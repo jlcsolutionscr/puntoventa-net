@@ -1,0 +1,43 @@
+2018-11-18 14:28:16,456 [1] ERROR LeandroSoftware.PuntoVenta.Servicios.ComprobanteElectronicoService - Error al enviar el el documento al servicio de facturación electrónica: 
+System.Exception: Error al consultar el registro de la empresa en el servicio de factura electrónica: Internal Server Error
+   en LeandroSoftware.PuntoVenta.Servicios.ComprobanteElectronicoService.<ConsultarEmpresa>d__8.MoveNext() en C:\Users\Jason\Documents\.NET Proyects\puntoventa.NET\Aplicacion\Servicios\ComprobanteElectronicoService.cs:línea 714
+2018-11-18 14:35:57,380 [1] ERROR LeandroSoftware.PuntoVenta.Servicios.FacturacionService - Error al agregar el registro de facturación: 
+System.NullReferenceException: Referencia a objeto no establecida como instancia de un objeto.
+   en LeandroSoftware.PuntoVenta.Servicios.ComprobanteElectronicoService.GeneraFacturaElectronica(Factura factura, Empresa empresa, Cliente cliente, IDbContext dbContext, Int32 intSucursal, Int32 intTerminal) en C:\Users\Jason\Documents\.NET Proyects\puntoventa.NET\Aplicacion\Servicios\ComprobanteElectronicoService.cs:línea 268
+   en LeandroSoftware.PuntoVenta.Servicios.FacturacionService.AgregarFactura(Factura factura, Int32 intSucursal, Int32 intTerminal) en C:\Users\Jason\Documents\.NET Proyects\puntoventa.NET\Aplicacion\Servicios\FacturacionService.cs:línea 623
+2018-11-18 14:36:58,211 [1] ERROR LeandroSoftware.PuntoVenta.Servicios.FacturacionService - Error al agregar el registro de facturación: 
+System.NullReferenceException: Referencia a objeto no establecida como instancia de un objeto.
+   en LeandroSoftware.PuntoVenta.Servicios.ComprobanteElectronicoService.GeneraFacturaElectronica(Factura factura, Empresa empresa, Cliente cliente, IDbContext dbContext, Int32 intSucursal, Int32 intTerminal) en C:\Users\Jason\Documents\.NET Proyects\puntoventa.NET\Aplicacion\Servicios\ComprobanteElectronicoService.cs:línea 268
+   en LeandroSoftware.PuntoVenta.Servicios.FacturacionService.AgregarFactura(Factura factura, Int32 intSucursal, Int32 intTerminal) en C:\Users\Jason\Documents\.NET Proyects\puntoventa.NET\Aplicacion\Servicios\FacturacionService.cs:línea 623
+2018-11-18 14:49:34,496 [1] ERROR LeandroSoftware.PuntoVenta.Servicios.FacturacionService - Error al actualizar el cliente: 
+System.InvalidOperationException: Attaching an entity of type 'LeandroSoftware.PuntoVenta.Dominio.Entidades.Empresa' failed because another entity of the same type already has the same primary key value. This can happen when using the 'Attach' method or setting the state of an entity to 'Unchanged' or 'Modified' if any entities in the graph have conflicting key values. This may be because some entities are new and have not yet received database-generated key values. In this case use the 'Add' method or the 'Added' entity state to track the graph and then set the state of non-new entities to 'Unchanged' or 'Modified' as appropriate.
+   en System.Data.Entity.Core.Objects.ObjectContext.AttachSingleObject(IEntityWrapper wrappedEntity, EntitySet entitySet)
+   en System.Data.Entity.Core.Objects.DataClasses.RelatedEnd.AddEntityToObjectStateManager(IEntityWrapper wrappedEntity, Boolean doAttach)
+   en System.Data.Entity.Core.Objects.DataClasses.EntityReference.AddEntityToObjectStateManager(IEntityWrapper wrappedEntity, Boolean doAttach)
+   en System.Data.Entity.Core.Objects.DataClasses.RelatedEnd.AddGraphToObjectStateManager(IEntityWrapper wrappedEntity, Boolean relationshipAlreadyExists, Boolean addRelationshipAsUnchanged, Boolean doAttach)
+   en System.Data.Entity.Core.Objects.DataClasses.RelatedEnd.IncludeEntity(IEntityWrapper wrappedEntity, Boolean addRelationshipAsUnchanged, Boolean doAttach)
+   en System.Data.Entity.Core.Objects.DataClasses.EntityReference`1.Include(Boolean addRelationshipAsUnchanged, Boolean doAttach)
+   en System.Data.Entity.Core.Objects.DataClasses.RelationshipManager.AddRelatedEntitiesToObjectStateManager(Boolean doAttach)
+   en System.Data.Entity.Core.Objects.ObjectContext.AttachTo(String entitySetName, Object entity)
+   en System.Data.Entity.Internal.Linq.InternalSet`1.<>c__DisplayClassa.<Attach>b__9()
+   en System.Data.Entity.Internal.Linq.InternalSet`1.ActOnSet(Action action, EntityState newState, Object entity, String methodName)
+   en System.Data.Entity.Internal.Linq.InternalSet`1.Attach(Object entity)
+   en System.Data.Entity.Internal.InternalEntityEntry.set_State(EntityState value)
+   en LeandroSoftware.PuntoVenta.Datos.LeandroContext.NotificarModificacion[TEntity](TEntity entidad) en C:\Users\Jason\Documents\.NET Proyects\puntoventa.NET\Aplicacion\Datos\LeandroContext.cs:línea 188
+   en LeandroSoftware.PuntoVenta.Servicios.FacturacionService.ActualizarCliente(Cliente cliente) en C:\Users\Jason\Documents\.NET Proyects\puntoventa.NET\Aplicacion\Servicios\FacturacionService.cs:línea 114
+2018-11-18 14:49:42,317 [1] ERROR LeandroSoftware.PuntoVenta.Servicios.FacturacionService - Error al actualizar el cliente: 
+System.InvalidOperationException: Attaching an entity of type 'LeandroSoftware.PuntoVenta.Dominio.Entidades.Empresa' failed because another entity of the same type already has the same primary key value. This can happen when using the 'Attach' method or setting the state of an entity to 'Unchanged' or 'Modified' if any entities in the graph have conflicting key values. This may be because some entities are new and have not yet received database-generated key values. In this case use the 'Add' method or the 'Added' entity state to track the graph and then set the state of non-new entities to 'Unchanged' or 'Modified' as appropriate.
+   en System.Data.Entity.Core.Objects.ObjectContext.AttachSingleObject(IEntityWrapper wrappedEntity, EntitySet entitySet)
+   en System.Data.Entity.Core.Objects.DataClasses.RelatedEnd.AddEntityToObjectStateManager(IEntityWrapper wrappedEntity, Boolean doAttach)
+   en System.Data.Entity.Core.Objects.DataClasses.EntityReference.AddEntityToObjectStateManager(IEntityWrapper wrappedEntity, Boolean doAttach)
+   en System.Data.Entity.Core.Objects.DataClasses.RelatedEnd.AddGraphToObjectStateManager(IEntityWrapper wrappedEntity, Boolean relationshipAlreadyExists, Boolean addRelationshipAsUnchanged, Boolean doAttach)
+   en System.Data.Entity.Core.Objects.DataClasses.RelatedEnd.IncludeEntity(IEntityWrapper wrappedEntity, Boolean addRelationshipAsUnchanged, Boolean doAttach)
+   en System.Data.Entity.Core.Objects.DataClasses.EntityReference`1.Include(Boolean addRelationshipAsUnchanged, Boolean doAttach)
+   en System.Data.Entity.Core.Objects.DataClasses.RelationshipManager.AddRelatedEntitiesToObjectStateManager(Boolean doAttach)
+   en System.Data.Entity.Core.Objects.ObjectContext.AttachTo(String entitySetName, Object entity)
+   en System.Data.Entity.Internal.Linq.InternalSet`1.<>c__DisplayClassa.<Attach>b__9()
+   en System.Data.Entity.Internal.Linq.InternalSet`1.ActOnSet(Action action, EntityState newState, Object entity, String methodName)
+   en System.Data.Entity.Internal.Linq.InternalSet`1.Attach(Object entity)
+   en System.Data.Entity.Internal.InternalEntityEntry.set_State(EntityState value)
+   en LeandroSoftware.PuntoVenta.Datos.LeandroContext.NotificarModificacion[TEntity](TEntity entidad) en C:\Users\Jason\Documents\.NET Proyects\puntoventa.NET\Aplicacion\Datos\LeandroContext.cs:línea 188
+   en LeandroSoftware.PuntoVenta.Servicios.FacturacionService.ActualizarCliente(Cliente cliente) en C:\Users\Jason\Documents\.NET Proyects\puntoventa.NET\Aplicacion\Servicios\FacturacionService.cs:línea 114

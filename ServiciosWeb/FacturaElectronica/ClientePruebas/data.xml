@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FacturaElectronica xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+    xmlns="https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/facturaElectronica" xsi:schemaLocation="https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/facturaElectronica https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/facturaElectronica.xsd">
+    <Clave>50611101800011094021100100001010000000008113572960</Clave>
+    <NumeroConsecutivo>00100001010000000008</NumeroConsecutivo>
+    <FechaEmision>2018-10-11T09:54:11.713</FechaEmision>
+    <Emisor>
+        <Nombre>JASON LEANDRO LOPEZ CORDOBA</Nombre>
+        <Identificacion>
+            <Tipo>01</Tipo>
+            <Numero>110940211</Numero>
+        </Identificacion>
+        <Ubicacion>
+            <Provincia>1</Provincia>
+            <Canton>06</Canton>
+            <Distrito>01</Distrito>
+            <OtrasSenas>DE LA ESCUELA DE CORAZÓN DE JESÚS 100 M OESTE Y 25 M SUR.</OtrasSenas>
+        </Ubicacion>
+        <Telefono>
+            <CodigoPais>506</CodigoPais>
+            <NumTelefono>22302970</NumTelefono>
+        </Telefono>
+        <CorreoElectronico>JASON.LOPEZ.CORDOBA@HOTMAIL.COM</CorreoElectronico>
+    </Emisor>
+    <Receptor>
+        <Nombre>GORILLA LOGIC GL SOCIEDAD ANONIMA</Nombre>
+        <Identificacion>
+            <Tipo>02</Tipo>
+            <Numero>3101666191</Numero>
+        </Identificacion>
+        <NombreComercial>GORILLA LOGIC GL SOCIEDAD ANONIMA</NombreComercial>
+        <Ubicacion>
+            <Provincia>1</Provincia>
+            <Canton>01</Canton>
+            <Distrito>08</Distrito>
+            <OtrasSenas>SABANA BUSINESS CENTER PISO N. 10</OtrasSenas>
+        </Ubicacion>
+        <Telefono>
+            <CodigoPais>506</CodigoPais>
+            <NumTelefono>41056000</NumTelefono>
+        </Telefono>
+        <Fax>
+            <CodigoPais>506</CodigoPais>
+            <NumTelefono>22015234</NumTelefono>
+        </Fax>
+    </Receptor>
+    <CondicionVenta>01</CondicionVenta>
+    <MedioPago>01</MedioPago>
+    <DetalleServicio>
+        <LineaDetalle>
+            <NumeroLinea>1</NumeroLinea>
+            <Codigo>
+                <Tipo>01</Tipo>
+                <Codigo>001</Codigo>
+            </Codigo>
+            <Cantidad>1.000</Cantidad>
+            <UnidadMedida>Sp</UnidadMedida>
+            <Detalle>SERVICIOS PROFESIONALES</Detalle>
+            <PrecioUnitario>2250.00000</PrecioUnitario>
+            <MontoTotal>2250.00000</MontoTotal>
+            <SubTotal>2250.00000</SubTotal>
+            <MontoTotalLinea>2250.00000</MontoTotalLinea>
+        </LineaDetalle>
+    </DetalleServicio>
+    <ResumenFactura>
+        <CodigoMoneda>USD</CodigoMoneda>
+        <TipoCambio>599.00000</TipoCambio>
+        <TotalServExentos>2250.00000</TotalServExentos>
+        <TotalExento>2250.00000</TotalExento>
+        <TotalVenta>2250.00000</TotalVenta>
+        <TotalVentaNeta>2250.00000</TotalVentaNeta>
+        <TotalComprobante>2250.00000</TotalComprobante>
+    </ResumenFactura>
+    <Normativa>
+        <NumeroResolucion>DGT-R-48-2016</NumeroResolucion>
+        <FechaResolucion>07-10-2016 00:00:00</FechaResolucion>
+    </Normativa>
+    <Otros>
+        <OtroTexto>-- ATV Comprobante Electrónico -- </OtroTexto>
+    </Otros>
+</FacturaElectronica

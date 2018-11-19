@@ -1,0 +1,13 @@
+011094021129-dev.p12
+cpf-01-1094-0211@stag.comprobanteselectronicos.go.cr
+P%%o78]Rba[.%J=[14[*
+
+URL API RECEPCION = https://api.comprobanteselectronicos.go.cr/recepcion-sandbox/v1/
+
+OAUTH 2.0 ACCESS TOKEN URL = https://idp.comprobanteselectronicos.go.cr/auth/realms/rut-stag/protocol/openid-connect/token
+
+CLIENT ID = api-stag
+
+CLIENT SECRET = [VACIO]
+
+SCOPE = [VACIO]

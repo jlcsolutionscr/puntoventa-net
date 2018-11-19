@@ -1,0 +1,2 @@
+2018-11-13 14:34:48,368 [1] INFO LeandroSoftware.FacturaElectronicaHacienda.ClientePruebas.Program - Attempt to request to FacturaElectronica WCF endpoint
+2018-11-13 14:34:59,277 [1] INFO LeandroSoftware.FacturaElectronicaHacienda.ClientePruebas.Program - Attempt to request to FacturaElectronica WCF endpoint

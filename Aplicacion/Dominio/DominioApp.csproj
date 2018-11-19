@@ -1,0 +1,159 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{74E3681E-1245-4268-ADB9-D76DA18B2FE0}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>LeandroSoftware.PuntoVenta.Dominio</RootNamespace>
+    <AssemblyName>DominioApp</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.XML" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BusinessException.cs" />
+    <Compile Include="Entidades\AjusteInventario.cs" />
+    <Compile Include="Entidades\Asiento.cs" />
+    <Compile Include="Entidades\Barrio.cs" />
+    <Compile Include="Entidades\Canton.cs" />
+    <Compile Include="Entidades\CatalogoContable.cs" />
+    <Compile Include="Entidades\CierreCaja.cs" />
+    <Compile Include="Entidades\Cliente.cs" />
+    <Compile Include="Entidades\ClaseCuentaContable.cs" />
+    <Compile Include="Entidades\DesglosePagoCompra.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entidades\DesglosePagoCuentaPorPagar.cs" />
+    <Compile Include="Entidades\DesglosePagoDevolucionCliente.cs" />
+    <Compile Include="Entidades\DesglosePagoDevolucionProveedor.cs" />
+    <Compile Include="Entidades\DetalleAjusteInventario.cs" />
+    <Compile Include="Entidades\DetalleDevolucionProveedor.cs" />
+    <Compile Include="Entidades\Distrito.cs" />
+    <Compile Include="Entidades\DevolucionProveedor.cs" />
+    <Compile Include="Entidades\CondicionVenta.cs" />
+    <Compile Include="Entidades\DocumentoElectronico.cs" />
+    <Compile Include="Entidades\Particular.cs" />
+    <Compile Include="Entidades\OrdenServicio.cs" />
+    <Compile Include="Entidades\DetalleOrdenServicio.cs" />
+    <Compile Include="Entidades\DesgloseMovimientoCuentaPorCobrar.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entidades\DesgloseMovimientoCuentaPorPagar.cs" />
+    <Compile Include="Entidades\MovimientoProducto.cs" />
+    <Compile Include="Entidades\DetalleTraslado.cs" />
+    <Compile Include="Entidades\Provincia.cs" />
+    <Compile Include="Entidades\TipoIdentificacion.cs" />
+    <Compile Include="Entidades\Traslado.cs" />
+    <Compile Include="Entidades\Sucursal.cs" />
+    <Compile Include="Entidades\DesglosePagoIngreso.cs" />
+    <Compile Include="Entidades\Ingreso.cs" />
+    <Compile Include="Entidades\CuentaIngreso.cs" />
+    <Compile Include="Entidades\DesglosePagoEgreso.cs" />
+    <Compile Include="Entidades\DesglosePagoMovimientoCuentaPorPagar.cs" />
+    <Compile Include="Entidades\DesglosePagoMovimientoCuentaPorCobrar.cs" />
+    <Compile Include="Entidades\DesglosePagoFactura.cs" />
+    <Compile Include="Entidades\TipoMoneda.cs" />
+    <Compile Include="Entidades\BancoAdquiriente.cs" />
+    <Compile Include="Entidades\FormaPago.cs" />
+    <Compile Include="Entidades\DetalleDevolucionCliente.cs" />
+    <Compile Include="Entidades\DevolucionCliente.cs" />
+    <Compile Include="Entidades\DetalleProforma.cs" />
+    <Compile Include="Entidades\Proforma.cs" />
+    <Compile Include="Entidades\ParametroContable.cs" />
+    <Compile Include="Entidades\TipoParametroContable.cs" />
+    <Compile Include="Entidades\CuentaPorCobrar.cs" />
+    <Compile Include="Entidades\CuentaBanco.cs" />
+    <Compile Include="Entidades\CuentaEgreso.cs" />
+    <Compile Include="Entidades\CuentaPorPagar.cs" />
+    <Compile Include="Entidades\Factura.cs" />
+    <Compile Include="Entidades\Compra.cs" />
+    <Compile Include="Entidades\DetalleAsiento.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entidades\DetalleFactura.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entidades\DetalleCompra.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entidades\DetalleOrdenCompra.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entidades\DetalleRegistro.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entidades\Egreso.cs" />
+    <Compile Include="Entidades\Linea.cs" />
+    <Compile Include="Entidades\MovimientoCuentaPorCobrar.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entidades\MovimientoCuentaPorPagar.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entidades\MovimientoBanco.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entidades\OrdenCompra.cs" />
+    <Compile Include="Entidades\Producto.cs" />
+    <Compile Include="Entidades\Proveedor.cs" />
+    <Compile Include="Entidades\Empresa.cs" />
+    <Compile Include="Entidades\Role.cs" />
+    <Compile Include="Entidades\RolePorUsuario.cs" />
+    <Compile Include="Entidades\SaldoMensualContable.cs" />
+    <Compile Include="Entidades\TipoCuentaContable.cs" />
+    <Compile Include="Entidades\TipoMovimientoBanco.cs" />
+    <Compile Include="Entidades\TipoProducto.cs" />
+    <Compile Include="Entidades\TipoUnidad.cs" />
+    <Compile Include="Entidades\Vendedor.cs" />
+    <Compile Include="Entidades\Usuario.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,219 @@
+<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+Partial Class FrmBusquedaEgreso
+    Inherits System.Windows.Forms.Form
+
+    'Form overrides dispose to clean up the component list.
+    <System.Diagnostics.DebuggerNonUserCode()> _
+    Protected Overrides Sub Dispose(ByVal disposing As Boolean)
+        If disposing AndAlso components IsNot Nothing Then
+            components.Dispose()
+        End If
+        MyBase.Dispose(disposing)
+    End Sub
+
+    'Required by the Windows Form Designer
+    Private components As System.ComponentModel.IContainer
+    'NOTE: The following procedure is required by the Windows Form Designer
+    'It can be modified using the Windows Form Designer.
+    'Do not modify it using the code editor.
+    <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FrmBusquedaEgreso))
+        Me.FlexProducto = New System.Windows.Forms.DataGridView()
+        Me.btnFiltrar = New System.Windows.Forms.Button()
+        Me.lblDescripcion = New System.Windows.Forms.Label()
+        Me.txtBeneficiario = New System.Windows.Forms.TextBox()
+        Me.lblPagina = New System.Windows.Forms.Label()
+        Me.btnLast = New System.Windows.Forms.Button()
+        Me.btnNext = New System.Windows.Forms.Button()
+        Me.btnPrevious = New System.Windows.Forms.Button()
+        Me.btnFirst = New System.Windows.Forms.Button()
+        Me.Label1 = New System.Windows.Forms.Label()
+        Me.txtId = New System.Windows.Forms.TextBox()
+        Me.Label2 = New System.Windows.Forms.Label()
+        Me.txtDetalle = New System.Windows.Forms.TextBox()
+        CType(Me.FlexProducto, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.SuspendLayout()
+        '
+        'FlexProducto
+        '
+        Me.FlexProducto.AllowUserToAddRows = False
+        Me.FlexProducto.AllowUserToDeleteRows = False
+        Me.FlexProducto.AllowUserToResizeColumns = False
+        Me.FlexProducto.AllowUserToResizeRows = False
+        Me.FlexProducto.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        Me.FlexProducto.Location = New System.Drawing.Point(12, 71)
+        Me.FlexProducto.Name = "FlexProducto"
+        Me.FlexProducto.ReadOnly = True
+        Me.FlexProducto.RowHeadersVisible = False
+        Me.FlexProducto.ScrollBars = System.Windows.Forms.ScrollBars.None
+        Me.FlexProducto.Size = New System.Drawing.Size(620, 310)
+        Me.FlexProducto.TabIndex = 4
+        Me.FlexProducto.TabStop = False
+        '
+        'btnFiltrar
+        '
+        Me.btnFiltrar.Image = CType(resources.GetObject("btnFiltrar.Image"), System.Drawing.Image)
+        Me.btnFiltrar.Location = New System.Drawing.Point(578, 10)
+        Me.btnFiltrar.Name = "btnFiltrar"
+        Me.btnFiltrar.Size = New System.Drawing.Size(22, 22)
+        Me.btnFiltrar.TabIndex = 3
+        Me.btnFiltrar.TabStop = False
+        Me.btnFiltrar.UseVisualStyleBackColor = True
+        '
+        'lblDescripcion
+        '
+        Me.lblDescripcion.AutoSize = True
+        Me.lblDescripcion.Location = New System.Drawing.Point(142, 15)
+        Me.lblDescripcion.Name = "lblDescripcion"
+        Me.lblDescripcion.Size = New System.Drawing.Size(65, 13)
+        Me.lblDescripcion.TabIndex = 8
+        Me.lblDescripcion.Text = "Beneficiario:"
+        '
+        'txtBeneficiario
+        '
+        Me.txtBeneficiario.Location = New System.Drawing.Point(213, 12)
+        Me.txtBeneficiario.Name = "txtBeneficiario"
+        Me.txtBeneficiario.Size = New System.Drawing.Size(359, 20)
+        Me.txtBeneficiario.TabIndex = 1
+        '
+        'lblPagina
+        '
+        Me.lblPagina.AutoSize = True
+        Me.lblPagina.Location = New System.Drawing.Point(389, 392)
+        Me.lblPagina.Name = "lblPagina"
+        Me.lblPagina.Size = New System.Drawing.Size(77, 13)
+        Me.lblPagina.TabIndex = 23
+        Me.lblPagina.Text = "Página N de N"
+        '
+        'btnLast
+        '
+        Me.btnLast.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnLast.Enabled = False
+        Me.btnLast.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnLast.Location = New System.Drawing.Point(603, 387)
+        Me.btnLast.Name = "btnLast"
+        Me.btnLast.Size = New System.Drawing.Size(29, 23)
+        Me.btnLast.TabIndex = 8
+        Me.btnLast.TabStop = False
+        Me.btnLast.Text = ">>"
+        Me.btnLast.UseVisualStyleBackColor = True
+        '
+        'btnNext
+        '
+        Me.btnNext.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnNext.Enabled = False
+        Me.btnNext.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnNext.Location = New System.Drawing.Point(574, 387)
+        Me.btnNext.Name = "btnNext"
+        Me.btnNext.Size = New System.Drawing.Size(29, 23)
+        Me.btnNext.TabIndex = 7
+        Me.btnNext.TabStop = False
+        Me.btnNext.Text = ">"
+        Me.btnNext.UseVisualStyleBackColor = True
+        '
+        'btnPrevious
+        '
+        Me.btnPrevious.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnPrevious.Enabled = False
+        Me.btnPrevious.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnPrevious.Location = New System.Drawing.Point(545, 387)
+        Me.btnPrevious.Name = "btnPrevious"
+        Me.btnPrevious.Size = New System.Drawing.Size(29, 23)
+        Me.btnPrevious.TabIndex = 6
+        Me.btnPrevious.TabStop = False
+        Me.btnPrevious.Text = "<"
+        Me.btnPrevious.UseVisualStyleBackColor = True
+        '
+        'btnFirst
+        '
+        Me.btnFirst.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnFirst.Enabled = False
+        Me.btnFirst.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnFirst.Location = New System.Drawing.Point(516, 387)
+        Me.btnFirst.Name = "btnFirst"
+        Me.btnFirst.Size = New System.Drawing.Size(29, 23)
+        Me.btnFirst.TabIndex = 5
+        Me.btnFirst.TabStop = False
+        Me.btnFirst.Text = "<<"
+        Me.btnFirst.UseVisualStyleBackColor = True
+        '
+        'Label1
+        '
+        Me.Label1.AutoSize = True
+        Me.Label1.Location = New System.Drawing.Point(11, 15)
+        Me.Label1.Name = "Label1"
+        Me.Label1.Size = New System.Drawing.Size(30, 13)
+        Me.Label1.TabIndex = 31
+        Me.Label1.Text = "Nro.:"
+        '
+        'txtId
+        '
+        Me.txtId.Location = New System.Drawing.Point(47, 12)
+        Me.txtId.Name = "txtId"
+        Me.txtId.Size = New System.Drawing.Size(87, 20)
+        Me.txtId.TabIndex = 0
+        '
+        'Label2
+        '
+        Me.Label2.AutoSize = True
+        Me.Label2.Location = New System.Drawing.Point(10, 41)
+        Me.Label2.Name = "Label2"
+        Me.Label2.Size = New System.Drawing.Size(43, 13)
+        Me.Label2.TabIndex = 33
+        Me.Label2.Text = "Detalle:"
+        '
+        'txtDetalle
+        '
+        Me.txtDetalle.Location = New System.Drawing.Point(59, 38)
+        Me.txtDetalle.Name = "txtDetalle"
+        Me.txtDetalle.Size = New System.Drawing.Size(573, 20)
+        Me.txtDetalle.TabIndex = 2
+        '
+        'FrmBusquedaEgreso
+        '
+        Me.AcceptButton = Me.btnFiltrar
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.BackColor = System.Drawing.SystemColors.Control
+        Me.ClientSize = New System.Drawing.Size(644, 419)
+        Me.Controls.Add(Me.Label2)
+        Me.Controls.Add(Me.txtDetalle)
+        Me.Controls.Add(Me.Label1)
+        Me.Controls.Add(Me.txtId)
+        Me.Controls.Add(Me.lblPagina)
+        Me.Controls.Add(Me.btnLast)
+        Me.Controls.Add(Me.btnNext)
+        Me.Controls.Add(Me.btnPrevious)
+        Me.Controls.Add(Me.btnFirst)
+        Me.Controls.Add(Me.btnFiltrar)
+        Me.Controls.Add(Me.lblDescripcion)
+        Me.Controls.Add(Me.txtBeneficiario)
+        Me.Controls.Add(Me.FlexProducto)
+        Me.Cursor = System.Windows.Forms.Cursors.Default
+        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
+        Me.Location = New System.Drawing.Point(3, 22)
+        Me.MaximizeBox = False
+        Me.MinimizeBox = False
+        Me.Name = "FrmBusquedaEgreso"
+        Me.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
+        Me.Text = "Búsqueda de Egresos"
+        CType(Me.FlexProducto, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.ResumeLayout(False)
+        Me.PerformLayout()
+
+    End Sub
+    Friend WithEvents FlexProducto As System.Windows.Forms.DataGridView
+    Friend WithEvents btnFiltrar As System.Windows.Forms.Button
+    Friend WithEvents lblDescripcion As System.Windows.Forms.Label
+    Friend WithEvents txtBeneficiario As System.Windows.Forms.TextBox
+    Friend WithEvents lblPagina As System.Windows.Forms.Label
+    Private WithEvents btnLast As System.Windows.Forms.Button
+    Private WithEvents btnNext As System.Windows.Forms.Button
+    Private WithEvents btnPrevious As System.Windows.Forms.Button
+    Private WithEvents btnFirst As System.Windows.Forms.Button
+    Friend WithEvents Label1 As System.Windows.Forms.Label
+    Friend WithEvents txtId As System.Windows.Forms.TextBox
+    Friend WithEvents Label2 As System.Windows.Forms.Label
+    Friend WithEvents txtDetalle As System.Windows.Forms.TextBox
+End Class
