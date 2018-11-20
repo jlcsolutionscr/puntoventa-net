@@ -103,7 +103,8 @@
         Me.cmdUpdate.Name = "cmdUpdate"
         Me.cmdUpdate.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.cmdUpdate.Size = New System.Drawing.Size(25, 25)
-        Me.cmdUpdate.TabIndex = 12
+        Me.cmdUpdate.TabIndex = 99
+        Me.cmdUpdate.TabStop = False
         Me.cmdUpdate.TextAlign = System.Drawing.ContentAlignment.BottomCenter
         Me.cmdUpdate.UseVisualStyleBackColor = False
         '
@@ -117,7 +118,8 @@
         Me.cmdCancel.Name = "cmdCancel"
         Me.cmdCancel.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.cmdCancel.Size = New System.Drawing.Size(25, 25)
-        Me.cmdCancel.TabIndex = 11
+        Me.cmdCancel.TabIndex = 98
+        Me.cmdCancel.TabStop = False
         Me.cmdCancel.TextAlign = System.Drawing.ContentAlignment.BottomCenter
         Me.cmdCancel.UseVisualStyleBackColor = False
         '

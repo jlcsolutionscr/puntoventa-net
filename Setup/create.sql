@@ -135,18 +135,18 @@ CREATE TABLE Modulo (
   Descripcion VARCHAR(100) NOT NULL,
   MenuPadre VARCHAR(100) NOT NULL,
   PRIMARY KEY(IdModulo)
-)
+);
 
 CREATE TABLE ModuloPorEmpresa (
   IdEmpresa INTEGER NOT NULL,
   IdModulo INTEGER NOT NULL,
   PRIMARY KEY(IdEmpresa, IdModulo),
   FOREIGN KEY(IdEmpresa)
-    REFERENCES  Empresa(IdEmpresa)
+    REFERENCES Empresa(IdEmpresa)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdModulo)
-    REFERENCES  Modulo(IdModulo)
+    REFERENCES Modulo(IdModulo)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT
 );

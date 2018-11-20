@@ -4,11 +4,14 @@ using System.Text;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Diagnostics;
+using log4net;
 
 namespace LeandroSoftware.PuntoVenta.Core
 {
     public static class Utilitario
     {
+        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         public static string VerificarCertificadoPorNombre(string key)
         {
             string strThumbPrint = null;
@@ -39,7 +42,8 @@ namespace LeandroSoftware.PuntoVenta.Core
             }
             catch (Exception ex)
             {
-                throw ex;
+                log.Error("Error cargando el certificado:", ex);
+                throw new Exception("Error al cargar la configuración del sistema. Por favor contacte a su proveedor. . .");
             }
             return strThumbPrint;
         }
@@ -108,7 +112,8 @@ namespace LeandroSoftware.PuntoVenta.Core
             }
             catch (Exception ex)
             {
-                throw ex;
+                log.Error("Error cargando el certificado:", ex);
+                throw new Exception("Error al cargar la configuración del sistema. Por favor contacte a su proveedor. . .");
             }
             return strResult;
         }
@@ -153,7 +158,8 @@ namespace LeandroSoftware.PuntoVenta.Core
             }
             catch (Exception ex)
             {
-                throw ex;
+                log.Error("Error cargando el certificado:", ex);
+                throw new Exception("Error al cargar la configuración del sistema. Por favor contacte a su proveedor. . .");
             }
             return strResult;
         }

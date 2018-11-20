@@ -11,15 +11,3 @@ INSERT INTO Role values(54,'Mantenimiento de Productos','MnuMant','MnuMantProduc
 INSERT INTO Role values(55,'Mantenimiento de Usuarios','MnuMant','MnuMantUsuario','Permite acceder al módulo de Mantenimiento de Usuarios');
 INSERT INTO Role values(61,'Mantenimiento de Vendedores','MnuMant','MnuMantVend','Permite actualizar los datos de los vendedores de la empresa');
 INSERT INTO Role values(101,'Módulo de Facturación','MnuCaptura','MnuCapturaFactura','Permite registrar la Facturación');
-INSERT INTO RolePorUsuario VALUES(2,1,1);
-INSERT INTO RolePorUsuario VALUES(2,1,2);
-INSERT INTO RolePorUsuario VALUES(2,1,4);
-INSERT INTO RolePorUsuario VALUES(2,1,5);
-INSERT INTO RolePorUsuario VALUES(2,1,6);
-INSERT INTO RolePorUsuario VALUES(2,1,50);
-INSERT INTO RolePorUsuario VALUES(2,1,52);
-INSERT INTO RolePorUsuario VALUES(2,1,53);
-INSERT INTO RolePorUsuario VALUES(2,1,54);
-INSERT INTO RolePorUsuario VALUES(2,1,55);
-INSERT INTO RolePorUsuario VALUES(2,1,61);
-INSERT INTO RolePorUsuario VALUES(2,1,101);

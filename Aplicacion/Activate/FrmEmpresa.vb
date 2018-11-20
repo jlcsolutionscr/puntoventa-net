@@ -159,7 +159,7 @@ Public Class FrmEmpresa
         Try
             Dim ocxConexion As MySqlConnection = New MySqlConnection(strCadenaConexion)
             ocxConexion.Open()
-            daDataAdapter = New MySqlDataAdapter("SELECT IdEmpresa, NombreEmpresa, NombreComercial, IdTipoIdentificacion, Identificacion, IdProvincia, IdCanton, IdDistrito, IdBarrio, Direccion, Telefono, CuentaCorreoElectronico, ServicioHaciendaURL, IdCertificado, PinCertificado, FechaVence, PorcentajeIVA, LineasPorFactura, Contabiliza, AutoCompletaProducto, ModificaDescProducto, DesglosaServicioInst, PorcentajeInstalacion, CodigoServicioInst, IncluyeInsumosEnFactura, RespaldoEnLinea, CierrePorTurnos, FacturaElectronica FROM Empresa WHERE IdEmpresa=" + strIdEmpresa, ocxConexion)
+            daDataAdapter = New MySqlDataAdapter("SELECT IdEmpresa, NombreEmpresa, NombreComercial, IdTipoIdentificacion, Identificacion, IdProvincia, IdCanton, IdDistrito, IdBarrio, Direccion, Telefono, CuentaCorreoElectronico, ServicioFacturaElectronicaURL, IdCertificado, PinCertificado, FechaVence, PorcentajeIVA, LineasPorFactura, Contabiliza, AutoCompletaProducto, ModificaDescProducto, DesglosaServicioInst, PorcentajeInstalacion, CodigoServicioInst, IncluyeInsumosEnFactura, RespaldoEnLinea, CierrePorTurnos, FacturaElectronica FROM Empresa WHERE IdEmpresa=" + strIdEmpresa, ocxConexion)
             Dim dsDataSet As DataSet = New DataSet()
             daDataAdapter.Fill(dsDataSet, "empresa")
             ocxConexion.Close()
@@ -182,7 +182,7 @@ Public Class FrmEmpresa
         txtDireccion.DataBindings.Add("Text", bndSource, "Direccion")
         txtTelefono.DataBindings.Add("Text", bndSource, "Telefono")
         txtCorreoElectronico.DataBindings.Add("Text", bndSource, "CuentaCorreoElectronico")
-        txtServicioFacturaElectronica.DataBindings.Add("Text", bndSource, "ServicioHaciendaURL")
+        txtServicioFacturaElectronica.DataBindings.Add("Text", bndSource, "ServicioFacturaElectronicaURL")
         txtIdCertificado.DataBindings.Add("Text", bndSource, "IdCertificado")
         txtPinCertificado.DataBindings.Add("Text", bndSource, "PinCertificado")
         txtFecha.DataBindings.Add("Text", bndSource, "FechaVence", True, DataSourceUpdateMode.OnPropertyChanged, "", "dd-MM-yyyy")
