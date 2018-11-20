@@ -20,6 +20,8 @@ namespace LeandroSoftware.PuntoVenta.Servicios
         void ActualizarEmpresa(Empresa empresa);
         Empresa ObtenerEmpresa(int intIdEmpresa);
         IEnumerable<Empresa> ObtenerListaEmpresas();
+        Modulo ObtenerModulo(int intIdModulo);
+        CatalogoReporte ObtenerCatalogoReporte(int intIdReporte);
         // Métodos para administrar los usuarios del sistema
         Usuario AgregarUsuario(Usuario usuario, string key);
         void ActualizarUsuario(Usuario usuario, string key);
@@ -162,7 +164,7 @@ namespace LeandroSoftware.PuntoVenta.Servicios
             {
                 try
                 {
-                    return dbContext.EmpresaRepository.Include("DetalleRegistro").FirstOrDefault(x => x.IdEmpresa == intIdEmpresa);
+                    return dbContext.EmpresaRepository.Include("DetalleRegistro").Include("ModuloPorEmpresa").Include("ReportePorEmpresa").FirstOrDefault(x => x.IdEmpresa == intIdEmpresa);
                 }
                 catch (Exception ex)
                 {
@@ -184,6 +186,38 @@ namespace LeandroSoftware.PuntoVenta.Servicios
                 {
                     log.Error("Error al obtener el listado de empresas: ", ex);
                     throw new Exception("Se produjo un error consultando el listado de empresas. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public Modulo ObtenerModulo(int intIdModulo)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    return dbContext.ModuloRepository.FirstOrDefault(x => x.IdModulo == intIdModulo);
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al obtener la información del módulo: ", ex);
+                    throw new Exception("Se produjo un error consultando la parametrización de la empresa. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public CatalogoReporte ObtenerCatalogoReporte(int intIdReporte)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    return dbContext.CatalogoReporteRepository.FirstOrDefault(x => x.IdReporte == intIdReporte);
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al obtener la información del catalogo de reporte: ", ex);
+                    throw new Exception("Se produjo un error consultando la parametrización de la empresa. Por favor consulte con su proveedor.");
                 }
             }
         }

@@ -54,6 +54,7 @@
     <Compile Include="Entidades\Barrio.cs" />
     <Compile Include="Entidades\Canton.cs" />
     <Compile Include="Entidades\CatalogoContable.cs" />
+    <Compile Include="Entidades\CatalogoReporte.cs" />
     <Compile Include="Entidades\CierreCaja.cs" />
     <Compile Include="Entidades\Cliente.cs" />
     <Compile Include="Entidades\ClaseCuentaContable.cs" />
@@ -69,6 +70,8 @@
     <Compile Include="Entidades\DevolucionProveedor.cs" />
     <Compile Include="Entidades\CondicionVenta.cs" />
     <Compile Include="Entidades\DocumentoElectronico.cs" />
+    <Compile Include="Entidades\Modulo.cs" />
+    <Compile Include="Entidades\ModuloPorEmpresa.cs" />
     <Compile Include="Entidades\Particular.cs" />
     <Compile Include="Entidades\OrdenServicio.cs" />
     <Compile Include="Entidades\DetalleOrdenServicio.cs" />
@@ -79,6 +82,7 @@
     <Compile Include="Entidades\MovimientoProducto.cs" />
     <Compile Include="Entidades\DetalleTraslado.cs" />
     <Compile Include="Entidades\Provincia.cs" />
+    <Compile Include="Entidades\ReportePorEmpresa.cs" />
     <Compile Include="Entidades\TipoIdentificacion.cs" />
     <Compile Include="Entidades\Traslado.cs" />
     <Compile Include="Entidades\Sucursal.cs" />

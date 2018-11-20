@@ -10,6 +10,7 @@ Imports LeandroSoftware.Puntoventa.Dominio.Entidades
 Imports LeandroSoftware.Puntoventa.Datos
 Imports LeandroSoftware.Puntoventa.Servicios
 Imports LeandroSoftware.FacturaElectronicaHacienda.TiposDatos
+Imports System.Collections.Generic
 
 Public Class FrmMenuPrincipal
 #Region "Variables"
@@ -18,7 +19,7 @@ Public Class FrmMenuPrincipal
     Private objMenu As ToolStripMenuItem
     Private appSettings As Specialized.NameValueCollection
     Private servicioRespaldo As IRespaldoService
-
+    Private servicioMantenimiento As IMantenimientoService
     Public usuarioGlobal As Usuario
     Public empresaGlobal As Empresa
     Public equipoGlobal As DetalleRegistro
@@ -30,6 +31,7 @@ Public Class FrmMenuPrincipal
     Public strAppThumptPrint As String
     Public intSucursal As Integer
     Public intTerminal As Integer
+    Public lstListaReportes As New List(Of String)
 #End Region
 
 #Region "Métodos"
@@ -490,6 +492,7 @@ Public Class FrmMenuPrincipal
             unityContainer.RegisterInstance(GetType(String), "conectionString", strConn, New ContainerControlledLifetimeManager())
             unityContainer.RegisterType(Of IDbContext, LeandroContext)(New InjectionConstructor(New ResolvedParameter(GetType(String), "conectionString")))
             servicioRespaldo = unityContainer.Resolve(Of IRespaldoService)()
+            servicioMantenimiento = unityContainer.Resolve(Of IMantenimientoService)()
         Catch ex As Exception
             MessageBox.Show("Error al iniciar el menu principal: " & ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -532,6 +535,15 @@ Public Class FrmMenuPrincipal
                 Exit Sub
             End If
         End If
+        For Each moduloPorEmpresa As ModuloPorEmpresa In empresaGlobal.ModuloPorEmpresa
+            Dim modulo As Modulo = servicioMantenimiento.ObtenerModulo(moduloPorEmpresa.IdModulo)
+            objMenu = mnuMenuPrincipal.Items(modulo.MenuPadre)
+            objMenu.Visible = True
+        Next
+        For Each reportePorEmpresa As ReportePorEmpresa In empresaGlobal.ReportePorEmpresa
+            Dim reporte As CatalogoReporte = servicioMantenimiento.ObtenerCatalogoReporte(reportePorEmpresa.IdReporte)
+            lstListaReportes.Add(reporte.NombreReporte)
+        Next
         dgvDecimal = New DataGridViewCellStyle With {
             .Format = "N2",
             .NullValue = "0",

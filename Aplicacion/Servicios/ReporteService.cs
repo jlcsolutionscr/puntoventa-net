@@ -126,7 +126,26 @@ namespace LeandroSoftware.PuntoVenta.Servicios
                     dtDataTable.Columns.Add("Impuesto", typeof(decimal));
                     dtDataTable.Columns.Add("Total", typeof(decimal));
 
-                    if (intTipoPago >= 0)
+                    if (intTipoPago == -1)
+                    {
+                        var detalleVentas = dbContext.FacturaRepository.Where(s => s.IdEmpresa == intIdEmpresa & s.Fecha >= datFechaInicial & s.Fecha <= datFechaFinal & s.Nulo == bolNulo)
+                            .Join(dbContext.ClienteRepository, x => x.IdCliente, y => y.IdCliente, (x, y) => new { x, y })
+                            .Select(z => new { z.x.IdCliente, z.x.Nulo, z.x.IdCondicionVenta, z.x.IdFactura, z.x.Fecha, NombreCliente = z.x.Cliente.Nombre, z.x.NoDocumento, z.x.PorcentajeIVA, z.x.Impuesto, Total = (z.x.Excento + z.x.Grabado + z.x.Impuesto) });
+                        foreach (var value in detalleVentas)
+                        {
+                            drNewRow = dtDataTable.NewRow();
+                            drNewRow["FechaDesde"] = datFechaInicial;
+                            drNewRow["FechaHasta"] = datFechaFinal;
+                            drNewRow["IdFactura"] = value.IdFactura;
+                            drNewRow["Fecha"] = value.Fecha;
+                            drNewRow["Nombre"] = value.NombreCliente;
+                            drNewRow["NoDocumento"] = value.NoDocumento;
+                            drNewRow["Impuesto"] = value.Impuesto;
+                            drNewRow["Total"] = value.Total;
+                            dtDataTable.Rows.Add(drNewRow);
+                        }
+                    }
+                    else
                     {
                         var pagosEfectivo = new[] { StaticReporteCondicionVentaFormaPago.ContadoEfectivo, StaticReporteCondicionVentaFormaPago.ContadoTarjeta, StaticReporteCondicionVentaFormaPago.ContadoCheque, StaticReporteCondicionVentaFormaPago.ContadoTransferenciaDepositoBancario };
                         if (intTipoPago == StaticReporteCondicionVentaFormaPago.Credito | !pagosEfectivo.Contains(intTipoPago))
@@ -159,7 +178,7 @@ namespace LeandroSoftware.PuntoVenta.Servicios
                             var detalleVentas = dbContext.FacturaRepository.Where(s => s.IdEmpresa == intIdEmpresa & s.Fecha >= datFechaInicial & s.Fecha <= datFechaFinal & s.Nulo == bolNulo)
                                 .Join(dbContext.ClienteRepository, x => x.IdCliente, y => y.IdCliente, (x, y) => new { x, y })
                                 .Join(dbContext.DesglosePagoFacturaRepository, x => x.x.IdFactura, y => y.IdFactura, (x, y) => new { x, y })
-                                    .Select(z => new { z.x.x.IdCliente, z.x.x.Nulo, z.x.x.IdCondicionVenta, z.y.IdFormaPago, z.y.IdCuentaBanco, z.x.x.IdFactura, z.x.x.Fecha, NombreCliente = z.x.x.Cliente.Nombre, z.x.x.NoDocumento, z.x.x.PorcentajeIVA, z.x.x.Impuesto, Total = z.y.MontoLocal, z.x.x.TotalCosto });
+                                .Select(z => new { z.x.x.IdCliente, z.x.x.Nulo, z.x.x.IdCondicionVenta, z.y.IdFormaPago, z.y.IdCuentaBanco, z.x.x.IdFactura, z.x.x.Fecha, NombreCliente = z.x.x.Cliente.Nombre, z.x.x.NoDocumento, z.x.x.PorcentajeIVA, z.x.x.Impuesto, Total = z.y.MontoLocal, z.x.x.TotalCosto });
                             if (intTipoPago == StaticReporteCondicionVentaFormaPago.ContadoEfectivo)
                             {
                                 detalleVentas = detalleVentas.Where(x => x.IdCondicionVenta == StaticCondicionVenta.Contado && x.IdFormaPago == StaticFormaPago.Efectivo);
@@ -274,7 +293,26 @@ namespace LeandroSoftware.PuntoVenta.Servicios
                     dtDataTable.Columns.Add("Impuesto", typeof(decimal));
                     dtDataTable.Columns.Add("Total", typeof(decimal));
 
-                    if (intTipoPago >= 0)
+                    if (intTipoPago == -1)
+                    {
+                        var detalleCompras = dbContext.CompraRepository.Where(s => s.IdEmpresa == intIdEmpresa & s.Fecha >= datFechaInicial & s.Fecha <= datFechaFinal & s.Nulo == bolNulo)
+                            .Join(dbContext.ProveedorRepository, x => x.IdProveedor, y => y.IdProveedor, (x, y) => new { x, y })
+                            .Select(z => new { z.x.IdProveedor, z.x.Nulo, z.x.IdCondicionVenta, z.x.IdCompra, z.x.Fecha, NombreProveedor = z.x.Proveedor.Nombre, z.x.NoDocumento, z.x.PorcentajeIVA, z.x.Impuesto, Total = (z.x.Excento + z.x.Grabado + z.x.Impuesto) });
+                        foreach (var value in detalleCompras)
+                        {
+                            drNewRow = dtDataTable.NewRow();
+                            drNewRow["FechaDesde"] = datFechaInicial;
+                            drNewRow["FechaHasta"] = datFechaFinal;
+                            drNewRow["IdCompra"] = value.IdCompra;
+                            drNewRow["Fecha"] = value.Fecha;
+                            drNewRow["Nombre"] = value.NombreProveedor;
+                            drNewRow["NoDocumento"] = value.NoDocumento;
+                            drNewRow["Impuesto"] = value.Impuesto;
+                            drNewRow["Total"] = value.Total;
+                            dtDataTable.Rows.Add(drNewRow);
+                        }
+                    }
+                    else
                     {
                         var pagosEfectivo = new[] { StaticReporteCondicionVentaFormaPago.ContadoEfectivo, StaticReporteCondicionVentaFormaPago.ContadoTarjeta, StaticReporteCondicionVentaFormaPago.ContadoCheque, StaticReporteCondicionVentaFormaPago.ContadoTransferenciaDepositoBancario };
                         if (intTipoPago == StaticReporteCondicionVentaFormaPago.Credito | !pagosEfectivo.Contains(intTipoPago))

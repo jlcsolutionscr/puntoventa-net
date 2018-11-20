@@ -1,2 +1,7 @@
 /packages/
 /padron/
+bin/
+obj/
+My Project/
+App_Data/
+.vs/

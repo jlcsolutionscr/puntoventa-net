@@ -44,7 +44,6 @@ Partial Class FrmMenuReportes
         Me.LstReporte.BackColor = System.Drawing.SystemColors.Window
         Me.LstReporte.Cursor = System.Windows.Forms.Cursors.Default
         Me.LstReporte.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.LstReporte.Items.AddRange(New Object() {"Ventas En General", "Ventas Anuladas", "Ventas por Vendedor", "Compras En General", "Compras Anuladas", "Cuentas por Cobrar a Clientes", "Cuentas por Pagar a Proveedores", "Pagos a Cuentas por Cobrar de Clientes", "Pagos a Cuentas por Pagar de Proveedores", "Conciliación Bancaria", "Resumen de Movimientos", "Detalle de Egresos", "Detalle de Ingresos", "Reporte Resumido de Ventas por Línea", "Reporte Detallado de Ventas por Línea"})
         Me.LstReporte.Location = New System.Drawing.Point(12, 125)
         Me.LstReporte.Name = "LstReporte"
         Me.LstReporte.RightToLeft = System.Windows.Forms.RightToLeft.No

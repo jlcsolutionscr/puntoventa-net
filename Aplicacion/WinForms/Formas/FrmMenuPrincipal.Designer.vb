@@ -114,6 +114,7 @@ Partial Class FrmMenuPrincipal
         Me.MnuArchivo.Name = "MnuArchivo"
         Me.MnuArchivo.Size = New System.Drawing.Size(60, 20)
         Me.MnuArchivo.Text = "Archivo"
+        Me.MnuArchivo.Visible = False
         '
         'mnuArchivoCierre
         '
@@ -155,6 +156,7 @@ Partial Class FrmMenuPrincipal
         Me.MnuParam.Name = "MnuParam"
         Me.MnuParam.Size = New System.Drawing.Size(79, 20)
         Me.MnuParam.Text = "Parámetros"
+        Me.MnuParam.Visible = False
         '
         'MnuParamPC
         '
@@ -184,6 +186,7 @@ Partial Class FrmMenuPrincipal
         Me.MnuMant.Name = "MnuMant"
         Me.MnuMant.Size = New System.Drawing.Size(101, 20)
         Me.MnuMant.Text = "Mantenimiento"
+        Me.MnuMant.Visible = False
         '
         'MnuMantCliente
         '
@@ -283,6 +286,7 @@ Partial Class FrmMenuPrincipal
         Me.MnuCaptura.Name = "MnuCaptura"
         Me.MnuCaptura.Size = New System.Drawing.Size(61, 20)
         Me.MnuCaptura.Text = "Captura"
+        Me.MnuCaptura.Visible = False
         '
         'MnuCapturaFactura
         '
@@ -374,6 +378,7 @@ Partial Class FrmMenuPrincipal
         Me.MnuDocElect.Name = "MnuDocElect"
         Me.MnuDocElect.Size = New System.Drawing.Size(154, 20)
         Me.MnuDocElect.Text = "Documentos Electrónicos"
+        Me.MnuDocElect.Visible = False
         '
         'MnuDocElectCDE
         '
@@ -394,6 +399,7 @@ Partial Class FrmMenuPrincipal
         Me.MnuCC.Name = "MnuCC"
         Me.MnuCC.Size = New System.Drawing.Size(103, 20)
         Me.MnuCC.Text = "Crédito y Cobro"
+        Me.MnuCC.Visible = False
         '
         'MnuApRCxC
         '
@@ -464,6 +470,7 @@ Partial Class FrmMenuPrincipal
         Me.MnuBC.Name = "MnuBC"
         Me.MnuBC.Size = New System.Drawing.Size(149, 20)
         Me.MnuBC.Text = "Bancos y Corresponsales"
+        Me.MnuBC.Visible = False
         '
         'MnuBCMov
         '
@@ -478,6 +485,7 @@ Partial Class FrmMenuPrincipal
         Me.mnuConta.Name = "mnuConta"
         Me.mnuConta.Size = New System.Drawing.Size(87, 20)
         Me.mnuConta.Text = "Contabilidad"
+        Me.mnuConta.Visible = False
         '
         'mnuContaAsiento
         '

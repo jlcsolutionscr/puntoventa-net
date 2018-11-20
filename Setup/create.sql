@@ -130,6 +130,47 @@ CREATE TABLE Usuario (
       ON UPDATE RESTRICT
 );
 
+CREATE TABLE Modulo (
+  IdModulo INTEGER NOT NULL,
+  Descripcion VARCHAR(100) NOT NULL,
+  MenuPadre VARCHAR(100) NOT NULL,
+  PRIMARY KEY(IdModulo)
+)
+
+CREATE TABLE ModuloPorEmpresa (
+  IdEmpresa INTEGER NOT NULL,
+  IdModulo INTEGER NOT NULL,
+  PRIMARY KEY(IdEmpresa, IdModulo),
+  FOREIGN KEY(IdEmpresa)
+    REFERENCES  Empresa(IdEmpresa)
+      ON DELETE RESTRICT
+      ON UPDATE RESTRICT,
+  FOREIGN KEY(IdModulo)
+    REFERENCES  Modulo(IdModulo)
+      ON DELETE RESTRICT
+      ON UPDATE RESTRICT
+);
+
+CREATE TABLE CatalogoReporte (
+  IdReporte INTEGER NOT NULL,
+  NombreReporte VARCHAR(100) NOT NULL,
+  PRIMARY KEY(IdReporte)
+);
+
+CREATE TABLE ReportePorEmpresa (
+  IdEmpresa INTEGER NOT NULL,
+  IdReporte INTEGER NOT NULL,
+  PRIMARY KEY(IdEmpresa, IdReporte),
+  FOREIGN KEY(IdEmpresa)
+    REFERENCES  Empresa(IdEmpresa)
+      ON DELETE RESTRICT
+      ON UPDATE RESTRICT,
+  FOREIGN KEY(IdReporte)
+    REFERENCES  CatalogoReporte(IdReporte)
+      ON DELETE RESTRICT
+      ON UPDATE RESTRICT
+);
+
 CREATE TABLE Role (
   IdRole INTEGER NOT NULL AUTO_INCREMENT,
   Nombre VARCHAR(100) NOT NULL,

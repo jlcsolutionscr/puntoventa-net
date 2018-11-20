@@ -11,6 +11,8 @@ namespace LeandroSoftware.PuntoVenta.Dominio.Entidades
         public Empresa()
         {
             DetalleRegistro = new HashSet<DetalleRegistro>();
+            ModuloPorEmpresa = new HashSet<ModuloPorEmpresa>();
+            ReportePorEmpresa = new HashSet<ReportePorEmpresa>();
         }
         [Key]
         public int IdEmpresa { get; set; }
@@ -51,5 +53,7 @@ namespace LeandroSoftware.PuntoVenta.Dominio.Entidades
         [ForeignKey("IdProvincia, IdCanton, IdDistrito, IdBarrio")]
         public Barrio Barrio { get; set; }
         public ICollection<DetalleRegistro> DetalleRegistro { get; set; }
+        public ICollection<ModuloPorEmpresa> ModuloPorEmpresa { get; set; }
+        public ICollection<ReportePorEmpresa> ReportePorEmpresa { get; set; }
     }
 }

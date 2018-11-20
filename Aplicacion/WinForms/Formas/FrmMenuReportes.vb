@@ -71,7 +71,7 @@ Public Class FrmMenuReportes
                 intIdProveedor = proveedor.IdProveedor
             End If
             Select Case LstReporte.Text
-                Case "Ventas En General"
+                Case "Ventas en general"
                     Dim reptVentas As New rptVentas
                     Dim formaMenuTipoTransaccion As New FrmMenuTipoTransaccion
                     Dim banco As BancoAdquiriente
@@ -122,10 +122,10 @@ Public Class FrmMenuReportes
                             formReport.ShowDialog()
                         End If
                     End If
-                Case "Ventas Anuladas"
+                Case "Ventas anuladas"
                     Dim reptVentas As New rptVentas
                     Try
-                        dtbDatos = servicioReportes.ObtenerReporteVentasPorCliente(FrmMenuPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text, intIdCliente, StaticTipoNulo.Nulo, 0, 0)
+                        dtbDatos = servicioReportes.ObtenerReporteVentasPorCliente(FrmMenuPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text, intIdCliente, StaticTipoNulo.Nulo, -1, 0)
                     Catch ex As Exception
                         MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         Exit Sub
@@ -136,7 +136,7 @@ Public Class FrmMenuReportes
                     reptVentas.SetParameterValue(2, "Reporte de Ventas Anuladas")
                     formReport.crtViewer.ReportSource = reptVentas
                     formReport.ShowDialog()
-                Case "Ventas por Vendedor"
+                Case "Ventas por vendedor"
                     Dim reptVentas As New rptVentasPorVendedor
                     Dim formaMenuVendedor As New FrmMenuVendedor
                     If formaMenuVendedor.ShowDialog() = System.Windows.Forms.DialogResult.OK Then
@@ -152,7 +152,7 @@ Public Class FrmMenuReportes
                         formReport.crtViewer.ReportSource = reptVentas
                         formReport.ShowDialog()
                     End If
-                Case "Compras En General"
+                Case "Compras en general"
                     Dim reptCompras As New rptCompras
                     Dim formaMenuTipoTransaccion As New FrmMenuTipoTransaccion
                     Dim intFormaPago = 0
@@ -193,10 +193,10 @@ Public Class FrmMenuReportes
                             formReport.ShowDialog()
                         End If
                     End If
-                Case "Compras Anuladas"
+                Case "Compras anuladas"
                     Dim reptCompras As New rptCompras
                     Try
-                        dtbDatos = servicioReportes.ObtenerReporteComprasPorProveedor(FrmMenuPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text, intIdProveedor, StaticTipoNulo.Nulo, 0)
+                        dtbDatos = servicioReportes.ObtenerReporteComprasPorProveedor(FrmMenuPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text, intIdProveedor, StaticTipoNulo.Nulo, -1)
                     Catch ex As Exception
                         MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         Exit Sub
@@ -207,7 +207,7 @@ Public Class FrmMenuReportes
                     reptCompras.SetParameterValue(2, "Reporte de Compras Anuladas")
                     formReport.crtViewer.ReportSource = reptCompras
                     formReport.ShowDialog()
-                Case "Cuentas por Cobrar a Clientes"
+                Case "Cuentas por cobrar a clientes"
                     Dim reptCxC As New rptCuentasxCobrar
                     Try
                         dtbDatos = servicioReportes.ObtenerReporteCuentasPorCobrarClientes(FrmMenuPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text, intIdCliente)
@@ -221,7 +221,7 @@ Public Class FrmMenuReportes
                     reptCxC.SetParameterValue(2, "Reporte de Cuentas por Cobrar a Clientes")
                     formReport.crtViewer.ReportSource = reptCxC
                     formReport.ShowDialog()
-                Case "Cuentas por Pagar a Proveedores"
+                Case "Cuentas por pagar a proveedores"
                     Dim reptCxP As New rptCuentasxPagar
                     Try
                         dtbDatos = servicioReportes.ObtenerReporteCuentasPorPagarProveedores(FrmMenuPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text, intIdProveedor)
@@ -235,7 +235,7 @@ Public Class FrmMenuReportes
                     reptCxP.SetParameterValue(2, "Reporte de Cuentas por Pagar a Proveedores")
                     formReport.crtViewer.ReportSource = reptCxP
                     formReport.ShowDialog()
-                Case "Pagos a Cuentas por Cobrar de Clientes"
+                Case "Pagos a cuentas por cobrar de clientes"
                     Dim reptReciboCxC As New rptReciboCxC
                     Try
                         dtbDatos = servicioReportes.ObtenerReporteMovimientosCxCClientes(FrmMenuPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text, intIdCliente)
@@ -249,7 +249,7 @@ Public Class FrmMenuReportes
                     reptReciboCxC.SetParameterValue(2, "Reporte de Recibos Aplicados a Cuentas por Cobrar de Clientes")
                     formReport.crtViewer.ReportSource = reptReciboCxC
                     formReport.ShowDialog()
-                Case "Pagos a Cuentas por Pagar de Proveedores"
+                Case "Pagos a cuentas por pagar de proveedores"
                     Dim reptReciboCxP As New rptReciboCxP
                     Try
                         dtbDatos = servicioReportes.ObtenerReporteMovimientosCxPProveedores(FrmMenuPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text, intIdProveedor)
@@ -263,7 +263,7 @@ Public Class FrmMenuReportes
                     reptReciboCxP.SetParameterValue(2, "Reporte de Recibos Aplicados a Cuentas por Pagar de Proveedores")
                     formReport.crtViewer.ReportSource = reptReciboCxP
                     formReport.ShowDialog()
-                Case "Conciliación Bancaria"
+                Case "Conciliación bancaria"
                     Dim reptConciliacionBancaria As New rptConciliacionBancaria
                     Dim formaCuentaBanco As New FrmMenuCuentaBanco
                     If formaCuentaBanco.ShowDialog() = System.Windows.Forms.DialogResult.OK Then
@@ -281,7 +281,7 @@ Public Class FrmMenuReportes
                             formReport.ShowDialog()
                         End If
                     End If
-                Case "Resumen de Movimientos"
+                Case "Resumen de movimientos"
                     Dim reptResumenMovimientos As New rptResumenMovimientos
                     Try
                         dtbDatos = servicioReportes.ObtenerReporteEstadoResultados(FrmMenuPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text)
@@ -294,7 +294,7 @@ Public Class FrmMenuReportes
                     reptResumenMovimientos.SetParameterValue(1, strEmpresa)
                     formReport.crtViewer.ReportSource = reptResumenMovimientos
                     formReport.ShowDialog()
-                Case "Detalle de Egresos"
+                Case "Detalle de egresos"
                     Dim reptDetalleEgresos As New rptDetalleEgresos
                     Dim formaCuentaEgreso As New FrmMenuCuentaEgreso
                     If formaCuentaEgreso.ShowDialog() = System.Windows.Forms.DialogResult.OK Then
@@ -310,7 +310,7 @@ Public Class FrmMenuReportes
                         formReport.crtViewer.ReportSource = reptDetalleEgresos
                         formReport.ShowDialog()
                     End If
-                Case "Detalle de Ingresos"
+                Case "Detalle de ingresos"
                     Dim reptDetalleIngresos As New rptDetalleIngresos
                     Dim formaCuentaIngreso As New FrmMenuCuentaIngreso
                     If formaCuentaIngreso.ShowDialog() = System.Windows.Forms.DialogResult.OK Then
@@ -326,7 +326,7 @@ Public Class FrmMenuReportes
                         formReport.crtViewer.ReportSource = reptDetalleIngresos
                         formReport.ShowDialog()
                     End If
-                Case "Reporte Resumido de Ventas por Línea"
+                Case "Reporte resumido de ventas por línea"
                     Dim reptVentasxLineaResumen As New rptVentasxLineaResumen
                     Try
                         dtbDatos = servicioReportes.ObtenerReporteVentasPorLineaResumen(FrmMenuPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text)
@@ -339,7 +339,7 @@ Public Class FrmMenuReportes
                     reptVentasxLineaResumen.SetParameterValue(1, strEmpresa)
                     formReport.crtViewer.ReportSource = reptVentasxLineaResumen
                     formReport.ShowDialog()
-                Case "Reporte Detallado de Ventas por Línea"
+                Case "Reporte detallado de ventas por línea"
                     Dim reptVentasxLineaDetalle As New rptVentasxLineaDetalle
                     Dim formaMenuLinea As New FrmMenuLinea
                     If formaMenuLinea.ShowDialog() = System.Windows.Forms.DialogResult.OK Then
@@ -365,6 +365,10 @@ Public Class FrmMenuReportes
         Else
             MsgBox("Debe seleccionar un reporte de la lista.", MsgBoxStyle.Information + MsgBoxStyle.OkOnly)
         End If
+    End Sub
+
+    Private Sub FrmMenuReportes_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        LstReporte.DataSource = FrmMenuPrincipal.lstListaReportes
     End Sub
 
     Private Sub FrmRptMenu_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown

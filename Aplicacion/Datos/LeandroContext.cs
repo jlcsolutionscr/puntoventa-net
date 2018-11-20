@@ -14,6 +14,7 @@ namespace LeandroSoftware.PuntoVenta.Datos
         DbSet<Barrio> BarrioRepository { get; set; }
         DbSet<Canton> CantonRepository { get; set; }
         DbSet<CatalogoContable> CatalogoContableRepository { get; set; }
+        DbSet<CatalogoReporte> CatalogoReporteRepository { get; set; }
         DbSet<CierreCaja> CierreCajaRepository { get; set; }
         DbSet<ClaseCuentaContable> ClaseCuentaContableRepository { get; set; }
         DbSet<Cliente> ClienteRepository { get; set; }
@@ -53,6 +54,7 @@ namespace LeandroSoftware.PuntoVenta.Datos
         DbSet<FormaPago> FormaPagoRepository { get; set; }
         DbSet<Ingreso> IngresoRepository { get; set; }
         DbSet<Linea> LineaRepository { get; set; }
+        DbSet<Modulo> ModuloRepository { get; set; }
         DbSet<MovimientoCuentaPorCobrar> MovimientoCuentaPorCobrarRepository { get; set; }
         DbSet<MovimientoCuentaPorPagar> MovimientoCuentaPorPagarRepository { get; set; }
         DbSet<MovimientoBanco> MovimientoBancoRepository { get; set; }
@@ -111,6 +113,7 @@ namespace LeandroSoftware.PuntoVenta.Datos
         public DbSet<Barrio> BarrioRepository { get; set; }
         public DbSet<Canton> CantonRepository { get; set; }
         public DbSet<CatalogoContable> CatalogoContableRepository { get; set; }
+        public DbSet<CatalogoReporte> CatalogoReporteRepository { get; set; }
         public DbSet<CierreCaja> CierreCajaRepository { get; set; }
         public DbSet<ClaseCuentaContable> ClaseCuentaContableRepository { get; set; }
         public DbSet<Cliente> ClienteRepository { get; set; }
@@ -150,6 +153,7 @@ namespace LeandroSoftware.PuntoVenta.Datos
         public DbSet<FormaPago> FormaPagoRepository { get; set; }
         public DbSet<Ingreso> IngresoRepository { get; set; }
         public DbSet<Linea> LineaRepository { get; set; }
+        public DbSet<Modulo> ModuloRepository { get; set; }
         public DbSet<MovimientoCuentaPorCobrar> MovimientoCuentaPorCobrarRepository { get; set; }
         public DbSet<MovimientoCuentaPorPagar> MovimientoCuentaPorPagarRepository { get; set; }
         public DbSet<MovimientoBanco> MovimientoBancoRepository { get; set; }

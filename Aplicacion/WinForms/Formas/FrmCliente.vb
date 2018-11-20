@@ -92,6 +92,7 @@ Public Class FrmCliente
             txtCorreoElectronico.Text = datos.CorreoElectronico
             If datos.IdVendedor IsNot Nothing Then cboVendedor.SelectedValue = datos.IdVendedor
             cboIdTipoPrecio.SelectedValue = datos.IdTipoPrecio
+            txtIdentificacion.ReadOnly = True
         Else
             datos = New Cliente
             CargarListadoBarrios(1, 1, 1)
@@ -104,9 +105,8 @@ Public Class FrmCliente
     End Sub
 
     Private Sub BtnGuardar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnGuardar.Click
-        Dim strCampo As String = ""
-        If Not ValidarCampos(strCampo) Then
-            MessageBox.Show("El campo " & strCampo & " es requerido", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        If cboTipoIdentificacion.SelectedValue Is Nothing Or txtIdentificacion.Text.Length = 0 Or cboProvincia.SelectedValue Is Nothing Or cboCanton.SelectedValue Is Nothing Or cboDistrito.SelectedValue Is Nothing Or cboBarrio.SelectedValue Is Nothing Or txtDireccion.Text.Length = 0 Or txtNombre.Text.Length = 0 Then
+            MessageBox.Show("Existen campos requeridos que no se fueron ingresados. Por favor verifique la información. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
         End If
         If datos.IdCliente = 0 Then
@@ -144,7 +144,7 @@ Public Class FrmCliente
     End Sub
 
     Private Sub Identificacion_Validating(ByVal sender As Object, ByVal e As EventArgs) Handles txtIdentificacion.Validated
-        If txtIdentificacion.Text <> "" Then
+        If txtIdCliente.Text = "" And txtIdentificacion.Text <> "" Then
             Dim cliente As Cliente = servicioFacturacion.ValidaIdentificacionCliente(FrmMenuPrincipal.empresaGlobal.IdEmpresa, txtIdentificacion.Text)
             If (cliente IsNot Nothing) Then
                 If (cliente.IdCliente > 0) Then
