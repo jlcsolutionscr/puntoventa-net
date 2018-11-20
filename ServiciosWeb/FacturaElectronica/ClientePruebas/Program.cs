@@ -28,7 +28,6 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.ClientePruebas
                     Console.WriteLine("Digite 'C' para consultar un comprobante o cualquier otra tecla para salir:");
                     input = Console.ReadLine();
                     string operacion = input.Substring(0, 1);
-                    log.Info("Attempt to request to FacturaElectronica WCF endpoint");
                     if (operacion == "C")
                     {
                         try
@@ -147,6 +146,7 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.ClientePruebas
             }
             catch (AggregateException ex)
             {
+                log.Error("Error consultado la lista de documentos: ", ex.Flatten());
                 throw ex.Flatten();
             }
         }
@@ -169,6 +169,7 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.ClientePruebas
             }
             catch (AggregateException ex)
             {
+                log.Error("Error consultado el documento con clave: " + datos.ClaveNumerica, ex.Flatten());
                 throw ex.Flatten();
             }
         }
@@ -215,6 +216,7 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.ClientePruebas
             }
             catch (AggregateException ex)
             {
+                log.Error("Error enviando el documento con clave: " + datos.ClaveNumerica, ex.Flatten());
                 throw ex.Flatten();
             }
         }
