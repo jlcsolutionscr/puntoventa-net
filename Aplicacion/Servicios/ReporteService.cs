@@ -685,7 +685,7 @@ namespace LeandroSoftware.PuntoVenta.Servicios
                     DataRow drNewRow;
                     dtDataTable.Columns.Add("FechaDesde", typeof(string));
                     dtDataTable.Columns.Add("FechaHasta", typeof(string));
-                    dtDataTable.Columns.Add("NombreTipoEmpresa", typeof(string));
+                    dtDataTable.Columns.Add("NombreTipoRegistro", typeof(string));
                     dtDataTable.Columns.Add("Descripcion", typeof(string));
                     dtDataTable.Columns.Add("Valor", typeof(decimal));
 
@@ -700,7 +700,7 @@ namespace LeandroSoftware.PuntoVenta.Servicios
                         drNewRow = dtDataTable.NewRow();
                         drNewRow["FechaDesde"] = datFechaInicial;
                         drNewRow["FechaHasta"] = datFechaFinal;
-                        drNewRow["NombreTipoEmpresa"] = "Ingresos";
+                        drNewRow["NombreTipoRegistro"] = "Ingresos";
                         if (eachCxC.tipopago == StaticFormaPago.Efectivo)
                             strTipo = " de contado";
                         else if (eachCxC.tipopago == StaticFormaPago.Cheque)
@@ -720,7 +720,7 @@ namespace LeandroSoftware.PuntoVenta.Servicios
                         drNewRow = dtDataTable.NewRow();
                         drNewRow["FechaDesde"] = datFechaInicial;
                         drNewRow["FechaHasta"] = datFechaFinal;
-                        drNewRow["NombreTipoEmpresa"] = "Ingresos";
+                        drNewRow["NombreTipoRegistro"] = "Ingresos";
                         drNewRow["Descripcion"] = "No hay registros";
                         drNewRow["Valor"] = 0;
                         dtDataTable.Rows.Add(drNewRow);
@@ -738,7 +738,7 @@ namespace LeandroSoftware.PuntoVenta.Servicios
                             drNewRow = dtDataTable.NewRow();
                             drNewRow["FechaDesde"] = datFechaInicial;
                             drNewRow["FechaHasta"] = datFechaFinal;
-                            drNewRow["NombreTipoEmpresa"] = "Egresos";
+                            drNewRow["NombreTipoRegistro"] = "Egresos";
                             if (eachCxP.tipopago == StaticFormaPago.Efectivo)
                                 strTipo = " de contado";
                             else if (eachCxP.tipopago == StaticFormaPago.Cheque)
@@ -765,7 +765,7 @@ namespace LeandroSoftware.PuntoVenta.Servicios
                         drNewRow = dtDataTable.NewRow();
                         drNewRow["FechaDesde"] = datFechaInicial;
                         drNewRow["FechaHasta"] = datFechaFinal;
-                        drNewRow["NombreTipoEmpresa"] = "Egresos";
+                        drNewRow["NombreTipoRegistro"] = "Egresos";
                         drNewRow["Descripcion"] = value.Desc;
                         drNewRow["Valor"] = value.Total;
                         dtDataTable.Rows.Add(drNewRow);
@@ -776,7 +776,7 @@ namespace LeandroSoftware.PuntoVenta.Servicios
                         drNewRow = dtDataTable.NewRow();
                         drNewRow["FechaDesde"] = datFechaInicial;
                         drNewRow["FechaHasta"] = datFechaFinal;
-                        drNewRow["NombreTipoEmpresa"] = "Egresos";
+                        drNewRow["NombreTipoRegistro"] = "Egresos";
                         drNewRow["Descripcion"] = "No hay registros";
                         drNewRow["Valor"] = 0;
                         dtDataTable.Rows.Add(drNewRow);

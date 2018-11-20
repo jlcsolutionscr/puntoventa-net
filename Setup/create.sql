@@ -86,7 +86,7 @@ CREATE TABLE Empresa (
   CierrePorTurnos BIT NOT NULL,
   CierreEnEjecucion BIT NOT NULL,
   FacturaElectronica BIT NOT NULL,
-  ServicioHaciendaURL VARCHAR(500) NULL,
+  ServicioFacturaElectronicaURL VARCHAR(500) NULL,
   IdCertificado VARCHAR(100) NULL,
   PinCertificado VARCHAR(4) NULL,
   PRIMARY KEY(IdEmpresa),
