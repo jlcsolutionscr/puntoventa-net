@@ -44,7 +44,7 @@ namespace LeandroSoftware.PuntoVenta.Dominio.Entidades
         public bool CierrePorTurnos { get; set; }
         public bool CierreEnEjecucion { get; set; }
         public bool FacturaElectronica { get; set; }
-        public string ServicioHaciendaURL { get; set; }
+        public string ServicioFacturaElectronicaURL { get; set; }
         public string IdCertificado { get; set; }
         public string PinCertificado { get; set; }
 

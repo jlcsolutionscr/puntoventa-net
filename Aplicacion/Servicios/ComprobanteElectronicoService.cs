@@ -690,7 +690,7 @@ namespace LeandroSoftware.PuntoVenta.Servicios
             {
                 string jsonRequest = new JavaScriptSerializer().Serialize(datos);
                 StringContent stringContent = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
-                Uri uri = new Uri(empresa.ServicioHaciendaURL + "/registrardocumentoelectronico");
+                Uri uri = new Uri(empresa.ServicioFacturaElectronicaURL + "/registrardocumentoelectronico");
                 Task<HttpResponseMessage> task1 = client.PostAsync(uri, stringContent);
                 task1.Wait();
             }
@@ -703,7 +703,7 @@ namespace LeandroSoftware.PuntoVenta.Servicios
 
         public static async Task<EmpresaDTO> ConsultarEmpresa(Empresa empresa)
         {
-            Uri uri = new Uri(empresa.ServicioHaciendaURL + "/consultarempresa?empresa=" + empresa.IdEmpresa);
+            Uri uri = new Uri(empresa.ServicioFacturaElectronicaURL + "/consultarempresa?empresa=" + empresa.IdEmpresa);
             Task<HttpResponseMessage> tskObtenerEmpresa = client.GetAsync(uri);
             EmpresaDTO empresaDTO;
             try
@@ -734,7 +734,7 @@ namespace LeandroSoftware.PuntoVenta.Servicios
 
         public static async Task<DatosDocumentoElectronicoDTO> ConsultarDocumentoElectronico(Empresa empresa, string strClaveNumerica, string strConsecutivo)
         {
-            Uri uri = new Uri(empresa.ServicioHaciendaURL + "/consultardocumentoelectronico?empresa=" + empresa.IdEmpresa + "&clave=" + strClaveNumerica + "&consecutivo=" + strConsecutivo);
+            Uri uri = new Uri(empresa.ServicioFacturaElectronicaURL + "/consultardocumentoelectronico?empresa=" + empresa.IdEmpresa + "&clave=" + strClaveNumerica + "&consecutivo=" + strConsecutivo);
             Task <HttpResponseMessage> tskObtenerListado = client.GetAsync(uri);
             try
             {
@@ -769,7 +769,7 @@ namespace LeandroSoftware.PuntoVenta.Servicios
                 strEndpoint = "/registrardocumentoelectronico";
             else if (documento.EstadoEnvio == "registrado")
                 strEndpoint = "/enviardocumentoelectronico";
-            Uri uri = new Uri(empresa.ServicioHaciendaURL + strEndpoint);
+            Uri uri = new Uri(empresa.ServicioFacturaElectronicaURL + strEndpoint);
             string jsonRequest = new JavaScriptSerializer().Serialize(documento);
             StringContent stringContent = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
             Task<HttpResponseMessage> task1 = client.PostAsync(uri, stringContent);
@@ -796,7 +796,7 @@ namespace LeandroSoftware.PuntoVenta.Servicios
 
         public static PadronDTO ConsultarPersonaPorIdentificacion(Empresa empresa, string strIdentificacion)
         {
-            Uri uri = new Uri(empresa.ServicioHaciendaURL + "/consultarpersonaporidentificacion?id=" + strIdentificacion);
+            Uri uri = new Uri(empresa.ServicioFacturaElectronicaURL + "/consultarpersonaporidentificacion?id=" + strIdentificacion);
             Task<HttpResponseMessage> task1 = client.GetAsync(uri);
             try
             {
