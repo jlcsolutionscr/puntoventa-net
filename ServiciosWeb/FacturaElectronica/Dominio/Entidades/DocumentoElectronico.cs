@@ -9,6 +9,7 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.Dominio.Entidades
     {
         [Key]
         public int IdDocumento { get; set; }
+        public int IdTipoDocumento { get; set; }
         public int IdEmpresa { get; set; }
         public DateTime Fecha { get; set; }
         public string ClaveNumerica { get; set; }

@@ -677,6 +677,7 @@ namespace LeandroSoftware.PuntoVenta.Servicios
                 // Generación de datos para envío de XML al servicio de Hacienda
                 DatosDocumentoElectronicoDTO datos = new DatosDocumentoElectronicoDTO();
                 datos.IdEmpresa = empresa.IdEmpresa;
+                datos.IdTipoDocumento = (int)tipoDocumento;
                 datos.ClaveNumerica = strClaveNumerica;
                 datos.FechaEmision = fechaEmision;
                 datos.TipoIdentificacionEmisor = strTipoIdentificacionEmisor;

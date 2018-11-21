@@ -10,6 +10,7 @@ namespace LeandroSoftware.Core
             DetalleServicio = new HashSet<EstructuraPDFDetalleServicio>();
         }
 
+        public string TituloDocumento { get; set; }
         public string NombreEmpresa { get; set; }
         public string Consecutivo { get; set; }
         public string PlazoCredito { get; set; }

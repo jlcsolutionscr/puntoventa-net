@@ -202,12 +202,12 @@ namespace LeandroSoftware.Core
             try
             {
                 PdfDocument document = new PdfDocument();
-                document.Info.Title = "Documento electrónico";
+                document.Info.Title = datos.TituloDocumento;
                 PdfPage page = document.AddPage();
                 XGraphics gfx = XGraphics.FromPdfPage(page);
                 XFont font = new XFont("Courier New", 10, XFontStyle.Bold);
                 gfx.DrawString(datos.NombreEmpresa.ToUpper(), font, XBrushes.Black, new XRect(0, 40, page.Width, 15), XStringFormats.Center);
-                gfx.DrawString("COMPROBANTE ELECTRONICO", font, XBrushes.Black, new XRect(0, 55, page.Width, 15), XStringFormats.Center);
+                gfx.DrawString(datos.TituloDocumento, font, XBrushes.Black, new XRect(0, 55, page.Width, 15), XStringFormats.Center);
                 font = new XFont("Arial", 8, XFontStyle.Regular);
                 gfx.DrawString("Consecutivo: ", font, XBrushes.Black, new XRect(20, 100, 80, 12), XStringFormats.TopLeft);
                 gfx.DrawString(datos.Consecutivo, font, XBrushes.Black, new XRect(110, 100, 200, 12), XStringFormats.TopLeft);
@@ -225,8 +225,6 @@ namespace LeandroSoftware.Core
                 gfx.DrawString("Medio de Pago: ", font, XBrushes.Black, new XRect(370, 124, 80, 12), XStringFormats.TopLeft);
                 gfx.DrawString(datos.MedioPago, font, XBrushes.Black, new XRect(470, 124, 80, 12), XStringFormats.TopLeft);
 
-                gfx.DrawString("Tipo Documento: ", font, XBrushes.Black, new XRect(20, 136, 80, 12), XStringFormats.TopLeft);
-                gfx.DrawString("Factura electrónica", font, XBrushes.Black, new XRect(110, 136, 200, 12), XStringFormats.TopLeft);
                 font = new XFont("Arial", 8, XFontStyle.Bold);
                 gfx.DrawString("DATOS DEL EMISOR", font, XBrushes.Black, new XRect(20, 151, 100, 12), XStringFormats.TopLeft);
 
@@ -254,7 +252,7 @@ namespace LeandroSoftware.Core
                 gfx.DrawString(datos.CantonEmisor, font, XBrushes.Black, new XRect(470, 211, 80, 12), XStringFormats.TopLeft);
 
                 gfx.DrawString("Distrito: ", font, XBrushes.Black, new XRect(20, 223, 80, 12), XStringFormats.TopLeft);
-                gfx.DrawString(datos.DireccionEmisor, font, XBrushes.Black, new XRect(110, 223, 200, 12), XStringFormats.TopLeft);
+                gfx.DrawString(datos.DistritoEmisor, font, XBrushes.Black, new XRect(110, 223, 200, 12), XStringFormats.TopLeft);
                 gfx.DrawString("Barrio: ", font, XBrushes.Black, new XRect(370, 223, 80, 12), XStringFormats.TopLeft);
                 gfx.DrawString(datos.BarrioEmisor, font, XBrushes.Black, new XRect(470, 223, 80, 12), XStringFormats.TopLeft);
 

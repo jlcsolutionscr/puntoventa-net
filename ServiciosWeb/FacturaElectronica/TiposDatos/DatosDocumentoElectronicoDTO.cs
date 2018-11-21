@@ -11,9 +11,11 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.TiposDatos
         }
 
         [DataMember]
+        public int IdDocumento { get; set; }
+        [DataMember]
         public int IdEmpresa { get; set; }
         [DataMember]
-        public int IdDocumento { get; set; }
+        public int IdTipoDocumento { get; set; }
         [DataMember]
         public string ClaveNumerica { get; set; }
         [DataMember]

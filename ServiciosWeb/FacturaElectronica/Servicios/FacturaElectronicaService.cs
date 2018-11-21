@@ -340,6 +340,7 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.Servicios
                     DocumentoElectronico documento = new DocumentoElectronico()
                     {
                         IdEmpresa = datos.IdEmpresa,
+                        IdTipoDocumento = datos.IdTipoDocumento,
                         Fecha = datos.FechaEmision.ToLocalTime(),
                         ClaveNumerica = datos.ClaveNumerica,
                         Consecutivo = datos.Consecutivo,
@@ -608,89 +609,170 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.Servicios
                             documentoElectronico.Respuesta = bytRespuestaXML;
                             if (strEstado == "aceptado" && documentoElectronico.CorreoNotificacion != "")
                             {
-                                string strBody;
-                                JArray jarrayObj = new JArray();
-                                if (documentoElectronico.EsMensajeReceptor == "N")
+                                try
                                 {
-                                    strBody = "Adjunto documento electrónico en formato PDF y XML con clave " + mensaje.Clave + " y la respuesta de Hacienda.";
-                                    XmlSerializer serializer = new XmlSerializer(typeof(FacturaElectronica));
-                                    MemoryStream memStream = new MemoryStream(documentoElectronico.DatosDocumento);
-                                    FacturaElectronica facturaElectronica = (FacturaElectronica)serializer.Deserialize(memStream);
-                                    EstructuraPDF datos = new EstructuraPDF();
-                                    datos.NombreEmpresa = facturaElectronica.Emisor.NombreComercial.Length > 0 ? facturaElectronica.Emisor.NombreComercial : facturaElectronica.Emisor.Nombre;
-                                    datos.Consecutivo = facturaElectronica.NumeroConsecutivo;
-                                    datos.PlazoCredito = facturaElectronica.PlazoCredito != null ? facturaElectronica.PlazoCredito : "";
-                                    datos.Clave = facturaElectronica.Clave;
-                                    datos.CondicionVenta = ObtenerValoresCodificados.ObtenerCondicionDeVenta(int.Parse(facturaElectronica.CondicionVenta.ToString().Substring(5)));
-                                    datos.Fecha = facturaElectronica.FechaEmision.ToString("dd/MM/yyyy hh:mm:ss");
-                                    datos.MedioPago = ObtenerValoresCodificados.ObtenerMedioDePago(int.Parse(facturaElectronica.MedioPago[0].ToString().Substring(5)));
-                                    datos.NombreEmisor = facturaElectronica.Emisor.Nombre;
-                                    datos.IdentificacionEmisor = facturaElectronica.Emisor.Identificacion.Numero;
-                                    datos.NombreComercialEmisor = facturaElectronica.Emisor.NombreComercial;
-                                    datos.CorreoElectronicoEmisor = facturaElectronica.Emisor.CorreoElectronico;
-                                    datos.TelefonoEmisor = facturaElectronica.Emisor.Telefono != null ? facturaElectronica.Emisor.Telefono.NumTelefono.ToString() : "";
-                                    datos.FaxEmisor = facturaElectronica.Emisor.Fax != null ? facturaElectronica.Emisor.Fax.NumTelefono.ToString() : "";
-                                    int intProvincia = int.Parse(facturaElectronica.Emisor.Ubicacion.Provincia);
-                                    int intCanton = int.Parse(facturaElectronica.Emisor.Ubicacion.Canton);
-                                    int intDistrito = int.Parse(facturaElectronica.Emisor.Ubicacion.Distrito);
-                                    int intBarrio = int.Parse(facturaElectronica.Emisor.Ubicacion.Barrio);
-                                    datos.ProvinciaEmisor = dbContext.ProvinciaRepository.Where(x => x.IdProvincia == intProvincia).FirstOrDefault().Descripcion;
-                                    datos.CantonEmisor = dbContext.CantonRepository.Where(x => x.IdProvincia == intProvincia && x.IdCanton == intCanton).FirstOrDefault().Descripcion;
-                                    datos.DistritoEmisor = dbContext.DistritoRepository.Where(x => x.IdProvincia == intProvincia && x.IdCanton == intCanton && x.IdDistrito == intDistrito).FirstOrDefault().Descripcion;
-                                    datos.BarrioEmisor = dbContext.BarrioRepository.Where(x => x.IdProvincia == intProvincia && x.IdCanton == intCanton && x.IdDistrito == intDistrito && x.IdBarrio == intBarrio).FirstOrDefault().Descripcion;
-                                    datos.DireccionEmisor = facturaElectronica.Emisor.Ubicacion.OtrasSenas;
-                                    if (facturaElectronica.Receptor != null)
+                                    string strBody;
+                                    JArray jarrayObj = new JArray();
+                                    if (documentoElectronico.EsMensajeReceptor == "N")
                                     {
-                                        datos.PoseeReceptor = true;
-                                        datos.NombreReceptor = facturaElectronica.Receptor.Nombre;
-                                        datos.IdentificacionReceptor = facturaElectronica.Receptor.Identificacion.Numero;
-                                        datos.NombreComercialReceptor = facturaElectronica.Receptor.NombreComercial;
-                                        datos.CorreoElectronicoReceptor = facturaElectronica.Receptor.CorreoElectronico;
-                                        datos.TelefonoReceptor = facturaElectronica.Receptor.Telefono != null ? facturaElectronica.Receptor.Telefono.NumTelefono.ToString() : "";
-                                        datos.FaxReceptor = facturaElectronica.Receptor.Fax != null ? facturaElectronica.Receptor.Fax.NumTelefono.ToString() : "";
-                                        intProvincia = int.Parse(facturaElectronica.Receptor.Ubicacion.Provincia);
-                                        intCanton = int.Parse(facturaElectronica.Receptor.Ubicacion.Canton);
-                                        intDistrito = int.Parse(facturaElectronica.Receptor.Ubicacion.Distrito);
-                                        intBarrio = int.Parse(facturaElectronica.Receptor.Ubicacion.Barrio);
-                                        datos.ProvinciaReceptor = dbContext.ProvinciaRepository.Where(x => x.IdProvincia == intProvincia).FirstOrDefault().Descripcion;
-                                        datos.CantonReceptor = dbContext.CantonRepository.Where(x => x.IdProvincia == intProvincia && x.IdCanton == intCanton).FirstOrDefault().Descripcion;
-                                        datos.DistritoReceptor = dbContext.DistritoRepository.Where(x => x.IdProvincia == intProvincia && x.IdCanton == intCanton && x.IdDistrito == intDistrito).FirstOrDefault().Descripcion;
-                                        datos.BarrioReceptor = dbContext.BarrioRepository.Where(x => x.IdProvincia == intProvincia && x.IdCanton == intCanton && x.IdDistrito == intDistrito && x.IdBarrio == intBarrio).FirstOrDefault().Descripcion;
-                                        datos.DireccionReceptor = facturaElectronica.Receptor.Ubicacion.OtrasSenas;
+                                        strBody = "Adjunto documento electrónico en formato PDF y XML con clave " + mensaje.Clave + " y la respuesta de Hacienda.";
+                                        MemoryStream memStream = new MemoryStream(documentoElectronico.DatosDocumento);
+                                        EstructuraPDF datos = new EstructuraPDF();
+                                        if (documentoElectronico.IdTipoDocumento == 1)
+                                        {
+                                            XmlSerializer serializer = new XmlSerializer(typeof(FacturaElectronica));
+                                            FacturaElectronica facturaElectronica = (FacturaElectronica)serializer.Deserialize(memStream);
+                                            datos.TituloDocumento = "FACTURA ELECTRONICA";
+                                            datos.NombreEmpresa = facturaElectronica.Emisor.NombreComercial.Length > 0 ? facturaElectronica.Emisor.NombreComercial : facturaElectronica.Emisor.Nombre;
+                                            datos.Consecutivo = facturaElectronica.NumeroConsecutivo;
+                                            datos.PlazoCredito = facturaElectronica.PlazoCredito != null ? facturaElectronica.PlazoCredito : "";
+                                            datos.Clave = facturaElectronica.Clave;
+                                            datos.CondicionVenta = ObtenerValoresCodificados.ObtenerCondicionDeVenta(int.Parse(facturaElectronica.CondicionVenta.ToString().Substring(5)));
+                                            datos.Fecha = facturaElectronica.FechaEmision.ToString("dd/MM/yyyy hh:mm:ss");
+                                            datos.MedioPago = ObtenerValoresCodificados.ObtenerMedioDePago(int.Parse(facturaElectronica.MedioPago[0].ToString().Substring(5)));
+                                            datos.NombreEmisor = facturaElectronica.Emisor.Nombre;
+                                            datos.IdentificacionEmisor = facturaElectronica.Emisor.Identificacion.Numero;
+                                            datos.NombreComercialEmisor = facturaElectronica.Emisor.NombreComercial;
+                                            datos.CorreoElectronicoEmisor = facturaElectronica.Emisor.CorreoElectronico;
+                                            datos.TelefonoEmisor = facturaElectronica.Emisor.Telefono != null ? facturaElectronica.Emisor.Telefono.NumTelefono.ToString() : "";
+                                            datos.FaxEmisor = facturaElectronica.Emisor.Fax != null ? facturaElectronica.Emisor.Fax.NumTelefono.ToString() : "";
+                                            int intProvincia = int.Parse(facturaElectronica.Emisor.Ubicacion.Provincia);
+                                            int intCanton = int.Parse(facturaElectronica.Emisor.Ubicacion.Canton);
+                                            int intDistrito = int.Parse(facturaElectronica.Emisor.Ubicacion.Distrito);
+                                            int intBarrio = int.Parse(facturaElectronica.Emisor.Ubicacion.Barrio);
+                                            datos.ProvinciaEmisor = dbContext.ProvinciaRepository.Where(x => x.IdProvincia == intProvincia).FirstOrDefault().Descripcion;
+                                            datos.CantonEmisor = dbContext.CantonRepository.Where(x => x.IdProvincia == intProvincia && x.IdCanton == intCanton).FirstOrDefault().Descripcion;
+                                            datos.DistritoEmisor = dbContext.DistritoRepository.Where(x => x.IdProvincia == intProvincia && x.IdCanton == intCanton && x.IdDistrito == intDistrito).FirstOrDefault().Descripcion;
+                                            datos.BarrioEmisor = dbContext.BarrioRepository.Where(x => x.IdProvincia == intProvincia && x.IdCanton == intCanton && x.IdDistrito == intDistrito && x.IdBarrio == intBarrio).FirstOrDefault().Descripcion;
+                                            datos.DireccionEmisor = facturaElectronica.Emisor.Ubicacion.OtrasSenas;
+                                            if (facturaElectronica.Receptor != null)
+                                            {
+                                                datos.PoseeReceptor = true;
+                                                datos.NombreReceptor = facturaElectronica.Receptor.Nombre;
+                                                datos.IdentificacionReceptor = facturaElectronica.Receptor.Identificacion.Numero;
+                                                datos.NombreComercialReceptor = facturaElectronica.Receptor.NombreComercial;
+                                                datos.CorreoElectronicoReceptor = facturaElectronica.Receptor.CorreoElectronico;
+                                                datos.TelefonoReceptor = facturaElectronica.Receptor.Telefono != null ? facturaElectronica.Receptor.Telefono.NumTelefono.ToString() : "";
+                                                datos.FaxReceptor = facturaElectronica.Receptor.Fax != null ? facturaElectronica.Receptor.Fax.NumTelefono.ToString() : "";
+                                                intProvincia = int.Parse(facturaElectronica.Receptor.Ubicacion.Provincia);
+                                                intCanton = int.Parse(facturaElectronica.Receptor.Ubicacion.Canton);
+                                                intDistrito = int.Parse(facturaElectronica.Receptor.Ubicacion.Distrito);
+                                                intBarrio = int.Parse(facturaElectronica.Receptor.Ubicacion.Barrio);
+                                                datos.ProvinciaReceptor = dbContext.ProvinciaRepository.Where(x => x.IdProvincia == intProvincia).FirstOrDefault().Descripcion;
+                                                datos.CantonReceptor = dbContext.CantonRepository.Where(x => x.IdProvincia == intProvincia && x.IdCanton == intCanton).FirstOrDefault().Descripcion;
+                                                datos.DistritoReceptor = dbContext.DistritoRepository.Where(x => x.IdProvincia == intProvincia && x.IdCanton == intCanton && x.IdDistrito == intDistrito).FirstOrDefault().Descripcion;
+                                                datos.BarrioReceptor = dbContext.BarrioRepository.Where(x => x.IdProvincia == intProvincia && x.IdCanton == intCanton && x.IdDistrito == intDistrito && x.IdBarrio == intBarrio).FirstOrDefault().Descripcion;
+                                                datos.DireccionReceptor = facturaElectronica.Receptor.Ubicacion.OtrasSenas;
+                                            }
+                                            foreach (FacturaElectronicaLineaDetalle linea in facturaElectronica.DetalleServicio)
+                                            {
+                                                EstructuraPDFDetalleServicio detalle = new EstructuraPDFDetalleServicio();
+                                                detalle.NumeroLinea = linea.NumeroLinea;
+                                                detalle.Codigo = linea.Codigo[0].Codigo;
+                                                detalle.Detalle = linea.Detalle;
+                                                detalle.PrecioUnitario = string.Format("{0:N5}", Convert.ToDouble(linea.PrecioUnitario, CultureInfo.InvariantCulture));
+                                                detalle.TotalLinea = linea.MontoTotalLinea.ToString("F5", CultureInfo.InvariantCulture);
+                                                datos.DetalleServicio.Add(detalle);
+                                            }
+                                            datos.SubTotal = facturaElectronica.ResumenFactura.TotalVenta.ToString("F5", CultureInfo.InvariantCulture);
+                                            datos.Descuento = facturaElectronica.ResumenFactura.TotalDescuentosSpecified ? facturaElectronica.ResumenFactura.TotalDescuentos.ToString("F5", CultureInfo.InvariantCulture) : "0.00000";
+                                            datos.Impuesto = facturaElectronica.ResumenFactura.TotalImpuestoSpecified ? facturaElectronica.ResumenFactura.TotalImpuesto.ToString("F5", CultureInfo.InvariantCulture) : "0.00000";
+                                            datos.TotalGeneral = facturaElectronica.ResumenFactura.TotalComprobante.ToString("F5", CultureInfo.InvariantCulture);
+                                            datos.CodigoMoneda = facturaElectronica.ResumenFactura.CodigoMonedaSpecified ? facturaElectronica.ResumenFactura.CodigoMoneda.ToString() : "";
+                                            datos.TipoDeCambio = facturaElectronica.ResumenFactura.CodigoMonedaSpecified ? facturaElectronica.ResumenFactura.TipoCambio.ToString() : "";
+                                        }
+                                        else if (documentoElectronico.IdTipoDocumento == 3)
+                                        {
+                                            XmlSerializer serializer = new XmlSerializer(typeof(NotaCreditoElectronica));
+                                            NotaCreditoElectronica notaCreditoElectronica = (NotaCreditoElectronica)serializer.Deserialize(memStream);
+                                            datos.TituloDocumento = "NOTA DE CREDITO ELECTRONICA";
+                                            datos.NombreEmpresa = notaCreditoElectronica.Emisor.NombreComercial.Length > 0 ? notaCreditoElectronica.Emisor.NombreComercial : notaCreditoElectronica.Emisor.Nombre;
+                                            datos.Consecutivo = notaCreditoElectronica.NumeroConsecutivo;
+                                            datos.PlazoCredito = notaCreditoElectronica.PlazoCredito != null ? notaCreditoElectronica.PlazoCredito : "";
+                                            datos.Clave = notaCreditoElectronica.Clave;
+                                            datos.CondicionVenta = ObtenerValoresCodificados.ObtenerCondicionDeVenta(int.Parse(notaCreditoElectronica.CondicionVenta.ToString().Substring(5)));
+                                            datos.Fecha = notaCreditoElectronica.FechaEmision.ToString("dd/MM/yyyy hh:mm:ss");
+                                            if (notaCreditoElectronica.MedioPago != null)
+                                                datos.MedioPago = ObtenerValoresCodificados.ObtenerMedioDePago(int.Parse(notaCreditoElectronica.MedioPago[0].ToString().Substring(5)));
+                                            else
+                                                datos.MedioPago = "";
+                                            datos.NombreEmisor = notaCreditoElectronica.Emisor.Nombre;
+                                            datos.IdentificacionEmisor = notaCreditoElectronica.Emisor.Identificacion.Numero;
+                                            datos.NombreComercialEmisor = notaCreditoElectronica.Emisor.NombreComercial;
+                                            datos.CorreoElectronicoEmisor = notaCreditoElectronica.Emisor.CorreoElectronico;
+                                            datos.TelefonoEmisor = notaCreditoElectronica.Emisor.Telefono != null ? notaCreditoElectronica.Emisor.Telefono.NumTelefono.ToString() : "";
+                                            datos.FaxEmisor = notaCreditoElectronica.Emisor.Fax != null ? notaCreditoElectronica.Emisor.Fax.NumTelefono.ToString() : "";
+                                            int intProvincia = int.Parse(notaCreditoElectronica.Emisor.Ubicacion.Provincia);
+                                            int intCanton = int.Parse(notaCreditoElectronica.Emisor.Ubicacion.Canton);
+                                            int intDistrito = int.Parse(notaCreditoElectronica.Emisor.Ubicacion.Distrito);
+                                            int intBarrio = int.Parse(notaCreditoElectronica.Emisor.Ubicacion.Barrio);
+                                            datos.ProvinciaEmisor = dbContext.ProvinciaRepository.Where(x => x.IdProvincia == intProvincia).FirstOrDefault().Descripcion;
+                                            datos.CantonEmisor = dbContext.CantonRepository.Where(x => x.IdProvincia == intProvincia && x.IdCanton == intCanton).FirstOrDefault().Descripcion;
+                                            datos.DistritoEmisor = dbContext.DistritoRepository.Where(x => x.IdProvincia == intProvincia && x.IdCanton == intCanton && x.IdDistrito == intDistrito).FirstOrDefault().Descripcion;
+                                            datos.BarrioEmisor = dbContext.BarrioRepository.Where(x => x.IdProvincia == intProvincia && x.IdCanton == intCanton && x.IdDistrito == intDistrito && x.IdBarrio == intBarrio).FirstOrDefault().Descripcion;
+                                            datos.DireccionEmisor = notaCreditoElectronica.Emisor.Ubicacion.OtrasSenas;
+                                            if (notaCreditoElectronica.Receptor != null)
+                                            {
+                                                datos.PoseeReceptor = true;
+                                                datos.NombreReceptor = notaCreditoElectronica.Receptor.Nombre;
+                                                datos.IdentificacionReceptor = notaCreditoElectronica.Receptor.Identificacion.Numero;
+                                                datos.NombreComercialReceptor = notaCreditoElectronica.Receptor.NombreComercial;
+                                                datos.CorreoElectronicoReceptor = notaCreditoElectronica.Receptor.CorreoElectronico;
+                                                datos.TelefonoReceptor = notaCreditoElectronica.Receptor.Telefono != null ? notaCreditoElectronica.Receptor.Telefono.NumTelefono.ToString() : "";
+                                                datos.FaxReceptor = notaCreditoElectronica.Receptor.Fax != null ? notaCreditoElectronica.Receptor.Fax.NumTelefono.ToString() : "";
+                                                intProvincia = int.Parse(notaCreditoElectronica.Receptor.Ubicacion.Provincia);
+                                                intCanton = int.Parse(notaCreditoElectronica.Receptor.Ubicacion.Canton);
+                                                intDistrito = int.Parse(notaCreditoElectronica.Receptor.Ubicacion.Distrito);
+                                                intBarrio = int.Parse(notaCreditoElectronica.Receptor.Ubicacion.Barrio);
+                                                datos.ProvinciaReceptor = dbContext.ProvinciaRepository.Where(x => x.IdProvincia == intProvincia).FirstOrDefault().Descripcion;
+                                                datos.CantonReceptor = dbContext.CantonRepository.Where(x => x.IdProvincia == intProvincia && x.IdCanton == intCanton).FirstOrDefault().Descripcion;
+                                                datos.DistritoReceptor = dbContext.DistritoRepository.Where(x => x.IdProvincia == intProvincia && x.IdCanton == intCanton && x.IdDistrito == intDistrito).FirstOrDefault().Descripcion;
+                                                datos.BarrioReceptor = dbContext.BarrioRepository.Where(x => x.IdProvincia == intProvincia && x.IdCanton == intCanton && x.IdDistrito == intDistrito && x.IdBarrio == intBarrio).FirstOrDefault().Descripcion;
+                                                datos.DireccionReceptor = notaCreditoElectronica.Receptor.Ubicacion.OtrasSenas;
+                                            }
+                                            foreach (NotaCreditoElectronicaLineaDetalle linea in notaCreditoElectronica.DetalleServicio)
+                                            {
+                                                EstructuraPDFDetalleServicio detalle = new EstructuraPDFDetalleServicio();
+                                                detalle.NumeroLinea = linea.NumeroLinea;
+                                                detalle.Codigo = linea.Codigo[0].Codigo;
+                                                detalle.Detalle = linea.Detalle;
+                                                detalle.PrecioUnitario = linea.PrecioUnitario.ToString("F5", CultureInfo.InvariantCulture);
+                                                detalle.TotalLinea = linea.MontoTotalLinea.ToString("F5", CultureInfo.InvariantCulture);
+                                                datos.DetalleServicio.Add(detalle);
+                                            }
+                                            datos.SubTotal = notaCreditoElectronica.ResumenFactura.TotalVenta.ToString("F5", CultureInfo.InvariantCulture);
+                                            datos.Descuento = notaCreditoElectronica.ResumenFactura.TotalDescuentosSpecified ? notaCreditoElectronica.ResumenFactura.TotalDescuentos.ToString("F5", CultureInfo.InvariantCulture) : "0.00000";
+                                            datos.Impuesto = notaCreditoElectronica.ResumenFactura.TotalImpuestoSpecified ? notaCreditoElectronica.ResumenFactura.TotalImpuesto.ToString("F5", CultureInfo.InvariantCulture) : "0.00000";
+                                            datos.TotalGeneral = notaCreditoElectronica.ResumenFactura.TotalComprobante.ToString("F5", CultureInfo.InvariantCulture);
+                                            datos.CodigoMoneda = notaCreditoElectronica.ResumenFactura.CodigoMonedaSpecified ? notaCreditoElectronica.ResumenFactura.CodigoMoneda.ToString() : "";
+                                            datos.TipoDeCambio = notaCreditoElectronica.ResumenFactura.CodigoMonedaSpecified ? notaCreditoElectronica.ResumenFactura.TipoCambio.ToString() : "";
+                                        }
+                                        byte[] pdfAttactment = Utilitario.GenerarPDFFacturaElectronica(datos);
+                                        JObject jobDatosAdjuntos1 = new JObject();
+                                        jobDatosAdjuntos1["nombre"] = documentoElectronico.ClaveNumerica + ".pdf";
+                                        jobDatosAdjuntos1["contenido"] = Convert.ToBase64String(pdfAttactment);
+                                        jarrayObj.Add(jobDatosAdjuntos1);
                                     }
-                                    foreach (FacturaElectronicaLineaDetalle linea in facturaElectronica.DetalleServicio)
+                                    else
                                     {
-                                        EstructuraPDFDetalleServicio detalle = new EstructuraPDFDetalleServicio();
-                                        detalle.NumeroLinea = linea.NumeroLinea;
-                                        detalle.Codigo = linea.Codigo[0].Codigo;
-                                        detalle.PrecioUnitario = linea.PrecioUnitario.ToString();
-                                        detalle.TotalLinea = linea.MontoTotalLinea.ToString();
+                                        strBody = "Adjunto XML de aceptación de documento electrónico con clave " + mensaje.Clave + " y la respuesta de Hacienda.";
                                     }
-                                    datos.SubTotal = facturaElectronica.ResumenFactura.TotalVenta.ToString();
-                                    datos.Descuento = facturaElectronica.ResumenFactura.TotalDescuentosSpecified ? facturaElectronica.ResumenFactura.TotalDescuentos.ToString() : "0.00000";
-                                    datos.Impuesto = facturaElectronica.ResumenFactura.TotalImpuestoSpecified ? facturaElectronica.ResumenFactura.TotalImpuesto.ToString() : "0.00000";
-                                    datos.TotalGeneral = facturaElectronica.ResumenFactura.TotalComprobante.ToString();
-                                    datos.CodigoMoneda = facturaElectronica.ResumenFactura.CodigoMonedaSpecified ? facturaElectronica.ResumenFactura.CodigoMoneda.ToString() : "";
-                                    datos.TipoDeCambio = facturaElectronica.ResumenFactura.CodigoMonedaSpecified ? facturaElectronica.ResumenFactura.TipoCambio.ToString() : "";
-                                    byte[] pdfAttactment = Utilitario.GenerarPDFFacturaElectronica(datos);
-                                    JObject jobDatosAdjuntos1 = new JObject();
-                                    jobDatosAdjuntos1["nombre"] = documentoElectronico.ClaveNumerica + ".pdf";
-                                    jobDatosAdjuntos1["contenido"] = Convert.ToBase64String(pdfAttactment);
-                                    jarrayObj.Add(jobDatosAdjuntos1);
+                                    JObject jobDatosAdjuntos2 = new JObject();
+                                    jobDatosAdjuntos2["nombre"] = documentoElectronico.ClaveNumerica + ".xml";
+                                    jobDatosAdjuntos2["contenido"] = Convert.ToBase64String(documentoElectronico.DatosDocumento);
+                                    jarrayObj.Add(jobDatosAdjuntos2);
+                                    JObject jobDatosAdjuntos3 = new JObject();
+                                    jobDatosAdjuntos3["nombre"] = "RespuestaHacienda.xml";
+                                    jobDatosAdjuntos3["contenido"] = Convert.ToBase64String(bytRespuestaXML);
+                                    jarrayObj.Add(jobDatosAdjuntos3);
+                                    servicioEnvioCorreo.SendEmail(new string[] { documentoElectronico.CorreoNotificacion }, new string[] { }, "Documento electrónico con clave " + mensaje.Clave, strBody, false, jarrayObj);
                                 }
-                                else
+                                catch (Exception ex)
                                 {
-                                    strBody = "Adjunto XML de aceptación de documento electrónico con clave " + mensaje.Clave + " y la respuesta de Hacienda.";
+                                    JArray emptyJArray = new JArray();
+                                    string strBody = "El documento con clave " + mensaje.Clave + " genero un error en el envío del PDF al receptor:" + ex.Message;
+                                    servicioEnvioCorreo.SendEmail(new string[] { strCorreoNotificacionErrores }, new string[] { }, "Error al tratar de enviar el correo al receptor.", strBody, false, emptyJArray);
                                 }
-                                JObject jobDatosAdjuntos2 = new JObject();
-                                jobDatosAdjuntos2["nombre"] = documentoElectronico.ClaveNumerica + ".xml";
-                                jobDatosAdjuntos2["contenido"] = Convert.ToBase64String(documentoElectronico.DatosDocumento);
-                                jarrayObj.Add(jobDatosAdjuntos2);
-                                JObject jobDatosAdjuntos3 = new JObject();
-                                jobDatosAdjuntos3["nombre"] = "RespuestaHacienda.xml";
-                                jobDatosAdjuntos3["contenido"] = Convert.ToBase64String(bytRespuestaXML);
-                                jarrayObj.Add(jobDatosAdjuntos3);
-                                servicioEnvioCorreo.SendEmail(new string[] { documentoElectronico.CorreoNotificacion }, new string[] { }, "Documento electrónico con clave " + mensaje.Clave, strBody, false, jarrayObj);
                             }
                         }
                         dbContext.Commit();
