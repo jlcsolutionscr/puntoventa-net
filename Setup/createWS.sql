@@ -50,6 +50,17 @@ CREATE TABLE tipodecambiodolar (
   PRIMARY KEY(FechaTipoCambio)
 );
 
+CREATE TABLE padron (
+  Identificacion VARCHAR(9) NOT NULL,
+  IdPronvincia INTEGER NOT NULL,
+  IdCanton INTEGER NOT NULL,
+  IdDistrito INTEGER NOT NULL,
+  Nombre VARCHAR(100) NOT NULL,
+  PrimerApellido VARCHAR(100) NOT NULL,
+  SegundoApellido VARCHAR(100) NOT NULL,
+  PRIMARY KEY(Identificacion)
+);
+
 CREATE TABLE empresa (
   IdEmpresa INTEGER NOT NULL AUTO_INCREMENT,
   NombreEmpresa VARCHAR(200) NOT NULL,
@@ -98,17 +109,6 @@ CREATE TABLE documentoelectronico (
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   INDEX (ClaveNumerica)
-);
-
-CREATE TABLE padron (
-  Identificacion VARCHAR(9) NOT NULL,
-  IdPronvincia INTEGER NOT NULL,
-  IdCanton INTEGER NOT NULL,
-  IdDistrito INTEGER NOT NULL,
-  Nombre VARCHAR(100) NOT NULL,
-  PrimerApellido VARCHAR(100) NOT NULL,
-  SegundoApellido VARCHAR(100) NOT NULL,
-  PRIMARY KEY(Identificacion)
 );
 
 use mysql;

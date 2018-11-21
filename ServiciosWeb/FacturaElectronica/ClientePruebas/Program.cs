@@ -95,13 +95,13 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.ClientePruebas
                                     }
                                     if (strOpcion == "E")
                                     {
-                                        if (documento.EstadoEnvio == "pendiente" || documento.EstadoEnvio == "erroralenviar")
+                                        if (documento.EstadoEnvio == "registrado")
                                         {
                                             enviarDocumentoElectronico(documento);
                                         }
                                         else
                                         {
-                                            Console.WriteLine("El documento no posee un estado de 'Pendiente' o 'ErrorEnviando' por lo que no se puede procesar.");
+                                            Console.WriteLine("El documento no posee un estado de 'Registrado' por lo que no se puede procesar.");
                                             Console.WriteLine("");
                                         }
                                     }

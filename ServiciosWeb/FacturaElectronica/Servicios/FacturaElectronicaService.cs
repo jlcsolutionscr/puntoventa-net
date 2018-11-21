@@ -55,7 +55,7 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.Servicios
             }
         }
 
-        private void validarToken(IDbContext dbContext, Empresa empresaLocal, string strServicioTokenURL)
+        private void validarToken(IDbContext dbContext, Empresa empresaLocal, string strServicioTokenURL, string strClientId)
         {
             TokenType nuevoToken = null;
             try
@@ -69,7 +69,7 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.Servicios
                         {
                             if (horaEmision.AddSeconds((int)empresaLocal.RefreshExpiresIn) < DateTime.Now)
                             {
-                                nuevoToken = ObtenerToken(strServicioTokenURL, empresaLocal.UsuarioHacienda, empresaLocal.ClaveHacienda).Result;
+                                nuevoToken = ObtenerToken(strServicioTokenURL, strClientId, empresaLocal.UsuarioHacienda, empresaLocal.ClaveHacienda).Result;
                                 empresaLocal.AccessToken = nuevoToken.access_token;
                                 empresaLocal.ExpiresIn = nuevoToken.expires_in;
                                 empresaLocal.RefreshExpiresIn = nuevoToken.refresh_expires_in;
@@ -80,7 +80,7 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.Servicios
                             }
                             else
                             {
-                                nuevoToken = RefrescarToken(strServicioTokenURL, empresaLocal.RefreshToken).Result;
+                                nuevoToken = RefrescarToken(strServicioTokenURL, strClientId, empresaLocal.RefreshToken).Result;
                                 empresaLocal.AccessToken = nuevoToken.access_token;
                                 empresaLocal.ExpiresIn = nuevoToken.expires_in;
                                 empresaLocal.RefreshExpiresIn = nuevoToken.refresh_expires_in;
@@ -94,7 +94,7 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.Servicios
                 }
                 else
                 {
-                    nuevoToken = ObtenerToken(strServicioTokenURL, empresaLocal.UsuarioHacienda, empresaLocal.ClaveHacienda).Result;
+                    nuevoToken = ObtenerToken(strServicioTokenURL, strClientId, empresaLocal.UsuarioHacienda, empresaLocal.ClaveHacienda).Result;
                     empresaLocal.AccessToken = nuevoToken.access_token;
                     empresaLocal.ExpiresIn = nuevoToken.expires_in;
                     empresaLocal.RefreshExpiresIn = nuevoToken.refresh_expires_in;
@@ -110,14 +110,14 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.Servicios
             }
         }
 
-        private async Task<TokenType> ObtenerToken(string strServicioTokenURL, string strUsuario, string strPassword)
+        private async Task<TokenType> ObtenerToken(string strServicioTokenURL, string strClientId, string strUsuario, string strPassword)
         {
             try
             {
                 FormUrlEncodedContent formContent = new FormUrlEncodedContent(new[]
                 {
                     new KeyValuePair<string, string>("grant_type", "password"),
-                    new KeyValuePair<string, string>("client_id", "api-stag"),
+                    new KeyValuePair<string, string>("client_id", strClientId),
                     new KeyValuePair<string, string>("username", strUsuario),
                     new KeyValuePair<string, string>("password", strPassword)
                 });
@@ -133,14 +133,14 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.Servicios
             }
         }
 
-        private async Task<TokenType> RefrescarToken(string strServicioTokenURL, string strRefreshToken)
+        private async Task<TokenType> RefrescarToken(string strServicioTokenURL, string strClientId, string strRefreshToken)
         {
             try
             {
                 FormUrlEncodedContent formContent = new FormUrlEncodedContent(new[]
                 {
                     new KeyValuePair<string, string>("grant_type", "refresh_token"),
-                    new KeyValuePair<string, string>("client_id", "api-stag"),
+                    new KeyValuePair<string, string>("client_id", strClientId),
                     new KeyValuePair<string, string>("refresh_token", strRefreshToken)
                 });
                 HttpResponseMessage httpResponse = await httpClient.PostAsync(strServicioTokenURL + "/token", formContent);
@@ -370,7 +370,7 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.Servicios
                     }
                     dbContext.Commit();
                     string strComprobanteXML = Convert.ToBase64String(mensajeEncoded);
-                    validarToken(dbContext, empresaLocal, configuracion.ServicioTokenURL);
+                    validarToken(dbContext, empresaLocal, configuracion.ServicioTokenURL, configuracion.ClientId);
                     string JsonObject = "{\"clave\": \"" + datos.ClaveNumerica + "\",\"fecha\": \"" + documento.Fecha.ToString("yyyy-MM-ddTHH:mm:ssss") + "\"," +
                         "\"emisor\": {\"tipoIdentificacion\": \"" + datos.TipoIdentificacionEmisor + "\"," +
                         "\"numeroIdentificacion\": \"" + datos.IdentificacionEmisor + "\"},";
@@ -422,7 +422,7 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.Servicios
                     if (documento == null) throw new Exception("El documento con clave numéerica " + datos.ClaveNumerica + "no se encuentra registrado en el sistema.");
                     if (documento.EstadoEnvio != "registrado") throw new Exception("El documento con clave numérica " + datos.ClaveNumerica + " ya fue enviado a hacienda.");
                     string strComprobanteXML = Convert.ToBase64String(documento.DatosDocumento);
-                    validarToken(dbContext, empresaLocal, configuracion.ServicioTokenURL);
+                    validarToken(dbContext, empresaLocal, configuracion.ServicioTokenURL, configuracion.ClientId);
                     string JsonObject = "{\"clave\": \"" + documento.ClaveNumerica + "\",\"fecha\": \"" + documento.Fecha.ToString("yyyy-MM-ddTHH:mm:ssss") + "\"," +
                         "\"emisor\": {\"tipoIdentificacion\": \"" + datos.TipoIdentificacionEmisor + "\"," +
                         "\"numeroIdentificacion\": \"" + datos.IdentificacionEmisor + "\"}," +
@@ -478,7 +478,7 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.Servicios
                         respuesta.ClaveNumerica = documentoElectronico.ClaveNumerica;
                         if (documentoElectronico.EstadoEnvio == "enviado")
                         {
-                            validarToken(dbContext, empresaLocal, configuracion.ServicioTokenURL);
+                            validarToken(dbContext, empresaLocal, configuracion.ServicioTokenURL, configuracion.ClientId);
                             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", empresaLocal.AccessToken);
                             HttpResponseMessage httpResponse = httpClient.GetAsync(configuracion.ComprobantesElectronicosURL + "/recepcion/" + documentoElectronico.ClaveNumerica).Result;
                             if (httpResponse.StatusCode == HttpStatusCode.OK)

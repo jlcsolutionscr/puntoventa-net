@@ -27,6 +27,7 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF
             appSettings["strConsultaIEURL"].ToString(),
             appSettings["strSoapOperation"].ToString(),
             appSettings["strServicioComprobantesURL"].ToString(),
+            appSettings["strClientId"].ToString(),
             appSettings["strServicioTokenURL"].ToString(),
             appSettings["strComprobantesCallbackURL"].ToString(),
             appSettings["strCorreoNotificacionErrores"].ToString()

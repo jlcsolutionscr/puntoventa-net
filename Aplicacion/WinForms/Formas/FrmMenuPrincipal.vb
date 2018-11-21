@@ -558,6 +558,11 @@ Public Class FrmMenuPrincipal
         picLoader.Visible = True
         Try
             Dim empresaDTO As EmpresaDTO = Await ComprobanteElectronicoService.ConsultarEmpresa(empresaGlobal)
+            If empresaDTO.IdEmpresa Is Nothing Then
+                MessageBox.Show("La empresa no se encuentra registrada en el servicio de facturación electrónica. Contacte a su Proveedor. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                Close()
+                Exit Sub
+            End If
             If empresaDTO.PermiteFacturar = "N" Then
                 MessageBox.Show("La empresa no se encuentra activa para emitir documentos electrónicos. Contacte a su Proveedor. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                 Close()

@@ -64,7 +64,7 @@ Public Class FrmClienteListado
         dgvDatos.Refresh()
     End Sub
 
-    Private Sub ValidarCantidadEmpresas()
+    Private Sub ValidarCantidadClientes()
         Try
             intTotalEmpresas = servicioFacturacion.ObtenerTotalListaClientes(FrmMenuPrincipal.empresaGlobal.IdEmpresa, txtNombre.Text)
         Catch ex As Exception
@@ -123,7 +123,7 @@ Public Class FrmClienteListado
             Exit Sub
         End Try
         EstablecerPropiedadesDataGridView()
-        ValidarCantidadEmpresas()
+        ValidarCantidadClientes()
         intIndiceDePagina = 1
         ActualizarDatos(intIndiceDePagina)
     End Sub
@@ -135,7 +135,7 @@ Public Class FrmClienteListado
             .servicioMantenimiento = servicioMantenimiento
         }
         formMant.ShowDialog()
-        ValidarCantidadEmpresas()
+        ValidarCantidadClientes()
         intIndiceDePagina = 1
         ActualizarDatos(intIndiceDePagina)
     End Sub
@@ -158,14 +158,14 @@ Public Class FrmClienteListado
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
-            ValidarCantidadEmpresas()
+            ValidarCantidadClientes()
             intIndiceDePagina = 1
             ActualizarDatos(intIndiceDePagina)
         End If
     End Sub
 
     Private Sub BtnFiltrar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnFiltrar.Click
-        ValidarCantidadEmpresas()
+        ValidarCantidadClientes()
         intIndiceDePagina = 1
         ActualizarDatos(intIndiceDePagina)
     End Sub

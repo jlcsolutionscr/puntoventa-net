@@ -37,15 +37,17 @@ namespace LeandroSoftware.PuntoVenta.Servicios
             try
             {
                 string strCorreoNotificacion = "";
-                if (cliente.IdCliente > 1 && cliente.CorreoElectronico.Length == 0)
+                if (cliente.IdCliente > 1)
                 {
-                    throw new Exception("El cliente seleccionado debe poseer una dirección de correo electrónico para ser notificador por Hacienda.");
+                    if (cliente.CorreoElectronico == null || cliente.CorreoElectronico.Length == 0)
+                    {
+                        throw new Exception("El cliente seleccionado debe poseer una dirección de correo electrónico para ser notificador por Hacienda.");
+                    }
+                    else
+                    {
+                        strCorreoNotificacion = cliente.CorreoElectronico;
+                    }
                 }
-                else
-                {
-                    strCorreoNotificacion = cliente.CorreoElectronico;
-                }
-                
                 FacturaElectronica facturaElectronica = new FacturaElectronica
                 {
                     Clave = "",
@@ -274,13 +276,16 @@ namespace LeandroSoftware.PuntoVenta.Servicios
             try
             {
                 string strCorreoNotificacion = "";
-                if (cliente.IdCliente > 1 && cliente.CorreoElectronico.Length == 0)
+                if (cliente.IdCliente > 1)
                 {
-                    throw new Exception("El cliente seleccionado debe poseer una dirección de correo electrónico para ser notificador por Hacienda.");
-                }
-                else
-                {
-                    strCorreoNotificacion = cliente.CorreoElectronico;
+                    if (cliente.CorreoElectronico != null && cliente.CorreoElectronico.Length == 0)
+                    {
+                        throw new Exception("El cliente seleccionado debe poseer una dirección de correo electrónico para ser notificador por Hacienda.");
+                    }
+                    else
+                    {
+                        strCorreoNotificacion = cliente.CorreoElectronico;
+                    }
                 }
                 NotaCreditoElectronica notaCreditoElectronica = new NotaCreditoElectronica
                 {
