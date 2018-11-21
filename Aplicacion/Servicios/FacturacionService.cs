@@ -4,7 +4,7 @@ using System.Data;
 using System.Data.Entity.Infrastructure;
 using System.Collections.Generic;
 using System.Data.Entity;
-using LeandroSoftware.PuntoVenta.Core.CommonTypes;
+using LeandroSoftware.Core.CommonTypes;
 using LeandroSoftware.PuntoVenta.Dominio;
 using LeandroSoftware.PuntoVenta.Dominio.Entidades;
 using LeandroSoftware.PuntoVenta.Datos;

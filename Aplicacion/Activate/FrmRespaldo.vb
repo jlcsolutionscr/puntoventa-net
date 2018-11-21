@@ -1,5 +1,5 @@
 Imports System.IO
-Imports LeandroSoftware.PuntoVenta.Core
+Imports LeandroSoftware.Core
 Imports MySql.Data.MySqlClient
 
 Public Class FrmRespaldo

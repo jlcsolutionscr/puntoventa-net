@@ -5,7 +5,7 @@ Imports Unity
 Imports Unity.Injection
 Imports Unity.Lifetime
 Imports Microsoft.Practices.Unity.Configuration
-Imports LeandroSoftware.Puntoventa.Core
+Imports LeandroSoftware.Core
 Imports LeandroSoftware.Puntoventa.Dominio.Entidades
 Imports LeandroSoftware.Puntoventa.Datos
 Imports LeandroSoftware.Puntoventa.Servicios
@@ -581,6 +581,7 @@ Public Class FrmMenuPrincipal
                 Next
                 If empresaGlobal.FacturaElectronica Then
                     objMenu = mnuMenuPrincipal.Items("MnuDocElect")
+                    objMenu.Visible = True
                     objMenu.DropDownItems("MnuDocElectCDE").Visible = True
                     objMenu.DropDownItems("MnuDocElectADE").Visible = True
                 End If

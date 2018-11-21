@@ -1,5 +1,5 @@
 Imports System.IO
-Imports LeandroSoftware.PuntoVenta.Core
+Imports LeandroSoftware.Core
 
 Public Class FrmDesencriptar
     Private ProcID As Integer

@@ -1,4 +1,4 @@
-Imports LeandroSoftware.Puntoventa.Core.CommonTypes
+Imports LeandroSoftware.Core.CommonTypes
 Imports LeandroSoftware.PuntoVenta.Servicios
 Imports Unity
 Imports System.Collections.Generic

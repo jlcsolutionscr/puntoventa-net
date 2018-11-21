@@ -2,8 +2,8 @@
 using System.Data;
 using System.Linq;
 using System.Collections.Generic;
-using LeandroSoftware.PuntoVenta.Core;
-using LeandroSoftware.PuntoVenta.Core.CommonTypes;
+using LeandroSoftware.Core;
+using LeandroSoftware.Core.CommonTypes;
 using LeandroSoftware.PuntoVenta.Datos;
 using LeandroSoftware.PuntoVenta.Dominio.Entidades;
 using log4net;

@@ -53,7 +53,7 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.ClientePruebas
                                         Console.WriteLine("El documento posee un estado: " + consulta.EstadoEnvio);
                                         if (consulta.RespuestaHacienda != null)
                                         {
-                                            if (documento.EstadoEnvio != "pendiente" && documento.EstadoEnvio != "erroralenviar")
+                                            if (documento.EstadoEnvio == "enviado")
                                             {
                                                 if (consulta.EstadoEnvio == "aceptado" || consulta.EstadoEnvio == "rechazado")
                                                 {

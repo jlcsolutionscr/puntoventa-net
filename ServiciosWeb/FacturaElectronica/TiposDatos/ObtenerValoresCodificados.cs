@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-namespace LeandroSoftware.FacturaElectronicaHacienda.TiposDatos
+﻿namespace LeandroSoftware.FacturaElectronicaHacienda.TiposDatos
 {
     public static class ObtenerValoresCodificados
     {

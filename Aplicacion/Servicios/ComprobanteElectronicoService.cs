@@ -7,7 +7,7 @@ using System.Net.Http;
 using System.Web.Script.Serialization;
 using LeandroSoftware.PuntoVenta.Dominio.Entidades;
 using LeandroSoftware.FacturaElectronicaHacienda.TiposDatos;
-using LeandroSoftware.PuntoVenta.Core.CommonTypes;
+using LeandroSoftware.Core.CommonTypes;
 using System.Xml;
 using System.IO;
 using System.Xml.Serialization;
@@ -41,7 +41,7 @@ namespace LeandroSoftware.PuntoVenta.Servicios
                 {
                     if (cliente.CorreoElectronico == null || cliente.CorreoElectronico.Length == 0)
                     {
-                        throw new Exception("El cliente seleccionado debe poseer una dirección de correo electrónico para ser notificador por Hacienda.");
+                        throw new Exception("El cliente seleccionado debe poseer una dirección de correo electrónico para ser notificado por Hacienda.");
                     }
                     else
                     {
@@ -278,9 +278,9 @@ namespace LeandroSoftware.PuntoVenta.Servicios
                 string strCorreoNotificacion = "";
                 if (cliente.IdCliente > 1)
                 {
-                    if (cliente.CorreoElectronico != null && cliente.CorreoElectronico.Length == 0)
+                    if (cliente.CorreoElectronico == null || cliente.CorreoElectronico.Length == 0)
                     {
-                        throw new Exception("El cliente seleccionado debe poseer una dirección de correo electrónico para ser notificador por Hacienda.");
+                        throw new Exception("El cliente seleccionado debe poseer una dirección de correo electrónico para ser notificado por Hacienda.");
                     }
                     else
                     {
@@ -521,7 +521,15 @@ namespace LeandroSoftware.PuntoVenta.Servicios
         {
             try
             {
-                string strCorreoNotificacion = empresa.CuentaCorreoElectronico;
+                string strCorreoNotificacion = "";
+                if (empresa.CuentaCorreoElectronico == null || empresa.CuentaCorreoElectronico.Length == 0)
+                {
+                    throw new Exception("La emoresa debe poseer una dirección de correo electrónico para ser notificada por Hacienda.");
+                }
+                else
+                {
+                    strCorreoNotificacion = empresa.CuentaCorreoElectronico;
+                }
                 XmlDocument documentoXml = new XmlDocument();
                 documentoXml.LoadXml(datosXml);
                 MensajeReceptor mensajeReceptor = new MensajeReceptor

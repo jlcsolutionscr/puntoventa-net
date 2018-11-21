@@ -1,5 +1,5 @@
 ﻿using System;
-using LeandroSoftware.PuntoVenta.Core;
+using LeandroSoftware.Core;
 using log4net;
 
 namespace LeandroSoftware.PuntoVenta.Servicios

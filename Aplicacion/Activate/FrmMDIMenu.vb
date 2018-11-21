@@ -1,4 +1,4 @@
-﻿Imports LeandroSoftware.PuntoVenta.Core
+﻿Imports LeandroSoftware.Core
 
 Public Class FrmMDIMenu
     Public strCadenaConexion, strMySQLDumpOptions, strThumbprint, strSubjectName, strApplicationKey, strDatabase, strUser, strPassword, strHost As String

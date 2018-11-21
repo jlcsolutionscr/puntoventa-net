@@ -1,5 +1,5 @@
 ﻿Imports System.Configuration
-Imports LeandroSoftware.PuntoVenta.Core
+Imports LeandroSoftware.Core
 
 Public Class FrmActivacion
     Private config As Configuration
