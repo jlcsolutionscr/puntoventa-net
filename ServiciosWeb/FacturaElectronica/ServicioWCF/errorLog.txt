@@ -59,3 +59,19 @@ System.Exception: No se logró obtener un token valido con los parámetros proporc
 2018-11-21 09:21:11,474 [7] INFO LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF.FacturaElectronicaWCF - Servicio WCF inicializado correctamente.
 2018-11-21 09:24:19,588 [7] INFO LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF.FacturaElectronicaWCF - Servicio WCF inicializado correctamente.
 2018-11-21 09:28:09,795 [7] INFO LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF.FacturaElectronicaWCF - Servicio WCF inicializado correctamente.
+2018-11-21 09:58:51,003 [7] INFO LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF.FacturaElectronicaWCF - Servicio WCF inicializado correctamente.
+2018-11-21 10:03:42,523 [8] INFO LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF.FacturaElectronicaWCF - Servicio WCF inicializado correctamente.
+2018-11-21 10:09:31,367 [7] INFO LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF.FacturaElectronicaWCF - Servicio WCF inicializado correctamente.
+2018-11-21 10:11:53,155 [7] INFO LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF.FacturaElectronicaWCF - Servicio WCF inicializado correctamente.
+2018-11-21 10:12:03,329 [9] ERROR LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF.FacturaElectronicaWCF - Error al consumir endpoint 'ConsultarEstadoDocumentoElectronico': 
+System.Exception: el documento electrónico con clave numérica: 50621111800011094021100100001010000000049159135804 no se encuentra registrado en la empresa indicada. Consulte con su proveedor.
+   en LeandroSoftware.FacturaElectronicaHacienda.Servicios.FacturaElectronicaService.ConsultarDocumentoElectronico(Int32 intIdEmpresa, String strClave, String strConsecutivo, DatosConfiguracion configuracion) en C:\Users\Jason\Development\puntoventa.NET\ServiciosWeb\FacturaElectronica\Servicios\FacturaElectronicaService.cs:línea 527
+   en LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF.FacturaElectronicaWCF.ConsultarDocumentoElectronico(String empresa, String clave, String consecutivo) en C:\Users\Jason\Development\puntoventa.NET\ServiciosWeb\FacturaElectronica\ServicioWCF\FacturaElectronicaWCF.svc.cs:línea 128
+2018-11-21 10:12:57,883 [8] INFO LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF.FacturaElectronicaWCF - Servicio WCF inicializado correctamente.
+2018-11-21 10:18:25,384 [7] INFO LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF.FacturaElectronicaWCF - Servicio WCF inicializado correctamente.
+2018-11-21 10:24:10,364 [7] INFO LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF.FacturaElectronicaWCF - Servicio WCF inicializado correctamente.
+2018-11-21 10:26:52,193 [7] INFO LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF.FacturaElectronicaWCF - Servicio WCF inicializado correctamente.
+2018-11-21 10:30:50,192 [7] INFO LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF.FacturaElectronicaWCF - Servicio WCF inicializado correctamente.
+2018-11-21 10:34:20,629 [8] INFO LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF.FacturaElectronicaWCF - Servicio WCF inicializado correctamente.
+2018-11-21 10:38:34,554 [7] INFO LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF.FacturaElectronicaWCF - Servicio WCF inicializado correctamente.
+2018-11-21 10:40:00,999 [10] INFO LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF.FacturaElectronicaWCF - Servicio WCF inicializado correctamente.

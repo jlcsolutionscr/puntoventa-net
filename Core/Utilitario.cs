@@ -301,7 +301,7 @@ namespace LeandroSoftware.Core
                 gfx.DrawString("Línea", font, XBrushes.Black, new XRect(30, 365, 30, 12), XStringFormats.TopLeft);
                 gfx.DrawString("Código", font, XBrushes.Black, new XRect(60, 365, 80, 12), XStringFormats.TopLeft);
                 gfx.DrawString("Detalle", font, XBrushes.Black, new XRect(140, 365, 280, 12), XStringFormats.TopLeft);
-                gfx.DrawString("Precio Unitario", font, XBrushes.Black, new XRect(432.5, 365, 80, 12), XStringFormats.TopLeft);
+                gfx.DrawString("Precio Unitario", font, XBrushes.Black, new XRect(420, 365, 80, 12), XStringFormats.TopLeft);
                 gfx.DrawString("Total", font, XBrushes.Black, new XRect(557.5, 365, 80, 12), XStringFormats.TopLeft);
                 gfx.DrawLine(XPens.DarkGray, 28, 376, 582, 376);
 
@@ -314,48 +314,60 @@ namespace LeandroSoftware.Core
                     gfx.DrawString(linea.Codigo, font, XBrushes.Black, new XRect(60, lineaPos, 80, 12), XStringFormats.TopLeft);
                     gfx.DrawString(linea.Detalle, font, XBrushes.Black, new XRect(140, lineaPos, 280, 12), XStringFormats.TopLeft);
                     string strPrecioUnitario = linea.PrecioUnitario;
-                    double intPrecioUnitarioLength = 420 + 80 - (strPrecioUnitario.Length * 4.5);
+                    double intPrecioUnitarioLength = 400 + 80 + (strPrecioUnitario.Contains(",") ? (strPrecioUnitario.Split(',').Length -1) * 2.5 : 0) - (strPrecioUnitario.Length * 4.5);
                     gfx.DrawString(strPrecioUnitario, font, XBrushes.Black, new XRect(intPrecioUnitarioLength, lineaPos, 80, 12), XStringFormats.TopLeft);
                     string strTotal = linea.TotalLinea;
-                    double intTotalLength = 500 + 80 - (strTotal.Length * 4.5);
+                    double intTotalLength = 500 + 80 + (strTotal.Contains(",") ? (strTotal.Split(',').Length - 1) * 2.5 : 0) - (strTotal.Length * 4.5);
                     gfx.DrawString(strTotal, font, XBrushes.Black, new XRect(intTotalLength, lineaPos, 80, 12), XStringFormats.TopLeft);
                 }
                 gfx.DrawLine(XPens.DarkGray, 28, lineaPos + 11, 582, lineaPos + 11);
                 lineaPos += 17;
+                font = new XFont("Arial", 8, XFontStyle.Bold);
                 gfx.DrawString("SubTotal Factura:", font, XBrushes.Black, new XRect(420, lineaPos, 80, 12), XStringFormats.TopLeft);
                 string strResumenDato = datos.SubTotal;
-                double intResumenLength = 500 + 80 - (strResumenDato.Length * 4.5);
+                double intResumenLength = 500 + 80 + (strResumenDato.Contains(",") ? (strResumenDato.Split(',').Length - 1) * 2.5 : 0) - (strResumenDato.Length * 4.5);
+                font = new XFont("Arial", 8, XFontStyle.Regular);
                 gfx.DrawString(strResumenDato, font, XBrushes.Black, new XRect(intResumenLength, lineaPos, 80, 12), XStringFormats.TopLeft);
 
                 lineaPos += 12;
+                font = new XFont("Arial", 8, XFontStyle.Bold);
                 gfx.DrawString("Descuento:", font, XBrushes.Black, new XRect(420, lineaPos, 80, 12), XStringFormats.TopLeft);
                 strResumenDato = datos.Descuento;
-                intResumenLength = 500 + 80 - (strResumenDato.Length * 4.5);
+                intResumenLength = 500 + 80 + (strResumenDato.Contains(",") ? (strResumenDato.Split(',').Length - 1) * 2.5 : 0) - (strResumenDato.Length * 4.5);
+                font = new XFont("Arial", 8, XFontStyle.Regular);
                 gfx.DrawString(strResumenDato, font, XBrushes.Black, new XRect(intResumenLength, lineaPos, 80, 12), XStringFormats.TopLeft);
 
                 lineaPos += 12;
+                font = new XFont("Arial", 8, XFontStyle.Bold);
                 gfx.DrawString("Impuesto:", font, XBrushes.Black, new XRect(420, lineaPos, 80, 12), XStringFormats.TopLeft);
                 strResumenDato = datos.Impuesto;
-                intResumenLength = 500 + 80 - (strResumenDato.Length * 4.5);
+                intResumenLength = 500 + 80 + (strResumenDato.Contains(",") ? (strResumenDato.Split(',').Length - 1) * 2.5 : 0) - (strResumenDato.Length * 4.5);
+                font = new XFont("Arial", 8, XFontStyle.Regular);
                 gfx.DrawString(strResumenDato, font, XBrushes.Black, new XRect(intResumenLength, lineaPos, 80, 12), XStringFormats.TopLeft);
 
                 lineaPos += 12;
+                font = new XFont("Arial", 8, XFontStyle.Bold);
                 gfx.DrawString("Total General:", font, XBrushes.Black, new XRect(420, lineaPos, 80, 12), XStringFormats.TopLeft);
                 strResumenDato = datos.TotalGeneral;
-                intResumenLength = 500 + 80 - (strResumenDato.Length * 4.5);
+                intResumenLength = 500 + 80 + (strResumenDato.Contains(",") ? (strResumenDato.Split(',').Length - 1) * 2.5 : 0) - (strResumenDato.Length * 4.5);
+                font = new XFont("Arial", 8, XFontStyle.Regular);
                 gfx.DrawString(strResumenDato, font, XBrushes.Black, new XRect(intResumenLength, lineaPos, 80, 12), XStringFormats.TopLeft);
+
 
                 if (datos.CodigoMoneda != "")
                 {
                     lineaPos += 32;
+                    font = new XFont("Arial", 8, XFontStyle.Bold);
                     gfx.DrawString("Codigo Moneda:", font, XBrushes.Black, new XRect(70, lineaPos, 80, 12), XStringFormats.TopLeft);
+                    font = new XFont("Arial", 8, XFontStyle.Regular);
                     gfx.DrawString(datos.CodigoMoneda, font, XBrushes.Black, new XRect(150, lineaPos, 80, 12), XStringFormats.TopLeft);
                     if (datos.TipoDeCambio != "")
                     {
                         lineaPos += 12;
-                        strResumenDato = datos.TipoDeCambio;
+                        font = new XFont("Arial", 8, XFontStyle.Bold);
                         gfx.DrawString("Tipo de cambio:", font, XBrushes.Black, new XRect(70, lineaPos, 80, 12), XStringFormats.TopLeft);
-                        gfx.DrawString(strResumenDato, font, XBrushes.Black, new XRect(150, lineaPos, 80, 12), XStringFormats.TopLeft);
+                        font = new XFont("Arial", 8, XFontStyle.Regular);
+                        gfx.DrawString(datos.TipoDeCambio, font, XBrushes.Black, new XRect(150, lineaPos, 80, 12), XStringFormats.TopLeft);
                     }
                 }
 

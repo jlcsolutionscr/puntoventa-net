@@ -671,16 +671,16 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.Servicios
                                                 detalle.Codigo = linea.Codigo[0].Codigo;
                                                 detalle.Detalle = linea.Detalle;
                                                 detalle.PrecioUnitario = string.Format("{0:N5}", Convert.ToDouble(linea.PrecioUnitario, CultureInfo.InvariantCulture));
-                                                detalle.TotalLinea = linea.MontoTotalLinea.ToString("F5", CultureInfo.InvariantCulture);
+                                                detalle.TotalLinea = string.Format("{0:N5}", Convert.ToDouble(linea.MontoTotalLinea, CultureInfo.InvariantCulture));
                                                 datos.DetalleServicio.Add(detalle);
                                             }
-                                            datos.SubTotal = facturaElectronica.ResumenFactura.TotalVenta.ToString("F5", CultureInfo.InvariantCulture);
-                                            datos.Descuento = facturaElectronica.ResumenFactura.TotalDescuentosSpecified ? facturaElectronica.ResumenFactura.TotalDescuentos.ToString("F5", CultureInfo.InvariantCulture) : "0.00000";
-                                            datos.Impuesto = facturaElectronica.ResumenFactura.TotalImpuestoSpecified ? facturaElectronica.ResumenFactura.TotalImpuesto.ToString("F5", CultureInfo.InvariantCulture) : "0.00000";
-                                            datos.TotalGeneral = facturaElectronica.ResumenFactura.TotalComprobante.ToString("F5", CultureInfo.InvariantCulture);
+                                            datos.SubTotal = string.Format("{0:N5}", Convert.ToDouble(facturaElectronica.ResumenFactura.TotalVenta, CultureInfo.InvariantCulture));
+                                            datos.Descuento = facturaElectronica.ResumenFactura.TotalDescuentosSpecified ? string.Format("{0:N5}", Convert.ToDouble(facturaElectronica.ResumenFactura.TotalDescuentos, CultureInfo.InvariantCulture)) : "0.00000";
+                                            datos.Impuesto = facturaElectronica.ResumenFactura.TotalImpuestoSpecified ? string.Format("{0:N5}", Convert.ToDouble(facturaElectronica.ResumenFactura.TotalImpuesto, CultureInfo.InvariantCulture)) : "0.00000";
+                                            datos.TotalGeneral = string.Format("{0:N5}", Convert.ToDouble(facturaElectronica.ResumenFactura.TotalComprobante, CultureInfo.InvariantCulture));
                                             datos.CodigoMoneda = facturaElectronica.ResumenFactura.CodigoMonedaSpecified ? facturaElectronica.ResumenFactura.CodigoMoneda.ToString() : "";
                                             datos.TipoDeCambio = facturaElectronica.ResumenFactura.CodigoMonedaSpecified ? facturaElectronica.ResumenFactura.TipoCambio.ToString() : "";
-                                        }
+                                        }       
                                         else if (documentoElectronico.IdTipoDocumento == 3)
                                         {
                                             XmlSerializer serializer = new XmlSerializer(typeof(NotaCreditoElectronica));
@@ -689,7 +689,7 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.Servicios
                                             datos.NombreEmpresa = notaCreditoElectronica.Emisor.NombreComercial.Length > 0 ? notaCreditoElectronica.Emisor.NombreComercial : notaCreditoElectronica.Emisor.Nombre;
                                             datos.Consecutivo = notaCreditoElectronica.NumeroConsecutivo;
                                             datos.PlazoCredito = notaCreditoElectronica.PlazoCredito != null ? notaCreditoElectronica.PlazoCredito : "";
-                                            datos.Clave = notaCreditoElectronica.Clave;
+                                            datos.Clave = notaCreditoElectronica.Clave; 
                                             datos.CondicionVenta = ObtenerValoresCodificados.ObtenerCondicionDeVenta(int.Parse(notaCreditoElectronica.CondicionVenta.ToString().Substring(5)));
                                             datos.Fecha = notaCreditoElectronica.FechaEmision.ToString("dd/MM/yyyy hh:mm:ss");
                                             if (notaCreditoElectronica.MedioPago != null)
@@ -736,14 +736,14 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.Servicios
                                                 detalle.NumeroLinea = linea.NumeroLinea;
                                                 detalle.Codigo = linea.Codigo[0].Codigo;
                                                 detalle.Detalle = linea.Detalle;
-                                                detalle.PrecioUnitario = linea.PrecioUnitario.ToString("F5", CultureInfo.InvariantCulture);
-                                                detalle.TotalLinea = linea.MontoTotalLinea.ToString("F5", CultureInfo.InvariantCulture);
+                                                detalle.PrecioUnitario = string.Format("{0:N5}", Convert.ToDouble(linea.PrecioUnitario, CultureInfo.InvariantCulture));
+                                                detalle.TotalLinea = string.Format("{0:N5}", Convert.ToDouble(linea.MontoTotalLinea, CultureInfo.InvariantCulture));
                                                 datos.DetalleServicio.Add(detalle);
                                             }
-                                            datos.SubTotal = notaCreditoElectronica.ResumenFactura.TotalVenta.ToString("F5", CultureInfo.InvariantCulture);
-                                            datos.Descuento = notaCreditoElectronica.ResumenFactura.TotalDescuentosSpecified ? notaCreditoElectronica.ResumenFactura.TotalDescuentos.ToString("F5", CultureInfo.InvariantCulture) : "0.00000";
-                                            datos.Impuesto = notaCreditoElectronica.ResumenFactura.TotalImpuestoSpecified ? notaCreditoElectronica.ResumenFactura.TotalImpuesto.ToString("F5", CultureInfo.InvariantCulture) : "0.00000";
-                                            datos.TotalGeneral = notaCreditoElectronica.ResumenFactura.TotalComprobante.ToString("F5", CultureInfo.InvariantCulture);
+                                            datos.SubTotal = string.Format("{0:N5}", Convert.ToDouble(notaCreditoElectronica.ResumenFactura.TotalVenta, CultureInfo.InvariantCulture));
+                                            datos.Descuento = notaCreditoElectronica.ResumenFactura.TotalDescuentosSpecified ? string.Format("{0:N5}", Convert.ToDouble(notaCreditoElectronica.ResumenFactura.TotalDescuentos, CultureInfo.InvariantCulture)) : "0.00000";
+                                            datos.Impuesto = notaCreditoElectronica.ResumenFactura.TotalImpuestoSpecified ? string.Format("{0:N5}", Convert.ToDouble(notaCreditoElectronica.ResumenFactura.TotalImpuesto, CultureInfo.InvariantCulture)) : "0.00000";
+                                            datos.TotalGeneral = string.Format("{0:N5}", Convert.ToDouble(notaCreditoElectronica.ResumenFactura.TotalComprobante, CultureInfo.InvariantCulture));
                                             datos.CodigoMoneda = notaCreditoElectronica.ResumenFactura.CodigoMonedaSpecified ? notaCreditoElectronica.ResumenFactura.CodigoMoneda.ToString() : "";
                                             datos.TipoDeCambio = notaCreditoElectronica.ResumenFactura.CodigoMonedaSpecified ? notaCreditoElectronica.ResumenFactura.TipoCambio.ToString() : "";
                                         }
