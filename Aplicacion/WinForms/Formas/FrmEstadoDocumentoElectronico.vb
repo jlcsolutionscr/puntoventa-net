@@ -62,7 +62,7 @@ Public Class FrmEstadoDocumentoElectronico
 #End Region
 
 #Region "Eventos controles"
-    Private Sub FrmEstadoDocumentoElectronico_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+    Private Sub FrmEstadoDocumentoElectronico_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
             servicioFacturacion = FrmMenuPrincipal.unityContainer.Resolve(Of IFacturacionService)()
         Catch ex As Exception

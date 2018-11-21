@@ -1663,6 +1663,7 @@ namespace LeandroSoftware.PuntoVenta.Servicios
                     {
                         DatosDocumentoElectronicoDTO datos = new DatosDocumentoElectronicoDTO();
                         datos.IdEmpresa = empresa.IdEmpresa;
+                        datos.IdTipoDocumento = doc.IdTipoDocumento;
                         datos.ClaveNumerica = doc.ClaveNumerica;
                         datos.FechaEmision = doc.Fecha;
                         datos.TipoIdentificacionEmisor = doc.TipoIdentificacionEmisor.ToString("D2");
