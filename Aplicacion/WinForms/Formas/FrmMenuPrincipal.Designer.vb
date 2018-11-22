@@ -77,6 +77,7 @@ Partial Class FrmMenuPrincipal
         Me.MnuDocElect = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuDocElectCDE = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuDocElectADE = New System.Windows.Forms.ToolStripMenuItem()
+        Me.MnuDocElectRDE = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuCC = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuApRCxC = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuApRCxP = New System.Windows.Forms.ToolStripMenuItem()
@@ -94,7 +95,6 @@ Partial Class FrmMenuPrincipal
         Me.mnuContaCierre = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuContaReporte = New System.Windows.Forms.ToolStripMenuItem()
         Me.picLoader = New System.Windows.Forms.PictureBox()
-        Me.MnuDocElectRDE = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuMenuPrincipal.SuspendLayout()
         CType(Me.picLoader, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -386,12 +386,21 @@ Partial Class FrmMenuPrincipal
         Me.MnuDocElectCDE.Name = "MnuDocElectCDE"
         Me.MnuDocElectCDE.Size = New System.Drawing.Size(258, 22)
         Me.MnuDocElectCDE.Text = "Consultar documentos pendientes"
+        Me.MnuDocElectCDE.Visible = False
         '
         'MnuDocElectADE
         '
         Me.MnuDocElectADE.Name = "MnuDocElectADE"
         Me.MnuDocElectADE.Size = New System.Drawing.Size(258, 22)
         Me.MnuDocElectADE.Text = "Aceptar documentos electrónicos"
+        Me.MnuDocElectADE.Visible = False
+        '
+        'MnuDocElectRDE
+        '
+        Me.MnuDocElectRDE.Name = "MnuDocElectRDE"
+        Me.MnuDocElectRDE.Size = New System.Drawing.Size(258, 22)
+        Me.MnuDocElectRDE.Text = "Consultar documentos procesados"
+        Me.MnuDocElectRDE.Visible = False
         '
         'MnuCC
         '
@@ -522,13 +531,6 @@ Partial Class FrmMenuPrincipal
         Me.picLoader.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
         Me.picLoader.TabIndex = 3
         Me.picLoader.TabStop = False
-        '
-        'MnuDocElectRDE
-        '
-        Me.MnuDocElectRDE.Name = "MnuDocElectRDE"
-        Me.MnuDocElectRDE.Size = New System.Drawing.Size(258, 22)
-        Me.MnuDocElectRDE.Text = "Consultar documentos procesados"
-        Me.MnuDocElectRDE.Visible = False
         '
         'FrmMenuPrincipal
         '

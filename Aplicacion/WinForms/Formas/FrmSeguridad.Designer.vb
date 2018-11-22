@@ -39,7 +39,7 @@ Partial Class FrmSeguridad
         Me.CmdCancelar.Cursor = System.Windows.Forms.Cursors.Default
         Me.CmdCancelar.DialogResult = System.Windows.Forms.DialogResult.Cancel
         Me.CmdCancelar.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.CmdCancelar.Location = New System.Drawing.Point(163, 114)
+        Me.CmdCancelar.Location = New System.Drawing.Point(150, 114)
         Me.CmdCancelar.Name = "CmdCancelar"
         Me.CmdCancelar.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.CmdCancelar.Size = New System.Drawing.Size(81, 25)
@@ -53,7 +53,7 @@ Partial Class FrmSeguridad
         Me.CmdAceptar.BackColor = System.Drawing.SystemColors.ButtonHighlight
         Me.CmdAceptar.Cursor = System.Windows.Forms.Cursors.Default
         Me.CmdAceptar.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.CmdAceptar.Location = New System.Drawing.Point(72, 114)
+        Me.CmdAceptar.Location = New System.Drawing.Point(56, 114)
         Me.CmdAceptar.Name = "CmdAceptar"
         Me.CmdAceptar.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.CmdAceptar.Size = New System.Drawing.Size(81, 25)
@@ -123,7 +123,7 @@ Partial Class FrmSeguridad
         Me.cboEmpresa.FormattingEnabled = True
         Me.cboEmpresa.Location = New System.Drawing.Point(82, 72)
         Me.cboEmpresa.Name = "cboEmpresa"
-        Me.cboEmpresa.Size = New System.Drawing.Size(221, 21)
+        Me.cboEmpresa.Size = New System.Drawing.Size(192, 21)
         Me.cboEmpresa.TabIndex = 2
         '
         'Label1
@@ -146,7 +146,7 @@ Partial Class FrmSeguridad
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.CancelButton = Me.CmdCancelar
-        Me.ClientSize = New System.Drawing.Size(315, 155)
+        Me.ClientSize = New System.Drawing.Size(288, 155)
         Me.ControlBox = False
         Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.cboEmpresa)
