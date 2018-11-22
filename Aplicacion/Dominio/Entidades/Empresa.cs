@@ -47,6 +47,11 @@ namespace LeandroSoftware.PuntoVenta.Dominio.Entidades
         public string ServicioFacturaElectronicaURL { get; set; }
         public string IdCertificado { get; set; }
         public string PinCertificado { get; set; }
+        public int UltimoDocFE { get; set; }
+        public int UltimoDocND { get; set; }
+        public int UltimoDocNC { get; set; }
+        public int UltimoDocTE { get; set; }
+        public int UltimoDocMR { get; set; }
 
         public TipoIdentificacion TipoIdentificacion { get; set; }
         public TipoMoneda TipoMoneda { get; set; }

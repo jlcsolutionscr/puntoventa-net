@@ -595,6 +595,22 @@ Public Class FrmFactura
             Close()
             Exit Sub
         End Try
+        Try
+            cliente = servicioFacturacion.ObtenerCliente(1)
+            txtNombreCliente.Text = cliente.Nombre
+        Catch ex As Exception
+            MessageBox.Show("Error al consultar el cliente de contado. Por favor consulte con su proveedor.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Close()
+            Exit Sub
+        End Try
+        Try
+            vendedor = servicioMantenimiento.ObtenerVendedor(1)
+            txtVendedor.Text = vendedor.Nombre
+        Catch ex As Exception
+            MessageBox.Show("Debe ingresar al menos un vendedor para generar la facturación. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Close()
+            Exit Sub
+        End Try
         txtTipoCambio.Text = FormatNumber(tipoMoneda.TipoCambioCompra, 2)
         txtSaldoPorPagar.Text = FormatNumber(dblSaldoPorPagar, 2)
         shtConsecutivoPago = 0
@@ -645,10 +661,22 @@ Public Class FrmFactura
         btnBuscarCliente.Enabled = True
         btnOrdenServicio.Enabled = True
         btnProforma.Enabled = True
-        cliente = Nothing
-        txtNombreCliente.Text = ""
-        vendedor = Nothing
-        txtVendedor.Text = ""
+        Try
+            cliente = servicioFacturacion.ObtenerCliente(1)
+            txtNombreCliente.Text = cliente.Nombre
+        Catch ex As Exception
+            MessageBox.Show("Error al consultar el cliente de contado. Por favor consulte con su proveedor.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Close()
+            Exit Sub
+        End Try
+        Try
+            vendedor = servicioMantenimiento.ObtenerVendedor(1)
+            txtVendedor.Text = vendedor.Nombre
+        Catch ex As Exception
+            MessageBox.Show("Debe ingresar al menos un vendedor para generar la facturación. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Close()
+            Exit Sub
+        End Try
         cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado
         cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
         cboTipoMoneda.SelectedValue = StaticValoresPorDefecto.MonedaDelSistema

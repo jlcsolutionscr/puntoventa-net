@@ -453,6 +453,13 @@ Public Class FrmMenuPrincipal
         }
         formEstadoDocumentoElectronico.Show()
     End Sub
+
+    Private Sub MnuDocElectRDE_Click(sender As Object, e As EventArgs) Handles MnuDocElectRDE.Click
+        Dim formDetalleDocumentoElectronico As New FrmDetalleDocumentoElectronico With {
+            .MdiParent = Me
+        }
+        formDetalleDocumentoElectronico.Show()
+    End Sub
 #End Region
 
 #Region "Eventos Formulario"

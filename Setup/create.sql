@@ -89,6 +89,11 @@ CREATE TABLE Empresa (
   ServicioFacturaElectronicaURL VARCHAR(500) NULL,
   IdCertificado VARCHAR(100) NULL,
   PinCertificado VARCHAR(4) NULL,
+  UltimoDocFE INTEGER NOT NULL,
+  UltimoDocND INTEGER NOT NULL,
+  UltimoDocNC INTEGER NOT NULL,
+  UltimoDocTE INTEGER NOT NULL,
+  UltimoDocMR INTEGER NOT NULL,
   PRIMARY KEY(IdEmpresa),
   FOREIGN KEY(IdTipoIdentificacion)
     REFERENCES TipoIdentificacion(IdTipoIdentificacion)

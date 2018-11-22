@@ -613,8 +613,56 @@ namespace LeandroSoftware.PuntoVenta.Servicios
                 int intTipoDocumentoElectronico = (int)tipoDocumento;
                 int intIdConsecutivo = 1;
                 int? consecutivoBaseDatos = dbContext.DocumentoElectronicoRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa & x.IdSucursal == intSucursal & x.IdTerminal == intTerminal & x.IdTipoDocumento == intTipoDocumentoElectronico).Max(x => (int?)x.IdConsecutivo);
-                if (!(consecutivoBaseDatos is null))
-                    intIdConsecutivo = (int)consecutivoBaseDatos + 1;
+                switch (tipoDocumento)
+                {
+                    case TipoDocumento.FacturaElectronica:
+                        if (!(consecutivoBaseDatos is null))
+                        {
+                            intIdConsecutivo = (int)consecutivoBaseDatos + 1;
+                            empresa.UltimoDocFE = intIdConsecutivo;
+                        }
+                        else
+                            intIdConsecutivo = empresa.UltimoDocFE + 1;
+                        break;
+                    case TipoDocumento.NotaDebitoElectronica:
+                        if (!(consecutivoBaseDatos is null))
+                        {
+                            intIdConsecutivo = (int)consecutivoBaseDatos + 1;
+                            empresa.UltimoDocND = intIdConsecutivo;
+                        }
+                        else
+                            intIdConsecutivo = empresa.UltimoDocND + 1;
+                        break;
+                    case TipoDocumento.NotaCreditoElectronica:
+                        if (!(consecutivoBaseDatos is null))
+                        {
+                            intIdConsecutivo = (int)consecutivoBaseDatos + 1;
+                            empresa.UltimoDocNC = intIdConsecutivo;
+                        }
+                        else
+                            intIdConsecutivo = empresa.UltimoDocNC + 1;
+                        break;
+                    case TipoDocumento.TiqueteElectronico:
+                        if (!(consecutivoBaseDatos is null))
+                        {
+                            intIdConsecutivo = (int)consecutivoBaseDatos + 1;
+                            empresa.UltimoDocTE = intIdConsecutivo;
+                        }
+                        else
+                            intIdConsecutivo = empresa.UltimoDocTE + 1;
+                        break;
+                    case TipoDocumento.MensajeReceptorAceptado:
+                    case TipoDocumento.MensajeReceptorAceptadoParcial:
+                    case TipoDocumento.MensajeReceptorRechazado:
+                        if (!(consecutivoBaseDatos is null))
+                        {
+                            intIdConsecutivo = (int)consecutivoBaseDatos + 1;
+                            empresa.UltimoDocMR = intIdConsecutivo;
+                        }
+                        else
+                            intIdConsecutivo = empresa.UltimoDocMR + 1;
+                        break;
+                }
                 strConsucutivo = intSucursal.ToString("D3") + intTerminal.ToString("D5") + intTipoDocumentoElectronico.ToString("D2") + intIdConsecutivo.ToString("D10");
                 if (!esMensajeReceptor)
                 {

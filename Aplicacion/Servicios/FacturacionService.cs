@@ -50,6 +50,8 @@ namespace LeandroSoftware.PuntoVenta.Servicios
         IEnumerable<DevolucionCliente> ObtenerListaDevolucionesPorCliente(int intIdEmpresa, int numPagina, int cantRec, int intIdDevolucion = 0, string strNombre = "");
         void GeneraMensajeReceptor(string datos, int intIdEmpresa, int intSucursal, int intTerminal, int intMensaje);
         Task<IList<DocumentoElectronico>> ObtenerListaDocumentosElectronicosPendientes(int intIdEmpresa);
+        Task<int> ObtenerTotalDocumentosElectronicosProcesados(int intIdEmpresa);
+        IList<DocumentoElectronico> ObtenerListaDocumentosElectronicosProcesados(int intIdEmpresa, int numPagina, int cantRec);
         void ProcesarDocumentosElectronicosPendientes(int intIdEmpresa, IList<DocumentoElectronico> listaPendientes);
     }
 
@@ -1636,6 +1638,85 @@ namespace LeandroSoftware.PuntoVenta.Servicios
                     }
                     dbContext.Commit();
                     return listado;
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al procesar factura electrónica: ", ex);
+                    if (ex.Message == "Service Unavailable")
+                        throw new Exception("El servicio de factura electrónica se encuentra fuera de servicio. Por favor consulte con su proveedor.");
+                    else
+                        throw new Exception("Se produjo un error al procesar la factura electrónica ingresada. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public async Task<int> ObtenerTotalDocumentosElectronicosProcesados(int intIdEmpresa)
+        {
+            IList<DocumentoElectronico> listado = new List<DocumentoElectronico>();
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
+                    if (empresa == null)
+                        throw new Exception("La empresa asignada a la transacción no existe.");
+                    var listaProcesados = dbContext.DocumentoElectronicoRepository.Where(x => x.IdEmpresa == intIdEmpresa);
+                    foreach (DocumentoElectronico doc in listaProcesados)
+                    {
+                        if (doc.EstadoEnvio == "pendiente" || doc.EstadoEnvio == "registrado")
+                        {
+                            try
+                            {
+                                DatosDocumentoElectronicoDTO datos = await ComprobanteElectronicoService.ConsultarDocumentoElectronico(empresa, doc.ClaveNumerica, doc.Consecutivo);
+                                if (datos.EstadoEnvio != "procesando")
+                                {
+                                    if (doc.EstadoEnvio != datos.EstadoEnvio)
+                                    {
+                                        doc.EstadoEnvio = datos.EstadoEnvio;
+                                        dbContext.NotificarModificacion(doc);
+                                    }
+                                    if (datos.EstadoEnvio == "aceptado" && datos.EstadoEnvio == "rechazado")
+                                    {
+                                        listado.Add(doc);
+                                    }
+                                }
+                            }
+                            catch (Exception)
+                            {
+                            }
+                        } else if (doc.EstadoEnvio == "aceptado" && doc.EstadoEnvio == "rechazado")
+                        {
+                            listado.Add(doc);
+                        }
+
+                    }
+                    dbContext.Commit();
+                    return listado.Count();
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al obtener el total del listado de documentos electrónicos: ", ex);
+                    throw new Exception("Se produjo un error consultando el total del listado de documentos electrónicos. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public IList<DocumentoElectronico> ObtenerListaDocumentosElectronicosProcesados(int intIdEmpresa, int numPagina, int cantRec)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
+                    if (empresa == null)
+                        throw new Exception("La empresa asignada a la transacción no existe.");
+                    if (empresa.CierreEnEjecucion)
+                        throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
+                    var listaPprocesados = dbContext.DocumentoElectronicoRepository.Where(x => x.IdEmpresa == intIdEmpresa)
+                        .OrderByDescending(x => x.IdDocumento)
+                        .Skip((numPagina - 1) * cantRec).Take(cantRec).ToList();
+                    
+                    return listaPprocesados.ToList();
                 }
                 catch (Exception ex)
                 {

@@ -190,6 +190,12 @@
     <Compile Include="Formas\FrmAjusteInventario.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Formas\FrmDetalleDocumentoElectronico.Designer.vb">
+      <DependentUpon>FrmDetalleDocumentoElectronico.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Formas\FrmDetalleDocumentoElectronico.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Formas\FrmDevolucionAProveedores.Designer.vb">
       <DependentUpon>FrmDevolucionAProveedores.vb</DependentUpon>
     </Compile>
@@ -930,6 +936,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Formas\FrmAjusteInventario.resx">
       <DependentUpon>FrmAjusteInventario.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Formas\FrmDetalleDocumentoElectronico.resx">
+      <DependentUpon>FrmDetalleDocumentoElectronico.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Formas\FrmDevolucionAProveedores.resx">
       <DependentUpon>FrmDevolucionAProveedores.vb</DependentUpon>

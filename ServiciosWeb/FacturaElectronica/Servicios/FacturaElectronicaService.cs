@@ -555,13 +555,6 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.Servicios
                         datos.IdentificacionReceptor = item.IdentificacionReceptor;
                         datos.EsMensajeReceptor = item.EsMensajeReceptor;
                         datos.EstadoEnvio = item.EstadoEnvio;
-                        BinaryFormatter bf = new BinaryFormatter();
-                        using (MemoryStream ms = new MemoryStream())
-                        {
-                            datos.DatosDocumento = Convert.ToBase64String(item.DatosDocumento, 0, item.DatosDocumento.Length);
-                            if (item.Respuesta != null && item.Respuesta.Length > 0)
-                                datos.RespuestaHacienda = Convert.ToBase64String(item.Respuesta, 0, item.Respuesta.Length);
-                        }
                         listadoDocumentoElectronico.Add(datos);
                     }
                     return listadoDocumentoElectronico;
