@@ -49,7 +49,7 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.ClientePruebas
                                     string strOpcion = Console.ReadLine();
                                     if (strOpcion == "C")
                                     {
-                                        if (documento.RespuestaHacienda != null)
+                                        /* if (documento.RespuestaHacienda != null)
                                         {
                                             Console.WriteLine("Desea proceder con la aplicación de la respuesta de Hacienda (S/N):");
                                             string strSiNo = Console.ReadLine();
@@ -70,8 +70,8 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.ClientePruebas
                                             {
                                                 Console.WriteLine("Procesamiento abortado por el usuario. . .");
                                             }
-                                        }
-                                        /* DatosDocumentoElectronicoDTO consulta = consultarEstadoDocumento(documento);
+                                        } */
+                                        DatosDocumentoElectronicoDTO consulta = consultarEstadoDocumento(documento);
                                         Console.WriteLine("El documento posee un estado: " + consulta.EstadoEnvio);
                                         if (consulta.RespuestaHacienda != null)
                                         {
@@ -112,7 +112,7 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.ClientePruebas
                                                     }
                                                 }
                                             }
-                                        } */
+                                        }
                                         Console.WriteLine("");
                                     }
                                     if (strOpcion == "E")
