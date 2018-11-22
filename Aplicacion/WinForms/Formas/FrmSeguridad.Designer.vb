@@ -1,9 +1,9 @@
-<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
 Partial Class FrmSeguridad
     Inherits System.Windows.Forms.Form
 
     'Form overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()> _
+    <System.Diagnostics.DebuggerNonUserCode()>
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         If disposing AndAlso components IsNot Nothing Then
             components.Dispose()
@@ -39,7 +39,7 @@ Partial Class FrmSeguridad
         Me.CmdCancelar.Cursor = System.Windows.Forms.Cursors.Default
         Me.CmdCancelar.DialogResult = System.Windows.Forms.DialogResult.Cancel
         Me.CmdCancelar.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.CmdCancelar.Location = New System.Drawing.Point(144, 111)
+        Me.CmdCancelar.Location = New System.Drawing.Point(163, 114)
         Me.CmdCancelar.Name = "CmdCancelar"
         Me.CmdCancelar.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.CmdCancelar.Size = New System.Drawing.Size(81, 25)
@@ -53,7 +53,7 @@ Partial Class FrmSeguridad
         Me.CmdAceptar.BackColor = System.Drawing.SystemColors.ButtonHighlight
         Me.CmdAceptar.Cursor = System.Windows.Forms.Cursors.Default
         Me.CmdAceptar.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.CmdAceptar.Location = New System.Drawing.Point(48, 111)
+        Me.CmdAceptar.Location = New System.Drawing.Point(72, 114)
         Me.CmdAceptar.Name = "CmdAceptar"
         Me.CmdAceptar.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.CmdAceptar.Size = New System.Drawing.Size(81, 25)
@@ -69,12 +69,12 @@ Partial Class FrmSeguridad
         Me.TxtClave.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.TxtClave.ForeColor = System.Drawing.SystemColors.WindowText
         Me.TxtClave.ImeMode = System.Windows.Forms.ImeMode.Disable
-        Me.TxtClave.Location = New System.Drawing.Point(122, 43)
+        Me.TxtClave.Location = New System.Drawing.Point(123, 46)
         Me.TxtClave.MaxLength = 0
         Me.TxtClave.Name = "TxtClave"
         Me.TxtClave.PasswordChar = Global.Microsoft.VisualBasic.ChrW(42)
         Me.TxtClave.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.TxtClave.Size = New System.Drawing.Size(89, 20)
+        Me.TxtClave.Size = New System.Drawing.Size(129, 20)
         Me.TxtClave.TabIndex = 1
         '
         'TxtUsuario
@@ -84,11 +84,11 @@ Partial Class FrmSeguridad
         Me.TxtUsuario.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper
         Me.TxtUsuario.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.TxtUsuario.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.TxtUsuario.Location = New System.Drawing.Point(122, 19)
+        Me.TxtUsuario.Location = New System.Drawing.Point(123, 22)
         Me.TxtUsuario.MaxLength = 0
         Me.TxtUsuario.Name = "TxtUsuario"
         Me.TxtUsuario.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.TxtUsuario.Size = New System.Drawing.Size(89, 20)
+        Me.TxtUsuario.Size = New System.Drawing.Size(129, 20)
         Me.TxtUsuario.TabIndex = 0
         '
         'LblClave
@@ -96,34 +96,34 @@ Partial Class FrmSeguridad
         Me.LblClave.BackColor = System.Drawing.Color.Transparent
         Me.LblClave.Cursor = System.Windows.Forms.Cursors.Default
         Me.LblClave.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.LblClave.Location = New System.Drawing.Point(50, 43)
+        Me.LblClave.Location = New System.Drawing.Point(51, 46)
         Me.LblClave.Name = "LblClave"
         Me.LblClave.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.LblClave.Size = New System.Drawing.Size(65, 17)
         Me.LblClave.TabIndex = 5
         Me.LblClave.Text = "Contraseña"
-        Me.LblClave.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        Me.LblClave.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'LblUsuario
         '
         Me.LblUsuario.BackColor = System.Drawing.Color.Transparent
         Me.LblUsuario.Cursor = System.Windows.Forms.Cursors.Default
         Me.LblUsuario.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.LblUsuario.Location = New System.Drawing.Point(50, 19)
+        Me.LblUsuario.Location = New System.Drawing.Point(51, 22)
         Me.LblUsuario.Name = "LblUsuario"
         Me.LblUsuario.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.LblUsuario.Size = New System.Drawing.Size(65, 17)
         Me.LblUsuario.TabIndex = 4
         Me.LblUsuario.Text = "Usuario"
-        Me.LblUsuario.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        Me.LblUsuario.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'cboEmpresa
         '
         Me.cboEmpresa.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cboEmpresa.FormattingEnabled = True
-        Me.cboEmpresa.Location = New System.Drawing.Point(121, 72)
+        Me.cboEmpresa.Location = New System.Drawing.Point(82, 72)
         Me.cboEmpresa.Name = "cboEmpresa"
-        Me.cboEmpresa.Size = New System.Drawing.Size(126, 21)
+        Me.cboEmpresa.Size = New System.Drawing.Size(221, 21)
         Me.cboEmpresa.TabIndex = 2
         '
         'Label1
@@ -131,11 +131,11 @@ Partial Class FrmSeguridad
         Me.Label1.BackColor = System.Drawing.Color.Transparent
         Me.Label1.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label1.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label1.Location = New System.Drawing.Point(50, 75)
+        Me.Label1.Location = New System.Drawing.Point(23, 73)
         Me.Label1.Name = "Label1"
         Me.Label1.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label1.Size = New System.Drawing.Size(65, 17)
-        Me.Label1.TabIndex = 7
+        Me.Label1.Size = New System.Drawing.Size(53, 17)
+        Me.Label1.TabIndex = 6
         Me.Label1.Text = "Empresa"
         Me.Label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
@@ -146,7 +146,7 @@ Partial Class FrmSeguridad
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.CancelButton = Me.CmdCancelar
-        Me.ClientSize = New System.Drawing.Size(282, 148)
+        Me.ClientSize = New System.Drawing.Size(315, 155)
         Me.ControlBox = False
         Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.cboEmpresa)
@@ -170,5 +170,5 @@ Partial Class FrmSeguridad
 
     End Sub
     Friend WithEvents cboEmpresa As System.Windows.Forms.ComboBox
-    Public WithEvents Label1 As System.Windows.Forms.Label
+    Public WithEvents Label1 As Label
 End Class

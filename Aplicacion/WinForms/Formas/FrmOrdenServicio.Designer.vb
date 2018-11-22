@@ -593,7 +593,7 @@ Partial Class FrmOrdenServicio
         Me._lblLabels_11.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me._lblLabels_11.Size = New System.Drawing.Size(57, 19)
         Me._lblLabels_11.TabIndex = 76
-        Me._lblLabels_11.Text = "Operarios:"
+        Me._lblLabels_11.Text = "Notas:"
         Me._lblLabels_11.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'btnBuscaVendedor
@@ -709,7 +709,7 @@ Partial Class FrmOrdenServicio
         Me.Label5.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label5.Size = New System.Drawing.Size(42, 19)
         Me.Label5.TabIndex = 88
-        Me.Label5.Text = "Marca:"
+        Me.Label5.Text = "Ref1:"
         Me.Label5.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'txtModelo
@@ -735,7 +735,7 @@ Partial Class FrmOrdenServicio
         Me.Label6.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label6.Size = New System.Drawing.Size(48, 19)
         Me.Label6.TabIndex = 90
-        Me.Label6.Text = "Modelo:"
+        Me.Label6.Text = "Ref2:"
         Me.Label6.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'txtPlaca
@@ -761,7 +761,7 @@ Partial Class FrmOrdenServicio
         Me.Label7.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label7.Size = New System.Drawing.Size(37, 19)
         Me.Label7.TabIndex = 92
-        Me.Label7.Text = "Placa:"
+        Me.Label7.Text = "Ref3:"
         Me.Label7.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'txtColor
@@ -787,7 +787,7 @@ Partial Class FrmOrdenServicio
         Me.Label8.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label8.Size = New System.Drawing.Size(42, 19)
         Me.Label8.TabIndex = 94
-        Me.Label8.Text = "Color:"
+        Me.Label8.Text = "Ref4:"
         Me.Label8.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'txtEstadoActual
@@ -815,7 +815,7 @@ Partial Class FrmOrdenServicio
         Me.Label9.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label9.Size = New System.Drawing.Size(77, 40)
         Me.Label9.TabIndex = 96
-        Me.Label9.Text = "Estado actual del vehículo:"
+        Me.Label9.Text = "Estado actual:"
         Me.Label9.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'FrmOrdenServicio

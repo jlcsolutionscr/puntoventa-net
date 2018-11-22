@@ -94,6 +94,7 @@ Partial Class FrmMenuPrincipal
         Me.mnuContaCierre = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuContaReporte = New System.Windows.Forms.ToolStripMenuItem()
         Me.picLoader = New System.Windows.Forms.PictureBox()
+        Me.MnuDocElectRDE = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuMenuPrincipal.SuspendLayout()
         CType(Me.picLoader, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -374,7 +375,7 @@ Partial Class FrmMenuPrincipal
         '
         'MnuDocElect
         '
-        Me.MnuDocElect.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MnuDocElectCDE, Me.MnuDocElectADE})
+        Me.MnuDocElect.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MnuDocElectCDE, Me.MnuDocElectADE, Me.MnuDocElectRDE})
         Me.MnuDocElect.Name = "MnuDocElect"
         Me.MnuDocElect.Size = New System.Drawing.Size(154, 20)
         Me.MnuDocElect.Text = "Documentos Electrónicos"
@@ -383,13 +384,13 @@ Partial Class FrmMenuPrincipal
         'MnuDocElectCDE
         '
         Me.MnuDocElectCDE.Name = "MnuDocElectCDE"
-        Me.MnuDocElectCDE.Size = New System.Drawing.Size(256, 22)
+        Me.MnuDocElectCDE.Size = New System.Drawing.Size(258, 22)
         Me.MnuDocElectCDE.Text = "Consultar documentos pendientes"
         '
         'MnuDocElectADE
         '
         Me.MnuDocElectADE.Name = "MnuDocElectADE"
-        Me.MnuDocElectADE.Size = New System.Drawing.Size(256, 22)
+        Me.MnuDocElectADE.Size = New System.Drawing.Size(258, 22)
         Me.MnuDocElectADE.Text = "Aceptar documentos electrónicos"
         '
         'MnuCC
@@ -522,6 +523,13 @@ Partial Class FrmMenuPrincipal
         Me.picLoader.TabIndex = 3
         Me.picLoader.TabStop = False
         '
+        'MnuDocElectRDE
+        '
+        Me.MnuDocElectRDE.Name = "MnuDocElectRDE"
+        Me.MnuDocElectRDE.Size = New System.Drawing.Size(258, 22)
+        Me.MnuDocElectRDE.Text = "Consultar documentos procesados"
+        Me.MnuDocElectRDE.Visible = False
+        '
         'FrmMenuPrincipal
         '
         Me.BackColor = System.Drawing.SystemColors.AppWorkspace
@@ -584,4 +592,5 @@ Partial Class FrmMenuPrincipal
     Friend WithEvents MnuDocElect As ToolStripMenuItem
     Friend WithEvents MnuDocElectCDE As ToolStripMenuItem
     Friend WithEvents MnuDocElectADE As ToolStripMenuItem
+    Friend WithEvents MnuDocElectRDE As ToolStripMenuItem
 End Class

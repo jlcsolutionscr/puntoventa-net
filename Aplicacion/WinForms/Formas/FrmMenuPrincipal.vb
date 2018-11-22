@@ -572,19 +572,17 @@ Public Class FrmMenuPrincipal
                 Dim formInicio As New FrmInicio()
                 formInicio.ShowDialog()
                 mnuMenuPrincipal.Visible = True
-                For Each permiso As RolePorUsuario In usuarioGlobal.RolePorUsuario
-                    objMenu = mnuMenuPrincipal.Items(permiso.Role.MenuPadre)
-                    Try
+                Try
+                    If empresaGlobal.FacturaElectronica Then
+                        objMenu = mnuMenuPrincipal.Items("MnuDocElect")
+                        objMenu.Visible = True
+                    End If
+                    For Each permiso As RolePorUsuario In usuarioGlobal.RolePorUsuario
+                        objMenu = mnuMenuPrincipal.Items(permiso.Role.MenuPadre)
                         objMenu.DropDownItems(permiso.Role.MenuItem).Visible = True
-                    Catch ex As Exception
-                    End Try
-                Next
-                If empresaGlobal.FacturaElectronica Then
-                    objMenu = mnuMenuPrincipal.Items("MnuDocElect")
-                    objMenu.Visible = True
-                    objMenu.DropDownItems("MnuDocElectCDE").Visible = True
-                    objMenu.DropDownItems("MnuDocElectADE").Visible = True
-                End If
+                    Next
+                Catch ex As Exception
+                End Try
             End If
         Catch
             MessageBox.Show("Error de conexión con el servicio web de factura electrónica. Por verifique su conexión a internet e intente más tarde. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)

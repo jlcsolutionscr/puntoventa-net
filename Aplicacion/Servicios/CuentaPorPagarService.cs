@@ -156,7 +156,7 @@ namespace LeandroSoftware.PuntoVenta.Servicios
                     }
                     dbContext.Commit();
                     cuenta.NroDocOrig = cuenta.IdCxP;
-                    dbContext.NotificarModificacion(asiento);
+                    dbContext.NotificarModificacion(cuenta);
                     if (asiento != null)
                     {
                         cuenta.IdAsiento = asiento.IdAsiento;

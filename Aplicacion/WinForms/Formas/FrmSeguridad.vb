@@ -16,7 +16,7 @@ Public Class FrmSeguridad
             servicioMantenimiento = FrmMenuPrincipal.unityContainer.Resolve(Of IMantenimientoService)()
             cboEmpresa.DataSource = servicioMantenimiento.ObtenerListaEmpresas()
             cboEmpresa.ValueMember = "IdEmpresa"
-            cboEmpresa.DisplayMember = "NombreEmpresa"
+            cboEmpresa.DisplayMember = "NombreComercial"
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
