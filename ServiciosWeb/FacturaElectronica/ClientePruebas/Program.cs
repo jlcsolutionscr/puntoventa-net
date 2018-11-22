@@ -49,7 +49,29 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.ClientePruebas
                                     string strOpcion = Console.ReadLine();
                                     if (strOpcion == "C")
                                     {
-                                        DatosDocumentoElectronicoDTO consulta = consultarEstadoDocumento(documento);
+                                        if (documento.RespuestaHacienda != null)
+                                        {
+                                            Console.WriteLine("Desea proceder con la aplicación de la respuesta de Hacienda (S/N):");
+                                            string strSiNo = Console.ReadLine();
+                                            if (strSiNo == "S")
+                                            {
+                                                RespuestaHaciendaDTO respuesta = new RespuestaHaciendaDTO();
+                                                if (documento.EsMensajeReceptor == "S")
+                                                    respuesta.Clave = documento.ClaveNumerica + "-" + documento.Consecutivo;
+                                                else
+                                                    respuesta.Clave = documento.ClaveNumerica;
+                                                respuesta.Fecha = documento.FechaEmision.ToString("yyyy-MM-dd'T'HH:mm:ssZ");
+                                                respuesta.IndEstado = documento.EstadoEnvio;
+                                                respuesta.RespuestaXml = documento.RespuestaHacienda;
+                                                procesarRespuesta(respuesta);
+                                                Console.WriteLine("Procesado satisfactoriamente. . .");
+                                            }
+                                            else
+                                            {
+                                                Console.WriteLine("Procesamiento abortado por el usuario. . .");
+                                            }
+                                        }
+                                        /* DatosDocumentoElectronicoDTO consulta = consultarEstadoDocumento(documento);
                                         Console.WriteLine("El documento posee un estado: " + consulta.EstadoEnvio);
                                         if (consulta.RespuestaHacienda != null)
                                         {
@@ -90,7 +112,7 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.ClientePruebas
                                                     }
                                                 }
                                             }
-                                        }
+                                        } */
                                         Console.WriteLine("");
                                     }
                                     if (strOpcion == "E")

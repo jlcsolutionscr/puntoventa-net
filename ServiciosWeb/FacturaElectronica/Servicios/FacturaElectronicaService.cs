@@ -631,8 +631,8 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.Servicios
                                             datos.Fecha = facturaElectronica.FechaEmision.ToString("dd/MM/yyyy hh:mm:ss");
                                             datos.MedioPago = ObtenerValoresCodificados.ObtenerMedioDePago(int.Parse(facturaElectronica.MedioPago[0].ToString().Substring(5)));
                                             datos.NombreEmisor = facturaElectronica.Emisor.Nombre;
-                                            datos.IdentificacionEmisor = facturaElectronica.Emisor.Identificacion.Numero;
                                             datos.NombreComercialEmisor = facturaElectronica.Emisor.NombreComercial;
+                                            datos.IdentificacionEmisor = facturaElectronica.Emisor.Identificacion.Numero;
                                             datos.CorreoElectronicoEmisor = facturaElectronica.Emisor.CorreoElectronico;
                                             datos.TelefonoEmisor = facturaElectronica.Emisor.Telefono != null ? facturaElectronica.Emisor.Telefono.NumTelefono.ToString() : "";
                                             datos.FaxEmisor = facturaElectronica.Emisor.Fax != null ? facturaElectronica.Emisor.Fax.NumTelefono.ToString() : "";
@@ -649,8 +649,8 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.Servicios
                                             {
                                                 datos.PoseeReceptor = true;
                                                 datos.NombreReceptor = facturaElectronica.Receptor.Nombre;
+                                                datos.NombreComercialReceptor = facturaElectronica.Receptor.NombreComercial != null ? facturaElectronica.Receptor.NombreComercial : "";
                                                 datos.IdentificacionReceptor = facturaElectronica.Receptor.Identificacion.Numero;
-                                                datos.NombreComercialReceptor = facturaElectronica.Receptor.NombreComercial;
                                                 datos.CorreoElectronicoReceptor = facturaElectronica.Receptor.CorreoElectronico;
                                                 datos.TelefonoReceptor = facturaElectronica.Receptor.Telefono != null ? facturaElectronica.Receptor.Telefono.NumTelefono.ToString() : "";
                                                 datos.FaxReceptor = facturaElectronica.Receptor.Fax != null ? facturaElectronica.Receptor.Fax.NumTelefono.ToString() : "";
@@ -697,8 +697,8 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.Servicios
                                             else
                                                 datos.MedioPago = "";
                                             datos.NombreEmisor = notaCreditoElectronica.Emisor.Nombre;
-                                            datos.IdentificacionEmisor = notaCreditoElectronica.Emisor.Identificacion.Numero;
                                             datos.NombreComercialEmisor = notaCreditoElectronica.Emisor.NombreComercial;
+                                            datos.IdentificacionEmisor = notaCreditoElectronica.Emisor.Identificacion.Numero;
                                             datos.CorreoElectronicoEmisor = notaCreditoElectronica.Emisor.CorreoElectronico;
                                             datos.TelefonoEmisor = notaCreditoElectronica.Emisor.Telefono != null ? notaCreditoElectronica.Emisor.Telefono.NumTelefono.ToString() : "";
                                             datos.FaxEmisor = notaCreditoElectronica.Emisor.Fax != null ? notaCreditoElectronica.Emisor.Fax.NumTelefono.ToString() : "";
@@ -715,8 +715,8 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.Servicios
                                             {
                                                 datos.PoseeReceptor = true;
                                                 datos.NombreReceptor = notaCreditoElectronica.Receptor.Nombre;
-                                                datos.IdentificacionReceptor = notaCreditoElectronica.Receptor.Identificacion.Numero;
                                                 datos.NombreComercialReceptor = notaCreditoElectronica.Receptor.NombreComercial;
+                                                datos.IdentificacionReceptor = notaCreditoElectronica.Receptor.Identificacion.Numero;
                                                 datos.CorreoElectronicoReceptor = notaCreditoElectronica.Receptor.CorreoElectronico;
                                                 datos.TelefonoReceptor = notaCreditoElectronica.Receptor.Telefono != null ? notaCreditoElectronica.Receptor.Telefono.NumTelefono.ToString() : "";
                                                 datos.FaxReceptor = notaCreditoElectronica.Receptor.Fax != null ? notaCreditoElectronica.Receptor.Fax.NumTelefono.ToString() : "";

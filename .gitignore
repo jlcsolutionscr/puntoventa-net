@@ -6,3 +6,4 @@ obj/
 My Project/
 App_Data/
 .vs/
+errorLog*.*
