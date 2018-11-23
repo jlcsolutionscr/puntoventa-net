@@ -7,7 +7,7 @@ Public Class FrmDetalleDocumentoElectronico
     Private listadoDocumentosPprocesados As IList
     Private intTotalDocumentos As Integer
     Private intIndiceDePagina As Integer
-    Private intFilasPorPagina As Integer = 16
+    Private intFilasPorPagina As Integer = 17
     Private intCantidadDePaginas As Integer
 #End Region
 

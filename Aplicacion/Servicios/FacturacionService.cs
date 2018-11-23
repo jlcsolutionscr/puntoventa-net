@@ -756,8 +756,16 @@ namespace LeandroSoftware.PuntoVenta.Servicios
                     if (empresa.FacturaElectronica)
                     {
                         Cliente cliente = dbContext.ClienteRepository.Find(factura.IdCliente);
-                        ComprobanteElectronicoService.GenerarNotaDeCreditoElectronica(factura, factura.Empresa, cliente, dbContext, intSucursal, intTerminal);
-                        dbContext.NotificarModificacion(factura);
+                        DocumentoElectronico documento = dbContext.DocumentoElectronicoRepository.Where(x => x.ClaveNumerica == factura.IdDocElectronico).FirstOrDefault();
+                        if (documento.EstadoEnvio == "aceptado")
+                        {
+                            ComprobanteElectronicoService.GenerarNotaDeCreditoElectronica(factura, factura.Empresa, cliente, dbContext, intSucursal, intTerminal);
+                            dbContext.NotificarModificacion(factura);
+                        }
+                        else if(documento.EstadoEnvio != "rechazado")
+                        {
+                            throw new BusinessException("El documento electrónico no ha sido procesado por el Ministerio de Hacienda. No puede ser reversada en este momento.");
+                        }
                     }
                     dbContext.Commit();
                 }
@@ -1684,7 +1692,7 @@ namespace LeandroSoftware.PuntoVenta.Servicios
                             catch (Exception)
                             {
                             }
-                        } else if (doc.EstadoEnvio == "aceptado" && doc.EstadoEnvio == "rechazado")
+                        } else if (doc.EstadoEnvio == "aceptado" || doc.EstadoEnvio == "rechazado")
                         {
                             listado.Add(doc);
                         }

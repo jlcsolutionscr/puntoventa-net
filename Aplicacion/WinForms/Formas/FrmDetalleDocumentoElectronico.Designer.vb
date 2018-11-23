@@ -44,7 +44,7 @@ Partial Class FrmDetalleDocumentoElectronico
         Me.picLoader.InitialImage = Nothing
         Me.picLoader.Location = New System.Drawing.Point(0, 0)
         Me.picLoader.Name = "picLoader"
-        Me.picLoader.Size = New System.Drawing.Size(794, 464)
+        Me.picLoader.Size = New System.Drawing.Size(794, 450)
         Me.picLoader.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage
         Me.picLoader.TabIndex = 37
         Me.picLoader.TabStop = False
@@ -52,7 +52,7 @@ Partial Class FrmDetalleDocumentoElectronico
         '
         'btnGenerarPDF
         '
-        Me.btnGenerarPDF.Location = New System.Drawing.Point(424, 429)
+        Me.btnGenerarPDF.Location = New System.Drawing.Point(424, 415)
         Me.btnGenerarPDF.Name = "btnGenerarPDF"
         Me.btnGenerarPDF.Size = New System.Drawing.Size(111, 22)
         Me.btnGenerarPDF.TabIndex = 38
@@ -63,7 +63,7 @@ Partial Class FrmDetalleDocumentoElectronico
         'lblPagina
         '
         Me.lblPagina.AutoSize = True
-        Me.lblPagina.Location = New System.Drawing.Point(583, 434)
+        Me.lblPagina.Location = New System.Drawing.Point(583, 420)
         Me.lblPagina.Name = "lblPagina"
         Me.lblPagina.Size = New System.Drawing.Size(77, 13)
         Me.lblPagina.TabIndex = 44
@@ -74,7 +74,7 @@ Partial Class FrmDetalleDocumentoElectronico
         Me.btnLast.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnLast.Enabled = False
         Me.btnLast.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnLast.Location = New System.Drawing.Point(753, 429)
+        Me.btnLast.Location = New System.Drawing.Point(753, 415)
         Me.btnLast.Name = "btnLast"
         Me.btnLast.Size = New System.Drawing.Size(29, 23)
         Me.btnLast.TabIndex = 43
@@ -87,7 +87,7 @@ Partial Class FrmDetalleDocumentoElectronico
         Me.btnNext.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnNext.Enabled = False
         Me.btnNext.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnNext.Location = New System.Drawing.Point(724, 429)
+        Me.btnNext.Location = New System.Drawing.Point(724, 415)
         Me.btnNext.Name = "btnNext"
         Me.btnNext.Size = New System.Drawing.Size(29, 23)
         Me.btnNext.TabIndex = 42
@@ -100,7 +100,7 @@ Partial Class FrmDetalleDocumentoElectronico
         Me.btnPrevious.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnPrevious.Enabled = False
         Me.btnPrevious.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnPrevious.Location = New System.Drawing.Point(695, 429)
+        Me.btnPrevious.Location = New System.Drawing.Point(695, 415)
         Me.btnPrevious.Name = "btnPrevious"
         Me.btnPrevious.Size = New System.Drawing.Size(29, 23)
         Me.btnPrevious.TabIndex = 41
@@ -113,7 +113,7 @@ Partial Class FrmDetalleDocumentoElectronico
         Me.btnFirst.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnFirst.Enabled = False
         Me.btnFirst.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnFirst.Location = New System.Drawing.Point(666, 429)
+        Me.btnFirst.Location = New System.Drawing.Point(666, 415)
         Me.btnFirst.Name = "btnFirst"
         Me.btnFirst.Size = New System.Drawing.Size(29, 23)
         Me.btnFirst.TabIndex = 40
@@ -134,7 +134,7 @@ Partial Class FrmDetalleDocumentoElectronico
         Me.dgvDatos.ReadOnly = True
         Me.dgvDatos.RowHeadersVisible = False
         Me.dgvDatos.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-        Me.dgvDatos.Size = New System.Drawing.Size(770, 411)
+        Me.dgvDatos.Size = New System.Drawing.Size(770, 397)
         Me.dgvDatos.TabIndex = 45
         Me.dgvDatos.TabStop = False
         '
@@ -142,7 +142,7 @@ Partial Class FrmDetalleDocumentoElectronico
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(794, 462)
+        Me.ClientSize = New System.Drawing.Size(794, 450)
         Me.Controls.Add(Me.picLoader)
         Me.Controls.Add(Me.dgvDatos)
         Me.Controls.Add(Me.lblPagina)
