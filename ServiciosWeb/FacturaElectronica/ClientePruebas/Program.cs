@@ -23,9 +23,9 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.ClientePruebas
             string input = "C";
             try
             {
-                while (input == "C")
+                while (input != "S")
                 {
-                    Console.WriteLine("Digite 'C' para consultar un comprobante o cualquier otra tecla para salir:");
+                    Console.WriteLine("Digite 'C' para consultar un comprobante o 'S' para salir:");
                     input = Console.ReadLine();
                     string operacion = input.Substring(0, 1);
                     if (operacion == "C")
@@ -49,28 +49,6 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.ClientePruebas
                                     string strOpcion = Console.ReadLine();
                                     if (strOpcion == "C")
                                     {
-                                        /* if (documento.RespuestaHacienda != null)
-                                        {
-                                            Console.WriteLine("Desea proceder con la aplicación de la respuesta de Hacienda (S/N):");
-                                            string strSiNo = Console.ReadLine();
-                                            if (strSiNo == "S")
-                                            {
-                                                RespuestaHaciendaDTO respuesta = new RespuestaHaciendaDTO();
-                                                if (documento.EsMensajeReceptor == "S")
-                                                    respuesta.Clave = documento.ClaveNumerica + "-" + documento.Consecutivo;
-                                                else
-                                                    respuesta.Clave = documento.ClaveNumerica;
-                                                respuesta.Fecha = documento.FechaEmision.ToString("yyyy-MM-dd'T'HH:mm:ssZ");
-                                                respuesta.IndEstado = documento.EstadoEnvio;
-                                                respuesta.RespuestaXml = documento.RespuestaHacienda;
-                                                procesarRespuesta(respuesta);
-                                                Console.WriteLine("Procesado satisfactoriamente. . .");
-                                            }
-                                            else
-                                            {
-                                                Console.WriteLine("Procesamiento abortado por el usuario. . .");
-                                            }
-                                        } */
                                         DatosDocumentoElectronicoDTO consulta = consultarEstadoDocumento(documento);
                                         Console.WriteLine("El documento posee un estado: " + consulta.EstadoEnvio);
                                         if (consulta.RespuestaHacienda != null)
@@ -152,7 +130,7 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.ClientePruebas
 
         private static List<DatosDocumentoElectronicoDTO> obtenerListadoDocumentos(int intIdEmpresa)
         {
-            Uri uri = new Uri(appSettings["ServicioHaciendaURL"] + "/consultarlistadodocumentos?empresa=" + intIdEmpresa + "&estado=");
+            Uri uri = new Uri(appSettings["ServicioFacturaElectronicaURL"] + "/consultarlistadodocumentos?empresa=" + intIdEmpresa + "&estado=");
             Task<HttpResponseMessage> task1 = client.GetAsync(uri);
             try
             {
@@ -175,7 +153,7 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.ClientePruebas
 
         private static DatosDocumentoElectronicoDTO consultarEstadoDocumento(DatosDocumentoElectronicoDTO datos)
         {
-            Uri uri = new Uri(appSettings["ServicioHaciendaURL"] + "/consultardocumentoelectronico?empresa=" + datos.IdEmpresa + "&clave=" + datos.ClaveNumerica + "&consecutivo=" + datos.Consecutivo);
+            Uri uri = new Uri(appSettings["ServicioFacturaElectronicaURL"] + "/consultardocumentoelectronico?empresa=" + datos.IdEmpresa + "&clave=" + datos.ClaveNumerica + "&consecutivo=" + datos.Consecutivo);
             Task<HttpResponseMessage> task1 = client.GetAsync(uri);
             try
             {
@@ -204,7 +182,7 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.ClientePruebas
                 "\"respuesta-xml\": \"" + respuesta.RespuestaXml + "\"}";
 
             StringContent stringContent = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
-            Uri uri = new Uri(appSettings["ServicioHaciendaURL"] + "/recibirrespuestahacienda");
+            Uri uri = new Uri(appSettings["ServicioFacturaElectronicaURL"] + "/recibirrespuestahacienda");
             Task<HttpResponseMessage> task1 = client.PostAsync(uri, stringContent);
             try
             {
@@ -225,7 +203,7 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.ClientePruebas
         {
             string jsonRequest = new JavaScriptSerializer().Serialize(datos);
             StringContent stringContent = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
-            Uri uri = new Uri(appSettings["ServicioHaciendaURL"] + "/enviardocumentoelectronico");
+            Uri uri = new Uri(appSettings["ServicioFacturaElectronicaURL"] + "/enviardocumentoelectronico");
             Task<HttpResponseMessage> task1 = client.PostAsync(uri, stringContent);
             try
             {

@@ -16,7 +16,6 @@ using System.IO;
 using System.Net;
 using Newtonsoft.Json.Linq;
 using System.Globalization;
-using System.Runtime.Serialization.Formatters.Binary;
 using log4net;
 using LeandroSoftware.Core;
 
@@ -600,15 +599,15 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.Servicios
                         {
                             byte[] bytRespuestaXML = Convert.FromBase64String(mensaje.RespuestaXml);
                             documentoElectronico.Respuesta = bytRespuestaXML;
-                            if (strEstado == "aceptado" && documentoElectronico.CorreoNotificacion != "")
+                            try
                             {
-                                try
+                                string strBody;
+                                JArray jarrayObj = new JArray();
+                                if (documentoElectronico.EsMensajeReceptor == "N")
                                 {
-                                    string strBody;
-                                    JArray jarrayObj = new JArray();
-                                    if (documentoElectronico.EsMensajeReceptor == "N")
+                                    if (strEstado == "aceptado" && documentoElectronico.CorreoNotificacion != "")
                                     {
-                                        strBody = "Adjunto documento electrónico en formato PDF y XML con clave " + mensaje.Clave + " y la respuesta de Hacienda.";
+                                        strBody = "Adjunto documento electrónico en formato PDF y XML con clave " + mensaje.Clave + " y la respuesta de aceptación del Ministerio de Hacienda.";
                                         MemoryStream memStream = new MemoryStream(documentoElectronico.DatosDocumento);
                                         EstructuraPDF datos = new EstructuraPDF();
                                         if (documentoElectronico.IdTipoDocumento == 1)
@@ -616,7 +615,7 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.Servicios
                                             XmlSerializer serializer = new XmlSerializer(typeof(FacturaElectronica));
                                             FacturaElectronica facturaElectronica = (FacturaElectronica)serializer.Deserialize(memStream);
                                             datos.TituloDocumento = "FACTURA ELECTRONICA";
-                                            datos.NombreEmpresa = facturaElectronica.Emisor.NombreComercial.Length > 0 ? facturaElectronica.Emisor.NombreComercial : facturaElectronica.Emisor.Nombre;
+                                            datos.NombreEmpresa = facturaElectronica.Emisor.NombreComercial != null ? facturaElectronica.Emisor.NombreComercial : facturaElectronica.Emisor.Nombre;
                                             datos.Consecutivo = facturaElectronica.NumeroConsecutivo;
                                             datos.PlazoCredito = facturaElectronica.PlazoCredito != null ? facturaElectronica.PlazoCredito : "";
                                             datos.Clave = facturaElectronica.Clave;
@@ -673,16 +672,16 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.Servicios
                                             datos.TotalGeneral = string.Format("{0:N5}", Convert.ToDouble(facturaElectronica.ResumenFactura.TotalComprobante, CultureInfo.InvariantCulture));
                                             datos.CodigoMoneda = facturaElectronica.ResumenFactura.CodigoMonedaSpecified ? facturaElectronica.ResumenFactura.CodigoMoneda.ToString() : "";
                                             datos.TipoDeCambio = facturaElectronica.ResumenFactura.CodigoMonedaSpecified ? facturaElectronica.ResumenFactura.TipoCambio.ToString() : "";
-                                        }       
+                                        }
                                         else if (documentoElectronico.IdTipoDocumento == 3)
                                         {
                                             XmlSerializer serializer = new XmlSerializer(typeof(NotaCreditoElectronica));
                                             NotaCreditoElectronica notaCreditoElectronica = (NotaCreditoElectronica)serializer.Deserialize(memStream);
                                             datos.TituloDocumento = "NOTA DE CREDITO ELECTRONICA";
-                                            datos.NombreEmpresa = notaCreditoElectronica.Emisor.NombreComercial.Length > 0 ? notaCreditoElectronica.Emisor.NombreComercial : notaCreditoElectronica.Emisor.Nombre;
+                                            datos.NombreEmpresa = notaCreditoElectronica.Emisor.NombreComercial != null ? notaCreditoElectronica.Emisor.NombreComercial : notaCreditoElectronica.Emisor.Nombre;
                                             datos.Consecutivo = notaCreditoElectronica.NumeroConsecutivo;
                                             datos.PlazoCredito = notaCreditoElectronica.PlazoCredito != null ? notaCreditoElectronica.PlazoCredito : "";
-                                            datos.Clave = notaCreditoElectronica.Clave; 
+                                            datos.Clave = notaCreditoElectronica.Clave;
                                             datos.CondicionVenta = ObtenerValoresCodificados.ObtenerCondicionDeVenta(int.Parse(notaCreditoElectronica.CondicionVenta.ToString().Substring(5)));
                                             datos.Fecha = notaCreditoElectronica.FechaEmision.ToString("dd/MM/yyyy hh:mm:ss");
                                             if (notaCreditoElectronica.MedioPago != null)
@@ -708,7 +707,7 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.Servicios
                                             {
                                                 datos.PoseeReceptor = true;
                                                 datos.NombreReceptor = notaCreditoElectronica.Receptor.Nombre;
-                                                datos.NombreComercialReceptor = notaCreditoElectronica.Receptor.NombreComercial;
+                                                datos.NombreComercialReceptor = notaCreditoElectronica.Receptor.NombreComercial != null ? notaCreditoElectronica.Receptor.NombreComercial : "";
                                                 datos.IdentificacionReceptor = notaCreditoElectronica.Receptor.Identificacion.Numero;
                                                 datos.CorreoElectronicoReceptor = notaCreditoElectronica.Receptor.CorreoElectronico;
                                                 datos.TelefonoReceptor = notaCreditoElectronica.Receptor.Telefono != null ? notaCreditoElectronica.Receptor.Telefono.NumTelefono.ToString() : "";
@@ -745,27 +744,39 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.Servicios
                                         jobDatosAdjuntos1["nombre"] = documentoElectronico.ClaveNumerica + ".pdf";
                                         jobDatosAdjuntos1["contenido"] = Convert.ToBase64String(pdfAttactment);
                                         jarrayObj.Add(jobDatosAdjuntos1);
+                                        JObject jobDatosAdjuntos2 = new JObject();
+                                        jobDatosAdjuntos2["nombre"] = documentoElectronico.ClaveNumerica + ".xml";
+                                        jobDatosAdjuntos2["contenido"] = Convert.ToBase64String(documentoElectronico.DatosDocumento);
+                                        jarrayObj.Add(jobDatosAdjuntos2);
+                                        JObject jobDatosAdjuntos3 = new JObject();
+                                        jobDatosAdjuntos3["nombre"] = "RespuestaHacienda.xml";
+                                        jobDatosAdjuntos3["contenido"] = Convert.ToBase64String(bytRespuestaXML);
+                                        jarrayObj.Add(jobDatosAdjuntos3);
+                                        servicioEnvioCorreo.SendEmail(new string[] { documentoElectronico.CorreoNotificacion }, new string[] { }, "Documento electrónico con clave " + mensaje.Clave, strBody, false, jarrayObj);
                                     }
-                                    else
-                                    {
-                                        strBody = "Adjunto XML de aceptación de documento electrónico con clave " + mensaje.Clave + " y la respuesta de Hacienda.";
-                                    }
-                                    JObject jobDatosAdjuntos2 = new JObject();
-                                    jobDatosAdjuntos2["nombre"] = documentoElectronico.ClaveNumerica + ".xml";
-                                    jobDatosAdjuntos2["contenido"] = Convert.ToBase64String(documentoElectronico.DatosDocumento);
-                                    jarrayObj.Add(jobDatosAdjuntos2);
-                                    JObject jobDatosAdjuntos3 = new JObject();
-                                    jobDatosAdjuntos3["nombre"] = "RespuestaHacienda.xml";
-                                    jobDatosAdjuntos3["contenido"] = Convert.ToBase64String(bytRespuestaXML);
-                                    jarrayObj.Add(jobDatosAdjuntos3);
-                                    servicioEnvioCorreo.SendEmail(new string[] { documentoElectronico.CorreoNotificacion }, new string[] { }, "Documento electrónico con clave " + mensaje.Clave, strBody, false, jarrayObj);
                                 }
-                                catch (Exception ex)
+                                else
                                 {
-                                    JArray emptyJArray = new JArray();
-                                    string strBody = "El documento con clave " + mensaje.Clave + " genero un error en el envío del PDF al receptor:" + ex.Message;
-                                    servicioEnvioCorreo.SendEmail(new string[] { strCorreoNotificacionErrores }, new string[] { }, "Error al tratar de enviar el correo al receptor.", strBody, false, emptyJArray);
+                                    if ((strEstado == "aceptado" || strEstado == "rechazado") && documentoElectronico.CorreoNotificacion != "")
+                                    {
+                                        strBody = "Adjunto XML con estado " + strEstado + " del documento electrónico con clave " + mensaje.Clave + " y la respuesta del Ministerio de Hacienda.";
+                                        JObject jobDatosAdjuntos1 = new JObject();
+                                        jobDatosAdjuntos1["nombre"] = documentoElectronico.ClaveNumerica + ".xml";
+                                        jobDatosAdjuntos1["contenido"] = Convert.ToBase64String(documentoElectronico.DatosDocumento);
+                                        jarrayObj.Add(jobDatosAdjuntos1);
+                                        JObject jobDatosAdjuntos2 = new JObject();
+                                        jobDatosAdjuntos2["nombre"] = "RespuestaHacienda.xml";
+                                        jobDatosAdjuntos2["contenido"] = Convert.ToBase64String(bytRespuestaXML);
+                                        jarrayObj.Add(jobDatosAdjuntos2);
+                                        servicioEnvioCorreo.SendEmail(new string[] { documentoElectronico.CorreoNotificacion }, new string[] { }, "Documento electrónico con clave " + mensaje.Clave, strBody, false, jarrayObj);
+                                    }
                                 }
+                            }
+                            catch (Exception ex)
+                            {
+                                JArray emptyJArray = new JArray();
+                                string strBody = "El documento con clave " + mensaje.Clave + " genero un error en el envío del PDF al receptor:" + ex.Message;
+                                servicioEnvioCorreo.SendEmail(new string[] { strCorreoNotificacionErrores }, new string[] { }, "Error al tratar de enviar el correo al receptor.", strBody, false, emptyJArray);
                             }
                         }
                         dbContext.Commit();

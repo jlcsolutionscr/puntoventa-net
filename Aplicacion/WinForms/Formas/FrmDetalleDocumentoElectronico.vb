@@ -1,14 +1,19 @@
-﻿Imports LeandroSoftware.Puntoventa.Servicios
+﻿Imports System.IO
+Imports System.Xml
+Imports LeandroSoftware.Puntoventa.Servicios
+Imports LeandroSoftware.Puntoventa.Dominio.Entidades
 Imports Unity
+Imports System.Text
 
 Public Class FrmDetalleDocumentoElectronico
 #Region "Variables"
     Private servicioFacturacion As IFacturacionService
-    Private listadoDocumentosPprocesados As IList
+    Private listadoDocumentosProcesados As IList
     Private intTotalDocumentos As Integer
     Private intIndiceDePagina As Integer
     Private intFilasPorPagina As Integer = 17
     Private intCantidadDePaginas As Integer
+    Private bolRespuestaVisible = False
 #End Region
 
 #Region "Métodos"
@@ -34,7 +39,7 @@ Public Class FrmDetalleDocumentoElectronico
         dvcConsecutivo.Width = 150
         dgvDatos.Columns.Add(dvcConsecutivo)
         dvcFecha.HeaderText = "Fecha"
-        dvcFecha.DataPropertyName = "FechaEmision"
+        dvcFecha.DataPropertyName = "Fecha"
         dvcFecha.Width = 150
         dgvDatos.Columns.Add(dvcFecha)
         dvcEstado.HeaderText = "Estado"
@@ -45,12 +50,12 @@ Public Class FrmDetalleDocumentoElectronico
 
     Private Sub ActualizarDatos(ByVal intNumeroPagina As Integer)
         Try
-            listadoDocumentosPprocesados = servicioFacturacion.ObtenerListaDocumentosElectronicosProcesados(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina)
-            dgvDatos.DataSource = listadoDocumentosPprocesados
-            If listadoDocumentosPprocesados.Count() > 0 Then
-                btnGenerarPDF.Enabled = False
+            listadoDocumentosProcesados = servicioFacturacion.ObtenerListaDocumentosElectronicosProcesados(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina)
+            dgvDatos.DataSource = listadoDocumentosProcesados
+            If listadoDocumentosProcesados.Count() > 0 Then
+                btnMostrarRespuesta.Enabled = True
             Else
-                btnGenerarPDF.Enabled = False
+                btnMostrarRespuesta.Enabled = False
             End If
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
@@ -118,6 +123,7 @@ Public Class FrmDetalleDocumentoElectronico
             Close()
             Exit Sub
         End Try
+        rtxDetalleRespuesta.Visible = False
         EstablecerPropiedadesDataGridView()
         picLoader.Visible = True
         ValidarCantidadClientes()
@@ -126,16 +132,35 @@ Public Class FrmDetalleDocumentoElectronico
         picLoader.Visible = False
     End Sub
 
-    Private Sub btnGenerarPDF_Click(sender As Object, e As EventArgs) Handles btnGenerarPDF.Click
-        If MessageBox.Show("Desea generar el documento en formato PDF?", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
-            Try
-                'TODO Generar PDF
-                MessageBox.Show("Registros procesados correctamente. La lista será actualizada. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
-            Catch ex As Exception
-                MessageBox.Show("Error al procesar los documentos pendientes. Por favor contacte con su proveedor. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Close()
-            End Try
-        End If
+    Private Sub BtnMostrarRespuesta_Click(sender As Object, e As EventArgs) Handles btnMostrarRespuesta.Click
+        Try
+            If Not bolRespuestaVisible Then
+                Dim intIndex As Integer = dgvDatos.CurrentRow.Index
+                Dim documento As DocumentoElectronico = listadoDocumentosProcesados.Item(intIndex)
+                If documento.EstadoEnvio = "aceptado" Or documento.EstadoEnvio = "rechazado" Then
+                    rtxDetalleRespuesta.Visible = True
+                    Dim sw As New StringWriter()
+                    Dim xw As New XmlTextWriter(sw)
+                    xw.Formatting = Formatting.Indented
+                    xw.Indentation = 4
+                    Dim datos As XmlDocument = New XmlDocument()
+                    Dim strBase64String As String = Convert.ToBase64String(documento.Respuesta)
+                    Dim strRespuesta As String = Encoding.UTF8.GetString(documento.Respuesta)
+                    datos.LoadXml(strRespuesta)
+                    datos.Save(xw)
+                    rtxDetalleRespuesta.Text = sw.ToString()
+                    btnMostrarRespuesta.Text = "Mostrar lista"
+                    bolRespuestaVisible = True
+                End If
+            Else
+                rtxDetalleRespuesta.Visible = False
+                bolRespuestaVisible = False
+                btnMostrarRespuesta.Text = "Mostrar detalle de la respuesta"
+            End If
+        Catch ex As Exception
+            rtxDetalleRespuesta.Visible = False
+            MessageBox.Show("Error al procesar la respuesta del Ministerio de Hacienda. Contacte a su proveedor. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
     End Sub
 #End Region
 End Class

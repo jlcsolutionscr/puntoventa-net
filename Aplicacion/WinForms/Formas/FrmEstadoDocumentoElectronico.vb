@@ -30,7 +30,7 @@ Public Class FrmEstadoDocumentoElectronico
         dvcConsecutivo.Width = 150
         dgvDatos.Columns.Add(dvcConsecutivo)
         dvcFecha.HeaderText = "Fecha"
-        dvcFecha.DataPropertyName = "FechaEmision"
+        dvcFecha.DataPropertyName = "Fecha"
         dvcFecha.Width = 150
         dgvDatos.Columns.Add(dvcFecha)
         dvcEstado.HeaderText = "Estado"

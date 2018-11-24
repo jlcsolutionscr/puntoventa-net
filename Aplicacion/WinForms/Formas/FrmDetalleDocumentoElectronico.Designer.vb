@@ -24,13 +24,14 @@ Partial Class FrmDetalleDocumentoElectronico
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FrmDetalleDocumentoElectronico))
         Me.picLoader = New System.Windows.Forms.PictureBox()
-        Me.btnGenerarPDF = New System.Windows.Forms.Button()
+        Me.btnMostrarRespuesta = New System.Windows.Forms.Button()
         Me.lblPagina = New System.Windows.Forms.Label()
         Me.btnLast = New System.Windows.Forms.Button()
         Me.btnNext = New System.Windows.Forms.Button()
         Me.btnPrevious = New System.Windows.Forms.Button()
         Me.btnFirst = New System.Windows.Forms.Button()
         Me.dgvDatos = New System.Windows.Forms.DataGridView()
+        Me.rtxDetalleRespuesta = New System.Windows.Forms.RichTextBox()
         CType(Me.picLoader, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.dgvDatos, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -50,15 +51,15 @@ Partial Class FrmDetalleDocumentoElectronico
         Me.picLoader.TabStop = False
         Me.picLoader.Visible = False
         '
-        'btnGenerarPDF
+        'btnMostrarRespuesta
         '
-        Me.btnGenerarPDF.Location = New System.Drawing.Point(424, 415)
-        Me.btnGenerarPDF.Name = "btnGenerarPDF"
-        Me.btnGenerarPDF.Size = New System.Drawing.Size(111, 22)
-        Me.btnGenerarPDF.TabIndex = 38
-        Me.btnGenerarPDF.TabStop = False
-        Me.btnGenerarPDF.Text = "Generar PDF"
-        Me.btnGenerarPDF.UseVisualStyleBackColor = True
+        Me.btnMostrarRespuesta.Location = New System.Drawing.Point(397, 415)
+        Me.btnMostrarRespuesta.Name = "btnMostrarRespuesta"
+        Me.btnMostrarRespuesta.Size = New System.Drawing.Size(170, 22)
+        Me.btnMostrarRespuesta.TabIndex = 38
+        Me.btnMostrarRespuesta.TabStop = False
+        Me.btnMostrarRespuesta.Text = "Mostrar detalle de la respuesta"
+        Me.btnMostrarRespuesta.UseVisualStyleBackColor = True
         '
         'lblPagina
         '
@@ -138,19 +139,28 @@ Partial Class FrmDetalleDocumentoElectronico
         Me.dgvDatos.TabIndex = 45
         Me.dgvDatos.TabStop = False
         '
+        'rtxDetalleRespuesta
+        '
+        Me.rtxDetalleRespuesta.Location = New System.Drawing.Point(12, 12)
+        Me.rtxDetalleRespuesta.Name = "rtxDetalleRespuesta"
+        Me.rtxDetalleRespuesta.Size = New System.Drawing.Size(770, 397)
+        Me.rtxDetalleRespuesta.TabIndex = 46
+        Me.rtxDetalleRespuesta.Text = ""
+        '
         'FrmDetalleDocumentoElectronico
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(794, 450)
         Me.Controls.Add(Me.picLoader)
-        Me.Controls.Add(Me.dgvDatos)
         Me.Controls.Add(Me.lblPagina)
         Me.Controls.Add(Me.btnLast)
         Me.Controls.Add(Me.btnNext)
         Me.Controls.Add(Me.btnPrevious)
         Me.Controls.Add(Me.btnFirst)
-        Me.Controls.Add(Me.btnGenerarPDF)
+        Me.Controls.Add(Me.btnMostrarRespuesta)
+        Me.Controls.Add(Me.rtxDetalleRespuesta)
+        Me.Controls.Add(Me.dgvDatos)
         Me.Name = "FrmDetalleDocumentoElectronico"
         Me.Text = "Consulta de Documentos Electrónicos Procesados"
         CType(Me.picLoader, System.ComponentModel.ISupportInitialize).EndInit()
@@ -161,11 +171,12 @@ Partial Class FrmDetalleDocumentoElectronico
     End Sub
 
     Friend WithEvents picLoader As PictureBox
-    Friend WithEvents btnGenerarPDF As Button
+    Friend WithEvents btnMostrarRespuesta As Button
     Friend WithEvents lblPagina As Label
     Private WithEvents btnLast As Button
     Private WithEvents btnNext As Button
     Private WithEvents btnPrevious As Button
     Private WithEvents btnFirst As Button
     Friend WithEvents dgvDatos As DataGridView
+    Friend WithEvents rtxDetalleRespuesta As RichTextBox
 End Class

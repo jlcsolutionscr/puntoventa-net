@@ -1,4 +1,5 @@
-﻿Imports System.Xml
+﻿Imports System.IO
+Imports System.Xml
 Imports LeandroSoftware.Puntoventa.Servicios
 Imports Unity
 
@@ -48,10 +49,15 @@ Public Class FrmAceptarDocumentoElectronico
         Dim result As DialogResult = ofdAbrirDocumento.ShowDialog()
         If result = Windows.Forms.DialogResult.OK Then
             Try
+                Dim sw As New StringWriter()
+                Dim xw As New XmlTextWriter(sw)
+                xw.Formatting = Formatting.Indented
+                xw.Indentation = 4
                 Dim datos As XmlDocument = New XmlDocument()
                 datos.Load(ofdAbrirDocumento.FileName)
                 strDatos = datos.OuterXml
-                txtMensaje.Text = datos.OuterXml
+                datos.Save(xw)
+                txtMensaje.Text = sw.ToString()
                 btnEnviar.Enabled = True
             Catch ex As Exception
                 MessageBox.Show("Error al intentar cargar el archivo. Por favor intente de nuevo o contacte a su proveedor. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)

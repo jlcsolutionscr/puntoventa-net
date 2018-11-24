@@ -53,7 +53,6 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF
                 log.Error("Error al consultar el tipo de cambio del dolar: ", ex);
                 throw ex;
             }
-            log.Info("Servicio WCF inicializado correctamente.");
         }
 
         public List<EmpresaDTO> ConsultarListadoEmpresas()
@@ -175,7 +174,6 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF
         public void Dispose()
         {
             GC.SuppressFinalize(this);
-            log.Info("Servicio WCF finalizado correctamente.");
         }
     }
 }
