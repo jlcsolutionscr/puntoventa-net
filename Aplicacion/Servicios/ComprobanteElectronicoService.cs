@@ -41,7 +41,7 @@ namespace LeandroSoftware.PuntoVenta.Servicios
                 {
                     if (cliente.CorreoElectronico == null || cliente.CorreoElectronico.Length == 0)
                     {
-                        throw new Exception("El cliente seleccionado debe poseer una dirección de correo electrónico para ser notificado por Hacienda.");
+                        throw new Exception("El cliente seleccionado debe poseer una dirección de correo electrónico para ser notificado.");
                     }
                     else
                     {
@@ -280,7 +280,7 @@ namespace LeandroSoftware.PuntoVenta.Servicios
                 {
                     if (cliente.CorreoElectronico == null || cliente.CorreoElectronico.Length == 0)
                     {
-                        throw new Exception("El cliente seleccionado debe poseer una dirección de correo electrónico para ser notificado por Hacienda.");
+                        throw new Exception("El cliente seleccionado debe poseer una dirección de correo electrónico para ser notificado.");
                     }
                     else
                     {
@@ -524,7 +524,7 @@ namespace LeandroSoftware.PuntoVenta.Servicios
                 string strCorreoNotificacion = "";
                 if (empresa.CuentaCorreoElectronico == null || empresa.CuentaCorreoElectronico.Length == 0)
                 {
-                    throw new Exception("La emoresa debe poseer una dirección de correo electrónico para ser notificada por Hacienda.");
+                    throw new Exception("La empresa debe poseer una dirección de correo electrónico para ser notificada.");
                 }
                 else
                 {
@@ -693,52 +693,58 @@ namespace LeandroSoftware.PuntoVenta.Servicios
                 signatureParameters.SignaturePackaging = SignaturePackaging.ENVELOPED;
                 string appPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
                 string filePath = appPath + "/Certificates/" + empresa.IdCertificado;
-                bool bolFileExists = File.Exists(filePath);
-                byte[] fileBytes = File.ReadAllBytes(filePath);
-                X509Certificate2 uidCert = new X509Certificate2(fileBytes, empresa.PinCertificado, X509KeyStorageFlags.UserKeySet);
-                using (Signer signer2 = signatureParameters.Signer = new Signer(uidCert))
-                using (MemoryStream smDatos = new MemoryStream(mensajeEncoded))
+                if (File.Exists(filePath))
                 {
-                    signatureDocument = xadesService.Sign(smDatos, signatureParameters);
+                    byte[] fileBytes = File.ReadAllBytes(filePath);
+                    X509Certificate2 uidCert = new X509Certificate2(fileBytes, empresa.PinCertificado, X509KeyStorageFlags.UserKeySet);
+                    using (Signer signer2 = signatureParameters.Signer = new Signer(uidCert))
+                    using (MemoryStream smDatos = new MemoryStream(mensajeEncoded))
+                    {
+                        signatureDocument = xadesService.Sign(smDatos, signatureParameters);
+                    }
+                    // Almacenaje del documento en base de datos
+                    byte[] signedDataEncoded = Encoding.UTF8.GetBytes(signatureDocument.Document.OuterXml);
+                    DocumentoElectronico documento = new DocumentoElectronico
+                    {
+                        IdEmpresa = empresa.IdEmpresa,
+                        IdSucursal = intSucursal,
+                        IdTerminal = intTerminal,
+                        IdTipoDocumento = intTipoDocumentoElectronico,
+                        Fecha = fechaEmision,
+                        TipoIdentificacionEmisor = int.Parse(strTipoIdentificacionEmisor),
+                        IdentificacionEmisor = strIdentificacionEmisor,
+                        TipoIdentificacionReceptor = strTipoIdentificacionReceptor.Length > 0 ? int.Parse(strTipoIdentificacionReceptor) : 0,
+                        IdentificacionReceptor = strIdentificacionReceptor,
+                        CorreoNotificacion = strCorreoNotificacion
+                    };
+                    documento.IdConsecutivo = intIdConsecutivo;
+                    documento.Consecutivo = strConsucutivo;
+                    documento.ClaveNumerica = strClaveNumerica;
+                    documento.EstadoEnvio = "pendiente";
+                    documento.DatosDocumento = signedDataEncoded;
+                    dbContext.DocumentoElectronicoRepository.Add(documento);
+                    // Generación de datos para envío de XML al servicio de Hacienda
+                    DatosDocumentoElectronicoDTO datos = new DatosDocumentoElectronicoDTO();
+                    datos.IdEmpresa = empresa.IdEmpresa;
+                    datos.IdTipoDocumento = (int)tipoDocumento;
+                    datos.ClaveNumerica = strClaveNumerica;
+                    datos.FechaEmision = fechaEmision;
+                    datos.TipoIdentificacionEmisor = strTipoIdentificacionEmisor;
+                    datos.IdentificacionEmisor = strIdentificacionEmisor;
+                    datos.TipoIdentificacionReceptor = strTipoIdentificacionReceptor;
+                    datos.IdentificacionReceptor = strIdentificacionReceptor;
+                    datos.EsMensajeReceptor = esMensajeReceptor ? "S" : "N";
+                    datos.Consecutivo = strConsucutivo;
+                    datos.CorreoNotificacion = strCorreoNotificacion;
+                    datos.DatosDocumento = Convert.ToBase64String(signedDataEncoded);
+                    // Envío de solicitud al servicio web de factura electrónica
+                    Task.Run(() => EnviarDocumentoElectronico(empresa, datos));
+                    return strClaveNumerica;
                 }
-                // Almacenaje del documento en base de datos
-                byte[] signedDataEncoded = Encoding.UTF8.GetBytes(signatureDocument.Document.OuterXml);
-                DocumentoElectronico documento = new DocumentoElectronico
+                else
                 {
-                    IdEmpresa = empresa.IdEmpresa,
-                    IdSucursal = intSucursal,
-                    IdTerminal = intTerminal,
-                    IdTipoDocumento = intTipoDocumentoElectronico,
-                    Fecha = fechaEmision,
-                    TipoIdentificacionEmisor = int.Parse(strTipoIdentificacionEmisor),
-                    IdentificacionEmisor = strIdentificacionEmisor,
-                    TipoIdentificacionReceptor = strTipoIdentificacionReceptor.Length > 0 ? int.Parse(strTipoIdentificacionReceptor) : 0,
-                    IdentificacionReceptor = strIdentificacionReceptor,
-                    CorreoNotificacion = strCorreoNotificacion
-                };
-                documento.IdConsecutivo = intIdConsecutivo;
-                documento.Consecutivo = strConsucutivo;
-                documento.ClaveNumerica = strClaveNumerica;
-                documento.EstadoEnvio = "pendiente";
-                documento.DatosDocumento = signedDataEncoded;
-                dbContext.DocumentoElectronicoRepository.Add(documento);
-                // Generación de datos para envío de XML al servicio de Hacienda
-                DatosDocumentoElectronicoDTO datos = new DatosDocumentoElectronicoDTO();
-                datos.IdEmpresa = empresa.IdEmpresa;
-                datos.IdTipoDocumento = (int)tipoDocumento;
-                datos.ClaveNumerica = strClaveNumerica;
-                datos.FechaEmision = fechaEmision;
-                datos.TipoIdentificacionEmisor = strTipoIdentificacionEmisor;
-                datos.IdentificacionEmisor = strIdentificacionEmisor;
-                datos.TipoIdentificacionReceptor = strTipoIdentificacionReceptor;
-                datos.IdentificacionReceptor = strIdentificacionReceptor;
-                datos.EsMensajeReceptor = esMensajeReceptor ? "S" : "N";
-                datos.Consecutivo = strConsucutivo;
-                datos.CorreoNotificacion = strCorreoNotificacion;
-                datos.DatosDocumento = Convert.ToBase64String(signedDataEncoded);
-                // Envío de solicitud al servicio web de factura electrónica
-                Task.Run(() => EnviarDocumentoElectronico(empresa, datos));
-                return strClaveNumerica;
+                    throw new Exception("No se logró encontrar la llave cryptográfica para la firma del documento electrónico. Contacte a su proveedor.");
+                }
             }
             catch (Exception ex)
             {
