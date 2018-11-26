@@ -247,7 +247,6 @@ namespace LeandroSoftware.Core
                 gfx.DrawString("Fax: ", font, XBrushes.Black, new XRect(370, 199, 80, 12), XStringFormats.TopLeft);
                 gfx.DrawString(datos.FaxEmisor, font, XBrushes.Black, new XRect(470, 199, 80, 12), XStringFormats.TopLeft);
 
-                
                 gfx.DrawString("Provincia: ", font, XBrushes.Black, new XRect(20, 211, 80, 12), XStringFormats.TopLeft);
                 gfx.DrawString(datos.ProvinciaEmisor, font, XBrushes.Black, new XRect(110, 211, 200, 12), XStringFormats.TopLeft);
                 gfx.DrawString("Cantón: ", font, XBrushes.Black, new XRect(370, 211, 80, 12), XStringFormats.TopLeft);
@@ -260,55 +259,63 @@ namespace LeandroSoftware.Core
 
                 gfx.DrawString("Otras señas: ", font, XBrushes.Black, new XRect(20, 235, 80, 12), XStringFormats.TopLeft);
                 gfx.DrawString(datos.DireccionEmisor, font, XBrushes.Black, new XRect(110, 235, 400, 12), XStringFormats.TopLeft);
-
+                int lineaPos = 262;
                 if (datos.PoseeReceptor)
                 {
                     font = new XFont("Arial", 8, XFontStyle.Bold);
-                    gfx.DrawString("DATOS DEL CLIENTE", font, XBrushes.Black, new XRect(20, 252, 100, 12), XStringFormats.TopLeft);
+                    gfx.DrawString("DATOS DEL CLIENTE", font, XBrushes.Black, new XRect(20, lineaPos, 100, 12), XStringFormats.TopLeft);
 
+                    lineaPos += 12;
                     font = new XFont("Arial", 8, XFontStyle.Regular);
-                    gfx.DrawString("Nombre: ", font, XBrushes.Black, new XRect(20, 264, 80, 12), XStringFormats.TopLeft);
-                    gfx.DrawString(datos.NombreReceptor, font, XBrushes.Black, new XRect(110, 264, 200, 12), XStringFormats.TopLeft);
-                    gfx.DrawString("Identificación: ", font, XBrushes.Black, new XRect(370, 264, 80, 12), XStringFormats.TopLeft);
-                    gfx.DrawString(datos.IdentificacionReceptor, font, XBrushes.Black, new XRect(470, 264, 80, 12), XStringFormats.TopLeft);
+                    gfx.DrawString("Nombre: ", font, XBrushes.Black, new XRect(20, lineaPos, 80, 12), XStringFormats.TopLeft);
+                    gfx.DrawString(datos.NombreReceptor, font, XBrushes.Black, new XRect(110, lineaPos, 200, 12), XStringFormats.TopLeft);
+                    gfx.DrawString("Identificación: ", font, XBrushes.Black, new XRect(370, lineaPos, 80, 12), XStringFormats.TopLeft);
+                    gfx.DrawString(datos.IdentificacionReceptor, font, XBrushes.Black, new XRect(470, lineaPos, 80, 12), XStringFormats.TopLeft);
 
-                    gfx.DrawString("Nombre comercial: ", font, XBrushes.Black, new XRect(20, 276, 80, 12), XStringFormats.TopLeft);
-                    gfx.DrawString(datos.NombreComercialReceptor, font, XBrushes.Black, new XRect(110, 276, 400, 12), XStringFormats.TopLeft);
+                    lineaPos += 12;
+                    gfx.DrawString("Nombre comercial: ", font, XBrushes.Black, new XRect(20, lineaPos, 80, 12), XStringFormats.TopLeft);
+                    gfx.DrawString(datos.NombreComercialReceptor, font, XBrushes.Black, new XRect(110, lineaPos, 400, 12), XStringFormats.TopLeft);
 
-                    gfx.DrawString("Correo electrónico: ", font, XBrushes.Black, new XRect(20, 288, 80, 12), XStringFormats.TopLeft);
-                    gfx.DrawString(datos.CorreoElectronicoReceptor, font, XBrushes.Black, new XRect(110, 288, 400, 12), XStringFormats.TopLeft);
+                    lineaPos += 12;
+                    gfx.DrawString("Correo electrónico: ", font, XBrushes.Black, new XRect(20, lineaPos, 80, 12), XStringFormats.TopLeft);
+                    gfx.DrawString(datos.CorreoElectronicoReceptor, font, XBrushes.Black, new XRect(110, lineaPos, 400, 12), XStringFormats.TopLeft);
 
-                    gfx.DrawString("Teléfono: ", font, XBrushes.Black, new XRect(20, 300, 80, 12), XStringFormats.TopLeft);
-                    gfx.DrawString(datos.TelefonoReceptor, font, XBrushes.Black, new XRect(110, 300, 200, 12), XStringFormats.TopLeft);
-                    gfx.DrawString("Fax: ", font, XBrushes.Black, new XRect(370, 300, 80, 12), XStringFormats.TopLeft);
-                    gfx.DrawString(datos.FaxReceptor, font, XBrushes.Black, new XRect(470, 300, 80, 12), XStringFormats.TopLeft);
+                    lineaPos += 12;
+                    gfx.DrawString("Teléfono: ", font, XBrushes.Black, new XRect(20, lineaPos, 80, 12), XStringFormats.TopLeft);
+                    gfx.DrawString(datos.TelefonoReceptor, font, XBrushes.Black, new XRect(110, lineaPos, 200, 12), XStringFormats.TopLeft);
+                    gfx.DrawString("Fax: ", font, XBrushes.Black, new XRect(370, lineaPos, 80, 12), XStringFormats.TopLeft);
+                    gfx.DrawString(datos.FaxReceptor, font, XBrushes.Black, new XRect(470, lineaPos, 80, 12), XStringFormats.TopLeft);
 
-                    gfx.DrawString("Provincia: ", font, XBrushes.Black, new XRect(20, 312, 80, 12), XStringFormats.TopLeft);
-                    gfx.DrawString(datos.ProvinciaReceptor, font, XBrushes.Black, new XRect(110, 312, 200, 12), XStringFormats.TopLeft);
-                    gfx.DrawString("Cantón: ", font, XBrushes.Black, new XRect(370, 312, 80, 12), XStringFormats.TopLeft);
-                    gfx.DrawString(datos.CantonReceptor, font, XBrushes.Black, new XRect(470, 312, 80, 12), XStringFormats.TopLeft);
+                    lineaPos += 12;
+                    gfx.DrawString("Provincia: ", font, XBrushes.Black, new XRect(20, lineaPos, 80, 12), XStringFormats.TopLeft);
+                    gfx.DrawString(datos.ProvinciaReceptor, font, XBrushes.Black, new XRect(110, lineaPos, 200, 12), XStringFormats.TopLeft);
+                    gfx.DrawString("Cantón: ", font, XBrushes.Black, new XRect(370, lineaPos, 80, 12), XStringFormats.TopLeft);
+                    gfx.DrawString(datos.CantonReceptor, font, XBrushes.Black, new XRect(470, lineaPos, 80, 12), XStringFormats.TopLeft);
 
-                    gfx.DrawString("Distrito: ", font, XBrushes.Black, new XRect(20, 324, 80, 12), XStringFormats.TopLeft);
-                    gfx.DrawString(datos.DistritoReceptor, font, XBrushes.Black, new XRect(110, 324, 200, 12), XStringFormats.TopLeft);
-                    gfx.DrawString("Barrio: ", font, XBrushes.Black, new XRect(370, 324, 80, 12), XStringFormats.TopLeft);
-                    gfx.DrawString(datos.BarrioReceptor, font, XBrushes.Black, new XRect(470, 324, 80, 12), XStringFormats.TopLeft);
+                    lineaPos += 12;
+                    gfx.DrawString("Distrito: ", font, XBrushes.Black, new XRect(20, lineaPos, 80, 12), XStringFormats.TopLeft);
+                    gfx.DrawString(datos.DistritoReceptor, font, XBrushes.Black, new XRect(110, lineaPos, 200, 12), XStringFormats.TopLeft);
+                    gfx.DrawString("Barrio: ", font, XBrushes.Black, new XRect(370, lineaPos, 80, 12), XStringFormats.TopLeft);
+                    gfx.DrawString(datos.BarrioReceptor, font, XBrushes.Black, new XRect(470, lineaPos, 80, 12), XStringFormats.TopLeft);
 
-                    gfx.DrawString("Otras señas: ", font, XBrushes.Black, new XRect(20, 336, 80, 12), XStringFormats.TopLeft);
-                    gfx.DrawString(datos.DireccionReceptor, font, XBrushes.Black, new XRect(110, 336, 400, 12), XStringFormats.TopLeft);
+                    lineaPos += 12;
+                    gfx.DrawString("Otras señas: ", font, XBrushes.Black, new XRect(20, lineaPos, 80, 12), XStringFormats.TopLeft);
+                    gfx.DrawString(datos.DireccionReceptor, font, XBrushes.Black, new XRect(110, lineaPos, 400, 12), XStringFormats.TopLeft);
+                    lineaPos += 27;
                 }
 
                 font = new XFont("Arial", 8, XFontStyle.Bold);
-                gfx.DrawString("DETALLE DE SERVICIOS", font, XBrushes.Black, new XRect(20, 353, 100, 12), XStringFormats.TopLeft);
+                gfx.DrawString("DETALLE DE SERVICIOS", font, XBrushes.Black, new XRect(20, lineaPos, 100, 12), XStringFormats.TopLeft);
 
-                gfx.DrawString("Línea", font, XBrushes.Black, new XRect(30, 365, 30, 12), XStringFormats.TopLeft);
-                gfx.DrawString("Código", font, XBrushes.Black, new XRect(60, 365, 80, 12), XStringFormats.TopLeft);
-                gfx.DrawString("Detalle", font, XBrushes.Black, new XRect(140, 365, 280, 12), XStringFormats.TopLeft);
-                gfx.DrawString("Precio Unitario", font, XBrushes.Black, new XRect(420, 365, 80, 12), XStringFormats.TopLeft);
-                gfx.DrawString("Total", font, XBrushes.Black, new XRect(557.5, 365, 80, 12), XStringFormats.TopLeft);
-                gfx.DrawLine(XPens.DarkGray, 28, 376, 582, 376);
+                lineaPos += 12;
+                gfx.DrawString("Línea", font, XBrushes.Black, new XRect(30, lineaPos, 30, 12), XStringFormats.TopLeft);
+                gfx.DrawString("Código", font, XBrushes.Black, new XRect(60, lineaPos, 80, 12), XStringFormats.TopLeft);
+                gfx.DrawString("Detalle", font, XBrushes.Black, new XRect(140, lineaPos, 280, 12), XStringFormats.TopLeft);
+                gfx.DrawString("Precio Unitario", font, XBrushes.Black, new XRect(420, lineaPos, 80, 12), XStringFormats.TopLeft);
+                gfx.DrawString("Total", font, XBrushes.Black, new XRect(557.5, lineaPos, 80, 12), XStringFormats.TopLeft);
+                gfx.DrawLine(XPens.DarkGray, 28, lineaPos + 11, 582, lineaPos + 11);
 
                 font = new XFont("Arial", 8, XFontStyle.Regular);
-                int lineaPos = 365;
                 foreach (EstructuraPDFDetalleServicio linea in datos.DetalleServicio)
                 {
                     lineaPos += 12;
