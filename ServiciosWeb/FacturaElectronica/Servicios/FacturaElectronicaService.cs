@@ -608,12 +608,13 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.Servicios
                                     if (strEstado == "aceptado" && documentoElectronico.CorreoNotificacion != "")
                                     {
                                         strBody = "Adjunto documento electrónico en formato PDF y XML con clave " + mensaje.Clave + " y la respuesta de aceptación del Ministerio de Hacienda.";
-                                        MemoryStream memStream = new MemoryStream(documentoElectronico.DatosDocumento);
                                         EstructuraPDF datos = new EstructuraPDF();
                                         if (documentoElectronico.IdTipoDocumento == 1)
                                         {
                                             XmlSerializer serializer = new XmlSerializer(typeof(FacturaElectronica));
-                                            FacturaElectronica facturaElectronica = (FacturaElectronica)serializer.Deserialize(memStream);
+                                            FacturaElectronica facturaElectronica;
+                                            using (MemoryStream memStream = new MemoryStream(documentoElectronico.DatosDocumento))
+                                                facturaElectronica = (FacturaElectronica)serializer.Deserialize(memStream);
                                             datos.TituloDocumento = "FACTURA ELECTRONICA";
                                             datos.NombreEmpresa = facturaElectronica.Emisor.NombreComercial != null ? facturaElectronica.Emisor.NombreComercial : facturaElectronica.Emisor.Nombre;
                                             datos.Consecutivo = facturaElectronica.NumeroConsecutivo;
@@ -676,7 +677,9 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.Servicios
                                         else if (documentoElectronico.IdTipoDocumento == 3)
                                         {
                                             XmlSerializer serializer = new XmlSerializer(typeof(NotaCreditoElectronica));
-                                            NotaCreditoElectronica notaCreditoElectronica = (NotaCreditoElectronica)serializer.Deserialize(memStream);
+                                            NotaCreditoElectronica notaCreditoElectronica;
+                                            using (MemoryStream memStream = new MemoryStream(documentoElectronico.DatosDocumento))
+                                                notaCreditoElectronica = (NotaCreditoElectronica)serializer.Deserialize(memStream);
                                             datos.TituloDocumento = "NOTA DE CREDITO ELECTRONICA";
                                             datos.NombreEmpresa = notaCreditoElectronica.Emisor.NombreComercial != null ? notaCreditoElectronica.Emisor.NombreComercial : notaCreditoElectronica.Emisor.Nombre;
                                             datos.Consecutivo = notaCreditoElectronica.NumeroConsecutivo;

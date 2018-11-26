@@ -120,6 +120,7 @@ Partial Class FrmFactura
         Me.Label7 = New System.Windows.Forms.Label()
         Me.txtPlazoCredito = New System.Windows.Forms.TextBox()
         Me.Label12 = New System.Windows.Forms.Label()
+        Me.btnGenerarPDF = New System.Windows.Forms.Button()
         CType(Me.grdDetalleFactura, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.grdDesglosePago, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -1120,6 +1121,21 @@ Partial Class FrmFactura
         Me.Label12.Text = "Plazo de crédito:"
         Me.Label12.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
+        'btnGenerarPDF
+        '
+        Me.btnGenerarPDF.BackColor = System.Drawing.SystemColors.ButtonHighlight
+        Me.btnGenerarPDF.Cursor = System.Windows.Forms.Cursors.Default
+        Me.btnGenerarPDF.Enabled = False
+        Me.btnGenerarPDF.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.btnGenerarPDF.Location = New System.Drawing.Point(328, 8)
+        Me.btnGenerarPDF.Name = "btnGenerarPDF"
+        Me.btnGenerarPDF.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.btnGenerarPDF.Size = New System.Drawing.Size(64, 21)
+        Me.btnGenerarPDF.TabIndex = 105
+        Me.btnGenerarPDF.TabStop = False
+        Me.btnGenerarPDF.Text = "A&brir PDF"
+        Me.btnGenerarPDF.UseVisualStyleBackColor = False
+        '
         'FrmFactura
         '
         Me.AcceptButton = Me.btnInsertar
@@ -1127,6 +1143,7 @@ Partial Class FrmFactura
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(817, 612)
+        Me.Controls.Add(Me.btnGenerarPDF)
         Me.Controls.Add(Me.txtPlazoCredito)
         Me.Controls.Add(Me.Label12)
         Me.Controls.Add(Me.Label7)
@@ -1254,4 +1271,5 @@ Partial Class FrmFactura
     Public WithEvents Label7 As Label
     Public WithEvents txtPlazoCredito As TextBox
     Public WithEvents Label12 As Label
+    Public WithEvents btnGenerarPDF As Button
 End Class

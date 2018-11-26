@@ -28,6 +28,7 @@ namespace LeandroSoftware.PuntoVenta.Servicios
         void ActualizarFactura(Factura factura);
         void AnularFactura(int intIdFactura, int intIdUsuario, int intSucursal, int intTerminal);
         Factura ObtenerFactura(int intIdFactura);
+        DocumentoElectronico ObtenerDocumentoElectronico(string strClave);
         int ObtenerTotalListaFacturas(int intIdEmpresa, int intIdFactura = 0, string strNombre = "");
         IEnumerable<Factura> ObtenerListaFacturas(int intIdEmpresa, int numPagina, int cantRec, int intIdFactura = 0, string strNombre = "");
         IEnumerable<Factura> ObtenerListaFacturasPorCliente(int intIdCliente);
@@ -172,7 +173,7 @@ namespace LeandroSoftware.PuntoVenta.Servicios
             {
                 try
                 {
-                    var cliente = dbContext.ClienteRepository.Find(intIdCliente);
+                    var cliente = dbContext.ClienteRepository.Include("Barrio.Distrito.Canton.Provincia").Where(x => x.IdCliente == intIdCliente).FirstOrDefault();
                     if (cliente.IdVendedor != null)
                     {
                         var vendedor = dbContext.VendedorRepository.Find(cliente.IdVendedor);
@@ -789,12 +790,28 @@ namespace LeandroSoftware.PuntoVenta.Servicios
             {
                 try
                 {
-                    return dbContext.FacturaRepository.Include("Cliente").Include("Vendedor").Include("DetalleFactura.Producto.TipoProducto").Include("DesglosePagoFactura.FormaPago").Include("DesglosePagoFactura.TipoMoneda").FirstOrDefault(x => x.IdFactura == intIdFactura);
+                    return dbContext.FacturaRepository.Include("Cliente.Barrio.Distrito.Canton.Provincia").Include("Vendedor").Include("DetalleFactura.Producto.TipoProducto").Include("DesglosePagoFactura.FormaPago").Include("DesglosePagoFactura.TipoMoneda").FirstOrDefault(x => x.IdFactura == intIdFactura);
                 }
                 catch (Exception ex)
                 {
                     log.Error("Error al obtener el registro de facturación: ", ex);
                     throw new Exception("Se produjo un error consultando la información de la factura. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public DocumentoElectronico ObtenerDocumentoElectronico(string strClave)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    return dbContext.DocumentoElectronicoRepository.FirstOrDefault(x => x.ClaveNumerica == strClave);
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al obtener el registro de documento electrónico: ", ex);
+                    throw new Exception("Se produjo un error consultando la información del documento electrónico. Por favor consulte con su proveedor.");
                 }
             }
         }

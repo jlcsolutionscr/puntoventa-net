@@ -164,7 +164,7 @@ namespace LeandroSoftware.PuntoVenta.Servicios
             {
                 try
                 {
-                    return dbContext.EmpresaRepository.Include("DetalleRegistro").Include("ModuloPorEmpresa").Include("ReportePorEmpresa").FirstOrDefault(x => x.IdEmpresa == intIdEmpresa);
+                    return dbContext.EmpresaRepository.Include("DetalleRegistro").Include("ModuloPorEmpresa").Include("ReportePorEmpresa").Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.IdEmpresa == intIdEmpresa);
                 }
                 catch (Exception ex)
                 {

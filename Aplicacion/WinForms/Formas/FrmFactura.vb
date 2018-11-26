@@ -1,7 +1,12 @@
 Imports System.Collections.Generic
+Imports System.Globalization
+Imports System.IO
+Imports System.Xml.Serialization
+Imports LeandroSoftware.Core
 Imports LeandroSoftware.Core.CommonTypes
-Imports LeandroSoftware.PuntoVenta.Dominio.Entidades
-Imports LeandroSoftware.PuntoVenta.Servicios
+Imports LeandroSoftware.FacturaElectronicaHacienda.TiposDatos
+Imports LeandroSoftware.Puntoventa.Dominio.Entidades
+Imports LeandroSoftware.Puntoventa.Servicios
 Imports Unity
 
 Public Class FrmFactura
@@ -521,17 +526,17 @@ Public Class FrmFactura
                     txtPrecio.Text = FormatNumber(producto.PrecioVenta1, 2)
                 End If
                 txtUnidad.Text = producto.IdTipoUnidad
-                    If producto.Tipo = StaticTipoProducto.Servicio Then
-                        If FrmMenuPrincipal.empresaGlobal.ModificaDescProducto = True Then
-                            txtDescripcion.ReadOnly = False
-                            txtDescripcion.Focus()
-                        End If
-                    Else
-                        txtDescripcion.ReadOnly = True
-                        txtPrecio.Focus()
+                If producto.Tipo = StaticTipoProducto.Servicio Then
+                    If FrmMenuPrincipal.empresaGlobal.ModificaDescProducto = True Then
+                        txtDescripcion.ReadOnly = False
+                        txtDescripcion.Focus()
                     End If
+                Else
+                    txtDescripcion.ReadOnly = True
+                    txtPrecio.Focus()
                 End If
             End If
+        End If
     End Sub
 
     Private Sub CargarAutoCompletarProducto()
@@ -657,6 +662,7 @@ Public Class FrmFactura
         btnAnular.Enabled = False
         btnGuardar.Enabled = True
         btnImprimir.Enabled = False
+        btnGenerarPDF.Enabled = False
         btnBuscaVendedor.Enabled = True
         btnBuscarCliente.Enabled = True
         btnOrdenServicio.Enabled = True
@@ -739,6 +745,7 @@ Public Class FrmFactura
                 btnEliminarPago.Enabled = False
                 btnBusProd.Enabled = False
                 btnImprimir.Enabled = True
+                btnGenerarPDF.Enabled = True
                 btnBuscaVendedor.Enabled = False
                 btnBuscarCliente.Enabled = False
                 btnOrdenServicio.Enabled = False
@@ -791,6 +798,7 @@ Public Class FrmFactura
                 btnAnular.Enabled = False
                 btnGuardar.Enabled = True
                 btnImprimir.Enabled = False
+                btnGenerarPDF.Enabled = False
                 btnBuscarCliente.Enabled = True
             Else
                 MessageBox.Show("No existe registro de orden de servicio asociado al identificador seleccionado", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -838,6 +846,7 @@ Public Class FrmFactura
                 btnAnular.Enabled = False
                 btnGuardar.Enabled = True
                 btnImprimir.Enabled = False
+                btnGenerarPDF.Enabled = False
                 btnBuscarCliente.Enabled = True
             Else
                 MessageBox.Show("No existe registro de orden de servicio asociado al identificador seleccionado", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -985,6 +994,7 @@ Public Class FrmFactura
         End If
         MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
         btnImprimir.Enabled = True
+        btnGenerarPDF.Enabled = True
         btnAgregar.Enabled = True
         btnAnular.Enabled = FrmMenuPrincipal.usuarioGlobal.Modifica
         btnImprimir.Focus()
@@ -1043,6 +1053,98 @@ Public Class FrmFactura
             comprobanteImpresion.arrDesglosePago = arrDesglosePago
             Try
                 ModuloImpresion.ImprimirFactura(comprobanteImpresion)
+            Catch ex As Exception
+                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Exit Sub
+            End Try
+        End If
+    End Sub
+
+    Private Sub BtnGenerarPDF_Click(sender As Object, e As EventArgs) Handles btnGenerarPDF.Click
+        If txtIdFactura.Text <> "" Then
+            Dim documento As DocumentoElectronico
+            Try
+                documento = servicioFacturacion.ObtenerDocumentoElectronico(factura.IdDocElectronico)
+            Catch ex As Exception
+                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Exit Sub
+            End Try
+            Dim datos As EstructuraPDF = New EstructuraPDF()
+            Dim facturaElectronica As FacturaElectronica = Nothing
+            Dim serializer As New XmlSerializer(GetType(FacturaElectronica))
+            Using memStream As MemoryStream = New MemoryStream(documento.DatosDocumento)
+                facturaElectronica = serializer.Deserialize(memStream)
+            End Using
+            datos.TituloDocumento = "FACTURA ELECTRONICA"
+            datos.NombreEmpresa = IIf(facturaElectronica.Emisor.NombreComercial IsNot Nothing, facturaElectronica.Emisor.NombreComercial, facturaElectronica.Emisor.Nombre)
+            datos.Consecutivo = facturaElectronica.NumeroConsecutivo
+            datos.PlazoCredito = IIf(facturaElectronica.PlazoCredito IsNot Nothing, facturaElectronica.PlazoCredito, "")
+            datos.Clave = facturaElectronica.Clave
+            datos.CondicionVenta = ObtenerValoresCodificados.ObtenerCondicionDeVenta(Integer.Parse(facturaElectronica.CondicionVenta.ToString().Substring(5)))
+            datos.Fecha = facturaElectronica.FechaEmision.ToString("dd/MM/yyyy hh,mm,ss")
+            datos.MedioPago = ObtenerValoresCodificados.ObtenerMedioDePago(Integer.Parse(facturaElectronica.MedioPago(0).ToString().Substring(5)))
+            datos.NombreEmisor = facturaElectronica.Emisor.Nombre
+            datos.NombreComercialEmisor = facturaElectronica.Emisor.NombreComercial
+            datos.IdentificacionEmisor = facturaElectronica.Emisor.Identificacion.Numero
+            datos.CorreoElectronicoEmisor = facturaElectronica.Emisor.CorreoElectronico
+            If facturaElectronica.Emisor.Telefono IsNot Nothing Then
+                datos.TelefonoEmisor = facturaElectronica.Emisor.Telefono.NumTelefono
+            Else
+                datos.TelefonoEmisor = ""
+            End If
+            If facturaElectronica.Emisor.Fax IsNot Nothing Then
+                datos.FaxEmisor = facturaElectronica.Emisor.Fax.NumTelefono
+            Else
+                datos.FaxEmisor = ""
+            End If
+            datos.ProvinciaEmisor = FrmMenuPrincipal.empresaGlobal.Barrio.Distrito.Canton.Provincia.Descripcion
+            datos.CantonEmisor = FrmMenuPrincipal.empresaGlobal.Barrio.Distrito.Canton.Descripcion
+            datos.DistritoEmisor = FrmMenuPrincipal.empresaGlobal.Barrio.Distrito.Descripcion
+            datos.BarrioEmisor = FrmMenuPrincipal.empresaGlobal.Barrio.Descripcion
+            datos.DireccionEmisor = facturaElectronica.Emisor.Ubicacion.OtrasSenas
+            If facturaElectronica.Receptor IsNot Nothing Then
+                datos.PoseeReceptor = True
+                datos.NombreReceptor = facturaElectronica.Receptor.Nombre
+                datos.NombreComercialReceptor = IIf(facturaElectronica.Receptor.NombreComercial IsNot Nothing, facturaElectronica.Receptor.NombreComercial, "")
+                datos.IdentificacionReceptor = facturaElectronica.Receptor.Identificacion.Numero
+                datos.CorreoElectronicoReceptor = facturaElectronica.Receptor.CorreoElectronico
+                If facturaElectronica.Receptor.Telefono IsNot Nothing Then
+                    datos.TelefonoReceptor = facturaElectronica.Receptor.Telefono.NumTelefono
+                Else
+                    datos.TelefonoReceptor = ""
+                End If
+                If facturaElectronica.Receptor.Fax IsNot Nothing Then
+                    datos.FaxReceptor = facturaElectronica.Receptor.Fax.NumTelefono
+                Else
+                    datos.FaxReceptor = ""
+                End If
+                Dim barrio As Barrio = cliente.Barrio
+                datos.ProvinciaReceptor = cliente.Barrio.Distrito.Canton.Provincia.Descripcion
+                datos.CantonReceptor = cliente.Barrio.Distrito.Canton.Descripcion
+                datos.DistritoReceptor = cliente.Barrio.Distrito.Descripcion
+                datos.BarrioReceptor = cliente.Barrio.Descripcion
+                datos.DireccionReceptor = facturaElectronica.Receptor.Ubicacion.OtrasSenas
+            End If
+            For Each linea As FacturaElectronicaLineaDetalle In facturaElectronica.DetalleServicio
+                Dim detalle As EstructuraPDFDetalleServicio = New EstructuraPDFDetalleServicio()
+                detalle.NumeroLinea = linea.NumeroLinea
+                detalle.Codigo = linea.Codigo(0).Codigo
+                detalle.Detalle = linea.Detalle
+                detalle.PrecioUnitario = linea.PrecioUnitario.ToString("N5", CultureInfo.InvariantCulture)
+                detalle.TotalLinea = linea.MontoTotalLinea.ToString("N5", CultureInfo.InvariantCulture)
+                datos.DetalleServicio.Add(detalle)
+            Next
+            datos.SubTotal = facturaElectronica.ResumenFactura.TotalVenta.ToString("N5", CultureInfo.InvariantCulture)
+            datos.Descuento = IIf(facturaElectronica.ResumenFactura.TotalDescuentosSpecified, facturaElectronica.ResumenFactura.TotalDescuentos.ToString("N5", CultureInfo.InvariantCulture), "0.00000")
+            datos.Impuesto = IIf(facturaElectronica.ResumenFactura.TotalImpuestoSpecified, facturaElectronica.ResumenFactura.TotalImpuesto.ToString("N5", CultureInfo.InvariantCulture), "0.00000")
+            datos.TotalGeneral = facturaElectronica.ResumenFactura.TotalComprobante.ToString("N5", CultureInfo.InvariantCulture)
+            datos.CodigoMoneda = IIf(facturaElectronica.ResumenFactura.CodigoMonedaSpecified, facturaElectronica.ResumenFactura.CodigoMoneda.ToString(), "")
+            datos.TipoDeCambio = IIf(facturaElectronica.ResumenFactura.CodigoMonedaSpecified, facturaElectronica.ResumenFactura.TipoCambio.ToString(), "")
+            Try
+                Dim pdfBytes As Byte() = Utilitario.GenerarPDFFacturaElectronica(datos)
+                Dim pdfFilePath As String = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\FAC-" + documento.ClaveNumerica + ".pdf"
+                File.WriteAllBytes(pdfFilePath, pdfBytes)
+                System.Diagnostics.Process.Start(pdfFilePath)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
