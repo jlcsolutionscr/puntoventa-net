@@ -8,7 +8,7 @@ Public Class FrmInicio
         Close()
     End Sub
 
-    Private Sub CmdClave_Click(sender As Object, e As EventArgs) Handles CmdClave.Click
+    Private Sub CmdClave_Click(sender As Object, e As EventArgs)
         Dim formActualizarClave As New FrmActualizarClave()
         formActualizarClave.ShowDialog()
     End Sub

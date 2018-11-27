@@ -52,8 +52,9 @@ namespace LeandroSoftware.PuntoVenta.Dominio.Entidades
         public int UltimoDocNC { get; set; }
         public int UltimoDocTE { get; set; }
         public int UltimoDocMR { get; set; }
+        public byte[] Logotipo { get; set; }
 
-        public TipoIdentificacion TipoIdentificacion { get; set; }
+    public TipoIdentificacion TipoIdentificacion { get; set; }
         public TipoMoneda TipoMoneda { get; set; }
         [ForeignKey("IdProvincia, IdCanton, IdDistrito, IdBarrio")]
         public Barrio Barrio { get; set; }

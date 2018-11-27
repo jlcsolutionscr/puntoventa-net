@@ -9,8 +9,10 @@ INSERT INTO Role values(52,'Mantenimiento de Líneas','MnuMant','MnuMantLinea','
 INSERT INTO Role values(53,'Mantenimiento de Proveedores','MnuMant','MnuMantProveedor','Permite acceder al módulo de Mantenimiento de Proveedores');
 INSERT INTO Role values(54,'Mantenimiento de Productos','MnuMant','MnuMantProducto','Permite acceder al módulo de Mantenimiento de Productos');
 INSERT INTO Role values(55,'Mantenimiento de Usuarios','MnuMant','MnuMantUsuario','Permite acceder al módulo de Mantenimiento de Usuarios');
+INSERT INTO Role values(57,'Mantenimiento de Cuentas de Egreso','MnuMant','MnuMantCE','Permite acceder al módulo de Mantenimiento de Cuenta de Egresos');
 INSERT INTO Role values(61,'Mantenimiento de Vendedores','MnuMant','MnuMantVend','Permite actualizar los datos de los vendedores de la empresa');
 INSERT INTO Role values(101,'Módulo de Facturación','MnuCaptura','MnuCapturaFactura','Permite registrar la Facturación');
+INSERT INTO Role values(109,'Módulo de Registro de Egresos','MnuCaptura','MnuCapturaEgreso','Permite registrar los movimientos de Egresos');
 INSERT INTO Role values(125,'Documentos Electrónicos','MnuDocElect','MnuDocElectCDE','Permite consultar documentos pendientes de procesar');
 INSERT INTO Role values(126,'Documentos Electrónicos','MnuDocElect','MnuDocElectADE','Permite registrar facturas electrónicas recibidas');
 INSERT INTO Role values(127,'Documentos Electrónicos','MnuDocElect','MnuDocElectRDE','Permite revisar documentos procesados');

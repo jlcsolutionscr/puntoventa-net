@@ -94,6 +94,7 @@ CREATE TABLE Empresa (
   UltimoDocNC INTEGER NOT NULL,
   UltimoDocTE INTEGER NOT NULL,
   UltimoDocMR INTEGER NOT NULL,
+  Logotipo BLOB NULL,
   PRIMARY KEY(IdEmpresa),
   FOREIGN KEY(IdTipoIdentificacion)
     REFERENCES TipoIdentificacion(IdTipoIdentificacion)

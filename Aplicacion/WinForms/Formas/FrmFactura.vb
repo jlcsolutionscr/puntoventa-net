@@ -1075,6 +1075,16 @@ Public Class FrmFactura
             Using memStream As MemoryStream = New MemoryStream(documento.DatosDocumento)
                 facturaElectronica = serializer.Deserialize(memStream)
             End Using
+            Try
+                Dim logoImage As Image
+                Using ms As New MemoryStream(CType(FrmMenuPrincipal.empresaGlobal.Logotipo, Byte()))
+                    logoImage = Image.FromStream(ms)
+                End Using
+                datos.Logotipo = logoImage
+            Catch ex As Exception
+                Dim noImage As Image = My.Resources.emptyImage
+                datos.Logotipo = noImage
+            End Try
             datos.TituloDocumento = "FACTURA ELECTRONICA"
             datos.NombreEmpresa = IIf(facturaElectronica.Emisor.NombreComercial IsNot Nothing, facturaElectronica.Emisor.NombreComercial, facturaElectronica.Emisor.Nombre)
             datos.Consecutivo = facturaElectronica.NumeroConsecutivo

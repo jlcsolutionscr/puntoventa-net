@@ -73,6 +73,7 @@ CREATE TABLE empresa (
   RefreshExpiresIn INTEGER NULL,
   RefreshToken BLOB NULL,
   EmitedAt DATETIME NULL,
+  Logotipo BLOB NULL,
   PRIMARY KEY(IdEmpresa)
 );
 

@@ -159,7 +159,7 @@ Public Class FrmEmpresa
         Try
             Dim ocxConexion As MySqlConnection = New MySqlConnection(strCadenaConexion)
             ocxConexion.Open()
-            daDataAdapter = New MySqlDataAdapter("SELECT IdEmpresa, NombreEmpresa, NombreComercial, IdTipoIdentificacion, Identificacion, IdProvincia, IdCanton, IdDistrito, IdBarrio, Direccion, Telefono, CuentaCorreoElectronico, ServicioFacturaElectronicaURL, IdCertificado, PinCertificado, UltimoDocFE, UltimoDocND, UltimoDocNC, UltimoDocTE, UltimoDocMR, FechaVence, PorcentajeIVA, LineasPorFactura, Contabiliza, AutoCompletaProducto, ModificaDescProducto, DesglosaServicioInst, PorcentajeInstalacion, CodigoServicioInst, IncluyeInsumosEnFactura, RespaldoEnLinea, CierrePorTurnos, FacturaElectronica FROM Empresa WHERE IdEmpresa=" + strIdEmpresa, ocxConexion)
+            daDataAdapter = New MySqlDataAdapter("SELECT IdEmpresa, NombreEmpresa, NombreComercial, IdTipoIdentificacion, Identificacion, IdProvincia, IdCanton, IdDistrito, IdBarrio, Direccion, Telefono, CuentaCorreoElectronico, ServicioFacturaElectronicaURL, IdCertificado, PinCertificado, UltimoDocFE, UltimoDocND, UltimoDocNC, UltimoDocTE, UltimoDocMR, Logotipo, FechaVence, PorcentajeIVA, LineasPorFactura, Contabiliza, AutoCompletaProducto, ModificaDescProducto, DesglosaServicioInst, PorcentajeInstalacion, CodigoServicioInst, IncluyeInsumosEnFactura, RespaldoEnLinea, CierrePorTurnos, FacturaElectronica FROM Empresa WHERE IdEmpresa=" + strIdEmpresa, ocxConexion)
             Dim dsDataSet As DataSet = New DataSet()
             daDataAdapter.Fill(dsDataSet, "empresa")
             ocxConexion.Close()
@@ -190,6 +190,7 @@ Public Class FrmEmpresa
         txtUltimoDocNC.DataBindings.Add("Text", bndSource, "UltimoDocNC")
         txtUltimoDocTE.DataBindings.Add("Text", bndSource, "UltimoDocTE")
         txtUltimoDocMR.DataBindings.Add("Text", bndSource, "UltimoDocMR")
+        picLogo.DataBindings.Add("Image", bndSource, "Logotipo", True, DataSourceUpdateMode.OnPropertyChanged, New Bitmap(My.Resources.emptyImage))
         txtFecha.DataBindings.Add("Text", bndSource, "FechaVence", True, DataSourceUpdateMode.OnPropertyChanged, "", "dd-MM-yyyy")
         ckbContabiliza.DataBindings.Add("Checked", dtEmpresa, "Contabiliza")
         txtPorcentajeIVA.DataBindings.Add("Text", bndSource, "PorcentajeIVA", True, DataSourceUpdateMode.OnPropertyChanged, 0)
@@ -280,6 +281,19 @@ Public Class FrmEmpresa
     Private Sub CmdCancel_Click(sender As Object, e As EventArgs) Handles cmdCancel.Click
         bndSource.CancelEdit()
         Close()
+    End Sub
+
+    Private Sub btnCargarLogo_Click(sender As Object, e As EventArgs) Handles btnCargarLogo.Click
+        ofdAbrirDocumento.DefaultExt = "png"
+        ofdAbrirDocumento.Filter = "Image Files|*.jpg;*.jpeg;*.png;"
+        Dim result As DialogResult = ofdAbrirDocumento.ShowDialog()
+        If result = Windows.Forms.DialogResult.OK Then
+            Try
+                picLogo.Image = Image.FromFile(ofdAbrirDocumento.FileName)
+            Catch ex As Exception
+                MessageBox.Show("Error al intentar cargar el archivo. Verifique que sea un archivo de imagen válido. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End Try
+        End If
     End Sub
 
     Private Sub CmdUpdate_Click(sender As Object, e As EventArgs) Handles cmdUpdate.Click

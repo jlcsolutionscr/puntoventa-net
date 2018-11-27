@@ -1617,7 +1617,7 @@ namespace LeandroSoftware.PuntoVenta.Servicios
                 catch (Exception ex)
                 {
                     log.Error("Error al procesar factura electrónica: ", ex);
-                    throw new Exception("Se produjo un error al procesar la factura electrónica ingresada. Por favor consulte con su proveedor.");
+                    throw ex;
                 }
             }
         }

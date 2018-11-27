@@ -2,7 +2,6 @@
 INSERT INTO Role values(3,'Parametrización Contable de Servicios','MnuParam','MnuParamPC','Permite parametrizar los servicios con las cuentas contables respectivas');
 INSERT INTO Role values(51,'Mantenimiento de Particulares','MnuMant','MnuMantPArticular','Permite acceder al módulo de Mantenimiento de Particulares');
 INSERT INTO Role values(56,'Mantenimiento de Sucursales','MnuMant','MnuMantSucursal','Permite acceder al módulo de Mantenimiento de Sucursales');
-INSERT INTO Role values(57,'Mantenimiento de Cuentas de Egreso','MnuMant','MnuMantCE','Permite acceder al módulo de Mantenimiento de Cuenta de Egresos');
 INSERT INTO Role values(58,'Mantenimiento de Cuentas de Ingreso','MnuMant','MnuMantCI','Permite acceder al módulo de Mantenimiento de Cuenta de Ingresos');
 INSERT INTO Role values(59,'Mantenimiento de Cuentas Bancarias','MnuMant','MnuMantCB','Permite actualizar los saldos de las cuentas de bancos');
 INSERT INTO Role values(60,'Mantenimiento del Catalogo Contable','MnuMant','MnuMantCC','Permite actualizar los datos de las cuentas del catálogo contable');
@@ -14,7 +13,6 @@ INSERT INTO Role values(105,'Módulo de Ordenes de Compra','MnuCaptura','MnuCapt
 INSERT INTO Role values(106,'Módulo de Devoluciones a Provedores','MnuCaptura','MnuDevolucionProveedor','Permite registrar los movimientos de devoluciones de producto a proveedores');
 INSERT INTO Role values(107,'Módulo de Devoluciones de Clientes','MnuCaptura','MnuDevolucionCliente','Permite registrar los movimientos de devoluciones de producto de clientes');
 INSERT INTO Role values(108,'Módulo de Traslados','MnuCaptura','MnuCapturaTraslado','Permite registrar los movimientos de Traslados de Producto');
-INSERT INTO Role values(109,'Módulo de Registro de Egresos','MnuCaptura','MnuCapturaEgreso','Permite registrar los movimientos de Egresos');
 INSERT INTO Role values(110,'Módulo de Registro de Ingresos','MnuCaptura','MnuCapturaIngreso','Permite registrar los movimientos de Ingresos');
 INSERT INTO Role values(111,'Módulo de Ajustes al Inventario','MnuCaptura','MnuCapturaAI','Permite registrar los ajustes de inventario');
 INSERT INTO Role values(112,'Módulo de CxP Particulares','MnuCaptura','MnuCapturaCxPP','Permite registrar las cuentas por pagar a particulares');

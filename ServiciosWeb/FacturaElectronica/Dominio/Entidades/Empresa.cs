@@ -19,5 +19,6 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.Dominio.Entidades
         public int? RefreshExpiresIn { get; set; }
         public string RefreshToken { get; set; }
         public DateTime? EmitedAt { get; set; }
+        public byte[] Logotipo { get; set; }
     }
 }

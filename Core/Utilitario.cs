@@ -205,61 +205,76 @@ namespace LeandroSoftware.Core
                 document.Info.Title = datos.TituloDocumento;
                 PdfPage page = document.AddPage();
                 XGraphics gfx = XGraphics.FromPdfPage(page);
-                XFont font = new XFont("Courier New", 10, XFontStyle.Bold);
+
+                XImage image = XImage.FromGdiPlusImage(datos.Logotipo);
+                gfx.DrawImage(image, 340, 40, 175, 80);
+
+                XFont font = new XFont("Courier New", 12, XFontStyle.Bold);
                 XTextFormatter tf = new XTextFormatter(gfx);
                 tf.Alignment = XParagraphAlignment.Right;
-                gfx.DrawString(datos.NombreEmpresa.ToUpper(), font, XBrushes.Black, new XRect(0, 40, page.Width, 15), XStringFormats.Center);
-                gfx.DrawString(datos.TituloDocumento, font, XBrushes.Black, new XRect(0, 55, page.Width, 15), XStringFormats.Center);
+                gfx.DrawString(datos.NombreEmpresa.ToUpper(), font, XBrushes.Black, new XRect(20, 110, 300, 15), XStringFormats.TopLeft);
+                gfx.DrawString(datos.TituloDocumento, font, XBrushes.Black, new XRect(20, 125, 200, 15), XStringFormats.TopLeft);
                 font = new XFont("Arial", 8, XFontStyle.Regular);
-                gfx.DrawString("Consecutivo: ", font, XBrushes.Black, new XRect(20, 100, 80, 12), XStringFormats.TopLeft);
-                gfx.DrawString(datos.Consecutivo, font, XBrushes.Black, new XRect(110, 100, 200, 12), XStringFormats.TopLeft);
-                gfx.DrawString("Plazo de crédito: ", font, XBrushes.Black, new XRect(370, 100, 80, 12), XStringFormats.TopLeft);
-                gfx.DrawString(datos.PlazoCredito, font, XBrushes.Black, new XRect(470, 100, 80, 12), XStringFormats.TopLeft);
+                gfx.DrawString("Consecutivo: ", font, XBrushes.Black, new XRect(20, 160, 80, 12), XStringFormats.TopLeft);
+                gfx.DrawString(datos.Consecutivo, font, XBrushes.Black, new XRect(110, 160, 200, 12), XStringFormats.TopLeft);
+                gfx.DrawString("Plazo de crédito: ", font, XBrushes.Black, new XRect(370, 160, 80, 12), XStringFormats.TopLeft);
+                gfx.DrawString(datos.PlazoCredito, font, XBrushes.Black, new XRect(470, 160, 80, 12), XStringFormats.TopLeft);
 
-                gfx.DrawString("Clave: ", font, XBrushes.Black, new XRect(20, 112, 80, 12), XStringFormats.TopLeft);
-                gfx.DrawString(datos.Clave, font, XBrushes.Black, new XRect(110, 112, 200, 12), XStringFormats.TopLeft);
+                int lineaPos = 172;
+                gfx.DrawString("Clave: ", font, XBrushes.Black, new XRect(20, lineaPos, 80, 12), XStringFormats.TopLeft);
+                gfx.DrawString(datos.Clave, font, XBrushes.Black, new XRect(110, lineaPos, 200, 12), XStringFormats.TopLeft);
 
-                gfx.DrawString("Condición de Venta: ", font, XBrushes.Black, new XRect(370, 112, 80, 12), XStringFormats.TopLeft);
-                gfx.DrawString(datos.CondicionVenta, font, XBrushes.Black, new XRect(470, 112, 80, 12), XStringFormats.TopLeft);
+                gfx.DrawString("Condición de Venta: ", font, XBrushes.Black, new XRect(370, lineaPos, 80, 12), XStringFormats.TopLeft);
+                gfx.DrawString(datos.CondicionVenta, font, XBrushes.Black, new XRect(470, lineaPos, 80, 12), XStringFormats.TopLeft);
 
-                gfx.DrawString("Fecha: ", font, XBrushes.Black, new XRect(20, 124, 80, 12), XStringFormats.TopLeft);
-                gfx.DrawString(datos.Fecha, font, XBrushes.Black, new XRect(110, 124, 200, 12), XStringFormats.TopLeft);
-                gfx.DrawString("Medio de Pago: ", font, XBrushes.Black, new XRect(370, 124, 80, 12), XStringFormats.TopLeft);
-                gfx.DrawString(datos.MedioPago, font, XBrushes.Black, new XRect(470, 124, 80, 12), XStringFormats.TopLeft);
+                lineaPos += 12;
+                gfx.DrawString("Fecha: ", font, XBrushes.Black, new XRect(20, lineaPos, 80, 12), XStringFormats.TopLeft);
+                gfx.DrawString(datos.Fecha, font, XBrushes.Black, new XRect(110, lineaPos, 200, 12), XStringFormats.TopLeft);
+                gfx.DrawString("Medio de Pago: ", font, XBrushes.Black, new XRect(370, lineaPos, 80, 12), XStringFormats.TopLeft);
+                gfx.DrawString(datos.MedioPago, font, XBrushes.Black, new XRect(470, lineaPos, 80, 12), XStringFormats.TopLeft);
 
+                lineaPos += 27;
                 font = new XFont("Arial", 8, XFontStyle.Bold);
-                gfx.DrawString("DATOS DEL EMISOR", font, XBrushes.Black, new XRect(20, 151, 100, 12), XStringFormats.TopLeft);
+                gfx.DrawString("DATOS DEL EMISOR", font, XBrushes.Black, new XRect(20, lineaPos, 100, 12), XStringFormats.TopLeft);
 
+                lineaPos += 12;
                 font = new XFont("Arial", 8, XFontStyle.Regular);
-                gfx.DrawString("Nombre: ", font, XBrushes.Black, new XRect(20, 163, 80, 12), XStringFormats.TopLeft);
-                gfx.DrawString(datos.NombreEmisor, font, XBrushes.Black, new XRect(110, 163, 200, 12), XStringFormats.TopLeft);
-                gfx.DrawString("Identificación: ", font, XBrushes.Black, new XRect(370, 163, 80, 12), XStringFormats.TopLeft);
-                gfx.DrawString(datos.IdentificacionEmisor, font, XBrushes.Black, new XRect(470, 163, 80, 12), XStringFormats.TopLeft);
+                gfx.DrawString("Nombre: ", font, XBrushes.Black, new XRect(20, lineaPos, 80, 12), XStringFormats.TopLeft);
+                gfx.DrawString(datos.NombreEmisor, font, XBrushes.Black, new XRect(110, lineaPos, 200, 12), XStringFormats.TopLeft);
+                gfx.DrawString("Identificación: ", font, XBrushes.Black, new XRect(370, lineaPos, 80, 12), XStringFormats.TopLeft);
+                gfx.DrawString(datos.IdentificacionEmisor, font, XBrushes.Black, new XRect(470, lineaPos, 80, 12), XStringFormats.TopLeft);
 
-                gfx.DrawString("Nombre comercial: ", font, XBrushes.Black, new XRect(20, 175, 80, 12), XStringFormats.TopLeft);
-                gfx.DrawString(datos.NombreComercialEmisor, font, XBrushes.Black, new XRect(110, 175, 400, 12), XStringFormats.TopLeft);
+                lineaPos += 12;
+                gfx.DrawString("Nombre comercial: ", font, XBrushes.Black, new XRect(20, lineaPos, 80, 12), XStringFormats.TopLeft);
+                gfx.DrawString(datos.NombreComercialEmisor, font, XBrushes.Black, new XRect(110, lineaPos, 400, 12), XStringFormats.TopLeft);
 
-                gfx.DrawString("Correo electrónico: ", font, XBrushes.Black, new XRect(20, 187, 80, 12), XStringFormats.TopLeft);
-                gfx.DrawString(datos.CorreoElectronicoEmisor, font, XBrushes.Black, new XRect(110, 187, 400, 12), XStringFormats.TopLeft);
+                lineaPos += 12;
+                gfx.DrawString("Correo electrónico: ", font, XBrushes.Black, new XRect(20, lineaPos, 80, 12), XStringFormats.TopLeft);
+                gfx.DrawString(datos.CorreoElectronicoEmisor, font, XBrushes.Black, new XRect(110, lineaPos, 400, 12), XStringFormats.TopLeft);
 
-                gfx.DrawString("Teléfono: ", font, XBrushes.Black, new XRect(20, 199, 80, 12), XStringFormats.TopLeft);
-                gfx.DrawString(datos.TelefonoEmisor, font, XBrushes.Black, new XRect(110, 199, 200, 12), XStringFormats.TopLeft);
-                gfx.DrawString("Fax: ", font, XBrushes.Black, new XRect(370, 199, 80, 12), XStringFormats.TopLeft);
-                gfx.DrawString(datos.FaxEmisor, font, XBrushes.Black, new XRect(470, 199, 80, 12), XStringFormats.TopLeft);
+                lineaPos += 12;
+                gfx.DrawString("Teléfono: ", font, XBrushes.Black, new XRect(20, lineaPos, 80, 12), XStringFormats.TopLeft);
+                gfx.DrawString(datos.TelefonoEmisor, font, XBrushes.Black, new XRect(110, lineaPos, 200, 12), XStringFormats.TopLeft);
+                gfx.DrawString("Fax: ", font, XBrushes.Black, new XRect(370, lineaPos, 80, 12), XStringFormats.TopLeft);
+                gfx.DrawString(datos.FaxEmisor, font, XBrushes.Black, new XRect(470, lineaPos, 80, 12), XStringFormats.TopLeft);
 
-                gfx.DrawString("Provincia: ", font, XBrushes.Black, new XRect(20, 211, 80, 12), XStringFormats.TopLeft);
-                gfx.DrawString(datos.ProvinciaEmisor, font, XBrushes.Black, new XRect(110, 211, 200, 12), XStringFormats.TopLeft);
-                gfx.DrawString("Cantón: ", font, XBrushes.Black, new XRect(370, 211, 80, 12), XStringFormats.TopLeft);
-                gfx.DrawString(datos.CantonEmisor, font, XBrushes.Black, new XRect(470, 211, 80, 12), XStringFormats.TopLeft);
+                lineaPos += 12;
+                gfx.DrawString("Provincia: ", font, XBrushes.Black, new XRect(20, lineaPos, 80, 12), XStringFormats.TopLeft);
+                gfx.DrawString(datos.ProvinciaEmisor, font, XBrushes.Black, new XRect(110, lineaPos, 200, 12), XStringFormats.TopLeft);
+                gfx.DrawString("Cantón: ", font, XBrushes.Black, new XRect(370, lineaPos, 80, 12), XStringFormats.TopLeft);
+                gfx.DrawString(datos.CantonEmisor, font, XBrushes.Black, new XRect(470, lineaPos, 80, 12), XStringFormats.TopLeft);
 
-                gfx.DrawString("Distrito: ", font, XBrushes.Black, new XRect(20, 223, 80, 12), XStringFormats.TopLeft);
-                gfx.DrawString(datos.DistritoEmisor, font, XBrushes.Black, new XRect(110, 223, 200, 12), XStringFormats.TopLeft);
-                gfx.DrawString("Barrio: ", font, XBrushes.Black, new XRect(370, 223, 80, 12), XStringFormats.TopLeft);
-                gfx.DrawString(datos.BarrioEmisor, font, XBrushes.Black, new XRect(470, 223, 80, 12), XStringFormats.TopLeft);
+                lineaPos += 12;
+                gfx.DrawString("Distrito: ", font, XBrushes.Black, new XRect(20, lineaPos, 80, 12), XStringFormats.TopLeft);
+                gfx.DrawString(datos.DistritoEmisor, font, XBrushes.Black, new XRect(110, lineaPos, 200, 12), XStringFormats.TopLeft);
+                gfx.DrawString("Barrio: ", font, XBrushes.Black, new XRect(370, lineaPos, 80, 12), XStringFormats.TopLeft);
+                gfx.DrawString(datos.BarrioEmisor, font, XBrushes.Black, new XRect(470, lineaPos, 80, 12), XStringFormats.TopLeft);
 
-                gfx.DrawString("Otras señas: ", font, XBrushes.Black, new XRect(20, 235, 80, 12), XStringFormats.TopLeft);
-                gfx.DrawString(datos.DireccionEmisor, font, XBrushes.Black, new XRect(110, 235, 400, 12), XStringFormats.TopLeft);
-                int lineaPos = 262;
+                lineaPos += 12;
+                gfx.DrawString("Otras señas: ", font, XBrushes.Black, new XRect(20, lineaPos, 80, 12), XStringFormats.TopLeft);
+                gfx.DrawString(datos.DireccionEmisor, font, XBrushes.Black, new XRect(110, lineaPos, 400, 12), XStringFormats.TopLeft);
+
+                lineaPos += 27;
                 if (datos.PoseeReceptor)
                 {
                     font = new XFont("Arial", 8, XFontStyle.Bold);
@@ -311,9 +326,9 @@ namespace LeandroSoftware.Core
                 gfx.DrawString("Línea", font, XBrushes.Black, new XRect(30, lineaPos, 30, 12), XStringFormats.TopLeft);
                 gfx.DrawString("Código", font, XBrushes.Black, new XRect(60, lineaPos, 80, 12), XStringFormats.TopLeft);
                 gfx.DrawString("Detalle", font, XBrushes.Black, new XRect(140, lineaPos, 280, 12), XStringFormats.TopLeft);
-                gfx.DrawString("Precio Unitario", font, XBrushes.Black, new XRect(420, lineaPos, 80, 12), XStringFormats.TopLeft);
-                gfx.DrawString("Total", font, XBrushes.Black, new XRect(557.5, lineaPos, 80, 12), XStringFormats.TopLeft);
-                gfx.DrawLine(XPens.DarkGray, 28, lineaPos + 11, 582, lineaPos + 11);
+                tf.DrawString("Precio Unitario", font, XBrushes.Black, new XRect(400, lineaPos, 80, 12), XStringFormats.TopLeft);
+                tf.DrawString("Total", font, XBrushes.Black, new XRect(480, lineaPos, 80, 12), XStringFormats.TopLeft);
+                gfx.DrawLine(XPens.DarkGray, 28, lineaPos + 11, 562, lineaPos + 11);
 
                 font = new XFont("Arial", 8, XFontStyle.Regular);
                 foreach (EstructuraPDFDetalleServicio linea in datos.DetalleServicio)
@@ -323,32 +338,32 @@ namespace LeandroSoftware.Core
                     gfx.DrawString(linea.Codigo, font, XBrushes.Black, new XRect(60, lineaPos, 80, 12), XStringFormats.TopLeft);
                     gfx.DrawString(linea.Detalle, font, XBrushes.Black, new XRect(140, lineaPos, 280, 12), XStringFormats.TopLeft);
                     tf.DrawString(linea.PrecioUnitario, font, XBrushes.Black, new XRect(400, lineaPos, 80, 12), XStringFormats.TopLeft);
-                    tf.DrawString(linea.TotalLinea, font, XBrushes.Black, new XRect(500, lineaPos, 80, 12), XStringFormats.TopLeft);
+                    tf.DrawString(linea.TotalLinea, font, XBrushes.Black, new XRect(480, lineaPos, 80, 12), XStringFormats.TopLeft);
                 }
-                gfx.DrawLine(XPens.DarkGray, 28, lineaPos + 11, 582, lineaPos + 11);
+                gfx.DrawLine(XPens.DarkGray, 28, lineaPos + 11, 562, lineaPos + 11);
                 lineaPos += 17;
                 font = new XFont("Arial", 8, XFontStyle.Bold);
-                gfx.DrawString("SubTotal Factura:", font, XBrushes.Black, new XRect(420, lineaPos, 80, 12), XStringFormats.TopLeft);
+                gfx.DrawString("SubTotal Factura:", font, XBrushes.Black, new XRect(380, lineaPos, 80, 12), XStringFormats.TopLeft);
                 font = new XFont("Arial", 8, XFontStyle.Regular);
-                tf.DrawString(datos.SubTotal, font, XBrushes.Black, new XRect(500, lineaPos, 80, 12), XStringFormats.TopLeft);
+                tf.DrawString(datos.SubTotal, font, XBrushes.Black, new XRect(480, lineaPos, 80, 12), XStringFormats.TopLeft);
 
                 lineaPos += 12;
                 font = new XFont("Arial", 8, XFontStyle.Bold);
-                gfx.DrawString("Descuento:", font, XBrushes.Black, new XRect(420, lineaPos, 80, 12), XStringFormats.TopLeft);
+                gfx.DrawString("Descuento:", font, XBrushes.Black, new XRect(380, lineaPos, 80, 12), XStringFormats.TopLeft);
                 font = new XFont("Arial", 8, XFontStyle.Regular);
-                tf.DrawString(datos.Descuento, font, XBrushes.Black, new XRect(500, lineaPos, 80, 12), XStringFormats.TopLeft);
+                tf.DrawString(datos.Descuento, font, XBrushes.Black, new XRect(480, lineaPos, 80, 12), XStringFormats.TopLeft);
 
                 lineaPos += 12;
                 font = new XFont("Arial", 8, XFontStyle.Bold);
-                gfx.DrawString("Impuesto:", font, XBrushes.Black, new XRect(420, lineaPos, 80, 12), XStringFormats.TopLeft);
+                gfx.DrawString("Impuesto:", font, XBrushes.Black, new XRect(380, lineaPos, 80, 12), XStringFormats.TopLeft);
                 font = new XFont("Arial", 8, XFontStyle.Regular);
-                tf.DrawString(datos.Impuesto, font, XBrushes.Black, new XRect(500, lineaPos, 80, 12), XStringFormats.TopLeft);
+                tf.DrawString(datos.Impuesto, font, XBrushes.Black, new XRect(480, lineaPos, 80, 12), XStringFormats.TopLeft);
 
                 lineaPos += 12;
                 font = new XFont("Arial", 8, XFontStyle.Bold);
-                gfx.DrawString("Total General:", font, XBrushes.Black, new XRect(420, lineaPos, 80, 12), XStringFormats.TopLeft);
+                gfx.DrawString("Total General:", font, XBrushes.Black, new XRect(380, lineaPos, 80, 12), XStringFormats.TopLeft);
                 font = new XFont("Arial", 8, XFontStyle.Regular);
-                tf.DrawString(datos.TotalGeneral, font, XBrushes.Black, new XRect(500, lineaPos, 80, 12), XStringFormats.TopLeft);
+                tf.DrawString(datos.TotalGeneral, font, XBrushes.Black, new XRect(480, lineaPos, 80, 12), XStringFormats.TopLeft);
 
                 if (datos.CodigoMoneda != "")
                 {
@@ -366,7 +381,6 @@ namespace LeandroSoftware.Core
                         gfx.DrawString(datos.TipoDeCambio, font, XBrushes.Black, new XRect(150, lineaPos, 80, 12), XStringFormats.TopLeft);
                     }
                 }
-
                 string filename = datos.Clave + ".pdf";
                 MemoryStream stream = new MemoryStream();
                 document.Save(stream, false);

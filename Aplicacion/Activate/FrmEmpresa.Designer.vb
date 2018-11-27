@@ -100,7 +100,11 @@
         Me.Label21 = New System.Windows.Forms.Label()
         Me.Label22 = New System.Windows.Forms.Label()
         Me.Label23 = New System.Windows.Forms.Label()
+        Me.picLogo = New System.Windows.Forms.PictureBox()
+        Me.btnCargarLogo = New System.Windows.Forms.Button()
+        Me.ofdAbrirDocumento = New System.Windows.Forms.OpenFileDialog()
         CType(Me.dgvEquipos, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.picLogo, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'cmdUpdate
@@ -508,7 +512,7 @@
         '
         Me.ckbContabiliza.AutoSize = True
         Me.ckbContabiliza.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.ckbContabiliza.Location = New System.Drawing.Point(469, 397)
+        Me.ckbContabiliza.Location = New System.Drawing.Point(476, 477)
         Me.ckbContabiliza.Name = "ckbContabiliza"
         Me.ckbContabiliza.Size = New System.Drawing.Size(77, 17)
         Me.ckbContabiliza.TabIndex = 33
@@ -520,7 +524,7 @@
         '
         Me.ckbAutoCompleta.AutoSize = True
         Me.ckbAutoCompleta.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.ckbAutoCompleta.Location = New System.Drawing.Point(469, 423)
+        Me.ckbAutoCompleta.Location = New System.Drawing.Point(476, 503)
         Me.ckbAutoCompleta.Name = "ckbAutoCompleta"
         Me.ckbAutoCompleta.Size = New System.Drawing.Size(189, 17)
         Me.ckbAutoCompleta.TabIndex = 35
@@ -532,7 +536,7 @@
         '
         Me.chkModificaDesc.AutoSize = True
         Me.chkModificaDesc.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.chkModificaDesc.Location = New System.Drawing.Point(469, 449)
+        Me.chkModificaDesc.Location = New System.Drawing.Point(476, 529)
         Me.chkModificaDesc.Name = "chkModificaDesc"
         Me.chkModificaDesc.Size = New System.Drawing.Size(196, 17)
         Me.chkModificaDesc.TabIndex = 37
@@ -544,7 +548,7 @@
         '
         Me.chkDesgloseInst.AutoSize = True
         Me.chkDesgloseInst.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.chkDesgloseInst.Location = New System.Drawing.Point(469, 475)
+        Me.chkDesgloseInst.Location = New System.Drawing.Point(476, 555)
         Me.chkDesgloseInst.Name = "chkDesgloseInst"
         Me.chkDesgloseInst.Size = New System.Drawing.Size(177, 17)
         Me.chkDesgloseInst.TabIndex = 39
@@ -626,7 +630,7 @@
         '
         Me.chkIncluyeInsumosEnFactura.AutoSize = True
         Me.chkIncluyeInsumosEnFactura.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.chkIncluyeInsumosEnFactura.Location = New System.Drawing.Point(675, 397)
+        Me.chkIncluyeInsumosEnFactura.Location = New System.Drawing.Point(682, 477)
         Me.chkIncluyeInsumosEnFactura.Name = "chkIncluyeInsumosEnFactura"
         Me.chkIncluyeInsumosEnFactura.Size = New System.Drawing.Size(152, 17)
         Me.chkIncluyeInsumosEnFactura.TabIndex = 34
@@ -638,7 +642,7 @@
         '
         Me.chkRespaldoEnLinea.AutoSize = True
         Me.chkRespaldoEnLinea.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.chkRespaldoEnLinea.Location = New System.Drawing.Point(675, 422)
+        Me.chkRespaldoEnLinea.Location = New System.Drawing.Point(682, 502)
         Me.chkRespaldoEnLinea.Name = "chkRespaldoEnLinea"
         Me.chkRespaldoEnLinea.Size = New System.Drawing.Size(113, 17)
         Me.chkRespaldoEnLinea.TabIndex = 36
@@ -650,7 +654,7 @@
         '
         Me.chkCierrePorTurnos.AutoSize = True
         Me.chkCierrePorTurnos.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.chkCierrePorTurnos.Location = New System.Drawing.Point(675, 448)
+        Me.chkCierrePorTurnos.Location = New System.Drawing.Point(682, 528)
         Me.chkCierrePorTurnos.Name = "chkCierrePorTurnos"
         Me.chkCierrePorTurnos.Size = New System.Drawing.Size(116, 17)
         Me.chkCierrePorTurnos.TabIndex = 38
@@ -704,7 +708,7 @@
         '
         Me.chkFacturaElectronica.AutoSize = True
         Me.chkFacturaElectronica.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.chkFacturaElectronica.Location = New System.Drawing.Point(675, 474)
+        Me.chkFacturaElectronica.Location = New System.Drawing.Point(682, 554)
         Me.chkFacturaElectronica.Name = "chkFacturaElectronica"
         Me.chkFacturaElectronica.Size = New System.Drawing.Size(152, 17)
         Me.chkFacturaElectronica.TabIndex = 40
@@ -904,7 +908,7 @@
         Me.txtUltimoDocFE.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtUltimoDocFE.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtUltimoDocFE.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtUltimoDocFE.Location = New System.Drawing.Point(562, 289)
+        Me.txtUltimoDocFE.Location = New System.Drawing.Point(132, 497)
         Me.txtUltimoDocFE.MaxLength = 50
         Me.txtUltimoDocFE.Name = "txtUltimoDocFE"
         Me.txtUltimoDocFE.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -917,12 +921,12 @@
         Me.Label19.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label19.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label19.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label19.Location = New System.Drawing.Point(476, 292)
+        Me.Label19.Location = New System.Drawing.Point(62, 500)
         Me.Label19.Name = "Label19"
         Me.Label19.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label19.Size = New System.Drawing.Size(80, 17)
+        Me.Label19.Size = New System.Drawing.Size(64, 17)
         Me.Label19.TabIndex = 101
-        Me.Label19.Text = "Ultimo reg FE:"
+        Me.Label19.Text = "Ultimo FE:"
         Me.Label19.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'txtUltimoDocND
@@ -932,7 +936,7 @@
         Me.txtUltimoDocND.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtUltimoDocND.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtUltimoDocND.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtUltimoDocND.Location = New System.Drawing.Point(562, 315)
+        Me.txtUltimoDocND.Location = New System.Drawing.Point(132, 523)
         Me.txtUltimoDocND.MaxLength = 50
         Me.txtUltimoDocND.Name = "txtUltimoDocND"
         Me.txtUltimoDocND.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -946,7 +950,7 @@
         Me.txtUltimoDocNC.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtUltimoDocNC.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtUltimoDocNC.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtUltimoDocNC.Location = New System.Drawing.Point(562, 341)
+        Me.txtUltimoDocNC.Location = New System.Drawing.Point(401, 499)
         Me.txtUltimoDocNC.MaxLength = 50
         Me.txtUltimoDocNC.Name = "txtUltimoDocNC"
         Me.txtUltimoDocNC.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -960,7 +964,7 @@
         Me.txtUltimoDocTE.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtUltimoDocTE.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtUltimoDocTE.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtUltimoDocTE.Location = New System.Drawing.Point(707, 289)
+        Me.txtUltimoDocTE.Location = New System.Drawing.Point(259, 497)
         Me.txtUltimoDocTE.MaxLength = 50
         Me.txtUltimoDocTE.Name = "txtUltimoDocTE"
         Me.txtUltimoDocTE.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -974,7 +978,7 @@
         Me.txtUltimoDocMR.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtUltimoDocMR.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtUltimoDocMR.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtUltimoDocMR.Location = New System.Drawing.Point(707, 315)
+        Me.txtUltimoDocMR.Location = New System.Drawing.Point(259, 523)
         Me.txtUltimoDocMR.MaxLength = 50
         Me.txtUltimoDocMR.Name = "txtUltimoDocMR"
         Me.txtUltimoDocMR.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -987,12 +991,12 @@
         Me.Label20.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label20.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label20.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label20.Location = New System.Drawing.Point(476, 316)
+        Me.Label20.Location = New System.Drawing.Point(62, 524)
         Me.Label20.Name = "Label20"
         Me.Label20.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label20.Size = New System.Drawing.Size(80, 17)
+        Me.Label20.Size = New System.Drawing.Size(64, 17)
         Me.Label20.TabIndex = 109
-        Me.Label20.Text = "Ultimo reg ND:"
+        Me.Label20.Text = "Ultimo ND:"
         Me.Label20.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'Label21
@@ -1001,12 +1005,12 @@
         Me.Label21.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label21.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label21.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label21.Location = New System.Drawing.Point(476, 342)
+        Me.Label21.Location = New System.Drawing.Point(331, 500)
         Me.Label21.Name = "Label21"
         Me.Label21.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label21.Size = New System.Drawing.Size(80, 17)
+        Me.Label21.Size = New System.Drawing.Size(64, 17)
         Me.Label21.TabIndex = 110
-        Me.Label21.Text = "Ultimo reg NC:"
+        Me.Label21.Text = "Ultimo NC:"
         Me.Label21.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'Label22
@@ -1015,12 +1019,12 @@
         Me.Label22.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label22.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label22.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label22.Location = New System.Drawing.Point(621, 292)
+        Me.Label22.Location = New System.Drawing.Point(189, 500)
         Me.Label22.Name = "Label22"
         Me.Label22.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label22.Size = New System.Drawing.Size(80, 17)
+        Me.Label22.Size = New System.Drawing.Size(64, 17)
         Me.Label22.TabIndex = 111
-        Me.Label22.Text = "Ultimo reg TE:"
+        Me.Label22.Text = "Ultimo TE:"
         Me.Label22.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'Label23
@@ -1029,20 +1033,48 @@
         Me.Label23.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label23.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label23.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label23.Location = New System.Drawing.Point(621, 316)
+        Me.Label23.Location = New System.Drawing.Point(189, 524)
         Me.Label23.Name = "Label23"
         Me.Label23.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label23.Size = New System.Drawing.Size(80, 17)
+        Me.Label23.Size = New System.Drawing.Size(64, 17)
         Me.Label23.TabIndex = 112
-        Me.Label23.Text = "Ultimo reg MR:"
+        Me.Label23.Text = "Ultimo MR:"
         Me.Label23.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
+        'picLogo
+        '
+        Me.picLogo.BackColor = System.Drawing.Color.White
+        Me.picLogo.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
+        Me.picLogo.Location = New System.Drawing.Point(475, 272)
+        Me.picLogo.Name = "picLogo"
+        Me.picLogo.Size = New System.Drawing.Size(350, 160)
+        Me.picLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
+        Me.picLogo.TabIndex = 113
+        Me.picLogo.TabStop = False
+        '
+        'btnCargarLogo
+        '
+        Me.btnCargarLogo.BackColor = System.Drawing.SystemColors.ButtonHighlight
+        Me.btnCargarLogo.Cursor = System.Windows.Forms.Cursors.Default
+        Me.btnCargarLogo.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnCargarLogo.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.btnCargarLogo.Location = New System.Drawing.Point(475, 438)
+        Me.btnCargarLogo.Name = "btnCargarLogo"
+        Me.btnCargarLogo.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.btnCargarLogo.Size = New System.Drawing.Size(78, 26)
+        Me.btnCargarLogo.TabIndex = 114
+        Me.btnCargarLogo.TabStop = False
+        Me.btnCargarLogo.Text = "&Cargar logo"
+        Me.btnCargarLogo.UseVisualStyleBackColor = False
         '
         'FrmEmpresa
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.FromArgb(CType(CType(193, Byte), Integer), CType(CType(215, Byte), Integer), CType(CType(225, Byte), Integer))
-        Me.ClientSize = New System.Drawing.Size(835, 496)
+        Me.ClientSize = New System.Drawing.Size(844, 584)
+        Me.Controls.Add(Me.btnCargarLogo)
+        Me.Controls.Add(Me.picLogo)
         Me.Controls.Add(Me.Label23)
         Me.Controls.Add(Me.Label22)
         Me.Controls.Add(Me.Label21)
@@ -1124,6 +1156,7 @@
         Me.StartPosition = System.Windows.Forms.FormStartPosition.Manual
         Me.Text = "Empresa"
         CType(Me.dgvEquipos, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.picLogo, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -1188,5 +1221,8 @@
     Public WithEvents Label21 As Label
     Public WithEvents Label22 As Label
     Public WithEvents Label23 As Label
+    Friend WithEvents picLogo As PictureBox
+    Public WithEvents btnCargarLogo As Button
+    Friend WithEvents ofdAbrirDocumento As OpenFileDialog
 #End Region
 End Class
