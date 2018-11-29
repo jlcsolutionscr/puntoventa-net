@@ -18,6 +18,8 @@ using Newtonsoft.Json.Linq;
 using System.Globalization;
 using log4net;
 using LeandroSoftware.Core;
+using System.Drawing;
+using System.Web.Hosting;
 
 namespace LeandroSoftware.FacturaElectronicaHacienda.Servicios
 {
@@ -265,6 +267,17 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.Servicios
                         empresaDTO.ClaveATV = item.ClaveHacienda;
                         empresaDTO.CorreoNotificacion = item.CorreoNotificacion;
                         empresaDTO.PermiteFacturar = item.PermiteFacturar ? "S" : "N";
+                        if (item.Logotipo != null)
+                            try
+                            {
+                                empresaDTO.Logotipo = Convert.ToBase64String(item.Logotipo);
+                            }
+                            catch (Exception)
+                            {
+                                empresaDTO.Logotipo = "";
+                            }
+                        else
+                            empresaDTO.Logotipo = "";
                     }
                 }
                 return empresaDTO;
@@ -290,6 +303,14 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.Servicios
                         item.ClaveHacienda = empresaDTO.ClaveATV;
                         item.CorreoNotificacion = empresaDTO.CorreoNotificacion;
                         item.PermiteFacturar = empresaDTO.PermiteFacturar == "S";
+                        try
+                        {
+                            item.Logotipo = Convert.FromBase64String(empresaDTO.Logotipo);
+                        }
+                        catch (Exception)
+                        {
+                            item.Logotipo = null;
+                        }
                         dbContext.NotificarModificacion(item);
                     }
                     else
@@ -300,6 +321,14 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.Servicios
                         item.ClaveHacienda = empresaDTO.ClaveATV;
                         item.CorreoNotificacion = empresaDTO.CorreoNotificacion;
                         item.PermiteFacturar = empresaDTO.PermiteFacturar == "S";
+                        try
+                        {
+                            item.Logotipo = Convert.FromBase64String(empresaDTO.Logotipo);
+                        }
+                        catch (Exception)
+                        {
+                            item.Logotipo = null;
+                        }
                         dbContext.EmpresaRepository.Add(item);
                     }
                     dbContext.Commit();
@@ -581,6 +610,7 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.Servicios
                 using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
                 {
                     DocumentoElectronico documentoElectronico = null;
+                    Empresa empresa = null;
                     if (strConsecutivo.Length > 0)
                         documentoElectronico = dbContext.DocumentoElectronicoRepository.Where(x => x.ClaveNumerica == strClave & x.Consecutivo == strConsecutivo).FirstOrDefault();
                     else
@@ -593,6 +623,7 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.Servicios
                     }
                     else
                     {
+                        empresa = dbContext.EmpresaRepository.Where(x => x.IdEmpresa == documentoElectronico.IdEmpresa).FirstOrDefault();
                         string strEstado = mensaje.IndEstado;
                         documentoElectronico.EstadoEnvio = strEstado;
                         if (strEstado == "aceptado" || strEstado == "rechazado")
@@ -609,12 +640,34 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.Servicios
                                     {
                                         strBody = "Adjunto documento electrónico en formato PDF y XML con clave " + mensaje.Clave + " y la respuesta de aceptación del Ministerio de Hacienda.";
                                         EstructuraPDF datos = new EstructuraPDF();
+                                        try
+                                        {
+                                            Image logoImage;
+                                            using (MemoryStream memStream = new MemoryStream(empresa.Logotipo))
+                                                logoImage = Image.FromStream(memStream);
+                                            datos.Logotipo = logoImage;
+                                        }
+                                        catch (Exception)
+                                        {
+                                            datos.Logotipo = null;
+                                        }
+                                        try
+                                        {
+                                            string apPath = HostingEnvironment.ApplicationPhysicalPath + "bin\\images\\Logo.png";
+                                            Image poweredByImage = Image.FromFile(apPath);
+                                            datos.PoweredByLogotipo = poweredByImage;
+                                        }
+                                        catch (Exception)
+                                        {
+                                            datos.PoweredByLogotipo = null;
+                                        }
                                         if (documentoElectronico.IdTipoDocumento == 1)
                                         {
                                             XmlSerializer serializer = new XmlSerializer(typeof(FacturaElectronica));
                                             FacturaElectronica facturaElectronica;
                                             using (MemoryStream memStream = new MemoryStream(documentoElectronico.DatosDocumento))
                                                 facturaElectronica = (FacturaElectronica)serializer.Deserialize(memStream);
+                                            
                                             datos.TituloDocumento = "FACTURA ELECTRONICA";
                                             datos.NombreEmpresa = facturaElectronica.Emisor.NombreComercial != null ? facturaElectronica.Emisor.NombreComercial : facturaElectronica.Emisor.Nombre;
                                             datos.Consecutivo = facturaElectronica.NumeroConsecutivo;

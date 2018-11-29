@@ -1151,6 +1151,12 @@ Public Class FrmFactura
             datos.CodigoMoneda = IIf(facturaElectronica.ResumenFactura.CodigoMonedaSpecified, facturaElectronica.ResumenFactura.CodigoMoneda.ToString(), "")
             datos.TipoDeCambio = IIf(facturaElectronica.ResumenFactura.CodigoMonedaSpecified, facturaElectronica.ResumenFactura.TipoCambio.ToString(), "")
             Try
+                Dim poweredByImage As Image = My.Resources.poweredByImage
+                datos.PoweredByLogotipo = poweredByImage
+            Catch ex As Exception
+                datos.PoweredByLogotipo = Nothing
+            End Try
+            Try
                 Dim pdfBytes As Byte() = Utilitario.GenerarPDFFacturaElectronica(datos)
                 Dim pdfFilePath As String = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\FAC-" + documento.ClaveNumerica + ".pdf"
                 File.WriteAllBytes(pdfFilePath, pdfBytes)

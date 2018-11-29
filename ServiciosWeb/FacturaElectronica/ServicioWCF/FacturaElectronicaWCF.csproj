@@ -139,6 +139,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\Logo.png" />
     <Content Include="FacturaElectronicaWCF.svc" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -157,9 +158,7 @@
     <Compile Include="IFacturaElectronicaWCF.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="App_Data\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\Datos\DatosSWFE.csproj">
       <Project>{20d0884f-f81a-496d-99da-7b433ade4708}</Project>

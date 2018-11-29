@@ -8,5 +8,6 @@
         public string ClaveATV { get; set; }
         public string CorreoNotificacion { get; set; }
         public string PermiteFacturar { get; set; }
+        public string Logotipo { get; set; }
     }
 }

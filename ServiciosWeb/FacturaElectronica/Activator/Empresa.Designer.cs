@@ -43,6 +43,10 @@
             this.label4 = new System.Windows.Forms.Label();
             this.chkPermiteFacturar = new System.Windows.Forms.CheckBox();
             this.label5 = new System.Windows.Forms.Label();
+            this.btnCargarLogo = new System.Windows.Forms.Button();
+            this.picLogo = new System.Windows.Forms.PictureBox();
+            this.ofdAbrirDocumento = new System.Windows.Forms.OpenFileDialog();
+            ((System.ComponentModel.ISupportInitialize)(this.picLogo)).BeginInit();
             this.SuspendLayout();
             // 
             // txtIdEmpresa
@@ -114,7 +118,7 @@
             this.txtUsuarioATV.MaxLength = 100;
             this.txtUsuarioATV.Name = "txtUsuarioATV";
             this.txtUsuarioATV.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.txtUsuarioATV.Size = new System.Drawing.Size(323, 20);
+            this.txtUsuarioATV.Size = new System.Drawing.Size(350, 20);
             this.txtUsuarioATV.TabIndex = 2;
             // 
             // label2
@@ -142,7 +146,7 @@
             this.txtNombreEmpresa.MaxLength = 100;
             this.txtNombreEmpresa.Name = "txtNombreEmpresa";
             this.txtNombreEmpresa.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.txtNombreEmpresa.Size = new System.Drawing.Size(323, 20);
+            this.txtNombreEmpresa.Size = new System.Drawing.Size(350, 20);
             this.txtNombreEmpresa.TabIndex = 1;
             // 
             // label3
@@ -200,7 +204,7 @@
             this.txtCorreoNotificacion.MaxLength = 100;
             this.txtCorreoNotificacion.Name = "txtCorreoNotificacion";
             this.txtCorreoNotificacion.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.txtCorreoNotificacion.Size = new System.Drawing.Size(323, 20);
+            this.txtCorreoNotificacion.Size = new System.Drawing.Size(350, 20);
             this.txtCorreoNotificacion.TabIndex = 4;
             // 
             // label4
@@ -240,12 +244,41 @@
             this.label5.Text = "Permite facturar:";
             this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // btnCargarLogo
+            // 
+            this.btnCargarLogo.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.btnCargarLogo.Cursor = System.Windows.Forms.Cursors.Default;
+            this.btnCargarLogo.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnCargarLogo.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.btnCargarLogo.Location = new System.Drawing.Point(121, 372);
+            this.btnCargarLogo.Name = "btnCargarLogo";
+            this.btnCargarLogo.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.btnCargarLogo.Size = new System.Drawing.Size(78, 26);
+            this.btnCargarLogo.TabIndex = 133;
+            this.btnCargarLogo.TabStop = false;
+            this.btnCargarLogo.Text = "&Cargar logo";
+            this.btnCargarLogo.UseVisualStyleBackColor = false;
+            this.btnCargarLogo.Click += new System.EventHandler(this.btnCargarLogo_Click);
+            // 
+            // picLogo
+            // 
+            this.picLogo.BackColor = System.Drawing.Color.White;
+            this.picLogo.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.picLogo.Location = new System.Drawing.Point(121, 206);
+            this.picLogo.Name = "picLogo";
+            this.picLogo.Size = new System.Drawing.Size(350, 160);
+            this.picLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.picLogo.TabIndex = 132;
+            this.picLogo.TabStop = false;
+            // 
             // Empresa
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(193)))), ((int)(((byte)(215)))), ((int)(((byte)(225)))));
-            this.ClientSize = new System.Drawing.Size(450, 223);
+            this.ClientSize = new System.Drawing.Size(480, 404);
+            this.Controls.Add(this.btnCargarLogo);
+            this.Controls.Add(this.picLogo);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.chkPermiteFacturar);
             this.Controls.Add(this.txtCorreoNotificacion);
@@ -263,6 +296,7 @@
             this.Name = "Empresa";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Empresa_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.picLogo)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -283,6 +317,9 @@
         public System.Windows.Forms.Label label4;
         private System.Windows.Forms.CheckBox chkPermiteFacturar;
         public System.Windows.Forms.Label label5;
+        public System.Windows.Forms.Button btnCargarLogo;
+        internal System.Windows.Forms.PictureBox picLogo;
+        private System.Windows.Forms.OpenFileDialog ofdAbrirDocumento;
     }
 }
 

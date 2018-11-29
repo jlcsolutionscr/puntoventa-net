@@ -21,5 +21,7 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.TiposDatos
         public string CorreoNotificacion { get; set; }
         [DataMember]
         public string PermiteFacturar { get; set; }
+        [DataMember]
+        public string Logotipo { get; set; }
     }
 }

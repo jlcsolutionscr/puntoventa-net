@@ -10,6 +10,7 @@ INSERT INTO Role values(53,'Mantenimiento de Proveedores','MnuMant','MnuMantProv
 INSERT INTO Role values(54,'Mantenimiento de Productos','MnuMant','MnuMantProducto','Permite acceder al módulo de Mantenimiento de Productos');
 INSERT INTO Role values(55,'Mantenimiento de Usuarios','MnuMant','MnuMantUsuario','Permite acceder al módulo de Mantenimiento de Usuarios');
 INSERT INTO Role values(57,'Mantenimiento de Cuentas de Egreso','MnuMant','MnuMantCE','Permite acceder al módulo de Mantenimiento de Cuenta de Egresos');
+INSERT INTO Role values(59,'Mantenimiento de Cuentas Bancarias','MnuMant','MnuMantCB','Permite actualizar los saldos de las cuentas de bancos');
 INSERT INTO Role values(61,'Mantenimiento de Vendedores','MnuMant','MnuMantVend','Permite actualizar los datos de los vendedores de la empresa');
 INSERT INTO Role values(101,'Módulo de Facturación','MnuCaptura','MnuCapturaFactura','Permite registrar la Facturación');
 INSERT INTO Role values(109,'Módulo de Registro de Egresos','MnuCaptura','MnuCapturaEgreso','Permite registrar los movimientos de Egresos');

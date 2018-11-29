@@ -49,6 +49,7 @@ namespace LeandroSoftware.Core
         public string CodigoMoneda { get; set; }
         public string TipoDeCambio { get; set; }
         public Image Logotipo { get; set; }
+        public Image PoweredByLogotipo { get; set; }
 
         public ICollection<EstructuraPDFDetalleServicio> DetalleServicio { get; set; }
     }

@@ -1429,6 +1429,7 @@
     <Content Include="mysqldump.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="Resources\poweredByImage.bmp" />
     <None Include="Resources\emptyImage.bmp" />
   </ItemGroup>
   <ItemGroup>

@@ -3,7 +3,6 @@ INSERT INTO Role values(3,'Parametrización Contable de Servicios','MnuParam','M
 INSERT INTO Role values(51,'Mantenimiento de Particulares','MnuMant','MnuMantPArticular','Permite acceder al módulo de Mantenimiento de Particulares');
 INSERT INTO Role values(56,'Mantenimiento de Sucursales','MnuMant','MnuMantSucursal','Permite acceder al módulo de Mantenimiento de Sucursales');
 INSERT INTO Role values(58,'Mantenimiento de Cuentas de Ingreso','MnuMant','MnuMantCI','Permite acceder al módulo de Mantenimiento de Cuenta de Ingresos');
-INSERT INTO Role values(59,'Mantenimiento de Cuentas Bancarias','MnuMant','MnuMantCB','Permite actualizar los saldos de las cuentas de bancos');
 INSERT INTO Role values(60,'Mantenimiento del Catalogo Contable','MnuMant','MnuMantCC','Permite actualizar los datos de las cuentas del catálogo contable');
 INSERT INTO Role values(100,'Módulo de Inventario','MnuMant','MnuMantInv','Permite acceder al módulo de Mantenimiento de Inventario');
 INSERT INTO Role values(102,'Módulo de Ordenes de Servicio','MnuCaptura','MnuCapturaOrdenServicio','Permite registrar las Ordenes de Servicio');
@@ -32,9 +31,7 @@ INSERT INTO Role values(352,'Módulo de Reportes Contables','mnuConta','mnuConta
 INSERT INTO RolePorUsuario VALUES(1,1,3);
 INSERT INTO RolePorUsuario VALUES(1,1,51);
 INSERT INTO RolePorUsuario VALUES(1,1,56);
-INSERT INTO RolePorUsuario VALUES(1,1,57);
 INSERT INTO RolePorUsuario VALUES(1,1,58);
-INSERT INTO RolePorUsuario VALUES(1,1,59);
 INSERT INTO RolePorUsuario VALUES(1,1,60);
 INSERT INTO RolePorUsuario VALUES(1,1,100);
 INSERT INTO RolePorUsuario VALUES(1,1,102);

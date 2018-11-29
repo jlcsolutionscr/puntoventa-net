@@ -285,7 +285,7 @@ Public Class FrmEmpresa
 
     Private Sub btnCargarLogo_Click(sender As Object, e As EventArgs) Handles btnCargarLogo.Click
         ofdAbrirDocumento.DefaultExt = "png"
-        ofdAbrirDocumento.Filter = "Image Files|*.jpg;*.jpeg;*.png;"
+        ofdAbrirDocumento.Filter = "PNG Image Files|*.png;"
         Dim result As DialogResult = ofdAbrirDocumento.ShowDialog()
         If result = Windows.Forms.DialogResult.OK Then
             Try

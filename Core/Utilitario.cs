@@ -206,14 +206,17 @@ namespace LeandroSoftware.Core
                 PdfPage page = document.AddPage();
                 XGraphics gfx = XGraphics.FromPdfPage(page);
 
-                XImage image = XImage.FromGdiPlusImage(datos.Logotipo);
-                gfx.DrawImage(image, 340, 40, 175, 80);
+                if (datos.Logotipo != null)
+                {
+                    XImage image = XImage.FromGdiPlusImage(datos.Logotipo);
+                    gfx.DrawImage(image, 340, 40, 175, 80);
+                }
 
                 XFont font = new XFont("Courier New", 12, XFontStyle.Bold);
                 XTextFormatter tf = new XTextFormatter(gfx);
                 tf.Alignment = XParagraphAlignment.Right;
-                gfx.DrawString(datos.NombreEmpresa.ToUpper(), font, XBrushes.Black, new XRect(20, 110, 300, 15), XStringFormats.TopLeft);
-                gfx.DrawString(datos.TituloDocumento, font, XBrushes.Black, new XRect(20, 125, 200, 15), XStringFormats.TopLeft);
+                gfx.DrawString(datos.NombreEmpresa.ToUpper(), font, XBrushes.Black, new XRect(20, 80, 300, 15), XStringFormats.TopLeft);
+                gfx.DrawString(datos.TituloDocumento, font, XBrushes.Black, new XRect(20, 95, 200, 15), XStringFormats.TopLeft);
                 font = new XFont("Arial", 8, XFontStyle.Regular);
                 gfx.DrawString("Consecutivo: ", font, XBrushes.Black, new XRect(20, 160, 80, 12), XStringFormats.TopLeft);
                 gfx.DrawString(datos.Consecutivo, font, XBrushes.Black, new XRect(110, 160, 200, 12), XStringFormats.TopLeft);
@@ -381,6 +384,15 @@ namespace LeandroSoftware.Core
                         gfx.DrawString(datos.TipoDeCambio, font, XBrushes.Black, new XRect(150, lineaPos, 80, 12), XStringFormats.TopLeft);
                     }
                 }
+
+                if (datos.PoweredByLogotipo != null)
+                {
+                    font = new XFont("Arial", 10, XFontStyle.BoldItalic);
+                    tf.DrawString("Powered by", font, XBrushes.Black, new XRect(20, gfx.PageSize.Height - 30, gfx.PageSize.Width - 137.5, 15), XStringFormats.TopLeft);
+                    XImage poweredByImage = XImage.FromGdiPlusImage(datos.PoweredByLogotipo);
+                    gfx.DrawImage(poweredByImage, gfx.PageSize.Width - 117.5, gfx.PageSize.Height - 50, 87.5, 40);
+                }
+
                 string filename = datos.Clave + ".pdf";
                 MemoryStream stream = new MemoryStream();
                 document.Save(stream, false);
