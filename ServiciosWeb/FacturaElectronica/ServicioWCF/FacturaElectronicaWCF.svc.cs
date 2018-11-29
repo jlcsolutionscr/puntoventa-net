@@ -11,6 +11,7 @@ using LeandroSoftware.FacturaElectronicaHacienda.TiposDatos;
 using System.Collections.Generic;
 using System.ServiceModel.Web;
 using System.Net;
+using LeandroSoftware.Core.Servicios;
 
 namespace LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF
 {

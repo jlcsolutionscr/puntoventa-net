@@ -1446,18 +1446,6 @@
       <Project>{DF822CEB-DFF9-4F4F-8BC1-D6C0CBF54D4B}</Project>
       <Name>TiposDatosSWFE</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Datos\DatosApp.csproj">
-      <Project>{7c07fd36-af8c-4d6f-9ee4-f84082d03f9d}</Project>
-      <Name>DatosApp</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Dominio\DominioApp.csproj">
-      <Project>{74e3681e-1245-4268-adb9-d76da18b2fe0}</Project>
-      <Name>DominioApp</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Servicios\ServiciosApp.csproj">
-      <Project>{BC08C145-CE0A-4220-A2F6-41B7AAE80FC7}</Project>
-      <Name>ServiciosApp</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
   <PropertyGroup>

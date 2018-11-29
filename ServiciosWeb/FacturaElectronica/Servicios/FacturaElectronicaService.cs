@@ -20,6 +20,7 @@ using log4net;
 using LeandroSoftware.Core;
 using System.Drawing;
 using System.Web.Hosting;
+using LeandroSoftware.Core.Servicios;
 
 namespace LeandroSoftware.FacturaElectronicaHacienda.Servicios
 {
