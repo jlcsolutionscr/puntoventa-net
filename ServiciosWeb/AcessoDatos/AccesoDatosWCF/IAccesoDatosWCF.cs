@@ -1,5 +1,7 @@
-﻿using System.Runtime.Serialization;
+﻿using System.Collections.Generic;
+using System.Runtime.Serialization;
 using System.ServiceModel;
+using System.ServiceModel.Web;
 
 namespace LeandroSoftware.AccesoDatos.ServicioWCF
 {
@@ -9,34 +11,16 @@ namespace LeandroSoftware.AccesoDatos.ServicioWCF
     {
 
         [OperationContract]
-        string GetData(int value);
-
+        [WebGet(UriTemplate = "consultarlistadoempresas", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
+        List<EmpresaDTO> ConsultarListadoEmpresas();
         [OperationContract]
-        CompositeType GetDataUsingDataContract(CompositeType composite);
-
-        // TODO: agregue aquí sus operaciones de servicio
-    }
-
-
-    // Utilice un contrato de datos, como se ilustra en el ejemplo siguiente, para agregar tipos compuestos a las operaciones de servicio.
-    [DataContract]
-    public class CompositeType
-    {
-        bool boolValue = true;
-        string stringValue = "Hello ";
-
-        [DataMember]
-        public bool BoolValue
-        {
-            get { return boolValue; }
-            set { boolValue = value; }
-        }
-
-        [DataMember]
-        public string StringValue
-        {
-            get { return stringValue; }
-            set { stringValue = value; }
-        }
+        [WebGet(UriTemplate = "consultarempresa?empresa={empresa}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
+        EmpresaDTO ConsultarEmpresa(string empresa);
+        [OperationContract]
+        [WebInvoke(Method = "POST", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, UriTemplate = "registrarempresa")]
+        string RegistrarEmpresa(EmpresaDTO empresa);
+        [OperationContract]
+        [WebInvoke(Method = "POST", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, UriTemplate = "registrardocumentoelectronico")]
+        void RegistrarDocumentoElectronico(DatosDocumentoElectronicoDTO datos);
     }
 }
