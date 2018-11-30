@@ -738,7 +738,7 @@ namespace LeandroSoftware.PuntoVenta.Servicios
                     datos.CorreoNotificacion = strCorreoNotificacion;
                     datos.DatosDocumento = Convert.ToBase64String(signedDataEncoded);
                     // Envío de solicitud al servicio web de factura electrónica
-                    Task.Run(() => EnviarDocumentoElectronico(empresa, datos));
+                    Task.Run(() => RegistrarDocumentoElectronicoAsync(empresa, datos));
                     return strClaveNumerica;
                 }
                 else
@@ -752,13 +752,13 @@ namespace LeandroSoftware.PuntoVenta.Servicios
             }
         }
 
-        private static void EnviarDocumentoElectronico(Empresa empresa, DatosDocumentoElectronicoDTO datos)
+        private static void RegistrarDocumentoElectronicoAsync(Empresa empresa, DatosDocumentoElectronicoDTO datos)
         {
             try
             {
+                Uri uri = new Uri(empresa.ServicioFacturaElectronicaURL + "/registrardocumentoelectronico");
                 string jsonRequest = new JavaScriptSerializer().Serialize(datos);
                 StringContent stringContent = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
-                Uri uri = new Uri(empresa.ServicioFacturaElectronicaURL + "/registrardocumentoelectronico");
                 Task<HttpResponseMessage> task1 = client.PostAsync(uri, stringContent);
                 task1.Wait();
             }
@@ -766,6 +766,60 @@ namespace LeandroSoftware.PuntoVenta.Servicios
             {
                 Exception flattenEx = ex.Flatten();
                 log.Error("Error al enviar el el documento al servicio de facturación electrónica: ", flattenEx);
+            }
+        }
+
+        public static void RegistrarDocumentoElectronico(Empresa empresa, DatosDocumentoElectronicoDTO documento)
+        {
+            Uri uri = new Uri(empresa.ServicioFacturaElectronicaURL + "/registrardocumentoelectronico");
+            string jsonRequest = new JavaScriptSerializer().Serialize(documento);
+            StringContent stringContent = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
+            Task<HttpResponseMessage> task1 = client.PostAsync(uri, stringContent);
+            try
+            {
+                task1.Wait();
+                if (!task1.Result.IsSuccessStatusCode)
+                {
+                    if (task1.Result.ReasonPhrase == "Service Unavailable")
+                        throw new Exception("Service Unavailable");
+                    throw new Exception("Error en el procesamiento de algunos o todos los documentos electrónicos. Por favor realice la consulta del estado de nuevo.");
+                }
+            }
+            catch (AggregateException ex)
+            {
+                Exception flattenEx = ex.Flatten();
+                throw flattenEx;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public static void EnviarDocumentoElectronico(Empresa empresa, DatosDocumentoElectronicoDTO documento)
+        {
+            Uri uri = new Uri(empresa.ServicioFacturaElectronicaURL + "/enviardocumentoelectronico");
+            string jsonRequest = new JavaScriptSerializer().Serialize(documento);
+            StringContent stringContent = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
+            Task<HttpResponseMessage> task1 = client.PostAsync(uri, stringContent);
+            try
+            {
+                task1.Wait();
+                if (!task1.Result.IsSuccessStatusCode)
+                {
+                    if (task1.Result.ReasonPhrase == "Service Unavailable")
+                        throw new Exception("Service Unavailable");
+                    throw new Exception("Error en el procesamiento de algunos o todos los documentos electrónicos. Por favor realice la consulta del estado de nuevo.");
+                }
+            }
+            catch (AggregateException ex)
+            {
+                Exception flattenEx = ex.Flatten();
+                throw flattenEx;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
             }
         }
 
@@ -818,38 +872,6 @@ namespace LeandroSoftware.PuntoVenta.Servicios
                 JavaScriptSerializer json_serializer = new JavaScriptSerializer();
                 DatosDocumentoElectronicoDTO datos = json_serializer.Deserialize<DatosDocumentoElectronicoDTO>(strListado);
                 return datos;
-            }
-            catch (AggregateException ex)
-            {
-                Exception flattenEx = ex.Flatten();
-                throw flattenEx;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
-        public static void ProcesarDocumentoElectronico(Empresa empresa, DatosDocumentoElectronicoDTO documento)
-        {
-            string strEndpoint = "";
-            if (documento.EstadoEnvio == "pendiente")
-                strEndpoint = "/registrardocumentoelectronico";
-            else if (documento.EstadoEnvio == "registrado")
-                strEndpoint = "/enviardocumentoelectronico";
-            Uri uri = new Uri(empresa.ServicioFacturaElectronicaURL + strEndpoint);
-            string jsonRequest = new JavaScriptSerializer().Serialize(documento);
-            StringContent stringContent = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
-            Task<HttpResponseMessage> task1 = client.PostAsync(uri, stringContent);
-            try
-            {
-                task1.Wait();
-                if (!task1.Result.IsSuccessStatusCode)
-                {
-                    if (task1.Result.ReasonPhrase == "Service Unavailable")
-                        throw new Exception("Service Unavailable");
-                    throw new Exception("Error en el procesamiento de algunos o todos los documentos electrónicos. Por favor realice la consulta del estado de nuevo.");
-                }
             }
             catch (AggregateException ex)
             {

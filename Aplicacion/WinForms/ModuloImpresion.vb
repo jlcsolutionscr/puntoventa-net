@@ -164,25 +164,28 @@ Public Class ModuloImpresion
         Dim di As New DOCINFOW          ' Describes your document (name, port, data type). 
         Dim dwWritten As Int32          ' The number of bytes written by WritePrinter(). 
         Dim bSuccess As Boolean         ' Your success code. 
-
-        With di
-            .pDocName = "Document from Leandro Software"
-            .pDataType = "RAW"
-        End With
-        bSuccess = False
-        If OpenPrinter(szPrinterName, hPrinter, 0) Then
-            If StartDocPrinter(hPrinter, 1, di) Then
-                If StartPagePrinter(hPrinter) Then
-                    bSuccess = WritePrinter(hPrinter, pBytes, dwCount, dwWritten)
-                    EndPagePrinter(hPrinter)
+        Try
+            With di
+                .pDocName = "Document from Leandro Software"
+                .pDataType = "RAW"
+            End With
+            bSuccess = False
+            If OpenPrinter(szPrinterName, hPrinter, 0) Then
+                If StartDocPrinter(hPrinter, 1, di) Then
+                    If StartPagePrinter(hPrinter) Then
+                        bSuccess = WritePrinter(hPrinter, pBytes, dwCount, dwWritten)
+                        EndPagePrinter(hPrinter)
+                    End If
+                    EndDocPrinter(hPrinter)
                 End If
-                EndDocPrinter(hPrinter)
+                ClosePrinter(hPrinter)
             End If
-            ClosePrinter(hPrinter)
-        End If
-        If bSuccess = False Then
-            dwError = Marshal.GetLastWin32Error()
-        End If
+            If bSuccess = False Then
+                dwError = Marshal.GetLastWin32Error()
+            End If
+        Catch ex As Exception
+            Throw New Exception("Error en SendBytesToPrinter: " & szPrinterName)
+        End Try
         Return bSuccess
     End Function
 
@@ -190,19 +193,22 @@ Public Class ModuloImpresion
         Dim pBytes As IntPtr
         Dim dwCount As Int32
         Dim bSuccess As Boolean
-
-        dwCount = strInput.Length()
-        pBytes = Marshal.StringToCoTaskMemAnsi(strInput)
-        bSuccess = SendBytesToPrinter(szPrinterName, pBytes, dwCount)
-        If Not bSuccess Then
-            Throw New Exception("Error al tratar de imprimir en dispositivo: " & szPrinterName)
-        End If
-        Marshal.FreeCoTaskMem(pBytes)
+        Try
+            dwCount = (strInput.Length + 1) * Marshal.SystemMaxDBCSCharSize
+            pBytes = Marshal.StringToCoTaskMemAnsi(strInput)
+            bSuccess = SendBytesToPrinter(szPrinterName, pBytes, dwCount)
+            If Not bSuccess Then
+                Throw New Exception("No se logro imprimir el tiquete en el dispositivo: " & szPrinterName)
+            End If
+            Marshal.FreeCoTaskMem(pBytes)
+        Catch ex As Exception
+            Throw New Exception("Error en SendStringToPrinter: " & szPrinterName)
+        End Try
     End Sub
 
-    Private Sub SendDataToPrinter(ByVal szPrinterName As String, ByVal strContenido As String)
+    Private Sub SendDataToPrinter(ByVal szPrinterName As String, ByVal strFilePath As String)
         Dim printDocument As PrintDocument = New PrintDocument()
-        Dim fileStream As FileStream = New FileStream(strContenido, FileMode.Open)
+        Dim fileStream As FileStream = New FileStream(strFilePath, FileMode.Open)
         Dim streamReader As StreamReader = New StreamReader(fileStream)
         Dim stringToPrint As String = streamReader.ReadToEnd()
         printDocument.PrinterSettings.PrinterName = szPrinterName

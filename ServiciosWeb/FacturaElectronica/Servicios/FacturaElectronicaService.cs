@@ -542,12 +542,15 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.Servicios
                         {
                             respuesta.EstadoEnvio = documentoElectronico.EstadoEnvio;
                         }
-                        return respuesta;
                     }
                     else
                     {
-                        throw new Exception("el documento electrónico con clave numérica: " + strClave + " no se encuentra registrado en la empresa indicada. Consulte con su proveedor.");
+                        respuesta.IdEmpresa = intIdEmpresa;
+                        respuesta.ClaveNumerica = strClave;
+                        respuesta.Consecutivo = strConsecutivo;
+                        respuesta.EstadoEnvio = "noexiste";
                     }
+                    return respuesta;
                 }         
             }
             catch (Exception ex)
