@@ -1012,49 +1012,53 @@ Public Class FrmFactura
 
     Private Sub BtnImprimir_Click(sender As Object, e As EventArgs) Handles btnImprimir.Click
         If txtIdFactura.Text <> "" Then
-            comprobanteImpresion = New ModuloImpresion.clsComprobante With {
-                .usuario = FrmMenuPrincipal.usuarioGlobal,
-                .empresa = FrmMenuPrincipal.empresaGlobal,
-                .equipo = FrmMenuPrincipal.equipoGlobal,
-                .strId = txtIdFactura.Text,
-                .strVendedor = txtVendedor.Text,
-                .strNombre = txtNombreCliente.Text,
-                .strDocumento = txtDocumento.Text,
-                .strFecha = txtFecha.Text,
-                .strSubTotal = txtSubTotal.Text,
-                .strDescuento = txtDescuento.Text,
-                .strImpuesto = txtImpuesto.Text,
-                .strTotal = txtTotal.Text,
-                .strPagoCon = txtPagoDelCliente.Text,
-                .strCambio = txtCambio.Text,
-                .strClaveNumerica = factura.IdDocElectronico
-            }
-            arrDetalleFactura = New List(Of ModuloImpresion.clsDetalleComprobante)
-            For I = 0 To dtbDetalleFactura.Rows.Count - 1
-                detalleComprobante = New ModuloImpresion.clsDetalleComprobante With {
+            Try
+                comprobanteImpresion = New ModuloImpresion.clsComprobante With {
+                    .usuario = FrmMenuPrincipal.usuarioGlobal,
+                    .empresa = FrmMenuPrincipal.empresaGlobal,
+                    .equipo = FrmMenuPrincipal.equipoGlobal,
+                    .strId = txtIdFactura.Text,
+                    .strVendedor = txtVendedor.Text,
+                    .strNombre = txtNombreCliente.Text,
+                    .strDocumento = txtDocumento.Text,
+                    .strFecha = txtFecha.Text,
+                    .strSubTotal = txtSubTotal.Text,
+                    .strDescuento = txtDescuento.Text,
+                    .strImpuesto = txtImpuesto.Text,
+                    .strTotal = txtTotal.Text,
+                    .strPagoCon = txtPagoDelCliente.Text,
+                    .strCambio = txtCambio.Text
+                }
+                If factura.IdDocElectronico IsNot Nothing Then
+                    comprobanteImpresion.strClaveNumerica = factura.IdDocElectronico
+                Else
+                    comprobanteImpresion.strClaveNumerica = "09876543212345678909876543212345678909876543212345"
+                End If
+                arrDetalleFactura = New List(Of ModuloImpresion.clsDetalleComprobante)
+                For I = 0 To dtbDetalleFactura.Rows.Count - 1
+                    detalleComprobante = New ModuloImpresion.clsDetalleComprobante With {
                     .strDescripcion = dtbDetalleFactura.Rows(I).Item(1) + "-" + dtbDetalleFactura.Rows(I).Item(2),
                     .strCantidad = CDbl(dtbDetalleFactura.Rows(I).Item(3)),
                     .strPrecio = FormatNumber(dtbDetalleFactura.Rows(I).Item(4), 2),
                     .strTotalLinea = FormatNumber(CDbl(dtbDetalleFactura.Rows(I).Item(3)) * CDbl(dtbDetalleFactura.Rows(I).Item(4)), 2),
                     .strExcento = IIf(dtbDetalleFactura.Rows(I).Item(6) = 0, "G", "E")
                 }
-                arrDetalleFactura.Add(detalleComprobante)
-            Next
-            comprobanteImpresion.arrDetalleComprobante = arrDetalleFactura
-            arrDesglosePago = New List(Of ModuloImpresion.clsDesgloseFormaPago)
-            For I = 0 To dtbDesglosePago.Rows.Count - 1
-                desglosePagoImpresion = New ModuloImpresion.clsDesgloseFormaPago With {
+                    arrDetalleFactura.Add(detalleComprobante)
+                Next
+                comprobanteImpresion.arrDetalleComprobante = arrDetalleFactura
+                arrDesglosePago = New List(Of ModuloImpresion.clsDesgloseFormaPago)
+                For I = 0 To dtbDesglosePago.Rows.Count - 1
+                    desglosePagoImpresion = New ModuloImpresion.clsDesgloseFormaPago With {
                     .strDescripcion = dtbDesglosePago.Rows(I).Item(2),
                     .strMonto = FormatNumber(dtbDesglosePago.Rows(I).Item(10)),
                     .strNroDoc = dtbDesglosePago.Rows(I).Item(5)
                 }
-                arrDesglosePago.Add(desglosePagoImpresion)
-            Next
-            comprobanteImpresion.arrDesglosePago = arrDesglosePago
-            Try
+                    arrDesglosePago.Add(desglosePagoImpresion)
+                Next
+                comprobanteImpresion.arrDesglosePago = arrDesglosePago
                 ModuloImpresion.ImprimirFactura(comprobanteImpresion)
             Catch ex As Exception
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Error al tratar de imprimir: " & ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
         End If

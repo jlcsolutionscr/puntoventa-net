@@ -21,9 +21,9 @@ Public Class FrmDatabase
             Dim dsDataSet As New DataSet()
             Dim strSQLString As String
             If strFormulario = "Empresa" Then
-                strSQLString = "SELECT SCHEMA_NAME AS BaseDeDatos FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME NOT IN('mysql','information_schema','performance_schema','test')"
+                strSQLString = "SELECT SCHEMA_NAME AS BaseDeDatos FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME NOT IN('mysql','information_schema','performance_schema','test', 'sys')"
             Else
-                strSQLString = "SELECT SCHEMA_NAME AS BaseDeDatos FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME NOT IN('information_schema','performance_schema','test')"
+                strSQLString = "SELECT SCHEMA_NAME AS BaseDeDatos FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME NOT IN('information_schema','performance_schema','test'', 'sys')"
             End If
             Dim ocxConexion As MySqlConnection = New MySqlConnection(FrmMDIMenu.strCadenaConexion)
             ocxConexion.Open()
