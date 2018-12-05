@@ -105,6 +105,7 @@ CREATE TABLE documentoelectronico (
   Respuesta BLOB NULL,
   EstadoEnvio VARCHAR(20) NOT NULL,
   CorreoNotificacion VARCHAR(200) NOT NULL,
+  ErrorEnvio VARCHAR(500) NULL,
   PRIMARY KEY(IdDocumento),
   FOREIGN KEY(IdEmpresa)
     REFERENCES Empresa(IdEmpresa)

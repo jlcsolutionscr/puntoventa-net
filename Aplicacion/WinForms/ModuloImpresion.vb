@@ -263,19 +263,20 @@ Public Class ModuloImpresion
     Private Shared Function ImprimirEncabezado(objEquipo As DetalleRegistro, objEmpresa As Empresa, strFecha As String, Optional strCodigoUsuario As String = "") As String
         Dim strCadena As String = strFecha & strCodigoUsuario.PadLeft(30, " ") & Chr(13) & Chr(10)
         If objEmpresa.NombreComercial.Length > 40 Then
-            strCadena += objEmpresa.NombreComercial.Substring(0, 40) & Chr(13) & Chr(10) & Chr(13) & Chr(10)
+            strCadena += objEmpresa.NombreComercial.Substring(0, 40) & Chr(13) & Chr(10)
         Else
-            strCadena += "".PadRight(((40 - objEmpresa.NombreComercial.Length) / 2) - 10, " ") & objEmpresa.NombreComercial & Chr(13) & Chr(10) & Chr(13) & Chr(10)
+            strCadena += "".PadRight((40 - objEmpresa.NombreComercial.Length) / 2, " ") & objEmpresa.NombreComercial & Chr(13) & Chr(10)
         End If
+        strCadena += Chr(13) & Chr(10)
         If objEmpresa.NombreEmpresa.Length > 40 Then
             strCadena += objEmpresa.NombreEmpresa.Substring(0, 40) & Chr(13) & Chr(10)
         Else
-            strCadena += "".PadRight(((40 - objEmpresa.NombreEmpresa.Length) / 2) - 10, " ") & objEmpresa.NombreEmpresa & Chr(13) & Chr(10)
+            strCadena += "".PadRight((40 - objEmpresa.NombreEmpresa.Length) / 2, " ") & objEmpresa.NombreEmpresa & Chr(13) & Chr(10)
         End If
         If objEmpresa.Identificacion.Length > 40 Then
             strCadena += objEmpresa.Identificacion.Substring(0, 40) & Chr(13) & Chr(10)
         Else
-            strCadena += "".PadRight(((40 - objEmpresa.Identificacion.Length) / 2) - 10, " ") & objEmpresa.Identificacion & Chr(13) & Chr(10)
+            strCadena += "".PadRight((40 - objEmpresa.Identificacion.Length) / 2, " ") & objEmpresa.Identificacion & Chr(13) & Chr(10)
         End If
         Dim strDireccion1 As String = ""
         Dim strDireccion2 As String = ""

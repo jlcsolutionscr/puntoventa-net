@@ -401,36 +401,54 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.Servicios
                     validarToken(dbContext, empresaLocal, configuracion.ServicioTokenURL, configuracion.ClientId);
                     if (empresaLocal.AccessToken != null)
                     {
-                        string JsonObject = "{\"clave\": \"" + datos.ClaveNumerica + "\",\"fecha\": \"" + documento.Fecha.ToString("yyyy-MM-ddTHH:mm:ssss") + "\"," +
-                            "\"emisor\": {\"tipoIdentificacion\": \"" + datos.TipoIdentificacionEmisor + "\"," +
-                            "\"numeroIdentificacion\": \"" + datos.IdentificacionEmisor + "\"},";
-                        if (datos.TipoIdentificacionReceptor.Length > 0)
-                        {
-                            JsonObject += "\"receptor\": {\"tipoIdentificacion\": \"" + datos.TipoIdentificacionReceptor + "\"," +
-                            "\"numeroIdentificacion\": \"" + datos.IdentificacionReceptor + "\"},";
-                        }
-                        if (configuracion.CallbackURL != "")
-                            JsonObject += "\"callbackUrl\": \"" + configuracion.CallbackURL + "\",";
-                        if (datos.EsMensajeReceptor == "S")
-                            JsonObject += "\"consecutivoReceptor\": \"" + datos.Consecutivo + "\",";
-                        JsonObject += "\"comprobanteXml\": \"" + strComprobanteXML + "\"}";
+                        documento.EstadoEnvio = "enviado";
+                        dbContext.NotificarModificacion(documento);
+                        dbContext.Commit();
                         try
                         {
+                            string JsonObject = "{\"clave\": \"" + datos.ClaveNumerica + "\",\"fecha\": \"" + documento.Fecha.ToString("yyyy-MM-ddTHH:mm:ssss") + "\"," +
+                                "\"emisor\": {\"tipoIdentificacion\": \"" + datos.TipoIdentificacionEmisor + "\"," +
+                                "\"numeroIdentificacion\": \"" + datos.IdentificacionEmisor + "\"},";
+                            if (datos.TipoIdentificacionReceptor.Length > 0)
+                            {
+                                JsonObject += "\"receptor\": {\"tipoIdentificacion\": \"" + datos.TipoIdentificacionReceptor + "\"," +
+                                "\"numeroIdentificacion\": \"" + datos.IdentificacionReceptor + "\"},";
+                            }
+                            if (configuracion.CallbackURL != "")
+                                JsonObject += "\"callbackUrl\": \"" + configuracion.CallbackURL + "\",";
+                            if (datos.EsMensajeReceptor == "S")
+                                JsonObject += "\"consecutivoReceptor\": \"" + datos.Consecutivo + "\",";
+                            JsonObject += "\"comprobanteXml\": \"" + strComprobanteXML + "\"}";
                             StringContent contentJson = new StringContent(JsonObject, Encoding.UTF8, "application/json");
                             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", empresaLocal.AccessToken);
                             HttpResponseMessage httpResponse = httpClient.PostAsync(configuracion.ComprobantesElectronicosURL + "/recepcion", contentJson).Result;
                             string responseContent = httpResponse.Content.ReadAsStringAsync().Result;
-                            if (httpResponse.StatusCode == HttpStatusCode.Accepted)
+                            if (httpResponse.StatusCode != HttpStatusCode.Accepted)
                             {
-                                documento.EstadoEnvio = "enviado";
+                                string strMensajeError = httpResponse.ReasonPhrase;
+                                if (httpResponse.ReasonPhrase.Length > 500) strMensajeError = httpResponse.ReasonPhrase.Substring(0, 500);
+                                documento.EstadoEnvio = "registrado";
+                                documento.ErrorEnvio = strMensajeError;
                                 dbContext.NotificarModificacion(documento);
                                 dbContext.Commit();
                             }
                         }
                         catch (Exception ex)
                         {
+                            string strMensajeError = ex.Message;
+                            if (ex.Message.Length > 500) strMensajeError = ex.Message.Substring(0, 500);
+                            documento.EstadoEnvio = "registrado";
+                            documento.ErrorEnvio = strMensajeError;
+                            dbContext.NotificarModificacion(documento);
+                            dbContext.Commit();
                             throw ex;
                         }
+                    } else
+                    {
+                        documento.EstadoEnvio = "registrado";
+                        documento.ErrorEnvio = "No se logro obtener un token válido para la empresa correspondiente al documento electrónico";
+                        dbContext.NotificarModificacion(documento);
+                        dbContext.Commit();
                     }
                 }
             }
@@ -455,33 +473,54 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.Servicios
                     string strComprobanteXML = Convert.ToBase64String(documento.DatosDocumento);
                     validarToken(dbContext, empresaLocal, configuracion.ServicioTokenURL, configuracion.ClientId);
                     if (empresaLocal.AccessToken == null) throw new Exception("No se logró obtener un token valido con los parámetros proporcionados. Consulte con su proveedor.");
-                    string JsonObject = "{\"clave\": \"" + documento.ClaveNumerica + "\",\"fecha\": \"" + documento.Fecha.ToString("yyyy-MM-ddTHH:mm:ssss") + "\"," +
-                        "\"emisor\": {\"tipoIdentificacion\": \"" + datos.TipoIdentificacionEmisor + "\"," +
-                        "\"numeroIdentificacion\": \"" + datos.IdentificacionEmisor + "\"}," +
-                        "\"receptor\": {\"tipoIdentificacion\": \"" + datos.TipoIdentificacionReceptor + "\"," +
-                        "\"numeroIdentificacion\": \"" + datos.IdentificacionReceptor + "\"},";
-                    if (configuracion.CallbackURL != "")
-                        JsonObject += "\"callbackUrl\": \"" + configuracion.CallbackURL + "\",";
-                    if (datos.EsMensajeReceptor == "S")
-                    {
-                        JsonObject += "\"consecutivoReceptor\": \"" + datos.Consecutivo + "\",";
-                    }
-                    JsonObject += "\"comprobanteXml\": \"" + strComprobanteXML + "\"}";
+                    documento.EstadoEnvio = "enviado";
+                    dbContext.NotificarModificacion(documento);
+                    dbContext.Commit();
                     try
                     {
+                        string JsonObject = "{\"clave\": \"" + documento.ClaveNumerica + "\",\"fecha\": \"" + documento.Fecha.ToString("yyyy-MM-ddTHH:mm:ssss") + "\"," +
+                            "\"emisor\": {\"tipoIdentificacion\": \"" + datos.TipoIdentificacionEmisor + "\"," +
+                            "\"numeroIdentificacion\": \"" + datos.IdentificacionEmisor + "\"},";
+                        if (datos.TipoIdentificacionReceptor.Length > 0)
+                        {
+                            JsonObject += "\"receptor\": {\"tipoIdentificacion\": \"" + datos.TipoIdentificacionReceptor + "\"," +
+                            "\"numeroIdentificacion\": \"" + datos.IdentificacionReceptor + "\"},";
+                        }
+                        if (configuracion.CallbackURL != "")
+                            JsonObject += "\"callbackUrl\": \"" + configuracion.CallbackURL + "\",";
+                        if (datos.EsMensajeReceptor == "S")
+                        {
+                            JsonObject += "\"consecutivoReceptor\": \"" + datos.Consecutivo + "\",";
+                        }
+                        JsonObject += "\"comprobanteXml\": \"" + strComprobanteXML + "\"}";
                         StringContent contentJson = new StringContent(JsonObject, Encoding.UTF8, "application/json");
                         httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", empresaLocal.AccessToken);
                         HttpResponseMessage httpResponse = httpClient.PostAsync(configuracion.ComprobantesElectronicosURL + "/recepcion", contentJson).Result;
                         string responseContent = httpResponse.Content.ReadAsStringAsync().Result;
-                        if (httpResponse.StatusCode == HttpStatusCode.Accepted)
+                        if (httpResponse.StatusCode != HttpStatusCode.Accepted)
                         {
-                            documento.EstadoEnvio = "enviado";
+                            string strMensajeError = "";
+                            if (httpResponse.Headers.Where(x => x.Key == "X-Error-Cause").FirstOrDefault().Value != null)
+                            {
+                                IList<string> headers = httpResponse.Headers.Where(x => x.Key == "X-Error-Cause").FirstOrDefault().Value.ToList();
+                                if (headers.Count > 0)
+                                    strMensajeError = headers[0];
+                            }
+                            if (strMensajeError.Length > 500) strMensajeError = strMensajeError.Substring(0, 500);
+                            documento.EstadoEnvio = "registrado";
+                            documento.ErrorEnvio = strMensajeError;
                             dbContext.NotificarModificacion(documento);
                             dbContext.Commit();
                         }
                     }
                     catch (Exception ex)
                     {
+                        string strMensajeError = ex.Message;
+                        if (ex.Message.Length > 500) strMensajeError = ex.Message.Substring(0, 500);
+                        documento.EstadoEnvio = "registrado";
+                        documento.ErrorEnvio = strMensajeError;
+                        dbContext.NotificarModificacion(documento);
+                        dbContext.Commit();
                         throw ex;
                     }
                 }
@@ -527,9 +566,12 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.Servicios
                             }
                             else
                             {
-                                IList<string> headers = httpResponse.Headers.Where(x => x.Key == "X-Error-Cause").FirstOrDefault().Value.ToList();
-                                if (headers.Count > 0)
-                                    respuesta.RespuestaHacienda = headers[0];
+                                if (httpResponse.Headers.Where(x => x.Key == "X-Error-Cause").FirstOrDefault().Value != null)
+                                {
+                                    IList<string> headers = httpResponse.Headers.Where(x => x.Key == "X-Error-Cause").FirstOrDefault().Value.ToList();
+                                    if (headers.Count > 0)
+                                        respuesta.RespuestaHacienda = headers[0];
+                                }
                                 respuesta.EstadoEnvio = "registrado";
                             }
                         }

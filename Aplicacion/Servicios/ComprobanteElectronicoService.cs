@@ -535,14 +535,55 @@ namespace LeandroSoftware.PuntoVenta.Servicios
                 MensajeReceptor mensajeReceptor = new MensajeReceptor
                 {
                     Clave = documentoXml.GetElementsByTagName("Clave").Item(0).InnerText,
-                    NumeroCedulaEmisor = documentoXml.GetElementsByTagName("Emisor").Item(0).ChildNodes.Item(1).ChildNodes.Item(1).InnerText,
+                    
                     FechaEmisionDoc = DateTime.Parse(documentoXml.GetElementsByTagName("FechaEmision").Item(0).InnerText, CultureInfo.InvariantCulture),
                     Mensaje = (MensajeReceptorMensaje)intMensaje,
                     DetalleMensaje = "Mensaje de receptor con estado: " + (intMensaje == 0 ? "Aceptado" : intMensaje == 1 ? "Aceptado parcialmente" : "Rechazado"),
                     TotalFactura = decimal.Parse(documentoXml.GetElementsByTagName("TotalComprobante").Item(0).InnerText),
-                    NumeroCedulaReceptor = documentoXml.GetElementsByTagName("Receptor").Item(0).ChildNodes.Item(1).ChildNodes.Item(1).InnerText,
                     NumeroConsecutivoReceptor = ""
                 };
+                if (documentoXml.GetElementsByTagName("Emisor") != null)
+                {
+                    XmlNode emisorNode = documentoXml.GetElementsByTagName("Emisor").Item(0).ChildNodes.Item(1);
+                    if (emisorNode.Name == "IdentificacionExtranjero")
+                        mensajeReceptor.NumeroCedulaEmisor = emisorNode.InnerText;
+                    else
+                    {
+                        string strNumeroCedulaEmisor = "";
+                        foreach (XmlNode item in emisorNode.ChildNodes)
+                        {
+                            if (item.Name == "Numero")
+                                strNumeroCedulaEmisor = item.InnerText;
+                        }
+                        if (strNumeroCedulaEmisor != "")
+                            mensajeReceptor.NumeroCedulaEmisor = strNumeroCedulaEmisor;
+                        else
+                            throw new Exception("No se encuentra el número de identificacion del EMISOR en el archivo XML.");
+                    }
+                }
+                else
+                    throw new Exception("No se encuentra el nodo EMISOR en el archivo XML.");
+                if (documentoXml.GetElementsByTagName("Receptor") != null)
+                {
+                    XmlNode receptorNode = documentoXml.GetElementsByTagName("Receptor").Item(0).ChildNodes.Item(1);
+                    if (receptorNode.Name == "IdentificacionExtranjero")
+                        mensajeReceptor.NumeroCedulaReceptor = receptorNode.InnerText;
+                    else
+                    {
+                        string strNumeroCedulaReceptor = "";
+                        foreach (XmlNode item in receptorNode.ChildNodes)
+                        {
+                            if (item.Name == "Numero")
+                                strNumeroCedulaReceptor = item.InnerText;
+                        }
+                        if (strNumeroCedulaReceptor != "")
+                            mensajeReceptor.NumeroCedulaReceptor = strNumeroCedulaReceptor;
+                        else
+                            throw new Exception("No se encuentra el número de identificacion del RECEPTOR en el archivo XML.");
+                    }
+                }
+                else
+                    throw new Exception("No se encuentra el nodo RECEPTOR en el archivo XML.");
                 if (documentoXml.GetElementsByTagName("TotalImpuesto").Count > 0)
                 {
                     string strTotalImpuesto = documentoXml.GetElementsByTagName("TotalImpuesto").Item(0).InnerText;
@@ -769,7 +810,7 @@ namespace LeandroSoftware.PuntoVenta.Servicios
             }
         }
 
-        public static void RegistrarDocumentoElectronico(Empresa empresa, DatosDocumentoElectronicoDTO documento)
+        public static async Task<bool> RegistrarDocumentoElectronico(Empresa empresa, DatosDocumentoElectronicoDTO documento)
         {
             Uri uri = new Uri(empresa.ServicioFacturaElectronicaURL + "/registrardocumentoelectronico");
             string jsonRequest = new JavaScriptSerializer().Serialize(documento);
@@ -777,13 +818,14 @@ namespace LeandroSoftware.PuntoVenta.Servicios
             Task<HttpResponseMessage> task1 = client.PostAsync(uri, stringContent);
             try
             {
-                task1.Wait();
-                if (!task1.Result.IsSuccessStatusCode)
+                HttpResponseMessage httpRespuesta = await task1;
+                if (!httpRespuesta.IsSuccessStatusCode)
                 {
-                    if (task1.Result.ReasonPhrase == "Service Unavailable")
+                    if (httpRespuesta.ReasonPhrase == "Service Unavailable")
                         throw new Exception("Service Unavailable");
-                    throw new Exception("Error en el procesamiento de algunos o todos los documentos electrónicos. Por favor realice la consulta del estado de nuevo.");
+                    throw new Exception("Error en el registro del documento electrónico: " + httpRespuesta.ReasonPhrase);
                 }
+                return true;
             }
             catch (AggregateException ex)
             {
@@ -796,7 +838,7 @@ namespace LeandroSoftware.PuntoVenta.Servicios
             }
         }
 
-        public static void EnviarDocumentoElectronico(Empresa empresa, DatosDocumentoElectronicoDTO documento)
+        public static async Task<bool> EnviarDocumentoElectronico(Empresa empresa, DatosDocumentoElectronicoDTO documento)
         {
             Uri uri = new Uri(empresa.ServicioFacturaElectronicaURL + "/enviardocumentoelectronico");
             string jsonRequest = new JavaScriptSerializer().Serialize(documento);
@@ -804,13 +846,14 @@ namespace LeandroSoftware.PuntoVenta.Servicios
             Task<HttpResponseMessage> task1 = client.PostAsync(uri, stringContent);
             try
             {
-                task1.Wait();
-                if (!task1.Result.IsSuccessStatusCode)
+                HttpResponseMessage httpRespuesta = await task1;
+                if (!httpRespuesta.IsSuccessStatusCode)
                 {
-                    if (task1.Result.ReasonPhrase == "Service Unavailable")
+                    if (httpRespuesta.ReasonPhrase == "Service Unavailable")
                         throw new Exception("Service Unavailable");
-                    throw new Exception("Error en el procesamiento de algunos o todos los documentos electrónicos. Por favor realice la consulta del estado de nuevo.");
+                    throw new Exception("Error en el envío del documento electrónico: " + httpRespuesta.ReasonPhrase);
                 }
+                return true;
             }
             catch (AggregateException ex)
             {

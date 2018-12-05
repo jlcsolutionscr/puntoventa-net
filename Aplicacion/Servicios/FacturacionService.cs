@@ -1647,9 +1647,9 @@ namespace LeandroSoftware.PuntoVenta.Servicios
                             }
                             else
                             {
+                                DatosDocumentoElectronicoDTO datosAProcesar = new DatosDocumentoElectronicoDTO();
                                 if (datos.EstadoEnvio == "noexiste")
                                 {
-                                    DatosDocumentoElectronicoDTO datosAProcesar = new DatosDocumentoElectronicoDTO();
                                     datosAProcesar.IdEmpresa = empresa.IdEmpresa;
                                     datosAProcesar.IdTipoDocumento = doc.IdTipoDocumento;
                                     datosAProcesar.ClaveNumerica = doc.ClaveNumerica;
@@ -1663,12 +1663,10 @@ namespace LeandroSoftware.PuntoVenta.Servicios
                                     datosAProcesar.CorreoNotificacion = doc.CorreoNotificacion;
                                     datosAProcesar.EstadoEnvio = datos.EstadoEnvio;
                                     datosAProcesar.DatosDocumento = Convert.ToBase64String(doc.DatosDocumento);
-                                    ComprobanteElectronicoService.RegistrarDocumentoElectronico(empresa, datosAProcesar);
-                                    doc.EstadoEnvio = "procesando";
+                                    bool resultado = await ComprobanteElectronicoService.RegistrarDocumentoElectronico(empresa, datosAProcesar);
                                 }
                                 else if (datos.EstadoEnvio == "registrado")
                                 {
-                                    DatosDocumentoElectronicoDTO datosAProcesar = new DatosDocumentoElectronicoDTO();
                                     datosAProcesar.IdEmpresa = empresa.IdEmpresa;
                                     datosAProcesar.IdTipoDocumento = doc.IdTipoDocumento;
                                     datosAProcesar.ClaveNumerica = doc.ClaveNumerica;
@@ -1682,11 +1680,7 @@ namespace LeandroSoftware.PuntoVenta.Servicios
                                     datosAProcesar.CorreoNotificacion = doc.CorreoNotificacion;
                                     datosAProcesar.EstadoEnvio = datos.EstadoEnvio;
                                     datosAProcesar.DatosDocumento = Convert.ToBase64String(doc.DatosDocumento);
-                                    ComprobanteElectronicoService.EnviarDocumentoElectronico(empresa, datosAProcesar);
-                                }
-                                else
-                                {
-                                    doc.EstadoEnvio = datos.EstadoEnvio;
+                                    bool resultado = await ComprobanteElectronicoService.EnviarDocumentoElectronico(empresa, datosAProcesar);
                                 }
                                 listado.Add(doc);
                             }
@@ -1770,7 +1764,7 @@ namespace LeandroSoftware.PuntoVenta.Servicios
                         throw new Exception("La empresa asignada a la transacción no existe.");
                     if (empresa.CierreEnEjecucion)
                         throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
-                    var listaProcesados = dbContext.DocumentoElectronicoRepository.Where(x => x.IdEmpresa == intIdEmpresa)
+                    var listaProcesados = dbContext.DocumentoElectronicoRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.EstadoEnvio == "aceptado" || x.EstadoEnvio == "rechazado")
                         .OrderByDescending(x => x.IdDocumento)
                         .Skip((numPagina - 1) * cantRec).Take(cantRec).ToList();
                     return listaProcesados.ToList();
