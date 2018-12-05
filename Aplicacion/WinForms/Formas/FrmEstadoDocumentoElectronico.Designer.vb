@@ -23,22 +23,22 @@ Partial Class FrmEstadoDocumentoElectronico
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FrmEstadoDocumentoElectronico))
-        Me.btnEnviar = New System.Windows.Forms.Button()
+        Me.btnActualizar = New System.Windows.Forms.Button()
         Me.dgvDatos = New System.Windows.Forms.DataGridView()
         Me.picLoader = New System.Windows.Forms.PictureBox()
         CType(Me.dgvDatos, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.picLoader, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
-        'btnEnviar
+        'btnActualizar
         '
-        Me.btnEnviar.Location = New System.Drawing.Point(609, 429)
-        Me.btnEnviar.Name = "btnEnviar"
-        Me.btnEnviar.Size = New System.Drawing.Size(173, 22)
-        Me.btnEnviar.TabIndex = 31
-        Me.btnEnviar.TabStop = False
-        Me.btnEnviar.Text = "Enviar Documentos pendientes"
-        Me.btnEnviar.UseVisualStyleBackColor = True
+        Me.btnActualizar.Location = New System.Drawing.Point(672, 429)
+        Me.btnActualizar.Name = "btnActualizar"
+        Me.btnActualizar.Size = New System.Drawing.Size(110, 22)
+        Me.btnActualizar.TabIndex = 31
+        Me.btnActualizar.TabStop = False
+        Me.btnActualizar.Text = "Actualizar listado"
+        Me.btnActualizar.UseVisualStyleBackColor = True
         '
         'dgvDatos
         '
@@ -78,7 +78,7 @@ Partial Class FrmEstadoDocumentoElectronico
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(795, 463)
         Me.Controls.Add(Me.picLoader)
-        Me.Controls.Add(Me.btnEnviar)
+        Me.Controls.Add(Me.btnActualizar)
         Me.Controls.Add(Me.dgvDatos)
         Me.Name = "FrmEstadoDocumentoElectronico"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
@@ -88,7 +88,7 @@ Partial Class FrmEstadoDocumentoElectronico
         Me.ResumeLayout(False)
 
     End Sub
-    Friend WithEvents btnEnviar As Button
+    Friend WithEvents btnActualizar As Button
     Friend WithEvents dgvDatos As DataGridView
     Friend WithEvents picLoader As PictureBox
 End Class

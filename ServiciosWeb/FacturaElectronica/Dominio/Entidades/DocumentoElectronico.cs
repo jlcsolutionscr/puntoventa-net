@@ -22,6 +22,7 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.Dominio.Entidades
         public byte[] DatosDocumento { get; set; }
         public byte[] Respuesta { get; set; }
         public string EstadoEnvio { get; set; }
+        public string ErrorEnvio { get; set; }
         public string CorreoNotificacion { get; set; }
     }
 }

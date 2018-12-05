@@ -556,45 +556,45 @@ Public Class FrmMenuPrincipal
             .NullValue = "0",
             .Alignment = DataGridViewContentAlignment.MiddleRight
         }
-
         dgvInteger = New DataGridViewCellStyle With {
             .Format = "F0",
             .NullValue = "0",
             .Alignment = DataGridViewContentAlignment.MiddleCenter
         }
-        picLoader.Visible = True
+        If empresaGlobal.FacturaElectronica Then
+            picLoader.Visible = True
+            Try
+                Dim empresaDTO As EmpresaDTO = Await ComprobanteElectronicoService.ConsultarEmpresa(empresaGlobal)
+                If empresaDTO.IdEmpresa Is Nothing Then
+                    MessageBox.Show("La empresa no se encuentra registrada en el servicio de facturación electrónica. Contacte a su Proveedor. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                    Close()
+                    Exit Sub
+                End If
+                If empresaDTO.PermiteFacturar = "N" Then
+                    MessageBox.Show("La empresa no se encuentra activa para emitir documentos electrónicos. Contacte a su Proveedor. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                    Close()
+                    Exit Sub
+                End If
+            Catch
+                MessageBox.Show("Error de conexión con el servicio web de factura electrónica. Por verifique su conexión a internet e intente más tarde. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                Close()
+                Exit Sub
+            End Try
+        End If
+        picLoader.Visible = False
+        Dim formInicio As New FrmInicio()
+        formInicio.ShowDialog()
+        mnuMenuPrincipal.Visible = True
         Try
-            Dim empresaDTO As EmpresaDTO = Await ComprobanteElectronicoService.ConsultarEmpresa(empresaGlobal)
-            If empresaDTO.IdEmpresa Is Nothing Then
-                MessageBox.Show("La empresa no se encuentra registrada en el servicio de facturación electrónica. Contacte a su Proveedor. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-                Close()
-                Exit Sub
+            If empresaGlobal.FacturaElectronica Then
+                objMenu = mnuMenuPrincipal.Items("MnuDocElect")
+                objMenu.Visible = True
             End If
-            If empresaDTO.PermiteFacturar = "N" Then
-                MessageBox.Show("La empresa no se encuentra activa para emitir documentos electrónicos. Contacte a su Proveedor. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-                Close()
-                Exit Sub
-            Else
-                picLoader.Visible = False
-                Dim formInicio As New FrmInicio()
-                formInicio.ShowDialog()
-                mnuMenuPrincipal.Visible = True
-                Try
-                    If empresaGlobal.FacturaElectronica Then
-                        objMenu = mnuMenuPrincipal.Items("MnuDocElect")
-                        objMenu.Visible = True
-                    End If
-                    For Each permiso As RolePorUsuario In usuarioGlobal.RolePorUsuario
-                        objMenu = mnuMenuPrincipal.Items(permiso.Role.MenuPadre)
-                        objMenu.DropDownItems(permiso.Role.MenuItem).Visible = True
-                    Next
-                Catch ex As Exception
-                End Try
-            End If
-        Catch
-            MessageBox.Show("Error de conexión con el servicio web de factura electrónica. Por verifique su conexión a internet e intente más tarde. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-            Close()
-            Exit Sub
+            For Each permiso As RolePorUsuario In usuarioGlobal.RolePorUsuario
+                objMenu = mnuMenuPrincipal.Items(permiso.Role.MenuPadre)
+                objMenu.DropDownItems(permiso.Role.MenuItem).Visible = True
+            Next
+        Catch ex As Exception
         End Try
     End Sub
 #End Region

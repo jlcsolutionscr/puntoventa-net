@@ -535,14 +535,55 @@ namespace LeandroSoftware.PuntoVenta.Servicios
                 MensajeReceptor mensajeReceptor = new MensajeReceptor
                 {
                     Clave = documentoXml.GetElementsByTagName("Clave").Item(0).InnerText,
-                    NumeroCedulaEmisor = documentoXml.GetElementsByTagName("Emisor").Item(0).ChildNodes.Item(1).ChildNodes.Item(1).InnerText,
+                    
                     FechaEmisionDoc = DateTime.Parse(documentoXml.GetElementsByTagName("FechaEmision").Item(0).InnerText, CultureInfo.InvariantCulture),
                     Mensaje = (MensajeReceptorMensaje)intMensaje,
                     DetalleMensaje = "Mensaje de receptor con estado: " + (intMensaje == 0 ? "Aceptado" : intMensaje == 1 ? "Aceptado parcialmente" : "Rechazado"),
                     TotalFactura = decimal.Parse(documentoXml.GetElementsByTagName("TotalComprobante").Item(0).InnerText),
-                    NumeroCedulaReceptor = documentoXml.GetElementsByTagName("Receptor").Item(0).ChildNodes.Item(1).ChildNodes.Item(1).InnerText,
                     NumeroConsecutivoReceptor = ""
                 };
+                if (documentoXml.GetElementsByTagName("Emisor") != null)
+                {
+                    XmlNode emisorNode = documentoXml.GetElementsByTagName("Emisor").Item(0).ChildNodes.Item(1);
+                    if (emisorNode.Name == "IdentificacionExtranjero")
+                        mensajeReceptor.NumeroCedulaEmisor = emisorNode.InnerText;
+                    else
+                    {
+                        string strNumeroCedulaEmisor = "";
+                        foreach (XmlNode item in emisorNode.ChildNodes)
+                        {
+                            if (item.Name == "Numero")
+                                strNumeroCedulaEmisor = item.InnerText;
+                        }
+                        if (strNumeroCedulaEmisor != "")
+                            mensajeReceptor.NumeroCedulaEmisor = strNumeroCedulaEmisor;
+                        else
+                            throw new Exception("No se encuentra el número de identificacion del EMISOR en el archivo XML.");
+                    }
+                }
+                else
+                    throw new Exception("No se encuentra el nodo EMISOR en el archivo XML.");
+                if (documentoXml.GetElementsByTagName("Receptor") != null)
+                {
+                    XmlNode receptorNode = documentoXml.GetElementsByTagName("Receptor").Item(0).ChildNodes.Item(1);
+                    if (receptorNode.Name == "IdentificacionExtranjero")
+                        mensajeReceptor.NumeroCedulaReceptor = receptorNode.InnerText;
+                    else
+                    {
+                        string strNumeroCedulaReceptor = "";
+                        foreach (XmlNode item in receptorNode.ChildNodes)
+                        {
+                            if (item.Name == "Numero")
+                                strNumeroCedulaReceptor = item.InnerText;
+                        }
+                        if (strNumeroCedulaReceptor != "")
+                            mensajeReceptor.NumeroCedulaReceptor = strNumeroCedulaReceptor;
+                        else
+                            throw new Exception("No se encuentra el número de identificacion del RECEPTOR en el archivo XML.");
+                    }
+                }
+                else
+                    throw new Exception("No se encuentra el nodo RECEPTOR en el archivo XML.");
                 if (documentoXml.GetElementsByTagName("TotalImpuesto").Count > 0)
                 {
                     string strTotalImpuesto = documentoXml.GetElementsByTagName("TotalImpuesto").Item(0).InnerText;
@@ -738,7 +779,7 @@ namespace LeandroSoftware.PuntoVenta.Servicios
                     datos.CorreoNotificacion = strCorreoNotificacion;
                     datos.DatosDocumento = Convert.ToBase64String(signedDataEncoded);
                     // Envío de solicitud al servicio web de factura electrónica
-                    Task.Run(() => EnviarDocumentoElectronico(empresa, datos));
+                    Task.Run(() => RegistrarDocumentoElectronicoAsync(empresa, datos));
                     return strClaveNumerica;
                 }
                 else
@@ -752,13 +793,13 @@ namespace LeandroSoftware.PuntoVenta.Servicios
             }
         }
 
-        private static void EnviarDocumentoElectronico(Empresa empresa, DatosDocumentoElectronicoDTO datos)
+        private static void RegistrarDocumentoElectronicoAsync(Empresa empresa, DatosDocumentoElectronicoDTO datos)
         {
             try
             {
+                Uri uri = new Uri(empresa.ServicioFacturaElectronicaURL + "/registrardocumentoelectronico");
                 string jsonRequest = new JavaScriptSerializer().Serialize(datos);
                 StringContent stringContent = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
-                Uri uri = new Uri(empresa.ServicioFacturaElectronicaURL + "/registrardocumentoelectronico");
                 Task<HttpResponseMessage> task1 = client.PostAsync(uri, stringContent);
                 task1.Wait();
             }
@@ -766,6 +807,62 @@ namespace LeandroSoftware.PuntoVenta.Servicios
             {
                 Exception flattenEx = ex.Flatten();
                 log.Error("Error al enviar el el documento al servicio de facturación electrónica: ", flattenEx);
+            }
+        }
+
+        public static async Task<bool> RegistrarDocumentoElectronico(Empresa empresa, DatosDocumentoElectronicoDTO documento)
+        {
+            Uri uri = new Uri(empresa.ServicioFacturaElectronicaURL + "/registrardocumentoelectronico");
+            string jsonRequest = new JavaScriptSerializer().Serialize(documento);
+            StringContent stringContent = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
+            Task<HttpResponseMessage> task1 = client.PostAsync(uri, stringContent);
+            try
+            {
+                HttpResponseMessage httpRespuesta = await task1;
+                if (!httpRespuesta.IsSuccessStatusCode)
+                {
+                    if (httpRespuesta.ReasonPhrase == "Service Unavailable")
+                        throw new Exception("Service Unavailable");
+                    throw new Exception("Error en el registro del documento electrónico: " + httpRespuesta.ReasonPhrase);
+                }
+                return true;
+            }
+            catch (AggregateException ex)
+            {
+                Exception flattenEx = ex.Flatten();
+                throw flattenEx;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public static async Task<bool> EnviarDocumentoElectronico(Empresa empresa, DatosDocumentoElectronicoDTO documento)
+        {
+            Uri uri = new Uri(empresa.ServicioFacturaElectronicaURL + "/enviardocumentoelectronico");
+            string jsonRequest = new JavaScriptSerializer().Serialize(documento);
+            StringContent stringContent = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
+            Task<HttpResponseMessage> task1 = client.PostAsync(uri, stringContent);
+            try
+            {
+                HttpResponseMessage httpRespuesta = await task1;
+                if (!httpRespuesta.IsSuccessStatusCode)
+                {
+                    if (httpRespuesta.ReasonPhrase == "Service Unavailable")
+                        throw new Exception("Service Unavailable");
+                    throw new Exception("Error en el envío del documento electrónico: " + httpRespuesta.ReasonPhrase);
+                }
+                return true;
+            }
+            catch (AggregateException ex)
+            {
+                Exception flattenEx = ex.Flatten();
+                throw flattenEx;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
             }
         }
 
@@ -818,38 +915,6 @@ namespace LeandroSoftware.PuntoVenta.Servicios
                 JavaScriptSerializer json_serializer = new JavaScriptSerializer();
                 DatosDocumentoElectronicoDTO datos = json_serializer.Deserialize<DatosDocumentoElectronicoDTO>(strListado);
                 return datos;
-            }
-            catch (AggregateException ex)
-            {
-                Exception flattenEx = ex.Flatten();
-                throw flattenEx;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
-        public static void ProcesarDocumentoElectronico(Empresa empresa, DatosDocumentoElectronicoDTO documento)
-        {
-            string strEndpoint = "";
-            if (documento.EstadoEnvio == "pendiente")
-                strEndpoint = "/registrardocumentoelectronico";
-            else if (documento.EstadoEnvio == "registrado")
-                strEndpoint = "/enviardocumentoelectronico";
-            Uri uri = new Uri(empresa.ServicioFacturaElectronicaURL + strEndpoint);
-            string jsonRequest = new JavaScriptSerializer().Serialize(documento);
-            StringContent stringContent = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
-            Task<HttpResponseMessage> task1 = client.PostAsync(uri, stringContent);
-            try
-            {
-                task1.Wait();
-                if (!task1.Result.IsSuccessStatusCode)
-                {
-                    if (task1.Result.ReasonPhrase == "Service Unavailable")
-                        throw new Exception("Service Unavailable");
-                    throw new Exception("Error en el procesamiento de algunos o todos los documentos electrónicos. Por favor realice la consulta del estado de nuevo.");
-                }
             }
             catch (AggregateException ex)
             {

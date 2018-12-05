@@ -1,0 +1,121 @@
+2018-12-04 08:06:59,077 [19] ERROR LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF.FacturaElectronicaWCF - Error al consumir endpoint 'ConsultarEstadoDocumentoElectronico': 
+System.AggregateException: One or more errors occurred. ---> System.Net.Http.HttpRequestException: Error al enviar la solicitud. ---> System.Net.WebException: No se puede resolver el nombre remoto: 'idp.comprobanteselectronicos.go.cr'
+   at System.Net.HttpWebRequest.EndGetRequestStream(IAsyncResult asyncResult, TransportContext& context)
+   at System.Net.Http.HttpClientHandler.GetRequestStreamCallback(IAsyncResult ar)
+   --- End of inner exception stack trace ---
+   at LeandroSoftware.FacturaElectronicaHacienda.Servicios.FacturaElectronicaService.<ObtenerToken>d__5.MoveNext() in C:\Users\Jason\Development\puntoventa.NET\ServiciosWeb\FacturaElectronica\Servicios\FacturaElectronicaService.cs:line 132
+   --- End of inner exception stack trace ---
+   at LeandroSoftware.FacturaElectronicaHacienda.Servicios.FacturaElectronicaService.ConsultarDocumentoElectronico(Int32 intIdEmpresa, String strClave, String strConsecutivo, DatosConfiguracion configuracion) in C:\Users\Jason\Development\puntoventa.NET\ServiciosWeb\FacturaElectronica\Servicios\FacturaElectronicaService.cs:line 558
+   at LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF.FacturaElectronicaWCF.ConsultarDocumentoElectronico(String empresa, String clave, String consecutivo) in C:\Users\Jason\Development\puntoventa.NET\ServiciosWeb\FacturaElectronica\ServicioWCF\FacturaElectronicaWCF.svc.cs:line 127
+---> (Inner Exception #0) System.Net.Http.HttpRequestException: Error al enviar la solicitud. ---> System.Net.WebException: No se puede resolver el nombre remoto: 'idp.comprobanteselectronicos.go.cr'
+   at System.Net.HttpWebRequest.EndGetRequestStream(IAsyncResult asyncResult, TransportContext& context)
+   at System.Net.Http.HttpClientHandler.GetRequestStreamCallback(IAsyncResult ar)
+   --- End of inner exception stack trace ---
+   at LeandroSoftware.FacturaElectronicaHacienda.Servicios.FacturaElectronicaService.<ObtenerToken>d__5.MoveNext() in C:\Users\Jason\Development\puntoventa.NET\ServiciosWeb\FacturaElectronica\Servicios\FacturaElectronicaService.cs:line 132<---
+
+2018-12-04 08:07:06,639 [19] ERROR LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF.FacturaElectronicaWCF - Error al consumir endpoint 'ConsultarEstadoDocumentoElectronico': 
+System.ArgumentNullException: Value cannot be null.
+Parameter name: source
+   at LeandroSoftware.FacturaElectronicaHacienda.Servicios.FacturaElectronicaService.ConsultarDocumentoElectronico(Int32 intIdEmpresa, String strClave, String strConsecutivo, DatosConfiguracion configuracion) in C:\Users\Jason\Development\puntoventa.NET\ServiciosWeb\FacturaElectronica\Servicios\FacturaElectronicaService.cs:line 558
+   at LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF.FacturaElectronicaWCF.ConsultarDocumentoElectronico(String empresa, String clave, String consecutivo) in C:\Users\Jason\Development\puntoventa.NET\ServiciosWeb\FacturaElectronica\ServicioWCF\FacturaElectronicaWCF.svc.cs:line 127
+2018-12-04 08:07:11,530 [19] ERROR LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF.FacturaElectronicaWCF - Error al consumir endpoint 'ConsultarEstadoDocumentoElectronico': 
+System.ArgumentNullException: Value cannot be null.
+Parameter name: source
+   at LeandroSoftware.FacturaElectronicaHacienda.Servicios.FacturaElectronicaService.ConsultarDocumentoElectronico(Int32 intIdEmpresa, String strClave, String strConsecutivo, DatosConfiguracion configuracion) in C:\Users\Jason\Development\puntoventa.NET\ServiciosWeb\FacturaElectronica\Servicios\FacturaElectronicaService.cs:line 558
+   at LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF.FacturaElectronicaWCF.ConsultarDocumentoElectronico(String empresa, String clave, String consecutivo) in C:\Users\Jason\Development\puntoventa.NET\ServiciosWeb\FacturaElectronica\ServicioWCF\FacturaElectronicaWCF.svc.cs:line 127
+2018-12-04 08:07:15,407 [19] ERROR LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF.FacturaElectronicaWCF - Error al consumir endpoint 'ConsultarEstadoDocumentoElectronico': 
+System.ArgumentNullException: Value cannot be null.
+Parameter name: source
+   at LeandroSoftware.FacturaElectronicaHacienda.Servicios.FacturaElectronicaService.ConsultarDocumentoElectronico(Int32 intIdEmpresa, String strClave, String strConsecutivo, DatosConfiguracion configuracion) in C:\Users\Jason\Development\puntoventa.NET\ServiciosWeb\FacturaElectronica\Servicios\FacturaElectronicaService.cs:line 558
+   at LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF.FacturaElectronicaWCF.ConsultarDocumentoElectronico(String empresa, String clave, String consecutivo) in C:\Users\Jason\Development\puntoventa.NET\ServiciosWeb\FacturaElectronica\ServicioWCF\FacturaElectronicaWCF.svc.cs:line 127
+2018-12-04 08:07:20,131 [19] ERROR LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF.FacturaElectronicaWCF - Error al consumir endpoint 'ConsultarEstadoDocumentoElectronico': 
+System.ArgumentNullException: Value cannot be null.
+Parameter name: source
+   at LeandroSoftware.FacturaElectronicaHacienda.Servicios.FacturaElectronicaService.ConsultarDocumentoElectronico(Int32 intIdEmpresa, String strClave, String strConsecutivo, DatosConfiguracion configuracion) in C:\Users\Jason\Development\puntoventa.NET\ServiciosWeb\FacturaElectronica\Servicios\FacturaElectronicaService.cs:line 558
+   at LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF.FacturaElectronicaWCF.ConsultarDocumentoElectronico(String empresa, String clave, String consecutivo) in C:\Users\Jason\Development\puntoventa.NET\ServiciosWeb\FacturaElectronica\ServicioWCF\FacturaElectronicaWCF.svc.cs:line 127
+2018-12-04 08:07:56,168 [24] ERROR LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF.FacturaElectronicaWCF - Error al consumir endpoint 'ConsultarEstadoDocumentoElectronico': 
+System.ArgumentNullException: Value cannot be null.
+Parameter name: source
+   at LeandroSoftware.FacturaElectronicaHacienda.Servicios.FacturaElectronicaService.ConsultarDocumentoElectronico(Int32 intIdEmpresa, String strClave, String strConsecutivo, DatosConfiguracion configuracion) in C:\Users\Jason\Development\puntoventa.NET\ServiciosWeb\FacturaElectronica\Servicios\FacturaElectronicaService.cs:line 558
+   at LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF.FacturaElectronicaWCF.ConsultarDocumentoElectronico(String empresa, String clave, String consecutivo) in C:\Users\Jason\Development\puntoventa.NET\ServiciosWeb\FacturaElectronica\ServicioWCF\FacturaElectronicaWCF.svc.cs:line 127
+2018-12-04 08:10:05,605 [24] ERROR LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF.FacturaElectronicaWCF - Error al consumir endpoint 'ConsultarEstadoDocumentoElectronico': 
+System.ArgumentNullException: Value cannot be null.
+Parameter name: source
+   at LeandroSoftware.FacturaElectronicaHacienda.Servicios.FacturaElectronicaService.ConsultarDocumentoElectronico(Int32 intIdEmpresa, String strClave, String strConsecutivo, DatosConfiguracion configuracion)
+   at LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF.FacturaElectronicaWCF.ConsultarDocumentoElectronico(String empresa, String clave, String consecutivo) in C:\Users\Jason\Development\puntoventa.NET\ServiciosWeb\FacturaElectronica\ServicioWCF\FacturaElectronicaWCF.svc.cs:line 127
+2018-12-04 08:10:29,409 [24] ERROR LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF.FacturaElectronicaWCF - Error al consumir endpoint 'ConsultarEstadoDocumentoElectronico': 
+System.ArgumentNullException: Value cannot be null.
+Parameter name: source
+   at LeandroSoftware.FacturaElectronicaHacienda.Servicios.FacturaElectronicaService.ConsultarDocumentoElectronico(Int32 intIdEmpresa, String strClave, String strConsecutivo, DatosConfiguracion configuracion)
+   at LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF.FacturaElectronicaWCF.ConsultarDocumentoElectronico(String empresa, String clave, String consecutivo) in C:\Users\Jason\Development\puntoventa.NET\ServiciosWeb\FacturaElectronica\ServicioWCF\FacturaElectronicaWCF.svc.cs:line 127
+2018-12-04 08:14:09,426 [13] ERROR LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF.FacturaElectronicaWCF - Error al consumir endpoint 'ConsultarEstadoDocumentoElectronico': 
+System.ArgumentNullException: Value cannot be null.
+Parameter name: source
+   at LeandroSoftware.FacturaElectronicaHacienda.Servicios.FacturaElectronicaService.ConsultarDocumentoElectronico(Int32 intIdEmpresa, String strClave, String strConsecutivo, DatosConfiguracion configuracion)
+   at LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF.FacturaElectronicaWCF.ConsultarDocumentoElectronico(String empresa, String clave, String consecutivo) in C:\Users\Jason\Development\puntoventa.NET\ServiciosWeb\FacturaElectronica\ServicioWCF\FacturaElectronicaWCF.svc.cs:line 127
+2018-12-04 08:33:05,728 [17] ERROR LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF.FacturaElectronicaWCF - Error al consumir endpoint 'ConsultarEstadoDocumentoElectronico': 
+System.AggregateException: One or more errors occurred. ---> System.Net.Http.HttpRequestException: Error al enviar la solicitud. ---> System.Net.WebException: No se puede resolver el nombre remoto: 'idp.comprobanteselectronicos.go.cr'
+   at System.Net.HttpWebRequest.EndGetRequestStream(IAsyncResult asyncResult, TransportContext& context)
+   at System.Net.Http.HttpClientHandler.GetRequestStreamCallback(IAsyncResult ar)
+   --- End of inner exception stack trace ---
+   at LeandroSoftware.FacturaElectronicaHacienda.Servicios.FacturaElectronicaService.<ObtenerToken>d__5.MoveNext() in C:\Users\Jason\Development\puntoventa.NET\ServiciosWeb\FacturaElectronica\Servicios\FacturaElectronicaService.cs:line 132
+   --- End of inner exception stack trace ---
+   at LeandroSoftware.FacturaElectronicaHacienda.Servicios.FacturaElectronicaService.ConsultarDocumentoElectronico(Int32 intIdEmpresa, String strClave, String strConsecutivo, DatosConfiguracion configuracion) in C:\Users\Jason\Development\puntoventa.NET\ServiciosWeb\FacturaElectronica\Servicios\FacturaElectronicaService.cs:line 561
+   at LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF.FacturaElectronicaWCF.ConsultarDocumentoElectronico(String empresa, String clave, String consecutivo) in C:\Users\Jason\Development\puntoventa.NET\ServiciosWeb\FacturaElectronica\ServicioWCF\FacturaElectronicaWCF.svc.cs:line 127
+---> (Inner Exception #0) System.Net.Http.HttpRequestException: Error al enviar la solicitud. ---> System.Net.WebException: No se puede resolver el nombre remoto: 'idp.comprobanteselectronicos.go.cr'
+   at System.Net.HttpWebRequest.EndGetRequestStream(IAsyncResult asyncResult, TransportContext& context)
+   at System.Net.Http.HttpClientHandler.GetRequestStreamCallback(IAsyncResult ar)
+   --- End of inner exception stack trace ---
+   at LeandroSoftware.FacturaElectronicaHacienda.Servicios.FacturaElectronicaService.<ObtenerToken>d__5.MoveNext() in C:\Users\Jason\Development\puntoventa.NET\ServiciosWeb\FacturaElectronica\Servicios\FacturaElectronicaService.cs:line 132<---
+
+2018-12-04 08:48:17,785 [16] ERROR LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF.FacturaElectronicaWCF - Error al consumir endpoint 'EnviarDocumentoElectronico': 
+System.Exception: No se logró obtener un token valido con los parámetros proporcionados. Consulte con su proveedor.
+   at LeandroSoftware.FacturaElectronicaHacienda.Servicios.FacturaElectronicaService.EnviarDocumentoElectronico(DatosDocumentoElectronicoDTO datos, DatosConfiguracion configuracion) in C:\Users\Jason\Development\puntoventa.NET\ServiciosWeb\FacturaElectronica\Servicios\FacturaElectronicaService.cs:line 503
+   at LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF.FacturaElectronicaWCF.EnviarDocumentoElectronico(DatosDocumentoElectronicoDTO datos) in C:\Users\Jason\Development\puntoventa.NET\ServiciosWeb\FacturaElectronica\ServicioWCF\FacturaElectronicaWCF.svc.cs:line 114
+2018-12-04 08:49:39,259 [25] ERROR LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF.FacturaElectronicaWCF - Error al consumir endpoint 'EnviarDocumentoElectronico': 
+System.Exception: No se logró obtener un token valido con los parámetros proporcionados. Consulte con su proveedor.
+   at LeandroSoftware.FacturaElectronicaHacienda.Servicios.FacturaElectronicaService.EnviarDocumentoElectronico(DatosDocumentoElectronicoDTO datos, DatosConfiguracion configuracion) in C:\Users\Jason\Development\puntoventa.NET\ServiciosWeb\FacturaElectronica\Servicios\FacturaElectronicaService.cs:line 503
+   at LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF.FacturaElectronicaWCF.EnviarDocumentoElectronico(DatosDocumentoElectronicoDTO datos) in C:\Users\Jason\Development\puntoventa.NET\ServiciosWeb\FacturaElectronica\ServicioWCF\FacturaElectronicaWCF.svc.cs:line 114
+2018-12-04 08:50:02,531 [17] ERROR LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF.FacturaElectronicaWCF - Error al consumir endpoint 'EnviarDocumentoElectronico': 
+System.Exception: No se logró obtener un token valido con los parámetros proporcionados. Consulte con su proveedor.
+   at LeandroSoftware.FacturaElectronicaHacienda.Servicios.FacturaElectronicaService.EnviarDocumentoElectronico(DatosDocumentoElectronicoDTO datos, DatosConfiguracion configuracion) in C:\Users\Jason\Development\puntoventa.NET\ServiciosWeb\FacturaElectronica\Servicios\FacturaElectronicaService.cs:line 503
+   at LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF.FacturaElectronicaWCF.EnviarDocumentoElectronico(DatosDocumentoElectronicoDTO datos) in C:\Users\Jason\Development\puntoventa.NET\ServiciosWeb\FacturaElectronica\ServicioWCF\FacturaElectronicaWCF.svc.cs:line 114
+2018-12-04 08:51:00,926 [32] ERROR LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF.FacturaElectronicaWCF - Error al consumir endpoint 'EnviarDocumentoElectronico': 
+System.Exception: No se logró obtener un token valido con los parámetros proporcionados. Consulte con su proveedor.
+   at LeandroSoftware.FacturaElectronicaHacienda.Servicios.FacturaElectronicaService.EnviarDocumentoElectronico(DatosDocumentoElectronicoDTO datos, DatosConfiguracion configuracion) in C:\Users\Jason\Development\puntoventa.NET\ServiciosWeb\FacturaElectronica\Servicios\FacturaElectronicaService.cs:line 503
+   at LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF.FacturaElectronicaWCF.EnviarDocumentoElectronico(DatosDocumentoElectronicoDTO datos) in C:\Users\Jason\Development\puntoventa.NET\ServiciosWeb\FacturaElectronica\ServicioWCF\FacturaElectronicaWCF.svc.cs:line 114
+2018-12-04 08:51:07,257 [32] ERROR LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF.FacturaElectronicaWCF - Error al consumir endpoint 'EnviarDocumentoElectronico': 
+System.Exception: No se logró obtener un token valido con los parámetros proporcionados. Consulte con su proveedor.
+   at LeandroSoftware.FacturaElectronicaHacienda.Servicios.FacturaElectronicaService.EnviarDocumentoElectronico(DatosDocumentoElectronicoDTO datos, DatosConfiguracion configuracion) in C:\Users\Jason\Development\puntoventa.NET\ServiciosWeb\FacturaElectronica\Servicios\FacturaElectronicaService.cs:line 503
+   at LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF.FacturaElectronicaWCF.EnviarDocumentoElectronico(DatosDocumentoElectronicoDTO datos) in C:\Users\Jason\Development\puntoventa.NET\ServiciosWeb\FacturaElectronica\ServicioWCF\FacturaElectronicaWCF.svc.cs:line 114
+2018-12-04 08:51:15,672 [32] ERROR LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF.FacturaElectronicaWCF - Error al consumir endpoint 'EnviarDocumentoElectronico': 
+System.Exception: No se logró obtener un token valido con los parámetros proporcionados. Consulte con su proveedor.
+   at LeandroSoftware.FacturaElectronicaHacienda.Servicios.FacturaElectronicaService.EnviarDocumentoElectronico(DatosDocumentoElectronicoDTO datos, DatosConfiguracion configuracion) in C:\Users\Jason\Development\puntoventa.NET\ServiciosWeb\FacturaElectronica\Servicios\FacturaElectronicaService.cs:line 503
+   at LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF.FacturaElectronicaWCF.EnviarDocumentoElectronico(DatosDocumentoElectronicoDTO datos) in C:\Users\Jason\Development\puntoventa.NET\ServiciosWeb\FacturaElectronica\ServicioWCF\FacturaElectronicaWCF.svc.cs:line 114
+2018-12-04 08:51:29,451 [33] ERROR LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF.FacturaElectronicaWCF - Error al consumir endpoint 'EnviarDocumentoElectronico': 
+System.Exception: No se logró obtener un token valido con los parámetros proporcionados. Consulte con su proveedor.
+   at LeandroSoftware.FacturaElectronicaHacienda.Servicios.FacturaElectronicaService.EnviarDocumentoElectronico(DatosDocumentoElectronicoDTO datos, DatosConfiguracion configuracion) in C:\Users\Jason\Development\puntoventa.NET\ServiciosWeb\FacturaElectronica\Servicios\FacturaElectronicaService.cs:line 503
+   at LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF.FacturaElectronicaWCF.EnviarDocumentoElectronico(DatosDocumentoElectronicoDTO datos) in C:\Users\Jason\Development\puntoventa.NET\ServiciosWeb\FacturaElectronica\ServicioWCF\FacturaElectronicaWCF.svc.cs:line 114
+2018-12-04 08:51:41,433 [33] ERROR LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF.FacturaElectronicaWCF - Error al consumir endpoint 'EnviarDocumentoElectronico': 
+System.Exception: No se logró obtener un token valido con los parámetros proporcionados. Consulte con su proveedor.
+   at LeandroSoftware.FacturaElectronicaHacienda.Servicios.FacturaElectronicaService.EnviarDocumentoElectronico(DatosDocumentoElectronicoDTO datos, DatosConfiguracion configuracion) in C:\Users\Jason\Development\puntoventa.NET\ServiciosWeb\FacturaElectronica\Servicios\FacturaElectronicaService.cs:line 503
+   at LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF.FacturaElectronicaWCF.EnviarDocumentoElectronico(DatosDocumentoElectronicoDTO datos) in C:\Users\Jason\Development\puntoventa.NET\ServiciosWeb\FacturaElectronica\ServicioWCF\FacturaElectronicaWCF.svc.cs:line 114
+2018-12-04 08:51:48,816 [17] ERROR LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF.FacturaElectronicaWCF - Error al consumir endpoint 'EnviarDocumentoElectronico': 
+System.Exception: No se logró obtener un token valido con los parámetros proporcionados. Consulte con su proveedor.
+   at LeandroSoftware.FacturaElectronicaHacienda.Servicios.FacturaElectronicaService.EnviarDocumentoElectronico(DatosDocumentoElectronicoDTO datos, DatosConfiguracion configuracion) in C:\Users\Jason\Development\puntoventa.NET\ServiciosWeb\FacturaElectronica\Servicios\FacturaElectronicaService.cs:line 503
+   at LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF.FacturaElectronicaWCF.EnviarDocumentoElectronico(DatosDocumentoElectronicoDTO datos) in C:\Users\Jason\Development\puntoventa.NET\ServiciosWeb\FacturaElectronica\ServicioWCF\FacturaElectronicaWCF.svc.cs:line 114
+2018-12-04 10:37:13,263 [10] ERROR LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF.FacturaElectronicaWCF - Error al consumir endpoint 'EnviarDocumentoElectronico': 
+System.AggregateException: One or more errors occurred. ---> System.Net.Http.HttpRequestException: Error al enviar la solicitud. ---> System.Net.WebException: No se puede resolver el nombre remoto: 'idp.comprobanteselectronicos.go.cr'
+   at System.Net.HttpWebRequest.EndGetRequestStream(IAsyncResult asyncResult, TransportContext& context)
+   at System.Net.Http.HttpClientHandler.GetRequestStreamCallback(IAsyncResult ar)
+   --- End of inner exception stack trace ---
+   at LeandroSoftware.FacturaElectronicaHacienda.Servicios.FacturaElectronicaService.<RefrescarToken>d__6.MoveNext() in C:\Users\Jason\Development\puntoventa.NET\ServiciosWeb\FacturaElectronica\Servicios\FacturaElectronicaService.cs:line 154
+   --- End of inner exception stack trace ---
+   at LeandroSoftware.FacturaElectronicaHacienda.Servicios.FacturaElectronicaService.EnviarDocumentoElectronico(DatosDocumentoElectronicoDTO datos, DatosConfiguracion configuracion) in C:\Users\Jason\Development\puntoventa.NET\ServiciosWeb\FacturaElectronica\Servicios\FacturaElectronicaService.cs:line 530
+   at LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF.FacturaElectronicaWCF.EnviarDocumentoElectronico(DatosDocumentoElectronicoDTO datos) in C:\Users\Jason\Development\puntoventa.NET\ServiciosWeb\FacturaElectronica\ServicioWCF\FacturaElectronicaWCF.svc.cs:line 114
+---> (Inner Exception #0) System.Net.Http.HttpRequestException: Error al enviar la solicitud. ---> System.Net.WebException: No se puede resolver el nombre remoto: 'idp.comprobanteselectronicos.go.cr'
+   at System.Net.HttpWebRequest.EndGetRequestStream(IAsyncResult asyncResult, TransportContext& context)
+   at System.Net.Http.HttpClientHandler.GetRequestStreamCallback(IAsyncResult ar)
+   --- End of inner exception stack trace ---
+   at LeandroSoftware.FacturaElectronicaHacienda.Servicios.FacturaElectronicaService.<RefrescarToken>d__6.MoveNext() in C:\Users\Jason\Development\puntoventa.NET\ServiciosWeb\FacturaElectronica\Servicios\FacturaElectronicaService.cs:line 154<---
+

@@ -53,7 +53,6 @@ namespace LeandroSoftware.PuntoVenta.Servicios
         Task<IList<DocumentoElectronico>> ObtenerListaDocumentosElectronicosPendientes(int intIdEmpresa);
         Task<int> ObtenerTotalDocumentosElectronicosProcesados(int intIdEmpresa);
         IList<DocumentoElectronico> ObtenerListaDocumentosElectronicosProcesados(int intIdEmpresa, int numPagina, int cantRec);
-        void ProcesarDocumentosElectronicosPendientes(int intIdEmpresa, IList<DocumentoElectronico> listaPendientes);
     }
 
     public class FacturacionService : IFacturacionService
@@ -1634,7 +1633,7 @@ namespace LeandroSoftware.PuntoVenta.Servicios
                         throw new Exception("La empresa asignada a la transacción no existe.");
                     if (empresa.CierreEnEjecucion)
                         throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
-                    var listaPendientes = dbContext.DocumentoElectronicoRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.EstadoEnvio == "pendiente" || x.EstadoEnvio == "registrado");
+                    var listaPendientes = dbContext.DocumentoElectronicoRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.EstadoEnvio == "pendiente");
                     foreach (DocumentoElectronico doc in listaPendientes)
                     {
                         try
@@ -1648,10 +1647,40 @@ namespace LeandroSoftware.PuntoVenta.Servicios
                             }
                             else
                             {
-                                if (datos.EstadoEnvio == "registrado")
+                                DatosDocumentoElectronicoDTO datosAProcesar = new DatosDocumentoElectronicoDTO();
+                                if (datos.EstadoEnvio == "noexiste")
                                 {
-                                    doc.EstadoEnvio = datos.EstadoEnvio;
-                                    dbContext.NotificarModificacion(doc);
+                                    datosAProcesar.IdEmpresa = empresa.IdEmpresa;
+                                    datosAProcesar.IdTipoDocumento = doc.IdTipoDocumento;
+                                    datosAProcesar.ClaveNumerica = doc.ClaveNumerica;
+                                    datosAProcesar.FechaEmision = doc.Fecha;
+                                    datosAProcesar.TipoIdentificacionEmisor = doc.TipoIdentificacionEmisor.ToString("D2");
+                                    datosAProcesar.IdentificacionEmisor = doc.IdentificacionEmisor;
+                                    datosAProcesar.TipoIdentificacionReceptor = doc.TipoIdentificacionReceptor.ToString("D2");
+                                    datosAProcesar.IdentificacionReceptor = doc.IdentificacionReceptor;
+                                    datosAProcesar.EsMensajeReceptor = new int[] { 5, 6, 7 }.Contains(doc.IdTipoDocumento) ? "S" : "N";
+                                    datosAProcesar.Consecutivo = doc.Consecutivo;
+                                    datosAProcesar.CorreoNotificacion = doc.CorreoNotificacion;
+                                    datosAProcesar.EstadoEnvio = datos.EstadoEnvio;
+                                    datosAProcesar.DatosDocumento = Convert.ToBase64String(doc.DatosDocumento);
+                                    bool resultado = await ComprobanteElectronicoService.RegistrarDocumentoElectronico(empresa, datosAProcesar);
+                                }
+                                else if (datos.EstadoEnvio == "registrado")
+                                {
+                                    datosAProcesar.IdEmpresa = empresa.IdEmpresa;
+                                    datosAProcesar.IdTipoDocumento = doc.IdTipoDocumento;
+                                    datosAProcesar.ClaveNumerica = doc.ClaveNumerica;
+                                    datosAProcesar.FechaEmision = doc.Fecha;
+                                    datosAProcesar.TipoIdentificacionEmisor = doc.TipoIdentificacionEmisor.ToString("D2");
+                                    datosAProcesar.IdentificacionEmisor = doc.IdentificacionEmisor;
+                                    datosAProcesar.TipoIdentificacionReceptor = doc.TipoIdentificacionReceptor.ToString("D2");
+                                    datosAProcesar.IdentificacionReceptor = doc.IdentificacionReceptor;
+                                    datosAProcesar.EsMensajeReceptor = new int[] { 5, 6, 7 }.Contains(doc.IdTipoDocumento) ? "S" : "N";
+                                    datosAProcesar.Consecutivo = doc.Consecutivo;
+                                    datosAProcesar.CorreoNotificacion = doc.CorreoNotificacion;
+                                    datosAProcesar.EstadoEnvio = datos.EstadoEnvio;
+                                    datosAProcesar.DatosDocumento = Convert.ToBase64String(doc.DatosDocumento);
+                                    bool resultado = await ComprobanteElectronicoService.EnviarDocumentoElectronico(empresa, datosAProcesar);
                                 }
                                 listado.Add(doc);
                             }
@@ -1665,47 +1694,6 @@ namespace LeandroSoftware.PuntoVenta.Servicios
                     }
                     dbContext.Commit();
                     return listado;
-                }
-                catch (Exception ex)
-                {
-                    log.Error("Error al procesar factura electrónica: ", ex);
-                    if (ex.Message == "Service Unavailable")
-                        throw new Exception("El servicio de factura electrónica se encuentra fuera de servicio. Por favor consulte con su proveedor.");
-                    else
-                        throw new Exception("Se produjo un error al procesar la factura electrónica ingresada. Por favor consulte con su proveedor.");
-                }
-            }
-        }
-
-        public void ProcesarDocumentosElectronicosPendientes(int intIdEmpresa, IList<DocumentoElectronico> listaPendientes)
-        {
-            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
-            {
-                try
-                {
-                    Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
-                    if (empresa == null)
-                        throw new Exception("La empresa asignada a la transacción no existe.");
-                    if (empresa.CierreEnEjecucion)
-                        throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
-                    foreach (DocumentoElectronico doc in listaPendientes)
-                    {
-                        DatosDocumentoElectronicoDTO datos = new DatosDocumentoElectronicoDTO();
-                        datos.IdEmpresa = empresa.IdEmpresa;
-                        datos.IdTipoDocumento = doc.IdTipoDocumento;
-                        datos.ClaveNumerica = doc.ClaveNumerica;
-                        datos.FechaEmision = doc.Fecha;
-                        datos.TipoIdentificacionEmisor = doc.TipoIdentificacionEmisor.ToString("D2");
-                        datos.IdentificacionEmisor = doc.IdentificacionEmisor;
-                        datos.TipoIdentificacionReceptor = doc.TipoIdentificacionReceptor.ToString("D2");
-                        datos.IdentificacionReceptor = doc.IdentificacionReceptor;
-                        datos.EsMensajeReceptor = new int[] { 5, 6, 7 }.Contains(doc.IdTipoDocumento) ? "S" : "N";
-                        datos.Consecutivo = doc.Consecutivo;
-                        datos.CorreoNotificacion = doc.CorreoNotificacion;
-                        datos.EstadoEnvio = doc.EstadoEnvio;
-                        datos.DatosDocumento = Convert.ToBase64String(doc.DatosDocumento);
-                        ComprobanteElectronicoService.ProcesarDocumentoElectronico(empresa, datos);
-                    }
                 }
                 catch (Exception ex)
                 {
@@ -1776,7 +1764,7 @@ namespace LeandroSoftware.PuntoVenta.Servicios
                         throw new Exception("La empresa asignada a la transacción no existe.");
                     if (empresa.CierreEnEjecucion)
                         throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
-                    var listaProcesados = dbContext.DocumentoElectronicoRepository.Where(x => x.IdEmpresa == intIdEmpresa)
+                    var listaProcesados = dbContext.DocumentoElectronicoRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.EstadoEnvio == "aceptado" || x.EstadoEnvio == "rechazado")
                         .OrderByDescending(x => x.IdDocumento)
                         .Skip((numPagina - 1) * cantRec).Take(cantRec).ToList();
                     return listaProcesados.ToList();
