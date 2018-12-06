@@ -1,16 +1,28 @@
-﻿using LeandroSoftware.Core.Servicios;
+﻿using LeandroSoftware.AccesoDatos.Datos;
+using LeandroSoftware.AccesoDatos.Dominio.Entidades;
+using LeandroSoftware.AccesoDatos.Servicios;
+using LeandroSoftware.AccesoDatos.TiposDatos;
+using LeandroSoftware.Core.Servicios;
 using log4net;
 using System;
+using System.Collections;
+using System.Configuration;
+using System.IO;
+using System.Net;
+using System.Runtime.Serialization.Json;
+using System.ServiceModel.Web;
 using System.Web.Configuration;
 using Unity;
+using Unity.Injection;
+using Unity.Lifetime;
 
 namespace LeandroSoftware.AccesoDatos.ServicioWCF
 {
     public class AccesoDatosWCF : IAccesoDatosWCF
     {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        private IFacturaElectronicaService servicioFacturElectronica;
         private ICorreoService servicioEnvioCorreo;
+        private IMantenimientoService servicioMantenimiento;
         IUnityContainer unityContainer;
         private static System.Collections.Specialized.NameValueCollection appSettings = WebConfigurationManager.AppSettings;
         private readonly DatosConfiguracion configuracion = new DatosConfiguracion
@@ -23,21 +35,30 @@ namespace LeandroSoftware.AccesoDatos.ServicioWCF
             appSettings["strComprobantesCallbackURL"].ToString(),
             appSettings["strCorreoNotificacionErrores"].ToString()
         );
-        private decimal decTipoCambioDolar;
 
         public AccesoDatosWCF()
         {
             unityContainer = new UnityContainer();
-            string connString = WebConfigurationManager.ConnectionStrings[1].ConnectionString;
+            ConnectionStringSettingsCollection connectionStrings = WebConfigurationManager.ConnectionStrings as ConnectionStringSettingsCollection;
+            IEnumerator connectionStringsEnum = connectionStrings.GetEnumerator();
+            int i = 0;
+            string connString = "";
+            while (connectionStringsEnum.MoveNext())
+            {
+                string name = connectionStrings[i].Name;
+                if (name == "PuntoventaConn")
+                    connString = connectionStrings[i].ConnectionString;
+            }
             unityContainer.RegisterInstance("conectionString", connString, new ContainerControlledLifetimeManager());
-            unityContainer.RegisterType<IDbContext, DatabaseContext>(new InjectionConstructor(new ResolvedParameter<string>("conectionString")));
-            unityContainer.RegisterType<IFacturaElectronicaService, FacturaElectronicaService>();
+            unityContainer.RegisterInstance("configuracionData", configuracion, new ContainerControlledLifetimeManager());
+            unityContainer.RegisterType<IDbContext, LeandroContext>(new InjectionConstructor(new ResolvedParameter<string>("conectionString")));
             unityContainer.RegisterType<ICorreoService, CorreoService>(new InjectionConstructor(appSettings["strEmailHost"], appSettings["strEmailPort"], appSettings["strEmailAccount"], appSettings["strEmailPass"], appSettings["strEmailFrom"], appSettings["strSSLHost"]));
-            servicioFacturElectronica = unityContainer.Resolve<IFacturaElectronicaService>();
+            unityContainer.RegisterType<IFacturacionService, FacturacionService>();
             servicioEnvioCorreo = unityContainer.Resolve<ICorreoService>();
+            servicioMantenimiento = unityContainer.Resolve<IMantenimientoService>();
             try
             {
-                decTipoCambioDolar = servicioFacturElectronica.ObtenerTipoCambioVenta(configuracion.ConsultaIndicadoresEconomicosURL, configuracion.OperacionSoap, DateTime.Now);
+                ComprobanteElectronicoService.ObtenerTipoCambioVenta(configuracion.ConsultaIndicadoresEconomicosURL, configuracion.OperacionSoap, DateTime.Now, unityContainer);
             }
             catch (Exception ex)
             {
@@ -46,22 +67,92 @@ namespace LeandroSoftware.AccesoDatos.ServicioWCF
             }
         }
 
-        public string GetData(int value)
+        public string ValidarCredenciales(string strUsuario, string strPassword, string strIdentificacion)
         {
-            return string.Format("You entered: {0}", value);
+            string strEmpresa = null;
+            try
+            {
+                Empresa empresa = servicioMantenimiento.ObtenerEmpresaPorIdentificacion(strIdentificacion);
+                if (empresa == null)
+                {
+                    throw new WebFaultException<string>("No existe registrada la empresa para la identificación ingresada.", HttpStatusCode.InternalServerError);
+                }
+                Usuario usuario = servicioMantenimiento.ValidarUsuario(empresa.IdEmpresa, strUsuario, strPassword, appSettings["ApplicationKey"]);
+                var serializer = new DataContractJsonSerializer(typeof(Empresa));
+                using (var ms = new MemoryStream())
+                {
+                    serializer.WriteObject(ms, empresa);
+                    strEmpresa = Convert.ToBase64String(ms.ToArray());
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
+            }
+            return strEmpresa;
         }
 
-        public CompositeType GetDataUsingDataContract(CompositeType composite)
+        public void Ejecutar(RequestDTO datos)
         {
-            if (composite == null)
+            if (datos.NombreMetodo == "AgregarEmpresa")
             {
-                throw new ArgumentNullException("composite");
+                Empresa empresa = null;
+                var serializer = new DataContractJsonSerializer(typeof(Empresa));
+                using (var ms = new MemoryStream(Convert.FromBase64String(datos.DatosPeticion)))
+                {
+                    empresa = (Empresa)serializer.ReadObject(ms);
+                }
+                servicioMantenimiento.AgregarEmpresa(empresa);
             }
-            if (composite.BoolValue)
+        }
+
+        public ResponseDTO EjecutarConsulta(RequestDTO datos)
+        {
+            try
             {
-                composite.StringValue += "Suffix";
+                ResponseDTO respuesta = new ResponseDTO();
+                if (datos.NombreMetodo == "ValidarCredenciales")
+                {
+                    Credenciales credenciales = null;
+                    var serializer = new DataContractJsonSerializer(typeof(Credenciales));
+                    using (var ms = new MemoryStream(Convert.FromBase64String(datos.DatosPeticion)))
+                    {
+                        credenciales = (Credenciales)serializer.ReadObject(ms);
+                    }
+                    string strEmpresa = null;
+                    Empresa empresa = servicioMantenimiento.ObtenerEmpresaPorIdentificacion(credenciales.Identificacion);
+                    if (empresa == null)
+                    {
+                        throw new Exception("No existe registrada la empresa para la identificación ingresada.");
+                    }
+                    Usuario usuario = servicioMantenimiento.ValidarUsuario(empresa.IdEmpresa, credenciales.Usuario, credenciales.Clave, appSettings["ApplicationKey"]);
+                    serializer = new DataContractJsonSerializer(typeof(Empresa));
+                    using (var ms = new MemoryStream())
+                    {
+                        serializer.WriteObject(ms, empresa);
+                        strEmpresa = Convert.ToBase64String(ms.ToArray());
+                    }
+                    respuesta.ElementoSimple = false;
+                    respuesta.DatosPeticion = strEmpresa;
+                }
+                if (datos.NombreMetodo == "AgregarEmpresa")
+                {
+                    Empresa empresa = null;
+                    var serializer = new DataContractJsonSerializer(typeof(Empresa));
+                    using (var ms = new MemoryStream(Convert.FromBase64String(datos.DatosPeticion)))
+                    {
+                        empresa = (Empresa)serializer.ReadObject(ms);
+                    }
+                    Empresa nuevoRegistro = servicioMantenimiento.AgregarEmpresa(empresa);
+                    respuesta.ElementoSimple = true;
+                    respuesta.DatosPeticion = nuevoRegistro.IdEmpresa.ToString();
+                }
+                return respuesta;
             }
-            return composite;
+            catch (Exception ex)
+            {
+                throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
+            }
         }
     }
 }

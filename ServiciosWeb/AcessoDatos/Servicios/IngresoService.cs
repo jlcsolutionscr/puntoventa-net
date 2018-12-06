@@ -9,7 +9,7 @@ using LeandroSoftware.AccesoDatos.Datos;
 using log4net;
 using Unity;
 
-namespace LeandroSoftware.PuntoVenta.Servicios
+namespace LeandroSoftware.AccesoDatos.Servicios
 {
     public interface IIngresoService
     {

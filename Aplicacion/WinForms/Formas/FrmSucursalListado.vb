@@ -1,5 +1,5 @@
-﻿Imports LeandroSoftware.PuntoVenta.Dominio.Entidades
-Imports LeandroSoftware.PuntoVenta.Servicios
+﻿Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
+Imports LeandroSoftware.AccesoDatos.Servicios
 Imports Unity
 
 Public Class FrmSucursalListado

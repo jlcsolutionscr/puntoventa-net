@@ -37,11 +37,11 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    <Reference Include="EntityFramework">
+      <HintPath>..\..\..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
-    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\..\..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -52,6 +52,7 @@
     <Compile Include="Entidades\AjusteInventario.cs" />
     <Compile Include="Entidades\Asiento.cs" />
     <Compile Include="Entidades\Barrio.cs" />
+    <Compile Include="Entidades\CantFEMensualEmpresa.cs" />
     <Compile Include="Entidades\Canton.cs" />
     <Compile Include="Entidades\CatalogoContable.cs" />
     <Compile Include="Entidades\CatalogoReporte.cs" />
@@ -72,6 +73,7 @@
     <Compile Include="Entidades\DocumentoElectronico.cs" />
     <Compile Include="Entidades\Modulo.cs" />
     <Compile Include="Entidades\ModuloPorEmpresa.cs" />
+    <Compile Include="Entidades\Padron.cs" />
     <Compile Include="Entidades\Particular.cs" />
     <Compile Include="Entidades\OrdenServicio.cs" />
     <Compile Include="Entidades\DetalleOrdenServicio.cs" />
@@ -83,6 +85,7 @@
     <Compile Include="Entidades\DetalleTraslado.cs" />
     <Compile Include="Entidades\Provincia.cs" />
     <Compile Include="Entidades\ReportePorEmpresa.cs" />
+    <Compile Include="Entidades\TipoDeCambioDolar.cs" />
     <Compile Include="Entidades\TipoIdentificacion.cs" />
     <Compile Include="Entidades\Traslado.cs" />
     <Compile Include="Entidades\Sucursal.cs" />

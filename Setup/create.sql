@@ -89,13 +89,22 @@ CREATE TABLE Empresa (
   ServicioFacturaElectronicaURL VARCHAR(500) NULL,
   IdCertificado VARCHAR(100) NULL,
   PinCertificado VARCHAR(4) NULL,
+  UsuarioHacienda VARCHAR(100) NULL,
+  ClaveHacienda VARCHAR(100) NULL,
   UltimoDocFE INTEGER NOT NULL,
   UltimoDocND INTEGER NOT NULL,
   UltimoDocNC INTEGER NOT NULL,
   UltimoDocTE INTEGER NOT NULL,
   UltimoDocMR INTEGER NOT NULL,
   Logotipo BLOB NULL,
+  PermiteFacturar BIT NOT NULL,
+  AccessToken BLOB NULL,
+  ExpiresIn INTEGER NULL,
+  RefreshExpiresIn INTEGER NULL,
+  RefreshToken BLOB NULL,
+  EmitedAt DATETIME NULL,
   PRIMARY KEY(IdEmpresa),
+  INDEX (Identificacion),
   FOREIGN KEY(IdTipoIdentificacion)
     REFERENCES TipoIdentificacion(IdTipoIdentificacion)
       ON DELETE RESTRICT
@@ -1521,6 +1530,35 @@ CREATE TABLE DetalleTraslado (
       ON UPDATE RESTRICT
 );
 
+CREATE TABLE tipodecambiodolar (
+  FechaTipoCambio VARCHAR(10),
+  ValorTipoCambio DECIMAL(13,5),
+  PRIMARY KEY(FechaTipoCambio)
+);
+
+CREATE TABLE padron (
+  Identificacion VARCHAR(9) NOT NULL,
+  IdPronvincia INTEGER NOT NULL,
+  IdCanton INTEGER NOT NULL,
+  IdDistrito INTEGER NOT NULL,
+  Nombre VARCHAR(100) NOT NULL,
+  PrimerApellido VARCHAR(100) NOT NULL,
+  SegundoApellido VARCHAR(100) NOT NULL,
+  PRIMARY KEY(Identificacion)
+);
+
+CREATE TABLE cantfemensualempresa (
+  IdEmpresa INTEGER NOT NULL,
+  IdMes INTEGER NOT NULL,
+  IdAnio INTEGER NOT NULL,
+  CantidadDoc INTEGER NOT NULL,
+  PRIMARY KEY(IdEmpresa,IdMes,IdAnio),
+  FOREIGN KEY(IdEmpresa)
+    REFERENCES Empresa(IdEmpresa)
+      ON DELETE RESTRICT
+      ON UPDATE RESTRICT
+);
+
 CREATE TABLE DocumentoElectronico (
   IdDocumento INTEGER NOT NULL AUTO_INCREMENT,
   IdEmpresa INTEGER NOT NULL,
@@ -1529,18 +1567,24 @@ CREATE TABLE DocumentoElectronico (
   IdTipoDocumento INTEGER NOT NULL,
   IdConsecutivo INTEGER NOT NULL,
   Fecha DATETIME NOT NULL,
-  TipoIdentificacionEmisor INTEGER NOT NULL,
-  IdentificacionEmisor VARCHAR(20) NOT NULL,
-  TipoIdentificacionReceptor INTEGER NOT NULL,
-  IdentificacionReceptor VARCHAR(12) NOT NULL,
   Consecutivo VARCHAR(20) NULL,
   ClaveNumerica VARCHAR(50) NULL,
+  TipoIdentificacionEmisor VARCHAR(2) NOT NULL,
+  IdentificacionEmisor VARCHAR(20) NOT NULL,
+  TipoIdentificacionReceptor VARCHAR(2) NOT NULL,
+  IdentificacionReceptor VARCHAR(12) NOT NULL,
+  EsMensajeReceptor VARCHAR(1) NOT NULL,
   DatosDocumento BLOB NULL,
   Respuesta BLOB NULL,
   EstadoEnvio VARCHAR(20) NOT NULL,
+  ErrorEnvio VARCHAR(500) NULL,
   CorreoNotificacion VARCHAR(200) NOT NULL,
   PRIMARY KEY(IdDocumento),
-  INDEX (ClaveNumerica)
+  INDEX (ClaveNumerica),
+  FOREIGN KEY(IdEmpresa)
+    REFERENCES Empresa(IdEmpresa)
+      ON DELETE RESTRICT
+      ON UPDATE RESTRICT
 );
 
 DELIMITER //

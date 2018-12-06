@@ -1,5 +1,5 @@
 Imports System.Collections
-Imports LeandroSoftware.Puntoventa.Servicios
+Imports LeandroSoftware.AccesoDatos.Servicios
 Imports Unity
 
 Public Class FrmMenuLinea

@@ -3,7 +3,7 @@ Imports System.Text
 Imports System.Runtime.InteropServices
 Imports System.Data
 Imports System.Collections.Generic
-Imports LeandroSoftware.Puntoventa.Dominio.Entidades
+Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
 Imports System.Drawing.Printing
 
 Public Class ModuloImpresion

@@ -91,11 +91,14 @@ CREATE TABLE cantfemensualempresa (
 
 CREATE TABLE documentoelectronico (
   IdDocumento INTEGER NOT NULL AUTO_INCREMENT,
-  IdTipoDocumento INTEGER NOT NULL,
   IdEmpresa INTEGER NOT NULL,
+  IdSucursal INTEGER NOT NULL,
+  IdTerminal INTEGER NOT NULL,
+  IdTipoDocumento INTEGER NOT NULL,
+  IdConsecutivo INTEGER NOT NULL,
   Fecha DATETIME NOT NULL,
+  Consecutivo VARCHAR(20) NOT NULL,
   ClaveNumerica VARCHAR(50) NOT NULL,
-  Consecutivo VARCHAR(50) NOT NULL,
   TipoIdentificacionEmisor VARCHAR(2) NOT NULL,
   IdentificacionEmisor VARCHAR(12) NOT NULL,
   TipoIdentificacionReceptor VARCHAR(2) NOT NULL,
@@ -104,14 +107,14 @@ CREATE TABLE documentoelectronico (
   DatosDocumento BLOB NOT NULL,
   Respuesta BLOB NULL,
   EstadoEnvio VARCHAR(20) NOT NULL,
-  CorreoNotificacion VARCHAR(200) NOT NULL,
   ErrorEnvio VARCHAR(500) NULL,
+  CorreoNotificacion VARCHAR(200) NOT NULL,
   PRIMARY KEY(IdDocumento),
+  INDEX (ClaveNumerica),
   FOREIGN KEY(IdEmpresa)
     REFERENCES Empresa(IdEmpresa)
       ON DELETE RESTRICT
-      ON UPDATE RESTRICT,
-  INDEX (ClaveNumerica)
+      ON UPDATE RESTRICT
 );
 
 use mysql;

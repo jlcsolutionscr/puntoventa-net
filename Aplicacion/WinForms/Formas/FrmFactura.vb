@@ -4,10 +4,10 @@ Imports System.IO
 Imports System.Xml.Serialization
 Imports LeandroSoftware.Core
 Imports LeandroSoftware.Core.CommonTypes
-Imports LeandroSoftware.FacturaElectronicaHacienda.TiposDatos
-Imports LeandroSoftware.Puntoventa.Dominio.Entidades
-Imports LeandroSoftware.Puntoventa.Servicios
+Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
+Imports LeandroSoftware.AccesoDatos.Servicios
 Imports Unity
+Imports LeandroSoftware.AccesoDatos.TiposDatos
 
 Public Class FrmFactura
 #Region "Variables"

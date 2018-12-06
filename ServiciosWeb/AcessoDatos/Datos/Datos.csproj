@@ -60,9 +60,9 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Dominio\DominioApp.csproj">
+    <ProjectReference Include="..\Dominio\Dominio.csproj">
       <Project>{74e3681e-1245-4268-adb9-d76da18b2fe0}</Project>
-      <Name>DominioApp</Name>
+      <Name>Dominio</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

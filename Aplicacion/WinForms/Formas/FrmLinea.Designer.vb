@@ -32,7 +32,7 @@ Partial Class FrmLinea
         '
         'ClienteBindingSource
         '
-        Me.ClienteBindingSource.DataSource = GetType(LeandroSoftware.Puntoventa.Dominio.Entidades.Cliente)
+        Me.ClienteBindingSource.DataSource = GetType(AccesoDatos.Dominio.Entidades.Cliente)
         '
         'btnCancelar
         '

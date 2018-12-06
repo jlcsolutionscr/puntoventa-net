@@ -8,8 +8,8 @@
     <ProjectGuid>{BC08C145-CE0A-4220-A2F6-41B7AAE80FC7}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>LeandroSoftware.PuntoVenta.Servicios</RootNamespace>
-    <AssemblyName>ServiciosApp</AssemblyName>
+    <RootNamespace>LeandroSoftware.AccesoDatos.Servicios</RootNamespace>
+    <AssemblyName>Servicios</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile>
@@ -37,9 +37,6 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="BouncyCastle.Crypto, Version=1.7.4137.9688, Culture=neutral, PublicKeyToken=a4292a325f69b123, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\BouncyCastle.1.7.0\lib\Net40-Client\BouncyCastle.Crypto.dll</HintPath>
-    </Reference>
     <Reference Include="CommonServiceLocator, Version=2.0.4.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Unity.5.8.11\lib\net47\CommonServiceLocator.dll</HintPath>
     </Reference>
@@ -58,29 +55,21 @@
     <Reference Include="Microsoft.Xades, Version=1.0.5.0, Culture=neutral, PublicKeyToken=52bc0bff8bc72d48, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\FirmaXadesNet.2.0.1.1\lib\net45\Microsoft.Xades.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
-    <Reference Include="System.Configuration.ConfigurationManager, Version=4.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Configuration.ConfigurationManager.4.4.1\lib\net461\System.Configuration.ConfigurationManager.dll</HintPath>
-    </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Data.OracleClient" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Net" />
     <Reference Include="System.Net.Http" />
-    <Reference Include="System.Security.AccessControl, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Security.AccessControl.4.5.0\lib\net461\System.Security.AccessControl.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Security.Permissions, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Security.Permissions.4.5.0\lib\net461\System.Security.Permissions.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Security.Principal.Windows, Version=4.1.1.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Security.Principal.Windows.4.5.1\lib\net461\System.Security.Principal.Windows.dll</HintPath>
-    </Reference>
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Transactions" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.XML" />
     <Reference Include="Unity.Abstractions, Version=3.3.1.0, Culture=neutral, PublicKeyToken=6d32ff45e0ccc69f, processorArchitecture=MSIL">
@@ -133,17 +122,17 @@
       <Project>{fa3c5bce-3db6-486e-b16b-8b7f76eef63f}</Project>
       <Name>Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\FacturaElectronica\TiposDatos\TiposDatosSWFE.csproj">
-      <Project>{df822ceb-dff9-4f4f-8bc1-d6c0cbf54d4b}</Project>
-      <Name>TiposDatosSWFE</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Datos\DatosApp.csproj">
+    <ProjectReference Include="..\Datos\Datos.csproj">
       <Project>{7c07fd36-af8c-4d6f-9ee4-f84082d03f9d}</Project>
-      <Name>DatosApp</Name>
+      <Name>Datos</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Dominio\DominioApp.csproj">
+    <ProjectReference Include="..\Dominio\Dominio.csproj">
       <Project>{74e3681e-1245-4268-adb9-d76da18b2fe0}</Project>
-      <Name>DominioApp</Name>
+      <Name>Dominio</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TiposDatos\TiposDatos.csproj">
+      <Project>{df822ceb-dff9-4f4f-8bc1-d6c0cbf54d4b}</Project>
+      <Name>TiposDatos</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

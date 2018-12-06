@@ -1,4 +1,4 @@
-﻿Imports LeandroSoftware.Puntoventa.Servicios
+﻿Imports LeandroSoftware.AccesoDatos.Servicios
 Imports Unity
 
 Public Class FrmTipoMonedaListado

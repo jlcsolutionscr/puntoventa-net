@@ -15,15 +15,17 @@ namespace LeandroSoftware.AccesoDatos.Dominio.Entidades
         public int IdTipoDocumento { get; set; }
         public int IdConsecutivo { get; set; }
         public DateTime Fecha { get; set; }
-        public int TipoIdentificacionEmisor { get; set; }
-        public string IdentificacionEmisor { get; set; }
-        public int TipoIdentificacionReceptor { get; set; }
-        public string IdentificacionReceptor { get; set; }
         public string Consecutivo { get; set; }
         public string ClaveNumerica { get; set; }
+        public string TipoIdentificacionEmisor { get; set; }
+        public string IdentificacionEmisor { get; set; }
+        public string TipoIdentificacionReceptor { get; set; }
+        public string IdentificacionReceptor { get; set; }
+        public string EsMensajeReceptor { get; set; }
         public byte[] DatosDocumento { get; set; }
         public byte[] Respuesta { get; set; }
         public string EstadoEnvio { get; set; }
+        public string ErrorEnvio { get; set; }
         public string CorreoNotificacion { get; set; }
     }
 }

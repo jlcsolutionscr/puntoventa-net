@@ -12,6 +12,7 @@ namespace LeandroSoftware.AccesoDatos.Datos
         DbSet<AjusteInventario> AjusteInventarioRepository { get; set; }
         DbSet<BancoAdquiriente> BancoAdquirienteRepository { get; set; }
         DbSet<Barrio> BarrioRepository { get; set; }
+        DbSet<CantFEMensualEmpresa> CantFEMensualEmpresaRepository { get; set; }
         DbSet<Canton> CantonRepository { get; set; }
         DbSet<CatalogoContable> CatalogoContableRepository { get; set; }
         DbSet<CatalogoReporte> CatalogoReporteRepository { get; set; }
@@ -61,6 +62,7 @@ namespace LeandroSoftware.AccesoDatos.Datos
         DbSet<MovimientoProducto> MovimientoProductoRepository { get; set; }
         DbSet<OrdenCompra> OrdenRepository { get; set; }
         DbSet<OrdenServicio> OrdenServicioRepository { get; set; }
+        DbSet<Padron> PadronRepository { get; set; }
         DbSet<ParametroContable> ParametroContableRepository { get; set; }
         DbSet<Particular> ParticularRepository { get; set; }
         DbSet<Producto> ProductoRepository { get; set; }
@@ -72,6 +74,7 @@ namespace LeandroSoftware.AccesoDatos.Datos
         DbSet<RolePorUsuario> RolePorUsuarioRepository { get; set; }
         DbSet<SaldoMensualContable> SaldoMensualContableRepository { get; set; }
         DbSet<Sucursal> SucursalRepository { get; set; }
+        DbSet<TipoDeCambioDolar> TipoDeCambioDolarRepository { get; set; }
         DbSet<TipoCuentaContable> TipoCuentaContableRepository { get; set; }
         DbSet<TipoIdentificacion> TipoIdentificacionRepository { get; set; }
         DbSet<TipoMoneda> TipoMonedaRepository { get; set; }
@@ -111,6 +114,7 @@ namespace LeandroSoftware.AccesoDatos.Datos
         public DbSet<AjusteInventario> AjusteInventarioRepository { get; set; }
         public DbSet<BancoAdquiriente> BancoAdquirienteRepository { get; set; }
         public DbSet<Barrio> BarrioRepository { get; set; }
+        public DbSet<CantFEMensualEmpresa> CantFEMensualEmpresaRepository { get; set; }
         public DbSet<Canton> CantonRepository { get; set; }
         public DbSet<CatalogoContable> CatalogoContableRepository { get; set; }
         public DbSet<CatalogoReporte> CatalogoReporteRepository { get; set; }
@@ -160,6 +164,7 @@ namespace LeandroSoftware.AccesoDatos.Datos
         public DbSet<MovimientoProducto> MovimientoProductoRepository { get; set; }
         public DbSet<OrdenCompra> OrdenRepository { get; set; }
         public DbSet<OrdenServicio> OrdenServicioRepository { get; set; }
+        public DbSet<Padron> PadronRepository { get; set; }
         public DbSet<ParametroContable> ParametroContableRepository { get; set; }
         public DbSet<Particular> ParticularRepository { get; set; }
         public DbSet<Producto> ProductoRepository { get; set; }
@@ -171,6 +176,7 @@ namespace LeandroSoftware.AccesoDatos.Datos
         public DbSet<RolePorUsuario> RolePorUsuarioRepository { get; set; }
         public DbSet<SaldoMensualContable> SaldoMensualContableRepository { get; set; }
         public DbSet<Sucursal> SucursalRepository { get; set; }
+        public DbSet<TipoDeCambioDolar> TipoDeCambioDolarRepository { get; set; }
         public DbSet<TipoCuentaContable> TipoCuentaContableRepository { get; set; }
         public DbSet<TipoIdentificacion> TipoIdentificacionRepository { get; set; }
         public DbSet<TipoMoneda> TipoMonedaRepository { get; set; }

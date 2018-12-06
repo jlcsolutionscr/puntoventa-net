@@ -1,7 +1,7 @@
 ﻿Imports System.IO
 Imports System.Xml
-Imports LeandroSoftware.Puntoventa.Servicios
-Imports LeandroSoftware.Puntoventa.Dominio.Entidades
+Imports LeandroSoftware.AccesoDatos.Servicios
+Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
 Imports Unity
 Imports System.Text
 
@@ -68,7 +68,7 @@ Public Class FrmDetalleDocumentoElectronico
 
     Private Async Sub ValidarCantidadClientes()
         Try
-            intTotalDocumentos = Await servicioFacturacion.ObtenerTotalDocumentosElectronicosProcesados(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
+            intTotalDocumentos = servicioFacturacion.ObtenerTotalDocumentosElectronicosProcesados(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()

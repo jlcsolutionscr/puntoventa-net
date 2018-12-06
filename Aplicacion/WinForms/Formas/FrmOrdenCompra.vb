@@ -1,7 +1,7 @@
 Imports System.Collections.Generic
 Imports LeandroSoftware.Core.CommonTypes
-Imports LeandroSoftware.Puntoventa.Dominio.Entidades
-Imports LeandroSoftware.PuntoVenta.Servicios
+Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
+Imports LeandroSoftware.AccesoDatos.Servicios
 Imports Unity
 
 Public Class FrmOrdenCompra

@@ -2,7 +2,7 @@
 using LeandroSoftware.Core;
 using log4net;
 
-namespace LeandroSoftware.PuntoVenta.Servicios
+namespace LeandroSoftware.AccesoDatos.Servicios
 {
     public interface IRespaldoService
     {

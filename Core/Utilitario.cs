@@ -2,18 +2,27 @@
 using System.IO;
 using System.Text;
 using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
 using System.Diagnostics;
 using log4net;
 using PdfSharp.Pdf;
 using PdfSharp.Drawing;
 using PdfSharp.Drawing.Layout;
+using System.Xml;
+using FirmaXadesNet.Signature;
+using FirmaXadesNet;
+using FirmaXadesNet.Signature.Parameters;
+using FirmaXadesNet.Crypto;
+using System.Security.Cryptography.X509Certificates;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
 
 namespace LeandroSoftware.Core
 {
     public static class Utilitario
     {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static HttpClient httpClient = new HttpClient();
 
         public static string VerificarCertificadoPorNombre(string key)
         {
@@ -195,6 +204,78 @@ namespace LeandroSoftware.Core
 	        fsDecrypted.Write(new StreamReader(decryptoStream).ReadToEnd());
 	        fsDecrypted.Flush();
 	        fsDecrypted.Close();
+        }
+
+        public static async Task Ejecutar(string jsonObject, string servicioURL, string strToken)
+        {
+            try
+            {
+                StringContent contentJson = new StringContent(jsonObject, Encoding.UTF8, "application/json");
+                if (strToken != "")
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", strToken);
+                HttpResponseMessage httpResponse = httpClient.PostAsync(servicioURL + "/recepcion", contentJson).Result;
+                string responseContent = await httpResponse.Content.ReadAsStringAsync();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public static async Task<string> EjecutarConsulta(string jsonObject, string servicioURL, string strToken)
+        {
+            try
+            {
+                StringContent contentJson = new StringContent(jsonObject, Encoding.UTF8, "application/json");
+                if (strToken != "")
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", strToken);
+                HttpResponseMessage httpResponse = httpClient.PostAsync(servicioURL + "/recepcion", contentJson).Result;
+                string responseContent = await httpResponse.Content.ReadAsStringAsync();
+                return responseContent;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public static byte[] FirmarDocumentoXML(XmlDocument documentoXml, string strCertificado, string strPinCertificado)
+        {
+            byte[] signedDataEncoded = null;
+            try
+            {
+                // Firma del documento XML
+                byte[] mensajeEncoded = Encoding.UTF8.GetBytes(documentoXml.OuterXml);
+                SignatureDocument signatureDocument;
+                XadesService xadesService = new XadesService();
+                SignatureParameters signatureParameters = new SignatureParameters();
+                signatureParameters.SignaturePolicyInfo = new SignaturePolicyInfo();
+                signatureParameters.SignaturePolicyInfo.PolicyIdentifier = "https://tribunet.hacienda.go.cr/docs/esquemas/2016/v4/Resolucion%20Comprobantes%20Electronicos%20%20DGT-R-48-2016.pdf";
+                signatureParameters.SignaturePolicyInfo.PolicyHash = "V8lVVNGDCPen6VELRD1Ja8HARFk=";
+                signatureParameters.SignaturePolicyInfo.PolicyUri = "";
+                signatureParameters.SignatureMethod = SignatureMethod.RSAwithSHA256;
+                signatureParameters.SigningDate = DateTime.Now;
+                signatureParameters.SignaturePackaging = SignaturePackaging.ENVELOPED;
+                string appPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+                string filePath = appPath + "/Certificates/" + strCertificado;
+                if (File.Exists(filePath))
+                {
+                    byte[] fileBytes = File.ReadAllBytes(filePath);
+                    X509Certificate2 uidCert = new X509Certificate2(fileBytes, strPinCertificado, X509KeyStorageFlags.UserKeySet);
+                    using (Signer signer2 = signatureParameters.Signer = new Signer(uidCert))
+                    using (MemoryStream smDatos = new MemoryStream(mensajeEncoded))
+                    {
+                        signatureDocument = xadesService.Sign(smDatos, signatureParameters);
+                    }
+                    // Almacenaje del documento en base de datos
+                    signedDataEncoded = Encoding.UTF8.GetBytes(signatureDocument.Document.OuterXml);
+                }
+                return signedDataEncoded;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         public static byte[] GenerarPDFFacturaElectronica(EstructuraPDF datos)

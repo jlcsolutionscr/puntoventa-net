@@ -6,10 +6,8 @@ Imports Unity.Injection
 Imports Unity.Lifetime
 Imports Microsoft.Practices.Unity.Configuration
 Imports LeandroSoftware.Core
-Imports LeandroSoftware.Puntoventa.Dominio.Entidades
-Imports LeandroSoftware.Puntoventa.Datos
-Imports LeandroSoftware.Puntoventa.Servicios
-Imports LeandroSoftware.FacturaElectronicaHacienda.TiposDatos
+Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
+Imports LeandroSoftware.AccesoDatos.Servicios
 Imports System.Collections.Generic
 
 Public Class FrmMenuPrincipal
@@ -492,12 +490,9 @@ Public Class FrmMenuPrincipal
             Exit Sub
         End Try
         Try
-            Dim strConn As String = "Server=" + hostname + "; Database=" + database + "; UId=" + Utilitario.DesencriptarDatos(strAppThumptPrint, username) + "; Pwd=" + Utilitario.DesencriptarDatos(strAppThumptPrint, password) + ";"
             unityContainer = New UnityContainer()
             Dim section As UnityConfigurationSection = ConfigurationManager.GetSection("unity")
             section.Configure(unityContainer, "Service")
-            unityContainer.RegisterInstance(GetType(String), "conectionString", strConn, New ContainerControlledLifetimeManager())
-            unityContainer.RegisterType(Of IDbContext, LeandroContext)(New InjectionConstructor(New ResolvedParameter(GetType(String), "conectionString")))
             servicioRespaldo = unityContainer.Resolve(Of IRespaldoService)()
             servicioMantenimiento = unityContainer.Resolve(Of IMantenimientoService)()
         Catch ex As Exception
@@ -519,7 +514,21 @@ Public Class FrmMenuPrincipal
             Close()
             Exit Sub
         End If
-
+        If empresaGlobal Is Nothing Then
+            MessageBox.Show("La empresa no se encuentra registrada en el servicio de facturación electrónica. Contacte a su Proveedor. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            Close()
+            Exit Sub
+        Else
+            If empresaGlobal.PermiteFacturar = "N" Then
+                MessageBox.Show("La empresa no se encuentra activa para emitir documentos electrónicos. Contacte a su Proveedor. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                Close()
+                Exit Sub
+            ElseIf Today > empresaGlobal.FechaVence Then
+                MessageBox.Show("Ha Expirado el período del plan de factura electrónica adquirido. Contacte a su Proveedor. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                Close()
+                Exit Sub
+            End If
+        End If
         fileSystemObject = CreateObject("Scripting.FileSystemObject")
         driveName = "C:\"
         drive = fileSystemObject.GetDrive(fileSystemObject.GetDriveName(fileSystemObject.GetAbsolutePathName(driveName)))
@@ -561,26 +570,6 @@ Public Class FrmMenuPrincipal
             .NullValue = "0",
             .Alignment = DataGridViewContentAlignment.MiddleCenter
         }
-        If empresaGlobal.FacturaElectronica Then
-            picLoader.Visible = True
-            Try
-                Dim empresaDTO As EmpresaDTO = Await ComprobanteElectronicoService.ConsultarEmpresa(empresaGlobal)
-                If empresaDTO.IdEmpresa Is Nothing Then
-                    MessageBox.Show("La empresa no se encuentra registrada en el servicio de facturación electrónica. Contacte a su Proveedor. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-                    Close()
-                    Exit Sub
-                End If
-                If empresaDTO.PermiteFacturar = "N" Then
-                    MessageBox.Show("La empresa no se encuentra activa para emitir documentos electrónicos. Contacte a su Proveedor. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-                    Close()
-                    Exit Sub
-                End If
-            Catch
-                MessageBox.Show("Error de conexión con el servicio web de factura electrónica. Por verifique su conexión a internet e intente más tarde. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-                Close()
-                Exit Sub
-            End Try
-        End If
         picLoader.Visible = False
         Dim formInicio As New FrmInicio()
         formInicio.ShowDialog()

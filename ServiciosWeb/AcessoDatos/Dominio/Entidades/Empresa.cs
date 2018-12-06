@@ -45,16 +45,25 @@ namespace LeandroSoftware.AccesoDatos.Dominio.Entidades
         public bool CierreEnEjecucion { get; set; }
         public bool FacturaElectronica { get; set; }
         public string ServicioFacturaElectronicaURL { get; set; }
+        public bool PermiteFacturar { get; set; }
         public string IdCertificado { get; set; }
         public string PinCertificado { get; set; }
+        public string UsuarioHacienda { get; set; }
+        public string ClaveHacienda { get; set; }
         public int UltimoDocFE { get; set; }
         public int UltimoDocND { get; set; }
         public int UltimoDocNC { get; set; }
         public int UltimoDocTE { get; set; }
         public int UltimoDocMR { get; set; }
         public byte[] Logotipo { get; set; }
+        public byte[] Certificado { get; set; }
+        public string AccessToken { get; set; }
+        public int? ExpiresIn { get; set; }
+        public int? RefreshExpiresIn { get; set; }
+        public string RefreshToken { get; set; }
+        public DateTime? EmitedAt { get; set; }
 
-    public TipoIdentificacion TipoIdentificacion { get; set; }
+        public TipoIdentificacion TipoIdentificacion { get; set; }
         public TipoMoneda TipoMoneda { get; set; }
         [ForeignKey("IdProvincia, IdCanton, IdDistrito, IdBarrio")]
         public Barrio Barrio { get; set; }

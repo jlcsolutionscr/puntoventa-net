@@ -11,7 +11,7 @@ using LeandroSoftware.AccesoDatos.Datos;
 using log4net;
 using Unity;
 
-namespace LeandroSoftware.PuntoVenta.Servicios
+namespace LeandroSoftware.AccesoDatos.Servicios
 {
     public interface IMantenimientoService
     {
@@ -19,6 +19,7 @@ namespace LeandroSoftware.PuntoVenta.Servicios
         Empresa AgregarEmpresa(Empresa empresa);
         void ActualizarEmpresa(Empresa empresa);
         Empresa ObtenerEmpresa(int intIdEmpresa);
+        Empresa ObtenerEmpresaPorIdentificacion(string strIdentificacion);
         IEnumerable<Empresa> ObtenerListaEmpresas();
         Modulo ObtenerModulo(int intIdModulo);
         CatalogoReporte ObtenerCatalogoReporte(int intIdReporte);
@@ -165,6 +166,22 @@ namespace LeandroSoftware.PuntoVenta.Servicios
                 try
                 {
                     return dbContext.EmpresaRepository.Include("DetalleRegistro").Include("ModuloPorEmpresa").Include("ReportePorEmpresa").Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.IdEmpresa == intIdEmpresa);
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al obtener la empresa: ", ex);
+                    throw new Exception("Se produjo un error consultando la información de la empresa. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public Empresa ObtenerEmpresaPorIdentificacion(string strIdentificacion)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    return dbContext.EmpresaRepository.Include("DetalleRegistro").Include("ModuloPorEmpresa").Include("ReportePorEmpresa").Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.Identificacion == strIdentificacion);
                 }
                 catch (Exception ex)
                 {

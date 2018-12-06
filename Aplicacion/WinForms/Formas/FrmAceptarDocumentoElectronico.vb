@@ -1,6 +1,6 @@
 ﻿Imports System.IO
 Imports System.Xml
-Imports LeandroSoftware.Puntoventa.Servicios
+Imports LeandroSoftware.AccesoDatos.Servicios
 Imports Unity
 
 Public Class FrmAceptarDocumentoElectronico

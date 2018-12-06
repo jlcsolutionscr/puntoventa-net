@@ -54,12 +54,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Dominio\DominioSWFE.csproj">
-      <Project>{5231403a-caa3-4e56-bd42-0a5077c0b8d1}</Project>
-      <Name>DominioSWFE</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

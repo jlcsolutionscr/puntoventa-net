@@ -156,6 +156,22 @@
       <Project>{FA3C5BCE-3DB6-486E-B16B-8B7F76EEF63F}</Project>
       <Name>Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Datos\Datos.csproj">
+      <Project>{7C07FD36-AF8C-4D6F-9EE4-F84082D03F9D}</Project>
+      <Name>Datos</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Dominio\Dominio.csproj">
+      <Project>{74E3681E-1245-4268-ADB9-D76DA18B2FE0}</Project>
+      <Name>Dominio</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Servicios\Servicios.csproj">
+      <Project>{bc08c145-ce0a-4220-a2f6-41b7aae80fc7}</Project>
+      <Name>Servicios</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TiposDatos\TiposDatos.csproj">
+      <Project>{df822ceb-dff9-4f4f-8bc1-d6c0cbf54d4b}</Project>
+      <Name>TiposDatos</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
