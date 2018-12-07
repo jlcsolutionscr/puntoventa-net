@@ -36,6 +36,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Servicios", "ServiciosWeb\A
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TiposDatos", "ServiciosWeb\AcessoDatos\TiposDatos\TiposDatos.csproj", "{DF822CEB-DFF9-4F4F-8BC1-D6C0CBF54D4B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientePruebas", "Aplicacion\ClientePruebas\ClientePruebas.csproj", "{6C3FD6CF-671E-46E1-9CA3-9B769BD0712C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|.NET = Debug|.NET
@@ -184,6 +186,18 @@ Global
 		{DF822CEB-DFF9-4F4F-8BC1-D6C0CBF54D4B}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{DF822CEB-DFF9-4F4F-8BC1-D6C0CBF54D4B}.Release|x86.ActiveCfg = Release|Any CPU
 		{DF822CEB-DFF9-4F4F-8BC1-D6C0CBF54D4B}.Release|x86.Build.0 = Release|Any CPU
+		{6C3FD6CF-671E-46E1-9CA3-9B769BD0712C}.Debug|.NET.ActiveCfg = Debug|x86
+		{6C3FD6CF-671E-46E1-9CA3-9B769BD0712C}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{6C3FD6CF-671E-46E1-9CA3-9B769BD0712C}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{6C3FD6CF-671E-46E1-9CA3-9B769BD0712C}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{6C3FD6CF-671E-46E1-9CA3-9B769BD0712C}.Debug|x86.ActiveCfg = Debug|x86
+		{6C3FD6CF-671E-46E1-9CA3-9B769BD0712C}.Debug|x86.Build.0 = Debug|x86
+		{6C3FD6CF-671E-46E1-9CA3-9B769BD0712C}.Release|.NET.ActiveCfg = Release|x86
+		{6C3FD6CF-671E-46E1-9CA3-9B769BD0712C}.Release|Any CPU.ActiveCfg = Release|x86
+		{6C3FD6CF-671E-46E1-9CA3-9B769BD0712C}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{6C3FD6CF-671E-46E1-9CA3-9B769BD0712C}.Release|Mixed Platforms.Build.0 = Release|x86
+		{6C3FD6CF-671E-46E1-9CA3-9B769BD0712C}.Release|x86.ActiveCfg = Release|x86
+		{6C3FD6CF-671E-46E1-9CA3-9B769BD0712C}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -199,9 +213,10 @@ Global
 		{74E3681E-1245-4268-ADB9-D76DA18B2FE0} = {EC6B0077-A2C7-4BED-811A-1DE73F019E76}
 		{BC08C145-CE0A-4220-A2F6-41B7AAE80FC7} = {EC6B0077-A2C7-4BED-811A-1DE73F019E76}
 		{DF822CEB-DFF9-4F4F-8BC1-D6C0CBF54D4B} = {EC6B0077-A2C7-4BED-811A-1DE73F019E76}
+		{6C3FD6CF-671E-46E1-9CA3-9B769BD0712C} = {543941A1-28FF-432D-82A1-3E30AE9CE3D8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.2\lib\NET35;packages\Unity.2.1.505.0\lib\NET35
 		SolutionGuid = {D8133CC0-28D9-4CD6-8284-726C2C85E359}
+		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.2\lib\NET35;packages\Unity.2.1.505.0\lib\NET35
 	EndGlobalSection
 EndGlobal

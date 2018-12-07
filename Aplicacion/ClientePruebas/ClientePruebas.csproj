@@ -37,11 +37,12 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>LeandroSoftware.FacturaElectronicaHacienda.ClientePruebas.Program</StartupObject>
+    <StartupObject>LeandroSoftware.AccesoDatos.ClientePruebas.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -66,13 +67,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Dominio\DominioSWFE.csproj">
-      <Project>{5231403a-caa3-4e56-bd42-0a5077c0b8d1}</Project>
-      <Name>DominioSWFE</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TiposDatos\TiposDatosSWFE.csproj">
-      <Project>{DF822CEB-DFF9-4F4F-8BC1-D6C0CBF54D4B}</Project>
-      <Name>TiposDatosSWFE</Name>
+    <ProjectReference Include="..\..\ServiciosWeb\AcessoDatos\TiposDatos\TiposDatos.csproj">
+      <Project>{df822ceb-dff9-4f4f-8bc1-d6c0cbf54d4b}</Project>
+      <Name>TiposDatos</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -1,4 +1,4 @@
-﻿using LeandroSoftware.FacturaElectronicaHacienda.TiposDatos;
+﻿using LeandroSoftware.AccesoDatos.TiposDatos;
 using log4net;
 using System;
 using System.Collections.Generic;
@@ -12,7 +12,7 @@ using System.Web.Script.Serialization;
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace LeandroSoftware.FacturaElectronicaHacienda.ClientePruebas
+namespace LeandroSoftware.AccesoDatos.ClientePruebas
 {
     class Program
     {
@@ -53,8 +53,8 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.ClientePruebas
                     {
                         try
                         {
-                            List<DatosDocumentoElectronicoDTO> documentoLista = obtenerListadoDocumentos(idEmpresa);
-                            foreach (DatosDocumentoElectronicoDTO doc in documentoLista)
+                            List<DocumentoElectronicoDTO> documentoLista = obtenerListadoDocumentos(idEmpresa);
+                            foreach (DocumentoElectronicoDTO doc in documentoLista)
                             {
                                 Console.WriteLine("id: " + doc.IdDocumento + " Clave: " + doc.ClaveNumerica + " Estado: " + doc.EstadoEnvio);
                             }
@@ -71,15 +71,24 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.ClientePruebas
                             }
                             if (idDoc != "S")
                             {
-                                DatosDocumentoElectronicoDTO documento = documentoLista.Where(x => x.IdDocumento == idDocumento).FirstOrDefault();
+                                DocumentoElectronicoDTO documento = documentoLista.Where(x => x.IdDocumento == idDocumento).FirstOrDefault();
                                 if (documento != null)
                                 {
+                                    if (documento.EstadoEnvio == "aceptado")
+                                    {
+                                        Console.WriteLine("El documento fue ACEPTADO. Desea reenviar la notificacion al cliente (S/N)");
+                                        string strSiNo = Console.ReadLine();
+                                        if (strSiNo == "S")
+                                        {
+                                            enviarNotificacion(documento);
+                                        }
+                                    }
                                     if (documento.EstadoEnvio == "rechazado")
                                     {
-                                        Console.WriteLine("El documento posee la siguiente respuesta de hacienda:");
+                                        Console.WriteLine("El documento fue RECHAZADO y posee la siguiente respuesta de hacienda:");
                                         if (documento.RespuestaHacienda == null)
                                         {
-                                            DatosDocumentoElectronicoDTO consulta = consultarEstadoDocumento(documento);
+                                            DocumentoElectronicoDTO consulta = consultarEstadoDocumento(documento);
                                             byte[] bytRespuesta = Convert.FromBase64String(consulta.RespuestaHacienda);
                                             XmlSerializer serializer = new XmlSerializer(typeof(MensajeHacienda));
                                             MensajeHacienda mensajeRespuesta;
@@ -98,7 +107,7 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.ClientePruebas
                                         string strOpcion = Console.ReadLine();
                                         if (strOpcion == "S")
                                         {
-                                            DatosDocumentoElectronicoDTO consulta = consultarEstadoDocumento(documento);
+                                            DocumentoElectronicoDTO consulta = consultarEstadoDocumento(documento);
                                             Console.WriteLine("El documento posee un estado: " + consulta.EstadoEnvio);
                                             if (consulta.RespuestaHacienda != null)
                                             {
@@ -196,7 +205,7 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.ClientePruebas
             }
         }
 
-        private static List<DatosDocumentoElectronicoDTO> obtenerListadoDocumentos(int intIdEmpresa)
+        private static List<DocumentoElectronicoDTO> obtenerListadoDocumentos(int intIdEmpresa)
         {
             Uri uri = new Uri(appSettings["ServicioFacturaElectronicaURL"] + "/consultarlistadodocumentos?empresa=" + intIdEmpresa + "&estado=");
             Task<HttpResponseMessage> task1 = client.GetAsync(uri);
@@ -209,7 +218,7 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.ClientePruebas
                 }
                 string results = task1.Result.Content.ReadAsStringAsync().Result;
                 JavaScriptSerializer json_serializer = new JavaScriptSerializer();
-                List<DatosDocumentoElectronicoDTO> listado = json_serializer.Deserialize<List<DatosDocumentoElectronicoDTO>>(results);
+                List<DocumentoElectronicoDTO> listado = json_serializer.Deserialize<List<DocumentoElectronicoDTO>>(results);
                 return listado;
             }
             catch (AggregateException ex)
@@ -219,7 +228,7 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.ClientePruebas
             }
         }
 
-        private static DatosDocumentoElectronicoDTO consultarEstadoDocumento(DatosDocumentoElectronicoDTO datos)
+        private static DocumentoElectronicoDTO consultarEstadoDocumento(DocumentoElectronicoDTO datos)
         {
             Uri uri = new Uri(appSettings["ServicioFacturaElectronicaURL"] + "/consultardocumentoelectronico?empresa=" + datos.IdEmpresa + "&clave=" + datos.ClaveNumerica + "&consecutivo=" + datos.Consecutivo);
             Task<HttpResponseMessage> task1 = client.GetAsync(uri);
@@ -232,7 +241,7 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.ClientePruebas
                 }
                 string results = task1.Result.Content.ReadAsStringAsync().Result;
                 JavaScriptSerializer json_serializer = new JavaScriptSerializer();
-                DatosDocumentoElectronicoDTO respuesta = json_serializer.Deserialize<DatosDocumentoElectronicoDTO>(results);
+                DocumentoElectronicoDTO respuesta = json_serializer.Deserialize<DocumentoElectronicoDTO>(results);
                 return respuesta;
             }
             catch (AggregateException ex)
@@ -267,7 +276,7 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.ClientePruebas
             }
         }
 
-        private static void enviarDocumentoElectronico(DatosDocumentoElectronicoDTO datos)
+        private static void enviarDocumentoElectronico(DocumentoElectronicoDTO datos)
         {
             string jsonRequest = new JavaScriptSerializer().Serialize(datos);
             StringContent stringContent = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
@@ -285,6 +294,25 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.ClientePruebas
             catch (AggregateException ex)
             {
                 log.Error("Error enviando el documento con clave: " + datos.ClaveNumerica, ex.Flatten());
+                throw ex.Flatten();
+            }
+        }
+
+        private static void enviarNotificacion(DocumentoElectronicoDTO datos)
+        {
+            Uri uri = new Uri(appSettings["ServicioFacturaElectronicaURL"] + "/enviarnotificacion?empresa=" + datos.IdEmpresa + "&clave=" + datos.ClaveNumerica + "&consecutivo=" + datos.Consecutivo);
+            Task<HttpResponseMessage> task1 = client.GetAsync(uri);
+            try
+            {
+                task1.Wait();
+                if (!task1.Result.IsSuccessStatusCode)
+                {
+                    throw new Exception("Error al consumir el servicio web de factura electrónica: " + task1.Result.ReasonPhrase);
+                }
+            }
+            catch (AggregateException ex)
+            {
+                log.Error("Error enviando la notificación para el documento con clave: " + datos.ClaveNumerica, ex.Flatten());
                 throw ex.Flatten();
             }
         }
