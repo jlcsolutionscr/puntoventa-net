@@ -3,12 +3,14 @@ using log4net;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 using System.Xml;
+using System.Xml.Serialization;
 
 namespace LeandroSoftware.FacturaElectronicaHacienda.ClientePruebas
 {
@@ -45,64 +47,65 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.ClientePruebas
                                 DatosDocumentoElectronicoDTO documento = documentoLista.Where(x => x.IdDocumento == intIdDocumento).FirstOrDefault();
                                 if (documento != null)
                                 {
-                                    Console.WriteLine("Ingrese 'C' para consultar el estado, 'E' para enviar o cualquier otra tecla para salir.");
-                                    string strOpcion = Console.ReadLine();
-                                    if (strOpcion == "C")
+                                    if (documento.EstadoEnvio == "registrado")
+                                    {
+                                        Console.WriteLine("Desea enviar el documento al Ministerio de Hacienda (S/N):");
+                                        string strSiNo = Console.ReadLine();
+                                        if (strSiNo == "S")
+                                        {
+                                            enviarDocumentoElectronico(documento);
+                                        }
+                                    }
+                                    else if (documento.EstadoEnvio == "enviado")
                                     {
                                         DatosDocumentoElectronicoDTO consulta = consultarEstadoDocumento(documento);
-                                        Console.WriteLine("El documento posee un estado: " + consulta.EstadoEnvio);
-                                        if (consulta.RespuestaHacienda != null)
+                                        if (consulta.EstadoEnvio == "aceptado" || consulta.EstadoEnvio == "rechazado")
                                         {
-                                            if (documento.EstadoEnvio == "enviado")
+                                            XmlDocument xmlRespuesta = new XmlDocument();
+                                            byte[] bytRespuesta = Convert.FromBase64String(consulta.RespuestaHacienda);
+                                            xmlRespuesta.LoadXml(Encoding.UTF8.GetString(bytRespuesta));
+                                            Console.WriteLine("Respuesta de hacienda: " + xmlRespuesta.GetElementsByTagName("DetalleMensaje").Item(0).InnerText);
+                                            Console.WriteLine("");
+                                            Console.WriteLine("Desea proceder con la aplicación de la respuesta de Hacienda (S/N):");
+                                            string strSiNo = Console.ReadLine();
+                                            if (strSiNo == "S")
                                             {
-                                                if (consulta.EstadoEnvio == "aceptado" || consulta.EstadoEnvio == "rechazado")
-                                                {
-                                                    XmlDocument xmlRespuesta = new XmlDocument();
-                                                    byte[] bytRespuesta = Convert.FromBase64String(consulta.RespuestaHacienda);
-                                                    xmlRespuesta.LoadXml(Encoding.UTF8.GetString(bytRespuesta));
-                                                    Console.WriteLine("Respuesta de hacienda: " + xmlRespuesta.GetElementsByTagName("DetalleMensaje").Item(0).InnerText);
-                                                }
+                                                RespuestaHaciendaDTO respuesta = new RespuestaHaciendaDTO();
+                                                if (documento.EsMensajeReceptor == "S")
+                                                    respuesta.Clave = documento.ClaveNumerica + "-" + documento.Consecutivo;
                                                 else
-                                                {
-                                                    Console.WriteLine("Respuesta de hacienda: " + consulta.RespuestaHacienda);
-                                                }
-                                                Console.WriteLine("");
-                                                if (documento.EstadoEnvio != consulta.EstadoEnvio)
-                                                {
-                                                    Console.WriteLine("Desea proceder con la aplicación de la respuesta de Hacienda (S/N):");
-                                                    string strSiNo = Console.ReadLine();
-                                                    if (strSiNo == "S")
-                                                    {
-                                                        RespuestaHaciendaDTO respuesta = new RespuestaHaciendaDTO();
-                                                        if (documento.EsMensajeReceptor == "S")
-                                                            respuesta.Clave = documento.ClaveNumerica + "-" + documento.Consecutivo;
-                                                        else
-                                                            respuesta.Clave = documento.ClaveNumerica;
-                                                        respuesta.Fecha = documento.FechaEmision.ToString("yyyy-MM-dd'T'HH:mm:ssZ");
-                                                        respuesta.IndEstado = consulta.EstadoEnvio;
-                                                        respuesta.RespuestaXml = consulta.RespuestaHacienda;
-                                                        procesarRespuesta(respuesta);
-                                                        Console.WriteLine("Procesado satisfactoriamente. . .");
-                                                    }
-                                                    else
-                                                    {
-                                                        Console.WriteLine("Procesamiento abortado por el usuario. . .");
-                                                    }
-                                                }
+                                                    respuesta.Clave = documento.ClaveNumerica;
+                                                respuesta.Fecha = documento.FechaEmision.ToString("yyyy-MM-dd'T'HH:mm:ssZ");
+                                                respuesta.IndEstado = consulta.EstadoEnvio;
+                                                respuesta.RespuestaXml = consulta.RespuestaHacienda;
+                                                procesarRespuesta(respuesta);
+                                                Console.WriteLine("Procesado satisfactoriamente. . .");
+                                            }
+                                            else
+                                            {
+                                                Console.WriteLine("Procesamiento abortado por el usuario. . .");
                                             }
                                         }
                                         Console.WriteLine("");
                                     }
-                                    if (strOpcion == "E")
+                                    else
                                     {
-                                        if (documento.EstadoEnvio == "registrado")
+                                        DatosDocumentoElectronicoDTO consulta = consultarEstadoDocumento(documento);
+                                        XmlSerializer serializer = new XmlSerializer(typeof(MensajeHacienda));
+                                        if (consulta.RespuestaHacienda != null)
                                         {
-                                            enviarDocumentoElectronico(documento);
-                                        }
-                                        else
-                                        {
-                                            Console.WriteLine("El documento no posee un estado de 'Registrado' por lo que no se puede procesar.");
+                                            byte[] datosRespuesta = Convert.FromBase64String(consulta.RespuestaHacienda);
+                                            XmlDocument datos = new XmlDocument();
+                                            string strRespuesta = Encoding.UTF8.GetString(datosRespuesta);
+                                            datos.LoadXml(strRespuesta);
+                                            Console.WriteLine("Respuesta de hacienda: " + datos.InnerXml);
                                             Console.WriteLine("");
+                                            Console.WriteLine("Desea proceder con la aplicación de la respuesta de Hacienda (S/N):");
+                                            string strSiNo = Console.ReadLine();
+                                            if (strSiNo == "S")
+                                            {
+                                                enviarNotificacion(documento);
+                                            }
                                         }
                                     }
                                 }
@@ -170,6 +173,25 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.ClientePruebas
             catch (AggregateException ex)
             {
                 log.Error("Error consultado el documento con clave: " + datos.ClaveNumerica, ex.Flatten());
+                throw ex.Flatten();
+            }
+        }
+
+        private static void enviarNotificacion(DatosDocumentoElectronicoDTO datos)
+        {
+            Uri uri = new Uri(appSettings["ServicioFacturaElectronicaURL"] + "/enviarnotificacion?empresa=" + datos.IdEmpresa + "&clave=" + datos.ClaveNumerica + "&consecutivo=" + datos.Consecutivo);
+            Task<HttpResponseMessage> task1 = client.GetAsync(uri);
+            try
+            {
+                task1.Wait();
+                if (!task1.Result.IsSuccessStatusCode)
+                {
+                    throw new Exception("Error al consumir el servicio web de factura electrónica: " + task1.Result.ReasonPhrase);
+                }
+            }
+            catch (AggregateException ex)
+            {
+                log.Error("Error enviando la notificación para el documento con clave: " + datos.ClaveNumerica, ex.Flatten());
                 throw ex.Flatten();
             }
         }

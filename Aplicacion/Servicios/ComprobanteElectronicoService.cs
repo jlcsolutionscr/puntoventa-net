@@ -624,7 +624,6 @@ namespace LeandroSoftware.PuntoVenta.Servicios
                 string strConsucutivo = "";
                 string strClaveNumerica = "";
                 bool esMensajeReceptor = false;
-
                 if (tipoDocumento == TipoDocumento.MensajeReceptorAceptado || tipoDocumento == TipoDocumento.MensajeReceptorAceptadoParcial || tipoDocumento == TipoDocumento.MensajeReceptorRechazado)
                     esMensajeReceptor = true;
                 if (!esMensajeReceptor)

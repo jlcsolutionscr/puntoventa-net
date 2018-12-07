@@ -30,6 +30,9 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF
         [WebGet(UriTemplate = "consultarlistadodocumentos?empresa={empresa}&estado={estado}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
         List<DatosDocumentoElectronicoDTO> ConsultarListadoDocumentosElectronicos(string empresa, string estado);
         [OperationContract]
+        [WebGet(UriTemplate = "enviarnotificacion?empresa={empresa}&clave={clave}&consecutivo={consecutivo}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
+        void EnviarNotificacion(string empresa, string clave, string consecutivo);
+        [OperationContract]
         [WebInvoke(Method = "POST", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, UriTemplate = "recibirrespuestahacienda")]
         void RecibirRespuestaHacienda(RespuestaHaciendaDTO mensaje);
         [WebGet(UriTemplate = "consultarpersonaporidentificacion?id={id}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]

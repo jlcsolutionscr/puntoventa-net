@@ -68,6 +68,7 @@ CREATE TABLE empresa (
   ClaveHacienda VARCHAR(100) NULL,
   CorreoNotificacion VARCHAR(200) NULL,
   PermiteFacturar BIT NOT NULL,
+  FechaVence DATETIME NULL,
   AccessToken BLOB NULL,
   ExpiresIn INTEGER NULL,
   RefreshExpiresIn INTEGER NULL,

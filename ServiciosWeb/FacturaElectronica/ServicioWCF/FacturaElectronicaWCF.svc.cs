@@ -146,6 +146,19 @@ namespace LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF
             }
         }
 
+        public void EnviarNotificacion(string empresa, string clave, string consecutivo)
+        {
+            try
+            {
+                servicioFacturElectronica.EnviarNotificacion(int.Parse(empresa), clave, consecutivo, servicioEnvioCorreo, configuracion.CorreoNotificacionErrores);
+            }
+            catch (Exception ex)
+            {
+                log.Error("Error al consumir endpoint 'ConsultarEstadoDocumentoElectronico': ", ex);
+                throw ex;
+            }
+        }
+
         public void RecibirRespuestaHacienda(RespuestaHaciendaDTO mensaje)
         {
             try

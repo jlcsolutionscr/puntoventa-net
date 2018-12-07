@@ -144,7 +144,6 @@ Public Class FrmDetalleDocumentoElectronico
                     xw.Formatting = Formatting.Indented
                     xw.Indentation = 4
                     Dim datos As XmlDocument = New XmlDocument()
-                    Dim strBase64String As String = Convert.ToBase64String(documento.Respuesta)
                     Dim strRespuesta As String = Encoding.UTF8.GetString(documento.Respuesta)
                     datos.LoadXml(strRespuesta)
                     datos.Save(xw)
