@@ -10,8 +10,8 @@
     <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AccesoDatosWCF</RootNamespace>
-    <AssemblyName>AccesoDatosWCF</AssemblyName>
+    <RootNamespace>PuntoventaWCF</RootNamespace>
+    <AssemblyName>PuntoventaWCF</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <WcfConfigValidationEnabled>True</WcfConfigValidationEnabled>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -129,14 +129,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="AccesoDatosWCF.svc" />
+    <Content Include="PuntoventaWCF.svc" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AccesoDatosWCF.svc.cs">
-      <DependentUpon>AccesoDatosWCF.svc</DependentUpon>
+    <Compile Include="PuntoventaWCF.svc.cs">
+      <DependentUpon>PuntoventaWCF.svc</DependentUpon>
     </Compile>
-    <Compile Include="IAccesoDatosWCF.cs" />
+    <Compile Include="IPuntoventaWCF.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

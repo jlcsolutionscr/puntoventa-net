@@ -248,7 +248,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     };
                     emisor.Telefono = telefonoType;
                 }
-                emisor.CorreoElectronico = empresa.CuentaCorreoElectronico;
+                emisor.CorreoElectronico = empresa.CorreoNotificacion;
                 FacturaElectronicaUbicacionType ubicacionType = new FacturaElectronicaUbicacionType
                 {
                     Provincia = empresa.IdProvincia.ToString(),
@@ -492,7 +492,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     };
                     emisor.Telefono = telefonoType;
                 }
-                emisor.CorreoElectronico = empresa.CuentaCorreoElectronico;
+                emisor.CorreoElectronico = empresa.CorreoNotificacion;
                 NotaCreditoElectronicaUbicacionType ubicacionType = new NotaCreditoElectronicaUbicacionType
                 {
                     Provincia = empresa.IdProvincia.ToString(),
@@ -707,13 +707,13 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             try
             {
                 string strCorreoNotificacion = "";
-                if (empresa.CuentaCorreoElectronico == null || empresa.CuentaCorreoElectronico.Length == 0)
+                if (empresa.CorreoNotificacion == null || empresa.CorreoNotificacion.Length == 0)
                 {
                     throw new Exception("La empresa debe poseer una dirección de correo electrónico para ser notificada.");
                 }
                 else
                 {
-                    strCorreoNotificacion = empresa.CuentaCorreoElectronico;
+                    strCorreoNotificacion = empresa.CorreoNotificacion;
                 }
                 XmlDocument documentoXml = new XmlDocument();
                 documentoXml.LoadXml(datosXml);

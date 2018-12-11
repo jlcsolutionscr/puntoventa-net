@@ -105,7 +105,7 @@ namespace LeandroSoftware.AccesoDatos.Datos
 
         public LeandroContext(string conectionString)
         {
-            Database.Connection.ConnectionString = conectionString + "; Sslmode=None";
+            Database.Connection.ConnectionString = conectionString;
             Configuration.LazyLoadingEnabled = false;
             Configuration.ProxyCreationEnabled = false;
         }
