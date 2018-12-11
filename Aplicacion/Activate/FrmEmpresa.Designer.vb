@@ -103,6 +103,10 @@
         Me.picLogo = New System.Windows.Forms.PictureBox()
         Me.btnCargarLogo = New System.Windows.Forms.Button()
         Me.ofdAbrirDocumento = New System.Windows.Forms.OpenFileDialog()
+        Me.txtUsuarioATV = New System.Windows.Forms.TextBox()
+        Me.Label24 = New System.Windows.Forms.Label()
+        Me.txtClaveATV = New System.Windows.Forms.TextBox()
+        Me.Label25 = New System.Windows.Forms.Label()
         CType(Me.dgvEquipos, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.picLogo, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -144,7 +148,7 @@
         Me.txtEquipo.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtEquipo.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtEquipo.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtEquipo.Location = New System.Drawing.Point(476, 79)
+        Me.txtEquipo.Location = New System.Drawing.Point(476, 68)
         Me.txtEquipo.MaxLength = 0
         Me.txtEquipo.Name = "txtEquipo"
         Me.txtEquipo.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -159,7 +163,7 @@
         Me.txtFecha.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtFecha.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtFecha.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtFecha.Location = New System.Drawing.Point(360, 471)
+        Me.txtFecha.Location = New System.Drawing.Point(132, 558)
         Me.txtFecha.MaxLength = 0
         Me.txtFecha.Name = "txtFecha"
         Me.txtFecha.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -174,7 +178,7 @@
         Me.txtIdEmpresa.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtIdEmpresa.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtIdEmpresa.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtIdEmpresa.Location = New System.Drawing.Point(132, 49)
+        Me.txtIdEmpresa.Location = New System.Drawing.Point(132, 38)
         Me.txtIdEmpresa.MaxLength = 0
         Me.txtIdEmpresa.Name = "txtIdEmpresa"
         Me.txtIdEmpresa.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -188,7 +192,7 @@
         Me._lblLabels_3.Cursor = System.Windows.Forms.Cursors.Default
         Me._lblLabels_3.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me._lblLabels_3.ForeColor = System.Drawing.SystemColors.ControlText
-        Me._lblLabels_3.Location = New System.Drawing.Point(7, 78)
+        Me._lblLabels_3.Location = New System.Drawing.Point(7, 67)
         Me._lblLabels_3.Name = "_lblLabels_3"
         Me._lblLabels_3.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me._lblLabels_3.Size = New System.Drawing.Size(119, 17)
@@ -202,12 +206,12 @@
         Me._lblLabels_1.Cursor = System.Windows.Forms.Cursors.Default
         Me._lblLabels_1.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me._lblLabels_1.ForeColor = System.Drawing.SystemColors.ControlText
-        Me._lblLabels_1.Location = New System.Drawing.Point(188, 474)
+        Me._lblLabels_1.Location = New System.Drawing.Point(13, 561)
         Me._lblLabels_1.Name = "_lblLabels_1"
         Me._lblLabels_1.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me._lblLabels_1.Size = New System.Drawing.Size(166, 17)
+        Me._lblLabels_1.Size = New System.Drawing.Size(113, 17)
         Me._lblLabels_1.TabIndex = 18
-        Me._lblLabels_1.Text = "Fecha:"
+        Me._lblLabels_1.Text = "Fecha vencimiento:"
         Me._lblLabels_1.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         '_lblLabels_2
@@ -216,7 +220,7 @@
         Me._lblLabels_2.Cursor = System.Windows.Forms.Cursors.Default
         Me._lblLabels_2.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me._lblLabels_2.ForeColor = System.Drawing.SystemColors.ControlText
-        Me._lblLabels_2.Location = New System.Drawing.Point(476, 59)
+        Me._lblLabels_2.Location = New System.Drawing.Point(476, 48)
         Me._lblLabels_2.Name = "_lblLabels_2"
         Me._lblLabels_2.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me._lblLabels_2.Size = New System.Drawing.Size(151, 17)
@@ -230,7 +234,7 @@
         Me._lblLabels_0.Cursor = System.Windows.Forms.Cursors.Default
         Me._lblLabels_0.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me._lblLabels_0.ForeColor = System.Drawing.SystemColors.ControlText
-        Me._lblLabels_0.Location = New System.Drawing.Point(7, 52)
+        Me._lblLabels_0.Location = New System.Drawing.Point(7, 41)
         Me._lblLabels_0.Name = "_lblLabels_0"
         Me._lblLabels_0.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me._lblLabels_0.Size = New System.Drawing.Size(119, 17)
@@ -244,7 +248,7 @@
         Me.CmdConsultar.Cursor = System.Windows.Forms.Cursors.Default
         Me.CmdConsultar.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.CmdConsultar.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.CmdConsultar.Location = New System.Drawing.Point(607, 79)
+        Me.CmdConsultar.Location = New System.Drawing.Point(607, 68)
         Me.CmdConsultar.Name = "CmdConsultar"
         Me.CmdConsultar.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.CmdConsultar.Size = New System.Drawing.Size(20, 20)
@@ -259,7 +263,7 @@
         Me.dgvEquipos.AllowUserToResizeColumns = False
         Me.dgvEquipos.AllowUserToResizeRows = False
         Me.dgvEquipos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.dgvEquipos.Location = New System.Drawing.Point(476, 132)
+        Me.dgvEquipos.Location = New System.Drawing.Point(476, 121)
         Me.dgvEquipos.Name = "dgvEquipos"
         Me.dgvEquipos.RowHeadersVisible = False
         Me.dgvEquipos.Size = New System.Drawing.Size(349, 102)
@@ -272,7 +276,7 @@
         Me.btnEliminarDetalle.Cursor = System.Windows.Forms.Cursors.Default
         Me.btnEliminarDetalle.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.btnEliminarDetalle.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.btnEliminarDetalle.Location = New System.Drawing.Point(541, 240)
+        Me.btnEliminarDetalle.Location = New System.Drawing.Point(541, 229)
         Me.btnEliminarDetalle.Name = "btnEliminarDetalle"
         Me.btnEliminarDetalle.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.btnEliminarDetalle.Size = New System.Drawing.Size(65, 26)
@@ -287,7 +291,7 @@
         Me.btnInsertarDetalle.Cursor = System.Windows.Forms.Cursors.Default
         Me.btnInsertarDetalle.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.btnInsertarDetalle.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.btnInsertarDetalle.Location = New System.Drawing.Point(475, 240)
+        Me.btnInsertarDetalle.Location = New System.Drawing.Point(475, 229)
         Me.btnInsertarDetalle.Name = "btnInsertarDetalle"
         Me.btnInsertarDetalle.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.btnInsertarDetalle.Size = New System.Drawing.Size(65, 26)
@@ -303,7 +307,7 @@
         Me.txtNombreComercial.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtNombreComercial.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtNombreComercial.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtNombreComercial.Location = New System.Drawing.Point(132, 101)
+        Me.txtNombreComercial.Location = New System.Drawing.Point(132, 90)
         Me.txtNombreComercial.MaxLength = 50
         Me.txtNombreComercial.Name = "txtNombreComercial"
         Me.txtNombreComercial.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -316,7 +320,7 @@
         Me.Label1.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label1.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label1.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label1.Location = New System.Drawing.Point(10, 104)
+        Me.Label1.Location = New System.Drawing.Point(10, 93)
         Me.Label1.Name = "Label1"
         Me.Label1.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label1.Size = New System.Drawing.Size(116, 17)
@@ -331,7 +335,7 @@
         Me.txtIdentificacion.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtIdentificacion.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtIdentificacion.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtIdentificacion.Location = New System.Drawing.Point(132, 154)
+        Me.txtIdentificacion.Location = New System.Drawing.Point(132, 143)
         Me.txtIdentificacion.MaxLength = 50
         Me.txtIdentificacion.Name = "txtIdentificacion"
         Me.txtIdentificacion.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -344,7 +348,7 @@
         Me.Label2.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label2.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label2.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label2.Location = New System.Drawing.Point(8, 157)
+        Me.Label2.Location = New System.Drawing.Point(8, 146)
         Me.Label2.Name = "Label2"
         Me.Label2.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label2.Size = New System.Drawing.Size(119, 17)
@@ -358,7 +362,7 @@
         Me.Label3.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label3.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label3.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label3.Location = New System.Drawing.Point(7, 183)
+        Me.Label3.Location = New System.Drawing.Point(7, 172)
         Me.Label3.Name = "Label3"
         Me.Label3.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label3.Size = New System.Drawing.Size(119, 17)
@@ -373,7 +377,7 @@
         Me.txtDireccion.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtDireccion.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtDireccion.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtDireccion.Location = New System.Drawing.Point(132, 289)
+        Me.txtDireccion.Location = New System.Drawing.Point(132, 278)
         Me.txtDireccion.MaxLength = 50
         Me.txtDireccion.Name = "txtDireccion"
         Me.txtDireccion.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -386,7 +390,7 @@
         Me.Label4.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label4.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label4.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label4.Location = New System.Drawing.Point(7, 292)
+        Me.Label4.Location = New System.Drawing.Point(7, 281)
         Me.Label4.Name = "Label4"
         Me.Label4.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label4.Size = New System.Drawing.Size(119, 17)
@@ -401,7 +405,7 @@
         Me.txtTelefono.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtTelefono.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtTelefono.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtTelefono.Location = New System.Drawing.Point(132, 315)
+        Me.txtTelefono.Location = New System.Drawing.Point(132, 304)
         Me.txtTelefono.MaxLength = 50
         Me.txtTelefono.Name = "txtTelefono"
         Me.txtTelefono.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -414,7 +418,7 @@
         Me.Label5.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label5.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label5.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label5.Location = New System.Drawing.Point(7, 318)
+        Me.Label5.Location = New System.Drawing.Point(7, 307)
         Me.Label5.Name = "Label5"
         Me.Label5.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label5.Size = New System.Drawing.Size(119, 17)
@@ -429,7 +433,7 @@
         Me.txtImpresoraFactura.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtImpresoraFactura.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtImpresoraFactura.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtImpresoraFactura.Location = New System.Drawing.Point(628, 79)
+        Me.txtImpresoraFactura.Location = New System.Drawing.Point(628, 68)
         Me.txtImpresoraFactura.MaxLength = 50
         Me.txtImpresoraFactura.Name = "txtImpresoraFactura"
         Me.txtImpresoraFactura.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -443,7 +447,7 @@
         Me.Label6.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label6.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label6.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label6.Location = New System.Drawing.Point(628, 59)
+        Me.Label6.Location = New System.Drawing.Point(628, 48)
         Me.Label6.Name = "Label6"
         Me.Label6.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label6.Size = New System.Drawing.Size(199, 17)
@@ -458,7 +462,7 @@
         Me.txtPorcentajeIVA.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtPorcentajeIVA.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtPorcentajeIVA.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtPorcentajeIVA.Location = New System.Drawing.Point(132, 445)
+        Me.txtPorcentajeIVA.Location = New System.Drawing.Point(132, 506)
         Me.txtPorcentajeIVA.MaxLength = 50
         Me.txtPorcentajeIVA.Name = "txtPorcentajeIVA"
         Me.txtPorcentajeIVA.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -471,10 +475,10 @@
         Me.Label7.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label7.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label7.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label7.Location = New System.Drawing.Point(7, 448)
+        Me.Label7.Location = New System.Drawing.Point(75, 509)
         Me.Label7.Name = "Label7"
         Me.Label7.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label7.Size = New System.Drawing.Size(119, 17)
+        Me.Label7.Size = New System.Drawing.Size(51, 17)
         Me.Label7.TabIndex = 52
         Me.Label7.Text = "% IVA:"
         Me.Label7.TextAlign = System.Drawing.ContentAlignment.MiddleRight
@@ -486,7 +490,7 @@
         Me.txtLineasFactura.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtLineasFactura.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtLineasFactura.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtLineasFactura.Location = New System.Drawing.Point(132, 471)
+        Me.txtLineasFactura.Location = New System.Drawing.Point(132, 532)
         Me.txtLineasFactura.MaxLength = 50
         Me.txtLineasFactura.Name = "txtLineasFactura"
         Me.txtLineasFactura.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -500,10 +504,10 @@
         Me.Label8.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label8.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label8.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label8.Location = New System.Drawing.Point(7, 474)
+        Me.Label8.Location = New System.Drawing.Point(27, 535)
         Me.Label8.Name = "Label8"
         Me.Label8.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label8.Size = New System.Drawing.Size(120, 17)
+        Me.Label8.Size = New System.Drawing.Size(100, 17)
         Me.Label8.TabIndex = 54
         Me.Label8.Text = "Líneas por Fact:"
         Me.Label8.TextAlign = System.Drawing.ContentAlignment.MiddleRight
@@ -512,7 +516,7 @@
         '
         Me.ckbContabiliza.AutoSize = True
         Me.ckbContabiliza.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.ckbContabiliza.Location = New System.Drawing.Point(476, 477)
+        Me.ckbContabiliza.Location = New System.Drawing.Point(476, 466)
         Me.ckbContabiliza.Name = "ckbContabiliza"
         Me.ckbContabiliza.Size = New System.Drawing.Size(77, 17)
         Me.ckbContabiliza.TabIndex = 33
@@ -524,7 +528,7 @@
         '
         Me.ckbAutoCompleta.AutoSize = True
         Me.ckbAutoCompleta.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.ckbAutoCompleta.Location = New System.Drawing.Point(476, 503)
+        Me.ckbAutoCompleta.Location = New System.Drawing.Point(476, 492)
         Me.ckbAutoCompleta.Name = "ckbAutoCompleta"
         Me.ckbAutoCompleta.Size = New System.Drawing.Size(189, 17)
         Me.ckbAutoCompleta.TabIndex = 35
@@ -536,7 +540,7 @@
         '
         Me.chkModificaDesc.AutoSize = True
         Me.chkModificaDesc.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.chkModificaDesc.Location = New System.Drawing.Point(476, 529)
+        Me.chkModificaDesc.Location = New System.Drawing.Point(476, 518)
         Me.chkModificaDesc.Name = "chkModificaDesc"
         Me.chkModificaDesc.Size = New System.Drawing.Size(196, 17)
         Me.chkModificaDesc.TabIndex = 37
@@ -548,7 +552,7 @@
         '
         Me.chkDesgloseInst.AutoSize = True
         Me.chkDesgloseInst.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.chkDesgloseInst.Location = New System.Drawing.Point(476, 555)
+        Me.chkDesgloseInst.Location = New System.Drawing.Point(476, 544)
         Me.chkDesgloseInst.Name = "chkDesgloseInst"
         Me.chkDesgloseInst.Size = New System.Drawing.Size(177, 17)
         Me.chkDesgloseInst.TabIndex = 39
@@ -563,7 +567,7 @@
         Me.txtPorcentajeInstalacion.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtPorcentajeInstalacion.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtPorcentajeInstalacion.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtPorcentajeInstalacion.Location = New System.Drawing.Point(237, 445)
+        Me.txtPorcentajeInstalacion.Location = New System.Drawing.Point(287, 506)
         Me.txtPorcentajeInstalacion.MaxLength = 50
         Me.txtPorcentajeInstalacion.Name = "txtPorcentajeInstalacion"
         Me.txtPorcentajeInstalacion.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -577,7 +581,7 @@
         Me.Label9.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label9.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label9.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label9.Location = New System.Drawing.Point(181, 448)
+        Me.Label9.Location = New System.Drawing.Point(231, 509)
         Me.Label9.Name = "Label9"
         Me.Label9.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label9.Size = New System.Drawing.Size(50, 17)
@@ -592,7 +596,7 @@
         Me.txtCodigoServInst.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtCodigoServInst.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtCodigoServInst.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtCodigoServInst.Location = New System.Drawing.Point(401, 445)
+        Me.txtCodigoServInst.Location = New System.Drawing.Point(287, 532)
         Me.txtCodigoServInst.MaxLength = 50
         Me.txtCodigoServInst.Name = "txtCodigoServInst"
         Me.txtCodigoServInst.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -606,7 +610,7 @@
         Me.Label10.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label10.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label10.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label10.Location = New System.Drawing.Point(297, 447)
+        Me.Label10.Location = New System.Drawing.Point(183, 534)
         Me.Label10.Name = "Label10"
         Me.Label10.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label10.Size = New System.Drawing.Size(98, 17)
@@ -618,7 +622,7 @@
         '
         Me.chkUsaImpresoraImpacto.AutoSize = True
         Me.chkUsaImpresoraImpacto.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.chkUsaImpresoraImpacto.Location = New System.Drawing.Point(475, 105)
+        Me.chkUsaImpresoraImpacto.Location = New System.Drawing.Point(475, 94)
         Me.chkUsaImpresoraImpacto.Name = "chkUsaImpresoraImpacto"
         Me.chkUsaImpresoraImpacto.Size = New System.Drawing.Size(144, 17)
         Me.chkUsaImpresoraImpacto.TabIndex = 28
@@ -630,7 +634,7 @@
         '
         Me.chkIncluyeInsumosEnFactura.AutoSize = True
         Me.chkIncluyeInsumosEnFactura.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.chkIncluyeInsumosEnFactura.Location = New System.Drawing.Point(682, 477)
+        Me.chkIncluyeInsumosEnFactura.Location = New System.Drawing.Point(682, 466)
         Me.chkIncluyeInsumosEnFactura.Name = "chkIncluyeInsumosEnFactura"
         Me.chkIncluyeInsumosEnFactura.Size = New System.Drawing.Size(152, 17)
         Me.chkIncluyeInsumosEnFactura.TabIndex = 34
@@ -642,7 +646,7 @@
         '
         Me.chkRespaldoEnLinea.AutoSize = True
         Me.chkRespaldoEnLinea.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.chkRespaldoEnLinea.Location = New System.Drawing.Point(682, 502)
+        Me.chkRespaldoEnLinea.Location = New System.Drawing.Point(682, 491)
         Me.chkRespaldoEnLinea.Name = "chkRespaldoEnLinea"
         Me.chkRespaldoEnLinea.Size = New System.Drawing.Size(113, 17)
         Me.chkRespaldoEnLinea.TabIndex = 36
@@ -654,7 +658,7 @@
         '
         Me.chkCierrePorTurnos.AutoSize = True
         Me.chkCierrePorTurnos.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.chkCierrePorTurnos.Location = New System.Drawing.Point(682, 528)
+        Me.chkCierrePorTurnos.Location = New System.Drawing.Point(682, 517)
         Me.chkCierrePorTurnos.Name = "chkCierrePorTurnos"
         Me.chkCierrePorTurnos.Size = New System.Drawing.Size(116, 17)
         Me.chkCierrePorTurnos.TabIndex = 38
@@ -669,7 +673,7 @@
         Me.txtNombreEmpresa.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtNombreEmpresa.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtNombreEmpresa.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtNombreEmpresa.Location = New System.Drawing.Point(132, 75)
+        Me.txtNombreEmpresa.Location = New System.Drawing.Point(132, 64)
         Me.txtNombreEmpresa.MaxLength = 50
         Me.txtNombreEmpresa.Name = "txtNombreEmpresa"
         Me.txtNombreEmpresa.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -683,7 +687,7 @@
         Me.txtCorreoElectronico.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtCorreoElectronico.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtCorreoElectronico.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtCorreoElectronico.Location = New System.Drawing.Point(132, 341)
+        Me.txtCorreoElectronico.Location = New System.Drawing.Point(132, 330)
         Me.txtCorreoElectronico.MaxLength = 50
         Me.txtCorreoElectronico.Name = "txtCorreoElectronico"
         Me.txtCorreoElectronico.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -696,7 +700,7 @@
         Me.Label11.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label11.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label11.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label11.Location = New System.Drawing.Point(7, 344)
+        Me.Label11.Location = New System.Drawing.Point(7, 333)
         Me.Label11.Name = "Label11"
         Me.Label11.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label11.Size = New System.Drawing.Size(119, 17)
@@ -708,7 +712,7 @@
         '
         Me.chkFacturaElectronica.AutoSize = True
         Me.chkFacturaElectronica.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.chkFacturaElectronica.Location = New System.Drawing.Point(682, 554)
+        Me.chkFacturaElectronica.Location = New System.Drawing.Point(682, 543)
         Me.chkFacturaElectronica.Name = "chkFacturaElectronica"
         Me.chkFacturaElectronica.Size = New System.Drawing.Size(152, 17)
         Me.chkFacturaElectronica.TabIndex = 40
@@ -722,7 +726,7 @@
         Me.Label12.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label12.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label12.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label12.Location = New System.Drawing.Point(7, 130)
+        Me.Label12.Location = New System.Drawing.Point(7, 119)
         Me.Label12.Name = "Label12"
         Me.Label12.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label12.Size = New System.Drawing.Size(119, 17)
@@ -734,7 +738,7 @@
         '
         Me.cboTipoIdentificacion.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cboTipoIdentificacion.FormattingEnabled = True
-        Me.cboTipoIdentificacion.Location = New System.Drawing.Point(132, 127)
+        Me.cboTipoIdentificacion.Location = New System.Drawing.Point(132, 116)
         Me.cboTipoIdentificacion.Name = "cboTipoIdentificacion"
         Me.cboTipoIdentificacion.Size = New System.Drawing.Size(171, 21)
         Me.cboTipoIdentificacion.TabIndex = 3
@@ -743,7 +747,7 @@
         '
         Me.cboProvincia.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cboProvincia.FormattingEnabled = True
-        Me.cboProvincia.Location = New System.Drawing.Point(132, 180)
+        Me.cboProvincia.Location = New System.Drawing.Point(132, 169)
         Me.cboProvincia.Name = "cboProvincia"
         Me.cboProvincia.Size = New System.Drawing.Size(147, 21)
         Me.cboProvincia.TabIndex = 5
@@ -752,7 +756,7 @@
         '
         Me.cboCanton.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cboCanton.FormattingEnabled = True
-        Me.cboCanton.Location = New System.Drawing.Point(132, 207)
+        Me.cboCanton.Location = New System.Drawing.Point(132, 196)
         Me.cboCanton.Name = "cboCanton"
         Me.cboCanton.Size = New System.Drawing.Size(147, 21)
         Me.cboCanton.TabIndex = 6
@@ -763,7 +767,7 @@
         Me.Label13.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label13.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label13.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label13.Location = New System.Drawing.Point(7, 210)
+        Me.Label13.Location = New System.Drawing.Point(7, 199)
         Me.Label13.Name = "Label13"
         Me.Label13.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label13.Size = New System.Drawing.Size(119, 17)
@@ -775,7 +779,7 @@
         '
         Me.cboDistrito.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cboDistrito.FormattingEnabled = True
-        Me.cboDistrito.Location = New System.Drawing.Point(132, 235)
+        Me.cboDistrito.Location = New System.Drawing.Point(132, 224)
         Me.cboDistrito.Name = "cboDistrito"
         Me.cboDistrito.Size = New System.Drawing.Size(147, 21)
         Me.cboDistrito.TabIndex = 7
@@ -786,7 +790,7 @@
         Me.Label14.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label14.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label14.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label14.Location = New System.Drawing.Point(7, 238)
+        Me.Label14.Location = New System.Drawing.Point(7, 227)
         Me.Label14.Name = "Label14"
         Me.Label14.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label14.Size = New System.Drawing.Size(119, 17)
@@ -798,7 +802,7 @@
         '
         Me.cboBarrio.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cboBarrio.FormattingEnabled = True
-        Me.cboBarrio.Location = New System.Drawing.Point(132, 262)
+        Me.cboBarrio.Location = New System.Drawing.Point(132, 251)
         Me.cboBarrio.Name = "cboBarrio"
         Me.cboBarrio.Size = New System.Drawing.Size(147, 21)
         Me.cboBarrio.TabIndex = 8
@@ -809,7 +813,7 @@
         Me.Label15.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label15.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label15.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label15.Location = New System.Drawing.Point(7, 265)
+        Me.Label15.Location = New System.Drawing.Point(7, 254)
         Me.Label15.Name = "Label15"
         Me.Label15.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label15.Size = New System.Drawing.Size(119, 17)
@@ -824,11 +828,12 @@
         Me.txtServicioFacturaElectronica.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtServicioFacturaElectronica.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtServicioFacturaElectronica.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtServicioFacturaElectronica.Location = New System.Drawing.Point(132, 367)
+        Me.txtServicioFacturaElectronica.Location = New System.Drawing.Point(132, 356)
         Me.txtServicioFacturaElectronica.MaxLength = 200
+        Me.txtServicioFacturaElectronica.Multiline = True
         Me.txtServicioFacturaElectronica.Name = "txtServicioFacturaElectronica"
         Me.txtServicioFacturaElectronica.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtServicioFacturaElectronica.Size = New System.Drawing.Size(313, 20)
+        Me.txtServicioFacturaElectronica.Size = New System.Drawing.Size(313, 40)
         Me.txtServicioFacturaElectronica.TabIndex = 12
         '
         'Label16
@@ -837,7 +842,7 @@
         Me.Label16.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label16.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label16.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label16.Location = New System.Drawing.Point(7, 370)
+        Me.Label16.Location = New System.Drawing.Point(7, 359)
         Me.Label16.Name = "Label16"
         Me.Label16.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label16.Size = New System.Drawing.Size(119, 17)
@@ -852,7 +857,7 @@
         Me.txtIdCertificado.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtIdCertificado.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtIdCertificado.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtIdCertificado.Location = New System.Drawing.Point(132, 393)
+        Me.txtIdCertificado.Location = New System.Drawing.Point(132, 402)
         Me.txtIdCertificado.MaxLength = 200
         Me.txtIdCertificado.Name = "txtIdCertificado"
         Me.txtIdCertificado.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -865,7 +870,7 @@
         Me.Label17.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label17.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label17.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label17.Location = New System.Drawing.Point(48, 396)
+        Me.Label17.Location = New System.Drawing.Point(48, 405)
         Me.Label17.Name = "Label17"
         Me.Label17.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label17.Size = New System.Drawing.Size(78, 17)
@@ -880,7 +885,7 @@
         Me.txtPinCertificado.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtPinCertificado.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtPinCertificado.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtPinCertificado.Location = New System.Drawing.Point(132, 419)
+        Me.txtPinCertificado.Location = New System.Drawing.Point(132, 428)
         Me.txtPinCertificado.MaxLength = 50
         Me.txtPinCertificado.Name = "txtPinCertificado"
         Me.txtPinCertificado.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -893,7 +898,7 @@
         Me.Label18.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label18.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label18.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label18.Location = New System.Drawing.Point(7, 422)
+        Me.Label18.Location = New System.Drawing.Point(7, 431)
         Me.Label18.Name = "Label18"
         Me.Label18.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label18.Size = New System.Drawing.Size(119, 17)
@@ -908,7 +913,7 @@
         Me.txtUltimoDocFE.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtUltimoDocFE.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtUltimoDocFE.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtUltimoDocFE.Location = New System.Drawing.Point(132, 497)
+        Me.txtUltimoDocFE.Location = New System.Drawing.Point(132, 584)
         Me.txtUltimoDocFE.MaxLength = 50
         Me.txtUltimoDocFE.Name = "txtUltimoDocFE"
         Me.txtUltimoDocFE.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -921,7 +926,7 @@
         Me.Label19.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label19.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label19.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label19.Location = New System.Drawing.Point(62, 500)
+        Me.Label19.Location = New System.Drawing.Point(62, 587)
         Me.Label19.Name = "Label19"
         Me.Label19.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label19.Size = New System.Drawing.Size(64, 17)
@@ -936,7 +941,7 @@
         Me.txtUltimoDocND.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtUltimoDocND.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtUltimoDocND.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtUltimoDocND.Location = New System.Drawing.Point(132, 523)
+        Me.txtUltimoDocND.Location = New System.Drawing.Point(132, 610)
         Me.txtUltimoDocND.MaxLength = 50
         Me.txtUltimoDocND.Name = "txtUltimoDocND"
         Me.txtUltimoDocND.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -950,7 +955,7 @@
         Me.txtUltimoDocNC.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtUltimoDocNC.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtUltimoDocNC.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtUltimoDocNC.Location = New System.Drawing.Point(401, 499)
+        Me.txtUltimoDocNC.Location = New System.Drawing.Point(287, 581)
         Me.txtUltimoDocNC.MaxLength = 50
         Me.txtUltimoDocNC.Name = "txtUltimoDocNC"
         Me.txtUltimoDocNC.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -964,7 +969,7 @@
         Me.txtUltimoDocTE.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtUltimoDocTE.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtUltimoDocTE.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtUltimoDocTE.Location = New System.Drawing.Point(259, 497)
+        Me.txtUltimoDocTE.Location = New System.Drawing.Point(287, 607)
         Me.txtUltimoDocTE.MaxLength = 50
         Me.txtUltimoDocTE.Name = "txtUltimoDocTE"
         Me.txtUltimoDocTE.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -978,7 +983,7 @@
         Me.txtUltimoDocMR.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtUltimoDocMR.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtUltimoDocMR.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtUltimoDocMR.Location = New System.Drawing.Point(259, 523)
+        Me.txtUltimoDocMR.Location = New System.Drawing.Point(132, 636)
         Me.txtUltimoDocMR.MaxLength = 50
         Me.txtUltimoDocMR.Name = "txtUltimoDocMR"
         Me.txtUltimoDocMR.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -991,7 +996,7 @@
         Me.Label20.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label20.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label20.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label20.Location = New System.Drawing.Point(62, 524)
+        Me.Label20.Location = New System.Drawing.Point(62, 611)
         Me.Label20.Name = "Label20"
         Me.Label20.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label20.Size = New System.Drawing.Size(64, 17)
@@ -1005,7 +1010,7 @@
         Me.Label21.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label21.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label21.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label21.Location = New System.Drawing.Point(331, 500)
+        Me.Label21.Location = New System.Drawing.Point(217, 582)
         Me.Label21.Name = "Label21"
         Me.Label21.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label21.Size = New System.Drawing.Size(64, 17)
@@ -1019,7 +1024,7 @@
         Me.Label22.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label22.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label22.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label22.Location = New System.Drawing.Point(189, 500)
+        Me.Label22.Location = New System.Drawing.Point(217, 610)
         Me.Label22.Name = "Label22"
         Me.Label22.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label22.Size = New System.Drawing.Size(64, 17)
@@ -1033,7 +1038,7 @@
         Me.Label23.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label23.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label23.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label23.Location = New System.Drawing.Point(189, 524)
+        Me.Label23.Location = New System.Drawing.Point(62, 637)
         Me.Label23.Name = "Label23"
         Me.Label23.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label23.Size = New System.Drawing.Size(64, 17)
@@ -1045,7 +1050,7 @@
         '
         Me.picLogo.BackColor = System.Drawing.Color.White
         Me.picLogo.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
-        Me.picLogo.Location = New System.Drawing.Point(475, 272)
+        Me.picLogo.Location = New System.Drawing.Point(475, 261)
         Me.picLogo.Name = "picLogo"
         Me.picLogo.Size = New System.Drawing.Size(350, 160)
         Me.picLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
@@ -1058,7 +1063,7 @@
         Me.btnCargarLogo.Cursor = System.Windows.Forms.Cursors.Default
         Me.btnCargarLogo.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.btnCargarLogo.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.btnCargarLogo.Location = New System.Drawing.Point(475, 438)
+        Me.btnCargarLogo.Location = New System.Drawing.Point(475, 427)
         Me.btnCargarLogo.Name = "btnCargarLogo"
         Me.btnCargarLogo.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.btnCargarLogo.Size = New System.Drawing.Size(78, 26)
@@ -1067,12 +1072,72 @@
         Me.btnCargarLogo.Text = "&Cargar logo"
         Me.btnCargarLogo.UseVisualStyleBackColor = False
         '
+        'txtUsuarioATV
+        '
+        Me.txtUsuarioATV.AcceptsReturn = True
+        Me.txtUsuarioATV.BackColor = System.Drawing.SystemColors.Window
+        Me.txtUsuarioATV.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtUsuarioATV.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.txtUsuarioATV.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtUsuarioATV.Location = New System.Drawing.Point(132, 454)
+        Me.txtUsuarioATV.MaxLength = 200
+        Me.txtUsuarioATV.Name = "txtUsuarioATV"
+        Me.txtUsuarioATV.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtUsuarioATV.Size = New System.Drawing.Size(313, 20)
+        Me.txtUsuarioATV.TabIndex = 115
+        '
+        'Label24
+        '
+        Me.Label24.BackColor = System.Drawing.Color.Transparent
+        Me.Label24.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label24.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label24.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label24.Location = New System.Drawing.Point(48, 457)
+        Me.Label24.Name = "Label24"
+        Me.Label24.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label24.Size = New System.Drawing.Size(78, 17)
+        Me.Label24.TabIndex = 116
+        Me.Label24.Text = "Usuario ATV:"
+        Me.Label24.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
+        'txtClaveATV
+        '
+        Me.txtClaveATV.AcceptsReturn = True
+        Me.txtClaveATV.BackColor = System.Drawing.SystemColors.Window
+        Me.txtClaveATV.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtClaveATV.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.txtClaveATV.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtClaveATV.Location = New System.Drawing.Point(132, 480)
+        Me.txtClaveATV.MaxLength = 200
+        Me.txtClaveATV.Name = "txtClaveATV"
+        Me.txtClaveATV.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtClaveATV.Size = New System.Drawing.Size(199, 20)
+        Me.txtClaveATV.TabIndex = 117
+        '
+        'Label25
+        '
+        Me.Label25.BackColor = System.Drawing.Color.Transparent
+        Me.Label25.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label25.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label25.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label25.Location = New System.Drawing.Point(29, 483)
+        Me.Label25.Name = "Label25"
+        Me.Label25.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label25.Size = New System.Drawing.Size(97, 17)
+        Me.Label25.TabIndex = 118
+        Me.Label25.Text = "Contraseña ATV:"
+        Me.Label25.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
         'FrmEmpresa
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.FromArgb(CType(CType(193, Byte), Integer), CType(CType(215, Byte), Integer), CType(CType(225, Byte), Integer))
-        Me.ClientSize = New System.Drawing.Size(844, 584)
+        Me.ClientSize = New System.Drawing.Size(844, 658)
+        Me.Controls.Add(Me.txtClaveATV)
+        Me.Controls.Add(Me.Label25)
+        Me.Controls.Add(Me.txtUsuarioATV)
+        Me.Controls.Add(Me.Label24)
         Me.Controls.Add(Me.btnCargarLogo)
         Me.Controls.Add(Me.picLogo)
         Me.Controls.Add(Me.Label23)
@@ -1224,5 +1289,9 @@
     Friend WithEvents picLogo As PictureBox
     Public WithEvents btnCargarLogo As Button
     Friend WithEvents ofdAbrirDocumento As OpenFileDialog
+    Public WithEvents txtUsuarioATV As TextBox
+    Public WithEvents Label24 As Label
+    Public WithEvents txtClaveATV As TextBox
+    Public WithEvents Label25 As Label
 #End Region
 End Class

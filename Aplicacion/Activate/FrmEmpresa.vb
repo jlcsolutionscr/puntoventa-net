@@ -159,7 +159,7 @@ Public Class FrmEmpresa
         Try
             Dim ocxConexion As MySqlConnection = New MySqlConnection(strCadenaConexion)
             ocxConexion.Open()
-            daDataAdapter = New MySqlDataAdapter("SELECT IdEmpresa, NombreEmpresa, NombreComercial, IdTipoIdentificacion, Identificacion, IdProvincia, IdCanton, IdDistrito, IdBarrio, Direccion, Telefono, CuentaCorreoElectronico, ServicioFacturaElectronicaURL, IdCertificado, PinCertificado, UltimoDocFE, UltimoDocND, UltimoDocNC, UltimoDocTE, UltimoDocMR, Logotipo, FechaVence, PorcentajeIVA, LineasPorFactura, Contabiliza, AutoCompletaProducto, ModificaDescProducto, DesglosaServicioInst, PorcentajeInstalacion, CodigoServicioInst, IncluyeInsumosEnFactura, RespaldoEnLinea, CierrePorTurnos, FacturaElectronica FROM Empresa WHERE IdEmpresa=" + strIdEmpresa, ocxConexion)
+            daDataAdapter = New MySqlDataAdapter("SELECT IdEmpresa, NombreEmpresa, NombreComercial, IdTipoIdentificacion, Identificacion, IdProvincia, IdCanton, IdDistrito, IdBarrio, Direccion, Telefono, CuentaCorreoElectronico, ServicioFacturaElectronicaURL, IdCertificado, PinCertificado, UsuarioHacienda, ClaveHacienda, UltimoDocFE, UltimoDocND, UltimoDocNC, UltimoDocTE, UltimoDocMR, Logotipo, FechaVence, PorcentajeIVA, LineasPorFactura, Contabiliza, AutoCompletaProducto, ModificaDescProducto, DesglosaServicioInst, PorcentajeInstalacion, CodigoServicioInst, IncluyeInsumosEnFactura, RespaldoEnLinea, CierrePorTurnos, FacturaElectronica FROM Empresa WHERE IdEmpresa=" + strIdEmpresa, ocxConexion)
             Dim dsDataSet As DataSet = New DataSet()
             daDataAdapter.Fill(dsDataSet, "empresa")
             ocxConexion.Close()
@@ -185,6 +185,8 @@ Public Class FrmEmpresa
         txtServicioFacturaElectronica.DataBindings.Add("Text", bndSource, "ServicioFacturaElectronicaURL")
         txtIdCertificado.DataBindings.Add("Text", bndSource, "IdCertificado")
         txtPinCertificado.DataBindings.Add("Text", bndSource, "PinCertificado")
+        txtUsuarioATV.DataBindings.Add("Text", bndSource, "UsuarioHacienda")
+        txtClaveATV.DataBindings.Add("Text", bndSource, "ClaveHacienda")
         txtUltimoDocFE.DataBindings.Add("Text", bndSource, "UltimoDocFE")
         txtUltimoDocND.DataBindings.Add("Text", bndSource, "UltimoDocND")
         txtUltimoDocNC.DataBindings.Add("Text", bndSource, "UltimoDocNC")

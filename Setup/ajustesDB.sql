@@ -8,8 +8,6 @@
   IdBarrio INTEGER NOT NULL,
   Direccion VARCHAR(160) NOT NULL,
   Telefono VARCHAR(20) NOT NULL,
-  CuentaCorreoElectronico VARCHAR(200) NOT NULL,
-  FechaVence DATETIME NULL,
   PorcentajeIVA DOUBLE NOT NULL,
   LineasPorFactura INTEGER NOT NULL,
   IdTipoMoneda INTEGER NOT NULL,
@@ -25,7 +23,7 @@
   CierreEnEjecucion BIT NOT NULL,
   FacturaElectronica BIT NOT NULL,
   ServicioFacturaElectronicaURL VARCHAR(500) NULL,
-  IdCertificado VARCHAR(100) NULL,
+  Certificado BLOB NULL,
   PinCertificado VARCHAR(4) NULL,
   UltimoDocFE INTEGER NOT NULL,
   UltimoDocND INTEGER NOT NULL,
@@ -35,21 +33,21 @@
   INDEX (Identificacion)
 );
 
-ALTER TABLE empresa CHANGE NombreEmpresa NombreEmpresa VARCHAR(80) NOT NULL;
+ALTER TABLE empresa CHANGE Nombreempresa Nombreempresa VARCHAR(80) NOT NULL;
 
-CREATE TABLE DetalleRegistro (
-  IdEmpresa INTEGER NOT NULL,
+CREATE TABLE detalleregistro (
+  Idempresa INTEGER NOT NULL,
   ValorRegistro INTEGER NOT NULL,
   ImpresoraFactura VARCHAR(50),
   UsaImpresoraImpacto BIT NOT NULL,
-  PRIMARY KEY(IdEmpresa,ValorRegistro),
-  FOREIGN KEY(IdEmpresa)
-    REFERENCES Empresa(IdEmpresa)
+  PRIMARY KEY(Idempresa,ValorRegistro),
+  FOREIGN KEY(Idempresa)
+    REFERENCES empresa(IdEmpresa)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT
 );
 
-CREATE TABLE Usuario (
+CREATE TABLE usuario (
   IdEmpresa INTEGER NOT NULL,
   IdUsuario INTEGER NOT NULL AUTO_INCREMENT,
   CodigoUsuario VARCHAR(10) NOT NULL,
@@ -58,53 +56,53 @@ CREATE TABLE Usuario (
   AutorizaCredito BOOL NOT NULL,
   PRIMARY KEY(IdUsuario),
   FOREIGN KEY(IdEmpresa)
-    REFERENCES  Empresa(IdEmpresa)
+    REFERENCES empresa(IdEmpresa)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT
 );
 
-CREATE TABLE Modulo (
+CREATE TABLE modulo (
   IdModulo INTEGER NOT NULL,
   Descripcion VARCHAR(100) NOT NULL,
   MenuPadre VARCHAR(100) NOT NULL,
   PRIMARY KEY(IdModulo)
 );
 
-CREATE TABLE ModuloPorEmpresa (
+CREATE TABLE moduloporempresa (
   IdEmpresa INTEGER NOT NULL,
   IdModulo INTEGER NOT NULL,
   PRIMARY KEY(IdEmpresa, IdModulo),
   FOREIGN KEY(IdEmpresa)
-    REFERENCES Empresa(IdEmpresa)
+    REFERENCES empresa(IdEmpresa)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdModulo)
-    REFERENCES Modulo(IdModulo)
+    REFERENCES modulo(IdModulo)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT
 );
 
-CREATE TABLE CatalogoReporte (
+CREATE TABLE catalogoreporte (
   IdReporte INTEGER NOT NULL,
   NombreReporte VARCHAR(100) NOT NULL,
   PRIMARY KEY(IdReporte)
 );
 
-CREATE TABLE ReportePorEmpresa (
+CREATE TABLE reporteporempresa (
   IdEmpresa INTEGER NOT NULL,
   IdReporte INTEGER NOT NULL,
   PRIMARY KEY(IdEmpresa, IdReporte),
   FOREIGN KEY(IdEmpresa)
-    REFERENCES  Empresa(IdEmpresa)
+    REFERENCES empresa(IdEmpresa)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdReporte)
-    REFERENCES  CatalogoReporte(IdReporte)
+    REFERENCES catalogoreporte(IdReporte)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT
 );
 
-CREATE TABLE Role (
+CREATE TABLE role (
   IdRole INTEGER NOT NULL AUTO_INCREMENT,
   Nombre VARCHAR(100) NOT NULL,
   MenuPadre VARCHAR(100) NOT NULL,
@@ -113,26 +111,26 @@ CREATE TABLE Role (
   PRIMARY KEY(IdRole)
 );
 
-CREATE TABLE RolePorUsuario (
+CREATE TABLE roleporusuario (
   IdEmpresa INTEGER NOT NULL,
   IdUsuario INTEGER NOT NULL,
   IdRole INTEGER NOT NULL,
   PRIMARY KEY(IdEmpresa,IdUsuario,IdRole),
   FOREIGN KEY(IdEmpresa)
-    REFERENCES  Empresa(IdEmpresa)
+    REFERENCES empresa(IdEmpresa)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdUsuario)
-    REFERENCES Usuario(IdUsuario)
+    REFERENCES usuario(IdUsuario)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdRole)
-    REFERENCES Role(IdRole)
+    REFERENCES role(IdRole)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT
 );
 
-CREATE TABLE CierreCaja (
+CREATE TABLE cierrecaja (
   IdEmpresa INTEGER NOT NULL,
   IdCierre INTEGER NOT NULL AUTO_INCREMENT,
   FechaCierre DATE,
@@ -159,26 +157,26 @@ CREATE TABLE CierreCaja (
   FondoCierre DOUBLE,
   PRIMARY KEY(IdCierre),
   FOREIGN KEY(IdEmpresa)
-    REFERENCES  Empresa(IdEmpresa)
+    REFERENCES empresa(IdEmpresa)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   INDEX cierre_index (FechaCierre)
 );
 
-CREATE TABLE TipoCuentaContable (
+CREATE TABLE tipocuentacontable (
   IdTipoCuenta INTEGER NOT NULL,
   TipoSaldo VARCHAR(1) NOT NULL,
   Descripcion VARCHAR(20) NOT NULL,
   PRIMARY KEY(IdTipoCuenta)
 );
 
-CREATE TABLE ClaseCuentaContable (
+CREATE TABLE clasecuentacontable (
   IdClaseCuenta INTEGER NOT NULL,
   Descripcion VARCHAR(20) NOT NULL,
   PRIMARY KEY(IdClaseCuenta)
 );
 
-CREATE TABLE CatalogoContable (
+CREATE TABLE catalogocontable (
   IdEmpresa INTEGER NOT NULL,
   IdCuenta INTEGER NOT NULL AUTO_INCREMENT,
   Nivel_1 VARCHAR(1) NOT NULL,
@@ -200,20 +198,20 @@ CREATE TABLE CatalogoContable (
   TotalCredito DOUBLE NOT NULL DEFAULT 0,
   PRIMARY KEY(IdCuenta),
   FOREIGN KEY(IdEmpresa)
-    REFERENCES  Empresa(IdEmpresa)
+    REFERENCES empresa(IdEmpresa)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdTipoCuenta)
-    REFERENCES TipoCuentaContable(IdTipoCuenta)
+    REFERENCES tipocuentacontable(IdTipoCuenta)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdClaseCuenta)
-    REFERENCES ClaseCuentaContable(IdClaseCuenta)
+    REFERENCES clasecuentacontable(IdClaseCuenta)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT
 );
 
-CREATE TABLE SaldoMensualContable (
+CREATE TABLE saldomensualcontable (
   IdCuenta INTEGER NOT NULL,
   Mes INTEGER(2) NOT NULL,
   Annio INTEGER(4) NOT NULL,
@@ -222,35 +220,35 @@ CREATE TABLE SaldoMensualContable (
   TotalCredito DOUBLE NOT NULL,
   PRIMARY KEY(IdCuenta,Mes,Annio),
   FOREIGN KEY(IdCuenta)
-    REFERENCES CatalogoContable(IdCuenta)
+    REFERENCES catalogocontable(IdCuenta)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT
 );
 
-CREATE TABLE TipoParametroContable (
+CREATE TABLE tipoparametrocontable (
   IdTipo INTEGER NOT NULL AUTO_INCREMENT,
   Descripcion VARCHAR(200) NOT NULL,
   MultiCuenta BIT NOT NULL,
   PRIMARY KEY(IdtIPO)
 );
 
-CREATE TABLE ParametroContable (
+CREATE TABLE parametrocontable (
   IdParametro INTEGER NOT NULL AUTO_INCREMENT,
   IdTipo INTEGER NOT NULL,
   IdCuenta INTEGER NOT NULL,
   IdProducto INTEGER NULL,
   PRIMARY KEY(IdParametro),
   FOREIGN KEY(IdTipo)
-    REFERENCES TipoParametroContable(IdTipo)
+    REFERENCES tipoparametrocontable(IdTipo)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdCuenta)
-    REFERENCES CatalogoContable(IdCuenta)
+    REFERENCES catalogocontable(IdCuenta)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT
 );
 
-CREATE TABLE Asiento (
+CREATE TABLE asiento (
   IdEmpresa INTEGER NOT NULL,
   IdAsiento INTEGER NOT NULL AUTO_INCREMENT,
   IdUsuario INTEGER NOT NULL,
@@ -262,12 +260,12 @@ CREATE TABLE Asiento (
   IdAnuladoPor INTEGER NULL,
   PRIMARY KEY(IdAsiento),
   FOREIGN KEY(IdEmpresa)
-    REFERENCES  Empresa(IdEmpresa)
+    REFERENCES empresa(IdEmpresa)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT
 );
 
-CREATE TABLE DetalleAsiento (
+CREATE TABLE detalleasiento (
   IdAsiento INTEGER NOT NULL,
   Linea INTEGER NOT NULL,
   IdCuenta INTEGER NOT NULL,
@@ -276,23 +274,23 @@ CREATE TABLE DetalleAsiento (
   SaldoAnterior DOUBLE NOT NULL,
   PRIMARY KEY(IdAsiento,Linea),
   FOREIGN KEY(IdAsiento)
-    REFERENCES Asiento(IdAsiento)
+    REFERENCES asiento(IdAsiento)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdCuenta)
-    REFERENCES CatalogoContable(IdCuenta)
+    REFERENCES catalogocontable(IdCuenta)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT
 );
 
-CREATE TABLE TipoMovimientoBanco (
+CREATE TABLE tipomovimientobanco (
   IdTipoMov INTEGER NOT NULL AUTO_INCREMENT,
   DebeHaber VARCHAR(2) NOT NULL,
   Descripcion VARCHAR(50) NOT NULL,
   PRIMARY KEY(IdTipoMov)
 );
 
-CREATE TABLE CuentaBanco (
+CREATE TABLE cuentabanco (
   IdEmpresa INTEGER NOT NULL,
   IdCuenta INTEGER NOT NULL AUTO_INCREMENT,
   Codigo VARCHAR(50) NOT NULL,
@@ -300,12 +298,12 @@ CREATE TABLE CuentaBanco (
   Saldo DOUBLE NOT NULL,
   PRIMARY KEY(IdCuenta),
   FOREIGN KEY(IdEmpresa)
-    REFERENCES  Empresa(IdEmpresa)
+    REFERENCES empresa(IdEmpresa)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT
 );
 
-CREATE TABLE MovimientoBanco (
+CREATE TABLE movimientobanco (
   IdMov INTEGER NOT NULL AUTO_INCREMENT,
   Fecha DATETIME NOT NULL,
   IdUsuario INTEGER NOT NULL,
@@ -320,28 +318,28 @@ CREATE TABLE MovimientoBanco (
   IdAnuladoPor INTEGER NULL,
   PRIMARY KEY(IdMov),
   FOREIGN KEY(IdCuenta)
-    REFERENCES CuentaBanco(IdCuenta)
+    REFERENCES cuentabanco(IdCuenta)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdTipo)
-    REFERENCES TipoMovimientoBanco(IdTipoMov)
+    REFERENCES tipomovimientobanco(IdTipoMov)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT
 );
 
-CREATE TABLE CondicionVenta (
+CREATE TABLE condicionventa (
   IdCondicionVenta INTEGER NOT NULL,
   Descripcion VARCHAR(100) NOT NULL,
   PRIMARY KEY(IdCondicionVenta)
 );
 
-CREATE TABLE FormaPago (
+CREATE TABLE formapago (
   IdFormaPago INTEGER NOT NULL,
   Descripcion VARCHAR(100) NOT NULL,
   PRIMARY KEY(IdFormaPago)
 );
 
-CREATE TABLE BancoAdquiriente (
+CREATE TABLE bancoadquiriente (
   IdEmpresa INTEGER NOT NULL,
   IdBanco INTEGER NOT NULL AUTO_INCREMENT,
   Codigo VARCHAR(30) NOT NULL,
@@ -351,14 +349,14 @@ CREATE TABLE BancoAdquiriente (
   PRIMARY KEY(IdBanco)
 );
 
-CREATE TABLE CuentaEgreso (
+CREATE TABLE cuentaegreso (
   IdEmpresa INTEGER NOT NULL,
   IdCuenta INTEGER NOT NULL AUTO_INCREMENT,
   Descripcion VARCHAR(200) NOT NULL,
   PRIMARY KEY(IdCuenta)
 );
 
-CREATE TABLE Egreso (
+CREATE TABLE egreso (
   IdEmpresa INTEGER NOT NULL,
   IdEgreso INTEGER NOT NULL AUTO_INCREMENT,
   IdUsuario INTEGER NOT NULL,
@@ -374,16 +372,16 @@ CREATE TABLE Egreso (
   Procesado BIT NOT NULL,
   PRIMARY KEY(IdEgreso),
   FOREIGN KEY(IdEmpresa)
-    REFERENCES  Empresa(IdEmpresa)
+    REFERENCES empresa(IdEmpresa)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdCuenta)
-    REFERENCES CuentaEgreso(IdCuenta)
+    REFERENCES cuentaegreso(IdCuenta)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT
 );
 
-CREATE TABLE DesglosePagoEgreso (
+CREATE TABLE desglosepagoegreso (
   IdEgreso INTEGER NOT NULL,
   IdFormaPago INTEGER NOT NULL,
   IdTipoMoneda INTEGER NOT NULL,
@@ -394,31 +392,31 @@ CREATE TABLE DesglosePagoEgreso (
   MontoForaneo DOUBLE NOT NULL,
   PRIMARY KEY(IdEgreso, IdFormaPago, IdTipoMoneda, IdCuentaBanco),
   FOREIGN KEY(IdEgreso)
-    REFERENCES Egreso(IdEgreso)
+    REFERENCES egreso(IdEgreso)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdFormaPago)
-    REFERENCES FormaPago(IdFormaPago)
+    REFERENCES formapago(IdFormaPago)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdTipoMoneda)
-    REFERENCES TipoMoneda(IdTipoMoneda)
+    REFERENCES tipomoneda(IdTipoMoneda)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdCuentaBanco)
-    REFERENCES CuentaBanco(IdCuenta)
+    REFERENCES cuentabanco(IdCuenta)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT
 );
 
-CREATE TABLE CuentaIngreso (
+CREATE TABLE cuentaingreso (
   IdEmpresa INTEGER NOT NULL,
   IdCuenta INTEGER NOT NULL AUTO_INCREMENT,
   Descripcion VARCHAR(200) NOT NULL,
   PRIMARY KEY(IdCuenta)
 );
 
-CREATE TABLE Ingreso (
+CREATE TABLE ingreso (
   IdEmpresa INTEGER NOT NULL,
   IdIngreso INTEGER NOT NULL AUTO_INCREMENT,
   IdUsuario INTEGER NOT NULL,
@@ -434,16 +432,16 @@ CREATE TABLE Ingreso (
   Procesado BIT NOT NULL,
   PRIMARY KEY(IdIngreso),
   FOREIGN KEY(IdEmpresa)
-    REFERENCES  Empresa(IdEmpresa)
+    REFERENCES empresa(IdEmpresa)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdCuenta)
-    REFERENCES CuentaEgreso(IdCuenta)
+    REFERENCES cuentaingreso(IdCuenta)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT
 );
 
-CREATE TABLE DesglosePagoIngreso (
+CREATE TABLE desglosepagoingreso (
   IdIngreso INTEGER NOT NULL,
   IdFormaPago INTEGER NOT NULL,
   IdTipoMoneda INTEGER NOT NULL,
@@ -454,31 +452,37 @@ CREATE TABLE DesglosePagoIngreso (
   MontoForaneo DOUBLE NOT NULL,
   PRIMARY KEY(IdIngreso, IdFormaPago, IdTipoMoneda, IdCuentaBanco),
   FOREIGN KEY(IdIngreso)
-    REFERENCES Ingreso(IdIngreso)
+    REFERENCES ingreso(IdIngreso)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdFormaPago)
-    REFERENCES FormaPago(IdFormaPago)
+    REFERENCES formapago(IdFormaPago)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdTipoMoneda)
-    REFERENCES TipoMoneda(IdTipoMoneda)
+    REFERENCES tipomoneda(IdTipoMoneda)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT
 );
 
-CREATE TABLE Vendedor (
+CREATE TABLE vendedor (
   IdEmpresa INTEGER NOT NULL,
   IdVendedor INTEGER NOT NULL AUTO_INCREMENT,
   Nombre VARCHAR(100) NOT NULL,
   PRIMARY KEY(IdVendedor),
   FOREIGN KEY(IdEmpresa)
-    REFERENCES  Empresa(IdEmpresa)
+    REFERENCES empresa(IdEmpresa)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT
 );
 
-CREATE TABLE Cliente (
+CREATE TABLE tipoidentificacion (
+  IdTipoIdentificacion INTEGER NOT NULL,
+  Descripcion VARCHAR(20) NOT NULL,
+  PRIMARY KEY(IdTipoIdentificacion)
+);
+
+CREATE TABLE cliente (
   IdEmpresa INTEGER NOT NULL,
   IdCliente INTEGER NOT NULL AUTO_INCREMENT,
   IdTipoIdentificacion INTEGER NOT NULL,
@@ -499,20 +503,20 @@ CREATE TABLE Cliente (
   IdTipoPrecio INTEGER NULL,
   PRIMARY KEY(IdCliente),
   FOREIGN KEY(IdEmpresa)
-    REFERENCES  Empresa(IdEmpresa)
+    REFERENCES empresa(IdEmpresa)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdTipoIdentificacion)
-    REFERENCES TipoIdentificacion(IdTipoIdentificacion)
+    REFERENCES tipoidentificacion(IdTipoIdentificacion)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdProvincia, IdCanton, IdDistrito, IdBarrio)
-    REFERENCES Barrio(IdProvincia, IdCanton, IdDistrito, IdBarrio)
+    REFERENCES barrio(IdProvincia, IdCanton, IdDistrito, IdBarrio)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT
 );
 
-CREATE TABLE Particular (
+CREATE TABLE particular (
   IdEmpresa INTEGER NOT NULL,
   IdParticular INTEGER NOT NULL AUTO_INCREMENT,
   Identificacion VARCHAR(35),
@@ -524,12 +528,12 @@ CREATE TABLE Particular (
   EMail VARCHAR(200) NULL,
   PRIMARY KEY(IdParticular),
   FOREIGN KEY(IdEmpresa)
-    REFERENCES  Empresa(IdEmpresa)
+    REFERENCES empresa(IdEmpresa)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT
 );
 
-CREATE TABLE Proveedor (
+CREATE TABLE proveedor (
   IdEmpresa INTEGER NOT NULL,
   IdProveedor INTEGER NOT NULL AUTO_INCREMENT,
   Identificacion VARCHAR(35) NOT NULL,
@@ -546,40 +550,40 @@ CREATE TABLE Proveedor (
   TelCont2 VARCHAR(9) NULL,
   PRIMARY KEY(IdProveedor),
   FOREIGN KEY(IdEmpresa)
-    REFERENCES  Empresa(IdEmpresa)
+    REFERENCES empresa(IdEmpresa)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT
 );
 
-CREATE TABLE TipoProducto (
+CREATE TABLE tipoproducto (
   IdTipoProducto INTEGER NOT NULL AUTO_INCREMENT,
   Descripcion VARCHAR(10) NOT NULL,
   PRIMARY KEY(IdTipoProducto)
 );
 
-CREATE TABLE Linea (
+CREATE TABLE linea (
   IdEmpresa INTEGER NOT NULL,
   IdLinea INTEGER NOT NULL AUTO_INCREMENT,
   IdTipoProducto INTEGER NOT NULL,
   Descripcion VARCHAR(50) NOT NULL,
   PRIMARY KEY(IdLinea),
   FOREIGN KEY(IdEmpresa)
-    REFERENCES  Empresa(IdEmpresa)
+    REFERENCES empresa(IdEmpresa)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdTipoProducto)
-    REFERENCES TipoProducto(IdTipoProducto)
+    REFERENCES tipoproducto(IdTipoProducto)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT
 );
 
-CREATE TABLE TipoUnidad (
+CREATE TABLE tipounidad (
   IdTipoUnidad INTEGER NOT NULL AUTO_INCREMENT,
   Descripcion VARCHAR(5) NOT NULL,
   PRIMARY KEY(IdTipoUnidad)
 );
 
-CREATE TABLE Producto (
+CREATE TABLE producto (
   IdEmpresa INTEGER NOT NULL,
   IdProducto INTEGER NOT NULL AUTO_INCREMENT,
   Tipo INTEGER NOT NULL,
@@ -600,28 +604,28 @@ CREATE TABLE Producto (
   Imagen LONGBLOB NULL,
   PRIMARY KEY(IdProducto),
   FOREIGN KEY(IdEmpresa)
-    REFERENCES  Empresa(IdEmpresa)
+    REFERENCES empresa(IdEmpresa)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdLinea)
-    REFERENCES Linea(IdLinea)
+    REFERENCES linea(IdLinea)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdProveedor)
-    REFERENCES Proveedor(IdProveedor)
+    REFERENCES proveedor(IdProveedor)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(Tipo)
-    REFERENCES TipoProducto(IdTipoProducto)
+    REFERENCES tipoproducto(IdTipoProducto)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdTipoUnidad)
-    REFERENCES TipoUnidad(IdTipoUnidad)
+    REFERENCES tipounidad(IdTipoUnidad)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT
 );
 
-CREATE TABLE MovimientoProducto (
+CREATE TABLE movimientoproducto (
   IdProducto INTEGER NOT NULL,
   Fecha DATETIME NOT NULL,
   Cantidad DOUBLE NOT NULL,
@@ -631,12 +635,12 @@ CREATE TABLE MovimientoProducto (
   PrecioCosto DOUBLE NOT NULL,
   PRIMARY KEY(IdProducto, Fecha),
   FOREIGN KEY(IdProducto)
-    REFERENCES Producto(IdProducto)
+    REFERENCES producto(IdProducto)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT
 );
 
-CREATE TABLE Proforma (
+CREATE TABLE proforma (
   IdEmpresa INTEGER NOT NULL,
   IdProforma INTEGER NOT NULL AUTO_INCREMENT,
   IdUsuario INTEGER NOT NULL,
@@ -657,28 +661,28 @@ CREATE TABLE Proforma (
   Aplicado BIT NOT NULL,
   PRIMARY KEY(IdProforma),
   FOREIGN KEY(IdEmpresa)
-    REFERENCES  Empresa(IdEmpresa)
+    REFERENCES empresa(IdEmpresa)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdCliente)
-    REFERENCES Cliente(IdCliente)
+    REFERENCES cliente(IdCliente)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdUsuario)
-    REFERENCES Usuario(IdUsuario)
+    REFERENCES usuario(IdUsuario)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdCondicionVenta)
-    REFERENCES CondicionVenta(IdCondicionVenta)
+    REFERENCES condicionventa(IdCondicionVenta)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdVendedor)
-    REFERENCES Vendedor(IdVendedor)
+    REFERENCES vendedor(IdVendedor)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT
 );
 
-CREATE TABLE DetalleProforma (
+CREATE TABLE detalleproforma (
   IdProforma INTEGER NOT NULL,
   IdProducto INTEGER NOT NULL,
   Cantidad REAL NOT NULL,
@@ -686,16 +690,16 @@ CREATE TABLE DetalleProforma (
   Excento BIT NOT NULL,
   PRIMARY KEY(IdProforma,IdProducto),
   FOREIGN KEY(IdProforma)
-    REFERENCES Proforma(IdProforma)
+    REFERENCES proforma(IdProforma)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdProducto)
-    REFERENCES Producto(IdProducto)
+    REFERENCES producto(IdProducto)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT
 );
 
-CREATE TABLE OrdenServicio (
+CREATE TABLE ordenservicio (
   IdEmpresa INTEGER NOT NULL,
   IdOrden INTEGER NOT NULL AUTO_INCREMENT,
   IdUsuario INTEGER NOT NULL,
@@ -720,20 +724,20 @@ CREATE TABLE OrdenServicio (
   Aplicado BIT NOT NULL,
   PRIMARY KEY(IdOrden),
   FOREIGN KEY(IdEmpresa)
-    REFERENCES  Empresa(IdEmpresa)
+    REFERENCES empresa(IdEmpresa)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdUsuario)
-    REFERENCES Usuario(IdUsuario)
+    REFERENCES usuario(IdUsuario)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdCliente)
-    REFERENCES Cliente(IdCliente)
+    REFERENCES cliente(IdCliente)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT
 );
 
-CREATE TABLE DetalleOrdenServicio (
+CREATE TABLE detalleordenservicio (
   IdOrden INTEGER NOT NULL,
   IdProducto INTEGER NOT NULL,
   Descripcion VARCHAR(200) NOT NULL,
@@ -743,16 +747,16 @@ CREATE TABLE DetalleOrdenServicio (
   Excento BIT NOT NULL,
   PRIMARY KEY(IdOrden,IdProducto),
   FOREIGN KEY(IdOrden)
-    REFERENCES OrdenServicio(IdOrden)
+    REFERENCES ordenservicio(IdOrden)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdProducto)
-    REFERENCES Producto(IdProducto)
+    REFERENCES producto(IdProducto)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT
 );
 
-CREATE TABLE OrdenCompra (
+CREATE TABLE ordencompra (
   IdEmpresa INTEGER NOT NULL,
   IdOrdenCompra INTEGER NOT NULL AUTO_INCREMENT,
   IdUsuario INTEGER NOT NULL,
@@ -772,24 +776,24 @@ CREATE TABLE OrdenCompra (
   Aplicado BIT NOT NULL,
   PRIMARY KEY(IdOrdenCompra),
   FOREIGN KEY(IdEmpresa)
-    REFERENCES  Empresa(IdEmpresa)
+    REFERENCES empresa(IdEmpresa)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdUsuario)
-    REFERENCES Usuario(IdUsuario)
+    REFERENCES usuario(IdUsuario)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdProveedor)
-    REFERENCES Proveedor(IdProveedor)
+    REFERENCES proveedor(IdProveedor)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdCondicionVenta)
-    REFERENCES CondicionVenta(IdCondicionVenta)
+    REFERENCES condicionventa(IdCondicionVenta)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT
 );
 
-CREATE TABLE DetalleOrdenCompra (
+CREATE TABLE detalleordencompra (
   IdOrdenCompra INTEGER NOT NULL,
   IdProducto INTEGER NOT NULL,
   Cantidad DOUBLE NOT NULL,
@@ -797,16 +801,24 @@ CREATE TABLE DetalleOrdenCompra (
   Excento BIT NOT NULL,
   PRIMARY KEY(IdOrdenCompra,IdProducto),
   FOREIGN KEY(IdOrdenCompra)
-    REFERENCES OrdenCompra(IdOrdenCompra)
+    REFERENCES ordencompra(IdOrdenCompra)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdProducto)
-    REFERENCES Producto(IdProducto)
+    REFERENCES producto(IdProducto)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT
 );
 
-CREATE TABLE Factura (
+CREATE TABLE tipomoneda (
+  IdTipoMoneda INTEGER NOT NULL AUTO_INCREMENT,
+  Descripcion VARCHAR(10) NOT NULL,
+  TipoCambioCompra DOUBLE NOT NULL,
+  TipoCambioVenta DOUBLE NOT NULL,
+  PRIMARY KEY(IdTipoMoneda)
+);
+
+CREATE TABLE factura (
   IdEmpresa INTEGER NOT NULL,
   IdFactura INTEGER NOT NULL AUTO_INCREMENT,
   IdUsuario INTEGER NOT NULL,
@@ -835,29 +847,29 @@ CREATE TABLE Factura (
   IdDocElectronicoRev VARCHAR(50) NULL,
   PRIMARY KEY(IdFactura),
   FOREIGN KEY(IdEmpresa)
-    REFERENCES  Empresa(IdEmpresa)
+    REFERENCES empresa(IdEmpresa)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdCliente)
-    REFERENCES Cliente(IdCliente)
+    REFERENCES cliente(IdCliente)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdUsuario)
-    REFERENCES Usuario(IdUsuario)
+    REFERENCES usuario(IdUsuario)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdCondicionVenta)
-    REFERENCES CondicionVenta(IdCondicionVenta)
+    REFERENCES condicionventa(IdCondicionVenta)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdVendedor)
-    REFERENCES Vendedor(IdVendedor)
+    REFERENCES vendedor(IdVendedor)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   INDEX cxc_index (IdCxC)
 );
 
-CREATE TABLE DetalleFactura (
+CREATE TABLE detallefactura (
   IdFactura INTEGER NOT NULL,
   IdProducto INTEGER NOT NULL,
   Descripcion VARCHAR(200) NOT NULL,
@@ -868,16 +880,16 @@ CREATE TABLE DetalleFactura (
   CostoInstalacion DOUBLE NOT NULL,
   PRIMARY KEY(IdFactura,IdProducto),
   FOREIGN KEY(IdFactura)
-    REFERENCES Factura(IdFactura)
+    REFERENCES factura(IdFactura)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdProducto)
-    REFERENCES Producto(IdProducto)
+    REFERENCES producto(IdProducto)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT
 );
 
-CREATE TABLE DesglosePagoFactura (
+CREATE TABLE desglosepagofactura (
   IdConsecutivo INTEGER NOT NULL AUTO_INCREMENT,
   IdFactura INTEGER NOT NULL,
   IdFormaPago INTEGER NOT NULL,
@@ -889,20 +901,20 @@ CREATE TABLE DesglosePagoFactura (
   MontoForaneo DOUBLE NOT NULL,
   PRIMARY KEY(IdConsecutivo),
   FOREIGN KEY(IdFactura)
-    REFERENCES Factura(IdFactura)
+    REFERENCES factura(IdFactura)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdFormaPago)
-    REFERENCES FormaPago(IdFormaPago)
+    REFERENCES formapago(IdFormaPago)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdTipoMoneda)
-    REFERENCES TipoMoneda(IdTipoMoneda)
+    REFERENCES tipomoneda(IdTipoMoneda)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT
 );
 
-CREATE TABLE CuentaPorCobrar (
+CREATE TABLE cuentaporcobrar (
   IdEmpresa INTEGER NOT NULL,
   IdCxC INTEGER NOT NULL AUTO_INCREMENT,
   IdUsuario INTEGER NOT NULL,
@@ -919,17 +931,17 @@ CREATE TABLE CuentaPorCobrar (
   IdAnuladoPor INTEGER NULL,
   PRIMARY KEY(IdCxC),
   FOREIGN KEY(IdEmpresa)
-    REFERENCES  Empresa(IdEmpresa)
+    REFERENCES empresa(IdEmpresa)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdUsuario)
-    REFERENCES Usuario(IdUsuario)
+    REFERENCES usuario(IdUsuario)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   INDEX cxc_index (IdCxC)
 );
 
-CREATE TABLE MovimientoCuentaPorCobrar (
+CREATE TABLE movimientocuentaporcobrar (
   IdEmpresa INTEGER NOT NULL,
   IdMovCxC INTEGER NOT NULL AUTO_INCREMENT,
   IdUsuario INTEGER NOT NULL,
@@ -945,27 +957,27 @@ CREATE TABLE MovimientoCuentaPorCobrar (
   Procesado BIT NOT NULL,
   PRIMARY KEY(IdMovCxC),
   FOREIGN KEY(IdUsuario)
-    REFERENCES Usuario(IdUsuario)
+    REFERENCES usuario(IdUsuario)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT
 );
 
-CREATE TABLE DesgloseMovimientoCuentaPorCobrar (
+CREATE TABLE desglosemovimientocuentaporcobrar (
   IdMovCxC INTEGER NOT NULL,
   IdCxC INTEGER NOT NULL,
   Monto DOUBLE NOT NULL,
   PRIMARY KEY(IdMovCxC, IdCxC),
   FOREIGN KEY(IdMovCxC)
-    REFERENCES MovimientoCuentaPorCobrar(IdMovCxC)
+    REFERENCES movimientocuentaporcobrar(IdMovCxC)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdCxC)
-    REFERENCES CuentaPorCobrar(IdCxC)
+    REFERENCES cuentaporcobrar(IdCxC)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT
 );
 
-CREATE TABLE DesglosePagoMovimientoCuentaPorCobrar (
+CREATE TABLE desglosepagomovimientocuentaporcobrar (
   IdMovCxC INTEGER NOT NULL,
   IdFormaPago INTEGER NOT NULL,
   IdTipoMoneda INTEGER NOT NULL,
@@ -976,20 +988,20 @@ CREATE TABLE DesglosePagoMovimientoCuentaPorCobrar (
   MontoForaneo DOUBLE NOT NULL,
   PRIMARY KEY(IdMovCxC, IdFormaPago, IdTipoMoneda, IdCuentaBanco),
   FOREIGN KEY(IdMovCxC)
-    REFERENCES MovimientoCuentaPorCobrar(IdMovCxC)
+    REFERENCES movimientocuentaporcobrar(IdMovCxC)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdFormaPago)
-    REFERENCES FormaPago(IdFormaPago)
+    REFERENCES formapago(IdFormaPago)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdTipoMoneda)
-    REFERENCES TipoMoneda(IdTipoMoneda)
+    REFERENCES tipomoneda(IdTipoMoneda)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT
 );
 
-CREATE TABLE Compra (
+CREATE TABLE compra (
   IdEmpresa INTEGER NOT NULL,
   IdCompra INTEGER NOT NULL AUTO_INCREMENT,
   IdUsuario INTEGER NOT NULL,
@@ -1012,26 +1024,25 @@ CREATE TABLE Compra (
   Procesado BIT NOT NULL,
   PRIMARY KEY(IdCompra),
   FOREIGN KEY(IdEmpresa)
-    REFERENCES  Empresa(IdEmpresa)
+    REFERENCES empresa(IdEmpresa)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdUsuario)
-    REFERENCES Usuario(IdUsuario)
+    REFERENCES usuario(IdUsuario)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdProveedor)
-    REFERENCES Proveedor(IdProveedor)
+    REFERENCES proveedor(IdProveedor)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
-
   FOREIGN KEY(IdCondicionVenta)
-    REFERENCES CondicionVenta(IdCondicionVenta)
+    REFERENCES condicionventa(IdCondicionVenta)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   INDEX cxp_index (idCxP)
 );
 
-CREATE TABLE DetalleCompra (
+CREATE TABLE detallecompra (
   IdCompra INTEGER NOT NULL,
   IdProducto INTEGER NOT NULL,
   Cantidad REAL NOT NULL,
@@ -1039,16 +1050,16 @@ CREATE TABLE DetalleCompra (
   Excento BIT NOT NULL,
   PRIMARY KEY(IdCompra,IdProducto),
   FOREIGN KEY(IdCompra)
-    REFERENCES Compra(IdCompra)
+    REFERENCES compra(IdCompra)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdProducto)
-    REFERENCES Producto(IdProducto)
+    REFERENCES producto(IdProducto)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT
 );
 
-CREATE TABLE DesglosePagoCompra (
+CREATE TABLE desglosepagocompra (
   IdCompra INTEGER NOT NULL,
   IdFormaPago INTEGER NOT NULL,
   IdTipoMoneda INTEGER NOT NULL,
@@ -1059,24 +1070,24 @@ CREATE TABLE DesglosePagoCompra (
   MontoForaneo DOUBLE NOT NULL,
   PRIMARY KEY(IdCompra, IdFormaPago, IdTipoMoneda, IdCuentaBanco),
   FOREIGN KEY(IdCompra)
-    REFERENCES Compra(IdCompra)
+    REFERENCES compra(IdCompra)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdFormaPago)
-    REFERENCES FormaPago(IdFormaPago)
+    REFERENCES formapago(IdFormaPago)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdTipoMoneda)
-    REFERENCES TipoMoneda(IdTipoMoneda)
+    REFERENCES tipomoneda(IdTipoMoneda)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdCuentaBanco)
-    REFERENCES CuentaBanco(IdCuenta)
+    REFERENCES cuentabanco(IdCuenta)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT
 );
 
-CREATE TABLE CuentaPorPagar (
+CREATE TABLE cuentaporpagar (
   IdEmpresa INTEGER NOT NULL,
   IdCxP INTEGER NOT NULL AUTO_INCREMENT,
   IdUsuario INTEGER NOT NULL,
@@ -1094,17 +1105,17 @@ CREATE TABLE CuentaPorPagar (
   IdAnuladoPor INTEGER NULL,
   PRIMARY KEY(IdCxP),
   FOREIGN KEY(IdEmpresa)
-    REFERENCES  Empresa(IdEmpresa)
+    REFERENCES empresa(IdEmpresa)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdUsuario)
-    REFERENCES Usuario(IdUsuario)
+    REFERENCES usuario(IdUsuario)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   INDEX cxp_index (IdCxP)
 );
 
-CREATE TABLE DesglosePagoCuentaPorPagar (
+CREATE TABLE desglosepagocuentaporpagar (
   IdCxP INTEGER NOT NULL,
   IdFormaPago INTEGER NOT NULL,
   IdTipoMoneda INTEGER NOT NULL,
@@ -1115,20 +1126,20 @@ CREATE TABLE DesglosePagoCuentaPorPagar (
   MontoForaneo DOUBLE NOT NULL,
   PRIMARY KEY(IdCxP, IdFormaPago, IdTipoMoneda, IdCuentaBanco),
   FOREIGN KEY(IdCxP)
-    REFERENCES CuentaPorPagar(IdCxP)
+    REFERENCES cuentaporpagar(IdCxP)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdFormaPago)
-    REFERENCES FormaPago(IdFormaPago)
+    REFERENCES formapago(IdFormaPago)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdTipoMoneda)
-    REFERENCES TipoMoneda(IdTipoMoneda)
+    REFERENCES tipomoneda(IdTipoMoneda)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT
 );
 
-CREATE TABLE MovimientoCuentaPorPagar (
+CREATE TABLE movimientocuentaporpagar (
   IdEmpresa INTEGER NOT NULL,
   IdMovCxP INTEGER NOT NULL AUTO_INCREMENT,
   IdUsuario INTEGER NOT NULL,
@@ -1146,27 +1157,27 @@ CREATE TABLE MovimientoCuentaPorPagar (
   Procesado BIT NOT NULL,
   PRIMARY KEY(IdMovCxP),
   FOREIGN KEY(IdUsuario)
-    REFERENCES Usuario(IdUsuario)
+    REFERENCES usuario(IdUsuario)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT
 );
 
-CREATE TABLE DesgloseMovimientoCuentaPorPagar (
+CREATE TABLE desglosemovimientocuentaporpagar (
   IdMovCxP INTEGER NOT NULL,
   IdCxP INTEGER NOT NULL,
   Monto DOUBLE NOT NULL,
   PRIMARY KEY(IdMovCxP, IdCxP),
   FOREIGN KEY(IdMovCxP)
-    REFERENCES MovimientoCuentaPorPagar(IdMovCxP)
+    REFERENCES movimientocuentaporpagar(IdMovCxP)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdCxP)
-    REFERENCES CuentaPorPagar(IdCxP)
+    REFERENCES cuentaporpagar(IdCxP)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT
 );
 
-CREATE TABLE DesglosePagoMovimientoCuentaPorPagar (
+CREATE TABLE desglosepagomovimientocuentaporpagar (
   IdMovCxP INTEGER NOT NULL,
   IdFormaPago INTEGER NOT NULL,
   IdTipoMoneda INTEGER NOT NULL,
@@ -1177,24 +1188,24 @@ CREATE TABLE DesglosePagoMovimientoCuentaPorPagar (
   MontoForaneo DOUBLE NOT NULL,
   PRIMARY KEY(IdMovCxP, IdFormaPago, IdTipoMoneda, IdCuentaBanco),
   FOREIGN KEY(IdMovCxP)
-    REFERENCES MovimientoCuentaPorPagar(IdMovCxP)
+    REFERENCES movimientocuentaporpagar(IdMovCxP)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdFormaPago)
-    REFERENCES FormaPago(IdFormaPago)
+    REFERENCES formapago(IdFormaPago)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdTipoMoneda)
-    REFERENCES TipoMoneda(IdTipoMoneda)
+    REFERENCES tipomoneda(IdTipoMoneda)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdCuentaBanco)
-    REFERENCES CuentaBanco(IdCuenta)
+    REFERENCES cuentabanco(IdCuenta)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT
 );
 
-CREATE TABLE DevolucionProveedor (
+CREATE TABLE devolucionproveedor (
   IdEmpresa INTEGER NOT NULL,
   IdDevolucion INTEGER NOT NULL AUTO_INCREMENT,
   IdCompra INTEGER NOT NULL,
@@ -1212,24 +1223,24 @@ CREATE TABLE DevolucionProveedor (
   Procesado BIT NOT NULL,
   PRIMARY KEY(IdDevolucion),
   FOREIGN KEY(IdEmpresa)
-    REFERENCES  Empresa(IdEmpresa)
+    REFERENCES empresa(IdEmpresa)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdCompra)
-    REFERENCES Compra(IdCompra)
+    REFERENCES compra(IdCompra)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdUsuario)
-    REFERENCES Usuario(IdUsuario)
+    REFERENCES usuario(IdUsuario)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdProveedor)
-    REFERENCES Proveedor(IdProveedor)
+    REFERENCES proveedor(IdProveedor)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT
 );
 
-CREATE TABLE DetalleDevolucionProveedor (
+CREATE TABLE detalledevolucionproveedor (
   IdDevolucion INTEGER NOT NULL,
   IdProducto INTEGER NOT NULL,
   Cantidad REAL NOT NULL,
@@ -1238,16 +1249,16 @@ CREATE TABLE DetalleDevolucionProveedor (
   CantDevolucion REAL NOT NULL,
   PRIMARY KEY(IdDevolucion,IdProducto),
   FOREIGN KEY(IdDevolucion)
-    REFERENCES DevolucionProveedor(IdDevolucion)
+    REFERENCES devolucionproveedor(IdDevolucion)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdProducto)
-    REFERENCES Producto(IdProducto)
+    REFERENCES producto(IdProducto)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT
 );
 
-CREATE TABLE DesglosePagoDevolucionProveedor (
+CREATE TABLE desglosepagodevolucionproveedor (
   IdDevolucion INTEGER NOT NULL,
   IdFormaPago INTEGER NOT NULL,
   IdTipoMoneda INTEGER NOT NULL,
@@ -1258,24 +1269,24 @@ CREATE TABLE DesglosePagoDevolucionProveedor (
   MontoForaneo DOUBLE NOT NULL,
   PRIMARY KEY(IdDevolucion, IdFormaPago, IdTipoMoneda, IdCuentaBanco),
   FOREIGN KEY(IdDevolucion)
-    REFERENCES DevolucionProveedor(IdDevolucion)
+    REFERENCES devolucionproveedor(IdDevolucion)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdFormaPago)
-    REFERENCES FormaPago(IdFormaPago)
+    REFERENCES formapago(IdFormaPago)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdTipoMoneda)
-    REFERENCES TipoMoneda(IdTipoMoneda)
+    REFERENCES tipomoneda(IdTipoMoneda)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdCuentaBanco)
-    REFERENCES CuentaBanco(IdCuenta)
+    REFERENCES cuentabanco(IdCuenta)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT
 );
 
-CREATE TABLE DevolucionCliente (
+CREATE TABLE devolucioncliente (
   IdEmpresa INTEGER NOT NULL,
   IdDevolucion INTEGER NOT NULL AUTO_INCREMENT,
   IdFactura INTEGER NOT NULL,
@@ -1295,24 +1306,24 @@ CREATE TABLE DevolucionCliente (
   IdDocElectronicoRev VARCHAR(50) NULL,
   PRIMARY KEY(IdDevolucion),
   FOREIGN KEY(IdEmpresa)
-    REFERENCES  Empresa(IdEmpresa)
+    REFERENCES empresa(IdEmpresa)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdFactura)
-    REFERENCES Factura(IdFactura)
+    REFERENCES factura(IdFactura)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdUsuario)
-    REFERENCES Usuario(IdUsuario)
+    REFERENCES usuario(IdUsuario)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdCliente)
-    REFERENCES Cliente(IdCliente)
+    REFERENCES cliente(IdCliente)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT
 );
 
-CREATE TABLE DetalleDevolucionCliente (
+CREATE TABLE detalledevolucioncliente (
   IdDevolucion INTEGER NOT NULL,
   IdProducto INTEGER NOT NULL,
   Cantidad REAL NOT NULL,
@@ -1322,16 +1333,16 @@ CREATE TABLE DetalleDevolucionCliente (
   CantDevolucion REAL NOT NULL,
   PRIMARY KEY(IdDevolucion,IdProducto),
   FOREIGN KEY(IdDevolucion)
-    REFERENCES DevolucionCliente(IdDevolucion)
+    REFERENCES devolucioncliente(IdDevolucion)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdProducto)
-    REFERENCES Producto(IdProducto)
+    REFERENCES producto(IdProducto)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT
 );
 
-CREATE TABLE DesglosePagoDevolucionCliente (
+CREATE TABLE desglosepagodevolucioncliente (
   IdDevolucion INTEGER NOT NULL,
   IdFormaPago INTEGER NOT NULL,
   IdTipoMoneda INTEGER NOT NULL,
@@ -1342,24 +1353,24 @@ CREATE TABLE DesglosePagoDevolucionCliente (
   MontoForaneo DOUBLE NOT NULL,
   PRIMARY KEY(IdDevolucion, IdFormaPago, IdTipoMoneda, IdCuentaBanco),
   FOREIGN KEY(IdDevolucion)
-    REFERENCES DevolucionCliente(IdDevolucion)
+    REFERENCES devolucioncliente(IdDevolucion)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdFormaPago)
-    REFERENCES FormaPago(IdFormaPago)
+    REFERENCES formapago(IdFormaPago)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdTipoMoneda)
-    REFERENCES TipoMoneda(IdTipoMoneda)
+    REFERENCES tipomoneda(IdTipoMoneda)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdCuentaBanco)
-    REFERENCES CuentaBanco(IdCuenta)
+    REFERENCES cuentabanco(IdCuenta)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT
 );
 
-CREATE TABLE AjusteInventario (
+CREATE TABLE ajusteinventario (
   IdEmpresa INTEGER NOT NULL,
   IdAjuste INTEGER NOT NULL AUTO_INCREMENT,
   IdUsuario INTEGER NOT NULL,
@@ -1369,16 +1380,16 @@ CREATE TABLE AjusteInventario (
   IdAnuladoPor INTEGER NULL,
   PRIMARY KEY(IdAjuste),
   FOREIGN KEY(IdEmpresa)
-    REFERENCES  Empresa(IdEmpresa)
+    REFERENCES empresa(IdEmpresa)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdUsuario)
-    REFERENCES Usuario(IdUsuario)
+    REFERENCES usuario(IdUsuario)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT
 );
 
-CREATE TABLE DetalleAjusteInventario (
+CREATE TABLE detalleajusteinventario (
   IdAjuste INTEGER NOT NULL,
   IdProducto INTEGER NOT NULL,
   Cantidad DOUBLE NOT NULL,
@@ -1386,16 +1397,16 @@ CREATE TABLE DetalleAjusteInventario (
   Excento BIT NOT NULL,
   PRIMARY KEY(IdAjuste,IdProducto),
   FOREIGN KEY(IdAjuste)
-    REFERENCES AjusteInventario(IdAjuste)
+    REFERENCES ajusteinventario(IdAjuste)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdProducto)
-    REFERENCES Producto(IdProducto)
+    REFERENCES producto(IdProducto)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT
 );
 
-CREATE TABLE Sucursal (
+CREATE TABLE sucursal (
   IdEmpresa INTEGER NOT NULL,
   IdSucursal INTEGER NOT NULL AUTO_INCREMENT,
   Nombre VARCHAR(200) NOT NULL,
@@ -1404,7 +1415,7 @@ CREATE TABLE Sucursal (
   PRIMARY KEY(IdSucursal)
 );
 
-CREATE TABLE Traslado (
+CREATE TABLE traslado (
   IdEmpresa INTEGER NOT NULL,
   IdTraslado INTEGER NOT NULL AUTO_INCREMENT,
   IdUsuario INTEGER NOT NULL,
@@ -1418,11 +1429,11 @@ CREATE TABLE Traslado (
   IdAnuladoPor INTEGER NULL,
   PRIMARY KEY(IdTraslado),
   FOREIGN KEY(IdEmpresa)
-    REFERENCES  Empresa(IdEmpresa)
+    REFERENCES empresa(IdEmpresa)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdUsuario)
-    REFERENCES Usuario(IdUsuario)
+    REFERENCES usuario(IdUsuario)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdSucursal)
@@ -1431,7 +1442,7 @@ CREATE TABLE Traslado (
       ON UPDATE RESTRICT
 );
 
-CREATE TABLE DetalleTraslado (
+CREATE TABLE detalletraslado  (
   IdTraslado INTEGER NOT NULL,
   IdProducto INTEGER NOT NULL,
   Cantidad REAL NOT NULL,
@@ -1439,11 +1450,11 @@ CREATE TABLE DetalleTraslado (
   Excento BIT NOT NULL,
   PRIMARY KEY(IdTraslado,IdProducto),
   FOREIGN KEY(IdTraslado)
-    REFERENCES Traslado(IdTraslado)
+    REFERENCES traslado(IdTraslado)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT,
   FOREIGN KEY(IdProducto)
-    REFERENCES Producto(IdProducto)
+    REFERENCES producto(IdProducto)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT
 );
@@ -1451,15 +1462,14 @@ CREATE TABLE DetalleTraslado (
 ALTER TABLE documentoelectronico ADD (
   IdSucursal INTEGER NOT NULL,
   IdTerminal INTEGER NOT NULL,
-  IdConsecutivo INTEGER NOT NULL,
-  INDEX (ClaveNumerica),
-  FOREIGN KEY(IdEmpresa)
-    REFERENCES Empresa(IdEmpresa)
-      ON DELETE RESTRICT
-      ON UPDATE RESTRICT
+  IdConsecutivo INTEGER NOT NULL
 );
 
-ALTER TABLE documentoelectronico CHANGE Consecutivo Consecutivo VARCHAR(20) NOT NULL;
+ALTER TABLE documentoelectronico CHANGE Consecutivo Consecutivo VARCHAR(20) NULL;
+
+UPDATE documentoelectronico SET IdConsecutivo=CONVERT(SUBSTRING(Consecutivo,18),UNSIGNED INTEGER);
+UPDATE documentoelectronico SET IdSucursal=CONVERT(SUBSTRING(Consecutivo,1,3),UNSIGNED INTEGER);
+UPDATE documentoelectronico SET IdTerminal=CONVERT(SUBSTRING(Consecutivo,4,5),UNSIGNED INTEGER);
 
 DELIMITER //
 CREATE FUNCTION DiffDays (dateFrom DATE, dateTo DATE) RETURNS INTEGER

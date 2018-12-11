@@ -92,10 +92,7 @@ CREATE TABLE cantfemensualempresa (
 CREATE TABLE documentoelectronico (
   IdDocumento INTEGER NOT NULL AUTO_INCREMENT,
   IdEmpresa INTEGER NOT NULL,
-  IdSucursal INTEGER NOT NULL,
-  IdTerminal INTEGER NOT NULL,
   IdTipoDocumento INTEGER NOT NULL,
-  IdConsecutivo INTEGER NOT NULL,
   Fecha DATETIME NOT NULL,
   Consecutivo VARCHAR(20) NOT NULL,
   ClaveNumerica VARCHAR(50) NOT NULL,

@@ -294,7 +294,7 @@ Public Class ModuloImpresion
             strCadena += "".PadRight((40 - strDireccion1.Length) / 2, " ") + strDireccion1 & Chr(13) & Chr(10)
         End If
         strCadena += "".PadRight((40 - objEmpresa.Telefono.Length) / 2, " ") + objEmpresa.Telefono & Chr(13) & Chr(10)
-        strCadena += "".PadRight((40 - objEmpresa.CuentaCorreoElectronico.Length) / 2, " ") + objEmpresa.CuentaCorreoElectronico & Chr(13) & Chr(10)
+        strCadena += "".PadRight((40 - objEmpresa.CorreoNotificacion.Length) / 2, " ") + objEmpresa.CorreoNotificacion & Chr(13) & Chr(10)
         Return strCadena
     End Function
 

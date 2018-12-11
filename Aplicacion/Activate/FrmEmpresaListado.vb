@@ -6,7 +6,7 @@ Public Class FrmEmpresaListado
 #End Region
 
 #Region "Eventos Controles"
-    Private Sub FrmEmpresa_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+    Private Sub FrmEmpresaListado_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Try
             Dim dsDataSet As New DataSet()
             Dim strSQLString As String
