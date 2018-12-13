@@ -16,6 +16,8 @@ using System.Security.Cryptography.X509Certificates;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using System.Management;
+using System.ServiceModel.Web;
 
 namespace LeandroSoftware.Core
 {
@@ -206,6 +208,18 @@ namespace LeandroSoftware.Core
 	        fsDecrypted.Close();
         }
 
+        public static string ObtenerSerialEquipo()
+        {
+            string strSerial = "";
+            ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT * FROM Win32_PhysicalMedia");
+            foreach (ManagementObject wmi_HD in searcher.Get())
+            {
+                if (wmi_HD["SerialNumber"] != null)
+                    strSerial = wmi_HD["SerialNumber"].ToString();
+            }
+            return strSerial;
+        }
+
         public static async Task Ejecutar(string jsonObject, string servicioURL, string strToken)
         {
             try
@@ -213,7 +227,7 @@ namespace LeandroSoftware.Core
                 StringContent contentJson = new StringContent(jsonObject, Encoding.UTF8, "application/json");
                 if (strToken != "")
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", strToken);
-                HttpResponseMessage httpResponse = httpClient.PostAsync(servicioURL + "/recepcion", contentJson).Result;
+                HttpResponseMessage httpResponse = httpClient.PostAsync(servicioURL + "/ejecutar", contentJson).Result;
                 string responseContent = await httpResponse.Content.ReadAsStringAsync();
             }
             catch (Exception ex)
@@ -229,7 +243,7 @@ namespace LeandroSoftware.Core
                 StringContent contentJson = new StringContent(jsonObject, Encoding.UTF8, "application/json");
                 if (strToken != "")
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", strToken);
-                HttpResponseMessage httpResponse = httpClient.PostAsync(servicioURL + "/recepcion", contentJson).Result;
+                HttpResponseMessage httpResponse = await httpClient.PostAsync(servicioURL + "/ejecutarconsulta", contentJson);
                 string responseContent = await httpResponse.Content.ReadAsStringAsync();
                 return responseContent;
             }

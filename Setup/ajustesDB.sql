@@ -21,7 +21,6 @@
   RespaldoEnLinea BIT NOT NULL,
   CierrePorTurnos BIT NOT NULL,
   CierreEnEjecucion BIT NOT NULL,
-  FacturaElectronica BIT NOT NULL,
   Certificado BLOB NULL,
   NombreCertificado VARCHAR(100) NULL,
   PinCertificado VARCHAR(4) NULL,
@@ -34,7 +33,8 @@
   INDEX (Identificacion)
 );
 
-ALTER TABLE empresa CHANGE Nombreempresa Nombreempresa VARCHAR(80) NOT NULL;
+ALTER TABLE empresa CHANGE NombreEmpresa NombreEmpresa VARCHAR(80) NOT NULL;
+ALTER TABLE empresa CHANGE PermiteFacturar FacturaElectronica BIT NOT NULL;
 
 CREATE TABLE TipoIdentificacion (
   IdTipoIdentificacion INTEGER NOT NULL,

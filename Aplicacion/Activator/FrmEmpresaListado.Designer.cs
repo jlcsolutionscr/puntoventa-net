@@ -66,6 +66,9 @@
             // 
             // cboEmpresa
             // 
+            this.cboEmpresa.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Append;
+            this.cboEmpresa.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.cboEmpresa.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboEmpresa.FormattingEnabled = true;
             this.cboEmpresa.Location = new System.Drawing.Point(79, 21);
             this.cboEmpresa.Name = "cboEmpresa";
@@ -73,7 +76,7 @@
             this.cboEmpresa.TabIndex = 5;
             this.cboEmpresa.SelectedIndexChanged += new System.EventHandler(this.cboEmpresa_SelectedIndexChanged);
             // 
-            // Main
+            // FrmEmpresaListado
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -83,7 +86,7 @@
             this.Controls.Add(this.btnAgregar);
             this.Controls.Add(this.Label1);
             this.Controls.Add(this.cboEmpresa);
-            this.Name = "Main";
+            this.Name = "FrmEmpresaListado";
             this.Text = "Seleccione la empresa o agregue una nueva";
             this.Load += new System.EventHandler(this.FrmEmpresaListado_Load);
             this.ResumeLayout(false);

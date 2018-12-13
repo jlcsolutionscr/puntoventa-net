@@ -1,5 +1,6 @@
 ﻿using LeandroSoftware.AccesoDatos.Dominio.Entidades;
 using LeandroSoftware.AccesoDatos.TiposDatos;
+using LeandroSoftware.Core;
 using log4net;
 using System;
 using System.Collections.Generic;
@@ -27,27 +28,18 @@ namespace LeandroSoftware.Activator
             InitializeComponent();
         }
 
-        private void CargarListadoEmpresa()
+        private async void CargarListadoEmpresa()
         {
             RequestDTO peticion = new RequestDTO
             {
                 NombreMetodo = "ObtenerListaEmpresas",
                 DatosPeticion = ""
             };
-            Uri uri = new Uri(strServicioPuntoventaURL + "/ejecutarconsulta");
-            string jsonRequest = new JavaScriptSerializer().Serialize(peticion);
-            StringContent stringContent = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
-            Task<HttpResponseMessage> task1 = client.PostAsync(uri, stringContent);
             try
             {
-                task1.Wait();
-                if (!task1.Result.IsSuccessStatusCode)
-                {
-                    MessageBox.Show("Error: " + task1.Result.ReasonPhrase, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    Close();
-                    return;
-                }
-                ResponseDTO respuesta = new JavaScriptSerializer().Deserialize<ResponseDTO>(task1.Result.Content.ReadAsStringAsync().Result);
+                string strPeticion = new JavaScriptSerializer().Serialize(peticion);
+                string strRespuesta = await Utilitario.EjecutarConsulta(strPeticion, appSettings["ServicioPuntoventaURL"].ToString(), "");
+                ResponseDTO respuesta = new JavaScriptSerializer().Deserialize<ResponseDTO>(strRespuesta);
                 IList<Empresa> dsDataSet = Array.Empty<Empresa>();
                 if (respuesta.DatosPeticion != null)
                 {

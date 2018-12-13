@@ -519,7 +519,7 @@ Public Class FrmMenuPrincipal
             Close()
             Exit Sub
         Else
-            If empresaGlobal.PermiteFacturar = "N" Then
+            If Not empresaGlobal.FacturaElectronica Then
                 MessageBox.Show("La empresa no se encuentra activa para emitir documentos electrónicos. Contacte a su Proveedor. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                 Close()
                 Exit Sub
@@ -529,11 +529,9 @@ Public Class FrmMenuPrincipal
                 Exit Sub
             End If
         End If
-        fileSystemObject = CreateObject("Scripting.FileSystemObject")
-        driveName = "C:\"
-        drive = fileSystemObject.GetDrive(fileSystemObject.GetDriveName(fileSystemObject.GetAbsolutePathName(driveName)))
+        Dim strSerial As String = Utilitario.ObtenerSerialEquipo()
         For Each detalleEmpresa As DetalleRegistro In empresaGlobal.DetalleRegistro
-            If detalleEmpresa.ValorRegistro = drive.SerialNumber Then
+            If detalleEmpresa.ValorRegistro = strSerial Then
                 bolEquipoRegistrado = True
                 equipoGlobal = detalleEmpresa
                 Exit For

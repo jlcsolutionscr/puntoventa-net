@@ -88,10 +88,8 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 try
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(cuenta.IdEmpresa);
-                    if (empresa == null)
-                        throw new Exception("La empresa asignada a la transacción no existe.");
-                    if (empresa.CierreEnEjecucion)
-                        throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     dbContext.CatalogoContableRepository.Add(cuenta);
                     dbContext.Commit();
                 }
@@ -117,10 +115,8 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 try
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(cuenta.IdEmpresa);
-                    if (empresa == null)
-                        throw new Exception("La empresa asignada a la transacción no existe.");
-                    if (empresa.CierreEnEjecucion)
-                        throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     dbContext.NotificarModificacion(cuenta);
                     dbContext.Commit();
                 }
@@ -145,13 +141,10 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 try
                 {
                     CatalogoContable cuenta = dbContext.CatalogoContableRepository.Find(intIdCuenta);
-                    if (cuenta == null)
-                        throw new Exception("La cuenta contable por eliminar no existe.");
+                    if (cuenta == null) throw new Exception("La cuenta contable por eliminar no existe.");
                     Empresa empresa = dbContext.EmpresaRepository.Find(cuenta.IdEmpresa);
-                    if (empresa == null)
-                        throw new Exception("La empresa asignada a la transacción no existe.");
-                    if (empresa.CierreEnEjecucion)
-                        throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     dbContext.CatalogoContableRepository.Remove(cuenta);
                     dbContext.Commit();
                 }
@@ -534,10 +527,8 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 try
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(asiento.IdEmpresa);
-                    if (empresa == null)
-                        throw new Exception("La empresa asignada a la transacción no existe.");
-                    if (empresa.CierreEnEjecucion)
-                        throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     dbContext.AsientoRepository.Add(asiento);
                     foreach (DetalleAsiento detalleAsiento in asiento.DetalleAsiento)
                     {
@@ -632,10 +623,8 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 try
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(asiento.IdEmpresa);
-                    if (empresa == null)
-                        throw new Exception("La empresa asignada a la transacción no existe.");
-                    if (empresa.CierreEnEjecucion)
-                        throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     dbContext.NotificarModificacion(asiento);
                     dbContext.Commit();
                 }
@@ -665,10 +654,8 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     if (asiento.Nulo)
                         return;
                     Empresa empresa = dbContext.EmpresaRepository.Find(asiento.IdEmpresa);
-                    if (empresa == null)
-                        throw new Exception("La empresa asignada a la transacción no existe.");
-                    if (empresa.CierreEnEjecucion)
-                        throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     foreach (DetalleAsiento detalleAsiento in asiento.DetalleAsiento)
                     {
                         if (detalleAsiento.Debito > 0)
@@ -828,10 +815,8 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 try
                 {
                     DateTime dtFechaCierre = DateTime.Parse(strFechaCierre);
-                    if (empresa == null)
-                        throw new Exception("La empresa asignada a la transacción no existe.");
-                    if (empresa.CierreEnEjecucion)
-                        throw new BusinessException("Ya se está ejecutando el cierre en este momento.");
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     empresa.CierreEnEjecucion = true;
                     dbContext.Commit();
                     CierreCaja cierre = new CierreCaja
@@ -986,11 +971,9 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 {
                     try
                     {
-                        if (cierre.IdCierre > 0)
-                            throw new BusinessException("La información del cierre ya fue registrada. No es posible continuar con la transacción.");
+                        if (cierre.IdCierre > 0) throw new BusinessException("La información del cierre ya fue registrada. No es posible continuar con la transacción.");
                         Empresa empresa = dbContext.EmpresaRepository.Find(cierre.IdEmpresa);
-                        if (empresa == null)
-                            throw new Exception("La empresa asignada a la transacción no existe.");
+                        if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                         object[] objParameters = new object[1];
                         objParameters.SetValue(cierre.IdEmpresa, 0);
                         dbContext.ExecuteProcedure("MarcaRegistrosProcesados", objParameters);
@@ -1021,8 +1004,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 try
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
-                    if (empresa == null)
-                        throw new Exception("La empresa asignada a la transacción no existe.");
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     empresa.CierreEnEjecucion = false;
                     dbContext.Commit();
                 }
@@ -1045,15 +1027,12 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 try
                 {
                     empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
-                    if (empresa == null)
-                        throw new Exception("La empresa asignada a la transacción no existe.");
-                    if (empresa.CierreEnEjecucion)
-                        throw new BusinessException("Ya se está ejecutando el cierre en este momento.");
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     empresa.CierreEnEjecucion = true;
                     dbContext.Commit();
                     perdidaGananciaParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.PerdidasyGanancias).FirstOrDefault();
-                    if (perdidaGananciaParam == null)
-                        throw new Exception("La cuenta de perdidas y ganancias no se encuentra parametrizada y no se puede ejecutar el cierre contable. Por favor verificar.");
+                    if (perdidaGananciaParam == null) throw new Exception("La cuenta de perdidas y ganancias no se encuentra parametrizada y no se puede ejecutar el cierre contable. Por favor verificar.");
 
                     var saldosMensuales = dbContext.CatalogoContableRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.SaldoActual != 0)
                         .OrderBy(x => x.Nivel_1).ThenBy(x => x.Nivel_2).ThenBy(x => x.Nivel_3).ThenBy(x => x.Nivel_4).ThenBy(x => x.Nivel_5).ThenBy(x => x.Nivel_6).ThenBy(x => x.Nivel_7).ToList();
@@ -1490,8 +1469,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                         try
                         {
                             Empresa empresa = dbContext.EmpresaRepository.Find(compra.IdEmpresa);
-                            if (empresa == null)
-                                throw new Exception("La empresa asignada a la compra no existe");
+                            if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                             efectivoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.Efectivo).FirstOrDefault();
                             cuentasPorPagarProveedoresParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.CuentasPorPagarProveedores).FirstOrDefault();
                             ivaPorPagarParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.IVAPorPagar).FirstOrDefault();
@@ -1678,8 +1656,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                         try
                         {
                             Empresa empresa = dbContext.EmpresaRepository.Find(egreso.IdEmpresa);
-                            if (empresa == null)
-                                throw new Exception("La empresa asignada al egreso no existe");
+                            if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                             efectivo = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.Efectivo).FirstOrDefault();
                             if (efectivo == null)
                                 throw new BusinessException("La parametrización contable está incompleta y no se puede continuar. Por favor verificar.");
@@ -1783,14 +1760,11 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                         try
                         {
                             Empresa empresa = dbContext.EmpresaRepository.Find(ingreso.IdEmpresa);
-                            if (empresa == null)
-                                throw new Exception("La empresa asignada al ingreso no existe");
+                            if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                             efectivo = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.Efectivo).FirstOrDefault();
-                            if (efectivo == null)
-                                throw new BusinessException("La parametrización contable está incompleta y no se puede continuar. Por favor verificar.");
+                            if (efectivo == null) throw new BusinessException("La parametrización contable está incompleta y no se puede continuar. Por favor verificar.");
                             CuentaIngreso cuentaIngreso = dbContext.CuentaIngresoRepository.Find(ingreso.IdCuenta);
-                            if (cuentaIngreso == null)
-                                throw new Exception("La cuenta de ingreso asignada al registro no existe");
+                            if (cuentaIngreso == null) throw new Exception("La cuenta de ingreso asignada al registro no existe");
                             ingreso.IdAsiento = 0;
                             int intLineaDetalleAsiento = 0;
                             asiento = new Asiento
@@ -1894,8 +1868,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                         try
                         {
                             Empresa empresa = dbContext.EmpresaRepository.Find(movimiento.IdEmpresa);
-                            if (empresa == null)
-                                throw new Exception("La empresa asignada a la devolución no existe");
+                            if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                             efectivoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.Efectivo).FirstOrDefault();
                             cuentaPorCobrarTarjetaParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.CuentasPorCobrarTarjeta).FirstOrDefault();
                             ivaPorPagarParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.IVAPorPagar).FirstOrDefault();
@@ -2029,8 +2002,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                         try
                         {
                             Empresa empresa = dbContext.EmpresaRepository.Find(movimiento.IdEmpresa);
-                            if (empresa == null)
-                                throw new Exception("La empresa asignada a la devolución no existe");
+                            if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                             efectivoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.Efectivo).FirstOrDefault();
                             cuentaPorPagarProveedoresParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.CuentasPorPagarProveedores).FirstOrDefault();
                             if (efectivoParam == null || cuentaPorPagarProveedoresParam == null)

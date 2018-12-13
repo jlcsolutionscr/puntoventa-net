@@ -149,7 +149,7 @@
             this.txtClaveATV.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtClaveATV.ForeColor = System.Drawing.SystemColors.WindowText;
             this.txtClaveATV.Location = new System.Drawing.Point(139, 432);
-            this.txtClaveATV.MaxLength = 200;
+            this.txtClaveATV.MaxLength = 100;
             this.txtClaveATV.Name = "txtClaveATV";
             this.txtClaveATV.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.txtClaveATV.Size = new System.Drawing.Size(199, 20);
@@ -177,7 +177,7 @@
             this.txtUsuarioATV.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtUsuarioATV.ForeColor = System.Drawing.SystemColors.WindowText;
             this.txtUsuarioATV.Location = new System.Drawing.Point(139, 406);
-            this.txtUsuarioATV.MaxLength = 200;
+            this.txtUsuarioATV.MaxLength = 100;
             this.txtUsuarioATV.Name = "txtUsuarioATV";
             this.txtUsuarioATV.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.txtUsuarioATV.Size = new System.Drawing.Size(313, 20);
@@ -211,7 +211,7 @@
             this.btnCargarLogo.TabStop = false;
             this.btnCargarLogo.Text = "&Cargar logo";
             this.btnCargarLogo.UseVisualStyleBackColor = false;
-            this.btnCargarLogo.Click += new System.EventHandler(this.btnCargarLogo_Click_1);
+            this.btnCargarLogo.Click += new System.EventHandler(this.btnCargarLogo_Click);
             // 
             // picLogo
             // 
@@ -288,7 +288,7 @@
             this.txtUltimoDocMR.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtUltimoDocMR.ForeColor = System.Drawing.SystemColors.WindowText;
             this.txtUltimoDocMR.Location = new System.Drawing.Point(139, 588);
-            this.txtUltimoDocMR.MaxLength = 50;
+            this.txtUltimoDocMR.MaxLength = 5;
             this.txtUltimoDocMR.Name = "txtUltimoDocMR";
             this.txtUltimoDocMR.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.txtUltimoDocMR.Size = new System.Drawing.Size(44, 20);
@@ -302,7 +302,7 @@
             this.txtUltimoDocTE.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtUltimoDocTE.ForeColor = System.Drawing.SystemColors.WindowText;
             this.txtUltimoDocTE.Location = new System.Drawing.Point(294, 559);
-            this.txtUltimoDocTE.MaxLength = 50;
+            this.txtUltimoDocTE.MaxLength = 5;
             this.txtUltimoDocTE.Name = "txtUltimoDocTE";
             this.txtUltimoDocTE.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.txtUltimoDocTE.Size = new System.Drawing.Size(44, 20);
@@ -316,7 +316,7 @@
             this.txtUltimoDocNC.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtUltimoDocNC.ForeColor = System.Drawing.SystemColors.WindowText;
             this.txtUltimoDocNC.Location = new System.Drawing.Point(294, 533);
-            this.txtUltimoDocNC.MaxLength = 50;
+            this.txtUltimoDocNC.MaxLength = 5;
             this.txtUltimoDocNC.Name = "txtUltimoDocNC";
             this.txtUltimoDocNC.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.txtUltimoDocNC.Size = new System.Drawing.Size(44, 20);
@@ -330,7 +330,7 @@
             this.txtUltimoDocND.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtUltimoDocND.ForeColor = System.Drawing.SystemColors.WindowText;
             this.txtUltimoDocND.Location = new System.Drawing.Point(139, 562);
-            this.txtUltimoDocND.MaxLength = 50;
+            this.txtUltimoDocND.MaxLength = 5;
             this.txtUltimoDocND.Name = "txtUltimoDocND";
             this.txtUltimoDocND.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.txtUltimoDocND.Size = new System.Drawing.Size(44, 20);
@@ -344,7 +344,7 @@
             this.txtUltimoDocFE.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtUltimoDocFE.ForeColor = System.Drawing.SystemColors.WindowText;
             this.txtUltimoDocFE.Location = new System.Drawing.Point(139, 536);
-            this.txtUltimoDocFE.MaxLength = 50;
+            this.txtUltimoDocFE.MaxLength = 5;
             this.txtUltimoDocFE.Name = "txtUltimoDocFE";
             this.txtUltimoDocFE.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.txtUltimoDocFE.Size = new System.Drawing.Size(44, 20);
@@ -372,7 +372,7 @@
             this.txtPinCertificado.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtPinCertificado.ForeColor = System.Drawing.SystemColors.WindowText;
             this.txtPinCertificado.Location = new System.Drawing.Point(139, 380);
-            this.txtPinCertificado.MaxLength = 50;
+            this.txtPinCertificado.MaxLength = 4;
             this.txtPinCertificado.Name = "txtPinCertificado";
             this.txtPinCertificado.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.txtPinCertificado.Size = new System.Drawing.Size(44, 20);
@@ -423,6 +423,7 @@
             // 
             // cboBarrio
             // 
+            this.cboBarrio.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboBarrio.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboBarrio.FormattingEnabled = true;
             this.cboBarrio.Location = new System.Drawing.Point(139, 249);
@@ -446,6 +447,7 @@
             // 
             // cboDistrito
             // 
+            this.cboDistrito.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboDistrito.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboDistrito.FormattingEnabled = true;
             this.cboDistrito.Location = new System.Drawing.Point(139, 222);
@@ -470,6 +472,7 @@
             // 
             // cboCanton
             // 
+            this.cboCanton.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboCanton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboCanton.FormattingEnabled = true;
             this.cboCanton.Location = new System.Drawing.Point(139, 194);
@@ -494,6 +497,7 @@
             // 
             // cboProvincia
             // 
+            this.cboProvincia.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboProvincia.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboProvincia.FormattingEnabled = true;
             this.cboProvincia.Location = new System.Drawing.Point(139, 167);
@@ -504,6 +508,7 @@
             // 
             // cboTipoIdentificacion
             // 
+            this.cboTipoIdentificacion.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboTipoIdentificacion.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboTipoIdentificacion.FormattingEnabled = true;
             this.cboTipoIdentificacion.Location = new System.Drawing.Point(139, 114);
@@ -545,7 +550,7 @@
             this.txtCorreoNotificacion.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtCorreoNotificacion.ForeColor = System.Drawing.SystemColors.WindowText;
             this.txtCorreoNotificacion.Location = new System.Drawing.Point(139, 328);
-            this.txtCorreoNotificacion.MaxLength = 50;
+            this.txtCorreoNotificacion.MaxLength = 200;
             this.txtCorreoNotificacion.Name = "txtCorreoNotificacion";
             this.txtCorreoNotificacion.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.txtCorreoNotificacion.Size = new System.Drawing.Size(313, 20);
@@ -573,7 +578,7 @@
             this.txtNombreEmpresa.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtNombreEmpresa.ForeColor = System.Drawing.SystemColors.WindowText;
             this.txtNombreEmpresa.Location = new System.Drawing.Point(139, 62);
-            this.txtNombreEmpresa.MaxLength = 50;
+            this.txtNombreEmpresa.MaxLength = 80;
             this.txtNombreEmpresa.Name = "txtNombreEmpresa";
             this.txtNombreEmpresa.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.txtNombreEmpresa.Size = new System.Drawing.Size(313, 20);
@@ -635,7 +640,7 @@
             this.txtCodigoServInst.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtCodigoServInst.ForeColor = System.Drawing.SystemColors.WindowText;
             this.txtCodigoServInst.Location = new System.Drawing.Point(294, 484);
-            this.txtCodigoServInst.MaxLength = 50;
+            this.txtCodigoServInst.MaxLength = 5;
             this.txtCodigoServInst.Name = "txtCodigoServInst";
             this.txtCodigoServInst.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.txtCodigoServInst.Size = new System.Drawing.Size(44, 20);
@@ -664,7 +669,7 @@
             this.txtPorcentajeInstalacion.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtPorcentajeInstalacion.ForeColor = System.Drawing.SystemColors.WindowText;
             this.txtPorcentajeInstalacion.Location = new System.Drawing.Point(294, 458);
-            this.txtPorcentajeInstalacion.MaxLength = 50;
+            this.txtPorcentajeInstalacion.MaxLength = 5;
             this.txtPorcentajeInstalacion.Name = "txtPorcentajeInstalacion";
             this.txtPorcentajeInstalacion.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.txtPorcentajeInstalacion.Size = new System.Drawing.Size(44, 20);
@@ -741,7 +746,7 @@
             this.txtLineasFactura.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtLineasFactura.ForeColor = System.Drawing.SystemColors.WindowText;
             this.txtLineasFactura.Location = new System.Drawing.Point(139, 484);
-            this.txtLineasFactura.MaxLength = 50;
+            this.txtLineasFactura.MaxLength = 5;
             this.txtLineasFactura.Name = "txtLineasFactura";
             this.txtLineasFactura.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.txtLineasFactura.Size = new System.Drawing.Size(42, 20);
@@ -770,7 +775,7 @@
             this.txtPorcentajeIVA.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtPorcentajeIVA.ForeColor = System.Drawing.SystemColors.WindowText;
             this.txtPorcentajeIVA.Location = new System.Drawing.Point(139, 458);
-            this.txtPorcentajeIVA.MaxLength = 50;
+            this.txtPorcentajeIVA.MaxLength = 5;
             this.txtPorcentajeIVA.Name = "txtPorcentajeIVA";
             this.txtPorcentajeIVA.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.txtPorcentajeIVA.Size = new System.Drawing.Size(44, 20);
@@ -827,7 +832,7 @@
             this.txtTelefono.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtTelefono.ForeColor = System.Drawing.SystemColors.WindowText;
             this.txtTelefono.Location = new System.Drawing.Point(139, 302);
-            this.txtTelefono.MaxLength = 50;
+            this.txtTelefono.MaxLength = 20;
             this.txtTelefono.Name = "txtTelefono";
             this.txtTelefono.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.txtTelefono.Size = new System.Drawing.Size(125, 20);
@@ -855,7 +860,7 @@
             this.txtDireccion.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtDireccion.ForeColor = System.Drawing.SystemColors.WindowText;
             this.txtDireccion.Location = new System.Drawing.Point(139, 276);
-            this.txtDireccion.MaxLength = 50;
+            this.txtDireccion.MaxLength = 160;
             this.txtDireccion.Name = "txtDireccion";
             this.txtDireccion.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.txtDireccion.Size = new System.Drawing.Size(313, 20);
@@ -897,7 +902,7 @@
             this.txtIdentificacion.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtIdentificacion.ForeColor = System.Drawing.SystemColors.WindowText;
             this.txtIdentificacion.Location = new System.Drawing.Point(139, 141);
-            this.txtIdentificacion.MaxLength = 50;
+            this.txtIdentificacion.MaxLength = 20;
             this.txtIdentificacion.Name = "txtIdentificacion";
             this.txtIdentificacion.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.txtIdentificacion.Size = new System.Drawing.Size(146, 20);
@@ -925,7 +930,7 @@
             this.txtNombreComercial.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtNombreComercial.ForeColor = System.Drawing.SystemColors.WindowText;
             this.txtNombreComercial.Location = new System.Drawing.Point(139, 88);
-            this.txtNombreComercial.MaxLength = 50;
+            this.txtNombreComercial.MaxLength = 80;
             this.txtNombreComercial.Name = "txtNombreComercial";
             this.txtNombreComercial.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.txtNombreComercial.Size = new System.Drawing.Size(313, 20);

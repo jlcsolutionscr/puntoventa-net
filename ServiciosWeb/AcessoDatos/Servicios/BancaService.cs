@@ -58,10 +58,8 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 try
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(cuentaBanco.IdEmpresa);
-                    if (empresa == null)
-                        throw new Exception("La empresa asignada a la transacción no existe.");
-                    if (empresa.CierreEnEjecucion)
-                        throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     dbContext.CuentaBancoRepository.Add(cuentaBanco);
                     dbContext.Commit();
                 }
@@ -87,10 +85,8 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 try
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(cuentaBanco.IdEmpresa);
-                    if (empresa == null)
-                        throw new Exception("La empresa asignada a la transacción no existe.");
-                    if (empresa.CierreEnEjecucion)
-                        throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     dbContext.NotificarModificacion(cuentaBanco);
                     dbContext.Commit();
                 }
@@ -115,13 +111,10 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 try
                 {
                     CuentaBanco cuentaBanco = dbContext.CuentaBancoRepository.Find(intIdCuenta);
-                    if (cuentaBanco == null)
-                        throw new Exception("La cuenta bancaria por eliminar no existe.");
+                    if (cuentaBanco == null) throw new Exception("La cuenta bancaria por eliminar no existe.");
                     Empresa empresa = dbContext.EmpresaRepository.Find(cuentaBanco.IdEmpresa);
-                    if (empresa == null)
-                        throw new Exception("La empresa asignada a la transacción no existe.");
-                    if (empresa.CierreEnEjecucion)
-                        throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     dbContext.CuentaBancoRepository.Remove(cuentaBanco);
                     dbContext.Commit();
                 }
@@ -202,13 +195,10 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 try
                 {
                     CuentaBanco cuenta = dbContext.CuentaBancoRepository.Find(movimiento.IdCuenta);
-                    if (cuenta == null)
-                        throw new Exception("La cuenta bancaria asignada al movimiento no existe.");
+                    if (cuenta == null) throw new Exception("La cuenta bancaria asignada al movimiento no existe.");
                     Empresa empresa = dbContext.EmpresaRepository.Find(cuenta.IdEmpresa);
-                    if (empresa == null)
-                        throw new Exception("La empresa asignada a la transacción no existe.");
-                    if (empresa.CierreEnEjecucion)
-                        throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     TipoMovimientoBanco tipo = dbContext.TipoMovimientoBancoRepository.Find(movimiento.IdTipo);
                     if (tipo == null)
                         throw new Exception("El tipo de movimiento no existe.");
@@ -241,13 +231,10 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             try
             {
                 CuentaBanco cuenta = dbContext.CuentaBancoRepository.Find(movimiento.IdCuenta);
-                if (cuenta == null)
-                    throw new Exception("La cuenta bancaria asignada al movimiento no existe.");
+                if (cuenta == null) throw new Exception("La cuenta bancaria asignada al movimiento no existe.");
                 Empresa empresa = dbContext.EmpresaRepository.Find(cuenta.IdEmpresa);
-                if (empresa == null)
-                    throw new Exception("La empresa asignada a la transacción no existe.");
-                if (empresa.CierreEnEjecucion)
-                    throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
+                if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                 TipoMovimientoBanco tipo = dbContext.TipoMovimientoBancoRepository.Find(movimiento.IdTipo);
                 if (tipo == null)
                     throw new Exception("El tipo de movimiento no existe.");
@@ -279,13 +266,10 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 try
                 {
                     CuentaBanco cuenta = dbContext.CuentaBancoRepository.Find(movimiento.IdCuenta);
-                    if (cuenta == null)
-                        throw new Exception("La cuenta bancaria asignada al movimiento no existe.");
+                    if (cuenta == null) throw new Exception("La cuenta bancaria asignada al movimiento no existe.");
                     Empresa empresa = dbContext.EmpresaRepository.Find(cuenta.IdEmpresa);
-                    if (empresa == null)
-                        throw new Exception("La empresa asignada a la transacción no existe.");
-                    if (empresa.CierreEnEjecucion)
-                        throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     dbContext.NotificarModificacion(movimiento);
                     dbContext.Commit();
                 }
@@ -310,16 +294,12 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 try
                 {
                     MovimientoBanco movimiento = dbContext.MovimientoBancoRepository.Find(intIdMovimiento);
-                    if (movimiento == null)
-                        throw new Exception("El movimiento por eliminar no existe.");
+                    if (movimiento == null) throw new Exception("El movimiento por eliminar no existe.");
                     CuentaBanco cuenta = dbContext.CuentaBancoRepository.Find(movimiento.IdCuenta);
-                    if (cuenta == null)
-                        throw new Exception("La cuenta bancaria asignada al movimiento no existe.");
+                    if (cuenta == null) throw new Exception("La cuenta bancaria asignada al movimiento no existe.");
                     Empresa empresa = dbContext.EmpresaRepository.Find(cuenta.IdEmpresa);
-                    if (empresa == null)
-                        throw new Exception("La empresa asignada a la transacción no existe.");
-                    if (empresa.CierreEnEjecucion)
-                        throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     movimiento.Nulo = true;
                     movimiento.IdAnuladoPor = intIdUsuario;
                     dbContext.NotificarModificacion(movimiento);
@@ -346,16 +326,12 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             try
             {
                 MovimientoBanco movimiento = dbContext.MovimientoBancoRepository.Find(intIdMovimiento);
-                if (movimiento == null)
-                    throw new Exception("El movimiento por eliminar no existe.");
+                if (movimiento == null) throw new Exception("El movimiento por eliminar no existe.");
                 CuentaBanco cuenta = dbContext.CuentaBancoRepository.Find(movimiento.IdCuenta);
-                if (cuenta == null)
-                    throw new Exception("La cuenta bancaria asignada al movimiento no existe.");
+                if (cuenta == null) throw new Exception("La cuenta bancaria asignada al movimiento no existe.");
                 Empresa empresa = dbContext.EmpresaRepository.Find(cuenta.IdEmpresa);
-                if (empresa == null)
-                    throw new Exception("La empresa asignada a la transacción no existe.");
-                if (empresa.CierreEnEjecucion)
-                    throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
+                if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                 movimiento.Nulo = true;
                 movimiento.IdAnuladoPor = intIdUsuario;
                 dbContext.NotificarModificacion(movimiento);

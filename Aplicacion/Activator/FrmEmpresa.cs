@@ -11,7 +11,7 @@ using System.Web.Script.Serialization;
 using System.Windows.Forms;
 using System.Data;
 using System.Linq;
-using System.Management;
+using LeandroSoftware.Core;
 
 namespace LeandroSoftware.Activator
 {
@@ -21,6 +21,8 @@ namespace LeandroSoftware.Activator
         private DataRow objRowEquipo;
         private Empresa empresa;
         private bool bolLoading = true;
+        private bool bolLogoModificado = false;
+        private bool bolCertificadoModificado = false;
         private string strRutaCertificado;
         private JavaScriptSerializer serializer = new JavaScriptSerializer();
         private static HttpClient client = new HttpClient();
@@ -116,27 +118,18 @@ namespace LeandroSoftware.Activator
             dgvEquipos.Columns.Add(dvcUsaImpresoraImpacto);
         }
 
-        public void CargarTiposIdentificacion()
+        public async void CargarTiposIdentificacion()
         {
             RequestDTO peticion = new RequestDTO
             {
                 NombreMetodo = "ObtenerListaTipoIdentificacion",
                 DatosPeticion = ""
             };
-            Uri uri = new Uri(strServicioPuntoventaURL + "/ejecutarconsulta");
-            string jsonRequest = serializer.Serialize(peticion);
-            StringContent stringContent = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
-            Task<HttpResponseMessage> task1 = client.PostAsync(uri, stringContent);
             try
             {
-                task1.Wait();
-                if (!task1.Result.IsSuccessStatusCode)
-                {
-                    MessageBox.Show("Error: " + task1.Result.ReasonPhrase, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    Close();
-                    return;
-                }
-                ResponseDTO respuesta = serializer.Deserialize<ResponseDTO>(task1.Result.Content.ReadAsStringAsync().Result);
+                string strPeticion = new JavaScriptSerializer().Serialize(peticion);
+                string strRespuesta = await Utilitario.EjecutarConsulta(strPeticion, strServicioPuntoventaURL, "");
+                ResponseDTO respuesta = serializer.Deserialize<ResponseDTO>(strRespuesta);
                 IList<TipoIdentificacion> dsDataSet = Array.Empty<TipoIdentificacion>();
                 if (respuesta.DatosPeticion != null)
                 {
@@ -146,35 +139,25 @@ namespace LeandroSoftware.Activator
                 cboTipoIdentificacion.ValueMember = "IdTipoIdentificacion";
                 cboTipoIdentificacion.DisplayMember = "Descripcion";
             }
-            catch (AggregateException ex)
+            catch (Exception ex)
             {
-                Exception newEx = ex.Flatten();
-                MessageBox.Show("Error al consumir el servicio web de factura electrónica: " + newEx.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Error al consumir el servicio web de factura electrónica: " + ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Close();
             }
         }
 
-        public void CargarProvincias()
+        public async void CargarProvincias()
         {
             RequestDTO peticion = new RequestDTO
             {
                 NombreMetodo = "ObtenerListaProvincias",
                 DatosPeticion = ""
             };
-            Uri uri = new Uri(strServicioPuntoventaURL + "/ejecutarconsulta");
-            string jsonRequest = serializer.Serialize(peticion);
-            StringContent stringContent = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
-            Task<HttpResponseMessage> task1 = client.PostAsync(uri, stringContent);
             try
             {
-                task1.Wait();
-                if (!task1.Result.IsSuccessStatusCode)
-                {
-                    MessageBox.Show("Error: " + task1.Result.ReasonPhrase, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    Close();
-                    return;
-                }
-                ResponseDTO respuesta = serializer.Deserialize<ResponseDTO>(task1.Result.Content.ReadAsStringAsync().Result);
+                string strPeticion = new JavaScriptSerializer().Serialize(peticion);
+                string strRespuesta = await Utilitario.EjecutarConsulta(strPeticion, strServicioPuntoventaURL, "");
+                ResponseDTO respuesta = serializer.Deserialize<ResponseDTO>(strRespuesta);
                 IList<Provincia> dsDataSet = Array.Empty<Provincia>();
                 if (respuesta.DatosPeticion != null)
                 {
@@ -184,35 +167,25 @@ namespace LeandroSoftware.Activator
                 cboProvincia.ValueMember = "IdProvincia";
                 cboProvincia.DisplayMember = "Descripcion";
             }
-            catch (AggregateException ex)
+            catch (Exception ex)
             {
-                Exception newEx = ex.Flatten();
-                MessageBox.Show("Error al consumir el servicio web de factura electrónica: " + newEx.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Error al consumir el servicio web de factura electrónica: " + ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Close();
             }
         }
 
-        public void CargarCantones(int intIdProvincia)
+        public async void CargarCantones(int intIdProvincia)
         {
             RequestDTO peticion = new RequestDTO
             {
                 NombreMetodo = "ObtenerListaCantones",
                 DatosPeticion = "{IdProvincia: " + intIdProvincia + "}"
             };
-            Uri uri = new Uri(strServicioPuntoventaURL + "/ejecutarconsulta");
-            string jsonRequest = serializer.Serialize(peticion);
-            StringContent stringContent = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
-            Task<HttpResponseMessage> task1 = client.PostAsync(uri, stringContent);
             try
             {
-                task1.Wait();
-                if (!task1.Result.IsSuccessStatusCode)
-                {
-                    MessageBox.Show("Error: " + task1.Result.ReasonPhrase, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    Close();
-                    return;
-                }
-                ResponseDTO respuesta = serializer.Deserialize<ResponseDTO>(task1.Result.Content.ReadAsStringAsync().Result);
+                string strPeticion = new JavaScriptSerializer().Serialize(peticion);
+                string strRespuesta = await Utilitario.EjecutarConsulta(strPeticion, strServicioPuntoventaURL, "");
+                ResponseDTO respuesta = serializer.Deserialize<ResponseDTO>(strRespuesta);
                 IList<Canton> dsDataSet = Array.Empty<Canton>();
                 if (respuesta.DatosPeticion != null)
                 {
@@ -222,35 +195,25 @@ namespace LeandroSoftware.Activator
                 cboCanton.ValueMember = "IdCanton";
                 cboCanton.DisplayMember = "Descripcion";
             }
-            catch (AggregateException ex)
+            catch (Exception ex)
             {
-                Exception newEx = ex.Flatten();
-                MessageBox.Show("Error al consumir el servicio web de factura electrónica: " + newEx.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Error al consumir el servicio web de factura electrónica: " + ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Close();
             }
         }
 
-        public void CargarDistritos(int intIdProvincia, int intIdCanton)
+        public async void CargarDistritos(int intIdProvincia, int intIdCanton)
         {
             RequestDTO peticion = new RequestDTO
             {
                 NombreMetodo = "ObtenerListaDistritos",
                 DatosPeticion = "{IdProvincia: " + intIdProvincia + ",IdCanton: " + intIdCanton + "}"
             };
-            Uri uri = new Uri(strServicioPuntoventaURL + "/ejecutarconsulta");
-            string jsonRequest = serializer.Serialize(peticion);
-            StringContent stringContent = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
-            Task<HttpResponseMessage> task1 = client.PostAsync(uri, stringContent);
             try
             {
-                task1.Wait();
-                if (!task1.Result.IsSuccessStatusCode)
-                {
-                    MessageBox.Show("Error: " + task1.Result.ReasonPhrase, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    Close();
-                    return;
-                }
-                ResponseDTO respuesta = serializer.Deserialize<ResponseDTO>(task1.Result.Content.ReadAsStringAsync().Result);
+                string strPeticion = new JavaScriptSerializer().Serialize(peticion);
+                string strRespuesta = await Utilitario.EjecutarConsulta(strPeticion, strServicioPuntoventaURL, "");
+                ResponseDTO respuesta = serializer.Deserialize<ResponseDTO>(strRespuesta);
                 IList<Distrito> dsDataSet = Array.Empty<Distrito>();
                 if (respuesta.DatosPeticion != null)
                 {
@@ -260,35 +223,25 @@ namespace LeandroSoftware.Activator
                 cboDistrito.ValueMember = "IdDistrito";
                 cboDistrito.DisplayMember = "Descripcion";
             }
-            catch (AggregateException ex)
+            catch (Exception ex)
             {
-                Exception newEx = ex.Flatten();
-                MessageBox.Show("Error al consumir el servicio web de factura electrónica: " + newEx.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Error al consumir el servicio web de factura electrónica: " + ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Close();
             }
         }
 
-        public void CargarBarrios(int intIdProvincia, int intIdCanton, int intIdDistrito)
+        public async void CargarBarrios(int intIdProvincia, int intIdCanton, int intIdDistrito)
         {
             RequestDTO peticion = new RequestDTO
             {
                 NombreMetodo = "ObtenerListaBarrios",
                 DatosPeticion = "{IdProvincia: " + intIdProvincia + ", IdCanton: " + intIdCanton + ", IdDistrito: " + intIdDistrito + "}"
             };
-            Uri uri = new Uri(strServicioPuntoventaURL + "/ejecutarconsulta");
-            string jsonRequest = serializer.Serialize(peticion);
-            StringContent stringContent = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
-            Task<HttpResponseMessage> task1 = client.PostAsync(uri, stringContent);
             try
             {
-                task1.Wait();
-                if (!task1.Result.IsSuccessStatusCode)
-                {
-                    MessageBox.Show("Error: " + task1.Result.ReasonPhrase, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    Close();
-                    return;
-                }
-                ResponseDTO respuesta = serializer.Deserialize<ResponseDTO>(task1.Result.Content.ReadAsStringAsync().Result);
+                string strPeticion = new JavaScriptSerializer().Serialize(peticion);
+                string strRespuesta = await Utilitario.EjecutarConsulta(strPeticion, strServicioPuntoventaURL, "");
+                ResponseDTO respuesta = serializer.Deserialize<ResponseDTO>(strRespuesta);
                 IList<Barrio> dsDataSet = Array.Empty<Barrio>();
                 if (respuesta.DatosPeticion != null)
                 {
@@ -298,15 +251,14 @@ namespace LeandroSoftware.Activator
                 cboBarrio.ValueMember = "IdBarrio";
                 cboBarrio.DisplayMember = "Descripcion";
             }
-            catch (AggregateException ex)
+            catch (Exception ex)
             {
-                Exception newEx = ex.Flatten();
-                MessageBox.Show("Error al consumir el servicio web de factura electrónica: " + newEx.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Error al consumir el servicio web de factura electrónica: " + ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Close();
             }
         }
 
-        private void FrmEmpresa_Load(object sender, EventArgs e)
+        private async void FrmEmpresa_Load(object sender, EventArgs e)
         {
             try
             {
@@ -325,83 +277,69 @@ namespace LeandroSoftware.Activator
                         NombreMetodo = "ConsultarEmpresa",
                         DatosPeticion = intIdEmpresa.ToString()
                     };
-
-                    Uri uri = new Uri(strServicioPuntoventaURL + "/ejecutarconsulta");
-                    string jsonRequest = serializer.Serialize(peticion);
-                    StringContent stringContent = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
-                    Task<HttpResponseMessage> task1 = client.PostAsync(uri, stringContent);
                     try
                     {
-                        task1.Wait();
-                        if (!task1.Result.IsSuccessStatusCode)
+                        string strPeticion = new JavaScriptSerializer().Serialize(peticion);
+                        string strRespuesta = await Utilitario.EjecutarConsulta(strPeticion, strServicioPuntoventaURL, "");
+                        ResponseDTO respuesta = serializer.Deserialize<ResponseDTO>(strRespuesta);
+                        if (respuesta.DatosPeticion != null)
                         {
-                            MessageBox.Show("Error: " + task1.Result.ReasonPhrase, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            Close();
+                            empresa = serializer.Deserialize<Empresa>(respuesta.DatosPeticion);
                         }
-                        else
+                        txtIdEmpresa.Text = empresa.IdEmpresa.ToString();
+                        txtNombreEmpresa.Text = empresa.NombreEmpresa;
+                        txtNombreComercial.Text = empresa.NombreComercial;
+                        cboTipoIdentificacion.SelectedValue = empresa.IdTipoIdentificacion;
+                        txtIdentificacion.Text = empresa.Identificacion;
+                        cboProvincia.SelectedValue = empresa.IdProvincia;
+                        cboCanton.SelectedValue = empresa.IdCanton;
+                        cboDistrito.SelectedValue = empresa.IdDistrito;
+                        cboBarrio.SelectedValue = empresa.IdBarrio;
+                        txtDireccion.Text = empresa.Direccion;
+                        txtTelefono.Text = empresa.Telefono;
+                        txtCorreoNotificacion.Text = empresa.CorreoNotificacion;
+                        txtNombreCertificado.Text = empresa.NombreCertificado;
+                        txtPinCertificado.Text = empresa.PinCertificado;
+                        txtUsuarioATV.Text = empresa.UsuarioHacienda;
+                        txtClaveATV.Text = empresa.ClaveHacienda;
+                        txtPorcentajeIVA.Text = empresa.PorcentajeIVA.ToString();
+                        txtPorcentajeInstalacion.Text = empresa.PorcentajeInstalacion.ToString();
+                        txtLineasFactura.Text = empresa.LineasPorFactura.ToString();
+                        txtCodigoServInst.Text = empresa.CodigoServicioInst.ToString();
+                        if (empresa.FechaVence != null) txtFecha.Text = DateTime.Parse(empresa.FechaVence.ToString()).ToString("dd-MM-yyyy");
+                        txtUltimoDocFE.Text = empresa.UltimoDocFE.ToString();
+                        txtUltimoDocNC.Text = empresa.UltimoDocNC.ToString();
+                        txtUltimoDocND.Text = empresa.UltimoDocND.ToString();
+                        txtUltimoDocTE.Text = empresa.UltimoDocTE.ToString();
+                        txtUltimoDocMR.Text = empresa.UltimoDocMR.ToString();
+                        chkContabiliza.Checked = empresa.Contabiliza;
+                        chkIncluyeInsumosEnFactura.Checked = empresa.IncluyeInsumosEnFactura;
+                        chkAutoCompleta.Checked = empresa.AutoCompletaProducto;
+                        chkRespaldoEnLinea.Checked = empresa.RespaldoEnLinea;
+                        chkModificaDesc.Checked = empresa.ModificaDescProducto;
+                        chkCierrePorTurnos.Checked = empresa.CierrePorTurnos;
+                        chkDesgloseInst.Checked = empresa.DesglosaServicioInst;
+                        chkFacturaElectronica.Checked = empresa.FacturaElectronica;
+                        if (empresa.Logotipo != null)
                         {
-                            string results = task1.Result.Content.ReadAsStringAsync().Result;
-                            ResponseDTO respuesta = serializer.Deserialize<ResponseDTO>(results);
-                            if (respuesta.DatosPeticion != null)
+                            try
                             {
-                                empresa = serializer.Deserialize<Empresa>(respuesta.DatosPeticion);
+                                using (MemoryStream ms = new MemoryStream(empresa.Logotipo))
+                                    picLogo.Image = Image.FromStream(ms);
                             }
-                            txtIdEmpresa.Text = empresa.IdEmpresa.ToString();
-                            txtNombreEmpresa.Text = empresa.NombreEmpresa;
-                            txtNombreComercial.Text = empresa.NombreComercial;
-                            cboTipoIdentificacion.SelectedValue = empresa.IdTipoIdentificacion;
-                            txtIdentificacion.Text = empresa.Identificacion;
-                            cboProvincia.SelectedValue = empresa.IdProvincia;
-                            cboCanton.SelectedValue = empresa.IdCanton;
-                            cboDistrito.SelectedValue = empresa.IdDistrito;
-                            cboBarrio.SelectedValue = empresa.IdBarrio;
-                            txtDireccion.Text = empresa.Direccion;
-                            txtTelefono.Text = empresa.Telefono;
-                            txtCorreoNotificacion.Text = empresa.CorreoNotificacion;
-                            txtNombreCertificado.Text = empresa.NombreCertificado;
-                            txtPinCertificado.Text = empresa.PinCertificado;
-                            txtUsuarioATV.Text = empresa.UsuarioHacienda;
-                            txtClaveATV.Text = empresa.ClaveHacienda;
-                            txtPorcentajeIVA.Text = empresa.PorcentajeIVA.ToString();
-                            txtPorcentajeInstalacion.Text = empresa.PorcentajeInstalacion.ToString();
-                            txtLineasFactura.Text = empresa.LineasPorFactura.ToString();
-                            txtCodigoServInst.Text = empresa.CodigoServicioInst.ToString();
-                            if (empresa.FechaVence != null) txtFecha.Text = DateTime.Parse(empresa.FechaVence.ToString()).ToString("dd-MM-yyyy");
-                            txtUltimoDocFE.Text = empresa.UltimoDocFE.ToString();
-                            txtUltimoDocNC.Text = empresa.UltimoDocNC.ToString();
-                            txtUltimoDocND.Text = empresa.UltimoDocND.ToString();
-                            txtUltimoDocTE.Text = empresa.UltimoDocTE.ToString();
-                            txtUltimoDocMR.Text = empresa.UltimoDocMR.ToString();
-                            chkContabiliza.Checked = empresa.Contabiliza;
-                            chkIncluyeInsumosEnFactura.Checked = empresa.IncluyeInsumosEnFactura;
-                            chkAutoCompleta.Checked = empresa.AutoCompletaProducto;
-                            chkRespaldoEnLinea.Checked = empresa.RespaldoEnLinea;
-                            chkModificaDesc.Checked = empresa.ModificaDescProducto;
-                            chkCierrePorTurnos.Checked = empresa.CierrePorTurnos;
-                            chkDesgloseInst.Checked = empresa.DesglosaServicioInst;
-                            chkFacturaElectronica.Checked = empresa.PermiteFacturar;
-                            if (empresa.Logotipo != null)
-                            {
-                                try
-                                {
-                                    using (MemoryStream ms = new MemoryStream(empresa.Logotipo))
-                                        picLogo.Image = Image.FromStream(ms);
-                                }
-                                catch (Exception)
-                                {
-                                    picLogo.Image = null;
-                                }
-                            }
-                            else
+                            catch (Exception)
                             {
                                 picLogo.Image = null;
                             }
-                            CargarDetalleEquipos(empresa.DetalleRegistro.ToList());
                         }
+                        else
+                        {
+                            picLogo.Image = null;
+                        }
+                        CargarDetalleEquipos(empresa.DetalleRegistro.ToList());
                     }
-                    catch (AggregateException ex)
+                    catch (Exception ex)
                     {
-                        Exception newEx = ex.Flatten();
                         MessageBox.Show("Error al consumir el servicio web de factura electrónica: " + ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         Close();
                     }
@@ -434,7 +372,7 @@ namespace LeandroSoftware.Activator
             Close();
         }
 
-        private void cmdUpdate_Click(object sender, EventArgs e)
+        private async void cmdUpdate_Click(object sender, EventArgs e)
         {
             if (!ValidarCampos())
             {
@@ -476,17 +414,7 @@ namespace LeandroSoftware.Activator
                 empresa.ModificaDescProducto = chkModificaDesc.Checked;
                 empresa.CierrePorTurnos = chkCierrePorTurnos.Checked;
                 empresa.DesglosaServicioInst = chkDesgloseInst.Checked;
-                empresa.PermiteFacturar = chkFacturaElectronica.Checked;
-                if (picLogo.Image != null)
-                {
-                    MemoryStream stream = new MemoryStream();
-                    picLogo.Image.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
-                    empresa.Logotipo = stream.ToArray();
-                }
-                else
-                {
-                    empresa.Logotipo = null;
-                }
+                empresa.FacturaElectronica = chkFacturaElectronica.Checked;
                 empresa.DetalleRegistro.Clear();
                 foreach (DataRow row in dtEquipos.Rows)
                 {
@@ -499,63 +427,74 @@ namespace LeandroSoftware.Activator
                 }
                 string strDatos = serializer.Serialize(empresa);
                 RequestDTO peticion = new RequestDTO();
-                Uri uri;
-                if (txtIdEmpresa.Text == "")
-                {
-                    peticion.NombreMetodo = "AgregarEmpresa";
-                    uri = new Uri(strServicioPuntoventaURL + "/ejecutarconsulta");
-                }
-                else
-                {
-                    peticion.NombreMetodo = "ActualizarEmpresa";
-                    uri = new Uri(strServicioPuntoventaURL + "/ejecutar");
-                }
+                peticion.NombreMetodo = txtIdEmpresa.Text == "" ? "AgregarEmpresa" : "ActualizarEmpresa";
                 peticion.DatosPeticion = strDatos;
-                string jsonRequest = serializer.Serialize(peticion);
-                StringContent stringContent = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
-                Task<HttpResponseMessage> task1 = client.PostAsync(uri, stringContent);
                 try
                 {
-                    task1.Wait();
-                    if (!task1.Result.IsSuccessStatusCode)
-                    {
-                        MessageBox.Show("Error: " + task1.Result.ReasonPhrase, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
+                    string strPeticion = new JavaScriptSerializer().Serialize(peticion);
+                    string strRespuesta = null;
                     if (txtIdEmpresa.Text == "")
                     {
-                        string results = task1.Result.Content.ReadAsStringAsync().Result;
-                        ResponseDTO respuesta = serializer.Deserialize<ResponseDTO>(results);
+                        strRespuesta = await Utilitario.EjecutarConsulta(strPeticion, strServicioPuntoventaURL, "");
+                        ResponseDTO respuesta = serializer.Deserialize<ResponseDTO>(strRespuesta);
                         txtIdEmpresa.Text = respuesta.DatosPeticion;
+                    }
+                    else
+                    {
+                        await Utilitario.Ejecutar(strPeticion, strServicioPuntoventaURL, "");
                     }
                        
                 }
-                catch (AggregateException ex)
+                catch (Exception ex)
                 {
-                    Exception newEx = ex.Flatten();
-                    MessageBox.Show("Error al actualizar el registro: " + newEx.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Error al actualizar el registro: " + ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                if (bolLogoModificado && picLogo.Image != null)
+                {
+                    byte[] bytLogotipo;
+                    using (MemoryStream stream = new MemoryStream())
+                    {
+                        picLogo.Image.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
+                        bytLogotipo = stream.ToArray();
+                    }
+                    peticion = new RequestDTO
+                    {
+                        NombreMetodo = "ActualizarLogoEmpresa",
+                        DatosPeticion = "{IdEmpresa: " + txtIdEmpresa.Text + ", Logotipo: '" + Convert.ToBase64String(bytLogotipo) + "'}"
+                    };
+                    try
+                    {
+                        string strPeticion = new JavaScriptSerializer().Serialize(peticion);
+                        await Utilitario.Ejecutar(strPeticion, strServicioPuntoventaURL, "");
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Error al actualizar el registro: " + ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+                if (bolCertificadoModificado && txtNombreCertificado.Text != "")
+                {
+                    byte[] bytCertificado = File.ReadAllBytes(strRutaCertificado);
+                    peticion = new RequestDTO
+                    {
+                        NombreMetodo = "ActualizarCertificadoEmpresa",
+                        DatosPeticion = "{IdEmpresa: " + txtIdEmpresa.Text + ", Certificado: '" + Convert.ToBase64String(bytCertificado) + "'}"
+                    };
+                    try
+                    {
+                        string strPeticion = new JavaScriptSerializer().Serialize(peticion);
+                        await Utilitario.Ejecutar(strPeticion, strServicioPuntoventaURL, "");
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Error al actualizar el registro: " + ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
                 }
                 Close();
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error al actualizar el registro" + ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-        }
-
-        private void btnCargarLogo_Click(object sender, EventArgs e)
-        {
-            ofdAbrirDocumento.DefaultExt = "png";
-            ofdAbrirDocumento.Filter = "PNG Image Files|*.png;";
-            DialogResult result = ofdAbrirDocumento.ShowDialog();
-            if (result == DialogResult.OK)
-            {
-                try
-                {
-                    picLogo.Image = Image.FromFile(ofdAbrirDocumento.FileName);
-                } catch (Exception)
-                {
-                    MessageBox.Show("Error al intentar cargar el archivo. Verifique que sea un archivo de imagen válido. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
             }
         }
 
@@ -594,12 +533,7 @@ namespace LeandroSoftware.Activator
 
         private void CmdConsultar_Click(object sender, EventArgs e)
         {
-            ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT * FROM Win32_PhysicalMedia");
-            foreach (ManagementObject wmi_HD in searcher.Get())
-            {
-                if (wmi_HD["SerialNumber"] != null)
-                    txtEquipo.Text = wmi_HD["SerialNumber"].ToString();
-            }
+            txtEquipo.Text = Utilitario.ObtenerSerialEquipo();
         }
 
         private void btnInsertarDetalle_Click(object sender, EventArgs e)
@@ -613,7 +547,7 @@ namespace LeandroSoftware.Activator
                 dtEquipos.Rows.Remove(dtEquipos.Rows.Find(dgvEquipos.CurrentRow.Cells[0].Value));
         }
 
-        private void btnCargarLogo_Click_1(object sender, EventArgs e)
+        private void btnCargarLogo_Click(object sender, EventArgs e)
         {
             ofdAbrirDocumento.DefaultExt = "png";
             ofdAbrirDocumento.Filter = "PNG Image Files|*.png;";
@@ -623,6 +557,7 @@ namespace LeandroSoftware.Activator
                 try
                 {
                     picLogo.Image = Image.FromFile(ofdAbrirDocumento.FileName);
+                    bolLogoModificado = true;
                 }
                 catch (Exception)
                 {
@@ -642,6 +577,7 @@ namespace LeandroSoftware.Activator
                 {
                     strRutaCertificado = ofdAbrirDocumento.FileName;
                     txtNombreCertificado.Text = Path.GetFileName(strRutaCertificado);
+                    bolCertificadoModificado = true;
                 }
                 catch (Exception)
                 {

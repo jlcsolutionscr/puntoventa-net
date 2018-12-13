@@ -62,12 +62,28 @@ namespace LeandroSoftware.AccesoDatos.ServicioWCF
         {
             try
             {
-                if (datos.NombreMetodo == "ActualizarEmpresa")
+                JObject parametrosJO;
+                int intIdEmpresa;
+                switch (datos.NombreMetodo)
                 {
-                    Empresa empresa = null;
-                    JavaScriptSerializer serializer = new JavaScriptSerializer();
-                    empresa = serializer.Deserialize<Empresa>(datos.DatosPeticion);
-                    servicioMantenimiento.ActualizarEmpresa(empresa);
+                    case "ActualizarEmpresa":
+                        Empresa empresa = null;
+                        JavaScriptSerializer serializer = new JavaScriptSerializer();
+                        empresa = serializer.Deserialize<Empresa>(datos.DatosPeticion);
+                        servicioMantenimiento.ActualizarEmpresa(empresa);
+                        break;
+                    case "ActualizarLogoEmpresa":
+                        parametrosJO = JObject.Parse(datos.DatosPeticion);
+                        intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
+                        string strLogotipo = parametrosJO.Property("Logotipo").Value.ToString();
+                        servicioMantenimiento.ActualizarLogoEmpresa(intIdEmpresa, strLogotipo);
+                        break;
+                    case "ActualizarCertificadoEmpresa":
+                        parametrosJO = JObject.Parse(datos.DatosPeticion);
+                        intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
+                        string strCertificado = parametrosJO.Property("Certificado").Value.ToString();
+                        servicioMantenimiento.ActualizarCertificadoEmpresa(intIdEmpresa, strCertificado);
+                        break;
                 }
             }
             catch (Exception ex)
