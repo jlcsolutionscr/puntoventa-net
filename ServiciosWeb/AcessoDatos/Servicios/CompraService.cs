@@ -705,10 +705,12 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                         throw new Exception("La empresa asignada a la transacción no existe.");
                     if (ordenCompra.Aplicado == true)
                         throw new BusinessException("La orden de servicio no puede ser modificada porque ya genero un registro de compra.");
-                    OrdenCompra ordenCompraPersistente = dbContext.OrdenRepository.Include("DetalleOrdenCompra").FirstOrDefault(x => x.IdOrdenCompra == ordenCompra.IdOrdenCompra);
-                    dbContext.ApplyCurrentValues(ordenCompraPersistente, ordenCompra);
-                    dbContext.DetalleOrdenRepository.RemoveRange(ordenCompraPersistente.DetalleOrdenCompra);
-                    dbContext.DetalleOrdenRepository.AddRange(ordenCompra.DetalleOrdenCompra);
+                    List<DetalleOrdenCompra> listadoDetalleAnterior = dbContext.DetalleOrdenCompraRepository.Where(x => x.IdOrdenCompra == ordenCompra.IdOrdenCompra).ToList();
+                    foreach (DetalleOrdenCompra detalle in listadoDetalleAnterior)
+                        dbContext.NotificarEliminacion(detalle);
+                    dbContext.NotificarModificacion(ordenCompra);
+                    foreach (DetalleOrdenCompra detalle in ordenCompra.DetalleOrdenCompra)
+                        dbContext.DetalleOrdenCompraRepository.Add(detalle);
                     dbContext.Commit();
                 }
                 catch (BusinessException ex)

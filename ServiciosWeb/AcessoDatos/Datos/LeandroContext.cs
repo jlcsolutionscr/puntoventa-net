@@ -42,10 +42,10 @@ namespace LeandroSoftware.AccesoDatos.Datos
         DbSet<DetalleDevolucionCliente> DetalleDevolucionClienteRepository { get; set; }
         DbSet<DetalleDevolucionProveedor> DetalleDevolucionProveedorRepository { get; set; }
         DbSet<DetalleFactura> DetalleFacturaRepository { get; set; }
-        DbSet<DetalleOrdenCompra> DetalleOrdenRepository { get; set; }
+        DbSet<DetalleOrdenCompra> DetalleOrdenCompraRepository { get; set; }
         DbSet<DetalleOrdenServicio> DetalleOrdenServicioRepository { get; set; }
         DbSet<DetalleProforma> DetalleProformaRepository { get; set; }
-        DbSet<DetalleRegistro> DetalleEmpresaRepository { get; set; }
+        DbSet<DetalleRegistro> DetalleRegistroRepository { get; set; }
         DbSet<DetalleTraslado> DetalleTrasladoRepository { get; set; }
         DbSet<DevolucionCliente> DevolucionClienteRepository { get; set; }
         DbSet<DevolucionProveedor> DevolucionProveedorRepository { get; set; }
@@ -86,7 +86,6 @@ namespace LeandroSoftware.AccesoDatos.Datos
         DbSet<Usuario> UsuarioRepository { get; set; }
         DbSet<Vendedor> VendedorRepository { get; set; }
 
-        void ApplyCurrentValues<TEntity>(TEntity original, TEntity current) where TEntity : class;
         void NotificarModificacion<TEntity>(TEntity entidad) where TEntity : class;
         void NotificarEliminacion<TEntity>(TEntity entidad) where TEntity : class;
         DbContextTransaction GetDatabaseTransaction();
@@ -144,10 +143,10 @@ namespace LeandroSoftware.AccesoDatos.Datos
         public DbSet<DetalleDevolucionCliente> DetalleDevolucionClienteRepository { get; set; }
         public DbSet<DetalleDevolucionProveedor> DetalleDevolucionProveedorRepository { get; set; }
         public DbSet<DetalleFactura> DetalleFacturaRepository { get; set; }
-        public DbSet<DetalleOrdenCompra> DetalleOrdenRepository { get; set; }
+        public DbSet<DetalleOrdenCompra> DetalleOrdenCompraRepository { get; set; }
         public DbSet<DetalleOrdenServicio> DetalleOrdenServicioRepository { get; set; }
         public DbSet<DetalleProforma> DetalleProformaRepository { get; set; }
-        public DbSet<DetalleRegistro> DetalleEmpresaRepository { get; set; }
+        public DbSet<DetalleRegistro> DetalleRegistroRepository { get; set; }
         public DbSet<DetalleTraslado> DetalleTrasladoRepository { get; set; }
         public DbSet<DevolucionCliente> DevolucionClienteRepository { get; set; }
         public DbSet<DevolucionProveedor> DevolucionProveedorRepository { get; set; }
@@ -188,11 +187,6 @@ namespace LeandroSoftware.AccesoDatos.Datos
         public DbSet<Vendedor> VendedorRepository { get; set; }
         public DbSet<Usuario> UsuarioRepository { get; set; }
 
-        public void ApplyCurrentValues<TEntity>(TEntity original, TEntity entidad) where TEntity : class
-        {
-            Entry<TEntity>(original).CurrentValues.SetValues(entidad);
-            Entry<TEntity>(original).State = EntityState.Modified;
-        }
         public void NotificarModificacion<TEntity>(TEntity entidad) where TEntity : class
         {
             Entry<TEntity>(entidad).State = EntityState.Modified;

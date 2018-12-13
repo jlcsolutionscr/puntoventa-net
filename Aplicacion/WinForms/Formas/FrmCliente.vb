@@ -128,6 +128,7 @@ Public Class FrmCliente
         datos.CorreoElectronico = txtCorreoElectronico.Text
         datos.IdVendedor = cboVendedor.SelectedValue
         datos.IdTipoPrecio = cboIdTipoPrecio.SelectedValue
+        datos.Barrio = Nothing
         Try
             If datos.IdCliente = 0 Then
                 servicioFacturacion.AgregarCliente(datos)

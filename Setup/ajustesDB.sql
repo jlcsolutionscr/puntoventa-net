@@ -22,9 +22,10 @@
   CierrePorTurnos BIT NOT NULL,
   CierreEnEjecucion BIT NOT NULL,
   FacturaElectronica BIT NOT NULL,
-  ServicioFacturaElectronicaURL VARCHAR(500) NULL,
   Certificado BLOB NULL,
+  NombreCertificado VARCHAR(100) NULL,
   PinCertificado VARCHAR(4) NULL,
+  FechaVence DATETIME NULL,
   UltimoDocFE INTEGER NOT NULL,
   UltimoDocND INTEGER NOT NULL,
   UltimoDocNC INTEGER NOT NULL,
@@ -34,6 +35,12 @@
 );
 
 ALTER TABLE empresa CHANGE Nombreempresa Nombreempresa VARCHAR(80) NOT NULL;
+
+CREATE TABLE TipoIdentificacion (
+  IdTipoIdentificacion INTEGER NOT NULL,
+  Descripcion VARCHAR(20) NOT NULL,
+  PRIMARY KEY(IdTipoIdentificacion)
+);
 
 CREATE TABLE detalleregistro (
   Idempresa INTEGER NOT NULL,

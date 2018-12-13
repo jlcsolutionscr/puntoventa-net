@@ -935,10 +935,12 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                         throw new Exception("La empresa asignada a la transacción no existe.");
                     if (proforma.Aplicado == true)
                         throw new BusinessException("La proforma no puede ser modificada porque ya fue facturada.");
-                    Proforma proformaPersistente = dbContext.ProformaRepository.Include("DetalleProforma").FirstOrDefault(x => x.IdProforma == proforma.IdProforma);
-                    dbContext.ApplyCurrentValues(proformaPersistente, proforma);
-                    dbContext.DetalleProformaRepository.RemoveRange(proformaPersistente.DetalleProforma);
-                    dbContext.DetalleProformaRepository.AddRange(proforma.DetalleProforma);
+                    List<DetalleProforma> listadoDetalleAnterior = dbContext.DetalleProformaRepository.Where(x => x.IdProforma == proforma.IdProforma).ToList();
+                    foreach (DetalleProforma detalle in listadoDetalleAnterior)
+                        dbContext.NotificarEliminacion(detalle);
+                    dbContext.NotificarModificacion(proforma);
+                    foreach (DetalleProforma detalle in proforma.DetalleProforma)
+                        dbContext.DetalleProformaRepository.Add(detalle);
                     dbContext.Commit();
                 }
                 catch (BusinessException ex)
@@ -1090,10 +1092,12 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                         throw new Exception("La empresa asignada a la transacción no existe.");
                     if (ordenServicio.Aplicado == true)
                         throw new BusinessException("La orden de servicio no puede ser modificada porque ya fue facturada.");
-                    OrdenServicio ordenServicioPersistente = dbContext.OrdenServicioRepository.Include("DetalleOrdenServicio").FirstOrDefault(x => x.IdOrden == ordenServicio.IdOrden);
-                    dbContext.ApplyCurrentValues(ordenServicioPersistente, ordenServicio);
-                    dbContext.DetalleOrdenServicioRepository.RemoveRange(ordenServicioPersistente.DetalleOrdenServicio);
-                    dbContext.DetalleOrdenServicioRepository.AddRange(ordenServicio.DetalleOrdenServicio);
+                    List<DetalleOrdenServicio> listadoDetalleAnterior = dbContext.DetalleOrdenServicioRepository.Where(x => x.IdOrden == ordenServicio.IdOrden).ToList();
+                    foreach (DetalleOrdenServicio detalle in listadoDetalleAnterior)
+                        dbContext.NotificarEliminacion(detalle);
+                    dbContext.NotificarModificacion(ordenServicio);
+                    foreach (DetalleOrdenServicio detalle in ordenServicio.DetalleOrdenServicio)
+                        dbContext.DetalleOrdenServicioRepository.Add(detalle);
                     dbContext.Commit();
                 }
                 catch (BusinessException ex)

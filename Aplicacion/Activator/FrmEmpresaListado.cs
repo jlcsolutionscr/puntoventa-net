@@ -29,13 +29,13 @@ namespace LeandroSoftware.Activator
 
         private void CargarListadoEmpresa()
         {
-            RequestDTO request = new RequestDTO
+            RequestDTO peticion = new RequestDTO
             {
                 NombreMetodo = "ObtenerListaEmpresas",
                 DatosPeticion = ""
             };
             Uri uri = new Uri(strServicioPuntoventaURL + "/ejecutarconsulta");
-            string jsonRequest = new JavaScriptSerializer().Serialize(request);
+            string jsonRequest = new JavaScriptSerializer().Serialize(peticion);
             StringContent stringContent = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
             Task<HttpResponseMessage> task1 = client.PostAsync(uri, stringContent);
             try
@@ -51,11 +51,7 @@ namespace LeandroSoftware.Activator
                 IList<Empresa> dsDataSet = Array.Empty<Empresa>();
                 if (respuesta.DatosPeticion != null)
                 {
-                    BinaryFormatter serializer = new BinaryFormatter();
-                    using (var ms = new MemoryStream(Convert.FromBase64String(respuesta.DatosPeticion)))
-                    {
-                        dsDataSet = (List<Empresa>)serializer.Deserialize(ms);
-                    }
+                    dsDataSet = new JavaScriptSerializer().Deserialize<List<Empresa>>(respuesta.DatosPeticion); 
                 }
                 cboEmpresa.DataSource = dsDataSet;
             }
@@ -79,7 +75,7 @@ namespace LeandroSoftware.Activator
         {
             empresaForm = new FrmEmpresa();
             empresaForm.strServicioPuntoventaURL = strServicioPuntoventaURL;
-            empresaForm.bolLoading = false;
+            empresaForm.bolEditing = false;
             empresaForm.ShowDialog();
             CargarListadoEmpresa();
         }
@@ -88,7 +84,7 @@ namespace LeandroSoftware.Activator
         {
             empresaForm = new FrmEmpresa();
             empresaForm.strServicioPuntoventaURL = strServicioPuntoventaURL;
-            empresaForm.bolLoading = true;
+            empresaForm.bolEditing = true;
             empresaForm.intIdEmpresa = (int)cboEmpresa.SelectedValue;
             empresaForm.ShowDialog();
         }

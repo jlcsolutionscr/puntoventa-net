@@ -147,6 +147,8 @@ namespace LeandroSoftware.AccesoDatos.ServicioWCF
                         break;
                     case "ConsultarEmpresa":
                         empresa = servicioMantenimiento.ObtenerEmpresa(int.Parse(datos.DatosPeticion));
+                        foreach (DetalleRegistro detalle in empresa.DetalleRegistro)
+                            detalle.Empresa = null;
                         respuesta.ElementoSimple = false;
                         if (empresa != null)
                             respuesta.DatosPeticion = serializer.Serialize(empresa);

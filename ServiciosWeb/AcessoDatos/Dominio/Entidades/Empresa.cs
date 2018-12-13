@@ -43,9 +43,9 @@ namespace LeandroSoftware.AccesoDatos.Dominio.Entidades
         public bool CierrePorTurnos { get; set; }
         public bool CierreEnEjecucion { get; set; }
         public bool FacturaElectronica { get; set; }
-        public string ServicioFacturaElectronicaURL { get; set; }
         public bool PermiteFacturar { get; set; }
         public byte[] Certificado { get; set; }
+        public string NombreCertificado { get; set; }
         public string PinCertificado { get; set; }
         public string UsuarioHacienda { get; set; }
         public string ClaveHacienda { get; set; }

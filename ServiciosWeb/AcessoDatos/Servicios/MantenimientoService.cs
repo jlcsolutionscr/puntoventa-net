@@ -147,7 +147,12 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             {
                 try
                 {
+                    List<DetalleRegistro> listadoDetalleAnterior = dbContext.DetalleRegistroRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa).ToList();
+                    foreach (DetalleRegistro detalle in listadoDetalleAnterior)
+                        dbContext.NotificarEliminacion(detalle);
                     dbContext.NotificarModificacion(empresa);
+                    foreach (DetalleRegistro detalle in empresa.DetalleRegistro)
+                        dbContext.DetalleRegistroRepository.Add(detalle);
                     dbContext.Commit();
                 }
                 catch (Exception ex)
@@ -281,10 +286,12 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     if (empresa == null)
                         throw new Exception("La empresa asignada a la transacción no existe.");
                     usuario.Clave = Utilitario.EncriptarDatos(key, usuario.ClaveSinEncriptar);
-                    Usuario usuarioPersistente = dbContext.UsuarioRepository.Include("RolePorUsuario").FirstOrDefault(x => x.IdUsuario == usuario.IdUsuario);
-                    dbContext.ApplyCurrentValues(usuarioPersistente, usuario);
-                    dbContext.RolePorUsuarioRepository.RemoveRange(usuarioPersistente.RolePorUsuario);
-                    dbContext.RolePorUsuarioRepository.AddRange(usuario.RolePorUsuario);
+                    List<RolePorUsuario> listadoDetalleAnterior = dbContext.RolePorUsuarioRepository.Where(x => x.IdUsuario == usuario.IdUsuario).ToList();
+                    foreach (RolePorUsuario detalle in listadoDetalleAnterior)
+                        dbContext.NotificarEliminacion(detalle);
+                    dbContext.NotificarModificacion(usuario);
+                    foreach (RolePorUsuario detalle in usuario.RolePorUsuario)
+                        dbContext.RolePorUsuarioRepository.Add(detalle);
                     dbContext.Commit();
                 }
                 catch (Exception ex)
