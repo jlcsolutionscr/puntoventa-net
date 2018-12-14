@@ -5,8 +5,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 using System.Windows.Forms;
 using System.Data;
@@ -129,12 +127,9 @@ namespace LeandroSoftware.Activator
             {
                 string strPeticion = new JavaScriptSerializer().Serialize(peticion);
                 string strRespuesta = await Utilitario.EjecutarConsulta(strPeticion, strServicioPuntoventaURL, "");
-                ResponseDTO respuesta = serializer.Deserialize<ResponseDTO>(strRespuesta);
+                strRespuesta = serializer.Deserialize<string>(strRespuesta);
                 IList<TipoIdentificacion> dsDataSet = Array.Empty<TipoIdentificacion>();
-                if (respuesta.DatosPeticion != null)
-                {
-                    dsDataSet = serializer.Deserialize<List<TipoIdentificacion>>(respuesta.DatosPeticion);
-                }
+                dsDataSet = serializer.Deserialize<List<TipoIdentificacion>>(strRespuesta);
                 cboTipoIdentificacion.DataSource = dsDataSet;
                 cboTipoIdentificacion.ValueMember = "IdTipoIdentificacion";
                 cboTipoIdentificacion.DisplayMember = "Descripcion";
@@ -157,12 +152,9 @@ namespace LeandroSoftware.Activator
             {
                 string strPeticion = new JavaScriptSerializer().Serialize(peticion);
                 string strRespuesta = await Utilitario.EjecutarConsulta(strPeticion, strServicioPuntoventaURL, "");
-                ResponseDTO respuesta = serializer.Deserialize<ResponseDTO>(strRespuesta);
+                strRespuesta = serializer.Deserialize<string>(strRespuesta);
                 IList<Provincia> dsDataSet = Array.Empty<Provincia>();
-                if (respuesta.DatosPeticion != null)
-                {
-                    dsDataSet = serializer.Deserialize<List<Provincia>>(respuesta.DatosPeticion);
-                }
+                dsDataSet = serializer.Deserialize<List<Provincia>>(strRespuesta);
                 cboProvincia.DataSource = dsDataSet;
                 cboProvincia.ValueMember = "IdProvincia";
                 cboProvincia.DisplayMember = "Descripcion";
@@ -185,12 +177,9 @@ namespace LeandroSoftware.Activator
             {
                 string strPeticion = new JavaScriptSerializer().Serialize(peticion);
                 string strRespuesta = await Utilitario.EjecutarConsulta(strPeticion, strServicioPuntoventaURL, "");
-                ResponseDTO respuesta = serializer.Deserialize<ResponseDTO>(strRespuesta);
+                strRespuesta = serializer.Deserialize<string>(strRespuesta);
                 IList<Canton> dsDataSet = Array.Empty<Canton>();
-                if (respuesta.DatosPeticion != null)
-                {
-                    dsDataSet = serializer.Deserialize<List<Canton>>(respuesta.DatosPeticion);
-                }
+                dsDataSet = serializer.Deserialize<List<Canton>>(strRespuesta);
                 cboCanton.DataSource = dsDataSet;
                 cboCanton.ValueMember = "IdCanton";
                 cboCanton.DisplayMember = "Descripcion";
@@ -213,12 +202,9 @@ namespace LeandroSoftware.Activator
             {
                 string strPeticion = new JavaScriptSerializer().Serialize(peticion);
                 string strRespuesta = await Utilitario.EjecutarConsulta(strPeticion, strServicioPuntoventaURL, "");
-                ResponseDTO respuesta = serializer.Deserialize<ResponseDTO>(strRespuesta);
+                strRespuesta = serializer.Deserialize<string>(strRespuesta);
                 IList<Distrito> dsDataSet = Array.Empty<Distrito>();
-                if (respuesta.DatosPeticion != null)
-                {
-                    dsDataSet = serializer.Deserialize<List<Distrito>>(respuesta.DatosPeticion);
-                }
+                dsDataSet = serializer.Deserialize<List<Distrito>>(strRespuesta);
                 cboDistrito.DataSource = dsDataSet;
                 cboDistrito.ValueMember = "IdDistrito";
                 cboDistrito.DisplayMember = "Descripcion";
@@ -241,12 +227,9 @@ namespace LeandroSoftware.Activator
             {
                 string strPeticion = new JavaScriptSerializer().Serialize(peticion);
                 string strRespuesta = await Utilitario.EjecutarConsulta(strPeticion, strServicioPuntoventaURL, "");
-                ResponseDTO respuesta = serializer.Deserialize<ResponseDTO>(strRespuesta);
+                strRespuesta = serializer.Deserialize<string>(strRespuesta);
                 IList<Barrio> dsDataSet = Array.Empty<Barrio>();
-                if (respuesta.DatosPeticion != null)
-                {
-                    dsDataSet = serializer.Deserialize<List<Barrio>>(respuesta.DatosPeticion);
-                }
+                dsDataSet = serializer.Deserialize<List<Barrio>>(strRespuesta);
                 cboBarrio.DataSource = dsDataSet;
                 cboBarrio.ValueMember = "IdBarrio";
                 cboBarrio.DisplayMember = "Descripcion";
@@ -274,18 +257,15 @@ namespace LeandroSoftware.Activator
                 {
                     RequestDTO peticion = new RequestDTO
                     {
-                        NombreMetodo = "ConsultarEmpresa",
-                        DatosPeticion = intIdEmpresa.ToString()
+                        NombreMetodo = "ObtenerEmpresa",
+                        DatosPeticion = "{IdEmpresa: " + intIdEmpresa + "}"
                     };
                     try
                     {
                         string strPeticion = new JavaScriptSerializer().Serialize(peticion);
                         string strRespuesta = await Utilitario.EjecutarConsulta(strPeticion, strServicioPuntoventaURL, "");
-                        ResponseDTO respuesta = serializer.Deserialize<ResponseDTO>(strRespuesta);
-                        if (respuesta.DatosPeticion != null)
-                        {
-                            empresa = serializer.Deserialize<Empresa>(respuesta.DatosPeticion);
-                        }
+                        strRespuesta = serializer.Deserialize<string>(strRespuesta);
+                        empresa = serializer.Deserialize<Empresa>(strRespuesta);
                         txtIdEmpresa.Text = empresa.IdEmpresa.ToString();
                         txtNombreEmpresa.Text = empresa.NombreEmpresa;
                         txtNombreComercial.Text = empresa.NombreComercial;
@@ -431,13 +411,13 @@ namespace LeandroSoftware.Activator
                 peticion.DatosPeticion = strDatos;
                 try
                 {
-                    string strPeticion = new JavaScriptSerializer().Serialize(peticion);
+                    string strPeticion = serializer.Serialize(peticion);
                     string strRespuesta = null;
                     if (txtIdEmpresa.Text == "")
                     {
                         strRespuesta = await Utilitario.EjecutarConsulta(strPeticion, strServicioPuntoventaURL, "");
-                        ResponseDTO respuesta = serializer.Deserialize<ResponseDTO>(strRespuesta);
-                        txtIdEmpresa.Text = respuesta.DatosPeticion;
+                        strRespuesta = new JavaScriptSerializer().Deserialize<string>(strRespuesta);
+                        txtIdEmpresa.Text = strRespuesta;
                     }
                     else
                     {

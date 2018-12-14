@@ -66,7 +66,7 @@ Public Class FrmDetalleDocumentoElectronico
         dgvDatos.Refresh()
     End Sub
 
-    Private Async Sub ValidarCantidadClientes()
+    Private Sub ObtenerCantidadDocumentosProcesados()
         Try
             intTotalDocumentos = servicioFacturacion.ObtenerTotalDocumentosElectronicosProcesados(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
         Catch ex As Exception
@@ -126,7 +126,7 @@ Public Class FrmDetalleDocumentoElectronico
         rtxDetalleRespuesta.Visible = False
         EstablecerPropiedadesDataGridView()
         picLoader.Visible = True
-        ValidarCantidadClientes()
+        ObtenerCantidadDocumentosProcesados()
         intIndiceDePagina = 1
         ActualizarDatos(intIndiceDePagina)
         picLoader.Visible = False

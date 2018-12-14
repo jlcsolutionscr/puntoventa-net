@@ -1,4 +1,6 @@
-﻿using LeandroSoftware.AccesoDatos.TiposDatos;
+﻿using LeandroSoftware.AccesoDatos.Dominio.Entidades;
+using LeandroSoftware.AccesoDatos.TiposDatos;
+using LeandroSoftware.Core;
 using log4net;
 using System;
 using System.Collections.Generic;
@@ -27,10 +29,10 @@ namespace LeandroSoftware.AccesoDatos.ClientePruebas
                 int idEmpresa = 0;
                 while (idEmpresa == 0)
                 {
-                    List<EmpresaDTO> empresaLista = obtenerListadoEmpresas();
-                    foreach (EmpresaDTO empresa in empresaLista)
+                    List<Empresa> empresaLista = ObtenerListadoEmpresas();
+                    foreach (Empresa empresa in empresaLista)
                     {
-                        Console.WriteLine("id: " + empresa.IdEmpresa + " Clave: " + empresa.NombreEmpresa);
+                        Console.WriteLine("Id: " + empresa.IdEmpresa + " Nombre: " + empresa.NombreComercial);
                     }
                     Console.WriteLine("Ingrese el Id de la empresa a consultar:");
                     string strIdEmpresa = Console.ReadLine();
@@ -53,8 +55,8 @@ namespace LeandroSoftware.AccesoDatos.ClientePruebas
                     {
                         try
                         {
-                            List<DocumentoElectronicoDTO> documentoLista = obtenerListadoDocumentos(idEmpresa);
-                            foreach (DocumentoElectronicoDTO doc in documentoLista)
+                            List<DocumentoElectronico> documentoLista = ObtenerListaDocumentosElectronicosEnProceso(idEmpresa);
+                            foreach (DocumentoElectronico doc in documentoLista)
                             {
                                 Console.WriteLine("id: " + doc.IdDocumento + " Clave: " + doc.ClaveNumerica + " Estado: " + doc.EstadoEnvio);
                             }
@@ -71,7 +73,7 @@ namespace LeandroSoftware.AccesoDatos.ClientePruebas
                             }
                             if (idDoc != "S")
                             {
-                                DocumentoElectronicoDTO documento = documentoLista.Where(x => x.IdDocumento == idDocumento).FirstOrDefault();
+                                DocumentoElectronico documento = documentoLista.Where(x => x.IdDocumento == idDocumento).FirstOrDefault();
                                 if (documento != null)
                                 {
                                     if (documento.EstadoEnvio == "aceptado")
@@ -80,26 +82,20 @@ namespace LeandroSoftware.AccesoDatos.ClientePruebas
                                         string strSiNo = Console.ReadLine();
                                         if (strSiNo == "S")
                                         {
-                                            enviarNotificacion(documento);
+                                            EnviarNotificacion(documento.IdDocumento);
                                         }
                                     }
                                     if (documento.EstadoEnvio == "rechazado")
                                     {
                                         Console.WriteLine("El documento fue RECHAZADO y posee la siguiente respuesta de hacienda:");
-                                        if (documento.RespuestaHacienda == null)
+                                        DocumentoElectronico consulta = ObtenerDocumentoElectronico(documento.IdDocumento);
+                                        XmlSerializer serializer = new XmlSerializer(typeof(MensajeHacienda));
+                                        MensajeHacienda mensajeRespuesta;
+                                        using (MemoryStream ms = new MemoryStream(consulta.Respuesta))
                                         {
-                                            DocumentoElectronicoDTO consulta = consultarEstadoDocumento(documento);
-                                            byte[] bytRespuesta = Convert.FromBase64String(consulta.RespuestaHacienda);
-                                            XmlSerializer serializer = new XmlSerializer(typeof(MensajeHacienda));
-                                            MensajeHacienda mensajeRespuesta;
-                                            using (MemoryStream ms = new MemoryStream(bytRespuesta))
-                                            {
-                                                mensajeRespuesta = (MensajeHacienda)serializer.Deserialize(ms);
-                                            }
-                                            Console.WriteLine(mensajeRespuesta.DetalleMensaje);
+                                            mensajeRespuesta = (MensajeHacienda)serializer.Deserialize(ms);
                                         }
-                                        else
-                                            Console.WriteLine(documento.RespuestaHacienda);
+                                        Console.WriteLine(mensajeRespuesta.DetalleMensaje);
                                     }
                                     if (documento.EstadoEnvio == "enviado")
                                     {
@@ -107,45 +103,41 @@ namespace LeandroSoftware.AccesoDatos.ClientePruebas
                                         string strOpcion = Console.ReadLine();
                                         if (strOpcion == "S")
                                         {
-                                            DocumentoElectronicoDTO consulta = consultarEstadoDocumento(documento);
+                                            DocumentoElectronico consulta = ObtenerRespuestaDocumentoElectronicoEnviado(documento.IdDocumento);
                                             Console.WriteLine("El documento posee un estado: " + consulta.EstadoEnvio);
-                                            if (consulta.RespuestaHacienda != null)
+                                            if (consulta.Respuesta != null)
                                             {
-                                                if (documento.EstadoEnvio == "enviado")
+                                                if (consulta.EstadoEnvio == "aceptado" || consulta.EstadoEnvio == "rechazado")
                                                 {
-                                                    if (consulta.EstadoEnvio == "aceptado" || consulta.EstadoEnvio == "rechazado")
+                                                    XmlDocument xmlRespuesta = new XmlDocument();
+                                                    xmlRespuesta.LoadXml(Encoding.UTF8.GetString(consulta.Respuesta));
+                                                    Console.WriteLine("Respuesta de hacienda: " + xmlRespuesta.GetElementsByTagName("DetalleMensaje").Item(0).InnerText);
+                                                    Console.WriteLine("");
+                                                    Console.WriteLine("Desea proceder con la aplicación de la respuesta de Hacienda (S/N):");
+                                                    string strSiNo = Console.ReadLine();
+                                                    if (strSiNo == "S")
                                                     {
-                                                        XmlDocument xmlRespuesta = new XmlDocument();
-                                                        byte[] bytRespuesta = Convert.FromBase64String(consulta.RespuestaHacienda);
-                                                        xmlRespuesta.LoadXml(Encoding.UTF8.GetString(bytRespuesta));
-                                                        Console.WriteLine("Respuesta de hacienda: " + xmlRespuesta.GetElementsByTagName("DetalleMensaje").Item(0).InnerText);
+                                                        RespuestaHaciendaDTO respuesta = new RespuestaHaciendaDTO();
+                                                        if (documento.EsMensajeReceptor == "S")
+                                                            respuesta.Clave = documento.ClaveNumerica + "-" + documento.Consecutivo;
+                                                        else
+                                                            respuesta.Clave = documento.ClaveNumerica;
+                                                        respuesta.Fecha = documento.Fecha.ToString("yyyy-MM-dd'T'HH:mm:ssZ");
+                                                        respuesta.IndEstado = consulta.EstadoEnvio;
+                                                        respuesta.RespuestaXml = Convert.ToBase64String(consulta.Respuesta);
+                                                        try
+                                                        {
+                                                            ProcesarRespuesta(respuesta);
+                                                            Console.WriteLine("Procesado satisfactoriamente. . .");
+                                                        }
+                                                        catch (Exception ex)
+                                                        {
+                                                            Console.WriteLine("Error en el procesamiento de la respuesta de Hacienda: " + ex.Message);
+                                                        }
                                                     }
                                                     else
                                                     {
-                                                        Console.WriteLine("Respuesta de hacienda: " + consulta.RespuestaHacienda);
-                                                    }
-                                                    Console.WriteLine("");
-                                                    if (documento.EstadoEnvio != consulta.EstadoEnvio)
-                                                    {
-                                                        Console.WriteLine("Desea proceder con la aplicación de la respuesta de Hacienda (S/N):");
-                                                        string strSiNo = Console.ReadLine();
-                                                        if (strSiNo == "S")
-                                                        {
-                                                            RespuestaHaciendaDTO respuesta = new RespuestaHaciendaDTO();
-                                                            if (documento.EsMensajeReceptor == "S")
-                                                                respuesta.Clave = documento.ClaveNumerica + "-" + documento.Consecutivo;
-                                                            else
-                                                                respuesta.Clave = documento.ClaveNumerica;
-                                                            respuesta.Fecha = documento.FechaEmision.ToString("yyyy-MM-dd'T'HH:mm:ssZ");
-                                                            respuesta.IndEstado = consulta.EstadoEnvio;
-                                                            respuesta.RespuestaXml = consulta.RespuestaHacienda;
-                                                            procesarRespuesta(respuesta);
-                                                            Console.WriteLine("Procesado satisfactoriamente. . .");
-                                                        }
-                                                        else
-                                                        {
-                                                            Console.WriteLine("Procesamiento abortado por el usuario. . .");
-                                                        }
+                                                        Console.WriteLine("Procesamiento abortado por el usuario. . .");
                                                     }
                                                 }
                                             }
@@ -157,7 +149,17 @@ namespace LeandroSoftware.AccesoDatos.ClientePruebas
                                         Console.WriteLine("El documento se encuentra pendiente de enviar a Hacienda. Desea realizar el envío del documento a Hacienda? (S/N)");
                                         string strOpcion = Console.ReadLine();
                                         if (strOpcion == "S")
-                                            enviarDocumentoElectronico(documento);
+                                        {
+                                            try
+                                            {
+                                                EnviarDocumentoElectronico(documento.IdDocumento);
+                                                Console.WriteLine("Procesado satisfactoriamente. . .");
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                Console.WriteLine("Error en el procesamiento de la respuesta de Hacienda: " + ex.Message);
+                                            }
+                                        } 
                                     }
                                 }
                                 else
@@ -182,76 +184,142 @@ namespace LeandroSoftware.AccesoDatos.ClientePruebas
             }
         }
 
-        private static List<EmpresaDTO> obtenerListadoEmpresas()
+        private static List<Empresa> ObtenerListadoEmpresas()
         {
-            Uri uri = new Uri(appSettings["ServicioFacturaElectronicaURL"] + "/consultarlistadoempresas");
-            Task<HttpResponseMessage> task1 = client.GetAsync(uri);
+            List<Empresa> listado = new List<Empresa>();
             try
             {
-                task1.Wait();
-                if (!task1.Result.IsSuccessStatusCode)
+                RequestDTO peticion = new RequestDTO
                 {
-                    throw new Exception("Error al consumir el servicio web de factura electrónica: " + task1.Result.ReasonPhrase);
+                    NombreMetodo = "ObtenerListaEmpresas",
+                    DatosPeticion = ""
+                };
+                string strPeticion = new JavaScriptSerializer().Serialize(peticion);
+                string strRespuesta = Utilitario.EjecutarConsulta(strPeticion, appSettings["ServicioPuntoventaURL"].ToString(), "").Result;
+                ResponseDTO respuesta = new JavaScriptSerializer().Deserialize<ResponseDTO>(strRespuesta);
+                if (respuesta.DatosPeticion != null)
+                {
+                    listado = new JavaScriptSerializer().Deserialize<List<Empresa>>(respuesta.DatosPeticion);
                 }
-                string results = task1.Result.Content.ReadAsStringAsync().Result;
-                JavaScriptSerializer json_serializer = new JavaScriptSerializer();
-                List<EmpresaDTO> listado = json_serializer.Deserialize<List<EmpresaDTO>>(results);
                 return listado;
             }
-            catch (AggregateException ex)
+            catch (Exception ex)
             {
-                log.Error("Error consultado la lista de empresas: ", ex.Flatten());
-                throw ex.Flatten();
+                log.Error("Error consultado la lista de empresas: ", ex);
+                throw ex;
             }
         }
 
-        private static List<DocumentoElectronicoDTO> obtenerListadoDocumentos(int intIdEmpresa)
+        private static List<DocumentoElectronico> ObtenerListaDocumentosElectronicosEnProceso(int intIdEmpresa)
         {
-            Uri uri = new Uri(appSettings["ServicioFacturaElectronicaURL"] + "/consultarlistadodocumentos?empresa=" + intIdEmpresa + "&estado=");
-            Task<HttpResponseMessage> task1 = client.GetAsync(uri);
+            List<DocumentoElectronico> listado = new List<DocumentoElectronico>();
             try
             {
-                task1.Wait();
-                if (!task1.Result.IsSuccessStatusCode)
+                RequestDTO peticion = new RequestDTO
                 {
-                    throw new Exception("Error al consumir el servicio web de factura electrónica: " + task1.Result.ReasonPhrase);
+                    NombreMetodo = "ObtenerListaDocumentosElectronicosPendientes",
+                    DatosPeticion = "{IdEmpresa: " + intIdEmpresa + "}"
+                };
+                string strPeticion = new JavaScriptSerializer().Serialize(peticion);
+                string strRespuesta = Utilitario.EjecutarConsulta(strPeticion, appSettings["ServicioPuntoventaURL"].ToString(), "").Result;
+                ResponseDTO respuesta = new JavaScriptSerializer().Deserialize<ResponseDTO>(strRespuesta);
+                if (respuesta.DatosPeticion != null)
+                {
+                    List<DocumentoElectronico> listadoPendientes = new JavaScriptSerializer().Deserialize<List<DocumentoElectronico>>(respuesta.DatosPeticion);
+                    foreach (DocumentoElectronico doc in listadoPendientes)
+                        listado.Add(doc);
                 }
-                string results = task1.Result.Content.ReadAsStringAsync().Result;
-                JavaScriptSerializer json_serializer = new JavaScriptSerializer();
-                List<DocumentoElectronicoDTO> listado = json_serializer.Deserialize<List<DocumentoElectronicoDTO>>(results);
+                peticion = new RequestDTO
+                {
+                    NombreMetodo = "ObtenerListaDocumentosElectronicosEnviados",
+                    DatosPeticion = "{IdEmpresa: " + intIdEmpresa + "}"
+                };
+                strPeticion = new JavaScriptSerializer().Serialize(peticion);
+                strRespuesta = Utilitario.EjecutarConsulta(strPeticion, appSettings["ServicioPuntoventaURL"].ToString(), "").Result;
+                respuesta = new JavaScriptSerializer().Deserialize<ResponseDTO>(strRespuesta);
+                if (respuesta.DatosPeticion != null)
+                {
+                    List<DocumentoElectronico> listadoEnviados = new JavaScriptSerializer().Deserialize<List<DocumentoElectronico>>(respuesta.DatosPeticion);
+                    foreach (DocumentoElectronico doc in listadoEnviados)
+                        listado.Add(doc);
+                }
                 return listado;
             }
-            catch (AggregateException ex)
+            catch (Exception ex)
             {
-                log.Error("Error consultado la lista de documentos: ", ex.Flatten());
-                throw ex.Flatten();
+                log.Error("Error consultado la lista de documentos: ", ex);
+                throw ex;
             }
         }
 
-        private static DocumentoElectronicoDTO consultarEstadoDocumento(DocumentoElectronicoDTO datos)
+        private static void EnviarDocumentoElectronico(int intIdDocumento)
         {
-            Uri uri = new Uri(appSettings["ServicioFacturaElectronicaURL"] + "/consultardocumentoelectronico?empresa=" + datos.IdEmpresa + "&clave=" + datos.ClaveNumerica + "&consecutivo=" + datos.Consecutivo);
-            Task<HttpResponseMessage> task1 = client.GetAsync(uri);
             try
             {
-                task1.Wait();
-                if (!task1.Result.IsSuccessStatusCode)
+                RequestDTO peticion = new RequestDTO
                 {
-                    throw new Exception("Error al consumir el servicio web de factura electrónica: " + task1.Result.ReasonPhrase);
-                }
-                string results = task1.Result.Content.ReadAsStringAsync().Result;
-                JavaScriptSerializer json_serializer = new JavaScriptSerializer();
-                DocumentoElectronicoDTO respuesta = json_serializer.Deserialize<DocumentoElectronicoDTO>(results);
-                return respuesta;
+                    NombreMetodo = "EnviarDocumentoElectronicoPendiente",
+                    DatosPeticion = "{IdDocumento: " + intIdDocumento + "}"
+                };
+                string strPeticion = new JavaScriptSerializer().Serialize(peticion);
+                string strRespuesta = Utilitario.EjecutarConsulta(strPeticion, appSettings["ServicioPuntoventaURL"].ToString(), "").Result;
             }
-            catch (AggregateException ex)
+            catch (Exception ex)
             {
-                log.Error("Error consultado el documento con clave: " + datos.ClaveNumerica, ex.Flatten());
-                throw ex.Flatten();
+                log.Error("Error enviando el documento con ID: " + intIdDocumento, ex);
+                throw ex;
             }
         }
 
-        private static void procesarRespuesta(RespuestaHaciendaDTO respuesta)
+        private static DocumentoElectronico ObtenerDocumentoElectronico(int intIdDocumento)
+        {
+            DocumentoElectronico documento = null;
+            try
+            {
+                RequestDTO peticion = new RequestDTO
+                {
+                    NombreMetodo = "ObtenerDocumentoElectronico",
+                    DatosPeticion = "{IdDocumento: " + intIdDocumento + "}"
+                };
+                string strPeticion = new JavaScriptSerializer().Serialize(peticion);
+                string strRespuesta = Utilitario.EjecutarConsulta(strPeticion, appSettings["ServicioPuntoventaURL"].ToString(), "").Result;
+                ResponseDTO respuesta = new JavaScriptSerializer().Deserialize<ResponseDTO>(strRespuesta);
+                if (respuesta.DatosPeticion != null)
+                    documento = new JavaScriptSerializer().Deserialize<DocumentoElectronico>(respuesta.DatosPeticion);
+                return documento;
+            }
+            catch (Exception ex)
+            {
+                log.Error("Error consultado el documento con ID: " + intIdDocumento, ex);
+                throw ex;
+            }
+        }
+
+        private static DocumentoElectronico ObtenerRespuestaDocumentoElectronicoEnviado(int intIdDocumento)
+        {
+            DocumentoElectronico documento = null;
+            try
+            {
+                RequestDTO peticion = new RequestDTO
+                {
+                    NombreMetodo = "ObtenerRespuestaDocumentoElectronicoEnviado",
+                    DatosPeticion = "{IdDocumento: " + intIdDocumento + "}"
+                };
+                string strPeticion = new JavaScriptSerializer().Serialize(peticion);
+                string strRespuesta = Utilitario.EjecutarConsulta(strPeticion, appSettings["ServicioPuntoventaURL"].ToString(), "").Result;
+                ResponseDTO respuesta = new JavaScriptSerializer().Deserialize<ResponseDTO>(strRespuesta);
+                if (respuesta.DatosPeticion != null)
+                    documento = new JavaScriptSerializer().Deserialize<DocumentoElectronico>(respuesta.DatosPeticion);
+                return documento;
+            }
+            catch (Exception ex)
+            {
+                log.Error("Error obteniendo respuesta de Hacienda para el documento con ID: " + intIdDocumento, ex);
+                throw ex;
+            }
+        }
+
+        private static void ProcesarRespuesta(RespuestaHaciendaDTO respuesta)
         {
             string jsonRequest = "{\"clave\": \"" + respuesta.Clave + "\"," +
                 "\"fecha\": \"" + respuesta.Fecha + "\"," +
@@ -259,7 +327,7 @@ namespace LeandroSoftware.AccesoDatos.ClientePruebas
                 "\"respuesta-xml\": \"" + respuesta.RespuestaXml + "\"}";
 
             StringContent stringContent = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
-            Uri uri = new Uri(appSettings["ServicioFacturaElectronicaURL"] + "/recibirrespuestahacienda");
+            Uri uri = new Uri(appSettings["ServicioPuntoventaURL"] + "/recibirrespuestahacienda");
             Task<HttpResponseMessage> task1 = client.PostAsync(uri, stringContent);
             try
             {
@@ -276,44 +344,22 @@ namespace LeandroSoftware.AccesoDatos.ClientePruebas
             }
         }
 
-        private static void enviarDocumentoElectronico(DocumentoElectronicoDTO datos)
+        private static void EnviarNotificacion(int intIdDocumento)
         {
-            string jsonRequest = new JavaScriptSerializer().Serialize(datos);
-            StringContent stringContent = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
-            Uri uri = new Uri(appSettings["ServicioFacturaElectronicaURL"] + "/enviardocumentoelectronico");
-            Task<HttpResponseMessage> task1 = client.PostAsync(uri, stringContent);
             try
             {
-                task1.Wait();
-                if (!task1.Result.IsSuccessStatusCode)
+                RequestDTO peticion = new RequestDTO
                 {
-                    string strErrorMessage = task1.Result.Content.ReadAsStringAsync().Result.Replace("\"", "");
-                    throw new Exception("Error al consumir el servicio web de factura electrónica: " + strErrorMessage);
-                }
+                    NombreMetodo = "EnviarNotificacionDocumentoElectronico",
+                    DatosPeticion = "{IdDocumento: " + intIdDocumento + "}"
+                };
+                string strPeticion = new JavaScriptSerializer().Serialize(peticion);
+                Utilitario.Ejecutar(strPeticion, appSettings["ServicioPuntoventaURL"].ToString(), "").Wait();
             }
-            catch (AggregateException ex)
+            catch (Exception ex)
             {
-                log.Error("Error enviando el documento con clave: " + datos.ClaveNumerica, ex.Flatten());
-                throw ex.Flatten();
-            }
-        }
-
-        private static void enviarNotificacion(DocumentoElectronicoDTO datos)
-        {
-            Uri uri = new Uri(appSettings["ServicioFacturaElectronicaURL"] + "/enviarnotificacion?empresa=" + datos.IdEmpresa + "&clave=" + datos.ClaveNumerica + "&consecutivo=" + datos.Consecutivo);
-            Task<HttpResponseMessage> task1 = client.GetAsync(uri);
-            try
-            {
-                task1.Wait();
-                if (!task1.Result.IsSuccessStatusCode)
-                {
-                    throw new Exception("Error al consumir el servicio web de factura electrónica: " + task1.Result.ReasonPhrase);
-                }
-            }
-            catch (AggregateException ex)
-            {
-                log.Error("Error enviando la notificación para el documento con clave: " + datos.ClaveNumerica, ex.Flatten());
-                throw ex.Flatten();
+                log.Error("Error enviando la notificación para el documento con ID: " + intIdDocumento, ex);
+                throw ex;
             }
         }
     }

@@ -695,7 +695,7 @@ Public Class FrmFactura
         If txtIdFactura.Text <> "" Then
             If MessageBox.Show("Desea anular este registro?", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
                 Try
-                    servicioFacturacion.AnularFactura(txtIdFactura.Text, FrmMenuPrincipal.usuarioGlobal.IdUsuario, FrmMenuPrincipal.intSucursal, FrmMenuPrincipal.intTerminal)
+                    servicioFacturacion.AnularFactura(txtIdFactura.Text, FrmMenuPrincipal.usuarioGlobal.IdUsuario, FrmMenuPrincipal.intSucursal, FrmMenuPrincipal.intTerminal, FrmMenuPrincipal.datosConfig)
                 Catch ex As Exception
                     MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
@@ -976,7 +976,7 @@ Public Class FrmFactura
                 factura.DesglosePagoFactura.Add(desglosePago)
             Next
             Try
-                factura = servicioFacturacion.AgregarFactura(factura, FrmMenuPrincipal.intSucursal, FrmMenuPrincipal.intTerminal)
+                factura = servicioFacturacion.AgregarFactura(factura, FrmMenuPrincipal.intSucursal, FrmMenuPrincipal.intTerminal, FrmMenuPrincipal.datosConfig)
                 txtIdFactura.Text = factura.IdFactura
             Catch ex As Exception
                 txtIdFactura.Text = ""

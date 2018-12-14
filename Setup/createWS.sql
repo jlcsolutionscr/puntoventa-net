@@ -52,7 +52,7 @@ CREATE TABLE tipodecambiodolar (
 
 CREATE TABLE padron (
   Identificacion VARCHAR(9) NOT NULL,
-  IdPronvincia INTEGER NOT NULL,
+  IdProvincia INTEGER NOT NULL,
   IdCanton INTEGER NOT NULL,
   IdDistrito INTEGER NOT NULL,
   Nombre VARCHAR(100) NOT NULL,
@@ -108,6 +108,8 @@ CREATE TABLE documentoelectronico (
   CorreoNotificacion VARCHAR(200) NOT NULL,
   PRIMARY KEY(IdDocumento),
   INDEX (ClaveNumerica),
+  INDEX (ClaveNumerica, Consecutivo),
+  INDEX (EstadoEnvio),
   FOREIGN KEY(IdEmpresa)
     REFERENCES Empresa(IdEmpresa)
       ON DELETE RESTRICT

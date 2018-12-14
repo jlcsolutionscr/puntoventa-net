@@ -20,7 +20,7 @@ Public Class FrmActualizarClave
     Private Sub CmdAceptar_Click(sender As Object, e As EventArgs) Handles CmdAceptar.Click
         If TxtClave1.Text = TxtClave2.Text Then
             Try
-                FrmMenuPrincipal.usuarioGlobal = servicioMantenimiento.ActualizarClaveUsuario(FrmMenuPrincipal.usuarioGlobal.IdUsuario, TxtClave1.Text, FrmMenuPrincipal.strAppThumptPrint)
+                FrmMenuPrincipal.usuarioGlobal = servicioMantenimiento.ActualizarClaveUsuario(FrmMenuPrincipal.usuarioGlobal.IdUsuario, TxtClave1.Text, FrmMenuPrincipal.strThumbprint)
                 MessageBox.Show("Transacción completa exitósamente.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 Close()
             Catch ex As Exception

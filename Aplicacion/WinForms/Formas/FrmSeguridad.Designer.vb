@@ -39,7 +39,7 @@ Partial Class FrmSeguridad
         Me.CmdCancelar.Cursor = System.Windows.Forms.Cursors.Default
         Me.CmdCancelar.DialogResult = System.Windows.Forms.DialogResult.Cancel
         Me.CmdCancelar.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.CmdCancelar.Location = New System.Drawing.Point(152, 107)
+        Me.CmdCancelar.Location = New System.Drawing.Point(152, 110)
         Me.CmdCancelar.Name = "CmdCancelar"
         Me.CmdCancelar.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.CmdCancelar.Size = New System.Drawing.Size(81, 25)
@@ -53,7 +53,7 @@ Partial Class FrmSeguridad
         Me.CmdAceptar.BackColor = System.Drawing.SystemColors.ButtonHighlight
         Me.CmdAceptar.Cursor = System.Windows.Forms.Cursors.Default
         Me.CmdAceptar.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.CmdAceptar.Location = New System.Drawing.Point(58, 107)
+        Me.CmdAceptar.Location = New System.Drawing.Point(58, 110)
         Me.CmdAceptar.Name = "CmdAceptar"
         Me.CmdAceptar.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.CmdAceptar.Size = New System.Drawing.Size(81, 25)
@@ -102,7 +102,7 @@ Partial Class FrmSeguridad
         Me.LblClave.Size = New System.Drawing.Size(65, 17)
         Me.LblClave.TabIndex = 5
         Me.LblClave.Text = "Contraseña"
-        Me.LblClave.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.LblClave.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'LblUsuario
         '
@@ -115,7 +115,7 @@ Partial Class FrmSeguridad
         Me.LblUsuario.Size = New System.Drawing.Size(65, 17)
         Me.LblUsuario.TabIndex = 4
         Me.LblUsuario.Text = "Usuario"
-        Me.LblUsuario.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.LblUsuario.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'txtIdentificacion
         '
@@ -125,9 +125,8 @@ Partial Class FrmSeguridad
         Me.txtIdentificacion.ForeColor = System.Drawing.SystemColors.WindowText
         Me.txtIdentificacion.ImeMode = System.Windows.Forms.ImeMode.Disable
         Me.txtIdentificacion.Location = New System.Drawing.Point(120, 73)
-        Me.txtIdentificacion.MaxLength = 0
+        Me.txtIdentificacion.MaxLength = 12
         Me.txtIdentificacion.Name = "txtIdentificacion"
-        Me.txtIdentificacion.PasswordChar = Global.Microsoft.VisualBasic.ChrW(42)
         Me.txtIdentificacion.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtIdentificacion.Size = New System.Drawing.Size(129, 20)
         Me.txtIdentificacion.TabIndex = 6
@@ -137,13 +136,13 @@ Partial Class FrmSeguridad
         Me.Label1.BackColor = System.Drawing.Color.Transparent
         Me.Label1.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label1.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label1.Location = New System.Drawing.Point(48, 73)
+        Me.Label1.Location = New System.Drawing.Point(40, 73)
         Me.Label1.Name = "Label1"
         Me.Label1.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label1.Size = New System.Drawing.Size(65, 17)
+        Me.Label1.Size = New System.Drawing.Size(73, 17)
         Me.Label1.TabIndex = 7
         Me.Label1.Text = "Identificación"
-        Me.Label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.Label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'FrmSeguridad
         '
@@ -152,7 +151,7 @@ Partial Class FrmSeguridad
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.CancelButton = Me.CmdCancelar
-        Me.ClientSize = New System.Drawing.Size(288, 155)
+        Me.ClientSize = New System.Drawing.Size(288, 153)
         Me.ControlBox = False
         Me.Controls.Add(Me.txtIdentificacion)
         Me.Controls.Add(Me.Label1)

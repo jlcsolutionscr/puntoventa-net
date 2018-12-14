@@ -97,7 +97,7 @@ Public Class FrmUsuario
         CargarCombos()
         If intIdUsuario > 0 Then
             Try
-                datos = servicioMantenimiento.ObtenerUsuario(intIdUsuario, FrmMenuPrincipal.strAppThumptPrint)
+                datos = servicioMantenimiento.ObtenerUsuario(intIdUsuario, FrmMenuPrincipal.strThumbprint)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                 Close()
@@ -152,10 +152,10 @@ Public Class FrmUsuario
         Next
         Try
             If datos.IdUsuario = 0 Then
-                datos = servicioMantenimiento.AgregarUsuario(datos, FrmMenuPrincipal.strAppThumptPrint)
+                datos = servicioMantenimiento.AgregarUsuario(datos, FrmMenuPrincipal.strThumbprint)
                 txtIdUsuario.Text = datos.IdUsuario
             Else
-                servicioMantenimiento.ActualizarUsuario(datos, FrmMenuPrincipal.strAppThumptPrint)
+                servicioMantenimiento.ActualizarUsuario(datos, FrmMenuPrincipal.strThumbprint)
             End If
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)

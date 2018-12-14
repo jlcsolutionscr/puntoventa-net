@@ -146,7 +146,11 @@ Public Class FrmCliente
 
     Private Sub Identificacion_Validating(ByVal sender As Object, ByVal e As EventArgs) Handles txtIdentificacion.Validated
         If txtIdCliente.Text = "" And txtIdentificacion.Text <> "" Then
-            Dim cliente As Cliente = servicioFacturacion.ValidaIdentificacionCliente(FrmMenuPrincipal.empresaGlobal.IdEmpresa, txtIdentificacion.Text)
+            Dim cliente As Cliente = Nothing
+            Try
+                cliente = servicioFacturacion.ValidaIdentificacionCliente(FrmMenuPrincipal.empresaGlobal.IdEmpresa, txtIdentificacion.Text)
+            Catch ex As Exception
+            End Try
             If (cliente IsNot Nothing) Then
                 If (cliente.IdCliente > 0) Then
                     MessageBox.Show("La identificación ingresada ya se encuentra registrada en la base de datos de clientes del sistema.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)

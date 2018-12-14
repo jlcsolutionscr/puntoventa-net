@@ -44,10 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Credenciales.cs" />
     <Compile Include="DatosConfiguracion.cs" />
-    <Compile Include="DocumentoElectronicoDTO.cs" />
-    <Compile Include="EmpresaDTO.cs" />
     <Compile Include="TipoDocumento.cs" />
     <Compile Include="RequestDTO.cs" />
     <Compile Include="FacturaElectronica.cs" />
@@ -57,7 +54,6 @@
     <Compile Include="NotaDebitoElectronica.cs" />
     <Compile Include="ObtenerValoresCodificados.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ResponseDTO.cs" />
     <Compile Include="RespuestaHaciendaDTO.cs" />
     <Compile Include="Signature.cs" />
     <Compile Include="TiqueteElectronico.cs" />

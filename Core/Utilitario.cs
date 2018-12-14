@@ -18,6 +18,8 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Management;
 using System.ServiceModel.Web;
+using System.ServiceModel;
+using System.Net;
 
 namespace LeandroSoftware.Core
 {
@@ -26,14 +28,14 @@ namespace LeandroSoftware.Core
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private static HttpClient httpClient = new HttpClient();
 
-        public static string VerificarCertificadoPorNombre(string key)
+        public static bool VerificarCertificado(string strThumbprint)
         {
-            string strThumbPrint = null;
+            bool bolCertificadoValido = false;
             try
             {
                 X509Store store = new X509Store(StoreName.Root, StoreLocation.LocalMachine);
                 store.Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly);
-                X509Certificate2Collection certs = store.Certificates.Find(X509FindType.FindBySubjectName, key, true);
+                X509Certificate2Collection certs = store.Certificates.Find(X509FindType.FindByThumbprint, strThumbprint, true);
                 store.Close();
                 if (certs.Count == 0)
                 {
@@ -45,21 +47,20 @@ namespace LeandroSoftware.Core
                     {
                         if (!cert.HasPrivateKey)
                             throw new Exception("El certificado con la llave utilizada por el sistema no posee la llave privada requerida. Por favor verificar.");
-                        strThumbPrint = cert.Thumbprint;
-                        break;
+                        bolCertificadoValido = true;
                     }
                 }
                 else
                 {
-                    throw new Exception("Existe más de un certificado con la huella digital: " + key + ". Por favor verificar.");
+                    throw new Exception("Existe más de un certificado con la huella digital: " + strThumbprint + ". Por favor verificar.");
                 }
             }
             catch (Exception ex)
             {
                 log.Error("Error cargando el certificado:", ex);
-                throw new Exception("Error al cargar la configuración del sistema. Por favor contacte a su proveedor. . .");
+                bolCertificadoValido = false;
             }
-            return strThumbPrint;
+            return bolCertificadoValido;
         }
 
         public static string GenerarRespaldo(string strUser, string strPassword, string strHost, string strDatabase, string strMySQLDumpOptions)
@@ -89,7 +90,7 @@ namespace LeandroSoftware.Core
             return output;
         }
 
-        public static string EncriptarDatos(string key, string strData)
+        public static string EncriptarDatos(string strThumbprint, string strData)
         {
             RSACryptoServiceProvider rsaEncryptor = null;
             string strResult = null;
@@ -97,25 +98,25 @@ namespace LeandroSoftware.Core
             {
                 X509Store store = new X509Store(StoreName.Root, StoreLocation.LocalMachine);
                 store.Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly);
-                X509Certificate2Collection certs = store.Certificates.Find(X509FindType.FindByThumbprint, key, true);
+                X509Certificate2Collection certs = store.Certificates.Find(X509FindType.FindByThumbprint, strThumbprint, true);
                 store.Close();
                 if (certs.Count == 0)
                 {
-                    throw new Exception("No se logró ubicar el certificado con la huella digital: " + key + ". Por favor verificar.");
+                    throw new Exception("No se logró ubicar el certificado con la huella digital: " + strThumbprint + ". Por favor verificar.");
                 }
                 if (certs.Count == 1)
                 {
                     foreach (X509Certificate2 cert in certs)
                     {
                         if (!cert.HasPrivateKey)
-                            throw new Exception("El certificado con la huella digital: " + key + " no posee la llave privada requerida. Por favor verificar.");
+                            throw new Exception("El certificado con la huella digital: " + strThumbprint + " no posee la llave privada requerida. Por favor verificar.");
                         rsaEncryptor = (RSACryptoServiceProvider)cert.PrivateKey;
                         break;
                     }
                 }
                 else
                 {
-                    throw new Exception("Existe más de un certificado con la huella digital: " + key + ". Por favor verificar.");
+                    throw new Exception("Existe más de un certificado con la huella digital: " + strThumbprint + ". Por favor verificar.");
                 }
 
                 if (rsaEncryptor != null)
@@ -132,7 +133,7 @@ namespace LeandroSoftware.Core
             return strResult;
         }
 
-        public static string DesencriptarDatos(string key, string strData)
+        public static string DesencriptarDatos(string strThumbprint, string strData)
         {
             RSACryptoServiceProvider rsaEncryptor = null;
             string strResult = null;
@@ -140,25 +141,25 @@ namespace LeandroSoftware.Core
             {
                 X509Store store = new X509Store(StoreName.Root, StoreLocation.LocalMachine);
                 store.Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly);
-                X509Certificate2Collection certs = store.Certificates.Find(X509FindType.FindByThumbprint, key, true);
+                X509Certificate2Collection certs = store.Certificates.Find(X509FindType.FindByThumbprint, strThumbprint, true);
                 store.Close();
                 if (certs.Count == 0)
                 {
-                    throw new Exception("No se logró ubicar el certificado con la huella digital: " + key + ". Por favor verificar.");
+                    throw new Exception("No se logró ubicar el certificado con la huella digital: " + strThumbprint + ". Por favor verificar.");
                 }
                 if (certs.Count == 1)
                 {
                     foreach (X509Certificate2 cert in certs)
                     {
                         if (!cert.HasPrivateKey)
-                            throw new Exception("El certificado con la huella digital: " + key + " no posee la llave privada requerida. Por favor verificar.");
+                            throw new Exception("El certificado con la huella digital: " + strThumbprint + " no posee la llave privada requerida. Por favor verificar.");
                         rsaEncryptor = (RSACryptoServiceProvider)cert.PrivateKey;
                         break;
                     }
                 }
                 else
                 {
-                    throw new Exception("Existe más de un certificado con la huella digital: " + key + ". Por favor verificar.");
+                    throw new Exception("Existe más de un certificado con la huella digital: " + strThumbprint + ". Por favor verificar.");
                 }
                 if (rsaEncryptor != null)
                 {
@@ -167,7 +168,7 @@ namespace LeandroSoftware.Core
                 }
                 else
                 {
-                    throw new Exception("No se logró obtener un encriptador para el certificado con huella digital: " + key + ". Por favor verificar.");
+                    throw new Exception("No se logró obtener un encriptador para el certificado con huella digital: " + strThumbprint + ". Por favor verificar.");
                 }
             }
             catch (Exception ex)
@@ -178,9 +179,9 @@ namespace LeandroSoftware.Core
             return strResult;
         }
 
-        public static byte[] EncriptarArchivo(string key, string AppKey, string strData)
+        public static byte[] EncriptarArchivo(string strThumbprint, string strAppKey, string strData)
         {
-            string sKey = DesencriptarDatos(key, AppKey);
+            string sKey = DesencriptarDatos(strThumbprint, strAppKey);
             DESCryptoServiceProvider DES = new DESCryptoServiceProvider();
             DES.Key = Encoding.ASCII.GetBytes(sKey);
             DES.IV = Encoding.ASCII.GetBytes(sKey);
@@ -193,9 +194,9 @@ namespace LeandroSoftware.Core
             return msEncrypted.ToArray();
         }
 
-        public static void DesencriptarArchivo(string key, string AppKey, string strInputFilename, string strOutPutFilename)
+        public static void DesencriptarArchivo(string strThumbprint, string strAppKey, string strInputFilename, string strOutPutFilename)
         {
-            string sKey = DesencriptarDatos(key, AppKey);
+            string sKey = DesencriptarDatos(strThumbprint, strAppKey);
             DESCryptoServiceProvider DES = new DESCryptoServiceProvider();
 	        DES.Key = Encoding.ASCII.GetBytes(sKey);
 	        DES.IV = Encoding.ASCII.GetBytes(sKey);
@@ -227,7 +228,9 @@ namespace LeandroSoftware.Core
                 StringContent contentJson = new StringContent(jsonObject, Encoding.UTF8, "application/json");
                 if (strToken != "")
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", strToken);
-                HttpResponseMessage httpResponse = httpClient.PostAsync(servicioURL + "/ejecutar", contentJson).Result;
+                HttpResponseMessage httpResponse = await httpClient.PostAsync(servicioURL + "/ejecutar", contentJson);
+                if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
+                    throw new Exception(httpResponse.Content.ReadAsStringAsync().Result);
                 string responseContent = await httpResponse.Content.ReadAsStringAsync();
             }
             catch (Exception ex)
@@ -244,6 +247,8 @@ namespace LeandroSoftware.Core
                 if (strToken != "")
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", strToken);
                 HttpResponseMessage httpResponse = await httpClient.PostAsync(servicioURL + "/ejecutarconsulta", contentJson);
+                if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
+                    throw new Exception(httpResponse.Content.ReadAsStringAsync().Result);
                 string responseContent = await httpResponse.Content.ReadAsStringAsync();
                 return responseContent;
             }

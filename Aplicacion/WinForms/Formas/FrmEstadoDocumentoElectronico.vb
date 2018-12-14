@@ -39,10 +39,10 @@ Public Class FrmEstadoDocumentoElectronico
         dgvDatos.Columns.Add(dvcEstado)
     End Sub
 
-    Private Async Sub ActualizarDatos()
+    Private Sub ActualizarDatos()
         Try
             picLoader.Visible = True
-            listadoDocumentosPendientes = Await servicioFacturacion.ObtenerListaDocumentosElectronicosPendientes(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
+            listadoDocumentosPendientes = servicioFacturacion.ObtenerListaDocumentosElectronicosPendientes(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
             dgvDatos.DataSource = listadoDocumentosPendientes
             If listadoDocumentosPendientes.Count() > 0 Then
                 btnActualizar.Enabled = True
@@ -73,24 +73,24 @@ Public Class FrmEstadoDocumentoElectronico
         ActualizarDatos()
     End Sub
 
-    Private Async Sub btnEnviar_Click(sender As Object, e As EventArgs) Handles btnActualizar.Click
-        Try
-            picLoader.Visible = True
-            listadoDocumentosPendientes = Await servicioFacturacion.ObtenerListaDocumentosElectronicosPendientes(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
-            dgvDatos.DataSource = listadoDocumentosPendientes
-            If listadoDocumentosPendientes.Count() > 0 Then
-                btnActualizar.Enabled = True
-            Else
-                MessageBox.Show("No existen registros pendientes. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
-                Close()
-            End If
-            picLoader.Visible = False
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-            Exit Sub
-        End Try
-        dgvDatos.Refresh()
+    Private Sub btnEnviar_Click(sender As Object, e As EventArgs) Handles btnActualizar.Click
+        'Try
+        'picLoader.Visible = True
+        'listadoDocumentosPendientes = servicioFacturacion.ObtenerListaDocumentosElectronicosPendientes(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
+        'dgvDatos.DataSource = listadoDocumentosPendientes
+        'If listadoDocumentosPendientes.Count() > 0 Then
+        'btnActualizar.Enabled = True
+        'Else
+        'MessageBox.Show("No existen registros pendientes. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        'Close()
+        'End If
+        'picLoader.Visible = False
+        'Catch ex As Exception
+        'MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        'Close()
+        'Exit Sub
+        'End Try
+        'dgvDatos.Refresh()
     End Sub
 #End Region
 End Class

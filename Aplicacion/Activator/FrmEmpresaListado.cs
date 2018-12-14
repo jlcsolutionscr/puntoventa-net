@@ -39,18 +39,14 @@ namespace LeandroSoftware.Activator
             {
                 string strPeticion = new JavaScriptSerializer().Serialize(peticion);
                 string strRespuesta = await Utilitario.EjecutarConsulta(strPeticion, appSettings["ServicioPuntoventaURL"].ToString(), "");
-                ResponseDTO respuesta = new JavaScriptSerializer().Deserialize<ResponseDTO>(strRespuesta);
+                strRespuesta = new JavaScriptSerializer().Deserialize<string>(strRespuesta);
                 IList<Empresa> dsDataSet = Array.Empty<Empresa>();
-                if (respuesta.DatosPeticion != null)
-                {
-                    dsDataSet = new JavaScriptSerializer().Deserialize<List<Empresa>>(respuesta.DatosPeticion); 
-                }
+                dsDataSet = new JavaScriptSerializer().Deserialize<List<Empresa>>(strRespuesta); 
                 cboEmpresa.DataSource = dsDataSet;
             }
-            catch (AggregateException ex)
+            catch (Exception ex)
             {
-                Exception newEx = ex.Flatten();
-                MessageBox.Show("Error al consumir el servicio web de factura electrónica: " + newEx.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Error al consumir el servicio web de factura electrónica: " + ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Close();
             }
         }

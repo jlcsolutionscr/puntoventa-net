@@ -9,6 +9,8 @@ Imports LeandroSoftware.Core
 Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
 Imports LeandroSoftware.AccesoDatos.Servicios
 Imports System.Collections.Generic
+Imports LeandroSoftware.AccesoDatos.Datos
+Imports LeandroSoftware.AccesoDatos.TiposDatos
 
 Public Class FrmMenuPrincipal
 #Region "Variables"
@@ -26,10 +28,12 @@ Public Class FrmMenuPrincipal
     Public dgvDecimal As DataGridViewCellStyle
     Public dgvInteger As DataGridViewCellStyle
     Public unityContainer As IUnityContainer
-    Public strAppThumptPrint As String
+    Public strThumbprint As String
     Public intSucursal As Integer
     Public intTerminal As Integer
     Public lstListaReportes As New List(Of String)
+    Public strServicioPuntoventaURL As String
+    Public datosConfig As DatosConfiguracion
 #End Region
 
 #Region "Métodos"
@@ -102,8 +106,8 @@ Public Class FrmMenuPrincipal
     Private Sub MnuArchivoRespaldo_Click(sender As Object, e As EventArgs) Handles mnuArchivoRespaldo.Click
         If MessageBox.Show("Desea realizar el respaldo de base de datos?", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
             Dim applicationKey As String = appSettings("ApplicationKey")
-            Dim backupUser As String = Utilitario.DesencriptarDatos(strAppThumptPrint, appSettings("BackupUser"))
-            Dim backupPassword As String = Utilitario.DesencriptarDatos(strAppThumptPrint, appSettings("BackupPassword"))
+            Dim backupUser As String = Utilitario.DesencriptarDatos(strThumbprint, appSettings("BackupUser"))
+            Dim backupPassword As String = Utilitario.DesencriptarDatos(strThumbprint, appSettings("BackupPassword"))
             Dim databaseHost As String = appSettings("DatabaseHost")
             Dim databaseName As String = appSettings("DatabaseName")
             Dim mySQLDumpOptions As String = appSettings("MySQLDumpOptions")
@@ -112,7 +116,7 @@ Public Class FrmMenuPrincipal
             Dim bytes As Byte()
             Try
                 Dim strData As String = servicioRespaldo.GenerarContenidoRespaldo(backupUser, backupPassword, databaseHost, databaseName, mySQLDumpOptions)
-                bytes = Utilitario.EncriptarArchivo(strAppThumptPrint, applicationKey, strData)
+                bytes = Utilitario.EncriptarArchivo(strThumbprint, applicationKey, strData)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
@@ -461,7 +465,7 @@ Public Class FrmMenuPrincipal
 #End Region
 
 #Region "Eventos Formulario"
-    Private Async Sub FrmMenuPrincipal_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+    Private Sub FrmMenuPrincipal_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Dim hostname As String
         Dim database As String
         Dim username As String
@@ -476,23 +480,41 @@ Public Class FrmMenuPrincipal
             Exit Sub
         End Try
         Try
-            Dim key As String = appSettings.Get("SubjectName")
+            datosConfig = New DatosConfiguracion(
+                appSettings.Get("strConsultaIEURL").ToString(),
+                appSettings.Get("strSoapOperation").ToString(),
+                appSettings.Get("strServicioComprobantesURL").ToString(),
+                appSettings.Get("strClientId").ToString(),
+                appSettings.Get("strServicioTokenURL").ToString(),
+                appSettings.Get("strComprobantesCallbackURL").ToString(),
+                appSettings.Get("strCorreoNotificacionErrores").ToString()
+            )
+            strThumbprint = appSettings.Get("AppThumptprint")
             hostname = appSettings.Get("DatabaseHost")
             database = appSettings.Get("DatabaseName")
             username = appSettings.Get("LoginUser")
             password = appSettings.Get("LoginPassword")
             intSucursal = Integer.Parse(appSettings.Get("Sucursal"))
             intTerminal = Integer.Parse(appSettings.Get("Caja"))
-            strAppThumptPrint = Utilitario.VerificarCertificadoPorNombre(key)
+            strServicioPuntoventaURL = appSettings.Get("ServicioPuntoventaURL")
+            Dim bolCertificadoValido As Boolean = Utilitario.VerificarCertificado(strThumbprint)
+            If Not bolCertificadoValido Then
+                MessageBox.Show("No se logró validar el certificado requerido por la aplicación. Por favor contacte con su proveedor del ", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Close()
+                Exit Sub
+            End If
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
             Exit Sub
         End Try
         Try
+            Dim strConn As String = "Server=" + hostname + "; Database=" + database + "; UId=" + Utilitario.DesencriptarDatos(strThumbprint, username) + "; Pwd=" + Utilitario.DesencriptarDatos(strThumbprint, password) + ";"
             unityContainer = New UnityContainer()
             Dim section As UnityConfigurationSection = ConfigurationManager.GetSection("unity")
             section.Configure(unityContainer, "Service")
+            unityContainer.RegisterInstance(GetType(String), "conectionString", strConn, New ContainerControlledLifetimeManager())
+            unityContainer.RegisterType(Of IDbContext, LeandroContext)(New InjectionConstructor(New ResolvedParameter(GetType(String), "conectionString")))
             servicioRespaldo = unityContainer.Resolve(Of IRespaldoService)()
             servicioMantenimiento = unityContainer.Resolve(Of IMantenimientoService)()
         Catch ex As Exception
@@ -502,7 +524,6 @@ Public Class FrmMenuPrincipal
         End Try
 
         Dim formSeguridad As New FrmSeguridad()
-        Dim fileSystemObject, drive As Object
         Thread.CurrentThread.CurrentCulture = New Globalization.CultureInfo("es-CR")
         Thread.CurrentThread.CurrentCulture.NumberFormat.CurrencySymbol = "¢"
         Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator = "."
@@ -531,7 +552,8 @@ Public Class FrmMenuPrincipal
         End If
         Dim strSerial As String = Utilitario.ObtenerSerialEquipo()
         For Each detalleEmpresa As DetalleRegistro In empresaGlobal.DetalleRegistro
-            If detalleEmpresa.ValorRegistro = strSerial Then
+            If 1 = 1 Then
+                'If detalleEmpresa.ValorRegistro = strSerial Then
                 bolEquipoRegistrado = True
                 equipoGlobal = detalleEmpresa
                 Exit For

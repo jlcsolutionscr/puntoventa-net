@@ -11,6 +11,15 @@ using LeandroSoftware.AccesoDatos.Datos;
 using log4net;
 using Unity;
 using System.Threading.Tasks;
+using LeandroSoftware.AccesoDatos.TiposDatos;
+using LeandroSoftware.Core.Servicios;
+using Newtonsoft.Json.Linq;
+using LeandroSoftware.Core;
+using System.Xml.Serialization;
+using System.IO;
+using System.Web.Hosting;
+using System.Drawing;
+using System.Globalization;
 
 namespace LeandroSoftware.AccesoDatos.Servicios
 {
@@ -23,11 +32,10 @@ namespace LeandroSoftware.AccesoDatos.Servicios
         Cliente ValidaIdentificacionCliente(int intIdEmpresa, string strIdentificacion);
         int ObtenerTotalListaClientes(int intIdEmpresa, string strNombre = "", bool incluyeClienteContado = false);
         IEnumerable<Cliente> ObtenerListaClientes(int intIdEmpresa, int numPagina, int cantRec, string strNombre = "", bool incluyeClienteContado = false);
-        Factura AgregarFactura(Factura factura, int intSucursal, int intTerminal);
+        Factura AgregarFactura(Factura factura, int intSucursal, int intTerminal, DatosConfiguracion datos);
         void ActualizarFactura(Factura factura);
-        void AnularFactura(int intIdFactura, int intIdUsuario, int intSucursal, int intTerminal);
+        void AnularFactura(int intIdFactura, int intIdUsuario, int intSucursal, int intTerminal, DatosConfiguracion datos);
         Factura ObtenerFactura(int intIdFactura);
-        DocumentoElectronico ObtenerDocumentoElectronico(string strClave);
         int ObtenerTotalListaFacturas(int intIdEmpresa, int intIdFactura = 0, string strNombre = "");
         IEnumerable<Factura> ObtenerListaFacturas(int intIdEmpresa, int numPagina, int cantRec, int intIdFactura = 0, string strNombre = "");
         IEnumerable<Factura> ObtenerListaFacturasPorCliente(int intIdCliente);
@@ -49,9 +57,15 @@ namespace LeandroSoftware.AccesoDatos.Servicios
         int ObtenerTotalListaDevolucionesPorCliente(int intIdEmpresa, int intIdDevolucion = 0, string strNombre = "");
         IEnumerable<DevolucionCliente> ObtenerListaDevolucionesPorCliente(int intIdEmpresa, int numPagina, int cantRec, int intIdDevolucion = 0, string strNombre = "");
         void GeneraMensajeReceptor(string datos, int intIdEmpresa, int intSucursal, int intTerminal, int intMensaje);
-        Task<IList<DocumentoElectronico>> ObtenerListaDocumentosElectronicosPendientes(int intIdEmpresa);
+        IList<DocumentoElectronico> ObtenerListaDocumentosElectronicosPendientes(int intIdEmpresa);
+        IList<DocumentoElectronico> ObtenerListaDocumentosElectronicosEnviados(int intIdEmpresa);
+        void EnviarDocumentoElectronicoPendiente(int intIdDocumento, DatosConfiguracion datos);
+        DocumentoElectronico ObtenerRespuestaDocumentoElectronicoEnviado(int intIdDocumento, DatosConfiguracion datos);
         int ObtenerTotalDocumentosElectronicosProcesados(int intIdEmpresa);
         IList<DocumentoElectronico> ObtenerListaDocumentosElectronicosProcesados(int intIdEmpresa, int numPagina, int cantRec);
+        DocumentoElectronico ObtenerDocumentoElectronico(int intIdDocumento);
+        void ProcesarRespuestaHacienda(RespuestaHaciendaDTO mensaje, ICorreoService servicioEnvioCorreo, string strCorreoNotificacionErrores);
+        void EnviarNotificacionDocumentoElectronico(int intIdDocumento, ICorreoService servicioEnvioCorreo, string strCorreoNotificacionErrores);
     }
 
     public class FacturacionService : IFacturacionService
@@ -194,7 +208,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     else
                     {
                         Padron persona = dbContext.PadronRepository.Where(x => x.Identificacion == strIdentificacion).FirstOrDefault();
-                        if (persona.Identificacion == null)
+                        if (persona == null)
                             return null;
                         else
                         {
@@ -261,7 +275,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public Factura AgregarFactura(Factura factura, int intSucursal, int intTerminal)
+        public Factura AgregarFactura(Factura factura, int intSucursal, int intTerminal, DatosConfiguracion datos)
         {
             decimal decTotalIngresosMercancia = 0;
             decimal decTotalIngresosServicios = 0;
@@ -615,7 +629,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                         Cliente cliente = dbContext.ClienteRepository.Find(factura.IdCliente);
                         string criteria = factura.Fecha.ToString("dd/MM/yyyy");
                         TipoDeCambioDolar tipoDeCambio = dbContext.TipoDeCambioDolarRepository.Find(criteria);
-                        if (tipoDeCambio == null)
+                        if (tipoDeCambio != null)
                         {
                             documentoFE = ComprobanteElectronicoService.GeneraFacturaElectronica(factura, factura.Empresa, cliente, dbContext, intSucursal, intTerminal, tipoDeCambio.ValorTipoCambio);
                             factura.IdDocElectronico = documentoFE.ClaveNumerica;
@@ -650,7 +664,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     dbContext.Commit();
                     if (documentoFE != null)
                     {
-                        Task.Run(() => ComprobanteElectronicoService.EnviarDocumentoElectronico(empresa, documentoFE, dbContext));
+                        Task.Run(() => ComprobanteElectronicoService.EnviarDocumentoElectronico(empresa, documentoFE, localContainer, datos));
                     }
                 }
                 catch (BusinessException ex)
@@ -694,7 +708,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public void AnularFactura(int intIdFactura, int intIdUsuario, int intSucursal, int intTerminal)
+        public void AnularFactura(int intIdFactura, int intIdUsuario, int intSucursal, int intTerminal, DatosConfiguracion datos)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -779,7 +793,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     dbContext.Commit();
                     if (documentoNC != null)
                     {
-                        Task.Run(() => ComprobanteElectronicoService.EnviarDocumentoElectronico(empresa, documentoNC, dbContext));
+                        Task.Run(() => ComprobanteElectronicoService.EnviarDocumentoElectronico(empresa, documentoNC, dbContext, datos));
                     }
                 }
                 catch (BusinessException ex)
@@ -808,22 +822,6 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 {
                     log.Error("Error al obtener el registro de facturación: ", ex);
                     throw new Exception("Se produjo un error consultando la información de la factura. Por favor consulte con su proveedor.");
-                }
-            }
-        }
-
-        public DocumentoElectronico ObtenerDocumentoElectronico(string strClave)
-        {
-            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
-            {
-                try
-                {
-                    return dbContext.DocumentoElectronicoRepository.FirstOrDefault(x => x.ClaveNumerica == strClave);
-                }
-                catch (Exception ex)
-                {
-                    log.Error("Error al obtener el registro de documento electrónico: ", ex);
-                    throw new Exception("Se produjo un error consultando la información del documento electrónico. Por favor consulte con su proveedor.");
                 }
             }
         }
@@ -1622,68 +1620,9 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public async Task<IList<DocumentoElectronico>> ObtenerListaDocumentosElectronicosPendientes(int intIdEmpresa)
+        public IList<DocumentoElectronico> ObtenerListaDocumentosElectronicosPendientes(int intIdEmpresa)
         {
-            IList<DocumentoElectronico> listado = new List<DocumentoElectronico>();
-            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
-            {
-                try
-                {
-                    Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
-                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio."); throw new Exception("Empresa no registrada en el sistema de factura electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (!empresa.FacturaElectronica) throw new Exception("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.FechaVence < DateTime.Today) throw new Exception("El período del plan de facturación electrónica adquirido ya ha expirado. Por favor, pongase en contacto con su proveedor del servicio.");
-                    var listaPendientes = dbContext.DocumentoElectronicoRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.EstadoEnvio == "pendiente");
-                    foreach (DocumentoElectronico doc in listaPendientes)
-                    {
-                        try
-                        {
-                            if (doc.EstadoEnvio != "aceptado" && doc.EstadoEnvio != "rechazado")
-                            {
-                                DocumentoElectronico datos = await ComprobanteElectronicoService.ConsultarDocumentoElectronico(empresa, doc, dbContext);
-                                if (datos.EstadoEnvio == "registrado")
-                                {
-                                    doc.EstadoEnvio = "enviado";
-                                    dbContext.NotificarModificacion(doc);
-                                    dbContext.Commit();
-                                    try
-                                    {
-                                        await ComprobanteElectronicoService.EnviarDocumentoElectronico(empresa, doc, dbContext);
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        doc.EstadoEnvio = "registrado";
-                                        doc.ErrorEnvio = ex.Message;
-                                        dbContext.NotificarModificacion(doc);
-                                        dbContext.Commit();
-                                    }
-                                }
-                                listado.Add(doc);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            if (ex.Message == "Service Unavailable")
-                                throw ex;
-                            listado.Add(doc);
-                        }
-                    }
-                    return listado;
-                }
-                catch (Exception ex)
-                {
-                    log.Error("Error al procesar factura electrónica: ", ex);
-                    if (ex.Message == "Service Unavailable")
-                        throw new Exception("El servicio de factura electrónica se encuentra fuera de servicio. Por favor consulte con su proveedor.");
-                    else
-                        throw new Exception("Se produjo un error al procesar la factura electrónica ingresada. Por favor consulte con su proveedor.");
-                }
-            }
-        }
-
-        public int ObtenerTotalDocumentosElectronicosProcesados(int intIdEmpresa)
-        {
-            IList<DocumentoElectronico> listado = new List<DocumentoElectronico>();
+            List<DocumentoElectronico> listado = new List<DocumentoElectronico>();
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 try
@@ -1692,24 +1631,146 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (!empresa.FacturaElectronica) throw new Exception("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.FechaVence < DateTime.Today) throw new Exception("El período del plan de facturación electrónica adquirido ya ha expirado. Por favor, pongase en contacto con su proveedor del servicio.");
-                    var listaProcesados = dbContext.DocumentoElectronicoRepository.Where(x => x.IdEmpresa == intIdEmpresa);
-                    foreach (DocumentoElectronico doc in listaProcesados)
+                    var listaPendientes = dbContext.DocumentoElectronicoRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.EstadoEnvio == "registrado");
+                    foreach (DocumentoElectronico doc in listaPendientes)
                     {
-                        if (doc.EstadoEnvio == "aceptado" || doc.EstadoEnvio == "rechazado")
-                            listado.Add(doc);
+                        doc.DatosDocumento = null;
+                        doc.Respuesta = null;
+                        listado.Add(doc);
                     }
-                    return listado.Count();
+                    return listado;
                 }
                 catch (Exception ex)
                 {
-                    log.Error("Error al obtener el total del listado de documentos electrónicos: ", ex);
-                    throw new Exception("Se produjo un error consultando el total del listado de documentos electrónicos. Por favor consulte con su proveedor.");
+                    log.Error("Error al obtener el listado de documentos electrónicos pendientes: ", ex);
+                    throw new Exception("Se produjo un error al obtener el listado de documentos electrónicos pendientes. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public IList<DocumentoElectronico> ObtenerListaDocumentosElectronicosEnviados(int intIdEmpresa)
+        {
+            List<DocumentoElectronico> listado = new List<DocumentoElectronico>();
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (!empresa.FacturaElectronica) throw new Exception("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (empresa.FechaVence < DateTime.Today) throw new Exception("El período del plan de facturación electrónica adquirido ya ha expirado. Por favor, pongase en contacto con su proveedor del servicio.");
+                    var listaEnviados = dbContext.DocumentoElectronicoRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.EstadoEnvio == "enviado");
+                    foreach (DocumentoElectronico doc in listaEnviados)
+                    {
+                        doc.DatosDocumento = null;
+                        doc.Respuesta = null;
+                        listado.Add(doc);
+                    }
+                    return listado;
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al obtener el listado de documentos electrónicos enviados: ", ex);
+                    throw new Exception("Se produjo un error al obtener el listado de documentos electrónicos enviados. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public async void EnviarDocumentoElectronicoPendiente(int intIdDocumento, DatosConfiguracion datos)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    DocumentoElectronico documento = dbContext.DocumentoElectronicoRepository.Find(intIdDocumento);
+                    if (documento == null) throw new BusinessException("El documento solicitado no existe.");
+                    Empresa empresa = dbContext.EmpresaRepository.Find(documento.IdEmpresa);
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (!empresa.FacturaElectronica) throw new Exception("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (empresa.FechaVence < DateTime.Today) throw new Exception("El período del plan de facturación electrónica adquirido ya ha expirado. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (documento.EstadoEnvio == "registrado")
+                    {
+                        documento.EstadoEnvio = "enviado";
+                        dbContext.NotificarModificacion(documento);
+                        dbContext.Commit();
+                        try
+                        {
+                            await ComprobanteElectronicoService.EnviarDocumentoElectronico(empresa, documento, dbContext, datos);
+                        }
+                        catch (Exception ex)
+                        {
+                            documento.EstadoEnvio = "registrado";
+                            documento.ErrorEnvio = ex.Message;
+                            dbContext.NotificarModificacion(documento);
+                            dbContext.Commit();
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al procesar el documento electrónico pendiente: ", ex);
+                    if (ex.Message == "Service Unavailable")
+                        throw new Exception("El servicio de factura electrónica se encuentra fuera de servicio. Por favor intente más tarde.");
+                    else
+                        throw new Exception("Se produjo un error al procesar el documento electrónico pendiente. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public DocumentoElectronico ObtenerRespuestaDocumentoElectronicoEnviado(int intIdDocumento, DatosConfiguracion datos)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                DocumentoElectronico respuesta = null;
+                try
+                {
+                    DocumentoElectronico documento = dbContext.DocumentoElectronicoRepository.Find(intIdDocumento);
+                    if (documento == null) throw new BusinessException("El documento solicitado no existe.");
+                    Empresa empresa = dbContext.EmpresaRepository.Find(documento.IdEmpresa);
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (!empresa.FacturaElectronica) throw new Exception("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (empresa.FechaVence < DateTime.Today) throw new Exception("El período del plan de facturación electrónica adquirido ya ha expirado. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (documento.EstadoEnvio == "enviado")
+                    {
+                        respuesta = ComprobanteElectronicoService.ConsultarDocumentoElectronico(empresa, documento, dbContext, datos).Result;
+                    }
+                    return respuesta;
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al consultar respuesta de Hacienda del documento electrónico: ", ex);
+                    if (ex.Message == "Service Unavailable")
+                        throw new Exception("El servicio de factura electrónica se encuentra fuera de servicio. Por favor intente más tarde.");
+                    else
+                        throw new Exception("Se produjo un error al consultar respuesta de Hacienda del documento electrónico. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public int ObtenerTotalDocumentosElectronicosProcesados(int intIdEmpresa)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (!empresa.FacturaElectronica) throw new Exception("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (empresa.FechaVence < DateTime.Today) throw new Exception("El período del plan de facturación electrónica adquirido ya ha expirado. Por favor, pongase en contacto con su proveedor del servicio.");
+                    var listaProcesados = dbContext.DocumentoElectronicoRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.EstadoEnvio == "aceptado" || x.EstadoEnvio == "rechazado");
+                    return listaProcesados.Count();
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al obtener el total del listado de documentos electrónicos procesados: ", ex);
+                    throw new Exception("Se produjo un error consultando el total del listado de documentos electrónicos procesados. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public IList<DocumentoElectronico> ObtenerListaDocumentosElectronicosProcesados(int intIdEmpresa, int numPagina, int cantRec)
         {
+            List<DocumentoElectronico> listado = new List<DocumentoElectronico>();
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 try
@@ -1720,17 +1781,337 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     if (empresa.FechaVence < DateTime.Today) throw new Exception("El período del plan de facturación electrónica adquirido ya ha expirado. Por favor, pongase en contacto con su proveedor del servicio.");
                     var listaProcesados = dbContext.DocumentoElectronicoRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.EstadoEnvio == "aceptado" || x.EstadoEnvio == "rechazado")
                         .OrderByDescending(x => x.IdDocumento)
-                        .Skip((numPagina - 1) * cantRec).Take(cantRec).ToList();
-                    return listaProcesados.ToList();
+                        .Skip((numPagina - 1) * cantRec).Take(cantRec);
+                    foreach (DocumentoElectronico doc in listaProcesados)
+                    {
+                        doc.DatosDocumento = null;
+                        doc.Respuesta = null;
+                        listado.Add(doc);
+                    }
+                    return listado;
                 }
                 catch (Exception ex)
                 {
-                    log.Error("Error al procesar factura electrónica: ", ex);
+                    log.Error("Error al consultar el listado de documentos electrónicos procesados: ", ex);
                     if (ex.Message == "Service Unavailable")
                         throw new Exception("El servicio de factura electrónica se encuentra fuera de servicio. Por favor consulte con su proveedor.");
                     else
-                        throw new Exception("Se produjo un error al procesar la factura electrónica ingresada. Por favor consulte con su proveedor.");
+                        throw new Exception("Se produjo un error al consultar el listado de documentos electrónicos procesados. Por favor consulte con su proveedor.");
                 }
+            }
+        }
+
+        public DocumentoElectronico ObtenerDocumentoElectronico(int intIdDocumento)
+        {
+            List<DocumentoElectronico> listado = new List<DocumentoElectronico>();
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    DocumentoElectronico documento = dbContext.DocumentoElectronicoRepository.Find(intIdDocumento);
+                    if (documento == null) throw new BusinessException("El documento solicitado no existe.");
+                    Empresa empresa = dbContext.EmpresaRepository.Find(documento.IdEmpresa);
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (!empresa.FacturaElectronica) throw new Exception("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (empresa.FechaVence < DateTime.Today) throw new Exception("El período del plan de facturación electrónica adquirido ya ha expirado. Por favor, pongase en contacto con su proveedor del servicio.");
+                    return documento;
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al consultar documento electrónico con ID: " + intIdDocumento, ex);
+                    throw new Exception("Se produjo un error al consultar el documento electrónico. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public void ProcesarRespuestaHacienda(RespuestaHaciendaDTO mensaje, ICorreoService servicioEnvioCorreo, string strCorreoNotificacionErrores)
+        {
+            string strClave = "";
+            string strConsecutivo = "";
+            if (mensaje.Clave.Length > 50)
+            {
+                strClave = mensaje.Clave.Substring(0, 50);
+                strConsecutivo = mensaje.Clave.Substring(51);
+            }
+            else
+                strClave = mensaje.Clave;
+            try
+            {
+                using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+                {
+                    DocumentoElectronico documentoElectronico = null;
+                    Empresa empresa = null;
+                    if (strConsecutivo.Length > 0)
+                        documentoElectronico = dbContext.DocumentoElectronicoRepository.Where(x => x.ClaveNumerica == strClave & x.Consecutivo == strConsecutivo).FirstOrDefault();
+                    else
+                        documentoElectronico = dbContext.DocumentoElectronicoRepository.Where(x => x.ClaveNumerica == strClave).FirstOrDefault();
+                    if (documentoElectronico == null)
+                    {
+                        JArray emptyJArray = new JArray();
+                        string strBody = "El documento con clave " + mensaje.Clave + " no se encuentra registrado en los registros del cliente.";
+                        servicioEnvioCorreo.SendEmail(new string[] { strCorreoNotificacionErrores }, new string[] { }, "Error al recibir respuesta de Hacienda.", strBody, false, emptyJArray);
+                    }
+                    else
+                    {
+                        empresa = dbContext.EmpresaRepository.Where(x => x.IdEmpresa == documentoElectronico.IdEmpresa).FirstOrDefault();
+                        string strEstado = mensaje.IndEstado;
+                        documentoElectronico.EstadoEnvio = strEstado;
+                        if (strEstado == "aceptado" || strEstado == "rechazado")
+                        {
+                            byte[] bytRespuestaXML = Convert.FromBase64String(mensaje.RespuestaXml);
+                            documentoElectronico.Respuesta = bytRespuestaXML;
+                            dbContext.NotificarModificacion(documentoElectronico);
+                            dbContext.Commit();
+                            GenerarNotificacion(documentoElectronico, empresa, dbContext, servicioEnvioCorreo, strCorreoNotificacionErrores);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                JArray emptyJArray = new JArray();
+                servicioEnvioCorreo.SendEmail(new string[] { strCorreoNotificacionErrores }, new string[] { }, "Excepción en el procesamiento de la respuesta de hacienda para el comprobante con clave: " + mensaje.Clave, ex.Message, false, emptyJArray);
+            }
+        }
+
+        public void EnviarNotificacionDocumentoElectronico(int intIdDocumento, ICorreoService servicioEnvioCorreo, string strCorreoNotificacionErrores)
+        {
+            try
+            {
+                using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+                {
+                    DocumentoElectronico documento = dbContext.DocumentoElectronicoRepository.Find(intIdDocumento);
+                    if (documento == null)
+                    {
+                        JArray emptyJArray = new JArray();
+                        string strBody = "El documento con ID " + intIdDocumento + " no se encuentra registrado.";
+                        servicioEnvioCorreo.SendEmail(new string[] { strCorreoNotificacionErrores }, new string[] { }, "Error al recibir respuesta de Hacienda.", strBody, false, emptyJArray);
+                    }
+                    else
+                    {
+                        Empresa empresa = dbContext.EmpresaRepository.Where(x => x.IdEmpresa == documento.IdEmpresa).FirstOrDefault();
+                        if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                        if (!empresa.FacturaElectronica) throw new Exception("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
+                        if (empresa.FechaVence < DateTime.Today) throw new Exception("El período del plan de facturación electrónica adquirido ya ha expirado. Por favor, pongase en contacto con su proveedor del servicio.");
+                        if (documento.EstadoEnvio == "aceptado" || documento.EstadoEnvio == "rechazado")
+                        {
+                            GenerarNotificacion(documento, empresa, dbContext, servicioEnvioCorreo, strCorreoNotificacionErrores);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                JArray emptyJArray = new JArray();
+                servicioEnvioCorreo.SendEmail(new string[] { strCorreoNotificacionErrores }, new string[] { }, "Excepción en el envio de la notificacion del documento electrónico con ID: " + intIdDocumento, ex.Message, false, emptyJArray);
+            }
+        }
+
+        private void GenerarNotificacion(DocumentoElectronico documentoElectronico, Empresa empresa, IDbContext dbContext, ICorreoService servicioEnvioCorreo, string strCorreoNotificacionErrores)
+        {
+            try
+            {
+                string strBody;
+                JArray jarrayObj = new JArray();
+                if (documentoElectronico.EsMensajeReceptor == "N")
+                {
+                    if (documentoElectronico.EstadoEnvio == "aceptado" && documentoElectronico.CorreoNotificacion != "")
+                    {
+                        strBody = "Adjunto documento electrónico en formato PDF y XML con clave " + documentoElectronico.ClaveNumerica + " y la respuesta de aceptación del Ministerio de Hacienda.";
+                        EstructuraPDF datos = new EstructuraPDF();
+                        try
+                        {
+                            Image logoImage;
+                            using (MemoryStream memStream = new MemoryStream(empresa.Logotipo))
+                                logoImage = Image.FromStream(memStream);
+                            datos.Logotipo = logoImage;
+                        }
+                        catch (Exception)
+                        {
+                            datos.Logotipo = null;
+                        }
+                        try
+                        {
+                            string apPath = HostingEnvironment.ApplicationPhysicalPath + "bin\\images\\Logo.png";
+                            Image poweredByImage = Image.FromFile(apPath);
+                            datos.PoweredByLogotipo = poweredByImage;
+                        }
+                        catch (Exception)
+                        {
+                            datos.PoweredByLogotipo = null;
+                        }
+                        if (documentoElectronico.IdTipoDocumento == 1)
+                        {
+                            XmlSerializer serializer = new XmlSerializer(typeof(FacturaElectronica));
+                            FacturaElectronica facturaElectronica;
+                            using (MemoryStream memStream = new MemoryStream(documentoElectronico.DatosDocumento))
+                                facturaElectronica = (FacturaElectronica)serializer.Deserialize(memStream);
+
+                            datos.TituloDocumento = "FACTURA ELECTRONICA";
+                            datos.NombreEmpresa = facturaElectronica.Emisor.NombreComercial != null ? facturaElectronica.Emisor.NombreComercial : facturaElectronica.Emisor.Nombre;
+                            datos.Consecutivo = facturaElectronica.NumeroConsecutivo;
+                            datos.PlazoCredito = facturaElectronica.PlazoCredito != null ? facturaElectronica.PlazoCredito : "";
+                            datos.Clave = facturaElectronica.Clave;
+                            datos.CondicionVenta = ObtenerValoresCodificados.ObtenerCondicionDeVenta(int.Parse(facturaElectronica.CondicionVenta.ToString().Substring(5)));
+                            datos.Fecha = facturaElectronica.FechaEmision.ToString("dd/MM/yyyy hh:mm:ss");
+                            datos.MedioPago = ObtenerValoresCodificados.ObtenerMedioDePago(int.Parse(facturaElectronica.MedioPago[0].ToString().Substring(5)));
+                            datos.NombreEmisor = facturaElectronica.Emisor.Nombre;
+                            datos.NombreComercialEmisor = facturaElectronica.Emisor.NombreComercial;
+                            datos.IdentificacionEmisor = facturaElectronica.Emisor.Identificacion.Numero;
+                            datos.CorreoElectronicoEmisor = facturaElectronica.Emisor.CorreoElectronico;
+                            datos.TelefonoEmisor = facturaElectronica.Emisor.Telefono != null ? facturaElectronica.Emisor.Telefono.NumTelefono.ToString() : "";
+                            datos.FaxEmisor = facturaElectronica.Emisor.Fax != null ? facturaElectronica.Emisor.Fax.NumTelefono.ToString() : "";
+                            int intProvincia = int.Parse(facturaElectronica.Emisor.Ubicacion.Provincia);
+                            int intCanton = int.Parse(facturaElectronica.Emisor.Ubicacion.Canton);
+                            int intDistrito = int.Parse(facturaElectronica.Emisor.Ubicacion.Distrito);
+                            int intBarrio = int.Parse(facturaElectronica.Emisor.Ubicacion.Barrio);
+                            datos.ProvinciaEmisor = dbContext.ProvinciaRepository.Where(x => x.IdProvincia == intProvincia).FirstOrDefault().Descripcion;
+                            datos.CantonEmisor = dbContext.CantonRepository.Where(x => x.IdProvincia == intProvincia && x.IdCanton == intCanton).FirstOrDefault().Descripcion;
+                            datos.DistritoEmisor = dbContext.DistritoRepository.Where(x => x.IdProvincia == intProvincia && x.IdCanton == intCanton && x.IdDistrito == intDistrito).FirstOrDefault().Descripcion;
+                            datos.BarrioEmisor = dbContext.BarrioRepository.Where(x => x.IdProvincia == intProvincia && x.IdCanton == intCanton && x.IdDistrito == intDistrito && x.IdBarrio == intBarrio).FirstOrDefault().Descripcion;
+                            datos.DireccionEmisor = facturaElectronica.Emisor.Ubicacion.OtrasSenas;
+                            if (facturaElectronica.Receptor != null)
+                            {
+                                datos.PoseeReceptor = true;
+                                datos.NombreReceptor = facturaElectronica.Receptor.Nombre;
+                                datos.NombreComercialReceptor = facturaElectronica.Receptor.NombreComercial != null ? facturaElectronica.Receptor.NombreComercial : "";
+                                datos.IdentificacionReceptor = facturaElectronica.Receptor.Identificacion.Numero;
+                                datos.CorreoElectronicoReceptor = facturaElectronica.Receptor.CorreoElectronico;
+                                datos.TelefonoReceptor = facturaElectronica.Receptor.Telefono != null ? facturaElectronica.Receptor.Telefono.NumTelefono.ToString() : "";
+                                datos.FaxReceptor = facturaElectronica.Receptor.Fax != null ? facturaElectronica.Receptor.Fax.NumTelefono.ToString() : "";
+                                intProvincia = int.Parse(facturaElectronica.Receptor.Ubicacion.Provincia);
+                                intCanton = int.Parse(facturaElectronica.Receptor.Ubicacion.Canton);
+                                intDistrito = int.Parse(facturaElectronica.Receptor.Ubicacion.Distrito);
+                                intBarrio = int.Parse(facturaElectronica.Receptor.Ubicacion.Barrio);
+                                datos.ProvinciaReceptor = dbContext.ProvinciaRepository.Where(x => x.IdProvincia == intProvincia).FirstOrDefault().Descripcion;
+                                datos.CantonReceptor = dbContext.CantonRepository.Where(x => x.IdProvincia == intProvincia && x.IdCanton == intCanton).FirstOrDefault().Descripcion;
+                                datos.DistritoReceptor = dbContext.DistritoRepository.Where(x => x.IdProvincia == intProvincia && x.IdCanton == intCanton && x.IdDistrito == intDistrito).FirstOrDefault().Descripcion;
+                                datos.BarrioReceptor = dbContext.BarrioRepository.Where(x => x.IdProvincia == intProvincia && x.IdCanton == intCanton && x.IdDistrito == intDistrito && x.IdBarrio == intBarrio).FirstOrDefault().Descripcion;
+                                datos.DireccionReceptor = facturaElectronica.Receptor.Ubicacion.OtrasSenas;
+                            }
+                            foreach (FacturaElectronicaLineaDetalle linea in facturaElectronica.DetalleServicio)
+                            {
+                                EstructuraPDFDetalleServicio detalle = new EstructuraPDFDetalleServicio();
+                                detalle.NumeroLinea = linea.NumeroLinea;
+                                detalle.Codigo = linea.Codigo[0].Codigo;
+                                detalle.Detalle = linea.Detalle;
+                                detalle.PrecioUnitario = string.Format("{0:N5}", Convert.ToDouble(linea.PrecioUnitario, CultureInfo.InvariantCulture));
+                                detalle.TotalLinea = string.Format("{0:N5}", Convert.ToDouble(linea.MontoTotalLinea, CultureInfo.InvariantCulture));
+                                datos.DetalleServicio.Add(detalle);
+                            }
+                            datos.SubTotal = string.Format("{0:N5}", Convert.ToDouble(facturaElectronica.ResumenFactura.TotalVenta, CultureInfo.InvariantCulture));
+                            datos.Descuento = facturaElectronica.ResumenFactura.TotalDescuentosSpecified ? string.Format("{0:N5}", Convert.ToDouble(facturaElectronica.ResumenFactura.TotalDescuentos, CultureInfo.InvariantCulture)) : "0.00000";
+                            datos.Impuesto = facturaElectronica.ResumenFactura.TotalImpuestoSpecified ? string.Format("{0:N5}", Convert.ToDouble(facturaElectronica.ResumenFactura.TotalImpuesto, CultureInfo.InvariantCulture)) : "0.00000";
+                            datos.TotalGeneral = string.Format("{0:N5}", Convert.ToDouble(facturaElectronica.ResumenFactura.TotalComprobante, CultureInfo.InvariantCulture));
+                            datos.CodigoMoneda = facturaElectronica.ResumenFactura.CodigoMonedaSpecified ? facturaElectronica.ResumenFactura.CodigoMoneda.ToString() : "";
+                            datos.TipoDeCambio = facturaElectronica.ResumenFactura.CodigoMonedaSpecified ? facturaElectronica.ResumenFactura.TipoCambio.ToString() : "";
+                        }
+                        else if (documentoElectronico.IdTipoDocumento == 3)
+                        {
+                            XmlSerializer serializer = new XmlSerializer(typeof(NotaCreditoElectronica));
+                            NotaCreditoElectronica notaCreditoElectronica;
+                            using (MemoryStream memStream = new MemoryStream(documentoElectronico.DatosDocumento))
+                                notaCreditoElectronica = (NotaCreditoElectronica)serializer.Deserialize(memStream);
+                            datos.TituloDocumento = "NOTA DE CREDITO ELECTRONICA";
+                            datos.NombreEmpresa = notaCreditoElectronica.Emisor.NombreComercial != null ? notaCreditoElectronica.Emisor.NombreComercial : notaCreditoElectronica.Emisor.Nombre;
+                            datos.Consecutivo = notaCreditoElectronica.NumeroConsecutivo;
+                            datos.PlazoCredito = notaCreditoElectronica.PlazoCredito != null ? notaCreditoElectronica.PlazoCredito : "";
+                            datos.Clave = notaCreditoElectronica.Clave;
+                            datos.CondicionVenta = ObtenerValoresCodificados.ObtenerCondicionDeVenta(int.Parse(notaCreditoElectronica.CondicionVenta.ToString().Substring(5)));
+                            datos.Fecha = notaCreditoElectronica.FechaEmision.ToString("dd/MM/yyyy hh:mm:ss");
+                            if (notaCreditoElectronica.MedioPago != null)
+                                datos.MedioPago = ObtenerValoresCodificados.ObtenerMedioDePago(int.Parse(notaCreditoElectronica.MedioPago[0].ToString().Substring(5)));
+                            else
+                                datos.MedioPago = "";
+                            datos.NombreEmisor = notaCreditoElectronica.Emisor.Nombre;
+                            datos.NombreComercialEmisor = notaCreditoElectronica.Emisor.NombreComercial;
+                            datos.IdentificacionEmisor = notaCreditoElectronica.Emisor.Identificacion.Numero;
+                            datos.CorreoElectronicoEmisor = notaCreditoElectronica.Emisor.CorreoElectronico;
+                            datos.TelefonoEmisor = notaCreditoElectronica.Emisor.Telefono != null ? notaCreditoElectronica.Emisor.Telefono.NumTelefono.ToString() : "";
+                            datos.FaxEmisor = notaCreditoElectronica.Emisor.Fax != null ? notaCreditoElectronica.Emisor.Fax.NumTelefono.ToString() : "";
+                            int intProvincia = int.Parse(notaCreditoElectronica.Emisor.Ubicacion.Provincia);
+                            int intCanton = int.Parse(notaCreditoElectronica.Emisor.Ubicacion.Canton);
+                            int intDistrito = int.Parse(notaCreditoElectronica.Emisor.Ubicacion.Distrito);
+                            int intBarrio = int.Parse(notaCreditoElectronica.Emisor.Ubicacion.Barrio);
+                            datos.ProvinciaEmisor = dbContext.ProvinciaRepository.Where(x => x.IdProvincia == intProvincia).FirstOrDefault().Descripcion;
+                            datos.CantonEmisor = dbContext.CantonRepository.Where(x => x.IdProvincia == intProvincia && x.IdCanton == intCanton).FirstOrDefault().Descripcion;
+                            datos.DistritoEmisor = dbContext.DistritoRepository.Where(x => x.IdProvincia == intProvincia && x.IdCanton == intCanton && x.IdDistrito == intDistrito).FirstOrDefault().Descripcion;
+                            datos.BarrioEmisor = dbContext.BarrioRepository.Where(x => x.IdProvincia == intProvincia && x.IdCanton == intCanton && x.IdDistrito == intDistrito && x.IdBarrio == intBarrio).FirstOrDefault().Descripcion;
+                            datos.DireccionEmisor = notaCreditoElectronica.Emisor.Ubicacion.OtrasSenas;
+                            if (notaCreditoElectronica.Receptor != null)
+                            {
+                                datos.PoseeReceptor = true;
+                                datos.NombreReceptor = notaCreditoElectronica.Receptor.Nombre;
+                                datos.NombreComercialReceptor = notaCreditoElectronica.Receptor.NombreComercial != null ? notaCreditoElectronica.Receptor.NombreComercial : "";
+                                datos.IdentificacionReceptor = notaCreditoElectronica.Receptor.Identificacion.Numero;
+                                datos.CorreoElectronicoReceptor = notaCreditoElectronica.Receptor.CorreoElectronico;
+                                datos.TelefonoReceptor = notaCreditoElectronica.Receptor.Telefono != null ? notaCreditoElectronica.Receptor.Telefono.NumTelefono.ToString() : "";
+                                datos.FaxReceptor = notaCreditoElectronica.Receptor.Fax != null ? notaCreditoElectronica.Receptor.Fax.NumTelefono.ToString() : "";
+                                intProvincia = int.Parse(notaCreditoElectronica.Receptor.Ubicacion.Provincia);
+                                intCanton = int.Parse(notaCreditoElectronica.Receptor.Ubicacion.Canton);
+                                intDistrito = int.Parse(notaCreditoElectronica.Receptor.Ubicacion.Distrito);
+                                intBarrio = int.Parse(notaCreditoElectronica.Receptor.Ubicacion.Barrio);
+                                datos.ProvinciaReceptor = dbContext.ProvinciaRepository.Where(x => x.IdProvincia == intProvincia).FirstOrDefault().Descripcion;
+                                datos.CantonReceptor = dbContext.CantonRepository.Where(x => x.IdProvincia == intProvincia && x.IdCanton == intCanton).FirstOrDefault().Descripcion;
+                                datos.DistritoReceptor = dbContext.DistritoRepository.Where(x => x.IdProvincia == intProvincia && x.IdCanton == intCanton && x.IdDistrito == intDistrito).FirstOrDefault().Descripcion;
+                                datos.BarrioReceptor = dbContext.BarrioRepository.Where(x => x.IdProvincia == intProvincia && x.IdCanton == intCanton && x.IdDistrito == intDistrito && x.IdBarrio == intBarrio).FirstOrDefault().Descripcion;
+                                datos.DireccionReceptor = notaCreditoElectronica.Receptor.Ubicacion.OtrasSenas;
+                            }
+                            foreach (NotaCreditoElectronicaLineaDetalle linea in notaCreditoElectronica.DetalleServicio)
+                            {
+                                EstructuraPDFDetalleServicio detalle = new EstructuraPDFDetalleServicio();
+                                detalle.NumeroLinea = linea.NumeroLinea;
+                                detalle.Codigo = linea.Codigo[0].Codigo;
+                                detalle.Detalle = linea.Detalle;
+                                detalle.PrecioUnitario = string.Format("{0:N5}", Convert.ToDouble(linea.PrecioUnitario, CultureInfo.InvariantCulture));
+                                detalle.TotalLinea = string.Format("{0:N5}", Convert.ToDouble(linea.MontoTotalLinea, CultureInfo.InvariantCulture));
+                                datos.DetalleServicio.Add(detalle);
+                            }
+                            datos.SubTotal = string.Format("{0:N5}", Convert.ToDouble(notaCreditoElectronica.ResumenFactura.TotalVenta, CultureInfo.InvariantCulture));
+                            datos.Descuento = notaCreditoElectronica.ResumenFactura.TotalDescuentosSpecified ? string.Format("{0:N5}", Convert.ToDouble(notaCreditoElectronica.ResumenFactura.TotalDescuentos, CultureInfo.InvariantCulture)) : "0.00000";
+                            datos.Impuesto = notaCreditoElectronica.ResumenFactura.TotalImpuestoSpecified ? string.Format("{0:N5}", Convert.ToDouble(notaCreditoElectronica.ResumenFactura.TotalImpuesto, CultureInfo.InvariantCulture)) : "0.00000";
+                            datos.TotalGeneral = string.Format("{0:N5}", Convert.ToDouble(notaCreditoElectronica.ResumenFactura.TotalComprobante, CultureInfo.InvariantCulture));
+                            datos.CodigoMoneda = notaCreditoElectronica.ResumenFactura.CodigoMonedaSpecified ? notaCreditoElectronica.ResumenFactura.CodigoMoneda.ToString() : "";
+                            datos.TipoDeCambio = notaCreditoElectronica.ResumenFactura.CodigoMonedaSpecified ? notaCreditoElectronica.ResumenFactura.TipoCambio.ToString() : "";
+                        }
+                        byte[] pdfAttactment = Utilitario.GenerarPDFFacturaElectronica(datos);
+                        JObject jobDatosAdjuntos1 = new JObject();
+                        jobDatosAdjuntos1["nombre"] = documentoElectronico.ClaveNumerica + ".pdf";
+                        jobDatosAdjuntos1["contenido"] = Convert.ToBase64String(pdfAttactment);
+                        jarrayObj.Add(jobDatosAdjuntos1);
+                        JObject jobDatosAdjuntos2 = new JObject();
+                        jobDatosAdjuntos2["nombre"] = documentoElectronico.ClaveNumerica + ".xml";
+                        jobDatosAdjuntos2["contenido"] = Convert.ToBase64String(documentoElectronico.DatosDocumento);
+                        jarrayObj.Add(jobDatosAdjuntos2);
+                        JObject jobDatosAdjuntos3 = new JObject();
+                        jobDatosAdjuntos3["nombre"] = "RespuestaHacienda.xml";
+                        jobDatosAdjuntos3["contenido"] = Convert.ToBase64String(documentoElectronico.Respuesta);
+                        jarrayObj.Add(jobDatosAdjuntos3);
+                        servicioEnvioCorreo.SendEmail(new string[] { documentoElectronico.CorreoNotificacion }, new string[] { }, "Documento electrónico con clave " + documentoElectronico.ClaveNumerica, strBody, false, jarrayObj);
+                    }
+                }
+                else
+                {
+                    if ((documentoElectronico.EstadoEnvio == "aceptado" || documentoElectronico.EstadoEnvio == "rechazado") && documentoElectronico.CorreoNotificacion != "")
+                    {
+                        strBody = "Adjunto XML con estado " + documentoElectronico.EstadoEnvio + " del documento electrónico con clave " + documentoElectronico.ClaveNumerica + " y la respuesta del Ministerio de Hacienda.";
+                        JObject jobDatosAdjuntos1 = new JObject();
+                        jobDatosAdjuntos1["nombre"] = documentoElectronico.ClaveNumerica + ".xml";
+                        jobDatosAdjuntos1["contenido"] = Convert.ToBase64String(documentoElectronico.DatosDocumento);
+                        jarrayObj.Add(jobDatosAdjuntos1);
+                        JObject jobDatosAdjuntos2 = new JObject();
+                        jobDatosAdjuntos2["nombre"] = "RespuestaHacienda.xml";
+                        jobDatosAdjuntos2["contenido"] = Convert.ToBase64String(documentoElectronico.Respuesta);
+                        jarrayObj.Add(jobDatosAdjuntos2);
+                        servicioEnvioCorreo.SendEmail(new string[] { documentoElectronico.CorreoNotificacion }, new string[] { }, "Documento electrónico con clave " + documentoElectronico.ClaveNumerica, strBody, false, jarrayObj);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                JArray emptyJArray = new JArray();
+                string strBody = "El documento con clave " + documentoElectronico.ClaveNumerica + " genero un error en el envío del PDF al receptor:" + ex.Message;
+                servicioEnvioCorreo.SendEmail(new string[] { strCorreoNotificacionErrores }, new string[] { }, "Error al tratar de enviar el correo al receptor.", strBody, false, emptyJArray);
             }
         }
     }

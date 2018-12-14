@@ -22,7 +22,7 @@ Public Class FrmAutoriza
 
     Private Sub CmdAceptar_Click(sender As Object, e As EventArgs) Handles CmdAceptar.Click
         Try
-            usuarioAutorizador = servicioMantenimiento.ValidarUsuario(FrmMenuPrincipal.empresaGlobal.IdEmpresa, TxtUsuario.Text, TxtClave.Text, FrmMenuPrincipal.strAppThumptPrint)
+            usuarioAutorizador = servicioMantenimiento.ValidarUsuario(FrmMenuPrincipal.empresaGlobal.IdEmpresa, TxtUsuario.Text, TxtClave.Text, FrmMenuPrincipal.strThumbprint)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             TxtUsuario.Text = ""

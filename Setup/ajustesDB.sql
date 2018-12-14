@@ -1473,6 +1473,9 @@ ALTER TABLE documentoelectronico ADD (
 );
 
 ALTER TABLE documentoelectronico CHANGE Consecutivo Consecutivo VARCHAR(20) NULL;
+ALTER TABLE documentoelectronico ADD INDEX (EstadoEnvio);
+ALTER TABLE documentoelectronico ADD INDEX (ClaveNumerica);
+ALTER TABLE documentoelectronico ADD INDEX (ClaveNumerica, Consecutivo);
 
 UPDATE documentoelectronico SET IdConsecutivo=CONVERT(SUBSTRING(Consecutivo,18),UNSIGNED INTEGER);
 UPDATE documentoelectronico SET IdSucursal=CONVERT(SUBSTRING(Consecutivo,1,3),UNSIGNED INTEGER);

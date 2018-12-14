@@ -1580,7 +1580,9 @@ CREATE TABLE DocumentoElectronico (
   ErrorEnvio VARCHAR(500) NULL,
   CorreoNotificacion VARCHAR(200) NOT NULL,
   PRIMARY KEY(IdDocumento),
+  INDEX (EstadoEnvio),
   INDEX (ClaveNumerica),
+  INDEX (ClaveNumerica, Consecutivo),
   FOREIGN KEY(IdEmpresa)
     REFERENCES Empresa(IdEmpresa)
       ON DELETE RESTRICT

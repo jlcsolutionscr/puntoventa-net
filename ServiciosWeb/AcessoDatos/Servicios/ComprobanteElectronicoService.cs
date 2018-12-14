@@ -30,16 +30,10 @@ using System.Web.Script.Serialization;
 
 namespace LeandroSoftware.AccesoDatos.Servicios
 {
-    public class ComprobanteElectronicoService
+    public static class ComprobanteElectronicoService
     {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private static HttpClient httpClient = new HttpClient();
-        private static DatosConfiguracion configuracionLocal;
-
-        public ComprobanteElectronicoService(DatosConfiguracion configuracion)
-        {
-            configuracionLocal = configuracion;
-        }
 
         private static void validarToken(IDbContext dbContext, Empresa empresaLocal, string strServicioTokenURL, string strClientId)
         {
@@ -939,6 +933,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     IdentificacionEmisor = strIdentificacionEmisor,
                     TipoIdentificacionReceptor = strTipoIdentificacionReceptor,
                     IdentificacionReceptor = strIdentificacionReceptor,
+                    EsMensajeReceptor = esMensajeReceptor ? "S" : "N",
                     EstadoEnvio = "registrado",
                     CorreoNotificacion = strCorreoNotificacion,
                     DatosDocumento = signedDataEncoded
@@ -972,55 +967,59 @@ namespace LeandroSoftware.AccesoDatos.Servicios
 
         
 
-        public static async Task EnviarDocumentoElectronico(Empresa empresaLocal, DocumentoElectronico documento, IDbContext dbContext)
+        public static async Task EnviarDocumentoElectronico(Empresa empresaLocal, DocumentoElectronico documento, IUnityContainer localContainer, DatosConfiguracion datos)
         {
+            
             try
             {
-                XmlDocument documentoXml = new XmlDocument();
-                using (MemoryStream ms = new MemoryStream(documento.DatosDocumento))
+                using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
                 {
-                    documentoXml.Load(ms);
-                }
-                byte[] mensajeEncoded = Encoding.UTF8.GetBytes(documentoXml.OuterXml);
-                string strComprobanteXML = Convert.ToBase64String(mensajeEncoded);
-                validarToken(dbContext, empresaLocal, configuracionLocal.ServicioTokenURL, configuracionLocal.ClientId);
-                if (empresaLocal.AccessToken != null)
-                {
-                    try
+                    XmlDocument documentoXml = new XmlDocument();
+                    using (MemoryStream ms = new MemoryStream(documento.DatosDocumento))
                     {
-                        string JsonObject = "{\"clave\": \"" + documento.ClaveNumerica + "\",\"fecha\": \"" + documento.Fecha.ToString("yyyy-MM-ddTHH:mm:ssss") + "\"," +
-                            "\"emisor\": {\"tipoIdentificacion\": \"" + documento.TipoIdentificacionEmisor + "\"," +
-                            "\"numeroIdentificacion\": \"" + documento.IdentificacionEmisor + "\"},";
-                        if (documento.TipoIdentificacionReceptor.Length > 0)
+                        documentoXml.Load(ms);
+                    }
+                    byte[] mensajeEncoded = Encoding.UTF8.GetBytes(documentoXml.OuterXml);
+                    string strComprobanteXML = Convert.ToBase64String(mensajeEncoded);
+                    validarToken(dbContext, empresaLocal, datos.ServicioTokenURL, datos.ClientId);
+                    if (empresaLocal.AccessToken != null)
+                    {
+                        try
                         {
-                            JsonObject += "\"receptor\": {\"tipoIdentificacion\": \"" + documento.TipoIdentificacionReceptor + "\"," +
-                            "\"numeroIdentificacion\": \"" + documento.IdentificacionReceptor + "\"},";
+                            string JsonObject = "{\"clave\": \"" + documento.ClaveNumerica + "\",\"fecha\": \"" + documento.Fecha.ToString("yyyy-MM-ddTHH:mm:ssss") + "\"," +
+                                "\"emisor\": {\"tipoIdentificacion\": \"" + documento.TipoIdentificacionEmisor + "\"," +
+                                "\"numeroIdentificacion\": \"" + documento.IdentificacionEmisor + "\"},";
+                            if (documento.TipoIdentificacionReceptor.Length > 0)
+                            {
+                                JsonObject += "\"receptor\": {\"tipoIdentificacion\": \"" + documento.TipoIdentificacionReceptor + "\"," +
+                                "\"numeroIdentificacion\": \"" + documento.IdentificacionReceptor + "\"},";
+                            }
+                            if (datos.CallbackURL != "")
+                                JsonObject += "\"callbackUrl\": \"" + datos.CallbackURL + "\",";
+                            if (documento.EsMensajeReceptor == "S")
+                                JsonObject += "\"consecutivoReceptor\": \"" + documento.Consecutivo + "\",";
+                            JsonObject += "\"comprobanteXml\": \"" + strComprobanteXML + "\"}";
+                            StringContent contentJson = new StringContent(JsonObject, Encoding.UTF8, "application/json");
+                            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", empresaLocal.AccessToken);
+                            HttpResponseMessage httpResponse = httpClient.PostAsync(datos.ComprobantesElectronicosURL + "/recepcion", contentJson).Result;
+                            string responseContent = await httpResponse.Content.ReadAsStringAsync();
+                            if (httpResponse.StatusCode != HttpStatusCode.Accepted)
+                            {
+                                string strMensajeError = httpResponse.ReasonPhrase;
+                                throw new Exception(strMensajeError);
+                            }
                         }
-                        if (configuracionLocal.CallbackURL != "")
-                            JsonObject += "\"callbackUrl\": \"" + configuracionLocal.CallbackURL + "\",";
-                        if (documento.EsMensajeReceptor == "S")
-                            JsonObject += "\"consecutivoReceptor\": \"" + documento.Consecutivo + "\",";
-                        JsonObject += "\"comprobanteXml\": \"" + strComprobanteXML + "\"}";
-                        StringContent contentJson = new StringContent(JsonObject, Encoding.UTF8, "application/json");
-                        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", empresaLocal.AccessToken);
-                        HttpResponseMessage httpResponse = httpClient.PostAsync(configuracionLocal.ComprobantesElectronicosURL + "/recepcion", contentJson).Result;
-                        string responseContent = await httpResponse.Content.ReadAsStringAsync();
-                        if (httpResponse.StatusCode != HttpStatusCode.Accepted)
+                        catch (Exception ex)
                         {
-                            string strMensajeError = httpResponse.ReasonPhrase;
+                            string strMensajeError = ex.Message;
+                            if (ex.Message.Length > 500) strMensajeError = ex.Message.Substring(0, 500);
                             throw new Exception(strMensajeError);
                         }
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        string strMensajeError = ex.Message;
-                        if (ex.Message.Length > 500) strMensajeError = ex.Message.Substring(0, 500);
-                        throw new Exception(strMensajeError);
+                        throw new Exception("No se logro obtener un token válido para la empresa correspondiente al documento electrónico");
                     }
-                }
-                else
-                {
-                    throw new Exception("No se logro obtener un token válido para la empresa correspondiente al documento electrónico");
                 }
             }
             catch (Exception ex)
@@ -1030,39 +1029,43 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public static async Task<DocumentoElectronico> ConsultarDocumentoElectronico(Empresa empresaLocal, DocumentoElectronico documento, IDbContext dbContext)
+        public static async Task<DocumentoElectronico> ConsultarDocumentoElectronico(Empresa empresaLocal, DocumentoElectronico documento, IUnityContainer localContainer, DatosConfiguracion datos)
         {
+
             try
             {
-                if (documento.EstadoEnvio == "enviado")
+                using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
                 {
-                    validarToken(dbContext, empresaLocal, configuracionLocal.ServicioTokenURL, configuracionLocal.ClientId);
-                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", empresaLocal.AccessToken);
-                    HttpResponseMessage httpResponse = await httpClient.GetAsync(configuracionLocal.ComprobantesElectronicosURL + "/recepcion/" + documento.ClaveNumerica);
-                    if (httpResponse.StatusCode == HttpStatusCode.OK)
+                    if (documento.EstadoEnvio == "enviado")
                     {
-                        JObject estadoDocumento = JObject.Parse(httpResponse.Content.ReadAsStringAsync().Result);
-                        string strEstado = estadoDocumento.Property("ind-estado").Value.ToString();
-                        if (strEstado != "procesando")
+                        validarToken(dbContext, empresaLocal, datos.ServicioTokenURL, datos.ClientId);
+                        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", empresaLocal.AccessToken);
+                        HttpResponseMessage httpResponse = await httpClient.GetAsync(datos.ComprobantesElectronicosURL + "/recepcion/" + documento.ClaveNumerica);
+                        if (httpResponse.StatusCode == HttpStatusCode.OK)
                         {
-                            string strRespuesta = estadoDocumento.Property("respuesta-xml").Value.ToString();
-                            documento.Respuesta = Convert.FromBase64String(strRespuesta);
+                            JObject estadoDocumento = JObject.Parse(httpResponse.Content.ReadAsStringAsync().Result);
+                            string strEstado = estadoDocumento.Property("ind-estado").Value.ToString();
+                            if (strEstado != "procesando")
+                            {
+                                string strRespuesta = estadoDocumento.Property("respuesta-xml").Value.ToString();
+                                documento.Respuesta = Convert.FromBase64String(strRespuesta);
 
+                            }
+                            documento.EstadoEnvio = strEstado;
                         }
-                        documento.EstadoEnvio = strEstado;
-                    }
-                    else
-                    {
-                        if (httpResponse.Headers.Where(x => x.Key == "X-Error-Cause").FirstOrDefault().Value != null)
+                        else
                         {
-                            IList<string> headers = httpResponse.Headers.Where(x => x.Key == "X-Error-Cause").FirstOrDefault().Value.ToList();
-                            if (headers.Count > 0)
-                                documento.ErrorEnvio = headers[0];
+                            if (httpResponse.Headers.Where(x => x.Key == "X-Error-Cause").FirstOrDefault().Value != null)
+                            {
+                                IList<string> headers = httpResponse.Headers.Where(x => x.Key == "X-Error-Cause").FirstOrDefault().Value.ToList();
+                                if (headers.Count > 0)
+                                    documento.ErrorEnvio = headers[0];
+                            }
+                            documento.EstadoEnvio = "registrado";
                         }
-                        documento.EstadoEnvio = "registrado";
                     }
+                    return documento;
                 }
-                return documento;
             }
             catch (Exception ex)
             {
