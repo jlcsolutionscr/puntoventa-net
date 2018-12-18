@@ -13,7 +13,7 @@ namespace Activator
             InitializeComponent();
         }
 
-        private void btnSeleccionar_Click(object sender, EventArgs e)
+        private void BtnSeleccionar_Click(object sender, EventArgs e)
         {
             /*Dim openFileDialog1 As New OpenFileDialog With {
             .InitialDirectory = "c:\\",
@@ -60,7 +60,7 @@ namespace Activator
         End If */
         }
 
-        private void btnPAramPorDefecto_Click(object sender, EventArgs e)
+        private void BtnPAramPorDefecto_Click(object sender, EventArgs e)
         {
             txtUsuarioLogin.Text = "usuarioConn";
             txtClaveLogin.Text = "";
@@ -74,7 +74,7 @@ namespace Activator
             txtCaja.Text = "00001";
         }
 
-        private void btnGuardar_Click(object sender, EventArgs e)
+        private void BtnGuardar_Click(object sender, EventArgs e)
         {
             /*Try
             config.AppSettings.Settings("LoginUser").Value = Utilitario.EncriptarDatos(FrmMDIMenu.strThumbprint, txtUsuarioLogin.Text)

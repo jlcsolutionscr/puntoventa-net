@@ -1,8 +1,6 @@
 Imports System.Collections.Generic
 Imports LeandroSoftware.Core.CommonTypes
 Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
-Imports LeandroSoftware.AccesoDatos.Servicios
-Imports Unity
 
 Public Class FrmOrdenCompra
 #Region "Variables"
@@ -10,13 +8,11 @@ Public Class FrmOrdenCompra
     Private I As Integer
     Private dtbDatosLocal, dtbDetalleOrdenCompra As DataTable
     Private objRowDetOrdenCompra As DataRow
-    Private servicioCompras As ICompraService
-    Private servicioMantenimiento As IMantenimientoService
-    Private servicioReportes As IReporteService
     Private ordenCompra As OrdenCompra
     Private proveedor As Proveedor
     Private detalleOrdenCompra As DetalleOrdenCompra
     Private producto As Producto
+    Private listOfProducts As IList(Of Producto)
     Private bolInit As Boolean = True
 
     Private formReport As New frmRptViewer()
@@ -159,7 +155,7 @@ Public Class FrmOrdenCompra
                     End If
                 End If
                 Try
-                    producto = servicioMantenimiento.ObtenerProductoPorCodigo(txtCodigo.Text)
+                    'producto = servicioMantenimiento.ObtenerProductoPorCodigo(txtCodigo.Text)
                 Catch ex As Exception
                     MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
@@ -181,7 +177,7 @@ Public Class FrmOrdenCompra
 
     Private Sub CargarAutoCompletarProducto()
         Dim source As AutoCompleteStringCollection = New AutoCompleteStringCollection()
-        Dim listOfProducts As ICollection(Of Producto) = servicioMantenimiento.ObtenerListaProductos(FrmMenuPrincipal.empresaGlobal.IdEmpresa, 1, 0, True)
+        'listOfProducts = servicioMantenimiento.ObtenerListaProductos(FrmMenuPrincipal.empresaGlobal.IdEmpresa, 1, 0, True)
         For Each producto As Producto In listOfProducts
             source.Add(String.Concat(producto.Codigo, " ", producto.Descripcion))
         Next
@@ -194,7 +190,7 @@ Public Class FrmOrdenCompra
         Try
             cboIdCondicionVenta.ValueMember = "IdCondicionVenta"
             cboIdCondicionVenta.DisplayMember = "Descripcion"
-            cboIdCondicionVenta.DataSource = servicioMantenimiento.ObtenerListaCondicionVenta()
+            'cboIdCondicionVenta.DataSource = servicioMantenimiento.ObtenerListaCondicionVenta()
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
@@ -204,15 +200,6 @@ Public Class FrmOrdenCompra
 
 #Region "Eventos Controles"
     Private Sub FrmOrdenCompra_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        Try
-            servicioCompras = FrmMenuPrincipal.unityContainer.Resolve(Of ICompraService)()
-            servicioMantenimiento = FrmMenuPrincipal.unityContainer.Resolve(Of IMantenimientoService)()
-            servicioReportes = FrmMenuPrincipal.unityContainer.Resolve(Of IReporteService)()
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-            Exit Sub
-        End Try
         txtFecha.Text = FrmMenuPrincipal.ObtenerFechaFormateada(Now())
         dblPorcentajeIVA = FrmMenuPrincipal.empresaGlobal.PorcentajeIVA
         If FrmMenuPrincipal.empresaGlobal.AutoCompletaProducto = True Then
@@ -264,7 +251,7 @@ Public Class FrmOrdenCompra
         If txtIdOrdenCompra.Text <> "" Then
             If MessageBox.Show("Desea anular este registro?", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
                 Try
-                    servicioCompras.AnularOrdenCompra(txtIdOrdenCompra.Text, FrmMenuPrincipal.usuarioGlobal.IdUsuario)
+                    'servicioCompras.AnularOrdenCompra(txtIdOrdenCompra.Text, FrmMenuPrincipal.usuarioGlobal.IdUsuario)
                 Catch ex As Exception
                     MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
@@ -281,7 +268,7 @@ Public Class FrmOrdenCompra
         formBusqueda.ShowDialog()
         If FrmMenuPrincipal.intBusqueda > 0 Then
             Try
-                ordenCompra = servicioCompras.ObtenerOrdenCompra(FrmMenuPrincipal.intBusqueda)
+                'ordenCompra = servicioCompras.ObtenerOrdenCompra(FrmMenuPrincipal.intBusqueda)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
@@ -319,7 +306,7 @@ Public Class FrmOrdenCompra
         formBusquedaProveedor.ShowDialog()
         If FrmMenuPrincipal.intBusqueda > 0 Then
             Try
-                proveedor = servicioCompras.ObtenerProveedor(FrmMenuPrincipal.intBusqueda)
+                'proveedor = servicioCompras.ObtenerProveedor(FrmMenuPrincipal.intBusqueda)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
@@ -379,7 +366,7 @@ Public Class FrmOrdenCompra
         Next
         If txtIdOrdenCompra.Text = "" Then
             Try
-                ordenCompra = servicioCompras.AgregarOrdenCompra(ordenCompra)
+                'ordenCompra = servicioCompras.AgregarOrdenCompra(ordenCompra)
                 txtIdOrdenCompra.Text = ordenCompra.IdOrdenCompra
             Catch ex As Exception
                 txtIdOrdenCompra.Text = ""
@@ -388,7 +375,7 @@ Public Class FrmOrdenCompra
             End Try
         Else
             Try
-                servicioCompras.ActualizarOrdenCompra(ordenCompra)
+                'servicioCompras.ActualizarOrdenCompra(ordenCompra)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
@@ -410,7 +397,7 @@ Public Class FrmOrdenCompra
         If txtIdOrdenCompra.Text <> "" Then
             Dim reptOrdenCompra As New rptOrdenCompra
             Try
-                dtbDatos = servicioReportes.ObtenerReporteOrdenCompra(txtIdOrdenCompra.Text)
+                'dtbDatos = servicioReportes.ObtenerReporteOrdenCompra(txtIdOrdenCompra.Text)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub

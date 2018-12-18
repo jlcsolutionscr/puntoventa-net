@@ -1,10 +1,7 @@
 Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
-Imports LeandroSoftware.AccesoDatos.Servicios
-Imports Unity
 
 Public Class FrmParticular
 #Region "Variables"
-    Public servicioMantenimiento As IMantenimientoService
     Public intIdParticular As Integer
     Private datos As Particular
 #End Region
@@ -24,7 +21,7 @@ Public Class FrmParticular
     Private Sub FrmParticular_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         If intIdParticular > 0 Then
             Try
-                datos = servicioMantenimiento.ObtenerParticular(intIdParticular)
+                'datos = servicioMantenimiento.ObtenerParticular(intIdParticular)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Close()
@@ -70,10 +67,10 @@ Public Class FrmParticular
         datos.EMail = txtEMail.Text
         Try
             If datos.IdParticular = 0 Then
-                servicioMantenimiento.AgregarParticular(datos)
+                'servicioMantenimiento.AgregarParticular(datos)
                 txtIdParticular.Text = datos.IdParticular
             Else
-                servicioMantenimiento.ActualizarParticular(datos)
+                'servicioMantenimiento.ActualizarParticular(datos)
             End If
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -85,7 +82,7 @@ Public Class FrmParticular
 
     Private Sub Identificacion_Validating(ByVal sender As Object, ByVal e As EventArgs) Handles txtIdentificacion.Validated
         If txtIdentificacion.Text <> "" Then
-            Dim particular As Particular = servicioMantenimiento.ValidaIdentificacionParticular(txtIdentificacion.Text)
+            Dim particular As Particular = Nothing 'servicioMantenimiento.ValidaIdentificacionParticular(txtIdentificacion.Text)
             If particular IsNot Nothing Then
                 If (datos IsNot Nothing And datos.Identificacion <> txtIdentificacion.Text) Or datos Is Nothing Then
                     MessageBox.Show("La identificación ingresada ya se encuentra registrada en la base de datos de particulares del sistema.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)

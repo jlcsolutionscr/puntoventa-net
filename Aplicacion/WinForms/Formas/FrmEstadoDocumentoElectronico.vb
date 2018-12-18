@@ -1,9 +1,5 @@
-﻿Imports LeandroSoftware.AccesoDatos.Servicios
-Imports Unity
-
-Public Class FrmEstadoDocumentoElectronico
+﻿Public Class FrmEstadoDocumentoElectronico
 #Region "Variables"
-    Private servicioFacturacion As IFacturacionService
     Private listadoDocumentosPendientes As IList
 #End Region
 
@@ -42,7 +38,7 @@ Public Class FrmEstadoDocumentoElectronico
     Private Sub ActualizarDatos()
         Try
             picLoader.Visible = True
-            listadoDocumentosPendientes = servicioFacturacion.ObtenerListaDocumentosElectronicosPendientes(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
+            'listadoDocumentosPendientes = servicioFacturacion.ObtenerListaDocumentosElectronicosPendientes(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
             dgvDatos.DataSource = listadoDocumentosPendientes
             If listadoDocumentosPendientes.Count() > 0 Then
                 btnActualizar.Enabled = True
@@ -63,7 +59,7 @@ Public Class FrmEstadoDocumentoElectronico
 #Region "Eventos controles"
     Private Sub FrmEstadoDocumentoElectronico_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
-            servicioFacturacion = FrmMenuPrincipal.unityContainer.Resolve(Of IFacturacionService)()
+            'servicioFacturacion = FrmMenuPrincipal.unityContainer.Resolve(Of IFacturacionService)()
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()

@@ -21,7 +21,7 @@ Partial Class FrmMovimientoProducto
         Me.txtDescripcion = New System.Windows.Forms.TextBox()
         Me._lblLabels_5 = New System.Windows.Forms.Label()
         Me._lblLabels_1 = New System.Windows.Forms.Label()
-        Me.GrdDetalle = New System.Windows.Forms.DataGridView()
+        Me.dgvListado = New System.Windows.Forms.DataGridView()
         Me.lblPagina = New System.Windows.Forms.Label()
         Me.btnLast = New System.Windows.Forms.Button()
         Me.btnNext = New System.Windows.Forms.Button()
@@ -32,7 +32,7 @@ Partial Class FrmMovimientoProducto
         Me.FechaInicio = New System.Windows.Forms.DateTimePicker()
         Me.Label2 = New System.Windows.Forms.Label()
         Me.Label1 = New System.Windows.Forms.Label()
-        CType(Me.GrdDetalle, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.dgvListado, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'txtCodigo
@@ -89,22 +89,22 @@ Partial Class FrmMovimientoProducto
         Me._lblLabels_1.Text = "Código:"
         Me._lblLabels_1.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
-        'GrdDetalle
+        'dgvListado
         '
-        Me.GrdDetalle.AllowUserToAddRows = False
-        Me.GrdDetalle.AllowUserToDeleteRows = False
-        Me.GrdDetalle.AllowUserToResizeColumns = False
-        Me.GrdDetalle.AllowUserToResizeRows = False
-        Me.GrdDetalle.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing
-        Me.GrdDetalle.Location = New System.Drawing.Point(8, 64)
-        Me.GrdDetalle.Name = "GrdDetalle"
-        Me.GrdDetalle.ReadOnly = True
-        Me.GrdDetalle.RowHeadersVisible = False
-        Me.GrdDetalle.ScrollBars = System.Windows.Forms.ScrollBars.None
-        Me.GrdDetalle.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.GrdDetalle.Size = New System.Drawing.Size(599, 310)
-        Me.GrdDetalle.TabIndex = 5
-        Me.GrdDetalle.TabStop = False
+        Me.dgvListado.AllowUserToAddRows = False
+        Me.dgvListado.AllowUserToDeleteRows = False
+        Me.dgvListado.AllowUserToResizeColumns = False
+        Me.dgvListado.AllowUserToResizeRows = False
+        Me.dgvListado.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing
+        Me.dgvListado.Location = New System.Drawing.Point(8, 64)
+        Me.dgvListado.Name = "dgvListado"
+        Me.dgvListado.ReadOnly = True
+        Me.dgvListado.RowHeadersVisible = False
+        Me.dgvListado.ScrollBars = System.Windows.Forms.ScrollBars.None
+        Me.dgvListado.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
+        Me.dgvListado.Size = New System.Drawing.Size(599, 310)
+        Me.dgvListado.TabIndex = 5
+        Me.dgvListado.TabStop = False
         '
         'lblPagina
         '
@@ -241,7 +241,7 @@ Partial Class FrmMovimientoProducto
         Me.Controls.Add(Me.btnNext)
         Me.Controls.Add(Me.btnPrevious)
         Me.Controls.Add(Me.btnFirst)
-        Me.Controls.Add(Me.GrdDetalle)
+        Me.Controls.Add(Me.dgvListado)
         Me.Controls.Add(Me.txtCodigo)
         Me.Controls.Add(Me.CmdFiltrar)
         Me.Controls.Add(Me.txtDescripcion)
@@ -257,12 +257,12 @@ Partial Class FrmMovimientoProducto
         Me.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Detalle de Movimientos de un Producto"
-        CType(Me.GrdDetalle, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.dgvListado, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
     End Sub
-    Friend WithEvents GrdDetalle As System.Windows.Forms.DataGridView
+    Friend WithEvents dgvListado As System.Windows.Forms.DataGridView
     Friend WithEvents txtCodigo As System.Windows.Forms.TextBox
     Friend WithEvents txtDescripcion As System.Windows.Forms.TextBox
     Friend WithEvents _lblLabels_5 As System.Windows.Forms.Label

@@ -212,12 +212,14 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                             return null;
                         else
                         {
-                            cliente = new Cliente();
-                            cliente.Identificacion = persona.Identificacion;
-                            cliente.IdProvincia = persona.IdProvincia;
-                            cliente.IdCanton = persona.IdCanton;
-                            cliente.IdDistrito = persona.IdDistrito;
-                            cliente.Nombre = persona.Nombre + " " + persona.PrimerApellido + " " + persona.SegundoApellido;
+                            cliente = new Cliente
+                            {
+                                Identificacion = persona.Identificacion,
+                                IdProvincia = persona.IdProvincia,
+                                IdCanton = persona.IdCanton,
+                                IdDistrito = persona.IdDistrito,
+                                Nombre = persona.Nombre + " " + persona.PrimerApellido + " " + persona.SegundoApellido
+                            };
                             return cliente;
                         }
                     }
@@ -623,7 +625,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                         servicioContabilidad.AgregarAsiento(dbContext, asiento);
                     }
                     DocumentoElectronico documentoFE = null;
-                    if (empresa.FacturaElectronica)
+                    if (!empresa.RegimenSimplificado)
                     {
                         if (empresa.FechaVence < DateTime.Today) throw new BusinessException("El período del plan de facturación electrónica adquirido ya ha expirado. Por favor, pongase en contacto con su proveedor del servicio.");
                         Cliente cliente = dbContext.ClienteRepository.Find(factura.IdCliente);
@@ -765,7 +767,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                         servicioContabilidad.ReversarAsientoContable(dbContext, factura.IdAsiento);
                     }
                     DocumentoElectronico documentoNC = null;
-                    if (empresa.FacturaElectronica)
+                    if (!empresa.RegimenSimplificado)
                     {
                         if (empresa.FechaVence < DateTime.Today) throw new BusinessException("El período del plan de facturación electrónica adquirido ya ha expirado. Por favor, pongase en contacto con su proveedor del servicio.");
                         Cliente cliente = dbContext.ClienteRepository.Find(factura.IdCliente);
@@ -793,7 +795,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     dbContext.Commit();
                     if (documentoNC != null)
                     {
-                        Task.Run(() => ComprobanteElectronicoService.EnviarDocumentoElectronico(empresa, documentoNC, dbContext, datos));
+                        Task.Run(() => ComprobanteElectronicoService.EnviarDocumentoElectronico(empresa, documentoNC, localContainer, datos));
                     }
                 }
                 catch (BusinessException ex)
@@ -913,9 +915,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(proforma.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                        throw new Exception("La empresa asignada a la transacción no existe.");
-                    if (proforma.Aplicado == true)
-                        throw new BusinessException("La proforma no puede ser modificada porque ya fue facturada.");
+                    if (proforma.Aplicado == true) throw new BusinessException("La proforma no puede ser modificada porque ya fue facturada.");
                     List<DetalleProforma> listadoDetalleAnterior = dbContext.DetalleProformaRepository.Where(x => x.IdProforma == proforma.IdProforma).ToList();
                     foreach (DetalleProforma detalle in listadoDetalleAnterior)
                         dbContext.NotificarEliminacion(detalle);
@@ -944,12 +944,9 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 try
                 {
                     Proforma proforma = dbContext.ProformaRepository.Find(intIdProforma);
-                    if (proforma == null)
-                        throw new Exception("La proforma por anular no existe.");
-                    if (proforma.Nulo == true)
-                        throw new BusinessException("La proforma ya ha sido anulada.");
-                    if (proforma.Aplicado == true)
-                        throw new BusinessException("La proforma no puede ser anulada porque ya fue facturada.");
+                    if (proforma == null) throw new Exception("La proforma por anular no existe.");
+                    if (proforma.Nulo == true) throw new BusinessException("La proforma ya ha sido anulada.");
+                    if (proforma.Aplicado == true) throw new BusinessException("La proforma no puede ser anulada porque ya fue facturada.");
                     Empresa empresa = dbContext.EmpresaRepository.Find(proforma.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     proforma.Nulo = true;
@@ -1607,7 +1604,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (!empresa.FacturaElectronica) throw new Exception("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (!empresa.PermiteFacturar) throw new Exception("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.FechaVence < DateTime.Today) throw new Exception("El período del plan de facturación electrónica adquirido ya ha expirado. Por favor, pongase en contacto con su proveedor del servicio.");
                     ComprobanteElectronicoService.GeneraMensajeReceptor(datos, empresa, dbContext, intSucursal, intTerminal, intMensaje);
                     dbContext.Commit();
@@ -1629,7 +1626,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (!empresa.FacturaElectronica) throw new Exception("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (!empresa.PermiteFacturar) throw new Exception("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.FechaVence < DateTime.Today) throw new Exception("El período del plan de facturación electrónica adquirido ya ha expirado. Por favor, pongase en contacto con su proveedor del servicio.");
                     var listaPendientes = dbContext.DocumentoElectronicoRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.EstadoEnvio == "registrado");
                     foreach (DocumentoElectronico doc in listaPendientes)
@@ -1657,7 +1654,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (!empresa.FacturaElectronica) throw new Exception("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (!empresa.PermiteFacturar) throw new Exception("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.FechaVence < DateTime.Today) throw new Exception("El período del plan de facturación electrónica adquirido ya ha expirado. Por favor, pongase en contacto con su proveedor del servicio.");
                     var listaEnviados = dbContext.DocumentoElectronicoRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.EstadoEnvio == "enviado");
                     foreach (DocumentoElectronico doc in listaEnviados)
@@ -1686,7 +1683,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     if (documento == null) throw new BusinessException("El documento solicitado no existe.");
                     Empresa empresa = dbContext.EmpresaRepository.Find(documento.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (!empresa.FacturaElectronica) throw new Exception("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (!empresa.PermiteFacturar) throw new Exception("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.FechaVence < DateTime.Today) throw new Exception("El período del plan de facturación electrónica adquirido ya ha expirado. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (documento.EstadoEnvio == "registrado")
                     {
@@ -1695,7 +1692,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                         dbContext.Commit();
                         try
                         {
-                            await ComprobanteElectronicoService.EnviarDocumentoElectronico(empresa, documento, dbContext, datos);
+                            await ComprobanteElectronicoService.EnviarDocumentoElectronico(empresa, documento, localContainer, datos);
                         }
                         catch (Exception ex)
                         {
@@ -1728,11 +1725,11 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     if (documento == null) throw new BusinessException("El documento solicitado no existe.");
                     Empresa empresa = dbContext.EmpresaRepository.Find(documento.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (!empresa.FacturaElectronica) throw new Exception("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (!empresa.PermiteFacturar) throw new Exception("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.FechaVence < DateTime.Today) throw new Exception("El período del plan de facturación electrónica adquirido ya ha expirado. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (documento.EstadoEnvio == "enviado")
                     {
-                        respuesta = ComprobanteElectronicoService.ConsultarDocumentoElectronico(empresa, documento, dbContext, datos).Result;
+                        respuesta = ComprobanteElectronicoService.ConsultarDocumentoElectronico(empresa, documento, localContainer, datos).Result;
                     }
                     return respuesta;
                 }
@@ -1755,7 +1752,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (!empresa.FacturaElectronica) throw new Exception("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (!empresa.PermiteFacturar) throw new Exception("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.FechaVence < DateTime.Today) throw new Exception("El período del plan de facturación electrónica adquirido ya ha expirado. Por favor, pongase en contacto con su proveedor del servicio.");
                     var listaProcesados = dbContext.DocumentoElectronicoRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.EstadoEnvio == "aceptado" || x.EstadoEnvio == "rechazado");
                     return listaProcesados.Count();
@@ -1777,7 +1774,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (!empresa.FacturaElectronica) throw new Exception("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (!empresa.PermiteFacturar) throw new Exception("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.FechaVence < DateTime.Today) throw new Exception("El período del plan de facturación electrónica adquirido ya ha expirado. Por favor, pongase en contacto con su proveedor del servicio.");
                     var listaProcesados = dbContext.DocumentoElectronicoRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.EstadoEnvio == "aceptado" || x.EstadoEnvio == "rechazado")
                         .OrderByDescending(x => x.IdDocumento)
@@ -1812,7 +1809,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     if (documento == null) throw new BusinessException("El documento solicitado no existe.");
                     Empresa empresa = dbContext.EmpresaRepository.Find(documento.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (!empresa.FacturaElectronica) throw new Exception("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (!empresa.PermiteFacturar) throw new Exception("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.FechaVence < DateTime.Today) throw new Exception("El período del plan de facturación electrónica adquirido ya ha expirado. Por favor, pongase en contacto con su proveedor del servicio.");
                     return documento;
                 }
@@ -1891,7 +1888,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     {
                         Empresa empresa = dbContext.EmpresaRepository.Where(x => x.IdEmpresa == documento.IdEmpresa).FirstOrDefault();
                         if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                        if (!empresa.FacturaElectronica) throw new Exception("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
+                        if (!empresa.PermiteFacturar) throw new Exception("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
                         if (empresa.FechaVence < DateTime.Today) throw new Exception("El período del plan de facturación electrónica adquirido ya ha expirado. Por favor, pongase en contacto con su proveedor del servicio.");
                         if (documento.EstadoEnvio == "aceptado" || documento.EstadoEnvio == "rechazado")
                         {
@@ -1948,9 +1945,9 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                                 facturaElectronica = (FacturaElectronica)serializer.Deserialize(memStream);
 
                             datos.TituloDocumento = "FACTURA ELECTRONICA";
-                            datos.NombreEmpresa = facturaElectronica.Emisor.NombreComercial != null ? facturaElectronica.Emisor.NombreComercial : facturaElectronica.Emisor.Nombre;
+                            datos.NombreEmpresa = facturaElectronica.Emisor.NombreComercial ?? facturaElectronica.Emisor.Nombre;
                             datos.Consecutivo = facturaElectronica.NumeroConsecutivo;
-                            datos.PlazoCredito = facturaElectronica.PlazoCredito != null ? facturaElectronica.PlazoCredito : "";
+                            datos.PlazoCredito = facturaElectronica.PlazoCredito ?? "";
                             datos.Clave = facturaElectronica.Clave;
                             datos.CondicionVenta = ObtenerValoresCodificados.ObtenerCondicionDeVenta(int.Parse(facturaElectronica.CondicionVenta.ToString().Substring(5)));
                             datos.Fecha = facturaElectronica.FechaEmision.ToString("dd/MM/yyyy hh:mm:ss");
@@ -1974,7 +1971,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                             {
                                 datos.PoseeReceptor = true;
                                 datos.NombreReceptor = facturaElectronica.Receptor.Nombre;
-                                datos.NombreComercialReceptor = facturaElectronica.Receptor.NombreComercial != null ? facturaElectronica.Receptor.NombreComercial : "";
+                                datos.NombreComercialReceptor = facturaElectronica.Receptor.NombreComercial ?? "";
                                 datos.IdentificacionReceptor = facturaElectronica.Receptor.Identificacion.Numero;
                                 datos.CorreoElectronicoReceptor = facturaElectronica.Receptor.CorreoElectronico;
                                 datos.TelefonoReceptor = facturaElectronica.Receptor.Telefono != null ? facturaElectronica.Receptor.Telefono.NumTelefono.ToString() : "";
@@ -1991,12 +1988,14 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                             }
                             foreach (FacturaElectronicaLineaDetalle linea in facturaElectronica.DetalleServicio)
                             {
-                                EstructuraPDFDetalleServicio detalle = new EstructuraPDFDetalleServicio();
-                                detalle.NumeroLinea = linea.NumeroLinea;
-                                detalle.Codigo = linea.Codigo[0].Codigo;
-                                detalle.Detalle = linea.Detalle;
-                                detalle.PrecioUnitario = string.Format("{0:N5}", Convert.ToDouble(linea.PrecioUnitario, CultureInfo.InvariantCulture));
-                                detalle.TotalLinea = string.Format("{0:N5}", Convert.ToDouble(linea.MontoTotalLinea, CultureInfo.InvariantCulture));
+                                EstructuraPDFDetalleServicio detalle = new EstructuraPDFDetalleServicio
+                                {
+                                    NumeroLinea = linea.NumeroLinea,
+                                    Codigo = linea.Codigo[0].Codigo,
+                                    Detalle = linea.Detalle,
+                                    PrecioUnitario = string.Format("{0:N5}", Convert.ToDouble(linea.PrecioUnitario, CultureInfo.InvariantCulture)),
+                                    TotalLinea = string.Format("{0:N5}", Convert.ToDouble(linea.MontoTotalLinea, CultureInfo.InvariantCulture))
+                                };
                                 datos.DetalleServicio.Add(detalle);
                             }
                             datos.SubTotal = string.Format("{0:N5}", Convert.ToDouble(facturaElectronica.ResumenFactura.TotalVenta, CultureInfo.InvariantCulture));
@@ -2013,9 +2012,9 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                             using (MemoryStream memStream = new MemoryStream(documentoElectronico.DatosDocumento))
                                 notaCreditoElectronica = (NotaCreditoElectronica)serializer.Deserialize(memStream);
                             datos.TituloDocumento = "NOTA DE CREDITO ELECTRONICA";
-                            datos.NombreEmpresa = notaCreditoElectronica.Emisor.NombreComercial != null ? notaCreditoElectronica.Emisor.NombreComercial : notaCreditoElectronica.Emisor.Nombre;
+                            datos.NombreEmpresa = notaCreditoElectronica.Emisor.NombreComercial ?? notaCreditoElectronica.Emisor.Nombre;
                             datos.Consecutivo = notaCreditoElectronica.NumeroConsecutivo;
-                            datos.PlazoCredito = notaCreditoElectronica.PlazoCredito != null ? notaCreditoElectronica.PlazoCredito : "";
+                            datos.PlazoCredito = notaCreditoElectronica.PlazoCredito ?? "";
                             datos.Clave = notaCreditoElectronica.Clave;
                             datos.CondicionVenta = ObtenerValoresCodificados.ObtenerCondicionDeVenta(int.Parse(notaCreditoElectronica.CondicionVenta.ToString().Substring(5)));
                             datos.Fecha = notaCreditoElectronica.FechaEmision.ToString("dd/MM/yyyy hh:mm:ss");
@@ -2042,7 +2041,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                             {
                                 datos.PoseeReceptor = true;
                                 datos.NombreReceptor = notaCreditoElectronica.Receptor.Nombre;
-                                datos.NombreComercialReceptor = notaCreditoElectronica.Receptor.NombreComercial != null ? notaCreditoElectronica.Receptor.NombreComercial : "";
+                                datos.NombreComercialReceptor = notaCreditoElectronica.Receptor.NombreComercial ?? "";
                                 datos.IdentificacionReceptor = notaCreditoElectronica.Receptor.Identificacion.Numero;
                                 datos.CorreoElectronicoReceptor = notaCreditoElectronica.Receptor.CorreoElectronico;
                                 datos.TelefonoReceptor = notaCreditoElectronica.Receptor.Telefono != null ? notaCreditoElectronica.Receptor.Telefono.NumTelefono.ToString() : "";
@@ -2059,12 +2058,14 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                             }
                             foreach (NotaCreditoElectronicaLineaDetalle linea in notaCreditoElectronica.DetalleServicio)
                             {
-                                EstructuraPDFDetalleServicio detalle = new EstructuraPDFDetalleServicio();
-                                detalle.NumeroLinea = linea.NumeroLinea;
-                                detalle.Codigo = linea.Codigo[0].Codigo;
-                                detalle.Detalle = linea.Detalle;
-                                detalle.PrecioUnitario = string.Format("{0:N5}", Convert.ToDouble(linea.PrecioUnitario, CultureInfo.InvariantCulture));
-                                detalle.TotalLinea = string.Format("{0:N5}", Convert.ToDouble(linea.MontoTotalLinea, CultureInfo.InvariantCulture));
+                                EstructuraPDFDetalleServicio detalle = new EstructuraPDFDetalleServicio
+                                {
+                                    NumeroLinea = linea.NumeroLinea,
+                                    Codigo = linea.Codigo[0].Codigo,
+                                    Detalle = linea.Detalle,
+                                    PrecioUnitario = string.Format("{0:N5}", Convert.ToDouble(linea.PrecioUnitario, CultureInfo.InvariantCulture)),
+                                    TotalLinea = string.Format("{0:N5}", Convert.ToDouble(linea.MontoTotalLinea, CultureInfo.InvariantCulture))
+                                };
                                 datos.DetalleServicio.Add(detalle);
                             }
                             datos.SubTotal = string.Format("{0:N5}", Convert.ToDouble(notaCreditoElectronica.ResumenFactura.TotalVenta, CultureInfo.InvariantCulture));

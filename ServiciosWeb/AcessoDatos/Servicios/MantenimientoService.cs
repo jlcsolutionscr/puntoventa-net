@@ -29,7 +29,8 @@ namespace LeandroSoftware.AccesoDatos.Servicios
         Usuario AgregarUsuario(Usuario usuario, string key);
         void ActualizarUsuario(Usuario usuario, string key);
         Usuario ActualizarClaveUsuario(int intIdUsuario, string strClave, string key);
-        Usuario ValidarUsuario(int intIdEmpresa, string strCodigoUsuario, string strClave, string key);
+        Usuario ValidarUsuario(string strCodigoUsuario, string strClave, string key);
+        Usuario ValidarCredenciales(string strIdentificacion, string strCodigoUsuario, string strClave, string key);
         void EliminarUsuario(int intIdUsuario);
         Usuario ObtenerUsuario(int intIdUsuario, string key);
         IEnumerable<Usuario> ObtenerListaUsuarios(int intIdEmpresa, string strCodigo = "");
@@ -99,6 +100,8 @@ namespace LeandroSoftware.AccesoDatos.Servicios
         int ObtenerTotalListaAjustes(int intIdEmpresa, int intIdAjusteInventario = 0, string strDescripcion = "");
         IEnumerable<AjusteInventario> ObtenerListaAjustes(int intIdEmpresa, int numPagina, int cantRec, int intIdAjusteInventario = 0, string strDescripcion = "");
         IEnumerable<TipoIdentificacion> ObtenerListaTipoIdentificacion();
+        IEnumerable<Modulo> ObtenerListaModulos();
+        IEnumerable<CatalogoReporte> ObtenerListaReportes();
         IEnumerable<Provincia> ObtenerListaProvincias();
         IEnumerable<Canton> ObtenerListaCantones(int intIdProvincia);
         IEnumerable<Distrito> ObtenerListaDistritos(int intIdProvincia, int intIdCanton);
@@ -149,14 +152,29 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             {
                 try
                 {
-                    List<DetalleRegistro> listadoDetalleNuevo = empresa.DetalleRegistro.ToList();
+                    List<DetalleRegistro> listadoDetalleRegistro = empresa.DetalleRegistro.ToList();
+                    List<ModuloPorEmpresa> listadoModuloPorEmpresa = empresa.ModuloPorEmpresa.ToList();
+                    List<ReportePorEmpresa> listadoReportePorEmpresa = empresa.ReportePorEmpresa.ToList();
                     empresa.DetalleRegistro = null;
-                    List<DetalleRegistro> listadoDetalleAnterior = dbContext.DetalleRegistroRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa).ToList();
-                    foreach (DetalleRegistro detalle in listadoDetalleAnterior)
-                        dbContext.NotificarEliminacion(detalle);
+                    empresa.ModuloPorEmpresa = null;
+                    empresa.ReportePorEmpresa = null;
+                    empresa.Barrio = null;
                     dbContext.NotificarModificacion(empresa);
-                    foreach (DetalleRegistro detalle in listadoDetalleNuevo)
+                    List<DetalleRegistro> listadoDetalleRegistroAnt = dbContext.DetalleRegistroRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa).ToList();
+                    foreach (DetalleRegistro detalle in listadoDetalleRegistroAnt)
+                        dbContext.DetalleRegistroRepository.Remove(detalle);
+                    foreach (DetalleRegistro detalle in listadoDetalleRegistro)
                         dbContext.DetalleRegistroRepository.Add(detalle);
+                    List<ModuloPorEmpresa> listadoModuloPorEmpresaAnt = dbContext.ModuloPorEmpresaRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa).ToList();
+                    foreach (ModuloPorEmpresa modulo in listadoModuloPorEmpresaAnt)
+                        dbContext.ModuloPorEmpresaRepository.Remove(modulo);
+                    foreach (ModuloPorEmpresa modulo in listadoModuloPorEmpresa)
+                        dbContext.ModuloPorEmpresaRepository.Add(modulo);
+                    List<ReportePorEmpresa> listadoReportePorEmpresaAnt = dbContext.ReportePorEmpresaRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa).ToList();
+                    foreach (ReportePorEmpresa reporte in listadoReportePorEmpresaAnt)
+                        dbContext.ReportePorEmpresaRepository.Remove(reporte);
+                    foreach (ReportePorEmpresa reporte in listadoReportePorEmpresa)
+                        dbContext.ReportePorEmpresaRepository.Add(reporte);
                     dbContext.Commit();
                 }
                 catch (Exception ex)
@@ -174,7 +192,14 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             {
                 try
                 {
-                    return dbContext.EmpresaRepository.Include("DetalleRegistro").Include("ModuloPorEmpresa").Include("ReportePorEmpresa").Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.IdEmpresa == intIdEmpresa);
+                    Empresa empresa = dbContext.EmpresaRepository.Include("DetalleRegistro").Include("ModuloPorEmpresa.Modulo").Include("ReportePorEmpresa.CatalogoReporte").Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.IdEmpresa == intIdEmpresa);
+                    foreach (DetalleRegistro detalle in empresa.DetalleRegistro)
+                        detalle.Empresa = null;
+                    foreach (ModuloPorEmpresa modulo in empresa.ModuloPorEmpresa)
+                        modulo.Empresa = null;
+                    foreach (ReportePorEmpresa reporte in empresa.ReportePorEmpresa)
+                        reporte.Empresa = null;
+                    return empresa;
                 }
                 catch (Exception ex)
                 {
@@ -190,7 +215,14 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             {
                 try
                 {
-                    return dbContext.EmpresaRepository.Include("DetalleRegistro").Include("ModuloPorEmpresa").Include("ReportePorEmpresa").Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.Identificacion == strIdentificacion);
+                    Empresa empresa = dbContext.EmpresaRepository.Include("DetalleRegistro").Include("ModuloPorEmpresa").Include("ReportePorEmpresa").Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.Identificacion == strIdentificacion);
+                    foreach (DetalleRegistro detalle in empresa.DetalleRegistro)
+                        detalle.Empresa = null;
+                    foreach (ModuloPorEmpresa modulo in empresa.ModuloPorEmpresa)
+                        modulo.Empresa = null;
+                    foreach (ReportePorEmpresa reporte in empresa.ReportePorEmpresa)
+                        reporte.Empresa = null;
+                    return empresa;
                 }
                 catch (Exception ex)
                 {
@@ -294,7 +326,9 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             {
                 try
                 {
-                    Empresa empresa = dbContext.EmpresaRepository.Find(usuario.IdEmpresa);
+                    List<EmpresaPorUsuario> empresaUsuario = usuario.EmpresaPorUsuario.ToList();
+                    if (empresaUsuario.Count == 0) throw new BusinessException("El usuario por agregar debe estar vinculado a la empresa actual. Por favor, pongase en contacto con su proveedor del servicio.");
+                    Empresa empresa = dbContext.EmpresaRepository.Find(empresaUsuario[0].IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     Usuario usuarioExistente = dbContext.UsuarioRepository.Where(x => x.CodigoUsuario.ToUpper().Contains(usuario.CodigoUsuario.ToUpper())).FirstOrDefault();
                     if (usuarioExistente != null) throw new BusinessException("El código de usuario que desea agregar ya existe.");
@@ -322,14 +356,18 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             {
                 try
                 {
-                    Empresa empresa = dbContext.EmpresaRepository.Find(usuario.IdEmpresa);
+                    EmpresaPorUsuario empresaUsuario = dbContext.EmpresaPorUsuarioRepository.Where(x => x.IdUsuario == usuario.IdUsuario).FirstOrDefault();
+                    if (empresaUsuario == null) throw new BusinessException("El usuario por modificar debe estar vinculado a la empresa actual. Por favor, pongase en contacto con su proveedor del servicio.");
+                    Empresa empresa = dbContext.EmpresaRepository.Find(empresaUsuario.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     usuario.Clave = Utilitario.EncriptarDatos(key, usuario.ClaveSinEncriptar);
                     List<RolePorUsuario> listadoDetalleAnterior = dbContext.RolePorUsuarioRepository.Where(x => x.IdUsuario == usuario.IdUsuario).ToList();
+                    List<RolePorUsuario> listadoDetalle = usuario.RolePorUsuario.ToList();
+                    usuario.RolePorUsuario = null;
                     foreach (RolePorUsuario detalle in listadoDetalleAnterior)
                         dbContext.NotificarEliminacion(detalle);
                     dbContext.NotificarModificacion(usuario);
-                    foreach (RolePorUsuario detalle in usuario.RolePorUsuario)
+                    foreach (RolePorUsuario detalle in listadoDetalle)
                         dbContext.RolePorUsuarioRepository.Add(detalle);
                     dbContext.Commit();
                 }
@@ -349,8 +387,10 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 try
                 {
                     Usuario usuario = dbContext.UsuarioRepository.Find(intIdUsuario);
-                    if (usuario == null) throw new Exception("El usuario seleccionado para actualizar clave no existe.");
-                    Empresa empresa = dbContext.EmpresaRepository.Find(usuario.IdEmpresa);
+                    if (usuario == null) throw new Exception("El usuario seleccionado para la actualización de la clave no existe.");
+                    List<EmpresaPorUsuario> empresaUsuario = usuario.EmpresaPorUsuario.ToList();
+                    if (empresaUsuario.Count == 0) throw new BusinessException("El usuario por modificar debe estar vinculado a la empresa actual. Por favor, pongase en contacto con su proveedor del servicio.");
+                    Empresa empresa = dbContext.EmpresaRepository.Find(empresaUsuario[0].IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     usuario.Clave = Utilitario.EncriptarDatos(key, strClave);
                     usuario.ClaveSinEncriptar = strClave;
@@ -367,17 +407,15 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public Usuario ValidarUsuario(int intIdEmpresa, string strCodigoUsuario, string strClave, string key)
+        public Usuario ValidarUsuario(string strCodigoUsuario, string strClave, string key)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 try
                 {
-                    Usuario usuario = dbContext.UsuarioRepository.Include("RolePorUsuario.Role").FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.CodigoUsuario == strCodigoUsuario);
-                    if (usuario == null)
-                        throw new BusinessException("El código de usuario ingresado no se encuentra registrado. Contacte a su proveedor.");
-                    if (Utilitario.DesencriptarDatos(key, usuario.Clave) != strClave)
-                        throw new BusinessException("Contraseña incorrecta. Verifique los credenciales suministrados.");
+                    Usuario usuario = dbContext.UsuarioRepository.FirstOrDefault(x => x.CodigoUsuario == strCodigoUsuario);
+                    if (usuario == null) throw new BusinessException("El código de usuario ingresado no se encuentra registrado.");
+                    if (Utilitario.DesencriptarDatos(key, usuario.Clave) != strClave) throw new BusinessException("Contraseña incorrecta.");
                     return usuario;
                 }
                 catch (BusinessException ex)
@@ -387,7 +425,45 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 catch (Exception ex)
                 {
                     log.Error("Error al validar los credenciales del usuario: ", ex);
-                    throw new Exception("Se produjo un error verificando los credenciales del usuario. Por favor consulte con su proveedor.");
+                    throw new Exception("Error en los credenciales suministrados por favor verifique la información. . .");
+                }
+            }
+        }
+
+        public Usuario ValidarCredenciales(string strIdentificacion, string strCodigoUsuario, string strClave, string key)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                bool bolPerteneceAEmpresa = false;
+                try
+                {
+                    Usuario usuario = dbContext.UsuarioRepository.Include("RolePorUsuario.Role").Include("EmpresaPorUsuario.Empresa").FirstOrDefault(x => x.CodigoUsuario == strCodigoUsuario);
+                    if (usuario == null)  throw new Exception("El código de usuario ingresado no se encuentra registrado. Contacte a su proveedor.");
+                    if (Utilitario.DesencriptarDatos(key, usuario.Clave) != strClave) throw new Exception("Contraseña incorrecta. Verifique los credenciales suministrados.");
+                    foreach (EmpresaPorUsuario empresaUsuario in usuario.EmpresaPorUsuario)
+                    {
+                        
+                        if (empresaUsuario.Empresa.Identificacion == strIdentificacion)
+                        {
+                            bolPerteneceAEmpresa = true;
+                            Empresa empresa = dbContext.EmpresaRepository.Include("DetalleRegistro").Include("ModuloPorEmpresa.Modulo").Include("ReportePorEmpresa.CatalogoReporte").Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.IdEmpresa == empresaUsuario.IdEmpresa);
+                            foreach (DetalleRegistro detalle in empresa.DetalleRegistro)
+                                detalle.Empresa = null;
+                            foreach (ModuloPorEmpresa modulo in empresa.ModuloPorEmpresa)
+                                modulo.Empresa = null;
+                            foreach (ReportePorEmpresa reporte in empresa.ReportePorEmpresa)
+                                reporte.Empresa = null;
+                            usuario.Empresa = empresa;
+                        }
+                    }
+                    if (!bolPerteneceAEmpresa) throw new Exception("El usuario ingresado no pertenece a la empresa con la identificación ingresada.");
+                    usuario.EmpresaPorUsuario = new List<EmpresaPorUsuario>();
+                    return usuario;
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al validar los credenciales del usuario: ", ex);
+                    throw new Exception("Error en la validación de los credenciales suministrados por favor verifique la información. . .");
                 }
             }
         }
@@ -401,9 +477,12 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     Usuario usuario = dbContext.UsuarioRepository.Find(intIdUsuario);
                     if (usuario == null)
                         throw new BusinessException("El usuario por eliminar no existe.");
-                    Empresa empresa = dbContext.EmpresaRepository.Find(usuario.IdEmpresa);
+                    List<EmpresaPorUsuario> empresaUsuario = usuario.EmpresaPorUsuario.ToList();
+                    if (empresaUsuario.Count == 0) throw new BusinessException("El usuario por modificar debe estar vinculado a la empresa actual. Por favor, pongase en contacto con su proveedor del servicio.");
+                    Empresa empresa = dbContext.EmpresaRepository.Find(empresaUsuario[0].IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     dbContext.RolePorUsuarioRepository.RemoveRange(usuario.RolePorUsuario);
+                    dbContext.EmpresaPorUsuarioRepository.RemoveRange(usuario.EmpresaPorUsuario);
                     dbContext.UsuarioRepository.Remove(usuario);
                     dbContext.Commit();
                 }
@@ -453,14 +532,20 @@ namespace LeandroSoftware.AccesoDatos.Servicios
 
         public IEnumerable<Usuario> ObtenerListaUsuarios(int intIdEmpresa, string strCodigo = "")
         {
+            List<Usuario> listaUsuarios = new List<Usuario>();
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 try
                 {
-                    var listaUsuarios = dbContext.UsuarioRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdUsuario > 1);
+                    var listaUsuariosPorEmpresa = dbContext.EmpresaPorUsuarioRepository.Include("Usuario").Where(x => x.IdEmpresa == intIdEmpresa && x.IdUsuario > 1);
                     if (!strCodigo.Equals(string.Empty))
-                        listaUsuarios = listaUsuarios.Where(x => x.CodigoUsuario.Contains(strCodigo));
-                    return listaUsuarios.OrderBy(x => x.IdUsuario).ToList();
+                        listaUsuariosPorEmpresa = listaUsuariosPorEmpresa.Where(x => x.Usuario.CodigoUsuario.Contains(strCodigo));
+                    listaUsuariosPorEmpresa.OrderBy(x => x.Usuario.IdUsuario);
+                    foreach (EmpresaPorUsuario empresaUsuario in listaUsuariosPorEmpresa)
+                    {
+                        listaUsuarios.Add(empresaUsuario.Usuario);
+                    }
+                    return listaUsuarios;
                 }
                 catch (Exception ex)
                 {
@@ -1980,6 +2065,38 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 {
                     log.Error("Error al obtener el listado de tipos de identificación: ", ex);
                     throw new Exception("Se produjo un error consultando el listado de tipos de identificación. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public IEnumerable<Modulo> ObtenerListaModulos()
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    return dbContext.ModuloRepository.ToList();
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al obtener el listado de módulos del sistema: ", ex);
+                    throw new Exception("Se produjo un error consultando el listado de módulos del sistema. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public IEnumerable<CatalogoReporte> ObtenerListaReportes()
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    return dbContext.CatalogoReporteRepository.ToList();
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al obtener el listado de reportes: ", ex);
+                    throw new Exception("Se produjo un error consultando el listado de reportes. Por favor consulte con su proveedor.");
                 }
             }
         }

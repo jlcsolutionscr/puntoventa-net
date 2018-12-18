@@ -1,14 +1,10 @@
 ﻿using LeandroSoftware.AccesoDatos.Dominio.Entidades;
 using LeandroSoftware.AccesoDatos.TiposDatos;
 using LeandroSoftware.Core;
-using log4net;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.IO;
 using System.Net.Http;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 using System.Windows.Forms;
@@ -17,18 +13,18 @@ namespace LeandroSoftware.Activator
 {
     public partial class FrmEmpresaListado : Form
     {
-        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private FrmEmpresa empresaForm;
         private string strServicioPuntoventaURL;
         private static readonly System.Collections.Specialized.NameValueCollection appSettings = ConfigurationManager.AppSettings;
         private static HttpClient client = new HttpClient();
+        private IList<Empresa> dsDataSet = Array.Empty<Empresa>();
 
         public FrmEmpresaListado()
         {
             InitializeComponent();
         }
 
-        private async void CargarListadoEmpresa()
+        private async Task CargarListadoEmpresa()
         {
             RequestDTO peticion = new RequestDTO
             {
@@ -40,7 +36,6 @@ namespace LeandroSoftware.Activator
                 string strPeticion = new JavaScriptSerializer().Serialize(peticion);
                 string strRespuesta = await Utilitario.EjecutarConsulta(strPeticion, appSettings["ServicioPuntoventaURL"].ToString(), "");
                 strRespuesta = new JavaScriptSerializer().Deserialize<string>(strRespuesta);
-                IList<Empresa> dsDataSet = Array.Empty<Empresa>();
                 dsDataSet = new JavaScriptSerializer().Deserialize<List<Empresa>>(strRespuesta); 
                 cboEmpresa.DataSource = dsDataSet;
             }
@@ -51,33 +46,41 @@ namespace LeandroSoftware.Activator
             }
         }
 
-        private void FrmEmpresaListado_Load(object sender, EventArgs e)
+        private async void FrmEmpresaListado_Load(object sender, EventArgs e)
         {
+            btnAgregar.Enabled = false;
+            btnEditar.Enabled = false;
             strServicioPuntoventaURL = appSettings["ServicioPuntoventaURL"];
             cboEmpresa.ValueMember = "IdEmpresa";
-            cboEmpresa.DisplayMember = "NombreEmpresa";
-            CargarListadoEmpresa();
+            cboEmpresa.DisplayMember = "NombreComercial";
+            await CargarListadoEmpresa();
+            btnAgregar.Enabled = true;
+            if (dsDataSet.Count > 0) btnEditar.Enabled = true;
         }
 
-        private void btnAgregar_Click(object sender, EventArgs e)
+        private async void BtnAgregar_Click(object sender, EventArgs e)
         {
-            empresaForm = new FrmEmpresa();
-            empresaForm.strServicioPuntoventaURL = strServicioPuntoventaURL;
-            empresaForm.bolEditing = false;
+            empresaForm = new FrmEmpresa
+            {
+                strServicioPuntoventaURL = strServicioPuntoventaURL,
+                bolEditing = false
+            };
             empresaForm.ShowDialog();
-            CargarListadoEmpresa();
+            await CargarListadoEmpresa();
         }
 
-        private void btnEditar_Click(object sender, EventArgs e)
+        private void BtnEditar_Click(object sender, EventArgs e)
         {
-            empresaForm = new FrmEmpresa();
-            empresaForm.strServicioPuntoventaURL = strServicioPuntoventaURL;
-            empresaForm.bolEditing = true;
-            empresaForm.intIdEmpresa = (int)cboEmpresa.SelectedValue;
+            empresaForm = new FrmEmpresa
+            {
+                strServicioPuntoventaURL = strServicioPuntoventaURL,
+                bolEditing = true,
+                intIdEmpresa = (int)cboEmpresa.SelectedValue
+            };
             empresaForm.ShowDialog();
         }
 
-        private void cboEmpresa_SelectedIndexChanged(object sender, EventArgs e)
+        private void CboEmpresa_SelectedIndexChanged(object sender, EventArgs e)
         {
             int selectedValue = (int)cboEmpresa.SelectedValue;
             if (selectedValue > -1)

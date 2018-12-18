@@ -687,9 +687,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(ordenCompra.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                        throw new Exception("La empresa asignada a la transacción no existe.");
-                    if (ordenCompra.Aplicado == true)
-                        throw new BusinessException("La orden de servicio no puede ser modificada porque ya genero un registro de compra.");
+                    if (ordenCompra.Aplicado == true) throw new BusinessException("La orden de servicio no puede ser modificada porque ya genero un registro de compra.");
                     List<DetalleOrdenCompra> listadoDetalleAnterior = dbContext.DetalleOrdenCompraRepository.Where(x => x.IdOrdenCompra == ordenCompra.IdOrdenCompra).ToList();
                     foreach (DetalleOrdenCompra detalle in listadoDetalleAnterior)
                         dbContext.NotificarEliminacion(detalle);

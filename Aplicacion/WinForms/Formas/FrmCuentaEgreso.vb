@@ -1,10 +1,7 @@
 Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
-Imports LeandroSoftware.AccesoDatos.Servicios
-Imports Unity
 
 Public Class FrmCuentaEgreso
 #Region "Variables"
-    Public servicioEgresos As IEgresoService
     Public intIdCuenta As Integer
     Private datos As CuentaEgreso
 #End Region
@@ -24,7 +21,7 @@ Public Class FrmCuentaEgreso
     Private Sub FrmCuentaEgreso_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         If intIdCuenta > 0 Then
             Try
-                datos = servicioEgresos.obtenerCuentaEgreso(intIdCuenta)
+                'datos = servicioEgresos.obtenerCuentaEgreso(intIdCuenta)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Close()
@@ -58,9 +55,9 @@ Public Class FrmCuentaEgreso
         datos.Descripcion = txtDescripcion.Text
         Try
             If datos.IdCuenta = 0 Then
-                servicioEgresos.AgregarCuentaEgreso(datos)
+                'servicioEgresos.AgregarCuentaEgreso(datos)
             Else
-                servicioEgresos.ActualizarCuentaEgreso(datos)
+                'servicioEgresos.ActualizarCuentaEgreso(datos)
             End If
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)

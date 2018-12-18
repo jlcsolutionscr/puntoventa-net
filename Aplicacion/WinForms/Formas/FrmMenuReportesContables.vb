@@ -1,17 +1,8 @@
-Imports System.Collections
-Imports CrystalDecisions.Shared
-Imports CrystalDecisions.CrystalReports.Engine
-Imports LeandroSoftware.Core.CommonTypes
-Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
-Imports LeandroSoftware.AccesoDatos.Servicios
-Imports Unity
-
 Public Class FrmMenuReportesContables
 #Region "Variables"
     Private strUsuario, strEmpresa As String
     Private intMes, intAnnio As Integer
     Private dtbDatos, dtbSubRepDatos As DataTable
-    Private servicioReportes As IReporteService
 #End Region
 
 #Region "Métodos"
@@ -29,7 +20,7 @@ Public Class FrmMenuReportesContables
                 Case "Detalle de Movimientos de Diario"
                     Dim reptMovimientosContables As New rptMovimientosContables
                     Try
-                        dtbDatos = servicioReportes.ObtenerReporteMovimientosContables(FrmMenuPrincipal.empresaGlobal.IdEmpresa, dtpFechaInicial.Text, dtpFechaFinal.Text)
+                        'dtbDatos = servicioReportes.ObtenerReporteMovimientosContables(FrmMenuPrincipal.empresaGlobal.IdEmpresa, dtpFechaInicial.Text, dtpFechaFinal.Text)
                     Catch ex As Exception
                         MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         Exit Sub
@@ -44,7 +35,7 @@ Public Class FrmMenuReportesContables
                 Case "Balance de Comprobación Histórico"
                     Dim reptBalanceComprobacion As New rptBalanceComprobacion
                     Try
-                        dtbDatos = servicioReportes.ObtenerReporteBalanceComprobacion(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intMes, intAnnio)
+                        'dtbDatos = servicioReportes.ObtenerReporteBalanceComprobacion(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intMes, intAnnio)
                     Catch ex As Exception
                         MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         Exit Sub
@@ -59,7 +50,7 @@ Public Class FrmMenuReportesContables
                 Case "Balance de Comprobación Actual"
                     Dim reptBalanceComprobacion As New rptBalanceComprobacion
                     Try
-                        dtbDatos = servicioReportes.ObtenerReporteBalanceComprobacion(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
+                        'dtbDatos = servicioReportes.ObtenerReporteBalanceComprobacion(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
                     Catch ex As Exception
                         MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         Exit Sub
@@ -75,7 +66,7 @@ Public Class FrmMenuReportesContables
                 Case "Balance de Perdidas y Ganancias"
                     Dim reptPerdidasyGanancias As New rptPerdidasyGanacias
                     Try
-                        dtbDatos = servicioReportes.ObtenerReportePerdidasyGanancias(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
+                        'dtbDatos = servicioReportes.ObtenerReportePerdidasyGanancias(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
                     Catch ex As Exception
                         MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         Exit Sub
@@ -90,7 +81,7 @@ Public Class FrmMenuReportesContables
                     Dim formaCuentaDeBalance As New FrmMenuCuentaDeBalance
                     If formaCuentaDeBalance.ShowDialog() = System.Windows.Forms.DialogResult.OK Then
                         Try
-                            dtbDatos = servicioReportes.ObtenerReporteDetalleMovimientosCuentasDeBalance(FrmMenuPrincipal.empresaGlobal.IdEmpresa, FrmMenuPrincipal.intBusqueda, dtpFechaInicial.Text, dtpFechaFinal.Text)
+                            'dtbDatos = servicioReportes.ObtenerReporteDetalleMovimientosCuentasDeBalance(FrmMenuPrincipal.empresaGlobal.IdEmpresa, FrmMenuPrincipal.intBusqueda, dtpFechaInicial.Text, dtpFechaFinal.Text)
                         Catch ex As Exception
                             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                             Exit Sub
@@ -107,16 +98,6 @@ Public Class FrmMenuReportesContables
         Else
             MsgBox("Debe seleccionar un reporte de la lista.", MsgBoxStyle.Information + MsgBoxStyle.OkOnly)
         End If
-    End Sub
-
-    Private Sub FrmRptMenu_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        Try
-            servicioReportes = FrmMenuPrincipal.unityContainer.Resolve(Of IReporteService)()
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-            Exit Sub
-        End Try
     End Sub
 
     Private Sub LstReporte_DoubleClick(ByVal sender As Object, ByVal e As EventArgs) Handles LstReporte.DoubleClick

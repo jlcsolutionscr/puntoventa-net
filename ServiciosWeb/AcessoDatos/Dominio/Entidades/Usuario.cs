@@ -10,10 +10,9 @@ namespace LeandroSoftware.AccesoDatos.Dominio.Entidades
         public Usuario()
         {
             RolePorUsuario = new HashSet<RolePorUsuario>();
+            EmpresaPorUsuario = new HashSet<EmpresaPorUsuario>();
         }
 
-        [ForeignKey("Empresa")]
-        public int IdEmpresa { get; set; }
         [Key]
         public int IdUsuario { get; set; }
         public string CodigoUsuario { get; set; }
@@ -22,8 +21,10 @@ namespace LeandroSoftware.AccesoDatos.Dominio.Entidades
         public string ClaveSinEncriptar { get; set; }
         public bool Modifica { get; set; }
         public bool AutorizaCredito { get; set; }
+        [NotMapped]
+        public Empresa Empresa;
 
-        public Empresa Empresa { get; set; }
         public ICollection<RolePorUsuario> RolePorUsuario { get; set; }
+        public ICollection<EmpresaPorUsuario> EmpresaPorUsuario { get; set; }
     }
 }

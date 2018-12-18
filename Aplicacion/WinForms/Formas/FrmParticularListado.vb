@@ -1,14 +1,10 @@
-﻿Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
-Imports LeandroSoftware.AccesoDatos.Servicios
-Imports Unity
-
-Public Class FrmParticularListado
+﻿Public Class FrmParticularListado
 #Region "Variables"
-    Private servicioMantenimiento As IMantenimientoService
     Private intTotalEmpresas As Integer
     Private intIndiceDePagina As Integer
     Private intFilasPorPagina As Integer = 16
     Private intCantidadDePaginas As Integer
+    Private listado As IList
 #End Region
 
 #Region "Métodos"
@@ -45,7 +41,7 @@ Public Class FrmParticularListado
 
     Private Sub ActualizarDatos(ByVal intNumeroPagina As Integer)
         Try
-            Dim listado As IList = servicioMantenimiento.ObtenerListaParticulares(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, txtNombre.Text)
+            'listado = servicioMantenimiento.ObtenerListaParticulares(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, txtNombre.Text)
             dgvDatos.DataSource = listado
             If listado.Count() > 0 Then
                 btnEditar.Enabled = True
@@ -65,7 +61,7 @@ Public Class FrmParticularListado
 
     Private Sub ValidarCantidadEmpresas()
         Try
-            intTotalEmpresas = servicioMantenimiento.ObtenerTotalListaParticulares(FrmMenuPrincipal.empresaGlobal.IdEmpresa, txtNombre.Text)
+            'intTotalEmpresas = servicioMantenimiento.ObtenerTotalListaParticulares(FrmMenuPrincipal.empresaGlobal.IdEmpresa, txtNombre.Text)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -113,13 +109,6 @@ Public Class FrmParticularListado
     End Sub
 
     Private Sub FrmClienteListado_Shown(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Shown
-        Try
-            servicioMantenimiento = FrmMenuPrincipal.unityContainer.Resolve(Of IMantenimientoService)()
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-            Exit Sub
-        End Try
         EstablecerPropiedadesDataGridView()
         ValidarCantidadEmpresas()
         intIndiceDePagina = 1
@@ -127,29 +116,29 @@ Public Class FrmParticularListado
     End Sub
 
     Private Sub btnAgregar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnAgregar.Click
-        Dim formMant As New FrmParticular With {
-            .intIdParticular = 0,
-            .servicioMantenimiento = servicioMantenimiento
-        }
-        formMant.ShowDialog()
+        'Dim formMant As New FrmParticular With {
+        '    .intIdParticular = 0,
+        '    .servicioMantenimiento = servicioMantenimiento
+        '}
+        'formMant.ShowDialog()
         ValidarCantidadEmpresas()
         intIndiceDePagina = 1
         ActualizarDatos(intIndiceDePagina)
     End Sub
 
     Private Sub btnEditar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEditar.Click
-        Dim formMant As New FrmParticular With {
-            .intIdParticular = dgvDatos.CurrentRow.Cells(0).Value,
-            .servicioMantenimiento = servicioMantenimiento
-        }
-        formMant.ShowDialog()
+        'Dim formMant As New FrmParticular With {
+        '    .intIdParticular = dgvDatos.CurrentRow.Cells(0).Value,
+        '    .servicioMantenimiento = servicioMantenimiento
+        '}
+        'formMant.ShowDialog()
         ActualizarDatos(intIndiceDePagina)
     End Sub
 
     Private Sub btnEliminar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEliminar.Click
         If MessageBox.Show("Desea eliminar el registro actual", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
             Try
-                servicioMantenimiento.EliminarParticular(dgvDatos.CurrentRow.Cells(0).Value)
+                'servicioMantenimiento.EliminarParticular(dgvDatos.CurrentRow.Cells(0).Value)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub

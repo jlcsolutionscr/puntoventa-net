@@ -1,10 +1,7 @@
 Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
-Imports LeandroSoftware.AccesoDatos.Servicios
-Imports Unity
 
 Public Class FrmCuentaBanco
 #Region "Variables"
-    Public servicioAuxiliarBancario As IBancaService
     Public intIdCuenta As Integer
     Private datos As CuentaBanco
 #End Region
@@ -30,7 +27,7 @@ Public Class FrmCuentaBanco
     Private Sub FrmCuentaBanco_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         If intIdCuenta > 0 Then
             Try
-                datos = servicioAuxiliarBancario.ObtenerCuentaBanco(intIdCuenta)
+                'datos = servicioAuxiliarBancario.ObtenerCuentaBanco(intIdCuenta)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Close()
@@ -69,10 +66,10 @@ Public Class FrmCuentaBanco
         datos.Saldo = txtSaldo.Text
         Try
             If datos.IdCuenta = 0 Then
-                servicioAuxiliarBancario.AgregarCuentaBanco(datos)
+                'servicioAuxiliarBancario.AgregarCuentaBanco(datos)
                 txtIdCuenta.Text = datos.IdCuenta
             Else
-                servicioAuxiliarBancario.ActualizarCuentaBanco(datos)
+                'servicioAuxiliarBancario.ActualizarCuentaBanco(datos)
             End If
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)

@@ -17,10 +17,10 @@ using Unity.Lifetime;
 
 namespace LeandroSoftware.AccesoDatos.ServicioWCF
 {
-    public class PuntoventaWCF : IPuntoventaWCF
+    public class PuntoventaWCF : IPuntoventaWCF, IDisposable
     {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        private ICorreoService servicioEnvioCorreo;
+        private static ICorreoService servicioEnvioCorreo;
         private IMantenimientoService servicioMantenimiento;
         private IFacturacionService servicioFacturacion;
         IUnityContainer unityContainer;
@@ -116,6 +116,7 @@ namespace LeandroSoftware.AccesoDatos.ServicioWCF
                 DocumentoElectronico documento;
                 JObject parametrosJO;
                 int intIdEmpresa;
+                string strIdentificacion;
                 int intIdProvincia;
                 int intIdCanton;
                 int intIdDistrito;
@@ -125,12 +126,10 @@ namespace LeandroSoftware.AccesoDatos.ServicioWCF
                 {
                     case "ValidarCredenciales":
                         parametrosJO = JObject.Parse(datos.DatosPeticion);
-                        string strIdentificacion = parametrosJO.Property("Identificacion").Value.ToString();
+                        strIdentificacion = parametrosJO.Property("Identificacion").Value.ToString();
                         string strUsuario = parametrosJO.Property("Usuario").Value.ToString();
                         string strClave = parametrosJO.Property("Clave").Value.ToString();
-                        empresa = servicioMantenimiento.ObtenerEmpresaPorIdentificacion(strIdentificacion);
-                        if (empresa == null) throw new Exception("Empresa no registrada en el sistema.Por favor, pongase en contacto con su proveedor del servicio.");
-                        usuario = servicioMantenimiento.ValidarUsuario(empresa.IdEmpresa, strUsuario, strClave, appSettings["AppThumptprint"]);
+                        usuario = servicioMantenimiento.ValidarCredenciales(strIdentificacion, strUsuario, strClave, appSettings["AppThumptprint"]);
                         if (usuario != null)
                         {
                             foreach (RolePorUsuario role in usuario.RolePorUsuario)
@@ -142,6 +141,15 @@ namespace LeandroSoftware.AccesoDatos.ServicioWCF
                         parametrosJO = JObject.Parse(datos.DatosPeticion);
                         intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                         empresa = servicioMantenimiento.ObtenerEmpresa(intIdEmpresa);
+                        if (empresa != null)
+                        {
+                            strRespuesta = serializer.Serialize(empresa);
+                        }
+                        break;
+                    case "ObtenerEmpresaPorIdentificacion":
+                        parametrosJO = JObject.Parse(datos.DatosPeticion);
+                        strIdentificacion = parametrosJO.Property("Identificacion").Value.ToString();
+                        empresa = servicioMantenimiento.ObtenerEmpresaPorIdentificacion(strIdentificacion);
                         if (empresa != null)
                         {
                             foreach (DetalleRegistro detalle in empresa.DetalleRegistro)
@@ -162,6 +170,16 @@ namespace LeandroSoftware.AccesoDatos.ServicioWCF
                         IList<TipoIdentificacion> listadoTipoIdentificacion = (List<TipoIdentificacion>)servicioMantenimiento.ObtenerListaTipoIdentificacion();
                         if (listadoTipoIdentificacion.Count > 0)
                             strRespuesta = serializer.Serialize(listadoTipoIdentificacion);
+                        break;
+                    case "ObtenerListaModulos":
+                        IList<Modulo> listadoModulos = (List<Modulo>)servicioMantenimiento.ObtenerListaModulos();
+                        if (listadoModulos.Count > 0)
+                            strRespuesta = serializer.Serialize(listadoModulos);
+                        break;
+                    case "ObtenerListaReportes":
+                        IList<CatalogoReporte> listadoReportes = (List<CatalogoReporte>)servicioMantenimiento.ObtenerListaReportes();
+                        if (listadoReportes.Count > 0)
+                            strRespuesta = serializer.Serialize(listadoReportes);
                         break;
                     case "ObtenerListaProvincias":
                         IList<Provincia> listadoProvincias = (List<Provincia>)servicioMantenimiento.ObtenerListaProvincias();
@@ -192,6 +210,7 @@ namespace LeandroSoftware.AccesoDatos.ServicioWCF
                         if (listadoBarrios.Count > 0)
                             strRespuesta = serializer.Serialize(listadoBarrios);
                         break;
+                    
                     case "AgregarEmpresa":
                         empresa = serializer.Deserialize<Empresa>(datos.DatosPeticion);
                         Empresa nuevoRegistro = servicioMantenimiento.AgregarEmpresa(empresa);
@@ -264,6 +283,7 @@ namespace LeandroSoftware.AccesoDatos.ServicioWCF
 
         public void Dispose()
         {
+            unityContainer.Dispose();
             GC.SuppressFinalize(this);
         }
     }

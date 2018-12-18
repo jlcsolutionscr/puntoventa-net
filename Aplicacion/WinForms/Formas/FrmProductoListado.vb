@@ -1,14 +1,10 @@
-﻿Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
-Imports LeandroSoftware.AccesoDatos.Servicios
-Imports Unity
-
-Public Class FrmProductoListado
+﻿Public Class FrmProductoListado
 #Region "Variables"
-    Private servicioMantenimiento As IMantenimientoService
     Private intTotalEmpresas As Integer
     Private intIndiceDePagina As Integer
     Private intFilasPorPagina As Integer = 16
     Private intCantidadDePaginas As Integer
+    Private listado As IList
 #End Region
 
 #Region "Métodos"
@@ -56,7 +52,7 @@ Public Class FrmProductoListado
 
     Private Sub ActualizarDatos(ByVal intNumeroPagina As Integer)
         Try
-            Dim listado As IList = servicioMantenimiento.ObtenerListaProductos(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, True, cboLinea.SelectedValue, txtCodigo.Text, txtDescripcion.Text)
+            'listado = servicioMantenimiento.ObtenerListaProductos(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, True, cboLinea.SelectedValue, txtCodigo.Text, txtDescripcion.Text)
             dgvDatos.DataSource = listado
             If listado.Count() > 0 Then
                 btnEditar.Enabled = True
@@ -76,7 +72,7 @@ Public Class FrmProductoListado
 
     Private Sub ValidarCantidadEmpresas()
         Try
-            intTotalEmpresas = servicioMantenimiento.ObtenerTotalListaProductos(FrmMenuPrincipal.empresaGlobal.IdEmpresa, True, cboLinea.SelectedValue, txtCodigo.Text, txtDescripcion.Text)
+            'intTotalEmpresas = servicioMantenimiento.ObtenerTotalListaProductos(FrmMenuPrincipal.empresaGlobal.IdEmpresa, True, cboLinea.SelectedValue, txtCodigo.Text, txtDescripcion.Text)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -99,7 +95,7 @@ Public Class FrmProductoListado
 
     Private Sub CargarComboBox()
         Try
-            cboLinea.DataSource = servicioMantenimiento.ObtenerListaLineas(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
+            'cboLinea.DataSource = servicioMantenimiento.ObtenerListaLineas(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
             cboLinea.ValueMember = "IdLinea"
             cboLinea.DisplayMember = "Descripcion"
         Catch ex As Exception
@@ -137,13 +133,6 @@ Public Class FrmProductoListado
     End Sub
 
     Private Sub FrmProductoListado_Shown(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Shown
-        Try
-            servicioMantenimiento = FrmMenuPrincipal.unityContainer.Resolve(Of IMantenimientoService)()
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-            Exit Sub
-        End Try
         CargarComboBox()
         EstablecerPropiedadesDataGridView()
         ValidarCantidadEmpresas()
@@ -152,29 +141,29 @@ Public Class FrmProductoListado
     End Sub
 
     Private Sub btnAgregar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnAgregar.Click
-        Dim formMant As New FrmProducto With {
-            .intIdProducto = 0,
-            .servicioMantenimiento = servicioMantenimiento
-        }
-        formMant.ShowDialog()
+        'Dim formMant As New FrmProducto With {
+        '    .intIdProducto = 0,
+        '    .servicioMantenimiento = servicioMantenimiento
+        '}
+        'formMant.ShowDialog()
         ValidarCantidadEmpresas()
         intIndiceDePagina = 1
         ActualizarDatos(intIndiceDePagina)
     End Sub
 
     Private Sub btnEditar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEditar.Click
-        Dim formMant As New FrmProducto With {
-            .intIdProducto = dgvDatos.CurrentRow.Cells(0).Value,
-            .servicioMantenimiento = servicioMantenimiento
-            }
-        formMant.ShowDialog()
+        'Dim formMant As New FrmProducto With {
+        '    .intIdProducto = dgvDatos.CurrentRow.Cells(0).Value,
+        '    .servicioMantenimiento = servicioMantenimiento
+        '    }
+        'formMant.ShowDialog()
         ActualizarDatos(intIndiceDePagina)
     End Sub
 
     Private Sub btnEliminar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEliminar.Click
         If MessageBox.Show("Desea eliminar el registro actual", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
             Try
-                servicioMantenimiento.EliminarProducto(dgvDatos.CurrentRow.Cells(0).Value)
+                'servicioMantenimiento.EliminarProducto(dgvDatos.CurrentRow.Cells(0).Value)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub

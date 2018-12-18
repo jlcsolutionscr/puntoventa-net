@@ -1,7 +1,5 @@
 Imports System.Collections.Generic
 Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
-Imports LeandroSoftware.AccesoDatos.Servicios
-Imports Unity
 Imports System.Xml
 
 Public Class FrmTrasladoMercaderia
@@ -10,14 +8,13 @@ Public Class FrmTrasladoMercaderia
     Private I As Short
     Private dtbDatosLocal, dtbDetalleTraslado As DataTable
     Private dtrRowDetTraslado As DataRow
-    Private arrDetalleTraslado As List(Of ModuloImpresion.clsDetalleComprobante)
-    Private servicioTraslados As ITrasladoService
-    Private servicioMantenimiento As IMantenimientoService
+    Private arrDetalleTraslado As List(Of ModuloImpresion.ClsDetalleComprobante)
     Private traslado As Traslado
     Private detalleTraslado As DetalleTraslado
     Private producto As Producto
-    Private comprobante As ModuloImpresion.clsComprobante
-    Private detalleComprobante As ModuloImpresion.clsDetalleComprobante
+    Private comprobante As ModuloImpresion.ClsComprobante
+    Private detalleComprobante As ModuloImpresion.ClsDetalleComprobante
+    Private listOfProducts As IList(Of Producto)
     Private bolInit As Boolean = True
 #End Region
 
@@ -140,7 +137,7 @@ Public Class FrmTrasladoMercaderia
         Try
             cboIdSucursal.ValueMember = "IdSucursal"
             cboIdSucursal.DisplayMember = "Nombre"
-            cboIdSucursal.DataSource = servicioTraslados.ObtenerListaSucursales(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
+            'cboIdSucursal.DataSource = servicioTraslados.ObtenerListaSucursales(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
@@ -157,7 +154,7 @@ Public Class FrmTrasladoMercaderia
                     End If
                 End If
                 Try
-                    producto = servicioMantenimiento.ObtenerProductoPorCodigo(txtCodigo.Text)
+                    'producto = servicioMantenimiento.ObtenerProductoPorCodigo(txtCodigo.Text)
                 Catch ex As Exception
                     MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
@@ -181,7 +178,7 @@ Public Class FrmTrasladoMercaderia
 
     Private Sub CargarAutoCompletarProducto()
         Dim source As AutoCompleteStringCollection = New AutoCompleteStringCollection()
-        Dim listOfProducts As ICollection(Of Producto) = servicioMantenimiento.ObtenerListaProductos(FrmMenuPrincipal.empresaGlobal.IdEmpresa, 1, 0, True)
+        'listOfProducts = servicioMantenimiento.ObtenerListaProductos(FrmMenuPrincipal.empresaGlobal.IdEmpresa, 1, 0, True)
         For Each producto As Producto In listOfProducts
             source.Add(String.Concat(producto.Codigo, " ", producto.Descripcion))
         Next
@@ -193,14 +190,6 @@ Public Class FrmTrasladoMercaderia
 
 #Region "Eventos Controles"
     Private Sub FrmTraslado_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        Try
-            servicioTraslados = FrmMenuPrincipal.unityContainer.Resolve(Of ITrasladoService)()
-            servicioMantenimiento = FrmMenuPrincipal.unityContainer.Resolve(Of IMantenimientoService)()
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-            Exit Sub
-        End Try
         txtFecha.Text = FrmMenuPrincipal.ObtenerFechaFormateada(Now())
         CargarCombos()
         If FrmMenuPrincipal.empresaGlobal.AutoCompletaProducto = True Then
@@ -244,7 +233,7 @@ Public Class FrmTrasladoMercaderia
         If txtIdTraslado.Text <> "" Then
             If MessageBox.Show("Desea anular este registro?", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
                 Try
-                    servicioTraslados.AnularTraslado(txtIdTraslado.Text, FrmMenuPrincipal.usuarioGlobal.IdUsuario)
+                    'servicioTraslados.AnularTraslado(txtIdTraslado.Text, FrmMenuPrincipal.usuarioGlobal.IdUsuario)
                 Catch ex As Exception
                     MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
@@ -261,7 +250,7 @@ Public Class FrmTrasladoMercaderia
         formBusqueda.ShowDialog()
         If FrmMenuPrincipal.intBusqueda > 0 Then
             Try
-                traslado = servicioTraslados.ObtenerTraslado(FrmMenuPrincipal.intBusqueda)
+                'traslado = servicioTraslados.ObtenerTraslado(FrmMenuPrincipal.intBusqueda)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
@@ -327,7 +316,7 @@ Public Class FrmTrasladoMercaderia
                     traslado.DetalleTraslado.Add(detalleTraslado)
                 Next
                 Try
-                    traslado = servicioTraslados.AgregarTraslado(traslado)
+                    'traslado = servicioTraslados.AgregarTraslado(traslado)
                     txtIdTraslado.Text = traslado.IdTraslado
                 Catch ex As Exception
                     txtIdTraslado.Text = ""
@@ -337,7 +326,7 @@ Public Class FrmTrasladoMercaderia
             Else
                 traslado.NoDocumento = txtDocumento.Text
                 Try
-                    servicioTraslados.ActualizarTraslado(traslado)
+                    'servicioTraslados.ActualizarTraslado(traslado)
                 Catch ex As Exception
                     MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
@@ -362,7 +351,7 @@ Public Class FrmTrasladoMercaderia
 
     Private Sub btnImprimir_Click(sender As Object, e As EventArgs) Handles btnImprimir.Click
         If txtIdTraslado.Text <> "" Then
-            comprobante = New ModuloImpresion.clsComprobante With {
+            comprobante = New ModuloImpresion.ClsComprobante With {
                 .usuario = FrmMenuPrincipal.usuarioGlobal,
                 .empresa = FrmMenuPrincipal.empresaGlobal,
                 .equipo = FrmMenuPrincipal.equipoGlobal,

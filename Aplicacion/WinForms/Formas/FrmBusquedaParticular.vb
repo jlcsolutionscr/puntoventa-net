@@ -1,11 +1,5 @@
-Imports System.Collections.Generic
-Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
-Imports LeandroSoftware.AccesoDatos.Servicios
-Imports Unity
-
 Public Class FrmBusquedaParticular
 #Region "Variables"
-    Private servicioMantenimiento As IMantenimientoService
     Private intTotalEmpresas As Integer
     Private intIndiceDePagina As Integer
     Private intFilasPorPagina As Integer = 13
@@ -19,41 +13,41 @@ Public Class FrmBusquedaParticular
         Dim dvcTelefono As New DataGridViewTextBoxColumn
         Dim dvcCelular As New DataGridViewTextBoxColumn
 
-        FlexProducto.Columns.Clear()
-        FlexProducto.AutoGenerateColumns = False
+        dgvListado.Columns.Clear()
+        dgvListado.AutoGenerateColumns = False
         dvcId.HeaderText = "Id"
         dvcId.DataPropertyName = "IdParticular"
         dvcId.Width = 50
-        FlexProducto.Columns.Add(dvcId)
+        dgvListado.Columns.Add(dvcId)
         dvcNombre.HeaderText = "Nombre"
         dvcNombre.DataPropertyName = "Nombre"
         dvcNombre.Width = 430
-        FlexProducto.Columns.Add(dvcNombre)
+        dgvListado.Columns.Add(dvcNombre)
         dvcTelefono.HeaderText = "Teléefono"
         dvcTelefono.DataPropertyName = "Telefono"
         dvcTelefono.Width = 70
-        FlexProducto.Columns.Add(dvcTelefono)
+        dgvListado.Columns.Add(dvcTelefono)
         dvcCelular.HeaderText = "Celular"
         dvcCelular.DataPropertyName = "Celular"
         dvcCelular.Width = 70
-        FlexProducto.Columns.Add(dvcCelular)
+        dgvListado.Columns.Add(dvcCelular)
     End Sub
 
     Private Sub ActualizarDatos(ByVal intNumeroPagina As Integer)
         Try
-            FlexProducto.DataSource = servicioMantenimiento.ObtenerListaParticulares(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, txtNombre.Text)
+            'dgvListado.DataSource = servicioMantenimiento.ObtenerListaParticulares(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, txtNombre.Text)
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
             Exit Sub
         End Try
-        FlexProducto.Refresh()
+        dgvListado.Refresh()
     End Sub
 
     Private Sub ValidarCantidadEmpresas()
         Try
-            intTotalEmpresas = servicioMantenimiento.ObtenerTotalListaParticulares(FrmMenuPrincipal.empresaGlobal.IdEmpresa, txtNombre.Text)
+            'intTotalEmpresas = servicioMantenimiento.ObtenerTotalListaParticulares(FrmMenuPrincipal.empresaGlobal.IdEmpresa, txtNombre.Text)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -101,22 +95,15 @@ Public Class FrmBusquedaParticular
     End Sub
 
     Private Sub FrmBusProd_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        Try
-            servicioMantenimiento = FrmMenuPrincipal.unityContainer.Resolve(Of IMantenimientoService)()
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-            Exit Sub
-        End Try
         EstablecerPropiedadesDataGridView()
         ValidarCantidadEmpresas()
         intIndiceDePagina = 1
         ActualizarDatos(intIndiceDePagina)
     End Sub
 
-    Private Sub FlexProducto_DoubleClick(ByVal sender As Object, ByVal e As EventArgs) Handles FlexProducto.DoubleClick
-        If FlexProducto.RowCount > 0 Then
-            FrmMenuPrincipal.intBusqueda = FlexProducto.CurrentRow.Cells(0).Value
+    Private Sub FlexProducto_DoubleClick(ByVal sender As Object, ByVal e As EventArgs) Handles dgvListado.DoubleClick
+        If dgvListado.RowCount > 0 Then
+            FrmMenuPrincipal.intBusqueda = dgvListado.CurrentRow.Cells(0).Value
             Close()
         End If
     End Sub

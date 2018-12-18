@@ -1,8 +1,6 @@
 Imports System.Collections.Generic
 Imports LeandroSoftware.Core.CommonTypes
 Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
-Imports LeandroSoftware.AccesoDatos.Servicios
-Imports Unity
 
 Public Class FrmAnulaReciboCxP
 #Region "Variables"
@@ -10,8 +8,6 @@ Public Class FrmAnulaReciboCxP
     Private dtbDatosLocal, dtbDetalleMovimiento As DataTable
     Private dtrRowDetMovimiento As DataRow
     Private bolInit As Boolean = True
-    Private servicioCompras As ICompraService
-    Private servicioCuentaPorPagar As ICuentaPorPagarService
     Private listadoMovimientos As IEnumerable(Of MovimientoCuentaPorPagar)
     Private movimientoCuentaPorPagar As MovimientoCuentaPorPagar
     Private proveedor As Proveedor
@@ -82,7 +78,7 @@ Public Class FrmAnulaReciboCxP
     Private Sub CargarDetalleMovimiento(ByVal intIdProveedor As Integer)
         dtbDetalleMovimiento.Rows.Clear()
         Try
-            listadoMovimientos = servicioCuentaPorPagar.ObtenerListaMovimientos(StaticTipoCuentaPorPagar.Proveedores, intIdProveedor)
+            'listadoMovimientos = servicioCuentaPorPagar.ObtenerListaMovimientos(StaticTipoCuentaPorPagar.Proveedores, intIdProveedor)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
@@ -110,7 +106,7 @@ Public Class FrmAnulaReciboCxP
             If grdDetalleRecibo.CurrentRow.Cells(0).Value.ToString <> "" Then
                 If MessageBox.Show("Desea anular este registro?", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
                     Try
-                        servicioCuentaPorPagar.AnularMovimientoCxP(grdDetalleRecibo.CurrentRow.Cells(0).Value, FrmMenuPrincipal.usuarioGlobal.IdUsuario)
+                        'servicioCuentaPorPagar.AnularMovimientoCxP(grdDetalleRecibo.CurrentRow.Cells(0).Value, FrmMenuPrincipal.usuarioGlobal.IdUsuario)
                     Catch ex As Exception
                         MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         Exit Sub
@@ -132,7 +128,7 @@ Public Class FrmAnulaReciboCxP
         formBusquedaProveedor.ShowDialog()
         If FrmMenuPrincipal.intBusqueda > 0 Then
             Try
-                proveedor = servicioCompras.ObtenerProveedor(FrmMenuPrincipal.intBusqueda)
+                'proveedor = servicioCompras.ObtenerProveedor(FrmMenuPrincipal.intBusqueda)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
@@ -143,14 +139,6 @@ Public Class FrmAnulaReciboCxP
     End Sub
 
     Private Sub FrmAnulaReciboCxP_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        Try
-            servicioCompras = FrmMenuPrincipal.unityContainer.Resolve(Of ICompraService)()
-            servicioCuentaPorPagar = FrmMenuPrincipal.unityContainer.Resolve(Of ICuentaPorPagarService)()
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-            Exit Sub
-        End Try
         IniciaDetalleMovimiento()
         EstablecerPropiedadesDataGridView()
         grdDetalleRecibo.DataSource = dtbDetalleMovimiento

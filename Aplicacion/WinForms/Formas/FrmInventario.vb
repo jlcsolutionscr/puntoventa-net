@@ -1,11 +1,5 @@
-Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
-Imports LeandroSoftware.AccesoDatos.Servicios
-Imports Unity
-
 Public Class FrmInventario
 #Region "Variables"
-    Private servicioMantenimiento As IMantenimientoService
-    Private servicioReportes As IReporteService
     Private intTotalEmpresas As Integer
     Private intIndiceDePagina As Integer
     Private intFilasPorPagina As Integer = 13
@@ -14,9 +8,9 @@ Public Class FrmInventario
 
 #Region "Metodos"
     Private Sub EstablecerPropiedadesDataGridView()
-        GrdDetalle.Columns.Clear()
-        GrdDetalle.AutoGenerateColumns = False
-        Dim dgvNumber As System.Windows.Forms.DataGridViewCellStyle
+        dgvListado.Columns.Clear()
+        dgvListado.AutoGenerateColumns = False
+        Dim dgvNumber As DataGridViewCellStyle
         Dim dvcIdProducto As New DataGridViewTextBoxColumn
         Dim dvcCodigo As New DataGridViewTextBoxColumn
         Dim dvcDescripcion As New DataGridViewTextBoxColumn
@@ -24,7 +18,7 @@ Public Class FrmInventario
         Dim dvcPrecioCosto As New DataGridViewTextBoxColumn
         Dim dvcPrecioVenta As New DataGridViewTextBoxColumn
         Dim dvcPrecioPorMayor As New DataGridViewTextBoxColumn
-        dgvNumber = New System.Windows.Forms.DataGridViewCellStyle With {
+        dgvNumber = New DataGridViewCellStyle With {
             .Format = "N2",
             .NullValue = "0",
             .Alignment = DataGridViewContentAlignment.MiddleRight
@@ -32,46 +26,46 @@ Public Class FrmInventario
         dvcIdProducto.DataPropertyName = "IdProducto"
         dvcIdProducto.HeaderText = "PK"
         dvcIdProducto.Visible = False
-        GrdDetalle.Columns.Add(dvcIdProducto)
+        dgvListado.Columns.Add(dvcIdProducto)
 
         dvcCodigo.DataPropertyName = "Codigo"
         dvcCodigo.HeaderText = "Código"
         dvcCodigo.Width = 120
-        GrdDetalle.Columns.Add(dvcCodigo)
+        dgvListado.Columns.Add(dvcCodigo)
 
         dvcDescripcion.DataPropertyName = "Descripcion"
         dvcDescripcion.HeaderText = "Descripción"
         dvcDescripcion.Width = 230
-        GrdDetalle.Columns.Add(dvcDescripcion)
+        dgvListado.Columns.Add(dvcDescripcion)
 
         dvcCantidad.DataPropertyName = "Cantidad"
         dvcCantidad.HeaderText = "Cant"
         dvcCantidad.Width = 48
         dvcCantidad.DefaultCellStyle = dgvNumber
-        GrdDetalle.Columns.Add(dvcCantidad)
+        dgvListado.Columns.Add(dvcCantidad)
 
         dvcPrecioCosto.DataPropertyName = "PrecioCosto"
         dvcPrecioCosto.HeaderText = "Precio Costo"
         dvcPrecioCosto.Width = 100
         dvcPrecioCosto.DefaultCellStyle = dgvNumber
-        GrdDetalle.Columns.Add(dvcPrecioCosto)
+        dgvListado.Columns.Add(dvcPrecioCosto)
 
         dvcPrecioVenta.DataPropertyName = "PrecioVenta"
         dvcPrecioVenta.HeaderText = "Precio Venta"
         dvcPrecioVenta.Width = 100
         dvcPrecioVenta.DefaultCellStyle = dgvNumber
-        GrdDetalle.Columns.Add(dvcPrecioVenta)
+        dgvListado.Columns.Add(dvcPrecioVenta)
 
         dvcPrecioPorMayor.DataPropertyName = "PrecioVentaPorMayor"
         dvcPrecioPorMayor.HeaderText = "Prec. x Mayor"
         dvcPrecioPorMayor.Width = 100
         dvcPrecioPorMayor.DefaultCellStyle = dgvNumber
-        GrdDetalle.Columns.Add(dvcPrecioPorMayor)
+        dgvListado.Columns.Add(dvcPrecioPorMayor)
     End Sub
 
     Private Sub CargarComboBox()
         Try
-            cboLinea.DataSource = servicioMantenimiento.ObtenerListaLineasDeProducto(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
+            'cboLinea.DataSource = servicioMantenimiento.ObtenerListaLineasDeProducto(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
             cboLinea.ValueMember = "IdLinea"
             cboLinea.DisplayMember = "Descripcion"
         Catch ex As Exception
@@ -83,18 +77,18 @@ Public Class FrmInventario
 
     Private Sub ActualizarDatos(ByVal intNumeroPagina As Integer)
         Try
-            GrdDetalle.DataSource = servicioMantenimiento.ObtenerListaProductos(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, False, cboLinea.SelectedValue, txtCodigo.Text, txtDescripcion.Text)
+            'dgvListado.DataSource = servicioMantenimiento.ObtenerListaProductos(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, False, cboLinea.SelectedValue, txtCodigo.Text, txtDescripcion.Text)
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
         End Try
-        GrdDetalle.Refresh()
+        dgvListado.Refresh()
     End Sub
 
     Private Sub ValidarCantidadEmpresas()
         Try
-            intTotalEmpresas = servicioMantenimiento.ObtenerTotalListaProductos(FrmMenuPrincipal.empresaGlobal.IdEmpresa, False, cboLinea.SelectedValue, txtCodigo.Text, txtDescripcion.Text)
+            'intTotalEmpresas = servicioMantenimiento.ObtenerTotalListaProductos(FrmMenuPrincipal.empresaGlobal.IdEmpresa, False, cboLinea.SelectedValue, txtCodigo.Text, txtDescripcion.Text)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -148,14 +142,6 @@ Public Class FrmInventario
     End Sub
 
     Private Sub FrmInventario_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        Try
-            servicioMantenimiento = FrmMenuPrincipal.unityContainer.Resolve(Of IMantenimientoService)()
-            servicioReportes = FrmMenuPrincipal.unityContainer.Resolve(Of IReporteService)()
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-            Exit Sub
-        End Try
         CargarComboBox()
         EstablecerPropiedadesDataGridView()
         ValidarCantidadEmpresas()
@@ -167,7 +153,7 @@ Public Class FrmInventario
         Dim reptInventario As New rptInventario
         Dim formReport As New frmRptViewer()
         Dim dtbDatos As DataTable
-        dtbDatos = servicioReportes.ObtenerReporteInventario(FrmMenuPrincipal.empresaGlobal.IdEmpresa, cboLinea.SelectedValue, txtCodigo.Text, txtDescripcion.Text)
+        'dtbDatos = servicioReportes.ObtenerReporteInventario(FrmMenuPrincipal.empresaGlobal.IdEmpresa, cboLinea.SelectedValue, txtCodigo.Text, txtDescripcion.Text)
         reptInventario.SetDataSource(dtbDatos)
         reptInventario.SetParameterValue(0, FrmMenuPrincipal.usuarioGlobal.CodigoUsuario)
         reptInventario.SetParameterValue(1, FrmMenuPrincipal.empresaGlobal.NombreEmpresa)
@@ -176,10 +162,10 @@ Public Class FrmInventario
     End Sub
 
     Private Sub btnCardex_Click(sender As Object, e As EventArgs) Handles btnCardex.Click
-        If GrdDetalle.Rows.Count > 0 Then
-            If GrdDetalle.CurrentRow.Cells(0).Value.ToString <> "" Then
+        If dgvListado.Rows.Count > 0 Then
+            If dgvListado.CurrentRow.Cells(0).Value.ToString <> "" Then
                 Dim movimiento As New FrmMovimientoProducto With {
-                    .intIdProducto = GrdDetalle.CurrentRow.Cells(0).Value
+                    .intIdProducto = dgvListado.CurrentRow.Cells(0).Value
                 }
                 movimiento.ShowDialog()
             End If

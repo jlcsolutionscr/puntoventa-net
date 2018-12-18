@@ -1,13 +1,10 @@
 ﻿Imports System.IO
 Imports System.Xml
-Imports LeandroSoftware.AccesoDatos.Servicios
 Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
-Imports Unity
 Imports System.Text
 
 Public Class FrmDetalleDocumentoElectronico
 #Region "Variables"
-    Private servicioFacturacion As IFacturacionService
     Private listadoDocumentosProcesados As IList
     Private intTotalDocumentos As Integer
     Private intIndiceDePagina As Integer
@@ -50,7 +47,7 @@ Public Class FrmDetalleDocumentoElectronico
 
     Private Sub ActualizarDatos(ByVal intNumeroPagina As Integer)
         Try
-            listadoDocumentosProcesados = servicioFacturacion.ObtenerListaDocumentosElectronicosProcesados(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina)
+            'listadoDocumentosProcesados = servicioFacturacion.ObtenerListaDocumentosElectronicosProcesados(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina)
             dgvDatos.DataSource = listadoDocumentosProcesados
             If listadoDocumentosProcesados.Count() > 0 Then
                 btnMostrarRespuesta.Enabled = True
@@ -68,7 +65,7 @@ Public Class FrmDetalleDocumentoElectronico
 
     Private Sub ObtenerCantidadDocumentosProcesados()
         Try
-            intTotalDocumentos = servicioFacturacion.ObtenerTotalDocumentosElectronicosProcesados(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
+            'intTotalDocumentos = servicioFacturacion.ObtenerTotalDocumentosElectronicosProcesados(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -117,7 +114,7 @@ Public Class FrmDetalleDocumentoElectronico
 
     Private Sub FrmDetalleDocumentoElectronico_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
-            servicioFacturacion = FrmMenuPrincipal.unityContainer.Resolve(Of IFacturacionService)()
+            'servicioFacturacion = FrmMenuPrincipal.unityContainer.Resolve(Of IFacturacionService)()
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -140,9 +137,10 @@ Public Class FrmDetalleDocumentoElectronico
                 If documento.EstadoEnvio = "aceptado" Or documento.EstadoEnvio = "rechazado" Then
                     rtxDetalleRespuesta.Visible = True
                     Dim sw As New StringWriter()
-                    Dim xw As New XmlTextWriter(sw)
-                    xw.Formatting = Formatting.Indented
-                    xw.Indentation = 4
+                    Dim xw As New XmlTextWriter(sw) With {
+                        .Formatting = Formatting.Indented,
+                        .Indentation = 4
+                    }
                     Dim datos As XmlDocument = New XmlDocument()
                     Dim strBase64String As String = Convert.ToBase64String(documento.Respuesta)
                     Dim strRespuesta As String = Encoding.UTF8.GetString(documento.Respuesta)

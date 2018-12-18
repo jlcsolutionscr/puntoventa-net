@@ -1,4 +1,3 @@
-Imports System.IO
 Imports System.Threading
 Imports System.Configuration
 Imports Unity
@@ -7,9 +6,7 @@ Imports Unity.Lifetime
 Imports Microsoft.Practices.Unity.Configuration
 Imports LeandroSoftware.Core
 Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
-Imports LeandroSoftware.AccesoDatos.Servicios
 Imports System.Collections.Generic
-Imports LeandroSoftware.AccesoDatos.Datos
 Imports LeandroSoftware.AccesoDatos.TiposDatos
 
 Public Class FrmMenuPrincipal
@@ -18,8 +15,6 @@ Public Class FrmMenuPrincipal
     Private bolEquipoRegistrado As Boolean = False
     Private objMenu As ToolStripMenuItem
     Private appSettings As Specialized.NameValueCollection
-    Private servicioRespaldo As IRespaldoService
-    Private servicioMantenimiento As IMantenimientoService
     Public usuarioGlobal As Usuario
     Public empresaGlobal As Empresa
     Public equipoGlobal As DetalleRegistro
@@ -115,38 +110,18 @@ Public Class FrmMenuPrincipal
             Dim strFileName As String = databaseName + "-" + Now.ToShortDateString().Replace("/", "") + ".sql"
             Dim bytes As Byte()
             Try
-                Dim strData As String = servicioRespaldo.GenerarContenidoRespaldo(backupUser, backupPassword, databaseHost, databaseName, mySQLDumpOptions)
+                Dim strData As String = "" 'servicioRespaldo.GenerarContenidoRespaldo(backupUser, backupPassword, databaseHost, databaseName, mySQLDumpOptions)
                 bytes = Utilitario.EncriptarArchivo(strThumbprint, applicationKey, strData)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
-            If Not empresaGlobal.RespaldoEnLinea Then
-                Dim backupFilePath As String = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\" + strFileName
-                If File.Exists(backupFilePath) Then
-                    If MessageBox.Show("El respaldo ya fue generado para la fecha actual. Desea sobreescribir el archivo de respaldo?", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.No Then
-                        MessageBox.Show("Proceso de respaldo cancelado por el usuario.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
-                        Exit Sub
-                    End If
-                    File.Delete(backupFilePath)
-                End If
-                Try
-                    Dim bw As BinaryWriter = New BinaryWriter(New FileStream(backupFilePath, FileMode.Create))
-                    bw.Write(bytes)
-                    bw.Close()
-                Catch ex As Exception
-                    MessageBox.Show("Se produjo un error al generar el archivo respaldo desde la base de datos: " & ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                    Exit Sub
-                End Try
-            Else
-                Try
-                    servicioRespaldo = unityContainer.Resolve(Of IRespaldoService)()
-                    servicioRespaldo.SubirRespaldo(bytes, strFileName)
-                Catch ex As Exception
-                    MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                    Exit Sub
-                End Try
-            End If
+            Try
+                'servicioRespaldo.SubirRespaldo(bytes, strFileName)
+            Catch ex As Exception
+                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Exit Sub
+            End Try
             MessageBox.Show("Respaldo finalizado satisfactoriamente.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
         End If
     End Sub
@@ -466,59 +441,28 @@ Public Class FrmMenuPrincipal
 
 #Region "Eventos Formulario"
     Private Sub FrmMenuPrincipal_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        Dim hostname As String
-        Dim database As String
-        Dim username As String
-        Dim password As String
         picLoader.Top = Me.Height / 2 - (picLoader.Height / 2)
         picLoader.Left = Me.Width / 2 - (picLoader.Width / 2)
         Try
             appSettings = ConfigurationManager.AppSettings
         Catch ex As Exception
-            MessageBox.Show("Error al cargar el archivo de configuración del sistema de activación: " & ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("Error al cargar el archivo de configuración del sistema de activación. Por favor contacte con su proveedor del servicio. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
             Exit Sub
         End Try
         Try
-            datosConfig = New DatosConfiguracion(
-                appSettings.Get("strConsultaIEURL").ToString(),
-                appSettings.Get("strSoapOperation").ToString(),
-                appSettings.Get("strServicioComprobantesURL").ToString(),
-                appSettings.Get("strClientId").ToString(),
-                appSettings.Get("strServicioTokenURL").ToString(),
-                appSettings.Get("strComprobantesCallbackURL").ToString(),
-                appSettings.Get("strCorreoNotificacionErrores").ToString()
-            )
             strThumbprint = appSettings.Get("AppThumptprint")
-            hostname = appSettings.Get("DatabaseHost")
-            database = appSettings.Get("DatabaseName")
-            username = appSettings.Get("LoginUser")
-            password = appSettings.Get("LoginPassword")
             intSucursal = Integer.Parse(appSettings.Get("Sucursal"))
             intTerminal = Integer.Parse(appSettings.Get("Caja"))
             strServicioPuntoventaURL = appSettings.Get("ServicioPuntoventaURL")
             Dim bolCertificadoValido As Boolean = Utilitario.VerificarCertificado(strThumbprint)
             If Not bolCertificadoValido Then
-                MessageBox.Show("No se logró validar el certificado requerido por la aplicación. Por favor contacte con su proveedor del ", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("No se logró validar el certificado requerido por la aplicación. Por favor contacte con su proveedor del servicio. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Close()
                 Exit Sub
             End If
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-            Exit Sub
-        End Try
-        Try
-            Dim strConn As String = "Server=" + hostname + "; Database=" + database + "; UId=" + Utilitario.DesencriptarDatos(strThumbprint, username) + "; Pwd=" + Utilitario.DesencriptarDatos(strThumbprint, password) + ";"
-            unityContainer = New UnityContainer()
-            Dim section As UnityConfigurationSection = ConfigurationManager.GetSection("unity")
-            section.Configure(unityContainer, "Service")
-            unityContainer.RegisterInstance(GetType(String), "conectionString", strConn, New ContainerControlledLifetimeManager())
-            unityContainer.RegisterType(Of IDbContext, LeandroContext)(New InjectionConstructor(New ResolvedParameter(GetType(String), "conectionString")))
-            servicioRespaldo = unityContainer.Resolve(Of IRespaldoService)()
-            servicioMantenimiento = unityContainer.Resolve(Of IMantenimientoService)()
-        Catch ex As Exception
-            MessageBox.Show("Error al iniciar el menu principal: " & ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
             Exit Sub
         End Try
@@ -536,49 +480,64 @@ Public Class FrmMenuPrincipal
             Exit Sub
         End If
         If empresaGlobal Is Nothing Then
-            MessageBox.Show("La empresa no se encuentra registrada en el servicio de facturación electrónica. Contacte a su Proveedor. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            MessageBox.Show("La empresa no se encuentra registrada en el servicio de facturación electrónica. Por favor contacte con su proveedor del servicio. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Close()
             Exit Sub
-        Else
-            If Not empresaGlobal.FacturaElectronica Then
-                MessageBox.Show("La empresa no se encuentra activa para emitir documentos electrónicos. Contacte a su Proveedor. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        End If
+        If Not empresaGlobal.RegimenSimplificado Then
+            If empresaGlobal.Certificado Is Nothing Then
+                MessageBox.Show("La empresa no posee la llave criptográfica requerida. Por favor contacte con su proveedor del servicio. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                 Close()
                 Exit Sub
-            ElseIf Today > empresaGlobal.FechaVence Then
-                MessageBox.Show("Ha Expirado el período del plan de factura electrónica adquirido. Contacte a su Proveedor. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            End If
+            If empresaGlobal.PinCertificado = "" Then
+                MessageBox.Show("La empresa no posee el parámetro PIN de la llave criptográfica. Por favor contacte con su proveedor del servicio. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                Close()
+                Exit Sub
+            End If
+            If Not empresaGlobal.PermiteFacturar Then
+                MessageBox.Show("La empresa no se encuentra activa para emitir documentos electrónicos. Por favor contacte con su proveedor del servicio. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                 Close()
                 Exit Sub
             End If
         End If
+        If Today > empresaGlobal.FechaVence Then
+            Dim strMensajeExpirado = ""
+            If Not empresaGlobal.RegimenSimplificado Then
+                strMensajeExpirado = "El período del plan de factura electrónica adquirido ha expirado. Por favor contacte con su proveedor del servicio. . ."
+            Else
+                strMensajeExpirado = "El período del plan del servicio del sistema de punto de venta ha expirado. Por favor contacte con su proveedor del servicio. . ."
+            End If
+            MessageBox.Show(strMensajeExpirado, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            Close()
+            Exit Sub
+        End If
         Dim strSerial As String = Utilitario.ObtenerSerialEquipo()
         For Each detalleEmpresa As DetalleRegistro In empresaGlobal.DetalleRegistro
-            If 1 = 1 Then
-                'If detalleEmpresa.ValorRegistro = strSerial Then
+            If detalleEmpresa.ValorRegistro = strSerial Then
                 bolEquipoRegistrado = True
                 equipoGlobal = detalleEmpresa
                 Exit For
             End If
         Next
         If Not bolEquipoRegistrado Then
-            MessageBox.Show("Equipo no registrado para la empresa seleccionada. Contacte a su Proveedor. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            MessageBox.Show("Equipo no registrado para la empresa seleccionada. Por favor contacte con su proveedor del servicio. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Close()
             Exit Sub
         End If
         If empresaGlobal.FechaVence IsNot Nothing Then
             If Today > empresaGlobal.FechaVence Then
-                MessageBox.Show("Ha Expirado el período de Prueba del Producto. Contacte a su Proveedor. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                MessageBox.Show("Ha Expirado el período de Prueba del Producto. Por favor contacte con su proveedor del servicio. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                 Close()
                 Exit Sub
             End If
         End If
         For Each moduloPorEmpresa As ModuloPorEmpresa In empresaGlobal.ModuloPorEmpresa
-            Dim modulo As Modulo = servicioMantenimiento.ObtenerModulo(moduloPorEmpresa.IdModulo)
-            objMenu = mnuMenuPrincipal.Items(modulo.MenuPadre)
+            objMenu = mnuMenuPrincipal.Items(moduloPorEmpresa.Modulo.MenuPadre)
             objMenu.Visible = True
         Next
         For Each reportePorEmpresa As ReportePorEmpresa In empresaGlobal.ReportePorEmpresa
-            Dim reporte As CatalogoReporte = servicioMantenimiento.ObtenerCatalogoReporte(reportePorEmpresa.IdReporte)
-            lstListaReportes.Add(reporte.NombreReporte)
+            lstListaReportes.Add(reportePorEmpresa.CatalogoReporte.NombreReporte)
         Next
         dgvDecimal = New DataGridViewCellStyle With {
             .Format = "N2",
@@ -595,7 +554,7 @@ Public Class FrmMenuPrincipal
         formInicio.ShowDialog()
         mnuMenuPrincipal.Visible = True
         Try
-            If empresaGlobal.FacturaElectronica Then
+            If Not empresaGlobal.RegimenSimplificado Then
                 objMenu = mnuMenuPrincipal.Items("MnuDocElect")
                 objMenu.Visible = True
             End If

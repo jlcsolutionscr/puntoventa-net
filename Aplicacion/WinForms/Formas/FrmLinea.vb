@@ -1,10 +1,7 @@
 Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
-Imports LeandroSoftware.AccesoDatos.Servicios
-Imports Unity
 
 Public Class FrmLinea
 #Region "Variables"
-    Public servicioMantenimiento As IMantenimientoService
     Public intIdLinea As Integer
     Private datos As Linea
     Private bolInit As Boolean = True
@@ -25,7 +22,7 @@ Public Class FrmLinea
 
     Private Sub CargarTipoLinea()
         Try
-            cboTipoProducto.DataSource = servicioMantenimiento.ObtenerTiposProducto()
+            'cboTipoProducto.DataSource = servicioMantenimiento.ObtenerTiposProducto()
             cboTipoProducto.ValueMember = "IdTipoProducto"
             cboTipoProducto.DisplayMember = "Descripcion"
         Catch ex As Exception
@@ -40,7 +37,7 @@ Public Class FrmLinea
         CargarTipoLinea()
         If intIdLinea > 0 Then
             Try
-                datos = servicioMantenimiento.ObtenerLinea(intIdLinea)
+                'datos = servicioMantenimiento.ObtenerLinea(intIdLinea)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Close()
@@ -77,10 +74,10 @@ Public Class FrmLinea
         datos.Descripcion = txtDescripcion.Text
         Try
             If datos.IdLinea = 0 Then
-                datos = servicioMantenimiento.AgregarLinea(datos)
+                'datos = servicioMantenimiento.AgregarLinea(datos)
                 txtIdLinea.Text = datos.IdLinea
             Else
-                servicioMantenimiento.ActualizarLinea(datos)
+                'servicioMantenimiento.ActualizarLinea(datos)
             End If
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)

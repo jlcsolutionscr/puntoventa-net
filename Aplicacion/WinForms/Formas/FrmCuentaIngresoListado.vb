@@ -1,10 +1,5 @@
-﻿Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
-Imports LeandroSoftware.AccesoDatos.Servicios
-Imports Unity
-
-Public Class FrmCuentaIngresoListado
+﻿Public Class FrmCuentaIngresoListado
 #Region "Variables"
-    Private servicioIngresos As IIngresoService
 #End Region
 
 #Region "Métodos"
@@ -26,7 +21,7 @@ Public Class FrmCuentaIngresoListado
 
     Private Sub ActualizarDatos()
         Try
-            Dim listado As IList = servicioIngresos.ObtenerListaCuentasIngreso(FrmMenuPrincipal.empresaGlobal.IdEmpresa, txtDescripcion.Text)
+            Dim listado As IList = Nothing 'servicioIngresos.ObtenerListaCuentasIngreso(FrmMenuPrincipal.empresaGlobal.IdEmpresa, txtDescripcion.Text)
             dgvDatos.DataSource = listado
             If listado.Count() > 0 Then
                 btnEditar.Enabled = True
@@ -46,39 +41,32 @@ Public Class FrmCuentaIngresoListado
 
 #Region "Eventos Controles"
     Private Sub FrmCuentaIngresoListado_Shown(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Shown
-        Try
-            servicioIngresos = FrmMenuPrincipal.unityContainer.Resolve(Of IIngresoService)()
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-            Exit Sub
-        End Try
         EstablecerPropiedadesDataGridView()
         ActualizarDatos()
     End Sub
 
     Private Sub btnAgregar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnAgregar.Click
-        Dim formMant As New FrmCuentaIngreso With {
-            .intIdCuenta = 0,
-            .servicioIngresos = servicioIngresos
-        }
-        formMant.ShowDialog()
+        'Dim formMant As New FrmCuentaIngreso With {
+        '    .intIdCuenta = 0,
+        '    .servicioIngresos = servicioIngresos
+        '}
+        'formMant.ShowDialog()
         ActualizarDatos()
     End Sub
 
     Private Sub btnEditar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEditar.Click
-        Dim formMant As New FrmCuentaIngreso With {
-            .intIdCuenta = dgvDatos.CurrentRow.Cells(0).Value,
-            .servicioIngresos = servicioIngresos
-        }
-        formMant.ShowDialog()
+        'Dim formMant As New FrmCuentaIngreso With {
+        '    .intIdCuenta = dgvDatos.CurrentRow.Cells(0).Value,
+        '    .servicioIngresos = servicioIngresos
+        '}
+        'formMant.ShowDialog()
         ActualizarDatos()
     End Sub
 
     Private Sub btnEliminar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEliminar.Click
         If MessageBox.Show("Desea eliminar el registro actual", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
             Try
-                servicioIngresos.EliminarCuentaIngreso(dgvDatos.CurrentRow.Cells(0).Value)
+                'servicioIngresos.EliminarCuentaIngreso(dgvDatos.CurrentRow.Cells(0).Value)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub

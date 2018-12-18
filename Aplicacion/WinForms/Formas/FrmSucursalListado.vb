@@ -1,10 +1,6 @@
-﻿Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
-Imports LeandroSoftware.AccesoDatos.Servicios
-Imports Unity
-
-Public Class FrmSucursalListado
+﻿Public Class FrmSucursalListado
 #Region "Variables"
-    Private servicioTraslados As ITrasladoService
+    Private listado As IList
 #End Region
 
 #Region "Métodos"
@@ -37,7 +33,7 @@ Public Class FrmSucursalListado
 
     Private Sub ActualizarDatos()
         Try
-            Dim listado As IList = servicioTraslados.ObtenerListaSucursales(FrmMenuPrincipal.empresaGlobal.IdEmpresa, txtNombre.Text)
+            'listado = servicioTraslados.ObtenerListaSucursales(FrmMenuPrincipal.empresaGlobal.IdEmpresa, txtNombre.Text)
             dgvDatos.DataSource = listado
             If listado.Count() > 0 Then
                 btnEditar.Enabled = True
@@ -56,39 +52,32 @@ Public Class FrmSucursalListado
 
 #Region "Eventos Controles"
     Private Sub FrmSucursalListado_Shown(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Shown
-        Try
-            servicioTraslados = FrmMenuPrincipal.unityContainer.Resolve(Of ITrasladoService)()
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-            Exit Sub
-        End Try
         EstablecerPropiedadesDataGridView()
         ActualizarDatos()
     End Sub
 
     Private Sub btnAgregar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnAgregar.Click
-        Dim formMant As New FrmSucursal With {
-            .intIdSucursal = 0,
-            .servicioTraslados = servicioTraslados
-        }
-        formMant.ShowDialog()
+        'Dim formMant As New FrmSucursal With {
+        '    .intIdSucursal = 0,
+        '    .servicioTraslados = servicioTraslados
+        '}
+        'formMant.ShowDialog()
         ActualizarDatos()
     End Sub
 
     Private Sub btnEditar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEditar.Click
-        Dim formMant As New FrmSucursal With {
-            .intIdSucursal = dgvDatos.CurrentRow.Cells(0).Value,
-            .servicioTraslados = servicioTraslados
-        }
-        formMant.ShowDialog()
+        'Dim formMant As New FrmSucursal With {
+        '    .intIdSucursal = dgvDatos.CurrentRow.Cells(0).Value,
+        '    .servicioTraslados = servicioTraslados
+        '}
+        'formMant.ShowDialog()
         ActualizarDatos()
     End Sub
 
     Private Sub btnEliminar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEliminar.Click
         If MessageBox.Show("Desea eliminar el registro actual", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
             Try
-                servicioTraslados.EliminarSucursal(dgvDatos.CurrentRow.Cells(0).Value)
+                'servicioTraslados.EliminarSucursal(dgvDatos.CurrentRow.Cells(0).Value)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub

@@ -1,9 +1,5 @@
-Imports LeandroSoftware.AccesoDatos.Servicios
-Imports Unity
-
 Public Class FrmMenuVendedor
 #Region "Variables"
-    Private servicioMantenimiento As IMantenimientoService
 #End Region
 
 #Region "Métodos"
@@ -11,7 +7,7 @@ Public Class FrmMenuVendedor
         Try
             cboIdVendedor.ValueMember = "IdVendedor"
             cboIdVendedor.DisplayMember = "Nombre"
-            cboIdVendedor.DataSource = servicioMantenimiento.ObtenerListaVendedores(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
+            'cboIdVendedor.DataSource = servicioMantenimiento.ObtenerListaVendedores(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -23,13 +19,6 @@ Public Class FrmMenuVendedor
 
 #Region "Eventos Controles"
     Private Sub FrmRptMenu_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        Try
-            servicioMantenimiento = FrmMenuPrincipal.unityContainer.Resolve(Of IMantenimientoService)()
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-            Exit Sub
-        End Try
         CargarCombos()
     End Sub
 

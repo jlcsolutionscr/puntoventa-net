@@ -1,8 +1,6 @@
 Imports System.Collections.Generic
 Imports LeandroSoftware.Core.CommonTypes
 Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
-Imports LeandroSoftware.AccesoDatos.Servicios
-Imports Unity
 
 Public Class FrmImprimirReciboCxPParticular
 #Region "Variables"
@@ -11,11 +9,9 @@ Public Class FrmImprimirReciboCxPParticular
     Private dtrRowDetMovimiento As DataRow
     Private dblSaldo As Decimal
     Private bolInit As Boolean = True
-    Private servicioMantenimiento As IMantenimientoService
-    Private servicioCuentaPorPagar As ICuentaPorPagarService
     Private listadoMovimientos As IEnumerable(Of MovimientoCuentaPorPagar)
     Private movimientoCuentaPorPagar As MovimientoCuentaPorPagar
-    Private reciboComprobante As ModuloImpresion.clsRecibo
+    Private reciboComprobante As ModuloImpresion.ClsRecibo
     Private desglosePagoImpresion As ModuloImpresion.clsDesgloseFormaPago
     Private arrDesgloseMov, arrDesglosePago As List(Of ModuloImpresion.clsDesgloseFormaPago)
     Private particular As Particular
@@ -86,7 +82,7 @@ Public Class FrmImprimirReciboCxPParticular
     Private Sub CargarDetalleMovimiento(ByVal intIdParticular As Integer)
         dtbDetalleMovimiento.Rows.Clear()
         Try
-            listadoMovimientos = servicioCuentaPorPagar.ObtenerListaMovimientos(StaticTipoCuentaPorPagar.Particulares, intIdParticular)
+            'listadoMovimientos = servicioCuentaPorPagar.ObtenerListaMovimientos(StaticTipoCuentaPorPagar.Particulares, intIdParticular)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
@@ -110,14 +106,6 @@ Public Class FrmImprimirReciboCxPParticular
 
 #Region "Eventos Controles"
     Private Sub FrmAnulaReciboCxPP_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        Try
-            servicioMantenimiento = FrmMenuPrincipal.unityContainer.Resolve(Of IMantenimientoService)()
-            servicioCuentaPorPagar = FrmMenuPrincipal.unityContainer.Resolve(Of ICuentaPorPagarService)()
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-            Exit Sub
-        End Try
         IniciaDetalleMovimiento()
         EstablecerPropiedadesDataGridView()
         grdDetalleRecibo.DataSource = dtbDetalleMovimiento
@@ -127,8 +115,8 @@ Public Class FrmImprimirReciboCxPParticular
     Private Sub CmdImprimir_Click(sender As Object, e As EventArgs) Handles CmdImprimir.Click
         If grdDetalleRecibo.Rows.Count > 0 Then
             If grdDetalleRecibo.CurrentRow.Cells(0).Value.ToString <> "" Then
-                movimientoCuentaPorPagar = servicioCuentaPorPagar.ObtenerMovimiento(grdDetalleRecibo.CurrentRow.Cells(0).Value)
-                reciboComprobante = New ModuloImpresion.clsRecibo With {
+                'movimientoCuentaPorPagar = servicioCuentaPorPagar.ObtenerMovimiento(grdDetalleRecibo.CurrentRow.Cells(0).Value)
+                reciboComprobante = New ModuloImpresion.ClsRecibo With {
                     .usuario = FrmMenuPrincipal.usuarioGlobal,
                     .empresa = FrmMenuPrincipal.empresaGlobal,
                     .equipo = FrmMenuPrincipal.equipoGlobal,
@@ -177,7 +165,7 @@ Public Class FrmImprimirReciboCxPParticular
         formBusquedaParticular.ShowDialog()
         If FrmMenuPrincipal.intBusqueda > 0 Then
             Try
-                particular = servicioMantenimiento.ObtenerParticular(FrmMenuPrincipal.intBusqueda)
+                'particular = servicioMantenimiento.ObtenerParticular(FrmMenuPrincipal.intBusqueda)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub

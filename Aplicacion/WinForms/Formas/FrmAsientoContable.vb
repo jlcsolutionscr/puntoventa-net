@@ -1,6 +1,4 @@
 Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
-Imports LeandroSoftware.AccesoDatos.Servicios
-Imports Unity
 
 Public Class FrmAsientoContable
 #Region "Variables"
@@ -14,7 +12,6 @@ Public Class FrmAsientoContable
     Private asientoDiario As Asiento
     Private detalleAsiento As DetalleAsiento
     Private cuentaContable As CatalogoContable
-    Private servicioContabilidad As IContabilidadService
 #End Region
 
 #Region "Métodos"
@@ -112,7 +109,7 @@ Public Class FrmAsientoContable
 
     Private Sub CargarComboProducto()
         Try
-            cboCuentaContable.DataSource = servicioContabilidad.ObtenerListaCuentasParaMovimientos(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
+            'cboCuentaContable.DataSource = servicioContabilidad.ObtenerListaCuentasParaMovimientos(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
             cboCuentaContable.ValueMember = "IdCuenta"
             cboCuentaContable.DisplayMember = "DescripcionCompleta"
         Catch ex As Exception
@@ -149,7 +146,7 @@ Public Class FrmAsientoContable
         If txtIdAsiento.Text <> "" Then
             If MessageBox.Show("Desea anular este registro?", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
                 Try
-                    servicioContabilidad.AnularAsiento(txtIdAsiento.Text, FrmMenuPrincipal.usuarioGlobal.IdUsuario)
+                    'servicioContabilidad.AnularAsiento(txtIdAsiento.Text, FrmMenuPrincipal.usuarioGlobal.IdUsuario)
                 Catch ex As Exception
                     MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
@@ -165,7 +162,7 @@ Public Class FrmAsientoContable
         FrmMenuPrincipal.intBusqueda = 0
         formBusqueda.ShowDialog()
         If FrmMenuPrincipal.intBusqueda > 0 Then
-            asientoDiario = servicioContabilidad.ObtenerAsiento(FrmMenuPrincipal.intBusqueda)
+            'asientoDiario = servicioContabilidad.ObtenerAsiento(FrmMenuPrincipal.intBusqueda)
             If asientoDiario.IdAsiento > 0 Then
                 txtIdAsiento.Text = asientoDiario.IdAsiento
                 txtDetalle.Text = asientoDiario.Detalle
@@ -209,10 +206,10 @@ Public Class FrmAsientoContable
             Next
             Try
                 If txtIdAsiento.Text = "" Then
-                    asientoDiario = servicioContabilidad.AgregarAsiento(asientoDiario)
+                    'asientoDiario = servicioContabilidad.AgregarAsiento(asientoDiario)
                     txtIdAsiento.Text = asientoDiario.IdAsiento
                 Else
-                    servicioContabilidad.ActualizarAsiento(asientoDiario)
+                    'servicioContabilidad.ActualizarAsiento(asientoDiario)
                 End If
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -242,7 +239,7 @@ Public Class FrmAsientoContable
                 Exit Sub
             End If
             Try
-                cuentaContable = servicioContabilidad.ObtenerCuentaContable(cboCuentaContable.SelectedValue)
+                'cuentaContable = servicioContabilidad.ObtenerCuentaContable(cboCuentaContable.SelectedValue)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
@@ -267,13 +264,6 @@ Public Class FrmAsientoContable
     End Sub
 
     Private Sub FrmFactura_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        Try
-            servicioContabilidad = FrmMenuPrincipal.unityContainer.Resolve(Of IContabilidadService)()
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-            Exit Sub
-        End Try
         txtFecha.Text = FrmMenuPrincipal.ObtenerFechaFormateada(Now())
         CargarComboProducto()
         IniciaDetalleAsiento()

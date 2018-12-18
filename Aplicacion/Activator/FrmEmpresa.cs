@@ -10,13 +10,15 @@ using System.Windows.Forms;
 using System.Data;
 using System.Linq;
 using LeandroSoftware.Core;
+using System.Threading.Tasks;
 
 namespace LeandroSoftware.Activator
 {
     public partial class FrmEmpresa : Form
     {
         private DataTable dtEquipos;
-        private DataRow objRowEquipo;
+        private DataTable dtModuloPorEmpresa;
+        private DataTable dtReportePorEmpresa;
         private Empresa empresa;
         private bool bolLoading = true;
         private bool bolLogoModificado = false;
@@ -33,31 +35,60 @@ namespace LeandroSoftware.Activator
             InitializeComponent();
         }
 
-        private void IniciaDetalleEmpresa()
+        private void IniciaMaestroDetalle()
         {
             dtEquipos = new DataTable();
-            dtEquipos.Columns.Add("VALORREGISTRO", typeof(string));
-            dtEquipos.Columns.Add("IMPRESORAFACTURA", typeof(string));
-            dtEquipos.Columns.Add("USAIMPRESORAIMPACTO", typeof(bool));
+            dtEquipos.Columns.Add("ValorRegistro", typeof(string));
+            dtEquipos.Columns.Add("ImpresoraFactura", typeof(string));
+            dtEquipos.Columns.Add("UsaImpresoraImpacto", typeof(bool));
             DataColumn[] columns = new DataColumn[1];
             columns[0] = dtEquipos.Columns[0];
             dtEquipos.PrimaryKey = columns;
+
+            dtModuloPorEmpresa = new DataTable();
+            dtModuloPorEmpresa.Columns.Add("IdModulo", typeof(int));
+            dtModuloPorEmpresa.Columns.Add("Descripcion", typeof(string));
+            columns = new DataColumn[1];
+            columns[0] = dtModuloPorEmpresa.Columns[0];
+            dtModuloPorEmpresa.PrimaryKey = columns;
+
+            dtReportePorEmpresa = new DataTable();
+            dtReportePorEmpresa.Columns.Add("IdReporte", typeof(int));
+            dtReportePorEmpresa.Columns.Add("NombreReporte", typeof(string));
+            columns = new DataColumn[1];
+            columns[0] = dtReportePorEmpresa.Columns[0];
+            dtReportePorEmpresa.PrimaryKey = columns;
         }
 
-        private void CargarDetalleEquipos(List<DetalleRegistro> detalleRegistro)
+        private void CargarDetalleEmpresa(Empresa empresa)
         {
+            List<DetalleRegistro> detalleRegistro = empresa.DetalleRegistro.ToList();
             dtEquipos.Rows.Clear();
-            if (txtIdEmpresa.Text != "")
+            foreach (DetalleRegistro row in detalleRegistro)
             {
-
-                foreach (DetalleRegistro row in detalleRegistro)
-                {
-                    objRowEquipo = dtEquipos.NewRow();
-                    objRowEquipo["VALORREGISTRO"] = row.ValorRegistro;
-                    objRowEquipo["IMPRESORAFACTURA"] = row.ImpresoraFactura;
-                    objRowEquipo["USAIMPRESORAIMPACTO"] = row.UsaImpresoraImpacto;
-                    dtEquipos.Rows.Add(objRowEquipo);
-                }
+                DataRow objRowEquipo = dtEquipos.NewRow();
+                objRowEquipo["ValorRegistro"] = row.ValorRegistro;
+                objRowEquipo["ImpresoraFactura"] = row.ImpresoraFactura;
+                objRowEquipo["UsaImpresoraImpacto"] = row.UsaImpresoraImpacto;
+                dtEquipos.Rows.Add(objRowEquipo);
+            }
+            List<ModuloPorEmpresa> moduloPorEmpresa = empresa.ModuloPorEmpresa.ToList();
+            dtModuloPorEmpresa.Rows.Clear();
+            foreach (ModuloPorEmpresa row in moduloPorEmpresa)
+            {
+                DataRow objRowModulo = dtModuloPorEmpresa.NewRow();
+                objRowModulo["IdModulo"] = row.IdModulo;
+                objRowModulo["Descripcion"] = row.Modulo.Descripcion;
+                dtModuloPorEmpresa.Rows.Add(objRowModulo);
+            }
+            List<ReportePorEmpresa> reportePorEmpresa = empresa.ReportePorEmpresa.ToList();
+            dtReportePorEmpresa.Rows.Clear();
+            foreach (ReportePorEmpresa row in reportePorEmpresa)
+            {
+                DataRow objRowReporte = dtReportePorEmpresa.NewRow();
+                objRowReporte["IdReporte"] = row.IdReporte;
+                objRowReporte["NombreReporte"] = row.CatalogoReporte.NombreReporte;
+                dtReportePorEmpresa.Rows.Add(objRowReporte);
             }
         }
 
@@ -68,15 +99,15 @@ namespace LeandroSoftware.Activator
                 int intIndice = dtEquipos.Rows.IndexOf(dtEquipos.Rows.Find(txtEquipo.Text));
                 if (intIndice >= 0)
                 {
-                    dtEquipos.Rows[intIndice]["IMPRESORAFACTURA"] = txtImpresoraFactura.Text;
-                    dtEquipos.Rows[intIndice]["USAIMPRESORAIMPACTO"] = chkUsaImpresoraImpacto.Checked;
+                    dtEquipos.Rows[intIndice]["ImpresoraFactura"] = txtImpresoraFactura.Text;
+                    dtEquipos.Rows[intIndice]["UsaImpresoraImpacto"] = chkUsaImpresoraImpacto.Checked;
                 }
                 else
                 {
-                    objRowEquipo = dtEquipos.NewRow();
-                    objRowEquipo["VALORREGISTRO"] = txtEquipo.Text;
-                    objRowEquipo["IMPRESORAFACTURA"] = txtImpresoraFactura.Text;
-                    objRowEquipo["USAIMPRESORAIMPACTO"] = chkUsaImpresoraImpacto.Checked;
+                    DataRow objRowEquipo = dtEquipos.NewRow();
+                    objRowEquipo["ValorRegistro"] = txtEquipo.Text;
+                    objRowEquipo["ImpresoraFactura"] = txtImpresoraFactura.Text;
+                    objRowEquipo["UsaImpresoraImpacto"] = chkUsaImpresoraImpacto.Checked;
                     dtEquipos.Rows.Add(objRowEquipo);
                     dgvEquipos.Refresh();
                     txtEquipo.Text = "";
@@ -85,54 +116,162 @@ namespace LeandroSoftware.Activator
             }
         }
 
+        private void CargarLineaDetalleModulo()
+        {
+            if (cboModuloPorEmpresa.SelectedValue != null)
+            {
+                string strValor = cboModuloPorEmpresa.SelectedValue.ToString();
+                if (dtModuloPorEmpresa.Rows.IndexOf(dtModuloPorEmpresa.Rows.Find(strValor)) >= 0)
+                {
+                    MessageBox.Show("El módulo seleccionado ya fue agregado al detalle.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    DataRow objRowEquipo = dtModuloPorEmpresa.NewRow();
+                    objRowEquipo["IdModulo"] = cboModuloPorEmpresa.SelectedValue;
+                    objRowEquipo["Descripcion"] = cboModuloPorEmpresa.Text;
+                    dtModuloPorEmpresa.Rows.Add(objRowEquipo);
+                    dgvModuloPorEmpresa.Refresh();
+                }
+            }
+        }
+
+        private void CargarLineaDetalleReporte()
+        {
+            if (cboReportePorEmpresa.SelectedValue != null)
+            {
+                string strValor = cboReportePorEmpresa.SelectedValue.ToString();
+                if (dtReportePorEmpresa.Rows.IndexOf(dtReportePorEmpresa.Rows.Find(strValor)) >= 0)
+                {
+                    MessageBox.Show("El reporte seleccionado ya fue agregado al detalle.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    DataRow objRowEquipo = dtReportePorEmpresa.NewRow();
+                    objRowEquipo["IdReporte"] = cboReportePorEmpresa.SelectedValue;
+                    objRowEquipo["NombreReporte"] = cboReportePorEmpresa.Text;
+                    dtReportePorEmpresa.Rows.Add(objRowEquipo);
+                    dgvReportePorEmpresa.Refresh();
+                }
+            }
+        }
+
         private void EstablecerPropiedadesDataGridView()
         {
+            DataGridViewTextBoxColumn dvcEmpresa = new DataGridViewTextBoxColumn();
+            DataGridViewTextBoxColumn dvcDetalle1 = new DataGridViewTextBoxColumn();
+            DataGridViewTextBoxColumn dvcDetalle2 = new DataGridViewTextBoxColumn();
+
             dgvEquipos.Columns.Clear();
             dgvEquipos.AutoGenerateColumns = false;
 
-            DataGridViewTextBoxColumn dvcValorEmpresa = new DataGridViewTextBoxColumn();
-            DataGridViewTextBoxColumn dvcImpresoraFactura = new DataGridViewTextBoxColumn();
-            DataGridViewTextBoxColumn dvcUsaImpresoraImpacto = new DataGridViewTextBoxColumn();
+            dvcEmpresa.DataPropertyName = "ValorRegistro";
+            dvcEmpresa.HeaderText = "Equipo";
+            dvcEmpresa.Width = 150;
+            dvcEmpresa.Visible = true;
+            dvcEmpresa.ReadOnly = true;
+            dgvEquipos.Columns.Add(dvcEmpresa);
 
-            dvcValorEmpresa.DataPropertyName = "VALORREGISTRO";
-            dvcValorEmpresa.HeaderText = "Equipo";
-            dvcValorEmpresa.Width = 150;
-            dvcValorEmpresa.Visible = true;
-            dvcValorEmpresa.ReadOnly = true;
-            dgvEquipos.Columns.Add(dvcValorEmpresa);
+            dvcDetalle1.DataPropertyName = "ImpresoraFactura";
+            dvcDetalle1.HeaderText = "Impresora";
+            dvcDetalle1.Width = 100;
+            dvcDetalle1.Visible = true;
+            dvcDetalle1.ReadOnly = true;
+            dgvEquipos.Columns.Add(dvcDetalle1);
 
-            dvcImpresoraFactura.DataPropertyName = "IMPRESORAFACTURA";
-            dvcImpresoraFactura.HeaderText = "Impresora";
-            dvcImpresoraFactura.Width = 100;
-            dvcImpresoraFactura.Visible = true;
-            dvcImpresoraFactura.ReadOnly = true;
-            dgvEquipos.Columns.Add(dvcImpresoraFactura);
+            dvcDetalle2.DataPropertyName = "UsaImpresoraImpacto";
+            dvcDetalle2.HeaderText = "Impacto";
+            dvcDetalle2.Width = 80;
+            dvcDetalle2.Visible = true;
+            dvcDetalle2.ReadOnly = true;
+            dgvEquipos.Columns.Add(dvcDetalle2);
 
-            dvcUsaImpresoraImpacto.DataPropertyName = "USAIMPRESORAIMPACTO";
-            dvcUsaImpresoraImpacto.HeaderText = "Impacto";
-            dvcUsaImpresoraImpacto.Width = 80;
-            dvcUsaImpresoraImpacto.Visible = true;
-            dvcUsaImpresoraImpacto.ReadOnly = true;
-            dgvEquipos.Columns.Add(dvcUsaImpresoraImpacto);
+            DataGridViewTextBoxColumn dvcModuloPorEmpresa = new DataGridViewTextBoxColumn();
+            DataGridViewTextBoxColumn dvcDescripcion = new DataGridViewTextBoxColumn();
+
+            dgvModuloPorEmpresa.Columns.Clear();
+            dgvModuloPorEmpresa.AutoGenerateColumns = false;
+
+            dvcModuloPorEmpresa.DataPropertyName = "IdModulo";
+            dvcModuloPorEmpresa.HeaderText = "";
+            dvcModuloPorEmpresa.Width = 5;
+            dvcModuloPorEmpresa.Visible = false;
+            dvcModuloPorEmpresa.ReadOnly = false;
+            dgvModuloPorEmpresa.Columns.Add(dvcModuloPorEmpresa);
+
+            dvcDescripcion.DataPropertyName = "Descripcion";
+            dvcDescripcion.HeaderText = "Módulo";
+            dvcDescripcion.Width = 342;
+            dvcDescripcion.Visible = true;
+            dvcDescripcion.ReadOnly = true;
+            dgvModuloPorEmpresa.Columns.Add(dvcDescripcion);
+
+            DataGridViewTextBoxColumn dvcReportePorEmpresa = new DataGridViewTextBoxColumn();
+            DataGridViewTextBoxColumn dvcNombreReporte = new DataGridViewTextBoxColumn();
+
+            dgvReportePorEmpresa.Columns.Clear();
+            dgvReportePorEmpresa.AutoGenerateColumns = false;
+
+            dvcReportePorEmpresa.DataPropertyName = "IdReporte";
+            dvcReportePorEmpresa.HeaderText = "";
+            dvcReportePorEmpresa.Width = 5;
+            dvcReportePorEmpresa.Visible = false;
+            dvcReportePorEmpresa.ReadOnly = false;
+            dgvReportePorEmpresa.Columns.Add(dvcReportePorEmpresa);
+
+            dvcNombreReporte.DataPropertyName = "NombreReporte";
+            dvcNombreReporte.HeaderText = "Reporte";
+            dvcNombreReporte.Width = 342;
+            dvcNombreReporte.Visible = true;
+            dvcNombreReporte.ReadOnly = true;
+            dgvReportePorEmpresa.Columns.Add(dvcNombreReporte);
         }
 
-        public async void CargarTiposIdentificacion()
+        public async Task CargarListaParametros()
         {
-            RequestDTO peticion = new RequestDTO
-            {
-                NombreMetodo = "ObtenerListaTipoIdentificacion",
-                DatosPeticion = ""
-            };
             try
             {
+                RequestDTO peticion = new RequestDTO
+                {
+                    NombreMetodo = "ObtenerListaTipoIdentificacion",
+                    DatosPeticion = ""
+                };
                 string strPeticion = new JavaScriptSerializer().Serialize(peticion);
                 string strRespuesta = await Utilitario.EjecutarConsulta(strPeticion, strServicioPuntoventaURL, "");
                 strRespuesta = serializer.Deserialize<string>(strRespuesta);
-                IList<TipoIdentificacion> dsDataSet = Array.Empty<TipoIdentificacion>();
-                dsDataSet = serializer.Deserialize<List<TipoIdentificacion>>(strRespuesta);
-                cboTipoIdentificacion.DataSource = dsDataSet;
+                IList<TipoIdentificacion> dsTipoIdentificacion = Array.Empty<TipoIdentificacion>();
+                dsTipoIdentificacion = serializer.Deserialize<List<TipoIdentificacion>>(strRespuesta);
+                cboTipoIdentificacion.DataSource = dsTipoIdentificacion;
                 cboTipoIdentificacion.ValueMember = "IdTipoIdentificacion";
                 cboTipoIdentificacion.DisplayMember = "Descripcion";
+                // Carga listado módulos
+                peticion = new RequestDTO
+                {
+                    NombreMetodo = "ObtenerListaModulos",
+                    DatosPeticion = ""
+                };
+                strPeticion = new JavaScriptSerializer().Serialize(peticion);
+                strRespuesta = await Utilitario.EjecutarConsulta(strPeticion, strServicioPuntoventaURL, "");
+                strRespuesta = serializer.Deserialize<string>(strRespuesta);
+                IList<Modulo> dsModulos = Array.Empty<Modulo>();
+                dsModulos = serializer.Deserialize<List<Modulo>>(strRespuesta);
+                cboModuloPorEmpresa.DataSource = dsModulos;
+                cboModuloPorEmpresa.ValueMember = "IdModulo";
+                cboModuloPorEmpresa.DisplayMember = "Descripcion";
+                // Carga listado reportes
+                peticion = new RequestDTO
+                {
+                    NombreMetodo = "ObtenerListaReportes",
+                    DatosPeticion = ""
+                };
+                strPeticion = new JavaScriptSerializer().Serialize(peticion);
+                strRespuesta = await Utilitario.EjecutarConsulta(strPeticion, strServicioPuntoventaURL, "");
+                strRespuesta = serializer.Deserialize<string>(strRespuesta);
+                IList<CatalogoReporte> dsReportes = Array.Empty<CatalogoReporte>();
+                dsReportes = serializer.Deserialize<List<CatalogoReporte>>(strRespuesta);
+                cboReportePorEmpresa.DataSource = dsReportes;
+                cboReportePorEmpresa.ValueMember = "IdReporte";
+                cboReportePorEmpresa.DisplayMember = "NombreReporte";
             }
             catch (Exception ex)
             {
@@ -141,7 +280,7 @@ namespace LeandroSoftware.Activator
             }
         }
 
-        public async void CargarProvincias()
+        public async Task CargarProvincias()
         {
             RequestDTO peticion = new RequestDTO
             {
@@ -166,7 +305,7 @@ namespace LeandroSoftware.Activator
             }
         }
 
-        public async void CargarCantones(int intIdProvincia)
+        public async Task CargarCantones(int intIdProvincia)
         {
             RequestDTO peticion = new RequestDTO
             {
@@ -191,7 +330,7 @@ namespace LeandroSoftware.Activator
             }
         }
 
-        public async void CargarDistritos(int intIdProvincia, int intIdCanton)
+        public async Task CargarDistritos(int intIdProvincia, int intIdCanton)
         {
             RequestDTO peticion = new RequestDTO
             {
@@ -216,7 +355,7 @@ namespace LeandroSoftware.Activator
             }
         }
 
-        public async void CargarBarrios(int intIdProvincia, int intIdCanton, int intIdDistrito)
+        public async Task CargarBarrios(int intIdProvincia, int intIdCanton, int intIdDistrito)
         {
             RequestDTO peticion = new RequestDTO
             {
@@ -245,14 +384,17 @@ namespace LeandroSoftware.Activator
         {
             try
             {
-                IniciaDetalleEmpresa();
+                IniciaMaestroDetalle();
                 EstablecerPropiedadesDataGridView();
-                CargarTiposIdentificacion();
-                CargarProvincias();
-                CargarCantones(1);
-                CargarDistritos(1, 1);
-                CargarBarrios(1, 1, 1);
+                await CargarListaParametros();
+                await CargarProvincias();
+                await CargarCantones(1);
+                await CargarDistritos(1, 1);
+                await CargarBarrios(1, 1, 1);
+                bolLoading = false;
                 dgvEquipos.DataSource = dtEquipos;
+                dgvModuloPorEmpresa.DataSource = dtModuloPorEmpresa;
+                dgvReportePorEmpresa.DataSource = dtReportePorEmpresa;
                 if (bolEditing)
                 {
                     RequestDTO peticion = new RequestDTO
@@ -265,58 +407,66 @@ namespace LeandroSoftware.Activator
                         string strPeticion = new JavaScriptSerializer().Serialize(peticion);
                         string strRespuesta = await Utilitario.EjecutarConsulta(strPeticion, strServicioPuntoventaURL, "");
                         strRespuesta = serializer.Deserialize<string>(strRespuesta);
-                        empresa = serializer.Deserialize<Empresa>(strRespuesta);
-                        txtIdEmpresa.Text = empresa.IdEmpresa.ToString();
-                        txtNombreEmpresa.Text = empresa.NombreEmpresa;
-                        txtNombreComercial.Text = empresa.NombreComercial;
-                        cboTipoIdentificacion.SelectedValue = empresa.IdTipoIdentificacion;
-                        txtIdentificacion.Text = empresa.Identificacion;
-                        cboProvincia.SelectedValue = empresa.IdProvincia;
-                        cboCanton.SelectedValue = empresa.IdCanton;
-                        cboDistrito.SelectedValue = empresa.IdDistrito;
-                        cboBarrio.SelectedValue = empresa.IdBarrio;
-                        txtDireccion.Text = empresa.Direccion;
-                        txtTelefono.Text = empresa.Telefono;
-                        txtCorreoNotificacion.Text = empresa.CorreoNotificacion;
-                        txtNombreCertificado.Text = empresa.NombreCertificado;
-                        txtPinCertificado.Text = empresa.PinCertificado;
-                        txtUsuarioATV.Text = empresa.UsuarioHacienda;
-                        txtClaveATV.Text = empresa.ClaveHacienda;
-                        txtPorcentajeIVA.Text = empresa.PorcentajeIVA.ToString();
-                        txtPorcentajeInstalacion.Text = empresa.PorcentajeInstalacion.ToString();
-                        txtLineasFactura.Text = empresa.LineasPorFactura.ToString();
-                        txtCodigoServInst.Text = empresa.CodigoServicioInst.ToString();
-                        if (empresa.FechaVence != null) txtFecha.Text = DateTime.Parse(empresa.FechaVence.ToString()).ToString("dd-MM-yyyy");
-                        txtUltimoDocFE.Text = empresa.UltimoDocFE.ToString();
-                        txtUltimoDocNC.Text = empresa.UltimoDocNC.ToString();
-                        txtUltimoDocND.Text = empresa.UltimoDocND.ToString();
-                        txtUltimoDocTE.Text = empresa.UltimoDocTE.ToString();
-                        txtUltimoDocMR.Text = empresa.UltimoDocMR.ToString();
-                        chkContabiliza.Checked = empresa.Contabiliza;
-                        chkIncluyeInsumosEnFactura.Checked = empresa.IncluyeInsumosEnFactura;
-                        chkAutoCompleta.Checked = empresa.AutoCompletaProducto;
-                        chkRespaldoEnLinea.Checked = empresa.RespaldoEnLinea;
-                        chkModificaDesc.Checked = empresa.ModificaDescProducto;
-                        chkCierrePorTurnos.Checked = empresa.CierrePorTurnos;
-                        chkDesgloseInst.Checked = empresa.DesglosaServicioInst;
-                        chkFacturaElectronica.Checked = empresa.FacturaElectronica;
-                        if (empresa.Logotipo != null)
+                        if (strRespuesta != "")
                         {
-                            try
+                            empresa = serializer.Deserialize<Empresa>(strRespuesta);
+                            txtIdEmpresa.Text = empresa.IdEmpresa.ToString();
+                            txtNombreEmpresa.Text = empresa.NombreEmpresa;
+                            txtNombreComercial.Text = empresa.NombreComercial;
+                            cboTipoIdentificacion.SelectedValue = empresa.IdTipoIdentificacion;
+                            txtIdentificacion.Text = empresa.Identificacion;
+                            cboProvincia.SelectedValue = empresa.IdProvincia;
+                            cboCanton.SelectedValue = empresa.IdCanton;
+                            cboDistrito.SelectedValue = empresa.IdDistrito;
+                            cboBarrio.SelectedValue = empresa.IdBarrio;
+                            txtDireccion.Text = empresa.Direccion;
+                            txtTelefono.Text = empresa.Telefono;
+                            txtCorreoNotificacion.Text = empresa.CorreoNotificacion;
+                            txtNombreCertificado.Text = empresa.NombreCertificado;
+                            txtPinCertificado.Text = empresa.PinCertificado;
+                            txtUsuarioATV.Text = empresa.UsuarioHacienda;
+                            txtClaveATV.Text = empresa.ClaveHacienda;
+                            txtPorcentajeIVA.Text = empresa.PorcentajeIVA.ToString();
+                            txtPorcentajeInstalacion.Text = empresa.PorcentajeInstalacion.ToString();
+                            txtLineasFactura.Text = empresa.LineasPorFactura.ToString();
+                            txtCodigoServInst.Text = empresa.CodigoServicioInst.ToString();
+                            if (empresa.FechaVence != null) txtFecha.Text = DateTime.Parse(empresa.FechaVence.ToString()).ToString("dd-MM-yyyy");
+                            txtUltimoDocFE.Text = empresa.UltimoDocFE.ToString();
+                            txtUltimoDocNC.Text = empresa.UltimoDocNC.ToString();
+                            txtUltimoDocND.Text = empresa.UltimoDocND.ToString();
+                            txtUltimoDocTE.Text = empresa.UltimoDocTE.ToString();
+                            txtUltimoDocMR.Text = empresa.UltimoDocMR.ToString();
+                            chkContabiliza.Checked = empresa.Contabiliza;
+                            chkIncluyeInsumosEnFactura.Checked = empresa.IncluyeInsumosEnFactura;
+                            chkAutoCompleta.Checked = empresa.AutoCompletaProducto;
+                            chkModificaDesc.Checked = empresa.ModificaDescProducto;
+                            chkCierrePorTurnos.Checked = empresa.CierrePorTurnos;
+                            chkDesgloseInst.Checked = empresa.DesglosaServicioInst;
+                            chkFacturaElectronica.Checked = empresa.PermiteFacturar;
+                            chkRegimenSimplificado.Checked = empresa.RegimenSimplificado;
+                            if (empresa.Logotipo != null)
                             {
-                                using (MemoryStream ms = new MemoryStream(empresa.Logotipo))
-                                    picLogo.Image = Image.FromStream(ms);
+                                try
+                                {
+                                    using (MemoryStream ms = new MemoryStream(empresa.Logotipo))
+                                        picLogo.Image = Image.FromStream(ms);
+                                }
+                                catch (Exception)
+                                {
+                                    picLogo.Image = null;
+                                }
                             }
-                            catch (Exception)
+                            else
                             {
                                 picLogo.Image = null;
                             }
+                            CargarDetalleEmpresa(empresa);
                         }
                         else
                         {
-                            picLogo.Image = null;
+                            MessageBox.Show("No se logró obtener información de la empresa seleccionada.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            Close();
                         }
-                        CargarDetalleEquipos(empresa.DetalleRegistro.ToList());
                     }
                     catch (Exception ex)
                     {
@@ -328,7 +478,6 @@ namespace LeandroSoftware.Activator
                 {
                     empresa = new Empresa();
                 }
-                bolLoading = false;
             }
             catch (Exception ex)
             {
@@ -347,12 +496,12 @@ namespace LeandroSoftware.Activator
             }
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
+        private void CmdCancel_Click(object sender, EventArgs e)
         {
             Close();
         }
 
-        private async void cmdUpdate_Click(object sender, EventArgs e)
+        private async void CmdUpdate_Click(object sender, EventArgs e)
         {
             if (!ValidarCampos())
             {
@@ -390,25 +539,43 @@ namespace LeandroSoftware.Activator
                 empresa.Contabiliza = chkContabiliza.Checked;
                 empresa.IncluyeInsumosEnFactura = chkIncluyeInsumosEnFactura.Checked;
                 empresa.AutoCompletaProducto = chkAutoCompleta.Checked;
-                empresa.RespaldoEnLinea = chkRespaldoEnLinea.Checked;
                 empresa.ModificaDescProducto = chkModificaDesc.Checked;
                 empresa.CierrePorTurnos = chkCierrePorTurnos.Checked;
                 empresa.DesglosaServicioInst = chkDesgloseInst.Checked;
-                empresa.FacturaElectronica = chkFacturaElectronica.Checked;
+                empresa.PermiteFacturar = chkFacturaElectronica.Checked;
+                empresa.RegimenSimplificado = chkRegimenSimplificado.Checked;
                 empresa.DetalleRegistro.Clear();
                 foreach (DataRow row in dtEquipos.Rows)
                 {
                     DetalleRegistro detalle = new DetalleRegistro();
                     if (txtIdEmpresa.Text != "") detalle.IdEmpresa = empresa.IdEmpresa;
-                    detalle.ValorRegistro = row["VALORREGISTRO"].ToString();
-                    detalle.ImpresoraFactura = row["IMPRESORAFACTURA"].ToString();
-                    detalle.UsaImpresoraImpacto = (bool)row["USAIMPRESORAIMPACTO"];
+                    detalle.ValorRegistro = row["ValorRegistro"].ToString();
+                    detalle.ImpresoraFactura = row["ImpresoraFactura"].ToString();
+                    detalle.UsaImpresoraImpacto = (bool)row["UsaImpresoraImpacto"];
                     empresa.DetalleRegistro.Add(detalle);
                 }
+                empresa.ModuloPorEmpresa.Clear();
+                foreach (DataRow row in dtModuloPorEmpresa.Rows)
+                {
+                    ModuloPorEmpresa modulo = new ModuloPorEmpresa();
+                    if (txtIdEmpresa.Text != "") modulo.IdEmpresa = empresa.IdEmpresa;
+                    modulo.IdModulo = int.Parse(row["IdModulo"].ToString());
+                    empresa.ModuloPorEmpresa.Add(modulo);
+                }
+                empresa.ReportePorEmpresa.Clear();
+                foreach (DataRow row in dtReportePorEmpresa.Rows)
+                {
+                    ReportePorEmpresa reporte = new ReportePorEmpresa();
+                    if (txtIdEmpresa.Text != "") reporte.IdEmpresa = empresa.IdEmpresa;
+                    reporte.IdReporte = int.Parse(row["IdReporte"].ToString());
+                    empresa.ReportePorEmpresa.Add(reporte);
+                }
                 string strDatos = serializer.Serialize(empresa);
-                RequestDTO peticion = new RequestDTO();
-                peticion.NombreMetodo = txtIdEmpresa.Text == "" ? "AgregarEmpresa" : "ActualizarEmpresa";
-                peticion.DatosPeticion = strDatos;
+                RequestDTO peticion = new RequestDTO
+                {
+                    NombreMetodo = txtIdEmpresa.Text == "" ? "AgregarEmpresa" : "ActualizarEmpresa",
+                    DatosPeticion = strDatos
+                };
                 try
                 {
                     string strPeticion = serializer.Serialize(peticion);
@@ -428,6 +595,7 @@ namespace LeandroSoftware.Activator
                 catch (Exception ex)
                 {
                     MessageBox.Show("Error al actualizar el registro: " + ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
                 }
                 if (bolLogoModificado && picLogo.Image != null)
                 {
@@ -450,6 +618,7 @@ namespace LeandroSoftware.Activator
                     catch (Exception ex)
                     {
                         MessageBox.Show("Error al actualizar el registro: " + ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return;
                     }
                 }
                 if (bolCertificadoModificado && txtNombreCertificado.Text != "")
@@ -468,6 +637,7 @@ namespace LeandroSoftware.Activator
                     catch (Exception ex)
                     {
                         MessageBox.Show("Error al actualizar el registro: " + ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return;
                     }
                 }
                 Close();
@@ -478,36 +648,36 @@ namespace LeandroSoftware.Activator
             }
         }
 
-        private void cboProvincia_SelectedIndexChanged(object sender, EventArgs e)
+        private async void CboProvincia_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (!bolLoading)
             {
                 int intIdProvincia = (int)cboProvincia.SelectedValue;
-                CargarCantones(intIdProvincia);
-                CargarDistritos(intIdProvincia, 1);
-                CargarBarrios(intIdProvincia, 1, 1);
+                await CargarCantones(intIdProvincia);
+                await CargarDistritos(intIdProvincia, 1);
+                await CargarBarrios(intIdProvincia, 1, 1);
             }
         }
 
-        private void cboCanton_SelectedIndexChanged(object sender, EventArgs e)
+        private async void CboCanton_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (!bolLoading)
             {
                 int intIdProvincia = (int)cboProvincia.SelectedValue;
                 int intIdCanton = (int)cboCanton.SelectedValue;
-                CargarDistritos(intIdProvincia, intIdCanton);
-                CargarBarrios(intIdProvincia, intIdCanton, 1);
+                await CargarDistritos(intIdProvincia, intIdCanton);
+                await CargarBarrios(intIdProvincia, intIdCanton, 1);
             }
         }
 
-        private void cboDistrito_SelectedIndexChanged(object sender, EventArgs e)
+        private async void CboDistrito_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (!bolLoading)
             {
                 int intIdProvincia = (int)cboProvincia.SelectedValue;
                 int intIdCanton = (int)cboCanton.SelectedValue;
                 int intIdDistrito = (int)cboDistrito.SelectedValue;
-                CargarBarrios(intIdProvincia, intIdCanton, intIdDistrito);
+                await CargarBarrios(intIdProvincia, intIdCanton, intIdDistrito);
             }
         }
 
@@ -516,18 +686,40 @@ namespace LeandroSoftware.Activator
             txtEquipo.Text = Utilitario.ObtenerSerialEquipo();
         }
 
-        private void btnInsertarDetalle_Click(object sender, EventArgs e)
+        private void BtnInsertarDetalle_Click(object sender, EventArgs e)
         {
             CargarLineaDetalleEquipo();
         }
 
-        private void btnEliminarDetalle_Click(object sender, EventArgs e)
+        private void BtnEliminarDetalle_Click(object sender, EventArgs e)
         {
             if (dtEquipos.Rows.Count > 0)
                 dtEquipos.Rows.Remove(dtEquipos.Rows.Find(dgvEquipos.CurrentRow.Cells[0].Value));
         }
 
-        private void btnCargarLogo_Click(object sender, EventArgs e)
+        private void BtnInsertaModulo_Click(object sender, EventArgs e)
+        {
+            CargarLineaDetalleModulo();
+        }
+
+        private void BtnEliminaModulo_Click(object sender, EventArgs e)
+        {
+            if (dtModuloPorEmpresa.Rows.Count > 0)
+                dtModuloPorEmpresa.Rows.Remove(dtModuloPorEmpresa.Rows.Find(dgvModuloPorEmpresa.CurrentRow.Cells[0].Value));
+        }
+
+        private void BtnInsertaReporte_Click(object sender, EventArgs e)
+        {
+            CargarLineaDetalleReporte();
+        }
+
+        private void BtnEliminaReporte_Click(object sender, EventArgs e)
+        {
+            if (dtReportePorEmpresa.Rows.Count > 0)
+                dtReportePorEmpresa.Rows.Remove(dtReportePorEmpresa.Rows.Find(dgvReportePorEmpresa.CurrentRow.Cells[0].Value));
+        }
+
+        private void BtnCargarLogo_Click(object sender, EventArgs e)
         {
             ofdAbrirDocumento.DefaultExt = "png";
             ofdAbrirDocumento.Filter = "PNG Image Files|*.png;";
@@ -546,7 +738,7 @@ namespace LeandroSoftware.Activator
             }
         }
 
-        private void btnCargarCertificado_Click(object sender, EventArgs e)
+        private void BtnCargarCertificado_Click(object sender, EventArgs e)
         {
             ofdAbrirDocumento.DefaultExt = "p12";
             ofdAbrirDocumento.Filter = "Certificate Files|*.p12;";

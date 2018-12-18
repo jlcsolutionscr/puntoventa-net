@@ -3,7 +3,7 @@ Imports Unity
 
 Public Class FrmTipoMonedaListado
 #Region "Variables"
-    Private servicioMantenimiento As IMantenimientoService
+    Private listado As IList
 #End Region
 
 #Region "Métodos"
@@ -37,7 +37,7 @@ Public Class FrmTipoMonedaListado
 
     Private Sub ActualizarDatos()
         Try
-            Dim listado As IList = servicioMantenimiento.ObtenerListaTipoMoneda(txtDescripcion.Text)
+            'listado = servicioMantenimiento.ObtenerListaTipoMoneda(txtDescripcion.Text)
             dgvDatos.DataSource = listado
             If listado.Count() > 0 Then
                 btnEditar.Enabled = True
@@ -55,23 +55,16 @@ Public Class FrmTipoMonedaListado
 
 #Region "Eventos Controles"
     Private Sub FrmTipoMonedaListado_Shown(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Shown
-        Try
-            servicioMantenimiento = FrmMenuPrincipal.unityContainer.Resolve(Of IMantenimientoService)()
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-            Exit Sub
-        End Try
         EstablecerPropiedadesDataGridView()
         ActualizarDatos()
     End Sub
 
     Private Sub BtnActualizar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEditar.Click
-        Dim formMant As New FrmTipoMoneda With {
-            .intIdTipoMoneda = dgvDatos.CurrentRow.Cells(0).Value,
-            .servicioMantenimiento = servicioMantenimiento
-        }
-        formMant.ShowDialog()
+        'Dim formMant As New FrmTipoMoneda With {
+        '    .intIdTipoMoneda = dgvDatos.CurrentRow.Cells(0).Value,
+        '    .servicioMantenimiento = servicioMantenimiento
+        '}
+        'formMant.ShowDialog()
         ActualizarDatos()
     End Sub
 

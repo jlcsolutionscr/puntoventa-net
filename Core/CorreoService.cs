@@ -47,9 +47,11 @@ namespace LeandroSoftware.Core.Servicios
             }
 
             List<string> tempFiles = new List<string>();
-            SmtpClient smtpClient = new SmtpClient(smtpHost, smtpPort);
-            smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
-            smtpClient.UseDefaultCredentials = false;
+            SmtpClient smtpClient = new SmtpClient(smtpHost, smtpPort)
+            {
+                DeliveryMethod = SmtpDeliveryMethod.Network,
+                UseDefaultCredentials = false
+            };
             if (sslHost == "S")
                 smtpClient.EnableSsl = true;
             if (mailUserAddress != "" & mailUserPassword != "")

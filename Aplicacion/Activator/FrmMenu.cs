@@ -7,7 +7,7 @@ namespace LeandroSoftware.Activator
     {
         public string strCadenaConexion, strMySQLDumpOptions, strThumbprint, strSubjectName, strApplicationKey, strDatabase, strUser, strPassword, strHost;
         public bool bolSeguridad = true;
-        private bool bolArchivoConfig = true;
+        // private bool bolArchivoConfig = true;
 
         public FrmMenu()
         {
@@ -26,8 +26,10 @@ namespace LeandroSoftware.Activator
 
         private void tsRegistrarEmpresa_Click(object sender, EventArgs e)
         {
-            FrmEmpresaListado listadoEmpresas = new FrmEmpresaListado();
-            listadoEmpresas.MdiParent = this;
+            FrmEmpresaListado listadoEmpresas = new FrmEmpresaListado
+            {
+                MdiParent = this
+            };
             listadoEmpresas.Show();
         }
     }

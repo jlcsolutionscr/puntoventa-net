@@ -1,13 +1,5 @@
-Imports System.Collections
-Imports CrystalDecisions.Shared
-Imports CrystalDecisions.CrystalReports.Engine
-Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
-Imports LeandroSoftware.AccesoDatos.Servicios
-Imports Unity
-
 Public Class FrmMenuCuentaEgreso
 #Region "Variables"
-    Private servicioEgreso As IEgresoService
 #End Region
 
 #Region "Métodos"
@@ -15,7 +7,7 @@ Public Class FrmMenuCuentaEgreso
         Try
             cboIdCuentaEgreso.ValueMember = "IdCuenta"
             cboIdCuentaEgreso.DisplayMember = "Descripcion"
-            cboIdCuentaEgreso.DataSource = servicioEgreso.ObtenerListaCuentasEgreso(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
+            'cboIdCuentaEgreso.DataSource = servicioEgreso.ObtenerListaCuentasEgreso(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -27,13 +19,6 @@ Public Class FrmMenuCuentaEgreso
 
 #Region "Eventos Controles"
     Private Sub FrmRptMenu_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        Try
-            servicioEgreso = FrmMenuPrincipal.unityContainer.Resolve(Of IEgresoService)()
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-            Exit Sub
-        End Try
         CargarCombos()
     End Sub
 

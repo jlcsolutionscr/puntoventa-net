@@ -1,8 +1,6 @@
 Imports System.Collections.Generic
 Imports LeandroSoftware.Core.CommonTypes
 Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
-Imports LeandroSoftware.AccesoDatos.Servicios
-Imports Unity
 
 Public Class FrmProforma
 #Region "Variables"
@@ -12,18 +10,15 @@ Public Class FrmProforma
     Private dtbDatosLocal, dtbDetalleProforma As DataTable
     Private dtrRowDetProforma As DataRow
     Private arrDetalleProforma As ArrayList
-    Private servicioFacturacion As IFacturacionService
-    Private servicioCuentaPorCobrar As ICuentaPorCobrarService
-    Private servicioMantenimiento As IMantenimientoService
-    Private servicioReportes As IReporteService
     Private proforma As Proforma
     Private detalleProforma As DetalleProforma
     Private producto As Producto
     Private cliente As Cliente
     Private vendedor As Vendedor
-    Private comprobante As ModuloImpresion.clsComprobante
-    Private detalleComprobante As ModuloImpresion.clsDetalleComprobante
+    Private comprobante As ModuloImpresion.ClsComprobante
+    Private detalleComprobante As ModuloImpresion.ClsDetalleComprobante
     Private bolInit As Boolean = True
+    Private listOfProducts As List(Of Producto)
 
     Private formReport As New frmRptViewer()
     Private dtbDatos As DataTable
@@ -184,7 +179,7 @@ Public Class FrmProforma
                     End If
                 End If
                 Try
-                    producto = servicioMantenimiento.ObtenerProductoPorCodigo(txtCodigo.Text)
+                    'producto = servicioMantenimiento.ObtenerProductoPorCodigo(txtCodigo.Text)
                 Catch ex As Exception
                     MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
@@ -220,7 +215,7 @@ Public Class FrmProforma
 
     Private Sub CargarAutoCompletarProducto()
         Dim source As AutoCompleteStringCollection = New AutoCompleteStringCollection()
-        Dim listOfProducts As ICollection(Of Producto) = servicioMantenimiento.ObtenerListaProductos(FrmMenuPrincipal.empresaGlobal.IdEmpresa, 1, 0, True)
+        'listOfProducts = servicioMantenimiento.ObtenerListaProductos(FrmMenuPrincipal.empresaGlobal.IdEmpresa, 1, 0, True)
         For Each producto As Producto In listOfProducts
             source.Add(String.Concat(producto.Codigo, " ", producto.Descripcion))
         Next
@@ -233,7 +228,7 @@ Public Class FrmProforma
         Try
             cboIdCondicionVenta.ValueMember = "IdCondicionVenta"
             cboIdCondicionVenta.DisplayMember = "Descripcion"
-            cboIdCondicionVenta.DataSource = servicioMantenimiento.ObtenerListaCondicionVenta()
+            'cboIdCondicionVenta.DataSource = servicioMantenimiento.ObtenerListaCondicionVenta()
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
@@ -243,16 +238,6 @@ Public Class FrmProforma
 
 #Region "Eventos Controles"
     Private Sub FrmProforma_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        Try
-            servicioFacturacion = FrmMenuPrincipal.unityContainer.Resolve(Of IFacturacionService)()
-            servicioCuentaPorCobrar = FrmMenuPrincipal.unityContainer.Resolve(Of ICuentaPorCobrarService)()
-            servicioMantenimiento = FrmMenuPrincipal.unityContainer.Resolve(Of IMantenimientoService)()
-            servicioReportes = FrmMenuPrincipal.unityContainer.Resolve(Of IReporteService)()
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-            Exit Sub
-        End Try
         txtFecha.Text = FrmMenuPrincipal.ObtenerFechaFormateada(Now())
         dblPorcentajeIVA = FrmMenuPrincipal.empresaGlobal.PorcentajeIVA
         If FrmMenuPrincipal.empresaGlobal.AutoCompletaProducto = True Then
@@ -302,7 +287,7 @@ Public Class FrmProforma
         If txtIdProforma.Text <> "" Then
             If MessageBox.Show("Desea anular este registro?", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
                 Try
-                    servicioFacturacion.AnularProforma(txtIdProforma.Text, FrmMenuPrincipal.usuarioGlobal.IdUsuario)
+                    'servicioFacturacion.AnularProforma(txtIdProforma.Text, FrmMenuPrincipal.usuarioGlobal.IdUsuario)
                     MessageBox.Show("Transacción procesada satisfactoriamente. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
                     CmdAgregar_Click(CmdAgregar, New EventArgs())
                 Catch ex As Exception
@@ -318,7 +303,7 @@ Public Class FrmProforma
         formBusqueda.ShowDialog()
         If FrmMenuPrincipal.intBusqueda > 0 Then
             Try
-                proforma = servicioFacturacion.ObtenerProforma(FrmMenuPrincipal.intBusqueda)
+                'proforma = servicioFacturacion.ObtenerProforma(FrmMenuPrincipal.intBusqueda)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
@@ -360,7 +345,7 @@ Public Class FrmProforma
         formBusquedaVendedor.ShowDialog()
         If FrmMenuPrincipal.intBusqueda > 0 Then
             Try
-                vendedor = servicioMantenimiento.ObtenerVendedor(FrmMenuPrincipal.intBusqueda)
+                'vendedor = servicioMantenimiento.ObtenerVendedor(FrmMenuPrincipal.intBusqueda)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
@@ -379,7 +364,7 @@ Public Class FrmProforma
         formBusquedaCliente.ShowDialog()
         If FrmMenuPrincipal.intBusqueda > 0 Then
             Try
-                cliente = servicioFacturacion.ObtenerCliente(FrmMenuPrincipal.intBusqueda)
+                'cliente = servicioFacturacion.ObtenerCliente(FrmMenuPrincipal.intBusqueda)
                 If cliente.Vendedor IsNot Nothing Then
                     vendedor = cliente.Vendedor
                     txtVendedor.Text = vendedor.Nombre
@@ -446,7 +431,7 @@ Public Class FrmProforma
         Next
         If txtIdProforma.Text = "" Then
             Try
-                proforma = servicioFacturacion.AgregarProforma(proforma)
+                'proforma = servicioFacturacion.AgregarProforma(proforma)
                 txtIdProforma.Text = proforma.IdProforma
             Catch ex As Exception
                 txtIdProforma.Text = ""
@@ -455,7 +440,7 @@ Public Class FrmProforma
             End Try
         Else
             Try
-                servicioFacturacion.ActualizarProforma(proforma)
+                'servicioFacturacion.ActualizarProforma(proforma)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
@@ -475,7 +460,7 @@ Public Class FrmProforma
         If txtIdProforma.Text <> "" Then
             Dim reptProforma As New rptProforma
             Try
-                dtbDatos = servicioReportes.ObtenerReporteProforma(txtIdProforma.Text)
+                'dtbDatos = servicioReportes.ObtenerReporteProforma(txtIdProforma.Text)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub

@@ -148,6 +148,7 @@
     <Compile Include="Entidades\TipoMovimientoBanco.cs" />
     <Compile Include="Entidades\TipoProducto.cs" />
     <Compile Include="Entidades\TipoUnidad.cs" />
+    <Compile Include="Entidades\EmpresaPorUsuario.cs" />
     <Compile Include="Entidades\Vendedor.cs" />
     <Compile Include="Entidades\Usuario.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

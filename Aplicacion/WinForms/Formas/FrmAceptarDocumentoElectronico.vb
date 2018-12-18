@@ -1,26 +1,13 @@
 ﻿Imports System.IO
 Imports System.Xml
-Imports LeandroSoftware.AccesoDatos.Servicios
-Imports Unity
 
 Public Class FrmAceptarDocumentoElectronico
 #Region "Variables"
-    Private servicioFacturacion As IFacturacionService
     Private strDatos As String
 #End Region
 
 #Region "Eventos Controles"
-    Private Sub FrmAceptarDocumentoElectronico_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        Try
-            servicioFacturacion = FrmMenuPrincipal.unityContainer.Resolve(Of IFacturacionService)
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-            Exit Sub
-        End Try
-    End Sub
-
-    Private Sub btnEnviar_Click(sender As Object, e As EventArgs) Handles btnEnviar.Click
+    Private Sub BtnEnviar_Click(sender As Object, e As EventArgs) Handles btnEnviar.Click
         Try
             If MessageBox.Show("Desea enviar el documento al servicio web de Hacienda?", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
                 Dim intEstado As Integer
@@ -31,7 +18,7 @@ Public Class FrmAceptarDocumentoElectronico
                 Else
                     intEstado = 2
                 End If
-                servicioFacturacion.GeneraMensajeReceptor(strDatos, FrmMenuPrincipal.empresaGlobal.IdEmpresa, FrmMenuPrincipal.intSucursal, FrmMenuPrincipal.intTerminal, intEstado)
+                'servicioFacturacion.GeneraMensajeReceptor(strDatos, FrmMenuPrincipal.empresaGlobal.IdEmpresa, FrmMenuPrincipal.intSucursal, FrmMenuPrincipal.intTerminal, intEstado)
                 MessageBox.Show("Documento enviado satisfactoriamente. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 Close()
             Else
@@ -43,16 +30,17 @@ Public Class FrmAceptarDocumentoElectronico
         End Try
     End Sub
 
-    Private Sub btnCargar_Click(sender As Object, e As EventArgs) Handles btnCargar.Click
+    Private Sub BtnCargar_Click(sender As Object, e As EventArgs) Handles btnCargar.Click
         ofdAbrirDocumento.DefaultExt = "xml"
         ofdAbrirDocumento.Filter = "XML Files|*.xml"
         Dim result As DialogResult = ofdAbrirDocumento.ShowDialog()
         If result = Windows.Forms.DialogResult.OK Then
             Try
                 Dim sw As New StringWriter()
-                Dim xw As New XmlTextWriter(sw)
-                xw.Formatting = Formatting.Indented
-                xw.Indentation = 4
+                Dim xw As New XmlTextWriter(sw) With {
+                    .Formatting = Formatting.Indented,
+                    .Indentation = 4
+                }
                 Dim datos As XmlDocument = New XmlDocument()
                 datos.Load(ofdAbrirDocumento.FileName)
                 strDatos = datos.OuterXml

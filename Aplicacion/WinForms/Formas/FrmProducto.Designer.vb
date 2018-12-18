@@ -15,7 +15,7 @@ Partial Class FrmProducto
     Private components As System.ComponentModel.IContainer
     Public WithEvents txtPrecioVenta1 As System.Windows.Forms.TextBox
     Public WithEvents cboUnidad As System.Windows.Forms.ComboBox
-    Public WithEvents CboLinea As System.Windows.Forms.ComboBox
+    Public WithEvents cboLinea As System.Windows.Forms.ComboBox
     Public WithEvents txtIndExistencia As System.Windows.Forms.TextBox
     Public WithEvents txtPrecioCosto As System.Windows.Forms.TextBox
     Public WithEvents txtCantidad As System.Windows.Forms.TextBox
@@ -41,7 +41,7 @@ Partial Class FrmProducto
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FrmProducto))
         Me.txtPrecioVenta1 = New System.Windows.Forms.TextBox()
         Me.cboUnidad = New System.Windows.Forms.ComboBox()
-        Me.CboLinea = New System.Windows.Forms.ComboBox()
+        Me.cboLinea = New System.Windows.Forms.ComboBox()
         Me.txtIndExistencia = New System.Windows.Forms.TextBox()
         Me.txtPrecioCosto = New System.Windows.Forms.TextBox()
         Me.txtCantidad = New System.Windows.Forms.TextBox()
@@ -111,19 +111,19 @@ Partial Class FrmProducto
         Me.cboUnidad.Size = New System.Drawing.Size(128, 21)
         Me.cboUnidad.TabIndex = 15
         '
-        'CboLinea
+        'cboLinea
         '
-        Me.CboLinea.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
-        Me.CboLinea.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
-        Me.CboLinea.BackColor = System.Drawing.SystemColors.Window
-        Me.CboLinea.Cursor = System.Windows.Forms.Cursors.Default
-        Me.CboLinea.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.CboLinea.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.CboLinea.Location = New System.Drawing.Point(94, 91)
-        Me.CboLinea.Name = "CboLinea"
-        Me.CboLinea.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.CboLinea.Size = New System.Drawing.Size(319, 21)
-        Me.CboLinea.TabIndex = 2
+        Me.cboLinea.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
+        Me.cboLinea.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
+        Me.cboLinea.BackColor = System.Drawing.SystemColors.Window
+        Me.cboLinea.Cursor = System.Windows.Forms.Cursors.Default
+        Me.cboLinea.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.cboLinea.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.cboLinea.Location = New System.Drawing.Point(94, 91)
+        Me.cboLinea.Name = "cboLinea"
+        Me.cboLinea.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.cboLinea.Size = New System.Drawing.Size(319, 21)
+        Me.cboLinea.TabIndex = 2
         '
         'txtIndExistencia
         '
@@ -610,7 +610,7 @@ Partial Class FrmProducto
         Me.Controls.Add(Me.cboTipoProducto)
         Me.Controls.Add(Me.txtPrecioVenta1)
         Me.Controls.Add(Me.cboUnidad)
-        Me.Controls.Add(Me.CboLinea)
+        Me.Controls.Add(Me.cboLinea)
         Me.Controls.Add(Me.txtIndExistencia)
         Me.Controls.Add(Me.txtPrecioCosto)
         Me.Controls.Add(Me.txtCantidad)

@@ -1,8 +1,6 @@
 Imports System.Collections.Generic
 Imports LeandroSoftware.Core.CommonTypes
 Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
-Imports LeandroSoftware.AccesoDatos.Servicios
-Imports Unity
 
 Public Class FrmCompra
 #Region "Variables"
@@ -14,10 +12,7 @@ Public Class FrmCompra
     Private dtbDatosLocal, dtbDetalleCompra, dtbDesglosePago As DataTable
     Private dtrRowDetCompra, dtrRowDesglosePago As DataRow
     Private arrDetalleCompra As List(Of ModuloImpresion.clsDetalleComprobante)
-    Private arrDesglosePago As List(Of ModuloImpresion.clsDesgloseFormaPago)
-    Private servicioCompras As ICompraService
-    Private servicioMantenimiento As IMantenimientoService
-    Private servicioAuxiliarBancario As IBancaService
+    Private arrDesglosePago As List(Of ModuloImpresion.ClsDesgloseFormaPago)
     Private compra As Compra
     Private ordenCompra As OrdenCompra
     Private proveedor As Proveedor
@@ -25,7 +20,7 @@ Public Class FrmCompra
     Private desglosePago As DesglosePagoCompra
     Private producto As Producto
     Private tipoMoneda As TipoMoneda
-    Private comprobanteImpresion As ModuloImpresion.clsComprobante
+    Private comprobanteImpresion As ModuloImpresion.ClsComprobante
     Private detalleComprobante As ModuloImpresion.clsDetalleComprobante
     Private desglosePagoImpresion As ModuloImpresion.clsDesgloseFormaPago
     Private bolInit As Boolean = True
@@ -331,16 +326,16 @@ Public Class FrmCompra
         Try
             cboCondicionVenta.ValueMember = "IdCondicionVenta"
             cboCondicionVenta.DisplayMember = "Descripcion"
-            cboCondicionVenta.DataSource = servicioMantenimiento.ObtenerListaCondicionVenta()
+            'cboCondicionVenta.DataSource = servicioMantenimiento.ObtenerListaCondicionVenta()
             cboFormaPago.ValueMember = "IdFormaPago"
             cboFormaPago.DisplayMember = "Descripcion"
-            cboFormaPago.DataSource = servicioMantenimiento.ObtenerListaFormaPagoCompra()
+            'cboFormaPago.DataSource = servicioMantenimiento.ObtenerListaFormaPagoCompra()
             cboCuentaBanco.ValueMember = "IdCuenta"
             cboCuentaBanco.DisplayMember = "Descripcion"
-            cboCuentaBanco.DataSource = servicioAuxiliarBancario.ObtenerListaCuentasBanco(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
+            'cboCuentaBanco.DataSource = servicioAuxiliarBancario.ObtenerListaCuentasBanco(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
             cboTipoMoneda.ValueMember = "IdTipoMoneda"
             cboTipoMoneda.DisplayMember = "Descripcion"
-            cboTipoMoneda.DataSource = servicioMantenimiento.ObtenerListaTipoMoneda()
+            'cboTipoMoneda.DataSource = servicioMantenimiento.ObtenerListaTipoMoneda()
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
@@ -356,7 +351,7 @@ Public Class FrmCompra
                     End If
                 End If
                 Try
-                    producto = servicioMantenimiento.ObtenerProductoPorCodigo(txtCodigo.Text)
+                    'producto = servicioMantenimiento.ObtenerProductoPorCodigo(txtCodigo.Text)
                 Catch ex As Exception
                     MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
@@ -378,7 +373,7 @@ Public Class FrmCompra
 
     Private Sub CargarAutoCompletarProducto()
         Dim source As AutoCompleteStringCollection = New AutoCompleteStringCollection()
-        Dim listOfProducts As ICollection(Of Producto) = servicioMantenimiento.ObtenerListaProductos(FrmMenuPrincipal.empresaGlobal.IdEmpresa, 1, 0, True)
+        Dim listOfProducts As ICollection(Of Producto) = Nothing 'servicioMantenimiento.ObtenerListaProductos(FrmMenuPrincipal.empresaGlobal.IdEmpresa, 1, 0, True)
         For Each producto As Producto In listOfProducts
             source.Add(String.Concat(producto.Codigo, " ", producto.Descripcion))
         Next
@@ -390,15 +385,6 @@ Public Class FrmCompra
 
 #Region "Eventos Controles"
     Private Sub FrmCompra_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        Try
-            servicioCompras = FrmMenuPrincipal.unityContainer.Resolve(Of ICompraService)()
-            servicioMantenimiento = FrmMenuPrincipal.unityContainer.Resolve(Of IMantenimientoService)()
-            servicioAuxiliarBancario = FrmMenuPrincipal.unityContainer.Resolve(Of IBancaService)()
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-            Exit Sub
-        End Try
         txtFecha.Text = FrmMenuPrincipal.ObtenerFechaFormateada(Now())
         txtIdOrdenCompra.Text = "0"
         dblPorcentajeIVA = FrmMenuPrincipal.empresaGlobal.PorcentajeIVA
@@ -419,7 +405,7 @@ Public Class FrmCompra
         cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
         cboTipoMoneda.SelectedValue = StaticValoresPorDefecto.MonedaDelSistema
         Try
-            tipoMoneda = servicioMantenimiento.ObtenerTipoMoneda(cboTipoMoneda.SelectedValue)
+            'tipoMoneda = servicioMantenimiento.ObtenerTipoMoneda(cboTipoMoneda.SelectedValue)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
@@ -477,7 +463,7 @@ Public Class FrmCompra
         If txtIdCompra.Text <> "" Then
             If MessageBox.Show("Desea anular este registro?", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
                 Try
-                    servicioCompras.AnularCompra(compra.IdCompra, FrmMenuPrincipal.usuarioGlobal.IdUsuario)
+                    'servicioCompras.AnularCompra(compra.IdCompra, FrmMenuPrincipal.usuarioGlobal.IdUsuario)
                 Catch ex As Exception
                     MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
@@ -494,7 +480,7 @@ Public Class FrmCompra
         formBusqueda.ShowDialog()
         If FrmMenuPrincipal.intBusqueda > 0 Then
             Try
-                compra = servicioCompras.ObtenerCompra(FrmMenuPrincipal.intBusqueda)
+                'compra = servicioCompras.ObtenerCompra(FrmMenuPrincipal.intBusqueda)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
@@ -535,7 +521,7 @@ Public Class FrmCompra
         formBusqueda.ShowDialog()
         If FrmMenuPrincipal.intBusqueda > 0 Then
             Try
-                ordenCompra = servicioCompras.ObtenerOrdenCompra(FrmMenuPrincipal.intBusqueda)
+                'ordenCompra = servicioCompras.ObtenerOrdenCompra(FrmMenuPrincipal.intBusqueda)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
@@ -578,7 +564,7 @@ Public Class FrmCompra
         formBusquedaProveedor.ShowDialog()
         If FrmMenuPrincipal.intBusqueda > 0 Then
             Try
-                proveedor = servicioCompras.ObtenerProveedor(FrmMenuPrincipal.intBusqueda)
+                'proveedor = servicioCompras.ObtenerProveedor(FrmMenuPrincipal.intBusqueda)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
@@ -659,7 +645,7 @@ Public Class FrmCompra
                 compra.DesglosePagoCompra.Add(desglosePago)
             Next
             Try
-                compra = servicioCompras.AgregarCompra(compra)
+                'compra = servicioCompras.AgregarCompra(compra)
                 txtIdCompra.Text = compra.IdCompra
             Catch ex As Exception
                 txtIdCompra.Text = ""
@@ -669,7 +655,7 @@ Public Class FrmCompra
         Else
             compra.NoDocumento = txtFactura.Text
             Try
-                servicioCompras.ActualizarCompra(compra)
+                'servicioCompras.ActualizarCompra(compra)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
@@ -691,7 +677,7 @@ Public Class FrmCompra
 
     Private Sub BtnImprimir_Click(sender As Object, e As EventArgs) Handles btnImprimir.Click
         If txtIdCompra.Text <> "" Then
-            comprobanteImpresion = New ModuloImpresion.clsComprobante With {
+            comprobanteImpresion = New ModuloImpresion.ClsComprobante With {
                 .usuario = FrmMenuPrincipal.usuarioGlobal,
                 .empresa = FrmMenuPrincipal.empresaGlobal,
                 .equipo = FrmMenuPrincipal.equipoGlobal,
@@ -778,7 +764,7 @@ Public Class FrmCompra
     Private Sub CboTipoMoneda_SelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs) Handles cboTipoMoneda.SelectedIndexChanged
         If Not bolInit And Not cboTipoMoneda.SelectedValue Is Nothing Then
             Try
-                tipoMoneda = servicioMantenimiento.ObtenerTipoMoneda(cboTipoMoneda.SelectedValue)
+                'tipoMoneda = servicioMantenimiento.ObtenerTipoMoneda(cboTipoMoneda.SelectedValue)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub

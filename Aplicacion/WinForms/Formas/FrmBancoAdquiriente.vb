@@ -1,10 +1,7 @@
 Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
-Imports LeandroSoftware.AccesoDatos.Servicios
-Imports Unity
 
 Public Class FrmBancoAdquiriente
 #Region "Variables"
-    Public servicioMantenimiento As IMantenimientoService
     Public intIdBanco As Integer
     Private datos As BancoAdquiriente
 #End Region
@@ -33,7 +30,7 @@ Public Class FrmBancoAdquiriente
     Private Sub FrmBancoAdquiriente_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         If intIdBanco > 0 Then
             Try
-                datos = servicioMantenimiento.ObtenerBancoAdquiriente(intIdBanco)
+                'datos = servicioMantenimiento.ObtenerBancoAdquiriente(intIdBanco)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                 Close()
@@ -73,10 +70,10 @@ Public Class FrmBancoAdquiriente
         datos.PorcentajeComision = txtComision.Text
         Try
             If datos.IdBanco = 0 Then
-                datos = servicioMantenimiento.AgregarBancoAdquiriente(datos)
+                'datos = servicioMantenimiento.AgregarBancoAdquiriente(datos)
                 txtIdBanco.Text = datos.IdBanco
             Else
-                servicioMantenimiento.ActualizarBancoAdquiriente(datos)
+                'servicioMantenimiento.ActualizarBancoAdquiriente(datos)
             End If
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)

@@ -1,8 +1,6 @@
 Imports System.Collections.Generic
 Imports LeandroSoftware.Core.CommonTypes
 Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
-Imports LeandroSoftware.AccesoDatos.Servicios
-Imports Unity
 
 Public Class FrmAplicaReciboCxC
 #Region "Variables"
@@ -19,11 +17,7 @@ Public Class FrmAplicaReciboCxC
     Private tipoMoneda As TipoMoneda
     Private desgloseMovimiento As DesgloseMovimientoCuentaPorCobrar
     Private desglosePagoMovimiento As DesglosePagoMovimientoCuentaPorCobrar
-    Private servicioFacturacion As IFacturacionService
-    Private servicioCuentaPorCobrar As ICuentaPorCobrarService
-    Private servicioMantenimiento As IMantenimientoService
-    Private servicioAuxiliarBancario As IBancaService
-    Private reciboComprobante As ModuloImpresion.clsRecibo
+    Private reciboComprobante As ModuloImpresion.ClsRecibo
     Private desglosePagoImpresion As ModuloImpresion.clsDesgloseFormaPago
     Private arrDesglosePago, arrDesgloseMov As List(Of ModuloImpresion.clsDesgloseFormaPago)
 #End Region
@@ -244,10 +238,10 @@ Public Class FrmAplicaReciboCxC
         Try
             cboFormaPago.ValueMember = "IdFormaPago"
             cboFormaPago.DisplayMember = "Descripcion"
-            cboFormaPago.DataSource = servicioMantenimiento.ObtenerListaFormaPagoMovimientoCxC()
+            'cboFormaPago.DataSource = servicioMantenimiento.ObtenerListaFormaPagoMovimientoCxC()
             cboTipoMoneda.ValueMember = "IdTipoMoneda"
             cboTipoMoneda.DisplayMember = "Descripcion"
-            cboTipoMoneda.DataSource = servicioMantenimiento.ObtenerListaTipoMoneda()
+            'cboTipoMoneda.DataSource = servicioMantenimiento.ObtenerListaTipoMoneda()
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
@@ -255,13 +249,13 @@ Public Class FrmAplicaReciboCxC
     End Sub
 
     Private Sub CargarListaBancoAdquiriente()
-        cboTipoBanco.DataSource = servicioMantenimiento.ObtenerListaBancoAdquiriente(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
+        'cboTipoBanco.DataSource = servicioMantenimiento.ObtenerListaBancoAdquiriente(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
         cboTipoBanco.ValueMember = "IdBanco"
         cboTipoBanco.DisplayMember = "Codigo"
     End Sub
 
     Private Sub CargarListaCuentaBanco()
-        cboTipoBanco.DataSource = servicioAuxiliarBancario.ObtenerListaCuentasBanco(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
+        'cboTipoBanco.DataSource = servicioAuxiliarBancario.ObtenerListaCuentasBanco(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
         cboTipoBanco.ValueMember = "IdCuenta"
         cboTipoBanco.DisplayMember = "Descripcion"
     End Sub
@@ -269,16 +263,6 @@ Public Class FrmAplicaReciboCxC
 
 #Region "Eventos Controles"
     Private Sub FrmAplicaReciboCxCClientes_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        Try
-            servicioFacturacion = FrmMenuPrincipal.unityContainer.Resolve(Of IFacturacionService)()
-            servicioCuentaPorCobrar = FrmMenuPrincipal.unityContainer.Resolve(Of ICuentaPorCobrarService)()
-            servicioMantenimiento = FrmMenuPrincipal.unityContainer.Resolve(Of IMantenimientoService)()
-            servicioAuxiliarBancario = FrmMenuPrincipal.unityContainer.Resolve(Of IBancaService)()
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-            Exit Sub
-        End Try
         txtFecha.Text = FrmMenuPrincipal.ObtenerFechaFormateada(Now())
         CargarCombos()
         CargarListaBancoAdquiriente()
@@ -290,7 +274,7 @@ Public Class FrmAplicaReciboCxC
         cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
         cboTipoMoneda.SelectedValue = StaticValoresPorDefecto.MonedaDelSistema
         Try
-            tipoMoneda = servicioMantenimiento.ObtenerTipoMoneda(cboTipoMoneda.SelectedValue)
+            'tipoMoneda = servicioMantenimiento.ObtenerTipoMoneda(cboTipoMoneda.SelectedValue)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
@@ -375,7 +359,7 @@ Public Class FrmAplicaReciboCxC
             movimiento.DesglosePagoMovimientoCuentaPorCobrar.Add(desglosePagoMovimiento)
         Next
         Try
-            servicioCuentaPorCobrar.AplicarMovimientoCxC(movimiento)
+            'servicioCuentaPorCobrar.AplicarMovimientoCxC(movimiento)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
@@ -391,7 +375,7 @@ Public Class FrmAplicaReciboCxC
     End Sub
 
     Private Sub CmdImprimir_Click(ByVal sender As Object, ByVal e As EventArgs) Handles CmdImprimir.Click
-        reciboComprobante = New ModuloImpresion.clsRecibo With {
+        reciboComprobante = New ModuloImpresion.ClsRecibo With {
             .usuario = FrmMenuPrincipal.usuarioGlobal,
             .empresa = FrmMenuPrincipal.empresaGlobal,
             .equipo = FrmMenuPrincipal.equipoGlobal,
@@ -473,7 +457,7 @@ Public Class FrmAplicaReciboCxC
         If Not bolInit And Not cboTipoMoneda.SelectedValue Is Nothing Then
             Dim tipoMoneda As TipoMoneda = Nothing
             Try
-                tipoMoneda = servicioMantenimiento.ObtenerTipoMoneda(cboTipoMoneda.SelectedValue)
+                'tipoMoneda = servicioMantenimiento.ObtenerTipoMoneda(cboTipoMoneda.SelectedValue)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
@@ -555,7 +539,7 @@ Public Class FrmAplicaReciboCxC
                 Exit Sub
             End If
             Try
-                cliente = servicioFacturacion.ObtenerCliente(FrmMenuPrincipal.intBusqueda)
+                'cliente = servicioFacturacion.ObtenerCliente(FrmMenuPrincipal.intBusqueda)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
@@ -563,7 +547,7 @@ Public Class FrmAplicaReciboCxC
             txtNombreCliente.Text = cliente.Nombre
             bolInit = True
             Try
-                cboCuentaPorCobrar.DataSource = servicioCuentaPorCobrar.ObtenerListaCuentasPorCobrar(cliente.IdCliente, StaticTipoCuentaPorCobrar.Clientes)
+                'cboCuentaPorCobrar.DataSource = servicioCuentaPorCobrar.ObtenerListaCuentasPorCobrar(cliente.IdCliente, StaticTipoCuentaPorCobrar.Clientes)
                 cboCuentaPorCobrar.ValueMember = "IdCxC"
                 cboCuentaPorCobrar.DisplayMember = "DescReferencia"
             Catch ex As Exception
@@ -588,7 +572,7 @@ Public Class FrmAplicaReciboCxC
     Private Sub cboCuentaPorCobrar_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboCuentaPorCobrar.SelectedValueChanged
         If Not bolInit And cboCuentaPorCobrar.SelectedValue IsNot Nothing Then
             Try
-                cuentaPorCobrar = servicioCuentaPorCobrar.ObtenerCuentaPorCobrar(cboCuentaPorCobrar.SelectedValue)
+                'cuentaPorCobrar = servicioCuentaPorCobrar.ObtenerCuentaPorCobrar(cboCuentaPorCobrar.SelectedValue)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub

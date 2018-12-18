@@ -1,10 +1,7 @@
 ﻿Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
-Imports LeandroSoftware.AccesoDatos.Servicios
-Imports Unity
 
 Public Class FrmVendedorListado
 #Region "Variables"
-    Private servicioMantenimiento As IMantenimientoService
 #End Region
 
 #Region "Métodos"
@@ -26,7 +23,7 @@ Public Class FrmVendedorListado
 
     Private Sub ActualizarDatos()
         Try
-            Dim listado As IList = servicioMantenimiento.ObtenerListaVendedores(FrmMenuPrincipal.empresaGlobal.IdEmpresa, txtNombre.Text)
+            Dim listado As IList = Nothing 'servicioMantenimiento.ObtenerListaVendedores(FrmMenuPrincipal.empresaGlobal.IdEmpresa, txtNombre.Text)
             dgvDatos.DataSource = listado
             If listado.Count() > 0 Then
                 btnEditar.Enabled = True
@@ -46,39 +43,32 @@ Public Class FrmVendedorListado
 
 #Region "Eventos Controles"
     Private Sub FrmUsuarioListado_Shown(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Shown
-        Try
-            servicioMantenimiento = FrmMenuPrincipal.unityContainer.Resolve(Of IMantenimientoService)()
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-            Exit Sub
-        End Try
         EstablecerPropiedadesDataGridView()
         ActualizarDatos()
     End Sub
 
     Private Sub btnAgregar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnAgregar.Click
-        Dim formMant As New FrmVendedor With {
-            .intIdVendedor = 0,
-            .servicioMantenimiento = servicioMantenimiento
-        }
-        formMant.ShowDialog()
+        'Dim formMant As New FrmVendedor With {
+        '.intIdVendedor = 0,
+        '.servicioMantenimiento = servicioMantenimiento
+        '}
+        'formMant.ShowDialog()
         ActualizarDatos()
     End Sub
 
     Private Sub btnEditar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEditar.Click
-        Dim formMant As New FrmVendedor With {
-            .intIdVendedor = dgvDatos.CurrentRow.Cells(0).Value,
-            .servicioMantenimiento = servicioMantenimiento
-        }
-        formMant.ShowDialog()
+        'Dim formMant As New FrmVendedor With {
+        '.intIdVendedor = dgvDatos.CurrentRow.Cells(0).Value,
+        '.servicioMantenimiento = servicioMantenimiento
+        '}
+        'formMant.ShowDialog()
         ActualizarDatos()
     End Sub
 
     Private Sub btnEliminar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEliminar.Click
         If MessageBox.Show("Desea eliminar el registro actual", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
             Try
-                servicioMantenimiento.EliminarVendedor(dgvDatos.CurrentRow.Cells(0).Value)
+                'servicioMantenimiento.EliminarVendedor(dgvDatos.CurrentRow.Cells(0).Value)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub

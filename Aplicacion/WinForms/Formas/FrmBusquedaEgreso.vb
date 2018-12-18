@@ -1,11 +1,5 @@
-Imports System.Collections.Generic
-Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
-Imports LeandroSoftware.AccesoDatos.Servicios
-Imports Unity
-
 Public Class FrmBusquedaEgreso
 #Region "Variables"
-    Private servicioEgresos As IEgresoService
     Private intTotalEmpresas As Integer
     Private intIndiceDePagina As Integer
     Private intFilasPorPagina As Integer = 13
@@ -19,38 +13,38 @@ Public Class FrmBusquedaEgreso
         Dim dvcNombre As New DataGridViewTextBoxColumn
         Dim dvcTopeCredito As New DataGridViewTextBoxColumn
 
-        FlexProducto.Columns.Clear()
-        FlexProducto.AutoGenerateColumns = False
+        dgvListado.Columns.Clear()
+        dgvListado.AutoGenerateColumns = False
         dvcId.HeaderText = "Id"
         dvcId.DataPropertyName = "IdEgreso"
         dvcId.Width = 50
-        FlexProducto.Columns.Add(dvcId)
+        dgvListado.Columns.Add(dvcId)
         dvcNombre.HeaderText = "Beneficiario"
         dvcNombre.DataPropertyName = "Beneficiario"
         dvcNombre.Width = 450
-        FlexProducto.Columns.Add(dvcNombre)
+        dgvListado.Columns.Add(dvcNombre)
         dvcTopeCredito.HeaderText = "Monto"
         dvcTopeCredito.DataPropertyName = "Monto"
         dvcTopeCredito.Width = 120
         dvcTopeCredito.DefaultCellStyle = FrmMenuPrincipal.dgvDecimal
-        FlexProducto.Columns.Add(dvcTopeCredito)
+        dgvListado.Columns.Add(dvcTopeCredito)
     End Sub
 
     Private Sub ActualizarDatos(ByVal intNumeroPagina As Integer)
         Try
-            FlexProducto.DataSource = servicioEgresos.ObtenerListaEgresos(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, intId, txtBeneficiario.Text, txtDetalle.Text)
+            'dgvListado.DataSource = servicioEgresos.ObtenerListaEgresos(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, intId, txtBeneficiario.Text, txtDetalle.Text)
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
             Exit Sub
         End Try
-        FlexProducto.Refresh()
+        dgvListado.Refresh()
     End Sub
 
     Private Sub ValidarCantidadEmpresas()
         Try
-            intTotalEmpresas = servicioEgresos.ObtenerTotalListaEgresos(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intId, txtBeneficiario.Text, txtDetalle.Text)
+            'intTotalEmpresas = servicioEgresos.ObtenerTotalListaEgresos(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intId, txtBeneficiario.Text, txtDetalle.Text)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -102,22 +96,15 @@ Public Class FrmBusquedaEgreso
     End Sub
 
     Private Sub FrmBusEgreso_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        Try
-            servicioEgresos = FrmMenuPrincipal.unityContainer.Resolve(Of IEgresoService)()
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-            Exit Sub
-        End Try
         EstablecerPropiedadesDataGridView()
         ValidarCantidadEmpresas()
         intIndiceDePagina = 1
         ActualizarDatos(intIndiceDePagina)
     End Sub
 
-    Private Sub FlexProducto_DoubleClick(ByVal sender As Object, ByVal e As EventArgs) Handles FlexProducto.DoubleClick
-        If FlexProducto.RowCount > 0 Then
-            FrmMenuPrincipal.intBusqueda = FlexProducto.CurrentRow.Cells(0).Value
+    Private Sub FlexProducto_DoubleClick(ByVal sender As Object, ByVal e As EventArgs) Handles dgvListado.DoubleClick
+        If dgvListado.RowCount > 0 Then
+            FrmMenuPrincipal.intBusqueda = dgvListado.CurrentRow.Cells(0).Value
             Close()
         End If
     End Sub

@@ -1,11 +1,5 @@
-Imports System.Collections.Generic
-Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
-Imports LeandroSoftware.AccesoDatos.Servicios
-Imports Unity
-
 Public Class FrmBusquedaOrdenServicio
 #Region "Variables"
-    Private servicioFacturacion As IFacturacionService
     Private intTotalEmpresas As Integer
     Private intIndiceDePagina As Integer
     Private intFilasPorPagina As Integer = 13
@@ -21,42 +15,42 @@ Public Class FrmBusquedaOrdenServicio
         Dim dvcReferencia As New DataGridViewTextBoxColumn
         Dim dvcTopeCredito As New DataGridViewTextBoxColumn
 
-        FlexProducto.Columns.Clear()
-        FlexProducto.AutoGenerateColumns = False
+        dgvListado.Columns.Clear()
+        dgvListado.AutoGenerateColumns = False
         dvcId.HeaderText = "Id"
         dvcId.DataPropertyName = "IdOrden"
         dvcId.Width = 50
-        FlexProducto.Columns.Add(dvcId)
+        dgvListado.Columns.Add(dvcId)
         dvcNombre.HeaderText = "Cliente"
         dvcNombre.DataPropertyName = "NombreCliente"
         dvcNombre.Width = 400
-        FlexProducto.Columns.Add(dvcNombre)
+        dgvListado.Columns.Add(dvcNombre)
         dvcReferencia.HeaderText = "Referencia"
         dvcReferencia.DataPropertyName = "NoDocumento"
         dvcReferencia.Width = 50
-        FlexProducto.Columns.Add(dvcReferencia)
+        dgvListado.Columns.Add(dvcReferencia)
         dvcTopeCredito.HeaderText = "Total"
         dvcTopeCredito.DataPropertyName = "Total"
         dvcTopeCredito.Width = 120
         dvcTopeCredito.DefaultCellStyle = FrmMenuPrincipal.dgvDecimal
-        FlexProducto.Columns.Add(dvcTopeCredito)
+        dgvListado.Columns.Add(dvcTopeCredito)
     End Sub
 
     Private Sub ActualizarDatos(ByVal intNumeroPagina As Integer)
         Try
-            FlexProducto.DataSource = servicioFacturacion.ObtenerListaOrdenesServicio(FrmMenuPrincipal.empresaGlobal.IdEmpresa, bolIncluyeTodo, intNumeroPagina, intFilasPorPagina, intId, txtNombre.Text)
+            'dgvListado.DataSource = servicioFacturacion.ObtenerListaOrdenesServicio(FrmMenuPrincipal.empresaGlobal.IdEmpresa, bolIncluyeTodo, intNumeroPagina, intFilasPorPagina, intId, txtNombre.Text)
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
             Exit Sub
         End Try
-        FlexProducto.Refresh()
+        dgvListado.Refresh()
     End Sub
 
     Private Sub ValidarCantidadEmpresas()
         Try
-            intTotalEmpresas = servicioFacturacion.ObtenerTotalListaOrdenesServicio(FrmMenuPrincipal.empresaGlobal.IdEmpresa, bolIncluyeTodo, intId, txtNombre.Text)
+            'intTotalEmpresas = servicioFacturacion.ObtenerTotalListaOrdenesServicio(FrmMenuPrincipal.empresaGlobal.IdEmpresa, bolIncluyeTodo, intId, txtNombre.Text)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -111,22 +105,15 @@ Public Class FrmBusquedaOrdenServicio
     End Sub
 
     Private Sub FrmBusProd_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        Try
-            servicioFacturacion = FrmMenuPrincipal.unityContainer.Resolve(Of IFacturacionService)()
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-            Exit Sub
-        End Try
         EstablecerPropiedadesDataGridView()
         ValidarCantidadEmpresas()
         intIndiceDePagina = 1
         ActualizarDatos(intIndiceDePagina)
     End Sub
 
-    Private Sub FlexProducto_DoubleClick(ByVal sender As Object, ByVal e As EventArgs) Handles FlexProducto.DoubleClick
-        If FlexProducto.RowCount > 0 Then
-            FrmMenuPrincipal.intBusqueda = FlexProducto.CurrentRow.Cells(0).Value
+    Private Sub FlexProducto_DoubleClick(ByVal sender As Object, ByVal e As EventArgs) Handles dgvListado.DoubleClick
+        If dgvListado.RowCount > 0 Then
+            FrmMenuPrincipal.intBusqueda = dgvListado.CurrentRow.Cells(0).Value
             Close()
         End If
     End Sub

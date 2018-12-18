@@ -1,8 +1,6 @@
 Imports System.Collections.Generic
 Imports LeandroSoftware.Core.CommonTypes
 Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
-Imports LeandroSoftware.AccesoDatos.Servicios
-Imports Unity
 
 Public Class FrmOrdenServicio
 #Region "Variables"
@@ -12,15 +10,12 @@ Public Class FrmOrdenServicio
     Private dtbDatosLocal, dtbDetalleOrdenServicio As DataTable
     Private dtrRowDetOrdenServicio As DataRow
     Private arrDetalleOrdenServicio As ArrayList
-    Private servicioFacturacion As IFacturacionService
-    Private servicioMantenimiento As IMantenimientoService
-    Private servicioReportes As IReporteService
     Private ordenServicio As OrdenServicio
     Private detalleOrdenServicio As DetalleOrdenServicio
     Private producto As Producto
     Private cliente As Cliente
     Private vendedor As Vendedor
-    Private comprobante As ModuloImpresion.clsComprobante
+    Private comprobante As ModuloImpresion.ClsComprobante
     Private detalleComprobante As ModuloImpresion.clsDetalleComprobante
     Private bolInit As Boolean = True
 
@@ -224,7 +219,7 @@ Public Class FrmOrdenServicio
                     End If
                 End If
                 Try
-                    producto = servicioMantenimiento.ObtenerProductoPorCodigo(strCodigoProducto)
+                    'producto = servicioMantenimiento.ObtenerProductoPorCodigo(strCodigoProducto)
                 Catch ex As Exception
                     MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
@@ -269,7 +264,7 @@ Public Class FrmOrdenServicio
 
     Private Sub CargarAutoCompletarProducto()
         Dim source As AutoCompleteStringCollection = New AutoCompleteStringCollection()
-        Dim listOfProducts As ICollection(Of Producto) = servicioMantenimiento.ObtenerListaProductos(FrmMenuPrincipal.empresaGlobal.IdEmpresa, 1, 0, True)
+        Dim listOfProducts As ICollection(Of Producto) = Nothing 'servicioMantenimiento.ObtenerListaProductos(FrmMenuPrincipal.empresaGlobal.IdEmpresa, 1, 0, True)
         For Each producto As Producto In listOfProducts
             source.Add(String.Concat(producto.Codigo, " ", producto.Descripcion))
         Next
@@ -281,15 +276,6 @@ Public Class FrmOrdenServicio
 
 #Region "Eventos Controles"
     Private Sub FrmOrdenServicio_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        Try
-            servicioFacturacion = FrmMenuPrincipal.unityContainer.Resolve(Of IFacturacionService)()
-            servicioMantenimiento = FrmMenuPrincipal.unityContainer.Resolve(Of IMantenimientoService)()
-            servicioReportes = FrmMenuPrincipal.unityContainer.Resolve(Of IReporteService)()
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-            Exit Sub
-        End Try
         txtFecha.Text = FrmMenuPrincipal.ObtenerFechaFormateada(Now())
         dblPorcentajeIVA = FrmMenuPrincipal.empresaGlobal.PorcentajeIVA
         If FrmMenuPrincipal.empresaGlobal.AutoCompletaProducto = True Then
@@ -343,7 +329,7 @@ Public Class FrmOrdenServicio
         If txtIdOrdenServicio.Text <> "" Then
             If MessageBox.Show("Desea anular este registro?", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
                 Try
-                    servicioFacturacion.AnularOrdenServicio(txtIdOrdenServicio.Text, FrmMenuPrincipal.usuarioGlobal.IdUsuario)
+                    'servicioFacturacion.AnularOrdenServicio(txtIdOrdenServicio.Text, FrmMenuPrincipal.usuarioGlobal.IdUsuario)
                     MessageBox.Show("Transacción procesada satisfactoriamente. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
                     CmdAgregar_Click(CmdAgregar, New EventArgs())
                 Catch ex As Exception
@@ -359,7 +345,7 @@ Public Class FrmOrdenServicio
         formBusqueda.ShowDialog()
         If FrmMenuPrincipal.intBusqueda > 0 Then
             Try
-                ordenServicio = servicioFacturacion.ObtenerOrdenServicio(FrmMenuPrincipal.intBusqueda)
+                'ordenServicio = servicioFacturacion.ObtenerOrdenServicio(FrmMenuPrincipal.intBusqueda)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
@@ -407,7 +393,7 @@ Public Class FrmOrdenServicio
         formBusquedaVendedor.ShowDialog()
         If FrmMenuPrincipal.intBusqueda > 0 Then
             Try
-                vendedor = servicioMantenimiento.ObtenerVendedor(FrmMenuPrincipal.intBusqueda)
+                'vendedor = servicioMantenimiento.ObtenerVendedor(FrmMenuPrincipal.intBusqueda)
                 txtVendedor.Text = vendedor.Nombre
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -426,7 +412,7 @@ Public Class FrmOrdenServicio
         formBusquedaCliente.ShowDialog()
         If FrmMenuPrincipal.intBusqueda > 0 Then
             Try
-                cliente = servicioFacturacion.ObtenerCliente(FrmMenuPrincipal.intBusqueda)
+                'cliente = servicioFacturacion.ObtenerCliente(FrmMenuPrincipal.intBusqueda)
                 txtNombreCliente.Text = cliente.Nombre
                 If cliente.Vendedor IsNot Nothing Then
                     vendedor = cliente.Vendedor
@@ -502,7 +488,7 @@ Public Class FrmOrdenServicio
         Next
         If txtIdOrdenServicio.Text = "" Then
             Try
-                ordenServicio = servicioFacturacion.AgregarOrdenServicio(ordenServicio)
+                'ordenServicio = servicioFacturacion.AgregarOrdenServicio(ordenServicio)
                 txtIdOrdenServicio.Text = ordenServicio.IdOrden
             Catch ex As Exception
                 txtIdOrdenServicio.Text = ""
@@ -511,7 +497,7 @@ Public Class FrmOrdenServicio
             End Try
         Else
             Try
-                servicioFacturacion.ActualizarOrdenServicio(ordenServicio)
+                'servicioFacturacion.ActualizarOrdenServicio(ordenServicio)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
@@ -531,7 +517,7 @@ Public Class FrmOrdenServicio
         If txtIdOrdenServicio.Text <> "" Then
             Dim reptOrdenServicio As New rptOrdenServicio
             Try
-                dtbDatos = servicioReportes.ObtenerReporteOrdenServicio(txtIdOrdenServicio.Text)
+                'dtbDatos = servicioReportes.ObtenerReporteOrdenServicio(txtIdOrdenServicio.Text)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
@@ -563,7 +549,7 @@ Public Class FrmOrdenServicio
                         precioInstalacion = CDbl(txtPrecio.Text) * FrmMenuPrincipal.empresaGlobal.PorcentajeInstalacion / 100
                         precioProducto = CDbl(txtPrecio.Text) - precioInstalacion
                         CargarLineaDetalleOrdenServicio(producto, txtDescripcion.Text, txtCantidad.Text, precioProducto, precioInstalacion)
-                        producto = servicioMantenimiento.ObtenerProducto(FrmMenuPrincipal.empresaGlobal.CodigoServicioInst)
+                        'producto = servicioMantenimiento.ObtenerProducto(FrmMenuPrincipal.empresaGlobal.CodigoServicioInst)
                         CargarLineaDetalleInstalacion(producto, precioInstalacion * CDbl(txtCantidad.Text))
                         dblCostoPorInstalacion += precioInstalacion * CDbl(txtCantidad.Text)
                     Else
@@ -593,9 +579,9 @@ Public Class FrmOrdenServicio
                 MessageBox.Show("La línea seleccionada no puede eliminarse. Debe eliminar los productos relacionados.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End If
-            producto = servicioMantenimiento.ObtenerProducto(grdDetalleOrdenServicio.CurrentRow.Cells(0).Value)
+            'producto = servicioMantenimiento.ObtenerProducto(grdDetalleOrdenServicio.CurrentRow.Cells(0).Value)
             If CDbl(dtbDetalleOrdenServicio.Rows.Find(grdDetalleOrdenServicio.CurrentRow.Cells(0).Value).Item(7)) > 0 Then
-                producto = servicioMantenimiento.ObtenerProducto(FrmMenuPrincipal.empresaGlobal.CodigoServicioInst)
+                'producto = servicioMantenimiento.ObtenerProducto(FrmMenuPrincipal.empresaGlobal.CodigoServicioInst)
                 DescargarLineaDetalleInstalacion(producto, CDbl(dtbDetalleOrdenServicio.Rows.Find(grdDetalleOrdenServicio.CurrentRow.Cells(0).Value).Item(7)) * CDbl(grdDetalleOrdenServicio.CurrentRow.Cells(3).Value))
                 dblCostoPorInstalacion -= CDbl(dtbDetalleOrdenServicio.Rows.Find(grdDetalleOrdenServicio.CurrentRow.Cells(0).Value).Item(7)) * CDbl(grdDetalleOrdenServicio.CurrentRow.Cells(3).Value)
             End If

@@ -1,18 +1,15 @@
 Imports System.Collections.Generic
 Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
-Imports LeandroSoftware.AccesoDatos.Servicios
-Imports Unity
 
 Public Class FrmAjusteInventario
 #Region "Variables"
     Private I As Short
     Private dtbDatosLocal, dtbDetalleAjusteInventario As DataTable
     Private dtrRowDetAjusteInventario As DataRow
-    Private arrDetalleAjusteInventario As List(Of ModuloImpresion.clsDetalleComprobante)
-    Private servicioMantenimiento As IMantenimientoService
+    Private arrDetalleAjusteInventario As List(Of ModuloImpresion.ClsDetalleComprobante)
     Private ajusteInventario As AjusteInventario
     Private detalleAjusteInventario As DetalleAjusteInventario
-    Private comprobante As ModuloImpresion.clsAjusteInventario
+    Private comprobante As ModuloImpresion.ClsAjusteInventario
     Private detalleComprobante As ModuloImpresion.clsDetalleComprobante
     Private bolInit As Boolean = True
     Private producto As Producto
@@ -131,7 +128,7 @@ Public Class FrmAjusteInventario
                     End If
                 End If
                 Try
-                    producto = servicioMantenimiento.ObtenerProductoPorCodigo(txtCodigo.Text)
+                    'producto = servicioMantenimiento.ObtenerProductoPorCodigo(txtCodigo.Text)
                 Catch ex As Exception
                     MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
@@ -189,13 +186,6 @@ Public Class FrmAjusteInventario
 
 #Region "Eventos Controles"
     Private Sub FrmAjusteInventario_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        Try
-            servicioMantenimiento = FrmMenuPrincipal.unityContainer.Resolve(Of IMantenimientoService)()
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-            Exit Sub
-        End Try
         txtFecha.Text = FrmMenuPrincipal.ObtenerFechaFormateada(Now())
         IniciaDetalleAjusteInventario()
         EstablecerPropiedadesDataGridView()
@@ -219,7 +209,7 @@ Public Class FrmAjusteInventario
         If txtIdAjuste.Text <> "" Then
             If MessageBox.Show("Desea anular este registro?", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
                 Try
-                    servicioMantenimiento.AnularAjusteInventario(txtIdAjuste.Text, FrmMenuPrincipal.usuarioGlobal.IdUsuario)
+                    'servicioMantenimiento.AnularAjusteInventario(txtIdAjuste.Text, FrmMenuPrincipal.usuarioGlobal.IdUsuario)
                 Catch ex As Exception
                     MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
@@ -236,7 +226,7 @@ Public Class FrmAjusteInventario
         formBusqueda.ShowDialog()
         If FrmMenuPrincipal.intBusqueda > 0 Then
             Try
-                ajusteInventario = servicioMantenimiento.ObtenerAjusteInventario(FrmMenuPrincipal.intBusqueda)
+                'ajusteInventario = servicioMantenimiento.ObtenerAjusteInventario(FrmMenuPrincipal.intBusqueda)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
@@ -275,7 +265,7 @@ Public Class FrmAjusteInventario
                 ajusteInventario.DetalleAjusteInventario.Add(detalleAjusteInventario)
             Next
             Try
-                ajusteInventario = servicioMantenimiento.AgregarAjusteInventario(ajusteInventario)
+                'ajusteInventario = servicioMantenimiento.AgregarAjusteInventario(ajusteInventario)
                 txtIdAjuste.Text = ajusteInventario.IdAjuste
             Catch ex As Exception
                 txtIdAjuste.Text = ""
@@ -293,7 +283,7 @@ Public Class FrmAjusteInventario
 
     Private Sub CmdImprimir_Click(sender As Object, e As EventArgs) Handles CmdImprimir.Click
         If txtIdAjuste.Text <> "" Then
-            comprobante = New ModuloImpresion.clsAjusteInventario With {
+            comprobante = New ModuloImpresion.ClsAjusteInventario With {
                 .usuario = FrmMenuPrincipal.usuarioGlobal,
                 .empresa = FrmMenuPrincipal.empresaGlobal,
                 .equipo = FrmMenuPrincipal.equipoGlobal,

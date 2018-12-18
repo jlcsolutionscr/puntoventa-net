@@ -1,13 +1,5 @@
-Imports System.Collections
-Imports CrystalDecisions.Shared
-Imports CrystalDecisions.CrystalReports.Engine
-Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
-Imports LeandroSoftware.AccesoDatos.Servicios
-Imports Unity
-
 Public Class FrmMenuBancoAdquiriente
 #Region "Variables"
-    Private servicioMantenimiento As IMantenimientoService
 #End Region
 
 #Region "Métodos"
@@ -15,7 +7,7 @@ Public Class FrmMenuBancoAdquiriente
         Try
             cboIdBancoAdquiriente.ValueMember = "IdBanco"
             cboIdBancoAdquiriente.DisplayMember = "Descripcion"
-            cboIdBancoAdquiriente.DataSource = servicioMantenimiento.ObtenerListaBancoAdquiriente(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
+            'cboIdBancoAdquiriente.DataSource = servicioMantenimiento.ObtenerListaBancoAdquiriente(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -27,13 +19,6 @@ Public Class FrmMenuBancoAdquiriente
 
 #Region "Eventos Controles"
     Private Sub FrmRptMenu_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        Try
-            servicioMantenimiento = FrmMenuPrincipal.unityContainer.Resolve(Of IMantenimientoService)()
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-            Exit Sub
-        End Try
         CargarCombos()
     End Sub
 

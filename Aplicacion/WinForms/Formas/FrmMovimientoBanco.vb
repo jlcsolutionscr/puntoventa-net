@@ -1,11 +1,8 @@
 Imports System.Collections.Generic
 Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
-Imports LeandroSoftware.AccesoDatos.Servicios
-Imports Unity
 
 Public Class FrmMovimientoBanco
 #Region "Variables"
-    Private servicioAuxiliarBancario As IBancaService
     Private movimiento As MovimientoBanco
     Private listaMovimientos As IEnumerable(Of MovimientoBanco)
 #End Region
@@ -15,10 +12,10 @@ Public Class FrmMovimientoBanco
         Try
             cboIdCuenta.ValueMember = "IdCuenta"
             cboIdCuenta.DisplayMember = "Descripcion"
-            cboIdCuenta.DataSource = servicioAuxiliarBancario.ObtenerListaCuentasBanco(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
+            'cboIdCuenta.DataSource = servicioAuxiliarBancario.ObtenerListaCuentasBanco(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
             cboIdTipo.ValueMember = "IdTipoMov"
             cboIdTipo.DisplayMember = "Descripcion"
-            cboIdTipo.DataSource = servicioAuxiliarBancario.ObtenerTipoMovimientoBanco()
+            'cboIdTipo.DataSource = servicioAuxiliarBancario.ObtenerTipoMovimientoBanco()
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
@@ -51,7 +48,7 @@ Public Class FrmMovimientoBanco
         If txtIdMov.Text <> "" And cboIdCuenta.SelectedValue <> Nothing And cboIdTipo.SelectedValue <> Nothing Then
             If MessageBox.Show("Desea anular este registro?", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
                 Try
-                    servicioAuxiliarBancario.AnularMovimientoBanco(txtIdMov.Text, FrmMenuPrincipal.usuarioGlobal.IdUsuario)
+                    'servicioAuxiliarBancario.AnularMovimientoBanco(txtIdMov.Text, FrmMenuPrincipal.usuarioGlobal.IdUsuario)
                 Catch ex As Exception
                     MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
@@ -68,7 +65,7 @@ Public Class FrmMovimientoBanco
         formBusqueda.ShowDialog()
         If FrmMenuPrincipal.intBusqueda > 0 Then
             Try
-                movimiento = servicioAuxiliarBancario.ObtenerMovimientoBanco(FrmMenuPrincipal.intBusqueda)
+                'movimiento = servicioAuxiliarBancario.ObtenerMovimientoBanco(FrmMenuPrincipal.intBusqueda)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
@@ -106,7 +103,7 @@ Public Class FrmMovimientoBanco
                     .Descripcion = txtDescripcion.Text
                 }
                 Try
-                    movimiento = servicioAuxiliarBancario.AgregarMovimientoBanco(movimiento)
+                    'movimiento = servicioAuxiliarBancario.AgregarMovimientoBanco(movimiento)
                     txtIdMov.Text = movimiento.IdMov
                 Catch ex As Exception
                     txtIdMov.Text = ""
@@ -118,7 +115,7 @@ Public Class FrmMovimientoBanco
                 movimiento.Beneficiario = txtBeneficiario.Text
                 movimiento.Descripcion = txtDescripcion.Text
                 Try
-                    servicioAuxiliarBancario.ActualizarMovimientoBanco(movimiento)
+                    'servicioAuxiliarBancario.ActualizarMovimientoBanco(movimiento)
                 Catch ex As Exception
                     MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
@@ -141,13 +138,6 @@ Public Class FrmMovimientoBanco
     End Sub
 
     Private Sub FrmMantDebCred_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        Try
-            servicioAuxiliarBancario = FrmMenuPrincipal.unityContainer.Resolve(Of IBancaService)()
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-            Exit Sub
-        End Try
         txtFecha.Text = FrmMenuPrincipal.ObtenerFechaFormateada(Now())
         CargarCombos()
         txtMonto.Text = FormatNumber(0, 2)

@@ -1,7 +1,5 @@
 Imports System.Collections.Generic
 Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
-Imports LeandroSoftware.AccesoDatos.Servicios
-Imports Unity
 
 Public Class FrmUsuario
 #Region "Variables"
@@ -12,7 +10,6 @@ Public Class FrmUsuario
     Private role As Role
     Private rolePorUsuario As RolePorUsuario
     Private bolInit As Boolean = True
-    Public servicioMantenimiento As IMantenimientoService
     Public intIdUsuario As Integer
 #End Region
 
@@ -82,7 +79,7 @@ Public Class FrmUsuario
         Try
             cboRole.ValueMember = "IdRole"
             cboRole.DisplayMember = "Nombre"
-            cboRole.DataSource = servicioMantenimiento.ObtenerListaRoles()
+            'cboRole.DataSource = servicioMantenimiento.ObtenerListaRoles()
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
@@ -97,7 +94,7 @@ Public Class FrmUsuario
         CargarCombos()
         If intIdUsuario > 0 Then
             Try
-                datos = servicioMantenimiento.ObtenerUsuario(intIdUsuario, FrmMenuPrincipal.strThumbprint)
+                'datos = servicioMantenimiento.ObtenerUsuario(intIdUsuario, FrmMenuPrincipal.strThumbprint)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                 Close()
@@ -118,7 +115,7 @@ Public Class FrmUsuario
             datos = New Usuario
         End If
         bolInit = False
-        role = servicioMantenimiento.ObtenerRole(cboRole.SelectedValue)
+        'role = servicioMantenimiento.ObtenerRole(cboRole.SelectedValue)
         txtDescripción.Text = role.Descripcion
     End Sub
 
@@ -133,7 +130,11 @@ Public Class FrmUsuario
             Exit Sub
         End If
         If datos.IdUsuario = 0 Then
-            datos.IdEmpresa = FrmMenuPrincipal.empresaGlobal.IdEmpresa
+            Dim empresaUsuario As EmpresaPorUsuario = New EmpresaPorUsuario()
+            empresaUsuario.IdEmpresa = FrmMenuPrincipal.empresaGlobal.IdEmpresa
+            Dim detalleEmpresa As List(Of EmpresaPorUsuario) = New List(Of EmpresaPorUsuario)()
+            detalleEmpresa.Add(empresaUsuario)
+            datos.EmpresaPorUsuario = detalleEmpresa
         End If
         datos.CodigoUsuario = txtUsuario.Text
         datos.ClaveSinEncriptar = txtPassword.Text
@@ -142,7 +143,6 @@ Public Class FrmUsuario
         datos.RolePorUsuario.Clear()
         For I = 0 To dtbRolePorUsuario.Rows.Count - 1
             rolePorUsuario = New RolePorUsuario With {
-                .IdEmpresa = FrmMenuPrincipal.empresaGlobal.IdEmpresa,
                 .IdRole = dtbRolePorUsuario.Rows(I).Item(0)
             }
             If datos.IdUsuario > 0 Then
@@ -152,10 +152,10 @@ Public Class FrmUsuario
         Next
         Try
             If datos.IdUsuario = 0 Then
-                datos = servicioMantenimiento.AgregarUsuario(datos, FrmMenuPrincipal.strThumbprint)
+                'datos = servicioMantenimiento.AgregarUsuario(datos, FrmMenuPrincipal.strThumbprint)
                 txtIdUsuario.Text = datos.IdUsuario
             Else
-                servicioMantenimiento.ActualizarUsuario(datos, FrmMenuPrincipal.strThumbprint)
+                'servicioMantenimiento.ActualizarUsuario(datos, FrmMenuPrincipal.strThumbprint)
             End If
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -168,7 +168,7 @@ Public Class FrmUsuario
     Private Sub cboRole_SelectedValueChanged(ByVal sender As Object, ByVal e As EventArgs) Handles cboRole.SelectedValueChanged
         If Not bolInit Then
             Try
-                role = servicioMantenimiento.ObtenerRole(cboRole.SelectedValue)
+                'role = servicioMantenimiento.ObtenerRole(cboRole.SelectedValue)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                 Close()

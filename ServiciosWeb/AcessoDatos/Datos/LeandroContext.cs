@@ -52,10 +52,12 @@ namespace LeandroSoftware.AccesoDatos.Datos
         DbSet<Distrito> DistritoRepository { get; set; }
         DbSet<DocumentoElectronico> DocumentoElectronicoRepository { get; set; }
         DbSet<Egreso> EgresoRepository { get; set; }
+        DbSet<EmpresaPorUsuario> EmpresaPorUsuarioRepository { get; set; }
         DbSet<FormaPago> FormaPagoRepository { get; set; }
         DbSet<Ingreso> IngresoRepository { get; set; }
         DbSet<Linea> LineaRepository { get; set; }
         DbSet<Modulo> ModuloRepository { get; set; }
+        DbSet<ModuloPorEmpresa> ModuloPorEmpresaRepository { get; set; }
         DbSet<MovimientoCuentaPorCobrar> MovimientoCuentaPorCobrarRepository { get; set; }
         DbSet<MovimientoCuentaPorPagar> MovimientoCuentaPorPagarRepository { get; set; }
         DbSet<MovimientoBanco> MovimientoBancoRepository { get; set; }
@@ -70,6 +72,7 @@ namespace LeandroSoftware.AccesoDatos.Datos
         DbSet<Proveedor> ProveedorRepository { get; set; }
         DbSet<Provincia> ProvinciaRepository { get; set; }
         DbSet<Empresa> EmpresaRepository { get; set; }
+        DbSet<ReportePorEmpresa> ReportePorEmpresaRepository { get; set; }
         DbSet<Role> RoleRepository { get; set; }
         DbSet<RolePorUsuario> RolePorUsuarioRepository { get; set; }
         DbSet<SaldoMensualContable> SaldoMensualContableRepository { get; set; }
@@ -153,10 +156,12 @@ namespace LeandroSoftware.AccesoDatos.Datos
         public DbSet<Distrito> DistritoRepository { get; set; }
         public DbSet<DocumentoElectronico> DocumentoElectronicoRepository { get; set; }
         public DbSet<Egreso> EgresoRepository { get; set; }
+        public DbSet<EmpresaPorUsuario> EmpresaPorUsuarioRepository { get; set; }
         public DbSet<FormaPago> FormaPagoRepository { get; set; }
         public DbSet<Ingreso> IngresoRepository { get; set; }
         public DbSet<Linea> LineaRepository { get; set; }
         public DbSet<Modulo> ModuloRepository { get; set; }
+        public DbSet<ModuloPorEmpresa> ModuloPorEmpresaRepository { get; set; }
         public DbSet<MovimientoCuentaPorCobrar> MovimientoCuentaPorCobrarRepository { get; set; }
         public DbSet<MovimientoCuentaPorPagar> MovimientoCuentaPorPagarRepository { get; set; }
         public DbSet<MovimientoBanco> MovimientoBancoRepository { get; set; }
@@ -171,6 +176,7 @@ namespace LeandroSoftware.AccesoDatos.Datos
         public DbSet<Proveedor> ProveedorRepository { get; set; }
         public DbSet<Provincia> ProvinciaRepository { get; set; }
         public DbSet<Empresa> EmpresaRepository { get; set; }
+        public DbSet<ReportePorEmpresa> ReportePorEmpresaRepository { get; set; }
         public DbSet<Role> RoleRepository { get; set; }
         public DbSet<RolePorUsuario> RolePorUsuarioRepository { get; set; }
         public DbSet<SaldoMensualContable> SaldoMensualContableRepository { get; set; }

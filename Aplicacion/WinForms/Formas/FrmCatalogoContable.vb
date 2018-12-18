@@ -1,10 +1,7 @@
 Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
-Imports LeandroSoftware.AccesoDatos.Servicios
-Imports Unity
 
 Public Class FrmCatalogoContable
 #Region "Variables"
-    Public servicioContabilidad As IContabilidadService
     Public intIdCuenta As Integer
     Private datos As CatalogoContable
 #End Region
@@ -27,13 +24,13 @@ Public Class FrmCatalogoContable
 
     Private Sub CargarComboBox()
         Try
-            cboTipoSaldo.DataSource = servicioContabilidad.ObtenerTiposCuentaContable()
+            'cboTipoSaldo.DataSource = servicioContabilidad.ObtenerTiposCuentaContable()
             cboTipoSaldo.ValueMember = "IdTipoCuenta"
             cboTipoSaldo.DisplayMember = "Descripcion"
-            cboCuentaGrupo.DataSource = servicioContabilidad.ObtenerListaCuentasPrimerOrden(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
+            'cboCuentaGrupo.DataSource = servicioContabilidad.ObtenerListaCuentasPrimerOrden(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
             cboCuentaGrupo.ValueMember = "IdCuenta"
             cboCuentaGrupo.DisplayMember = "Descripcion"
-            cboClaseCuenta.DataSource = servicioContabilidad.ObtenerClaseCuentaContable()
+            'cboClaseCuenta.DataSource = servicioContabilidad.ObtenerClaseCuentaContable()
             cboClaseCuenta.ValueMember = "IdClaseCuenta"
             cboClaseCuenta.DisplayMember = "Descripcion"
         Catch ex As Exception
@@ -48,7 +45,7 @@ Public Class FrmCatalogoContable
         CargarComboBox()
         If intIdCuenta > 0 Then
             Try
-                datos = servicioContabilidad.ObtenerCuentaContable(intIdCuenta)
+                'datos = servicioContabilidad.ObtenerCuentaContable(intIdCuenta)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Close()
@@ -111,9 +108,9 @@ Public Class FrmCatalogoContable
         datos.IdClaseCuenta = cboClaseCuenta.SelectedValue
         Try
             If datos.IdCuenta = 0 Then
-                servicioContabilidad.AgregarCuentaContable(datos)
+                'servicioContabilidad.AgregarCuentaContable(datos)
             Else
-                servicioContabilidad.ActualizarCuentaContable(datos)
+                'servicioContabilidad.ActualizarCuentaContable(datos)
             End If
             MessageBox.Show("Registro guardado satisfactoriamente", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
         Catch ex As Exception

@@ -1,13 +1,9 @@
-Imports System.Collections.Generic
 Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
-Imports LeandroSoftware.AccesoDatos.Servicios
-Imports Unity
 
 Public Class FrmVendedor
 #Region "Variables"
     Private I As Short
     Private datos As Vendedor
-    Public servicioMantenimiento As IMantenimientoService
     Public intIdVendedor As Integer
 #End Region
 
@@ -26,7 +22,7 @@ Public Class FrmVendedor
     Private Sub FrmUsuario_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         If intIdVendedor > 0 Then
             Try
-                datos = servicioMantenimiento.ObtenerVendedor(intIdVendedor)
+                'datos = servicioMantenimiento.ObtenerVendedor(intIdVendedor)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                 Close()
@@ -60,10 +56,10 @@ Public Class FrmVendedor
         datos.Nombre = txtNombre.Text
         Try
             If datos.IdVendedor = 0 Then
-                datos = servicioMantenimiento.AgregarVendedor(datos)
+                'datos = servicioMantenimiento.AgregarVendedor(datos)
                 txtIdVendedor.Text = datos.IdVendedor
             Else
-                servicioMantenimiento.ActualizarVendedor(datos)
+                'servicioMantenimiento.ActualizarVendedor(datos)
             End If
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)

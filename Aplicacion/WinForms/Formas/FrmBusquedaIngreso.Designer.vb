@@ -18,7 +18,7 @@ Partial Class FrmBusquedaIngreso
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FrmBusquedaIngreso))
-        Me.FlexProducto = New System.Windows.Forms.DataGridView()
+        Me.dgvListado = New System.Windows.Forms.DataGridView()
         Me.btnFiltrar = New System.Windows.Forms.Button()
         Me.lblDescripcion = New System.Windows.Forms.Label()
         Me.txtRecibidoDe = New System.Windows.Forms.TextBox()
@@ -31,24 +31,24 @@ Partial Class FrmBusquedaIngreso
         Me.txtId = New System.Windows.Forms.TextBox()
         Me.Label2 = New System.Windows.Forms.Label()
         Me.txtDetalle = New System.Windows.Forms.TextBox()
-        CType(Me.FlexProducto, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.dgvListado, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
-        'FlexProducto
+        'dgvListado
         '
-        Me.FlexProducto.AllowUserToAddRows = False
-        Me.FlexProducto.AllowUserToDeleteRows = False
-        Me.FlexProducto.AllowUserToResizeColumns = False
-        Me.FlexProducto.AllowUserToResizeRows = False
-        Me.FlexProducto.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.FlexProducto.Location = New System.Drawing.Point(12, 71)
-        Me.FlexProducto.Name = "FlexProducto"
-        Me.FlexProducto.ReadOnly = True
-        Me.FlexProducto.RowHeadersVisible = False
-        Me.FlexProducto.ScrollBars = System.Windows.Forms.ScrollBars.None
-        Me.FlexProducto.Size = New System.Drawing.Size(620, 310)
-        Me.FlexProducto.TabIndex = 3
-        Me.FlexProducto.TabStop = False
+        Me.dgvListado.AllowUserToAddRows = False
+        Me.dgvListado.AllowUserToDeleteRows = False
+        Me.dgvListado.AllowUserToResizeColumns = False
+        Me.dgvListado.AllowUserToResizeRows = False
+        Me.dgvListado.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        Me.dgvListado.Location = New System.Drawing.Point(12, 71)
+        Me.dgvListado.Name = "dgvListado"
+        Me.dgvListado.ReadOnly = True
+        Me.dgvListado.RowHeadersVisible = False
+        Me.dgvListado.ScrollBars = System.Windows.Forms.ScrollBars.None
+        Me.dgvListado.Size = New System.Drawing.Size(620, 310)
+        Me.dgvListado.TabIndex = 3
+        Me.dgvListado.TabStop = False
         '
         'btnFiltrar
         '
@@ -188,7 +188,7 @@ Partial Class FrmBusquedaIngreso
         Me.Controls.Add(Me.btnFiltrar)
         Me.Controls.Add(Me.lblDescripcion)
         Me.Controls.Add(Me.txtRecibidoDe)
-        Me.Controls.Add(Me.FlexProducto)
+        Me.Controls.Add(Me.dgvListado)
         Me.Cursor = System.Windows.Forms.Cursors.Default
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
         Me.Location = New System.Drawing.Point(3, 22)
@@ -198,12 +198,12 @@ Partial Class FrmBusquedaIngreso
         Me.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Búsqueda de Ingresos"
-        CType(Me.FlexProducto, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.dgvListado, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
     End Sub
-    Friend WithEvents FlexProducto As System.Windows.Forms.DataGridView
+    Friend WithEvents dgvListado As System.Windows.Forms.DataGridView
     Friend WithEvents btnFiltrar As System.Windows.Forms.Button
     Friend WithEvents lblDescripcion As System.Windows.Forms.Label
     Friend WithEvents txtRecibidoDe As System.Windows.Forms.TextBox

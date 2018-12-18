@@ -7,18 +7,11 @@ using log4net;
 using PdfSharp.Pdf;
 using PdfSharp.Drawing;
 using PdfSharp.Drawing.Layout;
-using System.Xml;
-using FirmaXadesNet.Signature;
-using FirmaXadesNet;
-using FirmaXadesNet.Signature.Parameters;
-using FirmaXadesNet.Crypto;
 using System.Security.Cryptography.X509Certificates;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Management;
-using System.ServiceModel.Web;
-using System.ServiceModel;
 using System.Net;
 
 namespace LeandroSoftware.Core
@@ -69,14 +62,16 @@ namespace LeandroSoftware.Core
             string output = "";
             try
             {
-                psi = new ProcessStartInfo();
-                psi.FileName = "mysqldump";
-                psi.RedirectStandardInput = false;
-                psi.RedirectStandardOutput = true;
-                psi.Arguments = strMySQLDumpOptions + " -u" + strUser + " -p" + strPassword + " -h" + strHost + " " + strDatabase;
-                psi.UseShellExecute = false;
-                psi.CreateNoWindow = true;
-                psi.StandardOutputEncoding = Encoding.UTF8;
+                psi = new ProcessStartInfo
+                {
+                    FileName = "mysqldump",
+                    RedirectStandardInput = false,
+                    RedirectStandardOutput = true,
+                    Arguments = strMySQLDumpOptions + " -u" + strUser + " -p" + strPassword + " -h" + strHost + " " + strDatabase,
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    StandardOutputEncoding = Encoding.UTF8
+                };
                 using (Process process = Process.Start(psi))
                 {
                     output = process.StandardOutput.ReadToEnd();
@@ -182,9 +177,11 @@ namespace LeandroSoftware.Core
         public static byte[] EncriptarArchivo(string strThumbprint, string strAppKey, string strData)
         {
             string sKey = DesencriptarDatos(strThumbprint, strAppKey);
-            DESCryptoServiceProvider DES = new DESCryptoServiceProvider();
-            DES.Key = Encoding.ASCII.GetBytes(sKey);
-            DES.IV = Encoding.ASCII.GetBytes(sKey);
+            DESCryptoServiceProvider DES = new DESCryptoServiceProvider
+            {
+                Key = Encoding.ASCII.GetBytes(sKey),
+                IV = Encoding.ASCII.GetBytes(sKey)
+            };
             var msEncrypted = new MemoryStream();
             ICryptoTransform encryptor = DES.CreateEncryptor();
             CryptoStream cryptostream = new CryptoStream(msEncrypted, encryptor, CryptoStreamMode.Write);
@@ -197,10 +194,12 @@ namespace LeandroSoftware.Core
         public static void DesencriptarArchivo(string strThumbprint, string strAppKey, string strInputFilename, string strOutPutFilename)
         {
             string sKey = DesencriptarDatos(strThumbprint, strAppKey);
-            DESCryptoServiceProvider DES = new DESCryptoServiceProvider();
-	        DES.Key = Encoding.ASCII.GetBytes(sKey);
-	        DES.IV = Encoding.ASCII.GetBytes(sKey);
-	        FileStream fsread = new FileStream(strInputFilename, FileMode.Open, FileAccess.Read);
+            DESCryptoServiceProvider DES = new DESCryptoServiceProvider
+            {
+                Key = Encoding.ASCII.GetBytes(sKey),
+                IV = Encoding.ASCII.GetBytes(sKey)
+            };
+            FileStream fsread = new FileStream(strInputFilename, FileMode.Open, FileAccess.Read);
 	        ICryptoTransform desdecrypt = DES.CreateDecryptor();
 	        CryptoStream decryptoStream = new CryptoStream(fsread, desdecrypt, CryptoStreamMode.Read);
             StreamWriter fsDecrypted = new StreamWriter(strOutPutFilename);
@@ -258,45 +257,6 @@ namespace LeandroSoftware.Core
             }
         }
 
-        public static byte[] FirmarDocumentoXML(XmlDocument documentoXml, string strCertificado, string strPinCertificado)
-        {
-            byte[] signedDataEncoded = null;
-            try
-            {
-                // Firma del documento XML
-                byte[] mensajeEncoded = Encoding.UTF8.GetBytes(documentoXml.OuterXml);
-                SignatureDocument signatureDocument;
-                XadesService xadesService = new XadesService();
-                SignatureParameters signatureParameters = new SignatureParameters();
-                signatureParameters.SignaturePolicyInfo = new SignaturePolicyInfo();
-                signatureParameters.SignaturePolicyInfo.PolicyIdentifier = "https://tribunet.hacienda.go.cr/docs/esquemas/2016/v4/Resolucion%20Comprobantes%20Electronicos%20%20DGT-R-48-2016.pdf";
-                signatureParameters.SignaturePolicyInfo.PolicyHash = "V8lVVNGDCPen6VELRD1Ja8HARFk=";
-                signatureParameters.SignaturePolicyInfo.PolicyUri = "";
-                signatureParameters.SignatureMethod = SignatureMethod.RSAwithSHA256;
-                signatureParameters.SigningDate = DateTime.Now;
-                signatureParameters.SignaturePackaging = SignaturePackaging.ENVELOPED;
-                string appPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-                string filePath = appPath + "/Certificates/" + strCertificado;
-                if (File.Exists(filePath))
-                {
-                    byte[] fileBytes = File.ReadAllBytes(filePath);
-                    X509Certificate2 uidCert = new X509Certificate2(fileBytes, strPinCertificado, X509KeyStorageFlags.UserKeySet);
-                    using (Signer signer2 = signatureParameters.Signer = new Signer(uidCert))
-                    using (MemoryStream smDatos = new MemoryStream(mensajeEncoded))
-                    {
-                        signatureDocument = xadesService.Sign(smDatos, signatureParameters);
-                    }
-                    // Almacenaje del documento en base de datos
-                    signedDataEncoded = Encoding.UTF8.GetBytes(signatureDocument.Document.OuterXml);
-                }
-                return signedDataEncoded;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
         public static byte[] GenerarPDFFacturaElectronica(EstructuraPDF datos)
         {
             try
@@ -313,8 +273,10 @@ namespace LeandroSoftware.Core
                 }
 
                 XFont font = new XFont("Courier New", 12, XFontStyle.Bold);
-                XTextFormatter tf = new XTextFormatter(gfx);
-                tf.Alignment = XParagraphAlignment.Right;
+                XTextFormatter tf = new XTextFormatter(gfx)
+                {
+                    Alignment = XParagraphAlignment.Right
+                };
                 gfx.DrawString(datos.NombreEmpresa.ToUpper(), font, XBrushes.Black, new XRect(20, 80, 300, 15), XStringFormats.TopLeft);
                 gfx.DrawString(datos.TituloDocumento, font, XBrushes.Black, new XRect(20, 95, 200, 15), XStringFormats.TopLeft);
                 font = new XFont("Arial", 8, XFontStyle.Regular);

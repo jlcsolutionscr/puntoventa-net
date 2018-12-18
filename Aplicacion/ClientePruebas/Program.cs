@@ -21,6 +21,7 @@ namespace LeandroSoftware.AccesoDatos.ClientePruebas
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private static readonly System.Collections.Specialized.NameValueCollection appSettings = ConfigurationManager.AppSettings;
         private static HttpClient client = new HttpClient();
+        private static JavaScriptSerializer serializer = new JavaScriptSerializer();
 
         static void Main(string[] args)
         {
@@ -194,13 +195,11 @@ namespace LeandroSoftware.AccesoDatos.ClientePruebas
                     NombreMetodo = "ObtenerListaEmpresas",
                     DatosPeticion = ""
                 };
-                string strPeticion = new JavaScriptSerializer().Serialize(peticion);
+                string strPeticion = serializer.Serialize(peticion);
                 string strRespuesta = Utilitario.EjecutarConsulta(strPeticion, appSettings["ServicioPuntoventaURL"].ToString(), "").Result;
-                ResponseDTO respuesta = new JavaScriptSerializer().Deserialize<ResponseDTO>(strRespuesta);
-                if (respuesta.DatosPeticion != null)
-                {
-                    listado = new JavaScriptSerializer().Deserialize<List<Empresa>>(respuesta.DatosPeticion);
-                }
+                strRespuesta = serializer.Deserialize<string>(strRespuesta);
+                if (strRespuesta != "")
+                    listado = serializer.Deserialize<List<Empresa>>(strRespuesta);
                 return listado;
             }
             catch (Exception ex)
@@ -220,12 +219,12 @@ namespace LeandroSoftware.AccesoDatos.ClientePruebas
                     NombreMetodo = "ObtenerListaDocumentosElectronicosPendientes",
                     DatosPeticion = "{IdEmpresa: " + intIdEmpresa + "}"
                 };
-                string strPeticion = new JavaScriptSerializer().Serialize(peticion);
+                string strPeticion = serializer.Serialize(peticion);
                 string strRespuesta = Utilitario.EjecutarConsulta(strPeticion, appSettings["ServicioPuntoventaURL"].ToString(), "").Result;
-                ResponseDTO respuesta = new JavaScriptSerializer().Deserialize<ResponseDTO>(strRespuesta);
-                if (respuesta.DatosPeticion != null)
+                strRespuesta = serializer.Deserialize<string>(strRespuesta);
+                if (strRespuesta != "")
                 {
-                    List<DocumentoElectronico> listadoPendientes = new JavaScriptSerializer().Deserialize<List<DocumentoElectronico>>(respuesta.DatosPeticion);
+                    List<DocumentoElectronico> listadoPendientes = serializer.Deserialize<List<DocumentoElectronico>>(strRespuesta);
                     foreach (DocumentoElectronico doc in listadoPendientes)
                         listado.Add(doc);
                 }
@@ -234,12 +233,12 @@ namespace LeandroSoftware.AccesoDatos.ClientePruebas
                     NombreMetodo = "ObtenerListaDocumentosElectronicosEnviados",
                     DatosPeticion = "{IdEmpresa: " + intIdEmpresa + "}"
                 };
-                strPeticion = new JavaScriptSerializer().Serialize(peticion);
+                strPeticion = serializer.Serialize(peticion);
                 strRespuesta = Utilitario.EjecutarConsulta(strPeticion, appSettings["ServicioPuntoventaURL"].ToString(), "").Result;
-                respuesta = new JavaScriptSerializer().Deserialize<ResponseDTO>(strRespuesta);
-                if (respuesta.DatosPeticion != null)
+                strRespuesta = serializer.Deserialize<string>(strRespuesta);
+                if (strRespuesta != "")
                 {
-                    List<DocumentoElectronico> listadoEnviados = new JavaScriptSerializer().Deserialize<List<DocumentoElectronico>>(respuesta.DatosPeticion);
+                    List<DocumentoElectronico> listadoEnviados = serializer.Deserialize<List<DocumentoElectronico>>(strRespuesta);
                     foreach (DocumentoElectronico doc in listadoEnviados)
                         listado.Add(doc);
                 }
@@ -261,8 +260,8 @@ namespace LeandroSoftware.AccesoDatos.ClientePruebas
                     NombreMetodo = "EnviarDocumentoElectronicoPendiente",
                     DatosPeticion = "{IdDocumento: " + intIdDocumento + "}"
                 };
-                string strPeticion = new JavaScriptSerializer().Serialize(peticion);
-                string strRespuesta = Utilitario.EjecutarConsulta(strPeticion, appSettings["ServicioPuntoventaURL"].ToString(), "").Result;
+                string strPeticion = serializer.Serialize(peticion);
+                Utilitario.Ejecutar(strPeticion, appSettings["ServicioPuntoventaURL"].ToString(), "").Wait();
             }
             catch (Exception ex)
             {
@@ -281,11 +280,11 @@ namespace LeandroSoftware.AccesoDatos.ClientePruebas
                     NombreMetodo = "ObtenerDocumentoElectronico",
                     DatosPeticion = "{IdDocumento: " + intIdDocumento + "}"
                 };
-                string strPeticion = new JavaScriptSerializer().Serialize(peticion);
+                string strPeticion = serializer.Serialize(peticion);
                 string strRespuesta = Utilitario.EjecutarConsulta(strPeticion, appSettings["ServicioPuntoventaURL"].ToString(), "").Result;
-                ResponseDTO respuesta = new JavaScriptSerializer().Deserialize<ResponseDTO>(strRespuesta);
-                if (respuesta.DatosPeticion != null)
-                    documento = new JavaScriptSerializer().Deserialize<DocumentoElectronico>(respuesta.DatosPeticion);
+                strRespuesta = serializer.Deserialize<string>(strRespuesta);
+                if (strRespuesta != "")
+                    documento = serializer.Deserialize<DocumentoElectronico>(strRespuesta);
                 return documento;
             }
             catch (Exception ex)
@@ -305,11 +304,10 @@ namespace LeandroSoftware.AccesoDatos.ClientePruebas
                     NombreMetodo = "ObtenerRespuestaDocumentoElectronicoEnviado",
                     DatosPeticion = "{IdDocumento: " + intIdDocumento + "}"
                 };
-                string strPeticion = new JavaScriptSerializer().Serialize(peticion);
+                string strPeticion = serializer.Serialize(peticion);
                 string strRespuesta = Utilitario.EjecutarConsulta(strPeticion, appSettings["ServicioPuntoventaURL"].ToString(), "").Result;
-                ResponseDTO respuesta = new JavaScriptSerializer().Deserialize<ResponseDTO>(strRespuesta);
-                if (respuesta.DatosPeticion != null)
-                    documento = new JavaScriptSerializer().Deserialize<DocumentoElectronico>(respuesta.DatosPeticion);
+                strRespuesta = serializer.Deserialize<string>(strRespuesta);
+                documento = new JavaScriptSerializer().Deserialize<DocumentoElectronico>(strRespuesta);
                 return documento;
             }
             catch (Exception ex)
@@ -353,7 +351,7 @@ namespace LeandroSoftware.AccesoDatos.ClientePruebas
                     NombreMetodo = "EnviarNotificacionDocumentoElectronico",
                     DatosPeticion = "{IdDocumento: " + intIdDocumento + "}"
                 };
-                string strPeticion = new JavaScriptSerializer().Serialize(peticion);
+                string strPeticion = serializer.Serialize(peticion);
                 Utilitario.Ejecutar(strPeticion, appSettings["ServicioPuntoventaURL"].ToString(), "").Wait();
             }
             catch (Exception ex)

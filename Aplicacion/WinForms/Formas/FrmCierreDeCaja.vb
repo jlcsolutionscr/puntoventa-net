@@ -1,28 +1,14 @@
 Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
-Imports LeandroSoftware.AccesoDatos.Servicios
-Imports Unity
 
 Public Class FrmCierreDeCaja
 #Region "Variables"
     Private Criterio, strUsuario, strEmpresa As String
-    Private servicioContabilidad As IContabilidadService
-    Private servicioReportes As IReporteService
     Private cierreCaja As CierreCaja
     Private dtbDatosReporte As DataTable
 #End Region
 
 #Region "Eventos Controles"
     Private Sub FrmCierre_Shown(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Shown
-        Try
-            servicioContabilidad = FrmMenuPrincipal.unityContainer.Resolve(Of IContabilidadService)()
-            servicioReportes = FrmMenuPrincipal.unityContainer.Resolve(Of IReporteService)()
-            cierreCaja = servicioContabilidad.GenerarDatosCierreCaja(FrmMenuPrincipal.empresaGlobal.IdEmpresa, Today)
-            cierreCaja.IdEmpresa = FrmMenuPrincipal.empresaGlobal.IdEmpresa
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-            Exit Sub
-        End Try
         strUsuario = FrmMenuPrincipal.usuarioGlobal.CodigoUsuario
         strEmpresa = FrmMenuPrincipal.empresaGlobal.NombreEmpresa
         txtFondoInicio.Text = FormatNumber(cierreCaja.FondoInicio, 2)
@@ -57,7 +43,7 @@ Public Class FrmCierreDeCaja
 
     Private Sub btnGuardar_Click(sender As Object, e As EventArgs) Handles btnGuardar.Click
         Try
-            cierreCaja = servicioContabilidad.GuardarDatosCierreCaja(cierreCaja)
+            'cierreCaja = servicioContabilidad.GuardarDatosCierreCaja(cierreCaja)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
@@ -72,7 +58,7 @@ Public Class FrmCierreDeCaja
         Dim reptCierre As New rptCierreCaja()
         Dim formReport As New frmRptViewer()
         Try
-            dtbDatosReporte = servicioReportes.ObtenerReporteCierreDeCaja(cierreCaja.IdCierre)
+            'dtbDatosReporte = servicioReportes.ObtenerReporteCierreDeCaja(cierreCaja.IdCierre)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
@@ -87,7 +73,7 @@ Public Class FrmCierreDeCaja
     Private Sub FrmCierreDeCaja_Closing(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles MyBase.Closing
         Try
             If (Not cierreCaja Is Nothing) Then
-                servicioContabilidad.AbortarCierreCaja(cierreCaja.IdEmpresa)
+                'servicioContabilidad.AbortarCierreCaja(cierreCaja.IdEmpresa)
             End If
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)

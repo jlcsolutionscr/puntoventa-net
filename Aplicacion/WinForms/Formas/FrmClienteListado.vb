@@ -1,10 +1,5 @@
-﻿Imports LeandroSoftware.AccesoDatos.Servicios
-Imports Unity
-
-Public Class FrmClienteListado
+﻿Public Class FrmClienteListado
 #Region "Variables"
-    Private servicioFacturacion As IFacturacionService
-    Private servicioMantenimiento As IMantenimientoService
     Private intTotalEmpresas As Integer
     Private intIndiceDePagina As Integer
     Private intFilasPorPagina As Integer = 16
@@ -45,7 +40,7 @@ Public Class FrmClienteListado
 
     Private Sub ActualizarDatos(ByVal intNumeroPagina As Integer)
         Try
-            Dim listado As IList = servicioFacturacion.ObtenerListaClientes(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, txtNombre.Text)
+            Dim listado As IList = Nothing 'servicioFacturacion.ObtenerListaClientes(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, txtNombre.Text)
             dgvDatos.DataSource = listado
             If listado.Count() > 0 Then
                 btnEditar.Enabled = True
@@ -65,7 +60,7 @@ Public Class FrmClienteListado
 
     Private Sub ValidarCantidadClientes()
         Try
-            intTotalEmpresas = servicioFacturacion.ObtenerTotalListaClientes(FrmMenuPrincipal.empresaGlobal.IdEmpresa, txtNombre.Text)
+            'intTotalEmpresas = servicioFacturacion.ObtenerTotalListaClientes(FrmMenuPrincipal.empresaGlobal.IdEmpresa, txtNombre.Text)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -113,14 +108,6 @@ Public Class FrmClienteListado
     End Sub
 
     Private Sub FrmClienteListado_Shown(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Shown
-        Try
-            servicioFacturacion = FrmMenuPrincipal.unityContainer.Resolve(Of IFacturacionService)()
-            servicioMantenimiento = FrmMenuPrincipal.unityContainer.Resolve(Of IMantenimientoService)()
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-            Exit Sub
-        End Try
         EstablecerPropiedadesDataGridView()
         ValidarCantidadClientes()
         intIndiceDePagina = 1
@@ -128,31 +115,31 @@ Public Class FrmClienteListado
     End Sub
 
     Private Sub BtnAgregar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnAgregar.Click
-        Dim formMant As New FrmCliente With {
-            .intIdCliente = 0,
-            .servicioFacturacion = servicioFacturacion,
-            .servicioMantenimiento = servicioMantenimiento
-        }
-        formMant.ShowDialog()
+        'Dim formMant As New FrmCliente With {
+        '    .intIdCliente = 0,
+        '    .servicioFacturacion = servicioFacturacion,
+        '    .servicioMantenimiento = servicioMantenimiento
+        '}
+        'formMant.ShowDialog()
         ValidarCantidadClientes()
         intIndiceDePagina = 1
         ActualizarDatos(intIndiceDePagina)
     End Sub
 
     Private Sub BtnEditar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEditar.Click
-        Dim formMant As New FrmCliente With {
-            .intIdCliente = dgvDatos.CurrentRow.Cells(0).Value,
-            .servicioFacturacion = servicioFacturacion,
-            .servicioMantenimiento = servicioMantenimiento
-        }
-        formMant.ShowDialog()
+        'Dim formMant As New FrmCliente With {
+        '    .intIdCliente = dgvDatos.CurrentRow.Cells(0).Value,
+        '    .servicioFacturacion = servicioFacturacion,
+        '    .servicioMantenimiento = servicioMantenimiento
+        '}
+        'formMant.ShowDialog()
         ActualizarDatos(intIndiceDePagina)
     End Sub
 
     Private Sub BtnEliminar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEliminar.Click
         If MessageBox.Show("Desea eliminar el registro actual", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
             Try
-                servicioFacturacion.EliminarCliente(dgvDatos.CurrentRow.Cells(0).Value)
+                'servicioFacturacion.EliminarCliente(dgvDatos.CurrentRow.Cells(0).Value)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub

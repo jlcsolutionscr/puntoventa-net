@@ -52,6 +52,7 @@ Partial Class FrmSeguridad
         '
         Me.CmdAceptar.BackColor = System.Drawing.SystemColors.ButtonHighlight
         Me.CmdAceptar.Cursor = System.Windows.Forms.Cursors.Default
+        Me.CmdAceptar.Enabled = False
         Me.CmdAceptar.ForeColor = System.Drawing.SystemColors.ControlText
         Me.CmdAceptar.Location = New System.Drawing.Point(58, 110)
         Me.CmdAceptar.Name = "CmdAceptar"

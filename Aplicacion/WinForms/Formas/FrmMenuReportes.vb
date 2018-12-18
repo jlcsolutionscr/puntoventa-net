@@ -1,19 +1,10 @@
-Imports System.Collections
-Imports CrystalDecisions.Shared
-Imports CrystalDecisions.CrystalReports.Engine
 Imports LeandroSoftware.Core.CommonTypes
 Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
-Imports LeandroSoftware.AccesoDatos.Servicios
-Imports Unity
 
 Public Class FrmMenuReportes
 #Region "Variables"
     Private strUsuario, Valida, strEmpresa As String
     Private dtbDatos As DataTable
-    Private servicioReportes As IReporteService
-    Private servicioMantenimiento As IMantenimientoService
-    Private servicioCompras As ICompraService
-    Private servicioFacturacion As IFacturacionService
     Private proveedor As Proveedor
     Private cliente As Cliente
 #End Region
@@ -28,7 +19,7 @@ Public Class FrmMenuReportes
         formBusquedaCliente.ShowDialog()
         If FrmMenuPrincipal.intBusqueda > 0 Then
             Try
-                cliente = servicioFacturacion.ObtenerCliente(FrmMenuPrincipal.intBusqueda)
+                'cliente = servicioFacturacion.ObtenerCliente(FrmMenuPrincipal.intBusqueda)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
@@ -43,7 +34,7 @@ Public Class FrmMenuReportes
         formBusquedaProveedor.ShowDialog()
         If FrmMenuPrincipal.intBusqueda > 0 Then
             Try
-                proveedor = servicioCompras.ObtenerProveedor(FrmMenuPrincipal.intBusqueda)
+                'proveedor = servicioCompras.ObtenerProveedor(FrmMenuPrincipal.intBusqueda)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
@@ -79,7 +70,7 @@ Public Class FrmMenuReportes
                     Dim intBancoAdquiriente = 0
                     Dim strDescripcionReporte = ""
                     Try
-                        dtListaFormaPago = servicioReportes.ObtenerListaCondicionVentaYFormaPagoFactura()
+                        'dtListaFormaPago = servicioReportes.ObtenerListaCondicionVentaYFormaPagoFactura()
                         formaMenuTipoTransaccion.clFormasPago = dtListaFormaPago
                     Catch ex As Exception
                         MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -101,7 +92,7 @@ Public Class FrmMenuReportes
                             Dim formaBancoAdquiriente As New FrmMenuBancoAdquiriente
                             If formaBancoAdquiriente.ShowDialog() = System.Windows.Forms.DialogResult.OK Then
                                 intBancoAdquiriente = FrmMenuPrincipal.intBusqueda
-                                banco = servicioMantenimiento.ObtenerBancoAdquiriente(FrmMenuPrincipal.intBusqueda)
+                                'banco = servicioMantenimiento.ObtenerBancoAdquiriente(FrmMenuPrincipal.intBusqueda)
                                 strDescripcionReporte = "Reporte de Ventas con Tarjeta del Banco " & banco.Descripcion
                             Else
                                 intFormaPago = 0
@@ -109,7 +100,7 @@ Public Class FrmMenuReportes
                         End If
                         If intFormaPago <> 0 Then
                             Try
-                                dtbDatos = servicioReportes.ObtenerReporteVentasPorCliente(FrmMenuPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text, intIdCliente, StaticTipoNulo.NoNulo, intFormaPago, intBancoAdquiriente)
+                                'dtbDatos = servicioReportes.ObtenerReporteVentasPorCliente(FrmMenuPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text, intIdCliente, StaticTipoNulo.NoNulo, intFormaPago, intBancoAdquiriente)
                             Catch ex As Exception
                                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                                 Exit Sub
@@ -125,7 +116,7 @@ Public Class FrmMenuReportes
                 Case "Ventas anuladas"
                     Dim reptVentas As New rptVentas
                     Try
-                        dtbDatos = servicioReportes.ObtenerReporteVentasPorCliente(FrmMenuPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text, intIdCliente, StaticTipoNulo.Nulo, -1, 0)
+                        'dtbDatos = servicioReportes.ObtenerReporteVentasPorCliente(FrmMenuPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text, intIdCliente, StaticTipoNulo.Nulo, -1, 0)
                     Catch ex As Exception
                         MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         Exit Sub
@@ -141,7 +132,7 @@ Public Class FrmMenuReportes
                     Dim formaMenuVendedor As New FrmMenuVendedor
                     If formaMenuVendedor.ShowDialog() = System.Windows.Forms.DialogResult.OK Then
                         Try
-                            dtbDatos = servicioReportes.ObtenerReporteVentasPorVendedor(FrmMenuPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text, FrmMenuPrincipal.intBusqueda)
+                            'dtbDatos = servicioReportes.ObtenerReporteVentasPorVendedor(FrmMenuPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text, FrmMenuPrincipal.intBusqueda)
                         Catch ex As Exception
                             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                             Exit Sub
@@ -159,7 +150,7 @@ Public Class FrmMenuReportes
                     Dim intBancoAdquiriente = 0
                     Dim strDescripcionReporte = ""
                     Try
-                        dtListaFormaPago = servicioReportes.ObtenerListaCondicionVentaYFormaPagoCompra()
+                        'dtListaFormaPago = servicioReportes.ObtenerListaCondicionVentaYFormaPagoCompra()
                         formaMenuTipoTransaccion.clFormasPago = dtListaFormaPago
                     Catch ex As Exception
                         MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -180,7 +171,7 @@ Public Class FrmMenuReportes
                         End If
                         If intFormaPago <> 0 Then
                             Try
-                                dtbDatos = servicioReportes.ObtenerReporteComprasPorProveedor(FrmMenuPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text, intIdProveedor, StaticTipoNulo.NoNulo, intFormaPago)
+                                'dtbDatos = servicioReportes.ObtenerReporteComprasPorProveedor(FrmMenuPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text, intIdProveedor, StaticTipoNulo.NoNulo, intFormaPago)
                             Catch ex As Exception
                                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                                 Exit Sub
@@ -196,7 +187,7 @@ Public Class FrmMenuReportes
                 Case "Compras anuladas"
                     Dim reptCompras As New rptCompras
                     Try
-                        dtbDatos = servicioReportes.ObtenerReporteComprasPorProveedor(FrmMenuPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text, intIdProveedor, StaticTipoNulo.Nulo, -1)
+                        'dtbDatos = servicioReportes.ObtenerReporteComprasPorProveedor(FrmMenuPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text, intIdProveedor, StaticTipoNulo.Nulo, -1)
                     Catch ex As Exception
                         MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         Exit Sub
@@ -210,7 +201,7 @@ Public Class FrmMenuReportes
                 Case "Cuentas por cobrar a clientes"
                     Dim reptCxC As New rptCuentasxCobrar
                     Try
-                        dtbDatos = servicioReportes.ObtenerReporteCuentasPorCobrarClientes(FrmMenuPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text, intIdCliente)
+                        'dtbDatos = servicioReportes.ObtenerReporteCuentasPorCobrarClientes(FrmMenuPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text, intIdCliente)
                     Catch ex As Exception
                         MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         Exit Sub
@@ -224,7 +215,7 @@ Public Class FrmMenuReportes
                 Case "Cuentas por pagar a proveedores"
                     Dim reptCxP As New rptCuentasxPagar
                     Try
-                        dtbDatos = servicioReportes.ObtenerReporteCuentasPorPagarProveedores(FrmMenuPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text, intIdProveedor)
+                        'dtbDatos = servicioReportes.ObtenerReporteCuentasPorPagarProveedores(FrmMenuPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text, intIdProveedor)
                     Catch ex As Exception
                         MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         Exit Sub
@@ -238,7 +229,7 @@ Public Class FrmMenuReportes
                 Case "Pagos a cuentas por cobrar de clientes"
                     Dim reptReciboCxC As New rptReciboCxC
                     Try
-                        dtbDatos = servicioReportes.ObtenerReporteMovimientosCxCClientes(FrmMenuPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text, intIdCliente)
+                        'dtbDatos = servicioReportes.ObtenerReporteMovimientosCxCClientes(FrmMenuPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text, intIdCliente)
                     Catch ex As Exception
                         MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         Exit Sub
@@ -252,7 +243,7 @@ Public Class FrmMenuReportes
                 Case "Pagos a cuentas por pagar de proveedores"
                     Dim reptReciboCxP As New rptReciboCxP
                     Try
-                        dtbDatos = servicioReportes.ObtenerReporteMovimientosCxPProveedores(FrmMenuPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text, intIdProveedor)
+                        'dtbDatos = servicioReportes.ObtenerReporteMovimientosCxPProveedores(FrmMenuPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text, intIdProveedor)
                     Catch ex As Exception
                         MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         Exit Sub
@@ -269,7 +260,7 @@ Public Class FrmMenuReportes
                     If formaCuentaBanco.ShowDialog() = System.Windows.Forms.DialogResult.OK Then
                         If FrmMenuPrincipal.intBusqueda > 0 Then
                             Try
-                                dtbDatos = servicioReportes.ObtenerReporteMovimientosBanco(FrmMenuPrincipal.intBusqueda, FechaInicio.Text, FechaFinal.Text)
+                                'dtbDatos = servicioReportes.ObtenerReporteMovimientosBanco(FrmMenuPrincipal.intBusqueda, FechaInicio.Text, FechaFinal.Text)
                             Catch ex As Exception
                                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                                 Exit Sub
@@ -284,7 +275,7 @@ Public Class FrmMenuReportes
                 Case "Resumen de movimientos"
                     Dim reptResumenMovimientos As New rptResumenMovimientos
                     Try
-                        dtbDatos = servicioReportes.ObtenerReporteEstadoResultados(FrmMenuPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text)
+                        'dtbDatos = servicioReportes.ObtenerReporteEstadoResultados(FrmMenuPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text)
                     Catch ex As Exception
                         MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         Exit Sub
@@ -299,7 +290,7 @@ Public Class FrmMenuReportes
                     Dim formaCuentaEgreso As New FrmMenuCuentaEgreso
                     If formaCuentaEgreso.ShowDialog() = System.Windows.Forms.DialogResult.OK Then
                         Try
-                            dtbDatos = servicioReportes.ObtenerReporteDetalleEgreso(FrmMenuPrincipal.empresaGlobal.IdEmpresa, FrmMenuPrincipal.intBusqueda, FechaInicio.Text, FechaFinal.Text)
+                            'dtbDatos = servicioReportes.ObtenerReporteDetalleEgreso(FrmMenuPrincipal.empresaGlobal.IdEmpresa, FrmMenuPrincipal.intBusqueda, FechaInicio.Text, FechaFinal.Text)
                         Catch ex As Exception
                             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                             Exit Sub
@@ -315,7 +306,7 @@ Public Class FrmMenuReportes
                     Dim formaCuentaIngreso As New FrmMenuCuentaIngreso
                     If formaCuentaIngreso.ShowDialog() = System.Windows.Forms.DialogResult.OK Then
                         Try
-                            dtbDatos = servicioReportes.ObtenerReporteDetalleIngreso(FrmMenuPrincipal.empresaGlobal.IdEmpresa, FrmMenuPrincipal.intBusqueda, FechaInicio.Text, FechaFinal.Text)
+                            'dtbDatos = servicioReportes.ObtenerReporteDetalleIngreso(FrmMenuPrincipal.empresaGlobal.IdEmpresa, FrmMenuPrincipal.intBusqueda, FechaInicio.Text, FechaFinal.Text)
                         Catch ex As Exception
                             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                             Exit Sub
@@ -329,7 +320,7 @@ Public Class FrmMenuReportes
                 Case "Reporte resumido de ventas por línea"
                     Dim reptVentasxLineaResumen As New rptVentasxLineaResumen
                     Try
-                        dtbDatos = servicioReportes.ObtenerReporteVentasPorLineaResumen(FrmMenuPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text)
+                        'dtbDatos = servicioReportes.ObtenerReporteVentasPorLineaResumen(FrmMenuPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text)
                     Catch ex As Exception
                         MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         Exit Sub
@@ -344,7 +335,7 @@ Public Class FrmMenuReportes
                     Dim formaMenuLinea As New FrmMenuLinea
                     If formaMenuLinea.ShowDialog() = System.Windows.Forms.DialogResult.OK Then
                         Try
-                            dtbDatos = servicioReportes.ObtenerReporteVentasPorLineaDetalle(FrmMenuPrincipal.empresaGlobal.IdEmpresa, FrmMenuPrincipal.intBusqueda, FechaInicio.Text, FechaFinal.Text)
+                            'dtbDatos = servicioReportes.ObtenerReporteVentasPorLineaDetalle(FrmMenuPrincipal.empresaGlobal.IdEmpresa, FrmMenuPrincipal.intBusqueda, FechaInicio.Text, FechaFinal.Text)
                         Catch ex As Exception
                             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                             Exit Sub
@@ -372,16 +363,6 @@ Public Class FrmMenuReportes
     End Sub
 
     Private Sub FrmRptMenu_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        Try
-            servicioMantenimiento = FrmMenuPrincipal.unityContainer.Resolve(Of IMantenimientoService)()
-            servicioReportes = FrmMenuPrincipal.unityContainer.Resolve(Of IReporteService)()
-            servicioCompras = FrmMenuPrincipal.unityContainer.Resolve(Of ICompraService)()
-            servicioFacturacion = FrmMenuPrincipal.unityContainer.Resolve(Of IFacturacionService)()
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-            Exit Sub
-        End Try
         Valida = ""
         FechaInicio.Text = "01/" & Date.Now.Month & "/" & Date.Now.Year
         FechaFinal.Text = Date.DaysInMonth(Date.Now.Year, Date.Now.Month) & "/" & Date.Now.Month & "/" & Date.Now.Year

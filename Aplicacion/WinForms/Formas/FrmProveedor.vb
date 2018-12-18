@@ -1,10 +1,7 @@
 Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
-Imports LeandroSoftware.AccesoDatos.Servicios
-Imports Unity
 
 Public Class FrmProveedor
 #Region "Variables"
-    Public servicioCompras As ICompraService
     Public intIdProveedor As Integer
     Private datos As Proveedor
 #End Region
@@ -27,7 +24,7 @@ Public Class FrmProveedor
     Private Sub FrmProveedor_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         If intIdProveedor > 0 Then
             Try
-                datos = servicioCompras.ObtenerProveedor(intIdProveedor)
+                'datos = servicioCompras.ObtenerProveedor(intIdProveedor)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                 Close()
@@ -84,9 +81,9 @@ Public Class FrmProveedor
         datos.TelCont2 = txtTelContacto2.Text
         Try
             If datos.IdProveedor = 0 Then
-                servicioCompras.AgregarProveedor(datos)
+                'servicioCompras.AgregarProveedor(datos)
             Else
-                servicioCompras.ActualizarProveedor(datos)
+                'servicioCompras.ActualizarProveedor(datos)
             End If
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)

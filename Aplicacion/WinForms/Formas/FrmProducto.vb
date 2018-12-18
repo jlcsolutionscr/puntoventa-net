@@ -1,13 +1,9 @@
 Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
-Imports LeandroSoftware.AccesoDatos.Servicios
-Imports Unity
 Imports System.IO
 
 Public Class FrmProducto
 #Region "Variables"
-    Public servicioMantenimiento As IMantenimientoService
     Public intIdProducto As Integer
-    Private servicioCompras As ICompraService
     Private datos As Producto
     Private bolInit As Boolean = True
     Private proveedor As Proveedor
@@ -18,7 +14,7 @@ Public Class FrmProducto
         If cboTipoProducto.Text = "" Then
             pCampo = "Tipo de producto"
             Return False
-        ElseIf CboLinea.Text = "" Then
+        ElseIf cboLinea.Text = "" Then
             pCampo = "Línea del Producto"
             Return False
         ElseIf txtCodigo.Text = "" Then
@@ -54,10 +50,10 @@ Public Class FrmProducto
         Try
             cboTipoProducto.ValueMember = "IdTipoProducto"
             cboTipoProducto.DisplayMember = "Descripcion"
-            cboTipoProducto.DataSource = servicioMantenimiento.ObtenerTiposProducto()
+            'cboTipoProducto.DataSource = servicioMantenimiento.ObtenerTiposProducto()
             cboUnidad.ValueMember = "IdTipoUnidad"
             cboUnidad.DisplayMember = "Descripcion"
-            cboUnidad.DataSource = servicioMantenimiento.ObtenerTiposUnidad()
+            'cboUnidad.DataSource = servicioMantenimiento.ObtenerTiposUnidad()
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
@@ -67,16 +63,16 @@ Public Class FrmProducto
     Private Sub CargarComboLinea()
         Try
             If cboTipoProducto.SelectedValue = 1 Then
-                CboLinea.DataSource = servicioMantenimiento.ObtenerListaLineasDeProducto(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
+                'cboLinea.DataSource = servicioMantenimiento.ObtenerListaLineasDeProducto(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
             Else
-                CboLinea.DataSource = servicioMantenimiento.ObtenerListaLineasDeServicio(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
+                'cboLinea.DataSource = servicioMantenimiento.ObtenerListaLineasDeServicio(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
             End If
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
         End Try
-        CboLinea.ValueMember = "IdLinea"
-        CboLinea.DisplayMember = "Descripcion"
+        cboLinea.ValueMember = "IdLinea"
+        cboLinea.DisplayMember = "Descripcion"
     End Sub
 
     Private Function Bytes_Imagen(ByVal Imagen As Byte()) As Image
@@ -107,7 +103,7 @@ Public Class FrmProducto
 #Region "Eventos Controles"
     Private Sub FrmProducto_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
-            servicioCompras = FrmMenuPrincipal.unityContainer.Resolve(Of ICompraService)()
+            'servicioCompras = FrmMenuPrincipal.unityContainer.Resolve(Of ICompraService)()
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -116,7 +112,7 @@ Public Class FrmProducto
         CargarCombos()
         If intIdProducto > 0 Then
             Try
-                datos = servicioMantenimiento.ObtenerProducto(intIdProducto)
+                'datos = servicioMantenimiento.ObtenerProducto(intIdProducto)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Close()
@@ -130,7 +126,7 @@ Public Class FrmProducto
             txtIdProducto.Text = datos.IdProducto
             cboTipoProducto.SelectedValue = datos.Tipo
             CargarComboLinea()
-            CboLinea.SelectedValue = datos.IdLinea
+            cboLinea.SelectedValue = datos.IdLinea
             txtCodigo.Text = datos.Codigo
             proveedor = datos.Proveedor
             txtProveedor.Text = proveedor.Nombre
@@ -182,7 +178,7 @@ Public Class FrmProducto
         If datos.IdProducto = 0 Then
             datos.IdEmpresa = FrmMenuPrincipal.empresaGlobal.IdEmpresa
         End If
-        datos.IdLinea = CboLinea.SelectedValue
+        datos.IdLinea = cboLinea.SelectedValue
         datos.Codigo = txtCodigo.Text
         datos.IdProveedor = proveedor.IdProveedor
         datos.Descripcion = txtDescripcion.Text
@@ -204,9 +200,9 @@ Public Class FrmProducto
         End If
         Try
             If datos.IdProducto = 0 Then
-                servicioMantenimiento.AgregarProducto(datos)
+                'servicioMantenimiento.AgregarProducto(datos)
             Else
-                servicioMantenimiento.ActualizarProducto(datos)
+                'servicioMantenimiento.ActualizarProducto(datos)
             End If
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -222,7 +218,7 @@ Public Class FrmProducto
         formBusquedaProveedor.ShowDialog()
         If FrmMenuPrincipal.intBusqueda > 0 Then
             Try
-                proveedor = servicioCompras.ObtenerProveedor(FrmMenuPrincipal.intBusqueda)
+                'proveedor = servicioCompras.ObtenerProveedor(FrmMenuPrincipal.intBusqueda)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub

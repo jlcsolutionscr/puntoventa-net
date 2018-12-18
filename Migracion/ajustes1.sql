@@ -1,42 +1,4 @@
-﻿ALTER TABLE empresa ADD (
-  NombreComercial VARCHAR(80) NOT NULL,
-  IdTipoIdentificacion INTEGER NOT NULL,
-  Identificacion VARCHAR(20) NOT NULL,
-  IdProvincia INTEGER NOT NULL,
-  IdCanton INTEGER NOT NULL,
-  IdDistrito INTEGER NOT NULL,
-  IdBarrio INTEGER NOT NULL,
-  Direccion VARCHAR(160) NOT NULL,
-  Telefono VARCHAR(20) NOT NULL,
-  PorcentajeIVA DOUBLE NOT NULL,
-  LineasPorFactura INTEGER NOT NULL,
-  IdTipoMoneda INTEGER NOT NULL,
-  Contabiliza BIT NOT NULL,
-  AutoCompletaProducto BIT NOT NULL,
-  ModificaDescProducto BIT NOT NULL,
-  DesglosaServicioInst BIT NOT NULL,
-  PorcentajeInstalacion DOUBLE NULL,
-  CodigoServicioInst INTEGER NULL,
-  IncluyeInsumosEnFactura BIT NOT NULL,
-  RespaldoEnLinea BIT NOT NULL,
-  CierrePorTurnos BIT NOT NULL,
-  CierreEnEjecucion BIT NOT NULL,
-  Certificado BLOB NULL,
-  NombreCertificado VARCHAR(100) NULL,
-  PinCertificado VARCHAR(4) NULL,
-  FechaVence DATETIME NULL,
-  UltimoDocFE INTEGER NOT NULL,
-  UltimoDocND INTEGER NOT NULL,
-  UltimoDocNC INTEGER NOT NULL,
-  UltimoDocTE INTEGER NOT NULL,
-  UltimoDocMR INTEGER NOT NULL,
-  INDEX (Identificacion)
-);
-
-ALTER TABLE empresa CHANGE NombreEmpresa NombreEmpresa VARCHAR(80) NOT NULL;
-ALTER TABLE empresa CHANGE PermiteFacturar FacturaElectronica BIT NOT NULL;
-
-CREATE TABLE TipoIdentificacion (
+﻿CREATE TABLE TipoIdentificacion (
   IdTipoIdentificacion INTEGER NOT NULL,
   Descripcion VARCHAR(20) NOT NULL,
   PRIMARY KEY(IdTipoIdentificacion)
@@ -44,7 +6,7 @@ CREATE TABLE TipoIdentificacion (
 
 CREATE TABLE detalleregistro (
   Idempresa INTEGER NOT NULL,
-  ValorRegistro INTEGER NOT NULL,
+  ValorRegistro VARCHAR(100) NOT NULL,
   ImpresoraFactura VARCHAR(50),
   UsaImpresoraImpacto BIT NOT NULL,
   PRIMARY KEY(Idempresa,ValorRegistro),
@@ -55,15 +17,24 @@ CREATE TABLE detalleregistro (
 );
 
 CREATE TABLE usuario (
-  IdEmpresa INTEGER NOT NULL,
   IdUsuario INTEGER NOT NULL AUTO_INCREMENT,
   CodigoUsuario VARCHAR(10) NOT NULL,
   Clave VARCHAR(1000) NOT NULL,
   Modifica BOOL NOT NULL,
   AutorizaCredito BOOL NOT NULL,
-  PRIMARY KEY(IdUsuario),
+  PRIMARY KEY(IdUsuario)
+);
+
+CREATE TABLE empresaporusuario (
+  IdEmpresa INTEGER NOT NULL,
+  IdUsuario INTEGER NOT NULL,
+  PRIMARY KEY(IdUsuario, IdEmpresa),
   FOREIGN KEY(IdEmpresa)
     REFERENCES empresa(IdEmpresa)
+      ON DELETE RESTRICT
+      ON UPDATE RESTRICT,
+  FOREIGN KEY(IdUsuario)
+    REFERENCES usuario(IdUsuario)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT
 );
@@ -119,14 +90,9 @@ CREATE TABLE role (
 );
 
 CREATE TABLE roleporusuario (
-  IdEmpresa INTEGER NOT NULL,
   IdUsuario INTEGER NOT NULL,
   IdRole INTEGER NOT NULL,
-  PRIMARY KEY(IdEmpresa,IdUsuario,IdRole),
-  FOREIGN KEY(IdEmpresa)
-    REFERENCES empresa(IdEmpresa)
-      ON DELETE RESTRICT
-      ON UPDATE RESTRICT,
+  PRIMARY KEY(IdUsuario,IdRole),
   FOREIGN KEY(IdUsuario)
     REFERENCES usuario(IdUsuario)
       ON DELETE RESTRICT
@@ -346,6 +312,14 @@ CREATE TABLE formapago (
   PRIMARY KEY(IdFormaPago)
 );
 
+CREATE TABLE tipomoneda (
+  IdTipoMoneda INTEGER NOT NULL AUTO_INCREMENT,
+  Descripcion VARCHAR(10) NOT NULL,
+  TipoCambioCompra DOUBLE NOT NULL,
+  TipoCambioVenta DOUBLE NOT NULL,
+  PRIMARY KEY(IdTipoMoneda)
+);
+
 CREATE TABLE bancoadquiriente (
   IdEmpresa INTEGER NOT NULL,
   IdBanco INTEGER NOT NULL AUTO_INCREMENT,
@@ -481,12 +455,6 @@ CREATE TABLE vendedor (
     REFERENCES empresa(IdEmpresa)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT
-);
-
-CREATE TABLE tipoidentificacion (
-  IdTipoIdentificacion INTEGER NOT NULL,
-  Descripcion VARCHAR(20) NOT NULL,
-  PRIMARY KEY(IdTipoIdentificacion)
 );
 
 CREATE TABLE cliente (
@@ -817,14 +785,6 @@ CREATE TABLE detalleordencompra (
       ON UPDATE RESTRICT
 );
 
-CREATE TABLE tipomoneda (
-  IdTipoMoneda INTEGER NOT NULL AUTO_INCREMENT,
-  Descripcion VARCHAR(10) NOT NULL,
-  TipoCambioCompra DOUBLE NOT NULL,
-  TipoCambioVenta DOUBLE NOT NULL,
-  PRIMARY KEY(IdTipoMoneda)
-);
-
 CREATE TABLE factura (
   IdEmpresa INTEGER NOT NULL,
   IdFactura INTEGER NOT NULL AUTO_INCREMENT,
@@ -944,8 +904,7 @@ CREATE TABLE cuentaporcobrar (
   FOREIGN KEY(IdUsuario)
     REFERENCES usuario(IdUsuario)
       ON DELETE RESTRICT
-      ON UPDATE RESTRICT,
-  INDEX cxc_index (IdCxC)
+      ON UPDATE RESTRICT
 );
 
 CREATE TABLE movimientocuentaporcobrar (
@@ -1118,8 +1077,7 @@ CREATE TABLE cuentaporpagar (
   FOREIGN KEY(IdUsuario)
     REFERENCES usuario(IdUsuario)
       ON DELETE RESTRICT
-      ON UPDATE RESTRICT,
-  INDEX cxp_index (IdCxP)
+      ON UPDATE RESTRICT
 );
 
 CREATE TABLE desglosepagocuentaporpagar (
@@ -1465,21 +1423,6 @@ CREATE TABLE detalletraslado  (
       ON DELETE RESTRICT
       ON UPDATE RESTRICT
 );
-
-ALTER TABLE documentoelectronico ADD (
-  IdSucursal INTEGER NOT NULL,
-  IdTerminal INTEGER NOT NULL,
-  IdConsecutivo INTEGER NOT NULL
-);
-
-ALTER TABLE documentoelectronico CHANGE Consecutivo Consecutivo VARCHAR(20) NULL;
-ALTER TABLE documentoelectronico ADD INDEX (EstadoEnvio);
-ALTER TABLE documentoelectronico ADD INDEX (ClaveNumerica);
-ALTER TABLE documentoelectronico ADD INDEX (ClaveNumerica, Consecutivo);
-
-UPDATE documentoelectronico SET IdConsecutivo=CONVERT(SUBSTRING(Consecutivo,18),UNSIGNED INTEGER);
-UPDATE documentoelectronico SET IdSucursal=CONVERT(SUBSTRING(Consecutivo,1,3),UNSIGNED INTEGER);
-UPDATE documentoelectronico SET IdTerminal=CONVERT(SUBSTRING(Consecutivo,4,5),UNSIGNED INTEGER);
 
 DELIMITER //
 CREATE FUNCTION DiffDays (dateFrom DATE, dateTo DATE) RETURNS INTEGER

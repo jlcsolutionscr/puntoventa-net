@@ -70,7 +70,7 @@ CREATE TABLE Empresa (
   IdBarrio INTEGER NOT NULL,
   Direccion VARCHAR(160) NOT NULL,
   Telefono VARCHAR(20) NOT NULL,
-  CuentaCorreoElectronico VARCHAR(200) NOT NULL,
+  CorreoNotificacion VARCHAR(200) NOT NULL,
   FechaVence DATETIME NULL,
   PorcentajeIVA DOUBLE NOT NULL,
   LineasPorFactura INTEGER NOT NULL,
@@ -82,11 +82,11 @@ CREATE TABLE Empresa (
   PorcentajeInstalacion DOUBLE NULL,
   CodigoServicioInst INTEGER NULL,
   IncluyeInsumosEnFactura BIT NOT NULL,
-  RespaldoEnLinea BIT NOT NULL,
   CierrePorTurnos BIT NOT NULL,
   CierreEnEjecucion BIT NOT NULL,
-  FacturaElectronica BIT NOT NULL,
-  ServicioFacturaElectronicaURL VARCHAR(500) NULL,
+  RegimenSimplificado BIT NOT NULL,
+  PermiteFacturar BIT NOT NULL,
+  Certificado BLOB NULL,
   IdCertificado VARCHAR(100) NULL,
   PinCertificado VARCHAR(4) NULL,
   UsuarioHacienda VARCHAR(100) NULL,
@@ -96,13 +96,12 @@ CREATE TABLE Empresa (
   UltimoDocNC INTEGER NOT NULL,
   UltimoDocTE INTEGER NOT NULL,
   UltimoDocMR INTEGER NOT NULL,
-  Logotipo BLOB NULL,
-  PermiteFacturar BIT NOT NULL,
   AccessToken BLOB NULL,
   ExpiresIn INTEGER NULL,
   RefreshExpiresIn INTEGER NULL,
   RefreshToken BLOB NULL,
   EmitedAt DATETIME NULL,
+  Logotipo BLOB NULL,
   PRIMARY KEY(IdEmpresa),
   INDEX (Identificacion),
   FOREIGN KEY(IdTipoIdentificacion)
@@ -116,7 +115,8 @@ CREATE TABLE Empresa (
   FOREIGN KEY(IdTipoMoneda)
     REFERENCES TipoMoneda(IdTipoMoneda)
       ON DELETE RESTRICT
-      ON UPDATE RESTRICT
+      ON UPDATE RESTRICT,
+  INDEX (Identificacion)
 );
 
 CREATE TABLE DetalleRegistro (
@@ -1583,6 +1583,35 @@ CREATE TABLE DocumentoElectronico (
   INDEX (EstadoEnvio),
   INDEX (ClaveNumerica),
   INDEX (ClaveNumerica, Consecutivo),
+  FOREIGN KEY(IdEmpresa)
+    REFERENCES Empresa(IdEmpresa)
+      ON DELETE RESTRICT
+      ON UPDATE RESTRICT
+);
+
+CREATE TABLE tipodecambiodolar (
+  FechaTipoCambio VARCHAR(10),
+  ValorTipoCambio DECIMAL(13,5),
+  PRIMARY KEY(FechaTipoCambio)
+);
+
+CREATE TABLE padron (
+  Identificacion VARCHAR(9) NOT NULL,
+  IdProvincia INTEGER NOT NULL,
+  IdCanton INTEGER NOT NULL,
+  IdDistrito INTEGER NOT NULL,
+  Nombre VARCHAR(100) NOT NULL,
+  PrimerApellido VARCHAR(100) NOT NULL,
+  SegundoApellido VARCHAR(100) NOT NULL,
+  PRIMARY KEY(Identificacion)
+);
+
+CREATE TABLE cantfemensualempresa (
+  IdEmpresa INTEGER NOT NULL,
+  IdMes INTEGER NOT NULL,
+  IdAnio INTEGER NOT NULL,
+  CantidadDoc INTEGER NOT NULL,
+  PRIMARY KEY(IdEmpresa,IdMes,IdAnio),
   FOREIGN KEY(IdEmpresa)
     REFERENCES Empresa(IdEmpresa)
       ON DELETE RESTRICT

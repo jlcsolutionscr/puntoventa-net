@@ -1,10 +1,7 @@
 Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
-Imports LeandroSoftware.AccesoDatos.Servicios
-Imports Unity
 
 Public Class FrmTipoMoneda
 #Region "Variables"
-    Public servicioMantenimiento As IMantenimientoService
     Public intIdTipoMoneda As Integer
     Private datos As TipoMoneda
 #End Region
@@ -27,7 +24,7 @@ Public Class FrmTipoMoneda
     Private Sub FrmTipoMoneda_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         If intIdTipoMoneda > 0 Then
             Try
-                datos = servicioMantenimiento.ObtenerTipoMoneda(intIdTipoMoneda)
+                'datos = servicioMantenimiento.ObtenerTipoMoneda(intIdTipoMoneda)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Close()
@@ -62,10 +59,10 @@ Public Class FrmTipoMoneda
         datos.TipoCambioVenta = txtTipoCambioVenta.Text
         Try
             If datos.IdTipoMoneda = 0 Then
-                datos = servicioMantenimiento.AgregarTipoMoneda(datos)
+                'datos = servicioMantenimiento.AgregarTipoMoneda(datos)
                 txtIdTipoMoneda.Text = datos.IdTipoMoneda
             Else
-                servicioMantenimiento.ActualizarTipoMoneda(datos)
+                'servicioMantenimiento.ActualizarTipoMoneda(datos)
             End If
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)

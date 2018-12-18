@@ -1,8 +1,6 @@
 Imports System.Collections.Generic
 Imports LeandroSoftware.Core.CommonTypes
 Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
-Imports LeandroSoftware.AccesoDatos.Servicios
-Imports Unity
 
 Public Class FrmDevolucionDeClientes
 #Region "Variables"
@@ -10,14 +8,12 @@ Public Class FrmDevolucionDeClientes
     Private I As Short
     Private dtbDatosLocal, dtbDetalleDevolucion As DataTable
     Private dtrRowDetDevolucion As DataRow
-    Private arrDetalleDevolucion As List(Of ModuloImpresion.clsDetalleComprobante)
-    Private servicioFacturacion As IFacturacionService
-    Private servicioMantenimiento As IMantenimientoService
+    Private arrDetalleDevolucion As List(Of ModuloImpresion.ClsDetalleComprobante)
     Private devolucion As DevolucionCliente
     Private detalleDevolucion As DetalleDevolucionCliente
     Private factura As Factura
     Private cliente As Cliente
-    Private comprobante As ModuloImpresion.clsComprobante
+    Private comprobante As ModuloImpresion.ClsComprobante
     Private detalleComprobante As ModuloImpresion.clsDetalleComprobante
     Private bolInit As Boolean = True
 #End Region
@@ -189,7 +185,7 @@ Public Class FrmDevolucionDeClientes
 
     Private Sub CargarFactura(intIdFactura As Integer)
         Try
-            factura = servicioFacturacion.ObtenerFactura(intIdFactura)
+            'factura = servicioFacturacion.ObtenerFactura(intIdFactura)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
@@ -207,14 +203,6 @@ Public Class FrmDevolucionDeClientes
 
 #Region "Eventos Controles"
     Private Sub FrmDevolucion_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        Try
-            servicioFacturacion = FrmMenuPrincipal.unityContainer.Resolve(Of IFacturacionService)()
-            servicioMantenimiento = FrmMenuPrincipal.unityContainer.Resolve(Of IMantenimientoService)()
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-            Exit Sub
-        End Try
         txtFecha.Text = FrmMenuPrincipal.ObtenerFechaFormateada(Now())
         IniciaDetalleDevolucion()
         EstablecerPropiedadesDataGridView()
@@ -264,7 +252,7 @@ Public Class FrmDevolucionDeClientes
         If txtIdDevolucion.Text <> "" Then
             If MessageBox.Show("Desea anular este registro?", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
                 Try
-                    servicioFacturacion.AnularDevolucionCliente(txtIdDevolucion.Text, FrmMenuPrincipal.usuarioGlobal.IdUsuario)
+                    'servicioFacturacion.AnularDevolucionCliente(txtIdDevolucion.Text, FrmMenuPrincipal.usuarioGlobal.IdUsuario)
                 Catch ex As Exception
                     MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
@@ -281,13 +269,13 @@ Public Class FrmDevolucionDeClientes
         formBusqueda.ShowDialog()
         If FrmMenuPrincipal.intBusqueda > 0 Then
             Try
-                devolucion = servicioFacturacion.ObtenerDevolucionCliente(FrmMenuPrincipal.intBusqueda)
+                'devolucion = servicioFacturacion.ObtenerDevolucionCliente(FrmMenuPrincipal.intBusqueda)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
             If devolucion IsNot Nothing Then
-                factura = servicioFacturacion.ObtenerFactura(devolucion.IdFactura)
+                'factura = servicioFacturacion.ObtenerFactura(devolucion.IdFactura)
                 txtIdDevolucion.Text = devolucion.IdDevolucion
                 txtIdFactura.Text = devolucion.IdFactura
                 cliente = devolucion.Cliente
@@ -339,7 +327,7 @@ Public Class FrmDevolucionDeClientes
                     devolucion.DetalleDevolucionCliente.Add(detalleDevolucion)
                 Next
                 Try
-                    devolucion = servicioFacturacion.AgregarDevolucionCliente(devolucion)
+                    'devolucion = servicioFacturacion.AgregarDevolucionCliente(devolucion)
                     txtIdDevolucion.Text = devolucion.IdDevolucion
                 Catch ex As Exception
                     txtIdDevolucion.Text = ""
@@ -361,7 +349,7 @@ Public Class FrmDevolucionDeClientes
 
     Private Sub CmdImprimir_Click(sender As Object, e As EventArgs) Handles CmdImprimir.Click
         If txtIdDevolucion.Text <> "" Then
-            comprobante = New ModuloImpresion.clsComprobante With {
+            comprobante = New ModuloImpresion.ClsComprobante With {
                 .usuario = FrmMenuPrincipal.usuarioGlobal,
                 .empresa = FrmMenuPrincipal.empresaGlobal,
                 .equipo = FrmMenuPrincipal.equipoGlobal,

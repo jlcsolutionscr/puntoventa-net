@@ -1,10 +1,7 @@
 Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
-Imports LeandroSoftware.AccesoDatos.Servicios
 
 Public Class FrmCliente
 #Region "Variables"
-    Public servicioFacturacion As IFacturacionService
-    Public servicioMantenimiento As IMantenimientoService
     Public intIdCliente As Integer
     Private datos As Cliente
     Private bolInit As Boolean = True
@@ -24,13 +21,13 @@ Public Class FrmCliente
         Try
             cboCanton.ValueMember = "IdCanton"
             cboCanton.DisplayMember = "Descripcion"
-            cboCanton.DataSource = servicioMantenimiento.ObtenerListaCantones(IdProvincia)
+            'cboCanton.DataSource = servicioMantenimiento.ObtenerListaCantones(IdProvincia)
             cboDistrito.ValueMember = "IdDistrito"
             cboDistrito.DisplayMember = "Descripcion"
-            cboDistrito.DataSource = servicioMantenimiento.ObtenerListaDistritos(IdProvincia, IdCanton)
+            'cboDistrito.DataSource = servicioMantenimiento.ObtenerListaDistritos(IdProvincia, IdCanton)
             cboBarrio.ValueMember = "IdBarrio"
             cboBarrio.DisplayMember = "Descripcion"
-            cboBarrio.DataSource = servicioMantenimiento.ObtenerListaBarrios(IdProvincia, IdCanton, IdDistrito)
+            'cboBarrio.DataSource = servicioMantenimiento.ObtenerListaBarrios(IdProvincia, IdCanton, IdDistrito)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
@@ -41,16 +38,16 @@ Public Class FrmCliente
         Try
             cboTipoIdentificacion.ValueMember = "IdTipoIdentificacion"
             cboTipoIdentificacion.DisplayMember = "Descripcion"
-            cboTipoIdentificacion.DataSource = servicioMantenimiento.ObtenerListaTipoIdentificacion()
+            'cboTipoIdentificacion.DataSource = servicioMantenimiento.ObtenerListaTipoIdentificacion()
             cboProvincia.ValueMember = "IdProvincia"
             cboProvincia.DisplayMember = "Descripcion"
-            cboProvincia.DataSource = servicioMantenimiento.ObtenerListaProvincias()
+            'cboProvincia.DataSource = servicioMantenimiento.ObtenerListaProvincias()
             cboVendedor.ValueMember = "IdVendedor"
             cboVendedor.DisplayMember = "Nombre"
-            cboVendedor.DataSource = servicioMantenimiento.ObtenerListaVendedores(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
+            'cboVendedor.DataSource = servicioMantenimiento.ObtenerListaVendedores(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
             cboIdTipoPrecio.ValueMember = "IdTipoPrecio"
             cboIdTipoPrecio.DisplayMember = "Descripcion"
-            cboIdTipoPrecio.DataSource = servicioMantenimiento.ObtenerListaTipodePrecio()
+            'cboIdTipoPrecio.DataSource = servicioMantenimiento.ObtenerListaTipodePrecio()
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
@@ -63,7 +60,7 @@ Public Class FrmCliente
         CargarCombos()
         If intIdCliente > 0 Then
             Try
-                datos = servicioFacturacion.ObtenerCliente(intIdCliente)
+                'datos = servicioFacturacion.ObtenerCliente(intIdCliente)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Close()
@@ -131,10 +128,10 @@ Public Class FrmCliente
         datos.Barrio = Nothing
         Try
             If datos.IdCliente = 0 Then
-                servicioFacturacion.AgregarCliente(datos)
+                'servicioFacturacion.AgregarCliente(datos)
                 txtIdCliente.Text = datos.IdCliente
             Else
-                servicioFacturacion.ActualizarCliente(datos)
+                'servicioFacturacion.ActualizarCliente(datos)
             End If
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -148,7 +145,7 @@ Public Class FrmCliente
         If txtIdCliente.Text = "" And txtIdentificacion.Text <> "" Then
             Dim cliente As Cliente = Nothing
             Try
-                cliente = servicioFacturacion.ValidaIdentificacionCliente(FrmMenuPrincipal.empresaGlobal.IdEmpresa, txtIdentificacion.Text)
+                'cliente = servicioFacturacion.ValidaIdentificacionCliente(FrmMenuPrincipal.empresaGlobal.IdEmpresa, txtIdentificacion.Text)
             Catch ex As Exception
             End Try
             If (cliente IsNot Nothing) Then
@@ -194,22 +191,22 @@ Public Class FrmCliente
 
     Private Sub CboProvincia_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboProvincia.SelectedIndexChanged
         If Not bolInit Then
-            cboCanton.DataSource = servicioMantenimiento.ObtenerListaCantones(cboProvincia.SelectedValue)
-            cboDistrito.DataSource = servicioMantenimiento.ObtenerListaDistritos(cboProvincia.SelectedValue, 1)
-            cboBarrio.DataSource = servicioMantenimiento.ObtenerListaBarrios(cboProvincia.SelectedValue, 1, 1)
+            'cboCanton.DataSource = servicioMantenimiento.ObtenerListaCantones(cboProvincia.SelectedValue)
+            'cboDistrito.DataSource = servicioMantenimiento.ObtenerListaDistritos(cboProvincia.SelectedValue, 1)
+            'cboBarrio.DataSource = servicioMantenimiento.ObtenerListaBarrios(cboProvincia.SelectedValue, 1, 1)
         End If
     End Sub
 
     Private Sub CboCanton_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboCanton.SelectedIndexChanged
         If Not bolInit Then
-            cboDistrito.DataSource = servicioMantenimiento.ObtenerListaDistritos(cboProvincia.SelectedValue, cboCanton.SelectedValue)
-            cboBarrio.DataSource = servicioMantenimiento.ObtenerListaBarrios(cboProvincia.SelectedValue, cboCanton.SelectedValue, 1)
+            'cboDistrito.DataSource = servicioMantenimiento.ObtenerListaDistritos(cboProvincia.SelectedValue, cboCanton.SelectedValue)
+            'cboBarrio.DataSource = servicioMantenimiento.ObtenerListaBarrios(cboProvincia.SelectedValue, cboCanton.SelectedValue, 1)
         End If
     End Sub
 
     Private Sub CboDistrito_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboDistrito.SelectedIndexChanged
         If Not bolInit Then
-            cboBarrio.DataSource = servicioMantenimiento.ObtenerListaBarrios(cboProvincia.SelectedValue, cboCanton.SelectedValue, cboDistrito.SelectedValue)
+            'cboBarrio.DataSource = servicioMantenimiento.ObtenerListaBarrios(cboProvincia.SelectedValue, cboCanton.SelectedValue, cboDistrito.SelectedValue)
         End If
     End Sub
 #End Region
