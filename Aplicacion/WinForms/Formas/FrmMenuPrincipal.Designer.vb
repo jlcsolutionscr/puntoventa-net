@@ -41,11 +41,9 @@ Partial Class FrmMenuPrincipal
         Me.mnuArchivoCierre = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuArchivoReporte = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuArchivoCambio = New System.Windows.Forms.ToolStripMenuItem()
-        Me.mnuArchivoRespaldo = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuArchivoSalir = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuParam = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuParamPC = New System.Windows.Forms.ToolStripMenuItem()
-        Me.MnuParamTM = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuParamBA = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuMant = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuMantCliente = New System.Windows.Forms.ToolStripMenuItem()
@@ -110,7 +108,7 @@ Partial Class FrmMenuPrincipal
         '
         'MnuArchivo
         '
-        Me.MnuArchivo.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuArchivoCierre, Me.MnuArchivoReporte, Me.mnuArchivoCambio, Me.mnuArchivoRespaldo, Me.MnuArchivoSalir})
+        Me.MnuArchivo.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuArchivoCierre, Me.MnuArchivoReporte, Me.mnuArchivoCambio, Me.MnuArchivoSalir})
         Me.MnuArchivo.MergeAction = System.Windows.Forms.MergeAction.Remove
         Me.MnuArchivo.Name = "MnuArchivo"
         Me.MnuArchivo.Size = New System.Drawing.Size(60, 20)
@@ -120,39 +118,32 @@ Partial Class FrmMenuPrincipal
         'mnuArchivoCierre
         '
         Me.mnuArchivoCierre.Name = "mnuArchivoCierre"
-        Me.mnuArchivoCierre.Size = New System.Drawing.Size(200, 22)
+        Me.mnuArchivoCierre.Size = New System.Drawing.Size(180, 22)
         Me.mnuArchivoCierre.Text = "Cierre de Caja"
         Me.mnuArchivoCierre.Visible = False
         '
         'MnuArchivoReporte
         '
         Me.MnuArchivoReporte.Name = "MnuArchivoReporte"
-        Me.MnuArchivoReporte.Size = New System.Drawing.Size(200, 22)
+        Me.MnuArchivoReporte.Size = New System.Drawing.Size(180, 22)
         Me.MnuArchivoReporte.Text = "Menu de Reportes"
         Me.MnuArchivoReporte.Visible = False
         '
         'mnuArchivoCambio
         '
         Me.mnuArchivoCambio.Name = "mnuArchivoCambio"
-        Me.mnuArchivoCambio.Size = New System.Drawing.Size(200, 22)
+        Me.mnuArchivoCambio.Size = New System.Drawing.Size(180, 22)
         Me.mnuArchivoCambio.Text = "Cambio Contraseña"
-        '
-        'mnuArchivoRespaldo
-        '
-        Me.mnuArchivoRespaldo.Name = "mnuArchivoRespaldo"
-        Me.mnuArchivoRespaldo.Size = New System.Drawing.Size(200, 22)
-        Me.mnuArchivoRespaldo.Text = "Respaldar base de datos"
-        Me.mnuArchivoRespaldo.Visible = False
         '
         'MnuArchivoSalir
         '
         Me.MnuArchivoSalir.Name = "MnuArchivoSalir"
-        Me.MnuArchivoSalir.Size = New System.Drawing.Size(200, 22)
+        Me.MnuArchivoSalir.Size = New System.Drawing.Size(180, 22)
         Me.MnuArchivoSalir.Text = "Salir"
         '
         'MnuParam
         '
-        Me.MnuParam.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MnuParamPC, Me.MnuParamTM, Me.MnuParamBA})
+        Me.MnuParam.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MnuParamPC, Me.MnuParamBA})
         Me.MnuParam.MergeAction = System.Windows.Forms.MergeAction.Remove
         Me.MnuParam.Name = "MnuParam"
         Me.MnuParam.Size = New System.Drawing.Size(79, 20)
@@ -165,13 +156,6 @@ Partial Class FrmMenuPrincipal
         Me.MnuParamPC.Size = New System.Drawing.Size(180, 22)
         Me.MnuParamPC.Text = "Parámetro Contable"
         Me.MnuParamPC.Visible = False
-        '
-        'MnuParamTM
-        '
-        Me.MnuParamTM.Name = "MnuParamTM"
-        Me.MnuParamTM.Size = New System.Drawing.Size(180, 22)
-        Me.MnuParamTM.Text = "Tipo de Moneda"
-        Me.MnuParamTM.Visible = False
         '
         'MnuParamBA
         '
@@ -571,7 +555,6 @@ Partial Class FrmMenuPrincipal
     Public WithEvents MnuDevolucionCliente As System.Windows.Forms.ToolStripMenuItem
     Public WithEvents MnuParam As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents MnuParamPC As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents MnuParamTM As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents MnuParamBA As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents MnuMantCE As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents MnuCapturaIngreso As System.Windows.Forms.ToolStripMenuItem
@@ -586,7 +569,6 @@ Partial Class FrmMenuPrincipal
     Friend WithEvents MnuAnRCxPP As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents MnuImpCxPP As System.Windows.Forms.ToolStripMenuItem
     Public WithEvents MnuDevolucionProveedor As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents mnuArchivoRespaldo As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents MnuMantVend As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents MnuCapturaCxPP As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents MnuCapturaAI As System.Windows.Forms.ToolStripMenuItem

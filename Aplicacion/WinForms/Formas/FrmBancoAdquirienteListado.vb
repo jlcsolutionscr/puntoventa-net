@@ -1,7 +1,6 @@
-﻿Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
-
-Public Class FrmBancoAdquirienteListado
+﻿Public Class FrmBancoAdquirienteListado
 #Region "Variables"
+    Private listado As IList
 #End Region
 
 #Region "Métodos"
@@ -38,9 +37,9 @@ Public Class FrmBancoAdquirienteListado
         dgvDatos.Columns.Add(dvcPorcentajeComision)
     End Sub
 
-    Private Sub ActualizarDatos()
+    Private Async Sub ActualizarDatos()
         Try
-            Dim listado As IList = Nothing 'servicioMantenimiento.ObtenerListaBancoAdquiriente(FrmMenuPrincipal.empresaGlobal.IdEmpresa, txtDescripcion.Text)
+            listado = Await ClienteWCF.ObtenerListaBancoAdquiriente(FrmMenuPrincipal.empresaGlobal.IdEmpresa, txtDescripcion.Text)
             dgvDatos.DataSource = listado
             If listado.Count() > 0 Then
                 btnEditar.Enabled = True
@@ -65,27 +64,25 @@ Public Class FrmBancoAdquirienteListado
     End Sub
 
     Private Sub BtnAgregar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnAgregar.Click
-        'Dim formMant As New FrmBancoAdquiriente With {
-        '    .intIdBanco = 0,
-        '    .servicioMantenimiento = servicioMantenimiento
-        '}
-        'formMant.ShowDialog()
+        Dim formMant As New FrmBancoAdquiriente With {
+            .intIdBanco = 0
+        }
+        formMant.ShowDialog()
         ActualizarDatos()
     End Sub
 
     Private Sub BtnEditar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEditar.Click
-        'Dim formMant As New FrmBancoAdquiriente With {
-        '    .intIdBanco = dgvDatos.CurrentRow.Cells(0).Value,
-        '    .servicioMantenimiento = servicioMantenimiento
-        '}
-        'formMant.ShowDialog()
+        Dim formMant As New FrmBancoAdquiriente With {
+            .intIdBanco = dgvDatos.CurrentRow.Cells(0).Value
+        }
+        formMant.ShowDialog()
         ActualizarDatos()
     End Sub
 
-    Private Sub BtnEliminar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEliminar.Click
+    Private Async Sub BtnEliminar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEliminar.Click
         If MessageBox.Show("Desea eliminar el registro actual", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
             Try
-                'servicioMantenimiento.EliminarBancoAdquiriente(dgvDatos.CurrentRow.Cells(0).Value)
+                Await ClienteWCF.EliminarBancoAdquiriente(dgvDatos.CurrentRow.Cells(0).Value)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub

@@ -27,10 +27,10 @@ Public Class FrmBancoAdquiriente
 #End Region
 
 #Region "Eventos Controles"
-    Private Sub FrmBancoAdquiriente_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+    Private Async Sub FrmBancoAdquiriente_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         If intIdBanco > 0 Then
             Try
-                'datos = servicioMantenimiento.ObtenerBancoAdquiriente(intIdBanco)
+                datos = Await ClienteWCF.ObtenerBancoAdquiriente(intIdBanco)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                 Close()
@@ -55,7 +55,7 @@ Public Class FrmBancoAdquiriente
         Close()
     End Sub
 
-    Private Sub btnGuardar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnGuardar.Click
+    Private Async Sub btnGuardar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnGuardar.Click
         Dim strCampo As String = ""
         If Not ValidarCampos(strCampo) Then
             MessageBox.Show("El campo " & strCampo & " es requerido", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
@@ -70,10 +70,10 @@ Public Class FrmBancoAdquiriente
         datos.PorcentajeComision = txtComision.Text
         Try
             If datos.IdBanco = 0 Then
-                'datos = servicioMantenimiento.AgregarBancoAdquiriente(datos)
-                txtIdBanco.Text = datos.IdBanco
+                Dim strIdBanco As String = Await ClienteWCF.AgregarBancoAdquiriente(datos)
+                txtIdBanco.Text = strIdBanco
             Else
-                'servicioMantenimiento.ActualizarBancoAdquiriente(datos)
+                Await ClienteWCF.ActualizarBancoAdquiriente(datos)
             End If
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)

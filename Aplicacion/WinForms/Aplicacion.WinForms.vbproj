@@ -170,6 +170,7 @@
     <Import Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClienteWCF.vb" />
     <Compile Include="Formas\FrmAceptarDocumentoElectronico.Designer.vb">
       <DependentUpon>FrmAceptarDocumentoElectronico.vb</DependentUpon>
     </Compile>
@@ -408,18 +409,6 @@
       <DependentUpon>FrmCuentaIngreso.vb</DependentUpon>
     </Compile>
     <Compile Include="Formas\FrmCuentaIngreso.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Formas\FrmTipoMoneda.Designer.vb">
-      <DependentUpon>FrmTipoMoneda.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Formas\FrmTipoMoneda.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Formas\FrmTipoMonedaListado.Designer.vb">
-      <DependentUpon>FrmTipoMonedaListado.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Formas\FrmTipoMonedaListado.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Formas\FrmMenuBancoAdquiriente.Designer.vb">
@@ -1065,12 +1054,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Formas\FrmCuentaIngreso.resx">
       <DependentUpon>FrmCuentaIngreso.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Formas\FrmTipoMoneda.resX">
-      <DependentUpon>FrmTipoMoneda.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Formas\FrmTipoMonedaListado.resx">
-      <DependentUpon>FrmTipoMonedaListado.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Formas\FrmMenuBancoAdquiriente.resx">
       <DependentUpon>FrmMenuBancoAdquiriente.vb</DependentUpon>

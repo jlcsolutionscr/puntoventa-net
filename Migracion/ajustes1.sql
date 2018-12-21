@@ -315,8 +315,6 @@ CREATE TABLE formapago (
 CREATE TABLE tipomoneda (
   IdTipoMoneda INTEGER NOT NULL AUTO_INCREMENT,
   Descripcion VARCHAR(10) NOT NULL,
-  TipoCambioCompra DOUBLE NOT NULL,
-  TipoCambioVenta DOUBLE NOT NULL,
   PRIMARY KEY(IdTipoMoneda)
 );
 

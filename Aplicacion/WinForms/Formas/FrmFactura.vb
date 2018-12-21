@@ -600,7 +600,7 @@ Public Class FrmFactura
             Close()
             Exit Sub
         End Try
-        txtTipoCambio.Text = FormatNumber(tipoMoneda.TipoCambioCompra, 2)
+        txtTipoCambio.Text = 1 'servicioMantenimiento.ObtenerTipoCambioDolar()
         txtSaldoPorPagar.Text = FormatNumber(dblSaldoPorPagar, 2)
         shtConsecutivoPago = 0
         txtCodigo.Focus()
@@ -1280,7 +1280,7 @@ Public Class FrmFactura
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
-            txtTipoCambio.Text = FormatNumber(tipoMoneda.TipoCambioCompra, 2)
+            txtTipoCambio.Text = 1 'servicioMantenimiento.ObtenerTipoCambioDolar()
         End If
     End Sub
 

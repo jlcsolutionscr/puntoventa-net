@@ -1,28 +1,19 @@
-Imports System.Web.Script.Serialization
+
 Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
-Imports LeandroSoftware.AccesoDatos.TiposDatos
-Imports LeandroSoftware.Core
 
 Public Class FrmSeguridad
 #Region "Variables"
 #End Region
 
 #Region "Eventos Controles"
+    Private Sub FrmSeguridad_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+        txtIdentificacion.Text = FrmMenuPrincipal.strIdentificacion
+    End Sub
     Private Async Sub CmdAceptar_Click(sender As Object, e As EventArgs) Handles CmdAceptar.Click
         Dim usuario As Usuario = Nothing
         Try
             CmdAceptar.Enabled = False
-            Dim peticion As RequestDTO = New RequestDTO With {
-                .NombreMetodo = "ValidarCredenciales",
-                .DatosPeticion = "{Identificacion: '" + txtIdentificacion.Text + "', Usuario: '" + TxtUsuario.Text + "', Clave: '" + TxtClave.Text + "'}"
-            }
-            Dim strPeticion As String = New JavaScriptSerializer().Serialize(peticion)
-            Dim strRespuesta As String = Await Utilitario.EjecutarConsulta(strPeticion, FrmMenuPrincipal.strServicioPuntoventaURL, "")
-            strRespuesta = New JavaScriptSerializer().Deserialize(Of String)(strRespuesta)
-
-            If strRespuesta <> "" Then
-                Usuario = New JavaScriptSerializer().Deserialize(Of Usuario)(strRespuesta)
-            End If
+            usuario = Await ClienteWCF.ValidarCredenciales(txtIdentificacion.Text, TxtUsuario.Text, TxtClave.Text)
         Catch ex As Exception
             CmdAceptar.Enabled = True
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)

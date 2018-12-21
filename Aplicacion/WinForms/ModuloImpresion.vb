@@ -1,7 +1,5 @@
 Imports System.IO
-Imports System.Text
 Imports System.Runtime.InteropServices
-Imports System.Data
 Imports System.Collections.Generic
 Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
 Imports System.Drawing.Printing

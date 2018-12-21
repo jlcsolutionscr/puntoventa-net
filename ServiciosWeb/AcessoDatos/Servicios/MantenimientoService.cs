@@ -19,7 +19,6 @@ namespace LeandroSoftware.AccesoDatos.Servicios
         Empresa AgregarEmpresa(Empresa empresa);
         void ActualizarEmpresa(Empresa empresa);
         Empresa ObtenerEmpresa(int intIdEmpresa);
-        Empresa ObtenerEmpresaPorIdentificacion(string strIdentificacion);
         IEnumerable<Empresa> ObtenerListaEmpresas();
         void ActualizarLogoEmpresa(int intIdEmpresa, string strLogo);
         void ActualizarCertificadoEmpresa(int intIdEmpresa, string strCertificado);
@@ -60,8 +59,8 @@ namespace LeandroSoftware.AccesoDatos.Servicios
         int ObtenerTotalListaParticulares(int intIdEmpresa, string strNombre = "");
         IEnumerable<Particular> ObtenerListaParticulares(int intIdEmpresa, int numPagina, int cantRec, string strNombre = "");
         // Métodos para administrar los productos
-        IEnumerable<TipoProducto> ObtenerTiposProducto();
-        IEnumerable<TipoUnidad> ObtenerTiposUnidad();
+        IEnumerable<TipoProducto> ObtenerListaTipoProducto();
+        IEnumerable<TipoUnidad> ObtenerListaTipoUnidad();
         Producto AgregarProducto(Producto producto);
         void ActualizarProducto(Producto producto);
         void ActualizarPrecioVentaProductos(int intIdEmpresa, int intIdLinea = 0, string strCodigo = "", string strDescripcion = "", decimal decPorcentajeAumento = 0);
@@ -193,29 +192,6 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 try
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Include("DetalleRegistro").Include("ModuloPorEmpresa.Modulo").Include("ReportePorEmpresa.CatalogoReporte").Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.IdEmpresa == intIdEmpresa);
-                    foreach (DetalleRegistro detalle in empresa.DetalleRegistro)
-                        detalle.Empresa = null;
-                    foreach (ModuloPorEmpresa modulo in empresa.ModuloPorEmpresa)
-                        modulo.Empresa = null;
-                    foreach (ReportePorEmpresa reporte in empresa.ReportePorEmpresa)
-                        reporte.Empresa = null;
-                    return empresa;
-                }
-                catch (Exception ex)
-                {
-                    log.Error("Error al obtener la empresa: ", ex);
-                    throw new Exception("Se produjo un error consultando la información de la empresa. Por favor consulte con su proveedor.");
-                }
-            }
-        }
-
-        public Empresa ObtenerEmpresaPorIdentificacion(string strIdentificacion)
-        {
-            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
-            {
-                try
-                {
-                    Empresa empresa = dbContext.EmpresaRepository.Include("DetalleRegistro").Include("ModuloPorEmpresa").Include("ReportePorEmpresa").Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.Identificacion == strIdentificacion);
                     foreach (DetalleRegistro detalle in empresa.DetalleRegistro)
                         detalle.Empresa = null;
                     foreach (ModuloPorEmpresa modulo in empresa.ModuloPorEmpresa)
@@ -1021,7 +997,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public IEnumerable<TipoProducto> ObtenerTiposProducto()
+        public IEnumerable<TipoProducto> ObtenerListaTipoProducto()
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -1037,7 +1013,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public IEnumerable<TipoUnidad> ObtenerTiposUnidad()
+        public IEnumerable<TipoUnidad> ObtenerListaTipoUnidad()
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {

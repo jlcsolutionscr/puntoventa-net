@@ -241,7 +241,7 @@ Public Class FrmIngreso
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
         End Try
-        txtTipoCambio.Text = FormatNumber(tipoMoneda.TipoCambioVenta, 2)
+        txtTipoCambio.Text = 1 'servicioMantenimiento.ObtenerTipoCambioDolar()
         txtSaldoPorPagar.Text = FormatNumber(dblSaldoPorPagar, 2)
     End Sub
 
@@ -482,7 +482,7 @@ Public Class FrmIngreso
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
-            txtTipoCambio.Text = FormatNumber(tipoMoneda.TipoCambioVenta, 2)
+            txtTipoCambio.Text = 1 'servicioMantenimiento.ObtenerTipoCambioDolar()
         End If
     End Sub
 

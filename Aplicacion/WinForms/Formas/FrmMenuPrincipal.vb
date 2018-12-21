@@ -1,9 +1,5 @@
 Imports System.Threading
 Imports System.Configuration
-Imports Unity
-Imports Unity.Injection
-Imports Unity.Lifetime
-Imports Microsoft.Practices.Unity.Configuration
 Imports LeandroSoftware.Core
 Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
 Imports System.Collections.Generic
@@ -22,8 +18,8 @@ Public Class FrmMenuPrincipal
     Public strBusqueda As String
     Public dgvDecimal As DataGridViewCellStyle
     Public dgvInteger As DataGridViewCellStyle
-    Public unityContainer As IUnityContainer
     Public strThumbprint As String
+    Public strIdentificacion As String
     Public intSucursal As Integer
     Public intTerminal As Integer
     Public lstListaReportes As New List(Of String)
@@ -98,34 +94,6 @@ Public Class FrmMenuPrincipal
         formActualizarClave.Show()
     End Sub
 
-    Private Sub MnuArchivoRespaldo_Click(sender As Object, e As EventArgs) Handles mnuArchivoRespaldo.Click
-        If MessageBox.Show("Desea realizar el respaldo de base de datos?", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
-            Dim applicationKey As String = appSettings("ApplicationKey")
-            Dim backupUser As String = Utilitario.DesencriptarDatos(strThumbprint, appSettings("BackupUser"))
-            Dim backupPassword As String = Utilitario.DesencriptarDatos(strThumbprint, appSettings("BackupPassword"))
-            Dim databaseHost As String = appSettings("DatabaseHost")
-            Dim databaseName As String = appSettings("DatabaseName")
-            Dim mySQLDumpOptions As String = appSettings("MySQLDumpOptions")
-            Dim backupServer As String = appSettings("BackupServer")
-            Dim strFileName As String = databaseName + "-" + Now.ToShortDateString().Replace("/", "") + ".sql"
-            Dim bytes As Byte()
-            Try
-                Dim strData As String = "" 'servicioRespaldo.GenerarContenidoRespaldo(backupUser, backupPassword, databaseHost, databaseName, mySQLDumpOptions)
-                bytes = Utilitario.EncriptarArchivo(strThumbprint, applicationKey, strData)
-            Catch ex As Exception
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Exit Sub
-            End Try
-            Try
-                'servicioRespaldo.SubirRespaldo(bytes, strFileName)
-            Catch ex As Exception
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Exit Sub
-            End Try
-            MessageBox.Show("Respaldo finalizado satisfactoriamente.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
-        End If
-    End Sub
-
     Public Sub MnuArchivoSalir_Click(sender As Object, e As EventArgs) Handles MnuArchivoSalir.Click
         If MessageBox.Show("Desea salir del sistema", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then Close()
     End Sub
@@ -135,13 +103,6 @@ Public Class FrmMenuPrincipal
             .MdiParent = Me
         }
         formParametroContableListado.Show()
-    End Sub
-
-    Private Sub MnuParamTM_Click(sender As Object, e As EventArgs) Handles MnuParamTM.Click
-        Dim formTipoMonedaListado As New FrmTipoMonedaListado With {
-            .MdiParent = Me
-        }
-        formTipoMonedaListado.Show()
     End Sub
 
     Private Sub MnuParamBA_Click(sender As Object, e As EventArgs) Handles MnuParamBA.Click
@@ -452,6 +413,7 @@ Public Class FrmMenuPrincipal
         End Try
         Try
             strThumbprint = appSettings.Get("AppThumptprint")
+            strIdentificacion = appSettings.Get("Identificacion")
             intSucursal = Integer.Parse(appSettings.Get("Sucursal"))
             intTerminal = Integer.Parse(appSettings.Get("Caja"))
             strServicioPuntoventaURL = appSettings.Get("ServicioPuntoventaURL")

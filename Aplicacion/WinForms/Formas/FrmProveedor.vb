@@ -21,10 +21,10 @@ Public Class FrmProveedor
 #End Region
 
 #Region "Eventos Controles"
-    Private Sub FrmProveedor_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+    Private Async Sub FrmProveedor_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         If intIdProveedor > 0 Then
             Try
-                'datos = servicioCompras.ObtenerProveedor(intIdProveedor)
+                datos = Await ClienteWCF.ObtenerProveedor(intIdProveedor)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                 Close()
@@ -58,7 +58,7 @@ Public Class FrmProveedor
         Close()
     End Sub
 
-    Private Sub btnGuardar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnGuardar.Click
+    Private Async Sub btnGuardar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnGuardar.Click
         Dim strCampo As String = ""
         If Not ValidarCampos(strCampo) Then
             MessageBox.Show("El campo " & strCampo & " es requerido", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
@@ -81,9 +81,10 @@ Public Class FrmProveedor
         datos.TelCont2 = txtTelContacto2.Text
         Try
             If datos.IdProveedor = 0 Then
-                'servicioCompras.AgregarProveedor(datos)
+                Dim strIdProveedor As String = Await ClienteWCF.AgregarProveedor(datos)
+                txtIdProveedor.Text = strIdProveedor
             Else
-                'servicioCompras.ActualizarProveedor(datos)
+                Await ClienteWCF.ActualizarProveedor(datos)
             End If
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)

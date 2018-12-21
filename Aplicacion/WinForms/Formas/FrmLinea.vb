@@ -20,9 +20,9 @@ Public Class FrmLinea
         End If
     End Function
 
-    Private Sub CargarTipoLinea()
+    Private Async Sub CargarTipoLinea()
         Try
-            'cboTipoProducto.DataSource = servicioMantenimiento.ObtenerTiposProducto()
+            cboTipoProducto.DataSource = Await ClienteWCF.ObtenerListaTipoProducto()
             cboTipoProducto.ValueMember = "IdTipoProducto"
             cboTipoProducto.DisplayMember = "Descripcion"
         Catch ex As Exception
@@ -33,11 +33,11 @@ Public Class FrmLinea
 #End Region
 
 #Region "Eventos Controles"
-    Private Sub FrmLinea_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+    Private Async Sub FrmLinea_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         CargarTipoLinea()
         If intIdLinea > 0 Then
             Try
-                'datos = servicioMantenimiento.ObtenerLinea(intIdLinea)
+                datos = Await ClienteWCF.ObtenerLinea(intIdLinea)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Close()
@@ -61,7 +61,7 @@ Public Class FrmLinea
         Close()
     End Sub
 
-    Private Sub btnGuardar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnGuardar.Click
+    Private Async Sub btnGuardar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnGuardar.Click
         Dim strCampo As String = ""
         If Not ValidarCampos(strCampo) Then
             MessageBox.Show("El campo " & strCampo & " es requerido", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
@@ -74,10 +74,10 @@ Public Class FrmLinea
         datos.Descripcion = txtDescripcion.Text
         Try
             If datos.IdLinea = 0 Then
-                'datos = servicioMantenimiento.AgregarLinea(datos)
-                txtIdLinea.Text = datos.IdLinea
+                Dim strIdLinea = Await ClienteWCF.AgregarLinea(datos)
+                txtIdLinea.Text = strIdLinea
             Else
-                'servicioMantenimiento.ActualizarLinea(datos)
+                Await ClienteWCF.ActualizarLinea(datos)
             End If
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)

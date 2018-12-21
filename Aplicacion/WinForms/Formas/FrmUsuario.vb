@@ -7,7 +7,6 @@ Public Class FrmUsuario
     Private dtrRolePorUsuario As DataRow
     Private I As Short
     Private datos As Usuario
-    Private role As Role
     Private rolePorUsuario As RolePorUsuario
     Private bolInit As Boolean = True
     Public intIdUsuario As Integer
@@ -50,13 +49,13 @@ Public Class FrmUsuario
         dgvRoleXUsuario.Refresh()
     End Sub
 
-    Private Sub CargarLineaDetalleRole(ByVal role As Role)
-        If dtbRolePorUsuario.Rows.Contains(role.IdRole) Then
+    Private Sub CargarLineaDetalleRole(ByVal intIdRole As Integer, ByVal strDescripcion As String)
+        If dtbRolePorUsuario.Rows.Contains(intIdRole) Then
             MessageBox.Show("El role seleccionado ya esta asignado. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         Else
             dtrRolePorUsuario = dtbRolePorUsuario.NewRow
-            dtrRolePorUsuario.Item(0) = role.IdRole
-            dtrRolePorUsuario.Item(1) = role.Descripcion
+            dtrRolePorUsuario.Item(0) = intIdRole
+            dtrRolePorUsuario.Item(1) = strDescripcion
             dtbRolePorUsuario.Rows.Add(dtrRolePorUsuario)
             dgvRoleXUsuario.DataSource = dtbRolePorUsuario
             dgvRoleXUsuario.Refresh()
@@ -75,11 +74,11 @@ Public Class FrmUsuario
         End If
     End Function
 
-    Private Sub CargarCombos()
+    Private Async Sub CargarCombos()
         Try
             cboRole.ValueMember = "IdRole"
             cboRole.DisplayMember = "Nombre"
-            'cboRole.DataSource = servicioMantenimiento.ObtenerListaRoles()
+            cboRole.DataSource = Await ClienteWCF.ObtenerListaRoles()
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
@@ -88,13 +87,13 @@ Public Class FrmUsuario
 #End Region
 
 #Region "Eventos Controles"
-    Private Sub FrmUsuario_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+    Private Async Sub FrmUsuario_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         IniciaDetalleRole()
         EstablecerPropiedadesDataGridView()
         CargarCombos()
         If intIdUsuario > 0 Then
             Try
-                'datos = servicioMantenimiento.ObtenerUsuario(intIdUsuario, FrmMenuPrincipal.strThumbprint)
+                datos = Await ClienteWCF.ObtenerUsuario(intIdUsuario)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                 Close()
@@ -115,15 +114,13 @@ Public Class FrmUsuario
             datos = New Usuario
         End If
         bolInit = False
-        'role = servicioMantenimiento.ObtenerRole(cboRole.SelectedValue)
-        txtDescripción.Text = role.Descripcion
     End Sub
 
     Private Sub btnCancelar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnCancelar.Click
         Close()
     End Sub
 
-    Private Sub btnGuardar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnGuardar.Click
+    Private Async Sub btnGuardar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnGuardar.Click
         Dim strCampo As String = ""
         If Not ValidarCampos(strCampo) Then
             MessageBox.Show("El campo " & strCampo & " es requerido", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
@@ -152,10 +149,10 @@ Public Class FrmUsuario
         Next
         Try
             If datos.IdUsuario = 0 Then
-                'datos = servicioMantenimiento.AgregarUsuario(datos, FrmMenuPrincipal.strThumbprint)
-                txtIdUsuario.Text = datos.IdUsuario
+                Dim strIdUsuario = Await ClienteWCF.AgregarUsuario(datos)
+                txtIdUsuario.Text = strIdUsuario
             Else
-                'servicioMantenimiento.ActualizarUsuario(datos, FrmMenuPrincipal.strThumbprint)
+                Await ClienteWCF.ActualizarUsuario(datos)
             End If
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -165,22 +162,9 @@ Public Class FrmUsuario
         Close()
     End Sub
 
-    Private Sub cboRole_SelectedValueChanged(ByVal sender As Object, ByVal e As EventArgs) Handles cboRole.SelectedValueChanged
-        If Not bolInit Then
-            Try
-                'role = servicioMantenimiento.ObtenerRole(cboRole.SelectedValue)
-            Catch ex As Exception
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-                Close()
-                Exit Sub
-            End Try
-            txtDescripción.Text = role.Descripcion
-        End If
-    End Sub
-
     Private Sub btnInsertarRole_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnInsertarRole.Click
         If cboRole.SelectedValue IsNot Nothing Then
-            CargarLineaDetalleRole(role)
+            CargarLineaDetalleRole(cboRole.SelectedValue, cboRole.Text)
         Else
             MessageBox.Show("Debe selecionar el Permiso para asignar al usuario", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End If

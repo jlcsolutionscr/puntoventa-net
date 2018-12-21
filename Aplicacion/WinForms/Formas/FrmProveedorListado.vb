@@ -29,9 +29,9 @@
         dgvDatos.Columns.Add(dvcNombre)
     End Sub
 
-    Private Sub ActualizarDatos(ByVal intNumeroPagina As Integer)
+    Private Async Sub ActualizarDatos(ByVal intNumeroPagina As Integer)
         Try
-            'listado = servicioCompras.ObtenerListaProveedores(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, txtNombre.Text)
+            listado = Await ClienteWCF.ObtenerListaProveedores(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, txtNombre.Text)
             dgvDatos.DataSource = listado
             If listado.Count() > 0 Then
                 btnEditar.Enabled = True
@@ -49,9 +49,9 @@
         dgvDatos.Refresh()
     End Sub
 
-    Private Sub ValidarCantidadRegistros()
+    Private Async Sub ValidarCantidadRegistros()
         Try
-            'intTotalEmpresas = servicioCompras.ObtenerTotalListaProveedores(FrmMenuPrincipal.empresaGlobal.IdEmpresa, txtNombre.Text)
+            intTotalEmpresas = Await ClienteWCF.ObtenerTotalListaProveedores(FrmMenuPrincipal.empresaGlobal.IdEmpresa, txtNombre.Text)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -106,29 +106,27 @@
     End Sub
 
     Private Sub btnAgregar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnAgregar.Click
-        'Dim formMant As New FrmProveedor With {
-        '    .intIdProveedor = 0,
-        '    .servicioCompras = servicioCompras
-        '}
-        'formMant.ShowDialog()
+        Dim formMant As New FrmProveedor With {
+        .intIdProveedor = 0
+        }
+        formMant.ShowDialog()
         ValidarCantidadRegistros()
         intIndiceDePagina = 1
         ActualizarDatos(intIndiceDePagina)
     End Sub
 
     Private Sub btnEditar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEditar.Click
-        'Dim formMant As New FrmProveedor With {
-        '    .intIdProveedor = dgvDatos.CurrentRow.Cells(0).Value,
-        '    .servicioCompras = servicioCompras
-        '}
-        'formMant.ShowDialog()
+        Dim formMant As New FrmProveedor With {
+        .intIdProveedor = dgvDatos.CurrentRow.Cells(0).Value
+        }
+        formMant.ShowDialog()
         ActualizarDatos(intIndiceDePagina)
     End Sub
 
-    Private Sub btnEliminar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEliminar.Click
+    Private Async Sub btnEliminar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEliminar.Click
         If MessageBox.Show("Desea eliminar el registro actual", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
             Try
-                'servicioCompras.EliminarProveedor(dgvDatos.CurrentRow.Cells(0).Value)
+                Await ClienteWCF.EliminarProveedor(dgvDatos.CurrentRow.Cells(0).Value)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub

@@ -270,7 +270,7 @@ Public Class FrmAplicaReciboCxP
             Exit Sub
         End Try
         txtMontoAbono.Text = FormatNumber(0, 2)
-        txtTipoCambio.Text = FormatNumber(tipoMoneda.TipoCambioCompra, 2)
+        txtTipoCambio.Text = 1 'servicioMantenimiento.ObtenerTipoCambioDolar()
         txtSaldoPorPagar.Text = FormatNumber(dblSaldoPorPagar, 2)
     End Sub
 
@@ -432,7 +432,7 @@ Public Class FrmAplicaReciboCxP
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
-            txtTipoCambio.Text = FormatNumber(tipoMoneda.TipoCambioCompra, 2)
+            txtTipoCambio.Text = 1 'servicioMantenimiento.ObtenerTipoCambioDolar()
         End If
     End Sub
 

@@ -235,7 +235,7 @@ Public Class FrmCuentaPorPagarParticulares
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
         End Try
-        txtTipoCambio.Text = FormatNumber(tipoMoneda.TipoCambioVenta, 2)
+        txtTipoCambio.Text = 1 'servicioMantenimiento.ObtenerTipoCambioDolar()
         txtSaldoPorPagar.Text = FormatNumber(dblSaldoPorPagar, 2)
         bolInit = False
         txtTotal.Text = FormatNumber(0, 2)
@@ -473,7 +473,7 @@ Public Class FrmCuentaPorPagarParticulares
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
-            txtTipoCambio.Text = FormatNumber(tipoMoneda.TipoCambioVenta, 2)
+            txtTipoCambio.Text = 1 'servicioMantenimiento.ObtenerTipoCambioDolar()
         End If
     End Sub
 

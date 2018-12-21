@@ -1,3 +1,4 @@
+Imports System.Threading.Tasks
 Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
 
 Public Class FrmCliente
@@ -17,50 +18,48 @@ Public Class FrmCliente
         End If
     End Function
 
-    Private Sub CargarListadoBarrios(IdProvincia As Integer, IdCanton As Integer, IdDistrito As Integer)
+    Private Async Function CargarListadoBarrios(IdProvincia As Integer, IdCanton As Integer, IdDistrito As Integer) As Task
         Try
             cboCanton.ValueMember = "IdCanton"
             cboCanton.DisplayMember = "Descripcion"
-            'cboCanton.DataSource = servicioMantenimiento.ObtenerListaCantones(IdProvincia)
+            cboCanton.DataSource = Await ClienteWCF.ObtenerListaCantones(IdProvincia)
             cboDistrito.ValueMember = "IdDistrito"
             cboDistrito.DisplayMember = "Descripcion"
-            'cboDistrito.DataSource = servicioMantenimiento.ObtenerListaDistritos(IdProvincia, IdCanton)
+            cboDistrito.DataSource = Await ClienteWCF.ObtenerListaDistritos(IdProvincia, IdCanton)
             cboBarrio.ValueMember = "IdBarrio"
             cboBarrio.DisplayMember = "Descripcion"
-            'cboBarrio.DataSource = servicioMantenimiento.ObtenerListaBarrios(IdProvincia, IdCanton, IdDistrito)
+            cboBarrio.DataSource = Await ClienteWCF.ObtenerListaBarrios(IdProvincia, IdCanton, IdDistrito)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Exit Sub
         End Try
-    End Sub
+    End Function
 
-    Private Sub CargarCombos()
+    Private Async Function CargarCombos() As Task
         Try
             cboTipoIdentificacion.ValueMember = "IdTipoIdentificacion"
             cboTipoIdentificacion.DisplayMember = "Descripcion"
-            'cboTipoIdentificacion.DataSource = servicioMantenimiento.ObtenerListaTipoIdentificacion()
+            cboTipoIdentificacion.DataSource = Await ClienteWCF.ObtenerListaTipoIdentificacion()
             cboProvincia.ValueMember = "IdProvincia"
             cboProvincia.DisplayMember = "Descripcion"
-            'cboProvincia.DataSource = servicioMantenimiento.ObtenerListaProvincias()
+            cboProvincia.DataSource = Await ClienteWCF.ObtenerListaProvincias()
             cboVendedor.ValueMember = "IdVendedor"
             cboVendedor.DisplayMember = "Nombre"
-            'cboVendedor.DataSource = servicioMantenimiento.ObtenerListaVendedores(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
+            cboVendedor.DataSource = Await ClienteWCF.ObtenerListaVendedores(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
             cboIdTipoPrecio.ValueMember = "IdTipoPrecio"
             cboIdTipoPrecio.DisplayMember = "Descripcion"
-            'cboIdTipoPrecio.DataSource = servicioMantenimiento.ObtenerListaTipodePrecio()
+            cboIdTipoPrecio.DataSource = Await ClienteWCF.ObtenerListaTipodePrecio()
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Exit Sub
         End Try
-    End Sub
+    End Function
 #End Region
 
 #Region "Eventos Controles"
-    Private Sub FrmCliente_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        CargarCombos()
+    Private Async Sub FrmCliente_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+        Await CargarCombos()
         If intIdCliente > 0 Then
             Try
-                'datos = servicioFacturacion.ObtenerCliente(intIdCliente)
+                datos = Await ClienteWCF.ObtenerCliente(intIdCliente)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Close()
@@ -71,7 +70,7 @@ Public Class FrmCliente
                 Close()
                 Exit Sub
             End If
-            CargarListadoBarrios(datos.IdProvincia, datos.IdCanton, datos.IdDistrito)
+            Await CargarListadoBarrios(datos.IdProvincia, datos.IdCanton, datos.IdDistrito)
             txtIdCliente.Text = datos.IdCliente
             cboTipoIdentificacion.SelectedValue = datos.IdTipoIdentificacion
             txtIdentificacion.Text = datos.Identificacion
@@ -92,7 +91,7 @@ Public Class FrmCliente
             txtIdentificacion.ReadOnly = True
         Else
             datos = New Cliente
-            CargarListadoBarrios(1, 1, 1)
+            Await CargarListadoBarrios(1, 1, 1)
         End If
         bolInit = False
     End Sub
@@ -101,7 +100,7 @@ Public Class FrmCliente
         Close()
     End Sub
 
-    Private Sub BtnGuardar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnGuardar.Click
+    Private Async Sub BtnGuardar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnGuardar.Click
         If cboTipoIdentificacion.SelectedValue Is Nothing Or txtIdentificacion.Text.Length = 0 Or cboProvincia.SelectedValue Is Nothing Or cboCanton.SelectedValue Is Nothing Or cboDistrito.SelectedValue Is Nothing Or cboBarrio.SelectedValue Is Nothing Or txtDireccion.Text.Length = 0 Or txtNombre.Text.Length = 0 Or txtCorreoElectronico.Text.Length = 0 Then
             MessageBox.Show("Existen campos requeridos que no se fueron ingresados. Por favor verifique la información. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
@@ -128,10 +127,10 @@ Public Class FrmCliente
         datos.Barrio = Nothing
         Try
             If datos.IdCliente = 0 Then
-                'servicioFacturacion.AgregarCliente(datos)
-                txtIdCliente.Text = datos.IdCliente
+                Dim strIdCliente = Await ClienteWCF.AgregarCliente(datos)
+                txtIdCliente.Text = strIdCliente
             Else
-                'servicioFacturacion.ActualizarCliente(datos)
+                Await ClienteWCF.ActualizarCliente(datos)
             End If
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -141,14 +140,15 @@ Public Class FrmCliente
         Close()
     End Sub
 
-    Private Sub Identificacion_Validating(ByVal sender As Object, ByVal e As EventArgs) Handles txtIdentificacion.Validated
+    Private Async Sub Identificacion_Validating(ByVal sender As Object, ByVal e As EventArgs) Handles txtIdentificacion.Validated
         If txtIdCliente.Text = "" And txtIdentificacion.Text <> "" Then
             Dim cliente As Cliente = Nothing
             Try
-                'cliente = servicioFacturacion.ValidaIdentificacionCliente(FrmMenuPrincipal.empresaGlobal.IdEmpresa, txtIdentificacion.Text)
+                cliente = Await ClienteWCF.ValidaIdentificacionCliente(FrmMenuPrincipal.empresaGlobal.IdEmpresa, txtIdentificacion.Text)
             Catch ex As Exception
             End Try
             If (cliente IsNot Nothing) Then
+                bolInit = True
                 If (cliente.IdCliente > 0) Then
                     MessageBox.Show("La identificación ingresada ya se encuentra registrada en la base de datos de clientes del sistema.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
                     datos = cliente
@@ -156,6 +156,7 @@ Public Class FrmCliente
                     cboTipoIdentificacion.SelectedValue = datos.IdTipoIdentificacion
                     txtIdentificacion.Text = datos.Identificacion
                     txtIdentificacionExtranjero.Text = datos.IdentificacionExtranjero
+                    Await CargarListadoBarrios(datos.IdProvincia, datos.IdCanton, datos.IdDistrito)
                     cboProvincia.SelectedValue = datos.IdProvincia
                     cboCanton.SelectedValue = datos.IdCanton
                     cboDistrito.SelectedValue = datos.IdDistrito
@@ -172,13 +173,14 @@ Public Class FrmCliente
                 Else
                     MessageBox.Show("Cliente encontrado en el padrón electoral. Por favor complete la información faltante.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
                     cboTipoIdentificacion.SelectedValue = 0
-                    txtIdentificacion.Text = cliente.Identificacion
+                    Await CargarListadoBarrios(cliente.IdProvincia, cliente.IdCanton, cliente.IdDistrito)
                     cboProvincia.SelectedValue = cliente.IdProvincia
                     cboCanton.SelectedValue = cliente.IdCanton
                     cboDistrito.SelectedValue = cliente.IdDistrito
                     cboBarrio.SelectedValue = 0
                     txtNombre.Text = cliente.Nombre
                 End If
+                bolInit = False
             Else
                 MessageBox.Show("No se encontró la identificación registrada en el sistema o en el padrón electoral. Por favor ingrese la información completa.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
             End If
@@ -189,24 +191,28 @@ Public Class FrmCliente
         FrmMenuPrincipal.ValidaNumero(e, sender, True, 2, ".")
     End Sub
 
-    Private Sub CboProvincia_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboProvincia.SelectedIndexChanged
+    Private Async Sub CboProvincia_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboProvincia.SelectedIndexChanged
         If Not bolInit Then
-            'cboCanton.DataSource = servicioMantenimiento.ObtenerListaCantones(cboProvincia.SelectedValue)
-            'cboDistrito.DataSource = servicioMantenimiento.ObtenerListaDistritos(cboProvincia.SelectedValue, 1)
-            'cboBarrio.DataSource = servicioMantenimiento.ObtenerListaBarrios(cboProvincia.SelectedValue, 1, 1)
+            bolInit = True
+            cboCanton.DataSource = Await ClienteWCF.ObtenerListaCantones(cboProvincia.SelectedValue)
+            cboDistrito.DataSource = Await ClienteWCF.ObtenerListaDistritos(cboProvincia.SelectedValue, 1)
+            cboBarrio.DataSource = Await ClienteWCF.ObtenerListaBarrios(cboProvincia.SelectedValue, 1, 1)
+            bolInit = False
         End If
     End Sub
 
-    Private Sub CboCanton_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboCanton.SelectedIndexChanged
+    Private Async Sub CboCanton_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboCanton.SelectedIndexChanged
         If Not bolInit Then
-            'cboDistrito.DataSource = servicioMantenimiento.ObtenerListaDistritos(cboProvincia.SelectedValue, cboCanton.SelectedValue)
-            'cboBarrio.DataSource = servicioMantenimiento.ObtenerListaBarrios(cboProvincia.SelectedValue, cboCanton.SelectedValue, 1)
+            bolInit = True
+            cboDistrito.DataSource = Await ClienteWCF.ObtenerListaDistritos(cboProvincia.SelectedValue, cboCanton.SelectedValue)
+            cboBarrio.DataSource = Await ClienteWCF.ObtenerListaBarrios(cboProvincia.SelectedValue, cboCanton.SelectedValue, 1)
+            bolInit = False
         End If
     End Sub
 
-    Private Sub CboDistrito_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboDistrito.SelectedIndexChanged
+    Private Async Sub CboDistrito_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboDistrito.SelectedIndexChanged
         If Not bolInit Then
-            'cboBarrio.DataSource = servicioMantenimiento.ObtenerListaBarrios(cboProvincia.SelectedValue, cboCanton.SelectedValue, cboDistrito.SelectedValue)
+            cboBarrio.DataSource = Await ClienteWCF.ObtenerListaBarrios(cboProvincia.SelectedValue, cboCanton.SelectedValue, cboDistrito.SelectedValue)
         End If
     End Sub
 #End Region

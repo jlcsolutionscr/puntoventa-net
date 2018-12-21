@@ -146,6 +146,10 @@
             Descripcion = desc;
         }
 
+        public TipodePrecio()
+        {
+        }
+
         public int IdTipoPrecio { get; set; }
         public string Descripcion { get; set; }
     }

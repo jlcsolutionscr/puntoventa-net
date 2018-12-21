@@ -9,7 +9,5 @@ namespace LeandroSoftware.AccesoDatos.Dominio.Entidades
         [Key]
         public int IdTipoMoneda { get; set; }
         public string Descripcion { get; set; }
-        public decimal TipoCambioCompra { get; set; }
-        public decimal TipoCambioVenta { get; set; }
     }
 }
