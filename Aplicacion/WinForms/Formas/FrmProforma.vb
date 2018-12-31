@@ -28,13 +28,13 @@ Public Class FrmProforma
 #Region "Métodos"
     Private Sub IniciaTablasDeDetalle()
         dtbDetalleProforma = New DataTable()
-        dtbDetalleProforma.Columns.Add("IDPRODUCTO", GetType(Int32))
+        dtbDetalleProforma.Columns.Add("IDPRODUCTO", GetType(Integer))
         dtbDetalleProforma.Columns.Add("CODIGO", GetType(String))
         dtbDetalleProforma.Columns.Add("DESCRIPCION", GetType(String))
         dtbDetalleProforma.Columns.Add("CANTIDAD", GetType(Decimal))
         dtbDetalleProforma.Columns.Add("PRECIO", GetType(Decimal))
         dtbDetalleProforma.Columns.Add("TOTAL", GetType(Decimal))
-        dtbDetalleProforma.Columns.Add("EXCENTO", GetType(Int32))
+        dtbDetalleProforma.Columns.Add("EXCENTO", GetType(Integer))
         dtbDetalleProforma.PrimaryKey = {dtbDetalleProforma.Columns(0)}
     End Sub
 

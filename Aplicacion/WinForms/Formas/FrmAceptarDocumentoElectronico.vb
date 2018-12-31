@@ -7,7 +7,7 @@ Public Class FrmAceptarDocumentoElectronico
 #End Region
 
 #Region "Eventos Controles"
-    Private Sub BtnEnviar_Click(sender As Object, e As EventArgs) Handles btnEnviar.Click
+    Private Async Sub BtnEnviar_Click(sender As Object, e As EventArgs) Handles btnEnviar.Click
         Try
             If MessageBox.Show("Desea enviar el documento al servicio web de Hacienda?", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
                 Dim intEstado As Integer
@@ -18,7 +18,7 @@ Public Class FrmAceptarDocumentoElectronico
                 Else
                     intEstado = 2
                 End If
-                'servicioFacturacion.GeneraMensajeReceptor(strDatos, FrmMenuPrincipal.empresaGlobal.IdEmpresa, FrmMenuPrincipal.intSucursal, FrmMenuPrincipal.intTerminal, intEstado)
+                Await ClienteWCF.GeneraMensajeReceptor(strDatos, FrmMenuPrincipal.empresaGlobal.IdEmpresa, FrmMenuPrincipal.intSucursal, FrmMenuPrincipal.intTerminal, intEstado)
                 MessageBox.Show("Documento enviado satisfactoriamente. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 Close()
             Else

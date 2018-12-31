@@ -133,7 +133,7 @@ Public Class ModuloImpresion
     <DllImport("winspool.Drv", EntryPoint:="StartDocPrinterW",
         SetLastError:=True, CharSet:=CharSet.Unicode,
         ExactSpelling:=True, CallingConvention:=CallingConvention.StdCall)>
-    Private Shared Function StartDocPrinter(ByVal hPrinter As IntPtr, ByVal level As Int32, ByRef pDI As DOCINFOW) As Boolean
+    Private Shared Function StartDocPrinter(ByVal hPrinter As IntPtr, ByVal level As Integer, ByRef pDI As DOCINFOW) As Boolean
     End Function
     <DllImport("winspool.Drv", EntryPoint:="EndDocPrinter",
         SetLastError:=True, CharSet:=CharSet.Unicode,
@@ -153,14 +153,14 @@ Public Class ModuloImpresion
     <DllImport("winspool.Drv", EntryPoint:="WritePrinter",
         SetLastError:=True, CharSet:=CharSet.Unicode,
         ExactSpelling:=True, CallingConvention:=CallingConvention.StdCall)>
-    Private Shared Function WritePrinter(ByVal hPrinter As IntPtr, ByVal pBytes As IntPtr, ByVal dwCount As Int32, ByRef dwWritten As Int32) As Boolean
+    Private Shared Function WritePrinter(ByVal hPrinter As IntPtr, ByVal pBytes As IntPtr, ByVal dwCount As Integer, ByRef dwWritten As Integer) As Boolean
     End Function
 
-    Private Shared Function SendBytesToPrinter(ByVal szPrinterName As String, ByVal pBytes As IntPtr, ByVal dwCount As Int32) As Boolean
+    Private Shared Function SendBytesToPrinter(ByVal szPrinterName As String, ByVal pBytes As IntPtr, ByVal dwCount As Integer) As Boolean
         Dim hPrinter As IntPtr          ' The printer handle. 
-        Dim dwError As Int32            ' Last error - in case there was trouble. 
+        Dim dwError As Integer            ' Last error - in case there was trouble. 
         Dim di As New DOCINFOW          ' Describes your document (name, port, data type). 
-        Dim dwWritten As Int32          ' The number of bytes written by WritePrinter(). 
+        Dim dwWritten As Integer          ' The number of bytes written by WritePrinter(). 
         Dim bSuccess As Boolean         ' Your success code. 
         Try
             With di
@@ -189,7 +189,7 @@ Public Class ModuloImpresion
 
     Private Shared Sub SendStringToPrinter(ByVal szPrinterName As String, ByVal strInput As String)
         Dim pBytes As IntPtr
-        Dim dwCount As Int32
+        Dim dwCount As Integer
         Dim bSuccess As Boolean
         Try
             Dim strDataString = strInput + Chr(12)

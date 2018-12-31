@@ -21,13 +21,13 @@ Public Class FrmTrasladoMercaderia
 #Region "Métodos"
     Private Sub IniciaDetalleTraslado()
         dtbDetalleTraslado = New DataTable()
-        dtbDetalleTraslado.Columns.Add("IDPRODUCTO", GetType(Int32))
+        dtbDetalleTraslado.Columns.Add("IDPRODUCTO", GetType(Integer))
         dtbDetalleTraslado.Columns.Add("CODIGO", GetType(String))
         dtbDetalleTraslado.Columns.Add("DESCRIPCION", GetType(String))
         dtbDetalleTraslado.Columns.Add("CANTIDAD", GetType(Decimal))
         dtbDetalleTraslado.Columns.Add("PRECIOCOSTO", GetType(Decimal))
         dtbDetalleTraslado.Columns.Add("TOTAL", GetType(Decimal))
-        dtbDetalleTraslado.Columns.Add("EXCENTO", GetType(Int32))
+        dtbDetalleTraslado.Columns.Add("EXCENTO", GetType(Integer))
         dtbDetalleTraslado.PrimaryKey = {dtbDetalleTraslado.Columns(0)}
     End Sub
 

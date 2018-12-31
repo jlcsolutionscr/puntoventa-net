@@ -18,10 +18,10 @@ Public Class FrmCuentaEgreso
 #End Region
 
 #Region "Eventos Controles"
-    Private Sub FrmCuentaEgreso_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+    Private Async Sub FrmCuentaEgreso_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         If intIdCuenta > 0 Then
             Try
-                'datos = servicioEgresos.obtenerCuentaEgreso(intIdCuenta)
+                datos = Await ClienteWCF.ObtenerCuentaEgreso(intIdCuenta)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Close()
@@ -43,7 +43,7 @@ Public Class FrmCuentaEgreso
         Close()
     End Sub
 
-    Private Sub btnGuardar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnGuardar.Click
+    Private Async Sub btnGuardar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnGuardar.Click
         Dim strCampo As String = ""
         If Not ValidarCampos(strCampo) Then
             MessageBox.Show("El campo " & strCampo & " es requerido", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
@@ -55,9 +55,10 @@ Public Class FrmCuentaEgreso
         datos.Descripcion = txtDescripcion.Text
         Try
             If datos.IdCuenta = 0 Then
-                'servicioEgresos.AgregarCuentaEgreso(datos)
+                Dim strIdCuentaEgreso As String = Await ClienteWCF.AgregarCuentaEgreso(datos)
+                txtIdCuenta.Text = strIdCuentaEgreso
             Else
-                'servicioEgresos.ActualizarCuentaEgreso(datos)
+                Await ClienteWCF.ActualizarCuentaEgreso(datos)
             End If
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)

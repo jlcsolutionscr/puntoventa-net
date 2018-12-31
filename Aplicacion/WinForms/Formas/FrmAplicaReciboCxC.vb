@@ -25,20 +25,20 @@ Public Class FrmAplicaReciboCxC
 #Region "Métodos"
     Private Sub IniciaDetalleMovimiento()
         dtbDesgloseCuenta = New DataTable()
-        dtbDesgloseCuenta.Columns.Add("IDCXC", GetType(Int32))
+        dtbDesgloseCuenta.Columns.Add("IDCXC", GetType(Integer))
         dtbDesgloseCuenta.Columns.Add("DESCRIPCION", GetType(String))
         dtbDesgloseCuenta.Columns.Add("MONTO", GetType(Decimal))
-        dtbDesgloseCuenta.Columns.Add("DOCORIGINAL", GetType(Int32))
+        dtbDesgloseCuenta.Columns.Add("DOCORIGINAL", GetType(Integer))
         dtbDesgloseCuenta.PrimaryKey = {dtbDesgloseCuenta.Columns(0)}
 
         dtbDesglosePago = New DataTable()
-        dtbDesglosePago.Columns.Add("IDFORMAPAGO", GetType(Int32))
+        dtbDesglosePago.Columns.Add("IDFORMAPAGO", GetType(Integer))
         dtbDesglosePago.Columns.Add("DESCFORMAPAGO", GetType(String))
-        dtbDesglosePago.Columns.Add("IDBANCO", GetType(Int32))
+        dtbDesglosePago.Columns.Add("IDBANCO", GetType(Integer))
         dtbDesglosePago.Columns.Add("DESCBANCO", GetType(String))
         dtbDesglosePago.Columns.Add("TIPOTARJETA", GetType(String))
         dtbDesglosePago.Columns.Add("AUTORIZACION", GetType(String))
-        dtbDesglosePago.Columns.Add("IDTIPOMONEDA", GetType(Int32))
+        dtbDesglosePago.Columns.Add("IDTIPOMONEDA", GetType(Integer))
         dtbDesglosePago.Columns.Add("DESCTIPOMONEDA", GetType(String))
         dtbDesglosePago.Columns.Add("MONTOLOCAL", GetType(Decimal))
         dtbDesglosePago.Columns.Add("MONTOFORANEO", GetType(Decimal))
@@ -280,7 +280,7 @@ Public Class FrmAplicaReciboCxC
             Exit Sub
         End Try
         txtMontoAbono.Text = FormatNumber(0, 2)
-        txtTipoCambio.Text = 1 'servicioMantenimiento.ObtenerTipoCambioDolar()
+        txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmMenuPrincipal.decTipoCambioDolar.ToString())
         txtSaldoPorPagar.Text = FormatNumber(dblSaldoPorPagar, 2)
     End Sub
 
@@ -384,18 +384,18 @@ Public Class FrmAplicaReciboCxC
             .strFechaAbono = txtFecha.Text,
             .strTotalAbono = FormatNumber(dblTotal, 2)
         }
-        arrDesgloseMov = New List(Of ModuloImpresion.clsDesgloseFormaPago)()
+        arrDesgloseMov = New List(Of ModuloImpresion.ClsDesgloseFormaPago)()
         For I = 0 To dtbDesgloseCuenta.Rows.Count - 1
-            desglosePagoImpresion = New ModuloImpresion.clsDesgloseFormaPago With {
+            desglosePagoImpresion = New ModuloImpresion.ClsDesgloseFormaPago With {
                 .strDescripcion = dtbDesgloseCuenta.Rows(I).Item(3),
                 .strMonto = FormatNumber(dtbDesgloseCuenta.Rows(I).Item(2), 2)
             }
             arrDesgloseMov.Add(desglosePagoImpresion)
         Next
         reciboComprobante.arrDesgloseMov = arrDesgloseMov
-        arrDesglosePago = New List(Of ModuloImpresion.clsDesgloseFormaPago)()
+        arrDesglosePago = New List(Of ModuloImpresion.ClsDesgloseFormaPago)()
         For I = 0 To dtbDesglosePago.Rows.Count - 1
-            desglosePagoImpresion = New ModuloImpresion.clsDesgloseFormaPago With {
+            desglosePagoImpresion = New ModuloImpresion.ClsDesgloseFormaPago With {
                 .strDescripcion = dtbDesglosePago.Rows(I).Item(1),
                 .strMonto = FormatNumber(dtbDesglosePago.Rows(I).Item(8), 2),
                 .strNroDoc = dtbDesglosePago.Rows(I).Item(5)
@@ -462,7 +462,7 @@ Public Class FrmAplicaReciboCxC
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
-            txtTipoCambio.Text = 1 'servicioMantenimiento.ObtenerTipoCambioDolar()
+            txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmMenuPrincipal.decTipoCambioDolar.ToString())
         End If
     End Sub
 

@@ -25,20 +25,20 @@ Public Class FrmAplicaReciboCxP
 #Region "Métodos"
     Private Sub IniciaDetalleMovimiento()
         dtbDesgloseCuenta = New DataTable()
-        dtbDesgloseCuenta.Columns.Add("IDCXP", GetType(Int32))
+        dtbDesgloseCuenta.Columns.Add("IDCXP", GetType(Integer))
         dtbDesgloseCuenta.Columns.Add("DESCRIPCION", GetType(String))
         dtbDesgloseCuenta.Columns.Add("MONTO", GetType(Decimal))
-        dtbDesgloseCuenta.Columns.Add("DOCORIGINAL", GetType(Int32))
+        dtbDesgloseCuenta.Columns.Add("DOCORIGINAL", GetType(Integer))
         dtbDesgloseCuenta.PrimaryKey = {dtbDesgloseCuenta.Columns(0)}
 
         dtbDesglosePago = New DataTable()
-        dtbDesglosePago.Columns.Add("IDFORMAPAGO", GetType(Int32))
+        dtbDesglosePago.Columns.Add("IDFORMAPAGO", GetType(Integer))
         dtbDesglosePago.Columns.Add("DESCFORMAPAGO", GetType(String))
-        dtbDesglosePago.Columns.Add("IDBANCO", GetType(Int32))
+        dtbDesglosePago.Columns.Add("IDBANCO", GetType(Integer))
         dtbDesglosePago.Columns.Add("DESCBANCO", GetType(String))
         dtbDesglosePago.Columns.Add("DOCUMENTO", GetType(String))
         dtbDesglosePago.Columns.Add("BENEFICIARIO", GetType(String))
-        dtbDesglosePago.Columns.Add("IDTIPOMONEDA", GetType(Int32))
+        dtbDesglosePago.Columns.Add("IDTIPOMONEDA", GetType(Integer))
         dtbDesglosePago.Columns.Add("DESCTIPOMONEDA", GetType(String))
         dtbDesglosePago.Columns.Add("MONTOLOCAL", GetType(Decimal))
         dtbDesglosePago.Columns.Add("MONTOFORANEO", GetType(Decimal))
@@ -270,7 +270,7 @@ Public Class FrmAplicaReciboCxP
             Exit Sub
         End Try
         txtMontoAbono.Text = FormatNumber(0, 2)
-        txtTipoCambio.Text = 1 'servicioMantenimiento.ObtenerTipoCambioDolar()
+        txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmMenuPrincipal.decTipoCambioDolar.ToString())
         txtSaldoPorPagar.Text = FormatNumber(dblSaldoPorPagar, 2)
     End Sub
 
@@ -432,7 +432,7 @@ Public Class FrmAplicaReciboCxP
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
-            txtTipoCambio.Text = 1 'servicioMantenimiento.ObtenerTipoCambioDolar()
+            txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmMenuPrincipal.decTipoCambioDolar.ToString())
         End If
     End Sub
 

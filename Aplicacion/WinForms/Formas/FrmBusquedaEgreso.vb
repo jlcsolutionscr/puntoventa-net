@@ -1,3 +1,5 @@
+Imports System.Threading.Tasks
+
 Public Class FrmBusquedaEgreso
 #Region "Variables"
     Private intTotalEmpresas As Integer
@@ -30,28 +32,27 @@ Public Class FrmBusquedaEgreso
         dgvListado.Columns.Add(dvcTopeCredito)
     End Sub
 
-    Private Sub ActualizarDatos(ByVal intNumeroPagina As Integer)
+    Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
         Try
-            'dgvListado.DataSource = servicioEgresos.ObtenerListaEgresos(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, intId, txtBeneficiario.Text, txtDetalle.Text)
+            dgvListado.DataSource = Await ClienteWCF.ObtenerListaEgresos(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, intId, txtBeneficiario.Text, txtDetalle.Text)
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
-            Exit Sub
+            Exit Function
         End Try
         dgvListado.Refresh()
-    End Sub
+    End Function
 
-    Private Sub ValidarCantidadEmpresas()
+    Private Async Function ValidarCantidadEgresos() As Task
         Try
-            'intTotalEmpresas = servicioEgresos.ObtenerTotalListaEgresos(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intId, txtBeneficiario.Text, txtDetalle.Text)
+            intTotalEmpresas = Await ClienteWCF.ObtenerTotalListaEgresos(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intId, txtBeneficiario.Text, txtDetalle.Text)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
-            Exit Sub
+            Exit Function
         End Try
         intCantidadDePaginas = Math.Truncate(intTotalEmpresas / intFilasPorPagina) + IIf((intTotalEmpresas Mod intFilasPorPagina) = 0, 0, 1)
-
         If intCantidadDePaginas > 1 Then
             btnLast.Enabled = True
             btnNext.Enabled = True
@@ -63,7 +64,7 @@ Public Class FrmBusquedaEgreso
             btnPrevious.Enabled = False
             btnFirst.Enabled = False
         End If
-    End Sub
+    End Function
 #End Region
 
 #Region "Eventos Controles"
@@ -71,35 +72,35 @@ Public Class FrmBusquedaEgreso
         FrmMenuPrincipal.ValidaNumero(e, sender, True, 0)
     End Sub
 
-    Private Sub btnFirst_Click(sender As Object, e As EventArgs) Handles btnFirst.Click
+    Private Async Sub btnFirst_Click(sender As Object, e As EventArgs) Handles btnFirst.Click
         intIndiceDePagina = 1
-        ActualizarDatos(intIndiceDePagina)
+        Await ActualizarDatos(intIndiceDePagina)
     End Sub
 
-    Private Sub btnPrevious_Click(sender As Object, e As EventArgs) Handles btnPrevious.Click
+    Private Async Sub btnPrevious_Click(sender As Object, e As EventArgs) Handles btnPrevious.Click
         If intIndiceDePagina > 1 Then
             intIndiceDePagina -= 1
-            ActualizarDatos(intIndiceDePagina)
+            Await ActualizarDatos(intIndiceDePagina)
         End If
     End Sub
 
-    Private Sub btnNext_Click(sender As Object, e As EventArgs) Handles btnNext.Click
+    Private Async Sub btnNext_Click(sender As Object, e As EventArgs) Handles btnNext.Click
         If intCantidadDePaginas > intIndiceDePagina Then
             intIndiceDePagina += 1
-            ActualizarDatos(intIndiceDePagina)
+            Await ActualizarDatos(intIndiceDePagina)
         End If
     End Sub
 
-    Private Sub btnLast_Click(sender As Object, e As EventArgs) Handles btnLast.Click
+    Private Async Sub btnLast_Click(sender As Object, e As EventArgs) Handles btnLast.Click
         intIndiceDePagina = intCantidadDePaginas
-        ActualizarDatos(intIndiceDePagina)
+        Await ActualizarDatos(intIndiceDePagina)
     End Sub
 
-    Private Sub FrmBusEgreso_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+    Private Async Sub FrmBusEgreso_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         EstablecerPropiedadesDataGridView()
-        ValidarCantidadEmpresas()
+        Await ValidarCantidadEgresos()
         intIndiceDePagina = 1
-        ActualizarDatos(intIndiceDePagina)
+        Await ActualizarDatos(intIndiceDePagina)
     End Sub
 
     Private Sub FlexProducto_DoubleClick(ByVal sender As Object, ByVal e As EventArgs) Handles dgvListado.DoubleClick
@@ -109,15 +110,15 @@ Public Class FrmBusquedaEgreso
         End If
     End Sub
 
-    Private Sub btnFiltrar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnFiltrar.Click
+    Private Async Sub btnFiltrar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnFiltrar.Click
         If txtId.Text = "" Then
             intId = 0
         Else
             intId = CInt(txtId.Text)
         End If
-        ValidarCantidadEmpresas()
+        Await ValidarCantidadEgresos()
         intIndiceDePagina = 1
-        ActualizarDatos(intIndiceDePagina)
+        Await ActualizarDatos(intIndiceDePagina)
     End Sub
 #End Region
 End Class

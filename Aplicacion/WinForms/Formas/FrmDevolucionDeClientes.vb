@@ -21,14 +21,14 @@ Public Class FrmDevolucionDeClientes
 #Region "Métodos"
     Private Sub IniciaDetalleDevolucion()
         dtbDetalleDevolucion = New DataTable()
-        dtbDetalleDevolucion.Columns.Add("IDPRODUCTO", GetType(Int32))
+        dtbDetalleDevolucion.Columns.Add("IDPRODUCTO", GetType(Integer))
         dtbDetalleDevolucion.Columns.Add("CODIGO", GetType(String))
         dtbDetalleDevolucion.Columns.Add("DESCRIPCION", GetType(String))
         dtbDetalleDevolucion.Columns.Add("CANTIDAD", GetType(Decimal))
         dtbDetalleDevolucion.Columns.Add("PRECIOCOSTO", GetType(Decimal))
         dtbDetalleDevolucion.Columns.Add("PRECIOVENTA", GetType(Decimal))
         dtbDetalleDevolucion.Columns.Add("TOTAL", GetType(Decimal))
-        dtbDetalleDevolucion.Columns.Add("EXCENTO", GetType(Int32))
+        dtbDetalleDevolucion.Columns.Add("EXCENTO", GetType(Integer))
         dtbDetalleDevolucion.Columns.Add("CANTDEVOLUCION", GetType(Decimal))
         dtbDetalleDevolucion.PrimaryKey = {dtbDetalleDevolucion.Columns(0)}
     End Sub

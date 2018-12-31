@@ -24,10 +24,10 @@ Public Class FrmCuentaBanco
 #End Region
 
 #Region "Eventos Controles"
-    Private Sub FrmCuentaBanco_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+    Private Async Sub FrmCuentaBanco_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         If intIdCuenta > 0 Then
             Try
-                'datos = servicioAuxiliarBancario.ObtenerCuentaBanco(intIdCuenta)
+                datos = Await ClienteWCF.ObtenerCuentaBanco(intIdCuenta)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Close()
@@ -52,7 +52,7 @@ Public Class FrmCuentaBanco
         Close()
     End Sub
 
-    Private Sub btnGuardar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnGuardar.Click
+    Private Async Sub btnGuardar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnGuardar.Click
         Dim strCampo As String = ""
         If Not ValidarCampos(strCampo) Then
             MessageBox.Show("El campo " & strCampo & " es requerido", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
@@ -66,10 +66,10 @@ Public Class FrmCuentaBanco
         datos.Saldo = txtSaldo.Text
         Try
             If datos.IdCuenta = 0 Then
-                'servicioAuxiliarBancario.AgregarCuentaBanco(datos)
-                txtIdCuenta.Text = datos.IdCuenta
+                Dim strIdCuenta = Await ClienteWCF.AgregarCuentaBanco(datos)
+                txtIdCuenta.Text = strIdCuenta
             Else
-                'servicioAuxiliarBancario.ActualizarCuentaBanco(datos)
+                Await ClienteWCF.ActualizarCuentaBanco(datos)
             End If
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)

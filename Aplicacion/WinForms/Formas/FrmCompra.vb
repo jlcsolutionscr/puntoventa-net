@@ -29,22 +29,22 @@ Public Class FrmCompra
 #Region "Métodos"
     Private Sub IniciaDetalleCompra()
         dtbDetalleCompra = New DataTable()
-        dtbDetalleCompra.Columns.Add("IDPRODUCTO", GetType(Int32))
+        dtbDetalleCompra.Columns.Add("IDPRODUCTO", GetType(Integer))
         dtbDetalleCompra.Columns.Add("CODIGO", GetType(String))
         dtbDetalleCompra.Columns.Add("DESCRIPCION", GetType(String))
         dtbDetalleCompra.Columns.Add("CANTIDAD", GetType(Decimal))
         dtbDetalleCompra.Columns.Add("PRECIOCOSTO", GetType(Decimal))
         dtbDetalleCompra.Columns.Add("TOTAL", GetType(Decimal))
-        dtbDetalleCompra.Columns.Add("EXCENTO", GetType(Int32))
+        dtbDetalleCompra.Columns.Add("EXCENTO", GetType(Integer))
         dtbDetalleCompra.PrimaryKey = {dtbDetalleCompra.Columns(0)}
 
         dtbDesglosePago = New DataTable()
-        dtbDesglosePago.Columns.Add("IDFORMAPAGO", GetType(Int32))
+        dtbDesglosePago.Columns.Add("IDFORMAPAGO", GetType(Integer))
         dtbDesglosePago.Columns.Add("DESCFORMAPAGO", GetType(String))
-        dtbDesglosePago.Columns.Add("IDCUENTABANCO", GetType(Int32))
+        dtbDesglosePago.Columns.Add("IDCUENTABANCO", GetType(Integer))
         dtbDesglosePago.Columns.Add("DESCBANCO", GetType(String))
         dtbDesglosePago.Columns.Add("NROCHEQUE", GetType(String))
-        dtbDesglosePago.Columns.Add("IDTIPOMONEDA", GetType(Int32))
+        dtbDesglosePago.Columns.Add("IDTIPOMONEDA", GetType(Integer))
         dtbDesglosePago.Columns.Add("DESCTIPOMONEDA", GetType(String))
         dtbDesglosePago.Columns.Add("MONTOLOCAL", GetType(Decimal))
         dtbDesglosePago.Columns.Add("MONTOFORANEO", GetType(Decimal))
@@ -410,7 +410,7 @@ Public Class FrmCompra
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
         End Try
-        txtTipoCambio.Text = 1 'servicioMantenimiento.ObtenerTipoCambioDolar()
+        txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmMenuPrincipal.decTipoCambioDolar.ToString())
         txtSaldoPorPagar.Text = FormatNumber(dblSaldoPorPagar, 2)
     End Sub
 
@@ -769,7 +769,7 @@ Public Class FrmCompra
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
-            txtTipoCambio.Text = 1 'servicioMantenimiento.ObtenerTipoCambioDolar()
+            txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmMenuPrincipal.decTipoCambioDolar.ToString())
         End If
     End Sub
 

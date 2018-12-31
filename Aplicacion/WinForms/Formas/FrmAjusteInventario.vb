@@ -18,13 +18,13 @@ Public Class FrmAjusteInventario
 #Region "Métodos"
     Private Sub IniciaDetalleAjusteInventario()
         dtbDetalleAjusteInventario = New DataTable()
-        dtbDetalleAjusteInventario.Columns.Add("IDPRODUCTO", GetType(Int32))
+        dtbDetalleAjusteInventario.Columns.Add("IDPRODUCTO", GetType(Integer))
         dtbDetalleAjusteInventario.Columns.Add("CODIGO", GetType(String))
         dtbDetalleAjusteInventario.Columns.Add("DESCRIPCION", GetType(String))
         dtbDetalleAjusteInventario.Columns.Add("CANTIDAD", GetType(Decimal))
         dtbDetalleAjusteInventario.Columns.Add("PRECIOCOSTO", GetType(Decimal))
         dtbDetalleAjusteInventario.Columns.Add("TOTAL", GetType(Decimal))
-        dtbDetalleAjusteInventario.Columns.Add("EXCENTO", GetType(Int32))
+        dtbDetalleAjusteInventario.Columns.Add("EXCENTO", GetType(Integer))
         dtbDetalleAjusteInventario.PrimaryKey = {dtbDetalleAjusteInventario.Columns(0)}
     End Sub
 

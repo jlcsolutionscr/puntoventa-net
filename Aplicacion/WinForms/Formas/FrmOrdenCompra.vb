@@ -23,13 +23,13 @@ Public Class FrmOrdenCompra
 #Region "Métodos"
     Private Sub IniciaDetalleOrdenCompra()
         dtbDetalleOrdenCompra = New DataTable()
-        dtbDetalleOrdenCompra.Columns.Add("IDPRODUCTO", GetType(Int32))
+        dtbDetalleOrdenCompra.Columns.Add("IDPRODUCTO", GetType(Integer))
         dtbDetalleOrdenCompra.Columns.Add("CODIGO", GetType(String))
         dtbDetalleOrdenCompra.Columns.Add("DESCRIPCION", GetType(String))
         dtbDetalleOrdenCompra.Columns.Add("CANTIDAD", GetType(Decimal))
         dtbDetalleOrdenCompra.Columns.Add("PRECIOCOSTO", GetType(Decimal))
         dtbDetalleOrdenCompra.Columns.Add("TOTAL", GetType(Decimal))
-        dtbDetalleOrdenCompra.Columns.Add("EXCENTO", GetType(Int32))
+        dtbDetalleOrdenCompra.Columns.Add("EXCENTO", GetType(Integer))
         dtbDetalleOrdenCompra.PrimaryKey = {dtbDetalleOrdenCompra.Columns(0)}
     End Sub
 

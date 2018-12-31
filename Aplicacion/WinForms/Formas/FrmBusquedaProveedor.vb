@@ -1,3 +1,5 @@
+Imports System.Threading.Tasks
+
 Public Class FrmBusquedaProveedor
 #Region "Variables"
     Private intTotalEmpresas As Integer
@@ -29,25 +31,25 @@ Public Class FrmBusquedaProveedor
         dgvListado.Columns.Add(dvcTopeCredito)
     End Sub
 
-    Private Sub ActualizarDatos(ByVal intNumeroPagina As Integer)
+    Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
         Try
-            'dgvListado.DataSource = servicioCompras.ObtenerListaProveedores(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, txtNombre.Text)
+            dgvListado.DataSource = Await ClienteWCF.ObtenerListaProveedores(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, txtNombre.Text)
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
-            Exit Sub
+            Exit Function
         End Try
         dgvListado.Refresh()
-    End Sub
+    End Function
 
-    Private Sub ValidarCantidadEmpresas()
+    Private Async Function ValidarCantidadEmpresas() As Task
         Try
-            'intTotalEmpresas = servicioCompras.ObtenerTotalListaProveedores(FrmMenuPrincipal.empresaGlobal.IdEmpresa, txtNombre.Text)
+            intTotalEmpresas = Await ClienteWCF.ObtenerTotalListaProveedores(FrmMenuPrincipal.empresaGlobal.IdEmpresa, txtNombre.Text)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
-            Exit Sub
+            Exit Function
         End Try
         intCantidadDePaginas = Math.Truncate(intTotalEmpresas / intFilasPorPagina) + IIf((intTotalEmpresas Mod intFilasPorPagina) = 0, 0, 1)
 
@@ -62,39 +64,39 @@ Public Class FrmBusquedaProveedor
             btnPrevious.Enabled = False
             btnFirst.Enabled = False
         End If
-    End Sub
+    End Function
 #End Region
 
 #Region "Eventos Controles"
-    Private Sub btnFirst_Click(sender As Object, e As EventArgs) Handles btnFirst.Click
+    Private Async Sub btnFirst_Click(sender As Object, e As EventArgs) Handles btnFirst.Click
         intIndiceDePagina = 1
-        ActualizarDatos(intIndiceDePagina)
+        Await ActualizarDatos(intIndiceDePagina)
     End Sub
 
-    Private Sub btnPrevious_Click(sender As Object, e As EventArgs) Handles btnPrevious.Click
+    Private Async Sub btnPrevious_Click(sender As Object, e As EventArgs) Handles btnPrevious.Click
         If intIndiceDePagina > 1 Then
             intIndiceDePagina -= 1
-            ActualizarDatos(intIndiceDePagina)
+            Await ActualizarDatos(intIndiceDePagina)
         End If
     End Sub
 
-    Private Sub btnNext_Click(sender As Object, e As EventArgs) Handles btnNext.Click
+    Private Async Sub btnNext_Click(sender As Object, e As EventArgs) Handles btnNext.Click
         If intCantidadDePaginas > intIndiceDePagina Then
             intIndiceDePagina += 1
-            ActualizarDatos(intIndiceDePagina)
+            Await ActualizarDatos(intIndiceDePagina)
         End If
     End Sub
 
-    Private Sub btnLast_Click(sender As Object, e As EventArgs) Handles btnLast.Click
+    Private Async Sub btnLast_Click(sender As Object, e As EventArgs) Handles btnLast.Click
         intIndiceDePagina = intCantidadDePaginas
-        ActualizarDatos(intIndiceDePagina)
+        Await ActualizarDatos(intIndiceDePagina)
     End Sub
 
-    Private Sub FrmBusProd_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+    Private Async Sub FrmBusProd_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         EstablecerPropiedadesDataGridView()
-        ValidarCantidadEmpresas()
+        Await ValidarCantidadEmpresas()
         intIndiceDePagina = 1
-        ActualizarDatos(intIndiceDePagina)
+        Await ActualizarDatos(intIndiceDePagina)
     End Sub
 
     Private Sub FlexProducto_DoubleClick(ByVal sender As Object, ByVal e As EventArgs) Handles dgvListado.DoubleClick
@@ -104,10 +106,10 @@ Public Class FrmBusquedaProveedor
         End If
     End Sub
 
-    Private Sub btnFiltrar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnFiltrar.Click
-        ValidarCantidadEmpresas()
+    Private Async Sub btnFiltrar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnFiltrar.Click
+        Await ValidarCantidadEmpresas()
         intIndiceDePagina = 1
-        ActualizarDatos(intIndiceDePagina)
+        Await ActualizarDatos(intIndiceDePagina)
     End Sub
 #End Region
 End Class

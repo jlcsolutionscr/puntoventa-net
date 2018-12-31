@@ -492,6 +492,8 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                         throw new BusinessException("El usuario por consultar no existe");
                     else
                         usuario.ClaveSinEncriptar = Utilitario.DesencriptarDatos(key, usuario.Clave);
+                    foreach (RolePorUsuario roleUsuario in usuario.RolePorUsuario)
+                        roleUsuario.Usuario = null;
                     return usuario;
                 }
                 catch (BusinessException ex)
@@ -519,6 +521,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     listaUsuariosPorEmpresa.OrderBy(x => x.Usuario.IdUsuario);
                     foreach (EmpresaPorUsuario empresaUsuario in listaUsuariosPorEmpresa)
                     {
+                        empresaUsuario.Usuario.EmpresaPorUsuario = null;
                         listaUsuarios.Add(empresaUsuario.Usuario);
                     }
                     return listaUsuarios;
@@ -1166,7 +1169,11 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             {
                 try
                 {
-                    return dbContext.ProductoRepository.Include("Proveedor").FirstOrDefault(x => x.IdProducto == intIdProducto);
+                    Producto producto = dbContext.ProductoRepository.Include("Proveedor").FirstOrDefault(x => x.IdProducto == intIdProducto);
+                    producto.Proveedor.Producto = null;
+                    foreach (MovimientoProducto movimiento in producto.MovimientoProducto)
+                        movimiento.Producto = null;
+                    return producto;
                 }
                 catch (Exception ex)
                 {

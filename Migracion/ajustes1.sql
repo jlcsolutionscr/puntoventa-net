@@ -785,6 +785,8 @@ CREATE TABLE detalleordencompra (
 
 CREATE TABLE factura (
   IdEmpresa INTEGER NOT NULL,
+  IdSucursal INTEGER NOT NULL,
+  IdTerminal INTEGER NOT NULL,
   IdFactura INTEGER NOT NULL AUTO_INCREMENT,
   IdUsuario INTEGER NOT NULL,
   IdCliente INTEGER NOT NULL,

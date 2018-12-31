@@ -17,7 +17,7 @@ Public Class FrmAsientoContable
 #Region "Métodos"
     Private Sub IniciaDetalleAsiento()
         dtbDetalleAsiento = New DataTable()
-        dtbDetalleAsiento.Columns.Add("IDCUENTA", GetType(Int32))
+        dtbDetalleAsiento.Columns.Add("IDCUENTA", GetType(Integer))
         dtbDetalleAsiento.Columns.Add("NIVELES", GetType(String))
         dtbDetalleAsiento.Columns.Add("DESCRIPCION", GetType(String))
         dtbDetalleAsiento.Columns.Add("TIPOSALDO", GetType(String))

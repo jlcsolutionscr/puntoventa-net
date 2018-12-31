@@ -24,6 +24,7 @@ Public Class FrmMenuPrincipal
     Public intTerminal As Integer
     Public lstListaReportes As New List(Of String)
     Public strServicioPuntoventaURL As String
+    Public decTipoCambioDolar As Decimal
     Public datosConfig As DatosConfiguracion
 #End Region
 
@@ -401,7 +402,7 @@ Public Class FrmMenuPrincipal
 #End Region
 
 #Region "Eventos Formulario"
-    Private Sub FrmMenuPrincipal_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+    Private Async Sub FrmMenuPrincipal_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         picLoader.Top = Me.Height / 2 - (picLoader.Height / 2)
         picLoader.Left = Me.Width / 2 - (picLoader.Width / 2)
         Try
@@ -511,6 +512,7 @@ Public Class FrmMenuPrincipal
             .NullValue = "0",
             .Alignment = DataGridViewContentAlignment.MiddleCenter
         }
+        decTipoCambioDolar = Await ClienteWCF.ObtenerTipoCambioDolar()
         picLoader.Visible = False
         Dim formInicio As New FrmInicio()
         formInicio.ShowDialog()

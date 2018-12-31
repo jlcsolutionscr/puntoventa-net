@@ -19,9 +19,9 @@ Public Class FrmImprimirReciboCxC
 #Region "Métodos"
     Private Sub IniciaDetalleMovimiento()
         dtbDetalleMovimiento = New DataTable()
-        dtbDetalleMovimiento.Columns.Add("IDMOV", GetType(Int32))
+        dtbDetalleMovimiento.Columns.Add("IDMOV", GetType(Integer))
         dtbDetalleMovimiento.Columns.Add("USUARIO", GetType(String))
-        dtbDetalleMovimiento.Columns.Add("TIPO", GetType(Int32))
+        dtbDetalleMovimiento.Columns.Add("TIPO", GetType(Integer))
         dtbDetalleMovimiento.Columns.Add("DESCRIPCION", GetType(String))
         dtbDetalleMovimiento.Columns.Add("FECHA", GetType(Date))
         dtbDetalleMovimiento.Columns.Add("MONTO", GetType(Decimal))

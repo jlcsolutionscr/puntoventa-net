@@ -187,10 +187,6 @@ Public Class FrmCliente
         End If
     End Sub
 
-    Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As KeyPressEventArgs)
-        FrmMenuPrincipal.ValidaNumero(e, sender, True, 2, ".")
-    End Sub
-
     Private Async Sub CboProvincia_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboProvincia.SelectedIndexChanged
         If Not bolInit Then
             bolInit = True
@@ -213,6 +209,12 @@ Public Class FrmCliente
     Private Async Sub CboDistrito_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboDistrito.SelectedIndexChanged
         If Not bolInit Then
             cboBarrio.DataSource = Await ClienteWCF.ObtenerListaBarrios(cboProvincia.SelectedValue, cboCanton.SelectedValue, cboDistrito.SelectedValue)
+        End If
+    End Sub
+
+    Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As KeyPressEventArgs) Handles txtIdentificacion.KeyPress, txtIdentificacionExtranjero.KeyPress
+        If cboTipoIdentificacion.SelectedValue = 0 Or cboTipoIdentificacion.SelectedValue = 1 Then
+            FrmMenuPrincipal.ValidaNumero(e, sender, True, 2, ".")
         End If
     End Sub
 #End Region

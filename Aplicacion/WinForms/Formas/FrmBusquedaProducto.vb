@@ -1,3 +1,4 @@
+Imports System.Threading.Tasks
 Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
 
 Public Class FrmBusquedaProducto
@@ -64,40 +65,39 @@ Public Class FrmBusquedaProducto
         dgvListado.Columns.Add(dvcPrecioPorMayor)
     End Sub
 
-    Private Sub CargarComboBox()
+    Private Async Function CargarComboBox() As Task
         Try
-            'cboLinea.DataSource = servicioMantenimiento.ObtenerListaLineas(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
+            cboLinea.DataSource = Await ClienteWCF.ObtenerListaLineas(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
             cboLinea.ValueMember = "IdLinea"
             cboLinea.DisplayMember = "Descripcion"
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
-            Exit Sub
+            Exit Function
         End Try
         cboLinea.SelectedValue = 0
-    End Sub
+    End Function
 
-    Private Sub ActualizarDatos(ByVal intNumeroPagina As Integer)
+    Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
         Try
-            'dgvListado.DataSource = servicioMantenimiento.ObtenerListaProductos(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, bolIncluyeServicios, cboLinea.SelectedValue, TxtCodigo.Text, TxtDesc.Text)
+            dgvListado.DataSource = Await ClienteWCF.ObtenerListaProductos(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, bolIncluyeServicios, cboLinea.SelectedValue, TxtCodigo.Text, TxtDesc.Text)
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Exit Sub
+            Exit Function
         End Try
         dgvListado.Refresh()
-    End Sub
+    End Function
 
-    Private Sub ValidarCantidadEmpresas()
+    Private Async Function ValidarCantidadProductos() As Task
         Try
-            'intTotalEmpresas = servicioMantenimiento.ObtenerTotalListaProductos(FrmMenuPrincipal.empresaGlobal.IdEmpresa, bolIncluyeServicios, cboLinea.SelectedValue, TxtCodigo.Text, TxtDesc.Text)
+            intTotalEmpresas = Await ClienteWCF.ObtenerTotalListaProductos(FrmMenuPrincipal.empresaGlobal.IdEmpresa, bolIncluyeServicios, cboLinea.SelectedValue, TxtCodigo.Text, TxtDesc.Text)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
-            Exit Sub
+            Exit Function
         End Try
         intCantidadDePaginas = Math.Truncate(intTotalEmpresas / intFilasPorPagina) + IIf((intTotalEmpresas Mod intFilasPorPagina) = 0, 0, 1)
-
         If intCantidadDePaginas > 1 Then
             btnLast.Enabled = True
             btnNext.Enabled = True
@@ -109,38 +109,38 @@ Public Class FrmBusquedaProducto
             btnPrevious.Enabled = False
             btnFirst.Enabled = False
         End If
-    End Sub
+    End Function
 #End Region
 
 #Region "Eventos Controles"
-    Private Sub btnFirst_Click(sender As Object, e As EventArgs) Handles btnFirst.Click
+    Private Async Sub btnFirst_Click(sender As Object, e As EventArgs) Handles btnFirst.Click
         intIndiceDePagina = 1
-        ActualizarDatos(intIndiceDePagina)
+        Await ActualizarDatos(intIndiceDePagina)
     End Sub
 
-    Private Sub btnPrevious_Click(sender As Object, e As EventArgs) Handles btnPrevious.Click
+    Private Async Sub btnPrevious_Click(sender As Object, e As EventArgs) Handles btnPrevious.Click
         If intIndiceDePagina > 1 Then
             intIndiceDePagina -= 1
-            ActualizarDatos(intIndiceDePagina)
+            Await ActualizarDatos(intIndiceDePagina)
         End If
     End Sub
 
-    Private Sub btnNext_Click(sender As Object, e As EventArgs) Handles btnNext.Click
+    Private Async Sub btnNext_Click(sender As Object, e As EventArgs) Handles btnNext.Click
         If intCantidadDePaginas > intIndiceDePagina Then
             intIndiceDePagina += 1
-            ActualizarDatos(intIndiceDePagina)
+            Await ActualizarDatos(intIndiceDePagina)
         End If
     End Sub
 
-    Private Sub btnLast_Click(sender As Object, e As EventArgs) Handles btnLast.Click
+    Private Async Sub btnLast_Click(sender As Object, e As EventArgs) Handles btnLast.Click
         intIndiceDePagina = intCantidadDePaginas
-        ActualizarDatos(intIndiceDePagina)
+        Await ActualizarDatos(intIndiceDePagina)
     End Sub
 
-    Private Sub CmdFiltro_Click(sender As Object, e As EventArgs) Handles CmdFiltro.Click
-        ValidarCantidadEmpresas()
+    Private Async Sub CmdFiltro_Click(sender As Object, e As EventArgs) Handles CmdFiltro.Click
+        Await ValidarCantidadProductos()
         intIndiceDePagina = 1
-        ActualizarDatos(intIndiceDePagina)
+        Await ActualizarDatos(intIndiceDePagina)
     End Sub
 
     Private Sub FlexProducto_DoubleClick(ByVal sender As Object, ByVal e As EventArgs) Handles dgvListado.DoubleClick
@@ -150,12 +150,12 @@ Public Class FrmBusquedaProducto
         End If
     End Sub
 
-    Private Sub FrmBusProd_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        CargarComboBox()
+    Private Async Sub FrmBusProd_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+        Await CargarComboBox()
         EstablecerPropiedadesDataGridView()
-        ValidarCantidadEmpresas()
+        Await ValidarCantidadProductos()
         intIndiceDePagina = 1
-        ActualizarDatos(intIndiceDePagina)
+        Await ActualizarDatos(intIndiceDePagina)
     End Sub
 #End Region
 End Class

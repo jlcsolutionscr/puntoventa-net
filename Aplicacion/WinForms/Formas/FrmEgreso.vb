@@ -1,6 +1,7 @@
 Imports System.Collections.Generic
 Imports LeandroSoftware.Core.CommonTypes
 Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
+Imports System.Threading.Tasks
 
 Public Class FrmEgreso
 #Region "Variables"
@@ -18,19 +19,19 @@ Public Class FrmEgreso
     Private desglosePago As DesglosePagoEgreso
     Private cuentaEgreso As CuentaEgreso
     Private comprobante As ModuloImpresion.ClsEgreso
-    Private desglosePagoImpresion As ModuloImpresion.clsDesgloseFormaPago
+    Private desglosePagoImpresion As ModuloImpresion.ClsDesgloseFormaPago
     Private bolInit As Boolean = True
 #End Region
 
 #Region "Métodos"
     Private Sub IniciaDetallePago()
         dtbDesglosePago = New DataTable()
-        dtbDesglosePago.Columns.Add("IDFORMAPAGO", GetType(Int32))
+        dtbDesglosePago.Columns.Add("IDFORMAPAGO", GetType(Integer))
         dtbDesglosePago.Columns.Add("DESCFORMAPAGO", GetType(String))
-        dtbDesglosePago.Columns.Add("IDCUENTABANCO", GetType(Int32))
+        dtbDesglosePago.Columns.Add("IDCUENTABANCO", GetType(Integer))
         dtbDesglosePago.Columns.Add("DESCBANCO", GetType(String))
         dtbDesglosePago.Columns.Add("NROCHEQUE", GetType(String))
-        dtbDesglosePago.Columns.Add("IDTIPOMONEDA", GetType(Int32))
+        dtbDesglosePago.Columns.Add("IDTIPOMONEDA", GetType(Integer))
         dtbDesglosePago.Columns.Add("DESCTIPOMONEDA", GetType(String))
         dtbDesglosePago.Columns.Add("MONTOLOCAL", GetType(Decimal))
         dtbDesglosePago.Columns.Add("MONTOFORANEO", GetType(Decimal))
@@ -140,10 +141,10 @@ Public Class FrmEgreso
         objPkDesglose(1) = cboCuentaBanco.SelectedValue
         objPkDesglose(2) = cboTipoMoneda.SelectedValue
         dblMontoForaneo = CDbl(txtMonto.Text)
-        dblMontoLocal = CDbl(txtMonto.Text) * CDbl(txtTipoCambio.Text)
+        dblMontoLocal = txtMonto.Text * txtTipoCambio.Text
         If dblMontoLocal > dblSaldoPorPagar Then
             dblMontoLocal = dblSaldoPorPagar
-            dblMontoForaneo = dblMontoLocal / CDbl(txtTipoCambio.Text)
+            dblMontoForaneo = dblMontoLocal / txtTipoCambio.Text
         End If
         If dtbDesglosePago.Rows.Contains(objPkDesglose) Then
             intIndice = dtbDesglosePago.Rows.IndexOf(dtbDesglosePago.Rows.Find(objPkDesglose))
@@ -175,45 +176,48 @@ Public Class FrmEgreso
         txtSaldoPorPagar.Text = FormatNumber(dblSaldoPorPagar, 2)
     End Sub
 
-    Private Sub CargarCombos()
+    Private Async Function CargarCombos() As Task
         Try
             cboCuentaEgreso.ValueMember = "IdCuenta"
             cboCuentaEgreso.DisplayMember = "Descripcion"
-            'cboCuentaEgreso.DataSource = servicioEgresos.ObtenerListaCuentasEgreso(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
+            cboCuentaEgreso.DataSource = Await ClienteWCF.ObtenerListaCuentasEgreso(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
             cboFormaPago.ValueMember = "IdFormaPago"
             cboFormaPago.DisplayMember = "Descripcion"
-            'cboFormaPago.DataSource = servicioMantenimiento.ObtenerListaFormaPagoEgreso()
+            cboFormaPago.DataSource = Await ClienteWCF.ObtenerListaFormaPagoEgreso()
             cboCuentaBanco.ValueMember = "IdCuenta"
             cboCuentaBanco.DisplayMember = "Descripcion"
-            'cboCuentaBanco.DataSource = servicioAuxiliarBancario.ObtenerListaCuentasBanco(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
+            cboCuentaBanco.DataSource = Await ClienteWCF.ObtenerListaCuentasBanco(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
             cboTipoMoneda.ValueMember = "IdTipoMoneda"
             cboTipoMoneda.DisplayMember = "Descripcion"
-            'cboTipoMoneda.DataSource = servicioMantenimiento.ObtenerListaTipoMoneda()
+            cboTipoMoneda.DataSource = Await ClienteWCF.ObtenerListaTipoMoneda()
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Exit Sub
+            Exit Function
         End Try
         cboCuentaEgreso.SelectedValue = 0
-    End Sub
+    End Function
 #End Region
 
 #Region "Eventos Controles"
-    Private Sub FrmEgreso_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+    Private Async Sub FrmEgreso_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         txtFecha.Text = FrmMenuPrincipal.ObtenerFechaFormateada(Now())
-        CargarCombos()
+        Await CargarCombos()
         IniciaDetallePago()
         EstablecerPropiedadesDataGridView()
         grdDesglosePago.DataSource = dtbDesglosePago
-        bolInit = False
         cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
         cboTipoMoneda.SelectedValue = StaticValoresPorDefecto.MonedaDelSistema
+        bolInit = False
         Try
-            'tipoMoneda = servicioMantenimiento.ObtenerTipoMoneda(cboTipoMoneda.SelectedValue)
+            tipoMoneda = New TipoMoneda With {
+                .IdTipoMoneda = cboTipoMoneda.SelectedValue,
+                .Descripcion = cboTipoMoneda.Text
+            }
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
         End Try
-        txtTipoCambio.Text = 1 'servicioMantenimiento.ObtenerTipoCambioDolar()
+        txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmMenuPrincipal.decTipoCambioDolar.ToString())
         txtSaldoPorPagar.Text = FormatNumber(dblSaldoPorPagar, 2)
     End Sub
 
@@ -242,11 +246,11 @@ Public Class FrmEgreso
         txtMonto.Text = ""
     End Sub
 
-    Private Sub CmdAnular_Click(sender As Object, e As EventArgs) Handles CmdAnular.Click
+    Private Async Sub CmdAnular_Click(sender As Object, e As EventArgs) Handles CmdAnular.Click
         If txtIdEgreso.Text <> "" Then
             If MessageBox.Show("Desea anular este registro?", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
                 Try
-                    'servicioEgresos.AnularEgreso(txtIdEgreso.Text, FrmMenuPrincipal.usuarioGlobal.IdUsuario)
+                    Await ClienteWCF.AnularEgreso(txtIdEgreso.Text, FrmMenuPrincipal.usuarioGlobal.IdUsuario)
                 Catch ex As Exception
                     MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
@@ -257,20 +261,21 @@ Public Class FrmEgreso
         End If
     End Sub
 
-    Private Sub CmdBuscar_Click(sender As Object, e As EventArgs) Handles CmdBuscar.Click
+    Private Async Sub CmdBuscar_Click(sender As Object, e As EventArgs) Handles CmdBuscar.Click
         Dim formBusqueda As New FrmBusquedaEgreso()
         FrmMenuPrincipal.intBusqueda = 0
         formBusqueda.ShowDialog()
         If FrmMenuPrincipal.intBusqueda > 0 Then
             Try
-                'egreso = servicioEgresos.ObtenerEgreso(FrmMenuPrincipal.intBusqueda)
+                egreso = Await ClienteWCF.ObtenerEgreso(FrmMenuPrincipal.intBusqueda)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
             If egreso IsNot Nothing Then
+                bolInit = True
                 txtIdEgreso.Text = egreso.IdEgreso
-                txtFecha.Text = egreso.Fecha
+                txtFecha.Text = egreso.Fecha.ToString("dd/MM/yyyy")
                 cboCuentaEgreso.SelectedValue = egreso.IdCuenta
                 txtBeneficiario.Text = egreso.Beneficiario
                 txtDetalle.Text = egreso.Detalle
@@ -282,11 +287,12 @@ Public Class FrmEgreso
                 CmdImprimir.Enabled = True
                 CmdAnular.Enabled = FrmMenuPrincipal.usuarioGlobal.Modifica
                 CmdGuardar.Enabled = FrmMenuPrincipal.usuarioGlobal.Modifica
+                bolInit = False
             End If
         End If
     End Sub
 
-    Private Sub CmdGuardar_Click(sender As Object, e As EventArgs) Handles CmdGuardar.Click
+    Private Async Sub CmdGuardar_Click(sender As Object, e As EventArgs) Handles CmdGuardar.Click
         If cboCuentaEgreso.SelectedValue Is Nothing Then
             MessageBox.Show("Debe seleccionar el tipo de cuenta por aplicar al egreso.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
@@ -335,8 +341,7 @@ Public Class FrmEgreso
                 egreso.DesglosePagoEgreso.Add(desglosePago)
             Next
             Try
-                'egreso = servicioEgresos.AgregarEgreso(egreso)
-                txtIdEgreso.Text = egreso.IdEgreso
+                txtIdEgreso.Text = Await ClienteWCF.AgregarEgreso(egreso)
             Catch ex As Exception
                 txtIdEgreso.Text = ""
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -345,7 +350,7 @@ Public Class FrmEgreso
         Else
             egreso.Detalle = txtDetalle.Text
             Try
-                'servicioEgresos.ActualizarEgreso(egreso)
+                Await ClienteWCF.ActualizarEgreso(egreso)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
@@ -374,9 +379,9 @@ Public Class FrmEgreso
                     .strConcepto = txtDetalle.Text,
                     .strMonto = txtTotal.Text
                 }
-                arrDesglosePago = New List(Of ModuloImpresion.clsDesgloseFormaPago)
+                arrDesglosePago = New List(Of ModuloImpresion.ClsDesgloseFormaPago)
                 For I = 0 To dtbDesglosePago.Rows.Count - 1
-                    desglosePagoImpresion = New ModuloImpresion.clsDesgloseFormaPago With {
+                    desglosePagoImpresion = New ModuloImpresion.ClsDesgloseFormaPago With {
                         .strDescripcion = dtbDesglosePago.Rows(I).Item(1) & IIf(dtbDesglosePago.Rows(I).Item(4).Equals(String.Empty), String.Empty, " - " & dtbDesglosePago.Rows(I).Item(4)),
                         .strMonto = FormatNumber(dtbDesglosePago.Rows(I).Item(7)),
                         .strNroDoc = dtbDesglosePago.Rows(I).Item(4)
@@ -433,12 +438,15 @@ Public Class FrmEgreso
     Private Sub cboTipoMoneda_SelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs) Handles cboTipoMoneda.SelectedValueChanged
         If Not bolInit And Not cboTipoMoneda.SelectedValue Is Nothing Then
             Try
-                'tipoMoneda = servicioMantenimiento.ObtenerTipoMoneda(cboTipoMoneda.SelectedValue)
+                tipoMoneda = New TipoMoneda With {
+                    .IdTipoMoneda = cboTipoMoneda.SelectedValue,
+                    .Descripcion = cboTipoMoneda.Text
+                }
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
-            txtTipoCambio.Text = 1 'servicioMantenimiento.ObtenerTipoCambioDolar()
+            txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmMenuPrincipal.decTipoCambioDolar.ToString())
         End If
     End Sub
 

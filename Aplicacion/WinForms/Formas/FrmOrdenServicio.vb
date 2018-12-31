@@ -27,13 +27,13 @@ Public Class FrmOrdenServicio
 #Region "Métodos"
     Private Sub IniciaDetalleOrdenServicio()
         dtbDetalleOrdenServicio = New DataTable()
-        dtbDetalleOrdenServicio.Columns.Add("IDPRODUCTO", GetType(Int32))
+        dtbDetalleOrdenServicio.Columns.Add("IDPRODUCTO", GetType(Integer))
         dtbDetalleOrdenServicio.Columns.Add("CODIGO", GetType(String))
         dtbDetalleOrdenServicio.Columns.Add("DESCRIPCION", GetType(String))
         dtbDetalleOrdenServicio.Columns.Add("CANTIDAD", GetType(Decimal))
         dtbDetalleOrdenServicio.Columns.Add("PRECIO", GetType(Decimal))
         dtbDetalleOrdenServicio.Columns.Add("TOTAL", GetType(Decimal))
-        dtbDetalleOrdenServicio.Columns.Add("EXCENTO", GetType(Int32))
+        dtbDetalleOrdenServicio.Columns.Add("EXCENTO", GetType(Integer))
         dtbDetalleOrdenServicio.Columns.Add("COSTOINSTALACION", GetType(Decimal))
         dtbDetalleOrdenServicio.PrimaryKey = {dtbDetalleOrdenServicio.Columns(0)}
     End Sub

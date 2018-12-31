@@ -27,6 +27,9 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Net;
 using System.Web.Script.Serialization;
+using System.Web.Configuration;
+using Unity.Lifetime;
+using Unity.Injection;
 
 namespace LeandroSoftware.AccesoDatos.Servicios
 {
@@ -34,6 +37,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
     {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private static HttpClient httpClient = new HttpClient();
+        private static IUnityContainer unityContainer = new UnityContainer();
 
         private static void ValidarToken(IDbContext dbContext, Empresa empresaLocal, string strServicioTokenURL, string strClientId)
         {
@@ -138,12 +142,12 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public static void ObtenerTipoCambioVenta(string strServicioURL, string strSoapOperation, DateTime fechaConsulta, IUnityContainer localContainer)
+        public static decimal ObtenerTipoCambioVenta(string strServicioURL, string strSoapOperation, DateTime fechaConsulta, IUnityContainer unityContainer)
         {
             try
             {
                 TipoDeCambioDolar tipoDeCambio = null;
-                using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+                using (IDbContext dbContext = unityContainer.Resolve<IDbContext>())
                 {
                     string criteria = fechaConsulta.ToString("dd/MM/yyyy");
                     tipoDeCambio = dbContext.TipoDeCambioDolarRepository.Find(criteria);
@@ -159,7 +163,6 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                             new KeyValuePair<string, string>("tnSubNiveles", "N")
                         });
                         HttpResponseMessage httpResponse = httpClient.PostAsync(strServicioURL + "/ObtenerIndicadoresEconomicos", formContent).Result;
-
                         if (httpResponse.StatusCode == HttpStatusCode.OK)
                         {
                             XmlDocument xmlDoc = new XmlDocument();
@@ -180,6 +183,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                                     };
                                     dbContext.TipoDeCambioDolarRepository.Add(tipoDeCambio);
                                     dbContext.Commit();
+                                    return decTipoDeCambio;
                                 }
                                 catch (Exception ex)
                                 {
@@ -192,6 +196,9 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                             string responseContent = httpResponse.Content.ReadAsStringAsync().Result;
                             throw new Exception(responseContent);
                         }
+                    } else
+                    {
+                        return tipoDeCambio.ValorTipoCambio;
                     }
                 }
             }
@@ -202,7 +209,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public static DocumentoElectronico GeneraFacturaElectronica(Factura factura, Empresa empresa, Cliente cliente, IDbContext dbContext, int intSucursal, int intTerminal, decimal decTipoCambioDolar)
+        public static DocumentoElectronico GeneraFacturaElectronica(Factura factura, Empresa empresa, Cliente cliente, IDbContext dbContext, decimal decTipoCambioDolar)
         {
             try
             {
@@ -440,7 +447,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     msDatosXML.Position = 0;
                     documentoXml.Load(msDatosXML);
                 }
-                return RegistrarDocumentoElectronico(empresa, documentoXml, dbContext, intSucursal, intTerminal, TipoDocumento.FacturaElectronica, strCorreoNotificacion);
+                return RegistrarDocumentoElectronico(empresa, documentoXml, dbContext, factura.IdSucursal, factura.IdTerminal, TipoDocumento.FacturaElectronica, strCorreoNotificacion);
             }
             catch (Exception ex)
             {
@@ -448,7 +455,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public static DocumentoElectronico GenerarNotaDeCreditoElectronica(Factura factura, Empresa empresa, Cliente cliente, IDbContext dbContext, int intSucursal, int intTerminal, decimal decTipoCambioDolar)
+        public static DocumentoElectronico GenerarNotaDeCreditoElectronica(Factura factura, Empresa empresa, Cliente cliente, IDbContext dbContext, decimal decTipoCambioDolar)
         {
             try
             {
@@ -694,7 +701,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     msDatosXML.Position = 0;
                     documentoXml.Load(msDatosXML);
                 }
-                return RegistrarDocumentoElectronico(empresa, documentoXml, dbContext, intSucursal, intTerminal, TipoDocumento.NotaCreditoElectronica, strCorreoNotificacion);
+                return RegistrarDocumentoElectronico(empresa, documentoXml, dbContext, factura.IdSucursal, factura.IdTerminal, TipoDocumento.NotaCreditoElectronica, strCorreoNotificacion);
             }
             catch (Exception ex)
             {
@@ -981,12 +988,15 @@ namespace LeandroSoftware.AccesoDatos.Servicios
 
         
 
-        public static async Task EnviarDocumentoElectronico(Empresa empresaLocal, DocumentoElectronico documento, IUnityContainer localContainer, DatosConfiguracion datos)
+        public static async Task EnviarDocumentoElectronico(Empresa empresaLocal, DocumentoElectronico documento, DatosConfiguracion datos)
         {
             
             try
             {
-                using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+                string connString = WebConfigurationManager.ConnectionStrings[1].ConnectionString;
+                unityContainer.RegisterInstance("conectionString", connString, new ContainerControlledLifetimeManager());
+                unityContainer.RegisterType<IDbContext, LeandroContext>(new InjectionConstructor(new ResolvedParameter<string>("conectionString")));
+                using (IDbContext dbContext = unityContainer.Resolve<IDbContext>())
                 {
                     XmlDocument documentoXml = new XmlDocument();
                     using (MemoryStream ms = new MemoryStream(documento.DatosDocumento))
@@ -1000,6 +1010,9 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     {
                         try
                         {
+                            documento.EstadoEnvio = "enviado";
+                            dbContext.NotificarModificacion(documento);
+                            dbContext.Commit();
                             string JsonObject = "{\"clave\": \"" + documento.ClaveNumerica + "\",\"fecha\": \"" + documento.Fecha.ToString("yyyy-MM-ddTHH:mm:ssss") + "\"," +
                                 "\"emisor\": {\"tipoIdentificacion\": \"" + documento.TipoIdentificacionEmisor + "\"," +
                                 "\"numeroIdentificacion\": \"" + documento.IdentificacionEmisor + "\"},";
@@ -1019,20 +1032,39 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                             string responseContent = await httpResponse.Content.ReadAsStringAsync();
                             if (httpResponse.StatusCode != HttpStatusCode.Accepted)
                             {
-                                string strMensajeError = httpResponse.ReasonPhrase;
-                                throw new Exception(strMensajeError);
+                                if (httpResponse.Headers.Where(x => x.Key == "X-Error-Cause").FirstOrDefault().Value != null)
+                                {
+                                    IList<string> headers = httpResponse.Headers.Where(x => x.Key == "X-Error-Cause").FirstOrDefault().Value.ToList();
+                                    if (headers.Count > 0)
+                                    {
+                                        documento.EstadoEnvio = "rechazado";
+                                        documento.ErrorEnvio = headers[0];
+                                    }
+                                }
+                                else
+                                {
+                                    documento.EstadoEnvio = "registrado";
+                                    documento.ErrorEnvio = httpResponse.ReasonPhrase;
+                                }
+                                dbContext.NotificarModificacion(documento);
+                                dbContext.Commit();
                             }
                         }
                         catch (Exception ex)
                         {
                             string strMensajeError = ex.Message;
                             if (ex.Message.Length > 500) strMensajeError = ex.Message.Substring(0, 500);
-                            throw new Exception(strMensajeError);
+                            documento.EstadoEnvio = "registrado";
+                            documento.ErrorEnvio = strMensajeError;
+                            dbContext.NotificarModificacion(documento);
+                            dbContext.Commit();
                         }
                     }
                     else
                     {
-                        throw new Exception("No se logro obtener un token válido para la empresa correspondiente al documento electrónico");
+                        documento.ErrorEnvio = "No se logro obtener un token válido para la empresa correspondiente al documento electrónico.";
+                        dbContext.NotificarModificacion(documento);
+                        dbContext.Commit();
                     }
                 }
             }
@@ -1043,16 +1075,16 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public static async Task<DocumentoElectronico> ConsultarDocumentoElectronico(Empresa empresaLocal, DocumentoElectronico documento, IUnityContainer localContainer, DatosConfiguracion datos)
+        public static async Task<DocumentoElectronico> ConsultarDocumentoElectronico(Empresa empresaLocal, DocumentoElectronico documento, IDbContext dbContext, DatosConfiguracion datos)
         {
 
             try
             {
-                using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+                if (documento.EstadoEnvio == "enviado")
                 {
-                    if (documento.EstadoEnvio == "enviado")
+                    ValidarToken(dbContext, empresaLocal, datos.ServicioTokenURL, datos.ClientId);
+                    if (empresaLocal.AccessToken != null)
                     {
-                        ValidarToken(dbContext, empresaLocal, datos.ServicioTokenURL, datos.ClientId);
                         httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", empresaLocal.AccessToken);
                         HttpResponseMessage httpResponse = await httpClient.GetAsync(datos.ComprobantesElectronicosURL + "/recepcion/" + documento.ClaveNumerica);
                         if (httpResponse.StatusCode == HttpStatusCode.OK)
@@ -1073,13 +1105,20 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                             {
                                 IList<string> headers = httpResponse.Headers.Where(x => x.Key == "X-Error-Cause").FirstOrDefault().Value.ToList();
                                 if (headers.Count > 0)
+                                {
+                                    documento.EstadoEnvio = "rechazado";
                                     documento.ErrorEnvio = headers[0];
+                                }
+
                             }
-                            documento.EstadoEnvio = "registrado";
                         }
                     }
-                    return documento;
+                    else
+                    {
+                        throw new Exception("No se logro obtener un token válido para la empresa correspondiente al documento electrónico.");
+                    }
                 }
+                return documento;
             }
             catch (Exception ex)
             {

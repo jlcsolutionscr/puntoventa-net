@@ -69,7 +69,7 @@
         .intIdUsuario = dgvDatos.CurrentRow.Cells(0).Value
         }
         formMant.ShowDialog()
-        dgvDatos.Refresh()
+        ActualizarDatos()
     End Sub
 
     Private Async Sub btnEliminar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEliminar.Click

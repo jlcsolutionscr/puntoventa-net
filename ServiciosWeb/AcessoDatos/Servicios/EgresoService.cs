@@ -26,7 +26,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
         IEnumerable<Egreso> ObtenerListaEgresos(int intIdEmpresa, int numPagina, int cantRec, int intIdEgreso = 0, string strBeneficiario = "", string strDetalle = "");
     }
 
-    class EgresoService : IEgresoService
+    public class EgresoService : IEgresoService
     {
         private static IUnityContainer localContainer;
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -382,7 +382,10 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             {
                 try
                 {
-                    return dbContext.EgresoRepository.Include("DesglosePagoEgreso.FormaPago").Include("DesglosePagoEgreso.TipoMoneda").Include("DesglosePagoEgreso.CuentaBanco").FirstOrDefault(x => x.IdEgreso == intIdEgreso);
+                    Egreso egreso = dbContext.EgresoRepository.Include("DesglosePagoEgreso.FormaPago").Include("DesglosePagoEgreso.TipoMoneda").Include("DesglosePagoEgreso.CuentaBanco").FirstOrDefault(x => x.IdEgreso == intIdEgreso);
+                    foreach (DesglosePagoEgreso desglosePago in egreso.DesglosePagoEgreso)
+                        desglosePago.Egreso = null;
+                    return egreso;
                 }
                 catch (Exception ex)
                 {
