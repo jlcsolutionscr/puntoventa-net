@@ -3,8 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LeandroSoftware.AccesoDatos.Dominio.Entidades
 {
-    [Table("empresaporusuario")]
-    public partial class EmpresaPorUsuario
+    [Table("usuarioporempresa")]
+    public partial class UsuarioPorEmpresa
     {
         [Key, Column(Order = 0), ForeignKey("Empresa")]
         public int IdEmpresa { get; set; }

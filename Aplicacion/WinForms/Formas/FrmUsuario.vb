@@ -116,22 +116,24 @@ Public Class FrmUsuario
         bolInit = False
     End Sub
 
-    Private Sub btnCancelar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnCancelar.Click
+    Private Sub BtnCancelar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnCancelar.Click
         Close()
     End Sub
 
-    Private Async Sub btnGuardar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnGuardar.Click
+    Private Async Sub BtnGuardar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnGuardar.Click
         Dim strCampo As String = ""
         If Not ValidarCampos(strCampo) Then
             MessageBox.Show("El campo " & strCampo & " es requerido", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         End If
         If datos.IdUsuario = 0 Then
-            Dim empresaUsuario As EmpresaPorUsuario = New EmpresaPorUsuario()
-            empresaUsuario.IdEmpresa = FrmMenuPrincipal.empresaGlobal.IdEmpresa
-            Dim detalleEmpresa As List(Of EmpresaPorUsuario) = New List(Of EmpresaPorUsuario)()
-            detalleEmpresa.Add(empresaUsuario)
-            datos.EmpresaPorUsuario = detalleEmpresa
+            Dim empresaUsuario As UsuarioPorEmpresa = New UsuarioPorEmpresa With {
+                .IdEmpresa = FrmMenuPrincipal.empresaGlobal.IdEmpresa
+            }
+            Dim detalleEmpresa As List(Of UsuarioPorEmpresa) = New List(Of UsuarioPorEmpresa) From {
+                empresaUsuario
+            }
+            datos.UsuarioPorEmpresa = detalleEmpresa
         End If
         datos.CodigoUsuario = txtUsuario.Text
         datos.ClaveSinEncriptar = txtPassword.Text
@@ -162,7 +164,7 @@ Public Class FrmUsuario
         Close()
     End Sub
 
-    Private Sub btnInsertarRole_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnInsertarRole.Click
+    Private Sub BtnInsertarRole_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnInsertarRole.Click
         If cboRole.SelectedValue IsNot Nothing Then
             CargarLineaDetalleRole(cboRole.SelectedValue, cboRole.Text)
         Else
@@ -170,7 +172,7 @@ Public Class FrmUsuario
         End If
     End Sub
 
-    Private Sub btnEliminarRole_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEliminarRole.Click
+    Private Sub BtnEliminarRole_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEliminarRole.Click
         If dtbRolePorUsuario.Rows.Count > 0 Then
             dtbRolePorUsuario.Rows.Remove(dtbRolePorUsuario.Rows.Find(dgvRoleXUsuario.CurrentRow.Cells(0).Value))
         End If

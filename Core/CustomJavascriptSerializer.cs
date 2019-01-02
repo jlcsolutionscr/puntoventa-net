@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LeandroSoftware.AccesoDatos.Dominio.Entidades;
+using System;
 using System.Collections.Generic;
 using System.Web.Script.Serialization;
 

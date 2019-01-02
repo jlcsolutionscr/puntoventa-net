@@ -1,4 +1,5 @@
-﻿Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
+﻿Imports System.Threading.Tasks
+Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
 
 Public Class FrmEstadoDocumentoElectronico
 #Region "Variables"

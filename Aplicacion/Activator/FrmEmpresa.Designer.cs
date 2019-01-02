@@ -1034,6 +1034,7 @@
             this.btnCargarLogo.TabStop = false;
             this.btnCargarLogo.Text = "Cargar logo";
             this.btnCargarLogo.UseVisualStyleBackColor = false;
+            this.btnCargarLogo.Click += new System.EventHandler(this.BtnCargarLogo_Click);
             // 
             // picLogo
             // 

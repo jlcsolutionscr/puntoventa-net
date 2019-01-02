@@ -11,6 +11,7 @@ using System.Data;
 using System.Linq;
 using LeandroSoftware.Core;
 using System.Threading.Tasks;
+using LeandroSoftware.PuntoVenta.Core;
 
 namespace LeandroSoftware.Activator
 {
@@ -24,7 +25,7 @@ namespace LeandroSoftware.Activator
         private bool bolLogoModificado = false;
         private bool bolCertificadoModificado = false;
         private string strRutaCertificado;
-        private JavaScriptSerializer serializer = new JavaScriptSerializer();
+        private CustomJavascriptSerializer serializer = new CustomJavascriptSerializer();
         private static HttpClient client = new HttpClient();
         public string strServicioPuntoventaURL;
         public bool bolEditing;

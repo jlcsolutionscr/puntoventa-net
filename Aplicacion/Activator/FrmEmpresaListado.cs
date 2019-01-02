@@ -1,6 +1,7 @@
 ﻿using LeandroSoftware.AccesoDatos.Dominio.Entidades;
 using LeandroSoftware.AccesoDatos.TiposDatos;
 using LeandroSoftware.Core;
+using LeandroSoftware.PuntoVenta.Core;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -17,6 +18,7 @@ namespace LeandroSoftware.Activator
         private string strServicioPuntoventaURL;
         private static readonly System.Collections.Specialized.NameValueCollection appSettings = ConfigurationManager.AppSettings;
         private static HttpClient client = new HttpClient();
+        private static CustomJavascriptSerializer serializer = new CustomJavascriptSerializer();
         private IList<Empresa> dsDataSet = Array.Empty<Empresa>();
 
         public FrmEmpresaListado()
@@ -33,10 +35,10 @@ namespace LeandroSoftware.Activator
             };
             try
             {
-                string strPeticion = new JavaScriptSerializer().Serialize(peticion);
+                string strPeticion = serializer.Serialize(peticion);
                 string strRespuesta = await Utilitario.EjecutarConsulta(strPeticion, appSettings["ServicioPuntoventaURL"].ToString(), "");
-                strRespuesta = new JavaScriptSerializer().Deserialize<string>(strRespuesta);
-                dsDataSet = new JavaScriptSerializer().Deserialize<List<Empresa>>(strRespuesta); 
+                strRespuesta = serializer.Deserialize<string>(strRespuesta);
+                dsDataSet = serializer.Deserialize<List<Empresa>>(strRespuesta); 
                 cboEmpresa.DataSource = dsDataSet;
             }
             catch (Exception ex)

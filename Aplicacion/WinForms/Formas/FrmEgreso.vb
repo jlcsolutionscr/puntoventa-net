@@ -173,6 +173,7 @@ Public Class FrmEgreso
             dblTotalPago = dblTotalPago + CDbl(dtbDesglosePago.Rows(I).Item(7))
         Next
         dblSaldoPorPagar = dblTotal - dblTotalPago
+        txtMonto.Text = FormatNumber(dblSaldoPorPagar, 2)
         txtSaldoPorPagar.Text = FormatNumber(dblSaldoPorPagar, 2)
     End Sub
 
@@ -417,7 +418,7 @@ Public Class FrmEgreso
         End If
     End Sub
 
-    Private Sub cboFormaPago_SelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs) Handles cboFormaPago.SelectedValueChanged
+    Private Sub CboFormaPago_SelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs) Handles cboFormaPago.SelectedValueChanged
         If Not bolInit And Not cboFormaPago.SelectedValue Is Nothing Then
             cboCuentaBanco.SelectedIndex = 0
             cboTipoMoneda.SelectedValue = StaticValoresPorDefecto.MonedaDelSistema
@@ -435,7 +436,7 @@ Public Class FrmEgreso
         End If
     End Sub
 
-    Private Sub cboTipoMoneda_SelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs) Handles cboTipoMoneda.SelectedValueChanged
+    Private Sub CboTipoMoneda_SelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs) Handles cboTipoMoneda.SelectedValueChanged
         If Not bolInit And Not cboTipoMoneda.SelectedValue Is Nothing Then
             Try
                 tipoMoneda = New TipoMoneda With {
@@ -450,7 +451,7 @@ Public Class FrmEgreso
         End If
     End Sub
 
-    Private Sub btnInsertarPago_Click(sender As Object, e As EventArgs) Handles btnInsertarPago.Click
+    Private Sub BtnInsertarPago_Click(sender As Object, e As EventArgs) Handles btnInsertarPago.Click
         If cboFormaPago.SelectedValue > 0 And cboTipoMoneda.SelectedValue > 0 And cboCuentaBanco.SelectedValue > 0 And dblTotal > 0 And txtMonto.Text <> "" Then
             If dblSaldoPorPagar = 0 Then
                 MessageBox.Show("El monto de por cancelar ya se encuentra cubierto. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -471,7 +472,7 @@ Public Class FrmEgreso
         End If
     End Sub
 
-    Private Sub btnEliminarPago_Click(sender As Object, e As EventArgs) Handles btnEliminarPago.Click
+    Private Sub BtnEliminarPago_Click(sender As Object, e As EventArgs) Handles btnEliminarPago.Click
         Dim objPkDesglose(2) As Object
         If dtbDesglosePago.Rows.Count > 0 Then
             objPkDesglose(0) = grdDesglosePago.CurrentRow.Cells(0).Value
@@ -484,11 +485,11 @@ Public Class FrmEgreso
         End If
     End Sub
 
-    Private Sub txtMonto_Validated(sender As Object, e As EventArgs) Handles txtMonto.Validated
+    Private Sub TxtMonto_Validated(sender As Object, e As EventArgs) Handles txtMonto.Validated
         If txtMonto.Text <> "" Then txtMonto.Text = FormatNumber(txtMonto.Text, 2)
     End Sub
 
-    Private Sub txtTotal_Validated(ByVal sender As Object, ByVal e As EventArgs) Handles txtTotal.Validated
+    Private Sub TxtTotal_Validated(ByVal sender As Object, ByVal e As EventArgs) Handles txtTotal.Validated
         txtTotal.Text = FormatNumber(IIf(txtTotal.Text = "", 0, txtTotal.Text), 2)
         dblTotal = CDbl(txtTotal.Text)
         dblSaldoPorPagar = dblTotal - dblTotalPago

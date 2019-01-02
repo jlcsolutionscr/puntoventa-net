@@ -25,7 +25,7 @@ CREATE TABLE usuario (
   PRIMARY KEY(IdUsuario)
 );
 
-CREATE TABLE empresaporusuario (
+CREATE TABLE usuarioporempresa (
   IdEmpresa INTEGER NOT NULL,
   IdUsuario INTEGER NOT NULL,
   PRIMARY KEY(IdUsuario, IdEmpresa),

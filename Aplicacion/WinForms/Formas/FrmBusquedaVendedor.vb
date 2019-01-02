@@ -19,9 +19,9 @@ Public Class FrmBusquedaVendedor
         dgvListado.Columns.Add(dvcNombre)
     End Sub
 
-    Private Sub ActualizarDatos()
+    Private Async Sub ActualizarDatos()
         Try
-            'dgvListado.DataSource = servicioMantenimiento.ObtenerListaVendedores(FrmMenuPrincipal.empresaGlobal.IdEmpresa, txtNombre.Text)
+            dgvListado.DataSource = Await ClienteWCF.ObtenerListaVendedores(FrmMenuPrincipal.empresaGlobal.IdEmpresa, txtNombre.Text)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -32,14 +32,7 @@ Public Class FrmBusquedaVendedor
 #End Region
 
 #Region "Eventos Controles"
-    Private Sub FrmBusProd_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        Try
-            'servicioMantenimiento = FrmMenuPrincipal.unityContainer.Resolve(Of IMantenimientoService)()
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-            Exit Sub
-        End Try
+    Private Sub FrmBusVendedor_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         EstablecerPropiedadesDataGridView()
         ActualizarDatos()
     End Sub

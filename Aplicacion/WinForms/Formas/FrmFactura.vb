@@ -1272,6 +1272,7 @@ Public Class FrmFactura
                 Try
                     Await CargarListaCuentaBanco()
                 Catch ex As Exception
+                    cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
                     MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
                 End Try

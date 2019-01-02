@@ -1106,10 +1106,8 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                                 IList<string> headers = httpResponse.Headers.Where(x => x.Key == "X-Error-Cause").FirstOrDefault().Value.ToList();
                                 if (headers.Count > 0)
                                 {
-                                    documento.EstadoEnvio = "rechazado";
                                     documento.ErrorEnvio = headers[0];
                                 }
-
                             }
                         }
                     }

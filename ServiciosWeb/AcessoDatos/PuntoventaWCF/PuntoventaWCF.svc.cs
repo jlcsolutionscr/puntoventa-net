@@ -15,8 +15,6 @@ using Unity;
 using Unity.Injection;
 using Unity.Lifetime;
 using LeandroSoftware.Core.CommonTypes;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using LeandroSoftware.PuntoVenta.Core;
 
 namespace LeandroSoftware.AccesoDatos.ServicioWCF
@@ -77,7 +75,7 @@ namespace LeandroSoftware.AccesoDatos.ServicioWCF
         {
             try
             {
-                JavaScriptSerializer serializer = new JavaScriptSerializer();
+                JavaScriptSerializer serializer = new CustomJavascriptSerializer();
                 JObject parametrosJO;
                 int intIdEmpresa;
                 int intIdDocumento;
@@ -215,6 +213,11 @@ namespace LeandroSoftware.AccesoDatos.ServicioWCF
                         intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                         servicioFacturacion.ProcesarDocumentosElectronicosPendientes(intIdEmpresa, configuracion);
                         break;
+                    case "EnviarDocumentoElectronicoPendiente":
+                        parametrosJO = JObject.Parse(datos.DatosPeticion);
+                        intIdDocumento = int.Parse(parametrosJO.Property("IdDocumento").Value.ToString());
+                        servicioFacturacion.EnviarDocumentoElectronicoPendiente(intIdDocumento, configuracion);
+                        break;
                     case "EnviarNotificacionDocumentoElectronico":
                         parametrosJO = JObject.Parse(datos.DatosPeticion);
                         intIdDocumento = int.Parse(parametrosJO.Property("IdDocumento").Value.ToString());
@@ -224,7 +227,6 @@ namespace LeandroSoftware.AccesoDatos.ServicioWCF
             }
             catch (Exception ex)
             {
-                log.Error("Error al procesar petición sin respuesta: " + datos.NombreMetodo, ex);
                 throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
             }
         }
@@ -736,21 +738,13 @@ namespace LeandroSoftware.AccesoDatos.ServicioWCF
             }
             catch (Exception ex)
             {
-                log.Error("Error al procesar petición con respuesta: " + datos.NombreMetodo, ex);
                 throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
             }
         }
 
         public void RecibirRespuestaHacienda(RespuestaHaciendaDTO mensaje)
         {
-            try
-            {
-                servicioFacturacion.ProcesarRespuestaHacienda(mensaje, servicioEnvioCorreo, configuracion.CorreoNotificacionErrores);
-            }
-            catch (Exception ex)
-            {
-                log.Error("Error al recibir mensaje de respuesta de Hacienda: ", ex);
-            }
+            servicioFacturacion.ProcesarRespuestaHacienda(mensaje, servicioEnvioCorreo, configuracion.CorreoNotificacionErrores);
         }
 
         public void Dispose()

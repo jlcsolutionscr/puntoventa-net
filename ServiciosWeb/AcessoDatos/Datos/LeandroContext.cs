@@ -52,7 +52,6 @@ namespace LeandroSoftware.AccesoDatos.Datos
         DbSet<Distrito> DistritoRepository { get; set; }
         DbSet<DocumentoElectronico> DocumentoElectronicoRepository { get; set; }
         DbSet<Egreso> EgresoRepository { get; set; }
-        DbSet<EmpresaPorUsuario> EmpresaPorUsuarioRepository { get; set; }
         DbSet<FormaPago> FormaPagoRepository { get; set; }
         DbSet<Ingreso> IngresoRepository { get; set; }
         DbSet<Linea> LineaRepository { get; set; }
@@ -87,6 +86,7 @@ namespace LeandroSoftware.AccesoDatos.Datos
         DbSet<TipoUnidad> TipoUnidadRepository { get; set; }
         DbSet<Traslado> TrasladoRepository { get; set; }
         DbSet<Usuario> UsuarioRepository { get; set; }
+        DbSet<UsuarioPorEmpresa> UsuarioPorEmpresaRepository { get; set; }
         DbSet<Vendedor> VendedorRepository { get; set; }
 
         void NotificarModificacion<TEntity>(TEntity entidad) where TEntity : class;
@@ -156,7 +156,6 @@ namespace LeandroSoftware.AccesoDatos.Datos
         public DbSet<Distrito> DistritoRepository { get; set; }
         public DbSet<DocumentoElectronico> DocumentoElectronicoRepository { get; set; }
         public DbSet<Egreso> EgresoRepository { get; set; }
-        public DbSet<EmpresaPorUsuario> EmpresaPorUsuarioRepository { get; set; }
         public DbSet<FormaPago> FormaPagoRepository { get; set; }
         public DbSet<Ingreso> IngresoRepository { get; set; }
         public DbSet<Linea> LineaRepository { get; set; }
@@ -190,8 +189,9 @@ namespace LeandroSoftware.AccesoDatos.Datos
         public DbSet<TipoProducto> TipoProductoRepository { get; set; }
         public DbSet<TipoUnidad> TipoUnidadRepository { get; set; }
         public DbSet<Traslado> TrasladoRepository { get; set; }
-        public DbSet<Vendedor> VendedorRepository { get; set; }
         public DbSet<Usuario> UsuarioRepository { get; set; }
+        public DbSet<UsuarioPorEmpresa> UsuarioPorEmpresaRepository { get; set; }
+        public DbSet<Vendedor> VendedorRepository { get; set; }
 
         public void NotificarModificacion<TEntity>(TEntity entidad) where TEntity : class
         {

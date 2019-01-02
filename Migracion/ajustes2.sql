@@ -27,9 +27,8 @@ INSERT INTO `tipounidad` (`IdTipoUnidad`, `Descripcion`) VALUES (1,'UND'),(2,'SP
 INSERT INTO `usuario` (IdUsuario, CodigoUsuario, Clave, Modifica, AutorizaCredito)
 VALUES(1, 'JASLOP', 'FM3hxI7oNJztOpmPDtatI+meEpEUZkBUj+oT+M4UWQ39VKg0j0tTRVUKdPXN8eGJE7M5a43wkW0dgnJoesZY71vbmHM+4cqKGfFSHqKv7qrc1BoW0ZFIynlhdKpSiG+Ji2BmnWgr8OQFbpxluDW9QirgAPoEf8RSJvqOTM5myzHW/zIDMjmnaj6ea9vep6yvX4/UQ2GlJekRetq6bBluGKxfyPho3iSuQxPNNfOe2jN/FNgkojvUhZEEXFTITjnR4xWrIBdcyFbkQGgZnskAq0Pf6NJZvzbkDJiSyZyncwFVThKfTniGTleedBNC0JHt1WbXHhcsmChSSQ73UtKTLA==', true, true);
 
-INSERT INTO roleporusuario VALUES(1,1),(1,2),(1,5),(1,50),(1,52),(1,53),(1,55),(1,57),(1,59),(1,61),(1,101),(1,109),(1,125),(1,126),(1,127);
+INSERT INTO roleporusuario VALUES(1,1),(1,2),(1,5),(1,50),(1,52),(1,53),(1,54),(1,55),(1,57),(1,59),(1,61),(1,101),(1,109),(1,125),(1,126),(1,127);
 
-INSERT INTO `usuarioporempresa` VALUES(1,1),(1,2),(1,3),(1,4),(1,5),(1,6),(1,7),(1,8),(1,9);
+INSERT INTO `usuarioporempresa` VALUES(1,1),(2,1),(3,1),(4,1),(5,1),(6,1),(7,1),(8,1),(9,1);
 
-INSERT INTO `cliente` (IdEmpresa, IdCliente, IdTipoIdentificacion, Identificacion, IdProvincia, IdCanton, IdDistrito, IdBarrio, Nombre, Direccion, IdTipoPrecio)
-VALUES(1, 1, 0, '', 1, 1, 1, 1, 'CLIENTE DE CONTADO', '', 1);
+INSERT INTO `cliente` (`IdEmpresa`, `IdCliente`, `IdTipoIdentificacion`, `Identificacion`, `IdProvincia`, `IdCanton`, `IdDistrito`, `IdBarrio`, `Direccion`, `Nombre`, `IdTipoPrecio`) VALUES (1, 1, 1, '101110111', 1, 1, 1, 1, 'N/A', 'CLIENTE DE CONTADO', 1);

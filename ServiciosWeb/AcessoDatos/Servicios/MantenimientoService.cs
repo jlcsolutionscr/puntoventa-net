@@ -302,7 +302,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             {
                 try
                 {
-                    List<EmpresaPorUsuario> empresaUsuario = usuario.EmpresaPorUsuario.ToList();
+                    List<UsuarioPorEmpresa> empresaUsuario = usuario.UsuarioPorEmpresa.ToList();
                     if (empresaUsuario.Count == 0) throw new BusinessException("El usuario por agregar debe estar vinculado a la empresa actual. Por favor, pongase en contacto con su proveedor del servicio.");
                     Empresa empresa = dbContext.EmpresaRepository.Find(empresaUsuario[0].IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
@@ -332,7 +332,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             {
                 try
                 {
-                    EmpresaPorUsuario empresaUsuario = dbContext.EmpresaPorUsuarioRepository.Where(x => x.IdUsuario == usuario.IdUsuario).FirstOrDefault();
+                    UsuarioPorEmpresa empresaUsuario = dbContext.UsuarioPorEmpresaRepository.Where(x => x.IdUsuario == usuario.IdUsuario).FirstOrDefault();
                     if (empresaUsuario == null) throw new BusinessException("El usuario por modificar debe estar vinculado a la empresa actual. Por favor, pongase en contacto con su proveedor del servicio.");
                     Empresa empresa = dbContext.EmpresaRepository.Find(empresaUsuario.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
@@ -364,7 +364,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 {
                     Usuario usuario = dbContext.UsuarioRepository.Find(intIdUsuario);
                     if (usuario == null) throw new Exception("El usuario seleccionado para la actualización de la clave no existe.");
-                    List<EmpresaPorUsuario> empresaUsuario = usuario.EmpresaPorUsuario.ToList();
+                    List<UsuarioPorEmpresa> empresaUsuario = usuario.UsuarioPorEmpresa.ToList();
                     if (empresaUsuario.Count == 0) throw new BusinessException("El usuario por modificar debe estar vinculado a la empresa actual. Por favor, pongase en contacto con su proveedor del servicio.");
                     Empresa empresa = dbContext.EmpresaRepository.Find(empresaUsuario[0].IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
@@ -413,10 +413,10 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 bool bolPerteneceAEmpresa = false;
                 try
                 {
-                    Usuario usuario = dbContext.UsuarioRepository.Include("RolePorUsuario.Role").Include("EmpresaPorUsuario.Empresa").FirstOrDefault(x => x.CodigoUsuario == strCodigoUsuario);
+                    Usuario usuario = dbContext.UsuarioRepository.Include("RolePorUsuario.Role").Include("UsuarioPorEmpresa.Empresa").FirstOrDefault(x => x.CodigoUsuario == strCodigoUsuario);
                     if (usuario == null)  throw new Exception("El código de usuario ingresado no se encuentra registrado. Contacte a su proveedor.");
                     if (Utilitario.DesencriptarDatos(key, usuario.Clave) != strClave) throw new Exception("Contraseña incorrecta. Verifique los credenciales suministrados.");
-                    foreach (EmpresaPorUsuario empresaUsuario in usuario.EmpresaPorUsuario)
+                    foreach (UsuarioPorEmpresa empresaUsuario in usuario.UsuarioPorEmpresa)
                     {
                         
                         if (empresaUsuario.Empresa.Identificacion == strIdentificacion)
@@ -433,7 +433,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                         }
                     }
                     if (!bolPerteneceAEmpresa) throw new Exception("El usuario ingresado no pertenece a la empresa con la identificación ingresada.");
-                    usuario.EmpresaPorUsuario = new List<EmpresaPorUsuario>();
+                    usuario.UsuarioPorEmpresa = new List<UsuarioPorEmpresa>();
                     return usuario;
                 }
                 catch (Exception ex)
@@ -453,12 +453,12 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     Usuario usuario = dbContext.UsuarioRepository.Find(intIdUsuario);
                     if (usuario == null)
                         throw new BusinessException("El usuario por eliminar no existe.");
-                    List<EmpresaPorUsuario> empresaUsuario = usuario.EmpresaPorUsuario.ToList();
+                    List<UsuarioPorEmpresa> empresaUsuario = usuario.UsuarioPorEmpresa.ToList();
                     if (empresaUsuario.Count == 0) throw new BusinessException("El usuario por modificar debe estar vinculado a la empresa actual. Por favor, pongase en contacto con su proveedor del servicio.");
                     Empresa empresa = dbContext.EmpresaRepository.Find(empresaUsuario[0].IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     dbContext.RolePorUsuarioRepository.RemoveRange(usuario.RolePorUsuario);
-                    dbContext.EmpresaPorUsuarioRepository.RemoveRange(usuario.EmpresaPorUsuario);
+                    dbContext.UsuarioPorEmpresaRepository.RemoveRange(usuario.UsuarioPorEmpresa);
                     dbContext.UsuarioRepository.Remove(usuario);
                     dbContext.Commit();
                 }
@@ -515,13 +515,13 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             {
                 try
                 {
-                    var listaUsuariosPorEmpresa = dbContext.EmpresaPorUsuarioRepository.Include("Usuario").Where(x => x.IdEmpresa == intIdEmpresa && x.IdUsuario > 1);
+                    var listaUsuariosPorEmpresa = dbContext.UsuarioPorEmpresaRepository.Include("Usuario").Where(x => x.IdEmpresa == intIdEmpresa && x.IdUsuario > 1);
                     if (!strCodigo.Equals(string.Empty))
                         listaUsuariosPorEmpresa = listaUsuariosPorEmpresa.Where(x => x.Usuario.CodigoUsuario.Contains(strCodigo));
                     listaUsuariosPorEmpresa.OrderBy(x => x.Usuario.IdUsuario);
-                    foreach (EmpresaPorUsuario empresaUsuario in listaUsuariosPorEmpresa)
+                    foreach (UsuarioPorEmpresa empresaUsuario in listaUsuariosPorEmpresa)
                     {
-                        empresaUsuario.Usuario.EmpresaPorUsuario = null;
+                        empresaUsuario.Usuario.UsuarioPorEmpresa = null;
                         listaUsuarios.Add(empresaUsuario.Usuario);
                     }
                     return listaUsuarios;
