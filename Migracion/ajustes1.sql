@@ -1,4 +1,4 @@
-﻿CREATE TABLE TipoIdentificacion (
+﻿CREATE TABLE tipoidentificacion (
   IdTipoIdentificacion INTEGER NOT NULL,
   Descripcion VARCHAR(20) NOT NULL,
   PRIMARY KEY(IdTipoIdentificacion)
