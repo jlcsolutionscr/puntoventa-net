@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Net.Http;
 using LeandroSoftware.AccesoDatos.Dominio.Entidades;
-using LeandroSoftware.Core.CommonTypes;
 using System.Xml;
 using System.IO;
 using System.Xml.Serialization;
@@ -30,6 +29,8 @@ using System.Web.Script.Serialization;
 using System.Web.Configuration;
 using Unity.Lifetime;
 using Unity.Injection;
+using LeandroSoftware.Puntoventa.CommonTypes;
+using LeandroSoftware.Puntoventa.Utilitario;
 
 namespace LeandroSoftware.AccesoDatos.Servicios
 {
@@ -1037,7 +1038,10 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                                     IList<string> headers = httpResponse.Headers.Where(x => x.Key == "X-Error-Cause").FirstOrDefault().Value.ToList();
                                     if (headers.Count > 0)
                                     {
-                                        documento.EstadoEnvio = "rechazado";
+                                        if (httpResponse.StatusCode == HttpStatusCode.BadRequest)
+                                            documento.EstadoEnvio = "rechazado";
+                                        else
+                                            documento.EstadoEnvio = "registrado";
                                         documento.ErrorEnvio = headers[0];
                                     }
                                 }
@@ -1330,7 +1334,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                                             datos.CodigoMoneda = notaCreditoElectronica.ResumenFactura.CodigoMonedaSpecified ? notaCreditoElectronica.ResumenFactura.CodigoMoneda.ToString() : "";
                                             datos.TipoDeCambio = notaCreditoElectronica.ResumenFactura.CodigoMonedaSpecified ? notaCreditoElectronica.ResumenFactura.TipoCambio.ToString() : "";
                                         }
-                                        byte[] pdfAttactment = Utilitario.GenerarPDFFacturaElectronica(datos);
+                                        byte[] pdfAttactment = UtilitarioPDF.GenerarPDFFacturaElectronica(datos);
                                         JObject jobDatosAdjuntos1 = new JObject
                                         {
                                             ["nombre"] = documentoElectronico.ClaveNumerica + ".pdf",

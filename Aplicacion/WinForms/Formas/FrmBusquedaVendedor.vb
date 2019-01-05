@@ -1,3 +1,5 @@
+Imports LeandroSoftware.AccesoDatos.ClienteWCF
+
 Public Class FrmBusquedaVendedor
 #Region "Variables"
 #End Region
@@ -21,7 +23,7 @@ Public Class FrmBusquedaVendedor
 
     Private Async Sub ActualizarDatos()
         Try
-            dgvListado.DataSource = Await ClienteWCF.ObtenerListaVendedores(FrmMenuPrincipal.empresaGlobal.IdEmpresa, txtNombre.Text)
+            dgvListado.DataSource = Await PuntoventaWCF.ObtenerListaVendedores(FrmMenuPrincipal.empresaGlobal.IdEmpresa, txtNombre.Text)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()

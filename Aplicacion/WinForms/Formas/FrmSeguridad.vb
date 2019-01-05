@@ -1,5 +1,6 @@
 
 Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
+Imports LeandroSoftware.AccesoDatos.ClienteWCF
 
 Public Class FrmSeguridad
 #Region "Variables"
@@ -11,9 +12,11 @@ Public Class FrmSeguridad
     End Sub
     Private Async Sub CmdAceptar_Click(sender As Object, e As EventArgs) Handles CmdAceptar.Click
         Dim usuario As Usuario = Nothing
+        Dim strEncryptedPassword As String
         Try
             CmdAceptar.Enabled = False
-            usuario = Await ClienteWCF.ValidarCredenciales(txtIdentificacion.Text, TxtUsuario.Text, TxtClave.Text)
+            strEncryptedPassword = Core.Utilitario.EncriptarDatos(TxtClave.Text, FrmMenuPrincipal.strKey)
+            usuario = Await PuntoventaWCF.ValidarCredenciales(txtIdentificacion.Text, TxtUsuario.Text, strEncryptedPassword)
         Catch ex As Exception
             CmdAceptar.Enabled = True
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)

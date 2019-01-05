@@ -158,8 +158,12 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Core\CommonTypes\CommonTypes.csproj">
+      <Project>{da1835bf-2e6b-4f35-aeb9-152f9ec52044}</Project>
+      <Name>CommonTypes</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Core\Core.csproj">
-      <Project>{FA3C5BCE-3DB6-486E-B16B-8B7F76EEF63F}</Project>
+      <Project>{fa3c5bce-3db6-486e-b16b-8b7f76eef63f}</Project>
       <Name>Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\Datos\Datos.csproj">

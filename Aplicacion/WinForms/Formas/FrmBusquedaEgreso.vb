@@ -1,4 +1,5 @@
 Imports System.Threading.Tasks
+Imports LeandroSoftware.AccesoDatos.ClienteWCF
 
 Public Class FrmBusquedaEgreso
 #Region "Variables"
@@ -34,7 +35,7 @@ Public Class FrmBusquedaEgreso
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
         Try
-            dgvListado.DataSource = Await ClienteWCF.ObtenerListaEgresos(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, intId, txtBeneficiario.Text, txtDetalle.Text)
+            dgvListado.DataSource = Await PuntoventaWCF.ObtenerListaEgresos(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, intId, txtBeneficiario.Text, txtDetalle.Text)
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -46,7 +47,7 @@ Public Class FrmBusquedaEgreso
 
     Private Async Function ValidarCantidadEgresos() As Task
         Try
-            intTotalEmpresas = Await ClienteWCF.ObtenerTotalListaEgresos(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intId, txtBeneficiario.Text, txtDetalle.Text)
+            intTotalEmpresas = Await PuntoventaWCF.ObtenerTotalListaEgresos(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intId, txtBeneficiario.Text, txtDetalle.Text)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()

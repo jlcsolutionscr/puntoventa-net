@@ -1,4 +1,5 @@
 Imports System.Threading.Tasks
+Imports LeandroSoftware.AccesoDatos.ClienteWCF
 
 Public Class FrmBusquedaProveedor
 #Region "Variables"
@@ -33,7 +34,7 @@ Public Class FrmBusquedaProveedor
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
         Try
-            dgvListado.DataSource = Await ClienteWCF.ObtenerListaProveedores(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, txtNombre.Text)
+            dgvListado.DataSource = Await PuntoventaWCF.ObtenerListaProveedores(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, txtNombre.Text)
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -45,7 +46,7 @@ Public Class FrmBusquedaProveedor
 
     Private Async Function ValidarCantidadEmpresas() As Task
         Try
-            intTotalEmpresas = Await ClienteWCF.ObtenerTotalListaProveedores(FrmMenuPrincipal.empresaGlobal.IdEmpresa, txtNombre.Text)
+            intTotalEmpresas = Await PuntoventaWCF.ObtenerTotalListaProveedores(FrmMenuPrincipal.empresaGlobal.IdEmpresa, txtNombre.Text)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()

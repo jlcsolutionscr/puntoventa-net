@@ -1143,8 +1143,9 @@ Partial Class FrmFactura
         'FrmFactura
         '
         Me.AcceptButton = Me.btnInsertar
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
+        Me.AutoScroll = True
+        Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(817, 612)
         Me.Controls.Add(Me.btnGenerarPDF)

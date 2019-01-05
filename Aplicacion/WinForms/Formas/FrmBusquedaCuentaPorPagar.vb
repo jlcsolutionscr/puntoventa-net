@@ -1,4 +1,4 @@
-Imports LeandroSoftware.Core.CommonTypes
+Imports LeandroSoftware.Puntoventa.CommonTypes
 
 Public Class FrmBusquedaCuentaPorPagar
 #Region "Variables"

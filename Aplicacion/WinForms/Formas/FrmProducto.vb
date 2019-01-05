@@ -1,4 +1,5 @@
 Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
+Imports LeandroSoftware.AccesoDatos.ClienteWCF
 Imports System.IO
 Imports System.Threading.Tasks
 
@@ -51,10 +52,10 @@ Public Class FrmProducto
         Try
             cboTipoProducto.ValueMember = "IdTipoProducto"
             cboTipoProducto.DisplayMember = "Descripcion"
-            cboTipoProducto.DataSource = Await ClienteWCF.ObtenerListaTipoProducto()
+            cboTipoProducto.DataSource = Await PuntoventaWCF.ObtenerListaTipoProducto()
             cboUnidad.ValueMember = "IdTipoUnidad"
             cboUnidad.DisplayMember = "Descripcion"
-            cboUnidad.DataSource = Await ClienteWCF.ObtenerListaTipoUnidad()
+            cboUnidad.DataSource = Await PuntoventaWCF.ObtenerListaTipoUnidad()
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
@@ -63,9 +64,9 @@ Public Class FrmProducto
     Private Async Function CargarComboLinea() As Task
         Try
             If cboTipoProducto.SelectedValue = 1 Then
-                cboLinea.DataSource = Await ClienteWCF.ObtenerListaLineasDeProducto(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
+                cboLinea.DataSource = Await PuntoventaWCF.ObtenerListaLineasDeProducto(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
             Else
-                cboLinea.DataSource = Await ClienteWCF.ObtenerListaLineasDeServicio(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
+                cboLinea.DataSource = Await PuntoventaWCF.ObtenerListaLineasDeServicio(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
             End If
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -105,7 +106,7 @@ Public Class FrmProducto
         Await CargarCombos()
         If intIdProducto > 0 Then
             Try
-                datos = Await ClienteWCF.ObtenerProducto(intIdProducto)
+                datos = Await PuntoventaWCF.ObtenerProducto(intIdProducto)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Close()
@@ -193,10 +194,10 @@ Public Class FrmProducto
         End If
         Try
             If datos.IdProducto = 0 Then
-                Dim strIdProducto As String = Await ClienteWCF.AgregarProducto(datos)
+                Dim strIdProducto As String = Await PuntoventaWCF.AgregarProducto(datos)
                 txtIdProducto.Text = strIdProducto
             Else
-                Await ClienteWCF.ActualizarProducto(datos)
+                Await PuntoventaWCF.ActualizarProducto(datos)
             End If
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -212,7 +213,7 @@ Public Class FrmProducto
         formBusquedaProveedor.ShowDialog()
         If FrmMenuPrincipal.intBusqueda > 0 Then
             Try
-                proveedor = Await ClienteWCF.ObtenerProveedor(FrmMenuPrincipal.intBusqueda)
+                proveedor = Await PuntoventaWCF.ObtenerProveedor(FrmMenuPrincipal.intBusqueda)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub

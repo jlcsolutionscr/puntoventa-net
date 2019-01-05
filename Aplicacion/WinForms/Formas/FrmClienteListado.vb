@@ -1,4 +1,5 @@
 ﻿Imports System.Threading.Tasks
+Imports LeandroSoftware.AccesoDatos.ClienteWCF
 
 Public Class FrmClienteListado
 #Region "Variables"
@@ -43,7 +44,7 @@ Public Class FrmClienteListado
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
         Try
-            listado = Await ClienteWCF.ObtenerListaClientes(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, txtNombre.Text)
+            listado = Await PuntoventaWCF.ObtenerListaClientes(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, txtNombre.Text)
             dgvDatos.DataSource = listado
             If listado.Count() > 0 Then
                 btnEditar.Enabled = True
@@ -62,7 +63,7 @@ Public Class FrmClienteListado
 
     Private Async Function ValidarCantidadClientes() As Task
         Try
-            intTotalEmpresas = Await ClienteWCF.ObtenerTotalListaClientes(FrmMenuPrincipal.empresaGlobal.IdEmpresa, txtNombre.Text)
+            intTotalEmpresas = Await PuntoventaWCF.ObtenerTotalListaClientes(FrmMenuPrincipal.empresaGlobal.IdEmpresa, txtNombre.Text)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -137,7 +138,7 @@ Public Class FrmClienteListado
     Private Async Sub BtnEliminar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEliminar.Click
         If MessageBox.Show("Desea eliminar el registro actual", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
             Try
-                Await ClienteWCF.EliminarCliente(dgvDatos.CurrentRow.Cells(0).Value)
+                Await PuntoventaWCF.EliminarCliente(dgvDatos.CurrentRow.Cells(0).Value)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub

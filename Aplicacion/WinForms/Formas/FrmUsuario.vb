@@ -1,5 +1,6 @@
 Imports System.Collections.Generic
 Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
+Imports LeandroSoftware.AccesoDatos.ClienteWCF
 
 Public Class FrmUsuario
 #Region "Variables"
@@ -78,7 +79,7 @@ Public Class FrmUsuario
         Try
             cboRole.ValueMember = "IdRole"
             cboRole.DisplayMember = "Nombre"
-            cboRole.DataSource = Await ClienteWCF.ObtenerListaRoles()
+            cboRole.DataSource = Await PuntoventaWCF.ObtenerListaRoles()
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
@@ -92,8 +93,10 @@ Public Class FrmUsuario
         EstablecerPropiedadesDataGridView()
         CargarCombos()
         If intIdUsuario > 0 Then
+            Dim strDecryptedPassword As String
             Try
-                datos = Await ClienteWCF.ObtenerUsuario(intIdUsuario)
+                datos = Await PuntoventaWCF.ObtenerUsuario(intIdUsuario)
+                strDecryptedPassword = Core.Utilitario.DesencriptarDatos(datos.Clave, FrmMenuPrincipal.strKey)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                 Close()
@@ -106,7 +109,7 @@ Public Class FrmUsuario
             End If
             txtIdUsuario.Text = datos.IdUsuario
             txtUsuario.Text = datos.CodigoUsuario
-            txtPassword.Text = datos.ClaveSinEncriptar
+            txtPassword.Text = strDecryptedPassword
             chkModifica.Checked = datos.Modifica
             chkAutoriza.Checked = datos.AutorizaCredito
             CargarDetalleRole(datos)
@@ -126,6 +129,7 @@ Public Class FrmUsuario
             MessageBox.Show("El campo " & strCampo & " es requerido", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         End If
+        Dim strEncryptedPassword As String
         If datos.IdUsuario = 0 Then
             Dim empresaUsuario As UsuarioPorEmpresa = New UsuarioPorEmpresa With {
                 .IdEmpresa = FrmMenuPrincipal.empresaGlobal.IdEmpresa
@@ -135,8 +139,15 @@ Public Class FrmUsuario
             }
             datos.UsuarioPorEmpresa = detalleEmpresa
         End If
+        Try
+            strEncryptedPassword = Core.Utilitario.EncriptarDatos(txtPassword.Text, FrmMenuPrincipal.strKey)
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            Close()
+            Exit Sub
+        End Try
         datos.CodigoUsuario = txtUsuario.Text
-        datos.ClaveSinEncriptar = txtPassword.Text
+        datos.Clave = strEncryptedPassword
         datos.Modifica = chkModifica.Checked
         datos.AutorizaCredito = chkAutoriza.Checked
         datos.RolePorUsuario.Clear()
@@ -151,10 +162,10 @@ Public Class FrmUsuario
         Next
         Try
             If datos.IdUsuario = 0 Then
-                Dim strIdUsuario = Await ClienteWCF.AgregarUsuario(datos)
+                Dim strIdUsuario = Await PuntoventaWCF.AgregarUsuario(datos)
                 txtIdUsuario.Text = strIdUsuario
             Else
-                Await ClienteWCF.ActualizarUsuario(datos)
+                Await PuntoventaWCF.ActualizarUsuario(datos)
             End If
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)

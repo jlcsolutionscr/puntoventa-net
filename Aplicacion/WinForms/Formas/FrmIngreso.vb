@@ -1,5 +1,5 @@
 Imports System.Collections.Generic
-Imports LeandroSoftware.Core.CommonTypes
+Imports LeandroSoftware.Puntoventa.CommonTypes
 Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
 
 Public Class FrmIngreso
@@ -410,24 +410,24 @@ Public Class FrmIngreso
                     MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
                 End Try
-            Else
-                Dim strUsuario, strEmpresa As String
-                Dim dtbDatos As DataTable
-                Dim formReport As New frmRptViewer
-                Dim reptVentas As New rptIngreso
-                Try
-                    strUsuario = FrmMenuPrincipal.usuarioGlobal.CodigoUsuario
-                    strEmpresa = FrmMenuPrincipal.empresaGlobal.NombreEmpresa
-                    'dtbDatos = servicioReportes.ObtenerReporteIngreso(txtIdIngreso.Text)
-                Catch ex As Exception
-                    MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                    Exit Sub
-                End Try
-                reptVentas.SetDataSource(dtbDatos)
-                reptVentas.SetParameterValue(0, strUsuario)
-                reptVentas.SetParameterValue(1, strEmpresa)
-                formReport.crtViewer.ReportSource = reptVentas
-                formReport.ShowDialog()
+                'Else
+                '    Dim strUsuario, strEmpresa As String
+                '    Dim dtbDatos As DataTable
+                '    Dim formReport As New frmRptViewer
+                '    Dim reptVentas As New rptIngreso
+                '    Try
+                '        strUsuario = FrmMenuPrincipal.usuarioGlobal.CodigoUsuario
+                '        strEmpresa = FrmMenuPrincipal.empresaGlobal.NombreEmpresa
+                '        'dtbDatos = servicioReportes.ObtenerReporteIngreso(txtIdIngreso.Text)
+                '    Catch ex As Exception
+                '        MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                '        Exit Sub
+                '    End Try
+                '    reptVentas.SetDataSource(dtbDatos)
+                '    reptVentas.SetParameterValue(0, strUsuario)
+                '    reptVentas.SetParameterValue(1, strEmpresa)
+                '    formReport.crtViewer.ReportSource = reptVentas
+                '    formReport.ShowDialog()
             End If
         End If
     End Sub

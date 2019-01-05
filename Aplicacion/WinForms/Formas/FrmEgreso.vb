@@ -1,7 +1,8 @@
 Imports System.Collections.Generic
-Imports LeandroSoftware.Core.CommonTypes
+Imports LeandroSoftware.Puntoventa.CommonTypes
 Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
 Imports System.Threading.Tasks
+Imports LeandroSoftware.AccesoDatos.ClienteWCF
 
 Public Class FrmEgreso
 #Region "Variables"
@@ -181,16 +182,16 @@ Public Class FrmEgreso
         Try
             cboCuentaEgreso.ValueMember = "IdCuenta"
             cboCuentaEgreso.DisplayMember = "Descripcion"
-            cboCuentaEgreso.DataSource = Await ClienteWCF.ObtenerListaCuentasEgreso(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
+            cboCuentaEgreso.DataSource = Await PuntoventaWCF.ObtenerListaCuentasEgreso(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
             cboFormaPago.ValueMember = "IdFormaPago"
             cboFormaPago.DisplayMember = "Descripcion"
-            cboFormaPago.DataSource = Await ClienteWCF.ObtenerListaFormaPagoEgreso()
+            cboFormaPago.DataSource = Await PuntoventaWCF.ObtenerListaFormaPagoEgreso()
             cboCuentaBanco.ValueMember = "IdCuenta"
             cboCuentaBanco.DisplayMember = "Descripcion"
-            cboCuentaBanco.DataSource = Await ClienteWCF.ObtenerListaCuentasBanco(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
+            cboCuentaBanco.DataSource = Await PuntoventaWCF.ObtenerListaCuentasBanco(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
             cboTipoMoneda.ValueMember = "IdTipoMoneda"
             cboTipoMoneda.DisplayMember = "Descripcion"
-            cboTipoMoneda.DataSource = Await ClienteWCF.ObtenerListaTipoMoneda()
+            cboTipoMoneda.DataSource = Await PuntoventaWCF.ObtenerListaTipoMoneda()
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Function
@@ -251,7 +252,7 @@ Public Class FrmEgreso
         If txtIdEgreso.Text <> "" Then
             If MessageBox.Show("Desea anular este registro?", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
                 Try
-                    Await ClienteWCF.AnularEgreso(txtIdEgreso.Text, FrmMenuPrincipal.usuarioGlobal.IdUsuario)
+                    Await PuntoventaWCF.AnularEgreso(txtIdEgreso.Text, FrmMenuPrincipal.usuarioGlobal.IdUsuario)
                 Catch ex As Exception
                     MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
@@ -268,7 +269,7 @@ Public Class FrmEgreso
         formBusqueda.ShowDialog()
         If FrmMenuPrincipal.intBusqueda > 0 Then
             Try
-                egreso = Await ClienteWCF.ObtenerEgreso(FrmMenuPrincipal.intBusqueda)
+                egreso = Await PuntoventaWCF.ObtenerEgreso(FrmMenuPrincipal.intBusqueda)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
@@ -342,7 +343,7 @@ Public Class FrmEgreso
                 egreso.DesglosePagoEgreso.Add(desglosePago)
             Next
             Try
-                txtIdEgreso.Text = Await ClienteWCF.AgregarEgreso(egreso)
+                txtIdEgreso.Text = Await PuntoventaWCF.AgregarEgreso(egreso)
             Catch ex As Exception
                 txtIdEgreso.Text = ""
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -351,7 +352,7 @@ Public Class FrmEgreso
         Else
             egreso.Detalle = txtDetalle.Text
             Try
-                Await ClienteWCF.ActualizarEgreso(egreso)
+                Await PuntoventaWCF.ActualizarEgreso(egreso)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
@@ -396,24 +397,24 @@ Public Class FrmEgreso
                     MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
                 End Try
-            Else
-                Dim strUsuario, strEmpresa As String
-                Dim dtbDatos As DataTable
-                Dim formReport As New frmRptViewer
-                Dim reptVentas As New rptEgreso
-                Try
-                    strUsuario = FrmMenuPrincipal.usuarioGlobal.CodigoUsuario
-                    strEmpresa = FrmMenuPrincipal.empresaGlobal.NombreEmpresa
-                    'dtbDatos = servicioReportes.ObtenerReporteEgreso(txtIdEgreso.Text)
-                Catch ex As Exception
-                    MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                    Exit Sub
-                End Try
-                reptVentas.SetDataSource(dtbDatos)
-                reptVentas.SetParameterValue(0, strUsuario)
-                reptVentas.SetParameterValue(1, strEmpresa)
-                formReport.crtViewer.ReportSource = reptVentas
-                formReport.ShowDialog()
+                'Else
+                '    Dim strUsuario, strEmpresa As String
+                '    Dim dtbDatos As DataTable
+                '    Dim formReport As New frmRptViewer
+                '    Dim reptVentas As New rptEgreso
+                '    Try
+                '        strUsuario = FrmMenuPrincipal.usuarioGlobal.CodigoUsuario
+                '        strEmpresa = FrmMenuPrincipal.empresaGlobal.NombreEmpresa
+                '        'dtbDatos = servicioReportes.ObtenerReporteEgreso(txtIdEgreso.Text)
+                '    Catch ex As Exception
+                '        MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                '        Exit Sub
+                '    End Try
+                '    reptVentas.SetDataSource(dtbDatos)
+                '    reptVentas.SetParameterValue(0, strUsuario)
+                '    reptVentas.SetParameterValue(1, strEmpresa)
+                '    formReport.crtViewer.ReportSource = reptVentas
+                '    formReport.ShowDialog()
             End If
         End If
     End Sub

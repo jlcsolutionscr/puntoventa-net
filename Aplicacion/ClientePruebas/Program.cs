@@ -1,7 +1,6 @@
 ﻿using LeandroSoftware.AccesoDatos.Dominio.Entidades;
 using LeandroSoftware.AccesoDatos.TiposDatos;
-using LeandroSoftware.Core;
-using LeandroSoftware.PuntoVenta.Core;
+using LeandroSoftware.AccesoDatos.ClienteWCF;
 using log4net;
 using System;
 using System.Collections.Generic;
@@ -21,17 +20,15 @@ namespace LeandroSoftware.AccesoDatos.ClientePruebas
     {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private static readonly System.Collections.Specialized.NameValueCollection appSettings = ConfigurationManager.AppSettings;
-        private static HttpClient client = new HttpClient();
-        private static JavaScriptSerializer serializer = new CustomJavascriptSerializer();
 
         static void Main(string[] args)
         {
             try
             {
-                int idEmpresa = 0;
-                while (idEmpresa == 0)
+                int intIdEmpresa = 0;
+                while (intIdEmpresa == 0)
                 {
-                    List<Empresa> empresaLista = ObtenerListadoEmpresas();
+                    List<Empresa> empresaLista = PuntoventaWCF.ObtenerListaEmpresas().Result;
                     foreach (Empresa empresa in empresaLista)
                     {
                         Console.WriteLine("Id: " + empresa.IdEmpresa + " Nombre: " + empresa.NombreComercial);
@@ -40,11 +37,11 @@ namespace LeandroSoftware.AccesoDatos.ClientePruebas
                     string strIdEmpresa = Console.ReadLine();
                     try
                     {
-                        idEmpresa = int.Parse(strIdEmpresa);
+                        intIdEmpresa = int.Parse(strIdEmpresa);
                     }
                     catch (Exception)
                     {
-                        idEmpresa = 0;
+                        intIdEmpresa = 0;
                     }
                 };
                 string input = "C";
@@ -57,7 +54,7 @@ namespace LeandroSoftware.AccesoDatos.ClientePruebas
                         string operacion = input.Substring(0, 1);
                         if (operacion == "C")
                         {
-                            List<DocumentoElectronico> documentoLista = ObtenerListaDocumentosElectronicosEnProceso(idEmpresa);
+                            List<DocumentoElectronico> documentoLista = PuntoventaWCF.ObtenerListaDocumentosElectronicosEnProceso(intIdEmpresa).Result;
                             foreach (DocumentoElectronico doc in documentoLista)
                             {
                                 Console.WriteLine("id: " + doc.IdDocumento + " Clave: " + doc.ClaveNumerica + " Estado: " + doc.EstadoEnvio);
@@ -84,13 +81,13 @@ namespace LeandroSoftware.AccesoDatos.ClientePruebas
                                         string strSiNo = Console.ReadLine();
                                         if (strSiNo == "S")
                                         {
-                                            EnviarNotificacion(documento.IdDocumento);
+                                            PuntoventaWCF.EnviarNotificacion(documento.IdDocumento).Wait();
                                         }
                                     }
                                     if (documento.EstadoEnvio == "rechazado")
                                     {
                                         Console.WriteLine("El documento fue RECHAZADO y posee la siguiente respuesta de hacienda:");
-                                        DocumentoElectronico consulta = ObtenerDocumentoElectronico(documento.IdDocumento);
+                                        DocumentoElectronico consulta = PuntoventaWCF.ObtenerDocumentoElectronico(documento.IdDocumento).Result;
                                         XmlSerializer serializer = new XmlSerializer(typeof(MensajeHacienda));
                                         MensajeHacienda mensajeRespuesta;
                                         using (MemoryStream ms = new MemoryStream(consulta.Respuesta))
@@ -105,7 +102,7 @@ namespace LeandroSoftware.AccesoDatos.ClientePruebas
                                         string strOpcion = Console.ReadLine();
                                         if (strOpcion == "S")
                                         {
-                                            DocumentoElectronico consulta = ObtenerRespuestaDocumentoElectronicoEnviado(documento.IdDocumento);
+                                            DocumentoElectronico consulta = PuntoventaWCF.ObtenerRespuestaDocumentoElectronicoEnviado(documento.IdDocumento).Result;
                                             Console.WriteLine("El documento posee un estado: " + consulta.EstadoEnvio);
                                             if (consulta.Respuesta != null)
                                             {
@@ -129,7 +126,7 @@ namespace LeandroSoftware.AccesoDatos.ClientePruebas
                                                         respuesta.RespuestaXml = Convert.ToBase64String(consulta.Respuesta);
                                                         try
                                                         {
-                                                            ProcesarRespuesta(respuesta);
+                                                            PuntoventaWCF.ProcesarRespuesta(respuesta);
                                                             Console.WriteLine("Procesado satisfactoriamente. . .");
                                                         }
                                                         catch (Exception ex)
@@ -152,7 +149,7 @@ namespace LeandroSoftware.AccesoDatos.ClientePruebas
                                         string strOpcion = Console.ReadLine();
                                         if (strOpcion == "S")
                                         {
-                                            EnviarDocumentoElectronicoPendiente(documento.IdDocumento);
+                                            PuntoventaWCF.EnviarDocumentoElectronicoPendiente(documento.IdDocumento).Wait();
                                             Console.WriteLine("Procesado satisfactoriamente. . .");
                                         } 
                                     }
@@ -179,127 +176,6 @@ namespace LeandroSoftware.AccesoDatos.ClientePruebas
                 Console.WriteLine(ex.InnerException.Message);
                 Console.WriteLine("");
             }
-        }
-
-        private static List<Empresa> ObtenerListadoEmpresas()
-        {
-            List<Empresa> listado = new List<Empresa>();
-            RequestDTO peticion = new RequestDTO
-            {
-                NombreMetodo = "ObtenerListaEmpresas",
-                DatosPeticion = ""
-            };
-            string strPeticion = serializer.Serialize(peticion);
-            string strRespuesta = Utilitario.EjecutarConsulta(strPeticion, appSettings["ServicioPuntoventaURL"].ToString(), "").Result;
-            strRespuesta = serializer.Deserialize<string>(strRespuesta);
-            if (strRespuesta != "")
-                listado = serializer.Deserialize<List<Empresa>>(strRespuesta);
-            return listado;
-        }
-
-        private static List<DocumentoElectronico> ObtenerListaDocumentosElectronicosEnProceso(int intIdEmpresa)
-        {
-            List<DocumentoElectronico> listado = new List<DocumentoElectronico>();
-            RequestDTO peticion = new RequestDTO
-            {
-                NombreMetodo = "ObtenerListaDocumentosElectronicosEnProceso",
-                DatosPeticion = "{IdEmpresa: " + intIdEmpresa + "}"
-            };
-            string strPeticion = serializer.Serialize(peticion);
-            string strRespuesta = Utilitario.EjecutarConsulta(strPeticion, appSettings["ServicioPuntoventaURL"].ToString(), "").Result;
-            strRespuesta = serializer.Deserialize<string>(strRespuesta);
-            if (strRespuesta != "")
-            {
-                List<DocumentoElectronico> listadoPendientes = serializer.Deserialize<List<DocumentoElectronico>>(strRespuesta);
-                foreach (DocumentoElectronico doc in listadoPendientes)
-                    listado.Add(doc);
-            }
-            peticion = new RequestDTO
-            {
-                NombreMetodo = "ObtenerListaDocumentosElectronicosEnviados",
-                DatosPeticion = "{IdEmpresa: " + intIdEmpresa + "}"
-            };
-            strPeticion = serializer.Serialize(peticion);
-            strRespuesta = Utilitario.EjecutarConsulta(strPeticion, appSettings["ServicioPuntoventaURL"].ToString(), "").Result;
-            strRespuesta = serializer.Deserialize<string>(strRespuesta);
-            if (strRespuesta != "")
-            {
-                List<DocumentoElectronico> listadoEnviados = serializer.Deserialize<List<DocumentoElectronico>>(strRespuesta);
-                foreach (DocumentoElectronico doc in listadoEnviados)
-                    listado.Add(doc);
-            }
-            return listado;
-        }
-
-        private static void EnviarDocumentoElectronicoPendiente(int intIdDocumento)
-        {
-            RequestDTO peticion = new RequestDTO
-            {
-                NombreMetodo = "EnviarDocumentoElectronicoPendiente",
-                DatosPeticion = "{IdDocumento: " + intIdDocumento + "}"
-            };
-            string strPeticion = serializer.Serialize(peticion);
-            Utilitario.Ejecutar(strPeticion, appSettings["ServicioPuntoventaURL"].ToString(), "").Wait();
-        }
-
-        private static DocumentoElectronico ObtenerDocumentoElectronico(int intIdDocumento)
-        {
-            DocumentoElectronico documento = null;
-            RequestDTO peticion = new RequestDTO
-            {
-                NombreMetodo = "ObtenerDocumentoElectronico",
-                DatosPeticion = "{IdDocumento: " + intIdDocumento + "}"
-            };
-            string strPeticion = serializer.Serialize(peticion);
-            string strRespuesta = Utilitario.EjecutarConsulta(strPeticion, appSettings["ServicioPuntoventaURL"].ToString(), "").Result;
-            strRespuesta = serializer.Deserialize<string>(strRespuesta);
-            if (strRespuesta != "")
-                documento = serializer.Deserialize<DocumentoElectronico>(strRespuesta);
-            return documento;
-        }
-
-        private static DocumentoElectronico ObtenerRespuestaDocumentoElectronicoEnviado(int intIdDocumento)
-        {
-            DocumentoElectronico documento = null;
-            RequestDTO peticion = new RequestDTO
-            {
-                NombreMetodo = "ObtenerRespuestaDocumentoElectronicoEnviado",
-                DatosPeticion = "{IdDocumento: " + intIdDocumento + "}"
-            };
-            string strPeticion = serializer.Serialize(peticion);
-            string strRespuesta = Utilitario.EjecutarConsulta(strPeticion, appSettings["ServicioPuntoventaURL"].ToString(), "").Result;
-            strRespuesta = serializer.Deserialize<string>(strRespuesta);
-            documento = new JavaScriptSerializer().Deserialize<DocumentoElectronico>(strRespuesta);
-            return documento;
-        }
-
-        private static void ProcesarRespuesta(RespuestaHaciendaDTO respuesta)
-        {
-            string jsonRequest = "{\"clave\": \"" + respuesta.Clave + "\"," +
-                "\"fecha\": \"" + respuesta.Fecha + "\"," +
-                "\"ind-estado\": \"" + respuesta.IndEstado + "\"," +
-                "\"respuesta-xml\": \"" + respuesta.RespuestaXml + "\"}";
-
-            StringContent stringContent = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
-            Uri uri = new Uri(appSettings["ServicioPuntoventaURL"] + "/recibirrespuestahacienda");
-            Task<HttpResponseMessage> task1 = client.PostAsync(uri, stringContent);
-            task1.Wait();
-            if (!task1.Result.IsSuccessStatusCode)
-            {
-                string strErrorMessage = task1.Result.Content.ReadAsStringAsync().Result.Replace("\"", "");
-                throw new Exception("Error al consumir el servicio web de factura electrónica: " + strErrorMessage);
-            }
-        }
-
-        private static void EnviarNotificacion(int intIdDocumento)
-        {
-            RequestDTO peticion = new RequestDTO
-            {
-                NombreMetodo = "EnviarNotificacionDocumentoElectronico",
-                DatosPeticion = "{IdDocumento: " + intIdDocumento + "}"
-            };
-            string strPeticion = serializer.Serialize(peticion);
-            Utilitario.Ejecutar(strPeticion, appSettings["ServicioPuntoventaURL"].ToString(), "").Wait();
         }
     }
 }

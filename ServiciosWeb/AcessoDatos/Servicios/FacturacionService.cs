@@ -4,7 +4,6 @@ using System.Data;
 using System.Data.Entity.Infrastructure;
 using System.Collections.Generic;
 using System.Data.Entity;
-using LeandroSoftware.Core.CommonTypes;
 using LeandroSoftware.AccesoDatos.Dominio;
 using LeandroSoftware.AccesoDatos.Dominio.Entidades;
 using LeandroSoftware.AccesoDatos.Datos;
@@ -14,12 +13,13 @@ using System.Threading.Tasks;
 using LeandroSoftware.AccesoDatos.TiposDatos;
 using LeandroSoftware.Core.Servicios;
 using Newtonsoft.Json.Linq;
-using LeandroSoftware.Core;
 using System.Xml.Serialization;
 using System.IO;
 using System.Web.Hosting;
 using System.Drawing;
 using System.Globalization;
+using LeandroSoftware.Puntoventa.CommonTypes;
+using LeandroSoftware.Puntoventa.Utilitario;
 
 namespace LeandroSoftware.AccesoDatos.Servicios
 {
@@ -64,6 +64,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
         int ObtenerTotalDocumentosElectronicosProcesados(int intIdEmpresa);
         IList<DocumentoElectronico> ObtenerListaDocumentosElectronicosProcesados(int intIdEmpresa, int numPagina, int cantRec);
         DocumentoElectronico ObtenerDocumentoElectronico(int intIdDocumento);
+        DocumentoElectronico ObtenerDocumentoElectronicoPorClave(string strClave);
         void ProcesarRespuestaHacienda(RespuestaHaciendaDTO mensaje, ICorreoService servicioEnvioCorreo, string strCorreoNotificacionErrores);
         void EnviarNotificacionDocumentoElectronico(int intIdDocumento, ICorreoService servicioEnvioCorreo, string strCorreoNotificacionErrores);
     }
@@ -1857,7 +1858,6 @@ namespace LeandroSoftware.AccesoDatos.Servicios
 
         public DocumentoElectronico ObtenerDocumentoElectronico(int intIdDocumento)
         {
-            List<DocumentoElectronico> listado = new List<DocumentoElectronico>();
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 try
@@ -1877,6 +1877,32 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 catch (Exception ex)
                 {
                     log.Error("Error al consultar documento electrónico con ID: " + intIdDocumento, ex);
+                    throw new Exception("Se produjo un error al consultar el documento electrónico. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public DocumentoElectronico ObtenerDocumentoElectronicoPorClave(string strClave)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    DocumentoElectronico documento = dbContext.DocumentoElectronicoRepository.Where(x => x.ClaveNumerica == strClave).FirstOrDefault();
+                    if (documento == null) throw new BusinessException("El documento solicitado no existe.");
+                    Empresa empresa = dbContext.EmpresaRepository.Find(documento.IdEmpresa);
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (!empresa.PermiteFacturar) throw new BusinessException("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (empresa.FechaVence < DateTime.Today) throw new BusinessException("El período del plan de facturación electrónica adquirido ya ha expirado. Por favor, pongase en contacto con su proveedor del servicio.");
+                    return documento;
+                }
+                catch (BusinessException ex)
+                {
+                    throw ex;
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al consultar documento electrónico con clave: " + strClave, ex);
                     throw new Exception("Se produjo un error al consultar el documento electrónico. Por favor consulte con su proveedor.");
                 }
             }
@@ -2140,7 +2166,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                             datos.CodigoMoneda = notaCreditoElectronica.ResumenFactura.CodigoMonedaSpecified ? notaCreditoElectronica.ResumenFactura.CodigoMoneda.ToString() : "";
                             datos.TipoDeCambio = notaCreditoElectronica.ResumenFactura.CodigoMonedaSpecified ? notaCreditoElectronica.ResumenFactura.TipoCambio.ToString() : "";
                         }
-                        byte[] pdfAttactment = Utilitario.GenerarPDFFacturaElectronica(datos);
+                        byte[] pdfAttactment = UtilitarioPDF.GenerarPDFFacturaElectronica(datos);
                         JObject jobDatosAdjuntos1 = new JObject
                         {
                             ["nombre"] = documentoElectronico.ClaveNumerica + ".pdf",

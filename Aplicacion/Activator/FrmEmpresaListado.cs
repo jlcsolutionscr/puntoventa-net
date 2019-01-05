@@ -1,21 +1,18 @@
 ﻿using LeandroSoftware.AccesoDatos.Dominio.Entidades;
-using LeandroSoftware.AccesoDatos.TiposDatos;
-using LeandroSoftware.Core;
-using LeandroSoftware.PuntoVenta.Core;
+using LeandroSoftware.AccesoDatos.ClienteWCF;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Net.Http;
 using System.Threading.Tasks;
-using System.Web.Script.Serialization;
 using System.Windows.Forms;
+using LeandroSoftware.Core.CustomClasses;
 
 namespace LeandroSoftware.Activator
 {
     public partial class FrmEmpresaListado : Form
     {
         private FrmEmpresa empresaForm;
-        private string strServicioPuntoventaURL;
         private static readonly System.Collections.Specialized.NameValueCollection appSettings = ConfigurationManager.AppSettings;
         private static HttpClient client = new HttpClient();
         private static CustomJavascriptSerializer serializer = new CustomJavascriptSerializer();
@@ -28,17 +25,9 @@ namespace LeandroSoftware.Activator
 
         private async Task CargarListadoEmpresa()
         {
-            RequestDTO peticion = new RequestDTO
-            {
-                NombreMetodo = "ObtenerListaEmpresas",
-                DatosPeticion = ""
-            };
             try
             {
-                string strPeticion = serializer.Serialize(peticion);
-                string strRespuesta = await Utilitario.EjecutarConsulta(strPeticion, appSettings["ServicioPuntoventaURL"].ToString(), "");
-                strRespuesta = serializer.Deserialize<string>(strRespuesta);
-                dsDataSet = serializer.Deserialize<List<Empresa>>(strRespuesta); 
+                dsDataSet = await PuntoventaWCF.ObtenerListaEmpresas();
                 cboEmpresa.DataSource = dsDataSet;
             }
             catch (Exception ex)
@@ -52,7 +41,6 @@ namespace LeandroSoftware.Activator
         {
             btnAgregar.Enabled = false;
             btnEditar.Enabled = false;
-            strServicioPuntoventaURL = appSettings["ServicioPuntoventaURL"];
             cboEmpresa.ValueMember = "IdEmpresa";
             cboEmpresa.DisplayMember = "NombreComercial";
             await CargarListadoEmpresa();
@@ -64,7 +52,6 @@ namespace LeandroSoftware.Activator
         {
             empresaForm = new FrmEmpresa
             {
-                strServicioPuntoventaURL = strServicioPuntoventaURL,
                 bolEditing = false
             };
             empresaForm.ShowDialog();
@@ -75,7 +62,6 @@ namespace LeandroSoftware.Activator
         {
             empresaForm = new FrmEmpresa
             {
-                strServicioPuntoventaURL = strServicioPuntoventaURL,
                 bolEditing = true,
                 intIdEmpresa = (int)cboEmpresa.SelectedValue
             };

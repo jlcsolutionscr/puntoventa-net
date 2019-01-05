@@ -1,9 +1,8 @@
-﻿using LeandroSoftware.AccesoDatos.Dominio.Entidades;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Web.Script.Serialization;
 
-namespace LeandroSoftware.PuntoVenta.Core
+namespace LeandroSoftware.Core.CustomClasses
 {
     public class CustomJavascriptSerializer : JavaScriptSerializer
     {

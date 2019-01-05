@@ -1,4 +1,5 @@
 Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
+Imports LeandroSoftware.AccesoDatos.ClienteWCF
 
 Public Class FrmCuentaBanco
 #Region "Variables"
@@ -27,7 +28,7 @@ Public Class FrmCuentaBanco
     Private Async Sub FrmCuentaBanco_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         If intIdCuenta > 0 Then
             Try
-                datos = Await ClienteWCF.ObtenerCuentaBanco(intIdCuenta)
+                datos = Await PuntoventaWCF.ObtenerCuentaBanco(intIdCuenta)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Close()
@@ -66,10 +67,10 @@ Public Class FrmCuentaBanco
         datos.Saldo = txtSaldo.Text
         Try
             If datos.IdCuenta = 0 Then
-                Dim strIdCuenta = Await ClienteWCF.AgregarCuentaBanco(datos)
+                Dim strIdCuenta = Await PuntoventaWCF.AgregarCuentaBanco(datos)
                 txtIdCuenta.Text = strIdCuenta
             Else
-                Await ClienteWCF.ActualizarCuentaBanco(datos)
+                Await PuntoventaWCF.ActualizarCuentaBanco(datos)
             End If
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)

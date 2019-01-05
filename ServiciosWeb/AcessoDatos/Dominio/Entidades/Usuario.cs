@@ -17,8 +17,6 @@ namespace LeandroSoftware.AccesoDatos.Dominio.Entidades
         public int IdUsuario { get; set; }
         public string CodigoUsuario { get; set; }
         public string Clave { get; set; }
-        [NotMapped]
-        public string ClaveSinEncriptar { get; set; }
         public bool Modifica { get; set; }
         public bool AutorizaCredito { get; set; }
         [NotMapped]

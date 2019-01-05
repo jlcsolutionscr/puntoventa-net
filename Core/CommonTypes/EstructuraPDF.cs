@@ -1,8 +1,8 @@
 ﻿
-using System.Collections.Generic;
 using System.Drawing;
+using System.Collections.Generic;
 
-namespace LeandroSoftware.Core
+namespace LeandroSoftware.Puntoventa.CommonTypes
 {
     public class EstructuraPDF
     {

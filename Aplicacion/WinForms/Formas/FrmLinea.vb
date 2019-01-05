@@ -1,4 +1,5 @@
 Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
+Imports LeandroSoftware.AccesoDatos.ClienteWCF
 
 Public Class FrmLinea
 #Region "Variables"
@@ -22,7 +23,7 @@ Public Class FrmLinea
 
     Private Async Sub CargarTipoLinea()
         Try
-            cboTipoProducto.DataSource = Await ClienteWCF.ObtenerListaTipoProducto()
+            cboTipoProducto.DataSource = Await PuntoventaWCF.ObtenerListaTipoProducto()
             cboTipoProducto.ValueMember = "IdTipoProducto"
             cboTipoProducto.DisplayMember = "Descripcion"
         Catch ex As Exception
@@ -37,7 +38,7 @@ Public Class FrmLinea
         CargarTipoLinea()
         If intIdLinea > 0 Then
             Try
-                datos = Await ClienteWCF.ObtenerLinea(intIdLinea)
+                datos = Await PuntoventaWCF.ObtenerLinea(intIdLinea)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Close()
@@ -74,10 +75,10 @@ Public Class FrmLinea
         datos.Descripcion = txtDescripcion.Text
         Try
             If datos.IdLinea = 0 Then
-                Dim strIdLinea = Await ClienteWCF.AgregarLinea(datos)
+                Dim strIdLinea = Await PuntoventaWCF.AgregarLinea(datos)
                 txtIdLinea.Text = strIdLinea
             Else
-                Await ClienteWCF.ActualizarLinea(datos)
+                Await PuntoventaWCF.ActualizarLinea(datos)
             End If
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)

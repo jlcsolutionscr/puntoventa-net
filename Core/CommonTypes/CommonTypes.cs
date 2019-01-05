@@ -1,4 +1,4 @@
-﻿namespace LeandroSoftware.Core.CommonTypes
+﻿namespace LeandroSoftware.Puntoventa.CommonTypes
 {
     public static class StaticTipoMoneda
     {

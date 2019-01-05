@@ -1,5 +1,6 @@
-Imports LeandroSoftware.Core.CommonTypes
+Imports LeandroSoftware.Puntoventa.CommonTypes
 Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
+Imports LeandroSoftware.AccesoDatos.ClienteWCF
 
 Public Class FrmMenuReportes
 #Region "Variables"
@@ -43,7 +44,7 @@ Public Class FrmMenuReportes
         End If
     End Sub
 
-    Private Sub CmdVistaPrevia_Click(sender As Object, e As EventArgs) Handles CmdVistaPrevia.Click
+    Private Async Sub CmdVistaPrevia_Click(sender As Object, e As EventArgs) Handles CmdVistaPrevia.Click
         Dim formReport As New frmRptViewer
         Dim intIdCliente As Integer
         Dim intIdProveedor As Integer
@@ -92,7 +93,7 @@ Public Class FrmMenuReportes
                             Dim formaBancoAdquiriente As New FrmMenuBancoAdquiriente
                             If formaBancoAdquiriente.ShowDialog() = System.Windows.Forms.DialogResult.OK Then
                                 intBancoAdquiriente = FrmMenuPrincipal.intBusqueda
-                                'banco = servicioMantenimiento.ObtenerBancoAdquiriente(FrmMenuPrincipal.intBusqueda)
+                                banco = Await PuntoventaWCF.ObtenerBancoAdquiriente(FrmMenuPrincipal.intBusqueda)
                                 strDescripcionReporte = "Reporte de Ventas con Tarjeta del Banco " & banco.Descripcion
                             Else
                                 intFormaPago = 0

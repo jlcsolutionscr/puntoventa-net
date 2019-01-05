@@ -1,6 +1,6 @@
 Imports System.Threading
 Imports System.Configuration
-Imports LeandroSoftware.Core
+Imports LeandroSoftware.AccesoDatos.ClienteWCF
 Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
 Imports System.Collections.Generic
 Imports LeandroSoftware.AccesoDatos.TiposDatos
@@ -19,11 +19,12 @@ Public Class FrmMenuPrincipal
     Public dgvDecimal As DataGridViewCellStyle
     Public dgvInteger As DataGridViewCellStyle
     Public strThumbprint As String
+    Public strApplicationKey As String
     Public strIdentificacion As String
     Public intSucursal As Integer
     Public intTerminal As Integer
     Public lstListaReportes As New List(Of String)
-    Public strServicioPuntoventaURL As String
+    Public strKey As String
     Public decTipoCambioDolar As Decimal
     Public datosConfig As DatosConfiguracion
 #End Region
@@ -414,11 +415,11 @@ Public Class FrmMenuPrincipal
         End Try
         Try
             strThumbprint = appSettings.Get("AppThumptprint")
+            strApplicationKey = appSettings.Get("ApplicationKey")
             strIdentificacion = appSettings.Get("Identificacion")
             intSucursal = Integer.Parse(appSettings.Get("Sucursal"))
             intTerminal = Integer.Parse(appSettings.Get("Caja"))
-            strServicioPuntoventaURL = appSettings.Get("ServicioPuntoventaURL")
-            Dim bolCertificadoValido As Boolean = Utilitario.VerificarCertificado(strThumbprint)
+            Dim bolCertificadoValido As Boolean = LeandroSoftware.Core.Utilitario.VerificarCertificado(strThumbprint)
             If Not bolCertificadoValido Then
                 MessageBox.Show("No se logró validar el certificado requerido por la aplicación. Por favor contacte con su proveedor del servicio. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Close()
@@ -429,7 +430,13 @@ Public Class FrmMenuPrincipal
             Close()
             Exit Sub
         End Try
-
+        Try
+            strKey = Core.Utilitario.ObtenerLlaveEncriptadoLocal(strThumbprint, strApplicationKey)
+        Catch ex As Exception
+            MessageBox.Show("Error al validar la llave criptográfica de la aplicación. Consulte con su proveedor del servicio.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            Close()
+            Exit Sub
+        End Try
         Dim formSeguridad As New FrmSeguridad()
         Thread.CurrentThread.CurrentCulture = New Globalization.CultureInfo("es-CR")
         Thread.CurrentThread.CurrentCulture.NumberFormat.CurrencySymbol = "¢"
@@ -475,7 +482,7 @@ Public Class FrmMenuPrincipal
             Close()
             Exit Sub
         End If
-        Dim strSerial As String = Utilitario.ObtenerSerialEquipo()
+        Dim strSerial As String = Core.Utilitario.ObtenerSerialEquipo()
         For Each detalleEmpresa As DetalleRegistro In empresaGlobal.DetalleRegistro
             If detalleEmpresa.ValorRegistro = strSerial Then
                 bolEquipoRegistrado = True
@@ -512,7 +519,7 @@ Public Class FrmMenuPrincipal
             .NullValue = "0",
             .Alignment = DataGridViewContentAlignment.MiddleCenter
         }
-        decTipoCambioDolar = Await ClienteWCF.ObtenerTipoCambioDolar()
+        decTipoCambioDolar = Await PuntoventaWCF.ObtenerTipoCambioDolar()
         picLoader.Visible = False
         Dim formInicio As New FrmInicio()
         formInicio.ShowDialog()

@@ -135,7 +135,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">
@@ -150,6 +152,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Core\ClienteWCF\ClienteWCF.csproj">
+      <Project>{2602DD72-5AA0-45A2-A4A6-4805DA33C318}</Project>
+      <Name>ClienteWCF</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Core\Core.csproj">
       <Project>{fa3c5bce-3db6-486e-b16b-8b7f76eef63f}</Project>
       <Name>Core</Name>
@@ -157,10 +163,6 @@
     <ProjectReference Include="..\..\ServiciosWeb\AcessoDatos\Dominio\Dominio.csproj">
       <Project>{74E3681E-1245-4268-ADB9-D76DA18B2FE0}</Project>
       <Name>Dominio</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\ServiciosWeb\AcessoDatos\TiposDatos\TiposDatos.csproj">
-      <Project>{DF822CEB-DFF9-4F4F-8BC1-D6C0CBF54D4B}</Project>
-      <Name>TiposDatos</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

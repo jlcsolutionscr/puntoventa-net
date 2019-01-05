@@ -1,5 +1,5 @@
 Imports System.Collections.Generic
-Imports LeandroSoftware.Core.CommonTypes
+Imports LeandroSoftware.Puntoventa.CommonTypes
 Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
 
 Public Class FrmAplicaReciboCxP

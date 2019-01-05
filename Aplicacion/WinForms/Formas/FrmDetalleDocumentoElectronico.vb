@@ -3,6 +3,7 @@ Imports System.Xml
 Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
 Imports System.Text
 Imports System.Threading.Tasks
+Imports LeandroSoftware.AccesoDatos.ClienteWCF
 
 Public Class FrmDetalleDocumentoElectronico
 #Region "Variables"
@@ -48,7 +49,7 @@ Public Class FrmDetalleDocumentoElectronico
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
         Try
-            listadoDocumentosProcesados = Await ClienteWCF.ObtenerListaDocumentosElectronicosProcesados(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina)
+            listadoDocumentosProcesados = Await PuntoventaWCF.ObtenerListaDocumentosElectronicosProcesados(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina)
             dgvDatos.DataSource = listadoDocumentosProcesados
             If listadoDocumentosProcesados.Count() > 0 Then
                 btnMostrarRespuesta.Enabled = True
@@ -66,7 +67,7 @@ Public Class FrmDetalleDocumentoElectronico
 
     Private Async Function ObtenerCantidadDocumentosProcesados() As Task
         Try
-            intTotalDocumentos = Await ClienteWCF.ObtenerTotalDocumentosElectronicosProcesados(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
+            intTotalDocumentos = Await PuntoventaWCF.ObtenerTotalDocumentosElectronicosProcesados(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -129,7 +130,7 @@ Public Class FrmDetalleDocumentoElectronico
                 Dim intIndex As Integer = dgvDatos.CurrentRow.Index
                 Dim documento As DocumentoElectronico = listadoDocumentosProcesados.Item(intIndex)
                 If documento.EstadoEnvio = "aceptado" Or documento.EstadoEnvio = "rechazado" Then
-                    Dim consulta As DocumentoElectronico = Await ClienteWCF.ObtenerDocumentoElectronico(documento.IdDocumento)
+                    Dim consulta As DocumentoElectronico = Await PuntoventaWCF.ObtenerDocumentoElectronico(documento.IdDocumento)
                     If consulta.Respuesta IsNot Nothing Then
                         rtxDetalleRespuesta.Visible = True
                         Dim sw As New StringWriter()

@@ -1,17 +1,15 @@
 ﻿using LeandroSoftware.AccesoDatos.Dominio.Entidades;
-using LeandroSoftware.AccesoDatos.TiposDatos;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Net.Http;
 using System.Web.Script.Serialization;
 using System.Windows.Forms;
 using System.Data;
 using System.Linq;
 using LeandroSoftware.Core;
 using System.Threading.Tasks;
-using LeandroSoftware.PuntoVenta.Core;
+using LeandroSoftware.AccesoDatos.ClienteWCF;
 
 namespace LeandroSoftware.Activator
 {
@@ -25,9 +23,6 @@ namespace LeandroSoftware.Activator
         private bool bolLogoModificado = false;
         private bool bolCertificadoModificado = false;
         private string strRutaCertificado;
-        private CustomJavascriptSerializer serializer = new CustomJavascriptSerializer();
-        private static HttpClient client = new HttpClient();
-        public string strServicioPuntoventaURL;
         public bool bolEditing;
         public int intIdEmpresa = -1;
 
@@ -195,17 +190,18 @@ namespace LeandroSoftware.Activator
 
             dvcModuloPorEmpresa.DataPropertyName = "IdModulo";
             dvcModuloPorEmpresa.HeaderText = "";
-            dvcModuloPorEmpresa.Width = 5;
-            dvcModuloPorEmpresa.Visible = false;
-            dvcModuloPorEmpresa.ReadOnly = false;
+            dvcModuloPorEmpresa.Width = 20;
+            dvcModuloPorEmpresa.Visible = true;
+            dvcModuloPorEmpresa.ReadOnly = true;
             dgvModuloPorEmpresa.Columns.Add(dvcModuloPorEmpresa);
 
             dvcDescripcion.DataPropertyName = "Descripcion";
             dvcDescripcion.HeaderText = "Módulo";
-            dvcDescripcion.Width = 342;
+            dvcDescripcion.Width = 322;
             dvcDescripcion.Visible = true;
             dvcDescripcion.ReadOnly = true;
             dgvModuloPorEmpresa.Columns.Add(dvcDescripcion);
+            dgvModuloPorEmpresa.Columns[0].Visible = false;
 
             DataGridViewTextBoxColumn dvcReportePorEmpresa = new DataGridViewTextBoxColumn();
             DataGridViewTextBoxColumn dvcNombreReporte = new DataGridViewTextBoxColumn();
@@ -215,14 +211,14 @@ namespace LeandroSoftware.Activator
 
             dvcReportePorEmpresa.DataPropertyName = "IdReporte";
             dvcReportePorEmpresa.HeaderText = "";
-            dvcReportePorEmpresa.Width = 5;
-            dvcReportePorEmpresa.Visible = false;
-            dvcReportePorEmpresa.ReadOnly = false;
+            dvcReportePorEmpresa.Width = 20;
+            dvcReportePorEmpresa.Visible = true;
+            dvcReportePorEmpresa.ReadOnly = true;
             dgvReportePorEmpresa.Columns.Add(dvcReportePorEmpresa);
 
             dvcNombreReporte.DataPropertyName = "NombreReporte";
             dvcNombreReporte.HeaderText = "Reporte";
-            dvcNombreReporte.Width = 342;
+            dvcNombreReporte.Width = 322;
             dvcNombreReporte.Visible = true;
             dvcNombreReporte.ReadOnly = true;
             dgvReportePorEmpresa.Columns.Add(dvcNombreReporte);
@@ -232,44 +228,20 @@ namespace LeandroSoftware.Activator
         {
             try
             {
-                RequestDTO peticion = new RequestDTO
-                {
-                    NombreMetodo = "ObtenerListaTipoIdentificacion",
-                    DatosPeticion = ""
-                };
-                string strPeticion = new JavaScriptSerializer().Serialize(peticion);
-                string strRespuesta = await Utilitario.EjecutarConsulta(strPeticion, strServicioPuntoventaURL, "");
-                strRespuesta = serializer.Deserialize<string>(strRespuesta);
                 IList<TipoIdentificacion> dsTipoIdentificacion = Array.Empty<TipoIdentificacion>();
-                dsTipoIdentificacion = serializer.Deserialize<List<TipoIdentificacion>>(strRespuesta);
+                dsTipoIdentificacion = await PuntoventaWCF.ObtenerListaTipoIdentificacion();
                 cboTipoIdentificacion.DataSource = dsTipoIdentificacion;
                 cboTipoIdentificacion.ValueMember = "IdTipoIdentificacion";
                 cboTipoIdentificacion.DisplayMember = "Descripcion";
                 // Carga listado módulos
-                peticion = new RequestDTO
-                {
-                    NombreMetodo = "ObtenerListaModulos",
-                    DatosPeticion = ""
-                };
-                strPeticion = new JavaScriptSerializer().Serialize(peticion);
-                strRespuesta = await Utilitario.EjecutarConsulta(strPeticion, strServicioPuntoventaURL, "");
-                strRespuesta = serializer.Deserialize<string>(strRespuesta);
                 IList<Modulo> dsModulos = Array.Empty<Modulo>();
-                dsModulos = serializer.Deserialize<List<Modulo>>(strRespuesta);
+                dsModulos = await PuntoventaWCF.ObtenerlistaModulos();
                 cboModuloPorEmpresa.DataSource = dsModulos;
                 cboModuloPorEmpresa.ValueMember = "IdModulo";
                 cboModuloPorEmpresa.DisplayMember = "Descripcion";
                 // Carga listado reportes
-                peticion = new RequestDTO
-                {
-                    NombreMetodo = "ObtenerListaReportes",
-                    DatosPeticion = ""
-                };
-                strPeticion = new JavaScriptSerializer().Serialize(peticion);
-                strRespuesta = await Utilitario.EjecutarConsulta(strPeticion, strServicioPuntoventaURL, "");
-                strRespuesta = serializer.Deserialize<string>(strRespuesta);
                 IList<CatalogoReporte> dsReportes = Array.Empty<CatalogoReporte>();
-                dsReportes = serializer.Deserialize<List<CatalogoReporte>>(strRespuesta);
+                dsReportes = await PuntoventaWCF.ObtenerListaReportes();
                 cboReportePorEmpresa.DataSource = dsReportes;
                 cboReportePorEmpresa.ValueMember = "IdReporte";
                 cboReportePorEmpresa.DisplayMember = "NombreReporte";
@@ -283,18 +255,10 @@ namespace LeandroSoftware.Activator
 
         public async Task CargarProvincias()
         {
-            RequestDTO peticion = new RequestDTO
-            {
-                NombreMetodo = "ObtenerListaProvincias",
-                DatosPeticion = ""
-            };
             try
             {
-                string strPeticion = new JavaScriptSerializer().Serialize(peticion);
-                string strRespuesta = await Utilitario.EjecutarConsulta(strPeticion, strServicioPuntoventaURL, "");
-                strRespuesta = serializer.Deserialize<string>(strRespuesta);
                 IList<Provincia> dsDataSet = Array.Empty<Provincia>();
-                dsDataSet = serializer.Deserialize<List<Provincia>>(strRespuesta);
+                dsDataSet = await PuntoventaWCF.ObtenerListaProvincias();
                 cboProvincia.DataSource = dsDataSet;
                 cboProvincia.ValueMember = "IdProvincia";
                 cboProvincia.DisplayMember = "Descripcion";
@@ -308,18 +272,10 @@ namespace LeandroSoftware.Activator
 
         public async Task CargarCantones(int intIdProvincia)
         {
-            RequestDTO peticion = new RequestDTO
-            {
-                NombreMetodo = "ObtenerListaCantones",
-                DatosPeticion = "{IdProvincia: " + intIdProvincia + "}"
-            };
             try
             {
-                string strPeticion = new JavaScriptSerializer().Serialize(peticion);
-                string strRespuesta = await Utilitario.EjecutarConsulta(strPeticion, strServicioPuntoventaURL, "");
-                strRespuesta = serializer.Deserialize<string>(strRespuesta);
                 IList<Canton> dsDataSet = Array.Empty<Canton>();
-                dsDataSet = serializer.Deserialize<List<Canton>>(strRespuesta);
+                dsDataSet = await PuntoventaWCF.ObtenerListaCantones(intIdProvincia);
                 cboCanton.DataSource = dsDataSet;
                 cboCanton.ValueMember = "IdCanton";
                 cboCanton.DisplayMember = "Descripcion";
@@ -333,18 +289,10 @@ namespace LeandroSoftware.Activator
 
         public async Task CargarDistritos(int intIdProvincia, int intIdCanton)
         {
-            RequestDTO peticion = new RequestDTO
-            {
-                NombreMetodo = "ObtenerListaDistritos",
-                DatosPeticion = "{IdProvincia: " + intIdProvincia + ",IdCanton: " + intIdCanton + "}"
-            };
             try
             {
-                string strPeticion = new JavaScriptSerializer().Serialize(peticion);
-                string strRespuesta = await Utilitario.EjecutarConsulta(strPeticion, strServicioPuntoventaURL, "");
-                strRespuesta = serializer.Deserialize<string>(strRespuesta);
                 IList<Distrito> dsDataSet = Array.Empty<Distrito>();
-                dsDataSet = serializer.Deserialize<List<Distrito>>(strRespuesta);
+                dsDataSet = await PuntoventaWCF.ObtenerListaDistritos(intIdProvincia, intIdCanton);
                 cboDistrito.DataSource = dsDataSet;
                 cboDistrito.ValueMember = "IdDistrito";
                 cboDistrito.DisplayMember = "Descripcion";
@@ -358,18 +306,10 @@ namespace LeandroSoftware.Activator
 
         public async Task CargarBarrios(int intIdProvincia, int intIdCanton, int intIdDistrito)
         {
-            RequestDTO peticion = new RequestDTO
-            {
-                NombreMetodo = "ObtenerListaBarrios",
-                DatosPeticion = "{IdProvincia: " + intIdProvincia + ", IdCanton: " + intIdCanton + ", IdDistrito: " + intIdDistrito + "}"
-            };
             try
             {
-                string strPeticion = new JavaScriptSerializer().Serialize(peticion);
-                string strRespuesta = await Utilitario.EjecutarConsulta(strPeticion, strServicioPuntoventaURL, "");
-                strRespuesta = serializer.Deserialize<string>(strRespuesta);
                 IList<Barrio> dsDataSet = Array.Empty<Barrio>();
-                dsDataSet = serializer.Deserialize<List<Barrio>>(strRespuesta);
+                dsDataSet = await PuntoventaWCF.ObtenerListaBarrios(intIdProvincia, intIdCanton, intIdDistrito);
                 cboBarrio.DataSource = dsDataSet;
                 cboBarrio.ValueMember = "IdBarrio";
                 cboBarrio.DisplayMember = "Descripcion";
@@ -398,19 +338,11 @@ namespace LeandroSoftware.Activator
                 dgvReportePorEmpresa.DataSource = dtReportePorEmpresa;
                 if (bolEditing)
                 {
-                    RequestDTO peticion = new RequestDTO
-                    {
-                        NombreMetodo = "ObtenerEmpresa",
-                        DatosPeticion = "{IdEmpresa: " + intIdEmpresa + "}"
-                    };
                     try
                     {
-                        string strPeticion = new JavaScriptSerializer().Serialize(peticion);
-                        string strRespuesta = await Utilitario.EjecutarConsulta(strPeticion, strServicioPuntoventaURL, "");
-                        strRespuesta = serializer.Deserialize<string>(strRespuesta);
-                        if (strRespuesta != "")
+                        empresa = await PuntoventaWCF.ObtenerEmpresa(intIdEmpresa);
+                        if (empresa != null)
                         {
-                            empresa = serializer.Deserialize<Empresa>(strRespuesta);
                             txtIdEmpresa.Text = empresa.IdEmpresa.ToString();
                             txtNombreEmpresa.Text = empresa.NombreEmpresa;
                             txtNombreComercial.Text = empresa.NombreComercial;
@@ -571,32 +503,16 @@ namespace LeandroSoftware.Activator
                     reporte.IdReporte = int.Parse(row["IdReporte"].ToString());
                     empresa.ReportePorEmpresa.Add(reporte);
                 }
-                string strDatos = serializer.Serialize(empresa);
-                RequestDTO peticion = new RequestDTO
+                if (txtIdEmpresa.Text == "")
                 {
-                    NombreMetodo = txtIdEmpresa.Text == "" ? "AgregarEmpresa" : "ActualizarEmpresa",
-                    DatosPeticion = strDatos
-                };
-                try
-                {
-                    string strPeticion = serializer.Serialize(peticion);
-                    string strRespuesta = null;
-                    if (txtIdEmpresa.Text == "")
-                    {
-                        strRespuesta = await Utilitario.EjecutarConsulta(strPeticion, strServicioPuntoventaURL, "");
-                        strRespuesta = new JavaScriptSerializer().Deserialize<string>(strRespuesta);
-                        txtIdEmpresa.Text = strRespuesta;
-                    }
-                    else
-                    {
-                        await Utilitario.Ejecutar(strPeticion, strServicioPuntoventaURL, "");
-                    }
-                       
+                    string strRespuesta = await PuntoventaWCF.AgregarEmpresa(empresa);
+                    strRespuesta = new JavaScriptSerializer().Deserialize<string>(strRespuesta);
+                    txtIdEmpresa.Text = strRespuesta;
+                    await PuntoventaWCF.AgregarUsuarioPorEmpresa(1, int.Parse(txtIdEmpresa.Text));
                 }
-                catch (Exception ex)
+                else
                 {
-                    MessageBox.Show("Error al actualizar el registro: " + ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
+                    await PuntoventaWCF.ActualizarEmpresa(empresa);
                 }
                 if (bolLogoModificado && picLogo.Image != null)
                 {
@@ -606,40 +522,12 @@ namespace LeandroSoftware.Activator
                         picLogo.Image.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
                         bytLogotipo = stream.ToArray();
                     }
-                    peticion = new RequestDTO
-                    {
-                        NombreMetodo = "ActualizarLogoEmpresa",
-                        DatosPeticion = "{IdEmpresa: " + txtIdEmpresa.Text + ", Logotipo: '" + Convert.ToBase64String(bytLogotipo) + "'}"
-                    };
-                    try
-                    {
-                        string strPeticion = new JavaScriptSerializer().Serialize(peticion);
-                        await Utilitario.Ejecutar(strPeticion, strServicioPuntoventaURL, "");
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("Error al actualizar el registro: " + ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        return;
-                    }
+                    await PuntoventaWCF.ActualizarLogoEmpresa(int.Parse(txtIdEmpresa.Text), Convert.ToBase64String(bytLogotipo));
                 }
                 if (bolCertificadoModificado && txtNombreCertificado.Text != "")
                 {
                     byte[] bytCertificado = File.ReadAllBytes(strRutaCertificado);
-                    peticion = new RequestDTO
-                    {
-                        NombreMetodo = "ActualizarCertificadoEmpresa",
-                        DatosPeticion = "{IdEmpresa: " + txtIdEmpresa.Text + ", Certificado: '" + Convert.ToBase64String(bytCertificado) + "'}"
-                    };
-                    try
-                    {
-                        string strPeticion = new JavaScriptSerializer().Serialize(peticion);
-                        await Utilitario.Ejecutar(strPeticion, strServicioPuntoventaURL, "");
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("Error al actualizar el registro: " + ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        return;
-                    }
+                    await PuntoventaWCF.ActualizarCertificadoEmpresa(int.Parse(txtIdEmpresa.Text), Convert.ToBase64String(bytCertificado));
                 }
                 Close();
             }

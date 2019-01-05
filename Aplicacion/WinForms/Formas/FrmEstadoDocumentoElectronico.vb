@@ -1,5 +1,6 @@
 ﻿Imports System.Threading.Tasks
 Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
+Imports LeandroSoftware.AccesoDatos.ClienteWCF
 
 Public Class FrmEstadoDocumentoElectronico
 #Region "Variables"
@@ -41,7 +42,7 @@ Public Class FrmEstadoDocumentoElectronico
     Private Async Sub ActualizarDatos()
         Try
             picLoader.Visible = True
-            listadoDocumentosPendientes = Await ClienteWCF.ObtenerListaDocumentosElectronicosEnProceso(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
+            listadoDocumentosPendientes = Await PuntoventaWCF.ObtenerListaDocumentosElectronicosEnProceso(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
             dgvDatos.DataSource = listadoDocumentosPendientes
             If listadoDocumentosPendientes.Count() > 0 Then
                 btnProcesar.Enabled = True
@@ -68,7 +69,7 @@ Public Class FrmEstadoDocumentoElectronico
     Private Async Sub BtnProcesar_Click(sender As Object, e As EventArgs) Handles btnProcesar.Click
         Try
             picLoader.Visible = True
-            Await ClienteWCF.ProcesarDocumentosElectronicosPendientes(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
+            Await PuntoventaWCF.ProcesarDocumentosElectronicosPendientes(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
             ActualizarDatos()
             picLoader.Visible = False
         Catch ex As Exception

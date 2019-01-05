@@ -14,8 +14,8 @@ using System.Web.Configuration;
 using Unity;
 using Unity.Injection;
 using Unity.Lifetime;
-using LeandroSoftware.Core.CommonTypes;
-using LeandroSoftware.PuntoVenta.Core;
+using LeandroSoftware.Puntoventa.CommonTypes;
+using LeandroSoftware.Core.CustomClasses;
 
 namespace LeandroSoftware.AccesoDatos.ServicioWCF
 {
@@ -78,6 +78,7 @@ namespace LeandroSoftware.AccesoDatos.ServicioWCF
                 JavaScriptSerializer serializer = new CustomJavascriptSerializer();
                 JObject parametrosJO;
                 int intIdEmpresa;
+                int intIdUsuario;
                 int intIdDocumento;
                 switch (datos.NombreMetodo)
                 {
@@ -145,11 +146,17 @@ namespace LeandroSoftware.AccesoDatos.ServicioWCF
                         break;
                     case "ActualizarUsuario":
                         Usuario usuario = serializer.Deserialize<Usuario>(datos.DatosPeticion);
-                        servicioMantenimiento.ActualizarUsuario(usuario, appSettings["AppThumptprint"]);
+                        servicioMantenimiento.ActualizarUsuario(usuario);
+                        break;
+                    case "AgregarUsuarioPorEmpresa":
+                        parametrosJO = JObject.Parse(datos.DatosPeticion);
+                        intIdUsuario = int.Parse(parametrosJO.Property("IdUsuario").Value.ToString());
+                        intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
+                        servicioMantenimiento.AgregarUsuarioPorEmpresa(intIdUsuario, intIdEmpresa);
                         break;
                     case "EliminarUsuario":
                         parametrosJO = JObject.Parse(datos.DatosPeticion);
-                        int intIdUsuario = int.Parse(parametrosJO.Property("IdUsuario").Value.ToString());
+                        intIdUsuario = int.Parse(parametrosJO.Property("IdUsuario").Value.ToString());
                         servicioMantenimiento.EliminarUsuario(intIdUsuario);
                         break;
                     case "ActualizarCuentaEgreso":
@@ -275,7 +282,7 @@ namespace LeandroSoftware.AccesoDatos.ServicioWCF
                         strIdentificacion = parametrosJO.Property("Identificacion").Value.ToString();
                         string strUsuario = parametrosJO.Property("Usuario").Value.ToString();
                         string strClave = parametrosJO.Property("Clave").Value.ToString();
-                        usuario = servicioMantenimiento.ValidarCredenciales(strIdentificacion, strUsuario, strClave, appSettings["AppThumptprint"]);
+                        usuario = servicioMantenimiento.ValidarCredenciales(strIdentificacion, strUsuario, strClave);
                         if (usuario != null)
                         {
                             foreach (RolePorUsuario role in usuario.RolePorUsuario)
@@ -541,8 +548,9 @@ namespace LeandroSoftware.AccesoDatos.ServicioWCF
                         break;
                     case "ObtenerProductoPorCodigo":
                         parametrosJO = JObject.Parse(datos.DatosPeticion);
+                        intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                         strCodigo = parametrosJO.Property("Codigo").Value.ToString();
-                        producto = servicioMantenimiento.ObtenerProductoPorCodigo(strCodigo);
+                        producto = servicioMantenimiento.ObtenerProductoPorCodigo(intIdEmpresa, strCodigo);
                         if (producto != null)
                             strRespuesta = serializer.Serialize(producto);
                         break;
@@ -562,14 +570,22 @@ namespace LeandroSoftware.AccesoDatos.ServicioWCF
                     case "ObtenerUsuario":
                         parametrosJO = JObject.Parse(datos.DatosPeticion);
                         int intIdUsuario = int.Parse(parametrosJO.Property("IdUsuario").Value.ToString());
-                        usuario = servicioMantenimiento.ObtenerUsuario(intIdUsuario, appSettings["AppThumptprint"]);
+                        usuario = servicioMantenimiento.ObtenerUsuario(intIdUsuario);
                         if (usuario != null)
                             strRespuesta = serializer.Serialize(usuario);
                         break;
                     case "AgregarUsuario":
                         usuario = serializer.Deserialize<Usuario>(datos.DatosPeticion);
-                        Usuario nuevoUsuario = servicioMantenimiento.AgregarUsuario(usuario, appSettings["AppThumptprint"]);
+                        Usuario nuevoUsuario = servicioMantenimiento.AgregarUsuario(usuario);
                         strRespuesta = nuevoUsuario.IdUsuario.ToString();
+                        break;
+                    case "ActualizarClaveUsuario":
+                        parametrosJO = JObject.Parse(datos.DatosPeticion);
+                        intIdUsuario = int.Parse(parametrosJO.Property("IdUsuario").Value.ToString());
+                        strClave = parametrosJO.Property("Clave").Value.ToString();
+                        usuario = servicioMantenimiento.ActualizarClaveUsuario(intIdUsuario, strClave);
+                        if (usuario != null)
+                            strRespuesta = serializer.Serialize(usuario);
                         break;
                     case "ObtenerListaCuentasEgreso":
                         parametrosJO = JObject.Parse(datos.DatosPeticion);
@@ -623,6 +639,13 @@ namespace LeandroSoftware.AccesoDatos.ServicioWCF
                         parametrosJO = JObject.Parse(datos.DatosPeticion);
                         int intIdVendedor = int.Parse(parametrosJO.Property("IdVendedor").Value.ToString());
                         vendedor = servicioMantenimiento.ObtenerVendedor(intIdVendedor);
+                        if (vendedor != null)
+                            strRespuesta = serializer.Serialize(vendedor);
+                        break;
+                    case "ObtenerVendedorPorDefecto":
+                        parametrosJO = JObject.Parse(datos.DatosPeticion);
+                        intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
+                        vendedor = servicioMantenimiento.ObtenerVendedorPorDefecto(intIdEmpresa);
                         if (vendedor != null)
                             strRespuesta = serializer.Serialize(vendedor);
                         break;
@@ -723,6 +746,13 @@ namespace LeandroSoftware.AccesoDatos.ServicioWCF
                         parametrosJO = JObject.Parse(datos.DatosPeticion);
                         intIdDocumento = int.Parse(parametrosJO.Property("IdDocumento").Value.ToString());
                         documento = servicioFacturacion.ObtenerDocumentoElectronico(intIdDocumento);
+                        if (documento != null)
+                            strRespuesta = serializer.Serialize(documento);
+                        break;
+                    case "ObtenerDocumentoElectronicoPorClave":
+                        parametrosJO = JObject.Parse(datos.DatosPeticion);
+                        strClave = parametrosJO.Property("Clave").Value.ToString();
+                        documento = servicioFacturacion.ObtenerDocumentoElectronicoPorClave(strClave);
                         if (documento != null)
                             strRespuesta = serializer.Serialize(documento);
                         break;

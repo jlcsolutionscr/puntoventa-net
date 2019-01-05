@@ -3,7 +3,7 @@ using System.Data;
 using System.Linq;
 using System.Collections.Generic;
 using LeandroSoftware.Core;
-using LeandroSoftware.Core.CommonTypes;
+using LeandroSoftware.Puntoventa.CommonTypes;
 using LeandroSoftware.AccesoDatos.Datos;
 using LeandroSoftware.AccesoDatos.Dominio.Entidades;
 using log4net;

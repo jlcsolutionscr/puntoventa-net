@@ -1,5 +1,5 @@
 Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
-Imports LeandroSoftware.Core.CommonTypes
+Imports LeandroSoftware.Puntoventa.CommonTypes
 
 Public Class FrmParametroContable
 #Region "Variables"
