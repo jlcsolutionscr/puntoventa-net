@@ -19,7 +19,6 @@ using FirmaXadesNet.Crypto;
 using LeandroSoftware.Core.Servicios;
 using Unity;
 using Newtonsoft.Json.Linq;
-using LeandroSoftware.Core;
 using System.Drawing;
 using System.Web.Hosting;
 using System.Net.Http.Headers;
@@ -931,7 +930,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     SigningDate = DateTime.Now,
                     SignaturePackaging = SignaturePackaging.ENVELOPED
                 };
-                X509Certificate2 uidCert = new X509Certificate2(empresa.Certificado, empresa.PinCertificado, X509KeyStorageFlags.UserKeySet);
+                X509Certificate2 uidCert = new X509Certificate2(empresa.Certificado, empresa.PinCertificado, X509KeyStorageFlags.MachineKeySet);
                 using (Signer signer2 = signatureParameters.Signer = new Signer(uidCert))
                 using (MemoryStream smDatos = new MemoryStream(mensajeEncoded))
                 {
