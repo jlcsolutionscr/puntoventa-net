@@ -93,6 +93,11 @@ namespace LeandroSoftware.AccesoDatos.ServicioWCF
                         string strLogotipo = parametrosJO.Property("Logotipo").Value.ToString();
                         servicioMantenimiento.ActualizarLogoEmpresa(intIdEmpresa, strLogotipo);
                         break;
+                    case "RemoverLogoEmpresa":
+                        parametrosJO = JObject.Parse(datos.DatosPeticion);
+                        intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
+                        servicioMantenimiento.ActualizarLogoEmpresa(intIdEmpresa, "");
+                        break;
                     case "ActualizarCertificadoEmpresa":
                         parametrosJO = JObject.Parse(datos.DatosPeticion);
                         intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
@@ -213,12 +218,12 @@ namespace LeandroSoftware.AccesoDatos.ServicioWCF
                         int intSucursal = int.Parse(parametrosJO.Property("Sucursal").Value.ToString());
                         int intTerminal = int.Parse(parametrosJO.Property("Terminal").Value.ToString());
                         int intEstado = int.Parse(parametrosJO.Property("Estado").Value.ToString());
-                        servicioFacturacion.GeneraMensajeReceptor(strDatos, intIdEmpresa, intSucursal, intTerminal, intEstado);
+                        servicioFacturacion.GeneraMensajeReceptor(strDatos, intIdEmpresa, intSucursal, intTerminal, intEstado, configuracion);
                         break;
                     case "ProcesarDocumentosElectronicosPendientes":
                         parametrosJO = JObject.Parse(datos.DatosPeticion);
                         intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
-                        servicioFacturacion.ProcesarDocumentosElectronicosPendientes(intIdEmpresa, configuracion);
+                        servicioFacturacion.ProcesarDocumentosElectronicosPendientes(intIdEmpresa, servicioEnvioCorreo, configuracion);
                         break;
                     case "EnviarDocumentoElectronicoPendiente":
                         parametrosJO = JObject.Parse(datos.DatosPeticion);

@@ -55,7 +55,6 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     dbContext.CuentaEgresoRepository.Add(cuenta);
                     dbContext.Commit();
-                    return cuenta;
                 }
                 catch (BusinessException ex)
                 {
@@ -69,6 +68,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     throw new Exception("Se produjo un error agregando la cuenta de egreso. Por favor consulte con su proveedor.");
                 }
             }
+            return cuenta;
         }
 
         public void ActualizarCuentaEgreso(CuentaEgreso cuenta)

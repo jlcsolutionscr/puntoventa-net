@@ -118,6 +118,7 @@
             this.btnEliminaModulo = new System.Windows.Forms.Button();
             this.btnInsertaModulo = new System.Windows.Forms.Button();
             this.dgvModuloPorEmpresa = new System.Windows.Forms.DataGridView();
+            this.btnLimpiarLogo = new System.Windows.Forms.Button();
             this.tabContainer.SuspendLayout();
             this.TabGeneral.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picLogo)).BeginInit();
@@ -1002,6 +1003,7 @@
             // TabGeneral
             // 
             this.TabGeneral.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(193)))), ((int)(((byte)(215)))), ((int)(((byte)(225)))));
+            this.TabGeneral.Controls.Add(this.btnLimpiarLogo);
             this.TabGeneral.Controls.Add(this.btnCargarLogo);
             this.TabGeneral.Controls.Add(this.picLogo);
             this.TabGeneral.Controls.Add(this.chkUsaImpresoraImpacto);
@@ -1346,6 +1348,22 @@
             this.dgvModuloPorEmpresa.TabIndex = 205;
             this.dgvModuloPorEmpresa.TabStop = false;
             // 
+            // btnLimpiarLogo
+            // 
+            this.btnLimpiarLogo.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.btnLimpiarLogo.Cursor = System.Windows.Forms.Cursors.Default;
+            this.btnLimpiarLogo.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnLimpiarLogo.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.btnLimpiarLogo.Location = new System.Drawing.Point(97, 389);
+            this.btnLimpiarLogo.Name = "btnLimpiarLogo";
+            this.btnLimpiarLogo.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.btnLimpiarLogo.Size = new System.Drawing.Size(78, 26);
+            this.btnLimpiarLogo.TabIndex = 207;
+            this.btnLimpiarLogo.TabStop = false;
+            this.btnLimpiarLogo.Text = "Limpiar logo";
+            this.btnLimpiarLogo.UseVisualStyleBackColor = false;
+            this.btnLimpiarLogo.Click += new System.EventHandler(this.btnLimpiarLogo_Click);
+            // 
             // FrmEmpresa
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1522,6 +1540,7 @@
         public System.Windows.Forms.Button btnEliminaModulo;
         public System.Windows.Forms.Button btnInsertaModulo;
         internal System.Windows.Forms.DataGridView dgvModuloPorEmpresa;
+        public System.Windows.Forms.Button btnLimpiarLogo;
     }
 }
 

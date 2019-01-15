@@ -329,10 +329,6 @@ namespace LeandroSoftware.Activator
                 EstablecerPropiedadesDataGridView();
                 await CargarListaParametros();
                 await CargarProvincias();
-                await CargarCantones(1);
-                await CargarDistritos(1, 1);
-                await CargarBarrios(1, 1, 1);
-                bolLoading = false;
                 dgvEquipos.DataSource = dtEquipos;
                 dgvModuloPorEmpresa.DataSource = dtModuloPorEmpresa;
                 dgvReportePorEmpresa.DataSource = dtReportePorEmpresa;
@@ -348,6 +344,9 @@ namespace LeandroSoftware.Activator
                             txtNombreComercial.Text = empresa.NombreComercial;
                             cboTipoIdentificacion.SelectedValue = empresa.IdTipoIdentificacion;
                             txtIdentificacion.Text = empresa.Identificacion;
+                            await CargarCantones(empresa.IdProvincia);
+                            await CargarDistritos(empresa.IdProvincia, empresa.IdCanton);
+                            await CargarBarrios(empresa.IdProvincia, empresa.IdCanton, empresa.IdDistrito);
                             cboProvincia.SelectedValue = empresa.IdProvincia;
                             cboCanton.SelectedValue = empresa.IdCanton;
                             cboDistrito.SelectedValue = empresa.IdDistrito;
@@ -409,8 +408,12 @@ namespace LeandroSoftware.Activator
                 }
                 else
                 {
+                    await CargarCantones(1);
+                    await CargarDistritos(1, 1);
+                    await CargarBarrios(1, 1, 1);
                     empresa = new Empresa();
                 }
+                bolLoading = false;
             }
             catch (Exception ex)
             {
@@ -514,15 +517,22 @@ namespace LeandroSoftware.Activator
                 {
                     await PuntoventaWCF.ActualizarEmpresa(empresa);
                 }
-                if (bolLogoModificado && picLogo.Image != null)
+                if (bolLogoModificado)
                 {
-                    byte[] bytLogotipo;
-                    using (MemoryStream stream = new MemoryStream())
+                    if (picLogo.Image != null)
                     {
-                        picLogo.Image.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
-                        bytLogotipo = stream.ToArray();
+                        byte[] bytLogotipo;
+                        using (MemoryStream stream = new MemoryStream())
+                        {
+                            picLogo.Image.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
+                            bytLogotipo = stream.ToArray();
+                        }
+                        await PuntoventaWCF.ActualizarLogoEmpresa(int.Parse(txtIdEmpresa.Text), Convert.ToBase64String(bytLogotipo));
                     }
-                    await PuntoventaWCF.ActualizarLogoEmpresa(int.Parse(txtIdEmpresa.Text), Convert.ToBase64String(bytLogotipo));
+                    else
+                    {
+                        await PuntoventaWCF.RemoverLogoEmpresa(int.Parse(txtIdEmpresa.Text));
+                    }
                 }
                 if (bolCertificadoModificado && txtNombreCertificado.Text != "")
                 {
@@ -624,6 +634,16 @@ namespace LeandroSoftware.Activator
                 {
                     MessageBox.Show("Error al intentar cargar el archivo. Verifique que sea un archivo de imagen válido. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
+            }
+        }
+
+        private void btnLimpiarLogo_Click(object sender, EventArgs e)
+        {
+            DialogResult dialogResult = MessageBox.Show("Desea eliminar el logotipo?", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (dialogResult == DialogResult.Yes)
+            {
+                picLogo.Image = null;
+                bolLogoModificado = true;
             }
         }
 

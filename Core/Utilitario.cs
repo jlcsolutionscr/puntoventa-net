@@ -5,6 +5,7 @@ using System.Security.Cryptography;
 using System.Diagnostics;
 using System.Security.Cryptography.X509Certificates;
 using System.Management;
+using System.Collections.Generic;
 
 namespace LeandroSoftware.Core
 {
@@ -252,11 +253,14 @@ namespace LeandroSoftware.Core
         public static string ObtenerSerialEquipo()
         {
             string strSerial = "";
-            ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT * FROM Win32_PhysicalMedia");
-            foreach (ManagementObject wmi_HD in searcher.Get())
+            ManagementObjectSearcher hdSearcher = new ManagementObjectSearcher("SELECT * FROM Win32_PhysicalMedia");
+            foreach (ManagementObject wmi_HD in hdSearcher.Get())
             {
                 if (wmi_HD["SerialNumber"] != null)
+                {
                     strSerial = wmi_HD["SerialNumber"].ToString();
+                    strSerial = strSerial.Trim();
+                }
             }
             return strSerial;
         }

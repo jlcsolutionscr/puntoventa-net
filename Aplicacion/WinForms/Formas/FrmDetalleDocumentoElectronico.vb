@@ -131,8 +131,8 @@ Public Class FrmDetalleDocumentoElectronico
                 Dim documento As DocumentoElectronico = listadoDocumentosProcesados.Item(intIndex)
                 If documento.EstadoEnvio = "aceptado" Or documento.EstadoEnvio = "rechazado" Then
                     Dim consulta As DocumentoElectronico = Await PuntoventaWCF.ObtenerDocumentoElectronico(documento.IdDocumento)
+                    rtxDetalleRespuesta.Visible = True
                     If consulta.Respuesta IsNot Nothing Then
-                        rtxDetalleRespuesta.Visible = True
                         Dim sw As New StringWriter()
                         Dim xw As New XmlTextWriter(sw) With {
                             .Formatting = Formatting.Indented,
@@ -143,10 +143,11 @@ Public Class FrmDetalleDocumentoElectronico
                         datos.LoadXml(strRespuesta)
                         datos.Save(xw)
                         rtxDetalleRespuesta.Text = sw.ToString()
-                        btnMostrarRespuesta.Text = "Mostrar lista"
-                        bolRespuestaVisible = True
                     Else
+                        rtxDetalleRespuesta.Text = consulta.ErrorEnvio
                     End If
+                    btnMostrarRespuesta.Text = "Mostrar lista"
+                    bolRespuestaVisible = True
                 End If
             Else
                 rtxDetalleRespuesta.Visible = False

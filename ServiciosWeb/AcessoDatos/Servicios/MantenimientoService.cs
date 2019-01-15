@@ -232,8 +232,13 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    byte[] bytLogotipo = Convert.FromBase64String(strLogo);
-                    empresa.Logotipo = bytLogotipo;
+                    if (strLogo != "")
+                    {
+                        byte[] bytLogotipo = Convert.FromBase64String(strLogo);
+                        empresa.Logotipo = bytLogotipo;
+                    }
+                    else
+                        empresa.Logotipo = null;
                     dbContext.Commit();
                 }
                 catch (Exception ex)

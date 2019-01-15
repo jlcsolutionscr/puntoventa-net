@@ -126,6 +126,15 @@
         public static readonly int Patrimonio = 4;
     };
 
+    public static class StaticEstadoDocumentoElectronico
+    {
+        public static readonly string Registrado = "registrado";
+        public static readonly string Enviado = "enviado";
+        public static readonly string Procesando = "procesando";
+        public static readonly string Aceptado = "aceptado";
+        public static readonly string Rechazado = "rechazado";
+    };
+
     public class CondicionVentaYFormaPago
     {
         public CondicionVentaYFormaPago(int id, string desc)

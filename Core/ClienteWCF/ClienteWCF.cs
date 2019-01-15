@@ -603,6 +603,17 @@ namespace LeandroSoftware.AccesoDatos.ClienteWCF
             await Ejecutar(strPeticion, strServicioPuntoventaURL, "");
         }
 
+        public static async Task RemoverLogoEmpresa(int intIdEmpresa)
+        {
+            RequestDTO peticion = new RequestDTO
+            {
+                NombreMetodo = "RemoverLogoEmpresa",
+                DatosPeticion = "{IdEmpresa: " + intIdEmpresa.ToString() + "}"
+            };
+            string strPeticion = serializer.Serialize(peticion);
+            await Ejecutar(strPeticion, strServicioPuntoventaURL, "");
+        }
+
         public static async Task ActualizarCertificadoEmpresa(int intIdEmpresa, string strCertificado)
         {
             RequestDTO peticion = new RequestDTO

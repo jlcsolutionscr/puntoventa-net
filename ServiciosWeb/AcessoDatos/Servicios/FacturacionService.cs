@@ -56,9 +56,9 @@ namespace LeandroSoftware.AccesoDatos.Servicios
         DevolucionCliente ObtenerDevolucionCliente(int intIdDevolucion);
         int ObtenerTotalListaDevolucionesPorCliente(int intIdEmpresa, int intIdDevolucion = 0, string strNombre = "");
         IEnumerable<DevolucionCliente> ObtenerListaDevolucionesPorCliente(int intIdEmpresa, int numPagina, int cantRec, int intIdDevolucion = 0, string strNombre = "");
-        void GeneraMensajeReceptor(string datos, int intIdEmpresa, int intSucursal, int intTerminal, int intMensaje);
+        void GeneraMensajeReceptor(string strDatos, int intIdEmpresa, int intSucursal, int intTerminal, int intMensaje, DatosConfiguracion datos);
         IList<DocumentoElectronico> ObtenerListaDocumentosElectronicosEnProceso(int intIdEmpresa);
-        void ProcesarDocumentosElectronicosPendientes(int intIdEmpresa, DatosConfiguracion datos);
+        void ProcesarDocumentosElectronicosPendientes(int intIdEmpresa, ICorreoService servicioEnvioCorreo, DatosConfiguracion datos);
         void EnviarDocumentoElectronicoPendiente(int intIdDocumento, DatosConfiguracion datos);
         DocumentoElectronico ObtenerRespuestaDocumentoElectronicoEnviado(int intIdDocumento, DatosConfiguracion datos);
         int ObtenerTotalDocumentosElectronicosProcesados(int intIdEmpresa);
@@ -667,7 +667,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     dbContext.Commit();
                     if (documentoFE != null)
                     {
-                        Task.Run(() => ComprobanteElectronicoService.EnviarDocumentoElectronico(empresa, documentoFE, datos));
+                        Task.Run(() => ComprobanteElectronicoService.EnviarDocumentoElectronico(empresa.IdEmpresa, documentoFE.IdDocumento, datos));
                     }
                 }
                 catch (BusinessException ex)
@@ -777,7 +777,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                         {
                             string criteria = factura.Fecha.ToString("dd/MM/yyyy");
                             TipoDeCambioDolar tipoDeCambio = dbContext.TipoDeCambioDolarRepository.Find(criteria);
-                            if (tipoDeCambio == null)
+                            if (tipoDeCambio != null)
                             {
                                 documentoNC = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronica(factura, factura.Empresa, cliente, dbContext, tipoDeCambio.ValorTipoCambio);
                                 factura.IdDocElectronicoRev = documentoNC.ClaveNumerica;
@@ -796,7 +796,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     dbContext.Commit();
                     if (documentoNC != null)
                     {
-                        Task.Run(() => ComprobanteElectronicoService.EnviarDocumentoElectronico(empresa, documentoNC, datos));
+                        Task.Run(() => ComprobanteElectronicoService.EnviarDocumentoElectronico(empresa.IdEmpresa, documentoNC.IdDocumento, datos));
                     }
                 }
                 catch (BusinessException ex)
@@ -858,7 +858,6 @@ namespace LeandroSoftware.AccesoDatos.Servicios
 
         public IEnumerable<Factura> ObtenerListaFacturas(int intIdEmpresa, int numPagina, int cantRec, int intIdFactura = 0, string strNombre = "")
         {
-            List<Factura> listado = new List<Factura>();
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 try
@@ -868,11 +867,10 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                         listaFacturas = listaFacturas.Where(x => !x.Nulo && x.IdFactura == intIdFactura);
                     else if (!strNombre.Equals(string.Empty))
                         listaFacturas = listaFacturas.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.Cliente.Nombre.Contains(strNombre));
-                    listaFacturas.OrderByDescending(x => x.IdFactura).Skip((numPagina - 1) * cantRec).Take(cantRec);
-                    foreach (Factura factura in listaFacturas)
+                    List<Factura> listado = listaFacturas.OrderByDescending(x => x.IdFactura).Skip((numPagina - 1) * cantRec).Take(cantRec).ToList();
+                    foreach (Factura factura in listado)
                     {
                         factura.Cliente.Factura = null;
-                        listado.Add(factura);
                     }
                     return listado;
                 }
@@ -1610,7 +1608,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public void GeneraMensajeReceptor(string datos, int intIdEmpresa, int intSucursal, int intTerminal, int intMensaje)
+        public void GeneraMensajeReceptor(string strDatos, int intIdEmpresa, int intSucursal, int intTerminal, int intMensaje, DatosConfiguracion datos)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -1620,8 +1618,12 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (!empresa.PermiteFacturar) throw new BusinessException("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.FechaVence < DateTime.Today) throw new BusinessException("El período del plan de facturación electrónica adquirido ya ha expirado. Por favor, pongase en contacto con su proveedor del servicio.");
-                    ComprobanteElectronicoService.GeneraMensajeReceptor(datos, empresa, dbContext, intSucursal, intTerminal, intMensaje);
+                    DocumentoElectronico documentoMR = ComprobanteElectronicoService.GeneraMensajeReceptor(strDatos, empresa, dbContext, intSucursal, intTerminal, intMensaje);
                     dbContext.Commit();
+                    if (documentoMR != null)
+                    {
+                        Task.Run(() => ComprobanteElectronicoService.EnviarDocumentoElectronico(empresa.IdEmpresa, documentoMR.IdDocumento, datos));
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -1633,7 +1635,6 @@ namespace LeandroSoftware.AccesoDatos.Servicios
 
         public IList<DocumentoElectronico> ObtenerListaDocumentosElectronicosEnProceso(int intIdEmpresa)
         {
-            List<DocumentoElectronico> listado = new List<DocumentoElectronico>();
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 try
@@ -1642,12 +1643,11 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (!empresa.PermiteFacturar) throw new BusinessException("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.FechaVence < DateTime.Today) throw new BusinessException("El período del plan de facturación electrónica adquirido ya ha expirado. Por favor, pongase en contacto con su proveedor del servicio.");
-                    var listaPendientes = dbContext.DocumentoElectronicoRepository.Where(x => x.IdEmpresa == intIdEmpresa && (x.EstadoEnvio == "registrado" || x.EstadoEnvio == "enviado"));
-                    foreach (DocumentoElectronico doc in listaPendientes)
+                    List<DocumentoElectronico> listado = dbContext.DocumentoElectronicoRepository.Where(x => x.IdEmpresa == intIdEmpresa && (x.EstadoEnvio == StaticEstadoDocumentoElectronico.Registrado || x.EstadoEnvio == StaticEstadoDocumentoElectronico.Enviado || x.EstadoEnvio == StaticEstadoDocumentoElectronico.Procesando)).ToList();
+                    foreach (DocumentoElectronico doc in listado)
                     {
                         doc.DatosDocumento = null;
                         doc.Respuesta = null;
-                        listado.Add(doc);
                     }
                     return listado;
                 }
@@ -1663,7 +1663,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public async void ProcesarDocumentosElectronicosPendientes(int intIdEmpresa, DatosConfiguracion datos)
+        public async void ProcesarDocumentosElectronicosPendientes(int intIdEmpresa, ICorreoService servicioEnvioCorreo, DatosConfiguracion datos)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -1673,36 +1673,35 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (!empresa.PermiteFacturar) throw new BusinessException("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.FechaVence < DateTime.Today) throw new BusinessException("El período del plan de facturación electrónica adquirido ya ha expirado. Por favor, pongase en contacto con su proveedor del servicio.");
-                    List<DocumentoElectronico> listaPendientes = dbContext.DocumentoElectronicoRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.EstadoEnvio == "registrado" || x.EstadoEnvio == "enviado").ToList();
+                    List<DocumentoElectronico> listaPendientes = dbContext.DocumentoElectronicoRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.EstadoEnvio == StaticEstadoDocumentoElectronico.Registrado || x.EstadoEnvio == StaticEstadoDocumentoElectronico.Enviado || x.EstadoEnvio == StaticEstadoDocumentoElectronico.Procesando).ToList();
                     foreach (DocumentoElectronico documento in listaPendientes)
                     {
-                        if (documento.EstadoEnvio == "registrado")
+                        if (documento.EstadoEnvio == StaticEstadoDocumentoElectronico.Registrado)
                         {
                             try
                             {
-                                await ComprobanteElectronicoService.EnviarDocumentoElectronico(empresa, documento, datos);
+                                await ComprobanteElectronicoService.EnviarDocumentoElectronico(empresa.IdEmpresa, documento.IdDocumento, datos);
                             }
                             catch (Exception ex)
                             {
                                 throw ex;
                             }
                         }
-                        else
+                        else if (documento.EstadoEnvio == StaticEstadoDocumentoElectronico.Enviado)
                         {
-                            if (documento.Fecha.AddMinutes(30) <= DateTime.Now)
+                            try
                             {
-                                try
-                                {
-                                    DocumentoElectronico estadoDoc = await ComprobanteElectronicoService.ConsultarDocumentoElectronico(empresa, documento, dbContext, datos);
-                                    dbContext.NotificarModificacion(estadoDoc);
-                                    dbContext.Commit();
-                                }
-                                catch (Exception ex)
-                                {
-                                    documento.ErrorEnvio = ex.Message;
-                                    dbContext.NotificarModificacion(documento);
-                                    dbContext.Commit();
-                                }
+                                DocumentoElectronico estadoDoc = await ComprobanteElectronicoService.ConsultarDocumentoElectronico(empresa, documento, dbContext, datos);
+                                dbContext.NotificarModificacion(estadoDoc);
+                                dbContext.Commit();
+                                if (estadoDoc.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado || estadoDoc.EstadoEnvio == StaticEstadoDocumentoElectronico.Rechazado)
+                                    GenerarNotificacionDocumentoElectronico(estadoDoc, empresa, dbContext, servicioEnvioCorreo, datos.CorreoNotificacionErrores);
+                            }
+                            catch (Exception ex)
+                            {
+                                documento.ErrorEnvio = ex.Message;
+                                dbContext.NotificarModificacion(documento);
+                                dbContext.Commit();
                             }
                         }
                     }
@@ -1733,11 +1732,11 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (!empresa.PermiteFacturar) throw new BusinessException("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.FechaVence < DateTime.Today) throw new BusinessException("El período del plan de facturación electrónica adquirido ya ha expirado. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (documento.EstadoEnvio == "registrado")
+                    if (documento.EstadoEnvio == StaticEstadoDocumentoElectronico.Registrado)
                     {
                         try
                         {
-                            await ComprobanteElectronicoService.EnviarDocumentoElectronico(empresa, documento, datos);
+                            await ComprobanteElectronicoService.EnviarDocumentoElectronico(empresa.IdEmpresa, documento.IdDocumento, datos);
                         }
                         catch (Exception ex)
                         {
@@ -1773,7 +1772,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (!empresa.PermiteFacturar) throw new BusinessException("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.FechaVence < DateTime.Today) throw new BusinessException("El período del plan de facturación electrónica adquirido ya ha expirado. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (documento.EstadoEnvio == "enviado")
+                    if (documento.EstadoEnvio == StaticEstadoDocumentoElectronico.Enviado)
                     {
                         respuesta = ComprobanteElectronicoService.ConsultarDocumentoElectronico(empresa, documento, dbContext, datos).Result;
                     }
@@ -1804,7 +1803,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (!empresa.PermiteFacturar) throw new BusinessException("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.FechaVence < DateTime.Today) throw new BusinessException("El período del plan de facturación electrónica adquirido ya ha expirado. Por favor, pongase en contacto con su proveedor del servicio.");
-                    var listaProcesados = dbContext.DocumentoElectronicoRepository.Where(x => x.IdEmpresa == intIdEmpresa && (x.EstadoEnvio == "aceptado" || x.EstadoEnvio == "rechazado"));
+                    var listaProcesados = dbContext.DocumentoElectronicoRepository.Where(x => x.IdEmpresa == intIdEmpresa && (x.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado || x.EstadoEnvio == StaticEstadoDocumentoElectronico.Rechazado));
                     return listaProcesados.Count();
                 }
                 catch (BusinessException ex)
@@ -1821,7 +1820,6 @@ namespace LeandroSoftware.AccesoDatos.Servicios
 
         public IList<DocumentoElectronico> ObtenerListaDocumentosElectronicosProcesados(int intIdEmpresa, int numPagina, int cantRec)
         {
-            List<DocumentoElectronico> listado = new List<DocumentoElectronico>();
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 try
@@ -1830,14 +1828,13 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (!empresa.PermiteFacturar) throw new BusinessException("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.FechaVence < DateTime.Today) throw new BusinessException("El período del plan de facturación electrónica adquirido ya ha expirado. Por favor, pongase en contacto con su proveedor del servicio.");
-                    var listaProcesados = dbContext.DocumentoElectronicoRepository.Where(x => x.IdEmpresa == intIdEmpresa && (x.EstadoEnvio == "aceptado" || x.EstadoEnvio == "rechazado"))
+                    List<DocumentoElectronico> listado = dbContext.DocumentoElectronicoRepository.Where(x => x.IdEmpresa == intIdEmpresa && (x.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado || x.EstadoEnvio == StaticEstadoDocumentoElectronico.Rechazado))
                         .OrderByDescending(x => x.IdDocumento)
-                        .Skip((numPagina - 1) * cantRec).Take(cantRec);
-                    foreach (DocumentoElectronico doc in listaProcesados)
+                        .Skip((numPagina - 1) * cantRec).Take(cantRec).ToList();
+                    foreach (DocumentoElectronico doc in listado)
                     {
                         doc.DatosDocumento = null;
                         doc.Respuesta = null;
-                        listado.Add(doc);
                     }
                     return listado;
                 }
@@ -1940,13 +1937,13 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                         empresa = dbContext.EmpresaRepository.Where(x => x.IdEmpresa == documentoElectronico.IdEmpresa).FirstOrDefault();
                         string strEstado = mensaje.IndEstado;
                         documentoElectronico.EstadoEnvio = strEstado;
-                        if (strEstado == "aceptado" || strEstado == "rechazado")
+                        if (strEstado == StaticEstadoDocumentoElectronico.Aceptado || strEstado == StaticEstadoDocumentoElectronico.Rechazado)
                         {
                             byte[] bytRespuestaXML = Convert.FromBase64String(mensaje.RespuestaXml);
                             documentoElectronico.Respuesta = bytRespuestaXML;
                             dbContext.NotificarModificacion(documentoElectronico);
                             dbContext.Commit();
-                            GenerarNotificacion(documentoElectronico, empresa, dbContext, servicioEnvioCorreo, strCorreoNotificacionErrores);
+                            GenerarNotificacionDocumentoElectronico(documentoElectronico, empresa, dbContext, servicioEnvioCorreo, strCorreoNotificacionErrores);
                         }
                     }
                 }
@@ -1977,9 +1974,9 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                         if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                         if (!empresa.PermiteFacturar) throw new BusinessException("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
                         if (empresa.FechaVence < DateTime.Today) throw new BusinessException("El período del plan de facturación electrónica adquirido ya ha expirado. Por favor, pongase en contacto con su proveedor del servicio.");
-                        if (documento.EstadoEnvio == "aceptado" || documento.EstadoEnvio == "rechazado")
+                        if (documento.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado || documento.EstadoEnvio == StaticEstadoDocumentoElectronico.Rechazado)
                         {
-                            GenerarNotificacion(documento, empresa, dbContext, servicioEnvioCorreo, strCorreoNotificacionErrores);
+                            GenerarNotificacionDocumentoElectronico(documento, empresa, dbContext, servicioEnvioCorreo, strCorreoNotificacionErrores);
                         }
                     }
                 }
@@ -1995,7 +1992,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        private void GenerarNotificacion(DocumentoElectronico documentoElectronico, Empresa empresa, IDbContext dbContext, ICorreoService servicioEnvioCorreo, string strCorreoNotificacionErrores)
+        private void GenerarNotificacionDocumentoElectronico(DocumentoElectronico documentoElectronico, Empresa empresa, IDbContext dbContext, ICorreoService servicioEnvioCorreo, string strCorreoNotificacionErrores)
         {
             try
             {
