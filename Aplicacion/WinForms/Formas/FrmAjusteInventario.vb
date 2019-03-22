@@ -59,19 +59,19 @@ Public Class FrmAjusteInventario
         dvcCantidad.DataPropertyName = "CANTIDAD"
         dvcCantidad.HeaderText = "Cantidad"
         dvcCantidad.Width = 60
-        dvcCantidad.DefaultCellStyle = FrmMenuPrincipal.dgvDecimal
+        dvcCantidad.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleAjusteInventario.Columns.Add(dvcCantidad)
 
         dvcPrecioCosto.DataPropertyName = "PRECIOCOSTO"
         dvcPrecioCosto.HeaderText = "Precio"
         dvcPrecioCosto.Width = 75
-        dvcPrecioCosto.DefaultCellStyle = FrmMenuPrincipal.dgvDecimal
+        dvcPrecioCosto.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleAjusteInventario.Columns.Add(dvcPrecioCosto)
 
         dvcTotal.DataPropertyName = "TOTAL"
         dvcTotal.HeaderText = "Total"
         dvcTotal.Width = 100
-        dvcTotal.DefaultCellStyle = FrmMenuPrincipal.dgvDecimal
+        dvcTotal.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleAjusteInventario.Columns.Add(dvcTotal)
 
         dvcExc.DataPropertyName = "EXCENTO"
@@ -104,7 +104,7 @@ Public Class FrmAjusteInventario
             dtbDetalleAjusteInventario.Rows(intIndice).Item(3) += txtCantidad.Text
             dtbDetalleAjusteInventario.Rows(intIndice).Item(4) = producto.PrecioCosto
             dtbDetalleAjusteInventario.Rows(intIndice).Item(5) = dtbDetalleAjusteInventario.Rows(intIndice).Item(3) * dtbDetalleAjusteInventario.Rows(intIndice).Item(4)
-            dtbDetalleAjusteInventario.Rows(intIndice).Item(6) = producto.Excento
+            dtbDetalleAjusteInventario.Rows(intIndice).Item(6) = producto.ParametroImpuesto.TasaImpuesto = 0
         Else
             dtrRowDetAjusteInventario = dtbDetalleAjusteInventario.NewRow
             dtrRowDetAjusteInventario.Item(0) = producto.IdProducto
@@ -113,7 +113,7 @@ Public Class FrmAjusteInventario
             dtrRowDetAjusteInventario.Item(3) = txtCantidad.Text
             dtrRowDetAjusteInventario.Item(4) = producto.PrecioCosto
             dtrRowDetAjusteInventario.Item(5) = dtrRowDetAjusteInventario.Item(3) * dtrRowDetAjusteInventario.Item(4)
-            dtrRowDetAjusteInventario.Item(6) = producto.Excento
+            dtrRowDetAjusteInventario.Item(6) = producto.ParametroImpuesto.TasaImpuesto = 0
             dtbDetalleAjusteInventario.Rows.Add(dtrRowDetAjusteInventario)
         End If
         grdDetalleAjusteInventario.Refresh()
@@ -122,7 +122,7 @@ Public Class FrmAjusteInventario
     Private Sub ValidarProducto()
         If Not bolInit Then
             If txtCodigo.Text <> "" Then
-                If FrmMenuPrincipal.empresaGlobal.AutoCompletaProducto = True Then
+                If FrmPrincipal.empresaGlobal.AutoCompletaProducto = True Then
                     If txtCodigo.Text.IndexOf(" ") >= 0 Then
                         txtCodigo.Text = txtCodigo.Text.Substring(0, txtCodigo.Text.IndexOf(" "))
                     End If
@@ -147,46 +147,11 @@ Public Class FrmAjusteInventario
             End If
         End If
     End Sub
-
-    Public Sub ValidaNumero(ByVal e As KeyPressEventArgs, ByVal oText As TextBox, Optional ByVal pbConPuntoDec As Boolean = True, Optional ByVal pnNumDecimal As Integer = 2, Optional ByVal psSimbolo As String = ".")
-        Dim nDig As Integer
-        Dim sTexto As String = String.Concat(oText.Text, e.KeyChar)
-        If Asc(e.KeyChar) = Keys.Back Or Asc(e.KeyChar) = Keys.Return Or Asc(e.KeyChar) = 45 Then
-            e.Handled = False
-            Exit Sub
-        End If
-        If pbConPuntoDec Then
-            If Char.IsDigit(e.KeyChar) Or e.KeyChar = psSimbolo Then
-                e.Handled = False
-            ElseIf Char.IsControl(e.KeyChar) Then
-                e.Handled = False
-            Else
-                e.Handled = True
-            End If
-            nDig = sTexto.Length
-            If nDig = 1 And e.KeyChar = psSimbolo Then
-                e.Handled = True
-            End If
-            If oText.SelectedText.Length = 0 Then
-                If sTexto.IndexOf(psSimbolo) >= 0 And (nDig - (sTexto.IndexOf(psSimbolo) + 1)) > pnNumDecimal Then
-                    e.Handled = True
-                End If
-            End If
-        Else
-            If Char.IsDigit(e.KeyChar) Then
-                e.Handled = False
-            ElseIf Char.IsControl(e.KeyChar) Then
-                e.Handled = False
-            Else
-                e.Handled = True
-            End If
-        End If
-    End Sub
 #End Region
 
 #Region "Eventos Controles"
     Private Sub FrmAjusteInventario_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        txtFecha.Text = FrmMenuPrincipal.ObtenerFechaFormateada(Now())
+        txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
         IniciaDetalleAjusteInventario()
         EstablecerPropiedadesDataGridView()
         grdDetalleAjusteInventario.DataSource = dtbDetalleAjusteInventario
@@ -195,7 +160,7 @@ Public Class FrmAjusteInventario
 
     Private Sub CmdAgregar_Click(sender As Object, e As EventArgs) Handles CmdAgregar.Click
         txtIdAjuste.Text = ""
-        txtFecha.Text = FrmMenuPrincipal.ObtenerFechaFormateada(Now())
+        txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
         txtDescAjuste.Text = ""
         dtbDetalleAjusteInventario.Rows.Clear()
         grdDetalleAjusteInventario.Refresh()
@@ -222,9 +187,9 @@ Public Class FrmAjusteInventario
 
     Private Sub CmdBuscar_Click(sender As Object, e As EventArgs) Handles CmdBuscar.Click
         Dim formBusqueda As New FrmBusquedaAjusteInventario()
-        FrmMenuPrincipal.intBusqueda = 0
+        FrmPrincipal.intBusqueda = 0
         formBusqueda.ShowDialog()
-        If FrmMenuPrincipal.intBusqueda > 0 Then
+        If FrmPrincipal.intBusqueda > 0 Then
             Try
                 'ajusteInventario = servicioMantenimiento.ObtenerAjusteInventario(FrmMenuPrincipal.intBusqueda)
             Catch ex As Exception
@@ -237,7 +202,7 @@ Public Class FrmAjusteInventario
                 txtDescAjuste.Text = ajusteInventario.Descripcion
                 CargarDetalleAjusteInventario(ajusteInventario)
                 CmdImprimir.Enabled = True
-                CmdAnular.Enabled = FrmMenuPrincipal.usuarioGlobal.Modifica
+                CmdAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
                 CmdGuardar.Enabled = False
             End If
         End If
@@ -250,8 +215,8 @@ Public Class FrmAjusteInventario
         End If
         If txtIdAjuste.Text = "" Then
             ajusteInventario = New AjusteInventario With {
-                .IdEmpresa = FrmMenuPrincipal.empresaGlobal.IdEmpresa,
-                .IdUsuario = FrmMenuPrincipal.usuarioGlobal.IdUsuario,
+                .IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa,
+                .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
                 .Fecha = Now(),
                 .Descripcion = txtDescAjuste.Text
             }
@@ -276,7 +241,7 @@ Public Class FrmAjusteInventario
         MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
         CmdImprimir.Enabled = True
         CmdAgregar.Enabled = True
-        CmdAnular.Enabled = FrmMenuPrincipal.usuarioGlobal.Modifica
+        CmdAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
         CmdImprimir.Focus()
         CmdGuardar.Enabled = False
     End Sub
@@ -284,9 +249,9 @@ Public Class FrmAjusteInventario
     Private Sub CmdImprimir_Click(sender As Object, e As EventArgs) Handles CmdImprimir.Click
         If txtIdAjuste.Text <> "" Then
             comprobante = New ModuloImpresion.ClsAjusteInventario With {
-                .usuario = FrmMenuPrincipal.usuarioGlobal,
-                .empresa = FrmMenuPrincipal.empresaGlobal,
-                .equipo = FrmMenuPrincipal.equipoGlobal,
+                .usuario = FrmPrincipal.usuarioGlobal,
+                .empresa = FrmPrincipal.empresaGlobal,
+                .equipo = FrmPrincipal.equipoGlobal,
                 .strId = txtIdAjuste.Text,
                 .strFecha = txtFecha.Text,
                 .strDescripcion = txtDescAjuste.Text
@@ -318,10 +283,10 @@ Public Class FrmAjusteInventario
             .bolIncluyeServicios = False,
             .intTipoPrecio = 1
         }
-        FrmMenuPrincipal.strBusqueda = ""
+        FrmPrincipal.strBusqueda = ""
         formBusProd.ShowDialog()
-        If Not FrmMenuPrincipal.strBusqueda.Equals("") Then
-            txtCodigo.Text = FrmMenuPrincipal.strBusqueda
+        If Not FrmPrincipal.strBusqueda.Equals("") Then
+            txtCodigo.Text = FrmPrincipal.strBusqueda
             ValidarProducto()
         End If
         txtCodigo.Focus()
@@ -347,7 +312,7 @@ Public Class FrmAjusteInventario
     End Sub
 
     Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As KeyPressEventArgs) Handles txtCantidad.KeyPress
-        ValidaNumero(e, sender, True, 2, ".")
+        FrmPrincipal.ValidaNumero(e, sender, True, 2, ".")
     End Sub
 #End Region
 End Class

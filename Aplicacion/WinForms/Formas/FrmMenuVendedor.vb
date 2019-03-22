@@ -1,13 +1,15 @@
+Imports LeandroSoftware.AccesoDatos.ClienteWCF
+
 Public Class FrmMenuVendedor
 #Region "Variables"
 #End Region
 
 #Region "Métodos"
-    Private Sub CargarCombos()
+    Private Async Sub CargarCombos()
         Try
             cboIdVendedor.ValueMember = "IdVendedor"
             cboIdVendedor.DisplayMember = "Nombre"
-            'cboIdVendedor.DataSource = servicioMantenimiento.ObtenerListaVendedores(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
+            cboIdVendedor.DataSource = Await PuntoventaWCF.ObtenerListaVendedores(FrmPrincipal.empresaGlobal.IdEmpresa)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -24,10 +26,10 @@ Public Class FrmMenuVendedor
 
     Private Sub btnProcesar_Click(sender As Object, e As EventArgs) Handles btnProcesar.Click
         If cboIdVendedor.SelectedValue IsNot Nothing Then
-            FrmMenuPrincipal.intBusqueda = cboIdVendedor.SelectedValue
+            FrmPrincipal.intBusqueda = cboIdVendedor.SelectedValue
             Close()
         Else
-            FrmMenuPrincipal.intBusqueda = 0
+            FrmPrincipal.intBusqueda = 0
             Close()
         End If
     End Sub

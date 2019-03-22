@@ -30,6 +30,7 @@
         {
             this.MenuStrip1 = new System.Windows.Forms.MenuStrip();
             this.tsRegistrarEmpresa = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsSubirNuevaVersionApp = new System.Windows.Forms.ToolStripMenuItem();
             this.tsSalir = new System.Windows.Forms.ToolStripMenuItem();
             this.MenuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -38,6 +39,7 @@
             // 
             this.MenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsRegistrarEmpresa,
+            this.tsSubirNuevaVersionApp,
             this.tsSalir});
             this.MenuStrip1.Location = new System.Drawing.Point(0, 0);
             this.MenuStrip1.Name = "MenuStrip1";
@@ -53,11 +55,20 @@
             this.tsRegistrarEmpresa.Visible = false;
             this.tsRegistrarEmpresa.Click += new System.EventHandler(this.tsRegistrarEmpresa_Click);
             // 
+            // tsSubirNuevaVersionApp
+            // 
+            this.tsSubirNuevaVersionApp.Name = "tsSubirNuevaVersionApp";
+            this.tsSubirNuevaVersionApp.Size = new System.Drawing.Size(169, 20);
+            this.tsSubirNuevaVersionApp.Text = "Subir Nueva Version del App";
+            this.tsSubirNuevaVersionApp.Visible = false;
+            this.tsSubirNuevaVersionApp.Click += new System.EventHandler(this.tsSubirNuevaVersionApp_Click);
+            // 
             // tsSalir
             // 
             this.tsSalir.Name = "tsSalir";
             this.tsSalir.Size = new System.Drawing.Size(41, 20);
             this.tsSalir.Text = "Salir";
+            this.tsSalir.Click += new System.EventHandler(this.tsSalir_Click);
             // 
             // FrmMenu
             // 
@@ -82,5 +93,6 @@
         internal System.Windows.Forms.MenuStrip MenuStrip1;
         internal System.Windows.Forms.ToolStripMenuItem tsRegistrarEmpresa;
         internal System.Windows.Forms.ToolStripMenuItem tsSalir;
+        private System.Windows.Forms.ToolStripMenuItem tsSubirNuevaVersionApp;
     }
 }

@@ -10,7 +10,7 @@ namespace LeandroSoftware.Activator
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new FrmEmpresaListado());
+            Application.Run(new FrmMenu());
         }
     }
 }

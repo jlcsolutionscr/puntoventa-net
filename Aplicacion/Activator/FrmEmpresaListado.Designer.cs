@@ -47,6 +47,7 @@
             // 
             // btnAgregar
             // 
+            this.btnAgregar.Enabled = false;
             this.btnAgregar.Location = new System.Drawing.Point(108, 68);
             this.btnAgregar.Name = "btnAgregar";
             this.btnAgregar.Size = new System.Drawing.Size(75, 23);
@@ -87,6 +88,7 @@
             this.Controls.Add(this.Label1);
             this.Controls.Add(this.cboEmpresa);
             this.Name = "FrmEmpresaListado";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Seleccione la empresa o agregue una nueva";
             this.Load += new System.EventHandler(this.FrmEmpresaListado_Load);
             this.ResumeLayout(false);

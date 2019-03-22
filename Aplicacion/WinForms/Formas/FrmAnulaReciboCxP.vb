@@ -71,7 +71,7 @@ Public Class FrmAnulaReciboCxP
         dvcMonto.DataPropertyName = "MONTO"
         dvcMonto.HeaderText = "Monto"
         dvcMonto.Width = 90
-        dvcMonto.DefaultCellStyle = FrmMenuPrincipal.dgvDecimal
+        dvcMonto.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleRecibo.Columns.Add(dvcMonto)
     End Sub
 
@@ -124,9 +124,9 @@ Public Class FrmAnulaReciboCxP
 
     Private Sub btnBuscarProveedor_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnBuscarProveedor.Click
         Dim formBusquedaProveedor As New FrmBusquedaProveedor()
-        FrmMenuPrincipal.intBusqueda = 0
+        FrmPrincipal.intBusqueda = 0
         formBusquedaProveedor.ShowDialog()
-        If FrmMenuPrincipal.intBusqueda > 0 Then
+        If FrmPrincipal.intBusqueda > 0 Then
             Try
                 'proveedor = servicioCompras.ObtenerProveedor(FrmMenuPrincipal.intBusqueda)
             Catch ex As Exception

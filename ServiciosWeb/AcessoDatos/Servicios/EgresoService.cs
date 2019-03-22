@@ -238,7 +238,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                         DetalleAsiento detalleAsiento = new DetalleAsiento();
                         intLineaDetalleAsiento += 1;
                         detalleAsiento.Linea = intLineaDetalleAsiento;
-                        egresoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.CuentaDeEgresos && x.IdProducto == cuentaEgreso.IdCuenta).FirstOrDefault();
+                        egresoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.CuentaDeEgresos & x.IdProducto == cuentaEgreso.IdCuenta).FirstOrDefault();
                         if (egresoParam == null)
                             throw new BusinessException("No existe parametrización contable para la cuenta de ingresos " + cuentaEgreso.IdCuenta + " y no se puede continuar. Por favor verificar.");
                         detalleAsiento.IdCuenta = egresoParam.IdCuenta;
@@ -264,7 +264,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                                 detalleAsiento = new DetalleAsiento();
                                 intLineaDetalleAsiento += 1;
                                 detalleAsiento.Linea = intLineaDetalleAsiento;
-                                bancoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.CuentaDeBancos && x.IdProducto == desglosePago.IdCuentaBanco).FirstOrDefault();
+                                bancoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.CuentaDeBancos & x.IdProducto == desglosePago.IdCuentaBanco).FirstOrDefault();
                                 if (bancoParam == null)
                                     throw new BusinessException("No existe parametrización contable para la cuenta bancaría " + desglosePago.IdCuentaBanco + " y no se puede continuar. Por favor verificar.");
                                 detalleAsiento.IdCuenta = bancoParam.IdCuenta;
@@ -401,7 +401,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             {
                 try
                 {
-                    var listaEgresos = dbContext.EgresoRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa);
+                    var listaEgresos = dbContext.EgresoRepository.Where(x => !x.Nulo & x.IdEmpresa == intIdEmpresa);
                     if (intIdEgreso > 0)
                         listaEgresos = listaEgresos.Where(x => x.IdEgreso == intIdEgreso);
                     else
@@ -427,7 +427,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             {
                 try
                 {
-                    var listaEgresos = dbContext.EgresoRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa);
+                    var listaEgresos = dbContext.EgresoRepository.Where(x => !x.Nulo & x.IdEmpresa == intIdEmpresa);
                     if (intIdEgreso > 0)
                         listaEgresos = listaEgresos.Where(x => x.IdEgreso == intIdEgreso);
                     else

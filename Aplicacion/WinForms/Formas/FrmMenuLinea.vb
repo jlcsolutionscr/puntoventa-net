@@ -1,13 +1,15 @@
+Imports LeandroSoftware.AccesoDatos.ClienteWCF
+
 Public Class FrmMenuLinea
 #Region "Variables"
 #End Region
 
 #Region "Métodos"
-    Private Sub CargarCombos()
+    Private Async Sub CargarCombos()
         Try
             cboIdLinea.ValueMember = "IdLinea"
             cboIdLinea.DisplayMember = "Descripcion"
-            'cboIdLinea.DataSource = servicioMantenimiento.ObtenerListaLineas(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
+            cboIdLinea.DataSource = Await PuntoventaWCF.ObtenerListaLineas(FrmPrincipal.empresaGlobal.IdEmpresa)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -24,10 +26,10 @@ Public Class FrmMenuLinea
 
     Private Sub btnProcesar_Click(sender As Object, e As EventArgs) Handles btnProcesar.Click
         If cboIdLinea.SelectedValue IsNot Nothing Then
-            FrmMenuPrincipal.intBusqueda = cboIdLinea.SelectedValue
+            FrmPrincipal.intBusqueda = cboIdLinea.SelectedValue
             Close()
         Else
-            FrmMenuPrincipal.intBusqueda = 0
+            FrmPrincipal.intBusqueda = 0
             Close()
         End If
     End Sub

@@ -25,7 +25,6 @@ Partial Class FrmProducto
     Public WithEvents lblPrecioVenta1 As System.Windows.Forms.Label
     Public WithEvents _lblLabels_12 As System.Windows.Forms.Label
     Public WithEvents _lblLabels_11 As System.Windows.Forms.Label
-    Public WithEvents _lblLabels_10 As System.Windows.Forms.Label
     Public WithEvents _lblLabels_9 As System.Windows.Forms.Label
     Public WithEvents _lblLabels_6 As System.Windows.Forms.Label
     Public WithEvents _lblLabels_5 As System.Windows.Forms.Label
@@ -51,7 +50,6 @@ Partial Class FrmProducto
         Me.lblPrecioVenta1 = New System.Windows.Forms.Label()
         Me._lblLabels_12 = New System.Windows.Forms.Label()
         Me._lblLabels_11 = New System.Windows.Forms.Label()
-        Me._lblLabels_10 = New System.Windows.Forms.Label()
         Me._lblLabels_9 = New System.Windows.Forms.Label()
         Me._lblLabels_6 = New System.Windows.Forms.Label()
         Me._lblLabels_5 = New System.Windows.Forms.Label()
@@ -68,7 +66,6 @@ Partial Class FrmProducto
         Me.btnEliminarImagen = New System.Windows.Forms.Button()
         Me.btnCancelar = New System.Windows.Forms.Button()
         Me.btnGuardar = New System.Windows.Forms.Button()
-        Me.chkExcento = New System.Windows.Forms.CheckBox()
         Me.btnBuscarProveedor = New System.Windows.Forms.Button()
         Me.txtProveedor = New System.Windows.Forms.TextBox()
         Me.txtPrecioVenta2 = New System.Windows.Forms.TextBox()
@@ -79,6 +76,14 @@ Partial Class FrmProducto
         Me.Label4 = New System.Windows.Forms.Label()
         Me.txtPrecioVenta5 = New System.Windows.Forms.TextBox()
         Me.Label5 = New System.Windows.Forms.Label()
+        Me.cboTipoImpuesto = New System.Windows.Forms.ComboBox()
+        Me.Label6 = New System.Windows.Forms.Label()
+        Me.txtPrecioImpuesto5 = New System.Windows.Forms.TextBox()
+        Me.txtPrecioImpuesto4 = New System.Windows.Forms.TextBox()
+        Me.txtPrecioImpuesto3 = New System.Windows.Forms.TextBox()
+        Me.txtPrecioImpuesto2 = New System.Windows.Forms.TextBox()
+        Me.txtPrecioImpuesto1 = New System.Windows.Forms.TextBox()
+        Me.Label7 = New System.Windows.Forms.Label()
         CType(Me.ptbImagen, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -105,7 +110,7 @@ Partial Class FrmProducto
         Me.cboUnidad.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cboUnidad.ForeColor = System.Drawing.SystemColors.WindowText
         Me.cboUnidad.Items.AddRange(New Object() {"UND", "MT2", "MT3", "MT", "LT", "GL", "CTO", "CUB", "PAQ", "LAM", "VAR", "PZA"})
-        Me.cboUnidad.Location = New System.Drawing.Point(94, 439)
+        Me.cboUnidad.Location = New System.Drawing.Point(94, 446)
         Me.cboUnidad.Name = "cboUnidad"
         Me.cboUnidad.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.cboUnidad.Size = New System.Drawing.Size(128, 21)
@@ -131,7 +136,7 @@ Partial Class FrmProducto
         Me.txtIndExistencia.BackColor = System.Drawing.SystemColors.Window
         Me.txtIndExistencia.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtIndExistencia.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtIndExistencia.Location = New System.Drawing.Point(94, 413)
+        Me.txtIndExistencia.Location = New System.Drawing.Point(94, 420)
         Me.txtIndExistencia.MaxLength = 0
         Me.txtIndExistencia.Name = "txtIndExistencia"
         Me.txtIndExistencia.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -226,7 +231,7 @@ Partial Class FrmProducto
         Me._lblLabels_12.BackColor = System.Drawing.Color.Transparent
         Me._lblLabels_12.Cursor = System.Windows.Forms.Cursors.Default
         Me._lblLabels_12.ForeColor = System.Drawing.SystemColors.ControlText
-        Me._lblLabels_12.Location = New System.Drawing.Point(5, 440)
+        Me._lblLabels_12.Location = New System.Drawing.Point(5, 447)
         Me._lblLabels_12.Name = "_lblLabels_12"
         Me._lblLabels_12.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me._lblLabels_12.Size = New System.Drawing.Size(83, 17)
@@ -239,26 +244,13 @@ Partial Class FrmProducto
         Me._lblLabels_11.BackColor = System.Drawing.Color.Transparent
         Me._lblLabels_11.Cursor = System.Windows.Forms.Cursors.Default
         Me._lblLabels_11.ForeColor = System.Drawing.SystemColors.ControlText
-        Me._lblLabels_11.Location = New System.Drawing.Point(5, 414)
+        Me._lblLabels_11.Location = New System.Drawing.Point(5, 421)
         Me._lblLabels_11.Name = "_lblLabels_11"
         Me._lblLabels_11.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me._lblLabels_11.Size = New System.Drawing.Size(83, 17)
         Me._lblLabels_11.TabIndex = 0
         Me._lblLabels_11.Text = "Punto Reorden:"
         Me._lblLabels_11.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        '
-        '_lblLabels_10
-        '
-        Me._lblLabels_10.BackColor = System.Drawing.Color.Transparent
-        Me._lblLabels_10.Cursor = System.Windows.Forms.Cursors.Default
-        Me._lblLabels_10.ForeColor = System.Drawing.SystemColors.ControlText
-        Me._lblLabels_10.Location = New System.Drawing.Point(32, 391)
-        Me._lblLabels_10.Name = "_lblLabels_10"
-        Me._lblLabels_10.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me._lblLabels_10.Size = New System.Drawing.Size(56, 17)
-        Me._lblLabels_10.TabIndex = 0
-        Me._lblLabels_10.Text = "Excento:"
-        Me._lblLabels_10.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         '_lblLabels_9
         '
@@ -443,15 +435,6 @@ Partial Class FrmProducto
         Me.btnGuardar.Text = "Guardar"
         Me.btnGuardar.UseVisualStyleBackColor = True
         '
-        'chkExcento
-        '
-        Me.chkExcento.AutoSize = True
-        Me.chkExcento.Location = New System.Drawing.Point(94, 393)
-        Me.chkExcento.Name = "chkExcento"
-        Me.chkExcento.Size = New System.Drawing.Size(15, 14)
-        Me.chkExcento.TabIndex = 13
-        Me.chkExcento.UseVisualStyleBackColor = True
-        '
         'btnBuscarProveedor
         '
         Me.btnBuscarProveedor.Image = CType(resources.GetObject("btnBuscarProveedor.Image"), System.Drawing.Image)
@@ -584,12 +567,136 @@ Partial Class FrmProducto
         Me.Label5.Text = "Precio Venta 5:"
         Me.Label5.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
+        'cboTipoImpuesto
+        '
+        Me.cboTipoImpuesto.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
+        Me.cboTipoImpuesto.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
+        Me.cboTipoImpuesto.BackColor = System.Drawing.SystemColors.Window
+        Me.cboTipoImpuesto.Cursor = System.Windows.Forms.Cursors.Default
+        Me.cboTipoImpuesto.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.cboTipoImpuesto.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.cboTipoImpuesto.Items.AddRange(New Object() {"UND", "MT2", "MT3", "MT", "LT", "GL", "CTO", "CUB", "PAQ", "LAM", "VAR", "PZA"})
+        Me.cboTipoImpuesto.Location = New System.Drawing.Point(94, 393)
+        Me.cboTipoImpuesto.Name = "cboTipoImpuesto"
+        Me.cboTipoImpuesto.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.cboTipoImpuesto.Size = New System.Drawing.Size(319, 21)
+        Me.cboTipoImpuesto.TabIndex = 13
+        '
+        'Label6
+        '
+        Me.Label6.BackColor = System.Drawing.Color.Transparent
+        Me.Label6.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label6.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label6.Location = New System.Drawing.Point(5, 394)
+        Me.Label6.Name = "Label6"
+        Me.Label6.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label6.Size = New System.Drawing.Size(83, 17)
+        Me.Label6.TabIndex = 144
+        Me.Label6.Text = "Tipo Impuesto:"
+        Me.Label6.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
+        'txtPrecioImpuesto5
+        '
+        Me.txtPrecioImpuesto5.AcceptsReturn = True
+        Me.txtPrecioImpuesto5.BackColor = System.Drawing.SystemColors.Window
+        Me.txtPrecioImpuesto5.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtPrecioImpuesto5.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtPrecioImpuesto5.Location = New System.Drawing.Point(218, 367)
+        Me.txtPrecioImpuesto5.MaxLength = 0
+        Me.txtPrecioImpuesto5.Name = "txtPrecioImpuesto5"
+        Me.txtPrecioImpuesto5.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtPrecioImpuesto5.Size = New System.Drawing.Size(106, 20)
+        Me.txtPrecioImpuesto5.TabIndex = 149
+        Me.txtPrecioImpuesto5.TabStop = False
+        Me.txtPrecioImpuesto5.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        '
+        'txtPrecioImpuesto4
+        '
+        Me.txtPrecioImpuesto4.AcceptsReturn = True
+        Me.txtPrecioImpuesto4.BackColor = System.Drawing.SystemColors.Window
+        Me.txtPrecioImpuesto4.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtPrecioImpuesto4.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtPrecioImpuesto4.Location = New System.Drawing.Point(218, 341)
+        Me.txtPrecioImpuesto4.MaxLength = 0
+        Me.txtPrecioImpuesto4.Name = "txtPrecioImpuesto4"
+        Me.txtPrecioImpuesto4.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtPrecioImpuesto4.Size = New System.Drawing.Size(106, 20)
+        Me.txtPrecioImpuesto4.TabIndex = 148
+        Me.txtPrecioImpuesto4.TabStop = False
+        Me.txtPrecioImpuesto4.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        '
+        'txtPrecioImpuesto3
+        '
+        Me.txtPrecioImpuesto3.AcceptsReturn = True
+        Me.txtPrecioImpuesto3.BackColor = System.Drawing.SystemColors.Window
+        Me.txtPrecioImpuesto3.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtPrecioImpuesto3.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtPrecioImpuesto3.Location = New System.Drawing.Point(218, 315)
+        Me.txtPrecioImpuesto3.MaxLength = 0
+        Me.txtPrecioImpuesto3.Name = "txtPrecioImpuesto3"
+        Me.txtPrecioImpuesto3.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtPrecioImpuesto3.Size = New System.Drawing.Size(106, 20)
+        Me.txtPrecioImpuesto3.TabIndex = 147
+        Me.txtPrecioImpuesto3.TabStop = False
+        Me.txtPrecioImpuesto3.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        '
+        'txtPrecioImpuesto2
+        '
+        Me.txtPrecioImpuesto2.AcceptsReturn = True
+        Me.txtPrecioImpuesto2.BackColor = System.Drawing.SystemColors.Window
+        Me.txtPrecioImpuesto2.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtPrecioImpuesto2.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtPrecioImpuesto2.Location = New System.Drawing.Point(218, 289)
+        Me.txtPrecioImpuesto2.MaxLength = 0
+        Me.txtPrecioImpuesto2.Name = "txtPrecioImpuesto2"
+        Me.txtPrecioImpuesto2.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtPrecioImpuesto2.Size = New System.Drawing.Size(106, 20)
+        Me.txtPrecioImpuesto2.TabIndex = 146
+        Me.txtPrecioImpuesto2.TabStop = False
+        Me.txtPrecioImpuesto2.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        '
+        'txtPrecioImpuesto1
+        '
+        Me.txtPrecioImpuesto1.AcceptsReturn = True
+        Me.txtPrecioImpuesto1.BackColor = System.Drawing.SystemColors.Window
+        Me.txtPrecioImpuesto1.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtPrecioImpuesto1.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtPrecioImpuesto1.Location = New System.Drawing.Point(218, 263)
+        Me.txtPrecioImpuesto1.MaxLength = 0
+        Me.txtPrecioImpuesto1.Name = "txtPrecioImpuesto1"
+        Me.txtPrecioImpuesto1.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtPrecioImpuesto1.Size = New System.Drawing.Size(106, 20)
+        Me.txtPrecioImpuesto1.TabIndex = 145
+        Me.txtPrecioImpuesto1.TabStop = False
+        Me.txtPrecioImpuesto1.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        '
+        'Label7
+        '
+        Me.Label7.BackColor = System.Drawing.Color.Transparent
+        Me.Label7.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label7.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label7.Location = New System.Drawing.Point(218, 243)
+        Me.Label7.Name = "Label7"
+        Me.Label7.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label7.Size = New System.Drawing.Size(106, 17)
+        Me.Label7.TabIndex = 150
+        Me.Label7.Text = "Con Impuesto"
+        Me.Label7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
         'FrmProducto
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
-        Me.ClientSize = New System.Drawing.Size(752, 475)
+        Me.ClientSize = New System.Drawing.Size(752, 481)
+        Me.Controls.Add(Me.Label7)
+        Me.Controls.Add(Me.txtPrecioImpuesto5)
+        Me.Controls.Add(Me.txtPrecioImpuesto4)
+        Me.Controls.Add(Me.txtPrecioImpuesto3)
+        Me.Controls.Add(Me.txtPrecioImpuesto2)
+        Me.Controls.Add(Me.txtPrecioImpuesto1)
+        Me.Controls.Add(Me.cboTipoImpuesto)
+        Me.Controls.Add(Me.Label6)
         Me.Controls.Add(Me.txtPrecioVenta5)
         Me.Controls.Add(Me.Label5)
         Me.Controls.Add(Me.txtPrecioVenta4)
@@ -600,7 +707,6 @@ Partial Class FrmProducto
         Me.Controls.Add(Me.Label2)
         Me.Controls.Add(Me.btnBuscarProveedor)
         Me.Controls.Add(Me.txtProveedor)
-        Me.Controls.Add(Me.chkExcento)
         Me.Controls.Add(Me.btnCancelar)
         Me.Controls.Add(Me.btnGuardar)
         Me.Controls.Add(Me.btnEliminarImagen)
@@ -620,7 +726,6 @@ Partial Class FrmProducto
         Me.Controls.Add(Me.lblPrecioVenta1)
         Me.Controls.Add(Me._lblLabels_12)
         Me.Controls.Add(Me._lblLabels_11)
-        Me.Controls.Add(Me._lblLabels_10)
         Me.Controls.Add(Me._lblLabels_9)
         Me.Controls.Add(Me._lblLabels_6)
         Me.Controls.Add(Me._lblLabels_5)
@@ -653,7 +758,6 @@ Partial Class FrmProducto
     Friend WithEvents btnEliminarImagen As System.Windows.Forms.Button
     Friend WithEvents btnCancelar As System.Windows.Forms.Button
     Friend WithEvents btnGuardar As System.Windows.Forms.Button
-    Friend WithEvents chkExcento As System.Windows.Forms.CheckBox
     Friend WithEvents btnBuscarProveedor As System.Windows.Forms.Button
     Public WithEvents txtProveedor As System.Windows.Forms.TextBox
     Public WithEvents txtPrecioVenta2 As System.Windows.Forms.TextBox
@@ -664,4 +768,12 @@ Partial Class FrmProducto
     Public WithEvents Label4 As Label
     Public WithEvents txtPrecioVenta5 As TextBox
     Public WithEvents Label5 As Label
+    Public WithEvents cboTipoImpuesto As ComboBox
+    Public WithEvents Label6 As Label
+    Public WithEvents txtPrecioImpuesto5 As TextBox
+    Public WithEvents txtPrecioImpuesto4 As TextBox
+    Public WithEvents txtPrecioImpuesto3 As TextBox
+    Public WithEvents txtPrecioImpuesto2 As TextBox
+    Public WithEvents txtPrecioImpuesto1 As TextBox
+    Public WithEvents Label7 As Label
 End Class

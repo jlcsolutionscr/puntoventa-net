@@ -34,11 +34,10 @@ namespace LeandroSoftware.AccesoDatos.Dominio.Entidades
         public decimal Excento { get; set; }
         public decimal Grabado { get; set; }
         public decimal Descuento { get; set; }
-        public decimal PorcentajeIVA { get; set; }
         public decimal Impuesto { get; set; }
         public decimal MontoPagado { get; set; }
         [NotMapped]
-        public decimal Total { get { return Excento + Grabado + Impuesto; } }
+        public decimal Total { get { return Excento + Grabado + Impuesto - Descuento; } }
         [NotMapped]
         public string NombreCliente { get { if (Cliente == null) return ""; else return Cliente.Nombre; } }
         public int IdCxC { get; set; }

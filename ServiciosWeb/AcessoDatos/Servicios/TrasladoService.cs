@@ -264,7 +264,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                         DetalleAsiento detalleAsiento = new DetalleAsiento();
                         intLineaDetalleAsiento += 1;
                         detalleAsiento.Linea = intLineaDetalleAsiento;
-                        trasladosParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.Traslados && x.IdProducto == traslado.IdSucursal).FirstOrDefault();
+                        trasladosParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.Traslados & x.IdProducto == traslado.IdSucursal).FirstOrDefault();
                         if (trasladosParam == null)
                             throw new BusinessException("No existe parametrización contable para la sucursal " + traslado.IdSucursal + " y no se puede continuar. Por favor verificar.");
                         detalleAsiento.IdCuenta = trasladosParam.IdCuenta;
@@ -284,7 +284,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                             intLineaDetalleAsiento += 1;
                             detalleAsiento.Linea = intLineaDetalleAsiento;
                             int intIdLinea = (int)data["IdLinea"];
-                            lineaParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.LineaDeProductos && x.IdProducto == intIdLinea).FirstOrDefault();
+                            lineaParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.LineaDeProductos & x.IdProducto == intIdLinea).FirstOrDefault();
                             if (lineaParam == null)
                                 throw new BusinessException("No existe parametrización contable para la línea de producto " + intIdLinea + " y no se puede continuar. Por favor verificar.");
                             detalleAsiento.IdCuenta = lineaParam.IdCuenta;
@@ -441,7 +441,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             {
                 try
                 {
-                    var listaTraslados = dbContext.TrasladoRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa);
+                    var listaTraslados = dbContext.TrasladoRepository.Where(x => !x.Nulo & x.IdEmpresa == intIdEmpresa);
                     if (intIdTraslado > 0)
                         listaTraslados = listaTraslados.Where(x => x.IdTraslado == intIdTraslado);
                     else if (!strNombre.Equals(string.Empty))
@@ -462,7 +462,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             {
                 try
                 {
-                    var listaTraslados = dbContext.TrasladoRepository.Include("Sucursal").Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa);
+                    var listaTraslados = dbContext.TrasladoRepository.Include("Sucursal").Where(x => !x.Nulo & x.IdEmpresa == intIdEmpresa);
                     if (intIdTraslado > 0)
                         listaTraslados = listaTraslados.Where(x => x.IdTraslado == intIdTraslado);
                     else if (!strNombre.Equals(string.Empty))

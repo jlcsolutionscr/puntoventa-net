@@ -76,8 +76,6 @@
             this.chkContabiliza = new System.Windows.Forms.CheckBox();
             this.txtLineasFactura = new System.Windows.Forms.TextBox();
             this.Label8 = new System.Windows.Forms.Label();
-            this.txtPorcentajeIVA = new System.Windows.Forms.TextBox();
-            this.Label7 = new System.Windows.Forms.Label();
             this.txtTelefono = new System.Windows.Forms.TextBox();
             this.Label5 = new System.Windows.Forms.Label();
             this.txtDireccion = new System.Windows.Forms.TextBox();
@@ -96,14 +94,17 @@
             this.chkRegimenSimplificado = new System.Windows.Forms.CheckBox();
             this.tabContainer = new System.Windows.Forms.TabControl();
             this.TabGeneral = new System.Windows.Forms.TabPage();
+            this.label29 = new System.Windows.Forms.Label();
+            this.label28 = new System.Windows.Forms.Label();
+            this.txtTerminal = new System.Windows.Forms.TextBox();
+            this.btnLimpiarLogo = new System.Windows.Forms.Button();
             this.btnCargarLogo = new System.Windows.Forms.Button();
+            this.label27 = new System.Windows.Forms.Label();
             this.picLogo = new System.Windows.Forms.PictureBox();
-            this.chkUsaImpresoraImpacto = new System.Windows.Forms.CheckBox();
             this.txtImpresoraFactura = new System.Windows.Forms.TextBox();
+            this.txtSucursal = new System.Windows.Forms.TextBox();
+            this.lblSucursal = new System.Windows.Forms.Label();
             this.Label6 = new System.Windows.Forms.Label();
-            this.btnEliminarDetalle = new System.Windows.Forms.Button();
-            this.btnInsertarDetalle = new System.Windows.Forms.Button();
-            this.dgvEquipos = new System.Windows.Forms.DataGridView();
             this.CmdConsultar = new System.Windows.Forms.Button();
             this.txtEquipo = new System.Windows.Forms.TextBox();
             this._lblLabels_2 = new System.Windows.Forms.Label();
@@ -118,11 +119,9 @@
             this.btnEliminaModulo = new System.Windows.Forms.Button();
             this.btnInsertaModulo = new System.Windows.Forms.Button();
             this.dgvModuloPorEmpresa = new System.Windows.Forms.DataGridView();
-            this.btnLimpiarLogo = new System.Windows.Forms.Button();
             this.tabContainer.SuspendLayout();
             this.TabGeneral.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picLogo)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvEquipos)).BeginInit();
             this.tabParametros.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvReportePorEmpresa)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvModuloPorEmpresa)).BeginInit();
@@ -222,10 +221,10 @@
             this.Label23.Cursor = System.Windows.Forms.Cursors.Default;
             this.Label23.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Label23.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.Label23.Location = new System.Drawing.Point(69, 589);
+            this.Label23.Location = new System.Drawing.Point(125, 144);
             this.Label23.Name = "Label23";
             this.Label23.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.Label23.Size = new System.Drawing.Size(64, 17);
+            this.Label23.Size = new System.Drawing.Size(59, 17);
             this.Label23.TabIndex = 194;
             this.Label23.Text = "Ultimo MR:";
             this.Label23.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -236,10 +235,10 @@
             this.Label22.Cursor = System.Windows.Forms.Cursors.Default;
             this.Label22.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Label22.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.Label22.Location = new System.Drawing.Point(224, 565);
+            this.Label22.Location = new System.Drawing.Point(18, 144);
             this.Label22.Name = "Label22";
             this.Label22.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.Label22.Size = new System.Drawing.Size(64, 17);
+            this.Label22.Size = new System.Drawing.Size(56, 17);
             this.Label22.TabIndex = 193;
             this.Label22.Text = "Ultimo TE:";
             this.Label22.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -250,10 +249,10 @@
             this.Label21.Cursor = System.Windows.Forms.Cursors.Default;
             this.Label21.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Label21.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.Label21.Location = new System.Drawing.Point(224, 537);
+            this.Label21.Location = new System.Drawing.Point(237, 119);
             this.Label21.Name = "Label21";
             this.Label21.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.Label21.Size = new System.Drawing.Size(64, 17);
+            this.Label21.Size = new System.Drawing.Size(58, 17);
             this.Label21.TabIndex = 192;
             this.Label21.Text = "Ultimo NC:";
             this.Label21.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -264,10 +263,10 @@
             this.Label20.Cursor = System.Windows.Forms.Cursors.Default;
             this.Label20.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Label20.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.Label20.Location = new System.Drawing.Point(69, 563);
+            this.Label20.Location = new System.Drawing.Point(125, 118);
             this.Label20.Name = "Label20";
             this.Label20.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.Label20.Size = new System.Drawing.Size(64, 17);
+            this.Label20.Size = new System.Drawing.Size(59, 17);
             this.Label20.TabIndex = 191;
             this.Label20.Text = "Ultimo ND:";
             this.Label20.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -279,7 +278,7 @@
             this.txtUltimoDocMR.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.txtUltimoDocMR.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtUltimoDocMR.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.txtUltimoDocMR.Location = new System.Drawing.Point(139, 588);
+            this.txtUltimoDocMR.Location = new System.Drawing.Point(190, 143);
             this.txtUltimoDocMR.MaxLength = 5;
             this.txtUltimoDocMR.Name = "txtUltimoDocMR";
             this.txtUltimoDocMR.RightToLeft = System.Windows.Forms.RightToLeft.No;
@@ -293,7 +292,7 @@
             this.txtUltimoDocTE.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.txtUltimoDocTE.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtUltimoDocTE.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.txtUltimoDocTE.Location = new System.Drawing.Point(294, 562);
+            this.txtUltimoDocTE.Location = new System.Drawing.Point(80, 143);
             this.txtUltimoDocTE.MaxLength = 5;
             this.txtUltimoDocTE.Name = "txtUltimoDocTE";
             this.txtUltimoDocTE.RightToLeft = System.Windows.Forms.RightToLeft.No;
@@ -307,7 +306,7 @@
             this.txtUltimoDocNC.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.txtUltimoDocNC.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtUltimoDocNC.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.txtUltimoDocNC.Location = new System.Drawing.Point(294, 536);
+            this.txtUltimoDocNC.Location = new System.Drawing.Point(301, 118);
             this.txtUltimoDocNC.MaxLength = 5;
             this.txtUltimoDocNC.Name = "txtUltimoDocNC";
             this.txtUltimoDocNC.RightToLeft = System.Windows.Forms.RightToLeft.No;
@@ -321,7 +320,7 @@
             this.txtUltimoDocND.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.txtUltimoDocND.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtUltimoDocND.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.txtUltimoDocND.Location = new System.Drawing.Point(139, 562);
+            this.txtUltimoDocND.Location = new System.Drawing.Point(190, 117);
             this.txtUltimoDocND.MaxLength = 5;
             this.txtUltimoDocND.Name = "txtUltimoDocND";
             this.txtUltimoDocND.RightToLeft = System.Windows.Forms.RightToLeft.No;
@@ -335,7 +334,7 @@
             this.txtUltimoDocFE.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.txtUltimoDocFE.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtUltimoDocFE.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.txtUltimoDocFE.Location = new System.Drawing.Point(139, 536);
+            this.txtUltimoDocFE.Location = new System.Drawing.Point(80, 117);
             this.txtUltimoDocFE.MaxLength = 5;
             this.txtUltimoDocFE.Name = "txtUltimoDocFE";
             this.txtUltimoDocFE.RightToLeft = System.Windows.Forms.RightToLeft.No;
@@ -348,10 +347,10 @@
             this.Label19.Cursor = System.Windows.Forms.Cursors.Default;
             this.Label19.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Label19.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.Label19.Location = new System.Drawing.Point(69, 539);
+            this.Label19.Location = new System.Drawing.Point(18, 119);
             this.Label19.Name = "Label19";
             this.Label19.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.Label19.Size = new System.Drawing.Size(64, 17);
+            this.Label19.Size = new System.Drawing.Size(56, 17);
             this.Label19.TabIndex = 190;
             this.Label19.Text = "Ultimo FE:";
             this.Label19.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -607,7 +606,7 @@
             this.txtCodigoServInst.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.txtCodigoServInst.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtCodigoServInst.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.txtCodigoServInst.Location = new System.Drawing.Point(294, 484);
+            this.txtCodigoServInst.Location = new System.Drawing.Point(139, 458);
             this.txtCodigoServInst.MaxLength = 5;
             this.txtCodigoServInst.Name = "txtCodigoServInst";
             this.txtCodigoServInst.RightToLeft = System.Windows.Forms.RightToLeft.No;
@@ -621,7 +620,7 @@
             this.Label10.Cursor = System.Windows.Forms.Cursors.Default;
             this.Label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Label10.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.Label10.Location = new System.Drawing.Point(190, 486);
+            this.Label10.Location = new System.Drawing.Point(35, 460);
             this.Label10.Name = "Label10";
             this.Label10.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.Label10.Size = new System.Drawing.Size(98, 17);
@@ -636,7 +635,7 @@
             this.txtPorcentajeInstalacion.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.txtPorcentajeInstalacion.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtPorcentajeInstalacion.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.txtPorcentajeInstalacion.Location = new System.Drawing.Point(294, 458);
+            this.txtPorcentajeInstalacion.Location = new System.Drawing.Point(242, 458);
             this.txtPorcentajeInstalacion.MaxLength = 5;
             this.txtPorcentajeInstalacion.Name = "txtPorcentajeInstalacion";
             this.txtPorcentajeInstalacion.RightToLeft = System.Windows.Forms.RightToLeft.No;
@@ -650,7 +649,7 @@
             this.Label9.Cursor = System.Windows.Forms.Cursors.Default;
             this.Label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Label9.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.Label9.Location = new System.Drawing.Point(238, 461);
+            this.Label9.Location = new System.Drawing.Point(186, 461);
             this.Label9.Name = "Label9";
             this.Label9.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.Label9.Size = new System.Drawing.Size(50, 17);
@@ -734,34 +733,6 @@
             this.Label8.TabIndex = 179;
             this.Label8.Text = "Líneas por Fact:";
             this.Label8.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // txtPorcentajeIVA
-            // 
-            this.txtPorcentajeIVA.AcceptsReturn = true;
-            this.txtPorcentajeIVA.BackColor = System.Drawing.SystemColors.Window;
-            this.txtPorcentajeIVA.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.txtPorcentajeIVA.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtPorcentajeIVA.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.txtPorcentajeIVA.Location = new System.Drawing.Point(139, 458);
-            this.txtPorcentajeIVA.MaxLength = 5;
-            this.txtPorcentajeIVA.Name = "txtPorcentajeIVA";
-            this.txtPorcentajeIVA.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.txtPorcentajeIVA.Size = new System.Drawing.Size(44, 20);
-            this.txtPorcentajeIVA.TabIndex = 17;
-            // 
-            // Label7
-            // 
-            this.Label7.BackColor = System.Drawing.Color.Transparent;
-            this.Label7.Cursor = System.Windows.Forms.Cursors.Default;
-            this.Label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Label7.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.Label7.Location = new System.Drawing.Point(82, 461);
-            this.Label7.Name = "Label7";
-            this.Label7.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.Label7.Size = new System.Drawing.Size(51, 17);
-            this.Label7.TabIndex = 178;
-            this.Label7.Text = "% IVA:";
-            this.Label7.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // txtTelefono
             // 
@@ -1003,18 +974,30 @@
             // TabGeneral
             // 
             this.TabGeneral.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(193)))), ((int)(((byte)(215)))), ((int)(((byte)(225)))));
+            this.TabGeneral.Controls.Add(this.label29);
+            this.TabGeneral.Controls.Add(this.label28);
+            this.TabGeneral.Controls.Add(this.txtTerminal);
             this.TabGeneral.Controls.Add(this.btnLimpiarLogo);
             this.TabGeneral.Controls.Add(this.btnCargarLogo);
+            this.TabGeneral.Controls.Add(this.label27);
             this.TabGeneral.Controls.Add(this.picLogo);
-            this.TabGeneral.Controls.Add(this.chkUsaImpresoraImpacto);
             this.TabGeneral.Controls.Add(this.txtImpresoraFactura);
+            this.TabGeneral.Controls.Add(this.txtSucursal);
+            this.TabGeneral.Controls.Add(this.lblSucursal);
             this.TabGeneral.Controls.Add(this.Label6);
-            this.TabGeneral.Controls.Add(this.btnEliminarDetalle);
-            this.TabGeneral.Controls.Add(this.btnInsertarDetalle);
-            this.TabGeneral.Controls.Add(this.dgvEquipos);
+            this.TabGeneral.Controls.Add(this.Label23);
             this.TabGeneral.Controls.Add(this.CmdConsultar);
+            this.TabGeneral.Controls.Add(this.Label22);
             this.TabGeneral.Controls.Add(this.txtEquipo);
+            this.TabGeneral.Controls.Add(this.Label21);
             this.TabGeneral.Controls.Add(this._lblLabels_2);
+            this.TabGeneral.Controls.Add(this.Label20);
+            this.TabGeneral.Controls.Add(this.txtUltimoDocFE);
+            this.TabGeneral.Controls.Add(this.txtUltimoDocMR);
+            this.TabGeneral.Controls.Add(this.Label19);
+            this.TabGeneral.Controls.Add(this.txtUltimoDocTE);
+            this.TabGeneral.Controls.Add(this.txtUltimoDocND);
+            this.TabGeneral.Controls.Add(this.txtUltimoDocNC);
             this.TabGeneral.Location = new System.Drawing.Point(4, 22);
             this.TabGeneral.Name = "TabGeneral";
             this.TabGeneral.Padding = new System.Windows.Forms.Padding(3);
@@ -1022,13 +1005,72 @@
             this.TabGeneral.TabIndex = 0;
             this.TabGeneral.Text = "General";
             // 
+            // label29
+            // 
+            this.label29.BackColor = System.Drawing.Color.Transparent;
+            this.label29.Cursor = System.Windows.Forms.Cursors.Default;
+            this.label29.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label29.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label29.Location = new System.Drawing.Point(13, 10);
+            this.label29.Name = "label29";
+            this.label29.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.label29.Size = new System.Drawing.Size(350, 17);
+            this.label29.TabIndex = 213;
+            this.label29.Text = "Parámetros de la terminal para la empresa";
+            this.label29.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label28
+            // 
+            this.label28.BackColor = System.Drawing.Color.Transparent;
+            this.label28.Cursor = System.Windows.Forms.Cursors.Default;
+            this.label28.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label28.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label28.Location = new System.Drawing.Point(13, 198);
+            this.label28.Name = "label28";
+            this.label28.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.label28.Size = new System.Drawing.Size(350, 17);
+            this.label28.TabIndex = 212;
+            this.label28.Text = "Logotipo para la empresa";
+            this.label28.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // txtTerminal
+            // 
+            this.txtTerminal.AcceptsReturn = true;
+            this.txtTerminal.BackColor = System.Drawing.SystemColors.Window;
+            this.txtTerminal.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.txtTerminal.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtTerminal.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.txtTerminal.Location = new System.Drawing.Point(191, 39);
+            this.txtTerminal.MaxLength = 5;
+            this.txtTerminal.Name = "txtTerminal";
+            this.txtTerminal.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.txtTerminal.Size = new System.Drawing.Size(44, 20);
+            this.txtTerminal.TabIndex = 210;
+            this.txtTerminal.TextChanged += new System.EventHandler(this.txtTerminal_TextChanged);
+            // 
+            // btnLimpiarLogo
+            // 
+            this.btnLimpiarLogo.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.btnLimpiarLogo.Cursor = System.Windows.Forms.Cursors.Default;
+            this.btnLimpiarLogo.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnLimpiarLogo.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.btnLimpiarLogo.Location = new System.Drawing.Point(97, 384);
+            this.btnLimpiarLogo.Name = "btnLimpiarLogo";
+            this.btnLimpiarLogo.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.btnLimpiarLogo.Size = new System.Drawing.Size(78, 26);
+            this.btnLimpiarLogo.TabIndex = 207;
+            this.btnLimpiarLogo.TabStop = false;
+            this.btnLimpiarLogo.Text = "Limpiar logo";
+            this.btnLimpiarLogo.UseVisualStyleBackColor = false;
+            this.btnLimpiarLogo.Click += new System.EventHandler(this.btnLimpiarLogo_Click);
+            // 
             // btnCargarLogo
             // 
             this.btnCargarLogo.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.btnCargarLogo.Cursor = System.Windows.Forms.Cursors.Default;
             this.btnCargarLogo.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnCargarLogo.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.btnCargarLogo.Location = new System.Drawing.Point(13, 389);
+            this.btnCargarLogo.Location = new System.Drawing.Point(13, 384);
             this.btnCargarLogo.Name = "btnCargarLogo";
             this.btnCargarLogo.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.btnCargarLogo.Size = new System.Drawing.Size(78, 26);
@@ -1038,28 +1080,30 @@
             this.btnCargarLogo.UseVisualStyleBackColor = false;
             this.btnCargarLogo.Click += new System.EventHandler(this.BtnCargarLogo_Click);
             // 
+            // label27
+            // 
+            this.label27.BackColor = System.Drawing.Color.Transparent;
+            this.label27.Cursor = System.Windows.Forms.Cursors.Default;
+            this.label27.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label27.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label27.Location = new System.Drawing.Point(131, 41);
+            this.label27.Name = "label27";
+            this.label27.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.label27.Size = new System.Drawing.Size(54, 17);
+            this.label27.TabIndex = 211;
+            this.label27.Text = "Terminal:";
+            this.label27.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
             // picLogo
             // 
             this.picLogo.BackColor = System.Drawing.Color.White;
             this.picLogo.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.picLogo.Location = new System.Drawing.Point(13, 223);
+            this.picLogo.Location = new System.Drawing.Point(13, 218);
             this.picLogo.Name = "picLogo";
             this.picLogo.Size = new System.Drawing.Size(350, 160);
             this.picLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.picLogo.TabIndex = 206;
             this.picLogo.TabStop = false;
-            // 
-            // chkUsaImpresoraImpacto
-            // 
-            this.chkUsaImpresoraImpacto.AutoSize = true;
-            this.chkUsaImpresoraImpacto.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkUsaImpresoraImpacto.Location = new System.Drawing.Point(13, 56);
-            this.chkUsaImpresoraImpacto.Name = "chkUsaImpresoraImpacto";
-            this.chkUsaImpresoraImpacto.Size = new System.Drawing.Size(144, 17);
-            this.chkUsaImpresoraImpacto.TabIndex = 204;
-            this.chkUsaImpresoraImpacto.TabStop = false;
-            this.chkUsaImpresoraImpacto.Text = "Utiliza Impresora Impacto";
-            this.chkUsaImpresoraImpacto.UseVisualStyleBackColor = true;
             // 
             // txtImpresoraFactura
             // 
@@ -1068,13 +1112,42 @@
             this.txtImpresoraFactura.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.txtImpresoraFactura.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtImpresoraFactura.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.txtImpresoraFactura.Location = new System.Drawing.Point(166, 30);
+            this.txtImpresoraFactura.Location = new System.Drawing.Point(79, 91);
             this.txtImpresoraFactura.MaxLength = 50;
             this.txtImpresoraFactura.Name = "txtImpresoraFactura";
             this.txtImpresoraFactura.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.txtImpresoraFactura.Size = new System.Drawing.Size(197, 20);
+            this.txtImpresoraFactura.Size = new System.Drawing.Size(266, 20);
             this.txtImpresoraFactura.TabIndex = 197;
             this.txtImpresoraFactura.TabStop = false;
+            // 
+            // txtSucursal
+            // 
+            this.txtSucursal.AcceptsReturn = true;
+            this.txtSucursal.BackColor = System.Drawing.SystemColors.Window;
+            this.txtSucursal.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.txtSucursal.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtSucursal.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.txtSucursal.Location = new System.Drawing.Point(80, 39);
+            this.txtSucursal.MaxLength = 5;
+            this.txtSucursal.Name = "txtSucursal";
+            this.txtSucursal.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.txtSucursal.Size = new System.Drawing.Size(44, 20);
+            this.txtSucursal.TabIndex = 208;
+            this.txtSucursal.TextChanged += new System.EventHandler(this.txtSucursal_TextChanged);
+            // 
+            // lblSucursal
+            // 
+            this.lblSucursal.BackColor = System.Drawing.Color.Transparent;
+            this.lblSucursal.Cursor = System.Windows.Forms.Cursors.Default;
+            this.lblSucursal.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblSucursal.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.lblSucursal.Location = new System.Drawing.Point(10, 41);
+            this.lblSucursal.Name = "lblSucursal";
+            this.lblSucursal.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.lblSucursal.Size = new System.Drawing.Size(64, 17);
+            this.lblSucursal.TabIndex = 209;
+            this.lblSucursal.Text = "Sucursal:";
+            this.lblSucursal.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // Label6
             // 
@@ -1082,62 +1155,13 @@
             this.Label6.Cursor = System.Windows.Forms.Cursors.Default;
             this.Label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Label6.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.Label6.Location = new System.Drawing.Point(166, 10);
+            this.Label6.Location = new System.Drawing.Point(10, 92);
             this.Label6.Name = "Label6";
             this.Label6.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.Label6.Size = new System.Drawing.Size(199, 17);
+            this.Label6.Size = new System.Drawing.Size(64, 17);
             this.Label6.TabIndex = 205;
-            this.Label6.Text = "Impresora Fact:";
-            this.Label6.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // btnEliminarDetalle
-            // 
-            this.btnEliminarDetalle.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.btnEliminarDetalle.Cursor = System.Windows.Forms.Cursors.Default;
-            this.btnEliminarDetalle.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnEliminarDetalle.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.btnEliminarDetalle.Location = new System.Drawing.Point(79, 191);
-            this.btnEliminarDetalle.Name = "btnEliminarDetalle";
-            this.btnEliminarDetalle.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.btnEliminarDetalle.Size = new System.Drawing.Size(65, 26);
-            this.btnEliminarDetalle.TabIndex = 200;
-            this.btnEliminarDetalle.TabStop = false;
-            this.btnEliminarDetalle.Text = "Eliminar";
-            this.btnEliminarDetalle.UseVisualStyleBackColor = false;
-            this.btnEliminarDetalle.Click += new System.EventHandler(this.BtnEliminarDetalle_Click);
-            // 
-            // btnInsertarDetalle
-            // 
-            this.btnInsertarDetalle.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.btnInsertarDetalle.Cursor = System.Windows.Forms.Cursors.Default;
-            this.btnInsertarDetalle.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnInsertarDetalle.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.btnInsertarDetalle.Location = new System.Drawing.Point(13, 191);
-            this.btnInsertarDetalle.Name = "btnInsertarDetalle";
-            this.btnInsertarDetalle.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.btnInsertarDetalle.Size = new System.Drawing.Size(65, 26);
-            this.btnInsertarDetalle.TabIndex = 199;
-            this.btnInsertarDetalle.TabStop = false;
-            this.btnInsertarDetalle.Text = "Insertar";
-            this.btnInsertarDetalle.UseVisualStyleBackColor = false;
-            this.btnInsertarDetalle.Click += new System.EventHandler(this.BtnInsertarDetalle_Click);
-            // 
-            // dgvEquipos
-            // 
-            this.dgvEquipos.AllowUserToAddRows = false;
-            this.dgvEquipos.AllowUserToDeleteRows = false;
-            this.dgvEquipos.AllowUserToResizeColumns = false;
-            this.dgvEquipos.AllowUserToResizeRows = false;
-            this.dgvEquipos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvEquipos.Location = new System.Drawing.Point(14, 83);
-            this.dgvEquipos.Name = "dgvEquipos";
-            this.dgvEquipos.ReadOnly = true;
-            this.dgvEquipos.RowHeadersVisible = false;
-            this.dgvEquipos.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
-            this.dgvEquipos.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.dgvEquipos.Size = new System.Drawing.Size(349, 102);
-            this.dgvEquipos.TabIndex = 198;
-            this.dgvEquipos.TabStop = false;
+            this.Label6.Text = "Impresora:";
+            this.Label6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // CmdConsultar
             // 
@@ -1145,10 +1169,10 @@
             this.CmdConsultar.Cursor = System.Windows.Forms.Cursors.Default;
             this.CmdConsultar.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.CmdConsultar.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.CmdConsultar.Location = new System.Drawing.Point(145, 30);
+            this.CmdConsultar.Location = new System.Drawing.Point(348, 65);
             this.CmdConsultar.Name = "CmdConsultar";
             this.CmdConsultar.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.CmdConsultar.Size = new System.Drawing.Size(20, 20);
+            this.CmdConsultar.Size = new System.Drawing.Size(22, 21);
             this.CmdConsultar.TabIndex = 203;
             this.CmdConsultar.TabStop = false;
             this.CmdConsultar.UseVisualStyleBackColor = false;
@@ -1161,12 +1185,12 @@
             this.txtEquipo.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.txtEquipo.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtEquipo.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.txtEquipo.Location = new System.Drawing.Point(14, 30);
+            this.txtEquipo.Location = new System.Drawing.Point(79, 65);
             this.txtEquipo.MaxLength = 0;
             this.txtEquipo.Name = "txtEquipo";
             this.txtEquipo.ReadOnly = true;
             this.txtEquipo.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.txtEquipo.Size = new System.Drawing.Size(131, 20);
+            this.txtEquipo.Size = new System.Drawing.Size(266, 20);
             this.txtEquipo.TabIndex = 196;
             this.txtEquipo.TabStop = false;
             // 
@@ -1176,13 +1200,14 @@
             this._lblLabels_2.Cursor = System.Windows.Forms.Cursors.Default;
             this._lblLabels_2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this._lblLabels_2.ForeColor = System.Drawing.SystemColors.ControlText;
-            this._lblLabels_2.Location = new System.Drawing.Point(14, 10);
+            this._lblLabels_2.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this._lblLabels_2.Location = new System.Drawing.Point(21, 66);
             this._lblLabels_2.Name = "_lblLabels_2";
             this._lblLabels_2.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this._lblLabels_2.Size = new System.Drawing.Size(151, 17);
+            this._lblLabels_2.Size = new System.Drawing.Size(52, 17);
             this._lblLabels_2.TabIndex = 202;
-            this._lblLabels_2.Text = "Equipo";
-            this._lblLabels_2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this._lblLabels_2.Text = "Equipo:";
+            this._lblLabels_2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // tabParametros
             // 
@@ -1348,22 +1373,6 @@
             this.dgvModuloPorEmpresa.TabIndex = 205;
             this.dgvModuloPorEmpresa.TabStop = false;
             // 
-            // btnLimpiarLogo
-            // 
-            this.btnLimpiarLogo.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.btnLimpiarLogo.Cursor = System.Windows.Forms.Cursors.Default;
-            this.btnLimpiarLogo.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnLimpiarLogo.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.btnLimpiarLogo.Location = new System.Drawing.Point(97, 389);
-            this.btnLimpiarLogo.Name = "btnLimpiarLogo";
-            this.btnLimpiarLogo.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.btnLimpiarLogo.Size = new System.Drawing.Size(78, 26);
-            this.btnLimpiarLogo.TabIndex = 207;
-            this.btnLimpiarLogo.TabStop = false;
-            this.btnLimpiarLogo.Text = "Limpiar logo";
-            this.btnLimpiarLogo.UseVisualStyleBackColor = false;
-            this.btnLimpiarLogo.Click += new System.EventHandler(this.btnLimpiarLogo_Click);
-            // 
             // FrmEmpresa
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1377,16 +1386,6 @@
             this.Controls.Add(this.Label25);
             this.Controls.Add(this.txtUsuarioATV);
             this.Controls.Add(this.Label24);
-            this.Controls.Add(this.Label23);
-            this.Controls.Add(this.Label22);
-            this.Controls.Add(this.Label21);
-            this.Controls.Add(this.Label20);
-            this.Controls.Add(this.txtUltimoDocMR);
-            this.Controls.Add(this.txtUltimoDocTE);
-            this.Controls.Add(this.txtUltimoDocNC);
-            this.Controls.Add(this.txtUltimoDocND);
-            this.Controls.Add(this.txtUltimoDocFE);
-            this.Controls.Add(this.Label19);
             this.Controls.Add(this.txtPinCertificado);
             this.Controls.Add(this.Label18);
             this.Controls.Add(this.txtNombreCertificado);
@@ -1416,8 +1415,6 @@
             this.Controls.Add(this.chkContabiliza);
             this.Controls.Add(this.txtLineasFactura);
             this.Controls.Add(this.Label8);
-            this.Controls.Add(this.txtPorcentajeIVA);
-            this.Controls.Add(this.Label7);
             this.Controls.Add(this.txtTelefono);
             this.Controls.Add(this.Label5);
             this.Controls.Add(this.txtDireccion);
@@ -1435,13 +1432,13 @@
             this.Controls.Add(this.cmdUpdate);
             this.Controls.Add(this.cmdCancel);
             this.Name = "FrmEmpresa";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Registrar/Actualizar datos de la empresa seleccionada";
             this.Load += new System.EventHandler(this.FrmEmpresa_Load);
             this.tabContainer.ResumeLayout(false);
             this.TabGeneral.ResumeLayout(false);
             this.TabGeneral.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picLogo)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvEquipos)).EndInit();
             this.tabParametros.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvReportePorEmpresa)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvModuloPorEmpresa)).EndInit();
@@ -1498,8 +1495,6 @@
         internal System.Windows.Forms.CheckBox chkContabiliza;
         public System.Windows.Forms.TextBox txtLineasFactura;
         public System.Windows.Forms.Label Label8;
-        public System.Windows.Forms.TextBox txtPorcentajeIVA;
-        public System.Windows.Forms.Label Label7;
         public System.Windows.Forms.TextBox txtTelefono;
         public System.Windows.Forms.Label Label5;
         public System.Windows.Forms.TextBox txtDireccion;
@@ -1520,12 +1515,8 @@
         private System.Windows.Forms.TabPage TabGeneral;
         public System.Windows.Forms.Button btnCargarLogo;
         internal System.Windows.Forms.PictureBox picLogo;
-        internal System.Windows.Forms.CheckBox chkUsaImpresoraImpacto;
         public System.Windows.Forms.TextBox txtImpresoraFactura;
         public System.Windows.Forms.Label Label6;
-        public System.Windows.Forms.Button btnEliminarDetalle;
-        public System.Windows.Forms.Button btnInsertarDetalle;
-        internal System.Windows.Forms.DataGridView dgvEquipos;
         public System.Windows.Forms.Button CmdConsultar;
         public System.Windows.Forms.TextBox txtEquipo;
         public System.Windows.Forms.Label _lblLabels_2;
@@ -1541,6 +1532,12 @@
         public System.Windows.Forms.Button btnInsertaModulo;
         internal System.Windows.Forms.DataGridView dgvModuloPorEmpresa;
         public System.Windows.Forms.Button btnLimpiarLogo;
+        public System.Windows.Forms.TextBox txtSucursal;
+        public System.Windows.Forms.Label lblSucursal;
+        public System.Windows.Forms.TextBox txtTerminal;
+        public System.Windows.Forms.Label label27;
+        public System.Windows.Forms.Label label29;
+        public System.Windows.Forms.Label label28;
     }
 }
 

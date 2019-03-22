@@ -33,7 +33,7 @@ Public Class FrmProveedorListado
 
     Private Async Sub ActualizarDatos(ByVal intNumeroPagina As Integer)
         Try
-            listado = Await PuntoventaWCF.ObtenerListaProveedores(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, txtNombre.Text)
+            listado = Await PuntoventaWCF.ObtenerListaProveedores(FrmPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, txtNombre.Text)
             dgvDatos.DataSource = listado
             If listado.Count() > 0 Then
                 btnEditar.Enabled = True
@@ -53,7 +53,7 @@ Public Class FrmProveedorListado
 
     Private Async Sub ValidarCantidadRegistros()
         Try
-            intTotalEmpresas = Await PuntoventaWCF.ObtenerTotalListaProveedores(FrmMenuPrincipal.empresaGlobal.IdEmpresa, txtNombre.Text)
+            intTotalEmpresas = Await PuntoventaWCF.ObtenerTotalListaProveedores(FrmPrincipal.empresaGlobal.IdEmpresa, txtNombre.Text)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()

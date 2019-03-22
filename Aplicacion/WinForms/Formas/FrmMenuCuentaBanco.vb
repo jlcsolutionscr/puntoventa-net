@@ -1,13 +1,15 @@
+Imports LeandroSoftware.AccesoDatos.ClienteWCF
+
 Public Class FrmMenuCuentaBanco
 #Region "Variables"
 #End Region
 
 #Region "Métodos"
-    Private Sub CargarCombos()
+    Private Async Sub CargarCombos()
         Try
             cboIdCuentaBanco.ValueMember = "IdCuenta"
             cboIdCuentaBanco.DisplayMember = "Descripcion"
-            'cboIdCuentaBanco.DataSource = servicioAuxiliarBancario.ObtenerListaCuentasBanco(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
+            cboIdCuentaBanco.DataSource = Await PuntoventaWCF.ObtenerListaCuentasBanco(FrmPrincipal.empresaGlobal.IdEmpresa)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
@@ -23,7 +25,7 @@ Public Class FrmMenuCuentaBanco
 
     Private Sub btnProcesar_Click(sender As Object, e As EventArgs) Handles btnProcesar.Click
         If cboIdCuentaBanco.SelectedValue IsNot Nothing Then
-            FrmMenuPrincipal.intBusqueda = cboIdCuentaBanco.SelectedValue
+            FrmPrincipal.intBusqueda = cboIdCuentaBanco.SelectedValue
             Close()
         Else
             MessageBox.Show("Debe seleccionar una cuenta bancaria para continuar. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)

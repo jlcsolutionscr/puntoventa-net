@@ -36,15 +36,15 @@ Public Class FrmClienteListado
         dvcTelefono.DataPropertyName = "Telefono"
         dvcTelefono.Width = 70
         dgvDatos.Columns.Add(dvcTelefono)
-        dvcPermiteCredito.HeaderText = "Crédito"
-        dvcPermiteCredito.DataPropertyName = "PermiteCredito"
+        dvcPermiteCredito.HeaderText = "Exonerado"
+        dvcPermiteCredito.DataPropertyName = "ExoneradoDeImpuesto"
         dvcPermiteCredito.Width = 50
         dgvDatos.Columns.Add(dvcPermiteCredito)
     End Sub
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
         Try
-            listado = Await PuntoventaWCF.ObtenerListaClientes(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, txtNombre.Text)
+            listado = Await PuntoventaWCF.ObtenerListaClientes(FrmPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, txtNombre.Text)
             dgvDatos.DataSource = listado
             If listado.Count() > 0 Then
                 btnEditar.Enabled = True
@@ -63,7 +63,7 @@ Public Class FrmClienteListado
 
     Private Async Function ValidarCantidadClientes() As Task
         Try
-            intTotalEmpresas = Await PuntoventaWCF.ObtenerTotalListaClientes(FrmMenuPrincipal.empresaGlobal.IdEmpresa, txtNombre.Text)
+            intTotalEmpresas = Await PuntoventaWCF.ObtenerTotalListaClientes(FrmPrincipal.empresaGlobal.IdEmpresa, txtNombre.Text)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()

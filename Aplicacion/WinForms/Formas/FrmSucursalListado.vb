@@ -27,7 +27,7 @@
         dvcSaldo.HeaderText = "Teléfono"
         dvcSaldo.DataPropertyName = "Telefono"
         dvcSaldo.Width = 100
-        dvcSaldo.DefaultCellStyle = FrmMenuPrincipal.dgvDecimal
+        dvcSaldo.DefaultCellStyle = FrmPrincipal.dgvDecimal
         dgvDatos.Columns.Add(dvcSaldo)
     End Sub
 

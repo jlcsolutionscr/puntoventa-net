@@ -32,7 +32,7 @@ namespace LeandroSoftware.Migracion.ClienteWeb
             }
         }
 
-        private async void btnProcesar_Click(object sender, EventArgs e)
+        private async void BtnProcesar_Click(object sender, EventArgs e)
         {
             btnProcesar.Enabled = false;
             rtbSalida.Text = "";
@@ -64,12 +64,12 @@ namespace LeandroSoftware.Migracion.ClienteWeb
                 {
                     Empresa empresa = dbContext.EmpresaRepository.FirstOrDefault();
                     if (empresa == null) throw new Exception("No se logró obtener el registro de empresa de la base de datos.");
-                    if (chkBancoAdquiriente.Checked)
+                    // Registros banco adquiriente
+                    rtbSalida.AppendText("Agregando registros de banco adquiriente:\n");
+                    List<BancoAdquiriente> listadoBancoAdquiriente = dbContext.BancoAdquirienteRepository.ToList();
+                    foreach (BancoAdquiriente detalle in listadoBancoAdquiriente)
                     {
-                        // Registros banco adquiriente
-                        rtbSalida.AppendText("Agregando registros de banco adquiriente:\n");
-                        List<BancoAdquiriente> listadoBancoAdquiriente = dbContext.BancoAdquirienteRepository.ToList();
-                        foreach (BancoAdquiriente detalle in listadoBancoAdquiriente)
+                        if (chkBancoAdquiriente.Checked)
                         {
                             AccesoDatos.Dominio.Entidades.BancoAdquiriente nuevoRegistro = new AccesoDatos.Dominio.Entidades.BancoAdquiriente();
                             nuevoRegistro.IdEmpresa = detalle.IdEmpresa;
@@ -81,14 +81,19 @@ namespace LeandroSoftware.Migracion.ClienteWeb
                             bancoAdquirienteDict.Add(detalle.IdBanco, int.Parse(strId));
                             rtbSalida.AppendText("Migración de banco adquiriente IdLocal: " + detalle.IdBanco + " IdServer: " + strId + "\n");
                         }
-                        rtbSalida.AppendText("Registros de banco adquiriente agregados satisfactoriamente. . .\n");
+                        else
+                        {
+                            bancoAdquirienteDict.Add(detalle.IdBanco, detalle.IdBanco);
+                        }
                     }
-                    if (chkCliente.Checked)
+                    rtbSalida.AppendText("Registros de banco adquiriente agregados satisfactoriamente. . .\n");
+
+                    // Registros Clientes
+                    rtbSalida.AppendText("Agregando registros de clientes:\n");
+                    List<Cliente> listadoCliente = dbContext.ClienteRepository.Where(x => x.IdCliente > 1).ToList();
+                    foreach (Cliente detalle in listadoCliente)
                     {
-                        // Registros Clientes
-                        rtbSalida.AppendText("Agregando registros de clientes:\n");
-                        List<Cliente> listadoCliente = dbContext.ClienteRepository.Where(x => x.IdCliente > 1).ToList();
-                        foreach (Cliente detalle in listadoCliente)
+                        if (chkCliente.Checked)
                         {
                             AccesoDatos.Dominio.Entidades.Cliente nuevoRegistro = new AccesoDatos.Dominio.Entidades.Cliente();
                             nuevoRegistro.IdEmpresa = detalle.IdEmpresa;
@@ -112,14 +117,18 @@ namespace LeandroSoftware.Migracion.ClienteWeb
                             clienteDict.Add(detalle.IdCliente, int.Parse(strId));
                             rtbSalida.AppendText("Migración de cliente IdLocal: " + detalle.IdCliente + " IdServer: " + strId + "\n");
                         }
-                        rtbSalida.AppendText("Registros de cliente agregados satisfactoriamente. . .\n");
+                        else
+                        {
+                            clienteDict.Add(detalle.IdCliente, detalle.IdCliente);
+                        }
                     }
-                    if (chkLinea.Checked)
+                    rtbSalida.AppendText("Registros de cliente agregados satisfactoriamente. . .\n");
+                    // Registros Lineas
+                    rtbSalida.AppendText("Agregando registros de lineas de producto:\n");
+                    List<Linea> listadoLinea = dbContext.LineaRepository.ToList();
+                    foreach (Linea detalle in listadoLinea)
                     {
-                        // Registros Lineas
-                        rtbSalida.AppendText("Agregando registros de lineas de producto:\n");
-                        List<Linea> listadoLinea = dbContext.LineaRepository.ToList();
-                        foreach (Linea detalle in listadoLinea)
+                        if (chkLinea.Checked)
                         {
                             AccesoDatos.Dominio.Entidades.Linea nuevoRegistro = new AccesoDatos.Dominio.Entidades.Linea();
                             nuevoRegistro.IdEmpresa = detalle.IdEmpresa;
@@ -129,14 +138,18 @@ namespace LeandroSoftware.Migracion.ClienteWeb
                             lineaDict.Add(detalle.IdLinea, int.Parse(strId));
                             rtbSalida.AppendText("Migración de línea de producto IdLocal: " + detalle.IdLinea + " IdServer: " + strId + "\n");
                         }
-                        rtbSalida.AppendText("Registros de lineas de producto agregados satisfactoriamente. . .\n");
+                        else
+                        {
+                            lineaDict.Add(detalle.IdLinea, detalle.IdLinea);
+                        }
                     }
-                    if (chkProveedor.Checked)
+                    rtbSalida.AppendText("Registros de lineas de producto agregados satisfactoriamente. . .\n");
+                    // Registros Proveedores
+                    rtbSalida.AppendText("Agregando registros de proveedores:\n");
+                    List<Proveedor> listadoProveedor = dbContext.ProveedorRepository.ToList();
+                    foreach (Proveedor detalle in listadoProveedor)
                     {
-                        // Registros Proveedores
-                        rtbSalida.AppendText("Agregando registros de proveedores:\n");
-                        List<Proveedor> listadoProveedor = dbContext.ProveedorRepository.ToList();
-                        foreach (Proveedor detalle in listadoProveedor)
+                        if (chkProveedor.Checked)
                         {
                             AccesoDatos.Dominio.Entidades.Proveedor nuevoRegistro = new AccesoDatos.Dominio.Entidades.Proveedor();
                             nuevoRegistro.IdEmpresa = detalle.IdEmpresa;
@@ -156,14 +169,18 @@ namespace LeandroSoftware.Migracion.ClienteWeb
                             proveedorDict.Add(detalle.IdProveedor, int.Parse(strId));
                             rtbSalida.AppendText("Migración de proveedor IdLocal: " + detalle.IdProveedor + " IdServer: " + strId + "\n");
                         }
-                        rtbSalida.AppendText("Registros de proveedores agregados satisfactoriamente. . .\n");
+                        else
+                        {
+                            proveedorDict.Add(detalle.IdProveedor, detalle.IdProveedor);
+                        }
                     }
-                    if (chkProducto.Checked)
+                    rtbSalida.AppendText("Registros de proveedores agregados satisfactoriamente. . .\n");
+                    // Registros Productos
+                    rtbSalida.AppendText("Agregando registros de productos:\n");
+                    List<Producto> listadoProducto = dbContext.ProductoRepository.ToList();
+                    foreach (Producto detalle in listadoProducto)
                     {
-                        // Registros Productos
-                        rtbSalida.AppendText("Agregando registros de productos:\n");
-                        List<Producto> listadoProducto = dbContext.ProductoRepository.ToList();
-                        foreach (Producto detalle in listadoProducto)
+                        if (chkProducto.Checked)
                         {
                             int intNuevoIdLinea;
                             if (!lineaDict.TryGetValue(detalle.IdLinea, out intNuevoIdLinea)) throw new Exception("Línea del producto no ha sido migrada. Por favor verifique el proceso. . .");
@@ -190,14 +207,18 @@ namespace LeandroSoftware.Migracion.ClienteWeb
                             productoDict.Add(detalle.IdProducto, int.Parse(strId));
                             rtbSalida.AppendText("Migración de producto IdLocal: " + detalle.IdProducto + " IdServer: " + strId + "\n");
                         }
-                        rtbSalida.AppendText("Registros de productos agregados satisfactoriamente. . .\n");
+                        else
+                        {
+                            productoDict.Add(detalle.IdProducto, detalle.IdProducto);
+                        }
                     }
-                    if (chkUsuario.Checked)
+                    rtbSalida.AppendText("Registros de productos agregados satisfactoriamente. . .\n");
+                    // Registros Usuario
+                    rtbSalida.AppendText("Agregando registros de usuarios:\n");
+                    List<Usuario> listadoUsuario = dbContext.UsuarioRepository.Include("RolePorUsuario").Where(x => x.IdUsuario > 1).ToList();
+                    foreach (Usuario detalle in listadoUsuario)
                     {
-                        // Registros Usuario
-                        rtbSalida.AppendText("Agregando registros de usuarios:\n");
-                        List<Usuario> listadoUsuario = dbContext.UsuarioRepository.Include("RolePorUsuario").Where(x => x.IdUsuario > 1).ToList();
-                        foreach (Usuario detalle in listadoUsuario)
+                        if (chkUsuario.Checked)
                         {
                             AccesoDatos.Dominio.Entidades.Usuario nuevoRegistro = new AccesoDatos.Dominio.Entidades.Usuario();
                             nuevoRegistro.CodigoUsuario = detalle.CodigoUsuario;
@@ -215,14 +236,18 @@ namespace LeandroSoftware.Migracion.ClienteWeb
                             usuarioDict.Add(detalle.IdUsuario, int.Parse(strId));
                             rtbSalida.AppendText("Migración de usuario IdLocal: " + detalle.IdUsuario + " IdServer: " + strId + "\n");
                         }
-                        rtbSalida.AppendText("Registros de usuarios agregados satisfactoriamente. . .\n");
+                        else
+                        {
+                            usuarioDict.Add(detalle.IdUsuario, detalle.IdUsuario);
+                        }
                     }
-                    if (chkCuentaEgreso.Checked)
+                    rtbSalida.AppendText("Registros de usuarios agregados satisfactoriamente. . .\n");
+                    // Registros CuentaEgreso
+                    rtbSalida.AppendText("Agregando registros de cuentas de egreso:\n");
+                    List<CuentaEgreso> listadoCuentaEgreso = dbContext.CuentaEgresoRepository.ToList();
+                    foreach (CuentaEgreso detalle in listadoCuentaEgreso)
                     {
-                        // Registros CuentaEgreso
-                        rtbSalida.AppendText("Agregando registros de cuentas de egreso:\n");
-                        List<CuentaEgreso> listadoCuentaEgreso = dbContext.CuentaEgresoRepository.ToList();
-                        foreach (CuentaEgreso detalle in listadoCuentaEgreso)
+                        if (chkCuentaEgreso.Checked)
                         {
                             AccesoDatos.Dominio.Entidades.CuentaEgreso nuevoRegistro = new AccesoDatos.Dominio.Entidades.CuentaEgreso();
                             nuevoRegistro.IdEmpresa = detalle.IdEmpresa;
@@ -231,14 +256,18 @@ namespace LeandroSoftware.Migracion.ClienteWeb
                             cuentaEgresoDict.Add(detalle.IdCuenta, int.Parse(strId));
                             rtbSalida.AppendText("Migración de cuenta de egreso IdLocal: " + detalle.IdCuenta + " IdServer: " + strId + "\n");
                         }
-                        rtbSalida.AppendText("Registros de cuentas de egreso agregados satisfactoriamente. . .\n");
+                        else
+                        {
+                            cuentaEgresoDict.Add(detalle.IdCuenta, detalle.IdCuenta);
+                        }
                     }
-                    if (chkCuentaBanco.Checked)
+                    rtbSalida.AppendText("Registros de cuentas de egreso agregados satisfactoriamente. . .\n");
+                    // Registros CuentaBanco
+                    rtbSalida.AppendText("Agregando registros de cuentas bancarias:\n");
+                    List<CuentaBanco> listadoCuentaBanco = dbContext.CuentaBancoRepository.ToList();
+                    foreach (CuentaBanco detalle in listadoCuentaBanco)
                     {
-                        // Registros CuentaBanco
-                        rtbSalida.AppendText("Agregando registros de cuentas bancarias:\n");
-                        List<CuentaBanco> listadoCuentaBanco = dbContext.CuentaBancoRepository.ToList();
-                        foreach (CuentaBanco detalle in listadoCuentaBanco)
+                        if (chkCuentaBanco.Checked)
                         {
                             AccesoDatos.Dominio.Entidades.CuentaBanco nuevoRegistro = new AccesoDatos.Dominio.Entidades.CuentaBanco();
                             nuevoRegistro.IdEmpresa = detalle.IdEmpresa;
@@ -249,14 +278,18 @@ namespace LeandroSoftware.Migracion.ClienteWeb
                             cuentaBancoDict.Add(detalle.IdCuenta, int.Parse(strId));
                             rtbSalida.AppendText("Migración de cuenta bancaria IdLocal: " + detalle.IdCuenta + " IdServer: " + strId + "\n");
                         }
-                        rtbSalida.AppendText("Registros de cuentas bancarias agregados satisfactoriamente. . .\n");
+                        else
+                        {
+                            cuentaBancoDict.Add(detalle.IdCuenta, detalle.IdCuenta);
+                        }
                     }
-                    if (chkVendedor.Checked)
+                    rtbSalida.AppendText("Registros de cuentas bancarias agregados satisfactoriamente. . .\n");
+                    // Registros Vendedor
+                    rtbSalida.AppendText("Agregando registros de vendedores:\n");
+                    List<Vendedor> listadoVendedor = dbContext.VendedorRepository.ToList();
+                    foreach (Vendedor detalle in listadoVendedor)
                     {
-                        // Registros Vendedor
-                        rtbSalida.AppendText("Agregando registros de vendedores:\n");
-                        List<Vendedor> listadoVendedor = dbContext.VendedorRepository.ToList();
-                        foreach (Vendedor detalle in listadoVendedor)
+                        if (chkVendedor.Checked)
                         {
                             AccesoDatos.Dominio.Entidades.Vendedor nuevoRegistro = new AccesoDatos.Dominio.Entidades.Vendedor();
                             nuevoRegistro.IdEmpresa = detalle.IdEmpresa;
@@ -265,8 +298,12 @@ namespace LeandroSoftware.Migracion.ClienteWeb
                             vendedorDict.Add(detalle.IdVendedor, int.Parse(strId));
                             rtbSalida.AppendText("Migración de vendedor IdLocal: " + detalle.IdVendedor + " IdServer: " + strId + "\n");
                         }
-                        rtbSalida.AppendText("Registros de vendedores satisfactoriamente. . .\n");
+                        else
+                        {
+                            vendedorDict.Add(detalle.IdVendedor, detalle.IdVendedor);
+                        }
                     }
+                    rtbSalida.AppendText("Registros de vendedores satisfactoriamente. . .\n");
                     if (chkEgreso.Checked)
                     {
                         // Registros Egreso

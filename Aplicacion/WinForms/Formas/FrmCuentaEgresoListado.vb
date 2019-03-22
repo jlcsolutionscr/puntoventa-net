@@ -24,7 +24,7 @@ Public Class FrmCuentaEgresoListado
 
     Private Async Sub ActualizarDatos()
         Try
-            listado = Await PuntoventaWCF.ObtenerListaCuentasEgreso(FrmMenuPrincipal.empresaGlobal.IdEmpresa, txtDescripcion.Text)
+            listado = Await PuntoventaWCF.ObtenerListaCuentasEgreso(FrmPrincipal.empresaGlobal.IdEmpresa, txtDescripcion.Text)
             dgvDatos.DataSource = listado
             If listado.Count() > 0 Then
                 btnEditar.Enabled = True

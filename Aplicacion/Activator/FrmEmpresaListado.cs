@@ -29,6 +29,8 @@ namespace LeandroSoftware.Activator
             {
                 dsDataSet = await PuntoventaWCF.ObtenerListaEmpresas();
                 cboEmpresa.DataSource = dsDataSet;
+                btnAgregar.Enabled = true;
+                btnEditar.Enabled = true;
             }
             catch (Exception ex)
             {

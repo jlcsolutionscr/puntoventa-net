@@ -33,13 +33,13 @@ Public Class FrmBusquedaCliente
         dvcTopeCredito.HeaderText = "Tope Crédito"
         dvcTopeCredito.DataPropertyName = "TopeCredito"
         dvcTopeCredito.Width = 120
-        dvcTopeCredito.DefaultCellStyle = FrmMenuPrincipal.dgvDecimal
+        dvcTopeCredito.DefaultCellStyle = FrmPrincipal.dgvDecimal
         dgvListado.Columns.Add(dvcTopeCredito)
     End Sub
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
         Try
-            dgvListado.DataSource = Await PuntoventaWCF.ObtenerListaClientes(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, txtNombre.Text)
+            dgvListado.DataSource = Await PuntoventaWCF.ObtenerListaClientes(FrmPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, txtNombre.Text)
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -51,7 +51,7 @@ Public Class FrmBusquedaCliente
 
     Private Async Function ValidarCantidadClientes() As Task
         Try
-            intTotalEmpresas = Await PuntoventaWCF.ObtenerTotalListaClientes(FrmMenuPrincipal.empresaGlobal.IdEmpresa, txtNombre.Text)
+            intTotalEmpresas = Await PuntoventaWCF.ObtenerTotalListaClientes(FrmPrincipal.empresaGlobal.IdEmpresa, txtNombre.Text)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -107,7 +107,7 @@ Public Class FrmBusquedaCliente
 
     Private Sub FlexProducto_DoubleClick(ByVal sender As Object, ByVal e As EventArgs) Handles dgvListado.DoubleClick
         If dgvListado.RowCount > 0 Then
-            FrmMenuPrincipal.intBusqueda = dgvListado.CurrentRow.Cells(0).Value
+            FrmPrincipal.intBusqueda = dgvListado.CurrentRow.Cells(0).Value
             Close()
         End If
     End Sub

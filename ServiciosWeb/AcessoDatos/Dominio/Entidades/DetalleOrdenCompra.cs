@@ -13,6 +13,7 @@ namespace LeandroSoftware.AccesoDatos.Dominio.Entidades
         public decimal Cantidad { get; set; }
         public decimal PrecioCosto { get; set; }
         public bool Excento { get; set; }
+        public decimal PorcentajeIVA { get; set; }
 
         public OrdenCompra Orden { get; set; }
         public Producto Producto { get; set; }

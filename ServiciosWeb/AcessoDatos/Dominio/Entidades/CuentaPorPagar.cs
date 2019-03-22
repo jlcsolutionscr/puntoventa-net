@@ -8,11 +8,6 @@ namespace LeandroSoftware.AccesoDatos.Dominio.Entidades
     [Table("cuentaporpagar")]
     public partial class CuentaPorPagar
     {
-        public CuentaPorPagar()
-        {
-            DesglosePagoCuentaPorPagar = new HashSet<DesglosePagoCuentaPorPagar>();
-        }
-
         [ForeignKey("Empresa")]
         public int IdEmpresa { get; set; }
         [Key]
@@ -36,6 +31,5 @@ namespace LeandroSoftware.AccesoDatos.Dominio.Entidades
 
         public Empresa Empresa { get; set; }
         public Usuario Usuario { get; set; }
-        public ICollection<DesglosePagoCuentaPorPagar> DesglosePagoCuentaPorPagar { get; set; }
     }
 }

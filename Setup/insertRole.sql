@@ -3,7 +3,6 @@ INSERT INTO Role values(1,'Cierre Diario','mnuArchivo','mnuArchivoCierre','Permi
 INSERT INTO Role values(2,'Menu de Reportes','mnuArchivo','MnuArchivoReporte','Permite acceder el menu de reportes');
 INSERT INTO Role values(4,'Parametrización de Tipos de Moneda','MnuParam','MnuParamTM','Permite parametrizar los tipos de monedas para el desglose de pagos');
 INSERT INTO Role values(5,'Parametrización de Bancos Adquirientes','MnuParam','MnuParamBA','Permite parametrizar los bancos adquirientes');
-INSERT INTO Role values(6,'Respaldo de datos','mnuArchivo','mnuArchivoRespaldo','Permite ejecutar el respaldo en línea de la base de datos del sistema');
 INSERT INTO Role values(50,'Mantenimiento de Clientes','MnuMant','MnuMantCliente','Permite acceder al módulo de Mantenimiento de Clientes');
 INSERT INTO Role values(52,'Mantenimiento de Líneas','MnuMant','MnuMantLinea','Permite acceder al módulo de Mantenimiento de Líneas');
 INSERT INTO Role values(53,'Mantenimiento de Proveedores','MnuMant','MnuMantProveedor','Permite acceder al módulo de Mantenimiento de Proveedores');

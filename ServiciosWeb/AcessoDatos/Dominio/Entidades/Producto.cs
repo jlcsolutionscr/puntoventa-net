@@ -30,7 +30,8 @@ namespace LeandroSoftware.AccesoDatos.Dominio.Entidades
         public decimal PrecioVenta3 { get; set; }
         public decimal PrecioVenta4 { get; set; }
         public decimal PrecioVenta5 { get; set; }
-        public bool Excento { get; set; }
+        [ForeignKey("ParametroImpuesto")]
+        public int IdImpuesto { get; set; }
         public int IndExistencia { get; set; }
         [ForeignKey("TipoUnidad")]
         public int IdTipoUnidad { get; set; }
@@ -42,6 +43,7 @@ namespace LeandroSoftware.AccesoDatos.Dominio.Entidades
         public Empresa Empresa { get; set; }
         public Proveedor Proveedor { get; set; }
         public TipoProducto TipoProducto { get; set; }
+        public ParametroImpuesto ParametroImpuesto { get; set; }
         public TipoUnidad TipoUnidad { get; set; }
         public ICollection<MovimientoProducto> MovimientoProducto { get; set; }
     }

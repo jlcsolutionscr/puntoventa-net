@@ -63,7 +63,7 @@ Public Class FrmBancoAdquiriente
             Exit Sub
         End If
         If datos.IdBanco = 0 Then
-            datos.IdEmpresa = FrmMenuPrincipal.empresaGlobal.IdEmpresa
+            datos.IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa
         End If
         datos.Codigo = txtCodigo.Text
         datos.Descripcion = txtDescripcion.Text
@@ -95,7 +95,7 @@ Public Class FrmBancoAdquiriente
     End Sub
 
     Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs) Handles txtRetencion.KeyPress, txtComision.KeyPress
-        FrmMenuPrincipal.ValidaNumero(e, sender, True, 2, ".")
+        FrmPrincipal.ValidaNumero(e, sender, True, 2, ".")
     End Sub
 #End Region
 End Class

@@ -137,6 +137,10 @@
 
     public class CondicionVentaYFormaPago
     {
+        public CondicionVentaYFormaPago()
+        {
+        }
+
         public CondicionVentaYFormaPago(int id, string desc)
         {
             IdTipo = id;
@@ -149,17 +153,334 @@
 
     public class TipodePrecio
     {
+        public TipodePrecio()
+        {
+        }
+
         public TipodePrecio(int id, string desc)
         {
             IdTipoPrecio = id;
             Descripcion = desc;
         }
 
-        public TipodePrecio()
-        {
-        }
-
         public int IdTipoPrecio { get; set; }
         public string Descripcion { get; set; }
+    }
+
+    public class ReporteVentas
+    {
+        public string FechaDesde { get; set; }
+        public string FechaHasta { get; set; }
+        public int IdFactura { get; set; }
+        public string Fecha { get; set; }
+        public string Nombre { get; set; }
+        public string NoDocumento { get; set; }
+        public decimal Impuesto { get; set; }
+        public decimal Total { get; set; }
+    }
+
+    public class ReporteVentasPorVendedor
+    {
+        public string NombreVendedor { get; set; }
+        public string FechaDesde { get; set; }
+        public string FechaHasta { get; set; }
+        public int IdFactura { get; set; }
+        public string Fecha { get; set; }
+        public string NombreCliente { get; set; }
+        public string NoDocumento { get; set; }
+        public decimal Impuesto { get; set; }
+        public decimal Total { get; set; }
+    }
+
+    public class ReporteCompras
+    {
+        public string FechaDesde { get; set; }
+        public string FechaHasta { get; set; }
+        public int IdCompra { get; set; }
+        public string Fecha { get; set; }
+        public string Nombre { get; set; }
+        public string NoDocumento { get; set; }
+        public decimal Impuesto { get; set; }
+        public decimal Total { get; set; }
+    }
+
+    public class ReporteCuentasPorCobrar
+    {
+        public int IdPropietario { get; set; }
+        public string Nombre { get; set; }
+        public int IdCxC { get; set; }
+        public string Fecha { get; set; }
+        public string Descripcion { get; set; }
+        public string Referencia { get; set; }
+        public decimal Total { get; set; }
+        public decimal Saldo { get; set; }
+    }
+
+    public class ReporteCuentasPorPagar
+    {
+        public int IdPropietario { get; set; }
+        public string Nombre { get; set; }
+        public int IdCxP { get; set; }
+        public string Fecha { get; set; }
+        public string Descripcion { get; set; }
+        public string Referencia { get; set; }
+        public decimal Total { get; set; }
+        public decimal Saldo { get; set; }
+    }
+
+    public class ReporteMovimientosCxC
+    {
+        public int IdPropietario { get; set; }
+        public string Nombre { get; set; }
+        public int IdCxC { get; set; }
+        public string DescCxC { get; set; }
+        public string Fecha { get; set; }
+        public string Descripcion { get; set; }
+        public string Referencia { get; set; }
+        public decimal Total { get; set; }
+        public decimal Saldo { get; set; }
+        public int IdMovCxC { get; set; }
+        public decimal Credito { get; set; }
+        public decimal Debito { get; set; }
+    }
+
+    public class ReporteMovimientosCxP
+    {
+        public int IdProveedor { get; set; }
+        public string Nombre { get; set; }
+        public int IdCxP { get; set; }
+        public string DescCxP { get; set; }
+        public string Fecha { get; set; }
+        public string Descripcion { get; set; }
+        public string Recibo { get; set; }
+        public decimal Total { get; set; }
+        public decimal Saldo { get; set; }
+        public int IdMovCxP { get; set; }
+        public decimal Credito { get; set; }
+        public decimal Debito { get; set; }
+    }
+
+    public class ReporteMovimientosBanco
+    {
+        public string FechaDesde { get; set; }
+        public string FechaHasta { get; set; }
+        public int IdMov { get; set; }
+        public int IdCuenta { get; set; }
+        public string NombreCuenta { get; set; }
+        public decimal SaldoAnterior { get; set; }
+        public string Fecha { get; set; }
+        public string Numero { get; set; }
+        public string Beneficiario { get; set; }
+        public string Descripcion { get; set; }
+        public string Tipo { get; set; }
+        public decimal Credito { get; set; }
+        public decimal Debito { get; set; }
+        public decimal Saldo { get; set; }
+    }
+
+    public class ReporteEstadoResultados
+    {
+        public string FechaDesde { get; set; }
+        public string FechaHasta { get; set; }
+        public string NombreTipoRegistro { get; set; }
+        public string Descripcion { get; set; }
+        public decimal Valor { get; set; }
+    }
+
+    public class ReporteDetalleEgreso
+    {
+        public string FechaDesde { get; set; }
+        public string FechaHasta { get; set; }
+        public int IdMov { get; set; }
+        public string Descripcion { get; set; }
+        public string Detalle { get; set; }
+        public decimal Total { get; set; }
+    }
+
+    public class ReporteDetalleIngreso
+    {
+        public string FechaDesde { get; set; }
+        public string FechaHasta { get; set; }
+        public int IdMov { get; set; }
+        public string Descripcion { get; set; }
+        public string Detalle { get; set; }
+        public decimal Total { get; set; }
+    }
+
+    public class ReporteVentasPorLineaResumen
+    {
+        public string FechaDesde { get; set; }
+        public string FechaHasta { get; set; }
+        public string Codigo { get; set; }
+        public int IdLinea { get; set; }
+        public string NombreLinea { get; set; }
+        public decimal Cantidad { get; set; }
+        public decimal PrecioVenta { get; set; }
+        public decimal Excento { get; set; }
+        public decimal Grabado { get; set; }
+        public decimal Impuesto { get; set; }
+        public decimal Descuento { get; set; }
+        public decimal Costo { get; set; }
+        public decimal PorcentajeIVA { get; set; }
+
+    }
+
+    public class ReporteVentasPorLineaDetalle
+    {
+        public string FechaDesde { get; set; }
+        public string FechaHasta { get; set; }
+        public string Codigo { get; set; }
+        public string Descripcion { get; set; }
+        public int IdLinea { get; set; }
+        public string NombreLinea { get; set; }
+        public decimal Cantidad { get; set; }
+        public decimal PrecioVenta { get; set; }
+        public decimal Excento { get; set; }
+        public decimal Grabado { get; set; }
+        public decimal Impuesto { get; set; }
+        public decimal Descuento { get; set; }
+        public decimal PorcentajeIVA { get; set; }
+    }
+
+    public class ReporteCierreDeCaja
+    {
+        public decimal FondoInicio { get; set; }
+        public decimal VentasPorMayor { get; set; }
+        public decimal VentasDetalle { get; set; }
+        public decimal VentasContado { get; set; }
+        public decimal VentasCredito { get; set; }
+        public decimal VentasTarjeta { get; set; }
+        public decimal OtrasVentas { get; set; }
+        public decimal RetencionIVA { get; set; }
+        public decimal ComisionVT { get; set; }
+        public decimal Liquidacion { get; set; }
+        public decimal IngresoCxCEfectivo { get; set; }
+        public decimal IngresoCxCTarjeta { get; set; }
+        public decimal DevolucionesProveedores { get; set; }
+        public decimal OtrosIngresos { get; set; }
+        public decimal ComprasContado { get; set; }
+        public decimal ComprasCredito { get; set; }
+        public decimal OtrasCompras { get; set; }
+        public decimal EgresoCxPEfectivo { get; set; }
+        public decimal DevolucionesClientes { get; set; }
+        public decimal OtrosEgresos { get; set; }
+    }
+
+    public class ReporteProforma
+    {
+        public int IdProforma { get; set; }
+        public string NombreCliente { get; set; }
+        public decimal SubTotal { get; set; }
+        public decimal Descuento { get; set; }
+        public decimal Impuesto { get; set; }
+        public decimal Total { get; set; }
+        public string Fecha { get; set; }
+        public string TipoPago { get; set; }
+        public string Descripcion { get; set; }
+        public decimal Cantidad { get; set; }
+        public decimal PrecioVenta { get; set; }
+        public decimal TotalLinea { get; set; }
+    }
+
+    public class ReporteOrdenServicio
+    {
+        public int IdOrden { get; set; }
+        public string NombreCliente { get; set; }
+        public decimal SubTotal { get; set; }
+        public decimal Descuento { get; set; }
+        public decimal Impuesto { get; set; }
+        public decimal Total { get; set; }
+        public string Fecha { get; set; }
+        public string Placa { get; set; }
+        public string TipoPago { get; set; }
+        public string Descripcion { get; set; }
+        public decimal Cantidad { get; set; }
+        public decimal PrecioVenta { get; set; }
+        public decimal TotalLinea { get; set; }
+    }
+
+    public class ReporteOrdenCompra
+    {
+        public int IdOrden { get; set; }
+        public string Nombre { get; set; }
+        public decimal SubTotal { get; set; }
+        public decimal Descuento { get; set; }
+        public decimal Impuesto { get; set; }
+        public decimal Total { get; set; }
+        public string Fecha { get; set; }
+        public string TipoPago { get; set; }
+        public string Descripcion { get; set; }
+        public decimal Cantidad { get; set; }
+        public decimal PrecioCosto { get; set; }
+        public decimal TotalLinea { get; set; }
+    }
+
+    public class ReporteInventario
+    {
+        public int IdProducto { get; set; }
+        public string Codigo { get; set; }
+        public string Descripcion { get; set; }
+        public decimal Cantidad { get; set; }
+        public decimal PrecioCosto { get; set; }
+        public decimal PrecioVenta { get; set; }
+    }
+
+    public class ReporteMovimientosContables
+    {
+        public string Descripcion { get; set; }
+        public decimal SaldoDebe { get; set; }
+        public decimal SaldoHaber { get; set; }
+    }
+
+    public class ReporteBalanceComprobacion
+    {
+        public int IdCuenta { get; set; }
+        public string Descripcion { get; set; }
+        public decimal SaldoDebe { get; set; }
+        public decimal SaldoHaber { get; set; }
+    }
+
+    public class ReportePerdidasyGanancias
+    {
+        public string Descripcion { get; set; }
+        public int IdTipoCuenta { get; set; }
+        public string DescGrupo { get; set; }
+        public decimal SaldoDebe { get; set; }
+        public decimal SaldoHaber { get; set; }
+    }
+
+    public class ReporteDetalleMovimientosCuentasDeBalance
+    {
+        public string DescCuentaBalance { get; set; }
+        public string Descripcion { get; set; }
+        public decimal SaldoInicial { get; set; }
+        public string Fecha { get; set; }
+        public string Detalle { get; set; }
+        public decimal Debito { get; set; }
+        public decimal Credito { get; set; }
+    }
+
+    public class ReporteEgreso
+    {
+        public int IdEgreso { get; set; }
+        public string Fecha { get; set; }
+        public string Detalle { get; set; }
+        public string Beneficiario { get; set; }
+        public decimal Monto { get; set; }
+        public string MontoEnLetras { get; set; }
+        public string Descripcion { get; set; }
+        public decimal MontoLocal { get; set; }
+    }
+
+    public class ReporteIngreso
+    {
+        public int IdIngreso { get; set; }
+        public string Fecha { get; set; }
+        public string RecibidoDe { get; set; }
+        public string Detalle { get; set; }
+        public decimal Monto { get; set; }
+        public string MontoEnLetras { get; set; }
+        public string Descripcion { get; set; }
+        public decimal MontoLocal { get; set; }
     }
 }

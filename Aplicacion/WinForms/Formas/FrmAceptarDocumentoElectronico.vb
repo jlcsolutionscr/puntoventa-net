@@ -19,7 +19,7 @@ Public Class FrmAceptarDocumentoElectronico
                 Else
                     intEstado = 2
                 End If
-                Await PuntoventaWCF.GeneraMensajeReceptor(strDatos, FrmMenuPrincipal.empresaGlobal.IdEmpresa, FrmMenuPrincipal.intSucursal, FrmMenuPrincipal.intTerminal, intEstado)
+                Await PuntoventaWCF.GeneraMensajeReceptor(strDatos, FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, FrmPrincipal.equipoGlobal.IdTerminal, intEstado)
                 MessageBox.Show("Documento enviado satisfactoriamente. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 Close()
             Else
@@ -42,10 +42,14 @@ Public Class FrmAceptarDocumentoElectronico
                     .Formatting = Formatting.Indented,
                     .Indentation = 4
                 }
-                Dim datos As XmlDocument = New XmlDocument()
-                datos.Load(ofdAbrirDocumento.FileName)
-                strDatos = datos.OuterXml
-                datos.Save(xw)
+                Dim documentoXml As XmlDocument = New XmlDocument()
+                documentoXml.Load(ofdAbrirDocumento.FileName)
+                If (documentoXml.GetElementsByTagName("Otros").Count > 0) Then
+                    Dim otrosNode As XmlNode = documentoXml.GetElementsByTagName("Otros").Item(0)
+                    otrosNode.InnerText = ""
+                End If
+                strDatos = documentoXml.OuterXml
+                documentoXml.Save(xw)
                 txtMensaje.Text = sw.ToString()
                 btnEnviar.Enabled = True
             Catch ex As Exception

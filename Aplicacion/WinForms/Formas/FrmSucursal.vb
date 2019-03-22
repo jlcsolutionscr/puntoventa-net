@@ -58,7 +58,7 @@ Public Class FrmSucursal
             Exit Sub
         End If
         If datos.IdSucursal = 0 Then
-            datos.IdEmpresa = FrmMenuPrincipal.empresaGlobal.IdEmpresa
+            datos.IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa
         End If
         datos.Nombre = txtNombre.Text
         datos.Direccion = txtDireccion.Text

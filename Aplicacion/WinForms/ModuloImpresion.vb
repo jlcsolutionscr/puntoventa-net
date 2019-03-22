@@ -8,7 +8,7 @@ Public Class ModuloImpresion
 #Region "Variables"
     Public Class ClsEgreso
         Public empresa As Empresa
-        Public equipo As DetalleRegistro
+        Public equipo As TerminalPorEmpresa
         Public usuario As Usuario
         Public strId As String
         Public strFecha As String
@@ -23,7 +23,7 @@ Public Class ModuloImpresion
 
     Public Class ClsIngreso
         Public empresa As Empresa
-        Public equipo As DetalleRegistro
+        Public equipo As TerminalPorEmpresa
         Public usuario As Usuario
         Public strId As String
         Public strFecha As String
@@ -38,7 +38,7 @@ Public Class ModuloImpresion
 
     Public Class ClsCuentaPorPagar
         Public empresa As Empresa
-        Public equipo As DetalleRegistro
+        Public equipo As TerminalPorEmpresa
         Public usuario As Usuario
         Public strId As String
         Public strFecha As String
@@ -53,7 +53,7 @@ Public Class ModuloImpresion
 
     Public Class ClsRecibo
         Public empresa As Empresa
-        Public equipo As DetalleRegistro
+        Public equipo As TerminalPorEmpresa
         Public usuario As Usuario
         Public strConsecutivo As String
         Public strRecibo As String
@@ -66,7 +66,7 @@ Public Class ModuloImpresion
 
     Public Class ClsAjusteInventario
         Public empresa As Empresa
-        Public equipo As DetalleRegistro
+        Public equipo As TerminalPorEmpresa
         Public usuario As Usuario
         Public strId As String
         Public strFecha As String
@@ -76,7 +76,7 @@ Public Class ModuloImpresion
 
     Public Class ClsComprobante
         Public empresa As Empresa
-        Public equipo As DetalleRegistro
+        Public equipo As TerminalPorEmpresa
         Public usuario As Usuario
         Public strVendedor As String
         Public intCliente As Integer
@@ -258,7 +258,7 @@ Public Class ModuloImpresion
 #End Region
 
 #Region "Métodos"
-    Private Shared Function ImprimirEncabezado(objEquipo As DetalleRegistro, objEmpresa As Empresa, strFecha As String, Optional strCodigoUsuario As String = "") As String
+    Private Shared Function ImprimirEncabezado(objEquipo As TerminalPorEmpresa, objEmpresa As Empresa, strFecha As String, Optional strCodigoUsuario As String = "") As String
         Dim strCadena As String = strFecha & strCodigoUsuario.PadLeft(30, " ") & Chr(13) & Chr(10)
         If objEmpresa.NombreComercial.Length > 40 Then
             strCadena += objEmpresa.NombreComercial.Substring(0, 40) & Chr(13) & Chr(10)

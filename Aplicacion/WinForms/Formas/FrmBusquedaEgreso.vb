@@ -29,13 +29,13 @@ Public Class FrmBusquedaEgreso
         dvcTopeCredito.HeaderText = "Monto"
         dvcTopeCredito.DataPropertyName = "Monto"
         dvcTopeCredito.Width = 120
-        dvcTopeCredito.DefaultCellStyle = FrmMenuPrincipal.dgvDecimal
+        dvcTopeCredito.DefaultCellStyle = FrmPrincipal.dgvDecimal
         dgvListado.Columns.Add(dvcTopeCredito)
     End Sub
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
         Try
-            dgvListado.DataSource = Await PuntoventaWCF.ObtenerListaEgresos(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, intId, txtBeneficiario.Text, txtDetalle.Text)
+            dgvListado.DataSource = Await PuntoventaWCF.ObtenerListaEgresos(FrmPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, intId, txtBeneficiario.Text, txtDetalle.Text)
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -47,7 +47,7 @@ Public Class FrmBusquedaEgreso
 
     Private Async Function ValidarCantidadEgresos() As Task
         Try
-            intTotalEmpresas = Await PuntoventaWCF.ObtenerTotalListaEgresos(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intId, txtBeneficiario.Text, txtDetalle.Text)
+            intTotalEmpresas = Await PuntoventaWCF.ObtenerTotalListaEgresos(FrmPrincipal.empresaGlobal.IdEmpresa, intId, txtBeneficiario.Text, txtDetalle.Text)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -70,7 +70,7 @@ Public Class FrmBusquedaEgreso
 
 #Region "Eventos Controles"
     Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs) Handles txtId.KeyPress
-        FrmMenuPrincipal.ValidaNumero(e, sender, True, 0)
+        FrmPrincipal.ValidaNumero(e, sender, True, 0)
     End Sub
 
     Private Async Sub btnFirst_Click(sender As Object, e As EventArgs) Handles btnFirst.Click
@@ -106,7 +106,7 @@ Public Class FrmBusquedaEgreso
 
     Private Sub FlexProducto_DoubleClick(ByVal sender As Object, ByVal e As EventArgs) Handles dgvListado.DoubleClick
         If dgvListado.RowCount > 0 Then
-            FrmMenuPrincipal.intBusqueda = dgvListado.CurrentRow.Cells(0).Value
+            FrmPrincipal.intBusqueda = dgvListado.CurrentRow.Cells(0).Value
             Close()
         End If
     End Sub

@@ -14,7 +14,6 @@ Public Class FrmAplicaReciboCxP
     Private cuentaPorPagar As CuentaPorPagar
     Private proveedor As Proveedor
     Private movimiento As MovimientoCuentaPorPagar
-    Private tipoMoneda As TipoMoneda
     Private desgloseMovimiento As DesgloseMovimientoCuentaPorPagar
     Private desglosePagoMovimiento As DesglosePagoMovimientoCuentaPorPagar
     Private reciboComprobante As ModuloImpresion.ClsRecibo
@@ -73,7 +72,7 @@ Public Class FrmAplicaReciboCxP
         dvcMonto.Width = 100
         dvcMonto.Visible = True
         dvcMonto.ReadOnly = True
-        dvcMonto.DefaultCellStyle = FrmMenuPrincipal.dgvDecimal
+        dvcMonto.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDesgloseCuenta.Columns.Add(dvcMonto)
 
         dvcDocOriginal.DataPropertyName = "DOCORIGINAL"
@@ -155,7 +154,7 @@ Public Class FrmAplicaReciboCxP
         dvcMontoLocal.Width = 100
         dvcMontoLocal.Visible = True
         dvcMontoLocal.ReadOnly = True
-        dvcMontoLocal.DefaultCellStyle = FrmMenuPrincipal.dgvDecimal
+        dvcMontoLocal.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDesglosePago.Columns.Add(dvcMontoLocal)
 
         dvcMontoForaneo.DataPropertyName = "MONTOFORANEO"
@@ -163,7 +162,7 @@ Public Class FrmAplicaReciboCxP
         dvcMontoForaneo.Width = 100
         dvcMontoForaneo.Visible = True
         dvcMontoForaneo.ReadOnly = True
-        dvcMontoForaneo.DefaultCellStyle = FrmMenuPrincipal.dgvDecimal
+        dvcMontoForaneo.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDesglosePago.Columns.Add(dvcMontoForaneo)
     End Sub
 
@@ -254,7 +253,7 @@ Public Class FrmAplicaReciboCxP
 
 #Region "Eventos Controles"
     Private Sub FrmAplicaReciboCxP_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        txtFecha.Text = FrmMenuPrincipal.ObtenerFechaFormateada(Now())
+        txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
         CargarCombos()
         IniciaDetalleMovimiento()
         EstablecerPropiedadesDataGridView()
@@ -263,14 +262,8 @@ Public Class FrmAplicaReciboCxP
         bolInit = False
         cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
         cboTipoMoneda.SelectedValue = StaticValoresPorDefecto.MonedaDelSistema
-        Try
-            'tipoMoneda = servicioMantenimiento.ObtenerTipoMoneda(cboTipoMoneda.SelectedValue)
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Exit Sub
-        End Try
         txtMontoAbono.Text = FormatNumber(0, 2)
-        txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmMenuPrincipal.decTipoCambioDolar.ToString())
+        txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmPrincipal.decTipoCambioDolar.ToString())
         txtSaldoPorPagar.Text = FormatNumber(dblSaldoPorPagar, 2)
     End Sub
 
@@ -323,7 +316,7 @@ Public Class FrmAplicaReciboCxP
 
         movimiento = New MovimientoCuentaPorPagar With {
             .IdEmpresa = cuentaPorPagar.IdEmpresa,
-            .IdUsuario = FrmMenuPrincipal.usuarioGlobal.IdUsuario,
+            .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
             .IdPropietario = proveedor.IdProveedor,
             .Tipo = StaticTipoAbono.AbonoEfectivo,
             .TipoPropietario = StaticTipoCuentaPorPagar.Proveedores,
@@ -369,9 +362,9 @@ Public Class FrmAplicaReciboCxP
 
     Private Sub CmdImprimir_Click(ByVal sender As Object, ByVal e As EventArgs) Handles CmdImprimir.Click
         reciboComprobante = New ModuloImpresion.ClsRecibo With {
-            .usuario = FrmMenuPrincipal.usuarioGlobal,
-            .empresa = FrmMenuPrincipal.empresaGlobal,
-            .equipo = FrmMenuPrincipal.equipoGlobal,
+            .usuario = FrmPrincipal.usuarioGlobal,
+            .empresa = FrmPrincipal.empresaGlobal,
+            .equipo = FrmPrincipal.equipoGlobal,
             .strConsecutivo = movimiento.IdMovCxP,
             .strRecibo = txtDocumento.Text,
             .strNombre = txtNombreProveedor.Text,
@@ -425,14 +418,7 @@ Public Class FrmAplicaReciboCxP
 
     Private Sub cboTipoMoneda_SelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs) Handles cboTipoMoneda.SelectedValueChanged
         If Not bolInit And Not cboTipoMoneda.SelectedValue Is Nothing Then
-            Dim tipoMoneda As TipoMoneda = Nothing
-            Try
-                'tipoMoneda = servicioMantenimiento.ObtenerTipoMoneda(cboTipoMoneda.SelectedValue)
-            Catch ex As Exception
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Exit Sub
-            End Try
-            txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmMenuPrincipal.decTipoCambioDolar.ToString())
+            txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmPrincipal.decTipoCambioDolar.ToString())
         End If
     End Sub
 
@@ -496,9 +482,9 @@ Public Class FrmAplicaReciboCxP
 
     Private Sub btnBuscarProveedor_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnBuscarProveedor.Click
         Dim formBusquedaProveedor As New FrmBusquedaProveedor()
-        FrmMenuPrincipal.intBusqueda = 0
+        FrmPrincipal.intBusqueda = 0
         formBusquedaProveedor.ShowDialog()
-        If FrmMenuPrincipal.intBusqueda > 0 Then
+        If FrmPrincipal.intBusqueda > 0 Then
             Try
                 'proveedor = servicioCompras.ObtenerProveedor(FrmMenuPrincipal.intBusqueda)
             Catch ex As Exception
@@ -553,7 +539,7 @@ Public Class FrmAplicaReciboCxP
     End Sub
 
     Private Sub txtMontoAbono_KeyPress(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs) Handles txtMontoAbono.KeyPress, txtMonto.KeyPress
-        FrmMenuPrincipal.ValidaNumero(e, sender, True, 2, ".")
+        FrmPrincipal.ValidaNumero(e, sender, True, 2, ".")
     End Sub
 #End Region
 End Class

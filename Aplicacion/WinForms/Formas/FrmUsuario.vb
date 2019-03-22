@@ -96,7 +96,7 @@ Public Class FrmUsuario
             Dim strDecryptedPassword As String
             Try
                 datos = Await PuntoventaWCF.ObtenerUsuario(intIdUsuario)
-                strDecryptedPassword = Core.Utilitario.DesencriptarDatos(datos.Clave, FrmMenuPrincipal.strKey)
+                strDecryptedPassword = Core.Utilitario.DesencriptarDatos(datos.Clave, FrmPrincipal.strKey)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                 Close()
@@ -132,7 +132,7 @@ Public Class FrmUsuario
         Dim strEncryptedPassword As String
         If datos.IdUsuario = 0 Then
             Dim empresaUsuario As UsuarioPorEmpresa = New UsuarioPorEmpresa With {
-                .IdEmpresa = FrmMenuPrincipal.empresaGlobal.IdEmpresa
+                .IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa
             }
             Dim detalleEmpresa As List(Of UsuarioPorEmpresa) = New List(Of UsuarioPorEmpresa) From {
                 empresaUsuario
@@ -140,7 +140,7 @@ Public Class FrmUsuario
             datos.UsuarioPorEmpresa = detalleEmpresa
         End If
         Try
-            strEncryptedPassword = Core.Utilitario.EncriptarDatos(txtPassword.Text, FrmMenuPrincipal.strKey)
+            strEncryptedPassword = Core.Utilitario.EncriptarDatos(txtPassword.Text, FrmPrincipal.strKey)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Close()

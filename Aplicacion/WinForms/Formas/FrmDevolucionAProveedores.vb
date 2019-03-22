@@ -4,7 +4,7 @@ Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
 
 Public Class FrmDevolucionAProveedores
 #Region "Variables"
-    Private dblExcento, dblGrabado, dblSubTotal As Decimal
+    Private decExcento, decGrabado, decSubTotal As Decimal
     Private I As Short
     Private dtbDatosLocal, dtbDetalleDevolucion As DataTable
     Private dtrRowDetDevolucion As DataRow
@@ -14,7 +14,7 @@ Public Class FrmDevolucionAProveedores
     Private compra As Compra
     Private proveedor As Proveedor
     Private comprobante As ModuloImpresion.ClsComprobante
-    Private detalleComprobante As ModuloImpresion.clsDetalleComprobante
+    Private detalleComprobante As ModuloImpresion.ClsDetalleComprobante
     Private bolInit As Boolean = True
 #End Region
 
@@ -29,6 +29,7 @@ Public Class FrmDevolucionAProveedores
         dtbDetalleDevolucion.Columns.Add("TOTAL", GetType(Decimal))
         dtbDetalleDevolucion.Columns.Add("EXCENTO", GetType(Integer))
         dtbDetalleDevolucion.Columns.Add("CANTDEVOLUCION", GetType(Decimal))
+        dtbDetalleDevolucion.Columns.Add("PORCENTAJEIVA", GetType(Decimal))
         dtbDetalleDevolucion.PrimaryKey = {dtbDetalleDevolucion.Columns(0)}
     End Sub
 
@@ -45,6 +46,7 @@ Public Class FrmDevolucionAProveedores
         Dim dvcTotal As New DataGridViewTextBoxColumn
         Dim dvcExc As New DataGridViewCheckBoxColumn
         Dim dvcCantDevolucion As New DataGridViewTextBoxColumn
+        Dim dvcPorcentajeIVA As New DataGridViewTextBoxColumn
 
         dvcIdProducto.DataPropertyName = "IDPRODUCTO"
         dvcIdProducto.HeaderText = "IdP"
@@ -66,21 +68,21 @@ Public Class FrmDevolucionAProveedores
         dvcCantidad.DataPropertyName = "CANTIDAD"
         dvcCantidad.HeaderText = "Cantidad"
         dvcCantidad.Width = 60
-        dvcCantidad.DefaultCellStyle = FrmMenuPrincipal.dgvDecimal
+        dvcCantidad.DefaultCellStyle = FrmPrincipal.dgvDecimal
         dvcCodigo.ReadOnly = True
         grdDetalleDevolucion.Columns.Add(dvcCantidad)
 
         dvcPrecioCosto.DataPropertyName = "PRECIOCOSTO"
         dvcPrecioCosto.HeaderText = "Precio"
         dvcPrecioCosto.Width = 75
-        dvcPrecioCosto.DefaultCellStyle = FrmMenuPrincipal.dgvDecimal
+        dvcPrecioCosto.DefaultCellStyle = FrmPrincipal.dgvDecimal
         dvcCodigo.ReadOnly = True
         grdDetalleDevolucion.Columns.Add(dvcPrecioCosto)
 
         dvcTotal.DataPropertyName = "TOTAL"
         dvcTotal.HeaderText = "Total"
         dvcTotal.Width = 100
-        dvcTotal.DefaultCellStyle = FrmMenuPrincipal.dgvDecimal
+        dvcTotal.DefaultCellStyle = FrmPrincipal.dgvDecimal
         dvcCodigo.ReadOnly = True
         grdDetalleDevolucion.Columns.Add(dvcTotal)
 
@@ -93,9 +95,15 @@ Public Class FrmDevolucionAProveedores
         dvcCantDevolucion.DataPropertyName = "CANTDEVOLUCION"
         dvcCantDevolucion.HeaderText = "Cant-Devol"
         dvcCantDevolucion.Width = 60
-        dvcCantDevolucion.DefaultCellStyle = FrmMenuPrincipal.dgvDecimal
+        dvcCantDevolucion.DefaultCellStyle = FrmPrincipal.dgvDecimal
         dvcExc.ReadOnly = False
         grdDetalleDevolucion.Columns.Add(dvcCantDevolucion)
+
+        dvcPorcentajeIVA.DataPropertyName = "PORCENTAJEIVA"
+        dvcPorcentajeIVA.HeaderText = "PorcIVA"
+        dvcPorcentajeIVA.Width = 0
+        dvcPorcentajeIVA.Visible = False
+        grdDetalleDevolucion.Columns.Add(dvcPorcentajeIVA)
     End Sub
 
     Private Sub CargarDetalleDevolucion(ByVal devolucion As DevolucionProveedor)
@@ -110,6 +118,7 @@ Public Class FrmDevolucionAProveedores
             dtrRowDetDevolucion.Item(5) = dtrRowDetDevolucion.Item(3) * dtrRowDetDevolucion.Item(4)
             dtrRowDetDevolucion.Item(6) = detalle.Excento
             dtrRowDetDevolucion.Item(7) = detalle.CantDevolucion
+            dtrRowDetDevolucion.Item(8) = detalle.PorcentajeIVA
             dtbDetalleDevolucion.Rows.Add(dtrRowDetDevolucion)
         Next
         grdDetalleDevolucion.Refresh()
@@ -126,8 +135,9 @@ Public Class FrmDevolucionAProveedores
                 dtrRowDetDevolucion.Item(3) = detalle.Cantidad
                 dtrRowDetDevolucion.Item(4) = detalle.PrecioCosto
                 dtrRowDetDevolucion.Item(5) = dtrRowDetDevolucion.Item(3) * dtrRowDetDevolucion.Item(4)
-                dtrRowDetDevolucion.Item(6) = detalle.Producto.Excento
+                dtrRowDetDevolucion.Item(6) = detalle.Excento
                 dtrRowDetDevolucion.Item(7) = 0
+                dtrRowDetDevolucion.Item(8) = detalle.PorcentajeIVA
                 dtbDetalleDevolucion.Rows.Add(dtrRowDetDevolucion)
             End If
         Next
@@ -135,22 +145,37 @@ Public Class FrmDevolucionAProveedores
     End Sub
 
     Private Sub CargarTotales()
-        dblExcento = 0
-        dblGrabado = 0
-        dblSubTotal = 0
+        Dim decImpuesto As Decimal = 0
+        decExcento = 0
+        decGrabado = 0
+        decSubTotal = 0
         For I = 0 To dtbDetalleDevolucion.Rows.Count - 1
             If dtbDetalleDevolucion.Rows(I).Item(7) > 0 Then
+                Dim decTotalPorLinea As Decimal = dtbDetalleDevolucion.Rows(I).Item(4).Value * dtbDetalleDevolucion.Rows(I).Item(7).Value
                 If dtbDetalleDevolucion.Rows(I).Item(6) = 0 Then
-                    dblGrabado = dblGrabado + (CDbl(dtbDetalleDevolucion.Rows(I).Item(4)) * CDbl(dtbDetalleDevolucion.Rows(I).Item(7)))
+                    decGrabado += decTotalPorLinea
+                    decImpuesto += decTotalPorLinea * dtbDetalleDevolucion.Rows(I).Item(8).Value
                 Else
-                    dblExcento = dblExcento + (CDbl(dtbDetalleDevolucion.Rows(I).Item(4)) * CDbl(dtbDetalleDevolucion.Rows(I).Item(7)))
+                    decExcento += decTotalPorLinea
                 End If
             End If
         Next
-        dblSubTotal = dblGrabado + dblExcento
-        txtImpuesto.Text = FormatNumber(dblGrabado * (compra.PorcentajeIVA / 100), 2)
-        txtSubTotal.Text = FormatNumber(dblSubTotal, 2)
-        txtTotal.Text = FormatNumber(dblExcento + dblGrabado + CDbl(txtImpuesto.Text), 2)
+        decSubTotal = decGrabado + decExcento
+        If decSubTotal > 0 And compra.Descuento > 0 Then
+            decImpuesto = 0
+            For I = 0 To dtbDetalleDevolucion.Rows.Count - 1
+                Dim decDescuentoPorLinea As Decimal = 0
+                Dim decTotalPorLinea As Decimal = dtbDetalleDevolucion.Rows(I).Item(4).Value * dtbDetalleDevolucion.Rows(I).Item(7).Value
+                decDescuentoPorLinea = decTotalPorLinea - (compra.Descuento / decSubTotal * decTotalPorLinea)
+                decImpuesto += decDescuentoPorLinea * dtbDetalleDevolucion.Rows(I).Item(8).Value
+            Next
+        End If
+        decGrabado = Math.Round(decGrabado, 2, MidpointRounding.AwayFromZero)
+        decExcento = Math.Round(decExcento, 2, MidpointRounding.AwayFromZero)
+        decImpuesto = Math.Round(decImpuesto, 2, MidpointRounding.AwayFromZero)
+        txtSubTotal.Text = FormatNumber(decSubTotal, 2)
+        txtImpuesto.Text = FormatNumber(decImpuesto, 2)
+        txtTotal.Text = FormatNumber(decExcento + decGrabado + txtImpuesto.Text, 2)
     End Sub
 
     Private Sub CargarCompra(intIdCompra As Integer)
@@ -161,7 +186,7 @@ Public Class FrmDevolucionAProveedores
             Exit Sub
         End Try
         If compra IsNot Nothing Then
-            Proveedor = compra.Proveedor
+            proveedor = compra.Proveedor
             txtProveedor.Text = proveedor.Nombre
             txtNumFactura.Text = compra.NoDocumento
             CargarDetalleCompra(compra)
@@ -174,7 +199,7 @@ Public Class FrmDevolucionAProveedores
 
 #Region "Eventos Controles"
     Private Sub FrmDevolucion_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        txtFecha.Text = FrmMenuPrincipal.ObtenerFechaFormateada(Now())
+        txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
         IniciaDetalleDevolucion()
         EstablecerPropiedadesDataGridView()
         grdDetalleDevolucion.DataSource = dtbDetalleDevolucion
@@ -198,7 +223,7 @@ Public Class FrmDevolucionAProveedores
 
     Private Sub CmdAgregar_Click(sender As Object, e As EventArgs) Handles CmdAgregar.Click
         txtIdDevolucion.Text = ""
-        txtFecha.Text = FrmMenuPrincipal.ObtenerFechaFormateada(Now())
+        txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
         proveedor = Nothing
         compra = Nothing
         txtProveedor.Text = ""
@@ -232,9 +257,9 @@ Public Class FrmDevolucionAProveedores
 
     Private Sub CmdBuscar_Click(sender As Object, e As EventArgs) Handles CmdBuscar.Click
         Dim formBusqueda As New FrmBusquedaDevolucionProveedor()
-        FrmMenuPrincipal.intBusqueda = 0
+        FrmPrincipal.intBusqueda = 0
         formBusqueda.ShowDialog()
-        If FrmMenuPrincipal.intBusqueda > 0 Then
+        If FrmPrincipal.intBusqueda > 0 Then
             Try
                 'devolucion = servicioCompras.ObtenerDevolucionProveedor(FrmMenuPrincipal.intBusqueda)
             Catch ex As Exception
@@ -252,7 +277,7 @@ Public Class FrmDevolucionAProveedores
                 CargarTotales()
                 grdDetalleDevolucion.ReadOnly = True
                 CmdImprimir.Enabled = True
-                CmdAnular.Enabled = FrmMenuPrincipal.usuarioGlobal.Modifica
+                CmdAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
                 CmdGuardar.Enabled = False
             End If
         End If
@@ -260,10 +285,10 @@ Public Class FrmDevolucionAProveedores
 
     Private Sub btnBuscarCompra_Click(sender As Object, e As EventArgs) Handles btnBuscarFactura.Click
         Dim formBusqueda As New FrmBusquedaCompra()
-        FrmMenuPrincipal.intBusqueda = 0
+        FrmPrincipal.intBusqueda = 0
         formBusqueda.ShowDialog()
-        If FrmMenuPrincipal.intBusqueda > 0 Then
-            txtIdCompra.Text = FrmMenuPrincipal.intBusqueda
+        If FrmPrincipal.intBusqueda > 0 Then
+            txtIdCompra.Text = FrmPrincipal.intBusqueda
             CargarCompra(txtIdCompra.Text)
         End If
     End Sub
@@ -274,14 +299,13 @@ Public Class FrmDevolucionAProveedores
         End If
         If txtIdDevolucion.Text = "" Then
             devolucion = New DevolucionProveedor With {
-                .IdEmpresa = FrmMenuPrincipal.empresaGlobal.IdEmpresa,
-                .IdUsuario = FrmMenuPrincipal.usuarioGlobal.IdUsuario,
+                .IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa,
+                .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
                 .IdProveedor = compra.IdProveedor,
                 .IdCompra = compra.IdCompra,
                 .Fecha = Now(),
-                .Excento = dblExcento,
-                .Grabado = dblGrabado,
-                .PorcentajeIVA = compra.PorcentajeIVA,
+                .Excento = decExcento,
+                .Grabado = decGrabado,
                 .Impuesto = CDbl(txtImpuesto.Text)
             }
             For I = 0 To dtbDetalleDevolucion.Rows.Count - 1
@@ -290,7 +314,8 @@ Public Class FrmDevolucionAProveedores
                     .Cantidad = dtbDetalleDevolucion.Rows(I).Item(3),
                     .PrecioCosto = dtbDetalleDevolucion.Rows(I).Item(4),
                     .Excento = dtbDetalleDevolucion.Rows(I).Item(6),
-                    .CantDevolucion = dtbDetalleDevolucion.Rows(I).Item(7)
+                    .CantDevolucion = dtbDetalleDevolucion.Rows(I).Item(7),
+                    .PorcentajeIVA = dtbDetalleDevolucion.Rows(I).Item(8)
                 }
                 devolucion.DetalleDevolucionProveedor.Add(detalleDevolucion)
             Next
@@ -307,7 +332,7 @@ Public Class FrmDevolucionAProveedores
         grdDetalleDevolucion.ReadOnly = True
         CmdImprimir.Enabled = True
         CmdAgregar.Enabled = True
-        CmdAnular.Enabled = FrmMenuPrincipal.usuarioGlobal.Modifica
+        CmdAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
         CmdImprimir.Focus()
         CmdGuardar.Enabled = False
     End Sub
@@ -315,9 +340,9 @@ Public Class FrmDevolucionAProveedores
     Private Sub CmdImprimir_Click(sender As Object, e As EventArgs) Handles CmdImprimir.Click
         If txtIdDevolucion.Text <> "" Then
             comprobante = New ModuloImpresion.ClsComprobante With {
-                .usuario = FrmMenuPrincipal.usuarioGlobal,
-                .empresa = FrmMenuPrincipal.empresaGlobal,
-                .equipo = FrmMenuPrincipal.equipoGlobal,
+                .usuario = FrmPrincipal.usuarioGlobal,
+                .empresa = FrmPrincipal.empresaGlobal,
+                .equipo = FrmPrincipal.equipoGlobal,
                 .strId = txtIdDevolucion.Text,
                 .strDocumento = txtNumFactura.Text,
                 .strNombre = txtProveedor.Text,

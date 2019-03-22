@@ -13,8 +13,6 @@ namespace LeandroSoftware.AccesoDatos.Dominio.Entidades
         public int IdCierre { get; set; }
         public DateTime FechaCierre { get; set; }
         public decimal? FondoInicio { get; set; }
-        public decimal? VentasPorMayor { get; set; }
-        public decimal? VentasDetalle { get; set; }
         public decimal? VentasContado { get; set; }
         public decimal? VentasCredito { get; set; }
         public decimal? VentasTarjeta { get; set; }

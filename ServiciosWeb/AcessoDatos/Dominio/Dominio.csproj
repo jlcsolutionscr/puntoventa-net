@@ -19,7 +19,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>bin\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -30,7 +30,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>bin\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -62,7 +62,6 @@
     <Compile Include="Entidades\DesglosePagoCompra.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Entidades\DesglosePagoCuentaPorPagar.cs" />
     <Compile Include="Entidades\DesglosePagoDevolucionCliente.cs" />
     <Compile Include="Entidades\DesglosePagoDevolucionProveedor.cs" />
     <Compile Include="Entidades\DetalleAjusteInventario.cs" />
@@ -74,7 +73,8 @@
     <Compile Include="Entidades\Modulo.cs" />
     <Compile Include="Entidades\ModuloPorEmpresa.cs" />
     <Compile Include="Entidades\Padron.cs" />
-    <Compile Include="Entidades\Particular.cs" />
+    <Compile Include="Entidades\ParametroImpuesto.cs" />
+    <Compile Include="Entidades\ParametroSistema.cs" />
     <Compile Include="Entidades\OrdenServicio.cs" />
     <Compile Include="Entidades\DetalleOrdenServicio.cs" />
     <Compile Include="Entidades\DesgloseMovimientoCuentaPorCobrar.cs">
@@ -123,7 +123,7 @@
     <Compile Include="Entidades\DetalleOrdenCompra.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Entidades\DetalleRegistro.cs">
+    <Compile Include="Entidades\TerminalPorEmpresa.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Entidades\Egreso.cs" />

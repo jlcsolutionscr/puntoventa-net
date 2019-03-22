@@ -29,8 +29,7 @@ Partial Class FrmSeguridad
         Me.TxtUsuario = New System.Windows.Forms.TextBox()
         Me.LblClave = New System.Windows.Forms.Label()
         Me.LblUsuario = New System.Windows.Forms.Label()
-        Me.txtIdentificacion = New System.Windows.Forms.TextBox()
-        Me.Label1 = New System.Windows.Forms.Label()
+        Me.cboEmpresa = New System.Windows.Forms.ComboBox()
         Me.SuspendLayout()
         '
         'CmdCancelar
@@ -38,8 +37,9 @@ Partial Class FrmSeguridad
         Me.CmdCancelar.BackColor = System.Drawing.SystemColors.ButtonHighlight
         Me.CmdCancelar.Cursor = System.Windows.Forms.Cursors.Default
         Me.CmdCancelar.DialogResult = System.Windows.Forms.DialogResult.Cancel
+        Me.CmdCancelar.Enabled = False
         Me.CmdCancelar.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.CmdCancelar.Location = New System.Drawing.Point(152, 110)
+        Me.CmdCancelar.Location = New System.Drawing.Point(137, 108)
         Me.CmdCancelar.Name = "CmdCancelar"
         Me.CmdCancelar.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.CmdCancelar.Size = New System.Drawing.Size(81, 25)
@@ -54,7 +54,7 @@ Partial Class FrmSeguridad
         Me.CmdAceptar.Cursor = System.Windows.Forms.Cursors.Default
         Me.CmdAceptar.Enabled = False
         Me.CmdAceptar.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.CmdAceptar.Location = New System.Drawing.Point(58, 110)
+        Me.CmdAceptar.Location = New System.Drawing.Point(43, 108)
         Me.CmdAceptar.Name = "CmdAceptar"
         Me.CmdAceptar.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.CmdAceptar.Size = New System.Drawing.Size(81, 25)
@@ -70,12 +70,12 @@ Partial Class FrmSeguridad
         Me.TxtClave.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.TxtClave.ForeColor = System.Drawing.SystemColors.WindowText
         Me.TxtClave.ImeMode = System.Windows.Forms.ImeMode.Disable
-        Me.TxtClave.Location = New System.Drawing.Point(120, 47)
+        Me.TxtClave.Location = New System.Drawing.Point(107, 45)
         Me.TxtClave.MaxLength = 0
         Me.TxtClave.Name = "TxtClave"
         Me.TxtClave.PasswordChar = Global.Microsoft.VisualBasic.ChrW(42)
         Me.TxtClave.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.TxtClave.Size = New System.Drawing.Size(129, 20)
+        Me.TxtClave.Size = New System.Drawing.Size(122, 20)
         Me.TxtClave.TabIndex = 1
         '
         'TxtUsuario
@@ -85,11 +85,11 @@ Partial Class FrmSeguridad
         Me.TxtUsuario.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper
         Me.TxtUsuario.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.TxtUsuario.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.TxtUsuario.Location = New System.Drawing.Point(120, 23)
+        Me.TxtUsuario.Location = New System.Drawing.Point(107, 21)
         Me.TxtUsuario.MaxLength = 0
         Me.TxtUsuario.Name = "TxtUsuario"
         Me.TxtUsuario.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.TxtUsuario.Size = New System.Drawing.Size(129, 20)
+        Me.TxtUsuario.Size = New System.Drawing.Size(122, 20)
         Me.TxtUsuario.TabIndex = 0
         '
         'LblClave
@@ -97,10 +97,10 @@ Partial Class FrmSeguridad
         Me.LblClave.BackColor = System.Drawing.Color.Transparent
         Me.LblClave.Cursor = System.Windows.Forms.Cursors.Default
         Me.LblClave.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.LblClave.Location = New System.Drawing.Point(48, 47)
+        Me.LblClave.Location = New System.Drawing.Point(35, 46)
         Me.LblClave.Name = "LblClave"
         Me.LblClave.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.LblClave.Size = New System.Drawing.Size(65, 17)
+        Me.LblClave.Size = New System.Drawing.Size(66, 17)
         Me.LblClave.TabIndex = 5
         Me.LblClave.Text = "Contraseña"
         Me.LblClave.TextAlign = System.Drawing.ContentAlignment.MiddleRight
@@ -110,40 +110,22 @@ Partial Class FrmSeguridad
         Me.LblUsuario.BackColor = System.Drawing.Color.Transparent
         Me.LblUsuario.Cursor = System.Windows.Forms.Cursors.Default
         Me.LblUsuario.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.LblUsuario.Location = New System.Drawing.Point(48, 23)
+        Me.LblUsuario.Location = New System.Drawing.Point(35, 22)
         Me.LblUsuario.Name = "LblUsuario"
         Me.LblUsuario.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.LblUsuario.Size = New System.Drawing.Size(65, 17)
+        Me.LblUsuario.Size = New System.Drawing.Size(66, 17)
         Me.LblUsuario.TabIndex = 4
         Me.LblUsuario.Text = "Usuario"
         Me.LblUsuario.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
-        'txtIdentificacion
+        'cboEmpresa
         '
-        Me.txtIdentificacion.AcceptsReturn = True
-        Me.txtIdentificacion.BackColor = System.Drawing.SystemColors.Window
-        Me.txtIdentificacion.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtIdentificacion.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtIdentificacion.ImeMode = System.Windows.Forms.ImeMode.Disable
-        Me.txtIdentificacion.Location = New System.Drawing.Point(120, 73)
-        Me.txtIdentificacion.MaxLength = 12
-        Me.txtIdentificacion.Name = "txtIdentificacion"
-        Me.txtIdentificacion.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtIdentificacion.Size = New System.Drawing.Size(129, 20)
-        Me.txtIdentificacion.TabIndex = 6
-        '
-        'Label1
-        '
-        Me.Label1.BackColor = System.Drawing.Color.Transparent
-        Me.Label1.Cursor = System.Windows.Forms.Cursors.Default
-        Me.Label1.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label1.Location = New System.Drawing.Point(40, 73)
-        Me.Label1.Name = "Label1"
-        Me.Label1.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label1.Size = New System.Drawing.Size(73, 17)
-        Me.Label1.TabIndex = 7
-        Me.Label1.Text = "Identificación"
-        Me.Label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        Me.cboEmpresa.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.cboEmpresa.FormattingEnabled = True
+        Me.cboEmpresa.Location = New System.Drawing.Point(35, 72)
+        Me.cboEmpresa.Name = "cboEmpresa"
+        Me.cboEmpresa.Size = New System.Drawing.Size(194, 21)
+        Me.cboEmpresa.TabIndex = 2
         '
         'FrmSeguridad
         '
@@ -152,10 +134,9 @@ Partial Class FrmSeguridad
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.CancelButton = Me.CmdCancelar
-        Me.ClientSize = New System.Drawing.Size(288, 153)
+        Me.ClientSize = New System.Drawing.Size(262, 144)
         Me.ControlBox = False
-        Me.Controls.Add(Me.txtIdentificacion)
-        Me.Controls.Add(Me.Label1)
+        Me.Controls.Add(Me.cboEmpresa)
         Me.Controls.Add(Me.CmdCancelar)
         Me.Controls.Add(Me.CmdAceptar)
         Me.Controls.Add(Me.TxtClave)
@@ -175,7 +156,5 @@ Partial Class FrmSeguridad
         Me.PerformLayout()
 
     End Sub
-
-    Public WithEvents txtIdentificacion As TextBox
-    Public WithEvents Label1 As Label
+    Friend WithEvents cboEmpresa As System.Windows.Forms.ComboBox
 End Class

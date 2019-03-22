@@ -23,7 +23,7 @@ Public Class FrmMenuCuentaDeBalance
 
     Private Sub btnProcesar_Click(sender As Object, e As EventArgs) Handles btnProcesar.Click
         If cboIdCuentaBanco.SelectedValue IsNot Nothing Then
-            FrmMenuPrincipal.intBusqueda = cboIdCuentaBanco.SelectedValue
+            FrmPrincipal.intBusqueda = cboIdCuentaBanco.SelectedValue
             Close()
         Else
             MessageBox.Show("Debe seleccionar una cuenta contable para continuar. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)

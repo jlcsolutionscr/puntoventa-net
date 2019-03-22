@@ -407,7 +407,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                                 }
                                 else if (desglosePago.IdFormaPago == StaticFormaPago.Cheque || desglosePago.IdFormaPago == StaticFormaPago.TransferenciaDepositoBancario)
                                 {
-                                    ParametroContable bancoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.CuentaDeBancos && x.IdProducto == desglosePago.IdCuentaBanco).FirstOrDefault();
+                                    ParametroContable bancoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.CuentaDeBancos & x.IdProducto == desglosePago.IdCuentaBanco).FirstOrDefault();
                                     if (bancoParam == null)
                                         throw new BusinessException("No existe parametrización contable para la cuenta bancaría " + desglosePago.IdCuentaBanco + " y no se puede continuar. Por favor verificar.");
                                     intLineaDetalleAsiento += 1;
@@ -439,7 +439,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                         foreach (DataRow data in dtbInventarios.Rows)
                         {
                             int intIdLinea = (int)data["IdLinea"];
-                            lineaParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.LineaDeProductos && x.IdProducto == intIdLinea).FirstOrDefault();
+                            lineaParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.LineaDeProductos & x.IdProducto == intIdLinea).FirstOrDefault();
                             if (lineaParam == null)
                                 throw new BusinessException("No existe parametrización contable para la línea de producto " + intIdLinea + " y no se puede continuar. Por favor verificar.");
                             intLineaDetalleAsiento += 1;
@@ -643,7 +643,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             {
                 try
                 {
-                    var listaCompras = dbContext.CompraRepository.Include("Proveedor").Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa);
+                    var listaCompras = dbContext.CompraRepository.Include("Proveedor").Where(x => !x.Nulo & x.IdEmpresa == intIdEmpresa);
                     if (intIdCompra > 0)
                         listaCompras = listaCompras.Where(x => x.IdCompra == intIdCompra);
                     else if (!strNombre.Equals(string.Empty))
@@ -762,7 +762,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             {
                 try
                 {
-                    var listaOrdenesCompra = dbContext.OrdenRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa);
+                    var listaOrdenesCompra = dbContext.OrdenRepository.Where(x => !x.Nulo & x.IdEmpresa == intIdEmpresa);
                     if (!bolIncluyeTodo)
                         listaOrdenesCompra = listaOrdenesCompra.Where(x => !x.Aplicado);
                     if (intIdOrdenCompra > 0)
@@ -785,7 +785,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             {
                 try
                 {
-                    var listaOrdenesCompra = dbContext.OrdenRepository.Include("Proveedor").Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa);
+                    var listaOrdenesCompra = dbContext.OrdenRepository.Include("Proveedor").Where(x => !x.Nulo & x.IdEmpresa == intIdEmpresa);
                     if (!bolIncluyeTodo)
                         listaOrdenesCompra = listaOrdenesCompra.Where(x => !x.Aplicado);
                     if (intIdOrdenCompra > 0)
@@ -808,7 +808,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             {
                 try
                 {
-                    return dbContext.CompraRepository.Where(x => !x.Nulo && x.IdProveedor == intIdProveedor).ToList();
+                    return dbContext.CompraRepository.Where(x => !x.Nulo & x.IdProveedor == intIdProveedor).ToList();
                 }
                 catch (Exception ex)
                 {
@@ -1023,7 +1023,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                         foreach (DataRow data in dtbInventarios.Rows)
                         {
                             int intIdLinea = (int)data["IdLinea"];
-                            lineaParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.LineaDeProductos && x.IdProducto == intIdLinea).FirstOrDefault();
+                            lineaParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.LineaDeProductos & x.IdProducto == intIdLinea).FirstOrDefault();
                             if (lineaParam == null)
                                 throw new BusinessException("No existe parametrización contable para la línea de producto " + intIdLinea + " y no se puede continuar. Por favor verificar.");
                             intLineaDetalleAsiento += 1;
@@ -1167,7 +1167,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             {
                 try
                 {
-                    var listaDevoluciones = dbContext.DevolucionProveedorRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa);
+                    var listaDevoluciones = dbContext.DevolucionProveedorRepository.Where(x => !x.Nulo & x.IdEmpresa == intIdEmpresa);
                     if (intIdDevolucion > 0)
                         listaDevoluciones = listaDevoluciones.Where(x => x.IdDevolucion == intIdDevolucion);
                     else if (!strNombre.Equals(string.Empty))
@@ -1188,7 +1188,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             {
                 try
                 {
-                    var listaDevoluciones = dbContext.DevolucionProveedorRepository.Include("Proveedor").Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa);
+                    var listaDevoluciones = dbContext.DevolucionProveedorRepository.Include("Proveedor").Where(x => !x.Nulo & x.IdEmpresa == intIdEmpresa);
                     if (intIdDevolucion > 0)
                         listaDevoluciones = listaDevoluciones.Where(x => x.IdDevolucion == intIdDevolucion);
                     else if (!strNombre.Equals(string.Empty))

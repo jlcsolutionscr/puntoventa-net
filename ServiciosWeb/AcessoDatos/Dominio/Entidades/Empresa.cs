@@ -10,7 +10,7 @@ namespace LeandroSoftware.AccesoDatos.Dominio.Entidades
     {
         public Empresa()
         {
-            DetalleRegistro = new HashSet<DetalleRegistro>();
+            TerminalPorEmpresa = new HashSet<TerminalPorEmpresa>();
             ModuloPorEmpresa = new HashSet<ModuloPorEmpresa>();
             ReportePorEmpresa = new HashSet<ReportePorEmpresa>();
         }
@@ -30,7 +30,6 @@ namespace LeandroSoftware.AccesoDatos.Dominio.Entidades
         public string Direccion { get; set; }
         public string Telefono { get; set; }
         public DateTime? FechaVence { get; set; }
-        public decimal PorcentajeIVA { get; set; }
         public int LineasPorFactura { get; set; }
         public bool Contabiliza { get; set; }
         public bool AutoCompletaProducto { get; set; }
@@ -49,11 +48,6 @@ namespace LeandroSoftware.AccesoDatos.Dominio.Entidades
         public string UsuarioHacienda { get; set; }
         public string ClaveHacienda { get; set; }
         public string CorreoNotificacion { get; set; }
-        public int UltimoDocFE { get; set; }
-        public int UltimoDocND { get; set; }
-        public int UltimoDocNC { get; set; }
-        public int UltimoDocTE { get; set; }
-        public int UltimoDocMR { get; set; }
         public byte[] Logotipo { get; set; }
         public string AccessToken { get; set; }
         public int? ExpiresIn { get; set; }
@@ -65,7 +59,7 @@ namespace LeandroSoftware.AccesoDatos.Dominio.Entidades
         public TipoMoneda TipoMoneda { get; set; }
         [ForeignKey("IdProvincia, IdCanton, IdDistrito, IdBarrio")]
         public Barrio Barrio { get; set; }
-        public ICollection<DetalleRegistro> DetalleRegistro { get; set; }
+        public ICollection<TerminalPorEmpresa> TerminalPorEmpresa { get; set; }
         public ICollection<ModuloPorEmpresa> ModuloPorEmpresa { get; set; }
         public ICollection<ReportePorEmpresa> ReportePorEmpresa { get; set; }
     }

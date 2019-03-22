@@ -320,7 +320,6 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 decimal decTotalServiciosExcentos = 0;
                 decimal decTotalDescuentoPorFactura = factura.Descuento;
                 decimal decTotalImpuestos = 0;
-                decimal decPorcentajeIVA = factura.Empresa.PorcentajeIVA;
                 foreach (DetalleFactura detalleFactura in factura.DetalleFactura)
                 {
                     FacturaElectronicaLineaDetalle lineaDetalle = new FacturaElectronicaLineaDetalle
@@ -339,53 +338,41 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     else
                         lineaDetalle.UnidadMedida = FacturaElectronicaUnidadMedidaType.Sp;
                     lineaDetalle.Detalle = detalleFactura.Descripcion;
-                    decimal precioVenta = 0;
-                    if (!detalleFactura.Producto.Excento)
-                    {
-                        precioVenta = Math.Round(detalleFactura.PrecioVenta / (1 + (decPorcentajeIVA / 100)), 5);
-                        if (detalleFactura.Producto.Tipo == StaticTipoProducto.Producto)
-                            decTotalMercanciasGrabadas += Math.Round(detalleFactura.Cantidad * precioVenta, 5);
-                        else
-                            decTotalServiciosGrabados += Math.Round(detalleFactura.Cantidad * precioVenta, 5);
-                    }
+                    decimal montoTotalPorLinea = Math.Round(detalleFactura.Cantidad * detalleFactura.PrecioVenta, 5);
+                    if (!detalleFactura.Excento)
+                        decTotalMercanciasGrabadas += montoTotalPorLinea;
                     else
-                    {
-                        precioVenta = detalleFactura.PrecioVenta;
-                        if (detalleFactura.Producto.Tipo == StaticTipoProducto.Producto)
-                            decTotalMercanciasExcentas += Math.Round(detalleFactura.Cantidad * precioVenta, 5);
-                        else
-                            decTotalServiciosExcentos += Math.Round(detalleFactura.Cantidad * precioVenta, 5);
-                    }
-                    lineaDetalle.PrecioUnitario = precioVenta;
-                    lineaDetalle.MontoTotal = Math.Round(detalleFactura.Cantidad * precioVenta, 5);
-                    decimal decDescuentoPorLinea = 0;
+                        decTotalServiciosGrabados += montoTotalPorLinea;
+                    lineaDetalle.PrecioUnitario = detalleFactura.PrecioVenta;
+                    lineaDetalle.MontoTotal = montoTotalPorLinea;
+                    decimal descuentoPorLinea = 0;
                     if (factura.Descuento > 0)
                     {
-                        decDescuentoPorLinea = Math.Round(factura.Descuento / (factura.Total - factura.Impuesto) * lineaDetalle.MontoTotal, 5);
-                        if (decDescuentoPorLinea > decTotalDescuentoPorFactura)
-                            decDescuentoPorLinea = decTotalDescuentoPorFactura;
+                        descuentoPorLinea = Math.Round(factura.Descuento / (factura.Total - factura.Impuesto) * montoTotalPorLinea, 5);
+                        if (descuentoPorLinea > decTotalDescuentoPorFactura)
+                            descuentoPorLinea = decTotalDescuentoPorFactura;
                         else
-                            decTotalDescuentoPorFactura -= decDescuentoPorLinea;
-                        lineaDetalle.MontoDescuento = decDescuentoPorLinea;
+                            decTotalDescuentoPorFactura -= descuentoPorLinea;
+                        lineaDetalle.MontoDescuento = descuentoPorLinea;
+                        lineaDetalle.MontoDescuentoSpecified = true;
                         lineaDetalle.NaturalezaDescuento = "Descuento sobre mercancías";
                     }
-                    lineaDetalle.SubTotal = lineaDetalle.MontoTotal - lineaDetalle.MontoDescuento;
+                    lineaDetalle.SubTotal = montoTotalPorLinea - descuentoPorLinea;
+                    decimal montoImpuestoPorLinea = 0;
                     if (!detalleFactura.Excento)
                     {
                         FacturaElectronicaImpuestoType impuestoType = new FacturaElectronicaImpuestoType
                         {
                             Codigo = FacturaElectronicaImpuestoTypeCodigo.Item01,
-                            Tarifa = factura.Empresa.PorcentajeIVA
+                            Tarifa = detalleFactura.PorcentajeIVA
                         };
-                        impuestoType.Monto = Math.Round(lineaDetalle.SubTotal * impuestoType.Tarifa / 100, 5);
-                        decTotalImpuestos += impuestoType.Monto;
+                        montoImpuestoPorLinea = Math.Round(lineaDetalle.SubTotal * detalleFactura.PorcentajeIVA / 100, 5);
+                        impuestoType.Monto = montoImpuestoPorLinea;
+                        decTotalImpuestos += montoImpuestoPorLinea;
                         lineaDetalle.Impuesto = new FacturaElectronicaImpuestoType[] { impuestoType };
-                        lineaDetalle.MontoTotalLinea = lineaDetalle.SubTotal + impuestoType.Monto;
+                        
                     }
-                    else
-                    {
-                        lineaDetalle.MontoTotalLinea = lineaDetalle.SubTotal;
-                    }
+                    lineaDetalle.MontoTotalLinea = lineaDetalle.SubTotal + montoImpuestoPorLinea;
                     detalleServicioList.Add(lineaDetalle);
                 }
                 facturaElectronica.DetalleServicio = detalleServicioList.ToArray();
@@ -402,8 +389,11 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     resumenFactura.CodigoMoneda = FacturaElectronicaResumenFacturaCodigoMoneda.CRC;
                     resumenFactura.CodigoMonedaSpecified = true;
                 }
-                resumenFactura.TotalDescuentos = decTotalDescuentoPorFactura;
-                resumenFactura.TotalDescuentosSpecified = true;
+                if (factura.Descuento > 0)
+                {
+                    resumenFactura.TotalDescuentos = factura.Descuento;
+                    resumenFactura.TotalDescuentosSpecified = true;
+                }
                 resumenFactura.TotalMercanciasGravadas = decTotalMercanciasGrabadas;
                 resumenFactura.TotalMercanciasGravadasSpecified = true;
                 resumenFactura.TotalMercanciasExentas = decTotalMercanciasExcentas;
@@ -417,10 +407,13 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 resumenFactura.TotalExento = decTotalMercanciasExcentas + decTotalServiciosExcentos;
                 resumenFactura.TotalExentoSpecified = true;
                 resumenFactura.TotalVenta = resumenFactura.TotalGravado + resumenFactura.TotalExento;
-                resumenFactura.TotalVentaNeta = resumenFactura.TotalVenta - resumenFactura.TotalDescuentos;
-                resumenFactura.TotalImpuesto = decTotalImpuestos;
-                resumenFactura.TotalImpuestoSpecified = true;
-                resumenFactura.TotalComprobante = resumenFactura.TotalVentaNeta + resumenFactura.TotalImpuesto;
+                resumenFactura.TotalVentaNeta = resumenFactura.TotalVenta - factura.Descuento;
+                if (decTotalImpuestos > 0)
+                {
+                    resumenFactura.TotalImpuesto = decTotalImpuestos;
+                    resumenFactura.TotalImpuestoSpecified = true;
+                }
+                resumenFactura.TotalComprobante = resumenFactura.TotalVentaNeta + decTotalImpuestos;
                 facturaElectronica.ResumenFactura = resumenFactura;
                 FacturaElectronicaNormativa normativa = new FacturaElectronicaNormativa
                 {
@@ -566,7 +559,6 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 decimal decTotalServiciosExcentos = 0;
                 decimal decTotalDescuentoPorFactura = factura.Descuento;
                 decimal decTotalImpuestos = 0;
-                decimal decPorcentajeIVA = factura.Empresa.PorcentajeIVA;
                 foreach (DetalleFactura detalleFactura in factura.DetalleFactura)
                 {
                     NotaCreditoElectronicaLineaDetalle lineaDetalle = new NotaCreditoElectronicaLineaDetalle
@@ -585,53 +577,44 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     else
                         lineaDetalle.UnidadMedida = NotaCreditoElectronicaUnidadMedidaType.Sp;
                     lineaDetalle.Detalle = detalleFactura.Descripcion;
-                    decimal precioVenta = 0;
-                    if (!detalleFactura.Producto.Excento)
+                    decimal montoTotalPorLinea = Math.Round(detalleFactura.Cantidad * detalleFactura.PrecioVenta, 5);
+                    if (!detalleFactura.Excento)
                     {
-                        precioVenta = Math.Round(detalleFactura.PrecioVenta / (1 + (decPorcentajeIVA / 100)), 5);
-                        if (detalleFactura.Producto.Tipo == StaticTipoProducto.Producto)
-                            decTotalMercanciasGrabadas += Math.Round(detalleFactura.Cantidad * precioVenta, 5);
-                        else
-                            decTotalServiciosGrabados += Math.Round(detalleFactura.Cantidad * precioVenta, 5);
+                        decTotalMercanciasGrabadas += montoTotalPorLinea;
                     }
                     else
                     {
-                        precioVenta = detalleFactura.PrecioVenta;
-                        if (detalleFactura.Producto.Tipo == StaticTipoProducto.Producto)
-                            decTotalMercanciasExcentas += Math.Round(detalleFactura.Cantidad * precioVenta, 5);
-                        else
-                            decTotalServiciosExcentos += Math.Round(detalleFactura.Cantidad * precioVenta, 5);
+                        decTotalMercanciasExcentas += montoTotalPorLinea;
                     }
-                    lineaDetalle.PrecioUnitario = precioVenta;
-                    lineaDetalle.MontoTotal = Math.Round(detalleFactura.Cantidad * precioVenta, 5);
-                    decimal decDescuentoPorLinea = 0;
+                    lineaDetalle.PrecioUnitario = detalleFactura.PrecioVenta;
+                    lineaDetalle.MontoTotal = montoTotalPorLinea;
+                    decimal descuentoPorLinea = 0;
                     if (factura.Descuento > 0)
                     {
-                        decDescuentoPorLinea = Math.Round(factura.Descuento / (factura.Total - factura.Impuesto) * lineaDetalle.MontoTotal, 5);
-                        if (decDescuentoPorLinea > decTotalDescuentoPorFactura)
-                            decDescuentoPorLinea = decTotalDescuentoPorFactura;
+                        descuentoPorLinea = Math.Round(factura.Descuento / (factura.Total - factura.Impuesto) * montoTotalPorLinea, 5);
+                        if (descuentoPorLinea > decTotalDescuentoPorFactura)
+                            descuentoPorLinea = decTotalDescuentoPorFactura;
                         else
-                            decTotalDescuentoPorFactura -= decDescuentoPorLinea;
-                        lineaDetalle.MontoDescuento = decDescuentoPorLinea;
+                            decTotalDescuentoPorFactura -= descuentoPorLinea;
+                        lineaDetalle.MontoDescuento = descuentoPorLinea;
+                        lineaDetalle.MontoDescuentoSpecified = true;
                         lineaDetalle.NaturalezaDescuento = "Descuento sobre mercancías";
                     }
-                    lineaDetalle.SubTotal = lineaDetalle.MontoTotal - lineaDetalle.MontoDescuento;
+                    lineaDetalle.SubTotal = lineaDetalle.MontoTotal - descuentoPorLinea;
+                    decimal montoImpuestoPorLinea = 0;
                     if (!detalleFactura.Excento)
                     {
                         NotaCreditoElectronicaImpuestoType impuestoType = new NotaCreditoElectronicaImpuestoType
                         {
                             Codigo = NotaCreditoElectronicaImpuestoTypeCodigo.Item01,
-                            Tarifa = factura.Empresa.PorcentajeIVA
+                            Tarifa = detalleFactura.PorcentajeIVA
                         };
-                        impuestoType.Monto = Math.Round(lineaDetalle.SubTotal * impuestoType.Tarifa / 100, 5);
-                        decTotalImpuestos += impuestoType.Monto;
+                        montoImpuestoPorLinea = Math.Round(lineaDetalle.SubTotal * detalleFactura.PorcentajeIVA / 100, 5);
+                        impuestoType.Monto = montoImpuestoPorLinea;
+                        decTotalImpuestos += montoImpuestoPorLinea;
                         lineaDetalle.Impuesto = new NotaCreditoElectronicaImpuestoType[] { impuestoType };
-                        lineaDetalle.MontoTotalLinea = lineaDetalle.SubTotal + impuestoType.Monto;
                     }
-                    else
-                    {
-                        lineaDetalle.MontoTotalLinea = lineaDetalle.SubTotal;
-                    }
+                    lineaDetalle.MontoTotalLinea = lineaDetalle.SubTotal + montoImpuestoPorLinea;
                     detalleServicioList.Add(lineaDetalle);
                 }
                 notaCreditoElectronica.DetalleServicio = detalleServicioList.ToArray();
@@ -648,8 +631,11 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     resumenFactura.CodigoMoneda = NotaCreditoElectronicaResumenFacturaCodigoMoneda.CRC;
                     resumenFactura.CodigoMonedaSpecified = true;
                 }
-                resumenFactura.TotalDescuentos = decTotalDescuentoPorFactura;
-                resumenFactura.TotalDescuentosSpecified = true;
+                if (factura.Descuento > 0)
+                {
+                    resumenFactura.TotalDescuentos = factura.Descuento;
+                    resumenFactura.TotalDescuentosSpecified = true;
+                }
                 resumenFactura.TotalMercanciasGravadas = decTotalMercanciasGrabadas;
                 resumenFactura.TotalMercanciasGravadasSpecified = true;
                 resumenFactura.TotalMercanciasExentas = decTotalMercanciasExcentas;
@@ -663,10 +649,13 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 resumenFactura.TotalExento = decTotalMercanciasExcentas + decTotalServiciosExcentos;
                 resumenFactura.TotalExentoSpecified = true;
                 resumenFactura.TotalVenta = resumenFactura.TotalGravado + resumenFactura.TotalExento;
-                resumenFactura.TotalVentaNeta = resumenFactura.TotalVenta - resumenFactura.TotalDescuentos;
-                resumenFactura.TotalImpuesto = decTotalImpuestos;
-                resumenFactura.TotalImpuestoSpecified = true;
-                resumenFactura.TotalComprobante = resumenFactura.TotalVentaNeta + resumenFactura.TotalImpuesto;
+                resumenFactura.TotalVentaNeta = resumenFactura.TotalVenta - factura.Descuento;
+                if (decTotalImpuestos > 0)
+                {
+                    resumenFactura.TotalImpuesto = decTotalImpuestos;
+                    resumenFactura.TotalImpuestoSpecified = true;
+                }
+                resumenFactura.TotalComprobante = resumenFactura.TotalVentaNeta + decTotalImpuestos;
                 notaCreditoElectronica.ResumenFactura = resumenFactura;
                 NotaCreditoElectronicaInformacionReferencia informacionReferencia = new NotaCreditoElectronicaInformacionReferencia
                 {
@@ -723,7 +712,6 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 MensajeReceptor mensajeReceptor = new MensajeReceptor
                 {
                     Clave = documentoXml.GetElementsByTagName("Clave").Item(0).InnerText,
-
                     FechaEmisionDoc = DateTime.Parse(documentoXml.GetElementsByTagName("FechaEmision").Item(0).InnerText, CultureInfo.InvariantCulture),
                     Mensaje = (MensajeReceptorMensaje)intMensaje,
                     DetalleMensaje = "Mensaje de receptor con estado: " + (intMensaje == 0 ? "Aceptado" : intMensaje == 1 ? "Aceptado parcialmente" : "Rechazado"),
@@ -778,7 +766,6 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     mensajeReceptor.MontoTotalImpuesto = decimal.Parse(strTotalImpuesto);
                     mensajeReceptor.MontoTotalImpuestoSpecified = true;
                 }
-
                 XmlDocument mensajeReceptorXml = new XmlDocument();
                 XmlWriterSettings settings = new XmlWriterSettings
                 {
@@ -846,66 +833,70 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 int intTipoDocumentoElectronico = (int)tipoDocumento;
                 int intIdConsecutivo = 1;
                 int? consecutivoBaseDatos = dbContext.DocumentoElectronicoRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa & x.IdSucursal == intSucursal & x.IdTerminal == intTerminal & x.IdTipoDocumento == intTipoDocumentoElectronico).Max(x => (int?)x.IdConsecutivo);
+                TerminalPorEmpresa terminal = dbContext.TerminalPorEmpresaRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa & x.IdSucursal == intSucursal & x.IdTerminal == intTerminal).FirstOrDefault();
                 switch (tipoDocumento)
                 {
                     case TipoDocumento.FacturaElectronica:
                         if (!(consecutivoBaseDatos is null))
                         {
-                            if (consecutivoBaseDatos >= empresa.UltimoDocFE)
+                            if (consecutivoBaseDatos >= terminal.UltimoDocFE)
                                 intIdConsecutivo = (int)consecutivoBaseDatos + 1;
                             else
-                                intIdConsecutivo = empresa.UltimoDocFE + 1;
-                            empresa.UltimoDocFE = intIdConsecutivo;
+                                intIdConsecutivo = terminal.UltimoDocFE + 1;
                         }
                         else
-                            intIdConsecutivo = empresa.UltimoDocFE + 1;
+                            intIdConsecutivo = terminal.UltimoDocFE + 1;
+                        terminal.UltimoDocFE = intIdConsecutivo;
                         break;
                     case TipoDocumento.NotaDebitoElectronica:
                         if (!(consecutivoBaseDatos is null))
                         {
-                            if (consecutivoBaseDatos >= empresa.UltimoDocND)
+                            if (consecutivoBaseDatos >= terminal.UltimoDocND)
                                 intIdConsecutivo = (int)consecutivoBaseDatos + 1;
                             else
-                                intIdConsecutivo = empresa.UltimoDocND + 1;
-                            empresa.UltimoDocND = intIdConsecutivo;
+                                intIdConsecutivo = terminal.UltimoDocND + 1;
                         }
                         else
-                            intIdConsecutivo = empresa.UltimoDocND + 1;
+                            intIdConsecutivo = terminal.UltimoDocND + 1;
+                        terminal.UltimoDocND = intIdConsecutivo;
                         break;
                     case TipoDocumento.NotaCreditoElectronica:
                         if (!(consecutivoBaseDatos is null))
                         {
-                            if (consecutivoBaseDatos >= empresa.UltimoDocNC)
+                            if (consecutivoBaseDatos >= terminal.UltimoDocNC)
                                 intIdConsecutivo = (int)consecutivoBaseDatos + 1;
                             else
-                                intIdConsecutivo = empresa.UltimoDocNC + 1;
-                            empresa.UltimoDocNC = intIdConsecutivo;
+                                intIdConsecutivo = terminal.UltimoDocNC + 1;
                         }
                         else
-                            intIdConsecutivo = empresa.UltimoDocNC + 1;
+                            intIdConsecutivo = terminal.UltimoDocNC + 1;
+                        terminal.UltimoDocNC = intIdConsecutivo;
                         break;
                     case TipoDocumento.TiqueteElectronico:
                         if (!(consecutivoBaseDatos is null))
                         {
-                            if (consecutivoBaseDatos >= empresa.UltimoDocTE)
+                            if (consecutivoBaseDatos >= terminal.UltimoDocTE)
                                 intIdConsecutivo = (int)consecutivoBaseDatos + 1;
                             else
-                                intIdConsecutivo = empresa.UltimoDocTE + 1;
-                            empresa.UltimoDocTE = intIdConsecutivo;
+                                intIdConsecutivo = terminal.UltimoDocTE + 1;
                         }
                         else
-                            intIdConsecutivo = empresa.UltimoDocTE + 1;
+                            intIdConsecutivo = terminal.UltimoDocTE + 1;
+                        terminal.UltimoDocTE = intIdConsecutivo;
                         break;
                     case TipoDocumento.MensajeReceptorAceptado:
                     case TipoDocumento.MensajeReceptorAceptadoParcial:
                     case TipoDocumento.MensajeReceptorRechazado:
                         if (!(consecutivoBaseDatos is null))
                         {
-                            intIdConsecutivo = (int)consecutivoBaseDatos + 1;
-                            empresa.UltimoDocMR = intIdConsecutivo;
+                            if (consecutivoBaseDatos >= terminal.UltimoDocMR)
+                                intIdConsecutivo = (int)consecutivoBaseDatos + 1;
+                            else
+                                intIdConsecutivo = terminal.UltimoDocTE + 1;
                         }
                         else
-                            intIdConsecutivo = empresa.UltimoDocMR + 1;
+                            intIdConsecutivo = terminal.UltimoDocMR + 1;
+                        terminal.UltimoDocMR = intIdConsecutivo;
                         break;
                 }
                 strConsucutivo = intSucursal.ToString("D3") + intTerminal.ToString("D5") + intTipoDocumentoElectronico.ToString("D2") + intIdConsecutivo.ToString("D10");
@@ -969,7 +960,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 dbContext.DocumentoElectronicoRepository.Add(documento);
                 int intMesEnCurso = DateTime.Now.Month;
                 int intAnnioEnCurso = DateTime.Now.Year;
-                CantFEMensualEmpresa cantiFacturasMensual = dbContext.CantFEMensualEmpresaRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa && x.IdMes == intMesEnCurso && x.IdAnio == intAnnioEnCurso).FirstOrDefault();
+                CantFEMensualEmpresa cantiFacturasMensual = dbContext.CantFEMensualEmpresaRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa & x.IdMes == intMesEnCurso & x.IdAnio == intAnnioEnCurso).FirstOrDefault();
                 if (cantiFacturasMensual == null)
                 {
                     cantiFacturasMensual = new CantFEMensualEmpresa
@@ -999,7 +990,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
         {
             try
             {
-                string connString = WebConfigurationManager.ConnectionStrings[1].ConnectionString;
+                string connString = WebConfigurationManager.ConnectionStrings["LeandroContext"].ConnectionString;
                 unityContainer.RegisterInstance("conectionString", connString, new ContainerControlledLifetimeManager());
                 unityContainer.RegisterType<IDbContext, LeandroContext>(new InjectionConstructor(new ResolvedParameter<string>("conectionString")));
                 using (IDbContext dbContext = unityContainer.Resolve<IDbContext>())
@@ -1052,7 +1043,10 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                                             if (headers.Count > 0)
                                             {
                                                 if (httpResponse.StatusCode == HttpStatusCode.BadRequest)
-                                                    documento.EstadoEnvio = StaticEstadoDocumentoElectronico.Rechazado;
+                                                    if (headers[0] == "El comprobante [" + documento.ClaveNumerica + "] ya fue recibido anteriormente.")
+                                                        documento.EstadoEnvio = StaticEstadoDocumentoElectronico.Enviado;
+                                                    else
+                                                        documento.EstadoEnvio = StaticEstadoDocumentoElectronico.Rechazado;
                                                 else
                                                     documento.EstadoEnvio = StaticEstadoDocumentoElectronico.Registrado;
                                                 documento.ErrorEnvio = headers[0];
@@ -1079,6 +1073,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                             }
                             else
                             {
+                                documento.EstadoEnvio = StaticEstadoDocumentoElectronico.Registrado;
                                 documento.ErrorEnvio = "No se logro obtener un token válido para la empresa correspondiente al documento electrónico.";
                                 dbContext.NotificarModificacion(documento);
                                 dbContext.Commit();

@@ -30,13 +30,13 @@ Public Class FrmCuentaBancoListado
         dvcSaldo.HeaderText = "Saldo"
         dvcSaldo.DataPropertyName = "Saldo"
         dvcSaldo.Width = 100
-        dvcSaldo.DefaultCellStyle = FrmMenuPrincipal.dgvDecimal
+        dvcSaldo.DefaultCellStyle = FrmPrincipal.dgvDecimal
         dgvDatos.Columns.Add(dvcSaldo)
     End Sub
 
     Private Async Sub ActualizarDatos()
         Try
-            listado = Await PuntoventaWCF.ObtenerListaCuentasBanco(FrmMenuPrincipal.empresaGlobal.IdEmpresa, txtDescripcion.Text)
+            listado = Await PuntoventaWCF.ObtenerListaCuentasBanco(FrmPrincipal.empresaGlobal.IdEmpresa, txtDescripcion.Text)
             dgvDatos.DataSource = listado
             If listado.Count() > 0 Then
                 btnEditar.Enabled = True

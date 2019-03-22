@@ -69,7 +69,7 @@ Public Class FrmLinea
             Exit Sub
         End If
         If datos.IdLinea = 0 Then
-            datos.IdEmpresa = FrmMenuPrincipal.empresaGlobal.IdEmpresa
+            datos.IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa
         End If
         datos.IdTipoProducto = cboTipoProducto.SelectedValue
         datos.Descripcion = txtDescripcion.Text

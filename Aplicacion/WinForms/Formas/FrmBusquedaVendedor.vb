@@ -23,7 +23,7 @@ Public Class FrmBusquedaVendedor
 
     Private Async Sub ActualizarDatos()
         Try
-            dgvListado.DataSource = Await PuntoventaWCF.ObtenerListaVendedores(FrmMenuPrincipal.empresaGlobal.IdEmpresa, txtNombre.Text)
+            dgvListado.DataSource = Await PuntoventaWCF.ObtenerListaVendedores(FrmPrincipal.empresaGlobal.IdEmpresa, txtNombre.Text)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -41,7 +41,7 @@ Public Class FrmBusquedaVendedor
 
     Private Sub FlexProducto_DoubleClick(ByVal sender As Object, ByVal e As EventArgs) Handles dgvListado.DoubleClick
         If dgvListado.RowCount > 0 Then
-            FrmMenuPrincipal.intBusqueda = dgvListado.CurrentRow.Cells(0).Value
+            FrmPrincipal.intBusqueda = dgvListado.CurrentRow.Cells(0).Value
             Close()
         End If
     End Sub

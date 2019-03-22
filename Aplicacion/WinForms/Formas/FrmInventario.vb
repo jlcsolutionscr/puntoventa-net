@@ -155,8 +155,8 @@ Public Class FrmInventario
         'Dim dtbDatos As DataTable
         'dtbDatos = servicioReportes.ObtenerReporteInventario(FrmMenuPrincipal.empresaGlobal.IdEmpresa, cboLinea.SelectedValue, txtCodigo.Text, txtDescripcion.Text)
         'reptInventario.SetDataSource(dtbDatos)
-        reptInventario.SetParameterValue(0, FrmMenuPrincipal.usuarioGlobal.CodigoUsuario)
-        reptInventario.SetParameterValue(1, FrmMenuPrincipal.empresaGlobal.NombreEmpresa)
+        reptInventario.SetParameterValue(0, FrmPrincipal.usuarioGlobal.CodigoUsuario)
+        reptInventario.SetParameterValue(1, FrmPrincipal.empresaGlobal.NombreEmpresa)
         formReport.crtViewer.ReportSource = reptInventario
         formReport.ShowDialog()
     End Sub

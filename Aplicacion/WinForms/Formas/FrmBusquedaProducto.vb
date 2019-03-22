@@ -23,7 +23,6 @@ Public Class FrmBusquedaProducto
         Dim dvcDescripcion As New DataGridViewTextBoxColumn
         Dim dvcCantidad As New DataGridViewTextBoxColumn
         Dim dvcPrecio As New DataGridViewTextBoxColumn
-        Dim dvcPrecioPorMayor As New DataGridViewTextBoxColumn
         dgvNumber = New DataGridViewCellStyle With {
             .Format = "N2",
             .NullValue = "0",
@@ -37,12 +36,12 @@ Public Class FrmBusquedaProducto
 
         dvcCodigo.DataPropertyName = "CODIGO"
         dvcCodigo.HeaderText = "Código"
-        dvcCodigo.Width = 160
+        dvcCodigo.Width = 200
         dgvListado.Columns.Add(dvcCodigo)
 
         dvcDescripcion.DataPropertyName = "DESCRIPCION"
         dvcDescripcion.HeaderText = "Descripción"
-        dvcDescripcion.Width = 300
+        dvcDescripcion.Width = 340
         dgvListado.Columns.Add(dvcDescripcion)
 
         dvcCantidad.DataPropertyName = "CANTIDAD"
@@ -51,24 +50,19 @@ Public Class FrmBusquedaProducto
         dvcCantidad.DefaultCellStyle = dgvNumber
         dgvListado.Columns.Add(dvcCantidad)
         If intTipoPrecio = 0 Then
-            dvcPrecio.DataPropertyName = "PRECIOVENTA"
+            dvcPrecio.DataPropertyName = "PRECIOVENTA1"
         Else
             dvcPrecio.DataPropertyName = "PRECIOCOSTO"
         End If
-        dvcPrecio.HeaderText = "Precio"
-        dvcPrecio.Width = 90
+        dvcPrecio.HeaderText = "Precio (IVA)"
+        dvcPrecio.Width = 100
         dvcPrecio.DefaultCellStyle = dgvNumber
         dgvListado.Columns.Add(dvcPrecio)
-        dvcPrecioPorMayor.DataPropertyName = "PRECIOVENTAPORMAYOR"
-        dvcPrecioPorMayor.HeaderText = "Prec. Mayor"
-        dvcPrecioPorMayor.Width = 90
-        dvcPrecioPorMayor.DefaultCellStyle = dgvNumber
-        dgvListado.Columns.Add(dvcPrecioPorMayor)
     End Sub
 
     Private Async Function CargarComboBox() As Task
         Try
-            cboLinea.DataSource = Await PuntoventaWCF.ObtenerListaLineas(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
+            cboLinea.DataSource = Await PuntoventaWCF.ObtenerListaLineas(FrmPrincipal.empresaGlobal.IdEmpresa)
             cboLinea.ValueMember = "IdLinea"
             cboLinea.DisplayMember = "Descripcion"
         Catch ex As Exception
@@ -81,7 +75,7 @@ Public Class FrmBusquedaProducto
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
         Try
-            dgvListado.DataSource = Await PuntoventaWCF.ObtenerListaProductos(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, bolIncluyeServicios, cboLinea.SelectedValue, TxtCodigo.Text, TxtDesc.Text)
+            dgvListado.DataSource = Await PuntoventaWCF.ObtenerListaProductos(FrmPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, bolIncluyeServicios, cboLinea.SelectedValue, TxtCodigo.Text, TxtDesc.Text)
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -92,7 +86,7 @@ Public Class FrmBusquedaProducto
 
     Private Async Function ValidarCantidadProductos() As Task
         Try
-            intTotalEmpresas = Await PuntoventaWCF.ObtenerTotalListaProductos(FrmMenuPrincipal.empresaGlobal.IdEmpresa, bolIncluyeServicios, cboLinea.SelectedValue, TxtCodigo.Text, TxtDesc.Text)
+            intTotalEmpresas = Await PuntoventaWCF.ObtenerTotalListaProductos(FrmPrincipal.empresaGlobal.IdEmpresa, bolIncluyeServicios, cboLinea.SelectedValue, TxtCodigo.Text, TxtDesc.Text)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -146,7 +140,7 @@ Public Class FrmBusquedaProducto
 
     Private Sub FlexProducto_DoubleClick(ByVal sender As Object, ByVal e As EventArgs) Handles dgvListado.DoubleClick
         If dgvListado.RowCount > 0 Then
-            FrmMenuPrincipal.strBusqueda = dgvListado.CurrentRow.Cells(1).Value.ToString()
+            FrmPrincipal.strBusqueda = dgvListado.CurrentRow.Cells(1).Value.ToString()
             Close()
         End If
     End Sub

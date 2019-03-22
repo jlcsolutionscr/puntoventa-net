@@ -4,14 +4,14 @@ Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
 
 Public Class FrmCompra
 #Region "Variables"
-    Private dblExcento, dblGrabado, dblPorcentajeIVA As Decimal
+    Private decExcento, decGrabado As Decimal
     Private dblTotalPago As Decimal = 0
     Private dblTotal As Decimal = 0
     Private dblSaldoPorPagar As Decimal = 0
     Private I As Short
     Private dtbDatosLocal, dtbDetalleCompra, dtbDesglosePago As DataTable
     Private dtrRowDetCompra, dtrRowDesglosePago As DataRow
-    Private arrDetalleCompra As List(Of ModuloImpresion.clsDetalleComprobante)
+    Private arrDetalleCompra As List(Of ModuloImpresion.ClsDetalleComprobante)
     Private arrDesglosePago As List(Of ModuloImpresion.ClsDesgloseFormaPago)
     Private compra As Compra
     Private ordenCompra As OrdenCompra
@@ -19,10 +19,9 @@ Public Class FrmCompra
     Private detalleCompra As DetalleCompra
     Private desglosePago As DesglosePagoCompra
     Private producto As Producto
-    Private tipoMoneda As TipoMoneda
     Private comprobanteImpresion As ModuloImpresion.ClsComprobante
-    Private detalleComprobante As ModuloImpresion.clsDetalleComprobante
-    Private desglosePagoImpresion As ModuloImpresion.clsDesgloseFormaPago
+    Private detalleComprobante As ModuloImpresion.ClsDetalleComprobante
+    Private desglosePagoImpresion As ModuloImpresion.ClsDesgloseFormaPago
     Private bolInit As Boolean = True
 #End Region
 
@@ -36,6 +35,7 @@ Public Class FrmCompra
         dtbDetalleCompra.Columns.Add("PRECIOCOSTO", GetType(Decimal))
         dtbDetalleCompra.Columns.Add("TOTAL", GetType(Decimal))
         dtbDetalleCompra.Columns.Add("EXCENTO", GetType(Integer))
+        dtbDetalleCompra.Columns.Add("PORCENTAJEIVA", GetType(Decimal))
         dtbDetalleCompra.PrimaryKey = {dtbDetalleCompra.Columns(0)}
 
         dtbDesglosePago = New DataTable()
@@ -63,6 +63,7 @@ Public Class FrmCompra
         Dim dvcPrecioVenta As New DataGridViewTextBoxColumn
         Dim dvcTotal As New DataGridViewTextBoxColumn
         Dim dvcExc As New DataGridViewTextBoxColumn
+        Dim dvcPorcentajeIVA As New DataGridViewTextBoxColumn
 
         dvcIdProducto.DataPropertyName = "IDPRODUCTO"
         dvcIdProducto.HeaderText = "IdP"
@@ -82,19 +83,19 @@ Public Class FrmCompra
         dvcCantidad.DataPropertyName = "CANTIDAD"
         dvcCantidad.HeaderText = "Cantidad"
         dvcCantidad.Width = 60
-        dvcCantidad.DefaultCellStyle = FrmMenuPrincipal.dgvDecimal
+        dvcCantidad.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleCompra.Columns.Add(dvcCantidad)
 
         dvcPrecioCosto.DataPropertyName = "PRECIOCOSTO"
         dvcPrecioCosto.HeaderText = "Precio"
         dvcPrecioCosto.Width = 80
-        dvcPrecioCosto.DefaultCellStyle = FrmMenuPrincipal.dgvDecimal
+        dvcPrecioCosto.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleCompra.Columns.Add(dvcPrecioCosto)
 
         dvcTotal.DataPropertyName = "TOTAL"
         dvcTotal.HeaderText = "Total"
         dvcTotal.Width = 100
-        dvcTotal.DefaultCellStyle = FrmMenuPrincipal.dgvDecimal
+        dvcTotal.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleCompra.Columns.Add(dvcTotal)
 
         dvcExc.DataPropertyName = "EXCENTO"
@@ -102,6 +103,12 @@ Public Class FrmCompra
         dvcExc.Width = 0
         dvcExc.Visible = False
         grdDetalleCompra.Columns.Add(dvcExc)
+
+        dvcPorcentajeIVA.DataPropertyName = "PORCENTAJEIVA"
+        dvcPorcentajeIVA.HeaderText = "PorcIVA"
+        dvcPorcentajeIVA.Width = 0
+        dvcPorcentajeIVA.Visible = False
+        grdDetalleCompra.Columns.Add(dvcPorcentajeIVA)
 
         grdDesglosePago.Columns.Clear()
         grdDesglosePago.AutoGenerateColumns = False
@@ -168,7 +175,7 @@ Public Class FrmCompra
         dvcMontoLocal.Width = 110
         dvcMontoLocal.Visible = True
         dvcMontoLocal.ReadOnly = True
-        dvcMontoLocal.DefaultCellStyle = FrmMenuPrincipal.dgvDecimal
+        dvcMontoLocal.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDesglosePago.Columns.Add(dvcMontoLocal)
 
         dvcMontoForaneo.DataPropertyName = "MONTOFORANEO"
@@ -176,7 +183,7 @@ Public Class FrmCompra
         dvcMontoForaneo.Width = 110
         dvcMontoForaneo.Visible = True
         dvcMontoForaneo.ReadOnly = True
-        dvcMontoForaneo.DefaultCellStyle = FrmMenuPrincipal.dgvDecimal
+        dvcMontoForaneo.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDesglosePago.Columns.Add(dvcMontoForaneo)
     End Sub
 
@@ -190,7 +197,8 @@ Public Class FrmCompra
             dtrRowDetCompra.Item(3) = detalle.Cantidad
             dtrRowDetCompra.Item(4) = detalle.PrecioCosto
             dtrRowDetCompra.Item(5) = dtrRowDetCompra.Item(3) * dtrRowDetCompra.Item(4)
-            dtrRowDetCompra.Item(6) = detalle.Producto.Excento
+            dtrRowDetCompra.Item(6) = detalle.Producto.ParametroImpuesto.TasaImpuesto = 0
+            dtrRowDetCompra.Item(7) = detalle.Producto.ParametroImpuesto.TasaImpuesto
             dtbDetalleCompra.Rows.Add(dtrRowDetCompra)
         Next
         grdDetalleCompra.Refresh()
@@ -206,7 +214,8 @@ Public Class FrmCompra
             dtrRowDetCompra.Item(3) = detalle.Cantidad
             dtrRowDetCompra.Item(4) = detalle.PrecioCosto
             dtrRowDetCompra.Item(5) = dtrRowDetCompra.Item(3) * dtrRowDetCompra.Item(4)
-            dtrRowDetCompra.Item(6) = detalle.Producto.Excento
+            dtrRowDetCompra.Item(6) = detalle.Producto.ParametroImpuesto.TasaImpuesto = 0
+            dtrRowDetCompra.Item(7) = detalle.Producto.ParametroImpuesto.TasaImpuesto
             dtbDetalleCompra.Rows.Add(dtrRowDetCompra)
         Next
         grdDetalleCompra.Refresh()
@@ -238,7 +247,8 @@ Public Class FrmCompra
             dtbDetalleCompra.Rows(intIndice).Item(3) += txtCantidad.Text
             dtbDetalleCompra.Rows(intIndice).Item(4) = txtPrecioCosto.Text
             dtbDetalleCompra.Rows(intIndice).Item(5) = dtbDetalleCompra.Rows(intIndice).Item(3) * dtbDetalleCompra.Rows(intIndice).Item(4)
-            dtbDetalleCompra.Rows(intIndice).Item(6) = producto.Excento
+            dtbDetalleCompra.Rows(intIndice).Item(6) = producto.ParametroImpuesto.TasaImpuesto = 0
+            dtbDetalleCompra.Rows(intIndice).Item(7) = producto.ParametroImpuesto.TasaImpuesto
         Else
             dtrRowDetCompra = dtbDetalleCompra.NewRow
             dtrRowDetCompra.Item(0) = producto.IdProducto
@@ -247,7 +257,8 @@ Public Class FrmCompra
             dtrRowDetCompra.Item(3) = txtCantidad.Text
             dtrRowDetCompra.Item(4) = CDbl(txtPrecioCosto.Text)
             dtrRowDetCompra.Item(5) = dtrRowDetCompra.Item(3) * dtrRowDetCompra.Item(4)
-            dtrRowDetCompra.Item(6) = producto.Excento
+            dtrRowDetCompra.Item(6) = producto.ParametroImpuesto.TasaImpuesto = 0
+            dtrRowDetCompra.Item(7) = producto.ParametroImpuesto.TasaImpuesto
             dtbDetalleCompra.Rows.Add(dtrRowDetCompra)
         End If
         grdDetalleCompra.Refresh()
@@ -288,24 +299,22 @@ Public Class FrmCompra
     End Sub
 
     Private Sub CargarTotales()
-        Dim dblSubTotal As Decimal = 0
-        dblExcento = 0
-        dblGrabado = 0
+        Dim decSubTotal As Decimal = 0
+        decExcento = 0
+        decGrabado = 0
         For I = 0 To dtbDetalleCompra.Rows.Count - 1
             If dtbDetalleCompra.Rows(I).Item(6) = 0 Then
-                dblGrabado = dblGrabado + CDbl(dtbDetalleCompra.Rows(I).Item(5))
+                decGrabado += dtbDetalleCompra.Rows(I).Item(5)
             Else
-                dblExcento = dblExcento + CDbl(dtbDetalleCompra.Rows(I).Item(5))
+                decExcento += dtbDetalleCompra.Rows(I).Item(5)
             End If
         Next
-        dblSubTotal = dblGrabado + dblExcento
-        If dblSubTotal > 0 Then
-            dblExcento = Math.Round(dblExcento - (CDbl(txtDescuento.Text) / dblSubTotal * dblExcento), 2, MidpointRounding.AwayFromZero)
-            dblGrabado = Math.Round(dblGrabado - (CDbl(txtDescuento.Text) / dblSubTotal * dblGrabado), 2, MidpointRounding.AwayFromZero)
-        End If
-        txtImpuesto.Text = FormatNumber(dblGrabado * (dblPorcentajeIVA / 100), 2)
-        txtSubTotal.Text = FormatNumber(dblSubTotal, 2)
-        dblTotal = Math.Round(dblExcento + dblGrabado + CDbl(txtImpuesto.Text), 2, MidpointRounding.AwayFromZero)
+        decSubTotal = decGrabado + decExcento
+        decGrabado = Math.Round(decGrabado, 2, MidpointRounding.AwayFromZero)
+        decExcento = Math.Round(decExcento, 2, MidpointRounding.AwayFromZero)
+        dblTotal = Math.Round(decExcento + decGrabado + txtImpuesto.Text - txtDescuento.Text, 2, MidpointRounding.AwayFromZero)
+        txtSubTotal.Text = FormatNumber(decSubTotal, 2)
+        txtImpuesto.Text = FormatNumber(txtImpuesto, 2)
         txtTotal.Text = FormatNumber(dblTotal, 2)
         dblSaldoPorPagar = dblTotal - dblTotalPago
         txtSaldoPorPagar.Text = FormatNumber(dblSaldoPorPagar, 2)
@@ -345,7 +354,7 @@ Public Class FrmCompra
     Private Sub ValidarProducto()
         If Not bolInit Then
             If txtCodigo.Text <> "" Then
-                If FrmMenuPrincipal.empresaGlobal.AutoCompletaProducto = True Then
+                If FrmPrincipal.empresaGlobal.AutoCompletaProducto = True Then
                     If txtCodigo.Text.IndexOf(" ") >= 0 Then
                         txtCodigo.Text = txtCodigo.Text.Substring(0, txtCodigo.Text.IndexOf(" "))
                     End If
@@ -385,11 +394,10 @@ Public Class FrmCompra
 
 #Region "Eventos Controles"
     Private Sub FrmCompra_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        txtFecha.Text = FrmMenuPrincipal.ObtenerFechaFormateada(Now())
+        txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
         txtIdOrdenCompra.Text = "0"
-        dblPorcentajeIVA = FrmMenuPrincipal.empresaGlobal.PorcentajeIVA
         CargarCombos()
-        If FrmMenuPrincipal.empresaGlobal.AutoCompletaProducto = True Then
+        If FrmPrincipal.empresaGlobal.AutoCompletaProducto = True Then
             CargarAutoCompletarProducto()
         End If
         IniciaDetalleCompra()
@@ -404,20 +412,13 @@ Public Class FrmCompra
         txtTotal.Text = FormatNumber(0, 2)
         cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
         cboTipoMoneda.SelectedValue = StaticValoresPorDefecto.MonedaDelSistema
-        Try
-            'tipoMoneda = servicioMantenimiento.ObtenerTipoMoneda(cboTipoMoneda.SelectedValue)
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Exit Sub
-        End Try
-        txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmMenuPrincipal.decTipoCambioDolar.ToString())
+        txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmPrincipal.decTipoCambioDolar.ToString())
         txtSaldoPorPagar.Text = FormatNumber(dblSaldoPorPagar, 2)
     End Sub
 
     Private Sub BtnAgregar_Click(sender As Object, e As EventArgs) Handles btnAgregar.Click
         txtIdCompra.Text = ""
-        txtFecha.Text = FrmMenuPrincipal.ObtenerFechaFormateada(Now())
-        dblPorcentajeIVA = FrmMenuPrincipal.empresaGlobal.PorcentajeIVA
+        txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
         proveedor = Nothing
         txtProveedor.Text = ""
         txtFactura.Text = ""
@@ -476,9 +477,9 @@ Public Class FrmCompra
 
     Private Sub BtnBuscar_Click(sender As Object, e As EventArgs) Handles btnBuscar.Click
         Dim formBusqueda As New FrmBusquedaCompra()
-        FrmMenuPrincipal.intBusqueda = 0
+        FrmPrincipal.intBusqueda = 0
         formBusqueda.ShowDialog()
-        If FrmMenuPrincipal.intBusqueda > 0 Then
+        If FrmPrincipal.intBusqueda > 0 Then
             Try
                 'compra = servicioCompras.ObtenerCompra(FrmMenuPrincipal.intBusqueda)
             Catch ex As Exception
@@ -494,7 +495,6 @@ Public Class FrmCompra
                 cboCondicionVenta.SelectedValue = compra.IdCondicionVenta
                 txtPlazoCredito.Text = compra.PlazoCredito
                 txtDescuento.Text = FormatNumber(compra.Descuento, 2)
-                dblPorcentajeIVA = compra.PorcentajeIVA
                 CargarDetalleCompra(compra)
                 CargarDesglosePago(compra)
                 CargarTotales()
@@ -508,8 +508,8 @@ Public Class FrmCompra
                 btnBusProd.Enabled = False
                 btnImprimir.Enabled = True
                 btnBuscarProveedor.Enabled = False
-                btnAnular.Enabled = FrmMenuPrincipal.usuarioGlobal.Modifica
-                btnGuardar.Enabled = FrmMenuPrincipal.usuarioGlobal.Modifica
+                btnAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
+                btnGuardar.Enabled = FrmPrincipal.usuarioGlobal.Modifica
             End If
         End If
     End Sub
@@ -517,9 +517,9 @@ Public Class FrmCompra
     Private Sub BtnOrdenCompra_Click(sender As Object, e As EventArgs) Handles btnOrdenCompra.Click
         Dim formBusqueda As New FrmBusquedaOrdenCompra()
         formBusqueda.ExcluirOrdenesAplicadas()
-        FrmMenuPrincipal.intBusqueda = 0
+        FrmPrincipal.intBusqueda = 0
         formBusqueda.ShowDialog()
-        If FrmMenuPrincipal.intBusqueda > 0 Then
+        If FrmPrincipal.intBusqueda > 0 Then
             Try
                 'ordenCompra = servicioCompras.ObtenerOrdenCompra(FrmMenuPrincipal.intBusqueda)
             Catch ex As Exception
@@ -530,8 +530,7 @@ Public Class FrmCompra
                 txtIdCompra.Text = ""
                 proveedor = ordenCompra.Proveedor
                 txtProveedor.Text = proveedor.Nombre
-                txtFecha.Text = FrmMenuPrincipal.ObtenerFechaFormateada(Now())
-                dblPorcentajeIVA = FrmMenuPrincipal.empresaGlobal.PorcentajeIVA
+                txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
                 txtFactura.Text = ""
                 cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado
                 txtPlazoCredito.Text = ""
@@ -560,9 +559,9 @@ Public Class FrmCompra
 
     Private Sub BtnBuscarProveedor_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnBuscarProveedor.Click
         Dim formBusquedaProveedor As New FrmBusquedaProveedor()
-        FrmMenuPrincipal.intBusqueda = 0
+        FrmPrincipal.intBusqueda = 0
         formBusquedaProveedor.ShowDialog()
-        If FrmMenuPrincipal.intBusqueda > 0 Then
+        If FrmPrincipal.intBusqueda > 0 Then
             Try
                 'proveedor = servicioCompras.ObtenerProveedor(FrmMenuPrincipal.intBusqueda)
             Catch ex As Exception
@@ -578,10 +577,10 @@ Public Class FrmCompra
             .bolIncluyeServicios = False,
             .intTipoPrecio = 1
         }
-        FrmMenuPrincipal.strBusqueda = ""
+        FrmPrincipal.strBusqueda = ""
         formBusProd.ShowDialog()
-        If Not FrmMenuPrincipal.strBusqueda.Equals("") Then
-            txtCodigo.Text = FrmMenuPrincipal.strBusqueda
+        If Not FrmPrincipal.strBusqueda.Equals("") Then
+            txtCodigo.Text = FrmPrincipal.strBusqueda
             ValidarProducto()
         End If
         txtCodigo.Focus()
@@ -608,17 +607,16 @@ Public Class FrmCompra
         End If
         If txtIdCompra.Text = "" Then
             compra = New Compra With {
-                .IdEmpresa = FrmMenuPrincipal.empresaGlobal.IdEmpresa,
-                .IdUsuario = FrmMenuPrincipal.usuarioGlobal.IdUsuario,
+                .IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa,
+                .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
                 .IdProveedor = proveedor.IdProveedor,
                 .Fecha = Now(),
                 .NoDocumento = txtFactura.Text,
                 .IdCondicionVenta = cboCondicionVenta.SelectedValue,
                 .PlazoCredito = IIf(txtPlazoCredito.Text = "", 0, txtPlazoCredito.Text),
-                .Excento = dblExcento,
-                .Grabado = dblGrabado,
+                .Excento = decExcento,
+                .Grabado = decGrabado,
                 .Descuento = CDbl(txtDescuento.Text),
-                .PorcentajeIVA = dblPorcentajeIVA,
                 .Impuesto = CDbl(txtImpuesto.Text),
                 .IdOrdenCompra = txtIdOrdenCompra.Text,
                 .Nulo = False
@@ -628,7 +626,8 @@ Public Class FrmCompra
                     .IdProducto = dtbDetalleCompra.Rows(I).Item(0),
                     .Cantidad = dtbDetalleCompra.Rows(I).Item(3),
                     .PrecioCosto = dtbDetalleCompra.Rows(I).Item(4),
-                    .Excento = dtbDetalleCompra.Rows(I).Item(6)
+                    .Excento = dtbDetalleCompra.Rows(I).Item(6),
+                    .PorcentajeIVA = dtbDetalleCompra.Rows(I).Item(7)
                 }
                 compra.DetalleCompra.Add(detalleCompra)
             Next
@@ -664,9 +663,9 @@ Public Class FrmCompra
         MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
         btnImprimir.Enabled = True
         btnAgregar.Enabled = True
-        btnAnular.Enabled = FrmMenuPrincipal.usuarioGlobal.Modifica
+        btnAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
         btnImprimir.Focus()
-        btnGuardar.Enabled = FrmMenuPrincipal.usuarioGlobal.Modifica
+        btnGuardar.Enabled = FrmPrincipal.usuarioGlobal.Modifica
         btnInsertar.Enabled = False
         btnEliminar.Enabled = False
         btnInsertarPago.Enabled = False
@@ -678,9 +677,9 @@ Public Class FrmCompra
     Private Sub BtnImprimir_Click(sender As Object, e As EventArgs) Handles btnImprimir.Click
         If txtIdCompra.Text <> "" Then
             comprobanteImpresion = New ModuloImpresion.ClsComprobante With {
-                .usuario = FrmMenuPrincipal.usuarioGlobal,
-                .empresa = FrmMenuPrincipal.empresaGlobal,
-                .equipo = FrmMenuPrincipal.equipoGlobal,
+                .usuario = FrmPrincipal.usuarioGlobal,
+                .empresa = FrmPrincipal.empresaGlobal,
+                .equipo = FrmPrincipal.equipoGlobal,
                 .strId = txtIdCompra.Text,
                 .strNombre = txtProveedor.Text,
                 .strFecha = txtFecha.Text,
@@ -763,13 +762,7 @@ Public Class FrmCompra
 
     Private Sub CboTipoMoneda_SelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs) Handles cboTipoMoneda.SelectedIndexChanged
         If Not bolInit And Not cboTipoMoneda.SelectedValue Is Nothing Then
-            Try
-                'tipoMoneda = servicioMantenimiento.ObtenerTipoMoneda(cboTipoMoneda.SelectedValue)
-            Catch ex As Exception
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Exit Sub
-            End Try
-            txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmMenuPrincipal.decTipoCambioDolar.ToString())
+            txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmPrincipal.decTipoCambioDolar.ToString())
         End If
     End Sub
 
@@ -866,11 +859,11 @@ Public Class FrmCompra
     End Sub
 
     Private Sub TxtPlazo_KeyPress(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs)
-        FrmMenuPrincipal.ValidaNumero(e, sender, False, 0)
+        FrmPrincipal.ValidaNumero(e, sender, False, 0)
     End Sub
 
     Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs) Handles txtCantidad.KeyPress, txtPrecioCosto.KeyPress, txtDescuento.KeyPress, txtMonto.KeyPress
-        FrmMenuPrincipal.ValidaNumero(e, sender, True, 2, ".")
+        FrmPrincipal.ValidaNumero(e, sender, True, 2, ".")
     End Sub
 #End Region
 End Class

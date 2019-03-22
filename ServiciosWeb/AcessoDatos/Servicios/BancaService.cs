@@ -373,7 +373,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 try
                 {
                     var listaMovimientos = dbContext.MovimientoBancoRepository.Join(dbContext.CuentaBancoRepository, a => a.IdCuenta, b => b.IdCuenta, (a, b) => new { a, b })
-                            .Where(a => !a.a.Nulo && a.b.IdEmpresa == intIdEmpresa);
+                            .Where(a => !a.a.Nulo & a.b.IdEmpresa == intIdEmpresa);
                     if (!strDescripcion.Equals(string.Empty))
                         listaMovimientos = listaMovimientos.Where(a => a.a.Descripcion.Contains(strDescripcion));
                     return listaMovimientos.Count();
@@ -393,7 +393,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 try
                 {
                     var listaMovimientos = dbContext.MovimientoBancoRepository.Join(dbContext.CuentaBancoRepository, a => a.IdCuenta, b => b.IdCuenta, (a, b) => new { a, b })
-                        .Where(a => !a.a.Nulo && a.b.IdEmpresa == intIdEmpresa);
+                        .Where(a => !a.a.Nulo & a.b.IdEmpresa == intIdEmpresa);
                     if (!strDescripcion.Equals(string.Empty))
                         listaMovimientos = listaMovimientos.Where(a => a.a.Descripcion.Contains(strDescripcion));
                     return listaMovimientos.OrderByDescending(x => x.a.IdMov).Skip((numPagina - 1) * cantRec).Take(cantRec).Select(a => a.a).ToList();

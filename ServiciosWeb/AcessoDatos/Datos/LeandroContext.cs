@@ -45,7 +45,6 @@ namespace LeandroSoftware.AccesoDatos.Datos
         DbSet<DetalleOrdenCompra> DetalleOrdenCompraRepository { get; set; }
         DbSet<DetalleOrdenServicio> DetalleOrdenServicioRepository { get; set; }
         DbSet<DetalleProforma> DetalleProformaRepository { get; set; }
-        DbSet<DetalleRegistro> DetalleRegistroRepository { get; set; }
         DbSet<DetalleTraslado> DetalleTrasladoRepository { get; set; }
         DbSet<DevolucionCliente> DevolucionClienteRepository { get; set; }
         DbSet<DevolucionProveedor> DevolucionProveedorRepository { get; set; }
@@ -65,7 +64,8 @@ namespace LeandroSoftware.AccesoDatos.Datos
         DbSet<OrdenServicio> OrdenServicioRepository { get; set; }
         DbSet<Padron> PadronRepository { get; set; }
         DbSet<ParametroContable> ParametroContableRepository { get; set; }
-        DbSet<Particular> ParticularRepository { get; set; }
+        DbSet<ParametroImpuesto> ParametroImpuestoRepository { get; set; }
+        DbSet<ParametroSistema> ParametroSistemaRepository { get; set; }
         DbSet<Producto> ProductoRepository { get; set; }
         DbSet<Proforma> ProformaRepository { get; set; }
         DbSet<Proveedor> ProveedorRepository { get; set; }
@@ -76,6 +76,7 @@ namespace LeandroSoftware.AccesoDatos.Datos
         DbSet<RolePorUsuario> RolePorUsuarioRepository { get; set; }
         DbSet<SaldoMensualContable> SaldoMensualContableRepository { get; set; }
         DbSet<Sucursal> SucursalRepository { get; set; }
+        DbSet<TerminalPorEmpresa> TerminalPorEmpresaRepository { get; set; }
         DbSet<TipoDeCambioDolar> TipoDeCambioDolarRepository { get; set; }
         DbSet<TipoCuentaContable> TipoCuentaContableRepository { get; set; }
         DbSet<TipoIdentificacion> TipoIdentificacionRepository { get; set; }
@@ -149,7 +150,6 @@ namespace LeandroSoftware.AccesoDatos.Datos
         public DbSet<DetalleOrdenCompra> DetalleOrdenCompraRepository { get; set; }
         public DbSet<DetalleOrdenServicio> DetalleOrdenServicioRepository { get; set; }
         public DbSet<DetalleProforma> DetalleProformaRepository { get; set; }
-        public DbSet<DetalleRegistro> DetalleRegistroRepository { get; set; }
         public DbSet<DetalleTraslado> DetalleTrasladoRepository { get; set; }
         public DbSet<DevolucionCliente> DevolucionClienteRepository { get; set; }
         public DbSet<DevolucionProveedor> DevolucionProveedorRepository { get; set; }
@@ -169,7 +169,8 @@ namespace LeandroSoftware.AccesoDatos.Datos
         public DbSet<OrdenServicio> OrdenServicioRepository { get; set; }
         public DbSet<Padron> PadronRepository { get; set; }
         public DbSet<ParametroContable> ParametroContableRepository { get; set; }
-        public DbSet<Particular> ParticularRepository { get; set; }
+        public DbSet<ParametroImpuesto> ParametroImpuestoRepository { get; set; }
+        public DbSet<ParametroSistema> ParametroSistemaRepository { get; set; }
         public DbSet<Producto> ProductoRepository { get; set; }
         public DbSet<Proforma> ProformaRepository { get; set; }
         public DbSet<Proveedor> ProveedorRepository { get; set; }
@@ -180,6 +181,7 @@ namespace LeandroSoftware.AccesoDatos.Datos
         public DbSet<RolePorUsuario> RolePorUsuarioRepository { get; set; }
         public DbSet<SaldoMensualContable> SaldoMensualContableRepository { get; set; }
         public DbSet<Sucursal> SucursalRepository { get; set; }
+        public DbSet<TerminalPorEmpresa> TerminalPorEmpresaRepository { get; set; }
         public DbSet<TipoDeCambioDolar> TipoDeCambioDolarRepository { get; set; }
         public DbSet<TipoCuentaContable> TipoCuentaContableRepository { get; set; }
         public DbSet<TipoIdentificacion> TipoIdentificacionRepository { get; set; }

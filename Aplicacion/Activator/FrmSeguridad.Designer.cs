@@ -119,9 +119,11 @@
             // 
             // FrmSeguridad
             // 
+            this.AcceptButton = this.CmdAceptar;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(193)))), ((int)(((byte)(215)))), ((int)(((byte)(225)))));
+            this.CancelButton = this.CmdCancelar;
             this.ClientSize = new System.Drawing.Size(210, 115);
             this.Controls.Add(this.CmdCancelar);
             this.Controls.Add(this.CmdAceptar);
@@ -130,6 +132,7 @@
             this.Controls.Add(this.LblClave);
             this.Controls.Add(this.LblUsuario);
             this.Name = "FrmSeguridad";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "FrmSeguridad";
             this.ResumeLayout(false);
             this.PerformLayout();

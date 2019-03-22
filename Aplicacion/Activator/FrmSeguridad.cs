@@ -18,6 +18,7 @@ namespace LeandroSoftware.Activator
             {
                 if (TxtClave.Text == "A09c02t81i$")
                 {
+                    ((FrmMenu)Owner).bolSeguridad = true;
                     Close();
                 }
                 else
@@ -27,11 +28,12 @@ namespace LeandroSoftware.Activator
                     TxtClave.Focus();
                 }
             }
+            
         }
 
         private void CmdCancelar_Click(object sender, EventArgs e)
         {
-            Close();
+            Application.Exit();
         }
 
         public FrmSeguridad()

@@ -24,10 +24,10 @@ Public Class FrmMenuCuentaIngreso
 
     Private Sub btnProcesar_Click(sender As Object, e As EventArgs) Handles btnProcesar.Click
         If cboIdCuentaIngreso.SelectedValue IsNot Nothing Then
-            FrmMenuPrincipal.intBusqueda = cboIdCuentaIngreso.SelectedValue
+            FrmPrincipal.intBusqueda = cboIdCuentaIngreso.SelectedValue
             Close()
         Else
-            FrmMenuPrincipal.intBusqueda = 0
+            FrmPrincipal.intBusqueda = 0
             Close()
         End If
     End Sub

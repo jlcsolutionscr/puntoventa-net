@@ -35,13 +35,13 @@ Public Class FrmBusquedaFactura
         dvcTopeCredito.HeaderText = "Total"
         dvcTopeCredito.DataPropertyName = "Total"
         dvcTopeCredito.Width = 120
-        dvcTopeCredito.DefaultCellStyle = FrmMenuPrincipal.dgvDecimal
+        dvcTopeCredito.DefaultCellStyle = FrmPrincipal.dgvDecimal
         dgvListado.Columns.Add(dvcTopeCredito)
     End Sub
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
         Try
-            dgvListado.DataSource = Await PuntoventaWCF.ObtenerListaFacturas(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, intId, txtNombre.Text)
+            dgvListado.DataSource = Await PuntoventaWCF.ObtenerListaFacturas(FrmPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, intId, txtNombre.Text)
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -53,7 +53,7 @@ Public Class FrmBusquedaFactura
 
     Private Async Function ValidarCantidadFacturas() As Task
         Try
-            intTotalEmpresas = Await PuntoventaWCF.ObtenerTotalListaFacturas(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intId, txtNombre.Text)
+            intTotalEmpresas = Await PuntoventaWCF.ObtenerTotalListaFacturas(FrmPrincipal.empresaGlobal.IdEmpresa, intId, txtNombre.Text)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -77,7 +77,7 @@ Public Class FrmBusquedaFactura
 
 #Region "Eventos Controles"
     Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As KeyPressEventArgs) Handles txtId.KeyPress
-        FrmMenuPrincipal.ValidaNumero(e, sender, True, 0)
+        FrmPrincipal.ValidaNumero(e, sender, True, 0)
     End Sub
 
     Private Async Sub btnFirst_Click(sender As Object, e As EventArgs) Handles btnFirst.Click
@@ -113,7 +113,7 @@ Public Class FrmBusquedaFactura
 
     Private Sub FlexProducto_DoubleClick(ByVal sender As Object, ByVal e As EventArgs) Handles dgvListado.DoubleClick
         If dgvListado.RowCount > 0 Then
-            FrmMenuPrincipal.intBusqueda = dgvListado.CurrentRow.Cells(0).Value
+            FrmPrincipal.intBusqueda = dgvListado.CurrentRow.Cells(0).Value
             Close()
         End If
     End Sub

@@ -67,7 +67,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             {
                 try
                 {
-                    return dbContext.CuentaPorCobrarRepository.Where(x => !x.Nulo && x.Saldo > 0 && x.Tipo == intIdTipo && x.IdPropietario == intIdPropietario).ToList();
+                    return dbContext.CuentaPorCobrarRepository.Where(x => !x.Nulo & x.Saldo > 0 & x.Tipo == intIdTipo & x.IdPropietario == intIdPropietario).ToList();
                 }
                 catch (Exception ex)
                 {
@@ -83,7 +83,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             {
                 try
                 {
-                    return dbContext.MovimientoCuentaPorCobrarRepository.Include("Usuario").Where(x => !x.Nulo && x.IdPropietario == intIdPropietario).OrderByDescending(x => x.IdMovCxC).ToList();
+                    return dbContext.MovimientoCuentaPorCobrarRepository.Include("Usuario").Where(x => !x.Nulo & x.IdPropietario == intIdPropietario).OrderByDescending(x => x.IdMovCxC).ToList();
                 }
                 catch (Exception ex)
                 {
@@ -232,7 +232,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                                 detalleAsiento = new DetalleAsiento();
                                 intLineaDetalleAsiento += 1;
                                 detalleAsiento.Linea = intLineaDetalleAsiento;
-                                bancoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.CuentaDeBancos && x.IdProducto == desglosePago.IdCuentaBanco).FirstOrDefault();
+                                bancoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.CuentaDeBancos & x.IdProducto == desglosePago.IdCuentaBanco).FirstOrDefault();
                                 if (bancoParam == null)
                                     throw new BusinessException("No existe parametrización contable para la cuenta bancaría " + desglosePago.IdCuentaBanco + " y no se puede continuar. Por favor verificar.");
                                 detalleAsiento.IdCuenta = bancoParam.IdCuenta;
@@ -342,7 +342,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             {
                 try
                 {
-                    return dbContext.CuentaPorCobrarRepository.Where(a => a.Tipo == intIdTipo && a.IdPropietario == intIdPropietario && a.Nulo == false && DbFunctions.DiffDays(a.Fecha, DateTime.Now) > a.Plazo).Count();
+                    return dbContext.CuentaPorCobrarRepository.Where(a => a.Tipo == intIdTipo & a.IdPropietario == intIdPropietario & a.Nulo == false & DbFunctions.DiffDays(a.Fecha, DateTime.Now) > a.Plazo).Count();
                 }
                 catch (Exception ex)
                 {
@@ -358,7 +358,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             {
                 try
                 {
-                    return dbContext.CuentaPorCobrarRepository.Where(a => a.Tipo == intIdTipo && a.IdPropietario == intIdPropietario && a.Nulo == false).Sum(a => (decimal?)a.Saldo) ?? 0;
+                    return dbContext.CuentaPorCobrarRepository.Where(a => a.Tipo == intIdTipo & a.IdPropietario == intIdPropietario & a.Nulo == false).Sum(a => (decimal?)a.Saldo) ?? 0;
                 }
                 catch (Exception ex)
                 {

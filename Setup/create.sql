@@ -1,4 +1,11 @@
-﻿CREATE TABLE TipoIdentificacion (
+﻿CREATE TABLE parametrosistema (
+  IdParametro INTEGER NOT NULL,
+  Descripcion VARCHAR(50) NOT NULL,
+  Valor VARCHAR(100) NOT NULL,
+  PRIMARY KEY(IdParametro)
+);
+
+CREATE TABLE TipoIdentificacion (
   IdTipoIdentificacion INTEGER NOT NULL,
   Descripcion VARCHAR(20) NOT NULL,
   PRIMARY KEY(IdTipoIdentificacion)
@@ -219,8 +226,6 @@ CREATE TABLE CierreCaja (
   VentasCredito DOUBLE,
   VentasTarjeta DOUBLE,
   OtrasVentas DOUBLE,
-  VentasPorMayor DOUBLE,
-  VentasDetalle DOUBLE,
   RetencionIVA DOUBLE,
   ComisionVT DOUBLE,
   LiquidacionTarjeta DOUBLE,
@@ -884,7 +889,7 @@ CREATE TABLE DetalleOrdenCompra (
       ON UPDATE RESTRICT
 );
 
-CREATE TABLE Factura (
+CREATE TABLE Provincia (
   IdEmpresa INTEGER NOT NULL,
   IdFactura INTEGER NOT NULL AUTO_INCREMENT,
   IdUsuario INTEGER NOT NULL,

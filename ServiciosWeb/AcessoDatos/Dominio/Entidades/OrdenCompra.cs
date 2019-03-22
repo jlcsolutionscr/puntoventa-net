@@ -30,7 +30,6 @@ namespace LeandroSoftware.AccesoDatos.Dominio.Entidades
         public decimal Excento { get; set; }
         public decimal Grabado { get; set; }
         public decimal Descuento { get; set; }
-        public decimal PorcentajeIVA { get; set; }
         public decimal Impuesto { get; set; }
         [NotMapped]
         public decimal Total { get { return Excento + Grabado + Impuesto; } }

@@ -12,8 +12,8 @@ Public Class FrmMenuReportesContables
     Private Sub CmdVistaPrevia_Click(sender As Object, e As EventArgs) Handles CmdVistaPrevia.Click
         Dim formReport As New frmRptViewer()
         If LstReporte.SelectedIndex >= 0 Then
-            strUsuario = FrmMenuPrincipal.usuarioGlobal.CodigoUsuario
-            strEmpresa = FrmMenuPrincipal.empresaGlobal.NombreEmpresa
+            strUsuario = FrmPrincipal.usuarioGlobal.CodigoUsuario
+            strEmpresa = FrmPrincipal.empresaGlobal.NombreEmpresa
             intMes = dtpFechaInicial.Value.Month
             intAnnio = dtpFechaInicial.Value.Year
             Select Case LstReporte.Text

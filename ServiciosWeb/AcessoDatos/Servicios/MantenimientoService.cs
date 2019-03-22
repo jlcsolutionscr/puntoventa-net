@@ -14,10 +14,15 @@ namespace LeandroSoftware.AccesoDatos.Servicios
 {
     public interface IMantenimientoService
     {
+        // Métodos para administrar parametros del sistema
+        void ActualizarUltimaVersionApp(string strVersion);
+        string ObtenerUltimaVersionApp();
         // Métodos para administrar las empresas
         Empresa AgregarEmpresa(Empresa empresa);
         void ActualizarEmpresa(Empresa empresa);
+        void ActualizarTerminalPorEmpresa(TerminalPorEmpresa terminal);
         Empresa ObtenerEmpresa(int intIdEmpresa);
+        TerminalPorEmpresa ObtenerTerminalPorEmpresa(int intIdEmpresa, int intIdSucursal, int intIdTerminal);
         IEnumerable<Empresa> ObtenerListaEmpresas();
         void ActualizarLogoEmpresa(int intIdEmpresa, string strLogo);
         void ActualizarCertificadoEmpresa(int intIdEmpresa, string strCertificado);
@@ -28,6 +33,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
         void ActualizarUsuario(Usuario usuario);
         Usuario ActualizarClaveUsuario(int intIdUsuario, string strClave);
         void AgregarUsuarioPorEmpresa(int intIdUsuario, int intIdEmpresa);
+        IEnumerable<Empresa> ObtenerListaEmpresasPorIdentificacion(string[] lstIdentificacion);
         Usuario ValidarCredenciales(string strIdentificacion, string strCodigoUsuario, string strClave);
         void EliminarUsuario(int intIdUsuario);
         Usuario ObtenerUsuario(int intIdUsuario);
@@ -50,17 +56,11 @@ namespace LeandroSoftware.AccesoDatos.Servicios
         IEnumerable<Linea> ObtenerListaLineas(int intIdEmpresa, string strDescripcion = "");
         IEnumerable<Linea> ObtenerListaLineasDeProducto(int intIdEmpresa);
         IEnumerable<Linea> ObtenerListaLineasDeServicio(int intIdEmpresa);
-        // Métodos para administrar los datos de particulares vinculados al sistema
-        Particular AgregarParticular(Particular particular);
-        void ActualizarParticular(Particular particular);
-        void EliminarParticular(int intIdParticular);
-        Particular ObtenerParticular(int intIdParticular);
-        Particular ValidaIdentificacionParticular(string strIdentificacion);
-        int ObtenerTotalListaParticulares(int intIdEmpresa, string strNombre = "");
-        IEnumerable<Particular> ObtenerListaParticulares(int intIdEmpresa, int numPagina, int cantRec, string strNombre = "");
         // Métodos para administrar los productos
         IEnumerable<TipoProducto> ObtenerListaTipoProducto();
+        IEnumerable<ParametroImpuesto> ObtenerListaTipoImpuesto();
         IEnumerable<TipoUnidad> ObtenerListaTipoUnidad();
+        ParametroImpuesto ObtenerParametroImpuesto(int intIdImpuesto);
         Producto AgregarProducto(Producto producto);
         void ActualizarProducto(Producto producto);
         void ActualizarPrecioVentaProductos(int intIdEmpresa, int intIdLinea = 0, string strCodigo = "", string strDescripcion = "", decimal decPorcentajeAumento = 0);
@@ -126,6 +126,47 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
+        public void ActualizarUltimaVersionApp(string strVersion)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    var version = dbContext.ParametroSistemaRepository.Where(x => x.Descripcion == "Version").FirstOrDefault();
+                    if (version is null) throw new BusinessException("No se logró obtener el parámetro con descripción 'Version' de la tabla de parámetros del sistema.");
+                    version.Valor = strVersion;
+                    dbContext.Commit();
+                }
+                catch (Exception ex)
+                {
+                    dbContext.RollBack();
+                    log.Error("Error al agregar la empresa: ", ex);
+                    throw new Exception("Se produjo un error agregando la información de la empresa. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public string ObtenerUltimaVersionApp()
+        {
+            string strUltimaVersion = "";
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    var version = dbContext.ParametroSistemaRepository.Where(x => x.Descripcion == "Version").FirstOrDefault();
+                    if (version is null) throw new BusinessException("No se logró obtener el parámetro con descripción 'Version' de la tabla de parámetros del sistema.");
+                    strUltimaVersion = version.Valor;
+                }
+                catch (Exception ex)
+                {
+                    dbContext.RollBack();
+                    log.Error("Error al agregar la empresa: ", ex);
+                    throw new Exception("Se produjo un error agregando la información de la empresa. Por favor consulte con su proveedor.");
+                }
+            }
+            return strUltimaVersion;
+        }
+
         public Empresa AgregarEmpresa(Empresa empresa)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
@@ -151,19 +192,13 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             {
                 try
                 {
-                    List<DetalleRegistro> listadoDetalleRegistro = empresa.DetalleRegistro.ToList();
                     List<ModuloPorEmpresa> listadoModuloPorEmpresa = empresa.ModuloPorEmpresa.ToList();
                     List<ReportePorEmpresa> listadoReportePorEmpresa = empresa.ReportePorEmpresa.ToList();
-                    empresa.DetalleRegistro = null;
+                    empresa.TerminalPorEmpresa = null;
                     empresa.ModuloPorEmpresa = null;
                     empresa.ReportePorEmpresa = null;
                     empresa.Barrio = null;
                     dbContext.NotificarModificacion(empresa);
-                    List<DetalleRegistro> listadoDetalleRegistroAnt = dbContext.DetalleRegistroRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa).ToList();
-                    foreach (DetalleRegistro detalle in listadoDetalleRegistroAnt)
-                        dbContext.DetalleRegistroRepository.Remove(detalle);
-                    foreach (DetalleRegistro detalle in listadoDetalleRegistro)
-                        dbContext.DetalleRegistroRepository.Add(detalle);
                     List<ModuloPorEmpresa> listadoModuloPorEmpresaAnt = dbContext.ModuloPorEmpresaRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa).ToList();
                     foreach (ModuloPorEmpresa modulo in listadoModuloPorEmpresaAnt)
                         dbContext.ModuloPorEmpresaRepository.Remove(modulo);
@@ -174,6 +209,40 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                         dbContext.ReportePorEmpresaRepository.Remove(reporte);
                     foreach (ReportePorEmpresa reporte in listadoReportePorEmpresa)
                         dbContext.ReportePorEmpresaRepository.Add(reporte);
+
+                    empresa.Barrio = null;
+                    dbContext.NotificarModificacion(empresa);
+                    dbContext.Commit();
+                }
+                catch (Exception ex)
+                {
+                    dbContext.RollBack();
+                    log.Error("Error al actualizar la empresa: ", ex);
+                    throw new Exception("Se produjo un error actualizando la información de la empresa. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public void ActualizarTerminalPorEmpresa(TerminalPorEmpresa terminal)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    TerminalPorEmpresa terminalLocal = dbContext.TerminalPorEmpresaRepository.Where(x => x.IdEmpresa == terminal.IdEmpresa & x.IdSucursal == terminal.IdSucursal & x.IdTerminal == terminal.IdTerminal).FirstOrDefault();
+                    if (terminalLocal != null)
+                    {
+                        terminalLocal.ValorRegistro = terminal.ValorRegistro;
+                        terminalLocal.ImpresoraFactura = terminal.ImpresoraFactura;
+                        terminalLocal.UltimoDocFE = terminal.UltimoDocFE;
+                        terminalLocal.UltimoDocND = terminal.UltimoDocND;
+                        terminalLocal.UltimoDocNC = terminal.UltimoDocNC;
+                        terminalLocal.UltimoDocTE = terminal.UltimoDocTE;
+                        terminalLocal.UltimoDocMR = terminal.UltimoDocMR;
+                        dbContext.NotificarModificacion(terminalLocal);
+                    }
+                    else
+                        dbContext.TerminalPorEmpresaRepository.Add(terminal);
                     dbContext.Commit();
                 }
                 catch (Exception ex)
@@ -191,9 +260,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             {
                 try
                 {
-                    Empresa empresa = dbContext.EmpresaRepository.Include("DetalleRegistro").Include("ModuloPorEmpresa.Modulo").Include("ReportePorEmpresa.CatalogoReporte").Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.IdEmpresa == intIdEmpresa);
-                    foreach (DetalleRegistro detalle in empresa.DetalleRegistro)
-                        detalle.Empresa = null;
+                    Empresa empresa = dbContext.EmpresaRepository.Include("ModuloPorEmpresa.Modulo").Include("ReportePorEmpresa.CatalogoReporte").Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.IdEmpresa == intIdEmpresa);
                     foreach (ModuloPorEmpresa modulo in empresa.ModuloPorEmpresa)
                         modulo.Empresa = null;
                     foreach (ReportePorEmpresa reporte in empresa.ReportePorEmpresa)
@@ -204,6 +271,23 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 {
                     log.Error("Error al obtener la empresa: ", ex);
                     throw new Exception("Se produjo un error consultando la información de la empresa. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public TerminalPorEmpresa ObtenerTerminalPorEmpresa(int intIdEmpresa, int intIdSucursal, int intIdTerminal)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    TerminalPorEmpresa terminal = dbContext.TerminalPorEmpresaRepository.Where(x => x.IdEmpresa == intIdEmpresa & x.IdSucursal == intIdSucursal & x.IdTerminal == intIdTerminal).FirstOrDefault();
+                    return terminal;
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al obtener la terminal por empresa: ", ex);
+                    throw new Exception("Se produjo un error consultando la información de la terminal por empresa. Por favor consulte con su proveedor.");
                 }
             }
         }
@@ -426,8 +510,8 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                         if (empresaUsuario.Empresa.Identificacion == strIdentificacion)
                         {
                             bolPerteneceAEmpresa = true;
-                            Empresa empresa = dbContext.EmpresaRepository.Include("DetalleRegistro").Include("ModuloPorEmpresa.Modulo").Include("ReportePorEmpresa.CatalogoReporte").Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.IdEmpresa == empresaUsuario.IdEmpresa);
-                            foreach (DetalleRegistro detalle in empresa.DetalleRegistro)
+                            Empresa empresa = dbContext.EmpresaRepository.Include("TerminalPorEmpresa").Include("ModuloPorEmpresa.Modulo").Include("ReportePorEmpresa.CatalogoReporte").Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.IdEmpresa == empresaUsuario.IdEmpresa);
+                            foreach (TerminalPorEmpresa detalle in empresa.TerminalPorEmpresa)
                                 detalle.Empresa = null;
                             foreach (ModuloPorEmpresa modulo in empresa.ModuloPorEmpresa)
                                 modulo.Empresa = null;
@@ -439,6 +523,22 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     if (!bolPerteneceAEmpresa) throw new Exception("El usuario ingresado no pertenece a la empresa con la identificación ingresada.");
                     usuario.UsuarioPorEmpresa = new List<UsuarioPorEmpresa>();
                     return usuario;
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error en la validación de los credenciales suministrados por favor verifique la información. . .");
+                }
+            }
+        }
+
+        public IEnumerable<Empresa> ObtenerListaEmpresasPorIdentificacion(string[] lstIdentificacion)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    var listadoEmpresa = dbContext.EmpresaRepository.Where(x => lstIdentificacion.Contains(x.Identificacion)).ToList();
+                    return listadoEmpresa;
                 }
                 catch (Exception ex)
                 {
@@ -519,7 +619,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             {
                 try
                 {
-                    var listaUsuariosPorEmpresa = dbContext.UsuarioPorEmpresaRepository.Include("Usuario").Where(x => x.IdEmpresa == intIdEmpresa && x.IdUsuario > 1);
+                    var listaUsuariosPorEmpresa = dbContext.UsuarioPorEmpresaRepository.Include("Usuario").Where(x => x.IdEmpresa == intIdEmpresa & x.IdUsuario > 1);
                     if (!strCodigo.Equals(string.Empty))
                         listaUsuariosPorEmpresa = listaUsuariosPorEmpresa.Where(x => x.Usuario.CodigoUsuario.Contains(strCodigo));
                     listaUsuariosPorEmpresa.OrderBy(x => x.Usuario.IdUsuario);
@@ -844,7 +944,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             {
                 try
                 {
-                    return dbContext.LineaRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdTipoProducto == StaticTipoProducto.Producto).OrderBy(x => x.Descripcion).ToList();
+                    return dbContext.LineaRepository.Where(x => x.IdEmpresa == intIdEmpresa & x.IdTipoProducto == StaticTipoProducto.Producto).OrderBy(x => x.Descripcion).ToList();
                 }
                 catch (Exception ex)
                 {
@@ -860,169 +960,12 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             {
                 try
                 {
-                    return dbContext.LineaRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdTipoProducto == StaticTipoProducto.Servicio).OrderBy(x => x.Descripcion).ToList();
+                    return dbContext.LineaRepository.Where(x => x.IdEmpresa == intIdEmpresa & x.IdTipoProducto == StaticTipoProducto.Servicio).OrderBy(x => x.Descripcion).ToList();
                 }
                 catch (Exception ex)
                 {
                     log.Error("Error al obtener el listado de líneas de servicio: ", ex);
                     throw new Exception("Se produjo un error consultando el listado de líneas de servicio. Por favor consulte con su proveedor.");
-                }
-            }
-        }
-
-        public Particular AgregarParticular(Particular particular)
-        {
-            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
-            {
-                try
-                {
-                    Empresa empresa = dbContext.EmpresaRepository.Find(particular.IdEmpresa);
-                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    dbContext.ParticularRepository.Add(particular);
-                    dbContext.Commit();
-                }
-                catch (BusinessException ex)
-                {
-                    dbContext.RollBack();
-                    throw ex;
-                }
-                catch (Exception ex)
-                {
-                    dbContext.RollBack();
-                    log.Error("Error al agregar el particular: ", ex);
-                    throw new Exception("Se produjo un error agregando al particular. Por favor consulte con su proveedor.");
-                }
-            }
-            return particular;
-        }
-
-        public void ActualizarParticular(Particular particular)
-        {
-            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
-            {
-                try
-                {
-                    Empresa empresa = dbContext.EmpresaRepository.Find(particular.IdEmpresa);
-                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    dbContext.NotificarModificacion(particular);
-                    dbContext.Commit();
-                }
-                catch (BusinessException ex)
-                {
-                    dbContext.RollBack();
-                    throw ex;
-                }
-                catch (Exception ex)
-                {
-                    dbContext.RollBack();
-                    log.Error("Error al actualizar el particular: ", ex);
-                    throw new Exception("Se produjo un error actualizando la información del particular. Por favor consulte con su proveedor.");
-                }
-            }
-        }
-
-        public void EliminarParticular(int intIdParticular)
-        {
-            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
-            {
-                try
-                {
-                    Particular particular = dbContext.ParticularRepository.Find(intIdParticular);
-                    if (particular == null)
-                        throw new BusinessException("El particular por eliminar no existe.");
-                    Empresa empresa = dbContext.EmpresaRepository.Find(particular.IdEmpresa);
-                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    dbContext.ParticularRepository.Remove(particular);
-                    dbContext.Commit();
-                }
-                catch (DbUpdateException ex)
-                {
-                    log.Info("Validación al agregar el parámetro contable: ", ex);
-                    throw new BusinessException("No es posible eliminar el particular seleccionado. Posee registros relacionados en el sistema.");
-                }
-                catch (BusinessException ex)
-                {
-                    dbContext.RollBack();
-                    throw ex;
-                }
-                catch (Exception ex)
-                {
-                    dbContext.RollBack();
-                    log.Error("Error al eliminar el particular: ", ex);
-                    throw new Exception("Se produjo un error eliminando al particular. Por favor consulte con su proveedor.");
-                }
-            }
-        }
-
-        public Particular ObtenerParticular(int intIdParticular)
-        {
-            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
-            {
-                try
-                {
-                    return dbContext.ParticularRepository.Find(intIdParticular);
-                }
-                catch (Exception ex)
-                {
-                    log.Error("Error al obtener el particular: ", ex);
-                    throw new Exception("Se produjo un error consultando la información del particular. Por favor consulte con su proveedor.");
-                }
-            }
-        }
-
-        public Particular ValidaIdentificacionParticular(string strIdentificacion)
-        {
-            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
-            {
-                try
-                {
-                    return dbContext.ParticularRepository.Where(x => x.Identificacion == strIdentificacion).FirstOrDefault();
-                }
-                catch (Exception ex)
-                {
-                    log.Error("Error al obtener el particular: ", ex);
-                    throw new Exception("Se produjo un error consultando la información del particular. Por favor consulte con su proveedor.");
-                }
-            }
-        }
-
-        public int ObtenerTotalListaParticulares(int intIdEmpresa, string strNombre = "")
-        {
-            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
-            {
-                try
-                {
-                    var listaParticulares = dbContext.ParticularRepository.Where(x => x.IdEmpresa == intIdEmpresa);
-                    if (!strNombre.Equals(string.Empty))
-                        listaParticulares = listaParticulares.Where(x => x.Nombre.Contains(strNombre));
-                    return listaParticulares.Count();
-                }
-                catch (Exception ex)
-                {
-                    log.Error("Error al obtener el total del listado de particulars: ", ex);
-                    throw new Exception("Se produjo un error consultando el total del listado de particulars. Por favor consulte con su proveedor.");
-                }
-            }
-        }
-
-        public IEnumerable<Particular> ObtenerListaParticulares(int intIdEmpresa, int numPagina, int cantRec, string strNombre = "")
-        {
-            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
-            {
-                try
-                {
-                    var listaParticulares = dbContext.ParticularRepository.Where(x => x.IdEmpresa == intIdEmpresa);
-                    if (!strNombre.Equals(string.Empty))
-                        listaParticulares = listaParticulares.Where(x => x.Nombre.Contains(strNombre));
-                    if (cantRec == 0)
-                        return listaParticulares.OrderBy(x => x.Nombre).ToList();
-                    else
-                        return listaParticulares.OrderBy(x => x.IdParticular).Skip((numPagina - 1) * cantRec).Take(cantRec).ToList();
-                }
-                catch (Exception ex)
-                {
-                    log.Error("Error al obtener el listado de particulares: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de particulares. Por favor consulte con su proveedor.");
                 }
             }
         }
@@ -1034,6 +977,22 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 try
                 {
                     return dbContext.TipoProductoRepository.ToList();
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al obtener el tipo de producto: ", ex);
+                    throw new Exception("Se produjo un error consultando el listado de tipos de producto. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public IEnumerable<ParametroImpuesto> ObtenerListaTipoImpuesto()
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    return dbContext.ParametroImpuestoRepository.ToList();
                 }
                 catch (Exception ex)
                 {
@@ -1059,6 +1018,24 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
+        public ParametroImpuesto ObtenerParametroImpuesto(int intIdImpuesto)
+        {
+            ParametroImpuesto parametroImpuesto = null;
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    parametroImpuesto = dbContext.ParametroImpuestoRepository.Find(intIdImpuesto);
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al obtener el registro para el tipo de impuesto: ", ex);
+                    throw new Exception("Se produjo un error consultando el. Por favor consulte con su proveedor.");
+                }
+            }
+            return parametroImpuesto;
+        }
+
         public Producto AgregarProducto(Producto producto)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
@@ -1067,7 +1044,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(producto.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    bool existe = dbContext.ProductoRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.Codigo == producto.Codigo).Count() > 0;
+                    bool existe = dbContext.ProductoRepository.Where(x => x.IdEmpresa == producto.IdEmpresa & x.Codigo == producto.Codigo).Count() > 0;
                     if (existe) throw new BusinessException("El código de producto ingresado ya está registrado en la empresa.");
                     dbContext.ProductoRepository.Add(producto);
                     dbContext.Commit();
@@ -1096,7 +1073,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     Empresa empresa = dbContext.EmpresaRepository.Find(producto.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
-                    bool existe = dbContext.ProductoRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.Codigo == producto.Codigo).Count() > 0;
+                    bool existe = dbContext.ProductoRepository.Where(x => x.IdEmpresa == producto.IdEmpresa & x.Codigo == producto.Codigo & x.IdProducto != producto.IdProducto).Count() > 0;
                     if (existe) throw new BusinessException("El código de producto ingresado ya está registrado en la empresa.");
                     dbContext.NotificarModificacion(producto);
                     dbContext.Commit();
@@ -1216,7 +1193,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             {
                 try
                 {
-                    return dbContext.ProductoRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.Codigo.Equals(strCodigo)).FirstOrDefault();
+                    return dbContext.ProductoRepository.Include("ParametroImpuesto").Where(x => x.IdEmpresa == intIdEmpresa & x.Codigo.Equals(strCodigo)).FirstOrDefault();
                 }
                 catch (Exception ex)
                 {
@@ -1257,7 +1234,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             {
                 try
                 {
-                    var listaProductos = dbContext.ProductoRepository.Include("TipoProducto").Where(x => x.IdEmpresa == intIdEmpresa);
+                    var listaProductos = dbContext.ProductoRepository.Include("TipoProducto").Include("ParametroImpuesto").Where(x => x.IdEmpresa == intIdEmpresa);
                     if (intIdLinea > 0)
                         listaProductos = listaProductos.Where(x => x.IdLinea == intIdLinea);
                     if (!strCodigo.Equals(string.Empty))
@@ -1267,9 +1244,15 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     if (!bolIncluyeServicios)
                         listaProductos = listaProductos.Where(x => x.Tipo == StaticTipoProducto.Producto);
                     if (cantRec > 0)
-                        return listaProductos.OrderBy(x => x.Tipo).ThenBy(x => x.Descripcion).Skip((numPagina - 1) * cantRec).Take(cantRec).ToList();
+                        listaProductos = listaProductos.OrderBy(x => x.Tipo).ThenBy(x => x.Descripcion).Skip((numPagina - 1) * cantRec).Take(cantRec);
                     else
-                        return listaProductos.OrderBy(x => x.Tipo).ThenBy(x => x.Descripcion).ToList();
+                        listaProductos = listaProductos.OrderBy(x => x.Tipo).ThenBy(x => x.Descripcion);
+                    List<Producto> listado = listaProductos.ToList();
+                    foreach (Producto producto in listado)
+                    {
+                        producto.PrecioVenta1 = decimal.Round(producto.PrecioVenta1 * (1 + (producto.ParametroImpuesto.TasaImpuesto / 100)), 2);
+                    }
+                    return listado;
                 }
                 catch (Exception ex)
                 {
@@ -1287,7 +1270,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             {
                 try
                 {
-                    var listaMovimientos = dbContext.MovimientoProductoRepository.Where(x => x.IdProducto == intIdProducto && x.Fecha > datFechaInicio && x.Fecha < datFechaFin);
+                    var listaMovimientos = dbContext.MovimientoProductoRepository.Where(x => x.IdProducto == intIdProducto & x.Fecha > datFechaInicio & x.Fecha < datFechaFin);
                     return listaMovimientos.Count();
                 }
                 catch (Exception ex)
@@ -1306,7 +1289,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             {
                 try
                 {
-                    var listaMovimientos = dbContext.MovimientoProductoRepository.Where(x => x.IdProducto == intIdProducto && x.Fecha >= datFechaInicio && x.Fecha <= datFechaFin);
+                    var listaMovimientos = dbContext.MovimientoProductoRepository.Where(x => x.IdProducto == intIdProducto & x.Fecha >= datFechaInicio & x.Fecha <= datFechaFin);
                     if (cantRec > 0)
                         return listaMovimientos.OrderByDescending(x => x.Fecha).Skip((numPagina - 1) * cantRec).Take(cantRec).ToList();
                     else
@@ -1645,7 +1628,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     if (strDescripcion == "")
                         return dbContext.TipoMonedaRepository.ToList();
                     else
-                        return dbContext.TipoMonedaRepository.Where(x => x.IdTipoMoneda > StaticValoresPorDefecto.MonedaDelSistema && x.Descripcion.Contains(strDescripcion)).ToList();
+                        return dbContext.TipoMonedaRepository.Where(x => x.IdTipoMoneda > StaticValoresPorDefecto.MonedaDelSistema & x.Descripcion.Contains(strDescripcion)).ToList();
                 }
                 catch (Exception ex)
                 {
@@ -1798,7 +1781,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     //            detalleAsiento = new DetalleAsiento();
                     //            intLineaDetalleAsiento += 1;
                     //            detalleAsiento.Linea = intLineaDetalleAsiento;
-                    //            bancoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.CuentaDeBancos && x.IdProducto == desglosePago.IdCuentaBanco).FirstOrDefault();
+                    //            bancoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.CuentaDeBancos & x.IdProducto == desglosePago.IdCuentaBanco).FirstOrDefault();
                     //            if (bancoParam == null)
                     //                throw new BusinessException("No existe parametrización contable para la cuenta bancaría " + desglosePago.IdCuentaBanco + " y no se puede continuar. Por favor verificar.");
                     //            detalleAsiento.IdCuenta = bancoParam.IdCuenta;
@@ -1873,7 +1856,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     //        intLineaDetalleAsiento += 1;
                     //        detalleAsiento.Linea = intLineaDetalleAsiento;
                     //        int intIdLinea = (int)data["IdLinea"];
-                    //        lineaParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.LineaDeServicios && x.IdProducto == intIdLinea).FirstOrDefault();
+                    //        lineaParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.LineaDeServicios & x.IdProducto == intIdLinea).FirstOrDefault();
                     //        if (lineaParam == null)
                     //            throw new BusinessException("No existe parametrización contable para la línea de servicios " + intIdLinea + " y no se puede continuar. Por favor verificar.");
                     //        detalleAsiento.IdCuenta = lineaParam.IdCuenta;
@@ -1898,7 +1881,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     //            intLineaDetalleAsiento += 1;
                     //            detalleAsiento.Linea = intLineaDetalleAsiento;
                     //            int intIdLinea = (int)data["IdLinea"];
-                    //            lineaParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.LineaDeProductos && x.IdProducto == intIdLinea).FirstOrDefault();
+                    //            lineaParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.LineaDeProductos & x.IdProducto == intIdLinea).FirstOrDefault();
                     //            if (lineaParam == null)
                     //                throw new BusinessException("No existe parametrización contable para la línea de producto " + intIdLinea + " y no se puede continuar. Por favor verificar.");
                     //            detalleAsiento.IdCuenta = lineaParam.IdCuenta;
@@ -2027,11 +2010,11 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             {
                 try
                 {
-                    var listaAjusteInventario = dbContext.AjusteInventarioRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa);
+                    var listaAjusteInventario = dbContext.AjusteInventarioRepository.Where(x => !x.Nulo & x.IdEmpresa == intIdEmpresa);
                     if (intIdAjusteInventario > 0)
-                        listaAjusteInventario = listaAjusteInventario.Where(x => !x.Nulo && x.IdAjuste == intIdAjusteInventario);
+                        listaAjusteInventario = listaAjusteInventario.Where(x => !x.Nulo & x.IdAjuste == intIdAjusteInventario);
                     else if (!strDescripcion.Equals(string.Empty))
-                        listaAjusteInventario = listaAjusteInventario.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.Descripcion.Contains(strDescripcion));
+                        listaAjusteInventario = listaAjusteInventario.Where(x => !x.Nulo & x.IdEmpresa == intIdEmpresa & x.Descripcion.Contains(strDescripcion));
                     return listaAjusteInventario.Count();
                 }
                 catch (Exception ex)
@@ -2048,11 +2031,11 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             {
                 try
                 {
-                    var listaAjusteInventario = dbContext.AjusteInventarioRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa);
+                    var listaAjusteInventario = dbContext.AjusteInventarioRepository.Where(x => !x.Nulo & x.IdEmpresa == intIdEmpresa);
                     if (intIdAjusteInventario > 0)
-                        listaAjusteInventario = listaAjusteInventario.Where(x => !x.Nulo && x.IdAjuste == intIdAjusteInventario);
+                        listaAjusteInventario = listaAjusteInventario.Where(x => !x.Nulo & x.IdAjuste == intIdAjusteInventario);
                     else if (!strDescripcion.Equals(string.Empty))
-                        listaAjusteInventario = listaAjusteInventario.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.Descripcion.Contains(strDescripcion));
+                        listaAjusteInventario = listaAjusteInventario.Where(x => !x.Nulo & x.IdEmpresa == intIdEmpresa & x.Descripcion.Contains(strDescripcion));
                     return listaAjusteInventario.OrderByDescending(x => x.IdAjuste).Skip((numPagina - 1) * cantRec).Take(cantRec).ToList();
                 }
                 catch (Exception ex)

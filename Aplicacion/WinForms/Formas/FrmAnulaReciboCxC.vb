@@ -65,7 +65,7 @@ Public Class FrmAnulaReciboCxC
         dvcMonto.DataPropertyName = "MONTO"
         dvcMonto.HeaderText = "Monto"
         dvcMonto.Width = 90
-        dvcMonto.DefaultCellStyle = FrmMenuPrincipal.dgvDecimal
+        dvcMonto.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleRecibo.Columns.Add(dvcMonto)
     End Sub
 
@@ -117,10 +117,10 @@ Public Class FrmAnulaReciboCxC
 
     Private Sub btnBuscarCliente_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnBuscarCliente.Click
         Dim formBusquedaCliente As New FrmBusquedaCliente()
-        FrmMenuPrincipal.intBusqueda = 0
+        FrmPrincipal.intBusqueda = 0
         formBusquedaCliente.ShowDialog()
-        If FrmMenuPrincipal.intBusqueda > 0 Then
-            If FrmMenuPrincipal.intBusqueda = StaticValoresPorDefecto.ClienteContado Then
+        If FrmPrincipal.intBusqueda > 0 Then
+            If FrmPrincipal.intBusqueda = StaticValoresPorDefecto.ClienteContado Then
                 MessageBox.Show("El cliente indicado no corresponde a un cliente de crédito", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End If

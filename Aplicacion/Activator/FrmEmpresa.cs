@@ -15,7 +15,6 @@ namespace LeandroSoftware.Activator
 {
     public partial class FrmEmpresa : Form
     {
-        private DataTable dtEquipos;
         private DataTable dtModuloPorEmpresa;
         private DataTable dtReportePorEmpresa;
         private Empresa empresa;
@@ -33,18 +32,10 @@ namespace LeandroSoftware.Activator
 
         private void IniciaMaestroDetalle()
         {
-            dtEquipos = new DataTable();
-            dtEquipos.Columns.Add("ValorRegistro", typeof(string));
-            dtEquipos.Columns.Add("ImpresoraFactura", typeof(string));
-            dtEquipos.Columns.Add("UsaImpresoraImpacto", typeof(bool));
-            DataColumn[] columns = new DataColumn[1];
-            columns[0] = dtEquipos.Columns[0];
-            dtEquipos.PrimaryKey = columns;
-
             dtModuloPorEmpresa = new DataTable();
             dtModuloPorEmpresa.Columns.Add("IdModulo", typeof(int));
             dtModuloPorEmpresa.Columns.Add("Descripcion", typeof(string));
-            columns = new DataColumn[1];
+            DataColumn[] columns = new DataColumn[1];
             columns[0] = dtModuloPorEmpresa.Columns[0];
             dtModuloPorEmpresa.PrimaryKey = columns;
 
@@ -58,16 +49,6 @@ namespace LeandroSoftware.Activator
 
         private void CargarDetalleEmpresa(Empresa empresa)
         {
-            List<DetalleRegistro> detalleRegistro = empresa.DetalleRegistro.ToList();
-            dtEquipos.Rows.Clear();
-            foreach (DetalleRegistro row in detalleRegistro)
-            {
-                DataRow objRowEquipo = dtEquipos.NewRow();
-                objRowEquipo["ValorRegistro"] = row.ValorRegistro;
-                objRowEquipo["ImpresoraFactura"] = row.ImpresoraFactura;
-                objRowEquipo["UsaImpresoraImpacto"] = row.UsaImpresoraImpacto;
-                dtEquipos.Rows.Add(objRowEquipo);
-            }
             List<ModuloPorEmpresa> moduloPorEmpresa = empresa.ModuloPorEmpresa.ToList();
             dtModuloPorEmpresa.Rows.Clear();
             foreach (ModuloPorEmpresa row in moduloPorEmpresa)
@@ -85,30 +66,6 @@ namespace LeandroSoftware.Activator
                 objRowReporte["IdReporte"] = row.IdReporte;
                 objRowReporte["NombreReporte"] = row.CatalogoReporte.NombreReporte;
                 dtReportePorEmpresa.Rows.Add(objRowReporte);
-            }
-        }
-
-        private void CargarLineaDetalleEquipo()
-        {
-            if (txtEquipo.Text != "")
-            {
-                int intIndice = dtEquipos.Rows.IndexOf(dtEquipos.Rows.Find(txtEquipo.Text));
-                if (intIndice >= 0)
-                {
-                    dtEquipos.Rows[intIndice]["ImpresoraFactura"] = txtImpresoraFactura.Text;
-                    dtEquipos.Rows[intIndice]["UsaImpresoraImpacto"] = chkUsaImpresoraImpacto.Checked;
-                }
-                else
-                {
-                    DataRow objRowEquipo = dtEquipos.NewRow();
-                    objRowEquipo["ValorRegistro"] = txtEquipo.Text;
-                    objRowEquipo["ImpresoraFactura"] = txtImpresoraFactura.Text;
-                    objRowEquipo["UsaImpresoraImpacto"] = chkUsaImpresoraImpacto.Checked;
-                    dtEquipos.Rows.Add(objRowEquipo);
-                    dgvEquipos.Refresh();
-                    txtEquipo.Text = "";
-                    txtImpresoraFactura.Text = "";
-                }
             }
         }
 
@@ -154,34 +111,6 @@ namespace LeandroSoftware.Activator
 
         private void EstablecerPropiedadesDataGridView()
         {
-            DataGridViewTextBoxColumn dvcEmpresa = new DataGridViewTextBoxColumn();
-            DataGridViewTextBoxColumn dvcDetalle1 = new DataGridViewTextBoxColumn();
-            DataGridViewTextBoxColumn dvcDetalle2 = new DataGridViewTextBoxColumn();
-
-            dgvEquipos.Columns.Clear();
-            dgvEquipos.AutoGenerateColumns = false;
-
-            dvcEmpresa.DataPropertyName = "ValorRegistro";
-            dvcEmpresa.HeaderText = "Equipo";
-            dvcEmpresa.Width = 150;
-            dvcEmpresa.Visible = true;
-            dvcEmpresa.ReadOnly = true;
-            dgvEquipos.Columns.Add(dvcEmpresa);
-
-            dvcDetalle1.DataPropertyName = "ImpresoraFactura";
-            dvcDetalle1.HeaderText = "Impresora";
-            dvcDetalle1.Width = 100;
-            dvcDetalle1.Visible = true;
-            dvcDetalle1.ReadOnly = true;
-            dgvEquipos.Columns.Add(dvcDetalle1);
-
-            dvcDetalle2.DataPropertyName = "UsaImpresoraImpacto";
-            dvcDetalle2.HeaderText = "Impacto";
-            dvcDetalle2.Width = 80;
-            dvcDetalle2.Visible = true;
-            dvcDetalle2.ReadOnly = true;
-            dgvEquipos.Columns.Add(dvcDetalle2);
-
             DataGridViewTextBoxColumn dvcModuloPorEmpresa = new DataGridViewTextBoxColumn();
             DataGridViewTextBoxColumn dvcDescripcion = new DataGridViewTextBoxColumn();
 
@@ -321,6 +250,45 @@ namespace LeandroSoftware.Activator
             }
         }
 
+        private async void CargarTerminalPorEmpresa()
+        {
+            if (txtIdEmpresa.Text != "" && txtSucursal.Text != "" && txtTerminal.Text != "")
+            {
+                TerminalPorEmpresa terminal = await PuntoventaWCF.ObtenerTerminalPorEmpresa(int.Parse(txtIdEmpresa.Text), int.Parse(txtSucursal.Text), int.Parse(txtTerminal.Text));
+                if (terminal == null)
+                {
+                    txtEquipo.Text = "";
+                    txtImpresoraFactura.Text = "";
+                    txtUltimoDocFE.Text = "0";
+                    txtUltimoDocND.Text = "0";
+                    txtUltimoDocNC.Text = "0";
+                    txtUltimoDocTE.Text = "0";
+                    txtUltimoDocMR.Text = "0";
+                    MessageBox.Show("La sucursal y terminal ingresados no están registrados para la empresa actual. Ingrese la información y proceda a guardar los cambios. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    txtEquipo.Text = terminal.ValorRegistro;
+                    txtImpresoraFactura.Text = terminal.ImpresoraFactura;
+                    txtUltimoDocFE.Text = terminal.UltimoDocFE.ToString();
+                    txtUltimoDocND.Text = terminal.UltimoDocND.ToString();
+                    txtUltimoDocNC.Text = terminal.UltimoDocNC.ToString();
+                    txtUltimoDocTE.Text = terminal.UltimoDocTE.ToString();
+                    txtUltimoDocMR.Text = terminal.UltimoDocMR.ToString();
+                }
+            }
+            else
+            {
+                txtEquipo.Text = "";
+                txtImpresoraFactura.Text = "";
+                txtUltimoDocFE.Text = "0";
+                txtUltimoDocND.Text = "0";
+                txtUltimoDocNC.Text = "0";
+                txtUltimoDocTE.Text = "0";
+                txtUltimoDocMR.Text = "0";
+            }
+        }
+
         private async void FrmEmpresa_Load(object sender, EventArgs e)
         {
             try
@@ -329,7 +297,6 @@ namespace LeandroSoftware.Activator
                 EstablecerPropiedadesDataGridView();
                 await CargarListaParametros();
                 await CargarProvincias();
-                dgvEquipos.DataSource = dtEquipos;
                 dgvModuloPorEmpresa.DataSource = dtModuloPorEmpresa;
                 dgvReportePorEmpresa.DataSource = dtReportePorEmpresa;
                 if (bolEditing)
@@ -358,16 +325,10 @@ namespace LeandroSoftware.Activator
                             txtPinCertificado.Text = empresa.PinCertificado;
                             txtUsuarioATV.Text = empresa.UsuarioHacienda;
                             txtClaveATV.Text = empresa.ClaveHacienda;
-                            txtPorcentajeIVA.Text = empresa.PorcentajeIVA.ToString();
                             txtPorcentajeInstalacion.Text = empresa.PorcentajeInstalacion.ToString();
                             txtLineasFactura.Text = empresa.LineasPorFactura.ToString();
                             txtCodigoServInst.Text = empresa.CodigoServicioInst.ToString();
                             if (empresa.FechaVence != null) txtFecha.Text = DateTime.Parse(empresa.FechaVence.ToString()).ToString("dd-MM-yyyy");
-                            txtUltimoDocFE.Text = empresa.UltimoDocFE.ToString();
-                            txtUltimoDocNC.Text = empresa.UltimoDocNC.ToString();
-                            txtUltimoDocND.Text = empresa.UltimoDocND.ToString();
-                            txtUltimoDocTE.Text = empresa.UltimoDocTE.ToString();
-                            txtUltimoDocMR.Text = empresa.UltimoDocMR.ToString();
                             chkContabiliza.Checked = empresa.Contabiliza;
                             chkIncluyeInsumosEnFactura.Checked = empresa.IncluyeInsumosEnFactura;
                             chkAutoCompleta.Checked = empresa.AutoCompletaProducto;
@@ -462,16 +423,10 @@ namespace LeandroSoftware.Activator
                 empresa.PinCertificado = txtPinCertificado.Text;
                 empresa.UsuarioHacienda = txtUsuarioATV.Text;
                 empresa.ClaveHacienda = txtClaveATV.Text;
-                empresa.PorcentajeIVA = int.Parse(txtPorcentajeIVA.Text);
                 empresa.PorcentajeInstalacion = int.Parse(txtPorcentajeInstalacion.Text);
                 empresa.LineasPorFactura = int.Parse(txtLineasFactura.Text);
                 empresa.CodigoServicioInst = int.Parse(txtCodigoServInst.Text);
                 if (txtFecha.Text != "") empresa.FechaVence = DateTime.Parse(txtFecha.Text + " 23:59:59");
-                empresa.UltimoDocFE = int.Parse(txtUltimoDocFE.Text);
-                empresa.UltimoDocNC = int.Parse(txtUltimoDocNC.Text);
-                empresa.UltimoDocND = int.Parse(txtUltimoDocND.Text);
-                empresa.UltimoDocTE = int.Parse(txtUltimoDocTE.Text);
-                empresa.UltimoDocMR = int.Parse(txtUltimoDocMR.Text);
                 empresa.Contabiliza = chkContabiliza.Checked;
                 empresa.IncluyeInsumosEnFactura = chkIncluyeInsumosEnFactura.Checked;
                 empresa.AutoCompletaProducto = chkAutoCompleta.Checked;
@@ -480,16 +435,7 @@ namespace LeandroSoftware.Activator
                 empresa.DesglosaServicioInst = chkDesgloseInst.Checked;
                 empresa.PermiteFacturar = chkFacturaElectronica.Checked;
                 empresa.RegimenSimplificado = chkRegimenSimplificado.Checked;
-                empresa.DetalleRegistro.Clear();
-                foreach (DataRow row in dtEquipos.Rows)
-                {
-                    DetalleRegistro detalle = new DetalleRegistro();
-                    if (txtIdEmpresa.Text != "") detalle.IdEmpresa = empresa.IdEmpresa;
-                    detalle.ValorRegistro = row["ValorRegistro"].ToString();
-                    detalle.ImpresoraFactura = row["ImpresoraFactura"].ToString();
-                    detalle.UsaImpresoraImpacto = (bool)row["UsaImpresoraImpacto"];
-                    empresa.DetalleRegistro.Add(detalle);
-                }
+                empresa.TerminalPorEmpresa.Clear();
                 empresa.ModuloPorEmpresa.Clear();
                 foreach (DataRow row in dtModuloPorEmpresa.Rows)
                 {
@@ -516,6 +462,21 @@ namespace LeandroSoftware.Activator
                 else
                 {
                     await PuntoventaWCF.ActualizarEmpresa(empresa);
+                }
+                if (txtSucursal.Text != "" && txtTerminal.Text != "")
+                {
+                    TerminalPorEmpresa terminal = new TerminalPorEmpresa();
+                    if (txtIdEmpresa.Text != "") terminal.IdEmpresa = int.Parse(txtIdEmpresa.Text);
+                    terminal.IdSucursal = int.Parse(txtSucursal.Text);
+                    terminal.IdTerminal = int.Parse(txtTerminal.Text);
+                    terminal.ValorRegistro = txtEquipo.Text;
+                    terminal.ImpresoraFactura = txtImpresoraFactura.Text;
+                    terminal.UltimoDocFE = int.Parse(txtUltimoDocFE.Text);
+                    terminal.UltimoDocND = int.Parse(txtUltimoDocND.Text);
+                    terminal.UltimoDocNC = int.Parse(txtUltimoDocNC.Text);
+                    terminal.UltimoDocTE = int.Parse(txtUltimoDocTE.Text);
+                    terminal.UltimoDocMR = int.Parse(txtUltimoDocMR.Text);
+                    await PuntoventaWCF.ActualizarTerminalPorEmpresa(terminal);
                 }
                 if (bolLogoModificado)
                 {
@@ -582,18 +543,7 @@ namespace LeandroSoftware.Activator
 
         private void CmdConsultar_Click(object sender, EventArgs e)
         {
-            txtEquipo.Text = Utilitario.ObtenerSerialEquipo();
-        }
-
-        private void BtnInsertarDetalle_Click(object sender, EventArgs e)
-        {
-            CargarLineaDetalleEquipo();
-        }
-
-        private void BtnEliminarDetalle_Click(object sender, EventArgs e)
-        {
-            if (dtEquipos.Rows.Count > 0)
-                dtEquipos.Rows.Remove(dtEquipos.Rows.Find(dgvEquipos.CurrentRow.Cells[0].Value));
+            txtEquipo.Text = Utilitario.ObtenerIdentificadorEquipo();
         }
 
         private void BtnInsertaModulo_Click(object sender, EventArgs e)
@@ -665,6 +615,19 @@ namespace LeandroSoftware.Activator
                     MessageBox.Show("Error al intentar cargar el certificado. Verifique que sea un archivo .p12 válido. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
+        }
+
+        private void txtSucursal_TextChanged(object sender, EventArgs e)
+        {
+            if (txtSucursal.Text != "" && txtTerminal.Text != "")
+            {
+                CargarTerminalPorEmpresa();
+            }
+        }
+
+        private void txtTerminal_TextChanged(object sender, EventArgs e)
+        {
+            CargarTerminalPorEmpresa();
         }
     }
 }

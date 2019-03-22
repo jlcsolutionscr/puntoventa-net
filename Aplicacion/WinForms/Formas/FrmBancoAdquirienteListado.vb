@@ -29,19 +29,19 @@ Public Class FrmBancoAdquirienteListado
         dgvDatos.Columns.Add(dvcDescripcion)
         dvcPorcentajeRetencion.HeaderText = "% Retenc."
         dvcPorcentajeRetencion.DataPropertyName = "PorcentajeRetencion"
-        dvcPorcentajeRetencion.DefaultCellStyle = FrmMenuPrincipal.dgvDecimal
+        dvcPorcentajeRetencion.DefaultCellStyle = FrmPrincipal.dgvDecimal
         dvcPorcentajeRetencion.Width = 100
         dgvDatos.Columns.Add(dvcPorcentajeRetencion)
         dvcPorcentajeComision.HeaderText = "% Comisión"
         dvcPorcentajeComision.DataPropertyName = "PorcentajeComision"
-        dvcPorcentajeComision.DefaultCellStyle = FrmMenuPrincipal.dgvDecimal
+        dvcPorcentajeComision.DefaultCellStyle = FrmPrincipal.dgvDecimal
         dvcPorcentajeComision.Width = 100
         dgvDatos.Columns.Add(dvcPorcentajeComision)
     End Sub
 
     Private Async Sub ActualizarDatos()
         Try
-            listado = Await PuntoventaWCF.ObtenerListaBancoAdquiriente(FrmMenuPrincipal.empresaGlobal.IdEmpresa, txtDescripcion.Text)
+            listado = Await PuntoventaWCF.ObtenerListaBancoAdquiriente(FrmPrincipal.empresaGlobal.IdEmpresa, txtDescripcion.Text)
             dgvDatos.DataSource = listado
             If listado.Count() > 0 Then
                 btnEditar.Enabled = True

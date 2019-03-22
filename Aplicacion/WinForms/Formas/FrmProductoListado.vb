@@ -28,12 +28,12 @@ Public Class FrmProductoListado
 
         dvcTipo.HeaderText = "Tipo"
         dvcTipo.DataPropertyName = "TipoProductoDesc"
-        dvcTipo.Width = 100
+        dvcTipo.Width = 70
         dgvDatos.Columns.Add(dvcTipo)
 
         dvcCodigo.HeaderText = "Código"
         dvcCodigo.DataPropertyName = "Codigo"
-        dvcCodigo.Width = 120
+        dvcCodigo.Width = 150
         dgvDatos.Columns.Add(dvcCodigo)
 
         dvcDescripcion.HeaderText = "Descripción"
@@ -41,10 +41,10 @@ Public Class FrmProductoListado
         dvcDescripcion.Width = 250
         dgvDatos.Columns.Add(dvcDescripcion)
 
-        dvcPrecioVenta.HeaderText = "Precio Venta"
-        dvcPrecioVenta.DataPropertyName = "PrecioVenta"
+        dvcPrecioVenta.HeaderText = "Precio (IVA)"
+        dvcPrecioVenta.DataPropertyName = "PrecioVenta1"
         dvcPrecioVenta.Width = 100
-        dvcPrecioVenta.DefaultCellStyle = FrmMenuPrincipal.dgvDecimal
+        dvcPrecioVenta.DefaultCellStyle = FrmPrincipal.dgvDecimal
         dgvDatos.Columns.Add(dvcPrecioVenta)
 
         dvcExcento.HeaderText = "Excento"
@@ -55,7 +55,7 @@ Public Class FrmProductoListado
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
         Try
-            listado = Await PuntoventaWCF.ObtenerListaProductos(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, True, cboLinea.SelectedValue, txtCodigo.Text, txtDescripcion.Text)
+            listado = Await PuntoventaWCF.ObtenerListaProductos(FrmPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, True, cboLinea.SelectedValue, txtCodigo.Text, txtDescripcion.Text)
             dgvDatos.DataSource = listado
             If listado.Count() > 0 Then
                 btnEditar.Enabled = True
@@ -74,7 +74,7 @@ Public Class FrmProductoListado
 
     Private Async Function ValidarCantidadProductos() As Task
         Try
-            intTotalEmpresas = Await PuntoventaWCF.ObtenerTotalListaProductos(FrmMenuPrincipal.empresaGlobal.IdEmpresa, True, cboLinea.SelectedValue, txtCodigo.Text, txtDescripcion.Text)
+            intTotalEmpresas = Await PuntoventaWCF.ObtenerTotalListaProductos(FrmPrincipal.empresaGlobal.IdEmpresa, True, cboLinea.SelectedValue, txtCodigo.Text, txtDescripcion.Text)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -96,7 +96,7 @@ Public Class FrmProductoListado
 
     Private Async Function CargarComboBox() As Task
         Try
-            cboLinea.DataSource = Await PuntoventaWCF.ObtenerListaLineas(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
+            cboLinea.DataSource = Await PuntoventaWCF.ObtenerListaLineas(FrmPrincipal.empresaGlobal.IdEmpresa)
             cboLinea.ValueMember = "IdLinea"
             cboLinea.DisplayMember = "Descripcion"
         Catch ex As Exception

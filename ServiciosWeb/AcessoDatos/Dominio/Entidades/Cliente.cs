@@ -34,6 +34,7 @@ namespace LeandroSoftware.AccesoDatos.Dominio.Entidades
         [ForeignKey("Vendedor")]
         public int? IdVendedor { get; set; }
         public int IdTipoPrecio { get; set; }
+        public bool ExoneradoDeImpuesto { get; set; }
 
         public Empresa Empresa { get; set; }
         public TipoIdentificacion TipoIdentificacion { get; set; }

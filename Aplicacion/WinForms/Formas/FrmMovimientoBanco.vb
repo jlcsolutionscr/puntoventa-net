@@ -28,7 +28,7 @@ Public Class FrmMovimientoBanco
 #Region "Eventos Controles"
     Private Sub CmdAgregar_Click(sender As Object, e As EventArgs) Handles CmdAgregar.Click
         txtIdMov.Text = ""
-        txtFecha.Text = FrmMenuPrincipal.ObtenerFechaFormateada(Now())
+        txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
         txtNumero.Text = ""
         cboIdCuenta.Text = ""
         cboIdCuenta.SelectedValue = 0
@@ -61,9 +61,9 @@ Public Class FrmMovimientoBanco
 
     Private Sub CmdBuscar_Click(sender As Object, e As EventArgs) Handles CmdBuscar.Click
         Dim formBusqueda As New FrmBusquedaMovimientoBanco()
-        FrmMenuPrincipal.intBusqueda = 0
+        FrmPrincipal.intBusqueda = 0
         formBusqueda.ShowDialog()
-        If FrmMenuPrincipal.intBusqueda > 0 Then
+        If FrmPrincipal.intBusqueda > 0 Then
             Try
                 'movimiento = servicioAuxiliarBancario.ObtenerMovimientoBanco(FrmMenuPrincipal.intBusqueda)
             Catch ex As Exception
@@ -83,8 +83,8 @@ Public Class FrmMovimientoBanco
                 txtMonto.ReadOnly = True
                 cboIdCuenta.Enabled = False
                 cboIdTipo.Enabled = False
-                CmdAnular.Enabled = FrmMenuPrincipal.usuarioGlobal.Modifica
-                CmdGuardar.Enabled = FrmMenuPrincipal.usuarioGlobal.Modifica
+                CmdAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
+                CmdGuardar.Enabled = FrmPrincipal.usuarioGlobal.Modifica
             End If
         End If
     End Sub
@@ -94,8 +94,8 @@ Public Class FrmMovimientoBanco
             If txtIdMov.Text = "" Then
                 movimiento = New MovimientoBanco With {
                     .IdCuenta = cboIdCuenta.SelectedValue,
-                    .IdUsuario = FrmMenuPrincipal.usuarioGlobal.IdUsuario,
-                    .Fecha = FrmMenuPrincipal.ObtenerFechaFormateada(Now()),
+                    .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
+                    .Fecha = FrmPrincipal.ObtenerFechaFormateada(Now()),
                     .IdTipo = cboIdTipo.SelectedValue,
                     .Numero = txtNumero.Text,
                     .Beneficiario = txtBeneficiario.Text,
@@ -124,9 +124,9 @@ Public Class FrmMovimientoBanco
             MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
             CmdImprimir.Enabled = True
             CmdAgregar.Enabled = True
-            CmdAnular.Enabled = FrmMenuPrincipal.usuarioGlobal.Modifica
+            CmdAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
             CmdImprimir.Focus()
-            CmdGuardar.Enabled = FrmMenuPrincipal.usuarioGlobal.Modifica
+            CmdGuardar.Enabled = FrmPrincipal.usuarioGlobal.Modifica
         Else
             MessageBox.Show("Información incompleta.  Favor verificar. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End If
@@ -138,13 +138,13 @@ Public Class FrmMovimientoBanco
     End Sub
 
     Private Sub FrmMantDebCred_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        txtFecha.Text = FrmMenuPrincipal.ObtenerFechaFormateada(Now())
+        txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
         CargarCombos()
         txtMonto.Text = FormatNumber(0, 2)
     End Sub
 
     Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs) Handles txtMonto.KeyPress
-        FrmMenuPrincipal.ValidaNumero(e, sender, True, 2, ".")
+        FrmPrincipal.ValidaNumero(e, sender, True, 2, ".")
     End Sub
 
     Private Sub txtMonto_Validating(ByVal sender As Object, ByVal e As EventArgs) Handles txtMonto.Validated

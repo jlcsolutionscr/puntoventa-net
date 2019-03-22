@@ -66,7 +66,7 @@ Public Class FrmProveedor
             Exit Sub
         End If
         If datos.IdProveedor = 0 Then
-            datos.IdEmpresa = FrmMenuPrincipal.empresaGlobal.IdEmpresa
+            datos.IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa
         End If
         datos.Identificacion = txtIdentificacion.Text
         datos.Nombre = txtNombre.Text
@@ -100,7 +100,7 @@ Public Class FrmProveedor
     End Sub
 
     Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs) Handles txtPlazo.KeyPress
-        FrmMenuPrincipal.ValidaNumero(e, sender, False, 0)
+        FrmPrincipal.ValidaNumero(e, sender, False, 0)
     End Sub
 #End Region
 End Class

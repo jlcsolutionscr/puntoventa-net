@@ -42,10 +42,10 @@ Public Class FrmMenuTipoTransaccion
 
     Private Sub btnProcesar_Click(sender As Object, e As EventArgs) Handles btnProcesar.Click
         If cboTipoTransaccion.SelectedValue IsNot Nothing Then
-            FrmMenuPrincipal.intBusqueda = cboTipoTransaccion.SelectedValue
+            FrmPrincipal.intBusqueda = cboTipoTransaccion.SelectedValue
             Close()
         Else
-            FrmMenuPrincipal.intBusqueda = 0
+            FrmPrincipal.intBusqueda = 0
             Close()
         End If
     End Sub

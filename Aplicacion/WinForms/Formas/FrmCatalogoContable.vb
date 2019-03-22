@@ -89,7 +89,7 @@ Public Class FrmCatalogoContable
             Exit Sub
         End If
         If datos.IdCuenta = 0 Then
-            datos.IdEmpresa = FrmMenuPrincipal.empresaGlobal.IdEmpresa
+            datos.IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa
         End If
         datos.Nivel_1 = txtNivel_1.Text
         datos.Nivel_2 = txtNivel_2.Text
@@ -126,7 +126,7 @@ Public Class FrmCatalogoContable
     End Sub
 
     Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs) Handles txtSaldoActual.KeyPress
-        FrmMenuPrincipal.ValidaNumero(e, sender, True, 2, ".")
+        FrmPrincipal.ValidaNumero(e, sender, True, 2, ".")
     End Sub
 #End Region
 End Class

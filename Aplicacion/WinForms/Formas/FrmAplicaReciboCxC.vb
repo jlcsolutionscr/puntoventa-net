@@ -14,7 +14,6 @@ Public Class FrmAplicaReciboCxC
     Private cuentaPorCobrar As CuentaPorCobrar
     Private cliente As Cliente
     Private movimiento As MovimientoCuentaPorCobrar
-    Private tipoMoneda As TipoMoneda
     Private desgloseMovimiento As DesgloseMovimientoCuentaPorCobrar
     Private desglosePagoMovimiento As DesglosePagoMovimientoCuentaPorCobrar
     Private reciboComprobante As ModuloImpresion.ClsRecibo
@@ -73,7 +72,7 @@ Public Class FrmAplicaReciboCxC
         dvcMonto.Width = 100
         dvcMonto.Visible = True
         dvcMonto.ReadOnly = True
-        dvcMonto.DefaultCellStyle = FrmMenuPrincipal.dgvDecimal
+        dvcMonto.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDesgloseCuenta.Columns.Add(dvcMonto)
 
         dvcDocOriginal.DataPropertyName = "DOCORIGINAL"
@@ -155,7 +154,7 @@ Public Class FrmAplicaReciboCxC
         dvcMontoLocal.Width = 100
         dvcMontoLocal.Visible = True
         dvcMontoLocal.ReadOnly = True
-        dvcMontoLocal.DefaultCellStyle = FrmMenuPrincipal.dgvDecimal
+        dvcMontoLocal.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDesglosePago.Columns.Add(dvcMontoLocal)
 
         dvcMontoForaneo.DataPropertyName = "MONTOFORANEO"
@@ -163,7 +162,7 @@ Public Class FrmAplicaReciboCxC
         dvcMontoForaneo.Width = 100
         dvcMontoForaneo.Visible = True
         dvcMontoForaneo.ReadOnly = True
-        dvcMontoForaneo.DefaultCellStyle = FrmMenuPrincipal.dgvDecimal
+        dvcMontoForaneo.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDesglosePago.Columns.Add(dvcMontoForaneo)
     End Sub
 
@@ -263,7 +262,7 @@ Public Class FrmAplicaReciboCxC
 
 #Region "Eventos Controles"
     Private Sub FrmAplicaReciboCxCClientes_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        txtFecha.Text = FrmMenuPrincipal.ObtenerFechaFormateada(Now())
+        txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
         CargarCombos()
         CargarListaBancoAdquiriente()
         IniciaDetalleMovimiento()
@@ -273,14 +272,8 @@ Public Class FrmAplicaReciboCxC
         bolInit = False
         cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
         cboTipoMoneda.SelectedValue = StaticValoresPorDefecto.MonedaDelSistema
-        Try
-            'tipoMoneda = servicioMantenimiento.ObtenerTipoMoneda(cboTipoMoneda.SelectedValue)
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Exit Sub
-        End Try
         txtMontoAbono.Text = FormatNumber(0, 2)
-        txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmMenuPrincipal.decTipoCambioDolar.ToString())
+        txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmPrincipal.decTipoCambioDolar.ToString())
         txtSaldoPorPagar.Text = FormatNumber(dblSaldoPorPagar, 2)
     End Sub
 
@@ -332,7 +325,7 @@ Public Class FrmAplicaReciboCxC
 
         movimiento = New MovimientoCuentaPorCobrar With {
             .IdEmpresa = cuentaPorCobrar.IdEmpresa,
-            .IdUsuario = FrmMenuPrincipal.usuarioGlobal.IdUsuario,
+            .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
             .IdPropietario = cliente.IdCliente,
             .Tipo = StaticTipoAbono.AbonoEfectivo,
             .Descripcion = txtDescripcion.Text,
@@ -376,9 +369,9 @@ Public Class FrmAplicaReciboCxC
 
     Private Sub CmdImprimir_Click(ByVal sender As Object, ByVal e As EventArgs) Handles CmdImprimir.Click
         reciboComprobante = New ModuloImpresion.ClsRecibo With {
-            .usuario = FrmMenuPrincipal.usuarioGlobal,
-            .empresa = FrmMenuPrincipal.empresaGlobal,
-            .equipo = FrmMenuPrincipal.equipoGlobal,
+            .usuario = FrmPrincipal.usuarioGlobal,
+            .empresa = FrmPrincipal.empresaGlobal,
+            .equipo = FrmPrincipal.equipoGlobal,
             .strConsecutivo = movimiento.IdMovCxC,
             .strNombre = txtNombreCliente.Text,
             .strFechaAbono = txtFecha.Text,
@@ -455,14 +448,7 @@ Public Class FrmAplicaReciboCxC
 
     Private Sub cboTipoMoneda_SelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs) Handles cboTipoMoneda.SelectedValueChanged
         If Not bolInit And Not cboTipoMoneda.SelectedValue Is Nothing Then
-            Dim tipoMoneda As TipoMoneda = Nothing
-            Try
-                'tipoMoneda = servicioMantenimiento.ObtenerTipoMoneda(cboTipoMoneda.SelectedValue)
-            Catch ex As Exception
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Exit Sub
-            End Try
-            txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmMenuPrincipal.decTipoCambioDolar.ToString())
+            txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmPrincipal.decTipoCambioDolar.ToString())
         End If
     End Sub
 
@@ -531,10 +517,10 @@ Public Class FrmAplicaReciboCxC
 
     Private Sub btnBuscarCliente_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnBuscarCliente.Click
         Dim formBusquedaCliente As New FrmBusquedaCliente()
-        FrmMenuPrincipal.intBusqueda = 0
+        FrmPrincipal.intBusqueda = 0
         formBusquedaCliente.ShowDialog()
-        If FrmMenuPrincipal.intBusqueda > 0 Then
-            If FrmMenuPrincipal.intBusqueda = StaticValoresPorDefecto.ClienteContado Then
+        If FrmPrincipal.intBusqueda > 0 Then
+            If FrmPrincipal.intBusqueda = StaticValoresPorDefecto.ClienteContado Then
                 MessageBox.Show("El cliente indicado no corresponde a un cliente de crédito", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End If
@@ -592,7 +578,7 @@ Public Class FrmAplicaReciboCxC
     End Sub
 
     Private Sub txtMontoAbono_KeyPress(ByVal sender As Object, ByVal e As KeyPressEventArgs) Handles txtMontoAbono.KeyPress, txtMonto.KeyPress
-        FrmMenuPrincipal.ValidaNumero(e, sender, True, 2, ".")
+        FrmPrincipal.ValidaNumero(e, sender, True, 2, ".")
     End Sub
 #End Region
 End Class

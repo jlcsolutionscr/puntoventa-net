@@ -5,22 +5,17 @@ namespace LeandroSoftware.Activator
 {
     public partial class FrmMenu : Form
     {
-        public string strCadenaConexion, strMySQLDumpOptions, strThumbprint, strSubjectName, strApplicationKey, strDatabase, strUser, strPassword, strHost;
-        public bool bolSeguridad = true;
-        // private bool bolArchivoConfig = true;
+        public bool bolSeguridad = false;
 
         public FrmMenu()
         {
             InitializeComponent();
+            FrmSeguridad formSeguridad = new FrmSeguridad();
+            formSeguridad.ShowDialog(this);
             if (bolSeguridad)
             {
-                bolSeguridad = false;
-                FrmSeguridad formSeguridad = new FrmSeguridad();
-                formSeguridad.ShowDialog();
-                if (bolSeguridad)
-                {
-                    tsRegistrarEmpresa.Visible = true;
-                }
+                tsRegistrarEmpresa.Visible = true;
+                tsSubirNuevaVersionApp.Visible = true;
             }
         }
 
@@ -31,6 +26,20 @@ namespace LeandroSoftware.Activator
                 MdiParent = this
             };
             listadoEmpresas.Show();
+        }
+
+        private void tsSubirNuevaVersionApp_Click(object sender, EventArgs e)
+        {
+            FrmSubirActualizacion formSubirActualizacion = new FrmSubirActualizacion
+            {
+                MdiParent = this
+            };
+            formSubirActualizacion.Show();
+        }
+
+        private void tsSalir_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
         }
     }
 }

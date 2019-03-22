@@ -34,7 +34,7 @@ Public Class FrmUsuarioListado
 
     Private Async Sub ActualizarDatos()
         Try
-            listado = Await PuntoventaWCF.ObtenerListaUsuarios(FrmMenuPrincipal.empresaGlobal.IdEmpresa, txtCodigo.Text)
+            listado = Await PuntoventaWCF.ObtenerListaUsuarios(FrmPrincipal.empresaGlobal.IdEmpresa, txtCodigo.Text)
             dgvDatos.DataSource = listado
             If listado.Count() > 0 Then
                 btnEditar.Enabled = True

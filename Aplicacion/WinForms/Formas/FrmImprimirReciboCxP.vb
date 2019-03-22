@@ -75,7 +75,7 @@ Public Class FrmImprimirReciboCxP
         dvcMonto.DataPropertyName = "MONTO"
         dvcMonto.HeaderText = "Monto"
         dvcMonto.Width = 90
-        dvcMonto.DefaultCellStyle = FrmMenuPrincipal.dgvDecimal
+        dvcMonto.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleRecibo.Columns.Add(dvcMonto)
     End Sub
 
@@ -117,9 +117,9 @@ Public Class FrmImprimirReciboCxP
             If grdDetalleRecibo.CurrentRow.Cells(0).Value.ToString <> "" Then
                 'movimientoCuentaPorPagar = servicioCuentaPorPagar.ObtenerMovimiento(grdDetalleRecibo.CurrentRow.Cells(0).Value)
                 reciboComprobante = New ModuloImpresion.ClsRecibo With {
-                    .usuario = FrmMenuPrincipal.usuarioGlobal,
-                    .empresa = FrmMenuPrincipal.empresaGlobal,
-                    .equipo = FrmMenuPrincipal.equipoGlobal,
+                    .usuario = FrmPrincipal.usuarioGlobal,
+                    .empresa = FrmPrincipal.empresaGlobal,
+                    .equipo = FrmPrincipal.equipoGlobal,
                     .strConsecutivo = movimientoCuentaPorPagar.IdMovCxP,
                     .strRecibo = movimientoCuentaPorPagar.Recibo,
                     .strNombre = txtNombreProveedor.Text,
@@ -161,9 +161,9 @@ Public Class FrmImprimirReciboCxP
 
     Private Sub btnBuscarProveedor_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnBuscarProveedor.Click
         Dim formBusquedaProveedor As New FrmBusquedaProveedor()
-        FrmMenuPrincipal.intBusqueda = 0
+        FrmPrincipal.intBusqueda = 0
         formBusquedaProveedor.ShowDialog()
-        If FrmMenuPrincipal.intBusqueda > 0 Then
+        If FrmPrincipal.intBusqueda > 0 Then
             Try
                 'proveedor = servicioCompras.ObtenerProveedor(FrmMenuPrincipal.intBusqueda)
             Catch ex As Exception

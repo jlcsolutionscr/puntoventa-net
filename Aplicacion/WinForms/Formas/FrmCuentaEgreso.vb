@@ -51,7 +51,7 @@ Public Class FrmCuentaEgreso
             Exit Sub
         End If
         If datos.IdCuenta = 0 Then
-            datos.IdEmpresa = FrmMenuPrincipal.empresaGlobal.IdEmpresa
+            datos.IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa
         End If
         datos.Descripcion = txtDescripcion.Text
         Try

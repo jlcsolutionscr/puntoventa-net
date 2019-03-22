@@ -45,7 +45,7 @@ Public Class FrmCliente
             cboProvincia.DataSource = Await PuntoventaWCF.ObtenerListaProvincias()
             cboVendedor.ValueMember = "IdVendedor"
             cboVendedor.DisplayMember = "Nombre"
-            cboVendedor.DataSource = Await PuntoventaWCF.ObtenerListaVendedores(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
+            cboVendedor.DataSource = Await PuntoventaWCF.ObtenerListaVendedores(FrmPrincipal.empresaGlobal.IdEmpresa)
             cboIdTipoPrecio.ValueMember = "IdTipoPrecio"
             cboIdTipoPrecio.DisplayMember = "Descripcion"
             cboIdTipoPrecio.DataSource = Await PuntoventaWCF.ObtenerListaTipodePrecio()
@@ -89,6 +89,7 @@ Public Class FrmCliente
             txtCorreoElectronico.Text = datos.CorreoElectronico
             If datos.IdVendedor IsNot Nothing Then cboVendedor.SelectedValue = datos.IdVendedor
             cboIdTipoPrecio.SelectedValue = datos.IdTipoPrecio
+            chkExonerado.Checked = datos.ExoneradoDeImpuesto
             txtIdentificacion.ReadOnly = True
         Else
             datos = New Cliente
@@ -107,7 +108,7 @@ Public Class FrmCliente
             Exit Sub
         End If
         If datos.IdCliente = 0 Then
-            datos.IdEmpresa = FrmMenuPrincipal.empresaGlobal.IdEmpresa
+            datos.IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa
         End If
         datos.IdTipoIdentificacion = cboTipoIdentificacion.SelectedValue
         datos.Identificacion = txtIdentificacion.Text
@@ -125,6 +126,7 @@ Public Class FrmCliente
         datos.CorreoElectronico = txtCorreoElectronico.Text
         datos.IdVendedor = cboVendedor.SelectedValue
         datos.IdTipoPrecio = cboIdTipoPrecio.SelectedValue
+        datos.ExoneradoDeImpuesto = chkExonerado.Checked
         datos.Barrio = Nothing
         Try
             If datos.IdCliente = 0 Then
@@ -145,7 +147,7 @@ Public Class FrmCliente
         If txtIdCliente.Text = "" And txtIdentificacion.Text <> "" Then
             Dim cliente As Cliente = Nothing
             Try
-                cliente = Await PuntoventaWCF.ValidaIdentificacionCliente(FrmMenuPrincipal.empresaGlobal.IdEmpresa, txtIdentificacion.Text)
+                cliente = Await PuntoventaWCF.ValidaIdentificacionCliente(FrmPrincipal.empresaGlobal.IdEmpresa, txtIdentificacion.Text)
             Catch ex As Exception
             End Try
             If (cliente IsNot Nothing) Then
@@ -213,10 +215,8 @@ Public Class FrmCliente
         End If
     End Sub
 
-    Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As KeyPressEventArgs) Handles txtIdentificacion.KeyPress, txtIdentificacionExtranjero.KeyPress
-        If cboTipoIdentificacion.SelectedValue = 0 Or cboTipoIdentificacion.SelectedValue = 1 Then
-            FrmMenuPrincipal.ValidaNumero(e, sender, True, 2, ".")
-        End If
+    Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As KeyPressEventArgs) Handles txtIdentificacion.KeyPress, txtIdentificacionExtranjero.KeyPress, txtTelefono.KeyPress, txtCelular.KeyPress, txtFax.KeyPress
+        FrmPrincipal.ValidaNumero(e, sender, True, 2, ".")
     End Sub
 #End Region
 End Class

@@ -59,13 +59,13 @@ Public Class FrmAsientoContable
         dvcDebito.DataPropertyName = "DEBITO"
         dvcDebito.HeaderText = "Débito"
         dvcDebito.Width = 90
-        dvcDebito.DefaultCellStyle = FrmMenuPrincipal.dgvDecimal
+        dvcDebito.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleAsiento.Columns.Add(dvcDebito)
 
         dvcCredito.DataPropertyName = "CREDITO"
         dvcCredito.HeaderText = "Crédito"
         dvcCredito.Width = 90
-        dvcCredito.DefaultCellStyle = FrmMenuPrincipal.dgvDecimal
+        dvcCredito.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleAsiento.Columns.Add(dvcCredito)
     End Sub
 
@@ -123,7 +123,7 @@ Public Class FrmAsientoContable
 #Region "Eventos Controles"
     Private Sub CmdAgregar_Click(sender As Object, e As EventArgs) Handles CmdAgregar.Click
         txtIdAsiento.Text = ""
-        txtFecha.Text = FrmMenuPrincipal.ObtenerFechaFormateada(Now())
+        txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
         txtDetalle.Text = ""
         txtDebito.Text = FormatNumber(0, 2)
         txtCredito.Text = FormatNumber(0, 2)
@@ -159,9 +159,9 @@ Public Class FrmAsientoContable
 
     Private Sub CmdBuscar_Click(sender As Object, e As EventArgs) Handles CmdBuscar.Click
         Dim formBusqueda As New FrmBusquedaAsientoContable()
-        FrmMenuPrincipal.intBusqueda = 0
+        FrmPrincipal.intBusqueda = 0
         formBusqueda.ShowDialog()
-        If FrmMenuPrincipal.intBusqueda > 0 Then
+        If FrmPrincipal.intBusqueda > 0 Then
             'asientoDiario = servicioContabilidad.ObtenerAsiento(FrmMenuPrincipal.intBusqueda)
             If asientoDiario.IdAsiento > 0 Then
                 txtIdAsiento.Text = asientoDiario.IdAsiento
@@ -174,8 +174,8 @@ Public Class FrmAsientoContable
                 cmdInsertar.Enabled = False
                 cmdEliminar.Enabled = False
                 CmdImprimir.Enabled = True
-                CmdAnular.Enabled = FrmMenuPrincipal.usuarioGlobal.Modifica
-                CmdGuardar.Enabled = FrmMenuPrincipal.usuarioGlobal.Modifica
+                CmdAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
+                CmdGuardar.Enabled = FrmPrincipal.usuarioGlobal.Modifica
             End If
         End If
     End Sub
@@ -183,8 +183,8 @@ Public Class FrmAsientoContable
     Private Sub CmdGuardar_Click(sender As Object, e As EventArgs) Handles CmdGuardar.Click
         If txtFecha.Text <> "" And txtDetalle.Text <> "" Then
             asientoDiario = New Asiento With {
-                .IdEmpresa = FrmMenuPrincipal.empresaGlobal.IdEmpresa,
-                .IdUsuario = FrmMenuPrincipal.usuarioGlobal.IdUsuario,
+                .IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa,
+                .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
                 .Detalle = txtDetalle.Text,
                 .Fecha = Now(),
                 .TotalDebito = 0,
@@ -218,9 +218,9 @@ Public Class FrmAsientoContable
             MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
             CmdImprimir.Enabled = True
             CmdAgregar.Enabled = True
-            CmdAnular.Enabled = FrmMenuPrincipal.usuarioGlobal.Modifica
+            CmdAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
             CmdImprimir.Focus()
-            CmdGuardar.Enabled = FrmMenuPrincipal.usuarioGlobal.Modifica
+            CmdGuardar.Enabled = FrmPrincipal.usuarioGlobal.Modifica
             cmdInsertar.Enabled = False
             cmdEliminar.Enabled = False
         Else
@@ -264,7 +264,7 @@ Public Class FrmAsientoContable
     End Sub
 
     Private Sub FrmFactura_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        txtFecha.Text = FrmMenuPrincipal.ObtenerFechaFormateada(Now())
+        txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
         CargarComboProducto()
         IniciaDetalleAsiento()
         EstablecerPropiedadesDataGridView()
@@ -303,7 +303,7 @@ Public Class FrmAsientoContable
     End Sub
 
     Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs) Handles txtDebito.KeyPress, txtCredito.KeyPress
-        FrmMenuPrincipal.ValidaNumero(e, sender, True, 2, ".")
+        FrmPrincipal.ValidaNumero(e, sender, True, 2, ".")
     End Sub
 #End Region
 End Class

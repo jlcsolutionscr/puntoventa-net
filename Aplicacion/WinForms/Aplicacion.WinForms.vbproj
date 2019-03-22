@@ -8,7 +8,7 @@
     <ProjectGuid>{9E0FF35A-3DA7-4051-83D0-C97ACE18D0F8}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <AssemblyName>AplicacionWinForms</AssemblyName>
+    <AssemblyName>Application</AssemblyName>
     <OutputType>WinExe</OutputType>
     <StartupObject>LeandroSoftware.Puntoventa.Aplicacion.WinForms.My.MyApplication</StartupObject>
     <AssemblyMajorVersion>1</AssemblyMajorVersion>
@@ -45,7 +45,8 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>bin\</OutputPath>
-    <DocumentationFile>AplicacionWinForms.xml</DocumentationFile>
+    <DocumentationFile>
+    </DocumentationFile>
     <DebugSymbols>True</DebugSymbols>
     <DefineDebug>True</DefineDebug>
     <DefineTrace>True</DefineTrace>
@@ -59,7 +60,8 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>.\bin\</OutputPath>
-    <DocumentationFile>AplicacionWinForms.xml</DocumentationFile>
+    <DocumentationFile>
+    </DocumentationFile>
     <DebugSymbols>False</DebugSymbols>
     <DefineDebug>False</DefineDebug>
     <DefineTrace>True</DefineTrace>
@@ -131,6 +133,7 @@
     <Import Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApplicationEvents.vb" />
     <Compile Include="Formas\FrmAceptarDocumentoElectronico.Designer.vb">
       <DependentUpon>FrmAceptarDocumentoElectronico.vb</DependentUpon>
     </Compile>
@@ -147,12 +150,6 @@
       <DependentUpon>FrmBusquedaVendedor.vb</DependentUpon>
     </Compile>
     <Compile Include="Formas\FrmBusquedaVendedor.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Formas\FrmCuentaPorPagarParticulares.Designer.vb">
-      <DependentUpon>FrmCuentaPorPagarParticulares.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Formas\FrmCuentaPorPagarParticulares.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Formas\FrmAjusteInventario.Designer.vb">
@@ -221,46 +218,10 @@
     <Compile Include="Formas\FrmMenuCuentaIngreso.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Formas\FrmParticularListado.Designer.vb">
-      <DependentUpon>FrmParticularListado.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Formas\FrmParticularListado.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Formas\FrmImprimirReciboCxPParticular.Designer.vb">
-      <DependentUpon>FrmImprimirReciboCxPParticular.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Formas\FrmImprimirReciboCxPParticular.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Formas\FrmAplicaReciboCxPParticular.Designer.vb">
-      <DependentUpon>FrmAplicaReciboCxPParticular.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Formas\FrmAplicaReciboCxPParticular.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Formas\FrmAnulaReciboCxPParticular.Designer.vb">
-      <DependentUpon>FrmAnulaReciboCxPParticular.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Formas\FrmAnulaReciboCxPParticular.vb">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="Formas\FrmBusquedaCuentaPorPagar.Designer.vb">
       <DependentUpon>FrmBusquedaCuentaPorPagar.vb</DependentUpon>
     </Compile>
     <Compile Include="Formas\FrmBusquedaCuentaPorPagar.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Formas\FrmBusquedaParticular.Designer.vb">
-      <DependentUpon>FrmBusquedaParticular.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Formas\FrmBusquedaParticular.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Formas\FrmParticular.Designer.vb">
-      <DependentUpon>FrmParticular.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Formas\FrmParticular.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Formas\FrmBusquedaOrdenServicio.Designer.vb">
@@ -678,10 +639,10 @@
     <Compile Include="Formas\FrmInicio.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Formas\FrmMenuPrincipal.Designer.vb">
-      <DependentUpon>FrmMenuPrincipal.vb</DependentUpon>
+    <Compile Include="Formas\FrmPrincipal.Designer.vb">
+      <DependentUpon>FrmPrincipal.vb</DependentUpon>
     </Compile>
-    <Compile Include="Formas\FrmMenuPrincipal.vb">
+    <Compile Include="Formas\FrmPrincipal.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Formas\FrmMenuReportes.Designer.vb">
@@ -890,9 +851,6 @@
       <DependentUpon>FrmBusquedaVendedor.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Formas\FrmCuentaPorPagarParticulares.resx">
-      <DependentUpon>FrmCuentaPorPagarParticulares.vb</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Formas\FrmAjusteInventario.resx">
       <DependentUpon>FrmAjusteInventario.vb</DependentUpon>
     </EmbeddedResource>
@@ -932,28 +890,9 @@
       <DependentUpon>FrmMenuCuentaIngreso.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Formas\FrmParticularListado.resx">
-      <DependentUpon>FrmParticularListado.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Formas\FrmImprimirReciboCxPParticular.resX">
-      <DependentUpon>FrmImprimirReciboCxPParticular.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Formas\FrmAplicaReciboCxPParticular.resx">
-      <DependentUpon>FrmAplicaReciboCxPParticular.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Formas\FrmAnulaReciboCxPParticular.resx">
-      <DependentUpon>FrmAnulaReciboCxPParticular.vb</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Formas\FrmBusquedaCuentaPorPagar.resX">
       <DependentUpon>FrmBusquedaCuentaPorPagar.vb</DependentUpon>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Formas\FrmBusquedaParticular.resX">
-      <DependentUpon>FrmBusquedaParticular.vb</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Formas\FrmParticular.resx">
-      <DependentUpon>FrmParticular.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Formas\FrmBusquedaOrdenServicio.resX">
       <DependentUpon>FrmBusquedaOrdenServicio.vb</DependentUpon>
@@ -1164,8 +1103,8 @@
     <EmbeddedResource Include="Formas\FrmInventario.resx">
       <DependentUpon>FrmInventario.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Formas\FrmMenuPrincipal.resX">
-      <DependentUpon>FrmMenuPrincipal.vb</DependentUpon>
+    <EmbeddedResource Include="Formas\FrmPrincipal.resX">
+      <DependentUpon>FrmPrincipal.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Formas\FrmMovimientoBanco.resx">
@@ -1379,10 +1318,7 @@
       <Generator>MyApplicationCodeGenerator</Generator>
       <LastGenOutput>Application.Designer.vb</LastGenOutput>
     </Content>
-    <Content Include="mysqldump.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <None Include="Resources\poweredByImage.bmp" />
+    <Content Include="Resources\poweredByImage.jpg" />
     <None Include="Resources\emptyImage.bmp" />
   </ItemGroup>
   <ItemGroup>

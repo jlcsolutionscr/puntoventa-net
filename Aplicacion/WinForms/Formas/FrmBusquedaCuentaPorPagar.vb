@@ -32,7 +32,7 @@ Public Class FrmBusquedaCuentaPorPagar
         dvcTopeCredito.HeaderText = "Total"
         dvcTopeCredito.DataPropertyName = "Total"
         dvcTopeCredito.Width = 120
-        dvcTopeCredito.DefaultCellStyle = FrmMenuPrincipal.dgvDecimal
+        dvcTopeCredito.DefaultCellStyle = FrmPrincipal.dgvDecimal
         dgvListado.Columns.Add(dvcTopeCredito)
     End Sub
 
@@ -74,7 +74,7 @@ Public Class FrmBusquedaCuentaPorPagar
 
 #Region "Eventos Controles"
     Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs) Handles txtId.KeyPress
-        FrmMenuPrincipal.ValidaNumero(e, sender, True, 0)
+        FrmPrincipal.ValidaNumero(e, sender, True, 0)
     End Sub
 
     Private Sub btnFirst_Click(sender As Object, e As EventArgs) Handles btnFirst.Click
@@ -110,7 +110,7 @@ Public Class FrmBusquedaCuentaPorPagar
 
     Private Sub FlexProducto_DoubleClick(ByVal sender As Object, ByVal e As EventArgs) Handles dgvListado.DoubleClick
         If dgvListado.RowCount > 0 Then
-            FrmMenuPrincipal.intBusqueda = dgvListado.CurrentRow.Cells(0).Value
+            FrmPrincipal.intBusqueda = dgvListado.CurrentRow.Cells(0).Value
             Close()
         End If
     End Sub

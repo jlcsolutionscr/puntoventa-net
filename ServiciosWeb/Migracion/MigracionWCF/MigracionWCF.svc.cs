@@ -18,9 +18,10 @@ namespace LeandroSoftware.Migracion.ServicioWCF
     public class MigracionWCF : IMigracionWCF, IDisposable
     {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly System.Collections.Specialized.NameValueCollection appSettings = WebConfigurationManager.AppSettings;
         private IMigracionService servicioMigracion;
         IUnityContainer unityContainer;
-        private static System.Collections.Specialized.NameValueCollection appSettings = WebConfigurationManager.AppSettings;
+        
         private readonly DatosConfiguracion configuracion = new DatosConfiguracion
         (
             appSettings["strConsultaIEURL"].ToString(),
