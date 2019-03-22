@@ -30,7 +30,7 @@ Partial Class FrmCuentaEgreso
         '
         'ClienteBindingSource
         '
-        Me.ClienteBindingSource.DataSource = GetType(Dominio.Entidades.Cliente)
+        Me.ClienteBindingSource.DataSource = GetType(AccesoDatos.Dominio.Entidades.Cliente)
         '
         'btnCancelar
         '

@@ -1,10 +1,8 @@
-Imports LeandroSoftware.PuntoVenta.Dominio.Entidades
-Imports LeandroSoftware.PuntoVenta.Servicios
-Imports Unity
+Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
+Imports LeandroSoftware.AccesoDatos.ClienteWCF
 
 Public Class FrmBancoAdquiriente
 #Region "Variables"
-    Public servicioMantenimiento As IMantenimientoService
     Public intIdBanco As Integer
     Private datos As BancoAdquiriente
 #End Region
@@ -30,10 +28,10 @@ Public Class FrmBancoAdquiriente
 #End Region
 
 #Region "Eventos Controles"
-    Private Sub FrmBancoAdquiriente_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+    Private Async Sub FrmBancoAdquiriente_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         If intIdBanco > 0 Then
             Try
-                datos = servicioMantenimiento.ObtenerBancoAdquiriente(intIdBanco)
+                datos = Await PuntoventaWCF.ObtenerBancoAdquiriente(intIdBanco)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                 Close()
@@ -58,14 +56,14 @@ Public Class FrmBancoAdquiriente
         Close()
     End Sub
 
-    Private Sub btnGuardar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnGuardar.Click
+    Private Async Sub btnGuardar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnGuardar.Click
         Dim strCampo As String = ""
         If Not ValidarCampos(strCampo) Then
             MessageBox.Show("El campo " & strCampo & " es requerido", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         End If
         If datos.IdBanco = 0 Then
-            datos.IdEmpresa = FrmMenuPrincipal.empresaGlobal.IdEmpresa
+            datos.IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa
         End If
         datos.Codigo = txtCodigo.Text
         datos.Descripcion = txtDescripcion.Text
@@ -73,10 +71,10 @@ Public Class FrmBancoAdquiriente
         datos.PorcentajeComision = txtComision.Text
         Try
             If datos.IdBanco = 0 Then
-                datos = servicioMantenimiento.AgregarBancoAdquiriente(datos)
-                txtIdBanco.Text = datos.IdBanco
+                Dim strIdBanco As String = Await PuntoventaWCF.AgregarBancoAdquiriente(datos)
+                txtIdBanco.Text = strIdBanco
             Else
-                servicioMantenimiento.ActualizarBancoAdquiriente(datos)
+                Await PuntoventaWCF.ActualizarBancoAdquiriente(datos)
             End If
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -97,7 +95,7 @@ Public Class FrmBancoAdquiriente
     End Sub
 
     Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs) Handles txtRetencion.KeyPress, txtComision.KeyPress
-        FrmMenuPrincipal.ValidaNumero(e, sender, True, 2, ".")
+        FrmPrincipal.ValidaNumero(e, sender, True, 2, ".")
     End Sub
 #End Region
 End Class

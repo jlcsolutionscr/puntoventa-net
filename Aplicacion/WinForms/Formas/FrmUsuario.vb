@@ -1,7 +1,6 @@
 Imports System.Collections.Generic
-Imports LeandroSoftware.PuntoVenta.Dominio.Entidades
-Imports LeandroSoftware.PuntoVenta.Servicios
-Imports Unity
+Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
+Imports LeandroSoftware.AccesoDatos.ClienteWCF
 
 Public Class FrmUsuario
 #Region "Variables"
@@ -9,10 +8,8 @@ Public Class FrmUsuario
     Private dtrRolePorUsuario As DataRow
     Private I As Short
     Private datos As Usuario
-    Private role As Role
     Private rolePorUsuario As RolePorUsuario
     Private bolInit As Boolean = True
-    Public servicioMantenimiento As IMantenimientoService
     Public intIdUsuario As Integer
 #End Region
 
@@ -53,13 +50,13 @@ Public Class FrmUsuario
         dgvRoleXUsuario.Refresh()
     End Sub
 
-    Private Sub CargarLineaDetalleRole(ByVal role As Role)
-        If dtbRolePorUsuario.Rows.Contains(role.IdRole) Then
+    Private Sub CargarLineaDetalleRole(ByVal intIdRole As Integer, ByVal strDescripcion As String)
+        If dtbRolePorUsuario.Rows.Contains(intIdRole) Then
             MessageBox.Show("El role seleccionado ya esta asignado. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         Else
             dtrRolePorUsuario = dtbRolePorUsuario.NewRow
-            dtrRolePorUsuario.Item(0) = role.IdRole
-            dtrRolePorUsuario.Item(1) = role.Descripcion
+            dtrRolePorUsuario.Item(0) = intIdRole
+            dtrRolePorUsuario.Item(1) = strDescripcion
             dtbRolePorUsuario.Rows.Add(dtrRolePorUsuario)
             dgvRoleXUsuario.DataSource = dtbRolePorUsuario
             dgvRoleXUsuario.Refresh()
@@ -78,11 +75,11 @@ Public Class FrmUsuario
         End If
     End Function
 
-    Private Sub CargarCombos()
+    Private Async Sub CargarCombos()
         Try
             cboRole.ValueMember = "IdRole"
             cboRole.DisplayMember = "Nombre"
-            cboRole.DataSource = servicioMantenimiento.ObtenerListaRoles()
+            cboRole.DataSource = Await PuntoventaWCF.ObtenerListaRoles()
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
@@ -91,13 +88,15 @@ Public Class FrmUsuario
 #End Region
 
 #Region "Eventos Controles"
-    Private Sub FrmUsuario_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+    Private Async Sub FrmUsuario_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         IniciaDetalleRole()
         EstablecerPropiedadesDataGridView()
         CargarCombos()
         If intIdUsuario > 0 Then
+            Dim strDecryptedPassword As String
             Try
-                datos = servicioMantenimiento.ObtenerUsuario(intIdUsuario, FrmMenuPrincipal.strAppThumptPrint)
+                datos = Await PuntoventaWCF.ObtenerUsuario(intIdUsuario)
+                strDecryptedPassword = Core.Utilitario.DesencriptarDatos(datos.Clave, FrmPrincipal.strKey)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                 Close()
@@ -110,7 +109,7 @@ Public Class FrmUsuario
             End If
             txtIdUsuario.Text = datos.IdUsuario
             txtUsuario.Text = datos.CodigoUsuario
-            txtPassword.Text = datos.ClaveSinEncriptar
+            txtPassword.Text = strDecryptedPassword
             chkModifica.Checked = datos.Modifica
             chkAutoriza.Checked = datos.AutorizaCredito
             CargarDetalleRole(datos)
@@ -118,31 +117,42 @@ Public Class FrmUsuario
             datos = New Usuario
         End If
         bolInit = False
-        role = servicioMantenimiento.ObtenerRole(cboRole.SelectedValue)
-        txtDescripción.Text = role.Descripcion
     End Sub
 
-    Private Sub btnCancelar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnCancelar.Click
+    Private Sub BtnCancelar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnCancelar.Click
         Close()
     End Sub
 
-    Private Sub btnGuardar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnGuardar.Click
+    Private Async Sub BtnGuardar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnGuardar.Click
         Dim strCampo As String = ""
         If Not ValidarCampos(strCampo) Then
             MessageBox.Show("El campo " & strCampo & " es requerido", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         End If
+        Dim strEncryptedPassword As String
         If datos.IdUsuario = 0 Then
-            datos.IdEmpresa = FrmMenuPrincipal.empresaGlobal.IdEmpresa
+            Dim empresaUsuario As UsuarioPorEmpresa = New UsuarioPorEmpresa With {
+                .IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa
+            }
+            Dim detalleEmpresa As List(Of UsuarioPorEmpresa) = New List(Of UsuarioPorEmpresa) From {
+                empresaUsuario
+            }
+            datos.UsuarioPorEmpresa = detalleEmpresa
         End If
+        Try
+            strEncryptedPassword = Core.Utilitario.EncriptarDatos(txtPassword.Text, FrmPrincipal.strKey)
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            Close()
+            Exit Sub
+        End Try
         datos.CodigoUsuario = txtUsuario.Text
-        datos.ClaveSinEncriptar = txtPassword.Text
+        datos.Clave = strEncryptedPassword
         datos.Modifica = chkModifica.Checked
         datos.AutorizaCredito = chkAutoriza.Checked
         datos.RolePorUsuario.Clear()
         For I = 0 To dtbRolePorUsuario.Rows.Count - 1
             rolePorUsuario = New RolePorUsuario With {
-                .IdEmpresa = FrmMenuPrincipal.empresaGlobal.IdEmpresa,
                 .IdRole = dtbRolePorUsuario.Rows(I).Item(0)
             }
             If datos.IdUsuario > 0 Then
@@ -152,10 +162,10 @@ Public Class FrmUsuario
         Next
         Try
             If datos.IdUsuario = 0 Then
-                datos = servicioMantenimiento.AgregarUsuario(datos, FrmMenuPrincipal.strAppThumptPrint)
-                txtIdUsuario.Text = datos.IdUsuario
+                Dim strIdUsuario = Await PuntoventaWCF.AgregarUsuario(datos)
+                txtIdUsuario.Text = strIdUsuario
             Else
-                servicioMantenimiento.ActualizarUsuario(datos, FrmMenuPrincipal.strAppThumptPrint)
+                Await PuntoventaWCF.ActualizarUsuario(datos)
             End If
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -165,28 +175,15 @@ Public Class FrmUsuario
         Close()
     End Sub
 
-    Private Sub cboRole_SelectedValueChanged(ByVal sender As Object, ByVal e As EventArgs) Handles cboRole.SelectedValueChanged
-        If Not bolInit Then
-            Try
-                role = servicioMantenimiento.ObtenerRole(cboRole.SelectedValue)
-            Catch ex As Exception
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-                Close()
-                Exit Sub
-            End Try
-            txtDescripción.Text = role.Descripcion
-        End If
-    End Sub
-
-    Private Sub btnInsertarRole_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnInsertarRole.Click
+    Private Sub BtnInsertarRole_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnInsertarRole.Click
         If cboRole.SelectedValue IsNot Nothing Then
-            CargarLineaDetalleRole(role)
+            CargarLineaDetalleRole(cboRole.SelectedValue, cboRole.Text)
         Else
             MessageBox.Show("Debe selecionar el Permiso para asignar al usuario", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End If
     End Sub
 
-    Private Sub btnEliminarRole_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEliminarRole.Click
+    Private Sub BtnEliminarRole_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEliminarRole.Click
         If dtbRolePorUsuario.Rows.Count > 0 Then
             dtbRolePorUsuario.Rows.Remove(dtbRolePorUsuario.Rows.Find(dgvRoleXUsuario.CurrentRow.Cells(0).Value))
         End If

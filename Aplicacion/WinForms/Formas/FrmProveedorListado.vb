@@ -1,14 +1,12 @@
-﻿Imports LeandroSoftware.PuntoVenta.Dominio.Entidades
-Imports LeandroSoftware.PuntoVenta.Servicios
-Imports Unity
+﻿Imports LeandroSoftware.AccesoDatos.ClienteWCF
 
 Public Class FrmProveedorListado
 #Region "Variables"
-    Public servicioCompras As ICompraService
     Private intTotalEmpresas As Integer
     Private intIndiceDePagina As Integer
     Private intFilasPorPagina As Integer = 16
     Private intCantidadDePaginas As Integer
+    Private listado As IList
 #End Region
 
 #Region "Métodos"
@@ -33,9 +31,9 @@ Public Class FrmProveedorListado
         dgvDatos.Columns.Add(dvcNombre)
     End Sub
 
-    Private Sub ActualizarDatos(ByVal intNumeroPagina As Integer)
+    Private Async Sub ActualizarDatos(ByVal intNumeroPagina As Integer)
         Try
-            Dim listado As IList = servicioCompras.ObtenerListaProveedores(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, txtNombre.Text)
+            listado = Await PuntoventaWCF.ObtenerListaProveedores(FrmPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, txtNombre.Text)
             dgvDatos.DataSource = listado
             If listado.Count() > 0 Then
                 btnEditar.Enabled = True
@@ -53,9 +51,9 @@ Public Class FrmProveedorListado
         dgvDatos.Refresh()
     End Sub
 
-    Private Sub ValidarCantidadEmpresas()
+    Private Async Sub ValidarCantidadRegistros()
         Try
-            intTotalEmpresas = servicioCompras.ObtenerTotalListaProveedores(FrmMenuPrincipal.empresaGlobal.IdEmpresa, txtNombre.Text)
+            intTotalEmpresas = Await PuntoventaWCF.ObtenerTotalListaProveedores(FrmPrincipal.empresaGlobal.IdEmpresa, txtNombre.Text)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -103,55 +101,46 @@ Public Class FrmProveedorListado
     End Sub
 
     Private Sub FrmProveedorListado_Shown(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Shown
-        Try
-            servicioCompras = FrmMenuPrincipal.unityContainer.Resolve(Of ICompraService)()
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-            Exit Sub
-        End Try
         EstablecerPropiedadesDataGridView()
-        ValidarCantidadEmpresas()
+        ValidarCantidadRegistros()
         intIndiceDePagina = 1
         ActualizarDatos(intIndiceDePagina)
     End Sub
 
     Private Sub btnAgregar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnAgregar.Click
         Dim formMant As New FrmProveedor With {
-            .intIdProveedor = 0,
-            .servicioCompras = servicioCompras
+        .intIdProveedor = 0
         }
         formMant.ShowDialog()
-        ValidarCantidadEmpresas()
+        ValidarCantidadRegistros()
         intIndiceDePagina = 1
         ActualizarDatos(intIndiceDePagina)
     End Sub
 
     Private Sub btnEditar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEditar.Click
         Dim formMant As New FrmProveedor With {
-            .intIdProveedor = dgvDatos.CurrentRow.Cells(0).Value,
-            .servicioCompras = servicioCompras
+        .intIdProveedor = dgvDatos.CurrentRow.Cells(0).Value
         }
         formMant.ShowDialog()
         ActualizarDatos(intIndiceDePagina)
     End Sub
 
-    Private Sub btnEliminar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEliminar.Click
+    Private Async Sub btnEliminar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEliminar.Click
         If MessageBox.Show("Desea eliminar el registro actual", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
             Try
-                servicioCompras.EliminarProveedor(dgvDatos.CurrentRow.Cells(0).Value)
+                Await PuntoventaWCF.EliminarProveedor(dgvDatos.CurrentRow.Cells(0).Value)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
-            ValidarCantidadEmpresas()
+            ValidarCantidadRegistros()
             intIndiceDePagina = 1
             ActualizarDatos(intIndiceDePagina)
         End If
     End Sub
 
     Private Sub btnFiltrar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnFiltrar.Click
-        ValidarCantidadEmpresas()
+        ValidarCantidadRegistros()
         intIndiceDePagina = 1
         ActualizarDatos(intIndiceDePagina)
     End Sub

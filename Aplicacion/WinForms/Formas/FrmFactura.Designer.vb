@@ -909,6 +909,7 @@ Partial Class FrmFactura
         Me.btnOrdenServicio.TabStop = False
         Me.btnOrdenServicio.Text = "Cargar Orden"
         Me.btnOrdenServicio.UseVisualStyleBackColor = False
+        Me.btnOrdenServicio.Visible = False
         '
         'txtIdOrdenServicio
         '
@@ -924,6 +925,7 @@ Partial Class FrmFactura
         Me.txtIdOrdenServicio.Size = New System.Drawing.Size(54, 20)
         Me.txtIdOrdenServicio.TabIndex = 5
         Me.txtIdOrdenServicio.TabStop = False
+        Me.txtIdOrdenServicio.Visible = False
         '
         'txtVendedor
         '
@@ -977,6 +979,7 @@ Partial Class FrmFactura
         Me.txtIdProforma.Size = New System.Drawing.Size(54, 20)
         Me.txtIdProforma.TabIndex = 9
         Me.txtIdProforma.TabStop = False
+        Me.txtIdProforma.Visible = False
         '
         'btnProforma
         '
@@ -991,6 +994,7 @@ Partial Class FrmFactura
         Me.btnProforma.TabStop = False
         Me.btnProforma.Text = "Cargar Proforma"
         Me.btnProforma.UseVisualStyleBackColor = False
+        Me.btnProforma.Visible = False
         '
         'txtPorDesc
         '
@@ -1139,8 +1143,9 @@ Partial Class FrmFactura
         'FrmFactura
         '
         Me.AcceptButton = Me.btnInsertar
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
+        Me.AutoScroll = True
+        Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(817, 612)
         Me.Controls.Add(Me.btnGenerarPDF)

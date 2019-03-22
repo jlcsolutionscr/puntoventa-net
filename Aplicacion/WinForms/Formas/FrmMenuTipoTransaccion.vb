@@ -1,11 +1,8 @@
-Imports LeandroSoftware.Core.CommonTypes
-Imports LeandroSoftware.PuntoVenta.Servicios
-Imports Unity
+Imports LeandroSoftware.Puntoventa.CommonTypes
 Imports System.Collections.Generic
 
 Public Class FrmMenuTipoTransaccion
 #Region "Variables"
-    Private servicioMantenimiento As IMantenimientoService
     Private dtListaFormaPago As New DataTable, drListaFormaPago As DataRow
     Public clFormasPago As IEnumerable(Of CondicionVentaYFormaPago)
 #End Region
@@ -40,22 +37,15 @@ Public Class FrmMenuTipoTransaccion
 
 #Region "Eventos Controles"
     Private Sub FrmRptMenu_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        Try
-            servicioMantenimiento = FrmMenuPrincipal.unityContainer.Resolve(Of IMantenimientoService)()
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-            Exit Sub
-        End Try
         CargarCombos()
     End Sub
 
     Private Sub btnProcesar_Click(sender As Object, e As EventArgs) Handles btnProcesar.Click
         If cboTipoTransaccion.SelectedValue IsNot Nothing Then
-            FrmMenuPrincipal.intBusqueda = cboTipoTransaccion.SelectedValue
+            FrmPrincipal.intBusqueda = cboTipoTransaccion.SelectedValue
             Close()
         Else
-            FrmMenuPrincipal.intBusqueda = 0
+            FrmPrincipal.intBusqueda = 0
             Close()
         End If
     End Sub

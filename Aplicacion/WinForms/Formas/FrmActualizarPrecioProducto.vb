@@ -1,10 +1,5 @@
-Imports LeandroSoftware.PuntoVenta.Dominio.Entidades
-Imports LeandroSoftware.PuntoVenta.Servicios
-Imports Unity
-
 Public Class FrmActualizarPrecioProducto
 #Region "Variables"
-    Private servicioMantenimiento As IMantenimientoService
 #End Region
 
 #Region "Metodos"
@@ -59,7 +54,7 @@ Public Class FrmActualizarPrecioProducto
 
     Private Sub CargarComboBox()
         Try
-            cboLinea.DataSource = servicioMantenimiento.ObtenerListaLineasDeProducto(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
+            'cboLinea.DataSource = servicioMantenimiento.ObtenerListaLineasDeProducto(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
             cboLinea.ValueMember = "IdLinea"
             cboLinea.DisplayMember = "Descripcion"
         Catch ex As Exception
@@ -72,7 +67,7 @@ Public Class FrmActualizarPrecioProducto
 #Region "Eventos Controles"
     Private Sub CmdFiltrar_Click(sender As Object, e As EventArgs) Handles CmdFiltrar.Click
         Try
-            GrdDetalle.DataSource = servicioMantenimiento.ObtenerListaProductos(FrmMenuPrincipal.empresaGlobal.IdEmpresa, 1, 0, False, cboLinea.SelectedValue, txtCodigo.Text, txtDescripcion.Text)
+            'GrdDetalle.DataSource = servicioMantenimiento.ObtenerListaProductos(FrmMenuPrincipal.empresaGlobal.IdEmpresa, 1, 0, False, cboLinea.SelectedValue, txtCodigo.Text, txtDescripcion.Text)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
@@ -83,18 +78,11 @@ Public Class FrmActualizarPrecioProducto
     End Sub
 
     Private Sub FrmInventario_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        Try
-            servicioMantenimiento = FrmMenuPrincipal.unityContainer.Resolve(Of IMantenimientoService)()
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-            Exit Sub
-        End Try
         EstablecerPropiedadesDataGridView()
         CargarComboBox()
         cboLinea.SelectedValue = 0
         Try
-            GrdDetalle.DataSource = servicioMantenimiento.ObtenerListaProductos(FrmMenuPrincipal.empresaGlobal.IdEmpresa, 1, 0, False)
+            'GrdDetalle.DataSource = servicioMantenimiento.ObtenerListaProductos(FrmMenuPrincipal.empresaGlobal.IdEmpresa, 1, 0, False)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -104,7 +92,7 @@ Public Class FrmActualizarPrecioProducto
     Private Sub BtnAplicar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnAplicar.Click
         If GrdDetalle.RowCount > 0 And txtPorcentaje.Text <> "" Then
             If MessageBox.Show("Desea proceder con la aplicación de aumento sobre el precio de venta de los productos listados?", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
-                servicioMantenimiento.ActualizarPrecioVentaProductos(FrmMenuPrincipal.empresaGlobal.IdEmpresa, cboLinea.SelectedValue, txtCodigo.Text, txtDescripcion.Text, Decimal.Parse(txtPorcentaje.Text))
+                'servicioMantenimiento.ActualizarPrecioVentaProductos(FrmMenuPrincipal.empresaGlobal.IdEmpresa, cboLinea.SelectedValue, txtCodigo.Text, txtDescripcion.Text, Decimal.Parse(txtPorcentaje.Text))
                 MessageBox.Show("Debe listar al menos un producto o ingresar el porcentaje de aumento.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End If
         Else
@@ -113,7 +101,7 @@ Public Class FrmActualizarPrecioProducto
     End Sub
 
     Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As KeyPressEventArgs) Handles txtPorcentaje.KeyPress
-        FrmMenuPrincipal.ValidaNumero(e, sender, True, 2, ".")
+        FrmPrincipal.ValidaNumero(e, sender, True, 2, ".")
     End Sub
 #End Region
 End Class

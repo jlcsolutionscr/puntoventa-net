@@ -1,8 +1,5 @@
 Imports System.Collections.Generic
-Imports LeandroSoftware.Core.CommonTypes
-Imports LeandroSoftware.PuntoVenta.Dominio.Entidades
-Imports LeandroSoftware.PuntoVenta.Servicios
-Imports Unity
+Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
 
 Public Class FrmImprimirReciboCxC
 #Region "Variables"
@@ -11,11 +8,9 @@ Public Class FrmImprimirReciboCxC
     Private dtrRowDetMovimiento As DataRow
     Private dblSaldo As Decimal
     Private bolInit As Boolean = True
-    Private servicioFacturacion As IFacturacionService
-    Private servicioCuentaPorCobrar As ICuentaPorCobrarService
     Private listadoMovimientos As IEnumerable(Of MovimientoCuentaPorCobrar)
     Private movimientoCuentaPorCobrar As MovimientoCuentaPorCobrar
-    Private reciboComprobante As ModuloImpresion.clsRecibo
+    Private reciboComprobante As ModuloImpresion.ClsRecibo
     Private desglosePagoImpresion As ModuloImpresion.clsDesgloseFormaPago
     Private arrDesgloseMov, arrDesglosePago As List(Of ModuloImpresion.clsDesgloseFormaPago)
     Private cliente As Cliente
@@ -24,9 +19,9 @@ Public Class FrmImprimirReciboCxC
 #Region "Métodos"
     Private Sub IniciaDetalleMovimiento()
         dtbDetalleMovimiento = New DataTable()
-        dtbDetalleMovimiento.Columns.Add("IDMOV", GetType(Int32))
+        dtbDetalleMovimiento.Columns.Add("IDMOV", GetType(Integer))
         dtbDetalleMovimiento.Columns.Add("USUARIO", GetType(String))
-        dtbDetalleMovimiento.Columns.Add("TIPO", GetType(Int32))
+        dtbDetalleMovimiento.Columns.Add("TIPO", GetType(Integer))
         dtbDetalleMovimiento.Columns.Add("DESCRIPCION", GetType(String))
         dtbDetalleMovimiento.Columns.Add("FECHA", GetType(Date))
         dtbDetalleMovimiento.Columns.Add("MONTO", GetType(Decimal))
@@ -72,14 +67,14 @@ Public Class FrmImprimirReciboCxC
         dvcMonto.DataPropertyName = "MONTO"
         dvcMonto.HeaderText = "Monto"
         dvcMonto.Width = 90
-        dvcMonto.DefaultCellStyle = FrmMenuPrincipal.dgvDecimal
+        dvcMonto.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleRecibo.Columns.Add(dvcMonto)
     End Sub
 
     Private Sub CargarDetalleMovimiento(ByVal intIdCliente As Integer)
         dtbDetalleMovimiento.Rows.Clear()
         Try
-            listadoMovimientos = servicioCuentaPorCobrar.ObtenerListaMovimientos(intIdCliente)
+            'listadoMovimientos = servicioCuentaPorCobrar.ObtenerListaMovimientos(intIdCliente)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
@@ -102,14 +97,6 @@ Public Class FrmImprimirReciboCxC
 
 #Region "Eventos Controles"
     Private Sub FrmImprimirReciboCxC_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        Try
-            servicioFacturacion = FrmMenuPrincipal.unityContainer.Resolve(Of IFacturacionService)()
-            servicioCuentaPorCobrar = FrmMenuPrincipal.unityContainer.Resolve(Of ICuentaPorCobrarService)()
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-            Exit Sub
-        End Try
         IniciaDetalleMovimiento()
         EstablecerPropiedadesDataGridView()
         grdDetalleRecibo.DataSource = dtbDetalleMovimiento
@@ -119,11 +106,11 @@ Public Class FrmImprimirReciboCxC
     Private Sub CmdImprimir_Click(sender As Object, e As EventArgs) Handles CmdImprimir.Click
         If grdDetalleRecibo.Rows.Count > 0 Then
             If grdDetalleRecibo.CurrentRow.Cells(0).Value.ToString <> "" Then
-                movimientoCuentaPorCobrar = servicioCuentaPorCobrar.ObtenerMovimiento(grdDetalleRecibo.CurrentRow.Cells(0).Value)
-                reciboComprobante = New ModuloImpresion.clsRecibo With {
-                    .usuario = FrmMenuPrincipal.usuarioGlobal,
-                    .empresa = FrmMenuPrincipal.empresaGlobal,
-                    .equipo = FrmMenuPrincipal.equipoGlobal,
+                'movimientoCuentaPorCobrar = servicioCuentaPorCobrar.ObtenerMovimiento(grdDetalleRecibo.CurrentRow.Cells(0).Value)
+                reciboComprobante = New ModuloImpresion.ClsRecibo With {
+                    .usuario = FrmPrincipal.usuarioGlobal,
+                    .empresa = FrmPrincipal.empresaGlobal,
+                    .equipo = FrmPrincipal.equipoGlobal,
                     .strConsecutivo = movimientoCuentaPorCobrar.IdMovCxC,
                     .strNombre = txtNombreCliente.Text,
                     .strFechaAbono = movimientoCuentaPorCobrar.Fecha,
@@ -164,11 +151,11 @@ Public Class FrmImprimirReciboCxC
 
     Private Sub btnBuscarCliente_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnBuscarCliente.Click
         Dim formBusquedaCliente As New FrmBusquedaCliente()
-        FrmMenuPrincipal.intBusqueda = 0
+        FrmPrincipal.intBusqueda = 0
         formBusquedaCliente.ShowDialog()
-        If FrmMenuPrincipal.intBusqueda > 0 Then
+        If FrmPrincipal.intBusqueda > 0 Then
             Try
-                cliente = servicioFacturacion.ObtenerCliente(FrmMenuPrincipal.intBusqueda)
+                'cliente = servicioFacturacion.ObtenerCliente(FrmMenuPrincipal.intBusqueda)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub

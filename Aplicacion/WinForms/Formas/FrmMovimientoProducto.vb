@@ -1,6 +1,4 @@
-Imports LeandroSoftware.PuntoVenta.Dominio.Entidades
-Imports LeandroSoftware.PuntoVenta.Servicios
-Imports Unity
+Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
 
 Public Class FrmMovimientoProducto
 #Region "Variables"
@@ -8,16 +6,15 @@ Public Class FrmMovimientoProducto
     Private intIndiceDePagina As Integer
     Private intFilasPorPagina As Integer = 13
     Private intCantidadDePaginas As Integer
-    Private servicioMantenimiento As MantenimientoService
     Private producto As Producto
     Public intIdProducto As Integer
 #End Region
 
 #Region "Metodos"
     Private Sub EstablecerPropiedadesDataGridView()
-        GrdDetalle.Columns.Clear()
-        GrdDetalle.AutoGenerateColumns = False
-        Dim dgvNumber As System.Windows.Forms.DataGridViewCellStyle
+        dgvListado.Columns.Clear()
+        dgvListado.AutoGenerateColumns = False
+        Dim dgvNumber As DataGridViewCellStyle
         Dim dvcFecha As New DataGridViewTextBoxColumn
         Dim dvcTipo As New DataGridViewTextBoxColumn
         Dim dvcOrigen As New DataGridViewTextBoxColumn
@@ -25,7 +22,7 @@ Public Class FrmMovimientoProducto
         Dim dvcCantidad As New DataGridViewTextBoxColumn
         Dim dvcPrecioCosto As New DataGridViewTextBoxColumn
 
-        dgvNumber = New System.Windows.Forms.DataGridViewCellStyle With {
+        dgvNumber = New DataGridViewCellStyle With {
             .Format = "N2",
             .NullValue = "0",
             .Alignment = DataGridViewContentAlignment.MiddleRight
@@ -34,50 +31,50 @@ Public Class FrmMovimientoProducto
         dvcFecha.DataPropertyName = "Fecha"
         dvcFecha.HeaderText = "Fecha"
         dvcFecha.Width = 125
-        GrdDetalle.Columns.Add(dvcFecha)
+        dgvListado.Columns.Add(dvcFecha)
 
         dvcTipo.DataPropertyName = "Tipo"
         dvcTipo.HeaderText = "Tipo"
         dvcTipo.Width = 50
-        GrdDetalle.Columns.Add(dvcTipo)
+        dgvListado.Columns.Add(dvcTipo)
 
         dvcOrigen.DataPropertyName = "Origen"
         dvcOrigen.HeaderText = "Origen"
         dvcOrigen.Width = 200
-        GrdDetalle.Columns.Add(dvcOrigen)
+        dgvListado.Columns.Add(dvcOrigen)
 
         dvcReferencia.DataPropertyName = "Referencia"
         dvcReferencia.HeaderText = "Referencia"
         dvcReferencia.Width = 100
-        GrdDetalle.Columns.Add(dvcReferencia)
+        dgvListado.Columns.Add(dvcReferencia)
 
         dvcCantidad.DataPropertyName = "Cantidad"
         dvcCantidad.HeaderText = "Cant"
         dvcCantidad.Width = 48
         dvcCantidad.DefaultCellStyle = dgvNumber
-        GrdDetalle.Columns.Add(dvcCantidad)
+        dgvListado.Columns.Add(dvcCantidad)
 
         dvcPrecioCosto.DataPropertyName = "PrecioCosto"
         dvcPrecioCosto.HeaderText = "Precio Costo"
         dvcPrecioCosto.Width = 75
         dvcPrecioCosto.DefaultCellStyle = dgvNumber
-        GrdDetalle.Columns.Add(dvcPrecioCosto)
+        dgvListado.Columns.Add(dvcPrecioCosto)
     End Sub
 
     Private Sub ActualizarDatos(ByVal intNumeroPagina As Integer)
         Try
-            GrdDetalle.DataSource = servicioMantenimiento.ObtenerMovimientosPorProducto(intIdProducto, intNumeroPagina, intFilasPorPagina, FechaInicio.Value, FechaFinal.Value)
+            'dgvListado.DataSource = servicioMantenimiento.ObtenerMovimientosPorProducto(intIdProducto, intNumeroPagina, intFilasPorPagina, FechaInicio.Value, FechaFinal.Value)
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
         End Try
-        GrdDetalle.Refresh()
+        dgvListado.Refresh()
     End Sub
 
     Private Sub ValidarCantidadEmpresas()
         Try
-            intTotalEmpresas = servicioMantenimiento.ObtenerTotalMovimientosPorProducto(intIdProducto, FechaInicio.Value, FechaFinal.Value)
+            'intTotalEmpresas = servicioMantenimiento.ObtenerTotalMovimientosPorProducto(intIdProducto, FechaInicio.Value, FechaFinal.Value)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -131,17 +128,7 @@ Public Class FrmMovimientoProducto
     End Sub
 
     Private Sub FrmInventario_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        Try
-            servicioMantenimiento = FrmMenuPrincipal.unityContainer.Resolve(Of IMantenimientoService)()
-            producto = servicioMantenimiento.ObtenerProducto(intIdProducto)
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-            Exit Sub
-        End Try
         EstablecerPropiedadesDataGridView()
-        txtCodigo.Text = producto.Codigo
-        txtDescripcion.Text = producto.Descripcion
         FechaInicio.Text = "01/" & Date.Now.Month & "/" & Date.Now.Year
         FechaFinal.Text = Date.DaysInMonth(Date.Now.Year, Date.Now.Month) & "/" & Date.Now.Month & "/" & Date.Now.Year
         ValidarCantidadEmpresas()

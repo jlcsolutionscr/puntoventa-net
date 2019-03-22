@@ -1,9 +1,8 @@
-Imports LeandroSoftware.Puntoventa.Servicios
-Imports Unity
+Imports System.Threading.Tasks
+Imports LeandroSoftware.AccesoDatos.ClienteWCF
 
 Public Class FrmBusquedaCliente
 #Region "Variables"
-    Private servicioFacturacion As IFacturacionService
     Private intTotalEmpresas As Integer
     Private intIndiceDePagina As Integer
     Private intFilasPorPagina As Integer = 13
@@ -17,46 +16,46 @@ Public Class FrmBusquedaCliente
         Dim dvcPermiteCredito As New DataGridViewCheckBoxColumn
         Dim dvcTopeCredito As New DataGridViewTextBoxColumn
 
-        FlexProducto.Columns.Clear()
-        FlexProducto.AutoGenerateColumns = False
+        dgvListado.Columns.Clear()
+        dgvListado.AutoGenerateColumns = False
         dvcId.HeaderText = "Id"
         dvcId.DataPropertyName = "IdCliente"
         dvcId.Width = 50
-        FlexProducto.Columns.Add(dvcId)
+        dgvListado.Columns.Add(dvcId)
         dvcNombre.HeaderText = "Nombre"
         dvcNombre.DataPropertyName = "Nombre"
         dvcNombre.Width = 400
-        FlexProducto.Columns.Add(dvcNombre)
+        dgvListado.Columns.Add(dvcNombre)
         dvcPermiteCredito.HeaderText = "Crédito"
         dvcPermiteCredito.DataPropertyName = "PermiteCredito"
         dvcPermiteCredito.Width = 50
-        FlexProducto.Columns.Add(dvcPermiteCredito)
+        dgvListado.Columns.Add(dvcPermiteCredito)
         dvcTopeCredito.HeaderText = "Tope Crédito"
         dvcTopeCredito.DataPropertyName = "TopeCredito"
         dvcTopeCredito.Width = 120
-        dvcTopeCredito.DefaultCellStyle = FrmMenuPrincipal.dgvDecimal
-        FlexProducto.Columns.Add(dvcTopeCredito)
+        dvcTopeCredito.DefaultCellStyle = FrmPrincipal.dgvDecimal
+        dgvListado.Columns.Add(dvcTopeCredito)
     End Sub
 
-    Private Sub ActualizarDatos(ByVal intNumeroPagina As Integer)
+    Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
         Try
-            FlexProducto.DataSource = servicioFacturacion.ObtenerListaClientes(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, txtNombre.Text, True)
+            dgvListado.DataSource = Await PuntoventaWCF.ObtenerListaClientes(FrmPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, txtNombre.Text)
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
-            Exit Sub
+            Exit Function
         End Try
-        FlexProducto.Refresh()
-    End Sub
+        dgvListado.Refresh()
+    End Function
 
-    Private Sub ValidarCantidadEmpresas()
+    Private Async Function ValidarCantidadClientes() As Task
         Try
-            intTotalEmpresas = servicioFacturacion.ObtenerTotalListaClientes(FrmMenuPrincipal.empresaGlobal.IdEmpresa, txtNombre.Text, True)
+            intTotalEmpresas = Await PuntoventaWCF.ObtenerTotalListaClientes(FrmPrincipal.empresaGlobal.IdEmpresa, txtNombre.Text)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
-            Exit Sub
+            Exit Function
         End Try
         intCantidadDePaginas = Math.Truncate(intTotalEmpresas / intFilasPorPagina) + IIf((intTotalEmpresas Mod intFilasPorPagina) = 0, 0, 1)
 
@@ -71,59 +70,52 @@ Public Class FrmBusquedaCliente
             btnPrevious.Enabled = False
             btnFirst.Enabled = False
         End If
-    End Sub
+    End Function
 #End Region
 
 #Region "Eventos Controles"
-    Private Sub BtnFirst_Click(sender As Object, e As EventArgs) Handles btnFirst.Click
+    Private Async Sub BtnFirst_Click(sender As Object, e As EventArgs) Handles btnFirst.Click
         intIndiceDePagina = 1
-        ActualizarDatos(intIndiceDePagina)
+        Await ActualizarDatos(intIndiceDePagina)
     End Sub
 
-    Private Sub BtnPrevious_Click(sender As Object, e As EventArgs) Handles btnPrevious.Click
+    Private Async Sub BtnPrevious_Click(sender As Object, e As EventArgs) Handles btnPrevious.Click
         If intIndiceDePagina > 1 Then
             intIndiceDePagina -= 1
-            ActualizarDatos(intIndiceDePagina)
+            Await ActualizarDatos(intIndiceDePagina)
         End If
     End Sub
 
-    Private Sub BtnNext_Click(sender As Object, e As EventArgs) Handles btnNext.Click
+    Private Async Sub BtnNext_Click(sender As Object, e As EventArgs) Handles btnNext.Click
         If intCantidadDePaginas > intIndiceDePagina Then
             intIndiceDePagina += 1
-            ActualizarDatos(intIndiceDePagina)
+            Await ActualizarDatos(intIndiceDePagina)
         End If
     End Sub
 
-    Private Sub BtnLast_Click(sender As Object, e As EventArgs) Handles btnLast.Click
+    Private Async Sub BtnLast_Click(sender As Object, e As EventArgs) Handles btnLast.Click
         intIndiceDePagina = intCantidadDePaginas
-        ActualizarDatos(intIndiceDePagina)
+        Await ActualizarDatos(intIndiceDePagina)
     End Sub
 
-    Private Sub FrmBusProd_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        Try
-            servicioFacturacion = FrmMenuPrincipal.unityContainer.Resolve(Of IFacturacionService)()
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-            Exit Sub
-        End Try
+    Private Async Sub FrmBusProd_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         EstablecerPropiedadesDataGridView()
-        ValidarCantidadEmpresas()
+        Await ValidarCantidadClientes()
         intIndiceDePagina = 1
-        ActualizarDatos(intIndiceDePagina)
+        Await ActualizarDatos(intIndiceDePagina)
     End Sub
 
-    Private Sub FlexProducto_DoubleClick(ByVal sender As Object, ByVal e As EventArgs) Handles FlexProducto.DoubleClick
-        If FlexProducto.RowCount > 0 Then
-            FrmMenuPrincipal.intBusqueda = FlexProducto.CurrentRow.Cells(0).Value
+    Private Sub FlexProducto_DoubleClick(ByVal sender As Object, ByVal e As EventArgs) Handles dgvListado.DoubleClick
+        If dgvListado.RowCount > 0 Then
+            FrmPrincipal.intBusqueda = dgvListado.CurrentRow.Cells(0).Value
             Close()
         End If
     End Sub
 
-    Private Sub BtnFiltrar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnFiltrar.Click
-        ValidarCantidadEmpresas()
+    Private Async Sub BtnFiltrar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnFiltrar.Click
+        Await ValidarCantidadClientes()
         intIndiceDePagina = 1
-        ActualizarDatos(intIndiceDePagina)
+        Await ActualizarDatos(intIndiceDePagina)
     End Sub
 #End Region
 End Class

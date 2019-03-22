@@ -27,7 +27,7 @@ Partial Class FrmBusquedaProducto
         Me.TxtCodigo = New System.Windows.Forms.TextBox()
         Me.Id2Label = New System.Windows.Forms.Label()
         Me.IdLabel = New System.Windows.Forms.Label()
-        Me.FlexProducto = New System.Windows.Forms.DataGridView()
+        Me.dgvListado = New System.Windows.Forms.DataGridView()
         Me.chkExacta = New System.Windows.Forms.CheckBox()
         Me.cboLinea = New System.Windows.Forms.ComboBox()
         Me.Label1 = New System.Windows.Forms.Label()
@@ -36,7 +36,7 @@ Partial Class FrmBusquedaProducto
         Me.btnNext = New System.Windows.Forms.Button()
         Me.btnPrevious = New System.Windows.Forms.Button()
         Me.btnFirst = New System.Windows.Forms.Button()
-        CType(Me.FlexProducto, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.dgvListado, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'CmdFiltro
@@ -105,20 +105,20 @@ Partial Class FrmBusquedaProducto
         Me.IdLabel.Text = "Código"
         Me.IdLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
-        'FlexProducto
+        'dgvListado
         '
-        Me.FlexProducto.AllowUserToAddRows = False
-        Me.FlexProducto.AllowUserToDeleteRows = False
-        Me.FlexProducto.AllowUserToResizeColumns = False
-        Me.FlexProducto.AllowUserToResizeRows = False
-        Me.FlexProducto.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.FlexProducto.Location = New System.Drawing.Point(12, 124)
-        Me.FlexProducto.Name = "FlexProducto"
-        Me.FlexProducto.ReadOnly = True
-        Me.FlexProducto.ScrollBars = System.Windows.Forms.ScrollBars.None
-        Me.FlexProducto.Size = New System.Drawing.Size(735, 310)
-        Me.FlexProducto.TabIndex = 5
-        Me.FlexProducto.TabStop = False
+        Me.dgvListado.AllowUserToAddRows = False
+        Me.dgvListado.AllowUserToDeleteRows = False
+        Me.dgvListado.AllowUserToResizeColumns = False
+        Me.dgvListado.AllowUserToResizeRows = False
+        Me.dgvListado.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        Me.dgvListado.Location = New System.Drawing.Point(12, 124)
+        Me.dgvListado.Name = "dgvListado"
+        Me.dgvListado.ReadOnly = True
+        Me.dgvListado.ScrollBars = System.Windows.Forms.ScrollBars.None
+        Me.dgvListado.Size = New System.Drawing.Size(735, 310)
+        Me.dgvListado.TabIndex = 5
+        Me.dgvListado.TabStop = False
         '
         'chkExacta
         '
@@ -229,7 +229,7 @@ Partial Class FrmBusquedaProducto
         Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.cboLinea)
         Me.Controls.Add(Me.chkExacta)
-        Me.Controls.Add(Me.FlexProducto)
+        Me.Controls.Add(Me.dgvListado)
         Me.Controls.Add(Me.CmdFiltro)
         Me.Controls.Add(Me.TxtDesc)
         Me.Controls.Add(Me.TxtCodigo)
@@ -244,12 +244,12 @@ Partial Class FrmBusquedaProducto
         Me.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Búsqueda de Producto"
-        CType(Me.FlexProducto, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.dgvListado, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
     End Sub
-    Friend WithEvents FlexProducto As System.Windows.Forms.DataGridView
+    Friend WithEvents dgvListado As System.Windows.Forms.DataGridView
     Friend WithEvents chkExacta As System.Windows.Forms.CheckBox
     Friend WithEvents cboLinea As System.Windows.Forms.ComboBox
     Public WithEvents Label1 As System.Windows.Forms.Label

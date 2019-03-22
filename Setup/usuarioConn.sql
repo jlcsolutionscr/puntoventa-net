@@ -1,14 +1,6 @@
 ﻿use mysql;
 CREATE USER 'usuarioConn'@'%' identified by 'Mcmddppv090281';
-INSERT INTO db(host, db, user, Select_Priv, Insert_priv, Update_priv, Delete_priv) VALUES('localhost','puntoventa','usuarioConn','Y','Y','Y','Y');
-CREATE USER 'backup'@'%' IDENTIFIED BY 'Ursdtlds090281';
-INSERT INTO db(host, db, user, Select_Priv, Lock_tables_priv) VALUES('localhost','puntoventa','backup','Y','Y');
-CREATE USER 'activator'@'%' IDENTIFIED BY 'A09c02t81i$';
-INSERT INTO db(host, db, user, Select_Priv, Lock_tables_priv) VALUES('localhost','puntoventa','activator','Y','Y');
-INSERT INTO db(host, db, user, Select_Priv) VALUES('localhost','mysql','activator','Y');
-GRANT INSERT, DELETE, UPDATE ON puntoventa.empresa TO 'activator';
-GRANT INSERT, DELETE, UPDATE ON puntoventa.detalleregistro TO 'activator';
-GRANT INSERT, DELETE, UPDATE ON puntoventa.usuario TO 'activator';
-GRANT EXECUTE ON FUNCTION puntoventa.DiffDays TO usuarioConn;
-GRANT EXECUTE ON PROCEDURE puntoventa.MarcaRegistrosProcesados TO usuarioConn;
+INSERT INTO db(host, db, user, Select_Priv, Insert_priv, Update_priv, Delete_priv) VALUES('localhost','facturaelectronica','usuarioConn','Y','Y','Y','Y');
+GRANT EXECUTE ON FUNCTION facturaelectronica.DiffDays TO usuarioConn;
+GRANT EXECUTE ON PROCEDURE facturaelectronica.MarcaRegistrosProcesados TO usuarioConn;
 FLUSH PRIVILEGES;

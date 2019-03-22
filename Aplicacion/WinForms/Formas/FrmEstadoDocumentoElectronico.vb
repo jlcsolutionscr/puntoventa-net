@@ -1,9 +1,9 @@
-﻿Imports LeandroSoftware.Puntoventa.Servicios
-Imports Unity
+﻿Imports System.Threading.Tasks
+Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
+Imports LeandroSoftware.AccesoDatos.ClienteWCF
 
 Public Class FrmEstadoDocumentoElectronico
 #Region "Variables"
-    Private servicioFacturacion As IFacturacionService
     Private listadoDocumentosPendientes As IList
 #End Region
 
@@ -42,10 +42,10 @@ Public Class FrmEstadoDocumentoElectronico
     Private Async Sub ActualizarDatos()
         Try
             picLoader.Visible = True
-            listadoDocumentosPendientes = Await servicioFacturacion.ObtenerListaDocumentosElectronicosPendientes(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
+            listadoDocumentosPendientes = Await PuntoventaWCF.ObtenerListaDocumentosElectronicosEnProceso(FrmPrincipal.empresaGlobal.IdEmpresa)
             dgvDatos.DataSource = listadoDocumentosPendientes
             If listadoDocumentosPendientes.Count() > 0 Then
-                btnActualizar.Enabled = True
+                btnProcesar.Enabled = True
             Else
                 MessageBox.Show("No existen registros pendientes. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 Close()
@@ -62,29 +62,15 @@ Public Class FrmEstadoDocumentoElectronico
 
 #Region "Eventos controles"
     Private Sub FrmEstadoDocumentoElectronico_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        Try
-            servicioFacturacion = FrmMenuPrincipal.unityContainer.Resolve(Of IFacturacionService)()
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-            Exit Sub
-        End Try
         EstablecerPropiedadesDataGridView()
         ActualizarDatos()
     End Sub
 
-    Private Async Sub btnEnviar_Click(sender As Object, e As EventArgs) Handles btnActualizar.Click
+    Private Async Sub BtnProcesar_Click(sender As Object, e As EventArgs) Handles btnProcesar.Click
         Try
             picLoader.Visible = True
-            listadoDocumentosPendientes = Await servicioFacturacion.ObtenerListaDocumentosElectronicosPendientes(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
-            dgvDatos.DataSource = listadoDocumentosPendientes
-            If listadoDocumentosPendientes.Count() > 0 Then
-                btnActualizar.Enabled = True
-            Else
-                MessageBox.Show("No existen registros pendientes. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
-                Close()
-            End If
-            picLoader.Visible = False
+            Await PuntoventaWCF.ProcesarDocumentosElectronicosPendientes(FrmPrincipal.empresaGlobal.IdEmpresa)
+            Close()
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()

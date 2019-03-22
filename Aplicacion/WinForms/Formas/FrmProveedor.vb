@@ -1,10 +1,8 @@
-Imports LeandroSoftware.PuntoVenta.Dominio.Entidades
-Imports LeandroSoftware.PuntoVenta.Servicios
-Imports Unity
+Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
+Imports LeandroSoftware.AccesoDatos.ClienteWCF
 
 Public Class FrmProveedor
 #Region "Variables"
-    Public servicioCompras As ICompraService
     Public intIdProveedor As Integer
     Private datos As Proveedor
 #End Region
@@ -24,10 +22,10 @@ Public Class FrmProveedor
 #End Region
 
 #Region "Eventos Controles"
-    Private Sub FrmProveedor_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+    Private Async Sub FrmProveedor_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         If intIdProveedor > 0 Then
             Try
-                datos = servicioCompras.ObtenerProveedor(intIdProveedor)
+                datos = Await PuntoventaWCF.ObtenerProveedor(intIdProveedor)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                 Close()
@@ -61,14 +59,14 @@ Public Class FrmProveedor
         Close()
     End Sub
 
-    Private Sub btnGuardar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnGuardar.Click
+    Private Async Sub btnGuardar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnGuardar.Click
         Dim strCampo As String = ""
         If Not ValidarCampos(strCampo) Then
             MessageBox.Show("El campo " & strCampo & " es requerido", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         End If
         If datos.IdProveedor = 0 Then
-            datos.IdEmpresa = FrmMenuPrincipal.empresaGlobal.IdEmpresa
+            datos.IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa
         End If
         datos.Identificacion = txtIdentificacion.Text
         datos.Nombre = txtNombre.Text
@@ -84,9 +82,10 @@ Public Class FrmProveedor
         datos.TelCont2 = txtTelContacto2.Text
         Try
             If datos.IdProveedor = 0 Then
-                servicioCompras.AgregarProveedor(datos)
+                Dim strIdProveedor As String = Await PuntoventaWCF.AgregarProveedor(datos)
+                txtIdProveedor.Text = strIdProveedor
             Else
-                servicioCompras.ActualizarProveedor(datos)
+                Await PuntoventaWCF.ActualizarProveedor(datos)
             End If
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -101,7 +100,7 @@ Public Class FrmProveedor
     End Sub
 
     Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs) Handles txtPlazo.KeyPress
-        FrmMenuPrincipal.ValidaNumero(e, sender, False, 0)
+        FrmPrincipal.ValidaNumero(e, sender, False, 0)
     End Sub
 #End Region
 End Class

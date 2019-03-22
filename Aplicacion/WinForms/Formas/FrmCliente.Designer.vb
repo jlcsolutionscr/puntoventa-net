@@ -67,6 +67,8 @@ Partial Class FrmCliente
         Me.cboVendedor = New System.Windows.Forms.ComboBox()
         Me.Label10 = New System.Windows.Forms.Label()
         Me.cboIdTipoPrecio = New System.Windows.Forms.ComboBox()
+        Me.chkExonerado = New System.Windows.Forms.CheckBox()
+        Me.Label11 = New System.Windows.Forms.Label()
         Me.SuspendLayout()
         '
         'txtFax
@@ -556,12 +558,36 @@ Partial Class FrmCliente
         Me.cboIdTipoPrecio.Size = New System.Drawing.Size(192, 21)
         Me.cboIdTipoPrecio.TabIndex = 16
         '
+        'chkExonerado
+        '
+        Me.chkExonerado.AutoSize = True
+        Me.chkExonerado.Location = New System.Drawing.Point(162, 504)
+        Me.chkExonerado.Name = "chkExonerado"
+        Me.chkExonerado.Size = New System.Drawing.Size(15, 14)
+        Me.chkExonerado.TabIndex = 70
+        Me.chkExonerado.UseVisualStyleBackColor = True
+        '
+        'Label11
+        '
+        Me.Label11.BackColor = System.Drawing.Color.Transparent
+        Me.Label11.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label11.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label11.Location = New System.Drawing.Point(31, 503)
+        Me.Label11.Name = "Label11"
+        Me.Label11.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label11.Size = New System.Drawing.Size(125, 17)
+        Me.Label11.TabIndex = 71
+        Me.Label11.Text = "Exonerado impuestos:"
+        Me.Label11.TextAlign = System.Drawing.ContentAlignment.TopRight
+        '
         'FrmCliente
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
-        Me.ClientSize = New System.Drawing.Size(632, 517)
+        Me.ClientSize = New System.Drawing.Size(632, 528)
+        Me.Controls.Add(Me.Label11)
+        Me.Controls.Add(Me.chkExonerado)
         Me.Controls.Add(Me.Label10)
         Me.Controls.Add(Me.cboIdTipoPrecio)
         Me.Controls.Add(Me.Label9)
@@ -634,4 +660,6 @@ Partial Class FrmCliente
     Public WithEvents cboVendedor As ComboBox
     Public WithEvents Label10 As Label
     Public WithEvents cboIdTipoPrecio As ComboBox
+    Friend WithEvents chkExonerado As CheckBox
+    Public WithEvents Label11 As Label
 End Class

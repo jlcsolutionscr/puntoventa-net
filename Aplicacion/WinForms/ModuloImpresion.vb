@@ -1,16 +1,14 @@
 Imports System.IO
-Imports System.Text
 Imports System.Runtime.InteropServices
-Imports System.Data
 Imports System.Collections.Generic
-Imports LeandroSoftware.Puntoventa.Dominio.Entidades
+Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
 Imports System.Drawing.Printing
 
 Public Class ModuloImpresion
 #Region "Variables"
-    Public Class clsEgreso
+    Public Class ClsEgreso
         Public empresa As Empresa
-        Public equipo As DetalleRegistro
+        Public equipo As TerminalPorEmpresa
         Public usuario As Usuario
         Public strId As String
         Public strFecha As String
@@ -23,9 +21,9 @@ Public Class ModuloImpresion
         Public arrDesglosePago As IList(Of clsDesgloseFormaPago)
     End Class
 
-    Public Class clsIngreso
+    Public Class ClsIngreso
         Public empresa As Empresa
-        Public equipo As DetalleRegistro
+        Public equipo As TerminalPorEmpresa
         Public usuario As Usuario
         Public strId As String
         Public strFecha As String
@@ -38,9 +36,9 @@ Public Class ModuloImpresion
         Public arrDesglosePago As IList(Of clsDesgloseFormaPago)
     End Class
 
-    Public Class clsCuentaPorPagar
+    Public Class ClsCuentaPorPagar
         Public empresa As Empresa
-        Public equipo As DetalleRegistro
+        Public equipo As TerminalPorEmpresa
         Public usuario As Usuario
         Public strId As String
         Public strFecha As String
@@ -53,9 +51,9 @@ Public Class ModuloImpresion
         Public arrDesglosePago As IList(Of clsDesgloseFormaPago)
     End Class
 
-    Public Class clsRecibo
+    Public Class ClsRecibo
         Public empresa As Empresa
-        Public equipo As DetalleRegistro
+        Public equipo As TerminalPorEmpresa
         Public usuario As Usuario
         Public strConsecutivo As String
         Public strRecibo As String
@@ -66,9 +64,9 @@ Public Class ModuloImpresion
         Public arrDesglosePago As IList(Of clsDesgloseFormaPago)
     End Class
 
-    Public Class clsAjusteInventario
+    Public Class ClsAjusteInventario
         Public empresa As Empresa
-        Public equipo As DetalleRegistro
+        Public equipo As TerminalPorEmpresa
         Public usuario As Usuario
         Public strId As String
         Public strFecha As String
@@ -76,9 +74,9 @@ Public Class ModuloImpresion
         Public arrDetalleComprobante As IList(Of clsDetalleComprobante)
     End Class
 
-    Public Class clsComprobante
+    Public Class ClsComprobante
         Public empresa As Empresa
-        Public equipo As DetalleRegistro
+        Public equipo As TerminalPorEmpresa
         Public usuario As Usuario
         Public strVendedor As String
         Public intCliente As Integer
@@ -99,7 +97,7 @@ Public Class ModuloImpresion
         Public arrDesglosePago As IList(Of clsDesgloseFormaPago)
     End Class
 
-    Public Class clsDetalleComprobante
+    Public Class ClsDetalleComprobante
         Public strDescripcion As String
         Public strCantidad As String
         Public strPrecio As String
@@ -107,7 +105,7 @@ Public Class ModuloImpresion
         Public strExcento As String
     End Class
 
-    Public Class clsDesgloseFormaPago
+    Public Class ClsDesgloseFormaPago
         Public strDescripcion As String
         Public strMonto As String
         Public strNroDoc As String
@@ -115,54 +113,54 @@ Public Class ModuloImpresion
 #End Region
 
 #Region "Métodos sobrecargados"
-    <StructLayout(LayoutKind.Sequential, CharSet:=CharSet.Unicode)> _
+    <StructLayout(LayoutKind.Sequential, CharSet:=CharSet.Unicode)>
     Structure DOCINFOW
         <MarshalAs(UnmanagedType.LPWStr)> Public pDocName As String
         <MarshalAs(UnmanagedType.LPWStr)> Public pOutputFile As String
         <MarshalAs(UnmanagedType.LPWStr)> Public pDataType As String
     End Structure
 
-    <DllImport("winspool.Drv", EntryPoint:="OpenPrinterW", _
-        SetLastError:=True, CharSet:=CharSet.Unicode, _
-        ExactSpelling:=True, CallingConvention:=CallingConvention.StdCall)> _
+    <DllImport("winspool.Drv", EntryPoint:="OpenPrinterW",
+        SetLastError:=True, CharSet:=CharSet.Unicode,
+        ExactSpelling:=True, CallingConvention:=CallingConvention.StdCall)>
     Private Shared Function OpenPrinter(ByVal src As String, ByRef hPrinter As IntPtr, ByVal pd As Integer) As Boolean
     End Function
-    <DllImport("winspool.Drv", EntryPoint:="ClosePrinter", _
-        SetLastError:=True, CharSet:=CharSet.Unicode, _
-        ExactSpelling:=True, CallingConvention:=CallingConvention.StdCall)> _
+    <DllImport("winspool.Drv", EntryPoint:="ClosePrinter",
+        SetLastError:=True, CharSet:=CharSet.Unicode,
+        ExactSpelling:=True, CallingConvention:=CallingConvention.StdCall)>
     Private Shared Function ClosePrinter(ByVal hPrinter As IntPtr) As Boolean
     End Function
-    <DllImport("winspool.Drv", EntryPoint:="StartDocPrinterW", _
-        SetLastError:=True, CharSet:=CharSet.Unicode, _
-        ExactSpelling:=True, CallingConvention:=CallingConvention.StdCall)> _
-    Private Shared Function StartDocPrinter(ByVal hPrinter As IntPtr, ByVal level As Int32, ByRef pDI As DOCINFOW) As Boolean
+    <DllImport("winspool.Drv", EntryPoint:="StartDocPrinterW",
+        SetLastError:=True, CharSet:=CharSet.Unicode,
+        ExactSpelling:=True, CallingConvention:=CallingConvention.StdCall)>
+    Private Shared Function StartDocPrinter(ByVal hPrinter As IntPtr, ByVal level As Integer, ByRef pDI As DOCINFOW) As Boolean
     End Function
-    <DllImport("winspool.Drv", EntryPoint:="EndDocPrinter", _
-        SetLastError:=True, CharSet:=CharSet.Unicode, _
-        ExactSpelling:=True, CallingConvention:=CallingConvention.StdCall)> _
+    <DllImport("winspool.Drv", EntryPoint:="EndDocPrinter",
+        SetLastError:=True, CharSet:=CharSet.Unicode,
+        ExactSpelling:=True, CallingConvention:=CallingConvention.StdCall)>
     Private Shared Function EndDocPrinter(ByVal hPrinter As IntPtr) As Boolean
     End Function
-    <DllImport("winspool.Drv", EntryPoint:="StartPagePrinter", _
-        SetLastError:=True, CharSet:=CharSet.Unicode, _
-        ExactSpelling:=True, CallingConvention:=CallingConvention.StdCall)> _
+    <DllImport("winspool.Drv", EntryPoint:="StartPagePrinter",
+        SetLastError:=True, CharSet:=CharSet.Unicode,
+        ExactSpelling:=True, CallingConvention:=CallingConvention.StdCall)>
     Private Shared Function StartPagePrinter(ByVal hPrinter As IntPtr) As Boolean
     End Function
-    <DllImport("winspool.Drv", EntryPoint:="EndPagePrinter", _
-        SetLastError:=True, CharSet:=CharSet.Unicode, _
-        ExactSpelling:=True, CallingConvention:=CallingConvention.StdCall)> _
+    <DllImport("winspool.Drv", EntryPoint:="EndPagePrinter",
+        SetLastError:=True, CharSet:=CharSet.Unicode,
+        ExactSpelling:=True, CallingConvention:=CallingConvention.StdCall)>
     Private Shared Function EndPagePrinter(ByVal hPrinter As IntPtr) As Boolean
     End Function
-    <DllImport("winspool.Drv", EntryPoint:="WritePrinter", _
-        SetLastError:=True, CharSet:=CharSet.Unicode, _
-        ExactSpelling:=True, CallingConvention:=CallingConvention.StdCall)> _
-    Private Shared Function WritePrinter(ByVal hPrinter As IntPtr, ByVal pBytes As IntPtr, ByVal dwCount As Int32, ByRef dwWritten As Int32) As Boolean
+    <DllImport("winspool.Drv", EntryPoint:="WritePrinter",
+        SetLastError:=True, CharSet:=CharSet.Unicode,
+        ExactSpelling:=True, CallingConvention:=CallingConvention.StdCall)>
+    Private Shared Function WritePrinter(ByVal hPrinter As IntPtr, ByVal pBytes As IntPtr, ByVal dwCount As Integer, ByRef dwWritten As Integer) As Boolean
     End Function
 
-    Private Shared Function SendBytesToPrinter(ByVal szPrinterName As String, ByVal pBytes As IntPtr, ByVal dwCount As Int32) As Boolean
+    Private Shared Function SendBytesToPrinter(ByVal szPrinterName As String, ByVal pBytes As IntPtr, ByVal dwCount As Integer) As Boolean
         Dim hPrinter As IntPtr          ' The printer handle. 
-        Dim dwError As Int32            ' Last error - in case there was trouble. 
+        Dim dwError As Integer            ' Last error - in case there was trouble. 
         Dim di As New DOCINFOW          ' Describes your document (name, port, data type). 
-        Dim dwWritten As Int32          ' The number of bytes written by WritePrinter(). 
+        Dim dwWritten As Integer          ' The number of bytes written by WritePrinter(). 
         Dim bSuccess As Boolean         ' Your success code. 
         Try
             With di
@@ -191,7 +189,7 @@ Public Class ModuloImpresion
 
     Private Shared Sub SendStringToPrinter(ByVal szPrinterName As String, ByVal strInput As String)
         Dim pBytes As IntPtr
-        Dim dwCount As Int32
+        Dim dwCount As Integer
         Dim bSuccess As Boolean
         Try
             Dim strDataString = strInput + Chr(12)
@@ -228,11 +226,11 @@ Public Class ModuloImpresion
         Dim intYPosition As Integer = 0
 
         ' Use this for left/right/centre justification, trimming, etc
-        Dim objStringFormat As StringFormat = New StringFormat()
-        objStringFormat.Alignment = StringAlignment.Near
-
         ' ensure words aren't printed over the edge of the margin (start a new line)
-        objStringFormat.Trimming = StringTrimming.Word
+        Dim objStringFormat As StringFormat = New StringFormat With {
+            .Alignment = StringAlignment.Near,
+            .Trimming = StringTrimming.Word
+        }
 
         Dim regular As Font = New Font(FontFamily.GenericSansSerif, 10.0F, FontStyle.Regular)
         Dim bold As Font = New Font(FontFamily.GenericSansSerif, 10.0F, FontStyle.Bold)
@@ -260,7 +258,7 @@ Public Class ModuloImpresion
 #End Region
 
 #Region "Métodos"
-    Private Shared Function ImprimirEncabezado(objEquipo As DetalleRegistro, objEmpresa As Empresa, strFecha As String, Optional strCodigoUsuario As String = "") As String
+    Private Shared Function ImprimirEncabezado(objEquipo As TerminalPorEmpresa, objEmpresa As Empresa, strFecha As String, Optional strCodigoUsuario As String = "") As String
         Dim strCadena As String = strFecha & strCodigoUsuario.PadLeft(30, " ") & Chr(13) & Chr(10)
         If objEmpresa.NombreComercial.Length > 40 Then
             strCadena += objEmpresa.NombreComercial.Substring(0, 40) & Chr(13) & Chr(10)
@@ -294,7 +292,7 @@ Public Class ModuloImpresion
             strCadena += "".PadRight((40 - strDireccion1.Length) / 2, " ") + strDireccion1 & Chr(13) & Chr(10)
         End If
         strCadena += "".PadRight((40 - objEmpresa.Telefono.Length) / 2, " ") + objEmpresa.Telefono & Chr(13) & Chr(10)
-        strCadena += "".PadRight((40 - objEmpresa.CuentaCorreoElectronico.Length) / 2, " ") + objEmpresa.CuentaCorreoElectronico & Chr(13) & Chr(10)
+        strCadena += "".PadRight((40 - objEmpresa.CorreoNotificacion.Length) / 2, " ") + objEmpresa.CorreoNotificacion & Chr(13) & Chr(10)
         Return strCadena
     End Function
 
@@ -332,7 +330,7 @@ Public Class ModuloImpresion
         Return strDetalle
     End Function
 
-    Private Shared Function ImprimirTotales(objComprobante As clsComprobante) As String
+    Private Shared Function ImprimirTotales(objComprobante As ClsComprobante) As String
         Dim strTotales As String = ""
         strTotales += "Sub-Total:".PadLeft(23, " ") & objComprobante.strSubTotal.ToString.PadLeft(17, " ") & Chr(13) & Chr(10)
         If objComprobante.strDescuento <> "" Then
@@ -343,7 +341,7 @@ Public Class ModuloImpresion
         Return strTotales
     End Function
 
-    Public Shared Sub ImprimirFactura(ByVal objFactura As clsComprobante)
+    Public Shared Sub ImprimirFactura(ByVal objFactura As ClsComprobante)
         Dim strFactura As String = ""
         Try
             strFactura += ImprimirEncabezado(objFactura.equipo, objFactura.empresa, Date.Now.ToString("dd-MM-yyyy"), objFactura.usuario.CodigoUsuario)
@@ -383,7 +381,7 @@ Public Class ModuloImpresion
         End Try
     End Sub
 
-    Public Shared Sub ImprimirCompra(ByVal objCompra As clsComprobante)
+    Public Shared Sub ImprimirCompra(ByVal objCompra As ClsComprobante)
         Dim strCompra As String = ""
         strCompra += ImprimirEncabezado(objCompra.equipo, objCompra.empresa, Date.Now.ToString("dd-MM-yyyy"))
         strCompra += Chr(13) & Chr(10)
@@ -399,7 +397,7 @@ Public Class ModuloImpresion
         SendStringToPrinter(objCompra.equipo.ImpresoraFactura, strCompra)
     End Sub
 
-    Public Shared Sub ImprimirDevolucionCliente(ByVal objDevolucion As clsComprobante)
+    Public Shared Sub ImprimirDevolucionCliente(ByVal objDevolucion As ClsComprobante)
         Dim strDevolucion As String = ""
         strDevolucion += "    DEVOLUCION DE MERCANCIA CLIENTES" & Chr(13) & Chr(10)
         strDevolucion += Chr(13) & Chr(10)
@@ -419,7 +417,7 @@ Public Class ModuloImpresion
         SendStringToPrinter(objDevolucion.equipo.ImpresoraFactura, strDevolucion)
     End Sub
 
-    Public Shared Sub ImprimirDevolucionProveedor(ByVal objDevolucion As clsComprobante)
+    Public Shared Sub ImprimirDevolucionProveedor(ByVal objDevolucion As ClsComprobante)
         Dim strDevolucion As String = ""
         strDevolucion += "   DEVOLUCION DE MERCANCIA PROVEEDOR" & Chr(13) & Chr(10)
         strDevolucion += Chr(13) & Chr(10)
@@ -439,7 +437,7 @@ Public Class ModuloImpresion
         SendStringToPrinter(objDevolucion.equipo.ImpresoraFactura, strDevolucion)
     End Sub
 
-    Public Shared Sub ImprimirTraslado(ByVal objTraslado As clsComprobante)
+    Public Shared Sub ImprimirTraslado(ByVal objTraslado As ClsComprobante)
         Dim strTraslado As String = ""
         strTraslado += "         TRASLADO DE MERCANCIA" & Chr(13) & Chr(10)
         strTraslado += Chr(13) & Chr(10)
@@ -461,7 +459,7 @@ Public Class ModuloImpresion
         SendStringToPrinter(objTraslado.equipo.ImpresoraFactura, strTraslado)
     End Sub
 
-    Public Shared Sub ImprimirReciboCxC(ByVal objReciboCxC As clsRecibo)
+    Public Shared Sub ImprimirReciboCxC(ByVal objReciboCxC As ClsRecibo)
         Dim strRecibo As String = ""
         Dim i As Integer
         strRecibo += "        RECIBO CUENTA POR COBRAR" & Chr(13) & Chr(10)
@@ -485,7 +483,7 @@ Public Class ModuloImpresion
         SendStringToPrinter(objReciboCxC.equipo.ImpresoraFactura, strRecibo)
     End Sub
 
-    Public Shared Sub ImprimirReciboCxP(ByVal objReciboCxP As clsRecibo)
+    Public Shared Sub ImprimirReciboCxP(ByVal objReciboCxP As ClsRecibo)
         Dim strRecibo As String = ""
         Dim i As Integer
         strRecibo += "       ABONO CUENTA POR PAGAR" & Chr(13) & Chr(10)
@@ -509,7 +507,7 @@ Public Class ModuloImpresion
         SendStringToPrinter(objReciboCxP.equipo.ImpresoraFactura, strRecibo)
     End Sub
 
-    Public Shared Sub ImprimirEgreso(ByVal objEgreso As clsEgreso)
+    Public Shared Sub ImprimirEgreso(ByVal objEgreso As ClsEgreso)
         Dim strEgreso As String = ""
         strEgreso += "         COMPROBANTE DE EGRESO" & Chr(13) & Chr(10)
         strEgreso += Chr(13) & Chr(10)
@@ -543,7 +541,7 @@ Public Class ModuloImpresion
         SendStringToPrinter(objEgreso.equipo.ImpresoraFactura, strEgreso)
     End Sub
 
-    Public Shared Sub ImprimirIngreso(ByVal objIngreso As clsIngreso)
+    Public Shared Sub ImprimirIngreso(ByVal objIngreso As ClsIngreso)
         Dim strIngreso As String = ""
         strIngreso += "          REGISTRO DE INGRESO" & Chr(13) & Chr(10)
         strIngreso += Chr(13) & Chr(10)
@@ -577,7 +575,7 @@ Public Class ModuloImpresion
         SendStringToPrinter(objIngreso.equipo.ImpresoraFactura, strIngreso)
     End Sub
 
-    Public Shared Sub ImprimirCuentaPorPagar(ByVal objcuenta As clsCuentaPorPagar)
+    Public Shared Sub ImprimirCuentaPorPagar(ByVal objcuenta As ClsCuentaPorPagar)
         Dim strCuenta As String = ""
         strCuenta += "    COMPROBANTE DE CUENTA POR PAGAR" & Chr(13) & Chr(10)
         strCuenta += Chr(13) & Chr(10)
@@ -611,7 +609,7 @@ Public Class ModuloImpresion
         SendStringToPrinter(objcuenta.equipo.ImpresoraFactura, strCuenta)
     End Sub
 
-    Public Shared Sub ImprimirAjusteInventario(ByVal objAjuste As clsAjusteInventario)
+    Public Shared Sub ImprimirAjusteInventario(ByVal objAjuste As ClsAjusteInventario)
         Dim strAjusteInventario As String = ""
         strAjusteInventario += "         AJUSTE DE INVENTARIO" & Chr(13) & Chr(10)
         strAjusteInventario += Chr(13) & Chr(10)

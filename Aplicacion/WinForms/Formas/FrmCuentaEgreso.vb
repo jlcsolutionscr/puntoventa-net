@@ -1,10 +1,8 @@
-Imports LeandroSoftware.PuntoVenta.Dominio.Entidades
-Imports LeandroSoftware.PuntoVenta.Servicios
-Imports Unity
+Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
+Imports LeandroSoftware.AccesoDatos.ClienteWCF
 
 Public Class FrmCuentaEgreso
 #Region "Variables"
-    Public servicioEgresos As IEgresoService
     Public intIdCuenta As Integer
     Private datos As CuentaEgreso
 #End Region
@@ -21,10 +19,10 @@ Public Class FrmCuentaEgreso
 #End Region
 
 #Region "Eventos Controles"
-    Private Sub FrmCuentaEgreso_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+    Private Async Sub FrmCuentaEgreso_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         If intIdCuenta > 0 Then
             Try
-                datos = servicioEgresos.obtenerCuentaEgreso(intIdCuenta)
+                datos = Await PuntoventaWCF.ObtenerCuentaEgreso(intIdCuenta)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Close()
@@ -46,21 +44,22 @@ Public Class FrmCuentaEgreso
         Close()
     End Sub
 
-    Private Sub btnGuardar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnGuardar.Click
+    Private Async Sub btnGuardar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnGuardar.Click
         Dim strCampo As String = ""
         If Not ValidarCampos(strCampo) Then
             MessageBox.Show("El campo " & strCampo & " es requerido", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         End If
         If datos.IdCuenta = 0 Then
-            datos.IdEmpresa = FrmMenuPrincipal.empresaGlobal.IdEmpresa
+            datos.IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa
         End If
         datos.Descripcion = txtDescripcion.Text
         Try
             If datos.IdCuenta = 0 Then
-                servicioEgresos.AgregarCuentaEgreso(datos)
+                Dim strIdCuentaEgreso As String = Await PuntoventaWCF.AgregarCuentaEgreso(datos)
+                txtIdCuenta.Text = strIdCuentaEgreso
             Else
-                servicioEgresos.ActualizarCuentaEgreso(datos)
+                Await PuntoventaWCF.ActualizarCuentaEgreso(datos)
             End If
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)

@@ -29,8 +29,6 @@ Partial Class FrmUsuario
         Me.Label1 = New System.Windows.Forms.Label()
         Me.cboRole = New System.Windows.Forms.ComboBox()
         Me.Label2 = New System.Windows.Forms.Label()
-        Me.txtDescripción = New System.Windows.Forms.TextBox()
-        Me.Label3 = New System.Windows.Forms.Label()
         Me.dgvRoleXUsuario = New System.Windows.Forms.DataGridView()
         Me.btnInsertarRole = New System.Windows.Forms.Button()
         Me.btnEliminarRole = New System.Windows.Forms.Button()
@@ -93,7 +91,7 @@ Partial Class FrmUsuario
         Me._lblLabels_0.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me._lblLabels_0.Size = New System.Drawing.Size(65, 17)
         Me._lblLabels_0.TabIndex = 0
-        Me._lblLabels_0.Text = "Id Usuario:"
+        Me._lblLabels_0.Text = "Id:"
         Me._lblLabels_0.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'txtPassword
@@ -126,9 +124,9 @@ Partial Class FrmUsuario
         'cboRole
         '
         Me.cboRole.FormattingEnabled = True
-        Me.cboRole.Location = New System.Drawing.Point(118, 90)
+        Me.cboRole.Location = New System.Drawing.Point(119, 90)
         Me.cboRole.Name = "cboRole"
-        Me.cboRole.Size = New System.Drawing.Size(345, 21)
+        Me.cboRole.Size = New System.Drawing.Size(342, 21)
         Me.cboRole.TabIndex = 3
         '
         'Label2
@@ -144,35 +142,6 @@ Partial Class FrmUsuario
         Me.Label2.Text = "Seleccione un role:"
         Me.Label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
-        'txtDescripción
-        '
-        Me.txtDescripción.AcceptsReturn = True
-        Me.txtDescripción.BackColor = System.Drawing.SystemColors.Window
-        Me.txtDescripción.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtDescripción.Enabled = False
-        Me.txtDescripción.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtDescripción.Location = New System.Drawing.Point(118, 117)
-        Me.txtDescripción.MaxLength = 0
-        Me.txtDescripción.Name = "txtDescripción"
-        Me.txtDescripción.ReadOnly = True
-        Me.txtDescripción.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtDescripción.Size = New System.Drawing.Size(345, 20)
-        Me.txtDescripción.TabIndex = 0
-        Me.txtDescripción.TabStop = False
-        '
-        'Label3
-        '
-        Me.Label3.BackColor = System.Drawing.Color.Transparent
-        Me.Label3.Cursor = System.Windows.Forms.Cursors.Default
-        Me.Label3.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label3.Location = New System.Drawing.Point(47, 119)
-        Me.Label3.Name = "Label3"
-        Me.Label3.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label3.Size = New System.Drawing.Size(65, 17)
-        Me.Label3.TabIndex = 0
-        Me.Label3.Text = "Descripción:"
-        Me.Label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        '
         'dgvRoleXUsuario
         '
         Me.dgvRoleXUsuario.AllowUserToAddRows = False
@@ -181,14 +150,14 @@ Partial Class FrmUsuario
         Me.dgvRoleXUsuario.AllowUserToResizeRows = False
         Me.dgvRoleXUsuario.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.dgvRoleXUsuario.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter
-        Me.dgvRoleXUsuario.Location = New System.Drawing.Point(13, 143)
+        Me.dgvRoleXUsuario.Location = New System.Drawing.Point(14, 117)
         Me.dgvRoleXUsuario.MultiSelect = False
         Me.dgvRoleXUsuario.Name = "dgvRoleXUsuario"
         Me.dgvRoleXUsuario.ReadOnly = True
         Me.dgvRoleXUsuario.RowHeadersVisible = False
         Me.dgvRoleXUsuario.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing
         Me.dgvRoleXUsuario.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-        Me.dgvRoleXUsuario.Size = New System.Drawing.Size(447, 213)
+        Me.dgvRoleXUsuario.Size = New System.Drawing.Size(447, 239)
         Me.dgvRoleXUsuario.TabIndex = 0
         Me.dgvRoleXUsuario.TabStop = False
         '
@@ -274,8 +243,6 @@ Partial Class FrmUsuario
         Me.Controls.Add(Me.btnEliminarRole)
         Me.Controls.Add(Me.btnInsertarRole)
         Me.Controls.Add(Me.dgvRoleXUsuario)
-        Me.Controls.Add(Me.txtDescripción)
-        Me.Controls.Add(Me.Label3)
         Me.Controls.Add(Me.Label2)
         Me.Controls.Add(Me.cboRole)
         Me.Controls.Add(Me.txtPassword)
@@ -304,8 +271,6 @@ Partial Class FrmUsuario
     Public WithEvents Label1 As System.Windows.Forms.Label
     Friend WithEvents cboRole As System.Windows.Forms.ComboBox
     Public WithEvents Label2 As System.Windows.Forms.Label
-    Public WithEvents txtDescripción As System.Windows.Forms.TextBox
-    Public WithEvents Label3 As System.Windows.Forms.Label
     Friend WithEvents dgvRoleXUsuario As System.Windows.Forms.DataGridView
     Public WithEvents btnInsertarRole As System.Windows.Forms.Button
     Public WithEvents btnEliminarRole As System.Windows.Forms.Button

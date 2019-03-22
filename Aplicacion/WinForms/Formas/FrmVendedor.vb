@@ -1,13 +1,10 @@
-Imports System.Collections.Generic
-Imports LeandroSoftware.PuntoVenta.Dominio.Entidades
-Imports LeandroSoftware.PuntoVenta.Servicios
-Imports Unity
+Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
+Imports LeandroSoftware.AccesoDatos.ClienteWCF
 
 Public Class FrmVendedor
 #Region "Variables"
     Private I As Short
     Private datos As Vendedor
-    Public servicioMantenimiento As IMantenimientoService
     Public intIdVendedor As Integer
 #End Region
 
@@ -23,10 +20,10 @@ Public Class FrmVendedor
 #End Region
 
 #Region "Eventos Controles"
-    Private Sub FrmUsuario_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+    Private Async Sub FrmUsuario_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         If intIdVendedor > 0 Then
             Try
-                datos = servicioMantenimiento.ObtenerVendedor(intIdVendedor)
+                datos = Await PuntoventaWCF.ObtenerVendedor(intIdVendedor)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                 Close()
@@ -48,22 +45,22 @@ Public Class FrmVendedor
         Close()
     End Sub
 
-    Private Sub btnGuardar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnGuardar.Click
+    Private Async Sub btnGuardar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnGuardar.Click
         Dim strCampo As String = ""
         If Not ValidarCampos(strCampo) Then
             MessageBox.Show("El campo " & strCampo & " es requerido", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         End If
         If datos.IdVendedor = 0 Then
-            datos.IdEmpresa = FrmMenuPrincipal.empresaGlobal.IdEmpresa
+            datos.IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa
         End If
         datos.Nombre = txtNombre.Text
         Try
             If datos.IdVendedor = 0 Then
-                datos = servicioMantenimiento.AgregarVendedor(datos)
-                txtIdVendedor.Text = datos.IdVendedor
+                Dim strIdVendedor As String = Await PuntoventaWCF.AgregarVendedor(datos)
+                txtIdVendedor.Text = strIdVendedor
             Else
-                servicioMantenimiento.ActualizarVendedor(datos)
+                Await PuntoventaWCF.ActualizarVendedor(datos)
             End If
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)

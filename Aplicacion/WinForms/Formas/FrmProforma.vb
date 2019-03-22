@@ -1,29 +1,24 @@
 Imports System.Collections.Generic
-Imports LeandroSoftware.Core.CommonTypes
-Imports LeandroSoftware.PuntoVenta.Dominio.Entidades
-Imports LeandroSoftware.PuntoVenta.Servicios
-Imports Unity
+Imports LeandroSoftware.Puntoventa.CommonTypes
+Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
 
 Public Class FrmProforma
 #Region "Variables"
     Private strMotivoRechazo As String
-    Private dblExcento, dblGrabado, dblImpuesto, dblPorcentajeIVA, dblTotal As Decimal
+    Private decExcento, decGrabado, decImpuesto, decTotal As Decimal
     Private I As Short
     Private dtbDatosLocal, dtbDetalleProforma As DataTable
     Private dtrRowDetProforma As DataRow
     Private arrDetalleProforma As ArrayList
-    Private servicioFacturacion As IFacturacionService
-    Private servicioCuentaPorCobrar As ICuentaPorCobrarService
-    Private servicioMantenimiento As IMantenimientoService
-    Private servicioReportes As IReporteService
     Private proforma As Proforma
     Private detalleProforma As DetalleProforma
     Private producto As Producto
     Private cliente As Cliente
     Private vendedor As Vendedor
-    Private comprobante As ModuloImpresion.clsComprobante
-    Private detalleComprobante As ModuloImpresion.clsDetalleComprobante
+    Private comprobante As ModuloImpresion.ClsComprobante
+    Private detalleComprobante As ModuloImpresion.ClsDetalleComprobante
     Private bolInit As Boolean = True
+    Private listOfProducts As List(Of Producto)
 
     Private formReport As New frmRptViewer()
     Private dtbDatos As DataTable
@@ -33,13 +28,14 @@ Public Class FrmProforma
 #Region "Métodos"
     Private Sub IniciaTablasDeDetalle()
         dtbDetalleProforma = New DataTable()
-        dtbDetalleProforma.Columns.Add("IDPRODUCTO", GetType(Int32))
+        dtbDetalleProforma.Columns.Add("IDPRODUCTO", GetType(Integer))
         dtbDetalleProforma.Columns.Add("CODIGO", GetType(String))
         dtbDetalleProforma.Columns.Add("DESCRIPCION", GetType(String))
         dtbDetalleProforma.Columns.Add("CANTIDAD", GetType(Decimal))
         dtbDetalleProforma.Columns.Add("PRECIO", GetType(Decimal))
         dtbDetalleProforma.Columns.Add("TOTAL", GetType(Decimal))
-        dtbDetalleProforma.Columns.Add("EXCENTO", GetType(Int32))
+        dtbDetalleProforma.Columns.Add("EXCENTO", GetType(Integer))
+        dtbDetalleProforma.Columns.Add("PORCENTAJEIVA", GetType(Decimal))
         dtbDetalleProforma.PrimaryKey = {dtbDetalleProforma.Columns(0)}
     End Sub
 
@@ -55,6 +51,7 @@ Public Class FrmProforma
         Dim dvcTotal As New DataGridViewTextBoxColumn
         Dim dvcExc As New DataGridViewCheckBoxColumn
         Dim dvcPrecioCosto As New DataGridViewTextBoxColumn
+        Dim dvcPorcentajeIVA As New DataGridViewTextBoxColumn
 
         dvcIdProducto.DataPropertyName = "IDPRODUCTO"
         dvcIdProducto.HeaderText = "IdP"
@@ -81,7 +78,7 @@ Public Class FrmProforma
         dvcCantidad.Width = 60
         dvcCantidad.Visible = True
         dvcCantidad.ReadOnly = True
-        dvcCantidad.DefaultCellStyle = FrmMenuPrincipal.dgvDecimal
+        dvcCantidad.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleProforma.Columns.Add(dvcCantidad)
 
         dvcPrecio.DataPropertyName = "PRECIO"
@@ -89,7 +86,7 @@ Public Class FrmProforma
         dvcPrecio.Width = 75
         dvcPrecio.Visible = True
         dvcPrecio.ReadOnly = True
-        dvcPrecio.DefaultCellStyle = FrmMenuPrincipal.dgvDecimal
+        dvcPrecio.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleProforma.Columns.Add(dvcPrecio)
 
         dvcTotal.DataPropertyName = "TOTAL"
@@ -97,7 +94,7 @@ Public Class FrmProforma
         dvcTotal.Width = 100
         dvcTotal.Visible = True
         dvcTotal.ReadOnly = True
-        dvcTotal.DefaultCellStyle = FrmMenuPrincipal.dgvDecimal
+        dvcTotal.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleProforma.Columns.Add(dvcTotal)
 
         dvcExc.DataPropertyName = "EXCENTO"
@@ -106,6 +103,12 @@ Public Class FrmProforma
         dvcExc.Visible = True
         dvcExc.ReadOnly = True
         grdDetalleProforma.Columns.Add(dvcExc)
+
+        dvcPorcentajeIVA.DataPropertyName = "PORCENTAJEIVA"
+        dvcPorcentajeIVA.HeaderText = "PorcIVA"
+        dvcPorcentajeIVA.Width = 0
+        dvcPorcentajeIVA.Visible = False
+        grdDetalleProforma.Columns.Add(dvcPorcentajeIVA)
     End Sub
 
     Private Sub CargarDetalleProforma(ByVal proforma As Proforma)
@@ -118,7 +121,8 @@ Public Class FrmProforma
             dtrRowDetProforma.Item(3) = detalle.Cantidad
             dtrRowDetProforma.Item(4) = detalle.PrecioVenta
             dtrRowDetProforma.Item(5) = dtrRowDetProforma.Item(3) * dtrRowDetProforma.Item(4)
-            dtrRowDetProforma.Item(6) = detalle.Producto.Excento
+            dtrRowDetProforma.Item(6) = detalle.Excento
+            dtrRowDetProforma.Item(7) = detalle.PorcentajeIVA
             dtbDetalleProforma.Rows.Add(dtrRowDetProforma)
         Next
         grdDetalleProforma.Refresh()
@@ -126,13 +130,16 @@ Public Class FrmProforma
 
     Private Sub CargarLineaDetalleProforma(ByVal producto As Producto)
         Dim intIndice As Integer = dtbDetalleProforma.Rows.IndexOf(dtbDetalleProforma.Rows.Find(producto.IdProducto))
+        Dim decTasaImpuesto As Decimal = producto.ParametroImpuesto.TasaImpuesto
+        If cliente.ExoneradoDeImpuesto Then decTasaImpuesto = 0
         If intIndice >= 0 Then
             dtbDetalleProforma.Rows(intIndice).Item(1) = producto.Codigo
             dtbDetalleProforma.Rows(intIndice).Item(2) = producto.Descripcion
             dtbDetalleProforma.Rows(intIndice).Item(3) += txtCantidad.Text
             dtbDetalleProforma.Rows(intIndice).Item(4) = txtPrecio.Text
             dtbDetalleProforma.Rows(intIndice).Item(5) = dtbDetalleProforma.Rows(intIndice).Item(3) * dtbDetalleProforma.Rows(intIndice).Item(4)
-            dtbDetalleProforma.Rows(intIndice).Item(6) = producto.Excento
+            dtbDetalleProforma.Rows(intIndice).Item(6) = decTasaImpuesto = 0
+            dtbDetalleProforma.Rows(intIndice).Item(7) = decTasaImpuesto
         Else
             dtrRowDetProforma = dtbDetalleProforma.NewRow
             dtrRowDetProforma.Item(0) = producto.IdProducto
@@ -141,50 +148,57 @@ Public Class FrmProforma
             dtrRowDetProforma.Item(3) = txtCantidad.Text
             dtrRowDetProforma.Item(4) = txtPrecio.Text
             dtrRowDetProforma.Item(5) = dtrRowDetProforma.Item(3) * dtrRowDetProforma.Item(4)
-            dtrRowDetProforma.Item(6) = producto.Excento
+            dtrRowDetProforma.Item(6) = decTasaImpuesto = 0
+            dtrRowDetProforma.Item(7) = decTasaImpuesto
             dtbDetalleProforma.Rows.Add(dtrRowDetProforma)
         End If
         grdDetalleProforma.Refresh()
     End Sub
 
     Private Sub CargarTotales()
-        Dim dblSubTotal As Decimal = 0
-        Dim dblSubTotalSinIVA As Decimal = 0
-        dblExcento = 0
-        dblGrabado = 0
+        Dim decSubTotal As Decimal = 0
+        decGrabado = 0
+        decExcento = 0
+        decImpuesto = 0
         For I = 0 To dtbDetalleProforma.Rows.Count - 1
             If dtbDetalleProforma.Rows(I).Item(6) = 0 Then
-                dblGrabado += CDbl(grdDetalleProforma.Rows(I).Cells(5).Value)
+                decGrabado += dtbDetalleProforma.Rows(I).Item(5)
+                decImpuesto += dtbDetalleProforma.Rows(I).Item(5) * dtbDetalleProforma.Rows(I).Item(7) / 100
             Else
-                dblExcento += CDbl(grdDetalleProforma.Rows(I).Cells(5).Value)
+                decExcento += dtbDetalleProforma.Rows(I).Item(5)
             End If
         Next
-        dblSubTotal = dblGrabado + dblExcento
-        If dblSubTotal > 0 Then
-            dblSubTotalSinIVA = Math.Round((dblGrabado / (1 + (dblPorcentajeIVA / 100))) + dblExcento, 2, MidpointRounding.AwayFromZero)
-            dblExcento = Math.Round(dblExcento - (CDbl(txtDescuento.Text) / dblSubTotal * dblExcento), 2, MidpointRounding.AwayFromZero)
-            dblGrabado = Math.Round(dblGrabado - (CDbl(txtDescuento.Text) / dblSubTotal * dblGrabado), 2, MidpointRounding.AwayFromZero)
-            dblGrabado = dblGrabado / (1 + (dblPorcentajeIVA / 100))
-            dblImpuesto = dblGrabado * (dblPorcentajeIVA / 100)
+        decSubTotal = decGrabado + decExcento
+        If decSubTotal > 0 And txtDescuento.Text > 0 Then
+            decImpuesto = 0
+            For I = 0 To dtbDetalleProforma.Rows.Count - 1
+                If dtbDetalleProforma.Rows(I).Item(6) = 0 Then
+                    Dim decDescuentoPorLinea As Decimal = 0
+                    Dim decTotalPorLinea As Decimal = dtbDetalleProforma.Rows(I).Item(5)
+                    decDescuentoPorLinea = decTotalPorLinea - (txtDescuento.Text / decSubTotal * decTotalPorLinea)
+                    decImpuesto += decDescuentoPorLinea * dtbDetalleProforma.Rows(I).Item(7) / 100
+                End If
+            Next
         End If
-        dblGrabado = Math.Round(dblGrabado, 2, MidpointRounding.AwayFromZero)
-        dblImpuesto = Math.Round(dblImpuesto, 2, MidpointRounding.AwayFromZero)
-        txtImpuesto.Text = FormatNumber(dblImpuesto, 2)
-        txtSubTotal.Text = FormatNumber(dblSubTotalSinIVA, 2)
-        dblTotal = Math.Round(dblExcento + dblGrabado + dblImpuesto, 2, MidpointRounding.AwayFromZero)
-        txtTotal.Text = FormatNumber(dblTotal, 2)
+        decGrabado = Math.Round(decGrabado, 2, MidpointRounding.AwayFromZero)
+        decExcento = Math.Round(decExcento, 2, MidpointRounding.AwayFromZero)
+        decImpuesto = Math.Round(decImpuesto, 2, MidpointRounding.AwayFromZero)
+        decTotal = Math.Round(decExcento + decGrabado + decImpuesto - txtDescuento.Text, 2, MidpointRounding.AwayFromZero)
+        txtSubTotal.Text = FormatNumber(decSubTotal, 2)
+        txtImpuesto.Text = FormatNumber(decImpuesto, 2)
+        txtTotal.Text = FormatNumber(decTotal, 2)
     End Sub
 
     Private Sub ValidarProducto()
         If Not bolInit Then
             If txtCodigo.Text <> "" Then
-                If FrmMenuPrincipal.empresaGlobal.AutoCompletaProducto = True Then
+                If FrmPrincipal.empresaGlobal.AutoCompletaProducto = True Then
                     If txtCodigo.Text.IndexOf(" ") >= 0 Then
                         txtCodigo.Text = txtCodigo.Text.Substring(0, txtCodigo.Text.IndexOf(" "))
                     End If
                 End If
                 Try
-                    producto = servicioMantenimiento.ObtenerProductoPorCodigo(txtCodigo.Text)
+                    'producto = servicioMantenimiento.ObtenerProductoPorCodigo(txtCodigo.Text)
                 Catch ex As Exception
                     MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
@@ -220,7 +234,7 @@ Public Class FrmProforma
 
     Private Sub CargarAutoCompletarProducto()
         Dim source As AutoCompleteStringCollection = New AutoCompleteStringCollection()
-        Dim listOfProducts As ICollection(Of Producto) = servicioMantenimiento.ObtenerListaProductos(FrmMenuPrincipal.empresaGlobal.IdEmpresa, 1, 0, True)
+        'listOfProducts = servicioMantenimiento.ObtenerListaProductos(FrmMenuPrincipal.empresaGlobal.IdEmpresa, 1, 0, True)
         For Each producto As Producto In listOfProducts
             source.Add(String.Concat(producto.Codigo, " ", producto.Descripcion))
         Next
@@ -233,7 +247,7 @@ Public Class FrmProforma
         Try
             cboIdCondicionVenta.ValueMember = "IdCondicionVenta"
             cboIdCondicionVenta.DisplayMember = "Descripcion"
-            cboIdCondicionVenta.DataSource = servicioMantenimiento.ObtenerListaCondicionVenta()
+            'cboIdCondicionVenta.DataSource = servicioMantenimiento.ObtenerListaCondicionVenta()
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
@@ -243,19 +257,8 @@ Public Class FrmProforma
 
 #Region "Eventos Controles"
     Private Sub FrmProforma_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        Try
-            servicioFacturacion = FrmMenuPrincipal.unityContainer.Resolve(Of IFacturacionService)()
-            servicioCuentaPorCobrar = FrmMenuPrincipal.unityContainer.Resolve(Of ICuentaPorCobrarService)()
-            servicioMantenimiento = FrmMenuPrincipal.unityContainer.Resolve(Of IMantenimientoService)()
-            servicioReportes = FrmMenuPrincipal.unityContainer.Resolve(Of IReporteService)()
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-            Exit Sub
-        End Try
-        txtFecha.Text = FrmMenuPrincipal.ObtenerFechaFormateada(Now())
-        dblPorcentajeIVA = FrmMenuPrincipal.empresaGlobal.PorcentajeIVA
-        If FrmMenuPrincipal.empresaGlobal.AutoCompletaProducto = True Then
+        txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
+        If FrmPrincipal.empresaGlobal.AutoCompletaProducto = True Then
             CargarAutoCompletarProducto()
         End If
         CargarCombos()
@@ -272,9 +275,8 @@ Public Class FrmProforma
 
     Private Sub CmdAgregar_Click(sender As Object, e As EventArgs) Handles CmdAgregar.Click
         txtIdProforma.Text = ""
-        txtFecha.Text = FrmMenuPrincipal.ObtenerFechaFormateada(Now())
+        txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
         txtDocumento.Text = ""
-        dblPorcentajeIVA = FrmMenuPrincipal.empresaGlobal.PorcentajeIVA
         cboIdCondicionVenta.SelectedValue = StaticCondicionVenta.Contado
         txtPlazoCredito.Text = ""
         dtbDetalleProforma.Rows.Clear()
@@ -302,7 +304,7 @@ Public Class FrmProforma
         If txtIdProforma.Text <> "" Then
             If MessageBox.Show("Desea anular este registro?", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
                 Try
-                    servicioFacturacion.AnularProforma(txtIdProforma.Text, FrmMenuPrincipal.usuarioGlobal.IdUsuario)
+                    'servicioFacturacion.AnularProforma(txtIdProforma.Text, FrmMenuPrincipal.usuarioGlobal.IdUsuario)
                     MessageBox.Show("Transacción procesada satisfactoriamente. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
                     CmdAgregar_Click(CmdAgregar, New EventArgs())
                 Catch ex As Exception
@@ -314,11 +316,11 @@ Public Class FrmProforma
 
     Private Sub CmdBuscar_Click(sender As Object, e As EventArgs) Handles CmdBuscar.Click
         Dim formBusqueda As New FrmBusquedaProforma()
-        FrmMenuPrincipal.intBusqueda = 0
+        FrmPrincipal.intBusqueda = 0
         formBusqueda.ShowDialog()
-        If FrmMenuPrincipal.intBusqueda > 0 Then
+        If FrmPrincipal.intBusqueda > 0 Then
             Try
-                proforma = servicioFacturacion.ObtenerProforma(FrmMenuPrincipal.intBusqueda)
+                'proforma = servicioFacturacion.ObtenerProforma(FrmMenuPrincipal.intBusqueda)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
@@ -334,7 +336,6 @@ Public Class FrmProforma
                 cboIdCondicionVenta.SelectedValue = proforma.IdCondicionVenta
                 txtPlazoCredito.Text = proforma.PlazoCredito
                 txtDescuento.Text = FormatNumber(proforma.Descuento, 2)
-                dblPorcentajeIVA = proforma.PorcentajeIVA
                 CargarDetalleProforma(proforma)
                 CargarTotales()
                 CmdImprimir.Enabled = True
@@ -346,7 +347,7 @@ Public Class FrmProforma
                     CmdGuardar.Enabled = False
                 Else
                     btnBuscarCliente.Enabled = True
-                    CmdAnular.Enabled = FrmMenuPrincipal.usuarioGlobal.Modifica
+                    CmdAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
                     CmdGuardar.Enabled = True
                 End If
                 bolInit = False
@@ -356,11 +357,11 @@ Public Class FrmProforma
 
     Private Sub BtnBuscaVendedor_Click(sender As Object, e As EventArgs) Handles btnBuscaVendedor.Click
         Dim formBusquedaVendedor As New FrmBusquedaVendedor()
-        FrmMenuPrincipal.intBusqueda = 0
+        FrmPrincipal.intBusqueda = 0
         formBusquedaVendedor.ShowDialog()
-        If FrmMenuPrincipal.intBusqueda > 0 Then
+        If FrmPrincipal.intBusqueda > 0 Then
             Try
-                vendedor = servicioMantenimiento.ObtenerVendedor(FrmMenuPrincipal.intBusqueda)
+                'vendedor = servicioMantenimiento.ObtenerVendedor(FrmMenuPrincipal.intBusqueda)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
@@ -375,11 +376,11 @@ Public Class FrmProforma
 
     Private Sub BtnBuscarCliente_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnBuscarCliente.Click
         Dim formBusquedaCliente As New FrmBusquedaCliente()
-        FrmMenuPrincipal.intBusqueda = 0
+        FrmPrincipal.intBusqueda = 0
         formBusquedaCliente.ShowDialog()
-        If FrmMenuPrincipal.intBusqueda > 0 Then
+        If FrmPrincipal.intBusqueda > 0 Then
             Try
-                cliente = servicioFacturacion.ObtenerCliente(FrmMenuPrincipal.intBusqueda)
+                'cliente = servicioFacturacion.ObtenerCliente(FrmMenuPrincipal.intBusqueda)
                 If cliente.Vendedor IsNot Nothing Then
                     vendedor = cliente.Vendedor
                     txtVendedor.Text = vendedor.Nombre
@@ -401,10 +402,10 @@ Public Class FrmProforma
             .bolIncluyeServicios = True,
             .intTipoPrecio = 0
         }
-        FrmMenuPrincipal.strBusqueda = ""
+        FrmPrincipal.strBusqueda = ""
         formBusProd.ShowDialog()
-        If Not FrmMenuPrincipal.strBusqueda.Equals("") Then
-            txtCodigo.Text = FrmMenuPrincipal.strBusqueda
+        If Not FrmPrincipal.strBusqueda.Equals("") Then
+            txtCodigo.Text = FrmPrincipal.strBusqueda
             ValidarProducto()
         End If
         txtCodigo.Focus()
@@ -417,20 +418,19 @@ Public Class FrmProforma
         End If
         If txtIdProforma.Text = "" Then
             proforma = New Proforma With {
-                .IdEmpresa = FrmMenuPrincipal.empresaGlobal.IdEmpresa,
-                .IdUsuario = FrmMenuPrincipal.usuarioGlobal.IdUsuario
+                .IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa,
+                .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario
             }
         End If
         proforma.IdCliente = cliente.IdCliente
-        proforma.Fecha = FrmMenuPrincipal.ObtenerFechaFormateada(Now())
+        proforma.Fecha = FrmPrincipal.ObtenerFechaFormateada(Now())
         proforma.NoDocumento = txtDocumento.Text
         proforma.IdVendedor = vendedor.IdVendedor
         proforma.IdCondicionVenta = cboIdCondicionVenta.SelectedValue
         proforma.PlazoCredito = IIf(txtPlazoCredito.Text <> "", txtPlazoCredito.Text, 0)
-        proforma.Excento = dblExcento
-        proforma.Grabado = dblGrabado
+        proforma.Excento = decExcento
+        proforma.Grabado = decGrabado
         proforma.Descuento = CDbl(txtDescuento.Text)
-        proforma.PorcentajeIVA = dblPorcentajeIVA
         proforma.Impuesto = CDbl(txtImpuesto.Text)
         proforma.DetalleProforma.Clear()
         For I = 0 To dtbDetalleProforma.Rows.Count - 1
@@ -442,11 +442,12 @@ Public Class FrmProforma
             detalleProforma.Cantidad = dtbDetalleProforma.Rows(I).Item(3)
             detalleProforma.PrecioVenta = dtbDetalleProforma.Rows(I).Item(4)
             detalleProforma.Excento = dtbDetalleProforma.Rows(I).Item(6)
+            detalleProforma.PorcentajeIVA = dtbDetalleProforma.Rows(I).Item(7)
             proforma.DetalleProforma.Add(detalleProforma)
         Next
         If txtIdProforma.Text = "" Then
             Try
-                proforma = servicioFacturacion.AgregarProforma(proforma)
+                'proforma = servicioFacturacion.AgregarProforma(proforma)
                 txtIdProforma.Text = proforma.IdProforma
             Catch ex As Exception
                 txtIdProforma.Text = ""
@@ -455,7 +456,7 @@ Public Class FrmProforma
             End Try
         Else
             Try
-                servicioFacturacion.ActualizarProforma(proforma)
+                'servicioFacturacion.ActualizarProforma(proforma)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
@@ -464,9 +465,9 @@ Public Class FrmProforma
         MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
         CmdImprimir.Enabled = True
         CmdAgregar.Enabled = True
-        CmdAnular.Enabled = FrmMenuPrincipal.usuarioGlobal.Modifica
+        CmdAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
         CmdImprimir.Focus()
-        CmdGuardar.Enabled = FrmMenuPrincipal.usuarioGlobal.Modifica
+        CmdGuardar.Enabled = FrmPrincipal.usuarioGlobal.Modifica
         btnBuscaVendedor.Enabled = False
         btnBuscarCliente.Enabled = False
     End Sub
@@ -475,16 +476,16 @@ Public Class FrmProforma
         If txtIdProforma.Text <> "" Then
             Dim reptProforma As New rptProforma
             Try
-                dtbDatos = servicioReportes.ObtenerReporteProforma(txtIdProforma.Text)
+                'dtbDatos = servicioReportes.ObtenerReporteProforma(txtIdProforma.Text)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
-            strUsuario = FrmMenuPrincipal.usuarioGlobal.CodigoUsuario
-            strIdentificacion = FrmMenuPrincipal.empresaGlobal.Identificacion
-            strTelefonos = FrmMenuPrincipal.empresaGlobal.Telefono
-            strNombreEmpresa = FrmMenuPrincipal.empresaGlobal.NombreEmpresa
-            strNombreComercial = FrmMenuPrincipal.empresaGlobal.NombreComercial
+            strUsuario = FrmPrincipal.usuarioGlobal.CodigoUsuario
+            strIdentificacion = FrmPrincipal.empresaGlobal.Identificacion
+            strTelefonos = FrmPrincipal.empresaGlobal.Telefono
+            strNombreEmpresa = FrmPrincipal.empresaGlobal.NombreEmpresa
+            strNombreComercial = FrmPrincipal.empresaGlobal.NombreComercial
             reptProforma.SetDataSource(dtbDatos)
             reptProforma.SetParameterValue(0, strUsuario)
             reptProforma.SetParameterValue(1, strNombreEmpresa)
@@ -569,11 +570,11 @@ Public Class FrmProforma
     End Sub
 
     Private Sub ValidaDigitosSinDecimal(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs)
-        FrmMenuPrincipal.ValidaNumero(e, sender, False, 0)
+        FrmPrincipal.ValidaNumero(e, sender, False, 0)
     End Sub
 
     Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs) Handles txtCantidad.KeyPress, txtPrecio.KeyPress, txtDescuento.KeyPress
-        FrmMenuPrincipal.ValidaNumero(e, sender, True, 2, ".")
+        FrmPrincipal.ValidaNumero(e, sender, True, 2, ".")
     End Sub
 #End Region
 End Class

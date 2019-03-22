@@ -1,10 +1,5 @@
-﻿Imports LeandroSoftware.PuntoVenta.Dominio.Entidades
-Imports LeandroSoftware.PuntoVenta.Servicios
-Imports Unity
-
-Public Class FrmCatalogoContableListado
+﻿Public Class FrmCatalogoContableListado
 #Region "Variables"
-    Private servicioContabilidad As IContabilidadService
 #End Region
 
 #Region "Métodos"
@@ -41,7 +36,7 @@ Public Class FrmCatalogoContableListado
 
     Private Sub ActualizarDatos()
         Try
-            Dim listado As IList = servicioContabilidad.ObtenerListaCuentasContables(FrmMenuPrincipal.empresaGlobal.IdEmpresa, txtDescripcion.Text)
+            Dim listado As IList = Nothing 'servicioContabilidad.ObtenerListaCuentasContables(FrmMenuPrincipal.empresaGlobal.IdEmpresa, txtDescripcion.Text)
             dgvDatos.DataSource = listado
             If listado.Count() > 0 Then
                 btnEditar.Enabled = True
@@ -60,39 +55,32 @@ Public Class FrmCatalogoContableListado
 
 #Region "Eventos Controles"
     Private Sub FrmCatalogoContableListado_Shown(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Shown
-        Try
-            servicioContabilidad = FrmMenuPrincipal.unityContainer.Resolve(Of IContabilidadService)()
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-            Exit Sub
-        End Try
         EstablecerPropiedadesDataGridView()
         ActualizarDatos()
     End Sub
 
     Private Sub btnAgregar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnAgregar.Click
-        Dim formMant As New FrmCatalogoContable With {
-            .intIdCuenta = 0,
-            .servicioContabilidad = servicioContabilidad
-        }
-        formMant.ShowDialog()
+        'Dim formMant As New FrmCatalogoContable With {
+        '    .intIdCuenta = 0,
+        '    .servicioContabilidad = servicioContabilidad
+        '}
+        'formMant.ShowDialog()
         ActualizarDatos()
     End Sub
 
     Private Sub btnEditar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEditar.Click
-        Dim formMant As New FrmCatalogoContable With {
-            .intIdCuenta = dgvDatos.CurrentRow.Cells(0).Value,
-            .servicioContabilidad = servicioContabilidad
-        }
-        formMant.ShowDialog()
+        'Dim formMant As New FrmCatalogoContable With {
+        '    .intIdCuenta = dgvDatos.CurrentRow.Cells(0).Value,
+        '    .servicioContabilidad = servicioContabilidad
+        '}
+        'formMant.ShowDialog()
         ActualizarDatos()
     End Sub
 
     Private Sub btnEliminar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEliminar.Click
         If MessageBox.Show("Desea eliminar el registro actual", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
             Try
-                servicioContabilidad.EliminarCuentaContable(dgvDatos.CurrentRow.Cells(0).Value)
+                'servicioContabilidad.EliminarCuentaContable(dgvDatos.CurrentRow.Cells(0).Value)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub

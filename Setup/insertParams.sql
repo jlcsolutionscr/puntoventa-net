@@ -75,3 +75,4 @@ INSERT INTO CatalogoReporte VALUES(12, 'Detalle de egresos');
 INSERT INTO CatalogoReporte VALUES(13, 'Detalle de ingresos');
 INSERT INTO CatalogoReporte VALUES(14, 'Reporte resumido de ventas por línea');
 INSERT INTO CatalogoReporte VALUES(15, 'Reporte detallado de ventas por línea');
+INSERT INTO parametrosistema VALUES(1, 'Version', '1.0.0.0');

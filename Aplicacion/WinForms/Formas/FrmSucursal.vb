@@ -1,10 +1,7 @@
-Imports LeandroSoftware.PuntoVenta.Dominio.Entidades
-Imports LeandroSoftware.PuntoVenta.Servicios
-Imports Unity
+Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
 
 Public Class FrmSucursal
 #Region "Variables"
-    Public servicioTraslados As ITrasladoService
     Public intIdSucursal As Integer
     Private datos As Sucursal
 #End Region
@@ -30,7 +27,7 @@ Public Class FrmSucursal
     Private Sub FrmCuentaBanco_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         If intIdSucursal > 0 Then
             Try
-                datos = servicioTraslados.ObtenerSucursal(intIdSucursal)
+                'datos = servicioTraslados.ObtenerSucursal(intIdSucursal)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Close()
@@ -61,17 +58,17 @@ Public Class FrmSucursal
             Exit Sub
         End If
         If datos.IdSucursal = 0 Then
-            datos.IdEmpresa = FrmMenuPrincipal.empresaGlobal.IdEmpresa
+            datos.IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa
         End If
         datos.Nombre = txtNombre.Text
         datos.Direccion = txtDireccion.Text
         datos.Telefono = txtTelefono.Text
         Try
             If datos.IdSucursal = 0 Then
-                servicioTraslados.AgregarSucursal(datos)
+                'datos = servicioTraslados.AgregarSucursal(datos)
                 txtIdSucursal.Text = datos.IdSucursal
             Else
-                servicioTraslados.ActualizarSucursal(datos)
+                'servicioTraslados.ActualizarSucursal(datos)
             End If
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)

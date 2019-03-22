@@ -1,13 +1,5 @@
-Imports System.Collections
-Imports CrystalDecisions.Shared
-Imports CrystalDecisions.CrystalReports.Engine
-Imports LeandroSoftware.PuntoVenta.Dominio.Entidades
-Imports LeandroSoftware.PuntoVenta.Servicios
-Imports Unity
-
 Public Class FrmMenuCuentaIngreso
 #Region "Variables"
-    Private servicioIngreso As IIngresoService
 #End Region
 
 #Region "Métodos"
@@ -15,7 +7,7 @@ Public Class FrmMenuCuentaIngreso
         Try
             cboIdCuentaIngreso.ValueMember = "IdCuenta"
             cboIdCuentaIngreso.DisplayMember = "Descripcion"
-            cboIdCuentaIngreso.DataSource = servicioIngreso.ObtenerListaCuentasIngreso(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
+            'cboIdCuentaIngreso.DataSource = servicioIngreso.ObtenerListaCuentasIngreso(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -27,22 +19,15 @@ Public Class FrmMenuCuentaIngreso
 
 #Region "Eventos Controles"
     Private Sub FrmRptMenu_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        Try
-            servicioIngreso = FrmMenuPrincipal.unityContainer.Resolve(Of IIngresoService)()
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-            Exit Sub
-        End Try
         CargarCombos()
     End Sub
 
     Private Sub btnProcesar_Click(sender As Object, e As EventArgs) Handles btnProcesar.Click
         If cboIdCuentaIngreso.SelectedValue IsNot Nothing Then
-            FrmMenuPrincipal.intBusqueda = cboIdCuentaIngreso.SelectedValue
+            FrmPrincipal.intBusqueda = cboIdCuentaIngreso.SelectedValue
             Close()
         Else
-            FrmMenuPrincipal.intBusqueda = 0
+            FrmPrincipal.intBusqueda = 0
             Close()
         End If
     End Sub

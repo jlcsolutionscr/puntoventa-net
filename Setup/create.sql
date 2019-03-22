@@ -1,6 +1,9 @@
-﻿CREATE DATABASE PUNTOVENTA;
-
-use PUNTOVENTA;
+﻿CREATE TABLE parametrosistema (
+  IdParametro INTEGER NOT NULL,
+  Descripcion VARCHAR(50) NOT NULL,
+  Valor VARCHAR(100) NOT NULL,
+  PRIMARY KEY(IdParametro)
+);
 
 CREATE TABLE TipoIdentificacion (
   IdTipoIdentificacion INTEGER NOT NULL,
@@ -82,20 +85,28 @@ CREATE TABLE Empresa (
   PorcentajeInstalacion DOUBLE NULL,
   CodigoServicioInst INTEGER NULL,
   IncluyeInsumosEnFactura BIT NOT NULL,
-  RespaldoEnLinea BIT NOT NULL,
   CierrePorTurnos BIT NOT NULL,
   CierreEnEjecucion BIT NOT NULL,
-  FacturaElectronica BIT NOT NULL,
-  ServicioFacturaElectronicaURL VARCHAR(500) NULL,
+  RegimenSimplificado BIT NOT NULL,
+  PermiteFacturar BIT NOT NULL,
+  Certificado BLOB NULL,
   IdCertificado VARCHAR(100) NULL,
   PinCertificado VARCHAR(4) NULL,
+  UsuarioHacienda VARCHAR(100) NULL,
+  ClaveHacienda VARCHAR(100) NULL,
   UltimoDocFE INTEGER NOT NULL,
   UltimoDocND INTEGER NOT NULL,
   UltimoDocNC INTEGER NOT NULL,
   UltimoDocTE INTEGER NOT NULL,
   UltimoDocMR INTEGER NOT NULL,
+  AccessToken BLOB NULL,
+  ExpiresIn INTEGER NULL,
+  RefreshExpiresIn INTEGER NULL,
+  RefreshToken BLOB NULL,
+  EmitedAt DATETIME NULL,
   Logotipo BLOB NULL,
   PRIMARY KEY(IdEmpresa),
+  INDEX (Identificacion),
   FOREIGN KEY(IdTipoIdentificacion)
     REFERENCES TipoIdentificacion(IdTipoIdentificacion)
       ON DELETE RESTRICT
@@ -107,7 +118,8 @@ CREATE TABLE Empresa (
   FOREIGN KEY(IdTipoMoneda)
     REFERENCES TipoMoneda(IdTipoMoneda)
       ON DELETE RESTRICT
-      ON UPDATE RESTRICT
+      ON UPDATE RESTRICT,
+  INDEX (Identificacion)
 );
 
 CREATE TABLE DetalleRegistro (
@@ -214,8 +226,6 @@ CREATE TABLE CierreCaja (
   VentasCredito DOUBLE,
   VentasTarjeta DOUBLE,
   OtrasVentas DOUBLE,
-  VentasPorMayor DOUBLE,
-  VentasDetalle DOUBLE,
   RetencionIVA DOUBLE,
   ComisionVT DOUBLE,
   LiquidacionTarjeta DOUBLE,
@@ -879,7 +889,7 @@ CREATE TABLE DetalleOrdenCompra (
       ON UPDATE RESTRICT
 );
 
-CREATE TABLE Factura (
+CREATE TABLE Provincia (
   IdEmpresa INTEGER NOT NULL,
   IdFactura INTEGER NOT NULL AUTO_INCREMENT,
   IdUsuario INTEGER NOT NULL,
@@ -1529,18 +1539,26 @@ CREATE TABLE DocumentoElectronico (
   IdTipoDocumento INTEGER NOT NULL,
   IdConsecutivo INTEGER NOT NULL,
   Fecha DATETIME NOT NULL,
-  TipoIdentificacionEmisor INTEGER NOT NULL,
-  IdentificacionEmisor VARCHAR(20) NOT NULL,
-  TipoIdentificacionReceptor INTEGER NOT NULL,
-  IdentificacionReceptor VARCHAR(12) NOT NULL,
   Consecutivo VARCHAR(20) NULL,
   ClaveNumerica VARCHAR(50) NULL,
+  TipoIdentificacionEmisor VARCHAR(2) NOT NULL,
+  IdentificacionEmisor VARCHAR(20) NOT NULL,
+  TipoIdentificacionReceptor VARCHAR(2) NOT NULL,
+  IdentificacionReceptor VARCHAR(12) NOT NULL,
+  EsMensajeReceptor VARCHAR(1) NOT NULL,
   DatosDocumento BLOB NULL,
   Respuesta BLOB NULL,
   EstadoEnvio VARCHAR(20) NOT NULL,
+  ErrorEnvio VARCHAR(500) NULL,
   CorreoNotificacion VARCHAR(200) NOT NULL,
   PRIMARY KEY(IdDocumento),
-  INDEX (ClaveNumerica)
+  INDEX (EstadoEnvio),
+  INDEX (ClaveNumerica),
+  INDEX (ClaveNumerica, Consecutivo),
+  FOREIGN KEY(IdEmpresa)
+    REFERENCES Empresa(IdEmpresa)
+      ON DELETE RESTRICT
+      ON UPDATE RESTRICT
 );
 
 DELIMITER //

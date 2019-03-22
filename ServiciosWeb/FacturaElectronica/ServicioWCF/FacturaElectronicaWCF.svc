@@ -1,1 +1,0 @@
-﻿<%@ ServiceHost Language="C#" Debug="true" Service="LeandroSoftware.FacturaElectronicaHacienda.ServicioWCF.FacturaElectronicaWCF" CodeBehind="FacturaElectronicaWCF.svc.cs" %>

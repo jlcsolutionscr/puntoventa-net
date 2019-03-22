@@ -8,17 +8,17 @@ Imports System.Runtime.InteropServices
 
 ' Review the values of the assembly attributes
 
-<Assembly: AssemblyTitle("Leandro Software")> 
-<Assembly: AssemblyDescription("Software for Administrative Jobs")> 
-<Assembly: AssemblyCompany("")> 
-<Assembly: AssemblyProduct("")> 
-<Assembly: AssemblyCopyright("Copyright ©  2007")> 
-<Assembly: AssemblyTrademark("")> 
+<Assembly: AssemblyTitle("PuntoventaJLC")>
+<Assembly: AssemblyDescription("Administrative Tasks Software")>
+<Assembly: AssemblyCompany("JLC Solutions")>
+<Assembly: AssemblyProduct("PuntoventaJLC")>
+<Assembly: AssemblyCopyright("Copyright ©  2007")>
+<Assembly: AssemblyTrademark("JLC Solutions")>
 
 <Assembly: ComVisible(True)> 
 
 'The following GUID is for the ID of the typelib if this project is exposed to COM
-<Assembly: Guid("cd7d95a3-23d3-4c81-a21f-f0dc5f1808f3")> 
+<Assembly: Guid("cd7d95a3-23d3-4c81-a21f-f0dc5f1808f3")>
 
 ' Version information for an assembly consists of the following four values:
 '
@@ -30,7 +30,7 @@ Imports System.Runtime.InteropServices
 ' You can specify all the values or you can default the Build and Revision Numbers 
 ' by using the '*' as shown below:
 
-<Assembly: AssemblyVersion("1.0.0.0")> 
-<Assembly: AssemblyFileVersion("1.0.0.0")> 
+<Assembly: AssemblyVersion("1.0.0.2")>
+<Assembly: AssemblyFileVersion("1.0.0.2")>
 
-<Assembly: NeutralResourcesLanguageAttribute("es-CR")> 
+<Assembly: NeutralResourcesLanguage("es-CR")>

@@ -23,7 +23,7 @@ Partial Class FrmInventario
         Me._lblLabels_0 = New System.Windows.Forms.Label()
         Me._lblLabels_5 = New System.Windows.Forms.Label()
         Me._lblLabels_1 = New System.Windows.Forms.Label()
-        Me.GrdDetalle = New System.Windows.Forms.DataGridView()
+        Me.dgvListado = New System.Windows.Forms.DataGridView()
         Me.btnReporte = New System.Windows.Forms.Button()
         Me.cboLinea = New System.Windows.Forms.ComboBox()
         Me.lblPagina = New System.Windows.Forms.Label()
@@ -32,7 +32,7 @@ Partial Class FrmInventario
         Me.btnPrevious = New System.Windows.Forms.Button()
         Me.btnFirst = New System.Windows.Forms.Button()
         Me.btnCardex = New System.Windows.Forms.Button()
-        CType(Me.GrdDetalle, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.dgvListado, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'txtCodigo
@@ -114,22 +114,22 @@ Partial Class FrmInventario
         Me._lblLabels_1.Text = "Código:"
         Me._lblLabels_1.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
-        'GrdDetalle
+        'dgvListado
         '
-        Me.GrdDetalle.AllowUserToAddRows = False
-        Me.GrdDetalle.AllowUserToDeleteRows = False
-        Me.GrdDetalle.AllowUserToResizeColumns = False
-        Me.GrdDetalle.AllowUserToResizeRows = False
-        Me.GrdDetalle.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing
-        Me.GrdDetalle.Location = New System.Drawing.Point(8, 90)
-        Me.GrdDetalle.Name = "GrdDetalle"
-        Me.GrdDetalle.ReadOnly = True
-        Me.GrdDetalle.RowHeadersVisible = False
-        Me.GrdDetalle.ScrollBars = System.Windows.Forms.ScrollBars.None
-        Me.GrdDetalle.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.GrdDetalle.Size = New System.Drawing.Size(700, 310)
-        Me.GrdDetalle.TabIndex = 5
-        Me.GrdDetalle.TabStop = False
+        Me.dgvListado.AllowUserToAddRows = False
+        Me.dgvListado.AllowUserToDeleteRows = False
+        Me.dgvListado.AllowUserToResizeColumns = False
+        Me.dgvListado.AllowUserToResizeRows = False
+        Me.dgvListado.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing
+        Me.dgvListado.Location = New System.Drawing.Point(8, 90)
+        Me.dgvListado.Name = "dgvListado"
+        Me.dgvListado.ReadOnly = True
+        Me.dgvListado.RowHeadersVisible = False
+        Me.dgvListado.ScrollBars = System.Windows.Forms.ScrollBars.None
+        Me.dgvListado.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
+        Me.dgvListado.Size = New System.Drawing.Size(700, 310)
+        Me.dgvListado.TabIndex = 5
+        Me.dgvListado.TabStop = False
         '
         'btnReporte
         '
@@ -244,7 +244,7 @@ Partial Class FrmInventario
         Me.Controls.Add(Me.btnFirst)
         Me.Controls.Add(Me.cboLinea)
         Me.Controls.Add(Me.btnReporte)
-        Me.Controls.Add(Me.GrdDetalle)
+        Me.Controls.Add(Me.dgvListado)
         Me.Controls.Add(Me.txtCodigo)
         Me.Controls.Add(Me.CmdFiltrar)
         Me.Controls.Add(Me.txtDescripcion)
@@ -261,12 +261,12 @@ Partial Class FrmInventario
         Me.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Actualización de Inventario"
-        CType(Me.GrdDetalle, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.dgvListado, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
     End Sub
-    Friend WithEvents GrdDetalle As System.Windows.Forms.DataGridView
+    Friend WithEvents dgvListado As System.Windows.Forms.DataGridView
     Friend WithEvents txtCodigo As System.Windows.Forms.TextBox
     Friend WithEvents CmdFiltrar As System.Windows.Forms.Button
     Friend WithEvents txtDescripcion As System.Windows.Forms.TextBox

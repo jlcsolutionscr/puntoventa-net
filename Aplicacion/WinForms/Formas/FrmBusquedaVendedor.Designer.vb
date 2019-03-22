@@ -18,28 +18,28 @@ Partial Class FrmBusquedaVendedor
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FrmBusquedaVendedor))
-        Me.FlexVendedor = New System.Windows.Forms.DataGridView()
+        Me.dgvListado = New System.Windows.Forms.DataGridView()
         Me.btnFiltrar = New System.Windows.Forms.Button()
         Me.lblDescripcion = New System.Windows.Forms.Label()
         Me.txtNombre = New System.Windows.Forms.TextBox()
-        CType(Me.FlexVendedor, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.dgvListado, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
-        'FlexVendedor
+        'dgvListado
         '
-        Me.FlexVendedor.AllowUserToAddRows = False
-        Me.FlexVendedor.AllowUserToDeleteRows = False
-        Me.FlexVendedor.AllowUserToResizeColumns = False
-        Me.FlexVendedor.AllowUserToResizeRows = False
-        Me.FlexVendedor.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.FlexVendedor.Location = New System.Drawing.Point(12, 38)
-        Me.FlexVendedor.Name = "FlexVendedor"
-        Me.FlexVendedor.ReadOnly = True
-        Me.FlexVendedor.RowHeadersVisible = False
-        Me.FlexVendedor.ScrollBars = System.Windows.Forms.ScrollBars.None
-        Me.FlexVendedor.Size = New System.Drawing.Size(620, 337)
-        Me.FlexVendedor.TabIndex = 2
-        Me.FlexVendedor.TabStop = False
+        Me.dgvListado.AllowUserToAddRows = False
+        Me.dgvListado.AllowUserToDeleteRows = False
+        Me.dgvListado.AllowUserToResizeColumns = False
+        Me.dgvListado.AllowUserToResizeRows = False
+        Me.dgvListado.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        Me.dgvListado.Location = New System.Drawing.Point(12, 38)
+        Me.dgvListado.Name = "dgvListado"
+        Me.dgvListado.ReadOnly = True
+        Me.dgvListado.RowHeadersVisible = False
+        Me.dgvListado.ScrollBars = System.Windows.Forms.ScrollBars.None
+        Me.dgvListado.Size = New System.Drawing.Size(620, 337)
+        Me.dgvListado.TabIndex = 2
+        Me.dgvListado.TabStop = False
         '
         'btnFiltrar
         '
@@ -77,7 +77,7 @@ Partial Class FrmBusquedaVendedor
         Me.Controls.Add(Me.btnFiltrar)
         Me.Controls.Add(Me.lblDescripcion)
         Me.Controls.Add(Me.txtNombre)
-        Me.Controls.Add(Me.FlexVendedor)
+        Me.Controls.Add(Me.dgvListado)
         Me.Cursor = System.Windows.Forms.Cursors.Default
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
         Me.Location = New System.Drawing.Point(3, 22)
@@ -87,12 +87,12 @@ Partial Class FrmBusquedaVendedor
         Me.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Búsqueda de Vendedores"
-        CType(Me.FlexVendedor, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.dgvListado, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
     End Sub
-    Friend WithEvents FlexVendedor As System.Windows.Forms.DataGridView
+    Friend WithEvents dgvListado As System.Windows.Forms.DataGridView
     Friend WithEvents btnFiltrar As System.Windows.Forms.Button
     Friend WithEvents lblDescripcion As System.Windows.Forms.Label
     Friend WithEvents txtNombre As System.Windows.Forms.TextBox

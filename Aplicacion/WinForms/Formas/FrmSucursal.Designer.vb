@@ -34,7 +34,7 @@ Partial Class FrmSucursal
         '
         'ClienteBindingSource
         '
-        Me.ClienteBindingSource.DataSource = GetType(Dominio.Entidades.Cliente)
+        Me.ClienteBindingSource.DataSource = GetType(AccesoDatos.Dominio.Entidades.Cliente)
         '
         'btnCancelar
         '

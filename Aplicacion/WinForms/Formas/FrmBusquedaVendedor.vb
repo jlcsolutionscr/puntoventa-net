@@ -1,11 +1,7 @@
-Imports System.Collections.Generic
-Imports LeandroSoftware.PuntoVenta.Dominio.Entidades
-Imports LeandroSoftware.PuntoVenta.Servicios
-Imports Unity
+Imports LeandroSoftware.AccesoDatos.ClienteWCF
 
 Public Class FrmBusquedaVendedor
 #Region "Variables"
-    Private servicioMantenimiento As IMantenimientoService
 #End Region
 
 #Region "Métodos"
@@ -13,46 +9,39 @@ Public Class FrmBusquedaVendedor
         Dim dvcId As New DataGridViewTextBoxColumn
         Dim dvcNombre As New DataGridViewTextBoxColumn
 
-        FlexVendedor.Columns.Clear()
-        FlexVendedor.AutoGenerateColumns = False
+        dgvListado.Columns.Clear()
+        dgvListado.AutoGenerateColumns = False
         dvcId.HeaderText = "Id"
         dvcId.DataPropertyName = "IdVendedor"
         dvcId.Width = 50
-        FlexVendedor.Columns.Add(dvcId)
+        dgvListado.Columns.Add(dvcId)
         dvcNombre.HeaderText = "Nombre"
         dvcNombre.DataPropertyName = "Nombre"
         dvcNombre.Width = 570
-        FlexVendedor.Columns.Add(dvcNombre)
+        dgvListado.Columns.Add(dvcNombre)
     End Sub
 
-    Private Sub ActualizarDatos()
+    Private Async Sub ActualizarDatos()
         Try
-            FlexVendedor.DataSource = servicioMantenimiento.ObtenerListaVendedores(FrmMenuPrincipal.empresaGlobal.IdEmpresa, txtNombre.Text)
+            dgvListado.DataSource = Await PuntoventaWCF.ObtenerListaVendedores(FrmPrincipal.empresaGlobal.IdEmpresa, txtNombre.Text)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
             Exit Sub
         End Try
-        FlexVendedor.Refresh()
+        dgvListado.Refresh()
     End Sub
 #End Region
 
 #Region "Eventos Controles"
-    Private Sub FrmBusProd_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        Try
-            servicioMantenimiento = FrmMenuPrincipal.unityContainer.Resolve(Of IMantenimientoService)()
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-            Exit Sub
-        End Try
+    Private Sub FrmBusVendedor_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         EstablecerPropiedadesDataGridView()
         ActualizarDatos()
     End Sub
 
-    Private Sub FlexProducto_DoubleClick(ByVal sender As Object, ByVal e As EventArgs) Handles FlexVendedor.DoubleClick
-        If FlexVendedor.RowCount > 0 Then
-            FrmMenuPrincipal.intBusqueda = FlexVendedor.CurrentRow.Cells(0).Value
+    Private Sub FlexProducto_DoubleClick(ByVal sender As Object, ByVal e As EventArgs) Handles dgvListado.DoubleClick
+        If dgvListado.RowCount > 0 Then
+            FrmPrincipal.intBusqueda = dgvListado.CurrentRow.Cells(0).Value
             Close()
         End If
     End Sub

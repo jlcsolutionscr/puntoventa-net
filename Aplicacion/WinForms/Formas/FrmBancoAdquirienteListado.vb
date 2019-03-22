@@ -1,10 +1,8 @@
-﻿Imports LeandroSoftware.PuntoVenta.Dominio.Entidades
-Imports LeandroSoftware.PuntoVenta.Servicios
-Imports Unity
+﻿Imports LeandroSoftware.AccesoDatos.ClienteWCF
 
 Public Class FrmBancoAdquirienteListado
 #Region "Variables"
-    Public servicioMantenimiento As IMantenimientoService
+    Private listado As IList
 #End Region
 
 #Region "Métodos"
@@ -31,19 +29,19 @@ Public Class FrmBancoAdquirienteListado
         dgvDatos.Columns.Add(dvcDescripcion)
         dvcPorcentajeRetencion.HeaderText = "% Retenc."
         dvcPorcentajeRetencion.DataPropertyName = "PorcentajeRetencion"
-        dvcPorcentajeRetencion.DefaultCellStyle = FrmMenuPrincipal.dgvDecimal
+        dvcPorcentajeRetencion.DefaultCellStyle = FrmPrincipal.dgvDecimal
         dvcPorcentajeRetencion.Width = 100
         dgvDatos.Columns.Add(dvcPorcentajeRetencion)
         dvcPorcentajeComision.HeaderText = "% Comisión"
         dvcPorcentajeComision.DataPropertyName = "PorcentajeComision"
-        dvcPorcentajeComision.DefaultCellStyle = FrmMenuPrincipal.dgvDecimal
+        dvcPorcentajeComision.DefaultCellStyle = FrmPrincipal.dgvDecimal
         dvcPorcentajeComision.Width = 100
         dgvDatos.Columns.Add(dvcPorcentajeComision)
     End Sub
 
-    Private Sub ActualizarDatos()
+    Private Async Sub ActualizarDatos()
         Try
-            Dim listado As IList = servicioMantenimiento.ObtenerListaBancoAdquiriente(FrmMenuPrincipal.empresaGlobal.IdEmpresa, txtDescripcion.Text)
+            listado = Await PuntoventaWCF.ObtenerListaBancoAdquiriente(FrmPrincipal.empresaGlobal.IdEmpresa, txtDescripcion.Text)
             dgvDatos.DataSource = listado
             If listado.Count() > 0 Then
                 btnEditar.Enabled = True
@@ -63,21 +61,13 @@ Public Class FrmBancoAdquirienteListado
 
 #Region "Eventos Controles"
     Private Sub FrmBancoAdquirienteListado_Shown(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Shown
-        Try
-            servicioMantenimiento = FrmMenuPrincipal.unityContainer.Resolve(Of IMantenimientoService)()
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-            Exit Sub
-        End Try
         EstablecerPropiedadesDataGridView()
         ActualizarDatos()
     End Sub
 
     Private Sub BtnAgregar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnAgregar.Click
         Dim formMant As New FrmBancoAdquiriente With {
-            .intIdBanco = 0,
-            .servicioMantenimiento = servicioMantenimiento
+            .intIdBanco = 0
         }
         formMant.ShowDialog()
         ActualizarDatos()
@@ -85,17 +75,16 @@ Public Class FrmBancoAdquirienteListado
 
     Private Sub BtnEditar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEditar.Click
         Dim formMant As New FrmBancoAdquiriente With {
-            .intIdBanco = dgvDatos.CurrentRow.Cells(0).Value,
-            .servicioMantenimiento = servicioMantenimiento
+            .intIdBanco = dgvDatos.CurrentRow.Cells(0).Value
         }
         formMant.ShowDialog()
         ActualizarDatos()
     End Sub
 
-    Private Sub BtnEliminar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEliminar.Click
+    Private Async Sub BtnEliminar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEliminar.Click
         If MessageBox.Show("Desea eliminar el registro actual", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
             Try
-                servicioMantenimiento.EliminarBancoAdquiriente(dgvDatos.CurrentRow.Cells(0).Value)
+                Await PuntoventaWCF.EliminarBancoAdquiriente(dgvDatos.CurrentRow.Cells(0).Value)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub

@@ -1,21 +1,15 @@
-Imports System.Collections
-Imports CrystalDecisions.Shared
-Imports CrystalDecisions.CrystalReports.Engine
-Imports LeandroSoftware.PuntoVenta.Dominio.Entidades
-Imports LeandroSoftware.PuntoVenta.Servicios
-Imports Unity
+Imports LeandroSoftware.AccesoDatos.ClienteWCF
 
 Public Class FrmMenuCuentaEgreso
 #Region "Variables"
-    Private servicioEgreso As IEgresoService
 #End Region
 
 #Region "Métodos"
-    Private Sub CargarCombos()
+    Private Async Sub CargarCombos()
         Try
             cboIdCuentaEgreso.ValueMember = "IdCuenta"
             cboIdCuentaEgreso.DisplayMember = "Descripcion"
-            cboIdCuentaEgreso.DataSource = servicioEgreso.ObtenerListaCuentasEgreso(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
+            cboIdCuentaEgreso.DataSource = Await PuntoventaWCF.ObtenerListaCuentasEgreso(FrmPrincipal.empresaGlobal.IdEmpresa)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -27,22 +21,15 @@ Public Class FrmMenuCuentaEgreso
 
 #Region "Eventos Controles"
     Private Sub FrmRptMenu_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        Try
-            servicioEgreso = FrmMenuPrincipal.unityContainer.Resolve(Of IEgresoService)()
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-            Exit Sub
-        End Try
         CargarCombos()
     End Sub
 
     Private Sub btnProcesar_Click(sender As Object, e As EventArgs) Handles btnProcesar.Click
         If cboIdCuentaEgreso.SelectedValue IsNot Nothing Then
-            FrmMenuPrincipal.intBusqueda = cboIdCuentaEgreso.SelectedValue
+            FrmPrincipal.intBusqueda = cboIdCuentaEgreso.SelectedValue
             Close()
         Else
-            FrmMenuPrincipal.intBusqueda = 0
+            FrmPrincipal.intBusqueda = 0
             Close()
         End If
     End Sub

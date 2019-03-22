@@ -1,11 +1,5 @@
-Imports System.Collections.Generic
-Imports LeandroSoftware.PuntoVenta.Dominio.Entidades
-Imports LeandroSoftware.PuntoVenta.Servicios
-Imports Unity
-
 Public Class FrmBusquedaAjusteInventario
 #Region "Variables"
-    Private servicioMantenimiento As IMantenimientoService
     Private intTotalEmpresas As Integer
     Private intIndiceDePagina As Integer
     Private intFilasPorPagina As Integer = 13
@@ -18,33 +12,33 @@ Public Class FrmBusquedaAjusteInventario
         Dim dvcId As New DataGridViewTextBoxColumn
         Dim dvcDescripcion As New DataGridViewTextBoxColumn
 
-        FlexProducto.Columns.Clear()
-        FlexProducto.AutoGenerateColumns = False
+        dgvListado.Columns.Clear()
+        dgvListado.AutoGenerateColumns = False
         dvcId.HeaderText = "Id"
         dvcId.DataPropertyName = "IdAjuste"
         dvcId.Width = 50
-        FlexProducto.Columns.Add(dvcId)
+        dgvListado.Columns.Add(dvcId)
         dvcDescripcion.HeaderText = "Descripcion"
         dvcDescripcion.DataPropertyName = "Descripcion"
         dvcDescripcion.Width = 570
-        FlexProducto.Columns.Add(dvcDescripcion)
+        dgvListado.Columns.Add(dvcDescripcion)
     End Sub
 
     Private Sub ActualizarDatos(ByVal intNumeroPagina As Integer)
         Try
-            FlexProducto.DataSource = servicioMantenimiento.ObtenerListaAjustes(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, intId, txtDescripcion.Text)
+            'FlexProducto.DataSource = servicioMantenimiento.ObtenerListaAjustes(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, intId, txtDescripcion.Text)
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
             Exit Sub
         End Try
-        FlexProducto.Refresh()
+        dgvListado.Refresh()
     End Sub
 
     Private Sub ValidarCantidadEmpresas()
         Try
-            intTotalEmpresas = servicioMantenimiento.ObtenerTotalListaAjustes(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intId, txtDescripcion.Text)
+            'intTotalEmpresas = servicioMantenimiento.ObtenerTotalListaAjustes(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intId, txtDescripcion.Text)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -68,7 +62,7 @@ Public Class FrmBusquedaAjusteInventario
 
 #Region "Eventos Controles"
     Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs) Handles txtId.KeyPress
-        FrmMenuPrincipal.ValidaNumero(e, sender, True, 0)
+        FrmPrincipal.ValidaNumero(e, sender, True, 0)
     End Sub
 
     Private Sub btnFirst_Click(sender As Object, e As EventArgs) Handles btnFirst.Click
@@ -96,22 +90,15 @@ Public Class FrmBusquedaAjusteInventario
     End Sub
 
     Private Sub FrmBusProd_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        Try
-            servicioMantenimiento = FrmMenuPrincipal.unityContainer.Resolve(Of IMantenimientoService)()
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-            Exit Sub
-        End Try
         EstablecerPropiedadesDataGridView()
         ValidarCantidadEmpresas()
         intIndiceDePagina = 1
         ActualizarDatos(intIndiceDePagina)
     End Sub
 
-    Private Sub FlexProducto_DoubleClick(ByVal sender As Object, ByVal e As EventArgs) Handles FlexProducto.DoubleClick
-        If FlexProducto.RowCount > 0 Then
-            FrmMenuPrincipal.intBusqueda = FlexProducto.CurrentRow.Cells(0).Value
+    Private Sub FlexProducto_DoubleClick(ByVal sender As Object, ByVal e As EventArgs) Handles dgvListado.DoubleClick
+        If dgvListado.RowCount > 0 Then
+            FrmPrincipal.intBusqueda = dgvListado.CurrentRow.Cells(0).Value
             Close()
         End If
     End Sub

@@ -30,7 +30,7 @@ Partial Class FrmInicio
         Me.CmdAceptar.BackColor = System.Drawing.SystemColors.ButtonHighlight
         Me.CmdAceptar.Cursor = System.Windows.Forms.Cursors.Default
         Me.CmdAceptar.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.CmdAceptar.Location = New System.Drawing.Point(209, 628)
+        Me.CmdAceptar.Location = New System.Drawing.Point(177, 554)
         Me.CmdAceptar.Name = "CmdAceptar"
         Me.CmdAceptar.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.CmdAceptar.Size = New System.Drawing.Size(97, 25)
@@ -45,7 +45,7 @@ Partial Class FrmInicio
         Me.picInicio.InitialImage = CType(resources.GetObject("picInicio.InitialImage"), System.Drawing.Image)
         Me.picInicio.Location = New System.Drawing.Point(12, 12)
         Me.picInicio.Name = "picInicio"
-        Me.picInicio.Size = New System.Drawing.Size(483, 610)
+        Me.picInicio.Size = New System.Drawing.Size(428, 536)
         Me.picInicio.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
         Me.picInicio.TabIndex = 2
         Me.picInicio.TabStop = False
@@ -54,11 +54,11 @@ Partial Class FrmInicio
         '
         Me.lblVersion.AutoSize = True
         Me.lblVersion.ImageAlign = System.Drawing.ContentAlignment.MiddleRight
-        Me.lblVersion.Location = New System.Drawing.Point(412, 628)
+        Me.lblVersion.Location = New System.Drawing.Point(362, 554)
         Me.lblVersion.Name = "lblVersion"
-        Me.lblVersion.Size = New System.Drawing.Size(39, 13)
+        Me.lblVersion.Size = New System.Drawing.Size(78, 13)
         Me.lblVersion.TabIndex = 3
-        Me.lblVersion.Text = "Label1"
+        Me.lblVersion.Text = "Version 1.0.0.0"
         '
         'FrmInicio
         '
@@ -66,7 +66,7 @@ Partial Class FrmInicio
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.ControlLight
-        Me.ClientSize = New System.Drawing.Size(507, 667)
+        Me.ClientSize = New System.Drawing.Size(454, 587)
         Me.ControlBox = False
         Me.Controls.Add(Me.lblVersion)
         Me.Controls.Add(Me.picInicio)

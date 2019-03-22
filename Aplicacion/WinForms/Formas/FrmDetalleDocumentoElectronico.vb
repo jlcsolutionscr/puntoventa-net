@@ -1,13 +1,12 @@
 ﻿Imports System.IO
 Imports System.Xml
-Imports LeandroSoftware.Puntoventa.Servicios
-Imports LeandroSoftware.Puntoventa.Dominio.Entidades
-Imports Unity
+Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
 Imports System.Text
+Imports System.Threading.Tasks
+Imports LeandroSoftware.AccesoDatos.ClienteWCF
 
 Public Class FrmDetalleDocumentoElectronico
 #Region "Variables"
-    Private servicioFacturacion As IFacturacionService
     Private listadoDocumentosProcesados As IList
     Private intTotalDocumentos As Integer
     Private intIndiceDePagina As Integer
@@ -48,9 +47,9 @@ Public Class FrmDetalleDocumentoElectronico
         dgvDatos.Columns.Add(dvcEstado)
     End Sub
 
-    Private Sub ActualizarDatos(ByVal intNumeroPagina As Integer)
+    Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
         Try
-            listadoDocumentosProcesados = servicioFacturacion.ObtenerListaDocumentosElectronicosProcesados(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina)
+            listadoDocumentosProcesados = Await PuntoventaWCF.ObtenerListaDocumentosElectronicosProcesados(FrmPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina)
             dgvDatos.DataSource = listadoDocumentosProcesados
             If listadoDocumentosProcesados.Count() > 0 Then
                 btnMostrarRespuesta.Enabled = True
@@ -61,18 +60,18 @@ Public Class FrmDetalleDocumentoElectronico
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
-            Exit Sub
+            Exit Function
         End Try
         dgvDatos.Refresh()
-    End Sub
+    End Function
 
-    Private Async Sub ValidarCantidadClientes()
+    Private Async Function ObtenerCantidadDocumentosProcesados() As Task
         Try
-            intTotalDocumentos = Await servicioFacturacion.ObtenerTotalDocumentosElectronicosProcesados(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
+            intTotalDocumentos = Await PuntoventaWCF.ObtenerTotalDocumentosElectronicosProcesados(FrmPrincipal.empresaGlobal.IdEmpresa)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
-            Exit Sub
+            Exit Function
         End Try
         intCantidadDePaginas = Math.Truncate(intTotalDocumentos / intFilasPorPagina) + IIf((intTotalDocumentos Mod intFilasPorPagina) = 0, 0, 1)
 
@@ -87,67 +86,66 @@ Public Class FrmDetalleDocumentoElectronico
             btnPrevious.Enabled = False
             btnFirst.Enabled = False
         End If
-    End Sub
+    End Function
 #End Region
 
 #Region "Eventos controles"
-    Private Sub BtnFirst_Click(sender As Object, e As EventArgs) Handles btnFirst.Click
+    Private Async Sub BtnFirst_Click(sender As Object, e As EventArgs) Handles btnFirst.Click
         intIndiceDePagina = 1
-        ActualizarDatos(intIndiceDePagina)
+        Await ActualizarDatos(intIndiceDePagina)
     End Sub
 
-    Private Sub BtnPrevious_Click(sender As Object, e As EventArgs) Handles btnPrevious.Click
+    Private Async Sub BtnPrevious_Click(sender As Object, e As EventArgs) Handles btnPrevious.Click
         If intIndiceDePagina > 1 Then
             intIndiceDePagina -= 1
-            ActualizarDatos(intIndiceDePagina)
+            Await ActualizarDatos(intIndiceDePagina)
         End If
     End Sub
 
-    Private Sub BtnNext_Click(sender As Object, e As EventArgs) Handles btnNext.Click
+    Private Async Sub BtnNext_Click(sender As Object, e As EventArgs) Handles btnNext.Click
         If intCantidadDePaginas > intIndiceDePagina Then
             intIndiceDePagina += 1
-            ActualizarDatos(intIndiceDePagina)
+            Await ActualizarDatos(intIndiceDePagina)
         End If
     End Sub
 
-    Private Sub BtnLast_Click(sender As Object, e As EventArgs) Handles btnLast.Click
+    Private Async Sub BtnLast_Click(sender As Object, e As EventArgs) Handles btnLast.Click
         intIndiceDePagina = intCantidadDePaginas
-        ActualizarDatos(intIndiceDePagina)
+        Await ActualizarDatos(intIndiceDePagina)
     End Sub
 
-    Private Sub FrmDetalleDocumentoElectronico_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        Try
-            servicioFacturacion = FrmMenuPrincipal.unityContainer.Resolve(Of IFacturacionService)()
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-            Exit Sub
-        End Try
+    Private Async Sub FrmDetalleDocumentoElectronico_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         rtxDetalleRespuesta.Visible = False
         EstablecerPropiedadesDataGridView()
         picLoader.Visible = True
-        ValidarCantidadClientes()
+        Await ObtenerCantidadDocumentosProcesados()
         intIndiceDePagina = 1
-        ActualizarDatos(intIndiceDePagina)
+        Await ActualizarDatos(intIndiceDePagina)
         picLoader.Visible = False
     End Sub
 
-    Private Sub BtnMostrarRespuesta_Click(sender As Object, e As EventArgs) Handles btnMostrarRespuesta.Click
+    Private Async Sub BtnMostrarRespuesta_Click(sender As Object, e As EventArgs) Handles btnMostrarRespuesta.Click
         Try
             If Not bolRespuestaVisible Then
                 Dim intIndex As Integer = dgvDatos.CurrentRow.Index
                 Dim documento As DocumentoElectronico = listadoDocumentosProcesados.Item(intIndex)
                 If documento.EstadoEnvio = "aceptado" Or documento.EstadoEnvio = "rechazado" Then
+                    Dim consulta As DocumentoElectronico = Await PuntoventaWCF.ObtenerDocumentoElectronico(documento.IdDocumento)
                     rtxDetalleRespuesta.Visible = True
-                    Dim sw As New StringWriter()
-                    Dim xw As New XmlTextWriter(sw)
-                    xw.Formatting = Formatting.Indented
-                    xw.Indentation = 4
-                    Dim datos As XmlDocument = New XmlDocument()
-                    Dim strRespuesta As String = Encoding.UTF8.GetString(documento.Respuesta)
-                    datos.LoadXml(strRespuesta)
-                    datos.Save(xw)
-                    rtxDetalleRespuesta.Text = sw.ToString()
+                    If consulta.Respuesta IsNot Nothing Then
+                        Dim sw As New StringWriter()
+                        Dim xw As New XmlTextWriter(sw) With {
+                            .Formatting = Formatting.Indented,
+                            .Indentation = 4
+                        }
+                        Dim datos As XmlDocument = New XmlDocument()
+                        Dim strRespuesta As String = Encoding.UTF8.GetString(consulta.Respuesta)
+                        datos.LoadXml(strRespuesta)
+                        datos.Save(xw)
+                        rtxDetalleRespuesta.Text = sw.ToString()
+                    Else
+                        rtxDetalleRespuesta.Text = consulta.ErrorEnvio
+                    End If
                     btnMostrarRespuesta.Text = "Mostrar lista"
                     bolRespuestaVisible = True
                 End If

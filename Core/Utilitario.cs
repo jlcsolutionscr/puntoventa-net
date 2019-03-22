@@ -2,27 +2,27 @@
 using System.IO;
 using System.Text;
 using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
 using System.Diagnostics;
-using log4net;
-using PdfSharp.Pdf;
-using PdfSharp.Drawing;
-using PdfSharp.Drawing.Layout;
+using System.Security.Cryptography.X509Certificates;
+using System.Management;
 
 namespace LeandroSoftware.Core
 {
     public static class Utilitario
     {
-        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private const int Keysize = 256;
+        private const int DerivationIterations = 1000;
+        private static readonly string SaltKey = "S@LT&KEY";
+        private static readonly string VIKey = "@1B2c3D4e5F6g7H8";
 
-        public static string VerificarCertificadoPorNombre(string key)
+        public static bool VerificarCertificado(string strThumbprint)
         {
-            string strThumbPrint = null;
+            bool bolCertificadoValido = false;
             try
             {
                 X509Store store = new X509Store(StoreName.Root, StoreLocation.LocalMachine);
                 store.Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly);
-                X509Certificate2Collection certs = store.Certificates.Find(X509FindType.FindBySubjectName, key, true);
+                X509Certificate2Collection certs = store.Certificates.Find(X509FindType.FindByThumbprint, strThumbprint, true);
                 store.Close();
                 if (certs.Count == 0)
                 {
@@ -34,21 +34,19 @@ namespace LeandroSoftware.Core
                     {
                         if (!cert.HasPrivateKey)
                             throw new Exception("El certificado con la llave utilizada por el sistema no posee la llave privada requerida. Por favor verificar.");
-                        strThumbPrint = cert.Thumbprint;
-                        break;
+                        bolCertificadoValido = true;
                     }
                 }
                 else
                 {
-                    throw new Exception("Existe más de un certificado con la huella digital: " + key + ". Por favor verificar.");
+                    throw new Exception("Existe más de un certificado con la huella digital: " + strThumbprint + ". Por favor verificar.");
                 }
             }
             catch (Exception ex)
             {
-                log.Error("Error cargando el certificado:", ex);
-                throw new Exception("Error al cargar la configuración del sistema. Por favor contacte a su proveedor. . .");
+                throw ex;
             }
-            return strThumbPrint;
+            return bolCertificadoValido;
         }
 
         public static string GenerarRespaldo(string strUser, string strPassword, string strHost, string strDatabase, string strMySQLDumpOptions)
@@ -57,14 +55,16 @@ namespace LeandroSoftware.Core
             string output = "";
             try
             {
-                psi = new ProcessStartInfo();
-                psi.FileName = "mysqldump";
-                psi.RedirectStandardInput = false;
-                psi.RedirectStandardOutput = true;
-                psi.Arguments = strMySQLDumpOptions + " -u" + strUser + " -p" + strPassword + " -h" + strHost + " " + strDatabase;
-                psi.UseShellExecute = false;
-                psi.CreateNoWindow = true;
-                psi.StandardOutputEncoding = Encoding.UTF8;
+                psi = new ProcessStartInfo
+                {
+                    FileName = "mysqldump",
+                    RedirectStandardInput = false,
+                    RedirectStandardOutput = true,
+                    Arguments = strMySQLDumpOptions + " -u" + strUser + " -p" + strPassword + " -h" + strHost + " " + strDatabase,
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    StandardOutputEncoding = Encoding.UTF8
+                };
                 using (Process process = Process.Start(psi))
                 {
                     output = process.StandardOutput.ReadToEnd();
@@ -78,7 +78,57 @@ namespace LeandroSoftware.Core
             return output;
         }
 
-        public static string EncriptarDatos(string key, string strData)
+        public static string EncriptarDatos(string plainText, string passPhrase)
+        {
+            byte[] plainTextBytes = Encoding.UTF8.GetBytes(plainText);
+            byte[] keyBytes = new Rfc2898DeriveBytes(passPhrase, Encoding.ASCII.GetBytes(SaltKey)).GetBytes(256 / 8);
+            var symmetricKey = new RijndaelManaged() { Mode = CipherMode.CBC, Padding = PaddingMode.Zeros };
+            var encryptor = symmetricKey.CreateEncryptor(keyBytes, Encoding.ASCII.GetBytes(VIKey));
+
+            byte[] cipherTextBytes;
+
+            using (var memoryStream = new MemoryStream())
+            {
+                using (var cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write))
+                {
+                    cryptoStream.Write(plainTextBytes, 0, plainTextBytes.Length);
+                    cryptoStream.FlushFinalBlock();
+                    cipherTextBytes = memoryStream.ToArray();
+                    cryptoStream.Close();
+                }
+                memoryStream.Close();
+            }
+            return Convert.ToBase64String(cipherTextBytes);
+        }
+
+        public static string DesencriptarDatos(string cipherText, string passPhrase)
+        {
+            byte[] cipherTextBytes = Convert.FromBase64String(cipherText);
+            byte[] keyBytes = new Rfc2898DeriveBytes(passPhrase, Encoding.ASCII.GetBytes(SaltKey)).GetBytes(256 / 8);
+            var symmetricKey = new RijndaelManaged() { Mode = CipherMode.CBC, Padding = PaddingMode.None };
+
+            var decryptor = symmetricKey.CreateDecryptor(keyBytes, Encoding.ASCII.GetBytes(VIKey));
+            var memoryStream = new MemoryStream(cipherTextBytes);
+            var cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read);
+            byte[] plainTextBytes = new byte[cipherTextBytes.Length];
+
+            int decryptedByteCount = cryptoStream.Read(plainTextBytes, 0, plainTextBytes.Length);
+            memoryStream.Close();
+            cryptoStream.Close();
+            return Encoding.UTF8.GetString(plainTextBytes, 0, decryptedByteCount).TrimEnd("\0".ToCharArray());
+        }
+
+        private static byte[] Generate256BitsOfRandomEntropy()
+        {
+            var randomBytes = new byte[32];
+            using (var rngCsp = new RNGCryptoServiceProvider())
+            {
+                rngCsp.GetBytes(randomBytes);
+            }
+            return randomBytes;
+        }
+
+        /* public static string GenerarLlaveEncriptadoLocal(string strThumbprint, string strData)
         {
             RSACryptoServiceProvider rsaEncryptor = null;
             string strResult = null;
@@ -86,25 +136,25 @@ namespace LeandroSoftware.Core
             {
                 X509Store store = new X509Store(StoreName.Root, StoreLocation.LocalMachine);
                 store.Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly);
-                X509Certificate2Collection certs = store.Certificates.Find(X509FindType.FindByThumbprint, key, true);
+                X509Certificate2Collection certs = store.Certificates.Find(X509FindType.FindByThumbprint, strThumbprint, true);
                 store.Close();
                 if (certs.Count == 0)
                 {
-                    throw new Exception("No se logró ubicar el certificado con la huella digital: " + key + ". Por favor verificar.");
+                    throw new Exception("No se logró ubicar el certificado con la huella digital: " + strThumbprint + ". Por favor verificar.");
                 }
                 if (certs.Count == 1)
                 {
                     foreach (X509Certificate2 cert in certs)
                     {
                         if (!cert.HasPrivateKey)
-                            throw new Exception("El certificado con la huella digital: " + key + " no posee la llave privada requerida. Por favor verificar.");
+                            throw new Exception("El certificado con la huella digital: " + strThumbprint + " no posee la llave privada requerida. Por favor verificar.");
                         rsaEncryptor = (RSACryptoServiceProvider)cert.PrivateKey;
                         break;
                     }
                 }
                 else
                 {
-                    throw new Exception("Existe más de un certificado con la huella digital: " + key + ". Por favor verificar.");
+                    throw new Exception("Existe más de un certificado con la huella digital: " + strThumbprint + ". Por favor verificar.");
                 }
 
                 if (rsaEncryptor != null)
@@ -115,13 +165,12 @@ namespace LeandroSoftware.Core
             }
             catch (Exception ex)
             {
-                log.Error("Error cargando el certificado:", ex);
-                throw new Exception("Error al cargar la configuración del sistema. Por favor contacte a su proveedor. . .");
+                throw ex;
             }
             return strResult;
-        }
+        } */
 
-        public static string DesencriptarDatos(string key, string strData)
+        public static string ObtenerLlaveEncriptadoLocal(string strThumbprint, string strData)
         {
             RSACryptoServiceProvider rsaEncryptor = null;
             string strResult = null;
@@ -129,25 +178,25 @@ namespace LeandroSoftware.Core
             {
                 X509Store store = new X509Store(StoreName.Root, StoreLocation.LocalMachine);
                 store.Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly);
-                X509Certificate2Collection certs = store.Certificates.Find(X509FindType.FindByThumbprint, key, true);
+                X509Certificate2Collection certs = store.Certificates.Find(X509FindType.FindByThumbprint, strThumbprint, true);
                 store.Close();
                 if (certs.Count == 0)
                 {
-                    throw new Exception("No se logró ubicar el certificado con la huella digital: " + key + ". Por favor verificar.");
+                    throw new Exception("No se logró ubicar el certificado con la huella digital: " + strThumbprint + ". Por favor verificar.");
                 }
                 if (certs.Count == 1)
                 {
                     foreach (X509Certificate2 cert in certs)
                     {
                         if (!cert.HasPrivateKey)
-                            throw new Exception("El certificado con la huella digital: " + key + " no posee la llave privada requerida. Por favor verificar.");
+                            throw new Exception("El certificado con la huella digital: " + strThumbprint + " no posee la llave privada requerida. Por favor verificar.");
                         rsaEncryptor = (RSACryptoServiceProvider)cert.PrivateKey;
                         break;
                     }
                 }
                 else
                 {
-                    throw new Exception("Existe más de un certificado con la huella digital: " + key + ". Por favor verificar.");
+                    throw new Exception("Existe más de un certificado con la huella digital: " + strThumbprint + ". Por favor verificar.");
                 }
                 if (rsaEncryptor != null)
                 {
@@ -156,23 +205,24 @@ namespace LeandroSoftware.Core
                 }
                 else
                 {
-                    throw new Exception("No se logró obtener un encriptador para el certificado con huella digital: " + key + ". Por favor verificar.");
+                    throw new Exception("No se logró obtener un encriptador para el certificado con huella digital: " + strThumbprint + ". Por favor verificar.");
                 }
             }
             catch (Exception ex)
             {
-                log.Error("Error cargando el certificado:", ex);
-                throw new Exception("Error al cargar la configuración del sistema. Por favor contacte a su proveedor. . .");
+                throw ex;
             }
             return strResult;
         }
 
-        public static byte[] EncriptarArchivo(string key, string AppKey, string strData)
+        public static byte[] EncriptarArchivo(string strThumbprint, string strAppKey, string strData)
         {
-            string sKey = DesencriptarDatos(key, AppKey);
-            DESCryptoServiceProvider DES = new DESCryptoServiceProvider();
-            DES.Key = Encoding.ASCII.GetBytes(sKey);
-            DES.IV = Encoding.ASCII.GetBytes(sKey);
+            string sKey = ObtenerLlaveEncriptadoLocal(strThumbprint, strAppKey);
+            DESCryptoServiceProvider DES = new DESCryptoServiceProvider
+            {
+                Key = Encoding.ASCII.GetBytes(sKey),
+                IV = Encoding.ASCII.GetBytes(sKey)
+            };
             var msEncrypted = new MemoryStream();
             ICryptoTransform encryptor = DES.CreateEncryptor();
             CryptoStream cryptostream = new CryptoStream(msEncrypted, encryptor, CryptoStreamMode.Write);
@@ -182,13 +232,15 @@ namespace LeandroSoftware.Core
             return msEncrypted.ToArray();
         }
 
-        public static void DesencriptarArchivo(string key, string AppKey, string strInputFilename, string strOutPutFilename)
+        public static void DesencriptarArchivo(string strThumbprint, string strAppKey, string strInputFilename, string strOutPutFilename)
         {
-            string sKey = DesencriptarDatos(key, AppKey);
-            DESCryptoServiceProvider DES = new DESCryptoServiceProvider();
-	        DES.Key = Encoding.ASCII.GetBytes(sKey);
-	        DES.IV = Encoding.ASCII.GetBytes(sKey);
-	        FileStream fsread = new FileStream(strInputFilename, FileMode.Open, FileAccess.Read);
+            string sKey = ObtenerLlaveEncriptadoLocal(strThumbprint, strAppKey);
+            DESCryptoServiceProvider DES = new DESCryptoServiceProvider
+            {
+                Key = Encoding.ASCII.GetBytes(sKey),
+                IV = Encoding.ASCII.GetBytes(sKey)
+            };
+            FileStream fsread = new FileStream(strInputFilename, FileMode.Open, FileAccess.Read);
 	        ICryptoTransform desdecrypt = DES.CreateDecryptor();
 	        CryptoStream decryptoStream = new CryptoStream(fsread, desdecrypt, CryptoStreamMode.Read);
             StreamWriter fsDecrypted = new StreamWriter(strOutPutFilename);
@@ -197,212 +249,12 @@ namespace LeandroSoftware.Core
 	        fsDecrypted.Close();
         }
 
-        public static byte[] GenerarPDFFacturaElectronica(EstructuraPDF datos)
+        public static string ObtenerIdentificadorEquipo()
         {
-            try
-            {
-                PdfDocument document = new PdfDocument();
-                document.Info.Title = datos.TituloDocumento;
-                PdfPage page = document.AddPage();
-                XGraphics gfx = XGraphics.FromPdfPage(page);
-
-                if (datos.Logotipo != null)
-                {
-                    XImage image = XImage.FromGdiPlusImage(datos.Logotipo);
-                    gfx.DrawImage(image, 340, 40, 175, 80);
-                }
-
-                XFont font = new XFont("Courier New", 12, XFontStyle.Bold);
-                XTextFormatter tf = new XTextFormatter(gfx);
-                tf.Alignment = XParagraphAlignment.Right;
-                gfx.DrawString(datos.NombreEmpresa.ToUpper(), font, XBrushes.Black, new XRect(20, 80, 300, 15), XStringFormats.TopLeft);
-                gfx.DrawString(datos.TituloDocumento, font, XBrushes.Black, new XRect(20, 95, 200, 15), XStringFormats.TopLeft);
-                font = new XFont("Arial", 8, XFontStyle.Regular);
-                gfx.DrawString("Consecutivo: ", font, XBrushes.Black, new XRect(20, 160, 80, 12), XStringFormats.TopLeft);
-                gfx.DrawString(datos.Consecutivo, font, XBrushes.Black, new XRect(110, 160, 200, 12), XStringFormats.TopLeft);
-                gfx.DrawString("Plazo de crédito: ", font, XBrushes.Black, new XRect(370, 160, 80, 12), XStringFormats.TopLeft);
-                gfx.DrawString(datos.PlazoCredito, font, XBrushes.Black, new XRect(470, 160, 80, 12), XStringFormats.TopLeft);
-
-                int lineaPos = 172;
-                gfx.DrawString("Clave: ", font, XBrushes.Black, new XRect(20, lineaPos, 80, 12), XStringFormats.TopLeft);
-                gfx.DrawString(datos.Clave, font, XBrushes.Black, new XRect(110, lineaPos, 200, 12), XStringFormats.TopLeft);
-
-                gfx.DrawString("Condición de Venta: ", font, XBrushes.Black, new XRect(370, lineaPos, 80, 12), XStringFormats.TopLeft);
-                gfx.DrawString(datos.CondicionVenta, font, XBrushes.Black, new XRect(470, lineaPos, 80, 12), XStringFormats.TopLeft);
-
-                lineaPos += 12;
-                gfx.DrawString("Fecha: ", font, XBrushes.Black, new XRect(20, lineaPos, 80, 12), XStringFormats.TopLeft);
-                gfx.DrawString(datos.Fecha, font, XBrushes.Black, new XRect(110, lineaPos, 200, 12), XStringFormats.TopLeft);
-                gfx.DrawString("Medio de Pago: ", font, XBrushes.Black, new XRect(370, lineaPos, 80, 12), XStringFormats.TopLeft);
-                gfx.DrawString(datos.MedioPago, font, XBrushes.Black, new XRect(470, lineaPos, 80, 12), XStringFormats.TopLeft);
-
-                lineaPos += 27;
-                font = new XFont("Arial", 8, XFontStyle.Bold);
-                gfx.DrawString("DATOS DEL EMISOR", font, XBrushes.Black, new XRect(20, lineaPos, 100, 12), XStringFormats.TopLeft);
-
-                lineaPos += 12;
-                font = new XFont("Arial", 8, XFontStyle.Regular);
-                gfx.DrawString("Nombre: ", font, XBrushes.Black, new XRect(20, lineaPos, 80, 12), XStringFormats.TopLeft);
-                gfx.DrawString(datos.NombreEmisor, font, XBrushes.Black, new XRect(110, lineaPos, 200, 12), XStringFormats.TopLeft);
-                gfx.DrawString("Identificación: ", font, XBrushes.Black, new XRect(370, lineaPos, 80, 12), XStringFormats.TopLeft);
-                gfx.DrawString(datos.IdentificacionEmisor, font, XBrushes.Black, new XRect(470, lineaPos, 80, 12), XStringFormats.TopLeft);
-
-                lineaPos += 12;
-                gfx.DrawString("Nombre comercial: ", font, XBrushes.Black, new XRect(20, lineaPos, 80, 12), XStringFormats.TopLeft);
-                gfx.DrawString(datos.NombreComercialEmisor, font, XBrushes.Black, new XRect(110, lineaPos, 400, 12), XStringFormats.TopLeft);
-
-                lineaPos += 12;
-                gfx.DrawString("Correo electrónico: ", font, XBrushes.Black, new XRect(20, lineaPos, 80, 12), XStringFormats.TopLeft);
-                gfx.DrawString(datos.CorreoElectronicoEmisor, font, XBrushes.Black, new XRect(110, lineaPos, 400, 12), XStringFormats.TopLeft);
-
-                lineaPos += 12;
-                gfx.DrawString("Teléfono: ", font, XBrushes.Black, new XRect(20, lineaPos, 80, 12), XStringFormats.TopLeft);
-                gfx.DrawString(datos.TelefonoEmisor, font, XBrushes.Black, new XRect(110, lineaPos, 200, 12), XStringFormats.TopLeft);
-                gfx.DrawString("Fax: ", font, XBrushes.Black, new XRect(370, lineaPos, 80, 12), XStringFormats.TopLeft);
-                gfx.DrawString(datos.FaxEmisor, font, XBrushes.Black, new XRect(470, lineaPos, 80, 12), XStringFormats.TopLeft);
-
-                lineaPos += 12;
-                gfx.DrawString("Provincia: ", font, XBrushes.Black, new XRect(20, lineaPos, 80, 12), XStringFormats.TopLeft);
-                gfx.DrawString(datos.ProvinciaEmisor, font, XBrushes.Black, new XRect(110, lineaPos, 200, 12), XStringFormats.TopLeft);
-                gfx.DrawString("Cantón: ", font, XBrushes.Black, new XRect(370, lineaPos, 80, 12), XStringFormats.TopLeft);
-                gfx.DrawString(datos.CantonEmisor, font, XBrushes.Black, new XRect(470, lineaPos, 80, 12), XStringFormats.TopLeft);
-
-                lineaPos += 12;
-                gfx.DrawString("Distrito: ", font, XBrushes.Black, new XRect(20, lineaPos, 80, 12), XStringFormats.TopLeft);
-                gfx.DrawString(datos.DistritoEmisor, font, XBrushes.Black, new XRect(110, lineaPos, 200, 12), XStringFormats.TopLeft);
-                gfx.DrawString("Barrio: ", font, XBrushes.Black, new XRect(370, lineaPos, 80, 12), XStringFormats.TopLeft);
-                gfx.DrawString(datos.BarrioEmisor, font, XBrushes.Black, new XRect(470, lineaPos, 80, 12), XStringFormats.TopLeft);
-
-                lineaPos += 12;
-                gfx.DrawString("Otras señas: ", font, XBrushes.Black, new XRect(20, lineaPos, 80, 12), XStringFormats.TopLeft);
-                gfx.DrawString(datos.DireccionEmisor, font, XBrushes.Black, new XRect(110, lineaPos, 400, 12), XStringFormats.TopLeft);
-
-                lineaPos += 27;
-                if (datos.PoseeReceptor)
-                {
-                    font = new XFont("Arial", 8, XFontStyle.Bold);
-                    gfx.DrawString("DATOS DEL CLIENTE", font, XBrushes.Black, new XRect(20, lineaPos, 100, 12), XStringFormats.TopLeft);
-
-                    lineaPos += 12;
-                    font = new XFont("Arial", 8, XFontStyle.Regular);
-                    gfx.DrawString("Nombre: ", font, XBrushes.Black, new XRect(20, lineaPos, 80, 12), XStringFormats.TopLeft);
-                    gfx.DrawString(datos.NombreReceptor, font, XBrushes.Black, new XRect(110, lineaPos, 200, 12), XStringFormats.TopLeft);
-                    gfx.DrawString("Identificación: ", font, XBrushes.Black, new XRect(370, lineaPos, 80, 12), XStringFormats.TopLeft);
-                    gfx.DrawString(datos.IdentificacionReceptor, font, XBrushes.Black, new XRect(470, lineaPos, 80, 12), XStringFormats.TopLeft);
-
-                    lineaPos += 12;
-                    gfx.DrawString("Nombre comercial: ", font, XBrushes.Black, new XRect(20, lineaPos, 80, 12), XStringFormats.TopLeft);
-                    gfx.DrawString(datos.NombreComercialReceptor, font, XBrushes.Black, new XRect(110, lineaPos, 400, 12), XStringFormats.TopLeft);
-
-                    lineaPos += 12;
-                    gfx.DrawString("Correo electrónico: ", font, XBrushes.Black, new XRect(20, lineaPos, 80, 12), XStringFormats.TopLeft);
-                    gfx.DrawString(datos.CorreoElectronicoReceptor, font, XBrushes.Black, new XRect(110, lineaPos, 400, 12), XStringFormats.TopLeft);
-
-                    lineaPos += 12;
-                    gfx.DrawString("Teléfono: ", font, XBrushes.Black, new XRect(20, lineaPos, 80, 12), XStringFormats.TopLeft);
-                    gfx.DrawString(datos.TelefonoReceptor, font, XBrushes.Black, new XRect(110, lineaPos, 200, 12), XStringFormats.TopLeft);
-                    gfx.DrawString("Fax: ", font, XBrushes.Black, new XRect(370, lineaPos, 80, 12), XStringFormats.TopLeft);
-                    gfx.DrawString(datos.FaxReceptor, font, XBrushes.Black, new XRect(470, lineaPos, 80, 12), XStringFormats.TopLeft);
-
-                    lineaPos += 12;
-                    gfx.DrawString("Provincia: ", font, XBrushes.Black, new XRect(20, lineaPos, 80, 12), XStringFormats.TopLeft);
-                    gfx.DrawString(datos.ProvinciaReceptor, font, XBrushes.Black, new XRect(110, lineaPos, 200, 12), XStringFormats.TopLeft);
-                    gfx.DrawString("Cantón: ", font, XBrushes.Black, new XRect(370, lineaPos, 80, 12), XStringFormats.TopLeft);
-                    gfx.DrawString(datos.CantonReceptor, font, XBrushes.Black, new XRect(470, lineaPos, 80, 12), XStringFormats.TopLeft);
-
-                    lineaPos += 12;
-                    gfx.DrawString("Distrito: ", font, XBrushes.Black, new XRect(20, lineaPos, 80, 12), XStringFormats.TopLeft);
-                    gfx.DrawString(datos.DistritoReceptor, font, XBrushes.Black, new XRect(110, lineaPos, 200, 12), XStringFormats.TopLeft);
-                    gfx.DrawString("Barrio: ", font, XBrushes.Black, new XRect(370, lineaPos, 80, 12), XStringFormats.TopLeft);
-                    gfx.DrawString(datos.BarrioReceptor, font, XBrushes.Black, new XRect(470, lineaPos, 80, 12), XStringFormats.TopLeft);
-
-                    lineaPos += 12;
-                    gfx.DrawString("Otras señas: ", font, XBrushes.Black, new XRect(20, lineaPos, 80, 12), XStringFormats.TopLeft);
-                    gfx.DrawString(datos.DireccionReceptor, font, XBrushes.Black, new XRect(110, lineaPos, 400, 12), XStringFormats.TopLeft);
-                    lineaPos += 27;
-                }
-
-                font = new XFont("Arial", 8, XFontStyle.Bold);
-                gfx.DrawString("DETALLE DE SERVICIOS", font, XBrushes.Black, new XRect(20, lineaPos, 100, 12), XStringFormats.TopLeft);
-
-                lineaPos += 12;
-                gfx.DrawString("Línea", font, XBrushes.Black, new XRect(30, lineaPos, 30, 12), XStringFormats.TopLeft);
-                gfx.DrawString("Código", font, XBrushes.Black, new XRect(60, lineaPos, 80, 12), XStringFormats.TopLeft);
-                gfx.DrawString("Detalle", font, XBrushes.Black, new XRect(140, lineaPos, 280, 12), XStringFormats.TopLeft);
-                tf.DrawString("Precio Unitario", font, XBrushes.Black, new XRect(400, lineaPos, 80, 12), XStringFormats.TopLeft);
-                tf.DrawString("Total", font, XBrushes.Black, new XRect(480, lineaPos, 80, 12), XStringFormats.TopLeft);
-                gfx.DrawLine(XPens.DarkGray, 28, lineaPos + 11, 562, lineaPos + 11);
-
-                font = new XFont("Arial", 8, XFontStyle.Regular);
-                foreach (EstructuraPDFDetalleServicio linea in datos.DetalleServicio)
-                {
-                    lineaPos += 12;
-                    gfx.DrawString(linea.NumeroLinea, font, XBrushes.Black, new XRect(30, lineaPos, 30, 12), XStringFormats.Center);
-                    gfx.DrawString(linea.Codigo, font, XBrushes.Black, new XRect(60, lineaPos, 80, 12), XStringFormats.TopLeft);
-                    gfx.DrawString(linea.Detalle, font, XBrushes.Black, new XRect(140, lineaPos, 280, 12), XStringFormats.TopLeft);
-                    tf.DrawString(linea.PrecioUnitario, font, XBrushes.Black, new XRect(400, lineaPos, 80, 12), XStringFormats.TopLeft);
-                    tf.DrawString(linea.TotalLinea, font, XBrushes.Black, new XRect(480, lineaPos, 80, 12), XStringFormats.TopLeft);
-                }
-                gfx.DrawLine(XPens.DarkGray, 28, lineaPos + 11, 562, lineaPos + 11);
-                lineaPos += 17;
-                font = new XFont("Arial", 8, XFontStyle.Bold);
-                gfx.DrawString("SubTotal Factura:", font, XBrushes.Black, new XRect(380, lineaPos, 80, 12), XStringFormats.TopLeft);
-                font = new XFont("Arial", 8, XFontStyle.Regular);
-                tf.DrawString(datos.SubTotal, font, XBrushes.Black, new XRect(480, lineaPos, 80, 12), XStringFormats.TopLeft);
-
-                lineaPos += 12;
-                font = new XFont("Arial", 8, XFontStyle.Bold);
-                gfx.DrawString("Descuento:", font, XBrushes.Black, new XRect(380, lineaPos, 80, 12), XStringFormats.TopLeft);
-                font = new XFont("Arial", 8, XFontStyle.Regular);
-                tf.DrawString(datos.Descuento, font, XBrushes.Black, new XRect(480, lineaPos, 80, 12), XStringFormats.TopLeft);
-
-                lineaPos += 12;
-                font = new XFont("Arial", 8, XFontStyle.Bold);
-                gfx.DrawString("Impuesto:", font, XBrushes.Black, new XRect(380, lineaPos, 80, 12), XStringFormats.TopLeft);
-                font = new XFont("Arial", 8, XFontStyle.Regular);
-                tf.DrawString(datos.Impuesto, font, XBrushes.Black, new XRect(480, lineaPos, 80, 12), XStringFormats.TopLeft);
-
-                lineaPos += 12;
-                font = new XFont("Arial", 8, XFontStyle.Bold);
-                gfx.DrawString("Total General:", font, XBrushes.Black, new XRect(380, lineaPos, 80, 12), XStringFormats.TopLeft);
-                font = new XFont("Arial", 8, XFontStyle.Regular);
-                tf.DrawString(datos.TotalGeneral, font, XBrushes.Black, new XRect(480, lineaPos, 80, 12), XStringFormats.TopLeft);
-
-                if (datos.CodigoMoneda != "")
-                {
-                    lineaPos += 32;
-                    font = new XFont("Arial", 8, XFontStyle.Bold);
-                    gfx.DrawString("Codigo Moneda:", font, XBrushes.Black, new XRect(70, lineaPos, 80, 12), XStringFormats.TopLeft);
-                    font = new XFont("Arial", 8, XFontStyle.Regular);
-                    gfx.DrawString(datos.CodigoMoneda, font, XBrushes.Black, new XRect(150, lineaPos, 80, 12), XStringFormats.TopLeft);
-                    if (datos.TipoDeCambio != "")
-                    {
-                        lineaPos += 12;
-                        font = new XFont("Arial", 8, XFontStyle.Bold);
-                        gfx.DrawString("Tipo de cambio:", font, XBrushes.Black, new XRect(70, lineaPos, 80, 12), XStringFormats.TopLeft);
-                        font = new XFont("Arial", 8, XFontStyle.Regular);
-                        gfx.DrawString(datos.TipoDeCambio, font, XBrushes.Black, new XRect(150, lineaPos, 80, 12), XStringFormats.TopLeft);
-                    }
-                }
-
-                if (datos.PoweredByLogotipo != null)
-                {
-                    font = new XFont("Arial", 10, XFontStyle.BoldItalic);
-                    tf.DrawString("Powered by", font, XBrushes.Black, new XRect(20, gfx.PageSize.Height - 30, gfx.PageSize.Width - 137.5, 15), XStringFormats.TopLeft);
-                    XImage poweredByImage = XImage.FromGdiPlusImage(datos.PoweredByLogotipo);
-                    gfx.DrawImage(poweredByImage, gfx.PageSize.Width - 117.5, gfx.PageSize.Height - 50, 87.5, 40);
-                }
-
-                string filename = datos.Clave + ".pdf";
-                MemoryStream stream = new MemoryStream();
-                document.Save(stream, false);
-                byte[] bytes = stream.ToArray();
-                return bytes;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            ManagementObject dsk = new ManagementObject(@"win32_logicaldisk.deviceid=""c:""");
+            dsk.Get();
+            string strVolumeSerial = dsk["VolumeSerialNumber"].ToString();
+            return strVolumeSerial;
         }
 
         public static string NumeroALetras(double t)

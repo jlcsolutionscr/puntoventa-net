@@ -1,10 +1,9 @@
-﻿Imports LeandroSoftware.PuntoVenta.Dominio.Entidades
-Imports LeandroSoftware.PuntoVenta.Servicios
-Imports Unity
+﻿Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
+Imports LeandroSoftware.AccesoDatos.ClienteWCF
 
 Public Class FrmCuentaBancoListado
 #Region "Variables"
-    Private servicioAuxiliarBancario As IBancaService
+    Private listado As IList
 #End Region
 
 #Region "Métodos"
@@ -31,13 +30,13 @@ Public Class FrmCuentaBancoListado
         dvcSaldo.HeaderText = "Saldo"
         dvcSaldo.DataPropertyName = "Saldo"
         dvcSaldo.Width = 100
-        dvcSaldo.DefaultCellStyle = FrmMenuPrincipal.dgvDecimal
+        dvcSaldo.DefaultCellStyle = FrmPrincipal.dgvDecimal
         dgvDatos.Columns.Add(dvcSaldo)
     End Sub
 
-    Private Sub ActualizarDatos()
+    Private Async Sub ActualizarDatos()
         Try
-            Dim listado As IList = servicioAuxiliarBancario.ObtenerListaCuentasBanco(FrmMenuPrincipal.empresaGlobal.IdEmpresa, txtDescripcion.Text)
+            listado = Await PuntoventaWCF.ObtenerListaCuentasBanco(FrmPrincipal.empresaGlobal.IdEmpresa, txtDescripcion.Text)
             dgvDatos.DataSource = listado
             If listado.Count() > 0 Then
                 btnEditar.Enabled = True
@@ -56,21 +55,13 @@ Public Class FrmCuentaBancoListado
 
 #Region "Eventos Controles"
     Private Sub FrmCuentaBancoListado_Shown(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Shown
-        Try
-            servicioAuxiliarBancario = FrmMenuPrincipal.unityContainer.Resolve(Of IBancaService)()
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-            Exit Sub
-        End Try
         EstablecerPropiedadesDataGridView()
         ActualizarDatos()
     End Sub
 
     Private Sub btnAgregar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnAgregar.Click
         Dim formMant As New FrmCuentaBanco With {
-            .intIdCuenta = 0,
-            .servicioAuxiliarBancario = servicioAuxiliarBancario
+            .intIdCuenta = 0
         }
         formMant.ShowDialog()
         ActualizarDatos()
@@ -78,17 +69,16 @@ Public Class FrmCuentaBancoListado
 
     Private Sub btnEditar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEditar.Click
         Dim formMant As New FrmCuentaBanco With {
-            .intIdCuenta = dgvDatos.CurrentRow.Cells(0).Value,
-            .servicioAuxiliarBancario = servicioAuxiliarBancario
+            .intIdCuenta = dgvDatos.CurrentRow.Cells(0).Value
         }
         formMant.ShowDialog()
         ActualizarDatos()
     End Sub
 
-    Private Sub btnEliminar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEliminar.Click
+    Private Async Sub btnEliminar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEliminar.Click
         If MessageBox.Show("Desea eliminar el registro actual", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
             Try
-                servicioAuxiliarBancario.EliminarCuentaBanco(dgvDatos.CurrentRow.Cells(0).Value)
+                Await PuntoventaWCF.EliminarCuentaBanco(dgvDatos.CurrentRow.Cells(0).Value)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub

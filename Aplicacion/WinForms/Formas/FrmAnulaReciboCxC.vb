@@ -1,8 +1,6 @@
 Imports System.Collections.Generic
-Imports LeandroSoftware.Core.CommonTypes
-Imports LeandroSoftware.PuntoVenta.Dominio.Entidades
-Imports LeandroSoftware.PuntoVenta.Servicios
-Imports Unity
+Imports LeandroSoftware.Puntoventa.CommonTypes
+Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
 
 Public Class FrmAnulaReciboCxC
 #Region "Variables"
@@ -10,8 +8,6 @@ Public Class FrmAnulaReciboCxC
     Private dtbDatosLocal, dtbDetalleMovimiento As DataTable
     Private dtrRowDetMovimiento As DataRow
     Private bolInit As Boolean = True
-    Private servicioFacturacion As IFacturacionService
-    Private servicioCuentaPorCobrar As ICuentaPorCobrarService
     Private listadoMovimientos As IEnumerable(Of MovimientoCuentaPorCobrar)
     Private movimientoCuentaPorCobrar As MovimientoCuentaPorCobrar
     Private cliente As Cliente
@@ -20,9 +16,9 @@ Public Class FrmAnulaReciboCxC
 #Region "Métodos"
     Private Sub IniciaDetalleMovimiento()
         dtbDetalleMovimiento = New DataTable()
-        dtbDetalleMovimiento.Columns.Add("IDMOV", GetType(Int32))
+        dtbDetalleMovimiento.Columns.Add("IDMOV", GetType(Integer))
         dtbDetalleMovimiento.Columns.Add("USUARIO", GetType(String))
-        dtbDetalleMovimiento.Columns.Add("TIPO", GetType(Int32))
+        dtbDetalleMovimiento.Columns.Add("TIPO", GetType(Integer))
         dtbDetalleMovimiento.Columns.Add("DESCRIPCION", GetType(String))
         dtbDetalleMovimiento.Columns.Add("FECHA", GetType(Date))
         dtbDetalleMovimiento.Columns.Add("MONTO", GetType(Decimal))
@@ -69,14 +65,14 @@ Public Class FrmAnulaReciboCxC
         dvcMonto.DataPropertyName = "MONTO"
         dvcMonto.HeaderText = "Monto"
         dvcMonto.Width = 90
-        dvcMonto.DefaultCellStyle = FrmMenuPrincipal.dgvDecimal
+        dvcMonto.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleRecibo.Columns.Add(dvcMonto)
     End Sub
 
     Private Sub CargarDetalleMovimiento(ByVal intIdCliente As Integer)
         dtbDetalleMovimiento.Rows.Clear()
         Try
-            listadoMovimientos = servicioCuentaPorCobrar.ObtenerListaMovimientos(intIdCliente)
+            'listadoMovimientos = servicioCuentaPorCobrar.ObtenerListaMovimientos(intIdCliente)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
@@ -103,7 +99,7 @@ Public Class FrmAnulaReciboCxC
             If grdDetalleRecibo.CurrentRow.Cells(0).Value.ToString <> "" Then
                 If MessageBox.Show("Desea anular este registro?", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
                     Try
-                        servicioCuentaPorCobrar.AnularMovimientoCxC(grdDetalleRecibo.CurrentRow.Cells(0).Value, FrmMenuPrincipal.usuarioGlobal.IdUsuario)
+                        'servicioCuentaPorCobrar.AnularMovimientoCxC(grdDetalleRecibo.CurrentRow.Cells(0).Value, FrmMenuPrincipal.usuarioGlobal.IdUsuario)
                     Catch ex As Exception
                         MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         Exit Sub
@@ -121,15 +117,15 @@ Public Class FrmAnulaReciboCxC
 
     Private Sub btnBuscarCliente_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnBuscarCliente.Click
         Dim formBusquedaCliente As New FrmBusquedaCliente()
-        FrmMenuPrincipal.intBusqueda = 0
+        FrmPrincipal.intBusqueda = 0
         formBusquedaCliente.ShowDialog()
-        If FrmMenuPrincipal.intBusqueda > 0 Then
-            If FrmMenuPrincipal.intBusqueda = StaticValoresPorDefecto.ClienteContado Then
+        If FrmPrincipal.intBusqueda > 0 Then
+            If FrmPrincipal.intBusqueda = StaticValoresPorDefecto.ClienteContado Then
                 MessageBox.Show("El cliente indicado no corresponde a un cliente de crédito", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End If
             Try
-                cliente = servicioFacturacion.ObtenerCliente(FrmMenuPrincipal.intBusqueda)
+                'cliente = servicioFacturacion.ObtenerCliente(FrmMenuPrincipal.intBusqueda)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
@@ -140,14 +136,6 @@ Public Class FrmAnulaReciboCxC
     End Sub
 
     Private Sub FrmAnulaReciboCxC_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        Try
-            servicioFacturacion = FrmMenuPrincipal.unityContainer.Resolve(Of IFacturacionService)()
-            servicioCuentaPorCobrar = FrmMenuPrincipal.unityContainer.Resolve(Of ICuentaPorCobrarService)()
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-            Exit Sub
-        End Try
         IniciaDetalleMovimiento()
         EstablecerPropiedadesDataGridView()
         grdDetalleRecibo.DataSource = dtbDetalleMovimiento

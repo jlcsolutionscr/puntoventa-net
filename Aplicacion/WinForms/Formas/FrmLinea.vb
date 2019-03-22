@@ -1,10 +1,8 @@
-Imports LeandroSoftware.PuntoVenta.Dominio.Entidades
-Imports LeandroSoftware.PuntoVenta.Servicios
-Imports Unity
+Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
+Imports LeandroSoftware.AccesoDatos.ClienteWCF
 
 Public Class FrmLinea
 #Region "Variables"
-    Public servicioMantenimiento As IMantenimientoService
     Public intIdLinea As Integer
     Private datos As Linea
     Private bolInit As Boolean = True
@@ -23,9 +21,9 @@ Public Class FrmLinea
         End If
     End Function
 
-    Private Sub CargarTipoLinea()
+    Private Async Sub CargarTipoLinea()
         Try
-            cboTipoProducto.DataSource = servicioMantenimiento.ObtenerTiposProducto()
+            cboTipoProducto.DataSource = Await PuntoventaWCF.ObtenerListaTipoProducto()
             cboTipoProducto.ValueMember = "IdTipoProducto"
             cboTipoProducto.DisplayMember = "Descripcion"
         Catch ex As Exception
@@ -36,11 +34,11 @@ Public Class FrmLinea
 #End Region
 
 #Region "Eventos Controles"
-    Private Sub FrmLinea_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+    Private Async Sub FrmLinea_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         CargarTipoLinea()
         If intIdLinea > 0 Then
             Try
-                datos = servicioMantenimiento.ObtenerLinea(intIdLinea)
+                datos = Await PuntoventaWCF.ObtenerLinea(intIdLinea)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Close()
@@ -64,23 +62,23 @@ Public Class FrmLinea
         Close()
     End Sub
 
-    Private Sub btnGuardar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnGuardar.Click
+    Private Async Sub btnGuardar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnGuardar.Click
         Dim strCampo As String = ""
         If Not ValidarCampos(strCampo) Then
             MessageBox.Show("El campo " & strCampo & " es requerido", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         End If
         If datos.IdLinea = 0 Then
-            datos.IdEmpresa = FrmMenuPrincipal.empresaGlobal.IdEmpresa
+            datos.IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa
         End If
         datos.IdTipoProducto = cboTipoProducto.SelectedValue
         datos.Descripcion = txtDescripcion.Text
         Try
             If datos.IdLinea = 0 Then
-                datos = servicioMantenimiento.AgregarLinea(datos)
-                txtIdLinea.Text = datos.IdLinea
+                Dim strIdLinea = Await PuntoventaWCF.AgregarLinea(datos)
+                txtIdLinea.Text = strIdLinea
             Else
-                servicioMantenimiento.ActualizarLinea(datos)
+                Await PuntoventaWCF.ActualizarLinea(datos)
             End If
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)

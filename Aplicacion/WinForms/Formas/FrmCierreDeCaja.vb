@@ -1,30 +1,26 @@
-Imports LeandroSoftware.PuntoVenta.Dominio.Entidades
-Imports LeandroSoftware.PuntoVenta.Servicios
-Imports Unity
+Imports System.Collections.Generic
+Imports LeandroSoftware.AccesoDatos.ClienteWCF
+Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
+Imports LeandroSoftware.Puntoventa.CommonTypes
 
 Public Class FrmCierreDeCaja
 #Region "Variables"
     Private Criterio, strUsuario, strEmpresa As String
-    Private servicioContabilidad As IContabilidadService
-    Private servicioReportes As IReporteService
     Private cierreCaja As CierreCaja
-    Private dtbDatosReporte As DataTable
+    Private lstReporte As List(Of ReporteCierreDeCaja)
 #End Region
 
 #Region "Eventos Controles"
-    Private Sub FrmCierre_Shown(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Shown
+    Private Async Sub FrmCierre_Shown(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Shown
+        strUsuario = FrmPrincipal.usuarioGlobal.CodigoUsuario
+        strEmpresa = FrmPrincipal.empresaGlobal.NombreEmpresa
         Try
-            servicioContabilidad = FrmMenuPrincipal.unityContainer.Resolve(Of IContabilidadService)()
-            servicioReportes = FrmMenuPrincipal.unityContainer.Resolve(Of IReporteService)()
-            cierreCaja = servicioContabilidad.GenerarDatosCierreCaja(FrmMenuPrincipal.empresaGlobal.IdEmpresa, Today)
-            cierreCaja.IdEmpresa = FrmMenuPrincipal.empresaGlobal.IdEmpresa
+            cierreCaja = Await PuntoventaWCF.GenerarDatosCierreCaja(FrmPrincipal.empresaGlobal.IdEmpresa, Today)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
             Exit Sub
         End Try
-        strUsuario = FrmMenuPrincipal.usuarioGlobal.CodigoUsuario
-        strEmpresa = FrmMenuPrincipal.empresaGlobal.NombreEmpresa
         txtFondoInicio.Text = FormatNumber(cierreCaja.FondoInicio, 2)
         txtVentasContado.Text = FormatNumber(cierreCaja.VentasContado, 2)
         txtVentasCrédito.Text = FormatNumber(cierreCaja.VentasCredito, 2)
@@ -55,9 +51,9 @@ Public Class FrmCierreDeCaja
         btnGuardar.Focus()
     End Sub
 
-    Private Sub btnGuardar_Click(sender As Object, e As EventArgs) Handles btnGuardar.Click
+    Private Async Sub btnGuardar_Click(sender As Object, e As EventArgs) Handles btnGuardar.Click
         Try
-            cierreCaja = servicioContabilidad.GuardarDatosCierreCaja(cierreCaja)
+            cierreCaja = Await PuntoventaWCF.GuardarDatosCierreCaja(cierreCaja)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
@@ -68,26 +64,26 @@ Public Class FrmCierreDeCaja
         btnGuardar.Enabled = False
     End Sub
 
-    Private Sub btnImprimir_Click(sender As Object, e As EventArgs) Handles btnImprimir.Click
+    Private Async Sub btnImprimir_Click(sender As Object, e As EventArgs) Handles btnImprimir.Click
         Dim reptCierre As New rptCierreCaja()
         Dim formReport As New frmRptViewer()
         Try
-            dtbDatosReporte = servicioReportes.ObtenerReporteCierreDeCaja(cierreCaja.IdCierre)
+            lstReporte = Await PuntoventaWCF.ObtenerReporteCierreDeCaja(cierreCaja.IdCierre)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
         End Try
-        reptCierre.SetDataSource(dtbDatosReporte)
+        reptCierre.SetDataSource(lstReporte)
         reptCierre.SetParameterValue(0, strUsuario)
         reptCierre.SetParameterValue(1, strEmpresa)
         formReport.crtViewer.ReportSource = reptCierre
         formReport.ShowDialog()
     End Sub
 
-    Private Sub FrmCierreDeCaja_Closing(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles MyBase.Closing
+    Private Async Sub FrmCierreDeCaja_Closing(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles MyBase.Closing
         Try
             If (Not cierreCaja Is Nothing) Then
-                servicioContabilidad.AbortarCierreCaja(cierreCaja.IdEmpresa)
+                Await PuntoventaWCF.AbortarCierreCaja(cierreCaja.IdEmpresa)
             End If
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)

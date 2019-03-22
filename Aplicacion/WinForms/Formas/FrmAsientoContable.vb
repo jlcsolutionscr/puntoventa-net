@@ -1,6 +1,4 @@
-Imports LeandroSoftware.PuntoVenta.Dominio.Entidades
-Imports LeandroSoftware.PuntoVenta.Servicios
-Imports Unity
+Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
 
 Public Class FrmAsientoContable
 #Region "Variables"
@@ -14,13 +12,12 @@ Public Class FrmAsientoContable
     Private asientoDiario As Asiento
     Private detalleAsiento As DetalleAsiento
     Private cuentaContable As CatalogoContable
-    Private servicioContabilidad As IContabilidadService
 #End Region
 
 #Region "Métodos"
     Private Sub IniciaDetalleAsiento()
         dtbDetalleAsiento = New DataTable()
-        dtbDetalleAsiento.Columns.Add("IDCUENTA", GetType(Int32))
+        dtbDetalleAsiento.Columns.Add("IDCUENTA", GetType(Integer))
         dtbDetalleAsiento.Columns.Add("NIVELES", GetType(String))
         dtbDetalleAsiento.Columns.Add("DESCRIPCION", GetType(String))
         dtbDetalleAsiento.Columns.Add("TIPOSALDO", GetType(String))
@@ -62,13 +59,13 @@ Public Class FrmAsientoContable
         dvcDebito.DataPropertyName = "DEBITO"
         dvcDebito.HeaderText = "Débito"
         dvcDebito.Width = 90
-        dvcDebito.DefaultCellStyle = FrmMenuPrincipal.dgvDecimal
+        dvcDebito.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleAsiento.Columns.Add(dvcDebito)
 
         dvcCredito.DataPropertyName = "CREDITO"
         dvcCredito.HeaderText = "Crédito"
         dvcCredito.Width = 90
-        dvcCredito.DefaultCellStyle = FrmMenuPrincipal.dgvDecimal
+        dvcCredito.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleAsiento.Columns.Add(dvcCredito)
     End Sub
 
@@ -112,7 +109,7 @@ Public Class FrmAsientoContable
 
     Private Sub CargarComboProducto()
         Try
-            cboCuentaContable.DataSource = servicioContabilidad.ObtenerListaCuentasParaMovimientos(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
+            'cboCuentaContable.DataSource = servicioContabilidad.ObtenerListaCuentasParaMovimientos(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
             cboCuentaContable.ValueMember = "IdCuenta"
             cboCuentaContable.DisplayMember = "DescripcionCompleta"
         Catch ex As Exception
@@ -126,7 +123,7 @@ Public Class FrmAsientoContable
 #Region "Eventos Controles"
     Private Sub CmdAgregar_Click(sender As Object, e As EventArgs) Handles CmdAgregar.Click
         txtIdAsiento.Text = ""
-        txtFecha.Text = FrmMenuPrincipal.ObtenerFechaFormateada(Now())
+        txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
         txtDetalle.Text = ""
         txtDebito.Text = FormatNumber(0, 2)
         txtCredito.Text = FormatNumber(0, 2)
@@ -149,7 +146,7 @@ Public Class FrmAsientoContable
         If txtIdAsiento.Text <> "" Then
             If MessageBox.Show("Desea anular este registro?", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
                 Try
-                    servicioContabilidad.AnularAsiento(txtIdAsiento.Text, FrmMenuPrincipal.usuarioGlobal.IdUsuario)
+                    'servicioContabilidad.AnularAsiento(txtIdAsiento.Text, FrmMenuPrincipal.usuarioGlobal.IdUsuario)
                 Catch ex As Exception
                     MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
@@ -162,10 +159,10 @@ Public Class FrmAsientoContable
 
     Private Sub CmdBuscar_Click(sender As Object, e As EventArgs) Handles CmdBuscar.Click
         Dim formBusqueda As New FrmBusquedaAsientoContable()
-        FrmMenuPrincipal.intBusqueda = 0
+        FrmPrincipal.intBusqueda = 0
         formBusqueda.ShowDialog()
-        If FrmMenuPrincipal.intBusqueda > 0 Then
-            asientoDiario = servicioContabilidad.ObtenerAsiento(FrmMenuPrincipal.intBusqueda)
+        If FrmPrincipal.intBusqueda > 0 Then
+            'asientoDiario = servicioContabilidad.ObtenerAsiento(FrmMenuPrincipal.intBusqueda)
             If asientoDiario.IdAsiento > 0 Then
                 txtIdAsiento.Text = asientoDiario.IdAsiento
                 txtDetalle.Text = asientoDiario.Detalle
@@ -177,8 +174,8 @@ Public Class FrmAsientoContable
                 cmdInsertar.Enabled = False
                 cmdEliminar.Enabled = False
                 CmdImprimir.Enabled = True
-                CmdAnular.Enabled = FrmMenuPrincipal.usuarioGlobal.Modifica
-                CmdGuardar.Enabled = FrmMenuPrincipal.usuarioGlobal.Modifica
+                CmdAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
+                CmdGuardar.Enabled = FrmPrincipal.usuarioGlobal.Modifica
             End If
         End If
     End Sub
@@ -186,8 +183,8 @@ Public Class FrmAsientoContable
     Private Sub CmdGuardar_Click(sender As Object, e As EventArgs) Handles CmdGuardar.Click
         If txtFecha.Text <> "" And txtDetalle.Text <> "" Then
             asientoDiario = New Asiento With {
-                .IdEmpresa = FrmMenuPrincipal.empresaGlobal.IdEmpresa,
-                .IdUsuario = FrmMenuPrincipal.usuarioGlobal.IdUsuario,
+                .IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa,
+                .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
                 .Detalle = txtDetalle.Text,
                 .Fecha = Now(),
                 .TotalDebito = 0,
@@ -209,10 +206,10 @@ Public Class FrmAsientoContable
             Next
             Try
                 If txtIdAsiento.Text = "" Then
-                    asientoDiario = servicioContabilidad.AgregarAsiento(asientoDiario)
+                    'asientoDiario = servicioContabilidad.AgregarAsiento(asientoDiario)
                     txtIdAsiento.Text = asientoDiario.IdAsiento
                 Else
-                    servicioContabilidad.ActualizarAsiento(asientoDiario)
+                    'servicioContabilidad.ActualizarAsiento(asientoDiario)
                 End If
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -221,9 +218,9 @@ Public Class FrmAsientoContable
             MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
             CmdImprimir.Enabled = True
             CmdAgregar.Enabled = True
-            CmdAnular.Enabled = FrmMenuPrincipal.usuarioGlobal.Modifica
+            CmdAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
             CmdImprimir.Focus()
-            CmdGuardar.Enabled = FrmMenuPrincipal.usuarioGlobal.Modifica
+            CmdGuardar.Enabled = FrmPrincipal.usuarioGlobal.Modifica
             cmdInsertar.Enabled = False
             cmdEliminar.Enabled = False
         Else
@@ -242,7 +239,7 @@ Public Class FrmAsientoContable
                 Exit Sub
             End If
             Try
-                cuentaContable = servicioContabilidad.ObtenerCuentaContable(cboCuentaContable.SelectedValue)
+                'cuentaContable = servicioContabilidad.ObtenerCuentaContable(cboCuentaContable.SelectedValue)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
@@ -267,14 +264,7 @@ Public Class FrmAsientoContable
     End Sub
 
     Private Sub FrmFactura_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        Try
-            servicioContabilidad = FrmMenuPrincipal.unityContainer.Resolve(Of IContabilidadService)()
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-            Exit Sub
-        End Try
-        txtFecha.Text = FrmMenuPrincipal.ObtenerFechaFormateada(Now())
+        txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
         CargarComboProducto()
         IniciaDetalleAsiento()
         EstablecerPropiedadesDataGridView()
@@ -313,7 +303,7 @@ Public Class FrmAsientoContable
     End Sub
 
     Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs) Handles txtDebito.KeyPress, txtCredito.KeyPress
-        FrmMenuPrincipal.ValidaNumero(e, sender, True, 2, ".")
+        FrmPrincipal.ValidaNumero(e, sender, True, 2, ".")
     End Sub
 #End Region
 End Class

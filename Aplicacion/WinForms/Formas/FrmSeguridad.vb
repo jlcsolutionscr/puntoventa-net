@@ -1,48 +1,76 @@
-Imports System.Collections.Generic
-Imports LeandroSoftware.PuntoVenta.Dominio.Entidades
-Imports LeandroSoftware.PuntoVenta.Servicios
-Imports Unity
+
+Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
+Imports LeandroSoftware.AccesoDatos.ClienteWCF
 
 Public Class FrmSeguridad
 #Region "Variables"
-    Private servicioMantenimiento As IMantenimientoService
-    Private usuario As Usuario
-    Private empresa As Empresa
 #End Region
 
 #Region "Eventos Controles"
-    Private Sub FrmSeguridad_Shown(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Shown
+    Private Async Sub FrmSeguridad_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+        If FrmPrincipal.strIdentificacion = "" Then
+            MessageBox.Show("La identificación de la empresa no se encuentra parametrizada en el sistema. Por favor contacte con su proveedor del servicio. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Close()
+            Exit Sub
+        End If
         Try
-            servicioMantenimiento = FrmMenuPrincipal.unityContainer.Resolve(Of IMantenimientoService)()
-            cboEmpresa.DataSource = servicioMantenimiento.ObtenerListaEmpresas()
-            cboEmpresa.ValueMember = "IdEmpresa"
+            cboEmpresa.DataSource = Await PuntoventaWCF.ObtenerListaEmpresasPorIdentificacion(FrmPrincipal.strIdentificacion)
+            cboEmpresa.ValueMember = "Identificacion"
             cboEmpresa.DisplayMember = "NombreComercial"
+            CmdAceptar.Enabled = True
+            CmdCancelar.Enabled = True
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
             Exit Sub
         End Try
-    End Sub
 
-    Private Sub CmdAceptar_Click(sender As Object, e As EventArgs) Handles CmdAceptar.Click
-        If cboEmpresa.SelectedIndex < 0 Then
-            MessageBox.Show("Debe seleccionar una empresa para validar los datos", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-            Exit Sub
-        End If
+    End Sub
+    Private Async Sub CmdAceptar_Click(sender As Object, e As EventArgs) Handles CmdAceptar.Click
+        Dim usuario As Usuario = Nothing
+        Dim strEncryptedPassword As String
         Try
-            usuario = servicioMantenimiento.ValidarUsuario(cboEmpresa.SelectedValue, TxtUsuario.Text, TxtClave.Text, FrmMenuPrincipal.strAppThumptPrint)
-            empresa = servicioMantenimiento.ObtenerEmpresa(cboEmpresa.SelectedValue)
+            CmdAceptar.Enabled = False
+            CmdCancelar.Enabled = False
+            strEncryptedPassword = Core.Utilitario.EncriptarDatos(TxtClave.Text, FrmPrincipal.strKey)
+            usuario = Await PuntoventaWCF.ValidarCredenciales(cboEmpresa.SelectedValue.ToString(), TxtUsuario.Text, strEncryptedPassword)
         Catch ex As Exception
+            CmdAceptar.Enabled = True
+            CmdCancelar.Enabled = True
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
         End Try
-        FrmMenuPrincipal.usuarioGlobal = usuario
-        FrmMenuPrincipal.empresaGlobal = empresa
+        FrmPrincipal.usuarioGlobal = usuario
+        FrmPrincipal.empresaGlobal = usuario.Empresa
         Close()
     End Sub
 
     Private Sub CmdCancelar_Click(sender As Object, e As EventArgs) Handles CmdCancelar.Click
         Close()
+    End Sub
+
+    Private Sub TxtUsuario_TextChanged(sender As Object, e As EventArgs) Handles TxtUsuario.TextChanged
+        If TxtUsuario.Text <> "" And TxtClave.Text <> "" Then
+            CmdAceptar.Enabled = True
+        Else
+            CmdAceptar.Enabled = False
+        End If
+    End Sub
+
+    Private Sub TxtClave_TextChanged(sender As Object, e As EventArgs) Handles TxtClave.TextChanged
+        If TxtUsuario.Text <> "" And TxtClave.Text <> "" Then
+            CmdAceptar.Enabled = True
+        Else
+            CmdAceptar.Enabled = False
+        End If
+    End Sub
+
+    Private Sub txtIdentificacion_TextChanged(sender As Object, e As EventArgs)
+        If TxtUsuario.Text <> "" And TxtClave.Text <> "" Then
+            CmdAceptar.Enabled = True
+        Else
+            CmdAceptar.Enabled = False
+        End If
     End Sub
 #End Region
 End Class
