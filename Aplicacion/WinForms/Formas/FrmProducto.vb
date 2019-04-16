@@ -160,6 +160,7 @@ Public Class FrmProducto
         Else
             datos = New Producto
             Await CargarComboLinea()
+            parametroImpuesto = Await PuntoventaWCF.ObtenerParametroImpuesto(1)
             txtCantidad.Text = FormatoPrecio(0, 2)
             txtPrecioCosto.Text = FormatoPrecio(0, 2)
             txtPrecioVenta1.Text = FormatoPrecio(0, 2)
@@ -167,6 +168,11 @@ Public Class FrmProducto
             txtPrecioVenta3.Text = FormatoPrecio(0, 2)
             txtPrecioVenta4.Text = FormatoPrecio(0, 2)
             txtPrecioVenta5.Text = FormatoPrecio(0, 2)
+            txtPrecioImpuesto1.Text = FormatoPrecio(0, 2)
+            txtPrecioImpuesto2.Text = FormatoPrecio(0, 2)
+            txtPrecioImpuesto3.Text = FormatoPrecio(0, 2)
+            txtPrecioImpuesto4.Text = FormatoPrecio(0, 2)
+            txtPrecioImpuesto5.Text = FormatoPrecio(0, 2)
             txtIndExistencia.Text = FormatoPrecio(0, 2)
         End If
         bolInit = False
@@ -198,10 +204,10 @@ Public Class FrmProducto
         datos.Cantidad = txtCantidad.Text
         datos.PrecioCosto = txtPrecioCosto.Text
         datos.PrecioVenta1 = txtPrecioVenta1.Text
-        datos.PrecioVenta2 = IIf(txtPrecioVenta2.Text = "", 0, txtPrecioVenta2.Text)
-        datos.PrecioVenta3 = IIf(txtPrecioVenta3.Text = "", 0, txtPrecioVenta3.Text)
-        datos.PrecioVenta4 = IIf(txtPrecioVenta4.Text = "", 0, txtPrecioVenta4.Text)
-        datos.PrecioVenta5 = IIf(txtPrecioVenta5.Text = "", 0, txtPrecioVenta5.Text)
+        datos.PrecioVenta2 = txtPrecioVenta2.Text
+        datos.PrecioVenta3 = txtPrecioVenta3.Text
+        datos.PrecioVenta4 = txtPrecioVenta4.Text
+        datos.PrecioVenta5 = txtPrecioVenta5.Text
         datos.Tipo = cboTipoProducto.SelectedValue
         datos.IdImpuesto = cboTipoImpuesto.SelectedValue
         datos.IndExistencia = txtIndExistencia.Text
