@@ -550,14 +550,6 @@ Public Class FrmFactura
                     txtPrecio.Text = FormatNumber(decPrecioVenta, 2)
                 End If
                 txtUnidad.Text = producto.IdTipoUnidad
-                If producto.Tipo = StaticTipoProducto.Servicio Then
-                    If FrmPrincipal.empresaGlobal.ModificaDescProducto = True Then
-                        txtDescripcion.ReadOnly = False
-                        txtDescripcion.Focus()
-                    End If
-                Else
-                    txtDescripcion.ReadOnly = True
-                End If
             End If
         End If
     End Function
@@ -575,6 +567,10 @@ Public Class FrmFactura
 #End Region
 
 #Region "Eventos Controles"
+    Private Sub FrmFactura_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        Me.KeyPreview = True
+    End Sub
+
     Private Async Sub FrmFactura_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
         Await CargarCombos()
@@ -998,6 +994,7 @@ Public Class FrmFactura
                 txtIdFactura.Text = factura.IdFactura
             Catch ex As Exception
                 txtIdFactura.Text = ""
+                btnGuardar.Enabled = True
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
@@ -1182,7 +1179,10 @@ Public Class FrmFactura
         End If
     End Sub
 
-    Private Sub BtnInsertar_Click(sender As Object, e As EventArgs) Handles btnInsertar.Click
+    Private Async Sub BtnInsertar_Click(sender As Object, e As EventArgs) Handles btnInsertar.Click
+        If txtCodigo.Text <> "" And txtDescripcion.Text = "" Then
+            Await ValidarProducto(txtCodigo.Text)
+        End If
         If txtCodigo.Text <> "" And txtCantidad.Text <> "" And txtPrecio.Text <> "" And txtUnidad.Text <> "" Then
             If txtPrecio.Text <= 0 Then
                 MessageBox.Show("El precio de venta no puede ser igual o menor a 0.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -1336,7 +1336,7 @@ Public Class FrmFactura
     End Sub
 
     Private Sub Precio_Validated(sender As Object, e As EventArgs) Handles txtPrecio.Validated
-        If txtPrecio.Text <> "" Then
+        If Not producto Is Nothing And txtPrecio.Text <> "" Then
             If Not cliente.ExoneradoDeImpuesto And producto.ParametroImpuesto.TasaImpuesto > 0 Then
                 decPrecioVenta = Math.Round(txtPrecio.Text / (1 + (producto.ParametroImpuesto.TasaImpuesto / 100)), 2)
             Else
@@ -1348,8 +1348,21 @@ Public Class FrmFactura
         End If
     End Sub
 
-    Private Async Sub TxtCodigo_Validated(ByVal sender As Object, ByVal e As EventArgs) Handles txtCodigo.Validated
-        Await ValidarProducto(txtCodigo.Text)
+    Private Async Sub TxtCodigo_KeyPress(ByVal sender As Object, ByVal e As PreviewKeyDownEventArgs) Handles txtCodigo.PreviewKeyDown
+        If e.KeyCode = Keys.Tab Then
+            Await ValidarProducto(txtCodigo.Text)
+            If Not producto Is Nothing Then
+                If FrmPrincipal.empresaGlobal.ModificaDescProducto = True Then
+                    txtDescripcion.ReadOnly = False
+                    txtDescripcion.Focus()
+                    txtDescripcion.SelectAll()
+                End If
+            Else
+                txtDescripcion.ReadOnly = True
+                txtPrecio.Focus()
+                txtPrecio.SelectAll()
+            End If
+        End If
     End Sub
 
     Private Sub TxtCantidad_Validated(sender As Object, e As EventArgs) Handles txtCantidad.Validated

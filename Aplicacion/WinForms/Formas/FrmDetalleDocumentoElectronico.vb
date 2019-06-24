@@ -4,6 +4,7 @@ Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
 Imports System.Text
 Imports System.Threading.Tasks
 Imports LeandroSoftware.AccesoDatos.ClienteWCF
+Imports LeandroSoftware.Puntoventa.CommonTypes
 
 Public Class FrmDetalleDocumentoElectronico
 #Region "Variables"
@@ -129,7 +130,7 @@ Public Class FrmDetalleDocumentoElectronico
             If Not bolRespuestaVisible Then
                 Dim intIndex As Integer = dgvDatos.CurrentRow.Index
                 Dim documento As DocumentoElectronico = listadoDocumentosProcesados.Item(intIndex)
-                If documento.EstadoEnvio = "aceptado" Or documento.EstadoEnvio = "rechazado" Then
+                If documento.EstadoEnvio = StaticEstadoDocumentoElectronico.Aceptado Or documento.EstadoEnvio = StaticEstadoDocumentoElectronico.Rechazado Then
                     Dim consulta As DocumentoElectronico = Await PuntoventaWCF.ObtenerDocumentoElectronico(documento.IdDocumento)
                     rtxDetalleRespuesta.Visible = True
                     If consulta.Respuesta IsNot Nothing Then
@@ -158,6 +159,30 @@ Public Class FrmDetalleDocumentoElectronico
             rtxDetalleRespuesta.Visible = False
             MessageBox.Show("Error al procesar la respuesta del Ministerio de Hacienda. Contacte a su proveedor. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
+    End Sub
+
+    Private Async Sub btnReenviarNotificacion_Click(sender As Object, e As EventArgs) Handles btnReenviarNotificacion.Click
+        Dim strCorreoReceptor = ""
+        Dim intIndex As Integer = dgvDatos.CurrentRow.Index
+        Dim documento As DocumentoElectronico = listadoDocumentosProcesados.Item(intIndex)
+        If MessageBox.Show("Desea utilizar la dirección(es) de correo electrónico registrada(s) en el documento?", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+            strCorreoReceptor = documento.CorreoNotificacion
+        Else
+            strCorreoReceptor = InputBox("Ingrese la(s) dirección(es) de correo electrónico donde se enviará el comprobante, separados por punto y coma:")
+        End If
+        If strCorreoReceptor <> "" Then
+            picLoader.Visible = True
+            Try
+                Await PuntoventaWCF.EnviarNotificacion(documento.IdDocumento, strCorreoReceptor)
+                picLoader.Visible = False
+                MessageBox.Show("Comprobante electrónico enviado satisfactoriamente. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            Catch ex As Exception
+                picLoader.Visible = False
+                MessageBox.Show("Error al enviar el comprobante:" & ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End Try
+        Else
+            MessageBox.Show("Debe ingresar la dirección(es) de correo electrónico para hacer el envío del comprobante. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End If
     End Sub
 #End Region
 End Class

@@ -150,15 +150,15 @@ Public Class FrmInventario
     End Sub
 
     Private Sub btnReporte_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnReporte.Click
-        Dim reptInventario As New rptInventario
-        Dim formReport As New frmRptViewer()
-        'Dim dtbDatos As DataTable
-        'dtbDatos = servicioReportes.ObtenerReporteInventario(FrmMenuPrincipal.empresaGlobal.IdEmpresa, cboLinea.SelectedValue, txtCodigo.Text, txtDescripcion.Text)
-        'reptInventario.SetDataSource(dtbDatos)
-        reptInventario.SetParameterValue(0, FrmPrincipal.usuarioGlobal.CodigoUsuario)
-        reptInventario.SetParameterValue(1, FrmPrincipal.empresaGlobal.NombreEmpresa)
-        formReport.crtViewer.ReportSource = reptInventario
-        formReport.ShowDialog()
+        'Dim reptInventario As New rptInventario
+        'Dim formReport As New ReportViewer()
+        ''Dim dtbDatos As DataTable
+        ''dtbDatos = servicioReportes.ObtenerReporteInventario(FrmMenuPrincipal.empresaGlobal.IdEmpresa, cboLinea.SelectedValue, txtCodigo.Text, txtDescripcion.Text)
+        ''reptInventario.SetDataSource(dtbDatos)
+        'reptInventario.SetParameterValue(0, FrmPrincipal.usuarioGlobal.CodigoUsuario)
+        'reptInventario.SetParameterValue(1, FrmPrincipal.empresaGlobal.NombreEmpresa)
+        'formReport.crtViewer.ReportSource = reptInventario
+        'formReport.ShowDialog()
     End Sub
 
     Private Sub btnCardex_Click(sender As Object, e As EventArgs) Handles btnCardex.Click

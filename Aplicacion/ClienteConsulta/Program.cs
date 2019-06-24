@@ -136,6 +136,9 @@ namespace LeandroSoftware.AccesoDatos.ClientePruebas
                                                                     Console.WriteLine("Procesamiento abortado por el usuario. . .");
                                                                 }
                                                             }
+                                                        } else
+                                                        {
+                                                            Console.WriteLine("El documento presenta un error en el envío: " + consulta.ErrorEnvio);
                                                         }
                                                         Console.WriteLine("");
                                                     }
@@ -212,15 +215,20 @@ namespace LeandroSoftware.AccesoDatos.ClientePruebas
                                                     string strSiNo = Console.ReadLine();
                                                     if (strSiNo == "S")
                                                     {
-                                                        try
+                                                        Console.WriteLine("Ingrese el correo para el envío del comprobante electrónico:");
+                                                        string strCorreoReceptor = Console.ReadLine();
+                                                        if (strCorreoReceptor != "")
                                                         {
-                                                            PuntoventaWCF.EnviarNotificacion(documento.IdDocumento).Wait();
-                                                            Console.WriteLine("Notificación procesada satisfactoriamente. . .");
-                                                        }
-                                                        catch (Exception ex)
-                                                        {
-                                                            Console.WriteLine("Error al enviar la notificación al receptor del documento: " + ex.Message);
-                                                            Console.WriteLine("");
+                                                            try
+                                                            {
+                                                                PuntoventaWCF.EnviarNotificacion(documento.IdDocumento, strCorreoReceptor).Wait();
+                                                                Console.WriteLine("Notificación procesada satisfactoriamente. . .");
+                                                            }
+                                                            catch (Exception ex)
+                                                            {
+                                                                Console.WriteLine("Error al enviar la notificación al receptor del documento: " + ex.Message);
+                                                                Console.WriteLine("");
+                                                            }
                                                         }
                                                     }
                                                 }

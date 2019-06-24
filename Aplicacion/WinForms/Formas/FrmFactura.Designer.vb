@@ -587,7 +587,6 @@ Partial Class FrmFactura
         Me.txtDescripcion.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtDescripcion.Size = New System.Drawing.Size(345, 20)
         Me.txtDescripcion.TabIndex = 52
-        Me.txtDescripcion.TabStop = False
         '
         'Label1
         '

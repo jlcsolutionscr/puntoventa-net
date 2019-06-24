@@ -32,6 +32,7 @@ Partial Class FrmDetalleDocumentoElectronico
         Me.btnFirst = New System.Windows.Forms.Button()
         Me.dgvDatos = New System.Windows.Forms.DataGridView()
         Me.rtxDetalleRespuesta = New System.Windows.Forms.RichTextBox()
+        Me.btnReenviarNotificacion = New System.Windows.Forms.Button()
         CType(Me.picLoader, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.dgvDatos, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -147,12 +148,23 @@ Partial Class FrmDetalleDocumentoElectronico
         Me.rtxDetalleRespuesta.TabIndex = 46
         Me.rtxDetalleRespuesta.Text = ""
         '
+        'btnReenviarNotificacion
+        '
+        Me.btnReenviarNotificacion.Location = New System.Drawing.Point(221, 415)
+        Me.btnReenviarNotificacion.Name = "btnReenviarNotificacion"
+        Me.btnReenviarNotificacion.Size = New System.Drawing.Size(170, 22)
+        Me.btnReenviarNotificacion.TabIndex = 47
+        Me.btnReenviarNotificacion.TabStop = False
+        Me.btnReenviarNotificacion.Text = "Reenviar notificación al receptor"
+        Me.btnReenviarNotificacion.UseVisualStyleBackColor = True
+        '
         'FrmDetalleDocumentoElectronico
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(794, 450)
         Me.Controls.Add(Me.picLoader)
+        Me.Controls.Add(Me.btnReenviarNotificacion)
         Me.Controls.Add(Me.lblPagina)
         Me.Controls.Add(Me.btnLast)
         Me.Controls.Add(Me.btnNext)
@@ -162,6 +174,7 @@ Partial Class FrmDetalleDocumentoElectronico
         Me.Controls.Add(Me.rtxDetalleRespuesta)
         Me.Controls.Add(Me.dgvDatos)
         Me.Name = "FrmDetalleDocumentoElectronico"
+        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Consulta de Documentos Electrónicos Procesados"
         CType(Me.picLoader, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.dgvDatos, System.ComponentModel.ISupportInitialize).EndInit()
@@ -179,4 +192,5 @@ Partial Class FrmDetalleDocumentoElectronico
     Private WithEvents btnFirst As Button
     Friend WithEvents dgvDatos As DataGridView
     Friend WithEvents rtxDetalleRespuesta As RichTextBox
+    Friend WithEvents btnReenviarNotificacion As Button
 End Class

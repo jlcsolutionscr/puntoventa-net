@@ -15,7 +15,7 @@ Public Class FrmOrdenCompra
     Private listOfProducts As IList(Of Producto)
     Private bolInit As Boolean = True
 
-    Private formReport As New frmRptViewer()
+    Private formReport As New ReportViewer()
     Private dtbDatos As DataTable
     Private strEmpresa, strUsuario, strTelefonos As String
 #End Region
@@ -416,22 +416,22 @@ Public Class FrmOrdenCompra
 
     Private Sub BtnImprimir_Click(sender As Object, e As EventArgs) Handles btnImprimir.Click
         If txtIdOrdenCompra.Text <> "" Then
-            Dim reptOrdenCompra As New rptOrdenCompra
-            Try
-                'dtbDatos = servicioReportes.ObtenerReporteOrdenCompra(txtIdOrdenCompra.Text)
-            Catch ex As Exception
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Exit Sub
-            End Try
-            strUsuario = FrmPrincipal.usuarioGlobal.CodigoUsuario
-            strEmpresa = FrmPrincipal.empresaGlobal.NombreEmpresa
-            strTelefonos = FrmPrincipal.empresaGlobal.Telefono
-            reptOrdenCompra.SetDataSource(dtbDatos)
-            reptOrdenCompra.SetParameterValue(0, strUsuario)
-            reptOrdenCompra.SetParameterValue(1, strEmpresa)
-            reptOrdenCompra.SetParameterValue(2, strTelefonos)
-            formReport.crtViewer.ReportSource = reptOrdenCompra
-            formReport.ShowDialog()
+            'Dim reptOrdenCompra As New rptOrdenCompra
+            'Try
+            '    'dtbDatos = servicioReportes.ObtenerReporteOrdenCompra(txtIdOrdenCompra.Text)
+            'Catch ex As Exception
+            '    MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            '    Exit Sub
+            'End Try
+            'strUsuario = FrmPrincipal.usuarioGlobal.CodigoUsuario
+            'strEmpresa = FrmPrincipal.empresaGlobal.NombreEmpresa
+            'strTelefonos = FrmPrincipal.empresaGlobal.Telefono
+            'reptOrdenCompra.SetDataSource(dtbDatos)
+            'reptOrdenCompra.SetParameterValue(0, strUsuario)
+            'reptOrdenCompra.SetParameterValue(1, strEmpresa)
+            'reptOrdenCompra.SetParameterValue(2, strTelefonos)
+            'formReport.crtViewer.ReportSource = reptOrdenCompra
+            'formReport.ShowDialog()
         End If
     End Sub
 

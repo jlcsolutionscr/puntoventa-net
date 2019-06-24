@@ -150,9 +150,9 @@ Public Class FrmCliente
                 cliente = Await PuntoventaWCF.ValidaIdentificacionCliente(FrmPrincipal.empresaGlobal.IdEmpresa, txtIdentificacion.Text)
             Catch ex As Exception
             End Try
-            If (cliente IsNot Nothing) Then
+            If cliente IsNot Nothing Then
                 bolInit = True
-                If (cliente.IdCliente > 0) Then
+                If cliente.IdCliente > 0 Then
                     MessageBox.Show("La identificación ingresada ya se encuentra registrada en la base de datos de clientes del sistema.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
                     datos = cliente
                     txtIdCliente.Text = datos.IdCliente
@@ -184,7 +184,7 @@ Public Class FrmCliente
                     txtNombre.Text = cliente.Nombre
                 End If
                 bolInit = False
-            Else
+            ElseIf cboTipoIdentificacion.SelectedValue = 0 Then
                 MessageBox.Show("No se encontró la identificación registrada en el sistema o en el padrón electoral. Por favor ingrese la información completa.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
             End If
         End If

@@ -29,6 +29,8 @@ namespace LeandroSoftware.AccesoDatos.Dominio.Entidades
         public int IdTipoMoneda { get; set; }
         public string Direccion { get; set; }
         public string Telefono { get; set; }
+        public int TipoContrato { get; set; }
+        public int CantidadDisponible { get; set; }
         public DateTime? FechaVence { get; set; }
         public int LineasPorFactura { get; set; }
         public bool Contabiliza { get; set; }

@@ -10,6 +10,7 @@ using System.Linq;
 using LeandroSoftware.Core;
 using System.Threading.Tasks;
 using LeandroSoftware.AccesoDatos.ClienteWCF;
+using LeandroSoftware.Puntoventa.CommonTypes;
 
 namespace LeandroSoftware.Activator
 {
@@ -174,6 +175,15 @@ namespace LeandroSoftware.Activator
                 cboReportePorEmpresa.DataSource = dsReportes;
                 cboReportePorEmpresa.ValueMember = "IdReporte";
                 cboReportePorEmpresa.DisplayMember = "NombreReporte";
+                // Carga Tipo Contrato
+                IList<TipodeContrato> dsTipoContrato = new List<TipodeContrato>();
+                TipodeContrato tipo = new TipodeContrato(1, "Pago mensual o anual");
+                dsTipoContrato.Add(tipo);
+                tipo = new TipodeContrato(2, "Limite de documentos anual");
+                dsTipoContrato.Add(tipo);
+                cboTipoContrato.DataSource = dsTipoContrato;
+                cboTipoContrato.ValueMember = "IdTipoContrato";
+                cboTipoContrato.DisplayMember = "Descripcion";
             }
             catch (Exception ex)
             {
@@ -329,6 +339,8 @@ namespace LeandroSoftware.Activator
                             txtLineasFactura.Text = empresa.LineasPorFactura.ToString();
                             txtCodigoServInst.Text = empresa.CodigoServicioInst.ToString();
                             if (empresa.FechaVence != null) txtFecha.Text = DateTime.Parse(empresa.FechaVence.ToString()).ToString("dd-MM-yyyy");
+                            cboTipoContrato.SelectedValue = empresa.TipoContrato;
+                            txtCantidadDocumentos.Text = empresa.CantidadDisponible.ToString();
                             chkContabiliza.Checked = empresa.Contabiliza;
                             chkIncluyeInsumosEnFactura.Checked = empresa.IncluyeInsumosEnFactura;
                             chkAutoCompleta.Checked = empresa.AutoCompletaProducto;
@@ -427,6 +439,8 @@ namespace LeandroSoftware.Activator
                 empresa.LineasPorFactura = int.Parse(txtLineasFactura.Text);
                 empresa.CodigoServicioInst = int.Parse(txtCodigoServInst.Text);
                 if (txtFecha.Text != "") empresa.FechaVence = DateTime.Parse(txtFecha.Text + " 23:59:59");
+                empresa.TipoContrato = (int)cboTipoContrato.SelectedValue;
+                empresa.CantidadDisponible = int.Parse(txtCantidadDocumentos.Text);
                 empresa.Contabiliza = chkContabiliza.Checked;
                 empresa.IncluyeInsumosEnFactura = chkIncluyeInsumosEnFactura.Checked;
                 empresa.AutoCompletaProducto = chkAutoCompleta.Checked;

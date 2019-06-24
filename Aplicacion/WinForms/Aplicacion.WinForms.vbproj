@@ -38,8 +38,8 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.1.0.%2a</ApplicationVersion>
+    <ApplicationRevision>3</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -76,12 +76,25 @@
     <ApplicationManifest>My Project\app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CrystalDecisions.CrystalReports.Design, Version=13.0.3500.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
-    <Reference Include="CrystalDecisions.CrystalReports.Engine, Version=13.0.3500.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
-    <Reference Include="CrystalDecisions.ReportSource, Version=13.0.3500.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
-    <Reference Include="CrystalDecisions.Shared, Version=13.0.3500.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
-    <Reference Include="CrystalDecisions.Windows.Forms, Version=13.0.3500.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.ReportViewer.Common, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.ReportingServices.ReportViewerControl.Winforms.150.900.148\lib\net40\Microsoft.ReportViewer.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.DataVisualization, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.ReportingServices.ReportViewerControl.Winforms.150.900.148\lib\net40\Microsoft.ReportViewer.DataVisualization.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.Design, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.ReportingServices.ReportViewerControl.Winforms.150.900.148\lib\net40\Microsoft.ReportViewer.Design.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.ProcessingObjectModel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.ReportingServices.ReportViewerControl.Winforms.150.900.148\lib\net40\Microsoft.ReportViewer.ProcessingObjectModel.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.WinForms, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.ReportingServices.ReportViewerControl.Winforms.150.900.148\lib\net40\Microsoft.ReportViewer.WinForms.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.SqlServer.Types, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.SqlServer.Types.14.0.314.76\lib\net40\Microsoft.SqlServer.Types.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -186,6 +199,12 @@
       <DependentUpon>FrmEstadoDocumentoElectronico.vb</DependentUpon>
     </Compile>
     <Compile Include="Formas\FrmEstadoDocumentoElectronico.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Formas\FrmMenuReportes.Designer.vb">
+      <DependentUpon>FrmMenuReportes.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Formas\FrmMenuReportes.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Formas\FrmMenuTipoTransaccion.Designer.vb">
@@ -645,12 +664,6 @@
     <Compile Include="Formas\FrmPrincipal.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Formas\FrmMenuReportes.Designer.vb">
-      <DependentUpon>FrmMenuReportes.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Formas\FrmMenuReportes.vb">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="Formas\FrmSeguridad.Designer.vb">
       <DependentUpon>FrmSeguridad.vb</DependentUpon>
     </Compile>
@@ -672,174 +685,10 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Reportes\rptAbonoCxC.vb">
-      <DependentUpon>rptAbonoCxC.rpt</DependentUpon>
-      <SubType>Component</SubType>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
+    <Compile Include="Reportes\ReportViewer.Designer.vb">
+      <DependentUpon>ReportViewer.vb</DependentUpon>
     </Compile>
-    <Compile Include="Reportes\rptEgreso.vb">
-      <DependentUpon>rptEgreso.rpt</DependentUpon>
-      <SubType>Component</SubType>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
-    <Compile Include="Reportes\rptIngreso.vb">
-      <DependentUpon>rptIngreso.rpt</DependentUpon>
-      <SubType>Component</SubType>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
-    <Compile Include="Reportes\rptOrdenCompra.vb">
-      <DependentUpon>rptOrdenCompra.rpt</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <SubType>Component</SubType>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="Reportes\rptOrdenServicio.vb">
-      <DependentUpon>rptOrdenServicio.rpt</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <SubType>Component</SubType>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="Reportes\rptDetalleBalanceComprobacion.vb">
-      <DependentUpon>rptDetalleBalanceComprobacion.rpt</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <SubType>Component</SubType>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="Reportes\rptPerdidasyGanacias.vb">
-      <DependentUpon>rptPerdidasyGanacias.rpt</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <SubType>Component</SubType>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="Reportes\rptMovimientosContables.vb">
-      <DependentUpon>rptMovimientosContables.rpt</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <SubType>Component</SubType>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="Reportes\rptBalanceComprobacion.vb">
-      <DependentUpon>rptBalanceComprobacion.rpt</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <SubType>Component</SubType>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="Reportes\rptCuentasxPagar.vb">
-      <DependentUpon>rptCuentasxPagar.rpt</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <SubType>Component</SubType>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="Reportes\rptDetalleIngresos.vb">
-      <DependentUpon>rptDetalleIngresos.rpt</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <SubType>Component</SubType>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="Reportes\frmRptViewer.Designer.vb">
-      <DependentUpon>frmRptViewer.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Reportes\frmRptViewer.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Reportes\ReciboCxC.vb">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ReciboCxC.rpt</DependentUpon>
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Reportes\rptCierreCaja.vb">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>rptCierreCaja.rpt</DependentUpon>
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Reportes\rptConciliacionBancaria.vb">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>rptConciliacionBancaria.rpt</DependentUpon>
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Reportes\rptCuentasxCobrar.vb">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>rptCuentasxCobrar.rpt</DependentUpon>
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Reportes\rptDetalleEgresos.vb">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>rptDetalleEgresos.rpt</DependentUpon>
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Reportes\rptEtiquetaProducto.vb">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>rptEtiquetaProducto.rpt</DependentUpon>
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Reportes\rptInventario.vb">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>rptInventario.rpt</DependentUpon>
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Reportes\rptProforma.vb">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>rptProforma.rpt</DependentUpon>
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Reportes\rptReciboCxC.vb">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>rptReciboCxC.rpt</DependentUpon>
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Reportes\rptReciboCxP.vb">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>rptReciboCxP.rpt</DependentUpon>
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Reportes\rptResumenMovimientos.vb">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>rptResumenMovimientos.rpt</DependentUpon>
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Reportes\rptCompras.vb">
-      <DependentUpon>rptCompras.rpt</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <SubType>Component</SubType>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="Reportes\rptVentasPorVendedor.vb">
-      <DependentUpon>rptVentasPorVendedor.rpt</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <SubType>Component</SubType>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="Reportes\rptVentas.vb">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>rptVentas.rpt</DependentUpon>
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Reportes\rptVentasxLineaDetalle.vb">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>rptVentasxLineaDetalle.rpt</DependentUpon>
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Reportes\rptVentasxLineaResumen.vb">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>rptVentasxLineaResumen.rpt</DependentUpon>
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="Reportes\ReportViewer.vb" />
     <EmbeddedResource Include="Formas\FrmAceptarDocumentoElectronico.resx">
       <DependentUpon>FrmAceptarDocumentoElectronico.vb</DependentUpon>
     </EmbeddedResource>
@@ -869,6 +718,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Formas\FrmEstadoDocumentoElectronico.resx">
       <DependentUpon>FrmEstadoDocumentoElectronico.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Formas\FrmMenuReportes.resx">
+      <DependentUpon>FrmMenuReportes.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Formas\FrmMenuTipoTransaccion.resx">
       <DependentUpon>FrmMenuTipoTransaccion.vb</DependentUpon>
@@ -1122,10 +974,6 @@
     <EmbeddedResource Include="Formas\FrmProveedor.resx">
       <DependentUpon>FrmProveedor.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Formas\FrmMenuReportes.resx">
-      <DependentUpon>FrmMenuReportes.vb</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="Formas\FrmSeguridad.resX">
       <SubType>Designer</SubType>
       <DependentUpon>FrmSeguridad.vb</DependentUpon>
@@ -1139,117 +987,15 @@
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Reportes\rptAbonoCxC.rpt">
-      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>rptAbonoCxC.vb</LastGenOutput>
+    <EmbeddedResource Include="Reportes\ReportViewer.resx">
+      <DependentUpon>ReportViewer.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Reportes\rptEgreso.rpt">
-      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>rptEgreso.vb</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Reportes\rptIngreso.rpt">
-      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>rptIngreso.vb</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Reportes\rptOrdenCompra.rpt">
-      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>rptOrdenCompra.vb</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Reportes\rptOrdenServicio.rpt">
-      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>rptOrdenServicio.vb</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Reportes\rptDetalleBalanceComprobacion.rpt">
-      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>rptDetalleBalanceComprobacion.vb</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Reportes\rptPerdidasyGanacias.rpt">
-      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>rptPerdidasyGanacias.vb</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Reportes\rptMovimientosContables.rpt">
-      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>rptMovimientosContables.vb</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Reportes\rptBalanceComprobacion.rpt">
-      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>rptBalanceComprobacion.vb</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Reportes\rptCuentasxPagar.rpt">
-      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>rptCuentasxPagar.vb</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Reportes\rptDetalleIngresos.rpt">
-      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>rptDetalleIngresos.vb</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Reportes\frmRptViewer.resx">
-      <DependentUpon>frmRptViewer.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Reportes\ReciboCxC.rpt">
-      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>ReciboCxC.vb</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Reportes\rptCierreCaja.rpt">
-      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>rptCierreCaja.vb</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Reportes\rptConciliacionBancaria.rpt">
-      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>rptConciliacionBancaria.vb</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Reportes\rptCuentasxCobrar.rpt">
-      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>rptCuentasxCobrar.vb</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Reportes\rptDetalleEgresos.rpt">
-      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>rptDetalleEgresos.vb</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Reportes\rptEtiquetaProducto.rpt">
-      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>rptEtiquetaProducto.vb</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Reportes\rptInventario.rpt">
-      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>rptInventario.vb</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Reportes\rptProforma.rpt">
-      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>rptProforma.vb</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Reportes\rptReciboCxC.rpt">
-      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>rptReciboCxC.vb</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Reportes\rptReciboCxP.rpt">
-      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>rptReciboCxP.vb</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Reportes\rptResumenMovimientos.rpt">
-      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>rptResumenMovimientos.vb</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Reportes\rptCompras.rpt">
-      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>rptCompras.vb</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Reportes\rptVentasPorVendedor.rpt">
-      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>rptVentasPorVendedor.vb</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Reportes\rptVentas.rpt">
-      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>rptVentas.vb</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Reportes\rptVentasxLineaDetalle.rpt">
-      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>rptVentasxLineaDetalle.vb</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Reportes\rptVentasxLineaResumen.rpt">
-      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>rptVentasxLineaResumen.vb</LastGenOutput>
-    </EmbeddedResource>
+    <EmbeddedResource Include="Reportes\rptResumenComprobanteElectronicos.rdlc" />
+    <EmbeddedResource Include="Reportes\rptResumenMovimientos.rdlc" />
+    <EmbeddedResource Include="Reportes\rptDetalleEgresos.rdlc" />
+    <EmbeddedResource Include="Reportes\rptVentasPorVendedor.rdlc" />
+    <EmbeddedResource Include="Reportes\rptVentas.rdlc" />
+    <EmbeddedResource Include="Reportes\rptComprobanteElectronico.rdlc" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config">
@@ -1257,6 +1003,9 @@
     </None>
     <None Include="Certificates\011094021129-dev.p12" />
     <None Include="My Project\app.manifest" />
+    <None Include="My Project\DataSources\LeandroSoftware.Puntoventa.CommonTypes.ReporteDetalleEgreso.datasource" />
+    <None Include="My Project\DataSources\LeandroSoftware.Puntoventa.CommonTypes.ReporteEstadoResultados.datasource" />
+    <None Include="My Project\DataSources\LeandroSoftware.Puntoventa.CommonTypes.ReporteVentasPorVendedor.datasource" />
     <None Include="My Project\Settings.settings">
       <CustomToolNamespace>My</CustomToolNamespace>
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -1319,6 +1068,20 @@
       <LastGenOutput>Application.Designer.vb</LastGenOutput>
     </Content>
     <Content Include="Resources\poweredByImage.jpg" />
+    <Content Include="SqlServerTypes\Loader.cs" />
+    <Content Include="SqlServerTypes\readme.htm" />
+    <Content Include="SqlServerTypes\x64\msvcr120.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SqlServerTypes\x64\SqlServerSpatial140.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SqlServerTypes\x86\msvcr120.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SqlServerTypes\x86\SqlServerSpatial140.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="Resources\emptyImage.bmp" />
   </ItemGroup>
   <ItemGroup>

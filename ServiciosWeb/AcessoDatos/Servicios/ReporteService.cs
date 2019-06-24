@@ -9,6 +9,11 @@ using LeandroSoftware.AccesoDatos.Dominio.Entidades;
 using log4net;
 using Unity;
 using System.Globalization;
+using System.Xml;
+using System.Text;
+using System.Xml.Serialization;
+using LeandroSoftware.AccesoDatos.TiposDatos;
+using System.IO;
 
 namespace LeandroSoftware.AccesoDatos.Servicios
 {
@@ -40,6 +45,10 @@ namespace LeandroSoftware.AccesoDatos.Servicios
         List<ReporteDetalleMovimientosCuentasDeBalance> ObtenerReporteDetalleMovimientosCuentasDeBalance(int intIdEmpresa, int intIdCuentaGrupo, string strFechaInicial, string strFechaFinal);
         List<ReporteEgreso> ObtenerReporteEgreso(int intIdEgreso);
         List<ReporteIngreso> ObtenerReporteIngreso(int intIdIngreso);
+        List<ReporteDocumentoElectronico> ObtenerReporteFacturasElectronicasEmitidas(int intIdEmpresa, string strFechaInicial, string strFechaFinal);
+        List<ReporteDocumentoElectronico> ObtenerReporteNotasCreditoElectronicasEmitidas(int intIdEmpresa, string strFechaInicial, string strFechaFinal);
+        List<ReporteDocumentoElectronico> ObtenerReporteFacturasElectronicasRecibidas(int intIdEmpresa, string strFechaInicial, string strFechaFinal);
+        List<ReporteEstadoResultados> ObtenerReporteResumenDocumentosElectronicos(int intIdEmpresa, string strFechaInicial, string strFechaFinal);
     }
 
     public class ReporteService : IReporteService
@@ -127,8 +136,6 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                         foreach (var value in detalleVentas)
                         {
                             ReporteVentas reporteLinea = new ReporteVentas();
-                            reporteLinea.FechaDesde = strFechaInicial;
-                            reporteLinea.FechaHasta = strFechaFinal;
                             reporteLinea.IdFactura = value.IdFactura;
                             reporteLinea.Fecha = value.Fecha.ToString("dd/MM/yyyy");
                             reporteLinea.Nombre = value.NombreCliente;
@@ -155,8 +162,6 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                             foreach (var value in detalleVentas)
                             {
                                 ReporteVentas reporteLinea = new ReporteVentas();
-                                reporteLinea.FechaDesde = strFechaInicial;
-                                reporteLinea.FechaHasta = strFechaFinal;
                                 reporteLinea.IdFactura = value.IdFactura;
                                 reporteLinea.Fecha = value.Fecha.ToString("dd/MM/yyyy");
                                 reporteLinea.Nombre = value.NombreCliente;
@@ -195,8 +200,6 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                             foreach (var value in detalleVentas)
                             {
                                 ReporteVentas reporteLinea = new ReporteVentas();
-                                reporteLinea.FechaDesde = strFechaInicial;
-                                reporteLinea.FechaHasta = strFechaFinal;
                                 reporteLinea.IdFactura = value.IdFactura;
                                 reporteLinea.Fecha = value.Fecha.ToString("dd/MM/yyyy");
                                 reporteLinea.Nombre = value.NombreCliente;
@@ -236,8 +239,6 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     {
                         ReporteVentasPorVendedor reporteLinea = new ReporteVentasPorVendedor();
                         reporteLinea.NombreVendedor = value.Nombre;
-                        reporteLinea.FechaDesde = strFechaInicial;
-                        reporteLinea.FechaHasta = strFechaFinal;
                         reporteLinea.IdFactura = value.IdFactura;
                         reporteLinea.Fecha = value.Fecha.ToString("dd/MM/yyyy");
                         reporteLinea.NombreCliente = value.NombreCliente;
@@ -272,8 +273,6 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                         foreach (var value in detalleCompras)
                         {
                             ReporteCompras reporteLinea = new ReporteCompras();
-                            reporteLinea.FechaDesde = strFechaInicial;
-                            reporteLinea.FechaHasta = strFechaFinal;
                             reporteLinea.IdCompra = value.IdCompra;
                             reporteLinea.Fecha = value.Fecha.ToString("dd/MM/yyyy");
                             reporteLinea.Nombre = value.NombreProveedor;
@@ -300,8 +299,6 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                             foreach (var value in detalleCompras)
                             {
                                 ReporteCompras reporteLinea = new ReporteCompras();
-                                reporteLinea.FechaDesde = strFechaInicial;
-                                reporteLinea.FechaHasta = strFechaFinal;
                                 reporteLinea.IdCompra = value.IdCompra;
                                 reporteLinea.Fecha = value.Fecha.ToString("dd/MM/yyyy");
                                 reporteLinea.Nombre = value.NombreProveedor;
@@ -338,8 +335,6 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                             foreach (var value in detalleCompras)
                             {
                                 ReporteCompras reporteLinea = new ReporteCompras();
-                                reporteLinea.FechaDesde = strFechaInicial;
-                                reporteLinea.FechaHasta = strFechaFinal;
                                 reporteLinea.IdCompra = value.IdCompra;
                                 reporteLinea.Fecha = value.Fecha.ToString("dd/MM/yyyy");
                                 reporteLinea.Nombre = value.NombreProveedor;
@@ -539,8 +534,6 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     foreach (var value in movimientoBanco)
                     {
                         ReporteMovimientosBanco reporteLinea = new ReporteMovimientosBanco();
-                        reporteLinea.FechaDesde = strFechaInicial;
-                        reporteLinea.FechaHasta = strFechaFinal;
                         reporteLinea.IdMov = value.IdMov;
                         reporteLinea.IdCuenta = value.IdCuenta;
                         reporteLinea.NombreCuenta = value.NombreCuenta;
@@ -591,8 +584,6 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     {
                         string strTipo = "";
                         ReporteEstadoResultados reporteLinea = new ReporteEstadoResultados();
-                        reporteLinea.FechaDesde = strFechaInicial;
-                        reporteLinea.FechaHasta = strFechaFinal;
                         reporteLinea.NombreTipoRegistro = "Ingresos";
                         if (eachFactura.tipopago == StaticFormaPago.Efectivo)
                             strTipo = " de contado";
@@ -615,8 +606,6 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     foreach (var value in ingreso)
                     {
                         ReporteEstadoResultados reporteLinea = new ReporteEstadoResultados();
-                        reporteLinea.FechaDesde = strFechaInicial;
-                        reporteLinea.FechaHasta = strFechaFinal;
                         reporteLinea.NombreTipoRegistro = "Ingresos";
                         reporteLinea.Descripcion = value.Desc;
                         reporteLinea.Valor = value.Total;
@@ -625,8 +614,6 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     if (grupoFacturas.Count() == 0 & ingreso.Count() == 0)
                     {
                         ReporteEstadoResultados reporteLinea = new ReporteEstadoResultados();
-                        reporteLinea.FechaDesde = strFechaInicial;
-                        reporteLinea.FechaHasta = strFechaFinal;
                         reporteLinea.NombreTipoRegistro = "Ingresos";
                         reporteLinea.Descripcion = "No hay registros";
                         reporteLinea.Valor = 0;
@@ -642,8 +629,6 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                         {
                             string strTipo = "";
                             ReporteEstadoResultados reporteLinea = new ReporteEstadoResultados();
-                            reporteLinea.FechaDesde = strFechaInicial;
-                            reporteLinea.FechaHasta = strFechaFinal;
                             reporteLinea.NombreTipoRegistro = "Egresos";
                             if (eachCompra.tipopago == StaticFormaPago.Efectivo)
                                 strTipo = " de contado";
@@ -667,8 +652,6 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     foreach (var value in egreso)
                     {
                         ReporteEstadoResultados reporteLinea = new ReporteEstadoResultados();
-                        reporteLinea.FechaDesde = strFechaInicial;
-                        reporteLinea.FechaHasta = strFechaFinal;
                         reporteLinea.NombreTipoRegistro = "Egresos";
                         reporteLinea.Descripcion = value.Desc;
                         reporteLinea.Valor = value.Total;
@@ -678,8 +661,6 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     if (grupoCompras.Count() == 0 & egreso.Count() == 0)
                     {
                         ReporteEstadoResultados reporteLinea = new ReporteEstadoResultados();
-                        reporteLinea.FechaDesde = strFechaInicial;
-                        reporteLinea.FechaHasta = strFechaFinal;
                         reporteLinea.NombreTipoRegistro = "Egresos";
                         reporteLinea.Descripcion = "No hay registros";
                         reporteLinea.Valor = 0;
@@ -706,17 +687,16 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     List<ReporteDetalleEgreso> listaReporte = new List<ReporteDetalleEgreso>();
                     var egreso = dbContext.EgresoRepository.Where(s => s.IdEmpresa == intIdEmpresa & s.Nulo == false & s.Fecha >= datFechaInicial & s.Fecha <= datFechaFinal)
                         .Join(dbContext.CuentaEgresoRepository, a => a.IdCuenta, b => b.IdCuenta, (a, b) => new { a, b })
-                        .Select(z => new { z.a.IdCuenta, z.a.IdEgreso, z.b.Descripcion, z.a.Detalle, Total = z.a.Monto });
+                        .Select(z => new { z.a.IdCuenta, z.a.IdEgreso, z.b.Descripcion, z.a.Fecha, z.a.Detalle, Total = z.a.Monto });
                     foreach (var value in egreso)
                     {
                         if (intIdCuentaEgreso > 0 & value.IdCuenta != intIdCuentaEgreso)
                             continue;
                         ReporteDetalleEgreso reporteLinea = new ReporteDetalleEgreso();
-                        reporteLinea.FechaDesde = strFechaInicial;
-                        reporteLinea.FechaHasta = strFechaFinal;
                         reporteLinea.IdMov = value.IdEgreso;
                         reporteLinea.Descripcion = value.Descripcion;
                         reporteLinea.Detalle = value.Detalle;
+                        reporteLinea.Fecha = value.Fecha.ToString("dd/MM/yyyy");
                         reporteLinea.Total = value.Total;
                         listaReporte.Add(reporteLinea);
                     }
@@ -741,17 +721,16 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     List<ReporteDetalleIngreso> listaReporte = new List<ReporteDetalleIngreso>();
                     var ingreso = dbContext.IngresoRepository.Where(s => s.IdEmpresa == intIdEmpresa & s.Nulo == false & s.Fecha >= datFechaInicial & s.Fecha <= datFechaFinal)
                         .Join(dbContext.CuentaIngresoRepository, a => a.IdCuenta, b => b.IdCuenta, (a, b) => new { a, b })
-                        .Select(z => new { z.a.IdCuenta, z.a.IdIngreso, z.b.Descripcion, z.a.Detalle, Total = z.a.Monto });
+                        .Select(z => new { z.a.IdCuenta, z.a.IdIngreso, z.b.Descripcion, z.a.Fecha, z.a.Detalle, Total = z.a.Monto });
                     foreach (var value in ingreso)
                     {
                         if (intIdCuentaIngreso > 0 & value.IdCuenta != intIdCuentaIngreso)
                             continue;
                         ReporteDetalleIngreso reporteLinea = new ReporteDetalleIngreso();
-                        reporteLinea.FechaDesde = strFechaInicial;
-                        reporteLinea.FechaHasta = strFechaFinal;
                         reporteLinea.IdMov = value.IdIngreso;
                         reporteLinea.Descripcion = value.Descripcion;
                         reporteLinea.Detalle = value.Detalle;
+                        reporteLinea.Fecha = value.Fecha.ToString("dd/MM/yyyy");
                         reporteLinea.Total = value.Total;
                         listaReporte.Add(reporteLinea);
                     }
@@ -782,8 +761,6 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     foreach (var value in ventasResumen)
                     {
                         ReporteVentasPorLineaResumen reporteLinea = new ReporteVentasPorLineaResumen();
-                        reporteLinea.FechaDesde = strFechaInicial;
-                        reporteLinea.FechaHasta = strFechaFinal;
                         reporteLinea.Codigo = value.Codigo;
                         reporteLinea.IdLinea = value.IdLinea;
                         reporteLinea.NombreLinea = value.NombreLinea;
@@ -826,8 +803,6 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     foreach (var value in ventasDetalle)
                     {
                         ReporteVentasPorLineaDetalle reporteLinea = new ReporteVentasPorLineaDetalle();
-                        reporteLinea.FechaDesde = strFechaInicial;
-                        reporteLinea.FechaHasta = strFechaFinal;
                         reporteLinea.Codigo = value.Codigo;
                         reporteLinea.Descripcion = value.Descripcion;
                         reporteLinea.IdLinea = value.IdLinea;
@@ -1279,6 +1254,230 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 {
                     log.Error("Error al procesar el reporte de Ingreso: ", ex);
                     throw new Exception("Se produjo un error al ejecutar el reporte de Ingreso. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public List<ReporteDocumentoElectronico> ObtenerReporteFacturasElectronicasEmitidas(int intIdEmpresa, string strFechaInicial, string strFechaFinal)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    DateTime datFechaInicial = DateTime.ParseExact(strFechaInicial + " 00:00:01", strFormat, provider);
+                    DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
+                    List<ReporteDocumentoElectronico> listaReporte = new List<ReporteDocumentoElectronico>();
+                    var datosFacturasEmitidas = dbContext.DocumentoElectronicoRepository.Where(a => a.IdEmpresa == intIdEmpresa & a.Fecha >= datFechaInicial & a.Fecha <= datFechaFinal & a.IdTipoDocumento == 1 & a.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado);
+                    foreach (var documento in datosFacturasEmitidas)
+                    {
+                        string strNombreReceptor = "Cliente de contado";
+                        XmlSerializer serializer = new XmlSerializer(typeof(FacturaElectronica));
+                        FacturaElectronica facturaElectronica;
+                        using (MemoryStream memStream = new MemoryStream(documento.DatosDocumento))
+                            facturaElectronica = (FacturaElectronica)serializer.Deserialize(memStream);
+                        if (facturaElectronica.Receptor != null)
+                        {
+                            strNombreReceptor = facturaElectronica.Receptor.Nombre;
+                        }
+                        decimal decTotalImpuesto = facturaElectronica.ResumenFactura.TotalImpuestoSpecified ? facturaElectronica.ResumenFactura.TotalImpuesto : 0;
+                        string strMoneda = facturaElectronica.ResumenFactura.CodigoMonedaSpecified ? facturaElectronica.ResumenFactura.CodigoMoneda.ToString() : "CRC";
+                        decimal decTotal = facturaElectronica.ResumenFactura.TotalComprobante;
+                        ReporteDocumentoElectronico reporteLinea = new ReporteDocumentoElectronico();
+                        reporteLinea.ClaveNumerica = documento.ClaveNumerica;
+                        reporteLinea.Fecha = documento.Fecha.ToString("dd/MM/yyyy");
+                        reporteLinea.Nombre = strNombreReceptor;
+                        reporteLinea.Moneda = strMoneda;
+                        reporteLinea.Impuesto = decTotalImpuesto;
+                        reporteLinea.Total = decTotal;
+                        listaReporte.Add(reporteLinea);
+                    }
+                    return listaReporte;
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al procesar el reporte de Documentos Emitidos: ", ex);
+                    throw new Exception("Se produjo un error al ejecutar el reporte de documentos electrónicos emitidos. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public List<ReporteDocumentoElectronico> ObtenerReporteNotasCreditoElectronicasEmitidas(int intIdEmpresa, string strFechaInicial, string strFechaFinal)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    DateTime datFechaInicial = DateTime.ParseExact(strFechaInicial + " 00:00:01", strFormat, provider);
+                    DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
+                    List<ReporteDocumentoElectronico> listaReporte = new List<ReporteDocumentoElectronico>();
+                    var datosFacturasEmitidas = dbContext.DocumentoElectronicoRepository.Where(a => a.IdEmpresa == intIdEmpresa & a.Fecha >= datFechaInicial & a.Fecha <= datFechaFinal & a.IdTipoDocumento == 3 & a.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado);
+                    foreach (var documento in datosFacturasEmitidas)
+                    {
+                        string strNombreReceptor = "Cliente de contado";
+                        XmlSerializer serializer = new XmlSerializer(typeof(NotaCreditoElectronica));
+                        NotaCreditoElectronica notaCreditoElectronica;
+                        using (MemoryStream memStream = new MemoryStream(documento.DatosDocumento))
+                            notaCreditoElectronica = (NotaCreditoElectronica)serializer.Deserialize(memStream);
+                        if (notaCreditoElectronica.Receptor != null)
+                        {
+                            strNombreReceptor = notaCreditoElectronica.Receptor.Nombre;
+                        }
+                        decimal decTotalImpuesto = notaCreditoElectronica.ResumenFactura.TotalImpuestoSpecified ? notaCreditoElectronica.ResumenFactura.TotalImpuesto : 0;
+                        string strMoneda = notaCreditoElectronica.ResumenFactura.CodigoMonedaSpecified ? notaCreditoElectronica.ResumenFactura.CodigoMoneda.ToString() : "CRC";
+                        decimal decTotal = notaCreditoElectronica.ResumenFactura.TotalComprobante;
+                        ReporteDocumentoElectronico reporteLinea = new ReporteDocumentoElectronico();
+                        reporteLinea.ClaveNumerica = documento.ClaveNumerica;
+                        reporteLinea.Fecha = documento.Fecha.ToString("dd/MM/yyyy");
+                        reporteLinea.Nombre = strNombreReceptor;
+                        reporteLinea.Moneda = strMoneda;
+                        reporteLinea.Impuesto = decTotalImpuesto;
+                        reporteLinea.Total = decTotal;
+                        listaReporte.Add(reporteLinea);
+                    }
+                    return listaReporte;
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al procesar el reporte de Documentos Emitidos: ", ex);
+                    throw new Exception("Se produjo un error al ejecutar el reporte de documentos electrónicos emitidos. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public List<ReporteDocumentoElectronico> ObtenerReporteFacturasElectronicasRecibidas(int intIdEmpresa, string strFechaInicial, string strFechaFinal)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    DateTime datFechaInicial = DateTime.ParseExact(strFechaInicial + " 00:00:01", strFormat, provider);
+                    DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
+                    List<ReporteDocumentoElectronico> listaReporte = new List<ReporteDocumentoElectronico>();
+                    var datosFacturasRecibidas = dbContext.DocumentoElectronicoRepository.Where(a => a.IdEmpresa == intIdEmpresa & a.Fecha >= datFechaInicial & a.Fecha <= datFechaFinal & a.IdTipoDocumento == 5 & a.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado);
+                    foreach (var documento in datosFacturasRecibidas)
+                    {
+                        XmlSerializer serializer = new XmlSerializer(typeof(MensajeReceptor));
+                        MensajeReceptor mensajeReceptor;
+                        using (MemoryStream memStream = new MemoryStream(documento.DatosDocumento))
+                            mensajeReceptor = (MensajeReceptor)serializer.Deserialize(memStream);
+                        string strNombreEmisor = mensajeReceptor.NumeroCedulaEmisor;
+                        decimal decTotalImpuesto = mensajeReceptor.MontoTotalImpuestoSpecified ? mensajeReceptor.MontoTotalImpuesto : 0;
+                        string strMoneda = "CRC";
+                        decimal decTotal = mensajeReceptor.TotalFactura;
+                        ReporteDocumentoElectronico reporteLinea = new ReporteDocumentoElectronico();
+                        reporteLinea.ClaveNumerica = mensajeReceptor.Clave;
+                        reporteLinea.Fecha = documento.Fecha.ToString("dd/MM/yyyy");
+                        reporteLinea.Nombre = strNombreEmisor;
+                        reporteLinea.Moneda = strMoneda;
+                        reporteLinea.Impuesto = decTotalImpuesto;
+                        reporteLinea.Total = decTotal;
+                        listaReporte.Add(reporteLinea);
+                    }
+                    return listaReporte;
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al procesar el reporte de Documentos Emitidos: ", ex);
+                    throw new Exception("Se produjo un error al ejecutar el reporte de documentos electrónicos emitidos. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public List<ReporteEstadoResultados> ObtenerReporteResumenDocumentosElectronicos(int intIdEmpresa, string strFechaInicial, string strFechaFinal)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    DateTime datFechaInicial = DateTime.ParseExact(strFechaInicial + " 00:00:01", strFormat, provider);
+                    DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
+                    List<ReporteEstadoResultados> listaReporte = new List<ReporteEstadoResultados>();
+                    var grupoFacturasEmitidas = dbContext.DocumentoElectronicoRepository
+                        .Where(a => a.IdEmpresa == intIdEmpresa & a.Fecha >= datFechaInicial & a.Fecha <= datFechaFinal & a.IdTipoDocumento == 1 & a.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado).ToList();
+                    decimal decTotal = 0;
+                    decimal decTotalImpuesto = 0;
+                    foreach (var documento in grupoFacturasEmitidas)
+                    {
+                        XmlSerializer serializer = new XmlSerializer(typeof(FacturaElectronica));
+                        FacturaElectronica facturaElectronica;
+                        using (MemoryStream memStream = new MemoryStream(documento.DatosDocumento))
+                            facturaElectronica = (FacturaElectronica)serializer.Deserialize(memStream);
+                        decimal decTotalPorLinea = facturaElectronica.ResumenFactura.TotalComprobante;
+                        decimal decImpuestoPorLinea = facturaElectronica.ResumenFactura.TotalImpuestoSpecified ? facturaElectronica.ResumenFactura.TotalImpuesto : 0;
+
+                        decTotal += decTotalPorLinea;
+                        decTotalImpuesto += decImpuestoPorLinea;
+                    }
+                    ReporteEstadoResultados reporteLinea = new ReporteEstadoResultados();
+                    reporteLinea.NombreTipoRegistro = "Facturas electrónicas emitidas";
+                    reporteLinea.Descripcion = "Facturas electrónicas emitidas";
+                    reporteLinea.Valor = decTotal;
+                    listaReporte.Add(reporteLinea);
+                    reporteLinea = new ReporteEstadoResultados();
+                    reporteLinea.NombreTipoRegistro = "Impuesto sobre facturas electrónicas emitidas";
+                    reporteLinea.Descripcion = "Impuesto sobre facturas electrónicas emitidas";
+                    reporteLinea.Valor = decTotalImpuesto;
+                    listaReporte.Add(reporteLinea);
+
+                    var grupoNotasCreditoEmitidas = dbContext.DocumentoElectronicoRepository
+                        .Where(a => a.IdEmpresa == intIdEmpresa & a.Fecha >= datFechaInicial & a.Fecha <= datFechaFinal & a.IdTipoDocumento == 3 & a.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado).ToList();
+                    decTotal = 0;
+                    decTotalImpuesto = 0;
+                    foreach (var documento in grupoNotasCreditoEmitidas)
+                    {
+                        XmlSerializer serializer = new XmlSerializer(typeof(NotaCreditoElectronica));
+                        NotaCreditoElectronica notaCreditoElectronica;
+                        using (MemoryStream memStream = new MemoryStream(documento.DatosDocumento))
+                            notaCreditoElectronica = (NotaCreditoElectronica)serializer.Deserialize(memStream);
+                        decimal decTotalPorLinea = notaCreditoElectronica.ResumenFactura.TotalComprobante;
+                        decimal decImpuestoPorLinea = notaCreditoElectronica.ResumenFactura.TotalImpuestoSpecified ? notaCreditoElectronica.ResumenFactura.TotalImpuesto : 0;
+
+                        decTotal += decTotalPorLinea;
+                        decTotalImpuesto += decImpuestoPorLinea;
+                    }
+                    reporteLinea = new ReporteEstadoResultados();
+                    reporteLinea.NombreTipoRegistro = "Notas de crédito emitidas";
+                    reporteLinea.Descripcion = "Notas de crédito emitidas";
+                    reporteLinea.Valor = decTotal;
+                    listaReporte.Add(reporteLinea);
+                    reporteLinea = new ReporteEstadoResultados();
+                    reporteLinea.NombreTipoRegistro = "Impuesto sobre notas de crédito emitidas";
+                    reporteLinea.Descripcion = "Impuesto sobre notas de crédito emitidas";
+                    reporteLinea.Valor = decTotalImpuesto;
+                    listaReporte.Add(reporteLinea);
+
+                    var grupoFacturasRecibidas = dbContext.DocumentoElectronicoRepository
+                        .Where(a => a.IdEmpresa == intIdEmpresa & a.Fecha >= datFechaInicial & a.Fecha <= datFechaFinal & a.IdTipoDocumento == 5 & a.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado).ToList();
+                    decTotal = 0;
+                    decTotalImpuesto = 0;
+                    foreach (var documento in grupoFacturasRecibidas)
+                    {
+                        XmlSerializer serializer = new XmlSerializer(typeof(MensajeReceptor));
+                        MensajeReceptor mensajeReceptor;
+                        using (MemoryStream memStream = new MemoryStream(documento.DatosDocumento))
+                            mensajeReceptor = (MensajeReceptor)serializer.Deserialize(memStream);
+                        decimal decTotalPorLinea = mensajeReceptor.TotalFactura;
+                        decimal decImpuestoPorLinea = mensajeReceptor.MontoTotalImpuesto;
+                        decTotal += decTotalPorLinea;
+                        decTotalImpuesto += decImpuestoPorLinea;
+                    }
+                    reporteLinea = new ReporteEstadoResultados();
+                    reporteLinea.NombreTipoRegistro = "Documentos electrónicos aceptados";
+                    reporteLinea.Descripcion = "Documentos electrónicos aceptados";
+                    reporteLinea.Valor = decTotal;
+                    listaReporte.Add(reporteLinea);
+                    reporteLinea = new ReporteEstadoResultados();
+                    reporteLinea.NombreTipoRegistro = "Impuesto sobre documentos electrónicos aceptados";
+                    reporteLinea.Descripcion = "Impuesto sobre documentos electrónicos aceptados";
+                    reporteLinea.Valor = decTotalImpuesto;
+                    listaReporte.Add(reporteLinea);
+
+                    return listaReporte;
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al procesar el reporte de Resumen de Documentos Electrónicos: ", ex);
+                    throw new Exception("Se produjo un error al ejecutar el reporte resumen de documentos electrónicos. Por favor consulte con su proveedor.");
                 }
             }
         }

@@ -64,20 +64,20 @@ Public Class FrmCierreDeCaja
         btnGuardar.Enabled = False
     End Sub
 
-    Private Async Sub btnImprimir_Click(sender As Object, e As EventArgs) Handles btnImprimir.Click
-        Dim reptCierre As New rptCierreCaja()
-        Dim formReport As New frmRptViewer()
-        Try
-            lstReporte = Await PuntoventaWCF.ObtenerReporteCierreDeCaja(cierreCaja.IdCierre)
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Exit Sub
-        End Try
-        reptCierre.SetDataSource(lstReporte)
-        reptCierre.SetParameterValue(0, strUsuario)
-        reptCierre.SetParameterValue(1, strEmpresa)
-        formReport.crtViewer.ReportSource = reptCierre
-        formReport.ShowDialog()
+    Private Sub btnImprimir_Click(sender As Object, e As EventArgs) Handles btnImprimir.Click
+        'Dim reptCierre As New rptCierreCaja()
+        'Dim formReport As New ReportViewer()
+        'Try
+        '    lstReporte = Await PuntoventaWCF.ObtenerReporteCierreDeCaja(cierreCaja.IdCierre)
+        'Catch ex As Exception
+        '    MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        '    Exit Sub
+        'End Try
+        'reptCierre.SetDataSource(lstReporte)
+        'reptCierre.SetParameterValue(0, strUsuario)
+        'reptCierre.SetParameterValue(1, strEmpresa)
+        'formReport.crtViewer.ReportSource = reptCierre
+        'formReport.ShowDialog()
     End Sub
 
     Private Async Sub FrmCierreDeCaja_Closing(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles MyBase.Closing
