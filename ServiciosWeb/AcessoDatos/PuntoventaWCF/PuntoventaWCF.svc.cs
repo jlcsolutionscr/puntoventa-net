@@ -252,7 +252,8 @@ namespace LeandroSoftware.AccesoDatos.ServicioWCF
                     case "EnviarNotificacionDocumentoElectronico":
                         parametrosJO = JObject.Parse(datos.DatosPeticion);
                         intIdDocumento = int.Parse(parametrosJO.Property("IdDocumento").Value.ToString());
-                        servicioFacturacion.EnviarNotificacionDocumentoElectronico(intIdDocumento, servicioEnvioCorreo, configuracion.CorreoNotificacionErrores);
+                        string strCorreoReceptor = parametrosJO.Property("CorreoReceptor").Value.ToString();
+                        servicioFacturacion.EnviarNotificacionDocumentoElectronico(intIdDocumento, strCorreoReceptor, servicioEnvioCorreo, configuracion.CorreoNotificacionErrores);
                         break;
                 }
             }
@@ -620,6 +621,42 @@ namespace LeandroSoftware.AccesoDatos.ServicioWCF
                         IList<ReporteIngreso> listadoReporteIngreso = servicioReportes.ObtenerReporteIngreso(intIdIngreso);
                         if (listadoReporteIngreso.Count > 0)
                             strRespuesta = serializer.Serialize(listadoReporteIngreso);
+                        break;
+                    case "ObtenerReporteFacturasElectronicasEmitidas":
+                        parametrosJO = JObject.Parse(datos.DatosPeticion);
+                        intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
+                        strFechaInicial = parametrosJO.Property("FechaInicial").Value.ToString();
+                        strFechaFinal = parametrosJO.Property("FechaFinal").Value.ToString();
+                        IList<ReporteDocumentoElectronico> listadoFacturasEmitidas = servicioReportes.ObtenerReporteFacturasElectronicasEmitidas(intIdEmpresa, strFechaInicial, strFechaFinal);
+                        if (listadoFacturasEmitidas.Count > 0)
+                            strRespuesta = serializer.Serialize(listadoFacturasEmitidas);
+                        break;
+                    case "ObtenerReporteNotasCreditoElectronicasEmitidas":
+                        parametrosJO = JObject.Parse(datos.DatosPeticion);
+                        intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
+                        strFechaInicial = parametrosJO.Property("FechaInicial").Value.ToString();
+                        strFechaFinal = parametrosJO.Property("FechaFinal").Value.ToString();
+                        IList<ReporteDocumentoElectronico> listadoNotasCreditoEmitidas = servicioReportes.ObtenerReporteNotasCreditoElectronicasEmitidas(intIdEmpresa, strFechaInicial, strFechaFinal);
+                        if (listadoNotasCreditoEmitidas.Count > 0)
+                            strRespuesta = serializer.Serialize(listadoNotasCreditoEmitidas);
+                        break;
+                    case "ObtenerReporteFacturasElectronicasRecibidas":
+                        parametrosJO = JObject.Parse(datos.DatosPeticion);
+                        intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
+                        strFechaInicial = parametrosJO.Property("FechaInicial").Value.ToString();
+                        strFechaFinal = parametrosJO.Property("FechaFinal").Value.ToString();
+                        IList<ReporteDocumentoElectronico> listadoFacturasRecibidas = servicioReportes.ObtenerReporteFacturasElectronicasRecibidas(intIdEmpresa, strFechaInicial, strFechaFinal);
+                        if (listadoFacturasRecibidas.Count > 0)
+                            strRespuesta = serializer.Serialize(listadoFacturasRecibidas);
+                        break;
+                    case "ObtenerReporteResumenDocumentosElectronicos":
+                        parametrosJO = JObject.Parse(datos.DatosPeticion);
+                        intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
+                        strFechaInicial = parametrosJO.Property("FechaInicial").Value.ToString();
+                        strFechaFinal = parametrosJO.Property("FechaFinal").Value.ToString();
+                        IList<ReporteEstadoResultados> listadoReporteResumenDocumentosElectronicos = servicioReportes.ObtenerReporteResumenDocumentosElectronicos(intIdEmpresa, strFechaInicial, strFechaFinal);
+                        if (listadoReporteResumenDocumentosElectronicos.Count > 0)
+                            strRespuesta = serializer.Serialize(listadoReporteResumenDocumentosElectronicos);
                         break;
                     case "GenerarDatosCierreCaja":
                         parametrosJO = JObject.Parse(datos.DatosPeticion);

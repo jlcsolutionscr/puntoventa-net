@@ -63,8 +63,6 @@ namespace LeandroSoftware.Updater
             File.Delete(strMSIFilePath);
             Console.WriteLine("Archivos de actualización temporales eliminados satisfactoriamente. . .");
             Console.WriteLine("FINAL DEL PROCESO DE ACTUALIZACION. . .\n");
-            Console.WriteLine("Presione cualquier tecla para continuar. . .");
-            Console.ReadKey();
         }
 
         static string getProgramFilesx86Folder()

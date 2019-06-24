@@ -994,6 +994,7 @@ Public Class FrmFactura
                 txtIdFactura.Text = factura.IdFactura
             Catch ex As Exception
                 txtIdFactura.Text = ""
+                btnGuardar.Enabled = True
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
@@ -1351,15 +1352,15 @@ Public Class FrmFactura
         If e.KeyCode = Keys.Tab Then
             Await ValidarProducto(txtCodigo.Text)
             If Not producto Is Nothing Then
-                If producto.Tipo = StaticTipoProducto.Servicio Then
-                    If FrmPrincipal.empresaGlobal.ModificaDescProducto = True Then
-                        txtDescripcion.ReadOnly = False
-                        txtDescripcion.Focus()
-                    End If
-                Else
-                    txtDescripcion.ReadOnly = True
-                    txtPrecio.Focus()
+                If FrmPrincipal.empresaGlobal.ModificaDescProducto = True Then
+                    txtDescripcion.ReadOnly = False
+                    txtDescripcion.Focus()
+                    txtDescripcion.SelectAll()
                 End If
+            Else
+                txtDescripcion.ReadOnly = True
+                txtPrecio.Focus()
+                txtPrecio.SelectAll()
             End If
         End If
     End Sub

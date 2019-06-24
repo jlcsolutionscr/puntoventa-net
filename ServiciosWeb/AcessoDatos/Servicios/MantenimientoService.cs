@@ -160,8 +160,8 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    log.Error("Error al agregar la empresa: ", ex);
-                    throw new Exception("Se produjo un error agregando la información de la empresa. Por favor consulte con su proveedor.");
+                    log.Error("Error al consultar el parámetro 'Version' del sistema: ", ex);
+                    throw new Exception("Se produjo un error consultado la versión actual del sistema. Por favor consulte con su proveedor.");
                 }
             }
             return strUltimaVersion;
@@ -192,8 +192,8 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             {
                 try
                 {
-                    List<ModuloPorEmpresa> listadoModuloPorEmpresa = empresa.ModuloPorEmpresa.ToList();
-                    List<ReportePorEmpresa> listadoReportePorEmpresa = empresa.ReportePorEmpresa.ToList();
+                    List<ModuloPorEmpresa> listadoModuloPorEmpresa = empresa.ModuloPorEmpresa.OrderBy(o => o.IdModulo).ToList();
+                    List<ReportePorEmpresa> listadoReportePorEmpresa = empresa.ReportePorEmpresa.OrderBy(o => o.IdReporte).ToList();
                     empresa.TerminalPorEmpresa = null;
                     empresa.ModuloPorEmpresa = null;
                     empresa.ReportePorEmpresa = null;
@@ -524,7 +524,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     usuario.UsuarioPorEmpresa = new List<UsuarioPorEmpresa>();
                     return usuario;
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     throw new Exception("Error en la validación de los credenciales suministrados por favor verifique la información. . .");
                 }

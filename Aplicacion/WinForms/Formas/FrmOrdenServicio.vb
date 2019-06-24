@@ -19,7 +19,7 @@ Public Class FrmOrdenServicio
     Private detalleComprobante As ModuloImpresion.ClsDetalleComprobante
     Private bolInit As Boolean = True
 
-    Private formReport As New frmRptViewer()
+    Private formReport As New ReportViewer()
     Private dtbDatos As DataTable
     Private strEmpresa, strUsuario, strTelefonos As String
 #End Region
@@ -534,22 +534,22 @@ Public Class FrmOrdenServicio
 
     Private Sub CmdImprimir_Click(sender As Object, e As EventArgs) Handles CmdImprimir.Click
         If txtIdOrdenServicio.Text <> "" Then
-            Dim reptOrdenServicio As New rptOrdenServicio
-            Try
-                'dtbDatos = servicioReportes.ObtenerReporteOrdenServicio(txtIdOrdenServicio.Text)
-            Catch ex As Exception
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Exit Sub
-            End Try
-            strUsuario = FrmPrincipal.usuarioGlobal.CodigoUsuario
-            strEmpresa = FrmPrincipal.empresaGlobal.NombreEmpresa
-            strTelefonos = FrmPrincipal.empresaGlobal.Telefono
-            reptOrdenServicio.SetDataSource(dtbDatos)
-            reptOrdenServicio.SetParameterValue(0, strUsuario)
-            reptOrdenServicio.SetParameterValue(1, strEmpresa)
-            reptOrdenServicio.SetParameterValue(2, strTelefonos)
-            formReport.crtViewer.ReportSource = reptOrdenServicio
-            formReport.ShowDialog()
+            'Dim reptOrdenServicio As New rptOrdenServicio
+            'Try
+            '    'dtbDatos = servicioReportes.ObtenerReporteOrdenServicio(txtIdOrdenServicio.Text)
+            'Catch ex As Exception
+            '    MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            '    Exit Sub
+            'End Try
+            'strUsuario = FrmPrincipal.usuarioGlobal.CodigoUsuario
+            'strEmpresa = FrmPrincipal.empresaGlobal.NombreEmpresa
+            'strTelefonos = FrmPrincipal.empresaGlobal.Telefono
+            'reptOrdenServicio.SetDataSource(dtbDatos)
+            'reptOrdenServicio.SetParameterValue(0, strUsuario)
+            'reptOrdenServicio.SetParameterValue(1, strEmpresa)
+            'reptOrdenServicio.SetParameterValue(2, strTelefonos)
+            'formReport.crtViewer.ReportSource = reptOrdenServicio
+            'formReport.ShowDialog()
         End If
     End Sub
 

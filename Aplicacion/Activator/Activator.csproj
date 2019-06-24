@@ -76,6 +76,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="documentoelectronico.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>documentoelectronico.xsd</DependentUpon>
+    </Compile>
     <Compile Include="FrmMenu.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -133,7 +138,20 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="Report1.rdlc" />
+    <None Include="documentoelectronico.xsc">
+      <DependentUpon>documentoelectronico.xsd</DependentUpon>
+    </None>
+    <None Include="documentoelectronico.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>documentoelectronico.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="documentoelectronico.xss">
+      <DependentUpon>documentoelectronico.xsd</DependentUpon>
+    </None>
     <None Include="packages.config" />
+    <None Include="Properties\DataSources\LeandroSoftware.AccesoDatos.Dominio.Entidades.DocumentoElectronico.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -165,6 +183,10 @@
     <ProjectReference Include="..\..\Core\ClienteWCF\ClienteWCF.csproj">
       <Project>{2602DD72-5AA0-45A2-A4A6-4805DA33C318}</Project>
       <Name>ClienteWCF</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\CommonTypes\CommonTypes.csproj">
+      <Project>{DA1835BF-2E6B-4F35-AEB9-152F9EC52044}</Project>
+      <Name>CommonTypes</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Core\Core.csproj">
       <Project>{fa3c5bce-3db6-486e-b16b-8b7f76eef63f}</Project>

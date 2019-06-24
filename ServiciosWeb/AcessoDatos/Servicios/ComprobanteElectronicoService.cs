@@ -299,17 +299,32 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     facturaElectronica.Receptor = receptor;
                 }
                 facturaElectronica.CondicionVenta = (FacturaElectronicaCondicionVenta)factura.IdCondicionVenta - 1;
-                List<FacturaElectronicaMedioPago> medioPagoList = new List<FacturaElectronicaMedioPago>();
-                foreach (DesglosePagoFactura desglose in factura.DesglosePagoFactura)
+                if (facturaElectronica.CondicionVenta == FacturaElectronicaCondicionVenta.Item02)
                 {
-                    if (medioPagoList.Count() == 4)
-                    {
-                        throw new Exception("La factura electrónica no permite más de 4 medios de pago por registro. Por favor corrija la información suministrada.");
-                    }
-                    FacturaElectronicaMedioPago medioPago = (FacturaElectronicaMedioPago)desglose.IdFormaPago - 1;
+                    facturaElectronica.PlazoCredito = factura.PlazoCredito.ToString();
+                }
+                List<FacturaElectronicaMedioPago> medioPagoList = new List<FacturaElectronicaMedioPago>();
+                if (facturaElectronica.CondicionVenta != FacturaElectronicaCondicionVenta.Item01)
+                {
+                    FacturaElectronicaMedioPago medioPago = FacturaElectronicaMedioPago.Item99;
                     if (!medioPagoList.Contains(medioPago))
                     {
                         medioPagoList.Add(medioPago);
+                    }
+                }
+                else
+                {
+                    foreach (DesglosePagoFactura desglose in factura.DesglosePagoFactura)
+                    {
+                        if (medioPagoList.Count() == 4)
+                        {
+                            throw new Exception("La factura electrónica no permite más de 4 medios de pago por registro. Por favor corrija la información suministrada.");
+                        }
+                        FacturaElectronicaMedioPago medioPago = (FacturaElectronicaMedioPago)desglose.IdFormaPago - 1;
+                        if (!medioPagoList.Contains(medioPago))
+                        {
+                            medioPagoList.Add(medioPago);
+                        }
                     }
                 }
                 facturaElectronica.MedioPago = medioPagoList.ToArray();
@@ -538,20 +553,10 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     notaCreditoElectronica.Receptor = receptor;
                 }
                 notaCreditoElectronica.CondicionVenta = (NotaCreditoElectronicaCondicionVenta)factura.IdCondicionVenta - 1;
-                List<NotaCreditoElectronicaMedioPago> medioPagoList = new List<NotaCreditoElectronicaMedioPago>();
-                foreach (DesglosePagoFactura desglose in factura.DesglosePagoFactura)
+                if (notaCreditoElectronica.CondicionVenta == NotaCreditoElectronicaCondicionVenta.Item02)
                 {
-                    if (medioPagoList.Count() == 4)
-                    {
-                        throw new Exception("La factura electrónica no permite más de 4 medios de pago por registro. Por favor corrija la información suministrada.");
-                    }
-                    NotaCreditoElectronicaMedioPago medioPago = (NotaCreditoElectronicaMedioPago)desglose.IdFormaPago - 1;
-                    if (!medioPagoList.Contains(medioPago))
-                    {
-                        medioPagoList.Add(medioPago);
-                    }
+                    notaCreditoElectronica.PlazoCredito = factura.PlazoCredito.ToString();
                 }
-                notaCreditoElectronica.MedioPago = medioPagoList.ToArray();
                 List<NotaCreditoElectronicaLineaDetalle> detalleServicioList = new List<NotaCreditoElectronicaLineaDetalle>();
                 decimal decTotalMercanciasGrabadas = 0;
                 decimal decTotalServiciosGrabados = 0;
@@ -709,13 +714,16 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 }
                 XmlDocument documentoXml = new XmlDocument();
                 documentoXml.LoadXml(datosXml);
+                string strClaveNumerica = documentoXml.GetElementsByTagName("Clave").Item(0).InnerText;
+                DocumentoElectronico documentoExistente = dbContext.DocumentoElectronicoRepository.Where(x => x.ClaveNumerica == strClaveNumerica & x.IdEmpresa == empresa.IdEmpresa).FirstOrDefault();
+                if (documentoExistente != null) throw new Exception("El documento electrónico con clave " + strClaveNumerica + " ya se encuentra registrado en el sistema. . .");
                 MensajeReceptor mensajeReceptor = new MensajeReceptor
                 {
                     Clave = documentoXml.GetElementsByTagName("Clave").Item(0).InnerText,
                     FechaEmisionDoc = DateTime.Parse(documentoXml.GetElementsByTagName("FechaEmision").Item(0).InnerText, CultureInfo.InvariantCulture),
                     Mensaje = (MensajeReceptorMensaje)intMensaje,
                     DetalleMensaje = "Mensaje de receptor con estado: " + (intMensaje == 0 ? "Aceptado" : intMensaje == 1 ? "Aceptado parcialmente" : "Rechazado"),
-                    TotalFactura = decimal.Parse(documentoXml.GetElementsByTagName("TotalComprobante").Item(0).InnerText),
+                    TotalFactura = decimal.Parse(documentoXml.GetElementsByTagName("TotalComprobante").Item(0).InnerText, CultureInfo.InvariantCulture),
                     NumeroConsecutivoReceptor = ""
                 };
                 if (documentoXml.GetElementsByTagName("Emisor") != null)
@@ -763,7 +771,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 if (documentoXml.GetElementsByTagName("TotalImpuesto").Count > 0)
                 {
                     string strTotalImpuesto = documentoXml.GetElementsByTagName("TotalImpuesto").Item(0).InnerText;
-                    mensajeReceptor.MontoTotalImpuesto = decimal.Parse(strTotalImpuesto);
+                    mensajeReceptor.MontoTotalImpuesto = decimal.Parse(strTotalImpuesto, CultureInfo.InvariantCulture);
                     mensajeReceptor.MontoTotalImpuestoSpecified = true;
                 }
                 XmlDocument mensajeReceptorXml = new XmlDocument();
@@ -958,24 +966,32 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     DatosDocumento = signedDataEncoded
                 };
                 dbContext.DocumentoElectronicoRepository.Add(documento);
-                int intMesEnCurso = DateTime.Now.Month;
-                int intAnnioEnCurso = DateTime.Now.Year;
-                CantFEMensualEmpresa cantiFacturasMensual = dbContext.CantFEMensualEmpresaRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa & x.IdMes == intMesEnCurso & x.IdAnio == intAnnioEnCurso).FirstOrDefault();
-                if (cantiFacturasMensual == null)
+                if (empresa.TipoContrato == 1)
                 {
-                    cantiFacturasMensual = new CantFEMensualEmpresa
+                    int intMesEnCurso = DateTime.Now.Month;
+                    int intAnnioEnCurso = DateTime.Now.Year;
+                    CantFEMensualEmpresa cantiFacturasMensual = dbContext.CantFEMensualEmpresaRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa & x.IdMes == intMesEnCurso & x.IdAnio == intAnnioEnCurso).FirstOrDefault();
+                    if (cantiFacturasMensual == null)
                     {
-                        IdEmpresa = empresa.IdEmpresa,
-                        IdMes = intMesEnCurso,
-                        IdAnio = intAnnioEnCurso,
-                        CantidadDoc = 1
-                    };
-                    dbContext.CantFEMensualEmpresaRepository.Add(cantiFacturasMensual);
+                        cantiFacturasMensual = new CantFEMensualEmpresa
+                        {
+                            IdEmpresa = empresa.IdEmpresa,
+                            IdMes = intMesEnCurso,
+                            IdAnio = intAnnioEnCurso,
+                            CantidadDoc = 1
+                        };
+                        dbContext.CantFEMensualEmpresaRepository.Add(cantiFacturasMensual);
+                    }
+                    else
+                    {
+                        cantiFacturasMensual.CantidadDoc += 1;
+                        dbContext.NotificarModificacion(cantiFacturasMensual);
+                    }
                 }
-                else
+                else if (empresa.TipoContrato == 2)
                 {
-                    cantiFacturasMensual.CantidadDoc += 1;
-                    dbContext.NotificarModificacion(cantiFacturasMensual);
+                    empresa.CantidadDisponible -= 1;
+                    dbContext.NotificarModificacion(empresa);
                 }
                 return documento;
             }
@@ -1001,17 +1017,17 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                         Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
                         if (empresa != null)
                         {
-                            XmlDocument documentoXml = new XmlDocument();
-                            using (MemoryStream ms = new MemoryStream(documento.DatosDocumento))
+                            try
                             {
-                                documentoXml.Load(ms);
-                            }
-                            byte[] mensajeEncoded = Encoding.UTF8.GetBytes(documentoXml.OuterXml);
-                            string strComprobanteXML = Convert.ToBase64String(mensajeEncoded);
-                            ValidarToken(dbContext, empresa, datos.ServicioTokenURL, datos.ClientId);
-                            if (empresa.AccessToken != null)
-                            {
-                                try
+                                XmlDocument documentoXml = new XmlDocument();
+                                using (MemoryStream ms = new MemoryStream(documento.DatosDocumento))
+                                {
+                                    documentoXml.Load(ms);
+                                }
+                                byte[] mensajeEncoded = Encoding.UTF8.GetBytes(documentoXml.OuterXml);
+                                string strComprobanteXML = Convert.ToBase64String(mensajeEncoded);
+                                ValidarToken(dbContext, empresa, datos.ServicioTokenURL, datos.ClientId);
+                                if (empresa.AccessToken != null)
                                 {
                                     string JsonObject = "{\"clave\": \"" + documento.ClaveNumerica + "\",\"fecha\": \"" + documento.Fecha.ToString("yyyy-MM-ddTHH:mm:ssss") + "\"," +
                                         "\"emisor\": {\"tipoIdentificacion\": \"" + documento.TipoIdentificacionEmisor + "\"," +
@@ -1046,7 +1062,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                                                     if (headers[0] == "El comprobante [" + documento.ClaveNumerica + "] ya fue recibido anteriormente.")
                                                         documento.EstadoEnvio = StaticEstadoDocumentoElectronico.Enviado;
                                                     else
-                                                        documento.EstadoEnvio = StaticEstadoDocumentoElectronico.Rechazado;
+                                                        documento.EstadoEnvio = StaticEstadoDocumentoElectronico.Registrado;
                                                 else
                                                     documento.EstadoEnvio = StaticEstadoDocumentoElectronico.Registrado;
                                                 documento.ErrorEnvio = headers[0];
@@ -1061,20 +1077,20 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                                     }
                                     dbContext.Commit();
                                 }
-                                catch (Exception ex)
+                                else
                                 {
-                                    string strMensajeError = ex.Message;
-                                    if (ex.Message.Length > 500) strMensajeError = ex.Message.Substring(0, 500);
                                     documento.EstadoEnvio = StaticEstadoDocumentoElectronico.Registrado;
-                                    documento.ErrorEnvio = strMensajeError;
+                                    documento.ErrorEnvio = "No se logro obtener un token válido para la empresa correspondiente al documento electrónico.";
                                     dbContext.NotificarModificacion(documento);
                                     dbContext.Commit();
                                 }
                             }
-                            else
+                            catch (Exception ex)
                             {
+                                string strMensajeError = ex.Message;
+                                if (ex.Message.Length > 500) strMensajeError = ex.Message.Substring(0, 500);
                                 documento.EstadoEnvio = StaticEstadoDocumentoElectronico.Registrado;
-                                documento.ErrorEnvio = "No se logro obtener un token válido para la empresa correspondiente al documento electrónico.";
+                                documento.ErrorEnvio = strMensajeError;
                                 dbContext.NotificarModificacion(documento);
                                 dbContext.Commit();
                             }
@@ -1115,7 +1131,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                         else
                         {
                             if (httpResponse.StatusCode == HttpStatusCode.BadRequest)
-                                documento.EstadoEnvio = StaticEstadoDocumentoElectronico.Rechazado;
+                                documento.EstadoEnvio = StaticEstadoDocumentoElectronico.Enviado;
                             if (httpResponse.Headers.Where(x => x.Key == "X-Error-Cause").FirstOrDefault().Value != null)
                             {
                                 IList<string> headers = httpResponse.Headers.Where(x => x.Key == "X-Error-Cause").FirstOrDefault().Value.ToList();
@@ -1123,6 +1139,10 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                                 {
                                     documento.ErrorEnvio = headers[0];
                                 }
+                            }
+                            else
+                            {
+                                documento.ErrorEnvio = httpResponse.ReasonPhrase;
                             }
                         }
                     }

@@ -135,6 +135,22 @@
         public static readonly string Rechazado = "rechazado";
     };
 
+    public class TipodeContrato
+    {
+        public TipodeContrato()
+        {
+        }
+
+        public TipodeContrato(int id, string desc)
+        {
+            IdTipoContrato = id;
+            Descripcion = desc;
+        }
+
+        public int IdTipoContrato { get; set; }
+        public string Descripcion { get; set; }
+    }
+
     public class CondicionVentaYFormaPago
     {
         public CondicionVentaYFormaPago()
@@ -169,8 +185,6 @@
 
     public class ReporteVentas
     {
-        public string FechaDesde { get; set; }
-        public string FechaHasta { get; set; }
         public int IdFactura { get; set; }
         public string Fecha { get; set; }
         public string Nombre { get; set; }
@@ -182,8 +196,6 @@
     public class ReporteVentasPorVendedor
     {
         public string NombreVendedor { get; set; }
-        public string FechaDesde { get; set; }
-        public string FechaHasta { get; set; }
         public int IdFactura { get; set; }
         public string Fecha { get; set; }
         public string NombreCliente { get; set; }
@@ -194,8 +206,6 @@
 
     public class ReporteCompras
     {
-        public string FechaDesde { get; set; }
-        public string FechaHasta { get; set; }
         public int IdCompra { get; set; }
         public string Fecha { get; set; }
         public string Nombre { get; set; }
@@ -262,8 +272,6 @@
 
     public class ReporteMovimientosBanco
     {
-        public string FechaDesde { get; set; }
-        public string FechaHasta { get; set; }
         public int IdMov { get; set; }
         public int IdCuenta { get; set; }
         public string NombreCuenta { get; set; }
@@ -280,8 +288,6 @@
 
     public class ReporteEstadoResultados
     {
-        public string FechaDesde { get; set; }
-        public string FechaHasta { get; set; }
         public string NombreTipoRegistro { get; set; }
         public string Descripcion { get; set; }
         public decimal Valor { get; set; }
@@ -289,28 +295,24 @@
 
     public class ReporteDetalleEgreso
     {
-        public string FechaDesde { get; set; }
-        public string FechaHasta { get; set; }
         public int IdMov { get; set; }
         public string Descripcion { get; set; }
         public string Detalle { get; set; }
+        public string Fecha { get; set; }
         public decimal Total { get; set; }
     }
 
     public class ReporteDetalleIngreso
     {
-        public string FechaDesde { get; set; }
-        public string FechaHasta { get; set; }
         public int IdMov { get; set; }
         public string Descripcion { get; set; }
         public string Detalle { get; set; }
+        public string Fecha { get; set; }
         public decimal Total { get; set; }
     }
 
     public class ReporteVentasPorLineaResumen
     {
-        public string FechaDesde { get; set; }
-        public string FechaHasta { get; set; }
         public string Codigo { get; set; }
         public int IdLinea { get; set; }
         public string NombreLinea { get; set; }
@@ -327,8 +329,6 @@
 
     public class ReporteVentasPorLineaDetalle
     {
-        public string FechaDesde { get; set; }
-        public string FechaHasta { get; set; }
         public string Codigo { get; set; }
         public string Descripcion { get; set; }
         public int IdLinea { get; set; }
@@ -482,5 +482,15 @@
         public string MontoEnLetras { get; set; }
         public string Descripcion { get; set; }
         public decimal MontoLocal { get; set; }
+    }
+
+    public class ReporteDocumentoElectronico
+    {
+        public string ClaveNumerica { get; set; }
+        public string Fecha { get; set; }
+        public string Nombre { get; set; }
+        public string Moneda { get; set; }
+        public decimal Impuesto { get; set; }
+        public decimal Total { get; set; }
     }
 }

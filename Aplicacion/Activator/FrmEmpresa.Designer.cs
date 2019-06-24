@@ -119,6 +119,10 @@
             this.btnEliminaModulo = new System.Windows.Forms.Button();
             this.btnInsertaModulo = new System.Windows.Forms.Button();
             this.dgvModuloPorEmpresa = new System.Windows.Forms.DataGridView();
+            this.txtCantidadDocumentos = new System.Windows.Forms.TextBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.cboTipoContrato = new System.Windows.Forms.ComboBox();
+            this.label30 = new System.Windows.Forms.Label();
             this.tabContainer.SuspendLayout();
             this.TabGeneral.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picLogo)).BeginInit();
@@ -1188,7 +1192,6 @@
             this.txtEquipo.Location = new System.Drawing.Point(79, 65);
             this.txtEquipo.MaxLength = 0;
             this.txtEquipo.Name = "txtEquipo";
-            this.txtEquipo.ReadOnly = true;
             this.txtEquipo.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.txtEquipo.Size = new System.Drawing.Size(266, 20);
             this.txtEquipo.TabIndex = 196;
@@ -1373,12 +1376,69 @@
             this.dgvModuloPorEmpresa.TabIndex = 205;
             this.dgvModuloPorEmpresa.TabStop = false;
             // 
+            // txtCantidadDocumentos
+            // 
+            this.txtCantidadDocumentos.AcceptsReturn = true;
+            this.txtCantidadDocumentos.BackColor = System.Drawing.SystemColors.Window;
+            this.txtCantidadDocumentos.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.txtCantidadDocumentos.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtCantidadDocumentos.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.txtCantidadDocumentos.Location = new System.Drawing.Point(138, 563);
+            this.txtCantidadDocumentos.MaxLength = 0;
+            this.txtCantidadDocumentos.Name = "txtCantidadDocumentos";
+            this.txtCantidadDocumentos.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.txtCantidadDocumentos.Size = new System.Drawing.Size(49, 20);
+            this.txtCantidadDocumentos.TabIndex = 203;
+            this.txtCantidadDocumentos.TabStop = false;
+            // 
+            // label7
+            // 
+            this.label7.BackColor = System.Drawing.Color.Transparent;
+            this.label7.Cursor = System.Windows.Forms.Cursors.Default;
+            this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label7.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label7.Location = new System.Drawing.Point(19, 566);
+            this.label7.Name = "label7";
+            this.label7.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.label7.Size = new System.Drawing.Size(113, 17);
+            this.label7.TabIndex = 204;
+            this.label7.Text = "Cantidad documentos:";
+            this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // cboTipoContrato
+            // 
+            this.cboTipoContrato.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboTipoContrato.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cboTipoContrato.FormattingEnabled = true;
+            this.cboTipoContrato.Location = new System.Drawing.Point(138, 536);
+            this.cboTipoContrato.Name = "cboTipoContrato";
+            this.cboTipoContrato.Size = new System.Drawing.Size(172, 21);
+            this.cboTipoContrato.TabIndex = 205;
+            // 
+            // label30
+            // 
+            this.label30.BackColor = System.Drawing.Color.Transparent;
+            this.label30.Cursor = System.Windows.Forms.Cursors.Default;
+            this.label30.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label30.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label30.Location = new System.Drawing.Point(19, 537);
+            this.label30.Name = "label30";
+            this.label30.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.label30.Size = new System.Drawing.Size(113, 17);
+            this.label30.TabIndex = 206;
+            this.label30.Text = "Tipo Contrato:";
+            this.label30.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
             // FrmEmpresa
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(193)))), ((int)(((byte)(215)))), ((int)(((byte)(225)))));
             this.ClientSize = new System.Drawing.Size(844, 615);
+            this.Controls.Add(this.label30);
+            this.Controls.Add(this.cboTipoContrato);
+            this.Controls.Add(this.txtCantidadDocumentos);
+            this.Controls.Add(this.label7);
             this.Controls.Add(this.tabContainer);
             this.Controls.Add(this.chkRegimenSimplificado);
             this.Controls.Add(this.btnCargarCertificado);
@@ -1538,6 +1598,10 @@
         public System.Windows.Forms.Label label27;
         public System.Windows.Forms.Label label29;
         public System.Windows.Forms.Label label28;
+        public System.Windows.Forms.TextBox txtCantidadDocumentos;
+        public System.Windows.Forms.Label label7;
+        internal System.Windows.Forms.ComboBox cboTipoContrato;
+        public System.Windows.Forms.Label label30;
     }
 }
 

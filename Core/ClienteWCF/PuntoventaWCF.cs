@@ -649,6 +649,70 @@ namespace LeandroSoftware.AccesoDatos.ClienteWCF
             return listado;
         }
 
+        public static async Task<List<ReporteDocumentoElectronico>> ObtenerReporteFacturasElectronicasEmitidas(int intIdEmpresa, string strFechaInicial, string strFechaFinal)
+        {
+            RequestDTO peticion = new RequestDTO
+            {
+                NombreMetodo = "ObtenerReporteFacturasElectronicasEmitidas",
+                DatosPeticion = "{IdEmpresa: " + intIdEmpresa + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "'}"
+            };
+            string strPeticion = serializer.Serialize(peticion);
+            string strRespuesta = await EjecutarConsulta(strPeticion, strServicioPuntoventaURL, "");
+            strRespuesta = serializer.Deserialize<string>(strRespuesta);
+            List<ReporteDocumentoElectronico> listado = new List<ReporteDocumentoElectronico>();
+            if (strRespuesta != "")
+                listado = serializer.Deserialize<List<ReporteDocumentoElectronico>>(strRespuesta);
+            return listado;
+        }
+
+        public static async Task<List<ReporteDocumentoElectronico>> ObtenerReporteNotasCreditoElectronicasEmitidas(int intIdEmpresa, string strFechaInicial, string strFechaFinal)
+        {
+            RequestDTO peticion = new RequestDTO
+            {
+                NombreMetodo = "ObtenerReporteNotasCreditoElectronicasEmitidas",
+                DatosPeticion = "{IdEmpresa: " + intIdEmpresa + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "'}"
+            };
+            string strPeticion = serializer.Serialize(peticion);
+            string strRespuesta = await EjecutarConsulta(strPeticion, strServicioPuntoventaURL, "");
+            strRespuesta = serializer.Deserialize<string>(strRespuesta);
+            List<ReporteDocumentoElectronico> listado = new List<ReporteDocumentoElectronico>();
+            if (strRespuesta != "")
+                listado = serializer.Deserialize<List<ReporteDocumentoElectronico>>(strRespuesta);
+            return listado;
+        }
+
+        public static async Task<List<ReporteDocumentoElectronico>> ObtenerReporteFacturasElectronicasRecibidas(int intIdEmpresa, string strFechaInicial, string strFechaFinal)
+        {
+            RequestDTO peticion = new RequestDTO
+            {
+                NombreMetodo = "ObtenerReporteFacturasElectronicasRecibidas",
+                DatosPeticion = "{IdEmpresa: " + intIdEmpresa + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "'}"
+            };
+            string strPeticion = serializer.Serialize(peticion);
+            string strRespuesta = await EjecutarConsulta(strPeticion, strServicioPuntoventaURL, "");
+            strRespuesta = serializer.Deserialize<string>(strRespuesta);
+            List<ReporteDocumentoElectronico> listado = new List<ReporteDocumentoElectronico>();
+            if (strRespuesta != "")
+                listado = serializer.Deserialize<List<ReporteDocumentoElectronico>>(strRespuesta);
+            return listado;
+        }
+
+        public static async Task<List<ReporteEstadoResultados>> ObtenerReporteResumenDocumentosElectronicos(int intIdEmpresa, string strFechaInicial, string strFechaFinal)
+        {
+            RequestDTO peticion = new RequestDTO
+            {
+                NombreMetodo = "ObtenerReporteResumenDocumentosElectronicos",
+                DatosPeticion = "{IdEmpresa: " + intIdEmpresa + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "'}"
+            };
+            string strPeticion = serializer.Serialize(peticion);
+            string strRespuesta = await EjecutarConsulta(strPeticion, strServicioPuntoventaURL, "");
+            strRespuesta = serializer.Deserialize<string>(strRespuesta);
+            List<ReporteEstadoResultados> listado = new List<ReporteEstadoResultados>();
+            if (strRespuesta != "")
+                listado = serializer.Deserialize<List<ReporteEstadoResultados>>(strRespuesta);
+            return listado;
+        }
+
         public static async Task<CierreCaja> GenerarDatosCierreCaja(int intIdEmpresa, string strFechaCierre)
         {
             RequestDTO peticion = new RequestDTO
@@ -1891,12 +1955,12 @@ namespace LeandroSoftware.AccesoDatos.ClienteWCF
             return documento;
         }
 
-        public static async Task EnviarNotificacion(int intIdDocumento)
+        public static async Task EnviarNotificacion(int intIdDocumento, string strCorreoReceptor)
         {
             RequestDTO peticion = new RequestDTO
             {
                 NombreMetodo = "EnviarNotificacionDocumentoElectronico",
-                DatosPeticion = "{IdDocumento: " + intIdDocumento + "}"
+                DatosPeticion = "{IdDocumento: " + intIdDocumento + ", CorreoReceptor: '" + strCorreoReceptor + "'}"
             };
             string strPeticion = serializer.Serialize(peticion);
             await Ejecutar(strPeticion, strServicioPuntoventaURL, "");

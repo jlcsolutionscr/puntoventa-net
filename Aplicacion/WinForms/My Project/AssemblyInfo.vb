@@ -9,7 +9,7 @@ Imports System.Runtime.InteropServices
 ' Review the values of the assembly attributes
 
 <Assembly: AssemblyTitle("PuntoventaJLC")>
-<Assembly: AssemblyDescription("Administrative Tasks Software")>
+<Assembly: AssemblyDescription("Administrative Software")>
 <Assembly: AssemblyCompany("JLC Solutions")>
 <Assembly: AssemblyProduct("PuntoventaJLC")>
 <Assembly: AssemblyCopyright("Copyright ©  2007")>
@@ -30,7 +30,7 @@ Imports System.Runtime.InteropServices
 ' You can specify all the values or you can default the Build and Revision Numbers 
 ' by using the '*' as shown below:
 
-<Assembly: AssemblyVersion("1.0.0.2")>
-<Assembly: AssemblyFileVersion("1.0.0.2")>
+<Assembly: AssemblyVersion("1.0.0.4")>
+<Assembly: AssemblyFileVersion("1.0.0.4")>
 
 <Assembly: NeutralResourcesLanguage("es-CR")>

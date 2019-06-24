@@ -20,7 +20,7 @@ Public Class FrmProforma
     Private bolInit As Boolean = True
     Private listOfProducts As List(Of Producto)
 
-    Private formReport As New frmRptViewer()
+    Private formReport As New ReportViewer()
     Private dtbDatos As DataTable
     Private strNombreEmpresa, strNombreComercial, strUsuario, strTelefonos, strIdentificacion As String
 #End Region
@@ -474,26 +474,26 @@ Public Class FrmProforma
 
     Private Sub CmdImprimir_Click(sender As Object, e As EventArgs) Handles CmdImprimir.Click
         If txtIdProforma.Text <> "" Then
-            Dim reptProforma As New rptProforma
-            Try
-                'dtbDatos = servicioReportes.ObtenerReporteProforma(txtIdProforma.Text)
-            Catch ex As Exception
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Exit Sub
-            End Try
-            strUsuario = FrmPrincipal.usuarioGlobal.CodigoUsuario
-            strIdentificacion = FrmPrincipal.empresaGlobal.Identificacion
-            strTelefonos = FrmPrincipal.empresaGlobal.Telefono
-            strNombreEmpresa = FrmPrincipal.empresaGlobal.NombreEmpresa
-            strNombreComercial = FrmPrincipal.empresaGlobal.NombreComercial
-            reptProforma.SetDataSource(dtbDatos)
-            reptProforma.SetParameterValue(0, strUsuario)
-            reptProforma.SetParameterValue(1, strNombreEmpresa)
-            reptProforma.SetParameterValue(2, strNombreComercial)
-            reptProforma.SetParameterValue(3, strIdentificacion)
-            reptProforma.SetParameterValue(4, strTelefonos)
-            formReport.crtViewer.ReportSource = reptProforma
-            formReport.ShowDialog()
+            'Dim reptProforma As New rptProforma
+            'Try
+            '    'dtbDatos = servicioReportes.ObtenerReporteProforma(txtIdProforma.Text)
+            'Catch ex As Exception
+            '    MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            '    Exit Sub
+            'End Try
+            'strUsuario = FrmPrincipal.usuarioGlobal.CodigoUsuario
+            'strIdentificacion = FrmPrincipal.empresaGlobal.Identificacion
+            'strTelefonos = FrmPrincipal.empresaGlobal.Telefono
+            'strNombreEmpresa = FrmPrincipal.empresaGlobal.NombreEmpresa
+            'strNombreComercial = FrmPrincipal.empresaGlobal.NombreComercial
+            'reptProforma.SetDataSource(dtbDatos)
+            'reptProforma.SetParameterValue(0, strUsuario)
+            'reptProforma.SetParameterValue(1, strNombreEmpresa)
+            'reptProforma.SetParameterValue(2, strNombreComercial)
+            'reptProforma.SetParameterValue(3, strIdentificacion)
+            'reptProforma.SetParameterValue(4, strTelefonos)
+            'formReport.crtViewer.ReportSource = reptProforma
+            'formReport.ShowDialog()
         End If
     End Sub
 

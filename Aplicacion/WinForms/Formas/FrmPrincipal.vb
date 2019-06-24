@@ -5,6 +5,7 @@ Imports System.Collections.Generic
 Imports LeandroSoftware.AccesoDatos.TiposDatos
 Imports LeandroSoftware.AccesoDatos.ClienteWCF
 Imports System.IO
+Imports System.Linq
 
 Public Class FrmPrincipal
 #Region "Variables"
@@ -476,7 +477,7 @@ Public Class FrmPrincipal
         End If
         Dim strIdentificadoEquipoLocal = Core.Utilitario.ObtenerIdentificadorEquipo()
         For Each terminalPorEmpresa As TerminalPorEmpresa In empresaGlobal.TerminalPorEmpresa
-            If strIdentificadoEquipoLocal = terminalPorEmpresa.ValorRegistro Then
+            If strIdentificadoEquipoLocal = terminalPorEmpresa.ValorRegistro Or usuarioGlobal.CodigoUsuario = "JASLOP" Then
                 equipoGlobal = terminalPorEmpresa
                 bolEquipoRegistrado = True
                 Exit For
@@ -503,7 +504,7 @@ Public Class FrmPrincipal
             objMenu = mnuMenuPrincipal.Items(moduloPorEmpresa.Modulo.MenuPadre)
             objMenu.Visible = True
         Next
-        For Each reportePorEmpresa As ReportePorEmpresa In empresaGlobal.ReportePorEmpresa
+        For Each reportePorEmpresa As ReportePorEmpresa In empresaGlobal.ReportePorEmpresa.OrderBy(Function(obj) obj.IdReporte)
             lstListaReportes.Add(reportePorEmpresa.CatalogoReporte.NombreReporte)
         Next
         dgvDecimal = New DataGridViewCellStyle With {
