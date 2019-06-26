@@ -19,7 +19,7 @@ Public Class FrmOrdenServicio
     Private detalleComprobante As ModuloImpresion.ClsDetalleComprobante
     Private bolInit As Boolean = True
 
-    Private formReport As New ReportViewer()
+    Private formReport As New FrmReportViewer()
     Private dtbDatos As DataTable
     Private strEmpresa, strUsuario, strTelefonos As String
 #End Region

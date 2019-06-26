@@ -685,10 +685,12 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Reportes\ReportViewer.Designer.vb">
-      <DependentUpon>ReportViewer.vb</DependentUpon>
+    <Compile Include="Reportes\FrmReportViewer.Designer.vb">
+      <DependentUpon>FrmReportViewer.vb</DependentUpon>
     </Compile>
-    <Compile Include="Reportes\ReportViewer.vb" />
+    <Compile Include="Reportes\FrmReportViewer.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <EmbeddedResource Include="Formas\FrmAceptarDocumentoElectronico.resx">
       <DependentUpon>FrmAceptarDocumentoElectronico.vb</DependentUpon>
     </EmbeddedResource>
@@ -987,8 +989,8 @@
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Reportes\ReportViewer.resx">
-      <DependentUpon>ReportViewer.vb</DependentUpon>
+    <EmbeddedResource Include="Reportes\FrmReportViewer.resx">
+      <DependentUpon>FrmReportViewer.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Reportes\rptResumenComprobanteElectronicos.rdlc" />
     <EmbeddedResource Include="Reportes\rptResumenMovimientos.rdlc" />

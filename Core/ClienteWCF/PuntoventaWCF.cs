@@ -8,6 +8,8 @@ using System.Configuration;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
@@ -24,12 +26,15 @@ namespace LeandroSoftware.AccesoDatos.ClienteWCF
         {
             try
             {
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
                 StringContent contentJson = new StringContent(jsonObject, Encoding.UTF8, "application/json");
                 if (strToken != "")
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", strToken);
                 HttpResponseMessage httpResponse = await httpClient.PostAsync(servicioURL + "/ejecutar", contentJson);
                 if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
                     throw new Exception(httpResponse.Content.ReadAsStringAsync().Result);
+                if (httpResponse.StatusCode == HttpStatusCode.NotFound)
+                    throw new Exception(httpResponse.ReasonPhrase);
                 string responseContent = await httpResponse.Content.ReadAsStringAsync();
             }
             catch (Exception ex)
@@ -42,12 +47,15 @@ namespace LeandroSoftware.AccesoDatos.ClienteWCF
         {
             try
             {
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
                 StringContent contentJson = new StringContent(jsonObject, Encoding.UTF8, "application/json");
                 if (strToken != "")
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", strToken);
                 HttpResponseMessage httpResponse = await httpClient.PostAsync(servicioURL + "/ejecutarconsulta", contentJson);
                 if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
                     throw new Exception(httpResponse.Content.ReadAsStringAsync().Result);
+                if (httpResponse.StatusCode != HttpStatusCode.OK)
+                    throw new Exception(httpResponse.ReasonPhrase);
                 string responseContent = await httpResponse.Content.ReadAsStringAsync();
                 return responseContent;
             }

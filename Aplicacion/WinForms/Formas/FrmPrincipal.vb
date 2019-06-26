@@ -401,7 +401,14 @@ Public Class FrmPrincipal
             Exit Sub
         End Try
         Dim strVersionActualApp = My.Application.Info.Version.ToString()
-        Dim strUltimaVersionApp As String = Await PuntoventaWCF.ObtenerUltimaVersionApp()
+        Dim strUltimaVersionApp As String
+        Try
+            strUltimaVersionApp = Await PuntoventaWCF.ObtenerUltimaVersionApp()
+        Catch ex As Exception
+            MessageBox.Show("No fue posible acceder al servicio web de facturación electrónica. Consulte con su proveedor del servicio.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            Close()
+            Exit Sub
+        End Try
         If strVersionActualApp <> strUltimaVersionApp Then
             If MessageBox.Show("El sistema requiere una actualización para continuar. Desea proceder con la instalación de la actualización?", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
                 If File.Exists(Path.GetTempPath() + "/Updater.exe") Then
