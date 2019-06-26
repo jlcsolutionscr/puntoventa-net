@@ -673,7 +673,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Core, Version=1.0.0.4, Culture=neutral, processorArchitecture=x86"
                 "ScatterAssemblies"
                 {
                     "_0BAD896B07A5010BFEF891246E07AF53"
@@ -961,7 +961,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:CommonTypes, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86"
+            "AssemblyAsmDisplayName" = "8:CommonTypes, Version=1.0.0.4, Culture=neutral, processorArchitecture=x86"
                 "ScatterAssemblies"
                 {
                     "_6D6F0B5A940860D25216A8786C45325C"
@@ -1147,7 +1147,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Dominio, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Dominio, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86"
                 "ScatterAssemblies"
                 {
                     "_815DA7AEABF7D1F1890FC9540FFB9580"
@@ -1178,7 +1178,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:ClienteWCF, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86"
+            "AssemblyAsmDisplayName" = "8:ClienteWCF, Version=1.0.0.4, Culture=neutral, processorArchitecture=x86"
                 "ScatterAssemblies"
                 {
                     "_86C987BD1BE828B465F026842E6A17E2"
@@ -1457,7 +1457,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:UtilitarioPDF, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86"
+            "AssemblyAsmDisplayName" = "8:UtilitarioPDF, Version=1.0.0.4, Culture=neutral, processorArchitecture=x86"
                 "ScatterAssemblies"
                 {
                     "_DB489988695A9A9DD49B6398E81C8E2F"
@@ -1643,7 +1643,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:TiposDatos, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:TiposDatos, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86"
                 "ScatterAssemblies"
                 {
                     "_FE14F46E61FF7615C40EC44C55035414"
@@ -1726,15 +1726,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:PuntoventaJLC"
-        "ProductCode" = "8:{8A86048C-C509-468B-AEB9-64F0FE71411D}"
-        "PackageCode" = "8:{D180FD84-3A57-4BB0-84F2-AA68447BEB7E}"
+        "ProductCode" = "8:{C0A18A4D-1603-46B6-9734-93889A7F26A3}"
+        "PackageCode" = "8:{5F4F2ADF-54ED-4CD4-A0E1-C6E51F6929C3}"
         "UpgradeCode" = "8:{9F4F56C6-17E9-4C36-9940-81BDB1283F7F}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:1.0.4"
+        "ProductVersion" = "8:1.0.5"
         "Manufacturer" = "8:JLC Solutions"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -2219,7 +2219,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_062A01B2ACA24DE981250F61FDB6AFB6"
             {
-            "SourcePath" = "8:..\\Aplicacion\\Updater\\obj\\Release\\Updater.exe"
+            "SourcePath" = "8:..\\Aplicacion\\Updater\\obj\\Debug\\Updater.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_5A78B4A4225A47DC84E12965E5D1780F"
@@ -2247,7 +2247,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_92389C8ED78D4E42B4BA27818B8D0024"
             {
-            "SourcePath" = "8:..\\Aplicacion\\WinForms\\obj\\Release\\Application.exe"
+            "SourcePath" = "8:..\\Aplicacion\\WinForms\\obj\\Debug\\Application.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_5A78B4A4225A47DC84E12965E5D1780F"

@@ -15,7 +15,7 @@ Public Class FrmOrdenCompra
     Private listOfProducts As IList(Of Producto)
     Private bolInit As Boolean = True
 
-    Private formReport As New ReportViewer()
+    Private formReport As New FrmReportViewer()
     Private dtbDatos As DataTable
     Private strEmpresa, strUsuario, strTelefonos As String
 #End Region

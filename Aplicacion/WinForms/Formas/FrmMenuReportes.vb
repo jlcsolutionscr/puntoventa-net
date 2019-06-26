@@ -9,7 +9,7 @@ Public Class FrmMenuReportes
     Private strUsuario, Valida, strEmpresa As String
     Private proveedor As Proveedor
     Private cliente As Cliente
-    Private newFormReport As New ReportViewer
+    Private newFormReport As New FrmReportViewer
 #End Region
 
 #Region "Métodos"
@@ -425,7 +425,6 @@ Public Class FrmMenuReportes
                     newFormReport.repReportViewer.LocalReport.SetParameters(parameters)
                     newFormReport.ShowDialog()
                 Case "Notas de crédito electrónicas emitidas"
-                    Dim newFormReport As New ReportViewer
                     Dim datosReporte As List(Of ReporteDocumentoElectronico)
                     Try
                         datosReporte = Await PuntoventaWCF.ObtenerReporteNotasCreditoElectronicasEmitidas(FrmPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text)
@@ -447,7 +446,6 @@ Public Class FrmMenuReportes
                     newFormReport.repReportViewer.LocalReport.SetParameters(parameters)
                     newFormReport.ShowDialog()
                 Case "Facturas electrónicas recibidas"
-                    Dim newFormReport As New ReportViewer
                     Dim datosReporte As List(Of ReporteDocumentoElectronico)
                     Try
                         datosReporte = Await PuntoventaWCF.ObtenerReporteFacturasElectronicasRecibidas(FrmPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text)
@@ -469,7 +467,6 @@ Public Class FrmMenuReportes
                     newFormReport.repReportViewer.LocalReport.SetParameters(parameters)
                     newFormReport.ShowDialog()
                 Case "Resumen de comprobantes electrónicos"
-                    Dim newFormReport As New ReportViewer
                     Dim datosReporte As List(Of ReporteEstadoResultados)
                     Try
                         datosReporte = Await PuntoventaWCF.ObtenerReporteResumenDocumentosElectronicos(FrmPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text)

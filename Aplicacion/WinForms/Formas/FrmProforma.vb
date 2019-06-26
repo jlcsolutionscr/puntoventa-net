@@ -20,7 +20,7 @@ Public Class FrmProforma
     Private bolInit As Boolean = True
     Private listOfProducts As List(Of Producto)
 
-    Private formReport As New ReportViewer()
+    Private formReport As New FrmReportViewer()
     Private dtbDatos As DataTable
     Private strNombreEmpresa, strNombreComercial, strUsuario, strTelefonos, strIdentificacion As String
 #End Region
