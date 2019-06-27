@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using LeandroSoftware.Core;
 using LeandroSoftware.Puntoventa.CommonTypes;
 using LeandroSoftware.AccesoDatos.Datos;
-using LeandroSoftware.AccesoDatos.Dominio.Entidades;
+using LeandroSoftware.Core.Dominio.Entidades;
 using log4net;
 using Unity;
 using System.Globalization;

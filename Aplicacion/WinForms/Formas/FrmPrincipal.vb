@@ -1,6 +1,6 @@
 Imports System.Threading
 Imports System.Configuration
-Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
+Imports LeandroSoftware.Core.Dominio.Entidades
 Imports System.Collections.Generic
 Imports LeandroSoftware.AccesoDatos.TiposDatos
 Imports LeandroSoftware.AccesoDatos.ClienteWCF

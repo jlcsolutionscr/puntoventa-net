@@ -63,10 +63,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ServiciosWeb\AcessoDatos\Dominio\Dominio.csproj">
-      <Project>{74E3681E-1245-4268-ADB9-D76DA18B2FE0}</Project>
-      <Name>Dominio</Name>
-    </ProjectReference>
     <ProjectReference Include="..\ServiciosWeb\AcessoDatos\TiposDatos\TiposDatos.csproj">
       <Project>{DF822CEB-DFF9-4F4F-8BC1-D6C0CBF54D4B}</Project>
       <Name>TiposDatos</Name>

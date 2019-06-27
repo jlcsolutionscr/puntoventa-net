@@ -1,6 +1,6 @@
 Imports System.Collections.Generic
 Imports LeandroSoftware.Puntoventa.CommonTypes
-Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
+Imports LeandroSoftware.Core.Dominio.Entidades
 
 Public Class FrmOrdenCompra
 #Region "Variables"

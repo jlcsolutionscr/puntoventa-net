@@ -1,5 +1,5 @@
 Imports System.Collections.Generic
-Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
+Imports LeandroSoftware.Core.Dominio.Entidades
 
 Public Class FrmMovimientoBanco
 #Region "Variables"

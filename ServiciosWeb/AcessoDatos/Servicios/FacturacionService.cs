@@ -4,8 +4,7 @@ using System.Data;
 using System.Data.Entity.Infrastructure;
 using System.Collections.Generic;
 using System.Data.Entity;
-using LeandroSoftware.AccesoDatos.Dominio;
-using LeandroSoftware.AccesoDatos.Dominio.Entidades;
+using LeandroSoftware.Core.Dominio.Entidades;
 using LeandroSoftware.AccesoDatos.Datos;
 using log4net;
 using Unity;
@@ -1991,6 +1990,11 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                         byte[] bytRespuestaXML = Convert.FromBase64String(mensaje.RespuestaXml);
                         documentoElectronico.Respuesta = bytRespuestaXML;
                         dbContext.NotificarModificacion(documentoElectronico);
+                        RegistroRespuestaHacienda registro = new RegistroRespuestaHacienda();
+                        registro.ClaveNumerica = documentoElectronico.ClaveNumerica;
+                        registro.Fecha = DateTime.Now;
+                        registro.Respuesta = bytRespuestaXML;
+                        dbContext.RegistroRespuestaHaciendaRepository.Add(registro);
                         dbContext.Commit();
                         if (documentoElectronico.IdTipoDocumento == 3)
                         {

@@ -1,6 +1,6 @@
 ﻿Imports System.Collections.Generic
 Imports LeandroSoftware.AccesoDatos.ClienteWCF
-Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
+Imports LeandroSoftware.Core.Dominio.Entidades
 Imports LeandroSoftware.Puntoventa.CommonTypes
 Imports Microsoft.Reporting.WinForms
 

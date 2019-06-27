@@ -1,6 +1,6 @@
-﻿using LeandroSoftware.AccesoDatos.Dominio.Entidades;
-using LeandroSoftware.AccesoDatos.TiposDatos;
+﻿using LeandroSoftware.AccesoDatos.TiposDatos;
 using LeandroSoftware.Core.CustomClasses;
+using LeandroSoftware.Core.Dominio.Entidades;
 using LeandroSoftware.Puntoventa.CommonTypes;
 using System;
 using System.Collections.Generic;
@@ -8,8 +8,6 @@ using System.Configuration;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Net.Security;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
