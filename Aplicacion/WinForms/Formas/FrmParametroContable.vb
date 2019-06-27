@@ -1,4 +1,4 @@
-Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
+Imports LeandroSoftware.Core.Dominio.Entidades
 Imports LeandroSoftware.Puntoventa.CommonTypes
 
 Public Class FrmParametroContable

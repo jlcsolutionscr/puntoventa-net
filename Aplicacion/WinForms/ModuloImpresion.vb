@@ -1,7 +1,7 @@
 Imports System.IO
 Imports System.Runtime.InteropServices
 Imports System.Collections.Generic
-Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
+Imports LeandroSoftware.Core.Dominio.Entidades
 Imports System.Drawing.Printing
 
 Public Class ModuloImpresion

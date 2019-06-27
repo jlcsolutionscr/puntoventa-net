@@ -4,7 +4,7 @@ Imports System.IO
 Imports System.Xml.Serialization
 Imports LeandroSoftware.AccesoDatos.ClienteWCF
 Imports LeandroSoftware.Puntoventa.CommonTypes
-Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
+Imports LeandroSoftware.Core.Dominio.Entidades
 Imports LeandroSoftware.AccesoDatos.TiposDatos
 Imports System.Threading.Tasks
 Imports LeandroSoftware.Puntoventa.Utilitario

@@ -1,4 +1,4 @@
-﻿using LeandroSoftware.AccesoDatos.Dominio.Entidades;
+﻿using LeandroSoftware.Core.Dominio.Entidades;
 using LeandroSoftware.AccesoDatos.ClienteWCF;
 using System;
 using System.Collections.Generic;

@@ -1623,6 +1623,23 @@ CREATE TABLE `provincia` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `registrorespuestahacienda`
+--
+
+DROP TABLE IF EXISTS `registrorespuestahacienda`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `registrorespuestahacienda` (
+  `IdRegistro` int(11) NOT NULL AUTO_INCREMENT,
+  `Fecha` datetime NOT NULL,
+  `ClaveNumerica` varchar(50) NOT NULL,
+  `Respuesta` blob,
+  PRIMARY KEY (`IdRegistro`),
+  KEY `idx_clavenumerica` (`ClaveNumerica`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `reporteporempresa`
 --
 

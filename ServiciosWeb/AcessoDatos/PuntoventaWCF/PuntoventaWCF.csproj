@@ -166,13 +166,13 @@
       <Project>{fa3c5bce-3db6-486e-b16b-8b7f76eef63f}</Project>
       <Name>Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\Core\Dominio\Dominio.csproj">
+      <Project>{74e3681e-1245-4268-adb9-d76da18b2fe0}</Project>
+      <Name>Dominio</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Datos\Datos.csproj">
       <Project>{7C07FD36-AF8C-4D6F-9EE4-F84082D03F9D}</Project>
       <Name>Datos</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Dominio\Dominio.csproj">
-      <Project>{74E3681E-1245-4268-ADB9-D76DA18B2FE0}</Project>
-      <Name>Dominio</Name>
     </ProjectReference>
     <ProjectReference Include="..\Servicios\Servicios.csproj">
       <Project>{bc08c145-ce0a-4220-a2f6-41b7aae80fc7}</Project>

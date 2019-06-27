@@ -1,6 +1,6 @@
 ﻿using LeandroSoftware.AccesoDatos.Datos;
 using LeandroSoftware.AccesoDatos.Dominio;
-using LeandroSoftware.AccesoDatos.Dominio.Entidades;
+using LeandroSoftware.Core.Dominio.Entidades;
 using LeandroSoftware.AccesoDatos.TiposDatos;
 using LeandroSoftware.Puntoventa.CommonTypes;
 using log4net;
