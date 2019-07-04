@@ -1394,62 +1394,59 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     List<ReporteEstadoResultados> listaReporte = new List<ReporteEstadoResultados>();
                     var grupoFacturasEmitidas = dbContext.DocumentoElectronicoRepository
                         .Where(a => a.IdEmpresa == intIdEmpresa & a.Fecha >= datFechaInicial & a.Fecha <= datFechaFinal & a.IdTipoDocumento == 1 & a.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado).ToList();
-                    decimal decTotal = 0;
-                    decimal decTotalImpuesto = 0;
+                    decimal decTotalVentasExcentas = 0;
+                    decimal decTotalVentasGrabadas = 0;
+                    decimal decTotalImpuestoVentas = 0;
                     foreach (var documento in grupoFacturasEmitidas)
                     {
                         XmlSerializer serializer = new XmlSerializer(typeof(FacturaElectronica));
                         FacturaElectronica facturaElectronica;
                         using (MemoryStream memStream = new MemoryStream(documento.DatosDocumento))
                             facturaElectronica = (FacturaElectronica)serializer.Deserialize(memStream);
-                        decimal decTotalPorLinea = facturaElectronica.ResumenFactura.TotalComprobante;
+                        decimal decTotalPorLineaExcento = facturaElectronica.ResumenFactura.TotalExento;
+                        decimal decTotalPorLineaGrabado = facturaElectronica.ResumenFactura.TotalGravado;
                         decimal decImpuestoPorLinea = facturaElectronica.ResumenFactura.TotalImpuestoSpecified ? facturaElectronica.ResumenFactura.TotalImpuesto : 0;
-
-                        decTotal += decTotalPorLinea;
-                        decTotalImpuesto += decImpuestoPorLinea;
+                        decTotalVentasExcentas += decTotalPorLineaExcento;
+                        decTotalVentasGrabadas += decTotalPorLineaGrabado;
+                        decTotalImpuestoVentas += decImpuestoPorLinea;
                     }
-                    ReporteEstadoResultados reporteLinea = new ReporteEstadoResultados();
-                    reporteLinea.NombreTipoRegistro = "Facturas electrónicas emitidas";
-                    reporteLinea.Descripcion = "Facturas electrónicas emitidas";
-                    reporteLinea.Valor = decTotal;
-                    listaReporte.Add(reporteLinea);
-                    reporteLinea = new ReporteEstadoResultados();
-                    reporteLinea.NombreTipoRegistro = "Impuesto sobre facturas electrónicas emitidas";
-                    reporteLinea.Descripcion = "Impuesto sobre facturas electrónicas emitidas";
-                    reporteLinea.Valor = decTotalImpuesto;
-                    listaReporte.Add(reporteLinea);
 
                     var grupoNotasCreditoEmitidas = dbContext.DocumentoElectronicoRepository
                         .Where(a => a.IdEmpresa == intIdEmpresa & a.Fecha >= datFechaInicial & a.Fecha <= datFechaFinal & a.IdTipoDocumento == 3 & a.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado).ToList();
-                    decTotal = 0;
-                    decTotalImpuesto = 0;
                     foreach (var documento in grupoNotasCreditoEmitidas)
                     {
                         XmlSerializer serializer = new XmlSerializer(typeof(NotaCreditoElectronica));
                         NotaCreditoElectronica notaCreditoElectronica;
                         using (MemoryStream memStream = new MemoryStream(documento.DatosDocumento))
                             notaCreditoElectronica = (NotaCreditoElectronica)serializer.Deserialize(memStream);
-                        decimal decTotalPorLinea = notaCreditoElectronica.ResumenFactura.TotalComprobante;
+                        decimal decTotalPorLineaExcento = notaCreditoElectronica.ResumenFactura.TotalExento;
+                        decimal decTotalPorLineaGrabado = notaCreditoElectronica.ResumenFactura.TotalGravado;
                         decimal decImpuestoPorLinea = notaCreditoElectronica.ResumenFactura.TotalImpuestoSpecified ? notaCreditoElectronica.ResumenFactura.TotalImpuesto : 0;
-
-                        decTotal += decTotalPorLinea;
-                        decTotalImpuesto += decImpuestoPorLinea;
+                        decTotalVentasExcentas -= decTotalPorLineaExcento;
+                        decTotalVentasGrabadas -= decTotalPorLineaGrabado;
+                        decTotalImpuestoVentas -= decImpuestoPorLinea;
                     }
-                    reporteLinea = new ReporteEstadoResultados();
-                    reporteLinea.NombreTipoRegistro = "Notas de crédito emitidas";
-                    reporteLinea.Descripcion = "Notas de crédito emitidas";
-                    reporteLinea.Valor = decTotal;
+                    ReporteEstadoResultados reporteLinea = new ReporteEstadoResultados();
+                    reporteLinea.NombreTipoRegistro = "Ventas excentas por facturas electrónicas emitidas";
+                    reporteLinea.Descripcion = "Ventas excentas por facturas electrónicas emitidas";
+                    reporteLinea.Valor = decTotalVentasExcentas;
                     listaReporte.Add(reporteLinea);
                     reporteLinea = new ReporteEstadoResultados();
-                    reporteLinea.NombreTipoRegistro = "Impuesto sobre notas de crédito emitidas";
-                    reporteLinea.Descripcion = "Impuesto sobre notas de crédito emitidas";
-                    reporteLinea.Valor = decTotalImpuesto;
+                    reporteLinea.NombreTipoRegistro = "Ventas grabadas por facturas electrónicas emitidas";
+                    reporteLinea.Descripcion = "Ventas grabadas por facturas electrónicas emitidas";
+                    reporteLinea.Valor = decTotalVentasGrabadas;
+                    listaReporte.Add(reporteLinea);
+                    reporteLinea = new ReporteEstadoResultados();
+                    reporteLinea.NombreTipoRegistro = "Impuesto sobre facturas electrónicas emitidas";
+                    reporteLinea.Descripcion = "Impuesto sobre facturas electrónicas emitidas";
+                    reporteLinea.Valor = decTotalImpuestoVentas;
                     listaReporte.Add(reporteLinea);
 
                     var grupoFacturasRecibidas = dbContext.DocumentoElectronicoRepository
                         .Where(a => a.IdEmpresa == intIdEmpresa & a.Fecha >= datFechaInicial & a.Fecha <= datFechaFinal & a.IdTipoDocumento == 5 & a.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado).ToList();
-                    decTotal = 0;
-                    decTotalImpuesto = 0;
+                    decimal decTotalComprasExcentas = 0;
+                    decimal decTotalComprasGravadas = 0;
+                    decimal decTotalImpuestoCompras = 0;
                     foreach (var documento in grupoFacturasRecibidas)
                     {
                         XmlSerializer serializer = new XmlSerializer(typeof(MensajeReceptor));
@@ -1458,18 +1455,30 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                             mensajeReceptor = (MensajeReceptor)serializer.Deserialize(memStream);
                         decimal decTotalPorLinea = mensajeReceptor.TotalFactura;
                         decimal decImpuestoPorLinea = mensajeReceptor.MontoTotalImpuesto;
-                        decTotal += decTotalPorLinea;
-                        decTotalImpuesto += decImpuestoPorLinea;
+                        if (decImpuestoPorLinea > 0)
+                        {
+                            decTotalComprasGravadas += (decTotalPorLinea - decImpuestoPorLinea);
+                            decTotalImpuestoCompras += decImpuestoPorLinea;
+                        }
+                        else
+                        {
+                            decTotalComprasExcentas += decTotalPorLinea;
+                        }
                     }
                     reporteLinea = new ReporteEstadoResultados();
-                    reporteLinea.NombreTipoRegistro = "Documentos electrónicos aceptados";
-                    reporteLinea.Descripcion = "Documentos electrónicos aceptados";
-                    reporteLinea.Valor = decTotal;
+                    reporteLinea.NombreTipoRegistro = "Compras exentas por documentos electrónicos aceptados";
+                    reporteLinea.Descripcion = "Compras exentas por documentos electrónicos aceptados";
+                    reporteLinea.Valor = decTotalComprasExcentas;
+                    listaReporte.Add(reporteLinea);
+                    reporteLinea = new ReporteEstadoResultados();
+                    reporteLinea.NombreTipoRegistro = "Compras gravadas por documentos electrónicos aceptados";
+                    reporteLinea.Descripcion = "Compras gravadas por documentos electrónicos aceptados";
+                    reporteLinea.Valor = decTotalComprasGravadas;
                     listaReporte.Add(reporteLinea);
                     reporteLinea = new ReporteEstadoResultados();
                     reporteLinea.NombreTipoRegistro = "Impuesto sobre documentos electrónicos aceptados";
                     reporteLinea.Descripcion = "Impuesto sobre documentos electrónicos aceptados";
-                    reporteLinea.Valor = decTotalImpuesto;
+                    reporteLinea.Valor = decTotalImpuestoCompras;
                     listaReporte.Add(reporteLinea);
 
                     return listaReporte;

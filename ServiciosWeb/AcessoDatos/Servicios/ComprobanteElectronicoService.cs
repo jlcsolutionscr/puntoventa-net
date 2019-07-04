@@ -451,7 +451,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     msDatosXML.Position = 0;
                     documentoXml.Load(msDatosXML);
                 }
-                return RegistrarDocumentoElectronico(empresa, documentoXml, dbContext, factura.IdSucursal, factura.IdTerminal, TipoDocumento.FacturaElectronica, strCorreoNotificacion);
+                return RegistrarDocumentoElectronico(empresa, documentoXml, null, dbContext, factura.IdSucursal, factura.IdTerminal, TipoDocumento.FacturaElectronica, strCorreoNotificacion);
             }
             catch (Exception ex)
             {
@@ -691,7 +691,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     msDatosXML.Position = 0;
                     documentoXml.Load(msDatosXML);
                 }
-                return RegistrarDocumentoElectronico(empresa, documentoXml, dbContext, factura.IdSucursal, factura.IdTerminal, TipoDocumento.NotaCreditoElectronica, strCorreoNotificacion);
+                return RegistrarDocumentoElectronico(empresa, documentoXml, null, dbContext, factura.IdSucursal, factura.IdTerminal, TipoDocumento.NotaCreditoElectronica, strCorreoNotificacion);
             }
             catch (Exception ex)
             {
@@ -789,7 +789,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     mensajeReceptorXml.Load(msDatosXML);
                 }
                 TipoDocumento tipoDoc = intMensaje == 0 ? TipoDocumento.MensajeReceptorAceptado : intMensaje == 1 ? TipoDocumento.MensajeReceptorAceptadoParcial : TipoDocumento.MensajeReceptorRechazado;
-                DocumentoElectronico documento = RegistrarDocumentoElectronico(empresa, mensajeReceptorXml, dbContext, intSucursal, intTerminal, tipoDoc, strCorreoNotificacion);
+                DocumentoElectronico documento = RegistrarDocumentoElectronico(empresa, mensajeReceptorXml, documentoXml, dbContext, intSucursal, intTerminal, tipoDoc, strCorreoNotificacion);
                 return documento;
             }
             catch (Exception ex)
@@ -799,7 +799,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public static DocumentoElectronico RegistrarDocumentoElectronico(Empresa empresa, XmlDocument documentoXml, IDbContext dbContext, int intSucursal, int intTerminal, TipoDocumento tipoDocumento, string strCorreoNotificacion)
+        public static DocumentoElectronico RegistrarDocumentoElectronico(Empresa empresa, XmlDocument documentoXml, XmlDocument documentoOriXml, IDbContext dbContext, int intSucursal, int intTerminal, TipoDocumento tipoDocumento, string strCorreoNotificacion)
         {
             try
             {
@@ -946,6 +946,8 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 }
                 // Almacenaje del documento en base de datos
                 byte[] signedDataEncoded = Encoding.UTF8.GetBytes(signatureDocument.Document.OuterXml);
+                byte[] documentoOriEncoded = null;
+                if (documentoOriXml != null) documentoOriEncoded = Encoding.UTF8.GetBytes(documentoOriXml.OuterXml);
                 DocumentoElectronico documento = new DocumentoElectronico
                 {
                     IdEmpresa = empresa.IdEmpresa,
@@ -963,7 +965,8 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     EsMensajeReceptor = esMensajeReceptor ? "S" : "N",
                     EstadoEnvio = StaticEstadoDocumentoElectronico.Procesando,
                     CorreoNotificacion = strCorreoNotificacion,
-                    DatosDocumento = signedDataEncoded
+                    DatosDocumento = signedDataEncoded,
+                    DatosDocumentoOri = documentoOriEncoded
                 };
                 dbContext.DocumentoElectronicoRepository.Add(documento);
                 if (empresa.TipoContrato == 1)
