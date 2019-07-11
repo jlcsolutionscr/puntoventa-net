@@ -28,7 +28,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public int IdCondicionVenta { get; set; }
         public int PlazoCredito { get; set; }
         public DateTime Fecha { get; set; }
-        public string NoDocumento { get; set; }
+        public string TextoAdicional { get; set; }
         [ForeignKey("Vendedor")]
         public int IdVendedor { get; set; }
         public decimal Excento { get; set; }

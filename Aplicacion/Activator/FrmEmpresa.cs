@@ -1,5 +1,4 @@
-﻿using LeandroSoftware.Core.Dominio.Entidades;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -11,6 +10,7 @@ using LeandroSoftware.Core;
 using System.Threading.Tasks;
 using LeandroSoftware.AccesoDatos.ClienteWCF;
 using LeandroSoftware.Puntoventa.CommonTypes;
+using LeandroSoftware.Core.Dominio.Entidades;
 
 namespace LeandroSoftware.Activator
 {
@@ -439,6 +439,7 @@ namespace LeandroSoftware.Activator
                 empresa.LineasPorFactura = int.Parse(txtLineasFactura.Text);
                 empresa.CodigoServicioInst = int.Parse(txtCodigoServInst.Text);
                 if (txtFecha.Text != "") empresa.FechaVence = DateTime.Parse(txtFecha.Text + " 23:59:59");
+                empresa.IdTipoMoneda = 1;
                 empresa.TipoContrato = (int)cboTipoContrato.SelectedValue;
                 empresa.CantidadDisponible = int.Parse(txtCantidadDocumentos.Text);
                 empresa.Contabiliza = chkContabiliza.Checked;

@@ -436,7 +436,14 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     FechaResolucion = "07-10-2016 00:00:00"
                 };
                 facturaElectronica.Normativa = normativa;
-
+                if (factura.TextoAdicional != "")
+                {
+                    FacturaElectronicaOtros otros = new FacturaElectronicaOtros();
+                    FacturaElectronicaOtrosOtroTexto otrosTextos = new FacturaElectronicaOtrosOtroTexto();
+                    otrosTextos.Value = factura.TextoAdicional;
+                    otros.OtroTexto = new FacturaElectronicaOtrosOtroTexto[] { otrosTextos };
+                    facturaElectronica.Otros = otros;
+                }
                 XmlDocument documentoXml = new XmlDocument();
                 XmlWriterSettings settings = new XmlWriterSettings
                 {
@@ -677,6 +684,14 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     FechaResolucion = "07-10-2016 00:00:00"
                 };
                 notaCreditoElectronica.Normativa = normativa;
+                if (factura.TextoAdicional != "")
+                {
+                    NotaCreditoElectronicaOtros otros = new NotaCreditoElectronicaOtros();
+                    NotaCreditoElectronicaOtrosOtroTexto otrosTextos = new NotaCreditoElectronicaOtrosOtroTexto();
+                    otrosTextos.Value = factura.TextoAdicional;
+                    otros.OtroTexto = new NotaCreditoElectronicaOtrosOtroTexto[] { otrosTextos };
+                    notaCreditoElectronica.Otros = otros;
+                }
                 XmlDocument documentoXml = new XmlDocument();
                 XmlWriterSettings settings = new XmlWriterSettings
                 {

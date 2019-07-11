@@ -350,7 +350,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                             IdUsuario = factura.IdUsuario,
                             IdPropietario = factura.IdCliente,
                             Descripcion = "Cuenta por cobrar de Factura nro. ",
-                            Referencia = factura.NoDocumento,
+                            Referencia = factura.TextoAdicional,
                             NroDocOrig = factura.IdFactura,
                             Fecha = factura.Fecha,
                             Tipo = StaticTipoCuentaPorCobrar.Clientes,
@@ -376,7 +376,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                                 Fecha = DateTime.Now,
                                 Tipo = StaticTipoMovimientoProducto.Salida,
                                 Origen = "Registro de facturación.",
-                                Referencia = factura.NoDocumento,
+                                Referencia = factura.TextoAdicional,
                                 Cantidad = detalleFactura.Cantidad,
                                 PrecioCosto = detalleFactura.PrecioCosto
                             };
@@ -798,7 +798,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                         Fecha = DateTime.Now,
                         Tipo = StaticTipoMovimientoProducto.Entrada,
                         Origen = "Anulación registro de facturación.",
-                        Referencia = factura.NoDocumento,
+                        Referencia = factura.TextoAdicional,
                         Cantidad = detalleFactura.Cantidad,
                         PrecioCosto = detalleFactura.PrecioCosto
                     };
@@ -2173,6 +2173,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                                 };
                                 datos.DetalleServicio.Add(detalle);
                             }
+                            if (facturaElectronica.Otros != null) datos.OtrosTextos = facturaElectronica.Otros.OtroTexto[0].Value;
                             datos.SubTotal = string.Format("{0:N5}", Convert.ToDouble(facturaElectronica.ResumenFactura.TotalVenta, CultureInfo.InvariantCulture));
                             datos.Descuento = facturaElectronica.ResumenFactura.TotalDescuentosSpecified ? string.Format("{0:N5}", Convert.ToDouble(facturaElectronica.ResumenFactura.TotalDescuentos, CultureInfo.InvariantCulture)) : "0.00000";
                             datos.Impuesto = facturaElectronica.ResumenFactura.TotalImpuestoSpecified ? string.Format("{0:N5}", Convert.ToDouble(facturaElectronica.ResumenFactura.TotalImpuesto, CultureInfo.InvariantCulture)) : "0.00000";
@@ -2244,6 +2245,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                                 };
                                 datos.DetalleServicio.Add(detalle);
                             }
+                            if (notaCreditoElectronica.Otros != null) datos.OtrosTextos = notaCreditoElectronica.Otros.OtroTexto[0].Value;
                             datos.SubTotal = string.Format("{0:N5}", Convert.ToDouble(notaCreditoElectronica.ResumenFactura.TotalVenta, CultureInfo.InvariantCulture));
                             datos.Descuento = notaCreditoElectronica.ResumenFactura.TotalDescuentosSpecified ? string.Format("{0:N5}", Convert.ToDouble(notaCreditoElectronica.ResumenFactura.TotalDescuentos, CultureInfo.InvariantCulture)) : "0.00000";
                             datos.Impuesto = notaCreditoElectronica.ResumenFactura.TotalImpuestoSpecified ? string.Format("{0:N5}", Convert.ToDouble(notaCreditoElectronica.ResumenFactura.TotalImpuesto, CultureInfo.InvariantCulture)) : "0.00000";

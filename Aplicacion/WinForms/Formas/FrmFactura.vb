@@ -731,7 +731,7 @@ Public Class FrmFactura
                 cliente = factura.Cliente
                 txtNombreCliente.Text = factura.Cliente.Nombre
                 txtFecha.Text = factura.Fecha
-                txtDocumento.Text = factura.NoDocumento
+                txtDocumento.Text = factura.TextoAdicional
                 txtIdOrdenServicio.Text = factura.IdOrdenServicio
                 txtIdProforma.Text = factura.IdProforma
                 cboCondicionVenta.SelectedValue = factura.IdCondicionVenta
@@ -952,7 +952,7 @@ Public Class FrmFactura
                 .IdCondicionVenta = cboCondicionVenta.SelectedValue,
                 .PlazoCredito = IIf(txtPlazoCredito.Text = "", 0, txtPlazoCredito.Text),
                 .Fecha = Now(),
-                .NoDocumento = txtDocumento.Text,
+                .TextoAdicional = txtDocumento.Text,
                 .IdVendedor = vendedor.IdVendedor,
                 .Excento = decExcento,
                 .Grabado = decGrabado,
@@ -1155,28 +1155,29 @@ Public Class FrmFactura
                 }
                 datos.DetalleServicio.Add(detalle)
             Next
+            If (facturaElectronica.Otros IsNot Nothing) Then datos.OtrosTextos = facturaElectronica.Otros.OtroTexto(0).Value
             datos.SubTotal = facturaElectronica.ResumenFactura.TotalVenta.ToString("N5", CultureInfo.InvariantCulture)
-            datos.Descuento = IIf(facturaElectronica.ResumenFactura.TotalDescuentosSpecified, facturaElectronica.ResumenFactura.TotalDescuentos.ToString("N5", CultureInfo.InvariantCulture), "0.00000")
-            datos.Impuesto = IIf(facturaElectronica.ResumenFactura.TotalImpuestoSpecified, facturaElectronica.ResumenFactura.TotalImpuesto.ToString("N5", CultureInfo.InvariantCulture), "0.00000")
-            datos.TotalGeneral = facturaElectronica.ResumenFactura.TotalComprobante.ToString("N5", CultureInfo.InvariantCulture)
-            datos.CodigoMoneda = IIf(facturaElectronica.ResumenFactura.CodigoMonedaSpecified, facturaElectronica.ResumenFactura.CodigoMoneda.ToString(), "")
-            datos.TipoDeCambio = IIf(facturaElectronica.ResumenFactura.CodigoMonedaSpecified, facturaElectronica.ResumenFactura.TipoCambio.ToString(), "")
-            Try
-                Dim poweredByImage As Image = My.Resources.poweredByImage
-                datos.PoweredByLogotipo = poweredByImage
-            Catch ex As Exception
-                datos.PoweredByLogotipo = Nothing
-            End Try
-            Try
-                Dim pdfBytes As Byte() = UtilitarioPDF.GenerarPDFFacturaElectronica(datos)
-                Dim pdfFilePath As String = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\FAC-" + documento.ClaveNumerica + ".pdf"
-                File.WriteAllBytes(pdfFilePath, pdfBytes)
-                Process.Start(pdfFilePath)
-            Catch ex As Exception
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Exit Sub
-            End Try
-        End If
+                datos.Descuento = IIf(facturaElectronica.ResumenFactura.TotalDescuentosSpecified, facturaElectronica.ResumenFactura.TotalDescuentos.ToString("N5", CultureInfo.InvariantCulture), "0.00000")
+                datos.Impuesto = IIf(facturaElectronica.ResumenFactura.TotalImpuestoSpecified, facturaElectronica.ResumenFactura.TotalImpuesto.ToString("N5", CultureInfo.InvariantCulture), "0.00000")
+                datos.TotalGeneral = facturaElectronica.ResumenFactura.TotalComprobante.ToString("N5", CultureInfo.InvariantCulture)
+                datos.CodigoMoneda = IIf(facturaElectronica.ResumenFactura.CodigoMonedaSpecified, facturaElectronica.ResumenFactura.CodigoMoneda.ToString(), "")
+                datos.TipoDeCambio = IIf(facturaElectronica.ResumenFactura.CodigoMonedaSpecified, facturaElectronica.ResumenFactura.TipoCambio.ToString(), "")
+                Try
+                    Dim poweredByImage As Image = My.Resources.poweredByImage
+                    datos.PoweredByLogotipo = poweredByImage
+                Catch ex As Exception
+                    datos.PoweredByLogotipo = Nothing
+                End Try
+                Try
+                    Dim pdfBytes As Byte() = UtilitarioPDF.GenerarPDFFacturaElectronica(datos)
+                    Dim pdfFilePath As String = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\FAC-" + documento.ClaveNumerica + ".pdf"
+                    File.WriteAllBytes(pdfFilePath, pdfBytes)
+                    Process.Start(pdfFilePath)
+                Catch ex As Exception
+                    MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    Exit Sub
+                End Try
+            End If
     End Sub
 
     Private Async Sub BtnInsertar_Click(sender As Object, e As EventArgs) Handles btnInsertar.Click

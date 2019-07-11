@@ -46,6 +46,7 @@ namespace LeandroSoftware.Puntoventa.CommonTypes
         public string Descuento { get; set; }
         public string Impuesto { get; set; }
         public string TotalGeneral { get; set; }
+        public string OtrosTextos { get; set; }
         public string CodigoMoneda { get; set; }
         public string TipoDeCambio { get; set; }
         public Image Logotipo { get; set; }

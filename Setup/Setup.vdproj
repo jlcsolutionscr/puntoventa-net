@@ -201,18 +201,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_815DA7AEABF7D1F1890FC9540FFB9580"
-        "OwnerKey" = "8:_86C987BD1BE828B465F026842E6A17E2"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_815DA7AEABF7D1F1890FC9540FFB9580"
-        "OwnerKey" = "8:_92389C8ED78D4E42B4BA27818B8D0024"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_86C987BD1BE828B465F026842E6A17E2"
         "OwnerKey" = "8:_92389C8ED78D4E42B4BA27818B8D0024"
         "MsmSig" = "8:_UNDEFINED"
@@ -232,6 +220,18 @@
         "Entry"
         {
         "MsmKey" = "8:_96033D2DE9C72B1D3F9C6BECCB9A34E6"
+        "OwnerKey" = "8:_92389C8ED78D4E42B4BA27818B8D0024"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_A16874997E7D4B3FE974B44F831E3191"
+        "OwnerKey" = "8:_86C987BD1BE828B465F026842E6A17E2"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_A16874997E7D4B3FE974B44F831E3191"
         "OwnerKey" = "8:_92389C8ED78D4E42B4BA27818B8D0024"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -502,7 +502,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_815DA7AEABF7D1F1890FC9540FFB9580"
+        "OwnerKey" = "8:_A16874997E7D4B3FE974B44F831E3191"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -673,7 +673,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Core, Version=1.0.0.4, Culture=neutral, processorArchitecture=x86"
+            "AssemblyAsmDisplayName" = "8:Core, Version=1.0.0.6, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_0BAD896B07A5010BFEF891246E07AF53"
@@ -961,7 +961,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:CommonTypes, Version=1.0.0.4, Culture=neutral, processorArchitecture=x86"
+            "AssemblyAsmDisplayName" = "8:CommonTypes, Version=1.0.0.6, Culture=neutral, processorArchitecture=x86"
                 "ScatterAssemblies"
                 {
                     "_6D6F0B5A940860D25216A8786C45325C"
@@ -1143,42 +1143,11 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_815DA7AEABF7D1F1890FC9540FFB9580"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Dominio, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86"
-                "ScatterAssemblies"
-                {
-                    "_815DA7AEABF7D1F1890FC9540FFB9580"
-                    {
-                    "Name" = "8:Dominio.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:Dominio.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_5A78B4A4225A47DC84E12965E5D1780F"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_86C987BD1BE828B465F026842E6A17E2"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:ClienteWCF, Version=1.0.0.4, Culture=neutral, processorArchitecture=x86"
+            "AssemblyAsmDisplayName" = "8:ClienteWCF, Version=1.0.0.6, Culture=neutral, processorArchitecture=x86"
                 "ScatterAssemblies"
                 {
                     "_86C987BD1BE828B465F026842E6A17E2"
@@ -1250,6 +1219,37 @@
                     }
                 }
             "SourcePath" = "8:System.Security.AccessControl.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_5A78B4A4225A47DC84E12965E5D1780F"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_A16874997E7D4B3FE974B44F831E3191"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:Dominio, Version=1.0.0.6, Culture=neutral, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_A16874997E7D4B3FE974B44F831E3191"
+                    {
+                    "Name" = "8:Dominio.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:Dominio.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_5A78B4A4225A47DC84E12965E5D1780F"
@@ -1457,7 +1457,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:UtilitarioPDF, Version=1.0.0.4, Culture=neutral, processorArchitecture=x86"
+            "AssemblyAsmDisplayName" = "8:UtilitarioPDF, Version=1.0.0.6, Culture=neutral, processorArchitecture=x86"
                 "ScatterAssemblies"
                 {
                     "_DB489988695A9A9DD49B6398E81C8E2F"
@@ -1643,7 +1643,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:TiposDatos, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86"
+            "AssemblyAsmDisplayName" = "8:TiposDatos, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_FE14F46E61FF7615C40EC44C55035414"
@@ -1726,15 +1726,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:PuntoventaJLC"
-        "ProductCode" = "8:{C0A18A4D-1603-46B6-9734-93889A7F26A3}"
-        "PackageCode" = "8:{5F4F2ADF-54ED-4CD4-A0E1-C6E51F6929C3}"
+        "ProductCode" = "8:{BFA0C441-5C01-4E44-83E7-E7C4C6748CE3}"
+        "PackageCode" = "8:{7EAA0A85-D10B-45DB-97BD-53897BECA661}"
         "UpgradeCode" = "8:{9F4F56C6-17E9-4C36-9940-81BDB1283F7F}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:1.0.5"
+        "ProductVersion" = "8:1.0.6"
         "Manufacturer" = "8:JLC Solutions"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -2219,7 +2219,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_062A01B2ACA24DE981250F61FDB6AFB6"
             {
-            "SourcePath" = "8:..\\Aplicacion\\Updater\\obj\\Debug\\Updater.exe"
+            "SourcePath" = "8:..\\Aplicacion\\Updater\\obj\\Release\\Updater.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_5A78B4A4225A47DC84E12965E5D1780F"
@@ -2247,7 +2247,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_92389C8ED78D4E42B4BA27818B8D0024"
             {
-            "SourcePath" = "8:..\\Aplicacion\\WinForms\\obj\\Debug\\Application.exe"
+            "SourcePath" = "8:..\\Aplicacion\\WinForms\\obj\\Release\\Application.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_5A78B4A4225A47DC84E12965E5D1780F"
