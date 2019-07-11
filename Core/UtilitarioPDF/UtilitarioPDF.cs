@@ -174,11 +174,11 @@ namespace LeandroSoftware.Puntoventa.Utilitario
                     }
                     lineaPos += 27;
                     font = new XFont("Arial", 8, XFontStyle.Bold);
-                    gfx.DrawString("Otros detalles: ", font, XBrushes.Black, new XRect(20, lineaPos, 80, 12), XStringFormats.TopLeft);
+                    gfx.DrawString("Otras notas: ", font, XBrushes.Black, new XRect(20, lineaPos, 40, 12), XStringFormats.TopLeft);
                     font = new XFont("Arial", 8, XFontStyle.Regular);
                     foreach (string element in lstLines)
                     {
-                        gfx.DrawString(element, font, XBrushes.Black, new XRect(90, lineaPos, 550, 12), XStringFormats.TopLeft);
+                        gfx.DrawString(element, font, XBrushes.Black, new XRect(75, lineaPos, 550, 12), XStringFormats.TopLeft);
                         lineaPos += 12;
                     }
                 }
