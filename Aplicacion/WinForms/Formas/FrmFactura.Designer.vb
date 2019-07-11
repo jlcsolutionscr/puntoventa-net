@@ -131,12 +131,13 @@ Partial Class FrmFactura
         Me.txtDocumento.BackColor = System.Drawing.SystemColors.Window
         Me.txtDocumento.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtDocumento.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtDocumento.Location = New System.Drawing.Point(251, 65)
-        Me.txtDocumento.MaxLength = 300
+        Me.txtDocumento.Location = New System.Drawing.Point(103, 615)
+        Me.txtDocumento.MaxLength = 500
+        Me.txtDocumento.Multiline = True
         Me.txtDocumento.Name = "txtDocumento"
         Me.txtDocumento.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtDocumento.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-        Me.txtDocumento.Size = New System.Drawing.Size(100, 20)
+        Me.txtDocumento.Size = New System.Drawing.Size(704, 45)
         Me.txtDocumento.TabIndex = 8
         '
         'txtUnidad
@@ -396,12 +397,12 @@ Partial Class FrmFactura
         Me._lblLabels_11.BackColor = System.Drawing.Color.Transparent
         Me._lblLabels_11.Cursor = System.Windows.Forms.Cursors.Default
         Me._lblLabels_11.ForeColor = System.Drawing.SystemColors.ControlText
-        Me._lblLabels_11.Location = New System.Drawing.Point(181, 64)
+        Me._lblLabels_11.Location = New System.Drawing.Point(-3, 615)
         Me._lblLabels_11.Name = "_lblLabels_11"
         Me._lblLabels_11.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me._lblLabels_11.Size = New System.Drawing.Size(64, 19)
+        Me._lblLabels_11.Size = New System.Drawing.Size(100, 19)
         Me._lblLabels_11.TabIndex = 44
-        Me._lblLabels_11.Text = "Referencia:"
+        Me._lblLabels_11.Text = "Otras referencias:"
         Me._lblLabels_11.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         '_lblLabels_8
@@ -1146,7 +1147,7 @@ Partial Class FrmFactura
         Me.AutoScroll = True
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.BackColor = System.Drawing.SystemColors.Control
-        Me.ClientSize = New System.Drawing.Size(817, 612)
+        Me.ClientSize = New System.Drawing.Size(817, 672)
         Me.Controls.Add(Me.btnGenerarPDF)
         Me.Controls.Add(Me.txtPlazoCredito)
         Me.Controls.Add(Me.Label12)
