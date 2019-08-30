@@ -22,6 +22,8 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public int IdFactura { get; set; }
         [ForeignKey("Usuario")]
         public int IdUsuario { get; set; }
+        [ForeignKey("TipoMoneda")]
+        public int IdTipoMoneda { get; set; }
         [ForeignKey("Cliente")]
         public int IdCliente { get; set; }
         [ForeignKey("CondicionVenta")]
@@ -56,6 +58,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public CondicionVenta CondicionVenta { get; set; }
         public Empresa Empresa { get; set; }
         public Usuario Usuario { get; set; }
+        public TipoMoneda TipoMoneda { get; set; }
         public Vendedor Vendedor { get; set; }
         public ICollection<DetalleFactura> DetalleFactura { get; set; }
         public ICollection<DesglosePagoFactura> DesglosePagoFactura { get; set; }

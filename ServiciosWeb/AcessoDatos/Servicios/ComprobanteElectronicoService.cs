@@ -392,14 +392,14 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 }
                 facturaElectronica.DetalleServicio = detalleServicioList.ToArray();
                 FacturaElectronicaResumenFactura resumenFactura = new FacturaElectronicaResumenFactura();
-                if (factura.Empresa.IdTipoMoneda == StaticTipoMoneda.Dolares)
+                if (factura.IdTipoMoneda == StaticTipoMoneda.Dolares)
                 {
                     resumenFactura.CodigoMoneda = FacturaElectronicaResumenFacturaCodigoMoneda.USD;
                     resumenFactura.CodigoMonedaSpecified = true;
                     resumenFactura.TipoCambio = decTipoCambioDolar;
                     resumenFactura.TipoCambioSpecified = true;
                 }
-                else if (factura.Empresa.IdTipoMoneda == StaticTipoMoneda.Colones)
+                else if (factura.IdTipoMoneda == StaticTipoMoneda.Colones)
                 {
                     resumenFactura.CodigoMoneda = FacturaElectronicaResumenFacturaCodigoMoneda.CRC;
                     resumenFactura.CodigoMonedaSpecified = true;
@@ -631,14 +631,14 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 }
                 notaCreditoElectronica.DetalleServicio = detalleServicioList.ToArray();
                 NotaCreditoElectronicaResumenFactura resumenFactura = new NotaCreditoElectronicaResumenFactura();
-                if (factura.Empresa.IdTipoMoneda == StaticTipoMoneda.Dolares)
+                if (factura.IdTipoMoneda == StaticTipoMoneda.Dolares)
                 {
                     resumenFactura.CodigoMoneda = NotaCreditoElectronicaResumenFacturaCodigoMoneda.USD;
                     resumenFactura.CodigoMonedaSpecified = true;
                     resumenFactura.TipoCambio = decTipoCambioDolar;
                     resumenFactura.TipoCambioSpecified = true;
                 }
-                else if (factura.Empresa.IdTipoMoneda == StaticTipoMoneda.Colones)
+                else if (factura.IdTipoMoneda == StaticTipoMoneda.Colones)
                 {
                     resumenFactura.CodigoMoneda = NotaCreditoElectronicaResumenFacturaCodigoMoneda.CRC;
                     resumenFactura.CodigoMonedaSpecified = true;
@@ -785,8 +785,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     throw new Exception("No se encuentra el nodo RECEPTOR en el archivo XML.");
                 if (documentoXml.GetElementsByTagName("TotalImpuesto").Count > 0)
                 {
-                    string strTotalImpuesto = documentoXml.GetElementsByTagName("TotalImpuesto").Item(0).InnerText;
-                    mensajeReceptor.MontoTotalImpuesto = decimal.Parse(strTotalImpuesto, CultureInfo.InvariantCulture);
+                    mensajeReceptor.MontoTotalImpuesto = decimal.Parse(documentoXml.GetElementsByTagName("TotalImpuesto").Item(0).InnerText, CultureInfo.InvariantCulture);
                     mensajeReceptor.MontoTotalImpuestoSpecified = true;
                 }
                 XmlDocument mensajeReceptorXml = new XmlDocument();

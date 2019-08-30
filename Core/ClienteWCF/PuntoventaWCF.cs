@@ -703,6 +703,22 @@ namespace LeandroSoftware.AccesoDatos.ClienteWCF
             return listado;
         }
 
+        public static async Task<List<ReporteDocumentoElectronico>> ObtenerReporteNotasCreditoElectronicasRecibidas(int intIdEmpresa, string strFechaInicial, string strFechaFinal)
+        {
+            RequestDTO peticion = new RequestDTO
+            {
+                NombreMetodo = "ObtenerReporteNotasCreditoElectronicasRecibidas",
+                DatosPeticion = "{IdEmpresa: " + intIdEmpresa + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "'}"
+            };
+            string strPeticion = serializer.Serialize(peticion);
+            string strRespuesta = await EjecutarConsulta(strPeticion, strServicioPuntoventaURL, "");
+            strRespuesta = serializer.Deserialize<string>(strRespuesta);
+            List<ReporteDocumentoElectronico> listado = new List<ReporteDocumentoElectronico>();
+            if (strRespuesta != "")
+                listado = serializer.Deserialize<List<ReporteDocumentoElectronico>>(strRespuesta);
+            return listado;
+        }
+
         public static async Task<List<ReporteEstadoResultados>> ObtenerReporteResumenDocumentosElectronicos(int intIdEmpresa, string strFechaInicial, string strFechaFinal)
         {
             RequestDTO peticion = new RequestDTO

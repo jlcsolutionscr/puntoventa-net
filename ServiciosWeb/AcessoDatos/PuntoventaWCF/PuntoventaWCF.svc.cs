@@ -649,6 +649,15 @@ namespace LeandroSoftware.AccesoDatos.ServicioWCF
                         if (listadoFacturasRecibidas.Count > 0)
                             strRespuesta = serializer.Serialize(listadoFacturasRecibidas);
                         break;
+                    case "ObtenerReporteNotasCreditoElectronicasRecibidas":
+                        parametrosJO = JObject.Parse(datos.DatosPeticion);
+                        intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
+                        strFechaInicial = parametrosJO.Property("FechaInicial").Value.ToString();
+                        strFechaFinal = parametrosJO.Property("FechaFinal").Value.ToString();
+                        IList<ReporteDocumentoElectronico> listadoNotasCreditoRecibidas = servicioReportes.ObtenerReporteNotasCreditoElectronicasRecibidas(intIdEmpresa, strFechaInicial, strFechaFinal);
+                        if (listadoNotasCreditoRecibidas.Count > 0)
+                            strRespuesta = serializer.Serialize(listadoNotasCreditoRecibidas);
+                        break;
                     case "ObtenerReporteResumenDocumentosElectronicos":
                         parametrosJO = JObject.Parse(datos.DatosPeticion);
                         intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());

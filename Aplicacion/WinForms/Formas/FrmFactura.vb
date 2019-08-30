@@ -390,11 +390,7 @@ Public Class FrmFactura
     Private Sub CargarLineaDesglosePago()
         Dim dblMontoLocal, dblMontoForaneo As Decimal
         dblMontoForaneo = CDbl(txtMontoPago.Text)
-        dblMontoLocal = txtMontoPago.Text * txtTipoCambio.Text
-        If dblMontoLocal > decSaldoPorPagar Then
-            dblMontoLocal = decSaldoPorPagar
-            dblMontoForaneo = dblMontoLocal / txtTipoCambio.Text
-        End If
+        dblMontoLocal = CDbl(txtMontoPago.Text)
         dtrRowDesglosePago = dtbDesglosePago.NewRow
         shtConsecutivoPago += 1
         dtrRowDesglosePago.Item(0) = shtConsecutivoPago
@@ -600,7 +596,7 @@ Public Class FrmFactura
         txtIdOrdenServicio.Text = "0"
         txtIdProforma.Text = "0"
         cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
-        cboTipoMoneda.SelectedValue = StaticValoresPorDefecto.MonedaDelSistema
+        cboTipoMoneda.SelectedValue = FrmPrincipal.empresaGlobal.IdTipoMoneda
         Try
             cliente = New Cliente With {
                 .IdCliente = 1,
@@ -692,7 +688,7 @@ Public Class FrmFactura
         End Try
         cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado
         cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
-        cboTipoMoneda.SelectedValue = StaticValoresPorDefecto.MonedaDelSistema
+        cboTipoMoneda.SelectedValue = FrmPrincipal.empresaGlobal.IdTipoMoneda
         bolInit = False
         txtMontoPago.Text = ""
         shtConsecutivoPago = 0
@@ -948,6 +944,7 @@ Public Class FrmFactura
                 .IdSucursal = FrmPrincipal.equipoGlobal.IdSucursal,
                 .IdTerminal = FrmPrincipal.equipoGlobal.IdTerminal,
                 .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
+                .IdTipoMoneda = cboTipoMoneda.SelectedValue,
                 .IdCliente = cliente.IdCliente,
                 .IdCondicionVenta = cboCondicionVenta.SelectedValue,
                 .PlazoCredito = IIf(txtPlazoCredito.Text = "", 0, txtPlazoCredito.Text),
@@ -1223,7 +1220,7 @@ Public Class FrmFactura
 
     Private Async Sub CboFormaPago_SelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs) Handles cboFormaPago.SelectedValueChanged
         If Not bolInit And Not cboFormaPago.SelectedValue Is Nothing Then
-            cboTipoMoneda.SelectedValue = StaticValoresPorDefecto.MonedaDelSistema
+            cboTipoMoneda.SelectedValue = FrmPrincipal.empresaGlobal.IdTipoMoneda
             txtTipoTarjeta.Text = ""
             txtAutorizacion.Text = ""
             If cboFormaPago.SelectedValue <> StaticFormaPago.Cheque And cboFormaPago.SelectedValue <> StaticFormaPago.TransferenciaDepositoBancario Then
@@ -1249,11 +1246,6 @@ Public Class FrmFactura
                     txtTipoTarjeta.ReadOnly = True
                     txtAutorizacion.ReadOnly = True
                 End If
-                If cboFormaPago.SelectedValue = StaticFormaPago.Efectivo Then
-                    cboTipoMoneda.Enabled = True
-                Else
-                    cboTipoMoneda.Enabled = False
-                End If
             Else
                 Try
                     Await CargarListaCuentaBanco()
@@ -1272,7 +1264,6 @@ Public Class FrmFactura
                 txtTipoTarjeta.Visible = False
                 lblTipoTarjeta.Visible = False
                 txtAutorizacion.ReadOnly = False
-                cboTipoMoneda.Enabled = False
             End If
         End If
     End Sub
@@ -1319,7 +1310,6 @@ Public Class FrmFactura
             End If
             CargarLineaDesglosePago()
             cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
-            cboTipoMoneda.SelectedValue = StaticValoresPorDefecto.MonedaDelSistema
             CargarTotalesPago()
             cboFormaPago.Focus()
         End If

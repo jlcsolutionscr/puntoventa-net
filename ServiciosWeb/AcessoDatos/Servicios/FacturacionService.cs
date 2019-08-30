@@ -2029,7 +2029,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                                 }
                             }
                         }
-                        GenerarNotificacionDocumentoElectronico(documentoElectronico, empresa, dbContext, servicioEnvioCorreo, documentoElectronico.CorreoNotificacion, strCorreoNotificacionErrores);
+                        if (documentoElectronico.CorreoNotificacion != "") GenerarNotificacionDocumentoElectronico(documentoElectronico, empresa, dbContext, servicioEnvioCorreo, documentoElectronico.CorreoNotificacion, strCorreoNotificacionErrores);
                     }
                 }
             }
