@@ -33,6 +33,7 @@ Partial Class FrmDetalleDocumentoElectronico
         Me.dgvDatos = New System.Windows.Forms.DataGridView()
         Me.rtxDetalleRespuesta = New System.Windows.Forms.RichTextBox()
         Me.btnReenviarNotificacion = New System.Windows.Forms.Button()
+        Me.btnMostrarXML = New System.Windows.Forms.Button()
         CType(Me.picLoader, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.dgvDatos, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -54,12 +55,12 @@ Partial Class FrmDetalleDocumentoElectronico
         '
         'btnMostrarRespuesta
         '
-        Me.btnMostrarRespuesta.Location = New System.Drawing.Point(397, 415)
+        Me.btnMostrarRespuesta.Location = New System.Drawing.Point(467, 415)
         Me.btnMostrarRespuesta.Name = "btnMostrarRespuesta"
-        Me.btnMostrarRespuesta.Size = New System.Drawing.Size(170, 22)
-        Me.btnMostrarRespuesta.TabIndex = 38
+        Me.btnMostrarRespuesta.Size = New System.Drawing.Size(100, 22)
+        Me.btnMostrarRespuesta.TabIndex = 4
         Me.btnMostrarRespuesta.TabStop = False
-        Me.btnMostrarRespuesta.Text = "Mostrar detalle de la respuesta"
+        Me.btnMostrarRespuesta.Text = "Mostrar respuesta"
         Me.btnMostrarRespuesta.UseVisualStyleBackColor = True
         '
         'lblPagina
@@ -79,7 +80,7 @@ Partial Class FrmDetalleDocumentoElectronico
         Me.btnLast.Location = New System.Drawing.Point(753, 415)
         Me.btnLast.Name = "btnLast"
         Me.btnLast.Size = New System.Drawing.Size(29, 23)
-        Me.btnLast.TabIndex = 43
+        Me.btnLast.TabIndex = 8
         Me.btnLast.TabStop = False
         Me.btnLast.Text = ">>"
         Me.btnLast.UseVisualStyleBackColor = True
@@ -92,7 +93,7 @@ Partial Class FrmDetalleDocumentoElectronico
         Me.btnNext.Location = New System.Drawing.Point(724, 415)
         Me.btnNext.Name = "btnNext"
         Me.btnNext.Size = New System.Drawing.Size(29, 23)
-        Me.btnNext.TabIndex = 42
+        Me.btnNext.TabIndex = 7
         Me.btnNext.TabStop = False
         Me.btnNext.Text = ">"
         Me.btnNext.UseVisualStyleBackColor = True
@@ -105,7 +106,7 @@ Partial Class FrmDetalleDocumentoElectronico
         Me.btnPrevious.Location = New System.Drawing.Point(695, 415)
         Me.btnPrevious.Name = "btnPrevious"
         Me.btnPrevious.Size = New System.Drawing.Size(29, 23)
-        Me.btnPrevious.TabIndex = 41
+        Me.btnPrevious.TabIndex = 6
         Me.btnPrevious.TabStop = False
         Me.btnPrevious.Text = "<"
         Me.btnPrevious.UseVisualStyleBackColor = True
@@ -118,7 +119,7 @@ Partial Class FrmDetalleDocumentoElectronico
         Me.btnFirst.Location = New System.Drawing.Point(666, 415)
         Me.btnFirst.Name = "btnFirst"
         Me.btnFirst.Size = New System.Drawing.Size(29, 23)
-        Me.btnFirst.TabIndex = 40
+        Me.btnFirst.TabIndex = 5
         Me.btnFirst.TabStop = False
         Me.btnFirst.Text = "<<"
         Me.btnFirst.UseVisualStyleBackColor = True
@@ -145,18 +146,28 @@ Partial Class FrmDetalleDocumentoElectronico
         Me.rtxDetalleRespuesta.Location = New System.Drawing.Point(12, 12)
         Me.rtxDetalleRespuesta.Name = "rtxDetalleRespuesta"
         Me.rtxDetalleRespuesta.Size = New System.Drawing.Size(770, 397)
-        Me.rtxDetalleRespuesta.TabIndex = 46
+        Me.rtxDetalleRespuesta.TabIndex = 0
         Me.rtxDetalleRespuesta.Text = ""
         '
         'btnReenviarNotificacion
         '
-        Me.btnReenviarNotificacion.Location = New System.Drawing.Point(221, 415)
+        Me.btnReenviarNotificacion.Location = New System.Drawing.Point(12, 415)
         Me.btnReenviarNotificacion.Name = "btnReenviarNotificacion"
-        Me.btnReenviarNotificacion.Size = New System.Drawing.Size(170, 22)
-        Me.btnReenviarNotificacion.TabIndex = 47
+        Me.btnReenviarNotificacion.Size = New System.Drawing.Size(115, 22)
+        Me.btnReenviarNotificacion.TabIndex = 2
         Me.btnReenviarNotificacion.TabStop = False
-        Me.btnReenviarNotificacion.Text = "Reenviar notificación al receptor"
+        Me.btnReenviarNotificacion.Text = "Reenviar notificación"
         Me.btnReenviarNotificacion.UseVisualStyleBackColor = True
+        '
+        'btnMostrarXML
+        '
+        Me.btnMostrarXML.Location = New System.Drawing.Point(361, 415)
+        Me.btnMostrarXML.Name = "btnMostrarXML"
+        Me.btnMostrarXML.Size = New System.Drawing.Size(100, 22)
+        Me.btnMostrarXML.TabIndex = 3
+        Me.btnMostrarXML.TabStop = False
+        Me.btnMostrarXML.Text = "Mostrar XML"
+        Me.btnMostrarXML.UseVisualStyleBackColor = True
         '
         'FrmDetalleDocumentoElectronico
         '
@@ -164,6 +175,7 @@ Partial Class FrmDetalleDocumentoElectronico
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(794, 450)
         Me.Controls.Add(Me.picLoader)
+        Me.Controls.Add(Me.btnMostrarXML)
         Me.Controls.Add(Me.btnReenviarNotificacion)
         Me.Controls.Add(Me.lblPagina)
         Me.Controls.Add(Me.btnLast)
@@ -193,4 +205,5 @@ Partial Class FrmDetalleDocumentoElectronico
     Friend WithEvents dgvDatos As DataGridView
     Friend WithEvents rtxDetalleRespuesta As RichTextBox
     Friend WithEvents btnReenviarNotificacion As Button
+    Friend WithEvents btnMostrarXML As Button
 End Class

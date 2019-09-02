@@ -1,6 +1,6 @@
 ﻿Imports System.IO
 Imports System.Xml
-Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
+Imports LeandroSoftware.Core.Dominio.Entidades
 Imports System.Text
 Imports System.Threading.Tasks
 Imports LeandroSoftware.AccesoDatos.ClienteWCF
@@ -149,15 +149,17 @@ Public Class FrmDetalleDocumentoElectronico
                     End If
                     btnMostrarRespuesta.Text = "Mostrar lista"
                     bolRespuestaVisible = True
+                    btnMostrarXML.Enabled = False
                 End If
             Else
                 rtxDetalleRespuesta.Visible = False
                 bolRespuestaVisible = False
-                btnMostrarRespuesta.Text = "Mostrar detalle de la respuesta"
+                btnMostrarRespuesta.Text = "Mostrar respuesta"
+                btnMostrarXML.Enabled = True
             End If
         Catch ex As Exception
             rtxDetalleRespuesta.Visible = False
-            MessageBox.Show("Error al procesar la respuesta del Ministerio de Hacienda. Contacte a su proveedor. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("Error al procesar la petición de datos del documento electrónico. Contacte a su proveedor. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
 
@@ -183,6 +185,44 @@ Public Class FrmDetalleDocumentoElectronico
         Else
             MessageBox.Show("Debe ingresar la dirección(es) de correo electrónico para hacer el envío del comprobante. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End If
+    End Sub
+
+    Private Async Sub btnMostrarXML_Click(sender As Object, e As EventArgs) Handles btnMostrarXML.Click
+        Try
+            If Not bolRespuestaVisible Then
+                Dim intIndex As Integer = dgvDatos.CurrentRow.Index
+                Dim documento As DocumentoElectronico = listadoDocumentosProcesados.Item(intIndex)
+                If documento.EstadoEnvio = StaticEstadoDocumentoElectronico.Aceptado Or documento.EstadoEnvio = StaticEstadoDocumentoElectronico.Rechazado Then
+                    Dim consulta As DocumentoElectronico = Await PuntoventaWCF.ObtenerDocumentoElectronico(documento.IdDocumento)
+                    rtxDetalleRespuesta.Visible = True
+                    If consulta.DatosDocumento IsNot Nothing Then
+                        Dim sw As New StringWriter()
+                        Dim xw As New XmlTextWriter(sw) With {
+                            .Formatting = Formatting.Indented,
+                            .Indentation = 4
+                        }
+                        Dim datos As XmlDocument = New XmlDocument()
+                        Dim strRespuesta As String = Encoding.UTF8.GetString(consulta.DatosDocumento)
+                        datos.LoadXml(strRespuesta)
+                        datos.Save(xw)
+                        rtxDetalleRespuesta.Text = sw.ToString()
+                    Else
+                        rtxDetalleRespuesta.Text = "No se puede mostrar la información de este documento. . ."
+                    End If
+                    btnMostrarXML.Text = "Mostrar lista"
+                    bolRespuestaVisible = True
+                    btnMostrarRespuesta.Enabled = False
+                End If
+            Else
+                rtxDetalleRespuesta.Visible = False
+                bolRespuestaVisible = False
+                btnMostrarXML.Text = "Mostrar XML"
+                btnMostrarRespuesta.Enabled = True
+            End If
+        Catch ex As Exception
+            rtxDetalleRespuesta.Visible = False
+            MessageBox.Show("Error al procesar la petición de datos del documento electrónico. Contacte a su proveedor. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
     End Sub
 #End Region
 End Class

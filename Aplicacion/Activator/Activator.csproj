@@ -138,7 +138,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="Report1.rdlc" />
     <None Include="documentoelectronico.xsc">
       <DependentUpon>documentoelectronico.xsd</DependentUpon>
     </None>
@@ -192,7 +191,7 @@
       <Project>{fa3c5bce-3db6-486e-b16b-8b7f76eef63f}</Project>
       <Name>Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\ServiciosWeb\AcessoDatos\Dominio\Dominio.csproj">
+    <ProjectReference Include="..\..\Core\Dominio\Dominio.csproj">
       <Project>{74E3681E-1245-4268-ADB9-D76DA18B2FE0}</Project>
       <Name>Dominio</Name>
     </ProjectReference>

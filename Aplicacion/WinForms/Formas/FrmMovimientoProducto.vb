@@ -1,4 +1,4 @@
-Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
+Imports LeandroSoftware.Core.Dominio.Entidades
 
 Public Class FrmMovimientoProducto
 #Region "Variables"

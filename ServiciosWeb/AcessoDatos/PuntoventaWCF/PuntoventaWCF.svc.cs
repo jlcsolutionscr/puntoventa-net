@@ -1,5 +1,5 @@
 ﻿using LeandroSoftware.AccesoDatos.Datos;
-using LeandroSoftware.AccesoDatos.Dominio.Entidades;
+using LeandroSoftware.Core.Dominio.Entidades;
 using LeandroSoftware.AccesoDatos.Servicios;
 using LeandroSoftware.AccesoDatos.TiposDatos;
 using LeandroSoftware.Core.Servicios;
@@ -648,6 +648,15 @@ namespace LeandroSoftware.AccesoDatos.ServicioWCF
                         IList<ReporteDocumentoElectronico> listadoFacturasRecibidas = servicioReportes.ObtenerReporteFacturasElectronicasRecibidas(intIdEmpresa, strFechaInicial, strFechaFinal);
                         if (listadoFacturasRecibidas.Count > 0)
                             strRespuesta = serializer.Serialize(listadoFacturasRecibidas);
+                        break;
+                    case "ObtenerReporteNotasCreditoElectronicasRecibidas":
+                        parametrosJO = JObject.Parse(datos.DatosPeticion);
+                        intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
+                        strFechaInicial = parametrosJO.Property("FechaInicial").Value.ToString();
+                        strFechaFinal = parametrosJO.Property("FechaFinal").Value.ToString();
+                        IList<ReporteDocumentoElectronico> listadoNotasCreditoRecibidas = servicioReportes.ObtenerReporteNotasCreditoElectronicasRecibidas(intIdEmpresa, strFechaInicial, strFechaFinal);
+                        if (listadoNotasCreditoRecibidas.Count > 0)
+                            strRespuesta = serializer.Serialize(listadoNotasCreditoRecibidas);
                         break;
                     case "ObtenerReporteResumenDocumentosElectronicos":
                         parametrosJO = JObject.Parse(datos.DatosPeticion);

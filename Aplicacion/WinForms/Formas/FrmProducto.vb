@@ -1,4 +1,4 @@
-Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
+Imports LeandroSoftware.Core.Dominio.Entidades
 Imports LeandroSoftware.AccesoDatos.ClienteWCF
 Imports System.IO
 Imports System.Threading.Tasks

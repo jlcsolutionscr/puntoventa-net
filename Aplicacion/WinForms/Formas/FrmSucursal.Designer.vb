@@ -32,10 +32,6 @@ Partial Class FrmSucursal
         CType(Me.ClienteBindingSource, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
-        'ClienteBindingSource
-        '
-        Me.ClienteBindingSource.DataSource = GetType(AccesoDatos.Dominio.Entidades.Cliente)
-        '
         'btnCancelar
         '
         Me.btnCancelar.Location = New System.Drawing.Point(94, 10)

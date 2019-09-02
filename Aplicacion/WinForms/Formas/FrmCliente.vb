@@ -1,5 +1,5 @@
 Imports System.Threading.Tasks
-Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
+Imports LeandroSoftware.Core.Dominio.Entidades
 Imports LeandroSoftware.AccesoDatos.ClienteWCF
 
 Public Class FrmCliente

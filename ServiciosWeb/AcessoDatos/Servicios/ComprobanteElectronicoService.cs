@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Net.Http;
-using LeandroSoftware.AccesoDatos.Dominio.Entidades;
+using LeandroSoftware.Core.Dominio.Entidades;
 using System.Xml;
 using System.IO;
 using System.Xml.Serialization;
@@ -392,14 +392,14 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 }
                 facturaElectronica.DetalleServicio = detalleServicioList.ToArray();
                 FacturaElectronicaResumenFactura resumenFactura = new FacturaElectronicaResumenFactura();
-                if (factura.Empresa.IdTipoMoneda == StaticTipoMoneda.Dolares)
+                if (factura.IdTipoMoneda == StaticTipoMoneda.Dolares)
                 {
                     resumenFactura.CodigoMoneda = FacturaElectronicaResumenFacturaCodigoMoneda.USD;
                     resumenFactura.CodigoMonedaSpecified = true;
                     resumenFactura.TipoCambio = decTipoCambioDolar;
                     resumenFactura.TipoCambioSpecified = true;
                 }
-                else if (factura.Empresa.IdTipoMoneda == StaticTipoMoneda.Colones)
+                else if (factura.IdTipoMoneda == StaticTipoMoneda.Colones)
                 {
                     resumenFactura.CodigoMoneda = FacturaElectronicaResumenFacturaCodigoMoneda.CRC;
                     resumenFactura.CodigoMonedaSpecified = true;
@@ -436,7 +436,14 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     FechaResolucion = "07-10-2016 00:00:00"
                 };
                 facturaElectronica.Normativa = normativa;
-
+                if (factura.TextoAdicional != "")
+                {
+                    FacturaElectronicaOtros otros = new FacturaElectronicaOtros();
+                    FacturaElectronicaOtrosOtroTexto otrosTextos = new FacturaElectronicaOtrosOtroTexto();
+                    otrosTextos.Value = factura.TextoAdicional;
+                    otros.OtroTexto = new FacturaElectronicaOtrosOtroTexto[] { otrosTextos };
+                    facturaElectronica.Otros = otros;
+                }
                 XmlDocument documentoXml = new XmlDocument();
                 XmlWriterSettings settings = new XmlWriterSettings
                 {
@@ -451,7 +458,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     msDatosXML.Position = 0;
                     documentoXml.Load(msDatosXML);
                 }
-                return RegistrarDocumentoElectronico(empresa, documentoXml, dbContext, factura.IdSucursal, factura.IdTerminal, TipoDocumento.FacturaElectronica, strCorreoNotificacion);
+                return RegistrarDocumentoElectronico(empresa, documentoXml, null, dbContext, factura.IdSucursal, factura.IdTerminal, TipoDocumento.FacturaElectronica, strCorreoNotificacion);
             }
             catch (Exception ex)
             {
@@ -624,14 +631,14 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 }
                 notaCreditoElectronica.DetalleServicio = detalleServicioList.ToArray();
                 NotaCreditoElectronicaResumenFactura resumenFactura = new NotaCreditoElectronicaResumenFactura();
-                if (factura.Empresa.IdTipoMoneda == StaticTipoMoneda.Dolares)
+                if (factura.IdTipoMoneda == StaticTipoMoneda.Dolares)
                 {
                     resumenFactura.CodigoMoneda = NotaCreditoElectronicaResumenFacturaCodigoMoneda.USD;
                     resumenFactura.CodigoMonedaSpecified = true;
                     resumenFactura.TipoCambio = decTipoCambioDolar;
                     resumenFactura.TipoCambioSpecified = true;
                 }
-                else if (factura.Empresa.IdTipoMoneda == StaticTipoMoneda.Colones)
+                else if (factura.IdTipoMoneda == StaticTipoMoneda.Colones)
                 {
                     resumenFactura.CodigoMoneda = NotaCreditoElectronicaResumenFacturaCodigoMoneda.CRC;
                     resumenFactura.CodigoMonedaSpecified = true;
@@ -677,6 +684,14 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     FechaResolucion = "07-10-2016 00:00:00"
                 };
                 notaCreditoElectronica.Normativa = normativa;
+                if (factura.TextoAdicional != "")
+                {
+                    NotaCreditoElectronicaOtros otros = new NotaCreditoElectronicaOtros();
+                    NotaCreditoElectronicaOtrosOtroTexto otrosTextos = new NotaCreditoElectronicaOtrosOtroTexto();
+                    otrosTextos.Value = factura.TextoAdicional;
+                    otros.OtroTexto = new NotaCreditoElectronicaOtrosOtroTexto[] { otrosTextos };
+                    notaCreditoElectronica.Otros = otros;
+                }
                 XmlDocument documentoXml = new XmlDocument();
                 XmlWriterSettings settings = new XmlWriterSettings
                 {
@@ -691,7 +706,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     msDatosXML.Position = 0;
                     documentoXml.Load(msDatosXML);
                 }
-                return RegistrarDocumentoElectronico(empresa, documentoXml, dbContext, factura.IdSucursal, factura.IdTerminal, TipoDocumento.NotaCreditoElectronica, strCorreoNotificacion);
+                return RegistrarDocumentoElectronico(empresa, documentoXml, null, dbContext, factura.IdSucursal, factura.IdTerminal, TipoDocumento.NotaCreditoElectronica, strCorreoNotificacion);
             }
             catch (Exception ex)
             {
@@ -770,8 +785,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     throw new Exception("No se encuentra el nodo RECEPTOR en el archivo XML.");
                 if (documentoXml.GetElementsByTagName("TotalImpuesto").Count > 0)
                 {
-                    string strTotalImpuesto = documentoXml.GetElementsByTagName("TotalImpuesto").Item(0).InnerText;
-                    mensajeReceptor.MontoTotalImpuesto = decimal.Parse(strTotalImpuesto, CultureInfo.InvariantCulture);
+                    mensajeReceptor.MontoTotalImpuesto = decimal.Parse(documentoXml.GetElementsByTagName("TotalImpuesto").Item(0).InnerText, CultureInfo.InvariantCulture);
                     mensajeReceptor.MontoTotalImpuestoSpecified = true;
                 }
                 XmlDocument mensajeReceptorXml = new XmlDocument();
@@ -789,7 +803,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     mensajeReceptorXml.Load(msDatosXML);
                 }
                 TipoDocumento tipoDoc = intMensaje == 0 ? TipoDocumento.MensajeReceptorAceptado : intMensaje == 1 ? TipoDocumento.MensajeReceptorAceptadoParcial : TipoDocumento.MensajeReceptorRechazado;
-                DocumentoElectronico documento = RegistrarDocumentoElectronico(empresa, mensajeReceptorXml, dbContext, intSucursal, intTerminal, tipoDoc, strCorreoNotificacion);
+                DocumentoElectronico documento = RegistrarDocumentoElectronico(empresa, mensajeReceptorXml, documentoXml, dbContext, intSucursal, intTerminal, tipoDoc, strCorreoNotificacion);
                 return documento;
             }
             catch (Exception ex)
@@ -799,7 +813,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public static DocumentoElectronico RegistrarDocumentoElectronico(Empresa empresa, XmlDocument documentoXml, IDbContext dbContext, int intSucursal, int intTerminal, TipoDocumento tipoDocumento, string strCorreoNotificacion)
+        public static DocumentoElectronico RegistrarDocumentoElectronico(Empresa empresa, XmlDocument documentoXml, XmlDocument documentoOriXml, IDbContext dbContext, int intSucursal, int intTerminal, TipoDocumento tipoDocumento, string strCorreoNotificacion)
         {
             try
             {
@@ -945,6 +959,8 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 }
                 // Almacenaje del documento en base de datos
                 byte[] signedDataEncoded = Encoding.UTF8.GetBytes(signatureDocument.Document.OuterXml);
+                byte[] documentoOriEncoded = null;
+                if (documentoOriXml != null) documentoOriEncoded = Encoding.UTF8.GetBytes(documentoOriXml.OuterXml);
                 DocumentoElectronico documento = new DocumentoElectronico
                 {
                     IdEmpresa = empresa.IdEmpresa,
@@ -962,7 +978,8 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     EsMensajeReceptor = esMensajeReceptor ? "S" : "N",
                     EstadoEnvio = StaticEstadoDocumentoElectronico.Procesando,
                     CorreoNotificacion = strCorreoNotificacion,
-                    DatosDocumento = signedDataEncoded
+                    DatosDocumento = signedDataEncoded,
+                    DatosDocumentoOri = documentoOriEncoded
                 };
                 dbContext.DocumentoElectronicoRepository.Add(documento);
                 if (empresa.TipoContrato == 1)
@@ -1052,13 +1069,15 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                                     }
                                     else
                                     {
+                                        string strClave = documento.ClaveNumerica;
+                                        if (new int[] { 5, 6, 7 }.Contains(documento.IdTipoDocumento)) strClave = documento.ClaveNumerica + "-" + documento.Consecutivo;
                                         if (httpResponse.Headers.Where(x => x.Key == "X-Error-Cause").FirstOrDefault().Value != null)
                                         {
                                             IList<string> headers = httpResponse.Headers.Where(x => x.Key == "X-Error-Cause").FirstOrDefault().Value.ToList();
                                             if (headers.Count > 0)
                                             {
                                                 if (httpResponse.StatusCode == HttpStatusCode.BadRequest)
-                                                    if (headers[0] == "El comprobante [" + documento.ClaveNumerica + "] ya fue recibido anteriormente.")
+                                                    if (headers[0] == "El comprobante [" + strClave + "] ya fue recibido anteriormente.")
                                                         documento.EstadoEnvio = StaticEstadoDocumentoElectronico.Enviado;
                                                     else
                                                         documento.EstadoEnvio = StaticEstadoDocumentoElectronico.Registrado;
@@ -1113,8 +1132,10 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     ValidarToken(dbContext, empresaLocal, datos.ServicioTokenURL, datos.ClientId);
                     if (empresaLocal.AccessToken != null)
                     {
+                        string strClave = documento.ClaveNumerica;
+                        if (new int[] { 5, 6, 7 }.Contains(documento.IdTipoDocumento)) strClave = documento.ClaveNumerica + "-" + documento.Consecutivo;
                         httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", empresaLocal.AccessToken);
-                        HttpResponseMessage httpResponse = await httpClient.GetAsync(datos.ComprobantesElectronicosURL + "/recepcion/" + documento.ClaveNumerica);
+                        HttpResponseMessage httpResponse = await httpClient.GetAsync(datos.ComprobantesElectronicosURL + "/recepcion/" + strClave);
                         if (httpResponse.StatusCode == HttpStatusCode.OK)
                         {
                             JObject estadoDocumento = JObject.Parse(httpResponse.Content.ReadAsStringAsync().Result);

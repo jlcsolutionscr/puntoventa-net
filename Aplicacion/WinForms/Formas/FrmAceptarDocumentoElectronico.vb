@@ -48,7 +48,7 @@ Public Class FrmAceptarDocumentoElectronico
                     Dim otrosNode As XmlNode = documentoXml.GetElementsByTagName("Otros").Item(0)
                     otrosNode.InnerText = ""
                 End If
-                strDatos = documentoXml.OuterXml
+                strDatos = documentoXml.OuterXml.Replace("'", "")
                 documentoXml.Save(xw)
                 txtMensaje.Text = sw.ToString()
                 btnEnviar.Enabled = True

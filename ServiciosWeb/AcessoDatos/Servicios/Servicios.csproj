@@ -114,6 +114,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BancaService.cs" />
+    <Compile Include="BusinessException.cs" />
     <Compile Include="ComprobanteElectronicoService.cs" />
     <Compile Include="RespaldoService.cs" />
     <Compile Include="CompraService.cs" />
@@ -144,6 +145,10 @@
       <Project>{fa3c5bce-3db6-486e-b16b-8b7f76eef63f}</Project>
       <Name>Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\Core\Dominio\Dominio.csproj">
+      <Project>{74e3681e-1245-4268-adb9-d76da18b2fe0}</Project>
+      <Name>Dominio</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Core\UtilitarioPDF\UtilitarioPDF.csproj">
       <Project>{443A5959-FC1A-4741-8143-CD35A52005A3}</Project>
       <Name>UtilitarioPDF</Name>
@@ -151,10 +156,6 @@
     <ProjectReference Include="..\Datos\Datos.csproj">
       <Project>{7c07fd36-af8c-4d6f-9ee4-f84082d03f9d}</Project>
       <Name>Datos</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Dominio\Dominio.csproj">
-      <Project>{74e3681e-1245-4268-adb9-d76da18b2fe0}</Project>
-      <Name>Dominio</Name>
     </ProjectReference>
     <ProjectReference Include="..\TiposDatos\TiposDatos.csproj">
       <Project>{df822ceb-dff9-4f4f-8bc1-d6c0cbf54d4b}</Project>

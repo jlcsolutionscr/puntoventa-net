@@ -4,7 +4,7 @@ Imports System.IO
 Imports System.Xml.Serialization
 Imports LeandroSoftware.AccesoDatos.ClienteWCF
 Imports LeandroSoftware.Puntoventa.CommonTypes
-Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
+Imports LeandroSoftware.Core.Dominio.Entidades
 Imports LeandroSoftware.AccesoDatos.TiposDatos
 Imports System.Threading.Tasks
 Imports LeandroSoftware.Puntoventa.Utilitario
@@ -390,11 +390,7 @@ Public Class FrmFactura
     Private Sub CargarLineaDesglosePago()
         Dim dblMontoLocal, dblMontoForaneo As Decimal
         dblMontoForaneo = CDbl(txtMontoPago.Text)
-        dblMontoLocal = txtMontoPago.Text * txtTipoCambio.Text
-        If dblMontoLocal > decSaldoPorPagar Then
-            dblMontoLocal = decSaldoPorPagar
-            dblMontoForaneo = dblMontoLocal / txtTipoCambio.Text
-        End If
+        dblMontoLocal = CDbl(txtMontoPago.Text)
         dtrRowDesglosePago = dtbDesglosePago.NewRow
         shtConsecutivoPago += 1
         dtrRowDesglosePago.Item(0) = shtConsecutivoPago
@@ -600,7 +596,7 @@ Public Class FrmFactura
         txtIdOrdenServicio.Text = "0"
         txtIdProforma.Text = "0"
         cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
-        cboTipoMoneda.SelectedValue = StaticValoresPorDefecto.MonedaDelSistema
+        cboTipoMoneda.SelectedValue = FrmPrincipal.empresaGlobal.IdTipoMoneda
         Try
             cliente = New Cliente With {
                 .IdCliente = 1,
@@ -692,7 +688,7 @@ Public Class FrmFactura
         End Try
         cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado
         cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
-        cboTipoMoneda.SelectedValue = StaticValoresPorDefecto.MonedaDelSistema
+        cboTipoMoneda.SelectedValue = FrmPrincipal.empresaGlobal.IdTipoMoneda
         bolInit = False
         txtMontoPago.Text = ""
         shtConsecutivoPago = 0
@@ -731,7 +727,7 @@ Public Class FrmFactura
                 cliente = factura.Cliente
                 txtNombreCliente.Text = factura.Cliente.Nombre
                 txtFecha.Text = factura.Fecha
-                txtDocumento.Text = factura.NoDocumento
+                txtDocumento.Text = factura.TextoAdicional
                 txtIdOrdenServicio.Text = factura.IdOrdenServicio
                 txtIdProforma.Text = factura.IdProforma
                 cboCondicionVenta.SelectedValue = factura.IdCondicionVenta
@@ -948,11 +944,12 @@ Public Class FrmFactura
                 .IdSucursal = FrmPrincipal.equipoGlobal.IdSucursal,
                 .IdTerminal = FrmPrincipal.equipoGlobal.IdTerminal,
                 .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
+                .IdTipoMoneda = cboTipoMoneda.SelectedValue,
                 .IdCliente = cliente.IdCliente,
                 .IdCondicionVenta = cboCondicionVenta.SelectedValue,
                 .PlazoCredito = IIf(txtPlazoCredito.Text = "", 0, txtPlazoCredito.Text),
                 .Fecha = Now(),
-                .NoDocumento = txtDocumento.Text,
+                .TextoAdicional = txtDocumento.Text,
                 .IdVendedor = vendedor.IdVendedor,
                 .Excento = decExcento,
                 .Grabado = decGrabado,
@@ -1155,28 +1152,29 @@ Public Class FrmFactura
                 }
                 datos.DetalleServicio.Add(detalle)
             Next
+            If (facturaElectronica.Otros IsNot Nothing) Then datos.OtrosTextos = facturaElectronica.Otros.OtroTexto(0).Value
             datos.SubTotal = facturaElectronica.ResumenFactura.TotalVenta.ToString("N5", CultureInfo.InvariantCulture)
-            datos.Descuento = IIf(facturaElectronica.ResumenFactura.TotalDescuentosSpecified, facturaElectronica.ResumenFactura.TotalDescuentos.ToString("N5", CultureInfo.InvariantCulture), "0.00000")
-            datos.Impuesto = IIf(facturaElectronica.ResumenFactura.TotalImpuestoSpecified, facturaElectronica.ResumenFactura.TotalImpuesto.ToString("N5", CultureInfo.InvariantCulture), "0.00000")
-            datos.TotalGeneral = facturaElectronica.ResumenFactura.TotalComprobante.ToString("N5", CultureInfo.InvariantCulture)
-            datos.CodigoMoneda = IIf(facturaElectronica.ResumenFactura.CodigoMonedaSpecified, facturaElectronica.ResumenFactura.CodigoMoneda.ToString(), "")
-            datos.TipoDeCambio = IIf(facturaElectronica.ResumenFactura.CodigoMonedaSpecified, facturaElectronica.ResumenFactura.TipoCambio.ToString(), "")
-            Try
-                Dim poweredByImage As Image = My.Resources.poweredByImage
-                datos.PoweredByLogotipo = poweredByImage
-            Catch ex As Exception
-                datos.PoweredByLogotipo = Nothing
-            End Try
-            Try
-                Dim pdfBytes As Byte() = UtilitarioPDF.GenerarPDFFacturaElectronica(datos)
-                Dim pdfFilePath As String = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\FAC-" + documento.ClaveNumerica + ".pdf"
-                File.WriteAllBytes(pdfFilePath, pdfBytes)
-                Process.Start(pdfFilePath)
-            Catch ex As Exception
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Exit Sub
-            End Try
-        End If
+                datos.Descuento = IIf(facturaElectronica.ResumenFactura.TotalDescuentosSpecified, facturaElectronica.ResumenFactura.TotalDescuentos.ToString("N5", CultureInfo.InvariantCulture), "0.00000")
+                datos.Impuesto = IIf(facturaElectronica.ResumenFactura.TotalImpuestoSpecified, facturaElectronica.ResumenFactura.TotalImpuesto.ToString("N5", CultureInfo.InvariantCulture), "0.00000")
+                datos.TotalGeneral = facturaElectronica.ResumenFactura.TotalComprobante.ToString("N5", CultureInfo.InvariantCulture)
+                datos.CodigoMoneda = IIf(facturaElectronica.ResumenFactura.CodigoMonedaSpecified, facturaElectronica.ResumenFactura.CodigoMoneda.ToString(), "")
+                datos.TipoDeCambio = IIf(facturaElectronica.ResumenFactura.CodigoMonedaSpecified, facturaElectronica.ResumenFactura.TipoCambio.ToString(), "")
+                Try
+                    Dim poweredByImage As Image = My.Resources.poweredByImage
+                    datos.PoweredByLogotipo = poweredByImage
+                Catch ex As Exception
+                    datos.PoweredByLogotipo = Nothing
+                End Try
+                Try
+                    Dim pdfBytes As Byte() = UtilitarioPDF.GenerarPDFFacturaElectronica(datos)
+                    Dim pdfFilePath As String = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\FAC-" + documento.ClaveNumerica + ".pdf"
+                    File.WriteAllBytes(pdfFilePath, pdfBytes)
+                    Process.Start(pdfFilePath)
+                Catch ex As Exception
+                    MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    Exit Sub
+                End Try
+            End If
     End Sub
 
     Private Async Sub BtnInsertar_Click(sender As Object, e As EventArgs) Handles btnInsertar.Click
@@ -1222,7 +1220,7 @@ Public Class FrmFactura
 
     Private Async Sub CboFormaPago_SelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs) Handles cboFormaPago.SelectedValueChanged
         If Not bolInit And Not cboFormaPago.SelectedValue Is Nothing Then
-            cboTipoMoneda.SelectedValue = StaticValoresPorDefecto.MonedaDelSistema
+            cboTipoMoneda.SelectedValue = FrmPrincipal.empresaGlobal.IdTipoMoneda
             txtTipoTarjeta.Text = ""
             txtAutorizacion.Text = ""
             If cboFormaPago.SelectedValue <> StaticFormaPago.Cheque And cboFormaPago.SelectedValue <> StaticFormaPago.TransferenciaDepositoBancario Then
@@ -1248,11 +1246,6 @@ Public Class FrmFactura
                     txtTipoTarjeta.ReadOnly = True
                     txtAutorizacion.ReadOnly = True
                 End If
-                If cboFormaPago.SelectedValue = StaticFormaPago.Efectivo Then
-                    cboTipoMoneda.Enabled = True
-                Else
-                    cboTipoMoneda.Enabled = False
-                End If
             Else
                 Try
                     Await CargarListaCuentaBanco()
@@ -1271,7 +1264,6 @@ Public Class FrmFactura
                 txtTipoTarjeta.Visible = False
                 lblTipoTarjeta.Visible = False
                 txtAutorizacion.ReadOnly = False
-                cboTipoMoneda.Enabled = False
             End If
         End If
     End Sub
@@ -1318,7 +1310,6 @@ Public Class FrmFactura
             End If
             CargarLineaDesglosePago()
             cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
-            cboTipoMoneda.SelectedValue = StaticValoresPorDefecto.MonedaDelSistema
             CargarTotalesPago()
             cboFormaPago.Focus()
         End If

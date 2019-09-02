@@ -1,6 +1,6 @@
 ﻿Imports System.Collections.Generic
 Imports LeandroSoftware.AccesoDatos.ClienteWCF
-Imports LeandroSoftware.AccesoDatos.Dominio.Entidades
+Imports LeandroSoftware.Core.Dominio.Entidades
 Imports LeandroSoftware.Puntoventa.CommonTypes
 Imports Microsoft.Reporting.WinForms
 
@@ -462,6 +462,27 @@ Public Class FrmMenuReportes
                     parameters(0) = New ReportParameter("pUsuario", FrmPrincipal.usuarioGlobal.CodigoUsuario)
                     parameters(1) = New ReportParameter("pEmpresa", FrmPrincipal.empresaGlobal.NombreComercial)
                     parameters(2) = New ReportParameter("pNombreReporte", "Listado de Facturas Electrónicas Recibidas")
+                    parameters(3) = New ReportParameter("pFechaDesde", FechaInicio.Text)
+                    parameters(4) = New ReportParameter("pFechaHasta", FechaFinal.Text)
+                    newFormReport.repReportViewer.LocalReport.SetParameters(parameters)
+                    newFormReport.ShowDialog()
+                Case "Notas de crédito electrónicas recibidas"
+                    Dim datosReporte As List(Of ReporteDocumentoElectronico)
+                    Try
+                        datosReporte = Await PuntoventaWCF.ObtenerReporteNotasCreditoElectronicasRecibidas(FrmPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text)
+                    Catch ex As Exception
+                        MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        Exit Sub
+                    End Try
+                    Dim rds As ReportDataSource = New ReportDataSource("dstDatos", datosReporte)
+                    newFormReport.repReportViewer.LocalReport.DataSources.Clear()
+                    newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
+                    newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
+                    newFormReport.repReportViewer.LocalReport.ReportEmbeddedResource = "LeandroSoftware.Puntoventa.Aplicacion.WinForms.rptComprobanteElectronico.rdlc"
+                    Dim parameters(4) As ReportParameter
+                    parameters(0) = New ReportParameter("pUsuario", FrmPrincipal.usuarioGlobal.CodigoUsuario)
+                    parameters(1) = New ReportParameter("pEmpresa", FrmPrincipal.empresaGlobal.NombreComercial)
+                    parameters(2) = New ReportParameter("pNombreReporte", "Listado de Notas de Crédito Electrónicas Recibidas")
                     parameters(3) = New ReportParameter("pFechaDesde", FechaInicio.Text)
                     parameters(4) = New ReportParameter("pFechaHasta", FechaFinal.Text)
                     newFormReport.repReportViewer.LocalReport.SetParameters(parameters)

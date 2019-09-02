@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using LeandroSoftware.Core;
 using LeandroSoftware.Puntoventa.CommonTypes;
 using LeandroSoftware.AccesoDatos.Datos;
-using LeandroSoftware.AccesoDatos.Dominio.Entidades;
+using LeandroSoftware.Core.Dominio.Entidades;
 using log4net;
 using Unity;
 using System.Globalization;
@@ -48,6 +48,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
         List<ReporteDocumentoElectronico> ObtenerReporteFacturasElectronicasEmitidas(int intIdEmpresa, string strFechaInicial, string strFechaFinal);
         List<ReporteDocumentoElectronico> ObtenerReporteNotasCreditoElectronicasEmitidas(int intIdEmpresa, string strFechaInicial, string strFechaFinal);
         List<ReporteDocumentoElectronico> ObtenerReporteFacturasElectronicasRecibidas(int intIdEmpresa, string strFechaInicial, string strFechaFinal);
+        List<ReporteDocumentoElectronico> ObtenerReporteNotasCreditoElectronicasRecibidas(int intIdEmpresa, string strFechaInicial, string strFechaFinal);
         List<ReporteEstadoResultados> ObtenerReporteResumenDocumentosElectronicos(int intIdEmpresa, string strFechaInicial, string strFechaFinal);
     }
 
@@ -132,14 +133,14 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     {
                         var detalleVentas = dbContext.FacturaRepository.Where(s => s.IdEmpresa == intIdEmpresa & s.Fecha >= datFechaInicial & s.Fecha <= datFechaFinal & s.Nulo == bolNulo)
                             .Join(dbContext.ClienteRepository, x => x.IdCliente, y => y.IdCliente, (x, y) => new { x, y })
-                            .Select(z => new { z.x.IdCliente, z.x.Nulo, z.x.IdCondicionVenta, z.x.IdFactura, z.x.Fecha, NombreCliente = z.x.Cliente.Nombre, z.x.NoDocumento, z.x.Impuesto, Total = (z.x.Excento + z.x.Grabado + z.x.Impuesto - z.x.Descuento) });
+                            .Select(z => new { z.x.IdCliente, z.x.Nulo, z.x.IdCondicionVenta, z.x.IdFactura, z.x.Fecha, NombreCliente = z.x.Cliente.Nombre, z.x.IdDocElectronico, z.x.Impuesto, Total = (z.x.Excento + z.x.Grabado + z.x.Impuesto - z.x.Descuento) });
                         foreach (var value in detalleVentas)
                         {
                             ReporteVentas reporteLinea = new ReporteVentas();
                             reporteLinea.IdFactura = value.IdFactura;
                             reporteLinea.Fecha = value.Fecha.ToString("dd/MM/yyyy");
                             reporteLinea.Nombre = value.NombreCliente;
-                            reporteLinea.NoDocumento = value.NoDocumento;
+                            reporteLinea.NoDocumento = value.IdDocElectronico;
                             reporteLinea.Impuesto = value.Impuesto;
                             reporteLinea.Total = value.Total;
                             listaReporte.Add(reporteLinea);
@@ -152,7 +153,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                         {
                             var detalleVentas = dbContext.FacturaRepository.Where(s => s.IdEmpresa == intIdEmpresa & s.Fecha >= datFechaInicial & s.Fecha <= datFechaFinal & s.Nulo == bolNulo)
                                 .Join(dbContext.ClienteRepository, x => x.IdCliente, y => y.IdCliente, (x, y) => new { x, y })
-                                .Select(z => new { z.x.IdCliente, z.x.Nulo, z.x.IdCondicionVenta, z.x.IdFactura, z.x.Fecha, NombreCliente = z.x.Cliente.Nombre, z.x.NoDocumento, z.x.Impuesto, Total = (z.x.Excento + z.x.Grabado + z.x.Impuesto - z.x.Descuento) });
+                                .Select(z => new { z.x.IdCliente, z.x.Nulo, z.x.IdCondicionVenta, z.x.IdFactura, z.x.Fecha, NombreCliente = z.x.Cliente.Nombre, z.x.IdDocElectronico, z.x.Impuesto, Total = (z.x.Excento + z.x.Grabado + z.x.Impuesto - z.x.Descuento) });
                             if (intTipoPago == StaticReporteCondicionVentaFormaPago.Credito)
                                 detalleVentas = detalleVentas.Where(x => x.IdCondicionVenta == StaticCondicionVenta.Credito);
                             else
@@ -165,7 +166,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                                 reporteLinea.IdFactura = value.IdFactura;
                                 reporteLinea.Fecha = value.Fecha.ToString("dd/MM/yyyy");
                                 reporteLinea.Nombre = value.NombreCliente;
-                                reporteLinea.NoDocumento = value.NoDocumento;
+                                reporteLinea.NoDocumento = value.IdDocElectronico;
                                 reporteLinea.Impuesto = value.Impuesto;
                                 reporteLinea.Total = value.Total;
                                 listaReporte.Add(reporteLinea);
@@ -176,7 +177,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                             var detalleVentas = dbContext.FacturaRepository.Where(s => s.IdEmpresa == intIdEmpresa & s.Fecha >= datFechaInicial & s.Fecha <= datFechaFinal & s.Nulo == bolNulo)
                                 .Join(dbContext.ClienteRepository, x => x.IdCliente, y => y.IdCliente, (x, y) => new { x, y })
                                 .Join(dbContext.DesglosePagoFacturaRepository, x => x.x.IdFactura, y => y.IdFactura, (x, y) => new { x, y })
-                                .Select(z => new { z.x.x.IdCliente, z.x.x.Nulo, z.x.x.IdCondicionVenta, z.y.IdFormaPago, z.y.IdCuentaBanco, z.x.x.IdFactura, z.x.x.Fecha, NombreCliente = z.x.x.Cliente.Nombre, z.x.x.NoDocumento, z.x.x.Impuesto, Total = z.y.MontoLocal, z.x.x.TotalCosto });
+                                .Select(z => new { z.x.x.IdCliente, z.x.x.Nulo, z.x.x.IdCondicionVenta, z.y.IdFormaPago, z.y.IdCuentaBanco, z.x.x.IdFactura, z.x.x.Fecha, NombreCliente = z.x.x.Cliente.Nombre, z.x.x.IdDocElectronico, z.x.x.Impuesto, Total = z.y.MontoLocal, z.x.x.TotalCosto });
                             if (intTipoPago == StaticReporteCondicionVentaFormaPago.ContadoEfectivo)
                             {
                                 detalleVentas = detalleVentas.Where(x => x.IdCondicionVenta == StaticCondicionVenta.Contado & x.IdFormaPago == StaticFormaPago.Efectivo);
@@ -203,7 +204,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                                 reporteLinea.IdFactura = value.IdFactura;
                                 reporteLinea.Fecha = value.Fecha.ToString("dd/MM/yyyy");
                                 reporteLinea.Nombre = value.NombreCliente;
-                                reporteLinea.NoDocumento = value.NoDocumento;
+                                reporteLinea.NoDocumento = value.IdDocElectronico;
                                 reporteLinea.Impuesto = value.Impuesto;
                                 reporteLinea.Total = value.Total;
                                 listaReporte.Add(reporteLinea);
@@ -232,7 +233,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     var detalleVentas = dbContext.FacturaRepository.Where(s => s.IdEmpresa == intIdEmpresa & s.Fecha >= datFechaInicial & s.Fecha <= datFechaFinal & s.Nulo == false)
                         .Join(dbContext.VendedorRepository, x => x.IdVendedor, y => y.IdVendedor, (x, y) => new { x, y })
                         .Join(dbContext.DesglosePagoFacturaRepository, x => x.x.IdFactura, y => y.IdFactura, (x, y) => new { x, y })
-                        .Select(z => new { z.x.x.IdVendedor, z.x.y.Nombre, z.x.x.Nulo, z.y.IdFormaPago, z.y.IdCuentaBanco, z.x.x.IdFactura, z.x.x.Fecha, NombreCliente = z.x.x.Cliente.Nombre, z.x.x.NoDocumento, Total = z.y.MontoLocal, z.x.x.TotalCosto, z.x.x.Impuesto });
+                        .Select(z => new { z.x.x.IdVendedor, z.x.y.Nombre, z.x.x.Nulo, z.y.IdFormaPago, z.y.IdCuentaBanco, z.x.x.IdFactura, z.x.x.Fecha, NombreCliente = z.x.x.Cliente.Nombre, z.x.x.IdDocElectronico, Total = z.y.MontoLocal, z.x.x.TotalCosto, z.x.x.Impuesto });
                     if (intIdVendedor > 0)
                         detalleVentas = detalleVentas.Where(x => x.IdVendedor == intIdVendedor);
                     foreach (var value in detalleVentas)
@@ -242,7 +243,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                         reporteLinea.IdFactura = value.IdFactura;
                         reporteLinea.Fecha = value.Fecha.ToString("dd/MM/yyyy");
                         reporteLinea.NombreCliente = value.NombreCliente;
-                        reporteLinea.NoDocumento = value.NoDocumento;
+                        reporteLinea.NoDocumento = value.IdDocElectronico;
                         reporteLinea.Total = value.Total;
                         listaReporte.Add(reporteLinea);
                     }
@@ -1280,8 +1281,14 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                             strNombreReceptor = facturaElectronica.Receptor.Nombre;
                         }
                         decimal decTotalImpuesto = facturaElectronica.ResumenFactura.TotalImpuestoSpecified ? facturaElectronica.ResumenFactura.TotalImpuesto : 0;
-                        string strMoneda = facturaElectronica.ResumenFactura.CodigoMonedaSpecified ? facturaElectronica.ResumenFactura.CodigoMoneda.ToString() : "CRC";
                         decimal decTotal = facturaElectronica.ResumenFactura.TotalComprobante;
+                        string strMoneda = facturaElectronica.ResumenFactura.CodigoMonedaSpecified ? facturaElectronica.ResumenFactura.CodigoMoneda.ToString() : "CRC";
+                        if (facturaElectronica.ResumenFactura.CodigoMoneda.ToString() != "CRC")
+                        {
+                            decimal decTipoCambio = facturaElectronica.ResumenFactura.TipoCambioSpecified ? facturaElectronica.ResumenFactura.TipoCambio : 1;
+                            decTotal = decTotal * decTipoCambio;
+                            decTotalImpuesto = decTotalImpuesto * decTipoCambio;
+                        }
                         ReporteDocumentoElectronico reporteLinea = new ReporteDocumentoElectronico();
                         reporteLinea.ClaveNumerica = documento.ClaveNumerica;
                         reporteLinea.Fecha = documento.Fecha.ToString("dd/MM/yyyy");
@@ -1323,8 +1330,14 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                             strNombreReceptor = notaCreditoElectronica.Receptor.Nombre;
                         }
                         decimal decTotalImpuesto = notaCreditoElectronica.ResumenFactura.TotalImpuestoSpecified ? notaCreditoElectronica.ResumenFactura.TotalImpuesto : 0;
-                        string strMoneda = notaCreditoElectronica.ResumenFactura.CodigoMonedaSpecified ? notaCreditoElectronica.ResumenFactura.CodigoMoneda.ToString() : "CRC";
                         decimal decTotal = notaCreditoElectronica.ResumenFactura.TotalComprobante;
+                        string strMoneda = notaCreditoElectronica.ResumenFactura.CodigoMonedaSpecified ? notaCreditoElectronica.ResumenFactura.CodigoMoneda.ToString() : "CRC";
+                        if (notaCreditoElectronica.ResumenFactura.CodigoMoneda.ToString() != "CRC")
+                        {
+                            decimal decTipoCambio = notaCreditoElectronica.ResumenFactura.TipoCambioSpecified ? notaCreditoElectronica.ResumenFactura.TipoCambio : 1;
+                            decTotal = decTotal * decTipoCambio;
+                            decTotalImpuesto = decTotalImpuesto * decTipoCambio;
+                        }
                         ReporteDocumentoElectronico reporteLinea = new ReporteDocumentoElectronico();
                         reporteLinea.ClaveNumerica = documento.ClaveNumerica;
                         reporteLinea.Fecha = documento.Fecha.ToString("dd/MM/yyyy");
@@ -1356,22 +1369,127 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     var datosFacturasRecibidas = dbContext.DocumentoElectronicoRepository.Where(a => a.IdEmpresa == intIdEmpresa & a.Fecha >= datFechaInicial & a.Fecha <= datFechaFinal & a.IdTipoDocumento == 5 & a.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado);
                     foreach (var documento in datosFacturasRecibidas)
                     {
-                        XmlSerializer serializer = new XmlSerializer(typeof(MensajeReceptor));
-                        MensajeReceptor mensajeReceptor;
-                        using (MemoryStream memStream = new MemoryStream(documento.DatosDocumento))
-                            mensajeReceptor = (MensajeReceptor)serializer.Deserialize(memStream);
-                        string strNombreEmisor = mensajeReceptor.NumeroCedulaEmisor;
-                        decimal decTotalImpuesto = mensajeReceptor.MontoTotalImpuestoSpecified ? mensajeReceptor.MontoTotalImpuesto : 0;
-                        string strMoneda = "CRC";
-                        decimal decTotal = mensajeReceptor.TotalFactura;
-                        ReporteDocumentoElectronico reporteLinea = new ReporteDocumentoElectronico();
-                        reporteLinea.ClaveNumerica = mensajeReceptor.Clave;
-                        reporteLinea.Fecha = documento.Fecha.ToString("dd/MM/yyyy");
-                        reporteLinea.Nombre = strNombreEmisor;
-                        reporteLinea.Moneda = strMoneda;
-                        reporteLinea.Impuesto = decTotalImpuesto;
-                        reporteLinea.Total = decTotal;
-                        listaReporte.Add(reporteLinea);
+                        string datosXml = Encoding.Default.GetString(documento.DatosDocumentoOri);
+                        XmlDocument documentoXml = new XmlDocument();
+                        documentoXml.LoadXml(datosXml);
+                        if (documentoXml.DocumentElement.Name != "NotaCreditoElectronica")
+                        {
+                            string strNombreEmisor = "";
+                            if (documentoXml.GetElementsByTagName("Emisor") != null)
+                            {
+                                XmlNode emisorNode = documentoXml.GetElementsByTagName("Emisor").Item(0).ChildNodes.Item(1);
+                                if (emisorNode.Name == "IdentificacionExtranjero")
+                                    strNombreEmisor = emisorNode.InnerText;
+                                else
+                                {
+                                    string strNumeroCedulaEmisor = "";
+                                    foreach (XmlNode item in emisorNode.ChildNodes)
+                                    {
+                                        if (item.Name == "Numero")
+                                            strNumeroCedulaEmisor = item.InnerText;
+                                    }
+                                    if (strNumeroCedulaEmisor != "")
+                                        strNombreEmisor = strNumeroCedulaEmisor;
+                                }
+                            }
+                            decimal decTotalImpuesto = 0;
+                            if (documentoXml.GetElementsByTagName("TotalImpuesto").Count > 0)
+                                decTotalImpuesto = decimal.Parse(documentoXml.GetElementsByTagName("TotalImpuesto").Item(0).InnerText, CultureInfo.InvariantCulture);
+                            decimal decTotal = 0;
+                            if (documentoXml.GetElementsByTagName("TotalComprobante").Count > 0)
+                                decTotal = decimal.Parse(documentoXml.GetElementsByTagName("TotalComprobante").Item(0).InnerText, CultureInfo.InvariantCulture);
+                            string strCodigoMoneda = "CRC";
+                            if (documentoXml.GetElementsByTagName("CodigoMoneda").Count > 0)
+                                strCodigoMoneda = documentoXml.GetElementsByTagName("CodigoMoneda").Item(0).InnerText;
+                            decimal decTipoDeCambio = 1;
+                            if (documentoXml.GetElementsByTagName("TipoCambio").Count > 0)
+                                decTipoDeCambio = decimal.Parse(documentoXml.GetElementsByTagName("TipoCambio").Item(0).InnerText, CultureInfo.InvariantCulture);
+                            if (strCodigoMoneda != "CRC")
+                            {
+                                decTotal = decTotal * decTipoDeCambio;
+                                decTotalImpuesto = decTotalImpuesto * decTipoDeCambio;
+                            }
+                            ReporteDocumentoElectronico reporteLinea = new ReporteDocumentoElectronico();
+                            reporteLinea.ClaveNumerica = documentoXml.GetElementsByTagName("Clave").Item(0).InnerText;
+                            reporteLinea.Fecha = documento.Fecha.ToString("dd/MM/yyyy");
+                            reporteLinea.Nombre = strNombreEmisor;
+                            reporteLinea.Moneda = strCodigoMoneda;
+                            reporteLinea.Impuesto = decTotalImpuesto;
+                            reporteLinea.Total = decTotal;
+                            listaReporte.Add(reporteLinea);
+                        }
+                    }
+                    return listaReporte;
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al procesar el reporte de Documentos Emitidos: ", ex);
+                    throw new Exception("Se produjo un error al ejecutar el reporte de documentos electrónicos emitidos. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public List<ReporteDocumentoElectronico> ObtenerReporteNotasCreditoElectronicasRecibidas(int intIdEmpresa, string strFechaInicial, string strFechaFinal)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    DateTime datFechaInicial = DateTime.ParseExact(strFechaInicial + " 00:00:01", strFormat, provider);
+                    DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
+                    List<ReporteDocumentoElectronico> listaReporte = new List<ReporteDocumentoElectronico>();
+                    var datosFacturasRecibidas = dbContext.DocumentoElectronicoRepository.Where(a => a.IdEmpresa == intIdEmpresa & a.Fecha >= datFechaInicial & a.Fecha <= datFechaFinal & a.IdTipoDocumento == 5 & a.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado);
+                    foreach (var documento in datosFacturasRecibidas)
+                    {
+                        string datosXml = Encoding.Default.GetString(documento.DatosDocumentoOri);
+                        XmlDocument documentoXml = new XmlDocument();
+                        documentoXml.LoadXml(datosXml);
+                        if (documentoXml.DocumentElement.Name == "NotaCreditoElectronica")
+                        {
+                            string strNombreEmisor = "";
+                            if (documentoXml.GetElementsByTagName("Emisor") != null)
+                            {
+                                XmlNode emisorNode = documentoXml.GetElementsByTagName("Emisor").Item(0).ChildNodes.Item(1);
+                                if (emisorNode.Name == "IdentificacionExtranjero")
+                                    strNombreEmisor = emisorNode.InnerText;
+                                else
+                                {
+                                    string strNumeroCedulaEmisor = "";
+                                    foreach (XmlNode item in emisorNode.ChildNodes)
+                                    {
+                                        if (item.Name == "Numero")
+                                            strNumeroCedulaEmisor = item.InnerText;
+                                    }
+                                    if (strNumeroCedulaEmisor != "")
+                                        strNombreEmisor = strNumeroCedulaEmisor;
+                                }
+                            }
+                            decimal decTotalImpuesto = 0;
+                            if (documentoXml.GetElementsByTagName("TotalImpuesto").Count > 0)
+                                decTotalImpuesto = decimal.Parse(documentoXml.GetElementsByTagName("TotalImpuesto").Item(0).InnerText, CultureInfo.InvariantCulture);
+                            decimal decTotal = 0;
+                            if (documentoXml.GetElementsByTagName("TotalComprobante").Count > 0)
+                                decTotal = decimal.Parse(documentoXml.GetElementsByTagName("TotalComprobante").Item(0).InnerText, CultureInfo.InvariantCulture);
+                            string strCodigoMoneda = "CRC";
+                            if (documentoXml.GetElementsByTagName("CodigoMoneda").Count > 0)
+                                strCodigoMoneda = documentoXml.GetElementsByTagName("CodigoMoneda").Item(0).InnerText;
+                            decimal decTipoDeCambio = 1;
+                            if (documentoXml.GetElementsByTagName("TipoCambio").Count > 0)
+                                decTipoDeCambio = decimal.Parse(documentoXml.GetElementsByTagName("TipoCambio").Item(0).InnerText, CultureInfo.InvariantCulture);
+                            if (strCodigoMoneda != "CRC")
+                            {
+                                decTotal = decTotal * decTipoDeCambio;
+                                decTotalImpuesto = decTotalImpuesto * decTipoDeCambio;
+                            }
+                            ReporteDocumentoElectronico reporteLinea = new ReporteDocumentoElectronico();
+                            reporteLinea.ClaveNumerica = documentoXml.GetElementsByTagName("Clave").Item(0).InnerText;
+                            reporteLinea.Fecha = documento.Fecha.ToString("dd/MM/yyyy");
+                            reporteLinea.Nombre = strNombreEmisor;
+                            reporteLinea.Moneda = strCodigoMoneda;
+                            reporteLinea.Impuesto = decTotalImpuesto;
+                            reporteLinea.Total = decTotal;
+                            listaReporte.Add(reporteLinea);
+                        }
                     }
                     return listaReporte;
                 }
@@ -1394,82 +1512,170 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     List<ReporteEstadoResultados> listaReporte = new List<ReporteEstadoResultados>();
                     var grupoFacturasEmitidas = dbContext.DocumentoElectronicoRepository
                         .Where(a => a.IdEmpresa == intIdEmpresa & a.Fecha >= datFechaInicial & a.Fecha <= datFechaFinal & a.IdTipoDocumento == 1 & a.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado).ToList();
-                    decimal decTotal = 0;
-                    decimal decTotalImpuesto = 0;
+                    decimal decTotalVentasExcentas = 0;
+                    decimal decTotalVentasGrabadas = 0;
+                    decimal decTotalImpuestoVentas = 0;
                     foreach (var documento in grupoFacturasEmitidas)
                     {
                         XmlSerializer serializer = new XmlSerializer(typeof(FacturaElectronica));
                         FacturaElectronica facturaElectronica;
                         using (MemoryStream memStream = new MemoryStream(documento.DatosDocumento))
                             facturaElectronica = (FacturaElectronica)serializer.Deserialize(memStream);
-                        decimal decTotalPorLinea = facturaElectronica.ResumenFactura.TotalComprobante;
+                        decimal decTipoDeCambio = facturaElectronica.ResumenFactura.TipoCambioSpecified ? facturaElectronica.ResumenFactura.TipoCambio : 1;
+                        decimal decTotalPorLineaExcento = facturaElectronica.ResumenFactura.TotalExento;
+                        decimal decTotalPorLineaGrabado = facturaElectronica.ResumenFactura.TotalGravado;
                         decimal decImpuestoPorLinea = facturaElectronica.ResumenFactura.TotalImpuestoSpecified ? facturaElectronica.ResumenFactura.TotalImpuesto : 0;
-
-                        decTotal += decTotalPorLinea;
-                        decTotalImpuesto += decImpuestoPorLinea;
+                        if (facturaElectronica.ResumenFactura.CodigoMoneda.ToString() != "CRC")
+                        {
+                            decTotalVentasExcentas += decTotalPorLineaExcento * decTipoDeCambio;
+                            decTotalVentasGrabadas += decTotalPorLineaGrabado * decTipoDeCambio;
+                            decTotalImpuestoVentas += decImpuestoPorLinea * decTipoDeCambio;
+                        }
+                        else
+                        {
+                            decTotalVentasExcentas += decTotalPorLineaExcento;
+                            decTotalVentasGrabadas += decTotalPorLineaGrabado;
+                            decTotalImpuestoVentas += decImpuestoPorLinea;
+                        }
                     }
-                    ReporteEstadoResultados reporteLinea = new ReporteEstadoResultados();
-                    reporteLinea.NombreTipoRegistro = "Facturas electrónicas emitidas";
-                    reporteLinea.Descripcion = "Facturas electrónicas emitidas";
-                    reporteLinea.Valor = decTotal;
-                    listaReporte.Add(reporteLinea);
-                    reporteLinea = new ReporteEstadoResultados();
-                    reporteLinea.NombreTipoRegistro = "Impuesto sobre facturas electrónicas emitidas";
-                    reporteLinea.Descripcion = "Impuesto sobre facturas electrónicas emitidas";
-                    reporteLinea.Valor = decTotalImpuesto;
-                    listaReporte.Add(reporteLinea);
 
                     var grupoNotasCreditoEmitidas = dbContext.DocumentoElectronicoRepository
                         .Where(a => a.IdEmpresa == intIdEmpresa & a.Fecha >= datFechaInicial & a.Fecha <= datFechaFinal & a.IdTipoDocumento == 3 & a.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado).ToList();
-                    decTotal = 0;
-                    decTotalImpuesto = 0;
                     foreach (var documento in grupoNotasCreditoEmitidas)
                     {
                         XmlSerializer serializer = new XmlSerializer(typeof(NotaCreditoElectronica));
                         NotaCreditoElectronica notaCreditoElectronica;
                         using (MemoryStream memStream = new MemoryStream(documento.DatosDocumento))
                             notaCreditoElectronica = (NotaCreditoElectronica)serializer.Deserialize(memStream);
-                        decimal decTotalPorLinea = notaCreditoElectronica.ResumenFactura.TotalComprobante;
+                        decimal decTipoDeCambio = notaCreditoElectronica.ResumenFactura.TipoCambioSpecified ? notaCreditoElectronica.ResumenFactura.TipoCambio : 1;
+                        decimal decTotalPorLineaExcento = notaCreditoElectronica.ResumenFactura.TotalExento * decTipoDeCambio;
+                        decimal decTotalPorLineaGrabado = notaCreditoElectronica.ResumenFactura.TotalGravado * decTipoDeCambio;
                         decimal decImpuestoPorLinea = notaCreditoElectronica.ResumenFactura.TotalImpuestoSpecified ? notaCreditoElectronica.ResumenFactura.TotalImpuesto : 0;
-
-                        decTotal += decTotalPorLinea;
-                        decTotalImpuesto += decImpuestoPorLinea;
+                        decTotalVentasExcentas -= decTotalPorLineaExcento;
+                        decTotalVentasGrabadas -= decTotalPorLineaGrabado;
+                        decTotalImpuestoVentas -= decImpuestoPorLinea * decTipoDeCambio;
                     }
-                    reporteLinea = new ReporteEstadoResultados();
-                    reporteLinea.NombreTipoRegistro = "Notas de crédito emitidas";
-                    reporteLinea.Descripcion = "Notas de crédito emitidas";
-                    reporteLinea.Valor = decTotal;
+                    ReporteEstadoResultados reporteLinea = new ReporteEstadoResultados();
+                    reporteLinea.NombreTipoRegistro = "Ventas excentas por facturas electrónicas emitidas";
+                    reporteLinea.Descripcion = "Ventas excentas por facturas electrónicas emitidas";
+                    reporteLinea.Valor = decTotalVentasExcentas > 0 ? decTotalVentasExcentas : 0;
                     listaReporte.Add(reporteLinea);
                     reporteLinea = new ReporteEstadoResultados();
-                    reporteLinea.NombreTipoRegistro = "Impuesto sobre notas de crédito emitidas";
-                    reporteLinea.Descripcion = "Impuesto sobre notas de crédito emitidas";
-                    reporteLinea.Valor = decTotalImpuesto;
+                    reporteLinea.NombreTipoRegistro = "Ventas grabadas al 13% por facturas electrónicas emitidas";
+                    reporteLinea.Descripcion = "Ventas grabadas por facturas electrónicas emitidas";
+                    reporteLinea.Valor = decTotalVentasGrabadas > 0 ? decTotalVentasGrabadas : 0;
+                    listaReporte.Add(reporteLinea);
+                    reporteLinea = new ReporteEstadoResultados();
+                    reporteLinea.NombreTipoRegistro = "Impuesto sobre facturas electrónicas emitidas";
+                    reporteLinea.Descripcion = "Impuesto sobre facturas electrónicas emitidas";
+                    reporteLinea.Valor = decTotalImpuestoVentas > 0 ? decTotalImpuestoVentas : 0;
                     listaReporte.Add(reporteLinea);
 
                     var grupoFacturasRecibidas = dbContext.DocumentoElectronicoRepository
                         .Where(a => a.IdEmpresa == intIdEmpresa & a.Fecha >= datFechaInicial & a.Fecha <= datFechaFinal & a.IdTipoDocumento == 5 & a.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado).ToList();
-                    decTotal = 0;
-                    decTotalImpuesto = 0;
+                    decimal decTotalComprasExcentas = 0;
+                    decimal decTotalComprasGravadas = 0;
+                    decimal decTotalImpuestoCompras = 0;
+                    decimal decTotalDescuentosCompras = 0;
                     foreach (var documento in grupoFacturasRecibidas)
                     {
-                        XmlSerializer serializer = new XmlSerializer(typeof(MensajeReceptor));
-                        MensajeReceptor mensajeReceptor;
-                        using (MemoryStream memStream = new MemoryStream(documento.DatosDocumento))
-                            mensajeReceptor = (MensajeReceptor)serializer.Deserialize(memStream);
-                        decimal decTotalPorLinea = mensajeReceptor.TotalFactura;
-                        decimal decImpuestoPorLinea = mensajeReceptor.MontoTotalImpuesto;
-                        decTotal += decTotalPorLinea;
-                        decTotalImpuesto += decImpuestoPorLinea;
+                        if (documento.DatosDocumentoOri != null)
+                        {
+                            string datosXml = Encoding.Default.GetString(documento.DatosDocumentoOri);
+                            XmlDocument documentoXml = new XmlDocument();
+                            documentoXml.LoadXml(datosXml);
+                            decimal decComprasExcentas = 0;
+                            decimal decComprasGravadas = 0;
+                            decimal decImpuestoCompras = 0;
+                            decimal decDescuentosCompras = 0;
+                            decimal decTipoDeCambio = 1;
+                            string strCodigoMoneda = "CRC";
+
+                            if (documentoXml.GetElementsByTagName("TotalExento").Count > 0)
+                                decComprasExcentas = decimal.Parse(documentoXml.GetElementsByTagName("TotalExento").Item(0).InnerText, CultureInfo.InvariantCulture);
+                            if (documentoXml.GetElementsByTagName("TotalGravado").Count > 0)
+                                decComprasGravadas = decimal.Parse(documentoXml.GetElementsByTagName("TotalGravado").Item(0).InnerText, CultureInfo.InvariantCulture);
+                            if (documentoXml.GetElementsByTagName("TotalImpuesto").Count > 0)
+                                decImpuestoCompras = decimal.Parse(documentoXml.GetElementsByTagName("TotalImpuesto").Item(0).InnerText, CultureInfo.InvariantCulture);
+                            if (documentoXml.GetElementsByTagName("TotalDescuentos").Count > 0)
+                                decDescuentosCompras = decimal.Parse(documentoXml.GetElementsByTagName("TotalDescuentos").Item(0).InnerText, CultureInfo.InvariantCulture);
+                            if (documentoXml.GetElementsByTagName("TipoCambio").Count > 0)
+                                decTipoDeCambio = decimal.Parse(documentoXml.GetElementsByTagName("TipoCambio").Item(0).InnerText, CultureInfo.InvariantCulture);
+                            if (documentoXml.GetElementsByTagName("CodigoMoneda").Count > 0)
+                                strCodigoMoneda = documentoXml.GetElementsByTagName("CodigoMoneda").Item(0).InnerText;
+                            if (strCodigoMoneda != "CRC")
+                            {
+                                if (documentoXml.DocumentElement.Name != "NotaCreditoElectronica")
+                                {
+                                    decTotalComprasExcentas += decComprasExcentas * decTipoDeCambio;
+                                    decTotalComprasGravadas += decComprasGravadas * decTipoDeCambio;
+                                    decTotalImpuestoCompras += decImpuestoCompras * decTipoDeCambio;
+                                    decTotalDescuentosCompras += decDescuentosCompras * decTipoDeCambio;
+                                }
+                                else
+                                {
+                                    decTotalComprasExcentas -= decComprasExcentas * decTipoDeCambio;
+                                    decTotalComprasGravadas -= decComprasGravadas * decTipoDeCambio;
+                                    decTotalImpuestoCompras -= decImpuestoCompras * decTipoDeCambio;
+                                    decTotalDescuentosCompras -= decDescuentosCompras * decTipoDeCambio;
+                                }
+                            }
+                            else
+                            {
+                                if (documentoXml.DocumentElement.Name != "NotaCreditoElectronica")
+                                {
+                                    decTotalComprasExcentas += decComprasExcentas;
+                                    decTotalComprasGravadas += decComprasGravadas;
+                                    decTotalImpuestoCompras += decImpuestoCompras;
+                                    decTotalDescuentosCompras += decDescuentosCompras;
+                                }
+                                else
+                                {
+                                    decTotalComprasExcentas -= decComprasExcentas;
+                                    decTotalComprasGravadas -= decComprasGravadas;
+                                    decTotalImpuestoCompras -= decImpuestoCompras;
+                                    decTotalDescuentosCompras -= decDescuentosCompras;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            XmlSerializer serializer = new XmlSerializer(typeof(MensajeReceptor));
+                            MensajeReceptor mensajeReceptor;
+                            using (MemoryStream memStream = new MemoryStream(documento.DatosDocumento))
+                                mensajeReceptor = (MensajeReceptor)serializer.Deserialize(memStream);
+                            decimal decTotalPorLinea = mensajeReceptor.TotalFactura;
+                            decimal decImpuestoPorLinea = mensajeReceptor.MontoTotalImpuesto;
+                            if (decImpuestoPorLinea > 0)
+                            {
+                                decTotalComprasGravadas += (decTotalPorLinea - decImpuestoPorLinea);
+                                decTotalImpuestoCompras += decImpuestoPorLinea;
+                            }
+                            else
+                            {
+                                decTotalComprasExcentas += decTotalPorLinea;
+                            }
+                        }
                     }
                     reporteLinea = new ReporteEstadoResultados();
-                    reporteLinea.NombreTipoRegistro = "Documentos electrónicos aceptados";
-                    reporteLinea.Descripcion = "Documentos electrónicos aceptados";
-                    reporteLinea.Valor = decTotal;
+                    reporteLinea.NombreTipoRegistro = "Compras exentas por documentos electrónicos aceptados";
+                    reporteLinea.Descripcion = "Compras exentas por documentos electrónicos aceptados";
+                    reporteLinea.Valor = decTotalComprasExcentas;
                     listaReporte.Add(reporteLinea);
                     reporteLinea = new ReporteEstadoResultados();
-                    reporteLinea.NombreTipoRegistro = "Impuesto sobre documentos electrónicos aceptados";
-                    reporteLinea.Descripcion = "Impuesto sobre documentos electrónicos aceptados";
-                    reporteLinea.Valor = decTotalImpuesto;
+                    reporteLinea.NombreTipoRegistro = "Compras gravadas al 13% por documentos electrónicos aceptados";
+                    reporteLinea.Descripcion = "Compras gravadas por documentos electrónicos aceptados";
+                    reporteLinea.Valor = decTotalComprasGravadas;
+                    listaReporte.Add(reporteLinea);
+                    reporteLinea = new ReporteEstadoResultados();
+                    reporteLinea.NombreTipoRegistro = "Impuestos sobre compras de documentos electrónicos aceptados";
+                    reporteLinea.Descripcion = "Impuestos sobre compras de documentos electrónicos aceptados";
+                    reporteLinea.Valor = decTotalImpuestoCompras;
+                    listaReporte.Add(reporteLinea);
+                    reporteLinea = new ReporteEstadoResultados();
+                    reporteLinea.NombreTipoRegistro = "Descuentos sobre compras de documentos electrónicos aceptados";
+                    reporteLinea.Descripcion = "Descuentos sobre compras de documentos electrónicos aceptados";
+                    reporteLinea.Valor = decTotalDescuentosCompras;
                     listaReporte.Add(reporteLinea);
 
                     return listaReporte;
