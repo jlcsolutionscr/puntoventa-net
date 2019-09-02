@@ -1070,13 +1070,15 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                                     }
                                     else
                                     {
+                                        string strClave = documento.ClaveNumerica;
+                                        if (new int[] { 5, 6, 7 }.Contains(documento.IdTipoDocumento)) strClave = documento.ClaveNumerica + "-" + documento.Consecutivo;
                                         if (httpResponse.Headers.Where(x => x.Key == "X-Error-Cause").FirstOrDefault().Value != null)
                                         {
                                             IList<string> headers = httpResponse.Headers.Where(x => x.Key == "X-Error-Cause").FirstOrDefault().Value.ToList();
                                             if (headers.Count > 0)
                                             {
                                                 if (httpResponse.StatusCode == HttpStatusCode.BadRequest)
-                                                    if (headers[0] == "El comprobante [" + documento.ClaveNumerica + "] ya fue recibido anteriormente.")
+                                                    if (headers[0] == "El comprobante [" + strClave + "] ya fue recibido anteriormente.")
                                                         documento.EstadoEnvio = StaticEstadoDocumentoElectronico.Enviado;
                                                     else
                                                         documento.EstadoEnvio = StaticEstadoDocumentoElectronico.Registrado;
@@ -1131,8 +1133,10 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     ValidarToken(dbContext, empresaLocal, datos.ServicioTokenURL, datos.ClientId);
                     if (empresaLocal.AccessToken != null)
                     {
+                        string strClave = documento.ClaveNumerica;
+                        if (new int[] { 5, 6, 7 }.Contains(documento.IdTipoDocumento)) strClave = documento.ClaveNumerica + "-" + documento.Consecutivo;
                         httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", empresaLocal.AccessToken);
-                        HttpResponseMessage httpResponse = await httpClient.GetAsync(datos.ComprobantesElectronicosURL + "/recepcion/" + documento.ClaveNumerica);
+                        HttpResponseMessage httpResponse = await httpClient.GetAsync(datos.ComprobantesElectronicosURL + "/recepcion/" + strClave);
                         if (httpResponse.StatusCode == HttpStatusCode.OK)
                         {
                             JObject estadoDocumento = JObject.Parse(httpResponse.Content.ReadAsStringAsync().Result);
