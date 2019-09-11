@@ -1,6 +1,7 @@
 Imports System.Collections.Generic
 Imports LeandroSoftware.Core.Dominio.Entidades
-Imports LeandroSoftware.AccesoDatos.ClienteWCF
+Imports LeandroSoftware.Core.ClienteWCF
+Imports LeandroSoftware.Core.Utilities
 
 Public Class FrmUsuario
 #Region "Variables"
@@ -79,7 +80,7 @@ Public Class FrmUsuario
         Try
             cboRole.ValueMember = "IdRole"
             cboRole.DisplayMember = "Nombre"
-            cboRole.DataSource = Await PuntoventaWCF.ObtenerListaRoles()
+            cboRole.DataSource = Await ClienteFEWCF.ObtenerListaRoles()
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
@@ -95,8 +96,8 @@ Public Class FrmUsuario
         If intIdUsuario > 0 Then
             Dim strDecryptedPassword As String
             Try
-                datos = Await PuntoventaWCF.ObtenerUsuario(intIdUsuario)
-                strDecryptedPassword = Core.Utilitario.DesencriptarDatos(datos.Clave, FrmPrincipal.strKey)
+                datos = Await ClienteFEWCF.ObtenerUsuario(intIdUsuario)
+                strDecryptedPassword = Utilitario.DesencriptarDatos(datos.Clave, FrmPrincipal.strKey)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                 Close()
@@ -140,7 +141,7 @@ Public Class FrmUsuario
             datos.UsuarioPorEmpresa = detalleEmpresa
         End If
         Try
-            strEncryptedPassword = Core.Utilitario.EncriptarDatos(txtPassword.Text, FrmPrincipal.strKey)
+            strEncryptedPassword = Utilitario.EncriptarDatos(txtPassword.Text, FrmPrincipal.strKey)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Close()
@@ -162,10 +163,10 @@ Public Class FrmUsuario
         Next
         Try
             If datos.IdUsuario = 0 Then
-                Dim strIdUsuario = Await PuntoventaWCF.AgregarUsuario(datos)
+                Dim strIdUsuario = Await ClienteFEWCF.AgregarUsuario(datos)
                 txtIdUsuario.Text = strIdUsuario
             Else
-                Await PuntoventaWCF.ActualizarUsuario(datos)
+                Await ClienteFEWCF.ActualizarUsuario(datos)
             End If
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)

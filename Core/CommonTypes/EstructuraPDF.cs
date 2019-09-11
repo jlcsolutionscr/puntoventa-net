@@ -2,7 +2,7 @@
 using System.Drawing;
 using System.Collections.Generic;
 
-namespace LeandroSoftware.Puntoventa.CommonTypes
+namespace LeandroSoftware.Core.CommonTypes
 {
     public class EstructuraPDF
     {
@@ -12,6 +12,7 @@ namespace LeandroSoftware.Puntoventa.CommonTypes
         }
 
         public string TituloDocumento { get; set; }
+        public string NombreComercial { get; set; }
         public string NombreEmpresa { get; set; }
         public string Consecutivo { get; set; }
         public string PlazoCredito { get; set; }
@@ -42,7 +43,9 @@ namespace LeandroSoftware.Puntoventa.CommonTypes
         public string DistritoReceptor { get; set; }
         public string BarrioReceptor { get; set; }
         public string DireccionReceptor { get; set; }
-        public string SubTotal { get; set; }
+        public string TotalGrabado { get; set; }
+        public string TotalExonerado { get; set; }
+        public string TotalExento { get; set; }
         public string Descuento { get; set; }
         public string Impuesto { get; set; }
         public string TotalGeneral { get; set; }
@@ -57,7 +60,7 @@ namespace LeandroSoftware.Puntoventa.CommonTypes
 
     public class EstructuraPDFDetalleServicio
     {
-        public string NumeroLinea { get; set; }
+        public string Cantidad { get; set; }
         public string Codigo { get; set; }
         public string Detalle { get; set; }
         public string PrecioUnitario { get; set; }

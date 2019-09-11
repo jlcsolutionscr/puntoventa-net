@@ -1,5 +1,4 @@
 ﻿using LeandroSoftware.Core.Dominio.Entidades;
-using LeandroSoftware.AccesoDatos.ClienteWCF;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -7,6 +6,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using LeandroSoftware.Core.CustomClasses;
+using LeandroSoftware.Core.ClienteWCF;
 
 namespace LeandroSoftware.Activator
 {
@@ -27,7 +27,7 @@ namespace LeandroSoftware.Activator
         {
             try
             {
-                dsDataSet = await PuntoventaWCF.ObtenerListaEmpresas();
+                dsDataSet = await ClienteFEWCF.ObtenerListaEmpresas();
                 cboEmpresa.DataSource = dsDataSet;
                 btnAgregar.Enabled = true;
                 btnEditar.Enabled = true;

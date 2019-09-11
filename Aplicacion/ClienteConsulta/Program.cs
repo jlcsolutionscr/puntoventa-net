@@ -1,6 +1,6 @@
 ﻿using LeandroSoftware.Core.Dominio.Entidades;
-using LeandroSoftware.AccesoDatos.TiposDatos;
-using LeandroSoftware.AccesoDatos.ClienteWCF;
+using LeandroSoftware.Core.TiposDatosHacienda;
+using LeandroSoftware.Core.ClienteWCF;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
+using LeandroSoftware.Core.CommonTypes;
 
 namespace LeandroSoftware.AccesoDatos.ClientePruebas
 {
@@ -17,7 +18,7 @@ namespace LeandroSoftware.AccesoDatos.ClientePruebas
         {
             try
             {
-                List<Empresa> empresaLista = PuntoventaWCF.ObtenerListaEmpresas().Result;
+                List<Empresa> empresaLista = ClienteFEWCF.ObtenerListaEmpresas().Result;
                 string inputEmpresa = "C";
                 while (inputEmpresa != "S")
                 {
@@ -50,7 +51,7 @@ namespace LeandroSoftware.AccesoDatos.ClientePruebas
                                     List<DocumentoElectronico> documentoLista = null;
                                     try
                                     {
-                                        documentoLista = PuntoventaWCF.ObtenerListaDocumentosElectronicosEnProceso(intIdEmpresa).Result;
+                                        documentoLista = ClienteFEWCF.ObtenerListaDocumentosElectronicosEnProceso(intIdEmpresa).Result;
                                     }
                                     catch (Exception ex)
                                     {
@@ -92,7 +93,7 @@ namespace LeandroSoftware.AccesoDatos.ClientePruebas
                                                         DocumentoElectronico consulta = null;
                                                         try
                                                         {
-                                                            consulta = PuntoventaWCF.ObtenerRespuestaDocumentoElectronicoEnviado(documento.IdDocumento).Result;
+                                                            consulta = ClienteFEWCF.ObtenerRespuestaDocumentoElectronicoEnviado(documento.IdDocumento).Result;
                                                         }
                                                         catch (Exception ex)
                                                         {
@@ -122,7 +123,7 @@ namespace LeandroSoftware.AccesoDatos.ClientePruebas
                                                                     respuesta.RespuestaXml = Convert.ToBase64String(consulta.Respuesta);
                                                                     try
                                                                     {
-                                                                        PuntoventaWCF.ProcesarRespuesta(respuesta);
+                                                                        ClienteFEWCF.ProcesarRespuesta(respuesta);
                                                                         Console.WriteLine("Respuesta procesada satisfactoriamente. . .");
                                                                     }
                                                                     catch (Exception ex)
@@ -151,7 +152,7 @@ namespace LeandroSoftware.AccesoDatos.ClientePruebas
                                                     {
                                                         try
                                                         {
-                                                            PuntoventaWCF.EnviarDocumentoElectronicoPendiente(documento.IdDocumento).Wait();
+                                                            ClienteFEWCF.EnviarDocumentoElectronicoPendiente(documento.IdDocumento).Wait();
                                                             Console.WriteLine("Envio procesado satisfactoriamente. . .");
                                                         }
                                                         catch (Exception ex)
@@ -176,8 +177,8 @@ namespace LeandroSoftware.AccesoDatos.ClientePruebas
                                     List<DocumentoElectronico> documentoLista = null;
                                     try
                                     {
-                                        intCantidad = PuntoventaWCF.ObtenerTotalDocumentosElectronicosProcesados(intIdEmpresa).Result;
-                                        documentoLista = PuntoventaWCF.ObtenerListaDocumentosElectronicosProcesados(intIdEmpresa, 1, intCantidad).Result;
+                                        intCantidad = ClienteFEWCF.ObtenerTotalDocumentosElectronicosProcesados(intIdEmpresa).Result;
+                                        documentoLista = ClienteFEWCF.ObtenerListaDocumentosElectronicosProcesados(intIdEmpresa, 1, intCantidad).Result;
                                     }
                                     catch (Exception ex)
                                     {
@@ -221,7 +222,7 @@ namespace LeandroSoftware.AccesoDatos.ClientePruebas
                                                         {
                                                             try
                                                             {
-                                                                PuntoventaWCF.EnviarNotificacion(documento.IdDocumento, strCorreoReceptor).Wait();
+                                                                ClienteFEWCF.EnviarNotificacion(documento.IdDocumento, strCorreoReceptor).Wait();
                                                                 Console.WriteLine("Notificación procesada satisfactoriamente. . .");
                                                             }
                                                             catch (Exception ex)
@@ -235,7 +236,7 @@ namespace LeandroSoftware.AccesoDatos.ClientePruebas
                                                 if (documento.EstadoEnvio == "rechazado")
                                                 {
                                                     Console.WriteLine("El documento fue RECHAZADO y posee la siguiente respuesta de hacienda:");
-                                                    DocumentoElectronico consulta = PuntoventaWCF.ObtenerDocumentoElectronico(documento.IdDocumento).Result;
+                                                    DocumentoElectronico consulta = ClienteFEWCF.ObtenerDocumentoElectronico(documento.IdDocumento).Result;
                                                     XmlSerializer serializer = new XmlSerializer(typeof(MensajeHacienda));
                                                     MensajeHacienda mensajeRespuesta;
                                                     using (MemoryStream ms = new MemoryStream(consulta.Respuesta))

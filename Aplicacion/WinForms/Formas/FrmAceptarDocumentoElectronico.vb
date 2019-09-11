@@ -1,6 +1,6 @@
 ﻿Imports System.IO
 Imports System.Xml
-Imports LeandroSoftware.AccesoDatos.ClienteWCF
+Imports LeandroSoftware.Core.ClienteWCF
 
 Public Class FrmAceptarDocumentoElectronico
 #Region "Variables"
@@ -19,7 +19,7 @@ Public Class FrmAceptarDocumentoElectronico
                 Else
                     intEstado = 2
                 End If
-                Await PuntoventaWCF.GeneraMensajeReceptor(strDatos, FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, FrmPrincipal.equipoGlobal.IdTerminal, intEstado)
+                Await ClienteFEWCF.GeneraMensajeReceptor(strDatos, FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, FrmPrincipal.equipoGlobal.IdTerminal, intEstado)
                 MessageBox.Show("Documento enviado satisfactoriamente. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 Close()
             Else

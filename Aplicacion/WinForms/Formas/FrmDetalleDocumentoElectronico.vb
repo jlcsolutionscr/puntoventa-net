@@ -3,8 +3,8 @@ Imports System.Xml
 Imports LeandroSoftware.Core.Dominio.Entidades
 Imports System.Text
 Imports System.Threading.Tasks
-Imports LeandroSoftware.AccesoDatos.ClienteWCF
-Imports LeandroSoftware.Puntoventa.CommonTypes
+Imports LeandroSoftware.Core.ClienteWCF
+Imports LeandroSoftware.Core.CommonTypes
 
 Public Class FrmDetalleDocumentoElectronico
 #Region "Variables"
@@ -50,7 +50,7 @@ Public Class FrmDetalleDocumentoElectronico
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
         Try
-            listadoDocumentosProcesados = Await PuntoventaWCF.ObtenerListaDocumentosElectronicosProcesados(FrmPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina)
+            listadoDocumentosProcesados = Await ClienteFEWCF.ObtenerListaDocumentosElectronicosProcesados(FrmPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina)
             dgvDatos.DataSource = listadoDocumentosProcesados
             If listadoDocumentosProcesados.Count() > 0 Then
                 btnMostrarRespuesta.Enabled = True
@@ -68,7 +68,7 @@ Public Class FrmDetalleDocumentoElectronico
 
     Private Async Function ObtenerCantidadDocumentosProcesados() As Task
         Try
-            intTotalDocumentos = Await PuntoventaWCF.ObtenerTotalDocumentosElectronicosProcesados(FrmPrincipal.empresaGlobal.IdEmpresa)
+            intTotalDocumentos = Await ClienteFEWCF.ObtenerTotalDocumentosElectronicosProcesados(FrmPrincipal.empresaGlobal.IdEmpresa)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -131,7 +131,7 @@ Public Class FrmDetalleDocumentoElectronico
                 Dim intIndex As Integer = dgvDatos.CurrentRow.Index
                 Dim documento As DocumentoElectronico = listadoDocumentosProcesados.Item(intIndex)
                 If documento.EstadoEnvio = StaticEstadoDocumentoElectronico.Aceptado Or documento.EstadoEnvio = StaticEstadoDocumentoElectronico.Rechazado Then
-                    Dim consulta As DocumentoElectronico = Await PuntoventaWCF.ObtenerDocumentoElectronico(documento.IdDocumento)
+                    Dim consulta As DocumentoElectronico = Await ClienteFEWCF.ObtenerDocumentoElectronico(documento.IdDocumento)
                     rtxDetalleRespuesta.Visible = True
                     If consulta.Respuesta IsNot Nothing Then
                         Dim sw As New StringWriter()
@@ -175,7 +175,7 @@ Public Class FrmDetalleDocumentoElectronico
         If strCorreoReceptor <> "" Then
             picLoader.Visible = True
             Try
-                Await PuntoventaWCF.EnviarNotificacion(documento.IdDocumento, strCorreoReceptor)
+                Await ClienteFEWCF.EnviarNotificacion(documento.IdDocumento, strCorreoReceptor)
                 picLoader.Visible = False
                 MessageBox.Show("Comprobante electrónico enviado satisfactoriamente. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
             Catch ex As Exception
@@ -193,7 +193,7 @@ Public Class FrmDetalleDocumentoElectronico
                 Dim intIndex As Integer = dgvDatos.CurrentRow.Index
                 Dim documento As DocumentoElectronico = listadoDocumentosProcesados.Item(intIndex)
                 If documento.EstadoEnvio = StaticEstadoDocumentoElectronico.Aceptado Or documento.EstadoEnvio = StaticEstadoDocumentoElectronico.Rechazado Then
-                    Dim consulta As DocumentoElectronico = Await PuntoventaWCF.ObtenerDocumentoElectronico(documento.IdDocumento)
+                    Dim consulta As DocumentoElectronico = Await ClienteFEWCF.ObtenerDocumentoElectronico(documento.IdDocumento)
                     rtxDetalleRespuesta.Visible = True
                     If consulta.DatosDocumento IsNot Nothing Then
                         Dim sw As New StringWriter()

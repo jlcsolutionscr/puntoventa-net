@@ -132,9 +132,7 @@
     <Reference Include="System.Windows.Forms">
       <Name>System.Windows.Forms</Name>
     </Reference>
-    <Reference Include="System.XML">
-      <Name>System.XML</Name>
-    </Reference>
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Import Include="Microsoft.VisualBasic" />
@@ -169,6 +167,12 @@
       <DependentUpon>FrmAjusteInventario.vb</DependentUpon>
     </Compile>
     <Compile Include="Formas\FrmAjusteInventario.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Formas\FrmEmpresa.Designer.vb">
+      <DependentUpon>FrmEmpresa.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Formas\FrmEmpresa.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Formas\FrmDetalleDocumentoElectronico.Designer.vb">
@@ -705,6 +709,9 @@
     <EmbeddedResource Include="Formas\FrmAjusteInventario.resx">
       <DependentUpon>FrmAjusteInventario.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Formas\FrmEmpresa.resx">
+      <DependentUpon>FrmEmpresa.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Formas\FrmDetalleDocumentoElectronico.resx">
       <DependentUpon>FrmDetalleDocumentoElectronico.vb</DependentUpon>
     </EmbeddedResource>
@@ -1096,10 +1103,6 @@
       <Project>{2602dd72-5aa0-45a2-a4a6-4805da33c318}</Project>
       <Name>ClienteWCF</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Core\CommonTypes\CommonTypes.csproj">
-      <Project>{da1835bf-2e6b-4f35-aeb9-152f9ec52044}</Project>
-      <Name>CommonTypes</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Core\Core.csproj">
       <Project>{fa3c5bce-3db6-486e-b16b-8b7f76eef63f}</Project>
       <Name>Core</Name>
@@ -1108,13 +1111,9 @@
       <Project>{74E3681E-1245-4268-ADB9-D76DA18B2FE0}</Project>
       <Name>Dominio</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Core\UtilitarioPDF\UtilitarioPDF.csproj">
-      <Project>{443A5959-FC1A-4741-8143-CD35A52005A3}</Project>
-      <Name>UtilitarioPDF</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\ServiciosWeb\AcessoDatos\TiposDatos\TiposDatos.csproj">
+    <ProjectReference Include="..\..\ServiciosWeb\AcessoDatos\TiposDatos\TiposDatosHacienda.csproj">
       <Project>{df822ceb-dff9-4f4f-8bc1-d6c0cbf54d4b}</Project>
-      <Name>TiposDatos</Name>
+      <Name>TiposDatosHacienda</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />

@@ -1,5 +1,5 @@
 Imports System.Threading.Tasks
-Imports LeandroSoftware.AccesoDatos.ClienteWCF
+Imports LeandroSoftware.Core.ClienteWCF
 
 Public Class FrmBusquedaFactura
 #Region "Variables"
@@ -41,7 +41,7 @@ Public Class FrmBusquedaFactura
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
         Try
-            dgvListado.DataSource = Await PuntoventaWCF.ObtenerListaFacturas(FrmPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, intId, txtNombre.Text)
+            dgvListado.DataSource = Await ClienteFEWCF.ObtenerListaFacturas(FrmPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, intId, txtNombre.Text)
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -53,7 +53,7 @@ Public Class FrmBusquedaFactura
 
     Private Async Function ValidarCantidadFacturas() As Task
         Try
-            intTotalEmpresas = Await PuntoventaWCF.ObtenerTotalListaFacturas(FrmPrincipal.empresaGlobal.IdEmpresa, intId, txtNombre.Text)
+            intTotalEmpresas = Await ClienteFEWCF.ObtenerTotalListaFacturas(FrmPrincipal.empresaGlobal.IdEmpresa, intId, txtNombre.Text)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()

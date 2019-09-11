@@ -1,4 +1,4 @@
-Imports LeandroSoftware.Puntoventa.CommonTypes
+Imports LeandroSoftware.Core.CommonTypes
 Imports System.Collections.Generic
 
 Public Class FrmMenuTipoTransaccion

@@ -1,5 +1,5 @@
 Imports System.Collections.Generic
-Imports LeandroSoftware.Puntoventa.CommonTypes
+Imports LeandroSoftware.Core.CommonTypes
 Imports LeandroSoftware.Core.Dominio.Entidades
 
 Public Class FrmProforma

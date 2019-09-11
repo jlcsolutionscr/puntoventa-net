@@ -88,6 +88,7 @@ Partial Class FrmPrincipal
         Me.mnuContaCierre = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuContaReporte = New System.Windows.Forms.ToolStripMenuItem()
         Me.picLoader = New System.Windows.Forms.PictureBox()
+        Me.ManuMantEmpresa = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuMenuPrincipal.SuspendLayout()
         CType(Me.picLoader, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -161,7 +162,7 @@ Partial Class FrmPrincipal
         '
         'MnuMant
         '
-        Me.MnuMant.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MnuMantCliente, Me.MnuMantLinea, Me.MnuMantProveedor, Me.MnuMantProducto, Me.MnuMantUsuario, Me.MnuMantSucursal, Me.MnuMantCE, Me.MnuMantCI, Me.MnuMantCB, Me.MnuMantCC, Me.MnuMantInv, Me.MnuMantVend})
+        Me.MnuMant.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ManuMantEmpresa, Me.MnuMantCliente, Me.MnuMantLinea, Me.MnuMantProveedor, Me.MnuMantProducto, Me.MnuMantUsuario, Me.MnuMantSucursal, Me.MnuMantCE, Me.MnuMantCI, Me.MnuMantCB, Me.MnuMantCC, Me.MnuMantInv, Me.MnuMantVend})
         Me.MnuMant.MergeAction = System.Windows.Forms.MergeAction.Remove
         Me.MnuMant.Name = "MnuMant"
         Me.MnuMant.Size = New System.Drawing.Size(101, 20)
@@ -476,7 +477,13 @@ Partial Class FrmPrincipal
         Me.picLoader.TabIndex = 3
         Me.picLoader.TabStop = False
         '
-        'FrmMenuPrincipal
+        'ManuMantEmpresa
+        '
+        Me.ManuMantEmpresa.Name = "ManuMantEmpresa"
+        Me.ManuMantEmpresa.Size = New System.Drawing.Size(180, 22)
+        Me.ManuMantEmpresa.Text = "Empresa"
+        '
+        'FrmPrincipal
         '
         Me.BackColor = System.Drawing.SystemColors.AppWorkspace
         Me.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
@@ -487,7 +494,7 @@ Partial Class FrmPrincipal
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.IsMdiContainer = True
         Me.Location = New System.Drawing.Point(11, 57)
-        Me.Name = "FrmMenuPrincipal"
+        Me.Name = "FrmPrincipal"
         Me.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Text = "Menu Principal"
         Me.WindowState = System.Windows.Forms.FormWindowState.Maximized
@@ -532,4 +539,5 @@ Partial Class FrmPrincipal
     Friend WithEvents MnuDocElectCDE As ToolStripMenuItem
     Friend WithEvents MnuDocElectADE As ToolStripMenuItem
     Friend WithEvents MnuDocElectRDE As ToolStripMenuItem
+    Friend WithEvents ManuMantEmpresa As ToolStripMenuItem
 End Class

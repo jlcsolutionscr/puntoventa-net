@@ -1,8 +1,8 @@
 Imports System.Collections.Generic
-Imports LeandroSoftware.Puntoventa.CommonTypes
+Imports LeandroSoftware.Core.CommonTypes
 Imports LeandroSoftware.Core.Dominio.Entidades
 Imports System.Threading.Tasks
-Imports LeandroSoftware.AccesoDatos.ClienteWCF
+Imports LeandroSoftware.Core.ClienteWCF
 
 Public Class FrmEgreso
 #Region "Variables"
@@ -181,16 +181,16 @@ Public Class FrmEgreso
         Try
             cboCuentaEgreso.ValueMember = "IdCuenta"
             cboCuentaEgreso.DisplayMember = "Descripcion"
-            cboCuentaEgreso.DataSource = Await PuntoventaWCF.ObtenerListaCuentasEgreso(FrmPrincipal.empresaGlobal.IdEmpresa)
+            cboCuentaEgreso.DataSource = Await ClienteFEWCF.ObtenerListaCuentasEgreso(FrmPrincipal.empresaGlobal.IdEmpresa)
             cboFormaPago.ValueMember = "IdFormaPago"
             cboFormaPago.DisplayMember = "Descripcion"
-            cboFormaPago.DataSource = Await PuntoventaWCF.ObtenerListaFormaPagoEgreso()
+            cboFormaPago.DataSource = Await ClienteFEWCF.ObtenerListaFormaPagoEgreso()
             cboCuentaBanco.ValueMember = "IdCuenta"
             cboCuentaBanco.DisplayMember = "Descripcion"
-            cboCuentaBanco.DataSource = Await PuntoventaWCF.ObtenerListaCuentasBanco(FrmPrincipal.empresaGlobal.IdEmpresa)
+            cboCuentaBanco.DataSource = Await ClienteFEWCF.ObtenerListaCuentasBanco(FrmPrincipal.empresaGlobal.IdEmpresa)
             cboTipoMoneda.ValueMember = "IdTipoMoneda"
             cboTipoMoneda.DisplayMember = "Descripcion"
-            cboTipoMoneda.DataSource = Await PuntoventaWCF.ObtenerListaTipoMoneda()
+            cboTipoMoneda.DataSource = Await ClienteFEWCF.ObtenerListaTipoMoneda()
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Function
@@ -242,7 +242,7 @@ Public Class FrmEgreso
         If txtIdEgreso.Text <> "" Then
             If MessageBox.Show("Desea anular este registro?", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
                 Try
-                    Await PuntoventaWCF.AnularEgreso(txtIdEgreso.Text, FrmPrincipal.usuarioGlobal.IdUsuario)
+                    Await ClienteFEWCF.AnularEgreso(txtIdEgreso.Text, FrmPrincipal.usuarioGlobal.IdUsuario)
                 Catch ex As Exception
                     MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
@@ -259,7 +259,7 @@ Public Class FrmEgreso
         formBusqueda.ShowDialog()
         If FrmPrincipal.intBusqueda > 0 Then
             Try
-                egreso = Await PuntoventaWCF.ObtenerEgreso(FrmPrincipal.intBusqueda)
+                egreso = Await ClienteFEWCF.ObtenerEgreso(FrmPrincipal.intBusqueda)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
@@ -333,7 +333,7 @@ Public Class FrmEgreso
                 egreso.DesglosePagoEgreso.Add(desglosePago)
             Next
             Try
-                txtIdEgreso.Text = Await PuntoventaWCF.AgregarEgreso(egreso)
+                txtIdEgreso.Text = Await ClienteFEWCF.AgregarEgreso(egreso)
             Catch ex As Exception
                 txtIdEgreso.Text = ""
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -342,7 +342,7 @@ Public Class FrmEgreso
         Else
             egreso.Detalle = txtDetalle.Text
             Try
-                Await PuntoventaWCF.ActualizarEgreso(egreso)
+                Await ClienteFEWCF.ActualizarEgreso(egreso)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub

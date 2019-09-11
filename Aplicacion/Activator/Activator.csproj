@@ -13,6 +13,7 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
     <TargetFrameworkProfile />
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -25,7 +26,6 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -40,7 +40,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\</OutputPath>
@@ -180,12 +180,8 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\ClienteWCF\ClienteWCF.csproj">
-      <Project>{2602DD72-5AA0-45A2-A4A6-4805DA33C318}</Project>
+      <Project>{2602dd72-5aa0-45a2-a4a6-4805da33c318}</Project>
       <Name>ClienteWCF</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Core\CommonTypes\CommonTypes.csproj">
-      <Project>{DA1835BF-2E6B-4F35-AEB9-152F9EC52044}</Project>
-      <Name>CommonTypes</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Core\Core.csproj">
       <Project>{fa3c5bce-3db6-486e-b16b-8b7f76eef63f}</Project>

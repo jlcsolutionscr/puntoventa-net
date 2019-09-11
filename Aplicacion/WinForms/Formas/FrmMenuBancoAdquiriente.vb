@@ -1,4 +1,4 @@
-Imports LeandroSoftware.AccesoDatos.ClienteWCF
+Imports LeandroSoftware.Core.ClienteWCF
 
 Public Class FrmMenuBancoAdquiriente
 #Region "Variables"
@@ -9,7 +9,7 @@ Public Class FrmMenuBancoAdquiriente
         Try
             cboIdBancoAdquiriente.ValueMember = "IdBanco"
             cboIdBancoAdquiriente.DisplayMember = "Descripcion"
-            cboIdBancoAdquiriente.DataSource = Await PuntoventaWCF.ObtenerListaBancoAdquiriente(FrmPrincipal.empresaGlobal.IdEmpresa)
+            cboIdBancoAdquiriente.DataSource = Await ClienteFEWCF.ObtenerListaBancoAdquiriente(FrmPrincipal.empresaGlobal.IdEmpresa)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()

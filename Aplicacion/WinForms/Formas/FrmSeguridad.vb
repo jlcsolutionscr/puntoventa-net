@@ -1,6 +1,7 @@
 
 Imports LeandroSoftware.Core.Dominio.Entidades
-Imports LeandroSoftware.AccesoDatos.ClienteWCF
+Imports LeandroSoftware.Core.ClienteWCF
+Imports LeandroSoftware.Core.Utilities
 
 Public Class FrmSeguridad
 #Region "Variables"
@@ -14,7 +15,7 @@ Public Class FrmSeguridad
             Exit Sub
         End If
         Try
-            cboEmpresa.DataSource = Await PuntoventaWCF.ObtenerListaEmpresasPorIdentificacion(FrmPrincipal.strIdentificacion)
+            cboEmpresa.DataSource = Await ClienteFEWCF.ObtenerListaEmpresasPorIdentificacion(FrmPrincipal.strIdentificacion)
             cboEmpresa.ValueMember = "Identificacion"
             cboEmpresa.DisplayMember = "NombreComercial"
             CmdAceptar.Enabled = True
@@ -32,8 +33,8 @@ Public Class FrmSeguridad
         Try
             CmdAceptar.Enabled = False
             CmdCancelar.Enabled = False
-            strEncryptedPassword = Core.Utilitario.EncriptarDatos(TxtClave.Text, FrmPrincipal.strKey)
-            usuario = Await PuntoventaWCF.ValidarCredenciales(cboEmpresa.SelectedValue.ToString(), TxtUsuario.Text, strEncryptedPassword)
+            strEncryptedPassword = Utilitario.EncriptarDatos(TxtClave.Text, FrmPrincipal.strKey)
+            usuario = Await ClienteFEWCF.ValidarCredenciales(cboEmpresa.SelectedValue.ToString(), TxtUsuario.Text, strEncryptedPassword)
         Catch ex As Exception
             CmdAceptar.Enabled = True
             CmdCancelar.Enabled = True

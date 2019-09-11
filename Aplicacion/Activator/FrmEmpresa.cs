@@ -6,11 +6,11 @@ using System.Web.Script.Serialization;
 using System.Windows.Forms;
 using System.Data;
 using System.Linq;
-using LeandroSoftware.Core;
+using LeandroSoftware.Core.Utilities;
 using System.Threading.Tasks;
-using LeandroSoftware.AccesoDatos.ClienteWCF;
-using LeandroSoftware.Puntoventa.CommonTypes;
+using LeandroSoftware.Core.CommonTypes;
 using LeandroSoftware.Core.Dominio.Entidades;
+using LeandroSoftware.Core.ClienteWCF;
 
 namespace LeandroSoftware.Activator
 {
@@ -159,19 +159,19 @@ namespace LeandroSoftware.Activator
             try
             {
                 IList<TipoIdentificacion> dsTipoIdentificacion = Array.Empty<TipoIdentificacion>();
-                dsTipoIdentificacion = await PuntoventaWCF.ObtenerListaTipoIdentificacion();
+                dsTipoIdentificacion = await ClienteFEWCF.ObtenerListaTipoIdentificacion();
                 cboTipoIdentificacion.DataSource = dsTipoIdentificacion;
                 cboTipoIdentificacion.ValueMember = "IdTipoIdentificacion";
                 cboTipoIdentificacion.DisplayMember = "Descripcion";
                 // Carga listado módulos
                 IList<Modulo> dsModulos = Array.Empty<Modulo>();
-                dsModulos = await PuntoventaWCF.ObtenerlistaModulos();
+                dsModulos = await ClienteFEWCF.ObtenerlistaModulos();
                 cboModuloPorEmpresa.DataSource = dsModulos;
                 cboModuloPorEmpresa.ValueMember = "IdModulo";
                 cboModuloPorEmpresa.DisplayMember = "Descripcion";
                 // Carga listado reportes
                 IList<CatalogoReporte> dsReportes = Array.Empty<CatalogoReporte>();
-                dsReportes = await PuntoventaWCF.ObtenerListaReportes();
+                dsReportes = await ClienteFEWCF.ObtenerListaReportes();
                 cboReportePorEmpresa.DataSource = dsReportes;
                 cboReportePorEmpresa.ValueMember = "IdReporte";
                 cboReportePorEmpresa.DisplayMember = "NombreReporte";
@@ -197,7 +197,7 @@ namespace LeandroSoftware.Activator
             try
             {
                 IList<Provincia> dsDataSet = Array.Empty<Provincia>();
-                dsDataSet = await PuntoventaWCF.ObtenerListaProvincias();
+                dsDataSet = await ClienteFEWCF.ObtenerListaProvincias();
                 cboProvincia.DataSource = dsDataSet;
                 cboProvincia.ValueMember = "IdProvincia";
                 cboProvincia.DisplayMember = "Descripcion";
@@ -214,7 +214,7 @@ namespace LeandroSoftware.Activator
             try
             {
                 IList<Canton> dsDataSet = Array.Empty<Canton>();
-                dsDataSet = await PuntoventaWCF.ObtenerListaCantones(intIdProvincia);
+                dsDataSet = await ClienteFEWCF.ObtenerListaCantones(intIdProvincia);
                 cboCanton.DataSource = dsDataSet;
                 cboCanton.ValueMember = "IdCanton";
                 cboCanton.DisplayMember = "Descripcion";
@@ -231,7 +231,7 @@ namespace LeandroSoftware.Activator
             try
             {
                 IList<Distrito> dsDataSet = Array.Empty<Distrito>();
-                dsDataSet = await PuntoventaWCF.ObtenerListaDistritos(intIdProvincia, intIdCanton);
+                dsDataSet = await ClienteFEWCF.ObtenerListaDistritos(intIdProvincia, intIdCanton);
                 cboDistrito.DataSource = dsDataSet;
                 cboDistrito.ValueMember = "IdDistrito";
                 cboDistrito.DisplayMember = "Descripcion";
@@ -248,7 +248,7 @@ namespace LeandroSoftware.Activator
             try
             {
                 IList<Barrio> dsDataSet = Array.Empty<Barrio>();
-                dsDataSet = await PuntoventaWCF.ObtenerListaBarrios(intIdProvincia, intIdCanton, intIdDistrito);
+                dsDataSet = await ClienteFEWCF.ObtenerListaBarrios(intIdProvincia, intIdCanton, intIdDistrito);
                 cboBarrio.DataSource = dsDataSet;
                 cboBarrio.ValueMember = "IdBarrio";
                 cboBarrio.DisplayMember = "Descripcion";
@@ -264,7 +264,7 @@ namespace LeandroSoftware.Activator
         {
             if (txtIdEmpresa.Text != "" && txtSucursal.Text != "" && txtTerminal.Text != "")
             {
-                TerminalPorEmpresa terminal = await PuntoventaWCF.ObtenerTerminalPorEmpresa(int.Parse(txtIdEmpresa.Text), int.Parse(txtSucursal.Text), int.Parse(txtTerminal.Text));
+                TerminalPorEmpresa terminal = await ClienteFEWCF.ObtenerTerminalPorEmpresa(int.Parse(txtIdEmpresa.Text), int.Parse(txtSucursal.Text), int.Parse(txtTerminal.Text));
                 if (terminal == null)
                 {
                     txtEquipo.Text = "";
@@ -313,7 +313,7 @@ namespace LeandroSoftware.Activator
                 {
                     try
                     {
-                        empresa = await PuntoventaWCF.ObtenerEmpresa(intIdEmpresa);
+                        empresa = await ClienteFEWCF.ObtenerEmpresa(intIdEmpresa);
                         if (empresa != null)
                         {
                             txtIdEmpresa.Text = empresa.IdEmpresa.ToString();
@@ -469,14 +469,14 @@ namespace LeandroSoftware.Activator
                 }
                 if (txtIdEmpresa.Text == "")
                 {
-                    string strRespuesta = await PuntoventaWCF.AgregarEmpresa(empresa);
+                    string strRespuesta = await ClienteFEWCF.AgregarEmpresa(empresa);
                     strRespuesta = new JavaScriptSerializer().Deserialize<string>(strRespuesta);
                     txtIdEmpresa.Text = strRespuesta;
-                    await PuntoventaWCF.AgregarUsuarioPorEmpresa(1, int.Parse(txtIdEmpresa.Text));
+                    await ClienteFEWCF.AgregarUsuarioPorEmpresa(1, int.Parse(txtIdEmpresa.Text));
                 }
                 else
                 {
-                    await PuntoventaWCF.ActualizarEmpresa(empresa);
+                    await ClienteFEWCF.ActualizarEmpresaConDetalle(empresa);
                 }
                 if (txtSucursal.Text != "" && txtTerminal.Text != "")
                 {
@@ -491,7 +491,7 @@ namespace LeandroSoftware.Activator
                     terminal.UltimoDocNC = int.Parse(txtUltimoDocNC.Text);
                     terminal.UltimoDocTE = int.Parse(txtUltimoDocTE.Text);
                     terminal.UltimoDocMR = int.Parse(txtUltimoDocMR.Text);
-                    await PuntoventaWCF.ActualizarTerminalPorEmpresa(terminal);
+                    await ClienteFEWCF.ActualizarTerminalPorEmpresa(terminal);
                 }
                 if (bolLogoModificado)
                 {
@@ -503,17 +503,17 @@ namespace LeandroSoftware.Activator
                             picLogo.Image.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
                             bytLogotipo = stream.ToArray();
                         }
-                        await PuntoventaWCF.ActualizarLogoEmpresa(int.Parse(txtIdEmpresa.Text), Convert.ToBase64String(bytLogotipo));
+                        await ClienteFEWCF.ActualizarLogoEmpresa(int.Parse(txtIdEmpresa.Text), Convert.ToBase64String(bytLogotipo));
                     }
                     else
                     {
-                        await PuntoventaWCF.RemoverLogoEmpresa(int.Parse(txtIdEmpresa.Text));
+                        await ClienteFEWCF.RemoverLogoEmpresa(int.Parse(txtIdEmpresa.Text));
                     }
                 }
                 if (bolCertificadoModificado && txtNombreCertificado.Text != "")
                 {
                     byte[] bytCertificado = File.ReadAllBytes(strRutaCertificado);
-                    await PuntoventaWCF.ActualizarCertificadoEmpresa(int.Parse(txtIdEmpresa.Text), Convert.ToBase64String(bytCertificado));
+                    await ClienteFEWCF.ActualizarCertificadoEmpresa(int.Parse(txtIdEmpresa.Text), Convert.ToBase64String(bytCertificado));
                 }
                 Close();
             }

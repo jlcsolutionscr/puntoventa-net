@@ -1,4 +1,4 @@
-﻿using LeandroSoftware.AccesoDatos.TiposDatos;
+﻿using LeandroSoftware.Core.CommonTypes;
 using System.IO;
 using System.ServiceModel;
 using System.ServiceModel.Web;

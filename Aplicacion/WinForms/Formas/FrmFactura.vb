@@ -1,18 +1,17 @@
 Imports System.Collections.Generic
 Imports System.Globalization
 Imports System.IO
-Imports System.Xml.Serialization
-Imports LeandroSoftware.AccesoDatos.ClienteWCF
-Imports LeandroSoftware.Puntoventa.CommonTypes
 Imports LeandroSoftware.Core.Dominio.Entidades
-Imports LeandroSoftware.AccesoDatos.TiposDatos
 Imports System.Threading.Tasks
-Imports LeandroSoftware.Puntoventa.Utilitario
+Imports LeandroSoftware.Core.ClienteWCF
+Imports LeandroSoftware.Core.CommonTypes
+Imports LeandroSoftware.Core.TiposDatosHacienda
+Imports LeandroSoftware.Core.Utilities
 
 Public Class FrmFactura
 #Region "Variables"
     Private strMotivoRechazo As String
-    Private decExcento, decGrabado, decImpuesto, decTotalCosto, decTotalPago, decTotal, decSubTotal, decSaldoPorPagar, decCostoPorInstalacion, decPrecioVenta As Decimal
+    Private decExcento, decGrabado, decExonerado, decImpuesto, decTotalCosto, decTotalPago, decTotal, decSubTotal, decSaldoPorPagar, decCostoPorInstalacion, decPrecioVenta As Decimal
     Private I, shtConsecutivoPago As Short
     Private dtbDetalleFactura, dtbDesglosePago As DataTable
     Private dtrRowDetFactura, dtrRowDesglosePago As DataRow
@@ -299,10 +298,10 @@ Public Class FrmFactura
             dtrRowDesglosePago.Item(2) = detalle.FormaPago.Descripcion
             dtrRowDesglosePago.Item(3) = detalle.IdCuentaBanco
             If detalle.IdFormaPago = StaticFormaPago.Tarjeta Then
-                Dim banco As BancoAdquiriente = Await PuntoventaWCF.ObtenerBancoAdquiriente(detalle.IdCuentaBanco)
+                Dim banco As BancoAdquiriente = Await ClienteFEWCF.ObtenerBancoAdquiriente(detalle.IdCuentaBanco)
                 dtrRowDesglosePago.Item(4) = banco.Descripcion
             ElseIf detalle.IdFormaPago = StaticFormaPago.Cheque Or detalle.IdFormaPago = StaticFormaPago.TransferenciaDepositoBancario Then
-                Dim banco As CuentaBanco = Await PuntoventaWCF.ObtenerCuentaBanco(detalle.IdCuentaBanco)
+                Dim banco As CuentaBanco = Await ClienteFEWCF.ObtenerCuentaBanco(detalle.IdCuentaBanco)
                 dtrRowDesglosePago.Item(4) = banco.Descripcion
             End If
             dtrRowDesglosePago.Item(5) = detalle.TipoTarjeta
@@ -316,7 +315,7 @@ Public Class FrmFactura
         grdDesglosePago.Refresh()
     End Function
 
-    Private Sub CargarLineaDetalleFactura(ByVal producto As Producto, ByVal strDescripcion As String, ByVal dblCantidad As Double, ByVal dblPrecio As Double, ByVal dblCostoInstalacion As Double)
+    Private Sub CargarLineaDetalleFactura(ByVal producto As Producto, ByVal boolExcento As Boolean, ByVal strDescripcion As String, ByVal dblCantidad As Double, ByVal dblPrecio As Double, ByVal dblCostoInstalacion As Double)
         Dim intIndice As Integer = dtbDetalleFactura.Rows.IndexOf(dtbDetalleFactura.Rows.Find(producto.IdProducto))
         Dim decTasaImpuesto As Decimal = producto.ParametroImpuesto.TasaImpuesto
         If cliente.ExoneradoDeImpuesto Then decTasaImpuesto = 0
@@ -326,7 +325,7 @@ Public Class FrmFactura
             dtbDetalleFactura.Rows(intIndice).Item(3) += dblCantidad
             dtbDetalleFactura.Rows(intIndice).Item(4) = dblPrecio
             dtbDetalleFactura.Rows(intIndice).Item(5) = dtbDetalleFactura.Rows(intIndice).Item(3) * dtbDetalleFactura.Rows(intIndice).Item(4)
-            dtbDetalleFactura.Rows(intIndice).Item(6) = decTasaImpuesto = 0
+            dtbDetalleFactura.Rows(intIndice).Item(6) = boolExcento
             dtbDetalleFactura.Rows(intIndice).Item(7) = producto.PrecioCosto
             dtbDetalleFactura.Rows(intIndice).Item(8) = dblCostoInstalacion
             dtbDetalleFactura.Rows(intIndice).Item(9) = decTasaImpuesto
@@ -338,7 +337,7 @@ Public Class FrmFactura
             dtrRowDetFactura.Item(3) = dblCantidad
             dtrRowDetFactura.Item(4) = dblPrecio
             dtrRowDetFactura.Item(5) = dtrRowDetFactura.Item(3) * dtrRowDetFactura.Item(4)
-            dtrRowDetFactura.Item(6) = decTasaImpuesto = 0
+            dtrRowDetFactura.Item(6) = boolExcento
             dtrRowDetFactura.Item(7) = producto.PrecioCosto
             dtrRowDetFactura.Item(8) = dblCostoInstalacion
             dtrRowDetFactura.Item(9) = decTasaImpuesto
@@ -411,34 +410,34 @@ Public Class FrmFactura
     Private Sub CargarTotales()
         decSubTotal = 0
         decGrabado = 0
+        decExonerado = 0
         decExcento = 0
         decImpuesto = 0
         decTotalCosto = 0
+        Dim intPorcentajeExoneracion As Integer = 0
+        If txtPorcentajeExoneracion.Text <> "" Then intPorcentajeExoneracion = CInt(txtPorcentajeExoneracion.Text)
         For I = 0 To dtbDetalleFactura.Rows.Count - 1
             If dtbDetalleFactura.Rows(I).Item(6) = 0 Then
-                decGrabado += dtbDetalleFactura.Rows(I).Item(5)
-                decImpuesto += dtbDetalleFactura.Rows(I).Item(5) * dtbDetalleFactura.Rows(I).Item(9) / 100
+                If intPorcentajeExoneracion > 0 Then
+                    Dim decGrabadoPorLinea = dtbDetalleFactura.Rows(I).Item(5) * (1 - (intPorcentajeExoneracion / 100))
+                    decGrabado += decGrabadoPorLinea
+                    decExonerado += dtbDetalleFactura.Rows(I).Item(5) - decGrabadoPorLinea
+                    decImpuesto += decGrabadoPorLinea * dtbDetalleFactura.Rows(I).Item(9) / 100
+                Else
+                    decGrabado += dtbDetalleFactura.Rows(I).Item(5)
+                    decImpuesto += dtbDetalleFactura.Rows(I).Item(5) * dtbDetalleFactura.Rows(I).Item(9) / 100
+                End If
             Else
                 decExcento += dtbDetalleFactura.Rows(I).Item(5)
             End If
             decTotalCosto += dtbDetalleFactura.Rows(I).Item(7)
         Next
-        decSubTotal = decGrabado + decExcento
-        If decSubTotal > 0 And txtDescuento.Text > 0 Then
-            decImpuesto = 0
-            For I = 0 To dtbDetalleFactura.Rows.Count - 1
-                If dtbDetalleFactura.Rows(I).Item(6) = 0 Then
-                    Dim decTotalPorLinea As Decimal = dtbDetalleFactura.Rows(I).Item(5)
-                    Dim decDescuentoPorLinea As Decimal = txtDescuento.Text / decSubTotal * decTotalPorLinea
-                    decTotalPorLinea = decTotalPorLinea - decDescuentoPorLinea
-                    decImpuesto += decTotalPorLinea * dtbDetalleFactura.Rows(I).Item(9) / 100
-                End If
-            Next
-        End If
+        decSubTotal = decGrabado + decExcento + decExonerado
         decGrabado = Math.Round(decGrabado, 2, MidpointRounding.AwayFromZero)
+        decExonerado = Math.Round(decExonerado, 2, MidpointRounding.AwayFromZero)
         decExcento = Math.Round(decExcento, 2, MidpointRounding.AwayFromZero)
         decImpuesto = Math.Round(decImpuesto, 2, MidpointRounding.AwayFromZero)
-        decTotal = Math.Round(decExcento + decGrabado + decImpuesto - txtDescuento.Text, 2, MidpointRounding.AwayFromZero)
+        decTotal = Math.Round(decSubTotal + decImpuesto, 2, MidpointRounding.AwayFromZero)
         decTotalCosto = Math.Round(decTotalCosto, 2, MidpointRounding.AwayFromZero)
         txtSubTotal.Text = FormatNumber(decSubTotal, 2)
         txtImpuesto.Text = FormatNumber(decImpuesto, 2)
@@ -463,20 +462,23 @@ Public Class FrmFactura
         Try
             cboCondicionVenta.ValueMember = "IdCondicionVenta"
             cboCondicionVenta.DisplayMember = "Descripcion"
-            cboCondicionVenta.DataSource = Await PuntoventaWCF.ObtenerListaCondicionVenta()
+            cboCondicionVenta.DataSource = Await ClienteFEWCF.ObtenerListaCondicionVenta()
             cboFormaPago.ValueMember = "IdFormaPago"
             cboFormaPago.DisplayMember = "Descripcion"
-            cboFormaPago.DataSource = Await PuntoventaWCF.ObtenerListaFormaPagoFactura()
+            cboFormaPago.DataSource = Await ClienteFEWCF.ObtenerListaFormaPagoFactura()
             cboTipoMoneda.ValueMember = "IdTipoMoneda"
             cboTipoMoneda.DisplayMember = "Descripcion"
-            cboTipoMoneda.DataSource = Await PuntoventaWCF.ObtenerListaTipoMoneda()
+            cboTipoMoneda.DataSource = Await ClienteFEWCF.ObtenerListaTipoMoneda()
+            cboTipoExoneracion.ValueMember = "IdTipoExoneracion"
+            cboTipoExoneracion.DisplayMember = "Descripcion"
+            cboTipoExoneracion.DataSource = Await ClienteFEWCF.ObtenerListaTipoExoneracion()
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Function
 
     Private Async Function CargarListaBancoAdquiriente() As Task
-        Dim lista As IList = Await PuntoventaWCF.ObtenerListaBancoAdquiriente(FrmPrincipal.empresaGlobal.IdEmpresa)
+        Dim lista As IList = Await ClienteFEWCF.ObtenerListaBancoAdquiriente(FrmPrincipal.empresaGlobal.IdEmpresa)
         If lista.Count() = 0 Then
             Throw New Exception("Debe parametrizar la lista de bancos adquirientes para pagos con tarjeta.")
         Else
@@ -487,7 +489,7 @@ Public Class FrmFactura
     End Function
 
     Private Async Function CargarListaCuentaBanco() As Task
-        Dim lista As IList = Await PuntoventaWCF.ObtenerListaCuentasBanco(FrmPrincipal.empresaGlobal.IdEmpresa)
+        Dim lista As IList = Await ClienteFEWCF.ObtenerListaCuentasBanco(FrmPrincipal.empresaGlobal.IdEmpresa)
         If lista.Count() = 0 Then
             Throw New Exception("Debe parametrizar la lista de bancos para registrar movimientos.")
         Else
@@ -510,7 +512,7 @@ Public Class FrmFactura
                     End If
                 End If
                 Try
-                    producto = Await PuntoventaWCF.ObtenerProductoPorCodigo(FrmPrincipal.empresaGlobal.IdEmpresa, strCodigoProducto)
+                    producto = Await ClienteFEWCF.ObtenerProductoPorCodigo(FrmPrincipal.empresaGlobal.IdEmpresa, strCodigoProducto)
                 Catch ex As Exception
                     MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Function
@@ -540,11 +542,7 @@ Public Class FrmFactura
                 Else
                     decPrecioVenta = producto.PrecioVenta1
                 End If
-                If Not cliente.ExoneradoDeImpuesto Then
-                    txtPrecio.Text = FormatNumber(Math.Round(decPrecioVenta * (1 + (producto.ParametroImpuesto.TasaImpuesto / 100)), 2), 2)
-                Else
-                    txtPrecio.Text = FormatNumber(decPrecioVenta, 2)
-                End If
+                txtPrecio.Text = FormatNumber(decPrecioVenta, 2)
                 txtUnidad.Text = producto.IdTipoUnidad
             End If
         End If
@@ -552,7 +550,7 @@ Public Class FrmFactura
 
     Private Async Function CargarAutoCompletarProducto() As Task
         Dim source As AutoCompleteStringCollection = New AutoCompleteStringCollection()
-        Dim listOfProducts As IList(Of Producto) = Await PuntoventaWCF.ObtenerListaProductos(FrmPrincipal.empresaGlobal.IdEmpresa, 1, 0, True)
+        Dim listOfProducts As IList(Of Producto) = Await ClienteFEWCF.ObtenerListaProductos(FrmPrincipal.empresaGlobal.IdEmpresa, 1, 0, True)
         For Each producto As Producto In listOfProducts
             source.Add(String.Concat(producto.Codigo, " ", producto.Descripcion))
         Next
@@ -569,6 +567,8 @@ Public Class FrmFactura
 
     Private Async Sub FrmFactura_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
+        txtFechaExoneracion.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
+        txtPorcentajeExoneracion.Text = "0"
         Await CargarCombos()
         Try
             Await CargarListaBancoAdquiriente()
@@ -587,8 +587,6 @@ Public Class FrmFactura
         bolInit = False
         txtCantidad.Text = "1"
         txtSubTotal.Text = FormatNumber(0, 2)
-        txtPorDesc.Text = FormatNumber(0, 0)
-        txtDescuento.Text = FormatNumber(0, 2)
         txtImpuesto.Text = FormatNumber(0, 2)
         txtTotal.Text = FormatNumber(0, 2)
         txtPagoDelCliente.Text = FormatNumber(0, 2)
@@ -609,7 +607,7 @@ Public Class FrmFactura
             Exit Sub
         End Try
         Try
-            vendedor = Await PuntoventaWCF.ObtenerVendedorPorDefecto(FrmPrincipal.empresaGlobal.IdEmpresa)
+            vendedor = Await ClienteFEWCF.ObtenerVendedorPorDefecto(FrmPrincipal.empresaGlobal.IdEmpresa)
             txtVendedor.Text = vendedor.Nombre
         Catch ex As Exception
             MessageBox.Show("Debe ingresar al menos un vendedor para generar la facturación. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -631,11 +629,14 @@ Public Class FrmFactura
         txtIdProforma.Text = "0"
         cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado
         txtPlazoCredito.Text = ""
+        cboTipoExoneracion.SelectedIndex = 0
+        txtNumDocExoneracion.Text = ""
+        txtNombreInstExoneracion.Text = ""
+        txtFechaExoneracion.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
+        txtPorcentajeExoneracion.Text = "0"
         dtbDetalleFactura.Rows.Clear()
         grdDetalleFactura.Refresh()
         txtSubTotal.Text = FormatNumber(0, 2)
-        txtPorDesc.Text = FormatNumber(0, 0)
-        txtDescuento.Text = FormatNumber(0, 2)
         txtImpuesto.Text = FormatNumber(0, 2)
         txtTotal.Text = FormatNumber(0, 2)
         txtPagoDelCliente.Text = FormatNumber(0, 2)
@@ -653,7 +654,6 @@ Public Class FrmFactura
         txtSaldoPorPagar.Text = FormatNumber(decSaldoPorPagar, 2)
         decTotal = 0
         decTotalPago = 0
-        txtDescuento.ReadOnly = False
         btnInsertar.Enabled = True
         btnEliminar.Enabled = True
         btnInsertarPago.Enabled = True
@@ -673,13 +673,14 @@ Public Class FrmFactura
                 .Nombre = "CLIENTE DE CONTADO"
             }
             txtNombreCliente.Text = cliente.Nombre
+            gpbExoneracion.Enabled = False
         Catch ex As Exception
             MessageBox.Show("Error al consultar el cliente de contado. Por favor consulte con su proveedor.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
             Exit Sub
         End Try
         Try
-            vendedor = Await PuntoventaWCF.ObtenerVendedorPorDefecto(FrmPrincipal.empresaGlobal.IdEmpresa)
+            vendedor = Await ClienteFEWCF.ObtenerVendedorPorDefecto(FrmPrincipal.empresaGlobal.IdEmpresa)
             txtVendedor.Text = vendedor.Nombre
         Catch ex As Exception
             MessageBox.Show("Debe ingresar al menos un vendedor para generar la facturación. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -689,6 +690,7 @@ Public Class FrmFactura
         cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado
         cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
         cboTipoMoneda.SelectedValue = FrmPrincipal.empresaGlobal.IdTipoMoneda
+        txtTipoCambio.Text = "1"
         bolInit = False
         txtMontoPago.Text = ""
         shtConsecutivoPago = 0
@@ -699,7 +701,7 @@ Public Class FrmFactura
         If txtIdFactura.Text <> "" Then
             If MessageBox.Show("Desea anular este registro?", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
                 Try
-                    Await PuntoventaWCF.AnularFactura(txtIdFactura.Text, FrmPrincipal.usuarioGlobal.IdUsuario)
+                    Await ClienteFEWCF.AnularFactura(txtIdFactura.Text, FrmPrincipal.usuarioGlobal.IdUsuario)
                 Catch ex As Exception
                     MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
@@ -716,7 +718,7 @@ Public Class FrmFactura
         formBusqueda.ShowDialog()
         If FrmPrincipal.intBusqueda > 0 Then
             Try
-                factura = Await PuntoventaWCF.ObtenerFactura(FrmPrincipal.intBusqueda)
+                factura = Await ClienteFEWCF.ObtenerFactura(FrmPrincipal.intBusqueda)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
@@ -732,9 +734,13 @@ Public Class FrmFactura
                 txtIdProforma.Text = factura.IdProforma
                 cboCondicionVenta.SelectedValue = factura.IdCondicionVenta
                 txtPlazoCredito.Text = factura.PlazoCredito
+                cboTipoExoneracion.SelectedValue = factura.IdTipoExoneracion
+                txtNumDocExoneracion.Text = factura.NumDocExoneracion
+                txtNombreInstExoneracion.Text = factura.NombreInstExoneracion
+                txtFechaExoneracion.Text = factura.FechaEmisionDoc
+                txtPorcentajeExoneracion.Text = factura.PorcentajeExoneracion
                 vendedor = factura.Vendedor
                 txtVendedor.Text = IIf(vendedor IsNot Nothing, vendedor.Nombre, "")
-                txtDescuento.Text = FormatNumber(factura.Descuento, 2)
                 decCostoPorInstalacion = 0
                 CargarDetalleFactura(factura)
                 Await CargarDesglosePago(factura)
@@ -742,7 +748,6 @@ Public Class FrmFactura
                 CargarTotalesPago()
                 txtPagoDelCliente.Text = FormatNumber(factura.MontoPagado, 2)
                 txtCambio.Text = FormatNumber(txtPagoDelCliente.Text - decTotal, 2)
-                txtDescuento.ReadOnly = True
                 btnInsertar.Enabled = False
                 btnEliminar.Enabled = False
                 btnInsertarPago.Enabled = False
@@ -786,7 +791,6 @@ Public Class FrmFactura
                 txtPlazoCredito.Text = ""
                 vendedor = ordenServicio.Vendedor
                 txtVendedor.Text = IIf(vendedor IsNot Nothing, vendedor.Nombre, "")
-                txtDescuento.Text = FormatNumber(ordenServicio.Descuento, 2)
                 txtIdOrdenServicio.Text = ordenServicio.IdOrden
                 decCostoPorInstalacion = 0
                 CargarDetalleOrdenServicio(ordenServicio)
@@ -794,7 +798,6 @@ Public Class FrmFactura
                 grdDesglosePago.Refresh()
                 CargarTotales()
                 CargarTotalesPago()
-                txtDescuento.ReadOnly = False
                 btnInsertar.Enabled = True
                 btnEliminar.Enabled = True
                 btnInsertarPago.Enabled = True
@@ -835,7 +838,6 @@ Public Class FrmFactura
                 txtPlazoCredito.Text = proforma.PlazoCredito
                 vendedor = proforma.Vendedor
                 txtVendedor.Text = IIf(vendedor IsNot Nothing, vendedor.Nombre, "")
-                txtDescuento.Text = FormatNumber(proforma.Descuento, 2)
                 txtIdProforma.Text = proforma.IdProforma
                 decCostoPorInstalacion = 0
                 CargarDetalleProforma(proforma)
@@ -843,7 +845,6 @@ Public Class FrmFactura
                 grdDesglosePago.Refresh()
                 CargarTotales()
                 CargarTotalesPago()
-                txtDescuento.ReadOnly = False
                 btnInsertar.Enabled = True
                 btnEliminar.Enabled = True
                 btnInsertarPago.Enabled = True
@@ -867,7 +868,7 @@ Public Class FrmFactura
         formBusquedaVendedor.ShowDialog()
         If FrmPrincipal.intBusqueda > 0 Then
             Try
-                vendedor = Await PuntoventaWCF.ObtenerVendedor(FrmPrincipal.intBusqueda)
+                vendedor = Await ClienteFEWCF.ObtenerVendedor(FrmPrincipal.intBusqueda)
                 txtVendedor.Text = vendedor.Nombre
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -886,12 +887,13 @@ Public Class FrmFactura
         formBusquedaCliente.ShowDialog()
         If FrmPrincipal.intBusqueda > 0 Then
             Try
-                cliente = Await PuntoventaWCF.ObtenerCliente(FrmPrincipal.intBusqueda)
+                cliente = Await ClienteFEWCF.ObtenerCliente(FrmPrincipal.intBusqueda)
                 txtNombreCliente.Text = cliente.Nombre
                 If cliente.Vendedor IsNot Nothing Then
                     vendedor = cliente.Vendedor
                     txtVendedor.Text = vendedor.Nombre
                 End If
+                gpbExoneracion.Enabled = True
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
@@ -926,12 +928,17 @@ Public Class FrmFactura
             MessageBox.Show("Debe ingresar el monto con el que paga el cliente.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         End If
+        If txtNumDocExoneracion.Text <> "" Or txtNombreInstExoneracion.Text <> "" Or CInt(txtPorcentajeExoneracion.Text) > 0 Then
+            If txtNumDocExoneracion.Text = "" Or txtNombreInstExoneracion.Text = "" Or CInt(txtPorcentajeExoneracion.Text) = 0 Then
+                MessageBox.Show("La información para la exoneración se encuentra incompleta. Por favor verifique los datos suministrados. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                Exit Sub
+            End If
+        End If
         If cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado Then
             If decSaldoPorPagar > 0 Then
                 MessageBox.Show("El total del desglose de pago de la factura no es suficiente para cubrir el saldo por pagar actual.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                 Exit Sub
             End If
-
             If decSaldoPorPagar < 0 Then
                 MessageBox.Show("El total del desglose de pago de la factura es superior al saldo por pagar.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                 Exit Sub
@@ -948,12 +955,17 @@ Public Class FrmFactura
                 .IdCliente = cliente.IdCliente,
                 .IdCondicionVenta = cboCondicionVenta.SelectedValue,
                 .PlazoCredito = IIf(txtPlazoCredito.Text = "", 0, txtPlazoCredito.Text),
+                .IdTipoExoneracion = cboTipoExoneracion.SelectedValue,
+                .NumDocExoneracion = txtNumDocExoneracion.Text,
+                .NombreInstExoneracion = txtNombreInstExoneracion.Text,
+                .FechaEmisionDoc = txtFechaExoneracion.Text,
+                .PorcentajeExoneracion = txtPorcentajeExoneracion.Text,
                 .Fecha = Now(),
                 .TextoAdicional = txtDocumento.Text,
                 .IdVendedor = vendedor.IdVendedor,
-                .Excento = decExcento,
+                .Excento = decExcento + decExonerado,
                 .Grabado = decGrabado,
-                .Descuento = CDbl(txtDescuento.Text),
+                .Descuento = 0,
                 .Impuesto = decImpuesto,
                 .MontoPagado = CDbl(txtPagoDelCliente.Text),
                 .TotalCosto = decTotalCosto,
@@ -987,7 +999,7 @@ Public Class FrmFactura
                 factura.DesglosePagoFactura.Add(desglosePago)
             Next
             Try
-                factura = Await PuntoventaWCF.AgregarFactura(factura)
+                factura = Await ClienteFEWCF.AgregarFactura(factura)
                 txtIdFactura.Text = factura.IdFactura
             Catch ex As Exception
                 txtIdFactura.Text = ""
@@ -1026,7 +1038,7 @@ Public Class FrmFactura
                     .strDocumento = txtDocumento.Text,
                     .strFecha = txtFecha.Text,
                     .strSubTotal = txtSubTotal.Text,
-                    .strDescuento = txtDescuento.Text,
+                    .strDescuento = "0.00",
                     .strImpuesto = txtImpuesto.Text,
                     .strTotal = txtTotal.Text,
                     .strPagoCon = txtPagoDelCliente.Text,
@@ -1071,17 +1083,12 @@ Public Class FrmFactura
         If txtIdFactura.Text <> "" Then
             Dim documento As DocumentoElectronico
             Try
-                documento = Await PuntoventaWCF.ObtenerDocumentoElectronicoPorClave(factura.IdDocElectronico)
+                documento = Await ClienteFEWCF.ObtenerDocumentoElectronicoPorClave(factura.IdDocElectronico)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
             Dim datos As EstructuraPDF = New EstructuraPDF()
-            Dim facturaElectronica As FacturaElectronica = Nothing
-            Dim serializer As New XmlSerializer(GetType(FacturaElectronica))
-            Using memStream As MemoryStream = New MemoryStream(documento.DatosDocumento)
-                facturaElectronica = serializer.Deserialize(memStream)
-            End Using
             Try
                 Dim logoImage As Image
                 Using ms As New MemoryStream(FrmPrincipal.empresaGlobal.Logotipo)
@@ -1093,88 +1100,78 @@ Public Class FrmFactura
                 datos.Logotipo = noImage
             End Try
             datos.TituloDocumento = "FACTURA ELECTRONICA"
-            datos.NombreEmpresa = IIf(facturaElectronica.Emisor.NombreComercial IsNot Nothing, facturaElectronica.Emisor.NombreComercial, facturaElectronica.Emisor.Nombre)
-            datos.Consecutivo = facturaElectronica.NumeroConsecutivo
-            datos.PlazoCredito = IIf(facturaElectronica.PlazoCredito IsNot Nothing, facturaElectronica.PlazoCredito, "")
-            datos.Clave = facturaElectronica.Clave
-            datos.CondicionVenta = ObtenerValoresCodificados.ObtenerCondicionDeVenta(Integer.Parse(facturaElectronica.CondicionVenta.ToString().Substring(5)))
-            datos.Fecha = facturaElectronica.FechaEmision.ToString("dd/MM/yyyy hh,mm,ss")
-            datos.MedioPago = ObtenerValoresCodificados.ObtenerMedioDePago(Integer.Parse(facturaElectronica.MedioPago(0).ToString().Substring(5)))
-            datos.NombreEmisor = facturaElectronica.Emisor.Nombre
-            datos.NombreComercialEmisor = facturaElectronica.Emisor.NombreComercial
-            datos.IdentificacionEmisor = facturaElectronica.Emisor.Identificacion.Numero
-            datos.CorreoElectronicoEmisor = facturaElectronica.Emisor.CorreoElectronico
-            If facturaElectronica.Emisor.Telefono IsNot Nothing Then
-                datos.TelefonoEmisor = facturaElectronica.Emisor.Telefono.NumTelefono
-            Else
-                datos.TelefonoEmisor = ""
-            End If
-            If facturaElectronica.Emisor.Fax IsNot Nothing Then
-                datos.FaxEmisor = facturaElectronica.Emisor.Fax.NumTelefono
-            Else
-                datos.FaxEmisor = ""
-            End If
+            datos.NombreEmpresa = FrmPrincipal.empresaGlobal.NombreEmpresa
+            datos.NombreComercial = FrmPrincipal.empresaGlobal.NombreComercial
+            datos.Consecutivo = documento.Consecutivo
+            datos.PlazoCredito = IIf(factura.PlazoCredito > 0, factura.PlazoCredito.ToString(), "")
+            datos.Clave = documento.ClaveNumerica
+            datos.CondicionVenta = ObtenerValoresCodificados.ObtenerCondicionDeVenta(factura.IdCondicionVenta)
+            datos.Fecha = factura.Fecha.ToString("dd/MM/yyyy hh:mm:ss")
+            Dim listaDesglosePago As IList(Of DesglosePagoFactura) = factura.DesglosePagoFactura
+            datos.MedioPago = ObtenerValoresCodificados.ObtenerMedioDePago(listaDesglosePago(0).IdFormaPago)
+            datos.NombreEmisor = FrmPrincipal.empresaGlobal.NombreEmpresa
+            datos.NombreComercialEmisor = FrmPrincipal.empresaGlobal.NombreComercial
+            datos.IdentificacionEmisor = FrmPrincipal.empresaGlobal.Identificacion
+            datos.CorreoElectronicoEmisor = FrmPrincipal.empresaGlobal.CorreoNotificacion
+            datos.TelefonoEmisor = FrmPrincipal.empresaGlobal.Telefono
+            datos.FaxEmisor = ""
             datos.ProvinciaEmisor = FrmPrincipal.empresaGlobal.Barrio.Distrito.Canton.Provincia.Descripcion
             datos.CantonEmisor = FrmPrincipal.empresaGlobal.Barrio.Distrito.Canton.Descripcion
             datos.DistritoEmisor = FrmPrincipal.empresaGlobal.Barrio.Distrito.Descripcion
             datos.BarrioEmisor = FrmPrincipal.empresaGlobal.Barrio.Descripcion
-            datos.DireccionEmisor = facturaElectronica.Emisor.Ubicacion.OtrasSenas
-            If facturaElectronica.Receptor IsNot Nothing Then
+            datos.DireccionEmisor = FrmPrincipal.empresaGlobal.Direccion
+            If factura.IdCliente > 1 Then
                 datos.PoseeReceptor = True
-                datos.NombreReceptor = facturaElectronica.Receptor.Nombre
-                datos.NombreComercialReceptor = IIf(facturaElectronica.Receptor.NombreComercial IsNot Nothing, facturaElectronica.Receptor.NombreComercial, "")
-                datos.IdentificacionReceptor = facturaElectronica.Receptor.Identificacion.Numero
-                datos.CorreoElectronicoReceptor = facturaElectronica.Receptor.CorreoElectronico
-                If facturaElectronica.Receptor.Telefono IsNot Nothing Then
-                    datos.TelefonoReceptor = facturaElectronica.Receptor.Telefono.NumTelefono
-                Else
-                    datos.TelefonoReceptor = ""
-                End If
-                If facturaElectronica.Receptor.Fax IsNot Nothing Then
-                    datos.FaxReceptor = facturaElectronica.Receptor.Fax.NumTelefono
-                Else
-                    datos.FaxReceptor = ""
-                End If
+                datos.NombreReceptor = cliente.Nombre
+                datos.NombreComercialReceptor = cliente.NombreComercial
+                datos.IdentificacionReceptor = cliente.Identificacion
+                datos.CorreoElectronicoReceptor = cliente.CorreoElectronico
+                datos.TelefonoReceptor = cliente.Telefono
+                datos.FaxReceptor = cliente.Fax
                 Dim barrio As Barrio = cliente.Barrio
                 datos.ProvinciaReceptor = cliente.Barrio.Distrito.Canton.Provincia.Descripcion
                 datos.CantonReceptor = cliente.Barrio.Distrito.Canton.Descripcion
                 datos.DistritoReceptor = cliente.Barrio.Distrito.Descripcion
                 datos.BarrioReceptor = cliente.Barrio.Descripcion
-                datos.DireccionReceptor = facturaElectronica.Receptor.Ubicacion.OtrasSenas
+                datos.DireccionReceptor = cliente.Direccion
             End If
-            For Each linea As FacturaElectronicaLineaDetalle In facturaElectronica.DetalleServicio
+            For Each linea As DetalleFactura In factura.DetalleFactura
+                Dim decTotalLinea As Decimal = linea.Cantidad * linea.PrecioVenta
                 Dim detalle As EstructuraPDFDetalleServicio = New EstructuraPDFDetalleServicio With {
-                    .NumeroLinea = linea.NumeroLinea,
-                    .Codigo = linea.Codigo(0).Codigo,
-                    .Detalle = linea.Detalle,
-                    .PrecioUnitario = linea.PrecioUnitario.ToString("N5", CultureInfo.InvariantCulture),
-                    .TotalLinea = linea.MontoTotalLinea.ToString("N5", CultureInfo.InvariantCulture)
+                    .Cantidad = linea.Cantidad,
+                    .Codigo = linea.Producto.Codigo,
+                    .Detalle = linea.Descripcion,
+                    .PrecioUnitario = linea.PrecioVenta.ToString("N5", CultureInfo.InvariantCulture),
+                    .TotalLinea = decTotalLinea.ToString("N5", CultureInfo.InvariantCulture)
                 }
                 datos.DetalleServicio.Add(detalle)
             Next
-            If (facturaElectronica.Otros IsNot Nothing) Then datos.OtrosTextos = facturaElectronica.Otros.OtroTexto(0).Value
-            datos.SubTotal = facturaElectronica.ResumenFactura.TotalVenta.ToString("N5", CultureInfo.InvariantCulture)
-                datos.Descuento = IIf(facturaElectronica.ResumenFactura.TotalDescuentosSpecified, facturaElectronica.ResumenFactura.TotalDescuentos.ToString("N5", CultureInfo.InvariantCulture), "0.00000")
-                datos.Impuesto = IIf(facturaElectronica.ResumenFactura.TotalImpuestoSpecified, facturaElectronica.ResumenFactura.TotalImpuesto.ToString("N5", CultureInfo.InvariantCulture), "0.00000")
-                datos.TotalGeneral = facturaElectronica.ResumenFactura.TotalComprobante.ToString("N5", CultureInfo.InvariantCulture)
-                datos.CodigoMoneda = IIf(facturaElectronica.ResumenFactura.CodigoMonedaSpecified, facturaElectronica.ResumenFactura.CodigoMoneda.ToString(), "")
-                datos.TipoDeCambio = IIf(facturaElectronica.ResumenFactura.CodigoMonedaSpecified, facturaElectronica.ResumenFactura.TipoCambio.ToString(), "")
-                Try
-                    Dim poweredByImage As Image = My.Resources.poweredByImage
-                    datos.PoweredByLogotipo = poweredByImage
-                Catch ex As Exception
-                    datos.PoweredByLogotipo = Nothing
-                End Try
-                Try
-                    Dim pdfBytes As Byte() = UtilitarioPDF.GenerarPDFFacturaElectronica(datos)
-                    Dim pdfFilePath As String = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\FAC-" + documento.ClaveNumerica + ".pdf"
-                    File.WriteAllBytes(pdfFilePath, pdfBytes)
-                    Process.Start(pdfFilePath)
-                Catch ex As Exception
-                    MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                    Exit Sub
-                End Try
-            End If
+            If (factura.TextoAdicional IsNot Nothing) Then datos.OtrosTextos = factura.TextoAdicional
+            datos.TotalGrabado = decGrabado.ToString("N5", CultureInfo.InvariantCulture)
+            datos.TotalExonerado = decExonerado.ToString("N5", CultureInfo.InvariantCulture)
+            datos.TotalExento = decExcento.ToString("N5", CultureInfo.InvariantCulture)
+            datos.Descuento = "0.00000"
+            datos.Impuesto = decImpuesto.ToString("N5", CultureInfo.InvariantCulture)
+
+            datos.TotalGeneral = decTotal.ToString("N5", CultureInfo.InvariantCulture)
+            datos.CodigoMoneda = IIf(factura.IdTipoMoneda = 1, "CRC", "USD")
+            datos.TipoDeCambio = factura.TipoDeCambioDolar.ToString("N5", CultureInfo.InvariantCulture)
+            Try
+                Dim poweredByImage As Image = My.Resources.poweredByImage
+                datos.PoweredByLogotipo = poweredByImage
+            Catch ex As Exception
+                datos.PoweredByLogotipo = Nothing
+            End Try
+            Try
+                Dim pdfBytes As Byte() = UtilitarioPDF.GenerarPDFFacturaElectronica(datos)
+                Dim pdfFilePath As String = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\FAC-" + documento.ClaveNumerica + ".pdf"
+                File.WriteAllBytes(pdfFilePath, pdfBytes)
+                Process.Start(pdfFilePath)
+            Catch ex As Exception
+                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Exit Sub
+            End Try
+        End If
     End Sub
 
     Private Async Sub BtnInsertar_Click(sender As Object, e As EventArgs) Handles btnInsertar.Click
@@ -1186,7 +1183,7 @@ Public Class FrmFactura
                 MessageBox.Show("El precio de venta no puede ser igual o menor a 0.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End If
-            CargarLineaDetalleFactura(producto, txtDescripcion.Text, txtCantidad.Text, decPrecioVenta, 0)
+            CargarLineaDetalleFactura(producto, cliente.ExoneradoDeImpuesto, txtDescripcion.Text, txtCantidad.Text, decPrecioVenta, 0)
             CargarTotales()
             txtCantidad.Text = "1"
             txtCodigo.Text = ""
@@ -1203,9 +1200,9 @@ Public Class FrmFactura
                 MessageBox.Show("La línea seleccionada no puede eliminarse. Debe eliminar los productos relacionados.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End If
-            producto = Await PuntoventaWCF.ObtenerProducto(grdDetalleFactura.CurrentRow.Cells(0).Value)
+            producto = Await ClienteFEWCF.ObtenerProducto(grdDetalleFactura.CurrentRow.Cells(0).Value)
             If CDbl(dtbDetalleFactura.Rows.Find(grdDetalleFactura.CurrentRow.Cells(0).Value).Item(8)) > 0 Then
-                producto = Await PuntoventaWCF.ObtenerProducto(FrmPrincipal.empresaGlobal.CodigoServicioInst)
+                producto = Await ClienteFEWCF.ObtenerProducto(FrmPrincipal.empresaGlobal.CodigoServicioInst)
                 DescargarLineaDetalleInstalacion(producto, CDbl(dtbDetalleFactura.Rows.Find(grdDetalleFactura.CurrentRow.Cells(0).Value).Item(8)) * CDbl(grdDetalleFactura.CurrentRow.Cells(3).Value))
                 decCostoPorInstalacion -= CDbl(dtbDetalleFactura.Rows.Find(grdDetalleFactura.CurrentRow.Cells(0).Value).Item(8)) * CDbl(grdDetalleFactura.CurrentRow.Cells(3).Value)
             End If
@@ -1216,6 +1213,10 @@ Public Class FrmFactura
             txtPagoDelCliente.Text = txtTotal.Text
             txtCodigo.Focus()
         End If
+    End Sub
+
+    Private Sub txtPorcentajeExoneracion_Validated(sender As Object, e As EventArgs) Handles txtPorcentajeExoneracion.Validated
+        CargarTotales()
     End Sub
 
     Private Async Sub CboFormaPago_SelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs) Handles cboFormaPago.SelectedValueChanged
@@ -1328,11 +1329,7 @@ Public Class FrmFactura
 
     Private Sub Precio_Validated(sender As Object, e As EventArgs) Handles txtPrecio.Validated
         If Not producto Is Nothing And txtPrecio.Text <> "" Then
-            If Not cliente.ExoneradoDeImpuesto And producto.ParametroImpuesto.TasaImpuesto > 0 Then
-                decPrecioVenta = Math.Round(txtPrecio.Text / (1 + (producto.ParametroImpuesto.TasaImpuesto / 100)), 2)
-            Else
-                decPrecioVenta = Math.Round(CDbl(txtPrecio.Text), 2)
-            End If
+            decPrecioVenta = Math.Round(CDbl(txtPrecio.Text), 2)
             txtPrecio.Text = FormatNumber(txtPrecio.Text, 2)
         Else
             txtPrecio.Text = FormatNumber(0, 2)
@@ -1360,34 +1357,6 @@ Public Class FrmFactura
         If txtCantidad.Text = "" Then txtCantidad.Text = "1"
     End Sub
 
-    Private Sub TxtPorDesc_Validated(sender As Object, e As EventArgs) Handles txtPorDesc.Validated
-        If txtPorDesc.Text = "" Then
-            txtDescuento.Text = FormatNumber(0, 2)
-        ElseIf txtPorDesc.Text > 100 Then
-            MessageBox.Show("El descuento debe ser menor al SubTotal. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-            txtPorDesc.Text = FormatNumber(0, 0)
-            txtDescuento.Text = FormatNumber(0, 2)
-        Else
-            txtDescuento.Text = FormatNumber(decSubTotal * txtPorDesc.Text / 100, 2)
-        End If
-        CargarTotales()
-        CargarTotalesPago()
-    End Sub
-
-    Private Sub TxtDescuento_Validated(sender As Object, e As EventArgs) Handles txtDescuento.Validated
-        If txtDescuento.Text = "" Then
-            txtDescuento.Text = FormatNumber(0, 2)
-        Else
-            If txtDescuento.Text > decSubTotal Then
-                MessageBox.Show("El descuento debe ser menor al SubTotal. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-                txtDescuento.Text = 0
-            End If
-            txtDescuento.Text = FormatNumber(txtDescuento.Text, 2)
-        End If
-        CargarTotales()
-        CargarTotalesPago()
-    End Sub
-
     Private Sub TxtMonto_Validated(sender As Object, e As EventArgs) Handles txtMontoPago.Validated
         If txtMontoPago.Text <> "" Then txtMontoPago.Text = FormatNumber(txtMontoPago.Text, 2)
     End Sub
@@ -1403,11 +1372,11 @@ Public Class FrmFactura
         txtCambio.Text = FormatNumber(txtPagoDelCliente.Text - decTotal, 2)
     End Sub
 
-    Private Sub ValidaDigitosSinDecimal(ByVal sender As Object, ByVal e As KeyPressEventArgs)
+    Private Sub ValidaDigitosSinDecimal(ByVal sender As Object, ByVal e As KeyPressEventArgs) Handles txtPorcentajeExoneracion.KeyPress
         FrmPrincipal.ValidaNumero(e, sender, False, 0)
     End Sub
 
-    Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As KeyPressEventArgs) Handles txtCantidad.KeyPress, txtPrecio.KeyPress, txtDescuento.KeyPress, txtMontoPago.KeyPress, txtPorDesc.KeyPress
+    Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As KeyPressEventArgs) Handles txtCantidad.KeyPress, txtPrecio.KeyPress, txtMontoPago.KeyPress
         FrmPrincipal.ValidaNumero(e, sender, True, 2, ".")
     End Sub
 #End Region

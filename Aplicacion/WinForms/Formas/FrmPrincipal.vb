@@ -2,10 +2,10 @@ Imports System.Threading
 Imports System.Configuration
 Imports LeandroSoftware.Core.Dominio.Entidades
 Imports System.Collections.Generic
-Imports LeandroSoftware.AccesoDatos.TiposDatos
-Imports LeandroSoftware.AccesoDatos.ClienteWCF
 Imports System.IO
 Imports System.Linq
+Imports LeandroSoftware.Core.ClienteWCF
+Imports LeandroSoftware.Core.Utilities
 
 Public Class FrmPrincipal
 #Region "Variables"
@@ -26,7 +26,6 @@ Public Class FrmPrincipal
     Public lstListaReportes As New List(Of String)
     Public strKey As String
     Public decTipoCambioDolar As Decimal
-    Public datosConfig As DatosConfiguracion
 #End Region
 
 #Region "Métodos"
@@ -112,6 +111,11 @@ Public Class FrmPrincipal
             .MdiParent = Me
         }
         formBancoAdquirienteListado.Show()
+    End Sub
+
+    Private Sub ManuMantEmpresa_Click(sender As Object, e As EventArgs) Handles ManuMantEmpresa.Click
+        Dim formEmpresa As New FrmEmpresa
+        formEmpresa.ShowDialog()
     End Sub
 
     Public Sub MnuMantCliente_Click(sender As Object, e As EventArgs) Handles MnuMantCliente.Click
@@ -382,7 +386,7 @@ Public Class FrmPrincipal
             strThumbprint = appSettings.Get("AppThumptprint")
             strApplicationKey = appSettings.Get("ApplicationKey")
             strIdentificacion = appSettings.Get("Identificacion")
-            Dim bolCertificadoValido As Boolean = Core.Utilitario.VerificarCertificado(strThumbprint)
+            Dim bolCertificadoValido As Boolean = Utilitario.VerificarCertificado(strThumbprint)
             If Not bolCertificadoValido Then
                 MessageBox.Show("No se logró validar el certificado requerido por la aplicación. Por favor contacte con su proveedor del servicio. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Close()
@@ -394,7 +398,7 @@ Public Class FrmPrincipal
             Exit Sub
         End Try
         Try
-            strKey = Core.Utilitario.ObtenerLlaveEncriptadoLocal(strThumbprint, strApplicationKey)
+            strKey = Utilitario.ObtenerLlaveEncriptadoLocal(strThumbprint, strApplicationKey)
         Catch ex As Exception
             MessageBox.Show("Error al validar la llave criptográfica de la aplicación. Consulte con su proveedor del servicio.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Close()
@@ -403,7 +407,7 @@ Public Class FrmPrincipal
         Dim strVersionActualApp = My.Application.Info.Version.ToString()
         Dim strUltimaVersionApp As String
         Try
-            strUltimaVersionApp = Await PuntoventaWCF.ObtenerUltimaVersionApp()
+            strUltimaVersionApp = Await ClienteFEWCF.ObtenerUltimaVersionApp()
         Catch ex As Exception
             MessageBox.Show("No fue posible acceder al servicio web de facturación electrónica. Consulte con su proveedor del servicio.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Close()
@@ -482,7 +486,7 @@ Public Class FrmPrincipal
             Close()
             Exit Sub
         End If
-        Dim strIdentificadoEquipoLocal = Core.Utilitario.ObtenerIdentificadorEquipo()
+        Dim strIdentificadoEquipoLocal = Utilitario.ObtenerIdentificadorEquipo()
         For Each terminalPorEmpresa As TerminalPorEmpresa In empresaGlobal.TerminalPorEmpresa
             If strIdentificadoEquipoLocal = terminalPorEmpresa.ValorRegistro Or usuarioGlobal.CodigoUsuario = "JASLOP" Then
                 equipoGlobal = terminalPorEmpresa
@@ -524,7 +528,7 @@ Public Class FrmPrincipal
             .NullValue = "0",
             .Alignment = DataGridViewContentAlignment.MiddleCenter
         }
-        decTipoCambioDolar = Await PuntoventaWCF.ObtenerTipoCambioDolar()
+        decTipoCambioDolar = Await ClienteFEWCF.ObtenerTipoCambioDolar()
         picLoader.Visible = False
         Dim formInicio As New FrmInicio()
         formInicio.ShowDialog()

@@ -1,4 +1,4 @@
-﻿using LeandroSoftware.AccesoDatos.ClienteWCF;
+﻿using LeandroSoftware.Core.ClienteWCF;
 using System;
 using System.Configuration;
 using System.IO;
@@ -23,7 +23,7 @@ namespace LeandroSoftware.Activator
         {
             try
             {
-                string strVersionActual = await PuntoventaWCF.ObtenerUltimaVersionApp();
+                string strVersionActual = await ClienteFEWCF.ObtenerUltimaVersionApp();
                 string[] lstVersion = strVersionActual.Split('.');
                 txtVersion.Text = lstVersion[0];
                 txtSubVersion.Text = lstVersion[1];
@@ -68,7 +68,7 @@ namespace LeandroSoftware.Activator
                 try
                 {
                     string strVersion = txtVersion.Text + "." + txtSubVersion.Text + "." + txtBuild.Text + "." + txtRevision.Text;
-                    await PuntoventaWCF.ActualizarUltimaVersionApp(strVersion);
+                    await ClienteFEWCF.ActualizarUltimaVersionApp(strVersion);
                     client.Encoding = Encoding.UTF8;
                     client.Headers[HttpRequestHeader.ContentType] = "application/octet-stream";
                     client.UploadData(strServicioPuntoventaURL + "/actualizararchivoaplicacion", bytZipFile);

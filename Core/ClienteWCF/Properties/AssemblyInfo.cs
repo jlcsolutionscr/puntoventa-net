@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("ClienteWCF")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("JLCSolutionCR")]
 [assembly: AssemblyProduct("ClienteWCF")]
 [assembly: AssemblyCopyright("Copyright ©  2019")]
 [assembly: AssemblyTrademark("")]
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // Puede especificar todos los valores o usar los números de compilación y de revisión predeterminados
 // mediante el carácter "*", como se muestra a continuación:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0.8")]
-[assembly: AssemblyFileVersion("1.0.0.8")]
+[assembly: AssemblyVersion("1.0.0.10")]
+[assembly: AssemblyFileVersion("1.0.0.10")]

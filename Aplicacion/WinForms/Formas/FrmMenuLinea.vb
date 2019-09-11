@@ -1,4 +1,4 @@
-Imports LeandroSoftware.AccesoDatos.ClienteWCF
+Imports LeandroSoftware.Core.ClienteWCF
 
 Public Class FrmMenuLinea
 #Region "Variables"
@@ -9,7 +9,7 @@ Public Class FrmMenuLinea
         Try
             cboIdLinea.ValueMember = "IdLinea"
             cboIdLinea.DisplayMember = "Descripcion"
-            cboIdLinea.DataSource = Await PuntoventaWCF.ObtenerListaLineas(FrmPrincipal.empresaGlobal.IdEmpresa)
+            cboIdLinea.DataSource = Await ClienteFEWCF.ObtenerListaLineas(FrmPrincipal.empresaGlobal.IdEmpresa)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()

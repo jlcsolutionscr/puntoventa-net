@@ -1,7 +1,6 @@
 ﻿using LeandroSoftware.AccesoDatos.Datos;
 using LeandroSoftware.Core.Dominio.Entidades;
 using LeandroSoftware.AccesoDatos.Servicios;
-using LeandroSoftware.AccesoDatos.TiposDatos;
 using LeandroSoftware.Core.Servicios;
 using log4net;
 using System;
@@ -14,7 +13,7 @@ using System.Web.Configuration;
 using Unity;
 using Unity.Injection;
 using Unity.Lifetime;
-using LeandroSoftware.Puntoventa.CommonTypes;
+using LeandroSoftware.Core.CommonTypes;
 using LeandroSoftware.Core.CustomClasses;
 using System.IO;
 using System.Web;
@@ -77,6 +76,33 @@ namespace LeandroSoftware.AccesoDatos.ServicioWCF
                 log.Error("Error al consultar el tipo de cambio del dolar: ", ex);
                 throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
             }
+            try
+            {
+                string strPath = HttpContext.Current.Server.MapPath("~");
+                string[] directoryEntries = Directory.GetFileSystemEntries(strPath, "errorlog.txt??-??-????");
+
+                foreach (string str in directoryEntries)
+                {
+                    JArray jarrayObj = new JArray();
+                    byte[] bytes  = File.ReadAllBytes(str);
+                    if (bytes.Length > 0)
+                    {
+                        JObject jobDatosAdjuntos1 = new JObject
+                        {
+                            ["nombre"] = str,
+                            ["contenido"] = Convert.ToBase64String(bytes)
+                        };
+                        jarrayObj.Add(jobDatosAdjuntos1);
+                        servicioEnvioCorreo.SendEmail(new string[] { configuracion.CorreoNotificacionErrores }, new string[] { }, "Archivo log con errores de procesamiento", "Adjunto archivo con errores de procesamiento anteriores a la fecha actual.", false, jarrayObj);
+                    }
+                    File.Delete(str);
+                }
+            }
+            catch (Exception ex)
+            {
+                log.Error("Error al consultar el tipo de cambio del dolar: ", ex);
+                throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
+            }
         }
 
         public void Ejecutar(RequestDTO datos)
@@ -88,6 +114,7 @@ namespace LeandroSoftware.AccesoDatos.ServicioWCF
                 int intIdEmpresa;
                 int intIdUsuario;
                 int intIdDocumento;
+                Empresa empresa = null;
                 switch (datos.NombreMetodo)
                 {
                     case "ActualizarUltimaVersionApp":
@@ -101,9 +128,12 @@ namespace LeandroSoftware.AccesoDatos.ServicioWCF
                         servicioContabilidad.AbortarCierreCaja(intIdEmpresa);
                         break;
                     case "ActualizarEmpresa":
-                        Empresa empresa = null;
                         empresa = serializer.Deserialize<Empresa>(datos.DatosPeticion);
                         servicioMantenimiento.ActualizarEmpresa(empresa);
+                        break;
+                    case "ActualizarEmpresaConDetalle":
+                        empresa = serializer.Deserialize<Empresa>(datos.DatosPeticion);
+                        servicioMantenimiento.ActualizarEmpresaConDetalle(empresa);
                         break;
                     case "ActualizarTerminalPorEmpresa":
                         TerminalPorEmpresa terminal = null;
@@ -351,6 +381,11 @@ namespace LeandroSoftware.AccesoDatos.ServicioWCF
                         IList<TipoProducto> listadoTipoProducto = (List<TipoProducto>)servicioMantenimiento.ObtenerListaTipoProducto();
                         if (listadoTipoProducto.Count > 0)
                             strRespuesta = serializer.Serialize(listadoTipoProducto);
+                        break;
+                    case "ObtenerListaTipoExoneracion":
+                        IList<ParametroExoneracion> listadoTipoExoneracion = (List<ParametroExoneracion>)servicioMantenimiento.ObtenerListaTipoExoneracion();
+                        if (listadoTipoExoneracion.Count > 0)
+                            strRespuesta = serializer.Serialize(listadoTipoExoneracion);
                         break;
                     case "ObtenerListaTipoImpuesto":
                         IList<ParametroImpuesto> listadoTipoImpuesto = (List<ParametroImpuesto>)servicioMantenimiento.ObtenerListaTipoImpuesto();
