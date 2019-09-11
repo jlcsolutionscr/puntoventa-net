@@ -1,4 +1,4 @@
-﻿Imports LeandroSoftware.AccesoDatos.ClienteWCF
+﻿Imports LeandroSoftware.Core.ClienteWCF
 
 Public Class FrmVendedorListado
 #Region "Variables"
@@ -24,7 +24,7 @@ Public Class FrmVendedorListado
 
     Private Async Sub ActualizarDatos()
         Try
-            listado = Await PuntoventaWCF.ObtenerListaVendedores(FrmPrincipal.empresaGlobal.IdEmpresa, txtNombre.Text)
+            listado = Await ClienteFEWCF.ObtenerListaVendedores(FrmPrincipal.empresaGlobal.IdEmpresa, txtNombre.Text)
             dgvDatos.DataSource = listado
             If listado.Count() > 0 Then
                 btnEditar.Enabled = True
@@ -67,7 +67,7 @@ Public Class FrmVendedorListado
     Private Async Sub btnEliminar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEliminar.Click
         If MessageBox.Show("Desea eliminar el registro actual", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
             Try
-                Await PuntoventaWCF.EliminarVendedor(dgvDatos.CurrentRow.Cells(0).Value)
+                Await ClienteFEWCF.EliminarVendedor(dgvDatos.CurrentRow.Cells(0).Value)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub

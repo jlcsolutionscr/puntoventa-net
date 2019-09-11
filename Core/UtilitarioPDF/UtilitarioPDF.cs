@@ -2,11 +2,11 @@
 using PdfSharp.Pdf;
 using PdfSharp.Drawing;
 using PdfSharp.Drawing.Layout;
-using LeandroSoftware.Puntoventa.CommonTypes;
+using LeandroSoftware.Core.CommonTypes;
 using System.IO;
 using System.Collections.Generic;
 
-namespace LeandroSoftware.Puntoventa.Utilitario
+namespace LeandroSoftware.Core.Utilitario
 {
     public static class UtilitarioPDF
     {
@@ -133,25 +133,37 @@ namespace LeandroSoftware.Puntoventa.Utilitario
                 gfx.DrawLine(XPens.DarkGray, 28, lineaPos + 11, 562, lineaPos + 11);
                 lineaPos += 17;
                 font = new XFont("Arial", 8, XFontStyle.Bold);
-                gfx.DrawString("SubTotal Factura:", font, XBrushes.Black, new XRect(380, lineaPos, 80, 12), XStringFormats.TopLeft);
+                gfx.DrawString("Total Grabado:", font, XBrushes.Black, new XRect(380, lineaPos, 80, 12), XStringFormats.TopLeft);
                 font = new XFont("Arial", 8, XFontStyle.Regular);
-                tf.DrawString(datos.SubTotal, font, XBrushes.Black, new XRect(480, lineaPos, 80, 12), XStringFormats.TopLeft);
+                tf.DrawString(datos.TotalGrabado, font, XBrushes.Black, new XRect(480, lineaPos, 80, 12), XStringFormats.TopLeft);
 
                 lineaPos += 12;
                 font = new XFont("Arial", 8, XFontStyle.Bold);
-                gfx.DrawString("Descuento:", font, XBrushes.Black, new XRect(380, lineaPos, 80, 12), XStringFormats.TopLeft);
+                gfx.DrawString("Total Exonerado:", font, XBrushes.Black, new XRect(380, lineaPos, 80, 12), XStringFormats.TopLeft);
+                font = new XFont("Arial", 8, XFontStyle.Regular);
+                tf.DrawString(datos.TotalExonerado, font, XBrushes.Black, new XRect(480, lineaPos, 80, 12), XStringFormats.TopLeft);
+
+                lineaPos += 12;
+                font = new XFont("Arial", 8, XFontStyle.Bold);
+                gfx.DrawString("Total Exento:", font, XBrushes.Black, new XRect(380, lineaPos, 80, 12), XStringFormats.TopLeft);
+                font = new XFont("Arial", 8, XFontStyle.Regular);
+                tf.DrawString(datos.TotalExcento, font, XBrushes.Black, new XRect(480, lineaPos, 80, 12), XStringFormats.TopLeft);
+
+                lineaPos += 12;
+                font = new XFont("Arial", 8, XFontStyle.Bold);
+                gfx.DrawString("Total Descuento:", font, XBrushes.Black, new XRect(380, lineaPos, 80, 12), XStringFormats.TopLeft);
                 font = new XFont("Arial", 8, XFontStyle.Regular);
                 tf.DrawString(datos.Descuento, font, XBrushes.Black, new XRect(480, lineaPos, 80, 12), XStringFormats.TopLeft);
 
                 lineaPos += 12;
                 font = new XFont("Arial", 8, XFontStyle.Bold);
-                gfx.DrawString("Impuesto:", font, XBrushes.Black, new XRect(380, lineaPos, 80, 12), XStringFormats.TopLeft);
+                gfx.DrawString("Total Impuesto:", font, XBrushes.Black, new XRect(380, lineaPos, 80, 12), XStringFormats.TopLeft);
                 font = new XFont("Arial", 8, XFontStyle.Regular);
                 tf.DrawString(datos.Impuesto, font, XBrushes.Black, new XRect(480, lineaPos, 80, 12), XStringFormats.TopLeft);
 
                 lineaPos += 12;
                 font = new XFont("Arial", 8, XFontStyle.Bold);
-                gfx.DrawString("Total General:", font, XBrushes.Black, new XRect(380, lineaPos, 80, 12), XStringFormats.TopLeft);
+                gfx.DrawString("Total Comprobante:", font, XBrushes.Black, new XRect(380, lineaPos, 80, 12), XStringFormats.TopLeft);
                 font = new XFont("Arial", 8, XFontStyle.Regular);
                 tf.DrawString(datos.TotalGeneral, font, XBrushes.Black, new XRect(480, lineaPos, 80, 12), XStringFormats.TopLeft);
 

@@ -3,7 +3,7 @@ using System.Linq;
 using System.Data;
 using System.Collections.Generic;
 using System.Data.Entity.Infrastructure;
-using LeandroSoftware.Puntoventa.CommonTypes;
+using LeandroSoftware.Core.CommonTypes;
 using LeandroSoftware.Core.Dominio.Entidades;
 using LeandroSoftware.AccesoDatos.Datos;
 using log4net;
@@ -19,6 +19,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
         // Métodos para administrar las empresas
         Empresa AgregarEmpresa(Empresa empresa);
         void ActualizarEmpresa(Empresa empresa);
+        void ActualizarEmpresaConDetalle(Empresa empresa);
         void ActualizarTerminalPorEmpresa(TerminalPorEmpresa terminal);
         Empresa ObtenerEmpresa(int intIdEmpresa);
         TerminalPorEmpresa ObtenerTerminalPorEmpresa(int intIdEmpresa, int intIdSucursal, int intIdTerminal);
@@ -57,6 +58,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
         IEnumerable<Linea> ObtenerListaLineasDeServicio(int intIdEmpresa);
         // Métodos para administrar los productos
         IEnumerable<TipoProducto> ObtenerListaTipoProducto();
+        IEnumerable<ParametroExoneracion> ObtenerListaTipoExoneracion();
         IEnumerable<ParametroImpuesto> ObtenerListaTipoImpuesto();
         IEnumerable<TipoUnidad> ObtenerListaTipoUnidad();
         ParametroImpuesto ObtenerParametroImpuesto(int intIdImpuesto);
@@ -191,6 +193,24 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             {
                 try
                 {
+                    dbContext.NotificarModificacion(empresa);
+                    dbContext.Commit();
+                }
+                catch (Exception ex)
+                {
+                    dbContext.RollBack();
+                    log.Error("Error al actualizar la empresa: ", ex);
+                    throw new Exception("Se produjo un error actualizando la información de la empresa. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public void ActualizarEmpresaConDetalle(Empresa empresa)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
                     List<ModuloPorEmpresa> listadoModuloPorEmpresa = empresa.ModuloPorEmpresa.OrderBy(o => o.IdModulo).ToList();
                     List<ReportePorEmpresa> listadoReportePorEmpresa = empresa.ReportePorEmpresa.OrderBy(o => o.IdReporte).ToList();
                     empresa.TerminalPorEmpresa = null;
@@ -208,7 +228,6 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                         dbContext.ReportePorEmpresaRepository.Remove(reporte);
                     foreach (ReportePorEmpresa reporte in listadoReportePorEmpresa)
                         dbContext.ReportePorEmpresaRepository.Add(reporte);
-
                     empresa.Barrio = null;
                     dbContext.NotificarModificacion(empresa);
                     dbContext.Commit();
@@ -541,8 +560,8 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 }
                 catch (Exception ex)
                 {
-                    log.Error("Error al validar los credenciales del usuario: ", ex);
-                    throw new Exception("Error en la validación de los credenciales suministrados por favor verifique la información. . .");
+                    log.Error("Error al validar la lista de empresas por identificación: ", ex);
+                    throw new Exception("Error al validar la lista de empresas por identificación. . .");
                 }
             }
         }
@@ -981,6 +1000,22 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 {
                     log.Error("Error al obtener el tipo de producto: ", ex);
                     throw new Exception("Se produjo un error consultando el listado de tipos de producto. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public IEnumerable<ParametroExoneracion> ObtenerListaTipoExoneracion()
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    return dbContext.ParametroExoneracionRepository.ToList();
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al obtener la lista de parametros de exoneración: ", ex);
+                    throw new Exception("Se produjo un error consultando la lista de parametros de exoneración. Por favor consulte con su proveedor.");
                 }
             }
         }

@@ -977,6 +977,7 @@
             // 
             // TabGeneral
             // 
+            this.TabGeneral.AutoScroll = true;
             this.TabGeneral.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(193)))), ((int)(((byte)(215)))), ((int)(((byte)(225)))));
             this.TabGeneral.Controls.Add(this.label29);
             this.TabGeneral.Controls.Add(this.label28);
@@ -1433,8 +1434,9 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(193)))), ((int)(((byte)(215)))), ((int)(((byte)(225)))));
-            this.ClientSize = new System.Drawing.Size(844, 615);
+            this.ClientSize = new System.Drawing.Size(851, 591);
             this.Controls.Add(this.label30);
             this.Controls.Add(this.cboTipoContrato);
             this.Controls.Add(this.txtCantidadDocumentos);
@@ -1491,6 +1493,8 @@
             this.Controls.Add(this._lblLabels_0);
             this.Controls.Add(this.cmdUpdate);
             this.Controls.Add(this.cmdCancel);
+            this.MaximumSize = new System.Drawing.Size(867, 629);
+            this.MinimumSize = new System.Drawing.Size(867, 629);
             this.Name = "FrmEmpresa";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Registrar/Actualizar datos de la empresa seleccionada";

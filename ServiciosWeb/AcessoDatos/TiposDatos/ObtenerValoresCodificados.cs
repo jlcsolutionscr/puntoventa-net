@@ -1,4 +1,4 @@
-﻿namespace LeandroSoftware.AccesoDatos.TiposDatos
+﻿namespace LeandroSoftware.Core.TiposDatosHacienda
 {
     public static class ObtenerValoresCodificados
     {

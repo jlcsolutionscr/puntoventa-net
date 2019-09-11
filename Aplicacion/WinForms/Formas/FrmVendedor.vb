@@ -1,5 +1,5 @@
 Imports LeandroSoftware.Core.Dominio.Entidades
-Imports LeandroSoftware.AccesoDatos.ClienteWCF
+Imports LeandroSoftware.Core.ClienteWCF
 
 Public Class FrmVendedor
 #Region "Variables"
@@ -23,7 +23,7 @@ Public Class FrmVendedor
     Private Async Sub FrmUsuario_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         If intIdVendedor > 0 Then
             Try
-                datos = Await PuntoventaWCF.ObtenerVendedor(intIdVendedor)
+                datos = Await ClienteFEWCF.ObtenerVendedor(intIdVendedor)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                 Close()
@@ -57,10 +57,10 @@ Public Class FrmVendedor
         datos.Nombre = txtNombre.Text
         Try
             If datos.IdVendedor = 0 Then
-                Dim strIdVendedor As String = Await PuntoventaWCF.AgregarVendedor(datos)
+                Dim strIdVendedor As String = Await ClienteFEWCF.AgregarVendedor(datos)
                 txtIdVendedor.Text = strIdVendedor
             Else
-                Await PuntoventaWCF.ActualizarVendedor(datos)
+                Await ClienteFEWCF.ActualizarVendedor(datos)
             End If
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)

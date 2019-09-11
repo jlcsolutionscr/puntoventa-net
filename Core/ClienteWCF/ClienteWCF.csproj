@@ -45,18 +45,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="PuntoventaWCF.cs" />
+    <Compile Include="ClienteFEWCF.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\ServiciosWeb\AcessoDatos\TiposDatos\TiposDatos.csproj">
-      <Project>{df822ceb-dff9-4f4f-8bc1-d6c0cbf54d4b}</Project>
-      <Name>TiposDatos</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\CommonTypes\CommonTypes.csproj">
-      <Project>{da1835bf-2e6b-4f35-aeb9-152f9ec52044}</Project>
-      <Name>CommonTypes</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Core.csproj">
       <Project>{fa3c5bce-3db6-486e-b16b-8b7f76eef63f}</Project>
       <Name>Core</Name>

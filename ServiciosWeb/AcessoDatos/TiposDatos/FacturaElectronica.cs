@@ -1,2705 +1,2405 @@
-﻿namespace LeandroSoftware.AccesoDatos.TiposDatos
+﻿namespace LeandroSoftware.Core.TiposDatosHacienda
 {
-    /// <comentarios/>
-    [System.Xml.Serialization.XmlType(AnonymousType=true, Namespace="https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/facturaElectronica")]
-    [System.Xml.Serialization.XmlRoot(Namespace="https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/facturaElectronica", IsNullable=false)]
+    [System.Xml.Serialization.XmlType(AnonymousType=true, Namespace="https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/facturaElectronica")]
+    [System.Xml.Serialization.XmlRoot(Namespace="https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/facturaElectronica", IsNullable=false)]
     public partial class FacturaElectronica {
-        
+    
         private string claveField;
-        
+    
+        private string codigoActividadField;
+    
         private string numeroConsecutivoField;
-        
+    
         private System.DateTime fechaEmisionField;
-        
+    
         private FacturaElectronicaEmisorType emisorField;
-        
+    
         private FacturaElectronicaReceptorType receptorField;
-        
+    
         private FacturaElectronicaCondicionVenta condicionVentaField;
-        
+    
         private string plazoCreditoField;
-        
+    
         private FacturaElectronicaMedioPago[] medioPagoField;
-        
+    
         private FacturaElectronicaLineaDetalle[] detalleServicioField;
-        
+    
+        private FacturaElectronicaOtrosCargosType[] otrosCargosField;
+    
         private FacturaElectronicaResumenFactura resumenFacturaField;
-        
+    
         private FacturaElectronicaInformacionReferencia[] informacionReferenciaField;
-        
-        private FacturaElectronicaNormativa normativaField;
-        
+    
         private FacturaElectronicaOtros otrosField;
-        
+    
         private SignatureType signatureField;
-        
-        /// <comentarios/>
+    
+        /// <remarks/>
         public string Clave {
-            get {
-                return claveField;
-            }
-            set {
-                claveField = value;
-            }
+            get => claveField;
+            set => claveField = value;
         }
-        
-        /// <comentarios/>
+
+        /// <remarks/>
+        public string CodigoActividad {
+            get => codigoActividadField;
+            set => codigoActividadField = value;
+        }
+
+        /// <remarks/>
         public string NumeroConsecutivo {
-            get {
-                return numeroConsecutivoField;
-            }
-            set {
-                numeroConsecutivoField = value;
-            }
+            get => numeroConsecutivoField;
+            set => numeroConsecutivoField = value;
         }
-        
-        /// <comentarios/>
+
+        /// <remarks/>
         public System.DateTime FechaEmision {
-            get {
-                return fechaEmisionField;
-            }
-            set {
-                fechaEmisionField = value;
-            }
+            get => fechaEmisionField;
+            set => fechaEmisionField = value;
         }
-        
-        /// <comentarios/>
+
+        /// <remarks/>
         public FacturaElectronicaEmisorType Emisor {
-            get {
-                return emisorField;
-            }
-            set {
-                emisorField = value;
-            }
+            get => emisorField;
+            set => emisorField = value;
         }
-        
-        /// <comentarios/>
+
+        /// <remarks/>
         public FacturaElectronicaReceptorType Receptor {
-            get {
-                return receptorField;
-            }
-            set {
-                receptorField = value;
-            }
+            get => receptorField;
+            set => receptorField = value;
         }
-        
-        /// <comentarios/>
+
+        /// <remarks/>
         public FacturaElectronicaCondicionVenta CondicionVenta {
-            get {
-                return condicionVentaField;
-            }
-            set {
-                condicionVentaField = value;
-            }
+            get => condicionVentaField;
+            set => condicionVentaField = value;
         }
-        
-        /// <comentarios/>
+
+        /// <remarks/>
         public string PlazoCredito {
-            get {
-                return plazoCreditoField;
-            }
-            set {
-                plazoCreditoField = value;
-            }
+            get => plazoCreditoField;
+            set => plazoCreditoField = value;
         }
-        
-        /// <comentarios/>
+
+        /// <remarks/>
         [System.Xml.Serialization.XmlElement("MedioPago")]
         public FacturaElectronicaMedioPago[] MedioPago {
-            get {
-                return medioPagoField;
-            }
-            set {
-                medioPagoField = value;
-            }
+            get => medioPagoField;
+            set => medioPagoField = value;
         }
-        
-        /// <comentarios/>
+
+        /// <remarks/>
         [System.Xml.Serialization.XmlArrayItem("LineaDetalle", IsNullable=false)]
         public FacturaElectronicaLineaDetalle[] DetalleServicio {
-            get {
-                return detalleServicioField;
-            }
-            set {
-                detalleServicioField = value;
-            }
+            get => detalleServicioField;
+            set => detalleServicioField = value;
         }
-        
-        /// <comentarios/>
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElement("OtrosCargos")]
+        public FacturaElectronicaOtrosCargosType[] OtrosCargos {
+            get => otrosCargosField;
+            set => otrosCargosField = value;
+        }
+
+        /// <remarks/>
         public FacturaElectronicaResumenFactura ResumenFactura {
-            get {
-                return resumenFacturaField;
-            }
-            set {
-                resumenFacturaField = value;
-            }
+            get => resumenFacturaField;
+            set => resumenFacturaField = value;
         }
-        
-        /// <comentarios/>
+
+        /// <remarks/>
         [System.Xml.Serialization.XmlElement("InformacionReferencia")]
         public FacturaElectronicaInformacionReferencia[] InformacionReferencia {
-            get {
-                return informacionReferenciaField;
-            }
-            set {
-                informacionReferenciaField = value;
-            }
+            get => informacionReferenciaField;
+            set => informacionReferenciaField = value;
         }
-        
-        /// <comentarios/>
-        public FacturaElectronicaNormativa Normativa {
-            get {
-                return normativaField;
-            }
-            set {
-                normativaField = value;
-            }
-        }
-        
-        /// <comentarios/>
+
+        /// <remarks/>
         public FacturaElectronicaOtros Otros {
-            get {
-                return otrosField;
-            }
-            set {
-                otrosField = value;
-            }
+            get => otrosField;
+            set => otrosField = value;
         }
-        
-        /// <comentarios/>
+
+        /// <remarks/>
         [System.Xml.Serialization.XmlElement(Namespace="http://www.w3.org/2000/09/xmldsig#")]
         public SignatureType Signature {
-            get {
-                return signatureField;
-            }
-            set {
-                signatureField = value;
-            }
+            get => signatureField;
+            set => signatureField = value;
         }
     }
 
-    /// <comentarios/>
-    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/facturaElectronica")]
-    public enum FacturaElectronicaCondicionVenta
-    {
+    /// <remarks/>
+    [System.Serializable()]
+    [System.Xml.Serialization.XmlType(Namespace="https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/facturaElectronica")]
+    public partial class FacturaElectronicaEmisorType {
+    
+        private string nombreField;
+    
+        private FacturaElectronicaIdentificacionType identificacionField;
+    
+        private string nombreComercialField;
+    
+        private FacturaElectronicaUbicacionType ubicacionField;
+    
+        private FacturaElectronicaTelefonoType telefonoField;
+    
+        private FacturaElectronicaTelefonoType faxField;
+    
+        private string correoElectronicoField;
+    
+        /// <remarks/>
+        public string Nombre {
+            get => nombreField;
+            set => nombreField = value;
+        }
 
-        /// <comentarios/>
+        /// <remarks/>
+        public FacturaElectronicaIdentificacionType Identificacion {
+            get => identificacionField;
+            set => identificacionField = value;
+        }
+
+        /// <remarks/>
+        public string NombreComercial {
+            get => nombreComercialField;
+            set => nombreComercialField = value;
+        }
+
+        /// <remarks/>
+        public FacturaElectronicaUbicacionType Ubicacion {
+            get => ubicacionField;
+            set => ubicacionField = value;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElement(IsNullable=true)]
+        public FacturaElectronicaTelefonoType Telefono {
+            get => telefonoField;
+            set => telefonoField = value;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElement(IsNullable=true)]
+        public FacturaElectronicaTelefonoType Fax {
+            get => faxField;
+            set => faxField = value;
+        }
+
+        /// <remarks/>
+        public string CorreoElectronico {
+            get => correoElectronicoField;
+            set => correoElectronicoField = value;
+        }
+    }
+
+    /// <remarks/>
+    [System.Serializable()]
+    [System.Xml.Serialization.XmlType(Namespace="https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/facturaElectronica")]
+    public partial class FacturaElectronicaIdentificacionType {
+    
+        private FacturaElectronicaIdentificacionTypeTipo tipoField;
+    
+        private string numeroField;
+    
+        /// <remarks/>
+        public FacturaElectronicaIdentificacionTypeTipo Tipo {
+            get => tipoField;
+            set => tipoField = value;
+        }
+
+        /// <remarks/>
+        public string Numero {
+            get => numeroField;
+            set => numeroField = value;
+        }
+    }
+
+    /// <remarks/>
+    [System.Serializable()]
+    [System.Xml.Serialization.XmlType(AnonymousType=true, Namespace="https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/facturaElectronica")]
+    public enum FacturaElectronicaIdentificacionTypeTipo {
+    
+        /// <remarks/>
         [System.Xml.Serialization.XmlEnum("01")]
         Item01,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         [System.Xml.Serialization.XmlEnum("02")]
         Item02,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         [System.Xml.Serialization.XmlEnum("03")]
         Item03,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         [System.Xml.Serialization.XmlEnum("04")]
         Item04,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("05")]
-        Item05,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("06")]
-        Item06,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("99")]
-        Item99,
     }
 
-    /// <comentarios/>
-    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/facturaElectronica")]
-    public enum FacturaElectronicaMedioPago
-    {
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("01")]
-        Item01,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("02")]
-        Item02,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("03")]
-        Item03,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("04")]
-        Item04,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("05")]
-        Item05,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("99")]
-        Item99,
-    }
-
-    /// <comentarios/>
-    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/facturaElectronica")]
-    public partial class FacturaElectronicaLineaDetalle
-    {
-
-        private string numeroLineaField;
-
-        private  FacturaElectronicaCodigoType[] codigoField;
-
-        private decimal cantidadField;
-
-        private  FacturaElectronicaUnidadMedidaType unidadMedidaField;
-
-        private string unidadMedidaComercialField;
-
-        private string detalleField;
-
-        private decimal precioUnitarioField;
-
-        private decimal montoTotalField;
-
-        private decimal montoDescuentoField;
-
-        private bool montoDescuentoFieldSpecified;
-
-        private string naturalezaDescuentoField;
-
-        private decimal subTotalField;
-
-        private  FacturaElectronicaImpuestoType[] impuestoField;
-
-        private decimal montoTotalLineaField;
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlElement(DataType = "positiveInteger")]
-        public string NumeroLinea
-        {
-            get
-            {
-                return numeroLineaField;
-            }
-            set
-            {
-                numeroLineaField = value;
-            }
-        }
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlElement("Codigo")]
-        public  FacturaElectronicaCodigoType[] Codigo
-        {
-            get
-            {
-                return codigoField;
-            }
-            set
-            {
-                codigoField = value;
-            }
-        }
-
-        /// <comentarios/>
-        public decimal Cantidad
-        {
-            get
-            {
-                return cantidadField;
-            }
-            set
-            {
-                cantidadField = value;
-            }
-        }
-
-        /// <comentarios/>
-        public  FacturaElectronicaUnidadMedidaType UnidadMedida
-        {
-            get
-            {
-                return unidadMedidaField;
-            }
-            set
-            {
-                unidadMedidaField = value;
-            }
-        }
-
-        /// <comentarios/>
-        public string UnidadMedidaComercial
-        {
-            get
-            {
-                return unidadMedidaComercialField;
-            }
-            set
-            {
-                unidadMedidaComercialField = value;
-            }
-        }
-
-        /// <comentarios/>
-        public string Detalle
-        {
-            get
-            {
-                return detalleField;
-            }
-            set
-            {
-                detalleField = value;
-            }
-        }
-
-        /// <comentarios/>
-        public decimal PrecioUnitario
-        {
-            get
-            {
-                return precioUnitarioField;
-            }
-            set
-            {
-                precioUnitarioField = value;
-            }
-        }
-
-        /// <comentarios/>
-        public decimal MontoTotal
-        {
-            get
-            {
-                return montoTotalField;
-            }
-            set
-            {
-                montoTotalField = value;
-            }
-        }
-
-        /// <comentarios/>
-        public decimal MontoDescuento
-        {
-            get
-            {
-                return montoDescuentoField;
-            }
-            set
-            {
-                montoDescuentoField = value;
-            }
-        }
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlIgnore()]
-        public bool MontoDescuentoSpecified
-        {
-            get
-            {
-                return montoDescuentoFieldSpecified;
-            }
-            set
-            {
-                montoDescuentoFieldSpecified = value;
-            }
-        }
-
-        /// <comentarios/>
-        public string NaturalezaDescuento
-        {
-            get
-            {
-                return naturalezaDescuentoField;
-            }
-            set
-            {
-                naturalezaDescuentoField = value;
-            }
-        }
-
-        /// <comentarios/>
-        public decimal SubTotal
-        {
-            get
-            {
-                return subTotalField;
-            }
-            set
-            {
-                subTotalField = value;
-            }
-        }
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlElement("Impuesto")]
-        public  FacturaElectronicaImpuestoType[] Impuesto
-        {
-            get
-            {
-                return impuestoField;
-            }
-            set
-            {
-                impuestoField = value;
-            }
-        }
-
-        /// <comentarios/>
-        public decimal MontoTotalLinea
-        {
-            get
-            {
-                return montoTotalLineaField;
-            }
-            set
-            {
-                montoTotalLineaField = value;
-            }
-        }
-    }
-
-    /// <comentarios/>
-    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/facturaElectronica")]
-    public partial class FacturaElectronicaResumenFactura
-    {
-
-        private FacturaElectronicaResumenFacturaCodigoMoneda codigoMonedaField;
-
-        private bool codigoMonedaFieldSpecified;
-
+    /// <remarks/>
+    [System.Serializable()]
+    [System.Xml.Serialization.XmlType(Namespace="https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/facturaElectronica")]
+    public partial class FacturaElectronicaCodigoMonedaType {
+    
+        private FacturaElectronicaCodigoMonedaTypeCodigoMoneda codigoMonedaField;
+    
         private decimal tipoCambioField;
-
-        private bool tipoCambioFieldSpecified;
-
-        private decimal totalServGravadosField;
-
-        private bool totalServGravadosFieldSpecified;
-
-        private decimal totalServExentosField;
-
-        private bool totalServExentosFieldSpecified;
-
-        private decimal totalMercanciasGravadasField;
-
-        private bool totalMercanciasGravadasFieldSpecified;
-
-        private decimal totalMercanciasExentasField;
-
-        private bool totalMercanciasExentasFieldSpecified;
-
-        private decimal totalGravadoField;
-
-        private bool totalGravadoFieldSpecified;
-
-        private decimal totalExentoField;
-
-        private bool totalExentoFieldSpecified;
-
-        private decimal totalVentaField;
-
-        private decimal totalDescuentosField;
-
-        private bool totalDescuentosFieldSpecified;
-
-        private decimal totalVentaNetaField;
-
-        private decimal totalImpuestoField;
-
-        private bool totalImpuestoFieldSpecified;
-
-        private decimal totalComprobanteField;
-
-        /// <comentarios/>
-        public FacturaElectronicaResumenFacturaCodigoMoneda CodigoMoneda
-        {
-            get
-            {
-                return codigoMonedaField;
-            }
-            set
-            {
-                codigoMonedaField = value;
-            }
+    
+        /// <remarks/>
+        public FacturaElectronicaCodigoMonedaTypeCodigoMoneda CodigoMoneda {
+            get => codigoMonedaField;
+            set => codigoMonedaField = value;
         }
 
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlIgnore()]
-        public bool CodigoMonedaSpecified
-        {
-            get
-            {
-                return codigoMonedaFieldSpecified;
-            }
-            set
-            {
-                codigoMonedaFieldSpecified = value;
-            }
-        }
-
-        /// <comentarios/>
-        public decimal TipoCambio
-        {
-            get
-            {
-                return tipoCambioField;
-            }
-            set
-            {
-                tipoCambioField = value;
-            }
-        }
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlIgnore()]
-        public bool TipoCambioSpecified
-        {
-            get
-            {
-                return tipoCambioFieldSpecified;
-            }
-            set
-            {
-                tipoCambioFieldSpecified = value;
-            }
-        }
-
-        /// <comentarios/>
-        public decimal TotalServGravados
-        {
-            get
-            {
-                return totalServGravadosField;
-            }
-            set
-            {
-                totalServGravadosField = value;
-            }
-        }
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlIgnore()]
-        public bool TotalServGravadosSpecified
-        {
-            get
-            {
-                return totalServGravadosFieldSpecified;
-            }
-            set
-            {
-                totalServGravadosFieldSpecified = value;
-            }
-        }
-
-        /// <comentarios/>
-        public decimal TotalServExentos
-        {
-            get
-            {
-                return totalServExentosField;
-            }
-            set
-            {
-                totalServExentosField = value;
-            }
-        }
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlIgnore()]
-        public bool TotalServExentosSpecified
-        {
-            get
-            {
-                return totalServExentosFieldSpecified;
-            }
-            set
-            {
-                totalServExentosFieldSpecified = value;
-            }
-        }
-
-        /// <comentarios/>
-        public decimal TotalMercanciasGravadas
-        {
-            get
-            {
-                return totalMercanciasGravadasField;
-            }
-            set
-            {
-                totalMercanciasGravadasField = value;
-            }
-        }
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlIgnore()]
-        public bool TotalMercanciasGravadasSpecified
-        {
-            get
-            {
-                return totalMercanciasGravadasFieldSpecified;
-            }
-            set
-            {
-                totalMercanciasGravadasFieldSpecified = value;
-            }
-        }
-
-        /// <comentarios/>
-        public decimal TotalMercanciasExentas
-        {
-            get
-            {
-                return totalMercanciasExentasField;
-            }
-            set
-            {
-                totalMercanciasExentasField = value;
-            }
-        }
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlIgnore()]
-        public bool TotalMercanciasExentasSpecified
-        {
-            get
-            {
-                return totalMercanciasExentasFieldSpecified;
-            }
-            set
-            {
-                totalMercanciasExentasFieldSpecified = value;
-            }
-        }
-
-        /// <comentarios/>
-        public decimal TotalGravado
-        {
-            get
-            {
-                return totalGravadoField;
-            }
-            set
-            {
-                totalGravadoField = value;
-            }
-        }
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlIgnore()]
-        public bool TotalGravadoSpecified
-        {
-            get
-            {
-                return totalGravadoFieldSpecified;
-            }
-            set
-            {
-                totalGravadoFieldSpecified = value;
-            }
-        }
-
-        /// <comentarios/>
-        public decimal TotalExento
-        {
-            get
-            {
-                return totalExentoField;
-            }
-            set
-            {
-                totalExentoField = value;
-            }
-        }
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlIgnore()]
-        public bool TotalExentoSpecified
-        {
-            get
-            {
-                return totalExentoFieldSpecified;
-            }
-            set
-            {
-                totalExentoFieldSpecified = value;
-            }
-        }
-
-        /// <comentarios/>
-        public decimal TotalVenta
-        {
-            get
-            {
-                return totalVentaField;
-            }
-            set
-            {
-                totalVentaField = value;
-            }
-        }
-
-        /// <comentarios/>
-        public decimal TotalDescuentos
-        {
-            get
-            {
-                return totalDescuentosField;
-            }
-            set
-            {
-                totalDescuentosField = value;
-            }
-        }
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlIgnore()]
-        public bool TotalDescuentosSpecified
-        {
-            get
-            {
-                return totalDescuentosFieldSpecified;
-            }
-            set
-            {
-                totalDescuentosFieldSpecified = value;
-            }
-        }
-
-        /// <comentarios/>
-        public decimal TotalVentaNeta
-        {
-            get
-            {
-                return totalVentaNetaField;
-            }
-            set
-            {
-                totalVentaNetaField = value;
-            }
-        }
-
-        /// <comentarios/>
-        public decimal TotalImpuesto
-        {
-            get
-            {
-                return totalImpuestoField;
-            }
-            set
-            {
-                totalImpuestoField = value;
-            }
-        }
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlIgnore()]
-        public bool TotalImpuestoSpecified
-        {
-            get
-            {
-                return totalImpuestoFieldSpecified;
-            }
-            set
-            {
-                totalImpuestoFieldSpecified = value;
-            }
-        }
-
-        /// <comentarios/>
-        public decimal TotalComprobante
-        {
-            get
-            {
-                return totalComprobanteField;
-            }
-            set
-            {
-                totalComprobanteField = value;
-            }
+        /// <remarks/>
+        public decimal TipoCambio {
+            get => tipoCambioField;
+            set => tipoCambioField = value;
         }
     }
 
-    /// <comentarios/>
-    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/facturaElectronica")]
-    public enum FacturaElectronicaResumenFacturaCodigoMoneda
-    {
-
-        /// <comentarios/>
+    /// <remarks/>
+    [System.Serializable()]
+    [System.Xml.Serialization.XmlType(AnonymousType=true, Namespace="https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/facturaElectronica")]
+    public enum FacturaElectronicaCodigoMonedaTypeCodigoMoneda {
+    
+        /// <remarks/>
         AED,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         AFN,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         ALL,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         AMD,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         ANG,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         AOA,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         ARS,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         AUD,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         AWG,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         AZN,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         BAM,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         BBD,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         BDT,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         BGN,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         BHD,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         BIF,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         BMD,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         BND,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         BOB,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         BOV,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         BRL,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         BSD,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         BTN,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         BWP,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         BYR,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         BZD,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         CAD,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         CDF,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         CHE,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         CHF,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         CHW,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         CLF,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         CLP,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         CNY,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         COP,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         COU,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         CRC,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         CUC,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         CUP,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         CVE,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         CZK,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         DJF,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         DKK,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         DOP,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         DZD,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         EGP,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         ERN,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         ETB,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         EUR,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         FJD,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         FKP,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         GBP,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         GEL,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         GHS,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         GIP,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         GMD,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         GNF,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         GTQ,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         GYD,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         HKD,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         HNL,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         HRK,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         HTG,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         HUF,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         IDR,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         ILS,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         INR,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         IQD,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         IRR,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         ISK,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         JMD,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         JOD,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         JPY,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         KES,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         KGS,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         KHR,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         KMF,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         KPW,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         KRW,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         KWD,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         KYD,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         KZT,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         LAK,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         LBP,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         LKR,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         LRD,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         LSL,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         LYD,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         MAD,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         MDL,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         MGA,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         MKD,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         MMK,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         MNT,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         MOP,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         MRO,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         MUR,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         MVR,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         MWK,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         MXN,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         MXV,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         MYR,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         MZN,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         NAD,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         NGN,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         NIO,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         NOK,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         NPR,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         NZD,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         OMR,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         PAB,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         PEN,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         PGK,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         PHP,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         PKR,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         PLN,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         PYG,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         QAR,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         RON,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         RSD,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         RUB,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         RWF,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         SAR,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         SBD,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         SCR,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         SDG,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         SEK,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         SGD,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         SHP,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         SLL,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         SOS,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         SRD,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         SSP,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         STD,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         SVC,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         SYP,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         SZL,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         THB,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         TJS,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         TMT,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         TND,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         TOP,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         TRY,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         TTD,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         TWD,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         TZS,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         UAH,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         UGX,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         USD,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         USN,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         UYI,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         UYU,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         UZS,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         VEF,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         VND,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         VUV,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         WST,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         XAF,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         XAG,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         XAU,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         XBA,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         XBB,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         XBC,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         XBD,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         XCD,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         XDR,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         XOF,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         XPD,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         XPF,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         XPT,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         XSU,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         XTS,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         XUA,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         XXX,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         YER,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         ZAR,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         ZMW,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         ZWL,
     }
 
-    /// <comentarios/>
-    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/facturaElectronica")]
-    public partial class FacturaElectronicaInformacionReferencia
-    {
-
-        private FacturaElectronicaInformacionReferenciaTipoDoc tipoDocField;
-
-        private string numeroField;
-
-        private System.DateTime fechaEmisionField;
-
-        private FacturaElectronicaInformacionReferenciaCodigo codigoField;
-
-        private string razonField;
-
-        /// <comentarios/>
-        public FacturaElectronicaInformacionReferenciaTipoDoc TipoDoc
-        {
-            get
-            {
-                return tipoDocField;
-            }
-            set
-            {
-                tipoDocField = value;
-            }
-        }
-
-        /// <comentarios/>
-        public string Numero
-        {
-            get
-            {
-                return numeroField;
-            }
-            set
-            {
-                numeroField = value;
-            }
-        }
-
-        /// <comentarios/>
-        public System.DateTime FechaEmision
-        {
-            get
-            {
-                return fechaEmisionField;
-            }
-            set
-            {
-                fechaEmisionField = value;
-            }
-        }
-
-        /// <comentarios/>
-        public FacturaElectronicaInformacionReferenciaCodigo Codigo
-        {
-            get
-            {
-                return codigoField;
-            }
-            set
-            {
-                codigoField = value;
-            }
-        }
-
-        /// <comentarios/>
-        public string Razon
-        {
-            get
-            {
-                return razonField;
-            }
-            set
-            {
-                razonField = value;
-            }
-        }
-    }
-
-    /// <comentarios/>
-    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/facturaElectronica")]
-    public enum FacturaElectronicaInformacionReferenciaTipoDoc
-    {
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("01")]
-        Item01,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("02")]
-        Item02,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("03")]
-        Item03,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("04")]
-        Item04,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("05")]
-        Item05,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("06")]
-        Item06,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("07")]
-        Item07,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("08")]
-        Item08,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("99")]
-        Item99,
-    }
-
-    /// <comentarios/>
-    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/facturaElectronica")]
-    public enum FacturaElectronicaInformacionReferenciaCodigo
-    {
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("01")]
-        Item01,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("02")]
-        Item02,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("03")]
-        Item03,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("04")]
-        Item04,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("05")]
-        Item05,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("99")]
-        Item99,
-    }
-
-    /// <comentarios/>
-    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/facturaElectronica")]
-    public partial class FacturaElectronicaNormativa
-    {
-
-        private string numeroResolucionField;
-
-        private string fechaResolucionField;
-
-        /// <comentarios/>
-        public string NumeroResolucion
-        {
-            get
-            {
-                return numeroResolucionField;
-            }
-            set
-            {
-                numeroResolucionField = value;
-            }
-        }
-
-        /// <comentarios/>
-        public string FechaResolucion
-        {
-            get
-            {
-                return fechaResolucionField;
-            }
-            set
-            {
-                fechaResolucionField = value;
-            }
-        }
-    }
-
-    /// <comentarios/>
-    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/facturaElectronica")]
-    public partial class FacturaElectronicaOtros
-    {
-
-        private FacturaElectronicaOtrosOtroTexto[] otroTextoField;
-
-        private FacturaElectronicaOtrosOtroContenido[] otroContenidoField;
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlElement("OtroTexto")]
-        public FacturaElectronicaOtrosOtroTexto[] OtroTexto
-        {
-            get
-            {
-                return otroTextoField;
-            }
-            set
-            {
-                otroTextoField = value;
-            }
-        }
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlElement("OtroContenido")]
-        public FacturaElectronicaOtrosOtroContenido[] OtroContenido
-        {
-            get
-            {
-                return otroContenidoField;
-            }
-            set
-            {
-                otroContenidoField = value;
-            }
-        }
-    }
-
-    /// <comentarios/>
-    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/facturaElectronica")]
-    public partial class FacturaElectronicaOtrosOtroTexto
-    {
-
-        private string codigoField;
-
-        private string valueField;
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlAttribute()]
-        public string codigo
-        {
-            get
-            {
-                return codigoField;
-            }
-            set
-            {
-                codigoField = value;
-            }
-        }
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlText()]
-        public string Value
-        {
-            get
-            {
-                return valueField;
-            }
-            set
-            {
-                valueField = value;
-            }
-        }
-    }
-
-    /// <comentarios/>
-    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/facturaElectronica")]
-    public partial class FacturaElectronicaOtrosOtroContenido
-    {
-
-        private System.Xml.XmlElement anyField;
-
-        private string codigoField;
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlAnyElement()]
-        public System.Xml.XmlElement Any
-        {
-            get
-            {
-                return anyField;
-            }
-            set
-            {
-                anyField = value;
-            }
-        }
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlAttribute()]
-        public string codigo
-        {
-            get
-            {
-                return codigoField;
-            }
-            set
-            {
-                codigoField = value;
-            }
-        }
-    }
-
-    /// <comentarios/>
-    [System.Xml.Serialization.XmlType(Namespace = "https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/facturaElectronica")]
-    public partial class FacturaElectronicaEmisorType
-    {
-
-        private string nombreField;
-
-        private FacturaElectronicaIdentificacionType identificacionField;
-
-        private string nombreComercialField;
-
-        private FacturaElectronicaUbicacionType ubicacionField;
-
-        private FacturaElectronicaTelefonoType telefonoField;
-
-        private FacturaElectronicaTelefonoType faxField;
-
-        private string correoElectronicoField;
-
-        /// <comentarios/>
-        public string Nombre
-        {
-            get
-            {
-                return nombreField;
-            }
-            set
-            {
-                nombreField = value;
-            }
-        }
-
-        /// <comentarios/>
-        public FacturaElectronicaIdentificacionType Identificacion
-        {
-            get
-            {
-                return identificacionField;
-            }
-            set
-            {
-                identificacionField = value;
-            }
-        }
-
-        /// <comentarios/>
-        public string NombreComercial
-        {
-            get
-            {
-                return nombreComercialField;
-            }
-            set
-            {
-                nombreComercialField = value;
-            }
-        }
-
-        /// <comentarios/>
-        public FacturaElectronicaUbicacionType Ubicacion
-        {
-            get
-            {
-                return ubicacionField;
-            }
-            set
-            {
-                ubicacionField = value;
-            }
-        }
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlElement(IsNullable = true)]
-        public FacturaElectronicaTelefonoType Telefono
-        {
-            get
-            {
-                return telefonoField;
-            }
-            set
-            {
-                telefonoField = value;
-            }
-        }
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlElement(IsNullable = true)]
-        public FacturaElectronicaTelefonoType Fax
-        {
-            get
-            {
-                return faxField;
-            }
-            set
-            {
-                faxField = value;
-            }
-        }
-
-        /// <comentarios/>
-        public string CorreoElectronico
-        {
-            get
-            {
-                return correoElectronicoField;
-            }
-            set
-            {
-                correoElectronicoField = value;
-            }
-        }
-    }
-
-    /// <comentarios/>
-    [System.Xml.Serialization.XmlType(Namespace = "https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/facturaElectronica")]
-    public partial class FacturaElectronicaReceptorType
-    {
-
-        private string nombreField;
-
-        private FacturaElectronicaIdentificacionType identificacionField;
-
-        private string identificacionExtranjeroField;
-
-        private string nombreComercialField;
-
-        private FacturaElectronicaUbicacionType ubicacionField;
-
-        private FacturaElectronicaTelefonoType telefonoField;
-
-        private FacturaElectronicaTelefonoType faxField;
-
-        private string correoElectronicoField;
-
-        /// <comentarios/>
-        public string Nombre
-        {
-            get
-            {
-                return nombreField;
-            }
-            set
-            {
-                nombreField = value;
-            }
-        }
-
-        /// <comentarios/>
-        public FacturaElectronicaIdentificacionType Identificacion
-        {
-            get
-            {
-                return identificacionField;
-            }
-            set
-            {
-                identificacionField = value;
-            }
-        }
-
-        /// <comentarios/>
-        public string IdentificacionExtranjero
-        {
-            get
-            {
-                return identificacionExtranjeroField;
-            }
-            set
-            {
-                identificacionExtranjeroField = value;
-            }
-        }
-
-        /// <comentarios/>
-        public string NombreComercial
-        {
-            get
-            {
-                return nombreComercialField;
-            }
-            set
-            {
-                nombreComercialField = value;
-            }
-        }
-
-        /// <comentarios/>
-        public FacturaElectronicaUbicacionType Ubicacion
-        {
-            get
-            {
-                return ubicacionField;
-            }
-            set
-            {
-                ubicacionField = value;
-            }
-        }
-
-        /// <comentarios/>
-        public FacturaElectronicaTelefonoType Telefono
-        {
-            get
-            {
-                return telefonoField;
-            }
-            set
-            {
-                telefonoField = value;
-            }
-        }
-
-        /// <comentarios/>
-        public FacturaElectronicaTelefonoType Fax
-        {
-            get
-            {
-                return faxField;
-            }
-            set
-            {
-                faxField = value;
-            }
-        }
-
-        /// <comentarios/>
-        public string CorreoElectronico
-        {
-            get
-            {
-                return correoElectronicoField;
-            }
-            set
-            {
-                correoElectronicoField = value;
-            }
-        }
-    }
-
-    /// <comentarios/>
-    [System.Xml.Serialization.XmlType(Namespace = "https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/facturaElectronica")]
-    public partial class FacturaElectronicaIdentificacionType
-    {
-
-        private  FacturaElectronicaIdentificacionTypeTipo tipoField;
-
-        private string numeroField;
-
-        /// <comentarios/>
-        public  FacturaElectronicaIdentificacionTypeTipo Tipo
-        {
-            get
-            {
-                return tipoField;
-            }
-            set
-            {
-                tipoField = value;
-            }
-        }
-
-        /// <comentarios/>
-        public string Numero
-        {
-            get
-            {
-                return numeroField;
-            }
-            set
-            {
-                numeroField = value;
-            }
-        }
-    }
-
-    [System.Xml.Serialization.XmlType(Namespace = "https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/facturaElectronica")]
-    public partial class FacturaElectronicaUbicacionType
-    {
-
-        private string provinciaField;
-
-        private string cantonField;
-
-        private string distritoField;
-
-        private string barrioField;
-
-        private string otrasSenasField;
-
-        /// <comentarios/>
-        public string Provincia
-        {
-            get
-            {
-                return provinciaField;
-            }
-            set
-            {
-                provinciaField = value;
-            }
-        }
-
-        /// <comentarios/>
-        public string Canton
-        {
-            get
-            {
-                return cantonField;
-            }
-            set
-            {
-                cantonField = value;
-            }
-        }
-
-        /// <comentarios/>
-        public string Distrito
-        {
-            get
-            {
-                return distritoField;
-            }
-            set
-            {
-                distritoField = value;
-            }
-        }
-
-        /// <comentarios/>
-        public string Barrio
-        {
-            get
-            {
-                return barrioField;
-            }
-            set
-            {
-                barrioField = value;
-            }
-        }
-
-        /// <comentarios/>
-        public string OtrasSenas
-        {
-            get
-            {
-                return otrasSenasField;
-            }
-            set
-            {
-                otrasSenasField = value;
-            }
-        }
-    }
-
-    /// <comentarios/>
-    [System.Xml.Serialization.XmlType(Namespace = "https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/facturaElectronica")]
-    public partial class FacturaElectronicaTelefonoType
-    {
-
-        private string codigoPaisField;
-
-        private string numTelefonoField;
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlElement(DataType = "integer")]
-        public string CodigoPais
-        {
-            get
-            {
-                return codigoPaisField;
-            }
-            set
-            {
-                codigoPaisField = value;
-            }
-        }
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlElement(DataType = "integer")]
-        public string NumTelefono
-        {
-            get
-            {
-                return numTelefonoField;
-            }
-            set
-            {
-                numTelefonoField = value;
-            }
-        }
-    }
-
-    /// <comentarios/>
-    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/facturaElectronica")]
-    public enum  FacturaElectronicaCodigoTypeTipo
-    {
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("01")]
-        Item01,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("02")]
-        Item02,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("03")]
-        Item03,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("04")]
-        Item04,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("99")]
-        Item99,
-    }
-
-    /// <comentarios/>
-    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/facturaElectronica")]
-    public enum  FacturaElectronicaIdentificacionTypeTipo
-    {
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("01")]
-        Item01,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("02")]
-        Item02,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("03")]
-        Item03,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("04")]
-        Item04,
-    }
-
-    /// <comentarios/>
-    [System.Xml.Serialization.XmlType(Namespace = "https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/facturaElectronica")]
-    public partial class  FacturaElectronicaImpuestoType
-    {
-
-        private  FacturaElectronicaImpuestoTypeCodigo codigoField;
-
-        private decimal tarifaField;
-
-        private decimal montoField;
-
-        private  FacturaElectronicaExoneracionType exoneracionField;
-
-        /// <comentarios/>
-        public  FacturaElectronicaImpuestoTypeCodigo Codigo
-        {
-            get
-            {
-                return codigoField;
-            }
-            set
-            {
-                codigoField = value;
-            }
-        }
-
-        /// <comentarios/>
-        public decimal Tarifa
-        {
-            get
-            {
-                return tarifaField;
-            }
-            set
-            {
-                tarifaField = value;
-            }
-        }
-
-        /// <comentarios/>
-        public decimal Monto
-        {
-            get
-            {
-                return montoField;
-            }
-            set
-            {
-                montoField = value;
-            }
-        }
-
-        /// <comentarios/>
-        public  FacturaElectronicaExoneracionType Exoneracion
-        {
-            get
-            {
-                return exoneracionField;
-            }
-            set
-            {
-                exoneracionField = value;
-            }
-        }
-    }
+    /// <remarks/>
+    [System.Serializable()]
+    [System.Xml.Serialization.XmlType(Namespace="https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/facturaElectronica")]
+    public partial class FacturaElectronicaOtrosCargosType {
     
-    /// <comentarios/>
-    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/facturaElectronica")]
-    public enum  FacturaElectronicaImpuestoTypeCodigo
-    {
+        private FacturaElectronicaOtrosCargosTypeTipoDocumento tipoDocumentoField;
+    
+        private string numeroIdentidadTerceroField;
+    
+        private string nombreTerceroField;
+    
+        private string detalleField;
+    
+        private decimal porcentajeField;
+    
+        private bool porcentajeFieldSpecified;
+    
+        private decimal montoCargoField;
+    
+        /// <remarks/>
+        public FacturaElectronicaOtrosCargosTypeTipoDocumento TipoDocumento {
+            get => tipoDocumentoField;
+            set => tipoDocumentoField = value;
+        }
 
-        /// <comentarios/>
+        /// <remarks/>
+        public string NumeroIdentidadTercero {
+            get => numeroIdentidadTerceroField;
+            set => numeroIdentidadTerceroField = value;
+        }
+
+        /// <remarks/>
+        public string NombreTercero {
+            get => nombreTerceroField;
+            set => nombreTerceroField = value;
+        }
+
+        /// <remarks/>
+        public string Detalle {
+            get => detalleField;
+            set => detalleField = value;
+        }
+
+        /// <remarks/>
+        public decimal Porcentaje {
+            get => porcentajeField;
+            set => porcentajeField = value;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnore()]
+        public bool PorcentajeSpecified {
+            get => porcentajeFieldSpecified;
+            set => porcentajeFieldSpecified = value;
+        }
+
+        /// <remarks/>
+        public decimal MontoCargo {
+            get => montoCargoField;
+            set => montoCargoField = value;
+        }
+    }
+
+    /// <remarks/>
+    [System.Serializable()]
+    [System.Xml.Serialization.XmlType(AnonymousType=true, Namespace="https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/facturaElectronica")]
+    public enum FacturaElectronicaOtrosCargosTypeTipoDocumento {
+    
+        /// <remarks/>
         [System.Xml.Serialization.XmlEnum("01")]
         Item01,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         [System.Xml.Serialization.XmlEnum("02")]
         Item02,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         [System.Xml.Serialization.XmlEnum("03")]
         Item03,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         [System.Xml.Serialization.XmlEnum("04")]
         Item04,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         [System.Xml.Serialization.XmlEnum("05")]
         Item05,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         [System.Xml.Serialization.XmlEnum("06")]
         Item06,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         [System.Xml.Serialization.XmlEnum("07")]
         Item07,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("99")]
+        Item99,
+    }
 
-        /// <comentarios/>
+    /// <remarks/>
+    [System.Serializable()]
+    [System.Xml.Serialization.XmlType(Namespace="https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/facturaElectronica")]
+    public partial class FacturaElectronicaExoneracionType {
+    
+        private FacturaElectronicaExoneracionTypeTipoDocumento tipoDocumentoField;
+    
+        private string numeroDocumentoField;
+    
+        private string nombreInstitucionField;
+    
+        private System.DateTime fechaEmisionField;
+    
+        private string porcentajeExoneracionField;
+    
+        private decimal montoExoneracionField;
+    
+        /// <remarks/>
+        public FacturaElectronicaExoneracionTypeTipoDocumento TipoDocumento {
+            get => tipoDocumentoField;
+            set => tipoDocumentoField = value;
+        }
+
+        /// <remarks/>
+        public string NumeroDocumento {
+            get => numeroDocumentoField;
+            set => numeroDocumentoField = value;
+        }
+
+        /// <remarks/>
+        public string NombreInstitucion {
+            get => nombreInstitucionField;
+            set => nombreInstitucionField = value;
+        }
+
+        /// <remarks/>
+        public System.DateTime FechaEmision {
+            get => fechaEmisionField;
+            set => fechaEmisionField = value;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElement(DataType="positiveInteger")]
+        public string PorcentajeExoneracion {
+            get => porcentajeExoneracionField;
+            set => porcentajeExoneracionField = value;
+        }
+
+        /// <remarks/>
+        public decimal MontoExoneracion {
+            get => montoExoneracionField;
+            set => montoExoneracionField = value;
+        }
+    }
+
+    /// <remarks/>
+    [System.Serializable()]
+    [System.Xml.Serialization.XmlType(AnonymousType=true, Namespace="https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/facturaElectronica")]
+    public enum FacturaElectronicaExoneracionTypeTipoDocumento {
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("01")]
+        Item01,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("02")]
+        Item02,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("03")]
+        Item03,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("04")]
+        Item04,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("05")]
+        Item05,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("06")]
+        Item06,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("07")]
+        Item07,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("99")]
+        Item99,
+    }
+
+    /// <remarks/>
+    [System.Serializable()]
+    [System.Xml.Serialization.XmlType(Namespace="https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/facturaElectronica")]
+    public partial class FacturaElectronicaImpuestoType {
+    
+        private FacturaElectronicaImpuestoTypeCodigo codigoField;
+    
+        private FacturaElectronicaImpuestoTypeCodigoTarifa codigoTarifaField;
+    
+        private bool codigoTarifaFieldSpecified;
+    
+        private decimal tarifaField;
+    
+        private bool tarifaFieldSpecified;
+    
+        private decimal factorIVAField;
+    
+        private bool factorIVAFieldSpecified;
+    
+        private decimal montoField;
+    
+        private FacturaElectronicaExoneracionType exoneracionField;
+    
+        /// <remarks/>
+        public FacturaElectronicaImpuestoTypeCodigo Codigo {
+            get => codigoField;
+            set => codigoField = value;
+        }
+
+        /// <remarks/>
+        public FacturaElectronicaImpuestoTypeCodigoTarifa CodigoTarifa {
+            get => codigoTarifaField;
+            set => codigoTarifaField = value;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnore()]
+        public bool CodigoTarifaSpecified {
+            get => codigoTarifaFieldSpecified;
+            set => codigoTarifaFieldSpecified = value;
+        }
+
+        /// <remarks/>
+        public decimal Tarifa {
+            get => tarifaField;
+            set => tarifaField = value;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnore()]
+        public bool TarifaSpecified {
+            get => tarifaFieldSpecified;
+            set => tarifaFieldSpecified = value;
+        }
+
+        /// <remarks/>
+        public decimal FactorIVA {
+            get => factorIVAField;
+            set => factorIVAField = value;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnore()]
+        public bool FactorIVASpecified {
+            get => factorIVAFieldSpecified;
+            set => factorIVAFieldSpecified = value;
+        }
+
+        /// <remarks/>
+        public decimal Monto {
+            get => montoField;
+            set => montoField = value;
+        }
+
+        /// <remarks/>
+        public FacturaElectronicaExoneracionType Exoneracion {
+            get => exoneracionField;
+            set => exoneracionField = value;
+        }
+    }
+
+    /// <remarks/>
+    [System.Serializable()]
+    [System.Xml.Serialization.XmlType(AnonymousType=true, Namespace="https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/facturaElectronica")]
+    public enum FacturaElectronicaImpuestoTypeCodigo {
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("01")]
+        Item01,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("02")]
+        Item02,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("03")]
+        Item03,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("04")]
+        Item04,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("05")]
+        Item05,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("06")]
+        Item06,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("07")]
+        Item07,
+    
+        /// <remarks/>
         [System.Xml.Serialization.XmlEnum("08")]
         Item08,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("09")]
-        Item09,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("10")]
-        Item10,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("11")]
-        Item11,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         [System.Xml.Serialization.XmlEnum("12")]
         Item12,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("98")]
-        Item98,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         [System.Xml.Serialization.XmlEnum("99")]
         Item99,
     }
 
-    /// <comentarios/>
-    [System.Xml.Serialization.XmlType(Namespace = "https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/facturaElectronica")]
-    public partial class  FacturaElectronicaExoneracionType
-    {
-
-        private  FacturaElectronicaExoneracionTypeTipoDocumento tipoDocumentoField;
-
-        private string numeroDocumentoField;
-
-        private string nombreInstitucionField;
-
-        private System.DateTime fechaEmisionField;
-
-        private decimal montoImpuestoField;
-
-        private string porcentajeCompraField;
-
-        /// <comentarios/>
-        public  FacturaElectronicaExoneracionTypeTipoDocumento TipoDocumento
-        {
-            get
-            {
-                return tipoDocumentoField;
-            }
-            set
-            {
-                tipoDocumentoField = value;
-            }
-        }
-
-        /// <comentarios/>
-        public string NumeroDocumento
-        {
-            get
-            {
-                return numeroDocumentoField;
-            }
-            set
-            {
-                numeroDocumentoField = value;
-            }
-        }
-
-        /// <comentarios/>
-        public string NombreInstitucion
-        {
-            get
-            {
-                return nombreInstitucionField;
-            }
-            set
-            {
-                nombreInstitucionField = value;
-            }
-        }
-
-        /// <comentarios/>
-        public System.DateTime FechaEmision
-        {
-            get
-            {
-                return fechaEmisionField;
-            }
-            set
-            {
-                fechaEmisionField = value;
-            }
-        }
-
-        /// <comentarios/>
-        public decimal MontoImpuesto
-        {
-            get
-            {
-                return montoImpuestoField;
-            }
-            set
-            {
-                montoImpuestoField = value;
-            }
-        }
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlElement(DataType = "integer")]
-        public string PorcentajeCompra
-        {
-            get
-            {
-                return porcentajeCompraField;
-            }
-            set
-            {
-                porcentajeCompraField = value;
-            }
-        }
-    }
-
-    /// <comentarios/>
-    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/facturaElectronica")]
-    public enum  FacturaElectronicaExoneracionTypeTipoDocumento
-    {
-
-        /// <comentarios/>
+    /// <remarks/>
+    [System.Serializable()]
+    [System.Xml.Serialization.XmlType(AnonymousType=true, Namespace="https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/facturaElectronica")]
+    public enum FacturaElectronicaImpuestoTypeCodigoTarifa {
+    
+        /// <remarks/>
         [System.Xml.Serialization.XmlEnum("01")]
         Item01,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         [System.Xml.Serialization.XmlEnum("02")]
         Item02,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         [System.Xml.Serialization.XmlEnum("03")]
         Item03,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         [System.Xml.Serialization.XmlEnum("04")]
         Item04,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         [System.Xml.Serialization.XmlEnum("05")]
         Item05,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("06")]
+        Item06,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("07")]
+        Item07,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("08")]
+        Item08,
+    }
 
-        /// <comentarios/>
+    /// <remarks/>
+    [System.Serializable()]
+    [System.Xml.Serialization.XmlType(Namespace="https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/facturaElectronica")]
+    public partial class FacturaElectronicaDescuentoType {
+    
+        private decimal montoDescuentoField;
+    
+        private string naturalezaDescuentoField;
+    
+        /// <remarks/>
+        public decimal MontoDescuento {
+            get => montoDescuentoField;
+            set => montoDescuentoField = value;
+        }
+
+        /// <remarks/>
+        public string NaturalezaDescuento {
+            get => naturalezaDescuentoField;
+            set => naturalezaDescuentoField = value;
+        }
+    }
+
+    /// <remarks/>
+    [System.Serializable()]
+    [System.Xml.Serialization.XmlType(Namespace="https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/facturaElectronica")]
+    public partial class FacturaElectronicaCodigoType {
+    
+        private FacturaElectronicaCodigoTypeTipo tipoField;
+    
+        private string codigoField;
+    
+        /// <remarks/>
+        public FacturaElectronicaCodigoTypeTipo Tipo {
+            get => tipoField;
+            set => tipoField = value;
+        }
+
+        /// <remarks/>
+        public string Codigo {
+            get => codigoField;
+            set => codigoField = value;
+        }
+    }
+
+    /// <remarks/>
+    [System.Serializable()]
+    [System.Xml.Serialization.XmlType(AnonymousType=true, Namespace="https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/facturaElectronica")]
+    public enum FacturaElectronicaCodigoTypeTipo {
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("01")]
+        Item01,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("02")]
+        Item02,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("03")]
+        Item03,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("04")]
+        Item04,
+    
+        /// <remarks/>
         [System.Xml.Serialization.XmlEnum("99")]
         Item99,
     }
 
-    /// <comentarios/>
-    [System.Xml.Serialization.XmlType(Namespace = "https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/facturaElectronica")]
-    public partial class  FacturaElectronicaCodigoType
-    {
-
-        private  FacturaElectronicaCodigoTypeTipo tipoField;
-
-        private string codigoField;
-
-        /// <comentarios/>
-        public  FacturaElectronicaCodigoTypeTipo Tipo
-        {
-            get
-            {
-                return tipoField;
-            }
-            set
-            {
-                tipoField = value;
-            }
+    /// <remarks/>
+    [System.Serializable()]
+    [System.Xml.Serialization.XmlType(Namespace="https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/facturaElectronica")]
+    public partial class FacturaElectronicaReceptorType {
+    
+        private string nombreField;
+    
+        private FacturaElectronicaIdentificacionType identificacionField;
+    
+        private string identificacionExtranjeroField;
+    
+        private string nombreComercialField;
+    
+        private FacturaElectronicaUbicacionType ubicacionField;
+    
+        private string otrasSenasExtranjeroField;
+    
+        private FacturaElectronicaTelefonoType telefonoField;
+    
+        private FacturaElectronicaTelefonoType faxField;
+    
+        private string correoElectronicoField;
+    
+        /// <remarks/>
+        public string Nombre {
+            get => nombreField;
+            set => nombreField = value;
         }
 
-        /// <comentarios/>
-        public string Codigo
-        {
-            get
-            {
-                return codigoField;
-            }
-            set
-            {
-                codigoField = value;
-            }
+        /// <remarks/>
+        public FacturaElectronicaIdentificacionType Identificacion {
+            get => identificacionField;
+            set => identificacionField = value;
+        }
+
+        /// <remarks/>
+        public string IdentificacionExtranjero {
+            get => identificacionExtranjeroField;
+            set => identificacionExtranjeroField = value;
+        }
+
+        /// <remarks/>
+        public string NombreComercial {
+            get => nombreComercialField;
+            set => nombreComercialField = value;
+        }
+
+        /// <remarks/>
+        public FacturaElectronicaUbicacionType Ubicacion {
+            get => ubicacionField;
+            set => ubicacionField = value;
+        }
+
+        /// <remarks/>
+        public string OtrasSenasExtranjero {
+            get => otrasSenasExtranjeroField;
+            set => otrasSenasExtranjeroField = value;
+        }
+
+        /// <remarks/>
+        public FacturaElectronicaTelefonoType Telefono {
+            get => telefonoField;
+            set => telefonoField = value;
+        }
+
+        /// <remarks/>
+        public FacturaElectronicaTelefonoType Fax {
+            get => faxField;
+            set => faxField = value;
+        }
+
+        /// <remarks/>
+        public string CorreoElectronico {
+            get => correoElectronicoField;
+            set => correoElectronicoField = value;
         }
     }
 
-    /// <comentarios/>
-    [System.Xml.Serialization.XmlType(Namespace = "https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/facturaElectronica")]
-    public enum  FacturaElectronicaUnidadMedidaType
-    {
+    /// <remarks/>
+    [System.Serializable()]
+    [System.Xml.Serialization.XmlType(Namespace="https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/facturaElectronica")]
+    public partial class FacturaElectronicaUbicacionType {
+    
+        private string provinciaField;
+    
+        private string cantonField;
+    
+        private string distritoField;
+    
+        private string barrioField;
+    
+        private string otrasSenasField;
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElement(DataType="positiveInteger")]
+        public string Provincia {
+            get => provinciaField;
+            set => provinciaField = value;
+        }
 
-        /// <comentarios/>
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElement(DataType="positiveInteger")]
+        public string Canton {
+            get => cantonField;
+            set => cantonField = value;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElement(DataType="positiveInteger")]
+        public string Distrito {
+            get => distritoField;
+            set => distritoField = value;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElement(DataType="positiveInteger")]
+        public string Barrio {
+            get => barrioField;
+            set => barrioField = value;
+        }
+
+        /// <remarks/>
+        public string OtrasSenas {
+            get => otrasSenasField;
+            set => otrasSenasField = value;
+        }
+    }
+
+    /// <remarks/>
+    [System.Serializable()]
+    [System.Xml.Serialization.XmlType(Namespace="https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/facturaElectronica")]
+    public partial class FacturaElectronicaTelefonoType {
+    
+        private string codigoPaisField;
+    
+        private string numTelefonoField;
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElement(DataType="integer")]
+        public string CodigoPais {
+            get => codigoPaisField;
+            set => codigoPaisField = value;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElement(DataType="integer")]
+        public string NumTelefono {
+            get => numTelefonoField;
+            set => numTelefonoField = value;
+        }
+    }
+
+    /// <remarks/>
+    [System.Serializable()]
+    [System.Xml.Serialization.XmlType(AnonymousType=true, Namespace="https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/facturaElectronica")]
+    public enum FacturaElectronicaCondicionVenta {
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("01")]
+        Item01,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("02")]
+        Item02,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("03")]
+        Item03,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("04")]
+        Item04,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("05")]
+        Item05,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("06")]
+        Item06,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("07")]
+        Item07,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("08")]
+        Item08,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("09")]
+        Item09,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("99")]
+        Item99,
+    }
+
+    /// <remarks/>
+    [System.Serializable()]
+    [System.Xml.Serialization.XmlType(AnonymousType=true, Namespace="https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/facturaElectronica")]
+    public enum FacturaElectronicaMedioPago {
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("01")]
+        Item01,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("02")]
+        Item02,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("03")]
+        Item03,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("04")]
+        Item04,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("05")]
+        Item05,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("99")]
+        Item99,
+    }
+
+    /// <remarks/>
+    [System.Serializable()]
+    [System.Xml.Serialization.XmlType(AnonymousType=true, Namespace="https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/facturaElectronica")]
+    public partial class FacturaElectronicaLineaDetalle {
+    
+        private string numeroLineaField;
+    
+        private string codigoField;
+    
+        private FacturaElectronicaCodigoType[] codigoComercialField;
+    
+        private decimal cantidadField;
+    
+        private FacturaElectronicaUnidadMedidaType unidadMedidaField;
+    
+        private string unidadMedidaComercialField;
+    
+        private string detalleField;
+    
+        private decimal precioUnitarioField;
+    
+        private decimal montoTotalField;
+    
+        private FacturaElectronicaDescuentoType[] descuentoField;
+    
+        private decimal subTotalField;
+    
+        private decimal baseImponibleField;
+    
+        private bool baseImponibleFieldSpecified;
+    
+        private FacturaElectronicaImpuestoType[] impuestoField;
+    
+        private decimal impuestoNetoField;
+    
+        private bool impuestoNetoFieldSpecified;
+    
+        private decimal montoTotalLineaField;
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElement(DataType="positiveInteger")]
+        public string NumeroLinea {
+            get => numeroLineaField;
+            set => numeroLineaField = value;
+        }
+
+        /// <remarks/>
+        public string Codigo {
+            get => codigoField;
+            set => codigoField = value;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElement("CodigoComercial")]
+        public FacturaElectronicaCodigoType[] CodigoComercial {
+            get => codigoComercialField;
+            set => codigoComercialField = value;
+        }
+
+        /// <remarks/>
+        public decimal Cantidad {
+            get => cantidadField;
+            set => cantidadField = value;
+        }
+
+        /// <remarks/>
+        public FacturaElectronicaUnidadMedidaType UnidadMedida {
+            get => unidadMedidaField;
+            set => unidadMedidaField = value;
+        }
+
+        /// <remarks/>
+        public string UnidadMedidaComercial {
+            get => unidadMedidaComercialField;
+            set => unidadMedidaComercialField = value;
+        }
+
+        /// <remarks/>
+        public string Detalle {
+            get => detalleField;
+            set => detalleField = value;
+        }
+
+        /// <remarks/>
+        public decimal PrecioUnitario {
+            get => precioUnitarioField;
+            set => precioUnitarioField = value;
+        }
+
+        /// <remarks/>
+        public decimal MontoTotal {
+            get => montoTotalField;
+            set => montoTotalField = value;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElement("Descuento")]
+        public FacturaElectronicaDescuentoType[] Descuento {
+            get => descuentoField;
+            set => descuentoField = value;
+        }
+
+        /// <remarks/>
+        public decimal SubTotal {
+            get => subTotalField;
+            set => subTotalField = value;
+        }
+
+        /// <remarks/>
+        public decimal BaseImponible {
+            get => baseImponibleField;
+            set => baseImponibleField = value;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnore()]
+        public bool BaseImponibleSpecified {
+            get => baseImponibleFieldSpecified;
+            set => baseImponibleFieldSpecified = value;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElement("Impuesto")]
+        public FacturaElectronicaImpuestoType[] Impuesto {
+            get => impuestoField;
+            set => impuestoField = value;
+        }
+
+        /// <remarks/>
+        public decimal ImpuestoNeto {
+            get => impuestoNetoField;
+            set => impuestoNetoField = value;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnore()]
+        public bool ImpuestoNetoSpecified {
+            get => impuestoNetoFieldSpecified;
+            set => impuestoNetoFieldSpecified = value;
+        }
+
+        /// <remarks/>
+        public decimal MontoTotalLinea {
+            get => montoTotalLineaField;
+            set => montoTotalLineaField = value;
+        }
+    }
+
+    /// <remarks/>
+    [System.Serializable()]
+    [System.Xml.Serialization.XmlType(Namespace="https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/facturaElectronica")]
+    public enum FacturaElectronicaUnidadMedidaType {
+    
+        /// <remarks/>
+        Al,
+    
+        /// <remarks/>
+        Alc,
+    
+        /// <remarks/>
+        Cm,
+    
+        /// <remarks/>
+        I,
+    
+        /// <remarks/>
+        Os,
+    
+        /// <remarks/>
         Sp,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
+        Spe,
+    
+        /// <remarks/>
+        St,
+    
+        /// <remarks/>
         m,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         kg,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         s,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         A,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         K,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         mol,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         cd,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("mÂ²")]
-        mÂ,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("mÂ³")]
-        mÂ1,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("m²")]
+        m1,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("m³")]
+        m2,
+    
+        /// <remarks/>
         [System.Xml.Serialization.XmlEnum("m/s")]
         ms,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("m/sÂ²")]
-        msÂ,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("m/s²")]
+        ms1,
+    
+        /// <remarks/>
         [System.Xml.Serialization.XmlEnum("1/m")]
         Item1m,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("kg/mÂ³")]
-        kgmÂ,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("A/mÂ²")]
-        AmÂ,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("A/m")]
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("kg/m³")]
+        kgm,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("A/m²")]
         Am,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("mol/mÂ³")]
-        molmÂ,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("cd/mÂ²")]
-        cdmÂ,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("A/m")]
+        Am1,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("mol/m³")]
+        molm,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("cd/m²")]
+        cdm,
+    
+        /// <remarks/>
         [System.Xml.Serialization.XmlEnum("1")]
         Item1,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         rad,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         sr,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         Hz,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         N,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         Pa,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         J,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         W,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         C,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         V,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         F,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("â„¦")]
-        â,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
+        Ω,
+    
+        /// <remarks/>
         S,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         Wb,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         T,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         H,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("Â°C")]
-        ÂC,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("°C")]
+        C1,
+    
+        /// <remarks/>
         lm,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         lx,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         Bq,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         Gy,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         Sv,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         kat,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("PaÂ·s")]
-        PaÂs,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("NÂ·m")]
-        NÂm,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("N/m")]
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("Pa·s")]
+        Pas,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("N·m")]
         Nm,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("N/m")]
+        Nm1,
+    
+        /// <remarks/>
         [System.Xml.Serialization.XmlEnum("rad/s")]
         rads,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("rad/sÂ²")]
-        radsÂ,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("W/mÂ²")]
-        WmÂ,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("rad/s²")]
+        rads1,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("W/m²")]
+        Wm,
+    
+        /// <remarks/>
         [System.Xml.Serialization.XmlEnum("J/K")]
         JK,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("J/(kgÂ·K)")]
-        JkgÂK,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("J/(kg·K)")]
+        JkgK,
+    
+        /// <remarks/>
         [System.Xml.Serialization.XmlEnum("J/kg")]
         Jkg,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("W/(mÂ·K)")]
-        WmÂK,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("J/mÂ³")]
-        JmÂ,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("W/(m·K)")]
+        WmK,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("J/m³")]
+        Jm,
+    
+        /// <remarks/>
         [System.Xml.Serialization.XmlEnum("V/m")]
         Vm,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("C/mÂ³")]
-        CmÂ,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("C/mÂ²")]
-        CmÂ1,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("C/m³")]
+        Cm1,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("C/m²")]
+        Cm2,
+    
+        /// <remarks/>
         [System.Xml.Serialization.XmlEnum("F/m")]
         Fm,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         [System.Xml.Serialization.XmlEnum("H/m")]
         Hm,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         [System.Xml.Serialization.XmlEnum("J/mol")]
         Jmol,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("J/(molÂ·K)")]
-        JmolÂK,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("J/(mol·K)")]
+        JmolK,
+    
+        /// <remarks/>
         [System.Xml.Serialization.XmlEnum("C/kg")]
         Ckg,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         [System.Xml.Serialization.XmlEnum("Gy/s")]
         Gys,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         [System.Xml.Serialization.XmlEnum("W/sr")]
         Wsr,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("W/(mÂ²Â·sr)")]
-        WmÂÂsr,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("kat/mÂ³")]
-        katmÂ,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("W/(m²·sr)")]
+        Wmsr,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("kat/m³")]
+        katm,
+    
+        /// <remarks/>
         min,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         h,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         d,
-
-        /// <comentarios/>
-        Âº,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("Â´")]
-        Â,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("Â´Â´")]
-        ÂÂ,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
+        º,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("´")]
+        Item,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("´´")]
+        Item2,
+    
+        /// <remarks/>
         L,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         t,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         Np,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         B,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         eV,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         u,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         ua,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         Unid,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         Gal,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         g,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         Km,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
+        Kw,
+    
+        /// <remarks/>
         ln,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         cm,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         mL,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         mm,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         Oz,
-
-        /// <comentarios/>
+    
+        /// <remarks/>
         Otros,
+    }
+
+    /// <remarks/>
+    [System.Serializable()]
+    [System.Xml.Serialization.XmlType(AnonymousType=true, Namespace="https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/facturaElectronica")]
+    public partial class FacturaElectronicaResumenFactura {
+    
+        private FacturaElectronicaCodigoMonedaType codigoTipoMonedaField;
+    
+        private decimal totalServGravadosField;
+    
+        private bool totalServGravadosFieldSpecified;
+    
+        private decimal totalServExentosField;
+    
+        private bool totalServExentosFieldSpecified;
+    
+        private decimal totalServExoneradoField;
+    
+        private bool totalServExoneradoFieldSpecified;
+    
+        private decimal totalMercanciasGravadasField;
+    
+        private bool totalMercanciasGravadasFieldSpecified;
+    
+        private decimal totalMercanciasExentasField;
+    
+        private bool totalMercanciasExentasFieldSpecified;
+    
+        private decimal totalMercExoneradaField;
+    
+        private bool totalMercExoneradaFieldSpecified;
+    
+        private decimal totalGravadoField;
+    
+        private bool totalGravadoFieldSpecified;
+    
+        private decimal totalExentoField;
+    
+        private bool totalExentoFieldSpecified;
+    
+        private decimal totalExoneradoField;
+    
+        private bool totalExoneradoFieldSpecified;
+    
+        private decimal totalVentaField;
+    
+        private decimal totalDescuentosField;
+    
+        private bool totalDescuentosFieldSpecified;
+    
+        private decimal totalVentaNetaField;
+    
+        private decimal totalImpuestoField;
+    
+        private bool totalImpuestoFieldSpecified;
+    
+        private decimal totalIVADevueltoField;
+    
+        private bool totalIVADevueltoFieldSpecified;
+    
+        private decimal totalOtrosCargosField;
+    
+        private bool totalOtrosCargosFieldSpecified;
+    
+        private decimal totalComprobanteField;
+    
+        /// <remarks/>
+        public FacturaElectronicaCodigoMonedaType CodigoTipoMoneda
+        {
+            get => codigoTipoMonedaField;
+            set => codigoTipoMonedaField = value;
+        }
+
+        /// <remarks/>
+        public decimal TotalServGravados {
+            get => totalServGravadosField;
+            set => totalServGravadosField = value;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnore()]
+        public bool TotalServGravadosSpecified {
+            get => totalServGravadosFieldSpecified;
+            set => totalServGravadosFieldSpecified = value;
+        }
+
+        /// <remarks/>
+        public decimal TotalServExentos {
+            get => totalServExentosField;
+            set => totalServExentosField = value;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnore()]
+        public bool TotalServExentosSpecified {
+            get => totalServExentosFieldSpecified;
+            set => totalServExentosFieldSpecified = value;
+        }
+
+        /// <remarks/>
+        public decimal TotalServExonerado {
+            get => totalServExoneradoField;
+            set => totalServExoneradoField = value;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnore()]
+        public bool TotalServExoneradoSpecified {
+            get => totalServExoneradoFieldSpecified;
+            set => totalServExoneradoFieldSpecified = value;
+        }
+
+        /// <remarks/>
+        public decimal TotalMercanciasGravadas {
+            get => totalMercanciasGravadasField;
+            set => totalMercanciasGravadasField = value;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnore()]
+        public bool TotalMercanciasGravadasSpecified {
+            get => totalMercanciasGravadasFieldSpecified;
+            set => totalMercanciasGravadasFieldSpecified = value;
+        }
+
+        /// <remarks/>
+        public decimal TotalMercanciasExentas {
+            get => totalMercanciasExentasField;
+            set => totalMercanciasExentasField = value;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnore()]
+        public bool TotalMercanciasExentasSpecified {
+            get => totalMercanciasExentasFieldSpecified;
+            set => totalMercanciasExentasFieldSpecified = value;
+        }
+
+        /// <remarks/>
+        public decimal TotalMercExonerada {
+            get => totalMercExoneradaField;
+            set => totalMercExoneradaField = value;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnore()]
+        public bool TotalMercExoneradaSpecified {
+            get => totalMercExoneradaFieldSpecified;
+            set => totalMercExoneradaFieldSpecified = value;
+        }
+
+        /// <remarks/>
+        public decimal TotalGravado {
+            get => totalGravadoField;
+            set => totalGravadoField = value;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnore()]
+        public bool TotalGravadoSpecified {
+            get => totalGravadoFieldSpecified;
+            set => totalGravadoFieldSpecified = value;
+        }
+
+        /// <remarks/>
+        public decimal TotalExento {
+            get => totalExentoField;
+            set => totalExentoField = value;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnore()]
+        public bool TotalExentoSpecified {
+            get => totalExentoFieldSpecified;
+            set => totalExentoFieldSpecified = value;
+        }
+
+        /// <remarks/>
+        public decimal TotalExonerado {
+            get => totalExoneradoField;
+            set => totalExoneradoField = value;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnore()]
+        public bool TotalExoneradoSpecified {
+            get => totalExoneradoFieldSpecified;
+            set => totalExoneradoFieldSpecified = value;
+        }
+
+        /// <remarks/>
+        public decimal TotalVenta {
+            get => totalVentaField;
+            set => totalVentaField = value;
+        }
+
+        /// <remarks/>
+        public decimal TotalDescuentos {
+            get => totalDescuentosField;
+            set => totalDescuentosField = value;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnore()]
+        public bool TotalDescuentosSpecified {
+            get => totalDescuentosFieldSpecified;
+            set => totalDescuentosFieldSpecified = value;
+        }
+
+        /// <remarks/>
+        public decimal TotalVentaNeta {
+            get => totalVentaNetaField;
+            set => totalVentaNetaField = value;
+        }
+
+        /// <remarks/>
+        public decimal TotalImpuesto {
+            get => totalImpuestoField;
+            set => totalImpuestoField = value;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnore()]
+        public bool TotalImpuestoSpecified {
+            get => totalImpuestoFieldSpecified;
+            set => totalImpuestoFieldSpecified = value;
+        }
+
+        /// <remarks/>
+        public decimal TotalIVADevuelto {
+            get => totalIVADevueltoField;
+            set => totalIVADevueltoField = value;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnore()]
+        public bool TotalIVADevueltoSpecified {
+            get => totalIVADevueltoFieldSpecified;
+            set => totalIVADevueltoFieldSpecified = value;
+        }
+
+        /// <remarks/>
+        public decimal TotalOtrosCargos {
+            get => totalOtrosCargosField;
+            set => totalOtrosCargosField = value;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnore()]
+        public bool TotalOtrosCargosSpecified {
+            get => totalOtrosCargosFieldSpecified;
+            set => totalOtrosCargosFieldSpecified = value;
+        }
+
+        /// <remarks/>
+        public decimal TotalComprobante {
+            get => totalComprobanteField;
+            set => totalComprobanteField = value;
+        }
+    }
+
+    /// <remarks/>
+    [System.Serializable()]
+    [System.Xml.Serialization.XmlType(AnonymousType=true, Namespace="https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/facturaElectronica")]
+    public partial class FacturaElectronicaInformacionReferencia {
+    
+        private FacturaElectronicaInformacionReferenciaTipoDoc tipoDocField;
+    
+        private string numeroField;
+    
+        private System.DateTime fechaEmisionField;
+    
+        private FacturaElectronicaInformacionReferenciaCodigo codigoField;
+    
+        private string razonField;
+    
+        /// <remarks/>
+        public FacturaElectronicaInformacionReferenciaTipoDoc TipoDoc {
+            get => tipoDocField;
+            set => tipoDocField = value;
+        }
+
+        /// <remarks/>
+        public string Numero {
+            get => numeroField;
+            set => numeroField = value;
+        }
+
+        /// <remarks/>
+        public System.DateTime FechaEmision {
+            get => fechaEmisionField;
+            set => fechaEmisionField = value;
+        }
+
+        /// <remarks/>
+        public FacturaElectronicaInformacionReferenciaCodigo Codigo {
+            get => codigoField;
+            set => codigoField = value;
+        }
+
+        /// <remarks/>
+        public string Razon {
+            get => razonField;
+            set => razonField = value;
+        }
+    }
+
+    /// <remarks/>
+    [System.Serializable()]
+    [System.Xml.Serialization.XmlType(AnonymousType=true, Namespace="https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/facturaElectronica")]
+    public enum FacturaElectronicaInformacionReferenciaTipoDoc {
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("01")]
+        Item01,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("02")]
+        Item02,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("03")]
+        Item03,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("04")]
+        Item04,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("05")]
+        Item05,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("06")]
+        Item06,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("07")]
+        Item07,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("08")]
+        Item08,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("09")]
+        Item09,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("10")]
+        Item10,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("11")]
+        Item11,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("12")]
+        Item12,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("13")]
+        Item13,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("99")]
+        Item99,
+    }
+
+    /// <remarks/>
+    [System.Serializable()]
+    [System.Xml.Serialization.XmlType(AnonymousType=true, Namespace="https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/facturaElectronica")]
+    public enum FacturaElectronicaInformacionReferenciaCodigo {
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("01")]
+        Item01,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("02")]
+        Item02,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("03")]
+        Item03,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("04")]
+        Item04,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("05")]
+        Item05,
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("99")]
+        Item99,
+    }
+
+    /// <remarks/>
+    [System.Serializable()]
+    [System.Xml.Serialization.XmlType(AnonymousType=true, Namespace="https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/facturaElectronica")]
+    public partial class FacturaElectronicaOtros {
+    
+        private FacturaElectronicaOtrosOtroTexto[] otroTextoField;
+    
+        private FacturaElectronicaOtrosOtroContenido[] otroContenidoField;
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElement("OtroTexto")]
+        public FacturaElectronicaOtrosOtroTexto[] OtroTexto {
+            get => otroTextoField;
+            set => otroTextoField = value;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElement("OtroContenido")]
+        public FacturaElectronicaOtrosOtroContenido[] OtroContenido {
+            get => otroContenidoField;
+            set => otroContenidoField = value;
+        }
+    }
+
+    /// <remarks/>
+    [System.Serializable()]
+    [System.Xml.Serialization.XmlType(AnonymousType=true, Namespace="https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/facturaElectronica")]
+    public partial class FacturaElectronicaOtrosOtroTexto {
+    
+        private string codigoField;
+    
+        private string valueField;
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttribute()]
+        public string codigo {
+            get => codigoField;
+            set => codigoField = value;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlText()]
+        public string Value {
+            get => valueField;
+            set => valueField = value;
+        }
+    }
+
+    /// <remarks/>
+    [System.Serializable()]
+    [System.Xml.Serialization.XmlType(AnonymousType=true, Namespace="https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/facturaElectronica")]
+    public partial class FacturaElectronicaOtrosOtroContenido {
+    
+        private System.Xml.XmlElement anyField;
+    
+        private string codigoField;
+    
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAnyElement()]
+        public System.Xml.XmlElement Any {
+            get => anyField;
+            set => anyField = value;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttribute()]
+        public string codigo {
+            get => codigoField;
+            set => codigoField = value;
+        }
     }
 }

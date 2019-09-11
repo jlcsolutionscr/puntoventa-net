@@ -65,6 +65,7 @@ namespace LeandroSoftware.AccesoDatos.Datos
         DbSet<OrdenServicio> OrdenServicioRepository { get; set; }
         DbSet<Padron> PadronRepository { get; set; }
         DbSet<ParametroContable> ParametroContableRepository { get; set; }
+        DbSet<ParametroExoneracion> ParametroExoneracionRepository { get; set; }
         DbSet<ParametroImpuesto> ParametroImpuestoRepository { get; set; }
         DbSet<ParametroSistema> ParametroSistemaRepository { get; set; }
         DbSet<Producto> ProductoRepository { get; set; }
@@ -171,6 +172,7 @@ namespace LeandroSoftware.AccesoDatos.Datos
         public DbSet<OrdenServicio> OrdenServicioRepository { get; set; }
         public DbSet<Padron> PadronRepository { get; set; }
         public DbSet<ParametroContable> ParametroContableRepository { get; set; }
+        public DbSet<ParametroExoneracion> ParametroExoneracionRepository { get; set; }
         public DbSet<ParametroImpuesto> ParametroImpuestoRepository { get; set; }
         public DbSet<ParametroSistema> ParametroSistemaRepository { get; set; }
         public DbSet<Producto> ProductoRepository { get; set; }

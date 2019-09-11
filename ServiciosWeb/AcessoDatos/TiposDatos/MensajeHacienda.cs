@@ -1,8 +1,8 @@
-﻿namespace LeandroSoftware.AccesoDatos.TiposDatos
+﻿namespace LeandroSoftware.Core.TiposDatosHacienda
 {
     /// <comentarios/>
-    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/mensajeHacienda")]
-    [System.Xml.Serialization.XmlRoot(Namespace = "https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/mensajeHacienda", IsNullable = false)]
+    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/mensajeHacienda")]
+    [System.Xml.Serialization.XmlRoot(Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/mensajeHacienda", IsNullable = false)]
     public partial class MensajeHacienda
     {
 
@@ -16,7 +16,7 @@
 
         private string nombreReceptorField;
 
-        private MensajeHaciendaTipoIdentificacionReceptor tipoIdentificacionReceptorField;
+        private MensajeHaciendaTipoIdentificacionReceptor? tipoIdentificacionReceptorField;
 
         private bool tipoIdentificacionReceptorFieldSpecified;
 
@@ -34,250 +34,171 @@
 
         private SignatureType signatureField;
 
-        /// <comentarios/>
+        /// <remarks/>
         public string Clave
         {
-            get
-            {
-                return claveField;
-            }
-            set
-            {
-                claveField = value;
-            }
+            get => claveField;
+            set => claveField = value;
         }
 
-        /// <comentarios/>
+        /// <remarks/>
         public string NombreEmisor
         {
-            get
-            {
-                return nombreEmisorField;
-            }
-            set
-            {
-                nombreEmisorField = value;
-            }
+            get => nombreEmisorField;
+            set => nombreEmisorField = value;
         }
 
-        /// <comentarios/>
+        /// <remarks/>
         public MensajeHaciendaTipoIdentificacionEmisor TipoIdentificacionEmisor
         {
-            get
-            {
-                return tipoIdentificacionEmisorField;
-            }
-            set
-            {
-                tipoIdentificacionEmisorField = value;
-            }
+            get => tipoIdentificacionEmisorField;
+            set => tipoIdentificacionEmisorField = value;
         }
 
-        /// <comentarios/>
+        /// <remarks/>
         public string NumeroCedulaEmisor
         {
-            get
-            {
-                return numeroCedulaEmisorField;
-            }
-            set
-            {
-                numeroCedulaEmisorField = value;
-            }
+            get => numeroCedulaEmisorField;
+            set => numeroCedulaEmisorField = value;
         }
 
-        /// <comentarios/>
+        /// <remarks/>
         public string NombreReceptor
         {
-            get
-            {
-                return nombreReceptorField;
-            }
-            set
-            {
-                nombreReceptorField = value;
-            }
+            get => nombreReceptorField;
+            set => nombreReceptorField = value;
         }
 
-        /// <comentarios/>
-        public MensajeHaciendaTipoIdentificacionReceptor TipoIdentificacionReceptor
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElement(IsNullable = true)]
+        public MensajeHaciendaTipoIdentificacionReceptor? TipoIdentificacionReceptor
         {
-            get
-            {
-                return tipoIdentificacionReceptorField;
-            }
-            set
-            {
-                tipoIdentificacionReceptorField = value;
-            }
+            get => tipoIdentificacionReceptorField;
+            set => tipoIdentificacionReceptorField = value;
         }
 
-        /// <comentarios/>
+        /// <remarks/>
         [System.Xml.Serialization.XmlIgnore()]
         public bool TipoIdentificacionReceptorSpecified
         {
-            get
-            {
-                return tipoIdentificacionReceptorFieldSpecified;
-            }
-            set
-            {
-                tipoIdentificacionReceptorFieldSpecified = value;
-            }
+            get => tipoIdentificacionReceptorFieldSpecified;
+            set => tipoIdentificacionReceptorFieldSpecified = value;
         }
 
-        /// <comentarios/>
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElement(IsNullable = true)]
         public string NumeroCedulaReceptor
         {
-            get
-            {
-                return numeroCedulaReceptorField;
-            }
-            set
-            {
-                numeroCedulaReceptorField = value;
-            }
+            get => numeroCedulaReceptorField;
+            set => numeroCedulaReceptorField = value;
         }
 
-        /// <comentarios/>
+        /// <remarks/>
         public MensajeHaciendaMensaje Mensaje
         {
-            get
-            {
-                return mensajeField;
-            }
-            set
-            {
-                mensajeField = value;
-            }
+            get => mensajeField;
+            set => mensajeField = value;
         }
 
-        /// <comentarios/>
+        /// <remarks/>
         public string DetalleMensaje
         {
-            get
-            {
-                return detalleMensajeField;
-            }
-            set
-            {
-                detalleMensajeField = value;
-            }
+            get => detalleMensajeField;
+            set => detalleMensajeField = value;
         }
 
-        /// <comentarios/>
+        /// <remarks/>
         public decimal MontoTotalImpuesto
         {
-            get
-            {
-                return montoTotalImpuestoField;
-            }
-            set
-            {
-                montoTotalImpuestoField = value;
-            }
+            get => montoTotalImpuestoField;
+            set => montoTotalImpuestoField = value;
         }
 
-        /// <comentarios/>
+        /// <remarks/>
         [System.Xml.Serialization.XmlIgnore()]
         public bool MontoTotalImpuestoSpecified
         {
-            get
-            {
-                return montoTotalImpuestoFieldSpecified;
-            }
-            set
-            {
-                montoTotalImpuestoFieldSpecified = value;
-            }
+            get => montoTotalImpuestoFieldSpecified;
+            set => montoTotalImpuestoFieldSpecified = value;
         }
 
-        /// <comentarios/>
+        /// <remarks/>
         public decimal TotalFactura
         {
-            get
-            {
-                return totalFacturaField;
-            }
-            set
-            {
-                totalFacturaField = value;
-            }
+            get => totalFacturaField;
+            set => totalFacturaField = value;
         }
 
-        /// <comentarios/>
+        /// <remarks/>
         [System.Xml.Serialization.XmlElement(Namespace = "http://www.w3.org/2000/09/xmldsig#")]
         public SignatureType Signature
         {
-            get
-            {
-                return signatureField;
-            }
-            set
-            {
-                signatureField = value;
-            }
+            get => signatureField;
+            set => signatureField = value;
         }
     }
 
-    /// <comentarios/>
-    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/mensajeHacienda")]
+    /// <remarks/>
+    [System.Serializable()]
+    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/mensajeHacienda")]
     public enum MensajeHaciendaTipoIdentificacionEmisor
     {
 
-        /// <comentarios/>
+        /// <remarks/>
         [System.Xml.Serialization.XmlEnum("01")]
         Item01,
 
-        /// <comentarios/>
+        /// <remarks/>
         [System.Xml.Serialization.XmlEnum("02")]
         Item02,
 
-        /// <comentarios/>
+        /// <remarks/>
         [System.Xml.Serialization.XmlEnum("03")]
         Item03,
 
-        /// <comentarios/>
+        /// <remarks/>
         [System.Xml.Serialization.XmlEnum("04")]
         Item04,
     }
 
-    /// <comentarios/>
-    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/mensajeHacienda")]
+    /// <remarks/>
+    [System.Serializable()]
+    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/mensajeHacienda")]
     public enum MensajeHaciendaTipoIdentificacionReceptor
     {
 
-        /// <comentarios/>
+        /// <remarks/>
         [System.Xml.Serialization.XmlEnum("01")]
         Item01,
 
-        /// <comentarios/>
+        /// <remarks/>
         [System.Xml.Serialization.XmlEnum("02")]
         Item02,
 
-        /// <comentarios/>
+        /// <remarks/>
         [System.Xml.Serialization.XmlEnum("03")]
         Item03,
 
-        /// <comentarios/>
+        /// <remarks/>
         [System.Xml.Serialization.XmlEnum("04")]
         Item04,
 
-        /// <comentarios/>
+        /// <remarks/>
         [System.Xml.Serialization.XmlEnum("05")]
         Item05,
     }
 
-    /// <comentarios/>
-    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/mensajeHacienda")]
+    /// <remarks/>
+    [System.Serializable()]
+    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/mensajeHacienda")]
     public enum MensajeHaciendaMensaje
     {
 
-        /// <comentarios/>
+        /// <remarks/>
         [System.Xml.Serialization.XmlEnum("1")]
         Item1,
 
-        /// <comentarios/>
+        /// <remarks/>
         [System.Xml.Serialization.XmlEnum("3")]
         Item3,
     }

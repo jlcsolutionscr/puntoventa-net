@@ -1,6 +1,6 @@
 Imports System.Threading.Tasks
 Imports LeandroSoftware.Core.Dominio.Entidades
-Imports LeandroSoftware.AccesoDatos.ClienteWCF
+Imports LeandroSoftware.Core.ClienteWCF
 
 Public Class FrmBusquedaProducto
 #Region "Variables"
@@ -62,7 +62,7 @@ Public Class FrmBusquedaProducto
 
     Private Async Function CargarComboBox() As Task
         Try
-            cboLinea.DataSource = Await PuntoventaWCF.ObtenerListaLineas(FrmPrincipal.empresaGlobal.IdEmpresa)
+            cboLinea.DataSource = Await ClienteFEWCF.ObtenerListaLineas(FrmPrincipal.empresaGlobal.IdEmpresa)
             cboLinea.ValueMember = "IdLinea"
             cboLinea.DisplayMember = "Descripcion"
         Catch ex As Exception
@@ -75,7 +75,7 @@ Public Class FrmBusquedaProducto
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
         Try
-            dgvListado.DataSource = Await PuntoventaWCF.ObtenerListaProductos(FrmPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, bolIncluyeServicios, cboLinea.SelectedValue, TxtCodigo.Text, TxtDesc.Text)
+            dgvListado.DataSource = Await ClienteFEWCF.ObtenerListaProductos(FrmPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, bolIncluyeServicios, cboLinea.SelectedValue, TxtCodigo.Text, TxtDesc.Text)
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -86,7 +86,7 @@ Public Class FrmBusquedaProducto
 
     Private Async Function ValidarCantidadProductos() As Task
         Try
-            intTotalEmpresas = Await PuntoventaWCF.ObtenerTotalListaProductos(FrmPrincipal.empresaGlobal.IdEmpresa, bolIncluyeServicios, cboLinea.SelectedValue, TxtCodigo.Text, TxtDesc.Text)
+            intTotalEmpresas = Await ClienteFEWCF.ObtenerTotalListaProductos(FrmPrincipal.empresaGlobal.IdEmpresa, bolIncluyeServicios, cboLinea.SelectedValue, TxtCodigo.Text, TxtDesc.Text)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()

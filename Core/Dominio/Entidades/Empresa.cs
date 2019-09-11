@@ -21,6 +21,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         [ForeignKey("TipoIdentificacion")]
         public int IdTipoIdentificacion { get; set; }
         public string Identificacion { get; set; }
+        public string CodigoActividad { get; set; }
         public int IdProvincia { get; set; }
         public int IdCanton { get; set; }
         public int IdDistrito { get; set; }

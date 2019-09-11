@@ -1,1816 +1,155 @@
-﻿namespace LeandroSoftware.AccesoDatos.TiposDatos
+﻿namespace LeandroSoftware.Core.TiposDatosHacienda
 {
     /// <comentarios/>
-    [System.Xml.Serialization.XmlType(AnonymousType=true, Namespace="https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/tiqueteElectronico")]
-    [System.Xml.Serialization.XmlRoot(Namespace="https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/tiqueteElectronico", IsNullable=false)]
-    public partial class TiqueteElectronico {
-        
-        private string claveField;
-        
-        private string numeroConsecutivoField;
-        
-        private System.DateTime fechaEmisionField;
-        
-        private TiqueteElectronicoEmisorType emisorField;
-        
-        private TiqueteElectronicoReceptorType receptorField;
-        
-        private TiqueteElectronicoCondicionVenta condicionVentaField;
-        
-        private string plazoCreditoField;
-        
-        private TiqueteElectronicoMedioPago[] medioPagoField;
-        
-        private TiqueteElectronicoLineaDetalle[] detalleServicioField;
-        
-        private TiqueteElectronicoResumenFactura resumenFacturaField;
-        
-        private TiqueteElectronicoInformacionReferencia[] informacionReferenciaField;
-        
-        private TiqueteElectronicoNormativa normativaField;
-        
-        private TiqueteElectronicoOtros otrosField;
-        
-        private SignatureType signatureField;
-        
-        /// <comentarios/>
-        public string Clave {
-            get {
-                return claveField;
-            }
-            set {
-                claveField = value;
-            }
-        }
-        
-        /// <comentarios/>
-        public string NumeroConsecutivo {
-            get {
-                return numeroConsecutivoField;
-            }
-            set {
-                numeroConsecutivoField = value;
-            }
-        }
-        
-        /// <comentarios/>
-        public System.DateTime FechaEmision {
-            get {
-                return fechaEmisionField;
-            }
-            set {
-                fechaEmisionField = value;
-            }
-        }
-        
-        /// <comentarios/>
-        public TiqueteElectronicoEmisorType Emisor {
-            get {
-                return emisorField;
-            }
-            set {
-                emisorField = value;
-            }
-        }
-        
-        /// <comentarios/>
-        public TiqueteElectronicoReceptorType Receptor {
-            get {
-                return receptorField;
-            }
-            set {
-                receptorField = value;
-            }
-        }
-        
-        /// <comentarios/>
-        public TiqueteElectronicoCondicionVenta CondicionVenta {
-            get {
-                return condicionVentaField;
-            }
-            set {
-                condicionVentaField = value;
-            }
-        }
-        
-        /// <comentarios/>
-        public string PlazoCredito {
-            get {
-                return plazoCreditoField;
-            }
-            set {
-                plazoCreditoField = value;
-            }
-        }
-        
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlElement("MedioPago")]
-        public TiqueteElectronicoMedioPago[] MedioPago {
-            get {
-                return medioPagoField;
-            }
-            set {
-                medioPagoField = value;
-            }
-        }
-        
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlArrayItem("LineaDetalle", IsNullable=false)]
-        public TiqueteElectronicoLineaDetalle[] DetalleServicio {
-            get {
-                return detalleServicioField;
-            }
-            set {
-                detalleServicioField = value;
-            }
-        }
-        
-        /// <comentarios/>
-        public TiqueteElectronicoResumenFactura ResumenFactura {
-            get {
-                return resumenFacturaField;
-            }
-            set {
-                resumenFacturaField = value;
-            }
-        }
-        
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlElement("InformacionReferencia")]
-        public TiqueteElectronicoInformacionReferencia[] InformacionReferencia {
-            get {
-                return informacionReferenciaField;
-            }
-            set {
-                informacionReferenciaField = value;
-            }
-        }
-        
-        /// <comentarios/>
-        public TiqueteElectronicoNormativa Normativa {
-            get {
-                return normativaField;
-            }
-            set {
-                normativaField = value;
-            }
-        }
-        
-        /// <comentarios/>
-        public TiqueteElectronicoOtros Otros {
-            get {
-                return otrosField;
-            }
-            set {
-                otrosField = value;
-            }
-        }
-        
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlElement(Namespace="http://www.w3.org/2000/09/xmldsig#")]
-        public SignatureType Signature {
-            get {
-                return signatureField;
-            }
-            set {
-                signatureField = value;
-            }
-        }
-    }
-
-    /// <comentarios/>
-    [System.Xml.Serialization.XmlType(AnonymousType=true, Namespace="https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/tiqueteElectronico")]
-    public enum TiqueteElectronicoCondicionVenta {
-        
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("01")]
-        Item01,
-        
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("02")]
-        Item02,
-        
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("03")]
-        Item03,
-        
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("04")]
-        Item04,
-        
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("05")]
-        Item05,
-        
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("06")]
-        Item06,
-        
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("99")]
-        Item99,
-    }
-
-    /// <comentarios/>
-    [System.Xml.Serialization.XmlType(AnonymousType=true, Namespace="https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/tiqueteElectronico")]
-    public enum TiqueteElectronicoMedioPago {
-        
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("01")]
-        Item01,
-        
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("02")]
-        Item02,
-        
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("03")]
-        Item03,
-        
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("04")]
-        Item04,
-        
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("05")]
-        Item05,
-        
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("99")]
-        Item99,
-    }
-
-    /// <comentarios/>
-    [System.Xml.Serialization.XmlType(AnonymousType=true, Namespace="https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/tiqueteElectronico")]
-    public partial class TiqueteElectronicoLineaDetalle {
-        
-        private string numeroLineaField;
-        
-        private TiqueteElectronicoCodigoType[] codigoField;
-        
-        private decimal cantidadField;
-        
-        private TiqueteElectronicoUnidadMedidaType unidadMedidaField;
-        
-        private string unidadMedidaComercialField;
-        
-        private string detalleField;
-        
-        private decimal precioUnitarioField;
-        
-        private decimal montoTotalField;
-        
-        private decimal montoDescuentoField;
-        
-        private bool montoDescuentoFieldSpecified;
-        
-        private string naturalezaDescuentoField;
-        
-        private decimal subTotalField;
-        
-        private TiqueteElectronicoImpuestoType[] impuestoField;
-        
-        private decimal montoTotalLineaField;
-        
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlElement(DataType="positiveInteger")]
-        public string NumeroLinea {
-            get {
-                return numeroLineaField;
-            }
-            set {
-                numeroLineaField = value;
-            }
-        }
-        
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlElement("Codigo")]
-        public TiqueteElectronicoCodigoType[] Codigo {
-            get {
-                return codigoField;
-            }
-            set {
-                codigoField = value;
-            }
-        }
-        
-        /// <comentarios/>
-        public decimal Cantidad {
-            get {
-                return cantidadField;
-            }
-            set {
-                cantidadField = value;
-            }
-        }
-        
-        /// <comentarios/>
-        public TiqueteElectronicoUnidadMedidaType UnidadMedida {
-            get {
-                return unidadMedidaField;
-            }
-            set {
-                unidadMedidaField = value;
-            }
-        }
-        
-        /// <comentarios/>
-        public string UnidadMedidaComercial {
-            get {
-                return unidadMedidaComercialField;
-            }
-            set {
-                unidadMedidaComercialField = value;
-            }
-        }
-        
-        /// <comentarios/>
-        public string Detalle {
-            get {
-                return detalleField;
-            }
-            set {
-                detalleField = value;
-            }
-        }
-        
-        /// <comentarios/>
-        public decimal PrecioUnitario {
-            get {
-                return precioUnitarioField;
-            }
-            set {
-                precioUnitarioField = value;
-            }
-        }
-        
-        /// <comentarios/>
-        public decimal MontoTotal {
-            get {
-                return montoTotalField;
-            }
-            set {
-                montoTotalField = value;
-            }
-        }
-        
-        /// <comentarios/>
-        public decimal MontoDescuento {
-            get {
-                return montoDescuentoField;
-            }
-            set {
-                montoDescuentoField = value;
-            }
-        }
-        
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlIgnore()]
-        public bool MontoDescuentoSpecified {
-            get {
-                return montoDescuentoFieldSpecified;
-            }
-            set {
-                montoDescuentoFieldSpecified = value;
-            }
-        }
-        
-        /// <comentarios/>
-        public string NaturalezaDescuento {
-            get {
-                return naturalezaDescuentoField;
-            }
-            set {
-                naturalezaDescuentoField = value;
-            }
-        }
-        
-        /// <comentarios/>
-        public decimal SubTotal {
-            get {
-                return subTotalField;
-            }
-            set {
-                subTotalField = value;
-            }
-        }
-        
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlElement("Impuesto")]
-        public TiqueteElectronicoImpuestoType[] Impuesto {
-            get {
-                return impuestoField;
-            }
-            set {
-                impuestoField = value;
-            }
-        }
-        
-        /// <comentarios/>
-        public decimal MontoTotalLinea {
-            get {
-                return montoTotalLineaField;
-            }
-            set {
-                montoTotalLineaField = value;
-            }
-        }
-    }
-
-    /// <comentarios/>
-    [System.Xml.Serialization.XmlType(Namespace = "https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/tiqueteElectronico")]
-    public enum TiqueteElectronicoUnidadMedidaType
+    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/tiqueteElectronico")]
+    [System.Xml.Serialization.XmlRoot(Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/tiqueteElectronico", IsNullable = false)]
+    public partial class TiqueteElectronico
     {
 
-        /// <comentarios/>
-        Sp,
+        private string claveField;
 
-        /// <comentarios/>
-        m,
+        private string codigoActividadField;
 
-        /// <comentarios/>
-        kg,
+        private string numeroConsecutivoField;
 
-        /// <comentarios/>
-        s,
-
-        /// <comentarios/>
-        A,
-
-        /// <comentarios/>
-        K,
-
-        /// <comentarios/>
-        mol,
-
-        /// <comentarios/>
-        cd,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("mÂ²")]
-        mÂ,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("mÂ³")]
-        mÂ1,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("m/s")]
-        ms,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("m/sÂ²")]
-        msÂ,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("1/m")]
-        Item1m,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("kg/mÂ³")]
-        kgmÂ,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("A/mÂ²")]
-        AmÂ,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("A/m")]
-        Am,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("mol/mÂ³")]
-        molmÂ,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("cd/mÂ²")]
-        cdmÂ,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("1")]
-        Item1,
-
-        /// <comentarios/>
-        rad,
-
-        /// <comentarios/>
-        sr,
-
-        /// <comentarios/>
-        Hz,
-
-        /// <comentarios/>
-        N,
-
-        /// <comentarios/>
-        Pa,
-
-        /// <comentarios/>
-        J,
-
-        /// <comentarios/>
-        W,
-
-        /// <comentarios/>
-        C,
-
-        /// <comentarios/>
-        V,
-
-        /// <comentarios/>
-        F,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("â„¦")]
-        â,
-
-        /// <comentarios/>
-        S,
-
-        /// <comentarios/>
-        Wb,
-
-        /// <comentarios/>
-        T,
-
-        /// <comentarios/>
-        H,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("Â°C")]
-        ÂC,
-
-        /// <comentarios/>
-        lm,
-
-        /// <comentarios/>
-        lx,
-
-        /// <comentarios/>
-        Bq,
-
-        /// <comentarios/>
-        Gy,
-
-        /// <comentarios/>
-        Sv,
-
-        /// <comentarios/>
-        kat,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("PaÂ·s")]
-        PaÂs,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("NÂ·m")]
-        NÂm,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("N/m")]
-        Nm,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("rad/s")]
-        rads,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("rad/sÂ²")]
-        radsÂ,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("W/mÂ²")]
-        WmÂ,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("J/K")]
-        JK,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("J/(kgÂ·K)")]
-        JkgÂK,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("J/kg")]
-        Jkg,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("W/(mÂ·K)")]
-        WmÂK,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("J/mÂ³")]
-        JmÂ,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("V/m")]
-        Vm,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("C/mÂ³")]
-        CmÂ,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("C/mÂ²")]
-        CmÂ1,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("F/m")]
-        Fm,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("H/m")]
-        Hm,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("J/mol")]
-        Jmol,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("J/(molÂ·K)")]
-        JmolÂK,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("C/kg")]
-        Ckg,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("Gy/s")]
-        Gys,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("W/sr")]
-        Wsr,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("W/(mÂ²Â·sr)")]
-        WmÂÂsr,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("kat/mÂ³")]
-        katmÂ,
-
-        /// <comentarios/>
-        min,
-
-        /// <comentarios/>
-        h,
-
-        /// <comentarios/>
-        d,
-
-        /// <comentarios/>
-        Âº,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("Â´")]
-        Â,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("Â´Â´")]
-        ÂÂ,
-
-        /// <comentarios/>
-        L,
-
-        /// <comentarios/>
-        t,
-
-        /// <comentarios/>
-        Np,
-
-        /// <comentarios/>
-        B,
-
-        /// <comentarios/>
-        eV,
-
-        /// <comentarios/>
-        u,
-
-        /// <comentarios/>
-        ua,
-
-        /// <comentarios/>
-        Unid,
-
-        /// <comentarios/>
-        Gal,
-
-        /// <comentarios/>
-        g,
-
-        /// <comentarios/>
-        Km,
-
-        /// <comentarios/>
-        ln,
-
-        /// <comentarios/>
-        cm,
-
-        /// <comentarios/>
-        mL,
-
-        /// <comentarios/>
-        mm,
-
-        /// <comentarios/>
-        Oz,
-
-        /// <comentarios/>
-        Otros,
-    }
-
-    /// <comentarios/>
-    [System.Xml.Serialization.XmlType(AnonymousType=true, Namespace="https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/tiqueteElectronico")]
-    public partial class TiqueteElectronicoResumenFactura {
-        
-        private TiqueteElectronicoResumenFacturaCodigoMoneda codigoMonedaField;
-        
-        private bool codigoMonedaFieldSpecified;
-        
-        private decimal tipoCambioField;
-        
-        private bool tipoCambioFieldSpecified;
-        
-        private decimal totalServGravadosField;
-        
-        private bool totalServGravadosFieldSpecified;
-        
-        private decimal totalServExentosField;
-        
-        private bool totalServExentosFieldSpecified;
-        
-        private decimal totalMercanciasGravadasField;
-        
-        private bool totalMercanciasGravadasFieldSpecified;
-        
-        private decimal totalMercanciasExentasField;
-        
-        private bool totalMercanciasExentasFieldSpecified;
-        
-        private decimal totalGravadoField;
-        
-        private bool totalGravadoFieldSpecified;
-        
-        private decimal totalExentoField;
-        
-        private bool totalExentoFieldSpecified;
-        
-        private decimal totalVentaField;
-        
-        private decimal totalDescuentosField;
-        
-        private bool totalDescuentosFieldSpecified;
-        
-        private decimal totalVentaNetaField;
-        
-        private decimal totalImpuestoField;
-        
-        private bool totalImpuestoFieldSpecified;
-        
-        private decimal totalComprobanteField;
-        
-        /// <comentarios/>
-        public TiqueteElectronicoResumenFacturaCodigoMoneda CodigoMoneda {
-            get {
-                return codigoMonedaField;
-            }
-            set {
-                codigoMonedaField = value;
-            }
-        }
-        
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlIgnore()]
-        public bool CodigoMonedaSpecified {
-            get {
-                return codigoMonedaFieldSpecified;
-            }
-            set {
-                codigoMonedaFieldSpecified = value;
-            }
-        }
-        
-        /// <comentarios/>
-        public decimal TipoCambio {
-            get {
-                return tipoCambioField;
-            }
-            set {
-                tipoCambioField = value;
-            }
-        }
-        
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlIgnore()]
-        public bool TipoCambioSpecified {
-            get {
-                return tipoCambioFieldSpecified;
-            }
-            set {
-                tipoCambioFieldSpecified = value;
-            }
-        }
-        
-        /// <comentarios/>
-        public decimal TotalServGravados {
-            get {
-                return totalServGravadosField;
-            }
-            set {
-                totalServGravadosField = value;
-            }
-        }
-        
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlIgnore()]
-        public bool TotalServGravadosSpecified {
-            get {
-                return totalServGravadosFieldSpecified;
-            }
-            set {
-                totalServGravadosFieldSpecified = value;
-            }
-        }
-        
-        /// <comentarios/>
-        public decimal TotalServExentos {
-            get {
-                return totalServExentosField;
-            }
-            set {
-                totalServExentosField = value;
-            }
-        }
-        
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlIgnore()]
-        public bool TotalServExentosSpecified {
-            get {
-                return totalServExentosFieldSpecified;
-            }
-            set {
-                totalServExentosFieldSpecified = value;
-            }
-        }
-        
-        /// <comentarios/>
-        public decimal TotalMercanciasGravadas {
-            get {
-                return totalMercanciasGravadasField;
-            }
-            set {
-                totalMercanciasGravadasField = value;
-            }
-        }
-        
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlIgnore()]
-        public bool TotalMercanciasGravadasSpecified {
-            get {
-                return totalMercanciasGravadasFieldSpecified;
-            }
-            set {
-                totalMercanciasGravadasFieldSpecified = value;
-            }
-        }
-        
-        /// <comentarios/>
-        public decimal TotalMercanciasExentas {
-            get {
-                return totalMercanciasExentasField;
-            }
-            set {
-                totalMercanciasExentasField = value;
-            }
-        }
-        
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlIgnore()]
-        public bool TotalMercanciasExentasSpecified {
-            get {
-                return totalMercanciasExentasFieldSpecified;
-            }
-            set {
-                totalMercanciasExentasFieldSpecified = value;
-            }
-        }
-        
-        /// <comentarios/>
-        public decimal TotalGravado {
-            get {
-                return totalGravadoField;
-            }
-            set {
-                totalGravadoField = value;
-            }
-        }
-        
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlIgnore()]
-        public bool TotalGravadoSpecified {
-            get {
-                return totalGravadoFieldSpecified;
-            }
-            set {
-                totalGravadoFieldSpecified = value;
-            }
-        }
-        
-        /// <comentarios/>
-        public decimal TotalExento {
-            get {
-                return totalExentoField;
-            }
-            set {
-                totalExentoField = value;
-            }
-        }
-        
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlIgnore()]
-        public bool TotalExentoSpecified {
-            get {
-                return totalExentoFieldSpecified;
-            }
-            set {
-                totalExentoFieldSpecified = value;
-            }
-        }
-        
-        /// <comentarios/>
-        public decimal TotalVenta {
-            get {
-                return totalVentaField;
-            }
-            set {
-                totalVentaField = value;
-            }
-        }
-        
-        /// <comentarios/>
-        public decimal TotalDescuentos {
-            get {
-                return totalDescuentosField;
-            }
-            set {
-                totalDescuentosField = value;
-            }
-        }
-        
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlIgnore()]
-        public bool TotalDescuentosSpecified {
-            get {
-                return totalDescuentosFieldSpecified;
-            }
-            set {
-                totalDescuentosFieldSpecified = value;
-            }
-        }
-        
-        /// <comentarios/>
-        public decimal TotalVentaNeta {
-            get {
-                return totalVentaNetaField;
-            }
-            set {
-                totalVentaNetaField = value;
-            }
-        }
-        
-        /// <comentarios/>
-        public decimal TotalImpuesto {
-            get {
-                return totalImpuestoField;
-            }
-            set {
-                totalImpuestoField = value;
-            }
-        }
-        
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlIgnore()]
-        public bool TotalImpuestoSpecified {
-            get {
-                return totalImpuestoFieldSpecified;
-            }
-            set {
-                totalImpuestoFieldSpecified = value;
-            }
-        }
-        
-        /// <comentarios/>
-        public decimal TotalComprobante {
-            get {
-                return totalComprobanteField;
-            }
-            set {
-                totalComprobanteField = value;
-            }
-        }
-    }
-
-    /// <comentarios/>
-    [System.Xml.Serialization.XmlType(AnonymousType=true, Namespace="https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/tiqueteElectronico")]
-    public enum TiqueteElectronicoResumenFacturaCodigoMoneda {
-        
-        /// <comentarios/>
-        AED,
-        
-        /// <comentarios/>
-        AFN,
-        
-        /// <comentarios/>
-        ALL,
-        
-        /// <comentarios/>
-        AMD,
-        
-        /// <comentarios/>
-        ANG,
-        
-        /// <comentarios/>
-        AOA,
-        
-        /// <comentarios/>
-        ARS,
-        
-        /// <comentarios/>
-        AUD,
-        
-        /// <comentarios/>
-        AWG,
-        
-        /// <comentarios/>
-        AZN,
-        
-        /// <comentarios/>
-        BAM,
-        
-        /// <comentarios/>
-        BBD,
-        
-        /// <comentarios/>
-        BDT,
-        
-        /// <comentarios/>
-        BGN,
-        
-        /// <comentarios/>
-        BHD,
-        
-        /// <comentarios/>
-        BIF,
-        
-        /// <comentarios/>
-        BMD,
-        
-        /// <comentarios/>
-        BND,
-        
-        /// <comentarios/>
-        BOB,
-        
-        /// <comentarios/>
-        BOV,
-        
-        /// <comentarios/>
-        BRL,
-        
-        /// <comentarios/>
-        BSD,
-        
-        /// <comentarios/>
-        BTN,
-        
-        /// <comentarios/>
-        BWP,
-        
-        /// <comentarios/>
-        BYR,
-        
-        /// <comentarios/>
-        BZD,
-        
-        /// <comentarios/>
-        CAD,
-        
-        /// <comentarios/>
-        CDF,
-        
-        /// <comentarios/>
-        CHE,
-        
-        /// <comentarios/>
-        CHF,
-        
-        /// <comentarios/>
-        CHW,
-        
-        /// <comentarios/>
-        CLF,
-        
-        /// <comentarios/>
-        CLP,
-        
-        /// <comentarios/>
-        CNY,
-        
-        /// <comentarios/>
-        COP,
-        
-        /// <comentarios/>
-        COU,
-        
-        /// <comentarios/>
-        CRC,
-        
-        /// <comentarios/>
-        CUC,
-        
-        /// <comentarios/>
-        CUP,
-        
-        /// <comentarios/>
-        CVE,
-        
-        /// <comentarios/>
-        CZK,
-        
-        /// <comentarios/>
-        DJF,
-        
-        /// <comentarios/>
-        DKK,
-        
-        /// <comentarios/>
-        DOP,
-        
-        /// <comentarios/>
-        DZD,
-        
-        /// <comentarios/>
-        EGP,
-        
-        /// <comentarios/>
-        ERN,
-        
-        /// <comentarios/>
-        ETB,
-        
-        /// <comentarios/>
-        EUR,
-        
-        /// <comentarios/>
-        FJD,
-        
-        /// <comentarios/>
-        FKP,
-        
-        /// <comentarios/>
-        GBP,
-        
-        /// <comentarios/>
-        GEL,
-        
-        /// <comentarios/>
-        GHS,
-        
-        /// <comentarios/>
-        GIP,
-        
-        /// <comentarios/>
-        GMD,
-        
-        /// <comentarios/>
-        GNF,
-        
-        /// <comentarios/>
-        GTQ,
-        
-        /// <comentarios/>
-        GYD,
-        
-        /// <comentarios/>
-        HKD,
-        
-        /// <comentarios/>
-        HNL,
-        
-        /// <comentarios/>
-        HRK,
-        
-        /// <comentarios/>
-        HTG,
-        
-        /// <comentarios/>
-        HUF,
-        
-        /// <comentarios/>
-        IDR,
-        
-        /// <comentarios/>
-        ILS,
-        
-        /// <comentarios/>
-        INR,
-        
-        /// <comentarios/>
-        IQD,
-        
-        /// <comentarios/>
-        IRR,
-        
-        /// <comentarios/>
-        ISK,
-        
-        /// <comentarios/>
-        JMD,
-        
-        /// <comentarios/>
-        JOD,
-        
-        /// <comentarios/>
-        JPY,
-        
-        /// <comentarios/>
-        KES,
-        
-        /// <comentarios/>
-        KGS,
-        
-        /// <comentarios/>
-        KHR,
-        
-        /// <comentarios/>
-        KMF,
-        
-        /// <comentarios/>
-        KPW,
-        
-        /// <comentarios/>
-        KRW,
-        
-        /// <comentarios/>
-        KWD,
-        
-        /// <comentarios/>
-        KYD,
-        
-        /// <comentarios/>
-        KZT,
-        
-        /// <comentarios/>
-        LAK,
-        
-        /// <comentarios/>
-        LBP,
-        
-        /// <comentarios/>
-        LKR,
-        
-        /// <comentarios/>
-        LRD,
-        
-        /// <comentarios/>
-        LSL,
-        
-        /// <comentarios/>
-        LYD,
-        
-        /// <comentarios/>
-        MAD,
-        
-        /// <comentarios/>
-        MDL,
-        
-        /// <comentarios/>
-        MGA,
-        
-        /// <comentarios/>
-        MKD,
-        
-        /// <comentarios/>
-        MMK,
-        
-        /// <comentarios/>
-        MNT,
-        
-        /// <comentarios/>
-        MOP,
-        
-        /// <comentarios/>
-        MRO,
-        
-        /// <comentarios/>
-        MUR,
-        
-        /// <comentarios/>
-        MVR,
-        
-        /// <comentarios/>
-        MWK,
-        
-        /// <comentarios/>
-        MXN,
-        
-        /// <comentarios/>
-        MXV,
-        
-        /// <comentarios/>
-        MYR,
-        
-        /// <comentarios/>
-        MZN,
-        
-        /// <comentarios/>
-        NAD,
-        
-        /// <comentarios/>
-        NGN,
-        
-        /// <comentarios/>
-        NIO,
-        
-        /// <comentarios/>
-        NOK,
-        
-        /// <comentarios/>
-        NPR,
-        
-        /// <comentarios/>
-        NZD,
-        
-        /// <comentarios/>
-        OMR,
-        
-        /// <comentarios/>
-        PAB,
-        
-        /// <comentarios/>
-        PEN,
-        
-        /// <comentarios/>
-        PGK,
-        
-        /// <comentarios/>
-        PHP,
-        
-        /// <comentarios/>
-        PKR,
-        
-        /// <comentarios/>
-        PLN,
-        
-        /// <comentarios/>
-        PYG,
-        
-        /// <comentarios/>
-        QAR,
-        
-        /// <comentarios/>
-        RON,
-        
-        /// <comentarios/>
-        RSD,
-        
-        /// <comentarios/>
-        RUB,
-        
-        /// <comentarios/>
-        RWF,
-        
-        /// <comentarios/>
-        SAR,
-        
-        /// <comentarios/>
-        SBD,
-        
-        /// <comentarios/>
-        SCR,
-        
-        /// <comentarios/>
-        SDG,
-        
-        /// <comentarios/>
-        SEK,
-        
-        /// <comentarios/>
-        SGD,
-        
-        /// <comentarios/>
-        SHP,
-        
-        /// <comentarios/>
-        SLL,
-        
-        /// <comentarios/>
-        SOS,
-        
-        /// <comentarios/>
-        SRD,
-        
-        /// <comentarios/>
-        SSP,
-        
-        /// <comentarios/>
-        STD,
-        
-        /// <comentarios/>
-        SVC,
-        
-        /// <comentarios/>
-        SYP,
-        
-        /// <comentarios/>
-        SZL,
-        
-        /// <comentarios/>
-        THB,
-        
-        /// <comentarios/>
-        TJS,
-        
-        /// <comentarios/>
-        TMT,
-        
-        /// <comentarios/>
-        TND,
-        
-        /// <comentarios/>
-        TOP,
-        
-        /// <comentarios/>
-        TRY,
-        
-        /// <comentarios/>
-        TTD,
-        
-        /// <comentarios/>
-        TWD,
-        
-        /// <comentarios/>
-        TZS,
-        
-        /// <comentarios/>
-        UAH,
-        
-        /// <comentarios/>
-        UGX,
-        
-        /// <comentarios/>
-        USD,
-        
-        /// <comentarios/>
-        USN,
-        
-        /// <comentarios/>
-        UYI,
-        
-        /// <comentarios/>
-        UYU,
-        
-        /// <comentarios/>
-        UZS,
-        
-        /// <comentarios/>
-        VEF,
-        
-        /// <comentarios/>
-        VND,
-        
-        /// <comentarios/>
-        VUV,
-        
-        /// <comentarios/>
-        WST,
-        
-        /// <comentarios/>
-        XAF,
-        
-        /// <comentarios/>
-        XAG,
-        
-        /// <comentarios/>
-        XAU,
-        
-        /// <comentarios/>
-        XBA,
-        
-        /// <comentarios/>
-        XBB,
-        
-        /// <comentarios/>
-        XBC,
-        
-        /// <comentarios/>
-        XBD,
-        
-        /// <comentarios/>
-        XCD,
-        
-        /// <comentarios/>
-        XDR,
-        
-        /// <comentarios/>
-        XOF,
-        
-        /// <comentarios/>
-        XPD,
-        
-        /// <comentarios/>
-        XPF,
-        
-        /// <comentarios/>
-        XPT,
-        
-        /// <comentarios/>
-        XSU,
-        
-        /// <comentarios/>
-        XTS,
-        
-        /// <comentarios/>
-        XUA,
-        
-        /// <comentarios/>
-        XXX,
-        
-        /// <comentarios/>
-        YER,
-        
-        /// <comentarios/>
-        ZAR,
-        
-        /// <comentarios/>
-        ZMW,
-        
-        /// <comentarios/>
-        ZWL,
-    }
-
-    /// <comentarios/>
-    [System.Xml.Serialization.XmlType(AnonymousType=true, Namespace="https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/tiqueteElectronico")]
-    public partial class TiqueteElectronicoInformacionReferencia {
-        
-        private TiqueteElectronicoInformacionReferenciaTipoDoc tipoDocField;
-        
-        private string numeroField;
-        
         private System.DateTime fechaEmisionField;
-        
-        private TiqueteElectronicoInformacionReferenciaCodigo codigoField;
-        
-        private string razonField;
-        
-        /// <comentarios/>
-        public TiqueteElectronicoInformacionReferenciaTipoDoc TipoDoc {
-            get {
-                return tipoDocField;
-            }
-            set {
-                tipoDocField = value;
-            }
+
+        private TiqueteElectronicoEmisorType emisorField;
+
+        private TiqueteElectronicoReceptorType receptorField;
+
+        private TiqueteElectronicoCondicionVenta condicionVentaField;
+
+        private string plazoCreditoField;
+
+        private TiqueteElectronicoMedioPago[] medioPagoField;
+
+        private TiqueteElectronicoLineaDetalle[] detalleServicioField;
+
+        private TiqueteElectronicoOtrosCargosType[] otrosCargosField;
+
+        private TiqueteElectronicoResumenFactura resumenFacturaField;
+
+        private TiqueteElectronicoInformacionReferencia[] informacionReferenciaField;
+
+        private TiqueteElectronicoOtros otrosField;
+
+        private SignatureType signatureField;
+
+        /// <remarks/>
+        public string Clave
+        {
+            get => claveField;
+            set => claveField = value;
         }
-        
-        /// <comentarios/>
-        public string Numero {
-            get {
-                return numeroField;
-            }
-            set {
-                numeroField = value;
-            }
+
+        /// <remarks/>
+        public string CodigoActividad
+        {
+            get => codigoActividadField;
+            set => codigoActividadField = value;
         }
-        
-        /// <comentarios/>
-        public System.DateTime FechaEmision {
-            get {
-                return fechaEmisionField;
-            }
-            set {
-                fechaEmisionField = value;
-            }
+
+        /// <remarks/>
+        public string NumeroConsecutivo
+        {
+            get => numeroConsecutivoField;
+            set => numeroConsecutivoField = value;
         }
-        
-        /// <comentarios/>
-        public TiqueteElectronicoInformacionReferenciaCodigo Codigo {
-            get {
-                return codigoField;
-            }
-            set {
-                codigoField = value;
-            }
+
+        /// <remarks/>
+        public System.DateTime FechaEmision
+        {
+            get => fechaEmisionField;
+            set => fechaEmisionField = value;
         }
-        
-        /// <comentarios/>
-        public string Razon {
-            get {
-                return razonField;
-            }
-            set {
-                razonField = value;
-            }
+
+        /// <remarks/>
+        public TiqueteElectronicoEmisorType Emisor
+        {
+            get => emisorField;
+            set => emisorField = value;
+        }
+
+        /// <remarks/>
+        public TiqueteElectronicoReceptorType Receptor
+        {
+            get => receptorField;
+            set => receptorField = value;
+        }
+
+        /// <remarks/>
+        public TiqueteElectronicoCondicionVenta CondicionVenta
+        {
+            get => condicionVentaField;
+            set => condicionVentaField = value;
+        }
+
+        /// <remarks/>
+        public string PlazoCredito
+        {
+            get => plazoCreditoField;
+            set => plazoCreditoField = value;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElement("MedioPago")]
+        public TiqueteElectronicoMedioPago[] MedioPago
+        {
+            get => medioPagoField;
+            set => medioPagoField = value;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayItem("LineaDetalle", IsNullable = false)]
+        public TiqueteElectronicoLineaDetalle[] DetalleServicio
+        {
+            get => detalleServicioField;
+            set => detalleServicioField = value;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElement("OtrosCargos")]
+        public TiqueteElectronicoOtrosCargosType[] OtrosCargos
+        {
+            get => otrosCargosField;
+            set => otrosCargosField = value;
+        }
+
+        /// <remarks/>
+        public TiqueteElectronicoResumenFactura ResumenFactura
+        {
+            get => resumenFacturaField;
+            set => resumenFacturaField = value;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElement("InformacionReferencia")]
+        public TiqueteElectronicoInformacionReferencia[] InformacionReferencia
+        {
+            get => informacionReferenciaField;
+            set => informacionReferenciaField = value;
+        }
+
+        /// <remarks/>
+        public TiqueteElectronicoOtros Otros
+        {
+            get => otrosField;
+            set => otrosField = value;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElement(Namespace = "http://www.w3.org/2000/09/xmldsig#")]
+        public SignatureType Signature
+        {
+            get => signatureField;
+            set => signatureField = value;
         }
     }
 
-    /// <comentarios/>
-    [System.Xml.Serialization.XmlType(AnonymousType=true, Namespace="https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/tiqueteElectronico")]
-    public enum TiqueteElectronicoInformacionReferenciaTipoDoc {
-        
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("01")]
-        Item01,
-        
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("02")]
-        Item02,
-        
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("03")]
-        Item03,
-        
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("04")]
-        Item04,
-        
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("05")]
-        Item05,
-        
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("06")]
-        Item06,
-        
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("07")]
-        Item07,
-        
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("08")]
-        Item08,
-        
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("99")]
-        Item99,
-    }
-
-    /// <comentarios/>
-    [System.Xml.Serialization.XmlType(AnonymousType=true, Namespace="https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/tiqueteElectronico")]
-    public enum TiqueteElectronicoInformacionReferenciaCodigo {
-        
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("01")]
-        Item01,
-        
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("02")]
-        Item02,
-        
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("03")]
-        Item03,
-        
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("04")]
-        Item04,
-        
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("05")]
-        Item05,
-        
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("99")]
-        Item99,
-    }
-
-    /// <comentarios/>
-    [System.Xml.Serialization.XmlType(AnonymousType=true, Namespace="https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/tiqueteElectronico")]
-    public partial class TiqueteElectronicoNormativa {
-        
-        private string numeroResolucionField;
-        
-        private string fechaResolucionField;
-        
-        /// <comentarios/>
-        public string NumeroResolucion {
-            get {
-                return numeroResolucionField;
-            }
-            set {
-                numeroResolucionField = value;
-            }
-        }
-        
-        /// <comentarios/>
-        public string FechaResolucion {
-            get {
-                return fechaResolucionField;
-            }
-            set {
-                fechaResolucionField = value;
-            }
-        }
-    }
-
-    /// <comentarios/>
-    [System.Xml.Serialization.XmlType(AnonymousType=true, Namespace="https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/tiqueteElectronico")]
-    public partial class TiqueteElectronicoOtros {
-        
-        private TiqueteElectronicoOtrosOtroTexto[] otroTextoField;
-        
-        private TiqueteElectronicoOtrosOtroContenido[] otroContenidoField;
-        
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlElement("OtroTexto")]
-        public TiqueteElectronicoOtrosOtroTexto[] OtroTexto {
-            get {
-                return otroTextoField;
-            }
-            set {
-                otroTextoField = value;
-            }
-        }
-        
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlElement("OtroContenido")]
-        public TiqueteElectronicoOtrosOtroContenido[] OtroContenido {
-            get {
-                return otroContenidoField;
-            }
-            set {
-                otroContenidoField = value;
-            }
-        }
-    }
-
-    /// <comentarios/>
-    [System.Xml.Serialization.XmlType(AnonymousType=true, Namespace="https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/tiqueteElectronico")]
-    public partial class TiqueteElectronicoOtrosOtroTexto {
-        
-        private string codigoField;
-        
-        private string valueField;
-        
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlAttribute()]
-        public string codigo {
-            get {
-                return codigoField;
-            }
-            set {
-                codigoField = value;
-            }
-        }
-        
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlText()]
-        public string Value {
-            get {
-                return valueField;
-            }
-            set {
-                valueField = value;
-            }
-        }
-    }
-
-    /// <comentarios/>
-    [System.Xml.Serialization.XmlType(AnonymousType=true, Namespace="https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/tiqueteElectronico")]
-    public partial class TiqueteElectronicoOtrosOtroContenido {
-        
-        private System.Xml.XmlElement anyField;
-        
-        private string codigoField;
-        
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlAnyElement()]
-        public System.Xml.XmlElement Any {
-            get {
-                return anyField;
-            }
-            set {
-                anyField = value;
-            }
-        }
-        
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlAttribute()]
-        public string codigo {
-            get {
-                return codigoField;
-            }
-            set {
-                codigoField = value;
-            }
-        }
-    }
-
-    /// <comentarios/>
-    [System.Xml.Serialization.XmlType(Namespace="https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/tiqueteElectronico")]
+    /// <remarks/>
+    [System.Serializable()]
+    [System.Xml.Serialization.XmlType(Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/tiqueteElectronico")]
     public partial class TiqueteElectronicoEmisorType
     {
 
@@ -1828,102 +167,1140 @@
 
         private string correoElectronicoField;
 
-        /// <comentarios/>
+        /// <remarks/>
         public string Nombre
         {
-            get
-            {
-                return nombreField;
-            }
-            set
-            {
-                nombreField = value;
-            }
+            get => nombreField;
+            set => nombreField = value;
         }
 
-        /// <comentarios/>
+        /// <remarks/>
         public TiqueteElectronicoIdentificacionType Identificacion
         {
-            get
-            {
-                return identificacionField;
-            }
-            set
-            {
-                identificacionField = value;
-            }
+            get => identificacionField;
+            set => identificacionField = value;
         }
 
-        /// <comentarios/>
+        /// <remarks/>
         public string NombreComercial
         {
-            get
-            {
-                return nombreComercialField;
-            }
-            set
-            {
-                nombreComercialField = value;
-            }
+            get => nombreComercialField;
+            set => nombreComercialField = value;
         }
 
-        /// <comentarios/>
+        /// <remarks/>
         public TiqueteElectronicoUbicacionType Ubicacion
         {
-            get
-            {
-                return ubicacionField;
-            }
-            set
-            {
-                ubicacionField = value;
-            }
+            get => ubicacionField;
+            set => ubicacionField = value;
         }
 
-        /// <comentarios/>
+        /// <remarks/>
         [System.Xml.Serialization.XmlElement(IsNullable = true)]
         public TiqueteElectronicoTelefonoType Telefono
         {
-            get
-            {
-                return telefonoField;
-            }
-            set
-            {
-                telefonoField = value;
-            }
+            get => telefonoField;
+            set => telefonoField = value;
         }
 
-        /// <comentarios/>
+        /// <remarks/>
         [System.Xml.Serialization.XmlElement(IsNullable = true)]
         public TiqueteElectronicoTelefonoType Fax
         {
-            get
-            {
-                return faxField;
-            }
-            set
-            {
-                faxField = value;
-            }
+            get => faxField;
+            set => faxField = value;
         }
 
-        /// <comentarios/>
+        /// <remarks/>
         public string CorreoElectronico
         {
-            get
-            {
-                return correoElectronicoField;
-            }
-            set
-            {
-                correoElectronicoField = value;
-            }
+            get => correoElectronicoField;
+            set => correoElectronicoField = value;
         }
     }
 
-    /// <comentarios/>
-    [System.Xml.Serialization.XmlType(Namespace="https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/tiqueteElectronico")]
+    /// <remarks/>
+    [System.Serializable()]
+    [System.Xml.Serialization.XmlType(Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/tiqueteElectronico")]
+    public partial class TiqueteElectronicoIdentificacionType
+    {
+
+        private TiqueteElectronicoIdentificacionTypeTipo tipoField;
+
+        private string numeroField;
+
+        /// <remarks/>
+        public TiqueteElectronicoIdentificacionTypeTipo Tipo
+        {
+            get => tipoField;
+            set => tipoField = value;
+        }
+
+        /// <remarks/>
+        public string Numero
+        {
+            get => numeroField;
+            set => numeroField = value;
+        }
+    }
+
+    /// <remarks/>
+    [System.Serializable()]
+    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/tiqueteElectronico")]
+    public enum TiqueteElectronicoIdentificacionTypeTipo
+    {
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("01")]
+        Item01,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("02")]
+        Item02,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("03")]
+        Item03,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("04")]
+        Item04,
+    } 
+
+    /// <remarks/>
+    [System.Serializable()]
+    [System.Xml.Serialization.XmlType(Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/tiqueteElectronico")]
+    public partial class TiqueteElectronicoCodigoMonedaType
+    {
+
+        private TiqueteElectronicoCodigoMonedaTypeCodigoMoneda codigoMonedaField;
+
+        private decimal tipoCambioField;
+
+        /// <remarks/>
+        public TiqueteElectronicoCodigoMonedaTypeCodigoMoneda CodigoMoneda
+        {
+            get => codigoMonedaField;
+            set => codigoMonedaField = value;
+        }
+
+        /// <remarks/>
+        public decimal TipoCambio
+        {
+            get => tipoCambioField;
+            set => tipoCambioField = value;
+        }
+    }
+
+    /// <remarks/>
+    [System.Serializable()]
+    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/tiqueteElectronico")]
+    public enum TiqueteElectronicoCodigoMonedaTypeCodigoMoneda
+    {
+
+        /// <remarks/>
+        AED,
+
+        /// <remarks/>
+        AFN,
+
+        /// <remarks/>
+        ALL,
+
+        /// <remarks/>
+        AMD,
+
+        /// <remarks/>
+        ANG,
+
+        /// <remarks/>
+        AOA,
+
+        /// <remarks/>
+        ARS,
+
+        /// <remarks/>
+        AUD,
+
+        /// <remarks/>
+        AWG,
+
+        /// <remarks/>
+        AZN,
+
+        /// <remarks/>
+        BAM,
+
+        /// <remarks/>
+        BBD,
+
+        /// <remarks/>
+        BDT,
+
+        /// <remarks/>
+        BGN,
+
+        /// <remarks/>
+        BHD,
+
+        /// <remarks/>
+        BIF,
+
+        /// <remarks/>
+        BMD,
+
+        /// <remarks/>
+        BND,
+
+        /// <remarks/>
+        BOB,
+
+        /// <remarks/>
+        BOV,
+
+        /// <remarks/>
+        BRL,
+
+        /// <remarks/>
+        BSD,
+
+        /// <remarks/>
+        BTN,
+
+        /// <remarks/>
+        BWP,
+
+        /// <remarks/>
+        BYR,
+
+        /// <remarks/>
+        BZD,
+
+        /// <remarks/>
+        CAD,
+
+        /// <remarks/>
+        CDF,
+
+        /// <remarks/>
+        CHE,
+
+        /// <remarks/>
+        CHF,
+
+        /// <remarks/>
+        CHW,
+
+        /// <remarks/>
+        CLF,
+
+        /// <remarks/>
+        CLP,
+
+        /// <remarks/>
+        CNY,
+
+        /// <remarks/>
+        COP,
+
+        /// <remarks/>
+        COU,
+
+        /// <remarks/>
+        CRC,
+
+        /// <remarks/>
+        CUC,
+
+        /// <remarks/>
+        CUP,
+
+        /// <remarks/>
+        CVE,
+
+        /// <remarks/>
+        CZK,
+
+        /// <remarks/>
+        DJF,
+
+        /// <remarks/>
+        DKK,
+
+        /// <remarks/>
+        DOP,
+
+        /// <remarks/>
+        DZD,
+
+        /// <remarks/>
+        EGP,
+
+        /// <remarks/>
+        ERN,
+
+        /// <remarks/>
+        ETB,
+
+        /// <remarks/>
+        EUR,
+
+        /// <remarks/>
+        FJD,
+
+        /// <remarks/>
+        FKP,
+
+        /// <remarks/>
+        GBP,
+
+        /// <remarks/>
+        GEL,
+
+        /// <remarks/>
+        GHS,
+
+        /// <remarks/>
+        GIP,
+
+        /// <remarks/>
+        GMD,
+
+        /// <remarks/>
+        GNF,
+
+        /// <remarks/>
+        GTQ,
+
+        /// <remarks/>
+        GYD,
+
+        /// <remarks/>
+        HKD,
+
+        /// <remarks/>
+        HNL,
+
+        /// <remarks/>
+        HRK,
+
+        /// <remarks/>
+        HTG,
+
+        /// <remarks/>
+        HUF,
+
+        /// <remarks/>
+        IDR,
+
+        /// <remarks/>
+        ILS,
+
+        /// <remarks/>
+        INR,
+
+        /// <remarks/>
+        IQD,
+
+        /// <remarks/>
+        IRR,
+
+        /// <remarks/>
+        ISK,
+
+        /// <remarks/>
+        JMD,
+
+        /// <remarks/>
+        JOD,
+
+        /// <remarks/>
+        JPY,
+
+        /// <remarks/>
+        KES,
+
+        /// <remarks/>
+        KGS,
+
+        /// <remarks/>
+        KHR,
+
+        /// <remarks/>
+        KMF,
+
+        /// <remarks/>
+        KPW,
+
+        /// <remarks/>
+        KRW,
+
+        /// <remarks/>
+        KWD,
+
+        /// <remarks/>
+        KYD,
+
+        /// <remarks/>
+        KZT,
+
+        /// <remarks/>
+        LAK,
+
+        /// <remarks/>
+        LBP,
+
+        /// <remarks/>
+        LKR,
+
+        /// <remarks/>
+        LRD,
+
+        /// <remarks/>
+        LSL,
+
+        /// <remarks/>
+        LYD,
+
+        /// <remarks/>
+        MAD,
+
+        /// <remarks/>
+        MDL,
+
+        /// <remarks/>
+        MGA,
+
+        /// <remarks/>
+        MKD,
+
+        /// <remarks/>
+        MMK,
+
+        /// <remarks/>
+        MNT,
+
+        /// <remarks/>
+        MOP,
+
+        /// <remarks/>
+        MRO,
+
+        /// <remarks/>
+        MUR,
+
+        /// <remarks/>
+        MVR,
+
+        /// <remarks/>
+        MWK,
+
+        /// <remarks/>
+        MXN,
+
+        /// <remarks/>
+        MXV,
+
+        /// <remarks/>
+        MYR,
+
+        /// <remarks/>
+        MZN,
+
+        /// <remarks/>
+        NAD,
+
+        /// <remarks/>
+        NGN,
+
+        /// <remarks/>
+        NIO,
+
+        /// <remarks/>
+        NOK,
+
+        /// <remarks/>
+        NPR,
+
+        /// <remarks/>
+        NZD,
+
+        /// <remarks/>
+        OMR,
+
+        /// <remarks/>
+        PAB,
+
+        /// <remarks/>
+        PEN,
+
+        /// <remarks/>
+        PGK,
+
+        /// <remarks/>
+        PHP,
+
+        /// <remarks/>
+        PKR,
+
+        /// <remarks/>
+        PLN,
+
+        /// <remarks/>
+        PYG,
+
+        /// <remarks/>
+        QAR,
+
+        /// <remarks/>
+        RON,
+
+        /// <remarks/>
+        RSD,
+
+        /// <remarks/>
+        RUB,
+
+        /// <remarks/>
+        RWF,
+
+        /// <remarks/>
+        SAR,
+
+        /// <remarks/>
+        SBD,
+
+        /// <remarks/>
+        SCR,
+
+        /// <remarks/>
+        SDG,
+
+        /// <remarks/>
+        SEK,
+
+        /// <remarks/>
+        SGD,
+
+        /// <remarks/>
+        SHP,
+
+        /// <remarks/>
+        SLL,
+
+        /// <remarks/>
+        SOS,
+
+        /// <remarks/>
+        SRD,
+
+        /// <remarks/>
+        SSP,
+
+        /// <remarks/>
+        STD,
+
+        /// <remarks/>
+        SVC,
+
+        /// <remarks/>
+        SYP,
+
+        /// <remarks/>
+        SZL,
+
+        /// <remarks/>
+        THB,
+
+        /// <remarks/>
+        TJS,
+
+        /// <remarks/>
+        TMT,
+
+        /// <remarks/>
+        TND,
+
+        /// <remarks/>
+        TOP,
+
+        /// <remarks/>
+        TRY,
+
+        /// <remarks/>
+        TTD,
+
+        /// <remarks/>
+        TWD,
+
+        /// <remarks/>
+        TZS,
+
+        /// <remarks/>
+        UAH,
+
+        /// <remarks/>
+        UGX,
+
+        /// <remarks/>
+        USD,
+
+        /// <remarks/>
+        USN,
+
+        /// <remarks/>
+        UYI,
+
+        /// <remarks/>
+        UYU,
+
+        /// <remarks/>
+        UZS,
+
+        /// <remarks/>
+        VEF,
+
+        /// <remarks/>
+        VND,
+
+        /// <remarks/>
+        VUV,
+
+        /// <remarks/>
+        WST,
+
+        /// <remarks/>
+        XAF,
+
+        /// <remarks/>
+        XAG,
+
+        /// <remarks/>
+        XAU,
+
+        /// <remarks/>
+        XBA,
+
+        /// <remarks/>
+        XBB,
+
+        /// <remarks/>
+        XBC,
+
+        /// <remarks/>
+        XBD,
+
+        /// <remarks/>
+        XCD,
+
+        /// <remarks/>
+        XDR,
+
+        /// <remarks/>
+        XOF,
+
+        /// <remarks/>
+        XPD,
+
+        /// <remarks/>
+        XPF,
+
+        /// <remarks/>
+        XPT,
+
+        /// <remarks/>
+        XSU,
+
+        /// <remarks/>
+        XTS,
+
+        /// <remarks/>
+        XUA,
+
+        /// <remarks/>
+        XXX,
+
+        /// <remarks/>
+        YER,
+
+        /// <remarks/>
+        ZAR,
+
+        /// <remarks/>
+        ZMW,
+
+        /// <remarks/>
+        ZWL,
+    }
+
+    /// <remarks/>
+    [System.Serializable()]
+    [System.Xml.Serialization.XmlType(Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/tiqueteElectronico")]
+    public partial class TiqueteElectronicoOtrosCargosType
+    {
+
+        private TiqueteElectronicoOtrosCargosTypeTipoDocumento tipoDocumentoField;
+
+        private string numeroIdentidadTerceroField;
+
+        private string nombreTerceroField;
+
+        private string detalleField;
+
+        private decimal porcentajeField;
+
+        private bool porcentajeFieldSpecified;
+
+        private decimal montoCargoField;
+
+        /// <remarks/>
+        public TiqueteElectronicoOtrosCargosTypeTipoDocumento TipoDocumento
+        {
+            get => tipoDocumentoField;
+            set => tipoDocumentoField = value;
+        }
+
+        /// <remarks/>
+        public string NumeroIdentidadTercero
+        {
+            get => numeroIdentidadTerceroField;
+            set => numeroIdentidadTerceroField = value;
+        }
+
+        /// <remarks/>
+        public string NombreTercero
+        {
+            get => nombreTerceroField;
+            set => nombreTerceroField = value;
+        }
+
+        /// <remarks/>
+        public string Detalle
+        {
+            get => detalleField;
+            set => detalleField = value;
+        }
+
+        /// <remarks/>
+        public decimal Porcentaje
+        {
+            get => porcentajeField;
+            set => porcentajeField = value;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnore()]
+        public bool PorcentajeSpecified
+        {
+            get => porcentajeFieldSpecified;
+            set => porcentajeFieldSpecified = value;
+        }
+
+        /// <remarks/>
+        public decimal MontoCargo
+        {
+            get => montoCargoField;
+            set => montoCargoField = value;
+        }
+    }
+
+    /// <remarks/>
+    [System.Serializable()]
+    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/tiqueteElectronico")]
+    public enum TiqueteElectronicoOtrosCargosTypeTipoDocumento
+    {
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("01")]
+        Item01,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("02")]
+        Item02,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("03")]
+        Item03,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("04")]
+        Item04,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("05")]
+        Item05,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("06")]
+        Item06,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("07")]
+        Item07,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("99")]
+        Item99,
+    }
+
+    /// <remarks/>
+    [System.Serializable()]
+    [System.Xml.Serialization.XmlType(Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/tiqueteElectronico")]
+    public partial class TiqueteElectronicoExoneracionType
+    {
+
+        private TiqueteElectronicoExoneracionTypeTipoDocumento tipoDocumentoField;
+
+        private string numeroDocumentoField;
+
+        private string nombreInstitucionField;
+
+        private System.DateTime fechaEmisionField;
+
+        private string porcentajeExoneracionField;
+
+        private decimal montoExoneracionField;
+
+        /// <remarks/>
+        public TiqueteElectronicoExoneracionTypeTipoDocumento TipoDocumento
+        {
+            get => tipoDocumentoField;
+            set => tipoDocumentoField = value;
+        }
+
+        /// <remarks/>
+        public string NumeroDocumento
+        {
+            get => numeroDocumentoField;
+            set => numeroDocumentoField = value;
+        }
+
+        /// <remarks/>
+        public string NombreInstitucion
+        {
+            get => nombreInstitucionField;
+            set => nombreInstitucionField = value;
+        }
+
+        /// <remarks/>
+        public System.DateTime FechaEmision
+        {
+            get => fechaEmisionField;
+            set => fechaEmisionField = value;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElement(DataType = "positiveInteger")]
+        public string PorcentajeExoneracion
+        {
+            get => porcentajeExoneracionField;
+            set => porcentajeExoneracionField = value;
+        }
+
+        /// <remarks/>
+        public decimal MontoExoneracion
+        {
+            get => montoExoneracionField;
+            set => montoExoneracionField = value;
+        }
+    }
+
+    /// <remarks/>
+    [System.Serializable()]
+    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/tiqueteElectronico")]
+    public enum TiqueteElectronicoExoneracionTypeTipoDocumento
+    {
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("01")]
+        Item01,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("02")]
+        Item02,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("03")]
+        Item03,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("04")]
+        Item04,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("05")]
+        Item05,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("06")]
+        Item06,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("07")]
+        Item07,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("99")]
+        Item99,
+    }
+
+    /// <remarks/>
+    [System.Serializable()]
+    [System.Xml.Serialization.XmlType(Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/tiqueteElectronico")]
+    public partial class TiqueteElectronicoImpuestoType
+    {
+
+        private TiqueteElectronicoImpuestoTypeCodigo codigoField;
+
+        private TiqueteElectronicoImpuestoTypeCodigoTarifa codigoTarifaField;
+
+        private bool codigoTarifaFieldSpecified;
+
+        private decimal tarifaField;
+
+        private bool tarifaFieldSpecified;
+
+        private decimal factorIVAField;
+
+        private bool factorIVAFieldSpecified;
+
+        private decimal montoField;
+
+        private TiqueteElectronicoExoneracionType exoneracionField;
+
+        /// <remarks/>
+        public TiqueteElectronicoImpuestoTypeCodigo Codigo
+        {
+            get => codigoField;
+            set => codigoField = value;
+        }
+
+        /// <remarks/>
+        public TiqueteElectronicoImpuestoTypeCodigoTarifa CodigoTarifa
+        {
+            get => codigoTarifaField;
+            set => codigoTarifaField = value;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnore()]
+        public bool CodigoTarifaSpecified
+        {
+            get => codigoTarifaFieldSpecified;
+            set => codigoTarifaFieldSpecified = value;
+        }
+
+        /// <remarks/>
+        public decimal Tarifa
+        {
+            get => tarifaField;
+            set => tarifaField = value;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnore()]
+        public bool TarifaSpecified
+        {
+            get => tarifaFieldSpecified;
+            set => tarifaFieldSpecified = value;
+        }
+
+        /// <remarks/>
+        public decimal FactorIVA
+        {
+            get => factorIVAField;
+            set => factorIVAField = value;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnore()]
+        public bool FactorIVASpecified
+        {
+            get => factorIVAFieldSpecified;
+            set => factorIVAFieldSpecified = value;
+        }
+
+        /// <remarks/>
+        public decimal Monto
+        {
+            get => montoField;
+            set => montoField = value;
+        }
+
+        /// <remarks/>
+        public TiqueteElectronicoExoneracionType Exoneracion
+        {
+            get => exoneracionField;
+            set => exoneracionField = value;
+        }
+    }
+
+    /// <remarks/>
+    [System.Serializable()]
+    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/tiqueteElectronico")]
+    public enum TiqueteElectronicoImpuestoTypeCodigo
+    {
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("01")]
+        Item01,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("02")]
+        Item02,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("03")]
+        Item03,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("04")]
+        Item04,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("05")]
+        Item05,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("06")]
+        Item06,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("07")]
+        Item07,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("08")]
+        Item08,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("12")]
+        Item12,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("99")]
+        Item99,
+    }
+
+    /// <remarks/>
+    [System.Serializable()]
+    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/tiqueteElectronico")]
+    public enum TiqueteElectronicoImpuestoTypeCodigoTarifa
+    {
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("01")]
+        Item01,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("02")]
+        Item02,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("03")]
+        Item03,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("04")]
+        Item04,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("05")]
+        Item05,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("06")]
+        Item06,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("07")]
+        Item07,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("08")]
+        Item08,
+    }
+
+    /// <remarks/>
+    [System.Serializable()]
+    [System.Xml.Serialization.XmlType(Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/tiqueteElectronico")]
+    public partial class TiqueteElectronicoDescuentoType
+    {
+
+        private decimal montoDescuentoField;
+
+        private string naturalezaDescuentoField;
+
+        /// <remarks/>
+        public decimal MontoDescuento
+        {
+            get => montoDescuentoField;
+            set => montoDescuentoField = value;
+        }
+
+        /// <remarks/>
+        public string NaturalezaDescuento
+        {
+            get => naturalezaDescuentoField;
+            set => naturalezaDescuentoField = value;
+        }
+    }
+
+    /// <remarks/>
+    [System.Serializable()]
+    [System.Xml.Serialization.XmlType(Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/tiqueteElectronico")]
+    public partial class TiqueteElectronicoCodigoType
+    {
+
+        private TiqueteElectronicoCodigoTypeTipo tipoField;
+
+        private string codigoField;
+
+        /// <remarks/>
+        public TiqueteElectronicoCodigoTypeTipo Tipo
+        {
+            get => tipoField;
+            set => tipoField = value;
+        }
+
+        /// <remarks/>
+        public string Codigo
+        {
+            get => codigoField;
+            set => codigoField = value;
+        }
+    }
+
+    /// <remarks/>
+    [System.Serializable()]
+    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/tiqueteElectronico")]
+    public enum TiqueteElectronicoCodigoTypeTipo
+    {
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("01")]
+        Item01,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("02")]
+        Item02,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("03")]
+        Item03,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("04")]
+        Item04,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("99")]
+        Item99,
+    }
+
+    /// <remarks/>
+    [System.Serializable()]
+    [System.Xml.Serialization.XmlType(Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/tiqueteElectronico")]
     public partial class TiqueteElectronicoReceptorType
     {
 
@@ -1937,154 +1314,81 @@
 
         private TiqueteElectronicoUbicacionType ubicacionField;
 
+        private string otrasSenasExtranjeroField;
+
         private TiqueteElectronicoTelefonoType telefonoField;
 
         private TiqueteElectronicoTelefonoType faxField;
 
         private string correoElectronicoField;
 
-        /// <comentarios/>
+        /// <remarks/>
         public string Nombre
         {
-            get
-            {
-                return nombreField;
-            }
-            set
-            {
-                nombreField = value;
-            }
+            get => nombreField;
+            set => nombreField = value;
         }
 
-        /// <comentarios/>
+        /// <remarks/>
         public TiqueteElectronicoIdentificacionType Identificacion
         {
-            get
-            {
-                return identificacionField;
-            }
-            set
-            {
-                identificacionField = value;
-            }
+            get => identificacionField;
+            set => identificacionField = value;
         }
 
-        /// <comentarios/>
+        /// <remarks/>
         public string IdentificacionExtranjero
         {
-            get
-            {
-                return identificacionExtranjeroField;
-            }
-            set
-            {
-                identificacionExtranjeroField = value;
-            }
+            get => identificacionExtranjeroField;
+            set => identificacionExtranjeroField = value;
         }
 
-        /// <comentarios/>
+        /// <remarks/>
         public string NombreComercial
         {
-            get
-            {
-                return nombreComercialField;
-            }
-            set
-            {
-                nombreComercialField = value;
-            }
+            get => nombreComercialField;
+            set => nombreComercialField = value;
         }
 
-        /// <comentarios/>
+        /// <remarks/>
         public TiqueteElectronicoUbicacionType Ubicacion
         {
-            get
-            {
-                return ubicacionField;
-            }
-            set
-            {
-                ubicacionField = value;
-            }
+            get => ubicacionField;
+            set => ubicacionField = value;
         }
 
-        /// <comentarios/>
+        /// <remarks/>
+        public string OtrasSenasExtranjero
+        {
+            get => otrasSenasExtranjeroField;
+            set => otrasSenasExtranjeroField = value;
+        }
+
+        /// <remarks/>
         public TiqueteElectronicoTelefonoType Telefono
         {
-            get
-            {
-                return telefonoField;
-            }
-            set
-            {
-                telefonoField = value;
-            }
+            get => telefonoField;
+            set => telefonoField = value;
         }
 
-        /// <comentarios/>
+        /// <remarks/>
         public TiqueteElectronicoTelefonoType Fax
         {
-            get
-            {
-                return faxField;
-            }
-            set
-            {
-                faxField = value;
-            }
+            get => faxField;
+            set => faxField = value;
         }
 
-        /// <comentarios/>
+        /// <remarks/>
         public string CorreoElectronico
         {
-            get
-            {
-                return correoElectronicoField;
-            }
-            set
-            {
-                correoElectronicoField = value;
-            }
+            get => correoElectronicoField;
+            set => correoElectronicoField = value;
         }
     }
 
-    /// <comentarios/>
-    [System.Xml.Serialization.XmlType(Namespace="https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/tiqueteElectronico")]
-    public partial class TiqueteElectronicoIdentificacionType
-    {
-
-        private TiqueteElectronicoIdentificacionTypeTipo tipoField;
-
-        private string numeroField;
-
-        /// <comentarios/>
-        public TiqueteElectronicoIdentificacionTypeTipo Tipo
-        {
-            get
-            {
-                return tipoField;
-            }
-            set
-            {
-                tipoField = value;
-            }
-        }
-
-        /// <comentarios/>
-        public string Numero
-        {
-            get
-            {
-                return numeroField;
-            }
-            set
-            {
-                numeroField = value;
-            }
-        }
-    }
-
-    [System.Xml.Serialization.XmlType(Namespace="https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/tiqueteElectronico")]
+    /// <remarks/>
+    [System.Serializable()]
+    [System.Xml.Serialization.XmlType(Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/tiqueteElectronico")]
     public partial class TiqueteElectronicoUbicacionType
     {
 
@@ -2098,74 +1402,49 @@
 
         private string otrasSenasField;
 
-        /// <comentarios/>
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElement(DataType = "positiveInteger")]
         public string Provincia
         {
-            get
-            {
-                return provinciaField;
-            }
-            set
-            {
-                provinciaField = value;
-            }
+            get => provinciaField;
+            set => provinciaField = value;
         }
 
-        /// <comentarios/>
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElement(DataType = "positiveInteger")]
         public string Canton
         {
-            get
-            {
-                return cantonField;
-            }
-            set
-            {
-                cantonField = value;
-            }
+            get => cantonField;
+            set => cantonField = value;
         }
 
-        /// <comentarios/>
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElement(DataType = "positiveInteger")]
         public string Distrito
         {
-            get
-            {
-                return distritoField;
-            }
-            set
-            {
-                distritoField = value;
-            }
+            get => distritoField;
+            set => distritoField = value;
         }
 
-        /// <comentarios/>
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElement(DataType = "positiveInteger")]
         public string Barrio
         {
-            get
-            {
-                return barrioField;
-            }
-            set
-            {
-                barrioField = value;
-            }
+            get => barrioField;
+            set => barrioField = value;
         }
 
-        /// <comentarios/>
+        /// <remarks/>
         public string OtrasSenas
         {
-            get
-            {
-                return otrasSenasField;
-            }
-            set
-            {
-                otrasSenasField = value;
-            }
+            get => otrasSenasField;
+            set => otrasSenasField = value;
         }
     }
 
-    /// <comentarios/>
-    [System.Xml.Serialization.XmlType(Namespace="https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/tiqueteElectronico")]
+    /// <remarks/>
+    [System.Serializable()]
+    [System.Xml.Serialization.XmlType(Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/tiqueteElectronico")]
     public partial class TiqueteElectronicoTelefonoType
     {
 
@@ -2173,371 +1452,1110 @@
 
         private string numTelefonoField;
 
-        /// <comentarios/>
+        /// <remarks/>
         [System.Xml.Serialization.XmlElement(DataType = "integer")]
         public string CodigoPais
         {
-            get
-            {
-                return codigoPaisField;
-            }
-            set
-            {
-                codigoPaisField = value;
-            }
+            get => codigoPaisField;
+            set => codigoPaisField = value;
         }
 
-        /// <comentarios/>
+        /// <remarks/>
         [System.Xml.Serialization.XmlElement(DataType = "integer")]
         public string NumTelefono
         {
-            get
-            {
-                return numTelefonoField;
-            }
-            set
-            {
-                numTelefonoField = value;
-            }
+            get => numTelefonoField;
+            set => numTelefonoField = value;
         }
     }
 
-    /// <comentarios/>
-    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace="https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/tiqueteElectronico")]
-    public enum TiqueteElectronicoCodigoTypeTipo
+    /// <remarks/>
+    [System.Serializable()]
+    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/tiqueteElectronico")]
+    public enum TiqueteElectronicoCondicionVenta
     {
 
-        /// <comentarios/>
+        /// <remarks/>
         [System.Xml.Serialization.XmlEnum("01")]
         Item01,
 
-        /// <comentarios/>
+        /// <remarks/>
         [System.Xml.Serialization.XmlEnum("02")]
         Item02,
 
-        /// <comentarios/>
+        /// <remarks/>
         [System.Xml.Serialization.XmlEnum("03")]
         Item03,
 
-        /// <comentarios/>
+        /// <remarks/>
         [System.Xml.Serialization.XmlEnum("04")]
         Item04,
 
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("99")]
-        Item99,
-    }
-
-    /// <comentarios/>
-    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace="https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/tiqueteElectronico")]
-    public enum TiqueteElectronicoIdentificacionTypeTipo
-    {
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("01")]
-        Item01,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("02")]
-        Item02,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("03")]
-        Item03,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("04")]
-        Item04,
-    }
-
-    /// <comentarios/>
-    [System.Xml.Serialization.XmlType(Namespace="https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/tiqueteElectronico")]
-    public partial class TiqueteElectronicoImpuestoType
-    {
-
-        private TiqueteElectronicoImpuestoTypeCodigo codigoField;
-
-        private decimal tarifaField;
-
-        private decimal montoField;
-
-        private TiqueteElectronicoExoneracionType exoneracionField;
-
-        /// <comentarios/>
-        public TiqueteElectronicoImpuestoTypeCodigo Codigo
-        {
-            get
-            {
-                return codigoField;
-            }
-            set
-            {
-                codigoField = value;
-            }
-        }
-
-        /// <comentarios/>
-        public decimal Tarifa
-        {
-            get
-            {
-                return tarifaField;
-            }
-            set
-            {
-                tarifaField = value;
-            }
-        }
-
-        /// <comentarios/>
-        public decimal Monto
-        {
-            get
-            {
-                return montoField;
-            }
-            set
-            {
-                montoField = value;
-            }
-        }
-
-        /// <comentarios/>
-        public TiqueteElectronicoExoneracionType Exoneracion
-        {
-            get
-            {
-                return exoneracionField;
-            }
-            set
-            {
-                exoneracionField = value;
-            }
-        }
-    }
-
-    /// <comentarios/>
-    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace="https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/tiqueteElectronico")]
-    public enum TiqueteElectronicoImpuestoTypeCodigo
-    {
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("01")]
-        Item01,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("02")]
-        Item02,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("03")]
-        Item03,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("04")]
-        Item04,
-
-        /// <comentarios/>
+        /// <remarks/>
         [System.Xml.Serialization.XmlEnum("05")]
         Item05,
 
-        /// <comentarios/>
+        /// <remarks/>
         [System.Xml.Serialization.XmlEnum("06")]
         Item06,
 
-        /// <comentarios/>
+        /// <remarks/>
         [System.Xml.Serialization.XmlEnum("07")]
         Item07,
 
-        /// <comentarios/>
+        /// <remarks/>
         [System.Xml.Serialization.XmlEnum("08")]
         Item08,
 
-        /// <comentarios/>
+        /// <remarks/>
         [System.Xml.Serialization.XmlEnum("09")]
         Item09,
 
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("10")]
-        Item10,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("11")]
-        Item11,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("12")]
-        Item12,
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlEnum("98")]
-        Item98,
-
-        /// <comentarios/>
+        /// <remarks/>
         [System.Xml.Serialization.XmlEnum("99")]
         Item99,
     }
 
-    /// <comentarios/>
-    [System.Xml.Serialization.XmlType(Namespace="https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/tiqueteElectronico")]
-    public partial class TiqueteElectronicoExoneracionType
+    /// <remarks/>
+    [System.Serializable()]
+    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/tiqueteElectronico")]
+    public enum TiqueteElectronicoMedioPago
     {
 
-        private TiqueteElectronicoExoneracionTypeTipoDocumento tipoDocumentoField;
-
-        private string numeroDocumentoField;
-
-        private string nombreInstitucionField;
-
-        private System.DateTime fechaEmisionField;
-
-        private decimal montoImpuestoField;
-
-        private string porcentajeCompraField;
-
-        /// <comentarios/>
-        public TiqueteElectronicoExoneracionTypeTipoDocumento TipoDocumento
-        {
-            get
-            {
-                return tipoDocumentoField;
-            }
-            set
-            {
-                tipoDocumentoField = value;
-            }
-        }
-
-        /// <comentarios/>
-        public string NumeroDocumento
-        {
-            get
-            {
-                return numeroDocumentoField;
-            }
-            set
-            {
-                numeroDocumentoField = value;
-            }
-        }
-
-        /// <comentarios/>
-        public string NombreInstitucion
-        {
-            get
-            {
-                return nombreInstitucionField;
-            }
-            set
-            {
-                nombreInstitucionField = value;
-            }
-        }
-
-        /// <comentarios/>
-        public System.DateTime FechaEmision
-        {
-            get
-            {
-                return fechaEmisionField;
-            }
-            set
-            {
-                fechaEmisionField = value;
-            }
-        }
-
-        /// <comentarios/>
-        public decimal MontoImpuesto
-        {
-            get
-            {
-                return montoImpuestoField;
-            }
-            set
-            {
-                montoImpuestoField = value;
-            }
-        }
-
-        /// <comentarios/>
-        [System.Xml.Serialization.XmlElement(DataType = "integer")]
-        public string PorcentajeCompra
-        {
-            get
-            {
-                return porcentajeCompraField;
-            }
-            set
-            {
-                porcentajeCompraField = value;
-            }
-        }
-    }
-
-    /// <comentarios/>
-    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace="https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/tiqueteElectronico")]
-    public enum TiqueteElectronicoExoneracionTypeTipoDocumento
-    {
-
-        /// <comentarios/>
+        /// <remarks/>
         [System.Xml.Serialization.XmlEnum("01")]
         Item01,
 
-        /// <comentarios/>
+        /// <remarks/>
         [System.Xml.Serialization.XmlEnum("02")]
         Item02,
 
-        /// <comentarios/>
+        /// <remarks/>
         [System.Xml.Serialization.XmlEnum("03")]
         Item03,
 
-        /// <comentarios/>
+        /// <remarks/>
         [System.Xml.Serialization.XmlEnum("04")]
         Item04,
 
-        /// <comentarios/>
+        /// <remarks/>
         [System.Xml.Serialization.XmlEnum("05")]
         Item05,
 
-        /// <comentarios/>
+        /// <remarks/>
         [System.Xml.Serialization.XmlEnum("99")]
         Item99,
     }
 
-    /// <comentarios/>
-    [System.Xml.Serialization.XmlType(Namespace="https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/tiqueteElectronico")]
-    public partial class TiqueteElectronicoCodigoType
+    /// <remarks/>
+    [System.Serializable()]
+    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/tiqueteElectronico")]
+    public partial class TiqueteElectronicoLineaDetalle
     {
 
-        private TiqueteElectronicoCodigoTypeTipo tipoField;
+        private string numeroLineaField;
 
         private string codigoField;
 
-        /// <comentarios/>
-        public TiqueteElectronicoCodigoTypeTipo Tipo
+        private TiqueteElectronicoCodigoType[] codigoComercialField;
+
+        private decimal cantidadField;
+
+        private TiqueteElectronicoUnidadMedidaType unidadMedidaField;
+
+        private string unidadMedidaComercialField;
+
+        private string detalleField;
+
+        private decimal precioUnitarioField;
+
+        private decimal montoTotalField;
+
+        private TiqueteElectronicoDescuentoType[] descuentoField;
+
+        private decimal subTotalField;
+
+        private decimal baseImponibleField;
+
+        private bool baseImponibleFieldSpecified;
+
+        private TiqueteElectronicoImpuestoType[] impuestoField;
+
+        private decimal impuestoNetoField;
+
+        private bool impuestoNetoFieldSpecified;
+
+        private decimal montoTotalLineaField;
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElement(DataType = "positiveInteger")]
+        public string NumeroLinea
         {
-            get
-            {
-                return tipoField;
-            }
-            set
-            {
-                tipoField = value;
-            }
+            get => numeroLineaField;
+            set => numeroLineaField = value;
         }
 
-        /// <comentarios/>
+        /// <remarks/>
         public string Codigo
         {
-            get
-            {
-                return codigoField;
-            }
-            set
-            {
-                codigoField = value;
-            }
+            get => codigoField;
+            set => codigoField = value;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElement("CodigoComercial")]
+        public TiqueteElectronicoCodigoType[] CodigoComercial
+        {
+            get => codigoComercialField;
+            set => codigoComercialField = value;
+        }
+
+        /// <remarks/>
+        public decimal Cantidad
+        {
+            get => cantidadField;
+            set => cantidadField = value;
+        }
+
+        /// <remarks/>
+        public TiqueteElectronicoUnidadMedidaType UnidadMedida
+        {
+            get => unidadMedidaField;
+            set => unidadMedidaField = value;
+        }
+
+        /// <remarks/>
+        public string UnidadMedidaComercial
+        {
+            get => unidadMedidaComercialField;
+            set => unidadMedidaComercialField = value;
+        }
+
+        /// <remarks/>
+        public string Detalle
+        {
+            get => detalleField;
+            set => detalleField = value;
+        }
+
+        /// <remarks/>
+        public decimal PrecioUnitario
+        {
+            get => precioUnitarioField;
+            set => precioUnitarioField = value;
+        }
+
+        /// <remarks/>
+        public decimal MontoTotal
+        {
+            get => montoTotalField;
+            set => montoTotalField = value;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElement("Descuento")]
+        public TiqueteElectronicoDescuentoType[] Descuento
+        {
+            get => descuentoField;
+            set => descuentoField = value;
+        }
+
+        /// <remarks/>
+        public decimal SubTotal
+        {
+            get => subTotalField;
+            set => subTotalField = value;
+        }
+
+        /// <remarks/>
+        public decimal BaseImponible
+        {
+            get => baseImponibleField;
+            set => baseImponibleField = value;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnore()]
+        public bool BaseImponibleSpecified
+        {
+            get => baseImponibleFieldSpecified;
+            set => baseImponibleFieldSpecified = value;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElement("Impuesto")]
+        public TiqueteElectronicoImpuestoType[] Impuesto
+        {
+            get => impuestoField;
+            set => impuestoField = value;
+        }
+
+        /// <remarks/>
+        public decimal ImpuestoNeto
+        {
+            get => impuestoNetoField;
+            set => impuestoNetoField = value;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnore()]
+        public bool ImpuestoNetoSpecified
+        {
+            get => impuestoNetoFieldSpecified;
+            set => impuestoNetoFieldSpecified = value;
+        }
+
+        /// <remarks/>
+        public decimal MontoTotalLinea
+        {
+            get => montoTotalLineaField;
+            set => montoTotalLineaField = value;
+        }
+    }
+
+    /// <remarks/>
+    [System.Serializable()]
+    [System.Xml.Serialization.XmlType(Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/tiqueteElectronico")]
+    public enum TiqueteElectronicoUnidadMedidaType
+    {
+
+        /// <remarks/>
+        Al,
+
+        /// <remarks/>
+        Alc,
+
+        /// <remarks/>
+        Cm,
+
+        /// <remarks/>
+        I,
+
+        /// <remarks/>
+        Os,
+
+        /// <remarks/>
+        Sp,
+
+        /// <remarks/>
+        Spe,
+
+        /// <remarks/>
+        St,
+
+        /// <remarks/>
+        m,
+
+        /// <remarks/>
+        kg,
+
+        /// <remarks/>
+        s,
+
+        /// <remarks/>
+        A,
+
+        /// <remarks/>
+        K,
+
+        /// <remarks/>
+        mol,
+
+        /// <remarks/>
+        cd,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("m²")]
+        m1,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("m³")]
+        m2,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("m/s")]
+        ms,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("m/s²")]
+        ms1,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("1/m")]
+        Item1m,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("kg/m³")]
+        kgm,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("A/m²")]
+        Am,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("A/m")]
+        Am1,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("mol/m³")]
+        molm,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("cd/m²")]
+        cdm,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("1")]
+        Item1,
+
+        /// <remarks/>
+        rad,
+
+        /// <remarks/>
+        sr,
+
+        /// <remarks/>
+        Hz,
+
+        /// <remarks/>
+        N,
+
+        /// <remarks/>
+        Pa,
+
+        /// <remarks/>
+        J,
+
+        /// <remarks/>
+        W,
+
+        /// <remarks/>
+        C,
+
+        /// <remarks/>
+        V,
+
+        /// <remarks/>
+        F,
+
+        /// <remarks/>
+        Ω,
+
+        /// <remarks/>
+        S,
+
+        /// <remarks/>
+        Wb,
+
+        /// <remarks/>
+        T,
+
+        /// <remarks/>
+        H,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("°C")]
+        C1,
+
+        /// <remarks/>
+        lm,
+
+        /// <remarks/>
+        lx,
+
+        /// <remarks/>
+        Bq,
+
+        /// <remarks/>
+        Gy,
+
+        /// <remarks/>
+        Sv,
+
+        /// <remarks/>
+        kat,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("Pa·s")]
+        Pas,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("N·m")]
+        Nm,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("N/m")]
+        Nm1,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("rad/s")]
+        rads,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("rad/s²")]
+        rads1,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("W/m²")]
+        Wm,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("J/K")]
+        JK,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("J/(kg·K)")]
+        JkgK,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("J/kg")]
+        Jkg,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("W/(m·K)")]
+        WmK,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("J/m³")]
+        Jm,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("V/m")]
+        Vm,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("C/m³")]
+        Cm1,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("C/m²")]
+        Cm2,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("F/m")]
+        Fm,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("H/m")]
+        Hm,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("J/mol")]
+        Jmol,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("J/(mol·K)")]
+        JmolK,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("C/kg")]
+        Ckg,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("Gy/s")]
+        Gys,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("W/sr")]
+        Wsr,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("W/(m²·sr)")]
+        Wmsr,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("kat/m³")]
+        katm,
+
+        /// <remarks/>
+        min,
+
+        /// <remarks/>
+        h,
+
+        /// <remarks/>
+        d,
+
+        /// <remarks/>
+        º,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("´")]
+        Item,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("´´")]
+        Item2,
+
+        /// <remarks/>
+        L,
+
+        /// <remarks/>
+        t,
+
+        /// <remarks/>
+        Np,
+
+        /// <remarks/>
+        B,
+
+        /// <remarks/>
+        eV,
+
+        /// <remarks/>
+        u,
+
+        /// <remarks/>
+        ua,
+
+        /// <remarks/>
+        Unid,
+
+        /// <remarks/>
+        Gal,
+
+        /// <remarks/>
+        g,
+
+        /// <remarks/>
+        Km,
+
+        /// <remarks/>
+        Kw,
+
+        /// <remarks/>
+        ln,
+
+        /// <remarks/>
+        cm,
+
+        /// <remarks/>
+        mL,
+
+        /// <remarks/>
+        mm,
+
+        /// <remarks/>
+        Oz,
+
+        /// <remarks/>
+        Otros,
+    }
+
+    /// <remarks/>
+    [System.Serializable()]
+    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/tiqueteElectronico")]
+    public partial class TiqueteElectronicoResumenFactura
+    {
+
+        private TiqueteElectronicoCodigoMonedaType codigoTipoMonedaField;
+
+        private decimal totalServGravadosField;
+
+        private bool totalServGravadosFieldSpecified;
+
+        private decimal totalServExentosField;
+
+        private bool totalServExentosFieldSpecified;
+
+        private decimal totalServExoneradoField;
+
+        private bool totalServExoneradoFieldSpecified;
+
+        private decimal totalMercanciasGravadasField;
+
+        private bool totalMercanciasGravadasFieldSpecified;
+
+        private decimal totalMercanciasExentasField;
+
+        private bool totalMercanciasExentasFieldSpecified;
+
+        private decimal totalMercExoneradaField;
+
+        private bool totalMercExoneradaFieldSpecified;
+
+        private decimal totalGravadoField;
+
+        private bool totalGravadoFieldSpecified;
+
+        private decimal totalExentoField;
+
+        private bool totalExentoFieldSpecified;
+
+        private decimal totalExoneradoField;
+
+        private bool totalExoneradoFieldSpecified;
+
+        private decimal totalVentaField;
+
+        private decimal totalDescuentosField;
+
+        private bool totalDescuentosFieldSpecified;
+
+        private decimal totalVentaNetaField;
+
+        private decimal totalImpuestoField;
+
+        private bool totalImpuestoFieldSpecified;
+
+        private decimal totalIVADevueltoField;
+
+        private bool totalIVADevueltoFieldSpecified;
+
+        private decimal totalOtrosCargosField;
+
+        private bool totalOtrosCargosFieldSpecified;
+
+        private decimal totalComprobanteField;
+
+        /// <remarks/>
+        public TiqueteElectronicoCodigoMonedaType CodigoTipoMoneda
+        {
+            get => codigoTipoMonedaField;
+            set => codigoTipoMonedaField = value;
+        }
+
+        /// <remarks/>
+        public decimal TotalServGravados
+        {
+            get => totalServGravadosField;
+            set => totalServGravadosField = value;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnore()]
+        public bool TotalServGravadosSpecified
+        {
+            get => totalServGravadosFieldSpecified;
+            set => totalServGravadosFieldSpecified = value;
+        }
+
+        /// <remarks/>
+        public decimal TotalServExentos
+        {
+            get => totalServExentosField;
+            set => totalServExentosField = value;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnore()]
+        public bool TotalServExentosSpecified
+        {
+            get => totalServExentosFieldSpecified;
+            set => totalServExentosFieldSpecified = value;
+        }
+
+        /// <remarks/>
+        public decimal TotalServExonerado
+        {
+            get => totalServExoneradoField;
+            set => totalServExoneradoField = value;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnore()]
+        public bool TotalServExoneradoSpecified
+        {
+            get => totalServExoneradoFieldSpecified;
+            set => totalServExoneradoFieldSpecified = value;
+        }
+
+        /// <remarks/>
+        public decimal TotalMercanciasGravadas
+        {
+            get => totalMercanciasGravadasField;
+            set => totalMercanciasGravadasField = value;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnore()]
+        public bool TotalMercanciasGravadasSpecified
+        {
+            get => totalMercanciasGravadasFieldSpecified;
+            set => totalMercanciasGravadasFieldSpecified = value;
+        }
+
+        /// <remarks/>
+        public decimal TotalMercanciasExentas
+        {
+            get => totalMercanciasExentasField;
+            set => totalMercanciasExentasField = value;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnore()]
+        public bool TotalMercanciasExentasSpecified
+        {
+            get => totalMercanciasExentasFieldSpecified;
+            set => totalMercanciasExentasFieldSpecified = value;
+        }
+
+        /// <remarks/>
+        public decimal TotalMercExonerada
+        {
+            get => totalMercExoneradaField;
+            set => totalMercExoneradaField = value;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnore()]
+        public bool TotalMercExoneradaSpecified
+        {
+            get => totalMercExoneradaFieldSpecified;
+            set => totalMercExoneradaFieldSpecified = value;
+        }
+
+        /// <remarks/>
+        public decimal TotalGravado
+        {
+            get => totalGravadoField;
+            set => totalGravadoField = value;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnore()]
+        public bool TotalGravadoSpecified
+        {
+            get => totalGravadoFieldSpecified;
+            set => totalGravadoFieldSpecified = value;
+        }
+
+        /// <remarks/>
+        public decimal TotalExento
+        {
+            get => totalExentoField;
+            set => totalExentoField = value;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnore()]
+        public bool TotalExentoSpecified
+        {
+            get => totalExentoFieldSpecified;
+            set => totalExentoFieldSpecified = value;
+        }
+
+        /// <remarks/>
+        public decimal TotalExonerado
+        {
+            get => totalExoneradoField;
+            set => totalExoneradoField = value;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnore()]
+        public bool TotalExoneradoSpecified
+        {
+            get => totalExoneradoFieldSpecified;
+            set => totalExoneradoFieldSpecified = value;
+        }
+
+        /// <remarks/>
+        public decimal TotalVenta
+        {
+            get => totalVentaField;
+            set => totalVentaField = value;
+        }
+
+        /// <remarks/>
+        public decimal TotalDescuentos
+        {
+            get => totalDescuentosField;
+            set => totalDescuentosField = value;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnore()]
+        public bool TotalDescuentosSpecified
+        {
+            get => totalDescuentosFieldSpecified;
+            set => totalDescuentosFieldSpecified = value;
+        }
+
+        /// <remarks/>
+        public decimal TotalVentaNeta
+        {
+            get => totalVentaNetaField;
+            set => totalVentaNetaField = value;
+        }
+
+        /// <remarks/>
+        public decimal TotalImpuesto
+        {
+            get => totalImpuestoField;
+            set => totalImpuestoField = value;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnore()]
+        public bool TotalImpuestoSpecified
+        {
+            get => totalImpuestoFieldSpecified;
+            set => totalImpuestoFieldSpecified = value;
+        }
+
+        /// <remarks/>
+        public decimal TotalIVADevuelto
+        {
+            get => totalIVADevueltoField;
+            set => totalIVADevueltoField = value;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnore()]
+        public bool TotalIVADevueltoSpecified
+        {
+            get => totalIVADevueltoFieldSpecified;
+            set => totalIVADevueltoFieldSpecified = value;
+        }
+
+        /// <remarks/>
+        public decimal TotalOtrosCargos
+        {
+            get => totalOtrosCargosField;
+            set => totalOtrosCargosField = value;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnore()]
+        public bool TotalOtrosCargosSpecified
+        {
+            get => totalOtrosCargosFieldSpecified;
+            set => totalOtrosCargosFieldSpecified = value;
+        }
+
+        /// <remarks/>
+        public decimal TotalComprobante
+        {
+            get => totalComprobanteField;
+            set => totalComprobanteField = value;
+        }
+    }
+
+    /// <remarks/>
+    [System.Serializable()]
+    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/tiqueteElectronico")]
+    public partial class TiqueteElectronicoInformacionReferencia
+    {
+
+        private TiqueteElectronicoInformacionReferenciaTipoDoc tipoDocField;
+
+        private string numeroField;
+
+        private System.DateTime fechaEmisionField;
+
+        private TiqueteElectronicoInformacionReferenciaCodigo codigoField;
+
+        private string razonField;
+
+        /// <remarks/>
+        public TiqueteElectronicoInformacionReferenciaTipoDoc TipoDoc
+        {
+            get => tipoDocField;
+            set => tipoDocField = value;
+        }
+
+        /// <remarks/>
+        public string Numero
+        {
+            get => numeroField;
+            set => numeroField = value;
+        }
+
+        /// <remarks/>
+        public System.DateTime FechaEmision
+        {
+            get => fechaEmisionField;
+            set => fechaEmisionField = value;
+        }
+
+        /// <remarks/>
+        public TiqueteElectronicoInformacionReferenciaCodigo Codigo
+        {
+            get => codigoField;
+            set => codigoField = value;
+        }
+
+        /// <remarks/>
+        public string Razon
+        {
+            get => razonField;
+            set => razonField = value;
+        }
+    }
+
+    /// <remarks/>
+    [System.Serializable()]
+    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/tiqueteElectronico")]
+    public enum TiqueteElectronicoInformacionReferenciaTipoDoc
+    {
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("01")]
+        Item01,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("02")]
+        Item02,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("03")]
+        Item03,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("04")]
+        Item04,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("05")]
+        Item05,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("06")]
+        Item06,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("07")]
+        Item07,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("08")]
+        Item08,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("09")]
+        Item09,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("10")]
+        Item10,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("11")]
+        Item11,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("12")]
+        Item12,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("13")]
+        Item13,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("99")]
+        Item99,
+    }
+
+    /// <remarks/>
+    [System.Serializable()]
+    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/tiqueteElectronico")]
+    public enum TiqueteElectronicoInformacionReferenciaCodigo
+    {
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("01")]
+        Item01,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("02")]
+        Item02,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("03")]
+        Item03,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("04")]
+        Item04,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("05")]
+        Item05,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("99")]
+        Item99,
+    }
+
+    /// <remarks/>
+    [System.Serializable()]
+    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/tiqueteElectronico")]
+    public partial class TiqueteElectronicoOtros
+    {
+
+        private TiqueteElectronicoOtrosOtroTexto[] otroTextoField;
+
+        private TiqueteElectronicoOtrosOtroContenido[] otroContenidoField;
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElement("OtroTexto")]
+        public TiqueteElectronicoOtrosOtroTexto[] OtroTexto
+        {
+            get => otroTextoField;
+            set => otroTextoField = value;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElement("OtroContenido")]
+        public TiqueteElectronicoOtrosOtroContenido[] OtroContenido
+        {
+            get => otroContenidoField;
+            set => otroContenidoField = value;
+        }
+    }
+
+    /// <remarks/>
+    [System.Serializable()]
+    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/tiqueteElectronico")]
+    public partial class TiqueteElectronicoOtrosOtroTexto
+    {
+
+        private string codigoField;
+
+        private string valueField;
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttribute()]
+        public string codigo
+        {
+            get => codigoField;
+            set => codigoField = value;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlText()]
+        public string Value
+        {
+            get => valueField;
+            set => valueField = value;
+        }
+    }
+
+    /// <remarks/>
+    [System.Serializable()]
+    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/tiqueteElectronico")]
+    public partial class TiqueteElectronicoOtrosOtroContenido
+    {
+
+        private System.Xml.XmlElement anyField;
+
+        private string codigoField;
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAnyElement()]
+        public System.Xml.XmlElement Any
+        {
+            get => anyField;
+            set => anyField = value;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttribute()]
+        public string codigo
+        {
+            get => codigoField;
+            set => codigoField = value;
         }
     }
 }

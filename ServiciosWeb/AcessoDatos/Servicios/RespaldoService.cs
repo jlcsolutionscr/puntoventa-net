@@ -1,5 +1,5 @@
 ﻿using System;
-using LeandroSoftware.Core;
+using LeandroSoftware.Core.Utilities;
 using log4net;
 
 namespace LeandroSoftware.AccesoDatos.Servicios

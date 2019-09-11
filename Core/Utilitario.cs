@@ -6,7 +6,7 @@ using System.Diagnostics;
 using System.Security.Cryptography.X509Certificates;
 using System.Management;
 
-namespace LeandroSoftware.Core
+namespace LeandroSoftware.Core.Utilities
 {
     public static class Utilitario
     {

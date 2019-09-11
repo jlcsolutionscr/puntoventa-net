@@ -1,7 +1,7 @@
 ﻿Imports System.Collections.Generic
-Imports LeandroSoftware.AccesoDatos.ClienteWCF
+Imports LeandroSoftware.Core.ClienteWCF
+Imports LeandroSoftware.Core.CommonTypes
 Imports LeandroSoftware.Core.Dominio.Entidades
-Imports LeandroSoftware.Puntoventa.CommonTypes
 Imports Microsoft.Reporting.WinForms
 
 Public Class FrmMenuReportes
@@ -9,7 +9,7 @@ Public Class FrmMenuReportes
     Private strUsuario, Valida, strEmpresa As String
     Private proveedor As Proveedor
     Private cliente As Cliente
-    Private newFormReport As New FrmReportViewer
+    Private newFormReport As FrmReportViewer
 #End Region
 
 #Region "Métodos"
@@ -22,7 +22,7 @@ Public Class FrmMenuReportes
         formBusquedaCliente.ShowDialog()
         If FrmPrincipal.intBusqueda > 0 Then
             Try
-                cliente = Await PuntoventaWCF.ObtenerCliente(FrmPrincipal.intBusqueda)
+                cliente = Await ClienteFEWCF.ObtenerCliente(FrmPrincipal.intBusqueda)
                 txtCliente.Text = cliente.Nombre
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -38,7 +38,7 @@ Public Class FrmMenuReportes
         formBusquedaProveedor.ShowDialog()
         If FrmPrincipal.intBusqueda > 0 Then
             Try
-                proveedor = Await PuntoventaWCF.ObtenerProveedor(FrmPrincipal.intBusqueda)
+                proveedor = Await ClienteFEWCF.ObtenerProveedor(FrmPrincipal.intBusqueda)
                 txtProveedor.Text = proveedor.Nombre
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -65,6 +65,8 @@ Public Class FrmMenuReportes
             Else
                 intIdProveedor = proveedor.IdProveedor
             End If
+            CmdVistaPrevia.Enabled = False
+            newFormReport = New FrmReportViewer
             Select Case LstReporte.Text
                 Case "Ventas en general"
                     Dim datosReporte As List(Of ReporteVentas)
@@ -74,10 +76,11 @@ Public Class FrmMenuReportes
                     Dim intBancoAdquiriente = 0
                     Dim strDescripcionReporte As String = ""
                     Try
-                        dtListaFormaPago = Await PuntoventaWCF.ObtenerListaCondicionVentaYFormaPagoFactura()
+                        dtListaFormaPago = Await ClienteFEWCF.ObtenerListaCondicionVentaYFormaPagoFactura()
                         formaMenuTipoTransaccion.clFormasPago = dtListaFormaPago
                     Catch ex As Exception
                         MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        CmdVistaPrevia.Enabled = False
                         Exit Sub
                     End Try
                     If formaMenuTipoTransaccion.ShowDialog() = System.Windows.Forms.DialogResult.OK Then
@@ -96,7 +99,7 @@ Public Class FrmMenuReportes
                             Dim formaBancoAdquiriente As New FrmMenuBancoAdquiriente
                             If formaBancoAdquiriente.ShowDialog() = System.Windows.Forms.DialogResult.OK Then
                                 intBancoAdquiriente = FrmPrincipal.intBusqueda
-                                banco = Await PuntoventaWCF.ObtenerBancoAdquiriente(FrmPrincipal.intBusqueda)
+                                banco = Await ClienteFEWCF.ObtenerBancoAdquiriente(FrmPrincipal.intBusqueda)
                                 strDescripcionReporte = "Reporte de Ventas con Tarjeta del Banco " & banco.Descripcion
                             Else
                                 intFormaPago = 0
@@ -104,9 +107,10 @@ Public Class FrmMenuReportes
                         End If
                         If intFormaPago <> 0 Then
                             Try
-                                datosReporte = Await PuntoventaWCF.ObtenerReporteVentasPorCliente(FrmPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text, intIdCliente, StaticTipoNulo.NoNulo, intFormaPago, intBancoAdquiriente)
+                                datosReporte = Await ClienteFEWCF.ObtenerReporteVentasPorCliente(FrmPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text, intIdCliente, StaticTipoNulo.NoNulo, intFormaPago, intBancoAdquiriente)
                             Catch ex As Exception
                                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                                CmdVistaPrevia.Enabled = False
                                 Exit Sub
                             End Try
                             Dim rds As ReportDataSource = New ReportDataSource("dstDatos", datosReporte)
@@ -122,14 +126,16 @@ Public Class FrmMenuReportes
                             parameters(4) = New ReportParameter("pFechaHasta", FechaFinal.Text)
                             newFormReport.repReportViewer.LocalReport.SetParameters(parameters)
                             newFormReport.ShowDialog()
+                            CmdVistaPrevia.Enabled = False
                         End If
                     End If
                 Case "Ventas anuladas"
                     Dim datosReporte As List(Of ReporteVentas)
                     Try
-                        datosReporte = Await PuntoventaWCF.ObtenerReporteVentasPorCliente(FrmPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text, intIdCliente, StaticTipoNulo.Nulo, -1, 0)
+                        datosReporte = Await ClienteFEWCF.ObtenerReporteVentasPorCliente(FrmPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text, intIdCliente, StaticTipoNulo.Nulo, -1, 0)
                     Catch ex As Exception
                         MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        CmdVistaPrevia.Enabled = False
                         Exit Sub
                     End Try
                     Dim rds As ReportDataSource = New ReportDataSource("dstDatos", datosReporte)
@@ -150,9 +156,10 @@ Public Class FrmMenuReportes
                     Dim formaMenuVendedor As New FrmMenuVendedor
                     If formaMenuVendedor.ShowDialog() = System.Windows.Forms.DialogResult.OK Then
                         Try
-                            datosReporte = Await PuntoventaWCF.ObtenerReporteVentasPorVendedor(FrmPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text, FrmPrincipal.intBusqueda)
+                            datosReporte = Await ClienteFEWCF.ObtenerReporteVentasPorVendedor(FrmPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text, FrmPrincipal.intBusqueda)
                         Catch ex As Exception
                             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                            CmdVistaPrevia.Enabled = False
                             Exit Sub
                         End Try
                         Dim rds As ReportDataSource = New ReportDataSource("dstDatos", datosReporte)
@@ -176,10 +183,11 @@ Public Class FrmMenuReportes
                 '    Dim intBancoAdquiriente = 0
                 '    Dim strDescripcionReporte = ""
                 '    Try
-                '        dtListaFormaPago = Await PuntoventaWCF.ObtenerListaCondicionVentaYFormaPagoCompra()
+                '        dtListaFormaPago = Await ClienteFEWCF.ObtenerListaCondicionVentaYFormaPagoCompra()
                 '        formaMenuTipoTransaccion.clFormasPago = dtListaFormaPago
                 '    Catch ex As Exception
                 '        MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                '        CmdVistaPrevia.Enabled = False
                 '        Exit Sub
                 '    End Try
                 '    If formaMenuTipoTransaccion.ShowDialog() = System.Windows.Forms.DialogResult.OK Then
@@ -197,7 +205,7 @@ Public Class FrmMenuReportes
                 '        End If
                 '        If intFormaPago <> 0 Then
                 '            Try
-                '                datosReporte = Await PuntoventaWCF.ObtenerReporteComprasPorProveedor(FrmPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text, intIdProveedor, StaticTipoNulo.NoNulo, intFormaPago)
+                '                datosReporte = Await ClienteFEWCF.ObtenerReporteComprasPorProveedor(FrmPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text, intIdProveedor, StaticTipoNulo.NoNulo, intFormaPago)
                 '            Catch ex As Exception
                 '                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 '                Exit Sub
@@ -214,7 +222,7 @@ Public Class FrmMenuReportes
                 '    Dim reptCompras As New rptCompras
                 '    Dim datosReporte As List(Of ReporteCompras)
                 '    Try
-                '        datosReporte = Await PuntoventaWCF.ObtenerReporteComprasPorProveedor(FrmPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text, intIdProveedor, StaticTipoNulo.Nulo, -1)
+                '        datosReporte = Await ClienteFEWCF.ObtenerReporteComprasPorProveedor(FrmPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text, intIdProveedor, StaticTipoNulo.Nulo, -1)
                 '    Catch ex As Exception
                 '        MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 '        Exit Sub
@@ -229,7 +237,7 @@ Public Class FrmMenuReportes
                 '    Dim reptCxC As New rptCuentasxCobrar
                 '    Dim datosReporte As List(Of ReporteCuentasPorCobrar)
                 '    Try
-                '        datosReporte = Await PuntoventaWCF.ObtenerReporteCuentasPorCobrarClientes(FrmPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text, intIdCliente)
+                '        datosReporte = Await ClienteFEWCF.ObtenerReporteCuentasPorCobrarClientes(FrmPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text, intIdCliente)
                 '    Catch ex As Exception
                 '        MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 '        Exit Sub
@@ -244,7 +252,7 @@ Public Class FrmMenuReportes
                 '    Dim reptCxP As New rptCuentasxPagar
                 '    Dim datosReporte As List(Of ReporteCuentasPorPagar)
                 '    Try
-                '        datosReporte = Await PuntoventaWCF.ObtenerReporteCuentasPorPagarProveedores(FrmPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text, intIdProveedor)
+                '        datosReporte = Await ClienteFEWCF.ObtenerReporteCuentasPorPagarProveedores(FrmPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text, intIdProveedor)
                 '    Catch ex As Exception
                 '        MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 '        Exit Sub
@@ -259,7 +267,7 @@ Public Class FrmMenuReportes
                 '    Dim reptReciboCxC As New rptReciboCxC
                 '    Dim datosReporte As List(Of ReporteMovimientosCxC)
                 '    Try
-                '        datosReporte = Await PuntoventaWCF.ObtenerReporteMovimientosCxCClientes(FrmPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text, intIdCliente)
+                '        datosReporte = Await ClienteFEWCF.ObtenerReporteMovimientosCxCClientes(FrmPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text, intIdCliente)
                 '    Catch ex As Exception
                 '        MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 '        Exit Sub
@@ -274,7 +282,7 @@ Public Class FrmMenuReportes
                 '    Dim reptReciboCxP As New rptReciboCxP
                 '    Dim datosReporte As List(Of ReporteMovimientosCxP)
                 '    Try
-                '        datosReporte = Await PuntoventaWCF.ObtenerReporteMovimientosCxPProveedores(FrmPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text, intIdProveedor)
+                '        datosReporte = Await ClienteFEWCF.ObtenerReporteMovimientosCxPProveedores(FrmPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text, intIdProveedor)
                 '    Catch ex As Exception
                 '        MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 '        Exit Sub
@@ -292,7 +300,7 @@ Public Class FrmMenuReportes
                 '    If formaCuentaBanco.ShowDialog() = System.Windows.Forms.DialogResult.OK Then
                 '        If FrmPrincipal.intBusqueda > 0 Then
                 '            Try
-                '                datosReporte = Await PuntoventaWCF.ObtenerReporteMovimientosBanco(FrmPrincipal.intBusqueda, FechaInicio.Text, FechaFinal.Text)
+                '                datosReporte = Await ClienteFEWCF.ObtenerReporteMovimientosBanco(FrmPrincipal.intBusqueda, FechaInicio.Text, FechaFinal.Text)
                 '            Catch ex As Exception
                 '                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 '                Exit Sub
@@ -307,9 +315,10 @@ Public Class FrmMenuReportes
                 Case "Resumen de movimientos"
                     Dim datosReporte As List(Of ReporteEstadoResultados)
                     Try
-                        datosReporte = Await PuntoventaWCF.ObtenerReporteEstadoResultados(FrmPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text)
+                        datosReporte = Await ClienteFEWCF.ObtenerReporteEstadoResultados(FrmPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text)
                     Catch ex As Exception
                         MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        CmdVistaPrevia.Enabled = False
                         Exit Sub
                     End Try
                     Dim rds As ReportDataSource = New ReportDataSource("dstDatos", datosReporte)
@@ -329,9 +338,10 @@ Public Class FrmMenuReportes
                     Dim datosReporte As List(Of ReporteDetalleEgreso)
                     If formaCuentaEgreso.ShowDialog() = System.Windows.Forms.DialogResult.OK Then
                         Try
-                            datosReporte = Await PuntoventaWCF.ObtenerReporteDetalleEgreso(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.intBusqueda, FechaInicio.Text, FechaFinal.Text)
+                            datosReporte = Await ClienteFEWCF.ObtenerReporteDetalleEgreso(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.intBusqueda, FechaInicio.Text, FechaFinal.Text)
                         Catch ex As Exception
                             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                            CmdVistaPrevia.Enabled = False
                             Exit Sub
                         End Try
                         Dim rds As ReportDataSource = New ReportDataSource("dstDatos", datosReporte)
@@ -353,7 +363,7 @@ Public Class FrmMenuReportes
                 '    Dim datosReporte As List(Of ReporteDetalleIngreso)
                 '    If formaCuentaIngreso.ShowDialog() = System.Windows.Forms.DialogResult.OK Then
                 '        Try
-                '            datosReporte = Await PuntoventaWCF.ObtenerReporteDetalleIngreso(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.intBusqueda, FechaInicio.Text, FechaFinal.Text)
+                '            datosReporte = Await ClienteFEWCF.ObtenerReporteDetalleIngreso(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.intBusqueda, FechaInicio.Text, FechaFinal.Text)
                 '        Catch ex As Exception
                 '            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 '            Exit Sub
@@ -368,7 +378,7 @@ Public Class FrmMenuReportes
                 '    Dim reptVentasxLineaResumen As New rptVentasxLineaResumen
                 '    Dim datosReporte As List(Of ReporteVentasPorLineaResumen)
                 '    Try
-                '        datosReporte = Await PuntoventaWCF.ObtenerReporteVentasPorLineaResumen(FrmPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text)
+                '        datosReporte = Await ClienteFEWCF.ObtenerReporteVentasPorLineaResumen(FrmPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text)
                 '    Catch ex As Exception
                 '        MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 '        Exit Sub
@@ -388,7 +398,7 @@ Public Class FrmMenuReportes
                 '    Dim formaMenuLinea As New FrmMenuLinea
                 '    If formaMenuLinea.ShowDialog() = System.Windows.Forms.DialogResult.OK Then
                 '        Try
-                '            datosReporte = Await PuntoventaWCF.ObtenerReporteVentasPorLineaDetalle(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.intBusqueda, FechaInicio.Text, FechaFinal.Text)
+                '            datosReporte = Await ClienteFEWCF.ObtenerReporteVentasPorLineaDetalle(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.intBusqueda, FechaInicio.Text, FechaFinal.Text)
                 '        Catch ex As Exception
                 '            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 '            Exit Sub
@@ -406,9 +416,10 @@ Public Class FrmMenuReportes
                 Case "Facturas electrónicas emitidas"
                     Dim datosReporte As List(Of ReporteDocumentoElectronico)
                     Try
-                        datosReporte = Await PuntoventaWCF.ObtenerReporteFacturasElectronicasEmitidas(FrmPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text)
+                        datosReporte = Await ClienteFEWCF.ObtenerReporteFacturasElectronicasEmitidas(FrmPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text)
                     Catch ex As Exception
                         MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        CmdVistaPrevia.Enabled = False
                         Exit Sub
                     End Try
                     Dim rds As ReportDataSource = New ReportDataSource("dstDatos", datosReporte)
@@ -427,9 +438,10 @@ Public Class FrmMenuReportes
                 Case "Notas de crédito electrónicas emitidas"
                     Dim datosReporte As List(Of ReporteDocumentoElectronico)
                     Try
-                        datosReporte = Await PuntoventaWCF.ObtenerReporteNotasCreditoElectronicasEmitidas(FrmPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text)
+                        datosReporte = Await ClienteFEWCF.ObtenerReporteNotasCreditoElectronicasEmitidas(FrmPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text)
                     Catch ex As Exception
                         MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        CmdVistaPrevia.Enabled = False
                         Exit Sub
                     End Try
                     Dim rds As ReportDataSource = New ReportDataSource("dstDatos", datosReporte)
@@ -448,9 +460,10 @@ Public Class FrmMenuReportes
                 Case "Facturas electrónicas recibidas"
                     Dim datosReporte As List(Of ReporteDocumentoElectronico)
                     Try
-                        datosReporte = Await PuntoventaWCF.ObtenerReporteFacturasElectronicasRecibidas(FrmPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text)
+                        datosReporte = Await ClienteFEWCF.ObtenerReporteFacturasElectronicasRecibidas(FrmPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text)
                     Catch ex As Exception
                         MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        CmdVistaPrevia.Enabled = False
                         Exit Sub
                     End Try
                     Dim rds As ReportDataSource = New ReportDataSource("dstDatos", datosReporte)
@@ -469,9 +482,10 @@ Public Class FrmMenuReportes
                 Case "Notas de crédito electrónicas recibidas"
                     Dim datosReporte As List(Of ReporteDocumentoElectronico)
                     Try
-                        datosReporte = Await PuntoventaWCF.ObtenerReporteNotasCreditoElectronicasRecibidas(FrmPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text)
+                        datosReporte = Await ClienteFEWCF.ObtenerReporteNotasCreditoElectronicasRecibidas(FrmPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text)
                     Catch ex As Exception
                         MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        CmdVistaPrevia.Enabled = False
                         Exit Sub
                     End Try
                     Dim rds As ReportDataSource = New ReportDataSource("dstDatos", datosReporte)
@@ -490,9 +504,10 @@ Public Class FrmMenuReportes
                 Case "Resumen de comprobantes electrónicos"
                     Dim datosReporte As List(Of ReporteEstadoResultados)
                     Try
-                        datosReporte = Await PuntoventaWCF.ObtenerReporteResumenDocumentosElectronicos(FrmPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text)
+                        datosReporte = Await ClienteFEWCF.ObtenerReporteResumenDocumentosElectronicos(FrmPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text)
                     Catch ex As Exception
                         MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        CmdVistaPrevia.Enabled = False
                         Exit Sub
                     End Try
                     Dim rds As ReportDataSource = New ReportDataSource("dstDatos", datosReporte)
@@ -507,8 +522,8 @@ Public Class FrmMenuReportes
                     parameters(3) = New ReportParameter("pFechaHasta", FechaFinal.Text)
                     newFormReport.repReportViewer.LocalReport.SetParameters(parameters)
                     newFormReport.ShowDialog()
-
             End Select
+            CmdVistaPrevia.Enabled = True
             Valida = ""
             cliente = Nothing
             proveedor = Nothing
