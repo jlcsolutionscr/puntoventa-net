@@ -6,13 +6,13 @@ Imports System.IO
 Imports System.Linq
 Imports LeandroSoftware.Core.ClienteWCF
 Imports LeandroSoftware.Core.Utilities
+Imports LeandroSoftware.Core.CommonTypes
 
 Public Class FrmPrincipal
 #Region "Variables"
-    Private driveName, strFechaVence As String
-    Private bolEquipoRegistrado As Boolean = False
     Private objMenu As ToolStripMenuItem
     Private appSettings As Specialized.NameValueCollection
+    Private strIdentificacion As String
     Public usuarioGlobal As Usuario
     Public empresaGlobal As Empresa
     Public equipoGlobal As TerminalPorEmpresa
@@ -22,10 +22,14 @@ Public Class FrmPrincipal
     Public dgvInteger As DataGridViewCellStyle
     Public strThumbprint As String
     Public strApplicationKey As String
-    Public strIdentificacion As String
     Public lstListaReportes As New List(Of String)
+    Public listaEmpresa As New List(Of IdentificacionNombre)
     Public strKey As String
     Public decTipoCambioDolar As Decimal
+    Public strCodigoUsuario As String
+    Public strContrasena As String
+    Public strIdEmpresa As String
+    Public bolContinua As Boolean = True
 #End Region
 
 #Region "Métodos"
@@ -67,10 +71,6 @@ Public Class FrmPrincipal
             End If
         End If
     End Sub
-
-    Private Function ValidarCertificado(ByVal sender As Object, ByVal certificate As System.Security.Cryptography.X509Certificates.X509Certificate, ByVal chain As System.Security.Cryptography.X509Certificates.X509Chain, ByVal sslPolicyErrors As System.Net.Security.SslPolicyErrors) As Boolean
-        Return True
-    End Function
 #End Region
 
 #Region "Eventos del Menu"
@@ -441,6 +441,12 @@ Public Class FrmPrincipal
                 File.Delete(Path.GetTempPath() + "/Updater.exe.config")
             End If
         End If
+        If strIdentificacion = "" Then
+            MessageBox.Show("La identificación de la empresa no se encuentra parametrizada en el sistema. Por favor contacte con su proveedor del servicio. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Close()
+            Exit Sub
+        End If
+        listaEmpresa = Await ClienteFEWCF.ObtenerListaEmpresasPorIdentificacion(strIdentificacion)
         Dim formSeguridad As New FrmSeguridad()
         Thread.CurrentThread.CurrentCulture = New Globalization.CultureInfo("es-CR")
         Thread.CurrentThread.CurrentCulture.NumberFormat.CurrencySymbol = "¢"
@@ -448,69 +454,27 @@ Public Class FrmPrincipal
         Thread.CurrentThread.CurrentCulture.NumberFormat.CurrencyDecimalSeparator = "."
         Thread.CurrentThread.CurrentCulture.NumberFormat.NumberGroupSeparator = ","
         Thread.CurrentThread.CurrentCulture.NumberFormat.CurrencyGroupSeparator = ","
-        formSeguridad.ShowDialog()
-        If usuarioGlobal Is Nothing Then
-            Close()
-            Exit Sub
-        End If
-        If empresaGlobal Is Nothing Then
-            MessageBox.Show("La empresa no se encuentra registrada en el servicio de facturación electrónica. Por favor contacte con su proveedor del servicio. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-            Close()
-            Exit Sub
-        End If
-        If Not empresaGlobal.RegimenSimplificado Then
-            If empresaGlobal.Certificado Is Nothing Then
-                MessageBox.Show("La empresa no posee la llave criptográfica requerida. Por favor contacte con su proveedor del servicio. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-                Close()
-                Exit Sub
-            End If
-            If empresaGlobal.PinCertificado = "" Then
-                MessageBox.Show("La empresa no posee el parámetro PIN de la llave criptográfica. Por favor contacte con su proveedor del servicio. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-                Close()
-                Exit Sub
-            End If
-            If Not empresaGlobal.PermiteFacturar Then
-                MessageBox.Show("La empresa no se encuentra activa para emitir documentos electrónicos. Por favor contacte con su proveedor del servicio. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-                Close()
-                Exit Sub
-            End If
-        End If
-        If Today > empresaGlobal.FechaVence Then
-            Dim strMensajeExpirado = ""
-            If Not empresaGlobal.RegimenSimplificado Then
-                strMensajeExpirado = "El período del plan de factura electrónica adquirido ha expirado. Por favor contacte con su proveedor del servicio. . ."
+        Dim empresa As Empresa = Nothing
+        Do
+            formSeguridad.ShowDialog()
+            If bolContinua Then
+                Dim strEncryptedPassword As String
+                Try
+                    Dim strIdentificadoEquipoLocal = Utilitario.ObtenerIdentificadorEquipo()
+                    strEncryptedPassword = Utilitario.EncriptarDatos(strContrasena, strKey)
+                    empresa = Await ClienteFEWCF.ValidarCredenciales(strIdEmpresa, strIdentificadoEquipoLocal, strCodigoUsuario, strEncryptedPassword)
+                    bolContinua = False
+                Catch ex As Exception
+                    MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                End Try
             Else
-                strMensajeExpirado = "El período del plan del servicio del sistema de punto de venta ha expirado. Por favor contacte con su proveedor del servicio. . ."
-            End If
-            MessageBox.Show(strMensajeExpirado, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-            Close()
-            Exit Sub
-        End If
-        Dim strIdentificadoEquipoLocal = Utilitario.ObtenerIdentificadorEquipo()
-        For Each terminalPorEmpresa As TerminalPorEmpresa In empresaGlobal.TerminalPorEmpresa
-            If strIdentificadoEquipoLocal = terminalPorEmpresa.ValorRegistro Or usuarioGlobal.CodigoUsuario = "JASLOP" Then
-                equipoGlobal = terminalPorEmpresa
-                bolEquipoRegistrado = True
-                Exit For
-            End If
-        Next
-        If Not bolEquipoRegistrado Then
-            MessageBox.Show("Equipo no registrado para la empresa seleccionada. Por favor contacte con su proveedor del servicio. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-            Close()
-            Exit Sub
-        End If
-        If equipoGlobal.IdSucursal = 0 Or equipoGlobal.IdTerminal = 0 Then
-            MessageBox.Show("Equipo no parametrizado con sucursal y terminal. Por favor contacte con su proveedor del servicio. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-            Close()
-            Exit Sub
-        End If
-        If empresaGlobal.FechaVence IsNot Nothing Then
-            If Today > empresaGlobal.FechaVence Then
-                MessageBox.Show("Ha Expirado el período de Prueba del Producto. Por favor contacte con su proveedor del servicio. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                 Close()
                 Exit Sub
             End If
-        End If
+        Loop While bolContinua
+        usuarioGlobal = empresa.Usuario
+        empresaGlobal = empresa
+        equipoGlobal = empresa.TerminalPorEmpresa(0)
         For Each moduloPorEmpresa As ModuloPorEmpresa In empresaGlobal.ModuloPorEmpresa
             objMenu = mnuMenuPrincipal.Items(moduloPorEmpresa.Modulo.MenuPadre)
             objMenu.Visible = True

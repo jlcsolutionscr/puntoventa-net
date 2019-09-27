@@ -18,12 +18,12 @@ namespace LeandroSoftware.AccesoDatos.ClientePruebas
         {
             try
             {
-                List<Empresa> empresaLista = ClienteFEWCF.ObtenerListaEmpresas().Result;
+                List<ListaEmpresa> empresaLista = ClienteFEWCF.ObtenerListaEmpresas().Result;
                 string inputEmpresa = "C";
                 while (inputEmpresa != "S")
                 {
                     int intIdEmpresa = 0;
-                    foreach (Empresa empresa in empresaLista)
+                    foreach (var empresa in empresaLista)
                     {
                         Console.WriteLine("Id: " + empresa.IdEmpresa + " Nombre: " + empresa.NombreComercial);
                     }

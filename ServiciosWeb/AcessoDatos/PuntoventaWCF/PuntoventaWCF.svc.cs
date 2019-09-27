@@ -117,6 +117,12 @@ namespace LeandroSoftware.AccesoDatos.ServicioWCF
                 Empresa empresa = null;
                 switch (datos.NombreMetodo)
                 {
+                    case "RegistrarDispositivo":
+                        parametrosJO = JObject.Parse(datos.DatosPeticion);
+                        string strIdentificacion = parametrosJO.Property("Identificacion").Value.ToString();
+                        string strDispositivo = parametrosJO.Property("Dispositivo").Value.ToString();
+                        servicioMantenimiento.RegistrarDispositivo(strIdentificacion, strDispositivo);
+                        break;
                     case "ActualizarUltimaVersionApp":
                         parametrosJO = JObject.Parse(datos.DatosPeticion);
                         string strVersion = parametrosJO.Property("Version").Value.ToString();
@@ -285,6 +291,8 @@ namespace LeandroSoftware.AccesoDatos.ServicioWCF
                         string strCorreoReceptor = parametrosJO.Property("CorreoReceptor").Value.ToString();
                         servicioFacturacion.EnviarNotificacionDocumentoElectronico(intIdDocumento, strCorreoReceptor, servicioEnvioCorreo, configuracion.CorreoNotificacionErrores);
                         break;
+                    default:
+                        throw new Exception("Los parémetros suministrados son inválidos.");
                 }
             }
             catch (Exception ex)
@@ -293,7 +301,7 @@ namespace LeandroSoftware.AccesoDatos.ServicioWCF
             }
         }
 
-        public string EjecutarConsulta(RequestDTO datos)
+        public ResponseDTO EjecutarConsulta(RequestDTO datos)
         {
             try
             {
@@ -352,22 +360,19 @@ namespace LeandroSoftware.AccesoDatos.ServicioWCF
                     case "ObtenerListaEmpresasPorIdentificacion":
                         parametrosJO = JObject.Parse(datos.DatosPeticion);
                         string[] lstIdentificacion = parametrosJO.Property("ListaIdentificacion").Value.ToString().Split(',');
-                        IList<Empresa> listadoEmpresaPorIdentificacion = (List<Empresa>)servicioMantenimiento.ObtenerListaEmpresasPorIdentificacion(lstIdentificacion);
+                        IList<IdentificacionNombre> listadoEmpresaPorIdentificacion = (List<IdentificacionNombre>)servicioMantenimiento.ObtenerListaEmpresasPorIdentificacion(lstIdentificacion);
                         if (listadoEmpresaPorIdentificacion.Count > 0)
                             strRespuesta = serializer.Serialize(listadoEmpresaPorIdentificacion);
                         break;
                     case "ValidarCredenciales":
                         parametrosJO = JObject.Parse(datos.DatosPeticion);
                         strIdentificacion = parametrosJO.Property("Identificacion").Value.ToString();
+                        string strValorRegistro = parametrosJO.Property("ValorRegistro").Value.ToString();
                         string strUsuario = parametrosJO.Property("Usuario").Value.ToString();
                         string strClave = parametrosJO.Property("Clave").Value.ToString();
-                        usuario = servicioMantenimiento.ValidarCredenciales(strIdentificacion, strUsuario, strClave);
-                        if (usuario != null)
-                        {
-                            foreach (RolePorUsuario role in usuario.RolePorUsuario)
-                                role.Usuario = null;
-                            strRespuesta = serializer.Serialize(usuario);
-                        }
+                        empresa = servicioMantenimiento.ValidarCredenciales(strIdentificacion, strValorRegistro, strUsuario, strClave);
+                        if (empresa != null)
+                            strRespuesta = serializer.Serialize(empresa);
                         break;
                     case "ObtenerTipoCambioDolar":
                         strRespuesta = decTipoCambioDolar.ToString();
@@ -423,7 +428,7 @@ namespace LeandroSoftware.AccesoDatos.ServicioWCF
                             strRespuesta = serializer.Serialize(listadoRoles);
                         break;
                     case "ObtenerListaEmpresas":
-                        IList<Empresa> listadoEmpresa = (List<Empresa>)servicioMantenimiento.ObtenerListaEmpresas();
+                        IList<ListaEmpresa> listadoEmpresa = (List<ListaEmpresa>)servicioMantenimiento.ObtenerListaEmpresas();
                         if (listadoEmpresa.Count > 0)
                             strRespuesta = serializer.Serialize(listadoEmpresa);
                         break;
@@ -1154,8 +1159,12 @@ namespace LeandroSoftware.AccesoDatos.ServicioWCF
                         if (documento != null)
                             strRespuesta = serializer.Serialize(documento);
                         break;
+                    default:
+                        throw new Exception("Los parémetros suministrados son inválidos.");
                 }
-                return strRespuesta;
+                ResponseDTO respuesta = new ResponseDTO();
+                respuesta.DatosRespuesta = strRespuesta;
+                return respuesta;
             }
             catch (Exception ex)
             {

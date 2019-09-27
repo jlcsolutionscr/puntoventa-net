@@ -22,7 +22,7 @@ namespace LeandroSoftware.Activator
         private bool bolLoading = true;
         private bool bolLogoModificado = false;
         private bool bolCertificadoModificado = false;
-        private string strRutaCertificado;
+        private string strRutaCertificado, strNombreSucursal, strDireccionSucursal, strTelefonoSucursal;
         public bool bolEditing;
         public int intIdEmpresa = -1;
 
@@ -269,6 +269,9 @@ namespace LeandroSoftware.Activator
                 {
                     txtEquipo.Text = "";
                     txtImpresoraFactura.Text = "";
+                    txtNombreSucursal.Text = txtNombreComercial.Text;
+                    txtDireccionSucursal.Text = txtDireccion.Text;
+                    txtTelefonoSucursal.Text = txtTelefono.Text;
                     txtUltimoDocFE.Text = "0";
                     txtUltimoDocND.Text = "0";
                     txtUltimoDocNC.Text = "0";
@@ -280,6 +283,9 @@ namespace LeandroSoftware.Activator
                 {
                     txtEquipo.Text = terminal.ValorRegistro;
                     txtImpresoraFactura.Text = terminal.ImpresoraFactura;
+                    txtNombreSucursal.Text = terminal.NombreSucursal;
+                    txtDireccionSucursal.Text = terminal.Direccion;
+                    txtTelefonoSucursal.Text = terminal.Telefono;
                     txtUltimoDocFE.Text = terminal.UltimoDocFE.ToString();
                     txtUltimoDocND.Text = terminal.UltimoDocND.ToString();
                     txtUltimoDocNC.Text = terminal.UltimoDocNC.ToString();
@@ -291,6 +297,9 @@ namespace LeandroSoftware.Activator
             {
                 txtEquipo.Text = "";
                 txtImpresoraFactura.Text = "";
+                txtNombreSucursal.Text = "";
+                txtDireccionSucursal.Text = "";
+                txtTelefonoSucursal.Text = "";
                 txtUltimoDocFE.Text = "0";
                 txtUltimoDocND.Text = "0";
                 txtUltimoDocNC.Text = "0";
@@ -321,6 +330,7 @@ namespace LeandroSoftware.Activator
                             txtNombreComercial.Text = empresa.NombreComercial;
                             cboTipoIdentificacion.SelectedValue = empresa.IdTipoIdentificacion;
                             txtIdentificacion.Text = empresa.Identificacion;
+                            txtCodigoActividad.Text = empresa.CodigoActividad;
                             await CargarCantones(empresa.IdProvincia);
                             await CargarDistritos(empresa.IdProvincia, empresa.IdCanton);
                             await CargarBarrios(empresa.IdProvincia, empresa.IdCanton, empresa.IdDistrito);
@@ -423,6 +433,7 @@ namespace LeandroSoftware.Activator
                 empresa.NombreEmpresa = txtNombreEmpresa.Text;
                 empresa.NombreComercial = txtNombreComercial.Text;
                 empresa.IdTipoIdentificacion = (int)cboTipoIdentificacion.SelectedValue;
+                empresa.CodigoActividad = txtCodigoActividad.Text;
                 empresa.Identificacion = txtIdentificacion.Text;
                 empresa.IdProvincia = (int)cboProvincia.SelectedValue;
                 empresa.IdCanton = (int)cboCanton.SelectedValue;
@@ -484,6 +495,9 @@ namespace LeandroSoftware.Activator
                     if (txtIdEmpresa.Text != "") terminal.IdEmpresa = int.Parse(txtIdEmpresa.Text);
                     terminal.IdSucursal = int.Parse(txtSucursal.Text);
                     terminal.IdTerminal = int.Parse(txtTerminal.Text);
+                    terminal.NombreSucursal = txtNombreSucursal.Text;
+                    terminal.Direccion = txtDireccionSucursal.Text;
+                    terminal.Telefono = txtTelefonoSucursal.Text;
                     terminal.ValorRegistro = txtEquipo.Text;
                     terminal.ImpresoraFactura = txtImpresoraFactura.Text;
                     terminal.UltimoDocFE = int.Parse(txtUltimoDocFE.Text);

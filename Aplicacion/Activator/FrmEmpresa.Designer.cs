@@ -123,6 +123,14 @@
             this.label7 = new System.Windows.Forms.Label();
             this.cboTipoContrato = new System.Windows.Forms.ComboBox();
             this.label30 = new System.Windows.Forms.Label();
+            this.txtCodigoActividad = new System.Windows.Forms.TextBox();
+            this.label31 = new System.Windows.Forms.Label();
+            this.txtNombreSucursal = new System.Windows.Forms.TextBox();
+            this.label32 = new System.Windows.Forms.Label();
+            this.txtDireccionSucursal = new System.Windows.Forms.TextBox();
+            this.label33 = new System.Windows.Forms.Label();
+            this.txtTelefonoSucursal = new System.Windows.Forms.TextBox();
+            this.label34 = new System.Windows.Forms.Label();
             this.tabContainer.SuspendLayout();
             this.TabGeneral.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picLogo)).BeginInit();
@@ -170,12 +178,12 @@
             this.txtClaveATV.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.txtClaveATV.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtClaveATV.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.txtClaveATV.Location = new System.Drawing.Point(139, 432);
+            this.txtClaveATV.Location = new System.Drawing.Point(137, 458);
             this.txtClaveATV.MaxLength = 100;
             this.txtClaveATV.Name = "txtClaveATV";
             this.txtClaveATV.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.txtClaveATV.Size = new System.Drawing.Size(199, 20);
-            this.txtClaveATV.TabIndex = 16;
+            this.txtClaveATV.TabIndex = 17;
             // 
             // Label25
             // 
@@ -183,7 +191,7 @@
             this.Label25.Cursor = System.Windows.Forms.Cursors.Default;
             this.Label25.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Label25.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.Label25.Location = new System.Drawing.Point(36, 435);
+            this.Label25.Location = new System.Drawing.Point(34, 461);
             this.Label25.Name = "Label25";
             this.Label25.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.Label25.Size = new System.Drawing.Size(97, 17);
@@ -198,12 +206,12 @@
             this.txtUsuarioATV.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.txtUsuarioATV.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtUsuarioATV.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.txtUsuarioATV.Location = new System.Drawing.Point(139, 406);
+            this.txtUsuarioATV.Location = new System.Drawing.Point(137, 432);
             this.txtUsuarioATV.MaxLength = 100;
             this.txtUsuarioATV.Name = "txtUsuarioATV";
             this.txtUsuarioATV.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.txtUsuarioATV.Size = new System.Drawing.Size(313, 20);
-            this.txtUsuarioATV.TabIndex = 15;
+            this.txtUsuarioATV.TabIndex = 16;
             // 
             // Label24
             // 
@@ -211,7 +219,7 @@
             this.Label24.Cursor = System.Windows.Forms.Cursors.Default;
             this.Label24.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Label24.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.Label24.Location = new System.Drawing.Point(55, 409);
+            this.Label24.Location = new System.Drawing.Point(53, 435);
             this.Label24.Name = "Label24";
             this.Label24.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.Label24.Size = new System.Drawing.Size(78, 17);
@@ -225,7 +233,7 @@
             this.Label23.Cursor = System.Windows.Forms.Cursors.Default;
             this.Label23.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Label23.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.Label23.Location = new System.Drawing.Point(125, 144);
+            this.Label23.Location = new System.Drawing.Point(143, 215);
             this.Label23.Name = "Label23";
             this.Label23.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.Label23.Size = new System.Drawing.Size(59, 17);
@@ -239,7 +247,7 @@
             this.Label22.Cursor = System.Windows.Forms.Cursors.Default;
             this.Label22.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Label22.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.Label22.Location = new System.Drawing.Point(18, 144);
+            this.Label22.Location = new System.Drawing.Point(36, 215);
             this.Label22.Name = "Label22";
             this.Label22.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.Label22.Size = new System.Drawing.Size(56, 17);
@@ -253,7 +261,7 @@
             this.Label21.Cursor = System.Windows.Forms.Cursors.Default;
             this.Label21.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Label21.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.Label21.Location = new System.Drawing.Point(237, 119);
+            this.Label21.Location = new System.Drawing.Point(255, 190);
             this.Label21.Name = "Label21";
             this.Label21.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.Label21.Size = new System.Drawing.Size(58, 17);
@@ -267,7 +275,7 @@
             this.Label20.Cursor = System.Windows.Forms.Cursors.Default;
             this.Label20.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Label20.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.Label20.Location = new System.Drawing.Point(125, 118);
+            this.Label20.Location = new System.Drawing.Point(143, 189);
             this.Label20.Name = "Label20";
             this.Label20.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.Label20.Size = new System.Drawing.Size(59, 17);
@@ -282,12 +290,12 @@
             this.txtUltimoDocMR.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.txtUltimoDocMR.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtUltimoDocMR.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.txtUltimoDocMR.Location = new System.Drawing.Point(190, 143);
+            this.txtUltimoDocMR.Location = new System.Drawing.Point(208, 214);
             this.txtUltimoDocMR.MaxLength = 5;
             this.txtUltimoDocMR.Name = "txtUltimoDocMR";
             this.txtUltimoDocMR.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.txtUltimoDocMR.Size = new System.Drawing.Size(44, 20);
-            this.txtUltimoDocMR.TabIndex = 26;
+            this.txtUltimoDocMR.TabIndex = 111;
             // 
             // txtUltimoDocTE
             // 
@@ -296,12 +304,12 @@
             this.txtUltimoDocTE.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.txtUltimoDocTE.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtUltimoDocTE.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.txtUltimoDocTE.Location = new System.Drawing.Point(80, 143);
+            this.txtUltimoDocTE.Location = new System.Drawing.Point(98, 214);
             this.txtUltimoDocTE.MaxLength = 5;
             this.txtUltimoDocTE.Name = "txtUltimoDocTE";
             this.txtUltimoDocTE.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.txtUltimoDocTE.Size = new System.Drawing.Size(44, 20);
-            this.txtUltimoDocTE.TabIndex = 25;
+            this.txtUltimoDocTE.TabIndex = 110;
             // 
             // txtUltimoDocNC
             // 
@@ -310,12 +318,12 @@
             this.txtUltimoDocNC.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.txtUltimoDocNC.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtUltimoDocNC.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.txtUltimoDocNC.Location = new System.Drawing.Point(301, 118);
+            this.txtUltimoDocNC.Location = new System.Drawing.Point(319, 189);
             this.txtUltimoDocNC.MaxLength = 5;
             this.txtUltimoDocNC.Name = "txtUltimoDocNC";
             this.txtUltimoDocNC.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.txtUltimoDocNC.Size = new System.Drawing.Size(44, 20);
-            this.txtUltimoDocNC.TabIndex = 23;
+            this.txtUltimoDocNC.TabIndex = 109;
             // 
             // txtUltimoDocND
             // 
@@ -324,12 +332,12 @@
             this.txtUltimoDocND.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.txtUltimoDocND.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtUltimoDocND.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.txtUltimoDocND.Location = new System.Drawing.Point(190, 117);
+            this.txtUltimoDocND.Location = new System.Drawing.Point(208, 188);
             this.txtUltimoDocND.MaxLength = 5;
             this.txtUltimoDocND.Name = "txtUltimoDocND";
             this.txtUltimoDocND.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.txtUltimoDocND.Size = new System.Drawing.Size(44, 20);
-            this.txtUltimoDocND.TabIndex = 24;
+            this.txtUltimoDocND.TabIndex = 108;
             // 
             // txtUltimoDocFE
             // 
@@ -338,12 +346,12 @@
             this.txtUltimoDocFE.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.txtUltimoDocFE.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtUltimoDocFE.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.txtUltimoDocFE.Location = new System.Drawing.Point(80, 117);
+            this.txtUltimoDocFE.Location = new System.Drawing.Point(98, 188);
             this.txtUltimoDocFE.MaxLength = 5;
             this.txtUltimoDocFE.Name = "txtUltimoDocFE";
             this.txtUltimoDocFE.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.txtUltimoDocFE.Size = new System.Drawing.Size(44, 20);
-            this.txtUltimoDocFE.TabIndex = 22;
+            this.txtUltimoDocFE.TabIndex = 107;
             // 
             // Label19
             // 
@@ -351,7 +359,7 @@
             this.Label19.Cursor = System.Windows.Forms.Cursors.Default;
             this.Label19.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Label19.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.Label19.Location = new System.Drawing.Point(18, 119);
+            this.Label19.Location = new System.Drawing.Point(36, 190);
             this.Label19.Name = "Label19";
             this.Label19.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.Label19.Size = new System.Drawing.Size(56, 17);
@@ -366,12 +374,12 @@
             this.txtPinCertificado.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.txtPinCertificado.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtPinCertificado.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.txtPinCertificado.Location = new System.Drawing.Point(139, 380);
+            this.txtPinCertificado.Location = new System.Drawing.Point(137, 406);
             this.txtPinCertificado.MaxLength = 4;
             this.txtPinCertificado.Name = "txtPinCertificado";
             this.txtPinCertificado.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.txtPinCertificado.Size = new System.Drawing.Size(44, 20);
-            this.txtPinCertificado.TabIndex = 14;
+            this.txtPinCertificado.TabIndex = 15;
             // 
             // Label18
             // 
@@ -379,7 +387,7 @@
             this.Label18.Cursor = System.Windows.Forms.Cursors.Default;
             this.Label18.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Label18.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.Label18.Location = new System.Drawing.Point(14, 383);
+            this.Label18.Location = new System.Drawing.Point(12, 409);
             this.Label18.Name = "Label18";
             this.Label18.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.Label18.Size = new System.Drawing.Size(119, 17);
@@ -394,13 +402,14 @@
             this.txtNombreCertificado.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.txtNombreCertificado.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtNombreCertificado.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.txtNombreCertificado.Location = new System.Drawing.Point(139, 354);
+            this.txtNombreCertificado.Location = new System.Drawing.Point(137, 380);
             this.txtNombreCertificado.MaxLength = 200;
             this.txtNombreCertificado.Name = "txtNombreCertificado";
             this.txtNombreCertificado.ReadOnly = true;
             this.txtNombreCertificado.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.txtNombreCertificado.Size = new System.Drawing.Size(260, 20);
-            this.txtNombreCertificado.TabIndex = 13;
+            this.txtNombreCertificado.TabIndex = 14;
+            this.txtNombreCertificado.TabStop = false;
             // 
             // Label16
             // 
@@ -408,7 +417,7 @@
             this.Label16.Cursor = System.Windows.Forms.Cursors.Default;
             this.Label16.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Label16.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.Label16.Location = new System.Drawing.Point(17, 355);
+            this.Label16.Location = new System.Drawing.Point(15, 381);
             this.Label16.Name = "Label16";
             this.Label16.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.Label16.Size = new System.Drawing.Size(119, 17);
@@ -421,10 +430,10 @@
             this.cboBarrio.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboBarrio.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboBarrio.FormattingEnabled = true;
-            this.cboBarrio.Location = new System.Drawing.Point(139, 249);
+            this.cboBarrio.Location = new System.Drawing.Point(137, 275);
             this.cboBarrio.Name = "cboBarrio";
             this.cboBarrio.Size = new System.Drawing.Size(147, 21);
-            this.cboBarrio.TabIndex = 9;
+            this.cboBarrio.TabIndex = 10;
             // 
             // Label15
             // 
@@ -432,7 +441,7 @@
             this.Label15.Cursor = System.Windows.Forms.Cursors.Default;
             this.Label15.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Label15.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.Label15.Location = new System.Drawing.Point(14, 252);
+            this.Label15.Location = new System.Drawing.Point(12, 278);
             this.Label15.Name = "Label15";
             this.Label15.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.Label15.Size = new System.Drawing.Size(119, 17);
@@ -445,10 +454,10 @@
             this.cboDistrito.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboDistrito.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboDistrito.FormattingEnabled = true;
-            this.cboDistrito.Location = new System.Drawing.Point(139, 222);
+            this.cboDistrito.Location = new System.Drawing.Point(137, 248);
             this.cboDistrito.Name = "cboDistrito";
             this.cboDistrito.Size = new System.Drawing.Size(147, 21);
-            this.cboDistrito.TabIndex = 8;
+            this.cboDistrito.TabIndex = 9;
             this.cboDistrito.SelectedIndexChanged += new System.EventHandler(this.CboDistrito_SelectedIndexChanged);
             // 
             // Label14
@@ -457,7 +466,7 @@
             this.Label14.Cursor = System.Windows.Forms.Cursors.Default;
             this.Label14.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Label14.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.Label14.Location = new System.Drawing.Point(14, 225);
+            this.Label14.Location = new System.Drawing.Point(12, 251);
             this.Label14.Name = "Label14";
             this.Label14.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.Label14.Size = new System.Drawing.Size(119, 17);
@@ -470,10 +479,10 @@
             this.cboCanton.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboCanton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboCanton.FormattingEnabled = true;
-            this.cboCanton.Location = new System.Drawing.Point(139, 194);
+            this.cboCanton.Location = new System.Drawing.Point(137, 220);
             this.cboCanton.Name = "cboCanton";
             this.cboCanton.Size = new System.Drawing.Size(147, 21);
-            this.cboCanton.TabIndex = 7;
+            this.cboCanton.TabIndex = 8;
             this.cboCanton.SelectedIndexChanged += new System.EventHandler(this.CboCanton_SelectedIndexChanged);
             // 
             // Label13
@@ -482,7 +491,7 @@
             this.Label13.Cursor = System.Windows.Forms.Cursors.Default;
             this.Label13.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Label13.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.Label13.Location = new System.Drawing.Point(14, 197);
+            this.Label13.Location = new System.Drawing.Point(12, 223);
             this.Label13.Name = "Label13";
             this.Label13.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.Label13.Size = new System.Drawing.Size(119, 17);
@@ -495,10 +504,10 @@
             this.cboProvincia.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboProvincia.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboProvincia.FormattingEnabled = true;
-            this.cboProvincia.Location = new System.Drawing.Point(139, 167);
+            this.cboProvincia.Location = new System.Drawing.Point(137, 193);
             this.cboProvincia.Name = "cboProvincia";
             this.cboProvincia.Size = new System.Drawing.Size(147, 21);
-            this.cboProvincia.TabIndex = 6;
+            this.cboProvincia.TabIndex = 7;
             this.cboProvincia.SelectedIndexChanged += new System.EventHandler(this.CboProvincia_SelectedIndexChanged);
             // 
             // cboTipoIdentificacion
@@ -529,7 +538,7 @@
             // 
             this.chkFacturaElectronica.AutoSize = true;
             this.chkFacturaElectronica.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkFacturaElectronica.Location = new System.Drawing.Point(692, 556);
+            this.chkFacturaElectronica.Location = new System.Drawing.Point(672, 596);
             this.chkFacturaElectronica.Name = "chkFacturaElectronica";
             this.chkFacturaElectronica.Size = new System.Drawing.Size(152, 17);
             this.chkFacturaElectronica.TabIndex = 40;
@@ -544,12 +553,12 @@
             this.txtCorreoNotificacion.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.txtCorreoNotificacion.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtCorreoNotificacion.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.txtCorreoNotificacion.Location = new System.Drawing.Point(139, 328);
+            this.txtCorreoNotificacion.Location = new System.Drawing.Point(137, 354);
             this.txtCorreoNotificacion.MaxLength = 200;
             this.txtCorreoNotificacion.Name = "txtCorreoNotificacion";
             this.txtCorreoNotificacion.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.txtCorreoNotificacion.Size = new System.Drawing.Size(313, 20);
-            this.txtCorreoNotificacion.TabIndex = 12;
+            this.txtCorreoNotificacion.TabIndex = 13;
             // 
             // Label11
             // 
@@ -557,7 +566,7 @@
             this.Label11.Cursor = System.Windows.Forms.Cursors.Default;
             this.Label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Label11.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.Label11.Location = new System.Drawing.Point(14, 331);
+            this.Label11.Location = new System.Drawing.Point(12, 357);
             this.Label11.Name = "Label11";
             this.Label11.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.Label11.Size = new System.Drawing.Size(119, 17);
@@ -583,7 +592,7 @@
             // 
             this.chkCierrePorTurnos.AutoSize = true;
             this.chkCierrePorTurnos.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkCierrePorTurnos.Location = new System.Drawing.Point(692, 502);
+            this.chkCierrePorTurnos.Location = new System.Drawing.Point(672, 542);
             this.chkCierrePorTurnos.Name = "chkCierrePorTurnos";
             this.chkCierrePorTurnos.Size = new System.Drawing.Size(116, 17);
             this.chkCierrePorTurnos.TabIndex = 38;
@@ -595,7 +604,7 @@
             // 
             this.chkIncluyeInsumosEnFactura.AutoSize = true;
             this.chkIncluyeInsumosEnFactura.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkIncluyeInsumosEnFactura.Location = new System.Drawing.Point(692, 480);
+            this.chkIncluyeInsumosEnFactura.Location = new System.Drawing.Point(672, 520);
             this.chkIncluyeInsumosEnFactura.Name = "chkIncluyeInsumosEnFactura";
             this.chkIncluyeInsumosEnFactura.Size = new System.Drawing.Size(152, 17);
             this.chkIncluyeInsumosEnFactura.TabIndex = 34;
@@ -610,12 +619,12 @@
             this.txtCodigoServInst.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.txtCodigoServInst.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtCodigoServInst.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.txtCodigoServInst.Location = new System.Drawing.Point(139, 458);
+            this.txtCodigoServInst.Location = new System.Drawing.Point(137, 484);
             this.txtCodigoServInst.MaxLength = 5;
             this.txtCodigoServInst.Name = "txtCodigoServInst";
             this.txtCodigoServInst.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.txtCodigoServInst.Size = new System.Drawing.Size(44, 20);
-            this.txtCodigoServInst.TabIndex = 20;
+            this.txtCodigoServInst.TabIndex = 18;
             this.txtCodigoServInst.TabStop = false;
             // 
             // Label10
@@ -624,7 +633,7 @@
             this.Label10.Cursor = System.Windows.Forms.Cursors.Default;
             this.Label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Label10.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.Label10.Location = new System.Drawing.Point(35, 460);
+            this.Label10.Location = new System.Drawing.Point(33, 486);
             this.Label10.Name = "Label10";
             this.Label10.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.Label10.Size = new System.Drawing.Size(98, 17);
@@ -639,12 +648,12 @@
             this.txtPorcentajeInstalacion.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.txtPorcentajeInstalacion.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtPorcentajeInstalacion.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.txtPorcentajeInstalacion.Location = new System.Drawing.Point(242, 458);
+            this.txtPorcentajeInstalacion.Location = new System.Drawing.Point(240, 484);
             this.txtPorcentajeInstalacion.MaxLength = 5;
             this.txtPorcentajeInstalacion.Name = "txtPorcentajeInstalacion";
             this.txtPorcentajeInstalacion.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.txtPorcentajeInstalacion.Size = new System.Drawing.Size(44, 20);
-            this.txtPorcentajeInstalacion.TabIndex = 18;
+            this.txtPorcentajeInstalacion.TabIndex = 19;
             this.txtPorcentajeInstalacion.TabStop = false;
             // 
             // Label9
@@ -653,7 +662,7 @@
             this.Label9.Cursor = System.Windows.Forms.Cursors.Default;
             this.Label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Label9.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.Label9.Location = new System.Drawing.Point(186, 461);
+            this.Label9.Location = new System.Drawing.Point(184, 487);
             this.Label9.Name = "Label9";
             this.Label9.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.Label9.Size = new System.Drawing.Size(50, 17);
@@ -665,7 +674,7 @@
             // 
             this.chkDesgloseInst.AutoSize = true;
             this.chkDesgloseInst.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkDesgloseInst.Location = new System.Drawing.Point(486, 556);
+            this.chkDesgloseInst.Location = new System.Drawing.Point(466, 596);
             this.chkDesgloseInst.Name = "chkDesgloseInst";
             this.chkDesgloseInst.Size = new System.Drawing.Size(177, 17);
             this.chkDesgloseInst.TabIndex = 39;
@@ -677,7 +686,7 @@
             // 
             this.chkModificaDesc.AutoSize = true;
             this.chkModificaDesc.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkModificaDesc.Location = new System.Drawing.Point(486, 530);
+            this.chkModificaDesc.Location = new System.Drawing.Point(466, 570);
             this.chkModificaDesc.Name = "chkModificaDesc";
             this.chkModificaDesc.Size = new System.Drawing.Size(196, 17);
             this.chkModificaDesc.TabIndex = 37;
@@ -689,7 +698,7 @@
             // 
             this.chkAutoCompleta.AutoSize = true;
             this.chkAutoCompleta.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkAutoCompleta.Location = new System.Drawing.Point(486, 504);
+            this.chkAutoCompleta.Location = new System.Drawing.Point(466, 544);
             this.chkAutoCompleta.Name = "chkAutoCompleta";
             this.chkAutoCompleta.Size = new System.Drawing.Size(189, 17);
             this.chkAutoCompleta.TabIndex = 35;
@@ -701,7 +710,7 @@
             // 
             this.chkContabiliza.AutoSize = true;
             this.chkContabiliza.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkContabiliza.Location = new System.Drawing.Point(486, 480);
+            this.chkContabiliza.Location = new System.Drawing.Point(466, 520);
             this.chkContabiliza.Name = "chkContabiliza";
             this.chkContabiliza.Size = new System.Drawing.Size(77, 17);
             this.chkContabiliza.TabIndex = 33;
@@ -716,12 +725,12 @@
             this.txtLineasFactura.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.txtLineasFactura.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtLineasFactura.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.txtLineasFactura.Location = new System.Drawing.Point(139, 484);
+            this.txtLineasFactura.Location = new System.Drawing.Point(137, 510);
             this.txtLineasFactura.MaxLength = 5;
             this.txtLineasFactura.Name = "txtLineasFactura";
             this.txtLineasFactura.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.txtLineasFactura.Size = new System.Drawing.Size(42, 20);
-            this.txtLineasFactura.TabIndex = 19;
+            this.txtLineasFactura.TabIndex = 20;
             this.txtLineasFactura.TabStop = false;
             // 
             // Label8
@@ -730,7 +739,7 @@
             this.Label8.Cursor = System.Windows.Forms.Cursors.Default;
             this.Label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Label8.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.Label8.Location = new System.Drawing.Point(34, 487);
+            this.Label8.Location = new System.Drawing.Point(32, 513);
             this.Label8.Name = "Label8";
             this.Label8.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.Label8.Size = new System.Drawing.Size(100, 17);
@@ -745,12 +754,12 @@
             this.txtTelefono.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.txtTelefono.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtTelefono.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.txtTelefono.Location = new System.Drawing.Point(139, 302);
+            this.txtTelefono.Location = new System.Drawing.Point(137, 328);
             this.txtTelefono.MaxLength = 20;
             this.txtTelefono.Name = "txtTelefono";
             this.txtTelefono.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.txtTelefono.Size = new System.Drawing.Size(125, 20);
-            this.txtTelefono.TabIndex = 11;
+            this.txtTelefono.TabIndex = 12;
             // 
             // Label5
             // 
@@ -758,7 +767,7 @@
             this.Label5.Cursor = System.Windows.Forms.Cursors.Default;
             this.Label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Label5.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.Label5.Location = new System.Drawing.Point(14, 305);
+            this.Label5.Location = new System.Drawing.Point(12, 331);
             this.Label5.Name = "Label5";
             this.Label5.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.Label5.Size = new System.Drawing.Size(119, 17);
@@ -773,12 +782,12 @@
             this.txtDireccion.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.txtDireccion.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtDireccion.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.txtDireccion.Location = new System.Drawing.Point(139, 276);
+            this.txtDireccion.Location = new System.Drawing.Point(137, 302);
             this.txtDireccion.MaxLength = 160;
             this.txtDireccion.Name = "txtDireccion";
             this.txtDireccion.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.txtDireccion.Size = new System.Drawing.Size(313, 20);
-            this.txtDireccion.TabIndex = 10;
+            this.txtDireccion.TabIndex = 11;
             // 
             // Label4
             // 
@@ -786,7 +795,7 @@
             this.Label4.Cursor = System.Windows.Forms.Cursors.Default;
             this.Label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Label4.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.Label4.Location = new System.Drawing.Point(14, 279);
+            this.Label4.Location = new System.Drawing.Point(12, 305);
             this.Label4.Name = "Label4";
             this.Label4.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.Label4.Size = new System.Drawing.Size(119, 17);
@@ -800,7 +809,7 @@
             this.Label3.Cursor = System.Windows.Forms.Cursors.Default;
             this.Label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Label3.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.Label3.Location = new System.Drawing.Point(14, 170);
+            this.Label3.Location = new System.Drawing.Point(12, 196);
             this.Label3.Name = "Label3";
             this.Label3.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.Label3.Size = new System.Drawing.Size(119, 17);
@@ -871,7 +880,7 @@
             this.txtFecha.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.txtFecha.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtFecha.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.txtFecha.Location = new System.Drawing.Point(139, 510);
+            this.txtFecha.Location = new System.Drawing.Point(137, 536);
             this.txtFecha.MaxLength = 0;
             this.txtFecha.Name = "txtFecha";
             this.txtFecha.RightToLeft = System.Windows.Forms.RightToLeft.No;
@@ -915,7 +924,7 @@
             this._lblLabels_1.Cursor = System.Windows.Forms.Cursors.Default;
             this._lblLabels_1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this._lblLabels_1.ForeColor = System.Drawing.SystemColors.ControlText;
-            this._lblLabels_1.Location = new System.Drawing.Point(20, 513);
+            this._lblLabels_1.Location = new System.Drawing.Point(18, 539);
             this._lblLabels_1.Name = "_lblLabels_1";
             this._lblLabels_1.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this._lblLabels_1.Size = new System.Drawing.Size(113, 17);
@@ -943,7 +952,7 @@
             this.btnCargarCertificado.Cursor = System.Windows.Forms.Cursors.Default;
             this.btnCargarCertificado.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnCargarCertificado.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.btnCargarCertificado.Location = new System.Drawing.Point(405, 354);
+            this.btnCargarCertificado.Location = new System.Drawing.Point(403, 380);
             this.btnCargarCertificado.Name = "btnCargarCertificado";
             this.btnCargarCertificado.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.btnCargarCertificado.Size = new System.Drawing.Size(47, 26);
@@ -957,7 +966,7 @@
             // 
             this.chkRegimenSimplificado.AutoSize = true;
             this.chkRegimenSimplificado.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkRegimenSimplificado.Location = new System.Drawing.Point(692, 530);
+            this.chkRegimenSimplificado.Location = new System.Drawing.Point(672, 570);
             this.chkRegimenSimplificado.Name = "chkRegimenSimplificado";
             this.chkRegimenSimplificado.Size = new System.Drawing.Size(127, 17);
             this.chkRegimenSimplificado.TabIndex = 41;
@@ -972,13 +981,20 @@
             this.tabContainer.Location = new System.Drawing.Point(458, 12);
             this.tabContainer.Name = "tabContainer";
             this.tabContainer.SelectedIndex = 0;
-            this.tabContainer.Size = new System.Drawing.Size(386, 451);
-            this.tabContainer.TabIndex = 202;
+            this.tabContainer.Size = new System.Drawing.Size(386, 491);
+            this.tabContainer.TabIndex = 24;
+            this.tabContainer.TabStop = false;
             // 
             // TabGeneral
             // 
             this.TabGeneral.AutoScroll = true;
             this.TabGeneral.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(193)))), ((int)(((byte)(215)))), ((int)(((byte)(225)))));
+            this.TabGeneral.Controls.Add(this.txtTelefonoSucursal);
+            this.TabGeneral.Controls.Add(this.label34);
+            this.TabGeneral.Controls.Add(this.txtDireccionSucursal);
+            this.TabGeneral.Controls.Add(this.label33);
+            this.TabGeneral.Controls.Add(this.txtNombreSucursal);
+            this.TabGeneral.Controls.Add(this.label32);
             this.TabGeneral.Controls.Add(this.label29);
             this.TabGeneral.Controls.Add(this.label28);
             this.TabGeneral.Controls.Add(this.txtTerminal);
@@ -1006,7 +1022,7 @@
             this.TabGeneral.Location = new System.Drawing.Point(4, 22);
             this.TabGeneral.Name = "TabGeneral";
             this.TabGeneral.Padding = new System.Windows.Forms.Padding(3);
-            this.TabGeneral.Size = new System.Drawing.Size(378, 425);
+            this.TabGeneral.Size = new System.Drawing.Size(378, 465);
             this.TabGeneral.TabIndex = 0;
             this.TabGeneral.Text = "General";
             // 
@@ -1030,7 +1046,7 @@
             this.label28.Cursor = System.Windows.Forms.Cursors.Default;
             this.label28.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label28.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label28.Location = new System.Drawing.Point(13, 198);
+            this.label28.Location = new System.Drawing.Point(13, 242);
             this.label28.Name = "label28";
             this.label28.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.label28.Size = new System.Drawing.Size(350, 17);
@@ -1045,12 +1061,12 @@
             this.txtTerminal.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.txtTerminal.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtTerminal.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.txtTerminal.Location = new System.Drawing.Point(191, 39);
+            this.txtTerminal.Location = new System.Drawing.Point(210, 32);
             this.txtTerminal.MaxLength = 5;
             this.txtTerminal.Name = "txtTerminal";
             this.txtTerminal.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.txtTerminal.Size = new System.Drawing.Size(44, 20);
-            this.txtTerminal.TabIndex = 210;
+            this.txtTerminal.TabIndex = 101;
             this.txtTerminal.TextChanged += new System.EventHandler(this.txtTerminal_TextChanged);
             // 
             // btnLimpiarLogo
@@ -1059,7 +1075,7 @@
             this.btnLimpiarLogo.Cursor = System.Windows.Forms.Cursors.Default;
             this.btnLimpiarLogo.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnLimpiarLogo.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.btnLimpiarLogo.Location = new System.Drawing.Point(97, 384);
+            this.btnLimpiarLogo.Location = new System.Drawing.Point(97, 428);
             this.btnLimpiarLogo.Name = "btnLimpiarLogo";
             this.btnLimpiarLogo.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.btnLimpiarLogo.Size = new System.Drawing.Size(78, 26);
@@ -1075,7 +1091,7 @@
             this.btnCargarLogo.Cursor = System.Windows.Forms.Cursors.Default;
             this.btnCargarLogo.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnCargarLogo.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.btnCargarLogo.Location = new System.Drawing.Point(13, 384);
+            this.btnCargarLogo.Location = new System.Drawing.Point(13, 428);
             this.btnCargarLogo.Name = "btnCargarLogo";
             this.btnCargarLogo.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.btnCargarLogo.Size = new System.Drawing.Size(78, 26);
@@ -1091,7 +1107,7 @@
             this.label27.Cursor = System.Windows.Forms.Cursors.Default;
             this.label27.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label27.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label27.Location = new System.Drawing.Point(131, 41);
+            this.label27.Location = new System.Drawing.Point(150, 34);
             this.label27.Name = "label27";
             this.label27.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.label27.Size = new System.Drawing.Size(54, 17);
@@ -1103,7 +1119,7 @@
             // 
             this.picLogo.BackColor = System.Drawing.Color.White;
             this.picLogo.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.picLogo.Location = new System.Drawing.Point(13, 218);
+            this.picLogo.Location = new System.Drawing.Point(13, 262);
             this.picLogo.Name = "picLogo";
             this.picLogo.Size = new System.Drawing.Size(350, 160);
             this.picLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -1117,13 +1133,12 @@
             this.txtImpresoraFactura.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.txtImpresoraFactura.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtImpresoraFactura.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.txtImpresoraFactura.Location = new System.Drawing.Point(79, 91);
+            this.txtImpresoraFactura.Location = new System.Drawing.Point(98, 84);
             this.txtImpresoraFactura.MaxLength = 50;
             this.txtImpresoraFactura.Name = "txtImpresoraFactura";
             this.txtImpresoraFactura.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.txtImpresoraFactura.Size = new System.Drawing.Size(266, 20);
-            this.txtImpresoraFactura.TabIndex = 197;
-            this.txtImpresoraFactura.TabStop = false;
+            this.txtImpresoraFactura.Size = new System.Drawing.Size(265, 20);
+            this.txtImpresoraFactura.TabIndex = 103;
             // 
             // txtSucursal
             // 
@@ -1132,12 +1147,12 @@
             this.txtSucursal.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.txtSucursal.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtSucursal.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.txtSucursal.Location = new System.Drawing.Point(80, 39);
+            this.txtSucursal.Location = new System.Drawing.Point(98, 32);
             this.txtSucursal.MaxLength = 5;
             this.txtSucursal.Name = "txtSucursal";
             this.txtSucursal.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.txtSucursal.Size = new System.Drawing.Size(44, 20);
-            this.txtSucursal.TabIndex = 208;
+            this.txtSucursal.TabIndex = 100;
             this.txtSucursal.TextChanged += new System.EventHandler(this.txtSucursal_TextChanged);
             // 
             // lblSucursal
@@ -1146,7 +1161,7 @@
             this.lblSucursal.Cursor = System.Windows.Forms.Cursors.Default;
             this.lblSucursal.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblSucursal.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.lblSucursal.Location = new System.Drawing.Point(10, 41);
+            this.lblSucursal.Location = new System.Drawing.Point(28, 34);
             this.lblSucursal.Name = "lblSucursal";
             this.lblSucursal.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.lblSucursal.Size = new System.Drawing.Size(64, 17);
@@ -1160,7 +1175,7 @@
             this.Label6.Cursor = System.Windows.Forms.Cursors.Default;
             this.Label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Label6.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.Label6.Location = new System.Drawing.Point(10, 92);
+            this.Label6.Location = new System.Drawing.Point(29, 85);
             this.Label6.Name = "Label6";
             this.Label6.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.Label6.Size = new System.Drawing.Size(64, 17);
@@ -1174,7 +1189,7 @@
             this.CmdConsultar.Cursor = System.Windows.Forms.Cursors.Default;
             this.CmdConsultar.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.CmdConsultar.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.CmdConsultar.Location = new System.Drawing.Point(348, 65);
+            this.CmdConsultar.Location = new System.Drawing.Point(213, 57);
             this.CmdConsultar.Name = "CmdConsultar";
             this.CmdConsultar.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.CmdConsultar.Size = new System.Drawing.Size(22, 21);
@@ -1190,12 +1205,12 @@
             this.txtEquipo.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.txtEquipo.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtEquipo.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.txtEquipo.Location = new System.Drawing.Point(79, 65);
+            this.txtEquipo.Location = new System.Drawing.Point(98, 58);
             this.txtEquipo.MaxLength = 0;
             this.txtEquipo.Name = "txtEquipo";
             this.txtEquipo.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.txtEquipo.Size = new System.Drawing.Size(266, 20);
-            this.txtEquipo.TabIndex = 196;
+            this.txtEquipo.Size = new System.Drawing.Size(115, 20);
+            this.txtEquipo.TabIndex = 102;
             this.txtEquipo.TabStop = false;
             // 
             // _lblLabels_2
@@ -1205,7 +1220,7 @@
             this._lblLabels_2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this._lblLabels_2.ForeColor = System.Drawing.SystemColors.ControlText;
             this._lblLabels_2.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this._lblLabels_2.Location = new System.Drawing.Point(21, 66);
+            this._lblLabels_2.Location = new System.Drawing.Point(40, 59);
             this._lblLabels_2.Name = "_lblLabels_2";
             this._lblLabels_2.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this._lblLabels_2.Size = new System.Drawing.Size(52, 17);
@@ -1384,12 +1399,12 @@
             this.txtCantidadDocumentos.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.txtCantidadDocumentos.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtCantidadDocumentos.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.txtCantidadDocumentos.Location = new System.Drawing.Point(138, 563);
+            this.txtCantidadDocumentos.Location = new System.Drawing.Point(136, 589);
             this.txtCantidadDocumentos.MaxLength = 0;
             this.txtCantidadDocumentos.Name = "txtCantidadDocumentos";
             this.txtCantidadDocumentos.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.txtCantidadDocumentos.Size = new System.Drawing.Size(49, 20);
-            this.txtCantidadDocumentos.TabIndex = 203;
+            this.txtCantidadDocumentos.TabIndex = 23;
             this.txtCantidadDocumentos.TabStop = false;
             // 
             // label7
@@ -1398,7 +1413,7 @@
             this.label7.Cursor = System.Windows.Forms.Cursors.Default;
             this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label7.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label7.Location = new System.Drawing.Point(19, 566);
+            this.label7.Location = new System.Drawing.Point(17, 592);
             this.label7.Name = "label7";
             this.label7.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.label7.Size = new System.Drawing.Size(113, 17);
@@ -1411,10 +1426,10 @@
             this.cboTipoContrato.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboTipoContrato.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboTipoContrato.FormattingEnabled = true;
-            this.cboTipoContrato.Location = new System.Drawing.Point(138, 536);
+            this.cboTipoContrato.Location = new System.Drawing.Point(136, 562);
             this.cboTipoContrato.Name = "cboTipoContrato";
             this.cboTipoContrato.Size = new System.Drawing.Size(172, 21);
-            this.cboTipoContrato.TabIndex = 205;
+            this.cboTipoContrato.TabIndex = 22;
             // 
             // label30
             // 
@@ -1422,7 +1437,7 @@
             this.label30.Cursor = System.Windows.Forms.Cursors.Default;
             this.label30.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label30.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label30.Location = new System.Drawing.Point(19, 537);
+            this.label30.Location = new System.Drawing.Point(17, 563);
             this.label30.Name = "label30";
             this.label30.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.label30.Size = new System.Drawing.Size(113, 17);
@@ -1430,13 +1445,127 @@
             this.label30.Text = "Tipo Contrato:";
             this.label30.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // txtCodigoActividad
+            // 
+            this.txtCodigoActividad.AcceptsReturn = true;
+            this.txtCodigoActividad.BackColor = System.Drawing.SystemColors.Window;
+            this.txtCodigoActividad.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.txtCodigoActividad.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtCodigoActividad.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.txtCodigoActividad.Location = new System.Drawing.Point(138, 167);
+            this.txtCodigoActividad.MaxLength = 6;
+            this.txtCodigoActividad.Name = "txtCodigoActividad";
+            this.txtCodigoActividad.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.txtCodigoActividad.Size = new System.Drawing.Size(63, 20);
+            this.txtCodigoActividad.TabIndex = 6;
+            // 
+            // label31
+            // 
+            this.label31.BackColor = System.Drawing.Color.Transparent;
+            this.label31.Cursor = System.Windows.Forms.Cursors.Default;
+            this.label31.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label31.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label31.Location = new System.Drawing.Point(14, 170);
+            this.label31.Name = "label31";
+            this.label31.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.label31.Size = new System.Drawing.Size(119, 17);
+            this.label31.TabIndex = 208;
+            this.label31.Text = "Actividad Económica:";
+            this.label31.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // txtNombreSucursal
+            // 
+            this.txtNombreSucursal.AcceptsReturn = true;
+            this.txtNombreSucursal.BackColor = System.Drawing.SystemColors.Window;
+            this.txtNombreSucursal.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.txtNombreSucursal.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtNombreSucursal.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.txtNombreSucursal.Location = new System.Drawing.Point(98, 110);
+            this.txtNombreSucursal.MaxLength = 50;
+            this.txtNombreSucursal.Name = "txtNombreSucursal";
+            this.txtNombreSucursal.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.txtNombreSucursal.Size = new System.Drawing.Size(265, 20);
+            this.txtNombreSucursal.TabIndex = 104;
+            // 
+            // label32
+            // 
+            this.label32.BackColor = System.Drawing.Color.Transparent;
+            this.label32.Cursor = System.Windows.Forms.Cursors.Default;
+            this.label32.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label32.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label32.Location = new System.Drawing.Point(29, 111);
+            this.label32.Name = "label32";
+            this.label32.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.label32.Size = new System.Drawing.Size(64, 17);
+            this.label32.TabIndex = 215;
+            this.label32.Text = "Nombre:";
+            this.label32.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // txtDireccionSucursal
+            // 
+            this.txtDireccionSucursal.AcceptsReturn = true;
+            this.txtDireccionSucursal.BackColor = System.Drawing.SystemColors.Window;
+            this.txtDireccionSucursal.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.txtDireccionSucursal.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtDireccionSucursal.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.txtDireccionSucursal.Location = new System.Drawing.Point(98, 136);
+            this.txtDireccionSucursal.MaxLength = 50;
+            this.txtDireccionSucursal.Name = "txtDireccionSucursal";
+            this.txtDireccionSucursal.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.txtDireccionSucursal.Size = new System.Drawing.Size(265, 20);
+            this.txtDireccionSucursal.TabIndex = 105;
+            // 
+            // label33
+            // 
+            this.label33.BackColor = System.Drawing.Color.Transparent;
+            this.label33.Cursor = System.Windows.Forms.Cursors.Default;
+            this.label33.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label33.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label33.Location = new System.Drawing.Point(29, 137);
+            this.label33.Name = "label33";
+            this.label33.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.label33.Size = new System.Drawing.Size(64, 17);
+            this.label33.TabIndex = 217;
+            this.label33.Text = "Dirección:";
+            this.label33.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // txtTelefonoSucursal
+            // 
+            this.txtTelefonoSucursal.AcceptsReturn = true;
+            this.txtTelefonoSucursal.BackColor = System.Drawing.SystemColors.Window;
+            this.txtTelefonoSucursal.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.txtTelefonoSucursal.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtTelefonoSucursal.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.txtTelefonoSucursal.Location = new System.Drawing.Point(98, 162);
+            this.txtTelefonoSucursal.MaxLength = 50;
+            this.txtTelefonoSucursal.Name = "txtTelefonoSucursal";
+            this.txtTelefonoSucursal.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.txtTelefonoSucursal.Size = new System.Drawing.Size(115, 20);
+            this.txtTelefonoSucursal.TabIndex = 106;
+            // 
+            // label34
+            // 
+            this.label34.BackColor = System.Drawing.Color.Transparent;
+            this.label34.Cursor = System.Windows.Forms.Cursors.Default;
+            this.label34.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label34.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label34.Location = new System.Drawing.Point(29, 163);
+            this.label34.Name = "label34";
+            this.label34.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.label34.Size = new System.Drawing.Size(64, 17);
+            this.label34.TabIndex = 219;
+            this.label34.Text = "Teléfono:";
+            this.label34.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
             // FrmEmpresa
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(193)))), ((int)(((byte)(215)))), ((int)(((byte)(225)))));
-            this.ClientSize = new System.Drawing.Size(851, 591);
+            this.ClientSize = new System.Drawing.Size(851, 622);
+            this.Controls.Add(this.txtCodigoActividad);
+            this.Controls.Add(this.label31);
             this.Controls.Add(this.label30);
             this.Controls.Add(this.cboTipoContrato);
             this.Controls.Add(this.txtCantidadDocumentos);
@@ -1493,8 +1622,8 @@
             this.Controls.Add(this._lblLabels_0);
             this.Controls.Add(this.cmdUpdate);
             this.Controls.Add(this.cmdCancel);
-            this.MaximumSize = new System.Drawing.Size(867, 629);
-            this.MinimumSize = new System.Drawing.Size(867, 629);
+            this.MaximumSize = new System.Drawing.Size(867, 660);
+            this.MinimumSize = new System.Drawing.Size(867, 660);
             this.Name = "FrmEmpresa";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Registrar/Actualizar datos de la empresa seleccionada";
@@ -1606,6 +1735,14 @@
         public System.Windows.Forms.Label label7;
         internal System.Windows.Forms.ComboBox cboTipoContrato;
         public System.Windows.Forms.Label label30;
+        public System.Windows.Forms.TextBox txtCodigoActividad;
+        public System.Windows.Forms.Label label31;
+        public System.Windows.Forms.TextBox txtDireccionSucursal;
+        public System.Windows.Forms.Label label33;
+        public System.Windows.Forms.TextBox txtNombreSucursal;
+        public System.Windows.Forms.Label label32;
+        public System.Windows.Forms.TextBox txtTelefonoSucursal;
+        public System.Windows.Forms.Label label34;
     }
 }
 

@@ -13,7 +13,7 @@ namespace LeandroSoftware.AccesoDatos.ServicioWCF
         void Ejecutar(RequestDTO datos);
         [OperationContract]
         [WebInvoke(Method = "POST", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, UriTemplate = "ejecutarconsulta")]
-        string EjecutarConsulta(RequestDTO datos);
+        ResponseDTO EjecutarConsulta(RequestDTO datos);
         [OperationContract]
         [WebInvoke(Method = "POST", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, UriTemplate = "recibirrespuestahacienda")]
         void RecibirRespuestaHacienda(RespuestaHaciendaDTO mensaje);

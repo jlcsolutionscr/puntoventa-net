@@ -78,22 +78,20 @@
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.ReportViewer.Common, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.ReportingServices.ReportViewerControl.Winforms.150.900.148\lib\net40\Microsoft.ReportViewer.Common.dll</HintPath>
+      <HintPath>..\..\packages\Microsoft.ReportingServices.ReportViewerControl.Winforms.150.1358.0\lib\net40\Microsoft.ReportViewer.Common.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.ReportViewer.DataVisualization, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.ReportingServices.ReportViewerControl.Winforms.150.900.148\lib\net40\Microsoft.ReportViewer.DataVisualization.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.ReportViewer.Design, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.ReportingServices.ReportViewerControl.Winforms.150.900.148\lib\net40\Microsoft.ReportViewer.Design.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.ReportViewer.ProcessingObjectModel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.ReportingServices.ReportViewerControl.Winforms.150.900.148\lib\net40\Microsoft.ReportViewer.ProcessingObjectModel.dll</HintPath>
+    <Reference Include="Microsoft.ReportViewer.Design, Version=15.3.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.ReportingServices.ReportViewerControl.Winforms.150.1358.0\lib\net40\Microsoft.ReportViewer.Design.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.ReportViewer.WinForms, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.ReportingServices.ReportViewerControl.Winforms.150.900.148\lib\net40\Microsoft.ReportViewer.WinForms.dll</HintPath>
+      <HintPath>..\..\packages\Microsoft.ReportingServices.ReportViewerControl.Winforms.150.1358.0\lib\net40\Microsoft.ReportViewer.WinForms.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.SqlServer.Types, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Microsoft.SqlServer.Types.14.0.314.76\lib\net40\Microsoft.SqlServer.Types.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel" />
@@ -101,6 +99,7 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Configuration.ConfigurationManager, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\..\packages\System.Configuration.ConfigurationManager.4.5.0\lib\net461\System.Configuration.ConfigurationManager.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Data">
@@ -117,12 +116,15 @@
     <Reference Include="System.Security" />
     <Reference Include="System.Security.AccessControl, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\System.Security.AccessControl.4.5.0\lib\net461\System.Security.AccessControl.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System.Security.Permissions, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\..\packages\System.Security.Permissions.4.5.0\lib\net461\System.Security.Permissions.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System.Security.Principal.Windows, Version=4.1.1.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\System.Security.Principal.Windows.4.5.1\lib\net461\System.Security.Principal.Windows.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.ServiceProcess" />
@@ -1010,7 +1012,6 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Certificates\011094021129-dev.p12" />
     <None Include="My Project\app.manifest" />
     <None Include="My Project\DataSources\LeandroSoftware.Puntoventa.CommonTypes.ReporteDetalleEgreso.datasource" />
     <None Include="My Project\DataSources\LeandroSoftware.Puntoventa.CommonTypes.ReporteEstadoResultados.datasource" />
@@ -1076,21 +1077,7 @@
       <Generator>MyApplicationCodeGenerator</Generator>
       <LastGenOutput>Application.Designer.vb</LastGenOutput>
     </Content>
-    <Content Include="Resources\poweredByImage.jpg" />
-    <Content Include="SqlServerTypes\Loader.cs" />
-    <Content Include="SqlServerTypes\readme.htm" />
-    <Content Include="SqlServerTypes\x64\msvcr120.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="SqlServerTypes\x64\SqlServerSpatial140.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="SqlServerTypes\x86\msvcr120.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="SqlServerTypes\x86\SqlServerSpatial140.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <None Include="Resources\logo.png" />
     <None Include="Resources\emptyImage.bmp" />
   </ItemGroup>
   <ItemGroup>
@@ -1102,18 +1089,17 @@
     <ProjectReference Include="..\..\Core\ClienteWCF\ClienteWCF.csproj">
       <Project>{2602dd72-5aa0-45a2-a4a6-4805da33c318}</Project>
       <Name>ClienteWCF</Name>
+      <Private>True</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Core\Core.csproj">
       <Project>{fa3c5bce-3db6-486e-b16b-8b7f76eef63f}</Project>
       <Name>Core</Name>
+      <Private>True</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Core\Dominio\Dominio.csproj">
       <Project>{74E3681E-1245-4268-ADB9-D76DA18B2FE0}</Project>
       <Name>Dominio</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\ServiciosWeb\AcessoDatos\TiposDatos\TiposDatosHacienda.csproj">
-      <Project>{df822ceb-dff9-4f4f-8bc1-d6c0cbf54d4b}</Project>
-      <Name>TiposDatosHacienda</Name>
+      <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />

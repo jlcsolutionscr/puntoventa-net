@@ -1,12 +1,15 @@
 Imports System.Threading.Tasks
 Imports LeandroSoftware.Core.Dominio.Entidades
 Imports LeandroSoftware.Core.ClienteWCF
+Imports System.Collections.Generic
 
 Public Class FrmEmpresa
 #Region "Variables"
     Public intIdEmpresa As Integer
     Private datos As Empresa
+    Private datosSucursal As List(Of TerminalPorEmpresa)
     Private bolInit As Boolean = True
+    Private intIdTerminalEnUso As Integer = 0
 #End Region
 
 #Region "Métodos"
@@ -54,6 +57,7 @@ Public Class FrmEmpresa
         Await CargarCombos()
         Try
             datos = Await ClienteFEWCF.ObtenerEmpresa(FrmPrincipal.empresaGlobal.IdEmpresa)
+            datosSucursal = datos.TerminalPorEmpresa
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -79,6 +83,12 @@ Public Class FrmEmpresa
         txtTelefono.Text = datos.Telefono
         txtCorreoNotificacion.Text = datos.CorreoNotificacion
         txtFechaRenovacion.Text = Format(datos.FechaVence, "dd/MM/yyyy")
+        txtIdSucursal.Text = datosSucursal.Item(intIdTerminalEnUso).IdSucursal
+        txtIdTerminal.Text = datosSucursal.Item(intIdTerminalEnUso).IdTerminal
+        txtNombreSucursal.Text = datosSucursal.Item(intIdTerminalEnUso).NombreSucursal
+        txtDireccionSucursal.Text = datosSucursal.Item(intIdTerminalEnUso).Direccion
+        txtTelefonoSucursal.Text = datosSucursal.Item(intIdTerminalEnUso).Telefono
+        If datosSucursal.Count > 1 Then btnSiguiente.Enabled = True
         bolInit = False
     End Sub
 
@@ -106,6 +116,9 @@ Public Class FrmEmpresa
         datos.Barrio = Nothing
         Try
             Await ClienteFEWCF.ActualizarEmpresa(datos)
+            For Each terminal As TerminalPorEmpresa In datosSucursal
+                Await ClienteFEWCF.ActualizarTerminalPorEmpresa(terminal)
+            Next
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
@@ -141,6 +154,48 @@ Public Class FrmEmpresa
 
     Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As KeyPressEventArgs) Handles txtIdentificacion.KeyPress, txtTelefono.KeyPress
         FrmPrincipal.ValidaNumero(e, sender, True, 2, ".")
+    End Sub
+
+    Private Sub BtnAnterior_Click(sender As Object, e As EventArgs) Handles btnAnterior.Click
+        intIdTerminalEnUso -= 1
+        If intIdTerminalEnUso = 0 Then btnAnterior.Enabled = False
+        If datosSucursal.Count > intIdTerminalEnUso + 1 Then
+            btnSiguiente.Enabled = True
+        Else
+            btnSiguiente.Enabled = False
+        End If
+        txtIdSucursal.Text = datosSucursal.Item(intIdTerminalEnUso).IdSucursal
+        txtIdTerminal.Text = datosSucursal.Item(intIdTerminalEnUso).IdTerminal
+        txtNombreSucursal.Text = datosSucursal.Item(intIdTerminalEnUso).NombreSucursal
+        txtDireccionSucursal.Text = datosSucursal.Item(intIdTerminalEnUso).Direccion
+        txtTelefonoSucursal.Text = datosSucursal.Item(intIdTerminalEnUso).Telefono
+    End Sub
+
+    Private Sub BtnSiguiente_Click(sender As Object, e As EventArgs) Handles btnSiguiente.Click
+        intIdTerminalEnUso += 1
+        If intIdTerminalEnUso >= 1 Then btnAnterior.Enabled = True
+        If datosSucursal.Count > intIdTerminalEnUso + 1 Then
+            btnSiguiente.Enabled = True
+        Else
+            btnSiguiente.Enabled = False
+        End If
+        txtIdSucursal.Text = datosSucursal.Item(intIdTerminalEnUso).IdSucursal
+        txtIdTerminal.Text = datosSucursal.Item(intIdTerminalEnUso).IdTerminal
+        txtNombreSucursal.Text = datosSucursal.Item(intIdTerminalEnUso).NombreSucursal
+        txtDireccionSucursal.Text = datosSucursal.Item(intIdTerminalEnUso).Direccion
+        txtTelefonoSucursal.Text = datosSucursal.Item(intIdTerminalEnUso).Telefono
+    End Sub
+
+    Private Sub TxtNombreSucursal_Validated(sender As Object, e As EventArgs) Handles txtNombreSucursal.Validated
+        datosSucursal.Item(intIdTerminalEnUso).NombreSucursal = txtNombreSucursal.Text
+    End Sub
+
+    Private Sub TxtDireccionSucursal_Validated(sender As Object, e As EventArgs) Handles txtDireccionSucursal.Validated
+        datosSucursal.Item(intIdTerminalEnUso).Direccion = txtDireccionSucursal.Text
+    End Sub
+
+    Private Sub TxtTelefonoSucursal_Validated(sender As Object, e As EventArgs) Handles txtTelefonoSucursal.Validated
+        datosSucursal.Item(intIdTerminalEnUso).Telefono = txtTelefonoSucursal.Text
     End Sub
 #End Region
 End Class

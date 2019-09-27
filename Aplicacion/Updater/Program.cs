@@ -63,12 +63,5 @@ namespace LeandroSoftware.Updater
             Console.WriteLine("Archivos de actualización temporales eliminados satisfactoriamente. . .");
             Console.WriteLine("FINAL DEL PROCESO DE ACTUALIZACION. . .\n");
         }
-
-        static string getProgramFilesx86Folder()
-        {
-            if (8 == IntPtr.Size || (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("PROCESSOR_ARCHITEW6432"))))
-                return Environment.GetEnvironmentVariable("ProgramFiles(x86)");
-            return Environment.GetEnvironmentVariable("ProgramFiles");
-        }
     }
 }

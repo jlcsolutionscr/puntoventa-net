@@ -493,4 +493,34 @@
         public decimal Impuesto { get; set; }
         public decimal Total { get; set; }
     }
+
+    public class IdentificacionNombre
+    {
+        public IdentificacionNombre()
+        {
+        }
+
+        public IdentificacionNombre(string id, string nombre)
+        {
+            Identificacion = id;
+            NombreComercial = nombre;
+        }
+        public string Identificacion { get; set; }
+        public string NombreComercial { get; set; }
+    }
+
+    public class ListaEmpresa
+    {
+        public ListaEmpresa()
+        {
+        }
+
+        public ListaEmpresa(int id, string nombre)
+        {
+            IdEmpresa = id;
+            NombreComercial = nombre;
+        }
+        public int IdEmpresa { get; set; }
+        public string NombreComercial { get; set; }
+    }
 }

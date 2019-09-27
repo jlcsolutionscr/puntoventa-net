@@ -54,11 +54,12 @@ Partial Class FrmInicio
         '
         Me.lblVersion.AutoSize = True
         Me.lblVersion.ImageAlign = System.Drawing.ContentAlignment.MiddleRight
-        Me.lblVersion.Location = New System.Drawing.Point(362, 554)
+        Me.lblVersion.Location = New System.Drawing.Point(338, 554)
         Me.lblVersion.Name = "lblVersion"
-        Me.lblVersion.Size = New System.Drawing.Size(78, 13)
+        Me.lblVersion.Size = New System.Drawing.Size(102, 13)
         Me.lblVersion.TabIndex = 3
-        Me.lblVersion.Text = "Version 1.0.0.0"
+        Me.lblVersion.Text = "Version 99.99.99.99"
+        Me.lblVersion.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'FrmInicio
         '

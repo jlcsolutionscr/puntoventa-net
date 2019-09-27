@@ -260,11 +260,32 @@ Public Class ModuloImpresion
 #Region "Métodos"
     Private Shared Function ImprimirEncabezado(objEquipo As TerminalPorEmpresa, objEmpresa As Empresa, strFecha As String, Optional strCodigoUsuario As String = "") As String
         Dim strCadena As String = strFecha & strCodigoUsuario.PadLeft(30, " ") & Chr(13) & Chr(10)
-        If objEmpresa.NombreComercial.Length > 40 Then
-            strCadena += objEmpresa.NombreComercial.Substring(0, 40) & Chr(13) & Chr(10)
+        strCadena += Chr(13) & Chr(10)
+        If objEquipo.NombreSucursal.Length > 40 Then
+            strCadena += objEquipo.NombreSucursal.Substring(0, 40) & Chr(13) & Chr(10)
         Else
-            strCadena += "".PadRight((40 - objEmpresa.NombreComercial.Length) / 2, " ") & objEmpresa.NombreComercial & Chr(13) & Chr(10)
+            strCadena += "".PadRight((40 - objEquipo.NombreSucursal.Length) / 2, " ") & objEquipo.NombreSucursal & Chr(13) & Chr(10)
         End If
+        strCadena += Chr(13) & Chr(10)
+        Dim strDireccion1 As String
+        If objEquipo.Direccion.Length > 40 Then
+            Dim intEspacioIndex = objEquipo.Direccion.Substring(0, 40).LastIndexOf(" ")
+            Dim strDireccion2 As String
+            If (intEspacioIndex >= 0) Then
+                strDireccion1 = objEquipo.Direccion.Substring(0, intEspacioIndex)
+                strDireccion2 = objEquipo.Direccion.Substring(intEspacioIndex + 1)
+            Else
+                strDireccion1 = objEquipo.NombreSucursal.Substring(0, 40)
+                strDireccion2 = objEquipo.NombreSucursal.Substring(40)
+            End If
+            strCadena += "".PadRight((40 - strDireccion1.Length) / 2, " ") + strDireccion1 & Chr(13) & Chr(10)
+            strCadena += "".PadRight((40 - strDireccion2.Length) / 2, " ") + strDireccion2 & Chr(13) & Chr(10)
+        Else
+            strDireccion1 = objEquipo.Direccion
+            strCadena += "".PadRight((40 - strDireccion1.Length) / 2, " ") + strDireccion1 & Chr(13) & Chr(10)
+        End If
+        Dim strTelefono As String = "TELEFONO: " + objEquipo.Telefono
+        strCadena += "".PadRight((40 - strTelefono.Length) / 2, " ") + strTelefono & Chr(13) & Chr(10)
         strCadena += Chr(13) & Chr(10)
         If objEmpresa.NombreEmpresa.Length > 40 Then
             strCadena += objEmpresa.NombreEmpresa.Substring(0, 40) & Chr(13) & Chr(10)
@@ -276,27 +297,12 @@ Public Class ModuloImpresion
         Else
             strCadena += "".PadRight((40 - objEmpresa.Identificacion.Length) / 2, " ") & objEmpresa.Identificacion & Chr(13) & Chr(10)
         End If
-        Dim strDireccion1 As String = ""
-        Dim strDireccion2 As String = ""
-        If objEmpresa.Direccion.Length > 40 Then
-            strDireccion1 = objEmpresa.Direccion.Substring(0, 40)
-            If objEmpresa.Direccion.Length > 80 Then
-                strDireccion2 = objEmpresa.Direccion.Substring(40, 40)
-            Else
-                strDireccion2 = objEmpresa.Direccion.Substring(40, objEmpresa.Direccion.Length - 40)
-            End If
-            strCadena += "".PadRight((40 - strDireccion1.Length) / 2, " ") + strDireccion1 & Chr(13) & Chr(10)
-            strCadena += "".PadRight((40 - strDireccion2.Length) / 2, " ") + strDireccion2 & Chr(13) & Chr(10)
-        Else
-            strDireccion1 = objEmpresa.Direccion
-            strCadena += "".PadRight((40 - strDireccion1.Length) / 2, " ") + strDireccion1 & Chr(13) & Chr(10)
-        End If
-        strCadena += "".PadRight((40 - objEmpresa.Telefono.Length) / 2, " ") + objEmpresa.Telefono & Chr(13) & Chr(10)
+
         strCadena += "".PadRight((40 - objEmpresa.CorreoNotificacion.Length) / 2, " ") + objEmpresa.CorreoNotificacion & Chr(13) & Chr(10)
         Return strCadena
     End Function
 
-    Private Shared Function ImprimirDesglosePago(objDesglosePago As IList(Of clsDesgloseFormaPago)) As String
+    Private Shared Function ImprimirDesglosePago(objDesglosePago As IList(Of ClsDesgloseFormaPago)) As String
         Dim strDesglosePago As String = ""
         strDesglosePago += "Desglose de Forma de pago" & Chr(13) & Chr(10)
         For i As Integer = 0 To objDesglosePago.Count - 1
@@ -351,6 +357,8 @@ Public Class ModuloImpresion
                 strFactura += objFactura.strClaveNumerica.Substring(0, 25).PadLeft(32, " ") & Chr(13) & Chr(10)
                 strFactura += objFactura.strClaveNumerica.Substring(25, 25).PadLeft(32, " ") & Chr(13) & Chr(10)
             End If
+            strFactura += Chr(13) & Chr(10)
+            strFactura += "       Sucursal: " & objFactura.equipo.IdSucursal.ToString().PadRight(4, " ") & "Terminal: " & objFactura.equipo.IdTerminal & Chr(13) & Chr(10)
             strFactura += Chr(13) & Chr(10)
             strFactura += "Factura Nro: " & objFactura.strId & Chr(13) & Chr(10)
             strFactura += "Vendedor: " & objFactura.strVendedor.Substring(0, If(objFactura.strVendedor.Length < 30, objFactura.strVendedor.Length, 30)) & Chr(13) & Chr(10)
