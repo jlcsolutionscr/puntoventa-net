@@ -635,7 +635,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     {
                         if (empresa.FechaVence < DateTime.Today) throw new BusinessException("El período del plan de facturación electrónica adquirido ha expirado. Por favor, pongase en contacto con su proveedor del servicio.");
                         if (empresa.TipoContrato == 2 && empresa.CantidadDisponible == 0) throw new BusinessException("El disponible de documentos electrónicos fue agotado. Por favor, pongase en contacto con su proveedor del servicio.");
-                        Cliente cliente = dbContext.ClienteRepository.Find(factura.IdCliente);                        
+                        Cliente cliente = dbContext.ClienteRepository.Find(factura.IdCliente);
                         if (factura.IdCliente > 1)
                             documentoFE = ComprobanteElectronicoService.GeneraFacturaElectronica(factura, factura.Empresa, cliente, dbContext, decTipoDeCambio);
                         else
@@ -2179,9 +2179,12 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                             foreach (XmlNode linea in documentoXml.GetElementsByTagName("DetalleServicio"))
                             {
                                 XmlNode lineaDetalle = linea["LineaDetalle"];
-                                if (lineaDetalle["Impuesto"]["Exoneracion"] != null)
+                                if (lineaDetalle["Impuesto"] != null)
                                 {
-                                    if (strExoneracionLeyenda.Length == 0) strExoneracionLeyenda = "Se aplica exoneración segun oficio " + lineaDetalle["Impuesto"]["Exoneracion"]["NumeroDocumento"].InnerText + " por un porcentaje del " + lineaDetalle["Impuesto"]["Exoneracion"]["PorcentajeExoneracion"].InnerText + "% del valor grabado.";
+                                    if (lineaDetalle["Impuesto"]["Exoneracion"] != null)
+                                    {
+                                        if (strExoneracionLeyenda.Length == 0) strExoneracionLeyenda = "Se aplica exoneración segun oficio " + lineaDetalle["Impuesto"]["Exoneracion"]["NumeroDocumento"].InnerText + " por un porcentaje del " + lineaDetalle["Impuesto"]["Exoneracion"]["PorcentajeExoneracion"].InnerText + "% del valor grabado.";
+                                    }
                                 }
                                 EstructuraPDFDetalleServicio detalle = new EstructuraPDFDetalleServicio
                                 {
