@@ -121,7 +121,9 @@ namespace LeandroSoftware.AccesoDatos.ServicioWCF
                         parametrosJO = JObject.Parse(datos.DatosPeticion);
                         string strIdentificacion = parametrosJO.Property("Identificacion").Value.ToString();
                         string strDispositivo = parametrosJO.Property("Dispositivo").Value.ToString();
-                        servicioMantenimiento.RegistrarDispositivo(strIdentificacion, strDispositivo);
+                        string strUsuario = parametrosJO.Property("Usuario").Value.ToString();
+                        string strClave = parametrosJO.Property("Clave").Value.ToString();
+                        servicioMantenimiento.RegistrarDispositivo(strIdentificacion, strDispositivo, strUsuario, strClave);
                         break;
                     case "ActualizarUltimaVersionApp":
                         parametrosJO = JObject.Parse(datos.DatosPeticion);

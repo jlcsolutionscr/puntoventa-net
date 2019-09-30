@@ -1667,6 +1667,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     foreach (DocumentoElectronico doc in listado)
                     {
                         doc.DatosDocumento = null;
+                        doc.DatosDocumentoOri = null;
                         doc.Respuesta = null;
                     }
                     return listado;
@@ -1860,6 +1861,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     foreach (DocumentoElectronico doc in listado)
                     {
                         doc.DatosDocumento = null;
+                        doc.DatosDocumentoOri = null;
                         doc.Respuesta = null;
                     }
                     return listado;

@@ -33,7 +33,7 @@ Partial Class FrmUsuario
         Me.btnInsertarRole = New System.Windows.Forms.Button()
         Me.btnEliminarRole = New System.Windows.Forms.Button()
         Me.chkModifica = New System.Windows.Forms.CheckBox()
-        Me.chkAutoriza = New System.Windows.Forms.CheckBox()
+        Me.chkRegistraDispositivo = New System.Windows.Forms.CheckBox()
         Me.btnCancelar = New System.Windows.Forms.Button()
         Me.btnGuardar = New System.Windows.Forms.Button()
         CType(Me.dgvRoleXUsuario, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -192,7 +192,7 @@ Partial Class FrmUsuario
         'chkModifica
         '
         Me.chkModifica.AutoSize = True
-        Me.chkModifica.Location = New System.Drawing.Point(146, 366)
+        Me.chkModifica.Location = New System.Drawing.Point(149, 362)
         Me.chkModifica.Name = "chkModifica"
         Me.chkModifica.Size = New System.Drawing.Size(161, 17)
         Me.chkModifica.TabIndex = 0
@@ -200,16 +200,16 @@ Partial Class FrmUsuario
         Me.chkModifica.Text = "Modificar registros existentes"
         Me.chkModifica.UseVisualStyleBackColor = True
         '
-        'chkAutoriza
+        'chkRegistraDispositivo
         '
-        Me.chkAutoriza.AutoSize = True
-        Me.chkAutoriza.Location = New System.Drawing.Point(310, 366)
-        Me.chkAutoriza.Name = "chkAutoriza"
-        Me.chkAutoriza.Size = New System.Drawing.Size(159, 17)
-        Me.chkAutoriza.TabIndex = 0
-        Me.chkAutoriza.TabStop = False
-        Me.chkAutoriza.Text = "Autoriza Facturas de Crédito"
-        Me.chkAutoriza.UseVisualStyleBackColor = True
+        Me.chkRegistraDispositivo.AutoSize = True
+        Me.chkRegistraDispositivo.Location = New System.Drawing.Point(313, 362)
+        Me.chkRegistraDispositivo.Name = "chkRegistraDispositivo"
+        Me.chkRegistraDispositivo.Size = New System.Drawing.Size(153, 17)
+        Me.chkRegistraDispositivo.TabIndex = 0
+        Me.chkRegistraDispositivo.TabStop = False
+        Me.chkRegistraDispositivo.Text = "Permite registrar dispositivo"
+        Me.chkRegistraDispositivo.UseVisualStyleBackColor = True
         '
         'btnCancelar
         '
@@ -238,7 +238,7 @@ Partial Class FrmUsuario
         Me.ClientSize = New System.Drawing.Size(475, 392)
         Me.Controls.Add(Me.btnCancelar)
         Me.Controls.Add(Me.btnGuardar)
-        Me.Controls.Add(Me.chkAutoriza)
+        Me.Controls.Add(Me.chkRegistraDispositivo)
         Me.Controls.Add(Me.chkModifica)
         Me.Controls.Add(Me.btnEliminarRole)
         Me.Controls.Add(Me.btnInsertarRole)
@@ -275,7 +275,7 @@ Partial Class FrmUsuario
     Public WithEvents btnInsertarRole As System.Windows.Forms.Button
     Public WithEvents btnEliminarRole As System.Windows.Forms.Button
     Friend WithEvents chkModifica As System.Windows.Forms.CheckBox
-    Friend WithEvents chkAutoriza As System.Windows.Forms.CheckBox
+    Friend WithEvents chkRegistraDispositivo As System.Windows.Forms.CheckBox
     Friend WithEvents btnCancelar As System.Windows.Forms.Button
     Friend WithEvents btnGuardar As System.Windows.Forms.Button
 End Class

@@ -112,7 +112,7 @@ Public Class FrmUsuario
             txtUsuario.Text = datos.CodigoUsuario
             txtPassword.Text = strDecryptedPassword
             chkModifica.Checked = datos.Modifica
-            chkAutoriza.Checked = datos.AutorizaCredito
+            chkRegistraDispositivo.Checked = datos.PermiteRegistrarDispositivo
             CargarDetalleRole(datos)
         Else
             datos = New Usuario
@@ -150,7 +150,7 @@ Public Class FrmUsuario
         datos.CodigoUsuario = txtUsuario.Text
         datos.Clave = strEncryptedPassword
         datos.Modifica = chkModifica.Checked
-        datos.AutorizaCredito = chkAutoriza.Checked
+        datos.PermiteRegistrarDispositivo = chkRegistraDispositivo.Checked
         datos.RolePorUsuario.Clear()
         For I = 0 To dtbRolePorUsuario.Rows.Count - 1
             rolePorUsuario = New RolePorUsuario With {

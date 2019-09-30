@@ -14,7 +14,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
     public interface IMantenimientoService
     {
         // Métodos para administrar parametros del sistema
-        void RegistrarDispositivo(string strIdentificacion, string strDispositivoID);
+        void RegistrarDispositivo(string strIdentificacion, string strDispositivoID, string strCodigoUsuario, string strClave);
         void ActualizarUltimaVersionApp(string strVersion);
         string ObtenerUltimaVersionApp();
         // Métodos para administrar las empresas
@@ -128,17 +128,23 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public void RegistrarDispositivo(string strIdentificacion, string strDispositivoId)
+        public void RegistrarDispositivo(string strIdentificacion, string strDispositivoId, string strCodigoUsuario, string strClave)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 try
                 {
+                    Usuario usuario = dbContext.UsuarioRepository.Include("RolePorUsuario.Role").FirstOrDefault(x => x.CodigoUsuario == strCodigoUsuario);
+                    if (usuario == null) throw new BusinessException("El código de usuario ingresado no se encuentra registrado. Contacte a su proveedor.");
+                    if (usuario.Clave != strClave) throw new BusinessException("Contraseña incorrecta. Verifique los credenciales suministrados.");
+                    if (!usuario.PermiteRegistrarDispositivo) throw new BusinessException("El usuario suministrado no esta autorizado para registrar un dispositivo movil. Contacte a su proveedor.");
                     Empresa empresa = dbContext.EmpresaRepository.FirstOrDefault(x => x.Identificacion == strIdentificacion);
                     if (empresa == null) throw new BusinessException("Empresa no se encuentra registrada con la identificción suministrada.");
                     if (!empresa.PermiteFacturar) throw new BusinessException("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.FechaVence < DateTime.Today) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
                     if (empresa.TipoContrato == 2 && empresa.CantidadDisponible == 0) throw new BusinessException("El disponible de documentos electrónicos ya fue utilizado. Por favor, pongase en contacto con su proveedor del servicio.");
+                    UsuarioPorEmpresa empresaUsuario = dbContext.UsuarioPorEmpresaRepository.Where(x => x.IdUsuario == usuario.IdUsuario && x.IdEmpresa == empresa.IdEmpresa).FirstOrDefault();
+                    if (empresaUsuario == null) throw new BusinessException("El usuario ingresado no pertenece a la empresa con la identificación suministrada.");
                     TerminalPorEmpresa terminal = dbContext.TerminalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa && x.IdTipoDispositivo == 1);
                     if (terminal == null)
                     {
@@ -651,8 +657,9 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 {
                     throw ex;
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    log.Error("Error al eliminar el usuario: ", ex);
                     throw new Exception("Error en la validación de los credenciales suministrados por favor verifique la información. . .");
                 }
             }

@@ -18,7 +18,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public string CodigoUsuario { get; set; }
         public string Clave { get; set; }
         public bool Modifica { get; set; }
-        public bool AutorizaCredito { get; set; }
+        public bool PermiteRegistrarDispositivo { get; set; }
         [NotMapped]
         public Empresa Empresa;
 
