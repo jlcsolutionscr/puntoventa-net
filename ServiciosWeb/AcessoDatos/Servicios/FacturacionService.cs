@@ -636,13 +636,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     DocumentoElectronico documentoFE = null;
                     if (!empresa.RegimenSimplificado)
                     {
-<<<<<<< HEAD
                         Cliente cliente = dbContext.ClienteRepository.Find(factura.IdCliente);                        
-=======
-                        if (empresa.FechaVence < DateTime.Today) throw new BusinessException("El período del plan de facturación electrónica adquirido ha expirado. Por favor, pongase en contacto con su proveedor del servicio.");
-                        if (empresa.TipoContrato == 2 && empresa.CantidadDisponible == 0) throw new BusinessException("El disponible de documentos electrónicos fue agotado. Por favor, pongase en contacto con su proveedor del servicio.");
-                        Cliente cliente = dbContext.ClienteRepository.Find(factura.IdCliente);
->>>>>>> 7979cec5a9db68de9b3222a70eb738c35f3d07ac
                         if (factura.IdCliente > 1)
                             documentoFE = ComprobanteElectronicoService.GeneraFacturaElectronica(factura, factura.Empresa, cliente, dbContext, decTipoDeCambio);
                         else
