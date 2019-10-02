@@ -5,13 +5,11 @@ Imports LeandroSoftware.Core.Dominio.Entidades
 Imports System.Threading.Tasks
 Imports LeandroSoftware.Core.ClienteWCF
 Imports LeandroSoftware.Core.CommonTypes
-Imports LeandroSoftware.Core.TiposDatosHacienda
 Imports LeandroSoftware.Core.Utilities
 
 Public Class FrmFactura
 #Region "Variables"
-    Private strMotivoRechazo As String
-    Private decExcento, decGrabado, decExonerado, decImpuesto, decTotalCosto, decTotalPago, decTotal, decSubTotal, decSaldoPorPagar, decCostoPorInstalacion, decPrecioVenta As Decimal
+    Private decExcento, decGrabado, decExonerado, decImpuesto, decTotalCosto, decTotalPago, decTotal, decSubTotal, decSaldoPorPagar, decPrecioVenta As Decimal
     Private I, shtConsecutivoPago As Short
     Private dtbDetalleFactura, dtbDesglosePago As DataTable
     Private dtrRowDetFactura, dtrRowDesglosePago As DataRow
@@ -245,7 +243,6 @@ Public Class FrmFactura
             dtrRowDetFactura.Item(8) = detalle.CostoInstalacion
             dtrRowDetFactura.Item(9) = detalle.PorcentajeIVA
             dtbDetalleFactura.Rows.Add(dtrRowDetFactura)
-            decCostoPorInstalacion += detalle.Cantidad * detalle.CostoInstalacion
         Next
         grdDetalleFactura.Refresh()
     End Sub
@@ -265,7 +262,6 @@ Public Class FrmFactura
             dtrRowDetFactura.Item(8) = detalle.CostoInstalacion
             dtrRowDetFactura.Item(9) = detalle.PorcentajeIVA
             dtbDetalleFactura.Rows.Add(dtrRowDetFactura)
-            decCostoPorInstalacion += detalle.Cantidad * detalle.CostoInstalacion
         Next
         grdDetalleFactura.Refresh()
     End Sub
@@ -342,46 +338,6 @@ Public Class FrmFactura
             dtrRowDetFactura.Item(8) = dblCostoInstalacion
             dtrRowDetFactura.Item(9) = decTasaImpuesto
             dtbDetalleFactura.Rows.Add(dtrRowDetFactura)
-        End If
-        grdDetalleFactura.Refresh()
-    End Sub
-
-    Private Sub CargarLineaDetalleInstalacion(ByVal producto As Producto, ByVal decTotal As Decimal)
-        Dim intIndice As Integer = dtbDetalleFactura.Rows.IndexOf(dtbDetalleFactura.Rows.Find(producto.IdProducto))
-        Dim decTasaImpuesto As Decimal = producto.ParametroImpuesto.TasaImpuesto
-        If cliente.ExoneradoDeImpuesto Then decTasaImpuesto = 0
-        If intIndice >= 0 Then
-            dtbDetalleFactura.Rows(intIndice).Item(1) = producto.Codigo
-            dtbDetalleFactura.Rows(intIndice).Item(2) = producto.Descripcion
-            dtbDetalleFactura.Rows(intIndice).Item(4) += decTotal
-            dtbDetalleFactura.Rows(intIndice).Item(5) += decTotal
-            dtbDetalleFactura.Rows(intIndice).Item(6) = decTasaImpuesto = 0
-            dtbDetalleFactura.Rows(intIndice).Item(7) = producto.PrecioCosto
-            dtbDetalleFactura.Rows(intIndice).Item(9) = decTasaImpuesto
-        Else
-            dtrRowDetFactura = dtbDetalleFactura.NewRow
-            dtrRowDetFactura.Item(0) = producto.IdProducto
-            dtrRowDetFactura.Item(1) = producto.Codigo
-            dtrRowDetFactura.Item(2) = producto.Descripcion
-            dtrRowDetFactura.Item(3) = 1
-            dtrRowDetFactura.Item(4) = decTotal
-            dtrRowDetFactura.Item(5) = decTotal
-            dtrRowDetFactura.Item(6) = decTasaImpuesto = 0
-            dtrRowDetFactura.Item(7) = producto.PrecioCosto
-            dtrRowDetFactura.Item(8) = 0
-            dtrRowDetFactura.Item(9) = decTasaImpuesto
-            dtbDetalleFactura.Rows.Add(dtrRowDetFactura)
-        End If
-        grdDetalleFactura.Refresh()
-    End Sub
-
-    Private Sub DescargarLineaDetalleInstalacion(ByVal producto As Producto, ByVal decTotal As Decimal)
-        Dim intIndice As Integer = dtbDetalleFactura.Rows.IndexOf(dtbDetalleFactura.Rows.Find(producto.IdProducto))
-        If intIndice >= 0 Then
-            dtbDetalleFactura.Rows(intIndice).Item(1) = producto.Codigo
-            dtbDetalleFactura.Rows(intIndice).Item(2) = producto.Descripcion
-            dtbDetalleFactura.Rows(intIndice).Item(4) -= decTotal
-            dtbDetalleFactura.Rows(intIndice).Item(5) -= decTotal
         End If
         grdDetalleFactura.Refresh()
     End Sub
@@ -641,7 +597,6 @@ Public Class FrmFactura
         txtTotal.Text = FormatNumber(0, 2)
         txtPagoDelCliente.Text = FormatNumber(0, 2)
         txtCambio.Text = FormatNumber(0, 2)
-        decCostoPorInstalacion = 0
         txtCodigo.Text = ""
         txtUnidad.Text = ""
         txtCantidad.Text = "1"
@@ -741,7 +696,6 @@ Public Class FrmFactura
                 txtPorcentajeExoneracion.Text = factura.PorcentajeExoneracion
                 vendedor = factura.Vendedor
                 txtVendedor.Text = IIf(vendedor IsNot Nothing, vendedor.Nombre, "")
-                decCostoPorInstalacion = 0
                 CargarDetalleFactura(factura)
                 Await CargarDesglosePago(factura)
                 CargarTotales()
@@ -792,7 +746,6 @@ Public Class FrmFactura
                 vendedor = ordenServicio.Vendedor
                 txtVendedor.Text = IIf(vendedor IsNot Nothing, vendedor.Nombre, "")
                 txtIdOrdenServicio.Text = ordenServicio.IdOrden
-                decCostoPorInstalacion = 0
                 CargarDetalleOrdenServicio(ordenServicio)
                 dtbDesglosePago.Rows.Clear()
                 grdDesglosePago.Refresh()
@@ -839,7 +792,6 @@ Public Class FrmFactura
                 vendedor = proforma.Vendedor
                 txtVendedor.Text = IIf(vendedor IsNot Nothing, vendedor.Nombre, "")
                 txtIdProforma.Text = proforma.IdProforma
-                decCostoPorInstalacion = 0
                 CargarDetalleProforma(proforma)
                 dtbDesglosePago.Rows.Clear()
                 grdDesglosePago.Refresh()
@@ -915,8 +867,17 @@ Public Class FrmFactura
         If Not FrmPrincipal.strBusqueda.Equals("") Then
             txtCodigo.Text = FrmPrincipal.strBusqueda
             Await ValidarProducto(txtCodigo.Text)
+            If Not producto Is Nothing Then
+                If FrmPrincipal.empresaGlobal.ModificaDescProducto = True Then
+                    txtDescripcion.ReadOnly = False
+                    txtDescripcion.Focus()
+                End If
+            Else
+                txtDescripcion.ReadOnly = True
+                txtPrecio.Focus()
+                txtPrecio.SelectAll()
+            End If
         End If
-        txtCodigo.Focus()
     End Sub
 
     Private Async Sub BtnGuardar_Click(sender As Object, e As EventArgs) Handles btnGuardar.Click
@@ -1157,7 +1118,7 @@ Public Class FrmFactura
             datos.CodigoMoneda = IIf(factura.IdTipoMoneda = 1, "CRC", "USD")
             datos.TipoDeCambio = factura.TipoDeCambioDolar.ToString("N5", CultureInfo.InvariantCulture)
             Try
-                Dim poweredByImage As Image = My.Resources.poweredByImage
+                Dim poweredByImage As Image = My.Resources.logo
                 datos.PoweredByLogotipo = poweredByImage
             Catch ex As Exception
                 datos.PoweredByLogotipo = Nothing
@@ -1196,15 +1157,9 @@ Public Class FrmFactura
 
     Private Async Sub CmdEliminar_Click(sender As Object, e As EventArgs) Handles btnEliminar.Click
         If grdDetalleFactura.Rows.Count > 0 Then
-            If FrmPrincipal.empresaGlobal.DesglosaServicioInst And grdDetalleFactura.CurrentRow.Cells(0).Value = FrmPrincipal.empresaGlobal.CodigoServicioInst And decCostoPorInstalacion > 0 Then
-                MessageBox.Show("La línea seleccionada no puede eliminarse. Debe eliminar los productos relacionados.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Exit Sub
-            End If
             producto = Await ClienteFEWCF.ObtenerProducto(grdDetalleFactura.CurrentRow.Cells(0).Value)
             If CDbl(dtbDetalleFactura.Rows.Find(grdDetalleFactura.CurrentRow.Cells(0).Value).Item(8)) > 0 Then
                 producto = Await ClienteFEWCF.ObtenerProducto(FrmPrincipal.empresaGlobal.CodigoServicioInst)
-                DescargarLineaDetalleInstalacion(producto, CDbl(dtbDetalleFactura.Rows.Find(grdDetalleFactura.CurrentRow.Cells(0).Value).Item(8)) * CDbl(grdDetalleFactura.CurrentRow.Cells(3).Value))
-                decCostoPorInstalacion -= CDbl(dtbDetalleFactura.Rows.Find(grdDetalleFactura.CurrentRow.Cells(0).Value).Item(8)) * CDbl(grdDetalleFactura.CurrentRow.Cells(3).Value)
             End If
             dtbDetalleFactura.Rows.Remove(dtbDetalleFactura.Rows.Find(grdDetalleFactura.CurrentRow.Cells(0).Value))
             grdDetalleFactura.Refresh()
@@ -1343,7 +1298,6 @@ Public Class FrmFactura
                 If FrmPrincipal.empresaGlobal.ModificaDescProducto = True Then
                     txtDescripcion.ReadOnly = False
                     txtDescripcion.Focus()
-                    txtDescripcion.SelectAll()
                 End If
             Else
                 txtDescripcion.ReadOnly = True
@@ -1355,6 +1309,10 @@ Public Class FrmFactura
 
     Private Sub TxtCantidad_Validated(sender As Object, e As EventArgs) Handles txtCantidad.Validated
         If txtCantidad.Text = "" Then txtCantidad.Text = "1"
+    End Sub
+
+    Private Sub SelectionAll_MouseDown(ByVal sender As Object, ByVal e As MouseEventArgs) Handles txtCantidad.MouseDown, txtCodigo.MouseDown, txtDescripcion.MouseDown, txtPrecio.MouseDown
+        sender.SelectAll()
     End Sub
 
     Private Sub TxtMonto_Validated(sender As Object, e As EventArgs) Handles txtMontoPago.Validated

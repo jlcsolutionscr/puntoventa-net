@@ -22,7 +22,7 @@ namespace LeandroSoftware.Activator
         private bool bolLoading = true;
         private bool bolLogoModificado = false;
         private bool bolCertificadoModificado = false;
-        private string strRutaCertificado;
+        private string strRutaCertificado, strNombreSucursal, strDireccionSucursal, strTelefonoSucursal;
         public bool bolEditing;
         public int intIdEmpresa = -1;
 

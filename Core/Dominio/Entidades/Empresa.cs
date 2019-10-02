@@ -57,6 +57,8 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public int? RefreshExpiresIn { get; set; }
         public string RefreshToken { get; set; }
         public DateTime? EmitedAt { get; set; }
+        [NotMapped]
+        public Usuario Usuario;
 
         public TipoIdentificacion TipoIdentificacion { get; set; }
         public TipoMoneda TipoMoneda { get; set; }

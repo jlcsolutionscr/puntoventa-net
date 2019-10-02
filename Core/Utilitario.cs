@@ -10,8 +10,6 @@ namespace LeandroSoftware.Core.Utilities
 {
     public static class Utilitario
     {
-        private const int Keysize = 256;
-        private const int DerivationIterations = 1000;
         private static readonly string SaltKey = "S@LT&KEY";
         private static readonly string VIKey = "@1B2c3D4e5F6g7H8";
 

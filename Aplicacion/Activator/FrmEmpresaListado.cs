@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using LeandroSoftware.Core.CustomClasses;
 using LeandroSoftware.Core.ClienteWCF;
+using LeandroSoftware.Core.CommonTypes;
 
 namespace LeandroSoftware.Activator
 {
@@ -16,7 +17,7 @@ namespace LeandroSoftware.Activator
         private static readonly System.Collections.Specialized.NameValueCollection appSettings = ConfigurationManager.AppSettings;
         private static HttpClient client = new HttpClient();
         private static CustomJavascriptSerializer serializer = new CustomJavascriptSerializer();
-        private IList<Empresa> dsDataSet = Array.Empty<Empresa>();
+        private IList<ListaEmpresa> dsDataSet = Array.Empty<ListaEmpresa>();
 
         public FrmEmpresaListado()
         {

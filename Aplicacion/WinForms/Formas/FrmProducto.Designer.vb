@@ -93,12 +93,12 @@ Partial Class FrmProducto
         Me.txtPrecioVenta1.BackColor = System.Drawing.SystemColors.Window
         Me.txtPrecioVenta1.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtPrecioVenta1.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtPrecioVenta1.Location = New System.Drawing.Point(94, 263)
+        Me.txtPrecioVenta1.Location = New System.Drawing.Point(94, 290)
         Me.txtPrecioVenta1.MaxLength = 0
         Me.txtPrecioVenta1.Name = "txtPrecioVenta1"
         Me.txtPrecioVenta1.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtPrecioVenta1.Size = New System.Drawing.Size(106, 20)
-        Me.txtPrecioVenta1.TabIndex = 8
+        Me.txtPrecioVenta1.TabIndex = 9
         Me.txtPrecioVenta1.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'cboUnidad
@@ -114,7 +114,7 @@ Partial Class FrmProducto
         Me.cboUnidad.Name = "cboUnidad"
         Me.cboUnidad.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.cboUnidad.Size = New System.Drawing.Size(128, 21)
-        Me.cboUnidad.TabIndex = 15
+        Me.cboUnidad.TabIndex = 20
         '
         'cboLinea
         '
@@ -141,7 +141,7 @@ Partial Class FrmProducto
         Me.txtIndExistencia.Name = "txtIndExistencia"
         Me.txtIndExistencia.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtIndExistencia.Size = New System.Drawing.Size(45, 20)
-        Me.txtIndExistencia.TabIndex = 14
+        Me.txtIndExistencia.TabIndex = 19
         '
         'txtPrecioCosto
         '
@@ -149,12 +149,12 @@ Partial Class FrmProducto
         Me.txtPrecioCosto.BackColor = System.Drawing.SystemColors.Window
         Me.txtPrecioCosto.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtPrecioCosto.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtPrecioCosto.Location = New System.Drawing.Point(94, 237)
+        Me.txtPrecioCosto.Location = New System.Drawing.Point(94, 264)
         Me.txtPrecioCosto.MaxLength = 0
         Me.txtPrecioCosto.Name = "txtPrecioCosto"
         Me.txtPrecioCosto.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtPrecioCosto.Size = New System.Drawing.Size(106, 20)
-        Me.txtPrecioCosto.TabIndex = 7
+        Me.txtPrecioCosto.TabIndex = 8
         Me.txtPrecioCosto.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'txtCantidad
@@ -218,7 +218,7 @@ Partial Class FrmProducto
         Me.lblPrecioVenta1.BackColor = System.Drawing.Color.Transparent
         Me.lblPrecioVenta1.Cursor = System.Windows.Forms.Cursors.Default
         Me.lblPrecioVenta1.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.lblPrecioVenta1.Location = New System.Drawing.Point(5, 264)
+        Me.lblPrecioVenta1.Location = New System.Drawing.Point(5, 291)
         Me.lblPrecioVenta1.Name = "lblPrecioVenta1"
         Me.lblPrecioVenta1.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.lblPrecioVenta1.Size = New System.Drawing.Size(83, 17)
@@ -270,7 +270,7 @@ Partial Class FrmProducto
         Me._lblLabels_6.BackColor = System.Drawing.Color.Transparent
         Me._lblLabels_6.Cursor = System.Windows.Forms.Cursors.Default
         Me._lblLabels_6.ForeColor = System.Drawing.SystemColors.ControlText
-        Me._lblLabels_6.Location = New System.Drawing.Point(5, 238)
+        Me._lblLabels_6.Location = New System.Drawing.Point(5, 265)
         Me._lblLabels_6.Name = "_lblLabels_6"
         Me._lblLabels_6.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me._lblLabels_6.Size = New System.Drawing.Size(83, 17)
@@ -386,7 +386,7 @@ Partial Class FrmProducto
         Me.btnCargarImagen.Location = New System.Drawing.Point(679, 336)
         Me.btnCargarImagen.Name = "btnCargarImagen"
         Me.btnCargarImagen.Size = New System.Drawing.Size(30, 28)
-        Me.btnCargarImagen.TabIndex = 16
+        Me.btnCargarImagen.TabIndex = 21
         Me.btnCargarImagen.TabStop = False
         Me.btnCargarImagen.UseVisualStyleBackColor = True
         '
@@ -413,7 +413,7 @@ Partial Class FrmProducto
         Me.btnEliminarImagen.Location = New System.Drawing.Point(715, 336)
         Me.btnEliminarImagen.Name = "btnEliminarImagen"
         Me.btnEliminarImagen.Size = New System.Drawing.Size(30, 28)
-        Me.btnEliminarImagen.TabIndex = 17
+        Me.btnEliminarImagen.TabIndex = 22
         Me.btnEliminarImagen.TabStop = False
         Me.btnEliminarImagen.UseVisualStyleBackColor = True
         '
@@ -423,6 +423,7 @@ Partial Class FrmProducto
         Me.btnCancelar.Name = "btnCancelar"
         Me.btnCancelar.Size = New System.Drawing.Size(78, 22)
         Me.btnCancelar.TabIndex = 52
+        Me.btnCancelar.TabStop = False
         Me.btnCancelar.Text = "Cancelar"
         Me.btnCancelar.UseVisualStyleBackColor = True
         '
@@ -432,6 +433,7 @@ Partial Class FrmProducto
         Me.btnGuardar.Name = "btnGuardar"
         Me.btnGuardar.Size = New System.Drawing.Size(78, 22)
         Me.btnGuardar.TabIndex = 51
+        Me.btnGuardar.TabStop = False
         Me.btnGuardar.Text = "Guardar"
         Me.btnGuardar.UseVisualStyleBackColor = True
         '
@@ -465,12 +467,12 @@ Partial Class FrmProducto
         Me.txtPrecioVenta2.BackColor = System.Drawing.SystemColors.Window
         Me.txtPrecioVenta2.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtPrecioVenta2.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtPrecioVenta2.Location = New System.Drawing.Point(94, 289)
+        Me.txtPrecioVenta2.Location = New System.Drawing.Point(94, 316)
         Me.txtPrecioVenta2.MaxLength = 0
         Me.txtPrecioVenta2.Name = "txtPrecioVenta2"
         Me.txtPrecioVenta2.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtPrecioVenta2.Size = New System.Drawing.Size(106, 20)
-        Me.txtPrecioVenta2.TabIndex = 9
+        Me.txtPrecioVenta2.TabIndex = 11
         Me.txtPrecioVenta2.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'Label2
@@ -478,7 +480,7 @@ Partial Class FrmProducto
         Me.Label2.BackColor = System.Drawing.Color.Transparent
         Me.Label2.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label2.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label2.Location = New System.Drawing.Point(0, 290)
+        Me.Label2.Location = New System.Drawing.Point(0, 317)
         Me.Label2.Name = "Label2"
         Me.Label2.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label2.Size = New System.Drawing.Size(88, 17)
@@ -492,12 +494,12 @@ Partial Class FrmProducto
         Me.txtPrecioVenta3.BackColor = System.Drawing.SystemColors.Window
         Me.txtPrecioVenta3.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtPrecioVenta3.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtPrecioVenta3.Location = New System.Drawing.Point(94, 315)
+        Me.txtPrecioVenta3.Location = New System.Drawing.Point(94, 342)
         Me.txtPrecioVenta3.MaxLength = 0
         Me.txtPrecioVenta3.Name = "txtPrecioVenta3"
         Me.txtPrecioVenta3.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtPrecioVenta3.Size = New System.Drawing.Size(106, 20)
-        Me.txtPrecioVenta3.TabIndex = 10
+        Me.txtPrecioVenta3.TabIndex = 13
         Me.txtPrecioVenta3.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'Label3
@@ -505,7 +507,7 @@ Partial Class FrmProducto
         Me.Label3.BackColor = System.Drawing.Color.Transparent
         Me.Label3.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label3.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label3.Location = New System.Drawing.Point(0, 316)
+        Me.Label3.Location = New System.Drawing.Point(0, 343)
         Me.Label3.Name = "Label3"
         Me.Label3.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label3.Size = New System.Drawing.Size(88, 17)
@@ -519,12 +521,12 @@ Partial Class FrmProducto
         Me.txtPrecioVenta4.BackColor = System.Drawing.SystemColors.Window
         Me.txtPrecioVenta4.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtPrecioVenta4.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtPrecioVenta4.Location = New System.Drawing.Point(94, 341)
+        Me.txtPrecioVenta4.Location = New System.Drawing.Point(94, 368)
         Me.txtPrecioVenta4.MaxLength = 0
         Me.txtPrecioVenta4.Name = "txtPrecioVenta4"
         Me.txtPrecioVenta4.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtPrecioVenta4.Size = New System.Drawing.Size(106, 20)
-        Me.txtPrecioVenta4.TabIndex = 11
+        Me.txtPrecioVenta4.TabIndex = 15
         Me.txtPrecioVenta4.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'Label4
@@ -532,7 +534,7 @@ Partial Class FrmProducto
         Me.Label4.BackColor = System.Drawing.Color.Transparent
         Me.Label4.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label4.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label4.Location = New System.Drawing.Point(0, 342)
+        Me.Label4.Location = New System.Drawing.Point(0, 369)
         Me.Label4.Name = "Label4"
         Me.Label4.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label4.Size = New System.Drawing.Size(88, 17)
@@ -546,12 +548,12 @@ Partial Class FrmProducto
         Me.txtPrecioVenta5.BackColor = System.Drawing.SystemColors.Window
         Me.txtPrecioVenta5.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtPrecioVenta5.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtPrecioVenta5.Location = New System.Drawing.Point(94, 367)
+        Me.txtPrecioVenta5.Location = New System.Drawing.Point(94, 394)
         Me.txtPrecioVenta5.MaxLength = 0
         Me.txtPrecioVenta5.Name = "txtPrecioVenta5"
         Me.txtPrecioVenta5.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtPrecioVenta5.Size = New System.Drawing.Size(106, 20)
-        Me.txtPrecioVenta5.TabIndex = 12
+        Me.txtPrecioVenta5.TabIndex = 17
         Me.txtPrecioVenta5.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'Label5
@@ -559,7 +561,7 @@ Partial Class FrmProducto
         Me.Label5.BackColor = System.Drawing.Color.Transparent
         Me.Label5.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label5.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label5.Location = New System.Drawing.Point(0, 368)
+        Me.Label5.Location = New System.Drawing.Point(0, 395)
         Me.Label5.Name = "Label5"
         Me.Label5.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label5.Size = New System.Drawing.Size(88, 17)
@@ -576,18 +578,18 @@ Partial Class FrmProducto
         Me.cboTipoImpuesto.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cboTipoImpuesto.ForeColor = System.Drawing.SystemColors.WindowText
         Me.cboTipoImpuesto.Items.AddRange(New Object() {"UND", "MT2", "MT3", "MT", "LT", "GL", "CTO", "CUB", "PAQ", "LAM", "VAR", "PZA"})
-        Me.cboTipoImpuesto.Location = New System.Drawing.Point(94, 393)
+        Me.cboTipoImpuesto.Location = New System.Drawing.Point(94, 237)
         Me.cboTipoImpuesto.Name = "cboTipoImpuesto"
         Me.cboTipoImpuesto.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.cboTipoImpuesto.Size = New System.Drawing.Size(319, 21)
-        Me.cboTipoImpuesto.TabIndex = 13
+        Me.cboTipoImpuesto.TabIndex = 7
         '
         'Label6
         '
         Me.Label6.BackColor = System.Drawing.Color.Transparent
         Me.Label6.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label6.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label6.Location = New System.Drawing.Point(5, 394)
+        Me.Label6.Location = New System.Drawing.Point(5, 238)
         Me.Label6.Name = "Label6"
         Me.Label6.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label6.Size = New System.Drawing.Size(83, 17)
@@ -601,12 +603,12 @@ Partial Class FrmProducto
         Me.txtPrecioImpuesto5.BackColor = System.Drawing.SystemColors.Window
         Me.txtPrecioImpuesto5.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtPrecioImpuesto5.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtPrecioImpuesto5.Location = New System.Drawing.Point(218, 367)
+        Me.txtPrecioImpuesto5.Location = New System.Drawing.Point(218, 394)
         Me.txtPrecioImpuesto5.MaxLength = 0
         Me.txtPrecioImpuesto5.Name = "txtPrecioImpuesto5"
         Me.txtPrecioImpuesto5.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtPrecioImpuesto5.Size = New System.Drawing.Size(106, 20)
-        Me.txtPrecioImpuesto5.TabIndex = 149
+        Me.txtPrecioImpuesto5.TabIndex = 18
         Me.txtPrecioImpuesto5.TabStop = False
         Me.txtPrecioImpuesto5.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
@@ -616,12 +618,12 @@ Partial Class FrmProducto
         Me.txtPrecioImpuesto4.BackColor = System.Drawing.SystemColors.Window
         Me.txtPrecioImpuesto4.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtPrecioImpuesto4.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtPrecioImpuesto4.Location = New System.Drawing.Point(218, 341)
+        Me.txtPrecioImpuesto4.Location = New System.Drawing.Point(218, 368)
         Me.txtPrecioImpuesto4.MaxLength = 0
         Me.txtPrecioImpuesto4.Name = "txtPrecioImpuesto4"
         Me.txtPrecioImpuesto4.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtPrecioImpuesto4.Size = New System.Drawing.Size(106, 20)
-        Me.txtPrecioImpuesto4.TabIndex = 148
+        Me.txtPrecioImpuesto4.TabIndex = 16
         Me.txtPrecioImpuesto4.TabStop = False
         Me.txtPrecioImpuesto4.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
@@ -631,12 +633,12 @@ Partial Class FrmProducto
         Me.txtPrecioImpuesto3.BackColor = System.Drawing.SystemColors.Window
         Me.txtPrecioImpuesto3.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtPrecioImpuesto3.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtPrecioImpuesto3.Location = New System.Drawing.Point(218, 315)
+        Me.txtPrecioImpuesto3.Location = New System.Drawing.Point(218, 342)
         Me.txtPrecioImpuesto3.MaxLength = 0
         Me.txtPrecioImpuesto3.Name = "txtPrecioImpuesto3"
         Me.txtPrecioImpuesto3.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtPrecioImpuesto3.Size = New System.Drawing.Size(106, 20)
-        Me.txtPrecioImpuesto3.TabIndex = 147
+        Me.txtPrecioImpuesto3.TabIndex = 14
         Me.txtPrecioImpuesto3.TabStop = False
         Me.txtPrecioImpuesto3.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
@@ -646,12 +648,12 @@ Partial Class FrmProducto
         Me.txtPrecioImpuesto2.BackColor = System.Drawing.SystemColors.Window
         Me.txtPrecioImpuesto2.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtPrecioImpuesto2.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtPrecioImpuesto2.Location = New System.Drawing.Point(218, 289)
+        Me.txtPrecioImpuesto2.Location = New System.Drawing.Point(218, 316)
         Me.txtPrecioImpuesto2.MaxLength = 0
         Me.txtPrecioImpuesto2.Name = "txtPrecioImpuesto2"
         Me.txtPrecioImpuesto2.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtPrecioImpuesto2.Size = New System.Drawing.Size(106, 20)
-        Me.txtPrecioImpuesto2.TabIndex = 146
+        Me.txtPrecioImpuesto2.TabIndex = 12
         Me.txtPrecioImpuesto2.TabStop = False
         Me.txtPrecioImpuesto2.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
@@ -661,12 +663,12 @@ Partial Class FrmProducto
         Me.txtPrecioImpuesto1.BackColor = System.Drawing.SystemColors.Window
         Me.txtPrecioImpuesto1.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtPrecioImpuesto1.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtPrecioImpuesto1.Location = New System.Drawing.Point(218, 263)
+        Me.txtPrecioImpuesto1.Location = New System.Drawing.Point(218, 290)
         Me.txtPrecioImpuesto1.MaxLength = 0
         Me.txtPrecioImpuesto1.Name = "txtPrecioImpuesto1"
         Me.txtPrecioImpuesto1.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtPrecioImpuesto1.Size = New System.Drawing.Size(106, 20)
-        Me.txtPrecioImpuesto1.TabIndex = 145
+        Me.txtPrecioImpuesto1.TabIndex = 10
         Me.txtPrecioImpuesto1.TabStop = False
         Me.txtPrecioImpuesto1.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
@@ -675,7 +677,7 @@ Partial Class FrmProducto
         Me.Label7.BackColor = System.Drawing.Color.Transparent
         Me.Label7.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label7.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label7.Location = New System.Drawing.Point(218, 243)
+        Me.Label7.Location = New System.Drawing.Point(218, 270)
         Me.Label7.Name = "Label7"
         Me.Label7.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label7.Size = New System.Drawing.Size(106, 17)

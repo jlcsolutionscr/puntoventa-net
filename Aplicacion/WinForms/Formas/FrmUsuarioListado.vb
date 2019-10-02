@@ -27,7 +27,7 @@ Public Class FrmUsuarioListado
         dvcModifica.Width = 75
         dgvDatos.Columns.Add(dvcModifica)
         dvcAutoriza.HeaderText = "Autoriza"
-        dvcAutoriza.DataPropertyName = "AutorizaCredito"
+        dvcAutoriza.DataPropertyName = "PermiteRegistrarDispositivo"
         dvcAutoriza.Width = 75
         dgvDatos.Columns.Add(dvcAutoriza)
     End Sub

@@ -12,6 +12,9 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public int IdSucursal { get; set; }
         [Key, Column(Order = 2)]
         public int IdTerminal { get; set; }
+        public string NombreSucursal { get; set; }
+        public string Direccion { get; set; }
+        public string Telefono { get; set; }
         public string ValorRegistro { get; set; }
         public string ImpresoraFactura { get; set; }
         public string NombreSucursal { get; set; }
@@ -22,6 +25,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public int UltimoDocNC { get; set; }
         public int UltimoDocTE { get; set; }
         public int UltimoDocMR { get; set; }
+        public int IdTipoDispositivo { get; set; }
 
         public Empresa Empresa { get; set; }
     }
