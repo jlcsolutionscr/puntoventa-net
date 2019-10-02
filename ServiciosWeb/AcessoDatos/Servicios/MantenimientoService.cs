@@ -252,6 +252,9 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     {
                         terminalLocal.ValorRegistro = terminal.ValorRegistro;
                         terminalLocal.ImpresoraFactura = terminal.ImpresoraFactura;
+                        terminalLocal.NombreSucursal = terminal.NombreSucursal;
+                        terminalLocal.Direccion = terminal.Direccion;
+                        terminalLocal.Telefono = terminal.Telefono;
                         terminalLocal.UltimoDocFE = terminal.UltimoDocFE;
                         terminalLocal.UltimoDocND = terminal.UltimoDocND;
                         terminalLocal.UltimoDocNC = terminal.UltimoDocNC;
