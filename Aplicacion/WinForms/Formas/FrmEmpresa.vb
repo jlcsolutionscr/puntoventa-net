@@ -88,6 +88,7 @@ Public Class FrmEmpresa
         txtNombreSucursal.Text = datosSucursal.Item(intIdTerminalEnUso).NombreSucursal
         txtDireccionSucursal.Text = datosSucursal.Item(intIdTerminalEnUso).Direccion
         txtTelefonoSucursal.Text = datosSucursal.Item(intIdTerminalEnUso).Telefono
+        txtImpresora.Text = datosSucursal.Item(intIdTerminalEnUso).ImpresoraFactura
         If datosSucursal.Count > 1 Then btnSiguiente.Enabled = True
         bolInit = False
     End Sub
@@ -169,6 +170,7 @@ Public Class FrmEmpresa
         txtNombreSucursal.Text = datosSucursal.Item(intIdTerminalEnUso).NombreSucursal
         txtDireccionSucursal.Text = datosSucursal.Item(intIdTerminalEnUso).Direccion
         txtTelefonoSucursal.Text = datosSucursal.Item(intIdTerminalEnUso).Telefono
+        txtImpresora.Text = datosSucursal.Item(intIdTerminalEnUso).ImpresoraFactura
     End Sub
 
     Private Sub BtnSiguiente_Click(sender As Object, e As EventArgs) Handles btnSiguiente.Click
@@ -184,6 +186,7 @@ Public Class FrmEmpresa
         txtNombreSucursal.Text = datosSucursal.Item(intIdTerminalEnUso).NombreSucursal
         txtDireccionSucursal.Text = datosSucursal.Item(intIdTerminalEnUso).Direccion
         txtTelefonoSucursal.Text = datosSucursal.Item(intIdTerminalEnUso).Telefono
+        txtImpresora.Text = datosSucursal.Item(intIdTerminalEnUso).ImpresoraFactura
     End Sub
 
     Private Sub TxtNombreSucursal_Validated(sender As Object, e As EventArgs) Handles txtNombreSucursal.Validated
@@ -196,6 +199,10 @@ Public Class FrmEmpresa
 
     Private Sub TxtTelefonoSucursal_Validated(sender As Object, e As EventArgs) Handles txtTelefonoSucursal.Validated
         datosSucursal.Item(intIdTerminalEnUso).Telefono = txtTelefonoSucursal.Text
+    End Sub
+
+    Private Sub TxtImpresora_Validated(sender As Object, e As EventArgs) Handles txtImpresora.Validated
+        datosSucursal.Item(intIdTerminalEnUso).ImpresoraFactura = txtImpresora.Text
     End Sub
 #End Region
 End Class
