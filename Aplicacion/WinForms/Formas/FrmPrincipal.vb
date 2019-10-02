@@ -12,7 +12,7 @@ Public Class FrmPrincipal
 #Region "Variables"
     Private objMenu As ToolStripMenuItem
     Private appSettings As Specialized.NameValueCollection
-    Private strIdentificacion As String
+    Private bolEsAdministrador As Boolean
     Public usuarioGlobal As Usuario
     Public empresaGlobal As Empresa
     Public equipoGlobal As TerminalPorEmpresa
@@ -385,7 +385,7 @@ Public Class FrmPrincipal
         Try
             strThumbprint = appSettings.Get("AppThumptprint")
             strApplicationKey = appSettings.Get("ApplicationKey")
-            strIdentificacion = appSettings.Get("Identificacion")
+            bolEsAdministrador = appSettings.Get("Administrator")
             Dim bolCertificadoValido As Boolean = Utilitario.VerificarCertificado(strThumbprint)
             If Not bolCertificadoValido Then
                 MessageBox.Show("No se logró validar el certificado requerido por la aplicación. Por favor contacte con su proveedor del servicio. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -441,12 +441,17 @@ Public Class FrmPrincipal
                 File.Delete(Path.GetTempPath() + "/Updater.exe.config")
             End If
         End If
-        If strIdentificacion = "" Then
-            MessageBox.Show("La identificación de la empresa no se encuentra parametrizada en el sistema. Por favor contacte con su proveedor del servicio. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Dim strIdentificadoEquipoLocal = Utilitario.ObtenerIdentificadorEquipo()
+        If bolEsAdministrador Then
+            listaEmpresa = Await ClienteFEWCF.ObtenerListaEmpresasAdministrador()
+        Else
+            listaEmpresa = Await ClienteFEWCF.ObtenerListaEmpresasPorDispositivo(strIdentificadoEquipoLocal)
+        End If
+        If listaEmpresa.Count = 0 Then
+            MessageBox.Show("El equipo no se encuentra registrado en ninguna Empresa. Por favor contacte con su proveedor del servicio. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
             Exit Sub
         End If
-        listaEmpresa = Await ClienteFEWCF.ObtenerListaEmpresasPorIdentificacion(strIdentificacion)
         Dim formSeguridad As New FrmSeguridad()
         Thread.CurrentThread.CurrentCulture = New Globalization.CultureInfo("es-CR")
         Thread.CurrentThread.CurrentCulture.NumberFormat.CurrencySymbol = "¢"
@@ -460,7 +465,6 @@ Public Class FrmPrincipal
             If bolContinua Then
                 Dim strEncryptedPassword As String
                 Try
-                    Dim strIdentificadoEquipoLocal = Utilitario.ObtenerIdentificadorEquipo()
                     strEncryptedPassword = Utilitario.EncriptarDatos(strContrasena, strKey)
                     empresa = Await ClienteFEWCF.ValidarCredenciales(strIdEmpresa, strIdentificadoEquipoLocal, strCodigoUsuario, strEncryptedPassword)
                     bolContinua = False

@@ -42,7 +42,7 @@ namespace LeandroSoftware.Core.ClienteWCF
             }
         }
 
-        private static async Task<ResponseDTO> EjecutarConsulta(RequestDTO peticion, string servicioURL, string strToken)
+        private static async Task<string> EjecutarConsulta(RequestDTO peticion, string servicioURL, string strToken)
         {
             try
             {
@@ -58,7 +58,7 @@ namespace LeandroSoftware.Core.ClienteWCF
                     throw new Exception(httpResponse.ReasonPhrase);
                 string responseContent = await httpResponse.Content.ReadAsStringAsync();
                 ResponseDTO response = serializer.Deserialize<ResponseDTO>(responseContent);
-                return response;
+                return response.DatosRespuesta;
             }
             catch (Exception ex)
             {
@@ -66,17 +66,31 @@ namespace LeandroSoftware.Core.ClienteWCF
             }
         }
 
-        public static async Task<List<IdentificacionNombre>> ObtenerListaEmpresasPorIdentificacion(string strListaIdentificacion)
+        public static async Task<List<IdentificacionNombre>> ObtenerListaEmpresasAdministrador()
         {
             RequestDTO peticion = new RequestDTO
             {
-                NombreMetodo = "ObtenerListaEmpresasPorIdentificacion",
-                DatosPeticion = "{ListaIdentificacion: '" + strListaIdentificacion + "'}"
+                NombreMetodo = "ObtenerListaEmpresasAdministrador",
+                DatosPeticion = ""
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             List<IdentificacionNombre> listado = new List<IdentificacionNombre>();
-            if (respuesta.DatosRespuesta != "")
-                listado = serializer.Deserialize<List<IdentificacionNombre>>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<IdentificacionNombre>>(respuesta);
+            return listado;
+        }
+
+        public static async Task<List<IdentificacionNombre>> ObtenerListaEmpresasPorDispositivo(string strDispositivoID)
+        {
+            RequestDTO peticion = new RequestDTO
+            {
+                NombreMetodo = "ObtenerListaEmpresasPorDispositivo",
+                DatosPeticion = "{Dispositivo: '" + strDispositivoID + "'}"
+            };
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            List<IdentificacionNombre> listado = new List<IdentificacionNombre>();
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<IdentificacionNombre>>(respuesta);
             return listado;
         }
 
@@ -87,10 +101,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerUltimaVersionApp",
                 DatosPeticion = ""
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             string strUltimaVersionApp = "";
-            if (respuesta.DatosRespuesta != "")
-                strUltimaVersionApp = serializer.Deserialize<string>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                strUltimaVersionApp = serializer.Deserialize<string>(respuesta);
             return strUltimaVersionApp;
         }
 
@@ -101,10 +115,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerEmpresa",
                 DatosPeticion = "{IdEmpresa: " + intIdEmpresa + "}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             Empresa empresa = null;
-            if (respuesta.DatosRespuesta != "")
-                empresa = serializer.Deserialize<Empresa>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                empresa = serializer.Deserialize<Empresa>(respuesta);
             return empresa;
         }
 
@@ -115,10 +129,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerTerminalPorEmpresa",
                 DatosPeticion = "{IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", IdTerminal: " + intIdTerminal + "}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             TerminalPorEmpresa terminal = null;
-            if (respuesta.DatosRespuesta != "")
-                terminal = serializer.Deserialize<TerminalPorEmpresa>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                terminal = serializer.Deserialize<TerminalPorEmpresa>(respuesta);
             return terminal;
         }
 
@@ -129,10 +143,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ValidarCredenciales",
                 DatosPeticion = "{Identificacion: '" + strIdentificacion + "', ValorRegistro: '" + strValorRegistro + "', Usuario: '" + strUsuario + "', Clave: '" + strClave + "'}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             Empresa empresa = null;
-            if (respuesta.DatosRespuesta != "")
-                empresa = serializer.Deserialize<Empresa>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                empresa = serializer.Deserialize<Empresa>(respuesta);
             return empresa;
         }
 
@@ -143,10 +157,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerTipoCambioDolar",
                 DatosPeticion = ""
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             decimal decTipoCambioDolar = 0;
-            if (respuesta.DatosRespuesta != "")
-                decTipoCambioDolar = serializer.Deserialize<decimal>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                decTipoCambioDolar = serializer.Deserialize<decimal>(respuesta);
             return decTipoCambioDolar;
         }
 
@@ -157,10 +171,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerListaTipoIdentificacion",
                 DatosPeticion = ""
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             List<TipoIdentificacion> listado = new List<TipoIdentificacion>();
-            if (respuesta.DatosRespuesta != "")
-                listado = serializer.Deserialize<List<TipoIdentificacion>>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<TipoIdentificacion>>(respuesta);
             return listado;
         }
 
@@ -171,10 +185,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerListaModulos",
                 DatosPeticion = ""
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             List<Modulo> listado = new List<Modulo>();
-            if (respuesta.DatosRespuesta != "")
-                listado = serializer.Deserialize<List<Modulo>>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<Modulo>>(respuesta);
             return listado;
         }
 
@@ -185,10 +199,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerListaReportes",
                 DatosPeticion = ""
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             List<CatalogoReporte> listado = new List<CatalogoReporte>();
-            if (respuesta.DatosRespuesta != "")
-                listado = serializer.Deserialize<List<CatalogoReporte>>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<CatalogoReporte>>(respuesta);
             return listado;
         }
 
@@ -199,10 +213,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerListaProvincias",
                 DatosPeticion = ""
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             List<Provincia> listado = new List<Provincia>();
-            if (respuesta.DatosRespuesta != "")
-                listado = serializer.Deserialize<List<Provincia>>(respuesta.DatosRespuesta);;
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<Provincia>>(respuesta);;
             return listado;
         }
 
@@ -213,10 +227,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerListaCantones",
                 DatosPeticion = "{IdProvincia: " + intIdProvincia + "}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             List<Canton> listado = new List<Canton>();
-            if (respuesta.DatosRespuesta != "")
-                listado = serializer.Deserialize<List<Canton>>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<Canton>>(respuesta);
             return listado;
         }
 
@@ -227,10 +241,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerListaDistritos",
                 DatosPeticion = "{IdProvincia: " + intIdProvincia + ", IdCanton: " + intIdCanton + "}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             List<Distrito> listado = new List<Distrito>();
-            if (respuesta.DatosRespuesta != "")
-                listado = serializer.Deserialize<List<Distrito>>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<Distrito>>(respuesta);
             return listado;
         }
 
@@ -241,10 +255,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerListaBarrios",
                 DatosPeticion = "{IdProvincia: " + intIdProvincia + ", IdCanton: " + intIdCanton + ", IdDistrito: " + intIdDistrito + "}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             List<Barrio> listado = new List<Barrio>();
-            if (respuesta.DatosRespuesta != "")
-                listado = serializer.Deserialize<List<Barrio>>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<Barrio>>(respuesta);
             return listado;
         }
 
@@ -255,10 +269,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerListaTipoProducto",
                 DatosPeticion = ""
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             List<TipoProducto> listado = new List<TipoProducto>();
-            if (respuesta.DatosRespuesta != "")
-                listado = serializer.Deserialize<List<TipoProducto>>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<TipoProducto>>(respuesta);
             return listado;
         }
 
@@ -269,10 +283,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerListaTipoExoneracion",
                 DatosPeticion = ""
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             List<ParametroExoneracion> listado = new List<ParametroExoneracion>();
-            if (respuesta.DatosRespuesta != "")
-                listado = serializer.Deserialize<List<ParametroExoneracion>>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<ParametroExoneracion>>(respuesta);
             return listado;
         }
 
@@ -283,10 +297,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerListaTipoImpuesto",
                 DatosPeticion = ""
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             List<ParametroImpuesto> listado = new List<ParametroImpuesto>();
-            if (respuesta.DatosRespuesta != "")
-                listado = serializer.Deserialize<List<ParametroImpuesto>>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<ParametroImpuesto>>(respuesta);
             return listado;
         }
 
@@ -297,10 +311,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerListaTipoUnidad",
                 DatosPeticion = ""
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             List<TipoUnidad> listado = new List<TipoUnidad>();
-            if (respuesta.DatosRespuesta != "")
-                listado = serializer.Deserialize<List<TipoUnidad>>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<TipoUnidad>>(respuesta);
             return listado;
         }
 
@@ -311,10 +325,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerListaFormaPagoEgreso",
                 DatosPeticion = ""
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             List<FormaPago> listado = new List<FormaPago>();
-            if (respuesta.DatosRespuesta != "")
-                listado = serializer.Deserialize<List<FormaPago>>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<FormaPago>>(respuesta);
             return listado;
         }
 
@@ -325,10 +339,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerListaFormaPagoFactura",
                 DatosPeticion = ""
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             List<FormaPago> listado = new List<FormaPago>();
-            if (respuesta.DatosRespuesta != "")
-                listado = serializer.Deserialize<List<FormaPago>>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<FormaPago>>(respuesta);
             return listado;
         }
 
@@ -339,10 +353,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerListaRoles",
                 DatosPeticion = ""
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             List<Role> listado = new List<Role>();
-            if (respuesta.DatosRespuesta != "")
-                listado = serializer.Deserialize<List<Role>>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<Role>>(respuesta);
             return listado;
         }
 
@@ -353,10 +367,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerListaTipodePrecio",
                 DatosPeticion = ""
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             List<TipodePrecio> listado = new List<TipodePrecio>();
-            if (respuesta.DatosRespuesta != "")
-                listado = serializer.Deserialize<List<TipodePrecio>>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<TipodePrecio>>(respuesta);
             return listado;
         }
 
@@ -367,10 +381,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerListaTipoMoneda",
                 DatosPeticion = ""
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             List<TipoMoneda> listado = new List<TipoMoneda>();
-            if (respuesta.DatosRespuesta != "")
-                listado = serializer.Deserialize<List<TipoMoneda>>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<TipoMoneda>>(respuesta);
             return listado;
         }
 
@@ -381,10 +395,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerListaCondicionVenta",
                 DatosPeticion = ""
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             List<CondicionVenta> listado = new List<CondicionVenta>();
-            if (respuesta.DatosRespuesta != "")
-                listado = serializer.Deserialize<List<CondicionVenta>>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<CondicionVenta>>(respuesta);
             return listado;
         }
 
@@ -395,10 +409,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerListaCondicionVentaYFormaPagoFactura",
                 DatosPeticion = ""
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             List<CondicionVentaYFormaPago> listado = new List<CondicionVentaYFormaPago>();
-            if (respuesta.DatosRespuesta != "")
-                listado = serializer.Deserialize<List<CondicionVentaYFormaPago>>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<CondicionVentaYFormaPago>>(respuesta);
             return listado;
         }
 
@@ -409,10 +423,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerListaCondicionVentaYFormaPagoCompra",
                 DatosPeticion = ""
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             List<CondicionVentaYFormaPago> listado = new List<CondicionVentaYFormaPago>();
-            if (respuesta.DatosRespuesta != "")
-                listado = serializer.Deserialize<List<CondicionVentaYFormaPago>>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<CondicionVentaYFormaPago>>(respuesta);
             return listado;
         }
 
@@ -423,10 +437,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerReporteVentasPorCliente",
                 DatosPeticion = "{IdEmpresa: " + intIdEmpresa + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "', IdCliente: " + intIdCliente + ", isNulo: '" + bolNulo + "', IdTipoPago: " + intIdTipoPago + ", IdBancoAdquiriente: " + intIdBancoAdquiriente + "}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             List<ReporteVentas> listado = new List<ReporteVentas>();
-            if (respuesta.DatosRespuesta != "")
-                listado = serializer.Deserialize<List<ReporteVentas>>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<ReporteVentas>>(respuesta);
             return listado;
         }
 
@@ -437,10 +451,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerReporteVentasPorVendedor",
                 DatosPeticion = "{IdEmpresa: " + intIdEmpresa + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "', IdVendedor: " + intIdVendedor + "}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             List<ReporteVentasPorVendedor> listado = new List<ReporteVentasPorVendedor>();
-            if (respuesta.DatosRespuesta != "")
-                listado = serializer.Deserialize<List<ReporteVentasPorVendedor>>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<ReporteVentasPorVendedor>>(respuesta);
             return listado;
         }
 
@@ -451,10 +465,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerReporteComprasPorProveedor",
                 DatosPeticion = "{IdEmpresa: " + intIdEmpresa + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "', IdProveedor: " + intIdProveedor + ", FormaPago: " + intFormaPago + "}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             List<ReporteCompras> listado = new List<ReporteCompras>();
-            if (respuesta.DatosRespuesta != "")
-                listado = serializer.Deserialize<List<ReporteCompras>>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<ReporteCompras>>(respuesta);
             return listado;
         }
 
@@ -465,10 +479,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerReporteCuentasPorCobrarClientes",
                 DatosPeticion = "{IdEmpresa: " + intIdEmpresa + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "', IdCliente: " + intIdCliente + "}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             List<ReporteCuentasPorCobrar> listado = new List<ReporteCuentasPorCobrar>();
-            if (respuesta.DatosRespuesta != "")
-                listado = serializer.Deserialize<List<ReporteCuentasPorCobrar>>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<ReporteCuentasPorCobrar>>(respuesta);
             return listado;
         }
 
@@ -479,10 +493,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerReporteCuentasPorPagarProveedores",
                 DatosPeticion = "{IdEmpresa: " + intIdEmpresa + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "', IdProveedor: " + intIdProveedor + "}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             List<ReporteCuentasPorPagar> listado = new List<ReporteCuentasPorPagar>();
-            if (respuesta.DatosRespuesta != "")
-                listado = serializer.Deserialize<List<ReporteCuentasPorPagar>>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<ReporteCuentasPorPagar>>(respuesta);
             return listado;
         }
 
@@ -493,10 +507,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerReporteMovimientosCxCClientes",
                 DatosPeticion = "{IdEmpresa: " + intIdEmpresa + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "', IdCliente: " + intIdCliente + "}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             List<ReporteMovimientosCxC> listado = new List<ReporteMovimientosCxC>();
-            if (respuesta.DatosRespuesta != "")
-                listado = serializer.Deserialize<List<ReporteMovimientosCxC>>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<ReporteMovimientosCxC>>(respuesta);
             return listado;
         }
 
@@ -507,10 +521,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerReporteMovimientosCxPProveedores",
                 DatosPeticion = "{IdEmpresa: " + intIdEmpresa + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "', IdProveedor: " + intIdProveedor + "}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             List<ReporteMovimientosCxP> listado = new List<ReporteMovimientosCxP>();
-            if (respuesta.DatosRespuesta != "")
-                listado = serializer.Deserialize<List<ReporteMovimientosCxP>>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<ReporteMovimientosCxP>>(respuesta);
             return listado;
         }
 
@@ -521,10 +535,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerReporteMovimientosBanco",
                 DatosPeticion = "{IdEmpresa: " + intIdEmpresa + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "'}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             List<ReporteMovimientosBanco> listado = new List<ReporteMovimientosBanco>();
-            if (respuesta.DatosRespuesta != "")
-                listado = serializer.Deserialize<List<ReporteMovimientosBanco>>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<ReporteMovimientosBanco>>(respuesta);
             return listado;
         }
 
@@ -535,10 +549,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerReporteEstadoResultados",
                 DatosPeticion = "{IdEmpresa: " + intIdEmpresa + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "'}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             List<ReporteEstadoResultados> listado = new List<ReporteEstadoResultados>();
-            if (respuesta.DatosRespuesta != "")
-                listado = serializer.Deserialize<List<ReporteEstadoResultados>>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<ReporteEstadoResultados>>(respuesta);
             return listado;
         }
 
@@ -549,10 +563,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerReporteDetalleEgreso",
                 DatosPeticion = "{IdEmpresa: " + intIdEmpresa + ", IdCuentaEgreso: " + intIdCuentaEgreso + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "'}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             List<ReporteDetalleEgreso> listado = new List<ReporteDetalleEgreso>();
-            if (respuesta.DatosRespuesta != "")
-                listado = serializer.Deserialize<List<ReporteDetalleEgreso>>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<ReporteDetalleEgreso>>(respuesta);
             return listado;
         }
 
@@ -563,10 +577,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerReporteDetalleIngreso",
                 DatosPeticion = "{IdEmpresa: " + intIdEmpresa + ", IdCuentaIngreso: " + intIdCuentaIngreso + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "'}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             List<ReporteDetalleIngreso> listado = new List<ReporteDetalleIngreso>();
-            if (respuesta.DatosRespuesta != "")
-                listado = serializer.Deserialize<List<ReporteDetalleIngreso>>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<ReporteDetalleIngreso>>(respuesta);
             return listado;
         }
 
@@ -577,10 +591,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerReporteVentasPorLineaResumen",
                 DatosPeticion = "{IdEmpresa: " + intIdEmpresa + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "'}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             List<ReporteVentasPorLineaResumen> listado = new List<ReporteVentasPorLineaResumen>();
-            if (respuesta.DatosRespuesta != "")
-                listado = serializer.Deserialize<List<ReporteVentasPorLineaResumen>>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<ReporteVentasPorLineaResumen>>(respuesta);
             return listado;
         }
 
@@ -591,10 +605,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerReporteVentasPorLineaDetalle",
                 DatosPeticion = "{IdEmpresa: " + intIdEmpresa + ", IdLinea: " + intIdLinea + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "'}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             List<ReporteVentasPorLineaDetalle> listado = new List<ReporteVentasPorLineaDetalle>();
-            if (respuesta.DatosRespuesta != "")
-                listado = serializer.Deserialize<List<ReporteVentasPorLineaDetalle>>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<ReporteVentasPorLineaDetalle>>(respuesta);
             return listado;
         }
 
@@ -605,10 +619,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerReporteFacturasElectronicasEmitidas",
                 DatosPeticion = "{IdEmpresa: " + intIdEmpresa + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "'}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             List<ReporteDocumentoElectronico> listado = new List<ReporteDocumentoElectronico>();
-            if (respuesta.DatosRespuesta != "")
-                listado = serializer.Deserialize<List<ReporteDocumentoElectronico>>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<ReporteDocumentoElectronico>>(respuesta);
             return listado;
         }
 
@@ -619,10 +633,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerReporteNotasCreditoElectronicasEmitidas",
                 DatosPeticion = "{IdEmpresa: " + intIdEmpresa + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "'}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             List<ReporteDocumentoElectronico> listado = new List<ReporteDocumentoElectronico>();
-            if (respuesta.DatosRespuesta != "")
-                listado = serializer.Deserialize<List<ReporteDocumentoElectronico>>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<ReporteDocumentoElectronico>>(respuesta);
             return listado;
         }
 
@@ -633,10 +647,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerReporteFacturasElectronicasRecibidas",
                 DatosPeticion = "{IdEmpresa: " + intIdEmpresa + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "'}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             List<ReporteDocumentoElectronico> listado = new List<ReporteDocumentoElectronico>();
-            if (respuesta.DatosRespuesta != "")
-                listado = serializer.Deserialize<List<ReporteDocumentoElectronico>>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<ReporteDocumentoElectronico>>(respuesta);
             return listado;
         }
 
@@ -647,10 +661,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerReporteNotasCreditoElectronicasRecibidas",
                 DatosPeticion = "{IdEmpresa: " + intIdEmpresa + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "'}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             List<ReporteDocumentoElectronico> listado = new List<ReporteDocumentoElectronico>();
-            if (respuesta.DatosRespuesta != "")
-                listado = serializer.Deserialize<List<ReporteDocumentoElectronico>>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<ReporteDocumentoElectronico>>(respuesta);
             return listado;
         }
 
@@ -661,10 +675,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerReporteResumenDocumentosElectronicos",
                 DatosPeticion = "{IdEmpresa: " + intIdEmpresa + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "'}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             List<ReporteEstadoResultados> listado = new List<ReporteEstadoResultados>();
-            if (respuesta.DatosRespuesta != "")
-                listado = serializer.Deserialize<List<ReporteEstadoResultados>>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<ReporteEstadoResultados>>(respuesta);
             return listado;
         }
 
@@ -675,10 +689,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "GenerarDatosCierreCaja",
                 DatosPeticion = "{IdEmpresa: " + intIdEmpresa + ", FechaCierre: '" + strFechaCierre + "'}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             CierreCaja cierre = null;
-            if (respuesta.DatosRespuesta != "")
-                cierre = serializer.Deserialize<CierreCaja>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                cierre = serializer.Deserialize<CierreCaja>(respuesta);
             return cierre;
         }
 
@@ -690,10 +704,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "GuardarDatosCierreCaja",
                 DatosPeticion = strDatos
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             CierreCaja nuevoCierre = null;
-            if (respuesta.DatosRespuesta != "")
-                nuevoCierre = serializer.Deserialize<CierreCaja>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                nuevoCierre = serializer.Deserialize<CierreCaja>(respuesta);
             return nuevoCierre;
         }
 
@@ -724,10 +738,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerReporteCierreDeCaja",
                 DatosPeticion = "{IdCierre: " + intIdCierre + "}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             List<ReporteCierreDeCaja> listado = new List<ReporteCierreDeCaja>();
-            if (respuesta.DatosRespuesta != "")
-                listado = serializer.Deserialize<List<ReporteCierreDeCaja>>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<ReporteCierreDeCaja>>(respuesta);
             return listado;
         }
 
@@ -738,10 +752,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerParametroImpuesto",
                 DatosPeticion = "{IdImpuesto: " + intIdImpuesto + "}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             ParametroImpuesto parametroImpuesto = null;
-            if (respuesta.DatosRespuesta != "")
-                parametroImpuesto = serializer.Deserialize<ParametroImpuesto>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                parametroImpuesto = serializer.Deserialize<ParametroImpuesto>(respuesta);
             return parametroImpuesto;
         }
 
@@ -752,10 +766,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerListaBancoAdquiriente",
                 DatosPeticion = "{IdEmpresa: " + intIdEmpresa + ", Descripcion: '" + strDescripcion + "'}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             List<BancoAdquiriente> listado = new List<BancoAdquiriente>();
-            if (respuesta.DatosRespuesta != "")
-                listado = serializer.Deserialize<List<BancoAdquiriente>>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<BancoAdquiriente>>(respuesta);
             return listado;
         }
 
@@ -767,8 +781,8 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "AgregarBancoAdquiriente",
                 DatosPeticion = strDatos
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
-            return respuesta.DatosRespuesta;
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            return respuesta;
         }
 
         public static async Task ActualizarBancoAdquiriente(BancoAdquiriente bancoAdquiriente)
@@ -789,10 +803,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerBancoAdquiriente",
                 DatosPeticion = "{IdBancoAdquiriente: " + intIdBanco + "}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             BancoAdquiriente bancoAdquiriente = null;
-            if (respuesta.DatosRespuesta != "")
-                bancoAdquiriente = serializer.Deserialize<BancoAdquiriente>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                bancoAdquiriente = serializer.Deserialize<BancoAdquiriente>(respuesta);
             return bancoAdquiriente;
         }
 
@@ -813,10 +827,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerListaClientes",
                 DatosPeticion = "{IdEmpresa: " + intIdEmpresa + ", NumeroPagina: " + intNumeroPagina + ",FilasPorPagina: " + intFilasPorPagina + ", Nombre: '" + strNombre + "'}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             List<Cliente> listado = new List<Cliente>();
-            if (respuesta.DatosRespuesta != "")
-                listado = serializer.Deserialize<List<Cliente>>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<Cliente>>(respuesta);
             return listado;
         }
 
@@ -827,10 +841,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerTotalListaClientes",
                 DatosPeticion = "{IdEmpresa: " + intIdEmpresa + ", Nombre: '" + strNombre + "'}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             int intCantidad = 0;
-            if (respuesta.DatosRespuesta != "")
-                intCantidad = serializer.Deserialize<int>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                intCantidad = serializer.Deserialize<int>(respuesta);
             return intCantidad;
         }
 
@@ -842,8 +856,8 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "AgregarCliente",
                 DatosPeticion = strDatos
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
-            return respuesta.DatosRespuesta;
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            return respuesta;
         }
 
         public static async Task ActualizarCliente(Cliente cliente)
@@ -864,10 +878,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerCliente",
                 DatosPeticion = "{IdCliente: " + intIdCliente + "}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             Cliente cliente = null;
-            if (respuesta.DatosRespuesta != "")
-                cliente = serializer.Deserialize<Cliente>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                cliente = serializer.Deserialize<Cliente>(respuesta);
             return cliente;
         }
 
@@ -888,10 +902,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ValidaIdentificacionCliente",
                 DatosPeticion = "{IdEmpresa: " + intIdEmpresa + ", Identificacion: '" + strIdentificacion + "'}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             Cliente cliente = null;
-            if (respuesta.DatosRespuesta != "")
-                cliente = serializer.Deserialize<Cliente>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                cliente = serializer.Deserialize<Cliente>(respuesta);
             return cliente;
         }
 
@@ -903,10 +917,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerListaLineas",
                 DatosPeticion = "{IdEmpresa: " + intIdEmpresa + ", Descripcion: '" + strDescripcion + "'}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             List<Linea> listado = new List<Linea>();
-            if (respuesta.DatosRespuesta != "")
-                listado = serializer.Deserialize<List<Linea>>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<Linea>>(respuesta);
             return listado;
         }
 
@@ -917,10 +931,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerListaLineasDeProducto",
                 DatosPeticion = "{IdEmpresa: " + intIdEmpresa + "}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             List<Linea> listado = new List<Linea>();
-            if (respuesta.DatosRespuesta != "")
-                listado = serializer.Deserialize<List<Linea>>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<Linea>>(respuesta);
             return listado;
         }
 
@@ -931,10 +945,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerListaEmpresas",
                 DatosPeticion = ""
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             List<ListaEmpresa> listado = new List<ListaEmpresa>();
-            if (respuesta.DatosRespuesta != "")
-                listado = serializer.Deserialize<List<ListaEmpresa>>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<ListaEmpresa>>(respuesta);
             return listado;
         }
 
@@ -946,8 +960,8 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "AgregarEmpresa",
                 DatosPeticion = strDatos
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
-            return respuesta.DatosRespuesta;
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            return respuesta;
         }
 
         public static async Task ActualizarEmpresa(Empresa empresa)
@@ -1020,10 +1034,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerListaLineasDeServicio",
                 DatosPeticion = "{IdEmpresa: " + intIdEmpresa + "}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             List<Linea> listado = new List<Linea>();
-            if (respuesta.DatosRespuesta != "")
-                listado = serializer.Deserialize<List<Linea>>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<Linea>>(respuesta);
             return listado;
         }
 
@@ -1035,8 +1049,8 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "AgregarLinea",
                 DatosPeticion = strDatos
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
-            return respuesta.DatosRespuesta;
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            return respuesta;
         }
 
         public static async Task ActualizarLinea(Linea linea)
@@ -1057,10 +1071,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerLinea",
                 DatosPeticion = "{IdLinea: " + intIdLinea + "}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             Linea linea = null;
-            if (respuesta.DatosRespuesta != "")
-                linea = serializer.Deserialize<Linea>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                linea = serializer.Deserialize<Linea>(respuesta);
             return linea;
         }
 
@@ -1081,10 +1095,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerListaProveedores",
                 DatosPeticion = "{IdEmpresa: " + intIdEmpresa + ", NumeroPagina: " + intNumeroPagina + ",FilasPorPagina: " + intFilasPorPagina + ", Nombre: '" + strNombre + "'}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             List<Proveedor> listado = new List<Proveedor>();
-            if (respuesta.DatosRespuesta != "")
-                listado = serializer.Deserialize<List<Proveedor>>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<Proveedor>>(respuesta);
             return listado;
         }
 
@@ -1095,10 +1109,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerTotalListaProveedores",
                 DatosPeticion = "{IdEmpresa: " + intIdEmpresa + ", Nombre: '" + strNombre + "'}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             int intCantidad = 0;
-            if (respuesta.DatosRespuesta != "")
-                intCantidad = serializer.Deserialize<int>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                intCantidad = serializer.Deserialize<int>(respuesta);
         
             return intCantidad;
         }
@@ -1111,8 +1125,8 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "AgregarProveedor",
                 DatosPeticion = strDatos
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
-            return respuesta.DatosRespuesta;
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            return respuesta;
         }
 
         public static async Task ActualizarProveedor(Proveedor proveedor)
@@ -1133,10 +1147,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerProveedor",
                 DatosPeticion = "{IdProveedor: " + intIdProveedor + "}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             Proveedor proveedor = null;
-            if (respuesta.DatosRespuesta != "")
-                proveedor = serializer.Deserialize<Proveedor>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                proveedor = serializer.Deserialize<Proveedor>(respuesta);
             return proveedor;
         }
 
@@ -1157,10 +1171,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerTotalListaProductos",
                 DatosPeticion = "{IdEmpresa: " + intIdEmpresa + ", IncluyeServicios: '" + bolIncluyeServicios + "', IdLinea: " + intIdLinea + ", Codigo: '" + strCodigo + "', Descripcion: '" + strDescripcion + "'}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             int intCantidad = 0;
-            if (respuesta.DatosRespuesta != "")
-                intCantidad = serializer.Deserialize<int>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                intCantidad = serializer.Deserialize<int>(respuesta);
             return intCantidad;
         }
 
@@ -1171,10 +1185,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerListaProductos",
                 DatosPeticion = "{IdEmpresa: " + intIdEmpresa + ", NumeroPagina: " + intNumeroPagina + ",FilasPorPagina: " + intFilasPorPagina + ", IncluyeServicios: '" + bolIncluyeServicios + "', IdLinea: " + intIdLinea + ", Codigo: '" + strCodigo + "', Descripcion: '" + strDescripcion + "'}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             List<Producto> listado = new List<Producto>();
-            if (respuesta.DatosRespuesta != "")
-                listado = serializer.Deserialize<List<Producto>>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<Producto>>(respuesta);
             return listado;
         }
 
@@ -1186,8 +1200,8 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "AgregarProducto",
                 DatosPeticion = strDatos
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
-            return respuesta.DatosRespuesta;
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            return respuesta;
         }
 
         public static async Task ActualizarProducto(Producto producto)
@@ -1208,10 +1222,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerProducto",
                 DatosPeticion = "{IdProducto: " + intIdProducto + "}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             Producto producto = null;
-            if (respuesta.DatosRespuesta != "")
-                producto = serializer.Deserialize<Producto>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                producto = serializer.Deserialize<Producto>(respuesta);
             return producto;
         }
 
@@ -1222,10 +1236,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerProductoPorCodigo",
                 DatosPeticion = "{IdEmpresa: " + intIdEmpresa + ", Codigo: '" + strCodigo + "'}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             Producto producto = null;
-            if (respuesta.DatosRespuesta != "")
-                producto = serializer.Deserialize<Producto>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                producto = serializer.Deserialize<Producto>(respuesta);
             return producto;
         }
 
@@ -1246,10 +1260,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerListaUsuarios",
                 DatosPeticion = "{IdEmpresa: " + intIdEmpresa + ", Codigo: '" + strCodigo + "'}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             List<Usuario> listado = new List<Usuario>();
-            if (respuesta.DatosRespuesta != "")
-                listado = serializer.Deserialize<List<Usuario>>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<Usuario>>(respuesta);
             return listado;
         }
 
@@ -1261,8 +1275,8 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "AgregarUsuario",
                 DatosPeticion = strDatos
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
-            return respuesta.DatosRespuesta;
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            return respuesta;
         }
 
         public static async Task AgregarUsuarioPorEmpresa(int intIdUsuario, int intIdEmpresa)
@@ -1293,10 +1307,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ActualizarClaveUsuario",
                 DatosPeticion = "{IdUsuario: " + intIdUsuario + ", Clave: '" + strClave + "'}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             Usuario usuario = null;
-            if (respuesta.DatosRespuesta != "")
-                usuario = serializer.Deserialize<Usuario>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                usuario = serializer.Deserialize<Usuario>(respuesta);
             return usuario;
         }
 
@@ -1307,10 +1321,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerUsuario",
                 DatosPeticion = "{IdUsuario: " + intIdUsuario + "}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             Usuario usuario = null;
-            if (respuesta.DatosRespuesta != "")
-                usuario = serializer.Deserialize<Usuario>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                usuario = serializer.Deserialize<Usuario>(respuesta);
             return usuario;
         }
 
@@ -1331,10 +1345,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerListaCuentasEgreso",
                 DatosPeticion = "{IdEmpresa: " + intIdEmpresa + ", Descripcion: '" + strDescripcion + "'}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             List<CuentaEgreso> listado = new List<CuentaEgreso>();
-            if (respuesta.DatosRespuesta != "")
-                listado = serializer.Deserialize<List<CuentaEgreso>>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<CuentaEgreso>>(respuesta);
             return listado;
         }
 
@@ -1346,8 +1360,8 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "AgregarCuentaEgreso",
                 DatosPeticion = strDatos
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
-            return respuesta.DatosRespuesta;
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            return respuesta;
         }
 
         public static async Task ActualizarCuentaEgreso(CuentaEgreso cuentaEgreso)
@@ -1368,10 +1382,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerCuentaEgreso",
                 DatosPeticion = "{IdCuentaEgreso: " + intIdCuentaEgreso + "}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             CuentaEgreso cuentaEgreso = null;
-            if (respuesta.DatosRespuesta != "")
-                cuentaEgreso = serializer.Deserialize<CuentaEgreso>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                cuentaEgreso = serializer.Deserialize<CuentaEgreso>(respuesta);
             return cuentaEgreso;
         }
 
@@ -1392,10 +1406,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerListaCuentasBanco",
                 DatosPeticion = "{IdEmpresa: " + intIdEmpresa + ", Descripcion: '" + strDescripcion + "'}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             List<CuentaBanco> listado = new List<CuentaBanco>();
-            if (respuesta.DatosRespuesta != "")
-                listado = serializer.Deserialize<List<CuentaBanco>>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<CuentaBanco>>(respuesta);
             return listado;
         }
 
@@ -1407,8 +1421,8 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "AgregarCuentaBanco",
                 DatosPeticion = strDatos
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
-            return respuesta.DatosRespuesta;
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            return respuesta;
         }
 
         public static async Task ActualizarCuentaBanco(CuentaBanco cuentaBanco)
@@ -1429,10 +1443,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerCuentaBanco",
                 DatosPeticion = "{IdCuentaBanco: " + intIdCuentaBanco + "}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             CuentaBanco cuentaBanco = null;
-            if (respuesta.DatosRespuesta != "")
-                cuentaBanco = serializer.Deserialize<CuentaBanco>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                cuentaBanco = serializer.Deserialize<CuentaBanco>(respuesta);
             return cuentaBanco;
         }
 
@@ -1453,10 +1467,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerListaVendedores",
                 DatosPeticion = "{IdEmpresa: " + intIdEmpresa + ", Nombre: '" + strNombre + "'}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             List<Vendedor> listado = new List<Vendedor>();
-            if (respuesta.DatosRespuesta != "")
-                listado = serializer.Deserialize<List<Vendedor>>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<Vendedor>>(respuesta);
             return listado;
         }
 
@@ -1468,8 +1482,8 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "AgregarVendedor",
                 DatosPeticion = strDatos
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
-            return respuesta.DatosRespuesta;
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            return respuesta;
         }
 
         public static async Task ActualizarVendedor(Vendedor vendedor)
@@ -1490,10 +1504,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerVendedor",
                 DatosPeticion = "{IdVendedor: " + intIdVendedor + "}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             Vendedor vendedor = null;
-            if (respuesta.DatosRespuesta != "")
-                vendedor = serializer.Deserialize<Vendedor>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                vendedor = serializer.Deserialize<Vendedor>(respuesta);
             return vendedor;
         }
 
@@ -1504,10 +1518,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerVendedorPorDefecto",
                 DatosPeticion = "{IdEmpresa: " + intIdEmpresa + "}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             Vendedor vendedor = null;
-            if (respuesta.DatosRespuesta != "")
-                vendedor = serializer.Deserialize<Vendedor>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                vendedor = serializer.Deserialize<Vendedor>(respuesta);
             return vendedor;
         }
 
@@ -1528,10 +1542,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerTotalListaEgresos",
                 DatosPeticion = "{IdEmpresa: " + intIdEmpresa + ", IdEgreso: " + intIdEgreso + ", Beneficiario: '" + strBeneficiario + "', Detalle: '" + strDetalle + "'}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             int intCantidad = 0;
-            if (respuesta.DatosRespuesta != "")
-                intCantidad = serializer.Deserialize<int>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                intCantidad = serializer.Deserialize<int>(respuesta);
             return intCantidad;
         }
 
@@ -1542,10 +1556,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerListaEgresos",
                 DatosPeticion = "{IdEmpresa: " + intIdEmpresa + ", NumeroPagina: " + intNumeroPagina + ",FilasPorPagina: " + intFilasPorPagina + ", IdEgreso: " + intIdEgreso + ", Beneficiario: '" + strBeneficiario + "', Detalle: '" + strDetalle + "'}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             List<Egreso> listado = new List<Egreso>();
-            if (respuesta.DatosRespuesta != "")
-                listado = serializer.Deserialize<List<Egreso>>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<Egreso>>(respuesta);
             return listado;
         }
 
@@ -1566,10 +1580,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerEgreso",
                 DatosPeticion = "{IdEgreso: " + intIdEgreso + "}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             Egreso egreso = null;
-            if (respuesta.DatosRespuesta != "")
-                egreso = serializer.Deserialize<Egreso>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                egreso = serializer.Deserialize<Egreso>(respuesta);
             return egreso;
         }
 
@@ -1581,8 +1595,8 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "AgregarEgreso",
                 DatosPeticion = strDatos
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
-            return respuesta.DatosRespuesta;
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            return respuesta;
         }
 
         public static async Task ActualizarEgreso(Egreso egreso)
@@ -1603,10 +1617,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerTotalListaFacturas",
                 DatosPeticion = "{IdEmpresa: " + intIdEmpresa + ", IdFactura: " + intIdFactura + ", Nombre: '" + strNombre + "'}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             int intCantidad = 0;
-            if (respuesta.DatosRespuesta != "")
-                intCantidad = serializer.Deserialize<int>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                intCantidad = serializer.Deserialize<int>(respuesta);
             return intCantidad;
         }
 
@@ -1617,10 +1631,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerListaFacturas",
                 DatosPeticion = "{IdEmpresa: " + intIdEmpresa + ", NumeroPagina: " + intNumeroPagina + ",FilasPorPagina: " + intFilasPorPagina + ", IdFactura: " + intIdFactura + ", Nombre: '" + strNombre + "'}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             List<Factura> listado = new List<Factura>();
-            if (respuesta.DatosRespuesta != "")
-                listado = serializer.Deserialize<List<Factura>>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<Factura>>(respuesta);
             return listado;
         }
 
@@ -1641,10 +1655,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerFactura",
                 DatosPeticion = "{IdFactura: " + intIdFactura + "}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             Factura factura = null;
-            if (respuesta.DatosRespuesta != "")
-                factura = serializer.Deserialize<Factura>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                factura = serializer.Deserialize<Factura>(respuesta);
             return factura;
         }
 
@@ -1656,10 +1670,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "AgregarFactura",
                 DatosPeticion = strDatos
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             Factura nuevaFactura = null;
-            if (respuesta.DatosRespuesta != "")
-                nuevaFactura = serializer.Deserialize<Factura>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                nuevaFactura = serializer.Deserialize<Factura>(respuesta);
             return nuevaFactura;
         }
 
@@ -1670,10 +1684,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerDocumentoElectronico",
                 DatosPeticion = "{IdDocumento: " + intIdDocumento + "}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             DocumentoElectronico documento = null;
-            if (respuesta.DatosRespuesta != "")
-                documento = serializer.Deserialize<DocumentoElectronico>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                documento = serializer.Deserialize<DocumentoElectronico>(respuesta);
             return documento;
         }
 
@@ -1684,10 +1698,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerDocumentoElectronicoPorClave",
                 DatosPeticion = "{Clave: " + strClave + "}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             DocumentoElectronico documento = null;
-            if (respuesta.DatosRespuesta != "")
-                documento = serializer.Deserialize<DocumentoElectronico>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                documento = serializer.Deserialize<DocumentoElectronico>(respuesta);
             return documento;
         }
 
@@ -1708,10 +1722,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerTotalDocumentosElectronicosProcesados",
                 DatosPeticion = "{IdEmpresa: " + intIdEmpresa + "}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             int intCantidad = 0;
-            if (respuesta.DatosRespuesta != "")
-                intCantidad = serializer.Deserialize<int>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                intCantidad = serializer.Deserialize<int>(respuesta);
             return intCantidad;
         }
 
@@ -1722,10 +1736,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerListaDocumentosElectronicosProcesados",
                 DatosPeticion = "{IdEmpresa: " + intIdEmpresa + ", NumeroPagina: " + intNumeroPagina + ",FilasPorPagina: " + intFilasPorPagina + "}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             List<DocumentoElectronico> listado = new List<DocumentoElectronico>();
-            if (respuesta.DatosRespuesta != "")
-                listado = serializer.Deserialize<List<DocumentoElectronico>>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<DocumentoElectronico>>(respuesta);
             return listado;
         }
 
@@ -1736,10 +1750,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerListaDocumentosElectronicosEnProceso",
                 DatosPeticion = "{IdEmpresa: " + intIdEmpresa + "}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             List<DocumentoElectronico> listado = new List<DocumentoElectronico>();
-            if (respuesta.DatosRespuesta != "")
-                listado = serializer.Deserialize<List<DocumentoElectronico>>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<DocumentoElectronico>>(respuesta);
             return listado;
         }
 
@@ -1770,10 +1784,10 @@ namespace LeandroSoftware.Core.ClienteWCF
                 NombreMetodo = "ObtenerRespuestaDocumentoElectronicoEnviado",
                 DatosPeticion = "{IdDocumento: " + intIdDocumento + "}"
             };
-            ResponseDTO respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             DocumentoElectronico documento = null;
-            if (respuesta.DatosRespuesta != "")
-                documento = serializer.Deserialize<DocumentoElectronico>(respuesta.DatosRespuesta);
+            if (respuesta != "")
+                documento = serializer.Deserialize<DocumentoElectronico>(respuesta);
             return documento;
         }
 

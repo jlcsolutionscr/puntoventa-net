@@ -25,7 +25,8 @@ namespace LeandroSoftware.AccesoDatos.Servicios
         Empresa ObtenerEmpresa(int intIdEmpresa);
         TerminalPorEmpresa ObtenerTerminalPorEmpresa(int intIdEmpresa, int intIdSucursal, int intIdTerminal);
         IEnumerable<ListaEmpresa> ObtenerListaEmpresas();
-        IEnumerable<IdentificacionNombre> ObtenerListaEmpresasPorIdentificacion(string[] lstIdentificacion);
+        IEnumerable<IdentificacionNombre> ObtenerListaEmpresasAdministrador();
+        IEnumerable<IdentificacionNombre> ObtenerListaEmpresasPorDispositivo(string strDispositivoID);
         void ActualizarLogoEmpresa(int intIdEmpresa, string strLogo);
         void ActualizarCertificadoEmpresa(int intIdEmpresa, string strCertificado);
         Modulo ObtenerModulo(int intIdModulo);
@@ -398,17 +399,40 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public IEnumerable<IdentificacionNombre> ObtenerListaEmpresasPorIdentificacion(string[] lstIdentificacion)
+        public IEnumerable<IdentificacionNombre> ObtenerListaEmpresasAdministrador()
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 var listaEmpresas = new List<IdentificacionNombre>();
                 try
                 {
-                    var listadoEmpresa = dbContext.EmpresaRepository.Where(x => lstIdentificacion.Contains(x.Identificacion));
+                    var listadoEmpresa = dbContext.EmpresaRepository.Where(x => x.PermiteFacturar);
                     foreach (Empresa value in listadoEmpresa)
                     {
                         IdentificacionNombre item = new IdentificacionNombre(value.Identificacion, value.NombreComercial);
+                        listaEmpresas.Add(item);
+                    }
+                    return listaEmpresas;
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al validar la lista de empresas por identificación: ", ex);
+                    throw new Exception("Error al validar la lista de empresas por identificación. . .");
+                }
+            }
+        }
+
+        public IEnumerable<IdentificacionNombre> ObtenerListaEmpresasPorDispositivo(string strDispositivoID)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                var listaEmpresas = new List<IdentificacionNombre>();
+                try
+                {
+                    var listadoEmpresa = dbContext.TerminalPorEmpresaRepository.Include("Empresa").Where(x => x.Empresa.PermiteFacturar && x.ValorRegistro == strDispositivoID);
+                    foreach (TerminalPorEmpresa value in listadoEmpresa)
+                    {
+                        IdentificacionNombre item = new IdentificacionNombre(value.Empresa.Identificacion, value.Empresa.NombreComercial);
                         listaEmpresas.Add(item);
                     }
                     return listaEmpresas;
@@ -623,7 +647,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     if (!empresa.RegimenSimplificado && empresa.Certificado == null) throw new BusinessException("La empresa no posee la llave criptográfica requerida. Por favor contacte con su proveedor del servicio.");
                     if (!empresa.RegimenSimplificado && empresa.PinCertificado == "") throw new BusinessException("La empresa no posee el parámetro PIN de la llave criptográfica. Por favor contacte con su proveedor del servicio.");
                     UsuarioPorEmpresa empresaUsuario = dbContext.UsuarioPorEmpresaRepository.Where(x => x.IdUsuario == usuario.IdUsuario && x.IdEmpresa == empresa.IdEmpresa).FirstOrDefault();
-                    if (empresaUsuario == null) throw new BusinessException("El usuario ingresado no pertenece a la empresa suministrada.");
+                    if (usuario.IdUsuario > 1 && empresaUsuario == null) throw new BusinessException("El usuario ingresado no pertenece a la empresa suministrada.");
                     TerminalPorEmpresa terminal = null;
                     if (strCodigoUsuario == "JASLOP")
                     {

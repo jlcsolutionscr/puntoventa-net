@@ -315,6 +315,7 @@ Public Class ModuloImpresion
         Dim strDetalle As String = ""
         strDetalle += "Descripcion" & Chr(13) & Chr(10)
         strDetalle += "Cant".PadLeft(6, " ") & "P/U".PadLeft(15, " ") & " Total".PadLeft(15, " ") & Chr(13) & Chr(10)
+        strDetalle += "".PadRight(40, "_") & Chr(13) & Chr(10)
         For i As Integer = 0 To objDetalleComprobante.Count - 1
             If CDbl(objDetalleComprobante(i).strPrecio) > 0 Then
                 Dim lineas As New List(Of String)
