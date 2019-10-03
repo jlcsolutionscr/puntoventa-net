@@ -254,6 +254,8 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             {
                 try
                 {
+                    byte[] certificado = dbContext.EmpresaRepository.AsNoTracking().Where(x => x.IdEmpresa == empresa.IdEmpresa).FirstOrDefault().Certificado;
+                    if (certificado != null) empresa.Certificado = certificado;
                     dbContext.NotificarModificacion(empresa);
                     dbContext.Commit();
                 }
@@ -272,12 +274,14 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             {
                 try
                 {
+                    byte[] certificado = dbContext.EmpresaRepository.AsNoTracking().Where(x => x.IdEmpresa == empresa.IdEmpresa).FirstOrDefault().Certificado;
                     List<ModuloPorEmpresa> listadoModuloPorEmpresa = empresa.ModuloPorEmpresa.OrderBy(o => o.IdModulo).ToList();
                     List<ReportePorEmpresa> listadoReportePorEmpresa = empresa.ReportePorEmpresa.OrderBy(o => o.IdReporte).ToList();
                     empresa.TerminalPorEmpresa = null;
                     empresa.ModuloPorEmpresa = null;
                     empresa.ReportePorEmpresa = null;
                     empresa.Barrio = null;
+                    if (certificado != null) empresa.Certificado = certificado;
                     dbContext.NotificarModificacion(empresa);
                     List<ModuloPorEmpresa> listadoModuloPorEmpresaAnt = dbContext.ModuloPorEmpresaRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa).ToList();
                     foreach (ModuloPorEmpresa modulo in listadoModuloPorEmpresaAnt)
