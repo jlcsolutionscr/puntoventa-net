@@ -294,7 +294,7 @@ namespace LeandroSoftware.AccesoDatos.ServicioWCF
                         servicioFacturacion.EnviarNotificacionDocumentoElectronico(intIdDocumento, strCorreoReceptor, servicioEnvioCorreo, configuracion.CorreoNotificacionErrores);
                         break;
                     default:
-                        throw new Exception("Los parémetros suministrados son inválidos.");
+                        throw new Exception("Los parámetros suministrados son inválidos para el método: " + datos.NombreMetodo);
                 }
             }
             catch (Exception ex)
@@ -1167,7 +1167,7 @@ namespace LeandroSoftware.AccesoDatos.ServicioWCF
                             strRespuesta = serializer.Serialize(documento);
                         break;
                     default:
-                        throw new Exception("Los parémetros suministrados son inválidos.");
+                        throw new Exception("Los parámetros suministrados son inválidos para el método: " + datos.NombreMetodo);
                 }
                 ResponseDTO respuesta = new ResponseDTO();
                 respuesta.DatosRespuesta = strRespuesta;

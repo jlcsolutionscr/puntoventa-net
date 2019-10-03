@@ -343,6 +343,12 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 try
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Include("ModuloPorEmpresa.Modulo").Include("ReportePorEmpresa.CatalogoReporte").Include("Barrio.Distrito.Canton.Provincia").Include("TerminalPorEmpresa").FirstOrDefault(x => x.IdEmpresa == intIdEmpresa);
+                    empresa.Certificado = null;
+                    empresa.AccessToken = null;
+                    empresa.RefreshToken = null;
+                    empresa.EmitedAt = null;
+                    empresa.ExpiresIn = null;
+                    empresa.RefreshExpiresIn = null;
                     foreach (ModuloPorEmpresa modulo in empresa.ModuloPorEmpresa)
                         modulo.Empresa = null;
                     foreach (ReportePorEmpresa reporte in empresa.ReportePorEmpresa)
