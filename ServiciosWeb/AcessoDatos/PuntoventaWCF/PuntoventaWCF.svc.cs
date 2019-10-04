@@ -367,9 +367,9 @@ namespace LeandroSoftware.AccesoDatos.ServicioWCF
                     case "ObtenerListaEmpresasPorDispositivo":
                         parametrosJO = JObject.Parse(datos.DatosPeticion);
                         string strDispositivoID = parametrosJO.Property("Dispositivo").Value.ToString();
-                        IList<IdentificacionNombre> listadoEmpresaPorIdentificacion = (List<IdentificacionNombre>)servicioMantenimiento.ObtenerListaEmpresasPorDispositivo(strDispositivoID);
-                        if (listadoEmpresaPorIdentificacion.Count > 0)
-                            strRespuesta = serializer.Serialize(listadoEmpresaPorIdentificacion);
+                        IList<IdentificacionNombre> listadoEmpresaPorDispositivo = (List<IdentificacionNombre>)servicioMantenimiento.ObtenerListaEmpresasPorDispositivo(strDispositivoID);
+                        if (listadoEmpresaPorDispositivo.Count > 0)
+                            strRespuesta = serializer.Serialize(listadoEmpresaPorDispositivo);
                         break;
                     case "ValidarCredenciales":
                         parametrosJO = JObject.Parse(datos.DatosPeticion);

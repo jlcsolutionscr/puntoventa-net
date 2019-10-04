@@ -183,7 +183,8 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                                 }
                                 catch (Exception ex)
                                 {
-                                    throw new Exception("Error parseando el tipo de cambio: " + strTipoCambioDolar + ": " + ex.Message);
+                                    string errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                                    throw new Exception("Error parseando el tipo de cambio: " + strTipoCambioDolar + ": " + errorMessage);
                                 }
                             }
                         }
