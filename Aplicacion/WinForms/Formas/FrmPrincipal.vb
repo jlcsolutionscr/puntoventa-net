@@ -441,16 +441,23 @@ Public Class FrmPrincipal
                 File.Delete(Path.GetTempPath() + "/Updater.exe.config")
             End If
         End If
-        Dim strIdentificadoEquipoLocal = Utilitario.ObtenerIdentificadorEquipo()
+        Dim strIdentificadoEquipoLocal = Nothing
+        strIdentificadoEquipoLocal = Utilitario.ObtenerIdentificadorEquipo()
         If bolEsAdministrador Then
             listaEmpresa = Await ClienteFEWCF.ObtenerListaEmpresasAdministrador()
         Else
-            listaEmpresa = Await ClienteFEWCF.ObtenerListaEmpresasPorDispositivo(strIdentificadoEquipoLocal)
-        End If
-        If listaEmpresa.Count = 0 Then
-            MessageBox.Show("El equipo no se encuentra registrado en ninguna Empresa. Por favor contacte con su proveedor del servicio. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-            Exit Sub
+            Do
+                listaEmpresa = Await ClienteFEWCF.ObtenerListaEmpresasPorDispositivo(strIdentificadoEquipoLocal)
+                If listaEmpresa.Count = 0 Then
+                    If MessageBox.Show("El equipo no se encuentra registrado. Desea proceder con el registro?", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
+                        Dim formEmpresa As New FrmEmpresa()
+                        formEmpresa.ShowDialog()
+                    Else
+                        Close()
+                        Exit Sub
+                    End If
+                End If
+            Loop While listaEmpresa.Count = 0
         End If
         Dim formSeguridad As New FrmSeguridad()
         Thread.CurrentThread.CurrentCulture = New Globalization.CultureInfo("es-CR")
@@ -460,6 +467,7 @@ Public Class FrmPrincipal
         Thread.CurrentThread.CurrentCulture.NumberFormat.NumberGroupSeparator = ","
         Thread.CurrentThread.CurrentCulture.NumberFormat.CurrencyGroupSeparator = ","
         Dim empresa As Empresa = Nothing
+        bolContinua = True
         Do
             formSeguridad.ShowDialog()
             If bolContinua Then

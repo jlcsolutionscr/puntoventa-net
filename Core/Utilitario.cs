@@ -116,58 +116,6 @@ namespace LeandroSoftware.Core.Utilities
             return Encoding.UTF8.GetString(plainTextBytes, 0, decryptedByteCount).TrimEnd("\0".ToCharArray());
         }
 
-        private static byte[] Generate256BitsOfRandomEntropy()
-        {
-            var randomBytes = new byte[32];
-            using (var rngCsp = new RNGCryptoServiceProvider())
-            {
-                rngCsp.GetBytes(randomBytes);
-            }
-            return randomBytes;
-        }
-
-        /* public static string GenerarLlaveEncriptadoLocal(string strThumbprint, string strData)
-        {
-            RSACryptoServiceProvider rsaEncryptor = null;
-            string strResult = null;
-            try
-            {
-                X509Store store = new X509Store(StoreName.Root, StoreLocation.LocalMachine);
-                store.Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly);
-                X509Certificate2Collection certs = store.Certificates.Find(X509FindType.FindByThumbprint, strThumbprint, true);
-                store.Close();
-                if (certs.Count == 0)
-                {
-                    throw new Exception("No se logró ubicar el certificado con la huella digital: " + strThumbprint + ". Por favor verificar.");
-                }
-                if (certs.Count == 1)
-                {
-                    foreach (X509Certificate2 cert in certs)
-                    {
-                        if (!cert.HasPrivateKey)
-                            throw new Exception("El certificado con la huella digital: " + strThumbprint + " no posee la llave privada requerida. Por favor verificar.");
-                        rsaEncryptor = (RSACryptoServiceProvider)cert.PrivateKey;
-                        break;
-                    }
-                }
-                else
-                {
-                    throw new Exception("Existe más de un certificado con la huella digital: " + strThumbprint + ". Por favor verificar.");
-                }
-
-                if (rsaEncryptor != null)
-                {
-                    byte[] cipherData = rsaEncryptor.Encrypt(Encoding.UTF8.GetBytes(strData), true);
-                    strResult = Convert.ToBase64String(cipherData);
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            return strResult;
-        } */
-
         public static string ObtenerLlaveEncriptadoLocal(string strThumbprint, string strData)
         {
             RSACryptoServiceProvider rsaEncryptor = null;
@@ -252,7 +200,20 @@ namespace LeandroSoftware.Core.Utilities
             ManagementObject dsk = new ManagementObject(@"win32_logicaldisk.deviceid=""c:""");
             dsk.Get();
             string strVolumeSerial = dsk["VolumeSerialNumber"].ToString();
-            return strVolumeSerial;
+            string strProcessorId = "";
+            try
+            {
+                ManagementObjectSearcher mos = new ManagementObjectSearcher("SELECT * FROM Win32_Processor Where DeviceID =\"CPU0\"");
+                foreach (ManagementObject mo in mos.Get())
+                {
+                    strProcessorId = mo["ProcessorId"].ToString();
+                }
+            }
+            catch
+            {
+                strProcessorId = "N/F-EFER2456AQWE";
+            }
+            return strProcessorId + "-" + strVolumeSerial;
         }
 
         public static string NumeroALetras(double t)

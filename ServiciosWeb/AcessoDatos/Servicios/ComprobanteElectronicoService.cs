@@ -1265,7 +1265,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 int intTipoDocumentoElectronico = (int)tipoDocumento;
                 int intIdConsecutivo = 1;
                 int? consecutivoBaseDatos = dbContext.DocumentoElectronicoRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa & x.IdSucursal == intSucursal & x.IdTerminal == intTerminal & x.IdTipoDocumento == intTipoDocumentoElectronico).Max(x => (int?)x.IdConsecutivo);
-                TerminalPorEmpresa terminal = dbContext.TerminalPorEmpresaRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa & x.IdSucursal == intSucursal & x.IdTerminal == intTerminal).FirstOrDefault();
+                TerminalPorSucursal terminal = dbContext.TerminalPorSucursalRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa & x.IdSucursal == intSucursal & x.IdTerminal == intTerminal).FirstOrDefault();
                 switch (tipoDocumento)
                 {
                     case TipoDocumento.FacturaElectronica:

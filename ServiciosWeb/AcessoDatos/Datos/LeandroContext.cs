@@ -78,7 +78,8 @@ namespace LeandroSoftware.AccesoDatos.Datos
         DbSet<RolePorUsuario> RolePorUsuarioRepository { get; set; }
         DbSet<SaldoMensualContable> SaldoMensualContableRepository { get; set; }
         DbSet<Sucursal> SucursalRepository { get; set; }
-        DbSet<TerminalPorEmpresa> TerminalPorEmpresaRepository { get; set; }
+        DbSet<SucursalPorEmpresa> SucursalPorEmpresaRepository { get; set; }
+        DbSet<TerminalPorSucursal> TerminalPorSucursalRepository { get; set; }
         DbSet<TipoDeCambioDolar> TipoDeCambioDolarRepository { get; set; }
         DbSet<TipoCuentaContable> TipoCuentaContableRepository { get; set; }
         DbSet<TipoIdentificacion> TipoIdentificacionRepository { get; set; }
@@ -185,7 +186,8 @@ namespace LeandroSoftware.AccesoDatos.Datos
         public DbSet<RolePorUsuario> RolePorUsuarioRepository { get; set; }
         public DbSet<SaldoMensualContable> SaldoMensualContableRepository { get; set; }
         public DbSet<Sucursal> SucursalRepository { get; set; }
-        public DbSet<TerminalPorEmpresa> TerminalPorEmpresaRepository { get; set; }
+        public DbSet<SucursalPorEmpresa> SucursalPorEmpresaRepository { get; set; }
+        public DbSet<TerminalPorSucursal> TerminalPorSucursalRepository { get; set; }
         public DbSet<TipoDeCambioDolar> TipoDeCambioDolarRepository { get; set; }
         public DbSet<TipoCuentaContable> TipoCuentaContableRepository { get; set; }
         public DbSet<TipoIdentificacion> TipoIdentificacionRepository { get; set; }

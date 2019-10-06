@@ -2,6 +2,8 @@ Imports System.Threading.Tasks
 Imports LeandroSoftware.Core.Dominio.Entidades
 Imports LeandroSoftware.Core.ClienteWCF
 Imports System.Collections.Generic
+Imports LeandroSoftware.Core.Utilities
+Imports System.IO
 
 Public Class FrmEmpresa
 #Region "Variables"
@@ -9,7 +11,9 @@ Public Class FrmEmpresa
     Private datos As Empresa
     Private datosSucursal As List(Of TerminalPorEmpresa)
     Private bolInit As Boolean = True
+    Private bolCertificadoModificado As Boolean = False
     Private intIdTerminalEnUso As Integer = 0
+    Private strRutaCertificado As String
 #End Region
 
 #Region "Métodos"
@@ -201,8 +205,23 @@ Public Class FrmEmpresa
         datosSucursal.Item(intIdTerminalEnUso).Telefono = txtTelefonoSucursal.Text
     End Sub
 
-    Private Sub TxtImpresora_Validated(sender As Object, e As EventArgs) Handles txtImpresora.Validated
+    Private Sub TxtImpresora_Validated(sender As Object, e As EventArgs)
         datosSucursal.Item(intIdTerminalEnUso).ImpresoraFactura = txtImpresora.Text
+    End Sub
+
+    Private Sub BtnCargarCertificado_Click(sender As Object, e As EventArgs) Handles btnCargarCertificado.Click
+        ofdAbrirDocumento.DefaultExt = "p12"
+        ofdAbrirDocumento.Filter = "Certificate Files|*.p12;"
+        Dim result As DialogResult = ofdAbrirDocumento.ShowDialog()
+        If result = DialogResult.OK Then
+            Try
+                strRutaCertificado = ofdAbrirDocumento.FileName
+                txtNombreCertificado.Text = Path.GetFileName(strRutaCertificado)
+                bolCertificadoModificado = True
+            Catch ex As Exception
+                MessageBox.Show("Error al intentar cargar el certificado. Verifique que sea un archivo .p12 válido. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End Try
+        End If
     End Sub
 #End Region
 End Class

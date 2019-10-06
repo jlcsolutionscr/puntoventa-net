@@ -85,6 +85,7 @@
     <Compile Include="Entidades\Provincia.cs" />
     <Compile Include="Entidades\RegistroRespuestaHacienda.cs" />
     <Compile Include="Entidades\ReportePorEmpresa.cs" />
+    <Compile Include="Entidades\SucursalPorEmpresa.cs" />
     <Compile Include="Entidades\TipoDeCambioDolar.cs" />
     <Compile Include="Entidades\TipoIdentificacion.cs" />
     <Compile Include="Entidades\ParametroExoneracion.cs" />
@@ -124,7 +125,7 @@
     <Compile Include="Entidades\DetalleOrdenCompra.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Entidades\TerminalPorEmpresa.cs">
+    <Compile Include="Entidades\TerminalPorSucursal.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Entidades\Egreso.cs" />

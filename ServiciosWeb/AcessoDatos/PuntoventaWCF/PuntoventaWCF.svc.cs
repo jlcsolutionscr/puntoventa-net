@@ -117,13 +117,16 @@ namespace LeandroSoftware.AccesoDatos.ServicioWCF
                 Empresa empresa = null;
                 switch (datos.NombreMetodo)
                 {
-                    case "RegistrarDispositivo":
+                    case "RegistrarTerminal":
                         parametrosJO = JObject.Parse(datos.DatosPeticion);
-                        string strIdentificacion = parametrosJO.Property("Identificacion").Value.ToString();
-                        string strDispositivo = parametrosJO.Property("Dispositivo").Value.ToString();
                         string strUsuario = parametrosJO.Property("Usuario").Value.ToString();
                         string strClave = parametrosJO.Property("Clave").Value.ToString();
-                        servicioMantenimiento.RegistrarDispositivo(strIdentificacion, strDispositivo, strUsuario, strClave);
+                        string strIdentificacion = parametrosJO.Property("Identificacion").Value.ToString();
+                        int intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
+                        int intIdTerminal = int.Parse(parametrosJO.Property("IdTerminal").Value.ToString());
+                        int intTipoDispositivo = int.Parse(parametrosJO.Property("TipoDispositivo").Value.ToString());
+                        string strDispositivo = parametrosJO.Property("Dispositivo").Value.ToString();
+                        servicioMantenimiento.RegistrarTerminal(strUsuario, strClave, strIdentificacion, intIdSucursal, intIdTerminal, intTipoDispositivo, strDispositivo);
                         break;
                     case "ActualizarUltimaVersionApp":
                         parametrosJO = JObject.Parse(datos.DatosPeticion);
@@ -143,11 +146,6 @@ namespace LeandroSoftware.AccesoDatos.ServicioWCF
                         empresa = serializer.Deserialize<Empresa>(datos.DatosPeticion);
                         servicioMantenimiento.ActualizarEmpresaConDetalle(empresa);
                         break;
-                    case "ActualizarTerminalPorEmpresa":
-                        TerminalPorEmpresa terminal = null;
-                        terminal = serializer.Deserialize<TerminalPorEmpresa>(datos.DatosPeticion);
-                        servicioMantenimiento.ActualizarTerminalPorEmpresa(terminal);
-                        break;
                     case "ActualizarLogoEmpresa":
                         parametrosJO = JObject.Parse(datos.DatosPeticion);
                         intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
@@ -164,6 +162,16 @@ namespace LeandroSoftware.AccesoDatos.ServicioWCF
                         intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                         string strCertificado = parametrosJO.Property("Certificado").Value.ToString();
                         servicioMantenimiento.ActualizarCertificadoEmpresa(intIdEmpresa, strCertificado);
+                        break;
+                    case "ActualizarSucursalPorEmpresa":
+                        SucursalPorEmpresa sucursal = null;
+                        sucursal = serializer.Deserialize<SucursalPorEmpresa>(datos.DatosPeticion);
+                        servicioMantenimiento.ActualizarSucursalPorEmpresa(sucursal);
+                        break;
+                    case "ActualizarTerminalPorSucursal":
+                        TerminalPorSucursal terminal = null;
+                        terminal = serializer.Deserialize<TerminalPorSucursal>(datos.DatosPeticion);
+                        servicioMantenimiento.ActualizarTerminalPorSucursal(terminal);
                         break;
                     case "ActualizarBancoAdquiriente":
                         BancoAdquiriente bancoAdquiriente = serializer.Deserialize<BancoAdquiriente>(datos.DatosPeticion);
@@ -354,11 +362,6 @@ namespace LeandroSoftware.AccesoDatos.ServicioWCF
                 string strRespuesta = "";
                 switch (datos.NombreMetodo)
                 {
-                    case "ObtenerUltimaVersionApp":
-                        string strUltimaVersion = servicioMantenimiento.ObtenerUltimaVersionApp();
-                        if (strUltimaVersion != "")
-                            strRespuesta = serializer.Serialize(strUltimaVersion);
-                        break;
                     case "ObtenerListaEmpresasAdministrador":
                         IList<IdentificacionNombre> listadoEmpresaAdministrador = (List<IdentificacionNombre>)servicioMantenimiento.ObtenerListaEmpresasAdministrador();
                         if (listadoEmpresaAdministrador.Count > 0)
@@ -434,8 +437,8 @@ namespace LeandroSoftware.AccesoDatos.ServicioWCF
                         if (listadoRoles.Count > 0)
                             strRespuesta = serializer.Serialize(listadoRoles);
                         break;
-                    case "ObtenerListaEmpresas":
-                        IList<ListaEmpresa> listadoEmpresa = (List<ListaEmpresa>)servicioMantenimiento.ObtenerListaEmpresas();
+                    case "ObtenerListadoEmpresa":
+                        IList<EmpresaNombre> listadoEmpresa = (List<EmpresaNombre>)servicioMantenimiento.ObtenerListadoEmpresa();
                         if (listadoEmpresa.Count > 0)
                             strRespuesta = serializer.Serialize(listadoEmpresa);
                         break;
@@ -735,14 +738,21 @@ namespace LeandroSoftware.AccesoDatos.ServicioWCF
                         if (empresa != null)
                             strRespuesta = serializer.Serialize(empresa);
                         break;
-                    case "ObtenerTerminalPorEmpresa":
+                    case "ObtenerListaSucursalPorEmpresa":
+                        parametrosJO = JObject.Parse(datos.DatosPeticion);
+                        intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
+                        IList<SucursalPorEmpresa> listadoSucursales = (List<SucursalPorEmpresa>)servicioMantenimiento.ObtenerListaSucursalPorEmpresa(intIdEmpresa);
+                        if (listadoSucursales.Count > 0)
+                            strRespuesta = serializer.Serialize(listadoSucursales);
+                        break;
+                    case "ObtenerListaTerminalPorSucursal":
                         parametrosJO = JObject.Parse(datos.DatosPeticion);
                         intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                         int intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
-                        int intIdTerminal = int.Parse(parametrosJO.Property("IdTerminal").Value.ToString());
-                        TerminalPorEmpresa terminal = servicioMantenimiento.ObtenerTerminalPorEmpresa(intIdEmpresa, intIdSucursal, intIdTerminal);
-                        if (terminal != null)
-                            strRespuesta = serializer.Serialize(terminal);
+                        bool bolDisponibles = bool.Parse(parametrosJO.Property("Disponibles").Value.ToString());
+                        IList<TerminalPorSucursal> listadoTerminales = (List<TerminalPorSucursal>)servicioMantenimiento.ObtenerListaTerminalPorSucursal(intIdEmpresa, intIdSucursal, bolDisponibles);
+                        if (listadoTerminales.Count > 0)
+                            strRespuesta = serializer.Serialize(listadoTerminales);
                         break;
                     case "AgregarEmpresa":
                         empresa = serializer.Deserialize<Empresa>(datos.DatosPeticion);
@@ -1179,9 +1189,9 @@ namespace LeandroSoftware.AccesoDatos.ServicioWCF
             }
         }
 
-        public void RecibirRespuestaHacienda(RespuestaHaciendaDTO mensaje)
+        public string ObtenerUltimaVersionApp()
         {
-            servicioFacturacion.ProcesarRespuestaHacienda(mensaje, servicioEnvioCorreo, configuracion.CorreoNotificacionErrores);
+            return servicioMantenimiento.ObtenerUltimaVersionApp();
         }
 
         public void ActualizarArchivoAplicacion(Stream fileStream)

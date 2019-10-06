@@ -10,7 +10,6 @@ namespace LeandroSoftware.Core.Dominio.Entidades
     {
         public Empresa()
         {
-            TerminalPorEmpresa = new HashSet<TerminalPorEmpresa>();
             ModuloPorEmpresa = new HashSet<ModuloPorEmpresa>();
             ReportePorEmpresa = new HashSet<ReportePorEmpresa>();
         }
@@ -59,12 +58,13 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public DateTime? EmitedAt { get; set; }
         [NotMapped]
         public Usuario Usuario;
+        [NotMapped]
+        public TerminalPorSucursal TerminalPorSucursal;
 
         public TipoIdentificacion TipoIdentificacion { get; set; }
         public TipoMoneda TipoMoneda { get; set; }
         [ForeignKey("IdProvincia, IdCanton, IdDistrito, IdBarrio")]
         public Barrio Barrio { get; set; }
-        public ICollection<TerminalPorEmpresa> TerminalPorEmpresa { get; set; }
         public ICollection<ModuloPorEmpresa> ModuloPorEmpresa { get; set; }
         public ICollection<ReportePorEmpresa> ReportePorEmpresa { get; set; }
     }

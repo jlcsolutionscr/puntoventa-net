@@ -14,21 +14,26 @@ namespace LeandroSoftware.AccesoDatos.Servicios
     public interface IMantenimientoService
     {
         // Métodos para administrar parametros del sistema
-        void RegistrarDispositivo(string strIdentificacion, string strDispositivoID, string strCodigoUsuario, string strClave);
+        IEnumerable<IdentificacionNombre> ObtenerListaEmpresasAdministrador();
+        IEnumerable<IdentificacionNombre> ObtenerListaEmpresasPorDispositivo(string strDispositivoId);
+        IEnumerable<SucursalPorEmpresa> ObtenerListaSucursalPorIdentificacion(string strIdentificacion);
+        void RegistrarTerminal(string strCodigoUsuario, string strClave, string strIdentificacion, int intIdSucursal, int intIdTerminal, int intTipoDispositivo, string strDispositivoId);
+        Empresa ValidarCredenciales(string strCodigoUsuario, string strClave, string strIdentificacion, string strValorRegistro);
         void ActualizarUltimaVersionApp(string strVersion);
         string ObtenerUltimaVersionApp();
         // Métodos para administrar las empresas
+        IEnumerable<EmpresaNombre> ObtenerListadoEmpresa();
         Empresa AgregarEmpresa(Empresa empresa);
+        Empresa ObtenerEmpresa(int intIdEmpresa);
         void ActualizarEmpresa(Empresa empresa);
         void ActualizarEmpresaConDetalle(Empresa empresa);
-        void ActualizarTerminalPorEmpresa(TerminalPorEmpresa terminal);
-        Empresa ObtenerEmpresa(int intIdEmpresa);
-        TerminalPorEmpresa ObtenerTerminalPorEmpresa(int intIdEmpresa, int intIdSucursal, int intIdTerminal);
-        IEnumerable<ListaEmpresa> ObtenerListaEmpresas();
-        IEnumerable<IdentificacionNombre> ObtenerListaEmpresasAdministrador();
-        IEnumerable<IdentificacionNombre> ObtenerListaEmpresasPorDispositivo(string strDispositivoID);
         void ActualizarLogoEmpresa(int intIdEmpresa, string strLogo);
         void ActualizarCertificadoEmpresa(int intIdEmpresa, string strCertificado);
+        // Métodos para administrar las sucursales
+        IEnumerable<SucursalPorEmpresa> ObtenerListaSucursalPorEmpresa(int intIdEmpresa);
+        void ActualizarSucursalPorEmpresa(SucursalPorEmpresa sucursal);
+        IEnumerable<TerminalPorSucursal> ObtenerListaTerminalPorSucursal(int intIdEmpresa, int intIdSucursal, bool bolDisponibles = false);
+        void ActualizarTerminalPorSucursal(TerminalPorSucursal terminal);
         Modulo ObtenerModulo(int intIdModulo);
         CatalogoReporte ObtenerCatalogoReporte(int intIdReporte);
         // Métodos para administrar los usuarios del sistema
@@ -36,7 +41,6 @@ namespace LeandroSoftware.AccesoDatos.Servicios
         void ActualizarUsuario(Usuario usuario);
         Usuario ActualizarClaveUsuario(int intIdUsuario, string strClave);
         void AgregarUsuarioPorEmpresa(int intIdUsuario, int intIdEmpresa);
-        Empresa ValidarCredenciales(string strIdentificacion, string strValorRegistro, string strCodigoUsuario, string strClave);
         void EliminarUsuario(int intIdUsuario);
         Usuario ObtenerUsuario(int intIdUsuario);
         IEnumerable<Usuario> ObtenerListaUsuarios(int intIdEmpresa, string strCodigo = "");
@@ -95,12 +99,14 @@ namespace LeandroSoftware.AccesoDatos.Servicios
         void EliminarTipoMoneda(int intIdTipoMoneda);
         TipoMoneda ObtenerTipoMoneda(int intIdTipoMoneda);
         IEnumerable<TipoMoneda> ObtenerListaTipoMoneda(string strDescripcion = "");
+        // Métodos para administrar los ajustes de inventario
         AjusteInventario AgregarAjusteInventario(AjusteInventario ajusteInventario);
         void ActualizarAjusteInventario(AjusteInventario ajusteInventario);
         void AnularAjusteInventario(int intIdAjusteInventario, int intIdUsuario);
         AjusteInventario ObtenerAjusteInventario(int intIdAjusteInventario);
         int ObtenerTotalListaAjustes(int intIdEmpresa, int intIdAjusteInventario = 0, string strDescripcion = "");
         IEnumerable<AjusteInventario> ObtenerListaAjustes(int intIdEmpresa, int numPagina, int cantRec, int intIdAjusteInventario = 0, string strDescripcion = "");
+        // Métodos para obtener parámetros generales del sistema
         IEnumerable<TipoIdentificacion> ObtenerListaTipoIdentificacion();
         IEnumerable<Modulo> ObtenerListaModulos();
         IEnumerable<CatalogoReporte> ObtenerListaReportes();
@@ -129,7 +135,72 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public void RegistrarDispositivo(string strIdentificacion, string strDispositivoId, string strCodigoUsuario, string strClave)
+        public IEnumerable<IdentificacionNombre> ObtenerListaEmpresasAdministrador()
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                var listaEmpresas = new List<IdentificacionNombre>();
+                try
+                {
+                    var listadoEmpresa = dbContext.EmpresaRepository.Select(x => new { x.Identificacion, x.NombreComercial });
+                    foreach (var value in listadoEmpresa)
+                    {
+                        IdentificacionNombre item = new IdentificacionNombre(value.Identificacion, value.NombreComercial);
+                        listaEmpresas.Add(item);
+                    }
+                    return listaEmpresas;
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al validar la lista de empresas para usuario administrador: ", ex);
+                    throw new Exception("Error al validar la lista de empresas para usuario administrador. . .");
+                }
+            }
+        }
+
+        public IEnumerable<IdentificacionNombre> ObtenerListaEmpresasPorDispositivo(string strDispositivoId)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                var listaEmpresas = new List<IdentificacionNombre>();
+                try
+                {
+                    var listadoEmpresa = dbContext.TerminalPorSucursalRepository.Include("Empresa").Where(x => x.Empresa.PermiteFacturar && x.ValorRegistro == strDispositivoId);
+                    foreach (TerminalPorSucursal value in listadoEmpresa)
+                    {
+                        IdentificacionNombre item = new IdentificacionNombre(value.Empresa.Identificacion, value.Empresa.NombreComercial);
+                        listaEmpresas.Add(item);
+                    }
+                    return listaEmpresas;
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al validar la lista de empresas por valor de registro: ", ex);
+                    throw new Exception("Error al validar la lista de empresas por valor de registro. . .");
+                }
+            }
+        }
+
+        public IEnumerable<SucursalPorEmpresa> ObtenerListaSucursalPorIdentificacion(string strIdentificacion)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    Empresa empresa = dbContext.EmpresaRepository.Where(x => x.Identificacion == strIdentificacion).FirstOrDefault();
+                    if (empresa == null) return new List<SucursalPorEmpresa>();
+                    var listadoSucursal = dbContext.SucursalPorEmpresaRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa).ToList();
+                    return listadoSucursal;
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al obtener el listado de sucursales por identificación: ", ex);
+                    throw new Exception("Error al obtener el listado de sucursales por identificación. . .");
+                }
+            }
+        }
+
+        public void RegistrarTerminal(string strCodigoUsuario, string strClave, string strIdentificacion, int intIdSucursal, int intIdTerminal, int intTipoDispositivo, string strDispositivoId)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -146,33 +217,19 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     if (empresa.TipoContrato == 2 && empresa.CantidadDisponible == 0) throw new BusinessException("El disponible de documentos electrónicos ya fue utilizado. Por favor, pongase en contacto con su proveedor del servicio.");
                     UsuarioPorEmpresa empresaUsuario = dbContext.UsuarioPorEmpresaRepository.Where(x => x.IdUsuario == usuario.IdUsuario && x.IdEmpresa == empresa.IdEmpresa).FirstOrDefault();
                     if (empresaUsuario == null) throw new BusinessException("El usuario ingresado no pertenece a la empresa con la identificación suministrada.");
-                    TerminalPorEmpresa terminal = dbContext.TerminalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa && x.IdTipoDispositivo == 1);
-                    if (terminal == null)
-                    {
-                        int maxTerminal = dbContext.TerminalPorEmpresaRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa && x.IdSucursal == 1).Select(c => c.IdTerminal).DefaultIfEmpty(0).Max();
-                        TerminalPorEmpresa newTerminal = new TerminalPorEmpresa();
-                        newTerminal.IdEmpresa = empresa.IdEmpresa;
-                        newTerminal.IdSucursal = 1;
-                        newTerminal.IdTerminal = maxTerminal + 1;
-                        newTerminal.NombreSucursal = "";
-                        newTerminal.Direccion = "";
-                        newTerminal.Telefono = "";
-                        newTerminal.ValorRegistro = strDispositivoId;
-                        newTerminal.ImpresoraFactura = "";
-                        newTerminal.UltimoDocFE = 0;
-                        newTerminal.UltimoDocNC = 0;
-                        newTerminal.UltimoDocND = 0;
-                        newTerminal.UltimoDocTE = 0;
-                        newTerminal.UltimoDocMR = 0;
-                        newTerminal.IdTipoDispositivo = 1;
-                        dbContext.TerminalPorEmpresaRepository.Add(newTerminal);
-                        dbContext.Commit();
-                    }
-                    else if (terminal.ValorRegistro != strDispositivoId)
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa && x.IdSucursal == intIdSucursal);
+                    if (sucursal == null) throw new BusinessException("La sucursal donde desea registrar su dispositivo o punto de venta no existe. Contacte a su proveedor.");
+                    TerminalPorSucursal terminal = dbContext.TerminalPorSucursalRepository.FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa && x.IdSucursal == intIdSucursal && x.IdTerminal == intIdTerminal && x.IdTipoDispositivo == intTipoDispositivo);
+                    if (terminal == null) throw new BusinessException("La terminal donde desea registrar su dispositivo o punto de venta no existe. Contacte a su proveedor.");
+                       
+                    if (terminal.ValorRegistro == "")
                     {
                         terminal.ValorRegistro = strDispositivoId;
                         dbContext.NotificarModificacion(terminal);
                         dbContext.Commit();
+                    } else
+                    {
+                        throw new BusinessException("La terminal donde desea registrar su punto de venta ya se encuentra registrada para otro punto de venta. Contacte a su proveedor.");
                     }
                 }
                 catch (BusinessException ex)
@@ -184,6 +241,64 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 {
                     log.Error("Error al registrar el dispositivo movil para la identificación suministrada: ", ex);
                     throw new Exception("Error al registrar el dispositivo movil para la identificación suministrada.");
+                }
+            }
+        }
+
+        public Empresa ValidarCredenciales(string strCodigoUsuario, string strClave, string strIdentificacion, string strValorRegistro)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    Usuario usuario = dbContext.UsuarioRepository.Include("RolePorUsuario.Role").FirstOrDefault(x => x.CodigoUsuario == strCodigoUsuario);
+                    if (usuario == null) throw new BusinessException("El código de usuario ingresado no se encuentra registrado. Contacte a su proveedor.");
+                    if (usuario.Clave != strClave) throw new BusinessException("Contraseña incorrecta. Verifique los credenciales suministrados.");
+                    Empresa empresa = dbContext.EmpresaRepository.Include("ModuloPorEmpresa.Modulo").Include("ReportePorEmpresa.CatalogoReporte").Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.Identificacion == strIdentificacion);
+                    if (!empresa.PermiteFacturar) throw new BusinessException("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (empresa.FechaVence < DateTime.Today) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
+                    if (empresa.TipoContrato == 2 && empresa.CantidadDisponible == 0) throw new BusinessException("El disponible de documentos electrónicos fue agotado. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (!empresa.RegimenSimplificado && empresa.Certificado == null) throw new BusinessException("La empresa no posee la llave criptográfica requerida. Por favor contacte con su proveedor del servicio.");
+                    if (!empresa.RegimenSimplificado && empresa.PinCertificado == "") throw new BusinessException("La empresa no posee el parámetro PIN de la llave criptográfica. Por favor contacte con su proveedor del servicio.");
+                    UsuarioPorEmpresa empresaUsuario = dbContext.UsuarioPorEmpresaRepository.Where(x => x.IdUsuario == usuario.IdUsuario && x.IdEmpresa == empresa.IdEmpresa).FirstOrDefault();
+                    if (usuario.IdUsuario > 1 && empresaUsuario == null) throw new BusinessException("El usuario ingresado no pertenece a la empresa suministrada.");
+                    TerminalPorSucursal terminal = null;
+                    if (strCodigoUsuario == "JASLOP")
+                    {
+                        terminal = dbContext.TerminalPorSucursalRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa).FirstOrDefault();
+                    }
+                    else
+                    {
+                        terminal = dbContext.TerminalPorSucursalRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa && x.ValorRegistro == strValorRegistro).FirstOrDefault();
+                    }
+                    if (terminal == null) throw new BusinessException("La terminal o dispositivo movil no se encuentra registrado para la empresa suministrada.");
+                    foreach (ModuloPorEmpresa modulo in empresa.ModuloPorEmpresa)
+                        modulo.Empresa = null;
+                    foreach (ReportePorEmpresa reporte in empresa.ReportePorEmpresa)
+                        reporte.Empresa = null;
+                    foreach (RolePorUsuario role in usuario.RolePorUsuario)
+                        role.Usuario = null;
+                    usuario.UsuarioPorEmpresa = new HashSet<UsuarioPorEmpresa>();
+                    if (terminal.IdTipoDispositivo == 1) empresa.Logotipo = null;
+                    terminal.Empresa = null;
+                    empresa.Certificado = null;
+                    empresa.AccessToken = null;
+                    empresa.RefreshToken = null;
+                    empresa.EmitedAt = null;
+                    empresa.ExpiresIn = null;
+                    empresa.RefreshExpiresIn = null;
+                    empresa.TerminalPorSucursal = terminal;
+                    empresa.Usuario = usuario;
+                    return empresa;
+                }
+                catch (BusinessException ex)
+                {
+                    throw ex;
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al eliminar el usuario: ", ex);
+                    throw new Exception("Error en la validación de los credenciales suministrados por favor verifique la información. . .");
                 }
             }
         }
@@ -227,6 +342,29 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 }
             }
             return strUltimaVersion;
+        }
+
+        public IEnumerable<EmpresaNombre> ObtenerListadoEmpresa()
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                var listaEmpresas = new List<EmpresaNombre>();
+                try
+                {
+                    var listadoEmpresa = dbContext.EmpresaRepository.Select(x => new { x.IdEmpresa, x.NombreComercial });
+                    foreach (var value in listadoEmpresa)
+                    {
+                        EmpresaNombre item = new EmpresaNombre(value.IdEmpresa, value.NombreComercial);
+                        listaEmpresas.Add(item);
+                    }
+                    return listaEmpresas;
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al validar la lista de empresas para usuario administrador: ", ex);
+                    throw new Exception("Error al validar la lista de empresas para usuario administrador. . .");
+                }
+            }
         }
 
         public Empresa AgregarEmpresa(Empresa empresa)
@@ -277,7 +415,6 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     byte[] certificado = dbContext.EmpresaRepository.AsNoTracking().Where(x => x.IdEmpresa == empresa.IdEmpresa).FirstOrDefault().Certificado;
                     List<ModuloPorEmpresa> listadoModuloPorEmpresa = empresa.ModuloPorEmpresa.OrderBy(o => o.IdModulo).ToList();
                     List<ReportePorEmpresa> listadoReportePorEmpresa = empresa.ReportePorEmpresa.OrderBy(o => o.IdReporte).ToList();
-                    empresa.TerminalPorEmpresa = null;
                     empresa.ModuloPorEmpresa = null;
                     empresa.ReportePorEmpresa = null;
                     empresa.Barrio = null;
@@ -306,47 +443,13 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public void ActualizarTerminalPorEmpresa(TerminalPorEmpresa terminal)
-        {
-            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
-            {
-                try
-                {
-                    TerminalPorEmpresa terminalLocal = dbContext.TerminalPorEmpresaRepository.Where(x => x.IdEmpresa == terminal.IdEmpresa & x.IdSucursal == terminal.IdSucursal & x.IdTerminal == terminal.IdTerminal).FirstOrDefault();
-                    if (terminalLocal != null)
-                    {
-                        terminalLocal.ValorRegistro = terminal.ValorRegistro;
-                        terminalLocal.ImpresoraFactura = terminal.ImpresoraFactura;
-                        terminalLocal.NombreSucursal = terminal.NombreSucursal;
-                        terminalLocal.Direccion = terminal.Direccion;
-                        terminalLocal.Telefono = terminal.Telefono;
-                        terminalLocal.UltimoDocFE = terminal.UltimoDocFE;
-                        terminalLocal.UltimoDocND = terminal.UltimoDocND;
-                        terminalLocal.UltimoDocNC = terminal.UltimoDocNC;
-                        terminalLocal.UltimoDocTE = terminal.UltimoDocTE;
-                        terminalLocal.UltimoDocMR = terminal.UltimoDocMR;
-                        dbContext.NotificarModificacion(terminalLocal);
-                    }
-                    else
-                        dbContext.TerminalPorEmpresaRepository.Add(terminal);
-                    dbContext.Commit();
-                }
-                catch (Exception ex)
-                {
-                    dbContext.RollBack();
-                    log.Error("Error al actualizar la empresa: ", ex);
-                    throw new Exception("Se produjo un error actualizando la información de la empresa. Por favor consulte con su proveedor.");
-                }
-            }
-        }
-
         public Empresa ObtenerEmpresa(int intIdEmpresa)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 try
                 {
-                    Empresa empresa = dbContext.EmpresaRepository.Include("ModuloPorEmpresa.Modulo").Include("ReportePorEmpresa.CatalogoReporte").Include("Barrio.Distrito.Canton.Provincia").Include("TerminalPorEmpresa").FirstOrDefault(x => x.IdEmpresa == intIdEmpresa);
+                    Empresa empresa = dbContext.EmpresaRepository.Include("ModuloPorEmpresa.Modulo").Include("ReportePorEmpresa.CatalogoReporte").Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.IdEmpresa == intIdEmpresa);
                     empresa.Certificado = null;
                     empresa.AccessToken = null;
                     empresa.RefreshToken = null;
@@ -357,100 +460,12 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                         modulo.Empresa = null;
                     foreach (ReportePorEmpresa reporte in empresa.ReportePorEmpresa)
                         reporte.Empresa = null;
-                    foreach (TerminalPorEmpresa terminal in empresa.TerminalPorEmpresa)
-                        terminal.Empresa = null;
                     return empresa;
                 }
                 catch (Exception ex)
                 {
                     log.Error("Error al obtener la empresa: ", ex);
                     throw new Exception("Se produjo un error consultando la información de la empresa. Por favor consulte con su proveedor.");
-                }
-            }
-        }
-
-        public TerminalPorEmpresa ObtenerTerminalPorEmpresa(int intIdEmpresa, int intIdSucursal, int intIdTerminal)
-        {
-            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
-            {
-                try
-                {
-                    TerminalPorEmpresa terminal = dbContext.TerminalPorEmpresaRepository.Where(x => x.IdEmpresa == intIdEmpresa & x.IdSucursal == intIdSucursal & x.IdTerminal == intIdTerminal).FirstOrDefault();
-                    return terminal;
-                }
-                catch (Exception ex)
-                {
-                    log.Error("Error al obtener la terminal por empresa: ", ex);
-                    throw new Exception("Se produjo un error consultando la información de la terminal por empresa. Por favor consulte con su proveedor.");
-                }
-            }
-        }
-
-        public IEnumerable<ListaEmpresa> ObtenerListaEmpresas()
-        {
-            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
-            {
-                var listaEmpresas = new List<ListaEmpresa>();
-                try
-                {
-                    var listadoEmpresa = dbContext.EmpresaRepository.Select(x => new { x.IdEmpresa, x.NombreComercial });
-                    foreach (var value in listadoEmpresa)
-                    {
-                        ListaEmpresa item = new ListaEmpresa(value.IdEmpresa, value.NombreComercial);
-                        listaEmpresas.Add(item);
-                    }
-                    return listaEmpresas;
-                }
-                catch (Exception ex)
-                {
-                    log.Error("Error al validar la lista de empresas por identificación: ", ex);
-                    throw new Exception("Error al validar la lista de empresas por identificación. . .");
-                }
-            }
-        }
-
-        public IEnumerable<IdentificacionNombre> ObtenerListaEmpresasAdministrador()
-        {
-            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
-            {
-                var listaEmpresas = new List<IdentificacionNombre>();
-                try
-                {
-                    var listadoEmpresa = dbContext.EmpresaRepository.Where(x => x.PermiteFacturar);
-                    foreach (Empresa value in listadoEmpresa)
-                    {
-                        IdentificacionNombre item = new IdentificacionNombre(value.Identificacion, value.NombreComercial);
-                        listaEmpresas.Add(item);
-                    }
-                    return listaEmpresas;
-                }
-                catch (Exception ex)
-                {
-                    log.Error("Error al validar la lista de empresas por identificación: ", ex);
-                    throw new Exception("Error al validar la lista de empresas por identificación. . .");
-                }
-            }
-        }
-
-        public IEnumerable<IdentificacionNombre> ObtenerListaEmpresasPorDispositivo(string strDispositivoID)
-        {
-            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
-            {
-                var listaEmpresas = new List<IdentificacionNombre>();
-                try
-                {
-                    var listadoEmpresa = dbContext.TerminalPorEmpresaRepository.Include("Empresa").Where(x => x.Empresa.PermiteFacturar && x.ValorRegistro == strDispositivoID);
-                    foreach (TerminalPorEmpresa value in listadoEmpresa)
-                    {
-                        IdentificacionNombre item = new IdentificacionNombre(value.Empresa.Identificacion, value.Empresa.NombreComercial);
-                        listaEmpresas.Add(item);
-                    }
-                    return listaEmpresas;
-                }
-                catch (Exception ex)
-                {
-                    log.Error("Error al validar la lista de empresas por identificación: ", ex);
-                    throw new Exception("Error al validar la lista de empresas por identificación. . .");
                 }
             }
         }
@@ -496,6 +511,77 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 {
                     log.Error("Error al actualizar el certificado de la empresa: ", ex);
                     throw new Exception("Se produjo un error registrando el certificado de la empresa. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public IEnumerable<SucursalPorEmpresa> ObtenerListaSucursalPorEmpresa(int intIdEmpresa)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    var listadoSucursal = dbContext.SucursalPorEmpresaRepository.Where(x => x.IdEmpresa == intIdEmpresa).ToList();
+                    return listadoSucursal;
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al obtener el listado de sucursales por empresa: ", ex);
+                    throw new Exception("Error al obtener el listado de sucursales por empresa. . .");
+                }
+            }
+        }
+
+        public void ActualizarSucursalPorEmpresa(SucursalPorEmpresa sucursal)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    dbContext.NotificarModificacion(sucursal);
+                    dbContext.Commit();
+                }
+                catch (Exception ex)
+                {
+                    dbContext.RollBack();
+                    log.Error("Error al actualizar la sucursal: ", ex);
+                    throw new Exception("Se produjo un error actualizando la información de la sucursal. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public IEnumerable<TerminalPorSucursal> ObtenerListaTerminalPorSucursal(int intIdEmpresa, int intIdSucursal, bool bolDisponibles = false)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    var listadoTerminal = dbContext.TerminalPorSucursalRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
+                    if (bolDisponibles) listadoTerminal = listadoTerminal.Where(x => x.ValorRegistro == "");
+                    return listadoTerminal.ToList();
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al obtener el listado de terminales por sucursal: ", ex);
+                    throw new Exception("Error al obtener el listado de terminales por sucursal. . .");
+                }
+            }
+        }
+
+        public void ActualizarTerminalPorSucursal(TerminalPorSucursal terminal)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    dbContext.NotificarModificacion(terminal);
+                    dbContext.Commit();
+                }
+                catch (Exception ex)
+                {
+                    dbContext.RollBack();
+                    log.Error("Error al actualizar la terminal: ", ex);
+                    throw new Exception("Se produjo un error actualizando la información de la terminal. Por favor consulte con su proveedor.");
                 }
             }
         }
@@ -641,64 +727,6 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public Empresa ValidarCredenciales(string strIdentificacion, string strValorRegistro, string strCodigoUsuario, string strClave)
-        {
-            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
-            {
-                try
-                {
-                    Usuario usuario = dbContext.UsuarioRepository.Include("RolePorUsuario.Role").FirstOrDefault(x => x.CodigoUsuario == strCodigoUsuario);
-                    if (usuario == null)  throw new BusinessException("El código de usuario ingresado no se encuentra registrado. Contacte a su proveedor.");
-                    if (usuario.Clave != strClave) throw new BusinessException("Contraseña incorrecta. Verifique los credenciales suministrados.");
-                    Empresa empresa = dbContext.EmpresaRepository.Include("ModuloPorEmpresa.Modulo").Include("ReportePorEmpresa.CatalogoReporte").Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.Identificacion == strIdentificacion);
-                    if (!empresa.PermiteFacturar) throw new BusinessException("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.FechaVence < DateTime.Today) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
-                    if (empresa.TipoContrato == 2 && empresa.CantidadDisponible == 0) throw new BusinessException("El disponible de documentos electrónicos fue agotado. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (!empresa.RegimenSimplificado && empresa.Certificado == null) throw new BusinessException("La empresa no posee la llave criptográfica requerida. Por favor contacte con su proveedor del servicio.");
-                    if (!empresa.RegimenSimplificado && empresa.PinCertificado == "") throw new BusinessException("La empresa no posee el parámetro PIN de la llave criptográfica. Por favor contacte con su proveedor del servicio.");
-                    UsuarioPorEmpresa empresaUsuario = dbContext.UsuarioPorEmpresaRepository.Where(x => x.IdUsuario == usuario.IdUsuario && x.IdEmpresa == empresa.IdEmpresa).FirstOrDefault();
-                    if (usuario.IdUsuario > 1 && empresaUsuario == null) throw new BusinessException("El usuario ingresado no pertenece a la empresa suministrada.");
-                    TerminalPorEmpresa terminal = null;
-                    if (strCodigoUsuario == "JASLOP")
-                    {
-                        terminal = dbContext.TerminalPorEmpresaRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa).FirstOrDefault();
-                    }
-                    else
-                    {
-                        terminal = dbContext.TerminalPorEmpresaRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa && x.ValorRegistro == strValorRegistro).FirstOrDefault();
-                    }
-                    if (terminal == null) throw new BusinessException("La terminal o dispositivo movil no se encuentra registrado para la empresa suministrada.");
-                    foreach (ModuloPorEmpresa modulo in empresa.ModuloPorEmpresa)
-                        modulo.Empresa = null;
-                    foreach (ReportePorEmpresa reporte in empresa.ReportePorEmpresa)
-                        reporte.Empresa = null;
-                    foreach (RolePorUsuario role in usuario.RolePorUsuario)
-                        role.Usuario = null;
-                    usuario.UsuarioPorEmpresa = new HashSet<UsuarioPorEmpresa>();
-                    if (terminal.IdTipoDispositivo == 1) empresa.Logotipo = null;
-                    terminal.Empresa = null;
-                    empresa.Certificado = null;
-                    empresa.AccessToken = null;
-                    empresa.RefreshToken = null;
-                    empresa.EmitedAt = null;
-                    empresa.ExpiresIn = null;
-                    empresa.RefreshExpiresIn = null;
-                    empresa.TerminalPorEmpresa.Add(terminal);
-                    empresa.Usuario = usuario;
-                    return empresa;
-                }
-                catch (BusinessException ex)
-                {
-                    throw ex;
-                }
-                catch (Exception ex)
-                {
-                    log.Error("Error al eliminar el usuario: ", ex);
-                    throw new Exception("Error en la validación de los credenciales suministrados por favor verifique la información. . .");
-                }
-            }
-        }
-
         public void EliminarUsuario(int intIdUsuario)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
@@ -770,7 +798,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             {
                 try
                 {
-                    var listaUsuariosPorEmpresa = dbContext.UsuarioPorEmpresaRepository.Include("Usuario").Where(x => x.IdEmpresa == intIdEmpresa & x.IdUsuario > 1);
+                    var listaUsuariosPorEmpresa = dbContext.UsuarioPorEmpresaRepository.Include("Usuario").Where(x => x.IdEmpresa == intIdEmpresa && x.IdUsuario > 1);
                     if (!strCodigo.Equals(string.Empty))
                         listaUsuariosPorEmpresa = listaUsuariosPorEmpresa.Where(x => x.Usuario.CodigoUsuario.Contains(strCodigo));
                     listaUsuariosPorEmpresa.OrderBy(x => x.Usuario.IdUsuario);
@@ -1095,7 +1123,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             {
                 try
                 {
-                    return dbContext.LineaRepository.Where(x => x.IdEmpresa == intIdEmpresa & x.IdTipoProducto == StaticTipoProducto.Producto).OrderBy(x => x.Descripcion).ToList();
+                    return dbContext.LineaRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdTipoProducto == StaticTipoProducto.Producto).OrderBy(x => x.Descripcion).ToList();
                 }
                 catch (Exception ex)
                 {
@@ -1111,7 +1139,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             {
                 try
                 {
-                    return dbContext.LineaRepository.Where(x => x.IdEmpresa == intIdEmpresa & x.IdTipoProducto == StaticTipoProducto.Servicio).OrderBy(x => x.Descripcion).ToList();
+                    return dbContext.LineaRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdTipoProducto == StaticTipoProducto.Servicio).OrderBy(x => x.Descripcion).ToList();
                 }
                 catch (Exception ex)
                 {
@@ -1211,7 +1239,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(producto.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    bool existe = dbContext.ProductoRepository.Where(x => x.IdEmpresa == producto.IdEmpresa & x.Codigo == producto.Codigo).Count() > 0;
+                    bool existe = dbContext.ProductoRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.Codigo == producto.Codigo).Count() > 0;
                     if (existe) throw new BusinessException("El código de producto ingresado ya está registrado en la empresa.");
                     dbContext.ProductoRepository.Add(producto);
                     dbContext.Commit();
@@ -1240,7 +1268,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     Empresa empresa = dbContext.EmpresaRepository.Find(producto.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
-                    bool existe = dbContext.ProductoRepository.Where(x => x.IdEmpresa == producto.IdEmpresa & x.Codigo == producto.Codigo & x.IdProducto != producto.IdProducto).Count() > 0;
+                    bool existe = dbContext.ProductoRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.Codigo == producto.Codigo && x.IdProducto != producto.IdProducto).Count() > 0;
                     if (existe) throw new BusinessException("El código de producto ingresado ya está registrado en la empresa.");
                     dbContext.NotificarModificacion(producto);
                     dbContext.Commit();
@@ -1360,7 +1388,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             {
                 try
                 {
-                    return dbContext.ProductoRepository.Include("ParametroImpuesto").Where(x => x.IdEmpresa == intIdEmpresa & x.Codigo.Equals(strCodigo)).FirstOrDefault();
+                    return dbContext.ProductoRepository.Include("ParametroImpuesto").Where(x => x.IdEmpresa == intIdEmpresa && x.Codigo.Equals(strCodigo)).FirstOrDefault();
                 }
                 catch (Exception ex)
                 {
@@ -1437,7 +1465,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             {
                 try
                 {
-                    var listaMovimientos = dbContext.MovimientoProductoRepository.Where(x => x.IdProducto == intIdProducto & x.Fecha > datFechaInicio & x.Fecha < datFechaFin);
+                    var listaMovimientos = dbContext.MovimientoProductoRepository.Where(x => x.IdProducto == intIdProducto && x.Fecha > datFechaInicio && x.Fecha < datFechaFin);
                     return listaMovimientos.Count();
                 }
                 catch (Exception ex)
@@ -1456,7 +1484,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             {
                 try
                 {
-                    var listaMovimientos = dbContext.MovimientoProductoRepository.Where(x => x.IdProducto == intIdProducto & x.Fecha >= datFechaInicio & x.Fecha <= datFechaFin);
+                    var listaMovimientos = dbContext.MovimientoProductoRepository.Where(x => x.IdProducto == intIdProducto && x.Fecha >= datFechaInicio && x.Fecha <= datFechaFin);
                     if (cantRec > 0)
                         return listaMovimientos.OrderByDescending(x => x.Fecha).Skip((numPagina - 1) * cantRec).Take(cantRec).ToList();
                     else
@@ -1795,7 +1823,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     if (strDescripcion == "")
                         return dbContext.TipoMonedaRepository.ToList();
                     else
-                        return dbContext.TipoMonedaRepository.Where(x => x.IdTipoMoneda > StaticValoresPorDefecto.MonedaDelSistema & x.Descripcion.Contains(strDescripcion)).ToList();
+                        return dbContext.TipoMonedaRepository.Where(x => x.IdTipoMoneda > StaticValoresPorDefecto.MonedaDelSistema && x.Descripcion.Contains(strDescripcion)).ToList();
                 }
                 catch (Exception ex)
                 {
@@ -1948,7 +1976,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     //            detalleAsiento = new DetalleAsiento();
                     //            intLineaDetalleAsiento += 1;
                     //            detalleAsiento.Linea = intLineaDetalleAsiento;
-                    //            bancoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.CuentaDeBancos & x.IdProducto == desglosePago.IdCuentaBanco).FirstOrDefault();
+                    //            bancoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.CuentaDeBancos && x.IdProducto == desglosePago.IdCuentaBanco).FirstOrDefault();
                     //            if (bancoParam == null)
                     //                throw new BusinessException("No existe parametrización contable para la cuenta bancaría " + desglosePago.IdCuentaBanco + " y no se puede continuar. Por favor verificar.");
                     //            detalleAsiento.IdCuenta = bancoParam.IdCuenta;
@@ -2023,7 +2051,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     //        intLineaDetalleAsiento += 1;
                     //        detalleAsiento.Linea = intLineaDetalleAsiento;
                     //        int intIdLinea = (int)data["IdLinea"];
-                    //        lineaParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.LineaDeServicios & x.IdProducto == intIdLinea).FirstOrDefault();
+                    //        lineaParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.LineaDeServicios && x.IdProducto == intIdLinea).FirstOrDefault();
                     //        if (lineaParam == null)
                     //            throw new BusinessException("No existe parametrización contable para la línea de servicios " + intIdLinea + " y no se puede continuar. Por favor verificar.");
                     //        detalleAsiento.IdCuenta = lineaParam.IdCuenta;
@@ -2048,7 +2076,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     //            intLineaDetalleAsiento += 1;
                     //            detalleAsiento.Linea = intLineaDetalleAsiento;
                     //            int intIdLinea = (int)data["IdLinea"];
-                    //            lineaParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.LineaDeProductos & x.IdProducto == intIdLinea).FirstOrDefault();
+                    //            lineaParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.LineaDeProductos && x.IdProducto == intIdLinea).FirstOrDefault();
                     //            if (lineaParam == null)
                     //                throw new BusinessException("No existe parametrización contable para la línea de producto " + intIdLinea + " y no se puede continuar. Por favor verificar.");
                     //            detalleAsiento.IdCuenta = lineaParam.IdCuenta;
@@ -2177,11 +2205,11 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             {
                 try
                 {
-                    var listaAjusteInventario = dbContext.AjusteInventarioRepository.Where(x => !x.Nulo & x.IdEmpresa == intIdEmpresa);
+                    var listaAjusteInventario = dbContext.AjusteInventarioRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa);
                     if (intIdAjusteInventario > 0)
-                        listaAjusteInventario = listaAjusteInventario.Where(x => !x.Nulo & x.IdAjuste == intIdAjusteInventario);
+                        listaAjusteInventario = listaAjusteInventario.Where(x => !x.Nulo && x.IdAjuste == intIdAjusteInventario);
                     else if (!strDescripcion.Equals(string.Empty))
-                        listaAjusteInventario = listaAjusteInventario.Where(x => !x.Nulo & x.IdEmpresa == intIdEmpresa & x.Descripcion.Contains(strDescripcion));
+                        listaAjusteInventario = listaAjusteInventario.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.Descripcion.Contains(strDescripcion));
                     return listaAjusteInventario.Count();
                 }
                 catch (Exception ex)
@@ -2198,11 +2226,11 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             {
                 try
                 {
-                    var listaAjusteInventario = dbContext.AjusteInventarioRepository.Where(x => !x.Nulo & x.IdEmpresa == intIdEmpresa);
+                    var listaAjusteInventario = dbContext.AjusteInventarioRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa);
                     if (intIdAjusteInventario > 0)
-                        listaAjusteInventario = listaAjusteInventario.Where(x => !x.Nulo & x.IdAjuste == intIdAjusteInventario);
+                        listaAjusteInventario = listaAjusteInventario.Where(x => !x.Nulo && x.IdAjuste == intIdAjusteInventario);
                     else if (!strDescripcion.Equals(string.Empty))
-                        listaAjusteInventario = listaAjusteInventario.Where(x => !x.Nulo & x.IdEmpresa == intIdEmpresa & x.Descripcion.Contains(strDescripcion));
+                        listaAjusteInventario = listaAjusteInventario.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.Descripcion.Contains(strDescripcion));
                     return listaAjusteInventario.OrderByDescending(x => x.IdAjuste).Skip((numPagina - 1) * cantRec).Take(cantRec).ToList();
                 }
                 catch (Exception ex)
@@ -2299,7 +2327,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             {
                 try
                 {
-                    return dbContext.DistritoRepository.Where(x => x.IdProvincia == intIdProvincia & x.IdCanton == intIdCanton).ToList();
+                    return dbContext.DistritoRepository.Where(x => x.IdProvincia == intIdProvincia && x.IdCanton == intIdCanton).ToList();
                 }
                 catch (Exception ex)
                 {
@@ -2315,7 +2343,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             {
                 try
                 {
-                    return dbContext.BarrioRepository.Where(x => x.IdProvincia == intIdProvincia & x.IdCanton == intIdCanton & x.IdDistrito == intIdDistrito).ToList();
+                    return dbContext.BarrioRepository.Where(x => x.IdProvincia == intIdProvincia && x.IdCanton == intIdCanton && x.IdDistrito == intIdDistrito).ToList();
                 }
                 catch (Exception ex)
                 {

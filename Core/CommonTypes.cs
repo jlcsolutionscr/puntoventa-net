@@ -509,13 +509,13 @@
         public string NombreComercial { get; set; }
     }
 
-    public class ListaEmpresa
+    public class EmpresaNombre
     {
-        public ListaEmpresa()
+        public EmpresaNombre()
         {
         }
 
-        public ListaEmpresa(int id, string nombre)
+        public EmpresaNombre(int id, string nombre)
         {
             IdEmpresa = id;
             NombreComercial = nombre;
