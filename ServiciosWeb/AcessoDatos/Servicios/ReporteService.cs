@@ -1536,40 +1536,58 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     List<ReporteEstadoResultados> listaReporte = new List<ReporteEstadoResultados>();
                     var grupoFacturasEmitidas = dbContext.DocumentoElectronicoRepository
                         .Where(a => a.IdEmpresa == intIdEmpresa && a.Fecha >= datFechaInicial && a.Fecha <= datFechaFinal && new[] { 1, 4 }.Any(s => s == a.IdTipoDocumento) && a.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado).ToList();
-                    decimal decTotalVentasExentas = 0;
-                    decimal decTotalVentasGrabadas = 0;
-                    decimal decTotalVentasExoneradas = 0;
+                    decimal decTotalVentasBienesGrabadas = 0;
+                    decimal decTotalVentasBienesExentas = 0;
+                    decimal decTotalVentasBienesExoneradas = 0;
+                    decimal decTotalVentasServiciosGrabados = 0;
+                    decimal decTotalVentasServiciosExentos = 0;
+                    decimal decTotalVentasServiciosExonerados = 0;
                     foreach (var documento in grupoFacturasEmitidas)
                     {
                         string datosXml = Encoding.Default.GetString(documento.DatosDocumento);
                         XmlDocument documentoXml = new XmlDocument();
                         documentoXml.LoadXml(datosXml);
-                        decimal decTotalPorLineaExcento = 0;
-                        decimal decTotalPorLineaGrabado = 0;
-                        decimal decTotalPorLineaExonerado = 0;
+                        decimal decVentasBienesGrabado = 0;
+                        decimal decVentasBienesExcento = 0;
+                        decimal decVentasBienesExonerado = 0;
+                        decimal decVentasServiciosGrabado = 0;
+                        decimal decVentasServiciosExcento = 0;
+                        decimal decVentasServiciosExonerado = 0;
                         decimal decTipoDeCambio = 1;
                         string strCodigoMoneda = "CRC";
-                        if (documentoXml.GetElementsByTagName("TotalExento").Count > 0)
-                            decTotalPorLineaExcento = decimal.Parse(documentoXml.GetElementsByTagName("TotalExento").Item(0).InnerText, CultureInfo.InvariantCulture);
-                        if (documentoXml.GetElementsByTagName("TotalGravado").Count > 0)
-                            decTotalPorLineaGrabado = decimal.Parse(documentoXml.GetElementsByTagName("TotalGravado").Item(0).InnerText, CultureInfo.InvariantCulture);
-                        if (documentoXml.GetElementsByTagName("TotalExonerado").Count > 0)
-                            decTotalPorLineaExonerado = decimal.Parse(documentoXml.GetElementsByTagName("TotalExonerado").Item(0).InnerText, CultureInfo.InvariantCulture);
+                        if (documentoXml.GetElementsByTagName("TotalMercanciasGravadas").Count > 0)
+                            decVentasBienesGrabado = decimal.Parse(documentoXml.GetElementsByTagName("TotalMercanciasGravadas").Item(0).InnerText, CultureInfo.InvariantCulture);
+                        if (documentoXml.GetElementsByTagName("TotalMercanciasExentas").Count > 0)
+                            decVentasBienesExcento = decimal.Parse(documentoXml.GetElementsByTagName("TotalMercanciasExentas").Item(0).InnerText, CultureInfo.InvariantCulture);
+                        if (documentoXml.GetElementsByTagName("TotalMercExonerada").Count > 0)
+                            decVentasBienesExonerado = decimal.Parse(documentoXml.GetElementsByTagName("TotalMercExonerada").Item(0).InnerText, CultureInfo.InvariantCulture);
+                        if (documentoXml.GetElementsByTagName("TotalServGravados").Count > 0)
+                            decVentasServiciosGrabado = decimal.Parse(documentoXml.GetElementsByTagName("TotalServGravados").Item(0).InnerText, CultureInfo.InvariantCulture);
+                        if (documentoXml.GetElementsByTagName("TotalServExentos").Count > 0)
+                            decVentasServiciosExcento = decimal.Parse(documentoXml.GetElementsByTagName("TotalServExentos").Item(0).InnerText, CultureInfo.InvariantCulture);
+                        if (documentoXml.GetElementsByTagName("TotalServExonerado").Count > 0)
+                            decVentasServiciosExonerado = decimal.Parse(documentoXml.GetElementsByTagName("TotalServExonerado").Item(0).InnerText, CultureInfo.InvariantCulture);
                         if (documentoXml.GetElementsByTagName("TipoCambio").Count > 0)
                             decTipoDeCambio = decimal.Parse(documentoXml.GetElementsByTagName("TipoCambio").Item(0).InnerText, CultureInfo.InvariantCulture);
                         if (documentoXml.GetElementsByTagName("CodigoMoneda").Count > 0)
                             strCodigoMoneda = documentoXml.GetElementsByTagName("CodigoMoneda").Item(0).InnerText;
                         if (strCodigoMoneda != "CRC")
                         {
-                            decTotalVentasExentas += decTotalPorLineaExcento * decTipoDeCambio;
-                            decTotalVentasGrabadas += decTotalPorLineaGrabado * decTipoDeCambio;
-                            decTotalVentasExoneradas += decTotalPorLineaExonerado * decTipoDeCambio;
+                            decTotalVentasBienesGrabadas += decVentasBienesGrabado * decTipoDeCambio;
+                            decTotalVentasBienesExentas += decVentasBienesExcento * decTipoDeCambio;
+                            decTotalVentasBienesExoneradas += decVentasBienesExonerado * decTipoDeCambio;
+                            decTotalVentasServiciosGrabados += decVentasServiciosGrabado * decTipoDeCambio;
+                            decTotalVentasServiciosExentos += decVentasServiciosExcento * decTipoDeCambio;
+                            decTotalVentasServiciosExonerados += decVentasServiciosExonerado * decTipoDeCambio;
                         }
                         else
                         {
-                            decTotalVentasExentas += decTotalPorLineaExcento;
-                            decTotalVentasGrabadas += decTotalPorLineaGrabado;
-                            decTotalVentasExoneradas += decTotalPorLineaExonerado;
+                            decTotalVentasBienesGrabadas += decVentasBienesGrabado;
+                            decTotalVentasBienesExentas += decVentasBienesExcento;
+                            decTotalVentasBienesExoneradas += decVentasBienesExonerado;
+                            decTotalVentasServiciosGrabados += decVentasServiciosGrabado;
+                            decTotalVentasServiciosExentos += decVentasServiciosExcento;
+                            decTotalVentasServiciosExonerados += decVentasServiciosExonerado;
                         }
                     }
 
@@ -1580,55 +1598,89 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                         string datosXml = Encoding.Default.GetString(documento.DatosDocumento);
                         XmlDocument documentoXml = new XmlDocument();
                         documentoXml.LoadXml(datosXml);
-                        decimal decTotalPorLineaExcento = 0;
-                        decimal decTotalPorLineaGrabado = 0;
-                        decimal decTotalPorLineaExonerado = 0;
+                        decimal decVentasBienesGrabado = 0;
+                        decimal decVentasBienesExcento = 0;
+                        decimal decVentasBienesExonerado = 0;
+                        decimal decVentasServiciosGrabado = 0;
+                        decimal decVentasServiciosExcento = 0;
+                        decimal decVentasServiciosExonerado = 0;
                         decimal decTipoDeCambio = 1;
                         string strCodigoMoneda = "CRC";
-                        if (documentoXml.GetElementsByTagName("TotalExento").Count > 0)
-                            decTotalPorLineaExcento = decimal.Parse(documentoXml.GetElementsByTagName("TotalExento").Item(0).InnerText, CultureInfo.InvariantCulture);
-                        if (documentoXml.GetElementsByTagName("TotalGravado").Count > 0)
-                            decTotalPorLineaGrabado = decimal.Parse(documentoXml.GetElementsByTagName("TotalGravado").Item(0).InnerText, CultureInfo.InvariantCulture);
-                        if (documentoXml.GetElementsByTagName("TotalExonerado").Count > 0)
-                            decTotalPorLineaExonerado = decimal.Parse(documentoXml.GetElementsByTagName("TotalExonerado").Item(0).InnerText, CultureInfo.InvariantCulture);
+                        if (documentoXml.GetElementsByTagName("TotalMercanciasGravadas").Count > 0)
+                            decVentasBienesGrabado = decimal.Parse(documentoXml.GetElementsByTagName("TotalMercanciasGravadas").Item(0).InnerText, CultureInfo.InvariantCulture);
+                        if (documentoXml.GetElementsByTagName("TotalMercanciasExentas").Count > 0)
+                            decVentasBienesExcento = decimal.Parse(documentoXml.GetElementsByTagName("TotalMercanciasExentas").Item(0).InnerText, CultureInfo.InvariantCulture);
+                        if (documentoXml.GetElementsByTagName("TotalMercExonerada").Count > 0)
+                            decVentasBienesExonerado = decimal.Parse(documentoXml.GetElementsByTagName("TotalMercExonerada").Item(0).InnerText, CultureInfo.InvariantCulture);
+                        if (documentoXml.GetElementsByTagName("TotalServGravados").Count > 0)
+                            decVentasServiciosGrabado = decimal.Parse(documentoXml.GetElementsByTagName("TotalServGravados").Item(0).InnerText, CultureInfo.InvariantCulture);
+                        if (documentoXml.GetElementsByTagName("TotalServExentos").Count > 0)
+                            decVentasServiciosExcento = decimal.Parse(documentoXml.GetElementsByTagName("TotalServExentos").Item(0).InnerText, CultureInfo.InvariantCulture);
+                        if (documentoXml.GetElementsByTagName("TotalServExonerado").Count > 0)
+                            decVentasServiciosExonerado = decimal.Parse(documentoXml.GetElementsByTagName("TotalServExonerado").Item(0).InnerText, CultureInfo.InvariantCulture);
                         if (documentoXml.GetElementsByTagName("TipoCambio").Count > 0)
                             decTipoDeCambio = decimal.Parse(documentoXml.GetElementsByTagName("TipoCambio").Item(0).InnerText, CultureInfo.InvariantCulture);
                         if (documentoXml.GetElementsByTagName("CodigoMoneda").Count > 0)
                             strCodigoMoneda = documentoXml.GetElementsByTagName("CodigoMoneda").Item(0).InnerText;
                         if (strCodigoMoneda != "CRC")
                         {
-                            decTotalVentasExentas -= decTotalPorLineaExcento * decTipoDeCambio;
-                            decTotalVentasGrabadas -= decTotalPorLineaGrabado * decTipoDeCambio;
-                            decTotalVentasExoneradas -= decTotalPorLineaExonerado * decTipoDeCambio;
+                            decTotalVentasBienesGrabadas -= decVentasBienesGrabado * decTipoDeCambio;
+                            decTotalVentasBienesExentas -= decVentasBienesExcento * decTipoDeCambio;
+                            decTotalVentasBienesExoneradas -= decVentasBienesExonerado * decTipoDeCambio;
+                            decTotalVentasServiciosGrabados -= decVentasServiciosGrabado * decTipoDeCambio;
+                            decTotalVentasServiciosExentos -= decVentasServiciosExcento * decTipoDeCambio;
+                            decTotalVentasServiciosExonerados -= decVentasServiciosExonerado * decTipoDeCambio;
                         }
                         else
                         {
-                            decTotalVentasExentas -= decTotalPorLineaExcento;
-                            decTotalVentasGrabadas -= decTotalPorLineaGrabado;
-                            decTotalVentasExoneradas -= decTotalPorLineaExonerado;
+                            decTotalVentasBienesGrabadas -= decVentasBienesGrabado;
+                            decTotalVentasBienesExentas -= decVentasBienesExcento;
+                            decTotalVentasBienesExoneradas -= decVentasBienesExonerado;
+                            decTotalVentasServiciosGrabados -= decVentasServiciosGrabado;
+                            decTotalVentasServiciosExentos -= decVentasServiciosExcento;
+                            decTotalVentasServiciosExonerados -= decVentasServiciosExonerado;
                         }
                     }
                     ReporteEstadoResultados reporteLinea = new ReporteEstadoResultados();
-                    reporteLinea.NombreTipoRegistro = "Ventas excentas por facturas electrónicas emitidas";
-                    reporteLinea.Descripcion = "Ventas excentas por facturas electrónicas emitidas";
-                    reporteLinea.Valor = decTotalVentasExentas > 0 ? decTotalVentasExentas : 0;
-                    listaReporte.Add(reporteLinea);
-                    reporteLinea = new ReporteEstadoResultados();
-                    reporteLinea.NombreTipoRegistro = "Ventas grabadas al 13% por facturas electrónicas emitidas";
+                    reporteLinea.NombreTipoRegistro = "Ventas de mercancias grabadas al 13% por facturas electrónicas emitidas";
                     reporteLinea.Descripcion = "Ventas grabadas por facturas electrónicas emitidas";
-                    reporteLinea.Valor = decTotalVentasGrabadas > 0 ? decTotalVentasGrabadas : 0;
+                    reporteLinea.Valor = decTotalVentasBienesGrabadas > 0 ? decTotalVentasBienesGrabadas : 0;
                     listaReporte.Add(reporteLinea);
                     reporteLinea = new ReporteEstadoResultados();
-                    reporteLinea.NombreTipoRegistro = "Ventas exoneradas facturas electrónicas emitidas";
+                    reporteLinea.NombreTipoRegistro = "Ventas de mercancias excentas por facturas electrónicas emitidas";
+                    reporteLinea.Descripcion = "Ventas excentas por facturas electrónicas emitidas";
+                    reporteLinea.Valor = decTotalVentasBienesExentas > 0 ? decTotalVentasBienesExentas : 0;
+                    listaReporte.Add(reporteLinea);
+                    reporteLinea = new ReporteEstadoResultados();
+                    reporteLinea.NombreTipoRegistro = "Ventas de mercancias exoneradas facturas electrónicas emitidas";
                     reporteLinea.Descripcion = "Ventas exoneradas facturas electrónicas emitidas";
-                    reporteLinea.Valor = decTotalVentasExoneradas > 0 ? decTotalVentasExoneradas : 0;
+                    reporteLinea.Valor = decTotalVentasBienesExoneradas > 0 ? decTotalVentasBienesExoneradas : 0;
+                    listaReporte.Add(reporteLinea);
+                    reporteLinea = new ReporteEstadoResultados();
+                    reporteLinea.NombreTipoRegistro = "Ventas de servicios grabados facturas electrónicas emitidas";
+                    reporteLinea.Descripcion = "Ventas exoneradas facturas electrónicas emitidas";
+                    reporteLinea.Valor = decTotalVentasServiciosGrabados > 0 ? decTotalVentasServiciosGrabados : 0;
+                    listaReporte.Add(reporteLinea);
+                    reporteLinea = new ReporteEstadoResultados();
+                    reporteLinea.NombreTipoRegistro = "Ventas de servicios excentos facturas electrónicas emitidas";
+                    reporteLinea.Descripcion = "Ventas exoneradas facturas electrónicas emitidas";
+                    reporteLinea.Valor = decTotalVentasServiciosExentos > 0 ? decTotalVentasServiciosExentos : 0;
+                    listaReporte.Add(reporteLinea);
+                    reporteLinea = new ReporteEstadoResultados();
+                    reporteLinea.NombreTipoRegistro = "Ventas de servicios exonerados facturas electrónicas emitidas";
+                    reporteLinea.Descripcion = "Ventas exoneradas facturas electrónicas emitidas";
+                    reporteLinea.Valor = decTotalVentasServiciosExonerados > 0 ? decTotalVentasServiciosExonerados : 0;
                     listaReporte.Add(reporteLinea);
 
                     var grupoFacturasRecibidas = dbContext.DocumentoElectronicoRepository
                         .Where(a => a.IdEmpresa == intIdEmpresa && a.Fecha >= datFechaInicial && a.Fecha <= datFechaFinal && a.IdTipoDocumento == 5 && a.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado).ToList();
-                    decimal decTotalComprasExentas = 0;
-                    decimal decTotalComprasGravadas = 0;
-                    decimal decTotalComprasExoneradas = 0;
+                    decimal decTotalComprasBienesGravadas = 0;
+                    decimal decTotalComprasBienesExentas = 0;
+                    decimal decTotalComprasBienesExoneradas = 0;
+                    decimal decTotalComprasServiciosGravados = 0;
+                    decimal decTotalComprasServiciosExentos = 0;
+                    decimal decTotalComprasServiciosExonerados = 0;
+                    decimal decTotalImpuestosCompras = 0;
                     decimal decTotalDescuentosCompras = 0;
                     foreach (var documento in grupoFacturasRecibidas)
                     {
@@ -1637,21 +1689,32 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                             string datosXml = Encoding.Default.GetString(documento.DatosDocumentoOri);
                             XmlDocument documentoXml = new XmlDocument();
                             documentoXml.LoadXml(datosXml);
-                            decimal decComprasExentas = 0;
-                            decimal decComprasGravadas = 0;
-                            decimal decComprasExoneradas = 0;
-                            decimal decDescuentosCompras = 0;
+                            decimal decComprasBienesGrabado = 0;
+                            decimal decComprasBienesExcento = 0;
+                            decimal decComprasBienesExonerado = 0;
+                            decimal decComprasServiciosGrabado = 0;
+                            decimal decComprasServiciosExcento = 0;
+                            decimal decComprasServiciosExonerado = 0;
+                            decimal decImpuestos = 0;
+                            decimal decDescuentos = 0;
                             decimal decTipoDeCambio = 1;
                             string strCodigoMoneda = "CRC";
-
-                            if (documentoXml.GetElementsByTagName("TotalExento").Count > 0)
-                                decComprasExentas = decimal.Parse(documentoXml.GetElementsByTagName("TotalExento").Item(0).InnerText, CultureInfo.InvariantCulture);
-                            if (documentoXml.GetElementsByTagName("TotalGravado").Count > 0)
-                                decComprasGravadas = decimal.Parse(documentoXml.GetElementsByTagName("TotalGravado").Item(0).InnerText, CultureInfo.InvariantCulture);
-                            if (documentoXml.GetElementsByTagName("TotalExonerado").Count > 0)
-                                decComprasExoneradas = decimal.Parse(documentoXml.GetElementsByTagName("TotalExonerado").Item(0).InnerText, CultureInfo.InvariantCulture);
+                            if (documentoXml.GetElementsByTagName("TotalMercanciasGravadas").Count > 0)
+                                decComprasBienesGrabado = decimal.Parse(documentoXml.GetElementsByTagName("TotalMercanciasGravadas").Item(0).InnerText, CultureInfo.InvariantCulture);
+                            if (documentoXml.GetElementsByTagName("TotalMercanciasExentas").Count > 0)
+                                decComprasBienesExcento = decimal.Parse(documentoXml.GetElementsByTagName("TotalMercanciasExentas").Item(0).InnerText, CultureInfo.InvariantCulture);
+                            if (documentoXml.GetElementsByTagName("TotalMercExonerada").Count > 0)
+                                decComprasBienesExonerado = decimal.Parse(documentoXml.GetElementsByTagName("TotalMercExonerada").Item(0).InnerText, CultureInfo.InvariantCulture);
+                            if (documentoXml.GetElementsByTagName("TotalServGravados").Count > 0)
+                                decComprasServiciosGrabado = decimal.Parse(documentoXml.GetElementsByTagName("TotalServGravados").Item(0).InnerText, CultureInfo.InvariantCulture);
+                            if (documentoXml.GetElementsByTagName("TotalServExentos").Count > 0)
+                                decComprasServiciosExcento = decimal.Parse(documentoXml.GetElementsByTagName("TotalServExentos").Item(0).InnerText, CultureInfo.InvariantCulture);
+                            if (documentoXml.GetElementsByTagName("TotalServExonerado").Count > 0)
+                                decComprasServiciosExonerado = decimal.Parse(documentoXml.GetElementsByTagName("TotalServExonerado").Item(0).InnerText, CultureInfo.InvariantCulture);
+                            if (documentoXml.GetElementsByTagName("TotalImpuesto").Count > 0)
+                                decImpuestos = decimal.Parse(documentoXml.GetElementsByTagName("TotalImpuesto").Item(0).InnerText, CultureInfo.InvariantCulture);
                             if (documentoXml.GetElementsByTagName("TotalDescuentos").Count > 0)
-                                decDescuentosCompras = decimal.Parse(documentoXml.GetElementsByTagName("TotalDescuentos").Item(0).InnerText, CultureInfo.InvariantCulture);
+                                decDescuentos = decimal.Parse(documentoXml.GetElementsByTagName("TotalDescuentos").Item(0).InnerText, CultureInfo.InvariantCulture);
                             if (documentoXml.GetElementsByTagName("TipoCambio").Count > 0)
                                 decTipoDeCambio = decimal.Parse(documentoXml.GetElementsByTagName("TipoCambio").Item(0).InnerText, CultureInfo.InvariantCulture);
                             if (documentoXml.GetElementsByTagName("CodigoMoneda").Count > 0)
@@ -1660,34 +1723,50 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                             {
                                 if (documentoXml.DocumentElement.Name != "NotaCreditoElectronica")
                                 {
-                                    decTotalComprasExentas += decComprasExentas * decTipoDeCambio;
-                                    decTotalComprasGravadas += decComprasGravadas * decTipoDeCambio;
-                                    decTotalComprasExoneradas += decComprasExoneradas * decTipoDeCambio;
-                                    decTotalDescuentosCompras += decDescuentosCompras * decTipoDeCambio;
+                                    decTotalComprasBienesGravadas += decComprasBienesGrabado * decTipoDeCambio;
+                                    decTotalComprasBienesExentas += decComprasBienesExcento * decTipoDeCambio;
+                                    decTotalComprasBienesExoneradas += decComprasBienesExonerado * decTipoDeCambio;
+                                    decTotalComprasServiciosGravados += decComprasServiciosGrabado * decTipoDeCambio;
+                                    decTotalComprasServiciosExentos += decComprasServiciosExcento * decTipoDeCambio;
+                                    decTotalComprasServiciosExonerados += decComprasServiciosExonerado * decTipoDeCambio;
+                                    decTotalImpuestosCompras += decImpuestos * decTipoDeCambio;
+                                    decTotalDescuentosCompras += decDescuentos * decTipoDeCambio;
                                 }
                                 else
                                 {
-                                    decTotalComprasExentas -= decComprasExentas * decTipoDeCambio;
-                                    decTotalComprasGravadas -= decComprasGravadas * decTipoDeCambio;
-                                    decTotalComprasExoneradas -= decComprasExoneradas * decTipoDeCambio;
-                                    decTotalDescuentosCompras -= decDescuentosCompras * decTipoDeCambio;
+                                    decTotalComprasBienesGravadas -= decComprasBienesGrabado * decTipoDeCambio;
+                                    decTotalComprasBienesExentas -= decComprasBienesExcento * decTipoDeCambio;
+                                    decTotalComprasBienesExoneradas -= decComprasBienesExonerado * decTipoDeCambio;
+                                    decTotalComprasServiciosGravados -= decComprasServiciosGrabado * decTipoDeCambio;
+                                    decTotalComprasServiciosExentos -= decComprasServiciosExcento * decTipoDeCambio;
+                                    decTotalComprasServiciosExonerados -= decComprasServiciosExonerado * decTipoDeCambio;
+                                    decTotalImpuestosCompras -= decImpuestos * decTipoDeCambio;
+                                    decTotalDescuentosCompras -= decDescuentos * decTipoDeCambio;
                                 }
                             }
                             else
                             {
                                 if (documentoXml.DocumentElement.Name != "NotaCreditoElectronica")
                                 {
-                                    decTotalComprasExentas += decComprasExentas;
-                                    decTotalComprasGravadas += decComprasGravadas;
-                                    decTotalComprasExoneradas += decComprasExoneradas;
-                                    decTotalDescuentosCompras += decDescuentosCompras;
+                                    decTotalComprasBienesGravadas += decComprasBienesGrabado;
+                                    decTotalComprasBienesExentas += decComprasBienesExcento;
+                                    decTotalComprasBienesExoneradas += decComprasBienesExonerado;
+                                    decTotalComprasServiciosGravados += decComprasServiciosGrabado;
+                                    decTotalComprasServiciosExentos += decComprasServiciosExcento;
+                                    decTotalComprasServiciosExonerados += decComprasServiciosExonerado;
+                                    decTotalImpuestosCompras += decImpuestos;
+                                    decTotalDescuentosCompras += decDescuentos;
                                 }
                                 else
                                 {
-                                    decTotalComprasExentas -= decComprasExentas;
-                                    decTotalComprasGravadas -= decComprasGravadas;
-                                    decTotalComprasExoneradas -= decComprasExoneradas;
-                                    decTotalDescuentosCompras -= decDescuentosCompras;
+                                    decTotalComprasBienesGravadas -= decComprasBienesGrabado;
+                                    decTotalComprasBienesExentas -= decComprasBienesExcento;
+                                    decTotalComprasBienesExoneradas -= decComprasBienesExonerado;
+                                    decTotalComprasServiciosGravados -= decComprasServiciosGrabado;
+                                    decTotalComprasServiciosExentos -= decComprasServiciosExcento;
+                                    decTotalComprasServiciosExonerados -= decComprasServiciosExonerado;
+                                    decTotalImpuestosCompras -= decImpuestos;
+                                    decTotalDescuentosCompras -= decDescuentos;
                                 }
                             }
                         }
@@ -1704,28 +1783,48 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                                 decImpuestoPorLinea = decimal.Parse(documentoXml.GetElementsByTagName("MontoTotalImpuesto").Item(0).InnerText, CultureInfo.InvariantCulture);
                             if (decImpuestoPorLinea > 0)
                             {
-                                decTotalComprasGravadas += (decTotalPorLinea - decImpuestoPorLinea);
+                                decTotalComprasBienesGravadas += (decTotalPorLinea - decImpuestoPorLinea);
                             }
                             else
                             {
-                                decTotalComprasExentas += decTotalPorLinea;
+                                decTotalComprasBienesExentas += decTotalPorLinea;
                             }
                         }
                     }
                     reporteLinea = new ReporteEstadoResultados();
-                    reporteLinea.NombreTipoRegistro = "Compras exentas por documentos electrónicos aceptados";
-                    reporteLinea.Descripcion = "Compras exentas por documentos electrónicos aceptados";
-                    reporteLinea.Valor = decTotalComprasExentas;
-                    listaReporte.Add(reporteLinea);
-                    reporteLinea = new ReporteEstadoResultados();
-                    reporteLinea.NombreTipoRegistro = "Compras gravadas al 13% por documentos electrónicos aceptados";
+                    reporteLinea.NombreTipoRegistro = "Compra de bienes gravadas al 13% por documentos electrónicos aceptados";
                     reporteLinea.Descripcion = "Compras gravadas por documentos electrónicos aceptados";
-                    reporteLinea.Valor = decTotalComprasGravadas;
+                    reporteLinea.Valor = decTotalComprasBienesGravadas;
                     listaReporte.Add(reporteLinea);
                     reporteLinea = new ReporteEstadoResultados();
-                    reporteLinea.NombreTipoRegistro = "Compras exoneradas por documentos electrónicos aceptados";
+                    reporteLinea.NombreTipoRegistro = "Compra de bienes exentas por documentos electrónicos aceptados";
+                    reporteLinea.Descripcion = "Compras exentas por documentos electrónicos aceptados";
+                    reporteLinea.Valor = decTotalComprasBienesExentas;
+                    listaReporte.Add(reporteLinea);
+                    reporteLinea = new ReporteEstadoResultados();
+                    reporteLinea.NombreTipoRegistro = "Compra de bienes exoneradas por documentos electrónicos aceptados";
                     reporteLinea.Descripcion = "Compras exoneradas por documentos electrónicos aceptados";
-                    reporteLinea.Valor = decTotalComprasExoneradas;
+                    reporteLinea.Valor = decTotalComprasBienesExoneradas;
+                    listaReporte.Add(reporteLinea);
+                    reporteLinea = new ReporteEstadoResultados();
+                    reporteLinea.NombreTipoRegistro = "Compra de servicios gravados al 13% por documentos electrónicos aceptados";
+                    reporteLinea.Descripcion = "Compras gravadas por documentos electrónicos aceptados";
+                    reporteLinea.Valor = decTotalComprasServiciosGravados;
+                    listaReporte.Add(reporteLinea);
+                    reporteLinea = new ReporteEstadoResultados();
+                    reporteLinea.NombreTipoRegistro = "Compra de servicios exentos por documentos electrónicos aceptados";
+                    reporteLinea.Descripcion = "Compras exentas por documentos electrónicos aceptados";
+                    reporteLinea.Valor = decTotalComprasServiciosExentos;
+                    listaReporte.Add(reporteLinea);
+                    reporteLinea = new ReporteEstadoResultados();
+                    reporteLinea.NombreTipoRegistro = "Compra de servicios exonerados por documentos electrónicos aceptados";
+                    reporteLinea.Descripcion = "Compras exoneradas por documentos electrónicos aceptados";
+                    reporteLinea.Valor = decTotalComprasServiciosExonerados;
+                    listaReporte.Add(reporteLinea);
+                    reporteLinea = new ReporteEstadoResultados();
+                    reporteLinea.NombreTipoRegistro = "Impuestos sobre compras de documentos electrónicos aceptados";
+                    reporteLinea.Descripcion = "Descuentos sobre compras de documentos electrónicos aceptados";
+                    reporteLinea.Valor = decTotalImpuestosCompras;
                     listaReporte.Add(reporteLinea);
                     reporteLinea = new ReporteEstadoResultados();
                     reporteLinea.NombreTipoRegistro = "Descuentos sobre compras de documentos electrónicos aceptados";
