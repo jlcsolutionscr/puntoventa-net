@@ -1680,7 +1680,6 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     decimal decTotalComprasServiciosGravados = 0;
                     decimal decTotalComprasServiciosExentos = 0;
                     decimal decTotalComprasServiciosExonerados = 0;
-                    decimal decTotalImpuestosCompras = 0;
                     decimal decTotalDescuentosCompras = 0;
                     foreach (var documento in grupoFacturasRecibidas)
                     {
@@ -1695,7 +1694,6 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                             decimal decComprasServiciosGrabado = 0;
                             decimal decComprasServiciosExcento = 0;
                             decimal decComprasServiciosExonerado = 0;
-                            decimal decImpuestos = 0;
                             decimal decDescuentos = 0;
                             decimal decTipoDeCambio = 1;
                             string strCodigoMoneda = "CRC";
@@ -1711,8 +1709,6 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                                 decComprasServiciosExcento = decimal.Parse(documentoXml.GetElementsByTagName("TotalServExentos").Item(0).InnerText, CultureInfo.InvariantCulture);
                             if (documentoXml.GetElementsByTagName("TotalServExonerado").Count > 0)
                                 decComprasServiciosExonerado = decimal.Parse(documentoXml.GetElementsByTagName("TotalServExonerado").Item(0).InnerText, CultureInfo.InvariantCulture);
-                            if (documentoXml.GetElementsByTagName("TotalImpuesto").Count > 0)
-                                decImpuestos = decimal.Parse(documentoXml.GetElementsByTagName("TotalImpuesto").Item(0).InnerText, CultureInfo.InvariantCulture);
                             if (documentoXml.GetElementsByTagName("TotalDescuentos").Count > 0)
                                 decDescuentos = decimal.Parse(documentoXml.GetElementsByTagName("TotalDescuentos").Item(0).InnerText, CultureInfo.InvariantCulture);
                             if (documentoXml.GetElementsByTagName("TipoCambio").Count > 0)
@@ -1729,7 +1725,6 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                                     decTotalComprasServiciosGravados += decComprasServiciosGrabado * decTipoDeCambio;
                                     decTotalComprasServiciosExentos += decComprasServiciosExcento * decTipoDeCambio;
                                     decTotalComprasServiciosExonerados += decComprasServiciosExonerado * decTipoDeCambio;
-                                    decTotalImpuestosCompras += decImpuestos * decTipoDeCambio;
                                     decTotalDescuentosCompras += decDescuentos * decTipoDeCambio;
                                 }
                                 else
@@ -1740,7 +1735,6 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                                     decTotalComprasServiciosGravados -= decComprasServiciosGrabado * decTipoDeCambio;
                                     decTotalComprasServiciosExentos -= decComprasServiciosExcento * decTipoDeCambio;
                                     decTotalComprasServiciosExonerados -= decComprasServiciosExonerado * decTipoDeCambio;
-                                    decTotalImpuestosCompras -= decImpuestos * decTipoDeCambio;
                                     decTotalDescuentosCompras -= decDescuentos * decTipoDeCambio;
                                 }
                             }
@@ -1754,7 +1748,6 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                                     decTotalComprasServiciosGravados += decComprasServiciosGrabado;
                                     decTotalComprasServiciosExentos += decComprasServiciosExcento;
                                     decTotalComprasServiciosExonerados += decComprasServiciosExonerado;
-                                    decTotalImpuestosCompras += decImpuestos;
                                     decTotalDescuentosCompras += decDescuentos;
                                 }
                                 else
@@ -1765,7 +1758,6 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                                     decTotalComprasServiciosGravados -= decComprasServiciosGrabado;
                                     decTotalComprasServiciosExentos -= decComprasServiciosExcento;
                                     decTotalComprasServiciosExonerados -= decComprasServiciosExonerado;
-                                    decTotalImpuestosCompras -= decImpuestos;
                                     decTotalDescuentosCompras -= decDescuentos;
                                 }
                             }
@@ -1820,11 +1812,6 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     reporteLinea.NombreTipoRegistro = "Compra de servicios exonerados por documentos electrónicos aceptados";
                     reporteLinea.Descripcion = "Compras exoneradas por documentos electrónicos aceptados";
                     reporteLinea.Valor = decTotalComprasServiciosExonerados;
-                    listaReporte.Add(reporteLinea);
-                    reporteLinea = new ReporteEstadoResultados();
-                    reporteLinea.NombreTipoRegistro = "Impuestos sobre compras de documentos electrónicos aceptados";
-                    reporteLinea.Descripcion = "Descuentos sobre compras de documentos electrónicos aceptados";
-                    reporteLinea.Valor = decTotalImpuestosCompras;
                     listaReporte.Add(reporteLinea);
                     reporteLinea = new ReporteEstadoResultados();
                     reporteLinea.NombreTipoRegistro = "Descuentos sobre compras de documentos electrónicos aceptados";
