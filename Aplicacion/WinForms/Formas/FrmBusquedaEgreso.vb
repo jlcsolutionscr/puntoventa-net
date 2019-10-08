@@ -13,29 +13,22 @@ Public Class FrmBusquedaEgreso
 #Region "Métodos"
     Private Sub EstablecerPropiedadesDataGridView()
         Dim dvcId As New DataGridViewTextBoxColumn
-        Dim dvcNombre As New DataGridViewTextBoxColumn
-        Dim dvcTopeCredito As New DataGridViewTextBoxColumn
-
+        Dim dvcDescripcion As New DataGridViewTextBoxColumn
         dgvListado.Columns.Clear()
         dgvListado.AutoGenerateColumns = False
         dvcId.HeaderText = "Id"
-        dvcId.DataPropertyName = "IdEgreso"
+        dvcId.DataPropertyName = "Id"
         dvcId.Width = 50
         dgvListado.Columns.Add(dvcId)
-        dvcNombre.HeaderText = "Beneficiario"
-        dvcNombre.DataPropertyName = "Beneficiario"
-        dvcNombre.Width = 450
-        dgvListado.Columns.Add(dvcNombre)
-        dvcTopeCredito.HeaderText = "Monto"
-        dvcTopeCredito.DataPropertyName = "Monto"
-        dvcTopeCredito.Width = 120
-        dvcTopeCredito.DefaultCellStyle = FrmPrincipal.dgvDecimal
-        dgvListado.Columns.Add(dvcTopeCredito)
+        dvcDescripcion.HeaderText = "Descripción"
+        dvcDescripcion.DataPropertyName = "Descripcion"
+        dvcDescripcion.Width = 600
+        dgvListado.Columns.Add(dvcDescripcion)
     End Sub
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
         Try
-            dgvListado.DataSource = Await ClienteFEWCF.ObtenerListaEgresos(FrmPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, intId, txtBeneficiario.Text, txtDetalle.Text)
+            dgvListado.DataSource = Await ClienteFEWCF.ObtenerListadoEgresos(FrmPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, intId, "", txtDetalle.Text)
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -47,7 +40,7 @@ Public Class FrmBusquedaEgreso
 
     Private Async Function ValidarCantidadEgresos() As Task
         Try
-            intTotalEmpresas = Await ClienteFEWCF.ObtenerTotalListaEgresos(FrmPrincipal.empresaGlobal.IdEmpresa, intId, txtBeneficiario.Text, txtDetalle.Text)
+            intTotalEmpresas = Await ClienteFEWCF.ObtenerTotalListaEgresos(FrmPrincipal.empresaGlobal.IdEmpresa, intId, "", txtDetalle.Text)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()

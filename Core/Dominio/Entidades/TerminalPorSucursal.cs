@@ -6,9 +6,9 @@ namespace LeandroSoftware.Core.Dominio.Entidades
     [Table("terminalporsucursal")]
     public partial class TerminalPorSucursal
     {
-        [Key, Column(Order = 0), ForeignKey("Empresa")]
+        [Key, Column(Order = 0)]
         public int IdEmpresa { get; set; }
-        [Key, Column(Order = 1), ForeignKey("SucursalPorEmpresa")]
+        [Key, Column(Order = 1)]
         public int IdSucursal { get; set; }
         [Key, Column(Order = 2)]
         public int IdTerminal { get; set; }
@@ -21,7 +21,9 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public int UltimoDocMR { get; set; }
         public int IdTipoDispositivo { get; set; }
 
+        [ForeignKey("IdEmpresa")]
         public Empresa Empresa { get; set; }
+        [ForeignKey("IdEmpresa, IdSucursal")]
         public SucursalPorEmpresa SucursalPorEmpresa { get; set; }
     }
 }

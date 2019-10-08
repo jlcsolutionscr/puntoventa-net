@@ -179,18 +179,18 @@ Public Class FrmEgreso
 
     Private Async Function CargarCombos() As Task
         Try
-            cboCuentaEgreso.ValueMember = "IdCuenta"
+            cboCuentaEgreso.ValueMember = "Id"
             cboCuentaEgreso.DisplayMember = "Descripcion"
-            cboCuentaEgreso.DataSource = Await ClienteFEWCF.ObtenerListaCuentasEgreso(FrmPrincipal.empresaGlobal.IdEmpresa)
-            cboFormaPago.ValueMember = "IdFormaPago"
+            cboCuentaEgreso.DataSource = Await ClienteFEWCF.ObtenerListadoCuentasEgreso(FrmPrincipal.empresaGlobal.IdEmpresa)
+            cboFormaPago.ValueMember = "Id"
             cboFormaPago.DisplayMember = "Descripcion"
-            cboFormaPago.DataSource = Await ClienteFEWCF.ObtenerListaFormaPagoEgreso()
-            cboCuentaBanco.ValueMember = "IdCuenta"
+            cboFormaPago.DataSource = Await ClienteFEWCF.ObtenerListadoFormaPagoEgreso()
+            cboCuentaBanco.ValueMember = "Id"
             cboCuentaBanco.DisplayMember = "Descripcion"
-            cboCuentaBanco.DataSource = Await ClienteFEWCF.ObtenerListaCuentasBanco(FrmPrincipal.empresaGlobal.IdEmpresa)
-            cboTipoMoneda.ValueMember = "IdTipoMoneda"
+            cboCuentaBanco.DataSource = Await ClienteFEWCF.ObtenerListadoCuentasBanco(FrmPrincipal.empresaGlobal.IdEmpresa)
+            cboTipoMoneda.ValueMember = "Id"
             cboTipoMoneda.DisplayMember = "Descripcion"
-            cboTipoMoneda.DataSource = Await ClienteFEWCF.ObtenerListaTipoMoneda()
+            cboTipoMoneda.DataSource = Await ClienteFEWCF.ObtenerListadoTipoMoneda()
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Function

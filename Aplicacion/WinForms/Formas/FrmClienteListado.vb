@@ -13,39 +13,23 @@ Public Class FrmClienteListado
 #Region "Métodos"
     Private Sub EstablecerPropiedadesDataGridView()
         Dim dvcId As New DataGridViewTextBoxColumn
-        Dim dvcNombre As New DataGridViewTextBoxColumn
-        Dim dvcDireccion As New DataGridViewTextBoxColumn
-        Dim dvcTelefono As New DataGridViewTextBoxColumn
-        Dim dvcPermiteCredito As New DataGridViewCheckBoxColumn
-
-        dgvDatos.Columns.Clear()
-        dgvDatos.AutoGenerateColumns = False
+        Dim dvcDescripcion As New DataGridViewTextBoxColumn
+        dgvListado.Columns.Clear()
+        dgvListado.AutoGenerateColumns = False
         dvcId.HeaderText = "Id"
-        dvcId.DataPropertyName = "IdCliente"
+        dvcId.DataPropertyName = "Id"
         dvcId.Width = 50
-        dgvDatos.Columns.Add(dvcId)
-        dvcNombre.HeaderText = "Nombre"
-        dvcNombre.DataPropertyName = "Nombre"
-        dvcNombre.Width = 200
-        dgvDatos.Columns.Add(dvcNombre)
-        dvcDireccion.HeaderText = "Dirección"
-        dvcDireccion.DataPropertyName = "Direccion"
-        dvcDireccion.Width = 300
-        dgvDatos.Columns.Add(dvcDireccion)
-        dvcTelefono.HeaderText = "Teléfono"
-        dvcTelefono.DataPropertyName = "Telefono"
-        dvcTelefono.Width = 70
-        dgvDatos.Columns.Add(dvcTelefono)
-        dvcPermiteCredito.HeaderText = "Exonerado"
-        dvcPermiteCredito.DataPropertyName = "ExoneradoDeImpuesto"
-        dvcPermiteCredito.Width = 50
-        dgvDatos.Columns.Add(dvcPermiteCredito)
+        dgvListado.Columns.Add(dvcId)
+        dvcDescripcion.HeaderText = "Descripción"
+        dvcDescripcion.DataPropertyName = "Descripcion"
+        dvcDescripcion.Width = 600
+        dgvListado.Columns.Add(dvcDescripcion)
     End Sub
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
         Try
-            listado = Await ClienteFEWCF.ObtenerListaClientes(FrmPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, txtNombre.Text)
-            dgvDatos.DataSource = listado
+            listado = Await ClienteFEWCF.ObtenerListadoClientes(FrmPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, txtNombre.Text)
+            dgvListado.DataSource = listado
             If listado.Count() > 0 Then
                 btnEditar.Enabled = True
                 btnEliminar.Enabled = True
@@ -58,7 +42,7 @@ Public Class FrmClienteListado
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
         End Try
-        dgvDatos.Refresh()
+        dgvListado.Refresh()
     End Function
 
     Private Async Function ValidarCantidadClientes() As Task
@@ -129,7 +113,7 @@ Public Class FrmClienteListado
 
     Private Async Sub BtnEditar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEditar.Click
         Dim formMant As New FrmCliente With {
-        .intIdCliente = dgvDatos.CurrentRow.Cells(0).Value
+        .intIdCliente = dgvListado.CurrentRow.Cells(0).Value
         }
         formMant.ShowDialog()
         Await ActualizarDatos(intIndiceDePagina)
@@ -138,7 +122,7 @@ Public Class FrmClienteListado
     Private Async Sub BtnEliminar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEliminar.Click
         If MessageBox.Show("Desea eliminar el registro actual", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
             Try
-                Await ClienteFEWCF.EliminarCliente(dgvDatos.CurrentRow.Cells(0).Value)
+                Await ClienteFEWCF.EliminarCliente(dgvListado.CurrentRow.Cells(0).Value)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub

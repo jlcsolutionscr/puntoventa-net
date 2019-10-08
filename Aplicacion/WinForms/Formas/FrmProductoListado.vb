@@ -13,50 +13,23 @@ Public Class FrmProductoListado
 #Region "Métodos"
     Private Sub EstablecerPropiedadesDataGridView()
         Dim dvcId As New DataGridViewTextBoxColumn
-        Dim dvcTipo As New DataGridViewTextBoxColumn
-        Dim dvcCodigo As New DataGridViewTextBoxColumn
         Dim dvcDescripcion As New DataGridViewTextBoxColumn
-        Dim dvcPrecioVenta As New DataGridViewTextBoxColumn
-        Dim dvcExcento As New DataGridViewCheckBoxColumn
-
-        dgvDatos.Columns.Clear()
-        dgvDatos.AutoGenerateColumns = False
+        dgvListado.Columns.Clear()
+        dgvListado.AutoGenerateColumns = False
         dvcId.HeaderText = "Id"
-        dvcId.DataPropertyName = "IdProducto"
+        dvcId.DataPropertyName = "Id"
         dvcId.Width = 50
-        dgvDatos.Columns.Add(dvcId)
-
-        dvcTipo.HeaderText = "Tipo"
-        dvcTipo.DataPropertyName = "TipoProductoDesc"
-        dvcTipo.Width = 70
-        dgvDatos.Columns.Add(dvcTipo)
-
-        dvcCodigo.HeaderText = "Código"
-        dvcCodigo.DataPropertyName = "Codigo"
-        dvcCodigo.Width = 150
-        dgvDatos.Columns.Add(dvcCodigo)
-
+        dgvListado.Columns.Add(dvcId)
         dvcDescripcion.HeaderText = "Descripción"
         dvcDescripcion.DataPropertyName = "Descripcion"
-        dvcDescripcion.Width = 250
-        dgvDatos.Columns.Add(dvcDescripcion)
-
-        dvcPrecioVenta.HeaderText = "Precio (IVA)"
-        dvcPrecioVenta.DataPropertyName = "PrecioVenta1"
-        dvcPrecioVenta.Width = 100
-        dvcPrecioVenta.DefaultCellStyle = FrmPrincipal.dgvDecimal
-        dgvDatos.Columns.Add(dvcPrecioVenta)
-
-        dvcExcento.HeaderText = "Excento"
-        dvcExcento.DataPropertyName = "Excento"
-        dvcExcento.Width = 50
-        dgvDatos.Columns.Add(dvcExcento)
+        dvcDescripcion.Width = 600
+        dgvListado.Columns.Add(dvcDescripcion)
     End Sub
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
         Try
-            listado = Await ClienteFEWCF.ObtenerListaProductos(FrmPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, True, cboLinea.SelectedValue, txtCodigo.Text, txtDescripcion.Text)
-            dgvDatos.DataSource = listado
+            listado = Await ClienteFEWCF.ObtenerListadoProductos(FrmPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, True, cboLinea.SelectedValue, txtCodigo.Text, txtDescripcion.Text)
+            dgvListado.DataSource = listado
             If listado.Count() > 0 Then
                 btnEditar.Enabled = True
                 btnEliminar.Enabled = True
@@ -69,7 +42,7 @@ Public Class FrmProductoListado
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
         End Try
-        dgvDatos.Refresh()
+        dgvListado.Refresh()
     End Function
 
     Private Async Function ValidarCantidadProductos() As Task
@@ -96,8 +69,8 @@ Public Class FrmProductoListado
 
     Private Async Function CargarComboBox() As Task
         Try
-            cboLinea.DataSource = Await ClienteFEWCF.ObtenerListaLineas(FrmPrincipal.empresaGlobal.IdEmpresa)
-            cboLinea.ValueMember = "IdLinea"
+            cboLinea.DataSource = Await ClienteFEWCF.ObtenerListadoLineas(FrmPrincipal.empresaGlobal.IdEmpresa)
+            cboLinea.ValueMember = "Id"
             cboLinea.DisplayMember = "Descripcion"
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -153,7 +126,7 @@ Public Class FrmProductoListado
 
     Private Async Sub btnEditar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEditar.Click
         Dim formMant As New FrmProducto With {
-            .intIdProducto = dgvDatos.CurrentRow.Cells(0).Value
+            .intIdProducto = dgvListado.CurrentRow.Cells(0).Value
             }
         formMant.ShowDialog()
         Await ActualizarDatos(intIndiceDePagina)
@@ -162,7 +135,7 @@ Public Class FrmProductoListado
     Private Async Sub btnEliminar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEliminar.Click
         If MessageBox.Show("Desea eliminar el registro actual", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
             Try
-                Await ClienteFEWCF.EliminarProducto(dgvDatos.CurrentRow.Cells(0).Value)
+                Await ClienteFEWCF.EliminarProducto(dgvListado.CurrentRow.Cells(0).Value)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub

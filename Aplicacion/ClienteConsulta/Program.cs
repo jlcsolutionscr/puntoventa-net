@@ -1,15 +1,11 @@
 ﻿using LeandroSoftware.Core.Dominio.Entidades;
-using LeandroSoftware.Core.TiposDatosHacienda;
 using LeandroSoftware.Core.ClienteWCF;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml;
-using System.Xml.Serialization;
 using LeandroSoftware.Core.CommonTypes;
-using System.Management;
 
 namespace LeandroSoftware.AccesoDatos.ClientePruebas
 {
@@ -18,10 +14,10 @@ namespace LeandroSoftware.AccesoDatos.ClientePruebas
         static void Main(string[] args)
         {
             string inputEmpresa = "C";
-            List<ListaEmpresa> empresaLista = null;
+            List<LlaveDescripcion> empresaLista = null;
             try
             {
-                empresaLista = ClienteFEWCF.ObtenerListaEmpresas().Result;
+                empresaLista = ClienteFEWCF.ObtenerListadoEmpresasAdministrador().Result;
             }
             catch (Exception ex)
             {
@@ -38,7 +34,7 @@ namespace LeandroSoftware.AccesoDatos.ClientePruebas
                 int intIdEmpresa = 0;
                 foreach (var empresa in empresaLista)
                 {
-                    Console.WriteLine("Id: " + empresa.IdEmpresa + " Nombre: " + empresa.NombreComercial);
+                    Console.WriteLine("Id: " + empresa.Id + " Nombre: " + empresa.Descripcion);
                 }
                 Console.WriteLine("Ingrese el Id de la empresa a consultar o 'S' para salir:");
                 inputEmpresa = Console.ReadLine();
@@ -59,10 +55,10 @@ namespace LeandroSoftware.AccesoDatos.ClientePruebas
                         operacion = Console.ReadLine();
                         if (operacion == "P")
                         {
-                            List<DocumentoElectronico> documentoLista = null;
+                            List<DocumentoDetalle> documentoLista = null;
                             try
                             {
-                                documentoLista = ClienteFEWCF.ObtenerListaDocumentosElectronicosEnProceso(intIdEmpresa).Result;
+                                documentoLista = ClienteFEWCF.ObtenerListadoDocumentosElectronicosEnProceso(intIdEmpresa).Result;
                             }
                             catch (Exception ex)
                             {
@@ -74,7 +70,7 @@ namespace LeandroSoftware.AccesoDatos.ClientePruebas
                             }
                             if (documentoLista != null && documentoLista.Count > 0)
                             {
-                                foreach (DocumentoElectronico doc in documentoLista)
+                                foreach (DocumentoDetalle doc in documentoLista)
                                 {
                                     Console.WriteLine("id: " + doc.IdDocumento + " Clave: " + doc.ClaveNumerica + " Estado: " + doc.EstadoEnvio);
                                 }
@@ -91,7 +87,7 @@ namespace LeandroSoftware.AccesoDatos.ClientePruebas
                                 }
                                 if (idDoc != "S")
                                 {
-                                    DocumentoElectronico documento = documentoLista.Where(x => x.IdDocumento == idDocumento).FirstOrDefault();
+                                    DocumentoDetalle documento = documentoLista.Where(x => x.IdDocumento == idDocumento).FirstOrDefault();
                                     if (documento != null)
                                     {
                                         if (documento.EstadoEnvio == "enviado")
@@ -185,7 +181,7 @@ namespace LeandroSoftware.AccesoDatos.ClientePruebas
                         else if (operacion == "C")
                         {
                             int intCantidad = 0;
-                            List<DocumentoElectronico> documentoLista = null;
+                            List<DocumentoDetalle> documentoLista = null;
                             int intNumeroPagina = 1;
                             try
                             {
@@ -206,7 +202,7 @@ namespace LeandroSoftware.AccesoDatos.ClientePruebas
                                 try
                                 {
                                     int intCantidadPorPagina = intCantidadRestante >= 10 ? 10 : intCantidadRestante;
-                                    documentoLista = ClienteFEWCF.ObtenerListaDocumentosElectronicosProcesados(intIdEmpresa, intNumeroPagina, intCantidadPorPagina).Result;
+                                    documentoLista = ClienteFEWCF.ObtenerListadoDocumentosElectronicosProcesados(intIdEmpresa, intNumeroPagina, intCantidadPorPagina).Result;
                                 }
                                 catch (Exception ex)
                                 {
@@ -217,7 +213,7 @@ namespace LeandroSoftware.AccesoDatos.ClientePruebas
                                         Console.WriteLine(ex.Message);
                                     Console.WriteLine("");
                                 }
-                                foreach (DocumentoElectronico doc in documentoLista)
+                                foreach (DocumentoDetalle doc in documentoLista)
                                 {
                                     Console.WriteLine("id: " + doc.IdDocumento + " Clave: " + doc.ClaveNumerica + " Estado: " + doc.EstadoEnvio);
                                 }
@@ -248,7 +244,7 @@ namespace LeandroSoftware.AccesoDatos.ClientePruebas
                                 }
                                 if (idDoc != "S")
                                 {
-                                    DocumentoElectronico documento = documentoLista.Where(x => x.IdDocumento == idDocumento).FirstOrDefault();
+                                    DocumentoDetalle documento = documentoLista.Where(x => x.IdDocumento == idDocumento).FirstOrDefault();
                                     if (documento != null)
                                     {
                                         try
@@ -284,74 +280,6 @@ namespace LeandroSoftware.AccesoDatos.ClientePruebas
                                         Console.WriteLine("");
                                     }
                                 }
-                            }
-                        }
-                    }
-                }
-                else if (inputEmpresa != "S")
-                {
-                    Console.WriteLine("Propiedades de win32_logicaldisk");
-                    ManagementObject dsk = new ManagementObject(@"win32_logicaldisk.deviceid=""c:""");
-                    dsk.Get();
-                    foreach (PropertyData prop in dsk.Properties)
-                    {
-                        Console.Write("Nombre: " + prop.Name.ToString());
-                        if (prop.Value != null)
-                        {
-                            Console.WriteLine(" - Valor: " + prop.Value.ToString());
-                        }
-                        else
-                        {
-                            Console.WriteLine("");
-                        }
-                    }
-                    Console.WriteLine("Propiedades de win32_processor");
-                    ManagementObjectSearcher mos = new ManagementObjectSearcher("SELECT * FROM Win32_Processor Where DeviceID =\"CPU0\"");
-                    foreach (ManagementObject mo in mos.Get())
-                    {
-                        foreach (PropertyData prop in mo.Properties)
-                        {
-                            Console.Write("Nombre: " + prop.Name.ToString());
-                            if (prop.Value != null)
-                            {
-                                Console.WriteLine(" - Valor: " + prop.Value.ToString());
-                            } else
-                            {
-                                Console.WriteLine("");
-                            }
-                        }
-                    }
-                    Console.WriteLine("Propiedades de Win32_BaseBoard");
-                    mos = new ManagementObjectSearcher("root\\CIMV2", "SELECT * FROM Win32_BaseBoard");
-                    foreach (ManagementObject mo in mos.Get())
-                    {
-                        foreach (PropertyData prop in mo.Properties)
-                        {
-                            Console.Write("Nombre: " + prop.Name.ToString());
-                            if (prop.Value != null)
-                            {
-                                Console.WriteLine(" - Valor: " + prop.Value.ToString());
-                            }
-                            else
-                            {
-                                Console.WriteLine("");
-                            }
-                        }
-                    }
-                    Console.WriteLine("Propiedades de Win32_MotherboardDevice");
-                    mos = new ManagementObjectSearcher("root\\CIMV2", "SELECT * FROM Win32_MotherboardDevice");
-                    foreach (ManagementObject mo in mos.Get())
-                    {
-                        foreach (PropertyData prop in mo.Properties)
-                        {
-                            Console.Write("Nombre: " + prop.Name.ToString());
-                            if (prop.Value != null)
-                            {
-                                Console.WriteLine(" - Valor: " + prop.Value.ToString());
-                            }
-                            else
-                            {
-                                Console.WriteLine("");
                             }
                         }
                     }

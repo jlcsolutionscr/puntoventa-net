@@ -23,9 +23,9 @@ Public Class FrmLinea
 
     Private Async Sub CargarTipoLinea()
         Try
-            cboTipoProducto.DataSource = Await ClienteFEWCF.ObtenerListaTipoProducto()
-            cboTipoProducto.ValueMember = "IdTipoProducto"
+            cboTipoProducto.ValueMember = "Id"
             cboTipoProducto.DisplayMember = "Descripcion"
+            cboTipoProducto.DataSource = Await ClienteFEWCF.ObtenerListadoTipoProducto()
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub

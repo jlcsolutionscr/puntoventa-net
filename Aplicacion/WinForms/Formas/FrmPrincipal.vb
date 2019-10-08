@@ -15,7 +15,7 @@ Public Class FrmPrincipal
     Private bolEsAdministrador As Boolean
     Public usuarioGlobal As Usuario
     Public empresaGlobal As Empresa
-    Public equipoGlobal As TerminalPorEmpresa
+    Public equipoGlobal As EquipoRegistrado
     Public intBusqueda As Integer
     Public strBusqueda As String
     Public dgvDecimal As DataGridViewCellStyle
@@ -23,13 +23,13 @@ Public Class FrmPrincipal
     Public strThumbprint As String
     Public strApplicationKey As String
     Public lstListaReportes As New List(Of String)
-    Public listaEmpresa As New List(Of IdentificacionNombre)
+    Public listaEmpresa As New List(Of LlaveDescripcion)
     Public strKey As String
     Public decTipoCambioDolar As Decimal
     Public strCodigoUsuario As String
     Public strContrasena As String
     Public strIdEmpresa As String
-    Public bolContinua As Boolean = True
+    Public bolSalir As Boolean = False
 #End Region
 
 #Region "Métodos"
@@ -71,6 +71,33 @@ Public Class FrmPrincipal
             End If
         End If
     End Sub
+
+    Public Function ValidarEmpresa(empresa As Empresa)
+        If empresa.NombreEmpresa.Length = 0 Or
+            empresa.IdTipoIdentificacion < 0 Or
+            empresa.Identificacion.Length = 0 Or
+            empresa.IdProvincia < 0 Or
+            empresa.IdCanton < 0 Or
+            empresa.IdDistrito < 0 Or
+            empresa.IdBarrio < 0 Or
+            empresa.Direccion.Length = 0 Or
+            empresa.Telefono.Length = 0 Or
+            empresa.CorreoNotificacion.Length = 0 Or
+            empresa.EquipoRegistrado.NombreSucursal.Length = 0 Or
+            empresa.EquipoRegistrado.DireccionSucursal.Length = 0 Or
+            empresa.EquipoRegistrado.TelefonoSucursal.Length = 0 Then
+            Return False
+        End If
+        If Not empresa.RegimenSimplificado Then
+            If empresa.NombreCertificado.Length = 0 Or
+                empresa.PinCertificado.Length = 0 Or
+                empresa.UsuarioHacienda.Length = 0 Or
+                empresa.ClaveHacienda.Length = 0 Then
+                Return False
+            End If
+        End If
+        Return True
+    End Function
 #End Region
 
 #Region "Eventos del Menu"
@@ -441,17 +468,20 @@ Public Class FrmPrincipal
                 File.Delete(Path.GetTempPath() + "/Updater.exe.config")
             End If
         End If
-        Dim strIdentificadoEquipoLocal = Nothing
-        strIdentificadoEquipoLocal = Utilitario.ObtenerIdentificadorEquipo()
+        Dim strIdentificadoEquipoLocal = Utilitario.ObtenerIdentificadorEquipo()
         If bolEsAdministrador Then
-            listaEmpresa = Await ClienteFEWCF.ObtenerListaEmpresasAdministrador()
+            listaEmpresa = Await ClienteFEWCF.ObtenerListadoEmpresasAdministrador()
         Else
             Do
-                listaEmpresa = Await ClienteFEWCF.ObtenerListaEmpresasPorDispositivo(strIdentificadoEquipoLocal)
+                listaEmpresa = Await ClienteFEWCF.ObtenerListadoEmpresasPorTerminal(strIdentificadoEquipoLocal)
                 If listaEmpresa.Count = 0 Then
                     If MessageBox.Show("El equipo no se encuentra registrado. Desea proceder con el registro?", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
-                        Dim formEmpresa As New FrmEmpresa()
-                        formEmpresa.ShowDialog()
+                        Dim formRegistro As New FrmRegistro()
+                        formRegistro.ShowDialog()
+                        If bolSalir Then
+                            Close()
+                            Exit Sub
+                        End If
                     Else
                         Close()
                         Exit Sub
@@ -467,33 +497,54 @@ Public Class FrmPrincipal
         Thread.CurrentThread.CurrentCulture.NumberFormat.NumberGroupSeparator = ","
         Thread.CurrentThread.CurrentCulture.NumberFormat.CurrencyGroupSeparator = ","
         Dim empresa As Empresa = Nothing
-        bolContinua = True
         Do
             formSeguridad.ShowDialog()
-            If bolContinua Then
-                Dim strEncryptedPassword As String
+            If bolSalir Then
+                Close()
+                Exit Sub
+            Else
                 Try
-                    strEncryptedPassword = Utilitario.EncriptarDatos(strContrasena, strKey)
-                    empresa = Await ClienteFEWCF.ValidarCredenciales(strIdEmpresa, strIdentificadoEquipoLocal, strCodigoUsuario, strEncryptedPassword)
-                    bolContinua = False
+                    Dim strEncryptedPassword As String = Utilitario.EncriptarDatos(strContrasena, strKey)
+                    empresa = Await ClienteFEWCF.ValidarCredenciales(strCodigoUsuario, strEncryptedPassword, strIdEmpresa, strIdentificadoEquipoLocal)
                 Catch ex As Exception
                     MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 End Try
+            End If
+        Loop While empresa Is Nothing
+        usuarioGlobal = empresa.Usuario
+        empresaGlobal = empresa
+        equipoGlobal = empresa.EquipoRegistrado
+        decTipoCambioDolar = Await ClienteFEWCF.ObtenerTipoCambioDolar()
+        picLoader.Visible = False
+        Dim formInicio As New FrmInicio()
+        formInicio.ShowDialog()
+        mnuMenuPrincipal.Visible = True
+        If ValidarEmpresa(empresa) Then
+            Try
+                For Each reportePorEmpresa As ReportePorEmpresa In empresaGlobal.ReportePorEmpresa.OrderBy(Function(obj) obj.IdReporte)
+                    lstListaReportes.Add(reportePorEmpresa.CatalogoReporte.NombreReporte)
+                Next
+                For Each permiso As RolePorUsuario In usuarioGlobal.RolePorUsuario
+                    objMenu = mnuMenuPrincipal.Items(permiso.Role.MenuPadre)
+                    objMenu.Visible = True
+                    objMenu.DropDownItems(permiso.Role.MenuItem).Visible = True
+                Next
+            Catch ex As Exception
+            End Try
+        Else
+            If usuarioGlobal.Modifica Then
+                MessageBox.Show("La información de la empresa requiere ser actualizada. Por favor ingrese al mantenimiento de Empresa para completar la información.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Try
+                    mnuMenuPrincipal.Items("MnuMant").Visible = True
+                    objMenu.DropDownItems("ManuMantEmpresa").Visible = True
+                Catch ex As Exception
+                End Try
             Else
+                MessageBox.Show("La información de la empresa requiere ser actualizada por un usuario administrador.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Close()
                 Exit Sub
             End If
-        Loop While bolContinua
-        usuarioGlobal = empresa.Usuario
-        empresaGlobal = empresa
-        equipoGlobal = empresa.TerminalPorEmpresa(0)
-        For Each moduloPorEmpresa As ModuloPorEmpresa In empresaGlobal.ModuloPorEmpresa
-            objMenu = mnuMenuPrincipal.Items(moduloPorEmpresa.Modulo.MenuPadre)
-            objMenu.Visible = True
-        Next
-        For Each reportePorEmpresa As ReportePorEmpresa In empresaGlobal.ReportePorEmpresa.OrderBy(Function(obj) obj.IdReporte)
-            lstListaReportes.Add(reportePorEmpresa.CatalogoReporte.NombreReporte)
-        Next
+        End If
         dgvDecimal = New DataGridViewCellStyle With {
             .Format = "N2",
             .NullValue = "0",
@@ -504,22 +555,6 @@ Public Class FrmPrincipal
             .NullValue = "0",
             .Alignment = DataGridViewContentAlignment.MiddleCenter
         }
-        decTipoCambioDolar = Await ClienteFEWCF.ObtenerTipoCambioDolar()
-        picLoader.Visible = False
-        Dim formInicio As New FrmInicio()
-        formInicio.ShowDialog()
-        mnuMenuPrincipal.Visible = True
-        Try
-            If Not empresaGlobal.RegimenSimplificado Then
-                objMenu = mnuMenuPrincipal.Items("MnuDocElect")
-                objMenu.Visible = True
-            End If
-            For Each permiso As RolePorUsuario In usuarioGlobal.RolePorUsuario
-                objMenu = mnuMenuPrincipal.Items(permiso.Role.MenuPadre)
-                objMenu.DropDownItems(permiso.Role.MenuItem).Visible = True
-            Next
-        Catch ex As Exception
-        End Try
     End Sub
 #End Region
 End Class

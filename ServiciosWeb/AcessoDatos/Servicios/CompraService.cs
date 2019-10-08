@@ -18,25 +18,25 @@ namespace LeandroSoftware.AccesoDatos.Servicios
         void EliminarProveedor(int intIdCuenta);
         Proveedor ObtenerProveedor(int intIdCuenta);
         int ObtenerTotalListaProveedores(int intIdEmpresa, string strNombre = "");
-        IEnumerable<Proveedor> ObtenerListaProveedores(int intIdEmpresa, int numPagina, int cantRec, string strNombre = "");
+        IEnumerable<LlaveDescripcion> ObtenerListadoProveedores(int intIdEmpresa, int numPagina, int cantRec, string strNombre = "");
         Compra AgregarCompra(Compra compra);
         void ActualizarCompra(Compra compra);
         void AnularCompra(int intIdCompra, int intIdUsuario);
         Compra ObtenerCompra(int intIdCompra);
         int ObtenerTotalListaCompras(int intIdEmpresa, int intIdCompra = 0, string strNombre = "");
-        IEnumerable<Compra> ObtenerListaCompras(int intIdEmpresa, int numPagina, int cantRec, int intIdCompra = 0, string strNombre = "");
+        IEnumerable<Compra> ObtenerListadoCompras(int intIdEmpresa, int numPagina, int cantRec, int intIdCompra = 0, string strNombre = "");
         OrdenCompra AgregarOrdenCompra(OrdenCompra ordenCompra);
         void ActualizarOrdenCompra(OrdenCompra ordenCompra);
         void AnularOrdenCompra(int intIdOrdenCompra, int intIdUsuario);
         OrdenCompra ObtenerOrdenCompra(int intIdOrdenCompra);
         int ObtenerTotalListaOrdenesCompra(int intIdEmpresa, bool bolIncluyeTodo, int intIdOrdenCompra = 0, string strNombre = "");
-        IEnumerable<OrdenCompra> ObtenerListaOrdenesCompra(int intIdEmpresa, bool bolIncluyeTodo, int numPagina, int cantRec, int intIdOrdenCompra = 0, string strNombre = "");
-        IEnumerable<Compra> ObtenerListaComprasPorProveedor(int intIdProveedor);
+        IEnumerable<OrdenCompra> ObtenerListadoOrdenesCompra(int intIdEmpresa, bool bolIncluyeTodo, int numPagina, int cantRec, int intIdOrdenCompra = 0, string strNombre = "");
+        IEnumerable<Compra> ObtenerListadoComprasPorProveedor(int intIdProveedor);
         DevolucionProveedor AgregarDevolucionProveedor(DevolucionProveedor devolucion);
         void AnularDevolucionProveedor(int intIdDevolucion, int intIdUsuario);
         DevolucionProveedor ObtenerDevolucionProveedor(int intIdDevolucion);
         int ObtenerTotalListaDevolucionesPorProveedor(int intIdEmpresa, int intIdDevolucion = 0, string strNombre = "");
-        IEnumerable<DevolucionProveedor> ObtenerListaDevolucionesPorProveedor(int intIdEmpresa, int numPagina, int cantRec, int intIdDevolucion = 0, string strNombre = "");
+        IEnumerable<DevolucionProveedor> ObtenerListadoDevolucionesPorProveedor(int intIdEmpresa, int numPagina, int cantRec, int intIdDevolucion = 0, string strNombre = "");
     }
 
     public class CompraService : ICompraService
@@ -178,19 +178,26 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public IEnumerable<Proveedor> ObtenerListaProveedores(int intIdEmpresa, int numPagina, int cantRec, string strNombre = "")
+        public IEnumerable<LlaveDescripcion> ObtenerListadoProveedores(int intIdEmpresa, int numPagina, int cantRec, string strNombre = "")
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
+                var listaProveedores = new List<LlaveDescripcion>();
                 try
                 {
-                    var listaProveedores = dbContext.ProveedorRepository.Where(x => x.IdEmpresa == intIdEmpresa);
+                    var listado = dbContext.ProveedorRepository.Where(x => x.IdEmpresa == intIdEmpresa);
                     if (!strNombre.Equals(string.Empty))
-                        listaProveedores = listaProveedores.Where(x => x.Nombre.Contains(strNombre));
+                        listado = listado.Where(x => x.Nombre.Contains(strNombre));
                     if (cantRec == 0)
-                        return listaProveedores.OrderBy(x => x.IdProveedor).ToList();
+                        listado = listado.OrderBy(x => x.IdProveedor);
                     else
-                        return listaProveedores.OrderBy(x => x.IdProveedor).Skip((numPagina - 1) * cantRec).Take(cantRec).ToList();
+                        listado = listado.OrderBy(x => x.IdProveedor).Skip((numPagina - 1) * cantRec).Take(cantRec);
+                    foreach (var value in listado)
+                    {
+                        LlaveDescripcion item = new LlaveDescripcion(value.IdProveedor, value.Nombre);
+                        listaProveedores.Add(item);
+                    }
+                    return listaProveedores;
                 }
                 catch (Exception ex)
                 {
@@ -636,7 +643,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public IEnumerable<Compra> ObtenerListaCompras(int intIdEmpresa, int numPagina, int cantRec, int intIdCompra = 0, string strNombre = "")
+        public IEnumerable<Compra> ObtenerListadoCompras(int intIdEmpresa, int numPagina, int cantRec, int intIdCompra = 0, string strNombre = "")
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -778,7 +785,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public IEnumerable<OrdenCompra> ObtenerListaOrdenesCompra(int intIdEmpresa, bool bolIncluyeTodo, int numPagina, int cantRec, int intIdOrdenCompra = 0, string strNombre = "")
+        public IEnumerable<OrdenCompra> ObtenerListadoOrdenesCompra(int intIdEmpresa, bool bolIncluyeTodo, int numPagina, int cantRec, int intIdOrdenCompra = 0, string strNombre = "")
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -801,7 +808,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public IEnumerable<Compra> ObtenerListaComprasPorProveedor(int intIdProveedor)
+        public IEnumerable<Compra> ObtenerListadoComprasPorProveedor(int intIdProveedor)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -1181,7 +1188,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public IEnumerable<DevolucionProveedor> ObtenerListaDevolucionesPorProveedor(int intIdEmpresa, int numPagina, int cantRec, int intIdDevolucion = 0, string strNombre = "")
+        public IEnumerable<DevolucionProveedor> ObtenerListadoDevolucionesPorProveedor(int intIdEmpresa, int numPagina, int cantRec, int intIdDevolucion = 0, string strNombre = "")
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {

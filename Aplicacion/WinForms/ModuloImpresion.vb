@@ -3,12 +3,13 @@ Imports System.Runtime.InteropServices
 Imports System.Collections.Generic
 Imports LeandroSoftware.Core.Dominio.Entidades
 Imports System.Drawing.Printing
+Imports LeandroSoftware.Core.CommonTypes
 
 Public Class ModuloImpresion
 #Region "Variables"
     Public Class ClsEgreso
         Public empresa As Empresa
-        Public equipo As TerminalPorEmpresa
+        Public equipo As EquipoRegistrado
         Public usuario As Usuario
         Public strId As String
         Public strFecha As String
@@ -18,12 +19,12 @@ Public Class ModuloImpresion
         Public strFormaPago As String
         Public strBanco As String
         Public strNroCheque As String
-        Public arrDesglosePago As IList(Of clsDesgloseFormaPago)
+        Public arrDesglosePago As IList(Of ClsDesgloseFormaPago)
     End Class
 
     Public Class ClsIngreso
         Public empresa As Empresa
-        Public equipo As TerminalPorEmpresa
+        Public equipo As EquipoRegistrado
         Public usuario As Usuario
         Public strId As String
         Public strFecha As String
@@ -33,12 +34,12 @@ Public Class ModuloImpresion
         Public strFormaPago As String
         Public strBanco As String
         Public strNroMovimiento As String
-        Public arrDesglosePago As IList(Of clsDesgloseFormaPago)
+        Public arrDesglosePago As IList(Of ClsDesgloseFormaPago)
     End Class
 
     Public Class ClsCuentaPorPagar
         Public empresa As Empresa
-        Public equipo As TerminalPorEmpresa
+        Public equipo As EquipoRegistrado
         Public usuario As Usuario
         Public strId As String
         Public strFecha As String
@@ -48,35 +49,35 @@ Public Class ModuloImpresion
         Public strFormaPago As String
         Public strBanco As String
         Public strNroMovimiento As String
-        Public arrDesglosePago As IList(Of clsDesgloseFormaPago)
+        Public arrDesglosePago As IList(Of ClsDesgloseFormaPago)
     End Class
 
     Public Class ClsRecibo
         Public empresa As Empresa
-        Public equipo As TerminalPorEmpresa
+        Public equipo As EquipoRegistrado
         Public usuario As Usuario
         Public strConsecutivo As String
         Public strRecibo As String
         Public strNombre As String
         Public strFechaAbono As String
         Public strTotalAbono As String
-        Public arrDesgloseMov As IList(Of clsDesgloseFormaPago)
-        Public arrDesglosePago As IList(Of clsDesgloseFormaPago)
+        Public arrDesgloseMov As IList(Of ClsDesgloseFormaPago)
+        Public arrDesglosePago As IList(Of ClsDesgloseFormaPago)
     End Class
 
     Public Class ClsAjusteInventario
         Public empresa As Empresa
-        Public equipo As TerminalPorEmpresa
+        Public equipo As EquipoRegistrado
         Public usuario As Usuario
         Public strId As String
         Public strFecha As String
         Public strDescripcion As String
-        Public arrDetalleComprobante As IList(Of clsDetalleComprobante)
+        Public arrDetalleComprobante As IList(Of ClsDetalleComprobante)
     End Class
 
     Public Class ClsComprobante
         Public empresa As Empresa
-        Public equipo As TerminalPorEmpresa
+        Public equipo As EquipoRegistrado
         Public usuario As Usuario
         Public strVendedor As String
         Public intCliente As Integer
@@ -93,8 +94,8 @@ Public Class ModuloImpresion
         Public strPagoCon As String
         Public strCambio As String
         Public strClaveNumerica As String
-        Public arrDetalleComprobante As IList(Of clsDetalleComprobante)
-        Public arrDesglosePago As IList(Of clsDesgloseFormaPago)
+        Public arrDetalleComprobante As IList(Of ClsDetalleComprobante)
+        Public arrDesglosePago As IList(Of ClsDesgloseFormaPago)
     End Class
 
     Public Class ClsDetalleComprobante
@@ -258,7 +259,7 @@ Public Class ModuloImpresion
 #End Region
 
 #Region "Métodos"
-    Private Shared Function ImprimirEncabezado(objEquipo As TerminalPorEmpresa, objEmpresa As Empresa, strFecha As String, Optional strCodigoUsuario As String = "") As String
+    Private Shared Function ImprimirEncabezado(objEquipo As EquipoRegistrado, objEmpresa As Empresa, strFecha As String, Optional strCodigoUsuario As String = "") As String
         Dim strCadena As String = strFecha & strCodigoUsuario.PadLeft(30, " ") & Chr(13) & Chr(10)
         strCadena += Chr(13) & Chr(10)
         If objEquipo.NombreSucursal.Length > 40 Then
@@ -268,12 +269,12 @@ Public Class ModuloImpresion
         End If
         strCadena += Chr(13) & Chr(10)
         Dim strDireccion1 As String
-        If objEquipo.Direccion.Length > 40 Then
-            Dim intEspacioIndex = objEquipo.Direccion.Substring(0, 40).LastIndexOf(" ")
+        If objEquipo.DireccionSucursal.Length > 40 Then
+            Dim intEspacioIndex = objEquipo.DireccionSucursal.Substring(0, 40).LastIndexOf(" ")
             Dim strDireccion2 As String
             If (intEspacioIndex >= 0) Then
-                strDireccion1 = objEquipo.Direccion.Substring(0, intEspacioIndex)
-                strDireccion2 = objEquipo.Direccion.Substring(intEspacioIndex + 1)
+                strDireccion1 = objEquipo.DireccionSucursal.Substring(0, intEspacioIndex)
+                strDireccion2 = objEquipo.DireccionSucursal.Substring(intEspacioIndex + 1)
             Else
                 strDireccion1 = objEquipo.NombreSucursal.Substring(0, 40)
                 strDireccion2 = objEquipo.NombreSucursal.Substring(40)
@@ -281,10 +282,10 @@ Public Class ModuloImpresion
             strCadena += "".PadRight((40 - strDireccion1.Length) / 2, " ") + strDireccion1 & Chr(13) & Chr(10)
             strCadena += "".PadRight((40 - strDireccion2.Length) / 2, " ") + strDireccion2 & Chr(13) & Chr(10)
         Else
-            strDireccion1 = objEquipo.Direccion
+            strDireccion1 = objEquipo.DireccionSucursal
             strCadena += "".PadRight((40 - strDireccion1.Length) / 2, " ") + strDireccion1 & Chr(13) & Chr(10)
         End If
-        Dim strTelefono As String = "TELEFONO: " + objEquipo.Telefono
+        Dim strTelefono As String = "TELEFONO: " + objEquipo.TelefonoSucursal
         strCadena += "".PadRight((40 - strTelefono.Length) / 2, " ") + strTelefono & Chr(13) & Chr(10)
         strCadena += Chr(13) & Chr(10)
         If objEmpresa.NombreEmpresa.Length > 40 Then
@@ -311,7 +312,7 @@ Public Class ModuloImpresion
         Return strDesglosePago
     End Function
 
-    Private Shared Function ImprimirDetalle(objDetalleComprobante As IList(Of clsDetalleComprobante)) As String
+    Private Shared Function ImprimirDetalle(objDetalleComprobante As IList(Of ClsDetalleComprobante)) As String
         Dim strDetalle As String = ""
         strDetalle += "Descripcion" & Chr(13) & Chr(10)
         strDetalle += "Cant".PadLeft(6, " ") & "P/U".PadLeft(15, " ") & " Total".PadLeft(15, " ") & Chr(13) & Chr(10)

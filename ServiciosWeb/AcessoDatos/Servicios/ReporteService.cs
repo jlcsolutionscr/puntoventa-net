@@ -15,8 +15,8 @@ namespace LeandroSoftware.AccesoDatos.Servicios
 {
     public interface IReporteService
     {
-        IList<CondicionVentaYFormaPago> ObtenerListaCondicionVentaYFormaPagoFactura();
-        IList<CondicionVentaYFormaPago> ObtenerListaCondicionVentaYFormaPagoCompra();
+        IList<LlaveDescripcion> ObtenerListadoCondicionVentaYFormaPagoFactura();
+        IList<LlaveDescripcion> ObtenerListadoCondicionVentaYFormaPagoCompra();
         List<ReporteVentas> ObtenerReporteVentasPorCliente(int intIdEmpresa, string strFechaInicial, string strFechaFinal, int intIdCliente, bool bolNulo, int intTipoPago, int intIdBancoAdquiriente);
         List<ReporteVentasPorVendedor> ObtenerReporteVentasPorVendedor(int intIdEmpresa, string strFechaInicial, string strFechaFinal, int intIdVendedor);
         List<ReporteCompras> ObtenerReporteComprasPorProveedor(int intIdEmpresa, string strFechaInicial, string strFechaFinal, int intIdProveedor, bool bolNulo, int intTipoPago);
@@ -68,52 +68,52 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public IList<CondicionVentaYFormaPago> ObtenerListaCondicionVentaYFormaPagoFactura()
+        public IList<LlaveDescripcion> ObtenerListadoCondicionVentaYFormaPagoFactura()
         {
-            IList<CondicionVentaYFormaPago> listado = null;
+            IList<LlaveDescripcion> listado = null;
             try
             {
-                listado = new List<CondicionVentaYFormaPago>();
-                var condicionVenta = new CondicionVentaYFormaPago(StaticReporteCondicionVentaFormaPago.ContadoEfectivo, "Ventas de contado en efectivo");
+                listado = new List<LlaveDescripcion>();
+                var condicionVenta = new LlaveDescripcion(StaticReporteCondicionVentaFormaPago.ContadoEfectivo, "Ventas de contado en efectivo");
                 listado.Add(condicionVenta);
-                condicionVenta = new CondicionVentaYFormaPago(StaticReporteCondicionVentaFormaPago.ContadoTransferenciaDepositoBancario, "Ventas de contado mediante transferencia o depósito bancario");
+                condicionVenta = new LlaveDescripcion(StaticReporteCondicionVentaFormaPago.ContadoTransferenciaDepositoBancario, "Ventas de contado mediante transferencia o depósito bancario");
                 listado.Add(condicionVenta);
-                condicionVenta = new CondicionVentaYFormaPago(StaticReporteCondicionVentaFormaPago.ContadoCheque, "Ventas de contado mediante cheque");
+                condicionVenta = new LlaveDescripcion(StaticReporteCondicionVentaFormaPago.ContadoCheque, "Ventas de contado mediante cheque");
                 listado.Add(condicionVenta);
-                condicionVenta = new CondicionVentaYFormaPago(StaticReporteCondicionVentaFormaPago.ContadoTarjeta, "Ventas de contado mediante pago con tarjeta");
+                condicionVenta = new LlaveDescripcion(StaticReporteCondicionVentaFormaPago.ContadoTarjeta, "Ventas de contado mediante pago con tarjeta");
                 listado.Add(condicionVenta);
-                condicionVenta = new CondicionVentaYFormaPago(StaticReporteCondicionVentaFormaPago.Credito, "Ventas de crédito");
+                condicionVenta = new LlaveDescripcion(StaticReporteCondicionVentaFormaPago.Credito, "Ventas de crédito");
                 listado.Add(condicionVenta);
+                return listado;
             }
             catch (Exception ex)
             {
                 log.Error("Error al obtener el listado de formas de pago para facturación: ", ex);
                 throw new Exception("Se produjo un error consultando el listado de formas de pago. Por favor consulte con su proveedor.");
             }
-            return listado;
         }
 
-        public IList<CondicionVentaYFormaPago> ObtenerListaCondicionVentaYFormaPagoCompra()
+        public IList<LlaveDescripcion> ObtenerListadoCondicionVentaYFormaPagoCompra()
         {
-            IList<CondicionVentaYFormaPago> listado = null;
+            IList<LlaveDescripcion> listado = null;
             try
             {
-                listado = new List<CondicionVentaYFormaPago>();
-                var condicionVenta = new CondicionVentaYFormaPago(StaticReporteCondicionVentaFormaPago.ContadoEfectivo, "Compras de contado en efectivo");
+                listado = new List<LlaveDescripcion>();
+                var condicionVenta = new LlaveDescripcion(StaticReporteCondicionVentaFormaPago.ContadoEfectivo, "Compras de contado en efectivo");
                 listado.Add(condicionVenta);
-                condicionVenta = new CondicionVentaYFormaPago(StaticReporteCondicionVentaFormaPago.ContadoTransferenciaDepositoBancario, "Compras de contado mediante transferencia o depósito bancario");
+                condicionVenta = new LlaveDescripcion(StaticReporteCondicionVentaFormaPago.ContadoTransferenciaDepositoBancario, "Compras de contado mediante transferencia o depósito bancario");
                 listado.Add(condicionVenta);
-                condicionVenta = new CondicionVentaYFormaPago(StaticReporteCondicionVentaFormaPago.ContadoCheque, "Compras de contado mediante cheque");
+                condicionVenta = new LlaveDescripcion(StaticReporteCondicionVentaFormaPago.ContadoCheque, "Compras de contado mediante cheque");
                 listado.Add(condicionVenta);
-                condicionVenta = new CondicionVentaYFormaPago(StaticReporteCondicionVentaFormaPago.Credito, "Compras de crédito");
+                condicionVenta = new LlaveDescripcion(StaticReporteCondicionVentaFormaPago.Credito, "Compras de crédito");
                 listado.Add(condicionVenta);
+                return listado;
             }
             catch (Exception ex)
             {
                 log.Error("Error al obtener el listado de formas de pago para facturación: ", ex);
                 throw new Exception("Se produjo un error consultando el listado de formas de pago. Por favor consulte con su proveedor.");
             }
-            return listado;
         }
 
         public List<ReporteVentas> ObtenerReporteVentasPorCliente(int intIdEmpresa, string strFechaInicial, string strFechaFinal, int intIdCliente, bool bolNulo, int intTipoPago, int intIdBancoAdquiriente)

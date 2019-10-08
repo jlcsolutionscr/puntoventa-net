@@ -10,34 +10,22 @@ Public Class FrmCuentaBancoListado
     Private Sub EstablecerPropiedadesDataGridView()
         Dim dvcId As New DataGridViewTextBoxColumn
         Dim dvcDescripcion As New DataGridViewTextBoxColumn
-        Dim dvcCodigo As New DataGridViewTextBoxColumn
-        Dim dvcSaldo As New DataGridViewTextBoxColumn
-
-        dgvDatos.Columns.Clear()
-        dgvDatos.AutoGenerateColumns = False
+        dgvListado.Columns.Clear()
+        dgvListado.AutoGenerateColumns = False
         dvcId.HeaderText = "Id"
-        dvcId.DataPropertyName = "IdCuenta"
+        dvcId.DataPropertyName = "Id"
         dvcId.Width = 50
-        dgvDatos.Columns.Add(dvcId)
+        dgvListado.Columns.Add(dvcId)
         dvcDescripcion.HeaderText = "Descripción"
         dvcDescripcion.DataPropertyName = "Descripcion"
-        dvcDescripcion.Width = 300
-        dgvDatos.Columns.Add(dvcDescripcion)
-        dvcCodigo.HeaderText = "Código"
-        dvcCodigo.DataPropertyName = "Codigo"
-        dvcCodigo.Width = 200
-        dgvDatos.Columns.Add(dvcCodigo)
-        dvcSaldo.HeaderText = "Saldo"
-        dvcSaldo.DataPropertyName = "Saldo"
-        dvcSaldo.Width = 100
-        dvcSaldo.DefaultCellStyle = FrmPrincipal.dgvDecimal
-        dgvDatos.Columns.Add(dvcSaldo)
+        dvcDescripcion.Width = 600
+        dgvListado.Columns.Add(dvcDescripcion)
     End Sub
 
     Private Async Sub ActualizarDatos()
         Try
-            listado = Await ClienteFEWCF.ObtenerListaCuentasBanco(FrmPrincipal.empresaGlobal.IdEmpresa, txtDescripcion.Text)
-            dgvDatos.DataSource = listado
+            listado = Await ClienteFEWCF.ObtenerListadoCuentasBanco(FrmPrincipal.empresaGlobal.IdEmpresa, txtDescripcion.Text)
+            dgvListado.DataSource = listado
             If listado.Count() > 0 Then
                 btnEditar.Enabled = True
                 btnEliminar.Enabled = True
@@ -49,7 +37,7 @@ Public Class FrmCuentaBancoListado
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
         End Try
-        dgvDatos.Refresh()
+        dgvListado.Refresh()
     End Sub
 #End Region
 
@@ -69,7 +57,7 @@ Public Class FrmCuentaBancoListado
 
     Private Sub btnEditar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEditar.Click
         Dim formMant As New FrmCuentaBanco With {
-            .intIdCuenta = dgvDatos.CurrentRow.Cells(0).Value
+            .intIdCuenta = dgvListado.CurrentRow.Cells(0).Value
         }
         formMant.ShowDialog()
         ActualizarDatos()
@@ -78,7 +66,7 @@ Public Class FrmCuentaBancoListado
     Private Async Sub btnEliminar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEliminar.Click
         If MessageBox.Show("Desea eliminar el registro actual", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
             Try
-                Await ClienteFEWCF.EliminarCuentaBanco(dgvDatos.CurrentRow.Cells(0).Value)
+                Await ClienteFEWCF.EliminarCuentaBanco(dgvListado.CurrentRow.Cells(0).Value)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub

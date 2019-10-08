@@ -21,15 +21,15 @@ Public Class FrmCliente
 
     Private Async Function CargarListadoBarrios(IdProvincia As Integer, IdCanton As Integer, IdDistrito As Integer) As Task
         Try
-            cboCanton.ValueMember = "IdCanton"
+            cboCanton.ValueMember = "Id"
             cboCanton.DisplayMember = "Descripcion"
-            cboCanton.DataSource = Await ClienteFEWCF.ObtenerListaCantones(IdProvincia)
-            cboDistrito.ValueMember = "IdDistrito"
+            cboCanton.DataSource = Await ClienteFEWCF.ObtenerListadoCantones(IdProvincia)
+            cboDistrito.ValueMember = "Id"
             cboDistrito.DisplayMember = "Descripcion"
-            cboDistrito.DataSource = Await ClienteFEWCF.ObtenerListaDistritos(IdProvincia, IdCanton)
-            cboBarrio.ValueMember = "IdBarrio"
+            cboDistrito.DataSource = Await ClienteFEWCF.ObtenerListadoDistritos(IdProvincia, IdCanton)
+            cboBarrio.ValueMember = "Id"
             cboBarrio.DisplayMember = "Descripcion"
-            cboBarrio.DataSource = Await ClienteFEWCF.ObtenerListaBarrios(IdProvincia, IdCanton, IdDistrito)
+            cboBarrio.DataSource = Await ClienteFEWCF.ObtenerListadoBarrios(IdProvincia, IdCanton, IdDistrito)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
@@ -37,18 +37,18 @@ Public Class FrmCliente
 
     Private Async Function CargarCombos() As Task
         Try
-            cboTipoIdentificacion.ValueMember = "IdTipoIdentificacion"
+            cboTipoIdentificacion.ValueMember = "Id"
             cboTipoIdentificacion.DisplayMember = "Descripcion"
-            cboTipoIdentificacion.DataSource = Await ClienteFEWCF.ObtenerListaTipoIdentificacion()
-            cboProvincia.ValueMember = "IdProvincia"
+            cboTipoIdentificacion.DataSource = Await ClienteFEWCF.ObtenerListadoTipoIdentificacion()
+            cboProvincia.ValueMember = "Id"
             cboProvincia.DisplayMember = "Descripcion"
-            cboProvincia.DataSource = Await ClienteFEWCF.ObtenerListaProvincias()
-            cboVendedor.ValueMember = "IdVendedor"
-            cboVendedor.DisplayMember = "Nombre"
-            cboVendedor.DataSource = Await ClienteFEWCF.ObtenerListaVendedores(FrmPrincipal.empresaGlobal.IdEmpresa)
-            cboIdTipoPrecio.ValueMember = "IdTipoPrecio"
+            cboProvincia.DataSource = Await ClienteFEWCF.ObtenerListadoProvincias()
+            cboVendedor.ValueMember = "Id"
+            cboVendedor.DisplayMember = "Descripcion"
+            cboVendedor.DataSource = Await ClienteFEWCF.ObtenerListadoVendedores(FrmPrincipal.empresaGlobal.IdEmpresa)
+            cboIdTipoPrecio.ValueMember = "Id"
             cboIdTipoPrecio.DisplayMember = "Descripcion"
-            cboIdTipoPrecio.DataSource = Await ClienteFEWCF.ObtenerListaTipodePrecio()
+            cboIdTipoPrecio.DataSource = Await ClienteFEWCF.ObtenerListadoTipodePrecio()
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
@@ -193,9 +193,9 @@ Public Class FrmCliente
     Private Async Sub CboProvincia_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboProvincia.SelectedIndexChanged
         If Not bolInit Then
             bolInit = True
-            cboCanton.DataSource = Await ClienteFEWCF.ObtenerListaCantones(cboProvincia.SelectedValue)
-            cboDistrito.DataSource = Await ClienteFEWCF.ObtenerListaDistritos(cboProvincia.SelectedValue, 1)
-            cboBarrio.DataSource = Await ClienteFEWCF.ObtenerListaBarrios(cboProvincia.SelectedValue, 1, 1)
+            cboCanton.DataSource = Await ClienteFEWCF.ObtenerListadoCantones(cboProvincia.SelectedValue)
+            cboDistrito.DataSource = Await ClienteFEWCF.ObtenerListadoDistritos(cboProvincia.SelectedValue, 1)
+            cboBarrio.DataSource = Await ClienteFEWCF.ObtenerListadoBarrios(cboProvincia.SelectedValue, 1, 1)
             bolInit = False
         End If
     End Sub
@@ -203,15 +203,15 @@ Public Class FrmCliente
     Private Async Sub CboCanton_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboCanton.SelectedIndexChanged
         If Not bolInit Then
             bolInit = True
-            cboDistrito.DataSource = Await ClienteFEWCF.ObtenerListaDistritos(cboProvincia.SelectedValue, cboCanton.SelectedValue)
-            cboBarrio.DataSource = Await ClienteFEWCF.ObtenerListaBarrios(cboProvincia.SelectedValue, cboCanton.SelectedValue, 1)
+            cboDistrito.DataSource = Await ClienteFEWCF.ObtenerListadoDistritos(cboProvincia.SelectedValue, cboCanton.SelectedValue)
+            cboBarrio.DataSource = Await ClienteFEWCF.ObtenerListadoBarrios(cboProvincia.SelectedValue, cboCanton.SelectedValue, 1)
             bolInit = False
         End If
     End Sub
 
     Private Async Sub CboDistrito_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboDistrito.SelectedIndexChanged
         If Not bolInit Then
-            cboBarrio.DataSource = Await ClienteFEWCF.ObtenerListaBarrios(cboProvincia.SelectedValue, cboCanton.SelectedValue, cboDistrito.SelectedValue)
+            cboBarrio.DataSource = Await ClienteFEWCF.ObtenerListadoBarrios(cboProvincia.SelectedValue, cboCanton.SelectedValue, cboDistrito.SelectedValue)
         End If
     End Sub
 

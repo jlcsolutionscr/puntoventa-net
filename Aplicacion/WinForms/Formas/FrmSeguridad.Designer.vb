@@ -147,7 +147,9 @@ Partial Class FrmSeguridad
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
         Me.Location = New System.Drawing.Point(3, 22)
         Me.MaximizeBox = False
+        Me.MaximumSize = New System.Drawing.Size(278, 182)
         Me.MinimizeBox = False
+        Me.MinimumSize = New System.Drawing.Size(278, 182)
         Me.Name = "FrmSeguridad"
         Me.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen

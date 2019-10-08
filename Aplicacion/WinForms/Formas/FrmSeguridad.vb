@@ -6,8 +6,8 @@ Public Class FrmSeguridad
     Private Sub FrmSeguridad_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
             cboEmpresa.DataSource = FrmPrincipal.listaEmpresa
-            cboEmpresa.ValueMember = "Identificacion"
-            cboEmpresa.DisplayMember = "NombreComercial"
+            cboEmpresa.ValueMember = "Id"
+            cboEmpresa.DisplayMember = "Descripcion"
             CmdAceptar.Enabled = True
             CmdCancelar.Enabled = True
         Catch ex As Exception
@@ -25,7 +25,7 @@ Public Class FrmSeguridad
     End Sub
 
     Private Sub CmdCancelar_Click(sender As Object, e As EventArgs) Handles CmdCancelar.Click
-        FrmPrincipal.bolContinua = False
+        FrmPrincipal.bolSalir = True
         Close()
     End Sub
 

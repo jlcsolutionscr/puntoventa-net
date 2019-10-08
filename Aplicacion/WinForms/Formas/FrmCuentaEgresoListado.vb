@@ -13,7 +13,7 @@ Public Class FrmCuentaEgresoListado
         dgvDatos.Columns.Clear()
         dgvDatos.AutoGenerateColumns = False
         dvcId.HeaderText = "Id"
-        dvcId.DataPropertyName = "IdCuenta"
+        dvcId.DataPropertyName = "Id"
         dvcId.Width = 50
         dgvDatos.Columns.Add(dvcId)
         dvcDescripcion.HeaderText = "Descripción"
@@ -24,7 +24,7 @@ Public Class FrmCuentaEgresoListado
 
     Private Async Sub ActualizarDatos()
         Try
-            listado = Await ClienteFEWCF.ObtenerListaCuentasEgreso(FrmPrincipal.empresaGlobal.IdEmpresa, txtDescripcion.Text)
+            listado = Await ClienteFEWCF.ObtenerListadoCuentasEgreso(FrmPrincipal.empresaGlobal.IdEmpresa, txtDescripcion.Text)
             dgvDatos.DataSource = listado
             If listado.Count() > 0 Then
                 btnEditar.Enabled = True

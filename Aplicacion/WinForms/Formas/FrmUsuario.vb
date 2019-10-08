@@ -78,9 +78,9 @@ Public Class FrmUsuario
 
     Private Async Sub CargarCombos()
         Try
-            cboRole.ValueMember = "IdRole"
-            cboRole.DisplayMember = "Nombre"
-            cboRole.DataSource = Await ClienteFEWCF.ObtenerListaRoles()
+            cboRole.ValueMember = "Id"
+            cboRole.DisplayMember = "Descripcion"
+            cboRole.DataSource = Await ClienteFEWCF.ObtenerListadoRoles()
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub

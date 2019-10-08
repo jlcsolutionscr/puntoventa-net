@@ -8,29 +8,23 @@ Public Class FrmLineaListado
 #Region "Métodos"
     Private Sub EstablecerPropiedadesDataGridView()
         Dim dvcId As New DataGridViewTextBoxColumn
-        Dim dvcTipo As New DataGridViewTextBoxColumn
         Dim dvcDescripcion As New DataGridViewTextBoxColumn
-
-        dgvDatos.Columns.Clear()
-        dgvDatos.AutoGenerateColumns = False
+        dgvListado.Columns.Clear()
+        dgvListado.AutoGenerateColumns = False
         dvcId.HeaderText = "Id"
-        dvcId.DataPropertyName = "IdLinea"
+        dvcId.DataPropertyName = "Id"
         dvcId.Width = 50
-        dgvDatos.Columns.Add(dvcId)
-        dvcTipo.HeaderText = "Tipo"
-        dvcTipo.DataPropertyName = "TipoLineaDesc"
-        dvcTipo.Width = 100
-        dgvDatos.Columns.Add(dvcTipo)
+        dgvListado.Columns.Add(dvcId)
         dvcDescripcion.HeaderText = "Descripción"
         dvcDescripcion.DataPropertyName = "Descripcion"
-        dvcDescripcion.Width = 500
-        dgvDatos.Columns.Add(dvcDescripcion)
+        dvcDescripcion.Width = 600
+        dgvListado.Columns.Add(dvcDescripcion)
     End Sub
 
     Private Async Sub ActualizarDatos()
         Try
-            listado = Await ClienteFEWCF.ObtenerListaLineas(FrmPrincipal.empresaGlobal.IdEmpresa, txtDescripcion.Text)
-            dgvDatos.DataSource = listado
+            listado = Await ClienteFEWCF.ObtenerListadoLineas(FrmPrincipal.empresaGlobal.IdEmpresa, txtDescripcion.Text)
+            dgvListado.DataSource = listado
             If listado.Count() > 0 Then
                 btnEditar.Enabled = True
                 btnEliminar.Enabled = True
@@ -43,7 +37,7 @@ Public Class FrmLineaListado
             Close()
             Exit Sub
         End Try
-        dgvDatos.Refresh()
+        dgvListado.Refresh()
     End Sub
 #End Region
 
@@ -63,7 +57,7 @@ Public Class FrmLineaListado
 
     Private Sub btnEditar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEditar.Click
         Dim formMant As New FrmLinea With {
-        .intIdLinea = dgvDatos.CurrentRow.Cells(0).Value
+        .intIdLinea = dgvListado.CurrentRow.Cells(0).Value
         }
         formMant.ShowDialog()
         ActualizarDatos()
@@ -72,7 +66,7 @@ Public Class FrmLineaListado
     Private Async Sub btnEliminar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEliminar.Click
         If MessageBox.Show("Desea eliminar el registro actual", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
             Try
-                Await ClienteFEWCF.EliminarLinea(dgvDatos.CurrentRow.Cells(0).Value)
+                Await ClienteFEWCF.EliminarLinea(dgvListado.CurrentRow.Cells(0).Value)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub

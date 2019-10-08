@@ -13,35 +13,22 @@ Public Class FrmBusquedaFactura
 #Region "Métodos"
     Private Sub EstablecerPropiedadesDataGridView()
         Dim dvcId As New DataGridViewTextBoxColumn
-        Dim dvcNombre As New DataGridViewTextBoxColumn
-        Dim dvcOrdenServicio As New DataGridViewTextBoxColumn
-        Dim dvcReferencia As New DataGridViewTextBoxColumn
-        Dim dvcTopeCredito As New DataGridViewTextBoxColumn
-
+        Dim dvcDescripcion As New DataGridViewTextBoxColumn
         dgvListado.Columns.Clear()
         dgvListado.AutoGenerateColumns = False
         dvcId.HeaderText = "Id"
-        dvcId.DataPropertyName = "IdFactura"
+        dvcId.DataPropertyName = "Id"
         dvcId.Width = 50
         dgvListado.Columns.Add(dvcId)
-        dvcNombre.HeaderText = "Cliente"
-        dvcNombre.DataPropertyName = "NombreCliente"
-        dvcNombre.Width = 350
-        dgvListado.Columns.Add(dvcNombre)
-        dvcReferencia.HeaderText = "Referencia"
-        dvcReferencia.DataPropertyName = "NoDocumento"
-        dvcReferencia.Width = 100
-        dgvListado.Columns.Add(dvcReferencia)
-        dvcTopeCredito.HeaderText = "Total"
-        dvcTopeCredito.DataPropertyName = "Total"
-        dvcTopeCredito.Width = 120
-        dvcTopeCredito.DefaultCellStyle = FrmPrincipal.dgvDecimal
-        dgvListado.Columns.Add(dvcTopeCredito)
+        dvcDescripcion.HeaderText = "Descripción"
+        dvcDescripcion.DataPropertyName = "Descripcion"
+        dvcDescripcion.Width = 600
+        dgvListado.Columns.Add(dvcDescripcion)
     End Sub
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
         Try
-            dgvListado.DataSource = Await ClienteFEWCF.ObtenerListaFacturas(FrmPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, intId, txtNombre.Text)
+            dgvListado.DataSource = Await ClienteFEWCF.ObtenerListadoFacturas(FrmPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, intId, txtNombre.Text)
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)

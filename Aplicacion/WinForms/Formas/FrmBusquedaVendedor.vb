@@ -7,23 +7,22 @@ Public Class FrmBusquedaVendedor
 #Region "Métodos"
     Private Sub EstablecerPropiedadesDataGridView()
         Dim dvcId As New DataGridViewTextBoxColumn
-        Dim dvcNombre As New DataGridViewTextBoxColumn
-
+        Dim dvcDescripcion As New DataGridViewTextBoxColumn
         dgvListado.Columns.Clear()
         dgvListado.AutoGenerateColumns = False
         dvcId.HeaderText = "Id"
-        dvcId.DataPropertyName = "IdVendedor"
+        dvcId.DataPropertyName = "Id"
         dvcId.Width = 50
         dgvListado.Columns.Add(dvcId)
-        dvcNombre.HeaderText = "Nombre"
-        dvcNombre.DataPropertyName = "Nombre"
-        dvcNombre.Width = 570
-        dgvListado.Columns.Add(dvcNombre)
+        dvcDescripcion.HeaderText = "Descripción"
+        dvcDescripcion.DataPropertyName = "Descripcion"
+        dvcDescripcion.Width = 600
+        dgvListado.Columns.Add(dvcDescripcion)
     End Sub
 
     Private Async Sub ActualizarDatos()
         Try
-            dgvListado.DataSource = Await ClienteFEWCF.ObtenerListaVendedores(FrmPrincipal.empresaGlobal.IdEmpresa, txtNombre.Text)
+            dgvListado.DataSource = Await ClienteFEWCF.ObtenerListadoVendedores(FrmPrincipal.empresaGlobal.IdEmpresa, txtNombre.Text)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()

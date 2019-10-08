@@ -1,5 +1,12 @@
-﻿namespace LeandroSoftware.Core.CommonTypes
+﻿using System;
+
+namespace LeandroSoftware.Core.CommonTypes
 {
+    public static class StaticTipoDispisitivo
+    {
+        public static readonly short AppEscritorio = 1;
+        public static readonly short AppMovil = 2;
+    };
     public static class StaticTipoMoneda
     {
         public static readonly short Colones = 1;
@@ -134,54 +141,6 @@
         public static readonly string Aceptado = "aceptado";
         public static readonly string Rechazado = "rechazado";
     };
-
-    public class TipodeContrato
-    {
-        public TipodeContrato()
-        {
-        }
-
-        public TipodeContrato(int id, string desc)
-        {
-            IdTipoContrato = id;
-            Descripcion = desc;
-        }
-
-        public int IdTipoContrato { get; set; }
-        public string Descripcion { get; set; }
-    }
-
-    public class CondicionVentaYFormaPago
-    {
-        public CondicionVentaYFormaPago()
-        {
-        }
-
-        public CondicionVentaYFormaPago(int id, string desc)
-        {
-            IdTipo = id;
-            Descripcion = desc;
-        }
-
-        public int IdTipo { get; set; }
-        public string Descripcion { get; set; }
-    }
-
-    public class TipodePrecio
-    {
-        public TipodePrecio()
-        {
-        }
-
-        public TipodePrecio(int id, string desc)
-        {
-            IdTipoPrecio = id;
-            Descripcion = desc;
-        }
-
-        public int IdTipoPrecio { get; set; }
-        public string Descripcion { get; set; }
-    }
 
     public class ReporteVentas
     {
@@ -494,33 +453,53 @@
         public decimal Total { get; set; }
     }
 
-    public class IdentificacionNombre
+    public class EquipoRegistrado
     {
-        public IdentificacionNombre()
-        {
-        }
-
-        public IdentificacionNombre(string id, string nombre)
-        {
-            Identificacion = id;
-            NombreComercial = nombre;
-        }
-        public string Identificacion { get; set; }
-        public string NombreComercial { get; set; }
+        public int IdSucursal { get; set; }
+        public int IdTerminal { get; set; }
+        public string NombreSucursal { get; set; }
+        public string DireccionSucursal { get; set; }
+        public string TelefonoSucursal { get; set; }
+        public string ImpresoraFactura { get; set; }
     }
 
-    public class EmpresaNombre
+    public class LlaveDescripcion
     {
-        public EmpresaNombre()
+        public LlaveDescripcion()
         {
         }
 
-        public EmpresaNombre(int id, string nombre)
+        public LlaveDescripcion(int id, string descripcion)
         {
-            IdEmpresa = id;
-            NombreComercial = nombre;
+            Id = id;
+            Descripcion = descripcion;
         }
-        public int IdEmpresa { get; set; }
-        public string NombreComercial { get; set; }
+        public int Id { get; set; }
+        public string Descripcion { get; set; }
+    }
+
+    public class DocumentoDetalle
+    {
+        public DocumentoDetalle()
+        {
+        }
+
+        public DocumentoDetalle(int id, string clave, string consecutivo, DateTime fecha, string estado, string esMensajeReceptor, string correoNotificacion)
+        {
+            IdDocumento = id;
+            ClaveNumerica = clave;
+            Consecutivo = consecutivo;
+            Fecha = fecha;
+            EstadoEnvio = estado;
+            EsMensajeReceptor = esMensajeReceptor;
+            CorreoNotificacion = correoNotificacion;
+        }
+        public int IdDocumento { get; set; }
+        public string ClaveNumerica { get; set; }
+        public string Consecutivo { get; set; }
+        public DateTime Fecha { get; set; }
+        public string EstadoEnvio { get; set; }
+        public string EsMensajeReceptor { get; set; }
+        public string CorreoNotificacion { get; set; }
     }
 }

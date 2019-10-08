@@ -31,37 +31,37 @@ namespace LeandroSoftware.AccesoDatos.Servicios
         Cliente ObtenerCliente(int intIdCliente);
         Cliente ValidaIdentificacionCliente(int intIdEmpresa, string strIdentificacion);
         int ObtenerTotalListaClientes(int intIdEmpresa, string strNombre = "", bool incluyeClienteContado = false);
-        IEnumerable<Cliente> ObtenerListaClientes(int intIdEmpresa, int numPagina, int cantRec, string strNombre = "", bool incluyeClienteContado = false);
+        IEnumerable<LlaveDescripcion> ObtenerListadoClientes(int intIdEmpresa, int numPagina, int cantRec, string strNombre = "", bool incluyeClienteContado = false);
         Factura AgregarFactura(Factura factura, DatosConfiguracion datos);
         void AnularFactura(int intIdFactura, int intIdUsuario, DatosConfiguracion datos);
         Factura ObtenerFactura(int intIdFactura);
         int ObtenerTotalListaFacturas(int intIdEmpresa, int intIdFactura = 0, string strNombre = "");
-        IEnumerable<Factura> ObtenerListaFacturas(int intIdEmpresa, int numPagina, int cantRec, int intIdFactura = 0, string strNombre = "");
-        IEnumerable<Factura> ObtenerListaFacturasPorCliente(int intIdCliente);
+        IEnumerable<LlaveDescripcion> ObtenerListadoFacturas(int intIdEmpresa, int numPagina, int cantRec, int intIdFactura = 0, string strNombre = "");
+        IEnumerable<LlaveDescripcion> ObtenerListadoFacturasPorCliente(int intIdCliente);
         Proforma AgregarProforma(Proforma proforma);
         void ActualizarProforma(Proforma proforma);
         void AnularProforma(int intIdProforma, int intIdUsuario);
         Proforma ObtenerProforma(int intIdProforma);
         int ObtenerTotalListaProformas(int intIdEmpresa, bool bolIncluyeTodo, int intIdProforma = 0, string strNombre = "");
-        IEnumerable<Proforma> ObtenerListaProformas(int intIdEmpresa, bool bolIncluyeTodo, int numPagina, int cantRec, int intIdProforma = 0, string strNombre = "");
+        IEnumerable<Proforma> ObtenerListadoProformas(int intIdEmpresa, bool bolIncluyeTodo, int numPagina, int cantRec, int intIdProforma = 0, string strNombre = "");
         OrdenServicio AgregarOrdenServicio(OrdenServicio ordenServicio);
         void ActualizarOrdenServicio(OrdenServicio ordenServicio);
         void AnularOrdenServicio(int intIdOrdenServicio, int intIdUsuario);
         OrdenServicio ObtenerOrdenServicio(int intIdOrdenServicio);
         int ObtenerTotalListaOrdenesServicio(int intIdEmpresa, bool bolIncluyeTodo, int intIdOrdenServicio = 0, string strNombre = "");
-        IEnumerable<OrdenServicio> ObtenerListaOrdenesServicio(int intIdEmpresa, bool bolIncluyeTodo, int numPagina, int cantRec, int intIdOrdenServicio = 0, string strNombre = "");
+        IEnumerable<OrdenServicio> ObtenerListadoOrdenesServicio(int intIdEmpresa, bool bolIncluyeTodo, int numPagina, int cantRec, int intIdOrdenServicio = 0, string strNombre = "");
         DevolucionCliente AgregarDevolucionCliente(DevolucionCliente devolucion);
         void AnularDevolucionCliente(int intIdDevolucion, int intIdUsuario);
         DevolucionCliente ObtenerDevolucionCliente(int intIdDevolucion);
         int ObtenerTotalListaDevolucionesPorCliente(int intIdEmpresa, int intIdDevolucion = 0, string strNombre = "");
-        IEnumerable<DevolucionCliente> ObtenerListaDevolucionesPorCliente(int intIdEmpresa, int numPagina, int cantRec, int intIdDevolucion = 0, string strNombre = "");
+        IEnumerable<DevolucionCliente> ObtenerListadoDevolucionesPorCliente(int intIdEmpresa, int numPagina, int cantRec, int intIdDevolucion = 0, string strNombre = "");
         void GeneraMensajeReceptor(string strDatos, int intIdEmpresa, int intSucursal, int intTerminal, int intMensaje, DatosConfiguracion datos);
-        IList<DocumentoElectronico> ObtenerListaDocumentosElectronicosEnProceso(int intIdEmpresa);
+        IList<DocumentoDetalle> ObtenerListadoDocumentosElectronicosEnProceso(int intIdEmpresa);
         void ProcesarDocumentosElectronicosPendientes(int intIdEmpresa, ICorreoService servicioEnvioCorreo, DatosConfiguracion datos);
         void EnviarDocumentoElectronicoPendiente(int intIdDocumento, DatosConfiguracion datos);
         DocumentoElectronico ObtenerRespuestaDocumentoElectronicoEnviado(int intIdDocumento, DatosConfiguracion datos);
         int ObtenerTotalDocumentosElectronicosProcesados(int intIdEmpresa);
-        IList<DocumentoElectronico> ObtenerListaDocumentosElectronicosProcesados(int intIdEmpresa, int numPagina, int cantRec);
+        IList<DocumentoDetalle> ObtenerListadoDocumentosElectronicosProcesados(int intIdEmpresa, int numPagina, int cantRec);
         DocumentoElectronico ObtenerDocumentoElectronico(int intIdDocumento);
         DocumentoElectronico ObtenerDocumentoElectronicoPorClave(string strClave);
         void ProcesarRespuestaHacienda(RespuestaHaciendaDTO mensaje, ICorreoService servicioEnvioCorreo, string strCorreoNotificacionErrores);
@@ -254,21 +254,28 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public IEnumerable<Cliente> ObtenerListaClientes(int intIdEmpresa, int numPagina, int cantRec, string strNombre = "", bool incluyeClienteContado = false)
+        public IEnumerable<LlaveDescripcion> ObtenerListadoClientes(int intIdEmpresa, int numPagina, int cantRec, string strNombre = "", bool incluyeClienteContado = false)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
+                var listaCliente = new List<LlaveDescripcion>();
                 try
                 {
-                    var listaClientes = dbContext.ClienteRepository.Where(x => x.IdEmpresa == intIdEmpresa);
+                    var listado = dbContext.ClienteRepository.Where(x => x.IdEmpresa == intIdEmpresa);
                     if (!incluyeClienteContado)
-                        listaClientes = listaClientes.Where(x => x.IdCliente > 1);
+                        listado = listado.Where(x => x.IdCliente > 1);
                     if (!strNombre.Equals(string.Empty))
-                        listaClientes = listaClientes.Where(x => x.Nombre.Contains(strNombre));
+                        listado = listado.Where(x => x.Nombre.Contains(strNombre));
                     if (cantRec == 0)
-                        return listaClientes.OrderBy(x => x.Nombre).OrderBy(x => x.Nombre).ToList();
+                        listado = listado.OrderBy(x => x.Nombre).OrderBy(x => x.Nombre);
                     else
-                        return listaClientes.OrderBy(x => x.IdCliente).Skip((numPagina - 1) * cantRec).Take(cantRec).OrderBy(x => x.Nombre).ToList();
+                        listado = listado.OrderBy(x => x.IdCliente).Skip((numPagina - 1) * cantRec).Take(cantRec).OrderBy(x => x.Nombre);
+                    foreach (var value in listado)
+                    {
+                        LlaveDescripcion item = new LlaveDescripcion(value.IdCliente, value.Nombre);
+                        listaCliente.Add(item);
+                    }
+                    return listaCliente;
                 }
                 catch (Exception ex)
                 {
@@ -876,23 +883,25 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public IEnumerable<Factura> ObtenerListaFacturas(int intIdEmpresa, int numPagina, int cantRec, int intIdFactura = 0, string strNombre = "")
+        public IEnumerable<LlaveDescripcion> ObtenerListadoFacturas(int intIdEmpresa, int numPagina, int cantRec, int intIdFactura = 0, string strNombre = "")
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
+                var listaFactura = new List<LlaveDescripcion>();
                 try
                 {
-                    var listaFacturas = dbContext.FacturaRepository.Include("Cliente").Where(x => !x.Nulo & x.IdEmpresa == intIdEmpresa);
+                    var listado = dbContext.FacturaRepository.Include("Cliente").Where(x => !x.Nulo & x.IdEmpresa == intIdEmpresa);
                     if (intIdFactura > 0)
-                        listaFacturas = listaFacturas.Where(x => !x.Nulo & x.IdFactura == intIdFactura);
+                        listado = listado.Where(x => !x.Nulo & x.IdFactura == intIdFactura);
                     else if (!strNombre.Equals(string.Empty))
-                        listaFacturas = listaFacturas.Where(x => !x.Nulo & x.IdEmpresa == intIdEmpresa & x.Cliente.Nombre.Contains(strNombre));
-                    List<Factura> listado = listaFacturas.OrderByDescending(x => x.IdFactura).Skip((numPagina - 1) * cantRec).Take(cantRec).ToList();
-                    foreach (Factura factura in listado)
+                        listado = listado.Where(x => !x.Nulo & x.IdEmpresa == intIdEmpresa & x.Cliente.Nombre.Contains(strNombre));
+                    listado = listado.OrderByDescending(x => x.IdFactura).Skip((numPagina - 1) * cantRec).Take(cantRec);
+                    foreach (var value in listado)
                     {
-                        factura.Cliente.Factura = null;
+                        LlaveDescripcion item = new LlaveDescripcion(value.IdFactura, value.Cliente.Nombre);
+                        listaFactura.Add(item);
                     }
-                    return listado;
+                    return listaFactura;
                 }
                 catch (Exception ex)
                 {
@@ -902,13 +911,20 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public IEnumerable<Factura> ObtenerListaFacturasPorCliente(int intIdCliente)
+        public IEnumerable<LlaveDescripcion> ObtenerListadoFacturasPorCliente(int intIdCliente)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
+                var listaFactura = new List<LlaveDescripcion>();
                 try
                 {
-                    return dbContext.FacturaRepository.Where(x => !x.Nulo & x.IdCliente == intIdCliente).ToList();
+                    var listado = dbContext.FacturaRepository.Where(x => !x.Nulo & x.IdCliente == intIdCliente);
+                    foreach (var value in listado)
+                    {
+                        LlaveDescripcion item = new LlaveDescripcion(value.IdFactura, value.Cliente.Nombre);
+                        listaFactura.Add(item);
+                    }
+                    return listaFactura;
                 }
                 catch (Exception ex)
                 {
@@ -1042,7 +1058,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public IEnumerable<Proforma> ObtenerListaProformas(int intIdEmpresa, bool bolIncluyeTodo, int numPagina, int cantRec, int intIdProforma = 0, string strNombre = "")
+        public IEnumerable<Proforma> ObtenerListadoProformas(int intIdEmpresa, bool bolIncluyeTodo, int numPagina, int cantRec, int intIdProforma = 0, string strNombre = "")
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -1189,7 +1205,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public IEnumerable<OrdenServicio> ObtenerListaOrdenesServicio(int intIdEmpresa, bool bolIncluyeTodo, int numPagina, int cantRec, int intIdOrdenServicio = 0, string strNombre = "")
+        public IEnumerable<OrdenServicio> ObtenerListadoOrdenesServicio(int intIdEmpresa, bool bolIncluyeTodo, int numPagina, int cantRec, int intIdOrdenServicio = 0, string strNombre = "")
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -1607,7 +1623,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public IEnumerable<DevolucionCliente> ObtenerListaDevolucionesPorCliente(int intIdEmpresa, int numPagina, int cantRec, int intIdDevolucion = 0, string strNombre = "")
+        public IEnumerable<DevolucionCliente> ObtenerListadoDevolucionesPorCliente(int intIdEmpresa, int numPagina, int cantRec, int intIdDevolucion = 0, string strNombre = "")
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -1654,23 +1670,23 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public IList<DocumentoElectronico> ObtenerListaDocumentosElectronicosEnProceso(int intIdEmpresa)
+        public IList<DocumentoDetalle> ObtenerListadoDocumentosElectronicosEnProceso(int intIdEmpresa)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
+                var listaDocumento = new List<DocumentoDetalle>();
                 try
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.FechaVence < DateTime.Today) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
                     List<DocumentoElectronico> listado = dbContext.DocumentoElectronicoRepository.Where(x => x.IdEmpresa == intIdEmpresa & (x.EstadoEnvio == StaticEstadoDocumentoElectronico.Registrado || x.EstadoEnvio == StaticEstadoDocumentoElectronico.Enviado || x.EstadoEnvio == StaticEstadoDocumentoElectronico.Procesando)).ToList();
-                    foreach (DocumentoElectronico doc in listado)
+                    foreach (var value in listado)
                     {
-                        doc.DatosDocumento = null;
-                        doc.DatosDocumentoOri = null;
-                        doc.Respuesta = null;
+                        DocumentoDetalle item = new DocumentoDetalle(value.IdDocumento, value.ClaveNumerica, value.Consecutivo, value.Fecha, value.EstadoEnvio, value.EsMensajeReceptor, value.CorreoNotificacion);
+                        listaDocumento.Add(item);
                     }
-                    return listado;
+                    return listaDocumento;
                 }
                 catch (BusinessException ex)
                 {
@@ -1847,10 +1863,11 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public IList<DocumentoElectronico> ObtenerListaDocumentosElectronicosProcesados(int intIdEmpresa, int numPagina, int cantRec)
+        public IList<DocumentoDetalle> ObtenerListadoDocumentosElectronicosProcesados(int intIdEmpresa, int numPagina, int cantRec)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
+                var listaDocumento = new List<DocumentoDetalle>();
                 try
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
@@ -1858,13 +1875,12 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     List<DocumentoElectronico> listado = dbContext.DocumentoElectronicoRepository.Where(x => x.IdEmpresa == intIdEmpresa & (x.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado || x.EstadoEnvio == StaticEstadoDocumentoElectronico.Rechazado))
                         .OrderByDescending(x => x.IdDocumento)
                         .Skip((numPagina - 1) * cantRec).Take(cantRec).ToList();
-                    foreach (DocumentoElectronico doc in listado)
+                    foreach (var value in listado)
                     {
-                        doc.DatosDocumento = null;
-                        doc.DatosDocumentoOri = null;
-                        doc.Respuesta = null;
+                        DocumentoDetalle item = new DocumentoDetalle(value.IdDocumento, value.ClaveNumerica, value.Consecutivo, value.Fecha, value.EstadoEnvio, value.EsMensajeReceptor, value.CorreoNotificacion);
+                        listaDocumento.Add(item);
                     }
-                    return listado;
+                    return listaDocumento;
                 }
                 catch (BusinessException ex)
                 {

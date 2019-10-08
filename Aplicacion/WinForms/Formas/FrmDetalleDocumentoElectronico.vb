@@ -19,25 +19,25 @@ Public Class FrmDetalleDocumentoElectronico
 #Region "Métodos"
     Private Sub EstablecerPropiedadesDataGridView()
         Dim dvcId As New DataGridViewTextBoxColumn
-        Dim dvcClave As New DataGridViewTextBoxColumn
         Dim dvcConsecutivo As New DataGridViewTextBoxColumn
+        Dim dvcClave As New DataGridViewTextBoxColumn
         Dim dvcFecha As New DataGridViewTextBoxColumn
         Dim dvcEstado As New DataGridViewTextBoxColumn
-
         dgvDatos.Columns.Clear()
         dgvDatos.AutoGenerateColumns = False
         dvcId.HeaderText = "Id"
         dvcId.DataPropertyName = "IdDocumento"
-        dvcId.Width = 50
+        dvcId.Width = 0
+        dvcId.Visible = False
         dgvDatos.Columns.Add(dvcId)
-        dvcClave.HeaderText = "Clave"
-        dvcClave.DataPropertyName = "ClaveNumerica"
-        dvcClave.Width = 320
-        dgvDatos.Columns.Add(dvcClave)
         dvcConsecutivo.HeaderText = "Consecutivo"
         dvcConsecutivo.DataPropertyName = "Consecutivo"
         dvcConsecutivo.Width = 150
         dgvDatos.Columns.Add(dvcConsecutivo)
+        dvcClave.HeaderText = "Clave"
+        dvcClave.DataPropertyName = "ClaveNumerica"
+        dvcClave.Width = 370
+        dgvDatos.Columns.Add(dvcClave)
         dvcFecha.HeaderText = "Fecha"
         dvcFecha.DataPropertyName = "Fecha"
         dvcFecha.Width = 150
@@ -50,7 +50,7 @@ Public Class FrmDetalleDocumentoElectronico
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
         Try
-            listadoDocumentosProcesados = Await ClienteFEWCF.ObtenerListaDocumentosElectronicosProcesados(FrmPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina)
+            listadoDocumentosProcesados = Await ClienteFEWCF.ObtenerListadoDocumentosElectronicosProcesados(FrmPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina)
             dgvDatos.DataSource = listadoDocumentosProcesados
             If listadoDocumentosProcesados.Count() > 0 Then
                 btnMostrarRespuesta.Enabled = True
@@ -129,7 +129,7 @@ Public Class FrmDetalleDocumentoElectronico
         Try
             If Not bolRespuestaVisible Then
                 Dim intIndex As Integer = dgvDatos.CurrentRow.Index
-                Dim documento As DocumentoElectronico = listadoDocumentosProcesados.Item(intIndex)
+                Dim documento As DocumentoDetalle = listadoDocumentosProcesados.Item(intIndex)
                 If documento.EstadoEnvio = StaticEstadoDocumentoElectronico.Aceptado Or documento.EstadoEnvio = StaticEstadoDocumentoElectronico.Rechazado Then
                     Dim consulta As DocumentoElectronico = Await ClienteFEWCF.ObtenerDocumentoElectronico(documento.IdDocumento)
                     rtxDetalleRespuesta.Visible = True
@@ -166,7 +166,7 @@ Public Class FrmDetalleDocumentoElectronico
     Private Async Sub btnReenviarNotificacion_Click(sender As Object, e As EventArgs) Handles btnReenviarNotificacion.Click
         Dim strCorreoReceptor = ""
         Dim intIndex As Integer = dgvDatos.CurrentRow.Index
-        Dim documento As DocumentoElectronico = listadoDocumentosProcesados.Item(intIndex)
+        Dim documento As DocumentoDetalle = listadoDocumentosProcesados.Item(intIndex)
         If MessageBox.Show("Desea utilizar la dirección(es) de correo electrónico registrada(s) en el documento?", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
             strCorreoReceptor = documento.CorreoNotificacion
         Else
@@ -191,7 +191,7 @@ Public Class FrmDetalleDocumentoElectronico
         Try
             If Not bolRespuestaVisible Then
                 Dim intIndex As Integer = dgvDatos.CurrentRow.Index
-                Dim documento As DocumentoElectronico = listadoDocumentosProcesados.Item(intIndex)
+                Dim documento As DocumentoDetalle = listadoDocumentosProcesados.Item(intIndex)
                 If documento.EstadoEnvio = StaticEstadoDocumentoElectronico.Aceptado Or documento.EstadoEnvio = StaticEstadoDocumentoElectronico.Rechazado Then
                     Dim consulta As DocumentoElectronico = Await ClienteFEWCF.ObtenerDocumentoElectronico(documento.IdDocumento)
                     rtxDetalleRespuesta.Visible = True

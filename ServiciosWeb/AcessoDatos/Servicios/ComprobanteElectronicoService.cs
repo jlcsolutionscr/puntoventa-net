@@ -37,7 +37,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
 
         private static void ValidarToken(IDbContext dbContext, Empresa empresaLocal, string strServicioTokenURL, string strClientId)
         {
-            TokenType nuevoToken = null;
+            TokenType nuevoToken;
             try
             {
                 if (empresaLocal.AccessToken != null)

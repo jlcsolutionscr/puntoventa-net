@@ -8,24 +8,23 @@ Public Class FrmVendedorListado
 #Region "Métodos"
     Private Sub EstablecerPropiedadesDataGridView()
         Dim dvcId As New DataGridViewTextBoxColumn
-        Dim dvcNombre As New DataGridViewTextBoxColumn
-
-        dgvDatos.Columns.Clear()
-        dgvDatos.AutoGenerateColumns = False
+        Dim dvcDescripcion As New DataGridViewTextBoxColumn
+        dgvListado.Columns.Clear()
+        dgvListado.AutoGenerateColumns = False
         dvcId.HeaderText = "Id"
-        dvcId.DataPropertyName = "IdVendedor"
+        dvcId.DataPropertyName = "Id"
         dvcId.Width = 50
-        dgvDatos.Columns.Add(dvcId)
-        dvcNombre.HeaderText = "Nombre"
-        dvcNombre.DataPropertyName = "Nombre"
-        dvcNombre.Width = 600
-        dgvDatos.Columns.Add(dvcNombre)
+        dgvListado.Columns.Add(dvcId)
+        dvcDescripcion.HeaderText = "Descripción"
+        dvcDescripcion.DataPropertyName = "Descripcion"
+        dvcDescripcion.Width = 600
+        dgvListado.Columns.Add(dvcDescripcion)
     End Sub
 
     Private Async Sub ActualizarDatos()
         Try
-            listado = Await ClienteFEWCF.ObtenerListaVendedores(FrmPrincipal.empresaGlobal.IdEmpresa, txtNombre.Text)
-            dgvDatos.DataSource = listado
+            listado = Await ClienteFEWCF.ObtenerListadoVendedores(FrmPrincipal.empresaGlobal.IdEmpresa, txtNombre.Text)
+            dgvListado.DataSource = listado
             If listado.Count() > 0 Then
                 btnEditar.Enabled = True
                 btnEliminar.Enabled = True
@@ -38,7 +37,7 @@ Public Class FrmVendedorListado
             Close()
             Exit Sub
         End Try
-        dgvDatos.Refresh()
+        dgvListado.Refresh()
     End Sub
 #End Region
 
@@ -58,7 +57,7 @@ Public Class FrmVendedorListado
 
     Private Sub btnEditar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEditar.Click
         Dim formMant As New FrmVendedor With {
-        .intIdVendedor = dgvDatos.CurrentRow.Cells(0).Value
+        .intIdVendedor = dgvListado.CurrentRow.Cells(0).Value
         }
         formMant.ShowDialog()
         ActualizarDatos()
@@ -67,7 +66,7 @@ Public Class FrmVendedorListado
     Private Async Sub btnEliminar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEliminar.Click
         If MessageBox.Show("Desea eliminar el registro actual", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
             Try
-                Await ClienteFEWCF.EliminarVendedor(dgvDatos.CurrentRow.Cells(0).Value)
+                Await ClienteFEWCF.EliminarVendedor(dgvListado.CurrentRow.Cells(0).Value)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub

@@ -12,34 +12,22 @@ Public Class FrmBusquedaCliente
 #Region "Métodos"
     Private Sub EstablecerPropiedadesDataGridView()
         Dim dvcId As New DataGridViewTextBoxColumn
-        Dim dvcNombre As New DataGridViewTextBoxColumn
-        Dim dvcPermiteCredito As New DataGridViewCheckBoxColumn
-        Dim dvcTopeCredito As New DataGridViewTextBoxColumn
-
+        Dim dvcDescripcion As New DataGridViewTextBoxColumn
         dgvListado.Columns.Clear()
         dgvListado.AutoGenerateColumns = False
         dvcId.HeaderText = "Id"
-        dvcId.DataPropertyName = "IdCliente"
+        dvcId.DataPropertyName = "Id"
         dvcId.Width = 50
         dgvListado.Columns.Add(dvcId)
-        dvcNombre.HeaderText = "Nombre"
-        dvcNombre.DataPropertyName = "Nombre"
-        dvcNombre.Width = 400
-        dgvListado.Columns.Add(dvcNombre)
-        dvcPermiteCredito.HeaderText = "Crédito"
-        dvcPermiteCredito.DataPropertyName = "PermiteCredito"
-        dvcPermiteCredito.Width = 50
-        dgvListado.Columns.Add(dvcPermiteCredito)
-        dvcTopeCredito.HeaderText = "Tope Crédito"
-        dvcTopeCredito.DataPropertyName = "TopeCredito"
-        dvcTopeCredito.Width = 120
-        dvcTopeCredito.DefaultCellStyle = FrmPrincipal.dgvDecimal
-        dgvListado.Columns.Add(dvcTopeCredito)
+        dvcDescripcion.HeaderText = "Descripción"
+        dvcDescripcion.DataPropertyName = "Descripcion"
+        dvcDescripcion.Width = 600
+        dgvListado.Columns.Add(dvcDescripcion)
     End Sub
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
         Try
-            dgvListado.DataSource = Await ClienteFEWCF.ObtenerListaClientes(FrmPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, txtNombre.Text)
+            dgvListado.DataSource = Await ClienteFEWCF.ObtenerListadoClientes(FrmPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, txtNombre.Text)
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)

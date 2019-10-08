@@ -16,13 +16,13 @@ namespace LeandroSoftware.AccesoDatos.Servicios
         void ActualizarCuentaEgreso(CuentaEgreso cuenta);
         void EliminarCuentaEgreso(int intIdCuenta);
         CuentaEgreso ObtenerCuentaEgreso(int intIdCuenta);
-        IEnumerable<CuentaEgreso> ObtenerListaCuentasEgreso(int intIdEmpresa, string strDescripcion = "");
+        IEnumerable<LlaveDescripcion> ObtenerListadoCuentasEgreso(int intIdEmpresa, string strDescripcion = "");
         Egreso AgregarEgreso(Egreso egreso);
         void ActualizarEgreso(Egreso egreso);
         void AnularEgreso(int intIdEgreso, int intIdUsuario);
         Egreso ObtenerEgreso(int intIdEgreso);
         int ObtenerTotalListaEgresos(int intIdEmpresa, int intIdEgreso = 0, string strBeneficiario = "", string strDetalle = "");
-        IEnumerable<Egreso> ObtenerListaEgresos(int intIdEmpresa, int numPagina, int cantRec, int intIdEgreso = 0, string strBeneficiario = "", string strDetalle = "");
+        IEnumerable<LlaveDescripcion> ObtenerListadoEgresos(int intIdEmpresa, int numPagina, int cantRec, int intIdEgreso = 0, string strBeneficiario = "", string strDetalle = "");
     }
 
     public class EgresoService : IEgresoService
@@ -145,16 +145,23 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public IEnumerable<CuentaEgreso> ObtenerListaCuentasEgreso(int intIdEmpresa, string strDescripcion = "")
+        public IEnumerable<LlaveDescripcion> ObtenerListadoCuentasEgreso(int intIdEmpresa, string strDescripcion = "")
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
+                var listadoCuentaEgreso = new List<LlaveDescripcion>();
                 try
                 {
-                    var listaCuentas = dbContext.CuentaEgresoRepository.Where(x => x.IdEmpresa == intIdEmpresa);
+                    var listado = dbContext.CuentaEgresoRepository.Where(x => x.IdEmpresa == intIdEmpresa);
                     if (!strDescripcion.Equals(string.Empty))
-                        listaCuentas = listaCuentas.Where(x => x.Descripcion.Contains(strDescripcion));
-                    return listaCuentas.OrderBy(x => x.Descripcion).ToList();
+                        listado = listado.Where(x => x.Descripcion.Contains(strDescripcion));
+                    listado = listado.OrderBy(x => x.Descripcion);
+                    foreach (var value in listado)
+                    {
+                        LlaveDescripcion item = new LlaveDescripcion(value.IdCuenta, value.Descripcion);
+                        listadoCuentaEgreso.Add(item);
+                    }
+                    return listadoCuentaEgreso;
                 }
                 catch (Exception ex)
                 {
@@ -420,23 +427,30 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public IEnumerable<Egreso> ObtenerListaEgresos(int intIdEmpresa, int numPagina, int cantRec, int intIdEgreso = 0, string strBeneficiario = "", string strDetalle = "")
+        public IEnumerable<LlaveDescripcion> ObtenerListadoEgresos(int intIdEmpresa, int numPagina, int cantRec, int intIdEgreso = 0, string strBeneficiario = "", string strDetalle = "")
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
+                var listadoEgreso = new List<LlaveDescripcion>();
                 try
                 {
-                    var listaEgresos = dbContext.EgresoRepository.Where(x => !x.Nulo & x.IdEmpresa == intIdEmpresa);
+                    var listado = dbContext.EgresoRepository.Where(x => !x.Nulo & x.IdEmpresa == intIdEmpresa);
                     if (intIdEgreso > 0)
-                        listaEgresos = listaEgresos.Where(x => x.IdEgreso == intIdEgreso);
+                        listado = listado.Where(x => x.IdEgreso == intIdEgreso);
                     else
                     {
                         if (!strBeneficiario.Equals(string.Empty))
-                            listaEgresos = listaEgresos.Where(x => x.Beneficiario.Contains(strBeneficiario));
+                            listado = listado.Where(x => x.Beneficiario.Contains(strBeneficiario));
                         if (!strDetalle.Equals(string.Empty))
-                            listaEgresos = listaEgresos.Where(x => x.Detalle.Contains(strDetalle));
+                            listado = listado.Where(x => x.Detalle.Contains(strDetalle));
                     }
-                    return listaEgresos.OrderByDescending(x => x.IdEgreso).Skip((numPagina - 1) * cantRec).Take(cantRec).ToList();
+                    listado = listado.OrderByDescending(x => x.IdEgreso).Skip((numPagina - 1) * cantRec).Take(cantRec);
+                    foreach (var value in listado)
+                    {
+                        LlaveDescripcion item = new LlaveDescripcion(value.IdEgreso, value.Detalle);
+                        listadoEgreso.Add(item);
+                    }
+                    return listadoEgreso;
                 }
                 catch (Exception ex)
                 {

@@ -1,11 +1,7 @@
-﻿using LeandroSoftware.Core.Dominio.Entidades;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using LeandroSoftware.Core.CustomClasses;
 using LeandroSoftware.Core.ClienteWCF;
 using LeandroSoftware.Core.CommonTypes;
 
@@ -14,10 +10,7 @@ namespace LeandroSoftware.Activator
     public partial class FrmEmpresaListado : Form
     {
         private FrmEmpresa empresaForm;
-        private static readonly System.Collections.Specialized.NameValueCollection appSettings = ConfigurationManager.AppSettings;
-        private static HttpClient client = new HttpClient();
-        private static CustomJavascriptSerializer serializer = new CustomJavascriptSerializer();
-        private IList<ListaEmpresa> dsDataSet = Array.Empty<ListaEmpresa>();
+        private IList<LlaveDescripcion> dsDataSet = Array.Empty<LlaveDescripcion>();
 
         public FrmEmpresaListado()
         {
@@ -28,7 +21,7 @@ namespace LeandroSoftware.Activator
         {
             try
             {
-                dsDataSet = await ClienteFEWCF.ObtenerListaEmpresas();
+                dsDataSet = await ClienteFEWCF.ObtenerListadoEmpresasAdministrador();
                 cboEmpresa.DataSource = dsDataSet;
                 btnAgregar.Enabled = true;
                 btnEditar.Enabled = true;
@@ -44,8 +37,8 @@ namespace LeandroSoftware.Activator
         {
             btnAgregar.Enabled = false;
             btnEditar.Enabled = false;
-            cboEmpresa.ValueMember = "IdEmpresa";
-            cboEmpresa.DisplayMember = "NombreComercial";
+            cboEmpresa.ValueMember = "Id";
+            cboEmpresa.DisplayMember = "Descripcion";
             await CargarListadoEmpresa();
             btnAgregar.Enabled = true;
             if (dsDataSet.Count > 0) btnEditar.Enabled = true;

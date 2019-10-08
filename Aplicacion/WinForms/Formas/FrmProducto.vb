@@ -51,15 +51,15 @@ Public Class FrmProducto
 
     Private Async Function CargarCombos() As Task
         Try
-            cboTipoProducto.ValueMember = "IdTipoProducto"
+            cboTipoProducto.ValueMember = "Id"
             cboTipoProducto.DisplayMember = "Descripcion"
-            cboTipoProducto.DataSource = Await ClienteFEWCF.ObtenerListaTipoProducto()
-            cboTipoImpuesto.ValueMember = "IdImpuesto"
+            cboTipoProducto.DataSource = Await ClienteFEWCF.ObtenerListadoTipoProducto()
+            cboTipoImpuesto.ValueMember = "Id"
             cboTipoImpuesto.DisplayMember = "Descripcion"
-            cboTipoImpuesto.DataSource = Await ClienteFEWCF.ObtenerListaTipoImpuesto()
-            cboUnidad.ValueMember = "IdTipoUnidad"
+            cboTipoImpuesto.DataSource = Await ClienteFEWCF.ObtenerListadoTipoImpuesto()
+            cboUnidad.ValueMember = "Id"
             cboUnidad.DisplayMember = "Descripcion"
-            cboUnidad.DataSource = Await ClienteFEWCF.ObtenerListaTipoUnidad()
+            cboUnidad.DataSource = Await ClienteFEWCF.ObtenerListadoTipoUnidad()
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
@@ -68,15 +68,15 @@ Public Class FrmProducto
     Private Async Function CargarComboLinea() As Task
         Try
             If cboTipoProducto.SelectedValue = 1 Then
-                cboLinea.DataSource = Await ClienteFEWCF.ObtenerListaLineasDeProducto(FrmPrincipal.empresaGlobal.IdEmpresa)
+                cboLinea.DataSource = Await ClienteFEWCF.ObtenerListadoLineasDeProducto(FrmPrincipal.empresaGlobal.IdEmpresa)
             Else
-                cboLinea.DataSource = Await ClienteFEWCF.ObtenerListaLineasDeServicio(FrmPrincipal.empresaGlobal.IdEmpresa)
+                cboLinea.DataSource = Await ClienteFEWCF.ObtenerListadoLineasDeServicio(FrmPrincipal.empresaGlobal.IdEmpresa)
             End If
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Function
         End Try
-        cboLinea.ValueMember = "IdLinea"
+        cboLinea.ValueMember = "Id"
         cboLinea.DisplayMember = "Descripcion"
     End Function
 

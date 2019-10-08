@@ -314,7 +314,7 @@ Public Class FrmFactura
     Private Sub CargarLineaDetalleFactura(ByVal producto As Producto, ByVal boolExcento As Boolean, ByVal strDescripcion As String, ByVal dblCantidad As Double, ByVal dblPrecio As Double, ByVal dblCostoInstalacion As Double)
         Dim intIndice As Integer = dtbDetalleFactura.Rows.IndexOf(dtbDetalleFactura.Rows.Find(producto.IdProducto))
         Dim decTasaImpuesto As Decimal = producto.ParametroImpuesto.TasaImpuesto
-        If cliente.ExoneradoDeImpuesto Then decTasaImpuesto = 0
+        If boolExcento Then decTasaImpuesto = 0
         If intIndice >= 0 Then
             dtbDetalleFactura.Rows(intIndice).Item(1) = producto.Codigo
             dtbDetalleFactura.Rows(intIndice).Item(2) = strDescripcion
@@ -416,41 +416,41 @@ Public Class FrmFactura
 
     Private Async Function CargarCombos() As Task
         Try
-            cboCondicionVenta.ValueMember = "IdCondicionVenta"
+            cboCondicionVenta.ValueMember = "Id"
             cboCondicionVenta.DisplayMember = "Descripcion"
-            cboCondicionVenta.DataSource = Await ClienteFEWCF.ObtenerListaCondicionVenta()
-            cboFormaPago.ValueMember = "IdFormaPago"
+            cboCondicionVenta.DataSource = Await ClienteFEWCF.ObtenerListadoCondicionVenta()
+            cboFormaPago.ValueMember = "Id"
             cboFormaPago.DisplayMember = "Descripcion"
-            cboFormaPago.DataSource = Await ClienteFEWCF.ObtenerListaFormaPagoFactura()
-            cboTipoMoneda.ValueMember = "IdTipoMoneda"
+            cboFormaPago.DataSource = Await ClienteFEWCF.ObtenerListadoFormaPagoFactura()
+            cboTipoMoneda.ValueMember = "Id"
             cboTipoMoneda.DisplayMember = "Descripcion"
-            cboTipoMoneda.DataSource = Await ClienteFEWCF.ObtenerListaTipoMoneda()
-            cboTipoExoneracion.ValueMember = "IdTipoExoneracion"
+            cboTipoMoneda.DataSource = Await ClienteFEWCF.ObtenerListadoTipoMoneda()
+            cboTipoExoneracion.ValueMember = "Id"
             cboTipoExoneracion.DisplayMember = "Descripcion"
-            cboTipoExoneracion.DataSource = Await ClienteFEWCF.ObtenerListaTipoExoneracion()
+            cboTipoExoneracion.DataSource = Await ClienteFEWCF.ObtenerListadoTipoExoneracion()
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Function
 
     Private Async Function CargarListaBancoAdquiriente() As Task
-        Dim lista As IList = Await ClienteFEWCF.ObtenerListaBancoAdquiriente(FrmPrincipal.empresaGlobal.IdEmpresa)
+        Dim lista As IList = Await ClienteFEWCF.ObtenerListadoBancoAdquiriente(FrmPrincipal.empresaGlobal.IdEmpresa)
         If lista.Count() = 0 Then
             Throw New Exception("Debe parametrizar la lista de bancos adquirientes para pagos con tarjeta.")
         Else
             cboTipoBanco.DataSource = lista
-            cboTipoBanco.ValueMember = "IdBanco"
+            cboTipoBanco.ValueMember = "Id"
             cboTipoBanco.DisplayMember = "Descripcion"
         End If
     End Function
 
     Private Async Function CargarListaCuentaBanco() As Task
-        Dim lista As IList = Await ClienteFEWCF.ObtenerListaCuentasBanco(FrmPrincipal.empresaGlobal.IdEmpresa)
+        Dim lista As IList = Await ClienteFEWCF.ObtenerListadoCuentasBanco(FrmPrincipal.empresaGlobal.IdEmpresa)
         If lista.Count() = 0 Then
             Throw New Exception("Debe parametrizar la lista de bancos para registrar movimientos.")
         Else
             cboTipoBanco.DataSource = lista
-            cboTipoBanco.ValueMember = "IdCuenta"
+            cboTipoBanco.ValueMember = "Id"
             cboTipoBanco.DisplayMember = "Descripcion"
         End If
     End Function
@@ -506,7 +506,7 @@ Public Class FrmFactura
 
     Private Async Function CargarAutoCompletarProducto() As Task
         Dim source As AutoCompleteStringCollection = New AutoCompleteStringCollection()
-        Dim listOfProducts As IList(Of Producto) = Await ClienteFEWCF.ObtenerListaProductos(FrmPrincipal.empresaGlobal.IdEmpresa, 1, 0, True)
+        Dim listOfProducts As IList(Of Producto) = Await ClienteFEWCF.ObtenerListadoProductos(FrmPrincipal.empresaGlobal.IdEmpresa, 1, 0, True)
         For Each producto As Producto In listOfProducts
             source.Add(String.Concat(producto.Codigo, " ", producto.Descripcion))
         Next
@@ -865,18 +865,34 @@ Public Class FrmFactura
         FrmPrincipal.strBusqueda = ""
         formBusProd.ShowDialog()
         If Not FrmPrincipal.strBusqueda.Equals("") Then
-            txtCodigo.Text = FrmPrincipal.strBusqueda
-            Await ValidarProducto(txtCodigo.Text)
-            If Not producto Is Nothing Then
-                If FrmPrincipal.empresaGlobal.ModificaDescProducto = True Then
-                    txtDescripcion.ReadOnly = False
-                    txtDescripcion.Focus()
+            Dim intIdProducto As Integer = Integer.Parse(FrmPrincipal.strBusqueda)
+            Try
+                producto = Await ClienteFEWCF.ObtenerProducto(intIdProducto)
+                txtCodigo.Text = producto.Codigo
+                If txtCantidad.Text = "" Then txtCantidad.Text = "1"
+                txtDescripcion.Text = producto.Descripcion
+                If cliente IsNot Nothing Then
+                    If cliente.IdTipoPrecio = 1 Then
+                        decPrecioVenta = producto.PrecioVenta1
+                    ElseIf cliente.IdTipoPrecio = 2 Then
+                        decPrecioVenta = producto.PrecioVenta2
+                    ElseIf cliente.IdTipoPrecio = 3 Then
+                        decPrecioVenta = producto.PrecioVenta3
+                    ElseIf cliente.IdTipoPrecio = 4 Then
+                        decPrecioVenta = producto.PrecioVenta4
+                    ElseIf cliente.IdTipoPrecio = 5 Then
+                        decPrecioVenta = producto.PrecioVenta5
+                    Else
+                        decPrecioVenta = producto.PrecioVenta1
+                    End If
+                Else
+                    decPrecioVenta = producto.PrecioVenta1
                 End If
-            Else
-                txtDescripcion.ReadOnly = True
-                txtPrecio.Focus()
-                txtPrecio.SelectAll()
-            End If
+                txtPrecio.Text = FormatNumber(decPrecioVenta, 2)
+                txtUnidad.Text = producto.IdTipoUnidad
+            Catch ex As Exception
+                MessageBox.Show("Error al obtener la información del producto seleccionado. Intente mas tarde.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End Try
         End If
     End Sub
 
@@ -1136,7 +1152,7 @@ Public Class FrmFactura
     End Sub
 
     Private Async Sub BtnInsertar_Click(sender As Object, e As EventArgs) Handles btnInsertar.Click
-        If txtCodigo.Text <> "" And txtDescripcion.Text = "" Then
+        If txtCodigo.Text <> "" And (txtDescripcion.Text = "" Or txtPrecio.Text = "") Then
             Await ValidarProducto(txtCodigo.Text)
         End If
         If txtCodigo.Text <> "" And txtCantidad.Text <> "" And txtPrecio.Text <> "" And txtUnidad.Text <> "" Then

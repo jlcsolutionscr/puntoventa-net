@@ -46,6 +46,7 @@ Partial Class FrmPrincipal
         Me.MnuParamPC = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuParamBA = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuMant = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ManuMantEmpresa = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuMantCliente = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuMantLinea = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuMantProveedor = New System.Windows.Forms.ToolStripMenuItem()
@@ -88,7 +89,6 @@ Partial Class FrmPrincipal
         Me.mnuContaCierre = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuContaReporte = New System.Windows.Forms.ToolStripMenuItem()
         Me.picLoader = New System.Windows.Forms.PictureBox()
-        Me.ManuMantEmpresa = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuMenuPrincipal.SuspendLayout()
         CType(Me.picLoader, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -168,6 +168,13 @@ Partial Class FrmPrincipal
         Me.MnuMant.Size = New System.Drawing.Size(101, 20)
         Me.MnuMant.Text = "Mantenimiento"
         Me.MnuMant.Visible = False
+        '
+        'ManuMantEmpresa
+        '
+        Me.ManuMantEmpresa.Name = "ManuMantEmpresa"
+        Me.ManuMantEmpresa.Size = New System.Drawing.Size(180, 22)
+        Me.ManuMantEmpresa.Text = "Empresa"
+        Me.ManuMantEmpresa.Visible = False
         '
         'MnuMantCliente
         '
@@ -476,12 +483,6 @@ Partial Class FrmPrincipal
         Me.picLoader.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
         Me.picLoader.TabIndex = 3
         Me.picLoader.TabStop = False
-        '
-        'ManuMantEmpresa
-        '
-        Me.ManuMantEmpresa.Name = "ManuMantEmpresa"
-        Me.ManuMantEmpresa.Size = New System.Drawing.Size(180, 22)
-        Me.ManuMantEmpresa.Text = "Empresa"
         '
         'FrmPrincipal
         '

@@ -9,7 +9,7 @@ Public Class FrmMenuCuentaBanco
         Try
             cboIdCuentaBanco.ValueMember = "IdCuenta"
             cboIdCuentaBanco.DisplayMember = "Descripcion"
-            cboIdCuentaBanco.DataSource = Await ClienteFEWCF.ObtenerListaCuentasBanco(FrmPrincipal.empresaGlobal.IdEmpresa)
+            cboIdCuentaBanco.DataSource = Await ClienteFEWCF.ObtenerListadoCuentasBanco(FrmPrincipal.empresaGlobal.IdEmpresa)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub

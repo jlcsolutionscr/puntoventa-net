@@ -20,8 +20,6 @@ Partial Class FrmBusquedaEgreso
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FrmBusquedaEgreso))
         Me.dgvListado = New System.Windows.Forms.DataGridView()
         Me.btnFiltrar = New System.Windows.Forms.Button()
-        Me.lblDescripcion = New System.Windows.Forms.Label()
-        Me.txtBeneficiario = New System.Windows.Forms.TextBox()
         Me.lblPagina = New System.Windows.Forms.Label()
         Me.btnLast = New System.Windows.Forms.Button()
         Me.btnNext = New System.Windows.Forms.Button()
@@ -41,7 +39,7 @@ Partial Class FrmBusquedaEgreso
         Me.dgvListado.AllowUserToResizeColumns = False
         Me.dgvListado.AllowUserToResizeRows = False
         Me.dgvListado.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.dgvListado.Location = New System.Drawing.Point(12, 71)
+        Me.dgvListado.Location = New System.Drawing.Point(12, 44)
         Me.dgvListado.Name = "dgvListado"
         Me.dgvListado.ReadOnly = True
         Me.dgvListado.RowHeadersVisible = False
@@ -53,33 +51,17 @@ Partial Class FrmBusquedaEgreso
         'btnFiltrar
         '
         Me.btnFiltrar.Image = CType(resources.GetObject("btnFiltrar.Image"), System.Drawing.Image)
-        Me.btnFiltrar.Location = New System.Drawing.Point(578, 10)
+        Me.btnFiltrar.Location = New System.Drawing.Point(610, 10)
         Me.btnFiltrar.Name = "btnFiltrar"
         Me.btnFiltrar.Size = New System.Drawing.Size(22, 22)
         Me.btnFiltrar.TabIndex = 3
         Me.btnFiltrar.TabStop = False
         Me.btnFiltrar.UseVisualStyleBackColor = True
         '
-        'lblDescripcion
-        '
-        Me.lblDescripcion.AutoSize = True
-        Me.lblDescripcion.Location = New System.Drawing.Point(142, 15)
-        Me.lblDescripcion.Name = "lblDescripcion"
-        Me.lblDescripcion.Size = New System.Drawing.Size(65, 13)
-        Me.lblDescripcion.TabIndex = 8
-        Me.lblDescripcion.Text = "Beneficiario:"
-        '
-        'txtBeneficiario
-        '
-        Me.txtBeneficiario.Location = New System.Drawing.Point(213, 12)
-        Me.txtBeneficiario.Name = "txtBeneficiario"
-        Me.txtBeneficiario.Size = New System.Drawing.Size(359, 20)
-        Me.txtBeneficiario.TabIndex = 1
-        '
         'lblPagina
         '
         Me.lblPagina.AutoSize = True
-        Me.lblPagina.Location = New System.Drawing.Point(389, 392)
+        Me.lblPagina.Location = New System.Drawing.Point(389, 365)
         Me.lblPagina.Name = "lblPagina"
         Me.lblPagina.Size = New System.Drawing.Size(77, 13)
         Me.lblPagina.TabIndex = 23
@@ -90,7 +72,7 @@ Partial Class FrmBusquedaEgreso
         Me.btnLast.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnLast.Enabled = False
         Me.btnLast.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnLast.Location = New System.Drawing.Point(603, 387)
+        Me.btnLast.Location = New System.Drawing.Point(603, 360)
         Me.btnLast.Name = "btnLast"
         Me.btnLast.Size = New System.Drawing.Size(29, 23)
         Me.btnLast.TabIndex = 8
@@ -103,7 +85,7 @@ Partial Class FrmBusquedaEgreso
         Me.btnNext.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnNext.Enabled = False
         Me.btnNext.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnNext.Location = New System.Drawing.Point(574, 387)
+        Me.btnNext.Location = New System.Drawing.Point(574, 360)
         Me.btnNext.Name = "btnNext"
         Me.btnNext.Size = New System.Drawing.Size(29, 23)
         Me.btnNext.TabIndex = 7
@@ -116,7 +98,7 @@ Partial Class FrmBusquedaEgreso
         Me.btnPrevious.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnPrevious.Enabled = False
         Me.btnPrevious.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnPrevious.Location = New System.Drawing.Point(545, 387)
+        Me.btnPrevious.Location = New System.Drawing.Point(545, 360)
         Me.btnPrevious.Name = "btnPrevious"
         Me.btnPrevious.Size = New System.Drawing.Size(29, 23)
         Me.btnPrevious.TabIndex = 6
@@ -129,7 +111,7 @@ Partial Class FrmBusquedaEgreso
         Me.btnFirst.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnFirst.Enabled = False
         Me.btnFirst.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnFirst.Location = New System.Drawing.Point(516, 387)
+        Me.btnFirst.Location = New System.Drawing.Point(516, 360)
         Me.btnFirst.Name = "btnFirst"
         Me.btnFirst.Size = New System.Drawing.Size(29, 23)
         Me.btnFirst.TabIndex = 5
@@ -140,7 +122,7 @@ Partial Class FrmBusquedaEgreso
         'Label1
         '
         Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(11, 15)
+        Me.Label1.Location = New System.Drawing.Point(12, 15)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(30, 13)
         Me.Label1.TabIndex = 31
@@ -148,15 +130,15 @@ Partial Class FrmBusquedaEgreso
         '
         'txtId
         '
-        Me.txtId.Location = New System.Drawing.Point(47, 12)
+        Me.txtId.Location = New System.Drawing.Point(48, 12)
         Me.txtId.Name = "txtId"
-        Me.txtId.Size = New System.Drawing.Size(87, 20)
+        Me.txtId.Size = New System.Drawing.Size(45, 20)
         Me.txtId.TabIndex = 0
         '
         'Label2
         '
         Me.Label2.AutoSize = True
-        Me.Label2.Location = New System.Drawing.Point(10, 41)
+        Me.Label2.Location = New System.Drawing.Point(99, 15)
         Me.Label2.Name = "Label2"
         Me.Label2.Size = New System.Drawing.Size(43, 13)
         Me.Label2.TabIndex = 33
@@ -164,9 +146,9 @@ Partial Class FrmBusquedaEgreso
         '
         'txtDetalle
         '
-        Me.txtDetalle.Location = New System.Drawing.Point(59, 38)
+        Me.txtDetalle.Location = New System.Drawing.Point(148, 12)
         Me.txtDetalle.Name = "txtDetalle"
-        Me.txtDetalle.Size = New System.Drawing.Size(573, 20)
+        Me.txtDetalle.Size = New System.Drawing.Size(456, 20)
         Me.txtDetalle.TabIndex = 2
         '
         'FrmBusquedaEgreso
@@ -175,7 +157,7 @@ Partial Class FrmBusquedaEgreso
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
-        Me.ClientSize = New System.Drawing.Size(644, 419)
+        Me.ClientSize = New System.Drawing.Size(644, 395)
         Me.Controls.Add(Me.Label2)
         Me.Controls.Add(Me.txtDetalle)
         Me.Controls.Add(Me.Label1)
@@ -186,8 +168,6 @@ Partial Class FrmBusquedaEgreso
         Me.Controls.Add(Me.btnPrevious)
         Me.Controls.Add(Me.btnFirst)
         Me.Controls.Add(Me.btnFiltrar)
-        Me.Controls.Add(Me.lblDescripcion)
-        Me.Controls.Add(Me.txtBeneficiario)
         Me.Controls.Add(Me.dgvListado)
         Me.Cursor = System.Windows.Forms.Cursors.Default
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
@@ -205,8 +185,6 @@ Partial Class FrmBusquedaEgreso
     End Sub
     Friend WithEvents dgvListado As System.Windows.Forms.DataGridView
     Friend WithEvents btnFiltrar As System.Windows.Forms.Button
-    Friend WithEvents lblDescripcion As System.Windows.Forms.Label
-    Friend WithEvents txtBeneficiario As System.Windows.Forms.TextBox
     Friend WithEvents lblPagina As System.Windows.Forms.Label
     Private WithEvents btnLast As System.Windows.Forms.Button
     Private WithEvents btnNext As System.Windows.Forms.Button

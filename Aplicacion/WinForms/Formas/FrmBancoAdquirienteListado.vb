@@ -8,41 +8,23 @@ Public Class FrmBancoAdquirienteListado
 #Region "Métodos"
     Private Sub EstablecerPropiedadesDataGridView()
         Dim dvcId As New DataGridViewTextBoxColumn
-        Dim dvcCodigo As New DataGridViewTextBoxColumn
         Dim dvcDescripcion As New DataGridViewTextBoxColumn
-        Dim dvcPorcentajeRetencion As New DataGridViewTextBoxColumn
-        Dim dvcPorcentajeComision As New DataGridViewTextBoxColumn
-
-        dgvDatos.Columns.Clear()
-        dgvDatos.AutoGenerateColumns = False
+        dgvListado.Columns.Clear()
+        dgvListado.AutoGenerateColumns = False
         dvcId.HeaderText = "Id"
-        dvcId.DataPropertyName = "IdBanco"
+        dvcId.DataPropertyName = "Id"
         dvcId.Width = 50
-        dgvDatos.Columns.Add(dvcId)
-        dvcCodigo.HeaderText = "Código"
-        dvcCodigo.DataPropertyName = "Codigo"
-        dvcCodigo.Width = 150
-        dgvDatos.Columns.Add(dvcCodigo)
+        dgvListado.Columns.Add(dvcId)
         dvcDescripcion.HeaderText = "Descripción"
         dvcDescripcion.DataPropertyName = "Descripcion"
-        dvcDescripcion.Width = 250
-        dgvDatos.Columns.Add(dvcDescripcion)
-        dvcPorcentajeRetencion.HeaderText = "% Retenc."
-        dvcPorcentajeRetencion.DataPropertyName = "PorcentajeRetencion"
-        dvcPorcentajeRetencion.DefaultCellStyle = FrmPrincipal.dgvDecimal
-        dvcPorcentajeRetencion.Width = 100
-        dgvDatos.Columns.Add(dvcPorcentajeRetencion)
-        dvcPorcentajeComision.HeaderText = "% Comisión"
-        dvcPorcentajeComision.DataPropertyName = "PorcentajeComision"
-        dvcPorcentajeComision.DefaultCellStyle = FrmPrincipal.dgvDecimal
-        dvcPorcentajeComision.Width = 100
-        dgvDatos.Columns.Add(dvcPorcentajeComision)
+        dvcDescripcion.Width = 600
+        dgvListado.Columns.Add(dvcDescripcion)
     End Sub
 
     Private Async Sub ActualizarDatos()
         Try
-            listado = Await ClienteFEWCF.ObtenerListaBancoAdquiriente(FrmPrincipal.empresaGlobal.IdEmpresa, txtDescripcion.Text)
-            dgvDatos.DataSource = listado
+            listado = Await ClienteFEWCF.ObtenerListadoBancoAdquiriente(FrmPrincipal.empresaGlobal.IdEmpresa, txtDescripcion.Text)
+            dgvListado.DataSource = listado
             If listado.Count() > 0 Then
                 btnEditar.Enabled = True
                 btnEliminar.Enabled = True
@@ -55,7 +37,7 @@ Public Class FrmBancoAdquirienteListado
             Close()
             Exit Sub
         End Try
-        dgvDatos.Refresh()
+        dgvListado.Refresh()
     End Sub
 #End Region
 
@@ -75,7 +57,7 @@ Public Class FrmBancoAdquirienteListado
 
     Private Sub BtnEditar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEditar.Click
         Dim formMant As New FrmBancoAdquiriente With {
-            .intIdBanco = dgvDatos.CurrentRow.Cells(0).Value
+            .intIdBanco = dgvListado.CurrentRow.Cells(0).Value
         }
         formMant.ShowDialog()
         ActualizarDatos()
@@ -84,7 +66,7 @@ Public Class FrmBancoAdquirienteListado
     Private Async Sub BtnEliminar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEliminar.Click
         If MessageBox.Show("Desea eliminar el registro actual", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
             Try
-                Await ClienteFEWCF.EliminarBancoAdquiriente(dgvDatos.CurrentRow.Cells(0).Value)
+                Await ClienteFEWCF.EliminarBancoAdquiriente(dgvListado.CurrentRow.Cells(0).Value)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub

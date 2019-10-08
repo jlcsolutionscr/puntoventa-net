@@ -16,7 +16,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
         void ActualizarCuentaBanco(CuentaBanco cuentaBanco);
         void EliminarCuentaBanco(int intIdCuenta);
         CuentaBanco ObtenerCuentaBanco(int intIdCuenta);
-        IEnumerable<CuentaBanco> ObtenerListaCuentasBanco(int intIdEmpresa, string strDescripcion = "");
+        IEnumerable<LlaveDescripcion> ObtenerListadoCuentasBanco(int intIdEmpresa, string strDescripcion = "");
         IEnumerable<TipoMovimientoBanco> ObtenerTipoMovimientoBanco();
         MovimientoBanco AgregarMovimientoBanco(MovimientoBanco movimiento);
         MovimientoBanco AgregarMovimientoBanco(IDbContext dbContext, MovimientoBanco movimiento);
@@ -25,7 +25,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
         void AnularMovimientoBanco(IDbContext dbContext, int intIdMovimiento, int intIdUsuario);
         MovimientoBanco ObtenerMovimientoBanco(int intIdMovimiento);
         int ObtenerTotalListaMovimientos(int intIdEmpresa, string strDescripcion = "");
-        IEnumerable<MovimientoBanco> ObtenerListaMovimientos(int intIdEmpresa, int numPagina, int cantRec, string strDescripcion = "");
+        IEnumerable<MovimientoBanco> ObtenerListadoMovimientos(int intIdEmpresa, int numPagina, int cantRec, string strDescripcion = "");
     }
 
     public class BancaService : IBancaService
@@ -152,16 +152,23 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public IEnumerable<CuentaBanco> ObtenerListaCuentasBanco(int intIdEmpresa, string strDescripcion = "")
+        public IEnumerable<LlaveDescripcion> ObtenerListadoCuentasBanco(int intIdEmpresa, string strDescripcion = "")
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
+                var listaCuentaBanco = new List<LlaveDescripcion>();
                 try
                 {
-                    var listaCuentas = dbContext.CuentaBancoRepository.Where(x => x.IdEmpresa == intIdEmpresa);
+                    var listado = dbContext.CuentaBancoRepository.Where(x => x.IdEmpresa == intIdEmpresa);
                     if (!strDescripcion.Equals(string.Empty))
-                        listaCuentas = listaCuentas.Where(x => x.Descripcion.Contains(strDescripcion));
-                    return listaCuentas.OrderBy(x => x.IdCuenta).ToList();
+                        listado = listado.Where(x => x.Descripcion.Contains(strDescripcion));
+                    listado = listado.OrderBy(x => x.IdCuenta);
+                    foreach (var value in listado)
+                    {
+                        LlaveDescripcion item = new LlaveDescripcion(value.IdCuenta, value.Descripcion);
+                        listaCuentaBanco.Add(item);
+                    }
+                    return listaCuentaBanco;
                 }
                 catch (Exception ex)
                 {
@@ -385,7 +392,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public IEnumerable<MovimientoBanco> ObtenerListaMovimientos(int intIdEmpresa, int numPagina, int cantRec, string strDescripcion = "")
+        public IEnumerable<MovimientoBanco> ObtenerListadoMovimientos(int intIdEmpresa, int numPagina, int cantRec, string strDescripcion = "")
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {

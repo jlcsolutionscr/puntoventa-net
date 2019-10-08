@@ -14,15 +14,15 @@ namespace LeandroSoftware.AccesoDatos.Servicios
     public interface IMantenimientoService
     {
         // Métodos para administrar parametros del sistema
-        IEnumerable<IdentificacionNombre> ObtenerListaEmpresasAdministrador();
-        IEnumerable<IdentificacionNombre> ObtenerListaEmpresasPorDispositivo(string strDispositivoId);
-        IEnumerable<SucursalPorEmpresa> ObtenerListaSucursalPorIdentificacion(string strIdentificacion);
-        void RegistrarTerminal(string strCodigoUsuario, string strClave, string strIdentificacion, int intIdSucursal, int intIdTerminal, int intTipoDispositivo, string strDispositivoId);
-        Empresa ValidarCredenciales(string strCodigoUsuario, string strClave, string strIdentificacion, string strValorRegistro);
+        IEnumerable<EquipoRegistrado> ObtenerListadoTerminalesDisponibles(string strUsuario, string strClave, string strIdentificacion, int intTipoDispositivo);
+        IEnumerable<LlaveDescripcion> ObtenerListadoEmpresasAdministrador();
+        IEnumerable<LlaveDescripcion> ObtenerListadoEmpresasPorTerminal(string strDispositivoId);
+        void RegistrarTerminal(string strUsuario, string strClave, string strIdentificacion, int intIdSucursal, int intIdTerminal, int intTipoDispositivo, string strDispositivoId);
+        Empresa ValidarCredenciales(string strUsuario, string strClave, int intIdEmpresa, string strValorRegistro);
         void ActualizarUltimaVersionApp(string strVersion);
         string ObtenerUltimaVersionApp();
         // Métodos para administrar las empresas
-        IEnumerable<EmpresaNombre> ObtenerListadoEmpresa();
+        IEnumerable<LlaveDescripcion> ObtenerListadoEmpresa();
         Empresa AgregarEmpresa(Empresa empresa);
         Empresa ObtenerEmpresa(int intIdEmpresa);
         void ActualizarEmpresa(Empresa empresa);
@@ -30,12 +30,12 @@ namespace LeandroSoftware.AccesoDatos.Servicios
         void ActualizarLogoEmpresa(int intIdEmpresa, string strLogo);
         void ActualizarCertificadoEmpresa(int intIdEmpresa, string strCertificado);
         // Métodos para administrar las sucursales
-        IEnumerable<SucursalPorEmpresa> ObtenerListaSucursalPorEmpresa(int intIdEmpresa);
+        SucursalPorEmpresa ObtenerSucursalPorEmpresa(int intIdEmpresa, int intIdSucursal);
+        void AgregarSucursalPorEmpresa(SucursalPorEmpresa sucursal);
         void ActualizarSucursalPorEmpresa(SucursalPorEmpresa sucursal);
-        IEnumerable<TerminalPorSucursal> ObtenerListaTerminalPorSucursal(int intIdEmpresa, int intIdSucursal, bool bolDisponibles = false);
+        TerminalPorSucursal ObtenerTerminalPorSucursal(int intIdEmpresa, int intIdSucursal, int intIdTerminal);
+        void AgregarTerminalPorSucursal(TerminalPorSucursal terminal);
         void ActualizarTerminalPorSucursal(TerminalPorSucursal terminal);
-        Modulo ObtenerModulo(int intIdModulo);
-        CatalogoReporte ObtenerCatalogoReporte(int intIdReporte);
         // Métodos para administrar los usuarios del sistema
         Usuario AgregarUsuario(Usuario usuario);
         void ActualizarUsuario(Usuario usuario);
@@ -43,30 +43,30 @@ namespace LeandroSoftware.AccesoDatos.Servicios
         void AgregarUsuarioPorEmpresa(int intIdUsuario, int intIdEmpresa);
         void EliminarUsuario(int intIdUsuario);
         Usuario ObtenerUsuario(int intIdUsuario);
-        IEnumerable<Usuario> ObtenerListaUsuarios(int intIdEmpresa, string strCodigo = "");
+        IEnumerable<LlaveDescripcion> ObtenerListadoUsuarios(int intIdEmpresa, string strCodigo = "");
         // Métodos para administrar los vendedores del sistema
         Vendedor AgregarVendedor(Vendedor vendedor);
         void ActualizarVendedor(Vendedor vendedor);
         void EliminarVendedor(int intIdVendedor);
         Vendedor ObtenerVendedor(int intIdVendedor);
         Vendedor ObtenerVendedorPorDefecto(int intIdEmpresa);
-        IEnumerable<Vendedor> ObtenerListaVendedores(int intIdEmpresa, string strNombre = "");
+        IEnumerable<LlaveDescripcion> ObtenerListadoVendedores(int intIdEmpresa, string strNombre = "");
         // Métodos para administrar los roles del sistema
         Role ObtenerRole(int intIdRole);
-        IEnumerable<Role> ObtenerListaRoles();
+        IEnumerable<LlaveDescripcion> ObtenerListadoRoles();
         // Métodos para administrar las líneas de producto
         Linea AgregarLinea(Linea linea);
         void ActualizarLinea(Linea linea);
         void EliminarLinea(int intIdLinea);
         Linea ObtenerLinea(int intIdLinea);
-        IEnumerable<Linea> ObtenerListaLineas(int intIdEmpresa, string strDescripcion = "");
-        IEnumerable<Linea> ObtenerListaLineasDeProducto(int intIdEmpresa);
-        IEnumerable<Linea> ObtenerListaLineasDeServicio(int intIdEmpresa);
+        IEnumerable<LlaveDescripcion> ObtenerListadoLineas(int intIdEmpresa, string strDescripcion = "");
+        IEnumerable<LlaveDescripcion> ObtenerListadoLineasDeProducto(int intIdEmpresa);
+        IEnumerable<LlaveDescripcion> ObtenerListadoLineasDeServicio(int intIdEmpresa);
         // Métodos para administrar los productos
-        IEnumerable<TipoProducto> ObtenerListaTipoProducto();
-        IEnumerable<ParametroExoneracion> ObtenerListaTipoExoneracion();
-        IEnumerable<ParametroImpuesto> ObtenerListaTipoImpuesto();
-        IEnumerable<TipoUnidad> ObtenerListaTipoUnidad();
+        IEnumerable<LlaveDescripcion> ObtenerListadoTipoProducto();
+        IEnumerable<LlaveDescripcion> ObtenerListadoTipoExoneracion();
+        IEnumerable<LlaveDescripcion> ObtenerListadoTipoImpuesto();
+        IEnumerable<LlaveDescripcion> ObtenerListadoTipoUnidad();
         ParametroImpuesto ObtenerParametroImpuesto(int intIdImpuesto);
         Producto AgregarProducto(Producto producto);
         void ActualizarProducto(Producto producto);
@@ -75,46 +75,48 @@ namespace LeandroSoftware.AccesoDatos.Servicios
         Producto ObtenerProducto(int intIdProducto);
         Producto ObtenerProductoPorCodigo(int intIdEmpresa, string strCodigo);
         int ObtenerTotalListaProductos(int intIdEmpresa, bool bolIncluyeServicios, int intIdLinea = 0, string strCodigo = "", string strDescripcion = "");
-        IEnumerable<Producto> ObtenerListaProductos(int intIdEmpresa, int numPagina, int cantRec, bool bolIncluyeServicios, int intIdLinea = 0, string strCodigo = "", string strDescripcion = "");
+        IEnumerable<LlaveDescripcion> ObtenerListadoProductos(int intIdEmpresa, int numPagina, int cantRec, bool bolIncluyeServicios, int intIdLinea = 0, string strCodigo = "", string strDescripcion = "");
         int ObtenerTotalMovimientosPorProducto(int intIdProducto, DateTime datFechaInicial, DateTime datFechaFinal);
         IEnumerable<MovimientoProducto> ObtenerMovimientosPorProducto(int intIdProducto, int numPagina, int cantRec, DateTime datFechaInicial, DateTime datFechaFinal);
         // Métodos para obtener las condiciones de venta para facturación
-        IEnumerable<CondicionVenta> ObtenerListaCondicionVenta();
+        IEnumerable<LlaveDescripcion> ObtenerListadoCondicionVenta();
         // Métodos para obtener las formas de pago por tipo de servicio
-        IEnumerable<FormaPago> ObtenerListaFormaPagoFactura();
-        IEnumerable<FormaPago> ObtenerListaFormaPagoCompra();
-        IEnumerable<FormaPago> ObtenerListaFormaPagoEgreso();
-        IEnumerable<FormaPago> ObtenerListaFormaPagoIngreso();
-        IEnumerable<FormaPago> ObtenerListaFormaPagoMovimientoCxC();
-        IEnumerable<FormaPago> ObtenerListaFormaPagoMovimientoCxP();
+        IEnumerable<LlaveDescripcion> ObtenerListadoFormaPagoFactura();
+        IEnumerable<LlaveDescripcion> ObtenerListadoFormaPagoCompra();
+        IEnumerable<LlaveDescripcion> ObtenerListadoFormaPagoEgreso();
+        IEnumerable<LlaveDescripcion> ObtenerListadoFormaPagoIngreso();
+        IEnumerable<LlaveDescripcion> ObtenerListadoFormaPagoMovimientoCxC();
+        IEnumerable<LlaveDescripcion> ObtenerListadoFormaPagoMovimientoCxP();
         // Métodos para administrar los parámetros de banco adquiriente
         BancoAdquiriente AgregarBancoAdquiriente(BancoAdquiriente bancoAdquiriente);
         void ActualizarBancoAdquiriente(BancoAdquiriente bancoAdquiriente);
         void EliminarBancoAdquiriente(int intIdBanco);
         BancoAdquiriente ObtenerBancoAdquiriente(int intIdBanco);
-        IEnumerable<BancoAdquiriente> ObtenerListaBancoAdquiriente(int intIdEmpresa, string strDescripcion = "");
+        IEnumerable<LlaveDescripcion> ObtenerListadoBancoAdquiriente(int intIdEmpresa, string strDescripcion = "");
         // Métodos para administrar los parámetros de tipo de moneda
         TipoMoneda AgregarTipoMoneda(TipoMoneda tipoMoneda);
         void ActualizarTipoMoneda(TipoMoneda tipoMoneda);
         void EliminarTipoMoneda(int intIdTipoMoneda);
         TipoMoneda ObtenerTipoMoneda(int intIdTipoMoneda);
-        IEnumerable<TipoMoneda> ObtenerListaTipoMoneda(string strDescripcion = "");
+        IEnumerable<LlaveDescripcion> ObtenerListadoTipoMoneda(string strDescripcion = "");
         // Métodos para administrar los ajustes de inventario
         AjusteInventario AgregarAjusteInventario(AjusteInventario ajusteInventario);
         void ActualizarAjusteInventario(AjusteInventario ajusteInventario);
         void AnularAjusteInventario(int intIdAjusteInventario, int intIdUsuario);
         AjusteInventario ObtenerAjusteInventario(int intIdAjusteInventario);
         int ObtenerTotalListaAjustes(int intIdEmpresa, int intIdAjusteInventario = 0, string strDescripcion = "");
-        IEnumerable<AjusteInventario> ObtenerListaAjustes(int intIdEmpresa, int numPagina, int cantRec, int intIdAjusteInventario = 0, string strDescripcion = "");
+        IEnumerable<LlaveDescripcion> ObtenerListadoAjustes(int intIdEmpresa, int numPagina, int cantRec, int intIdAjusteInventario = 0, string strDescripcion = "");
         // Métodos para obtener parámetros generales del sistema
-        IEnumerable<TipoIdentificacion> ObtenerListaTipoIdentificacion();
-        IEnumerable<Modulo> ObtenerListaModulos();
-        IEnumerable<CatalogoReporte> ObtenerListaReportes();
-        IEnumerable<Provincia> ObtenerListaProvincias();
-        IEnumerable<Canton> ObtenerListaCantones(int intIdProvincia);
-        IEnumerable<Distrito> ObtenerListaDistritos(int intIdProvincia, int intIdCanton);
-        IEnumerable<Barrio> ObtenerListaBarrios(int intIdProvincia, int intIdCanton, int intIdDistrito);
-        IList<TipodePrecio> ObtenerListaTipodePrecio();
+        IEnumerable<LlaveDescripcion> ObtenerListadoTipoIdentificacion();
+        IEnumerable<LlaveDescripcion> ObtenerListadoModulos();
+        Modulo ObtenerModulo(int intIdModulo);
+        IEnumerable<LlaveDescripcion> ObtenerListadoCatalogoReportes();
+        CatalogoReporte ObtenerCatalogoReporte(int intIdReporte);
+        IEnumerable<LlaveDescripcion> ObtenerListadoProvincias();
+        IEnumerable<LlaveDescripcion> ObtenerListadoCantones(int intIdProvincia);
+        IEnumerable<LlaveDescripcion> ObtenerListadoDistritos(int intIdProvincia, int intIdCanton);
+        IEnumerable<LlaveDescripcion> ObtenerListadoBarrios(int intIdProvincia, int intIdCanton, int intIdDistrito);
+        IList<LlaveDescripcion> ObtenerListadoTipodePrecio();
     }
 
     public class MantenimientoService : IMantenimientoService
@@ -135,62 +137,42 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public IEnumerable<IdentificacionNombre> ObtenerListaEmpresasAdministrador()
+        public IEnumerable<EquipoRegistrado> ObtenerListadoTerminalesDisponibles(string strUsuario, string strClave, string strIdentificacion, int intTipoDispositivo)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
-                var listaEmpresas = new List<IdentificacionNombre>();
+                var listaEquipoRegistrado = new List<EquipoRegistrado>();
                 try
                 {
-                    var listadoEmpresa = dbContext.EmpresaRepository.Select(x => new { x.Identificacion, x.NombreComercial });
-                    foreach (var value in listadoEmpresa)
+                    Usuario usuario = dbContext.UsuarioRepository.FirstOrDefault(x => x.CodigoUsuario == strUsuario);
+                    if (usuario == null) throw new BusinessException("Los credenciales suministrados no son válidos. Por favor verifique la información suministrada.");
+                    if (usuario.Clave != strClave) throw new BusinessException("Los credenciales suministrados no son válidos. Por favor verifique la información suministrada.");
+                    if (!usuario.PermiteRegistrarDispositivo) throw new BusinessException("El usuario suministrado no esta autorizado para registrar el punto de venta. Por favor, pongase en contacto con su proveedor del servicio.");
+                    Empresa empresa = dbContext.EmpresaRepository.FirstOrDefault(x => x.Identificacion == strIdentificacion);
+                    if (empresa == null) throw new BusinessException("La empresa suministrada no existe. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (!empresa.PermiteFacturar) throw new BusinessException("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (empresa.FechaVence < DateTime.Today) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
+                    if (empresa.TipoContrato == 2 && empresa.CantidadDisponible == 0) throw new BusinessException("El disponible de documentos electrónicos ya fue utilizado. Por favor, pongase en contacto con su proveedor del servicio.");
+                    UsuarioPorEmpresa empresaUsuario = dbContext.UsuarioPorEmpresaRepository.Where(x => x.IdUsuario == usuario.IdUsuario && x.IdEmpresa == empresa.IdEmpresa).FirstOrDefault();
+                    if (empresaUsuario == null) throw new BusinessException("El usuario ingresado no corresponde a la empresa suministrada.");
+                    var listado = dbContext.TerminalPorSucursalRepository.Include("SucursalPorEmpresa").Where(x => x.IdEmpresa == empresa.IdEmpresa && x.ValorRegistro == "" && x.IdTipoDispositivo == intTipoDispositivo)
+                        .OrderBy(x => x.IdSucursal).ThenBy(x => x.IdTerminal);
+                    foreach (var terminal in listado)
                     {
-                        IdentificacionNombre item = new IdentificacionNombre(value.Identificacion, value.NombreComercial);
-                        listaEmpresas.Add(item);
+                        EquipoRegistrado item = new EquipoRegistrado();
+                        item.IdSucursal = terminal.IdSucursal;
+                        item.IdTerminal = terminal.IdTerminal;
+                        item.NombreSucursal = terminal.SucursalPorEmpresa.NombreSucursal;
+                        item.DireccionSucursal = terminal.SucursalPorEmpresa.Direccion;
+                        item.TelefonoSucursal = terminal.SucursalPorEmpresa.Telefono;
+                        item.ImpresoraFactura = terminal.ImpresoraFactura;
+                        listaEquipoRegistrado.Add(item);
                     }
-                    return listaEmpresas;
+                    return listaEquipoRegistrado;
                 }
-                catch (Exception ex)
+                catch (BusinessException ex)
                 {
-                    log.Error("Error al validar la lista de empresas para usuario administrador: ", ex);
-                    throw new Exception("Error al validar la lista de empresas para usuario administrador. . .");
-                }
-            }
-        }
-
-        public IEnumerable<IdentificacionNombre> ObtenerListaEmpresasPorDispositivo(string strDispositivoId)
-        {
-            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
-            {
-                var listaEmpresas = new List<IdentificacionNombre>();
-                try
-                {
-                    var listadoEmpresa = dbContext.TerminalPorSucursalRepository.Include("Empresa").Where(x => x.Empresa.PermiteFacturar && x.ValorRegistro == strDispositivoId);
-                    foreach (TerminalPorSucursal value in listadoEmpresa)
-                    {
-                        IdentificacionNombre item = new IdentificacionNombre(value.Empresa.Identificacion, value.Empresa.NombreComercial);
-                        listaEmpresas.Add(item);
-                    }
-                    return listaEmpresas;
-                }
-                catch (Exception ex)
-                {
-                    log.Error("Error al validar la lista de empresas por valor de registro: ", ex);
-                    throw new Exception("Error al validar la lista de empresas por valor de registro. . .");
-                }
-            }
-        }
-
-        public IEnumerable<SucursalPorEmpresa> ObtenerListaSucursalPorIdentificacion(string strIdentificacion)
-        {
-            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
-            {
-                try
-                {
-                    Empresa empresa = dbContext.EmpresaRepository.Where(x => x.Identificacion == strIdentificacion).FirstOrDefault();
-                    if (empresa == null) return new List<SucursalPorEmpresa>();
-                    var listadoSucursal = dbContext.SucursalPorEmpresaRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa).ToList();
-                    return listadoSucursal;
+                    throw ex;
                 }
                 catch (Exception ex)
                 {
@@ -200,28 +182,73 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public void RegistrarTerminal(string strCodigoUsuario, string strClave, string strIdentificacion, int intIdSucursal, int intIdTerminal, int intTipoDispositivo, string strDispositivoId)
+        public IEnumerable<LlaveDescripcion> ObtenerListadoEmpresasAdministrador()
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                var listaEmpresa = new List<LlaveDescripcion>();
+                try
+                {
+                    var listado = dbContext.EmpresaRepository.AsQueryable();
+                    foreach (var value in listado)
+                    {
+                        LlaveDescripcion item = new LlaveDescripcion(value.IdEmpresa, value.NombreComercial);
+                        listaEmpresa.Add(item);
+                    }
+                    return listaEmpresa;
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al validar la lista de empresas para usuario administrador: ", ex);
+                    throw new Exception("Error al validar la lista de empresas para usuario administrador. . .");
+                }
+            }
+        }
+
+        public IEnumerable<LlaveDescripcion> ObtenerListadoEmpresasPorTerminal(string strDispositivoId)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                var listaEmpresa = new List<LlaveDescripcion>();
+                try
+                {
+                    var listado = dbContext.TerminalPorSucursalRepository.Include("Empresa").Where(x => x.Empresa.PermiteFacturar && x.ValorRegistro == strDispositivoId);
+                    foreach (TerminalPorSucursal value in listado)
+                    {
+                        LlaveDescripcion item = new LlaveDescripcion(value.Empresa.IdEmpresa, value.Empresa.NombreComercial);
+                        listaEmpresa.Add(item);
+                    }
+                    return listaEmpresa;
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al validar la lista de empresas por valor de registro: ", ex);
+                    throw new Exception("Error al validar la lista de empresas por valor de registro. . .");
+                }
+            }
+        }
+
+        public void RegistrarTerminal(string strUsuario, string strClave, string strIdentificacion, int intIdSucursal, int intIdTerminal, int intTipoDispositivo, string strDispositivoId)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 try
                 {
-                    Usuario usuario = dbContext.UsuarioRepository.Include("RolePorUsuario.Role").FirstOrDefault(x => x.CodigoUsuario == strCodigoUsuario);
-                    if (usuario == null) throw new BusinessException("El código de usuario ingresado no se encuentra registrado. Contacte a su proveedor.");
-                    if (usuario.Clave != strClave) throw new BusinessException("Contraseña incorrecta. Verifique los credenciales suministrados.");
-                    if (!usuario.PermiteRegistrarDispositivo) throw new BusinessException("El usuario suministrado no esta autorizado para registrar un dispositivo movil. Contacte a su proveedor.");
+                    Usuario usuario = dbContext.UsuarioRepository.FirstOrDefault(x => x.CodigoUsuario == strUsuario);
+                    if (usuario == null) throw new BusinessException("Los credenciales suministrados no son válidos. Por favor verifique la información suministrada.");
+                    if (usuario.Clave != strClave) throw new BusinessException("Los credenciales suministrados no son válidos. Por favor verifique la información suministrada.");
+                    if (!usuario.PermiteRegistrarDispositivo) throw new BusinessException("El usuario suministrado no esta autorizado para registrar el punto de venta. Por favor, pongase en contacto con su proveedor del servicio.");
                     Empresa empresa = dbContext.EmpresaRepository.FirstOrDefault(x => x.Identificacion == strIdentificacion);
-                    if (empresa == null) throw new BusinessException("Empresa no se encuentra registrada con la identificción suministrada.");
+                    if (empresa == null) throw new BusinessException("La empresa suministrada no existe. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (!empresa.PermiteFacturar) throw new BusinessException("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.FechaVence < DateTime.Today) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
                     if (empresa.TipoContrato == 2 && empresa.CantidadDisponible == 0) throw new BusinessException("El disponible de documentos electrónicos ya fue utilizado. Por favor, pongase en contacto con su proveedor del servicio.");
                     UsuarioPorEmpresa empresaUsuario = dbContext.UsuarioPorEmpresaRepository.Where(x => x.IdUsuario == usuario.IdUsuario && x.IdEmpresa == empresa.IdEmpresa).FirstOrDefault();
-                    if (empresaUsuario == null) throw new BusinessException("El usuario ingresado no pertenece a la empresa con la identificación suministrada.");
+                    if (empresaUsuario == null) throw new BusinessException("El usuario ingresado no corresponde a la empresa suministrada.");
                     SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa && x.IdSucursal == intIdSucursal);
-                    if (sucursal == null) throw new BusinessException("La sucursal donde desea registrar su dispositivo o punto de venta no existe. Contacte a su proveedor.");
+                    if (sucursal == null) throw new BusinessException("La sucursal donde desea registrar su punto de venta no existe. Por favor, pongase en contacto con su proveedor del servicio.");
                     TerminalPorSucursal terminal = dbContext.TerminalPorSucursalRepository.FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa && x.IdSucursal == intIdSucursal && x.IdTerminal == intIdTerminal && x.IdTipoDispositivo == intTipoDispositivo);
-                    if (terminal == null) throw new BusinessException("La terminal donde desea registrar su dispositivo o punto de venta no existe. Contacte a su proveedor.");
-                       
+                    if (terminal == null) throw new BusinessException("La terminal donde desea registrar su punto de venta no existe. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (terminal.ValorRegistro == "")
                     {
                         terminal.ValorRegistro = strDispositivoId;
@@ -229,7 +256,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                         dbContext.Commit();
                     } else
                     {
-                        throw new BusinessException("La terminal donde desea registrar su punto de venta ya se encuentra registrada para otro punto de venta. Contacte a su proveedor.");
+                        throw new BusinessException("La terminal donde desea registrar su punto de venta ya en uso. Por favor, pongase en contacto con su proveedor del servicio.");
                     }
                 }
                 catch (BusinessException ex)
@@ -245,33 +272,41 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public Empresa ValidarCredenciales(string strCodigoUsuario, string strClave, string strIdentificacion, string strValorRegistro)
+        public Empresa ValidarCredenciales(string strUsuario, string strClave, int intIdEmpresa, string strValorRegistro)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 try
                 {
-                    Usuario usuario = dbContext.UsuarioRepository.Include("RolePorUsuario.Role").FirstOrDefault(x => x.CodigoUsuario == strCodigoUsuario);
+                    Usuario usuario = dbContext.UsuarioRepository.Include("RolePorUsuario.Role").FirstOrDefault(x => x.CodigoUsuario == strUsuario);
                     if (usuario == null) throw new BusinessException("El código de usuario ingresado no se encuentra registrado. Contacte a su proveedor.");
                     if (usuario.Clave != strClave) throw new BusinessException("Contraseña incorrecta. Verifique los credenciales suministrados.");
-                    Empresa empresa = dbContext.EmpresaRepository.Include("ModuloPorEmpresa.Modulo").Include("ReportePorEmpresa.CatalogoReporte").Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.Identificacion == strIdentificacion);
+                    Empresa empresa = dbContext.EmpresaRepository.Include("ModuloPorEmpresa.Modulo").Include("ReportePorEmpresa.CatalogoReporte").Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.IdEmpresa == intIdEmpresa);
                     if (!empresa.PermiteFacturar) throw new BusinessException("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.FechaVence < DateTime.Today) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
                     if (empresa.TipoContrato == 2 && empresa.CantidadDisponible == 0) throw new BusinessException("El disponible de documentos electrónicos fue agotado. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (!empresa.RegimenSimplificado && empresa.Certificado == null) throw new BusinessException("La empresa no posee la llave criptográfica requerida. Por favor contacte con su proveedor del servicio.");
-                    if (!empresa.RegimenSimplificado && empresa.PinCertificado == "") throw new BusinessException("La empresa no posee el parámetro PIN de la llave criptográfica. Por favor contacte con su proveedor del servicio.");
                     UsuarioPorEmpresa empresaUsuario = dbContext.UsuarioPorEmpresaRepository.Where(x => x.IdUsuario == usuario.IdUsuario && x.IdEmpresa == empresa.IdEmpresa).FirstOrDefault();
                     if (usuario.IdUsuario > 1 && empresaUsuario == null) throw new BusinessException("El usuario ingresado no pertenece a la empresa suministrada.");
                     TerminalPorSucursal terminal = null;
-                    if (strCodigoUsuario == "JASLOP")
+                    SucursalPorEmpresa sucursal = null;
+                    if (strUsuario == "JASLOP")
                     {
                         terminal = dbContext.TerminalPorSucursalRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa).FirstOrDefault();
+                        sucursal = dbContext.SucursalPorEmpresaRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa).FirstOrDefault();
                     }
                     else
                     {
                         terminal = dbContext.TerminalPorSucursalRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa && x.ValorRegistro == strValorRegistro).FirstOrDefault();
+                        sucursal = dbContext.SucursalPorEmpresaRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa && x.IdSucursal == terminal.IdSucursal).FirstOrDefault();
                     }
-                    if (terminal == null) throw new BusinessException("La terminal o dispositivo movil no se encuentra registrado para la empresa suministrada.");
+                    if (terminal == null || sucursal == null) throw new BusinessException("La terminal o dispositivo movil no se encuentra registrado para la empresa suministrada.");
+                    EquipoRegistrado equipo = new EquipoRegistrado();
+                    equipo.IdSucursal = sucursal.IdSucursal;
+                    equipo.IdTerminal = terminal.IdTerminal;
+                    equipo.NombreSucursal = sucursal.NombreSucursal;
+                    equipo.DireccionSucursal = sucursal.Direccion;
+                    equipo.TelefonoSucursal = sucursal.Telefono;
+                    equipo.ImpresoraFactura = terminal.ImpresoraFactura;
                     foreach (ModuloPorEmpresa modulo in empresa.ModuloPorEmpresa)
                         modulo.Empresa = null;
                     foreach (ReportePorEmpresa reporte in empresa.ReportePorEmpresa)
@@ -279,7 +314,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     foreach (RolePorUsuario role in usuario.RolePorUsuario)
                         role.Usuario = null;
                     usuario.UsuarioPorEmpresa = new HashSet<UsuarioPorEmpresa>();
-                    if (terminal.IdTipoDispositivo == 1) empresa.Logotipo = null;
+                    if (terminal.IdTipoDispositivo == StaticTipoDispisitivo.AppMovil) empresa.Logotipo = null;
                     terminal.Empresa = null;
                     empresa.Certificado = null;
                     empresa.AccessToken = null;
@@ -287,7 +322,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     empresa.EmitedAt = null;
                     empresa.ExpiresIn = null;
                     empresa.RefreshExpiresIn = null;
-                    empresa.TerminalPorSucursal = terminal;
+                    empresa.EquipoRegistrado = equipo;
                     empresa.Usuario = usuario;
                     return empresa;
                 }
@@ -344,20 +379,20 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             return strUltimaVersion;
         }
 
-        public IEnumerable<EmpresaNombre> ObtenerListadoEmpresa()
+        public IEnumerable<LlaveDescripcion> ObtenerListadoEmpresa()
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
-                var listaEmpresas = new List<EmpresaNombre>();
+                var listaEmpresa = new List<LlaveDescripcion>();
                 try
                 {
-                    var listadoEmpresa = dbContext.EmpresaRepository.Select(x => new { x.IdEmpresa, x.NombreComercial });
-                    foreach (var value in listadoEmpresa)
+                    var listado = dbContext.EmpresaRepository.Select(x => new { x.IdEmpresa, x.NombreComercial });
+                    foreach (var value in listado)
                     {
-                        EmpresaNombre item = new EmpresaNombre(value.IdEmpresa, value.NombreComercial);
-                        listaEmpresas.Add(item);
+                        LlaveDescripcion item = new LlaveDescripcion(value.IdEmpresa, value.NombreComercial);
+                        listaEmpresa.Add(item);
                     }
-                    return listaEmpresas;
+                    return listaEmpresa;
                 }
                 catch (Exception ex)
                 {
@@ -515,77 +550,6 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public IEnumerable<SucursalPorEmpresa> ObtenerListaSucursalPorEmpresa(int intIdEmpresa)
-        {
-            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
-            {
-                try
-                {
-                    var listadoSucursal = dbContext.SucursalPorEmpresaRepository.Where(x => x.IdEmpresa == intIdEmpresa).ToList();
-                    return listadoSucursal;
-                }
-                catch (Exception ex)
-                {
-                    log.Error("Error al obtener el listado de sucursales por empresa: ", ex);
-                    throw new Exception("Error al obtener el listado de sucursales por empresa. . .");
-                }
-            }
-        }
-
-        public void ActualizarSucursalPorEmpresa(SucursalPorEmpresa sucursal)
-        {
-            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
-            {
-                try
-                {
-                    dbContext.NotificarModificacion(sucursal);
-                    dbContext.Commit();
-                }
-                catch (Exception ex)
-                {
-                    dbContext.RollBack();
-                    log.Error("Error al actualizar la sucursal: ", ex);
-                    throw new Exception("Se produjo un error actualizando la información de la sucursal. Por favor consulte con su proveedor.");
-                }
-            }
-        }
-
-        public IEnumerable<TerminalPorSucursal> ObtenerListaTerminalPorSucursal(int intIdEmpresa, int intIdSucursal, bool bolDisponibles = false)
-        {
-            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
-            {
-                try
-                {
-                    var listadoTerminal = dbContext.TerminalPorSucursalRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
-                    if (bolDisponibles) listadoTerminal = listadoTerminal.Where(x => x.ValorRegistro == "");
-                    return listadoTerminal.ToList();
-                }
-                catch (Exception ex)
-                {
-                    log.Error("Error al obtener el listado de terminales por sucursal: ", ex);
-                    throw new Exception("Error al obtener el listado de terminales por sucursal. . .");
-                }
-            }
-        }
-
-        public void ActualizarTerminalPorSucursal(TerminalPorSucursal terminal)
-        {
-            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
-            {
-                try
-                {
-                    dbContext.NotificarModificacion(terminal);
-                    dbContext.Commit();
-                }
-                catch (Exception ex)
-                {
-                    dbContext.RollBack();
-                    log.Error("Error al actualizar la terminal: ", ex);
-                    throw new Exception("Se produjo un error actualizando la información de la terminal. Por favor consulte con su proveedor.");
-                }
-            }
-        }
-
         public Modulo ObtenerModulo(int intIdModulo)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
@@ -614,6 +578,112 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 {
                     log.Error("Error al obtener la información del catalogo de reporte: ", ex);
                     throw new Exception("Se produjo un error consultando la parametrización de la empresa. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public SucursalPorEmpresa ObtenerSucursalPorEmpresa(int intIdEmpresa, int intIdSucursal)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal).FirstOrDefault();
+                    return sucursal;
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al obtener la información de la sucursal: ", ex);
+                    throw new Exception("Se produjo un error al obtener la información de la sucursal. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public void AgregarSucursalPorEmpresa(SucursalPorEmpresa sucursal)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    dbContext.SucursalPorEmpresaRepository.Add(sucursal);
+                    dbContext.Commit();
+                }
+                catch (Exception ex)
+                {
+                    dbContext.RollBack();
+                    log.Error("Error al agregar la sucursal: ", ex);
+                    throw new Exception("Se produjo un error adicionando la información de la sucursal. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public void ActualizarSucursalPorEmpresa(SucursalPorEmpresa sucursal)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    dbContext.NotificarModificacion(sucursal);
+                    dbContext.Commit();
+                }
+                catch (Exception ex)
+                {
+                    dbContext.RollBack();
+                    log.Error("Error al actualizar la sucursal: ", ex);
+                    throw new Exception("Se produjo un error actualizando la información de la sucursal. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public TerminalPorSucursal ObtenerTerminalPorSucursal(int intIdEmpresa, int intIdSucursal, int intIdTerminal)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    TerminalPorSucursal terminal = dbContext.TerminalPorSucursalRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdTerminal == intIdTerminal).FirstOrDefault();
+                    return terminal;
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al obtener la información de la terminal: ", ex);
+                    throw new Exception("Se produjo un error al obtener la información de la terminal. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public void AgregarTerminalPorSucursal(TerminalPorSucursal terminal)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    dbContext.TerminalPorSucursalRepository.Add(terminal);
+                    dbContext.Commit();
+                }
+                catch (Exception ex)
+                {
+                    dbContext.RollBack();
+                    log.Error("Error al agregar la terminal: ", ex);
+                    throw new Exception("Se produjo un error adicionando la información de la terminal. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public void ActualizarTerminalPorSucursal(TerminalPorSucursal terminal)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    dbContext.NotificarModificacion(terminal);
+                    dbContext.Commit();
+                }
+                catch (Exception ex)
+                {
+                    dbContext.RollBack();
+                    log.Error("Error al actualizar la terminal: ", ex);
+                    throw new Exception("Se produjo un error actualizando la información de la terminal. Por favor consulte con su proveedor.");
                 }
             }
         }
@@ -791,23 +861,23 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public IEnumerable<Usuario> ObtenerListaUsuarios(int intIdEmpresa, string strCodigo = "")
+        public IEnumerable<LlaveDescripcion> ObtenerListadoUsuarios(int intIdEmpresa, string strCodigo = "")
         {
-            List<Usuario> listaUsuarios = new List<Usuario>();
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
+                var listaUsuario = new List<LlaveDescripcion>();
                 try
                 {
-                    var listaUsuariosPorEmpresa = dbContext.UsuarioPorEmpresaRepository.Include("Usuario").Where(x => x.IdEmpresa == intIdEmpresa && x.IdUsuario > 1);
+                    var listado = dbContext.UsuarioPorEmpresaRepository.Include("Usuario").Where(x => x.IdEmpresa == intIdEmpresa && x.IdUsuario > 1);
                     if (!strCodigo.Equals(string.Empty))
-                        listaUsuariosPorEmpresa = listaUsuariosPorEmpresa.Where(x => x.Usuario.CodigoUsuario.Contains(strCodigo));
-                    listaUsuariosPorEmpresa.OrderBy(x => x.Usuario.IdUsuario);
-                    foreach (UsuarioPorEmpresa empresaUsuario in listaUsuariosPorEmpresa)
+                        listado = listado.Where(x => x.Usuario.CodigoUsuario.Contains(strCodigo));
+                    listado.OrderBy(x => x.Usuario.IdUsuario);
+                    foreach (var value in listado)
                     {
-                        empresaUsuario.Usuario.UsuarioPorEmpresa = null;
-                        listaUsuarios.Add(empresaUsuario.Usuario);
+                        LlaveDescripcion item = new LlaveDescripcion(value.IdUsuario, value.Usuario.CodigoUsuario);
+                        listaUsuario.Add(item);
                     }
-                    return listaUsuarios;
+                    return listaUsuario;
                 }
                 catch (Exception ex)
                 {
@@ -947,16 +1017,23 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public IEnumerable<Vendedor> ObtenerListaVendedores(int intIdEmpresa, string strNombre = "")
+        public IEnumerable<LlaveDescripcion> ObtenerListadoVendedores(int intIdEmpresa, string strNombre = "")
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
+                var listaVendedor = new List<LlaveDescripcion>();
                 try
                 {
-                    var listaVendedores = dbContext.VendedorRepository.Where(x => x.IdEmpresa == intIdEmpresa);
+                    var listado = dbContext.VendedorRepository.Where(x => x.IdEmpresa == intIdEmpresa);
                     if (!strNombre.Equals(string.Empty))
-                        listaVendedores = listaVendedores.Where(x => x.Nombre.Contains(strNombre));
-                    return listaVendedores.OrderBy(x => x.IdVendedor).ToList();
+                        listado = listado.Where(x => x.Nombre.Contains(strNombre));
+                    listado = listado.OrderBy(x => x.IdVendedor);
+                    foreach (var value in listado)
+                    {
+                        LlaveDescripcion item = new LlaveDescripcion(value.IdVendedor, value.Nombre);
+                        listaVendedor.Add(item);
+                    }
+                    return listaVendedor;
                 }
                 catch (Exception ex)
                 {
@@ -982,13 +1059,20 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public IEnumerable<Role> ObtenerListaRoles()
+        public IEnumerable<LlaveDescripcion> ObtenerListadoRoles()
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
+                var listaRoles = new List<LlaveDescripcion>();
                 try
                 {
-                    return dbContext.RoleRepository.ToList();
+                    var listado = dbContext.RoleRepository;
+                    foreach (var value in listado)
+                    {
+                        LlaveDescripcion item = new LlaveDescripcion(value.IdRole, value.Descripcion);
+                        listaRoles.Add(item);
+                    }
+                    return listaRoles;
                 }
                 catch (Exception ex)
                 {
@@ -1098,16 +1182,23 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public IEnumerable<Linea> ObtenerListaLineas(int intIdEmpresa, string strDescripcion = "")
+        public IEnumerable<LlaveDescripcion> ObtenerListadoLineas(int intIdEmpresa, string strDescripcion = "")
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
+                var listaLinea = new List<LlaveDescripcion>();
                 try
                 {
-                    var listaLineas = dbContext.LineaRepository.Include("TipoProducto").Where(x => x.IdEmpresa == intIdEmpresa);
+                    var listado = dbContext.LineaRepository.Include("TipoProducto").Where(x => x.IdEmpresa == intIdEmpresa);
                     if (!strDescripcion.Equals(string.Empty))
-                        listaLineas = listaLineas.Where(x => x.Descripcion.Contains(strDescripcion));
-                    return listaLineas.OrderBy(x => x.IdTipoProducto).ThenBy(x => x.Descripcion).ToList();
+                        listado = listado.Where(x => x.Descripcion.Contains(strDescripcion));
+                    listado = listado.OrderBy(x => x.IdTipoProducto).ThenBy(x => x.Descripcion);
+                    foreach (var value in listado)
+                    {
+                        LlaveDescripcion item = new LlaveDescripcion(value.IdLinea, value.Descripcion);
+                        listaLinea.Add(item);
+                    }
+                    return listaLinea;
                 }
                 catch (Exception ex)
                 {
@@ -1117,13 +1208,20 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public IEnumerable<Linea> ObtenerListaLineasDeProducto(int intIdEmpresa)
+        public IEnumerable<LlaveDescripcion> ObtenerListadoLineasDeProducto(int intIdEmpresa)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
+                var listaLineasDeProducto = new List<LlaveDescripcion>();
                 try
                 {
-                    return dbContext.LineaRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdTipoProducto == StaticTipoProducto.Producto).OrderBy(x => x.Descripcion).ToList();
+                    var listado = dbContext.LineaRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdTipoProducto == StaticTipoProducto.Producto).OrderBy(x => x.Descripcion);
+                    foreach (var value in listado)
+                    {
+                        LlaveDescripcion item = new LlaveDescripcion(value.IdLinea, value.Descripcion);
+                        listaLineasDeProducto.Add(item);
+                    }
+                    return listaLineasDeProducto;
                 }
                 catch (Exception ex)
                 {
@@ -1133,13 +1231,20 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public IEnumerable<Linea> ObtenerListaLineasDeServicio(int intIdEmpresa)
+        public IEnumerable<LlaveDescripcion> ObtenerListadoLineasDeServicio(int intIdEmpresa)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
+                var listaLineasDeServicio = new List<LlaveDescripcion>();
                 try
                 {
-                    return dbContext.LineaRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdTipoProducto == StaticTipoProducto.Servicio).OrderBy(x => x.Descripcion).ToList();
+                    var listado = dbContext.LineaRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdTipoProducto == StaticTipoProducto.Servicio).OrderBy(x => x.Descripcion);
+                    foreach (var value in listado)
+                    {
+                        LlaveDescripcion item = new LlaveDescripcion(value.IdLinea, value.Descripcion);
+                        listaLineasDeServicio.Add(item);
+                    }
+                    return listaLineasDeServicio;
                 }
                 catch (Exception ex)
                 {
@@ -1149,13 +1254,20 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public IEnumerable<TipoProducto> ObtenerListaTipoProducto()
+        public IEnumerable<LlaveDescripcion> ObtenerListadoTipoProducto()
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
+                var listaTipoProducto = new List<LlaveDescripcion>();
                 try
                 {
-                    return dbContext.TipoProductoRepository.ToList();
+                    var listado = dbContext.TipoProductoRepository;
+                    foreach (var value in listado)
+                    {
+                        LlaveDescripcion item = new LlaveDescripcion(value.IdTipoProducto, value.Descripcion);
+                        listaTipoProducto.Add(item);
+                    }
+                    return listaTipoProducto;
                 }
                 catch (Exception ex)
                 {
@@ -1165,13 +1277,20 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public IEnumerable<ParametroExoneracion> ObtenerListaTipoExoneracion()
+        public IEnumerable<LlaveDescripcion> ObtenerListadoTipoExoneracion()
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
+                var listaTipoExoneracion = new List<LlaveDescripcion>();
                 try
                 {
-                    return dbContext.ParametroExoneracionRepository.ToList();
+                    var listado = dbContext.ParametroExoneracionRepository;
+                    foreach (var value in listado)
+                    {
+                        LlaveDescripcion item = new LlaveDescripcion(value.IdTipoExoneracion, value.Descripcion);
+                        listaTipoExoneracion.Add(item);
+                    }
+                    return listaTipoExoneracion;
                 }
                 catch (Exception ex)
                 {
@@ -1181,13 +1300,20 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public IEnumerable<ParametroImpuesto> ObtenerListaTipoImpuesto()
+        public IEnumerable<LlaveDescripcion> ObtenerListadoTipoImpuesto()
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
+                var listaTipoImpuesto = new List<LlaveDescripcion>();
                 try
                 {
-                    return dbContext.ParametroImpuestoRepository.ToList();
+                    var listado = dbContext.ParametroImpuestoRepository;
+                    foreach (var value in listado)
+                    {
+                        LlaveDescripcion item = new LlaveDescripcion(value.IdImpuesto, value.Descripcion);
+                        listaTipoImpuesto.Add(item);
+                    }
+                    return listaTipoImpuesto;
                 }
                 catch (Exception ex)
                 {
@@ -1197,13 +1323,20 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public IEnumerable<TipoUnidad> ObtenerListaTipoUnidad()
+        public IEnumerable<LlaveDescripcion> ObtenerListadoTipoUnidad()
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
+                var listaTipoUnidad = new List<LlaveDescripcion>();
                 try
                 {
-                    return dbContext.TipoUnidadRepository.ToList();
+                    var listado = dbContext.TipoUnidadRepository;
+                    foreach (var value in listado)
+                    {
+                        LlaveDescripcion item = new LlaveDescripcion(value.IdTipoUnidad, value.Descripcion);
+                        listaTipoUnidad.Add(item);
+                    }
+                    return listaTipoUnidad;
                 }
                 catch (Exception ex)
                 {
@@ -1368,7 +1501,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             {
                 try
                 {
-                    Producto producto = dbContext.ProductoRepository.Include("Proveedor").FirstOrDefault(x => x.IdProducto == intIdProducto);
+                    Producto producto = dbContext.ProductoRepository.Include("ParametroImpuesto").Include("Proveedor").FirstOrDefault(x => x.IdProducto == intIdProducto);
                     producto.Proveedor.Producto = null;
                     foreach (MovimientoProducto movimiento in producto.MovimientoProducto)
                         movimiento.Producto = null;
@@ -1423,31 +1556,32 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public IEnumerable<Producto> ObtenerListaProductos(int intIdEmpresa, int numPagina, int cantRec, bool bolIncluyeServicios, int intIdLinea = 0, string strCodigo = "", string strDescripcion = "")
+        public IEnumerable<LlaveDescripcion> ObtenerListadoProductos(int intIdEmpresa, int numPagina, int cantRec, bool bolIncluyeServicios, int intIdLinea = 0, string strCodigo = "", string strDescripcion = "")
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
+                var listaProducto = new List<LlaveDescripcion>();
                 try
                 {
-                    var listaProductos = dbContext.ProductoRepository.Include("TipoProducto").Include("ParametroImpuesto").Where(x => x.IdEmpresa == intIdEmpresa);
+                    var listado = dbContext.ProductoRepository.Where(x => x.IdEmpresa == intIdEmpresa);
                     if (intIdLinea > 0)
-                        listaProductos = listaProductos.Where(x => x.IdLinea == intIdLinea);
+                        listado = listado.Where(x => x.IdLinea == intIdLinea);
                     if (!strCodigo.Equals(string.Empty))
-                        listaProductos = listaProductos.Where(x => x.Codigo.Contains(strCodigo));
+                        listado = listado.Where(x => x.Codigo.Contains(strCodigo));
                     if (!strDescripcion.Equals(string.Empty))
-                        listaProductos = listaProductos.Where(x => x.Descripcion.Contains(strDescripcion));
+                        listado = listado.Where(x => x.Descripcion.Contains(strDescripcion));
                     if (!bolIncluyeServicios)
-                        listaProductos = listaProductos.Where(x => x.Tipo == StaticTipoProducto.Producto);
+                        listado = listado.Where(x => x.Tipo == StaticTipoProducto.Producto);
                     if (cantRec > 0)
-                        listaProductos = listaProductos.OrderBy(x => x.Tipo).ThenBy(x => x.Descripcion).Skip((numPagina - 1) * cantRec).Take(cantRec);
+                        listado = listado.OrderBy(x => x.Tipo).ThenBy(x => x.Descripcion).Skip((numPagina - 1) * cantRec).Take(cantRec);
                     else
-                        listaProductos = listaProductos.OrderBy(x => x.Tipo).ThenBy(x => x.Descripcion);
-                    List<Producto> listado = listaProductos.ToList();
-                    foreach (Producto producto in listado)
+                        listado = listado.OrderBy(x => x.Tipo).ThenBy(x => x.Descripcion);
+                    foreach (Producto value in listado)
                     {
-                        producto.PrecioVenta1 = decimal.Round(producto.PrecioVenta1 * (1 + (producto.ParametroImpuesto.TasaImpuesto / 100)), 2);
+                        LlaveDescripcion item = new LlaveDescripcion(value.IdProducto, value.Codigo + " - " + value.Descripcion);
+                        listaProducto.Add(item);
                     }
-                    return listado;
+                    return listaProducto;
                 }
                 catch (Exception ex)
                 {
@@ -1498,13 +1632,20 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public IEnumerable<CondicionVenta> ObtenerListaCondicionVenta()
+        public IEnumerable<LlaveDescripcion> ObtenerListadoCondicionVenta()
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
+                var listaCondicionVenta = new List<LlaveDescripcion>();
                 try
                 {
-                    return dbContext.CondicionVentaRepository.ToList();
+                    var listado = dbContext.CondicionVentaRepository;
+                    foreach (var value in listado)
+                    {
+                        LlaveDescripcion item = new LlaveDescripcion(value.IdCondicionVenta, value.Descripcion);
+                        listaCondicionVenta.Add(item);
+                    }
+                    return listaCondicionVenta;
                 }
                 catch (Exception ex)
                 {
@@ -1514,13 +1655,20 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public IEnumerable<FormaPago> ObtenerListaFormaPagoFactura()
+        public IEnumerable<LlaveDescripcion> ObtenerListadoFormaPagoFactura()
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
+                var listaFormaPagoFactura = new List<LlaveDescripcion>();
                 try
                 {
-                    return dbContext.FormaPagoRepository.Where(x => new[] { StaticFormaPago.Efectivo, StaticFormaPago.TransferenciaDepositoBancario, StaticFormaPago.Cheque, StaticFormaPago.Tarjeta }.Contains(x.IdFormaPago)).ToList();
+                    var listado = dbContext.FormaPagoRepository.Where(x => new[] { StaticFormaPago.Efectivo, StaticFormaPago.TransferenciaDepositoBancario, StaticFormaPago.Cheque, StaticFormaPago.Tarjeta }.Contains(x.IdFormaPago));
+                    foreach (var value in listado)
+                    {
+                        LlaveDescripcion item = new LlaveDescripcion(value.IdFormaPago, value.Descripcion);
+                        listaFormaPagoFactura.Add(item);
+                    }
+                    return listaFormaPagoFactura;
                 }
                 catch (Exception ex)
                 {
@@ -1530,13 +1678,20 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public IEnumerable<FormaPago> ObtenerListaFormaPagoCompra()
+        public IEnumerable<LlaveDescripcion> ObtenerListadoFormaPagoCompra()
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
+                var listaFormaPagoCompra = new List<LlaveDescripcion>();
                 try
                 {
-                    return dbContext.FormaPagoRepository.Where(x => new[] { StaticFormaPago.Efectivo, StaticFormaPago.TransferenciaDepositoBancario, StaticFormaPago.Cheque }.Contains(x.IdFormaPago)).ToList();
+                    var listado = dbContext.FormaPagoRepository.Where(x => new[] { StaticFormaPago.Efectivo, StaticFormaPago.TransferenciaDepositoBancario, StaticFormaPago.Cheque }.Contains(x.IdFormaPago));
+                    foreach (var value in listado)
+                    {
+                        LlaveDescripcion item = new LlaveDescripcion(value.IdFormaPago, value.Descripcion);
+                        listaFormaPagoCompra.Add(item);
+                    }
+                    return listaFormaPagoCompra;
                 }
                 catch (Exception ex)
                 {
@@ -1546,13 +1701,20 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public IEnumerable<FormaPago> ObtenerListaFormaPagoEgreso()
+        public IEnumerable<LlaveDescripcion> ObtenerListadoFormaPagoEgreso()
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
+                var listaFormaPagoEgreso = new List<LlaveDescripcion>();
                 try
                 {
-                    return dbContext.FormaPagoRepository.Where(x => new[] { StaticFormaPago.Efectivo, StaticFormaPago.TransferenciaDepositoBancario, StaticFormaPago.Cheque, StaticFormaPago.Tarjeta }.Contains(x.IdFormaPago)).ToList();
+                    var listado = dbContext.FormaPagoRepository.Where(x => new[] { StaticFormaPago.Efectivo, StaticFormaPago.TransferenciaDepositoBancario, StaticFormaPago.Cheque, StaticFormaPago.Tarjeta }.Contains(x.IdFormaPago));
+                    foreach (var value in listado)
+                    {
+                        LlaveDescripcion item = new LlaveDescripcion(value.IdFormaPago, value.Descripcion);
+                        listaFormaPagoEgreso.Add(item);
+                    }
+                    return listaFormaPagoEgreso;
                 }
                 catch (Exception ex)
                 {
@@ -1562,13 +1724,20 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public IEnumerable<FormaPago> ObtenerListaFormaPagoIngreso()
+        public IEnumerable<LlaveDescripcion> ObtenerListadoFormaPagoIngreso()
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
+                var listaFormaPagoIngreso = new List<LlaveDescripcion>();
                 try
                 {
-                    return dbContext.FormaPagoRepository.Where(x => new[] { StaticFormaPago.Efectivo, StaticFormaPago.TransferenciaDepositoBancario, StaticFormaPago.Cheque }.Contains(x.IdFormaPago)).ToList();
+                    var listado = dbContext.FormaPagoRepository.Where(x => new[] { StaticFormaPago.Efectivo, StaticFormaPago.TransferenciaDepositoBancario, StaticFormaPago.Cheque }.Contains(x.IdFormaPago));
+                    foreach (var value in listado)
+                    {
+                        LlaveDescripcion item = new LlaveDescripcion(value.IdFormaPago, value.Descripcion);
+                        listaFormaPagoIngreso.Add(item);
+                    }
+                    return listaFormaPagoIngreso;
                 }
                 catch (Exception ex)
                 {
@@ -1578,13 +1747,20 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public IEnumerable<FormaPago> ObtenerListaFormaPagoMovimientoCxC()
+        public IEnumerable<LlaveDescripcion> ObtenerListadoFormaPagoMovimientoCxC()
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
+                var listaFormaPagoCxC = new List<LlaveDescripcion>();
                 try
                 {
-                    return dbContext.FormaPagoRepository.Where(x => new[] { StaticFormaPago.Efectivo, StaticFormaPago.TransferenciaDepositoBancario, StaticFormaPago.Cheque, StaticFormaPago.Tarjeta }.Contains(x.IdFormaPago)).ToList();
+                    var listado = dbContext.FormaPagoRepository.Where(x => new[] { StaticFormaPago.Efectivo, StaticFormaPago.TransferenciaDepositoBancario, StaticFormaPago.Cheque, StaticFormaPago.Tarjeta }.Contains(x.IdFormaPago));
+                    foreach (var value in listado)
+                    {
+                        LlaveDescripcion item = new LlaveDescripcion(value.IdFormaPago, value.Descripcion);
+                        listaFormaPagoCxC.Add(item);
+                    }
+                    return listaFormaPagoCxC;
                 }
                 catch (Exception ex)
                 {
@@ -1594,13 +1770,20 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public IEnumerable<FormaPago> ObtenerListaFormaPagoMovimientoCxP()
+        public IEnumerable<LlaveDescripcion> ObtenerListadoFormaPagoMovimientoCxP()
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
+                var listaFormaPagoCxP = new List<LlaveDescripcion>();
                 try
                 {
-                    return dbContext.FormaPagoRepository.Where(x => new[] { StaticFormaPago.Efectivo, StaticFormaPago.TransferenciaDepositoBancario, StaticFormaPago.Cheque }.Contains(x.IdFormaPago)).ToList();
+                    var listado = dbContext.FormaPagoRepository.Where(x => new[] { StaticFormaPago.Efectivo, StaticFormaPago.TransferenciaDepositoBancario, StaticFormaPago.Cheque }.Contains(x.IdFormaPago));
+                    foreach (var value in listado)
+                    {
+                        LlaveDescripcion item = new LlaveDescripcion(value.IdFormaPago, value.Descripcion);
+                        listaFormaPagoCxP.Add(item);
+                    }
+                    return listaFormaPagoCxP;
                 }
                 catch (Exception ex)
                 {
@@ -1711,16 +1894,22 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public IEnumerable<BancoAdquiriente> ObtenerListaBancoAdquiriente(int intIdEmpresa, string strDescripcion = "")
+        public IEnumerable<LlaveDescripcion> ObtenerListadoBancoAdquiriente(int intIdEmpresa, string strDescripcion = "")
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
+                var listaBancoAdquiriente = new List<LlaveDescripcion>();
                 try
                 {
-                    var listaBancos = dbContext.BancoAdquirienteRepository.Where(x => x.IdEmpresa == intIdEmpresa);
+                    var listado = dbContext.BancoAdquirienteRepository.Where(x => x.IdEmpresa == intIdEmpresa);
                     if (strDescripcion != "")
-                        listaBancos = listaBancos.Where(x => x.Descripcion.Contains(strDescripcion));
-                    return listaBancos.ToList();
+                        listado = listado.Where(x => x.Descripcion.Contains(strDescripcion));
+                    foreach (var value in listado)
+                    {
+                        LlaveDescripcion item = new LlaveDescripcion(value.IdBanco, value.Descripcion);
+                        listaBancoAdquiriente.Add(item);
+                    }
+                    return listaBancoAdquiriente;
                 }
                 catch (Exception ex)
                 {
@@ -1814,16 +2003,22 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public IEnumerable<TipoMoneda> ObtenerListaTipoMoneda(string strDescripcion = "")
+        public IEnumerable<LlaveDescripcion> ObtenerListadoTipoMoneda(string strDescripcion = "")
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
+                var listaTipoMoneda = new List<LlaveDescripcion>();
                 try
                 {
-                    if (strDescripcion == "")
-                        return dbContext.TipoMonedaRepository.ToList();
-                    else
-                        return dbContext.TipoMonedaRepository.Where(x => x.IdTipoMoneda > StaticValoresPorDefecto.MonedaDelSistema && x.Descripcion.Contains(strDescripcion)).ToList();
+                    var listado = dbContext.TipoMonedaRepository.AsQueryable();
+                    if (strDescripcion != "")
+                        listado = listado.Where(x => x.IdTipoMoneda > StaticValoresPorDefecto.MonedaDelSistema && x.Descripcion.Contains(strDescripcion));
+                    foreach (var value in listado)
+                    {
+                        LlaveDescripcion item = new LlaveDescripcion(value.IdTipoMoneda, value.Descripcion);
+                        listaTipoMoneda.Add(item);
+                    }
+                    return listaTipoMoneda;
                 }
                 catch (Exception ex)
                 {
@@ -2220,18 +2415,25 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public IEnumerable<AjusteInventario> ObtenerListaAjustes(int intIdEmpresa, int numPagina, int cantRec, int intIdAjusteInventario = 0, string strDescripcion = "")
+        public IEnumerable<LlaveDescripcion> ObtenerListadoAjustes(int intIdEmpresa, int numPagina, int cantRec, int intIdAjusteInventario = 0, string strDescripcion = "")
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
+                var listaAjustes = new List<LlaveDescripcion>();
                 try
                 {
-                    var listaAjusteInventario = dbContext.AjusteInventarioRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa);
+                    var listado = dbContext.AjusteInventarioRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa);
                     if (intIdAjusteInventario > 0)
-                        listaAjusteInventario = listaAjusteInventario.Where(x => !x.Nulo && x.IdAjuste == intIdAjusteInventario);
+                        listado = listado.Where(x => !x.Nulo && x.IdAjuste == intIdAjusteInventario);
                     else if (!strDescripcion.Equals(string.Empty))
-                        listaAjusteInventario = listaAjusteInventario.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.Descripcion.Contains(strDescripcion));
-                    return listaAjusteInventario.OrderByDescending(x => x.IdAjuste).Skip((numPagina - 1) * cantRec).Take(cantRec).ToList();
+                        listado = listado.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.Descripcion.Contains(strDescripcion));
+                    listado = listado.OrderByDescending(x => x.IdAjuste).Skip((numPagina - 1) * cantRec).Take(cantRec);
+                    foreach (var value in listado)
+                    {
+                        LlaveDescripcion item = new LlaveDescripcion(value.IdAjuste, value.Descripcion);
+                        listaAjustes.Add(item);
+                    }
+                    return listaAjustes;
                 }
                 catch (Exception ex)
                 {
@@ -2241,13 +2443,20 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public IEnumerable<TipoIdentificacion> ObtenerListaTipoIdentificacion()
+        public IEnumerable<LlaveDescripcion> ObtenerListadoTipoIdentificacion()
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
+                var listaTipoIdentificacion = new List<LlaveDescripcion>();
                 try
                 {
-                    return dbContext.TipoIdentificacionRepository.ToList();
+                    var listado = dbContext.TipoIdentificacionRepository;
+                    foreach (var value in listado)
+                    {
+                        LlaveDescripcion item = new LlaveDescripcion(value.IdTipoIdentificacion, value.Descripcion);
+                        listaTipoIdentificacion.Add(item);
+                    }
+                    return listaTipoIdentificacion;
                 }
                 catch (Exception ex)
                 {
@@ -2257,13 +2466,20 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public IEnumerable<Modulo> ObtenerListaModulos()
+        public IEnumerable<LlaveDescripcion> ObtenerListadoModulos()
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
+                var listaModulos = new List<LlaveDescripcion>();
                 try
                 {
-                    return dbContext.ModuloRepository.ToList();
+                    var listado = dbContext.ModuloRepository;
+                    foreach (var value in listado)
+                    {
+                        LlaveDescripcion item = new LlaveDescripcion(value.IdModulo, value.Descripcion);
+                        listaModulos.Add(item);
+                    }
+                    return listaModulos;
                 }
                 catch (Exception ex)
                 {
@@ -2273,13 +2489,20 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public IEnumerable<CatalogoReporte> ObtenerListaReportes()
+        public IEnumerable<LlaveDescripcion> ObtenerListadoCatalogoReportes()
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
+                var listaCatalogoReporte = new List<LlaveDescripcion>();
                 try
                 {
-                    return dbContext.CatalogoReporteRepository.ToList();
+                    var listado = dbContext.CatalogoReporteRepository;
+                    foreach (var value in listado)
+                    {
+                        LlaveDescripcion item = new LlaveDescripcion(value.IdReporte, value.NombreReporte);
+                        listaCatalogoReporte.Add(item);
+                    }
+                    return listaCatalogoReporte;
                 }
                 catch (Exception ex)
                 {
@@ -2289,13 +2512,20 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public IEnumerable<Provincia> ObtenerListaProvincias()
+        public IEnumerable<LlaveDescripcion> ObtenerListadoProvincias()
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
+                var listaProvincia = new List<LlaveDescripcion>();
                 try
                 {
-                    return dbContext.ProvinciaRepository.ToList();
+                    var listado = dbContext.ProvinciaRepository;
+                    foreach (var value in listado)
+                    {
+                        LlaveDescripcion item = new LlaveDescripcion(value.IdProvincia, value.Descripcion);
+                        listaProvincia.Add(item);
+                    }
+                    return listaProvincia;
                 }
                 catch (Exception ex)
                 {
@@ -2305,13 +2535,20 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public IEnumerable<Canton> ObtenerListaCantones(int intIdProvincia)
+        public IEnumerable<LlaveDescripcion> ObtenerListadoCantones(int intIdProvincia)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
+                var listaCanton = new List<LlaveDescripcion>();
                 try
                 {
-                    return dbContext.CantonRepository.Where(x => x.IdProvincia == intIdProvincia).ToList();
+                    var listado = dbContext.CantonRepository.Where(x => x.IdProvincia == intIdProvincia);
+                    foreach (var value in listado)
+                    {
+                        LlaveDescripcion item = new LlaveDescripcion(value.IdCanton, value.Descripcion);
+                        listaCanton.Add(item);
+                    }
+                    return listaCanton;
                 }
                 catch (Exception ex)
                 {
@@ -2321,13 +2558,20 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public IEnumerable<Distrito> ObtenerListaDistritos(int intIdProvincia, int intIdCanton)
+        public IEnumerable<LlaveDescripcion> ObtenerListadoDistritos(int intIdProvincia, int intIdCanton)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
+                var listaDistrito = new List<LlaveDescripcion>();
                 try
                 {
-                    return dbContext.DistritoRepository.Where(x => x.IdProvincia == intIdProvincia && x.IdCanton == intIdCanton).ToList();
+                    var listado = dbContext.DistritoRepository.Where(x => x.IdProvincia == intIdProvincia && x.IdCanton == intIdCanton);
+                    foreach (var value in listado)
+                    {
+                        LlaveDescripcion item = new LlaveDescripcion(value.IdDistrito, value.Descripcion);
+                        listaDistrito.Add(item);
+                    }
+                    return listaDistrito;
                 }
                 catch (Exception ex)
                 {
@@ -2337,13 +2581,20 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public IEnumerable<Barrio> ObtenerListaBarrios(int intIdProvincia, int intIdCanton, int intIdDistrito)
+        public IEnumerable<LlaveDescripcion> ObtenerListadoBarrios(int intIdProvincia, int intIdCanton, int intIdDistrito)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
+                var listaBarrio = new List<LlaveDescripcion>();
                 try
                 {
-                    return dbContext.BarrioRepository.Where(x => x.IdProvincia == intIdProvincia && x.IdCanton == intIdCanton && x.IdDistrito == intIdDistrito).ToList();
+                    var listado = dbContext.BarrioRepository.Where(x => x.IdProvincia == intIdProvincia && x.IdCanton == intIdCanton && x.IdDistrito == intIdDistrito);
+                    foreach (var value in listado)
+                    {
+                        LlaveDescripcion item = new LlaveDescripcion(value.IdBarrio, value.Descripcion);
+                        listaBarrio.Add(item);
+                    }
+                    return listaBarrio;
                 }
                 catch (Exception ex)
                 {
@@ -2353,29 +2604,28 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             }
         }
 
-        public IList<TipodePrecio> ObtenerListaTipodePrecio()
+        public IList<LlaveDescripcion> ObtenerListadoTipodePrecio()
         {
-            IList<TipodePrecio> listado = null;
             try
             {
-                listado = new List<TipodePrecio>();
-                var tipoPrecio = new TipodePrecio(1, "Precio 1");
+                IList<LlaveDescripcion> listado = new List<LlaveDescripcion>();
+                var tipoPrecio = new LlaveDescripcion(1, "Precio 1");
                 listado.Add(tipoPrecio);
-                tipoPrecio = new TipodePrecio(2, "Precio 2");
+                tipoPrecio = new LlaveDescripcion(2, "Precio 2");
                 listado.Add(tipoPrecio);
-                tipoPrecio = new TipodePrecio(3, "Precio 3");
+                tipoPrecio = new LlaveDescripcion(3, "Precio 3");
                 listado.Add(tipoPrecio);
-                tipoPrecio = new TipodePrecio(4, "Precio 4");
+                tipoPrecio = new LlaveDescripcion(4, "Precio 4");
                 listado.Add(tipoPrecio);
-                tipoPrecio = new TipodePrecio(5, "Precio 5");
+                tipoPrecio = new LlaveDescripcion(5, "Precio 5");
                 listado.Add(tipoPrecio);
+                return listado;
             }
             catch (Exception ex)
             {
                 log.Error("Error al obtener el listado de tipos de precio: ", ex);
                 throw new Exception("Se produjo un error consultando el listado de tipos de precio. Por favor consulte con su proveedor.");
             }
-            return listado;
         }
     }
 }

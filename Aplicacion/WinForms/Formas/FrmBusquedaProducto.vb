@@ -15,55 +15,24 @@ Public Class FrmBusquedaProducto
 
 #Region "Métodos"
     Private Sub EstablecerPropiedadesDataGridView()
+        Dim dvcId As New DataGridViewTextBoxColumn
+        Dim dvcDescripcion As New DataGridViewTextBoxColumn
         dgvListado.Columns.Clear()
         dgvListado.AutoGenerateColumns = False
-        Dim dgvNumber As DataGridViewCellStyle
-        Dim dvcIdProducto As New DataGridViewTextBoxColumn
-        Dim dvcCodigo As New DataGridViewTextBoxColumn
-        Dim dvcDescripcion As New DataGridViewTextBoxColumn
-        Dim dvcCantidad As New DataGridViewTextBoxColumn
-        Dim dvcPrecio As New DataGridViewTextBoxColumn
-        dgvNumber = New DataGridViewCellStyle With {
-            .Format = "N2",
-            .NullValue = "0",
-            .Alignment = DataGridViewContentAlignment.MiddleRight
-        }
-
-        dvcIdProducto.DataPropertyName = "IDPRODUCTO"
-        dvcIdProducto.HeaderText = "Id"
-        dvcIdProducto.Visible = False
-        dgvListado.Columns.Add(dvcIdProducto)
-
-        dvcCodigo.DataPropertyName = "CODIGO"
-        dvcCodigo.HeaderText = "Código"
-        dvcCodigo.Width = 200
-        dgvListado.Columns.Add(dvcCodigo)
-
-        dvcDescripcion.DataPropertyName = "DESCRIPCION"
+        dvcId.HeaderText = "Id"
+        dvcId.DataPropertyName = "Id"
+        dvcId.Width = 50
+        dgvListado.Columns.Add(dvcId)
         dvcDescripcion.HeaderText = "Descripción"
-        dvcDescripcion.Width = 340
+        dvcDescripcion.DataPropertyName = "Descripcion"
+        dvcDescripcion.Width = 600
         dgvListado.Columns.Add(dvcDescripcion)
-
-        dvcCantidad.DataPropertyName = "CANTIDAD"
-        dvcCantidad.HeaderText = "Cantidad"
-        dvcCantidad.Width = 50
-        dvcCantidad.DefaultCellStyle = dgvNumber
-        dgvListado.Columns.Add(dvcCantidad)
-        If intTipoPrecio = 0 Then
-            dvcPrecio.DataPropertyName = "PRECIOVENTA1"
-        Else
-            dvcPrecio.DataPropertyName = "PRECIOCOSTO"
-        End If
-        dvcPrecio.HeaderText = "Precio (IVA)"
-        dvcPrecio.Width = 100
-        dvcPrecio.DefaultCellStyle = dgvNumber
-        dgvListado.Columns.Add(dvcPrecio)
     End Sub
 
     Private Async Function CargarComboBox() As Task
         Try
-            cboLinea.DataSource = Await ClienteFEWCF.ObtenerListaLineas(FrmPrincipal.empresaGlobal.IdEmpresa)
-            cboLinea.ValueMember = "IdLinea"
+            cboLinea.DataSource = Await ClienteFEWCF.ObtenerListadoLineas(FrmPrincipal.empresaGlobal.IdEmpresa)
+            cboLinea.ValueMember = "Id"
             cboLinea.DisplayMember = "Descripcion"
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -75,7 +44,7 @@ Public Class FrmBusquedaProducto
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
         Try
-            dgvListado.DataSource = Await ClienteFEWCF.ObtenerListaProductos(FrmPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, bolIncluyeServicios, cboLinea.SelectedValue, TxtCodigo.Text, TxtDesc.Text)
+            dgvListado.DataSource = Await ClienteFEWCF.ObtenerListadoProductos(FrmPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, bolIncluyeServicios, cboLinea.SelectedValue, TxtCodigo.Text, TxtDesc.Text)
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -140,7 +109,7 @@ Public Class FrmBusquedaProducto
 
     Private Sub FlexProducto_DoubleClick(ByVal sender As Object, ByVal e As EventArgs) Handles dgvListado.DoubleClick
         If dgvListado.RowCount > 0 Then
-            FrmPrincipal.strBusqueda = dgvListado.CurrentRow.Cells(1).Value.ToString()
+            FrmPrincipal.strBusqueda = dgvListado.CurrentRow.Cells(0).Value.ToString()
             Close()
         End If
     End Sub

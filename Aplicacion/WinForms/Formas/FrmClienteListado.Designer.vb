@@ -23,7 +23,7 @@ Partial Class FrmClienteListado
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FrmClienteListado))
-        Me.dgvDatos = New System.Windows.Forms.DataGridView()
+        Me.dgvListado = New System.Windows.Forms.DataGridView()
         Me.txtNombre = New System.Windows.Forms.TextBox()
         Me.lblDescripcion = New System.Windows.Forms.Label()
         Me.btnAgregar = New System.Windows.Forms.Button()
@@ -35,25 +35,25 @@ Partial Class FrmClienteListado
         Me.btnNext = New System.Windows.Forms.Button()
         Me.btnPrevious = New System.Windows.Forms.Button()
         Me.btnFirst = New System.Windows.Forms.Button()
-        CType(Me.dgvDatos, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.dgvListado, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
-        'dgvDatos
+        'dgvListado
         '
-        Me.dgvDatos.AllowUserToAddRows = False
-        Me.dgvDatos.AllowUserToDeleteRows = False
-        Me.dgvDatos.AllowUserToOrderColumns = True
-        Me.dgvDatos.AllowUserToResizeColumns = False
-        Me.dgvDatos.AllowUserToResizeRows = False
-        Me.dgvDatos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.dgvDatos.Location = New System.Drawing.Point(12, 50)
-        Me.dgvDatos.Name = "dgvDatos"
-        Me.dgvDatos.ReadOnly = True
-        Me.dgvDatos.RowHeadersVisible = False
-        Me.dgvDatos.ScrollBars = System.Windows.Forms.ScrollBars.None
-        Me.dgvDatos.Size = New System.Drawing.Size(670, 375)
-        Me.dgvDatos.TabIndex = 5
-        Me.dgvDatos.TabStop = False
+        Me.dgvListado.AllowUserToAddRows = False
+        Me.dgvListado.AllowUserToDeleteRows = False
+        Me.dgvListado.AllowUserToOrderColumns = True
+        Me.dgvListado.AllowUserToResizeColumns = False
+        Me.dgvListado.AllowUserToResizeRows = False
+        Me.dgvListado.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        Me.dgvListado.Location = New System.Drawing.Point(12, 50)
+        Me.dgvListado.Name = "dgvListado"
+        Me.dgvListado.ReadOnly = True
+        Me.dgvListado.RowHeadersVisible = False
+        Me.dgvListado.ScrollBars = System.Windows.Forms.ScrollBars.None
+        Me.dgvListado.Size = New System.Drawing.Size(670, 375)
+        Me.dgvListado.TabIndex = 5
+        Me.dgvListado.TabStop = False
         '
         'txtNombre
         '
@@ -189,17 +189,17 @@ Partial Class FrmClienteListado
         Me.Controls.Add(Me.btnAgregar)
         Me.Controls.Add(Me.lblDescripcion)
         Me.Controls.Add(Me.txtNombre)
-        Me.Controls.Add(Me.dgvDatos)
+        Me.Controls.Add(Me.dgvListado)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
         Me.Name = "FrmClienteListado"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Mantenimientos de Clientes"
-        CType(Me.dgvDatos, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.dgvListado, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
     End Sub
-    Friend WithEvents dgvDatos As System.Windows.Forms.DataGridView
+    Friend WithEvents dgvListado As System.Windows.Forms.DataGridView
     Friend WithEvents txtNombre As System.Windows.Forms.TextBox
     Friend WithEvents lblDescripcion As System.Windows.Forms.Label
     Friend WithEvents btnAgregar As System.Windows.Forms.Button

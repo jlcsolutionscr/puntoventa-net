@@ -8,34 +8,23 @@ Public Class FrmUsuarioListado
 #Region "Métodos"
     Private Sub EstablecerPropiedadesDataGridView()
         Dim dvcId As New DataGridViewTextBoxColumn
-        Dim dvcCodigo As New DataGridViewTextBoxColumn
-        Dim dvcModifica As New DataGridViewCheckBoxColumn
-        Dim dvcAutoriza As New DataGridViewCheckBoxColumn
-
-        dgvDatos.Columns.Clear()
-        dgvDatos.AutoGenerateColumns = False
+        Dim dvcDescripcion As New DataGridViewTextBoxColumn
+        dgvListado.Columns.Clear()
+        dgvListado.AutoGenerateColumns = False
         dvcId.HeaderText = "Id"
-        dvcId.DataPropertyName = "IdUsuario"
+        dvcId.DataPropertyName = "Id"
         dvcId.Width = 50
-        dgvDatos.Columns.Add(dvcId)
-        dvcCodigo.HeaderText = "Código"
-        dvcCodigo.DataPropertyName = "CodigoUsuario"
-        dvcCodigo.Width = 450
-        dgvDatos.Columns.Add(dvcCodigo)
-        dvcModifica.HeaderText = "Modifica"
-        dvcModifica.DataPropertyName = "Modifica"
-        dvcModifica.Width = 75
-        dgvDatos.Columns.Add(dvcModifica)
-        dvcAutoriza.HeaderText = "Autoriza"
-        dvcAutoriza.DataPropertyName = "PermiteRegistrarDispositivo"
-        dvcAutoriza.Width = 75
-        dgvDatos.Columns.Add(dvcAutoriza)
+        dgvListado.Columns.Add(dvcId)
+        dvcDescripcion.HeaderText = "Descripción"
+        dvcDescripcion.DataPropertyName = "Descripcion"
+        dvcDescripcion.Width = 600
+        dgvListado.Columns.Add(dvcDescripcion)
     End Sub
 
     Private Async Sub ActualizarDatos()
         Try
-            listado = Await ClienteFEWCF.ObtenerListaUsuarios(FrmPrincipal.empresaGlobal.IdEmpresa, txtCodigo.Text)
-            dgvDatos.DataSource = listado
+            listado = Await ClienteFEWCF.ObtenerListadoUsuarios(FrmPrincipal.empresaGlobal.IdEmpresa, txtCodigo.Text)
+            dgvListado.DataSource = listado
             If listado.Count() > 0 Then
                 btnEditar.Enabled = True
                 btnEliminar.Enabled = True
@@ -48,7 +37,7 @@ Public Class FrmUsuarioListado
             Close()
             Exit Sub
         End Try
-        dgvDatos.Refresh()
+        dgvListado.Refresh()
     End Sub
 #End Region
 
@@ -68,7 +57,7 @@ Public Class FrmUsuarioListado
 
     Private Sub btnEditar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEditar.Click
         Dim formMant As New FrmUsuario With {
-        .intIdUsuario = dgvDatos.CurrentRow.Cells(0).Value
+        .intIdUsuario = dgvListado.CurrentRow.Cells(0).Value
         }
         formMant.ShowDialog()
         ActualizarDatos()
@@ -77,7 +66,7 @@ Public Class FrmUsuarioListado
     Private Async Sub btnEliminar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEliminar.Click
         If MessageBox.Show("Desea eliminar el registro actual", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
             Try
-                Await ClienteFEWCF.EliminarUsuario(dgvDatos.CurrentRow.Cells(0).Value)
+                Await ClienteFEWCF.EliminarUsuario(dgvListado.CurrentRow.Cells(0).Value)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub

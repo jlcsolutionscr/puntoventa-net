@@ -1,3 +1,4 @@
+using LeandroSoftware.Core.CommonTypes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -59,7 +60,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         [NotMapped]
         public Usuario Usuario;
         [NotMapped]
-        public TerminalPorSucursal TerminalPorSucursal;
+        public EquipoRegistrado EquipoRegistrado;
 
         public TipoIdentificacion TipoIdentificacion { get; set; }
         public TipoMoneda TipoMoneda { get; set; }

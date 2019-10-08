@@ -66,46 +66,46 @@ namespace LeandroSoftware.Core.ClienteWCF
             }
         }
 
-        public static async Task<List<IdentificacionNombre>> ObtenerListaEmpresasAdministrador()
+        public static async Task<List<EquipoRegistrado>> ObtenerListadoTerminalesDisponibles(string strUsuario, string strClave, string strIdentificacion, int intTipoDispositivo)
         {
             RequestDTO peticion = new RequestDTO
             {
-                NombreMetodo = "ObtenerListaEmpresasAdministrador",
-                DatosPeticion = ""
+                NombreMetodo = "ObtenerListadoTerminalesDisponibles",
+                DatosPeticion = "{Usuario: '" + strUsuario + "', Clave: '" + strClave + "', Identificacion: '" + strIdentificacion + "', TipoDispositivo: " + intTipoDispositivo + "}"
             };
             string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
-            List<IdentificacionNombre> listado = new List<IdentificacionNombre>();
+            List<EquipoRegistrado> listado = new List<EquipoRegistrado>();
             if (respuesta != "")
-                listado = serializer.Deserialize<List<IdentificacionNombre>>(respuesta);
+                listado = serializer.Deserialize<List<EquipoRegistrado>>(respuesta);
             return listado;
         }
 
-        public static async Task<List<IdentificacionNombre>> ObtenerListaEmpresasPorDispositivo(string strDispositivoID)
+        public static async Task<List<LlaveDescripcion>> ObtenerListadoEmpresasAdministrador()
         {
             RequestDTO peticion = new RequestDTO
             {
-                NombreMetodo = "ObtenerListaEmpresasPorDispositivo",
-                DatosPeticion = "{Dispositivo: '" + strDispositivoID + "'}"
-            };
-            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
-            List<IdentificacionNombre> listado = new List<IdentificacionNombre>();
-            if (respuesta != "")
-                listado = serializer.Deserialize<List<IdentificacionNombre>>(respuesta);
-            return listado;
-        }
-
-        public static async Task<string> ObtenerUltimaVersionApp()
-        {
-            RequestDTO peticion = new RequestDTO
-            {
-                NombreMetodo = "ObtenerUltimaVersionApp",
+                NombreMetodo = "ObtenerListadoEmpresasAdministrador",
                 DatosPeticion = ""
             };
             string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
-            string strUltimaVersionApp = "";
+            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
             if (respuesta != "")
-                strUltimaVersionApp = serializer.Deserialize<string>(respuesta);
-            return strUltimaVersionApp;
+                listado = serializer.Deserialize<List<LlaveDescripcion>>(respuesta);
+            return listado;
+        }
+
+        public static async Task<List<LlaveDescripcion>> ObtenerListadoEmpresasPorTerminal(string strIdDispositivo)
+        {
+            RequestDTO peticion = new RequestDTO
+            {
+                NombreMetodo = "ObtenerListadoEmpresasPorTerminal",
+                DatosPeticion = "{Dispositivo: '" + strIdDispositivo + "'}"
+            };
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<LlaveDescripcion>>(respuesta);
+            return listado;
         }
 
         public static async Task<Empresa> ObtenerEmpresa(int intIdEmpresa)
@@ -122,26 +122,68 @@ namespace LeandroSoftware.Core.ClienteWCF
             return empresa;
         }
 
-        public static async Task<TerminalPorEmpresa> ObtenerTerminalPorEmpresa(int intIdEmpresa, int intIdSucursal, int intIdTerminal)
+        public static async Task<List<SucursalPorEmpresa>> ObtenerListadoSucursalPorEmpresa(int intIdEmpresa)
         {
             RequestDTO peticion = new RequestDTO
             {
-                NombreMetodo = "ObtenerTerminalPorEmpresa",
+                NombreMetodo = "ObtenerListadoSucursalPorEmpresa",
+                DatosPeticion = "{IdEmpresa: " + intIdEmpresa + "}"
+            };
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            List<SucursalPorEmpresa> listado = new List<SucursalPorEmpresa>();
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<SucursalPorEmpresa>>(respuesta);
+            return listado;
+        }
+
+        public static async Task<SucursalPorEmpresa> ObtenerSucursalPorEmpresa(int intIdEmpresa, int intIdSucursal)
+        {
+            RequestDTO peticion = new RequestDTO
+            {
+                NombreMetodo = "ObtenerSucursalPorEmpresa",
+                DatosPeticion = "{IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + "}"
+            };
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            SucursalPorEmpresa sucursal = null;
+            if (respuesta != "")
+                sucursal = serializer.Deserialize<SucursalPorEmpresa>(respuesta);
+            return sucursal;
+        }
+
+        public static async Task<List<TerminalPorSucursal>> ObtenerListadoTerminalPorSucursal(int intIdEmpresa, int intIdSucursal)
+        {
+            RequestDTO peticion = new RequestDTO
+            {
+                NombreMetodo = "ObtenerListadoTerminalPorSucursal",
+                DatosPeticion = "{IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + "}"
+            };
+            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
+            List<TerminalPorSucursal> listado = new List<TerminalPorSucursal>();
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<TerminalPorSucursal>>(respuesta);
+            return listado;
+        }
+
+        public static async Task<TerminalPorSucursal> ObtenerTerminalPorSucursal(int intIdEmpresa, int intIdSucursal, int intIdTerminal)
+        {
+            RequestDTO peticion = new RequestDTO
+            {
+                NombreMetodo = "ObtenerTerminalPorSucursal",
                 DatosPeticion = "{IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", IdTerminal: " + intIdTerminal + "}"
             };
             string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
-            TerminalPorEmpresa terminal = null;
+            TerminalPorSucursal terminal = null;
             if (respuesta != "")
-                terminal = serializer.Deserialize<TerminalPorEmpresa>(respuesta);
+                terminal = serializer.Deserialize<TerminalPorSucursal>(respuesta);
             return terminal;
         }
 
-        public static async Task<Empresa> ValidarCredenciales(string strIdentificacion, string strValorRegistro, string strUsuario, string strClave)
+        public static async Task<Empresa> ValidarCredenciales(string strUsuario, string strClave, int intIdEmpresa, string strValorRegistro)
         {
             RequestDTO peticion = new RequestDTO
             {
                 NombreMetodo = "ValidarCredenciales",
-                DatosPeticion = "{Identificacion: '" + strIdentificacion + "', ValorRegistro: '" + strValorRegistro + "', Usuario: '" + strUsuario + "', Clave: '" + strClave + "'}"
+                DatosPeticion = "{Usuario: '" + strUsuario + "', Clave: '" + strClave + "', IdEmpresa: " + intIdEmpresa + ", ValorRegistro: '" + strValorRegistro + "'}"
             };
             string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
             Empresa empresa = null;
@@ -164,269 +206,269 @@ namespace LeandroSoftware.Core.ClienteWCF
             return decTipoCambioDolar;
         }
 
-        public static async Task<List<TipoIdentificacion>> ObtenerListaTipoIdentificacion()
+        public static async Task<List<LlaveDescripcion>> ObtenerListadoTipoIdentificacion()
         {
             RequestDTO peticion = new RequestDTO
             {
-                NombreMetodo = "ObtenerListaTipoIdentificacion",
+                NombreMetodo = "ObtenerListadoTipoIdentificacion",
                 DatosPeticion = ""
             };
             string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
-            List<TipoIdentificacion> listado = new List<TipoIdentificacion>();
+            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
             if (respuesta != "")
-                listado = serializer.Deserialize<List<TipoIdentificacion>>(respuesta);
+                listado = serializer.Deserialize<List<LlaveDescripcion>>(respuesta);
             return listado;
         }
 
-        public static async Task<List<Modulo>> ObtenerlistaModulos()
+        public static async Task<List<LlaveDescripcion>> ObtenerListadoModulos()
         {
             RequestDTO peticion = new RequestDTO
             {
-                NombreMetodo = "ObtenerListaModulos",
+                NombreMetodo = "ObtenerListadoModulos",
                 DatosPeticion = ""
             };
             string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
-            List<Modulo> listado = new List<Modulo>();
+            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
             if (respuesta != "")
-                listado = serializer.Deserialize<List<Modulo>>(respuesta);
+                listado = serializer.Deserialize<List<LlaveDescripcion>>(respuesta);
             return listado;
         }
 
-        public static async Task<List<CatalogoReporte>> ObtenerListaReportes()
+        public static async Task<List<LlaveDescripcion>> ObtenerListadoCatalogoReportes()
         {
             RequestDTO peticion = new RequestDTO
             {
-                NombreMetodo = "ObtenerListaReportes",
+                NombreMetodo = "ObtenerListadoCatalogoReportes",
                 DatosPeticion = ""
             };
             string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
-            List<CatalogoReporte> listado = new List<CatalogoReporte>();
+            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
             if (respuesta != "")
-                listado = serializer.Deserialize<List<CatalogoReporte>>(respuesta);
+                listado = serializer.Deserialize<List<LlaveDescripcion>>(respuesta);
             return listado;
         }
 
-        public static async Task<List<Provincia>> ObtenerListaProvincias()
+        public static async Task<List<LlaveDescripcion>> ObtenerListadoProvincias()
         {
             RequestDTO peticion = new RequestDTO
             {
-                NombreMetodo = "ObtenerListaProvincias",
+                NombreMetodo = "ObtenerListadoProvincias",
                 DatosPeticion = ""
             };
             string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
-            List<Provincia> listado = new List<Provincia>();
+            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
             if (respuesta != "")
-                listado = serializer.Deserialize<List<Provincia>>(respuesta);;
+                listado = serializer.Deserialize<List<LlaveDescripcion>>(respuesta);;
             return listado;
         }
 
-        public static async Task<List<Canton>> ObtenerListaCantones(int intIdProvincia)
+        public static async Task<List<LlaveDescripcion>> ObtenerListadoCantones(int intIdProvincia)
         {
             RequestDTO peticion = new RequestDTO
             {
-                NombreMetodo = "ObtenerListaCantones",
+                NombreMetodo = "ObtenerListadoCantones",
                 DatosPeticion = "{IdProvincia: " + intIdProvincia + "}"
             };
             string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
-            List<Canton> listado = new List<Canton>();
+            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
             if (respuesta != "")
-                listado = serializer.Deserialize<List<Canton>>(respuesta);
+                listado = serializer.Deserialize<List<LlaveDescripcion>>(respuesta);
             return listado;
         }
 
-        public static async Task<List<Distrito>> ObtenerListaDistritos(int intIdProvincia, int intIdCanton)
+        public static async Task<List<LlaveDescripcion>> ObtenerListadoDistritos(int intIdProvincia, int intIdCanton)
         {
             RequestDTO peticion = new RequestDTO
             {
-                NombreMetodo = "ObtenerListaDistritos",
+                NombreMetodo = "ObtenerListadoDistritos",
                 DatosPeticion = "{IdProvincia: " + intIdProvincia + ", IdCanton: " + intIdCanton + "}"
             };
             string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
-            List<Distrito> listado = new List<Distrito>();
+            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
             if (respuesta != "")
-                listado = serializer.Deserialize<List<Distrito>>(respuesta);
+                listado = serializer.Deserialize<List<LlaveDescripcion>>(respuesta);
             return listado;
         }
 
-        public static async Task<List<Barrio>> ObtenerListaBarrios(int intIdProvincia, int intIdCanton, int intIdDistrito)
+        public static async Task<List<LlaveDescripcion>> ObtenerListadoBarrios(int intIdProvincia, int intIdCanton, int intIdDistrito)
         {
             RequestDTO peticion = new RequestDTO
             {
-                NombreMetodo = "ObtenerListaBarrios",
+                NombreMetodo = "ObtenerListadoBarrios",
                 DatosPeticion = "{IdProvincia: " + intIdProvincia + ", IdCanton: " + intIdCanton + ", IdDistrito: " + intIdDistrito + "}"
             };
             string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
-            List<Barrio> listado = new List<Barrio>();
+            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
             if (respuesta != "")
-                listado = serializer.Deserialize<List<Barrio>>(respuesta);
+                listado = serializer.Deserialize<List<LlaveDescripcion>>(respuesta);
             return listado;
         }
 
-        public static async Task<List<TipoProducto>> ObtenerListaTipoProducto()
+        public static async Task<List<LlaveDescripcion>> ObtenerListadoTipoProducto()
         {
             RequestDTO peticion = new RequestDTO
             {
-                NombreMetodo = "ObtenerListaTipoProducto",
+                NombreMetodo = "ObtenerListadoTipoProducto",
                 DatosPeticion = ""
             };
             string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
-            List<TipoProducto> listado = new List<TipoProducto>();
+            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
             if (respuesta != "")
-                listado = serializer.Deserialize<List<TipoProducto>>(respuesta);
+                listado = serializer.Deserialize<List<LlaveDescripcion>>(respuesta);
             return listado;
         }
 
-        public static async Task<List<ParametroExoneracion>> ObtenerListaTipoExoneracion()
+        public static async Task<List<LlaveDescripcion>> ObtenerListadoTipoExoneracion()
         {
             RequestDTO peticion = new RequestDTO
             {
-                NombreMetodo = "ObtenerListaTipoExoneracion",
+                NombreMetodo = "ObtenerListadoTipoExoneracion",
                 DatosPeticion = ""
             };
             string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
-            List<ParametroExoneracion> listado = new List<ParametroExoneracion>();
+            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
             if (respuesta != "")
-                listado = serializer.Deserialize<List<ParametroExoneracion>>(respuesta);
+                listado = serializer.Deserialize<List<LlaveDescripcion>>(respuesta);
             return listado;
         }
 
-        public static async Task<List<ParametroImpuesto>> ObtenerListaTipoImpuesto()
+        public static async Task<List<LlaveDescripcion>> ObtenerListadoTipoImpuesto()
         {
             RequestDTO peticion = new RequestDTO
             {
-                NombreMetodo = "ObtenerListaTipoImpuesto",
+                NombreMetodo = "ObtenerListadoTipoImpuesto",
                 DatosPeticion = ""
             };
             string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
-            List<ParametroImpuesto> listado = new List<ParametroImpuesto>();
+            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
             if (respuesta != "")
-                listado = serializer.Deserialize<List<ParametroImpuesto>>(respuesta);
+                listado = serializer.Deserialize<List<LlaveDescripcion>>(respuesta);
             return listado;
         }
 
-        public static async Task<List<TipoUnidad>> ObtenerListaTipoUnidad()
+        public static async Task<List<LlaveDescripcion>> ObtenerListadoTipoUnidad()
         {
             RequestDTO peticion = new RequestDTO
             {
-                NombreMetodo = "ObtenerListaTipoUnidad",
+                NombreMetodo = "ObtenerListadoTipoUnidad",
                 DatosPeticion = ""
             };
             string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
-            List<TipoUnidad> listado = new List<TipoUnidad>();
+            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
             if (respuesta != "")
-                listado = serializer.Deserialize<List<TipoUnidad>>(respuesta);
+                listado = serializer.Deserialize<List<LlaveDescripcion>>(respuesta);
             return listado;
         }
 
-        public static async Task<List<FormaPago>> ObtenerListaFormaPagoEgreso()
+        public static async Task<List<LlaveDescripcion>> ObtenerListadoFormaPagoEgreso()
         {
             RequestDTO peticion = new RequestDTO
             {
-                NombreMetodo = "ObtenerListaFormaPagoEgreso",
+                NombreMetodo = "ObtenerListadoFormaPagoEgreso",
                 DatosPeticion = ""
             };
             string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
-            List<FormaPago> listado = new List<FormaPago>();
+            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
             if (respuesta != "")
-                listado = serializer.Deserialize<List<FormaPago>>(respuesta);
+                listado = serializer.Deserialize<List<LlaveDescripcion>>(respuesta);
             return listado;
         }
 
-        public static async Task<List<FormaPago>> ObtenerListaFormaPagoFactura()
+        public static async Task<List<LlaveDescripcion>> ObtenerListadoFormaPagoFactura()
         {
             RequestDTO peticion = new RequestDTO
             {
-                NombreMetodo = "ObtenerListaFormaPagoFactura",
+                NombreMetodo = "ObtenerListadoFormaPagoFactura",
                 DatosPeticion = ""
             };
             string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
-            List<FormaPago> listado = new List<FormaPago>();
+            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
             if (respuesta != "")
-                listado = serializer.Deserialize<List<FormaPago>>(respuesta);
+                listado = serializer.Deserialize<List<LlaveDescripcion>>(respuesta);
             return listado;
         }
 
-        public static async Task<List<Role>> ObtenerListaRoles()
+        public static async Task<List<LlaveDescripcion>> ObtenerListadoRoles()
         {
             RequestDTO peticion = new RequestDTO
             {
-                NombreMetodo = "ObtenerListaRoles",
+                NombreMetodo = "ObtenerListadoRoles",
                 DatosPeticion = ""
             };
             string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
-            List<Role> listado = new List<Role>();
+            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
             if (respuesta != "")
-                listado = serializer.Deserialize<List<Role>>(respuesta);
+                listado = serializer.Deserialize<List<LlaveDescripcion>>(respuesta);
             return listado;
         }
 
-        public static async Task<List<TipodePrecio>> ObtenerListaTipodePrecio()
+        public static async Task<List<LlaveDescripcion>> ObtenerListadoTipodePrecio()
         {
             RequestDTO peticion = new RequestDTO
             {
-                NombreMetodo = "ObtenerListaTipodePrecio",
+                NombreMetodo = "ObtenerListadoTipodePrecio",
                 DatosPeticion = ""
             };
             string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
-            List<TipodePrecio> listado = new List<TipodePrecio>();
+            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
             if (respuesta != "")
-                listado = serializer.Deserialize<List<TipodePrecio>>(respuesta);
+                listado = serializer.Deserialize<List<LlaveDescripcion>>(respuesta);
             return listado;
         }
 
-        public static async Task<List<TipoMoneda>> ObtenerListaTipoMoneda()
+        public static async Task<List<LlaveDescripcion>> ObtenerListadoTipoMoneda()
         {
             RequestDTO peticion = new RequestDTO
             {
-                NombreMetodo = "ObtenerListaTipoMoneda",
+                NombreMetodo = "ObtenerListadoTipoMoneda",
                 DatosPeticion = ""
             };
             string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
-            List<TipoMoneda> listado = new List<TipoMoneda>();
+            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
             if (respuesta != "")
-                listado = serializer.Deserialize<List<TipoMoneda>>(respuesta);
+                listado = serializer.Deserialize<List<LlaveDescripcion>>(respuesta);
             return listado;
         }
 
-        public static async Task<List<CondicionVenta>> ObtenerListaCondicionVenta()
+        public static async Task<List<LlaveDescripcion>> ObtenerListadoCondicionVenta()
         {
             RequestDTO peticion = new RequestDTO
             {
-                NombreMetodo = "ObtenerListaCondicionVenta",
+                NombreMetodo = "ObtenerListadoCondicionVenta",
                 DatosPeticion = ""
             };
             string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
-            List<CondicionVenta> listado = new List<CondicionVenta>();
+            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
             if (respuesta != "")
-                listado = serializer.Deserialize<List<CondicionVenta>>(respuesta);
+                listado = serializer.Deserialize<List<LlaveDescripcion>>(respuesta);
             return listado;
         }
 
-        public static async Task<List<CondicionVentaYFormaPago>> ObtenerListaCondicionVentaYFormaPagoFactura()
+        public static async Task<List<LlaveDescripcion>> ObtenerListadoCondicionVentaYFormaPagoFactura()
         {
             RequestDTO peticion = new RequestDTO
             {
-                NombreMetodo = "ObtenerListaCondicionVentaYFormaPagoFactura",
+                NombreMetodo = "ObtenerListadoCondicionVentaYFormaPagoFactura",
                 DatosPeticion = ""
             };
             string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
-            List<CondicionVentaYFormaPago> listado = new List<CondicionVentaYFormaPago>();
+            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
             if (respuesta != "")
-                listado = serializer.Deserialize<List<CondicionVentaYFormaPago>>(respuesta);
+                listado = serializer.Deserialize<List<LlaveDescripcion>>(respuesta);
             return listado;
         }
 
-        public static async Task<List<CondicionVentaYFormaPago>> ObtenerListaCondicionVentaYFormaPagoCompra()
+        public static async Task<List<LlaveDescripcion>> ObtenerListadoCondicionVentaYFormaPagoCompra()
         {
             RequestDTO peticion = new RequestDTO
             {
-                NombreMetodo = "ObtenerListaCondicionVentaYFormaPagoCompra",
+                NombreMetodo = "ObtenerListadoCondicionVentaYFormaPagoCompra",
                 DatosPeticion = ""
             };
             string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
-            List<CondicionVentaYFormaPago> listado = new List<CondicionVentaYFormaPago>();
+            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
             if (respuesta != "")
-                listado = serializer.Deserialize<List<CondicionVentaYFormaPago>>(respuesta);
+                listado = serializer.Deserialize<List<LlaveDescripcion>>(respuesta);
             return listado;
         }
 
@@ -759,17 +801,17 @@ namespace LeandroSoftware.Core.ClienteWCF
             return parametroImpuesto;
         }
 
-        public static async Task<List<BancoAdquiriente>> ObtenerListaBancoAdquiriente(int intIdEmpresa, string strDescripcion = "")
+        public static async Task<List<LlaveDescripcion>> ObtenerListadoBancoAdquiriente(int intIdEmpresa, string strDescripcion = "")
         {
             RequestDTO peticion = new RequestDTO
             {
-                NombreMetodo = "ObtenerListaBancoAdquiriente",
+                NombreMetodo = "ObtenerListadoBancoAdquiriente",
                 DatosPeticion = "{IdEmpresa: " + intIdEmpresa + ", Descripcion: '" + strDescripcion + "'}"
             };
             string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
-            List<BancoAdquiriente> listado = new List<BancoAdquiriente>();
+            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
             if (respuesta != "")
-                listado = serializer.Deserialize<List<BancoAdquiriente>>(respuesta);
+                listado = serializer.Deserialize<List<LlaveDescripcion>>(respuesta);
             return listado;
         }
 
@@ -820,17 +862,17 @@ namespace LeandroSoftware.Core.ClienteWCF
             await Ejecutar(peticion, strServicioPuntoventaURL, "");
         }
 
-        public static async Task<List<Cliente>> ObtenerListaClientes(int intIdEmpresa, int intNumeroPagina, int intFilasPorPagina, string strNombre)
+        public static async Task<List<LlaveDescripcion>> ObtenerListadoClientes(int intIdEmpresa, int intNumeroPagina, int intFilasPorPagina, string strNombre)
         {
             RequestDTO peticion = new RequestDTO
             {
-                NombreMetodo = "ObtenerListaClientes",
+                NombreMetodo = "ObtenerListadoClientes",
                 DatosPeticion = "{IdEmpresa: " + intIdEmpresa + ", NumeroPagina: " + intNumeroPagina + ",FilasPorPagina: " + intFilasPorPagina + ", Nombre: '" + strNombre + "'}"
             };
             string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
-            List<Cliente> listado = new List<Cliente>();
+            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
             if (respuesta != "")
-                listado = serializer.Deserialize<List<Cliente>>(respuesta);
+                listado = serializer.Deserialize<List<LlaveDescripcion>>(respuesta);
             return listado;
         }
 
@@ -910,45 +952,31 @@ namespace LeandroSoftware.Core.ClienteWCF
         }
 
 
-        public static async Task<List<Linea>> ObtenerListaLineas(int intIdEmpresa, string strDescripcion = "")
+        public static async Task<List<LlaveDescripcion>> ObtenerListadoLineas(int intIdEmpresa, string strDescripcion = "")
         {
             RequestDTO peticion = new RequestDTO
             {
-                NombreMetodo = "ObtenerListaLineas",
+                NombreMetodo = "ObtenerListadoLineas",
                 DatosPeticion = "{IdEmpresa: " + intIdEmpresa + ", Descripcion: '" + strDescripcion + "'}"
             };
             string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
-            List<Linea> listado = new List<Linea>();
+            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
             if (respuesta != "")
-                listado = serializer.Deserialize<List<Linea>>(respuesta);
+                listado = serializer.Deserialize<List<LlaveDescripcion>>(respuesta);
             return listado;
         }
 
-        public static async Task<List<Linea>> ObtenerListaLineasDeProducto(int intIdEmpresa)
+        public static async Task<List<LlaveDescripcion>> ObtenerListadoLineasDeProducto(int intIdEmpresa)
         {
             RequestDTO peticion = new RequestDTO
             {
-                NombreMetodo = "ObtenerListaLineasDeProducto",
+                NombreMetodo = "ObtenerListadoLineasDeProducto",
                 DatosPeticion = "{IdEmpresa: " + intIdEmpresa + "}"
             };
             string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
-            List<Linea> listado = new List<Linea>();
+            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
             if (respuesta != "")
-                listado = serializer.Deserialize<List<Linea>>(respuesta);
-            return listado;
-        }
-
-        public static async Task<List<ListaEmpresa>> ObtenerListaEmpresas()
-        {
-            RequestDTO peticion = new RequestDTO
-            {
-                NombreMetodo = "ObtenerListaEmpresas",
-                DatosPeticion = ""
-            };
-            string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
-            List<ListaEmpresa> listado = new List<ListaEmpresa>();
-            if (respuesta != "")
-                listado = serializer.Deserialize<List<ListaEmpresa>>(respuesta);
+                listado = serializer.Deserialize<List<LlaveDescripcion>>(respuesta);
             return listado;
         }
 
@@ -986,12 +1014,55 @@ namespace LeandroSoftware.Core.ClienteWCF
             await Ejecutar(peticion, strServicioPuntoventaURL, "");
         }
 
-        public static async Task ActualizarTerminalPorEmpresa(TerminalPorEmpresa terminal)
+        public static async Task RegistrarTerminal(string strCodigoUsuario, string strClave, string strIdentificacion, int intIdSucursal, int intIdTerminal, int intTipoDispositivo, string strDispositivoId)
+        {
+            RequestDTO peticion = new RequestDTO
+            {
+                NombreMetodo = "RegistrarTerminal",
+                DatosPeticion = "{Usuario: '" + strCodigoUsuario + "', Clave: '" + strClave + "', Identificacion: '" + strIdentificacion + "', IdSucursal: " + intIdSucursal + ", IdTerminal: " + intIdTerminal + ",TipoDispositivo: " + intTipoDispositivo + ",Dispositivo: '" + strDispositivoId + "'}"
+            };
+            await Ejecutar(peticion, strServicioPuntoventaURL, "");
+        }
+
+        public static async Task AgregarSucursalPorEmpresa(SucursalPorEmpresa sucursal)
+        {
+            string strDatos = serializer.Serialize(sucursal);
+            RequestDTO peticion = new RequestDTO
+            {
+                NombreMetodo = "AgregarSucursalPorEmpresa",
+                DatosPeticion = strDatos
+            };
+            await Ejecutar(peticion, strServicioPuntoventaURL, "");
+        }
+
+        public static async Task ActualizarSucursalPorEmpresa(SucursalPorEmpresa sucursal)
+        {
+            string strDatos = serializer.Serialize(sucursal);
+            RequestDTO peticion = new RequestDTO
+            {
+                NombreMetodo = "ActualizarSucursalPorEmpresa",
+                DatosPeticion = strDatos
+            };
+            await Ejecutar(peticion, strServicioPuntoventaURL, "");
+        }
+
+        public static async Task AgregarTerminalPorSucursal(TerminalPorSucursal terminal)
         {
             string strDatos = serializer.Serialize(terminal);
             RequestDTO peticion = new RequestDTO
             {
-                NombreMetodo = "ActualizarTerminalPorEmpresa",
+                NombreMetodo = "AgregarTerminalPorSucursal",
+                DatosPeticion = strDatos
+            };
+            await Ejecutar(peticion, strServicioPuntoventaURL, "");
+        }
+
+        public static async Task ActualizarTerminalPorSucursal(TerminalPorSucursal terminal)
+        {
+            string strDatos = serializer.Serialize(terminal);
+            RequestDTO peticion = new RequestDTO
+            {
+                NombreMetodo = "ActualizarTerminalPorSucursal",
                 DatosPeticion = strDatos
             };
             await Ejecutar(peticion, strServicioPuntoventaURL, "");
@@ -1027,17 +1098,17 @@ namespace LeandroSoftware.Core.ClienteWCF
             await Ejecutar(peticion, strServicioPuntoventaURL, "");
         }
 
-        public static async Task<List<Linea>> ObtenerListaLineasDeServicio(int intIdEmpresa)
+        public static async Task<List<LlaveDescripcion>> ObtenerListadoLineasDeServicio(int intIdEmpresa)
         {
             RequestDTO peticion = new RequestDTO
             {
-                NombreMetodo = "ObtenerListaLineasDeServicio",
+                NombreMetodo = "ObtenerListadoLineasDeServicio",
                 DatosPeticion = "{IdEmpresa: " + intIdEmpresa + "}"
             };
             string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
-            List<Linea> listado = new List<Linea>();
+            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
             if (respuesta != "")
-                listado = serializer.Deserialize<List<Linea>>(respuesta);
+                listado = serializer.Deserialize<List<LlaveDescripcion>>(respuesta);
             return listado;
         }
 
@@ -1088,17 +1159,17 @@ namespace LeandroSoftware.Core.ClienteWCF
             await Ejecutar(peticion, strServicioPuntoventaURL, "");
         }
 
-        public static async Task<List<Proveedor>> ObtenerListaProveedores(int intIdEmpresa, int intNumeroPagina, int intFilasPorPagina, string strNombre)
+        public static async Task<List<LlaveDescripcion>> ObtenerListadoProveedores(int intIdEmpresa, int intNumeroPagina, int intFilasPorPagina, string strNombre)
         {
             RequestDTO peticion = new RequestDTO
             {
-                NombreMetodo = "ObtenerListaProveedores",
+                NombreMetodo = "ObtenerListadoProveedores",
                 DatosPeticion = "{IdEmpresa: " + intIdEmpresa + ", NumeroPagina: " + intNumeroPagina + ",FilasPorPagina: " + intFilasPorPagina + ", Nombre: '" + strNombre + "'}"
             };
             string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
-            List<Proveedor> listado = new List<Proveedor>();
+            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
             if (respuesta != "")
-                listado = serializer.Deserialize<List<Proveedor>>(respuesta);
+                listado = serializer.Deserialize<List<LlaveDescripcion>>(respuesta);
             return listado;
         }
 
@@ -1178,17 +1249,17 @@ namespace LeandroSoftware.Core.ClienteWCF
             return intCantidad;
         }
 
-        public static async Task<List<Producto>> ObtenerListaProductos(int intIdEmpresa, int intNumeroPagina, int intFilasPorPagina, bool bolIncluyeServicios, int intIdLinea = 0, string strCodigo = "", string strDescripcion = "")
+        public static async Task<List<LlaveDescripcion>> ObtenerListadoProductos(int intIdEmpresa, int intNumeroPagina, int intFilasPorPagina, bool bolIncluyeServicios, int intIdLinea = 0, string strCodigo = "", string strDescripcion = "")
         {
             RequestDTO peticion = new RequestDTO
             {
-                NombreMetodo = "ObtenerListaProductos",
+                NombreMetodo = "ObtenerListadoProductos",
                 DatosPeticion = "{IdEmpresa: " + intIdEmpresa + ", NumeroPagina: " + intNumeroPagina + ",FilasPorPagina: " + intFilasPorPagina + ", IncluyeServicios: '" + bolIncluyeServicios + "', IdLinea: " + intIdLinea + ", Codigo: '" + strCodigo + "', Descripcion: '" + strDescripcion + "'}"
             };
             string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
-            List<Producto> listado = new List<Producto>();
+            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
             if (respuesta != "")
-                listado = serializer.Deserialize<List<Producto>>(respuesta);
+                listado = serializer.Deserialize<List<LlaveDescripcion>>(respuesta);
             return listado;
         }
 
@@ -1253,17 +1324,17 @@ namespace LeandroSoftware.Core.ClienteWCF
             await Ejecutar(peticion, strServicioPuntoventaURL, "");
         }
 
-        public static async Task<List<Usuario>> ObtenerListaUsuarios(int intIdEmpresa, string strCodigo)
+        public static async Task<List<LlaveDescripcion>> ObtenerListadoUsuarios(int intIdEmpresa, string strCodigo)
         {
             RequestDTO peticion = new RequestDTO
             {
-                NombreMetodo = "ObtenerListaUsuarios",
+                NombreMetodo = "ObtenerListadoUsuarios",
                 DatosPeticion = "{IdEmpresa: " + intIdEmpresa + ", Codigo: '" + strCodigo + "'}"
             };
             string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
-            List<Usuario> listado = new List<Usuario>();
+            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
             if (respuesta != "")
-                listado = serializer.Deserialize<List<Usuario>>(respuesta);
+                listado = serializer.Deserialize<List<LlaveDescripcion>>(respuesta);
             return listado;
         }
 
@@ -1338,17 +1409,17 @@ namespace LeandroSoftware.Core.ClienteWCF
             await Ejecutar(peticion, strServicioPuntoventaURL, "");
         }
 
-        public static async Task<List<CuentaEgreso>> ObtenerListaCuentasEgreso(int intIdEmpresa, string strDescripcion = "")
+        public static async Task<List<LlaveDescripcion>> ObtenerListadoCuentasEgreso(int intIdEmpresa, string strDescripcion = "")
         {
             RequestDTO peticion = new RequestDTO
             {
-                NombreMetodo = "ObtenerListaCuentasEgreso",
+                NombreMetodo = "ObtenerListadoCuentasEgreso",
                 DatosPeticion = "{IdEmpresa: " + intIdEmpresa + ", Descripcion: '" + strDescripcion + "'}"
             };
             string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
-            List<CuentaEgreso> listado = new List<CuentaEgreso>();
+            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
             if (respuesta != "")
-                listado = serializer.Deserialize<List<CuentaEgreso>>(respuesta);
+                listado = serializer.Deserialize<List<LlaveDescripcion>>(respuesta);
             return listado;
         }
 
@@ -1399,17 +1470,17 @@ namespace LeandroSoftware.Core.ClienteWCF
             await Ejecutar(peticion, strServicioPuntoventaURL, "");
         }
 
-        public static async Task<List<CuentaBanco>> ObtenerListaCuentasBanco(int intIdEmpresa, string strDescripcion = "")
+        public static async Task<List<LlaveDescripcion>> ObtenerListadoCuentasBanco(int intIdEmpresa, string strDescripcion = "")
         {
             RequestDTO peticion = new RequestDTO
             {
-                NombreMetodo = "ObtenerListaCuentasBanco",
+                NombreMetodo = "ObtenerListadoCuentasBanco",
                 DatosPeticion = "{IdEmpresa: " + intIdEmpresa + ", Descripcion: '" + strDescripcion + "'}"
             };
             string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
-            List<CuentaBanco> listado = new List<CuentaBanco>();
+            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
             if (respuesta != "")
-                listado = serializer.Deserialize<List<CuentaBanco>>(respuesta);
+                listado = serializer.Deserialize<List<LlaveDescripcion>>(respuesta);
             return listado;
         }
 
@@ -1460,17 +1531,17 @@ namespace LeandroSoftware.Core.ClienteWCF
             await Ejecutar(peticion, strServicioPuntoventaURL, "");
         }
 
-        public static async Task<List<Vendedor>> ObtenerListaVendedores(int intIdEmpresa, string strNombre = "")
+        public static async Task<List<LlaveDescripcion>> ObtenerListadoVendedores(int intIdEmpresa, string strNombre = "")
         {
             RequestDTO peticion = new RequestDTO
             {
-                NombreMetodo = "ObtenerListaVendedores",
+                NombreMetodo = "ObtenerListadoVendedores",
                 DatosPeticion = "{IdEmpresa: " + intIdEmpresa + ", Nombre: '" + strNombre + "'}"
             };
             string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
-            List<Vendedor> listado = new List<Vendedor>();
+            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
             if (respuesta != "")
-                listado = serializer.Deserialize<List<Vendedor>>(respuesta);
+                listado = serializer.Deserialize<List<LlaveDescripcion>>(respuesta);
             return listado;
         }
 
@@ -1549,17 +1620,17 @@ namespace LeandroSoftware.Core.ClienteWCF
             return intCantidad;
         }
 
-        public static async Task<List<Egreso>> ObtenerListaEgresos(int intIdEmpresa, int intNumeroPagina, int intFilasPorPagina, int intIdEgreso = 0, string strBeneficiario = "", string strDetalle = "")
+        public static async Task<List<LlaveDescripcion>> ObtenerListadoEgresos(int intIdEmpresa, int intNumeroPagina, int intFilasPorPagina, int intIdEgreso = 0, string strBeneficiario = "", string strDetalle = "")
         {
             RequestDTO peticion = new RequestDTO
             {
-                NombreMetodo = "ObtenerListaEgresos",
+                NombreMetodo = "ObtenerListadoEgresos",
                 DatosPeticion = "{IdEmpresa: " + intIdEmpresa + ", NumeroPagina: " + intNumeroPagina + ",FilasPorPagina: " + intFilasPorPagina + ", IdEgreso: " + intIdEgreso + ", Beneficiario: '" + strBeneficiario + "', Detalle: '" + strDetalle + "'}"
             };
             string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
-            List<Egreso> listado = new List<Egreso>();
+            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
             if (respuesta != "")
-                listado = serializer.Deserialize<List<Egreso>>(respuesta);
+                listado = serializer.Deserialize<List<LlaveDescripcion>>(respuesta);
             return listado;
         }
 
@@ -1624,17 +1695,17 @@ namespace LeandroSoftware.Core.ClienteWCF
             return intCantidad;
         }
 
-        public static async Task<List<Factura>> ObtenerListaFacturas(int intIdEmpresa, int intNumeroPagina, int intFilasPorPagina, int intIdFactura = 0, string strNombre = "")
+        public static async Task<List<LlaveDescripcion>> ObtenerListadoFacturas(int intIdEmpresa, int intNumeroPagina, int intFilasPorPagina, int intIdFactura = 0, string strNombre = "")
         {
             RequestDTO peticion = new RequestDTO
             {
-                NombreMetodo = "ObtenerListaFacturas",
+                NombreMetodo = "ObtenerListadoFacturas",
                 DatosPeticion = "{IdEmpresa: " + intIdEmpresa + ", NumeroPagina: " + intNumeroPagina + ",FilasPorPagina: " + intFilasPorPagina + ", IdFactura: " + intIdFactura + ", Nombre: '" + strNombre + "'}"
             };
             string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
-            List<Factura> listado = new List<Factura>();
+            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
             if (respuesta != "")
-                listado = serializer.Deserialize<List<Factura>>(respuesta);
+                listado = serializer.Deserialize<List<LlaveDescripcion>>(respuesta);
             return listado;
         }
 
@@ -1729,31 +1800,31 @@ namespace LeandroSoftware.Core.ClienteWCF
             return intCantidad;
         }
 
-        public static async Task<List<DocumentoElectronico>> ObtenerListaDocumentosElectronicosProcesados(int intIdEmpresa, int intNumeroPagina, int intFilasPorPagina)
+        public static async Task<List<DocumentoDetalle>> ObtenerListadoDocumentosElectronicosProcesados(int intIdEmpresa, int intNumeroPagina, int intFilasPorPagina)
         {
             RequestDTO peticion = new RequestDTO
             {
-                NombreMetodo = "ObtenerListaDocumentosElectronicosProcesados",
+                NombreMetodo = "ObtenerListadoDocumentosElectronicosProcesados",
                 DatosPeticion = "{IdEmpresa: " + intIdEmpresa + ", NumeroPagina: " + intNumeroPagina + ",FilasPorPagina: " + intFilasPorPagina + "}"
             };
             string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
-            List<DocumentoElectronico> listado = new List<DocumentoElectronico>();
+            List<DocumentoDetalle> listado = new List<DocumentoDetalle>();
             if (respuesta != "")
-                listado = serializer.Deserialize<List<DocumentoElectronico>>(respuesta);
+                listado = serializer.Deserialize<List<DocumentoDetalle>>(respuesta);
             return listado;
         }
 
-        public static async Task<List<DocumentoElectronico>> ObtenerListaDocumentosElectronicosEnProceso(int intIdEmpresa)
+        public static async Task<List<DocumentoDetalle>> ObtenerListadoDocumentosElectronicosEnProceso(int intIdEmpresa)
         {
             RequestDTO peticion = new RequestDTO
             {
-                NombreMetodo = "ObtenerListaDocumentosElectronicosEnProceso",
+                NombreMetodo = "ObtenerListadoDocumentosElectronicosEnProceso",
                 DatosPeticion = "{IdEmpresa: " + intIdEmpresa + "}"
             };
             string respuesta = await EjecutarConsulta(peticion, strServicioPuntoventaURL, "");
-            List<DocumentoElectronico> listado = new List<DocumentoElectronico>();
+            List<DocumentoDetalle> listado = new List<DocumentoDetalle>();
             if (respuesta != "")
-                listado = serializer.Deserialize<List<DocumentoElectronico>>(respuesta);
+                listado = serializer.Deserialize<List<DocumentoDetalle>>(respuesta);
             return listado;
         }
 
@@ -1815,6 +1886,19 @@ namespace LeandroSoftware.Core.ClienteWCF
                 string strErrorMessage = task1.Result.Content.ReadAsStringAsync().Result.Replace("\"", "");
                 throw new Exception("Error al consumir el servicio web de recepción de respuestas: " + strErrorMessage);
             }
+        }
+
+        public static async Task<string> ObtenerUltimaVersionApp()
+        {
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+            HttpResponseMessage httpResponse = await httpClient.GetAsync(strServicioPuntoventaURL + "/obtenerultimaversionapp");
+            if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
+                throw new Exception(httpResponse.Content.ReadAsStringAsync().Result);
+            if (httpResponse.StatusCode != HttpStatusCode.OK)
+                throw new Exception(httpResponse.ReasonPhrase);
+            string responseContent = await httpResponse.Content.ReadAsStringAsync();
+            string response = serializer.Deserialize<string>(responseContent);
+            return response;
         }
     }
 }

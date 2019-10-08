@@ -1,6 +1,4 @@
-﻿Imports System.Threading.Tasks
-Imports LeandroSoftware.Core.Dominio.Entidades
-Imports LeandroSoftware.Core.ClienteWCF
+﻿Imports LeandroSoftware.Core.ClienteWCF
 
 Public Class FrmEstadoDocumentoElectronico
 #Region "Variables"
@@ -10,25 +8,25 @@ Public Class FrmEstadoDocumentoElectronico
 #Region "Métodos"
     Private Sub EstablecerPropiedadesDataGridView()
         Dim dvcId As New DataGridViewTextBoxColumn
-        Dim dvcClave As New DataGridViewTextBoxColumn
         Dim dvcConsecutivo As New DataGridViewTextBoxColumn
+        Dim dvcClave As New DataGridViewTextBoxColumn
         Dim dvcFecha As New DataGridViewTextBoxColumn
         Dim dvcEstado As New DataGridViewTextBoxColumn
-
         dgvDatos.Columns.Clear()
         dgvDatos.AutoGenerateColumns = False
         dvcId.HeaderText = "Id"
         dvcId.DataPropertyName = "IdDocumento"
-        dvcId.Width = 50
+        dvcId.Width = 0
+        dvcId.Visible = False
         dgvDatos.Columns.Add(dvcId)
-        dvcClave.HeaderText = "Clave"
-        dvcClave.DataPropertyName = "ClaveNumerica"
-        dvcClave.Width = 320
-        dgvDatos.Columns.Add(dvcClave)
         dvcConsecutivo.HeaderText = "Consecutivo"
         dvcConsecutivo.DataPropertyName = "Consecutivo"
         dvcConsecutivo.Width = 150
         dgvDatos.Columns.Add(dvcConsecutivo)
+        dvcClave.HeaderText = "Clave"
+        dvcClave.DataPropertyName = "ClaveNumerica"
+        dvcClave.Width = 370
+        dgvDatos.Columns.Add(dvcClave)
         dvcFecha.HeaderText = "Fecha"
         dvcFecha.DataPropertyName = "Fecha"
         dvcFecha.Width = 150
@@ -42,7 +40,7 @@ Public Class FrmEstadoDocumentoElectronico
     Private Async Sub ActualizarDatos()
         Try
             picLoader.Visible = True
-            listadoDocumentosPendientes = Await ClienteFEWCF.ObtenerListaDocumentosElectronicosEnProceso(FrmPrincipal.empresaGlobal.IdEmpresa)
+            listadoDocumentosPendientes = Await ClienteFEWCF.ObtenerListadoDocumentosElectronicosEnProceso(FrmPrincipal.empresaGlobal.IdEmpresa)
             dgvDatos.DataSource = listadoDocumentosPendientes
             If listadoDocumentosPendientes.Count() > 0 Then
                 btnProcesar.Enabled = True

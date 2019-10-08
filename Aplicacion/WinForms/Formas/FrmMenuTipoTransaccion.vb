@@ -4,7 +4,7 @@ Imports System.Collections.Generic
 Public Class FrmMenuTipoTransaccion
 #Region "Variables"
     Private dtListaFormaPago As New DataTable, drListaFormaPago As DataRow
-    Public clFormasPago As IEnumerable(Of CondicionVentaYFormaPago)
+    Public clFormasPago As IEnumerable(Of LlaveDescripcion)
 #End Region
 
 #Region "Métodos"
@@ -17,13 +17,13 @@ Public Class FrmMenuTipoTransaccion
             drListaFormaPago(0) = "-1"
             drListaFormaPago(1) = "Todos"
             dtListaFormaPago.Rows.Add(drListaFormaPago)
-            For Each formaPago As CondicionVentaYFormaPago In clFormasPago
+            For Each formaPago As LlaveDescripcion In clFormasPago
                 drListaFormaPago = dtListaFormaPago.NewRow()
-                drListaFormaPago(0) = formaPago.IdTipo
+                drListaFormaPago(0) = formaPago.Id
                 drListaFormaPago(1) = formaPago.Descripcion
                 dtListaFormaPago.Rows.Add(drListaFormaPago)
             Next
-            cboTipoTransaccion.ValueMember = "IdFormaPago"
+            cboTipoTransaccion.ValueMember = "Id"
             cboTipoTransaccion.DisplayMember = "Descripcion"
             cboTipoTransaccion.DataSource = dtListaFormaPago
         Catch ex As Exception

@@ -12,29 +12,23 @@ Public Class FrmProveedorListado
 #Region "Métodos"
     Private Sub EstablecerPropiedadesDataGridView()
         Dim dvcId As New DataGridViewTextBoxColumn
-        Dim dvcIdentificacion As New DataGridViewTextBoxColumn
-        Dim dvcNombre As New DataGridViewTextBoxColumn
-
-        dgvDatos.Columns.Clear()
-        dgvDatos.AutoGenerateColumns = False
+        Dim dvcDescripcion As New DataGridViewTextBoxColumn
+        dgvListado.Columns.Clear()
+        dgvListado.AutoGenerateColumns = False
         dvcId.HeaderText = "Id"
-        dvcId.DataPropertyName = "IdProveedor"
+        dvcId.DataPropertyName = "Id"
         dvcId.Width = 50
-        dgvDatos.Columns.Add(dvcId)
-        dvcIdentificacion.HeaderText = "Identificación"
-        dvcIdentificacion.DataPropertyName = "Identificacion"
-        dvcIdentificacion.Width = 120
-        dgvDatos.Columns.Add(dvcIdentificacion)
-        dvcNombre.HeaderText = "Nombre"
-        dvcNombre.DataPropertyName = "Nombre"
-        dvcNombre.Width = 500
-        dgvDatos.Columns.Add(dvcNombre)
+        dgvListado.Columns.Add(dvcId)
+        dvcDescripcion.HeaderText = "Descripción"
+        dvcDescripcion.DataPropertyName = "Descripcion"
+        dvcDescripcion.Width = 600
+        dgvListado.Columns.Add(dvcDescripcion)
     End Sub
 
     Private Async Sub ActualizarDatos(ByVal intNumeroPagina As Integer)
         Try
-            listado = Await ClienteFEWCF.ObtenerListaProveedores(FrmPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, txtNombre.Text)
-            dgvDatos.DataSource = listado
+            listado = Await ClienteFEWCF.ObtenerListadoProveedores(FrmPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, txtNombre.Text)
+            dgvListado.DataSource = listado
             If listado.Count() > 0 Then
                 btnEditar.Enabled = True
                 btnEliminar.Enabled = True
@@ -48,7 +42,7 @@ Public Class FrmProveedorListado
             Close()
             Exit Sub
         End Try
-        dgvDatos.Refresh()
+        dgvListado.Refresh()
     End Sub
 
     Private Async Sub ValidarCantidadRegistros()
@@ -119,7 +113,7 @@ Public Class FrmProveedorListado
 
     Private Sub btnEditar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEditar.Click
         Dim formMant As New FrmProveedor With {
-        .intIdProveedor = dgvDatos.CurrentRow.Cells(0).Value
+        .intIdProveedor = dgvListado.CurrentRow.Cells(0).Value
         }
         formMant.ShowDialog()
         ActualizarDatos(intIndiceDePagina)
@@ -128,7 +122,7 @@ Public Class FrmProveedorListado
     Private Async Sub btnEliminar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEliminar.Click
         If MessageBox.Show("Desea eliminar el registro actual", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
             Try
-                Await ClienteFEWCF.EliminarProveedor(dgvDatos.CurrentRow.Cells(0).Value)
+                Await ClienteFEWCF.EliminarProveedor(dgvListado.CurrentRow.Cells(0).Value)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub

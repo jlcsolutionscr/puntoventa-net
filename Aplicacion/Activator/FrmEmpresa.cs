@@ -19,9 +19,13 @@ namespace LeandroSoftware.Activator
         private DataTable dtModuloPorEmpresa;
         private DataTable dtReportePorEmpresa;
         private Empresa empresa;
+        private SucursalPorEmpresa sucursal;
+        private TerminalPorSucursal terminal;
         private bool bolLoading = true;
         private bool bolLogoModificado = false;
         private bool bolCertificadoModificado = false;
+        private bool bolSucursalNueva = true;
+        private bool bolTerminalNueva = true;
         private string strRutaCertificado;
         public bool bolEditing;
         public int intIdEmpresa = -1;
@@ -34,14 +38,14 @@ namespace LeandroSoftware.Activator
         private void IniciaMaestroDetalle()
         {
             dtModuloPorEmpresa = new DataTable();
-            dtModuloPorEmpresa.Columns.Add("IdModulo", typeof(int));
+            dtModuloPorEmpresa.Columns.Add("Id", typeof(int));
             dtModuloPorEmpresa.Columns.Add("Descripcion", typeof(string));
             DataColumn[] columns = new DataColumn[1];
             columns[0] = dtModuloPorEmpresa.Columns[0];
             dtModuloPorEmpresa.PrimaryKey = columns;
 
             dtReportePorEmpresa = new DataTable();
-            dtReportePorEmpresa.Columns.Add("IdReporte", typeof(int));
+            dtReportePorEmpresa.Columns.Add("Id", typeof(int));
             dtReportePorEmpresa.Columns.Add("NombreReporte", typeof(string));
             columns = new DataColumn[1];
             columns[0] = dtReportePorEmpresa.Columns[0];
@@ -55,7 +59,7 @@ namespace LeandroSoftware.Activator
             foreach (ModuloPorEmpresa row in moduloPorEmpresa)
             {
                 DataRow objRowModulo = dtModuloPorEmpresa.NewRow();
-                objRowModulo["IdModulo"] = row.IdModulo;
+                objRowModulo["Id"] = row.IdModulo;
                 objRowModulo["Descripcion"] = row.Modulo.Descripcion;
                 dtModuloPorEmpresa.Rows.Add(objRowModulo);
             }
@@ -64,7 +68,7 @@ namespace LeandroSoftware.Activator
             foreach (ReportePorEmpresa row in reportePorEmpresa)
             {
                 DataRow objRowReporte = dtReportePorEmpresa.NewRow();
-                objRowReporte["IdReporte"] = row.IdReporte;
+                objRowReporte["Id"] = row.IdReporte;
                 objRowReporte["NombreReporte"] = row.CatalogoReporte.NombreReporte;
                 dtReportePorEmpresa.Rows.Add(objRowReporte);
             }
@@ -82,7 +86,7 @@ namespace LeandroSoftware.Activator
                 else
                 {
                     DataRow objRowEquipo = dtModuloPorEmpresa.NewRow();
-                    objRowEquipo["IdModulo"] = cboModuloPorEmpresa.SelectedValue;
+                    objRowEquipo["Id"] = cboModuloPorEmpresa.SelectedValue;
                     objRowEquipo["Descripcion"] = cboModuloPorEmpresa.Text;
                     dtModuloPorEmpresa.Rows.Add(objRowEquipo);
                     dgvModuloPorEmpresa.Refresh();
@@ -102,7 +106,7 @@ namespace LeandroSoftware.Activator
                 else
                 {
                     DataRow objRowEquipo = dtReportePorEmpresa.NewRow();
-                    objRowEquipo["IdReporte"] = cboReportePorEmpresa.SelectedValue;
+                    objRowEquipo["Id"] = cboReportePorEmpresa.SelectedValue;
                     objRowEquipo["NombreReporte"] = cboReportePorEmpresa.Text;
                     dtReportePorEmpresa.Rows.Add(objRowEquipo);
                     dgvReportePorEmpresa.Refresh();
@@ -118,7 +122,7 @@ namespace LeandroSoftware.Activator
             dgvModuloPorEmpresa.Columns.Clear();
             dgvModuloPorEmpresa.AutoGenerateColumns = false;
 
-            dvcModuloPorEmpresa.DataPropertyName = "IdModulo";
+            dvcModuloPorEmpresa.DataPropertyName = "Id";
             dvcModuloPorEmpresa.HeaderText = "";
             dvcModuloPorEmpresa.Width = 20;
             dvcModuloPorEmpresa.Visible = true;
@@ -139,7 +143,7 @@ namespace LeandroSoftware.Activator
             dgvReportePorEmpresa.Columns.Clear();
             dgvReportePorEmpresa.AutoGenerateColumns = false;
 
-            dvcReportePorEmpresa.DataPropertyName = "IdReporte";
+            dvcReportePorEmpresa.DataPropertyName = "Id";
             dvcReportePorEmpresa.HeaderText = "";
             dvcReportePorEmpresa.Width = 20;
             dvcReportePorEmpresa.Visible = true;
@@ -158,31 +162,31 @@ namespace LeandroSoftware.Activator
         {
             try
             {
-                IList<TipoIdentificacion> dsTipoIdentificacion = Array.Empty<TipoIdentificacion>();
-                dsTipoIdentificacion = await ClienteFEWCF.ObtenerListaTipoIdentificacion();
+                IList<LlaveDescripcion> dsTipoIdentificacion = Array.Empty<LlaveDescripcion>();
+                dsTipoIdentificacion = await ClienteFEWCF.ObtenerListadoTipoIdentificacion();
                 cboTipoIdentificacion.DataSource = dsTipoIdentificacion;
-                cboTipoIdentificacion.ValueMember = "IdTipoIdentificacion";
+                cboTipoIdentificacion.ValueMember = "Id";
                 cboTipoIdentificacion.DisplayMember = "Descripcion";
                 // Carga listado módulos
-                IList<Modulo> dsModulos = Array.Empty<Modulo>();
-                dsModulos = await ClienteFEWCF.ObtenerlistaModulos();
+                IList<LlaveDescripcion> dsModulos = Array.Empty<LlaveDescripcion>();
+                dsModulos = await ClienteFEWCF.ObtenerListadoModulos();
                 cboModuloPorEmpresa.DataSource = dsModulos;
-                cboModuloPorEmpresa.ValueMember = "IdModulo";
+                cboModuloPorEmpresa.ValueMember = "Id";
                 cboModuloPorEmpresa.DisplayMember = "Descripcion";
                 // Carga listado reportes
-                IList<CatalogoReporte> dsReportes = Array.Empty<CatalogoReporte>();
-                dsReportes = await ClienteFEWCF.ObtenerListaReportes();
+                IList<LlaveDescripcion> dsReportes = Array.Empty<LlaveDescripcion>();
+                dsReportes = await ClienteFEWCF.ObtenerListadoCatalogoReportes();
                 cboReportePorEmpresa.DataSource = dsReportes;
-                cboReportePorEmpresa.ValueMember = "IdReporte";
-                cboReportePorEmpresa.DisplayMember = "NombreReporte";
+                cboReportePorEmpresa.ValueMember = "Id";
+                cboReportePorEmpresa.DisplayMember = "Descripcion";
                 // Carga Tipo Contrato
-                IList<TipodeContrato> dsTipoContrato = new List<TipodeContrato>();
-                TipodeContrato tipo = new TipodeContrato(1, "Pago mensual o anual");
+                IList<LlaveDescripcion> dsTipoContrato = new List<LlaveDescripcion>();
+                LlaveDescripcion tipo = new LlaveDescripcion(1, "Pago mensual o anual");
                 dsTipoContrato.Add(tipo);
-                tipo = new TipodeContrato(2, "Limite de documentos anual");
+                tipo = new LlaveDescripcion(2, "Limite de documentos anual");
                 dsTipoContrato.Add(tipo);
                 cboTipoContrato.DataSource = dsTipoContrato;
-                cboTipoContrato.ValueMember = "IdTipoContrato";
+                cboTipoContrato.ValueMember = "Id";
                 cboTipoContrato.DisplayMember = "Descripcion";
             }
             catch (Exception ex)
@@ -196,10 +200,10 @@ namespace LeandroSoftware.Activator
         {
             try
             {
-                IList<Provincia> dsDataSet = Array.Empty<Provincia>();
-                dsDataSet = await ClienteFEWCF.ObtenerListaProvincias();
+                IList<LlaveDescripcion> dsDataSet = Array.Empty<LlaveDescripcion>();
+                dsDataSet = await ClienteFEWCF.ObtenerListadoProvincias();
                 cboProvincia.DataSource = dsDataSet;
-                cboProvincia.ValueMember = "IdProvincia";
+                cboProvincia.ValueMember = "Id";
                 cboProvincia.DisplayMember = "Descripcion";
             }
             catch (Exception ex)
@@ -213,10 +217,10 @@ namespace LeandroSoftware.Activator
         {
             try
             {
-                IList<Canton> dsDataSet = Array.Empty<Canton>();
-                dsDataSet = await ClienteFEWCF.ObtenerListaCantones(intIdProvincia);
+                IList<LlaveDescripcion> dsDataSet = Array.Empty<LlaveDescripcion>();
+                dsDataSet = await ClienteFEWCF.ObtenerListadoCantones(intIdProvincia);
                 cboCanton.DataSource = dsDataSet;
-                cboCanton.ValueMember = "IdCanton";
+                cboCanton.ValueMember = "Id";
                 cboCanton.DisplayMember = "Descripcion";
             }
             catch (Exception ex)
@@ -230,10 +234,10 @@ namespace LeandroSoftware.Activator
         {
             try
             {
-                IList<Distrito> dsDataSet = Array.Empty<Distrito>();
-                dsDataSet = await ClienteFEWCF.ObtenerListaDistritos(intIdProvincia, intIdCanton);
+                IList<LlaveDescripcion> dsDataSet = Array.Empty<LlaveDescripcion>();
+                dsDataSet = await ClienteFEWCF.ObtenerListadoDistritos(intIdProvincia, intIdCanton);
                 cboDistrito.DataSource = dsDataSet;
-                cboDistrito.ValueMember = "IdDistrito";
+                cboDistrito.ValueMember = "Id";
                 cboDistrito.DisplayMember = "Descripcion";
             }
             catch (Exception ex)
@@ -247,10 +251,10 @@ namespace LeandroSoftware.Activator
         {
             try
             {
-                IList<Barrio> dsDataSet = Array.Empty<Barrio>();
-                dsDataSet = await ClienteFEWCF.ObtenerListaBarrios(intIdProvincia, intIdCanton, intIdDistrito);
+                IList<LlaveDescripcion> dsDataSet = Array.Empty<LlaveDescripcion>();
+                dsDataSet = await ClienteFEWCF.ObtenerListadoBarrios(intIdProvincia, intIdCanton, intIdDistrito);
                 cboBarrio.DataSource = dsDataSet;
-                cboBarrio.ValueMember = "IdBarrio";
+                cboBarrio.ValueMember = "Id";
                 cboBarrio.DisplayMember = "Descripcion";
             }
             catch (Exception ex)
@@ -260,51 +264,83 @@ namespace LeandroSoftware.Activator
             }
         }
 
-        private async void CargarTerminalPorEmpresa()
+        private async void CargarSucursalPorEmpresa()
         {
-            if (txtIdEmpresa.Text != "" && txtSucursal.Text != "" && txtTerminal.Text != "")
+            if (txtIdEmpresa.Text != "" && txtIdSucursal.Text != "")
             {
-                TerminalPorEmpresa terminal = await ClienteFEWCF.ObtenerTerminalPorEmpresa(int.Parse(txtIdEmpresa.Text), int.Parse(txtSucursal.Text), int.Parse(txtTerminal.Text));
-                if (terminal == null)
+                sucursal = await ClienteFEWCF.ObtenerSucursalPorEmpresa(int.Parse(txtIdEmpresa.Text), int.Parse(txtIdSucursal.Text));
+                if (sucursal == null)
                 {
-                    txtEquipo.Text = "";
-                    txtImpresoraFactura.Text = "";
-                    txtNombreSucursal.Text = txtNombreComercial.Text;
+                    bolSucursalNueva = true;
+                    bolTerminalNueva = true;
+                    sucursal = new SucursalPorEmpresa();
+                    sucursal.IdEmpresa = int.Parse(txtIdEmpresa.Text);
+                    sucursal.IdSucursal = int.Parse(txtIdSucursal.Text);
+                    txtNombreSucursal.Text = txtNombreComercial.Text != "" ? txtNombreComercial.Text : txtNombreEmpresa.Text;
                     txtDireccionSucursal.Text = txtDireccion.Text;
                     txtTelefonoSucursal.Text = txtTelefono.Text;
-                    txtUltimoDocFE.Text = "0";
-                    txtUltimoDocND.Text = "0";
-                    txtUltimoDocNC.Text = "0";
-                    txtUltimoDocTE.Text = "0";
-                    txtUltimoDocMR.Text = "0";
+                    txtIdTerminal.Text = "1";
+                    txtDescripcionTerminal.Text = "Terminal 1";
+                    txtValorRegistro.Text = "";
+                    terminal = new TerminalPorSucursal();
+                    terminal.IdEmpresa = int.Parse(txtIdEmpresa.Text);
+                    terminal.IdSucursal = int.Parse(txtIdSucursal.Text);
+                    terminal.IdTerminal = 1;
+                    terminal.ValorRegistro = "";
+                    terminal.ImpresoraFactura = "";
+                    terminal.UltimoDocFE = 0;
+                    terminal.UltimoDocND = 0;
+                    terminal.UltimoDocNC = 0;
+                    terminal.UltimoDocTE = 0;
+                    terminal.UltimoDocMR = 0;
+                    terminal.IdTipoDispositivo = chkDispositivoMovil.Checked ? StaticTipoDispisitivo.AppMovil : StaticTipoDispisitivo.AppEscritorio;
+                    txtIdTerminal.Enabled = false;
+                    txtValorRegistro.Enabled = false;
+                    btnCargarTerminal.Enabled = false;
+                    MessageBox.Show("La sucursal no están registrada para la empresa actual. Ingrese la información y proceda a guardar los cambios. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    bolSucursalNueva = false;
+                    bolTerminalNueva = false;
+                    terminal = null;
+                    txtIdTerminal.Text = "";
+                    txtDescripcionTerminal.Text = "";
+                    chkDispositivoMovil.Checked = false;
+                    txtNombreSucursal.Text = sucursal.NombreSucursal;
+                    txtDireccionSucursal.Text = sucursal.Direccion;
+                    txtTelefonoSucursal.Text = sucursal.Telefono;
+                    txtIdTerminal.Enabled = true;
+                    txtValorRegistro.Enabled = true;
+                    btnCargarTerminal.Enabled = true;
+                }
+            }
+        }
+
+        private async void CargarTerminalPorSucursal()
+        {
+            if (txtIdEmpresa.Text != "" && txtIdSucursal.Text != "" && txtIdTerminal.Text != "")
+            {
+                terminal = await ClienteFEWCF.ObtenerTerminalPorSucursal(int.Parse(txtIdEmpresa.Text), int.Parse(txtIdSucursal.Text), int.Parse(txtIdTerminal.Text));
+                if (terminal == null)
+                {
+                    bolTerminalNueva = true;
+                    terminal = new TerminalPorSucursal();
+                    terminal.IdEmpresa = int.Parse(txtIdEmpresa.Text);
+                    terminal.IdSucursal = int.Parse(txtIdSucursal.Text);
+                    terminal.IdTerminal = int.Parse(txtIdTerminal.Text);
+                    txtValorRegistro.Text = "";
+                    txtDescripcionTerminal.Text = "Terminal " + txtIdTerminal.Text;
+                    chkDispositivoMovil.Checked = false;
                     MessageBox.Show("La sucursal y terminal ingresados no están registrados para la empresa actual. Ingrese la información y proceda a guardar los cambios. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else
                 {
-                    txtEquipo.Text = terminal.ValorRegistro;
-                    txtImpresoraFactura.Text = terminal.ImpresoraFactura;
-                    txtNombreSucursal.Text = terminal.NombreSucursal;
-                    txtDireccionSucursal.Text = terminal.Direccion;
-                    txtTelefonoSucursal.Text = terminal.Telefono;
-                    txtUltimoDocFE.Text = terminal.UltimoDocFE.ToString();
-                    txtUltimoDocND.Text = terminal.UltimoDocND.ToString();
-                    txtUltimoDocNC.Text = terminal.UltimoDocNC.ToString();
-                    txtUltimoDocTE.Text = terminal.UltimoDocTE.ToString();
-                    txtUltimoDocMR.Text = terminal.UltimoDocMR.ToString();
+                    bolTerminalNueva = false;
+                    txtValorRegistro.Text = terminal.ValorRegistro;
+                    txtDescripcionTerminal.Text = "Terminal " + txtIdTerminal.Text;
+                    chkDispositivoMovil.Checked = terminal.IdTipoDispositivo == StaticTipoDispisitivo.AppMovil;
                 }
-            }
-            else
-            {
-                txtEquipo.Text = "";
-                txtImpresoraFactura.Text = "";
-                txtNombreSucursal.Text = "";
-                txtDireccionSucursal.Text = "";
-                txtTelefonoSucursal.Text = "";
-                txtUltimoDocFE.Text = "0";
-                txtUltimoDocND.Text = "0";
-                txtUltimoDocNC.Text = "0";
-                txtUltimoDocTE.Text = "0";
-                txtUltimoDocMR.Text = "0";
             }
         }
 
@@ -461,13 +497,12 @@ namespace LeandroSoftware.Activator
                 empresa.DesglosaServicioInst = chkDesgloseInst.Checked;
                 empresa.PermiteFacturar = chkFacturaElectronica.Checked;
                 empresa.RegimenSimplificado = chkRegimenSimplificado.Checked;
-                empresa.TerminalPorEmpresa.Clear();
                 empresa.ModuloPorEmpresa.Clear();
                 foreach (DataRow row in dtModuloPorEmpresa.Rows)
                 {
                     ModuloPorEmpresa modulo = new ModuloPorEmpresa();
                     if (txtIdEmpresa.Text != "") modulo.IdEmpresa = empresa.IdEmpresa;
-                    modulo.IdModulo = int.Parse(row["IdModulo"].ToString());
+                    modulo.IdModulo = int.Parse(row["Id"].ToString());
                     empresa.ModuloPorEmpresa.Add(modulo);
                 }
                 empresa.ReportePorEmpresa.Clear();
@@ -475,7 +510,7 @@ namespace LeandroSoftware.Activator
                 {
                     ReportePorEmpresa reporte = new ReportePorEmpresa();
                     if (txtIdEmpresa.Text != "") reporte.IdEmpresa = empresa.IdEmpresa;
-                    reporte.IdReporte = int.Parse(row["IdReporte"].ToString());
+                    reporte.IdReporte = int.Parse(row["Id"].ToString());
                     empresa.ReportePorEmpresa.Add(reporte);
                 }
                 if (txtIdEmpresa.Text == "")
@@ -488,24 +523,6 @@ namespace LeandroSoftware.Activator
                 else
                 {
                     await ClienteFEWCF.ActualizarEmpresaConDetalle(empresa);
-                }
-                if (txtSucursal.Text != "" && txtTerminal.Text != "")
-                {
-                    TerminalPorEmpresa terminal = new TerminalPorEmpresa();
-                    if (txtIdEmpresa.Text != "") terminal.IdEmpresa = int.Parse(txtIdEmpresa.Text);
-                    terminal.IdSucursal = int.Parse(txtSucursal.Text);
-                    terminal.IdTerminal = int.Parse(txtTerminal.Text);
-                    terminal.NombreSucursal = txtNombreSucursal.Text;
-                    terminal.Direccion = txtDireccionSucursal.Text;
-                    terminal.Telefono = txtTelefonoSucursal.Text;
-                    terminal.ValorRegistro = txtEquipo.Text;
-                    terminal.ImpresoraFactura = txtImpresoraFactura.Text;
-                    terminal.UltimoDocFE = int.Parse(txtUltimoDocFE.Text);
-                    terminal.UltimoDocND = int.Parse(txtUltimoDocND.Text);
-                    terminal.UltimoDocNC = int.Parse(txtUltimoDocNC.Text);
-                    terminal.UltimoDocTE = int.Parse(txtUltimoDocTE.Text);
-                    terminal.UltimoDocMR = int.Parse(txtUltimoDocMR.Text);
-                    await ClienteFEWCF.ActualizarTerminalPorEmpresa(terminal);
                 }
                 if (bolLogoModificado)
                 {
@@ -528,6 +545,25 @@ namespace LeandroSoftware.Activator
                 {
                     byte[] bytCertificado = File.ReadAllBytes(strRutaCertificado);
                     await ClienteFEWCF.ActualizarCertificadoEmpresa(int.Parse(txtIdEmpresa.Text), Convert.ToBase64String(bytCertificado));
+                }
+                if (sucursal != null)
+                {
+                    sucursal.NombreSucursal = txtNombreSucursal.Text;
+                    sucursal.Direccion = txtDireccionSucursal.Text;
+                    sucursal.Telefono = txtTelefonoSucursal.Text;
+                    if (bolSucursalNueva)
+                        await ClienteFEWCF.AgregarSucursalPorEmpresa(sucursal);
+                    else
+                        await ClienteFEWCF.ActualizarSucursalPorEmpresa(sucursal);
+                    if (terminal != null)
+                    {
+                        terminal.ValorRegistro = txtValorRegistro.Text;
+                        terminal.IdTipoDispositivo = chkDispositivoMovil.Checked ? StaticTipoDispisitivo.AppMovil : StaticTipoDispisitivo.AppEscritorio;
+                        if (bolTerminalNueva)
+                            await ClienteFEWCF.AgregarTerminalPorSucursal(terminal);
+                        else
+                            await ClienteFEWCF.ActualizarTerminalPorSucursal(terminal);
+                    }
                 }
                 Close();
             }
@@ -568,11 +604,6 @@ namespace LeandroSoftware.Activator
                 int intIdDistrito = (int)cboDistrito.SelectedValue;
                 await CargarBarrios(intIdProvincia, intIdCanton, intIdDistrito);
             }
-        }
-
-        private void CmdConsultar_Click(object sender, EventArgs e)
-        {
-            txtEquipo.Text = Utilitario.ObtenerIdentificadorEquipo();
         }
 
         private void BtnInsertaModulo_Click(object sender, EventArgs e)
@@ -646,17 +677,20 @@ namespace LeandroSoftware.Activator
             }
         }
 
-        private void txtSucursal_TextChanged(object sender, EventArgs e)
+        private void BtnCargarSucursal_Click(object sender, EventArgs e)
         {
-            if (txtSucursal.Text != "" && txtTerminal.Text != "")
+            if (txtIdEmpresa.Text != "" && txtIdSucursal.Text != "")
             {
-                CargarTerminalPorEmpresa();
+                CargarSucursalPorEmpresa();
             }
         }
 
-        private void txtTerminal_TextChanged(object sender, EventArgs e)
+        private void BtnCargarTerminal_Click(object sender, EventArgs e)
         {
-            CargarTerminalPorEmpresa();
+            if (txtIdEmpresa.Text != "" && txtIdSucursal.Text != "" && txtIdTerminal.Text != "")
+            {
+                CargarTerminalPorSucursal();
+            }
         }
     }
 }

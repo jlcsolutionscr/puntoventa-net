@@ -51,7 +51,7 @@ Public Class FrmMenuReportes
     Private Async Sub CmdVistaPrevia_Click(sender As Object, e As EventArgs) Handles CmdVistaPrevia.Click
         Dim intIdCliente As Integer
         Dim intIdProveedor As Integer
-        Dim dtListaFormaPago As List(Of CondicionVentaYFormaPago)
+        Dim dtListaFormaPago As List(Of LlaveDescripcion)
         If LstReporte.SelectedIndex >= 0 Then
             strUsuario = FrmPrincipal.usuarioGlobal.CodigoUsuario
             strEmpresa = FrmPrincipal.empresaGlobal.NombreEmpresa
@@ -76,7 +76,7 @@ Public Class FrmMenuReportes
                     Dim intBancoAdquiriente = 0
                     Dim strDescripcionReporte As String = ""
                     Try
-                        dtListaFormaPago = Await ClienteFEWCF.ObtenerListaCondicionVentaYFormaPagoFactura()
+                        dtListaFormaPago = Await ClienteFEWCF.ObtenerListadoCondicionVentaYFormaPagoFactura()
                         formaMenuTipoTransaccion.clFormasPago = dtListaFormaPago
                     Catch ex As Exception
                         MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -183,7 +183,7 @@ Public Class FrmMenuReportes
                 '    Dim intBancoAdquiriente = 0
                 '    Dim strDescripcionReporte = ""
                 '    Try
-                '        dtListaFormaPago = Await ClienteFEWCF.ObtenerListaCondicionVentaYFormaPagoCompra()
+                '        dtListaFormaPago = Await ClienteFEWCF.ObtenerListadoCondicionVentaYFormaPagoCompra()
                 '        formaMenuTipoTransaccion.clFormasPago = dtListaFormaPago
                 '    Catch ex As Exception
                 '        MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
