@@ -791,11 +791,6 @@ namespace LeandroSoftware.AccesoDatos.ServicioWCF
                         if (listadoTipoIdentificacion.Count > 0)
                             strRespuesta = serializer.Serialize(listadoTipoIdentificacion);
                         break;
-                    case "ObtenerListadoModulos":
-                        IList<LlaveDescripcion> listadoModulos = (List<LlaveDescripcion>)servicioMantenimiento.ObtenerListadoModulos();
-                        if (listadoModulos.Count > 0)
-                            strRespuesta = serializer.Serialize(listadoModulos);
-                        break;
                     case "ObtenerListadoCatalogoReportes":
                         IList<LlaveDescripcion> listadoReportes = (List<LlaveDescripcion>)servicioMantenimiento.ObtenerListadoCatalogoReportes();
                         if (listadoReportes.Count > 0)

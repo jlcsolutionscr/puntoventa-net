@@ -55,8 +55,6 @@ namespace LeandroSoftware.AccesoDatos.Datos
         DbSet<FormaPago> FormaPagoRepository { get; set; }
         DbSet<Ingreso> IngresoRepository { get; set; }
         DbSet<Linea> LineaRepository { get; set; }
-        DbSet<Modulo> ModuloRepository { get; set; }
-        DbSet<ModuloPorEmpresa> ModuloPorEmpresaRepository { get; set; }
         DbSet<MovimientoCuentaPorCobrar> MovimientoCuentaPorCobrarRepository { get; set; }
         DbSet<MovimientoCuentaPorPagar> MovimientoCuentaPorPagarRepository { get; set; }
         DbSet<MovimientoBanco> MovimientoBancoRepository { get; set; }
@@ -163,8 +161,6 @@ namespace LeandroSoftware.AccesoDatos.Datos
         public DbSet<FormaPago> FormaPagoRepository { get; set; }
         public DbSet<Ingreso> IngresoRepository { get; set; }
         public DbSet<Linea> LineaRepository { get; set; }
-        public DbSet<Modulo> ModuloRepository { get; set; }
-        public DbSet<ModuloPorEmpresa> ModuloPorEmpresaRepository { get; set; }
         public DbSet<MovimientoCuentaPorCobrar> MovimientoCuentaPorCobrarRepository { get; set; }
         public DbSet<MovimientoCuentaPorPagar> MovimientoCuentaPorPagarRepository { get; set; }
         public DbSet<MovimientoBanco> MovimientoBancoRepository { get; set; }

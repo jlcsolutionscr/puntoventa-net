@@ -11,7 +11,6 @@ namespace LeandroSoftware.Core.Dominio.Entidades
     {
         public Empresa()
         {
-            ModuloPorEmpresa = new HashSet<ModuloPorEmpresa>();
             ReportePorEmpresa = new HashSet<ReportePorEmpresa>();
         }
         [Key]
@@ -66,7 +65,6 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public TipoMoneda TipoMoneda { get; set; }
         [ForeignKey("IdProvincia, IdCanton, IdDistrito, IdBarrio")]
         public Barrio Barrio { get; set; }
-        public ICollection<ModuloPorEmpresa> ModuloPorEmpresa { get; set; }
         public ICollection<ReportePorEmpresa> ReportePorEmpresa { get; set; }
     }
 }

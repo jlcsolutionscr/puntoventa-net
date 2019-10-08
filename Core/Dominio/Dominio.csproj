@@ -69,8 +69,6 @@
     <Compile Include="Entidades\DevolucionProveedor.cs" />
     <Compile Include="Entidades\CondicionVenta.cs" />
     <Compile Include="Entidades\DocumentoElectronico.cs" />
-    <Compile Include="Entidades\Modulo.cs" />
-    <Compile Include="Entidades\ModuloPorEmpresa.cs" />
     <Compile Include="Entidades\Padron.cs" />
     <Compile Include="Entidades\ParametroImpuesto.cs" />
     <Compile Include="Entidades\ParametroSistema.cs" />

@@ -108,8 +108,6 @@ namespace LeandroSoftware.AccesoDatos.Servicios
         IEnumerable<LlaveDescripcion> ObtenerListadoAjustes(int intIdEmpresa, int numPagina, int cantRec, int intIdAjusteInventario = 0, string strDescripcion = "");
         // Métodos para obtener parámetros generales del sistema
         IEnumerable<LlaveDescripcion> ObtenerListadoTipoIdentificacion();
-        IEnumerable<LlaveDescripcion> ObtenerListadoModulos();
-        Modulo ObtenerModulo(int intIdModulo);
         IEnumerable<LlaveDescripcion> ObtenerListadoCatalogoReportes();
         CatalogoReporte ObtenerCatalogoReporte(int intIdReporte);
         IEnumerable<LlaveDescripcion> ObtenerListadoProvincias();
@@ -281,7 +279,7 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     Usuario usuario = dbContext.UsuarioRepository.Include("RolePorUsuario.Role").FirstOrDefault(x => x.CodigoUsuario == strUsuario);
                     if (usuario == null) throw new BusinessException("El código de usuario ingresado no se encuentra registrado. Contacte a su proveedor.");
                     if (usuario.Clave != strClave) throw new BusinessException("Contraseña incorrecta. Verifique los credenciales suministrados.");
-                    Empresa empresa = dbContext.EmpresaRepository.Include("ModuloPorEmpresa.Modulo").Include("ReportePorEmpresa.CatalogoReporte").Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.IdEmpresa == intIdEmpresa);
+                    Empresa empresa = dbContext.EmpresaRepository.Include("ReportePorEmpresa.CatalogoReporte").Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.IdEmpresa == intIdEmpresa);
                     if (!empresa.PermiteFacturar) throw new BusinessException("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.FechaVence < DateTime.Today) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
                     if (empresa.TipoContrato == 2 && empresa.CantidadDisponible == 0) throw new BusinessException("El disponible de documentos electrónicos fue agotado. Por favor, pongase en contacto con su proveedor del servicio.");
@@ -307,8 +305,6 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                     equipo.DireccionSucursal = sucursal.Direccion;
                     equipo.TelefonoSucursal = sucursal.Telefono;
                     equipo.ImpresoraFactura = terminal.ImpresoraFactura;
-                    foreach (ModuloPorEmpresa modulo in empresa.ModuloPorEmpresa)
-                        modulo.Empresa = null;
                     foreach (ReportePorEmpresa reporte in empresa.ReportePorEmpresa)
                         reporte.Empresa = null;
                     foreach (RolePorUsuario role in usuario.RolePorUsuario)
@@ -448,18 +444,11 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 try
                 {
                     byte[] certificado = dbContext.EmpresaRepository.AsNoTracking().Where(x => x.IdEmpresa == empresa.IdEmpresa).FirstOrDefault().Certificado;
-                    List<ModuloPorEmpresa> listadoModuloPorEmpresa = empresa.ModuloPorEmpresa.OrderBy(o => o.IdModulo).ToList();
                     List<ReportePorEmpresa> listadoReportePorEmpresa = empresa.ReportePorEmpresa.OrderBy(o => o.IdReporte).ToList();
-                    empresa.ModuloPorEmpresa = null;
                     empresa.ReportePorEmpresa = null;
                     empresa.Barrio = null;
                     if (certificado != null) empresa.Certificado = certificado;
                     dbContext.NotificarModificacion(empresa);
-                    List<ModuloPorEmpresa> listadoModuloPorEmpresaAnt = dbContext.ModuloPorEmpresaRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa).ToList();
-                    foreach (ModuloPorEmpresa modulo in listadoModuloPorEmpresaAnt)
-                        dbContext.ModuloPorEmpresaRepository.Remove(modulo);
-                    foreach (ModuloPorEmpresa modulo in listadoModuloPorEmpresa)
-                        dbContext.ModuloPorEmpresaRepository.Add(modulo);
                     List<ReportePorEmpresa> listadoReportePorEmpresaAnt = dbContext.ReportePorEmpresaRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa).ToList();
                     foreach (ReportePorEmpresa reporte in listadoReportePorEmpresaAnt)
                         dbContext.ReportePorEmpresaRepository.Remove(reporte);
@@ -484,15 +473,13 @@ namespace LeandroSoftware.AccesoDatos.Servicios
             {
                 try
                 {
-                    Empresa empresa = dbContext.EmpresaRepository.Include("ModuloPorEmpresa.Modulo").Include("ReportePorEmpresa.CatalogoReporte").Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.IdEmpresa == intIdEmpresa);
+                    Empresa empresa = dbContext.EmpresaRepository.Include("ReportePorEmpresa.CatalogoReporte").Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.IdEmpresa == intIdEmpresa);
                     empresa.Certificado = null;
                     empresa.AccessToken = null;
                     empresa.RefreshToken = null;
                     empresa.EmitedAt = null;
                     empresa.ExpiresIn = null;
                     empresa.RefreshExpiresIn = null;
-                    foreach (ModuloPorEmpresa modulo in empresa.ModuloPorEmpresa)
-                        modulo.Empresa = null;
                     foreach (ReportePorEmpresa reporte in empresa.ReportePorEmpresa)
                         reporte.Empresa = null;
                     return empresa;
@@ -546,22 +533,6 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 {
                     log.Error("Error al actualizar el certificado de la empresa: ", ex);
                     throw new Exception("Se produjo un error registrando el certificado de la empresa. Por favor consulte con su proveedor.");
-                }
-            }
-        }
-
-        public Modulo ObtenerModulo(int intIdModulo)
-        {
-            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
-            {
-                try
-                {
-                    return dbContext.ModuloRepository.FirstOrDefault(x => x.IdModulo == intIdModulo);
-                }
-                catch (Exception ex)
-                {
-                    log.Error("Error al obtener la información del módulo: ", ex);
-                    throw new Exception("Se produjo un error consultando la parametrización de la empresa. Por favor consulte con su proveedor.");
                 }
             }
         }
@@ -2462,29 +2433,6 @@ namespace LeandroSoftware.AccesoDatos.Servicios
                 {
                     log.Error("Error al obtener el listado de tipos de identificación: ", ex);
                     throw new Exception("Se produjo un error consultando el listado de tipos de identificación. Por favor consulte con su proveedor.");
-                }
-            }
-        }
-
-        public IEnumerable<LlaveDescripcion> ObtenerListadoModulos()
-        {
-            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
-            {
-                var listaModulos = new List<LlaveDescripcion>();
-                try
-                {
-                    var listado = dbContext.ModuloRepository;
-                    foreach (var value in listado)
-                    {
-                        LlaveDescripcion item = new LlaveDescripcion(value.IdModulo, value.Descripcion);
-                        listaModulos.Add(item);
-                    }
-                    return listaModulos;
-                }
-                catch (Exception ex)
-                {
-                    log.Error("Error al obtener el listado de módulos del sistema: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de módulos del sistema. Por favor consulte con su proveedor.");
                 }
             }
         }

@@ -52,48 +52,6 @@ namespace LeandroSoftware.Activator
             dtReportePorEmpresa.PrimaryKey = columns;
         }
 
-        private void CargarDetalleEmpresa(Empresa empresa)
-        {
-            List<ModuloPorEmpresa> moduloPorEmpresa = empresa.ModuloPorEmpresa.ToList();
-            dtModuloPorEmpresa.Rows.Clear();
-            foreach (ModuloPorEmpresa row in moduloPorEmpresa)
-            {
-                DataRow objRowModulo = dtModuloPorEmpresa.NewRow();
-                objRowModulo["Id"] = row.IdModulo;
-                objRowModulo["Descripcion"] = row.Modulo.Descripcion;
-                dtModuloPorEmpresa.Rows.Add(objRowModulo);
-            }
-            List<ReportePorEmpresa> reportePorEmpresa = empresa.ReportePorEmpresa.ToList();
-            dtReportePorEmpresa.Rows.Clear();
-            foreach (ReportePorEmpresa row in reportePorEmpresa)
-            {
-                DataRow objRowReporte = dtReportePorEmpresa.NewRow();
-                objRowReporte["Id"] = row.IdReporte;
-                objRowReporte["NombreReporte"] = row.CatalogoReporte.NombreReporte;
-                dtReportePorEmpresa.Rows.Add(objRowReporte);
-            }
-        }
-
-        private void CargarLineaDetalleModulo()
-        {
-            if (cboModuloPorEmpresa.SelectedValue != null)
-            {
-                string strValor = cboModuloPorEmpresa.SelectedValue.ToString();
-                if (dtModuloPorEmpresa.Rows.IndexOf(dtModuloPorEmpresa.Rows.Find(strValor)) >= 0)
-                {
-                    MessageBox.Show("El módulo seleccionado ya fue agregado al detalle.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-                else
-                {
-                    DataRow objRowEquipo = dtModuloPorEmpresa.NewRow();
-                    objRowEquipo["Id"] = cboModuloPorEmpresa.SelectedValue;
-                    objRowEquipo["Descripcion"] = cboModuloPorEmpresa.Text;
-                    dtModuloPorEmpresa.Rows.Add(objRowEquipo);
-                    dgvModuloPorEmpresa.Refresh();
-                }
-            }
-        }
-
         private void CargarLineaDetalleReporte()
         {
             if (cboReportePorEmpresa.SelectedValue != null)
@@ -116,27 +74,6 @@ namespace LeandroSoftware.Activator
 
         private void EstablecerPropiedadesDataGridView()
         {
-            DataGridViewTextBoxColumn dvcModuloPorEmpresa = new DataGridViewTextBoxColumn();
-            DataGridViewTextBoxColumn dvcDescripcion = new DataGridViewTextBoxColumn();
-
-            dgvModuloPorEmpresa.Columns.Clear();
-            dgvModuloPorEmpresa.AutoGenerateColumns = false;
-
-            dvcModuloPorEmpresa.DataPropertyName = "Id";
-            dvcModuloPorEmpresa.HeaderText = "";
-            dvcModuloPorEmpresa.Width = 20;
-            dvcModuloPorEmpresa.Visible = true;
-            dvcModuloPorEmpresa.ReadOnly = true;
-            dgvModuloPorEmpresa.Columns.Add(dvcModuloPorEmpresa);
-
-            dvcDescripcion.DataPropertyName = "Descripcion";
-            dvcDescripcion.HeaderText = "Módulo";
-            dvcDescripcion.Width = 322;
-            dvcDescripcion.Visible = true;
-            dvcDescripcion.ReadOnly = true;
-            dgvModuloPorEmpresa.Columns.Add(dvcDescripcion);
-            dgvModuloPorEmpresa.Columns[0].Visible = false;
-
             DataGridViewTextBoxColumn dvcReportePorEmpresa = new DataGridViewTextBoxColumn();
             DataGridViewTextBoxColumn dvcNombreReporte = new DataGridViewTextBoxColumn();
 
@@ -167,12 +104,6 @@ namespace LeandroSoftware.Activator
                 cboTipoIdentificacion.DataSource = dsTipoIdentificacion;
                 cboTipoIdentificacion.ValueMember = "Id";
                 cboTipoIdentificacion.DisplayMember = "Descripcion";
-                // Carga listado módulos
-                IList<LlaveDescripcion> dsModulos = Array.Empty<LlaveDescripcion>();
-                dsModulos = await ClienteFEWCF.ObtenerListadoModulos();
-                cboModuloPorEmpresa.DataSource = dsModulos;
-                cboModuloPorEmpresa.ValueMember = "Id";
-                cboModuloPorEmpresa.DisplayMember = "Descripcion";
                 // Carga listado reportes
                 IList<LlaveDescripcion> dsReportes = Array.Empty<LlaveDescripcion>();
                 dsReportes = await ClienteFEWCF.ObtenerListadoCatalogoReportes();
@@ -352,7 +283,6 @@ namespace LeandroSoftware.Activator
                 EstablecerPropiedadesDataGridView();
                 await CargarListaParametros();
                 await CargarProvincias();
-                dgvModuloPorEmpresa.DataSource = dtModuloPorEmpresa;
                 dgvReportePorEmpresa.DataSource = dtReportePorEmpresa;
                 if (bolEditing)
                 {
@@ -411,7 +341,6 @@ namespace LeandroSoftware.Activator
                             {
                                 picLogo.Image = null;
                             }
-                            CargarDetalleEmpresa(empresa);
                         }
                         else
                         {
@@ -497,14 +426,6 @@ namespace LeandroSoftware.Activator
                 empresa.DesglosaServicioInst = chkDesgloseInst.Checked;
                 empresa.PermiteFacturar = chkFacturaElectronica.Checked;
                 empresa.RegimenSimplificado = chkRegimenSimplificado.Checked;
-                empresa.ModuloPorEmpresa.Clear();
-                foreach (DataRow row in dtModuloPorEmpresa.Rows)
-                {
-                    ModuloPorEmpresa modulo = new ModuloPorEmpresa();
-                    if (txtIdEmpresa.Text != "") modulo.IdEmpresa = empresa.IdEmpresa;
-                    modulo.IdModulo = int.Parse(row["Id"].ToString());
-                    empresa.ModuloPorEmpresa.Add(modulo);
-                }
                 empresa.ReportePorEmpresa.Clear();
                 foreach (DataRow row in dtReportePorEmpresa.Rows)
                 {
@@ -604,17 +525,6 @@ namespace LeandroSoftware.Activator
                 int intIdDistrito = (int)cboDistrito.SelectedValue;
                 await CargarBarrios(intIdProvincia, intIdCanton, intIdDistrito);
             }
-        }
-
-        private void BtnInsertaModulo_Click(object sender, EventArgs e)
-        {
-            CargarLineaDetalleModulo();
-        }
-
-        private void BtnEliminaModulo_Click(object sender, EventArgs e)
-        {
-            if (dtModuloPorEmpresa.Rows.Count > 0)
-                dtModuloPorEmpresa.Rows.Remove(dtModuloPorEmpresa.Rows.Find(dgvModuloPorEmpresa.CurrentRow.Cells[0].Value));
         }
 
         private void BtnInsertaReporte_Click(object sender, EventArgs e)

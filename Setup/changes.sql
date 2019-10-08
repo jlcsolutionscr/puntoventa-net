@@ -1,3 +1,5 @@
+drop table moduloporempresa;
+drop table modulo;
 create table sucursalporempresa (
   IdEmpresa INTEGER NOT NULL,
   IdSucursal INTEGER NOT NULL,
@@ -10,9 +12,7 @@ create table sucursalporempresa (
       ON DELETE RESTRICT
       ON UPDATE RESTRICT
 );
-select idempresa, idsucursal, NombreSucursal, Direccion, Telefono from terminalporempresa where idsucursal = 1 and nombresucursal != '';
-insert into sucursalporempresa select idempresa, idsucursal, NombreSucursal, Direccion, Telefono from terminalporempresa where idsucursal = 1 and nombresucursal != '';
-delete from terminalporempresa where nombresucursal = '';
+insert into sucursalporempresa select idempresa, idsucursal, NombreSucursal, Direccion, Telefono from terminalporempresa;
 alter table terminalporempresa drop column nombresucursal;
 alter table terminalporempresa drop column direccion;
 alter table terminalporempresa drop column telefono;
@@ -22,3 +22,4 @@ alter table terminalporsucursal ADD FOREIGN KEY(idempresa, idsucursal)
       ON DELETE RESTRICT
       ON UPDATE RESTRICT;
 update terminalporsucursal set IdTipoDispositivo = 1, ValorRegistro = "";
+update usuario set PermiteRegistrarDispositivo = 1 where idusuario not in(5,9,11,12,15,16,17,18,24,25,29);

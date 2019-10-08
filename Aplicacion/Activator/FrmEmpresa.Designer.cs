@@ -111,11 +111,6 @@
             this.btnEliminaReporte = new System.Windows.Forms.Button();
             this.btnInsertaReporte = new System.Windows.Forms.Button();
             this.dgvReportePorEmpresa = new System.Windows.Forms.DataGridView();
-            this.cboModuloPorEmpresa = new System.Windows.Forms.ComboBox();
-            this.label17 = new System.Windows.Forms.Label();
-            this.btnEliminaModulo = new System.Windows.Forms.Button();
-            this.btnInsertaModulo = new System.Windows.Forms.Button();
-            this.dgvModuloPorEmpresa = new System.Windows.Forms.DataGridView();
             this.txtCantidadDocumentos = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.cboTipoContrato = new System.Windows.Forms.ComboBox();
@@ -127,7 +122,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.picLogo)).BeginInit();
             this.tabParametros.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvReportePorEmpresa)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvModuloPorEmpresa)).BeginInit();
             this.SuspendLayout();
             // 
             // cmdUpdate
@@ -1180,11 +1174,6 @@
             this.tabParametros.Controls.Add(this.btnEliminaReporte);
             this.tabParametros.Controls.Add(this.btnInsertaReporte);
             this.tabParametros.Controls.Add(this.dgvReportePorEmpresa);
-            this.tabParametros.Controls.Add(this.cboModuloPorEmpresa);
-            this.tabParametros.Controls.Add(this.label17);
-            this.tabParametros.Controls.Add(this.btnEliminaModulo);
-            this.tabParametros.Controls.Add(this.btnInsertaModulo);
-            this.tabParametros.Controls.Add(this.dgvModuloPorEmpresa);
             this.tabParametros.Location = new System.Drawing.Point(4, 22);
             this.tabParametros.Name = "tabParametros";
             this.tabParametros.Padding = new System.Windows.Forms.Padding(3);
@@ -1197,7 +1186,7 @@
             this.cboReportePorEmpresa.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboReportePorEmpresa.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboReportePorEmpresa.FormattingEnabled = true;
-            this.cboReportePorEmpresa.Location = new System.Drawing.Point(10, 237);
+            this.cboReportePorEmpresa.Location = new System.Drawing.Point(11, 31);
             this.cboReportePorEmpresa.Name = "cboReportePorEmpresa";
             this.cboReportePorEmpresa.Size = new System.Drawing.Size(361, 21);
             this.cboReportePorEmpresa.TabIndex = 211;
@@ -1208,7 +1197,7 @@
             this.label26.Cursor = System.Windows.Forms.Cursors.Default;
             this.label26.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label26.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label26.Location = new System.Drawing.Point(7, 217);
+            this.label26.Location = new System.Drawing.Point(8, 11);
             this.label26.Name = "label26";
             this.label26.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.label26.Size = new System.Drawing.Size(116, 17);
@@ -1222,7 +1211,7 @@
             this.btnEliminaReporte.Cursor = System.Windows.Forms.Cursors.Default;
             this.btnEliminaReporte.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnEliminaReporte.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.btnEliminaReporte.Location = new System.Drawing.Point(75, 387);
+            this.btnEliminaReporte.Location = new System.Drawing.Point(75, 417);
             this.btnEliminaReporte.Name = "btnEliminaReporte";
             this.btnEliminaReporte.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.btnEliminaReporte.Size = new System.Drawing.Size(65, 26);
@@ -1238,7 +1227,7 @@
             this.btnInsertaReporte.Cursor = System.Windows.Forms.Cursors.Default;
             this.btnInsertaReporte.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnInsertaReporte.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.btnInsertaReporte.Location = new System.Drawing.Point(9, 387);
+            this.btnInsertaReporte.Location = new System.Drawing.Point(9, 417);
             this.btnInsertaReporte.Name = "btnInsertaReporte";
             this.btnInsertaReporte.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.btnInsertaReporte.Size = new System.Drawing.Size(65, 26);
@@ -1255,86 +1244,14 @@
             this.dgvReportePorEmpresa.AllowUserToResizeColumns = false;
             this.dgvReportePorEmpresa.AllowUserToResizeRows = false;
             this.dgvReportePorEmpresa.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            this.dgvReportePorEmpresa.Location = new System.Drawing.Point(9, 264);
+            this.dgvReportePorEmpresa.Location = new System.Drawing.Point(9, 58);
             this.dgvReportePorEmpresa.Name = "dgvReportePorEmpresa";
             this.dgvReportePorEmpresa.RowHeadersVisible = false;
             this.dgvReportePorEmpresa.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.dgvReportePorEmpresa.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.dgvReportePorEmpresa.Size = new System.Drawing.Size(362, 117);
+            this.dgvReportePorEmpresa.Size = new System.Drawing.Size(362, 353);
             this.dgvReportePorEmpresa.TabIndex = 212;
             this.dgvReportePorEmpresa.TabStop = false;
-            // 
-            // cboModuloPorEmpresa
-            // 
-            this.cboModuloPorEmpresa.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboModuloPorEmpresa.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cboModuloPorEmpresa.FormattingEnabled = true;
-            this.cboModuloPorEmpresa.Location = new System.Drawing.Point(9, 36);
-            this.cboModuloPorEmpresa.Name = "cboModuloPorEmpresa";
-            this.cboModuloPorEmpresa.Size = new System.Drawing.Size(361, 21);
-            this.cboModuloPorEmpresa.TabIndex = 203;
-            // 
-            // label17
-            // 
-            this.label17.BackColor = System.Drawing.Color.Transparent;
-            this.label17.Cursor = System.Windows.Forms.Cursors.Default;
-            this.label17.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label17.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label17.Location = new System.Drawing.Point(6, 16);
-            this.label17.Name = "label17";
-            this.label17.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.label17.Size = new System.Drawing.Size(116, 17);
-            this.label17.TabIndex = 210;
-            this.label17.Text = "Modulos por empresa:";
-            this.label17.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // btnEliminaModulo
-            // 
-            this.btnEliminaModulo.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.btnEliminaModulo.Cursor = System.Windows.Forms.Cursors.Default;
-            this.btnEliminaModulo.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnEliminaModulo.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.btnEliminaModulo.Location = new System.Drawing.Point(74, 186);
-            this.btnEliminaModulo.Name = "btnEliminaModulo";
-            this.btnEliminaModulo.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.btnEliminaModulo.Size = new System.Drawing.Size(65, 26);
-            this.btnEliminaModulo.TabIndex = 207;
-            this.btnEliminaModulo.TabStop = false;
-            this.btnEliminaModulo.Text = "Eliminar";
-            this.btnEliminaModulo.UseVisualStyleBackColor = false;
-            this.btnEliminaModulo.Click += new System.EventHandler(this.BtnEliminaModulo_Click);
-            // 
-            // btnInsertaModulo
-            // 
-            this.btnInsertaModulo.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.btnInsertaModulo.Cursor = System.Windows.Forms.Cursors.Default;
-            this.btnInsertaModulo.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnInsertaModulo.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.btnInsertaModulo.Location = new System.Drawing.Point(8, 186);
-            this.btnInsertaModulo.Name = "btnInsertaModulo";
-            this.btnInsertaModulo.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.btnInsertaModulo.Size = new System.Drawing.Size(65, 26);
-            this.btnInsertaModulo.TabIndex = 206;
-            this.btnInsertaModulo.TabStop = false;
-            this.btnInsertaModulo.Text = "Insertar";
-            this.btnInsertaModulo.UseVisualStyleBackColor = false;
-            this.btnInsertaModulo.Click += new System.EventHandler(this.BtnInsertaModulo_Click);
-            // 
-            // dgvModuloPorEmpresa
-            // 
-            this.dgvModuloPorEmpresa.AllowUserToAddRows = false;
-            this.dgvModuloPorEmpresa.AllowUserToDeleteRows = false;
-            this.dgvModuloPorEmpresa.AllowUserToResizeColumns = false;
-            this.dgvModuloPorEmpresa.AllowUserToResizeRows = false;
-            this.dgvModuloPorEmpresa.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            this.dgvModuloPorEmpresa.Location = new System.Drawing.Point(8, 63);
-            this.dgvModuloPorEmpresa.Name = "dgvModuloPorEmpresa";
-            this.dgvModuloPorEmpresa.RowHeadersVisible = false;
-            this.dgvModuloPorEmpresa.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
-            this.dgvModuloPorEmpresa.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.dgvModuloPorEmpresa.Size = new System.Drawing.Size(362, 117);
-            this.dgvModuloPorEmpresa.TabIndex = 205;
-            this.dgvModuloPorEmpresa.TabStop = false;
             // 
             // txtCantidadDocumentos
             // 
@@ -1494,7 +1411,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.picLogo)).EndInit();
             this.tabParametros.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvReportePorEmpresa)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvModuloPorEmpresa)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1564,11 +1480,6 @@
         public System.Windows.Forms.Button btnEliminaReporte;
         public System.Windows.Forms.Button btnInsertaReporte;
         internal System.Windows.Forms.DataGridView dgvReportePorEmpresa;
-        internal System.Windows.Forms.ComboBox cboModuloPorEmpresa;
-        public System.Windows.Forms.Label label17;
-        public System.Windows.Forms.Button btnEliminaModulo;
-        public System.Windows.Forms.Button btnInsertaModulo;
-        internal System.Windows.Forms.DataGridView dgvModuloPorEmpresa;
         public System.Windows.Forms.Button btnLimpiarLogo;
         public System.Windows.Forms.TextBox txtIdSucursal;
         public System.Windows.Forms.Label lblSucursal;
