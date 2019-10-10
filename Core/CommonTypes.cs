@@ -453,6 +453,8 @@ namespace LeandroSoftware.Core.CommonTypes
     public class ReporteDocumentoElectronico
     {
         public string ClaveNumerica { get; set; }
+
+        public string Consecutivo { get; set; }
         public string Fecha { get; set; }
         public string Nombre { get; set; }
         public string Moneda { get; set; }

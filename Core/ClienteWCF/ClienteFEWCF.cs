@@ -1892,7 +1892,10 @@ namespace LeandroSoftware.Core.ClienteWCF
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
             HttpResponseMessage httpResponse = await httpClient.GetAsync(strServicioPuntoventaURL + "/obtenerultimaversionapp");
             if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
-                throw new Exception(httpResponse.Content.ReadAsStringAsync().Result);
+            {
+                string strError = httpResponse.Content.ReadAsStringAsync().Result;
+                throw new Exception(strError);
+            }
             if (httpResponse.StatusCode != HttpStatusCode.OK)
                 throw new Exception(httpResponse.ReasonPhrase);
             string responseContent = await httpResponse.Content.ReadAsStringAsync();

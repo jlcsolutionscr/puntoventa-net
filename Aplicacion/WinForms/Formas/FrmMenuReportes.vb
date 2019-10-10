@@ -117,7 +117,7 @@ Public Class FrmMenuReportes
                             newFormReport.repReportViewer.LocalReport.DataSources.Clear()
                             newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
                             newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
-                            newFormReport.repReportViewer.LocalReport.ReportEmbeddedResource = "LeandroSoftware.Puntoventa.Aplicacion.WinForms.rptVentas.rdlc"
+                            newFormReport.repReportViewer.LocalReport.ReportEmbeddedResource = "LeandroSoftware.Aplicacion.rptVentas.rdlc"
                             Dim parameters(4) As ReportParameter
                             parameters(0) = New ReportParameter("pUsuario", FrmPrincipal.usuarioGlobal.CodigoUsuario)
                             parameters(1) = New ReportParameter("pEmpresa", FrmPrincipal.empresaGlobal.NombreComercial)
@@ -142,7 +142,7 @@ Public Class FrmMenuReportes
                     newFormReport.repReportViewer.LocalReport.DataSources.Clear()
                     newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
                     newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
-                    newFormReport.repReportViewer.LocalReport.ReportEmbeddedResource = "LeandroSoftware.Puntoventa.Aplicacion.WinForms.rptVentas.rdlc"
+                    newFormReport.repReportViewer.LocalReport.ReportEmbeddedResource = "LeandroSoftware.Aplicacion.rptVentas.rdlc"
                     Dim parameters(4) As ReportParameter
                     parameters(0) = New ReportParameter("pUsuario", FrmPrincipal.usuarioGlobal.CodigoUsuario)
                     parameters(1) = New ReportParameter("pEmpresa", FrmPrincipal.empresaGlobal.NombreComercial)
@@ -166,7 +166,7 @@ Public Class FrmMenuReportes
                         newFormReport.repReportViewer.LocalReport.DataSources.Clear()
                         newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
                         newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
-                        newFormReport.repReportViewer.LocalReport.ReportEmbeddedResource = "LeandroSoftware.Puntoventa.Aplicacion.WinForms.rptVentasPorVendedor.rdlc"
+                        newFormReport.repReportViewer.LocalReport.ReportEmbeddedResource = "LeandroSoftware.Aplicacion.rptVentasPorVendedor.rdlc"
                         Dim parameters(3) As ReportParameter
                         parameters(0) = New ReportParameter("pUsuario", FrmPrincipal.usuarioGlobal.CodigoUsuario)
                         parameters(1) = New ReportParameter("pEmpresa", FrmPrincipal.empresaGlobal.NombreComercial)
@@ -325,7 +325,7 @@ Public Class FrmMenuReportes
                     newFormReport.repReportViewer.LocalReport.DataSources.Clear()
                     newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
                     newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
-                    newFormReport.repReportViewer.LocalReport.ReportEmbeddedResource = "LeandroSoftware.Puntoventa.Aplicacion.WinForms.rptResumenMovimientos.rdlc"
+                    newFormReport.repReportViewer.LocalReport.ReportEmbeddedResource = "LeandroSoftware.Aplicacion.rptResumenMovimientos.rdlc"
                     Dim parameters(3) As ReportParameter
                     parameters(0) = New ReportParameter("pUsuario", FrmPrincipal.usuarioGlobal.CodigoUsuario)
                     parameters(1) = New ReportParameter("pEmpresa", FrmPrincipal.empresaGlobal.NombreComercial)
@@ -348,7 +348,7 @@ Public Class FrmMenuReportes
                         newFormReport.repReportViewer.LocalReport.DataSources.Clear()
                         newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
                         newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
-                        newFormReport.repReportViewer.LocalReport.ReportEmbeddedResource = "LeandroSoftware.Puntoventa.Aplicacion.WinForms.rptDetalleEgresos.rdlc"
+                        newFormReport.repReportViewer.LocalReport.ReportEmbeddedResource = "LeandroSoftware.Aplicacion.rptDetalleEgresos.rdlc"
                         Dim parameters(3) As ReportParameter
                         parameters(0) = New ReportParameter("pUsuario", FrmPrincipal.usuarioGlobal.CodigoUsuario)
                         parameters(1) = New ReportParameter("pEmpresa", FrmPrincipal.empresaGlobal.NombreComercial)
@@ -426,7 +426,7 @@ Public Class FrmMenuReportes
                     newFormReport.repReportViewer.LocalReport.DataSources.Clear()
                     newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
                     newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
-                    newFormReport.repReportViewer.LocalReport.ReportEmbeddedResource = "LeandroSoftware.Puntoventa.Aplicacion.WinForms.rptComprobanteElectronico.rdlc"
+                    newFormReport.repReportViewer.LocalReport.ReportEmbeddedResource = "LeandroSoftware.Aplicacion.rptComprobanteElectronico.rdlc"
                     Dim parameters(4) As ReportParameter
                     parameters(0) = New ReportParameter("pUsuario", FrmPrincipal.usuarioGlobal.CodigoUsuario)
                     parameters(1) = New ReportParameter("pEmpresa", FrmPrincipal.empresaGlobal.NombreComercial)
@@ -448,7 +448,7 @@ Public Class FrmMenuReportes
                     newFormReport.repReportViewer.LocalReport.DataSources.Clear()
                     newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
                     newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
-                    newFormReport.repReportViewer.LocalReport.ReportEmbeddedResource = "LeandroSoftware.Puntoventa.Aplicacion.WinForms.rptComprobanteElectronico.rdlc"
+                    newFormReport.repReportViewer.LocalReport.ReportEmbeddedResource = "LeandroSoftware.Aplicacion.rptComprobanteElectronico.rdlc"
                     Dim parameters(4) As ReportParameter
                     parameters(0) = New ReportParameter("pUsuario", FrmPrincipal.usuarioGlobal.CodigoUsuario)
                     parameters(1) = New ReportParameter("pEmpresa", FrmPrincipal.empresaGlobal.NombreComercial)
@@ -470,7 +470,7 @@ Public Class FrmMenuReportes
                     newFormReport.repReportViewer.LocalReport.DataSources.Clear()
                     newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
                     newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
-                    newFormReport.repReportViewer.LocalReport.ReportEmbeddedResource = "LeandroSoftware.Puntoventa.Aplicacion.WinForms.rptComprobanteElectronico.rdlc"
+                    newFormReport.repReportViewer.LocalReport.ReportEmbeddedResource = "LeandroSoftware.Aplicacion.rptComprobanteElectronico.rdlc"
                     Dim parameters(4) As ReportParameter
                     parameters(0) = New ReportParameter("pUsuario", FrmPrincipal.usuarioGlobal.CodigoUsuario)
                     parameters(1) = New ReportParameter("pEmpresa", FrmPrincipal.empresaGlobal.NombreComercial)
@@ -492,7 +492,7 @@ Public Class FrmMenuReportes
                     newFormReport.repReportViewer.LocalReport.DataSources.Clear()
                     newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
                     newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
-                    newFormReport.repReportViewer.LocalReport.ReportEmbeddedResource = "LeandroSoftware.Puntoventa.Aplicacion.WinForms.rptComprobanteElectronico.rdlc"
+                    newFormReport.repReportViewer.LocalReport.ReportEmbeddedResource = "LeandroSoftware.Aplicacion.rptComprobanteElectronico.rdlc"
                     Dim parameters(4) As ReportParameter
                     parameters(0) = New ReportParameter("pUsuario", FrmPrincipal.usuarioGlobal.CodigoUsuario)
                     parameters(1) = New ReportParameter("pEmpresa", FrmPrincipal.empresaGlobal.NombreComercial)
@@ -514,7 +514,7 @@ Public Class FrmMenuReportes
                     newFormReport.repReportViewer.LocalReport.DataSources.Clear()
                     newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
                     newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
-                    newFormReport.repReportViewer.LocalReport.ReportEmbeddedResource = "LeandroSoftware.Puntoventa.Aplicacion.WinForms.rptResumenComprobanteElectronicos.rdlc"
+                    newFormReport.repReportViewer.LocalReport.ReportEmbeddedResource = "LeandroSoftware.Aplicacion.rptResumenComprobanteElectronicos.rdlc"
                     Dim parameters(3) As ReportParameter
                     parameters(0) = New ReportParameter("pUsuario", FrmPrincipal.usuarioGlobal.CodigoUsuario)
                     parameters(1) = New ReportParameter("pEmpresa", FrmPrincipal.empresaGlobal.NombreComercial)

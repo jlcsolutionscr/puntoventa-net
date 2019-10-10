@@ -337,6 +337,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         TelefonoSucursal = sucursal.Telefono,
                         ImpresoraFactura = terminal.ImpresoraFactura
                     };
+                    usuario.UsuarioPorEmpresa = new HashSet<UsuarioPorEmpresa>();
                     string strToken = GenerarRegistroAutenticacion(StaticRolePorUsuario.USUARIO_SISTEMA);
                     usuario.Token = strToken;
                     foreach (ReportePorEmpresa reporte in empresa.ReportePorEmpresa)
@@ -807,16 +808,19 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    Usuario usuario = dbContext.UsuarioRepository.Find(intIdUsuario);
+                    Usuario usuario = dbContext.UsuarioRepository.Where(x => x.IdUsuario == intIdUsuario).FirstOrDefault();
                     if (usuario == null)
                         throw new BusinessException("El usuario por eliminar no existe.");
-                    List<UsuarioPorEmpresa> empresaUsuario = usuario.UsuarioPorEmpresa.ToList();
-                    if (empresaUsuario.Count == 0) throw new BusinessException("El usuario por modificar debe estar vinculado a la empresa actual. Por favor, pongase en contacto con su proveedor del servicio.");
-                    Empresa empresa = dbContext.EmpresaRepository.Find(empresaUsuario[0].IdEmpresa);
+                    List<UsuarioPorEmpresa> listaEmpresa = dbContext.UsuarioPorEmpresaRepository.Where(x => x.IdUsuario == usuario.IdUsuario).ToList();
+                    if (listaEmpresa.Count == 0) throw new BusinessException("El usuario por modificar debe estar vinculado a la empresa actual. Por favor, pongase en contacto con su proveedor del servicio.");
+                    Empresa empresa = dbContext.EmpresaRepository.Find(usuario.UsuarioPorEmpresa.FirstOrDefault().IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    dbContext.RolePorUsuarioRepository.RemoveRange(usuario.RolePorUsuario);
-                    dbContext.UsuarioPorEmpresaRepository.RemoveRange(usuario.UsuarioPorEmpresa);
-                    dbContext.UsuarioRepository.Remove(usuario);
+                    List<RolePorUsuario> listaRole = dbContext.RolePorUsuarioRepository.Where(x => x.IdUsuario == usuario.IdUsuario).ToList();
+                    foreach (RolePorUsuario roleUsuario in listaRole)
+                        dbContext.NotificarEliminacion(roleUsuario);
+                    foreach (UsuarioPorEmpresa empresaUsuario in listaEmpresa)
+                        dbContext.NotificarEliminacion(empresaUsuario);
+                    dbContext.NotificarEliminacion(usuario);
                     dbContext.Commit();
                 }
                 catch (DbUpdateException ex)

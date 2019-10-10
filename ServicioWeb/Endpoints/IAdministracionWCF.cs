@@ -28,7 +28,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
         void ProcesarDocumentosPendientes();
 
         [OperationContract]
-        [WebGet(UriTemplate = "obtenerultimaversionapp")]
+        [WebGet(UriTemplate = "obtenerultimaversionapp", ResponseFormat = WebMessageFormat.Json)]
         string ObtenerUltimaVersionApp();
 
         [OperationContract]

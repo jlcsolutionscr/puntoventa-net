@@ -58,8 +58,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AsyncResult.cs" />
-    <Compile Include="DroppingServerElement.cs" />
-    <Compile Include="DroppingServerInterceptor.cs" />
+    <Compile Include="ConsoleOutputBehaviorExtensionElement.cs" />
+    <Compile Include="ConsoleOutputBehavior.cs" />
+    <Compile Include="ConsoleOutputMessageInspector.cs" />
     <Compile Include="IRecepcionWCF.cs" />
     <Compile Include="RecepcionWCF.svc.cs">
       <DependentUpon>RecepcionWCF.svc</DependentUpon>
@@ -99,10 +100,6 @@
       <Project>{7c07fd36-af8c-4d6f-9ee4-f84082d03f9d}</Project>
       <Name>Contexto</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Interceptor\Interceptor.csproj">
-      <Project>{45721773-e5f8-4ac3-9c4a-71c0ca31cbbf}</Project>
-      <Name>Interceptor</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Servicios\Servicios.csproj">
       <Project>{bc08c145-ce0a-4220-a2f6-41b7aae80fc7}</Project>
       <Name>Servicios</Name>
@@ -116,26 +113,41 @@
     <Reference Include="CommonServiceLocator">
       <HintPath>..\..\packages\Unity.5.8.11\lib\net47\CommonServiceLocator.dll</HintPath>
     </Reference>
+    <Reference Include="EntityFramework">
+      <HintPath>..\..\packages\EntityFramework.6.3.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
     <Reference Include="log4net">
       <HintPath>..\..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="MySql.Data">
+      <HintPath>..\..\packages\MySql.Data.8.0.17\lib\net452\MySql.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="MySql.Data.EntityFramework">
+      <HintPath>..\..\packages\MySql.Data.EntityFramework.8.0.17\lib\net452\MySql.Data.EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="Renci.SshNet">
+      <HintPath>..\..\packages\SSH.NET.2016.1.0\lib\net40\Renci.SshNet.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
+    <Reference Include="System.Runtime.CompilerServices.Unsafe">
+      <HintPath>..\..\packages\System.Runtime.CompilerServices.Unsafe.4.6.0\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.ServiceModel.Web" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
-    <Reference Include="Unity.Abstractions, Version=5.11.1.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
+    <Reference Include="Unity.Abstractions, Version=3.3.1.0, Culture=neutral, PublicKeyToken=6d32ff45e0ccc69f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\Unity.5.8.11\lib\net47\Unity.Abstractions.dll</HintPath>
+      <HintPath>..\..\packages\Unity.5.11.1\lib\net47\Unity.Abstractions.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.Container, Version=5.11.1.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
+    <Reference Include="Unity.Container, Version=5.8.11.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\Unity.5.8.11\lib\net47\Unity.Container.dll</HintPath>
+      <HintPath>..\..\packages\Unity.5.11.1\lib\net47\Unity.Container.dll</HintPath>
     </Reference>
   </ItemGroup>
   <PropertyGroup>

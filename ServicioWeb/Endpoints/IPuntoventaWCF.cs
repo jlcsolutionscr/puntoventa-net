@@ -16,7 +16,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
         ResponseDTO EjecutarConsulta(RequestDTO datos);
 
         [OperationContract]
-        [WebInvoke(Method = "GET", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, UriTemplate = "obtenerultimaversionapp")]
+        [WebGet(UriTemplate = "obtenerultimaversionapp", ResponseFormat = WebMessageFormat.Json)]
         string ObtenerUltimaVersionApp();
     }
 }
