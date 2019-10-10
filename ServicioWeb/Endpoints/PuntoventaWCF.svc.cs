@@ -49,6 +49,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
         {
             unityContainer = new UnityContainer();
             string connString = WebConfigurationManager.ConnectionStrings["LeandroContext"].ConnectionString;
+            unityContainer.RegisterType<LeandroContext>(new ContainerControlledLifetimeManager());
             unityContainer.RegisterInstance("conectionString", connString, new ContainerControlledLifetimeManager());
             unityContainer.RegisterType<IDbContext, LeandroContext>(new InjectionConstructor(new ResolvedParameter<string>("conectionString")));
             unityContainer.RegisterType<ICorreoService, CorreoService>(new InjectionConstructor(appSettings["strEmailHost"], appSettings["strEmailPort"], appSettings["strEmailAccount"], appSettings["strEmailPass"], appSettings["strEmailFrom"], appSettings["strSSLHost"]));

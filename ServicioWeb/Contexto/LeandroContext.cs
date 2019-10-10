@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Linq;
 using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration.Conventions;
+using System.Linq;
 using LeandroSoftware.Core.Dominio.Entidades;
 
 namespace LeandroSoftware.ServicioWeb.Contexto

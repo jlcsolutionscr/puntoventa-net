@@ -4,19 +4,19 @@ using LeandroSoftware.Core.CommonTypes;
 using log4net;
 using System;
 using Newtonsoft.Json.Linq;
-using System.Net;
-using System.ServiceModel.Web;
-using System.Web.Configuration;
-using Unity;
-using Unity.Injection;
-using Unity.Lifetime;
 using System.IO;
-using System.Web;
 using System.Collections.Generic;
 using LeandroSoftware.Core.Dominio.Entidades;
 using LeandroSoftware.Core.CustomClasses;
-using System.Web.Script.Serialization;
 using LeandroSoftware.ServicioWeb.Contexto;
+using Unity;
+using Unity.Lifetime;
+using Unity.Injection;
+using System.Web.Configuration;
+using System.Web;
+using System.ServiceModel.Web;
+using System.Net;
+using System.Web.Script.Serialization;
 
 namespace LeandroSoftware.ServicioWeb.EndPoints
 {

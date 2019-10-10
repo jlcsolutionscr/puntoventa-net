@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Linq;
-using System.Data.Entity.Infrastructure;
 using System.Collections.Generic;
 using LeandroSoftware.Core.CommonTypes;
 using LeandroSoftware.Core.Dominio.Entidades;
 using LeandroSoftware.ServicioWeb.Contexto;
 using log4net;
 using Unity;
+using System.Data.Entity.Infrastructure;
 
 namespace LeandroSoftware.ServicioWeb.Servicios
 {
