@@ -34,7 +34,6 @@ namespace LeandroSoftware.Core.ClienteWCF
                     throw new Exception(httpResponse.Content.ReadAsStringAsync().Result);
                 if (httpResponse.StatusCode == HttpStatusCode.NotFound)
                     throw new Exception(httpResponse.ReasonPhrase);
-                string responseContent = await httpResponse.Content.ReadAsStringAsync();
             }
             catch (Exception ex)
             {

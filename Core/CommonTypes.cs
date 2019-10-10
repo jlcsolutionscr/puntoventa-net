@@ -7,6 +7,13 @@ namespace LeandroSoftware.Core.CommonTypes
         public static readonly short AppEscritorio = 1;
         public static readonly short AppMovil = 2;
     };
+
+    public static class StaticRolePorUsuario
+    {
+        public static readonly short ADMINISTRADOR = 1;
+        public static readonly short USUARIO_SISTEMA = 2;
+    };
+
     public static class StaticTipoMoneda
     {
         public static readonly short Colones = 1;

@@ -1,24 +1,20 @@
-﻿using System;
+﻿using LeandroSoftware.Core.Dominio.Entidades;
+using System;
 using System.Windows.Forms;
 
 namespace LeandroSoftware.Activator
 {
     public partial class FrmSeguridad : Form
     {
-        private void CmdAceptar_Click(object sender, EventArgs e)
+        private async void CmdAceptar_Click(object sender, EventArgs e)
         {
-            if (TxtUsuario.Text != "activator")
+
+            try
             {
-                MessageBox.Show("Usuario incorrecto.  Intente de nuevo. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                TxtUsuario.Text = "";
-                TxtClave.Text = "";
-                TxtUsuario.Focus();
-            }
-            else
-            {
-                if (TxtClave.Text == "A09c02t81i$")
+                Usuario usuario = await ClienteWCF.ValidarCredenciales(TxtUsuario.Text, TxtClave.Text);
+                if (usuario != null)
                 {
-                    ((FrmMenu)Owner).bolSeguridad = true;
+                    FrmMenu.strToken = usuario.Token;
                     Close();
                 }
                 else
@@ -28,7 +24,11 @@ namespace LeandroSoftware.Activator
                     TxtClave.Focus();
                 }
             }
-            
+            catch (Exception ex)
+            {
+                string strError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                MessageBox.Show(strError, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void CmdCancelar_Click(object sender, EventArgs e)

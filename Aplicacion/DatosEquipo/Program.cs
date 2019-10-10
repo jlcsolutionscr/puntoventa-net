@@ -1,5 +1,9 @@
-﻿using System;
+﻿using LeandroSoftware.Core.CommonTypes;
+using System;
 using System.Management;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace DatosEquipo
 {
@@ -7,7 +11,29 @@ namespace DatosEquipo
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Propiedades de win32_logicaldisk");
+            HttpClient httpClient = new HttpClient();
+            string jsonRequest = "{\"clave\": \"102100212121\"," +
+                "\"fecha\": \"" + DateTime.Now.ToString() + "\"," +
+                "\"ind-estado\": \"aceptado\"," +
+                "\"respuesta-xml\": \"resdede\"}";
+            try
+            {
+                StringContent stringContent = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
+                Uri uri = new Uri("http://localhost/puntoventa/RecepcionWCF.svc/recibirrespuestahacienda");
+                Task<HttpResponseMessage> task1 = httpClient.PostAsync(uri, stringContent);
+                if (!task1.Result.IsSuccessStatusCode)
+                {
+                    string strErrorMessage = task1.Result.Content.ReadAsStringAsync().Result.Replace("\"", "");
+                    Console.WriteLine("Error: " + strErrorMessage);
+                }
+            }
+            catch (Exception ex)
+            {
+                string strErrorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                Console.WriteLine("Exception: " + strErrorMessage);
+            }
+
+            /* Console.WriteLine("Propiedades de win32_logicaldisk");
             ManagementObject dsk = new ManagementObject(@"win32_logicaldisk.deviceid=""c:""");
             dsk.Get();
             foreach (PropertyData prop in dsk.Properties)
@@ -72,7 +98,7 @@ namespace DatosEquipo
                         Console.WriteLine("");
                     }
                 }
-            }
+            } */
             string inputEmpresa = Console.ReadLine();
         }
     }

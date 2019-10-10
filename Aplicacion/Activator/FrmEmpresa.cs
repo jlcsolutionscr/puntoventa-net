@@ -5,12 +5,9 @@ using System.IO;
 using System.Web.Script.Serialization;
 using System.Windows.Forms;
 using System.Data;
-using System.Linq;
-using LeandroSoftware.Core.Utilities;
 using System.Threading.Tasks;
 using LeandroSoftware.Core.CommonTypes;
 using LeandroSoftware.Core.Dominio.Entidades;
-using LeandroSoftware.Core.ClienteWCF;
 
 namespace LeandroSoftware.Activator
 {
@@ -100,13 +97,13 @@ namespace LeandroSoftware.Activator
             try
             {
                 IList<LlaveDescripcion> dsTipoIdentificacion = Array.Empty<LlaveDescripcion>();
-                dsTipoIdentificacion = await ClienteFEWCF.ObtenerListadoTipoIdentificacion();
+                // dsTipoIdentificacion = await ClienteFEWCF.ObtenerListadoTipoIdentificacion();
                 cboTipoIdentificacion.DataSource = dsTipoIdentificacion;
                 cboTipoIdentificacion.ValueMember = "Id";
                 cboTipoIdentificacion.DisplayMember = "Descripcion";
                 // Carga listado reportes
                 IList<LlaveDescripcion> dsReportes = Array.Empty<LlaveDescripcion>();
-                dsReportes = await ClienteFEWCF.ObtenerListadoCatalogoReportes();
+                // dsReportes = await ClienteFEWCF.ObtenerListadoCatalogoReportes();
                 cboReportePorEmpresa.DataSource = dsReportes;
                 cboReportePorEmpresa.ValueMember = "Id";
                 cboReportePorEmpresa.DisplayMember = "Descripcion";
@@ -132,7 +129,7 @@ namespace LeandroSoftware.Activator
             try
             {
                 IList<LlaveDescripcion> dsDataSet = Array.Empty<LlaveDescripcion>();
-                dsDataSet = await ClienteFEWCF.ObtenerListadoProvincias();
+                // dsDataSet = await ClienteFEWCF.ObtenerListadoProvincias();
                 cboProvincia.DataSource = dsDataSet;
                 cboProvincia.ValueMember = "Id";
                 cboProvincia.DisplayMember = "Descripcion";
@@ -149,7 +146,7 @@ namespace LeandroSoftware.Activator
             try
             {
                 IList<LlaveDescripcion> dsDataSet = Array.Empty<LlaveDescripcion>();
-                dsDataSet = await ClienteFEWCF.ObtenerListadoCantones(intIdProvincia);
+                // dsDataSet = await ClienteFEWCF.ObtenerListadoCantones(intIdProvincia);
                 cboCanton.DataSource = dsDataSet;
                 cboCanton.ValueMember = "Id";
                 cboCanton.DisplayMember = "Descripcion";
@@ -166,7 +163,7 @@ namespace LeandroSoftware.Activator
             try
             {
                 IList<LlaveDescripcion> dsDataSet = Array.Empty<LlaveDescripcion>();
-                dsDataSet = await ClienteFEWCF.ObtenerListadoDistritos(intIdProvincia, intIdCanton);
+                // dsDataSet = await ClienteFEWCF.ObtenerListadoDistritos(intIdProvincia, intIdCanton);
                 cboDistrito.DataSource = dsDataSet;
                 cboDistrito.ValueMember = "Id";
                 cboDistrito.DisplayMember = "Descripcion";
@@ -183,7 +180,7 @@ namespace LeandroSoftware.Activator
             try
             {
                 IList<LlaveDescripcion> dsDataSet = Array.Empty<LlaveDescripcion>();
-                dsDataSet = await ClienteFEWCF.ObtenerListadoBarrios(intIdProvincia, intIdCanton, intIdDistrito);
+                // dsDataSet = await ClienteFEWCF.ObtenerListadoBarrios(intIdProvincia, intIdCanton, intIdDistrito);
                 cboBarrio.DataSource = dsDataSet;
                 cboBarrio.ValueMember = "Id";
                 cboBarrio.DisplayMember = "Descripcion";
@@ -199,7 +196,7 @@ namespace LeandroSoftware.Activator
         {
             if (txtIdEmpresa.Text != "" && txtIdSucursal.Text != "")
             {
-                sucursal = await ClienteFEWCF.ObtenerSucursalPorEmpresa(int.Parse(txtIdEmpresa.Text), int.Parse(txtIdSucursal.Text));
+                // sucursal = await ClienteFEWCF.ObtenerSucursalPorEmpresa(int.Parse(txtIdEmpresa.Text), int.Parse(txtIdSucursal.Text));
                 if (sucursal == null)
                 {
                     bolSucursalNueva = true;
@@ -252,7 +249,7 @@ namespace LeandroSoftware.Activator
         {
             if (txtIdEmpresa.Text != "" && txtIdSucursal.Text != "" && txtIdTerminal.Text != "")
             {
-                terminal = await ClienteFEWCF.ObtenerTerminalPorSucursal(int.Parse(txtIdEmpresa.Text), int.Parse(txtIdSucursal.Text), int.Parse(txtIdTerminal.Text));
+                // terminal = await ClienteFEWCF.ObtenerTerminalPorSucursal(int.Parse(txtIdEmpresa.Text), int.Parse(txtIdSucursal.Text), int.Parse(txtIdTerminal.Text));
                 if (terminal == null)
                 {
                     bolTerminalNueva = true;
@@ -288,7 +285,7 @@ namespace LeandroSoftware.Activator
                 {
                     try
                     {
-                        empresa = await ClienteFEWCF.ObtenerEmpresa(intIdEmpresa);
+                        // empresa = await ClienteFEWCF.ObtenerEmpresa(intIdEmpresa);
                         if (empresa != null)
                         {
                             txtIdEmpresa.Text = empresa.IdEmpresa.ToString();
@@ -434,7 +431,7 @@ namespace LeandroSoftware.Activator
                     reporte.IdReporte = int.Parse(row["Id"].ToString());
                     empresa.ReportePorEmpresa.Add(reporte);
                 }
-                if (txtIdEmpresa.Text == "")
+                /*if (txtIdEmpresa.Text == "")
                 {
                     string strRespuesta = await ClienteFEWCF.AgregarEmpresa(empresa);
                     strRespuesta = new JavaScriptSerializer().Deserialize<string>(strRespuesta);
@@ -444,7 +441,7 @@ namespace LeandroSoftware.Activator
                 else
                 {
                     await ClienteFEWCF.ActualizarEmpresaConDetalle(empresa);
-                }
+                }*/
                 if (bolLogoModificado)
                 {
                     if (picLogo.Image != null)
@@ -455,35 +452,35 @@ namespace LeandroSoftware.Activator
                             picLogo.Image.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
                             bytLogotipo = stream.ToArray();
                         }
-                        await ClienteFEWCF.ActualizarLogoEmpresa(int.Parse(txtIdEmpresa.Text), Convert.ToBase64String(bytLogotipo));
+                        // await ClienteFEWCF.ActualizarLogoEmpresa(int.Parse(txtIdEmpresa.Text), Convert.ToBase64String(bytLogotipo));
                     }
-                    else
+                    /*else
                     {
                         await ClienteFEWCF.RemoverLogoEmpresa(int.Parse(txtIdEmpresa.Text));
-                    }
+                    }*/
                 }
                 if (bolCertificadoModificado && txtNombreCertificado.Text != "")
                 {
                     byte[] bytCertificado = File.ReadAllBytes(strRutaCertificado);
-                    await ClienteFEWCF.ActualizarCertificadoEmpresa(int.Parse(txtIdEmpresa.Text), Convert.ToBase64String(bytCertificado));
+                    // await ClienteFEWCF.ActualizarCertificadoEmpresa(int.Parse(txtIdEmpresa.Text), Convert.ToBase64String(bytCertificado));
                 }
                 if (sucursal != null)
                 {
                     sucursal.NombreSucursal = txtNombreSucursal.Text;
                     sucursal.Direccion = txtDireccionSucursal.Text;
                     sucursal.Telefono = txtTelefonoSucursal.Text;
-                    if (bolSucursalNueva)
+                    /*if (bolSucursalNueva)
                         await ClienteFEWCF.AgregarSucursalPorEmpresa(sucursal);
                     else
-                        await ClienteFEWCF.ActualizarSucursalPorEmpresa(sucursal);
+                        await ClienteFEWCF.ActualizarSucursalPorEmpresa(sucursal);*/
                     if (terminal != null)
                     {
                         terminal.ValorRegistro = txtValorRegistro.Text;
                         terminal.IdTipoDispositivo = chkDispositivoMovil.Checked ? StaticTipoDispisitivo.AppMovil : StaticTipoDispisitivo.AppEscritorio;
-                        if (bolTerminalNueva)
+                        /*if (bolTerminalNueva)
                             await ClienteFEWCF.AgregarTerminalPorSucursal(terminal);
                         else
-                            await ClienteFEWCF.ActualizarTerminalPorSucursal(terminal);
+                            await ClienteFEWCF.ActualizarTerminalPorSucursal(terminal);*/
                     }
                 }
                 Close();

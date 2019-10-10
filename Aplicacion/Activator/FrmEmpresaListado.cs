@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using LeandroSoftware.Core.ClienteWCF;
 using LeandroSoftware.Core.CommonTypes;
 
 namespace LeandroSoftware.Activator
@@ -10,7 +9,7 @@ namespace LeandroSoftware.Activator
     public partial class FrmEmpresaListado : Form
     {
         private FrmEmpresa empresaForm;
-        private IList<LlaveDescripcion> dsDataSet = Array.Empty<LlaveDescripcion>();
+        private List<LlaveDescripcion> dsDataSet = new List<LlaveDescripcion>();
 
         public FrmEmpresaListado()
         {
@@ -21,14 +20,15 @@ namespace LeandroSoftware.Activator
         {
             try
             {
-                dsDataSet = await ClienteFEWCF.ObtenerListadoEmpresasAdministrador();
+                string strToken = FrmMenu.strToken;
+                dsDataSet = await ClienteWCF.ObtenerListadoEmpresa(strToken);
                 cboEmpresa.DataSource = dsDataSet;
                 btnAgregar.Enabled = true;
                 btnEditar.Enabled = true;
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error al consumir el servicio web de factura electrónica: " + ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Close();
             }
         }

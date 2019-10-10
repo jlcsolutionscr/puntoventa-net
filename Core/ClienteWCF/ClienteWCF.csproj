@@ -7,7 +7,7 @@
     <ProjectGuid>{2602DD72-5AA0-45A2-A4A6-4805DA33C318}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ClienteWCF</RootNamespace>
+    <RootNamespace>LeandroSoftware.Core</RootNamespace>
     <AssemblyName>ClienteWCF</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

@@ -6,8 +6,11 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 using LeandroSoftware.Core.CommonTypes;
+using System.Net.Http;
+using System.Net;
+using System.Configuration;
 
-namespace LeandroSoftware.AccesoDatos.ClientePruebas
+namespace LeandroSoftware.ServicioWeb.ClientePruebas
 {
     class Program
     {
@@ -74,105 +77,27 @@ namespace LeandroSoftware.AccesoDatos.ClientePruebas
                                 {
                                     Console.WriteLine("id: " + doc.IdDocumento + " Clave: " + doc.ClaveNumerica + " Estado: " + doc.EstadoEnvio);
                                 }
-                                Console.WriteLine("Ingrese el Id del documento a procesar o 'S' para abortar la consulta:");
+                                Console.WriteLine("Desea procesar los documentos pendientes (S/N):");
                                 string idDoc = Console.ReadLine();
-                                int idDocumento = 0;
-                                try
+                                if (idDoc == "S")
                                 {
-                                    idDocumento = int.Parse(idDoc);
-                                }
-                                catch (Exception)
-                                {
-                                    idDoc = "S";
-                                }
-                                if (idDoc != "S")
-                                {
-                                    DocumentoDetalle documento = documentoLista.Where(x => x.IdDocumento == idDocumento).FirstOrDefault();
-                                    if (documento != null)
+                                    try
                                     {
-                                        if (documento.EstadoEnvio == "enviado")
-                                        {
-                                            Console.WriteLine("El documento ya fue enviado. Desea realizar la consulta del estado en Hacienda? (S/N)");
-                                            string strOpcion = Console.ReadLine();
-                                            if (strOpcion == "S")
-                                            {
-                                                DocumentoElectronico consulta = null;
-                                                try
-                                                {
-                                                    consulta = ClienteFEWCF.ObtenerRespuestaDocumentoElectronicoEnviado(documento.IdDocumento).Result;
-                                                }
-                                                catch (Exception ex)
-                                                {
-                                                    Console.WriteLine("Error al consultar la respuesta del documento electrónico: " + ex.Message);
-                                                    Console.WriteLine("");
-                                                }
-                                                if (consulta != null && consulta.Respuesta != null)
-                                                {
-                                                    Console.WriteLine("El documento posee un estado: " + consulta.EstadoEnvio);
-                                                    if (consulta.EstadoEnvio == "aceptado" || consulta.EstadoEnvio == "rechazado")
-                                                    {
-                                                        XmlDocument xmlRespuesta = new XmlDocument();
-                                                        xmlRespuesta.LoadXml(Encoding.UTF8.GetString(consulta.Respuesta));
-                                                        Console.WriteLine("Respuesta de hacienda: " + xmlRespuesta.GetElementsByTagName("DetalleMensaje").Item(0).InnerText);
-                                                        Console.WriteLine("");
-                                                        Console.WriteLine("Desea proceder con la aplicación de la respuesta de Hacienda (S/N):");
-                                                        string strSiNo = Console.ReadLine();
-                                                        if (strSiNo == "S")
-                                                        {
-                                                            RespuestaHaciendaDTO respuesta = new RespuestaHaciendaDTO();
-                                                            if (documento.EsMensajeReceptor == "S")
-                                                                respuesta.Clave = documento.ClaveNumerica + "-" + documento.Consecutivo;
-                                                            else
-                                                                respuesta.Clave = documento.ClaveNumerica;
-                                                            respuesta.Fecha = documento.Fecha.ToString("yyyy-MM-dd'T'HH:mm:ssZ");
-                                                            respuesta.IndEstado = consulta.EstadoEnvio;
-                                                            respuesta.RespuestaXml = Convert.ToBase64String(consulta.Respuesta);
-                                                            try
-                                                            {
-                                                                ClienteFEWCF.ProcesarRespuesta(respuesta);
-                                                                Console.WriteLine("Respuesta procesada satisfactoriamente. . .");
-                                                            }
-                                                            catch (Exception ex)
-                                                            {
-                                                                Console.WriteLine("Error en el procesamiento de la respuesta de Hacienda: " + ex.Message);
-                                                                Console.WriteLine("");
-                                                            }
-                                                        }
-                                                        else
-                                                        {
-                                                            Console.WriteLine("Procesamiento abortado por el usuario. . .");
-                                                        }
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    Console.WriteLine("El documento presenta un error en el envío: " + consulta.ErrorEnvio);
-                                                }
-                                                Console.WriteLine("");
-                                            }
-                                        }
-                                        if (documento.EstadoEnvio == "registrado")
-                                        {
-                                            Console.WriteLine("El documento se encuentra pendiente de enviar a Hacienda. Desea realizar el envío del documento a Hacienda? (S/N)");
-                                            string strOpcion = Console.ReadLine();
-                                            if (strOpcion == "S")
-                                            {
-                                                try
-                                                {
-                                                    ClienteFEWCF.EnviarDocumentoElectronicoPendiente(documento.IdDocumento).Wait();
-                                                    Console.WriteLine("Envio procesado satisfactoriamente. . .");
-                                                }
-                                                catch (Exception ex)
-                                                {
-                                                    Console.WriteLine("Error al enviar el documento electrónico a Hacienda: " + ex.Message);
-                                                    Console.WriteLine("");
-                                                }
-                                            }
-                                        }
+                                        HttpClient httpClient = new HttpClient();
+                                        string servicioURL = ConfigurationManager.AppSettings["ServicioRecepcionURL"];
+                                        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+                                        HttpResponseMessage httpResponse = httpClient.GetAsync(servicioURL + "/procesarpendientes").Result;
+                                        if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
+                                            throw new Exception(httpResponse.Content.ReadAsStringAsync().Result);
+                                        if (httpResponse.StatusCode == HttpStatusCode.NotFound)
+                                            throw new Exception(httpResponse.ReasonPhrase);
                                     }
-                                    else
+                                    catch (Exception ex)
                                     {
-                                        Console.WriteLine("El identificador del documento ingresado no existe. Verifique la información ingresada. . .");
+                                        if (ex.InnerException != null)
+                                            Console.WriteLine(ex.InnerException.Message);
+                                        else
+                                            Console.WriteLine(ex.Message);
                                         Console.WriteLine("");
                                     }
                                 }

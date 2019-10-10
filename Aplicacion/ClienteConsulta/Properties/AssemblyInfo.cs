@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("ClienteConsulta")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("JLCSolutionsCR")]
+[assembly: AssemblyCompany("JLC Solutions CR")]
 [assembly: AssemblyProduct("ClienteConsulta")]
 [assembly: AssemblyCopyright("Copyright © Microsoft 2010")]
 [assembly: AssemblyTrademark("")]

@@ -1,1 +1,0 @@
-﻿<%@ ServiceHost Language="C#" Debug="true" Service="LeandroSoftware.AccesoDatos.ServicioWCF.PuntoventaWCF" CodeBehind="PuntoventaWCF.svc.cs" %>
