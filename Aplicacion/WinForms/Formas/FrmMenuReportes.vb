@@ -80,7 +80,7 @@ Public Class FrmMenuReportes
                         formaMenuTipoTransaccion.clFormasPago = dtListaFormaPago
                     Catch ex As Exception
                         MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                        CmdVistaPrevia.Enabled = False
+                        CmdVistaPrevia.Enabled = True
                         Exit Sub
                     End Try
                     If formaMenuTipoTransaccion.ShowDialog() = System.Windows.Forms.DialogResult.OK Then
@@ -110,7 +110,7 @@ Public Class FrmMenuReportes
                                 datosReporte = Await ClienteFEWCF.ObtenerReporteVentasPorCliente(FrmPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text, intIdCliente, StaticTipoNulo.NoNulo, intFormaPago, intBancoAdquiriente)
                             Catch ex As Exception
                                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                                CmdVistaPrevia.Enabled = False
+                                CmdVistaPrevia.Enabled = True
                                 Exit Sub
                             End Try
                             Dim rds As ReportDataSource = New ReportDataSource("dstDatos", datosReporte)
@@ -126,7 +126,7 @@ Public Class FrmMenuReportes
                             parameters(4) = New ReportParameter("pFechaHasta", FechaFinal.Text)
                             newFormReport.repReportViewer.LocalReport.SetParameters(parameters)
                             newFormReport.ShowDialog()
-                            CmdVistaPrevia.Enabled = False
+                            CmdVistaPrevia.Enabled = True
                         End If
                     End If
                 Case "Ventas anuladas"
@@ -135,7 +135,7 @@ Public Class FrmMenuReportes
                         datosReporte = Await ClienteFEWCF.ObtenerReporteVentasPorCliente(FrmPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text, intIdCliente, StaticTipoNulo.Nulo, -1, 0)
                     Catch ex As Exception
                         MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                        CmdVistaPrevia.Enabled = False
+                        CmdVistaPrevia.Enabled = True
                         Exit Sub
                     End Try
                     Dim rds As ReportDataSource = New ReportDataSource("dstDatos", datosReporte)
@@ -159,7 +159,7 @@ Public Class FrmMenuReportes
                             datosReporte = Await ClienteFEWCF.ObtenerReporteVentasPorVendedor(FrmPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text, FrmPrincipal.intBusqueda)
                         Catch ex As Exception
                             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                            CmdVistaPrevia.Enabled = False
+                            CmdVistaPrevia.Enabled = True
                             Exit Sub
                         End Try
                         Dim rds As ReportDataSource = New ReportDataSource("dstDatos", datosReporte)
@@ -187,7 +187,7 @@ Public Class FrmMenuReportes
                 '        formaMenuTipoTransaccion.clFormasPago = dtListaFormaPago
                 '    Catch ex As Exception
                 '        MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                '        CmdVistaPrevia.Enabled = False
+                '        CmdVistaPrevia.Enabled = True
                 '        Exit Sub
                 '    End Try
                 '    If formaMenuTipoTransaccion.ShowDialog() = System.Windows.Forms.DialogResult.OK Then
@@ -318,7 +318,7 @@ Public Class FrmMenuReportes
                         datosReporte = Await ClienteFEWCF.ObtenerReporteEstadoResultados(FrmPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text)
                     Catch ex As Exception
                         MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                        CmdVistaPrevia.Enabled = False
+                        CmdVistaPrevia.Enabled = True
                         Exit Sub
                     End Try
                     Dim rds As ReportDataSource = New ReportDataSource("dstDatos", datosReporte)
@@ -341,7 +341,7 @@ Public Class FrmMenuReportes
                             datosReporte = Await ClienteFEWCF.ObtenerReporteDetalleEgreso(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.intBusqueda, FechaInicio.Text, FechaFinal.Text)
                         Catch ex As Exception
                             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                            CmdVistaPrevia.Enabled = False
+                            CmdVistaPrevia.Enabled = True
                             Exit Sub
                         End Try
                         Dim rds As ReportDataSource = New ReportDataSource("dstDatos", datosReporte)
@@ -419,7 +419,7 @@ Public Class FrmMenuReportes
                         datosReporte = Await ClienteFEWCF.ObtenerReporteFacturasElectronicasEmitidas(FrmPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text)
                     Catch ex As Exception
                         MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                        CmdVistaPrevia.Enabled = False
+                        CmdVistaPrevia.Enabled = True
                         Exit Sub
                     End Try
                     Dim rds As ReportDataSource = New ReportDataSource("dstDatos", datosReporte)
@@ -441,7 +441,7 @@ Public Class FrmMenuReportes
                         datosReporte = Await ClienteFEWCF.ObtenerReporteNotasCreditoElectronicasEmitidas(FrmPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text)
                     Catch ex As Exception
                         MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                        CmdVistaPrevia.Enabled = False
+                        CmdVistaPrevia.Enabled = True
                         Exit Sub
                     End Try
                     Dim rds As ReportDataSource = New ReportDataSource("dstDatos", datosReporte)
@@ -463,7 +463,7 @@ Public Class FrmMenuReportes
                         datosReporte = Await ClienteFEWCF.ObtenerReporteFacturasElectronicasRecibidas(FrmPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text)
                     Catch ex As Exception
                         MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                        CmdVistaPrevia.Enabled = False
+                        CmdVistaPrevia.Enabled = True
                         Exit Sub
                     End Try
                     Dim rds As ReportDataSource = New ReportDataSource("dstDatos", datosReporte)
@@ -485,7 +485,7 @@ Public Class FrmMenuReportes
                         datosReporte = Await ClienteFEWCF.ObtenerReporteNotasCreditoElectronicasRecibidas(FrmPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text)
                     Catch ex As Exception
                         MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                        CmdVistaPrevia.Enabled = False
+                        CmdVistaPrevia.Enabled = True
                         Exit Sub
                     End Try
                     Dim rds As ReportDataSource = New ReportDataSource("dstDatos", datosReporte)
@@ -507,7 +507,7 @@ Public Class FrmMenuReportes
                         datosReporte = Await ClienteFEWCF.ObtenerReporteResumenDocumentosElectronicos(FrmPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text)
                     Catch ex As Exception
                         MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                        CmdVistaPrevia.Enabled = False
+                        CmdVistaPrevia.Enabled = True
                         Exit Sub
                     End Try
                     Dim rds As ReportDataSource = New ReportDataSource("dstDatos", datosReporte)
