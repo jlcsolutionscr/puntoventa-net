@@ -82,7 +82,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!ClaveNumerica.Value</Value>
+                                  <Value>=Fields!Nombre.Value</Value>
                                   <Style>
                                     <FontFamily>Tahoma</FontFamily>
                                   </Style>
@@ -415,7 +415,7 @@
                 <Paragraph>
                   <TextRuns>
                     <TextRun>
-                      <Value>Clave numérica</Value>
+                      <Value>Nombre</Value>
                       <Style>
                         <FontFamily>Tahoma</FontFamily>
                         <FontWeight>Bold</FontWeight>
