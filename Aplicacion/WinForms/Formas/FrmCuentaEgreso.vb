@@ -1,5 +1,5 @@
 Imports LeandroSoftware.Core.Dominio.Entidades
-Imports LeandroSoftware.Core.ClienteWCF
+Imports LeandroSoftware.ClienteWCF
 
 Public Class FrmCuentaEgreso
 #Region "Variables"
@@ -22,19 +22,18 @@ Public Class FrmCuentaEgreso
     Private Async Sub FrmCuentaEgreso_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         If intIdCuenta > 0 Then
             Try
-                datos = Await ClienteFEWCF.ObtenerCuentaEgreso(intIdCuenta)
+                datos = Await Puntoventa.ObtenerCuentaEgreso(intIdCuenta, FrmPrincipal.usuarioGlobal.Token)
+                If datos Is Nothing Then
+                    MessageBox.Show("La cuenta de egreso seleccionada no existe", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                    Close()
+                    Exit Sub
+                End If
+                txtIdCuenta.Text = datos.IdCuenta
+                txtDescripcion.Text = datos.Descripcion
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Close()
-                Exit Sub
             End Try
-            If datos Is Nothing Then
-                MessageBox.Show("La cuenta de egreso seleccionada no existe", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-                Close()
-                Exit Sub
-            End If
-            txtIdCuenta.Text = datos.IdCuenta
-            txtDescripcion.Text = datos.Descripcion
         Else
             datos = New CuentaEgreso
         End If
@@ -56,10 +55,9 @@ Public Class FrmCuentaEgreso
         datos.Descripcion = txtDescripcion.Text
         Try
             If datos.IdCuenta = 0 Then
-                Dim strIdCuentaEgreso As String = Await ClienteFEWCF.AgregarCuentaEgreso(datos)
-                txtIdCuenta.Text = strIdCuentaEgreso
+                Await Puntoventa.AgregarCuentaEgreso(datos, FrmPrincipal.usuarioGlobal.Token)
             Else
-                Await ClienteFEWCF.ActualizarCuentaEgreso(datos)
+                Await Puntoventa.ActualizarCuentaEgreso(datos, FrmPrincipal.usuarioGlobal.Token)
             End If
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)

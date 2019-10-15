@@ -3,12 +3,13 @@ using System.Linq;
 using System.Data;
 using System.Collections.Generic;
 using System.Data.Entity.Infrastructure;
-using LeandroSoftware.Core.CommonTypes;
+using LeandroSoftware.Core.TiposComunes;
 using LeandroSoftware.Core.Dominio.Entidades;
 using LeandroSoftware.ServicioWeb.Contexto;
 using log4net;
 using Unity;
 using System.Text;
+using LeandroSoftware.Core.Utilities;
 
 namespace LeandroSoftware.ServicioWeb.Servicios
 {
@@ -20,13 +21,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         IEnumerable<LlaveDescripcion> ObtenerListadoEmpresasPorTerminal(string strDispositivoId);
         void RegistrarTerminal(string strUsuario, string strClave, string strIdentificacion, int intIdSucursal, int intIdTerminal, int intTipoDispositivo, string strDispositivoId);
 
-        Usuario ValidarCredenciales(string strUsuario, string strClave);
-        Empresa ValidarCredenciales(string strUsuario, string strClave, int intIdEmpresa, string strValorRegistro);
-        void ActualizarUltimaVersionApp(string strVersion);
+        Usuario ValidarCredenciales(string strUsuario, string strClave, string strApplicationKey);
+        Empresa ValidarCredenciales(string strUsuario, string strClave, int intIdEmpresa, string strValorRegistro, string strApplicationKey);
+        void ActualizarVersionApp(string strVersion);
         string ObtenerUltimaVersionApp();
         // Métodos para administrar las empresas
         IEnumerable<LlaveDescripcion> ObtenerListadoEmpresa();
-        Empresa AgregarEmpresa(Empresa empresa);
+        string AgregarEmpresa(Empresa empresa);
         Empresa ObtenerEmpresa(int intIdEmpresa);
         void ActualizarEmpresa(Empresa empresa);
         void ActualizarEmpresaConDetalle(Empresa empresa);
@@ -40,7 +41,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         void AgregarTerminalPorSucursal(TerminalPorSucursal terminal);
         void ActualizarTerminalPorSucursal(TerminalPorSucursal terminal);
         // Métodos para administrar los usuarios del sistema
-        Usuario AgregarUsuario(Usuario usuario);
+        void AgregarUsuario(Usuario usuario);
         void ActualizarUsuario(Usuario usuario);
         Usuario ActualizarClaveUsuario(int intIdUsuario, string strClave);
         void AgregarUsuarioPorEmpresa(int intIdUsuario, int intIdEmpresa);
@@ -48,7 +49,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         Usuario ObtenerUsuario(int intIdUsuario);
         IEnumerable<LlaveDescripcion> ObtenerListadoUsuarios(int intIdEmpresa, string strCodigo = "");
         // Métodos para administrar los vendedores del sistema
-        Vendedor AgregarVendedor(Vendedor vendedor);
+        void AgregarVendedor(Vendedor vendedor);
         void ActualizarVendedor(Vendedor vendedor);
         void EliminarVendedor(int intIdVendedor);
         Vendedor ObtenerVendedor(int intIdVendedor);
@@ -58,7 +59,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         Role ObtenerRole(int intIdRole);
         IEnumerable<LlaveDescripcion> ObtenerListadoRoles();
         // Métodos para administrar las líneas de producto
-        Linea AgregarLinea(Linea linea);
+        void AgregarLinea(Linea linea);
         void ActualizarLinea(Linea linea);
         void EliminarLinea(int intIdLinea);
         Linea ObtenerLinea(int intIdLinea);
@@ -71,7 +72,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         IEnumerable<LlaveDescripcion> ObtenerListadoTipoImpuesto();
         IEnumerable<LlaveDescripcion> ObtenerListadoTipoUnidad();
         ParametroImpuesto ObtenerParametroImpuesto(int intIdImpuesto);
-        Producto AgregarProducto(Producto producto);
+        void AgregarProducto(Producto producto);
         void ActualizarProducto(Producto producto);
         void ActualizarPrecioVentaProductos(int intIdEmpresa, int intIdLinea = 0, string strCodigo = "", string strDescripcion = "", decimal decPorcentajeAumento = 0);
         void EliminarProducto(int intIdProducto);
@@ -91,7 +92,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         IEnumerable<LlaveDescripcion> ObtenerListadoFormaPagoMovimientoCxC();
         IEnumerable<LlaveDescripcion> ObtenerListadoFormaPagoMovimientoCxP();
         // Métodos para administrar los parámetros de banco adquiriente
-        BancoAdquiriente AgregarBancoAdquiriente(BancoAdquiriente bancoAdquiriente);
+        void AgregarBancoAdquiriente(BancoAdquiriente bancoAdquiriente);
         void ActualizarBancoAdquiriente(BancoAdquiriente bancoAdquiriente);
         void EliminarBancoAdquiriente(int intIdBanco);
         BancoAdquiriente ObtenerBancoAdquiriente(int intIdBanco);
@@ -118,7 +119,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         IEnumerable<LlaveDescripcion> ObtenerListadoDistritos(int intIdProvincia, int intIdCanton);
         IEnumerable<LlaveDescripcion> ObtenerListadoBarrios(int intIdProvincia, int intIdCanton, int intIdDistrito);
         IList<LlaveDescripcion> ObtenerListadoTipodePrecio();
-        bool ValidarRegistroAutenticacion(string strToken, int intRole);
+        void ValidarRegistroAutenticacion(string strToken, int intRole, string strApplicationKey);
+        void EliminarRegistroAutenticacionInvalidos();
     }
 
     public class MantenimientoService : IMantenimientoService
@@ -276,7 +278,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public Usuario ValidarCredenciales(string strUsuario, string strClave)
+        public Usuario ValidarCredenciales(string strUsuario, string strClave, string strApplicationKey)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -285,7 +287,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     Usuario usuario = dbContext.UsuarioRepository.FirstOrDefault(x => x.CodigoUsuario == strUsuario);
                     if (usuario == null) throw new BusinessException("Los credenciales suministrados no son válidos. Por favor verifique la información suministrada.");
                     if (usuario.Clave != strClave) throw new BusinessException("Los credenciales suministrados no son válidos. Por favor verifique la información suministrada.");
-                    string strToken = GenerarRegistroAutenticacion(usuario.IdUsuario == 1 ? StaticRolePorUsuario.ADMINISTRADOR : StaticRolePorUsuario.USUARIO_SISTEMA);
+                    string strToken = GenerarRegistroAutenticacion(usuario.IdUsuario == 1 ? StaticRolePorUsuario.ADMINISTRADOR : StaticRolePorUsuario.USUARIO_SISTEMA, strApplicationKey);
                     usuario.Token = strToken;
                     return usuario;
                 }
@@ -300,7 +302,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
             }
         }
-        public Empresa ValidarCredenciales(string strUsuario, string strClave, int intIdEmpresa, string strValorRegistro)
+        public Empresa ValidarCredenciales(string strUsuario, string strClave, int intIdEmpresa, string strValorRegistro, string strApplicationKey)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -338,7 +340,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         ImpresoraFactura = terminal.ImpresoraFactura
                     };
                     usuario.UsuarioPorEmpresa = new HashSet<UsuarioPorEmpresa>();
-                    string strToken = GenerarRegistroAutenticacion(StaticRolePorUsuario.USUARIO_SISTEMA);
+                    string strToken = GenerarRegistroAutenticacion(StaticRolePorUsuario.USUARIO_SISTEMA, strApplicationKey);
                     usuario.Token = strToken;
                     foreach (ReportePorEmpresa reporte in empresa.ReportePorEmpresa)
                         reporte.Empresa = null;
@@ -368,7 +370,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void ActualizarUltimaVersionApp(string strVersion)
+        public void ActualizarVersionApp(string strVersion)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -432,7 +434,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public Empresa AgregarEmpresa(Empresa empresa)
+        public string AgregarEmpresa(Empresa empresa)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -440,6 +442,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     dbContext.EmpresaRepository.Add(empresa);
                     dbContext.Commit();
+                    return empresa.IdEmpresa.ToString();
                 }
                 catch (Exception ex)
                 {
@@ -448,7 +451,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     throw new Exception("Se produjo un error agregando la información de la empresa. Por favor consulte con su proveedor.");
                 }
             }
-            return empresa;
         }
 
         public void ActualizarEmpresa(Empresa empresa)
@@ -693,7 +695,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public Usuario AgregarUsuario(Usuario usuario)
+        public void AgregarUsuario(Usuario usuario)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -720,7 +722,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     throw new Exception("Se produjo un error agregando la información del usuario. Por favor consulte con su proveedor.");
                 }
             }
-            return usuario;
         }
 
         public void ActualizarUsuario(Usuario usuario)
@@ -895,7 +896,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public Vendedor AgregarVendedor(Vendedor vendedor)
+        public void AgregarVendedor(Vendedor vendedor)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -918,7 +919,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     throw new Exception("Se produjo un error agregando la información del vendedor. Por favor consulte con su proveedor.");
                 }
             }
-            return vendedor;
         }
 
         public void ActualizarVendedor(Vendedor vendedor)
@@ -1090,7 +1090,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public Linea AgregarLinea(Linea linea)
+        public void AgregarLinea(Linea linea)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -1113,7 +1113,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     throw new Exception("Se produjo un error agregando la información de la línea. Por favor consulte con su proveedor.");
                 }
             }
-            return linea;
         }
 
         public void ActualizarLinea(Linea linea)
@@ -1372,7 +1371,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             return parametroImpuesto;
         }
 
-        public Producto AgregarProducto(Producto producto)
+        public void AgregarProducto(Producto producto)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -1397,7 +1396,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     throw new Exception("Se produjo un error agregando la información del producto. Por favor consulte con su proveedor.");
                 }
             }
-            return producto;
         }
 
         public void ActualizarProducto(Producto producto)
@@ -1411,6 +1409,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     bool existe = dbContext.ProductoRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.Codigo == producto.Codigo && x.IdProducto != producto.IdProducto).Count() > 0;
                     if (existe) throw new BusinessException("El código de producto ingresado ya está registrado en la empresa.");
+                    producto.ParametroImpuesto = null;
                     dbContext.NotificarModificacion(producto);
                     dbContext.Commit();
                 }
@@ -1581,9 +1580,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (!bolIncluyeServicios)
                         listado = listado.Where(x => x.Tipo == StaticTipoProducto.Producto);
                     if (cantRec > 0)
-                        listado = listado.OrderBy(x => x.Tipo).ThenBy(x => x.Descripcion).Skip((numPagina - 1) * cantRec).Take(cantRec);
+                        listado = listado.OrderBy(x => x.Codigo).Skip((numPagina - 1) * cantRec).Take(cantRec);
                     else
-                        listado = listado.OrderBy(x => x.Tipo).ThenBy(x => x.Descripcion);
+                        listado = listado.OrderBy(x => x.Codigo);
                     foreach (Producto value in listado)
                     {
                         LlaveDescripcion item = new LlaveDescripcion(value.IdProducto, value.Codigo + " - " + value.Descripcion);
@@ -1801,7 +1800,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public BancoAdquiriente AgregarBancoAdquiriente(BancoAdquiriente bancoAdquiriente)
+        public void AgregarBancoAdquiriente(BancoAdquiriente bancoAdquiriente)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -1824,7 +1823,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     throw new Exception("Se produjo un error agregando la información del banco adquiriente. Por favor consulte con su proveedor.");
                 }
             }
-            return bancoAdquiriente;
         }
 
         public void ActualizarBancoAdquiriente(BancoAdquiriente bancoAdquiriente)
@@ -2613,14 +2611,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        private string GenerarRegistroAutenticacion(int intRole)
+        private string GenerarRegistroAutenticacion(int intRole, string strApplicationKey)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 string strGuid = Guid.NewGuid().ToString();
                 DateTime fechaRegistro = DateTime.UtcNow;
-                byte[] bitClave = Guid.Parse(strGuid).ToByteArray();
-                byte[] bitTimeStamp = BitConverter.GetBytes(fechaRegistro.ToBinary());
                 RegistroAutenticacion registro = new RegistroAutenticacion
                 {
                     Id = strGuid,
@@ -2636,34 +2632,30 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     throw ex;
                 }
-                byte[] data = new byte[bitClave.Length + bitTimeStamp.Length];
-                Buffer.BlockCopy(bitClave, 0, data, 0, bitClave.Length);
-                Buffer.BlockCopy(bitTimeStamp, 0, data, bitClave.Length, bitTimeStamp.Length);
-                return Convert.ToBase64String(data.ToArray());
+                string strTokenEncriptado = Utilitario.EncriptarDatos(strGuid, strApplicationKey);
+                return strTokenEncriptado;
             }
         }
 
-        public bool ValidarRegistroAutenticacion(string strToken, int intRole)
+        public void ValidarRegistroAutenticacion(string strToken, int intRole, string strApplicationKey)
         {
             try
             {
                 using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
                 {
-                    byte[] data = Convert.FromBase64String(strToken);
-                    byte[] bitClave = data.Take(16).ToArray();
-                    byte[] bitTimeStamp = data.Skip(16).ToArray();
-                    string strGuid = new Guid(bitClave).ToString();
-                    RegistroAutenticacion registro = dbContext.RegistroAutenticacionRepository.Where(x => x.Id == strGuid).FirstOrDefault();
-                    if (registro == null) throw new BusinessException("El registro de autenticación provisto no se encuentra registrado en el sistema.");
-                    DateTime when = DateTime.FromBinary(BitConverter.ToInt64(bitTimeStamp, 0));
-                    if (when < DateTime.UtcNow.AddHours(-24))
+                    string strTokenDesencriptado = Utilitario.DesencriptarDatos(strToken, strApplicationKey);
+                    RegistroAutenticacion registro = dbContext.RegistroAutenticacionRepository.Where(x => x.Id == strTokenDesencriptado).FirstOrDefault();
+                    if (registro == null) throw new BusinessException("La sessión del usuario no es válida. Debe reiniciar su sesión.");
+                    if (registro.Fecha < DateTime.UtcNow.AddHours(-12))
                     {
                         dbContext.NotificarEliminacion(registro);
                         dbContext.Commit();
-                        throw new BusinessException("La sessión del usuario ha expirado, debe salir del sistema e ingresar sus credenciales para activar una nueva sesión.");
+                        throw new BusinessException("La sessión del usuario se encuentra expirada. Debe reiniciar su sesión.");
                     }
-                    if (registro.Role != intRole) throw new BusinessException("El usuario no se encuentra autorizado para ejecutar la acción solicitada.");
-                    return true;
+                    if (registro.Role != StaticRolePorUsuario.ADMINISTRADOR)
+                    {
+                        if (registro.Role != intRole) throw new BusinessException("El usuario no se encuentra autorizado para ejecutar la acción solicitada.");
+                    }
                 }
             }
             catch (BusinessException ex)
@@ -2674,6 +2666,27 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 log.Error("Error al validar el registro de autenticación: ", ex);
                 throw ex;
+            }
+        }
+
+        public void EliminarRegistroAutenticacionInvalidos()
+        {
+            try
+            {
+                using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+                {
+                    DateTime detFechaMaxima = DateTime.UtcNow.AddHours(-12);
+                    var listado = dbContext.RegistroAutenticacionRepository.Where(x => x.Fecha < detFechaMaxima).ToList();
+                    foreach(RegistroAutenticacion registro in listado)
+                    {
+                        dbContext.NotificarEliminacion(registro);
+                        dbContext.Commit();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                log.Error("Error al validar el registro de autenticación: ", ex);
             }
         }
     }

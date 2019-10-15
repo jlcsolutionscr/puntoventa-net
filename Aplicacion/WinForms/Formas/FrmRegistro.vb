@@ -1,6 +1,6 @@
 Imports System.Collections.Generic
-Imports LeandroSoftware.Core.ClienteWCF
-Imports LeandroSoftware.Core.CommonTypes
+Imports LeandroSoftware.ClienteWCF
+Imports LeandroSoftware.Core.TiposComunes
 Imports LeandroSoftware.Core.Utilities
 
 Public Class FrmRegistro
@@ -36,7 +36,7 @@ Public Class FrmRegistro
 #End Region
 
 #Region "Eventos Controles"
-    Private Sub FrmLineaListado_Shown(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Shown
+    Private Sub FrmLineaListado_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
             EstablecerPropiedadesDataGridView()
             dgvDatos.DataSource = listado
@@ -44,12 +44,11 @@ Public Class FrmRegistro
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
-            Exit Sub
         End Try
     End Sub
     Private Async Sub BtnRegistrar_Click(sender As Object, e As EventArgs) Handles btnRegistrar.Click
         Try
-            Await ClienteFEWCF.RegistrarTerminal(txtUsuario.Text, strEncryptedPassword, txtIdentificacion.Text, intIdSucursal, intIdTerminal, StaticTipoDispisitivo.AppEscritorio, strDispositivoId)
+            Await Puntoventa.RegistrarTerminal(txtUsuario.Text, strEncryptedPassword, txtIdentificacion.Text, intIdSucursal, intIdTerminal, StaticTipoDispisitivo.AppEscritorio, strDispositivoId)
             MessageBox.Show("Equipo registrado satisfactoriamente. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
             Close()
             Exit Sub
@@ -66,7 +65,7 @@ Public Class FrmRegistro
     Private Async Sub BtnConsultar_Click(sender As Object, e As EventArgs) Handles btnConsultar.Click
         Try
             strEncryptedPassword = Utilitario.EncriptarDatos(txtClave.Text, FrmPrincipal.strKey)
-            listado = Await ClienteFEWCF.ObtenerListadoTerminalesDisponibles(txtUsuario.Text, strEncryptedPassword, txtIdentificacion.Text, StaticTipoDispisitivo.AppEscritorio)
+            listado = Await Puntoventa.ObtenerListadoTerminalesDisponibles(txtUsuario.Text, strEncryptedPassword, txtIdentificacion.Text, StaticTipoDispisitivo.AppEscritorio)
             dgvDatos.DataSource = listado
             If listado.Count > 0 Then
                 txtIdentificacion.Enabled = False

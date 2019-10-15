@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
-using LeandroSoftware.Core.CommonTypes;
+using LeandroSoftware.Core.TiposComunes;
 using LeandroSoftware.Core.Dominio.Entidades;
 using LeandroSoftware.ServicioWeb.Contexto;
 using log4net;
@@ -12,7 +12,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 {
     public interface IBancaService
     {
-        CuentaBanco AgregarCuentaBanco(CuentaBanco cuentaBanco);
+        void AgregarCuentaBanco(CuentaBanco cuentaBanco);
         void ActualizarCuentaBanco(CuentaBanco cuentaBanco);
         void EliminarCuentaBanco(int intIdCuenta);
         CuentaBanco ObtenerCuentaBanco(int intIdCuenta);
@@ -50,7 +50,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public CuentaBanco AgregarCuentaBanco(CuentaBanco cuentaBanco)
+        public void AgregarCuentaBanco(CuentaBanco cuentaBanco)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -74,7 +74,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     throw new Exception("Se produjo un error agregando la cuenta bancaria. Por favor consulte con su proveedor..");
                 }
             }
-            return cuentaBanco;
         }
 
         public void ActualizarCuentaBanco(CuentaBanco cuentaBanco)

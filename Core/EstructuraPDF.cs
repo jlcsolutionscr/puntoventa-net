@@ -2,7 +2,7 @@
 using System.Drawing;
 using System.Collections.Generic;
 
-namespace LeandroSoftware.Core.CommonTypes
+namespace LeandroSoftware.Core.TiposComunes
 {
     public class EstructuraPDF
     {
@@ -43,7 +43,7 @@ namespace LeandroSoftware.Core.CommonTypes
         public string DistritoReceptor { get; set; }
         public string BarrioReceptor { get; set; }
         public string DireccionReceptor { get; set; }
-        public string TotalGrabado { get; set; }
+        public string TotalGravado { get; set; }
         public string TotalExonerado { get; set; }
         public string TotalExento { get; set; }
         public string Descuento { get; set; }

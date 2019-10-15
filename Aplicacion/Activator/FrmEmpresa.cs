@@ -6,8 +6,9 @@ using System.Web.Script.Serialization;
 using System.Windows.Forms;
 using System.Data;
 using System.Threading.Tasks;
-using LeandroSoftware.Core.CommonTypes;
+using LeandroSoftware.Core.TiposComunes;
 using LeandroSoftware.Core.Dominio.Entidades;
+using LeandroSoftware.ClienteWCF;
 
 namespace LeandroSoftware.Activator
 {
@@ -24,6 +25,7 @@ namespace LeandroSoftware.Activator
         private bool bolSucursalNueva = true;
         private bool bolTerminalNueva = true;
         private string strRutaCertificado;
+        private string strToken;
         public bool bolEditing;
         public int intIdEmpresa = -1;
 
@@ -94,109 +96,70 @@ namespace LeandroSoftware.Activator
 
         public async Task CargarListaParametros()
         {
-            try
-            {
-                IList<LlaveDescripcion> dsTipoIdentificacion = Array.Empty<LlaveDescripcion>();
-                // dsTipoIdentificacion = await ClienteFEWCF.ObtenerListadoTipoIdentificacion();
-                cboTipoIdentificacion.DataSource = dsTipoIdentificacion;
-                cboTipoIdentificacion.ValueMember = "Id";
-                cboTipoIdentificacion.DisplayMember = "Descripcion";
-                // Carga listado reportes
-                IList<LlaveDescripcion> dsReportes = Array.Empty<LlaveDescripcion>();
-                // dsReportes = await ClienteFEWCF.ObtenerListadoCatalogoReportes();
-                cboReportePorEmpresa.DataSource = dsReportes;
-                cboReportePorEmpresa.ValueMember = "Id";
-                cboReportePorEmpresa.DisplayMember = "Descripcion";
-                // Carga Tipo Contrato
-                IList<LlaveDescripcion> dsTipoContrato = new List<LlaveDescripcion>();
-                LlaveDescripcion tipo = new LlaveDescripcion(1, "Pago mensual o anual");
-                dsTipoContrato.Add(tipo);
-                tipo = new LlaveDescripcion(2, "Limite de documentos anual");
-                dsTipoContrato.Add(tipo);
-                cboTipoContrato.DataSource = dsTipoContrato;
-                cboTipoContrato.ValueMember = "Id";
-                cboTipoContrato.DisplayMember = "Descripcion";
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error al consumir el servicio web de factura electrónica: " + ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Close();
-            }
+
+            IList<LlaveDescripcion> dsTipoIdentificacion = Array.Empty<LlaveDescripcion>();
+            dsTipoIdentificacion = await Administrador.ObtenerListadoTipoIdentificacion(strToken);
+            cboTipoIdentificacion.DataSource = dsTipoIdentificacion;
+            cboTipoIdentificacion.ValueMember = "Id";
+            cboTipoIdentificacion.DisplayMember = "Descripcion";
+            // Carga listado reportes
+            IList<LlaveDescripcion> dsReportes = Array.Empty<LlaveDescripcion>();
+            dsReportes = await Administrador.ObtenerListadoCatalogoReportes(strToken);
+            cboReportePorEmpresa.DataSource = dsReportes;
+            cboReportePorEmpresa.ValueMember = "Id";
+            cboReportePorEmpresa.DisplayMember = "Descripcion";
+            // Carga Tipo Contrato
+            IList<LlaveDescripcion> dsTipoContrato = new List<LlaveDescripcion>();
+            LlaveDescripcion tipo = new LlaveDescripcion(1, "Pago mensual o anual");
+            dsTipoContrato.Add(tipo);
+            tipo = new LlaveDescripcion(2, "Limite de documentos anual");
+            dsTipoContrato.Add(tipo);
+            cboTipoContrato.DataSource = dsTipoContrato;
+            cboTipoContrato.ValueMember = "Id";
+            cboTipoContrato.DisplayMember = "Descripcion";
         }
 
         public async Task CargarProvincias()
         {
-            try
-            {
-                IList<LlaveDescripcion> dsDataSet = Array.Empty<LlaveDescripcion>();
-                // dsDataSet = await ClienteFEWCF.ObtenerListadoProvincias();
-                cboProvincia.DataSource = dsDataSet;
-                cboProvincia.ValueMember = "Id";
-                cboProvincia.DisplayMember = "Descripcion";
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error al consumir el servicio web de factura electrónica: " + ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Close();
-            }
+            IList<LlaveDescripcion> dsDataSet = Array.Empty<LlaveDescripcion>();
+            dsDataSet = await Administrador.ObtenerListadoProvincias(strToken);
+            cboProvincia.DataSource = dsDataSet;
+            cboProvincia.ValueMember = "Id";
+            cboProvincia.DisplayMember = "Descripcion";
         }
 
         public async Task CargarCantones(int intIdProvincia)
         {
-            try
-            {
-                IList<LlaveDescripcion> dsDataSet = Array.Empty<LlaveDescripcion>();
-                // dsDataSet = await ClienteFEWCF.ObtenerListadoCantones(intIdProvincia);
-                cboCanton.DataSource = dsDataSet;
-                cboCanton.ValueMember = "Id";
-                cboCanton.DisplayMember = "Descripcion";
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error al consumir el servicio web de factura electrónica: " + ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Close();
-            }
+            IList<LlaveDescripcion> dsDataSet = Array.Empty<LlaveDescripcion>();
+            dsDataSet = await Administrador.ObtenerListadoCantones(intIdProvincia, strToken);
+            cboCanton.DataSource = dsDataSet;
+            cboCanton.ValueMember = "Id";
+            cboCanton.DisplayMember = "Descripcion";
         }
 
         public async Task CargarDistritos(int intIdProvincia, int intIdCanton)
         {
-            try
-            {
-                IList<LlaveDescripcion> dsDataSet = Array.Empty<LlaveDescripcion>();
-                // dsDataSet = await ClienteFEWCF.ObtenerListadoDistritos(intIdProvincia, intIdCanton);
-                cboDistrito.DataSource = dsDataSet;
-                cboDistrito.ValueMember = "Id";
-                cboDistrito.DisplayMember = "Descripcion";
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error al consumir el servicio web de factura electrónica: " + ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Close();
-            }
+            IList<LlaveDescripcion> dsDataSet = Array.Empty<LlaveDescripcion>();
+            dsDataSet = await Administrador.ObtenerListadoDistritos(intIdProvincia, intIdCanton, strToken);
+            cboDistrito.DataSource = dsDataSet;
+            cboDistrito.ValueMember = "Id";
+            cboDistrito.DisplayMember = "Descripcion";
         }
 
         public async Task CargarBarrios(int intIdProvincia, int intIdCanton, int intIdDistrito)
         {
-            try
-            {
-                IList<LlaveDescripcion> dsDataSet = Array.Empty<LlaveDescripcion>();
-                // dsDataSet = await ClienteFEWCF.ObtenerListadoBarrios(intIdProvincia, intIdCanton, intIdDistrito);
-                cboBarrio.DataSource = dsDataSet;
-                cboBarrio.ValueMember = "Id";
-                cboBarrio.DisplayMember = "Descripcion";
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error al consumir el servicio web de factura electrónica: " + ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Close();
-            }
+            IList<LlaveDescripcion> dsDataSet = Array.Empty<LlaveDescripcion>();
+            dsDataSet = await Administrador.ObtenerListadoBarrios(intIdProvincia, intIdCanton, intIdDistrito, strToken);
+            cboBarrio.DataSource = dsDataSet;
+            cboBarrio.ValueMember = "Id";
+            cboBarrio.DisplayMember = "Descripcion";
         }
 
         private async void CargarSucursalPorEmpresa()
         {
             if (txtIdEmpresa.Text != "" && txtIdSucursal.Text != "")
             {
-                // sucursal = await ClienteFEWCF.ObtenerSucursalPorEmpresa(int.Parse(txtIdEmpresa.Text), int.Parse(txtIdSucursal.Text));
+                sucursal = await Administrador.ObtenerSucursalPorEmpresa(int.Parse(txtIdEmpresa.Text), int.Parse(txtIdSucursal.Text), strToken);
                 if (sucursal == null)
                 {
                     bolSucursalNueva = true;
@@ -249,7 +212,7 @@ namespace LeandroSoftware.Activator
         {
             if (txtIdEmpresa.Text != "" && txtIdSucursal.Text != "" && txtIdTerminal.Text != "")
             {
-                // terminal = await ClienteFEWCF.ObtenerTerminalPorSucursal(int.Parse(txtIdEmpresa.Text), int.Parse(txtIdSucursal.Text), int.Parse(txtIdTerminal.Text));
+                terminal = await Administrador.ObtenerTerminalPorSucursal(int.Parse(txtIdEmpresa.Text), int.Parse(txtIdSucursal.Text), int.Parse(txtIdTerminal.Text), strToken);
                 if (terminal == null)
                 {
                     bolTerminalNueva = true;
@@ -276,6 +239,7 @@ namespace LeandroSoftware.Activator
         {
             try
             {
+                strToken = FrmMenu.strToken;
                 IniciaMaestroDetalle();
                 EstablecerPropiedadesDataGridView();
                 await CargarListaParametros();
@@ -283,71 +247,71 @@ namespace LeandroSoftware.Activator
                 dgvReportePorEmpresa.DataSource = dtReportePorEmpresa;
                 if (bolEditing)
                 {
-                    try
+                    empresa = await Administrador.ObtenerEmpresa(intIdEmpresa, strToken);
+                    if (empresa != null)
                     {
-                        // empresa = await ClienteFEWCF.ObtenerEmpresa(intIdEmpresa);
-                        if (empresa != null)
+                        txtIdEmpresa.Text = empresa.IdEmpresa.ToString();
+                        txtNombreEmpresa.Text = empresa.NombreEmpresa;
+                        txtNombreComercial.Text = empresa.NombreComercial;
+                        cboTipoIdentificacion.SelectedValue = empresa.IdTipoIdentificacion;
+                        txtIdentificacion.Text = empresa.Identificacion;
+                        txtCodigoActividad.Text = empresa.CodigoActividad;
+                        await CargarCantones(empresa.IdProvincia);
+                        await CargarDistritos(empresa.IdProvincia, empresa.IdCanton);
+                        await CargarBarrios(empresa.IdProvincia, empresa.IdCanton, empresa.IdDistrito);
+                        cboProvincia.SelectedValue = empresa.IdProvincia;
+                        cboCanton.SelectedValue = empresa.IdCanton;
+                        cboDistrito.SelectedValue = empresa.IdDistrito;
+                        cboBarrio.SelectedValue = empresa.IdBarrio;
+                        txtDireccion.Text = empresa.Direccion;
+                        txtTelefono.Text = empresa.Telefono;
+                        txtCorreoNotificacion.Text = empresa.CorreoNotificacion;
+                        txtNombreCertificado.Text = empresa.NombreCertificado;
+                        txtPinCertificado.Text = empresa.PinCertificado;
+                        txtUsuarioATV.Text = empresa.UsuarioHacienda;
+                        txtClaveATV.Text = empresa.ClaveHacienda;
+                        txtPorcentajeInstalacion.Text = empresa.PorcentajeInstalacion.ToString();
+                        txtLineasFactura.Text = empresa.LineasPorFactura.ToString();
+                        txtCodigoServInst.Text = empresa.CodigoServicioInst.ToString();
+                        if (empresa.FechaVence != null) txtFecha.Text = DateTime.Parse(empresa.FechaVence.ToString()).ToString("dd-MM-yyyy");
+                        cboTipoContrato.SelectedValue = empresa.TipoContrato;
+                        txtCantidadDocumentos.Text = empresa.CantidadDisponible.ToString();
+                        chkContabiliza.Checked = empresa.Contabiliza;
+                        chkIncluyeInsumosEnFactura.Checked = empresa.IncluyeInsumosEnFactura;
+                        chkAutoCompleta.Checked = empresa.AutoCompletaProducto;
+                        chkModificaDesc.Checked = empresa.ModificaDescProducto;
+                        chkCierrePorTurnos.Checked = empresa.CierrePorTurnos;
+                        chkDesgloseInst.Checked = empresa.DesglosaServicioInst;
+                        chkFacturaElectronica.Checked = empresa.PermiteFacturar;
+                        chkRegimenSimplificado.Checked = empresa.RegimenSimplificado;
+                        if (empresa.Logotipo != null)
                         {
-                            txtIdEmpresa.Text = empresa.IdEmpresa.ToString();
-                            txtNombreEmpresa.Text = empresa.NombreEmpresa;
-                            txtNombreComercial.Text = empresa.NombreComercial;
-                            cboTipoIdentificacion.SelectedValue = empresa.IdTipoIdentificacion;
-                            txtIdentificacion.Text = empresa.Identificacion;
-                            txtCodigoActividad.Text = empresa.CodigoActividad;
-                            await CargarCantones(empresa.IdProvincia);
-                            await CargarDistritos(empresa.IdProvincia, empresa.IdCanton);
-                            await CargarBarrios(empresa.IdProvincia, empresa.IdCanton, empresa.IdDistrito);
-                            cboProvincia.SelectedValue = empresa.IdProvincia;
-                            cboCanton.SelectedValue = empresa.IdCanton;
-                            cboDistrito.SelectedValue = empresa.IdDistrito;
-                            cboBarrio.SelectedValue = empresa.IdBarrio;
-                            txtDireccion.Text = empresa.Direccion;
-                            txtTelefono.Text = empresa.Telefono;
-                            txtCorreoNotificacion.Text = empresa.CorreoNotificacion;
-                            txtNombreCertificado.Text = empresa.NombreCertificado;
-                            txtPinCertificado.Text = empresa.PinCertificado;
-                            txtUsuarioATV.Text = empresa.UsuarioHacienda;
-                            txtClaveATV.Text = empresa.ClaveHacienda;
-                            txtPorcentajeInstalacion.Text = empresa.PorcentajeInstalacion.ToString();
-                            txtLineasFactura.Text = empresa.LineasPorFactura.ToString();
-                            txtCodigoServInst.Text = empresa.CodigoServicioInst.ToString();
-                            if (empresa.FechaVence != null) txtFecha.Text = DateTime.Parse(empresa.FechaVence.ToString()).ToString("dd-MM-yyyy");
-                            cboTipoContrato.SelectedValue = empresa.TipoContrato;
-                            txtCantidadDocumentos.Text = empresa.CantidadDisponible.ToString();
-                            chkContabiliza.Checked = empresa.Contabiliza;
-                            chkIncluyeInsumosEnFactura.Checked = empresa.IncluyeInsumosEnFactura;
-                            chkAutoCompleta.Checked = empresa.AutoCompletaProducto;
-                            chkModificaDesc.Checked = empresa.ModificaDescProducto;
-                            chkCierrePorTurnos.Checked = empresa.CierrePorTurnos;
-                            chkDesgloseInst.Checked = empresa.DesglosaServicioInst;
-                            chkFacturaElectronica.Checked = empresa.PermiteFacturar;
-                            chkRegimenSimplificado.Checked = empresa.RegimenSimplificado;
-                            if (empresa.Logotipo != null)
+                            try
                             {
-                                try
-                                {
-                                    using (MemoryStream ms = new MemoryStream(empresa.Logotipo))
-                                        picLogo.Image = Image.FromStream(ms);
-                                }
-                                catch (Exception)
-                                {
-                                    picLogo.Image = null;
-                                }
+                                using (MemoryStream ms = new MemoryStream(empresa.Logotipo))
+                                    picLogo.Image = Image.FromStream(ms);
                             }
-                            else
+                            catch (Exception)
                             {
                                 picLogo.Image = null;
                             }
                         }
                         else
                         {
-                            MessageBox.Show("No se logró obtener información de la empresa seleccionada.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            Close();
+                            picLogo.Image = null;
+                        }
+                        foreach (var reporte in empresa.ReportePorEmpresa)
+                        {
+                            DataRow objRowEquipo = dtReportePorEmpresa.NewRow();
+                            objRowEquipo["Id"] = reporte.IdReporte;
+                            objRowEquipo["NombreReporte"] = reporte.CatalogoReporte.NombreReporte;
+                            dtReportePorEmpresa.Rows.Add(objRowEquipo);
+                            dgvReportePorEmpresa.Refresh();
                         }
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        MessageBox.Show("Error al consumir el servicio web de factura electrónica: " + ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show("No se logró obtener información de la empresa seleccionada.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         Close();
                     }
                 }
@@ -431,17 +395,14 @@ namespace LeandroSoftware.Activator
                     reporte.IdReporte = int.Parse(row["Id"].ToString());
                     empresa.ReportePorEmpresa.Add(reporte);
                 }
-                /*if (txtIdEmpresa.Text == "")
+                if (txtIdEmpresa.Text == "")
                 {
-                    string strRespuesta = await ClienteFEWCF.AgregarEmpresa(empresa);
-                    strRespuesta = new JavaScriptSerializer().Deserialize<string>(strRespuesta);
-                    txtIdEmpresa.Text = strRespuesta;
-                    await ClienteFEWCF.AgregarUsuarioPorEmpresa(1, int.Parse(txtIdEmpresa.Text));
+                    txtIdEmpresa.Text = await Administrador.AgregarEmpresa(empresa, strToken);
                 }
                 else
                 {
-                    await ClienteFEWCF.ActualizarEmpresaConDetalle(empresa);
-                }*/
+                    await Administrador.ActualizarEmpresa(empresa, strToken);
+                }
                 if (bolLogoModificado)
                 {
                     if (picLogo.Image != null)
@@ -452,42 +413,42 @@ namespace LeandroSoftware.Activator
                             picLogo.Image.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
                             bytLogotipo = stream.ToArray();
                         }
-                        // await ClienteFEWCF.ActualizarLogoEmpresa(int.Parse(txtIdEmpresa.Text), Convert.ToBase64String(bytLogotipo));
+                        await Administrador.ActualizarLogoEmpresa(int.Parse(txtIdEmpresa.Text), Convert.ToBase64String(bytLogotipo), strToken);
                     }
-                    /*else
+                    else
                     {
-                        await ClienteFEWCF.RemoverLogoEmpresa(int.Parse(txtIdEmpresa.Text));
-                    }*/
+                        await Administrador.RemoverLogoEmpresa(int.Parse(txtIdEmpresa.Text), strToken);
+                    }
                 }
                 if (bolCertificadoModificado && txtNombreCertificado.Text != "")
                 {
                     byte[] bytCertificado = File.ReadAllBytes(strRutaCertificado);
-                    // await ClienteFEWCF.ActualizarCertificadoEmpresa(int.Parse(txtIdEmpresa.Text), Convert.ToBase64String(bytCertificado));
+                    await Administrador.ActualizarCertificadoEmpresa(int.Parse(txtIdEmpresa.Text), Convert.ToBase64String(bytCertificado), strToken);
                 }
                 if (sucursal != null)
                 {
                     sucursal.NombreSucursal = txtNombreSucursal.Text;
                     sucursal.Direccion = txtDireccionSucursal.Text;
                     sucursal.Telefono = txtTelefonoSucursal.Text;
-                    /*if (bolSucursalNueva)
-                        await ClienteFEWCF.AgregarSucursalPorEmpresa(sucursal);
+                    if (bolSucursalNueva)
+                        await Administrador.AgregarSucursalPorEmpresa(sucursal, strToken);
                     else
-                        await ClienteFEWCF.ActualizarSucursalPorEmpresa(sucursal);*/
+                        await Administrador.ActualizarSucursalPorEmpresa(sucursal, strToken);
                     if (terminal != null)
                     {
                         terminal.ValorRegistro = txtValorRegistro.Text;
                         terminal.IdTipoDispositivo = chkDispositivoMovil.Checked ? StaticTipoDispisitivo.AppMovil : StaticTipoDispisitivo.AppEscritorio;
-                        /*if (bolTerminalNueva)
-                            await ClienteFEWCF.AgregarTerminalPorSucursal(terminal);
+                        if (bolTerminalNueva)
+                            await Administrador.AgregarTerminalPorSucursal(terminal, strToken);
                         else
-                            await ClienteFEWCF.ActualizarTerminalPorSucursal(terminal);*/
+                            await Administrador.ActualizarTerminalPorSucursal(terminal, strToken);
                     }
                 }
-                Close();
+                MessageBox.Show("Información registrada satisfactoriamente. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error al actualizar el registro" + ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Error al actualizar el registro" + ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

@@ -1,4 +1,4 @@
-﻿using LeandroSoftware.Core.CommonTypes;
+﻿using LeandroSoftware.Core.TiposComunes;
 using System.ServiceModel;
 using System.ServiceModel.Web;
 

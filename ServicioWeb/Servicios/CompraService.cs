@@ -3,7 +3,7 @@ using System.Linq;
 using System.Data;
 using System.Data.Entity.Infrastructure;
 using System.Collections.Generic;
-using LeandroSoftware.Core.CommonTypes;
+using LeandroSoftware.Core.TiposComunes;
 using LeandroSoftware.Core.Dominio.Entidades;
 using LeandroSoftware.ServicioWeb.Contexto;
 using log4net;
@@ -13,26 +13,26 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 {
     public interface ICompraService
     {
-        Proveedor AgregarProveedor(Proveedor cuenta);
+        void AgregarProveedor(Proveedor cuenta);
         void ActualizarProveedor(Proveedor cuenta);
         void EliminarProveedor(int intIdCuenta);
         Proveedor ObtenerProveedor(int intIdCuenta);
         int ObtenerTotalListaProveedores(int intIdEmpresa, string strNombre = "");
         IEnumerable<LlaveDescripcion> ObtenerListadoProveedores(int intIdEmpresa, int numPagina, int cantRec, string strNombre = "");
-        Compra AgregarCompra(Compra compra);
+        void AgregarCompra(Compra compra);
         void ActualizarCompra(Compra compra);
         void AnularCompra(int intIdCompra, int intIdUsuario);
         Compra ObtenerCompra(int intIdCompra);
         int ObtenerTotalListaCompras(int intIdEmpresa, int intIdCompra = 0, string strNombre = "");
         IEnumerable<Compra> ObtenerListadoCompras(int intIdEmpresa, int numPagina, int cantRec, int intIdCompra = 0, string strNombre = "");
-        OrdenCompra AgregarOrdenCompra(OrdenCompra ordenCompra);
+        void AgregarOrdenCompra(OrdenCompra ordenCompra);
         void ActualizarOrdenCompra(OrdenCompra ordenCompra);
         void AnularOrdenCompra(int intIdOrdenCompra, int intIdUsuario);
         OrdenCompra ObtenerOrdenCompra(int intIdOrdenCompra);
         int ObtenerTotalListaOrdenesCompra(int intIdEmpresa, bool bolIncluyeTodo, int intIdOrdenCompra = 0, string strNombre = "");
         IEnumerable<OrdenCompra> ObtenerListadoOrdenesCompra(int intIdEmpresa, bool bolIncluyeTodo, int numPagina, int cantRec, int intIdOrdenCompra = 0, string strNombre = "");
         IEnumerable<Compra> ObtenerListadoComprasPorProveedor(int intIdProveedor);
-        DevolucionProveedor AgregarDevolucionProveedor(DevolucionProveedor devolucion);
+        void AgregarDevolucionProveedor(DevolucionProveedor devolucion);
         void AnularDevolucionProveedor(int intIdDevolucion, int intIdUsuario);
         DevolucionProveedor ObtenerDevolucionProveedor(int intIdDevolucion);
         int ObtenerTotalListaDevolucionesPorProveedor(int intIdEmpresa, int intIdDevolucion = 0, string strNombre = "");
@@ -57,7 +57,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public Proveedor AgregarProveedor(Proveedor proveedor)
+        public void AgregarProveedor(Proveedor proveedor)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -81,7 +81,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     throw new Exception("Se produjo un error agregando la información del proveedor. Por favor consulte con su proveedor.");
                 }
             }
-            return proveedor;
         }
 
         public void ActualizarProveedor(Proveedor proveedor)
@@ -207,7 +206,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public Compra AgregarCompra(Compra compra)
+        public void AgregarCompra(Compra compra)
         {
             decimal decTotalImpuesto = 0;
             decimal decSubTotalCompra = 0;
@@ -268,7 +267,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         dbContext.CuentaPorPagarRepository.Add(cuentaPorPagar);
                     }
                     decTotalImpuesto = compra.Impuesto;
-                    decSubTotalCompra = compra.Excento + compra.Grabado + compra.Descuento;
+                    decSubTotalCompra = compra.Excento + compra.Gravado + compra.Descuento;
                     foreach (var detalleCompra in compra.DetalleCompra)
                     {
                         Producto producto = dbContext.ProductoRepository.Find(detalleCompra.IdProducto);
@@ -499,7 +498,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     throw new Exception("Se produjo un error agregando la información de la compra. Por favor consulte con su proveedor.");
                 }
             }
-            return compra;
         }
 
         public void ActualizarCompra(Compra compra)
@@ -664,7 +662,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public OrdenCompra AgregarOrdenCompra(OrdenCompra ordenCompra)
+        public void AgregarOrdenCompra(OrdenCompra ordenCompra)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -682,7 +680,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     throw new Exception("Se produjo un error agregando la información de la orden de compra. Por favor consulte con su proveedor.");
                 }
             }
-            return ordenCompra;
         }
 
         public void ActualizarOrdenCompra(OrdenCompra ordenCompra)
@@ -824,7 +821,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public DevolucionProveedor AgregarDevolucionProveedor(DevolucionProveedor devolucion)
+        public void AgregarDevolucionProveedor(DevolucionProveedor devolucion)
         {
             decimal decTotalImpuesto = 0;
             decimal decTotalInventario = 0;
@@ -1075,7 +1072,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     throw new Exception("Se produjo un error agregando la información de la devolución. Por favor consulte con su proveedor.");
                 }
             }
-            return devolucion;
         }
 
         public void AnularDevolucionProveedor(int intIdDevolucion, int intIdUsuario)

@@ -1,5 +1,5 @@
 Imports LeandroSoftware.Core.Dominio.Entidades
-Imports LeandroSoftware.Core.ClienteWCF
+Imports LeandroSoftware.ClienteWCF
 
 Public Class FrmLinea
 #Region "Variables"
@@ -25,7 +25,7 @@ Public Class FrmLinea
         Try
             cboTipoProducto.ValueMember = "Id"
             cboTipoProducto.DisplayMember = "Descripcion"
-            cboTipoProducto.DataSource = Await ClienteFEWCF.ObtenerListadoTipoProducto()
+            cboTipoProducto.DataSource = Await Puntoventa.ObtenerListadoTipoProducto(FrmPrincipal.usuarioGlobal.Token)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
@@ -35,27 +35,26 @@ Public Class FrmLinea
 
 #Region "Eventos Controles"
     Private Async Sub FrmLinea_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        CargarTipoLinea()
-        If intIdLinea > 0 Then
-            Try
-                datos = Await ClienteFEWCF.ObtenerLinea(intIdLinea)
-            Catch ex As Exception
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Close()
-                Exit Sub
-            End Try
-            If datos Is Nothing Then
-                MessageBox.Show("La Línea seleccionada no existe", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-                Close()
-                Exit Sub
+        Try
+            CargarTipoLinea()
+            If intIdLinea > 0 Then
+                datos = Await Puntoventa.ObtenerLinea(intIdLinea, FrmPrincipal.usuarioGlobal.Token)
+                If datos Is Nothing Then
+                    MessageBox.Show("La Línea seleccionada no existe", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                    Close()
+                    Exit Sub
+                End If
+                txtIdLinea.Text = datos.IdLinea
+                cboTipoProducto.SelectedValue = datos.IdTipoProducto
+                txtDescripcion.Text = datos.Descripcion
+            Else
+                datos = New Linea
             End If
-            txtIdLinea.Text = datos.IdLinea
-            cboTipoProducto.SelectedValue = datos.IdTipoProducto
-            txtDescripcion.Text = datos.Descripcion
-        Else
-            datos = New Linea
-        End If
-        bolInit = False
+            bolInit = False
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Close()
+        End Try
     End Sub
 
     Private Sub btnCancelar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnCancelar.Click
@@ -75,10 +74,9 @@ Public Class FrmLinea
         datos.Descripcion = txtDescripcion.Text
         Try
             If datos.IdLinea = 0 Then
-                Dim strIdLinea = Await ClienteFEWCF.AgregarLinea(datos)
-                txtIdLinea.Text = strIdLinea
+                Await Puntoventa.AgregarLinea(datos, FrmPrincipal.usuarioGlobal.Token)
             Else
-                Await ClienteFEWCF.ActualizarLinea(datos)
+                Await Puntoventa.ActualizarLinea(datos, FrmPrincipal.usuarioGlobal.Token)
             End If
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)

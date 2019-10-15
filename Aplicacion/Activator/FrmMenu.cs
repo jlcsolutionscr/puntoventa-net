@@ -1,5 +1,4 @@
-﻿using LeandroSoftware.Core.Dominio.Entidades;
-using System;
+﻿using System;
 using System.Windows.Forms;
 
 namespace LeandroSoftware.Activator
@@ -44,6 +43,15 @@ namespace LeandroSoftware.Activator
         private void tsSalir_Click(object sender, EventArgs e)
         {
             Application.Exit();
+        }
+
+        private void ConsultarToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FrmDocumentosEnProceso formDocumentosEnProceso = new FrmDocumentosEnProceso
+            {
+                MdiParent = this
+            };
+            formDocumentosEnProceso.Show();
         }
     }
 }

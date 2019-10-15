@@ -1,6 +1,6 @@
 ﻿using LeandroSoftware.ServicioWeb.Servicios;
 using LeandroSoftware.Core.Servicios;
-using LeandroSoftware.Core.CommonTypes;
+using LeandroSoftware.Core.TiposComunes;
 using log4net;
 using System;
 using Newtonsoft.Json.Linq;
@@ -22,12 +22,12 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
 {
     public class AdministracionWCF : IAdministracionWCF, IDisposable
     {
-        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         IUnityContainer unityContainer;
         private static ICorreoService servicioEnvioCorreo;
         private IFacturacionService servicioFacturacion;
         private IMantenimientoService servicioMantenimiento;
         private static System.Collections.Specialized.NameValueCollection appSettings = WebConfigurationManager.AppSettings;
+        private static JavaScriptSerializer serializer = new CustomJavascriptSerializer();
         private readonly DatosConfiguracion configuracion = new DatosConfiguracion
         (
             appSettings["strConsultaIEURL"].ToString(),
@@ -38,6 +38,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             appSettings["strComprobantesCallbackURL"].ToString(),
             appSettings["strCorreoNotificacionErrores"].ToString()
         );
+        private static string strApplicationKey = appSettings["ApplicationKey"].ToString();
 
         public AdministracionWCF()
         {
@@ -51,41 +52,13 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             servicioEnvioCorreo = unityContainer.Resolve<ICorreoService>();
             servicioFacturacion = unityContainer.Resolve<IFacturacionService>();
             servicioMantenimiento = unityContainer.Resolve<IMantenimientoService>();
-            try
-            {
-                string strPath = HttpContext.Current.Server.MapPath("~");
-                string[] directoryEntries = Directory.GetFileSystemEntries(strPath, "errorlog.txt??-??-????");
-
-                foreach (string str in directoryEntries)
-                {
-                    JArray jarrayObj = new JArray();
-                    byte[] bytes  = File.ReadAllBytes(str);
-                    if (bytes.Length > 0)
-                    {
-                        JObject jobDatosAdjuntos1 = new JObject
-                        {
-                            ["nombre"] = str,
-                            ["contenido"] = Convert.ToBase64String(bytes)
-                        };
-                        jarrayObj.Add(jobDatosAdjuntos1);
-                        servicioEnvioCorreo.SendEmail(new string[] { configuracion.CorreoNotificacionErrores }, new string[] { }, "Archivo log con errores de procesamiento", "Adjunto archivo con errores de procesamiento anteriores a la fecha actual.", false, jarrayObj);
-                    }
-                    File.Delete(str);
-                }
-            }
-            catch (Exception ex)
-            {
-                log.Error("Error al consultar el tipo de cambio del dolar: ", ex);
-                throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
-            }
         }
 
         public string ValidarCredenciales(string strUsuario, string strClave)
         {
             try
             {
-                JavaScriptSerializer serializer = new CustomJavascriptSerializer();
-                Usuario usuario = servicioMantenimiento.ValidarCredenciales(strUsuario, strClave);
+                Usuario usuario = servicioMantenimiento.ValidarCredenciales(strUsuario, strClave, strApplicationKey);
                 string strRespuesta = "";
                 if (usuario != null)
                     strRespuesta = serializer.Serialize(usuario);
@@ -101,26 +74,11 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
         {
             try
             {
-                IncomingWebRequestContext request = WebOperationContext.Current.IncomingRequest;
-                WebHeaderCollection headers = request.Headers;
-                string strToken = headers["Authorization"];
-                bool bolTokenValido = true;
-                if (strToken != "") {
-                    strToken = strToken.Substring(6);
-                    bolTokenValido = servicioMantenimiento.ValidarRegistroAutenticacion(strToken, StaticRolePorUsuario.ADMINISTRADOR);
-                }
-                if (bolTokenValido)
-                {
-                    JavaScriptSerializer serializer = new CustomJavascriptSerializer();
-                    IList<LlaveDescripcion> listadoEmpresas = (List<LlaveDescripcion>)servicioMantenimiento.ObtenerListadoEmpresasAdministrador();
-                    string strRespuesta = "";
-                    if (listadoEmpresas.Count > 0)
-                        strRespuesta = serializer.Serialize(listadoEmpresas);
-                    return strRespuesta;
-                } else
-                {
-                    return "";
-                }
+                IList<LlaveDescripcion> listadoEmpresas = (List<LlaveDescripcion>)servicioMantenimiento.ObtenerListadoEmpresasAdministrador();
+                string strRespuesta = "";
+                if (listadoEmpresas.Count > 0)
+                    strRespuesta = serializer.Serialize(listadoEmpresas);
+                return strRespuesta;
             }
             catch (Exception ex)
             {
@@ -132,7 +90,6 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
         {
             try
             {
-                JavaScriptSerializer serializer = new CustomJavascriptSerializer();
                 Empresa empresa = servicioMantenimiento.ObtenerEmpresa(intIdEmpresa);
                 string strRespuesta = "";
                 if (empresa != null)
@@ -145,21 +102,285 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             }
         }
 
-        public void ActualizarEmpresa(string strEmpresa)
+        public string ObtenerSucursalPorEmpresa(int intIdEmpresa, int intIdSucursal)
         {
             try
             {
-                JavaScriptSerializer serializer = new CustomJavascriptSerializer();
-                Empresa empresa = serializer.Deserialize<Empresa>(strEmpresa);
-                servicioMantenimiento.ActualizarEmpresa(empresa);
+                SucursalPorEmpresa sucursal = servicioMantenimiento.ObtenerSucursalPorEmpresa(intIdEmpresa, intIdSucursal);
+                string strRespuesta = "";
+                if (sucursal != null)
+                    strRespuesta = serializer.Serialize(sucursal);
+                return strRespuesta;
             }
             catch (Exception ex)
             {
                 throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
             }
-}
+        }
 
-        public void ProcesarDocumentosPendientes()
+        public string ObtenerTerminalPorSucursal(int intIdEmpresa, int intIdSucursal, int intIdTerminal)
+        {
+            try
+            {
+                TerminalPorSucursal terminal = servicioMantenimiento.ObtenerTerminalPorSucursal(intIdEmpresa, intIdSucursal, intIdTerminal);
+                string strRespuesta = "";
+                if (terminal != null)
+                    strRespuesta = serializer.Serialize(terminal);
+                return strRespuesta;
+            }
+            catch (Exception ex)
+            {
+                throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
+            }
+        }
+
+        public string ObtenerListadoTipoIdentificacion()
+        {
+            try
+            {
+                IList<LlaveDescripcion> listadoEmpresas = (List<LlaveDescripcion>)servicioMantenimiento.ObtenerListadoTipoIdentificacion();
+                string strRespuesta = "";
+                if (listadoEmpresas.Count > 0)
+                    strRespuesta = serializer.Serialize(listadoEmpresas);
+                return strRespuesta;
+            }
+            catch (Exception ex)
+            {
+                throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
+            }
+        }
+
+        public string ObtenerListadoCatalogoReportes()
+        {
+            try
+            {
+                IList<LlaveDescripcion> listadoEmpresas = (List<LlaveDescripcion>)servicioMantenimiento.ObtenerListadoCatalogoReportes();
+                string strRespuesta = "";
+                if (listadoEmpresas.Count > 0)
+                    strRespuesta = serializer.Serialize(listadoEmpresas);
+                return strRespuesta;
+            }
+            catch (Exception ex)
+            {
+                throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
+            }
+        }
+
+        public string ObtenerListadoProvincias()
+        {
+            try
+            {
+                IList<LlaveDescripcion> listadoEmpresas = (List<LlaveDescripcion>)servicioMantenimiento.ObtenerListadoProvincias();
+                string strRespuesta = "";
+                if (listadoEmpresas.Count > 0)
+                    strRespuesta = serializer.Serialize(listadoEmpresas);
+                return strRespuesta;
+            }
+            catch (Exception ex)
+            {
+                throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
+            }
+        }
+
+        public string ObtenerListadoCantones(int intIdProvincia)
+        {
+            try
+            {
+                IList<LlaveDescripcion> listadoEmpresas = (List<LlaveDescripcion>)servicioMantenimiento.ObtenerListadoCantones(intIdProvincia);
+                string strRespuesta = "";
+                if (listadoEmpresas.Count > 0)
+                    strRespuesta = serializer.Serialize(listadoEmpresas);
+                return strRespuesta;
+            }
+            catch (Exception ex)
+            {
+                throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
+            }
+        }
+
+        public string ObtenerListadoDistritos(int intIdProvincia, int intIdCanton)
+        {
+            try
+            {
+                IList<LlaveDescripcion> listadoEmpresas = (List<LlaveDescripcion>)servicioMantenimiento.ObtenerListadoDistritos(intIdProvincia, intIdCanton);
+                string strRespuesta = "";
+                if (listadoEmpresas.Count > 0)
+                    strRespuesta = serializer.Serialize(listadoEmpresas);
+                return strRespuesta;
+            }
+            catch (Exception ex)
+            {
+                throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
+            }
+        }
+
+        public string ObtenerListadoBarrios(int intIdProvincia, int intIdCanton, int intIdDistrito)
+        {
+            try
+            {
+                IList<LlaveDescripcion> listadoEmpresas = (List<LlaveDescripcion>)servicioMantenimiento.ObtenerListadoBarrios(intIdProvincia, intIdCanton, intIdDistrito);
+                string strRespuesta = "";
+                if (listadoEmpresas.Count > 0)
+                    strRespuesta = serializer.Serialize(listadoEmpresas);
+                return strRespuesta;
+            }
+            catch (Exception ex)
+            {
+                throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
+            }
+        }
+
+        public string AgregarEmpresa(string strDatos)
+        {
+            try
+            {
+                JObject parametrosJO = JObject.Parse(strDatos);
+                string strEntidad = parametrosJO.Property("Entidad").Value.ToString();
+                Empresa empresa = serializer.Deserialize<Empresa>(strEntidad);
+                string strIdEmpresa = servicioMantenimiento.AgregarEmpresa(empresa);
+                return strIdEmpresa;
+            }
+            catch (Exception ex)
+            {
+                throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
+            }
+        }
+
+        public void ActualizarEmpresa(string strDatos)
+        {
+            try
+            {
+                JObject parametrosJO = JObject.Parse(strDatos);
+                string strEntidad = parametrosJO.Property("Entidad").Value.ToString();
+                Empresa empresa = serializer.Deserialize<Empresa>(strEntidad);
+                servicioMantenimiento.ActualizarEmpresaConDetalle(empresa);
+            }
+            catch (Exception ex)
+            {
+                throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
+            }
+        }
+
+        public void ActualizarLogoEmpresa(string strDatos)
+        {
+            try
+            {
+                JObject parametrosJO = JObject.Parse(strDatos);
+                int intIdEmpresa = int.Parse(parametrosJO.Property("Id").Value.ToString());
+                string strLogotipo = parametrosJO.Property("Datos").Value.ToString();
+                servicioMantenimiento.ActualizarLogoEmpresa(intIdEmpresa, strLogotipo);
+            }
+            catch (Exception ex)
+            {
+                throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
+            }
+        }
+
+        public void RemoverLogoEmpresa(int intIdEmpresa)
+        {
+            try
+            {
+                servicioMantenimiento.ActualizarLogoEmpresa(intIdEmpresa, "");
+            }
+            catch (Exception ex)
+            {
+                throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
+            }
+        }
+
+        public void ActualizarCertificadoEmpresa(string strDatos)
+        {
+            try
+            {
+                JObject parametrosJO = JObject.Parse(strDatos);
+                int intIdEmpresa = int.Parse(parametrosJO.Property("Id").Value.ToString());
+                string strCertificado = parametrosJO.Property("Datos").Value.ToString();
+                servicioMantenimiento.ActualizarCertificadoEmpresa(intIdEmpresa, strCertificado);
+            }
+            catch (Exception ex)
+            {
+                throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
+            }
+        }
+
+        public void AgregarSucursalPorEmpresa(string strDatos)
+        {
+            try
+            {
+                JObject parametrosJO = JObject.Parse(strDatos);
+                string strEntidad = parametrosJO.Property("Entidad").Value.ToString();
+                SucursalPorEmpresa sucursal = serializer.Deserialize<SucursalPorEmpresa>(strEntidad);
+                servicioMantenimiento.AgregarSucursalPorEmpresa(sucursal);
+            }
+            catch (Exception ex)
+            {
+                throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
+            }
+            
+        }
+
+        public void ActualizarSucursalPorEmpresa(string strDatos)
+        {
+            try
+            {
+                JObject parametrosJO = JObject.Parse(strDatos);
+                string strEntidad = parametrosJO.Property("Entidad").Value.ToString();
+                SucursalPorEmpresa sucursal = serializer.Deserialize<SucursalPorEmpresa>(strEntidad);
+                servicioMantenimiento.ActualizarSucursalPorEmpresa(sucursal);
+            }
+            catch (Exception ex)
+            {
+                throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
+            }
+        }
+
+        public void AgregarTerminalPorSucursal(string strDatos)
+        {
+            try
+            {
+                JObject parametrosJO = JObject.Parse(strDatos);
+                string strEntidad = parametrosJO.Property("Entidad").Value.ToString();
+                TerminalPorSucursal terminal = serializer.Deserialize<TerminalPorSucursal>(strEntidad);
+                servicioMantenimiento.AgregarTerminalPorSucursal(terminal);
+            }
+            catch (Exception ex)
+            {
+                throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
+            }
+        }
+
+        public void ActualizarTerminalPorSucursal(string strDatos)
+        {
+            try
+            {
+                JObject parametrosJO = JObject.Parse(strDatos);
+                string strEntidad = parametrosJO.Property("Entidad").Value.ToString();
+                TerminalPorSucursal terminal = serializer.Deserialize<TerminalPorSucursal>(strEntidad);
+                servicioMantenimiento.ActualizarTerminalPorSucursal(terminal);
+            }
+            catch (Exception ex)
+            {
+                throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
+            }
+        }
+
+        public string ObtenerListadoDocumentosElectronicosPendientes()
+        {
+            try
+            {
+                IList<DocumentoDetalle> listadoEmpresas = (List<DocumentoDetalle>)servicioFacturacion.ObtenerListadoDocumentosElectronicosPendientes();
+                string strRespuesta = "";
+                if (listadoEmpresas.Count > 0)
+                    strRespuesta = serializer.Serialize(listadoEmpresas);
+                return strRespuesta;
+            }
+            catch (Exception ex)
+            {
+                throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
+            }
+        }
+
+        public void ProcesarDocumentosElectronicosPendientes()
         {
             servicioFacturacion.ProcesarDocumentosElectronicosPendientes(servicioEnvioCorreo, configuracion);
         }
@@ -209,14 +430,13 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             }
         }
 
-        public Stream DescargarActualizacion()
+        public void ActualizarVersionApp(string strDatos)
         {
             try
             {
-                string strVersion = servicioMantenimiento.ObtenerUltimaVersionApp().Replace('.', '-');
-                string downloadFilePath = Path.Combine(HttpContext.Current.Server.MapPath("~"), "appupdates/" + strVersion + "/puntoventaJLC.msi");
-                WebOperationContext.Current.OutgoingResponse.ContentType = "application/octet-stream";
-                return File.OpenRead(downloadFilePath);
+                JObject parametrosJO = JObject.Parse(strDatos);
+                string strVersion = parametrosJO.Property("Version").Value.ToString();
+                servicioMantenimiento.ActualizarVersionApp(strVersion);
             }
             catch (Exception ex)
             {

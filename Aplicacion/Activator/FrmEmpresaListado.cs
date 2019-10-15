@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using LeandroSoftware.Core.CommonTypes;
+using LeandroSoftware.ClienteWCF;
+using LeandroSoftware.Core.TiposComunes;
 
 namespace LeandroSoftware.Activator
 {
@@ -10,6 +11,7 @@ namespace LeandroSoftware.Activator
     {
         private FrmEmpresa empresaForm;
         private List<LlaveDescripcion> dsDataSet = new List<LlaveDescripcion>();
+        private string strToken;
 
         public FrmEmpresaListado()
         {
@@ -20,11 +22,10 @@ namespace LeandroSoftware.Activator
         {
             try
             {
-                string strToken = FrmMenu.strToken;
-                dsDataSet = await ClienteWCF.ObtenerListadoEmpresa(strToken);
+                dsDataSet = await Administrador.ObtenerListadoEmpresa(strToken);
                 cboEmpresa.DataSource = dsDataSet;
                 btnAgregar.Enabled = true;
-                btnEditar.Enabled = true;
+                if (dsDataSet.Count > 0) btnEditar.Enabled = true;
             }
             catch (Exception ex)
             {
@@ -35,6 +36,7 @@ namespace LeandroSoftware.Activator
 
         private async void FrmEmpresaListado_Load(object sender, EventArgs e)
         {
+            strToken = FrmMenu.strToken;
             btnAgregar.Enabled = false;
             btnEditar.Enabled = false;
             cboEmpresa.ValueMember = "Id";

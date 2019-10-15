@@ -53,13 +53,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CommonTypes.cs" />
+    <Compile Include="TiposComunes.cs" />
     <Compile Include="CorreoService.cs" />
     <Compile Include="CustomJavascriptSerializer.cs" />
     <Compile Include="EstructuraPDF.cs" />
     <Compile Include="ObtenerValoresCodificados.cs" />
-    <Compile Include="ResponsetDTO.cs" />
-    <Compile Include="RequestDTO.cs" />
     <Compile Include="RespuestaHaciendaDTO.cs" />
     <Compile Include="Utilitario.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

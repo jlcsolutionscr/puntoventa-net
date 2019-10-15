@@ -1,5 +1,5 @@
 Imports LeandroSoftware.Core.Dominio.Entidades
-Imports LeandroSoftware.Core.ClienteWCF
+Imports LeandroSoftware.ClienteWCF
 
 Public Class FrmProveedor
 #Region "Variables"
@@ -23,36 +23,33 @@ Public Class FrmProveedor
 
 #Region "Eventos Controles"
     Private Async Sub FrmProveedor_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        If intIdProveedor > 0 Then
-            Try
-                datos = Await ClienteFEWCF.ObtenerProveedor(intIdProveedor)
-            Catch ex As Exception
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-                Close()
-                Exit Sub
-            End Try
-            If datos Is Nothing Then
-                MessageBox.Show("El proveedor seleccionado no existe", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-                Close()
-                Exit Sub
+        Try
+            If intIdProveedor > 0 Then
+                datos = Await Puntoventa.ObtenerProveedor(intIdProveedor, FrmPrincipal.usuarioGlobal.Token)
+                If datos Is Nothing Then
+                    Throw New Exception("El proveedor seleccionado no existe")
+                End If
+                txtIdProveedor.Text = datos.IdProveedor
+                txtIdentificacion.Text = datos.Identificacion
+                txtNombre.Text = datos.Nombre
+                txtDireccion.Text = datos.Direccion
+                txtTelefono1.Text = datos.Telefono1
+                txtTelefono2.Text = datos.Telefono2
+                txtFax.Text = datos.Fax
+                txtCorreo.Text = datos.Correo
+                txtPlazo.Text = IIf(datos.PlazoCredito Is Nothing, "0", datos.PlazoCredito)
+                txtContacto1.Text = datos.Contacto1
+                txtTelContacto1.Text = datos.TelCont1
+                txtContacto2.Text = datos.Contacto2
+                txtTelContacto2.Text = datos.TelCont2
+            Else
+                datos = New Proveedor
+                txtPlazo.Text = "0"
             End If
-            txtIdProveedor.Text = datos.IdProveedor
-            txtIdentificacion.Text = datos.Identificacion
-            txtNombre.Text = datos.Nombre
-            txtDireccion.Text = datos.Direccion
-            txtTelefono1.Text = datos.Telefono1
-            txtTelefono2.Text = datos.Telefono2
-            txtFax.Text = datos.Fax
-            txtCorreo.Text = datos.Correo
-            txtPlazo.Text = IIf(datos.PlazoCredito Is Nothing, "0", datos.PlazoCredito)
-            txtContacto1.Text = datos.Contacto1
-            txtTelContacto1.Text = datos.TelCont1
-            txtContacto2.Text = datos.Contacto2
-            txtTelContacto2.Text = datos.TelCont2
-        Else
-            datos = New Proveedor
-            txtPlazo.Text = "0"
-        End If
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Close()
+        End Try
     End Sub
 
     Private Sub btnCancelar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnCancelar.Click
@@ -82,10 +79,9 @@ Public Class FrmProveedor
         datos.TelCont2 = txtTelContacto2.Text
         Try
             If datos.IdProveedor = 0 Then
-                Dim strIdProveedor As String = Await ClienteFEWCF.AgregarProveedor(datos)
-                txtIdProveedor.Text = strIdProveedor
+                Await Puntoventa.AgregarProveedor(datos, FrmPrincipal.usuarioGlobal.Token)
             Else
-                Await ClienteFEWCF.ActualizarProveedor(datos)
+                Await Puntoventa.ActualizarProveedor(datos, FrmPrincipal.usuarioGlobal.Token)
             End If
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)

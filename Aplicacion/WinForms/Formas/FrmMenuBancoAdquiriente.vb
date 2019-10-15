@@ -1,4 +1,4 @@
-Imports LeandroSoftware.Core.ClienteWCF
+Imports LeandroSoftware.ClienteWCF
 
 Public Class FrmMenuBancoAdquiriente
 #Region "Variables"
@@ -6,22 +6,21 @@ Public Class FrmMenuBancoAdquiriente
 
 #Region "Métodos"
     Private Async Sub CargarCombos()
-        Try
-            cboIdBancoAdquiriente.ValueMember = "IdBanco"
-            cboIdBancoAdquiriente.DisplayMember = "Descripcion"
-            cboIdBancoAdquiriente.DataSource = Await ClienteFEWCF.ObtenerListadoBancoAdquiriente(FrmPrincipal.empresaGlobal.IdEmpresa)
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-            Exit Sub
-        End Try
+        cboIdBancoAdquiriente.ValueMember = "IdBanco"
+        cboIdBancoAdquiriente.DisplayMember = "Descripcion"
+        cboIdBancoAdquiriente.DataSource = Await Puntoventa.ObtenerListadoBancoAdquiriente(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
         cboIdBancoAdquiriente.SelectedValue = 0
     End Sub
 #End Region
 
 #Region "Eventos Controles"
     Private Sub FrmRptMenu_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        CargarCombos()
+        Try
+            CargarCombos()
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Close()
+        End Try
     End Sub
 
     Private Sub btnProcesar_Click(sender As Object, e As EventArgs) Handles btnProcesar.Click

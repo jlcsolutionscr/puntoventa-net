@@ -15,7 +15,7 @@ using System.Globalization;
 using System.Xml;
 using System.Text;
 using LeandroSoftware.ServicioWeb.Contexto;
-using LeandroSoftware.Core.CommonTypes;
+using LeandroSoftware.Core.TiposComunes;
 using LeandroSoftware.Core.Dominio.Entidades;
 using LeandroSoftware.ServicioWeb.TiposDatosHacienda;
 using LeandroSoftware.Core.Utilities;
@@ -25,14 +25,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 {
     public interface IFacturacionService
     {
-        Cliente AgregarCliente(Cliente cliente);
+        void AgregarCliente(Cliente cliente);
         void ActualizarCliente(Cliente cliente);
         void EliminarCliente(int intIdCliente);
         Cliente ObtenerCliente(int intIdCliente);
         Cliente ValidaIdentificacionCliente(int intIdEmpresa, string strIdentificacion);
         int ObtenerTotalListaClientes(int intIdEmpresa, string strNombre = "", bool incluyeClienteContado = false);
         IEnumerable<LlaveDescripcion> ObtenerListadoClientes(int intIdEmpresa, int numPagina, int cantRec, string strNombre = "", bool incluyeClienteContado = false);
-        Factura AgregarFactura(Factura factura, DatosConfiguracion datos);
+        string AgregarFactura(Factura factura, DatosConfiguracion datos);
         void AnularFactura(int intIdFactura, int intIdUsuario, DatosConfiguracion datos);
         Factura ObtenerFactura(int intIdFactura);
         int ObtenerTotalListaFacturas(int intIdEmpresa, int intIdFactura = 0, string strNombre = "");
@@ -56,6 +56,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         int ObtenerTotalListaDevolucionesPorCliente(int intIdEmpresa, int intIdDevolucion = 0, string strNombre = "");
         IEnumerable<DevolucionCliente> ObtenerListadoDevolucionesPorCliente(int intIdEmpresa, int numPagina, int cantRec, int intIdDevolucion = 0, string strNombre = "");
         void GeneraMensajeReceptor(string strDatos, int intIdEmpresa, int intSucursal, int intTerminal, int intMensaje, DatosConfiguracion datos);
+
+        IList<DocumentoDetalle> ObtenerListadoDocumentosElectronicosPendientes();
         IList<DocumentoDetalle> ObtenerListadoDocumentosElectronicosEnProceso(int intIdEmpresa);
         void ProcesarDocumentosElectronicosPendientes(ICorreoService servicioEnvioCorreo, DatosConfiguracion datos);
         void EnviarDocumentoElectronicoPendiente(int intIdDocumento, DatosConfiguracion datos);
@@ -86,7 +88,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public Cliente AgregarCliente(Cliente cliente)
+        public void AgregarCliente(Cliente cliente)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -110,7 +112,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     throw new Exception("Se produjo un error agregando al cliente. Por favor consulte con su proveedor.");
                 }
             }
-            return cliente;
         }
 
         public void ActualizarCliente(Cliente cliente)
@@ -122,7 +123,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     Empresa empresa = dbContext.EmpresaRepository.Find(cliente.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
-                    cliente.Vendedor = null;
+                    cliente.ParametroImpuesto = null;
                     dbContext.NotificarModificacion(cliente);
                     dbContext.Commit();
                 }
@@ -179,7 +180,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    var cliente = dbContext.ClienteRepository.Include("Barrio.Distrito.Canton.Provincia").Where(x => x.IdCliente == intIdCliente).FirstOrDefault();
+                    var cliente = dbContext.ClienteRepository.Include("ParametroImpuesto").Include("Barrio.Distrito.Canton.Provincia").Where(x => x.IdCliente == intIdCliente).FirstOrDefault();
                     if (cliente.IdVendedor != null)
                     {
                         var vendedor = dbContext.VendedorRepository.Find(cliente.IdVendedor);
@@ -285,7 +286,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public Factura AgregarFactura(Factura factura, DatosConfiguracion datos)
+        public string AgregarFactura(Factura factura, DatosConfiguracion datos)
         {
             decimal decTotalIngresosMercancia = 0;
             decimal decTotalIngresosServicios = 0;
@@ -691,7 +692,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     newFactura.Cliente.Empresa = null;
                     newFactura.Cliente.Factura = null;
                     newFactura.Vendedor.Empresa = null;
-                    return newFactura;
+                    return newFactura.IdFactura.ToString();
                 }
                 catch (BusinessException ex)
                 {
@@ -1670,6 +1671,33 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
+        public IList<DocumentoDetalle> ObtenerListadoDocumentosElectronicosPendientes()
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                var listaDocumento = new List<DocumentoDetalle>();
+                try
+                {
+                    List<DocumentoElectronico> listado = dbContext.DocumentoElectronicoRepository.Where(x => x.EstadoEnvio == StaticEstadoDocumentoElectronico.Registrado || x.EstadoEnvio == StaticEstadoDocumentoElectronico.Enviado || x.EstadoEnvio == StaticEstadoDocumentoElectronico.Procesando).OrderBy(x => x.ClaveNumerica).ToList();
+                    foreach (var value in listado)
+                    {
+                        DocumentoDetalle item = new DocumentoDetalle(value.IdDocumento, value.ClaveNumerica, value.Consecutivo, value.Fecha, value.EstadoEnvio, value.EsMensajeReceptor, value.CorreoNotificacion);
+                        listaDocumento.Add(item);
+                    }
+                    return listaDocumento;
+                }
+                catch (BusinessException ex)
+                {
+                    throw ex;
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al obtener el listado de documentos electrónicos pendientes: ", ex);
+                    throw new Exception("Se produjo un error al obtener el listado de documentos electrónicos pendientes. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
         public IList<DocumentoDetalle> ObtenerListadoDocumentosElectronicosEnProceso(int intIdEmpresa)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
@@ -2219,7 +2247,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 {
                                     if (lineaDetalle["Impuesto"]["Exoneracion"] != null)
                                     {
-                                        if (strExoneracionLeyenda.Length == 0) strExoneracionLeyenda = "Se aplica exoneración segun oficio " + lineaDetalle["Impuesto"]["Exoneracion"]["NumeroDocumento"].InnerText + " por un porcentaje del " + lineaDetalle["Impuesto"]["Exoneracion"]["PorcentajeExoneracion"].InnerText + "% del valor grabado.";
+                                        if (strExoneracionLeyenda.Length == 0) strExoneracionLeyenda = "Se aplica exoneración segun oficio " + lineaDetalle["Impuesto"]["Exoneracion"]["NumeroDocumento"].InnerText + " por un porcentaje del " + lineaDetalle["Impuesto"]["Exoneracion"]["PorcentajeExoneracion"].InnerText + "% del valor gravado.";
                                     }
                                 }
                                 EstructuraPDFDetalleServicio detalle = new EstructuraPDFDetalleServicio
@@ -2240,7 +2268,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             }
                             if (otrosTextos.Length > 0) datos.OtrosTextos = otrosTextos;
                             XmlNode resumenFacturaNode = documentoXml.GetElementsByTagName("ResumenFactura").Item(0);
-                            datos.TotalGrabado = string.Format("{0:N5}", Convert.ToDouble(resumenFacturaNode["TotalGravado"].InnerText, CultureInfo.InvariantCulture));
+                            datos.TotalGravado = string.Format("{0:N5}", Convert.ToDouble(resumenFacturaNode["TotalGravado"].InnerText, CultureInfo.InvariantCulture));
                             datos.TotalExonerado = resumenFacturaNode["TotalExonerado"] != null && resumenFacturaNode["TotalExonerado"].ChildNodes.Count > 0 ? string.Format("{0:N5}", Convert.ToDouble(resumenFacturaNode["TotalExonerado"].InnerText, CultureInfo.InvariantCulture)) : "0.00000";
                             datos.TotalExento = string.Format("{0:N5}", Convert.ToDouble(resumenFacturaNode["TotalExento"].InnerText, CultureInfo.InvariantCulture));
                             datos.Descuento = resumenFacturaNode["TotalDescuentos"] != null && resumenFacturaNode["TotalDescuentos"].ChildNodes.Count > 0 ? string.Format("{0:N5}", Convert.ToDouble(resumenFacturaNode["TotalDescuentos"].InnerText, CultureInfo.InvariantCulture)) : "0.00000";

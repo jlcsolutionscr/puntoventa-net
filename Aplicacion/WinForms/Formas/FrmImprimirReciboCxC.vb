@@ -97,10 +97,15 @@ Public Class FrmImprimirReciboCxC
 
 #Region "Eventos Controles"
     Private Sub FrmImprimirReciboCxC_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        IniciaDetalleMovimiento()
-        EstablecerPropiedadesDataGridView()
-        grdDetalleRecibo.DataSource = dtbDetalleMovimiento
-        bolInit = False
+        Try
+            IniciaDetalleMovimiento()
+            EstablecerPropiedadesDataGridView()
+            grdDetalleRecibo.DataSource = dtbDetalleMovimiento
+            bolInit = False
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Close()
+        End Try
     End Sub
 
     Private Sub CmdImprimir_Click(sender As Object, e As EventArgs) Handles CmdImprimir.Click

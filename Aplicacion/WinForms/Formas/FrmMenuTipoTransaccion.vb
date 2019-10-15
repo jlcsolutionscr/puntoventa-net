@@ -1,4 +1,4 @@
-Imports LeandroSoftware.Core.CommonTypes
+Imports LeandroSoftware.Core.TiposComunes
 Imports System.Collections.Generic
 
 Public Class FrmMenuTipoTransaccion
@@ -9,35 +9,34 @@ Public Class FrmMenuTipoTransaccion
 
 #Region "Métodos"
     Private Sub CargarCombos()
-        Try
-            dtListaFormaPago.Clear()
-            dtListaFormaPago.Columns.Add(New DataColumn("IdFormaPago", GetType(Integer)))
-            dtListaFormaPago.Columns.Add(New DataColumn("Descripcion", GetType(String)))
+        dtListaFormaPago.Clear()
+        dtListaFormaPago.Columns.Add(New DataColumn("IdFormaPago", GetType(Integer)))
+        dtListaFormaPago.Columns.Add(New DataColumn("Descripcion", GetType(String)))
+        drListaFormaPago = dtListaFormaPago.NewRow()
+        drListaFormaPago(0) = "-1"
+        drListaFormaPago(1) = "Todos"
+        dtListaFormaPago.Rows.Add(drListaFormaPago)
+        For Each formaPago As LlaveDescripcion In clFormasPago
             drListaFormaPago = dtListaFormaPago.NewRow()
-            drListaFormaPago(0) = "-1"
-            drListaFormaPago(1) = "Todos"
+            drListaFormaPago(0) = formaPago.Id
+            drListaFormaPago(1) = formaPago.Descripcion
             dtListaFormaPago.Rows.Add(drListaFormaPago)
-            For Each formaPago As LlaveDescripcion In clFormasPago
-                drListaFormaPago = dtListaFormaPago.NewRow()
-                drListaFormaPago(0) = formaPago.Id
-                drListaFormaPago(1) = formaPago.Descripcion
-                dtListaFormaPago.Rows.Add(drListaFormaPago)
-            Next
-            cboTipoTransaccion.ValueMember = "Id"
-            cboTipoTransaccion.DisplayMember = "Descripcion"
-            cboTipoTransaccion.DataSource = dtListaFormaPago
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-            Exit Sub
-        End Try
+        Next
+        cboTipoTransaccion.ValueMember = "IdFormaPago"
+        cboTipoTransaccion.DisplayMember = "Descripcion"
+        cboTipoTransaccion.DataSource = dtListaFormaPago
         cboTipoTransaccion.SelectedValue = 0
     End Sub
 #End Region
 
 #Region "Eventos Controles"
     Private Sub FrmRptMenu_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        CargarCombos()
+        Try
+            CargarCombos()
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Close()
+        End Try
     End Sub
 
     Private Sub btnProcesar_Click(sender As Object, e As EventArgs) Handles btnProcesar.Click

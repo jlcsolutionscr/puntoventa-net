@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Data.Entity.Infrastructure;
 using System.Collections.Generic;
-using LeandroSoftware.Core.CommonTypes;
+using LeandroSoftware.Core.TiposComunes;
 using LeandroSoftware.Core.Dominio.Entidades;
 using LeandroSoftware.ServicioWeb.Contexto;
 using log4net;
@@ -12,12 +12,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 {
     public interface IEgresoService
     {
-        CuentaEgreso AgregarCuentaEgreso(CuentaEgreso cuenta);
+        void AgregarCuentaEgreso(CuentaEgreso cuenta);
         void ActualizarCuentaEgreso(CuentaEgreso cuenta);
         void EliminarCuentaEgreso(int intIdCuenta);
         CuentaEgreso ObtenerCuentaEgreso(int intIdCuenta);
         IEnumerable<LlaveDescripcion> ObtenerListadoCuentasEgreso(int intIdEmpresa, string strDescripcion = "");
-        Egreso AgregarEgreso(Egreso egreso);
+        string AgregarEgreso(Egreso egreso);
         void ActualizarEgreso(Egreso egreso);
         void AnularEgreso(int intIdEgreso, int intIdUsuario);
         Egreso ObtenerEgreso(int intIdEgreso);
@@ -43,7 +43,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public CuentaEgreso AgregarCuentaEgreso(CuentaEgreso cuenta)
+        public void AgregarCuentaEgreso(CuentaEgreso cuenta)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -67,7 +67,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     throw new Exception("Se produjo un error agregando la cuenta de egreso. Por favor consulte con su proveedor.");
                 }
             }
-            return cuenta;
         }
 
         public void ActualizarCuentaEgreso(CuentaEgreso cuenta)
@@ -171,7 +170,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public Egreso AgregarEgreso(Egreso egreso)
+        public string AgregarEgreso(Egreso egreso)
         {
             ParametroContable efectivo = null;
             ParametroContable bancoParam = null;
@@ -299,6 +298,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         dbContext.NotificarModificacion(movimientoBanco);
                     }
                     dbContext.Commit();
+                    return egreso.IdEgreso.ToString();
                 }
                 catch (BusinessException ex)
                 {
@@ -312,7 +312,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     throw new Exception("Se produjo un error agregando la información del egreso. Por favor consulte con su proveedor.");
                 }
             }
-            return egreso;
         }
 
         public void ActualizarEgreso(Egreso egreso)

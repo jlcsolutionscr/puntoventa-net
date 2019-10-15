@@ -9,17 +9,12 @@ Public Class FrmMovimientoBanco
 
 #Region "Métodos"
     Private Sub CargarCombos()
-        Try
-            cboIdCuenta.ValueMember = "IdCuenta"
-            cboIdCuenta.DisplayMember = "Descripcion"
-            'cboIdCuenta.DataSource = servicioAuxiliarBancario.ObtenerListaCuentasBanco(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
-            cboIdTipo.ValueMember = "IdTipoMov"
-            cboIdTipo.DisplayMember = "Descripcion"
-            'cboIdTipo.DataSource = servicioAuxiliarBancario.ObtenerTipoMovimientoBanco()
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Exit Sub
-        End Try
+        cboIdCuenta.ValueMember = "IdCuenta"
+        cboIdCuenta.DisplayMember = "Descripcion"
+        'cboIdCuenta.DataSource = servicioAuxiliarBancario.ObtenerListaCuentasBanco(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
+        cboIdTipo.ValueMember = "IdTipoMov"
+        cboIdTipo.DisplayMember = "Descripcion"
+        'cboIdTipo.DataSource = servicioAuxiliarBancario.ObtenerTipoMovimientoBanco()
         cboIdCuenta.SelectedValue = 0
         cboIdTipo.SelectedValue = 0
     End Sub
@@ -138,9 +133,14 @@ Public Class FrmMovimientoBanco
     End Sub
 
     Private Sub FrmMantDebCred_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
-        CargarCombos()
-        txtMonto.Text = FormatNumber(0, 2)
+        Try
+            txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
+            CargarCombos()
+            txtMonto.Text = FormatNumber(0, 2)
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Close()
+        End Try
     End Sub
 
     Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs) Handles txtMonto.KeyPress

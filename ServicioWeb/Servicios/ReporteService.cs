@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Collections.Generic;
 using LeandroSoftware.Core. Utilities;
-using LeandroSoftware.Core.CommonTypes;
+using LeandroSoftware.Core.TiposComunes;
 using LeandroSoftware.ServicioWeb.Contexto;
 using LeandroSoftware.Core.Dominio.Entidades;
 using log4net;
@@ -129,7 +129,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         var detalleVentas = dbContext.FacturaRepository.Where(s => s.IdEmpresa == intIdEmpresa && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal && s.Nulo == bolNulo)
                             .Join(dbContext.ClienteRepository, x => x.IdCliente, y => y.IdCliente, (x, y) => new { x, y })
-                            .Select(z => new { z.x.IdCliente, z.x.Nulo, z.x.IdCondicionVenta, z.x.IdFactura, z.x.Fecha, NombreCliente = z.x.Cliente.Nombre, z.x.IdDocElectronico, z.x.Impuesto, Total = (z.x.Excento + z.x.Grabado + z.x.Impuesto - z.x.Descuento) });
+                            .Select(z => new { z.x.IdCliente, z.x.Nulo, z.x.IdCondicionVenta, z.x.IdFactura, z.x.Fecha, NombreCliente = z.x.Cliente.Nombre, z.x.IdDocElectronico, z.x.Impuesto, Total = (z.x.Excento + z.x.Gravado + z.x.Impuesto - z.x.Descuento) });
                         foreach (var value in detalleVentas)
                         {
                             ReporteVentas reporteLinea = new ReporteVentas();
@@ -149,7 +149,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         {
                             var detalleVentas = dbContext.FacturaRepository.Where(s => s.IdEmpresa == intIdEmpresa && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal && s.Nulo == bolNulo)
                                 .Join(dbContext.ClienteRepository, x => x.IdCliente, y => y.IdCliente, (x, y) => new { x, y })
-                                .Select(z => new { z.x.IdCliente, z.x.Nulo, z.x.IdCondicionVenta, z.x.IdFactura, z.x.Fecha, NombreCliente = z.x.Cliente.Nombre, z.x.IdDocElectronico, z.x.Impuesto, Total = (z.x.Excento + z.x.Grabado + z.x.Impuesto - z.x.Descuento) });
+                                .Select(z => new { z.x.IdCliente, z.x.Nulo, z.x.IdCondicionVenta, z.x.IdFactura, z.x.Fecha, NombreCliente = z.x.Cliente.Nombre, z.x.IdDocElectronico, z.x.Impuesto, Total = (z.x.Excento + z.x.Gravado + z.x.Impuesto - z.x.Descuento) });
                             if (intTipoPago == StaticReporteCondicionVentaFormaPago.Credito)
                                 detalleVentas = detalleVentas.Where(x => x.IdCondicionVenta == StaticCondicionVenta.Credito);
                             else
@@ -266,7 +266,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         var detalleCompras = dbContext.CompraRepository.Where(s => s.IdEmpresa == intIdEmpresa && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal && s.Nulo == bolNulo)
                             .Join(dbContext.ProveedorRepository, x => x.IdProveedor, y => y.IdProveedor, (x, y) => new { x, y })
-                            .Select(z => new { z.x.IdProveedor, z.x.Nulo, z.x.IdCondicionVenta, z.x.IdCompra, z.x.Fecha, NombreProveedor = z.x.Proveedor.Nombre, z.x.NoDocumento, z.x.Impuesto, Total = (z.x.Excento + z.x.Grabado + z.x.Impuesto) });
+                            .Select(z => new { z.x.IdProveedor, z.x.Nulo, z.x.IdCondicionVenta, z.x.IdCompra, z.x.Fecha, NombreProveedor = z.x.Proveedor.Nombre, z.x.NoDocumento, z.x.Impuesto, Total = (z.x.Excento + z.x.Gravado + z.x.Impuesto) });
                         foreach (var value in detalleCompras)
                         {
                             ReporteCompras reporteLinea = new ReporteCompras();
@@ -286,7 +286,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         {
                             var detalleCompras = dbContext.CompraRepository.Where(s => s.IdEmpresa == intIdEmpresa && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal && s.Nulo == bolNulo)
                                 .Join(dbContext.ProveedorRepository, x => x.IdProveedor, y => y.IdProveedor, (x, y) => new { x, y })
-                                .Select(z => new { z.x.IdProveedor, z.x.Nulo, z.x.IdCondicionVenta, z.x.IdCompra, z.x.Fecha, NombreProveedor = z.x.Proveedor.Nombre, z.x.NoDocumento, z.x.Impuesto, Total = (z.x.Excento + z.x.Grabado + z.x.Impuesto) });
+                                .Select(z => new { z.x.IdProveedor, z.x.Nulo, z.x.IdCondicionVenta, z.x.IdCompra, z.x.Fecha, NombreProveedor = z.x.Proveedor.Nombre, z.x.NoDocumento, z.x.Impuesto, Total = (z.x.Excento + z.x.Gravado + z.x.Impuesto) });
                             if (intTipoPago == StaticReporteCondicionVentaFormaPago.Credito)
                                 detalleCompras = detalleCompras.Where(x => x.IdCondicionVenta == StaticCondicionVenta.Credito);
                             else
@@ -754,7 +754,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         .Join(dbContext.DetalleFacturaRepository, x => x.IdFactura, y => y.IdFactura, (x, y) => new { x, y })
                         .Join(dbContext.ProductoRepository, x => x.y.IdProducto, y => y.IdProducto, (x, y) => new { x, y })
                         .Join(dbContext.LineaRepository, x => x.y.IdLinea, y => y.IdLinea, (x, y) => new { x, y })
-                        .Select(z => new { z.x.y.Codigo, z.x.y.IdLinea, NombreLinea = z.y.Descripcion, z.x.x.y.Cantidad, z.x.x.y.PrecioVenta, z.x.x.y.PorcentajeIVA, z.x.x.x.Excento, z.x.x.x.Grabado, z.x.x.x.Impuesto, z.x.x.x.Descuento, Costo = z.x.x.y.Cantidad * z.x.x.y.PrecioCosto });
+                        .Select(z => new { z.x.y.Codigo, z.x.y.IdLinea, NombreLinea = z.y.Descripcion, z.x.x.y.Cantidad, z.x.x.y.PrecioVenta, z.x.x.y.PorcentajeIVA, z.x.x.x.Excento, z.x.x.x.Gravado, z.x.x.x.Impuesto, z.x.x.x.Descuento, Costo = z.x.x.y.Cantidad * z.x.x.y.PrecioCosto });
                     foreach (var value in ventasResumen)
                     {
                         ReporteVentasPorLineaResumen reporteLinea = new ReporteVentasPorLineaResumen();
@@ -764,7 +764,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         reporteLinea.Cantidad = value.Cantidad;
                         reporteLinea.PrecioVenta = value.PrecioVenta;
                         reporteLinea.Excento = value.Excento;
-                        reporteLinea.Grabado = value.Grabado;
+                        reporteLinea.Gravado = value.Gravado;
                         reporteLinea.Descuento = value.Descuento;
                         reporteLinea.Impuesto = value.Impuesto;
                         reporteLinea.Costo = value.Costo;
@@ -794,7 +794,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         .Join(dbContext.DetalleFacturaRepository, x => x.IdFactura, y => y.IdFactura, (x, y) => new { x, y })
                         .Join(dbContext.ProductoRepository, x => x.y.IdProducto, y => y.IdProducto, (x, y) => new { x, y })
                         .Join(dbContext.LineaRepository, x => x.y.IdLinea, y => y.IdLinea, (x, y) => new { x, y })
-                        .Select(z => new { z.x.y.Codigo, z.x.y.Descripcion, z.x.y.IdLinea, NombreLinea = z.y.Descripcion, z.x.x.y.Cantidad, z.x.x.y.PrecioVenta, z.x.x.y.PorcentajeIVA, z.x.x.x.Excento, z.x.x.x.Grabado, z.x.x.x.Impuesto, z.x.x.x.Descuento });
+                        .Select(z => new { z.x.y.Codigo, z.x.y.Descripcion, z.x.y.IdLinea, NombreLinea = z.y.Descripcion, z.x.x.y.Cantidad, z.x.x.y.PrecioVenta, z.x.x.y.PorcentajeIVA, z.x.x.x.Excento, z.x.x.x.Gravado, z.x.x.x.Impuesto, z.x.x.x.Descuento });
                     if (intIdLinea > 0)
                         ventasDetalle = ventasDetalle.Where(a => a.IdLinea == intIdLinea);
                     foreach (var value in ventasDetalle)
@@ -807,7 +807,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         reporteLinea.Cantidad = value.Cantidad;
                         reporteLinea.PrecioVenta = value.PrecioVenta;
                         reporteLinea.Excento = value.Excento;
-                        reporteLinea.Grabado = value.Grabado;
+                        reporteLinea.Gravado = value.Gravado;
                         reporteLinea.Descuento = value.Descuento;
                         reporteLinea.Impuesto = value.Impuesto;
                         reporteLinea.PorcentajeIVA = value.PorcentajeIVA;
@@ -874,7 +874,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     List<ReporteProforma> listaReporte = new List<ReporteProforma>();
                     var datosCierre = dbContext.ProformaRepository.Where(a => a.IdProforma == intIdProforma)
                         .Join(dbContext.DetalleProformaRepository, b => b.IdProforma, b => b.IdProforma, (a, b) => new { a, b })
-                        .Select(c => new { c.a.IdProforma, NombreCliente = c.a.Cliente.Nombre, SubTotal = c.a.Excento + c.a.Grabado + c.a.Impuesto + c.a.Descuento, c.a.Descuento, c.a.Impuesto, Total = c.a.Excento + c.a.Grabado + c.a.Impuesto, c.a.Fecha, c.a.TipoPago, Descripcion = c.b.Producto.Codigo + " " + c.b.Producto.Descripcion, c.b.Cantidad, c.b.PrecioVenta, TotalLinea = c.b.Cantidad * c.b.PrecioVenta });
+                        .Select(c => new { c.a.IdProforma, NombreCliente = c.a.Cliente.Nombre, SubTotal = c.a.Excento + c.a.Gravado + c.a.Impuesto + c.a.Descuento, c.a.Descuento, c.a.Impuesto, Total = c.a.Excento + c.a.Gravado + c.a.Impuesto, c.a.Fecha, c.a.TipoPago, Descripcion = c.b.Producto.Codigo + " " + c.b.Producto.Descripcion, c.b.Cantidad, c.b.PrecioVenta, TotalLinea = c.b.Cantidad * c.b.PrecioVenta });
                     foreach (var value in datosCierre)
                     {
                         ReporteProforma reporteLinea = new ReporteProforma();
@@ -914,7 +914,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     List<ReporteOrdenServicio> listaReporte = new List<ReporteOrdenServicio>();
                     var datosCierre = dbContext.OrdenServicioRepository.Where(a => a.IdOrden == intIdOrdenServicio)
                         .Join(dbContext.DetalleOrdenServicioRepository, b => b.IdOrden, b => b.IdOrden, (a, b) => new { a, b })
-                        .Select(c => new { c.a.IdOrden, NombreCliente = c.a.Cliente.Nombre, SubTotal = c.a.Excento + c.a.Grabado + c.a.Impuesto + c.a.Descuento, c.a.Descuento, c.a.Impuesto, Total = c.a.Excento + c.a.Grabado + c.a.Impuesto, c.a.Fecha, c.a.Placa, Descripcion = c.b.Producto.Codigo + " " + c.b.Descripcion, c.b.Cantidad, c.b.PrecioVenta, TotalLinea = c.b.Cantidad * c.b.PrecioVenta });
+                        .Select(c => new { c.a.IdOrden, NombreCliente = c.a.Cliente.Nombre, SubTotal = c.a.Excento + c.a.Gravado + c.a.Impuesto + c.a.Descuento, c.a.Descuento, c.a.Impuesto, Total = c.a.Excento + c.a.Gravado + c.a.Impuesto, c.a.Fecha, c.a.Placa, Descripcion = c.b.Producto.Codigo + " " + c.b.Descripcion, c.b.Cantidad, c.b.PrecioVenta, TotalLinea = c.b.Cantidad * c.b.PrecioVenta });
                     foreach (var value in datosCierre)
                     {
                         ReporteOrdenServicio reporteLinea = new ReporteOrdenServicio();
@@ -952,7 +952,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     var datosCierre = dbContext.OrdenRepository.Where(a => a.IdOrdenCompra == intIdOrdenCompra)
                         .Join(dbContext.ProveedorRepository, b => b.IdProveedor, b => b.IdProveedor, (a, b) => new { a, b })
                         .Join(dbContext.DetalleOrdenCompraRepository, c => c.a.IdOrdenCompra, d => d.IdOrdenCompra, (c, d) => new { c, d })
-                        .Select(e => new { e.c.a.IdOrdenCompra, e.c.b.Nombre, SubTotal = e.c.a.Excento + e.c.a.Grabado + e.c.a.Impuesto + e.c.a.Descuento, e.c.a.Descuento, e.c.a.Impuesto, Total = e.c.a.Excento + e.c.a.Grabado + e.c.a.Impuesto, e.c.a.Fecha, e.c.a.TipoPago, Descripcion = e.d.Producto.Codigo + " " + e.d.Producto.Descripcion, e.d.Cantidad, e.d.PrecioCosto, TotalLinea = e.d.Cantidad * e.d.PrecioCosto });
+                        .Select(e => new { e.c.a.IdOrdenCompra, e.c.b.Nombre, SubTotal = e.c.a.Excento + e.c.a.Gravado + e.c.a.Impuesto + e.c.a.Descuento, e.c.a.Descuento, e.c.a.Impuesto, Total = e.c.a.Excento + e.c.a.Gravado + e.c.a.Impuesto, e.c.a.Fecha, e.c.a.TipoPago, Descripcion = e.d.Producto.Codigo + " " + e.d.Producto.Descripcion, e.d.Cantidad, e.d.PrecioCosto, TotalLinea = e.d.Cantidad * e.d.PrecioCosto });
                     foreach (var value in datosCierre)
                     {
                         ReporteOrdenCompra reporteLinea = new ReporteOrdenCompra();
@@ -1536,10 +1536,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     List<ReporteEstadoResultados> listaReporte = new List<ReporteEstadoResultados>();
                     var grupoFacturasEmitidas = dbContext.DocumentoElectronicoRepository
                         .Where(a => a.IdEmpresa == intIdEmpresa && a.Fecha >= datFechaInicial && a.Fecha <= datFechaFinal && new[] { 1, 4 }.Any(s => s == a.IdTipoDocumento) && a.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado).ToList();
-                    decimal decTotalVentasBienesGrabadas = 0;
+                    decimal decTotalVentasBienesGravadas = 0;
                     decimal decTotalVentasBienesExentas = 0;
                     decimal decTotalVentasBienesExoneradas = 0;
-                    decimal decTotalVentasServiciosGrabados = 0;
+                    decimal decTotalVentasServiciosGravados = 0;
                     decimal decTotalVentasServiciosExentos = 0;
                     decimal decTotalVentasServiciosExonerados = 0;
                     foreach (var documento in grupoFacturasEmitidas)
@@ -1547,22 +1547,22 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         string datosXml = Encoding.Default.GetString(documento.DatosDocumento);
                         XmlDocument documentoXml = new XmlDocument();
                         documentoXml.LoadXml(datosXml);
-                        decimal decVentasBienesGrabado = 0;
+                        decimal decVentasBienesGravado = 0;
                         decimal decVentasBienesExcento = 0;
                         decimal decVentasBienesExonerado = 0;
-                        decimal decVentasServiciosGrabado = 0;
+                        decimal decVentasServiciosGravado = 0;
                         decimal decVentasServiciosExcento = 0;
                         decimal decVentasServiciosExonerado = 0;
                         decimal decTipoDeCambio = 1;
                         string strCodigoMoneda = "CRC";
                         if (documentoXml.GetElementsByTagName("TotalMercanciasGravadas").Count > 0)
-                            decVentasBienesGrabado = decimal.Parse(documentoXml.GetElementsByTagName("TotalMercanciasGravadas").Item(0).InnerText, CultureInfo.InvariantCulture);
+                            decVentasBienesGravado = decimal.Parse(documentoXml.GetElementsByTagName("TotalMercanciasGravadas").Item(0).InnerText, CultureInfo.InvariantCulture);
                         if (documentoXml.GetElementsByTagName("TotalMercanciasExentas").Count > 0)
                             decVentasBienesExcento = decimal.Parse(documentoXml.GetElementsByTagName("TotalMercanciasExentas").Item(0).InnerText, CultureInfo.InvariantCulture);
                         if (documentoXml.GetElementsByTagName("TotalMercExonerada").Count > 0)
                             decVentasBienesExonerado = decimal.Parse(documentoXml.GetElementsByTagName("TotalMercExonerada").Item(0).InnerText, CultureInfo.InvariantCulture);
                         if (documentoXml.GetElementsByTagName("TotalServGravados").Count > 0)
-                            decVentasServiciosGrabado = decimal.Parse(documentoXml.GetElementsByTagName("TotalServGravados").Item(0).InnerText, CultureInfo.InvariantCulture);
+                            decVentasServiciosGravado = decimal.Parse(documentoXml.GetElementsByTagName("TotalServGravados").Item(0).InnerText, CultureInfo.InvariantCulture);
                         if (documentoXml.GetElementsByTagName("TotalServExentos").Count > 0)
                             decVentasServiciosExcento = decimal.Parse(documentoXml.GetElementsByTagName("TotalServExentos").Item(0).InnerText, CultureInfo.InvariantCulture);
                         if (documentoXml.GetElementsByTagName("TotalServExonerado").Count > 0)
@@ -1573,19 +1573,19 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             strCodigoMoneda = documentoXml.GetElementsByTagName("CodigoMoneda").Item(0).InnerText;
                         if (strCodigoMoneda != "CRC")
                         {
-                            decTotalVentasBienesGrabadas += decVentasBienesGrabado * decTipoDeCambio;
+                            decTotalVentasBienesGravadas += decVentasBienesGravado * decTipoDeCambio;
                             decTotalVentasBienesExentas += decVentasBienesExcento * decTipoDeCambio;
                             decTotalVentasBienesExoneradas += decVentasBienesExonerado * decTipoDeCambio;
-                            decTotalVentasServiciosGrabados += decVentasServiciosGrabado * decTipoDeCambio;
+                            decTotalVentasServiciosGravados += decVentasServiciosGravado * decTipoDeCambio;
                             decTotalVentasServiciosExentos += decVentasServiciosExcento * decTipoDeCambio;
                             decTotalVentasServiciosExonerados += decVentasServiciosExonerado * decTipoDeCambio;
                         }
                         else
                         {
-                            decTotalVentasBienesGrabadas += decVentasBienesGrabado;
+                            decTotalVentasBienesGravadas += decVentasBienesGravado;
                             decTotalVentasBienesExentas += decVentasBienesExcento;
                             decTotalVentasBienesExoneradas += decVentasBienesExonerado;
-                            decTotalVentasServiciosGrabados += decVentasServiciosGrabado;
+                            decTotalVentasServiciosGravados += decVentasServiciosGravado;
                             decTotalVentasServiciosExentos += decVentasServiciosExcento;
                             decTotalVentasServiciosExonerados += decVentasServiciosExonerado;
                         }
@@ -1598,22 +1598,22 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         string datosXml = Encoding.Default.GetString(documento.DatosDocumento);
                         XmlDocument documentoXml = new XmlDocument();
                         documentoXml.LoadXml(datosXml);
-                        decimal decVentasBienesGrabado = 0;
+                        decimal decVentasBienesGravado = 0;
                         decimal decVentasBienesExcento = 0;
                         decimal decVentasBienesExonerado = 0;
-                        decimal decVentasServiciosGrabado = 0;
+                        decimal decVentasServiciosGravado = 0;
                         decimal decVentasServiciosExcento = 0;
                         decimal decVentasServiciosExonerado = 0;
                         decimal decTipoDeCambio = 1;
                         string strCodigoMoneda = "CRC";
                         if (documentoXml.GetElementsByTagName("TotalMercanciasGravadas").Count > 0)
-                            decVentasBienesGrabado = decimal.Parse(documentoXml.GetElementsByTagName("TotalMercanciasGravadas").Item(0).InnerText, CultureInfo.InvariantCulture);
+                            decVentasBienesGravado = decimal.Parse(documentoXml.GetElementsByTagName("TotalMercanciasGravadas").Item(0).InnerText, CultureInfo.InvariantCulture);
                         if (documentoXml.GetElementsByTagName("TotalMercanciasExentas").Count > 0)
                             decVentasBienesExcento = decimal.Parse(documentoXml.GetElementsByTagName("TotalMercanciasExentas").Item(0).InnerText, CultureInfo.InvariantCulture);
                         if (documentoXml.GetElementsByTagName("TotalMercExonerada").Count > 0)
                             decVentasBienesExonerado = decimal.Parse(documentoXml.GetElementsByTagName("TotalMercExonerada").Item(0).InnerText, CultureInfo.InvariantCulture);
                         if (documentoXml.GetElementsByTagName("TotalServGravados").Count > 0)
-                            decVentasServiciosGrabado = decimal.Parse(documentoXml.GetElementsByTagName("TotalServGravados").Item(0).InnerText, CultureInfo.InvariantCulture);
+                            decVentasServiciosGravado = decimal.Parse(documentoXml.GetElementsByTagName("TotalServGravados").Item(0).InnerText, CultureInfo.InvariantCulture);
                         if (documentoXml.GetElementsByTagName("TotalServExentos").Count > 0)
                             decVentasServiciosExcento = decimal.Parse(documentoXml.GetElementsByTagName("TotalServExentos").Item(0).InnerText, CultureInfo.InvariantCulture);
                         if (documentoXml.GetElementsByTagName("TotalServExonerado").Count > 0)
@@ -1624,27 +1624,27 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             strCodigoMoneda = documentoXml.GetElementsByTagName("CodigoMoneda").Item(0).InnerText;
                         if (strCodigoMoneda != "CRC")
                         {
-                            decTotalVentasBienesGrabadas -= decVentasBienesGrabado * decTipoDeCambio;
+                            decTotalVentasBienesGravadas -= decVentasBienesGravado * decTipoDeCambio;
                             decTotalVentasBienesExentas -= decVentasBienesExcento * decTipoDeCambio;
                             decTotalVentasBienesExoneradas -= decVentasBienesExonerado * decTipoDeCambio;
-                            decTotalVentasServiciosGrabados -= decVentasServiciosGrabado * decTipoDeCambio;
+                            decTotalVentasServiciosGravados -= decVentasServiciosGravado * decTipoDeCambio;
                             decTotalVentasServiciosExentos -= decVentasServiciosExcento * decTipoDeCambio;
                             decTotalVentasServiciosExonerados -= decVentasServiciosExonerado * decTipoDeCambio;
                         }
                         else
                         {
-                            decTotalVentasBienesGrabadas -= decVentasBienesGrabado;
+                            decTotalVentasBienesGravadas -= decVentasBienesGravado;
                             decTotalVentasBienesExentas -= decVentasBienesExcento;
                             decTotalVentasBienesExoneradas -= decVentasBienesExonerado;
-                            decTotalVentasServiciosGrabados -= decVentasServiciosGrabado;
+                            decTotalVentasServiciosGravados -= decVentasServiciosGravado;
                             decTotalVentasServiciosExentos -= decVentasServiciosExcento;
                             decTotalVentasServiciosExonerados -= decVentasServiciosExonerado;
                         }
                     }
                     ReporteEstadoResultados reporteLinea = new ReporteEstadoResultados();
-                    reporteLinea.NombreTipoRegistro = "Ventas de mercancias grabadas al 13% por facturas electrónicas emitidas";
-                    reporteLinea.Descripcion = "Ventas grabadas por facturas electrónicas emitidas";
-                    reporteLinea.Valor = decTotalVentasBienesGrabadas > 0 ? decTotalVentasBienesGrabadas : 0;
+                    reporteLinea.NombreTipoRegistro = "Ventas de mercancias gravadas al 13% por facturas electrónicas emitidas";
+                    reporteLinea.Descripcion = "Ventas gravadas por facturas electrónicas emitidas";
+                    reporteLinea.Valor = decTotalVentasBienesGravadas > 0 ? decTotalVentasBienesGravadas : 0;
                     listaReporte.Add(reporteLinea);
                     reporteLinea = new ReporteEstadoResultados();
                     reporteLinea.NombreTipoRegistro = "Ventas de mercancias excentas por facturas electrónicas emitidas";
@@ -1657,9 +1657,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     reporteLinea.Valor = decTotalVentasBienesExoneradas > 0 ? decTotalVentasBienesExoneradas : 0;
                     listaReporte.Add(reporteLinea);
                     reporteLinea = new ReporteEstadoResultados();
-                    reporteLinea.NombreTipoRegistro = "Ventas de servicios grabados facturas electrónicas emitidas";
+                    reporteLinea.NombreTipoRegistro = "Ventas de servicios gravados facturas electrónicas emitidas";
                     reporteLinea.Descripcion = "Ventas exoneradas facturas electrónicas emitidas";
-                    reporteLinea.Valor = decTotalVentasServiciosGrabados > 0 ? decTotalVentasServiciosGrabados : 0;
+                    reporteLinea.Valor = decTotalVentasServiciosGravados > 0 ? decTotalVentasServiciosGravados : 0;
                     listaReporte.Add(reporteLinea);
                     reporteLinea = new ReporteEstadoResultados();
                     reporteLinea.NombreTipoRegistro = "Ventas de servicios excentos facturas electrónicas emitidas";
@@ -1689,10 +1689,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             string datosXml = Encoding.Default.GetString(documento.DatosDocumentoOri);
                             XmlDocument documentoXml = new XmlDocument();
                             documentoXml.LoadXml(datosXml);
-                            decimal decComprasBienesGrabado = 0;
+                            decimal decComprasBienesGravado = 0;
                             decimal decComprasBienesExcento = 0;
                             decimal decComprasBienesExonerado = 0;
-                            decimal decComprasServiciosGrabado = 0;
+                            decimal decComprasServiciosGravado = 0;
                             decimal decComprasServiciosExcento = 0;
                             decimal decComprasServiciosExonerado = 0;
                             decimal decDescuentos = 0;
@@ -1700,13 +1700,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             decimal decTipoDeCambio = 1;
                             string strCodigoMoneda = "CRC";
                             if (documentoXml.GetElementsByTagName("TotalMercanciasGravadas").Count > 0)
-                                decComprasBienesGrabado = decimal.Parse(documentoXml.GetElementsByTagName("TotalMercanciasGravadas").Item(0).InnerText, CultureInfo.InvariantCulture);
+                                decComprasBienesGravado = decimal.Parse(documentoXml.GetElementsByTagName("TotalMercanciasGravadas").Item(0).InnerText, CultureInfo.InvariantCulture);
                             if (documentoXml.GetElementsByTagName("TotalMercanciasExentas").Count > 0)
                                 decComprasBienesExcento = decimal.Parse(documentoXml.GetElementsByTagName("TotalMercanciasExentas").Item(0).InnerText, CultureInfo.InvariantCulture);
                             if (documentoXml.GetElementsByTagName("TotalMercExonerada").Count > 0)
                                 decComprasBienesExonerado = decimal.Parse(documentoXml.GetElementsByTagName("TotalMercExonerada").Item(0).InnerText, CultureInfo.InvariantCulture);
                             if (documentoXml.GetElementsByTagName("TotalServGravados").Count > 0)
-                                decComprasServiciosGrabado = decimal.Parse(documentoXml.GetElementsByTagName("TotalServGravados").Item(0).InnerText, CultureInfo.InvariantCulture);
+                                decComprasServiciosGravado = decimal.Parse(documentoXml.GetElementsByTagName("TotalServGravados").Item(0).InnerText, CultureInfo.InvariantCulture);
                             if (documentoXml.GetElementsByTagName("TotalServExentos").Count > 0)
                                 decComprasServiciosExcento = decimal.Parse(documentoXml.GetElementsByTagName("TotalServExentos").Item(0).InnerText, CultureInfo.InvariantCulture);
                             if (documentoXml.GetElementsByTagName("TotalServExonerado").Count > 0)
@@ -1723,10 +1723,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             {
                                 if (documentoXml.DocumentElement.Name != "NotaCreditoElectronica")
                                 {
-                                    decTotalComprasBienesGravadas += decComprasBienesGrabado * decTipoDeCambio;
+                                    decTotalComprasBienesGravadas += decComprasBienesGravado * decTipoDeCambio;
                                     decTotalComprasBienesExentas += decComprasBienesExcento * decTipoDeCambio;
                                     decTotalComprasBienesExoneradas += decComprasBienesExonerado * decTipoDeCambio;
-                                    decTotalComprasServiciosGravados += decComprasServiciosGrabado * decTipoDeCambio;
+                                    decTotalComprasServiciosGravados += decComprasServiciosGravado * decTipoDeCambio;
                                     decTotalComprasServiciosExentos += decComprasServiciosExcento * decTipoDeCambio;
                                     decTotalComprasServiciosExonerados += decComprasServiciosExonerado * decTipoDeCambio;
                                     decTotalDescuentosCompras += decDescuentos * decTipoDeCambio;
@@ -1734,10 +1734,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 }
                                 else
                                 {
-                                    decTotalComprasBienesGravadas -= decComprasBienesGrabado * decTipoDeCambio;
+                                    decTotalComprasBienesGravadas -= decComprasBienesGravado * decTipoDeCambio;
                                     decTotalComprasBienesExentas -= decComprasBienesExcento * decTipoDeCambio;
                                     decTotalComprasBienesExoneradas -= decComprasBienesExonerado * decTipoDeCambio;
-                                    decTotalComprasServiciosGravados -= decComprasServiciosGrabado * decTipoDeCambio;
+                                    decTotalComprasServiciosGravados -= decComprasServiciosGravado * decTipoDeCambio;
                                     decTotalComprasServiciosExentos -= decComprasServiciosExcento * decTipoDeCambio;
                                     decTotalComprasServiciosExonerados -= decComprasServiciosExonerado * decTipoDeCambio;
                                     decTotalDescuentosCompras -= decDescuentos * decTipoDeCambio;
@@ -1748,10 +1748,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             {
                                 if (documentoXml.DocumentElement.Name != "NotaCreditoElectronica")
                                 {
-                                    decTotalComprasBienesGravadas += decComprasBienesGrabado;
+                                    decTotalComprasBienesGravadas += decComprasBienesGravado;
                                     decTotalComprasBienesExentas += decComprasBienesExcento;
                                     decTotalComprasBienesExoneradas += decComprasBienesExonerado;
-                                    decTotalComprasServiciosGravados += decComprasServiciosGrabado;
+                                    decTotalComprasServiciosGravados += decComprasServiciosGravado;
                                     decTotalComprasServiciosExentos += decComprasServiciosExcento;
                                     decTotalComprasServiciosExonerados += decComprasServiciosExonerado;
                                     decTotalDescuentosCompras += decDescuentos;
@@ -1759,10 +1759,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 }
                                 else
                                 {
-                                    decTotalComprasBienesGravadas -= decComprasBienesGrabado;
+                                    decTotalComprasBienesGravadas -= decComprasBienesGravado;
                                     decTotalComprasBienesExentas -= decComprasBienesExcento;
                                     decTotalComprasBienesExoneradas -= decComprasBienesExonerado;
-                                    decTotalComprasServiciosGravados -= decComprasServiciosGrabado;
+                                    decTotalComprasServiciosGravados -= decComprasServiciosGravado;
                                     decTotalComprasServiciosExentos -= decComprasServiciosExcento;
                                     decTotalComprasServiciosExonerados -= decComprasServiciosExonerado;
                                     decTotalDescuentosCompras -= decDescuentos;

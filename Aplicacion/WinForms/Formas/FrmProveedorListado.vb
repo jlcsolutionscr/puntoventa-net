@@ -1,4 +1,4 @@
-﻿Imports LeandroSoftware.Core.ClienteWCF
+﻿Imports LeandroSoftware.ClienteWCF
 
 Public Class FrmProveedorListado
 #Region "Variables"
@@ -27,7 +27,7 @@ Public Class FrmProveedorListado
 
     Private Async Sub ActualizarDatos(ByVal intNumeroPagina As Integer)
         Try
-            listado = Await ClienteFEWCF.ObtenerListadoProveedores(FrmPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, txtNombre.Text)
+            listado = Await Puntoventa.ObtenerListadoProveedores(FrmPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, txtNombre.Text, FrmPrincipal.usuarioGlobal.Token)
             dgvListado.DataSource = listado
             If listado.Count() > 0 Then
                 btnEditar.Enabled = True
@@ -47,7 +47,7 @@ Public Class FrmProveedorListado
 
     Private Async Sub ValidarCantidadRegistros()
         Try
-            intTotalEmpresas = Await ClienteFEWCF.ObtenerTotalListaProveedores(FrmPrincipal.empresaGlobal.IdEmpresa, txtNombre.Text)
+            intTotalEmpresas = Await Puntoventa.ObtenerTotalListaProveedores(FrmPrincipal.empresaGlobal.IdEmpresa, txtNombre.Text, FrmPrincipal.usuarioGlobal.Token)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -94,11 +94,16 @@ Public Class FrmProveedorListado
         ActualizarDatos(intIndiceDePagina)
     End Sub
 
-    Private Sub FrmProveedorListado_Shown(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Shown
-        EstablecerPropiedadesDataGridView()
-        ValidarCantidadRegistros()
-        intIndiceDePagina = 1
-        ActualizarDatos(intIndiceDePagina)
+    Private Sub FrmProveedorListado_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+        Try
+            EstablecerPropiedadesDataGridView()
+            ValidarCantidadRegistros()
+            intIndiceDePagina = 1
+            ActualizarDatos(intIndiceDePagina)
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Close()
+        End Try
     End Sub
 
     Private Sub btnAgregar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnAgregar.Click
@@ -122,7 +127,7 @@ Public Class FrmProveedorListado
     Private Async Sub btnEliminar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEliminar.Click
         If MessageBox.Show("Desea eliminar el registro actual", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
             Try
-                Await ClienteFEWCF.EliminarProveedor(dgvListado.CurrentRow.Cells(0).Value)
+                Await Puntoventa.EliminarProveedor(dgvListado.CurrentRow.Cells(0).Value, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub

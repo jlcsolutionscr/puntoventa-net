@@ -74,14 +74,19 @@ Public Class FrmProcesoCierre
     End Sub
 
     Private Sub FrmProcesoCierre_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        EvaluaEstado()
-        If strEstado = "True" Then
-            CmdEjecutar.Enabled = False
-            CmdCambiarFecha.Enabled = True
-        Else
-            CmdEjecutar.Enabled = True
-            CmdCambiarFecha.Enabled = False
-        End If
+        Try
+            EvaluaEstado()
+            If strEstado = "True" Then
+                CmdEjecutar.Enabled = False
+                CmdCambiarFecha.Enabled = True
+            Else
+                CmdEjecutar.Enabled = True
+                CmdCambiarFecha.Enabled = False
+            End If
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Close()
+        End Try
     End Sub
 #End Region
 End Class

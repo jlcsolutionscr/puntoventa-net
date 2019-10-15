@@ -1,4 +1,4 @@
-Imports LeandroSoftware.Core.ClienteWCF
+Imports LeandroSoftware.ClienteWCF
 
 Public Class FrmBusquedaVendedor
 #Region "Variables"
@@ -22,7 +22,7 @@ Public Class FrmBusquedaVendedor
 
     Private Async Sub ActualizarDatos()
         Try
-            dgvListado.DataSource = Await ClienteFEWCF.ObtenerListadoVendedores(FrmPrincipal.empresaGlobal.IdEmpresa, txtNombre.Text)
+            dgvListado.DataSource = Await Puntoventa.ObtenerListadoVendedores(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token, txtNombre.Text)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -34,8 +34,13 @@ Public Class FrmBusquedaVendedor
 
 #Region "Eventos Controles"
     Private Sub FrmBusVendedor_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        EstablecerPropiedadesDataGridView()
-        ActualizarDatos()
+        Try
+            EstablecerPropiedadesDataGridView()
+            ActualizarDatos()
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Close()
+        End Try
     End Sub
 
     Private Sub FlexProducto_DoubleClick(ByVal sender As Object, ByVal e As EventArgs) Handles dgvListado.DoubleClick

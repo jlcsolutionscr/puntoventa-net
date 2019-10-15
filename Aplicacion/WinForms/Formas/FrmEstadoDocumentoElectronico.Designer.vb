@@ -23,22 +23,11 @@ Partial Class FrmEstadoDocumentoElectronico
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FrmEstadoDocumentoElectronico))
-        Me.btnProcesar = New System.Windows.Forms.Button()
         Me.dgvDatos = New System.Windows.Forms.DataGridView()
         Me.picLoader = New System.Windows.Forms.PictureBox()
         CType(Me.dgvDatos, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.picLoader, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
-        '
-        'btnProcesar
-        '
-        Me.btnProcesar.Location = New System.Drawing.Point(657, 429)
-        Me.btnProcesar.Name = "btnProcesar"
-        Me.btnProcesar.Size = New System.Drawing.Size(125, 22)
-        Me.btnProcesar.TabIndex = 31
-        Me.btnProcesar.TabStop = False
-        Me.btnProcesar.Text = "Procesar pendientes"
-        Me.btnProcesar.UseVisualStyleBackColor = True
         '
         'dgvDatos
         '
@@ -76,9 +65,8 @@ Partial Class FrmEstadoDocumentoElectronico
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(795, 463)
+        Me.ClientSize = New System.Drawing.Size(795, 434)
         Me.Controls.Add(Me.picLoader)
-        Me.Controls.Add(Me.btnProcesar)
         Me.Controls.Add(Me.dgvDatos)
         Me.Name = "FrmEstadoDocumentoElectronico"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
@@ -88,7 +76,6 @@ Partial Class FrmEstadoDocumentoElectronico
         Me.ResumeLayout(False)
 
     End Sub
-    Friend WithEvents btnProcesar As Button
     Friend WithEvents dgvDatos As DataGridView
     Friend WithEvents picLoader As PictureBox
 End Class

@@ -53,14 +53,9 @@ Public Class FrmActualizarPrecioProducto
     End Sub
 
     Private Sub CargarComboBox()
-        Try
-            'cboLinea.DataSource = servicioMantenimiento.ObtenerListaLineasDeProducto(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
-            cboLinea.ValueMember = "IdLinea"
-            cboLinea.DisplayMember = "Descripcion"
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Exit Sub
-        End Try
+        'cboLinea.DataSource = servicioMantenimiento.ObtenerListaLineasDeProducto(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
+        cboLinea.ValueMember = "IdLinea"
+        cboLinea.DisplayMember = "Descripcion"
     End Sub
 #End Region
 
@@ -78,10 +73,10 @@ Public Class FrmActualizarPrecioProducto
     End Sub
 
     Private Sub FrmInventario_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        EstablecerPropiedadesDataGridView()
-        CargarComboBox()
-        cboLinea.SelectedValue = 0
         Try
+            EstablecerPropiedadesDataGridView()
+            CargarComboBox()
+            cboLinea.SelectedValue = 0
             'GrdDetalle.DataSource = servicioMantenimiento.ObtenerListaProductos(FrmMenuPrincipal.empresaGlobal.IdEmpresa, 1, 0, False)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)

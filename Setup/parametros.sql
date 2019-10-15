@@ -206,8 +206,6 @@ INSERT INTO tipounidad (IdTipoUnidad, Descripcion) VALUES(2, 'SP');
 -- Volcar la base de datos para la tabla 'formapago'
 --
 
-
-
 INSERT INTO `formapago` (`IdFormaPago`, `Descripcion`) VALUES
 (1, 'Efectivo');
 

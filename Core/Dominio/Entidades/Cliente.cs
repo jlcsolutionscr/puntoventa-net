@@ -34,13 +34,16 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         [ForeignKey("Vendedor")]
         public int? IdVendedor { get; set; }
         public int IdTipoPrecio { get; set; }
-        public bool ExoneradoDeImpuesto { get; set; }
+        public bool AplicaTasaDiferenciada { get; set; }
+        [ForeignKey("ParametroImpuesto")]
+        public int IdImpuesto { get; set; }
 
         public Empresa Empresa { get; set; }
         public TipoIdentificacion TipoIdentificacion { get; set; }
         [ForeignKey("IdProvincia, IdCanton, IdDistrito, IdBarrio")]
         public Barrio Barrio { get; set; }
         public Vendedor Vendedor { get; set; }
+        public ParametroImpuesto ParametroImpuesto { get; set; }
         public ICollection<Factura> Factura { get; set; }
     }
 }

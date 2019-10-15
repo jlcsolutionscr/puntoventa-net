@@ -23,28 +23,23 @@ Public Class FrmCatalogoContable
     End Function
 
     Private Sub CargarComboBox()
-        Try
-            'cboTipoSaldo.DataSource = servicioContabilidad.ObtenerTiposCuentaContable()
-            cboTipoSaldo.ValueMember = "IdTipoCuenta"
-            cboTipoSaldo.DisplayMember = "Descripcion"
-            'cboCuentaGrupo.DataSource = servicioContabilidad.ObtenerListaCuentasPrimerOrden(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
-            cboCuentaGrupo.ValueMember = "IdCuenta"
-            cboCuentaGrupo.DisplayMember = "Descripcion"
-            'cboClaseCuenta.DataSource = servicioContabilidad.ObtenerClaseCuentaContable()
-            cboClaseCuenta.ValueMember = "IdClaseCuenta"
-            cboClaseCuenta.DisplayMember = "Descripcion"
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Exit Sub
-        End Try
+        'cboTipoSaldo.DataSource = servicioContabilidad.ObtenerTiposCuentaContable()
+        cboTipoSaldo.ValueMember = "IdTipoCuenta"
+        cboTipoSaldo.DisplayMember = "Descripcion"
+        'cboCuentaGrupo.DataSource = servicioContabilidad.ObtenerListaCuentasPrimerOrden(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
+        cboCuentaGrupo.ValueMember = "IdCuenta"
+        cboCuentaGrupo.DisplayMember = "Descripcion"
+        'cboClaseCuenta.DataSource = servicioContabilidad.ObtenerClaseCuentaContable()
+        cboClaseCuenta.ValueMember = "IdClaseCuenta"
+        cboClaseCuenta.DisplayMember = "Descripcion"
     End Sub
 #End Region
 
 #Region "Eventos Controles"
     Private Sub FrmCatalogoContable_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        CargarComboBox()
         If intIdCuenta > 0 Then
             Try
+                CargarComboBox()
                 'datos = servicioContabilidad.ObtenerCuentaContable(intIdCuenta)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)

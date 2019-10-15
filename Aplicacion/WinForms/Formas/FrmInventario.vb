@@ -64,14 +64,9 @@ Public Class FrmInventario
     End Sub
 
     Private Sub CargarComboBox()
-        Try
-            'cboLinea.DataSource = servicioMantenimiento.ObtenerListaLineasDeProducto(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
-            cboLinea.ValueMember = "IdLinea"
-            cboLinea.DisplayMember = "Descripcion"
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Exit Sub
-        End Try
+        'cboLinea.DataSource = servicioMantenimiento.ObtenerListaLineasDeProducto(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
+        cboLinea.ValueMember = "IdLinea"
+        cboLinea.DisplayMember = "Descripcion"
         cboLinea.SelectedValue = 0
     End Sub
 
@@ -142,11 +137,16 @@ Public Class FrmInventario
     End Sub
 
     Private Sub FrmInventario_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        CargarComboBox()
-        EstablecerPropiedadesDataGridView()
-        ValidarCantidadEmpresas()
-        intIndiceDePagina = 1
-        ActualizarDatos(intIndiceDePagina)
+        Try
+            CargarComboBox()
+            EstablecerPropiedadesDataGridView()
+            ValidarCantidadEmpresas()
+            intIndiceDePagina = 1
+            ActualizarDatos(intIndiceDePagina)
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Close()
+        End Try
     End Sub
 
     Private Sub btnReporte_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnReporte.Click

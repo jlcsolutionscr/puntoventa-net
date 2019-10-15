@@ -128,12 +128,17 @@ Public Class FrmMovimientoProducto
     End Sub
 
     Private Sub FrmInventario_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        EstablecerPropiedadesDataGridView()
-        FechaInicio.Text = "01/" & Date.Now.Month & "/" & Date.Now.Year
-        FechaFinal.Text = Date.DaysInMonth(Date.Now.Year, Date.Now.Month) & "/" & Date.Now.Month & "/" & Date.Now.Year
-        ValidarCantidadEmpresas()
-        intIndiceDePagina = 1
-        ActualizarDatos(intIndiceDePagina)
+        Try
+            EstablecerPropiedadesDataGridView()
+            FechaInicio.Text = "01/" & Date.Now.Month & "/" & Date.Now.Year
+            FechaFinal.Text = Date.DaysInMonth(Date.Now.Year, Date.Now.Month) & "/" & Date.Now.Month & "/" & Date.Now.Year
+            ValidarCantidadEmpresas()
+            intIndiceDePagina = 1
+            ActualizarDatos(intIndiceDePagina)
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Close()
+        End Try
     End Sub
 #End Region
 End Class

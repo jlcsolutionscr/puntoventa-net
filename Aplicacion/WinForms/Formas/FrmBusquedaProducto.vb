@@ -1,6 +1,6 @@
 Imports System.Threading.Tasks
 Imports LeandroSoftware.Core.Dominio.Entidades
-Imports LeandroSoftware.Core.ClienteWCF
+Imports LeandroSoftware.ClienteWCF
 
 Public Class FrmBusquedaProducto
 #Region "Variables"
@@ -30,21 +30,15 @@ Public Class FrmBusquedaProducto
     End Sub
 
     Private Async Function CargarComboBox() As Task
-        Try
-            cboLinea.DataSource = Await ClienteFEWCF.ObtenerListadoLineas(FrmPrincipal.empresaGlobal.IdEmpresa)
-            cboLinea.ValueMember = "Id"
-            cboLinea.DisplayMember = "Descripcion"
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-            Exit Function
-        End Try
+        cboLinea.DataSource = Await Puntoventa.ObtenerListadoLineas(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+        cboLinea.ValueMember = "Id"
+        cboLinea.DisplayMember = "Descripcion"
         cboLinea.SelectedValue = 0
     End Function
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
         Try
-            dgvListado.DataSource = Await ClienteFEWCF.ObtenerListadoProductos(FrmPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, bolIncluyeServicios, cboLinea.SelectedValue, TxtCodigo.Text, TxtDesc.Text)
+            dgvListado.DataSource = Await Puntoventa.ObtenerListadoProductos(FrmPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, bolIncluyeServicios, FrmPrincipal.usuarioGlobal.Token, cboLinea.SelectedValue, TxtCodigo.Text, TxtDesc.Text)
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -55,7 +49,7 @@ Public Class FrmBusquedaProducto
 
     Private Async Function ValidarCantidadProductos() As Task
         Try
-            intTotalEmpresas = Await ClienteFEWCF.ObtenerTotalListaProductos(FrmPrincipal.empresaGlobal.IdEmpresa, bolIncluyeServicios, cboLinea.SelectedValue, TxtCodigo.Text, TxtDesc.Text)
+            intTotalEmpresas = Await Puntoventa.ObtenerTotalListaProductos(FrmPrincipal.empresaGlobal.IdEmpresa, bolIncluyeServicios, FrmPrincipal.usuarioGlobal.Token, cboLinea.SelectedValue, TxtCodigo.Text, TxtDesc.Text)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -115,11 +109,17 @@ Public Class FrmBusquedaProducto
     End Sub
 
     Private Async Sub FrmBusProd_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        Await CargarComboBox()
-        EstablecerPropiedadesDataGridView()
-        Await ValidarCantidadProductos()
-        intIndiceDePagina = 1
-        Await ActualizarDatos(intIndiceDePagina)
+        Try
+            Await CargarComboBox()
+            EstablecerPropiedadesDataGridView()
+            Await ValidarCantidadProductos()
+            intIndiceDePagina = 1
+            Await ActualizarDatos(intIndiceDePagina)
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Close()
+            Exit Sub
+        End Try
     End Sub
 #End Region
 End Class

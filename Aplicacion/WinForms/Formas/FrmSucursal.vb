@@ -25,26 +25,25 @@ Public Class FrmSucursal
 
 #Region "Eventos Controles"
     Private Sub FrmCuentaBanco_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        If intIdSucursal > 0 Then
-            Try
+        Try
+            If intIdSucursal > 0 Then
                 'datos = servicioTraslados.ObtenerSucursal(intIdSucursal)
-            Catch ex As Exception
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Close()
-                Exit Sub
-            End Try
-            If datos Is Nothing Then
-                MessageBox.Show("La cuenta bancaria seleccionada no existe", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-                Close()
-                Exit Sub
+                If datos Is Nothing Then
+                    Throw New Exception("La cuenta bancaria seleccionada no existe")
+                    Close()
+                    Exit Sub
+                End If
+                txtIdSucursal.Text = datos.IdSucursal
+                txtNombre.Text = datos.Nombre
+                txtDireccion.Text = datos.Direccion
+                txtTelefono.Text = datos.Telefono
+            Else
+                datos = New Sucursal
             End If
-            txtIdSucursal.Text = datos.IdSucursal
-            txtNombre.Text = datos.Nombre
-            txtDireccion.Text = datos.Direccion
-            txtTelefono.Text = datos.Telefono
-        Else
-            datos = New Sucursal
-        End If
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Close()
+        End Try
     End Sub
 
     Private Sub btnCancelar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnCancelar.Click

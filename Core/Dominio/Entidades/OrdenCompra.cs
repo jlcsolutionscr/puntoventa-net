@@ -28,11 +28,11 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public string NoDocumento { get; set; }
         public short TipoPago { get; set; }
         public decimal Excento { get; set; }
-        public decimal Grabado { get; set; }
+        public decimal Gravado { get; set; }
         public decimal Descuento { get; set; }
         public decimal Impuesto { get; set; }
         [NotMapped]
-        public decimal Total { get { return Excento + Grabado + Impuesto; } }
+        public decimal Total { get { return Excento + Gravado + Impuesto; } }
         public bool Nulo { get; set; }
         public int? IdAnuladoPor { get; set; }
         public bool Aplicado { get; set; }

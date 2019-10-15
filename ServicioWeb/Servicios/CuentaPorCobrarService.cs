@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Data.Entity;
 using System.Collections.Generic;
-using LeandroSoftware.Core.CommonTypes;
+using LeandroSoftware.Core.TiposComunes;
 using LeandroSoftware.Core.Dominio.Entidades;
 using LeandroSoftware.ServicioWeb.Contexto;
 using log4net;

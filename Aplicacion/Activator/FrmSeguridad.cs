@@ -1,4 +1,5 @@
-﻿using LeandroSoftware.Core.Dominio.Entidades;
+﻿using LeandroSoftware.ClienteWCF;
+using LeandroSoftware.Core.Dominio.Entidades;
 using System;
 using System.Windows.Forms;
 
@@ -11,7 +12,9 @@ namespace LeandroSoftware.Activator
 
             try
             {
-                Usuario usuario = await ClienteWCF.ValidarCredenciales(TxtUsuario.Text, TxtClave.Text);
+                CmdAceptar.Enabled = false;
+                CmdCancelar.Enabled = false;
+                Usuario usuario = await Administrador.ValidarCredenciales(TxtUsuario.Text, TxtClave.Text);
                 if (usuario != null)
                 {
                     FrmMenu.strToken = usuario.Token;
@@ -19,6 +22,8 @@ namespace LeandroSoftware.Activator
                 }
                 else
                 {
+                    CmdAceptar.Enabled = true;
+                    CmdCancelar.Enabled = true;
                     MessageBox.Show("Clave incorrecta.  Intente de nuevo. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     TxtClave.Text = "";
                     TxtClave.Focus();
@@ -26,6 +31,8 @@ namespace LeandroSoftware.Activator
             }
             catch (Exception ex)
             {
+                CmdAceptar.Enabled = true;
+                CmdCancelar.Enabled = true;
                 string strError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
                 MessageBox.Show(strError, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }

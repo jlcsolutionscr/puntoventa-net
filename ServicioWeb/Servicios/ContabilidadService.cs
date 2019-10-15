@@ -3,7 +3,7 @@ using System.Linq;
 using System.Data;
 using System.Data.Entity.Infrastructure;
 using System.Collections.Generic;
-using LeandroSoftware.Core.CommonTypes;
+using LeandroSoftware.Core.TiposComunes;
 using LeandroSoftware.Core.Dominio.Entidades;
 using LeandroSoftware.ServicioWeb.Contexto;
 using log4net;
@@ -14,7 +14,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 {
     public interface IContabilidadService
     {
-        CatalogoContable AgregarCuentaContable(CatalogoContable cuenta);
+        void AgregarCuentaContable(CatalogoContable cuenta);
         void ActualizarCuentaContable(CatalogoContable cuenta);
         void EliminarCuentaContable(int intIdCuenta);
         CatalogoContable ObtenerCuentaContable(int intIdCuenta);
@@ -47,7 +47,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         IEnumerable<Asiento> ObtenerListaAsientos(int intIdEmpresa, int numPagina, int cantRec, int intIdAsiento = 0, string strDetalle = "");
         void MayorizarCuenta(IDbContext dbContext, int intIdCuenta, string strTipoMov, decimal dblMonto);
         CierreCaja GenerarDatosCierreCaja(int intIdEmpresa, string strFechaCierre);
-        CierreCaja GuardarDatosCierreCaja(CierreCaja cierre);
+        void GuardarDatosCierreCaja(CierreCaja cierre);
         void AbortarCierreCaja(int intIdEmpresa);
         void ProcesarCierreMensual(int intIdEmpresa);
         void GenerarAsientosdeFacturas();
@@ -81,7 +81,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public CatalogoContable AgregarCuentaContable(CatalogoContable cuenta)
+        public void AgregarCuentaContable(CatalogoContable cuenta)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -105,7 +105,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     throw new Exception("Se produjo un error agregando la cuenta contable. Por favor consulte con su proveedor.");
                 }
             }
-            return cuenta;
         }
 
         public void ActualizarCuentaContable(CatalogoContable cuenta)
@@ -964,7 +963,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public CierreCaja GuardarDatosCierreCaja(CierreCaja cierre)
+        public void GuardarDatosCierreCaja(CierreCaja cierre)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -995,7 +994,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                 }
             }
-            return cierre;
         }
 
         public void AbortarCierreCaja(int intIdEmpresa)
@@ -1474,7 +1472,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             if (efectivoParam == null || cuentasPorPagarProveedoresParam == null || ivaPorPagarParam  == null || otraCondicionVentaParam == null)
                                 throw new BusinessException("La parametrización contable está incompleta y no se puede continuar. Por favor verificar.");
                             decTotalImpuesto = compra.Impuesto;
-                            decSubTotalCompra = compra.Excento + compra.Grabado + compra.Descuento;
+                            decSubTotalCompra = compra.Excento + compra.Gravado + compra.Descuento;
                             foreach (var detalleCompra in compra.DetalleCompra)
                             {
                                 Producto producto = detalleCompra.Producto;

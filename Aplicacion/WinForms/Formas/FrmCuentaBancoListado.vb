@@ -1,5 +1,5 @@
 ﻿Imports LeandroSoftware.Core.Dominio.Entidades
-Imports LeandroSoftware.Core.ClienteWCF
+Imports LeandroSoftware.ClienteWCF
 
 Public Class FrmCuentaBancoListado
 #Region "Variables"
@@ -24,7 +24,7 @@ Public Class FrmCuentaBancoListado
 
     Private Async Sub ActualizarDatos()
         Try
-            listado = Await ClienteFEWCF.ObtenerListadoCuentasBanco(FrmPrincipal.empresaGlobal.IdEmpresa, txtDescripcion.Text)
+            listado = Await Puntoventa.ObtenerListadoCuentasBanco(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token, txtDescripcion.Text)
             dgvListado.DataSource = listado
             If listado.Count() > 0 Then
                 btnEditar.Enabled = True
@@ -42,9 +42,14 @@ Public Class FrmCuentaBancoListado
 #End Region
 
 #Region "Eventos Controles"
-    Private Sub FrmCuentaBancoListado_Shown(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Shown
-        EstablecerPropiedadesDataGridView()
-        ActualizarDatos()
+    Private Sub FrmCuentaBancoListado_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+        Try
+            EstablecerPropiedadesDataGridView()
+            ActualizarDatos()
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Close()
+        End Try
     End Sub
 
     Private Sub btnAgregar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnAgregar.Click
@@ -66,7 +71,7 @@ Public Class FrmCuentaBancoListado
     Private Async Sub btnEliminar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEliminar.Click
         If MessageBox.Show("Desea eliminar el registro actual", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
             Try
-                Await ClienteFEWCF.EliminarCuentaBanco(dgvListado.CurrentRow.Cells(0).Value)
+                Await Puntoventa.EliminarCuentaBanco(dgvListado.CurrentRow.Cells(0).Value, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub

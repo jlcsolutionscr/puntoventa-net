@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace LeandroSoftware.Core.CommonTypes
+namespace LeandroSoftware.Core.TiposComunes
 {
     [DataContract]
     public class RespuestaHaciendaDTO

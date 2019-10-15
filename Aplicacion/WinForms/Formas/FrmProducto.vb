@@ -1,5 +1,5 @@
 Imports LeandroSoftware.Core.Dominio.Entidades
-Imports LeandroSoftware.Core.ClienteWCF
+Imports LeandroSoftware.ClienteWCF
 Imports System.IO
 Imports System.Threading.Tasks
 
@@ -50,32 +50,23 @@ Public Class FrmProducto
     End Function
 
     Private Async Function CargarCombos() As Task
-        Try
-            cboTipoProducto.ValueMember = "Id"
-            cboTipoProducto.DisplayMember = "Descripcion"
-            cboTipoProducto.DataSource = Await ClienteFEWCF.ObtenerListadoTipoProducto()
-            cboTipoImpuesto.ValueMember = "Id"
-            cboTipoImpuesto.DisplayMember = "Descripcion"
-            cboTipoImpuesto.DataSource = Await ClienteFEWCF.ObtenerListadoTipoImpuesto()
-            cboUnidad.ValueMember = "Id"
-            cboUnidad.DisplayMember = "Descripcion"
-            cboUnidad.DataSource = Await ClienteFEWCF.ObtenerListadoTipoUnidad()
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-        End Try
+        cboTipoProducto.ValueMember = "Id"
+        cboTipoProducto.DisplayMember = "Descripcion"
+        cboTipoProducto.DataSource = Await Puntoventa.ObtenerListadoTipoProducto(FrmPrincipal.usuarioGlobal.Token)
+        cboTipoImpuesto.ValueMember = "Id"
+        cboTipoImpuesto.DisplayMember = "Descripcion"
+        cboTipoImpuesto.DataSource = Await Puntoventa.ObtenerListadoTipoImpuesto(FrmPrincipal.usuarioGlobal.Token)
+        cboUnidad.ValueMember = "Id"
+        cboUnidad.DisplayMember = "Descripcion"
+        cboUnidad.DataSource = Await Puntoventa.ObtenerListadoTipoUnidad(FrmPrincipal.usuarioGlobal.Token)
     End Function
 
     Private Async Function CargarComboLinea() As Task
-        Try
-            If cboTipoProducto.SelectedValue = 1 Then
-                cboLinea.DataSource = Await ClienteFEWCF.ObtenerListadoLineasDeProducto(FrmPrincipal.empresaGlobal.IdEmpresa)
-            Else
-                cboLinea.DataSource = Await ClienteFEWCF.ObtenerListadoLineasDeServicio(FrmPrincipal.empresaGlobal.IdEmpresa)
-            End If
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Exit Function
-        End Try
+        If cboTipoProducto.SelectedValue = 1 Then
+            cboLinea.DataSource = Await Puntoventa.ObtenerListadoLineasDeProducto(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+        Else
+            cboLinea.DataSource = Await Puntoventa.ObtenerListadoLineasDeServicio(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+        End If
         cboLinea.ValueMember = "Id"
         cboLinea.DisplayMember = "Descripcion"
     End Function
@@ -110,7 +101,7 @@ Public Class FrmProducto
     End Function
 
     Private Async Function CalcularPrecioConImpuesto(intIdImpuesto As Integer) As Task
-        parametroImpuesto = Await ClienteFEWCF.ObtenerParametroImpuesto(intIdImpuesto)
+        parametroImpuesto = Await Puntoventa.ObtenerParametroImpuesto(intIdImpuesto, FrmPrincipal.usuarioGlobal.Token)
         If txtPrecioVenta1.Text <> "" Then txtPrecioImpuesto1.Text = FormatoPrecio(txtPrecioVenta1.Text * (1 + (parametroImpuesto.TasaImpuesto / 100)), 2)
         If txtPrecioVenta2.Text <> "" Then txtPrecioImpuesto2.Text = FormatoPrecio(txtPrecioVenta2.Text * (1 + (parametroImpuesto.TasaImpuesto / 100)), 2)
         If txtPrecioVenta3.Text <> "" Then txtPrecioImpuesto3.Text = FormatoPrecio(txtPrecioVenta3.Text * (1 + (parametroImpuesto.TasaImpuesto / 100)), 2)
@@ -121,66 +112,68 @@ Public Class FrmProducto
 
 #Region "Eventos Controles"
     Private Async Sub FrmProducto_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        Await CargarCombos()
-        If intIdProducto > 0 Then
-            Try
-                datos = Await ClienteFEWCF.ObtenerProducto(intIdProducto)
-            Catch ex As Exception
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Close()
-                Exit Sub
-            End Try
-            If datos Is Nothing Then
-                MessageBox.Show("El producto seleccionado no existe", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-                Close()
-                Exit Sub
+        Try
+            Await CargarCombos()
+            If intIdProducto > 0 Then
+                datos = Await Puntoventa.ObtenerProducto(intIdProducto, FrmPrincipal.usuarioGlobal.Token)
+                If datos Is Nothing Then
+                    Throw New Exception("El producto seleccionado no existe")
+                End If
+                txtIdProducto.Text = datos.IdProducto
+                cboTipoProducto.SelectedValue = datos.Tipo
+                Await CargarComboLinea()
+                cboLinea.SelectedValue = datos.IdLinea
+                txtCodigo.Text = datos.Codigo
+                proveedor = datos.Proveedor
+                txtProveedor.Text = proveedor.Nombre
+                txtDescripcion.Text = datos.Descripcion
+                txtCantidad.Text = FormatoPrecio(datos.Cantidad, 2)
+                txtPrecioCosto.Text = FormatoPrecio(datos.PrecioCosto, 2)
+                txtPrecioVenta1.Text = FormatoPrecio(datos.PrecioVenta1, 2)
+                txtPrecioVenta2.Text = FormatoPrecio(datos.PrecioVenta2, 2)
+                txtPrecioVenta3.Text = FormatoPrecio(datos.PrecioVenta3, 2)
+                txtPrecioVenta4.Text = FormatoPrecio(datos.PrecioVenta4, 2)
+                txtPrecioVenta5.Text = FormatoPrecio(datos.PrecioVenta5, 2)
+                cboTipoImpuesto.SelectedValue = datos.IdImpuesto
+                txtIndExistencia.Text = FormatoPrecio(datos.IndExistencia, 2)
+                cboUnidad.SelectedValue = datos.IdTipoUnidad
+                If datos.Imagen IsNot Nothing Then
+                    ptbImagen.Image = Bytes_Imagen(datos.Imagen)
+                End If
+                Await CalcularPrecioConImpuesto(datos.IdImpuesto)
+            Else
+                datos = New Producto
+                Await CargarComboLinea()
+                parametroImpuesto = Await Puntoventa.ObtenerParametroImpuesto(1, FrmPrincipal.usuarioGlobal.Token)
+                txtCantidad.Text = FormatoPrecio(0, 2)
+                txtPrecioCosto.Text = FormatoPrecio(0, 2)
+                txtPrecioVenta1.Text = FormatoPrecio(0, 2)
+                txtPrecioVenta2.Text = FormatoPrecio(0, 2)
+                txtPrecioVenta3.Text = FormatoPrecio(0, 2)
+                txtPrecioVenta4.Text = FormatoPrecio(0, 2)
+                txtPrecioVenta5.Text = FormatoPrecio(0, 2)
+                txtPrecioImpuesto1.Text = FormatoPrecio(0, 2)
+                txtPrecioImpuesto2.Text = FormatoPrecio(0, 2)
+                txtPrecioImpuesto3.Text = FormatoPrecio(0, 2)
+                txtPrecioImpuesto4.Text = FormatoPrecio(0, 2)
+                txtPrecioImpuesto5.Text = FormatoPrecio(0, 2)
+                txtIndExistencia.Text = FormatoPrecio(0, 2)
             End If
-            txtIdProducto.Text = datos.IdProducto
-            cboTipoProducto.SelectedValue = datos.Tipo
-            Await CargarComboLinea()
-            cboLinea.SelectedValue = datos.IdLinea
-            txtCodigo.Text = datos.Codigo
-            proveedor = datos.Proveedor
-            txtProveedor.Text = proveedor.Nombre
-            txtDescripcion.Text = datos.Descripcion
-            txtCantidad.Text = FormatoPrecio(datos.Cantidad, 2)
-            txtPrecioCosto.Text = FormatoPrecio(datos.PrecioCosto, 2)
-            txtPrecioVenta1.Text = FormatoPrecio(datos.PrecioVenta1, 2)
-            txtPrecioVenta2.Text = FormatoPrecio(datos.PrecioVenta2, 2)
-            txtPrecioVenta3.Text = FormatoPrecio(datos.PrecioVenta3, 2)
-            txtPrecioVenta4.Text = FormatoPrecio(datos.PrecioVenta4, 2)
-            txtPrecioVenta5.Text = FormatoPrecio(datos.PrecioVenta5, 2)
-            cboTipoImpuesto.SelectedValue = datos.IdImpuesto
-            txtIndExistencia.Text = FormatoPrecio(datos.IndExistencia, 2)
-            cboUnidad.SelectedValue = datos.IdTipoUnidad
-            If datos.Imagen IsNot Nothing Then
-                ptbImagen.Image = Bytes_Imagen(datos.Imagen)
-            End If
-            Await CalcularPrecioConImpuesto(datos.IdImpuesto)
-        Else
-            datos = New Producto
-            Await CargarComboLinea()
-            parametroImpuesto = Await ClienteFEWCF.ObtenerParametroImpuesto(1)
-            txtCantidad.Text = FormatoPrecio(0, 2)
-            txtPrecioCosto.Text = FormatoPrecio(0, 2)
-            txtPrecioVenta1.Text = FormatoPrecio(0, 2)
-            txtPrecioVenta2.Text = FormatoPrecio(0, 2)
-            txtPrecioVenta3.Text = FormatoPrecio(0, 2)
-            txtPrecioVenta4.Text = FormatoPrecio(0, 2)
-            txtPrecioVenta5.Text = FormatoPrecio(0, 2)
-            txtPrecioImpuesto1.Text = FormatoPrecio(0, 2)
-            txtPrecioImpuesto2.Text = FormatoPrecio(0, 2)
-            txtPrecioImpuesto3.Text = FormatoPrecio(0, 2)
-            txtPrecioImpuesto4.Text = FormatoPrecio(0, 2)
-            txtPrecioImpuesto5.Text = FormatoPrecio(0, 2)
-            txtIndExistencia.Text = FormatoPrecio(0, 2)
-        End If
-        bolInit = False
+            bolInit = False
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Close()
+        End Try
     End Sub
 
     Private Async Sub cboTipoProducto_SelectedValueChanged(ByVal sender As Object, ByVal e As EventArgs) Handles cboTipoProducto.SelectedValueChanged
         If Not bolInit And cboTipoProducto.SelectedValue IsNot Nothing Then
-            Await CargarComboLinea()
+            Try
+                Await CargarComboLinea()
+            Catch ex As Exception
+                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Close()
+            End Try
         End If
     End Sub
 
@@ -219,10 +212,9 @@ Public Class FrmProducto
         End If
         Try
             If datos.IdProducto = 0 Then
-                Dim strIdProducto As String = Await ClienteFEWCF.AgregarProducto(datos)
-                txtIdProducto.Text = strIdProducto
+                Await Puntoventa.AgregarProducto(datos, FrmPrincipal.usuarioGlobal.Token)
             Else
-                Await ClienteFEWCF.ActualizarProducto(datos)
+                Await Puntoventa.ActualizarProducto(datos, FrmPrincipal.usuarioGlobal.Token)
             End If
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -238,7 +230,7 @@ Public Class FrmProducto
         formBusquedaProveedor.ShowDialog()
         If FrmPrincipal.intBusqueda > 0 Then
             Try
-                proveedor = Await ClienteFEWCF.ObtenerProveedor(FrmPrincipal.intBusqueda)
+                proveedor = Await Puntoventa.ObtenerProveedor(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
@@ -285,62 +277,62 @@ Public Class FrmProducto
 
     Private Sub PrecioVenta1_Validating(ByVal sender As Object, ByVal e As EventArgs) Handles txtPrecioVenta1.Validated
         If txtPrecioVenta1.Text = "" Then txtPrecioVenta1.Text = "0"
-        txtPrecioVenta1.Text = FormatoPrecio(txtPrecioVenta1.Text, 2)
+        txtPrecioVenta1.Text = FormatoPrecio(txtPrecioVenta1.Text, 3)
         txtPrecioImpuesto1.Text = FormatoPrecio(txtPrecioVenta1.Text * (1 + (parametroImpuesto.TasaImpuesto / 100)), 2)
     End Sub
 
     Private Sub txtPrecioImpuesto1_Validating(sender As Object, e As EventArgs) Handles txtPrecioImpuesto1.Validated
         If txtPrecioImpuesto1.Text = "" Then txtPrecioImpuesto1.Text = "0"
         txtPrecioImpuesto1.Text = FormatoPrecio(txtPrecioImpuesto1.Text, 2)
-        txtPrecioVenta1.Text = FormatoPrecio(Math.Round(txtPrecioImpuesto1.Text / (1 + (parametroImpuesto.TasaImpuesto / 100)), 1), 2)
+        txtPrecioVenta1.Text = FormatoPrecio(Math.Round(txtPrecioImpuesto1.Text / (1 + (parametroImpuesto.TasaImpuesto / 100)), 3), 3)
     End Sub
 
     Private Sub PrecioVenta2_Validating(ByVal sender As Object, ByVal e As EventArgs) Handles txtPrecioVenta2.Validated
         If txtPrecioVenta2.Text = "" Then txtPrecioVenta2.Text = "0"
-        txtPrecioVenta2.Text = FormatoPrecio(txtPrecioVenta2.Text, 2)
+        txtPrecioVenta2.Text = FormatoPrecio(txtPrecioVenta2.Text, 3)
         txtPrecioImpuesto2.Text = FormatoPrecio(txtPrecioVenta2.Text * (1 + (parametroImpuesto.TasaImpuesto / 100)), 2)
     End Sub
 
     Private Sub txtPrecioImpuesto2_Validating(sender As Object, e As EventArgs) Handles txtPrecioImpuesto2.Validated
         If txtPrecioImpuesto2.Text = "" Then txtPrecioImpuesto2.Text = "0"
         txtPrecioImpuesto2.Text = FormatoPrecio(txtPrecioImpuesto2.Text, 2)
-        txtPrecioVenta2.Text = FormatoPrecio(Math.Round(txtPrecioImpuesto2.Text / (1 + (parametroImpuesto.TasaImpuesto / 100)), 1), 2)
+        txtPrecioVenta2.Text = FormatoPrecio(Math.Round(txtPrecioImpuesto2.Text / (1 + (parametroImpuesto.TasaImpuesto / 100)), 3), 3)
     End Sub
 
     Private Sub PrecioVenta3_Validating(ByVal sender As Object, ByVal e As EventArgs) Handles txtPrecioVenta3.Validated
         If txtPrecioVenta3.Text = "" Then txtPrecioVenta3.Text = "0"
-        txtPrecioVenta3.Text = FormatoPrecio(txtPrecioVenta3.Text, 2)
+        txtPrecioVenta3.Text = FormatoPrecio(txtPrecioVenta3.Text, 3)
         txtPrecioImpuesto3.Text = FormatoPrecio(txtPrecioVenta3.Text * (1 + (parametroImpuesto.TasaImpuesto / 100)), 2)
     End Sub
 
     Private Sub txtPrecioImpuesto3_Validating(sender As Object, e As EventArgs) Handles txtPrecioImpuesto3.Validated
         If txtPrecioImpuesto3.Text = "" Then txtPrecioImpuesto3.Text = "0"
         txtPrecioImpuesto3.Text = FormatoPrecio(txtPrecioImpuesto3.Text, 2)
-        txtPrecioVenta3.Text = FormatoPrecio(Math.Round(txtPrecioImpuesto3.Text / (1 + (parametroImpuesto.TasaImpuesto / 100)), 1), 2)
+        txtPrecioVenta3.Text = FormatoPrecio(Math.Round(txtPrecioImpuesto3.Text / (1 + (parametroImpuesto.TasaImpuesto / 100)), 3), 3)
     End Sub
 
     Private Sub PrecioVenta4_Validating(ByVal sender As Object, ByVal e As EventArgs) Handles txtPrecioVenta4.Validated
         If txtPrecioVenta4.Text = "" Then txtPrecioVenta4.Text = "0"
-        txtPrecioVenta4.Text = FormatoPrecio(txtPrecioVenta4.Text, 2)
+        txtPrecioVenta4.Text = FormatoPrecio(txtPrecioVenta4.Text, 3)
         txtPrecioImpuesto4.Text = FormatoPrecio(txtPrecioVenta4.Text * (1 + (parametroImpuesto.TasaImpuesto / 100)), 2)
     End Sub
 
     Private Sub txtPrecioImpuesto4_Validating(sender As Object, e As EventArgs) Handles txtPrecioImpuesto4.Validated
         If txtPrecioImpuesto4.Text = "" Then txtPrecioImpuesto4.Text = "0"
         txtPrecioImpuesto4.Text = FormatoPrecio(txtPrecioImpuesto4.Text, 2)
-        txtPrecioVenta4.Text = FormatoPrecio(Math.Round(txtPrecioImpuesto4.Text / (1 + (parametroImpuesto.TasaImpuesto / 100)), 1), 2)
+        txtPrecioVenta4.Text = FormatoPrecio(Math.Round(txtPrecioImpuesto4.Text / (1 + (parametroImpuesto.TasaImpuesto / 100)), 3), 3)
     End Sub
 
     Private Sub PrecioVenta5_Validating(ByVal sender As Object, ByVal e As EventArgs) Handles txtPrecioVenta5.Validated
         If txtPrecioVenta5.Text = "" Then txtPrecioVenta5.Text = "0"
-        txtPrecioVenta5.Text = FormatoPrecio(txtPrecioVenta5.Text, 2)
+        txtPrecioVenta5.Text = FormatoPrecio(txtPrecioVenta5.Text, 3)
         txtPrecioImpuesto5.Text = FormatoPrecio(txtPrecioVenta5.Text * (1 + (parametroImpuesto.TasaImpuesto / 100)), 2)
     End Sub
 
     Private Sub txtPrecioImpuesto5_Validating(sender As Object, e As EventArgs) Handles txtPrecioImpuesto5.Validated
         If txtPrecioImpuesto5.Text = "" Then txtPrecioImpuesto5.Text = "0"
         txtPrecioImpuesto5.Text = FormatoPrecio(txtPrecioImpuesto5.Text, 2)
-        txtPrecioVenta5.Text = FormatoPrecio(Math.Round(txtPrecioImpuesto5.Text / (1 + (parametroImpuesto.TasaImpuesto / 100)), 1), 2)
+        txtPrecioVenta5.Text = FormatoPrecio(Math.Round(txtPrecioImpuesto5.Text / (1 + (parametroImpuesto.TasaImpuesto / 100)), 3), 3)
     End Sub
 
     Private Sub IndExistencia_Validating(ByVal sender As Object, ByVal e As EventArgs) Handles txtIndExistencia.Validated
@@ -353,7 +345,7 @@ Public Class FrmProducto
     End Sub
 
     Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As KeyPressEventArgs) Handles txtCantidad.KeyPress, txtPrecioCosto.KeyPress, txtPrecioVenta1.KeyPress, txtPrecioVenta2.KeyPress, txtPrecioVenta3.KeyPress, txtPrecioVenta4.KeyPress, txtPrecioVenta5.KeyPress, txtIndExistencia.KeyPress, txtPrecioImpuesto1.KeyPress, txtPrecioImpuesto2.KeyPress, txtPrecioImpuesto3.KeyPress, txtPrecioImpuesto4.KeyPress, txtPrecioImpuesto5.KeyPress
-        FrmPrincipal.ValidaNumero(e, sender, True, 2, ".")
+        FrmPrincipal.ValidaNumero(e, sender, True, 3, ".")
     End Sub
 
     Private Async Sub cboTipoImpuesto_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboTipoImpuesto.SelectedIndexChanged

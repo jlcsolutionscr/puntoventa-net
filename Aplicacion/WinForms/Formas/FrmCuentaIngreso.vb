@@ -22,18 +22,17 @@ Public Class FrmCuentaIngreso
         If intIdCuenta > 0 Then
             Try
                 'datos = servicioIngresos.obtenerCuentaIngreso(intIdCuenta)
+                If datos Is Nothing Then
+                    MessageBox.Show("La cuenta de ingreso seleccionada no existe", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                    Close()
+                    Exit Sub
+                End If
+                txtIdCuenta.Text = datos.IdCuenta
+                txtDescripcion.Text = datos.Descripcion
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Close()
-                Exit Sub
             End Try
-            If datos Is Nothing Then
-                MessageBox.Show("La cuenta de ingreso seleccionada no existe", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-                Close()
-                Exit Sub
-            End If
-            txtIdCuenta.Text = datos.IdCuenta
-            txtDescripcion.Text = datos.Descripcion
         Else
             datos = New CuentaIngreso
         End If

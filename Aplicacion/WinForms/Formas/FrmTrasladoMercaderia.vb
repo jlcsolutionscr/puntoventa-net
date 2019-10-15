@@ -134,14 +134,9 @@ Public Class FrmTrasladoMercaderia
     End Sub
 
     Private Sub CargarCombos()
-        Try
-            cboIdSucursal.ValueMember = "IdSucursal"
-            cboIdSucursal.DisplayMember = "Nombre"
-            'cboIdSucursal.DataSource = servicioTraslados.ObtenerListaSucursales(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Exit Sub
-        End Try
+        cboIdSucursal.ValueMember = "IdSucursal"
+        cboIdSucursal.DisplayMember = "Nombre"
+        'cboIdSucursal.DataSource = servicioTraslados.ObtenerListaSucursales(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
         cboIdSucursal.SelectedValue = 0
     End Sub
 
@@ -190,17 +185,22 @@ Public Class FrmTrasladoMercaderia
 
 #Region "Eventos Controles"
     Private Sub FrmTraslado_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
-        CargarCombos()
-        If FrmPrincipal.empresaGlobal.AutoCompletaProducto = True Then
-            CargarAutoCompletarProducto()
-        End If
-        IniciaDetalleTraslado()
-        EstablecerPropiedadesDataGridView()
-        grdDetalleTraslado.DataSource = dtbDetalleTraslado
-        bolInit = False
-        txtCantidad.Text = "1"
-        txtTotal.Text = FormatNumber(0, 2)
+        Try
+            txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
+            CargarCombos()
+            If FrmPrincipal.empresaGlobal.AutoCompletaProducto = True Then
+                CargarAutoCompletarProducto()
+            End If
+            IniciaDetalleTraslado()
+            EstablecerPropiedadesDataGridView()
+            grdDetalleTraslado.DataSource = dtbDetalleTraslado
+            bolInit = False
+            txtCantidad.Text = "1"
+            txtTotal.Text = FormatNumber(0, 2)
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Close()
+        End Try
     End Sub
 
     Private Sub CmdAgregar_Click(sender As Object, e As EventArgs) Handles btnAgregar.Click

@@ -1,4 +1,4 @@
-﻿Imports LeandroSoftware.Core.ClienteWCF
+﻿Imports LeandroSoftware.ClienteWCF
 
 Public Class FrmVendedorListado
 #Region "Variables"
@@ -23,7 +23,7 @@ Public Class FrmVendedorListado
 
     Private Async Sub ActualizarDatos()
         Try
-            listado = Await ClienteFEWCF.ObtenerListadoVendedores(FrmPrincipal.empresaGlobal.IdEmpresa, txtNombre.Text)
+            listado = Await Puntoventa.ObtenerListadoVendedores(FrmPrincipal.empresaGlobal.IdEmpresa, txtNombre.Text)
             dgvListado.DataSource = listado
             If listado.Count() > 0 Then
                 btnEditar.Enabled = True
@@ -42,9 +42,14 @@ Public Class FrmVendedorListado
 #End Region
 
 #Region "Eventos Controles"
-    Private Sub FrmUsuarioListado_Shown(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Shown
-        EstablecerPropiedadesDataGridView()
-        ActualizarDatos()
+    Private Sub FrmUsuarioListado_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+        Try
+            EstablecerPropiedadesDataGridView()
+            ActualizarDatos()
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Close()
+        End Try
     End Sub
 
     Private Sub btnAgregar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnAgregar.Click
@@ -66,7 +71,7 @@ Public Class FrmVendedorListado
     Private Async Sub btnEliminar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEliminar.Click
         If MessageBox.Show("Desea eliminar el registro actual", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
             Try
-                Await ClienteFEWCF.EliminarVendedor(dgvListado.CurrentRow.Cells(0).Value)
+                Await Puntoventa.EliminarVendedor(dgvListado.CurrentRow.Cells(0).Value, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub

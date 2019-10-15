@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 using System.Net;
 using Unity.Lifetime;
 using Unity.Injection;
-using LeandroSoftware.Core.CommonTypes;
+using LeandroSoftware.Core.TiposComunes;
 using LeandroSoftware.ServicioWeb.TiposDatosHacienda;
 using System.Web.Script.Serialization;
 using System.Xml;
@@ -329,8 +329,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 facturaElectronica.MedioPago = medioPagoList.ToArray();
                 List<FacturaElectronicaLineaDetalle> detalleServicioList = new List<FacturaElectronicaLineaDetalle>();
-                decimal decTotalMercanciasGrabadas = 0;
-                decimal decTotalServiciosGrabados = 0;
+                decimal decTotalMercanciasGravadas = 0;
+                decimal decTotalServiciosGravados = 0;
                 decimal decTotalMercanciasExcentas = 0;
                 decimal decTotalServiciosExcentos = 0;
                 decimal decTotalMercanciasExoneradas = 0;
@@ -351,23 +351,23 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         lineaDetalle.UnidadMedida = FacturaElectronicaUnidadMedidaType.Sp;
                     lineaDetalle.Detalle = detalleFactura.Descripcion;
                     decimal montoTotalPorLinea = Math.Round(detalleFactura.Cantidad * detalleFactura.PrecioVenta, 5);
-                    decimal decMontoGrabado = montoTotalPorLinea;
+                    decimal decMontoGravado = montoTotalPorLinea;
                     decimal decMontoExonerado = 0;
                     if (!detalleFactura.Excento)
                     {
                         if (factura.PorcentajeExoneracion > 0)
                         {
-                            decMontoGrabado = Math.Round(montoTotalPorLinea * (1 - (decimal.Parse(factura.PorcentajeExoneracion.ToString()) / 100)), 5);
-                            decMontoExonerado = Math.Round(montoTotalPorLinea - decMontoGrabado, 5);
+                            decMontoGravado = Math.Round(montoTotalPorLinea * (1 - (decimal.Parse(factura.PorcentajeExoneracion.ToString()) / 100)), 5);
+                            decMontoExonerado = Math.Round(montoTotalPorLinea - decMontoGravado, 5);
                         }
                         if (detalleFactura.Producto.Tipo == StaticTipoProducto.Producto)
                         {
-                            decTotalMercanciasGrabadas += decMontoGrabado;
+                            decTotalMercanciasGravadas += decMontoGravado;
                             decTotalMercanciasExoneradas += decMontoExonerado;
                         }
                         else
                         {
-                            decTotalServiciosGrabados += decMontoGrabado;
+                            decTotalServiciosGravados += decMontoGravado;
                             decTotalServiciosExonerados += decMontoExonerado;
                         }
                     }
@@ -463,19 +463,19 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     resumenFactura.TotalDescuentos = factura.Descuento;
                     resumenFactura.TotalDescuentosSpecified = true;
                 }
-                resumenFactura.TotalMercanciasGravadas = decTotalMercanciasGrabadas;
+                resumenFactura.TotalMercanciasGravadas = decTotalMercanciasGravadas;
                 resumenFactura.TotalMercanciasGravadasSpecified = true;
                 resumenFactura.TotalMercExonerada = decTotalMercanciasExoneradas;
                 resumenFactura.TotalMercExoneradaSpecified = true;
                 resumenFactura.TotalMercanciasExentas = decTotalMercanciasExcentas;
                 resumenFactura.TotalMercanciasExentasSpecified = true;
-                resumenFactura.TotalServGravados = decTotalServiciosGrabados;
+                resumenFactura.TotalServGravados = decTotalServiciosGravados;
                 resumenFactura.TotalServGravadosSpecified = true;
                 resumenFactura.TotalServExonerado = decTotalServiciosExonerados;
                 resumenFactura.TotalServExoneradoSpecified = true;
                 resumenFactura.TotalServExentos = decTotalServiciosExcentos;
                 resumenFactura.TotalServExentosSpecified = true;
-                resumenFactura.TotalGravado = decTotalMercanciasGrabadas + decTotalServiciosGrabados;
+                resumenFactura.TotalGravado = decTotalMercanciasGravadas + decTotalServiciosGravados;
                 resumenFactura.TotalGravadoSpecified = true;
                 resumenFactura.TotalExonerado = decTotalMercanciasExoneradas + decTotalServiciosExonerados;
                 resumenFactura.TotalExoneradoSpecified = true;
@@ -604,8 +604,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 tiqueteElectronico.MedioPago = medioPagoList.ToArray();
                 List<TiqueteElectronicoLineaDetalle> detalleServicioList = new List<TiqueteElectronicoLineaDetalle>();
-                decimal decTotalMercanciasGrabadas = 0;
-                decimal decTotalServiciosGrabados = 0;
+                decimal decTotalMercanciasGravadas = 0;
+                decimal decTotalServiciosGravados = 0;
                 decimal decTotalMercanciasExcentas = 0;
                 decimal decTotalServiciosExcentos = 0;
                 decimal decTotalMercanciasExoneradas = 0;
@@ -626,23 +626,23 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         lineaDetalle.UnidadMedida = TiqueteElectronicoUnidadMedidaType.Sp;
                     lineaDetalle.Detalle = detalleFactura.Descripcion;
                     decimal montoTotalPorLinea = Math.Round(detalleFactura.Cantidad * detalleFactura.PrecioVenta, 5);
-                    decimal decMontoGrabado = montoTotalPorLinea;
+                    decimal decMontoGravado = montoTotalPorLinea;
                     decimal decMontoExonerado = 0;
                     if (!detalleFactura.Excento)
                     {
                         if (factura.PorcentajeExoneracion > 0)
                         {
-                            decMontoGrabado = Math.Round(montoTotalPorLinea * (1 - (decimal.Parse(factura.PorcentajeExoneracion.ToString()) / 100)), 5);
-                            decMontoExonerado = Math.Round(montoTotalPorLinea - decMontoGrabado, 5);
+                            decMontoGravado = Math.Round(montoTotalPorLinea * (1 - (decimal.Parse(factura.PorcentajeExoneracion.ToString()) / 100)), 5);
+                            decMontoExonerado = Math.Round(montoTotalPorLinea - decMontoGravado, 5);
                         }
                         if (detalleFactura.Producto.Tipo == StaticTipoProducto.Producto)
                         {
-                            decTotalMercanciasGrabadas += decMontoGrabado;
+                            decTotalMercanciasGravadas += decMontoGravado;
                             decTotalMercanciasExoneradas += decMontoExonerado;
                         }
                         else
                         {
-                            decTotalServiciosGrabados += decMontoGrabado;
+                            decTotalServiciosGravados += decMontoGravado;
                             decTotalServiciosExonerados += decMontoExonerado;
                         }
                     }
@@ -738,19 +738,19 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     resumenFactura.TotalDescuentos = factura.Descuento;
                     resumenFactura.TotalDescuentosSpecified = true;
                 }
-                resumenFactura.TotalMercanciasGravadas = decTotalMercanciasGrabadas;
+                resumenFactura.TotalMercanciasGravadas = decTotalMercanciasGravadas;
                 resumenFactura.TotalMercanciasGravadasSpecified = true;
                 resumenFactura.TotalMercExonerada = decTotalMercanciasExoneradas;
                 resumenFactura.TotalMercExoneradaSpecified = true;
                 resumenFactura.TotalMercanciasExentas = decTotalMercanciasExcentas;
                 resumenFactura.TotalMercanciasExentasSpecified = true;
-                resumenFactura.TotalServGravados = decTotalServiciosGrabados;
+                resumenFactura.TotalServGravados = decTotalServiciosGravados;
                 resumenFactura.TotalServGravadosSpecified = true;
                 resumenFactura.TotalServExonerado = decTotalServiciosExonerados;
                 resumenFactura.TotalServExoneradoSpecified = true;
                 resumenFactura.TotalServExentos = decTotalServiciosExcentos;
                 resumenFactura.TotalServExentosSpecified = true;
-                resumenFactura.TotalGravado = decTotalMercanciasGrabadas + decTotalServiciosGrabados;
+                resumenFactura.TotalGravado = decTotalMercanciasGravadas + decTotalServiciosGravados;
                 resumenFactura.TotalGravadoSpecified = true;
                 resumenFactura.TotalExonerado = decTotalMercanciasExoneradas + decTotalServiciosExonerados;
                 resumenFactura.TotalExoneradoSpecified = true;
@@ -921,8 +921,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 notaCreditoElectronica.MedioPago = medioPagoList.ToArray();
                 List<NotaCreditoElectronicaLineaDetalle> detalleServicioList = new List<NotaCreditoElectronicaLineaDetalle>();
-                decimal decTotalMercanciasGrabadas = 0;
-                decimal decTotalServiciosGrabados = 0;
+                decimal decTotalMercanciasGravadas = 0;
+                decimal decTotalServiciosGravados = 0;
                 decimal decTotalMercanciasExcentas = 0;
                 decimal decTotalServiciosExcentos = 0;
                 decimal decTotalMercanciasExoneradas = 0;
@@ -943,23 +943,23 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         lineaDetalle.UnidadMedida = NotaCreditoElectronicaUnidadMedidaType.Sp;
                     lineaDetalle.Detalle = detalleFactura.Descripcion;
                     decimal montoTotalPorLinea = Math.Round(detalleFactura.Cantidad * detalleFactura.PrecioVenta, 5);
-                    decimal decMontoGrabado = montoTotalPorLinea;
+                    decimal decMontoGravado = montoTotalPorLinea;
                     decimal decMontoExonerado = 0;
                     if (!detalleFactura.Excento)
                     {
                         if (factura.PorcentajeExoneracion > 0)
                         {
-                            decMontoGrabado = Math.Round(montoTotalPorLinea * (1 - (decimal.Parse(factura.PorcentajeExoneracion.ToString()) / 100)), 5);
-                            decMontoExonerado = Math.Round(montoTotalPorLinea - decMontoGrabado, 5);
+                            decMontoGravado = Math.Round(montoTotalPorLinea * (1 - (decimal.Parse(factura.PorcentajeExoneracion.ToString()) / 100)), 5);
+                            decMontoExonerado = Math.Round(montoTotalPorLinea - decMontoGravado, 5);
                         }
                         if (detalleFactura.Producto.Tipo == StaticTipoProducto.Producto)
                         {
-                            decTotalMercanciasGrabadas += decMontoGrabado;
+                            decTotalMercanciasGravadas += decMontoGravado;
                             decTotalMercanciasExoneradas += decMontoExonerado;
                         }
                         else
                         {
-                            decTotalServiciosGrabados += decMontoGrabado;
+                            decTotalServiciosGravados += decMontoGravado;
                             decTotalServiciosExonerados += decMontoExonerado;
                         }
                     }
@@ -1055,19 +1055,19 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     resumenFactura.TotalDescuentos = factura.Descuento;
                     resumenFactura.TotalDescuentosSpecified = true;
                 }
-                resumenFactura.TotalMercanciasGravadas = decTotalMercanciasGrabadas;
+                resumenFactura.TotalMercanciasGravadas = decTotalMercanciasGravadas;
                 resumenFactura.TotalMercanciasGravadasSpecified = true;
                 resumenFactura.TotalMercExonerada = decTotalMercanciasExoneradas;
                 resumenFactura.TotalMercExoneradaSpecified = true;
                 resumenFactura.TotalMercanciasExentas = decTotalMercanciasExcentas;
                 resumenFactura.TotalMercanciasExentasSpecified = true;
-                resumenFactura.TotalServGravados = decTotalServiciosGrabados;
+                resumenFactura.TotalServGravados = decTotalServiciosGravados;
                 resumenFactura.TotalServGravadosSpecified = true;
                 resumenFactura.TotalServExonerado = decTotalServiciosExonerados;
                 resumenFactura.TotalServExoneradoSpecified = true;
                 resumenFactura.TotalServExentos = decTotalServiciosExcentos;
                 resumenFactura.TotalServExentosSpecified = true;
-                resumenFactura.TotalGravado = decTotalMercanciasGrabadas + decTotalServiciosGrabados;
+                resumenFactura.TotalGravado = decTotalMercanciasGravadas + decTotalServiciosGravados;
                 resumenFactura.TotalGravadoSpecified = true;
                 resumenFactura.TotalExonerado = decTotalMercanciasExoneradas + decTotalServiciosExonerados;
                 resumenFactura.TotalExoneradoSpecified = true;

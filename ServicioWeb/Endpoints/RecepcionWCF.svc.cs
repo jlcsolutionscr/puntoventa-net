@@ -1,7 +1,7 @@
 ﻿using LeandroSoftware.ServicioWeb.Contexto;
 using LeandroSoftware.ServicioWeb.Servicios;
 using LeandroSoftware.Core.Servicios;
-using LeandroSoftware.Core.CommonTypes;
+using LeandroSoftware.Core.TiposComunes;
 using System;
 using System.Web.Configuration;
 using Unity;

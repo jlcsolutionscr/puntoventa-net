@@ -40,9 +40,14 @@
 #End Region
 
 #Region "Eventos Controles"
-    Private Sub FrmCuentaIngresoListado_Shown(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Shown
-        EstablecerPropiedadesDataGridView()
-        ActualizarDatos()
+    Private Sub FrmCuentaIngresoListado_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+        Try
+            EstablecerPropiedadesDataGridView()
+            ActualizarDatos()
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Close()
+        End Try
     End Sub
 
     Private Sub btnAgregar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnAgregar.Click

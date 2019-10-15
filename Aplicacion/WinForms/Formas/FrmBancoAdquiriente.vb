@@ -1,5 +1,5 @@
 Imports LeandroSoftware.Core.Dominio.Entidades
-Imports LeandroSoftware.Core.ClienteWCF
+Imports LeandroSoftware.ClienteWCF
 
 Public Class FrmBancoAdquiriente
 #Region "Variables"
@@ -31,7 +31,7 @@ Public Class FrmBancoAdquiriente
     Private Async Sub FrmBancoAdquiriente_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         If intIdBanco > 0 Then
             Try
-                datos = Await ClienteFEWCF.ObtenerBancoAdquiriente(intIdBanco)
+                datos = Await Puntoventa.ObtenerBancoAdquiriente(intIdBanco, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                 Close()
@@ -71,10 +71,9 @@ Public Class FrmBancoAdquiriente
         datos.PorcentajeComision = txtComision.Text
         Try
             If datos.IdBanco = 0 Then
-                Dim strIdBanco As String = Await ClienteFEWCF.AgregarBancoAdquiriente(datos)
-                txtIdBanco.Text = strIdBanco
+                Await Puntoventa.AgregarBancoAdquiriente(datos, FrmPrincipal.usuarioGlobal.Token)
             Else
-                Await ClienteFEWCF.ActualizarBancoAdquiriente(datos)
+                Await Puntoventa.ActualizarBancoAdquiriente(datos, FrmPrincipal.usuarioGlobal.Token)
             End If
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)

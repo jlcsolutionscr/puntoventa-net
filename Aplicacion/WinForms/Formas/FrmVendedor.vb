@@ -1,5 +1,5 @@
 Imports LeandroSoftware.Core.Dominio.Entidades
-Imports LeandroSoftware.Core.ClienteWCF
+Imports LeandroSoftware.ClienteWCF
 
 Public Class FrmVendedor
 #Region "Variables"
@@ -21,24 +21,21 @@ Public Class FrmVendedor
 
 #Region "Eventos Controles"
     Private Async Sub FrmUsuario_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        If intIdVendedor > 0 Then
-            Try
-                datos = Await ClienteFEWCF.ObtenerVendedor(intIdVendedor)
-            Catch ex As Exception
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-                Close()
-                Exit Sub
-            End Try
-            If datos Is Nothing Then
-                MessageBox.Show("El vendedor seleccionado no existe", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-                Close()
-                Exit Sub
+        Try
+            If intIdVendedor > 0 Then
+                datos = Await Puntoventa.ObtenerVendedor(intIdVendedor, FrmPrincipal.usuarioGlobal.Token)
+                If datos Is Nothing Then
+                    Throw New Exception("El vendedor seleccionado no existe")
+                End If
+                txtIdVendedor.Text = datos.IdVendedor
+                txtNombre.Text = datos.Nombre
+            Else
+                datos = New Vendedor
             End If
-            txtIdVendedor.Text = datos.IdVendedor
-            txtNombre.Text = datos.Nombre
-        Else
-            datos = New Vendedor
-        End If
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Close()
+        End Try
     End Sub
 
     Private Sub btnCancelar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnCancelar.Click
@@ -57,10 +54,9 @@ Public Class FrmVendedor
         datos.Nombre = txtNombre.Text
         Try
             If datos.IdVendedor = 0 Then
-                Dim strIdVendedor As String = Await ClienteFEWCF.AgregarVendedor(datos)
-                txtIdVendedor.Text = strIdVendedor
+                Await Puntoventa.AgregarVendedor(datos, FrmPrincipal.usuarioGlobal.Token)
             Else
-                Await ClienteFEWCF.ActualizarVendedor(datos)
+                Await Puntoventa.ActualizarVendedor(datos, FrmPrincipal.usuarioGlobal.Token)
             End If
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
