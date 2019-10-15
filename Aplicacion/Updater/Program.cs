@@ -11,7 +11,7 @@ namespace LeandroSoftware.Updater
         static WebClient client = new WebClient();
         static string strMSIFileName = "puntoventaJLC.msi";
         static string strMSIFilePath = Path.GetTempPath() + strMSIFileName;
-        private static string strServicioPuntoventaURL = ConfigurationManager.AppSettings["ServicioPuntoventaURL"];
+        private static string strServicioPuntoventaURL = ConfigurationManager.AppSettings["ServicioURL"];
 
         static void Main(string[] args)
         {
@@ -23,7 +23,7 @@ namespace LeandroSoftware.Updater
             }
             Console.WriteLine("Procesos del sistema en memoria cerrados satisfactoriamente. . .\n");
             Console.WriteLine("------------------------------------------------------------------\n");
-            Console.WriteLine("Descarga de archivos de actualización iniciada:");
+            Console.WriteLine("Descarga de archivos de actualización en proceso. Espere por favor. . .");
             try
             {
                 client.DownloadFile(strServicioPuntoventaURL + "/descargaractualizacion", strMSIFilePath);

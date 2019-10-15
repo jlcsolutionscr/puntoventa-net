@@ -69,6 +69,8 @@ Partial Class FrmCliente
         Me.cboIdTipoPrecio = New System.Windows.Forms.ComboBox()
         Me.chkExonerado = New System.Windows.Forms.CheckBox()
         Me.Label11 = New System.Windows.Forms.Label()
+        Me.cboTipoImpuesto = New System.Windows.Forms.ComboBox()
+        Me.Label12 = New System.Windows.Forms.Label()
         Me.SuspendLayout()
         '
         'txtFax
@@ -572,20 +574,51 @@ Partial Class FrmCliente
         Me.Label11.BackColor = System.Drawing.Color.Transparent
         Me.Label11.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label11.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label11.Location = New System.Drawing.Point(31, 503)
+        Me.Label11.Location = New System.Drawing.Point(12, 503)
         Me.Label11.Name = "Label11"
         Me.Label11.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label11.Size = New System.Drawing.Size(125, 17)
+        Me.Label11.Size = New System.Drawing.Size(144, 17)
         Me.Label11.TabIndex = 71
-        Me.Label11.Text = "Exonerado impuestos:"
+        Me.Label11.Text = "Aplica Tarifa Diferenciada:"
         Me.Label11.TextAlign = System.Drawing.ContentAlignment.TopRight
+        '
+        'cboTipoImpuesto
+        '
+        Me.cboTipoImpuesto.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
+        Me.cboTipoImpuesto.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
+        Me.cboTipoImpuesto.BackColor = System.Drawing.SystemColors.Window
+        Me.cboTipoImpuesto.Cursor = System.Windows.Forms.Cursors.Default
+        Me.cboTipoImpuesto.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.cboTipoImpuesto.Enabled = False
+        Me.cboTipoImpuesto.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.cboTipoImpuesto.Items.AddRange(New Object() {"UND", "MT2", "MT3", "MT", "LT", "GL", "CTO", "CUB", "PAQ", "LAM", "VAR", "PZA"})
+        Me.cboTipoImpuesto.Location = New System.Drawing.Point(162, 524)
+        Me.cboTipoImpuesto.Name = "cboTipoImpuesto"
+        Me.cboTipoImpuesto.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.cboTipoImpuesto.Size = New System.Drawing.Size(319, 21)
+        Me.cboTipoImpuesto.TabIndex = 145
+        '
+        'Label12
+        '
+        Me.Label12.BackColor = System.Drawing.Color.Transparent
+        Me.Label12.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label12.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label12.Location = New System.Drawing.Point(73, 525)
+        Me.Label12.Name = "Label12"
+        Me.Label12.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label12.Size = New System.Drawing.Size(83, 17)
+        Me.Label12.TabIndex = 146
+        Me.Label12.Text = "Tipo Impuesto:"
+        Me.Label12.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'FrmCliente
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
-        Me.ClientSize = New System.Drawing.Size(632, 528)
+        Me.ClientSize = New System.Drawing.Size(632, 565)
+        Me.Controls.Add(Me.cboTipoImpuesto)
+        Me.Controls.Add(Me.Label12)
         Me.Controls.Add(Me.Label11)
         Me.Controls.Add(Me.chkExonerado)
         Me.Controls.Add(Me.Label10)
@@ -662,4 +695,6 @@ Partial Class FrmCliente
     Public WithEvents cboIdTipoPrecio As ComboBox
     Friend WithEvents chkExonerado As CheckBox
     Public WithEvents Label11 As Label
+    Public WithEvents cboTipoImpuesto As ComboBox
+    Public WithEvents Label12 As Label
 End Class

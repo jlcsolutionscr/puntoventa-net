@@ -1,5 +1,5 @@
 Imports System.Collections.Generic
-Imports LeandroSoftware.Core.CommonTypes
+Imports LeandroSoftware.Core.TiposComunes
 Imports LeandroSoftware.Core.Dominio.Entidades
 
 Public Class FrmAplicaReciboCxC
@@ -234,17 +234,12 @@ Public Class FrmAplicaReciboCxC
     End Sub
 
     Private Sub CargarCombos()
-        Try
-            cboFormaPago.ValueMember = "IdFormaPago"
-            cboFormaPago.DisplayMember = "Descripcion"
-            'cboFormaPago.DataSource = servicioMantenimiento.ObtenerListaFormaPagoMovimientoCxC()
-            cboTipoMoneda.ValueMember = "IdTipoMoneda"
-            cboTipoMoneda.DisplayMember = "Descripcion"
-            'cboTipoMoneda.DataSource = servicioMantenimiento.ObtenerListaTipoMoneda()
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Exit Sub
-        End Try
+        cboFormaPago.ValueMember = "IdFormaPago"
+        cboFormaPago.DisplayMember = "Descripcion"
+        'cboFormaPago.DataSource = servicioMantenimiento.ObtenerListaFormaPagoMovimientoCxC()
+        cboTipoMoneda.ValueMember = "IdTipoMoneda"
+        cboTipoMoneda.DisplayMember = "Descripcion"
+        'cboTipoMoneda.DataSource = servicioMantenimiento.ObtenerListaTipoMoneda()
     End Sub
 
     Private Sub CargarListaBancoAdquiriente()
@@ -262,19 +257,25 @@ Public Class FrmAplicaReciboCxC
 
 #Region "Eventos Controles"
     Private Sub FrmAplicaReciboCxCClientes_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
-        CargarCombos()
-        CargarListaBancoAdquiriente()
-        IniciaDetalleMovimiento()
-        EstablecerPropiedadesDataGridView()
-        grdDesgloseCuenta.DataSource = dtbDesgloseCuenta
-        grdDesglosePago.DataSource = dtbDesglosePago
-        bolInit = False
-        cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
-        cboTipoMoneda.SelectedValue = StaticValoresPorDefecto.MonedaDelSistema
-        txtMontoAbono.Text = FormatNumber(0, 2)
-        txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmPrincipal.decTipoCambioDolar.ToString())
-        txtSaldoPorPagar.Text = FormatNumber(dblSaldoPorPagar, 2)
+        Try
+            txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
+            CargarCombos()
+            CargarListaBancoAdquiriente()
+            IniciaDetalleMovimiento()
+            EstablecerPropiedadesDataGridView()
+            grdDesgloseCuenta.DataSource = dtbDesgloseCuenta
+            grdDesglosePago.DataSource = dtbDesglosePago
+            bolInit = False
+            cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
+            cboTipoMoneda.SelectedValue = StaticValoresPorDefecto.MonedaDelSistema
+            txtMontoAbono.Text = FormatNumber(0, 2)
+            txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmPrincipal.decTipoCambioDolar.ToString())
+            txtSaldoPorPagar.Text = FormatNumber(dblSaldoPorPagar, 2)
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Close()
+            Exit Sub
+        End Try
     End Sub
 
     Private Sub CmdAgregar_Click(sender As Object, e As EventArgs) Handles CmdAgregar.Click

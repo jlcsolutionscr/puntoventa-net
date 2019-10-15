@@ -1,5 +1,5 @@
 Imports System.Collections.Generic
-Imports LeandroSoftware.Core.CommonTypes
+Imports LeandroSoftware.Core.TiposComunes
 Imports LeandroSoftware.Core.Dominio.Entidades
 
 Public Class FrmImprimirReciboCxP
@@ -106,10 +106,15 @@ Public Class FrmImprimirReciboCxP
 
 #Region "Eventos Controles"
     Private Sub FrmAnulaReciboCxP_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        IniciaDetalleMovimiento()
-        EstablecerPropiedadesDataGridView()
-        grdDetalleRecibo.DataSource = dtbDetalleMovimiento
-        bolInit = False
+        Try
+            IniciaDetalleMovimiento()
+            EstablecerPropiedadesDataGridView()
+            grdDetalleRecibo.DataSource = dtbDetalleMovimiento
+            bolInit = False
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Close()
+        End Try
     End Sub
 
     Private Sub CmdImprimir_Click(sender As Object, e As EventArgs) Handles CmdImprimir.Click

@@ -1,5 +1,5 @@
 Imports System.Collections.Generic
-Imports LeandroSoftware.Core.CommonTypes
+Imports LeandroSoftware.Core.TiposComunes
 Imports LeandroSoftware.Core.Dominio.Entidades
 
 Public Class FrmAnulaReciboCxP
@@ -139,10 +139,16 @@ Public Class FrmAnulaReciboCxP
     End Sub
 
     Private Sub FrmAnulaReciboCxP_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        IniciaDetalleMovimiento()
-        EstablecerPropiedadesDataGridView()
-        grdDetalleRecibo.DataSource = dtbDetalleMovimiento
-        bolInit = False
+        Try
+            IniciaDetalleMovimiento()
+            EstablecerPropiedadesDataGridView()
+            grdDetalleRecibo.DataSource = dtbDetalleMovimiento
+            bolInit = False
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Close()
+            Exit Sub
+        End Try
     End Sub
 #End Region
 End Class

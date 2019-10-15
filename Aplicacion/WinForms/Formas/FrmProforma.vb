@@ -1,11 +1,11 @@
 Imports System.Collections.Generic
-Imports LeandroSoftware.Core.CommonTypes
+Imports LeandroSoftware.Core.TiposComunes
 Imports LeandroSoftware.Core.Dominio.Entidades
 
 Public Class FrmProforma
 #Region "Variables"
     Private strMotivoRechazo As String
-    Private decExcento, decGrabado, decImpuesto, decTotal As Decimal
+    Private decExcento, decGravado, decImpuesto, decTotal As Decimal
     Private I As Short
     Private dtbDatosLocal, dtbDetalleProforma As DataTable
     Private dtrRowDetProforma As DataRow
@@ -131,7 +131,7 @@ Public Class FrmProforma
     Private Sub CargarLineaDetalleProforma(ByVal producto As Producto)
         Dim intIndice As Integer = dtbDetalleProforma.Rows.IndexOf(dtbDetalleProforma.Rows.Find(producto.IdProducto))
         Dim decTasaImpuesto As Decimal = producto.ParametroImpuesto.TasaImpuesto
-        If cliente.ExoneradoDeImpuesto Then decTasaImpuesto = 0
+        If cliente.AplicaTasaDiferenciada Then decTasaImpuesto = cliente.ParametroImpuesto.TasaImpuesto
         If intIndice >= 0 Then
             dtbDetalleProforma.Rows(intIndice).Item(1) = producto.Codigo
             dtbDetalleProforma.Rows(intIndice).Item(2) = producto.Descripcion
@@ -157,18 +157,18 @@ Public Class FrmProforma
 
     Private Sub CargarTotales()
         Dim decSubTotal As Decimal = 0
-        decGrabado = 0
+        decGravado = 0
         decExcento = 0
         decImpuesto = 0
         For I = 0 To dtbDetalleProforma.Rows.Count - 1
             If dtbDetalleProforma.Rows(I).Item(6) = 0 Then
-                decGrabado += dtbDetalleProforma.Rows(I).Item(5)
+                decGravado += dtbDetalleProforma.Rows(I).Item(5)
                 decImpuesto += dtbDetalleProforma.Rows(I).Item(5) * dtbDetalleProforma.Rows(I).Item(7) / 100
             Else
                 decExcento += dtbDetalleProforma.Rows(I).Item(5)
             End If
         Next
-        decSubTotal = decGrabado + decExcento
+        decSubTotal = decGravado + decExcento
         If decSubTotal > 0 And txtDescuento.Text > 0 Then
             decImpuesto = 0
             For I = 0 To dtbDetalleProforma.Rows.Count - 1
@@ -180,10 +180,10 @@ Public Class FrmProforma
                 End If
             Next
         End If
-        decGrabado = Math.Round(decGrabado, 2, MidpointRounding.AwayFromZero)
+        decGravado = Math.Round(decGravado, 2, MidpointRounding.AwayFromZero)
         decExcento = Math.Round(decExcento, 2, MidpointRounding.AwayFromZero)
         decImpuesto = Math.Round(decImpuesto, 2, MidpointRounding.AwayFromZero)
-        decTotal = Math.Round(decExcento + decGrabado + decImpuesto - txtDescuento.Text, 2, MidpointRounding.AwayFromZero)
+        decTotal = Math.Round(decExcento + decGravado + decImpuesto - txtDescuento.Text, 2, MidpointRounding.AwayFromZero)
         txtSubTotal.Text = FormatNumber(decSubTotal, 2)
         txtImpuesto.Text = FormatNumber(decImpuesto, 2)
         txtTotal.Text = FormatNumber(decTotal, 2)
@@ -244,33 +244,33 @@ Public Class FrmProforma
     End Sub
 
     Private Sub CargarCombos()
-        Try
-            cboIdCondicionVenta.ValueMember = "IdCondicionVenta"
-            cboIdCondicionVenta.DisplayMember = "Descripcion"
-            'cboIdCondicionVenta.DataSource = servicioMantenimiento.ObtenerListaCondicionVenta()
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Exit Sub
-        End Try
+        cboIdCondicionVenta.ValueMember = "IdCondicionVenta"
+        cboIdCondicionVenta.DisplayMember = "Descripcion"
+        'cboIdCondicionVenta.DataSource = servicioMantenimiento.ObtenerListaCondicionVenta()
     End Sub
 #End Region
 
 #Region "Eventos Controles"
     Private Sub FrmProforma_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
-        If FrmPrincipal.empresaGlobal.AutoCompletaProducto = True Then
-            CargarAutoCompletarProducto()
-        End If
-        CargarCombos()
-        IniciaTablasDeDetalle()
-        EstablecerPropiedadesDataGridView()
-        grdDetalleProforma.DataSource = dtbDetalleProforma
-        txtCantidad.Text = "1"
-        txtSubTotal.Text = FormatNumber(0, 2)
-        txtDescuento.Text = FormatNumber(0, 2)
-        txtImpuesto.Text = FormatNumber(0, 2)
-        txtTotal.Text = FormatNumber(0, 2)
-        bolInit = False
+        Try
+            txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
+            If FrmPrincipal.empresaGlobal.AutoCompletaProducto = True Then
+                CargarAutoCompletarProducto()
+            End If
+            CargarCombos()
+            IniciaTablasDeDetalle()
+            EstablecerPropiedadesDataGridView()
+            grdDetalleProforma.DataSource = dtbDetalleProforma
+            txtCantidad.Text = "1"
+            txtSubTotal.Text = FormatNumber(0, 2)
+            txtDescuento.Text = FormatNumber(0, 2)
+            txtImpuesto.Text = FormatNumber(0, 2)
+            txtTotal.Text = FormatNumber(0, 2)
+            bolInit = False
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Close()
+        End Try
     End Sub
 
     Private Sub CmdAgregar_Click(sender As Object, e As EventArgs) Handles CmdAgregar.Click
@@ -429,7 +429,7 @@ Public Class FrmProforma
         proforma.IdCondicionVenta = cboIdCondicionVenta.SelectedValue
         proforma.PlazoCredito = IIf(txtPlazoCredito.Text <> "", txtPlazoCredito.Text, 0)
         proforma.Excento = decExcento
-        proforma.Grabado = decGrabado
+        proforma.Gravado = decGravado
         proforma.Descuento = CDbl(txtDescuento.Text)
         proforma.Impuesto = CDbl(txtImpuesto.Text)
         proforma.DetalleProforma.Clear()

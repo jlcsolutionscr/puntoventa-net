@@ -32,6 +32,8 @@
             this.tsRegistrarEmpresa = new System.Windows.Forms.ToolStripMenuItem();
             this.tsSubirNuevaVersionApp = new System.Windows.Forms.ToolStripMenuItem();
             this.tsSalir = new System.Windows.Forms.ToolStripMenuItem();
+            this.documentosPendientesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.consultarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -40,6 +42,7 @@
             this.MenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsRegistrarEmpresa,
             this.tsSubirNuevaVersionApp,
+            this.documentosPendientesToolStripMenuItem,
             this.tsSalir});
             this.MenuStrip1.Location = new System.Drawing.Point(0, 0);
             this.MenuStrip1.Name = "MenuStrip1";
@@ -70,6 +73,21 @@
             this.tsSalir.Text = "Salir";
             this.tsSalir.Click += new System.EventHandler(this.tsSalir_Click);
             // 
+            // documentosPendientesToolStripMenuItem
+            // 
+            this.documentosPendientesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.consultarToolStripMenuItem});
+            this.documentosPendientesToolStripMenuItem.Name = "documentosPendientesToolStripMenuItem";
+            this.documentosPendientesToolStripMenuItem.Size = new System.Drawing.Size(148, 20);
+            this.documentosPendientesToolStripMenuItem.Text = "Documentos Pendientes";
+            // 
+            // consultarToolStripMenuItem
+            // 
+            this.consultarToolStripMenuItem.Name = "consultarToolStripMenuItem";
+            this.consultarToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.consultarToolStripMenuItem.Text = "Consultar";
+            this.consultarToolStripMenuItem.Click += new System.EventHandler(this.ConsultarToolStripMenuItem_Click);
+            // 
             // FrmMenu
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -94,5 +112,7 @@
         internal System.Windows.Forms.ToolStripMenuItem tsRegistrarEmpresa;
         internal System.Windows.Forms.ToolStripMenuItem tsSalir;
         private System.Windows.Forms.ToolStripMenuItem tsSubirNuevaVersionApp;
+        private System.Windows.Forms.ToolStripMenuItem documentosPendientesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem consultarToolStripMenuItem;
     }
 }

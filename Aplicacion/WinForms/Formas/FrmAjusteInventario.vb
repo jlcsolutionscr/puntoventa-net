@@ -151,11 +151,17 @@ Public Class FrmAjusteInventario
 
 #Region "Eventos Controles"
     Private Sub FrmAjusteInventario_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
-        IniciaDetalleAjusteInventario()
-        EstablecerPropiedadesDataGridView()
-        grdDetalleAjusteInventario.DataSource = dtbDetalleAjusteInventario
-        bolInit = False
+        Try
+            txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
+            IniciaDetalleAjusteInventario()
+            EstablecerPropiedadesDataGridView()
+            grdDetalleAjusteInventario.DataSource = dtbDetalleAjusteInventario
+            bolInit = False
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Close()
+            Exit Sub
+        End Try
     End Sub
 
     Private Sub CmdAgregar_Click(sender As Object, e As EventArgs) Handles CmdAgregar.Click

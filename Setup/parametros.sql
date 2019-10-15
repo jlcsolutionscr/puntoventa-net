@@ -201,3 +201,20 @@ INSERT INTO tipoproducto (IdTipoProducto, Descripcion) VALUES(2, 'Servicio');
 
 INSERT INTO tipounidad (IdTipoUnidad, Descripcion) VALUES(1, 'UND');
 INSERT INTO tipounidad (IdTipoUnidad, Descripcion) VALUES(2, 'SP');
+
+--
+-- Volcar la base de datos para la tabla 'formapago'
+--
+
+INSERT INTO `formapago` (`IdFormaPago`, `Descripcion`) VALUES
+(1, 'Efectivo');
+
+INSERT INTO `formapago` (`IdFormaPago`, `Descripcion`) VALUES(2, 'Tarjeta');
+
+INSERT INTO `formapago` (`IdFormaPago`, `Descripcion`) VALUES(3, 'Cheque');
+
+INSERT INTO `formapago` (`IdFormaPago`, `Descripcion`) VALUES(4, 'Transferencia - Dep. Bancario');
+
+INSERT INTO `formapago` (`IdFormaPago`, `Descripcion`) VALUES(5, 'Racaudado por terceros');
+
+INSERT INTO `formapago` (`IdFormaPago`, `Descripcion`) VALUES(99, 'Otros');

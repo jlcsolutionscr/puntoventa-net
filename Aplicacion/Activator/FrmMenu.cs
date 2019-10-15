@@ -5,17 +5,20 @@ namespace LeandroSoftware.Activator
 {
     public partial class FrmMenu : Form
     {
-        public bool bolSeguridad = false;
+        public static string strToken { get; set; }
 
         public FrmMenu()
         {
             InitializeComponent();
             FrmSeguridad formSeguridad = new FrmSeguridad();
             formSeguridad.ShowDialog(this);
-            if (bolSeguridad)
+            if (strToken != "")
             {
                 tsRegistrarEmpresa.Visible = true;
                 tsSubirNuevaVersionApp.Visible = true;
+            } else
+            {
+                Application.Exit();
             }
         }
 
@@ -40,6 +43,15 @@ namespace LeandroSoftware.Activator
         private void tsSalir_Click(object sender, EventArgs e)
         {
             Application.Exit();
+        }
+
+        private void ConsultarToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FrmDocumentosEnProceso formDocumentosEnProceso = new FrmDocumentosEnProceso
+            {
+                MdiParent = this
+            };
+            formDocumentosEnProceso.Show();
         }
     }
 }

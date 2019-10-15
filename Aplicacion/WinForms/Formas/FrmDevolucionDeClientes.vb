@@ -1,10 +1,10 @@
 Imports System.Collections.Generic
-Imports LeandroSoftware.Core.CommonTypes
+Imports LeandroSoftware.Core.TiposComunes
 Imports LeandroSoftware.Core.Dominio.Entidades
 
 Public Class FrmDevolucionDeClientes
 #Region "Variables"
-    Private dblExcento, decGrabado, decSubTotal As Decimal
+    Private dblExcento, decGravado, decSubTotal As Decimal
     Private I As Short
     Private dtbDatosLocal, dtbDetalleDevolucion As DataTable
     Private dtrRowDetDevolucion As DataRow
@@ -154,21 +154,21 @@ Public Class FrmDevolucionDeClientes
 
     Private Sub CargarTotales()
         Dim decImpuesto As Decimal = 0
-        decGrabado = 0
+        decGravado = 0
         dblExcento = 0
         decSubTotal = 0
         For I = 0 To dtbDetalleDevolucion.Rows.Count - 1
             If dtbDetalleDevolucion.Rows(I).Item(8) > 0 Then
                 Dim decTotalPorLinea As Decimal = dtbDetalleDevolucion.Rows(I).Item(5).Value * dtbDetalleDevolucion.Rows(I).Item(8).Value
                 If dtbDetalleDevolucion.Rows(I).Item(6) = 0 Then
-                    decGrabado += decTotalPorLinea
+                    decGravado += decTotalPorLinea
                     decImpuesto += decTotalPorLinea * dtbDetalleDevolucion.Rows(I).Item(8).Value
                 Else
                     dblExcento += decTotalPorLinea
                 End If
             End If
         Next
-        decSubTotal = decGrabado + dblExcento
+        decSubTotal = decGravado + dblExcento
         If decSubTotal > 0 And factura.Descuento > 0 Then
             decImpuesto = 0
             For I = 0 To dtbDetalleDevolucion.Rows.Count - 1
@@ -178,12 +178,12 @@ Public Class FrmDevolucionDeClientes
                 decImpuesto += decDescuentoPorLinea * dtbDetalleDevolucion.Rows(I).Item(8).Value
             Next
         End If
-        decGrabado = Math.Round(decGrabado, 2, MidpointRounding.AwayFromZero)
+        decGravado = Math.Round(decGravado, 2, MidpointRounding.AwayFromZero)
         dblExcento = Math.Round(dblExcento, 2, MidpointRounding.AwayFromZero)
         decImpuesto = Math.Round(decImpuesto, 2, MidpointRounding.AwayFromZero)
         txtSubTotal.Text = FormatNumber(decSubTotal, 2)
         txtImpuesto.Text = FormatNumber(decImpuesto, 2)
-        txtTotal.Text = FormatNumber(dblExcento + decGrabado + CDbl(txtImpuesto.Text), 2)
+        txtTotal.Text = FormatNumber(dblExcento + decGravado + CDbl(txtImpuesto.Text), 2)
     End Sub
 
     Private Sub CargarFactura(intIdFactura As Integer)
@@ -206,14 +206,19 @@ Public Class FrmDevolucionDeClientes
 
 #Region "Eventos Controles"
     Private Sub FrmDevolucion_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
-        IniciaDetalleDevolucion()
-        EstablecerPropiedadesDataGridView()
-        grdDetalleDevolucion.DataSource = dtbDetalleDevolucion
-        bolInit = False
-        txtSubTotal.Text = FormatNumber(0, 2)
-        txtImpuesto.Text = FormatNumber(0, 2)
-        txtTotal.Text = FormatNumber(0, 2)
+        Try
+            txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
+            IniciaDetalleDevolucion()
+            EstablecerPropiedadesDataGridView()
+            grdDetalleDevolucion.DataSource = dtbDetalleDevolucion
+            bolInit = False
+            txtSubTotal.Text = FormatNumber(0, 2)
+            txtImpuesto.Text = FormatNumber(0, 2)
+            txtTotal.Text = FormatNumber(0, 2)
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Close()
+        End Try
     End Sub
 
     Private Sub grdDetalleDevolucion_CellEndEdit(sender As Object, e As System.Windows.Forms.DataGridViewCellEventArgs) Handles grdDetalleDevolucion.CellEndEdit
@@ -314,7 +319,7 @@ Public Class FrmDevolucionDeClientes
                     .IdFactura = factura.IdFactura,
                     .Fecha = Now(),
                     .Excento = dblExcento,
-                    .Grabado = decGrabado,
+                    .Gravado = decGravado,
                     .Impuesto = CDbl(txtImpuesto.Text)
                 }
                 For I = 0 To dtbDetalleDevolucion.Rows.Count - 1

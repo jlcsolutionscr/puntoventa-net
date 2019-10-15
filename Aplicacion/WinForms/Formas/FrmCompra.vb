@@ -1,10 +1,10 @@
 Imports System.Collections.Generic
-Imports LeandroSoftware.Core.CommonTypes
+Imports LeandroSoftware.Core.TiposComunes
 Imports LeandroSoftware.Core.Dominio.Entidades
 
 Public Class FrmCompra
 #Region "Variables"
-    Private decExcento, decGrabado As Decimal
+    Private decExcento, decGravado As Decimal
     Private dblTotalPago As Decimal = 0
     Private dblTotal As Decimal = 0
     Private dblSaldoPorPagar As Decimal = 0
@@ -301,18 +301,18 @@ Public Class FrmCompra
     Private Sub CargarTotales()
         Dim decSubTotal As Decimal = 0
         decExcento = 0
-        decGrabado = 0
+        decGravado = 0
         For I = 0 To dtbDetalleCompra.Rows.Count - 1
             If dtbDetalleCompra.Rows(I).Item(6) = 0 Then
-                decGrabado += dtbDetalleCompra.Rows(I).Item(5)
+                decGravado += dtbDetalleCompra.Rows(I).Item(5)
             Else
                 decExcento += dtbDetalleCompra.Rows(I).Item(5)
             End If
         Next
-        decSubTotal = decGrabado + decExcento
-        decGrabado = Math.Round(decGrabado, 2, MidpointRounding.AwayFromZero)
+        decSubTotal = decGravado + decExcento
+        decGravado = Math.Round(decGravado, 2, MidpointRounding.AwayFromZero)
         decExcento = Math.Round(decExcento, 2, MidpointRounding.AwayFromZero)
-        dblTotal = Math.Round(decExcento + decGrabado + txtImpuesto.Text - txtDescuento.Text, 2, MidpointRounding.AwayFromZero)
+        dblTotal = Math.Round(decExcento + decGravado + txtImpuesto.Text - txtDescuento.Text, 2, MidpointRounding.AwayFromZero)
         txtSubTotal.Text = FormatNumber(decSubTotal, 2)
         txtImpuesto.Text = FormatNumber(txtImpuesto, 2)
         txtTotal.Text = FormatNumber(dblTotal, 2)
@@ -332,23 +332,18 @@ Public Class FrmCompra
     End Sub
 
     Private Sub CargarCombos()
-        Try
-            cboCondicionVenta.ValueMember = "IdCondicionVenta"
-            cboCondicionVenta.DisplayMember = "Descripcion"
-            'cboCondicionVenta.DataSource = servicioMantenimiento.ObtenerListaCondicionVenta()
-            cboFormaPago.ValueMember = "IdFormaPago"
-            cboFormaPago.DisplayMember = "Descripcion"
-            'cboFormaPago.DataSource = servicioMantenimiento.ObtenerListaFormaPagoCompra()
-            cboCuentaBanco.ValueMember = "IdCuenta"
-            cboCuentaBanco.DisplayMember = "Descripcion"
-            'cboCuentaBanco.DataSource = servicioAuxiliarBancario.ObtenerListaCuentasBanco(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
-            cboTipoMoneda.ValueMember = "IdTipoMoneda"
-            cboTipoMoneda.DisplayMember = "Descripcion"
-            'cboTipoMoneda.DataSource = servicioMantenimiento.ObtenerListaTipoMoneda()
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Exit Sub
-        End Try
+        cboCondicionVenta.ValueMember = "IdCondicionVenta"
+        cboCondicionVenta.DisplayMember = "Descripcion"
+        'cboCondicionVenta.DataSource = servicioMantenimiento.ObtenerListaCondicionVenta()
+        cboFormaPago.ValueMember = "IdFormaPago"
+        cboFormaPago.DisplayMember = "Descripcion"
+        'cboFormaPago.DataSource = servicioMantenimiento.ObtenerListaFormaPagoCompra()
+        cboCuentaBanco.ValueMember = "IdCuenta"
+        cboCuentaBanco.DisplayMember = "Descripcion"
+        'cboCuentaBanco.DataSource = servicioAuxiliarBancario.ObtenerListaCuentasBanco(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
+        cboTipoMoneda.ValueMember = "IdTipoMoneda"
+        cboTipoMoneda.DisplayMember = "Descripcion"
+        'cboTipoMoneda.DataSource = servicioMantenimiento.ObtenerListaTipoMoneda()
     End Sub
 
     Private Sub ValidarProducto()
@@ -394,26 +389,31 @@ Public Class FrmCompra
 
 #Region "Eventos Controles"
     Private Sub FrmCompra_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
-        txtIdOrdenCompra.Text = "0"
-        CargarCombos()
-        If FrmPrincipal.empresaGlobal.AutoCompletaProducto = True Then
-            CargarAutoCompletarProducto()
-        End If
-        IniciaDetalleCompra()
-        EstablecerPropiedadesDataGridView()
-        grdDetalleCompra.DataSource = dtbDetalleCompra
-        grdDesglosePago.DataSource = dtbDesglosePago
-        bolInit = False
-        txtCantidad.Text = "1"
-        txtSubTotal.Text = FormatNumber(0, 2)
-        txtDescuento.Text = FormatNumber(0, 2)
-        txtImpuesto.Text = FormatNumber(0, 2)
-        txtTotal.Text = FormatNumber(0, 2)
-        cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
-        cboTipoMoneda.SelectedValue = StaticValoresPorDefecto.MonedaDelSistema
-        txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmPrincipal.decTipoCambioDolar.ToString())
-        txtSaldoPorPagar.Text = FormatNumber(dblSaldoPorPagar, 2)
+        Try
+            txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
+            txtIdOrdenCompra.Text = "0"
+            CargarCombos()
+            If FrmPrincipal.empresaGlobal.AutoCompletaProducto = True Then
+                CargarAutoCompletarProducto()
+            End If
+            IniciaDetalleCompra()
+            EstablecerPropiedadesDataGridView()
+            grdDetalleCompra.DataSource = dtbDetalleCompra
+            grdDesglosePago.DataSource = dtbDesglosePago
+            bolInit = False
+            txtCantidad.Text = "1"
+            txtSubTotal.Text = FormatNumber(0, 2)
+            txtDescuento.Text = FormatNumber(0, 2)
+            txtImpuesto.Text = FormatNumber(0, 2)
+            txtTotal.Text = FormatNumber(0, 2)
+            cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
+            cboTipoMoneda.SelectedValue = StaticValoresPorDefecto.MonedaDelSistema
+            txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmPrincipal.decTipoCambioDolar.ToString())
+            txtSaldoPorPagar.Text = FormatNumber(dblSaldoPorPagar, 2)
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Close()
+        End Try
     End Sub
 
     Private Sub BtnAgregar_Click(sender As Object, e As EventArgs) Handles btnAgregar.Click
@@ -615,7 +615,7 @@ Public Class FrmCompra
                 .IdCondicionVenta = cboCondicionVenta.SelectedValue,
                 .PlazoCredito = IIf(txtPlazoCredito.Text = "", 0, txtPlazoCredito.Text),
                 .Excento = decExcento,
-                .Grabado = decGrabado,
+                .Gravado = decGravado,
                 .Descuento = CDbl(txtDescuento.Text),
                 .Impuesto = CDbl(txtImpuesto.Text),
                 .IdOrdenCompra = txtIdOrdenCompra.Text,

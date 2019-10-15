@@ -1,5 +1,5 @@
 Imports LeandroSoftware.Core.Dominio.Entidades
-Imports LeandroSoftware.Core.ClienteWCF
+Imports LeandroSoftware.ClienteWCF
 
 Public Class FrmCuentaBanco
 #Region "Variables"
@@ -28,21 +28,20 @@ Public Class FrmCuentaBanco
     Private Async Sub FrmCuentaBanco_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         If intIdCuenta > 0 Then
             Try
-                datos = Await ClienteFEWCF.ObtenerCuentaBanco(intIdCuenta)
+                datos = Await Puntoventa.ObtenerCuentaBanco(intIdCuenta, FrmPrincipal.usuarioGlobal.Token)
+                If datos Is Nothing Then
+                    MessageBox.Show("La cuenta bancaria seleccionada no existe", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                    Close()
+                    Exit Sub
+                End If
+                txtIdCuenta.Text = datos.IdCuenta
+                txtCodigo.Text = datos.Codigo
+                txtDescripcion.Text = datos.Descripcion
+                txtSaldo.Text = FormatNumber(datos.Saldo, 2)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Close()
-                Exit Sub
             End Try
-            If datos Is Nothing Then
-                MessageBox.Show("La cuenta bancaria seleccionada no existe", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-                Close()
-                Exit Sub
-            End If
-            txtIdCuenta.Text = datos.IdCuenta
-            txtCodigo.Text = datos.Codigo
-            txtDescripcion.Text = datos.Descripcion
-            txtSaldo.Text = FormatNumber(datos.Saldo, 2)
         Else
             datos = New CuentaBanco
             txtSaldo.Text = FormatNumber(0, 2)
@@ -67,10 +66,9 @@ Public Class FrmCuentaBanco
         datos.Saldo = txtSaldo.Text
         Try
             If datos.IdCuenta = 0 Then
-                Dim strIdCuenta = Await ClienteFEWCF.AgregarCuentaBanco(datos)
-                txtIdCuenta.Text = strIdCuenta
+                Await Puntoventa.AgregarCuentaBanco(datos, FrmPrincipal.usuarioGlobal.Token)
             Else
-                Await ClienteFEWCF.ActualizarCuentaBanco(datos)
+                Await Puntoventa.ActualizarCuentaBanco(datos, FrmPrincipal.usuarioGlobal.Token)
             End If
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)

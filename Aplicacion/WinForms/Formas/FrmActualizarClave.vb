@@ -1,5 +1,5 @@
 Imports LeandroSoftware.Core.Dominio.Entidades
-Imports LeandroSoftware.Core.ClienteWCF
+Imports LeandroSoftware.ClienteWCF
 Imports LeandroSoftware.Core.Utilities
 
 Public Class FrmActualizarClave
@@ -12,7 +12,7 @@ Public Class FrmActualizarClave
         If TxtClave1.Text = TxtClave2.Text Then
             Try
                 Dim strClaveEncriptada = Utilitario.EncriptarDatos(TxtClave1.Text, FrmPrincipal.strKey)
-                Dim usuario As Usuario = Await ClienteFEWCF.ActualizarClaveUsuario(FrmPrincipal.usuarioGlobal.IdUsuario, strClaveEncriptada)
+                Dim usuario As Usuario = Await Puntoventa.ActualizarClaveUsuario(FrmPrincipal.usuarioGlobal.IdUsuario, strClaveEncriptada, FrmPrincipal.usuarioGlobal.Token)
                 FrmPrincipal.usuarioGlobal = usuario
                 MessageBox.Show("Transacción completa exitósamente.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 Close()

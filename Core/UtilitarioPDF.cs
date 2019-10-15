@@ -2,7 +2,7 @@
 using PdfSharp.Pdf;
 using PdfSharp.Drawing;
 using PdfSharp.Drawing.Layout;
-using LeandroSoftware.Core.CommonTypes;
+using LeandroSoftware.Core.TiposComunes;
 using System.IO;
 using System.Collections.Generic;
 
@@ -141,9 +141,9 @@ namespace LeandroSoftware.Core.Utilities
                 gfx.DrawLine(XPens.DarkGray, 28, lineaPos + 11, 562, lineaPos + 11);
                 lineaPos += 17;
                 font = new XFont("Arial", 8, XFontStyle.Bold);
-                gfx.DrawString("Total Grabado:", font, XBrushes.Black, new XRect(380, lineaPos, 80, 12), XStringFormats.TopLeft);
+                gfx.DrawString("Total Gravado:", font, XBrushes.Black, new XRect(380, lineaPos, 80, 12), XStringFormats.TopLeft);
                 font = new XFont("Arial", 8, XFontStyle.Regular);
-                tf.DrawString(datos.TotalGrabado, font, XBrushes.Black, new XRect(480, lineaPos, 80, 12), XStringFormats.TopLeft);
+                tf.DrawString(datos.TotalGravado, font, XBrushes.Black, new XRect(480, lineaPos, 80, 12), XStringFormats.TopLeft);
 
                 lineaPos += 12;
                 font = new XFont("Arial", 8, XFontStyle.Bold);

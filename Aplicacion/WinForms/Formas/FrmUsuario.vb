@@ -1,6 +1,6 @@
 Imports System.Collections.Generic
 Imports LeandroSoftware.Core.Dominio.Entidades
-Imports LeandroSoftware.Core.ClienteWCF
+Imports LeandroSoftware.ClienteWCF
 Imports LeandroSoftware.Core.Utilities
 
 Public Class FrmUsuario
@@ -77,47 +77,43 @@ Public Class FrmUsuario
     End Function
 
     Private Async Sub CargarCombos()
-        Try
-            cboRole.ValueMember = "Id"
-            cboRole.DisplayMember = "Descripcion"
-            cboRole.DataSource = Await ClienteFEWCF.ObtenerListadoRoles()
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Exit Sub
-        End Try
+        cboRole.ValueMember = "Id"
+        cboRole.DisplayMember = "Descripcion"
+        cboRole.DataSource = Await Puntoventa.ObtenerListadoRoles(FrmPrincipal.usuarioGlobal.Token)
     End Sub
 #End Region
 
 #Region "Eventos Controles"
     Private Async Sub FrmUsuario_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        IniciaDetalleRole()
-        EstablecerPropiedadesDataGridView()
-        CargarCombos()
-        If intIdUsuario > 0 Then
-            Dim strDecryptedPassword As String
-            Try
-                datos = Await ClienteFEWCF.ObtenerUsuario(intIdUsuario)
-                strDecryptedPassword = Utilitario.DesencriptarDatos(datos.Clave, FrmPrincipal.strKey)
-            Catch ex As Exception
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-                Close()
-                Exit Sub
-            End Try
-            If datos Is Nothing Then
-                MessageBox.Show("El usuario seleccionado no existe", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-                Close()
-                Exit Sub
+        Try
+            IniciaDetalleRole()
+            EstablecerPropiedadesDataGridView()
+            CargarCombos()
+            If intIdUsuario > 0 Then
+                Dim strDecryptedPassword As String
+                Try
+                    datos = Await Puntoventa.ObtenerUsuario(intIdUsuario, FrmPrincipal.usuarioGlobal.Token)
+                    strDecryptedPassword = Utilitario.DesencriptarDatos(datos.Clave, FrmPrincipal.strKey)
+                Catch ex As Exception
+                    Throw ex
+                End Try
+                If datos Is Nothing Then
+                    Throw New Exception("El usuario seleccionado no existe")
+                End If
+                txtIdUsuario.Text = datos.IdUsuario
+                txtUsuario.Text = datos.CodigoUsuario
+                txtPassword.Text = strDecryptedPassword
+                chkModifica.Checked = datos.Modifica
+                chkRegistraDispositivo.Checked = datos.PermiteRegistrarDispositivo
+                CargarDetalleRole(datos)
+            Else
+                datos = New Usuario
             End If
-            txtIdUsuario.Text = datos.IdUsuario
-            txtUsuario.Text = datos.CodigoUsuario
-            txtPassword.Text = strDecryptedPassword
-            chkModifica.Checked = datos.Modifica
-            chkRegistraDispositivo.Checked = datos.PermiteRegistrarDispositivo
-            CargarDetalleRole(datos)
-        Else
-            datos = New Usuario
-        End If
-        bolInit = False
+            bolInit = False
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Close()
+        End Try
     End Sub
 
     Private Sub BtnCancelar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnCancelar.Click
@@ -163,10 +159,9 @@ Public Class FrmUsuario
         Next
         Try
             If datos.IdUsuario = 0 Then
-                Dim strIdUsuario = Await ClienteFEWCF.AgregarUsuario(datos)
-                txtIdUsuario.Text = strIdUsuario
+                Await Puntoventa.AgregarUsuario(datos, FrmPrincipal.usuarioGlobal.Token)
             Else
-                Await ClienteFEWCF.ActualizarUsuario(datos)
+                Await Puntoventa.ActualizarUsuario(datos, FrmPrincipal.usuarioGlobal.Token)
             End If
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)

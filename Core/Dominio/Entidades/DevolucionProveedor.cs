@@ -26,10 +26,10 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public int IdProveedor { get; set; }
         public DateTime Fecha { get; set; }
         public decimal Excento { get; set; }
-        public decimal Grabado { get; set; }
+        public decimal Gravado { get; set; }
         public decimal Impuesto { get; set; }
         [NotMapped]
-        public decimal Total { get { return Excento + Grabado + Impuesto; } }
+        public decimal Total { get { return Excento + Gravado + Impuesto; } }
         public int IdMovimientoCxP { get; set; }
         public int IdAsiento { get; set; }
         public bool Nulo { get; set; }

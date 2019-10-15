@@ -1,4 +1,4 @@
-Imports LeandroSoftware.Core.CommonTypes
+Imports LeandroSoftware.Core.TiposComunes
 
 Public Class FrmBusquedaCuentaPorPagar
 #Region "Variables"
@@ -102,10 +102,16 @@ Public Class FrmBusquedaCuentaPorPagar
     End Sub
 
     Private Sub FrmBusProd_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        EstablecerPropiedadesDataGridView()
-        ValidarCantidadEmpresas()
-        intIndiceDePagina = 1
-        ActualizarDatos(intIndiceDePagina)
+        Try
+            EstablecerPropiedadesDataGridView()
+            ValidarCantidadEmpresas()
+            intIndiceDePagina = 1
+            ActualizarDatos(intIndiceDePagina)
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Close()
+            Exit Sub
+        End Try
     End Sub
 
     Private Sub FlexProducto_DoubleClick(ByVal sender As Object, ByVal e As EventArgs) Handles dgvListado.DoubleClick

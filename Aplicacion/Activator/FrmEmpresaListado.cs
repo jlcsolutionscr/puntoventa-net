@@ -2,15 +2,16 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using LeandroSoftware.Core.ClienteWCF;
-using LeandroSoftware.Core.CommonTypes;
+using LeandroSoftware.ClienteWCF;
+using LeandroSoftware.Core.TiposComunes;
 
 namespace LeandroSoftware.Activator
 {
     public partial class FrmEmpresaListado : Form
     {
         private FrmEmpresa empresaForm;
-        private IList<LlaveDescripcion> dsDataSet = Array.Empty<LlaveDescripcion>();
+        private List<LlaveDescripcion> dsDataSet = new List<LlaveDescripcion>();
+        private string strToken;
 
         public FrmEmpresaListado()
         {
@@ -21,20 +22,21 @@ namespace LeandroSoftware.Activator
         {
             try
             {
-                dsDataSet = await ClienteFEWCF.ObtenerListadoEmpresasAdministrador();
+                dsDataSet = await Administrador.ObtenerListadoEmpresa(strToken);
                 cboEmpresa.DataSource = dsDataSet;
                 btnAgregar.Enabled = true;
-                btnEditar.Enabled = true;
+                if (dsDataSet.Count > 0) btnEditar.Enabled = true;
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error al consumir el servicio web de factura electrónica: " + ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Close();
             }
         }
 
         private async void FrmEmpresaListado_Load(object sender, EventArgs e)
         {
+            strToken = FrmMenu.strToken;
             btnAgregar.Enabled = false;
             btnEditar.Enabled = false;
             cboEmpresa.ValueMember = "Id";

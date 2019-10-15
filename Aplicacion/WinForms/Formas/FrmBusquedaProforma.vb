@@ -107,15 +107,14 @@ Public Class FrmBusquedaProforma
     Private Sub FrmBusProd_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
             'servicioFacturacion = FrmMenuPrincipal.unityContainer.Resolve(Of IFacturacionService)()
+            EstablecerPropiedadesDataGridView()
+            ValidarCantidadEmpresas()
+            intIndiceDePagina = 1
+            ActualizarDatos(intIndiceDePagina)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
-            Exit Sub
         End Try
-        EstablecerPropiedadesDataGridView()
-        ValidarCantidadEmpresas()
-        intIndiceDePagina = 1
-        ActualizarDatos(intIndiceDePagina)
     End Sub
 
     Private Sub FlexProducto_DoubleClick(ByVal sender As Object, ByVal e As EventArgs) Handles dgvListado.DoubleClick

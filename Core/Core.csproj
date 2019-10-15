@@ -8,7 +8,7 @@
     <ProjectGuid>{FA3C5BCE-3DB6-486E-B16B-8B7F76EEF63F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>LeandroSoftware.PuntoVenta.Core</RootNamespace>
+    <RootNamespace>LeandroSoftware</RootNamespace>
     <AssemblyName>Core</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -35,9 +35,8 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="PdfSharp">
       <HintPath>..\packages\PDFsharp.1.32.3057.0\lib\net20\PdfSharp.dll</HintPath>
@@ -54,13 +53,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CommonTypes.cs" />
+    <Compile Include="TiposComunes.cs" />
     <Compile Include="CorreoService.cs" />
     <Compile Include="CustomJavascriptSerializer.cs" />
     <Compile Include="EstructuraPDF.cs" />
     <Compile Include="ObtenerValoresCodificados.cs" />
-    <Compile Include="ResponsetDTO.cs" />
-    <Compile Include="RequestDTO.cs" />
     <Compile Include="RespuestaHaciendaDTO.cs" />
     <Compile Include="Utilitario.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

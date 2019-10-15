@@ -33,11 +33,11 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public string Color { get; set; }
         public string EstadoActual { get; set; }
         public decimal Excento { get; set; }
-        public decimal Grabado { get; set; }
+        public decimal Gravado { get; set; }
         public decimal Descuento { get; set; }
         public decimal Impuesto { get; set; }
         [NotMapped]
-        public decimal Total { get { return Excento + Grabado + Impuesto; } }
+        public decimal Total { get { return Excento + Gravado + Impuesto; } }
         [NotMapped]
         public string NombreCliente { get { if (Cliente == null) return ""; else return Cliente.Nombre; } }
         public bool Nulo { get; set; }

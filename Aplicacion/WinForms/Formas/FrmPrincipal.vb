@@ -4,15 +4,15 @@ Imports LeandroSoftware.Core.Dominio.Entidades
 Imports System.Collections.Generic
 Imports System.IO
 Imports System.Linq
-Imports LeandroSoftware.Core.ClienteWCF
+Imports LeandroSoftware.ClienteWCF
 Imports LeandroSoftware.Core.Utilities
-Imports LeandroSoftware.Core.CommonTypes
+Imports LeandroSoftware.Core.TiposComunes
 
 Public Class FrmPrincipal
 #Region "Variables"
     Private objMenu As ToolStripMenuItem
     Private appSettings As Specialized.NameValueCollection
-    Private bolEsAdministrador As Boolean
+    Private bolEsAdministrador As Boolean = False
     Public usuarioGlobal As Usuario
     Public empresaGlobal As Empresa
     Public equipoGlobal As EquipoRegistrado
@@ -399,7 +399,7 @@ Public Class FrmPrincipal
 #End Region
 
 #Region "Eventos Formulario"
-    Private Async Sub FrmMenuPrincipal_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+    Private Async Sub FrmPrincipal_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         picLoader.Top = Me.Height / 2 - (picLoader.Height / 2)
         picLoader.Left = Me.Width / 2 - (picLoader.Width / 2)
         Try
@@ -412,7 +412,7 @@ Public Class FrmPrincipal
         Try
             strThumbprint = appSettings.Get("AppThumptprint")
             strApplicationKey = appSettings.Get("ApplicationKey")
-            bolEsAdministrador = appSettings.Get("Administrator")
+            If appSettings.Get("Administrator") IsNot Nothing Then bolEsAdministrador = appSettings.Get("Administrator")
             Dim bolCertificadoValido As Boolean = Utilitario.VerificarCertificado(strThumbprint)
             If Not bolCertificadoValido Then
                 MessageBox.Show("No se logró validar el certificado requerido por la aplicación. Por favor contacte con su proveedor del servicio. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -434,7 +434,7 @@ Public Class FrmPrincipal
         Dim strVersionActualApp = My.Application.Info.Version.ToString()
         Dim strUltimaVersionApp As String
         Try
-            strUltimaVersionApp = Await ClienteFEWCF.ObtenerUltimaVersionApp()
+            strUltimaVersionApp = Await Puntoventa.ObtenerUltimaVersionApp()
         Catch ex As Exception
             MessageBox.Show("No fue posible acceder al servicio web de facturación electrónica. Consulte con su proveedor del servicio.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Close()
@@ -470,10 +470,10 @@ Public Class FrmPrincipal
         End If
         Dim strIdentificadoEquipoLocal = Utilitario.ObtenerIdentificadorEquipo()
         If bolEsAdministrador Then
-            listaEmpresa = Await ClienteFEWCF.ObtenerListadoEmpresasAdministrador()
+            listaEmpresa = Await Puntoventa.ObtenerListadoEmpresasAdministrador()
         Else
             Do
-                listaEmpresa = Await ClienteFEWCF.ObtenerListadoEmpresasPorTerminal(strIdentificadoEquipoLocal)
+                listaEmpresa = Await Puntoventa.ObtenerListadoEmpresasPorTerminal(strIdentificadoEquipoLocal)
                 If listaEmpresa.Count = 0 Then
                     If MessageBox.Show("El equipo no se encuentra registrado. Desea proceder con el registro?", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
                         Dim formRegistro As New FrmRegistro()
@@ -505,7 +505,7 @@ Public Class FrmPrincipal
             Else
                 Try
                     Dim strEncryptedPassword As String = Utilitario.EncriptarDatos(strContrasena, strKey)
-                    empresa = Await ClienteFEWCF.ValidarCredenciales(strCodigoUsuario, strEncryptedPassword, strIdEmpresa, strIdentificadoEquipoLocal)
+                    empresa = Await Puntoventa.ValidarCredenciales(strCodigoUsuario, strEncryptedPassword, strIdEmpresa, strIdentificadoEquipoLocal)
                 Catch ex As Exception
                     MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 End Try
@@ -514,7 +514,7 @@ Public Class FrmPrincipal
         usuarioGlobal = empresa.Usuario
         empresaGlobal = empresa
         equipoGlobal = empresa.EquipoRegistrado
-        decTipoCambioDolar = Await ClienteFEWCF.ObtenerTipoCambioDolar()
+        decTipoCambioDolar = Await Puntoventa.ObtenerTipoCambioDolar(usuarioGlobal.Token)
         picLoader.Visible = False
         Dim formInicio As New FrmInicio()
         formInicio.ShowDialog()

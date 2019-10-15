@@ -1,6 +1,6 @@
 Imports System.Threading.Tasks
 Imports LeandroSoftware.Core.Dominio.Entidades
-Imports LeandroSoftware.Core.ClienteWCF
+Imports LeandroSoftware.ClienteWCF
 Imports System.IO
 
 Public Class FrmEmpresa
@@ -30,80 +30,75 @@ Public Class FrmEmpresa
         Try
             cboCanton.ValueMember = "Id"
             cboCanton.DisplayMember = "Descripcion"
-            cboCanton.DataSource = Await ClienteFEWCF.ObtenerListadoCantones(IdProvincia)
+            cboCanton.DataSource = Await Puntoventa.ObtenerListadoCantones(IdProvincia, FrmPrincipal.usuarioGlobal.Token)
             cboDistrito.ValueMember = "Id"
             cboDistrito.DisplayMember = "Descripcion"
-            cboDistrito.DataSource = Await ClienteFEWCF.ObtenerListadoDistritos(IdProvincia, IdCanton)
+            cboDistrito.DataSource = Await Puntoventa.ObtenerListadoDistritos(IdProvincia, IdCanton, FrmPrincipal.usuarioGlobal.Token)
             cboBarrio.ValueMember = "Id"
             cboBarrio.DisplayMember = "Descripcion"
-            cboBarrio.DataSource = Await ClienteFEWCF.ObtenerListadoBarrios(IdProvincia, IdCanton, IdDistrito)
+            cboBarrio.DataSource = Await Puntoventa.ObtenerListadoBarrios(IdProvincia, IdCanton, IdDistrito, FrmPrincipal.usuarioGlobal.Token)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Function
 
     Private Async Function CargarCombos() As Task
-        Try
-            cboTipoIdentificacion.ValueMember = "Id"
-            cboTipoIdentificacion.DisplayMember = "Descripcion"
-            cboTipoIdentificacion.DataSource = Await ClienteFEWCF.ObtenerListadoTipoIdentificacion()
-            cboProvincia.ValueMember = "Id"
-            cboProvincia.DisplayMember = "Descripcion"
-            cboProvincia.DataSource = Await ClienteFEWCF.ObtenerListadoProvincias()
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-        End Try
+        cboTipoIdentificacion.ValueMember = "Id"
+        cboTipoIdentificacion.DisplayMember = "Descripcion"
+        cboTipoIdentificacion.DataSource = Await Puntoventa.ObtenerListadoTipoIdentificacion(FrmPrincipal.usuarioGlobal.Token)
+        cboProvincia.ValueMember = "Id"
+        cboProvincia.DisplayMember = "Descripcion"
+        cboProvincia.DataSource = Await Puntoventa.ObtenerListadoProvincias(FrmPrincipal.usuarioGlobal.Token)
     End Function
 #End Region
 
 #Region "Eventos Controles"
     Private Async Sub FrmCliente_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        Await CargarCombos()
         Try
-            datos = Await ClienteFEWCF.ObtenerEmpresa(FrmPrincipal.empresaGlobal.IdEmpresa)
-            datosSucursal = Await ClienteFEWCF.ObtenerSucursalPorEmpresa(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal)
-            datosTerminal = Await ClienteFEWCF.ObtenerTerminalPorSucursal(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, FrmPrincipal.equipoGlobal.IdTerminal)
+            Await CargarCombos()
+            datos = Await Puntoventa.ObtenerEmpresa(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+            datosSucursal = Await Puntoventa.ObtenerSucursalPorEmpresa(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, FrmPrincipal.usuarioGlobal.Token)
+            datosTerminal = Await Puntoventa.ObtenerTerminalPorSucursal(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, FrmPrincipal.equipoGlobal.IdTerminal, FrmPrincipal.usuarioGlobal.Token)
+            If datos Is Nothing Then
+                MessageBox.Show("Error al cargar los datos de la empresa.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                Close()
+                Exit Sub
+            End If
+            Await CargarListadoBarrios(datos.IdProvincia, datos.IdCanton, datos.IdDistrito)
+            txtIdEmpresa.Text = datos.IdEmpresa
+            txtNombreEmpresa.Text = datos.NombreEmpresa
+            txtNombreComercial.Text = datos.NombreComercial
+            cboTipoIdentificacion.SelectedValue = datos.IdTipoIdentificacion
+            txtIdentificacion.Text = datos.Identificacion
+            txtCodigoActividad.Text = datos.CodigoActividad
+            cboProvincia.SelectedValue = datos.IdProvincia
+            cboCanton.SelectedValue = datos.IdCanton
+            cboDistrito.SelectedValue = datos.IdDistrito
+            cboBarrio.SelectedValue = datos.IdBarrio
+            txtDireccion.Text = datos.Direccion
+            txtTelefono.Text = datos.Telefono
+            txtCorreoNotificacion.Text = datos.CorreoNotificacion
+            txtFechaRenovacion.Text = Format(datos.FechaVence, "dd/MM/yyyy")
+            txtNombreCertificado.Text = datos.NombreCertificado
+            txtPinCertificado.Text = datos.PinCertificado
+            txtUsuarioATV.Text = datos.UsuarioHacienda
+            txtClaveATV.Text = datos.ClaveHacienda
+            txtIdSucursal.Text = datosSucursal.IdSucursal
+            txtNombreSucursal.Text = datosSucursal.NombreSucursal
+            txtDireccionSucursal.Text = datosSucursal.Direccion
+            txtTelefonoSucursal.Text = datosSucursal.Telefono
+            txtIdTerminal.Text = datosTerminal.IdTerminal
+            txtNombreImpresora.Text = datosTerminal.ImpresoraFactura
+            txtUltimoFE.Text = datosTerminal.UltimoDocFE
+            txtUltimoND.Text = datosTerminal.UltimoDocND
+            txtUltimoNC.Text = datosTerminal.UltimoDocNC
+            txtUltimoTE.Text = datosTerminal.UltimoDocTE
+            txtUltimoMR.Text = datosTerminal.UltimoDocMR
+            bolInit = False
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
-            Exit Sub
         End Try
-        If datos Is Nothing Then
-            MessageBox.Show("Error al cargar los datos de la empresa.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-            Close()
-            Exit Sub
-        End If
-        Await CargarListadoBarrios(datos.IdProvincia, datos.IdCanton, datos.IdDistrito)
-        txtIdEmpresa.Text = datos.IdEmpresa
-        txtNombreEmpresa.Text = datos.NombreEmpresa
-        txtNombreComercial.Text = datos.NombreComercial
-        cboTipoIdentificacion.SelectedValue = datos.IdTipoIdentificacion
-        txtIdentificacion.Text = datos.Identificacion
-        txtCodigoActividad.Text = datos.CodigoActividad
-        cboProvincia.SelectedValue = datos.IdProvincia
-        cboCanton.SelectedValue = datos.IdCanton
-        cboDistrito.SelectedValue = datos.IdDistrito
-        cboBarrio.SelectedValue = datos.IdBarrio
-        txtDireccion.Text = datos.Direccion
-        txtTelefono.Text = datos.Telefono
-        txtCorreoNotificacion.Text = datos.CorreoNotificacion
-        txtFechaRenovacion.Text = Format(datos.FechaVence, "dd/MM/yyyy")
-        txtNombreCertificado.Text = datos.NombreCertificado
-        txtPinCertificado.Text = datos.PinCertificado
-        txtUsuarioATV.Text = datos.UsuarioHacienda
-        txtClaveATV.Text = datos.ClaveHacienda
-        txtIdSucursal.Text = datosSucursal.IdSucursal
-        txtNombreSucursal.Text = datosSucursal.NombreSucursal
-        txtDireccionSucursal.Text = datosSucursal.Direccion
-        txtTelefonoSucursal.Text = datosSucursal.Telefono
-        txtIdTerminal.Text = datosTerminal.IdTerminal
-        txtNombreImpresora.Text = datosTerminal.ImpresoraFactura
-        txtUltimoFE.Text = datosTerminal.UltimoDocFE
-        txtUltimoND.Text = datosTerminal.UltimoDocND
-        txtUltimoNC.Text = datosTerminal.UltimoDocNC
-        txtUltimoTE.Text = datosTerminal.UltimoDocTE
-        txtUltimoMR.Text = datosTerminal.UltimoDocMR
-        bolInit = False
     End Sub
 
     Private Sub BtnCancelar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnCancelar.Click
@@ -162,16 +157,16 @@ Public Class FrmEmpresa
         datos.ClaveHacienda = txtClaveATV.Text
         datos.Barrio = Nothing
         Try
-            Await ClienteFEWCF.ActualizarEmpresa(datos)
+            Await Puntoventa.ActualizarEmpresa(datos, FrmPrincipal.usuarioGlobal.Token)
             If bolCertificadoModificado And txtNombreCertificado.Text.Length > 0 Then
                 Dim bytCertificado As Byte() = File.ReadAllBytes(strRutaCertificado)
-                Await ClienteFEWCF.ActualizarCertificadoEmpresa(txtIdEmpresa.Text, Convert.ToBase64String(bytCertificado))
+                Await Puntoventa.ActualizarCertificadoEmpresa(txtIdEmpresa.Text, Convert.ToBase64String(bytCertificado), FrmPrincipal.usuarioGlobal.Token)
             End If
             If bolSucursalActualizada Then
                 datosSucursal.NombreSucursal = txtNombreSucursal.Text
                 datosSucursal.Direccion = txtDireccionSucursal.Text
                 datosSucursal.Telefono = txtTelefonoSucursal.Text
-                Await ClienteFEWCF.ActualizarSucursalPorEmpresa(datosSucursal)
+                Await Puntoventa.ActualizarSucursalPorEmpresa(datosSucursal, FrmPrincipal.usuarioGlobal.Token)
             End If
             If bolTerminalActualizada Then
                 datosTerminal.ImpresoraFactura = txtNombreImpresora.Text
@@ -180,7 +175,7 @@ Public Class FrmEmpresa
                 datosTerminal.UltimoDocNC = txtUltimoNC.Text
                 datosTerminal.UltimoDocTE = txtUltimoTE.Text
                 datosTerminal.UltimoDocMR = txtUltimoMR.Text
-                Await ClienteFEWCF.ActualizarTerminalPorSucursal(datosTerminal)
+                Await Puntoventa.ActualizarTerminalPorSucursal(datosTerminal, FrmPrincipal.usuarioGlobal.Token)
             End If
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -193,9 +188,9 @@ Public Class FrmEmpresa
     Private Async Sub CboProvincia_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboProvincia.SelectedIndexChanged
         If Not bolInit Then
             bolInit = True
-            cboCanton.DataSource = Await ClienteFEWCF.ObtenerListadoCantones(cboProvincia.SelectedValue)
-            cboDistrito.DataSource = Await ClienteFEWCF.ObtenerListadoDistritos(cboProvincia.SelectedValue, 1)
-            cboBarrio.DataSource = Await ClienteFEWCF.ObtenerListadoBarrios(cboProvincia.SelectedValue, 1, 1)
+            cboCanton.DataSource = Await Puntoventa.ObtenerListadoCantones(cboProvincia.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
+            cboDistrito.DataSource = Await Puntoventa.ObtenerListadoDistritos(cboProvincia.SelectedValue, 1, FrmPrincipal.usuarioGlobal.Token)
+            cboBarrio.DataSource = Await Puntoventa.ObtenerListadoBarrios(cboProvincia.SelectedValue, 1, 1, FrmPrincipal.usuarioGlobal.Token)
             bolInit = False
         End If
     End Sub
@@ -203,15 +198,15 @@ Public Class FrmEmpresa
     Private Async Sub CboCanton_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboCanton.SelectedIndexChanged
         If Not bolInit Then
             bolInit = True
-            cboDistrito.DataSource = Await ClienteFEWCF.ObtenerListadoDistritos(cboProvincia.SelectedValue, cboCanton.SelectedValue)
-            cboBarrio.DataSource = Await ClienteFEWCF.ObtenerListadoBarrios(cboProvincia.SelectedValue, cboCanton.SelectedValue, 1)
+            cboDistrito.DataSource = Await Puntoventa.ObtenerListadoDistritos(cboProvincia.SelectedValue, cboCanton.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
+            cboBarrio.DataSource = Await Puntoventa.ObtenerListadoBarrios(cboProvincia.SelectedValue, cboCanton.SelectedValue, 1, FrmPrincipal.usuarioGlobal.Token)
             bolInit = False
         End If
     End Sub
 
     Private Async Sub CboDistrito_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboDistrito.SelectedIndexChanged
         If Not bolInit Then
-            cboBarrio.DataSource = Await ClienteFEWCF.ObtenerListadoBarrios(cboProvincia.SelectedValue, cboCanton.SelectedValue, cboDistrito.SelectedValue)
+            cboBarrio.DataSource = Await Puntoventa.ObtenerListadoBarrios(cboProvincia.SelectedValue, cboCanton.SelectedValue, cboDistrito.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
         End If
     End Sub
 

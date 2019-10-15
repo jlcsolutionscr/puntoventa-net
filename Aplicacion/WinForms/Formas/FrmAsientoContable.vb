@@ -108,14 +108,9 @@ Public Class FrmAsientoContable
     End Sub
 
     Private Sub CargarComboProducto()
-        Try
-            'cboCuentaContable.DataSource = servicioContabilidad.ObtenerListaCuentasParaMovimientos(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
-            cboCuentaContable.ValueMember = "IdCuenta"
-            cboCuentaContable.DisplayMember = "DescripcionCompleta"
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Exit Sub
-        End Try
+        'cboCuentaContable.DataSource = servicioContabilidad.ObtenerListaCuentasParaMovimientos(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
+        cboCuentaContable.ValueMember = "IdCuenta"
+        cboCuentaContable.DisplayMember = "DescripcionCompleta"
         cboCuentaContable.SelectedValue = 0
     End Sub
 #End Region
@@ -264,16 +259,22 @@ Public Class FrmAsientoContable
     End Sub
 
     Private Sub FrmFactura_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
-        CargarComboProducto()
-        IniciaDetalleAsiento()
-        EstablecerPropiedadesDataGridView()
-        grdDetalleAsiento.DataSource = dtbDetalleAsiento
-        grdDetalleAsiento.Refresh()
-        txtDebito.Text = FormatNumber(0, 2)
-        txtCredito.Text = FormatNumber(0, 2)
-        txtTotalDebito.Text = FormatNumber(0, 2)
-        txtTotalCredito.Text = FormatNumber(0, 2)
+        Try
+            txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
+            CargarComboProducto()
+            IniciaDetalleAsiento()
+            EstablecerPropiedadesDataGridView()
+            grdDetalleAsiento.DataSource = dtbDetalleAsiento
+            grdDetalleAsiento.Refresh()
+            txtDebito.Text = FormatNumber(0, 2)
+            txtCredito.Text = FormatNumber(0, 2)
+            txtTotalDebito.Text = FormatNumber(0, 2)
+            txtTotalCredito.Text = FormatNumber(0, 2)
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Close()
+            Exit Sub
+        End Try
     End Sub
 
     Private Sub txtDebito_Leave(sender As Object, e As EventArgs) Handles txtDebito.Validated

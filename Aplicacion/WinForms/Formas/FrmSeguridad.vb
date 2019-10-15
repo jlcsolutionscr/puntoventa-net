@@ -15,7 +15,6 @@ Public Class FrmSeguridad
             Close()
             Exit Sub
         End Try
-
     End Sub
     Private Sub CmdAceptar_Click(sender As Object, e As EventArgs) Handles CmdAceptar.Click
         FrmPrincipal.strCodigoUsuario = TxtUsuario.Text

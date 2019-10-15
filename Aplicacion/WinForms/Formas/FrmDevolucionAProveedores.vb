@@ -1,10 +1,10 @@
 Imports System.Collections.Generic
-Imports LeandroSoftware.Core.CommonTypes
+Imports LeandroSoftware.Core.TiposComunes
 Imports LeandroSoftware.Core.Dominio.Entidades
 
 Public Class FrmDevolucionAProveedores
 #Region "Variables"
-    Private decExcento, decGrabado, decSubTotal As Decimal
+    Private decExcento, decGravado, decSubTotal As Decimal
     Private I As Short
     Private dtbDatosLocal, dtbDetalleDevolucion As DataTable
     Private dtrRowDetDevolucion As DataRow
@@ -147,20 +147,20 @@ Public Class FrmDevolucionAProveedores
     Private Sub CargarTotales()
         Dim decImpuesto As Decimal = 0
         decExcento = 0
-        decGrabado = 0
+        decGravado = 0
         decSubTotal = 0
         For I = 0 To dtbDetalleDevolucion.Rows.Count - 1
             If dtbDetalleDevolucion.Rows(I).Item(7) > 0 Then
                 Dim decTotalPorLinea As Decimal = dtbDetalleDevolucion.Rows(I).Item(4).Value * dtbDetalleDevolucion.Rows(I).Item(7).Value
                 If dtbDetalleDevolucion.Rows(I).Item(6) = 0 Then
-                    decGrabado += decTotalPorLinea
+                    decGravado += decTotalPorLinea
                     decImpuesto += decTotalPorLinea * dtbDetalleDevolucion.Rows(I).Item(8).Value
                 Else
                     decExcento += decTotalPorLinea
                 End If
             End If
         Next
-        decSubTotal = decGrabado + decExcento
+        decSubTotal = decGravado + decExcento
         If decSubTotal > 0 And compra.Descuento > 0 Then
             decImpuesto = 0
             For I = 0 To dtbDetalleDevolucion.Rows.Count - 1
@@ -170,43 +170,47 @@ Public Class FrmDevolucionAProveedores
                 decImpuesto += decDescuentoPorLinea * dtbDetalleDevolucion.Rows(I).Item(8).Value
             Next
         End If
-        decGrabado = Math.Round(decGrabado, 2, MidpointRounding.AwayFromZero)
+        decGravado = Math.Round(decGravado, 2, MidpointRounding.AwayFromZero)
         decExcento = Math.Round(decExcento, 2, MidpointRounding.AwayFromZero)
         decImpuesto = Math.Round(decImpuesto, 2, MidpointRounding.AwayFromZero)
         txtSubTotal.Text = FormatNumber(decSubTotal, 2)
         txtImpuesto.Text = FormatNumber(decImpuesto, 2)
-        txtTotal.Text = FormatNumber(decExcento + decGrabado + txtImpuesto.Text, 2)
+        txtTotal.Text = FormatNumber(decExcento + decGravado + txtImpuesto.Text, 2)
     End Sub
 
     Private Sub CargarCompra(intIdCompra As Integer)
         Try
             'compra = servicioCompras.ObtenerCompra(intIdCompra)
+            If compra IsNot Nothing Then
+                proveedor = compra.Proveedor
+                txtProveedor.Text = proveedor.Nombre
+                txtNumFactura.Text = compra.NoDocumento
+                CargarDetalleCompra(compra)
+                CargarTotales()
+            Else
+                MessageBox.Show("El número de compra ingresado no existe. Por favor verifique.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End If
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Exit Sub
         End Try
-        If compra IsNot Nothing Then
-            proveedor = compra.Proveedor
-            txtProveedor.Text = proveedor.Nombre
-            txtNumFactura.Text = compra.NoDocumento
-            CargarDetalleCompra(compra)
-            CargarTotales()
-        Else
-            MessageBox.Show("El número de compra ingresado no existe. Por favor verifique.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-        End If
     End Sub
 #End Region
 
 #Region "Eventos Controles"
     Private Sub FrmDevolucion_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
-        IniciaDetalleDevolucion()
-        EstablecerPropiedadesDataGridView()
-        grdDetalleDevolucion.DataSource = dtbDetalleDevolucion
-        bolInit = False
-        txtSubTotal.Text = FormatNumber(0, 2)
-        txtImpuesto.Text = FormatNumber(0, 2)
-        txtTotal.Text = FormatNumber(0, 2)
+        Try
+            txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
+            IniciaDetalleDevolucion()
+            EstablecerPropiedadesDataGridView()
+            grdDetalleDevolucion.DataSource = dtbDetalleDevolucion
+            bolInit = False
+            txtSubTotal.Text = FormatNumber(0, 2)
+            txtImpuesto.Text = FormatNumber(0, 2)
+            txtTotal.Text = FormatNumber(0, 2)
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Close()
+        End Try
     End Sub
 
     Private Sub grdDetalleDevolucion_CellEndEdit(sender As Object, e As System.Windows.Forms.DataGridViewCellEventArgs) Handles grdDetalleDevolucion.CellEndEdit
@@ -305,7 +309,7 @@ Public Class FrmDevolucionAProveedores
                 .IdCompra = compra.IdCompra,
                 .Fecha = Now(),
                 .Excento = decExcento,
-                .Grabado = decGrabado,
+                .Gravado = decGravado,
                 .Impuesto = CDbl(txtImpuesto.Text)
             }
             For I = 0 To dtbDetalleDevolucion.Rows.Count - 1

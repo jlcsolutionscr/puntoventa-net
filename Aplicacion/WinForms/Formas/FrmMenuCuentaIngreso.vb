@@ -4,22 +4,21 @@ Public Class FrmMenuCuentaIngreso
 
 #Region "Métodos"
     Private Sub CargarCombos()
-        Try
-            cboIdCuentaIngreso.ValueMember = "IdCuenta"
-            cboIdCuentaIngreso.DisplayMember = "Descripcion"
-            'cboIdCuentaIngreso.DataSource = servicioIngreso.ObtenerListaCuentasIngreso(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-            Exit Sub
-        End Try
+        cboIdCuentaIngreso.ValueMember = "IdCuenta"
+        cboIdCuentaIngreso.DisplayMember = "Descripcion"
+        'cboIdCuentaIngreso.DataSource = servicioIngreso.ObtenerListaCuentasIngreso(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
         cboIdCuentaIngreso.SelectedValue = 0
     End Sub
 #End Region
 
 #Region "Eventos Controles"
     Private Sub FrmRptMenu_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        CargarCombos()
+        Try
+            CargarCombos()
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Close()
+        End Try
     End Sub
 
     Private Sub btnProcesar_Click(sender As Object, e As EventArgs) Handles btnProcesar.Click

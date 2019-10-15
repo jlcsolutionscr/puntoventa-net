@@ -1,5 +1,5 @@
 Imports System.Threading.Tasks
-Imports LeandroSoftware.Core.ClienteWCF
+Imports LeandroSoftware.ClienteWCF
 
 Public Class FrmBusquedaEgreso
 #Region "Variables"
@@ -28,7 +28,7 @@ Public Class FrmBusquedaEgreso
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
         Try
-            dgvListado.DataSource = Await ClienteFEWCF.ObtenerListadoEgresos(FrmPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, intId, "", txtDetalle.Text)
+            dgvListado.DataSource = Await Puntoventa.ObtenerListadoEgresos(FrmPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, FrmPrincipal.usuarioGlobal.Token, intId, "", txtDetalle.Text)
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -40,7 +40,7 @@ Public Class FrmBusquedaEgreso
 
     Private Async Function ValidarCantidadEgresos() As Task
         Try
-            intTotalEmpresas = Await ClienteFEWCF.ObtenerTotalListaEgresos(FrmPrincipal.empresaGlobal.IdEmpresa, intId, "", txtDetalle.Text)
+            intTotalEmpresas = Await Puntoventa.ObtenerTotalListaEgresos(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token, intId, "", txtDetalle.Text)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -91,10 +91,16 @@ Public Class FrmBusquedaEgreso
     End Sub
 
     Private Async Sub FrmBusEgreso_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        EstablecerPropiedadesDataGridView()
-        Await ValidarCantidadEgresos()
-        intIndiceDePagina = 1
-        Await ActualizarDatos(intIndiceDePagina)
+        Try
+            EstablecerPropiedadesDataGridView()
+            Await ValidarCantidadEgresos()
+            intIndiceDePagina = 1
+            Await ActualizarDatos(intIndiceDePagina)
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Close()
+            Exit Sub
+        End Try
     End Sub
 
     Private Sub FlexProducto_DoubleClick(ByVal sender As Object, ByVal e As EventArgs) Handles dgvListado.DoubleClick

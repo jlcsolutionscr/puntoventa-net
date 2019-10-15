@@ -20,7 +20,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public bool Modifica { get; set; }
         public bool PermiteRegistrarDispositivo { get; set; }
         [NotMapped]
-        public Empresa Empresa;
+        public string Token;
 
         public ICollection<RolePorUsuario> RolePorUsuario { get; set; }
         public ICollection<UsuarioPorEmpresa> UsuarioPorEmpresa { get; set; }

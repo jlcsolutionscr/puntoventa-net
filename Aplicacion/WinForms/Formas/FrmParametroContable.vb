@@ -1,5 +1,5 @@
 Imports LeandroSoftware.Core.Dominio.Entidades
-Imports LeandroSoftware.Core.CommonTypes
+Imports LeandroSoftware.Core.TiposComunes
 
 Public Class FrmParametroContable
 #Region "Variables"
@@ -27,17 +27,12 @@ Public Class FrmParametroContable
     End Function
 
     Private Sub CargarCombos()
-        Try
-            cboTipoParametro.ValueMember = "IdTipo"
-            cboTipoParametro.DisplayMember = "Descripcion"
-            'cboTipoParametro.DataSource = servicioContabilidad.ObtenerTiposParametroContable()
-            cboCuentaContable.ValueMember = "IdCuenta"
-            cboCuentaContable.DisplayMember = "DescripcionCompleta"
-            'cboCuentaContable.DataSource = servicioContabilidad.ObtenerListaCuentasParaMovimientos(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Exit Sub
-        End Try
+        cboTipoParametro.ValueMember = "IdTipo"
+        cboTipoParametro.DisplayMember = "Descripcion"
+        'cboTipoParametro.DataSource = servicioContabilidad.ObtenerTiposParametroContable()
+        cboCuentaContable.ValueMember = "IdCuenta"
+        cboCuentaContable.DisplayMember = "DescripcionCompleta"
+        'cboCuentaContable.DataSource = servicioContabilidad.ObtenerListaCuentasParaMovimientos(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
     End Sub
 
     Private Sub CargarDatosCuentaContable(ByVal intIdCuenta As Integer)
@@ -87,39 +82,31 @@ Public Class FrmParametroContable
 
 #Region "Eventos Controles"
     Private Sub FrmParametroContable_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        CargarCombos()
-        If intIdParametro > 0 Then
-            Try
+        Try
+            CargarCombos()
+            If intIdParametro > 0 Then
                 'datos = servicioContabilidad.ObtenerParametroContable(intIdParametro)
-            Catch ex As Exception
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Close()
-                Exit Sub
-            End Try
-            If datos Is Nothing Then
-                MessageBox.Show("El parámetro contable seleccionado no existe", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-                Close()
-                Exit Sub
-            End If
-            txtIdParametro.Text = datos.IdParametro
-            cboTipoParametro.SelectedValue = datos.IdTipo
-            cboCuentaContable.SelectedValue = datos.IdCuenta
-            CargarDatosCuentaContable(datos.IdCuenta)
-            CargarDatosProducto(datos.TipoParametroContable)
-            If datos.IdProducto > 0 Then
-                cboProducto.SelectedValue = datos.IdProducto
-            End If
-            Try
+                If datos Is Nothing Then
+                    Throw New Exception("El parámetro contable seleccionado no existe")
+                End If
+                txtIdParametro.Text = datos.IdParametro
+                cboTipoParametro.SelectedValue = datos.IdTipo
+                cboCuentaContable.SelectedValue = datos.IdCuenta
+                CargarDatosCuentaContable(datos.IdCuenta)
+                CargarDatosProducto(datos.TipoParametroContable)
+                If datos.IdProducto > 0 Then
+                    cboProducto.SelectedValue = datos.IdProducto
+                End If
                 'tipoParametro = servicioContabilidad.ObtenerTipoParametroContable(cboTipoParametro.SelectedValue)
-            Catch ex As Exception
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Exit Sub
-            End Try
-        Else
-            datos = New ParametroContable
-            If cboCuentaContable.SelectedValue > 0 Then CargarDatosCuentaContable(cboCuentaContable.SelectedValue)
-        End If
-        bolInit = False
+            Else
+                datos = New ParametroContable
+                If cboCuentaContable.SelectedValue > 0 Then CargarDatosCuentaContable(cboCuentaContable.SelectedValue)
+            End If
+            bolInit = False
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Close()
+        End Try
     End Sub
 
     Private Sub btnCancelar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnCancelar.Click

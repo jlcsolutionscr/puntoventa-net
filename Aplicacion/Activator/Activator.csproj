@@ -6,7 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{9D54BA58-FBB9-4325-82EF-1A4F8B36881F}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>Activator</RootNamespace>
+    <RootNamespace>LeandroSoftware.Aplicacion</RootNamespace>
     <AssemblyName>Activator</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -64,6 +64,7 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Management" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -76,10 +77,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="documentoelectronico.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>documentoelectronico.xsd</DependentUpon>
+    <Compile Include="FrmDocumentosEnProceso.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmDocumentosEnProceso.Designer.cs">
+      <DependentUpon>FrmDocumentosEnProceso.cs</DependentUpon>
     </Compile>
     <Compile Include="FrmMenu.cs">
       <SubType>Form</SubType>
@@ -113,6 +115,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="FrmDocumentosEnProceso.resx">
+      <DependentUpon>FrmDocumentosEnProceso.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FrmMenu.resx">
       <DependentUpon>FrmMenu.cs</DependentUpon>
     </EmbeddedResource>
@@ -138,17 +143,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <None Include="documentoelectronico.xsc">
-      <DependentUpon>documentoelectronico.xsd</DependentUpon>
-    </None>
-    <None Include="documentoelectronico.xsd">
-      <Generator>MSDataSetGenerator</Generator>
-      <LastGenOutput>documentoelectronico.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="documentoelectronico.xss">
-      <DependentUpon>documentoelectronico.xsd</DependentUpon>
-    </None>
     <None Include="packages.config" />
     <None Include="Properties\DataSources\LeandroSoftware.AccesoDatos.Dominio.Entidades.DocumentoElectronico.datasource" />
     <None Include="Properties\Settings.settings">
@@ -162,7 +156,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config">
+    <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
@@ -180,7 +174,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\ClienteWCF\ClienteWCF.csproj">
-      <Project>{2602dd72-5aa0-45a2-a4a6-4805da33c318}</Project>
+      <Project>{2602DD72-5AA0-45A2-A4A6-4805DA33C318}</Project>
       <Name>ClienteWCF</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Core\Core.csproj">

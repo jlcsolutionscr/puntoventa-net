@@ -3,7 +3,7 @@ Imports System.Runtime.InteropServices
 Imports System.Collections.Generic
 Imports LeandroSoftware.Core.Dominio.Entidades
 Imports System.Drawing.Printing
-Imports LeandroSoftware.Core.CommonTypes
+Imports LeandroSoftware.Core.TiposComunes
 
 Public Class ModuloImpresion
 #Region "Variables"

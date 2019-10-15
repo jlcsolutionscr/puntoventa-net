@@ -8,7 +8,7 @@
     <ProjectGuid>{74E3681E-1245-4268-ADB9-D76DA18B2FE0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>LeandroSoftware.PuntoVenta.Dominio</RootNamespace>
+    <RootNamespace>LeandroSoftware.Core</RootNamespace>
     <AssemblyName>Dominio</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -37,11 +37,11 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="EntityFramework">
-      <HintPath>..\..\..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\EntityFramework.6.3.0\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
-    <Reference Include="EntityFramework.SqlServer">
-      <HintPath>..\..\..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\EntityFramework.6.3.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -71,6 +71,7 @@
     <Compile Include="Entidades\DocumentoElectronico.cs" />
     <Compile Include="Entidades\Padron.cs" />
     <Compile Include="Entidades\ParametroImpuesto.cs" />
+    <Compile Include="Entidades\RegistroAutenticacion.cs" />
     <Compile Include="Entidades\ParametroSistema.cs" />
     <Compile Include="Entidades\OrdenServicio.cs" />
     <Compile Include="Entidades\DetalleOrdenServicio.cs" />
@@ -152,9 +153,6 @@
     <Compile Include="Entidades\Vendedor.cs" />
     <Compile Include="Entidades\Usuario.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core.csproj">
