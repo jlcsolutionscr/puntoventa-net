@@ -446,7 +446,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     listado = listado.OrderByDescending(x => x.IdEgreso).Skip((numPagina - 1) * cantRec).Take(cantRec);
                     foreach (var value in listado)
                     {
-                        LlaveDescripcion item = new LlaveDescripcion(value.IdEgreso, value.Detalle);
+                        LlaveDescripcion item = new LlaveDescripcion(value.IdEgreso, value.Fecha.ToString("dd/MM/yyyy") + "   -   " + value.Detalle);
                         listadoEgreso.Add(item);
                     }
                     return listadoEgreso;

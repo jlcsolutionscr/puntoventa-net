@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Servidor: 204.93.216.11:3306
--- Tiempo de generación: 08-10-2019 a las 15:48:35
+-- Tiempo de generación: 15-10-2019 a las 09:30:21
 -- Versión del servidor: 5.6.40
 -- Versión de PHP: 5.2.13
 
@@ -231,7 +231,8 @@ CREATE TABLE cliente (
   CorreoElectronico varchar(200) DEFAULT NULL,
   IdVendedor int(11) DEFAULT NULL,
   IdTipoPrecio int(11) DEFAULT NULL,
-  ExoneradoDeImpuesto int(11) NOT NULL,
+  AplicaTasaDiferenciada int(11) NOT NULL,
+  IdImpuesto int(11) DEFAULT NULL,
   PRIMARY KEY (IdCliente),
   KEY IdEmpresa (IdEmpresa),
   KEY IdTipoIdentificacion (IdTipoIdentificacion),
@@ -951,7 +952,7 @@ CREATE TABLE factura (
   TextoAdicional varchar(500) DEFAULT NULL,
   IdVendedor int(11) NOT NULL,
   Excento double NOT NULL,
-  Grabado double NOT NULL,
+  Gravado double NOT NULL,
   Descuento double NOT NULL,
   MontoPagado double NOT NULL,
   Impuesto double NOT NULL,
@@ -1034,32 +1035,6 @@ CREATE TABLE linea (
   KEY IdEmpresa (IdEmpresa),
   KEY IdTipoProducto (IdTipoProducto)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla 'modulo'
---
-
-CREATE TABLE modulo (
-  IdModulo int(11) NOT NULL,
-  Descripcion varchar(100) NOT NULL,
-  MenuPadre varchar(100) NOT NULL,
-  PRIMARY KEY (IdModulo)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla 'moduloporempresa'
---
-
-CREATE TABLE moduloporempresa (
-  IdEmpresa int(11) NOT NULL,
-  IdModulo int(11) NOT NULL,
-  PRIMARY KEY (IdEmpresa,IdModulo),
-  KEY IdModulo (IdModulo)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1393,6 +1368,19 @@ CREATE TABLE provincia (
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla 'registroautenticacion'
+--
+
+CREATE TABLE registroautenticacion (
+  Id varchar(36) NOT NULL,
+  Fecha datetime NOT NULL,
+  Role int(11) NOT NULL,
+  PRIMARY KEY (Id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla 'registrorespuestahacienda'
 --
 
@@ -1480,10 +1468,25 @@ CREATE TABLE sucursal (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'terminalporempresa'
+-- Estructura de tabla para la tabla 'sucursalporempresa'
 --
 
-CREATE TABLE terminalporempresa (
+CREATE TABLE sucursalporempresa (
+  IdEmpresa int(11) NOT NULL,
+  IdSucursal int(11) NOT NULL,
+  NombreSucursal varchar(160) NOT NULL,
+  Direccion varchar(160) NOT NULL,
+  Telefono varchar(20) NOT NULL,
+  PRIMARY KEY (IdEmpresa,IdSucursal)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla 'terminalporsucursal'
+--
+
+CREATE TABLE terminalporsucursal (
   IdEmpresa int(11) NOT NULL,
   IdSucursal int(11) NOT NULL,
   IdTerminal int(11) NOT NULL,
@@ -1494,9 +1497,6 @@ CREATE TABLE terminalporempresa (
   UltimoDocNC int(11) NOT NULL,
   UltimoDocTE int(11) NOT NULL,
   UltimoDocMR int(11) NOT NULL,
-  NombreSucursal varchar(160) NOT NULL,
-  Direccion varchar(160) NOT NULL,
-  Telefono varchar(20) NOT NULL,
   IdTipoDispositivo int(1) NOT NULL,
   PRIMARY KEY (IdEmpresa,IdSucursal,IdTerminal)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1967,13 +1967,6 @@ ALTER TABLE `linea`
   ADD CONSTRAINT linea_ibfk_2 FOREIGN KEY (IdTipoProducto) REFERENCES tipoproducto (IdTipoProducto);
 
 --
--- Filtros para la tabla `moduloporempresa`
---
-ALTER TABLE `moduloporempresa`
-  ADD CONSTRAINT moduloporempresa_ibfk_1 FOREIGN KEY (IdEmpresa) REFERENCES empresa (IdEmpresa),
-  ADD CONSTRAINT moduloporempresa_ibfk_2 FOREIGN KEY (IdModulo) REFERENCES modulo (IdModulo);
-
---
 -- Filtros para la tabla `movimientobanco`
 --
 ALTER TABLE `movimientobanco`
@@ -2070,10 +2063,17 @@ ALTER TABLE `saldomensualcontable`
   ADD CONSTRAINT saldomensualcontable_ibfk_1 FOREIGN KEY (IdCuenta) REFERENCES catalogocontable (IdCuenta);
 
 --
--- Filtros para la tabla `terminalporempresa`
+-- Filtros para la tabla `sucursalporempresa`
 --
-ALTER TABLE `terminalporempresa`
-  ADD CONSTRAINT terminalporempresa_ibfk_1 FOREIGN KEY (IdEmpresa) REFERENCES empresa (IdEmpresa);
+ALTER TABLE `sucursalporempresa`
+  ADD CONSTRAINT sucursalporempresa_ibfk_1 FOREIGN KEY (IdEmpresa) REFERENCES empresa (IdEmpresa);
+
+--
+-- Filtros para la tabla `terminalporsucursal`
+--
+ALTER TABLE `terminalporsucursal`
+  ADD CONSTRAINT terminalporsucursal_ibfk_1 FOREIGN KEY (IdEmpresa) REFERENCES empresa (IdEmpresa),
+  ADD CONSTRAINT terminalporsucursal_ibfk_2 FOREIGN KEY (IdEmpresa, IdSucursal) REFERENCES sucursalporempresa (IdEmpresa, IdSucursal);
 
 --
 -- Filtros para la tabla `traslado`

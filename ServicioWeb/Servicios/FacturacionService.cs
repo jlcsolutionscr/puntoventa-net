@@ -899,7 +899,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     listado = listado.OrderByDescending(x => x.IdFactura).Skip((numPagina - 1) * cantRec).Take(cantRec);
                     foreach (var value in listado)
                     {
-                        LlaveDescripcion item = new LlaveDescripcion(value.IdFactura, value.Cliente.Nombre);
+                        LlaveDescripcion item = new LlaveDescripcion(value.IdFactura, value.Fecha.ToString("dd/MM/yyyy") + "   -   " + value.Cliente.Nombre);
                         listaFactura.Add(item);
                     }
                     return listaFactura;
@@ -922,7 +922,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     var listado = dbContext.FacturaRepository.Where(x => !x.Nulo & x.IdCliente == intIdCliente);
                     foreach (var value in listado)
                     {
-                        LlaveDescripcion item = new LlaveDescripcion(value.IdFactura, value.Cliente.Nombre);
+                        LlaveDescripcion item = new LlaveDescripcion(value.IdFactura, value.Fecha.ToString("dd/MM/yyyy") + "   -   " + value.Cliente.Nombre);
                         listaFactura.Add(item);
                     }
                     return listaFactura;

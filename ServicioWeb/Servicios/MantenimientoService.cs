@@ -1585,7 +1585,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         listado = listado.OrderBy(x => x.Codigo);
                     foreach (Producto value in listado)
                     {
-                        LlaveDescripcion item = new LlaveDescripcion(value.IdProducto, value.Codigo + " - " + value.Descripcion);
+                        LlaveDescripcion item = new LlaveDescripcion(value.IdProducto, value.Codigo + "   -   " + value.Descripcion);
                         listaProducto.Add(item);
                     }
                     return listaProducto;
