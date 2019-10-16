@@ -1,6 +1,7 @@
 ﻿using LeandroSoftware.Core.TiposComunes;
 using LeandroSoftware.ServicioWeb.Servicios;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.ServiceModel;
@@ -16,10 +17,13 @@ namespace LeandroSoftware.ServicioWeb
         IUnityContainer unityContainer;
         IMantenimientoService servicioMantenimiento;
         string strApplicationKey;
-        public TokenValidationInspector(IUnityContainer container, string key)
+        Dictionary<string, string> requiredHeaders;
+
+        public TokenValidationInspector(Dictionary<string, string> headers, IUnityContainer container, string key)
         {
             unityContainer = container;
             strApplicationKey = key;
+            requiredHeaders = headers ?? new Dictionary<string, string>();
         }
 
         public object AfterReceiveRequest(ref Message request, IClientChannel channel, InstanceContext instanceContext)
@@ -47,6 +51,11 @@ namespace LeandroSoftware.ServicioWeb
 
         public void BeforeSendReply(ref Message reply, object correlationState)
         {
+            var httpHeader = reply.Properties["httpResponse"] as HttpResponseMessageProperty;
+            foreach (var item in requiredHeaders)
+            {
+                httpHeader.Headers.Add(item.Key, item.Value);
+            }
         }
     }
 }

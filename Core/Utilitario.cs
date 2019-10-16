@@ -201,19 +201,28 @@ namespace LeandroSoftware.Core.Utilities
             dsk.Get();
             string strVolumeSerial = dsk["VolumeSerialNumber"].ToString();
             string strProcessorId = "";
+            string strBoardSerialNumber = "";
             try
             {
                 ManagementObjectSearcher mos = new ManagementObjectSearcher("SELECT * FROM Win32_Processor Where DeviceID =\"CPU0\"");
                 foreach (ManagementObject mo in mos.Get())
-                {
                     strProcessorId = mo["ProcessorId"].ToString();
-                }
             }
             catch
             {
-                strProcessorId = "N/F-EFER2456AQWE";
+                strProcessorId = "N/F-PROCESSOR";
             }
-            return strProcessorId + "-" + strVolumeSerial;
+            try
+            {
+                ManagementObjectSearcher mos = new ManagementObjectSearcher("root\\CIMV2", "SELECT * FROM Win32_BaseBoard");
+                foreach (ManagementObject mo in mos.Get())
+                    strBoardSerialNumber = mo["SerialNumber"].ToString();
+            }
+            catch
+            {
+                strBoardSerialNumber = "N/F-BASEBOARD";
+            }
+            return strProcessorId + "-" + strVolumeSerial + "-" + strBoardSerialNumber;
         }
 
         public static string NumeroALetras(double t)

@@ -444,12 +444,11 @@ Public Class FrmPrincipal
             If MessageBox.Show("El sistema requiere una actualización para continuar. Desea proceder con la instalación de la actualización?", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
                 If File.Exists(Path.GetTempPath() + "/Updater.exe") Then
                     File.Delete(Path.GetTempPath() + "/Updater.exe")
-                    File.Delete(Path.GetTempPath() + "/Updater.exe.config")
                 End If
                 Dim procStartInfo As New ProcessStartInfo
                 Dim procExecuting As New Process
                 File.Copy(Application.StartupPath() + "/Updater.exe", Path.GetTempPath() + "/Updater.exe")
-                File.Copy(Application.StartupPath() + "/Updater.exe.config", Path.GetTempPath() + "/Updater.exe.config")
+                File.Copy(Application.StartupPath() + "/Applicacion.exe.config", Path.GetTempPath() + "/Updater.exe.config")
                 With procStartInfo
                     .UseShellExecute = True
                     .FileName = Path.GetTempPath() + "/Updater.exe"

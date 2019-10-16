@@ -327,6 +327,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     else
                     {
                         terminal = dbContext.TerminalPorSucursalRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa && x.ValorRegistro == strValorRegistro).FirstOrDefault();
+                        if (terminal == null) throw new BusinessException("No se logro obtener una terminal para la terminal indicada.");
                         sucursal = dbContext.SucursalPorEmpresaRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa && x.IdSucursal == terminal.IdSucursal).FirstOrDefault();
                     }
                     if (terminal == null || sucursal == null) throw new BusinessException("La terminal o dispositivo movil no se encuentra registrado para la empresa suministrada.");
@@ -360,6 +361,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (BusinessException ex)
                 {
+                    log.Error("Error al validar credenciales para la terminal: " + strValorRegistro + " Error: " + ex.Message);
                     throw ex;
                 }
                 catch (Exception ex)

@@ -1,6 +1,7 @@
 ﻿using LeandroSoftware.ServicioWeb.Contexto;
 using LeandroSoftware.ServicioWeb.Servicios;
 using System;
+using System.Collections.Generic;
 using System.ServiceModel.Channels;
 using System.ServiceModel.Description;
 using System.ServiceModel.Dispatcher;
@@ -31,7 +32,11 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             unityContainer.RegisterInstance("conectionString", connString, new ContainerControlledLifetimeManager());
             unityContainer.RegisterType<IDbContext, LeandroContext>(new InjectionConstructor(new ResolvedParameter<string>("conectionString")));
             unityContainer.RegisterType<IMantenimientoService, MantenimientoService>();
-            TokenValidationInspector inspector = new TokenValidationInspector(unityContainer, strApplicationKey);
+            var requiredHeaders = new Dictionary<string, string>();
+            requiredHeaders.Add("Access-Control-Allow-Origin", "*");
+            requiredHeaders.Add("Access-Control-Request-Method", "POST,GET,PUT,DELETE,OPTIONS");
+            requiredHeaders.Add("Access-Control-Allow-Headers", "X-Requested-With,Content-Type");
+            TokenValidationInspector inspector = new TokenValidationInspector(requiredHeaders, unityContainer, strApplicationKey);
             endpointDispatcher.DispatchRuntime.MessageInspectors.Add(inspector);
         }
 

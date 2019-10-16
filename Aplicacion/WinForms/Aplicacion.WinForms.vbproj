@@ -1079,11 +1079,6 @@
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\ClienteWCF\ClienteWCF.csproj">
-      <Project>{2602dd72-5aa0-45a2-a4a6-4805da33c318}</Project>
-      <Name>ClienteWCF</Name>
-      <Private>True</Private>
-    </ProjectReference>
     <ProjectReference Include="..\..\Core\Core.csproj">
       <Project>{fa3c5bce-3db6-486e-b16b-8b7f76eef63f}</Project>
       <Name>Core</Name>
@@ -1093,6 +1088,14 @@
       <Project>{74E3681E-1245-4268-ADB9-D76DA18B2FE0}</Project>
       <Name>Dominio</Name>
       <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\ClienteWCF\ClienteWCF.csproj">
+      <Project>{2602dd72-5aa0-45a2-a4a6-4805da33c318}</Project>
+      <Name>ClienteWCF</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Updater\Updater.csproj">
+      <Project>{c5a96452-92e8-4646-87cf-8366e174cdbd}</Project>
+      <Name>Updater</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
