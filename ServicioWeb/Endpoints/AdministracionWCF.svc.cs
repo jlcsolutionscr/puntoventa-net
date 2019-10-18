@@ -385,6 +385,11 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             servicioFacturacion.ProcesarDocumentosElectronicosPendientes(servicioEnvioCorreo, configuracion);
         }
 
+        public void LimpiarRegistrosInvalidos()
+        {
+            servicioMantenimiento.EliminarRegistroAutenticacionInvalidos();
+        }
+
         public string ObtenerUltimaVersionApp()
         {
             try

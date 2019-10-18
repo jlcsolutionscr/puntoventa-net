@@ -46,7 +46,7 @@ Partial Class FrmPrincipal
         Me.MnuParamPC = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuParamBA = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuMant = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ManuMantEmpresa = New System.Windows.Forms.ToolStripMenuItem()
+        Me.MnuMantEmpresa = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuMantCliente = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuMantLinea = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuMantProveedor = New System.Windows.Forms.ToolStripMenuItem()
@@ -162,19 +162,19 @@ Partial Class FrmPrincipal
         '
         'MnuMant
         '
-        Me.MnuMant.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ManuMantEmpresa, Me.MnuMantCliente, Me.MnuMantLinea, Me.MnuMantProveedor, Me.MnuMantProducto, Me.MnuMantUsuario, Me.MnuMantSucursal, Me.MnuMantCE, Me.MnuMantCI, Me.MnuMantCB, Me.MnuMantCC, Me.MnuMantInv, Me.MnuMantVend})
+        Me.MnuMant.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MnuMantEmpresa, Me.MnuMantCliente, Me.MnuMantLinea, Me.MnuMantProveedor, Me.MnuMantProducto, Me.MnuMantUsuario, Me.MnuMantSucursal, Me.MnuMantCE, Me.MnuMantCI, Me.MnuMantCB, Me.MnuMantCC, Me.MnuMantInv, Me.MnuMantVend})
         Me.MnuMant.MergeAction = System.Windows.Forms.MergeAction.Remove
         Me.MnuMant.Name = "MnuMant"
         Me.MnuMant.Size = New System.Drawing.Size(101, 20)
         Me.MnuMant.Text = "Mantenimiento"
         Me.MnuMant.Visible = False
         '
-        'ManuMantEmpresa
+        'MnuMantEmpresa
         '
-        Me.ManuMantEmpresa.Name = "ManuMantEmpresa"
-        Me.ManuMantEmpresa.Size = New System.Drawing.Size(180, 22)
-        Me.ManuMantEmpresa.Text = "Empresa"
-        Me.ManuMantEmpresa.Visible = False
+        Me.MnuMantEmpresa.Name = "MnuMantEmpresa"
+        Me.MnuMantEmpresa.Size = New System.Drawing.Size(180, 22)
+        Me.MnuMantEmpresa.Text = "Empresa"
+        Me.MnuMantEmpresa.Visible = False
         '
         'MnuMantCliente
         '
@@ -540,5 +540,5 @@ Partial Class FrmPrincipal
     Friend WithEvents MnuDocElectCDE As ToolStripMenuItem
     Friend WithEvents MnuDocElectADE As ToolStripMenuItem
     Friend WithEvents MnuDocElectRDE As ToolStripMenuItem
-    Friend WithEvents ManuMantEmpresa As ToolStripMenuItem
+    Friend WithEvents MnuMantEmpresa As ToolStripMenuItem
 End Class

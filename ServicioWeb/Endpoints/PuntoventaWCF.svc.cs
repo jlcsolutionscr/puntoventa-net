@@ -155,7 +155,6 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                 log.Error("Error al consultar el tipo de cambio del dolar: ", ex);
                 throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
             }
-            Task.Run(() => servicioMantenimiento.EliminarRegistroAutenticacionInvalidos());
         }
 
         public string ObtenerUltimaVersionApp()

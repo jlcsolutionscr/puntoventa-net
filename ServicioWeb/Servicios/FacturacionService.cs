@@ -124,6 +124,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     cliente.ParametroImpuesto = null;
+                    cliente.Vendedor = null;
                     dbContext.NotificarModificacion(cliente);
                     dbContext.Commit();
                 }

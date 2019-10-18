@@ -31,7 +31,7 @@ namespace LeandroSoftware.ServicioWeb
             try
             {
                 string strOperacion = request.Properties["HttpOperationName"].ToString();
-                if (!new string[] { "ObtenerUltimaVersionApp", "DescargarActualizacion", "ProcesarDocumentosElectronicosPendientes", "ValidarCredenciales", "ObtenerListadoEmpresasAdministrador", "ObtenerListadoEmpresasPorTerminal", "ObtenerListadoTerminalesDisponibles", "RegistrarTerminal" }.Contains(strOperacion))
+                if (!new string[] { "ObtenerUltimaVersionApp", "DescargarActualizacion", "LimpiarRegistrosInvalidos", "ProcesarDocumentosElectronicosPendientes", "ValidarCredenciales", "ObtenerListadoEmpresasAdministrador", "ObtenerListadoEmpresasPorTerminal", "ObtenerListadoTerminalesDisponibles", "RegistrarTerminal" }.Contains(strOperacion))
                 {
                     IncomingWebRequestContext incomingRequest = WebOperationContext.Current.IncomingRequest;
                     WebHeaderCollection headers = incomingRequest.Headers;

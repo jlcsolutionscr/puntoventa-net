@@ -140,7 +140,7 @@ Public Class FrmPrincipal
         formBancoAdquirienteListado.Show()
     End Sub
 
-    Private Sub ManuMantEmpresa_Click(sender As Object, e As EventArgs) Handles ManuMantEmpresa.Click
+    Private Sub ManuMantEmpresa_Click(sender As Object, e As EventArgs) Handles MnuMantEmpresa.Click
         Dim formEmpresa As New FrmEmpresa
         formEmpresa.ShowDialog()
     End Sub
@@ -518,24 +518,25 @@ Public Class FrmPrincipal
         Dim formInicio As New FrmInicio()
         formInicio.ShowDialog()
         mnuMenuPrincipal.Visible = True
-        If ValidarEmpresa(empresa) Then
-            Try
-                For Each reportePorEmpresa As ReportePorEmpresa In empresaGlobal.ReportePorEmpresa.OrderBy(Function(obj) obj.IdReporte)
-                    lstListaReportes.Add(reportePorEmpresa.CatalogoReporte.NombreReporte)
-                Next
-                For Each permiso As RolePorUsuario In usuarioGlobal.RolePorUsuario
+        If ValidarEmpresa(empresa) Or bolEsAdministrador = True Then
+            For Each reportePorEmpresa As ReportePorEmpresa In empresaGlobal.ReportePorEmpresa.OrderBy(Function(obj) obj.IdReporte)
+                lstListaReportes.Add(reportePorEmpresa.CatalogoReporte.NombreReporte)
+            Next
+            For Each permiso As RolePorUsuario In usuarioGlobal.RolePorUsuario
+                Try
                     objMenu = mnuMenuPrincipal.Items(permiso.Role.MenuPadre)
                     objMenu.Visible = True
                     objMenu.DropDownItems(permiso.Role.MenuItem).Visible = True
-                Next
-            Catch ex As Exception
-            End Try
+                Catch ex As Exception
+                End Try
+            Next
         Else
             If usuarioGlobal.Modifica Then
                 MessageBox.Show("La información de la empresa requiere ser actualizada. Por favor ingrese al mantenimiento de Empresa para completar la información.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Try
-                    mnuMenuPrincipal.Items("MnuMant").Visible = True
-                    objMenu.DropDownItems("ManuMantEmpresa").Visible = True
+                    objMenu = mnuMenuPrincipal.Items("MnuMant")
+                    objMenu.Visible = True
+                    objMenu.DropDownItems("MnuMantEmpresa").Visible = True
                 Catch ex As Exception
                 End Try
             Else

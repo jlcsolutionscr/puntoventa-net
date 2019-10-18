@@ -96,6 +96,10 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
         void ProcesarDocumentosElectronicosPendientes();
 
         [OperationContract]
+        [WebGet(UriTemplate = "limpiarregistrosinvalidos")]
+        void LimpiarRegistrosInvalidos();
+
+        [OperationContract]
         [WebGet(UriTemplate = "obtenerultimaversionapp", ResponseFormat = WebMessageFormat.Json)]
         string ObtenerUltimaVersionApp();
 

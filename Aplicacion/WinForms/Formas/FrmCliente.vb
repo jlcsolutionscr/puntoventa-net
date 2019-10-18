@@ -63,7 +63,6 @@ Public Class FrmCliente
                 txtIdCliente.Text = datos.IdCliente
                 cboTipoIdentificacion.SelectedValue = datos.IdTipoIdentificacion
                 txtIdentificacion.Text = datos.Identificacion
-                txtIdentificacionExtranjero.Text = datos.IdentificacionExtranjero
                 cboProvincia.SelectedValue = datos.IdProvincia
                 cboCanton.SelectedValue = datos.IdCanton
                 cboDistrito.SelectedValue = datos.IdDistrito
@@ -106,7 +105,6 @@ Public Class FrmCliente
         End If
         datos.IdTipoIdentificacion = cboTipoIdentificacion.SelectedValue
         datos.Identificacion = txtIdentificacion.Text
-        datos.IdentificacionExtranjero = txtIdentificacionExtranjero.Text
         datos.IdProvincia = cboProvincia.SelectedValue
         datos.IdCanton = cboCanton.SelectedValue
         datos.IdDistrito = cboDistrito.SelectedValue
@@ -150,7 +148,6 @@ Public Class FrmCliente
                         txtIdCliente.Text = datos.IdCliente
                         cboTipoIdentificacion.SelectedValue = datos.IdTipoIdentificacion
                         txtIdentificacion.Text = datos.Identificacion
-                        txtIdentificacionExtranjero.Text = datos.IdentificacionExtranjero
                         Await CargarListadoBarrios(datos.IdProvincia, datos.IdCanton, datos.IdDistrito)
                         cboProvincia.SelectedValue = datos.IdProvincia
                         cboCanton.SelectedValue = datos.IdCanton
@@ -210,7 +207,7 @@ Public Class FrmCliente
         End If
     End Sub
 
-    Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As KeyPressEventArgs) Handles txtIdentificacion.KeyPress, txtIdentificacionExtranjero.KeyPress, txtTelefono.KeyPress, txtCelular.KeyPress, txtFax.KeyPress
+    Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As KeyPressEventArgs) Handles txtIdentificacion.KeyPress, txtTelefono.KeyPress, txtCelular.KeyPress, txtFax.KeyPress
         FrmPrincipal.ValidaNumero(e, sender, True, 2, ".")
     End Sub
 
