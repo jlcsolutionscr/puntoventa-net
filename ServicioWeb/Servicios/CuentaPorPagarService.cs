@@ -17,8 +17,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         CuentaPorPagar ObtenerCuentaPorPagar(int intIdCxP);
         IEnumerable<CuentaPorPagar> ObtenerListaCuentasPorPagarPorPropietario(int intIdTipo, int intIdPropietario);
         IEnumerable<MovimientoCuentaPorPagar> ObtenerListaMovimientos(int intTipoPropietario, int intIdPropietario);
-        int ObtenerTotalListaCuentasPorPagar(int intIdEmpresa, int intTipo, string strNombre = "");
-        IEnumerable<CuentaPorPagar> ObtenerListaCuentasPorPagar(int intIdEmpresa, int intTipo, int numPagina, int cantRec, string strNombre = "");
+        int ObtenerTotalListaCuentasPorPagar(int intIdEmpresa, int intTipo, string strNombre);
+        IEnumerable<CuentaPorPagar> ObtenerListaCuentasPorPagar(int intIdEmpresa, int intTipo, int numPagina, int cantRec, string strNombre);
         void AplicarMovimientoCxP(MovimientoCuentaPorPagar movimiento);
         void AnularMovimientoCxP(int intIdMov, int intIdUsuario);
         MovimientoCuentaPorPagar ObtenerMovimiento(int intIdMov);
@@ -203,7 +203,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public int ObtenerTotalListaCuentasPorPagar(int intIdEmpresa, int intTipo, string strNombre = "")
+        public int ObtenerTotalListaCuentasPorPagar(int intIdEmpresa, int intTipo, string strNombre)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -220,7 +220,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<CuentaPorPagar> ObtenerListaCuentasPorPagar(int intIdEmpresa, int intTipo, int numPagina, int cantRec, string strNombre = "")
+        public IEnumerable<CuentaPorPagar> ObtenerListaCuentasPorPagar(int intIdEmpresa, int intTipo, int numPagina, int cantRec, string strNombre)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {

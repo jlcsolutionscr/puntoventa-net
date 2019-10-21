@@ -16,13 +16,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         void ActualizarCuentaEgreso(CuentaEgreso cuenta);
         void EliminarCuentaEgreso(int intIdCuenta);
         CuentaEgreso ObtenerCuentaEgreso(int intIdCuenta);
-        IEnumerable<LlaveDescripcion> ObtenerListadoCuentasEgreso(int intIdEmpresa, string strDescripcion = "");
+        IEnumerable<LlaveDescripcion> ObtenerListadoCuentasEgreso(int intIdEmpresa, string strDescripcion);
         string AgregarEgreso(Egreso egreso);
         void ActualizarEgreso(Egreso egreso);
         void AnularEgreso(int intIdEgreso, int intIdUsuario);
         Egreso ObtenerEgreso(int intIdEgreso);
-        int ObtenerTotalListaEgresos(int intIdEmpresa, int intIdEgreso = 0, string strBeneficiario = "", string strDetalle = "");
-        IEnumerable<LlaveDescripcion> ObtenerListadoEgresos(int intIdEmpresa, int numPagina, int cantRec, int intIdEgreso = 0, string strBeneficiario = "", string strDetalle = "");
+        int ObtenerTotalListaEgresos(int intIdEmpresa, int intIdEgreso, string strBeneficiario, string strDetalle);
+        IEnumerable<LlaveDescripcion> ObtenerListadoEgresos(int intIdEmpresa, int numPagina, int cantRec, int intIdEgreso, string strBeneficiario, string strDetalle);
     }
 
     public class EgresoService : IEgresoService
@@ -144,7 +144,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoCuentasEgreso(int intIdEmpresa, string strDescripcion = "")
+        public IEnumerable<LlaveDescripcion> ObtenerListadoCuentasEgreso(int intIdEmpresa, string strDescripcion)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -400,7 +400,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public int ObtenerTotalListaEgresos(int intIdEmpresa, int intIdEgreso = 0, string strBeneficiario = "", string strDetalle = "")
+        public int ObtenerTotalListaEgresos(int intIdEmpresa, int intIdEgreso, string strBeneficiario, string strDetalle)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -426,7 +426,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoEgresos(int intIdEmpresa, int numPagina, int cantRec, int intIdEgreso = 0, string strBeneficiario = "", string strDetalle = "")
+        public IEnumerable<LlaveDescripcion> ObtenerListadoEgresos(int intIdEmpresa, int numPagina, int cantRec, int intIdEgreso, string strBeneficiario, string strDetalle)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {

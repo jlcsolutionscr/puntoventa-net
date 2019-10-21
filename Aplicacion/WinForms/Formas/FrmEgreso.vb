@@ -190,7 +190,6 @@ Public Class FrmEgreso
         cboTipoMoneda.ValueMember = "Id"
         cboTipoMoneda.DisplayMember = "Descripcion"
         cboTipoMoneda.DataSource = Await Puntoventa.ObtenerListadoTipoMoneda(FrmPrincipal.usuarioGlobal.Token)
-        cboCuentaEgreso.SelectedValue = 0
     End Function
 #End Region
 
@@ -216,7 +215,7 @@ Public Class FrmEgreso
     Private Sub CmdAgregar_Click(sender As Object, e As EventArgs) Handles CmdAgregar.Click
         txtIdEgreso.Text = ""
         txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
-        cboCuentaEgreso.SelectedValue = 0
+        cboCuentaEgreso.SelectedIndex = 0
         txtBeneficiario.Text = ""
         txtDetalle.Text = ""
         txtTotal.Text = ""

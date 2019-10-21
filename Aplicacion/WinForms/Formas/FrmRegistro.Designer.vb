@@ -42,11 +42,11 @@ Partial Class FrmRegistro
         Me.btnCancelar.Cursor = System.Windows.Forms.Cursors.Default
         Me.btnCancelar.DialogResult = System.Windows.Forms.DialogResult.Cancel
         Me.btnCancelar.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.btnCancelar.Location = New System.Drawing.Point(351, 294)
+        Me.btnCancelar.Location = New System.Drawing.Point(301, 295)
         Me.btnCancelar.Name = "btnCancelar"
         Me.btnCancelar.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.btnCancelar.Size = New System.Drawing.Size(81, 25)
-        Me.btnCancelar.TabIndex = 10
+        Me.btnCancelar.TabIndex = 6
         Me.btnCancelar.TabStop = False
         Me.btnCancelar.Text = "&Cancelar"
         Me.btnCancelar.UseVisualStyleBackColor = False
@@ -57,11 +57,11 @@ Partial Class FrmRegistro
         Me.btnRegistrar.Cursor = System.Windows.Forms.Cursors.Default
         Me.btnRegistrar.Enabled = False
         Me.btnRegistrar.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.btnRegistrar.Location = New System.Drawing.Point(264, 294)
+        Me.btnRegistrar.Location = New System.Drawing.Point(214, 295)
         Me.btnRegistrar.Name = "btnRegistrar"
         Me.btnRegistrar.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.btnRegistrar.Size = New System.Drawing.Size(81, 25)
-        Me.btnRegistrar.TabIndex = 6
+        Me.btnRegistrar.TabIndex = 5
         Me.btnRegistrar.Text = "&Registrar"
         Me.btnRegistrar.UseVisualStyleBackColor = False
         '
@@ -72,13 +72,13 @@ Partial Class FrmRegistro
         Me.txtClave.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtClave.ForeColor = System.Drawing.SystemColors.WindowText
         Me.txtClave.ImeMode = System.Windows.Forms.ImeMode.Disable
-        Me.txtClave.Location = New System.Drawing.Point(91, 66)
+        Me.txtClave.Location = New System.Drawing.Point(87, 38)
         Me.txtClave.MaxLength = 0
         Me.txtClave.Name = "txtClave"
         Me.txtClave.PasswordChar = Global.Microsoft.VisualBasic.ChrW(42)
         Me.txtClave.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtClave.Size = New System.Drawing.Size(122, 20)
-        Me.txtClave.TabIndex = 3
+        Me.txtClave.Size = New System.Drawing.Size(107, 20)
+        Me.txtClave.TabIndex = 1
         '
         'txtIdentificacion
         '
@@ -87,19 +87,19 @@ Partial Class FrmRegistro
         Me.txtIdentificacion.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper
         Me.txtIdentificacion.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtIdentificacion.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtIdentificacion.Location = New System.Drawing.Point(91, 14)
+        Me.txtIdentificacion.Location = New System.Drawing.Point(87, 64)
         Me.txtIdentificacion.MaxLength = 0
         Me.txtIdentificacion.Name = "txtIdentificacion"
         Me.txtIdentificacion.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtIdentificacion.Size = New System.Drawing.Size(122, 20)
-        Me.txtIdentificacion.TabIndex = 1
+        Me.txtIdentificacion.Size = New System.Drawing.Size(107, 20)
+        Me.txtIdentificacion.TabIndex = 2
         '
         'LblClave
         '
         Me.LblClave.BackColor = System.Drawing.Color.Transparent
         Me.LblClave.Cursor = System.Windows.Forms.Cursors.Default
         Me.LblClave.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.LblClave.Location = New System.Drawing.Point(19, 67)
+        Me.LblClave.Location = New System.Drawing.Point(15, 39)
         Me.LblClave.Name = "LblClave"
         Me.LblClave.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.LblClave.Size = New System.Drawing.Size(66, 17)
@@ -112,7 +112,7 @@ Partial Class FrmRegistro
         Me.LblUsuario.BackColor = System.Drawing.Color.Transparent
         Me.LblUsuario.Cursor = System.Windows.Forms.Cursors.Default
         Me.LblUsuario.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.LblUsuario.Location = New System.Drawing.Point(9, 15)
+        Me.LblUsuario.Location = New System.Drawing.Point(5, 65)
         Me.LblUsuario.Name = "LblUsuario"
         Me.LblUsuario.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.LblUsuario.Size = New System.Drawing.Size(76, 17)
@@ -127,19 +127,19 @@ Partial Class FrmRegistro
         Me.txtUsuario.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtUsuario.ForeColor = System.Drawing.SystemColors.WindowText
         Me.txtUsuario.ImeMode = System.Windows.Forms.ImeMode.Disable
-        Me.txtUsuario.Location = New System.Drawing.Point(91, 40)
+        Me.txtUsuario.Location = New System.Drawing.Point(87, 12)
         Me.txtUsuario.MaxLength = 0
         Me.txtUsuario.Name = "txtUsuario"
         Me.txtUsuario.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtUsuario.Size = New System.Drawing.Size(122, 20)
-        Me.txtUsuario.TabIndex = 2
+        Me.txtUsuario.Size = New System.Drawing.Size(83, 20)
+        Me.txtUsuario.TabIndex = 0
         '
         'Label5
         '
         Me.Label5.BackColor = System.Drawing.Color.Transparent
         Me.Label5.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label5.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label5.Location = New System.Drawing.Point(19, 41)
+        Me.Label5.Location = New System.Drawing.Point(15, 13)
         Me.Label5.Name = "Label5"
         Me.Label5.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label5.Size = New System.Drawing.Size(66, 17)
@@ -153,19 +153,19 @@ Partial Class FrmRegistro
         Me.dgvDatos.Location = New System.Drawing.Point(12, 94)
         Me.dgvDatos.Name = "dgvDatos"
         Me.dgvDatos.RowHeadersVisible = False
-        Me.dgvDatos.Size = New System.Drawing.Size(420, 194)
-        Me.dgvDatos.TabIndex = 5
+        Me.dgvDatos.Size = New System.Drawing.Size(370, 194)
+        Me.dgvDatos.TabIndex = 4
         '
         'btnConsultar
         '
         Me.btnConsultar.BackColor = System.Drawing.SystemColors.ButtonHighlight
         Me.btnConsultar.Cursor = System.Windows.Forms.Cursors.Default
         Me.btnConsultar.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.btnConsultar.Location = New System.Drawing.Point(239, 63)
+        Me.btnConsultar.Location = New System.Drawing.Point(200, 63)
         Me.btnConsultar.Name = "btnConsultar"
         Me.btnConsultar.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.btnConsultar.Size = New System.Drawing.Size(175, 25)
-        Me.btnConsultar.TabIndex = 4
+        Me.btnConsultar.Size = New System.Drawing.Size(182, 25)
+        Me.btnConsultar.TabIndex = 3
         Me.btnConsultar.Text = "&Consultar Terminales Disponibles"
         Me.btnConsultar.UseVisualStyleBackColor = False
         '
@@ -176,7 +176,7 @@ Partial Class FrmRegistro
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.CancelButton = Me.btnCancelar
-        Me.ClientSize = New System.Drawing.Size(445, 332)
+        Me.ClientSize = New System.Drawing.Size(395, 332)
         Me.ControlBox = False
         Me.Controls.Add(Me.btnConsultar)
         Me.Controls.Add(Me.dgvDatos)
@@ -192,9 +192,9 @@ Partial Class FrmRegistro
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
         Me.Location = New System.Drawing.Point(3, 22)
         Me.MaximizeBox = False
-        Me.MaximumSize = New System.Drawing.Size(461, 370)
+        Me.MaximumSize = New System.Drawing.Size(411, 370)
         Me.MinimizeBox = False
-        Me.MinimumSize = New System.Drawing.Size(461, 370)
+        Me.MinimumSize = New System.Drawing.Size(411, 370)
         Me.Name = "FrmRegistro"
         Me.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen

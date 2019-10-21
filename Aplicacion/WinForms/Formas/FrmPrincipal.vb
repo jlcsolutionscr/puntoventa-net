@@ -140,9 +140,14 @@ Public Class FrmPrincipal
         formBancoAdquirienteListado.Show()
     End Sub
 
-    Private Sub ManuMantEmpresa_Click(sender As Object, e As EventArgs) Handles MnuMantEmpresa.Click
+    Private Sub MnuParamEmpresa_Click(sender As Object, e As EventArgs) Handles MnuParamEmpresa.Click
         Dim formEmpresa As New FrmEmpresa
         formEmpresa.ShowDialog()
+    End Sub
+
+    Private Sub MnuParamRegistro_Click(sender As Object, e As EventArgs) Handles MnuParamRegistro.Click
+        Dim formRegistro As New FrmRegistro()
+        formRegistro.ShowDialog()
     End Sub
 
     Public Sub MnuMantCliente_Click(sender As Object, e As EventArgs) Handles MnuMantCliente.Click
@@ -412,7 +417,7 @@ Public Class FrmPrincipal
         Try
             strThumbprint = appSettings.Get("AppThumptprint")
             strApplicationKey = appSettings.Get("ApplicationKey")
-            If appSettings.Get("Administrator") IsNot Nothing Then bolEsAdministrador = appSettings.Get("Administrator")
+            If appSettings.Get("Administrator") IsNot Nothing Then bolEsAdministrador = True
             Dim bolCertificadoValido As Boolean = Utilitario.VerificarCertificado(strThumbprint)
             If Not bolCertificadoValido Then
                 MessageBox.Show("No se logró validar el certificado requerido por la aplicación. Por favor contacte con su proveedor del servicio. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -534,9 +539,9 @@ Public Class FrmPrincipal
             If usuarioGlobal.Modifica Then
                 MessageBox.Show("La información de la empresa requiere ser actualizada. Por favor ingrese al mantenimiento de Empresa para completar la información.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Try
-                    objMenu = mnuMenuPrincipal.Items("MnuMant")
+                    objMenu = mnuMenuPrincipal.Items("MnuParam")
                     objMenu.Visible = True
-                    objMenu.DropDownItems("MnuMantEmpresa").Visible = True
+                    objMenu.DropDownItems("MnuParamEmpresa").Visible = True
                 Catch ex As Exception
                 End Try
             Else

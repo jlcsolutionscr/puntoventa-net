@@ -17,13 +17,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         void ActualizarSucursal(Sucursal sucursal);
         void EliminarSucursal(int intIdSucursal);
         Sucursal ObtenerSucursal(int intIdSucursal);
-        IEnumerable<Sucursal> ObtenerListaSucursales(int intIdEmpresa, string strNombre = "");
+        IEnumerable<Sucursal> ObtenerListaSucursales(int intIdEmpresa, string strNombre);
         Traslado AgregarTraslado(Traslado traslado);
         void ActualizarTraslado(Traslado traslado);
         void AnularTraslado(int intIdTraslado, int intIdUsuario);
         Traslado ObtenerTraslado(int intIdTraslado);
-        int ObtenerTotalListaTraslados(int intIdEmpresa, int intIdTraslado = 0, string strNombre = "");
-        IEnumerable<Traslado> ObtenerListaTraslados(int intIdEmpresa, int numPagina, int cantRec, int intIdTraslado = 0, string strNombre = "");
+        int ObtenerTotalListaTraslados(int intIdEmpresa, int intIdTraslado, string strNombre);
+        IEnumerable<Traslado> ObtenerListaTraslados(int intIdEmpresa, int numPagina, int cantRec, int intIdTraslado, string strNombre);
     }
 
     public class TrasladoService : ITrasladoService
@@ -143,7 +143,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<Sucursal> ObtenerListaSucursales(int intIdEmpresa, string strNombre = "")
+        public IEnumerable<Sucursal> ObtenerListaSucursales(int intIdEmpresa, string strNombre)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -434,7 +434,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public int ObtenerTotalListaTraslados(int intIdEmpresa, int intIdTraslado = 0, string strNombre = "")
+        public int ObtenerTotalListaTraslados(int intIdEmpresa, int intIdTraslado, string strNombre)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -455,7 +455,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<Traslado> ObtenerListaTraslados(int intIdEmpresa, int numPagina, int cantRec, int intIdTraslado = 0, string strNombre = "")
+        public IEnumerable<Traslado> ObtenerListaTraslados(int intIdEmpresa, int numPagina, int cantRec, int intIdTraslado, string strNombre)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {

@@ -25,7 +25,7 @@ Public Class FrmRegistro
         dgvDatos.Columns.Add(dvcId)
         dvcTipo.HeaderText = "Nombre Sucursal"
         dvcTipo.DataPropertyName = "NombreSucursal"
-        dvcTipo.Width = 300
+        dvcTipo.Width = 250
         dgvDatos.Columns.Add(dvcTipo)
         dvcDescripcion.HeaderText = "Terminal"
         dvcDescripcion.DataPropertyName = "IdTerminal"

@@ -46,7 +46,6 @@ Partial Class FrmPrincipal
         Me.MnuParamPC = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuParamBA = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuMant = New System.Windows.Forms.ToolStripMenuItem()
-        Me.MnuMantEmpresa = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuMantCliente = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuMantLinea = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuMantProveedor = New System.Windows.Forms.ToolStripMenuItem()
@@ -89,6 +88,8 @@ Partial Class FrmPrincipal
         Me.mnuContaCierre = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuContaReporte = New System.Windows.Forms.ToolStripMenuItem()
         Me.picLoader = New System.Windows.Forms.PictureBox()
+        Me.MnuParamEmpresa = New System.Windows.Forms.ToolStripMenuItem()
+        Me.MnuParamRegistro = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuMenuPrincipal.SuspendLayout()
         CType(Me.picLoader, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -98,7 +99,7 @@ Partial Class FrmPrincipal
         Me.mnuMenuPrincipal.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MnuArchivo, Me.MnuParam, Me.MnuMant, Me.MnuCaptura, Me.MnuDocElect, Me.MnuCC, Me.MnuBC, Me.mnuConta})
         Me.mnuMenuPrincipal.Location = New System.Drawing.Point(0, 0)
         Me.mnuMenuPrincipal.Name = "mnuMenuPrincipal"
-        Me.mnuMenuPrincipal.Size = New System.Drawing.Size(1330, 24)
+        Me.mnuMenuPrincipal.Size = New System.Drawing.Size(1276, 24)
         Me.mnuMenuPrincipal.TabIndex = 1
         Me.mnuMenuPrincipal.Visible = False
         '
@@ -139,7 +140,7 @@ Partial Class FrmPrincipal
         '
         'MnuParam
         '
-        Me.MnuParam.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MnuParamPC, Me.MnuParamBA})
+        Me.MnuParam.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MnuParamPC, Me.MnuParamBA, Me.MnuParamEmpresa, Me.MnuParamRegistro})
         Me.MnuParam.MergeAction = System.Windows.Forms.MergeAction.Remove
         Me.MnuParam.Name = "MnuParam"
         Me.MnuParam.Size = New System.Drawing.Size(79, 20)
@@ -162,19 +163,12 @@ Partial Class FrmPrincipal
         '
         'MnuMant
         '
-        Me.MnuMant.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MnuMantEmpresa, Me.MnuMantCliente, Me.MnuMantLinea, Me.MnuMantProveedor, Me.MnuMantProducto, Me.MnuMantUsuario, Me.MnuMantSucursal, Me.MnuMantCE, Me.MnuMantCI, Me.MnuMantCB, Me.MnuMantCC, Me.MnuMantInv, Me.MnuMantVend})
+        Me.MnuMant.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MnuMantCliente, Me.MnuMantLinea, Me.MnuMantProveedor, Me.MnuMantProducto, Me.MnuMantUsuario, Me.MnuMantSucursal, Me.MnuMantCE, Me.MnuMantCI, Me.MnuMantCB, Me.MnuMantCC, Me.MnuMantInv, Me.MnuMantVend})
         Me.MnuMant.MergeAction = System.Windows.Forms.MergeAction.Remove
         Me.MnuMant.Name = "MnuMant"
         Me.MnuMant.Size = New System.Drawing.Size(101, 20)
         Me.MnuMant.Text = "Mantenimiento"
         Me.MnuMant.Visible = False
-        '
-        'MnuMantEmpresa
-        '
-        Me.MnuMantEmpresa.Name = "MnuMantEmpresa"
-        Me.MnuMantEmpresa.Size = New System.Drawing.Size(180, 22)
-        Me.MnuMantEmpresa.Text = "Empresa"
-        Me.MnuMantEmpresa.Visible = False
         '
         'MnuMantCliente
         '
@@ -484,11 +478,24 @@ Partial Class FrmPrincipal
         Me.picLoader.TabIndex = 3
         Me.picLoader.TabStop = False
         '
+        'MnuParamEmpresa
+        '
+        Me.MnuParamEmpresa.Name = "MnuParamEmpresa"
+        Me.MnuParamEmpresa.Size = New System.Drawing.Size(180, 22)
+        Me.MnuParamEmpresa.Text = "Empresa"
+        Me.MnuParamEmpresa.Visible = False
+        '
+        'MnuParamRegistro
+        '
+        Me.MnuParamRegistro.Name = "MnuParamRegistro"
+        Me.MnuParamRegistro.Size = New System.Drawing.Size(180, 22)
+        Me.MnuParamRegistro.Text = "Registrar Equipo"
+        '
         'FrmPrincipal
         '
         Me.BackColor = System.Drawing.SystemColors.AppWorkspace
         Me.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
-        Me.ClientSize = New System.Drawing.Size(1330, 542)
+        Me.ClientSize = New System.Drawing.Size(1276, 542)
         Me.Controls.Add(Me.picLoader)
         Me.Controls.Add(Me.mnuMenuPrincipal)
         Me.Cursor = System.Windows.Forms.Cursors.Default
@@ -540,5 +547,6 @@ Partial Class FrmPrincipal
     Friend WithEvents MnuDocElectCDE As ToolStripMenuItem
     Friend WithEvents MnuDocElectADE As ToolStripMenuItem
     Friend WithEvents MnuDocElectRDE As ToolStripMenuItem
-    Friend WithEvents MnuMantEmpresa As ToolStripMenuItem
+    Friend WithEvents MnuParamEmpresa As ToolStripMenuItem
+    Friend WithEvents MnuParamRegistro As ToolStripMenuItem
 End Class

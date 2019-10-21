@@ -47,14 +47,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         void AgregarUsuarioPorEmpresa(int intIdUsuario, int intIdEmpresa);
         void EliminarUsuario(int intIdUsuario);
         Usuario ObtenerUsuario(int intIdUsuario);
-        IEnumerable<LlaveDescripcion> ObtenerListadoUsuarios(int intIdEmpresa, string strCodigo = "");
+        IEnumerable<LlaveDescripcion> ObtenerListadoUsuarios(int intIdEmpresa, string strCodigo);
         // Métodos para administrar los vendedores del sistema
         void AgregarVendedor(Vendedor vendedor);
         void ActualizarVendedor(Vendedor vendedor);
         void EliminarVendedor(int intIdVendedor);
         Vendedor ObtenerVendedor(int intIdVendedor);
         Vendedor ObtenerVendedorPorDefecto(int intIdEmpresa);
-        IEnumerable<LlaveDescripcion> ObtenerListadoVendedores(int intIdEmpresa, string strNombre = "");
+        IEnumerable<LlaveDescripcion> ObtenerListadoVendedores(int intIdEmpresa, string strNombre);
         // Métodos para administrar los roles del sistema
         Role ObtenerRole(int intIdRole);
         IEnumerable<LlaveDescripcion> ObtenerListadoRoles();
@@ -63,7 +63,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         void ActualizarLinea(Linea linea);
         void EliminarLinea(int intIdLinea);
         Linea ObtenerLinea(int intIdLinea);
-        IEnumerable<LlaveDescripcion> ObtenerListadoLineas(int intIdEmpresa, string strDescripcion = "");
+        IEnumerable<LlaveDescripcion> ObtenerListadoLineas(int intIdEmpresa, string strDescripcion);
         IEnumerable<LlaveDescripcion> ObtenerListadoLineasDeProducto(int intIdEmpresa);
         IEnumerable<LlaveDescripcion> ObtenerListadoLineasDeServicio(int intIdEmpresa);
         // Métodos para administrar los productos
@@ -74,12 +74,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         ParametroImpuesto ObtenerParametroImpuesto(int intIdImpuesto);
         void AgregarProducto(Producto producto);
         void ActualizarProducto(Producto producto);
-        void ActualizarPrecioVentaProductos(int intIdEmpresa, int intIdLinea = 0, string strCodigo = "", string strDescripcion = "", decimal decPorcentajeAumento = 0);
+        void ActualizarPrecioVentaProductos(int intIdEmpresa, int intIdLinea, string strCodigo, string strDescripcion, decimal decPorcentajeAumento);
         void EliminarProducto(int intIdProducto);
         Producto ObtenerProducto(int intIdProducto);
         Producto ObtenerProductoPorCodigo(int intIdEmpresa, string strCodigo);
-        int ObtenerTotalListaProductos(int intIdEmpresa, bool bolIncluyeServicios, int intIdLinea = 0, string strCodigo = "", string strDescripcion = "");
-        IEnumerable<LlaveDescripcion> ObtenerListadoProductos(int intIdEmpresa, int numPagina, int cantRec, bool bolIncluyeServicios, int intIdLinea = 0, string strCodigo = "", string strDescripcion = "");
+        int ObtenerTotalListaProductos(int intIdEmpresa, bool bolIncluyeServicios, int intIdLinea, string strCodigo, string strDescripcion);
+        IEnumerable<LlaveDescripcion> ObtenerListadoProductos(int intIdEmpresa, int numPagina, int cantRec, bool bolIncluyeServicios, int intIdLinea, string strCodigo, string strDescripcion);
         int ObtenerTotalMovimientosPorProducto(int intIdProducto, DateTime datFechaInicial, DateTime datFechaFinal);
         IEnumerable<MovimientoProducto> ObtenerMovimientosPorProducto(int intIdProducto, int numPagina, int cantRec, DateTime datFechaInicial, DateTime datFechaFinal);
         // Métodos para obtener las condiciones de venta para facturación
@@ -96,20 +96,20 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         void ActualizarBancoAdquiriente(BancoAdquiriente bancoAdquiriente);
         void EliminarBancoAdquiriente(int intIdBanco);
         BancoAdquiriente ObtenerBancoAdquiriente(int intIdBanco);
-        IEnumerable<LlaveDescripcion> ObtenerListadoBancoAdquiriente(int intIdEmpresa, string strDescripcion = "");
+        IEnumerable<LlaveDescripcion> ObtenerListadoBancoAdquiriente(int intIdEmpresa, string strDescripcion);
         // Métodos para administrar los parámetros de tipo de moneda
         TipoMoneda AgregarTipoMoneda(TipoMoneda tipoMoneda);
         void ActualizarTipoMoneda(TipoMoneda tipoMoneda);
         void EliminarTipoMoneda(int intIdTipoMoneda);
         TipoMoneda ObtenerTipoMoneda(int intIdTipoMoneda);
-        IEnumerable<LlaveDescripcion> ObtenerListadoTipoMoneda(string strDescripcion = "");
+        IEnumerable<LlaveDescripcion> ObtenerListadoTipoMoneda();
         // Métodos para administrar los ajustes de inventario
         AjusteInventario AgregarAjusteInventario(AjusteInventario ajusteInventario);
         void ActualizarAjusteInventario(AjusteInventario ajusteInventario);
         void AnularAjusteInventario(int intIdAjusteInventario, int intIdUsuario);
         AjusteInventario ObtenerAjusteInventario(int intIdAjusteInventario);
-        int ObtenerTotalListaAjustes(int intIdEmpresa, int intIdAjusteInventario = 0, string strDescripcion = "");
-        IEnumerable<LlaveDescripcion> ObtenerListadoAjustes(int intIdEmpresa, int numPagina, int cantRec, int intIdAjusteInventario = 0, string strDescripcion = "");
+        int ObtenerTotalListaAjustes(int intIdEmpresa, int intIdAjusteInventario, string strDescripcion);
+        IEnumerable<LlaveDescripcion> ObtenerListadoAjustes(int intIdEmpresa, int numPagina, int cantRec, int intIdAjusteInventario, string strDescripcion);
         // Métodos para obtener parámetros generales del sistema
         IEnumerable<LlaveDescripcion> ObtenerListadoTipoIdentificacion();
         IEnumerable<LlaveDescripcion> ObtenerListadoCatalogoReportes();
@@ -879,7 +879,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoUsuarios(int intIdEmpresa, string strCodigo = "")
+        public IEnumerable<LlaveDescripcion> ObtenerListadoUsuarios(int intIdEmpresa, string strCodigo)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -1034,7 +1034,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoVendedores(int intIdEmpresa, string strNombre = "")
+        public IEnumerable<LlaveDescripcion> ObtenerListadoVendedores(int intIdEmpresa, string strNombre)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -1198,7 +1198,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoLineas(int intIdEmpresa, string strDescripcion = "")
+        public IEnumerable<LlaveDescripcion> ObtenerListadoLineas(int intIdEmpresa, string strDescripcion)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -1436,7 +1436,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void ActualizarPrecioVentaProductos(int intIdEmpresa, int intIdLinea = 0, string strCodigo = "", string strDescripcion = "", decimal decPorcentajeAumento = 0)
+        public void ActualizarPrecioVentaProductos(int intIdEmpresa, int intIdLinea, string strCodigo, string strDescripcion, decimal decPorcentajeAumento)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -1547,7 +1547,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public int ObtenerTotalListaProductos(int intIdEmpresa, bool bolIncluyeServicios, int intIdLinea = 0, string strCodigo = "", string strDescripcion = "")
+        public int ObtenerTotalListaProductos(int intIdEmpresa, bool bolIncluyeServicios, int intIdLinea, string strCodigo, string strDescripcion)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -1572,7 +1572,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoProductos(int intIdEmpresa, int numPagina, int cantRec, bool bolIncluyeServicios, int intIdLinea = 0, string strCodigo = "", string strDescripcion = "")
+        public IEnumerable<LlaveDescripcion> ObtenerListadoProductos(int intIdEmpresa, int numPagina, int cantRec, bool bolIncluyeServicios, int intIdLinea, string strCodigo, string strDescripcion)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -1909,7 +1909,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoBancoAdquiriente(int intIdEmpresa, string strDescripcion = "")
+        public IEnumerable<LlaveDescripcion> ObtenerListadoBancoAdquiriente(int intIdEmpresa, string strDescripcion)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -2018,7 +2018,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoTipoMoneda(string strDescripcion = "")
+        public IEnumerable<LlaveDescripcion> ObtenerListadoTipoMoneda()
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -2026,8 +2026,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     var listado = dbContext.TipoMonedaRepository.AsQueryable();
-                    if (strDescripcion != "")
-                        listado = listado.Where(x => x.IdTipoMoneda > StaticValoresPorDefecto.MonedaDelSistema && x.Descripcion.Contains(strDescripcion));
                     foreach (var value in listado)
                     {
                         LlaveDescripcion item = new LlaveDescripcion(value.IdTipoMoneda, value.Descripcion);
@@ -2409,7 +2407,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public int ObtenerTotalListaAjustes(int intIdEmpresa, int intIdAjusteInventario = 0, string strDescripcion = "")
+        public int ObtenerTotalListaAjustes(int intIdEmpresa, int intIdAjusteInventario, string strDescripcion)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -2430,7 +2428,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoAjustes(int intIdEmpresa, int numPagina, int cantRec, int intIdAjusteInventario = 0, string strDescripcion = "")
+        public IEnumerable<LlaveDescripcion> ObtenerListadoAjustes(int intIdEmpresa, int numPagina, int cantRec, int intIdAjusteInventario, string strDescripcion)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {

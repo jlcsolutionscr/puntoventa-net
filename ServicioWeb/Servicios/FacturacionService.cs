@@ -30,31 +30,31 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         void EliminarCliente(int intIdCliente);
         Cliente ObtenerCliente(int intIdCliente);
         Cliente ValidaIdentificacionCliente(int intIdEmpresa, string strIdentificacion);
-        int ObtenerTotalListaClientes(int intIdEmpresa, string strNombre = "", bool incluyeClienteContado = false);
-        IEnumerable<LlaveDescripcion> ObtenerListadoClientes(int intIdEmpresa, int numPagina, int cantRec, string strNombre = "", bool incluyeClienteContado = false);
+        int ObtenerTotalListaClientes(int intIdEmpresa, string strNombre, bool incluyeClienteContado = false);
+        IEnumerable<LlaveDescripcion> ObtenerListadoClientes(int intIdEmpresa, int numPagina, int cantRec, string strNombre, bool incluyeClienteContado = false);
         string AgregarFactura(Factura factura, DatosConfiguracion datos);
         void AnularFactura(int intIdFactura, int intIdUsuario, DatosConfiguracion datos);
         Factura ObtenerFactura(int intIdFactura);
-        int ObtenerTotalListaFacturas(int intIdEmpresa, int intIdFactura = 0, string strNombre = "");
-        IEnumerable<LlaveDescripcion> ObtenerListadoFacturas(int intIdEmpresa, int numPagina, int cantRec, int intIdFactura = 0, string strNombre = "");
+        int ObtenerTotalListaFacturas(int intIdEmpresa, int intIdFactura, string strNombre);
+        IEnumerable<LlaveDescripcion> ObtenerListadoFacturas(int intIdEmpresa, int numPagina, int cantRec, int intIdFactura, string strNombre);
         IEnumerable<LlaveDescripcion> ObtenerListadoFacturasPorCliente(int intIdCliente);
         Proforma AgregarProforma(Proforma proforma);
         void ActualizarProforma(Proforma proforma);
         void AnularProforma(int intIdProforma, int intIdUsuario);
         Proforma ObtenerProforma(int intIdProforma);
-        int ObtenerTotalListaProformas(int intIdEmpresa, bool bolIncluyeTodo, int intIdProforma = 0, string strNombre = "");
-        IEnumerable<Proforma> ObtenerListadoProformas(int intIdEmpresa, bool bolIncluyeTodo, int numPagina, int cantRec, int intIdProforma = 0, string strNombre = "");
+        int ObtenerTotalListaProformas(int intIdEmpresa, bool bolIncluyeTodo, int intIdProforma, string strNombre);
+        IEnumerable<Proforma> ObtenerListadoProformas(int intIdEmpresa, bool bolIncluyeTodo, int numPagina, int cantRec, int intIdProforma, string strNombre);
         OrdenServicio AgregarOrdenServicio(OrdenServicio ordenServicio);
         void ActualizarOrdenServicio(OrdenServicio ordenServicio);
         void AnularOrdenServicio(int intIdOrdenServicio, int intIdUsuario);
         OrdenServicio ObtenerOrdenServicio(int intIdOrdenServicio);
-        int ObtenerTotalListaOrdenesServicio(int intIdEmpresa, bool bolIncluyeTodo, int intIdOrdenServicio = 0, string strNombre = "");
-        IEnumerable<OrdenServicio> ObtenerListadoOrdenesServicio(int intIdEmpresa, bool bolIncluyeTodo, int numPagina, int cantRec, int intIdOrdenServicio = 0, string strNombre = "");
+        int ObtenerTotalListaOrdenesServicio(int intIdEmpresa, bool bolIncluyeTodo, int intIdOrdenServicio, string strNombre);
+        IEnumerable<OrdenServicio> ObtenerListadoOrdenesServicio(int intIdEmpresa, bool bolIncluyeTodo, int numPagina, int cantRec, int intIdOrdenServicio, string strNombre);
         DevolucionCliente AgregarDevolucionCliente(DevolucionCliente devolucion);
         void AnularDevolucionCliente(int intIdDevolucion, int intIdUsuario);
         DevolucionCliente ObtenerDevolucionCliente(int intIdDevolucion);
-        int ObtenerTotalListaDevolucionesPorCliente(int intIdEmpresa, int intIdDevolucion = 0, string strNombre = "");
-        IEnumerable<DevolucionCliente> ObtenerListadoDevolucionesPorCliente(int intIdEmpresa, int numPagina, int cantRec, int intIdDevolucion = 0, string strNombre = "");
+        int ObtenerTotalListaDevolucionesPorCliente(int intIdEmpresa, int intIdDevolucion, string strNombre);
+        IEnumerable<DevolucionCliente> ObtenerListadoDevolucionesPorCliente(int intIdEmpresa, int numPagina, int cantRec, int intIdDevolucion, string strNombre);
         void GeneraMensajeReceptor(string strDatos, int intIdEmpresa, int intSucursal, int intTerminal, int intMensaje, DatosConfiguracion datos);
 
         IList<DocumentoDetalle> ObtenerListadoDocumentosElectronicosPendientes();
@@ -235,7 +235,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public int ObtenerTotalListaClientes(int intIdEmpresa, string strNombre = "", bool incluyeClienteContado = false)
+        public int ObtenerTotalListaClientes(int intIdEmpresa, string strNombre, bool incluyeClienteContado = false)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -256,7 +256,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoClientes(int intIdEmpresa, int numPagina, int cantRec, string strNombre = "", bool incluyeClienteContado = false)
+        public IEnumerable<LlaveDescripcion> ObtenerListadoClientes(int intIdEmpresa, int numPagina, int cantRec, string strNombre, bool incluyeClienteContado = false)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -864,7 +864,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public int ObtenerTotalListaFacturas(int intIdEmpresa, int intIdFactura = 0, string strNombre = "")
+        public int ObtenerTotalListaFacturas(int intIdEmpresa, int intIdFactura, string strNombre)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -885,7 +885,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoFacturas(int intIdEmpresa, int numPagina, int cantRec, int intIdFactura = 0, string strNombre = "")
+        public IEnumerable<LlaveDescripcion> ObtenerListadoFacturas(int intIdEmpresa, int numPagina, int cantRec, int intIdFactura, string strNombre)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -1034,7 +1034,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public int ObtenerTotalListaProformas(int intIdEmpresa, bool bolIncluyeTodo, int intIdProforma = 0, string strNombre = "")
+        public int ObtenerTotalListaProformas(int intIdEmpresa, bool bolIncluyeTodo, int intIdProforma, string strNombre)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -1060,7 +1060,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<Proforma> ObtenerListadoProformas(int intIdEmpresa, bool bolIncluyeTodo, int numPagina, int cantRec, int intIdProforma = 0, string strNombre = "")
+        public IEnumerable<Proforma> ObtenerListadoProformas(int intIdEmpresa, bool bolIncluyeTodo, int numPagina, int cantRec, int intIdProforma, string strNombre)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -1184,7 +1184,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public int ObtenerTotalListaOrdenesServicio(int intIdEmpresa, bool bolIncluyeTodo, int intIdOrdenServicio = 0, string strNombre = "")
+        public int ObtenerTotalListaOrdenesServicio(int intIdEmpresa, bool bolIncluyeTodo, int intIdOrdenServicio, string strNombre)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -1207,7 +1207,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<OrdenServicio> ObtenerListadoOrdenesServicio(int intIdEmpresa, bool bolIncluyeTodo, int numPagina, int cantRec, int intIdOrdenServicio = 0, string strNombre = "")
+        public IEnumerable<OrdenServicio> ObtenerListadoOrdenesServicio(int intIdEmpresa, bool bolIncluyeTodo, int numPagina, int cantRec, int intIdOrdenServicio, string strNombre)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -1604,7 +1604,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public int ObtenerTotalListaDevolucionesPorCliente(int intIdEmpresa, int intIdDevolucion = 0, string strNombre = "")
+        public int ObtenerTotalListaDevolucionesPorCliente(int intIdEmpresa, int intIdDevolucion, string strNombre)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -1625,7 +1625,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<DevolucionCliente> ObtenerListadoDevolucionesPorCliente(int intIdEmpresa, int numPagina, int cantRec, int intIdDevolucion = 0, string strNombre = "")
+        public IEnumerable<DevolucionCliente> ObtenerListadoDevolucionesPorCliente(int intIdEmpresa, int numPagina, int cantRec, int intIdDevolucion, string strNombre)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {

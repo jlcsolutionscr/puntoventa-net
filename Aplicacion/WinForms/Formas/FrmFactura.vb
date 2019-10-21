@@ -515,10 +515,8 @@ Public Class FrmFactura
             txtPorcentajeExoneracion.Text = "0"
             Await CargarCombos()
             Await CargarListaBancoAdquiriente()
-            If FrmPrincipal.empresaGlobal.AutoCompletaProducto = True Then
-                txtDescripcion.ReadOnly = False
-                Await CargarAutoCompletarProducto()
-            End If
+            If FrmPrincipal.empresaGlobal.AutoCompletaProducto = True Then Await CargarAutoCompletarProducto()
+            If FrmPrincipal.empresaGlobal.ModificaDescProducto = True Then txtDescripcion.ReadOnly = False
             IniciaTablasDeDetalle()
             EstablecerPropiedadesDataGridView()
             grdDetalleFactura.DataSource = dtbDetalleFactura
