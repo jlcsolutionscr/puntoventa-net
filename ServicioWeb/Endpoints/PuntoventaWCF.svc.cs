@@ -522,11 +522,6 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         if (listadoTipoImpuesto.Count > 0)
                             strRespuesta = serializer.Serialize(listadoTipoImpuesto);
                         break;
-                    case "ObtenerListadoTipoUnidad":
-                        IList<LlaveDescripcion> listadoTipoUnidad = (List<LlaveDescripcion>)servicioMantenimiento.ObtenerListadoTipoUnidad();
-                        if (listadoTipoUnidad.Count > 0)
-                            strRespuesta = serializer.Serialize(listadoTipoUnidad);
-                        break;
                     case "ObtenerListadoFormaPagoEgreso":
                         IList<LlaveDescripcion> listadoFormaPagoEgreso = (List<LlaveDescripcion>)servicioMantenimiento.ObtenerListadoFormaPagoEgreso();
                         if (listadoFormaPagoEgreso.Count > 0)

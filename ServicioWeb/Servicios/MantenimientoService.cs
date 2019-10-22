@@ -70,7 +70,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         IEnumerable<LlaveDescripcion> ObtenerListadoTipoProducto();
         IEnumerable<LlaveDescripcion> ObtenerListadoTipoExoneracion();
         IEnumerable<LlaveDescripcion> ObtenerListadoTipoImpuesto();
-        IEnumerable<LlaveDescripcion> ObtenerListadoTipoUnidad();
         ParametroImpuesto ObtenerParametroImpuesto(int intIdImpuesto);
         void AgregarProducto(Producto producto);
         void ActualizarProducto(Producto producto);
@@ -1335,29 +1334,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     log.Error("Error al obtener el tipo de producto: ", ex);
                     throw new Exception("Se produjo un error consultando el listado de tipos de producto. Por favor consulte con su proveedor.");
-                }
-            }
-        }
-
-        public IEnumerable<LlaveDescripcion> ObtenerListadoTipoUnidad()
-        {
-            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
-            {
-                var listaTipoUnidad = new List<LlaveDescripcion>();
-                try
-                {
-                    var listado = dbContext.TipoUnidadRepository;
-                    foreach (var value in listado)
-                    {
-                        LlaveDescripcion item = new LlaveDescripcion(value.IdTipoUnidad, value.Descripcion);
-                        listaTipoUnidad.Add(item);
-                    }
-                    return listaTipoUnidad;
-                }
-                catch (Exception ex)
-                {
-                    log.Error("Error al obtener el tipo de unidad: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de tipos de unidad de producto. Por favor consulte con su proveedor.");
                 }
             }
         }

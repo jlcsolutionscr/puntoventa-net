@@ -14,7 +14,6 @@ Partial Class FrmProducto
     'Required by the Windows Form Designer
     Private components As System.ComponentModel.IContainer
     Public WithEvents txtPrecioVenta1 As System.Windows.Forms.TextBox
-    Public WithEvents cboUnidad As System.Windows.Forms.ComboBox
     Public WithEvents cboLinea As System.Windows.Forms.ComboBox
     Public WithEvents txtIndExistencia As System.Windows.Forms.TextBox
     Public WithEvents txtPrecioCosto As System.Windows.Forms.TextBox
@@ -23,7 +22,6 @@ Partial Class FrmProducto
     Public WithEvents txtCodigo As System.Windows.Forms.TextBox
     Public WithEvents txtIdProducto As System.Windows.Forms.TextBox
     Public WithEvents lblPrecioVenta1 As System.Windows.Forms.Label
-    Public WithEvents _lblLabels_12 As System.Windows.Forms.Label
     Public WithEvents _lblLabels_11 As System.Windows.Forms.Label
     Public WithEvents _lblLabels_9 As System.Windows.Forms.Label
     Public WithEvents _lblLabels_6 As System.Windows.Forms.Label
@@ -39,7 +37,6 @@ Partial Class FrmProducto
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FrmProducto))
         Me.txtPrecioVenta1 = New System.Windows.Forms.TextBox()
-        Me.cboUnidad = New System.Windows.Forms.ComboBox()
         Me.cboLinea = New System.Windows.Forms.ComboBox()
         Me.txtIndExistencia = New System.Windows.Forms.TextBox()
         Me.txtPrecioCosto = New System.Windows.Forms.TextBox()
@@ -48,7 +45,6 @@ Partial Class FrmProducto
         Me.txtCodigo = New System.Windows.Forms.TextBox()
         Me.txtIdProducto = New System.Windows.Forms.TextBox()
         Me.lblPrecioVenta1 = New System.Windows.Forms.Label()
-        Me._lblLabels_12 = New System.Windows.Forms.Label()
         Me._lblLabels_11 = New System.Windows.Forms.Label()
         Me._lblLabels_9 = New System.Windows.Forms.Label()
         Me._lblLabels_6 = New System.Windows.Forms.Label()
@@ -100,21 +96,6 @@ Partial Class FrmProducto
         Me.txtPrecioVenta1.Size = New System.Drawing.Size(106, 20)
         Me.txtPrecioVenta1.TabIndex = 9
         Me.txtPrecioVenta1.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
-        '
-        'cboUnidad
-        '
-        Me.cboUnidad.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
-        Me.cboUnidad.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
-        Me.cboUnidad.BackColor = System.Drawing.SystemColors.Window
-        Me.cboUnidad.Cursor = System.Windows.Forms.Cursors.Default
-        Me.cboUnidad.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cboUnidad.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.cboUnidad.Items.AddRange(New Object() {"UND", "MT2", "MT3", "MT", "LT", "GL", "CTO", "CUB", "PAQ", "LAM", "VAR", "PZA"})
-        Me.cboUnidad.Location = New System.Drawing.Point(94, 446)
-        Me.cboUnidad.Name = "cboUnidad"
-        Me.cboUnidad.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.cboUnidad.Size = New System.Drawing.Size(128, 21)
-        Me.cboUnidad.TabIndex = 20
         '
         'cboLinea
         '
@@ -225,19 +206,6 @@ Partial Class FrmProducto
         Me.lblPrecioVenta1.TabIndex = 0
         Me.lblPrecioVenta1.Text = "Precio Venta 1:"
         Me.lblPrecioVenta1.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        '
-        '_lblLabels_12
-        '
-        Me._lblLabels_12.BackColor = System.Drawing.Color.Transparent
-        Me._lblLabels_12.Cursor = System.Windows.Forms.Cursors.Default
-        Me._lblLabels_12.ForeColor = System.Drawing.SystemColors.ControlText
-        Me._lblLabels_12.Location = New System.Drawing.Point(5, 447)
-        Me._lblLabels_12.Name = "_lblLabels_12"
-        Me._lblLabels_12.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me._lblLabels_12.Size = New System.Drawing.Size(83, 17)
-        Me._lblLabels_12.TabIndex = 0
-        Me._lblLabels_12.Text = "Unidad:"
-        Me._lblLabels_12.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         '_lblLabels_11
         '
@@ -690,7 +658,7 @@ Partial Class FrmProducto
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
-        Me.ClientSize = New System.Drawing.Size(752, 481)
+        Me.ClientSize = New System.Drawing.Size(752, 453)
         Me.Controls.Add(Me.Label7)
         Me.Controls.Add(Me.txtPrecioImpuesto5)
         Me.Controls.Add(Me.txtPrecioImpuesto4)
@@ -717,7 +685,6 @@ Partial Class FrmProducto
         Me.Controls.Add(Me.ptbImagen)
         Me.Controls.Add(Me.cboTipoProducto)
         Me.Controls.Add(Me.txtPrecioVenta1)
-        Me.Controls.Add(Me.cboUnidad)
         Me.Controls.Add(Me.cboLinea)
         Me.Controls.Add(Me.txtIndExistencia)
         Me.Controls.Add(Me.txtPrecioCosto)
@@ -726,7 +693,6 @@ Partial Class FrmProducto
         Me.Controls.Add(Me.txtCodigo)
         Me.Controls.Add(Me.txtIdProducto)
         Me.Controls.Add(Me.lblPrecioVenta1)
-        Me.Controls.Add(Me._lblLabels_12)
         Me.Controls.Add(Me._lblLabels_11)
         Me.Controls.Add(Me._lblLabels_9)
         Me.Controls.Add(Me._lblLabels_6)
