@@ -227,7 +227,7 @@ Public Class FrmProforma
                 Else
                     txtPrecio.Text = FormatNumber(producto.PrecioVenta1, 2)
                 End If
-                txtUnidad.Text = producto.IdTipoUnidad
+                txtUnidad.Text = IIf(producto.Tipo = 1, "UND", "SP")
             End If
         End If
     End Sub

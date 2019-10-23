@@ -482,7 +482,7 @@ Public Class FrmFactura
             txtDescripcion.Text = producto.Descripcion
             decPrecioVenta = ObtenerPrecioVentaPorCliente(cliente, producto)
             txtPrecio.Text = FormatNumber(decPrecioVenta, 2)
-            txtUnidad.Text = producto.IdTipoUnidad
+            txtUnidad.Text = IIf(producto.Tipo = 1, "UND", "SP")
             If FrmPrincipal.empresaGlobal.ModificaDescProducto = True Then
                 txtDescripcion.Focus()
             Else

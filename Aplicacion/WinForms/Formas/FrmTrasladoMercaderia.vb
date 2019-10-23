@@ -166,7 +166,7 @@ Public Class FrmTrasladoMercaderia
                 If txtCantidad.Text = "" Then txtCantidad.Text = "1"
                 txtDescripcion.Text = producto.Descripcion
                 txtPrecioCosto.Text = FormatNumber(producto.PrecioCosto, 2)
-                txtUnidad.Text = producto.IdTipoUnidad
+                txtUnidad.Text = IIf(producto.Tipo = 1, "UND", "SP")
             End If
         End If
     End Sub

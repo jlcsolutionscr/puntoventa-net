@@ -33,8 +33,6 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         [ForeignKey("ParametroImpuesto")]
         public int IdImpuesto { get; set; }
         public int IndExistencia { get; set; }
-        [ForeignKey("TipoUnidad")]
-        public int IdTipoUnidad { get; set; }
         public byte[] Imagen { get; set; }
         [NotMapped]
         public string TipoProductoDesc { get { if (TipoProducto == null) return ""; else return TipoProducto.Descripcion; } }
@@ -44,7 +42,6 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public Proveedor Proveedor { get; set; }
         public TipoProducto TipoProducto { get; set; }
         public ParametroImpuesto ParametroImpuesto { get; set; }
-        public TipoUnidad TipoUnidad { get; set; }
         public ICollection<MovimientoProducto> MovimientoProducto { get; set; }
     }
 }

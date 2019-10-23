@@ -86,7 +86,6 @@ namespace LeandroSoftware.ServicioWeb.Contexto
         DbSet<TipoMovimientoBanco> TipoMovimientoBancoRepository { get; set; }
         DbSet<TipoParametroContable> TipoParametroContableRepository { get; set; }
         DbSet<TipoProducto> TipoProductoRepository { get; set; }
-        DbSet<TipoUnidad> TipoUnidadRepository { get; set; }
         DbSet<Traslado> TrasladoRepository { get; set; }
         DbSet<Usuario> UsuarioRepository { get; set; }
         DbSet<UsuarioPorEmpresa> UsuarioPorEmpresaRepository { get; set; }
@@ -193,7 +192,6 @@ namespace LeandroSoftware.ServicioWeb.Contexto
         public DbSet<TipoMovimientoBanco> TipoMovimientoBancoRepository { get; set; }
         public DbSet<TipoParametroContable> TipoParametroContableRepository { get; set; }
         public DbSet<TipoProducto> TipoProductoRepository { get; set; }
-        public DbSet<TipoUnidad> TipoUnidadRepository { get; set; }
         public DbSet<Traslado> TrasladoRepository { get; set; }
         public DbSet<Usuario> UsuarioRepository { get; set; }
         public DbSet<UsuarioPorEmpresa> UsuarioPorEmpresaRepository { get; set; }

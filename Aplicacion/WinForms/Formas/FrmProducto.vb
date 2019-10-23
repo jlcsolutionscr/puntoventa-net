@@ -41,9 +41,6 @@ Public Class FrmProducto
         ElseIf txtIndExistencia.Text = "" Then
             pCampo = "Punto de reorden"
             Return False
-        ElseIf cboUnidad.Text = "" Then
-            pCampo = "Unidad"
-            Return False
         Else
             Return True
         End If
@@ -56,9 +53,6 @@ Public Class FrmProducto
         cboTipoImpuesto.ValueMember = "Id"
         cboTipoImpuesto.DisplayMember = "Descripcion"
         cboTipoImpuesto.DataSource = Await Puntoventa.ObtenerListadoTipoImpuesto(FrmPrincipal.usuarioGlobal.Token)
-        cboUnidad.ValueMember = "Id"
-        cboUnidad.DisplayMember = "Descripcion"
-        cboUnidad.DataSource = Await Puntoventa.ObtenerListadoTipoUnidad(FrmPrincipal.usuarioGlobal.Token)
     End Function
 
     Private Async Function CargarComboLinea() As Task
@@ -136,7 +130,6 @@ Public Class FrmProducto
                 txtPrecioVenta5.Text = FormatoPrecio(datos.PrecioVenta5, 2)
                 cboTipoImpuesto.SelectedValue = datos.IdImpuesto
                 txtIndExistencia.Text = FormatoPrecio(datos.IndExistencia, 2)
-                cboUnidad.SelectedValue = datos.IdTipoUnidad
                 If datos.Imagen IsNot Nothing Then
                     ptbImagen.Image = Bytes_Imagen(datos.Imagen)
                 End If
@@ -204,7 +197,6 @@ Public Class FrmProducto
         datos.Tipo = cboTipoProducto.SelectedValue
         datos.IdImpuesto = cboTipoImpuesto.SelectedValue
         datos.IndExistencia = txtIndExistencia.Text
-        datos.IdTipoUnidad = cboUnidad.SelectedValue
         If ptbImagen.Image IsNot Nothing Then
             datos.Imagen = Imagen_Bytes(ptbImagen.Image)
         Else
