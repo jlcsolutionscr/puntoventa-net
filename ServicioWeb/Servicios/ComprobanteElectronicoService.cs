@@ -418,21 +418,21 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 NombreInstitucion = factura.NombreInstExoneracion,
                                 FechaEmision = factura.FechaEmisionDoc,
                                 PorcentajeExoneracion = factura.PorcentajeExoneracion.ToString(),
-                                MontoExoneracion = decMontoExonerado * detalleFactura.PorcentajeIVA / 100
+                                MontoExoneracion = Math.Round(decMontoExonerado * detalleFactura.PorcentajeIVA / 100, 5, MidpointRounding.AwayFromZero)
                             };
                             impuestoType.Exoneracion = exoneracionType;
                         }
                         lineaDetalle.Impuesto = new FacturaElectronicaImpuestoType[] { impuestoType };
                         if (decMontoExonerado > 0)
                         {
-                            lineaDetalle.ImpuestoNeto = montoImpuestoPorLinea - impuestoType.Exoneracion.MontoExoneracion;
+                            lineaDetalle.ImpuestoNeto = Math.Round(montoImpuestoPorLinea - impuestoType.Exoneracion.MontoExoneracion, 5, MidpointRounding.AwayFromZero);
                             lineaDetalle.ImpuestoNetoSpecified = true;
-                            lineaDetalle.MontoTotalLinea = lineaDetalle.SubTotal + lineaDetalle.ImpuestoNeto;
+                            lineaDetalle.MontoTotalLinea = Math.Round(lineaDetalle.SubTotal + lineaDetalle.ImpuestoNeto, 5, MidpointRounding.AwayFromZero);
                             decTotalImpuestos += lineaDetalle.ImpuestoNeto;
                         }
                         else
                         {
-                            lineaDetalle.MontoTotalLinea = lineaDetalle.SubTotal + montoImpuestoPorLinea;
+                            lineaDetalle.MontoTotalLinea = Math.Round(lineaDetalle.SubTotal + montoImpuestoPorLinea, 5, MidpointRounding.AwayFromZero);
                             decTotalImpuestos += montoImpuestoPorLinea;
                         }
                     }
