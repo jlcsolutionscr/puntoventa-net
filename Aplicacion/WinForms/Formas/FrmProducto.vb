@@ -94,13 +94,13 @@ Public Class FrmProducto
         Return FormatNumber(decPrecio, intDecimales)
     End Function
 
-    Private Async Function CalcularPrecioConImpuesto(intIdImpuesto As Integer) As Task
+    Private Async Function CalcularPrecioSinImpuesto(intIdImpuesto As Integer) As Task
         parametroImpuesto = Await Puntoventa.ObtenerParametroImpuesto(intIdImpuesto, FrmPrincipal.usuarioGlobal.Token)
-        If txtPrecioVenta1.Text <> "" Then txtPrecioImpuesto1.Text = FormatoPrecio(txtPrecioVenta1.Text * (1 + (parametroImpuesto.TasaImpuesto / 100)), 2)
-        If txtPrecioVenta2.Text <> "" Then txtPrecioImpuesto2.Text = FormatoPrecio(txtPrecioVenta2.Text * (1 + (parametroImpuesto.TasaImpuesto / 100)), 2)
-        If txtPrecioVenta3.Text <> "" Then txtPrecioImpuesto3.Text = FormatoPrecio(txtPrecioVenta3.Text * (1 + (parametroImpuesto.TasaImpuesto / 100)), 2)
-        If txtPrecioVenta4.Text <> "" Then txtPrecioImpuesto4.Text = FormatoPrecio(txtPrecioVenta4.Text * (1 + (parametroImpuesto.TasaImpuesto / 100)), 2)
-        If txtPrecioVenta5.Text <> "" Then txtPrecioImpuesto5.Text = FormatoPrecio(txtPrecioVenta5.Text * (1 + (parametroImpuesto.TasaImpuesto / 100)), 2)
+        If txtPrecioImpuesto1.Text <> "" Then txtPrecioVenta1.Text = FormatoPrecio(txtPrecioImpuesto1.Text / (1 + (parametroImpuesto.TasaImpuesto / 100)), 2)
+        If txtPrecioImpuesto2.Text <> "" Then txtPrecioVenta2.Text = FormatoPrecio(txtPrecioImpuesto2.Text / (1 + (parametroImpuesto.TasaImpuesto / 100)), 2)
+        If txtPrecioImpuesto3.Text <> "" Then txtPrecioVenta3.Text = FormatoPrecio(txtPrecioImpuesto3.Text / (1 + (parametroImpuesto.TasaImpuesto / 100)), 2)
+        If txtPrecioImpuesto4.Text <> "" Then txtPrecioVenta4.Text = FormatoPrecio(txtPrecioImpuesto4.Text / (1 + (parametroImpuesto.TasaImpuesto / 100)), 2)
+        If txtPrecioImpuesto5.Text <> "" Then txtPrecioVenta5.Text = FormatoPrecio(txtPrecioImpuesto5.Text / (1 + (parametroImpuesto.TasaImpuesto / 100)), 2)
     End Function
 #End Region
 
@@ -123,17 +123,17 @@ Public Class FrmProducto
                 txtDescripcion.Text = datos.Descripcion
                 txtCantidad.Text = FormatoPrecio(datos.Cantidad, 2)
                 txtPrecioCosto.Text = FormatoPrecio(datos.PrecioCosto, 2)
-                txtPrecioVenta1.Text = FormatoPrecio(datos.PrecioVenta1, 2)
-                txtPrecioVenta2.Text = FormatoPrecio(datos.PrecioVenta2, 2)
-                txtPrecioVenta3.Text = FormatoPrecio(datos.PrecioVenta3, 2)
-                txtPrecioVenta4.Text = FormatoPrecio(datos.PrecioVenta4, 2)
-                txtPrecioVenta5.Text = FormatoPrecio(datos.PrecioVenta5, 2)
+                txtPrecioImpuesto1.Text = FormatoPrecio(datos.PrecioVenta1, 2)
+                txtPrecioImpuesto2.Text = FormatoPrecio(datos.PrecioVenta2, 2)
+                txtPrecioImpuesto3.Text = FormatoPrecio(datos.PrecioVenta3, 2)
+                txtPrecioImpuesto4.Text = FormatoPrecio(datos.PrecioVenta4, 2)
+                txtPrecioImpuesto5.Text = FormatoPrecio(datos.PrecioVenta5, 2)
                 cboTipoImpuesto.SelectedValue = datos.IdImpuesto
                 txtIndExistencia.Text = FormatoPrecio(datos.IndExistencia, 2)
                 If datos.Imagen IsNot Nothing Then
                     ptbImagen.Image = Bytes_Imagen(datos.Imagen)
                 End If
-                Await CalcularPrecioConImpuesto(datos.IdImpuesto)
+                Await CalcularPrecioSinImpuesto(datos.IdImpuesto)
             Else
                 datos = New Producto
                 Await CargarComboLinea()
@@ -189,11 +189,11 @@ Public Class FrmProducto
         datos.Descripcion = txtDescripcion.Text
         datos.Cantidad = txtCantidad.Text
         datos.PrecioCosto = txtPrecioCosto.Text
-        datos.PrecioVenta1 = txtPrecioVenta1.Text
-        datos.PrecioVenta2 = txtPrecioVenta2.Text
-        datos.PrecioVenta3 = txtPrecioVenta3.Text
-        datos.PrecioVenta4 = txtPrecioVenta4.Text
-        datos.PrecioVenta5 = txtPrecioVenta5.Text
+        datos.PrecioVenta1 = txtPrecioImpuesto1.Text
+        datos.PrecioVenta2 = txtPrecioImpuesto2.Text
+        datos.PrecioVenta3 = txtPrecioImpuesto3.Text
+        datos.PrecioVenta4 = txtPrecioImpuesto4.Text
+        datos.PrecioVenta5 = txtPrecioImpuesto5.Text
         datos.Tipo = cboTipoProducto.SelectedValue
         datos.IdImpuesto = cboTipoImpuesto.SelectedValue
         datos.IndExistencia = txtIndExistencia.Text
@@ -269,62 +269,62 @@ Public Class FrmProducto
 
     Private Sub PrecioVenta1_Validating(ByVal sender As Object, ByVal e As EventArgs) Handles txtPrecioVenta1.Validated
         If txtPrecioVenta1.Text = "" Then txtPrecioVenta1.Text = "0"
-        txtPrecioVenta1.Text = FormatoPrecio(txtPrecioVenta1.Text, 3)
+        txtPrecioVenta1.Text = FormatoPrecio(txtPrecioVenta1.Text, 2)
         txtPrecioImpuesto1.Text = FormatoPrecio(txtPrecioVenta1.Text * (1 + (parametroImpuesto.TasaImpuesto / 100)), 2)
     End Sub
 
     Private Sub txtPrecioImpuesto1_Validating(sender As Object, e As EventArgs) Handles txtPrecioImpuesto1.Validated
         If txtPrecioImpuesto1.Text = "" Then txtPrecioImpuesto1.Text = "0"
         txtPrecioImpuesto1.Text = FormatoPrecio(txtPrecioImpuesto1.Text, 2)
-        txtPrecioVenta1.Text = FormatoPrecio(Math.Round(txtPrecioImpuesto1.Text / (1 + (parametroImpuesto.TasaImpuesto / 100)), 3), 3)
+        txtPrecioVenta1.Text = FormatoPrecio(Math.Round(txtPrecioImpuesto1.Text / (1 + (parametroImpuesto.TasaImpuesto / 100)), 3), 2)
     End Sub
 
     Private Sub PrecioVenta2_Validating(ByVal sender As Object, ByVal e As EventArgs) Handles txtPrecioVenta2.Validated
         If txtPrecioVenta2.Text = "" Then txtPrecioVenta2.Text = "0"
-        txtPrecioVenta2.Text = FormatoPrecio(txtPrecioVenta2.Text, 3)
+        txtPrecioVenta2.Text = FormatoPrecio(txtPrecioVenta2.Text, 2)
         txtPrecioImpuesto2.Text = FormatoPrecio(txtPrecioVenta2.Text * (1 + (parametroImpuesto.TasaImpuesto / 100)), 2)
     End Sub
 
     Private Sub txtPrecioImpuesto2_Validating(sender As Object, e As EventArgs) Handles txtPrecioImpuesto2.Validated
         If txtPrecioImpuesto2.Text = "" Then txtPrecioImpuesto2.Text = "0"
         txtPrecioImpuesto2.Text = FormatoPrecio(txtPrecioImpuesto2.Text, 2)
-        txtPrecioVenta2.Text = FormatoPrecio(Math.Round(txtPrecioImpuesto2.Text / (1 + (parametroImpuesto.TasaImpuesto / 100)), 3), 3)
+        txtPrecioVenta2.Text = FormatoPrecio(Math.Round(txtPrecioImpuesto2.Text / (1 + (parametroImpuesto.TasaImpuesto / 100)), 3), 2)
     End Sub
 
     Private Sub PrecioVenta3_Validating(ByVal sender As Object, ByVal e As EventArgs) Handles txtPrecioVenta3.Validated
         If txtPrecioVenta3.Text = "" Then txtPrecioVenta3.Text = "0"
-        txtPrecioVenta3.Text = FormatoPrecio(txtPrecioVenta3.Text, 3)
+        txtPrecioVenta3.Text = FormatoPrecio(txtPrecioVenta3.Text, 2)
         txtPrecioImpuesto3.Text = FormatoPrecio(txtPrecioVenta3.Text * (1 + (parametroImpuesto.TasaImpuesto / 100)), 2)
     End Sub
 
     Private Sub txtPrecioImpuesto3_Validating(sender As Object, e As EventArgs) Handles txtPrecioImpuesto3.Validated
         If txtPrecioImpuesto3.Text = "" Then txtPrecioImpuesto3.Text = "0"
         txtPrecioImpuesto3.Text = FormatoPrecio(txtPrecioImpuesto3.Text, 2)
-        txtPrecioVenta3.Text = FormatoPrecio(Math.Round(txtPrecioImpuesto3.Text / (1 + (parametroImpuesto.TasaImpuesto / 100)), 3), 3)
+        txtPrecioVenta3.Text = FormatoPrecio(Math.Round(txtPrecioImpuesto3.Text / (1 + (parametroImpuesto.TasaImpuesto / 100)), 3), 2)
     End Sub
 
     Private Sub PrecioVenta4_Validating(ByVal sender As Object, ByVal e As EventArgs) Handles txtPrecioVenta4.Validated
         If txtPrecioVenta4.Text = "" Then txtPrecioVenta4.Text = "0"
-        txtPrecioVenta4.Text = FormatoPrecio(txtPrecioVenta4.Text, 3)
+        txtPrecioVenta4.Text = FormatoPrecio(txtPrecioVenta4.Text, 2)
         txtPrecioImpuesto4.Text = FormatoPrecio(txtPrecioVenta4.Text * (1 + (parametroImpuesto.TasaImpuesto / 100)), 2)
     End Sub
 
     Private Sub txtPrecioImpuesto4_Validating(sender As Object, e As EventArgs) Handles txtPrecioImpuesto4.Validated
         If txtPrecioImpuesto4.Text = "" Then txtPrecioImpuesto4.Text = "0"
         txtPrecioImpuesto4.Text = FormatoPrecio(txtPrecioImpuesto4.Text, 2)
-        txtPrecioVenta4.Text = FormatoPrecio(Math.Round(txtPrecioImpuesto4.Text / (1 + (parametroImpuesto.TasaImpuesto / 100)), 3), 3)
+        txtPrecioVenta4.Text = FormatoPrecio(Math.Round(txtPrecioImpuesto4.Text / (1 + (parametroImpuesto.TasaImpuesto / 100)), 3), 2)
     End Sub
 
     Private Sub PrecioVenta5_Validating(ByVal sender As Object, ByVal e As EventArgs) Handles txtPrecioVenta5.Validated
         If txtPrecioVenta5.Text = "" Then txtPrecioVenta5.Text = "0"
-        txtPrecioVenta5.Text = FormatoPrecio(txtPrecioVenta5.Text, 3)
+        txtPrecioVenta5.Text = FormatoPrecio(txtPrecioVenta5.Text, 2)
         txtPrecioImpuesto5.Text = FormatoPrecio(txtPrecioVenta5.Text * (1 + (parametroImpuesto.TasaImpuesto / 100)), 2)
     End Sub
 
     Private Sub txtPrecioImpuesto5_Validating(sender As Object, e As EventArgs) Handles txtPrecioImpuesto5.Validated
         If txtPrecioImpuesto5.Text = "" Then txtPrecioImpuesto5.Text = "0"
         txtPrecioImpuesto5.Text = FormatoPrecio(txtPrecioImpuesto5.Text, 2)
-        txtPrecioVenta5.Text = FormatoPrecio(Math.Round(txtPrecioImpuesto5.Text / (1 + (parametroImpuesto.TasaImpuesto / 100)), 3), 3)
+        txtPrecioVenta5.Text = FormatoPrecio(Math.Round(txtPrecioImpuesto5.Text / (1 + (parametroImpuesto.TasaImpuesto / 100)), 3), 2)
     End Sub
 
     Private Sub IndExistencia_Validating(ByVal sender As Object, ByVal e As EventArgs) Handles txtIndExistencia.Validated
@@ -342,7 +342,7 @@ Public Class FrmProducto
 
     Private Async Sub cboTipoImpuesto_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboTipoImpuesto.SelectedIndexChanged
         If Not bolInit And cboTipoImpuesto.SelectedValue IsNot Nothing Then
-            Await CalcularPrecioConImpuesto(cboTipoImpuesto.SelectedValue)
+            Await CalcularPrecioSinImpuesto(cboTipoImpuesto.SelectedValue)
         End If
     End Sub
 #End Region

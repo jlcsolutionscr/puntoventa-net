@@ -2241,9 +2241,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 datos.BarrioReceptor = dbContext.BarrioRepository.Where(x => x.IdProvincia == intProvincia & x.IdCanton == intCanton & x.IdDistrito == intDistrito & x.IdBarrio == intBarrio).FirstOrDefault().Descripcion;
                                 datos.DireccionReceptor = receptorNode["Ubicacion"]["OtrasSenas"].InnerText;
                             }
-                            foreach (XmlNode linea in documentoXml.GetElementsByTagName("DetalleServicio"))
+                            foreach (XmlNode lineaDetalle in documentoXml.GetElementsByTagName("LineaDetalle"))
                             {
-                                XmlNode lineaDetalle = linea["LineaDetalle"];
                                 if (lineaDetalle["Impuesto"] != null)
                                 {
                                     if (lineaDetalle["Impuesto"]["Exoneracion"] != null)
