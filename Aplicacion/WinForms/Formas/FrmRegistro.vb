@@ -64,7 +64,7 @@ Public Class FrmRegistro
 
     Private Async Sub BtnConsultar_Click(sender As Object, e As EventArgs) Handles btnConsultar.Click
         Try
-            strEncryptedPassword = Utilitario.EncriptarDatos(txtClave.Text, FrmPrincipal.strKey)
+            strEncryptedPassword = Utilitario.EncriptarDatos(txtClave.Text)
             listado = Await Puntoventa.ObtenerListadoTerminalesDisponibles(txtUsuario.Text, strEncryptedPassword, txtIdentificacion.Text, StaticTipoDispisitivo.AppEscritorio)
             dgvDatos.DataSource = listado
             If listado.Count > 0 Then

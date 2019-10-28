@@ -2615,7 +2615,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     throw ex;
                 }
-                string strTokenEncriptado = Utilitario.EncriptarDatos(strGuid, strApplicationKey);
+                string strTokenEncriptado = Utilitario.EncriptarDatos(strGuid);
                 return strTokenEncriptado;
             }
         }
@@ -2626,7 +2626,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
                 {
-                    string strTokenDesencriptado = Utilitario.DesencriptarDatos(strToken, strApplicationKey);
+                    string strTokenDesencriptado = Utilitario.DesencriptarDatos(strToken);
                     RegistroAutenticacion registro = dbContext.RegistroAutenticacionRepository.Where(x => x.Id == strTokenDesencriptado).FirstOrDefault();
                     if (registro == null) throw new BusinessException("La sessión del usuario no es válida. Debe reiniciar su sesión.");
                     if (registro.Fecha < DateTime.UtcNow.AddHours(-12))

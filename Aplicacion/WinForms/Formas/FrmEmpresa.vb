@@ -126,7 +126,8 @@ Public Class FrmEmpresa
             If txtNombreCertificado.Text.Length = 0 Or
                 txtPinCertificado.Text.Length = 0 Or
                 txtUsuarioATV.Text.Length = 0 Or
-                txtClaveATV.Text.Length = 0 Then
+                txtClaveATV.Text.Length = 0 Or
+                txtCodigoActividad.Text.Length = 0 Then
                 MessageBox.Show("Los datos para generar los documentos electrónicos son requeridos. Por favor verifique la información. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End If

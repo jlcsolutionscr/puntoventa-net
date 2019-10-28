@@ -2,81 +2,17 @@
 using System.IO;
 using System.Text;
 using System.Security.Cryptography;
-using System.Diagnostics;
-using System.Security.Cryptography.X509Certificates;
 using System.Management;
 
 namespace LeandroSoftware.Core.Utilities
 {
     public static class Utilitario
     {
+        private static readonly string passPhrase = "Po78]Rba[%J=[14[*";
         private static readonly string SaltKey = "S@LT&KEY";
         private static readonly string VIKey = "@1B2c3D4e5F6g7H8";
 
-        public static bool VerificarCertificado(string strThumbprint)
-        {
-            bool bolCertificadoValido = false;
-            try
-            {
-                X509Store store = new X509Store(StoreName.Root, StoreLocation.LocalMachine);
-                store.Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly);
-                X509Certificate2Collection certs = store.Certificates.Find(X509FindType.FindByThumbprint, strThumbprint, true);
-                store.Close();
-                if (certs.Count == 0)
-                {
-                    throw new Exception("No se logró ubicar el certificado con la llave utilizada por el sistema. Por favor verificar.");
-                }
-                if (certs.Count == 1)
-                {
-                    foreach (X509Certificate2 cert in certs)
-                    {
-                        if (!cert.HasPrivateKey)
-                            throw new Exception("El certificado con la llave utilizada por el sistema no posee la llave privada requerida. Por favor verificar.");
-                        bolCertificadoValido = true;
-                    }
-                }
-                else
-                {
-                    throw new Exception("Existe más de un certificado con la huella digital: " + strThumbprint + ". Por favor verificar.");
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            return bolCertificadoValido;
-        }
-
-        public static string GenerarRespaldo(string strUser, string strPassword, string strHost, string strDatabase, string strMySQLDumpOptions)
-        {
-            ProcessStartInfo psi = null;
-            string output = "";
-            try
-            {
-                psi = new ProcessStartInfo
-                {
-                    FileName = "mysqldump",
-                    RedirectStandardInput = false,
-                    RedirectStandardOutput = true,
-                    Arguments = strMySQLDumpOptions + " -u" + strUser + " -p" + strPassword + " -h" + strHost + " " + strDatabase,
-                    UseShellExecute = false,
-                    CreateNoWindow = true,
-                    StandardOutputEncoding = Encoding.UTF8
-                };
-                using (Process process = Process.Start(psi))
-                {
-                    output = process.StandardOutput.ReadToEnd();
-                    process.WaitForExit();
-                }
-            }
-            catch(Exception ex)
-            {
-                throw ex;
-            }
-            return output;
-        }
-
-        public static string EncriptarDatos(string plainText, string passPhrase)
+        public static string EncriptarDatos(string plainText)
         {
             byte[] plainTextBytes = Encoding.UTF8.GetBytes(plainText);
             byte[] keyBytes = new Rfc2898DeriveBytes(passPhrase, Encoding.ASCII.GetBytes(SaltKey)).GetBytes(256 / 8);
@@ -99,7 +35,7 @@ namespace LeandroSoftware.Core.Utilities
             return Convert.ToBase64String(cipherTextBytes);
         }
 
-        public static string DesencriptarDatos(string cipherText, string passPhrase)
+        public static string DesencriptarDatos(string cipherText)
         {
             byte[] cipherTextBytes = Convert.FromBase64String(cipherText);
             byte[] keyBytes = new Rfc2898DeriveBytes(passPhrase, Encoding.ASCII.GetBytes(SaltKey)).GetBytes(256 / 8);
@@ -114,85 +50,6 @@ namespace LeandroSoftware.Core.Utilities
             memoryStream.Close();
             cryptoStream.Close();
             return Encoding.UTF8.GetString(plainTextBytes, 0, decryptedByteCount).TrimEnd("\0".ToCharArray());
-        }
-
-        public static string ObtenerLlaveEncriptadoLocal(string strThumbprint, string strData)
-        {
-            RSACryptoServiceProvider rsaEncryptor = null;
-            string strResult = null;
-            try
-            {
-                X509Store store = new X509Store(StoreName.Root, StoreLocation.LocalMachine);
-                store.Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly);
-                X509Certificate2Collection certs = store.Certificates.Find(X509FindType.FindByThumbprint, strThumbprint, true);
-                store.Close();
-                if (certs.Count == 0)
-                {
-                    throw new Exception("No se logró ubicar el certificado con la huella digital: " + strThumbprint + ". Por favor verificar.");
-                }
-                if (certs.Count == 1)
-                {
-                    foreach (X509Certificate2 cert in certs)
-                    {
-                        if (!cert.HasPrivateKey)
-                            throw new Exception("El certificado con la huella digital: " + strThumbprint + " no posee la llave privada requerida. Por favor verificar.");
-                        rsaEncryptor = (RSACryptoServiceProvider)cert.PrivateKey;
-                        break;
-                    }
-                }
-                else
-                {
-                    throw new Exception("Existe más de un certificado con la huella digital: " + strThumbprint + ". Por favor verificar.");
-                }
-                if (rsaEncryptor != null)
-                {
-                    byte[] cipherData = rsaEncryptor.Decrypt(Convert.FromBase64String(strData), true);
-                    strResult = Encoding.UTF8.GetString(cipherData);
-                }
-                else
-                {
-                    throw new Exception("No se logró obtener un encriptador para el certificado con huella digital: " + strThumbprint + ". Por favor verificar.");
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            return strResult;
-        }
-
-        public static byte[] EncriptarArchivo(string strThumbprint, string strAppKey, string strData)
-        {
-            string sKey = ObtenerLlaveEncriptadoLocal(strThumbprint, strAppKey);
-            DESCryptoServiceProvider DES = new DESCryptoServiceProvider
-            {
-                Key = Encoding.ASCII.GetBytes(sKey),
-                IV = Encoding.ASCII.GetBytes(sKey)
-            };
-            var msEncrypted = new MemoryStream();
-            ICryptoTransform encryptor = DES.CreateEncryptor();
-            CryptoStream cryptostream = new CryptoStream(msEncrypted, encryptor, CryptoStreamMode.Write);
-            byte[] plainBytes = Encoding.UTF8.GetBytes(strData);
-            cryptostream.Write(plainBytes, 0, plainBytes.Length);
-            cryptostream.Close();
-            return msEncrypted.ToArray();
-        }
-
-        public static void DesencriptarArchivo(string strThumbprint, string strAppKey, string strInputFilename, string strOutPutFilename)
-        {
-            string sKey = ObtenerLlaveEncriptadoLocal(strThumbprint, strAppKey);
-            DESCryptoServiceProvider DES = new DESCryptoServiceProvider
-            {
-                Key = Encoding.ASCII.GetBytes(sKey),
-                IV = Encoding.ASCII.GetBytes(sKey)
-            };
-            FileStream fsread = new FileStream(strInputFilename, FileMode.Open, FileAccess.Read);
-	        ICryptoTransform desdecrypt = DES.CreateDecryptor();
-	        CryptoStream decryptoStream = new CryptoStream(fsread, desdecrypt, CryptoStreamMode.Read);
-            StreamWriter fsDecrypted = new StreamWriter(strOutPutFilename);
-	        fsDecrypted.Write(new StreamReader(decryptoStream).ReadToEnd());
-	        fsDecrypted.Flush();
-	        fsDecrypted.Close();
         }
 
         public static string ObtenerIdentificadorEquipo()

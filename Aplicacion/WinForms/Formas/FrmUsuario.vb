@@ -93,7 +93,7 @@ Public Class FrmUsuario
                 Dim strDecryptedPassword As String
                 Try
                     datos = Await Puntoventa.ObtenerUsuario(intIdUsuario, FrmPrincipal.usuarioGlobal.Token)
-                    strDecryptedPassword = Utilitario.DesencriptarDatos(datos.Clave, FrmPrincipal.strKey)
+                    strDecryptedPassword = Utilitario.DesencriptarDatos(datos.Clave)
                 Catch ex As Exception
                     Throw ex
                 End Try
@@ -137,7 +137,7 @@ Public Class FrmUsuario
             datos.UsuarioPorEmpresa = detalleEmpresa
         End If
         Try
-            strEncryptedPassword = Utilitario.EncriptarDatos(txtPassword.Text, FrmPrincipal.strKey)
+            strEncryptedPassword = Utilitario.EncriptarDatos(txtPassword.Text)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Close()

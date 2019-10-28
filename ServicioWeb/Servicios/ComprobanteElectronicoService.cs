@@ -339,10 +339,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 decimal decTotalImpuestos = 0;
                 foreach (DetalleFactura detalleFactura in factura.DetalleFactura)
                 {
-                    FacturaElectronicaLineaDetalle lineaDetalle = new FacturaElectronicaLineaDetalle
-                    {
-                        NumeroLinea = (detalleServicioList.Count() + 1).ToString()
-                    };
+                    FacturaElectronicaLineaDetalle lineaDetalle = new FacturaElectronicaLineaDetalle();
+                    lineaDetalle.NumeroLinea = (detalleServicioList.Count() + 1).ToString();
                     lineaDetalle.Codigo = detalleFactura.Producto.Codigo;
                     lineaDetalle.Cantidad = detalleFactura.Cantidad;
                     if (detalleFactura.Producto.Tipo == StaticTipoProducto.Producto)
@@ -350,67 +348,31 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     else
                         lineaDetalle.UnidadMedida = FacturaElectronicaUnidadMedidaType.Sp;
                     lineaDetalle.Detalle = detalleFactura.Descripcion;
-                    decimal montoTotalPorLinea = Math.Round(detalleFactura.Cantidad * detalleFactura.PrecioVenta, 5);
-                    decimal decMontoGravado = montoTotalPorLinea;
-                    decimal decMontoExonerado = 0;
+                    lineaDetalle.PrecioUnitario = Math.Round(detalleFactura.PrecioVenta, 2);
+                    decimal decTotalPorLinea = 0;
+                    decimal decMontoImpuestoPorLinea = 0;
                     if (!detalleFactura.Excento)
                     {
-                        if (factura.PorcentajeExoneracion > 0)
-                        {
-                            decMontoGravado = Math.Round(montoTotalPorLinea * (1 - (decimal.Parse(factura.PorcentajeExoneracion.ToString()) / 100)), 5);
-                            decMontoExonerado = Math.Round(montoTotalPorLinea - decMontoGravado, 5);
-                        }
-                        if (detalleFactura.Producto.Tipo == StaticTipoProducto.Producto)
-                        {
-                            decTotalMercanciasGravadas += decMontoGravado;
-                            decTotalMercanciasExoneradas += decMontoExonerado;
-                        }
-                        else
-                        {
-                            decTotalServiciosGravados += decMontoGravado;
-                            decTotalServiciosExonerados += decMontoExonerado;
-                        }
-                    }
-                    else
-                    {
-                        if (detalleFactura.Producto.Tipo == StaticTipoProducto.Producto)
-                            decTotalMercanciasExcentas += montoTotalPorLinea;
-                        else
-                            decTotalServiciosExcentos += montoTotalPorLinea;
-                    }
-                    lineaDetalle.PrecioUnitario = detalleFactura.PrecioVenta;
-                    lineaDetalle.MontoTotal = montoTotalPorLinea;
-                    decimal descuentoPorLinea = 0;
-                    if (factura.Descuento > 0)
-                    {
-                        descuentoPorLinea = Math.Round(factura.Descuento / (factura.Total - factura.Impuesto) * montoTotalPorLinea, 5);
-                        if (descuentoPorLinea > decTotalDescuentoPorFactura)
-                            descuentoPorLinea = decTotalDescuentoPorFactura;
-                        else
-                            decTotalDescuentoPorFactura -= descuentoPorLinea;
-                        FacturaElectronicaDescuentoType descuentoType = new FacturaElectronicaDescuentoType
-                        {
-                            MontoDescuento = descuentoPorLinea,
-                            NaturalezaDescuento = "Descuento sobre mercancías"
-                        };
-                        lineaDetalle.Descuento = new FacturaElectronicaDescuentoType[] { descuentoType };
-                    }
-                    lineaDetalle.SubTotal = montoTotalPorLinea - descuentoPorLinea;
-                    decimal montoImpuestoPorLinea = 0;
-                    if (!detalleFactura.Excento)
-                    {
+                        decimal decMontoGravadoPorLinea = Math.Round(detalleFactura.PrecioVenta * detalleFactura.Cantidad, 2);
+                        decimal decMontoExoneradoPorLinea = 0;
+                        decMontoImpuestoPorLinea = Math.Round(detalleFactura.PrecioVenta * detalleFactura.PorcentajeIVA / 100, 2) * detalleFactura.Cantidad;
                         FacturaElectronicaImpuestoType impuestoType = new FacturaElectronicaImpuestoType
                         {
                             Codigo = FacturaElectronicaImpuestoTypeCodigo.Item01,
                             CodigoTarifa = (FacturaElectronicaImpuestoTypeCodigoTarifa)detalleFactura.Producto.IdImpuesto - 1,
                             CodigoTarifaSpecified = true,
                             Tarifa = detalleFactura.PorcentajeIVA,
-                            TarifaSpecified = true
+                            TarifaSpecified = true,
+                            Monto = decMontoImpuestoPorLinea
                         };
-                        montoImpuestoPorLinea = Math.Round(lineaDetalle.SubTotal * detalleFactura.PorcentajeIVA / 100, 5);
-                        impuestoType.Monto = montoImpuestoPorLinea;
-                        if (decMontoExonerado > 0)
+                        if (factura.PorcentajeExoneracion > 0)
                         {
+                            decimal decMontoGravado = detalleFactura.PrecioVenta * (1 - (Convert.ToDecimal(factura.PorcentajeExoneracion) / 100));
+                            decimal decMontoExonerado = Math.Round(detalleFactura.PrecioVenta - decMontoGravado, 2);
+                            decMontoGravadoPorLinea = Math.Round(decMontoGravado, 2) * detalleFactura.Cantidad;
+                            decMontoExoneradoPorLinea = Math.Round(decMontoExonerado, 2) * detalleFactura.Cantidad;
+                            decimal decMontoImpuestoExonerado = Math.Round(decMontoExonerado * detalleFactura.PorcentajeIVA / 100, 2) * detalleFactura.Cantidad;
+                            decMontoImpuestoPorLinea -= decMontoImpuestoExonerado;
                             FacturaElectronicaExoneracionType exoneracionType = new FacturaElectronicaExoneracionType
                             {
                                 TipoDocumento = (FacturaElectronicaExoneracionTypeTipoDocumento)factura.IdTipoExoneracion - 1,
@@ -418,24 +380,39 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 NombreInstitucion = factura.NombreInstExoneracion,
                                 FechaEmision = factura.FechaEmisionDoc,
                                 PorcentajeExoneracion = factura.PorcentajeExoneracion.ToString(),
-                                MontoExoneracion = Math.Round(decMontoExonerado * detalleFactura.PorcentajeIVA / 100, 5, MidpointRounding.AwayFromZero)
+                                MontoExoneracion = decMontoImpuestoExonerado
                             };
                             impuestoType.Exoneracion = exoneracionType;
-                        }
-                        lineaDetalle.Impuesto = new FacturaElectronicaImpuestoType[] { impuestoType };
-                        if (decMontoExonerado > 0)
-                        {
-                            lineaDetalle.ImpuestoNeto = Math.Round(montoImpuestoPorLinea - impuestoType.Exoneracion.MontoExoneracion, 5, MidpointRounding.AwayFromZero);
+                            lineaDetalle.ImpuestoNeto = decMontoImpuestoPorLinea;
                             lineaDetalle.ImpuestoNetoSpecified = true;
-                            lineaDetalle.MontoTotalLinea = Math.Round(lineaDetalle.SubTotal + lineaDetalle.ImpuestoNeto, 5, MidpointRounding.AwayFromZero);
-                            decTotalImpuestos += lineaDetalle.ImpuestoNeto;
+                        }
+                        
+                        lineaDetalle.Impuesto = new FacturaElectronicaImpuestoType[] { impuestoType };
+                        decTotalImpuestos += decMontoImpuestoPorLinea;
+                        if (detalleFactura.Producto.Tipo == StaticTipoProducto.Producto)
+                        {
+                            decTotalMercanciasGravadas += decMontoGravadoPorLinea;
+                            decTotalMercanciasExoneradas += decMontoExoneradoPorLinea;
                         }
                         else
                         {
-                            lineaDetalle.MontoTotalLinea = Math.Round(lineaDetalle.SubTotal + montoImpuestoPorLinea, 5, MidpointRounding.AwayFromZero);
-                            decTotalImpuestos += montoImpuestoPorLinea;
+                            decTotalServiciosGravados += decMontoGravadoPorLinea;
+                            decTotalServiciosExonerados += decMontoExoneradoPorLinea;
                         }
+                        decTotalPorLinea = decMontoGravadoPorLinea + decMontoExoneradoPorLinea;
                     }
+                    else
+                    {
+                        decimal decMontoExcento = Math.Round(detalleFactura.PrecioVenta * detalleFactura.Cantidad, 2);
+                        if (detalleFactura.Producto.Tipo == StaticTipoProducto.Producto)
+                            decTotalMercanciasExcentas += decMontoExcento;
+                        else
+                            decTotalServiciosExcentos += decMontoExcento;
+                        decTotalPorLinea += decMontoExcento;
+                    }
+                    lineaDetalle.SubTotal = decTotalPorLinea;
+                    lineaDetalle.MontoTotal = decTotalPorLinea;
+                    lineaDetalle.MontoTotalLinea = decTotalPorLinea + decMontoImpuestoPorLinea;
                     detalleServicioList.Add(lineaDetalle);
                 }
                 facturaElectronica.DetalleServicio = detalleServicioList.ToArray();
@@ -614,10 +591,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 decimal decTotalImpuestos = 0;
                 foreach (DetalleFactura detalleFactura in factura.DetalleFactura)
                 {
-                    TiqueteElectronicoLineaDetalle lineaDetalle = new TiqueteElectronicoLineaDetalle
-                    {
-                        NumeroLinea = (detalleServicioList.Count() + 1).ToString()
-                    };
+                    TiqueteElectronicoLineaDetalle lineaDetalle = new TiqueteElectronicoLineaDetalle();
+                    lineaDetalle.NumeroLinea = (detalleServicioList.Count() + 1).ToString();
                     lineaDetalle.Codigo = detalleFactura.Producto.Codigo;
                     lineaDetalle.Cantidad = detalleFactura.Cantidad;
                     if (detalleFactura.Producto.Tipo == StaticTipoProducto.Producto)
@@ -625,92 +600,49 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     else
                         lineaDetalle.UnidadMedida = TiqueteElectronicoUnidadMedidaType.Sp;
                     lineaDetalle.Detalle = detalleFactura.Descripcion;
-                    decimal montoTotalPorLinea = Math.Round(detalleFactura.Cantidad * detalleFactura.PrecioVenta, 5);
-                    decimal decMontoGravado = montoTotalPorLinea;
-                    decimal decMontoExonerado = 0;
+                    lineaDetalle.PrecioUnitario = Math.Round(detalleFactura.PrecioVenta, 2);
+                    decimal decTotalPorLinea = 0;
+                    decimal decMontoImpuestoPorLinea = 0;
                     if (!detalleFactura.Excento)
                     {
-                        if (factura.PorcentajeExoneracion > 0)
-                        {
-                            decMontoGravado = Math.Round(montoTotalPorLinea * (1 - (decimal.Parse(factura.PorcentajeExoneracion.ToString()) / 100)), 5);
-                            decMontoExonerado = Math.Round(montoTotalPorLinea - decMontoGravado, 5);
-                        }
-                        if (detalleFactura.Producto.Tipo == StaticTipoProducto.Producto)
-                        {
-                            decTotalMercanciasGravadas += decMontoGravado;
-                            decTotalMercanciasExoneradas += decMontoExonerado;
-                        }
-                        else
-                        {
-                            decTotalServiciosGravados += decMontoGravado;
-                            decTotalServiciosExonerados += decMontoExonerado;
-                        }
-                    }
-                    else
-                    {
-                        if (detalleFactura.Producto.Tipo == StaticTipoProducto.Producto)
-                            decTotalMercanciasExcentas += montoTotalPorLinea;
-                        else
-                            decTotalServiciosExcentos += montoTotalPorLinea;
-                    }
-                    lineaDetalle.PrecioUnitario = detalleFactura.PrecioVenta;
-                    lineaDetalle.MontoTotal = montoTotalPorLinea;
-                    decimal descuentoPorLinea = 0;
-                    if (factura.Descuento > 0)
-                    {
-                        descuentoPorLinea = Math.Round(factura.Descuento / (factura.Total - factura.Impuesto) * montoTotalPorLinea, 5);
-                        if (descuentoPorLinea > decTotalDescuentoPorFactura)
-                            descuentoPorLinea = decTotalDescuentoPorFactura;
-                        else
-                            decTotalDescuentoPorFactura -= descuentoPorLinea;
-                        TiqueteElectronicoDescuentoType descuentoType = new TiqueteElectronicoDescuentoType
-                        {
-                            MontoDescuento = descuentoPorLinea,
-                            NaturalezaDescuento = "Descuento sobre mercancías"
-                        };
-                        lineaDetalle.Descuento = new TiqueteElectronicoDescuentoType[] { descuentoType };
-                    }
-                    lineaDetalle.SubTotal = montoTotalPorLinea - descuentoPorLinea;
-                    decimal montoImpuestoPorLinea = 0;
-                    if (!detalleFactura.Excento)
-                    {
+                        decimal decMontoGravadoPorLinea = Math.Round(detalleFactura.PrecioVenta * detalleFactura.Cantidad, 2);
+                        decimal decMontoExoneradoPorLinea = 0;
+                        decMontoImpuestoPorLinea = Math.Round(detalleFactura.PrecioVenta * detalleFactura.PorcentajeIVA / 100, 2) * detalleFactura.Cantidad;
                         TiqueteElectronicoImpuestoType impuestoType = new TiqueteElectronicoImpuestoType
                         {
                             Codigo = TiqueteElectronicoImpuestoTypeCodigo.Item01,
                             CodigoTarifa = (TiqueteElectronicoImpuestoTypeCodigoTarifa)detalleFactura.Producto.IdImpuesto - 1,
                             CodigoTarifaSpecified = true,
                             Tarifa = detalleFactura.PorcentajeIVA,
-                            TarifaSpecified = true
+                            TarifaSpecified = true,
+                            Monto = decMontoImpuestoPorLinea
                         };
-                        montoImpuestoPorLinea = Math.Round(lineaDetalle.SubTotal * detalleFactura.PorcentajeIVA / 100, 5);
-                        impuestoType.Monto = montoImpuestoPorLinea;
-                        if (decMontoExonerado > 0)
-                        {
-                            TiqueteElectronicoExoneracionType exoneracionType = new TiqueteElectronicoExoneracionType
-                            {
-                                TipoDocumento = (TiqueteElectronicoExoneracionTypeTipoDocumento)factura.IdTipoExoneracion - 1,
-                                NumeroDocumento = factura.NumDocExoneracion,
-                                NombreInstitucion = factura.NombreInstExoneracion,
-                                FechaEmision = factura.FechaEmisionDoc,
-                                PorcentajeExoneracion = factura.PorcentajeExoneracion.ToString(),
-                                MontoExoneracion = decMontoExonerado * detalleFactura.PorcentajeIVA / 100
-                            };
-                            impuestoType.Exoneracion = exoneracionType;
-                        }
                         lineaDetalle.Impuesto = new TiqueteElectronicoImpuestoType[] { impuestoType };
-                        if (decMontoExonerado > 0)
+                        decTotalImpuestos += decMontoImpuestoPorLinea;
+                        if (detalleFactura.Producto.Tipo == StaticTipoProducto.Producto)
                         {
-                            lineaDetalle.ImpuestoNeto = montoImpuestoPorLinea - impuestoType.Exoneracion.MontoExoneracion;
-                            lineaDetalle.ImpuestoNetoSpecified = true;
-                            lineaDetalle.MontoTotalLinea = lineaDetalle.SubTotal + lineaDetalle.ImpuestoNeto;
-                            decTotalImpuestos += lineaDetalle.ImpuestoNeto;
+                            decTotalMercanciasGravadas += decMontoGravadoPorLinea;
+                            decTotalMercanciasExoneradas += decMontoExoneradoPorLinea;
                         }
                         else
                         {
-                            lineaDetalle.MontoTotalLinea = lineaDetalle.SubTotal + montoImpuestoPorLinea;
-                            decTotalImpuestos += montoImpuestoPorLinea;
+                            decTotalServiciosGravados += decMontoGravadoPorLinea;
+                            decTotalServiciosExonerados += decMontoExoneradoPorLinea;
                         }
+                        decTotalPorLinea = decMontoGravadoPorLinea + decMontoExoneradoPorLinea;
                     }
+                    else
+                    {
+                        decimal decMontoExcento = Math.Round(detalleFactura.PrecioVenta * detalleFactura.Cantidad, 2);
+                        if (detalleFactura.Producto.Tipo == StaticTipoProducto.Producto)
+                            decTotalMercanciasExcentas += decMontoExcento;
+                        else
+                            decTotalServiciosExcentos += decMontoExcento;
+                        decTotalPorLinea += decMontoExcento;
+                    }
+                    lineaDetalle.SubTotal = decTotalPorLinea;
+                    lineaDetalle.MontoTotal = decTotalPorLinea;
+                    lineaDetalle.MontoTotalLinea = decTotalPorLinea + decMontoImpuestoPorLinea;
                     detalleServicioList.Add(lineaDetalle);
                 }
                 tiqueteElectronico.DetalleServicio = detalleServicioList.ToArray();
@@ -931,10 +863,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 decimal decTotalImpuestos = 0;
                 foreach (DetalleFactura detalleFactura in factura.DetalleFactura)
                 {
-                    NotaCreditoElectronicaLineaDetalle lineaDetalle = new NotaCreditoElectronicaLineaDetalle
-                    {
-                        NumeroLinea = (detalleServicioList.Count() + 1).ToString()
-                    };
+                    NotaCreditoElectronicaLineaDetalle lineaDetalle = new NotaCreditoElectronicaLineaDetalle();
+                    lineaDetalle.NumeroLinea = (detalleServicioList.Count() + 1).ToString();
                     lineaDetalle.Codigo = detalleFactura.Producto.Codigo;
                     lineaDetalle.Cantidad = detalleFactura.Cantidad;
                     if (detalleFactura.Producto.Tipo == StaticTipoProducto.Producto)
@@ -942,67 +872,31 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     else
                         lineaDetalle.UnidadMedida = NotaCreditoElectronicaUnidadMedidaType.Sp;
                     lineaDetalle.Detalle = detalleFactura.Descripcion;
-                    decimal montoTotalPorLinea = Math.Round(detalleFactura.Cantidad * detalleFactura.PrecioVenta, 5);
-                    decimal decMontoGravado = montoTotalPorLinea;
-                    decimal decMontoExonerado = 0;
+                    lineaDetalle.PrecioUnitario = Math.Round(detalleFactura.PrecioVenta, 2);
+                    decimal decTotalPorLinea = 0;
+                    decimal decMontoImpuestoPorLinea = 0;
                     if (!detalleFactura.Excento)
                     {
-                        if (factura.PorcentajeExoneracion > 0)
-                        {
-                            decMontoGravado = Math.Round(montoTotalPorLinea * (1 - (decimal.Parse(factura.PorcentajeExoneracion.ToString()) / 100)), 5);
-                            decMontoExonerado = Math.Round(montoTotalPorLinea - decMontoGravado, 5);
-                        }
-                        if (detalleFactura.Producto.Tipo == StaticTipoProducto.Producto)
-                        {
-                            decTotalMercanciasGravadas += decMontoGravado;
-                            decTotalMercanciasExoneradas += decMontoExonerado;
-                        }
-                        else
-                        {
-                            decTotalServiciosGravados += decMontoGravado;
-                            decTotalServiciosExonerados += decMontoExonerado;
-                        }
-                    }
-                    else
-                    {
-                        if (detalleFactura.Producto.Tipo == StaticTipoProducto.Producto)
-                            decTotalMercanciasExcentas += montoTotalPorLinea;
-                        else
-                            decTotalServiciosExcentos += montoTotalPorLinea;
-                    }
-                    lineaDetalle.PrecioUnitario = detalleFactura.PrecioVenta;
-                    lineaDetalle.MontoTotal = montoTotalPorLinea;
-                    decimal descuentoPorLinea = 0;
-                    if (factura.Descuento > 0)
-                    {
-                        descuentoPorLinea = Math.Round(factura.Descuento / (factura.Total - factura.Impuesto) * montoTotalPorLinea, 5);
-                        if (descuentoPorLinea > decTotalDescuentoPorFactura)
-                            descuentoPorLinea = decTotalDescuentoPorFactura;
-                        else
-                            decTotalDescuentoPorFactura -= descuentoPorLinea;
-                        NotaCreditoElectronicaDescuentoType descuentoType = new NotaCreditoElectronicaDescuentoType
-                        {
-                            MontoDescuento = descuentoPorLinea,
-                            NaturalezaDescuento = "Descuento sobre mercancías"
-                        };
-                        lineaDetalle.Descuento = new NotaCreditoElectronicaDescuentoType[] { descuentoType };
-                    }
-                    lineaDetalle.SubTotal = montoTotalPorLinea - descuentoPorLinea;
-                    decimal montoImpuestoPorLinea = 0;
-                    if (!detalleFactura.Excento)
-                    {
+                        decimal decMontoGravadoPorLinea = Math.Round(detalleFactura.PrecioVenta * detalleFactura.Cantidad, 2);
+                        decimal decMontoExoneradoPorLinea = 0;
+                        decMontoImpuestoPorLinea = Math.Round(detalleFactura.PrecioVenta * detalleFactura.PorcentajeIVA / 100, 2) * detalleFactura.Cantidad;
                         NotaCreditoElectronicaImpuestoType impuestoType = new NotaCreditoElectronicaImpuestoType
                         {
                             Codigo = NotaCreditoElectronicaImpuestoTypeCodigo.Item01,
                             CodigoTarifa = (NotaCreditoElectronicaImpuestoTypeCodigoTarifa)detalleFactura.Producto.IdImpuesto - 1,
                             CodigoTarifaSpecified = true,
                             Tarifa = detalleFactura.PorcentajeIVA,
-                            TarifaSpecified = true
+                            TarifaSpecified = true,
+                            Monto = decMontoImpuestoPorLinea
                         };
-                        montoImpuestoPorLinea = Math.Round(lineaDetalle.SubTotal * detalleFactura.PorcentajeIVA / 100, 5);
-                        impuestoType.Monto = montoImpuestoPorLinea;
-                        if (decMontoExonerado > 0)
+                        if (factura.PorcentajeExoneracion > 0)
                         {
+                            decimal decMontoGravado = detalleFactura.PrecioVenta * (1 - (Convert.ToDecimal(factura.PorcentajeExoneracion) / 100));
+                            decimal decMontoExonerado = Math.Round(detalleFactura.PrecioVenta - decMontoGravado, 2);
+                            decMontoGravadoPorLinea = Math.Round(decMontoGravado, 2) * detalleFactura.Cantidad;
+                            decMontoExoneradoPorLinea = Math.Round(decMontoExonerado, 2) * detalleFactura.Cantidad;
+                            decimal decMontoImpuestoExonerado = Math.Round(decMontoExonerado * detalleFactura.PorcentajeIVA / 100, 2) * detalleFactura.Cantidad;
+                            decMontoImpuestoPorLinea -= decMontoImpuestoExonerado;
                             NotaCreditoElectronicaExoneracionType exoneracionType = new NotaCreditoElectronicaExoneracionType
                             {
                                 TipoDocumento = (NotaCreditoElectronicaExoneracionTypeTipoDocumento)factura.IdTipoExoneracion - 1,
@@ -1010,24 +904,39 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 NombreInstitucion = factura.NombreInstExoneracion,
                                 FechaEmision = factura.FechaEmisionDoc,
                                 PorcentajeExoneracion = factura.PorcentajeExoneracion.ToString(),
-                                MontoExoneracion = decMontoExonerado * detalleFactura.PorcentajeIVA / 100
+                                MontoExoneracion = decMontoImpuestoExonerado
                             };
                             impuestoType.Exoneracion = exoneracionType;
-                        }
-                        lineaDetalle.Impuesto = new NotaCreditoElectronicaImpuestoType[] { impuestoType };
-                        if (decMontoExonerado > 0)
-                        {
-                            lineaDetalle.ImpuestoNeto = montoImpuestoPorLinea - impuestoType.Exoneracion.MontoExoneracion;
+                            lineaDetalle.ImpuestoNeto = decMontoImpuestoPorLinea;
                             lineaDetalle.ImpuestoNetoSpecified = true;
-                            lineaDetalle.MontoTotalLinea = lineaDetalle.SubTotal + lineaDetalle.ImpuestoNeto;
-                            decTotalImpuestos += lineaDetalle.ImpuestoNeto;
+                        }
+
+                        lineaDetalle.Impuesto = new NotaCreditoElectronicaImpuestoType[] { impuestoType };
+                        decTotalImpuestos += decMontoImpuestoPorLinea;
+                        if (detalleFactura.Producto.Tipo == StaticTipoProducto.Producto)
+                        {
+                            decTotalMercanciasGravadas += decMontoGravadoPorLinea;
+                            decTotalMercanciasExoneradas += decMontoExoneradoPorLinea;
                         }
                         else
                         {
-                            lineaDetalle.MontoTotalLinea = lineaDetalle.SubTotal + montoImpuestoPorLinea;
-                            decTotalImpuestos += montoImpuestoPorLinea;
+                            decTotalServiciosGravados += decMontoGravadoPorLinea;
+                            decTotalServiciosExonerados += decMontoExoneradoPorLinea;
                         }
+                        decTotalPorLinea = decMontoGravadoPorLinea + decMontoExoneradoPorLinea;
                     }
+                    else
+                    {
+                        decimal decMontoExcento = Math.Round(detalleFactura.PrecioVenta * detalleFactura.Cantidad, 2);
+                        if (detalleFactura.Producto.Tipo == StaticTipoProducto.Producto)
+                            decTotalMercanciasExcentas += decMontoExcento;
+                        else
+                            decTotalServiciosExcentos += decMontoExcento;
+                        decTotalPorLinea += decMontoExcento;
+                    }
+                    lineaDetalle.SubTotal = decTotalPorLinea;
+                    lineaDetalle.MontoTotal = decTotalPorLinea;
+                    lineaDetalle.MontoTotalLinea = decTotalPorLinea + decMontoImpuestoPorLinea;
                     detalleServicioList.Add(lineaDetalle);
                 }
                 notaCreditoElectronica.DetalleServicio = detalleServicioList.ToArray();

@@ -45,7 +45,6 @@
     <Compile Include="BusinessException.cs" />
     <Compile Include="ComprobanteElectronicoService.cs" />
     <Compile Include="DatosConfiguracion.cs" />
-    <Compile Include="RespaldoService.cs" />
     <Compile Include="CompraService.cs" />
     <Compile Include="ContabilidadService.cs" />
     <Compile Include="IngresoService.cs" />

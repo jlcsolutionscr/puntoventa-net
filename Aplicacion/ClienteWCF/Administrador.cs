@@ -18,7 +18,6 @@ namespace LeandroSoftware.ClienteWCF
     {
         private static JavaScriptSerializer serializer = new CustomJavascriptSerializer();
         private static string strServicioURL = ConfigurationManager.AppSettings["ServicioURL"];
-        private static string strApplicationKey = ConfigurationManager.AppSettings["ApplicationKey"];
         private static HttpClient httpClient = new HttpClient();
 
         public static StringContent serializarEntidad<T>(T entidad)
@@ -77,7 +76,7 @@ namespace LeandroSoftware.ClienteWCF
         {
             try
             {
-                string strEncryptedPassword = Utilitario.EncriptarDatos(strClave, strApplicationKey);
+                string strEncryptedPassword = Utilitario.EncriptarDatos(strClave);
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
                 HttpResponseMessage httpResponse = await httpClient.GetAsync(strServicioURL + "/validarcredenciales?usuario=" + strUsuario + "&clave=" + strEncryptedPassword);
                 if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)

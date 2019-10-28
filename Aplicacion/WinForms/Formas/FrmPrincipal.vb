@@ -20,11 +20,8 @@ Public Class FrmPrincipal
     Public strBusqueda As String
     Public dgvDecimal As DataGridViewCellStyle
     Public dgvInteger As DataGridViewCellStyle
-    Public strThumbprint As String
-    Public strApplicationKey As String
     Public lstListaReportes As New List(Of String)
     Public listaEmpresa As New List(Of LlaveDescripcion)
-    Public strKey As String
     Public decTipoCambioDolar As Decimal
     Public strCodigoUsuario As String
     Public strContrasena As String
@@ -415,24 +412,9 @@ Public Class FrmPrincipal
             Exit Sub
         End Try
         Try
-            strThumbprint = appSettings.Get("AppThumptprint")
-            strApplicationKey = appSettings.Get("ApplicationKey")
             If appSettings.Get("Administrator") IsNot Nothing Then bolEsAdministrador = True
-            Dim bolCertificadoValido As Boolean = Utilitario.VerificarCertificado(strThumbprint)
-            If Not bolCertificadoValido Then
-                MessageBox.Show("No se logró validar el certificado requerido por la aplicación. Por favor contacte con su proveedor del servicio. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Close()
-                Exit Sub
-            End If
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-            Exit Sub
-        End Try
-        Try
-            strKey = Utilitario.ObtenerLlaveEncriptadoLocal(strThumbprint, strApplicationKey)
-        Catch ex As Exception
-            MessageBox.Show("Error al validar la llave criptográfica de la aplicación. Consulte con su proveedor del servicio.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Close()
             Exit Sub
         End Try
@@ -452,8 +434,8 @@ Public Class FrmPrincipal
                 End If
                 Dim procStartInfo As New ProcessStartInfo
                 Dim procExecuting As New Process
-                File.Copy(Application.StartupPath() + "/Updater.exe", Path.GetTempPath() + "/Updater.exe")
-                File.Copy(Application.StartupPath() + "/Applicacion.exe.config", Path.GetTempPath() + "/Updater.exe.config")
+                File.Copy(Application.StartupPath() + "/Updater.exe", Path.GetTempPath() + "/Updater.exe", True)
+                File.Copy(Application.StartupPath() + "/Applicacion.exe.config", Path.GetTempPath() + "/Updater.exe.config", True)
                 With procStartInfo
                     .UseShellExecute = True
                     .FileName = Path.GetTempPath() + "/Updater.exe"
@@ -508,7 +490,7 @@ Public Class FrmPrincipal
                 Exit Sub
             Else
                 Try
-                    Dim strEncryptedPassword As String = Utilitario.EncriptarDatos(strContrasena, strKey)
+                    Dim strEncryptedPassword As String = Utilitario.EncriptarDatos(strContrasena)
                     empresa = Await Puntoventa.ValidarCredenciales(strCodigoUsuario, strEncryptedPassword, strIdEmpresa, strIdentificadoEquipoLocal)
                 Catch ex As Exception
                     MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
