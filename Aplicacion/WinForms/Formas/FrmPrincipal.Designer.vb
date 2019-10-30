@@ -45,6 +45,8 @@ Partial Class FrmPrincipal
         Me.MnuParam = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuParamPC = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuParamBA = New System.Windows.Forms.ToolStripMenuItem()
+        Me.MnuParamEmpresa = New System.Windows.Forms.ToolStripMenuItem()
+        Me.MnuParamRegistro = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuMant = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuMantCliente = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuMantLinea = New System.Windows.Forms.ToolStripMenuItem()
@@ -88,8 +90,6 @@ Partial Class FrmPrincipal
         Me.mnuContaCierre = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuContaReporte = New System.Windows.Forms.ToolStripMenuItem()
         Me.picLoader = New System.Windows.Forms.PictureBox()
-        Me.MnuParamEmpresa = New System.Windows.Forms.ToolStripMenuItem()
-        Me.MnuParamRegistro = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuMenuPrincipal.SuspendLayout()
         CType(Me.picLoader, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -160,6 +160,19 @@ Partial Class FrmPrincipal
         Me.MnuParamBA.Size = New System.Drawing.Size(180, 22)
         Me.MnuParamBA.Text = "Banco Adquiriente"
         Me.MnuParamBA.Visible = False
+        '
+        'MnuParamEmpresa
+        '
+        Me.MnuParamEmpresa.Name = "MnuParamEmpresa"
+        Me.MnuParamEmpresa.Size = New System.Drawing.Size(180, 22)
+        Me.MnuParamEmpresa.Text = "Empresa"
+        Me.MnuParamEmpresa.Visible = False
+        '
+        'MnuParamRegistro
+        '
+        Me.MnuParamRegistro.Name = "MnuParamRegistro"
+        Me.MnuParamRegistro.Size = New System.Drawing.Size(180, 22)
+        Me.MnuParamRegistro.Text = "Registrar Equipo"
         '
         'MnuMant
         '
@@ -477,19 +490,7 @@ Partial Class FrmPrincipal
         Me.picLoader.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
         Me.picLoader.TabIndex = 3
         Me.picLoader.TabStop = False
-        '
-        'MnuParamEmpresa
-        '
-        Me.MnuParamEmpresa.Name = "MnuParamEmpresa"
-        Me.MnuParamEmpresa.Size = New System.Drawing.Size(180, 22)
-        Me.MnuParamEmpresa.Text = "Empresa"
-        Me.MnuParamEmpresa.Visible = False
-        '
-        'MnuParamRegistro
-        '
-        Me.MnuParamRegistro.Name = "MnuParamRegistro"
-        Me.MnuParamRegistro.Size = New System.Drawing.Size(180, 22)
-        Me.MnuParamRegistro.Text = "Registrar Equipo"
+        Me.picLoader.Visible = False
         '
         'FrmPrincipal
         '

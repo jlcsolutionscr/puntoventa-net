@@ -31,6 +31,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         Empresa ObtenerEmpresa(int intIdEmpresa);
         void ActualizarEmpresa(Empresa empresa);
         void ActualizarEmpresaConDetalle(Empresa empresa);
+        string ObtenerLogotipoEmpresa(int intIdEmpresa);
         void ActualizarLogoEmpresa(int intIdEmpresa, string strLogo);
         void ActualizarCertificadoEmpresa(int intIdEmpresa, string strCertificado);
         // Métodos para administrar las sucursales
@@ -352,7 +353,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         reporte.Empresa = null;
                     foreach (RolePorUsuario role in usuario.RolePorUsuario)
                         role.Usuario = null;
-                    if (terminal.IdTipoDispositivo == StaticTipoDispisitivo.AppMovil) empresa.Logotipo = null;
+                    empresa.Logotipo = null;
                     terminal.Empresa = null;
                     empresa.Certificado = null;
                     empresa.AccessToken = null;
@@ -531,6 +532,24 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     log.Error("Error al obtener la empresa: ", ex);
                     throw new Exception("Se produjo un error consultando la información de la empresa. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public string ObtenerLogotipoEmpresa(int intIdEmpresa)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    return Convert.ToBase64String(empresa.Logotipo);
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al obtener el logotipo de la empresa: ", ex);
+                    throw new Exception("Se produjo un error consultando el logotipo de la empresa. Por favor consulte con su proveedor.");
                 }
             }
         }

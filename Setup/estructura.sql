@@ -1,4 +1,4 @@
--- phpMyAdmin SQL Dump
+﻿-- phpMyAdmin SQL Dump
 -- version 3.3.1
 -- http://www.phpmyadmin.net
 --
@@ -953,6 +953,7 @@ CREATE TABLE factura (
   IdVendedor int(11) NOT NULL,
   Excento double NOT NULL,
   Gravado double NOT NULL,
+  Exonerado double NOT NULL,
   Descuento double NOT NULL,
   MontoPagado double NOT NULL,
   Impuesto double NOT NULL,

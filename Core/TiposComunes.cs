@@ -487,6 +487,33 @@ namespace LeandroSoftware.Core.TiposComunes
         public string Descripcion { get; set; }
     }
 
+    public class FacturaDetalle
+    {
+        public FacturaDetalle()
+        {
+        }
+
+        public FacturaDetalle(int id, string nombreCliente, string fecha, decimal gravado, decimal exonerado, decimal excento, decimal impuesto, decimal total)
+        {
+            IdFactura = id;
+            NombreCliente = nombreCliente;
+            Fecha = fecha;
+            Gravado = gravado;
+            Exonerado = exonerado;
+            Excento = excento;
+            Impuesto = impuesto;
+            Total = total;
+        }
+        public int IdFactura { get; set; }
+        public string NombreCliente { get; set; }
+        public string Fecha { get; set; }
+        public decimal Gravado { get; set; }
+        public decimal Exonerado { get; set; }
+        public decimal Excento { get; set; }
+        public decimal Impuesto { get; set; }
+        public decimal Total { get; set; }
+    }
+
     public class DocumentoDetalle
     {
         public DocumentoDetalle()

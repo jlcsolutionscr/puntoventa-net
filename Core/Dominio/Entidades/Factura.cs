@@ -36,11 +36,12 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public int IdVendedor { get; set; }
         public decimal Excento { get; set; }
         public decimal Gravado { get; set; }
+        public decimal Exonerado { get; set; }
         public decimal Descuento { get; set; }
         public decimal Impuesto { get; set; }
         public decimal MontoPagado { get; set; }
         [NotMapped]
-        public decimal Total { get { return Excento + Gravado + Impuesto - Descuento; } }
+        public decimal Total { get { return Excento + Gravado + Exonerado + Impuesto - Descuento; } }
         [NotMapped]
         public string NombreCliente { get { if (Cliente == null) return ""; else return Cliente.Nombre; } }
         public int IdTipoExoneracion { get; set; }

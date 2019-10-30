@@ -315,8 +315,10 @@ Public Class FrmFactura
         Dim intIndice As Integer = dtbDetalleFactura.Rows.IndexOf(dtbDetalleFactura.Rows.Find(producto.IdProducto))
         Dim decTasaImpuesto As Decimal = producto.ParametroImpuesto.TasaImpuesto
         Dim decPrecioGravado As Decimal = dblPrecio
-        If decTasaImpuesto > 0 Then decPrecioGravado = dblPrecio / (1 + (decTasaImpuesto / 100))
-        If cliente.AplicaTasaDiferenciada Then decTasaImpuesto = cliente.ParametroImpuesto.TasaImpuesto
+        If decTasaImpuesto > 0 Then
+            decPrecioGravado = Math.Round(dblPrecio / (1 + (decTasaImpuesto / 100)), 3, MidpointRounding.AwayFromZero)
+            If cliente.AplicaTasaDiferenciada Then decTasaImpuesto = cliente.ParametroImpuesto.TasaImpuesto
+        End If
         If intIndice >= 0 Then
             dtbDetalleFactura.Rows(intIndice).Item(1) = producto.Codigo
             dtbDetalleFactura.Rows(intIndice).Item(2) = strDescripcion
@@ -912,8 +914,9 @@ Public Class FrmFactura
                 .Fecha = Now(),
                 .TextoAdicional = txtDocumento.Text,
                 .IdVendedor = vendedor.IdVendedor,
-                .Excento = decExcento + decExonerado,
+                .Excento = decExcento,
                 .Gravado = decGravado,
+                .Exonerado = decExonerado,
                 .Descuento = 0,
                 .Impuesto = decImpuesto,
                 .MontoPagado = CDbl(txtPagoDelCliente.Text),
@@ -1036,10 +1039,17 @@ Public Class FrmFactura
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
+            Dim logotipo As Byte() = Nothing
+            Try
+                logotipo = Await Puntoventa.ObtenerLogotipoEmpresa(factura.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+            Catch ex As Exception
+                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Exit Sub
+            End Try
             Dim datos As EstructuraPDF = New EstructuraPDF()
             Try
                 Dim logoImage As Image
-                Using ms As New MemoryStream(FrmPrincipal.empresaGlobal.Logotipo)
+                Using ms As New MemoryStream(logotipo)
                     logoImage = Image.FromStream(ms)
                 End Using
                 datos.Logotipo = logoImage
@@ -1279,7 +1289,7 @@ Public Class FrmFactura
     Private Sub Precio_KeyUp(sender As Object, e As KeyEventArgs) Handles txtPrecio.KeyUp
         If producto IsNot Nothing Then
             Dim decTasaImpuesto As Decimal = producto.ParametroImpuesto.TasaImpuesto
-            If txtPrecio.Text <> "" Then decPrecioVenta = Math.Round(CDbl(txtPrecio.Text) * (1 + (decTasaImpuesto / 100)), 2)
+            If txtPrecio.Text <> "" Then decPrecioVenta = Math.Round(CDbl(txtPrecio.Text) * (1 + (decTasaImpuesto / 100)), 2, MidpointRounding.AwayFromZero)
         End If
     End Sub
 

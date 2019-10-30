@@ -31,12 +31,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         Cliente ObtenerCliente(int intIdCliente);
         Cliente ValidaIdentificacionCliente(int intIdEmpresa, string strIdentificacion);
         int ObtenerTotalListaClientes(int intIdEmpresa, string strNombre, bool incluyeClienteContado = false);
-        IEnumerable<LlaveDescripcion> ObtenerListadoClientes(int intIdEmpresa, int numPagina, int cantRec, string strNombre, bool incluyeClienteContado = false);
+        IEnumerable<LlaveDescripcion> ObtenerListadoClientes(int intIdEmpresa, int numPagina, int cantRec, string strNombre);
         string AgregarFactura(Factura factura, DatosConfiguracion datos);
         void AnularFactura(int intIdFactura, int intIdUsuario, DatosConfiguracion datos);
         Factura ObtenerFactura(int intIdFactura);
         int ObtenerTotalListaFacturas(int intIdEmpresa, int intIdFactura, string strNombre);
-        IEnumerable<LlaveDescripcion> ObtenerListadoFacturas(int intIdEmpresa, int numPagina, int cantRec, int intIdFactura, string strNombre);
+        IEnumerable<FacturaDetalle> ObtenerListadoFacturas(int intIdEmpresa, int numPagina, int cantRec, int intIdFactura, string strNombre);
         IEnumerable<LlaveDescripcion> ObtenerListadoFacturasPorCliente(int intIdCliente);
         Proforma AgregarProforma(Proforma proforma);
         void ActualizarProforma(Proforma proforma);
@@ -256,16 +256,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoClientes(int intIdEmpresa, int numPagina, int cantRec, string strNombre, bool incluyeClienteContado = false)
+        public IEnumerable<LlaveDescripcion> ObtenerListadoClientes(int intIdEmpresa, int numPagina, int cantRec, string strNombre)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 var listaCliente = new List<LlaveDescripcion>();
                 try
                 {
-                    var listado = dbContext.ClienteRepository.Where(x => x.IdEmpresa == intIdEmpresa);
-                    if (!incluyeClienteContado)
-                        listado = listado.Where(x => x.IdCliente > 1);
+                    var listado = dbContext.ClienteRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdCliente > 1);
                     if (!strNombre.Equals(string.Empty))
                         listado = listado.Where(x => x.Nombre.Contains(strNombre));
                     if (cantRec == 0)
@@ -885,11 +883,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoFacturas(int intIdEmpresa, int numPagina, int cantRec, int intIdFactura, string strNombre)
+        public IEnumerable<FacturaDetalle> ObtenerListadoFacturas(int intIdEmpresa, int numPagina, int cantRec, int intIdFactura, string strNombre)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
-                var listaFactura = new List<LlaveDescripcion>();
+                var listaFactura = new List<FacturaDetalle>();
                 try
                 {
                     var listado = dbContext.FacturaRepository.Include("Cliente").Where(x => !x.Nulo & x.IdEmpresa == intIdEmpresa);
@@ -900,7 +898,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     listado = listado.OrderByDescending(x => x.IdFactura).Skip((numPagina - 1) * cantRec).Take(cantRec);
                     foreach (var value in listado)
                     {
-                        LlaveDescripcion item = new LlaveDescripcion(value.IdFactura, value.Fecha.ToString("dd/MM/yyyy") + "   -   " + value.Cliente.Nombre);
+                        FacturaDetalle item = new FacturaDetalle(value.IdFactura, value.Cliente.Nombre, value.Fecha.ToString("dd/MM/yyyy"), value.Gravado, value.Exonerado, value.Excento, value.Impuesto, value.Total);
                         listaFactura.Add(item);
                     }
                     return listaFactura;

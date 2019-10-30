@@ -175,8 +175,10 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             {
                 string strVersion = servicioMantenimiento.ObtenerUltimaVersionApp().Replace('.', '-');
                 string downloadFilePath = Path.Combine(HttpContext.Current.Server.MapPath("~"), "appupdates/" + strVersion + "/puntoventaJLC.msi");
+                FileStream content = File.Open(downloadFilePath, FileMode.Open);
+                HttpContext.Current.Response.Headers.Add("Content-Length", content.Length.ToString());
                 WebOperationContext.Current.OutgoingResponse.ContentType = "application/octet-stream";
-                return File.OpenRead(downloadFilePath);
+                return content;
             }
             catch (Exception ex)
             {
@@ -811,6 +813,12 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         if (empresa != null)
                             strRespuesta = serializer.Serialize(empresa);
                         break;
+                    case "ObtenerLogotipoEmpresa":
+                        intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
+                        string logotipo = servicioMantenimiento.ObtenerLogotipoEmpresa(intIdEmpresa);
+                        if (logotipo != null)
+                            strRespuesta = serializer.Serialize(logotipo);
+                        break;
                     case "ObtenerSucursalPorEmpresa":
                         intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                         intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
@@ -1086,7 +1094,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         break;
                     case "ObtenerTotalListaFacturas":
                         intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
-                        intIdFactura = int.Parse(parametrosJO.Property("IdFactura").Value.ToString());
+                        intIdFactura = parametrosJO.Property("IdFactura") != null ? int.Parse(parametrosJO.Property("IdFactura").Value.ToString()) : 0;
                         strNombre = parametrosJO.Property("Nombre") != null ? parametrosJO.Property("Nombre").Value.ToString() : "";
                         intTotalLista = servicioFacturacion.ObtenerTotalListaFacturas(intIdEmpresa, intIdFactura, strNombre);
                         strRespuesta = serializer.Serialize(intTotalLista);
@@ -1095,9 +1103,9 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                         intNumeroPagina = int.Parse(parametrosJO.Property("NumeroPagina").Value.ToString());
                         intFilasPorPagina = int.Parse(parametrosJO.Property("FilasPorPagina").Value.ToString());
-                        intIdFactura = int.Parse(parametrosJO.Property("IdFactura").Value.ToString());
+                        intIdFactura = parametrosJO.Property("IdFactura") != null ? int.Parse(parametrosJO.Property("IdFactura").Value.ToString()) : 0;
                         strNombre = parametrosJO.Property("Nombre") != null ? parametrosJO.Property("Nombre").Value.ToString() : "";
-                        IList<LlaveDescripcion> listadoFactura = (List<LlaveDescripcion>)servicioFacturacion.ObtenerListadoFacturas(intIdEmpresa, intNumeroPagina, intFilasPorPagina, intIdFactura, strNombre);
+                        IList<FacturaDetalle> listadoFactura = (List<FacturaDetalle>)servicioFacturacion.ObtenerListadoFacturas(intIdEmpresa, intNumeroPagina, intFilasPorPagina, intIdFactura, strNombre);
                         if (listadoFactura.Count > 0)
                             strRespuesta = serializer.Serialize(listadoFactura);
                         break;

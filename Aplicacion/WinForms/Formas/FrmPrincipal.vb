@@ -407,7 +407,7 @@ Public Class FrmPrincipal
         Try
             appSettings = ConfigurationManager.AppSettings
         Catch ex As Exception
-            MessageBox.Show("Error al cargar el archivo de configuración del sistema de activación. Por favor contacte con su proveedor del servicio. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("Error al cargar el archivo de configuración del sistema. Por favor contacte con su proveedor del servicio. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
             Exit Sub
         End Try
@@ -420,6 +420,7 @@ Public Class FrmPrincipal
         End Try
         Dim strVersionActualApp = My.Application.Info.Version.ToString()
         Dim strUltimaVersionApp As String
+        picLoader.Visible = True
         Try
             strUltimaVersionApp = Await Puntoventa.ObtenerUltimaVersionApp()
         Catch ex As Exception
@@ -428,31 +429,9 @@ Public Class FrmPrincipal
             Exit Sub
         End Try
         If strVersionActualApp <> strUltimaVersionApp Then
-            If MessageBox.Show("El sistema requiere una actualización para continuar. Desea proceder con la instalación de la actualización?", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
-                If File.Exists(Path.GetTempPath() + "/Updater.exe") Then
-                    File.Delete(Path.GetTempPath() + "/Updater.exe")
-                End If
-                Dim procStartInfo As New ProcessStartInfo
-                Dim procExecuting As New Process
-                File.Copy(Application.StartupPath() + "/Updater.exe", Path.GetTempPath() + "/Updater.exe", True)
-                File.Copy(Application.StartupPath() + "/Applicacion.exe.config", Path.GetTempPath() + "/Updater.exe.config", True)
-                With procStartInfo
-                    .UseShellExecute = True
-                    .FileName = Path.GetTempPath() + "/Updater.exe"
-                    .WindowStyle = ProcessWindowStyle.Normal
-                End With
-                procExecuting = Process.Start(procStartInfo)
-                Close()
-                Exit Sub
-            Else
-                Close()
-                Exit Sub
-            End If
-        Else
-            If File.Exists(Path.GetTempPath() + "/Updater.exe") Then
-                File.Delete(Path.GetTempPath() + "/Updater.exe")
-                File.Delete(Path.GetTempPath() + "/Updater.exe.config")
-            End If
+            picLoader.Visible = False
+            Dim formDescarga As New FrmDescargaActualizacion()
+            formDescarga.ShowDialog()
         End If
         Dim strIdentificadoEquipoLocal = Utilitario.ObtenerIdentificadorEquipo()
         If bolEsAdministrador Then
@@ -475,6 +454,7 @@ Public Class FrmPrincipal
                 End If
             Loop While listaEmpresa.Count = 0
         End If
+        picLoader.Visible = False
         Dim formSeguridad As New FrmSeguridad()
         Thread.CurrentThread.CurrentCulture = New Globalization.CultureInfo("es-CR")
         Thread.CurrentThread.CurrentCulture.NumberFormat.CurrencySymbol = "¢"
@@ -489,19 +469,20 @@ Public Class FrmPrincipal
                 Close()
                 Exit Sub
             Else
+                picLoader.Visible = True
                 Try
                     Dim strEncryptedPassword As String = Utilitario.EncriptarDatos(strContrasena)
                     empresa = Await Puntoventa.ValidarCredenciales(strCodigoUsuario, strEncryptedPassword, strIdEmpresa, strIdentificadoEquipoLocal)
                 Catch ex As Exception
                     MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 End Try
+                picLoader.Visible = False
             End If
         Loop While empresa Is Nothing
         usuarioGlobal = empresa.Usuario
         empresaGlobal = empresa
         equipoGlobal = empresa.EquipoRegistrado
         decTipoCambioDolar = Await Puntoventa.ObtenerTipoCambioDolar(usuarioGlobal.Token)
-        picLoader.Visible = False
         Dim formInicio As New FrmInicio()
         formInicio.ShowDialog()
         mnuMenuPrincipal.Visible = True

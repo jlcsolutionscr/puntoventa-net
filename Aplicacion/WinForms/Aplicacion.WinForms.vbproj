@@ -298,6 +298,12 @@
     <Compile Include="Formas\FrmBusquedaTraslado.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Formas\FrmDescargaActualizacion.Designer.vb">
+      <DependentUpon>FrmDescargaActualizacion.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Formas\FrmDescargaActualizacion.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Formas\FrmRegistro.Designer.vb">
       <DependentUpon>FrmRegistro.vb</DependentUpon>
     </Compile>
@@ -784,6 +790,10 @@
       <DependentUpon>FrmBusquedaTraslado.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Formas\FrmDescargaActualizacion.resX">
+      <DependentUpon>FrmDescargaActualizacion.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Formas\FrmRegistro.resX">
       <DependentUpon>FrmRegistro.vb</DependentUpon>
       <SubType>Designer</SubType>
@@ -1092,10 +1102,6 @@
     <ProjectReference Include="..\ClienteWCF\ClienteWCF.csproj">
       <Project>{2602dd72-5aa0-45a2-a4a6-4805da33c318}</Project>
       <Name>ClienteWCF</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Updater\Updater.csproj">
-      <Project>{c5a96452-92e8-4646-87cf-8366e174cdbd}</Project>
-      <Name>Updater</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />

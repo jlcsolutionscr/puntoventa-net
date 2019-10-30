@@ -185,6 +185,16 @@ namespace LeandroSoftware.ClienteWCF
             return empresa;
         }
 
+        public static async Task<byte[]> ObtenerLogotipoEmpresa(int intIdEmpresa, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'ObtenerLogotipoEmpresa', Parametros: {IdEmpresa: " + intIdEmpresa + "}}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            string logotipo = null;
+            if (respuesta != "")
+                logotipo = serializer.Deserialize<string>(respuesta);
+            return Convert.FromBase64String(logotipo);
+        }
+
         public static async Task<List<SucursalPorEmpresa>> ObtenerListadoSucursalPorEmpresa(int intIdEmpresa, string strToken)
         {
             string strDatos = "{NombreMetodo: 'ObtenerListadoSucursalPorEmpresa', Parametros: {IdEmpresa: " + intIdEmpresa + "}}";
@@ -1197,13 +1207,13 @@ namespace LeandroSoftware.ClienteWCF
             return intCantidad;
         }
 
-        public static async Task<List<LlaveDescripcion>> ObtenerListadoFacturas(int intIdEmpresa, int intNumeroPagina, int intFilasPorPagina, string strToken, int intIdFactura = 0, string strNombre = "")
+        public static async Task<List<FacturaDetalle>> ObtenerListadoFacturas(int intIdEmpresa, int intNumeroPagina, int intFilasPorPagina, string strToken, int intIdFactura = 0, string strNombre = "")
         {
             string strDatos = "{NombreMetodo: 'ObtenerListadoFacturas', Parametros: {IdEmpresa: " + intIdEmpresa + ", NumeroPagina: " + intNumeroPagina + ",FilasPorPagina: " + intFilasPorPagina + ", IdFactura: " + intIdFactura + ", Nombre: '" + strNombre + "'}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
-            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
+            List<FacturaDetalle> listado = new List<FacturaDetalle>();
             if (respuesta != "")
-                listado = serializer.Deserialize<List<LlaveDescripcion>>(respuesta);
+                listado = serializer.Deserialize<List<FacturaDetalle>>(respuesta);
             return listado;
         }
 

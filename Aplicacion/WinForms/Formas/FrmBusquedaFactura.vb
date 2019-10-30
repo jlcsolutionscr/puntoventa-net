@@ -13,17 +13,28 @@ Public Class FrmBusquedaFactura
 #Region "Métodos"
     Private Sub EstablecerPropiedadesDataGridView()
         Dim dvcId As New DataGridViewTextBoxColumn
-        Dim dvcDescripcion As New DataGridViewTextBoxColumn
+        Dim dvcFecha As New DataGridViewTextBoxColumn
+        Dim dvcNombreCliente As New DataGridViewTextBoxColumn
+        Dim dvcTotal As New DataGridViewTextBoxColumn
         dgvListado.Columns.Clear()
         dgvListado.AutoGenerateColumns = False
         dvcId.HeaderText = "Id"
-        dvcId.DataPropertyName = "Id"
+        dvcId.DataPropertyName = "IdFactura"
         dvcId.Width = 50
         dgvListado.Columns.Add(dvcId)
-        dvcDescripcion.HeaderText = "Descripción"
-        dvcDescripcion.DataPropertyName = "Descripcion"
-        dvcDescripcion.Width = 600
-        dgvListado.Columns.Add(dvcDescripcion)
+        dvcFecha.HeaderText = "Fecha"
+        dvcFecha.DataPropertyName = "Fecha"
+        dvcFecha.Width = 70
+        dgvListado.Columns.Add(dvcFecha)
+        dvcNombreCliente.HeaderText = "Cliente"
+        dvcNombreCliente.DataPropertyName = "NombreCliente"
+        dvcNombreCliente.Width = 380
+        dgvListado.Columns.Add(dvcNombreCliente)
+        dvcTotal.HeaderText = "Total"
+        dvcTotal.DataPropertyName = "Total"
+        dvcTotal.Width = 100
+        dvcTotal.DefaultCellStyle = FrmPrincipal.dgvDecimal
+        dgvListado.Columns.Add(dvcTotal)
     End Sub
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
