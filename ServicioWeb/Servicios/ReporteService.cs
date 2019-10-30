@@ -1541,11 +1541,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     decimal decTotalVentaBienesTasa4 = 0;
                     decimal decTotalVentaBienesTasa8 = 0;
                     decimal decTotalVentaBienesTasa13 = 0;
+                    decimal decTotalVentaBienesExento = 0;
                     decimal decTotalVentaServiciosTasa1 = 0;
                     decimal decTotalVentaServiciosTasa2 = 0;
                     decimal decTotalVentaServiciosTasa4 = 0;
                     decimal decTotalVentaServiciosTasa8 = 0;
                     decimal decTotalVentaServiciosTasa13 = 0;
+                    decimal decTotalVentaServiciosExento = 0;
                     foreach (var documento in grupoFacturasEmitidas)
                     {
                         string datosXml = Encoding.Default.GetString(documento.DatosDocumento);
@@ -1556,11 +1558,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         decimal decVentaServiciosTasa4 = 0;
                         decimal decVentaServiciosTasa8 = 0;
                         decimal decVentaServiciosTasa13 = 0;
+                        decimal decVentaServiciosExento = 0;
                         decimal decVentaBienesTasa1 = 0;
                         decimal decVentaBienesTasa2 = 0;
                         decimal decVentaBienesTasa4 = 0;
                         decimal decVentaBienesTasa8 = 0;
                         decimal decVentaBienesTasa13 = 0;
+                        decimal decVentaBienesExento = 0;
                         decimal decTipoDeCambio = 1;
                         string strCodigoMoneda = "CRC";
                         foreach (XmlNode lineaDetalle in documentoXml.GetElementsByTagName("LineaDetalle"))
@@ -1615,37 +1619,30 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                     }
                                 }
                             }
+                            else
+                            {
+                                if (lineaDetalle["UnidadMedida"].InnerText == "Sp")
+                                    decVentaServiciosExento += decMontoPorLinea;
+                                else
+                                    decVentaBienesExento += decMontoPorLinea;
+                            }
                         } 
                         if (documentoXml.GetElementsByTagName("TipoCambio").Count > 0)
                             decTipoDeCambio = decimal.Parse(documentoXml.GetElementsByTagName("TipoCambio").Item(0).InnerText, CultureInfo.InvariantCulture);
                         if (documentoXml.GetElementsByTagName("CodigoMoneda").Count > 0)
                             strCodigoMoneda = documentoXml.GetElementsByTagName("CodigoMoneda").Item(0).InnerText;
-                        if (strCodigoMoneda != "CRC")
-                        {
-                            decTotalVentaBienesTasa1 += decVentaBienesTasa1 * decTipoDeCambio;
-                            decTotalVentaBienesTasa2 += decVentaBienesTasa2 * decTipoDeCambio;
-                            decTotalVentaBienesTasa4 += decVentaBienesTasa4 * decTipoDeCambio;
-                            decTotalVentaBienesTasa8 += decVentaBienesTasa8 * decTipoDeCambio;
-                            decTotalVentaBienesTasa13 += decVentaBienesTasa13 * decTipoDeCambio;
-                            decTotalVentaServiciosTasa1 += decVentaServiciosTasa1 * decTipoDeCambio;
-                            decTotalVentaServiciosTasa2 += decVentaServiciosTasa2 * decTipoDeCambio;
-                            decTotalVentaServiciosTasa4 += decVentaServiciosTasa4 * decTipoDeCambio;
-                            decTotalVentaServiciosTasa8 += decVentaServiciosTasa8 * decTipoDeCambio;
-                            decTotalVentaServiciosTasa13 += decVentaServiciosTasa13 * decTipoDeCambio;
-                        }
-                        else
-                        {
-                            decTotalVentaBienesTasa1 += decVentaBienesTasa1;
-                            decTotalVentaBienesTasa2 += decVentaBienesTasa2;
-                            decTotalVentaBienesTasa4 += decVentaBienesTasa4;
-                            decTotalVentaBienesTasa8 += decVentaBienesTasa8;
-                            decTotalVentaBienesTasa13 += decVentaBienesTasa13;
-                            decTotalVentaServiciosTasa1 += decVentaServiciosTasa1;
-                            decTotalVentaServiciosTasa2 += decVentaServiciosTasa2;
-                            decTotalVentaServiciosTasa4 += decVentaServiciosTasa4;
-                            decTotalVentaServiciosTasa8 += decVentaServiciosTasa8;
-                            decTotalVentaServiciosTasa13 += decVentaServiciosTasa13;
-                        }
+                        decTotalVentaBienesTasa1 += decVentaBienesTasa1 * decTipoDeCambio;
+                        decTotalVentaBienesTasa2 += decVentaBienesTasa2 * decTipoDeCambio;
+                        decTotalVentaBienesTasa4 += decVentaBienesTasa4 * decTipoDeCambio;
+                        decTotalVentaBienesTasa8 += decVentaBienesTasa8 * decTipoDeCambio;
+                        decTotalVentaBienesTasa13 += decVentaBienesTasa13 * decTipoDeCambio;
+                        decTotalVentaBienesExento += decVentaBienesExento * decTipoDeCambio;
+                        decTotalVentaServiciosTasa1 += decVentaServiciosTasa1 * decTipoDeCambio;
+                        decTotalVentaServiciosTasa2 += decVentaServiciosTasa2 * decTipoDeCambio;
+                        decTotalVentaServiciosTasa4 += decVentaServiciosTasa4 * decTipoDeCambio;
+                        decTotalVentaServiciosTasa8 += decVentaServiciosTasa8 * decTipoDeCambio;
+                        decTotalVentaServiciosTasa13 += decVentaServiciosTasa13 * decTipoDeCambio;
+                        decTotalVentaServiciosExento += decVentaServiciosExento * decTipoDeCambio;
                     }
 
                     var grupoNotasCreditoEmitidas = dbContext.DocumentoElectronicoRepository
@@ -1660,11 +1657,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         decimal decVentaServiciosTasa4 = 0;
                         decimal decVentaServiciosTasa8 = 0;
                         decimal decVentaServiciosTasa13 = 0;
+                        decimal decVentaServiciosExento = 0;
                         decimal decVentaBienesTasa1 = 0;
                         decimal decVentaBienesTasa2 = 0;
                         decimal decVentaBienesTasa4 = 0;
                         decimal decVentaBienesTasa8 = 0;
                         decimal decVentaBienesTasa13 = 0;
+                        decimal decVentaBienesExento = 0;
                         decimal decTipoDeCambio = 1;
                         string strCodigoMoneda = "CRC";
                         foreach (XmlNode lineaDetalle in documentoXml.GetElementsByTagName("LineaDetalle"))
@@ -1721,37 +1720,31 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                     }
                                 }
                             }
+                            else
+                            {
+                                if (lineaDetalle["UnidadMedida"].InnerText == "Sp")
+                                    decVentaServiciosExento += decMontoPorLinea;
+                                else
+                                    decVentaBienesExento += decMontoPorLinea;
+                            }
                         }
-                        if (documentoXml.GetElementsByTagName("TipoCambio").Count > 0)
-                            decTipoDeCambio = decimal.Parse(documentoXml.GetElementsByTagName("TipoCambio").Item(0).InnerText, CultureInfo.InvariantCulture);
                         if (documentoXml.GetElementsByTagName("CodigoMoneda").Count > 0)
                             strCodigoMoneda = documentoXml.GetElementsByTagName("CodigoMoneda").Item(0).InnerText;
                         if (strCodigoMoneda != "CRC")
-                        {
-                            decTotalVentaBienesTasa1 -= decVentaBienesTasa1 * decTipoDeCambio;
-                            decTotalVentaBienesTasa2 -= decVentaBienesTasa2 * decTipoDeCambio;
-                            decTotalVentaBienesTasa4 -= decVentaBienesTasa4 * decTipoDeCambio;
-                            decTotalVentaBienesTasa8 -= decVentaBienesTasa8 * decTipoDeCambio;
-                            decTotalVentaBienesTasa13 -= decVentaBienesTasa13 * decTipoDeCambio;
-                            decTotalVentaServiciosTasa1 -= decVentaServiciosTasa1 * decTipoDeCambio;
-                            decTotalVentaServiciosTasa2 -= decVentaServiciosTasa2 * decTipoDeCambio;
-                            decTotalVentaServiciosTasa4 -= decVentaServiciosTasa4 * decTipoDeCambio;
-                            decTotalVentaServiciosTasa8 -= decVentaServiciosTasa8 * decTipoDeCambio;
-                            decTotalVentaServiciosTasa13 -= decVentaServiciosTasa13 * decTipoDeCambio;
-                        }
-                        else
-                        {
-                            decTotalVentaBienesTasa1 -= decVentaBienesTasa1;
-                            decTotalVentaBienesTasa2 -= decVentaBienesTasa2;
-                            decTotalVentaBienesTasa4 -= decVentaBienesTasa4;
-                            decTotalVentaBienesTasa8 -= decVentaBienesTasa8;
-                            decTotalVentaBienesTasa13 -= decVentaBienesTasa13;
-                            decTotalVentaServiciosTasa1 -= decVentaServiciosTasa1;
-                            decTotalVentaServiciosTasa2 -= decVentaServiciosTasa2;
-                            decTotalVentaServiciosTasa4 -= decVentaServiciosTasa4;
-                            decTotalVentaServiciosTasa8 -= decVentaServiciosTasa8;
-                            decTotalVentaServiciosTasa13 -= decVentaServiciosTasa13;
-                        }
+                            if (documentoXml.GetElementsByTagName("TipoCambio").Count > 0)
+                                decTipoDeCambio = decimal.Parse(documentoXml.GetElementsByTagName("TipoCambio").Item(0).InnerText, CultureInfo.InvariantCulture);
+                        decTotalVentaBienesTasa1 -= decVentaBienesTasa1 * decTipoDeCambio;
+                        decTotalVentaBienesTasa2 -= decVentaBienesTasa2 * decTipoDeCambio;
+                        decTotalVentaBienesTasa4 -= decVentaBienesTasa4 * decTipoDeCambio;
+                        decTotalVentaBienesTasa8 -= decVentaBienesTasa8 * decTipoDeCambio;
+                        decTotalVentaBienesTasa13 -= decVentaBienesTasa13 * decTipoDeCambio;
+                        decTotalVentaBienesExento -= decVentaBienesExento * decTipoDeCambio;
+                        decTotalVentaServiciosTasa1 -= decVentaServiciosTasa1 * decTipoDeCambio;
+                        decTotalVentaServiciosTasa2 -= decVentaServiciosTasa2 * decTipoDeCambio;
+                        decTotalVentaServiciosTasa4 -= decVentaServiciosTasa4 * decTipoDeCambio;
+                        decTotalVentaServiciosTasa8 -= decVentaServiciosTasa8 * decTipoDeCambio;
+                        decTotalVentaServiciosTasa13 -= decVentaServiciosTasa13 * decTipoDeCambio;
+                        decTotalVentaServiciosExento -= decVentaServiciosExento * decTipoDeCambio;
                     }
                     ReporteResumenMovimiento reporteLinea = new ReporteResumenMovimiento();
                     reporteLinea.Descripcion = "Ventas de bienes gravados";
@@ -1762,12 +1755,28 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     reporteLinea.Tasa13 = decTotalVentaBienesTasa13;
                     listaReporte.Add(reporteLinea);
                     reporteLinea = new ReporteResumenMovimiento();
+                    reporteLinea.Descripcion = "Ventas de bienes exentos";
+                    reporteLinea.Tasa1 = decTotalVentaBienesExento;
+                    reporteLinea.Tasa2 = 0;
+                    reporteLinea.Tasa4 = 0;
+                    reporteLinea.Tasa8 = 0;
+                    reporteLinea.Tasa13 = 0;
+                    listaReporte.Add(reporteLinea);
+                    reporteLinea = new ReporteResumenMovimiento();
                     reporteLinea.Descripcion = "Ventas de servicios gravados";
                     reporteLinea.Tasa1 = decTotalVentaServiciosTasa1;
                     reporteLinea.Tasa2 = decTotalVentaServiciosTasa2;
                     reporteLinea.Tasa4 = decTotalVentaServiciosTasa4;
                     reporteLinea.Tasa8 = decTotalVentaServiciosTasa8;
                     reporteLinea.Tasa13 = decTotalVentaServiciosTasa13;
+                    listaReporte.Add(reporteLinea);
+                    reporteLinea = new ReporteResumenMovimiento();
+                    reporteLinea.Descripcion = "Ventas de servicios exentos";
+                    reporteLinea.Tasa1 = decTotalVentaServiciosExento;
+                    reporteLinea.Tasa2 = 0;
+                    reporteLinea.Tasa4 = 0;
+                    reporteLinea.Tasa8 = 0;
+                    reporteLinea.Tasa13 = 0;
                     listaReporte.Add(reporteLinea);
                     var grupoFacturasRecibidas = dbContext.DocumentoElectronicoRepository
                         .Where(a => a.IdEmpresa == intIdEmpresa && a.Fecha >= datFechaInicial && a.Fecha <= datFechaFinal && a.IdTipoDocumento == 5 && a.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado).ToList();
@@ -1776,11 +1785,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     decimal decTotalCompraBienesTasa4 = 0;
                     decimal decTotalCompraBienesTasa8 = 0;
                     decimal decTotalCompraBienesTasa13 = 0;
+                    decimal decTotalCompraBienesExento = 0;
                     decimal decTotalCompraServiciosTasa1 = 0;
                     decimal decTotalCompraServiciosTasa2 = 0;
                     decimal decTotalCompraServiciosTasa4 = 0;
                     decimal decTotalCompraServiciosTasa8 = 0;
                     decimal decTotalCompraServiciosTasa13 = 0;
+                    decimal decTotalCompraServiciosExento = 0;
                     foreach (var documento in grupoFacturasRecibidas)
                     {
                         if (documento.DatosDocumentoOri != null)
@@ -1793,16 +1804,18 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             decimal decCompraServiciosTasa4 = 0;
                             decimal decCompraServiciosTasa8 = 0;
                             decimal decCompraServiciosTasa13 = 0;
+                            decimal decCompraServiciosExento = 0;
                             decimal decCompraBienesTasa1 = 0;
                             decimal decCompraBienesTasa2 = 0;
                             decimal decCompraBienesTasa4 = 0;
                             decimal decCompraBienesTasa8 = 0;
                             decimal decCompraBienesTasa13 = 0;
+                            decimal decCompraBienesExento = 0;
                             decimal decTipoDeCambio = 1;
                             string strCodigoMoneda = "CRC";
                             foreach (XmlNode lineaDetalle in documentoXml.GetElementsByTagName("LineaDetalle"))
                             {
-                                decimal decMontoPorLinea = decimal.Parse(lineaDetalle["MontoTotal"].InnerText, CultureInfo.InvariantCulture);
+                                decimal decMontoPorLinea = decimal.Parse(lineaDetalle["SubTotal"].InnerText, CultureInfo.InvariantCulture);
                                 if (lineaDetalle["Impuesto"] != null)
                                 {
                                     if (lineaDetalle["Impuesto"]["Exoneracion"] != null)
@@ -1816,18 +1829,23 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                         switch (strTarifa)
                                         {
                                             case "1":
+                                            case "1.00":
                                                 decCompraServiciosTasa1 += decMontoPorLinea;
                                                 break;
                                             case "2":
+                                            case "2.00":
                                                 decCompraServiciosTasa2 += decMontoPorLinea;
                                                 break;
                                             case "4":
+                                            case "4.00":
                                                 decCompraServiciosTasa4 += decMontoPorLinea;
                                                 break;
                                             case "8":
+                                            case "8.00":
                                                 decCompraServiciosTasa8 += decMontoPorLinea;
                                                 break;
                                             case "13":
+                                            case "13.00":
                                                 decCompraServiciosTasa13 += decMontoPorLinea;
                                                 break;
                                         }
@@ -1837,85 +1855,70 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                         switch (strTarifa)
                                         {
                                             case "1":
+                                            case "1.00":
                                                 decCompraBienesTasa1 += decMontoPorLinea;
                                                 break;
                                             case "2":
+                                            case "2.00":
                                                 decCompraBienesTasa2 += decMontoPorLinea;
                                                 break;
                                             case "4":
+                                            case "4.00":
                                                 decCompraBienesTasa4 += decMontoPorLinea;
                                                 break;
                                             case "8":
+                                            case "8.00":
                                                 decCompraBienesTasa8 += decMontoPorLinea;
                                                 break;
                                             case "13":
+                                            case "13.00":
                                                 decCompraBienesTasa13 += decMontoPorLinea;
                                                 break;
                                         }
                                     }
                                 }
+                                else
+                                {
+                                    if (lineaDetalle["UnidadMedida"].InnerText == "Sp")
+                                        decCompraServiciosExento += decMontoPorLinea;
+                                    else
+                                        decCompraBienesExento += decMontoPorLinea;
+                                }
                             }
-                            if (documentoXml.GetElementsByTagName("TipoCambio").Count > 0)
-                                decTipoDeCambio = decimal.Parse(documentoXml.GetElementsByTagName("TipoCambio").Item(0).InnerText, CultureInfo.InvariantCulture);
                             if (documentoXml.GetElementsByTagName("CodigoMoneda").Count > 0)
                                 strCodigoMoneda = documentoXml.GetElementsByTagName("CodigoMoneda").Item(0).InnerText;
                             if (strCodigoMoneda != "CRC")
+                                if (documentoXml.GetElementsByTagName("TipoCambio").Count > 0)
+                                    decTipoDeCambio = decimal.Parse(documentoXml.GetElementsByTagName("TipoCambio").Item(0).InnerText, CultureInfo.InvariantCulture);
+                            if (documentoXml.DocumentElement.Name != "NotaCreditoElectronica")
                             {
-                                if (documentoXml.DocumentElement.Name != "NotaCreditoElectronica")
-                                {
-                                    decTotalCompraBienesTasa1 += decCompraBienesTasa1 * decTipoDeCambio;
-                                    decTotalCompraBienesTasa2 += decCompraBienesTasa2 * decTipoDeCambio;
-                                    decTotalCompraBienesTasa4 += decCompraBienesTasa4 * decTipoDeCambio;
-                                    decTotalCompraBienesTasa8 += decCompraBienesTasa8 * decTipoDeCambio;
-                                    decTotalCompraBienesTasa13 += decCompraBienesTasa13 * decTipoDeCambio;
-                                    decTotalCompraServiciosTasa1 += decCompraServiciosTasa1 * decTipoDeCambio;
-                                    decTotalCompraServiciosTasa2 += decCompraServiciosTasa2 * decTipoDeCambio;
-                                    decTotalCompraServiciosTasa4 += decCompraServiciosTasa4 * decTipoDeCambio;
-                                    decTotalCompraServiciosTasa8 += decCompraServiciosTasa8 * decTipoDeCambio;
-                                    decTotalCompraServiciosTasa13 += decCompraServiciosTasa13 * decTipoDeCambio;
-                                }
-                                else
-                                {
-                                    decTotalCompraBienesTasa1 -= decCompraBienesTasa1 * decTipoDeCambio;
-                                    decTotalCompraBienesTasa2 -= decCompraBienesTasa2 * decTipoDeCambio;
-                                    decTotalCompraBienesTasa4 -= decCompraBienesTasa4 * decTipoDeCambio;
-                                    decTotalCompraBienesTasa8 -= decCompraBienesTasa8 * decTipoDeCambio;
-                                    decTotalCompraBienesTasa13 -= decCompraBienesTasa13 * decTipoDeCambio;
-                                    decTotalCompraServiciosTasa1 -= decCompraServiciosTasa1 * decTipoDeCambio;
-                                    decTotalCompraServiciosTasa2 -= decCompraServiciosTasa2 * decTipoDeCambio;
-                                    decTotalCompraServiciosTasa4 -= decCompraServiciosTasa4 * decTipoDeCambio;
-                                    decTotalCompraServiciosTasa8 -= decCompraServiciosTasa8 * decTipoDeCambio;
-                                    decTotalCompraServiciosTasa13 -= decCompraServiciosTasa13 * decTipoDeCambio;
-                                }
+                                decTotalCompraBienesTasa1 += decCompraBienesTasa1 * decTipoDeCambio;
+                                decTotalCompraBienesTasa2 += decCompraBienesTasa2 * decTipoDeCambio;
+                                decTotalCompraBienesTasa4 += decCompraBienesTasa4 * decTipoDeCambio;
+                                decTotalCompraBienesTasa8 += decCompraBienesTasa8 * decTipoDeCambio;
+                                decTotalCompraBienesTasa13 += decCompraBienesTasa13 * decTipoDeCambio;
+                                decTotalCompraBienesExento += decCompraBienesExento * decTipoDeCambio;
+                                decTotalCompraServiciosTasa1 += decCompraServiciosTasa1 * decTipoDeCambio;
+                                decTotalCompraServiciosTasa2 += decCompraServiciosTasa2 * decTipoDeCambio;
+                                decTotalCompraServiciosTasa4 += decCompraServiciosTasa4 * decTipoDeCambio;
+                                decTotalCompraServiciosTasa8 += decCompraServiciosTasa8 * decTipoDeCambio;
+                                decTotalCompraServiciosTasa13 += decCompraServiciosTasa13 * decTipoDeCambio;
+                                decTotalCompraServiciosExento += decCompraServiciosExento * decTipoDeCambio;
                             }
                             else
                             {
-                                if (documentoXml.DocumentElement.Name != "NotaCreditoElectronica")
-                                {
-                                    decTotalCompraBienesTasa1 += decCompraBienesTasa1;
-                                    decTotalCompraBienesTasa2 += decCompraBienesTasa2;
-                                    decTotalCompraBienesTasa4 += decCompraBienesTasa4;
-                                    decTotalCompraBienesTasa8 += decCompraBienesTasa8;
-                                    decTotalCompraBienesTasa13 += decCompraBienesTasa13;
-                                    decTotalCompraServiciosTasa1 += decCompraServiciosTasa1;
-                                    decTotalCompraServiciosTasa2 += decCompraServiciosTasa2;
-                                    decTotalCompraServiciosTasa4 += decCompraServiciosTasa4;
-                                    decTotalCompraServiciosTasa8 += decCompraServiciosTasa8;
-                                    decTotalCompraServiciosTasa13 += decCompraServiciosTasa13;
-                                }
-                                else
-                                {
-                                    decTotalCompraBienesTasa1 -= decCompraBienesTasa1;
-                                    decTotalCompraBienesTasa2 -= decCompraBienesTasa2;
-                                    decTotalCompraBienesTasa4 -= decCompraBienesTasa4;
-                                    decTotalCompraBienesTasa8 -= decCompraBienesTasa8;
-                                    decTotalCompraBienesTasa13 -= decCompraBienesTasa13;
-                                    decTotalCompraServiciosTasa1 -= decCompraServiciosTasa1;
-                                    decTotalCompraServiciosTasa2 -= decCompraServiciosTasa2;
-                                    decTotalCompraServiciosTasa4 -= decCompraServiciosTasa4;
-                                    decTotalCompraServiciosTasa8 -= decCompraServiciosTasa8;
-                                    decTotalCompraServiciosTasa13 -= decCompraServiciosTasa13;
-                                }
+                                decTotalCompraBienesTasa1 -= decCompraBienesTasa1 * decTipoDeCambio;
+                                decTotalCompraBienesTasa2 -= decCompraBienesTasa2 * decTipoDeCambio;
+                                decTotalCompraBienesTasa4 -= decCompraBienesTasa4 * decTipoDeCambio;
+                                decTotalCompraBienesTasa8 -= decCompraBienesTasa8 * decTipoDeCambio;
+                                decTotalCompraBienesTasa13 -= decCompraBienesTasa13 * decTipoDeCambio;
+                                decTotalCompraBienesExento -= decCompraBienesExento * decTipoDeCambio;
+                                decTotalCompraServiciosTasa1 -= decCompraServiciosTasa1 * decTipoDeCambio;
+                                decTotalCompraServiciosTasa2 -= decCompraServiciosTasa2 * decTipoDeCambio;
+                                decTotalCompraServiciosTasa4 -= decCompraServiciosTasa4 * decTipoDeCambio;
+                                decTotalCompraServiciosTasa8 -= decCompraServiciosTasa8 * decTipoDeCambio;
+                                decTotalCompraServiciosTasa13 -= decCompraServiciosTasa13 * decTipoDeCambio;
+                                decTotalCompraServiciosExento -= decCompraServiciosExento * decTipoDeCambio;
                             }
                         }
                         else
@@ -1944,12 +1947,28 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     reporteLinea.Tasa13 = decTotalCompraBienesTasa13;
                     listaReporte.Add(reporteLinea);
                     reporteLinea = new ReporteResumenMovimiento();
+                    reporteLinea.Descripcion = "Compras de bienes exentos";
+                    reporteLinea.Tasa1 = decTotalCompraBienesExento;
+                    reporteLinea.Tasa2 = 0;
+                    reporteLinea.Tasa4 = 0;
+                    reporteLinea.Tasa8 = 0;
+                    reporteLinea.Tasa13 = 0;
+                    listaReporte.Add(reporteLinea);
+                    reporteLinea = new ReporteResumenMovimiento();
                     reporteLinea.Descripcion = "Compras de servicios gravados";
                     reporteLinea.Tasa1 = decTotalCompraServiciosTasa1;
                     reporteLinea.Tasa2 = decTotalCompraServiciosTasa2;
                     reporteLinea.Tasa4 = decTotalCompraServiciosTasa4;
                     reporteLinea.Tasa8 = decTotalCompraServiciosTasa8;
                     reporteLinea.Tasa13 = decTotalCompraServiciosTasa13;
+                    listaReporte.Add(reporteLinea);
+                    reporteLinea = new ReporteResumenMovimiento();
+                    reporteLinea.Descripcion = "Compras de servicios exentos";
+                    reporteLinea.Tasa1 = decTotalCompraServiciosExento;
+                    reporteLinea.Tasa2 = 0;
+                    reporteLinea.Tasa4 = 0;
+                    reporteLinea.Tasa8 = 0;
+                    reporteLinea.Tasa13 = 0;
                     listaReporte.Add(reporteLinea);
                     return listaReporte;
                 }
