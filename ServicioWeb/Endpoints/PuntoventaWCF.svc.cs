@@ -796,7 +796,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                         strFechaInicial = parametrosJO.Property("FechaInicial").Value.ToString();
                         strFechaFinal = parametrosJO.Property("FechaFinal").Value.ToString();
-                        IList<ReporteEstadoResultados> listadoReporteResumenDocumentosElectronicos = servicioReportes.ObtenerReporteResumenDocumentosElectronicos(intIdEmpresa, strFechaInicial, strFechaFinal);
+                        IList<ReporteResumenMovimiento> listadoReporteResumenDocumentosElectronicos = servicioReportes.ObtenerReporteResumenDocumentosElectronicos(intIdEmpresa, strFechaInicial, strFechaFinal);
                         if (listadoReporteResumenDocumentosElectronicos.Count > 0)
                             strRespuesta = serializer.Serialize(listadoReporteResumenDocumentosElectronicos);
                         break;

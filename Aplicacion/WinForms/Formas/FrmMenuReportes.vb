@@ -502,7 +502,7 @@ Public Class FrmMenuReportes
                     newFormReport.repReportViewer.LocalReport.SetParameters(parameters)
                     newFormReport.ShowDialog()
                 Case "Resumen de comprobantes electrónicos"
-                    Dim datosReporte As List(Of ReporteEstadoResultados)
+                    Dim datosReporte As List(Of ReporteResumenMovimiento)
                     Try
                         datosReporte = Await Puntoventa.ObtenerReporteResumenDocumentosElectronicos(FrmPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text, FrmPrincipal.usuarioGlobal.Token)
                     Catch ex As Exception
@@ -514,7 +514,7 @@ Public Class FrmMenuReportes
                     newFormReport.repReportViewer.LocalReport.DataSources.Clear()
                     newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
                     newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
-                    newFormReport.repReportViewer.LocalReport.ReportEmbeddedResource = "LeandroSoftware.Aplicacion.rptResumenComprobanteElectronicos.rdlc"
+                    newFormReport.repReportViewer.LocalReport.ReportEmbeddedResource = "LeandroSoftware.Aplicacion.rptResumenComprobanteElectronico.rdlc"
                     Dim parameters(3) As ReportParameter
                     parameters(0) = New ReportParameter("pUsuario", FrmPrincipal.usuarioGlobal.CodigoUsuario)
                     parameters(1) = New ReportParameter("pEmpresa", FrmPrincipal.empresaGlobal.NombreComercial)

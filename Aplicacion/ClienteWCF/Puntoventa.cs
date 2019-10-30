@@ -595,13 +595,13 @@ namespace LeandroSoftware.ClienteWCF
             return listado;
         }
 
-        public static async Task<List<ReporteEstadoResultados>> ObtenerReporteResumenDocumentosElectronicos(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strToken)
+        public static async Task<List<ReporteResumenMovimiento>> ObtenerReporteResumenDocumentosElectronicos(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strToken)
         {
             string strDatos = "{NombreMetodo: 'ObtenerReporteResumenDocumentosElectronicos', Parametros: {IdEmpresa: " + intIdEmpresa + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "'}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
-            List<ReporteEstadoResultados> listado = new List<ReporteEstadoResultados>();
+            List<ReporteResumenMovimiento> listado = new List<ReporteResumenMovimiento>();
             if (respuesta != "")
-                listado = serializer.Deserialize<List<ReporteEstadoResultados>>(respuesta);
+                listado = serializer.Deserialize<List<ReporteResumenMovimiento>>(respuesta);
             return listado;
         }
 

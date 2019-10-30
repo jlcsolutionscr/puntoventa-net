@@ -462,6 +462,17 @@ namespace LeandroSoftware.Core.TiposComunes
         public decimal Total { get; set; }
     }
 
+    public class ReporteResumenMovimiento
+    {
+        public string Descripcion { get; set; }
+        public decimal Tasa1 { get; set; }
+        public decimal Tasa2 { get; set; }
+        public decimal Tasa4 { get; set; }
+        public decimal Tasa8 { get; set; }
+        public decimal Tasa13 { get; set; }
+
+    }
+
     public class EquipoRegistrado
     {
         public int IdSucursal { get; set; }

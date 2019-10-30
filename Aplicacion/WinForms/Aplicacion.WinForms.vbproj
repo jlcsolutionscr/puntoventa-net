@@ -1004,7 +1004,7 @@
     <EmbeddedResource Include="Reportes\FrmReportViewer.resx">
       <DependentUpon>FrmReportViewer.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Reportes\rptResumenComprobanteElectronicos.rdlc" />
+    <EmbeddedResource Include="Reportes\rptResumenComprobanteElectronico.rdlc" />
     <EmbeddedResource Include="Reportes\rptResumenMovimientos.rdlc" />
     <EmbeddedResource Include="Reportes\rptDetalleEgresos.rdlc" />
     <EmbeddedResource Include="Reportes\rptVentasPorVendedor.rdlc" />
@@ -1016,9 +1016,8 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="My Project\app.manifest" />
-    <None Include="My Project\DataSources\LeandroSoftware.Puntoventa.CommonTypes.ReporteDetalleEgreso.datasource" />
-    <None Include="My Project\DataSources\LeandroSoftware.Puntoventa.CommonTypes.ReporteEstadoResultados.datasource" />
-    <None Include="My Project\DataSources\LeandroSoftware.Puntoventa.CommonTypes.ReporteVentasPorVendedor.datasource" />
+    <None Include="My Project\DataSources\LeandroSoftware.Core.TiposComunes.LlaveDescripcion.datasource" />
+    <None Include="My Project\DataSources\LeandroSoftware.Core.TiposComunes.ReporteResumenMovimiento.datasource" />
     <None Include="My Project\Settings.settings">
       <CustomToolNamespace>My</CustomToolNamespace>
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -1103,6 +1102,9 @@
       <Project>{2602dd72-5aa0-45a2-a4a6-4805da33c318}</Project>
       <Name>ClienteWCF</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
   <PropertyGroup>
