@@ -1,5 +1,19 @@
-﻿namespace LeandroSoftware.Core.CommonTypes
+﻿using System;
+
+namespace LeandroSoftware.Core.TiposComunes
 {
+    public static class StaticTipoDispisitivo
+    {
+        public static readonly short AppEscritorio = 1;
+        public static readonly short AppMovil = 2;
+    };
+
+    public static class StaticRolePorUsuario
+    {
+        public static readonly short ADMINISTRADOR = 1;
+        public static readonly short USUARIO_SISTEMA = 2;
+    };
+
     public static class StaticTipoMoneda
     {
         public static readonly short Colones = 1;
@@ -134,54 +148,6 @@
         public static readonly string Aceptado = "aceptado";
         public static readonly string Rechazado = "rechazado";
     };
-
-    public class TipodeContrato
-    {
-        public TipodeContrato()
-        {
-        }
-
-        public TipodeContrato(int id, string desc)
-        {
-            IdTipoContrato = id;
-            Descripcion = desc;
-        }
-
-        public int IdTipoContrato { get; set; }
-        public string Descripcion { get; set; }
-    }
-
-    public class CondicionVentaYFormaPago
-    {
-        public CondicionVentaYFormaPago()
-        {
-        }
-
-        public CondicionVentaYFormaPago(int id, string desc)
-        {
-            IdTipo = id;
-            Descripcion = desc;
-        }
-
-        public int IdTipo { get; set; }
-        public string Descripcion { get; set; }
-    }
-
-    public class TipodePrecio
-    {
-        public TipodePrecio()
-        {
-        }
-
-        public TipodePrecio(int id, string desc)
-        {
-            IdTipoPrecio = id;
-            Descripcion = desc;
-        }
-
-        public int IdTipoPrecio { get; set; }
-        public string Descripcion { get; set; }
-    }
 
     public class ReporteVentas
     {
@@ -319,7 +285,7 @@
         public decimal Cantidad { get; set; }
         public decimal PrecioVenta { get; set; }
         public decimal Excento { get; set; }
-        public decimal Grabado { get; set; }
+        public decimal Gravado { get; set; }
         public decimal Impuesto { get; set; }
         public decimal Descuento { get; set; }
         public decimal Costo { get; set; }
@@ -336,7 +302,7 @@
         public decimal Cantidad { get; set; }
         public decimal PrecioVenta { get; set; }
         public decimal Excento { get; set; }
-        public decimal Grabado { get; set; }
+        public decimal Gravado { get; set; }
         public decimal Impuesto { get; set; }
         public decimal Descuento { get; set; }
         public decimal PorcentajeIVA { get; set; }
@@ -487,10 +453,103 @@
     public class ReporteDocumentoElectronico
     {
         public string ClaveNumerica { get; set; }
+
+        public string Consecutivo { get; set; }
         public string Fecha { get; set; }
         public string Nombre { get; set; }
         public string Moneda { get; set; }
         public decimal Impuesto { get; set; }
         public decimal Total { get; set; }
+    }
+
+    public class ReporteResumenMovimiento
+    {
+        public string Descripcion { get; set; }
+        public decimal Exento { get; set; }
+        public decimal Tasa1 { get; set; }
+        public decimal Tasa2 { get; set; }
+        public decimal Tasa4 { get; set; }
+        public decimal Tasa8 { get; set; }
+        public decimal Tasa13 { get; set; }
+
+    }
+
+    public class EquipoRegistrado
+    {
+        public int IdSucursal { get; set; }
+        public int IdTerminal { get; set; }
+        public string NombreSucursal { get; set; }
+        public string DireccionSucursal { get; set; }
+        public string TelefonoSucursal { get; set; }
+        public string ImpresoraFactura { get; set; }
+    }
+
+    public class LlaveDescripcion
+    {
+        public LlaveDescripcion()
+        {
+        }
+
+        public LlaveDescripcion(int id, string descripcion)
+        {
+            Id = id;
+            Descripcion = descripcion;
+        }
+        public int Id { get; set; }
+        public string Descripcion { get; set; }
+    }
+
+    public class FacturaDetalle
+    {
+        public FacturaDetalle()
+        {
+        }
+
+        public FacturaDetalle(int id, string nombreCliente, string fecha, decimal gravado, decimal exonerado, decimal excento, decimal impuesto, decimal total, string estado)
+        {
+            IdFactura = id;
+            NombreCliente = nombreCliente;
+            Fecha = fecha;
+            Gravado = gravado;
+            Exonerado = exonerado;
+            Excento = excento;
+            Impuesto = impuesto;
+            Total = total;
+            Estado = estado;
+        }
+        public int IdFactura { get; set; }
+        public string NombreCliente { get; set; }
+        public string Fecha { get; set; }
+        public decimal Gravado { get; set; }
+        public decimal Exonerado { get; set; }
+        public decimal Excento { get; set; }
+        public decimal Impuesto { get; set; }
+        public decimal Total { get; set; }
+        public string Estado { get; set; }
+    }
+
+    public class DocumentoDetalle
+    {
+        public DocumentoDetalle()
+        {
+        }
+
+        public DocumentoDetalle(int id, string clave, string consecutivo, DateTime fecha, string estado, string esMensajeReceptor, string correoNotificacion)
+        {
+            IdDocumento = id;
+            ClaveNumerica = clave;
+            Consecutivo = consecutivo;
+            Fecha = fecha;
+            EstadoEnvio = estado;
+            EsMensajeReceptor = esMensajeReceptor;
+            CorreoNotificacion = correoNotificacion;
+        }
+        public int IdDocumento { get; set; }
+        public string ClaveNumerica { get; set; }
+        public string Consecutivo { get; set; }
+        public DateTime Fecha { get; set; }
+        public string EstadoEnvio { get; set; }
+        public string EsMensajeReceptor { get; set; }
+        public string CorreoNotificacion { get; set; }
     }
 }

@@ -1088,10 +1088,9 @@
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\Core.csproj">
+    <ProjectReference Include="..\..\Core\Core\Core.csproj">
       <Project>{fa3c5bce-3db6-486e-b16b-8b7f76eef63f}</Project>
       <Name>Core</Name>
-      <Private>True</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Core\Dominio\Dominio.csproj">
       <Project>{74E3681E-1245-4268-ADB9-D76DA18B2FE0}</Project>

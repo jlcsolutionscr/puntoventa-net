@@ -1747,7 +1747,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         decTotalVentaServiciosExento -= decVentaServiciosExento * decTipoDeCambio;
                     }
                     ReporteResumenMovimiento reporteLinea = new ReporteResumenMovimiento();
-                    reporteLinea.Descripcion = "Ventas de bienes gravados";
+                    reporteLinea.Descripcion = "Ventas de bienes o mercancias";
+                    reporteLinea.Exento = decTotalVentaBienesExento;
                     reporteLinea.Tasa1 = decTotalVentaBienesTasa1;
                     reporteLinea.Tasa2 = decTotalVentaBienesTasa2;
                     reporteLinea.Tasa4 = decTotalVentaBienesTasa4;
@@ -1755,28 +1756,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     reporteLinea.Tasa13 = decTotalVentaBienesTasa13;
                     listaReporte.Add(reporteLinea);
                     reporteLinea = new ReporteResumenMovimiento();
-                    reporteLinea.Descripcion = "Ventas de bienes exentos";
-                    reporteLinea.Tasa1 = decTotalVentaBienesExento;
-                    reporteLinea.Tasa2 = 0;
-                    reporteLinea.Tasa4 = 0;
-                    reporteLinea.Tasa8 = 0;
-                    reporteLinea.Tasa13 = 0;
-                    listaReporte.Add(reporteLinea);
-                    reporteLinea = new ReporteResumenMovimiento();
-                    reporteLinea.Descripcion = "Ventas de servicios gravados";
+                    reporteLinea.Descripcion = "Ventas de servicios";
+                    reporteLinea.Exento = decTotalVentaServiciosExento;
                     reporteLinea.Tasa1 = decTotalVentaServiciosTasa1;
                     reporteLinea.Tasa2 = decTotalVentaServiciosTasa2;
                     reporteLinea.Tasa4 = decTotalVentaServiciosTasa4;
                     reporteLinea.Tasa8 = decTotalVentaServiciosTasa8;
                     reporteLinea.Tasa13 = decTotalVentaServiciosTasa13;
-                    listaReporte.Add(reporteLinea);
-                    reporteLinea = new ReporteResumenMovimiento();
-                    reporteLinea.Descripcion = "Ventas de servicios exentos";
-                    reporteLinea.Tasa1 = decTotalVentaServiciosExento;
-                    reporteLinea.Tasa2 = 0;
-                    reporteLinea.Tasa4 = 0;
-                    reporteLinea.Tasa8 = 0;
-                    reporteLinea.Tasa13 = 0;
                     listaReporte.Add(reporteLinea);
                     var grupoFacturasRecibidas = dbContext.DocumentoElectronicoRepository
                         .Where(a => a.IdEmpresa == intIdEmpresa && a.Fecha >= datFechaInicial && a.Fecha <= datFechaFinal && a.IdTipoDocumento == 5 && a.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado).ToList();
@@ -1939,7 +1925,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                     }
                     reporteLinea = new ReporteResumenMovimiento();
-                    reporteLinea.Descripcion = "Compras de bienes gravados";
+                    reporteLinea.Descripcion = "Compras de bienes o mercancias";
+                    reporteLinea.Exento = decTotalCompraBienesExento;
                     reporteLinea.Tasa1 = decTotalCompraBienesTasa1;
                     reporteLinea.Tasa2 = decTotalCompraBienesTasa2;
                     reporteLinea.Tasa4 = decTotalCompraBienesTasa4;
@@ -1947,28 +1934,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     reporteLinea.Tasa13 = decTotalCompraBienesTasa13;
                     listaReporte.Add(reporteLinea);
                     reporteLinea = new ReporteResumenMovimiento();
-                    reporteLinea.Descripcion = "Compras de bienes exentos";
-                    reporteLinea.Tasa1 = decTotalCompraBienesExento;
-                    reporteLinea.Tasa2 = 0;
-                    reporteLinea.Tasa4 = 0;
-                    reporteLinea.Tasa8 = 0;
-                    reporteLinea.Tasa13 = 0;
-                    listaReporte.Add(reporteLinea);
-                    reporteLinea = new ReporteResumenMovimiento();
-                    reporteLinea.Descripcion = "Compras de servicios gravados";
+                    reporteLinea.Descripcion = "Compras de servicios";
+                    reporteLinea.Exento = decTotalCompraServiciosExento;
                     reporteLinea.Tasa1 = decTotalCompraServiciosTasa1;
                     reporteLinea.Tasa2 = decTotalCompraServiciosTasa2;
                     reporteLinea.Tasa4 = decTotalCompraServiciosTasa4;
                     reporteLinea.Tasa8 = decTotalCompraServiciosTasa8;
                     reporteLinea.Tasa13 = decTotalCompraServiciosTasa13;
-                    listaReporte.Add(reporteLinea);
-                    reporteLinea = new ReporteResumenMovimiento();
-                    reporteLinea.Descripcion = "Compras de servicios exentos";
-                    reporteLinea.Tasa1 = decTotalCompraServiciosExento;
-                    reporteLinea.Tasa2 = 0;
-                    reporteLinea.Tasa4 = 0;
-                    reporteLinea.Tasa8 = 0;
-                    reporteLinea.Tasa13 = 0;
                     listaReporte.Add(reporteLinea);
                     return listaReporte;
                 }

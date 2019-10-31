@@ -896,9 +896,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     else if (!strNombre.Equals(string.Empty))
                         listado = listado.Where(x => !x.Nulo & x.IdEmpresa == intIdEmpresa & x.Cliente.Nombre.Contains(strNombre));
                     listado = listado.OrderByDescending(x => x.IdFactura).Skip((numPagina - 1) * cantRec).Take(cantRec);
-                    foreach (var value in listado)
+                    foreach (var factura in listado)
                     {
-                        FacturaDetalle item = new FacturaDetalle(value.IdFactura, value.Cliente.Nombre, value.Fecha.ToString("dd/MM/yyyy"), value.Gravado, value.Exonerado, value.Excento, value.Impuesto, value.Total);
+                        string strEstado = factura.IdDocElectronicoRev != "" ? "Anulando" : "Activa";
+                        FacturaDetalle item = new FacturaDetalle(factura.IdFactura, factura.Cliente.Nombre, factura.Fecha.ToString("dd/MM/yyyy"), factura.Gravado, factura.Exonerado, factura.Excento, factura.Impuesto, factura.Total, strEstado);
                         listaFactura.Add(item);
                     }
                     return listaFactura;

@@ -52,7 +52,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\Core.csproj">
+    <ProjectReference Include="..\..\Core\Core\Core.csproj">
       <Project>{fa3c5bce-3db6-486e-b16b-8b7f76eef63f}</Project>
       <Name>Core</Name>
     </ProjectReference>
