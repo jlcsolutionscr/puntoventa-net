@@ -534,21 +534,25 @@ namespace LeandroSoftware.Core.TiposComunes
         {
         }
 
-        public DocumentoDetalle(int id, string clave, string consecutivo, DateTime fecha, string estado, string esMensajeReceptor, string correoNotificacion)
+        public DocumentoDetalle(int id, string clave, string consecutivo, string fecha, string nombre, string estado, decimal monto, string esMensajeReceptor, string correoNotificacion)
         {
             IdDocumento = id;
             ClaveNumerica = clave;
             Consecutivo = consecutivo;
             Fecha = fecha;
+            NombreReceptor = nombre;
             EstadoEnvio = estado;
+            MontoTotal = monto;
             EsMensajeReceptor = esMensajeReceptor;
             CorreoNotificacion = correoNotificacion;
         }
         public int IdDocumento { get; set; }
         public string ClaveNumerica { get; set; }
         public string Consecutivo { get; set; }
-        public DateTime Fecha { get; set; }
+        public string Fecha { get; set; }
+        public string NombreReceptor { get; set; }
         public string EstadoEnvio { get; set; }
+        public decimal MontoTotal { get; set; }
         public string EsMensajeReceptor { get; set; }
         public string CorreoNotificacion { get; set; }
     }

@@ -1681,7 +1681,38 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     List<DocumentoElectronico> listado = dbContext.DocumentoElectronicoRepository.Where(x => x.EstadoEnvio == StaticEstadoDocumentoElectronico.Registrado || x.EstadoEnvio == StaticEstadoDocumentoElectronico.Enviado || x.EstadoEnvio == StaticEstadoDocumentoElectronico.Procesando).OrderBy(x => x.ClaveNumerica).ToList();
                     foreach (var value in listado)
                     {
-                        DocumentoDetalle item = new DocumentoDetalle(value.IdDocumento, value.ClaveNumerica, value.Consecutivo, value.Fecha, value.EstadoEnvio, value.EsMensajeReceptor, value.CorreoNotificacion);
+                        string datosXml = "";
+                        string strNombre = "";
+                        decimal decTotal = 0;
+                        if (value.EsMensajeReceptor == "S")
+                            datosXml = Encoding.Default.GetString(value.DatosDocumentoOri);
+                        else
+                            datosXml = Encoding.Default.GetString(value.DatosDocumento);
+                        XmlDocument documentoXml = new XmlDocument();
+                        documentoXml.LoadXml(datosXml);
+                        if (value.EsMensajeReceptor == "S")
+                        {
+                            strNombre = "DOCUMENTO NO POSEE EMISOR";
+                            if (documentoXml.GetElementsByTagName("Emisor").Count > 0)
+                            {
+                                XmlNode emisorNode = documentoXml.GetElementsByTagName("Emisor").Item(0);
+                                strNombre = emisorNode["Nombre"].InnerText;
+                            }
+                            if (documentoXml.GetElementsByTagName("TotalComprobante").Count > 0)
+                                decTotal = decimal.Parse(documentoXml.GetElementsByTagName("TotalComprobante").Item(0).InnerText, CultureInfo.InvariantCulture);
+                        }
+                        else
+                        {
+                            strNombre = "CLIENTE DE CONTADO";
+                            if (documentoXml.GetElementsByTagName("Receptor").Count > 0)
+                            {
+                                XmlNode emisorNode = documentoXml.GetElementsByTagName("Receptor").Item(0);
+                                strNombre = emisorNode["Nombre"].InnerText;
+                            }
+                            if (documentoXml.GetElementsByTagName("TotalComprobante").Count > 0)
+                                decTotal = decimal.Parse(documentoXml.GetElementsByTagName("TotalComprobante").Item(0).InnerText, CultureInfo.InvariantCulture);
+                        }
+                        DocumentoDetalle item = new DocumentoDetalle(value.IdDocumento, value.ClaveNumerica, value.Consecutivo, value.Fecha.ToString("dd/MM/yyyy"), strNombre, value.EstadoEnvio, decTotal, value.EsMensajeReceptor, value.CorreoNotificacion);
                         listaDocumento.Add(item);
                     }
                     return listaDocumento;
@@ -1711,7 +1742,38 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     List<DocumentoElectronico> listado = dbContext.DocumentoElectronicoRepository.Where(x => x.IdEmpresa == intIdEmpresa & (x.EstadoEnvio == StaticEstadoDocumentoElectronico.Registrado || x.EstadoEnvio == StaticEstadoDocumentoElectronico.Enviado || x.EstadoEnvio == StaticEstadoDocumentoElectronico.Procesando)).ToList();
                     foreach (var value in listado)
                     {
-                        DocumentoDetalle item = new DocumentoDetalle(value.IdDocumento, value.ClaveNumerica, value.Consecutivo, value.Fecha, value.EstadoEnvio, value.EsMensajeReceptor, value.CorreoNotificacion);
+                        string datosXml = "";
+                        string strNombre = "";
+                        decimal decTotal = 0;
+                        if (value.EsMensajeReceptor == "S")
+                            datosXml = Encoding.Default.GetString(value.DatosDocumentoOri);
+                        else
+                            datosXml = Encoding.Default.GetString(value.DatosDocumento);
+                        XmlDocument documentoXml = new XmlDocument();
+                        documentoXml.LoadXml(datosXml);
+                        if (value.EsMensajeReceptor == "S")
+                        {
+                            strNombre = "DOCUMENTO NO POSEE EMISOR";
+                            if (documentoXml.GetElementsByTagName("Emisor").Count > 0)
+                            {
+                                XmlNode emisorNode = documentoXml.GetElementsByTagName("Emisor").Item(0);
+                                strNombre = emisorNode["Nombre"].InnerText;
+                            }
+                            if (documentoXml.GetElementsByTagName("TotalComprobante").Count > 0)
+                                decTotal = decimal.Parse(documentoXml.GetElementsByTagName("TotalComprobante").Item(0).InnerText, CultureInfo.InvariantCulture);
+                        }
+                        else
+                        {
+                            strNombre = "CLIENTE DE CONTADO";
+                            if (documentoXml.GetElementsByTagName("Receptor").Count > 0)
+                            {
+                                XmlNode emisorNode = documentoXml.GetElementsByTagName("Receptor").Item(0);
+                                strNombre = emisorNode["Nombre"].InnerText;
+                            }
+                            if (documentoXml.GetElementsByTagName("TotalComprobante").Count > 0)
+                                decTotal = decimal.Parse(documentoXml.GetElementsByTagName("TotalComprobante").Item(0).InnerText, CultureInfo.InvariantCulture);
+                        }
+                        DocumentoDetalle item = new DocumentoDetalle(value.IdDocumento, value.ClaveNumerica, value.Consecutivo, value.Fecha.ToString("dd/MM/yyyy"), strNombre, value.EstadoEnvio, decTotal, value.EsMensajeReceptor, value.CorreoNotificacion);
                         listaDocumento.Add(item);
                     }
                     return listaDocumento;
@@ -1939,7 +2001,38 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         .Skip((numPagina - 1) * cantRec).Take(cantRec).ToList();
                     foreach (var value in listado)
                     {
-                        DocumentoDetalle item = new DocumentoDetalle(value.IdDocumento, value.ClaveNumerica, value.Consecutivo, value.Fecha, value.EstadoEnvio, value.EsMensajeReceptor, value.CorreoNotificacion);
+                        string datosXml = "";
+                        string strNombre = "";
+                        decimal decTotal = 0;
+                        if (value.EsMensajeReceptor == "S")
+                            datosXml = Encoding.Default.GetString(value.DatosDocumentoOri);
+                        else
+                            datosXml = Encoding.Default.GetString(value.DatosDocumento);
+                        XmlDocument documentoXml = new XmlDocument();
+                        documentoXml.LoadXml(datosXml);
+                        if (value.EsMensajeReceptor == "S")
+                        {
+                            strNombre = "DOCUMENTO NO POSEE EMISOR";
+                            if (documentoXml.GetElementsByTagName("Emisor").Count > 0)
+                            {
+                                XmlNode emisorNode = documentoXml.GetElementsByTagName("Emisor").Item(0);
+                                strNombre = emisorNode["Nombre"].InnerText;
+                            }
+                            if (documentoXml.GetElementsByTagName("TotalComprobante").Count > 0)
+                                decTotal = decimal.Parse(documentoXml.GetElementsByTagName("TotalComprobante").Item(0).InnerText, CultureInfo.InvariantCulture);
+                        }
+                        else
+                        {
+                            strNombre = "CLIENTE DE CONTADO";
+                            if (documentoXml.GetElementsByTagName("Receptor").Count > 0)
+                            {
+                                XmlNode emisorNode = documentoXml.GetElementsByTagName("Receptor").Item(0);
+                                strNombre = emisorNode["Nombre"].InnerText;
+                            }
+                            if (documentoXml.GetElementsByTagName("TotalComprobante").Count > 0)
+                                decTotal = decimal.Parse(documentoXml.GetElementsByTagName("TotalComprobante").Item(0).InnerText, CultureInfo.InvariantCulture);
+                        }
+                        DocumentoDetalle item = new DocumentoDetalle(value.IdDocumento, value.ClaveNumerica, value.Consecutivo, value.Fecha.ToString("dd/MM/yyyy"), strNombre, value.EstadoEnvio, decTotal, value.EsMensajeReceptor, value.CorreoNotificacion);
                         listaDocumento.Add(item);
                     }
                     return listaDocumento;

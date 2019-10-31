@@ -1379,22 +1379,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 string strCodigoMoneda = "CRC";
                                 decimal decTipoDeCambio = 1;
                                 string strNombreEmisor = "";
-                                if (documentoXml.GetElementsByTagName("Emisor") != null)
+                                if (documentoXml.GetElementsByTagName("Emisor").Count > 0)
                                 {
-                                    XmlNode emisorNode = documentoXml.GetElementsByTagName("Emisor").Item(0).ChildNodes.Item(0);
-                                    if (emisorNode.Name == "Nombre")
-                                        strNombreEmisor = emisorNode.InnerText;
-                                    else
-                                    {
-                                        string strNumeroCedulaEmisor = "";
-                                        foreach (XmlNode item in emisorNode.ChildNodes)
-                                        {
-                                            if (item.Name == "Numero")
-                                                strNumeroCedulaEmisor = item.InnerText;
-                                        }
-                                        if (strNumeroCedulaEmisor != "")
-                                            strNombreEmisor = strNumeroCedulaEmisor;
-                                    }
+                                    XmlNode emisorNode = documentoXml.GetElementsByTagName("Emisor").Item(0);
+                                    strNombreEmisor = emisorNode["Nombre"].InnerText;
                                 }
                                 if (documentoXml.GetElementsByTagName("TotalImpuesto").Count > 0)
                                     decTotalImpuesto = decimal.Parse(documentoXml.GetElementsByTagName("TotalImpuesto").Item(0).InnerText, CultureInfo.InvariantCulture);
@@ -1471,22 +1459,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         if (documentoXml.DocumentElement.Name == "NotaCreditoElectronica")
                         {
                             string strNombreEmisor = "";
-                            if (documentoXml.GetElementsByTagName("Emisor") != null)
+                            if (documentoXml.GetElementsByTagName("Emisor").Count > 0)
                             {
-                                XmlNode emisorNode = documentoXml.GetElementsByTagName("Emisor").Item(0).ChildNodes.Item(0);
-                                if (emisorNode.Name == "Nombre")
-                                    strNombreEmisor = emisorNode.InnerText;
-                                else
-                                {
-                                    string strNumeroCedulaEmisor = "";
-                                    foreach (XmlNode item in emisorNode.ChildNodes)
-                                    {
-                                        if (item.Name == "Numero")
-                                            strNumeroCedulaEmisor = item.InnerText;
-                                    }
-                                    if (strNumeroCedulaEmisor != "")
-                                        strNombreEmisor = strNumeroCedulaEmisor;
-                                }
+                                XmlNode emisorNode = documentoXml.GetElementsByTagName("Emisor").Item(0);
+                                strNombreEmisor = emisorNode["Nombre"].InnerText;
                             }
                             decimal decTotalImpuesto = 0;
                             if (documentoXml.GetElementsByTagName("TotalImpuesto").Count > 0)
