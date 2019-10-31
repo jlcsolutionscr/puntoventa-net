@@ -898,7 +898,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     listado = listado.OrderByDescending(x => x.IdFactura).Skip((numPagina - 1) * cantRec).Take(cantRec);
                     foreach (var factura in listado)
                     {
-                        string strEstado = factura.IdDocElectronicoRev != "" ? "Anulando" : "Activa";
+                        string strEstado = factura.IdDocElectronicoRev != null ? "Anulando" : "Activa";
                         FacturaDetalle item = new FacturaDetalle(factura.IdFactura, factura.Cliente.Nombre, factura.Fecha.ToString("dd/MM/yyyy"), factura.Gravado, factura.Exonerado, factura.Excento, factura.Impuesto, factura.Total, strEstado);
                         listaFactura.Add(item);
                     }
