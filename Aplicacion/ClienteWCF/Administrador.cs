@@ -8,7 +8,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
-using LeandroSoftware.Core.Utilities;
+using LeandroSoftware.Core.Utilitario;
 using System.Collections.Generic;
 using System.Text;
 

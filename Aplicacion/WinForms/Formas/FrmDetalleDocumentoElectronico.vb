@@ -19,9 +19,10 @@ Public Class FrmDetalleDocumentoElectronico
 #Region "Métodos"
     Private Sub EstablecerPropiedadesDataGridView()
         Dim dvcId As New DataGridViewTextBoxColumn
-        Dim dvcConsecutivo As New DataGridViewTextBoxColumn
-        Dim dvcClave As New DataGridViewTextBoxColumn
         Dim dvcFecha As New DataGridViewTextBoxColumn
+        Dim dvcConsecutivo As New DataGridViewTextBoxColumn
+        Dim dvcNombreReceptor As New DataGridViewTextBoxColumn
+        Dim dvcTotal As New DataGridViewTextBoxColumn
         Dim dvcEstado As New DataGridViewTextBoxColumn
         dgvDatos.Columns.Clear()
         dgvDatos.AutoGenerateColumns = False
@@ -30,18 +31,23 @@ Public Class FrmDetalleDocumentoElectronico
         dvcId.Width = 0
         dvcId.Visible = False
         dgvDatos.Columns.Add(dvcId)
+        dvcFecha.HeaderText = "Fecha"
+        dvcFecha.DataPropertyName = "Fecha"
+        dvcFecha.Width = 70
+        dgvDatos.Columns.Add(dvcFecha)
         dvcConsecutivo.HeaderText = "Consecutivo"
         dvcConsecutivo.DataPropertyName = "Consecutivo"
         dvcConsecutivo.Width = 150
         dgvDatos.Columns.Add(dvcConsecutivo)
-        dvcClave.HeaderText = "Clave"
-        dvcClave.DataPropertyName = "ClaveNumerica"
-        dvcClave.Width = 370
-        dgvDatos.Columns.Add(dvcClave)
-        dvcFecha.HeaderText = "Fecha"
-        dvcFecha.DataPropertyName = "Fecha"
-        dvcFecha.Width = 150
-        dgvDatos.Columns.Add(dvcFecha)
+        dvcNombreReceptor.HeaderText = "Receptor"
+        dvcNombreReceptor.DataPropertyName = "NombreReceptor"
+        dvcNombreReceptor.Width = 350
+        dgvDatos.Columns.Add(dvcNombreReceptor)
+        dvcTotal.HeaderText = "Total"
+        dvcTotal.DataPropertyName = "MontoTotal"
+        dvcTotal.Width = 100
+        dvcTotal.DefaultCellStyle = FrmPrincipal.dgvDecimal
+        dgvDatos.Columns.Add(dvcTotal)
         dvcEstado.HeaderText = "Estado"
         dvcEstado.DataPropertyName = "EstadoEnvio"
         dvcEstado.Width = 80

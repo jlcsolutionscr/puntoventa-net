@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
-using LeandroSoftware.Core. Utilities;
+using LeandroSoftware.Core. Utilitario;
 using LeandroSoftware.Core.TiposComunes;
 using LeandroSoftware.ServicioWeb.Contexto;
 using LeandroSoftware.Core.Dominio.Entidades;
@@ -10,6 +10,11 @@ using Unity;
 using System.Globalization;
 using System.Xml;
 using System.Text;
+using Microsoft.Reporting.WebForms;
+using System.IO;
+using System.Reflection;
+using LeandroSoftware.Core.Servicios;
+using Newtonsoft.Json.Linq;
 
 namespace LeandroSoftware.ServicioWeb.Servicios
 {
@@ -46,6 +51,16 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         List<ReporteDocumentoElectronico> ObtenerReporteFacturasElectronicasRecibidas(int intIdEmpresa, string strFechaInicial, string strFechaFinal);
         List<ReporteDocumentoElectronico> ObtenerReporteNotasCreditoElectronicasRecibidas(int intIdEmpresa, string strFechaInicial, string strFechaFinal);
         List<ReporteResumenMovimiento> ObtenerReporteResumenDocumentosElectronicos(int intIdEmpresa, string strFechaInicial, string strFechaFinal);
+        void EnviarReporteVentasGenerales(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo);
+        void EnviarReporteVentasAnuladas(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo);
+        void EnviarReporteResumenMovimientos(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo);
+        void EnviarReporteDetalleEgresos(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo);
+        void EnviarReporteFacturasEmitidas(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo);
+        void EnviarReporteFacturasRecibidas(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo);
+        void EnviarReporteNotasCreditoEmitidas(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo);
+        void EnviarReporteNotasCreditoRecibidas(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo);
+        void EnviarReporteResumenMovimientosElectronicos(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo);
+
     }
 
     public class ReporteService : IReporteService
@@ -1429,7 +1444,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             reporteLinea.Total = decTotal;
                             listaReporte.Add(reporteLinea);
                         }
-                        
+
                     }
                     return listaReporte;
                 }
@@ -1554,7 +1569,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                     decMontoPorLinea = decMontoPorLinea * (100 - porcentaje) / 100;
                                 }
                                 string strTarifa = lineaDetalle["Impuesto"]["Tarifa"].InnerText;
-                                if (lineaDetalle["UnidadMedida"].InnerText == "Sp") {
+                                if (lineaDetalle["UnidadMedida"].InnerText == "Sp")
+                                {
                                     switch (strTarifa)
                                     {
                                         case "1":
@@ -1573,7 +1589,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                             decVentaServiciosTasa13 += decMontoPorLinea;
                                             break;
                                     }
-                                } else
+                                }
+                                else
                                 {
                                     switch (strTarifa)
                                     {
@@ -1602,7 +1619,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 else
                                     decVentaBienesExento += decMontoPorLinea;
                             }
-                        } 
+                        }
                         if (documentoXml.GetElementsByTagName("TipoCambio").Count > 0)
                             decTipoDeCambio = decimal.Parse(documentoXml.GetElementsByTagName("TipoCambio").Item(0).InnerText, CultureInfo.InvariantCulture);
                         if (documentoXml.GetElementsByTagName("CodigoMoneda").Count > 0)
@@ -1924,6 +1941,379 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     log.Error("Error al procesar el reporte de Resumen de Documentos Electrónicos: ", ex);
                     throw new Exception("Se produjo un error al ejecutar el reporte resumen de documentos electrónicos. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public void EnviarReporteVentasGenerales(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    string strPlantillaReporte = "rptVentas.rdlc";
+                    Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
+                    string strNombreEmpresa = empresa.NombreComercial != "" ? empresa.NombreComercial : empresa.NombreEmpresa;
+                    IList<ReporteVentas> dstDatos = ObtenerReporteVentasPorCliente(intIdEmpresa, strFechaInicial, strFechaFinal, 0, false, 0, 0);
+                    ReportDataSource rds = new ReportDataSource("dstDatos", dstDatos);
+                    ReportParameter[] parameters = new ReportParameter[5];
+                    parameters[0] = new ReportParameter("pUsuario", "SYSTEM");
+                    parameters[1] = new ReportParameter("pEmpresa", strNombreEmpresa);
+                    parameters[2] = new ReportParameter("pNombreReporte", "Reporte de Ventas Generales");
+                    parameters[3] = new ReportParameter("pFechaDesde", strFechaInicial);
+                    parameters[4] = new ReportParameter("pFechaHasta", strFechaInicial);
+                    byte[] bytes = GenerarContenidoReporte(strFormatoReporte, strPlantillaReporte, rds, parameters);
+                    if (bytes.Length > 0)
+                    {
+                        JArray jarrayObj = new JArray();
+                        JObject jobDatosAdjuntos1 = new JObject
+                        {
+                            ["nombre"] = "ReporteVentasGenerales." + strFormatoReporte.ToLower(),
+                            ["contenido"] = Convert.ToBase64String(bytes)
+                        };
+                        jarrayObj.Add(jobDatosAdjuntos1);
+                        servicioEnvioCorreo.SendEmail(new string[] { empresa.CorreoNotificacion }, new string[] { }, "JLC Solutions CR - Reporte de ventas generales por rango de fechas", "Adjunto archivo en formato " + strFormatoReporte + " correspondiente al reporte de ventas por cliente para el rango de fechas solicitado.", false, jarrayObj);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al procesar el reporte de Resumen de Documentos Electrónicos: ", ex);
+                    throw new Exception("Se produjo un error al ejecutar el reporte resumen de documentos electrónicos. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public void EnviarReporteVentasAnuladas(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    string strPlantillaReporte = "rptVentas.rdlc";
+                    Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
+                    string strNombreEmpresa = empresa.NombreComercial != "" ? empresa.NombreComercial : empresa.NombreEmpresa;
+                    IList<ReporteVentas> dstDatos = ObtenerReporteVentasPorCliente(intIdEmpresa, strFechaInicial, strFechaFinal, 0, true, 0, 0);
+                    ReportDataSource rds = new ReportDataSource("dstDatos", dstDatos);
+                    ReportParameter[] parameters = new ReportParameter[5];
+                    parameters[0] = new ReportParameter("pUsuario", "SYSTEM");
+                    parameters[1] = new ReportParameter("pEmpresa", strNombreEmpresa);
+                    parameters[2] = new ReportParameter("pNombreReporte", "Reporte de Ventas Anuladas");
+                    parameters[3] = new ReportParameter("pFechaDesde", strFechaInicial);
+                    parameters[4] = new ReportParameter("pFechaHasta", strFechaInicial);
+                    byte[] bytes = GenerarContenidoReporte(strFormatoReporte, strPlantillaReporte, rds, parameters);
+                    if (bytes.Length > 0)
+                    {
+                        JArray jarrayObj = new JArray();
+                        JObject jobDatosAdjuntos1 = new JObject
+                        {
+                            ["nombre"] = "ReporteVentasAnuladas." + strFormatoReporte.ToLower(),
+                            ["contenido"] = Convert.ToBase64String(bytes)
+                        };
+                        jarrayObj.Add(jobDatosAdjuntos1);
+                        servicioEnvioCorreo.SendEmail(new string[] { empresa.CorreoNotificacion }, new string[] { }, "JLC Solutions CR - Reporte de ventas anuladas por rango de fechas", "Adjunto archivo en formato " + strFormatoReporte + " correspondiente al reporte de ventas por cliente para el rango de fechas solicitado.", false, jarrayObj);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al procesar el reporte de Resumen de Documentos Electrónicos: ", ex);
+                    throw new Exception("Se produjo un error al ejecutar el reporte resumen de documentos electrónicos. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public void EnviarReporteResumenMovimientos(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    string strPlantillaReporte = "rptResumenMovimientos.rdlc";
+                    Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
+                    string strNombreEmpresa = empresa.NombreComercial != "" ? empresa.NombreComercial : empresa.NombreEmpresa;
+                    IList<ReporteEstadoResultados> dstDatos = ObtenerReporteEstadoResultados(intIdEmpresa, strFechaInicial, strFechaFinal);
+                    ReportDataSource rds = new ReportDataSource("dstDatos", dstDatos);
+                    ReportParameter[] parameters = new ReportParameter[4];
+                    parameters[0] = new ReportParameter("pUsuario", "SYSTEM");
+                    parameters[1] = new ReportParameter("pEmpresa", strNombreEmpresa);
+                    parameters[2] = new ReportParameter("pFechaDesde", strFechaInicial);
+                    parameters[3] = new ReportParameter("pFechaHasta", strFechaInicial);
+                    byte[] bytes = GenerarContenidoReporte(strFormatoReporte, strPlantillaReporte, rds, parameters);
+                    if (bytes.Length > 0)
+                    {
+                        JArray jarrayObj = new JArray();
+                        JObject jobDatosAdjuntos1 = new JObject
+                        {
+                            ["nombre"] = "ReporteResumenDeMovimientos." + strFormatoReporte.ToLower(),
+                            ["contenido"] = Convert.ToBase64String(bytes)
+                        };
+                        jarrayObj.Add(jobDatosAdjuntos1);
+                        servicioEnvioCorreo.SendEmail(new string[] { empresa.CorreoNotificacion }, new string[] { }, "JLC Solutions CR - Reporte de resumen de movimientos por rango de fechas", "Adjunto archivo en formato " + strFormatoReporte + " correspondiente al reporte de ventas por cliente para el rango de fechas solicitado.", false, jarrayObj);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al procesar el reporte de Resumen de Documentos Electrónicos: ", ex);
+                    throw new Exception("Se produjo un error al ejecutar el reporte resumen de documentos electrónicos. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public void EnviarReporteDetalleEgresos(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    string strPlantillaReporte = "rptDetalleEgresos.rdlc";
+                    Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
+                    string strNombreEmpresa = empresa.NombreComercial != "" ? empresa.NombreComercial : empresa.NombreEmpresa;
+                    IList<ReporteDetalleEgreso> dstDatos = ObtenerReporteDetalleEgreso(intIdEmpresa, 0, strFechaInicial, strFechaFinal);
+                    ReportDataSource rds = new ReportDataSource("dstDatos", dstDatos);
+                    ReportParameter[] parameters = new ReportParameter[4];
+                    parameters[0] = new ReportParameter("pUsuario", "SYSTEM");
+                    parameters[1] = new ReportParameter("pEmpresa", strNombreEmpresa);
+                    parameters[2] = new ReportParameter("pFechaDesde", strFechaInicial);
+                    parameters[3] = new ReportParameter("pFechaHasta", strFechaInicial);
+                    byte[] bytes = GenerarContenidoReporte(strFormatoReporte, strPlantillaReporte, rds, parameters);
+                    if (bytes.Length > 0)
+                    {
+                        JArray jarrayObj = new JArray();
+                        JObject jobDatosAdjuntos1 = new JObject
+                        {
+                            ["nombre"] = "ReporteDetalleDeEgresos." + strFormatoReporte.ToLower(),
+                            ["contenido"] = Convert.ToBase64String(bytes)
+                        };
+                        jarrayObj.Add(jobDatosAdjuntos1);
+                        servicioEnvioCorreo.SendEmail(new string[] { empresa.CorreoNotificacion }, new string[] { }, "JLC Solutions CR - Reporte detallado de egresos por rango de fechas", "Adjunto archivo en formato " + strFormatoReporte + " correspondiente al reporte de ventas por cliente para el rango de fechas solicitado.", false, jarrayObj);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al procesar el reporte de Resumen de Documentos Electrónicos: ", ex);
+                    throw new Exception("Se produjo un error al ejecutar el reporte resumen de documentos electrónicos. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public void EnviarReporteFacturasEmitidas(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    string strPlantillaReporte = "rptComprobanteElectronico.rdlc";
+                    Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
+                    string strNombreEmpresa = empresa.NombreComercial != "" ? empresa.NombreComercial : empresa.NombreEmpresa;
+                    IList<ReporteDocumentoElectronico> dstDatos = ObtenerReporteFacturasElectronicasEmitidas(intIdEmpresa, strFechaInicial, strFechaFinal);
+                    ReportDataSource rds = new ReportDataSource("dstDatos", dstDatos);
+                    ReportParameter[] parameters = new ReportParameter[5];
+                    parameters[0] = new ReportParameter("pUsuario", "SYSTEM");
+                    parameters[1] = new ReportParameter("pEmpresa", strNombreEmpresa);
+                    parameters[2] = new ReportParameter("pNombreReporte", "Listado de Facturas Electrónicas Emitidas");
+                    parameters[3] = new ReportParameter("pFechaDesde", strFechaInicial);
+                    parameters[4] = new ReportParameter("pFechaHasta", strFechaInicial);
+                    byte[] bytes = GenerarContenidoReporte(strFormatoReporte, strPlantillaReporte, rds, parameters);
+                    if (bytes.Length > 0)
+                    {
+                        JArray jarrayObj = new JArray();
+                        JObject jobDatosAdjuntos1 = new JObject
+                        {
+                            ["nombre"] = "ReporteFacturasElectronicasEmitidas." + strFormatoReporte.ToLower(),
+                            ["contenido"] = Convert.ToBase64String(bytes)
+                        };
+                        jarrayObj.Add(jobDatosAdjuntos1);
+                        servicioEnvioCorreo.SendEmail(new string[] { empresa.CorreoNotificacion }, new string[] { }, "JLC Solutions CR - Reporte de facturas electrónicas emitidas por rango de fechas", "Adjunto archivo en formato " + strFormatoReporte + " correspondiente al reporte de ventas por cliente para el rango de fechas solicitado.", false, jarrayObj);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al enviar el reporte de listado facturas electrónicas emitidas: ", ex);
+                    throw new Exception("Se produjo un error al enviar el reporte de listado facturas electrónicas emitidas. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public void EnviarReporteFacturasRecibidas(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    string strPlantillaReporte = "rptComprobanteElectronico.rdlc";
+                    Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
+                    string strNombreEmpresa = empresa.NombreComercial != "" ? empresa.NombreComercial : empresa.NombreEmpresa;
+                    IList<ReporteDocumentoElectronico> dstDatos = ObtenerReporteFacturasElectronicasRecibidas(intIdEmpresa, strFechaInicial, strFechaFinal);
+                    ReportDataSource rds = new ReportDataSource("dstDatos", dstDatos);
+                    ReportParameter[] parameters = new ReportParameter[5];
+                    parameters[0] = new ReportParameter("pUsuario", "SYSTEM");
+                    parameters[1] = new ReportParameter("pEmpresa", strNombreEmpresa);
+                    parameters[2] = new ReportParameter("pNombreReporte", "Listado de Facturas Electrónicas Recibidas");
+                    parameters[3] = new ReportParameter("pFechaDesde", strFechaInicial);
+                    parameters[4] = new ReportParameter("pFechaHasta", strFechaInicial);
+                    byte[] bytes = GenerarContenidoReporte(strFormatoReporte, strPlantillaReporte, rds, parameters);
+                    if (bytes.Length > 0)
+                    {
+                        JArray jarrayObj = new JArray();
+                        JObject jobDatosAdjuntos1 = new JObject
+                        {
+                            ["nombre"] = "ReporteFacturasElectronicasRecibidas." + strFormatoReporte.ToLower(),
+                            ["contenido"] = Convert.ToBase64String(bytes)
+                        };
+                        jarrayObj.Add(jobDatosAdjuntos1);
+                        servicioEnvioCorreo.SendEmail(new string[] { empresa.CorreoNotificacion }, new string[] { }, "JLC Solutions CR - Reporte de facturas electrónicas recibidas por rango de fechas", "Adjunto archivo en formato " + strFormatoReporte + " correspondiente al reporte de ventas por cliente para el rango de fechas solicitado.", false, jarrayObj);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al enviar el reporte de listado facturas electrónicas recibidas: ", ex);
+                    throw new Exception("Se produjo un error al enviar el reporte de listado facturas electrónicas recibidas. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public void EnviarReporteNotasCreditoEmitidas(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    string strPlantillaReporte = "rptComprobanteElectronico.rdlc";
+                    Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
+                    string strNombreEmpresa = empresa.NombreComercial != "" ? empresa.NombreComercial : empresa.NombreEmpresa;
+                    IList<ReporteDocumentoElectronico> dstDatos = ObtenerReporteNotasCreditoElectronicasEmitidas(intIdEmpresa, strFechaInicial, strFechaFinal);
+                    ReportDataSource rds = new ReportDataSource("dstDatos", dstDatos);
+                    ReportParameter[] parameters = new ReportParameter[5];
+                    parameters[0] = new ReportParameter("pUsuario", "SYSTEM");
+                    parameters[1] = new ReportParameter("pEmpresa", strNombreEmpresa);
+                    parameters[2] = new ReportParameter("pNombreReporte", "Listado de Notas de Crédito Electrónicas Emitidas");
+                    parameters[3] = new ReportParameter("pFechaDesde", strFechaInicial);
+                    parameters[4] = new ReportParameter("pFechaHasta", strFechaInicial);
+                    byte[] bytes = GenerarContenidoReporte(strFormatoReporte, strPlantillaReporte, rds, parameters);
+                    if (bytes.Length > 0)
+                    {
+                        JArray jarrayObj = new JArray();
+                        JObject jobDatosAdjuntos1 = new JObject
+                        {
+                            ["nombre"] = "ReporteNotasCreditoElectrónicasEmitidas." + strFormatoReporte.ToLower(),
+                            ["contenido"] = Convert.ToBase64String(bytes)
+                        };
+                        jarrayObj.Add(jobDatosAdjuntos1);
+                        servicioEnvioCorreo.SendEmail(new string[] { empresa.CorreoNotificacion }, new string[] { }, "JLC Solutions CR - Reporte de notas de crédito electrónicas emitidas por rango de fechas", "Adjunto archivo en formato " + strFormatoReporte + " correspondiente al reporte de ventas por cliente para el rango de fechas solicitado.", false, jarrayObj);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al enviar el reporte de listado notas de crédito electrónicas emitidas: ", ex);
+                    throw new Exception("Se produjo un error al enviar el reporte de listado notas de crédito electrónicas emitidas. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public void EnviarReporteNotasCreditoRecibidas(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    string strPlantillaReporte = "rptComprobanteElectronico.rdlc";
+                    Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
+                    string strNombreEmpresa = empresa.NombreComercial != "" ? empresa.NombreComercial : empresa.NombreEmpresa;
+                    IList<ReporteDocumentoElectronico> dstDatos = ObtenerReporteNotasCreditoElectronicasRecibidas(intIdEmpresa, strFechaInicial, strFechaFinal);
+                    ReportDataSource rds = new ReportDataSource("dstDatos", dstDatos);
+                    ReportParameter[] parameters = new ReportParameter[5];
+                    parameters[0] = new ReportParameter("pUsuario", "SYSTEM");
+                    parameters[1] = new ReportParameter("pEmpresa", strNombreEmpresa);
+                    parameters[2] = new ReportParameter("pNombreReporte", "Listado de Notas de Crédito Electrónicas Recibidas");
+                    parameters[3] = new ReportParameter("pFechaDesde", strFechaInicial);
+                    parameters[4] = new ReportParameter("pFechaHasta", strFechaInicial);
+                    byte[] bytes = GenerarContenidoReporte(strFormatoReporte, strPlantillaReporte, rds, parameters);
+                    if (bytes.Length > 0)
+                    {
+                        JArray jarrayObj = new JArray();
+                        JObject jobDatosAdjuntos1 = new JObject
+                        {
+                            ["nombre"] = "ReporteNotasCreditoElectrónicasRecibidas." + strFormatoReporte.ToLower(),
+                            ["contenido"] = Convert.ToBase64String(bytes)
+                        };
+                        jarrayObj.Add(jobDatosAdjuntos1);
+                        servicioEnvioCorreo.SendEmail(new string[] { empresa.CorreoNotificacion }, new string[] { }, "JLC Solutions CR - Reporte de notas de crédito electrónicas recibidas por rango de fechas", "Adjunto archivo en formato " + strFormatoReporte + " correspondiente al reporte de ventas por cliente para el rango de fechas solicitado.", false, jarrayObj);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al enviar el reporte de listado notas de crédito electrónicas recibidas: ", ex);
+                    throw new Exception("Se produjo un error al enviar el reporte de listado notas de crédito electrónicas recibidas. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public void EnviarReporteResumenMovimientosElectronicos(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    string strPlantillaReporte = "rptResumenComprobanteElectronico.rdlc";
+                    Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
+                    string strNombreEmpresa = empresa.NombreComercial != "" ? empresa.NombreComercial : empresa.NombreEmpresa;
+                    IList<ReporteResumenMovimiento> dstDatos = ObtenerReporteResumenDocumentosElectronicos(intIdEmpresa, strFechaInicial, strFechaFinal);
+                    ReportDataSource rds = new ReportDataSource("dstDatos", dstDatos);
+                    ReportParameter[] parameters = new ReportParameter[4];
+                    parameters[0] = new ReportParameter("pUsuario", "SYSTEM");
+                    parameters[1] = new ReportParameter("pEmpresa", strNombreEmpresa);
+                    parameters[2] = new ReportParameter("pFechaDesde", strFechaInicial);
+                    parameters[3] = new ReportParameter("pFechaHasta", strFechaInicial);
+                    byte[] bytes = GenerarContenidoReporte(strFormatoReporte, strPlantillaReporte, rds, parameters);
+                    if (bytes.Length > 0)
+                    {
+                        JArray jarrayObj = new JArray();
+                        JObject jobDatosAdjuntos1 = new JObject
+                        {
+                            ["nombre"] = "ReporteResumenMovimientosElectronicos." + strFormatoReporte.ToLower(),
+                            ["contenido"] = Convert.ToBase64String(bytes)
+                        };
+                        jarrayObj.Add(jobDatosAdjuntos1);
+                        servicioEnvioCorreo.SendEmail(new string[] { empresa.CorreoNotificacion }, new string[] { }, "JLC Solutions CR - Reporte resumen de movimientos comprobantes electrónicos por rango de fechas", "Adjunto archivo en formato " + strFormatoReporte + " correspondiente al reporte de ventas por cliente para el rango de fechas solicitado.", false, jarrayObj);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al enviar el reporte de resumen de documentos electrónicos: ", ex);
+                    throw new Exception("Se produjo un error al enviar el reporte de resumen de documentos electrónicos. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        byte[] GenerarContenidoReporte(string strFormatoReporte, string strPlantillaReporte, ReportDataSource rds, ReportParameter[] parameters)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    ReportViewer viewer = new ReportViewer();
+                    viewer.LocalReport.DataSources.Clear();
+                    viewer.LocalReport.DataSources.Add(rds);
+                    viewer.ProcessingMode = ProcessingMode.Local;
+                    string reportPath = System.Web.Hosting.HostingEnvironment.ApplicationPhysicalPath + "PlantillaReportes/" + strPlantillaReporte;
+                    viewer.LocalReport.ReportPath = reportPath;
+                    viewer.LocalReport.SetParameters(parameters);
+                    Warning[] warnings;
+                    string[] streamids;
+                    string mimeType;
+                    string encoding;
+                    string filenameExtension;
+                    byte[] bytes = viewer.LocalReport.Render(strFormatoReporte, null, out mimeType, out encoding, out filenameExtension, out streamids, out warnings);
+                    return bytes;
+                }
+                catch (BusinessException ex)
+                {
+                    throw ex;
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al procesar el reporte de Resumen de Documentos Electrónicos: ", ex);
+                    throw new Exception("Se produjo un error al ejecutar el reporte resumen de documentos electrónicos. Por favor consulte con su proveedor.");
+
                 }
             }
         }

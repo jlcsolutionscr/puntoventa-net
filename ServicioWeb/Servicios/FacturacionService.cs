@@ -18,7 +18,7 @@ using LeandroSoftware.ServicioWeb.Contexto;
 using LeandroSoftware.Core.TiposComunes;
 using LeandroSoftware.Core.Dominio.Entidades;
 using LeandroSoftware.ServicioWeb.TiposDatosHacienda;
-using LeandroSoftware.Core.Utilities;
+using LeandroSoftware.Core.Utilitario;
 using System.Drawing;
 
 namespace LeandroSoftware.ServicioWeb.Servicios

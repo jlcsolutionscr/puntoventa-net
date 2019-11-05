@@ -5,7 +5,7 @@ Imports LeandroSoftware.Core.Dominio.Entidades
 Imports System.Threading.Tasks
 Imports LeandroSoftware.ClienteWCF
 Imports LeandroSoftware.Core.TiposComunes
-Imports LeandroSoftware.Core.Utilities
+Imports LeandroSoftware.Core.Utilitario
 
 Public Class FrmFactura
 #Region "Variables"

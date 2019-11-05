@@ -8,7 +8,7 @@
     <ProjectGuid>{74E3681E-1245-4268-ADB9-D76DA18B2FE0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>LeandroSoftware.Core</RootNamespace>
+    <RootNamespace>LeandroSoftware.Dominio</RootNamespace>
     <AssemblyName>Dominio</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

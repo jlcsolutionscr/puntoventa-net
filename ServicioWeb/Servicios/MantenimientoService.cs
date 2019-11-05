@@ -9,7 +9,7 @@ using LeandroSoftware.ServicioWeb.Contexto;
 using log4net;
 using Unity;
 using System.Text;
-using LeandroSoftware.Core.Utilities;
+using LeandroSoftware.Core.Utilitario;
 
 namespace LeandroSoftware.ServicioWeb.Servicios
 {
@@ -518,6 +518,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Include("ReportePorEmpresa.CatalogoReporte").Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.IdEmpresa == intIdEmpresa);
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     empresa.Certificado = null;
                     empresa.AccessToken = null;
                     empresa.RefreshToken = null;
@@ -527,6 +528,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     foreach (ReportePorEmpresa reporte in empresa.ReportePorEmpresa)
                         reporte.Empresa = null;
                     return empresa;
+                }
+                catch (BusinessException ex)
+                {
+                    throw ex;
                 }
                 catch (Exception ex)
                 {
@@ -545,6 +550,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     return Convert.ToBase64String(empresa.Logotipo);
+                }
+                catch (BusinessException ex)
+                {
+                    throw ex;
                 }
                 catch (Exception ex)
                 {
@@ -571,6 +580,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         empresa.Logotipo = null;
                     dbContext.Commit();
                 }
+                catch (BusinessException ex)
+                {
+                    throw ex;
+                }
                 catch (Exception ex)
                 {
                     log.Error("Error al actualizar el logotipo de la empresa: ", ex);
@@ -590,6 +603,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     byte[] bytCertificado = Convert.FromBase64String(strCertificado);
                     empresa.Certificado = bytCertificado;
                     dbContext.Commit();
+                }
+                catch (BusinessException ex)
+                {
+                    throw ex;
                 }
                 catch (Exception ex)
                 {

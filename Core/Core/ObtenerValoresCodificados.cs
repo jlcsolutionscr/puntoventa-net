@@ -1,4 +1,4 @@
-﻿namespace LeandroSoftware.Core.Utilities
+﻿namespace LeandroSoftware.Core.Utilitario
 {
     public static class ObtenerValoresCodificados
     {

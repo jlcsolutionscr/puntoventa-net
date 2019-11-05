@@ -1,7 +1,7 @@
 Imports System.Collections.Generic
 Imports LeandroSoftware.Core.Dominio.Entidades
 Imports LeandroSoftware.ClienteWCF
-Imports LeandroSoftware.Core.Utilities
+Imports LeandroSoftware.Core.Utilitario
 
 Public Class FrmUsuario
 #Region "Variables"

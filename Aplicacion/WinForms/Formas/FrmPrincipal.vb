@@ -5,7 +5,7 @@ Imports System.Collections.Generic
 Imports System.IO
 Imports System.Linq
 Imports LeandroSoftware.ClienteWCF
-Imports LeandroSoftware.Core.Utilities
+Imports LeandroSoftware.Core.Utilitario
 Imports LeandroSoftware.Core.TiposComunes
 
 Public Class FrmPrincipal

@@ -4,7 +4,7 @@ using System.Text;
 using System.Security.Cryptography;
 using System.Management;
 
-namespace LeandroSoftware.Core.Utilities
+namespace LeandroSoftware.Core.Utilitario
 {
     public static class Utilitario
     {

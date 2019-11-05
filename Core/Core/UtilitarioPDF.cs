@@ -6,7 +6,7 @@ using LeandroSoftware.Core.TiposComunes;
 using System.IO;
 using System.Collections.Generic;
 
-namespace LeandroSoftware.Core.Utilities
+namespace LeandroSoftware.Core.Utilitario
 {
     public static class UtilitarioPDF
     {

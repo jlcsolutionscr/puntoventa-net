@@ -3,6 +3,8 @@ Imports LeandroSoftware.ClienteWCF
 Imports LeandroSoftware.Core.TiposComunes
 Imports LeandroSoftware.Core.Dominio.Entidades
 Imports Microsoft.Reporting.WinForms
+Imports System.Reflection
+Imports System.IO
 
 Public Class FrmMenuReportes
 #Region "Variables"
@@ -10,6 +12,7 @@ Public Class FrmMenuReportes
     Private proveedor As Proveedor
     Private cliente As Cliente
     Private newFormReport As FrmReportViewer
+    Private assembly As Assembly = Assembly.LoadFrom("Core.dll")
 #End Region
 
 #Region "Métodos"
@@ -54,7 +57,7 @@ Public Class FrmMenuReportes
         Dim dtListaFormaPago As List(Of LlaveDescripcion)
         If LstReporte.SelectedIndex >= 0 Then
             strUsuario = FrmPrincipal.usuarioGlobal.CodigoUsuario
-            strEmpresa = FrmPrincipal.empresaGlobal.NombreEmpresa
+            strEmpresa = IIf(FrmPrincipal.empresaGlobal.NombreComercial = "", FrmPrincipal.empresaGlobal.NombreEmpresa, FrmPrincipal.empresaGlobal.NombreComercial)
             If cliente Is Nothing Then
                 intIdCliente = 0
             Else
@@ -117,10 +120,11 @@ Public Class FrmMenuReportes
                             newFormReport.repReportViewer.LocalReport.DataSources.Clear()
                             newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
                             newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
-                            newFormReport.repReportViewer.LocalReport.ReportEmbeddedResource = "LeandroSoftware.Aplicacion.rptVentas.rdlc"
+                            Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptVentas.rdlc")
+                            newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
                             Dim parameters(4) As ReportParameter
-                            parameters(0) = New ReportParameter("pUsuario", FrmPrincipal.usuarioGlobal.CodigoUsuario)
-                            parameters(1) = New ReportParameter("pEmpresa", FrmPrincipal.empresaGlobal.NombreComercial)
+                            parameters(0) = New ReportParameter("pUsuario", strUsuario)
+                            parameters(1) = New ReportParameter("pEmpresa", strEmpresa)
                             parameters(2) = New ReportParameter("pNombreReporte", strDescripcionReporte)
                             parameters(3) = New ReportParameter("pFechaDesde", FechaInicio.Text)
                             parameters(4) = New ReportParameter("pFechaHasta", FechaFinal.Text)
@@ -142,10 +146,11 @@ Public Class FrmMenuReportes
                     newFormReport.repReportViewer.LocalReport.DataSources.Clear()
                     newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
                     newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
-                    newFormReport.repReportViewer.LocalReport.ReportEmbeddedResource = "LeandroSoftware.Aplicacion.rptVentas.rdlc"
+                    Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptVentas.rdlc")
+                    newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
                     Dim parameters(4) As ReportParameter
-                    parameters(0) = New ReportParameter("pUsuario", FrmPrincipal.usuarioGlobal.CodigoUsuario)
-                    parameters(1) = New ReportParameter("pEmpresa", FrmPrincipal.empresaGlobal.NombreComercial)
+                    parameters(0) = New ReportParameter("pUsuario", strUsuario)
+                    parameters(1) = New ReportParameter("pEmpresa", strEmpresa)
                     parameters(2) = New ReportParameter("pNombreReporte", "Reporte de Ventas Anuladas")
                     parameters(3) = New ReportParameter("pFechaDesde", FechaInicio.Text)
                     parameters(4) = New ReportParameter("pFechaHasta", FechaFinal.Text)
@@ -166,10 +171,11 @@ Public Class FrmMenuReportes
                         newFormReport.repReportViewer.LocalReport.DataSources.Clear()
                         newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
                         newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
-                        newFormReport.repReportViewer.LocalReport.ReportEmbeddedResource = "LeandroSoftware.Aplicacion.rptVentasPorVendedor.rdlc"
+                        Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptVentasPorVendedor.rdlc")
+                        newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
                         Dim parameters(3) As ReportParameter
-                        parameters(0) = New ReportParameter("pUsuario", FrmPrincipal.usuarioGlobal.CodigoUsuario)
-                        parameters(1) = New ReportParameter("pEmpresa", FrmPrincipal.empresaGlobal.NombreComercial)
+                        parameters(0) = New ReportParameter("pUsuario", strUsuario)
+                        parameters(1) = New ReportParameter("pEmpresa", strEmpresa)
                         parameters(2) = New ReportParameter("pFechaDesde", FechaInicio.Text)
                         parameters(3) = New ReportParameter("pFechaHasta", FechaFinal.Text)
                         newFormReport.repReportViewer.LocalReport.SetParameters(parameters)
@@ -325,10 +331,11 @@ Public Class FrmMenuReportes
                     newFormReport.repReportViewer.LocalReport.DataSources.Clear()
                     newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
                     newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
-                    newFormReport.repReportViewer.LocalReport.ReportEmbeddedResource = "LeandroSoftware.Aplicacion.rptResumenMovimientos.rdlc"
+                    Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptResumenMovimientos.rdlc")
+                    newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
                     Dim parameters(3) As ReportParameter
-                    parameters(0) = New ReportParameter("pUsuario", FrmPrincipal.usuarioGlobal.CodigoUsuario)
-                    parameters(1) = New ReportParameter("pEmpresa", FrmPrincipal.empresaGlobal.NombreComercial)
+                    parameters(0) = New ReportParameter("pUsuario", strUsuario)
+                    parameters(1) = New ReportParameter("pEmpresa", strEmpresa)
                     parameters(2) = New ReportParameter("pFechaDesde", FechaInicio.Text)
                     parameters(3) = New ReportParameter("pFechaHasta", FechaFinal.Text)
                     newFormReport.repReportViewer.LocalReport.SetParameters(parameters)
@@ -348,10 +355,11 @@ Public Class FrmMenuReportes
                         newFormReport.repReportViewer.LocalReport.DataSources.Clear()
                         newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
                         newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
-                        newFormReport.repReportViewer.LocalReport.ReportEmbeddedResource = "LeandroSoftware.Aplicacion.rptDetalleEgresos.rdlc"
+                        Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptDetalleEgresos.rdlc")
+                        newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
                         Dim parameters(3) As ReportParameter
-                        parameters(0) = New ReportParameter("pUsuario", FrmPrincipal.usuarioGlobal.CodigoUsuario)
-                        parameters(1) = New ReportParameter("pEmpresa", FrmPrincipal.empresaGlobal.NombreComercial)
+                        parameters(0) = New ReportParameter("pUsuario", strUsuario)
+                        parameters(1) = New ReportParameter("pEmpresa", strEmpresa)
                         parameters(2) = New ReportParameter("pFechaDesde", FechaInicio.Text)
                         parameters(3) = New ReportParameter("pFechaHasta", FechaFinal.Text)
                         newFormReport.repReportViewer.LocalReport.SetParameters(parameters)
@@ -426,10 +434,11 @@ Public Class FrmMenuReportes
                     newFormReport.repReportViewer.LocalReport.DataSources.Clear()
                     newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
                     newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
-                    newFormReport.repReportViewer.LocalReport.ReportEmbeddedResource = "LeandroSoftware.Aplicacion.rptComprobanteElectronico.rdlc"
+                    Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptComprobanteElectronico.rdlc")
+                    newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
                     Dim parameters(4) As ReportParameter
-                    parameters(0) = New ReportParameter("pUsuario", FrmPrincipal.usuarioGlobal.CodigoUsuario)
-                    parameters(1) = New ReportParameter("pEmpresa", FrmPrincipal.empresaGlobal.NombreComercial)
+                    parameters(0) = New ReportParameter("pUsuario", strUsuario)
+                    parameters(1) = New ReportParameter("pEmpresa", strEmpresa)
                     parameters(2) = New ReportParameter("pNombreReporte", "Listado de Facturas Electrónicas Emitidas")
                     parameters(3) = New ReportParameter("pFechaDesde", FechaInicio.Text)
                     parameters(4) = New ReportParameter("pFechaHasta", FechaFinal.Text)
@@ -448,10 +457,11 @@ Public Class FrmMenuReportes
                     newFormReport.repReportViewer.LocalReport.DataSources.Clear()
                     newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
                     newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
-                    newFormReport.repReportViewer.LocalReport.ReportEmbeddedResource = "LeandroSoftware.Aplicacion.rptComprobanteElectronico.rdlc"
+                    Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptComprobanteElectronico.rdlc")
+                    newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
                     Dim parameters(4) As ReportParameter
-                    parameters(0) = New ReportParameter("pUsuario", FrmPrincipal.usuarioGlobal.CodigoUsuario)
-                    parameters(1) = New ReportParameter("pEmpresa", FrmPrincipal.empresaGlobal.NombreComercial)
+                    parameters(0) = New ReportParameter("pUsuario", strUsuario)
+                    parameters(1) = New ReportParameter("pEmpresa", strEmpresa)
                     parameters(2) = New ReportParameter("pNombreReporte", "Listado de Notas de Crédito Electrónicas Emitidas")
                     parameters(3) = New ReportParameter("pFechaDesde", FechaInicio.Text)
                     parameters(4) = New ReportParameter("pFechaHasta", FechaFinal.Text)
@@ -470,10 +480,11 @@ Public Class FrmMenuReportes
                     newFormReport.repReportViewer.LocalReport.DataSources.Clear()
                     newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
                     newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
-                    newFormReport.repReportViewer.LocalReport.ReportEmbeddedResource = "LeandroSoftware.Aplicacion.rptComprobanteElectronico.rdlc"
+                    Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptComprobanteElectronico.rdlc")
+                    newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
                     Dim parameters(4) As ReportParameter
-                    parameters(0) = New ReportParameter("pUsuario", FrmPrincipal.usuarioGlobal.CodigoUsuario)
-                    parameters(1) = New ReportParameter("pEmpresa", FrmPrincipal.empresaGlobal.NombreComercial)
+                    parameters(0) = New ReportParameter("pUsuario", strUsuario)
+                    parameters(1) = New ReportParameter("pEmpresa", strEmpresa)
                     parameters(2) = New ReportParameter("pNombreReporte", "Listado de Facturas Electrónicas Recibidas")
                     parameters(3) = New ReportParameter("pFechaDesde", FechaInicio.Text)
                     parameters(4) = New ReportParameter("pFechaHasta", FechaFinal.Text)
@@ -492,10 +503,11 @@ Public Class FrmMenuReportes
                     newFormReport.repReportViewer.LocalReport.DataSources.Clear()
                     newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
                     newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
-                    newFormReport.repReportViewer.LocalReport.ReportEmbeddedResource = "LeandroSoftware.Aplicacion.rptComprobanteElectronico.rdlc"
+                    Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptComprobanteElectronico.rdlc")
+                    newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
                     Dim parameters(4) As ReportParameter
-                    parameters(0) = New ReportParameter("pUsuario", FrmPrincipal.usuarioGlobal.CodigoUsuario)
-                    parameters(1) = New ReportParameter("pEmpresa", FrmPrincipal.empresaGlobal.NombreComercial)
+                    parameters(0) = New ReportParameter("pUsuario", strUsuario)
+                    parameters(1) = New ReportParameter("pEmpresa", strEmpresa)
                     parameters(2) = New ReportParameter("pNombreReporte", "Listado de Notas de Crédito Electrónicas Recibidas")
                     parameters(3) = New ReportParameter("pFechaDesde", FechaInicio.Text)
                     parameters(4) = New ReportParameter("pFechaHasta", FechaFinal.Text)
@@ -514,10 +526,11 @@ Public Class FrmMenuReportes
                     newFormReport.repReportViewer.LocalReport.DataSources.Clear()
                     newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
                     newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
-                    newFormReport.repReportViewer.LocalReport.ReportEmbeddedResource = "LeandroSoftware.Aplicacion.rptResumenComprobanteElectronico.rdlc"
+                    Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptResumenComprobanteElectronico.rdlc")
+                    newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
                     Dim parameters(3) As ReportParameter
-                    parameters(0) = New ReportParameter("pUsuario", FrmPrincipal.usuarioGlobal.CodigoUsuario)
-                    parameters(1) = New ReportParameter("pEmpresa", FrmPrincipal.empresaGlobal.NombreComercial)
+                    parameters(0) = New ReportParameter("pUsuario", strUsuario)
+                    parameters(1) = New ReportParameter("pEmpresa", strEmpresa)
                     parameters(2) = New ReportParameter("pFechaDesde", FechaInicio.Text)
                     parameters(3) = New ReportParameter("pFechaHasta", FechaFinal.Text)
                     newFormReport.repReportViewer.LocalReport.SetParameters(parameters)

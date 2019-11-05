@@ -79,15 +79,12 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.ReportViewer.Common, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Microsoft.ReportingServices.ReportViewerControl.Winforms.150.1358.0\lib\net40\Microsoft.ReportViewer.Common.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.ReportViewer.Design, Version=15.3.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Microsoft.ReportingServices.ReportViewerControl.Winforms.150.1358.0\lib\net40\Microsoft.ReportViewer.Design.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.ReportViewer.WinForms, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Microsoft.ReportingServices.ReportViewerControl.Winforms.150.1358.0\lib\net40\Microsoft.ReportViewer.WinForms.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.SqlServer.Types, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Microsoft.SqlServer.Types.14.0.1016.290\lib\net40\Microsoft.SqlServer.Types.dll</HintPath>
@@ -686,10 +683,10 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Reportes\FrmReportViewer.Designer.vb">
+    <Compile Include="Formas\FrmReportViewer.Designer.vb">
       <DependentUpon>FrmReportViewer.vb</DependentUpon>
     </Compile>
-    <Compile Include="Reportes\FrmReportViewer.vb">
+    <Compile Include="Formas\FrmReportViewer.vb">
       <SubType>Form</SubType>
     </Compile>
     <EmbeddedResource Include="Formas\FrmAceptarDocumentoElectronico.resx">
@@ -1001,15 +998,9 @@
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Reportes\FrmReportViewer.resx">
+    <EmbeddedResource Include="Formas\FrmReportViewer.resx">
       <DependentUpon>FrmReportViewer.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Reportes\rptResumenComprobanteElectronico.rdlc" />
-    <EmbeddedResource Include="Reportes\rptResumenMovimientos.rdlc" />
-    <EmbeddedResource Include="Reportes\rptDetalleEgresos.rdlc" />
-    <EmbeddedResource Include="Reportes\rptVentasPorVendedor.rdlc" />
-    <EmbeddedResource Include="Reportes\rptVentas.rdlc" />
-    <EmbeddedResource Include="Reportes\rptComprobanteElectronico.rdlc" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config">
@@ -1023,7 +1014,6 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <PublishFile Include="ADODB">
@@ -1079,6 +1069,7 @@
       <Generator>MyApplicationCodeGenerator</Generator>
       <LastGenOutput>Application.Designer.vb</LastGenOutput>
     </Content>
+    <None Include="packages.config" />
     <None Include="Resources\logo.png" />
     <None Include="Resources\emptyImage.bmp" />
   </ItemGroup>
@@ -1105,6 +1096,7 @@
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
   <PropertyGroup>
     <PreBuildEvent>
