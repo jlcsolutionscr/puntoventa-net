@@ -11,8 +11,6 @@ using System.Globalization;
 using System.Xml;
 using System.Text;
 using Microsoft.Reporting.WebForms;
-using System.IO;
-using System.Reflection;
 using LeandroSoftware.Core.Servicios;
 using Newtonsoft.Json.Linq;
 
@@ -51,15 +49,15 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         List<ReporteDocumentoElectronico> ObtenerReporteFacturasElectronicasRecibidas(int intIdEmpresa, string strFechaInicial, string strFechaFinal);
         List<ReporteDocumentoElectronico> ObtenerReporteNotasCreditoElectronicasRecibidas(int intIdEmpresa, string strFechaInicial, string strFechaFinal);
         List<ReporteResumenMovimiento> ObtenerReporteResumenDocumentosElectronicos(int intIdEmpresa, string strFechaInicial, string strFechaFinal);
-        void EnviarReporteVentasGenerales(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo);
-        void EnviarReporteVentasAnuladas(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo);
-        void EnviarReporteResumenMovimientos(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo);
-        void EnviarReporteDetalleEgresos(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo);
-        void EnviarReporteFacturasEmitidas(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo);
-        void EnviarReporteFacturasRecibidas(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo);
-        void EnviarReporteNotasCreditoEmitidas(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo);
-        void EnviarReporteNotasCreditoRecibidas(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo);
-        void EnviarReporteResumenMovimientosElectronicos(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo);
+        void EnviarReporteVentasGenerales(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo, string strCorreoEnvio);
+        void EnviarReporteVentasAnuladas(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo, string strCorreoEnvio);
+        void EnviarReporteResumenMovimientos(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo, string strCorreoEnvio);
+        void EnviarReporteDetalleEgresos(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo, string strCorreoEnvio);
+        void EnviarReporteFacturasEmitidas(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo, string strCorreoEnvio);
+        void EnviarReporteFacturasRecibidas(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo, string strCorreoEnvio);
+        void EnviarReporteNotasCreditoEmitidas(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo, string strCorreoEnvio);
+        void EnviarReporteNotasCreditoRecibidas(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo, string strCorreoEnvio);
+        void EnviarReporteResumenMovimientosElectronicos(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo, string strCorreoEnvio);
 
     }
 
@@ -1945,7 +1943,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void EnviarReporteVentasGenerales(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo)
+        public void EnviarReporteVentasGenerales(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo, string strCorreoEnvio)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -1972,7 +1970,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             ["contenido"] = Convert.ToBase64String(bytes)
                         };
                         jarrayObj.Add(jobDatosAdjuntos1);
-                        servicioEnvioCorreo.SendEmail(new string[] { empresa.CorreoNotificacion }, new string[] { }, "JLC Solutions CR - Reporte de ventas generales por rango de fechas", "Adjunto archivo en formato " + strFormatoReporte + " correspondiente al reporte de ventas por cliente para el rango de fechas solicitado.", false, jarrayObj);
+                        servicioEnvioCorreo.SendEmail(strCorreoEnvio, new string[] { empresa.CorreoNotificacion }, new string[] { }, "JLC Solutions CR - Reporte de ventas generales por rango de fechas", "Adjunto archivo en formato " + strFormatoReporte + " correspondiente al reporte de ventas por cliente para el rango de fechas solicitado.", false, jarrayObj);
                     }
                 }
                 catch (Exception ex)
@@ -1983,7 +1981,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void EnviarReporteVentasAnuladas(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo)
+        public void EnviarReporteVentasAnuladas(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo, string strCorreoEnvio)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -2010,7 +2008,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             ["contenido"] = Convert.ToBase64String(bytes)
                         };
                         jarrayObj.Add(jobDatosAdjuntos1);
-                        servicioEnvioCorreo.SendEmail(new string[] { empresa.CorreoNotificacion }, new string[] { }, "JLC Solutions CR - Reporte de ventas anuladas por rango de fechas", "Adjunto archivo en formato " + strFormatoReporte + " correspondiente al reporte de ventas por cliente para el rango de fechas solicitado.", false, jarrayObj);
+                        servicioEnvioCorreo.SendEmail(strCorreoEnvio, new string[] { empresa.CorreoNotificacion }, new string[] { }, "JLC Solutions CR - Reporte de ventas anuladas por rango de fechas", "Adjunto archivo en formato " + strFormatoReporte + " correspondiente al reporte de ventas por cliente para el rango de fechas solicitado.", false, jarrayObj);
                     }
                 }
                 catch (Exception ex)
@@ -2021,7 +2019,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void EnviarReporteResumenMovimientos(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo)
+        public void EnviarReporteResumenMovimientos(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo, string strCorreoEnvio)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -2047,7 +2045,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             ["contenido"] = Convert.ToBase64String(bytes)
                         };
                         jarrayObj.Add(jobDatosAdjuntos1);
-                        servicioEnvioCorreo.SendEmail(new string[] { empresa.CorreoNotificacion }, new string[] { }, "JLC Solutions CR - Reporte de resumen de movimientos por rango de fechas", "Adjunto archivo en formato " + strFormatoReporte + " correspondiente al reporte de ventas por cliente para el rango de fechas solicitado.", false, jarrayObj);
+                        servicioEnvioCorreo.SendEmail(strCorreoEnvio, new string[] { empresa.CorreoNotificacion }, new string[] { }, "JLC Solutions CR - Reporte de resumen de movimientos por rango de fechas", "Adjunto archivo en formato " + strFormatoReporte + " correspondiente al reporte de ventas por cliente para el rango de fechas solicitado.", false, jarrayObj);
                     }
                 }
                 catch (Exception ex)
@@ -2058,7 +2056,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void EnviarReporteDetalleEgresos(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo)
+        public void EnviarReporteDetalleEgresos(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo, string strCorreoEnvio)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -2084,7 +2082,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             ["contenido"] = Convert.ToBase64String(bytes)
                         };
                         jarrayObj.Add(jobDatosAdjuntos1);
-                        servicioEnvioCorreo.SendEmail(new string[] { empresa.CorreoNotificacion }, new string[] { }, "JLC Solutions CR - Reporte detallado de egresos por rango de fechas", "Adjunto archivo en formato " + strFormatoReporte + " correspondiente al reporte de ventas por cliente para el rango de fechas solicitado.", false, jarrayObj);
+                        servicioEnvioCorreo.SendEmail(strCorreoEnvio, new string[] { empresa.CorreoNotificacion }, new string[] { }, "JLC Solutions CR - Reporte detallado de egresos por rango de fechas", "Adjunto archivo en formato " + strFormatoReporte + " correspondiente al reporte de ventas por cliente para el rango de fechas solicitado.", false, jarrayObj);
                     }
                 }
                 catch (Exception ex)
@@ -2095,7 +2093,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void EnviarReporteFacturasEmitidas(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo)
+        public void EnviarReporteFacturasEmitidas(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo, string strCorreoEnvio)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -2122,7 +2120,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             ["contenido"] = Convert.ToBase64String(bytes)
                         };
                         jarrayObj.Add(jobDatosAdjuntos1);
-                        servicioEnvioCorreo.SendEmail(new string[] { empresa.CorreoNotificacion }, new string[] { }, "JLC Solutions CR - Reporte de facturas electrónicas emitidas por rango de fechas", "Adjunto archivo en formato " + strFormatoReporte + " correspondiente al reporte de ventas por cliente para el rango de fechas solicitado.", false, jarrayObj);
+                        servicioEnvioCorreo.SendEmail(strCorreoEnvio, new string[] { empresa.CorreoNotificacion }, new string[] { }, "JLC Solutions CR - Reporte de facturas electrónicas emitidas por rango de fechas", "Adjunto archivo en formato " + strFormatoReporte + " correspondiente al reporte de ventas por cliente para el rango de fechas solicitado.", false, jarrayObj);
                     }
                 }
                 catch (Exception ex)
@@ -2133,7 +2131,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void EnviarReporteFacturasRecibidas(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo)
+        public void EnviarReporteFacturasRecibidas(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo, string strCorreoEnvio)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -2160,7 +2158,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             ["contenido"] = Convert.ToBase64String(bytes)
                         };
                         jarrayObj.Add(jobDatosAdjuntos1);
-                        servicioEnvioCorreo.SendEmail(new string[] { empresa.CorreoNotificacion }, new string[] { }, "JLC Solutions CR - Reporte de facturas electrónicas recibidas por rango de fechas", "Adjunto archivo en formato " + strFormatoReporte + " correspondiente al reporte de ventas por cliente para el rango de fechas solicitado.", false, jarrayObj);
+                        servicioEnvioCorreo.SendEmail(strCorreoEnvio, new string[] { empresa.CorreoNotificacion }, new string[] { }, "JLC Solutions CR - Reporte de facturas electrónicas recibidas por rango de fechas", "Adjunto archivo en formato " + strFormatoReporte + " correspondiente al reporte de ventas por cliente para el rango de fechas solicitado.", false, jarrayObj);
                     }
                 }
                 catch (Exception ex)
@@ -2171,7 +2169,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void EnviarReporteNotasCreditoEmitidas(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo)
+        public void EnviarReporteNotasCreditoEmitidas(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo, string strCorreoEnvio)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -2198,7 +2196,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             ["contenido"] = Convert.ToBase64String(bytes)
                         };
                         jarrayObj.Add(jobDatosAdjuntos1);
-                        servicioEnvioCorreo.SendEmail(new string[] { empresa.CorreoNotificacion }, new string[] { }, "JLC Solutions CR - Reporte de notas de crédito electrónicas emitidas por rango de fechas", "Adjunto archivo en formato " + strFormatoReporte + " correspondiente al reporte de ventas por cliente para el rango de fechas solicitado.", false, jarrayObj);
+                        servicioEnvioCorreo.SendEmail(strCorreoEnvio, new string[] { empresa.CorreoNotificacion }, new string[] { }, "JLC Solutions CR - Reporte de notas de crédito electrónicas emitidas por rango de fechas", "Adjunto archivo en formato " + strFormatoReporte + " correspondiente al reporte de ventas por cliente para el rango de fechas solicitado.", false, jarrayObj);
                     }
                 }
                 catch (Exception ex)
@@ -2209,7 +2207,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void EnviarReporteNotasCreditoRecibidas(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo)
+        public void EnviarReporteNotasCreditoRecibidas(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo, string strCorreoEnvio)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -2236,7 +2234,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             ["contenido"] = Convert.ToBase64String(bytes)
                         };
                         jarrayObj.Add(jobDatosAdjuntos1);
-                        servicioEnvioCorreo.SendEmail(new string[] { empresa.CorreoNotificacion }, new string[] { }, "JLC Solutions CR - Reporte de notas de crédito electrónicas recibidas por rango de fechas", "Adjunto archivo en formato " + strFormatoReporte + " correspondiente al reporte de ventas por cliente para el rango de fechas solicitado.", false, jarrayObj);
+                        servicioEnvioCorreo.SendEmail(strCorreoEnvio, new string[] { empresa.CorreoNotificacion }, new string[] { }, "JLC Solutions CR - Reporte de notas de crédito electrónicas recibidas por rango de fechas", "Adjunto archivo en formato " + strFormatoReporte + " correspondiente al reporte de ventas por cliente para el rango de fechas solicitado.", false, jarrayObj);
                     }
                 }
                 catch (Exception ex)
@@ -2247,7 +2245,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void EnviarReporteResumenMovimientosElectronicos(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo)
+        public void EnviarReporteResumenMovimientosElectronicos(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo, string strCorreoEnvio)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -2273,7 +2271,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             ["contenido"] = Convert.ToBase64String(bytes)
                         };
                         jarrayObj.Add(jobDatosAdjuntos1);
-                        servicioEnvioCorreo.SendEmail(new string[] { empresa.CorreoNotificacion }, new string[] { }, "JLC Solutions CR - Reporte resumen de movimientos comprobantes electrónicos por rango de fechas", "Adjunto archivo en formato " + strFormatoReporte + " correspondiente al reporte de ventas por cliente para el rango de fechas solicitado.", false, jarrayObj);
+                        servicioEnvioCorreo.SendEmail(strCorreoEnvio, new string[] { empresa.CorreoNotificacion }, new string[] { }, "JLC Solutions CR - Reporte resumen de movimientos comprobantes electrónicos por rango de fechas", "Adjunto archivo en formato " + strFormatoReporte + " correspondiente al reporte de ventas por cliente para el rango de fechas solicitado.", false, jarrayObj);
                     }
                 }
                 catch (Exception ex)

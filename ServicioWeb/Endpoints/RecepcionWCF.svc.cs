@@ -17,6 +17,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
         private IFacturacionService servicioFacturacion;
         private static System.Collections.Specialized.NameValueCollection appSettings = WebConfigurationManager.AppSettings;
         private static string strCorreoNotificacionErrores = appSettings["strCorreoNotificacionErrores"].ToString();
+        private static string strCorreoEnvio = appSettings["facturaEmailFrom"].ToString();
 
         public RecepcionWCF()
         {
@@ -24,7 +25,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             string connString = WebConfigurationManager.ConnectionStrings["LeandroContext"].ConnectionString;
             unityContainer.RegisterInstance("conectionString", connString, new ContainerControlledLifetimeManager());
             unityContainer.RegisterType<IDbContext, LeandroContext>(new InjectionConstructor(new ResolvedParameter<string>("conectionString")));
-            unityContainer.RegisterType<ICorreoService, CorreoService>(new InjectionConstructor(appSettings["strEmailHost"], appSettings["strEmailPort"], appSettings["strEmailAccount"], appSettings["strEmailPass"], appSettings["strEmailFrom"], appSettings["strSSLHost"]));
+            unityContainer.RegisterType<ICorreoService, CorreoService>(new InjectionConstructor(appSettings["smtpEmailHost"], appSettings["smtpEmailPort"], appSettings["smtpEmailAccount"], appSettings["smtpEmailPass"], appSettings["smtpSSLHost"]));
             unityContainer.RegisterType<IFacturacionService, FacturacionService>();
             servicioEnvioCorreo = unityContainer.Resolve<ICorreoService>();
             servicioFacturacion = unityContainer.Resolve<IFacturacionService>();
@@ -32,7 +33,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
 
         public void RecibirRespuestaHacienda(RespuestaHaciendaDTO mensaje)
         {
-            servicioFacturacion.ProcesarRespuestaHacienda(mensaje, servicioEnvioCorreo, strCorreoNotificacionErrores);
+            servicioFacturacion.ProcesarRespuestaHacienda(mensaje, servicioEnvioCorreo, strCorreoEnvio, strCorreoNotificacionErrores);
         }
 
         public void Dispose()

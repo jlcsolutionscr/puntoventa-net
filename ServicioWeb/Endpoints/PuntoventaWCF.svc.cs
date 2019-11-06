@@ -42,7 +42,9 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             appSettings["strClientId"].ToString(),
             appSettings["strServicioTokenURL"].ToString(),
             appSettings["strComprobantesCallbackURL"].ToString(),
-            appSettings["strCorreoNotificacionErrores"].ToString()
+            appSettings["strCorreoNotificacionErrores"].ToString(),
+            appSettings["facturaEmailFrom"].ToString(),
+            appSettings["recepcionEmailFrom"].ToString()
         );
         private static string strApplicationKey = appSettings["ApplicationKey"].ToString();
         private static JavaScriptSerializer serializer = new CustomJavascriptSerializer();
@@ -102,7 +104,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             unityContainer.RegisterType<LeandroContext>(new ContainerControlledLifetimeManager());
             unityContainer.RegisterInstance("conectionString", connString, new ContainerControlledLifetimeManager());
             unityContainer.RegisterType<IDbContext, LeandroContext>(new InjectionConstructor(new ResolvedParameter<string>("conectionString")));
-            unityContainer.RegisterType<ICorreoService, CorreoService>(new InjectionConstructor(appSettings["strEmailHost"], appSettings["strEmailPort"], appSettings["strEmailAccount"], appSettings["strEmailPass"], appSettings["strEmailFrom"], appSettings["strSSLHost"]));
+            unityContainer.RegisterType<ICorreoService, CorreoService>(new InjectionConstructor(appSettings["smtpEmailHost"], appSettings["smtpEmailPort"], appSettings["smtpEmailAccount"], appSettings["smtpEmailPass"], appSettings["smtpSSLHost"]));
             unityContainer.RegisterType<IMantenimientoService, MantenimientoService>();
             unityContainer.RegisterType<IFacturacionService, FacturacionService>();
             unityContainer.RegisterType<ICompraService, CompraService>();
@@ -143,7 +145,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                             ["contenido"] = Convert.ToBase64String(bytes)
                         };
                         jarrayObj.Add(jobDatosAdjuntos1);
-                        servicioEnvioCorreo.SendEmail(new string[] { configuracion.CorreoNotificacionErrores }, new string[] { }, "Archivo log con errores de procesamiento", "Adjunto archivo con errores de procesamiento anteriores a la fecha actual.", false, jarrayObj);
+                        servicioEnvioCorreo.SendEmail(configuracion.CorreoCuentaFacturacion, new string[] { configuracion.CorreoNotificacionErrores }, new string[] { }, "Archivo log con errores de procesamiento", "Adjunto archivo con errores de procesamiento anteriores a la fecha actual.", false, jarrayObj);
                     }
                     File.Delete(str);
                 }
@@ -470,70 +472,70 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                     case "EnviarNotificacionDocumentoElectronico":
                         intIdDocumento = int.Parse(parametrosJO.Property("IdDocumento").Value.ToString());
                         string strCorreoReceptor = parametrosJO.Property("CorreoReceptor").Value.ToString();
-                        servicioFacturacion.EnviarNotificacionDocumentoElectronico(intIdDocumento, strCorreoReceptor, servicioEnvioCorreo, configuracion.CorreoNotificacionErrores);
+                        servicioFacturacion.EnviarNotificacionDocumentoElectronico(intIdDocumento, strCorreoReceptor, servicioEnvioCorreo, configuracion.CorreoCuentaFacturacion, configuracion.CorreoNotificacionErrores);
                         break;
                     case "EnviarReporteVentasGenerales":
                         intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                         strFechaInicial = parametrosJO.Property("FechaInicial").Value.ToString();
                         strFechaFinal = parametrosJO.Property("FechaFinal").Value.ToString();
                         strFormatoReporte = parametrosJO.Property("FormatoReporte").Value.ToString();
-                        servicioReportes.EnviarReporteVentasGenerales(intIdEmpresa, strFechaInicial, strFechaFinal, strFormatoReporte, servicioEnvioCorreo);
+                        servicioReportes.EnviarReporteVentasGenerales(intIdEmpresa, strFechaInicial, strFechaFinal, strFormatoReporte, servicioEnvioCorreo, configuracion.CorreoCuentaFacturacion);
                         break;
                     case "EnviarReporteVentasAnuladas":
                         intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                         strFechaInicial = parametrosJO.Property("FechaInicial").Value.ToString();
                         strFechaFinal = parametrosJO.Property("FechaFinal").Value.ToString();
                         strFormatoReporte = parametrosJO.Property("FormatoReporte").Value.ToString();
-                        servicioReportes.EnviarReporteVentasAnuladas(intIdEmpresa, strFechaInicial, strFechaFinal, strFormatoReporte, servicioEnvioCorreo);
+                        servicioReportes.EnviarReporteVentasAnuladas(intIdEmpresa, strFechaInicial, strFechaFinal, strFormatoReporte, servicioEnvioCorreo, configuracion.CorreoCuentaFacturacion);
                         break;
                     case "EnviarReporteResumenMovimientos":
                         intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                         strFechaInicial = parametrosJO.Property("FechaInicial").Value.ToString();
                         strFechaFinal = parametrosJO.Property("FechaFinal").Value.ToString();
                         strFormatoReporte = parametrosJO.Property("FormatoReporte").Value.ToString();
-                        servicioReportes.EnviarReporteResumenMovimientos(intIdEmpresa, strFechaInicial, strFechaFinal, strFormatoReporte, servicioEnvioCorreo);
+                        servicioReportes.EnviarReporteResumenMovimientos(intIdEmpresa, strFechaInicial, strFechaFinal, strFormatoReporte, servicioEnvioCorreo, configuracion.CorreoCuentaFacturacion);
                         break;
                     case "EnviarReporteDetalleEgresos":
                         intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                         strFechaInicial = parametrosJO.Property("FechaInicial").Value.ToString();
                         strFechaFinal = parametrosJO.Property("FechaFinal").Value.ToString();
                         strFormatoReporte = parametrosJO.Property("FormatoReporte").Value.ToString();
-                        servicioReportes.EnviarReporteDetalleEgresos(intIdEmpresa, strFechaInicial, strFechaFinal, strFormatoReporte, servicioEnvioCorreo);
+                        servicioReportes.EnviarReporteDetalleEgresos(intIdEmpresa, strFechaInicial, strFechaFinal, strFormatoReporte, servicioEnvioCorreo, configuracion.CorreoCuentaFacturacion);
                         break;
                     case "EnviarReporteFacturasEmitidas":
                         intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                         strFechaInicial = parametrosJO.Property("FechaInicial").Value.ToString();
                         strFechaFinal = parametrosJO.Property("FechaFinal").Value.ToString();
                         strFormatoReporte = parametrosJO.Property("FormatoReporte").Value.ToString();
-                        servicioReportes.EnviarReporteFacturasEmitidas(intIdEmpresa, strFechaInicial, strFechaFinal, strFormatoReporte, servicioEnvioCorreo);
+                        servicioReportes.EnviarReporteFacturasEmitidas(intIdEmpresa, strFechaInicial, strFechaFinal, strFormatoReporte, servicioEnvioCorreo, configuracion.CorreoCuentaFacturacion);
                         break;
                     case "EnviarReporteNotasCreditoEmitidas":
                         intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                         strFechaInicial = parametrosJO.Property("FechaInicial").Value.ToString();
                         strFechaFinal = parametrosJO.Property("FechaFinal").Value.ToString();
                         strFormatoReporte = parametrosJO.Property("FormatoReporte").Value.ToString();
-                        servicioReportes.EnviarReporteNotasCreditoEmitidas(intIdEmpresa, strFechaInicial, strFechaFinal, strFormatoReporte, servicioEnvioCorreo);
+                        servicioReportes.EnviarReporteNotasCreditoEmitidas(intIdEmpresa, strFechaInicial, strFechaFinal, strFormatoReporte, servicioEnvioCorreo, configuracion.CorreoCuentaFacturacion);
                         break;
                     case "EnviarReporteFacturasRecibidas":
                         intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                         strFechaInicial = parametrosJO.Property("FechaInicial").Value.ToString();
                         strFechaFinal = parametrosJO.Property("FechaFinal").Value.ToString();
                         strFormatoReporte = parametrosJO.Property("FormatoReporte").Value.ToString();
-                        servicioReportes.EnviarReporteFacturasRecibidas(intIdEmpresa, strFechaInicial, strFechaFinal, strFormatoReporte, servicioEnvioCorreo);
+                        servicioReportes.EnviarReporteFacturasRecibidas(intIdEmpresa, strFechaInicial, strFechaFinal, strFormatoReporte, servicioEnvioCorreo, configuracion.CorreoCuentaFacturacion);
                         break;
                     case "EnviarReporteNotasCreditoRecibidas":
                         intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                         strFechaInicial = parametrosJO.Property("FechaInicial").Value.ToString();
                         strFechaFinal = parametrosJO.Property("FechaFinal").Value.ToString();
                         strFormatoReporte = parametrosJO.Property("FormatoReporte").Value.ToString();
-                        servicioReportes.EnviarReporteNotasCreditoRecibidas(intIdEmpresa, strFechaInicial, strFechaFinal, strFormatoReporte, servicioEnvioCorreo);
+                        servicioReportes.EnviarReporteNotasCreditoRecibidas(intIdEmpresa, strFechaInicial, strFechaFinal, strFormatoReporte, servicioEnvioCorreo, configuracion.CorreoCuentaFacturacion);
                         break;
                     case "EnviarReporteResumenMovimientosElectronicos":
                         intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                         strFechaInicial = parametrosJO.Property("FechaInicial").Value.ToString();
                         strFechaFinal = parametrosJO.Property("FechaFinal").Value.ToString();
                         strFormatoReporte = parametrosJO.Property("FormatoReporte").Value.ToString();
-                        servicioReportes.EnviarReporteResumenMovimientosElectronicos(intIdEmpresa, strFechaInicial, strFechaFinal, strFormatoReporte, servicioEnvioCorreo);
+                        servicioReportes.EnviarReporteResumenMovimientosElectronicos(intIdEmpresa, strFechaInicial, strFechaFinal, strFormatoReporte, servicioEnvioCorreo, configuracion.CorreoCuentaFacturacion);
                         break;
                     default:
                         throw new Exception("El método solicitado no ha sido implementado: " + strNombreMetodo);

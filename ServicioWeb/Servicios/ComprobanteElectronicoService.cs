@@ -1049,7 +1049,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     throw new BusinessException("El documento por aceptar no corresponde a una factura electrónica o nota de crédito electrónica. Por favor verifique. . .");
                 string strClaveNumerica = documentoXml.GetElementsByTagName("Clave").Item(0).InnerText;
                 DocumentoElectronico documentoExistente = dbContext.DocumentoElectronicoRepository.Where(x => x.ClaveNumerica == strClaveNumerica & x.IdEmpresa == empresa.IdEmpresa).FirstOrDefault();
-                if (documentoExistente != null) throw new Exception("El documento electrónico con clave " + strClaveNumerica + " ya se encuentra registrado en el sistema. . .");
+                if (documentoExistente != null) throw new BusinessException("El documento electrónico con clave " + strClaveNumerica + " ya se encuentra registrado en el sistema. . .");
                 MensajeReceptor mensajeReceptor = new MensajeReceptor
                 {
                     Clave = documentoXml.GetElementsByTagName("Clave").Item(0).InnerText,
@@ -1125,6 +1125,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 TipoDocumento tipoDoc = intMensaje == 0 ? TipoDocumento.MensajeReceptorAceptado : intMensaje == 1 ? TipoDocumento.MensajeReceptorAceptadoParcial : TipoDocumento.MensajeReceptorRechazado;
                 DocumentoElectronico documento = RegistrarDocumentoElectronico(empresa, mensajeReceptorXml, documentoXml, dbContext, intSucursal, intTerminal, tipoDoc, strCorreoNotificacion);
                 return documento;
+            }
+            catch (BusinessException ex)
+            {
+                throw ex;
             }
             catch (Exception ex)
             {

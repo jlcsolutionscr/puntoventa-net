@@ -56,18 +56,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         int ObtenerTotalListaDevolucionesPorCliente(int intIdEmpresa, int intIdDevolucion, string strNombre);
         IEnumerable<DevolucionCliente> ObtenerListadoDevolucionesPorCliente(int intIdEmpresa, int numPagina, int cantRec, int intIdDevolucion, string strNombre);
         void GeneraMensajeReceptor(string strDatos, int intIdEmpresa, int intSucursal, int intTerminal, int intMensaje, DatosConfiguracion datos);
-
         IList<DocumentoDetalle> ObtenerListadoDocumentosElectronicosPendientes();
         IList<DocumentoDetalle> ObtenerListadoDocumentosElectronicosEnProceso(int intIdEmpresa);
-        void ProcesarDocumentosElectronicosPendientes(ICorreoService servicioEnvioCorreo, DatosConfiguracion datos);
+        void ProcesarDocumentosElectronicosPendientes(ICorreoService servicioEnvioCorreo, IServerMailService servicioRecepcionCorreo, DatosConfiguracion datos);
         void EnviarDocumentoElectronicoPendiente(int intIdDocumento, DatosConfiguracion datos);
         DocumentoElectronico ObtenerRespuestaDocumentoElectronicoEnviado(int intIdDocumento, DatosConfiguracion datos);
         int ObtenerTotalDocumentosElectronicosProcesados(int intIdEmpresa);
         IList<DocumentoDetalle> ObtenerListadoDocumentosElectronicosProcesados(int intIdEmpresa, int numPagina, int cantRec);
         DocumentoElectronico ObtenerDocumentoElectronico(int intIdDocumento);
         DocumentoElectronico ObtenerDocumentoElectronicoPorClave(string strClave);
-        void ProcesarRespuestaHacienda(RespuestaHaciendaDTO mensaje, ICorreoService servicioEnvioCorreo, string strCorreoNotificacionErrores);
-        void EnviarNotificacionDocumentoElectronico(int intIdDocumento, string strCorreoReceptor, ICorreoService servicioEnvioCorreo, string strCorreoNotificacionErrores);
+        void ProcesarRespuestaHacienda(RespuestaHaciendaDTO mensaje, ICorreoService servicioEnvioCorreo, string strCorreoEnvio, string strCorreoNotificacionErrores);
+        void EnviarNotificacionDocumentoElectronico(int intIdDocumento, string strCorreoReceptor, ICorreoService servicioEnvioCorreo, string strCorreoEnvio, string strCorreoNotificacionErrores);
     }
 
     public class FacturacionService : IFacturacionService
@@ -1790,7 +1789,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public async void ProcesarDocumentosElectronicosPendientes(ICorreoService servicioEnvioCorreo, DatosConfiguracion datos)
+        public async void ProcesarDocumentosElectronicosPendientes(ICorreoService servicioEnvioCorreo, IServerMailService servicioRecepcionCorreo, DatosConfiguracion datos)
         {
             var stringBuilder = new StringBuilder();
             try
@@ -1855,7 +1854,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                             respuesta.RespuestaXml = Convert.ToBase64String(estadoDoc.Respuesta);
                                             try
                                             {
-                                                ProcesarMensajeDeRespuesta(respuesta, dbContext, servicioEnvioCorreo, datos.CorreoNotificacionErrores);
+                                                ProcesarMensajeDeRespuesta(respuesta, dbContext, servicioEnvioCorreo, datos.CorreoCuentaFacturacion, datos.CorreoNotificacionErrores);
                                             }
                                             catch (Exception ex)
                                             {
@@ -1870,6 +1869,90 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 stringBuilder.AppendLine("Error al procesar el documento electrónico: No se encontro la empresa con id: " + documento.IdEmpresa);
                             }
                             
+                        }
+                        List<POPEmail> listadoCorreoPorProcesar = new List<POPEmail>();
+                        try
+                        {
+                            listadoCorreoPorProcesar = servicioRecepcionCorreo.ObtenerListadoMensaje().ToList();
+                        }
+                        catch (Exception ex)
+                        {
+                            string strError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                            stringBuilder.AppendLine("Error al obtener la lista de correos por procesar. Detalle: " + strError);
+                        }
+                        foreach (POPEmail correo in listadoCorreoPorProcesar)
+                        {
+                            try
+                            {
+                                string strDatos = "";
+                                string strIdentificacion = "";
+                                foreach (Attachment archivo in correo.Attachments)
+                                {
+                                    if (strDatos == "" && archivo.ContentType == "text/xml")
+                                    {
+                                        XmlDocument documentoXml = new XmlDocument();
+                                        string strXml = Encoding.UTF8.GetString(archivo.Content);
+                                        documentoXml.LoadXml(strXml);
+                                        if (documentoXml.DocumentElement.Name == "FacturaElectronica" || documentoXml.DocumentElement.Name == "NotaCreditoElectronica")
+                                        {
+                                            if (documentoXml.GetElementsByTagName("Otros").Count > 0)
+                                            {
+                                                XmlNode otrosNode = documentoXml.GetElementsByTagName("Otros").Item(0);
+                                                otrosNode.InnerText = "";
+                                            }
+                                            if (documentoXml.GetElementsByTagName("Receptor").Count > 0)
+                                            {
+                                                XmlNode emisorNode = documentoXml.GetElementsByTagName("Receptor").Item(0);
+                                                strIdentificacion = emisorNode["Identificacion"].InnerText.Substring(2);
+                                            }
+                                            strDatos = documentoXml.OuterXml.Replace("'", "");
+                                        }
+                                    }
+                                }
+                                if (strDatos == "")
+                                {
+                                    servicioRecepcionCorreo.EliminarMensaje(correo.MessageNumber);
+                                    string strMensaje = "El correo no contiene los archivos requeridos o ninguno de los archivos adjuntos corresponde a un documento electrónico válido para ser aceptado.";
+                                    JArray archivosJArray = new JArray();
+                                    string strFrom = correo.From.ToString().Substring(correo.From.ToString().IndexOf("'") + 8);
+                                    strFrom = strFrom.Substring(0, strFrom.IndexOf("'"));
+                                    servicioEnvioCorreo.SendEmail(datos.CorreoCuentaRecepcion, new string[] { strFrom }, new string[] { }, "Error en la aceptación del documento electrónico enviado", strMensaje, false, archivosJArray);
+                                    continue;
+                                }
+                                Empresa empresa = dbContext.EmpresaRepository.Where(x => x.Identificacion == strIdentificacion).FirstOrDefault();
+                                if (empresa == null)
+                                {
+                                    servicioRecepcionCorreo.EliminarMensaje(correo.MessageNumber);
+                                    string strMensaje = "La identificación contenida en el archivo XML enviado: " + strIdentificacion + " no pertenece a ninguna empresa suscrita al servicio de facturación electrónica.";
+                                    JArray archivosJArray = new JArray();
+                                    string strFrom = correo.From.ToString().Substring(correo.From.ToString().IndexOf("'") + 8);
+                                    strFrom = strFrom.Substring(0, strFrom.IndexOf("'"));
+                                    servicioEnvioCorreo.SendEmail(datos.CorreoCuentaRecepcion, new string[] { strFrom }, new string[] { }, "Error en la aceptación del documento electrónico enviado", strMensaje, false, archivosJArray);
+                                    continue;
+                                }
+                                try
+                                {
+                                    GeneraMensajeReceptor(strDatos, empresa.IdEmpresa, 1, 1, 0, datos);
+                                    servicioRecepcionCorreo.EliminarMensaje(correo.MessageNumber);
+                                }
+                                catch (BusinessException ex)
+                                {
+                                    servicioRecepcionCorreo.EliminarMensaje(correo.MessageNumber);
+                                    JArray archivosJArray = new JArray();
+                                    string strFrom = correo.From.ToString().Substring(correo.From.ToString().IndexOf("'") + 8);
+                                    strFrom = strFrom.Substring(0, strFrom.IndexOf("'"));
+                                    servicioEnvioCorreo.SendEmail(datos.CorreoCuentaRecepcion, new string[] { strFrom }, new string[] { }, "Error en la aceptación del documento electrónico enviado", ex.Message, false, archivosJArray);
+                                }
+                                catch (Exception ex)
+                                {
+                                    throw ex;
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                string strError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                                stringBuilder.AppendLine("Error al obtener la lista de correos por procesar. Detalle: " + strError);
+                            }
                         }
                         procesando.Valor = "NO";
                         dbContext.Commit();
@@ -1892,7 +1975,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     ["contenido"] = Convert.ToBase64String(bytes)
                 };
                 archivosJArray.Add(jobDatosAdjuntos1);
-                servicioEnvioCorreo.SendEmail(new string[] { datos.CorreoNotificacionErrores }, new string[] { }, "Excepción en la interface de procesamiento de documentos pendientes", "Adjunto el archivo con el detalle de los errores en procesamiento.", false, archivosJArray);
+                servicioEnvioCorreo.SendEmail(datos.CorreoCuentaFacturacion, new string[] { datos.CorreoNotificacionErrores }, new string[] { }, "Excepción en la interface de procesamiento de documentos pendientes", "Adjunto el archivo con el detalle de los errores en procesamiento.", false, archivosJArray);
             }
         }
 
@@ -2100,23 +2183,23 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void ProcesarRespuestaHacienda(RespuestaHaciendaDTO mensaje, ICorreoService servicioEnvioCorreo, string strCorreoNotificacionErrores)
+        public void ProcesarRespuestaHacienda(RespuestaHaciendaDTO mensaje, ICorreoService servicioEnvioCorreo, string strCorreoEnvio, string strCorreoNotificacionErrores)
         {
             try
             {
                 using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
                 {
-                    ProcesarMensajeDeRespuesta(mensaje, dbContext, servicioEnvioCorreo, strCorreoNotificacionErrores);
+                    ProcesarMensajeDeRespuesta(mensaje, dbContext, servicioEnvioCorreo, strCorreoEnvio, strCorreoNotificacionErrores);
                 }
             }
             catch (Exception ex)
             {
                 JArray emptyJArray = new JArray();
-                servicioEnvioCorreo.SendEmail(new string[] { strCorreoNotificacionErrores }, new string[] { }, "Excepción en la interface de procesamiento del mensaje de respuesta de Hacienda", ex.Message, false, emptyJArray);
+                servicioEnvioCorreo.SendEmail(strCorreoEnvio, new string[] { strCorreoNotificacionErrores }, new string[] { }, "Excepción en la interface de procesamiento del mensaje de respuesta de Hacienda", ex.Message, false, emptyJArray);
             }
         }
 
-        private void ProcesarMensajeDeRespuesta(RespuestaHaciendaDTO mensaje, IDbContext dbContext, ICorreoService servicioEnvioCorreo, string strCorreoNotificacionErrores)
+        private void ProcesarMensajeDeRespuesta(RespuestaHaciendaDTO mensaje, IDbContext dbContext, ICorreoService servicioEnvioCorreo, string strCorreoEnvio, string strCorreoNotificacionErrores)
         {
             string strClave = "";
             string strConsecutivo = "";
@@ -2139,7 +2222,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     JArray emptyJArray = new JArray();
                     string strBody = "El documento con clave " + mensaje.Clave + " no se encuentra registrado en los registros del cliente.";
-                    servicioEnvioCorreo.SendEmail(new string[] { strCorreoNotificacionErrores }, new string[] { }, "Error al recibir respuesta de Hacienda.", strBody, false, emptyJArray);
+                    servicioEnvioCorreo.SendEmail(strCorreoEnvio, new string[] { strCorreoNotificacionErrores }, new string[] { }, "Error al recibir respuesta de Hacienda.", strBody, false, emptyJArray);
                 }
                 else
                 {
@@ -2192,18 +2275,18 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 }
                             }
                         }
-                        if (documentoElectronico.CorreoNotificacion != "") GenerarNotificacionDocumentoElectronico(documentoElectronico, empresa, dbContext, servicioEnvioCorreo, documentoElectronico.CorreoNotificacion, strCorreoNotificacionErrores);
+                        if (documentoElectronico.CorreoNotificacion != "") GenerarNotificacionDocumentoElectronico(documentoElectronico, empresa, dbContext, servicioEnvioCorreo, documentoElectronico.CorreoNotificacion, strCorreoEnvio, strCorreoNotificacionErrores);
                     }
                 }
             }
             catch (Exception ex)
             {
                 JArray emptyJArray = new JArray();
-                servicioEnvioCorreo.SendEmail(new string[] { strCorreoNotificacionErrores }, new string[] { }, "Excepción en el procesamiento de la respuesta de hacienda para el comprobante con clave: " + mensaje.Clave, ex.Message, false, emptyJArray);
+                servicioEnvioCorreo.SendEmail(strCorreoEnvio, new string[] { strCorreoNotificacionErrores }, new string[] { }, "Excepción en el procesamiento de la respuesta de hacienda para el comprobante con clave: " + mensaje.Clave, ex.Message, false, emptyJArray);
             }
         }
 
-        public void EnviarNotificacionDocumentoElectronico(int intIdDocumento, string strCorreoReceptor, ICorreoService servicioEnvioCorreo, string strCorreoNotificacionErrores)
+        public void EnviarNotificacionDocumentoElectronico(int intIdDocumento, string strCorreoReceptor, ICorreoService servicioEnvioCorreo, string strCorreoEnvio, string strCorreoNotificacionErrores)
         {
             try
             {
@@ -2214,7 +2297,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         JArray emptyJArray = new JArray();
                         string strBody = "El documento con ID " + intIdDocumento + " no se encuentra registrado.";
-                        servicioEnvioCorreo.SendEmail(new string[] { strCorreoNotificacionErrores }, new string[] { }, "Error al recibir respuesta de Hacienda.", strBody, false, emptyJArray);
+                        servicioEnvioCorreo.SendEmail(strCorreoEnvio, new string[] { strCorreoNotificacionErrores }, new string[] { }, "Error al recibir respuesta de Hacienda.", strBody, false, emptyJArray);
                     }
                     else
                     {
@@ -2222,7 +2305,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                         if (documento.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado || documento.EstadoEnvio == StaticEstadoDocumentoElectronico.Rechazado)
                         {
-                            GenerarNotificacionDocumentoElectronico(documento, empresa, dbContext, servicioEnvioCorreo, strCorreoReceptor, strCorreoNotificacionErrores);
+                            GenerarNotificacionDocumentoElectronico(documento, empresa, dbContext, servicioEnvioCorreo, strCorreoReceptor, strCorreoEnvio, strCorreoNotificacionErrores);
                         }
                     }
                 }
@@ -2238,7 +2321,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        private void GenerarNotificacionDocumentoElectronico(DocumentoElectronico documentoElectronico, Empresa empresa, IDbContext dbContext, ICorreoService servicioEnvioCorreo, string strCorreoReceptor, string strCorreoNotificacionErrores)
+        private void GenerarNotificacionDocumentoElectronico(DocumentoElectronico documentoElectronico, Empresa empresa, IDbContext dbContext, ICorreoService servicioEnvioCorreo, string strCorreoReceptor, string strCorreoEnvio, string strCorreoNotificacionErrores)
         {
             try
             {
@@ -2388,7 +2471,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             ["contenido"] = Convert.ToBase64String(documentoElectronico.Respuesta)
                         };
                         jarrayObj.Add(jobDatosAdjuntos3);
-                        servicioEnvioCorreo.SendEmail(arrCorreoReceptor, new string[] { }, strTitle, strBody, false, jarrayObj);
+                        servicioEnvioCorreo.SendEmail(strCorreoEnvio, arrCorreoReceptor, new string[] { }, strTitle, strBody, false, jarrayObj);
                     }
                     else if(documentoElectronico.EstadoEnvio == "rechazado")
                     {
@@ -2397,7 +2480,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         string strMensajeHacienda = xmlRespuesta.GetElementsByTagName("DetalleMensaje").Item(0).InnerText;
                         strBody = "Estimado cliente, le informamos que el documento electrónico con clave " + documentoElectronico.ClaveNumerica + " fue rechazado por el Ministerio de Hacienda con el siguiente mensaje:\n\n" + strMensajeHacienda + "\n\nPara mayor información consulte el documento en su plataforma de factura electrónica.";
                         JArray emptyJArray = new JArray();
-                        servicioEnvioCorreo.SendEmail(new string[] { empresa.CorreoNotificacion }, new string[] { }, "Rechazo de documento electrónico con clave " + documentoElectronico.ClaveNumerica, strBody, false, emptyJArray);
+                        servicioEnvioCorreo.SendEmail(strCorreoEnvio, new string[] { empresa.CorreoNotificacion }, new string[] { }, "Rechazo de documento electrónico con clave " + documentoElectronico.ClaveNumerica, strBody, false, emptyJArray);
                     }
                 }
                 else
@@ -2417,7 +2500,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             ["contenido"] = Convert.ToBase64String(documentoElectronico.Respuesta)
                         };
                         jarrayObj.Add(jobDatosAdjuntos2);
-                        servicioEnvioCorreo.SendEmail(new string[] { empresa.CorreoNotificacion }, new string[] { }, "Estado de documento electrónico enviado a aceptación", strBody, false, jarrayObj);
+                        servicioEnvioCorreo.SendEmail(strCorreoEnvio, new string[] { empresa.CorreoNotificacion }, new string[] { }, "Estado de documento electrónico enviado a aceptación", strBody, false, jarrayObj);
                     }
                 }
             }
@@ -2425,7 +2508,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 JArray emptyJArray = new JArray();
                 string strBody = "El documento con clave " + documentoElectronico.ClaveNumerica + " genero un error en el envío del PDF al receptor:" + ex.Message;
-                servicioEnvioCorreo.SendEmail(new string[] { strCorreoNotificacionErrores }, new string[] { }, "Error al tratar de enviar el correo al receptor.", strBody, false, emptyJArray);
+                servicioEnvioCorreo.SendEmail(strCorreoEnvio, new string[] { strCorreoNotificacionErrores }, new string[] { }, "Error al tratar de enviar el correo al receptor.", strBody, false, emptyJArray);
             }
         }
     }

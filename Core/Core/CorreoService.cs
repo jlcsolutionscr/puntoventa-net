@@ -9,7 +9,7 @@ namespace LeandroSoftware.Core.Servicios
 {
     public interface ICorreoService
     {
-        void SendEmail(string[] emailTo, string[] ccTo, string subject, string body, bool isBodyHtml, JArray strAttachments);
+        void SendEmail(string emailFrom, string[] emailTo, string[] ccTo, string subject, string body, bool isBodyHtml, JArray strAttachments);
     }
 
     public class CorreoService : ICorreoService
@@ -18,20 +18,18 @@ namespace LeandroSoftware.Core.Servicios
         private int smtpPort;
         private string mailUserAddress;
         private string mailUserPassword;
-        private string emailFrom;
         private string sslHost;
 
-        public CorreoService(string strSmtpHost, string strSmptPort, string strMailUserAddress, string strMailUserPassword, string strEmailFrom, string strSSLHost)
+        public CorreoService(string strSmtpHost, string strSmptPort, string strMailUserAddress, string strMailUserPassword, string strSSLHost)
         {
             smtpHost = strSmtpHost;
             smtpPort = int.Parse(strSmptPort);
             mailUserAddress = strMailUserAddress;
             mailUserPassword = strMailUserPassword;
-            emailFrom = strEmailFrom;
             sslHost = strSSLHost;
         }
 
-        public void SendEmail(string[] emailTo, string[] ccTo, string subject, string body, bool isBodyHtml, JArray strAttachments)
+        public void SendEmail(string emailFrom, string[] emailTo, string[] ccTo, string subject, string body, bool isBodyHtml, JArray strAttachments)
         {
             if (emailTo == null || emailTo.Length == 0)
             {
@@ -45,8 +43,6 @@ namespace LeandroSoftware.Core.Servicios
             {
                 throw new Exception("El valor del campo 'Mensaje:' no debe ser nulo o estar en blanco.");
             }
-
-            List<string> tempFiles = new List<string>();
             SmtpClient smtpClient = new SmtpClient(smtpHost, smtpPort)
             {
                 DeliveryMethod = SmtpDeliveryMethod.Network,
