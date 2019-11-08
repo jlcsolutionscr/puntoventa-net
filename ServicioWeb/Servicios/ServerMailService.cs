@@ -6,31 +6,27 @@ namespace LeandroSoftware.ServicioWeb
 {
     public interface IServerMailService
     {
-        IList<POPEmail> ObtenerListadoMensaje();
-        void EliminarMensaje(int intIdMensaje);
+        IList<POPEmail> ObtenerListadoMensaje(string strMailUserAddress, string strMailUserPassword);
+        void EliminarMensaje(string strMailUserAddress, string strMailUserPassword, int intIdMensaje);
     }
 
     public class ServerMailService : IServerMailService
     {
         private string smtpHost;
         private int smtpPort;
-        private string mailUserAddress;
-        private string mailUserPassword;
 
-        public ServerMailService(string strSmtpHost, string strSmptPort, string strMailUserAddress, string strMailUserPassword)
+        public ServerMailService(string strSmtpHost, string strSmptPort)
         {
             smtpHost = strSmtpHost;
             smtpPort = int.Parse(strSmptPort);
-            mailUserAddress = strMailUserAddress;
-            mailUserPassword = strMailUserPassword;
         }
 
-        public IList<POPEmail> ObtenerListadoMensaje()
+        public IList<POPEmail> ObtenerListadoMensaje(string strMailUserAddress, string strMailUserPassword)
         {
             using (Pop3Client pop3Client = new Pop3Client())
             {
                 pop3Client.Connect(smtpHost, smtpPort, false);
-                pop3Client.Authenticate(mailUserAddress, mailUserPassword);
+                pop3Client.Authenticate(strMailUserAddress, strMailUserPassword);
                 int count = pop3Client.GetMessageCount();
                 var Emails = new List<POPEmail>();
                 int counter = 0;
@@ -79,12 +75,12 @@ namespace LeandroSoftware.ServicioWeb
             }
         }
 
-        public void EliminarMensaje(int intIdMensaje)
+        public void EliminarMensaje(string strMailUserAddress, string strMailUserPassword, int intIdMensaje)
         {
             using (Pop3Client pop3Client = new Pop3Client())
             {
                 pop3Client.Connect(smtpHost, smtpPort, false);
-                pop3Client.Authenticate(mailUserAddress, mailUserPassword);
+                pop3Client.Authenticate(strMailUserAddress, strMailUserPassword);
                 pop3Client.DeleteMessage(intIdMensaje);
             }
         }

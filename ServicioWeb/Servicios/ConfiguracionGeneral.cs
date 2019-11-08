@@ -1,8 +1,8 @@
 ﻿namespace LeandroSoftware.ServicioWeb.Servicios
 {
-    public class DatosConfiguracion
+    public class ConfiguracionGeneral
     {
-        public DatosConfiguracion(string strConsultaIndicadoresEconomicosURL, string strOperacionSoap, string strComprobantesElectronicosURL, string strClientId, string strServicioTokenURL, string strComprobantesCallbackURL, string strCorreoNotificacionErrores, string strCorreoCuentaFacturacion, string strCorreoCuentaRecepcion)
+        public ConfiguracionGeneral(string strConsultaIndicadoresEconomicosURL, string strOperacionSoap, string strComprobantesElectronicosURL, string strClientId, string strServicioTokenURL, string strComprobantesCallbackURL, string strCorreoNotificacionErrores, string strCorreoCuentaFacturacion)
         {
             ConsultaIndicadoresEconomicosURL = strConsultaIndicadoresEconomicosURL;
             OperacionSoap = strOperacionSoap;
@@ -12,7 +12,6 @@
             CallbackURL = strComprobantesCallbackURL;
             CorreoNotificacionErrores = strCorreoNotificacionErrores;
             CorreoCuentaFacturacion = strCorreoCuentaFacturacion;
-            CorreoCuentaRecepcion = strCorreoCuentaRecepcion;
         }
 
         public string ConsultaIndicadoresEconomicosURL { get; set; }
@@ -23,6 +22,5 @@
         public string CallbackURL { get; set; }
         public string CorreoNotificacionErrores { get; set; }
         public string CorreoCuentaFacturacion { get; set; }
-        public string CorreoCuentaRecepcion { get; set; }
     }
 }

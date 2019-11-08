@@ -271,7 +271,7 @@ Public Class FrmOrdenServicio
                     txtPrecio.Text = FormatNumber(producto.PrecioVenta1, 2)
                 End If
                 txtUnidad.Text = IIf(producto.Tipo = 1, "UND", "SP")
-                If producto.Tipo = StaticTipoProducto.Servicio Then
+                If producto.Tipo = StaticTipoProducto.ServicioProfesionales Then
                     If FrmPrincipal.empresaGlobal.ModificaDescProducto = True Then
                         txtDescripcion.ReadOnly = False
                         txtDescripcion.Focus()

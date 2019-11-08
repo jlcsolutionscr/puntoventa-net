@@ -10,13 +10,8 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public int IdEmpresa { get; set; }
         [Key]
         public int IdLinea { get; set; }
-        [ForeignKey("TipoProducto")]
-        public int IdTipoProducto { get; set; }
         public string Descripcion { get; set; }
-        [NotMapped]
-        public string TipoLineaDesc { get { if (TipoProducto == null) return ""; else return TipoProducto.Descripcion; } }
 
         public Empresa Empresa { get; set; }
-        public TipoProducto TipoProducto { get; set; }
     }
 }

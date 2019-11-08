@@ -273,7 +273,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         Producto producto = dbContext.ProductoRepository.Find(detalleCompra.IdProducto);
                         if (producto == null)
                             throw new Exception("El producto asignado al detalle de la compra no existe.");
-                        if (producto.Tipo == StaticTipoProducto.Servicio)
+                        if (producto.Tipo == StaticTipoProducto.ServicioProfesionales)
                             throw new BusinessException("El tipo de producto por devolver no puede ser un servicio. Por favor verificar.");
                         if (producto.PrecioCosto != detalleCompra.PrecioCosto)
                         {
@@ -863,7 +863,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             Producto producto = dbContext.ProductoRepository.Include("Linea").FirstOrDefault(x => x.IdProducto == detalleDevolucion.IdProducto);
                             if (producto == null)
                                 throw new Exception("El producto asignado al detalle de la devolución no existe.");
-                            if (producto.Tipo == StaticTipoProducto.Servicio)
+                            if (producto.Tipo == StaticTipoProducto.ServicioProfesionales)
                                 throw new BusinessException("El tipo de producto por devolver no puede ser un servicio. Por favor verificar.");
                             else if (producto.Tipo == StaticTipoProducto.Producto)
                             {

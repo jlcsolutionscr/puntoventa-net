@@ -759,16 +759,6 @@ namespace LeandroSoftware.ClienteWCF
             return listado;
         }
 
-        public static async Task<List<LlaveDescripcion>> ObtenerListadoLineasDeProducto(int intIdEmpresa, string strToken)
-        {
-            string strDatos = "{NombreMetodo: 'ObtenerListadoLineasDeProducto', Parametros: {IdEmpresa: " + intIdEmpresa + "}}";
-            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
-            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
-            if (respuesta != "")
-                listado = serializer.Deserialize<List<LlaveDescripcion>>(respuesta);
-            return listado;
-        }
-
         public static async Task ActualizarEmpresa(Empresa empresa, string strToken)
         {
             string strEntidad = serializer.Serialize(empresa);
@@ -813,16 +803,6 @@ namespace LeandroSoftware.ClienteWCF
         {
             string strDatos = "{NombreMetodo: 'ActualizarCertificadoEmpresa', Parametros: {IdEmpresa: " + intIdEmpresa + ", Certificado: '" + strCertificado + "'}}";
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
-        }
-
-        public static async Task<List<LlaveDescripcion>> ObtenerListadoLineasDeServicio(int intIdEmpresa, string strToken)
-        {
-            string strDatos = "{NombreMetodo: 'ObtenerListadoLineasDeServicio', Parametros: {IdEmpresa: " + intIdEmpresa + "}}";
-            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
-            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
-            if (respuesta != "")
-                listado = serializer.Deserialize<List<LlaveDescripcion>>(respuesta);
-            return listado;
         }
 
         public static async Task AgregarLinea(Linea linea, string strToken)

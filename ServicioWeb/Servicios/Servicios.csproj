@@ -44,8 +44,9 @@
     <Compile Include="BancaService.cs" />
     <Compile Include="BusinessException.cs" />
     <Compile Include="ComprobanteElectronicoService.cs" />
-    <Compile Include="DatosConfiguracion.cs" />
+    <Compile Include="ConfiguracionGeneral.cs" />
     <Compile Include="CompraService.cs" />
+    <Compile Include="ConfiguracionRecepcion.cs" />
     <Compile Include="ContabilidadService.cs" />
     <Compile Include="IngresoService.cs" />
     <Compile Include="CuentaPorCobrarService.cs" />

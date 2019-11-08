@@ -29,7 +29,8 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
         private IMantenimientoService servicioMantenimiento;
         private static System.Collections.Specialized.NameValueCollection appSettings = WebConfigurationManager.AppSettings;
         private static JavaScriptSerializer serializer = new CustomJavascriptSerializer();
-        private readonly DatosConfiguracion configuracion = new DatosConfiguracion
+        
+        private readonly ConfiguracionGeneral configuracionGeneral = new ConfiguracionGeneral
         (
             appSettings["strConsultaIEURL"].ToString(),
             appSettings["strSoapOperation"].ToString(),
@@ -38,7 +39,15 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             appSettings["strServicioTokenURL"].ToString(),
             appSettings["strComprobantesCallbackURL"].ToString(),
             appSettings["strCorreoNotificacionErrores"].ToString(),
-            appSettings["facturaEmailFrom"].ToString(),
+            appSettings["facturaEmailFrom"].ToString()
+        );
+        private readonly ConfiguracionRecepcion configuracionRecepcion = new ConfiguracionRecepcion
+        (
+            appSettings["pop3IvaAccount"].ToString(),
+            appSettings["pop3IvaPass"].ToString(),
+            appSettings["pop3GastoAccount"].ToString(),
+            appSettings["pop3GastoPass"].ToString(),
+            appSettings["strCorreoNotificacionErrores"].ToString(),
             appSettings["recepcionEmailFrom"].ToString()
         );
         private static string strApplicationKey = appSettings["ApplicationKey"].ToString();
@@ -50,7 +59,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             unityContainer.RegisterInstance("conectionString", connString, new ContainerControlledLifetimeManager());
             unityContainer.RegisterType<IDbContext, LeandroContext>(new InjectionConstructor(new ResolvedParameter<string>("conectionString")));
             unityContainer.RegisterType<ICorreoService, CorreoService>(new InjectionConstructor(appSettings["smtpEmailHost"], appSettings["smtpEmailPort"], appSettings["smtpEmailAccount"], appSettings["smtpEmailPass"], appSettings["smtpSSLHost"]));
-            unityContainer.RegisterType<IServerMailService, ServerMailService>(new InjectionConstructor(appSettings["pop3EmailHost"], appSettings["pop3EmailPort"], appSettings["pop3EmailAccount"], appSettings["pop3EmailPass"]));
+            unityContainer.RegisterType<IServerMailService, ServerMailService>(new InjectionConstructor(appSettings["pop3EmailHost"], appSettings["pop3EmailPort"]));
             unityContainer.RegisterType<IFacturacionService, FacturacionService>();
             unityContainer.RegisterType<IMantenimientoService, MantenimientoService>();
             servicioEnvioCorreo = unityContainer.Resolve<ICorreoService>();
@@ -387,7 +396,8 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
 
         public void ProcesarDocumentosElectronicosPendientes()
         {
-            servicioFacturacion.ProcesarDocumentosElectronicosPendientes(servicioEnvioCorreo, servicioRecepcionCorreo, configuracion);
+            servicioFacturacion.ProcesarDocumentosElectronicosPendientes(servicioEnvioCorreo, configuracionGeneral);
+            servicioFacturacion.ProcesarCorreoRecepcion(servicioEnvioCorreo, servicioRecepcionCorreo, configuracionGeneral, configuracionRecepcion);
         }
 
         public void LimpiarRegistrosInvalidos()

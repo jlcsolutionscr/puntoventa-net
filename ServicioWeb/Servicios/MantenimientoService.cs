@@ -65,8 +65,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         void EliminarLinea(int intIdLinea);
         Linea ObtenerLinea(int intIdLinea);
         IEnumerable<LlaveDescripcion> ObtenerListadoLineas(int intIdEmpresa, string strDescripcion);
-        IEnumerable<LlaveDescripcion> ObtenerListadoLineasDeProducto(int intIdEmpresa);
-        IEnumerable<LlaveDescripcion> ObtenerListadoLineasDeServicio(int intIdEmpresa);
         // Métodos para administrar los productos
         IEnumerable<LlaveDescripcion> ObtenerListadoTipoProducto();
         IEnumerable<LlaveDescripcion> ObtenerListadoTipoExoneracion();
@@ -1240,10 +1238,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 var listaLinea = new List<LlaveDescripcion>();
                 try
                 {
-                    var listado = dbContext.LineaRepository.Include("TipoProducto").Where(x => x.IdEmpresa == intIdEmpresa);
+                    var listado = dbContext.LineaRepository.Where(x => x.IdEmpresa == intIdEmpresa);
                     if (!strDescripcion.Equals(string.Empty))
                         listado = listado.Where(x => x.Descripcion.Contains(strDescripcion));
-                    listado = listado.OrderBy(x => x.IdTipoProducto).ThenBy(x => x.Descripcion);
+                    listado = listado.OrderBy(x => x.IdLinea).ThenBy(x => x.Descripcion);
                     foreach (var value in listado)
                     {
                         LlaveDescripcion item = new LlaveDescripcion(value.IdLinea, value.Descripcion);
@@ -1255,52 +1253,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     log.Error("Error al obtener el listado de líneas general: ", ex);
                     throw new Exception("Se produjo un error consultando el listado de líneas. Por favor consulte con su proveedor.");
-                }
-            }
-        }
-
-        public IEnumerable<LlaveDescripcion> ObtenerListadoLineasDeProducto(int intIdEmpresa)
-        {
-            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
-            {
-                var listaLineasDeProducto = new List<LlaveDescripcion>();
-                try
-                {
-                    var listado = dbContext.LineaRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdTipoProducto == StaticTipoProducto.Producto).OrderBy(x => x.Descripcion);
-                    foreach (var value in listado)
-                    {
-                        LlaveDescripcion item = new LlaveDescripcion(value.IdLinea, value.Descripcion);
-                        listaLineasDeProducto.Add(item);
-                    }
-                    return listaLineasDeProducto;
-                }
-                catch (Exception ex)
-                {
-                    log.Error("Error al obtener el listado de líneas de producto: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de líneas de producto. Por favor consulte con su proveedor.");
-                }
-            }
-        }
-
-        public IEnumerable<LlaveDescripcion> ObtenerListadoLineasDeServicio(int intIdEmpresa)
-        {
-            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
-            {
-                var listaLineasDeServicio = new List<LlaveDescripcion>();
-                try
-                {
-                    var listado = dbContext.LineaRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdTipoProducto == StaticTipoProducto.Servicio).OrderBy(x => x.Descripcion);
-                    foreach (var value in listado)
-                    {
-                        LlaveDescripcion item = new LlaveDescripcion(value.IdLinea, value.Descripcion);
-                        listaLineasDeServicio.Add(item);
-                    }
-                    return listaLineasDeServicio;
-                }
-                catch (Exception ex)
-                {
-                    log.Error("Error al obtener el listado de líneas de servicio: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de líneas de servicio. Por favor consulte con su proveedor.");
                 }
             }
         }

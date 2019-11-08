@@ -10,33 +10,18 @@ Public Class FrmLinea
 
 #Region "Métodos"
     Private Function ValidarCampos(ByRef pCampo As String) As Boolean
-        If cboTipoProducto.SelectedValue Is Nothing Then
-            pCampo = "Tipo de Línea"
-            Return False
-        ElseIf txtDescripcion.Text = "" Then
+        If txtDescripcion.Text = "" Then
             pCampo = "Descripción"
             Return False
         Else
             Return True
         End If
     End Function
-
-    Private Async Sub CargarTipoLinea()
-        Try
-            cboTipoProducto.ValueMember = "Id"
-            cboTipoProducto.DisplayMember = "Descripcion"
-            cboTipoProducto.DataSource = Await Puntoventa.ObtenerListadoTipoProducto(FrmPrincipal.usuarioGlobal.Token)
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Exit Sub
-        End Try
-    End Sub
 #End Region
 
 #Region "Eventos Controles"
     Private Async Sub FrmLinea_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
-            CargarTipoLinea()
             If intIdLinea > 0 Then
                 datos = Await Puntoventa.ObtenerLinea(intIdLinea, FrmPrincipal.usuarioGlobal.Token)
                 If datos Is Nothing Then
@@ -45,7 +30,6 @@ Public Class FrmLinea
                     Exit Sub
                 End If
                 txtIdLinea.Text = datos.IdLinea
-                cboTipoProducto.SelectedValue = datos.IdTipoProducto
                 txtDescripcion.Text = datos.Descripcion
             Else
                 datos = New Linea
@@ -70,7 +54,6 @@ Public Class FrmLinea
         If datos.IdLinea = 0 Then
             datos.IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa
         End If
-        datos.IdTipoProducto = cboTipoProducto.SelectedValue
         datos.Descripcion = txtDescripcion.Text
         Try
             If datos.IdLinea = 0 Then
@@ -84,6 +67,10 @@ Public Class FrmLinea
         End Try
         MessageBox.Show("Registro guardado satisfactoriamente", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
         Close()
+    End Sub
+
+    Private Sub FrmLinea_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+
     End Sub
 #End Region
 End Class

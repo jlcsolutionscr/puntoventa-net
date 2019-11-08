@@ -335,7 +335,7 @@ Partial Class FrmProducto
         Me.cboTipoProducto.Location = New System.Drawing.Point(94, 64)
         Me.cboTipoProducto.Name = "cboTipoProducto"
         Me.cboTipoProducto.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.cboTipoProducto.Size = New System.Drawing.Size(106, 21)
+        Me.cboTipoProducto.Size = New System.Drawing.Size(203, 21)
         Me.cboTipoProducto.TabIndex = 1
         '
         'ptbImagen

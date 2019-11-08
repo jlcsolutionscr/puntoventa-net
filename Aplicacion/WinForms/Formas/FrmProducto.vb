@@ -53,16 +53,9 @@ Public Class FrmProducto
         cboTipoImpuesto.ValueMember = "Id"
         cboTipoImpuesto.DisplayMember = "Descripcion"
         cboTipoImpuesto.DataSource = Await Puntoventa.ObtenerListadoTipoImpuesto(FrmPrincipal.usuarioGlobal.Token)
-    End Function
-
-    Private Async Function CargarComboLinea() As Task
-        If cboTipoProducto.SelectedValue = 1 Then
-            cboLinea.DataSource = Await Puntoventa.ObtenerListadoLineasDeProducto(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
-        Else
-            cboLinea.DataSource = Await Puntoventa.ObtenerListadoLineasDeServicio(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
-        End If
         cboLinea.ValueMember = "Id"
         cboLinea.DisplayMember = "Descripcion"
+        cboLinea.DataSource = Await Puntoventa.ObtenerListadoLineas(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
     End Function
 
     Private Function Bytes_Imagen(ByVal Imagen As Byte()) As Image
@@ -115,7 +108,6 @@ Public Class FrmProducto
                 End If
                 txtIdProducto.Text = datos.IdProducto
                 cboTipoProducto.SelectedValue = datos.Tipo
-                Await CargarComboLinea()
                 cboLinea.SelectedValue = datos.IdLinea
                 txtCodigo.Text = datos.Codigo
                 proveedor = datos.Proveedor
@@ -136,7 +128,6 @@ Public Class FrmProducto
                 Await CalcularPrecioSinImpuesto(datos.IdImpuesto)
             Else
                 datos = New Producto
-                Await CargarComboLinea()
                 parametroImpuesto = Await Puntoventa.ObtenerParametroImpuesto(1, FrmPrincipal.usuarioGlobal.Token)
                 txtCantidad.Text = FormatoPrecio(0, 2)
                 txtPrecioCosto.Text = FormatoPrecio(0, 2)
@@ -157,17 +148,6 @@ Public Class FrmProducto
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
         End Try
-    End Sub
-
-    Private Async Sub cboTipoProducto_SelectedValueChanged(ByVal sender As Object, ByVal e As EventArgs) Handles cboTipoProducto.SelectedValueChanged
-        If Not bolInit And cboTipoProducto.SelectedValue IsNot Nothing Then
-            Try
-                Await CargarComboLinea()
-            Catch ex As Exception
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Close()
-            End Try
-        End If
     End Sub
 
     Private Sub btnCancelar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnCancelar.Click

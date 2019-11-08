@@ -195,7 +195,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         Producto producto = dbContext.ProductoRepository.Include("Linea").FirstOrDefault(x => x.IdProducto == detalleTraslado.IdProducto);
                         if (producto == null)
                             throw new Exception("El producto asignado al detalle del traslado no existe");
-                        if (producto.Tipo == StaticTipoProducto.Servicio)
+                        if (producto.Tipo == StaticTipoProducto.ServicioProfesionales)
                             throw new BusinessException("El tipo de producto por trasladar no puede ser un servicio. Por favor verificar.");
                         else if (producto.Tipo == StaticTipoProducto.Producto)
                         {

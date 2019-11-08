@@ -345,8 +345,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     lineaDetalle.Cantidad = detalleFactura.Cantidad;
                     if (detalleFactura.Producto.Tipo == StaticTipoProducto.Producto)
                         lineaDetalle.UnidadMedida = FacturaElectronicaUnidadMedidaType.Unid;
-                    else
+                    else if (detalleFactura.Producto.Tipo == StaticTipoProducto.ServicioProfesionales)
                         lineaDetalle.UnidadMedida = FacturaElectronicaUnidadMedidaType.Sp;
+                    else
+                        lineaDetalle.UnidadMedida = FacturaElectronicaUnidadMedidaType.Os;
                     lineaDetalle.Detalle = detalleFactura.Descripcion;
                     lineaDetalle.PrecioUnitario = Math.Round(detalleFactura.PrecioVenta, 2, MidpointRounding.AwayFromZero);
                     decimal decTotalPorLinea = 0;
@@ -597,8 +599,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     lineaDetalle.Cantidad = detalleFactura.Cantidad;
                     if (detalleFactura.Producto.Tipo == StaticTipoProducto.Producto)
                         lineaDetalle.UnidadMedida = TiqueteElectronicoUnidadMedidaType.Unid;
-                    else
+                    else if (detalleFactura.Producto.Tipo == StaticTipoProducto.ServicioProfesionales)
                         lineaDetalle.UnidadMedida = TiqueteElectronicoUnidadMedidaType.Sp;
+                    else
+                        lineaDetalle.UnidadMedida = TiqueteElectronicoUnidadMedidaType.Os;
                     lineaDetalle.Detalle = detalleFactura.Descripcion;
                     lineaDetalle.PrecioUnitario = Math.Round(detalleFactura.PrecioVenta, 2, MidpointRounding.AwayFromZero);
                     decimal decTotalPorLinea = 0;
@@ -869,8 +873,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     lineaDetalle.Cantidad = detalleFactura.Cantidad;
                     if (detalleFactura.Producto.Tipo == StaticTipoProducto.Producto)
                         lineaDetalle.UnidadMedida = NotaCreditoElectronicaUnidadMedidaType.Unid;
-                    else
+                    else if (detalleFactura.Producto.Tipo == StaticTipoProducto.ServicioProfesionales)
                         lineaDetalle.UnidadMedida = NotaCreditoElectronicaUnidadMedidaType.Sp;
+                    else
+                        lineaDetalle.UnidadMedida = NotaCreditoElectronicaUnidadMedidaType.Os;
                     lineaDetalle.Detalle = detalleFactura.Descripcion;
                     lineaDetalle.PrecioUnitario = Math.Round(detalleFactura.PrecioVenta, 2, MidpointRounding.AwayFromZero);
                     decimal decTotalPorLinea = 0;
@@ -1030,7 +1036,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public static DocumentoElectronico GeneraMensajeReceptor(string datosXml, Empresa empresa, IDbContext dbContext, int intSucursal, int intTerminal, int intMensaje)
+        public static DocumentoElectronico GeneraMensajeReceptor(string datosXml, Empresa empresa, IDbContext dbContext, int intSucursal, int intTerminal, int intMensaje, bool bolIvaAcreditable)
         {
             try
             {
@@ -1050,13 +1056,15 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 string strClaveNumerica = documentoXml.GetElementsByTagName("Clave").Item(0).InnerText;
                 DocumentoElectronico documentoExistente = dbContext.DocumentoElectronicoRepository.Where(x => x.ClaveNumerica == strClaveNumerica & x.IdEmpresa == empresa.IdEmpresa).FirstOrDefault();
                 if (documentoExistente != null) throw new BusinessException("El documento electrónico con clave " + strClaveNumerica + " ya se encuentra registrado en el sistema. . .");
+                decimal decTotalComprobante = decimal.Parse(documentoXml.GetElementsByTagName("TotalComprobante").Item(0).InnerText, CultureInfo.InvariantCulture);
                 MensajeReceptor mensajeReceptor = new MensajeReceptor
                 {
                     Clave = documentoXml.GetElementsByTagName("Clave").Item(0).InnerText,
                     FechaEmisionDoc = DateTime.Parse(documentoXml.GetElementsByTagName("FechaEmision").Item(0).InnerText, CultureInfo.InvariantCulture),
                     Mensaje = (MensajeReceptorMensaje)intMensaje,
                     DetalleMensaje = "Mensaje de receptor con estado: " + (intMensaje == 0 ? "Aceptado" : intMensaje == 1 ? "Aceptado parcialmente" : "Rechazado"),
-                    TotalFactura = decimal.Parse(documentoXml.GetElementsByTagName("TotalComprobante").Item(0).InnerText, CultureInfo.InvariantCulture),
+                    TotalFactura = decTotalComprobante,
+                    CondicionImpuesto = MensajeReceptorCondicionImpuesto.Item01,
                     NumeroConsecutivoReceptor = ""
                 };
                 if (documentoXml.GetElementsByTagName("Emisor") != null)
@@ -1105,8 +1113,26 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     throw new BusinessException("No se encuentra el nodo RECEPTOR en el archivo XML.");
                 if (documentoXml.GetElementsByTagName("TotalImpuesto").Count > 0)
                 {
-                    mensajeReceptor.MontoTotalImpuesto = decimal.Parse(documentoXml.GetElementsByTagName("TotalImpuesto").Item(0).InnerText, CultureInfo.InvariantCulture);
+                    decimal decMontoImpuesto = decimal.Parse(documentoXml.GetElementsByTagName("TotalImpuesto").Item(0).InnerText, CultureInfo.InvariantCulture);
+                    mensajeReceptor.MontoTotalImpuesto = decMontoImpuesto;
                     mensajeReceptor.MontoTotalImpuestoSpecified = true;
+                    if (bolIvaAcreditable)
+                    {
+                        mensajeReceptor.MontoTotalImpuestoAcreditar = decMontoImpuesto;
+                        mensajeReceptor.MontoTotalDeGastoAplicable = decTotalComprobante - decMontoImpuesto;
+                    }
+                    else
+                    {
+                        mensajeReceptor.MontoTotalImpuestoAcreditar = 0;
+                        mensajeReceptor.MontoTotalDeGastoAplicable = decTotalComprobante;
+                    }
+                    mensajeReceptor.MontoTotalImpuestoAcreditarSpecified = true;
+                    mensajeReceptor.MontoTotalDeGastoAplicableSpecified = true;
+                }
+                else
+                {
+                    mensajeReceptor.MontoTotalDeGastoAplicable = decTotalComprobante;
+                    mensajeReceptor.MontoTotalDeGastoAplicableSpecified = true;
                 }
                 XmlDocument mensajeReceptorXml = new XmlDocument();
                 XmlWriterSettings settings = new XmlWriterSettings
@@ -1342,7 +1368,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public static async Task EnviarDocumentoElectronico(int intIdEmpresa, int intIdDocumento, DatosConfiguracion datos)
+        public static async Task EnviarDocumentoElectronico(int intIdEmpresa, int intIdDocumento, ConfiguracionGeneral datos)
         {
             try
             {
@@ -1447,7 +1473,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public static async Task<DocumentoElectronico> ConsultarDocumentoElectronico(Empresa empresaLocal, DocumentoElectronico documento, IDbContext dbContext, DatosConfiguracion datos)
+        public static async Task<DocumentoElectronico> ConsultarDocumentoElectronico(Empresa empresaLocal, DocumentoElectronico documento, IDbContext dbContext, ConfiguracionGeneral datos)
         {
             try
             {

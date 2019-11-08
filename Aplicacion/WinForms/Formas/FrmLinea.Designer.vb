@@ -1,9 +1,9 @@
-<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
 Partial Class FrmLinea
     Inherits System.Windows.Forms.Form
 
     'Form overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()> _
+    <System.Diagnostics.DebuggerNonUserCode()>
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         If disposing AndAlso components IsNot Nothing Then
             components.Dispose()
@@ -25,8 +25,6 @@ Partial Class FrmLinea
         Me.txtIdLinea = New System.Windows.Forms.TextBox()
         Me._lblLabels_1 = New System.Windows.Forms.Label()
         Me._lblLabels_0 = New System.Windows.Forms.Label()
-        Me.cboTipoProducto = New System.Windows.Forms.ComboBox()
-        Me._lblLabels_9 = New System.Windows.Forms.Label()
         CType(Me.ClienteBindingSource, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -54,7 +52,7 @@ Partial Class FrmLinea
         Me.txtDescripcion.BackColor = System.Drawing.SystemColors.Window
         Me.txtDescripcion.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtDescripcion.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtDescripcion.Location = New System.Drawing.Point(92, 91)
+        Me.txtDescripcion.Location = New System.Drawing.Point(92, 64)
         Me.txtDescripcion.MaxLength = 0
         Me.txtDescripcion.Multiline = True
         Me.txtDescripcion.Name = "txtDescripcion"
@@ -83,7 +81,7 @@ Partial Class FrmLinea
         Me._lblLabels_1.BackColor = System.Drawing.Color.Transparent
         Me._lblLabels_1.Cursor = System.Windows.Forms.Cursors.Default
         Me._lblLabels_1.ForeColor = System.Drawing.SystemColors.ControlText
-        Me._lblLabels_1.Location = New System.Drawing.Point(17, 92)
+        Me._lblLabels_1.Location = New System.Drawing.Point(17, 65)
         Me._lblLabels_1.Name = "_lblLabels_1"
         Me._lblLabels_1.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me._lblLabels_1.Size = New System.Drawing.Size(69, 17)
@@ -104,41 +102,12 @@ Partial Class FrmLinea
         Me._lblLabels_0.Text = "Id:"
         Me._lblLabels_0.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
-        'cboTipoProducto
-        '
-        Me.cboTipoProducto.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest
-        Me.cboTipoProducto.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
-        Me.cboTipoProducto.BackColor = System.Drawing.SystemColors.Window
-        Me.cboTipoProducto.Cursor = System.Windows.Forms.Cursors.Default
-        Me.cboTipoProducto.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cboTipoProducto.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.cboTipoProducto.Location = New System.Drawing.Point(94, 64)
-        Me.cboTipoProducto.Name = "cboTipoProducto"
-        Me.cboTipoProducto.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.cboTipoProducto.Size = New System.Drawing.Size(106, 21)
-        Me.cboTipoProducto.TabIndex = 1
-        '
-        '_lblLabels_9
-        '
-        Me._lblLabels_9.BackColor = System.Drawing.Color.Transparent
-        Me._lblLabels_9.Cursor = System.Windows.Forms.Cursors.Default
-        Me._lblLabels_9.ForeColor = System.Drawing.SystemColors.ControlText
-        Me._lblLabels_9.Location = New System.Drawing.Point(5, 65)
-        Me._lblLabels_9.Name = "_lblLabels_9"
-        Me._lblLabels_9.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me._lblLabels_9.Size = New System.Drawing.Size(83, 17)
-        Me._lblLabels_9.TabIndex = 61
-        Me._lblLabels_9.Text = "Tipo:"
-        Me._lblLabels_9.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        '
         'FrmLinea
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
-        Me.ClientSize = New System.Drawing.Size(464, 164)
-        Me.Controls.Add(Me.cboTipoProducto)
-        Me.Controls.Add(Me._lblLabels_9)
+        Me.ClientSize = New System.Drawing.Size(464, 112)
         Me.Controls.Add(Me.txtDescripcion)
         Me.Controls.Add(Me.txtIdLinea)
         Me.Controls.Add(Me._lblLabels_1)
@@ -150,7 +119,9 @@ Partial Class FrmLinea
         Me.KeyPreview = True
         Me.Location = New System.Drawing.Point(73, 22)
         Me.MaximizeBox = False
+        Me.MaximumSize = New System.Drawing.Size(480, 150)
         Me.MinimizeBox = False
+        Me.MinimumSize = New System.Drawing.Size(480, 150)
         Me.Name = "FrmLinea"
         Me.ShowInTaskbar = False
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
@@ -167,6 +138,4 @@ Partial Class FrmLinea
     Public WithEvents txtIdLinea As System.Windows.Forms.TextBox
     Public WithEvents _lblLabels_1 As System.Windows.Forms.Label
     Public WithEvents _lblLabels_0 As System.Windows.Forms.Label
-    Public WithEvents cboTipoProducto As System.Windows.Forms.ComboBox
-    Public WithEvents _lblLabels_9 As System.Windows.Forms.Label
 End Class

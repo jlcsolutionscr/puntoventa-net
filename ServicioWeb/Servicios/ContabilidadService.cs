@@ -1478,7 +1478,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 Producto producto = detalleCompra.Producto;
                                 if (producto == null)
                                     throw new Exception("El producto asignado al detalle de la compra no existe");
-                                if (producto.Tipo == StaticTipoProducto.Servicio)
+                                if (producto.Tipo == StaticTipoProducto.ServicioProfesionales)
                                     throw new BusinessException("El tipo de producto por devolver no puede ser un servicio. Por favor verificar.");
                                 else if (producto.Tipo == StaticTipoProducto.Producto)
                                 {
