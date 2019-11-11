@@ -64,7 +64,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         int ObtenerTotalDocumentosElectronicosProcesados(int intIdEmpresa);
         IList<DocumentoDetalle> ObtenerListadoDocumentosElectronicosProcesados(int intIdEmpresa, int numPagina, int cantRec);
         DocumentoElectronico ObtenerDocumentoElectronico(int intIdDocumento);
-        DocumentoElectronico ObtenerDocumentoElectronicoPorClave(string strClave);
         void ProcesarRespuestaHacienda(RespuestaHaciendaDTO mensaje, ICorreoService servicioEnvioCorreo, string strCorreoEnvio, string strCorreoNotificacionErrores);
         void EnviarNotificacionDocumentoElectronico(int intIdDocumento, string strCorreoReceptor, ICorreoService servicioEnvioCorreo, string strCorreoEnvio, string strCorreoNotificacionErrores);
     }
@@ -180,7 +179,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    var cliente = dbContext.ClienteRepository.Include("ParametroImpuesto").Include("Barrio.Distrito.Canton.Provincia").Where(x => x.IdCliente == intIdCliente).FirstOrDefault();
+                    var cliente = dbContext.ClienteRepository.Include("ParametroImpuesto").Include("ParametroExoneracion").Include("Barrio.Distrito.Canton.Provincia").Where(x => x.IdCliente == intIdCliente).FirstOrDefault();
                     if (cliente.IdVendedor != null)
                     {
                         var vendedor = dbContext.VendedorRepository.Find(cliente.IdVendedor);
@@ -845,7 +844,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    Factura factura = dbContext.FacturaRepository.Include("Cliente.Barrio.Distrito.Canton.Provincia").Include("Vendedor").Include("DetalleFactura.Producto.TipoProducto").Include("DesglosePagoFactura.FormaPago").Include("DesglosePagoFactura.TipoMoneda").FirstOrDefault(x => x.IdFactura == intIdFactura);
+                    Factura factura = dbContext.FacturaRepository.Include("ParametroExoneracion").Include("Cliente.Barrio.Distrito.Canton.Provincia").Include("Vendedor").Include("DetalleFactura.Producto.TipoProducto").Include("DesglosePagoFactura.FormaPago").Include("DesglosePagoFactura.TipoMoneda").FirstOrDefault(x => x.IdFactura == intIdFactura);
                     foreach (DetalleFactura detalle in factura.DetalleFactura)
                         detalle.Factura = null;
                     foreach (DesglosePagoFactura desglosePago in factura.DesglosePagoFactura)
@@ -2177,30 +2176,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     log.Error("Error al consultar documento electrónico con ID: " + intIdDocumento, ex);
-                    throw new Exception("Se produjo un error al consultar el documento electrónico. Por favor consulte con su proveedor.");
-                }
-            }
-        }
-
-        public DocumentoElectronico ObtenerDocumentoElectronicoPorClave(string strClave)
-        {
-            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
-            {
-                try
-                {
-                    DocumentoElectronico documento = dbContext.DocumentoElectronicoRepository.Where(x => x.ClaveNumerica == strClave).FirstOrDefault();
-                    if (documento == null) throw new BusinessException("El documento solicitado no existe.");
-                    Empresa empresa = dbContext.EmpresaRepository.Find(documento.IdEmpresa);
-                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    return documento;
-                }
-                catch (BusinessException ex)
-                {
-                    throw ex;
-                }
-                catch (Exception ex)
-                {
-                    log.Error("Error al consultar documento electrónico con clave: " + strClave, ex);
                     throw new Exception("Se produjo un error al consultar el documento electrónico. Por favor consulte con su proveedor.");
                 }
             }

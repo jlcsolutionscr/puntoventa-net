@@ -1188,12 +1188,6 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         if (documento != null)
                             strRespuesta = serializer.Serialize(documento);
                         break;
-                    case "ObtenerDocumentoElectronicoPorClave":
-                        strClave = parametrosJO.Property("Clave").Value.ToString();
-                        documento = servicioFacturacion.ObtenerDocumentoElectronicoPorClave(strClave);
-                        if (documento != null)
-                            strRespuesta = serializer.Serialize(documento);
-                        break;
                     case "ObtenerRespuestaDocumentoElectronicoEnviado":
                         intIdDocumento = int.Parse(parametrosJO.Property("IdDocumento").Value.ToString());
                         documento = servicioFacturacion.ObtenerRespuestaDocumentoElectronicoEnviado(intIdDocumento, configuracionGeneral);

@@ -547,7 +547,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    return Convert.ToBase64String(empresa.Logotipo);
+                    string strLogotipo = "";
+                    if (empresa.Logotipo != null)
+                        strLogotipo = Convert.ToBase64String(empresa.Logotipo);
+                    return strLogotipo;
                 }
                 catch (BusinessException ex)
                 {

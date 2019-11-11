@@ -189,10 +189,10 @@ namespace LeandroSoftware.ClienteWCF
         {
             string strDatos = "{NombreMetodo: 'ObtenerLogotipoEmpresa', Parametros: {IdEmpresa: " + intIdEmpresa + "}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
-            string logotipo = null;
-            if (respuesta != "")
-                logotipo = serializer.Deserialize<string>(respuesta);
-            return Convert.FromBase64String(logotipo);
+            byte[] logotipo = null;
+            if (respuesta != "\"\"")
+                logotipo = Convert.FromBase64String(serializer.Deserialize<string>(respuesta));
+            return logotipo;
         }
 
         public static async Task<List<SucursalPorEmpresa>> ObtenerListadoSucursalPorEmpresa(int intIdEmpresa, string strToken)
@@ -1231,9 +1231,9 @@ namespace LeandroSoftware.ClienteWCF
             return documento;
         }
 
-        public static async Task<DocumentoElectronico> ObtenerDocumentoElectronicoPorClave(string strClave, string strToken)
+        public static async Task<DocumentoElectronico> ObtenerDocumentoElectronicoPorIdFactura(int intIdFactura, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerDocumentoElectronicoPorClave', Parametros: {Clave: " + strClave + "}}";
+            string strDatos = "{NombreMetodo: 'ObtenerDocumentoElectronicoPorIdFactura', Parametros: {IdFactura: " + intIdFactura + "}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             DocumentoElectronico documento = null;
             if (respuesta != "")

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -36,6 +37,12 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public bool AplicaTasaDiferenciada { get; set; }
         [ForeignKey("ParametroImpuesto")]
         public int IdImpuesto { get; set; }
+        [ForeignKey("ParametroExoneracion")]
+        public int IdTipoExoneracion { get; set; }
+        public string NumDocExoneracion { get; set; }
+        public string NombreInstExoneracion { get; set; }
+        public DateTime FechaEmisionDoc { get; set; }
+        public int PorcentajeExoneracion { get; set; }
 
         public Empresa Empresa { get; set; }
         public TipoIdentificacion TipoIdentificacion { get; set; }
@@ -43,6 +50,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public Barrio Barrio { get; set; }
         public Vendedor Vendedor { get; set; }
         public ParametroImpuesto ParametroImpuesto { get; set; }
+        public ParametroExoneracion ParametroExoneracion { get; set; }
         public ICollection<Factura> Factura { get; set; }
     }
 }

@@ -47,6 +47,9 @@ Public Class FrmCliente
         cboIdTipoPrecio.ValueMember = "Id"
         cboIdTipoPrecio.DisplayMember = "Descripcion"
         cboIdTipoPrecio.DataSource = Await Puntoventa.ObtenerListadoTipodePrecio(FrmPrincipal.usuarioGlobal.Token)
+        cboTipoExoneracion.ValueMember = "Id"
+        cboTipoExoneracion.DisplayMember = "Descripcion"
+        cboTipoExoneracion.DataSource = Await Puntoventa.ObtenerListadoTipoExoneracion(FrmPrincipal.usuarioGlobal.Token)
     End Function
 #End Region
 
@@ -78,11 +81,19 @@ Public Class FrmCliente
                 cboIdTipoPrecio.SelectedValue = datos.IdTipoPrecio
                 chkExonerado.Checked = datos.AplicaTasaDiferenciada
                 cboTipoImpuesto.SelectedValue = datos.IdImpuesto
+                cboTipoExoneracion.SelectedValue = datos.IdTipoExoneracion
+                txtNumDocExoneracion.Text = datos.NumDocExoneracion
+                txtNombreInstExoneracion.Text = datos.NombreInstExoneracion
+                txtFechaExoneracion.Value = datos.FechaEmisionDoc
+                txtPorcentajeExoneracion.Text = datos.PorcentajeExoneracion
                 txtIdentificacion.ReadOnly = True
             Else
                 datos = New Cliente
                 Await CargarListadoBarrios(1, 1, 1)
                 cboTipoImpuesto.SelectedValue = 8
+                cboTipoExoneracion.SelectedValue = 1
+                txtPorcentajeExoneracion.Text = "0"
+                txtFechaExoneracion.Text = "01-01-2019"
             End If
             bolInit = False
         Catch ex As Exception
@@ -120,6 +131,11 @@ Public Class FrmCliente
         datos.IdTipoPrecio = cboIdTipoPrecio.SelectedValue
         datos.AplicaTasaDiferenciada = chkExonerado.Checked
         datos.IdImpuesto = cboTipoImpuesto.SelectedValue
+        datos.IdTipoExoneracion = cboTipoExoneracion.SelectedValue
+        datos.NumDocExoneracion = txtNumDocExoneracion.Text
+        datos.NombreInstExoneracion = txtNombreInstExoneracion.Text
+        datos.FechaEmisionDoc = txtFechaExoneracion.Value
+        datos.PorcentajeExoneracion = txtPorcentajeExoneracion.Text
         datos.Barrio = Nothing
         Try
             If datos.IdCliente = 0 Then
@@ -162,6 +178,13 @@ Public Class FrmCliente
                         txtCorreoElectronico.Text = datos.CorreoElectronico
                         If datos.IdVendedor IsNot Nothing Then cboVendedor.SelectedValue = datos.IdVendedor
                         cboIdTipoPrecio.SelectedValue = datos.IdTipoPrecio
+                        chkExonerado.Checked = datos.AplicaTasaDiferenciada
+                        cboTipoImpuesto.SelectedValue = datos.IdImpuesto
+                        cboTipoExoneracion.SelectedValue = datos.IdTipoExoneracion
+                        txtNumDocExoneracion.Text = datos.NumDocExoneracion
+                        txtNombreInstExoneracion.Text = datos.NombreInstExoneracion
+                        txtFechaExoneracion.Text = datos.FechaEmisionDoc.ToString()
+                        txtPorcentajeExoneracion.Text = datos.PorcentajeExoneracion
                     Else
                         MessageBox.Show("Cliente encontrado en el padrón electoral. Por favor complete la información faltante.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
                         cboTipoIdentificacion.SelectedValue = 0
@@ -207,7 +230,7 @@ Public Class FrmCliente
         End If
     End Sub
 
-    Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As KeyPressEventArgs) Handles txtIdentificacion.KeyPress, txtTelefono.KeyPress, txtCelular.KeyPress, txtFax.KeyPress
+    Private Sub ValidaDigitos(sender As Object, e As KeyPressEventArgs) Handles txtIdentificacion.KeyPress, txtTelefono.KeyPress, txtCelular.KeyPress, txtFax.KeyPress
         FrmPrincipal.ValidaNumero(e, sender, True, 2, ".")
     End Sub
 
@@ -218,6 +241,10 @@ Public Class FrmCliente
             cboTipoImpuesto.Enabled = False
             cboTipoImpuesto.SelectedValue = 8
         End If
+    End Sub
+
+    Private Sub txtPorcentajeExoneracion_TextChanged(sender As Object, e As KeyPressEventArgs) Handles txtPorcentajeExoneracion.KeyPress
+        FrmPrincipal.ValidaNumero(e, sender, True, 0, ".")
     End Sub
 #End Region
 End Class

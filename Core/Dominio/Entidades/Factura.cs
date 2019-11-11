@@ -44,6 +44,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public decimal Total { get { return Excento + Gravado + Exonerado + Impuesto - Descuento; } }
         [NotMapped]
         public string NombreCliente { get { if (Cliente == null) return ""; else return Cliente.Nombre; } }
+        [ForeignKey("ParametroExoneracion")]
         public int IdTipoExoneracion { get; set; }
         public string NumDocExoneracion { get; set; }
         public string NombreInstExoneracion { get; set; }
@@ -67,6 +68,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public Usuario Usuario { get; set; }
         public TipoMoneda TipoMoneda { get; set; }
         public Vendedor Vendedor { get; set; }
+        public ParametroExoneracion ParametroExoneracion { get; set; }
         public ICollection<DetalleFactura> DetalleFactura { get; set; }
         public ICollection<DesglosePagoFactura> DesglosePagoFactura { get; set; }
     }
