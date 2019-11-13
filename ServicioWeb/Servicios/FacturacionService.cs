@@ -37,7 +37,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         Factura ObtenerFactura(int intIdFactura);
         int ObtenerTotalListaFacturas(int intIdEmpresa, int intIdFactura, string strNombre);
         IEnumerable<FacturaDetalle> ObtenerListadoFacturas(int intIdEmpresa, int numPagina, int cantRec, int intIdFactura, string strNombre);
-        IEnumerable<LlaveDescripcion> ObtenerListadoFacturasPorCliente(int intIdCliente);
         Proforma AgregarProforma(Proforma proforma);
         void ActualizarProforma(Proforma proforma);
         void AnularProforma(int intIdProforma, int intIdUsuario);
@@ -906,29 +905,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     log.Error("Error al obtener el listado de registros de facturación: ", ex);
                     throw new Exception("Se produjo un error consultando el listado de facturas. Por favor consulte con su proveedor.");
-                }
-            }
-        }
-
-        public IEnumerable<LlaveDescripcion> ObtenerListadoFacturasPorCliente(int intIdCliente)
-        {
-            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
-            {
-                var listaFactura = new List<LlaveDescripcion>();
-                try
-                {
-                    var listado = dbContext.FacturaRepository.Where(x => !x.Nulo & x.IdCliente == intIdCliente);
-                    foreach (var value in listado)
-                    {
-                        LlaveDescripcion item = new LlaveDescripcion(value.IdFactura, value.Fecha.ToString("dd/MM/yyyy") + "   -   " + value.Cliente.Nombre);
-                        listaFactura.Add(item);
-                    }
-                    return listaFactura;
-                }
-                catch (Exception ex)
-                {
-                    log.Error("Error al obtener el listado de registros de facturación de un cliente: ", ex);
-                    throw new Exception("Se produjo un error consultado el listado de facturas de un cliente. Por favor consulte con su proveedor.");
                 }
             }
         }

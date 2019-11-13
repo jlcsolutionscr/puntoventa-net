@@ -93,7 +93,7 @@ Public Class FrmCliente
                 cboTipoImpuesto.SelectedValue = 8
                 cboTipoExoneracion.SelectedValue = 1
                 txtPorcentajeExoneracion.Text = "0"
-                txtFechaExoneracion.Text = "01-01-2019"
+                txtFechaExoneracion.Text = "01/01/2019"
             End If
             bolInit = False
         Catch ex As Exception

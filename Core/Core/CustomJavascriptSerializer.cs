@@ -24,7 +24,7 @@ namespace LeandroSoftware.Core.CustomClasses
         {
             Dictionary<string, object> result = new Dictionary<string, object>();
             if (obj == null) return result;
-            result["DateTime"] = ((DateTime)obj).ToString("dd-MM-yyyy HH:mm:ss \"GMT\"zzz");
+            result["DateTime"] = ((DateTime)obj).ToString("dd/MM/yyyy HH:mm:ss \"GMT\"zzz");
             return result;
         }
 
@@ -32,7 +32,7 @@ namespace LeandroSoftware.Core.CustomClasses
         {
             if (dictionary.ContainsKey("DateTime"))
             {
-                return DateTime.ParseExact(dictionary["DateTime"].ToString(), "dd-MM-yyyy HH:mm:ss \"GMT\"zzz", System.Globalization.CultureInfo.CurrentCulture);
+                return DateTime.ParseExact(dictionary["DateTime"].ToString(), "dd/MM/yyyy HH:mm:ss \"GMT\"zzz", System.Globalization.CultureInfo.CurrentCulture);
             }
             return null;
         }
