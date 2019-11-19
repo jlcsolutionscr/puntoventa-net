@@ -14,7 +14,7 @@ namespace LeandroSoftware.Activator
             {
                 CmdAceptar.Enabled = false;
                 CmdCancelar.Enabled = false;
-                Usuario usuario = await Administrador.ValidarCredenciales(TxtUsuario.Text, TxtClave.Text);
+                Usuario usuario = await Administrador.ValidarCredencialesAdmin(TxtUsuario.Text, TxtClave.Text);
                 if (usuario != null)
                 {
                     FrmMenu.strToken = usuario.Token;

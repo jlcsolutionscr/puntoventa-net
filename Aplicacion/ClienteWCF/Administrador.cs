@@ -72,13 +72,13 @@ namespace LeandroSoftware.ClienteWCF
             client.UploadData(strServicioURL + "/actualizararchivoaplicacion", bytZipFile);
         }
 
-        public static async Task<Usuario> ValidarCredenciales(string strUsuario, string strClave)
+        public static async Task<Usuario> ValidarCredencialesAdmin(string strUsuario, string strClave)
         {
             try
             {
                 string strEncryptedPassword = Utilitario.EncriptarDatos(strClave);
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
-                HttpResponseMessage httpResponse = await httpClient.GetAsync(strServicioURL + "/validarcredenciales?usuario=" + strUsuario + "&clave=" + strEncryptedPassword);
+                HttpResponseMessage httpResponse = await httpClient.GetAsync(strServicioURL + "/validarcredencialesadmin?usuario=" + strUsuario + "&clave=" + strEncryptedPassword);
                 if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
                 {
                     string strError = serializer.Deserialize<string>(httpResponse.Content.ReadAsStringAsync().Result);
