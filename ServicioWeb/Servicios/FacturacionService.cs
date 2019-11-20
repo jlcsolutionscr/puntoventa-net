@@ -316,6 +316,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (empresa.FechaVence < DateTime.Today) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
                     if (empresa.TipoContrato == 2 && empresa.CantidadDisponible == 0) throw new BusinessException("El disponible de documentos electrónicos fue agotado. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
+                    TerminalPorSucursal terminal = dbContext.TerminalPorSucursalRepository.Where(x => x.IdEmpresa == factura.IdEmpresa && x.IdSucursal == factura.IdSucursal && x.IdTerminal == factura.IdTerminal).FirstOrDefault();
+                    if (terminal == null) throw new BusinessException("No se logró obtener la información de la terminal que envia la solicitud. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (factura.IdOrdenServicio > 0)
                     {
                         OrdenServicio ordenServicio = dbContext.OrdenServicioRepository.Find(factura.IdOrdenServicio);
@@ -352,6 +354,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         decTipoDeCambio = tipoDeCambio.ValorTipoCambio;
                     }
                     factura.TipoDeCambioDolar = decTipoDeCambio;
+                    
+                    if (terminal.IdTipoDispositivo == StaticTipoDispisitivo.AppMovil)
+                    {
+                        Vendedor vendedor = dbContext.VendedorRepository.Where(x => x.IdEmpresa == factura.IdEmpresa).FirstOrDefault();
+                        if (vendedor == null) throw new BusinessException("La empresa no posee registrado ningún vendedor");
+                        factura.IdVendedor = vendedor.IdVendedor;
+                    }
                     dbContext.FacturaRepository.Add(factura);
                     if (factura.IdCondicionVenta == StaticCondicionVenta.Credito)
                     {
@@ -1944,7 +1953,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 if (strDatos == "" && archivo.ContentType == "text/xml")
                 {
                     XmlDocument documentoXml = new XmlDocument();
-                    string strXml = Encoding.UTF8.GetString(archivo.Content);
+                    string strXml = Encoding.ASCII.GetString(archivo.Content);
+                    strXml = strXml.Substring(strXml.IndexOf("<?xml"));
                     documentoXml.LoadXml(strXml);
                     if (documentoXml.DocumentElement.Name == "FacturaElectronica" || documentoXml.DocumentElement.Name == "NotaCreditoElectronica")
                     {

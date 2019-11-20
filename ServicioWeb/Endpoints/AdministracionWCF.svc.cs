@@ -68,14 +68,30 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             servicioMantenimiento = unityContainer.Resolve<IMantenimientoService>();
         }
 
-        public string ValidarCredenciales(string strUsuario, string strClave)
+        public string ValidarCredencialesAdmin(string strUsuario, string strClave)
         {
             try
             {
-                Usuario usuario = servicioMantenimiento.ValidarCredenciales(strUsuario, strClave, strApplicationKey);
+                Usuario usuario = servicioMantenimiento.ValidarCredencialesAdmin(strUsuario, strClave, strApplicationKey);
                 string strRespuesta = "";
                 if (usuario != null)
                     strRespuesta = serializer.Serialize(usuario);
+                return strRespuesta;
+            }
+            catch (Exception ex)
+            {
+                throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
+            }
+        }
+
+        public string ValidarCredenciales(string strUsuario, string strClave, string id)
+        {
+            try
+            {
+                Empresa empresa = servicioMantenimiento.ValidarCredenciales(strUsuario, strClave, id, strApplicationKey);
+                string strRespuesta = "";
+                if (empresa != null)
+                    strRespuesta = serializer.Serialize(empresa);
                 return strRespuesta;
             }
             catch (Exception ex)

@@ -20,8 +20,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         IEnumerable<LlaveDescripcion> ObtenerListadoEmpresasAdministrador();
         IEnumerable<LlaveDescripcion> ObtenerListadoEmpresasPorTerminal(string strDispositivoId);
         void RegistrarTerminal(string strUsuario, string strClave, string strIdentificacion, int intIdSucursal, int intIdTerminal, int intTipoDispositivo, string strDispositivoId);
-
-        Usuario ValidarCredenciales(string strUsuario, string strClave, string strApplicationKey);
+        Usuario ValidarCredencialesAdmin(string strUsuario, string strClave, string strApplicationKey);
+        Empresa ValidarCredenciales(string strUsuario, string strClave, string id, string strApplicationKey);
         Empresa ValidarCredenciales(string strUsuario, string strClave, int intIdEmpresa, string strValorRegistro, string strApplicationKey);
         void ActualizarVersionApp(string strVersion);
         string ObtenerUltimaVersionApp();
@@ -117,7 +117,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         IEnumerable<LlaveDescripcion> ObtenerListadoDistritos(int intIdProvincia, int intIdCanton);
         IEnumerable<LlaveDescripcion> ObtenerListadoBarrios(int intIdProvincia, int intIdCanton, int intIdDistrito);
         IList<LlaveDescripcion> ObtenerListadoTipodePrecio();
-        void ValidarRegistroAutenticacion(string strToken, int intRole, string strApplicationKey);
+        void ValidarRegistroAutenticacion(string strToken, int intRole);
         void EliminarRegistroAutenticacionInvalidos();
     }
 
@@ -282,7 +282,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public Usuario ValidarCredenciales(string strUsuario, string strClave, string strApplicationKey)
+        public Usuario ValidarCredencialesAdmin(string strUsuario, string strClave, string strApplicationKey)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -291,7 +291,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     Usuario usuario = dbContext.UsuarioRepository.Where(x => x.CodigoUsuario == strUsuario.ToUpper()).FirstOrDefault();
                     if (usuario == null) throw new BusinessException("Usuario no registrado. Por favor verifique la información suministrada.");
                     if (usuario.Clave != strClave) throw new BusinessException("Los credenciales suministrados no son válidos. Por favor verifique la información suministrada.");
-                    string strToken = GenerarRegistroAutenticacion(usuario.IdUsuario == 1 ? StaticRolePorUsuario.ADMINISTRADOR : StaticRolePorUsuario.USUARIO_SISTEMA, strApplicationKey);
+                    if (usuario.IdUsuario != 1) throw new BusinessException("Los credenciales suministrados no corresponden al usuario administrador. Por favor verifique la información suministrada.");
+                    string strToken = GenerarRegistroAutenticacion(StaticRolePorUsuario.ADMINISTRADOR);
                     usuario.Token = strToken;
                     return usuario;
                 }
@@ -306,21 +307,81 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
             }
         }
+
+        public Empresa ValidarCredenciales(string strUsuario, string strClave, string strIdentificacion, string strApplicationKey)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    Empresa empresa = dbContext.EmpresaRepository.Include("ReportePorEmpresa.CatalogoReporte").Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.Identificacion == strIdentificacion);
+                    if (!empresa.PermiteFacturar) throw new BusinessException("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (empresa.FechaVence < DateTime.Today) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
+                    if (empresa.TipoContrato == 2 && empresa.CantidadDisponible == 0) throw new BusinessException("El disponible de documentos electrónicos fue agotado. Por favor, pongase en contacto con su proveedor del servicio.");
+                    UsuarioPorEmpresa usuarioEmpresa = dbContext.UsuarioPorEmpresaRepository.Include("Usuario").FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa && x.Usuario.CodigoUsuario == strUsuario.ToUpper());
+                    if (strUsuario != "JASLOP" && usuarioEmpresa == null) throw new BusinessException("Usuario no registrado en la empresa indicada. Por favor verifique la información suministrada.");
+                    Usuario usuario = null;
+                    if (strUsuario == "JASLOP")
+                    {
+                        usuario = dbContext.UsuarioRepository.Include("RolePorUsuario.Role").FirstOrDefault(x => x.IdUsuario == 1);
+                    }
+                    else
+                    {
+                        usuario = dbContext.UsuarioRepository.Include("RolePorUsuario.Role").FirstOrDefault(x => x.IdUsuario == usuarioEmpresa.IdUsuario);
+                    }
+                    if (usuario.Clave != strClave) throw new BusinessException("Los credenciales suministrados no son válidos. Verifique los credenciales suministrados.");
+                    usuario.UsuarioPorEmpresa = new HashSet<UsuarioPorEmpresa>();
+                    string strToken = GenerarRegistroAutenticacion(StaticRolePorUsuario.USUARIO_SISTEMA);
+                    usuario.Token = strToken;
+                    foreach (ReportePorEmpresa reporte in empresa.ReportePorEmpresa)
+                        reporte.Empresa = null;
+                    foreach (RolePorUsuario role in usuario.RolePorUsuario)
+                        role.Usuario = null;
+                    empresa.Logotipo = null;
+                    empresa.Certificado = null;
+                    empresa.AccessToken = null;
+                    empresa.RefreshToken = null;
+                    empresa.EmitedAt = null;
+                    empresa.ExpiresIn = null;
+                    empresa.RefreshExpiresIn = null;
+                    empresa.EquipoRegistrado = null;
+                    empresa.Usuario = usuario;
+                    return empresa;
+                }
+                catch (BusinessException ex)
+                {
+                    log.Error("Error al validar credenciales para la identificación: " + strIdentificacion + " Error: " + ex.Message);
+                    throw ex;
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al validar los credenciales del usuario por identificación: ", ex);
+                    throw new Exception("Error en la validación de los credenciales suministrados por favor verifique la información. . .");
+                }
+            }
+        }
+
         public Empresa ValidarCredenciales(string strUsuario, string strClave, int intIdEmpresa, string strValorRegistro, string strApplicationKey)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 try
                 {
-                    Usuario usuario = dbContext.UsuarioRepository.Include("RolePorUsuario.Role").FirstOrDefault(x => x.CodigoUsuario == strUsuario.ToUpper());
-                    if (usuario == null) throw new BusinessException("Usuario no registrado. Por favor verifique la información suministrada.");
+                    UsuarioPorEmpresa usuarioEmpresa = dbContext.UsuarioPorEmpresaRepository.Include("Usuario").FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.Usuario.CodigoUsuario == strUsuario.ToUpper());
+                    if (strUsuario != "JASLOP" && usuarioEmpresa == null) throw new BusinessException("Usuario no registrado en la empresa indicada. Por favor verifique la información suministrada.");
+                    Usuario usuario = null;
+                    if (strUsuario == "JASLOP")
+                    {
+                        usuario = dbContext.UsuarioRepository.Include("RolePorUsuario.Role").FirstOrDefault(x => x.IdUsuario == 1);
+                    } else
+                    {
+                        usuario = dbContext.UsuarioRepository.Include("RolePorUsuario.Role").FirstOrDefault(x => x.IdUsuario == usuarioEmpresa.IdUsuario);
+                    }
                     if (usuario.Clave != strClave) throw new BusinessException("Los credenciales suministrados no son válidos. Verifique los credenciales suministrados.");
                     Empresa empresa = dbContext.EmpresaRepository.Include("ReportePorEmpresa.CatalogoReporte").Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.IdEmpresa == intIdEmpresa);
                     if (!empresa.PermiteFacturar) throw new BusinessException("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.FechaVence < DateTime.Today) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
                     if (empresa.TipoContrato == 2 && empresa.CantidadDisponible == 0) throw new BusinessException("El disponible de documentos electrónicos fue agotado. Por favor, pongase en contacto con su proveedor del servicio.");
-                    UsuarioPorEmpresa empresaUsuario = dbContext.UsuarioPorEmpresaRepository.Where(x => x.IdUsuario == usuario.IdUsuario && x.IdEmpresa == empresa.IdEmpresa).FirstOrDefault();
-                    if (usuario.IdUsuario > 1 && empresaUsuario == null) throw new BusinessException("El usuario ingresado no pertenece a la empresa suministrada.");
                     TerminalPorSucursal terminal = null;
                     SucursalPorEmpresa sucursal = null;
                     if (strUsuario == "JASLOP")
@@ -331,7 +392,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     else
                     {
                         terminal = dbContext.TerminalPorSucursalRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa && x.ValorRegistro == strValorRegistro).FirstOrDefault();
-                        if (terminal == null) throw new BusinessException("No se logro obtener una terminal para la terminal indicada.");
+                        if (terminal == null) throw new BusinessException("El dispositivo no se encuentra registrado en el sistema.");
                         sucursal = dbContext.SucursalPorEmpresaRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa && x.IdSucursal == terminal.IdSucursal).FirstOrDefault();
                     }
                     if (terminal == null || sucursal == null) throw new BusinessException("La terminal o dispositivo movil no se encuentra registrado para la empresa suministrada.");
@@ -345,7 +406,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         ImpresoraFactura = terminal.ImpresoraFactura
                     };
                     usuario.UsuarioPorEmpresa = new HashSet<UsuarioPorEmpresa>();
-                    string strToken = GenerarRegistroAutenticacion(StaticRolePorUsuario.USUARIO_SISTEMA, strApplicationKey);
+                    string strToken = GenerarRegistroAutenticacion(StaticRolePorUsuario.USUARIO_SISTEMA);
                     usuario.Token = strToken;
                     foreach (ReportePorEmpresa reporte in empresa.ReportePorEmpresa)
                         reporte.Empresa = null;
@@ -370,7 +431,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    log.Error("Error al validar los credenciales del usuario: ", ex);
+                    log.Error("Error al validar los credenciales del usuario por terminal: ", ex);
                     throw new Exception("Error en la validación de los credenciales suministrados por favor verifique la información. . .");
                 }
             }
@@ -750,8 +811,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (empresaUsuario.Count == 0) throw new BusinessException("El usuario por agregar debe estar vinculado a la empresa actual. Por favor, pongase en contacto con su proveedor del servicio.");
                     Empresa empresa = dbContext.EmpresaRepository.Find(empresaUsuario[0].IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    Usuario usuarioExistente = dbContext.UsuarioRepository.Where(x => x.CodigoUsuario.ToUpper().Contains(usuario.CodigoUsuario.ToUpper())).FirstOrDefault();
-                    if (usuarioExistente != null) throw new BusinessException("El código de usuario que desea agregar ya existe.");
+                    UsuarioPorEmpresa usuarioExistente = dbContext.UsuarioPorEmpresaRepository.Include("Usuario").Where(x => x.IdEmpresa == empresa.IdEmpresa && x.Usuario.CodigoUsuario.ToUpper().Contains(usuario.CodigoUsuario.ToUpper())).FirstOrDefault();
+                    if (usuarioExistente != null) throw new BusinessException("El código de usuario que desea agregar ya existe para la empresa suministrada.");
                     usuario.Clave = usuario.Clave;
                     dbContext.UsuarioRepository.Add(usuario);
                     dbContext.Commit();
@@ -2585,7 +2646,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        private string GenerarRegistroAutenticacion(int intRole, string strApplicationKey)
+        private string GenerarRegistroAutenticacion(int intRole)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -2611,7 +2672,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void ValidarRegistroAutenticacion(string strToken, int intRole, string strApplicationKey)
+        public void ValidarRegistroAutenticacion(string strToken, int intRole)
         {
             try
             {

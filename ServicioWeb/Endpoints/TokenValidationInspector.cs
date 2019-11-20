@@ -31,7 +31,7 @@ namespace LeandroSoftware.ServicioWeb
             try
             {
                 string strOperacion = request.Properties["HttpOperationName"].ToString();
-                if (!new string[] { "ObtenerUltimaVersionApp", "DescargarActualizacion", "LimpiarRegistrosInvalidos", "ProcesarDocumentosElectronicosPendientes", "ValidarCredenciales", "ObtenerListadoEmpresasAdministrador", "ObtenerListadoEmpresasPorTerminal", "ObtenerListadoTerminalesDisponibles", "RegistrarTerminal" }.Contains(strOperacion))
+                if (!new string[] { "ObtenerUltimaVersionApp", "DescargarActualizacion", "LimpiarRegistrosInvalidos", "ProcesarDocumentosElectronicosPendientes", "ValidarCredencialesAdmin", "ValidarCredenciales", "ObtenerListadoEmpresasAdministrador", "ObtenerListadoEmpresasPorTerminal", "ObtenerListadoTerminalesDisponibles", "RegistrarTerminal" }.Contains(strOperacion))
                 {
                     IncomingWebRequestContext incomingRequest = WebOperationContext.Current.IncomingRequest;
                     WebHeaderCollection headers = incomingRequest.Headers;
@@ -39,7 +39,7 @@ namespace LeandroSoftware.ServicioWeb
                     if (strToken == null) throw new Exception("La sessión del usuario no es válida. Debe reiniciar su sesión.");
                     servicioMantenimiento = unityContainer.Resolve<IMantenimientoService>();
                     strToken = strToken.Substring(7);
-                    servicioMantenimiento.ValidarRegistroAutenticacion(strToken, StaticRolePorUsuario.USUARIO_SISTEMA, strApplicationKey);
+                    servicioMantenimiento.ValidarRegistroAutenticacion(strToken, StaticRolePorUsuario.USUARIO_SISTEMA);
                 }
                 return null;
             }

@@ -8,8 +8,12 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
     public interface IAdministracionWCF
     {
         [OperationContract]
-        [WebGet(UriTemplate = "validarcredenciales?usuario={usuario}&clave={clave}", ResponseFormat = WebMessageFormat.Json)]
-        string ValidarCredenciales(string usuario, string clave);
+        [WebGet(UriTemplate = "validarcredencialesadmin?usuario={usuario}&clave={clave}", ResponseFormat = WebMessageFormat.Json)]
+        string ValidarCredencialesAdmin(string usuario, string clave);
+
+        [OperationContract]
+        [WebGet(UriTemplate = "validarcredenciales?usuario={usuario}&clave={clave}&id={id}", ResponseFormat = WebMessageFormat.Json)]
+        string ValidarCredenciales(string usuario, string clave, string id);
 
         [OperationContract]
         [WebGet(UriTemplate = "obtenerlistadoempresa", ResponseFormat = WebMessageFormat.Json)]

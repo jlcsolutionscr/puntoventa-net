@@ -1,11 +1,11 @@
-﻿-- phpMyAdmin SQL Dump
+-- phpMyAdmin SQL Dump
 -- version 3.3.1
 -- http://www.phpmyadmin.net
 --
--- Servidor: 204.93.216.11:3306
--- Tiempo de generación: 15-10-2019 a las 09:30:21
--- Versión del servidor: 5.6.40
--- Versión de PHP: 5.2.13
+-- Host: 204.93.216.11:3306
+-- Generation Time: Nov 18, 2019 at 07:51 AM
+-- Server version: 5.6.40
+-- PHP Version: 5.2.13
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
@@ -16,13 +16,13 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 /*!40101 SET NAMES utf8 */;
 
 --
--- Base de datos: 'jasoncr_puntoventa'
+-- Database: 'jasoncr_puntoventa_dev'
 --
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'ajusteinventario'
+-- Table structure for table 'ajusteinventario'
 --
 
 CREATE TABLE ajusteinventario (
@@ -41,7 +41,7 @@ CREATE TABLE ajusteinventario (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'asiento'
+-- Table structure for table 'asiento'
 --
 
 CREATE TABLE asiento (
@@ -61,7 +61,7 @@ CREATE TABLE asiento (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'bancoadquiriente'
+-- Table structure for table 'bancoadquiriente'
 --
 
 CREATE TABLE bancoadquiriente (
@@ -77,7 +77,7 @@ CREATE TABLE bancoadquiriente (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'barrio'
+-- Table structure for table 'barrio'
 --
 
 CREATE TABLE barrio (
@@ -92,7 +92,7 @@ CREATE TABLE barrio (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'cantfemensualempresa'
+-- Table structure for table 'cantfemensualempresa'
 --
 
 CREATE TABLE cantfemensualempresa (
@@ -106,7 +106,7 @@ CREATE TABLE cantfemensualempresa (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'canton'
+-- Table structure for table 'canton'
 --
 
 CREATE TABLE canton (
@@ -119,7 +119,7 @@ CREATE TABLE canton (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'catalogocontable'
+-- Table structure for table 'catalogocontable'
 --
 
 CREATE TABLE catalogocontable (
@@ -151,7 +151,7 @@ CREATE TABLE catalogocontable (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'catalogoreporte'
+-- Table structure for table 'catalogoreporte'
 --
 
 CREATE TABLE catalogoreporte (
@@ -163,7 +163,7 @@ CREATE TABLE catalogoreporte (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'cierrecaja'
+-- Table structure for table 'cierrecaja'
 --
 
 CREATE TABLE cierrecaja (
@@ -197,7 +197,7 @@ CREATE TABLE cierrecaja (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'clasecuentacontable'
+-- Table structure for table 'clasecuentacontable'
 --
 
 CREATE TABLE clasecuentacontable (
@@ -209,7 +209,7 @@ CREATE TABLE clasecuentacontable (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'cliente'
+-- Table structure for table 'cliente'
 --
 
 CREATE TABLE cliente (
@@ -217,7 +217,6 @@ CREATE TABLE cliente (
   IdCliente int(11) NOT NULL AUTO_INCREMENT,
   IdTipoIdentificacion int(11) NOT NULL,
   Identificacion varchar(20) NOT NULL,
-  IdentificacionExtranjero varchar(20) DEFAULT NULL,
   IdProvincia int(11) NOT NULL,
   IdCanton int(11) NOT NULL,
   IdDistrito int(11) NOT NULL,
@@ -233,6 +232,11 @@ CREATE TABLE cliente (
   IdTipoPrecio int(11) DEFAULT NULL,
   AplicaTasaDiferenciada int(11) NOT NULL,
   IdImpuesto int(11) DEFAULT NULL,
+  IdTipoExoneracion int(11) NOT NULL,
+  NumDocExoneracion varchar(100) DEFAULT NULL,
+  NombreInstExoneracion varchar(100) DEFAULT NULL,
+  FechaEmisionDoc datetime NOT NULL,
+  PorcentajeExoneracion int(11) DEFAULT NULL,
   PRIMARY KEY (IdCliente),
   KEY IdEmpresa (IdEmpresa),
   KEY IdTipoIdentificacion (IdTipoIdentificacion),
@@ -242,7 +246,7 @@ CREATE TABLE cliente (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'compra'
+-- Table structure for table 'compra'
 --
 
 CREATE TABLE compra (
@@ -276,7 +280,7 @@ CREATE TABLE compra (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'condicionventa'
+-- Table structure for table 'condicionventa'
 --
 
 CREATE TABLE condicionventa (
@@ -288,7 +292,7 @@ CREATE TABLE condicionventa (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'cuentabanco'
+-- Table structure for table 'cuentabanco'
 --
 
 CREATE TABLE cuentabanco (
@@ -304,7 +308,7 @@ CREATE TABLE cuentabanco (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'cuentaegreso'
+-- Table structure for table 'cuentaegreso'
 --
 
 CREATE TABLE cuentaegreso (
@@ -317,7 +321,7 @@ CREATE TABLE cuentaegreso (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'cuentaingreso'
+-- Table structure for table 'cuentaingreso'
 --
 
 CREATE TABLE cuentaingreso (
@@ -330,7 +334,7 @@ CREATE TABLE cuentaingreso (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'cuentaporcobrar'
+-- Table structure for table 'cuentaporcobrar'
 --
 
 CREATE TABLE cuentaporcobrar (
@@ -351,12 +355,12 @@ CREATE TABLE cuentaporcobrar (
   PRIMARY KEY (IdCxC),
   KEY IdEmpresa (IdEmpresa),
   KEY IdUsuario (IdUsuario)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'cuentaporpagar'
+-- Table structure for table 'cuentaporpagar'
 --
 
 CREATE TABLE cuentaporpagar (
@@ -383,7 +387,7 @@ CREATE TABLE cuentaporpagar (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'desglosemovimientocuentaporcobrar'
+-- Table structure for table 'desglosemovimientocuentaporcobrar'
 --
 
 CREATE TABLE desglosemovimientocuentaporcobrar (
@@ -397,7 +401,7 @@ CREATE TABLE desglosemovimientocuentaporcobrar (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'desglosemovimientocuentaporpagar'
+-- Table structure for table 'desglosemovimientocuentaporpagar'
 --
 
 CREATE TABLE desglosemovimientocuentaporpagar (
@@ -411,7 +415,7 @@ CREATE TABLE desglosemovimientocuentaporpagar (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'desglosepagocompra'
+-- Table structure for table 'desglosepagocompra'
 --
 
 CREATE TABLE desglosepagocompra (
@@ -432,7 +436,7 @@ CREATE TABLE desglosepagocompra (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'desglosepagodevolucioncliente'
+-- Table structure for table 'desglosepagodevolucioncliente'
 --
 
 CREATE TABLE desglosepagodevolucioncliente (
@@ -453,7 +457,7 @@ CREATE TABLE desglosepagodevolucioncliente (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'desglosepagodevolucionproveedor'
+-- Table structure for table 'desglosepagodevolucionproveedor'
 --
 
 CREATE TABLE desglosepagodevolucionproveedor (
@@ -474,7 +478,7 @@ CREATE TABLE desglosepagodevolucionproveedor (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'desglosepagoegreso'
+-- Table structure for table 'desglosepagoegreso'
 --
 
 CREATE TABLE desglosepagoegreso (
@@ -495,7 +499,7 @@ CREATE TABLE desglosepagoegreso (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'desglosepagofactura'
+-- Table structure for table 'desglosepagofactura'
 --
 
 CREATE TABLE desglosepagofactura (
@@ -517,7 +521,7 @@ CREATE TABLE desglosepagofactura (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'desglosepagoingreso'
+-- Table structure for table 'desglosepagoingreso'
 --
 
 CREATE TABLE desglosepagoingreso (
@@ -537,7 +541,7 @@ CREATE TABLE desglosepagoingreso (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'desglosepagomovimientocuentaporcobrar'
+-- Table structure for table 'desglosepagomovimientocuentaporcobrar'
 --
 
 CREATE TABLE desglosepagomovimientocuentaporcobrar (
@@ -557,7 +561,7 @@ CREATE TABLE desglosepagomovimientocuentaporcobrar (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'desglosepagomovimientocuentaporpagar'
+-- Table structure for table 'desglosepagomovimientocuentaporpagar'
 --
 
 CREATE TABLE desglosepagomovimientocuentaporpagar (
@@ -578,7 +582,7 @@ CREATE TABLE desglosepagomovimientocuentaporpagar (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'detalleajusteinventario'
+-- Table structure for table 'detalleajusteinventario'
 --
 
 CREATE TABLE detalleajusteinventario (
@@ -594,7 +598,7 @@ CREATE TABLE detalleajusteinventario (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'detalleasiento'
+-- Table structure for table 'detalleasiento'
 --
 
 CREATE TABLE detalleasiento (
@@ -611,7 +615,7 @@ CREATE TABLE detalleasiento (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'detallecompra'
+-- Table structure for table 'detallecompra'
 --
 
 CREATE TABLE detallecompra (
@@ -628,7 +632,7 @@ CREATE TABLE detallecompra (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'detalledevolucioncliente'
+-- Table structure for table 'detalledevolucioncliente'
 --
 
 CREATE TABLE detalledevolucioncliente (
@@ -647,7 +651,7 @@ CREATE TABLE detalledevolucioncliente (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'detalledevolucionproveedor'
+-- Table structure for table 'detalledevolucionproveedor'
 --
 
 CREATE TABLE detalledevolucionproveedor (
@@ -665,7 +669,7 @@ CREATE TABLE detalledevolucionproveedor (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'detallefactura'
+-- Table structure for table 'detallefactura'
 --
 
 CREATE TABLE detallefactura (
@@ -685,7 +689,7 @@ CREATE TABLE detallefactura (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'detalleordencompra'
+-- Table structure for table 'detalleordencompra'
 --
 
 CREATE TABLE detalleordencompra (
@@ -702,7 +706,7 @@ CREATE TABLE detalleordencompra (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'detalleordenservicio'
+-- Table structure for table 'detalleordenservicio'
 --
 
 CREATE TABLE detalleordenservicio (
@@ -721,7 +725,7 @@ CREATE TABLE detalleordenservicio (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'detalleproforma'
+-- Table structure for table 'detalleproforma'
 --
 
 CREATE TABLE detalleproforma (
@@ -738,7 +742,7 @@ CREATE TABLE detalleproforma (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'detalletraslado'
+-- Table structure for table 'detalletraslado'
 --
 
 CREATE TABLE detalletraslado (
@@ -754,7 +758,7 @@ CREATE TABLE detalletraslado (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'devolucioncliente'
+-- Table structure for table 'devolucioncliente'
 --
 
 CREATE TABLE devolucioncliente (
@@ -784,7 +788,7 @@ CREATE TABLE devolucioncliente (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'devolucionproveedor'
+-- Table structure for table 'devolucionproveedor'
 --
 
 CREATE TABLE devolucionproveedor (
@@ -812,7 +816,7 @@ CREATE TABLE devolucionproveedor (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'distrito'
+-- Table structure for table 'distrito'
 --
 
 CREATE TABLE distrito (
@@ -826,7 +830,7 @@ CREATE TABLE distrito (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'documentoelectronico'
+-- Table structure for table 'documentoelectronico'
 --
 
 CREATE TABLE documentoelectronico (
@@ -860,7 +864,7 @@ CREATE TABLE documentoelectronico (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'egreso'
+-- Table structure for table 'egreso'
 --
 
 CREATE TABLE egreso (
@@ -885,7 +889,7 @@ CREATE TABLE egreso (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'empresa'
+-- Table structure for table 'empresa'
 --
 
 CREATE TABLE empresa (
@@ -936,7 +940,7 @@ CREATE TABLE empresa (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'factura'
+-- Table structure for table 'factura'
 --
 
 CREATE TABLE factura (
@@ -953,7 +957,6 @@ CREATE TABLE factura (
   IdVendedor int(11) NOT NULL,
   Excento double NOT NULL,
   Gravado double NOT NULL,
-  Exonerado double NOT NULL,
   Descuento double NOT NULL,
   MontoPagado double NOT NULL,
   Impuesto double NOT NULL,
@@ -970,11 +973,12 @@ CREATE TABLE factura (
   IdDocElectronicoRev varchar(50) DEFAULT NULL,
   IdTipoMoneda int(11) NOT NULL,
   TipoDeCambioDolar decimal(13,5) NOT NULL,
-  IdTipoExoneracion int(11) NOT NULL,
+  IdTipoExoneracion int(11) DEFAULT NULL,
   NumDocExoneracion varchar(100) DEFAULT NULL,
   NombreInstExoneracion varchar(100) DEFAULT NULL,
   FechaEmisionDoc datetime NOT NULL,
   PorcentajeExoneracion int(11) DEFAULT NULL,
+  Exonerado double NOT NULL,
   PRIMARY KEY (IdFactura),
   KEY IdEmpresa (IdEmpresa),
   KEY IdCliente (IdCliente),
@@ -987,7 +991,7 @@ CREATE TABLE factura (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'formapago'
+-- Table structure for table 'formapago'
 --
 
 CREATE TABLE formapago (
@@ -999,7 +1003,7 @@ CREATE TABLE formapago (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'ingreso'
+-- Table structure for table 'ingreso'
 --
 
 CREATE TABLE ingreso (
@@ -1024,23 +1028,21 @@ CREATE TABLE ingreso (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'linea'
+-- Table structure for table 'linea'
 --
 
 CREATE TABLE linea (
   IdEmpresa int(11) NOT NULL,
   IdLinea int(11) NOT NULL AUTO_INCREMENT,
-  IdTipoProducto int(11) NOT NULL,
   Descripcion varchar(50) NOT NULL,
   PRIMARY KEY (IdLinea),
-  KEY IdEmpresa (IdEmpresa),
-  KEY IdTipoProducto (IdTipoProducto)
+  KEY IdEmpresa (IdEmpresa)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'movimientobanco'
+-- Table structure for table 'movimientobanco'
 --
 
 CREATE TABLE movimientobanco (
@@ -1064,7 +1066,7 @@ CREATE TABLE movimientobanco (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'movimientocuentaporcobrar'
+-- Table structure for table 'movimientocuentaporcobrar'
 --
 
 CREATE TABLE movimientocuentaporcobrar (
@@ -1088,7 +1090,7 @@ CREATE TABLE movimientocuentaporcobrar (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'movimientocuentaporpagar'
+-- Table structure for table 'movimientocuentaporpagar'
 --
 
 CREATE TABLE movimientocuentaporpagar (
@@ -1114,7 +1116,7 @@ CREATE TABLE movimientocuentaporpagar (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'movimientoproducto'
+-- Table structure for table 'movimientoproducto'
 --
 
 CREATE TABLE movimientoproducto (
@@ -1131,7 +1133,7 @@ CREATE TABLE movimientoproducto (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'ordencompra'
+-- Table structure for table 'ordencompra'
 --
 
 CREATE TABLE ordencompra (
@@ -1161,7 +1163,7 @@ CREATE TABLE ordencompra (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'ordenservicio'
+-- Table structure for table 'ordenservicio'
 --
 
 CREATE TABLE ordenservicio (
@@ -1195,7 +1197,7 @@ CREATE TABLE ordenservicio (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'padron'
+-- Table structure for table 'padron'
 --
 
 CREATE TABLE padron (
@@ -1212,7 +1214,7 @@ CREATE TABLE padron (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'parametrocontable'
+-- Table structure for table 'parametrocontable'
 --
 
 CREATE TABLE parametrocontable (
@@ -1228,7 +1230,7 @@ CREATE TABLE parametrocontable (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'parametroexoneracion'
+-- Table structure for table 'parametroexoneracion'
 --
 
 CREATE TABLE parametroexoneracion (
@@ -1240,7 +1242,7 @@ CREATE TABLE parametroexoneracion (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'parametroimpuesto'
+-- Table structure for table 'parametroimpuesto'
 --
 
 CREATE TABLE parametroimpuesto (
@@ -1253,7 +1255,7 @@ CREATE TABLE parametroimpuesto (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'parametrosistema'
+-- Table structure for table 'parametrosistema'
 --
 
 CREATE TABLE parametrosistema (
@@ -1266,7 +1268,7 @@ CREATE TABLE parametrosistema (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'producto'
+-- Table structure for table 'producto'
 --
 
 CREATE TABLE producto (
@@ -1285,7 +1287,6 @@ CREATE TABLE producto (
   PrecioVenta4 double NOT NULL,
   PrecioVenta5 double NOT NULL,
   IndExistencia double NOT NULL,
-  IdTipoUnidad int(11) NOT NULL,
   Imagen longblob,
   IdImpuesto int(11) NOT NULL,
   PRIMARY KEY (IdProducto),
@@ -1293,14 +1294,13 @@ CREATE TABLE producto (
   KEY IdLinea (IdLinea),
   KEY IdProveedor (IdProveedor),
   KEY Tipo (Tipo),
-  KEY IdTipoUnidad (IdTipoUnidad),
   KEY IdImpuesto (IdImpuesto)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'proforma'
+-- Table structure for table 'proforma'
 --
 
 CREATE TABLE proforma (
@@ -1332,7 +1332,7 @@ CREATE TABLE proforma (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'proveedor'
+-- Table structure for table 'proveedor'
 --
 
 CREATE TABLE proveedor (
@@ -1357,7 +1357,7 @@ CREATE TABLE proveedor (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'provincia'
+-- Table structure for table 'provincia'
 --
 
 CREATE TABLE provincia (
@@ -1369,7 +1369,7 @@ CREATE TABLE provincia (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'registroautenticacion'
+-- Table structure for table 'registroautenticacion'
 --
 
 CREATE TABLE registroautenticacion (
@@ -1382,7 +1382,7 @@ CREATE TABLE registroautenticacion (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'registrorespuestahacienda'
+-- Table structure for table 'registrorespuestahacienda'
 --
 
 CREATE TABLE registrorespuestahacienda (
@@ -1397,7 +1397,7 @@ CREATE TABLE registrorespuestahacienda (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'reporteporempresa'
+-- Table structure for table 'reporteporempresa'
 --
 
 CREATE TABLE reporteporempresa (
@@ -1410,7 +1410,7 @@ CREATE TABLE reporteporempresa (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'role'
+-- Table structure for table 'role'
 --
 
 CREATE TABLE role (
@@ -1425,7 +1425,7 @@ CREATE TABLE role (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'roleporusuario'
+-- Table structure for table 'roleporusuario'
 --
 
 CREATE TABLE roleporusuario (
@@ -1438,7 +1438,7 @@ CREATE TABLE roleporusuario (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'saldomensualcontable'
+-- Table structure for table 'saldomensualcontable'
 --
 
 CREATE TABLE saldomensualcontable (
@@ -1454,7 +1454,7 @@ CREATE TABLE saldomensualcontable (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'sucursal'
+-- Table structure for table 'sucursal'
 --
 
 CREATE TABLE sucursal (
@@ -1469,7 +1469,7 @@ CREATE TABLE sucursal (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'sucursalporempresa'
+-- Table structure for table 'sucursalporempresa'
 --
 
 CREATE TABLE sucursalporempresa (
@@ -1484,7 +1484,7 @@ CREATE TABLE sucursalporempresa (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'terminalporsucursal'
+-- Table structure for table 'terminalporsucursal'
 --
 
 CREATE TABLE terminalporsucursal (
@@ -1505,7 +1505,7 @@ CREATE TABLE terminalporsucursal (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'tipocuentacontable'
+-- Table structure for table 'tipocuentacontable'
 --
 
 CREATE TABLE tipocuentacontable (
@@ -1518,7 +1518,7 @@ CREATE TABLE tipocuentacontable (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'tipodecambiodolar'
+-- Table structure for table 'tipodecambiodolar'
 --
 
 CREATE TABLE tipodecambiodolar (
@@ -1530,7 +1530,7 @@ CREATE TABLE tipodecambiodolar (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'tipoidentificacion'
+-- Table structure for table 'tipoidentificacion'
 --
 
 CREATE TABLE tipoidentificacion (
@@ -1542,7 +1542,7 @@ CREATE TABLE tipoidentificacion (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'tipomoneda'
+-- Table structure for table 'tipomoneda'
 --
 
 CREATE TABLE tipomoneda (
@@ -1554,7 +1554,7 @@ CREATE TABLE tipomoneda (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'tipomovimientobanco'
+-- Table structure for table 'tipomovimientobanco'
 --
 
 CREATE TABLE tipomovimientobanco (
@@ -1567,7 +1567,7 @@ CREATE TABLE tipomovimientobanco (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'tipoparametrocontable'
+-- Table structure for table 'tipoparametrocontable'
 --
 
 CREATE TABLE tipoparametrocontable (
@@ -1580,19 +1580,19 @@ CREATE TABLE tipoparametrocontable (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'tipoproducto'
+-- Table structure for table 'tipoproducto'
 --
 
 CREATE TABLE tipoproducto (
   IdTipoProducto int(11) NOT NULL AUTO_INCREMENT,
-  Descripcion varchar(10) NOT NULL,
+  Descripcion varchar(25) DEFAULT NULL,
   PRIMARY KEY (IdTipoProducto)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'tipounidad'
+-- Table structure for table 'tipounidad'
 --
 
 CREATE TABLE tipounidad (
@@ -1604,7 +1604,7 @@ CREATE TABLE tipounidad (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'traslado'
+-- Table structure for table 'traslado'
 --
 
 CREATE TABLE traslado (
@@ -1628,7 +1628,7 @@ CREATE TABLE traslado (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'usuario'
+-- Table structure for table 'usuario'
 --
 
 CREATE TABLE usuario (
@@ -1643,7 +1643,7 @@ CREATE TABLE usuario (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'usuarioporempresa'
+-- Table structure for table 'usuarioporempresa'
 --
 
 CREATE TABLE usuarioporempresa (
@@ -1656,7 +1656,7 @@ CREATE TABLE usuarioporempresa (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'vendedor'
+-- Table structure for table 'vendedor'
 --
 
 CREATE TABLE vendedor (
@@ -1668,42 +1668,42 @@ CREATE TABLE vendedor (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 --
--- Filtros para las tablas descargadas (dump)
+-- Constraints for dumped tables
 --
 
 --
--- Filtros para la tabla `ajusteinventario`
+-- Constraints for table `ajusteinventario`
 --
 ALTER TABLE `ajusteinventario`
   ADD CONSTRAINT ajusteinventario_ibfk_1 FOREIGN KEY (IdEmpresa) REFERENCES empresa (IdEmpresa),
   ADD CONSTRAINT ajusteinventario_ibfk_2 FOREIGN KEY (IdUsuario) REFERENCES usuario (IdUsuario);
 
 --
--- Filtros para la tabla `asiento`
+-- Constraints for table `asiento`
 --
 ALTER TABLE `asiento`
   ADD CONSTRAINT asiento_ibfk_1 FOREIGN KEY (IdEmpresa) REFERENCES empresa (IdEmpresa);
 
 --
--- Filtros para la tabla `barrio`
+-- Constraints for table `barrio`
 --
 ALTER TABLE `barrio`
   ADD CONSTRAINT barrio_ibfk_1 FOREIGN KEY (IdProvincia, IdCanton, IdDistrito) REFERENCES distrito (IdProvincia, IdCanton, IdDistrito);
 
 --
--- Filtros para la tabla `cantfemensualempresa`
+-- Constraints for table `cantfemensualempresa`
 --
 ALTER TABLE `cantfemensualempresa`
   ADD CONSTRAINT cantfemensualempresa_ibfk_1 FOREIGN KEY (IdEmpresa) REFERENCES empresa (IdEmpresa);
 
 --
--- Filtros para la tabla `canton`
+-- Constraints for table `canton`
 --
 ALTER TABLE `canton`
   ADD CONSTRAINT canton_ibfk_1 FOREIGN KEY (IdProvincia) REFERENCES provincia (IdProvincia);
 
 --
--- Filtros para la tabla `catalogocontable`
+-- Constraints for table `catalogocontable`
 --
 ALTER TABLE `catalogocontable`
   ADD CONSTRAINT catalogocontable_ibfk_1 FOREIGN KEY (IdEmpresa) REFERENCES empresa (IdEmpresa),
@@ -1711,13 +1711,13 @@ ALTER TABLE `catalogocontable`
   ADD CONSTRAINT catalogocontable_ibfk_3 FOREIGN KEY (IdClaseCuenta) REFERENCES clasecuentacontable (IdClaseCuenta);
 
 --
--- Filtros para la tabla `cierrecaja`
+-- Constraints for table `cierrecaja`
 --
 ALTER TABLE `cierrecaja`
   ADD CONSTRAINT cierrecaja_ibfk_1 FOREIGN KEY (IdEmpresa) REFERENCES empresa (IdEmpresa);
 
 --
--- Filtros para la tabla `cliente`
+-- Constraints for table `cliente`
 --
 ALTER TABLE `cliente`
   ADD CONSTRAINT cliente_ibfk_1 FOREIGN KEY (IdEmpresa) REFERENCES empresa (IdEmpresa),
@@ -1725,7 +1725,7 @@ ALTER TABLE `cliente`
   ADD CONSTRAINT cliente_ibfk_3 FOREIGN KEY (IdProvincia, IdCanton, IdDistrito, IdBarrio) REFERENCES barrio (IdProvincia, IdCanton, IdDistrito, IdBarrio);
 
 --
--- Filtros para la tabla `compra`
+-- Constraints for table `compra`
 --
 ALTER TABLE `compra`
   ADD CONSTRAINT compra_ibfk_1 FOREIGN KEY (IdEmpresa) REFERENCES empresa (IdEmpresa),
@@ -1734,41 +1734,41 @@ ALTER TABLE `compra`
   ADD CONSTRAINT compra_ibfk_4 FOREIGN KEY (IdCondicionVenta) REFERENCES condicionventa (IdCondicionVenta);
 
 --
--- Filtros para la tabla `cuentabanco`
+-- Constraints for table `cuentabanco`
 --
 ALTER TABLE `cuentabanco`
   ADD CONSTRAINT cuentabanco_ibfk_1 FOREIGN KEY (IdEmpresa) REFERENCES empresa (IdEmpresa);
 
 --
--- Filtros para la tabla `cuentaporcobrar`
+-- Constraints for table `cuentaporcobrar`
 --
 ALTER TABLE `cuentaporcobrar`
   ADD CONSTRAINT cuentaporcobrar_ibfk_1 FOREIGN KEY (IdEmpresa) REFERENCES empresa (IdEmpresa),
   ADD CONSTRAINT cuentaporcobrar_ibfk_2 FOREIGN KEY (IdUsuario) REFERENCES usuario (IdUsuario);
 
 --
--- Filtros para la tabla `cuentaporpagar`
+-- Constraints for table `cuentaporpagar`
 --
 ALTER TABLE `cuentaporpagar`
   ADD CONSTRAINT cuentaporpagar_ibfk_1 FOREIGN KEY (IdEmpresa) REFERENCES empresa (IdEmpresa),
   ADD CONSTRAINT cuentaporpagar_ibfk_2 FOREIGN KEY (IdUsuario) REFERENCES usuario (IdUsuario);
 
 --
--- Filtros para la tabla `desglosemovimientocuentaporcobrar`
+-- Constraints for table `desglosemovimientocuentaporcobrar`
 --
 ALTER TABLE `desglosemovimientocuentaporcobrar`
   ADD CONSTRAINT desglosemovimientocuentaporcobrar_ibfk_1 FOREIGN KEY (IdMovCxC) REFERENCES movimientocuentaporcobrar (IdMovCxC),
   ADD CONSTRAINT desglosemovimientocuentaporcobrar_ibfk_2 FOREIGN KEY (IdCxC) REFERENCES cuentaporcobrar (IdCxC);
 
 --
--- Filtros para la tabla `desglosemovimientocuentaporpagar`
+-- Constraints for table `desglosemovimientocuentaporpagar`
 --
 ALTER TABLE `desglosemovimientocuentaporpagar`
   ADD CONSTRAINT desglosemovimientocuentaporpagar_ibfk_1 FOREIGN KEY (IdMovCxP) REFERENCES movimientocuentaporpagar (IdMovCxP),
   ADD CONSTRAINT desglosemovimientocuentaporpagar_ibfk_2 FOREIGN KEY (IdCxP) REFERENCES cuentaporpagar (IdCxP);
 
 --
--- Filtros para la tabla `desglosepagocompra`
+-- Constraints for table `desglosepagocompra`
 --
 ALTER TABLE `desglosepagocompra`
   ADD CONSTRAINT desglosepagocompra_ibfk_1 FOREIGN KEY (IdCompra) REFERENCES compra (IdCompra),
@@ -1777,7 +1777,7 @@ ALTER TABLE `desglosepagocompra`
   ADD CONSTRAINT desglosepagocompra_ibfk_4 FOREIGN KEY (IdCuentaBanco) REFERENCES cuentabanco (IdCuenta);
 
 --
--- Filtros para la tabla `desglosepagodevolucioncliente`
+-- Constraints for table `desglosepagodevolucioncliente`
 --
 ALTER TABLE `desglosepagodevolucioncliente`
   ADD CONSTRAINT desglosepagodevolucioncliente_ibfk_1 FOREIGN KEY (IdDevolucion) REFERENCES devolucioncliente (IdDevolucion),
@@ -1786,7 +1786,7 @@ ALTER TABLE `desglosepagodevolucioncliente`
   ADD CONSTRAINT desglosepagodevolucioncliente_ibfk_4 FOREIGN KEY (IdCuentaBanco) REFERENCES cuentabanco (IdCuenta);
 
 --
--- Filtros para la tabla `desglosepagodevolucionproveedor`
+-- Constraints for table `desglosepagodevolucionproveedor`
 --
 ALTER TABLE `desglosepagodevolucionproveedor`
   ADD CONSTRAINT desglosepagodevolucionproveedor_ibfk_1 FOREIGN KEY (IdDevolucion) REFERENCES devolucionproveedor (IdDevolucion),
@@ -1795,7 +1795,7 @@ ALTER TABLE `desglosepagodevolucionproveedor`
   ADD CONSTRAINT desglosepagodevolucionproveedor_ibfk_4 FOREIGN KEY (IdCuentaBanco) REFERENCES cuentabanco (IdCuenta);
 
 --
--- Filtros para la tabla `desglosepagoegreso`
+-- Constraints for table `desglosepagoegreso`
 --
 ALTER TABLE `desglosepagoegreso`
   ADD CONSTRAINT desglosepagoegreso_ibfk_1 FOREIGN KEY (IdEgreso) REFERENCES egreso (IdEgreso),
@@ -1804,7 +1804,7 @@ ALTER TABLE `desglosepagoegreso`
   ADD CONSTRAINT desglosepagoegreso_ibfk_4 FOREIGN KEY (IdCuentaBanco) REFERENCES cuentabanco (IdCuenta);
 
 --
--- Filtros para la tabla `desglosepagofactura`
+-- Constraints for table `desglosepagofactura`
 --
 ALTER TABLE `desglosepagofactura`
   ADD CONSTRAINT desglosepagofactura_ibfk_1 FOREIGN KEY (IdFactura) REFERENCES factura (IdFactura),
@@ -1812,7 +1812,7 @@ ALTER TABLE `desglosepagofactura`
   ADD CONSTRAINT desglosepagofactura_ibfk_3 FOREIGN KEY (IdTipoMoneda) REFERENCES tipomoneda (IdTipoMoneda);
 
 --
--- Filtros para la tabla `desglosepagoingreso`
+-- Constraints for table `desglosepagoingreso`
 --
 ALTER TABLE `desglosepagoingreso`
   ADD CONSTRAINT desglosepagoingreso_ibfk_1 FOREIGN KEY (IdIngreso) REFERENCES ingreso (IdIngreso),
@@ -1820,7 +1820,7 @@ ALTER TABLE `desglosepagoingreso`
   ADD CONSTRAINT desglosepagoingreso_ibfk_3 FOREIGN KEY (IdTipoMoneda) REFERENCES tipomoneda (IdTipoMoneda);
 
 --
--- Filtros para la tabla `desglosepagomovimientocuentaporcobrar`
+-- Constraints for table `desglosepagomovimientocuentaporcobrar`
 --
 ALTER TABLE `desglosepagomovimientocuentaporcobrar`
   ADD CONSTRAINT desglosepagomovimientocuentaporcobrar_ibfk_1 FOREIGN KEY (IdMovCxC) REFERENCES movimientocuentaporcobrar (IdMovCxC),
@@ -1828,7 +1828,7 @@ ALTER TABLE `desglosepagomovimientocuentaporcobrar`
   ADD CONSTRAINT desglosepagomovimientocuentaporcobrar_ibfk_3 FOREIGN KEY (IdTipoMoneda) REFERENCES tipomoneda (IdTipoMoneda);
 
 --
--- Filtros para la tabla `desglosepagomovimientocuentaporpagar`
+-- Constraints for table `desglosepagomovimientocuentaporpagar`
 --
 ALTER TABLE `desglosepagomovimientocuentaporpagar`
   ADD CONSTRAINT desglosepagomovimientocuentaporpagar_ibfk_1 FOREIGN KEY (IdMovCxP) REFERENCES movimientocuentaporpagar (IdMovCxP),
@@ -1837,77 +1837,77 @@ ALTER TABLE `desglosepagomovimientocuentaporpagar`
   ADD CONSTRAINT desglosepagomovimientocuentaporpagar_ibfk_4 FOREIGN KEY (IdCuentaBanco) REFERENCES cuentabanco (IdCuenta);
 
 --
--- Filtros para la tabla `detalleajusteinventario`
+-- Constraints for table `detalleajusteinventario`
 --
 ALTER TABLE `detalleajusteinventario`
   ADD CONSTRAINT detalleajusteinventario_ibfk_1 FOREIGN KEY (IdAjuste) REFERENCES ajusteinventario (IdAjuste),
   ADD CONSTRAINT detalleajusteinventario_ibfk_2 FOREIGN KEY (IdProducto) REFERENCES producto (IdProducto);
 
 --
--- Filtros para la tabla `detalleasiento`
+-- Constraints for table `detalleasiento`
 --
 ALTER TABLE `detalleasiento`
   ADD CONSTRAINT detalleasiento_ibfk_1 FOREIGN KEY (IdAsiento) REFERENCES asiento (IdAsiento),
   ADD CONSTRAINT detalleasiento_ibfk_2 FOREIGN KEY (IdCuenta) REFERENCES catalogocontable (IdCuenta);
 
 --
--- Filtros para la tabla `detallecompra`
+-- Constraints for table `detallecompra`
 --
 ALTER TABLE `detallecompra`
   ADD CONSTRAINT detallecompra_ibfk_1 FOREIGN KEY (IdCompra) REFERENCES compra (IdCompra),
   ADD CONSTRAINT detallecompra_ibfk_2 FOREIGN KEY (IdProducto) REFERENCES producto (IdProducto);
 
 --
--- Filtros para la tabla `detalledevolucioncliente`
+-- Constraints for table `detalledevolucioncliente`
 --
 ALTER TABLE `detalledevolucioncliente`
   ADD CONSTRAINT detalledevolucioncliente_ibfk_1 FOREIGN KEY (IdDevolucion) REFERENCES devolucioncliente (IdDevolucion),
   ADD CONSTRAINT detalledevolucioncliente_ibfk_2 FOREIGN KEY (IdProducto) REFERENCES producto (IdProducto);
 
 --
--- Filtros para la tabla `detalledevolucionproveedor`
+-- Constraints for table `detalledevolucionproveedor`
 --
 ALTER TABLE `detalledevolucionproveedor`
   ADD CONSTRAINT detalledevolucionproveedor_ibfk_1 FOREIGN KEY (IdDevolucion) REFERENCES devolucionproveedor (IdDevolucion),
   ADD CONSTRAINT detalledevolucionproveedor_ibfk_2 FOREIGN KEY (IdProducto) REFERENCES producto (IdProducto);
 
 --
--- Filtros para la tabla `detallefactura`
+-- Constraints for table `detallefactura`
 --
 ALTER TABLE `detallefactura`
   ADD CONSTRAINT detallefactura_ibfk_1 FOREIGN KEY (IdFactura) REFERENCES factura (IdFactura),
   ADD CONSTRAINT detallefactura_ibfk_2 FOREIGN KEY (IdProducto) REFERENCES producto (IdProducto);
 
 --
--- Filtros para la tabla `detalleordencompra`
+-- Constraints for table `detalleordencompra`
 --
 ALTER TABLE `detalleordencompra`
   ADD CONSTRAINT detalleordencompra_ibfk_1 FOREIGN KEY (IdOrdenCompra) REFERENCES ordencompra (IdOrdenCompra),
   ADD CONSTRAINT detalleordencompra_ibfk_2 FOREIGN KEY (IdProducto) REFERENCES producto (IdProducto);
 
 --
--- Filtros para la tabla `detalleordenservicio`
+-- Constraints for table `detalleordenservicio`
 --
 ALTER TABLE `detalleordenservicio`
   ADD CONSTRAINT detalleordenservicio_ibfk_1 FOREIGN KEY (IdOrden) REFERENCES ordenservicio (IdOrden),
   ADD CONSTRAINT detalleordenservicio_ibfk_2 FOREIGN KEY (IdProducto) REFERENCES producto (IdProducto);
 
 --
--- Filtros para la tabla `detalleproforma`
+-- Constraints for table `detalleproforma`
 --
 ALTER TABLE `detalleproforma`
   ADD CONSTRAINT detalleproforma_ibfk_1 FOREIGN KEY (IdProforma) REFERENCES proforma (IdProforma),
   ADD CONSTRAINT detalleproforma_ibfk_2 FOREIGN KEY (IdProducto) REFERENCES producto (IdProducto);
 
 --
--- Filtros para la tabla `detalletraslado`
+-- Constraints for table `detalletraslado`
 --
 ALTER TABLE `detalletraslado`
   ADD CONSTRAINT detalletraslado_ibfk_1 FOREIGN KEY (IdTraslado) REFERENCES traslado (IdTraslado),
   ADD CONSTRAINT detalletraslado_ibfk_2 FOREIGN KEY (IdProducto) REFERENCES producto (IdProducto);
 
 --
--- Filtros para la tabla `devolucioncliente`
+-- Constraints for table `devolucioncliente`
 --
 ALTER TABLE `devolucioncliente`
   ADD CONSTRAINT devolucioncliente_ibfk_1 FOREIGN KEY (IdEmpresa) REFERENCES empresa (IdEmpresa),
@@ -1916,7 +1916,7 @@ ALTER TABLE `devolucioncliente`
   ADD CONSTRAINT devolucioncliente_ibfk_4 FOREIGN KEY (IdCliente) REFERENCES `cliente` (IdCliente);
 
 --
--- Filtros para la tabla `devolucionproveedor`
+-- Constraints for table `devolucionproveedor`
 --
 ALTER TABLE `devolucionproveedor`
   ADD CONSTRAINT devolucionproveedor_ibfk_1 FOREIGN KEY (IdEmpresa) REFERENCES empresa (IdEmpresa),
@@ -1925,26 +1925,26 @@ ALTER TABLE `devolucionproveedor`
   ADD CONSTRAINT devolucionproveedor_ibfk_4 FOREIGN KEY (IdProveedor) REFERENCES proveedor (IdProveedor);
 
 --
--- Filtros para la tabla `distrito`
+-- Constraints for table `distrito`
 --
 ALTER TABLE `distrito`
   ADD CONSTRAINT distrito_ibfk_1 FOREIGN KEY (IdProvincia, IdCanton) REFERENCES canton (IdProvincia, IdCanton);
 
 --
--- Filtros para la tabla `documentoelectronico`
+-- Constraints for table `documentoelectronico`
 --
 ALTER TABLE `documentoelectronico`
   ADD CONSTRAINT documentoelectronico_ibfk_1 FOREIGN KEY (IdEmpresa) REFERENCES empresa (IdEmpresa);
 
 --
--- Filtros para la tabla `egreso`
+-- Constraints for table `egreso`
 --
 ALTER TABLE `egreso`
   ADD CONSTRAINT egreso_ibfk_1 FOREIGN KEY (IdEmpresa) REFERENCES empresa (IdEmpresa),
   ADD CONSTRAINT egreso_ibfk_2 FOREIGN KEY (IdCuenta) REFERENCES cuentaegreso (IdCuenta);
 
 --
--- Filtros para la tabla `factura`
+-- Constraints for table `factura`
 --
 ALTER TABLE `factura`
   ADD CONSTRAINT factura_ibfk_1 FOREIGN KEY (IdEmpresa) REFERENCES empresa (IdEmpresa),
@@ -1954,46 +1954,45 @@ ALTER TABLE `factura`
   ADD CONSTRAINT factura_ibfk_5 FOREIGN KEY (IdVendedor) REFERENCES vendedor (IdVendedor);
 
 --
--- Filtros para la tabla `ingreso`
+-- Constraints for table `ingreso`
 --
 ALTER TABLE `ingreso`
   ADD CONSTRAINT ingreso_ibfk_1 FOREIGN KEY (IdEmpresa) REFERENCES empresa (IdEmpresa),
   ADD CONSTRAINT ingreso_ibfk_2 FOREIGN KEY (IdCuenta) REFERENCES cuentaingreso (IdCuenta);
 
 --
--- Filtros para la tabla `linea`
+-- Constraints for table `linea`
 --
 ALTER TABLE `linea`
-  ADD CONSTRAINT linea_ibfk_1 FOREIGN KEY (IdEmpresa) REFERENCES empresa (IdEmpresa),
-  ADD CONSTRAINT linea_ibfk_2 FOREIGN KEY (IdTipoProducto) REFERENCES tipoproducto (IdTipoProducto);
+  ADD CONSTRAINT linea_ibfk_1 FOREIGN KEY (IdEmpresa) REFERENCES empresa (IdEmpresa);
 
 --
--- Filtros para la tabla `movimientobanco`
+-- Constraints for table `movimientobanco`
 --
 ALTER TABLE `movimientobanco`
   ADD CONSTRAINT movimientobanco_ibfk_1 FOREIGN KEY (IdCuenta) REFERENCES cuentabanco (IdCuenta),
   ADD CONSTRAINT movimientobanco_ibfk_2 FOREIGN KEY (IdTipo) REFERENCES tipomovimientobanco (IdTipoMov);
 
 --
--- Filtros para la tabla `movimientocuentaporcobrar`
+-- Constraints for table `movimientocuentaporcobrar`
 --
 ALTER TABLE `movimientocuentaporcobrar`
   ADD CONSTRAINT movimientocuentaporcobrar_ibfk_1 FOREIGN KEY (IdUsuario) REFERENCES usuario (IdUsuario);
 
 --
--- Filtros para la tabla `movimientocuentaporpagar`
+-- Constraints for table `movimientocuentaporpagar`
 --
 ALTER TABLE `movimientocuentaporpagar`
   ADD CONSTRAINT movimientocuentaporpagar_ibfk_1 FOREIGN KEY (IdUsuario) REFERENCES usuario (IdUsuario);
 
 --
--- Filtros para la tabla `movimientoproducto`
+-- Constraints for table `movimientoproducto`
 --
 ALTER TABLE `movimientoproducto`
   ADD CONSTRAINT movimientoproducto_ibfk_1 FOREIGN KEY (IdProducto) REFERENCES producto (IdProducto);
 
 --
--- Filtros para la tabla `ordencompra`
+-- Constraints for table `ordencompra`
 --
 ALTER TABLE `ordencompra`
   ADD CONSTRAINT ordencompra_ibfk_1 FOREIGN KEY (IdEmpresa) REFERENCES empresa (IdEmpresa),
@@ -2002,7 +2001,7 @@ ALTER TABLE `ordencompra`
   ADD CONSTRAINT ordencompra_ibfk_4 FOREIGN KEY (IdCondicionVenta) REFERENCES condicionventa (IdCondicionVenta);
 
 --
--- Filtros para la tabla `ordenservicio`
+-- Constraints for table `ordenservicio`
 --
 ALTER TABLE `ordenservicio`
   ADD CONSTRAINT ordenservicio_ibfk_1 FOREIGN KEY (IdEmpresa) REFERENCES empresa (IdEmpresa),
@@ -2010,25 +2009,24 @@ ALTER TABLE `ordenservicio`
   ADD CONSTRAINT ordenservicio_ibfk_3 FOREIGN KEY (IdCliente) REFERENCES `cliente` (IdCliente);
 
 --
--- Filtros para la tabla `parametrocontable`
+-- Constraints for table `parametrocontable`
 --
 ALTER TABLE `parametrocontable`
   ADD CONSTRAINT parametrocontable_ibfk_1 FOREIGN KEY (IdTipo) REFERENCES tipoparametrocontable (IdTipo),
   ADD CONSTRAINT parametrocontable_ibfk_2 FOREIGN KEY (IdCuenta) REFERENCES catalogocontable (IdCuenta);
 
 --
--- Filtros para la tabla `producto`
+-- Constraints for table `producto`
 --
 ALTER TABLE `producto`
   ADD CONSTRAINT producto_ibfk_1 FOREIGN KEY (IdEmpresa) REFERENCES empresa (IdEmpresa),
   ADD CONSTRAINT producto_ibfk_2 FOREIGN KEY (IdLinea) REFERENCES linea (IdLinea),
   ADD CONSTRAINT producto_ibfk_3 FOREIGN KEY (IdProveedor) REFERENCES proveedor (IdProveedor),
   ADD CONSTRAINT producto_ibfk_4 FOREIGN KEY (Tipo) REFERENCES tipoproducto (IdTipoProducto),
-  ADD CONSTRAINT producto_ibfk_5 FOREIGN KEY (IdTipoUnidad) REFERENCES tipounidad (IdTipoUnidad),
   ADD CONSTRAINT producto_ibfk_6 FOREIGN KEY (IdImpuesto) REFERENCES parametroimpuesto (IdImpuesto);
 
 --
--- Filtros para la tabla `proforma`
+-- Constraints for table `proforma`
 --
 ALTER TABLE `proforma`
   ADD CONSTRAINT proforma_ibfk_1 FOREIGN KEY (IdEmpresa) REFERENCES empresa (IdEmpresa),
@@ -2038,46 +2036,47 @@ ALTER TABLE `proforma`
   ADD CONSTRAINT proforma_ibfk_5 FOREIGN KEY (IdVendedor) REFERENCES vendedor (IdVendedor);
 
 --
--- Filtros para la tabla `proveedor`
+-- Constraints for table `proveedor`
 --
 ALTER TABLE `proveedor`
   ADD CONSTRAINT proveedor_ibfk_1 FOREIGN KEY (IdEmpresa) REFERENCES empresa (IdEmpresa);
 
 --
--- Filtros para la tabla `reporteporempresa`
+-- Constraints for table `reporteporempresa`
 --
 ALTER TABLE `reporteporempresa`
   ADD CONSTRAINT reporteporempresa_ibfk_1 FOREIGN KEY (IdEmpresa) REFERENCES empresa (IdEmpresa),
   ADD CONSTRAINT reporteporempresa_ibfk_2 FOREIGN KEY (IdReporte) REFERENCES catalogoreporte (IdReporte);
 
 --
--- Filtros para la tabla `roleporusuario`
+-- Constraints for table `roleporusuario`
 --
 ALTER TABLE `roleporusuario`
   ADD CONSTRAINT roleporusuario_ibfk_1 FOREIGN KEY (IdUsuario) REFERENCES usuario (IdUsuario),
   ADD CONSTRAINT roleporusuario_ibfk_2 FOREIGN KEY (IdRole) REFERENCES role (IdRole);
 
 --
--- Filtros para la tabla `saldomensualcontable`
+-- Constraints for table `saldomensualcontable`
 --
 ALTER TABLE `saldomensualcontable`
   ADD CONSTRAINT saldomensualcontable_ibfk_1 FOREIGN KEY (IdCuenta) REFERENCES catalogocontable (IdCuenta);
 
 --
--- Filtros para la tabla `sucursalporempresa`
+-- Constraints for table `sucursalporempresa`
 --
 ALTER TABLE `sucursalporempresa`
   ADD CONSTRAINT sucursalporempresa_ibfk_1 FOREIGN KEY (IdEmpresa) REFERENCES empresa (IdEmpresa);
 
 --
--- Filtros para la tabla `terminalporsucursal`
+-- Constraints for table `terminalporsucursal`
 --
 ALTER TABLE `terminalporsucursal`
   ADD CONSTRAINT terminalporsucursal_ibfk_1 FOREIGN KEY (IdEmpresa) REFERENCES empresa (IdEmpresa),
-  ADD CONSTRAINT terminalporsucursal_ibfk_2 FOREIGN KEY (IdEmpresa, IdSucursal) REFERENCES sucursalporempresa (IdEmpresa, IdSucursal);
+  ADD CONSTRAINT terminalporsucursal_ibfk_2 FOREIGN KEY (IdEmpresa, IdSucursal) REFERENCES sucursalporempresa (IdEmpresa, IdSucursal),
+  ADD CONSTRAINT terminalporsucursal_ibfk_3 FOREIGN KEY (IdEmpresa, IdSucursal) REFERENCES sucursalporempresa (IdEmpresa, IdSucursal);
 
 --
--- Filtros para la tabla `traslado`
+-- Constraints for table `traslado`
 --
 ALTER TABLE `traslado`
   ADD CONSTRAINT traslado_ibfk_1 FOREIGN KEY (IdEmpresa) REFERENCES empresa (IdEmpresa),
@@ -2085,14 +2084,14 @@ ALTER TABLE `traslado`
   ADD CONSTRAINT traslado_ibfk_3 FOREIGN KEY (IdSucursal) REFERENCES sucursal (IdSucursal);
 
 --
--- Filtros para la tabla `usuarioporempresa`
+-- Constraints for table `usuarioporempresa`
 --
 ALTER TABLE `usuarioporempresa`
   ADD CONSTRAINT usuarioporempresa_ibfk_1 FOREIGN KEY (IdEmpresa) REFERENCES empresa (IdEmpresa),
   ADD CONSTRAINT usuarioporempresa_ibfk_2 FOREIGN KEY (IdUsuario) REFERENCES usuario (IdUsuario);
 
 --
--- Filtros para la tabla `vendedor`
+-- Constraints for table `vendedor`
 --
 ALTER TABLE `vendedor`
   ADD CONSTRAINT vendedor_ibfk_1 FOREIGN KEY (IdEmpresa) REFERENCES empresa (IdEmpresa);
