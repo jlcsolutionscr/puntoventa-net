@@ -116,6 +116,38 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             }
         }
 
+        public string ObtenerListadoSucursales(int intIdEmpresa)
+        {
+            try
+            {
+                IList<LlaveDescripcion> listadoSucursales = (List<LlaveDescripcion>)servicioMantenimiento.ObtenerListadoSucursales(intIdEmpresa);
+                string strRespuesta = "";
+                if (listadoSucursales.Count > 0)
+                    strRespuesta = serializer.Serialize(listadoSucursales);
+                return strRespuesta;
+            }
+            catch (Exception ex)
+            {
+                throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
+            }
+        }
+
+        public string ObtenerListadoTerminales(int intIdEmpresa, int intIdSucursal)
+        {
+            try
+            {
+                IList<LlaveDescripcion> listadoTerminales = (List<LlaveDescripcion>)servicioMantenimiento.ObtenerListadoTerminales(intIdEmpresa, intIdSucursal);
+                string strRespuesta = "";
+                if (listadoTerminales.Count > 0)
+                    strRespuesta = serializer.Serialize(listadoTerminales);
+                return strRespuesta;
+            }
+            catch (Exception ex)
+            {
+                throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
+            }
+        }
+
         public string ObtenerEmpresa(int intIdEmpresa)
         {
             try

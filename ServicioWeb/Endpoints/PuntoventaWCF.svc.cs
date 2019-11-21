@@ -17,6 +17,7 @@ using LeandroSoftware.Core.TiposComunes;
 using LeandroSoftware.Core.CustomClasses;
 using System.IO;
 using System.Web;
+using System.Text;
 
 namespace LeandroSoftware.ServicioWeb.EndPoints
 {
@@ -224,7 +225,8 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             try
             {
                 JavaScriptSerializer serializer = new CustomJavascriptSerializer();
-                empresa = servicioMantenimiento.ValidarCredenciales(strUsuario, strClave, intIdEmpresa, strValorRegistro, strApplicationKey);
+                string strClaveFormateada = strClave.Replace(" ", "+");
+                empresa = servicioMantenimiento.ValidarCredenciales(strUsuario, strClaveFormateada, intIdEmpresa, strValorRegistro, strApplicationKey);
                 string strRespuesta = "";
                 if (empresa != null)
                     strRespuesta = serializer.Serialize(empresa);
@@ -241,7 +243,8 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             try
             {
                 JavaScriptSerializer serializer = new CustomJavascriptSerializer();
-                IList<EquipoRegistrado> listadoSucursales = (List<EquipoRegistrado>)servicioMantenimiento.ObtenerListadoTerminalesDisponibles(strUsuario, strClave, strIdentificacion, intTipoDispositivo);
+                string strClaveFormateada = strClave.Replace(" ", "+");
+                IList<EquipoRegistrado> listadoSucursales = (List<EquipoRegistrado>)servicioMantenimiento.ObtenerListadoTerminalesDisponibles(strUsuario, strClaveFormateada, strIdentificacion, intTipoDispositivo);
                 string strRespuesta = "";
                 if (listadoSucursales.Count > 0)
                     strRespuesta = serializer.Serialize(listadoSucursales);
@@ -257,7 +260,8 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
         {
             try
             {
-                servicioMantenimiento.RegistrarTerminal(strUsuario, strClave, strIdentificacion, intIdSucursal, intIdTerminal, intTipoDispositivo, strDispositivo);
+                string strClaveFormateada = strClave.Replace(" ", "+");
+                servicioMantenimiento.RegistrarTerminal(strUsuario, strClaveFormateada, strIdentificacion, intIdSucursal, intIdTerminal, intTipoDispositivo, strDispositivo);
             }
             catch (Exception ex)
             {

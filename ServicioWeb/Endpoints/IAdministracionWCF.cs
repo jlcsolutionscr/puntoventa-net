@@ -20,6 +20,14 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
         string ObtenerListadoEmpresa();
 
         [OperationContract]
+        [WebGet(UriTemplate = "obtenerlistadosucursales?idempresa={idempresa}", ResponseFormat = WebMessageFormat.Json)]
+        string ObtenerListadoSucursales(int idempresa);
+
+        [OperationContract]
+        [WebGet(UriTemplate = "obtenerlistadoterminales?idempresa={idempresa}&idsucursal={idsucursal}", ResponseFormat = WebMessageFormat.Json)]
+        string ObtenerListadoTerminales(int idempresa, int idsucursal);
+
+        [OperationContract]
         [WebGet(UriTemplate = "obtenerempresa?idempresa={idempresa}", ResponseFormat = WebMessageFormat.Json)]
         string ObtenerEmpresa(int idempresa);
 

@@ -1757,18 +1757,30 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     listaReporte.Add(reporteLinea);
                     var grupoFacturasRecibidas = dbContext.DocumentoElectronicoRepository
                         .Where(a => a.IdEmpresa == intIdEmpresa && a.Fecha >= datFechaInicial && a.Fecha <= datFechaFinal && a.IdTipoDocumento == 5 && a.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado).ToList();
-                    decimal decTotalCompraBienesTasa1 = 0;
-                    decimal decTotalCompraBienesTasa2 = 0;
-                    decimal decTotalCompraBienesTasa4 = 0;
-                    decimal decTotalCompraBienesTasa8 = 0;
-                    decimal decTotalCompraBienesTasa13 = 0;
-                    decimal decTotalCompraBienesExento = 0;
-                    decimal decTotalCompraServiciosTasa1 = 0;
-                    decimal decTotalCompraServiciosTasa2 = 0;
-                    decimal decTotalCompraServiciosTasa4 = 0;
-                    decimal decTotalCompraServiciosTasa8 = 0;
-                    decimal decTotalCompraServiciosTasa13 = 0;
-                    decimal decTotalCompraServiciosExento = 0;
+                    decimal decTotalCompraBienesIvaTasa1 = 0;
+                    decimal decTotalCompraBienesIvaTasa2 = 0;
+                    decimal decTotalCompraBienesIvaTasa4 = 0;
+                    decimal decTotalCompraBienesIvaTasa8 = 0;
+                    decimal decTotalCompraBienesIvaTasa13 = 0;
+                    decimal decTotalCompraBienesIvaExento = 0;
+                    decimal decTotalCompraServiciosIvaTasa1 = 0;
+                    decimal decTotalCompraServiciosIvaTasa2 = 0;
+                    decimal decTotalCompraServiciosIvaTasa4 = 0;
+                    decimal decTotalCompraServiciosIvaTasa8 = 0;
+                    decimal decTotalCompraServiciosIvaTasa13 = 0;
+                    decimal decTotalCompraServiciosIvaExento = 0;
+                    decimal decTotalCompraBienesGastoTasa1 = 0;
+                    decimal decTotalCompraBienesGastoTasa2 = 0;
+                    decimal decTotalCompraBienesGastoTasa4 = 0;
+                    decimal decTotalCompraBienesGastoTasa8 = 0;
+                    decimal decTotalCompraBienesGastoTasa13 = 0;
+                    decimal decTotalCompraBienesGastoExento = 0;
+                    decimal decTotalCompraServiciosGastoTasa1 = 0;
+                    decimal decTotalCompraServiciosGastoTasa2 = 0;
+                    decimal decTotalCompraServiciosGastoTasa4 = 0;
+                    decimal decTotalCompraServiciosGastoTasa8 = 0;
+                    decimal decTotalCompraServiciosGastoTasa13 = 0;
+                    decimal decTotalCompraServiciosGastoExento = 0;
                     foreach (var documento in grupoFacturasRecibidas)
                     {
                         if (documento.DatosDocumentoOri != null)
@@ -1869,33 +1881,69 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                     decTipoDeCambio = decimal.Parse(documentoXml.GetElementsByTagName("TipoCambio").Item(0).InnerText, CultureInfo.InvariantCulture);
                             if (documentoXml.DocumentElement.Name != "NotaCreditoElectronica")
                             {
-                                decTotalCompraBienesTasa1 += decCompraBienesTasa1 * decTipoDeCambio;
-                                decTotalCompraBienesTasa2 += decCompraBienesTasa2 * decTipoDeCambio;
-                                decTotalCompraBienesTasa4 += decCompraBienesTasa4 * decTipoDeCambio;
-                                decTotalCompraBienesTasa8 += decCompraBienesTasa8 * decTipoDeCambio;
-                                decTotalCompraBienesTasa13 += decCompraBienesTasa13 * decTipoDeCambio;
-                                decTotalCompraBienesExento += decCompraBienesExento * decTipoDeCambio;
-                                decTotalCompraServiciosTasa1 += decCompraServiciosTasa1 * decTipoDeCambio;
-                                decTotalCompraServiciosTasa2 += decCompraServiciosTasa2 * decTipoDeCambio;
-                                decTotalCompraServiciosTasa4 += decCompraServiciosTasa4 * decTipoDeCambio;
-                                decTotalCompraServiciosTasa8 += decCompraServiciosTasa8 * decTipoDeCambio;
-                                decTotalCompraServiciosTasa13 += decCompraServiciosTasa13 * decTipoDeCambio;
-                                decTotalCompraServiciosExento += decCompraServiciosExento * decTipoDeCambio;
+                                if (documento.EsIvaAcreditable == "S")
+                                {
+                                    decTotalCompraBienesIvaTasa1 += decCompraBienesTasa1 * decTipoDeCambio;
+                                    decTotalCompraBienesIvaTasa2 += decCompraBienesTasa2 * decTipoDeCambio;
+                                    decTotalCompraBienesIvaTasa4 += decCompraBienesTasa4 * decTipoDeCambio;
+                                    decTotalCompraBienesIvaTasa8 += decCompraBienesTasa8 * decTipoDeCambio;
+                                    decTotalCompraBienesIvaTasa13 += decCompraBienesTasa13 * decTipoDeCambio;
+                                    decTotalCompraBienesIvaExento += decCompraBienesExento * decTipoDeCambio;
+                                    decTotalCompraServiciosIvaTasa1 += decCompraServiciosTasa1 * decTipoDeCambio;
+                                    decTotalCompraServiciosIvaTasa2 += decCompraServiciosTasa2 * decTipoDeCambio;
+                                    decTotalCompraServiciosIvaTasa4 += decCompraServiciosTasa4 * decTipoDeCambio;
+                                    decTotalCompraServiciosIvaTasa8 += decCompraServiciosTasa8 * decTipoDeCambio;
+                                    decTotalCompraServiciosIvaTasa13 += decCompraServiciosTasa13 * decTipoDeCambio;
+                                    decTotalCompraServiciosIvaExento += decCompraServiciosExento * decTipoDeCambio;
+                                }
+                                else
+                                {
+                                    decTotalCompraBienesGastoTasa1 += decCompraBienesTasa1 * decTipoDeCambio;
+                                    decTotalCompraBienesGastoTasa2 += decCompraBienesTasa2 * decTipoDeCambio;
+                                    decTotalCompraBienesGastoTasa4 += decCompraBienesTasa4 * decTipoDeCambio;
+                                    decTotalCompraBienesGastoTasa8 += decCompraBienesTasa8 * decTipoDeCambio;
+                                    decTotalCompraBienesGastoTasa13 += decCompraBienesTasa13 * decTipoDeCambio;
+                                    decTotalCompraBienesGastoExento += decCompraBienesExento * decTipoDeCambio;
+                                    decTotalCompraServiciosGastoTasa1 += decCompraServiciosTasa1 * decTipoDeCambio;
+                                    decTotalCompraServiciosGastoTasa2 += decCompraServiciosTasa2 * decTipoDeCambio;
+                                    decTotalCompraServiciosGastoTasa4 += decCompraServiciosTasa4 * decTipoDeCambio;
+                                    decTotalCompraServiciosGastoTasa8 += decCompraServiciosTasa8 * decTipoDeCambio;
+                                    decTotalCompraServiciosGastoTasa13 += decCompraServiciosTasa13 * decTipoDeCambio;
+                                    decTotalCompraServiciosGastoExento += decCompraServiciosExento * decTipoDeCambio;
+                                }
                             }
                             else
                             {
-                                decTotalCompraBienesTasa1 -= decCompraBienesTasa1 * decTipoDeCambio;
-                                decTotalCompraBienesTasa2 -= decCompraBienesTasa2 * decTipoDeCambio;
-                                decTotalCompraBienesTasa4 -= decCompraBienesTasa4 * decTipoDeCambio;
-                                decTotalCompraBienesTasa8 -= decCompraBienesTasa8 * decTipoDeCambio;
-                                decTotalCompraBienesTasa13 -= decCompraBienesTasa13 * decTipoDeCambio;
-                                decTotalCompraBienesExento -= decCompraBienesExento * decTipoDeCambio;
-                                decTotalCompraServiciosTasa1 -= decCompraServiciosTasa1 * decTipoDeCambio;
-                                decTotalCompraServiciosTasa2 -= decCompraServiciosTasa2 * decTipoDeCambio;
-                                decTotalCompraServiciosTasa4 -= decCompraServiciosTasa4 * decTipoDeCambio;
-                                decTotalCompraServiciosTasa8 -= decCompraServiciosTasa8 * decTipoDeCambio;
-                                decTotalCompraServiciosTasa13 -= decCompraServiciosTasa13 * decTipoDeCambio;
-                                decTotalCompraServiciosExento -= decCompraServiciosExento * decTipoDeCambio;
+                                if (documento.EsIvaAcreditable == "S")
+                                {
+                                    decTotalCompraBienesIvaTasa1 -= decCompraBienesTasa1 * decTipoDeCambio;
+                                    decTotalCompraBienesIvaTasa2 -= decCompraBienesTasa2 * decTipoDeCambio;
+                                    decTotalCompraBienesIvaTasa4 -= decCompraBienesTasa4 * decTipoDeCambio;
+                                    decTotalCompraBienesIvaTasa8 -= decCompraBienesTasa8 * decTipoDeCambio;
+                                    decTotalCompraBienesIvaTasa13 -= decCompraBienesTasa13 * decTipoDeCambio;
+                                    decTotalCompraBienesIvaExento -= decCompraBienesExento * decTipoDeCambio;
+                                    decTotalCompraServiciosIvaTasa1 -= decCompraServiciosTasa1 * decTipoDeCambio;
+                                    decTotalCompraServiciosIvaTasa2 -= decCompraServiciosTasa2 * decTipoDeCambio;
+                                    decTotalCompraServiciosIvaTasa4 -= decCompraServiciosTasa4 * decTipoDeCambio;
+                                    decTotalCompraServiciosIvaTasa8 -= decCompraServiciosTasa8 * decTipoDeCambio;
+                                    decTotalCompraServiciosIvaTasa13 -= decCompraServiciosTasa13 * decTipoDeCambio;
+                                    decTotalCompraServiciosIvaExento -= decCompraServiciosExento * decTipoDeCambio;
+                                }
+                                else
+                                {
+                                    decTotalCompraBienesGastoTasa1 -= decCompraBienesTasa1 * decTipoDeCambio;
+                                    decTotalCompraBienesGastoTasa2 -= decCompraBienesTasa2 * decTipoDeCambio;
+                                    decTotalCompraBienesGastoTasa4 -= decCompraBienesTasa4 * decTipoDeCambio;
+                                    decTotalCompraBienesGastoTasa8 -= decCompraBienesTasa8 * decTipoDeCambio;
+                                    decTotalCompraBienesGastoTasa13 -= decCompraBienesTasa13 * decTipoDeCambio;
+                                    decTotalCompraBienesGastoExento -= decCompraBienesExento * decTipoDeCambio;
+                                    decTotalCompraServiciosGastoTasa1 -= decCompraServiciosTasa1 * decTipoDeCambio;
+                                    decTotalCompraServiciosGastoTasa2 -= decCompraServiciosTasa2 * decTipoDeCambio;
+                                    decTotalCompraServiciosGastoTasa4 -= decCompraServiciosTasa4 * decTipoDeCambio;
+                                    decTotalCompraServiciosGastoTasa8 -= decCompraServiciosTasa8 * decTipoDeCambio;
+                                    decTotalCompraServiciosGastoTasa13 -= decCompraServiciosTasa13 * decTipoDeCambio;
+                                    decTotalCompraServiciosGastoExento -= decCompraServiciosExento * decTipoDeCambio;
+                                }
                             }
                         }
                         else
@@ -1911,27 +1959,45 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 decImpuestoPorLinea = decimal.Parse(documentoXml.GetElementsByTagName("MontoTotalImpuesto").Item(0).InnerText, CultureInfo.InvariantCulture);
                             if (decImpuestoPorLinea > 0)
                             {
-                                decTotalCompraBienesTasa13 += (decTotalPorLinea - decImpuestoPorLinea);
+                                decTotalCompraBienesIvaTasa13 += (decTotalPorLinea - decImpuestoPorLinea);
                             }
                         }
                     }
                     reporteLinea = new ReporteResumenMovimiento();
-                    reporteLinea.Descripcion = "Compras de bienes o mercancias";
-                    reporteLinea.Exento = decTotalCompraBienesExento;
-                    reporteLinea.Tasa1 = decTotalCompraBienesTasa1;
-                    reporteLinea.Tasa2 = decTotalCompraBienesTasa2;
-                    reporteLinea.Tasa4 = decTotalCompraBienesTasa4;
-                    reporteLinea.Tasa8 = decTotalCompraBienesTasa8;
-                    reporteLinea.Tasa13 = decTotalCompraBienesTasa13;
+                    reporteLinea.Descripcion = "Compras de bienes o mercancias IVA acreditable";
+                    reporteLinea.Exento = decTotalCompraBienesIvaExento;
+                    reporteLinea.Tasa1 = decTotalCompraBienesIvaTasa1;
+                    reporteLinea.Tasa2 = decTotalCompraBienesIvaTasa2;
+                    reporteLinea.Tasa4 = decTotalCompraBienesIvaTasa4;
+                    reporteLinea.Tasa8 = decTotalCompraBienesIvaTasa8;
+                    reporteLinea.Tasa13 = decTotalCompraBienesIvaTasa13;
                     listaReporte.Add(reporteLinea);
                     reporteLinea = new ReporteResumenMovimiento();
-                    reporteLinea.Descripcion = "Compras de servicios";
-                    reporteLinea.Exento = decTotalCompraServiciosExento;
-                    reporteLinea.Tasa1 = decTotalCompraServiciosTasa1;
-                    reporteLinea.Tasa2 = decTotalCompraServiciosTasa2;
-                    reporteLinea.Tasa4 = decTotalCompraServiciosTasa4;
-                    reporteLinea.Tasa8 = decTotalCompraServiciosTasa8;
-                    reporteLinea.Tasa13 = decTotalCompraServiciosTasa13;
+                    reporteLinea.Descripcion = "Compras de servicios IVA acreditable";
+                    reporteLinea.Exento = decTotalCompraServiciosIvaExento;
+                    reporteLinea.Tasa1 = decTotalCompraServiciosIvaTasa1;
+                    reporteLinea.Tasa2 = decTotalCompraServiciosIvaTasa2;
+                    reporteLinea.Tasa4 = decTotalCompraServiciosIvaTasa4;
+                    reporteLinea.Tasa8 = decTotalCompraServiciosIvaTasa8;
+                    reporteLinea.Tasa13 = decTotalCompraServiciosIvaTasa13;
+                    listaReporte.Add(reporteLinea);
+                    reporteLinea = new ReporteResumenMovimiento();
+                    reporteLinea.Descripcion = "Compras de bienes o mercancias sin IVA acreditable";
+                    reporteLinea.Exento = decTotalCompraBienesGastoExento;
+                    reporteLinea.Tasa1 = decTotalCompraBienesGastoTasa1;
+                    reporteLinea.Tasa2 = decTotalCompraBienesGastoTasa2;
+                    reporteLinea.Tasa4 = decTotalCompraBienesGastoTasa4;
+                    reporteLinea.Tasa8 = decTotalCompraBienesGastoTasa8;
+                    reporteLinea.Tasa13 = decTotalCompraBienesGastoTasa13;
+                    listaReporte.Add(reporteLinea);
+                    reporteLinea = new ReporteResumenMovimiento();
+                    reporteLinea.Descripcion = "Compras de servicios sin IVA acreditable";
+                    reporteLinea.Exento = decTotalCompraServiciosGastoExento;
+                    reporteLinea.Tasa1 = decTotalCompraServiciosIvaTasa1;
+                    reporteLinea.Tasa2 = decTotalCompraServiciosGastoTasa2;
+                    reporteLinea.Tasa4 = decTotalCompraServiciosGastoTasa4;
+                    reporteLinea.Tasa8 = decTotalCompraServiciosGastoTasa8;
+                    reporteLinea.Tasa13 = decTotalCompraServiciosGastoTasa13;
                     listaReporte.Add(reporteLinea);
                     return listaReporte;
                 }
