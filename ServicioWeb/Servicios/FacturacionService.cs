@@ -122,6 +122,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     cliente.ParametroImpuesto = null;
                     cliente.Vendedor = null;
+                    cliente.ParametroExoneracion = null;
                     dbContext.NotificarModificacion(cliente);
                     dbContext.Commit();
                 }
@@ -1642,9 +1643,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         string strNombre = "";
                         decimal decTotal = 0;
                         if (value.EsMensajeReceptor == "S")
-                            datosXml = Encoding.Default.GetString(value.DatosDocumentoOri);
+                            datosXml = Encoding.UTF8.GetString(value.DatosDocumentoOri);
                         else
-                            datosXml = Encoding.Default.GetString(value.DatosDocumento);
+                            datosXml = Encoding.UTF8.GetString(value.DatosDocumento);
                         XmlDocument documentoXml = new XmlDocument();
                         documentoXml.LoadXml(datosXml);
                         if (value.EsMensajeReceptor == "S")
@@ -1703,9 +1704,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         string strNombre = "";
                         decimal decTotal = 0;
                         if (value.EsMensajeReceptor == "S")
-                            datosXml = Encoding.Default.GetString(value.DatosDocumentoOri);
+                            datosXml = Encoding.UTF8.GetString(value.DatosDocumentoOri);
                         else
-                            datosXml = Encoding.Default.GetString(value.DatosDocumento);
+                            datosXml = Encoding.UTF8.GetString(value.DatosDocumento);
                         XmlDocument documentoXml = new XmlDocument();
                         documentoXml.LoadXml(datosXml);
                         if (value.EsMensajeReceptor == "S")
@@ -1953,9 +1954,15 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 if (strDatos == "" && archivo.ContentType == "text/xml")
                 {
                     XmlDocument documentoXml = new XmlDocument();
-                    string strXml = Encoding.ASCII.GetString(archivo.Content);
-                    strXml = strXml.Substring(strXml.IndexOf("<?xml"));
-                    documentoXml.LoadXml(strXml);
+                    try
+                    {
+                        string strXml = Encoding.UTF8.GetString(archivo.Content);
+                        documentoXml.LoadXml(strXml);
+                    }
+                    catch
+                    {
+                        throw new BusinessException("El archivo XML del documento electrónico no se posee el formato adecuado para ser procesado.");
+                    }
                     if (documentoXml.DocumentElement.Name == "FacturaElectronica" || documentoXml.DocumentElement.Name == "NotaCreditoElectronica")
                     {
                         if (documentoXml.GetElementsByTagName("Otros").Count > 0)
@@ -2096,14 +2103,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         string strNombre = "";
                         decimal decTotal = 0;
                         if (value.EsMensajeReceptor == "S")
-                            datosXml = Encoding.Default.GetString(value.DatosDocumentoOri);
+                            if (value.DatosDocumentoOri != null)
+                                datosXml = Encoding.UTF8.GetString(value.DatosDocumentoOri);
+                            else
+                                datosXml = Encoding.UTF8.GetString(value.DatosDocumento);
                         else
-                            datosXml = Encoding.Default.GetString(value.DatosDocumento);
+                            datosXml = Encoding.UTF8.GetString(value.DatosDocumento);
                         XmlDocument documentoXml = new XmlDocument();
                         documentoXml.LoadXml(datosXml);
                         if (value.EsMensajeReceptor == "S")
                         {
-                            strNombre = "DOCUMENTO NO POSEE EMISOR";
+                            strNombre = "SIN INFORMACION DEL EMISOR";
                             if (documentoXml.GetElementsByTagName("Emisor").Count > 0)
                             {
                                 XmlNode emisorNode = documentoXml.GetElementsByTagName("Emisor").Item(0);
@@ -2111,6 +2121,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             }
                             if (documentoXml.GetElementsByTagName("TotalComprobante").Count > 0)
                                 decTotal = decimal.Parse(documentoXml.GetElementsByTagName("TotalComprobante").Item(0).InnerText, CultureInfo.InvariantCulture);
+                            else
+                                decTotal = decimal.Parse(documentoXml.GetElementsByTagName("TotalFactura").Item(0).InnerText, CultureInfo.InvariantCulture);
                         }
                         else
                         {
@@ -2414,8 +2426,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                     Cantidad = lineaDetalle["Cantidad"].InnerText,
                                     Codigo = lineaDetalle["Codigo"].InnerText,
                                     Detalle = lineaDetalle["Detalle"].InnerText,
-                                    PrecioUnitario = string.Format("{0:N5}", Convert.ToDouble(lineaDetalle["PrecioUnitario"].InnerText, CultureInfo.InvariantCulture)),
-                                    TotalLinea = string.Format("{0:N5}", Convert.ToDouble(lineaDetalle["MontoTotalLinea"].InnerText, CultureInfo.InvariantCulture))
+                                    PrecioUnitario = string.Format("{0:N2}", Convert.ToDouble(lineaDetalle["PrecioUnitario"].InnerText, CultureInfo.InvariantCulture)),
+                                    TotalLinea = string.Format("{0:N2}", Convert.ToDouble(lineaDetalle["MontoTotalLinea"].InnerText, CultureInfo.InvariantCulture))
                                 };
                                 datos.DetalleServicio.Add(detalle);
                             }
@@ -2427,12 +2439,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             }
                             if (otrosTextos.Length > 0) datos.OtrosTextos = otrosTextos;
                             XmlNode resumenFacturaNode = documentoXml.GetElementsByTagName("ResumenFactura").Item(0);
-                            datos.TotalGravado = string.Format("{0:N5}", Convert.ToDouble(resumenFacturaNode["TotalGravado"].InnerText, CultureInfo.InvariantCulture));
-                            datos.TotalExonerado = resumenFacturaNode["TotalExonerado"] != null && resumenFacturaNode["TotalExonerado"].ChildNodes.Count > 0 ? string.Format("{0:N5}", Convert.ToDouble(resumenFacturaNode["TotalExonerado"].InnerText, CultureInfo.InvariantCulture)) : "0.00000";
-                            datos.TotalExento = string.Format("{0:N5}", Convert.ToDouble(resumenFacturaNode["TotalExento"].InnerText, CultureInfo.InvariantCulture));
-                            datos.Descuento = resumenFacturaNode["TotalDescuentos"] != null && resumenFacturaNode["TotalDescuentos"].ChildNodes.Count > 0 ? string.Format("{0:N5}", Convert.ToDouble(resumenFacturaNode["TotalDescuentos"].InnerText, CultureInfo.InvariantCulture)) : "0.00000";
-                            datos.Impuesto = resumenFacturaNode["TotalImpuesto"] != null && resumenFacturaNode["TotalImpuesto"].ChildNodes.Count > 0 ? string.Format("{0:N5}", Convert.ToDouble(resumenFacturaNode["TotalImpuesto"].InnerText, CultureInfo.InvariantCulture)) : "0.00000";
-                            datos.TotalGeneral = string.Format("{0:N5}", Convert.ToDouble(resumenFacturaNode["TotalComprobante"].InnerText, CultureInfo.InvariantCulture));
+                            datos.TotalGravado = string.Format("{0:N2}", Convert.ToDouble(resumenFacturaNode["TotalGravado"].InnerText, CultureInfo.InvariantCulture));
+                            datos.TotalExonerado = resumenFacturaNode["TotalExonerado"] != null && resumenFacturaNode["TotalExonerado"].ChildNodes.Count > 0 ? string.Format("{0:N2}", Convert.ToDouble(resumenFacturaNode["TotalExonerado"].InnerText, CultureInfo.InvariantCulture)) : "0.00000";
+                            datos.TotalExento = string.Format("{0:N2}", Convert.ToDouble(resumenFacturaNode["TotalExento"].InnerText, CultureInfo.InvariantCulture));
+                            datos.Descuento = resumenFacturaNode["TotalDescuentos"] != null && resumenFacturaNode["TotalDescuentos"].ChildNodes.Count > 0 ? string.Format("{0:N2}", Convert.ToDouble(resumenFacturaNode["TotalDescuentos"].InnerText, CultureInfo.InvariantCulture)) : "0.00000";
+                            datos.Impuesto = resumenFacturaNode["TotalImpuesto"] != null && resumenFacturaNode["TotalImpuesto"].ChildNodes.Count > 0 ? string.Format("{0:N2}", Convert.ToDouble(resumenFacturaNode["TotalImpuesto"].InnerText, CultureInfo.InvariantCulture)) : "0.00000";
+                            datos.TotalGeneral = string.Format("{0:N2}", Convert.ToDouble(resumenFacturaNode["TotalComprobante"].InnerText, CultureInfo.InvariantCulture));
                             datos.CodigoMoneda = resumenFacturaNode["CodigoTipoMoneda"] != null && resumenFacturaNode["CodigoTipoMoneda"].ChildNodes.Count > 0 ? resumenFacturaNode["CodigoTipoMoneda"]["CodigoMoneda"].InnerText : "CRC";
                             datos.TipoDeCambio = resumenFacturaNode["CodigoTipoMoneda"] != null && resumenFacturaNode["CodigoTipoMoneda"].ChildNodes.Count > 0 ? resumenFacturaNode["CodigoTipoMoneda"]["TipoCambio"].InnerText : "1.00000";
                         }

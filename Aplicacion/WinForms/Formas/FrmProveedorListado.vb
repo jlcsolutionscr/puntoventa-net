@@ -118,7 +118,7 @@ Public Class FrmProveedorListado
 
     Private Sub btnEditar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEditar.Click
         Dim formMant As New FrmProveedor With {
-        .intIdProveedor = dgvListado.CurrentRow.Cells(0).Value
+            .intIdProveedor = dgvListado.CurrentRow.Cells(0).Value
         }
         formMant.ShowDialog()
         ActualizarDatos(intIndiceDePagina)
@@ -141,6 +141,14 @@ Public Class FrmProveedorListado
     Private Sub btnFiltrar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnFiltrar.Click
         ValidarCantidadRegistros()
         intIndiceDePagina = 1
+        ActualizarDatos(intIndiceDePagina)
+    End Sub
+
+    Private Sub FlexProducto_DoubleClick(ByVal sender As Object, ByVal e As EventArgs) Handles dgvListado.DoubleClick
+        Dim formMant As New FrmProveedor With {
+            .intIdProveedor = dgvListado.CurrentRow.Cells(0).Value
+        }
+        formMant.ShowDialog()
         ActualizarDatos(intIndiceDePagina)
     End Sub
 #End Region

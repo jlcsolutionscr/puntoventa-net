@@ -54,7 +54,7 @@ Public Class FrmVendedorListado
 
     Private Sub btnAgregar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnAgregar.Click
         Dim formMant As New FrmVendedor With {
-        .intIdVendedor = 0
+            .intIdVendedor = 0
         }
         formMant.ShowDialog()
         ActualizarDatos()
@@ -62,7 +62,7 @@ Public Class FrmVendedorListado
 
     Private Sub btnEditar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEditar.Click
         Dim formMant As New FrmVendedor With {
-        .intIdVendedor = dgvListado.CurrentRow.Cells(0).Value
+            .intIdVendedor = dgvListado.CurrentRow.Cells(0).Value
         }
         formMant.ShowDialog()
         ActualizarDatos()
@@ -81,6 +81,14 @@ Public Class FrmVendedorListado
     End Sub
 
     Private Sub btnFiltrar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnFiltrar.Click
+        ActualizarDatos()
+    End Sub
+
+    Private Sub FlexProducto_DoubleClick(ByVal sender As Object, ByVal e As EventArgs) Handles dgvListado.DoubleClick
+        Dim formMant As New FrmVendedor With {
+            .intIdVendedor = dgvListado.CurrentRow.Cells(0).Value
+        }
+        formMant.ShowDialog()
         ActualizarDatos()
     End Sub
 #End Region

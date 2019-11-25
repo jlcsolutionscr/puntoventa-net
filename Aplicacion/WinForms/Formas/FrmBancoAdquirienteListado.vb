@@ -83,5 +83,13 @@ Public Class FrmBancoAdquirienteListado
     Private Sub BtnFiltrar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnFiltrar.Click
         ActualizarDatos()
     End Sub
+
+    Private Sub FlexProducto_DoubleClick(ByVal sender As Object, ByVal e As EventArgs) Handles dgvListado.DoubleClick
+        Dim formMant As New FrmBancoAdquiriente With {
+            .intIdBanco = dgvListado.CurrentRow.Cells(0).Value
+        }
+        formMant.ShowDialog()
+        ActualizarDatos()
+    End Sub
 #End Region
 End Class

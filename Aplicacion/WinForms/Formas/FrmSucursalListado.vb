@@ -10,31 +10,31 @@
         Dim dvcCodigo As New DataGridViewTextBoxColumn
         Dim dvcSaldo As New DataGridViewTextBoxColumn
 
-        dgvDatos.Columns.Clear()
-        dgvDatos.AutoGenerateColumns = False
+        dgvListado.Columns.Clear()
+        dgvListado.AutoGenerateColumns = False
         dvcId.HeaderText = "Id"
         dvcId.DataPropertyName = "IdSucursal"
         dvcId.Width = 50
-        dgvDatos.Columns.Add(dvcId)
+        dgvListado.Columns.Add(dvcId)
         dvcDescripcion.HeaderText = "Nombre"
         dvcDescripcion.DataPropertyName = "Nombre"
         dvcDescripcion.Width = 150
-        dgvDatos.Columns.Add(dvcDescripcion)
+        dgvListado.Columns.Add(dvcDescripcion)
         dvcCodigo.HeaderText = "Dirección"
         dvcCodigo.DataPropertyName = "Direccion"
         dvcCodigo.Width = 350
-        dgvDatos.Columns.Add(dvcCodigo)
+        dgvListado.Columns.Add(dvcCodigo)
         dvcSaldo.HeaderText = "Teléfono"
         dvcSaldo.DataPropertyName = "Telefono"
         dvcSaldo.Width = 100
         dvcSaldo.DefaultCellStyle = FrmPrincipal.dgvDecimal
-        dgvDatos.Columns.Add(dvcSaldo)
+        dgvListado.Columns.Add(dvcSaldo)
     End Sub
 
     Private Sub ActualizarDatos()
         Try
             'listado = servicioTraslados.ObtenerListaSucursales(FrmMenuPrincipal.empresaGlobal.IdEmpresa, txtNombre.Text)
-            dgvDatos.DataSource = listado
+            dgvListado.DataSource = listado
             If listado.Count() > 0 Then
                 btnEditar.Enabled = True
                 btnEliminar.Enabled = True
@@ -46,7 +46,7 @@
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
         End Try
-        dgvDatos.Refresh()
+        dgvListado.Refresh()
     End Sub
 #End Region
 
@@ -92,6 +92,15 @@
     End Sub
 
     Private Sub btnFiltrar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnFiltrar.Click
+        ActualizarDatos()
+    End Sub
+
+    Private Sub FlexProducto_DoubleClick(ByVal sender As Object, ByVal e As EventArgs) Handles dgvListado.DoubleClick
+        'Dim formMant As New FrmSucursal With {
+        '    .intIdSucursal = dgvDatos.CurrentRow.Cells(0).Value,
+        '    .servicioTraslados = servicioTraslados
+        '}
+        'formMant.ShowDialog()
         ActualizarDatos()
     End Sub
 #End Region

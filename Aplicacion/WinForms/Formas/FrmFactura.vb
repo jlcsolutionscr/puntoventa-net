@@ -1113,20 +1113,20 @@ Public Class FrmFactura
                 .Cantidad = linea.Cantidad,
                 .Codigo = linea.Producto.Codigo,
                 .Detalle = linea.Descripcion,
-                .PrecioUnitario = linea.PrecioVenta.ToString("N5", CultureInfo.InvariantCulture),
-                .TotalLinea = decTotalLinea.ToString("N5", CultureInfo.InvariantCulture)
+                .PrecioUnitario = linea.PrecioVenta.ToString("N2", CultureInfo.InvariantCulture),
+                .TotalLinea = decTotalLinea.ToString("N2", CultureInfo.InvariantCulture)
             }
                 datos.DetalleServicio.Add(detalle)
             Next
             If (factura.TextoAdicional IsNot Nothing) Then datos.OtrosTextos = factura.TextoAdicional
-            datos.TotalGravado = decGravado.ToString("N5", CultureInfo.InvariantCulture)
-            datos.TotalExonerado = decExonerado.ToString("N5", CultureInfo.InvariantCulture)
-            datos.TotalExento = decExcento.ToString("N5", CultureInfo.InvariantCulture)
-            datos.Descuento = "0.00000"
-            datos.Impuesto = decImpuesto.ToString("N5", CultureInfo.InvariantCulture)
-            datos.TotalGeneral = decTotal.ToString("N5", CultureInfo.InvariantCulture)
+            datos.TotalGravado = decGravado.ToString("N2", CultureInfo.InvariantCulture)
+            datos.TotalExonerado = decExonerado.ToString("N2", CultureInfo.InvariantCulture)
+            datos.TotalExento = decExcento.ToString("N2", CultureInfo.InvariantCulture)
+            datos.Descuento = "0.00"
+            datos.Impuesto = decImpuesto.ToString("N2", CultureInfo.InvariantCulture)
+            datos.TotalGeneral = decTotal.ToString("N2", CultureInfo.InvariantCulture)
             datos.CodigoMoneda = IIf(factura.IdTipoMoneda = 1, "CRC", "USD")
-            datos.TipoDeCambio = factura.TipoDeCambioDolar.ToString("N5", CultureInfo.InvariantCulture)
+            datos.TipoDeCambio = factura.TipoDeCambioDolar.ToString("N2", CultureInfo.InvariantCulture)
             Try
                 Dim pdfBytes As Byte() = UtilitarioPDF.GenerarPDFFacturaElectronica(datos)
                 Dim pdfFilePath As String = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\FAC-" + factura.IdDocElectronico + ".pdf"

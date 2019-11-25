@@ -10,22 +10,22 @@ Public Class FrmCuentaEgresoListado
         Dim dvcId As New DataGridViewTextBoxColumn
         Dim dvcDescripcion As New DataGridViewTextBoxColumn
 
-        dgvDatos.Columns.Clear()
-        dgvDatos.AutoGenerateColumns = False
+        dgvListado.Columns.Clear()
+        dgvListado.AutoGenerateColumns = False
         dvcId.HeaderText = "Id"
         dvcId.DataPropertyName = "Id"
         dvcId.Width = 50
-        dgvDatos.Columns.Add(dvcId)
+        dgvListado.Columns.Add(dvcId)
         dvcDescripcion.HeaderText = "Descripción"
         dvcDescripcion.DataPropertyName = "Descripcion"
         dvcDescripcion.Width = 600
-        dgvDatos.Columns.Add(dvcDescripcion)
+        dgvListado.Columns.Add(dvcDescripcion)
     End Sub
 
     Private Async Sub ActualizarDatos()
         Try
             listado = Await Puntoventa.ObtenerListadoCuentasEgreso(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token, txtDescripcion.Text)
-            dgvDatos.DataSource = listado
+            dgvListado.DataSource = listado
             If listado.Count() > 0 Then
                 btnEditar.Enabled = True
                 btnEliminar.Enabled = True
@@ -38,7 +38,7 @@ Public Class FrmCuentaEgresoListado
             Close()
             Exit Sub
         End Try
-        dgvDatos.Refresh()
+        dgvListado.Refresh()
     End Sub
 #End Region
 
@@ -63,7 +63,7 @@ Public Class FrmCuentaEgresoListado
 
     Private Sub btnEditar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEditar.Click
         Dim formMant As New FrmCuentaEgreso With {
-            .intIdCuenta = dgvDatos.CurrentRow.Cells(0).Value
+            .intIdCuenta = dgvListado.CurrentRow.Cells(0).Value
         }
         formMant.ShowDialog()
         ActualizarDatos()
@@ -72,7 +72,7 @@ Public Class FrmCuentaEgresoListado
     Private Async Sub btnEliminar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEliminar.Click
         If MessageBox.Show("Desea eliminar el registro actual", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
             Try
-                Await Puntoventa.EliminarCuentaEgreso(dgvDatos.CurrentRow.Cells(0).Value, FrmPrincipal.usuarioGlobal.Token)
+                Await Puntoventa.EliminarCuentaEgreso(dgvListado.CurrentRow.Cells(0).Value, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
@@ -82,6 +82,14 @@ Public Class FrmCuentaEgresoListado
     End Sub
 
     Private Sub btnFiltrar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnFiltrar.Click
+        ActualizarDatos()
+    End Sub
+
+    Private Sub FlexProducto_DoubleClick(ByVal sender As Object, ByVal e As EventArgs) Handles dgvListado.DoubleClick
+        Dim formMant As New FrmCuentaEgreso With {
+            .intIdCuenta = dgvListado.CurrentRow.Cells(0).Value
+        }
+        formMant.ShowDialog()
         ActualizarDatos()
     End Sub
 #End Region

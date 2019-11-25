@@ -62,7 +62,7 @@ Public Class FrmLineaListado
 
     Private Sub btnEditar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEditar.Click
         Dim formMant As New FrmLinea With {
-        .intIdLinea = dgvListado.CurrentRow.Cells(0).Value
+            .intIdLinea = dgvListado.CurrentRow.Cells(0).Value
         }
         formMant.ShowDialog()
         ActualizarDatos()
@@ -81,6 +81,14 @@ Public Class FrmLineaListado
     End Sub
 
     Private Sub btnFiltrar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnFiltrar.Click
+        ActualizarDatos()
+    End Sub
+
+    Private Sub FlexProducto_DoubleClick(ByVal sender As Object, ByVal e As EventArgs) Handles dgvListado.DoubleClick
+        Dim formMant As New FrmLinea With {
+            .intIdLinea = dgvListado.CurrentRow.Cells(0).Value
+        }
+        formMant.ShowDialog()
         ActualizarDatos()
     End Sub
 #End Region

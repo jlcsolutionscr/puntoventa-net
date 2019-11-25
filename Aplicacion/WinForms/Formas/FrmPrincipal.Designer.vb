@@ -110,32 +110,31 @@ Partial Class FrmPrincipal
         Me.MnuArchivo.Name = "MnuArchivo"
         Me.MnuArchivo.Size = New System.Drawing.Size(60, 20)
         Me.MnuArchivo.Text = "Archivo"
-        Me.MnuArchivo.Visible = False
         '
         'mnuArchivoCierre
         '
         Me.mnuArchivoCierre.Name = "mnuArchivoCierre"
-        Me.mnuArchivoCierre.Size = New System.Drawing.Size(179, 22)
+        Me.mnuArchivoCierre.Size = New System.Drawing.Size(180, 22)
         Me.mnuArchivoCierre.Text = "Cierre de Caja"
         Me.mnuArchivoCierre.Visible = False
         '
         'MnuArchivoReporte
         '
         Me.MnuArchivoReporte.Name = "MnuArchivoReporte"
-        Me.MnuArchivoReporte.Size = New System.Drawing.Size(179, 22)
+        Me.MnuArchivoReporte.Size = New System.Drawing.Size(180, 22)
         Me.MnuArchivoReporte.Text = "Menu de Reportes"
         Me.MnuArchivoReporte.Visible = False
         '
         'mnuArchivoCambio
         '
         Me.mnuArchivoCambio.Name = "mnuArchivoCambio"
-        Me.mnuArchivoCambio.Size = New System.Drawing.Size(179, 22)
+        Me.mnuArchivoCambio.Size = New System.Drawing.Size(180, 22)
         Me.mnuArchivoCambio.Text = "Cambio Contraseña"
         '
         'MnuArchivoSalir
         '
         Me.MnuArchivoSalir.Name = "MnuArchivoSalir"
-        Me.MnuArchivoSalir.Size = New System.Drawing.Size(179, 22)
+        Me.MnuArchivoSalir.Size = New System.Drawing.Size(180, 22)
         Me.MnuArchivoSalir.Text = "Salir"
         '
         'MnuParam

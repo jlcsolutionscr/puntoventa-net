@@ -7,22 +7,22 @@
         Dim dvcId As New DataGridViewTextBoxColumn
         Dim dvcDescripcion As New DataGridViewTextBoxColumn
 
-        dgvDatos.Columns.Clear()
-        dgvDatos.AutoGenerateColumns = False
+        dgvListado.Columns.Clear()
+        dgvListado.AutoGenerateColumns = False
         dvcId.HeaderText = "Id"
         dvcId.DataPropertyName = "IdCuenta"
         dvcId.Width = 50
-        dgvDatos.Columns.Add(dvcId)
+        dgvListado.Columns.Add(dvcId)
         dvcDescripcion.HeaderText = "Descripción"
         dvcDescripcion.DataPropertyName = "Descripcion"
         dvcDescripcion.Width = 600
-        dgvDatos.Columns.Add(dvcDescripcion)
+        dgvListado.Columns.Add(dvcDescripcion)
     End Sub
 
     Private Sub ActualizarDatos()
         Try
             Dim listado As IList = Nothing 'servicioIngresos.ObtenerListaCuentasIngreso(FrmMenuPrincipal.empresaGlobal.IdEmpresa, txtDescripcion.Text)
-            dgvDatos.DataSource = listado
+            dgvListado.DataSource = listado
             If listado.Count() > 0 Then
                 btnEditar.Enabled = True
                 btnEliminar.Enabled = True
@@ -35,7 +35,7 @@
             Close()
             Exit Sub
         End Try
-        dgvDatos.Refresh()
+        dgvListado.Refresh()
     End Sub
 #End Region
 
@@ -81,6 +81,15 @@
     End Sub
 
     Private Sub btnFiltrar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnFiltrar.Click
+        ActualizarDatos()
+    End Sub
+
+    Private Sub FlexProducto_DoubleClick(ByVal sender As Object, ByVal e As EventArgs) Handles dgvListado.DoubleClick
+        'Dim formMant As New FrmCuentaIngreso With {
+        '    .intIdCuenta = dgvDatos.CurrentRow.Cells(0).Value,
+        '    .servicioIngresos = servicioIngresos
+        '}
+        'formMant.ShowDialog()
         ActualizarDatos()
     End Sub
 #End Region

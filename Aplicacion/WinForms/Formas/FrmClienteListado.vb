@@ -143,5 +143,13 @@ Public Class FrmClienteListado
         intIndiceDePagina = 1
         Await ActualizarDatos(intIndiceDePagina)
     End Sub
+
+    Private Async Sub FlexProducto_DoubleClick(ByVal sender As Object, ByVal e As EventArgs) Handles dgvListado.DoubleClick
+        Dim formMant As New FrmCliente With {
+        .intIdCliente = dgvListado.CurrentRow.Cells(0).Value
+        }
+        formMant.ShowDialog()
+        Await ActualizarDatos(intIndiceDePagina)
+    End Sub
 #End Region
 End Class
