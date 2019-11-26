@@ -68,11 +68,15 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             servicioMantenimiento = unityContainer.Resolve<IMantenimientoService>();
         }
 
+        public void Options()
+        {
+        }
+
         public string ValidarCredencialesAdmin(string strUsuario, string strClave)
         {
             try
             {
-                Usuario usuario = servicioMantenimiento.ValidarCredencialesAdmin(strUsuario, strClave, strApplicationKey);
+                Usuario usuario = servicioMantenimiento.ValidarCredencialesAdmin(strUsuario, strClave);
                 string strRespuesta = "";
                 if (usuario != null)
                     strRespuesta = serializer.Serialize(usuario);
@@ -88,10 +92,10 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
         {
             try
             {
-                Empresa empresa = servicioMantenimiento.ValidarCredenciales(strUsuario, strClave, id, strApplicationKey);
+                Usuario usuario = servicioMantenimiento.ValidarCredenciales(strUsuario, strClave, id);
                 string strRespuesta = "";
-                if (empresa != null)
-                    strRespuesta = serializer.Serialize(empresa);
+                if (usuario != null)
+                    strRespuesta = serializer.Serialize(usuario);
                 return strRespuesta;
             }
             catch (Exception ex)

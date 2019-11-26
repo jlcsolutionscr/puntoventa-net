@@ -1756,81 +1756,84 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
                 {
                     ParametroSistema procesando = dbContext.ParametroSistemaRepository.Where(x => x.IdParametro == 2).FirstOrDefault();
-                    if (procesando != null && procesando.Valor == "NO")
+                    if (procesando != null)
                     {
-                        procesando.Valor = "SI";
-                        dbContext.Commit();
-                        List<DocumentoElectronico> listaPendientes = new List<DocumentoElectronico>();
-                        try
+                        DateTime lastProcessAt = DateTime.ParseExact(procesando.Valor, "dd-MM-yyyy HH:mm:ss", null);
+                        if (lastProcessAt.AddMinutes(2.00) < DateTime.Now)
                         {
-                            listaPendientes = dbContext.DocumentoElectronicoRepository.Where(x => x.EstadoEnvio == StaticEstadoDocumentoElectronico.Registrado || x.EstadoEnvio == StaticEstadoDocumentoElectronico.Enviado).OrderBy(x => x.IdEmpresa).ToList();
-                        }
-                        catch (Exception ex)
-                        {
-                            string strError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                            stringBuilder.AppendLine("Error al obtener la lista de documentos pendientes de procesar. Detalle: " + strError);
-                        }
-                        foreach (DocumentoElectronico documento in listaPendientes)
-                        {
-                            Empresa empresa = dbContext.EmpresaRepository.Find(documento.IdEmpresa);
-                            if (empresa != null)
+                            procesando.Valor = DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss");
+                            dbContext.Commit();
+                            List<DocumentoElectronico> listaPendientes = new List<DocumentoElectronico>();
+                            try
                             {
-                                if (documento.EstadoEnvio == StaticEstadoDocumentoElectronico.Registrado)
+                                listaPendientes = dbContext.DocumentoElectronicoRepository.Where(x => x.EstadoEnvio == StaticEstadoDocumentoElectronico.Registrado || x.EstadoEnvio == StaticEstadoDocumentoElectronico.Enviado).OrderBy(x => x.IdEmpresa).ToList();
+                            }
+                            catch (Exception ex)
+                            {
+                                string strError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                                stringBuilder.AppendLine("Error al obtener la lista de documentos pendientes de procesar. Detalle: " + strError);
+                            }
+                            foreach (DocumentoElectronico documento in listaPendientes)
+                            {
+                                Empresa empresa = dbContext.EmpresaRepository.Find(documento.IdEmpresa);
+                                if (empresa != null)
                                 {
-                                    try
+                                    if (documento.EstadoEnvio == StaticEstadoDocumentoElectronico.Registrado)
                                     {
-                                        await ComprobanteElectronicoService.EnviarDocumentoElectronico(empresa.IdEmpresa, documento.IdDocumento, datos);
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        string strError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                                        stringBuilder.AppendLine("Error al enviar el documento electrónico con id: " + documento.IdDocumento + " Detalle: " + strError);
-                                    }
-                                }
-                                else if (documento.EstadoEnvio == StaticEstadoDocumentoElectronico.Enviado)
-                                {
-                                    DocumentoElectronico estadoDoc = null;
-                                    try
-                                    {
-                                        estadoDoc = await ComprobanteElectronicoService.ConsultarDocumentoElectronico(empresa, documento, dbContext, datos);
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        string strError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                                        stringBuilder.AppendLine("Error al consultar el documento electrónico con id: " + documento.IdDocumento + " Detalle: " + strError);
-                                    }
-                                    if (estadoDoc != null)
-                                    {
-                                        if (estadoDoc.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado || estadoDoc.EstadoEnvio == StaticEstadoDocumentoElectronico.Rechazado)
+                                        try
                                         {
-                                            RespuestaHaciendaDTO respuesta = new RespuestaHaciendaDTO();
-                                            if (documento.EsMensajeReceptor == "S")
-                                                respuesta.Clave = documento.ClaveNumerica + "-" + documento.Consecutivo;
-                                            else
-                                                respuesta.Clave = documento.ClaveNumerica;
-                                            respuesta.Fecha = documento.Fecha.ToString("yyyy-MM-dd'T'HH:mm:ssZ");
-                                            respuesta.IndEstado = estadoDoc.EstadoEnvio;
-                                            respuesta.RespuestaXml = Convert.ToBase64String(estadoDoc.Respuesta);
-                                            try
+                                            await ComprobanteElectronicoService.EnviarDocumentoElectronico(empresa.IdEmpresa, documento.IdDocumento, datos);
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            string strError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                                            stringBuilder.AppendLine("Error al enviar el documento electrónico con id: " + documento.IdDocumento + " Detalle: " + strError);
+                                        }
+                                    }
+                                    else if (documento.EstadoEnvio == StaticEstadoDocumentoElectronico.Enviado)
+                                    {
+                                        DocumentoElectronico estadoDoc = null;
+                                        try
+                                        {
+                                            estadoDoc = await ComprobanteElectronicoService.ConsultarDocumentoElectronico(empresa, documento, dbContext, datos);
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            string strError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                                            stringBuilder.AppendLine("Error al consultar el documento electrónico con id: " + documento.IdDocumento + " Detalle: " + strError);
+                                        }
+                                        if (estadoDoc != null)
+                                        {
+                                            if (estadoDoc.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado || estadoDoc.EstadoEnvio == StaticEstadoDocumentoElectronico.Rechazado)
                                             {
-                                                ProcesarMensajeDeRespuesta(respuesta, dbContext, servicioEnvioCorreo, datos.CorreoCuentaFacturacion, datos.CorreoNotificacionErrores);
-                                            }
-                                            catch (Exception ex)
-                                            {
-                                                string strError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                                                stringBuilder.AppendLine("Error al procesar la respuesta del documento electrónico con id: " + documento.IdDocumento + " Detalle: " + strError);
+                                                RespuestaHaciendaDTO respuesta = new RespuestaHaciendaDTO();
+                                                if (documento.EsMensajeReceptor == "S")
+                                                    respuesta.Clave = documento.ClaveNumerica + "-" + documento.Consecutivo;
+                                                else
+                                                    respuesta.Clave = documento.ClaveNumerica;
+                                                respuesta.Fecha = documento.Fecha.ToString("yyyy-MM-dd'T'HH:mm:ssZ");
+                                                respuesta.IndEstado = estadoDoc.EstadoEnvio;
+                                                respuesta.RespuestaXml = Convert.ToBase64String(estadoDoc.Respuesta);
+                                                try
+                                                {
+                                                    ProcesarMensajeDeRespuesta(respuesta, dbContext, servicioEnvioCorreo, datos.CorreoCuentaFacturacion, datos.CorreoNotificacionErrores);
+                                                }
+                                                catch (Exception ex)
+                                                {
+                                                    string strError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                                                    stringBuilder.AppendLine("Error al procesar la respuesta del documento electrónico con id: " + documento.IdDocumento + " Detalle: " + strError);
+                                                }
                                             }
                                         }
                                     }
                                 }
-                            } else
-                            {
-                                stringBuilder.AppendLine("Error al procesar el documento electrónico: No se encontro la empresa con id: " + documento.IdEmpresa);
+                                else
+                                {
+                                    stringBuilder.AppendLine("Error al procesar el documento electrónico: No se encontro la empresa con id: " + documento.IdEmpresa);
+                                }
+
                             }
-                            
                         }
-                        procesando.Valor = "NO";
-                        dbContext.Commit();
                     }
                 }
             }
@@ -1859,75 +1862,84 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             var stringBuilder = new StringBuilder();
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
-                ParametroSistema procesando = dbContext.ParametroSistemaRepository.Where(x => x.IdParametro == 2).FirstOrDefault();
-                if (procesando != null && procesando.Valor == "NO")
+                ParametroSistema procesando = dbContext.ParametroSistemaRepository.Where(x => x.IdParametro == 3).FirstOrDefault();
+                if (procesando != null)
                 {
-                    procesando.Valor = "SI";
-                    dbContext.Commit();
-                    List<POPEmail> listadoCorreoAcreditable = new List<POPEmail>();
-                    try
+                    DateTime lastProcessAt = DateTime.ParseExact(procesando.Valor, "dd-MM-yyyy HH:mm:ss", null);
+                    if (lastProcessAt.AddMinutes(2.00) < DateTime.Now)
                     {
-                        listadoCorreoAcreditable = servicioRecepcionCorreo.ObtenerListadoMensaje(datos.CuentaIvaAcreditable, datos.ClaveIvaAcreditable).ToList();
-                    }
-                    catch (Exception ex)
-                    {
-                        string strError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                        stringBuilder.AppendLine("Error al obtener la lista de correo de gastos con iva acreditable. Detalle: " + strError);
-                    }
-                    foreach (POPEmail correo in listadoCorreoAcreditable)
-                    {
+                        procesando.Valor = DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss");
+                        dbContext.Commit();
+                        List<POPEmail> listadoCorreoAcreditable = new List<POPEmail>();
                         try
                         {
-                            ProcesarMensajeReceptor(dbContext, correo, config, true);
-                            servicioRecepcionCorreo.EliminarMensaje(datos.CuentaIvaAcreditable, datos.ClaveIvaAcreditable, correo.MessageNumber);
-                        }
-                        catch (BusinessException ex)
-                        {
-                            servicioRecepcionCorreo.EliminarMensaje(datos.CuentaIvaAcreditable, datos.ClaveIvaAcreditable, correo.MessageNumber);
-                            JArray archivosJArray = new JArray();
-                            string strFrom = correo.From.ToString().Substring(correo.From.ToString().IndexOf("'") + 8);
-                            strFrom = strFrom.Substring(0, strFrom.IndexOf("'"));
-                            servicioEnvioCorreo.SendEmail(datos.CorreoCuentaRecepcion, new string[] { strFrom }, new string[] { }, "Error en la aceptación del documento electrónico enviado", ex.Message, false, archivosJArray);
+                            listadoCorreoAcreditable = servicioRecepcionCorreo.ObtenerListadoMensaje(datos.CuentaIvaAcreditable, datos.ClaveIvaAcreditable).ToList();
                         }
                         catch (Exception ex)
                         {
                             string strError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                            stringBuilder.AppendLine("Error al procesar correo de gastos con iva acreditable. Detalle: " + strError);
+                            stringBuilder.AppendLine("Error al obtener la lista de correo de gastos con iva acreditable. Detalle: " + strError);
                         }
-                    }
-                    List<POPEmail> listadoCorreoGasto = new List<POPEmail>();
-                    try
-                    {
-                        listadoCorreoGasto = servicioRecepcionCorreo.ObtenerListadoMensaje(datos.CuentaGastoNoAcreditable, datos.ClaveGastoNoAcreditable).ToList();
-                    }
-                    catch (Exception ex)
-                    {
-                        string strError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                        stringBuilder.AppendLine("Error al obtener la lista de correos de gastos con iva no acreditable. Detalle: " + strError);
-                    }
-                    foreach (POPEmail correo in listadoCorreoGasto)
-                    {
+                        foreach (POPEmail correo in listadoCorreoAcreditable)
+                        {
+                            try
+                            {
+
+                                ProcesarMensajeReceptor(dbContext, correo, config, true);
+                                servicioRecepcionCorreo.EliminarMensaje(datos.CuentaIvaAcreditable, datos.ClaveIvaAcreditable, correo.MessageNumber);
+                                stringBuilder.AppendLine("PROCESADO: Documento con IVA acreditable con asunto " + correo.Subject);
+                            }
+                            catch (BusinessException ex)
+                            {
+                                string strError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                                stringBuilder.AppendLine("Error al procesar el documento con IVA acreditable con asunto " + correo.Subject + ". Detalle: " + strError);
+                                servicioRecepcionCorreo.EliminarMensaje(datos.CuentaIvaAcreditable, datos.ClaveIvaAcreditable, correo.MessageNumber);
+                                JArray archivosJArray = new JArray();
+                                string strFrom = correo.From.ToString().Substring(correo.From.ToString().IndexOf("'") + 8);
+                                strFrom = strFrom.Substring(0, strFrom.IndexOf("'"));
+                                servicioEnvioCorreo.SendEmail(datos.CorreoCuentaRecepcion, new string[] { strFrom }, new string[] { }, "Error en la aceptación del documento electrónico con asunto " + correo.Subject, ex.Message, false, archivosJArray);
+                            }
+                            catch (Exception ex)
+                            {
+                                string strError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                                stringBuilder.AppendLine("Error al procesar el documento con IVA acreditable con asunto " + correo.Subject + ". Detalle: " + strError);
+                            }
+                        }
+                        List<POPEmail> listadoCorreoGasto = new List<POPEmail>();
                         try
                         {
-                            ProcesarMensajeReceptor(dbContext, correo, config, false);
-                            servicioRecepcionCorreo.EliminarMensaje(datos.CuentaGastoNoAcreditable, datos.ClaveGastoNoAcreditable, correo.MessageNumber);
-                        }
-                        catch (BusinessException ex)
-                        {
-                            servicioRecepcionCorreo.EliminarMensaje(datos.CuentaGastoNoAcreditable, datos.ClaveGastoNoAcreditable, correo.MessageNumber);
-                            JArray archivosJArray = new JArray();
-                            string strFrom = correo.From.ToString().Substring(correo.From.ToString().IndexOf("'") + 8);
-                            strFrom = strFrom.Substring(0, strFrom.IndexOf("'"));
-                            servicioEnvioCorreo.SendEmail(datos.CorreoCuentaRecepcion, new string[] { strFrom }, new string[] { }, "Error en la aceptación del documento electrónico enviado", ex.Message, false, archivosJArray);
+                            listadoCorreoGasto = servicioRecepcionCorreo.ObtenerListadoMensaje(datos.CuentaGastoNoAcreditable, datos.ClaveGastoNoAcreditable).ToList();
                         }
                         catch (Exception ex)
                         {
                             string strError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                            stringBuilder.AppendLine("Error al procesar correo de gastos con iva no acreditable. Detalle: " + strError);
+                            stringBuilder.AppendLine("Error al obtener la lista de correos de gastos con iva no acreditable. Detalle: " + strError);
+                        }
+                        foreach (POPEmail correo in listadoCorreoGasto)
+                        {
+                            try
+                            {
+                                ProcesarMensajeReceptor(dbContext, correo, config, false);
+                                servicioRecepcionCorreo.EliminarMensaje(datos.CuentaGastoNoAcreditable, datos.ClaveGastoNoAcreditable, correo.MessageNumber);
+                                stringBuilder.AppendLine("PROCESADO: Documento sin IVA acreditable con asunto " + correo.Subject);
+                            }
+                            catch (BusinessException ex)
+                            {
+                                string strError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                                stringBuilder.AppendLine("Error al procesar el documento sin IVA acreditable con asunto " + correo.Subject + ". Detalle: " + strError);
+                                servicioRecepcionCorreo.EliminarMensaje(datos.CuentaGastoNoAcreditable, datos.ClaveGastoNoAcreditable, correo.MessageNumber);
+                                JArray archivosJArray = new JArray();
+                                string strFrom = correo.From.ToString().Substring(correo.From.ToString().IndexOf("'") + 8);
+                                strFrom = strFrom.Substring(0, strFrom.IndexOf("'"));
+                                servicioEnvioCorreo.SendEmail(datos.CorreoCuentaRecepcion, new string[] { strFrom }, new string[] { }, "Error en la aceptación del documento electrónico con asunto " + correo.Subject, ex.Message, false, archivosJArray);
+                            }
+                            catch (Exception ex)
+                            {
+                                string strError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                                stringBuilder.AppendLine("Error al procesar el documento sin IVA acreditable con asunto " + correo.Subject + ". Detalle: " + strError);
+                            }
                         }
                     }
-                    procesando.Valor = "NO";
-                    dbContext.Commit();
                 }
             }
             if (stringBuilder.Length > 0)
@@ -1937,11 +1949,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 JArray archivosJArray = new JArray();
                 JObject jobDatosAdjuntos1 = new JObject
                 {
-                    ["nombre"] = "logErrores-" + DateTime.Now.ToString("ddMMyyyy-HH-mm-ss") + ".txt",
+                    ["nombre"] = "logRecepcion-" + DateTime.Now.ToString("ddMMyyyy-HH-mm-ss") + ".txt",
                     ["contenido"] = Convert.ToBase64String(bytes)
                 };
                 archivosJArray.Add(jobDatosAdjuntos1);
-                servicioEnvioCorreo.SendEmail(datos.CorreoCuentaRecepcion, new string[] { datos.CorreoNotificacionErrores }, new string[] { }, "Excepción en la interface de procesamiento de correos de recepción de gastos", "Adjunto el archivo con el detalle de los errores en procesamiento.", false, archivosJArray);
+                servicioEnvioCorreo.SendEmail(datos.CorreoCuentaRecepcion, new string[] { datos.CorreoNotificacionErrores }, new string[] { }, "Detalle del proceso de procesamiento de recepcion de documentos electronicos", "Adjunto el archivo con el detalle del procesamiento.", false, archivosJArray);
             }
         }
 
@@ -1951,7 +1963,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             string strIdentificacion = "";
             foreach (Attachment archivo in correo.Attachments)
             {
-                if (strDatos == "" && archivo.ContentType == "text/xml")
+                if (strDatos == "" && (archivo.ContentType == "text/xml" || archivo.ContentType == "application/xml"))
                 {
                     XmlDocument documentoXml = new XmlDocument();
                     try
@@ -1961,7 +1973,16 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     catch
                     {
-                        throw new BusinessException("El archivo XML del documento electrónico no se posee el formato adecuado para ser procesado.");
+                        try
+                        {
+                            string strXml = Encoding.ASCII.GetString(archivo.Content);
+                            strXml = strXml.Substring(strXml.IndexOf("<?xml"));
+                            documentoXml.LoadXml(strXml);
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new BusinessException("El archivo XML del documento electrónico no se posee el formato adecuado para ser procesado: " + ex.Message);
+                        }
                     }
                     if (documentoXml.DocumentElement.Name == "FacturaElectronica" || documentoXml.DocumentElement.Name == "NotaCreditoElectronica")
                     {

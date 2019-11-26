@@ -25,7 +25,6 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
 
         public void ApplyDispatchBehavior(ServiceEndpoint endpoint, EndpointDispatcher endpointDispatcher)
         {
-            string strApplicationKey = WebConfigurationManager.AppSettings["ApplicationKey"].ToString();
             IUnityContainer unityContainer = new UnityContainer();
             string connString = WebConfigurationManager.ConnectionStrings["LeandroContext"].ConnectionString;
             unityContainer.RegisterType<LeandroContext>(new ContainerControlledLifetimeManager());
@@ -35,8 +34,8 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             var requiredHeaders = new Dictionary<string, string>();
             requiredHeaders.Add("Access-Control-Allow-Origin", "*");
             requiredHeaders.Add("Access-Control-Request-Method", "POST,GET,PUT,DELETE,OPTIONS");
-            requiredHeaders.Add("Access-Control-Allow-Headers", "X-Requested-With,Content-Type");
-            TokenValidationInspector inspector = new TokenValidationInspector(requiredHeaders, unityContainer, strApplicationKey);
+            requiredHeaders.Add("Access-Control-Allow-Headers", "X-Requested-With, Content-Type, Accept, Authorization");
+            TokenValidationInspector inspector = new TokenValidationInspector(requiredHeaders, unityContainer);
             endpointDispatcher.DispatchRuntime.MessageInspectors.Add(inspector);
         }
 

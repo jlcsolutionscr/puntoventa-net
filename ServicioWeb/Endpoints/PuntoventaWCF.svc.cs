@@ -226,7 +226,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             {
                 JavaScriptSerializer serializer = new CustomJavascriptSerializer();
                 string strClaveFormateada = strClave.Replace(" ", "+");
-                empresa = servicioMantenimiento.ValidarCredenciales(strUsuario, strClaveFormateada, intIdEmpresa, strValorRegistro, strApplicationKey);
+                empresa = servicioMantenimiento.ValidarCredenciales(strUsuario, strClaveFormateada, intIdEmpresa, strValorRegistro);
                 string strRespuesta = "";
                 if (empresa != null)
                     strRespuesta = serializer.Serialize(empresa);

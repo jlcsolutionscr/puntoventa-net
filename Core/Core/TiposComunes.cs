@@ -2,6 +2,13 @@
 
 namespace LeandroSoftware.Core.TiposComunes
 {
+    public static class StaticTipoUsuario
+    {
+        public static readonly short Normal = 1;
+        public static readonly short Administrador = 2;
+        public static readonly short Contador = 3;
+    };
+
     public static class StaticTipoDispisitivo
     {
         public static readonly short AppEscritorio = 1;

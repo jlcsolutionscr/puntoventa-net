@@ -16,13 +16,11 @@ namespace LeandroSoftware.ServicioWeb
     {
         IUnityContainer unityContainer;
         IMantenimientoService servicioMantenimiento;
-        string strApplicationKey;
         Dictionary<string, string> requiredHeaders;
 
-        public TokenValidationInspector(Dictionary<string, string> headers, IUnityContainer container, string key)
+        public TokenValidationInspector(Dictionary<string, string> headers, IUnityContainer container)
         {
             unityContainer = container;
-            strApplicationKey = key;
             requiredHeaders = headers ?? new Dictionary<string, string>();
         }
 
@@ -31,7 +29,7 @@ namespace LeandroSoftware.ServicioWeb
             try
             {
                 string strOperacion = request.Properties["HttpOperationName"].ToString();
-                if (!new string[] { "ObtenerUltimaVersionApp", "DescargarActualizacion", "LimpiarRegistrosInvalidos", "ProcesarDocumentosElectronicosPendientes", "ValidarCredencialesAdmin", "ValidarCredenciales", "ObtenerListadoEmpresasAdministrador", "ObtenerListadoEmpresasPorTerminal", "ObtenerListadoTerminalesDisponibles", "RegistrarTerminal" }.Contains(strOperacion))
+                if (!new string[] { "Options", "ObtenerUltimaVersionApp", "DescargarActualizacion", "LimpiarRegistrosInvalidos", "ProcesarDocumentosElectronicosPendientes", "ValidarCredencialesAdmin", "ValidarCredenciales", "ObtenerListadoEmpresasAdministrador", "ObtenerListadoEmpresasPorTerminal", "ObtenerListadoTerminalesDisponibles", "RegistrarTerminal" }.Contains(strOperacion))
                 {
                     IncomingWebRequestContext incomingRequest = WebOperationContext.Current.IncomingRequest;
                     WebHeaderCollection headers = incomingRequest.Headers;
@@ -51,10 +49,17 @@ namespace LeandroSoftware.ServicioWeb
 
         public void BeforeSendReply(ref Message reply, object correlationState)
         {
-            var httpHeader = reply.Properties["httpResponse"] as HttpResponseMessageProperty;
-            foreach (var item in requiredHeaders)
+            try
             {
-                httpHeader.Headers.Add(item.Key, item.Value);
+                var httpHeader = reply.Properties["httpResponse"] as HttpResponseMessageProperty;
+                foreach (var item in requiredHeaders)
+                {
+                    httpHeader.Headers.Add(item.Key, item.Value);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
             }
         }
     }

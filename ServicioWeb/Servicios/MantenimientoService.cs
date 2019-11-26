@@ -20,9 +20,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         IEnumerable<LlaveDescripcion> ObtenerListadoEmpresasAdministrador();
         IEnumerable<LlaveDescripcion> ObtenerListadoEmpresasPorTerminal(string strDispositivoId);
         void RegistrarTerminal(string strUsuario, string strClave, string strIdentificacion, int intIdSucursal, int intIdTerminal, int intTipoDispositivo, string strDispositivoId);
-        Usuario ValidarCredencialesAdmin(string strUsuario, string strClave, string strApplicationKey);
-        Empresa ValidarCredenciales(string strUsuario, string strClave, string id, string strApplicationKey);
-        Empresa ValidarCredenciales(string strUsuario, string strClave, int intIdEmpresa, string strValorRegistro, string strApplicationKey);
+        Usuario ValidarCredencialesAdmin(string strUsuario, string strClave);
+        Usuario ValidarCredenciales(string strUsuario, string strClave, string id);
+        Empresa ValidarCredenciales(string strUsuario, string strClave, int intIdEmpresa, string strValorRegistro);
         void ActualizarVersionApp(string strVersion);
         string ObtenerUltimaVersionApp();
         // Métodos para administrar las empresas
@@ -336,7 +336,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public Usuario ValidarCredencialesAdmin(string strUsuario, string strClave, string strApplicationKey)
+        public Usuario ValidarCredencialesAdmin(string strUsuario, string strClave)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -362,7 +362,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public Empresa ValidarCredenciales(string strUsuario, string strClave, string strIdentificacion, string strApplicationKey)
+        public Usuario ValidarCredenciales(string strUsuario, string strClave, string strIdentificacion)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -372,35 +372,35 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (!empresa.PermiteFacturar) throw new BusinessException("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.FechaVence < DateTime.Today) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
                     if (empresa.TipoContrato == 2 && empresa.CantidadDisponible == 0) throw new BusinessException("El disponible de documentos electrónicos fue agotado. Por favor, pongase en contacto con su proveedor del servicio.");
-                    UsuarioPorEmpresa usuarioEmpresa = dbContext.UsuarioPorEmpresaRepository.Include("Usuario").FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa && x.Usuario.CodigoUsuario == strUsuario.ToUpper());
-                    if (strUsuario.ToUpper() != "JASLOP" && usuarioEmpresa == null) throw new BusinessException("Usuario no registrado en la empresa indicada. Por favor verifique la información suministrada.");
                     Usuario usuario = null;
+                    UsuarioPorEmpresa usuarioEmpresa = null;
                     if (strUsuario.ToUpper() == "JASLOP")
                     {
+                        usuarioEmpresa = dbContext.UsuarioPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa);
                         usuario = dbContext.UsuarioRepository.Include("RolePorUsuario.Role").FirstOrDefault(x => x.IdUsuario == 1);
                     }
                     else
                     {
+                        usuarioEmpresa = dbContext.UsuarioPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa && x.Usuario.CodigoUsuario == strUsuario.ToUpper());
+                        if (usuarioEmpresa == null) throw new BusinessException("Usuario no registrado en la empresa indicada. Por favor verifique la información suministrada.");
                         usuario = dbContext.UsuarioRepository.Include("RolePorUsuario.Role").FirstOrDefault(x => x.IdUsuario == usuarioEmpresa.IdUsuario);
                     }
                     if (usuario.Clave != strClave) throw new BusinessException("Los credenciales suministrados no son válidos. Verifique los credenciales suministrados.");
                     usuario.UsuarioPorEmpresa = new HashSet<UsuarioPorEmpresa>();
-                    string strToken = GenerarRegistroAutenticacion(StaticRolePorUsuario.USUARIO_SISTEMA);
+                    usuarioEmpresa.Usuario = null;
+                    Empresa refEmpresa = new Empresa();
+                    refEmpresa.NombreEmpresa = empresa.NombreEmpresa;
+                    refEmpresa.Identificacion = empresa.Identificacion;
+                    usuarioEmpresa.Empresa = refEmpresa;
+                    usuario.UsuarioPorEmpresa.Add(usuarioEmpresa);
+                    int tipoRole = strUsuario.ToUpper() == "JASLOP" ? StaticRolePorUsuario.ADMINISTRADOR : StaticRolePorUsuario.USUARIO_SISTEMA;
+                    string strToken = GenerarRegistroAutenticacion(tipoRole);
                     usuario.Token = strToken;
-                    foreach (ReportePorEmpresa reporte in empresa.ReportePorEmpresa)
-                        reporte.Empresa = null;
                     foreach (RolePorUsuario role in usuario.RolePorUsuario)
+                    {
                         role.Usuario = null;
-                    empresa.Logotipo = null;
-                    empresa.Certificado = null;
-                    empresa.AccessToken = null;
-                    empresa.RefreshToken = null;
-                    empresa.EmitedAt = null;
-                    empresa.ExpiresIn = null;
-                    empresa.RefreshExpiresIn = null;
-                    empresa.EquipoRegistrado = null;
-                    empresa.Usuario = usuario;
-                    return empresa;
+                    }
+                    return usuario;
                 }
                 catch (BusinessException ex)
                 {
@@ -415,20 +415,23 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public Empresa ValidarCredenciales(string strUsuario, string strClave, int intIdEmpresa, string strValorRegistro, string strApplicationKey)
+        public Empresa ValidarCredenciales(string strUsuario, string strClave, int intIdEmpresa, string strValorRegistro)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 try
                 {
-                    UsuarioPorEmpresa usuarioEmpresa = dbContext.UsuarioPorEmpresaRepository.Include("Usuario").FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.Usuario.CodigoUsuario == strUsuario.ToUpper());
-                    if (strUsuario.ToUpper() != "JASLOP" && usuarioEmpresa == null) throw new BusinessException("Usuario no registrado en la empresa indicada. Por favor verifique la información suministrada.");
                     Usuario usuario = null;
+                    UsuarioPorEmpresa usuarioEmpresa = null;
                     if (strUsuario.ToUpper() == "JASLOP")
                     {
+                        usuarioEmpresa = dbContext.UsuarioPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == intIdEmpresa);
                         usuario = dbContext.UsuarioRepository.Include("RolePorUsuario.Role").FirstOrDefault(x => x.IdUsuario == 1);
-                    } else
+                    }
+                    else
                     {
+                        usuarioEmpresa = dbContext.UsuarioPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.Usuario.CodigoUsuario == strUsuario.ToUpper());
+                        if (usuarioEmpresa == null) throw new BusinessException("Usuario no registrado en la empresa indicada. Por favor verifique la información suministrada.");
                         usuario = dbContext.UsuarioRepository.Include("RolePorUsuario.Role").FirstOrDefault(x => x.IdUsuario == usuarioEmpresa.IdUsuario);
                     }
                     if (usuario.Clave != strClave) throw new BusinessException("Los credenciales suministrados no son válidos. Verifique los credenciales suministrados.");
@@ -465,7 +468,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     foreach (ReportePorEmpresa reporte in empresa.ReportePorEmpresa)
                         reporte.Empresa = null;
                     foreach (RolePorUsuario role in usuario.RolePorUsuario)
+                    {
                         role.Usuario = null;
+                    }
                     empresa.Logotipo = null;
                     terminal.Empresa = null;
                     empresa.Certificado = null;
@@ -861,6 +866,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     usuario.CodigoUsuario = usuario.CodigoUsuario.ToUpper();
+                    if (usuario.CodigoUsuario == "JASLOP") throw new BusinessException("El código de usuario ingresado no se encuentra disponible. Por favor modifique la información suministrada.");
                     List<UsuarioPorEmpresa> empresaUsuario = usuario.UsuarioPorEmpresa.ToList();
                     if (empresaUsuario.Count == 0) throw new BusinessException("El usuario por agregar debe estar vinculado a la empresa actual. Por favor, pongase en contacto con su proveedor del servicio.");
                     Empresa empresa = dbContext.EmpresaRepository.Find(empresaUsuario[0].IdEmpresa);
@@ -890,13 +896,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
+                    usuario.CodigoUsuario = usuario.CodigoUsuario.ToUpper();
+                    if (usuario.CodigoUsuario == "JASLOP") throw new BusinessException("El código de usuario ingresado no se encuentra disponible. Por favor modifique la información suministrada.");
                     UsuarioPorEmpresa usuarioEmpresa = dbContext.UsuarioPorEmpresaRepository.Where(x => x.IdUsuario == usuario.IdUsuario).FirstOrDefault();
                     if (usuarioEmpresa == null) throw new BusinessException("El usuario por modificar debe estar vinculado a la empresa actual. Por favor, pongase en contacto con su proveedor del servicio.");
                     Empresa empresa = dbContext.EmpresaRepository.Find(usuarioEmpresa.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     List<RolePorUsuario> listadoDetalleAnterior = dbContext.RolePorUsuarioRepository.Where(x => x.IdUsuario == usuario.IdUsuario).ToList();
                     List<RolePorUsuario> listadoDetalle = usuario.RolePorUsuario.ToList();
-                    usuario.CodigoUsuario = usuario.CodigoUsuario.ToUpper();
                     usuario.UsuarioPorEmpresa = null;
                     usuario.RolePorUsuario = null;
                     foreach (RolePorUsuario detalle in listadoDetalleAnterior)
@@ -905,6 +912,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     foreach (RolePorUsuario detalle in listadoDetalle)
                         dbContext.RolePorUsuarioRepository.Add(detalle);
                     dbContext.Commit();
+                }
+                catch (BusinessException ex)
+                {
+                    throw ex;
                 }
                 catch (Exception ex)
                 {
