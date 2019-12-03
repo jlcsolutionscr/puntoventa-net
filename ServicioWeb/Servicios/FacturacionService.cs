@@ -1908,12 +1908,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             }
                             catch (BusinessException ex)
                             {
-                                string strError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                                stringBuilder.AppendLine("Error al procesar el documento con IVA acreditable con asunto " + correo.Subject + ". Detalle: " + strError);
-                                servicioRecepcionCorreo.EliminarMensaje(datos.CuentaIvaAcreditable, datos.ClaveIvaAcreditable, correo.MessageNumber);
-                                JArray archivosJArray = new JArray();
                                 string strFrom = correo.From.ToString().Substring(correo.From.ToString().IndexOf("'") + 8);
                                 strFrom = strFrom.Substring(0, strFrom.IndexOf("'"));
+                                string strError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                                stringBuilder.AppendLine("Error al procesar el documento con IVA acreditable. Enviado por " + strFrom + " Asunto " + correo.Subject + ". Detalle: " + strError);
+                                servicioRecepcionCorreo.EliminarMensaje(datos.CuentaIvaAcreditable, datos.ClaveIvaAcreditable, correo.MessageNumber);
+                                JArray archivosJArray = new JArray();
                                 servicioEnvioCorreo.SendEmail(datos.CorreoCuentaRecepcion, new string[] { strFrom }, new string[] { }, "Notificación de recepción de documento electrónico", "El correo del envio del documento electrónico con asunto " + correo.Subject + " presenta el siguiente detalle: " + ex.Message, false, archivosJArray);
                             }
                             catch (Exception ex)
@@ -1942,12 +1942,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             }
                             catch (BusinessException ex)
                             {
-                                string strError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                                stringBuilder.AppendLine("Error al procesar el documento sin IVA acreditable con asunto " + correo.Subject + ". Detalle: " + strError);
-                                servicioRecepcionCorreo.EliminarMensaje(datos.CuentaGastoNoAcreditable, datos.ClaveGastoNoAcreditable, correo.MessageNumber);
-                                JArray archivosJArray = new JArray();
                                 string strFrom = correo.From.ToString().Substring(correo.From.ToString().IndexOf("'") + 8);
                                 strFrom = strFrom.Substring(0, strFrom.IndexOf("'"));
+                                string strError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                                stringBuilder.AppendLine("Error al procesar el documento sin IVA acreditable. Enviado por " + strFrom + " Asunto " + correo.Subject + ". Detalle: " + strError);
+                                servicioRecepcionCorreo.EliminarMensaje(datos.CuentaGastoNoAcreditable, datos.ClaveGastoNoAcreditable, correo.MessageNumber);
+                                JArray archivosJArray = new JArray();
                                 servicioEnvioCorreo.SendEmail(datos.CorreoCuentaRecepcion, new string[] { strFrom }, new string[] { }, "Notificación de recepción de documento electrónico", "El correo del envio del documento electrónico con asunto " + correo.Subject + " presenta el siguiente detalle: " + ex.Message, false, archivosJArray);
                             }
                             catch (Exception ex)
