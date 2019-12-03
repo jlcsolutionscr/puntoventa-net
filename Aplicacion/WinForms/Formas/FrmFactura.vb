@@ -6,8 +6,6 @@ Imports System.Threading.Tasks
 Imports LeandroSoftware.ClienteWCF
 Imports LeandroSoftware.Core.TiposComunes
 Imports LeandroSoftware.Core.Utilitario
-Imports System.Xml
-Imports System.Text
 
 Public Class FrmFactura
 #Region "Variables"
@@ -42,7 +40,6 @@ Public Class FrmFactura
         dtbDetalleFactura.Columns.Add("TOTAL", GetType(Decimal))
         dtbDetalleFactura.Columns.Add("EXCENTO", GetType(Integer))
         dtbDetalleFactura.Columns.Add("PRECIOCOSTO", GetType(Decimal))
-        dtbDetalleFactura.Columns.Add("COSTOINSTALACION", GetType(Decimal))
         dtbDetalleFactura.Columns.Add("PORCENTAJEIVA", GetType(Decimal))
         dtbDetalleFactura.PrimaryKey = {dtbDetalleFactura.Columns(0)}
 
@@ -242,8 +239,7 @@ Public Class FrmFactura
             dtrRowDetFactura.Item(5) = dtrRowDetFactura.Item(3) * dtrRowDetFactura.Item(4)
             dtrRowDetFactura.Item(6) = detalle.Excento
             dtrRowDetFactura.Item(7) = detalle.PrecioCosto
-            dtrRowDetFactura.Item(8) = detalle.CostoInstalacion
-            dtrRowDetFactura.Item(9) = detalle.PorcentajeIVA
+            dtrRowDetFactura.Item(8) = detalle.PorcentajeIVA
             dtbDetalleFactura.Rows.Add(dtrRowDetFactura)
         Next
         grdDetalleFactura.Refresh()
@@ -261,8 +257,7 @@ Public Class FrmFactura
             dtrRowDetFactura.Item(5) = dtrRowDetFactura.Item(3) * dtrRowDetFactura.Item(4)
             dtrRowDetFactura.Item(6) = detalle.Excento
             dtrRowDetFactura.Item(7) = detalle.Producto.PrecioCosto
-            dtrRowDetFactura.Item(8) = detalle.CostoInstalacion
-            dtrRowDetFactura.Item(9) = detalle.PorcentajeIVA
+            dtrRowDetFactura.Item(8) = detalle.PorcentajeIVA
             dtbDetalleFactura.Rows.Add(dtrRowDetFactura)
         Next
         grdDetalleFactura.Refresh()
@@ -280,8 +275,7 @@ Public Class FrmFactura
             dtrRowDetFactura.Item(5) = dtrRowDetFactura.Item(3) * dtrRowDetFactura.Item(4)
             dtrRowDetFactura.Item(6) = detalle.Excento
             dtrRowDetFactura.Item(7) = detalle.Producto.PrecioCosto
-            dtrRowDetFactura.Item(8) = 0
-            dtrRowDetFactura.Item(9) = detalle.PorcentajeIVA
+            dtrRowDetFactura.Item(8) = detalle.PorcentajeIVA
             dtbDetalleFactura.Rows.Add(dtrRowDetFactura)
         Next
         grdDetalleFactura.Refresh()
@@ -313,7 +307,7 @@ Public Class FrmFactura
         grdDesglosePago.Refresh()
     End Function
 
-    Private Sub CargarLineaDetalleFactura(producto As Producto, strDescripcion As String, dblCantidad As Double, dblPrecio As Double, dblCostoInstalacion As Double)
+    Private Sub CargarLineaDetalleFactura(producto As Producto, strDescripcion As String, dblCantidad As Double, dblPrecio As Double)
         Dim intIndice As Integer = dtbDetalleFactura.Rows.IndexOf(dtbDetalleFactura.Rows.Find(producto.IdProducto))
         Dim decTasaImpuesto As Decimal = producto.ParametroImpuesto.TasaImpuesto
         Dim decPrecioGravado As Decimal = dblPrecio
@@ -329,8 +323,7 @@ Public Class FrmFactura
             dtbDetalleFactura.Rows(intIndice).Item(5) = dblCantidad * decPrecioGravado
             dtbDetalleFactura.Rows(intIndice).Item(6) = decTasaImpuesto = 0
             dtbDetalleFactura.Rows(intIndice).Item(7) = producto.PrecioCosto
-            dtbDetalleFactura.Rows(intIndice).Item(8) = dblCostoInstalacion
-            dtbDetalleFactura.Rows(intIndice).Item(9) = decTasaImpuesto
+            dtbDetalleFactura.Rows(intIndice).Item(8) = decTasaImpuesto
         Else
             dtrRowDetFactura = dtbDetalleFactura.NewRow
             dtrRowDetFactura.Item(0) = producto.IdProducto
@@ -341,8 +334,7 @@ Public Class FrmFactura
             dtrRowDetFactura.Item(5) = dblCantidad * decPrecioGravado
             dtrRowDetFactura.Item(6) = decTasaImpuesto = 0
             dtrRowDetFactura.Item(7) = producto.PrecioCosto
-            dtrRowDetFactura.Item(8) = dblCostoInstalacion
-            dtrRowDetFactura.Item(9) = decTasaImpuesto
+            dtrRowDetFactura.Item(8) = decTasaImpuesto
             dtbDetalleFactura.Rows.Add(dtrRowDetFactura)
         End If
         grdDetalleFactura.Refresh()
@@ -380,7 +372,7 @@ Public Class FrmFactura
         Dim intPorcentajeExoneracion As Integer = 0
         If txtPorcentajeExoneracion.Text <> "" Then intPorcentajeExoneracion = CInt(txtPorcentajeExoneracion.Text)
         For I = 0 To dtbDetalleFactura.Rows.Count - 1
-            Dim decTasaImpuesto As Decimal = dtbDetalleFactura.Rows(I).Item(9)
+            Dim decTasaImpuesto As Decimal = dtbDetalleFactura.Rows(I).Item(8)
             If decTasaImpuesto > 0 Then
                 Dim decImpuestoProducto As Decimal = dtbDetalleFactura.Rows(I).Item(4) * decTasaImpuesto / 100
                 If intPorcentajeExoneracion > 0 Then
@@ -518,7 +510,7 @@ Public Class FrmFactura
 
 #Region "Eventos Controles"
     Private Sub FrmFactura_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        Me.KeyPreview = True
+        KeyPreview = True
     End Sub
 
     Private Async Sub FrmFactura_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
@@ -715,14 +707,13 @@ Public Class FrmFactura
         End If
     End Sub
 
-    Private Sub BtnOrdenServicio_Click(sender As Object, e As EventArgs) Handles btnOrdenServicio.Click
+    Private Async Sub BtnOrdenServicio_Click(sender As Object, e As EventArgs) Handles btnOrdenServicio.Click
         Dim formBusqueda As New FrmBusquedaOrdenServicio()
-        formBusqueda.ExcluirOrdenesAplicadas()
         FrmPrincipal.intBusqueda = 0
         formBusqueda.ShowDialog()
         If FrmPrincipal.intBusqueda > 0 Then
             Try
-                'ordenServicio = servicioFacturacion.ObtenerOrdenServicio(FrmMenuPrincipal.intBusqueda)
+                ordenServicio = Await Puntoventa.ObtenerOrdenServicio(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
@@ -733,7 +724,7 @@ Public Class FrmFactura
                 cliente = ordenServicio.Cliente
                 txtNombreCliente.Text = ordenServicio.Cliente.Nombre
                 txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
-                txtDocumento.Text = ordenServicio.Placa
+                txtDocumento.Text = ""
                 cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado
                 txtPlazoCredito.Text = ""
                 vendedor = ordenServicio.Vendedor
@@ -761,14 +752,13 @@ Public Class FrmFactura
         End If
     End Sub
 
-    Private Sub BtnProforma_Click(sender As Object, e As EventArgs) Handles btnProforma.Click
+    Private Async Sub BtnProforma_Click(sender As Object, e As EventArgs) Handles btnProforma.Click
         Dim formBusqueda As New FrmBusquedaProforma()
-        formBusqueda.ExcluirOrdenesFacturadas()
         FrmPrincipal.intBusqueda = 0
         formBusqueda.ShowDialog()
         If FrmPrincipal.intBusqueda > 0 Then
             Try
-                'proforma = servicioFacturacion.ObtenerProforma(FrmMenuPrincipal.intBusqueda)
+                proforma = Await Puntoventa.ObtenerProforma(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
@@ -779,9 +769,9 @@ Public Class FrmFactura
                 cliente = proforma.Cliente
                 txtNombreCliente.Text = proforma.Cliente.Nombre
                 txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
-                txtDocumento.Text = proforma.NoDocumento
-                cboCondicionVenta.SelectedValue = proforma.IdCondicionVenta
-                txtPlazoCredito.Text = proforma.PlazoCredito
+                txtDocumento.Text = ""
+                cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado
+                txtPlazoCredito.Text = ""
                 vendedor = proforma.Vendedor
                 txtVendedor.Text = IIf(vendedor IsNot Nothing, vendedor.Nombre, "")
                 txtIdProforma.Text = proforma.IdProforma
@@ -902,6 +892,7 @@ Public Class FrmFactura
             End If
         End If
         If txtIdFactura.Text = "" Then
+            btnImprimir.Focus()
             btnGuardar.Enabled = False
             factura = New Factura With {
                 .IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa,
@@ -939,8 +930,7 @@ Public Class FrmFactura
                     .PrecioVenta = dtbDetalleFactura.Rows(I).Item(4),
                     .Excento = dtbDetalleFactura.Rows(I).Item(6),
                     .PrecioCosto = dtbDetalleFactura.Rows(I).Item(7),
-                    .CostoInstalacion = dtbDetalleFactura.Rows(I).Item(8),
-                    .PorcentajeIVA = dtbDetalleFactura.Rows(I).Item(9)
+                    .PorcentajeIVA = dtbDetalleFactura.Rows(I).Item(8)
                 }
                 factura.DetalleFactura.Add(detalleFactura)
             Next
@@ -961,6 +951,7 @@ Public Class FrmFactura
             Catch ex As Exception
                 txtIdFactura.Text = ""
                 btnGuardar.Enabled = True
+                btnGuardar.Focus()
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
@@ -968,6 +959,7 @@ Public Class FrmFactura
         MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
         btnImprimir.Enabled = True
         btnImprimir.Focus()
+        btnGuardar.Enabled = False
         btnGenerarPDF.Enabled = True
         btnAgregar.Enabled = True
         btnAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
@@ -1145,7 +1137,7 @@ Public Class FrmFactura
                 producto = Await Puntoventa.ObtenerProductoPorCodigo(FrmPrincipal.empresaGlobal.IdEmpresa, txtCodigo.Text, FrmPrincipal.usuarioGlobal.Token)
                 If producto IsNot Nothing Then
                     decPrecioVenta = ObtenerPrecioVentaPorCliente(cliente, producto)
-                    CargarLineaDetalleFactura(producto, producto.Descripcion, txtCantidad.Text, decPrecioVenta, 0)
+                    CargarLineaDetalleFactura(producto, producto.Descripcion, txtCantidad.Text, decPrecioVenta)
                     txtCodigo.Text = ""
                     producto = Nothing
                     txtCodigo.Focus()
@@ -1159,7 +1151,7 @@ Public Class FrmFactura
                 MessageBox.Show(strError, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End If
-            CargarLineaDetalleFactura(producto, txtDescripcion.Text, txtCantidad.Text, decPrecioVenta, 0)
+            CargarLineaDetalleFactura(producto, txtDescripcion.Text, txtCantidad.Text, decPrecioVenta)
             txtCantidad.Text = "1"
             txtCodigo.Text = ""
             txtDescripcion.Text = ""

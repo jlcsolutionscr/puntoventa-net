@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using LeandroSoftware.Core.TiposComunes;
 using LeandroSoftware.Core.Dominio.Entidades;
 using LeandroSoftware.ClienteWCF;
+using System.Globalization;
 
 namespace LeandroSoftware.Activator
 {
@@ -375,7 +376,14 @@ namespace LeandroSoftware.Activator
                 empresa.PorcentajeInstalacion = int.Parse(txtPorcentajeInstalacion.Text);
                 empresa.LineasPorFactura = int.Parse(txtLineasFactura.Text);
                 empresa.CodigoServicioInst = int.Parse(txtCodigoServInst.Text);
-                if (txtFecha.Text != "") empresa.FechaVence = DateTime.Parse(txtFecha.Text + " 23:59:59");
+                if (txtFecha.Text != "  /  /")
+                {
+                    empresa.FechaVence = DateTime.ParseExact(txtFecha.Text + " 23:59:59", "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+                }
+                else
+                {
+                    empresa.FechaVence = null;
+                }
                 empresa.IdTipoMoneda = 1;
                 empresa.TipoContrato = (int)cboTipoContrato.SelectedValue;
                 empresa.CantidadDisponible = int.Parse(txtCantidadDocumentos.Text);

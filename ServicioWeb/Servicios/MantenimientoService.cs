@@ -10,6 +10,9 @@ using log4net;
 using Unity;
 using System.Text;
 using LeandroSoftware.Core.Utilitario;
+using System.Web.Script.Serialization;
+using LeandroSoftware.Core.CustomClasses;
+using System.Globalization;
 
 namespace LeandroSoftware.ServicioWeb.Servicios
 {
@@ -32,7 +35,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         string AgregarEmpresa(Empresa empresa);
         Empresa ObtenerEmpresa(int intIdEmpresa);
         void ActualizarEmpresa(Empresa empresa);
-        void ActualizarEmpresaConDetalle(Empresa empresa);
+        List<ReportePorEmpresa> ObtenerCatalogoReportePorEmpresa(int intIdEmpresa);
+        void ActualizarCatalogoReporte(int intIdEmpresa, List<ReportePorEmpresa> listado);
         string ObtenerLogotipoEmpresa(int intIdEmpresa);
         void ActualizarLogoEmpresa(int intIdEmpresa, string strLogo);
         void ActualizarCertificadoEmpresa(int intIdEmpresa, string strCertificado);
@@ -79,9 +83,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         Producto ObtenerProducto(int intIdProducto);
         Producto ObtenerProductoPorCodigo(int intIdEmpresa, string strCodigo);
         int ObtenerTotalListaProductos(int intIdEmpresa, bool bolIncluyeServicios, int intIdLinea, string strCodigo, string strDescripcion);
-        IEnumerable<LlaveDescripcion> ObtenerListadoProductos(int intIdEmpresa, int numPagina, int cantRec, bool bolIncluyeServicios, int intIdLinea, string strCodigo, string strDescripcion);
-        int ObtenerTotalMovimientosPorProducto(int intIdProducto, DateTime datFechaInicial, DateTime datFechaFinal);
-        IEnumerable<MovimientoProducto> ObtenerMovimientosPorProducto(int intIdProducto, int numPagina, int cantRec, DateTime datFechaInicial, DateTime datFechaFinal);
+        IEnumerable<ProductoDetalle> ObtenerListadoProductos(int intIdEmpresa, int numPagina, int cantRec, bool bolIncluyeServicios, int intIdLinea, string strCodigo, string strDescripcion);
+        int ObtenerTotalMovimientosPorProducto(int intIdProducto, string strFechaInicial, string strFechaFinal);
+        IEnumerable<MovimientoProducto> ObtenerMovimientosPorProducto(int intIdProducto, int numPagina, int cantRec, string strFechaInicial, string strFechaFinal);
         // Métodos para obtener las condiciones de venta para facturación
         IEnumerable<LlaveDescripcion> ObtenerListadoCondicionVenta();
         // Métodos para obtener las formas de pago por tipo de servicio
@@ -127,7 +131,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
     {
         private static IUnityContainer localContainer;
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
+        private static CultureInfo provider = CultureInfo.InvariantCulture;
+        private static string strFormat = "dd/MM/yyyy HH:mm:ss";
         public MantenimientoService(IUnityContainer Container)
         {
             try
@@ -579,65 +584,16 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void ActualizarEmpresa(Empresa empresa)
-        {
-            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
-            {
-                try
-                {
-                    byte[] certificado = dbContext.EmpresaRepository.AsNoTracking().Where(x => x.IdEmpresa == empresa.IdEmpresa).FirstOrDefault().Certificado;
-                    if (certificado != null) empresa.Certificado = certificado;
-                    dbContext.NotificarModificacion(empresa);
-                    dbContext.Commit();
-                }
-                catch (Exception ex)
-                {
-                    dbContext.RollBack();
-                    log.Error("Error al actualizar la empresa: ", ex);
-                    throw new Exception("Se produjo un error actualizando la información de la empresa. Por favor consulte con su proveedor.");
-                }
-            }
-        }
-
-        public void ActualizarEmpresaConDetalle(Empresa empresa)
-        {
-            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
-            {
-                try
-                {
-                    byte[] certificado = dbContext.EmpresaRepository.AsNoTracking().Where(x => x.IdEmpresa == empresa.IdEmpresa).FirstOrDefault().Certificado;
-                    List<ReportePorEmpresa> listadoReportePorEmpresa = empresa.ReportePorEmpresa.OrderBy(o => o.IdReporte).ToList();
-                    empresa.ReportePorEmpresa = null;
-                    empresa.Barrio = null;
-                    if (certificado != null) empresa.Certificado = certificado;
-                    dbContext.NotificarModificacion(empresa);
-                    List<ReportePorEmpresa> listadoReportePorEmpresaAnt = dbContext.ReportePorEmpresaRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa).ToList();
-                    foreach (ReportePorEmpresa reporte in listadoReportePorEmpresaAnt)
-                        dbContext.ReportePorEmpresaRepository.Remove(reporte);
-                    foreach (ReportePorEmpresa reporte in listadoReportePorEmpresa)
-                        dbContext.ReportePorEmpresaRepository.Add(reporte);
-                    empresa.Barrio = null;
-                    dbContext.NotificarModificacion(empresa);
-                    dbContext.Commit();
-                }
-                catch (Exception ex)
-                {
-                    dbContext.RollBack();
-                    log.Error("Error al actualizar la empresa: ", ex);
-                    throw new Exception("Se produjo un error actualizando la información de la empresa. Por favor consulte con su proveedor.");
-                }
-            }
-        }
-
         public Empresa ObtenerEmpresa(int intIdEmpresa)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 try
                 {
-                    Empresa empresa = dbContext.EmpresaRepository.Include("ReportePorEmpresa.CatalogoReporte").Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.IdEmpresa == intIdEmpresa);
+                    Empresa empresa = dbContext.EmpresaRepository.Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.IdEmpresa == intIdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     empresa.Certificado = null;
+                    empresa.Logotipo = null;
                     empresa.AccessToken = null;
                     empresa.RefreshToken = null;
                     empresa.EmitedAt = null;
@@ -655,6 +611,72 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     log.Error("Error al obtener la empresa: ", ex);
                     throw new Exception("Se produjo un error consultando la información de la empresa. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public void ActualizarEmpresa(Empresa empresa)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    Empresa noTracking = dbContext.EmpresaRepository.AsNoTracking().Where(x => x.IdEmpresa == empresa.IdEmpresa).FirstOrDefault();
+                    empresa.Barrio = null;
+                    if (noTracking != null && noTracking.Certificado != null) empresa.Certificado = noTracking.Certificado;
+                    if (noTracking != null && noTracking.Logotipo != null) empresa.Logotipo = noTracking.Logotipo;
+                    dbContext.NotificarModificacion(empresa);
+                    dbContext.Commit();
+                }
+                catch (Exception ex)
+                {
+                    dbContext.RollBack();
+                    log.Error("Error al actualizar la empresa: ", ex);
+                    throw new Exception("Se produjo un error actualizando la información de la empresa. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public List<ReportePorEmpresa> ObtenerCatalogoReportePorEmpresa(int intIdEmpresa)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    List<ReportePorEmpresa> listadoReportePorEmpresa = dbContext.ReportePorEmpresaRepository.Where(x => x.IdEmpresa == intIdEmpresa).ToList();
+                    return listadoReportePorEmpresa;
+                }
+                catch (BusinessException ex)
+                {
+                    throw ex;
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al obtener el logotipo de la empresa: ", ex);
+                    throw new Exception("Se produjo un error consultando el logotipo de la empresa. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public void ActualizarCatalogoReporte(int intIdEmpresa, List<ReportePorEmpresa> listado)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    List<ReportePorEmpresa> listadoReportePorEmpresaAnt = dbContext.ReportePorEmpresaRepository.Where(x => x.IdEmpresa == intIdEmpresa).ToList();
+                    foreach (ReportePorEmpresa reporte in listadoReportePorEmpresaAnt)
+                        dbContext.ReportePorEmpresaRepository.Remove(reporte);
+                    foreach (ReportePorEmpresa reporte in listado)
+                        dbContext.ReportePorEmpresaRepository.Add(reporte);
+                    dbContext.Commit();
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al obtener el logotipo de la empresa: ", ex);
+                    throw new Exception("Se produjo un error consultando el logotipo de la empresa. Por favor consulte con su proveedor.");
                 }
             }
         }
@@ -866,7 +888,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     usuario.CodigoUsuario = usuario.CodigoUsuario.ToUpper();
-                    if (usuario.CodigoUsuario == "JASLOP") throw new BusinessException("El código de usuario ingresado no se encuentra disponible. Por favor modifique la información suministrada.");
+                    if (usuario.CodigoUsuario == "JASLOP" || usuario.CodigoUsuario == "CONTADOR") throw new BusinessException("El código de usuario ingresado no se encuentra disponible. Por favor modifique la información suministrada.");
                     List<UsuarioPorEmpresa> empresaUsuario = usuario.UsuarioPorEmpresa.ToList();
                     if (empresaUsuario.Count == 0) throw new BusinessException("El usuario por agregar debe estar vinculado a la empresa actual. Por favor, pongase en contacto con su proveedor del servicio.");
                     Empresa empresa = dbContext.EmpresaRepository.Find(empresaUsuario[0].IdEmpresa);
@@ -1049,7 +1071,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 var listaUsuario = new List<LlaveDescripcion>();
                 try
                 {
-                    var listado = dbContext.UsuarioPorEmpresaRepository.Include("Usuario").Where(x => x.IdEmpresa == intIdEmpresa && x.IdUsuario > 1);
+                    var listado = dbContext.UsuarioPorEmpresaRepository.Include("Usuario").Where(x => x.IdEmpresa == intIdEmpresa && x.IdUsuario > 2);
                     if (!strCodigo.Equals(string.Empty))
                         listado = listado.Where(x => x.Usuario.CodigoUsuario.Contains(strCodigo.ToUpper()));
                     listado.OrderBy(x => x.Usuario.IdUsuario);
@@ -1666,11 +1688,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoProductos(int intIdEmpresa, int numPagina, int cantRec, bool bolIncluyeServicios, int intIdLinea, string strCodigo, string strDescripcion)
+        public IEnumerable<ProductoDetalle> ObtenerListadoProductos(int intIdEmpresa, int numPagina, int cantRec, bool bolIncluyeServicios, int intIdLinea, string strCodigo, string strDescripcion)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
-                var listaProducto = new List<LlaveDescripcion>();
+                var listaProducto = new List<ProductoDetalle>();
                 try
                 {
                     var listado = dbContext.ProductoRepository.Where(x => x.IdEmpresa == intIdEmpresa);
@@ -1688,7 +1710,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         listado = listado.OrderBy(x => x.Codigo);
                     foreach (Producto value in listado)
                     {
-                        LlaveDescripcion item = new LlaveDescripcion(value.IdProducto, value.Codigo + "   -   " + value.Descripcion);
+                        ProductoDetalle item = new ProductoDetalle(value.IdProducto, value.Codigo, value.Descripcion, value.Cantidad, value.PrecioCosto, value.PrecioVenta1);
                         listaProducto.Add(item);
                     }
                     return listaProducto;
@@ -1701,15 +1723,15 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public int ObtenerTotalMovimientosPorProducto(int intIdProducto, DateTime datFechaInicial, DateTime datFechaFinal)
+        public int ObtenerTotalMovimientosPorProducto(int intIdProducto, string strFechaInicial, string strFechaFinal)
         {
-            DateTime datFechaInicio = new DateTime(datFechaInicial.Year, datFechaInicial.Month, datFechaInicial.Day, 0, 0, 0);
-            DateTime datFechaFin = new DateTime(datFechaFinal.Year, datFechaFinal.Month, datFechaFinal.Day, 23, 59, 59);
+            DateTime datFechaInicial = DateTime.ParseExact(strFechaInicial + " 00:00:01", strFormat, provider);
+            DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 try
                 {
-                    var listaMovimientos = dbContext.MovimientoProductoRepository.Where(x => x.IdProducto == intIdProducto && x.Fecha > datFechaInicio && x.Fecha < datFechaFin);
+                    var listaMovimientos = dbContext.MovimientoProductoRepository.Where(x => x.IdProducto == intIdProducto && x.Fecha > datFechaInicial && x.Fecha < datFechaFinal);
                     return listaMovimientos.Count();
                 }
                 catch (Exception ex)
@@ -1720,15 +1742,15 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<MovimientoProducto> ObtenerMovimientosPorProducto(int intIdProducto, int numPagina, int cantRec, DateTime datFechaInicial, DateTime datFechaFinal)
+        public IEnumerable<MovimientoProducto> ObtenerMovimientosPorProducto(int intIdProducto, int numPagina, int cantRec, string strFechaInicial, string strFechaFinal)
         {
-            DateTime datFechaInicio = new DateTime(datFechaInicial.Year, datFechaInicial.Month, datFechaInicial.Day, 0, 0, 0);
-            DateTime datFechaFin = new DateTime(datFechaFinal.Year, datFechaFinal.Month, datFechaFinal.Day, 23, 59, 59);
+            DateTime datFechaInicial = DateTime.ParseExact(strFechaInicial + " 00:00:01", strFormat, provider);
+            DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 try
                 {
-                    var listaMovimientos = dbContext.MovimientoProductoRepository.Where(x => x.IdProducto == intIdProducto && x.Fecha >= datFechaInicio && x.Fecha <= datFechaFin);
+                    var listaMovimientos = dbContext.MovimientoProductoRepository.Where(x => x.IdProducto == intIdProducto && x.Fecha >= datFechaInicial && x.Fecha <= datFechaFinal);
                     if (cantRec > 0)
                         return listaMovimientos.OrderByDescending(x => x.Fecha).Skip((numPagina - 1) * cantRec).Take(cantRec).ToList();
                     else

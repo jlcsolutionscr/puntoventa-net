@@ -44,7 +44,7 @@ Partial Class FrmBusquedaProducto
         Me.CmdFiltro.BackColor = System.Drawing.SystemColors.ControlLightLight
         Me.CmdFiltro.Cursor = System.Windows.Forms.Cursors.Default
         Me.CmdFiltro.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.CmdFiltro.Location = New System.Drawing.Point(601, 55)
+        Me.CmdFiltro.Location = New System.Drawing.Point(601, 57)
         Me.CmdFiltro.Name = "CmdFiltro"
         Me.CmdFiltro.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.CmdFiltro.Size = New System.Drawing.Size(81, 21)

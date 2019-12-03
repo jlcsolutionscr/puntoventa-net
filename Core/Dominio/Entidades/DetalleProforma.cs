@@ -10,6 +10,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public int IdProforma { get; set; }
         [Key, Column(Order = 1), ForeignKey("Producto")]
         public int IdProducto { get; set; }
+        public string Descripcion { get; set; }
         public decimal Cantidad { get; set; }
         public decimal PrecioVenta { get; set; }
         public bool Excento { get; set; }

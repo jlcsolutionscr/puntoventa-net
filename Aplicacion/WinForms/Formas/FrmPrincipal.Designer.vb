@@ -114,27 +114,27 @@ Partial Class FrmPrincipal
         'mnuArchivoCierre
         '
         Me.mnuArchivoCierre.Name = "mnuArchivoCierre"
-        Me.mnuArchivoCierre.Size = New System.Drawing.Size(180, 22)
+        Me.mnuArchivoCierre.Size = New System.Drawing.Size(179, 22)
         Me.mnuArchivoCierre.Text = "Cierre de Caja"
         Me.mnuArchivoCierre.Visible = False
         '
         'MnuArchivoReporte
         '
         Me.MnuArchivoReporte.Name = "MnuArchivoReporte"
-        Me.MnuArchivoReporte.Size = New System.Drawing.Size(180, 22)
+        Me.MnuArchivoReporte.Size = New System.Drawing.Size(179, 22)
         Me.MnuArchivoReporte.Text = "Menu de Reportes"
         Me.MnuArchivoReporte.Visible = False
         '
         'mnuArchivoCambio
         '
         Me.mnuArchivoCambio.Name = "mnuArchivoCambio"
-        Me.mnuArchivoCambio.Size = New System.Drawing.Size(180, 22)
+        Me.mnuArchivoCambio.Size = New System.Drawing.Size(179, 22)
         Me.mnuArchivoCambio.Text = "Cambio Contraseña"
         '
         'MnuArchivoSalir
         '
         Me.MnuArchivoSalir.Name = "MnuArchivoSalir"
-        Me.MnuArchivoSalir.Size = New System.Drawing.Size(180, 22)
+        Me.MnuArchivoSalir.Size = New System.Drawing.Size(179, 22)
         Me.MnuArchivoSalir.Text = "Salir"
         '
         'MnuParam
@@ -268,7 +268,7 @@ Partial Class FrmPrincipal
         '
         'MnuCaptura
         '
-        Me.MnuCaptura.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MnuCapturaFactura, Me.MnuCapturaOrdenServicio, Me.MnuCapturaCompra, Me.MnuCapturaProforma, Me.MnuCapturaOrden, Me.MnuDevolucionProveedor, Me.MnuDevolucionCliente, Me.MnuCapturaTraslado, Me.MnuCapturaIngreso, Me.MnuCapturaEgreso, Me.MnuCapturaAI})
+        Me.MnuCaptura.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MnuCapturaProforma, Me.MnuCapturaOrdenServicio, Me.MnuCapturaFactura, Me.MnuCapturaOrden, Me.MnuCapturaCompra, Me.MnuDevolucionProveedor, Me.MnuDevolucionCliente, Me.MnuCapturaTraslado, Me.MnuCapturaIngreso, Me.MnuCapturaEgreso, Me.MnuCapturaAI})
         Me.MnuCaptura.MergeAction = System.Windows.Forms.MergeAction.Remove
         Me.MnuCaptura.Name = "MnuCaptura"
         Me.MnuCaptura.Size = New System.Drawing.Size(61, 20)

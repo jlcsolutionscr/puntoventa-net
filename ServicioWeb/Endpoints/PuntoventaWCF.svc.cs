@@ -46,7 +46,6 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             appSettings["strCorreoNotificacionErrores"].ToString(),
             appSettings["facturaEmailFrom"].ToString()
         );
-        private static string strApplicationKey = appSettings["ApplicationKey"].ToString();
         private static JavaScriptSerializer serializer = new CustomJavascriptSerializer();
         private static Empresa empresa;
         private static SucursalPorEmpresa sucursal;
@@ -62,6 +61,9 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
         private static Vendedor vendedor;
         private static Egreso egreso;
         private static Factura factura;
+        private static Compra compra;
+        private static Proforma proforma;
+        private static OrdenServicio ordenServicio;
         private static DocumentoElectronico documento;
         private static CierreCaja cierre;
         private static int intIdEmpresa;
@@ -72,11 +74,15 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
         private static int intIdDistrito;
         private static int intIdDocumento;
         private static int intIdLinea;
+        private static int intIdProducto;
         private static int intIdCuentaEgreso;
         private static int intIdCuentaIngreso;
         private static int intIdEgreso;
         private static int intIdIngreso;
         private static int intIdFactura;
+        private static int intIdCompra;
+        private static int intIdProforma;
+        private static int intIdOrdenServicio;
         private static int intNumeroPagina;
         private static int intFilasPorPagina;
         private static int intTotalLista;
@@ -312,10 +318,6 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         empresa = serializer.Deserialize<Empresa>(strEntidad);
                         servicioMantenimiento.ActualizarEmpresa(empresa);
                         break;
-                    case "ActualizarEmpresaConDetalle":
-                        empresa = serializer.Deserialize<Empresa>(strEntidad);
-                        servicioMantenimiento.ActualizarEmpresaConDetalle(empresa);
-                        break;
                     case "ActualizarLogoEmpresa":
                         intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                         string strLogotipo = parametrosJO.Property("Logotipo").Value.ToString();
@@ -460,6 +462,25 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         intIdUsuario = int.Parse(parametrosJO.Property("IdUsuario").Value.ToString());
                         servicioFacturacion.AnularFactura(intIdFactura, intIdUsuario, configuracionGeneral);
                         break;
+                    case "AnularCompra":
+                        int intIdCompra = int.Parse(parametrosJO.Property("IdCompra").Value.ToString());
+                        intIdUsuario = int.Parse(parametrosJO.Property("IdUsuario").Value.ToString());
+                        servicioCompra.AnularCompra(intIdCompra, intIdUsuario);
+                        break;
+                    case "AnularProforma":
+                        int intIdProforma = int.Parse(parametrosJO.Property("IdProforma").Value.ToString());
+                        intIdUsuario = int.Parse(parametrosJO.Property("IdUsuario").Value.ToString());
+                        servicioFacturacion.AnularProforma(intIdProforma, intIdUsuario);
+                        break;
+                    case "AnularOrdenServicio":
+                        int intIdOrdenServicio = int.Parse(parametrosJO.Property("IdOrdenServicio").Value.ToString());
+                        intIdUsuario = int.Parse(parametrosJO.Property("IdUsuario").Value.ToString());
+                        servicioFacturacion.AnularOrdenServicio(intIdOrdenServicio, intIdUsuario);
+                        break;
+                    case "ActualizarOrdenServicio":
+                        ordenServicio = serializer.Deserialize<OrdenServicio>(strEntidad);
+                        servicioFacturacion.ActualizarOrdenServicio(ordenServicio);
+                        break;
                     case "EnviarDocumentoElectronicoPendiente":
                         intIdDocumento = int.Parse(parametrosJO.Property("IdDocumento").Value.ToString());
                         servicioFacturacion.EnviarDocumentoElectronicoPendiente(intIdDocumento, configuracionGeneral);
@@ -592,6 +613,11 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         IList<LlaveDescripcion> listadoFormaPagoFactura = (List<LlaveDescripcion>)servicioMantenimiento.ObtenerListadoFormaPagoFactura();
                         if (listadoFormaPagoFactura.Count > 0)
                             strRespuesta = serializer.Serialize(listadoFormaPagoFactura);
+                        break;
+                    case "ObtenerListadoFormaPagoCompra":
+                        IList<LlaveDescripcion> listadoFormaPagoCompra = (List<LlaveDescripcion>)servicioMantenimiento.ObtenerListadoFormaPagoCompra();
+                        if (listadoFormaPagoCompra.Count > 0)
+                            strRespuesta = serializer.Serialize(listadoFormaPagoCompra);
                         break;
                     case "ObtenerListadoTipoMoneda":
                         IList<LlaveDescripcion> listadoTipoMoneda = (List<LlaveDescripcion>)servicioMantenimiento.ObtenerListadoTipoMoneda();
@@ -748,24 +774,6 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         IList<ReporteCierreDeCaja> listadoReporteCierreDeCaja = servicioReportes.ObtenerReporteCierreDeCaja(intIdCierre);
                         if (listadoReporteCierreDeCaja.Count > 0)
                             strRespuesta = serializer.Serialize(listadoReporteCierreDeCaja);
-                        break;
-                    case "ObtenerReporteProforma":
-                        int intIdProforma = int.Parse(parametrosJO.Property("IdProforma").Value.ToString());
-                        IList<ReporteProforma> listadoReporteProforma = servicioReportes.ObtenerReporteProforma(intIdProforma);
-                        if (listadoReporteProforma.Count > 0)
-                            strRespuesta = serializer.Serialize(listadoReporteProforma);
-                        break;
-                    case "ObtenerReporteOrdenServicio":
-                        int intIdOrdenServicio = int.Parse(parametrosJO.Property("IdOrdenServicio").Value.ToString());
-                        IList<ReporteOrdenServicio> listadoReporteOrdenServicio = servicioReportes.ObtenerReporteOrdenServicio(intIdOrdenServicio);
-                        if (listadoReporteOrdenServicio.Count > 0)
-                            strRespuesta = serializer.Serialize(listadoReporteOrdenServicio);
-                        break;
-                    case "ObtenerReporteOrdenCompra":
-                        int intIdOrdenCompra = int.Parse(parametrosJO.Property("IdOrdenCompra").Value.ToString());
-                        IList<ReporteOrdenCompra> listadoReporteOrdenCompra = servicioReportes.ObtenerReporteOrdenCompra(intIdOrdenCompra);
-                        if (listadoReporteOrdenCompra.Count > 0)
-                            strRespuesta = serializer.Serialize(listadoReporteOrdenCompra);
                         break;
                     case "ObtenerReporteInventario":
                         intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
@@ -1027,12 +1035,12 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         intIdLinea = parametrosJO.Property("IdLinea") != null ? int.Parse(parametrosJO.Property("IdLinea").Value.ToString()) : 0;
                         strCodigo = parametrosJO.Property("Codigo") != null ? parametrosJO.Property("Codigo").Value.ToString() : "";
                         strDescripcion = parametrosJO.Property("Descripcion") != null ? parametrosJO.Property("Descripcion").Value.ToString() : "";
-                        IList<LlaveDescripcion> listadoProducto = (List<LlaveDescripcion>)servicioMantenimiento.ObtenerListadoProductos(intIdEmpresa, intNumeroPagina, intFilasPorPagina, bolIncluyeServicios, intIdLinea, strCodigo, strDescripcion);
+                        IList<ProductoDetalle> listadoProducto = (List<ProductoDetalle>)servicioMantenimiento.ObtenerListadoProductos(intIdEmpresa, intNumeroPagina, intFilasPorPagina, bolIncluyeServicios, intIdLinea, strCodigo, strDescripcion);
                         if (listadoProducto.Count > 0)
                             strRespuesta = serializer.Serialize(listadoProducto);
                         break;
                     case "ObtenerProducto":
-                        int intIdProducto = int.Parse(parametrosJO.Property("IdProducto").Value.ToString());
+                        intIdProducto = int.Parse(parametrosJO.Property("IdProducto").Value.ToString());
                         producto = servicioMantenimiento.ObtenerProducto(intIdProducto);
                         if (producto != null)
                             strRespuesta = serializer.Serialize(producto);
@@ -1043,6 +1051,23 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         producto = servicioMantenimiento.ObtenerProductoPorCodigo(intIdEmpresa, strCodigo);
                         if (producto != null)
                             strRespuesta = serializer.Serialize(producto);
+                        break;
+                    case "ObtenerTotalMovimientosPorProducto":
+                        intIdProducto = int.Parse(parametrosJO.Property("IdProducto").Value.ToString());
+                        strFechaInicial = parametrosJO.Property("FechaInicial").Value.ToString();
+                        strFechaFinal = parametrosJO.Property("FechaFinal").Value.ToString();
+                        intTotalLista = servicioMantenimiento.ObtenerTotalMovimientosPorProducto(intIdProducto, strFechaInicial, strFechaFinal);
+                        strRespuesta = serializer.Serialize(intTotalLista);
+                        break;
+                    case "ObtenerMovimientosPorProducto":
+                        intIdProducto = int.Parse(parametrosJO.Property("IdProducto").Value.ToString());
+                        intNumeroPagina = int.Parse(parametrosJO.Property("NumeroPagina").Value.ToString());
+                        intFilasPorPagina = int.Parse(parametrosJO.Property("FilasPorPagina").Value.ToString());
+                        strFechaInicial = parametrosJO.Property("FechaInicial").Value.ToString();
+                        strFechaFinal = parametrosJO.Property("FechaFinal").Value.ToString();
+                        IList<MovimientoProducto> listadoMovimientosProducto = (List<MovimientoProducto>)servicioMantenimiento.ObtenerMovimientosPorProducto(intIdProducto, intNumeroPagina, intFilasPorPagina, strFechaInicial, strFechaFinal);
+                        if (listadoMovimientosProducto != null)
+                            strRespuesta = serializer.Serialize(listadoMovimientosProducto);
                         break;
                     case "ObtenerListadoUsuarios":
                         intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
@@ -1152,9 +1177,9 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         intFilasPorPagina = int.Parse(parametrosJO.Property("FilasPorPagina").Value.ToString());
                         intIdFactura = parametrosJO.Property("IdFactura") != null ? int.Parse(parametrosJO.Property("IdFactura").Value.ToString()) : 0;
                         strNombre = parametrosJO.Property("Nombre") != null ? parametrosJO.Property("Nombre").Value.ToString() : "";
-                        IList<FacturaDetalle> listadoFactura = (List<FacturaDetalle>)servicioFacturacion.ObtenerListadoFacturas(intIdEmpresa, intNumeroPagina, intFilasPorPagina, intIdFactura, strNombre);
-                        if (listadoFactura.Count > 0)
-                            strRespuesta = serializer.Serialize(listadoFactura);
+                        IList<FacturaDetalle> listadoFacturas = (List<FacturaDetalle>)servicioFacturacion.ObtenerListadoFacturas(intIdEmpresa, intNumeroPagina, intFilasPorPagina, intIdFactura, strNombre);
+                        if (listadoFacturas.Count > 0)
+                            strRespuesta = serializer.Serialize(listadoFacturas);
                         break;
                     case "AgregarFactura":
                         factura = serializer.Deserialize<Factura>(strEntidad);
@@ -1166,6 +1191,90 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         factura = servicioFacturacion.ObtenerFactura(intIdFactura);
                         if (factura != null)
                             strRespuesta = serializer.Serialize(factura);
+                        break;
+                    case "ObtenerTotalListaCompras":
+                        intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
+                        intIdCompra = parametrosJO.Property("IdCompra") != null ? int.Parse(parametrosJO.Property("IdCompra").Value.ToString()) : 0;
+                        strNombre = parametrosJO.Property("Nombre") != null ? parametrosJO.Property("Nombre").Value.ToString() : "";
+                        intTotalLista = servicioCompra.ObtenerTotalListaCompras(intIdEmpresa, intIdCompra, strNombre);
+                        strRespuesta = serializer.Serialize(intTotalLista);
+                        break;
+                    case "ObtenerListadoCompras":
+                        intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
+                        intNumeroPagina = int.Parse(parametrosJO.Property("NumeroPagina").Value.ToString());
+                        intFilasPorPagina = int.Parse(parametrosJO.Property("FilasPorPagina").Value.ToString());
+                        intIdCompra = parametrosJO.Property("IdCompra") != null ? int.Parse(parametrosJO.Property("IdCompra").Value.ToString()) : 0;
+                        strNombre = parametrosJO.Property("Nombre") != null ? parametrosJO.Property("Nombre").Value.ToString() : "";
+                        IList<CompraDetalle> listadoCompras = (List<CompraDetalle>)servicioCompra.ObtenerListadoCompras(intIdEmpresa, intNumeroPagina, intFilasPorPagina, intIdCompra, strNombre);
+                        if (listadoCompras.Count > 0)
+                            strRespuesta = serializer.Serialize(listadoCompras);
+                        break;
+                    case "AgregarCompra":
+                        compra = serializer.Deserialize<Compra>(strEntidad);
+                        string strIdCompra = servicioCompra.AgregarCompra(compra);
+                        strRespuesta = serializer.Serialize(strIdCompra);
+                        break;
+                    case "ObtenerCompra":
+                        intIdCompra = int.Parse(parametrosJO.Property("IdCompra").Value.ToString());
+                        compra = servicioCompra.ObtenerCompra(intIdCompra);
+                        if (compra != null)
+                            strRespuesta = serializer.Serialize(compra);
+                        break;
+                    case "ObtenerTotalListaProformas":
+                        intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
+                        intIdProforma = parametrosJO.Property("IdProforma") != null ? int.Parse(parametrosJO.Property("IdProforma").Value.ToString()) : 0;
+                        strNombre = parametrosJO.Property("Nombre") != null ? parametrosJO.Property("Nombre").Value.ToString() : "";
+                        intTotalLista = servicioFacturacion.ObtenerTotalListaProformas(intIdEmpresa, intIdProforma, strNombre);
+                        strRespuesta = serializer.Serialize(intTotalLista);
+                        break;
+                    case "ObtenerListadoProformas":
+                        intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
+                        intNumeroPagina = int.Parse(parametrosJO.Property("NumeroPagina").Value.ToString());
+                        intFilasPorPagina = int.Parse(parametrosJO.Property("FilasPorPagina").Value.ToString());
+                        intIdProforma = parametrosJO.Property("IdProforma") != null ? int.Parse(parametrosJO.Property("IdProforma").Value.ToString()) : 0;
+                        strNombre = parametrosJO.Property("Nombre") != null ? parametrosJO.Property("Nombre").Value.ToString() : "";
+                        IList<FacturaDetalle> listadoProformas = (List<FacturaDetalle>)servicioFacturacion.ObtenerListadoProformas(intIdEmpresa, intNumeroPagina, intFilasPorPagina, intIdProforma, strNombre);
+                        if (listadoProformas.Count > 0)
+                            strRespuesta = serializer.Serialize(listadoProformas);
+                        break;
+                    case "AgregarProforma":
+                        proforma = serializer.Deserialize<Proforma>(strEntidad);
+                        string strIdProforma = servicioFacturacion.AgregarProforma(proforma);
+                        strRespuesta = serializer.Serialize(strIdProforma);
+                        break;
+                    case "ObtenerProforma":
+                        intIdProforma = int.Parse(parametrosJO.Property("IdProforma").Value.ToString());
+                        proforma = servicioFacturacion.ObtenerProforma(intIdProforma);
+                        if (proforma != null)
+                            strRespuesta = serializer.Serialize(proforma);
+                        break;
+                    case "ObtenerTotalListaOrdenServicio":
+                        intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
+                        intIdOrdenServicio = parametrosJO.Property("IdOrdenServicio") != null ? int.Parse(parametrosJO.Property("IdOrdenServicio").Value.ToString()) : 0;
+                        strNombre = parametrosJO.Property("Nombre") != null ? parametrosJO.Property("Nombre").Value.ToString() : "";
+                        intTotalLista = servicioFacturacion.ObtenerTotalListaOrdenServicio(intIdEmpresa, intIdOrdenServicio, strNombre);
+                        strRespuesta = serializer.Serialize(intTotalLista);
+                        break;
+                    case "ObtenerListadoOrdenServicio":
+                        intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
+                        intNumeroPagina = int.Parse(parametrosJO.Property("NumeroPagina").Value.ToString());
+                        intFilasPorPagina = int.Parse(parametrosJO.Property("FilasPorPagina").Value.ToString());
+                        intIdOrdenServicio = parametrosJO.Property("IdOrdenServicio") != null ? int.Parse(parametrosJO.Property("IdOrdenServicio").Value.ToString()) : 0;
+                        strNombre = parametrosJO.Property("Nombre") != null ? parametrosJO.Property("Nombre").Value.ToString() : "";
+                        IList<FacturaDetalle> listadoOrdenServicio = (List<FacturaDetalle>)servicioFacturacion.ObtenerListadoOrdenServicio(intIdEmpresa, intNumeroPagina, intFilasPorPagina, intIdOrdenServicio, strNombre);
+                        if (listadoOrdenServicio.Count > 0)
+                            strRespuesta = serializer.Serialize(listadoOrdenServicio);
+                        break;
+                    case "AgregarOrdenServicio":
+                        ordenServicio = serializer.Deserialize<OrdenServicio>(strEntidad);
+                        string strIdOrdenServicio = servicioFacturacion.AgregarOrdenServicio(ordenServicio);
+                        strRespuesta = serializer.Serialize(strIdOrdenServicio);
+                        break;
+                    case "ObtenerOrdenServicio":
+                        intIdOrdenServicio = int.Parse(parametrosJO.Property("IdOrdenServicio").Value.ToString());
+                        ordenServicio = servicioFacturacion.ObtenerOrdenServicio(intIdOrdenServicio);
+                        if (ordenServicio != null)
+                            strRespuesta = serializer.Serialize(ordenServicio);
                         break;
                     case "ObtenerListadoDocumentosElectronicosEnProceso":
                         intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());

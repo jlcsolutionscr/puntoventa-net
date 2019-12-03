@@ -12,6 +12,8 @@ Public Class FrmBusquedaFactura
 
 #Region "Métodos"
     Private Sub EstablecerPropiedadesDataGridView()
+        dgvListado.Columns.Clear()
+        dgvListado.AutoGenerateColumns = False
         Dim dvcId As New DataGridViewTextBoxColumn
         Dim dvcFecha As New DataGridViewTextBoxColumn
         Dim dvcNombreCliente As New DataGridViewTextBoxColumn
@@ -28,7 +30,7 @@ Public Class FrmBusquedaFactura
         dgvListado.Columns.Add(dvcFecha)
         dvcNombreCliente.HeaderText = "Cliente"
         dvcNombreCliente.DataPropertyName = "NombreCliente"
-        dvcNombreCliente.Width = 380
+        dvcNombreCliente.Width = 400
         dgvListado.Columns.Add(dvcNombreCliente)
         dvcTotal.HeaderText = "Total"
         dvcTotal.DataPropertyName = "Total"

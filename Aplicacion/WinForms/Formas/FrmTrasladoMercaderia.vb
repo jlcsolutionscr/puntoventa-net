@@ -295,6 +295,8 @@ Public Class FrmTrasladoMercaderia
     End Sub
 
     Private Sub btnGuardar_Click(sender As Object, e As EventArgs) Handles btnGuardar.Click
+        btnImprimir.Focus()
+        btnGuardar.Enabled = False
         If Not cboIdSucursal.SelectedValue Is Nothing And txtFecha.Text <> "" And txtDocumento.Text <> "" And CDbl(txtTotal.Text) > 0 And (rbEntrante.Checked Or rbSaliente.Checked) Then
             If txtIdTraslado.Text = "" Then
                 traslado = New Traslado With {
@@ -320,6 +322,8 @@ Public Class FrmTrasladoMercaderia
                     txtIdTraslado.Text = traslado.IdTraslado
                 Catch ex As Exception
                     txtIdTraslado.Text = ""
+                    btnGuardar.Enabled = True
+                    btnGuardar.Focus()
                     MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
                 End Try
@@ -328,6 +332,8 @@ Public Class FrmTrasladoMercaderia
                 Try
                     'servicioTraslados.ActualizarTraslado(traslado)
                 Catch ex As Exception
+                    btnGuardar.Enabled = True
+                    btnGuardar.Focus()
                     MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
                 End Try

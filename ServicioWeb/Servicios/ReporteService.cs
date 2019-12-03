@@ -34,9 +34,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         List<ReporteVentasPorLineaResumen> ObtenerReporteVentasPorLineaResumen(int intIdEmpresa, string strFechaInicial, string strFechaFinal);
         List<ReporteVentasPorLineaDetalle> ObtenerReporteVentasPorLineaDetalle(int intIdEmpresa, int intIdLinea, string strFechaInicial, string strFechaFinal);
         List<ReporteCierreDeCaja> ObtenerReporteCierreDeCaja(int intIdCierre);
-        List<ReporteProforma> ObtenerReporteProforma(int intIdProforma);
-        List<ReporteOrdenServicio> ObtenerReporteOrdenServicio(int intIdOrdenServicio);
-        List<ReporteOrdenCompra> ObtenerReporteOrdenCompra(int intIdOrdenCompra);
         List<ReporteInventario> ObtenerReporteInventario(int intIdEmpresa, int intIdLinea, string strCodigo, string strDescripcion);
         List<ReporteMovimientosContables> ObtenerReporteMovimientosContables(int intIdEmpresa, string strFechaInicial, string strFechaFinal);
         List<ReporteBalanceComprobacion> ObtenerReporteBalanceComprobacion(int intIdEmpresa, int intMes = 0, int intAnnio = 0);
@@ -878,124 +875,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public List<ReporteProforma> ObtenerReporteProforma(int intIdProforma)
-        {
-            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
-            {
-                try
-                {
-                    List<ReporteProforma> listaReporte = new List<ReporteProforma>();
-                    var datosCierre = dbContext.ProformaRepository.Where(a => a.IdProforma == intIdProforma)
-                        .Join(dbContext.DetalleProformaRepository, b => b.IdProforma, b => b.IdProforma, (a, b) => new { a, b })
-                        .Select(c => new { c.a.IdProforma, NombreCliente = c.a.Cliente.Nombre, SubTotal = c.a.Excento + c.a.Gravado + c.a.Impuesto + c.a.Descuento, c.a.Descuento, c.a.Impuesto, Total = c.a.Excento + c.a.Gravado + c.a.Impuesto, c.a.Fecha, c.a.TipoPago, Descripcion = c.b.Producto.Codigo + " " + c.b.Producto.Descripcion, c.b.Cantidad, c.b.PrecioVenta, TotalLinea = c.b.Cantidad * c.b.PrecioVenta });
-                    foreach (var value in datosCierre)
-                    {
-                        ReporteProforma reporteLinea = new ReporteProforma();
-                        reporteLinea.IdProforma = value.IdProforma;
-                        reporteLinea.NombreCliente = value.NombreCliente;
-                        reporteLinea.SubTotal = value.SubTotal;
-                        reporteLinea.Descuento = value.Descuento;
-                        reporteLinea.Impuesto = value.Impuesto;
-                        reporteLinea.Total = value.Total;
-                        reporteLinea.Fecha = value.Fecha.ToString("dd/MM/yyyy");
-                        if (value.TipoPago == 1)
-                            reporteLinea.TipoPago = "Contado";
-                        else
-                            reporteLinea.TipoPago = "Crédito";
-                        reporteLinea.Descripcion = value.Descripcion;
-                        reporteLinea.Cantidad = value.Cantidad;
-                        reporteLinea.PrecioVenta = value.PrecioVenta;
-                        reporteLinea.TotalLinea = value.TotalLinea;
-                        listaReporte.Add(reporteLinea);
-                    }
-                    return listaReporte;
-                }
-                catch (Exception ex)
-                {
-                    log.Error("Error al procesar el reporte de Proforma: ", ex);
-                    throw new Exception("Se produjo un error al ejecutar el reporte de Proforma. Por favor consulte con su proveedor.");
-                }
-            }
-        }
-
-        public List<ReporteOrdenServicio> ObtenerReporteOrdenServicio(int intIdOrdenServicio)
-        {
-            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
-            {
-                try
-                {
-                    List<ReporteOrdenServicio> listaReporte = new List<ReporteOrdenServicio>();
-                    var datosCierre = dbContext.OrdenServicioRepository.Where(a => a.IdOrden == intIdOrdenServicio)
-                        .Join(dbContext.DetalleOrdenServicioRepository, b => b.IdOrden, b => b.IdOrden, (a, b) => new { a, b })
-                        .Select(c => new { c.a.IdOrden, NombreCliente = c.a.Cliente.Nombre, SubTotal = c.a.Excento + c.a.Gravado + c.a.Impuesto + c.a.Descuento, c.a.Descuento, c.a.Impuesto, Total = c.a.Excento + c.a.Gravado + c.a.Impuesto, c.a.Fecha, c.a.Placa, Descripcion = c.b.Producto.Codigo + " " + c.b.Descripcion, c.b.Cantidad, c.b.PrecioVenta, TotalLinea = c.b.Cantidad * c.b.PrecioVenta });
-                    foreach (var value in datosCierre)
-                    {
-                        ReporteOrdenServicio reporteLinea = new ReporteOrdenServicio();
-                        reporteLinea.IdOrden = value.IdOrden;
-                        reporteLinea.NombreCliente = value.NombreCliente;
-                        reporteLinea.SubTotal = value.SubTotal;
-                        reporteLinea.Descuento = value.Descuento;
-                        reporteLinea.Impuesto = value.Impuesto;
-                        reporteLinea.Total = value.Total;
-                        reporteLinea.Fecha = value.Fecha.ToString("dd/MM/yyyy");
-                        reporteLinea.Placa = value.Placa;
-                        reporteLinea.Descripcion = value.Descripcion;
-                        reporteLinea.Cantidad = value.Cantidad;
-                        reporteLinea.PrecioVenta = value.PrecioVenta;
-                        reporteLinea.TotalLinea = value.TotalLinea;
-                        listaReporte.Add(reporteLinea);
-                    }
-                    return listaReporte;
-                }
-                catch (Exception ex)
-                {
-                    log.Error("Error al procesar el reporte de Ordenes de Servicio: ", ex);
-                    throw new Exception("Se produjo un error al ejecutar el reporte de Ordenes de Servicio. Por favor consulte con su proveedor.");
-                }
-            }
-        }
-
-        public List<ReporteOrdenCompra> ObtenerReporteOrdenCompra(int intIdOrdenCompra)
-        {
-            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
-            {
-                try
-                {
-                    List<ReporteOrdenCompra> listaReporte = new List<ReporteOrdenCompra>();
-                    var datosCierre = dbContext.OrdenRepository.Where(a => a.IdOrdenCompra == intIdOrdenCompra)
-                        .Join(dbContext.ProveedorRepository, b => b.IdProveedor, b => b.IdProveedor, (a, b) => new { a, b })
-                        .Join(dbContext.DetalleOrdenCompraRepository, c => c.a.IdOrdenCompra, d => d.IdOrdenCompra, (c, d) => new { c, d })
-                        .Select(e => new { e.c.a.IdOrdenCompra, e.c.b.Nombre, SubTotal = e.c.a.Excento + e.c.a.Gravado + e.c.a.Impuesto + e.c.a.Descuento, e.c.a.Descuento, e.c.a.Impuesto, Total = e.c.a.Excento + e.c.a.Gravado + e.c.a.Impuesto, e.c.a.Fecha, e.c.a.TipoPago, Descripcion = e.d.Producto.Codigo + " " + e.d.Producto.Descripcion, e.d.Cantidad, e.d.PrecioCosto, TotalLinea = e.d.Cantidad * e.d.PrecioCosto });
-                    foreach (var value in datosCierre)
-                    {
-                        ReporteOrdenCompra reporteLinea = new ReporteOrdenCompra();
-                        reporteLinea.IdOrden = value.IdOrdenCompra;
-                        reporteLinea.Nombre = value.Nombre;
-                        reporteLinea.SubTotal = value.SubTotal;
-                        reporteLinea.Descuento = value.Descuento;
-                        reporteLinea.Impuesto = value.Impuesto;
-                        reporteLinea.Total = value.Total;
-                        reporteLinea.Fecha = value.Fecha.ToString("dd/MM/yyyy");
-                        if (value.TipoPago == 1)
-                            reporteLinea.TipoPago = "Contado";
-                        else
-                            reporteLinea.TipoPago = "Crédito";
-                        reporteLinea.Descripcion = value.Descripcion;
-                        reporteLinea.Cantidad = value.Cantidad;
-                        reporteLinea.PrecioCosto = value.PrecioCosto;
-                        reporteLinea.TotalLinea = value.TotalLinea;
-                        listaReporte.Add(reporteLinea);
-                    }
-                    return listaReporte;
-                }
-                catch (Exception ex)
-                {
-                    log.Error("Error al procesar el reporte de Ordenes de Compra: ", ex);
-                    throw new Exception("Se produjo un error al ejecutar el reporte de Ordenes de Compra. Por favor consulte con su proveedor.");
-                }
-            }
-        }
-
         public List<ReporteInventario> ObtenerReporteInventario(int intIdEmpresa, int intIdLinea, string strCodigo, string strDescripcion)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
@@ -1301,6 +1180,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                         ReporteDocumentoElectronico reporteLinea = new ReporteDocumentoElectronico();
                         reporteLinea.ClaveNumerica = documento.ClaveNumerica;
+                        reporteLinea.Consecutivo = documento.Consecutivo;
                         reporteLinea.Fecha = documento.Fecha.ToString("dd/MM/yyyy");
                         reporteLinea.Nombre = strNombreReceptor;
                         reporteLinea.Moneda = strMoneda;
@@ -1350,7 +1230,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             decTotalImpuesto = decTotalImpuesto * decTipoCambio;
                         }
                         ReporteDocumentoElectronico reporteLinea = new ReporteDocumentoElectronico();
-                        reporteLinea.ClaveNumerica = documento.Consecutivo;
+                        reporteLinea.ClaveNumerica = documento.ClaveNumerica;
+                        reporteLinea.Consecutivo = documento.Consecutivo;
                         reporteLinea.Fecha = documento.Fecha.ToString("dd/MM/yyyy");
                         reporteLinea.Nombre = strNombreReceptor;
                         reporteLinea.Moneda = strMoneda;
@@ -1391,7 +1272,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 decimal decTotal = 0;
                                 string strCodigoMoneda = "CRC";
                                 decimal decTipoDeCambio = 1;
-                                string strNombreEmisor = "";
+                                string strNombreEmisor = "INFORMACION NO DISPONIBLE";
                                 if (documentoXml.GetElementsByTagName("Emisor").Count > 0)
                                 {
                                     XmlNode emisorNode = documentoXml.GetElementsByTagName("Emisor").Item(0);
@@ -1412,6 +1293,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 }
                                 ReporteDocumentoElectronico reporteLinea = new ReporteDocumentoElectronico();
                                 reporteLinea.ClaveNumerica = documentoXml.GetElementsByTagName("Clave").Item(0).InnerText;
+                                reporteLinea.Consecutivo = documentoXml.GetElementsByTagName("NumeroConsecutivo").Item(0).InnerText;
                                 reporteLinea.Fecha = documento.Fecha.ToString("dd/MM/yyyy");
                                 reporteLinea.Nombre = strNombreEmisor;
                                 reporteLinea.Moneda = strCodigoMoneda;
@@ -1428,7 +1310,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             decimal decTotalImpuesto = 0;
                             decimal decTotal = 0;
                             string strCodigoMoneda = "CRC";
-                            string strNombreEmisor = "";
+                            string strNombreEmisor = "INFORMACION NO DISPONIBLE";
                             if (documentoXml.GetElementsByTagName("TotalFactura").Count > 0)
                                 decTotal = decimal.Parse(documentoXml.GetElementsByTagName("TotalFactura").Item(0).InnerText, CultureInfo.InvariantCulture);
                             if (documentoXml.GetElementsByTagName("MontoTotalImpuesto").Count > 0)
@@ -1496,6 +1378,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             }
                             ReporteDocumentoElectronico reporteLinea = new ReporteDocumentoElectronico();
                             reporteLinea.ClaveNumerica = documentoXml.GetElementsByTagName("Clave").Item(0).InnerText;
+                            reporteLinea.Consecutivo = documentoXml.GetElementsByTagName("NumeroConsecutivo").Item(0).InnerText;
                             reporteLinea.Fecha = documento.Fecha.ToString("dd/MM/yyyy");
                             reporteLinea.Nombre = strNombreEmisor;
                             reporteLinea.Moneda = strCodigoMoneda;

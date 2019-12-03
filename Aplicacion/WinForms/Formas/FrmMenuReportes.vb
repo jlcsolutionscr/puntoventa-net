@@ -70,6 +70,7 @@ Public Class FrmMenuReportes
             End If
             CmdVistaPrevia.Enabled = False
             newFormReport = New FrmReportViewer
+            newFormReport.Visible = False
             Select Case LstReporte.Text
                 Case "Ventas en general"
                     Dim datosReporte As List(Of ReporteVentas)

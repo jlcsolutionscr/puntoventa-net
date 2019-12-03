@@ -340,55 +340,6 @@ namespace LeandroSoftware.Core.TiposComunes
         public decimal OtrosEgresos { get; set; }
     }
 
-    public class ReporteProforma
-    {
-        public int IdProforma { get; set; }
-        public string NombreCliente { get; set; }
-        public decimal SubTotal { get; set; }
-        public decimal Descuento { get; set; }
-        public decimal Impuesto { get; set; }
-        public decimal Total { get; set; }
-        public string Fecha { get; set; }
-        public string TipoPago { get; set; }
-        public string Descripcion { get; set; }
-        public decimal Cantidad { get; set; }
-        public decimal PrecioVenta { get; set; }
-        public decimal TotalLinea { get; set; }
-    }
-
-    public class ReporteOrdenServicio
-    {
-        public int IdOrden { get; set; }
-        public string NombreCliente { get; set; }
-        public decimal SubTotal { get; set; }
-        public decimal Descuento { get; set; }
-        public decimal Impuesto { get; set; }
-        public decimal Total { get; set; }
-        public string Fecha { get; set; }
-        public string Placa { get; set; }
-        public string TipoPago { get; set; }
-        public string Descripcion { get; set; }
-        public decimal Cantidad { get; set; }
-        public decimal PrecioVenta { get; set; }
-        public decimal TotalLinea { get; set; }
-    }
-
-    public class ReporteOrdenCompra
-    {
-        public int IdOrden { get; set; }
-        public string Nombre { get; set; }
-        public decimal SubTotal { get; set; }
-        public decimal Descuento { get; set; }
-        public decimal Impuesto { get; set; }
-        public decimal Total { get; set; }
-        public string Fecha { get; set; }
-        public string TipoPago { get; set; }
-        public string Descripcion { get; set; }
-        public decimal Cantidad { get; set; }
-        public decimal PrecioCosto { get; set; }
-        public decimal TotalLinea { get; set; }
-    }
-
     public class ReporteInventario
     {
         public int IdProducto { get; set; }
@@ -507,6 +458,29 @@ namespace LeandroSoftware.Core.TiposComunes
         public string Descripcion { get; set; }
     }
 
+    public class ProductoDetalle
+    {
+        public ProductoDetalle()
+        {
+        }
+
+        public ProductoDetalle(int id, string codigo, string descripcion, decimal cantidad, decimal precioCosto, decimal precioVenta1)
+        {
+            Id = id;
+            Codigo = codigo;
+            Descripcion = descripcion;
+            Cantidad = cantidad;
+            PrecioCosto = precioCosto;
+            PrecioVenta1 = precioVenta1;
+        }
+        public int Id { get; set; }
+        public string Codigo { get; set; }
+        public string Descripcion { get; set; }
+        public decimal Cantidad { get; set; }
+        public decimal PrecioCosto { get; set; }
+        public decimal PrecioVenta1 { get; set; }
+    }
+
     public class FacturaDetalle
     {
         public FacturaDetalle()
@@ -534,6 +508,31 @@ namespace LeandroSoftware.Core.TiposComunes
         public decimal Impuesto { get; set; }
         public decimal Total { get; set; }
         public string Estado { get; set; }
+    }
+
+    public class CompraDetalle
+    {
+        public CompraDetalle()
+        {
+        }
+
+        public CompraDetalle(int id, string nombreProveedor, string fecha, decimal gravado, decimal excento, decimal impuesto, decimal total)
+        {
+            IdCompra = id;
+            NombreProveedor = nombreProveedor;
+            Fecha = fecha;
+            Gravado = gravado;
+            Excento = excento;
+            Impuesto = impuesto;
+            Total = total;
+        }
+        public int IdCompra { get; set; }
+        public string NombreProveedor { get; set; }
+        public string Fecha { get; set; }
+        public decimal Gravado { get; set; }
+        public decimal Excento { get; set; }
+        public decimal Impuesto { get; set; }
+        public decimal Total { get; set; }
     }
 
     public class DocumentoDetalle

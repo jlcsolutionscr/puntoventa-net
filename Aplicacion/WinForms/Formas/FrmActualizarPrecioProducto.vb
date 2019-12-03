@@ -6,18 +6,12 @@ Public Class FrmActualizarPrecioProducto
     Private Sub EstablecerPropiedadesDataGridView()
         GrdDetalle.Columns.Clear()
         GrdDetalle.AutoGenerateColumns = False
-        Dim dgvNumber As DataGridViewCellStyle
         Dim dvcIdProducto As New DataGridViewTextBoxColumn
         Dim dvcCodigo As New DataGridViewTextBoxColumn
         Dim dvcDescripcion As New DataGridViewTextBoxColumn
         Dim dvcCantidad As New DataGridViewTextBoxColumn
         Dim dvcPrecioCosto As New DataGridViewTextBoxColumn
         Dim dvcPrecioVenta As New DataGridViewTextBoxColumn
-        dgvNumber = New DataGridViewCellStyle With {
-            .Format = "N2",
-            .NullValue = "0",
-            .Alignment = DataGridViewContentAlignment.MiddleRight
-        }
         dvcIdProducto.DataPropertyName = "IdProducto"
         dvcIdProducto.HeaderText = "PK"
         dvcIdProducto.Visible = False
@@ -36,19 +30,19 @@ Public Class FrmActualizarPrecioProducto
         dvcCantidad.DataPropertyName = "Cantidad"
         dvcCantidad.HeaderText = "Cant"
         dvcCantidad.Width = 48
-        dvcCantidad.DefaultCellStyle = dgvNumber
+        dvcCantidad.DefaultCellStyle = FrmPrincipal.dgvDecimal
         GrdDetalle.Columns.Add(dvcCantidad)
 
         dvcPrecioCosto.DataPropertyName = "PrecioCosto"
         dvcPrecioCosto.HeaderText = "Precio Costo"
         dvcPrecioCosto.Width = 100
-        dvcPrecioCosto.DefaultCellStyle = dgvNumber
+        dvcPrecioCosto.DefaultCellStyle = FrmPrincipal.dgvDecimal
         GrdDetalle.Columns.Add(dvcPrecioCosto)
 
         dvcPrecioVenta.DataPropertyName = "PrecioVenta"
         dvcPrecioVenta.HeaderText = "Precio Venta"
         dvcPrecioVenta.Width = 100
-        dvcPrecioVenta.DefaultCellStyle = dgvNumber
+        dvcPrecioVenta.DefaultCellStyle = FrmPrincipal.dgvDecimal
         GrdDetalle.Columns.Add(dvcPrecioVenta)
     End Sub
 

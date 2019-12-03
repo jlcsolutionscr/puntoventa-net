@@ -44,6 +44,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public bool CierreEnEjecucion { get; set; }
         public bool RegimenSimplificado { get; set; }
         public bool PermiteFacturar { get; set; }
+        public bool RecepcionGastos { get; set; }
         public byte[] Certificado { get; set; }
         public string NombreCertificado { get; set; }
         public string PinCertificado { get; set; }

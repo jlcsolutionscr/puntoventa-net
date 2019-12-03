@@ -75,7 +75,6 @@
             this.Label2 = new System.Windows.Forms.Label();
             this.txtNombreComercial = new System.Windows.Forms.TextBox();
             this.Label1 = new System.Windows.Forms.Label();
-            this.txtFecha = new System.Windows.Forms.TextBox();
             this.txtIdEmpresa = new System.Windows.Forms.TextBox();
             this._lblLabels_3 = new System.Windows.Forms.Label();
             this._lblLabels_1 = new System.Windows.Forms.Label();
@@ -117,6 +116,7 @@
             this.label30 = new System.Windows.Forms.Label();
             this.txtCodigoActividad = new System.Windows.Forms.TextBox();
             this.label31 = new System.Windows.Forms.Label();
+            this.txtFecha = new System.Windows.Forms.MaskedTextBox();
             this.tabContainer.SuspendLayout();
             this.TabGeneral.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picLogo)).BeginInit();
@@ -717,21 +717,6 @@
             this.Label1.TabIndex = 171;
             this.Label1.Text = "Nombre comercial:";
             this.Label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // txtFecha
-            // 
-            this.txtFecha.AcceptsReturn = true;
-            this.txtFecha.BackColor = System.Drawing.SystemColors.Window;
-            this.txtFecha.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.txtFecha.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtFecha.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.txtFecha.Location = new System.Drawing.Point(137, 536);
-            this.txtFecha.MaxLength = 0;
-            this.txtFecha.Name = "txtFecha";
-            this.txtFecha.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.txtFecha.Size = new System.Drawing.Size(85, 20);
-            this.txtFecha.TabIndex = 21;
-            this.txtFecha.TabStop = false;
             // 
             // txtIdEmpresa
             // 
@@ -1334,13 +1319,23 @@
             this.label31.Text = "Actividad Económica:";
             this.label31.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // txtFecha
+            // 
+            this.txtFecha.Location = new System.Drawing.Point(137, 536);
+            this.txtFecha.Mask = "00/00/0000";
+            this.txtFecha.Name = "txtFecha";
+            this.txtFecha.Size = new System.Drawing.Size(82, 20);
+            this.txtFecha.TabIndex = 21;
+            this.txtFecha.ValidatingType = typeof(System.DateTime);
+            // 
             // FrmEmpresa
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(193)))), ((int)(((byte)(215)))), ((int)(((byte)(225)))));
-            this.ClientSize = new System.Drawing.Size(851, 622);
+            this.ClientSize = new System.Drawing.Size(851, 621);
+            this.Controls.Add(this.txtFecha);
             this.Controls.Add(this.txtCodigoActividad);
             this.Controls.Add(this.label31);
             this.Controls.Add(this.label30);
@@ -1392,7 +1387,6 @@
             this.Controls.Add(this.Label2);
             this.Controls.Add(this.txtNombreComercial);
             this.Controls.Add(this.Label1);
-            this.Controls.Add(this.txtFecha);
             this.Controls.Add(this.txtIdEmpresa);
             this.Controls.Add(this._lblLabels_3);
             this.Controls.Add(this._lblLabels_1);
@@ -1463,7 +1457,6 @@
         public System.Windows.Forms.Label Label2;
         public System.Windows.Forms.TextBox txtNombreComercial;
         public System.Windows.Forms.Label Label1;
-        public System.Windows.Forms.TextBox txtFecha;
         public System.Windows.Forms.TextBox txtIdEmpresa;
         public System.Windows.Forms.Label _lblLabels_3;
         public System.Windows.Forms.Label _lblLabels_1;
@@ -1505,6 +1498,7 @@
         public System.Windows.Forms.Button btnCargarTerminal;
         internal System.Windows.Forms.CheckBox chkDispositivoMovil;
         public System.Windows.Forms.TextBox txtDescripcionTerminal;
+        private System.Windows.Forms.MaskedTextBox txtFecha;
     }
 }
 

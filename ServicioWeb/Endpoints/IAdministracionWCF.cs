@@ -35,6 +35,10 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
         string ObtenerEmpresa(int idempresa);
 
         [OperationContract]
+        [WebGet(UriTemplate = "obtenerlogotipoempresa?idempresa={idempresa}", ResponseFormat = WebMessageFormat.Json)]
+        string ObtenerLogotipoEmpresa(int idempresa);
+
+        [OperationContract]
         [WebGet(UriTemplate = "obtenersucursalporempresa?idempresa={idempresa}&idsucursal={idsucursal}", ResponseFormat = WebMessageFormat.Json)]
         string ObtenerSucursalPorEmpresa(int idempresa, int idsucursal);
 
@@ -61,6 +65,10 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
         [OperationContract]
         [WebGet(UriTemplate = "obtenerlistadodistritos?idprovincia={idprovincia}&idcanton={idcanton}", ResponseFormat = WebMessageFormat.Json)]
         string ObtenerListadoDistritos(int idprovincia, int idcanton);
+
+        [OperationContract]
+        [WebGet(UriTemplate = "obtenerdatosreporte?tipo={tipo}&idempresa={idempresa}&fechainicial={fechainicial}&fechafinal={fechafinal}", ResponseFormat = WebMessageFormat.Json)]
+        string ObtenerDatosReporte(int tipo, int idempresa, string fechainicial, string fechafinal);
 
         [OperationContract]
         [WebGet(UriTemplate = "obtenerlistadobarrios?idprovincia={idprovincia}&idcanton={idcanton}&iddistrito={iddistrito}", ResponseFormat = WebMessageFormat.Json)]

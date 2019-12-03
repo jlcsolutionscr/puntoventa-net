@@ -351,6 +351,8 @@ Public Class FrmOrdenCompra
     End Sub
 
     Private Sub BtnGuardar_Click(sender As Object, e As EventArgs) Handles btnGuardar.Click
+        btnImprimir.Focus()
+        btnGuardar.Enabled = False
         If proveedor Is Nothing Or txtFecha.Text = "" Or CDbl(txtTotal.Text) = 0 Then
             MessageBox.Show("Información incompleta.  Favor verificar. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
@@ -391,6 +393,8 @@ Public Class FrmOrdenCompra
                 txtIdOrdenCompra.Text = ordenCompra.IdOrdenCompra
             Catch ex As Exception
                 txtIdOrdenCompra.Text = ""
+                btnGuardar.Enabled = True
+                btnGuardar.Focus()
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
@@ -398,6 +402,8 @@ Public Class FrmOrdenCompra
             Try
                 'servicioCompras.ActualizarOrdenCompra(ordenCompra)
             Catch ex As Exception
+                btnGuardar.Enabled = True
+                btnGuardar.Focus()
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try

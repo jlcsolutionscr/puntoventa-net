@@ -1,3 +1,5 @@
+Imports LeandroSoftware.ClienteWCF
+
 Public Class FrmInventario
 #Region "Variables"
     Private intTotalEmpresas As Integer
@@ -10,19 +12,12 @@ Public Class FrmInventario
     Private Sub EstablecerPropiedadesDataGridView()
         dgvListado.Columns.Clear()
         dgvListado.AutoGenerateColumns = False
-        Dim dgvNumber As DataGridViewCellStyle
         Dim dvcIdProducto As New DataGridViewTextBoxColumn
         Dim dvcCodigo As New DataGridViewTextBoxColumn
         Dim dvcDescripcion As New DataGridViewTextBoxColumn
         Dim dvcCantidad As New DataGridViewTextBoxColumn
         Dim dvcPrecioCosto As New DataGridViewTextBoxColumn
-        Dim dvcPrecioVenta As New DataGridViewTextBoxColumn
-        Dim dvcPrecioPorMayor As New DataGridViewTextBoxColumn
-        dgvNumber = New DataGridViewCellStyle With {
-            .Format = "N2",
-            .NullValue = "0",
-            .Alignment = DataGridViewContentAlignment.MiddleRight
-        }
+        Dim dvcPrecioVenta1 As New DataGridViewTextBoxColumn
         dvcIdProducto.DataPropertyName = "IdProducto"
         dvcIdProducto.HeaderText = "PK"
         dvcIdProducto.Visible = False
@@ -35,44 +30,38 @@ Public Class FrmInventario
 
         dvcDescripcion.DataPropertyName = "Descripcion"
         dvcDescripcion.HeaderText = "Descripción"
-        dvcDescripcion.Width = 230
+        dvcDescripcion.Width = 330
         dgvListado.Columns.Add(dvcDescripcion)
 
         dvcCantidad.DataPropertyName = "Cantidad"
         dvcCantidad.HeaderText = "Cant"
         dvcCantidad.Width = 48
-        dvcCantidad.DefaultCellStyle = dgvNumber
+        dvcCantidad.DefaultCellStyle = FrmPrincipal.dgvDecimal
         dgvListado.Columns.Add(dvcCantidad)
 
         dvcPrecioCosto.DataPropertyName = "PrecioCosto"
         dvcPrecioCosto.HeaderText = "Precio Costo"
         dvcPrecioCosto.Width = 100
-        dvcPrecioCosto.DefaultCellStyle = dgvNumber
+        dvcPrecioCosto.DefaultCellStyle = FrmPrincipal.dgvDecimal
         dgvListado.Columns.Add(dvcPrecioCosto)
 
-        dvcPrecioVenta.DataPropertyName = "PrecioVenta"
-        dvcPrecioVenta.HeaderText = "Precio Venta"
-        dvcPrecioVenta.Width = 100
-        dvcPrecioVenta.DefaultCellStyle = dgvNumber
-        dgvListado.Columns.Add(dvcPrecioVenta)
-
-        dvcPrecioPorMayor.DataPropertyName = "PrecioVentaPorMayor"
-        dvcPrecioPorMayor.HeaderText = "Prec. x Mayor"
-        dvcPrecioPorMayor.Width = 100
-        dvcPrecioPorMayor.DefaultCellStyle = dgvNumber
-        dgvListado.Columns.Add(dvcPrecioPorMayor)
+        dvcPrecioVenta1.DataPropertyName = "PrecioVenta1"
+        dvcPrecioVenta1.HeaderText = "Precio Venta"
+        dvcPrecioVenta1.Width = 100
+        dvcPrecioVenta1.DefaultCellStyle = FrmPrincipal.dgvDecimal
+        dgvListado.Columns.Add(dvcPrecioVenta1)
     End Sub
 
-    Private Sub CargarComboBox()
-        'cboLinea.DataSource = servicioMantenimiento.ObtenerListaLineasDeProducto(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
-        cboLinea.ValueMember = "IdLinea"
+    Private Async Sub CargarComboBox()
+        cboLinea.DataSource = Await Puntoventa.ObtenerListadoLineas(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+        cboLinea.ValueMember = "Id"
         cboLinea.DisplayMember = "Descripcion"
         cboLinea.SelectedValue = 0
     End Sub
 
-    Private Sub ActualizarDatos(ByVal intNumeroPagina As Integer)
+    Private Async Sub ActualizarDatos(ByVal intNumeroPagina As Integer)
         Try
-            'dgvListado.DataSource = servicioMantenimiento.ObtenerListaProductos(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, False, cboLinea.SelectedValue, txtCodigo.Text, txtDescripcion.Text)
+            dgvListado.DataSource = Await Puntoventa.ObtenerListadoProductos(FrmPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, False, FrmPrincipal.usuarioGlobal.Token, cboLinea.SelectedValue, txtCodigo.Text, txtDescripcion.Text)
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -81,9 +70,9 @@ Public Class FrmInventario
         dgvListado.Refresh()
     End Sub
 
-    Private Sub ValidarCantidadEmpresas()
+    Private Async Sub ValidarCantidadEmpresas()
         Try
-            'intTotalEmpresas = servicioMantenimiento.ObtenerTotalListaProductos(FrmMenuPrincipal.empresaGlobal.IdEmpresa, False, cboLinea.SelectedValue, txtCodigo.Text, txtDescripcion.Text)
+            intTotalEmpresas = Await Puntoventa.ObtenerTotalListaProductos(FrmPrincipal.empresaGlobal.IdEmpresa, False, FrmPrincipal.usuarioGlobal.Token, cboLinea.SelectedValue, txtCodigo.Text, txtDescripcion.Text)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()

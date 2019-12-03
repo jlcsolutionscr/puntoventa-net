@@ -120,20 +120,19 @@
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="cmdUpdate.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAABMAAAATCAIAAAD9MqGbAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAHVJREFUOE/NjTEO
-        wCAMA/N0nsfI0P9QoMUOAhroUNXykMQ+RY7g39kmRSLc3PUys0FKp3q3fqaqcxmISprZIIEloQZPSY2V
-        9U7Z5zT6CSFln1NHaiFln1PJrrgXIvY51fjBBjnUKokL9DcyLwtiGdOuvyeDPwFJY2weUpTk8gAAAABJ
-        RU5ErkJggg==
+        iVBORw0KGgoAAAANSUhEUgAAABMAAAATCAIAAAD9MqGbAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6
+        JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAdUlEQVQ4T82NMQ7AIAwD83Sex8jQ/1Cg
+        xQ4CGuhQ1fKQxD5FjuDf2SZFItzc9TKzQUqnerd+pqpzGYhKmtkggSWhBk9JjZX1TtnnNPoJIWWfU0dq
+        IWWfU8muuBci9jnV+MEGOdQqiQv0NzIvC2IZ066/J4M/AUljbB5SlOTyAAAAAElFTkSuQmCC
 </value>
   </data>
   <data name="cmdCancel.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAABQAAAATCAIAAAAf7rriAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAINJREFUOE+t0N0O
-        gCAIBlAf3cfz0ovepxAIEWUVxr7NHziulY5awvkJJ6dkYI7F51gfcM7WGwwjw7HvEBuvMfSfsfaCSUr4
-        khZsu1gzChNacMLF2N3AONAZ3/TdjalmjDOhH7YM99r4iJcljNVwUF+u771Mj6EPYkijYQzZwi+zgWu5
-        AOvp1ms80wNwAAAAAElFTkSuQmCC
+        iVBORw0KGgoAAAANSUhEUgAAABQAAAATCAIAAAAf7rriAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6
+        JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAg0lEQVQ4T63Q3Q6AIAgGUB/dx/PSi96n
+        EAgRZRXGvs0fOK6VjlrC+Qknp2RgjsXnWB9wztYbDCPDse8QG68x9J+x9oJJSviSFmy7WDMKE1pwwsXY
+        3cA40Bnf9N2NqWaMM6Eftgz32viIlyWM1XBQX67vvUyPoQ9iSKNhDNnCL7OBa7kA6+nWazzTA3AAAAAA
+        SUVORK5CYII=
 </value>
   </data>
   <metadata name="ofdAbrirDocumento.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">

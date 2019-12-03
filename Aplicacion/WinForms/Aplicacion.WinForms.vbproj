@@ -187,6 +187,12 @@
     <Compile Include="Formas\FrmEstadoDocumentoElectronico.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Formas\FrmProforma.Designer.vb">
+      <DependentUpon>FrmProforma.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Formas\FrmProforma.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Formas\FrmMenuReportes.Designer.vb">
       <DependentUpon>FrmMenuReportes.vb</DependentUpon>
     </Compile>
@@ -407,12 +413,6 @@
       <DependentUpon>FrmBusquedaProforma.vb</DependentUpon>
     </Compile>
     <Compile Include="Formas\FrmBusquedaProforma.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Formas\FrmProforma.Designer.vb">
-      <DependentUpon>FrmProforma.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Formas\FrmProforma.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Formas\FrmBusquedaCompra.Designer.vb">
@@ -722,6 +722,9 @@
     <EmbeddedResource Include="Formas\FrmEstadoDocumentoElectronico.resx">
       <DependentUpon>FrmEstadoDocumentoElectronico.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Formas\FrmProforma.resx">
+      <DependentUpon>FrmProforma.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Formas\FrmMenuReportes.resx">
       <DependentUpon>FrmMenuReportes.vb</DependentUpon>
     </EmbeddedResource>
@@ -854,9 +857,6 @@
     <EmbeddedResource Include="Formas\FrmBusquedaProforma.resX">
       <DependentUpon>FrmBusquedaProforma.vb</DependentUpon>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Formas\FrmProforma.resx">
-      <DependentUpon>FrmProforma.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Formas\FrmBusquedaCompra.resX">
       <DependentUpon>FrmBusquedaCompra.vb</DependentUpon>

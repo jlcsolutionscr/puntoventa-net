@@ -1333,32 +1333,35 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     DatosDocumentoOri = documentoOriEncoded
                 };
                 dbContext.DocumentoElectronicoRepository.Add(documento);
-                if (empresa.TipoContrato == 1)
+                if (!new int[] { (int)TipoDocumento.MensajeReceptorAceptado, (int)TipoDocumento.MensajeReceptorAceptadoParcial, (int)TipoDocumento.MensajeReceptorRechazado }.Contains(intTipoDocumentoElectronico))
                 {
-                    int intMesEnCurso = DateTime.Now.Month;
-                    int intAnnioEnCurso = DateTime.Now.Year;
-                    CantFEMensualEmpresa cantiFacturasMensual = dbContext.CantFEMensualEmpresaRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa & x.IdMes == intMesEnCurso & x.IdAnio == intAnnioEnCurso).FirstOrDefault();
-                    if (cantiFacturasMensual == null)
+                    if (empresa.TipoContrato == 1)
                     {
-                        cantiFacturasMensual = new CantFEMensualEmpresa
+                        int intMesEnCurso = DateTime.Now.Month;
+                        int intAnnioEnCurso = DateTime.Now.Year;
+                        CantFEMensualEmpresa cantiFacturasMensual = dbContext.CantFEMensualEmpresaRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa & x.IdMes == intMesEnCurso & x.IdAnio == intAnnioEnCurso).FirstOrDefault();
+                        if (cantiFacturasMensual == null)
                         {
-                            IdEmpresa = empresa.IdEmpresa,
-                            IdMes = intMesEnCurso,
-                            IdAnio = intAnnioEnCurso,
-                            CantidadDoc = 1
-                        };
-                        dbContext.CantFEMensualEmpresaRepository.Add(cantiFacturasMensual);
+                            cantiFacturasMensual = new CantFEMensualEmpresa
+                            {
+                                IdEmpresa = empresa.IdEmpresa,
+                                IdMes = intMesEnCurso,
+                                IdAnio = intAnnioEnCurso,
+                                CantidadDoc = 1
+                            };
+                            dbContext.CantFEMensualEmpresaRepository.Add(cantiFacturasMensual);
+                        }
+                        else
+                        {
+                            cantiFacturasMensual.CantidadDoc += 1;
+                            dbContext.NotificarModificacion(cantiFacturasMensual);
+                        }
                     }
-                    else
+                    else if (empresa.TipoContrato == 2)
                     {
-                        cantiFacturasMensual.CantidadDoc += 1;
-                        dbContext.NotificarModificacion(cantiFacturasMensual);
+                        empresa.CantidadDisponible -= 1;
+                        dbContext.NotificarModificacion(empresa);
                     }
-                }
-                else if (empresa.TipoContrato == 2)
-                {
-                    empresa.CantidadDisponible -= 1;
-                    dbContext.NotificarModificacion(empresa);
                 }
                 return documento;
             }

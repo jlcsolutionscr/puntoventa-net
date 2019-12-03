@@ -83,7 +83,6 @@ Partial Class FrmCompra
         Me.btnEliminarPago = New System.Windows.Forms.Button()
         Me.btnInsertarPago = New System.Windows.Forms.Button()
         Me.txtMonto = New System.Windows.Forms.TextBox()
-        Me.cboFormaPago = New System.Windows.Forms.ComboBox()
         Me.Label5 = New System.Windows.Forms.Label()
         Me.Label8 = New System.Windows.Forms.Label()
         Me.Label9 = New System.Windows.Forms.Label()
@@ -102,6 +101,7 @@ Partial Class FrmCompra
         Me.lblAutorizacion = New System.Windows.Forms.Label()
         Me.cboTipoMoneda = New System.Windows.Forms.ComboBox()
         Me.Label4 = New System.Windows.Forms.Label()
+        Me.cboFormaPago = New System.Windows.Forms.ComboBox()
         CType(Me.grdDetalleCompra, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.grdDesglosePago, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -305,7 +305,7 @@ Partial Class FrmCompra
         Me.txtFactura.MaxLength = 0
         Me.txtFactura.Name = "txtFactura"
         Me.txtFactura.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtFactura.Size = New System.Drawing.Size(81, 20)
+        Me.txtFactura.Size = New System.Drawing.Size(289, 20)
         Me.txtFactura.TabIndex = 4
         '
         'txtSubTotal
@@ -551,10 +551,10 @@ Partial Class FrmCompra
         Me.cboCuentaBanco.ForeColor = System.Drawing.SystemColors.WindowText
         Me.cboCuentaBanco.IntegralHeight = False
         Me.cboCuentaBanco.ItemHeight = 13
-        Me.cboCuentaBanco.Location = New System.Drawing.Point(108, 424)
+        Me.cboCuentaBanco.Location = New System.Drawing.Point(180, 424)
         Me.cboCuentaBanco.Name = "cboCuentaBanco"
         Me.cboCuentaBanco.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.cboCuentaBanco.Size = New System.Drawing.Size(261, 21)
+        Me.cboCuentaBanco.Size = New System.Drawing.Size(189, 21)
         Me.cboCuentaBanco.TabIndex = 41
         '
         'Label3
@@ -644,22 +644,6 @@ Partial Class FrmCompra
         Me.txtMonto.Size = New System.Drawing.Size(109, 20)
         Me.txtMonto.TabIndex = 45
         Me.txtMonto.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
-        '
-        'cboFormaPago
-        '
-        Me.cboFormaPago.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
-        Me.cboFormaPago.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
-        Me.cboFormaPago.BackColor = System.Drawing.SystemColors.Window
-        Me.cboFormaPago.Cursor = System.Windows.Forms.Cursors.Default
-        Me.cboFormaPago.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cboFormaPago.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.cboFormaPago.IntegralHeight = False
-        Me.cboFormaPago.ItemHeight = 13
-        Me.cboFormaPago.Location = New System.Drawing.Point(8, 424)
-        Me.cboFormaPago.Name = "cboFormaPago"
-        Me.cboFormaPago.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.cboFormaPago.Size = New System.Drawing.Size(100, 21)
-        Me.cboFormaPago.TabIndex = 40
         '
         'Label5
         '
@@ -775,6 +759,7 @@ Partial Class FrmCompra
         Me.txtIdOrdenCompra.Size = New System.Drawing.Size(54, 20)
         Me.txtIdOrdenCompra.TabIndex = 5
         Me.txtIdOrdenCompra.TabStop = False
+        Me.txtIdOrdenCompra.Visible = False
         '
         'btnOrdenCompra
         '
@@ -789,6 +774,7 @@ Partial Class FrmCompra
         Me.btnOrdenCompra.TabStop = False
         Me.btnOrdenCompra.Text = "Cargar Orden"
         Me.btnOrdenCompra.UseVisualStyleBackColor = False
+        Me.btnOrdenCompra.Visible = False
         '
         'txtPlazoCredito
         '
@@ -904,6 +890,22 @@ Partial Class FrmCompra
         Me.Label4.Text = "Moneda"
         Me.Label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
+        'cboFormaPago
+        '
+        Me.cboFormaPago.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
+        Me.cboFormaPago.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
+        Me.cboFormaPago.BackColor = System.Drawing.SystemColors.Window
+        Me.cboFormaPago.Cursor = System.Windows.Forms.Cursors.Default
+        Me.cboFormaPago.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.cboFormaPago.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.cboFormaPago.IntegralHeight = False
+        Me.cboFormaPago.ItemHeight = 13
+        Me.cboFormaPago.Location = New System.Drawing.Point(8, 424)
+        Me.cboFormaPago.Name = "cboFormaPago"
+        Me.cboFormaPago.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.cboFormaPago.Size = New System.Drawing.Size(171, 21)
+        Me.cboFormaPago.TabIndex = 40
+        '
         'FrmCompra
         '
         Me.AcceptButton = Me.btnInsertar
@@ -911,6 +913,7 @@ Partial Class FrmCompra
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(814, 573)
+        Me.Controls.Add(Me.cboFormaPago)
         Me.Controls.Add(Me.txtDocumento)
         Me.Controls.Add(Me.lblAutorizacion)
         Me.Controls.Add(Me.cboTipoMoneda)
@@ -933,7 +936,6 @@ Partial Class FrmCompra
         Me.Controls.Add(Me.btnEliminarPago)
         Me.Controls.Add(Me.btnInsertarPago)
         Me.Controls.Add(Me.txtMonto)
-        Me.Controls.Add(Me.cboFormaPago)
         Me.Controls.Add(Me.Label5)
         Me.Controls.Add(Me.Label8)
         Me.Controls.Add(Me.Label9)
@@ -997,7 +999,6 @@ Partial Class FrmCompra
     Public WithEvents btnEliminarPago As System.Windows.Forms.Button
     Public WithEvents btnInsertarPago As System.Windows.Forms.Button
     Public WithEvents txtMonto As System.Windows.Forms.TextBox
-    Public WithEvents cboFormaPago As System.Windows.Forms.ComboBox
     Public WithEvents Label5 As System.Windows.Forms.Label
     Public WithEvents Label8 As System.Windows.Forms.Label
     Public WithEvents Label9 As System.Windows.Forms.Label
@@ -1016,4 +1017,5 @@ Partial Class FrmCompra
     Public WithEvents lblAutorizacion As Label
     Public WithEvents cboTipoMoneda As ComboBox
     Public WithEvents Label4 As Label
+    Public WithEvents cboFormaPago As ComboBox
 End Class

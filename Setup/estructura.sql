@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 204.93.216.11:3306
--- Generation Time: Nov 18, 2019 at 07:51 AM
+-- Generation Time: Nov 29, 2019 at 06:59 AM
 -- Server version: 5.6.40
 -- PHP Version: 5.2.13
 
@@ -16,7 +16,7 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 /*!40101 SET NAMES utf8 */;
 
 --
--- Database: 'jasoncr_puntoventa_dev'
+-- Database: 'jasoncr_puntoventa'
 --
 
 -- --------------------------------------------------------
@@ -355,7 +355,7 @@ CREATE TABLE cuentaporcobrar (
   PRIMARY KEY (IdCxC),
   KEY IdEmpresa (IdEmpresa),
   KEY IdUsuario (IdUsuario)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -854,6 +854,7 @@ CREATE TABLE documentoelectronico (
   IdTerminal int(11) NOT NULL,
   IdConsecutivo int(11) NOT NULL,
   DatosDocumentoOri blob,
+  EsIvaAcreditable varchar(1) NOT NULL,
   PRIMARY KEY (IdDocumento),
   KEY ClaveNumerica (ClaveNumerica),
   KEY IdEmpresa (IdEmpresa),
@@ -973,7 +974,7 @@ CREATE TABLE factura (
   IdDocElectronicoRev varchar(50) DEFAULT NULL,
   IdTipoMoneda int(11) NOT NULL,
   TipoDeCambioDolar decimal(13,5) NOT NULL,
-  IdTipoExoneracion int(11) DEFAULT NULL,
+  IdTipoExoneracion int(11) NOT NULL,
   NumDocExoneracion varchar(100) DEFAULT NULL,
   NombreInstExoneracion varchar(100) DEFAULT NULL,
   FechaEmisionDoc datetime NOT NULL,
@@ -1061,7 +1062,7 @@ CREATE TABLE movimientobanco (
   PRIMARY KEY (IdMov),
   KEY IdCuenta (IdCuenta),
   KEY IdTipo (IdTipo)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -2072,8 +2073,7 @@ ALTER TABLE `sucursalporempresa`
 --
 ALTER TABLE `terminalporsucursal`
   ADD CONSTRAINT terminalporsucursal_ibfk_1 FOREIGN KEY (IdEmpresa) REFERENCES empresa (IdEmpresa),
-  ADD CONSTRAINT terminalporsucursal_ibfk_2 FOREIGN KEY (IdEmpresa, IdSucursal) REFERENCES sucursalporempresa (IdEmpresa, IdSucursal),
-  ADD CONSTRAINT terminalporsucursal_ibfk_3 FOREIGN KEY (IdEmpresa, IdSucursal) REFERENCES sucursalporempresa (IdEmpresa, IdSucursal);
+  ADD CONSTRAINT terminalporsucursal_ibfk_2 FOREIGN KEY (IdEmpresa, IdSucursal) REFERENCES sucursalporempresa (IdEmpresa, IdSucursal);
 
 --
 -- Constraints for table `traslado`

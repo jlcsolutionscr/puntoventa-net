@@ -19,12 +19,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         Proveedor ObtenerProveedor(int intIdCuenta);
         int ObtenerTotalListaProveedores(int intIdEmpresa, string strNombre);
         IEnumerable<LlaveDescripcion> ObtenerListadoProveedores(int intIdEmpresa, int numPagina, int cantRec, string strNombre);
-        void AgregarCompra(Compra compra);
+        string AgregarCompra(Compra compra);
         void ActualizarCompra(Compra compra);
         void AnularCompra(int intIdCompra, int intIdUsuario);
         Compra ObtenerCompra(int intIdCompra);
         int ObtenerTotalListaCompras(int intIdEmpresa, int intIdCompra, string strNombre);
-        IEnumerable<Compra> ObtenerListadoCompras(int intIdEmpresa, int numPagina, int cantRec, int intIdCompra, string strNombre);
+        IEnumerable<CompraDetalle> ObtenerListadoCompras(int intIdEmpresa, int numPagina, int cantRec, int intIdCompra, string strNombre);
         void AgregarOrdenCompra(OrdenCompra ordenCompra);
         void ActualizarOrdenCompra(OrdenCompra ordenCompra);
         void AnularOrdenCompra(int intIdOrdenCompra, int intIdUsuario);
@@ -206,7 +206,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void AgregarCompra(Compra compra)
+        public string AgregarCompra(Compra compra)
         {
             decimal decTotalImpuesto = 0;
             decimal decSubTotalCompra = 0;
@@ -485,6 +485,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         dbContext.NotificarModificacion(movimientoBanco);
                     }
                     dbContext.Commit();
+                    return compra.IdCompra.ToString();
                 }
                 catch (BusinessException ex)
                 {
@@ -610,7 +611,16 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    return dbContext.CompraRepository.Include("Proveedor").Include("DetalleCompra.Producto.TipoProducto").Include("DesglosePagoCompra.CuentaBanco").Include("DesglosePagoCompra.FormaPago").Include("DesglosePagoCompra.TipoMoneda").FirstOrDefault(x => x.IdCompra == intIdCompra);
+                    Compra compra = dbContext.CompraRepository.Include("Proveedor").Include("DetalleCompra.Producto.TipoProducto").Include("DesglosePagoCompra.CuentaBanco").Include("DesglosePagoCompra.FormaPago").Include("DesglosePagoCompra.TipoMoneda").FirstOrDefault(x => x.IdCompra == intIdCompra);
+                    foreach (DetalleCompra detalle in compra.DetalleCompra)
+                    {
+                        detalle.Compra = null;
+                        detalle.Producto.Proveedor = null;
+                    }
+                    foreach (DesglosePagoCompra desglosePago in compra.DesglosePagoCompra)
+                        desglosePago.Compra = null;
+                    compra.Proveedor.Compra = null;
+                    return compra;
                 }
                 catch (Exception ex)
                 {
@@ -641,18 +651,25 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<Compra> ObtenerListadoCompras(int intIdEmpresa, int numPagina, int cantRec, int intIdCompra, string strNombre)
+        public IEnumerable<CompraDetalle> ObtenerListadoCompras(int intIdEmpresa, int numPagina, int cantRec, int intIdCompra, string strNombre)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
+                var listaCompras = new List<CompraDetalle>();
                 try
                 {
-                    var listaCompras = dbContext.CompraRepository.Include("Proveedor").Where(x => !x.Nulo & x.IdEmpresa == intIdEmpresa);
+                    var listado = dbContext.CompraRepository.Include("Proveedor").Where(x => !x.Nulo & x.IdEmpresa == intIdEmpresa);
                     if (intIdCompra > 0)
-                        listaCompras = listaCompras.Where(x => x.IdCompra == intIdCompra);
+                        listado = listado.Where(x => x.IdCompra == intIdCompra);
                     else if (!strNombre.Equals(string.Empty))
-                        listaCompras = listaCompras.Where(x => x.Proveedor.Nombre.Contains(strNombre));
-                    return listaCompras.OrderByDescending(x => x.IdCompra).Skip((numPagina - 1) * cantRec).Take(cantRec).ToList();
+                        listado = listado.Where(x => x.Proveedor.Nombre.Contains(strNombre));
+                    listado = listado.OrderByDescending(x => x.IdCompra).Skip((numPagina - 1) * cantRec).Take(cantRec);
+                    foreach (var compra in listado)
+                    {
+                        CompraDetalle item = new CompraDetalle(compra.IdCompra, compra.Proveedor.Nombre, compra.Fecha.ToString("dd/MM/yyyy"), compra.Gravado, compra.Excento, compra.Impuesto, compra.Total);
+                        listaCompras.Add(item);
+                    }
+                    return listaCompras;
                 }
                 catch (Exception ex)
                 {

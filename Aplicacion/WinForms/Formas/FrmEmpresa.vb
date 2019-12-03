@@ -158,6 +158,8 @@ Public Class FrmEmpresa
         datos.ClaveHacienda = txtClaveATV.Text
         datos.Barrio = Nothing
         Try
+            btnCancelar.Focus()
+            btnGuardar.Enabled = False
             Await Puntoventa.ActualizarEmpresa(datos, FrmPrincipal.usuarioGlobal.Token)
             If bolCertificadoModificado And txtNombreCertificado.Text.Length > 0 Then
                 Dim bytCertificado As Byte() = File.ReadAllBytes(strRutaCertificado)
@@ -179,6 +181,8 @@ Public Class FrmEmpresa
                 Await Puntoventa.ActualizarTerminalPorSucursal(datosTerminal, FrmPrincipal.usuarioGlobal.Token)
             End If
         Catch ex As Exception
+            btnGuardar.Enabled = True
+            btnGuardar.Focus()
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
         End Try

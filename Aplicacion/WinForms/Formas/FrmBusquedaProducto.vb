@@ -15,18 +15,46 @@ Public Class FrmBusquedaProducto
 
 #Region "Métodos"
     Private Sub EstablecerPropiedadesDataGridView()
-        Dim dvcId As New DataGridViewTextBoxColumn
-        Dim dvcDescripcion As New DataGridViewTextBoxColumn
         dgvListado.Columns.Clear()
         dgvListado.AutoGenerateColumns = False
-        dvcId.HeaderText = "Id"
-        dvcId.DataPropertyName = "Id"
-        dvcId.Width = 50
-        dgvListado.Columns.Add(dvcId)
-        dvcDescripcion.HeaderText = "Descripción"
+        Dim dvcIdProducto As New DataGridViewTextBoxColumn
+        Dim dvcCodigo As New DataGridViewTextBoxColumn
+        Dim dvcDescripcion As New DataGridViewTextBoxColumn
+        Dim dvcCantidad As New DataGridViewTextBoxColumn
+        Dim dvcPrecioCosto As New DataGridViewTextBoxColumn
+        Dim dvcPrecioVenta1 As New DataGridViewTextBoxColumn
+        dvcIdProducto.DataPropertyName = "Id"
+        dvcIdProducto.HeaderText = "Id"
+        dvcIdProducto.Visible = False
+        dgvListado.Columns.Add(dvcIdProducto)
+
+        dvcCodigo.DataPropertyName = "Codigo"
+        dvcCodigo.HeaderText = "Código"
+        dvcCodigo.Width = 100
+        dgvListado.Columns.Add(dvcCodigo)
+
         dvcDescripcion.DataPropertyName = "Descripcion"
-        dvcDescripcion.Width = 600
+        dvcDescripcion.HeaderText = "Descripción"
+        dvcDescripcion.Width = 320
         dgvListado.Columns.Add(dvcDescripcion)
+
+        dvcCantidad.DataPropertyName = "Cantidad"
+        dvcCantidad.HeaderText = "Cant"
+        dvcCantidad.Width = 48
+        dvcCantidad.DefaultCellStyle = FrmPrincipal.dgvDecimal
+        dgvListado.Columns.Add(dvcCantidad)
+
+        dvcPrecioCosto.DataPropertyName = "PrecioCosto"
+        dvcPrecioCosto.HeaderText = "Precio Costo"
+        dvcPrecioCosto.Width = 100
+        dvcPrecioCosto.DefaultCellStyle = FrmPrincipal.dgvDecimal
+        dgvListado.Columns.Add(dvcPrecioCosto)
+
+        dvcPrecioVenta1.DataPropertyName = "PrecioVenta1"
+        dvcPrecioVenta1.HeaderText = "Precio Venta"
+        dvcPrecioVenta1.Width = 100
+        dvcPrecioVenta1.DefaultCellStyle = FrmPrincipal.dgvDecimal
+        dgvListado.Columns.Add(dvcPrecioVenta1)
     End Sub
 
     Private Async Function CargarComboBox() As Task

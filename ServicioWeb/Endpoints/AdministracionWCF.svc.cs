@@ -27,6 +27,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
         private static IServerMailService servicioRecepcionCorreo;
         private IFacturacionService servicioFacturacion;
         private IMantenimientoService servicioMantenimiento;
+        private IReporteService servicioReportes;
         private static System.Collections.Specialized.NameValueCollection appSettings = WebConfigurationManager.AppSettings;
         private static JavaScriptSerializer serializer = new CustomJavascriptSerializer();
         
@@ -50,7 +51,6 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             appSettings["strCorreoNotificacionErrores"].ToString(),
             appSettings["recepcionEmailFrom"].ToString()
         );
-        private static string strApplicationKey = appSettings["ApplicationKey"].ToString();
 
         public AdministracionWCF()
         {
@@ -62,10 +62,12 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             unityContainer.RegisterType<IServerMailService, ServerMailService>(new InjectionConstructor(appSettings["pop3EmailHost"], appSettings["pop3EmailPort"]));
             unityContainer.RegisterType<IFacturacionService, FacturacionService>();
             unityContainer.RegisterType<IMantenimientoService, MantenimientoService>();
+            unityContainer.RegisterType<IReporteService, ReporteService>();
             servicioEnvioCorreo = unityContainer.Resolve<ICorreoService>();
             servicioRecepcionCorreo = unityContainer.Resolve<IServerMailService>();
             servicioFacturacion = unityContainer.Resolve<IFacturacionService>();
             servicioMantenimiento = unityContainer.Resolve<IMantenimientoService>();
+            servicioReportes = unityContainer.Resolve<IReporteService>();
         }
 
         public void Options()
@@ -76,7 +78,8 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
         {
             try
             {
-                Usuario usuario = servicioMantenimiento.ValidarCredencialesAdmin(strUsuario, strClave);
+                string strClaveFormateada = strClave.Replace(" ", "+");
+                Usuario usuario = servicioMantenimiento.ValidarCredencialesAdmin(strUsuario, strClaveFormateada);
                 string strRespuesta = "";
                 if (usuario != null)
                     strRespuesta = serializer.Serialize(usuario);
@@ -92,7 +95,8 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
         {
             try
             {
-                Usuario usuario = servicioMantenimiento.ValidarCredenciales(strUsuario, strClave, id);
+                string strClaveFormateada = strClave.Replace(" ", "+");
+                Usuario usuario = servicioMantenimiento.ValidarCredenciales(strUsuario, strClaveFormateada, id);
                 string strRespuesta = "";
                 if (usuario != null)
                     strRespuesta = serializer.Serialize(usuario);
@@ -160,6 +164,22 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                 string strRespuesta = "";
                 if (empresa != null)
                     strRespuesta = serializer.Serialize(empresa);
+                return strRespuesta;
+            }
+            catch (Exception ex)
+            {
+                throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
+            }
+        }
+
+        public string ObtenerLogotipoEmpresa(int intIdEmpresa)
+        {
+            try
+            {
+                string logotipo = servicioMantenimiento.ObtenerLogotipoEmpresa(intIdEmpresa);
+                string strRespuesta = "";
+                if (logotipo != null)
+                    strRespuesta = serializer.Serialize(logotipo);
                 return strRespuesta;
             }
             catch (Exception ex)
@@ -280,6 +300,50 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             }
         }
 
+        public string ObtenerDatosReporte(int tipo, int idempresa, string fechainicial, string fechafinal)
+        {
+            string strRespuesta = "";
+            switch (tipo)
+            {
+                case 1:
+                    {
+                        List<ReporteDocumentoElectronico> listado = servicioReportes.ObtenerReporteFacturasElectronicasEmitidas(idempresa, fechainicial, fechafinal);
+                        if (listado.Count > 0)
+                            strRespuesta = serializer.Serialize(listado);
+                        break;
+                    }
+                case 2:
+                    {
+                        List<ReporteDocumentoElectronico> listado = servicioReportes.ObtenerReporteNotasCreditoElectronicasEmitidas(idempresa, fechainicial, fechafinal);
+                        if (listado.Count > 0)
+                            strRespuesta = serializer.Serialize(listado);
+                        break;
+                    }
+                case 3:
+                    {
+                        List<ReporteDocumentoElectronico> listado = servicioReportes.ObtenerReporteFacturasElectronicasRecibidas(idempresa, fechainicial, fechafinal);
+                        if (listado.Count > 0)
+                            strRespuesta = serializer.Serialize(listado);
+                        break;
+                    }
+                case 4:
+                    {
+                        List<ReporteDocumentoElectronico> listado = servicioReportes.ObtenerReporteNotasCreditoElectronicasRecibidas(idempresa, fechainicial, fechafinal);
+                        if (listado.Count > 0)
+                            strRespuesta = serializer.Serialize(listado);
+                        break;
+                    }
+                case 5:
+                    {
+                        List<ReporteResumenMovimiento> listado = servicioReportes.ObtenerReporteResumenDocumentosElectronicos(idempresa, fechainicial, fechafinal);
+                        if (listado.Count > 0)
+                            strRespuesta = serializer.Serialize(listado);
+                        break;
+                    }
+            }
+            return strRespuesta;
+        }
+
         public string ObtenerListadoBarrios(int intIdProvincia, int intIdCanton, int intIdDistrito)
         {
             try
@@ -319,7 +383,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                 JObject parametrosJO = JObject.Parse(strDatos);
                 string strEntidad = parametrosJO.Property("Entidad").Value.ToString();
                 Empresa empresa = serializer.Deserialize<Empresa>(strEntidad);
-                servicioMantenimiento.ActualizarEmpresaConDetalle(empresa);
+                servicioMantenimiento.ActualizarEmpresa(empresa);
             }
             catch (Exception ex)
             {

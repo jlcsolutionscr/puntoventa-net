@@ -24,14 +24,11 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         [ForeignKey("Vendedor")]
         public int IdVendedor { get; set; }
         public DateTime Fecha { get; set; }
-        public string Operarios { get; set; }
-        public string HoraEntrada { get; set; }
-        public string HoraSalida { get; set; }
-        public string Marca { get; set; }
-        public string Modelo { get; set; }
-        public string Placa { get; set; }
-        public string Color { get; set; }
-        public string EstadoActual { get; set; }
+        public string Observaciones1 { get; set; }
+        public string Observaciones2 { get; set; }
+        public string Observaciones3 { get; set; }
+        public string Observaciones4 { get; set; }
+        public string Observaciones5 { get; set; }
         public decimal Excento { get; set; }
         public decimal Gravado { get; set; }
         public decimal Descuento { get; set; }

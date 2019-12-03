@@ -844,7 +844,7 @@ Partial Class FrmFactura
         Me.btnOrdenServicio.BackColor = System.Drawing.SystemColors.ButtonHighlight
         Me.btnOrdenServicio.Cursor = System.Windows.Forms.Cursors.Default
         Me.btnOrdenServicio.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.btnOrdenServicio.Location = New System.Drawing.Point(710, 38)
+        Me.btnOrdenServicio.Location = New System.Drawing.Point(710, 63)
         Me.btnOrdenServicio.Name = "btnOrdenServicio"
         Me.btnOrdenServicio.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.btnOrdenServicio.Size = New System.Drawing.Size(96, 21)
@@ -852,7 +852,6 @@ Partial Class FrmFactura
         Me.btnOrdenServicio.TabStop = False
         Me.btnOrdenServicio.Text = "Cargar Orden"
         Me.btnOrdenServicio.UseVisualStyleBackColor = False
-        Me.btnOrdenServicio.Visible = False
         '
         'txtIdOrdenServicio
         '
@@ -860,7 +859,7 @@ Partial Class FrmFactura
         Me.txtIdOrdenServicio.BackColor = System.Drawing.SystemColors.Window
         Me.txtIdOrdenServicio.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtIdOrdenServicio.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtIdOrdenServicio.Location = New System.Drawing.Point(653, 39)
+        Me.txtIdOrdenServicio.Location = New System.Drawing.Point(653, 64)
         Me.txtIdOrdenServicio.MaxLength = 0
         Me.txtIdOrdenServicio.Name = "txtIdOrdenServicio"
         Me.txtIdOrdenServicio.ReadOnly = True
@@ -868,7 +867,6 @@ Partial Class FrmFactura
         Me.txtIdOrdenServicio.Size = New System.Drawing.Size(54, 20)
         Me.txtIdOrdenServicio.TabIndex = 5
         Me.txtIdOrdenServicio.TabStop = False
-        Me.txtIdOrdenServicio.Visible = False
         '
         'txtVendedor
         '
@@ -914,7 +912,7 @@ Partial Class FrmFactura
         Me.txtIdProforma.BackColor = System.Drawing.SystemColors.Window
         Me.txtIdProforma.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtIdProforma.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtIdProforma.Location = New System.Drawing.Point(653, 64)
+        Me.txtIdProforma.Location = New System.Drawing.Point(654, 38)
         Me.txtIdProforma.MaxLength = 0
         Me.txtIdProforma.Name = "txtIdProforma"
         Me.txtIdProforma.ReadOnly = True
@@ -922,14 +920,13 @@ Partial Class FrmFactura
         Me.txtIdProforma.Size = New System.Drawing.Size(54, 20)
         Me.txtIdProforma.TabIndex = 9
         Me.txtIdProforma.TabStop = False
-        Me.txtIdProforma.Visible = False
         '
         'btnProforma
         '
         Me.btnProforma.BackColor = System.Drawing.SystemColors.ButtonHighlight
         Me.btnProforma.Cursor = System.Windows.Forms.Cursors.Default
         Me.btnProforma.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.btnProforma.Location = New System.Drawing.Point(710, 64)
+        Me.btnProforma.Location = New System.Drawing.Point(711, 38)
         Me.btnProforma.Name = "btnProforma"
         Me.btnProforma.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.btnProforma.Size = New System.Drawing.Size(96, 21)
@@ -937,7 +934,6 @@ Partial Class FrmFactura
         Me.btnProforma.TabStop = False
         Me.btnProforma.Text = "Cargar Proforma"
         Me.btnProforma.UseVisualStyleBackColor = False
-        Me.btnProforma.Visible = False
         '
         'txtPagoDelCliente
         '

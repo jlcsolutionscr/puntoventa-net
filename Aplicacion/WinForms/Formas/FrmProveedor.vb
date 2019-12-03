@@ -57,6 +57,8 @@ Public Class FrmProveedor
     End Sub
 
     Private Async Sub btnGuardar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnGuardar.Click
+        btnCancelar.Focus()
+        btnGuardar.Enabled = False
         Dim strCampo As String = ""
         If Not ValidarCampos(strCampo) Then
             MessageBox.Show("El campo " & strCampo & " es requerido", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
@@ -84,6 +86,8 @@ Public Class FrmProveedor
                 Await Puntoventa.ActualizarProveedor(datos, FrmPrincipal.usuarioGlobal.Token)
             End If
         Catch ex As Exception
+            btnGuardar.Enabled = True
+            btnGuardar.Focus()
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
         End Try

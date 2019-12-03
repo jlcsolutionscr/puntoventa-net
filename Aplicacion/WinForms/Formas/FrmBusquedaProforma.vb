@@ -1,62 +1,65 @@
+Imports System.Threading.Tasks
+Imports LeandroSoftware.ClienteWCF
+
 Public Class FrmBusquedaProforma
 #Region "Variables"
-    Private intTotalEmpresas As Integer
+    Private intTotalProformas As Integer
     Private intIndiceDePagina As Integer
     Private intFilasPorPagina As Integer = 13
     Private intCantidadDePaginas As Integer
     Private intId As Integer = 0
-    Private bolIncluyeTodo = True
 #End Region
 
 #Region "Métodos"
     Private Sub EstablecerPropiedadesDataGridView()
+        dgvListado.Columns.Clear()
+        dgvListado.AutoGenerateColumns = False
         Dim dvcId As New DataGridViewTextBoxColumn
-        Dim dvcNombre As New DataGridViewTextBoxColumn
-        Dim dvcReferencia As New DataGridViewTextBoxColumn
-        Dim dvcTopeCredito As New DataGridViewTextBoxColumn
-
+        Dim dvcFecha As New DataGridViewTextBoxColumn
+        Dim dvcNombreCliente As New DataGridViewTextBoxColumn
+        Dim dvcTotal As New DataGridViewTextBoxColumn
         dgvListado.Columns.Clear()
         dgvListado.AutoGenerateColumns = False
         dvcId.HeaderText = "Id"
-        dvcId.DataPropertyName = "IdProforma"
+        dvcId.DataPropertyName = "IdFactura"
         dvcId.Width = 50
         dgvListado.Columns.Add(dvcId)
-        dvcNombre.HeaderText = "Cliente"
-        dvcNombre.DataPropertyName = "NombreCliente"
-        dvcNombre.Width = 400
-        dgvListado.Columns.Add(dvcNombre)
-        dvcReferencia.HeaderText = "Referencia"
-        dvcReferencia.DataPropertyName = "NoDocumento"
-        dvcReferencia.Width = 50
-        dgvListado.Columns.Add(dvcReferencia)
-        dvcTopeCredito.HeaderText = "Total"
-        dvcTopeCredito.DataPropertyName = "Total"
-        dvcTopeCredito.Width = 120
-        dvcTopeCredito.DefaultCellStyle = FrmPrincipal.dgvDecimal
-        dgvListado.Columns.Add(dvcTopeCredito)
+        dvcFecha.HeaderText = "Fecha"
+        dvcFecha.DataPropertyName = "Fecha"
+        dvcFecha.Width = 70
+        dgvListado.Columns.Add(dvcFecha)
+        dvcNombreCliente.HeaderText = "Cliente"
+        dvcNombreCliente.DataPropertyName = "NombreCliente"
+        dvcNombreCliente.Width = 400
+        dgvListado.Columns.Add(dvcNombreCliente)
+        dvcTotal.HeaderText = "Total"
+        dvcTotal.DataPropertyName = "Total"
+        dvcTotal.Width = 100
+        dvcTotal.DefaultCellStyle = FrmPrincipal.dgvDecimal
+        dgvListado.Columns.Add(dvcTotal)
     End Sub
 
-    Private Sub ActualizarDatos(ByVal intNumeroPagina As Integer)
+    Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
         Try
-            'dgvListado.DataSource = servicioFacturacion.ObtenerListaProformas(FrmMenuPrincipal.empresaGlobal.IdEmpresa, bolIncluyeTodo, intNumeroPagina, intFilasPorPagina, intId, txtNombre.Text)
+            dgvListado.DataSource = Await Puntoventa.ObtenerListadoProformas(FrmPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, FrmPrincipal.usuarioGlobal.Token, intId, txtNombre.Text)
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
-            Exit Sub
+            Exit Function
         End Try
         dgvListado.Refresh()
-    End Sub
+    End Function
 
-    Private Sub ValidarCantidadEmpresas()
+    Private Async Function ValidarCantidadProformas() As Task
         Try
-            'intTotalEmpresas = servicioFacturacion.ObtenerTotalListaProformas(FrmMenuPrincipal.empresaGlobal.IdEmpresa, bolIncluyeTodo, intId, txtNombre.Text)
+            intTotalProformas = Await Puntoventa.ObtenerTotalListaProformas(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token, intId, txtNombre.Text)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
-            Exit Sub
+            Exit Function
         End Try
-        intCantidadDePaginas = Math.Truncate(intTotalEmpresas / intFilasPorPagina) + IIf((intTotalEmpresas Mod intFilasPorPagina) = 0, 0, 1)
+        intCantidadDePaginas = Math.Truncate(intTotalProformas / intFilasPorPagina) + IIf((intTotalProformas Mod intFilasPorPagina) = 0, 0, 1)
 
         If intCantidadDePaginas > 1 Then
             btnLast.Enabled = True
@@ -69,51 +72,48 @@ Public Class FrmBusquedaProforma
             btnPrevious.Enabled = False
             btnFirst.Enabled = False
         End If
-    End Sub
-    Public Sub ExcluirOrdenesFacturadas()
-        bolIncluyeTodo = False
-    End Sub
+    End Function
 #End Region
 
 #Region "Eventos Controles"
-    Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs) Handles txtId.KeyPress
+    Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As KeyPressEventArgs) Handles txtId.KeyPress
         FrmPrincipal.ValidaNumero(e, sender, True, 0)
     End Sub
 
-    Private Sub btnFirst_Click(sender As Object, e As EventArgs) Handles btnFirst.Click
+    Private Async Sub btnFirst_Click(sender As Object, e As EventArgs) Handles btnFirst.Click
         intIndiceDePagina = 1
-        ActualizarDatos(intIndiceDePagina)
+        Await ActualizarDatos(intIndiceDePagina)
     End Sub
 
-    Private Sub btnPrevious_Click(sender As Object, e As EventArgs) Handles btnPrevious.Click
+    Private Async Sub btnPrevious_Click(sender As Object, e As EventArgs) Handles btnPrevious.Click
         If intIndiceDePagina > 1 Then
             intIndiceDePagina -= 1
-            ActualizarDatos(intIndiceDePagina)
+            Await ActualizarDatos(intIndiceDePagina)
         End If
     End Sub
 
-    Private Sub btnNext_Click(sender As Object, e As EventArgs) Handles btnNext.Click
+    Private Async Sub btnNext_Click(sender As Object, e As EventArgs) Handles btnNext.Click
         If intCantidadDePaginas > intIndiceDePagina Then
             intIndiceDePagina += 1
-            ActualizarDatos(intIndiceDePagina)
+            Await ActualizarDatos(intIndiceDePagina)
         End If
     End Sub
 
-    Private Sub btnLast_Click(sender As Object, e As EventArgs) Handles btnLast.Click
+    Private Async Sub btnLast_Click(sender As Object, e As EventArgs) Handles btnLast.Click
         intIndiceDePagina = intCantidadDePaginas
-        ActualizarDatos(intIndiceDePagina)
+        Await ActualizarDatos(intIndiceDePagina)
     End Sub
 
-    Private Sub FrmBusProd_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+    Private Async Sub FrmBusProd_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
-            'servicioFacturacion = FrmMenuPrincipal.unityContainer.Resolve(Of IFacturacionService)()
             EstablecerPropiedadesDataGridView()
-            ValidarCantidadEmpresas()
+            Await ValidarCantidadProformas()
             intIndiceDePagina = 1
-            ActualizarDatos(intIndiceDePagina)
+            Await ActualizarDatos(intIndiceDePagina)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
+            Exit Sub
         End Try
     End Sub
 
@@ -124,15 +124,15 @@ Public Class FrmBusquedaProforma
         End If
     End Sub
 
-    Private Sub btnFiltrar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnFiltrar.Click
+    Private Async Sub btnFiltrar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnFiltrar.Click
         If txtId.Text = "" Then
             intId = 0
         Else
             intId = CInt(txtId.Text)
         End If
-        ValidarCantidadEmpresas()
+        Await ValidarCantidadProformas()
         intIndiceDePagina = 1
-        ActualizarDatos(intIndiceDePagina)
+        Await ActualizarDatos(intIndiceDePagina)
     End Sub
 #End Region
 End Class
