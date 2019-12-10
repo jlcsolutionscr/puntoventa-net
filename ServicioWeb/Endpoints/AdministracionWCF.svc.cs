@@ -17,6 +17,7 @@ using System.Web;
 using System.ServiceModel.Web;
 using System.Net;
 using System.Web.Script.Serialization;
+using System.Threading.Tasks;
 
 namespace LeandroSoftware.ServicioWeb.EndPoints
 {
@@ -512,13 +513,18 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
 
         public void ProcesarDocumentosElectronicosPendientes()
         {
+            Task.Run(() => RunSyncProcesarPendientes());
+        }
+
+        public void RunSyncProcesarPendientes()
+        {
             servicioFacturacion.ProcesarDocumentosElectronicosPendientes(servicioEnvioCorreo, configuracionGeneral);
             servicioFacturacion.ProcesarCorreoRecepcion(servicioEnvioCorreo, servicioRecepcionCorreo, configuracionGeneral, configuracionRecepcion);
         }
 
         public void LimpiarRegistrosInvalidos()
         {
-            servicioMantenimiento.EliminarRegistroAutenticacionInvalidos();
+            Task.Run(() => servicioMantenimiento.EliminarRegistroAutenticacionInvalidos());
         }
 
         public string ObtenerUltimaVersionApp()
