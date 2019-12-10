@@ -268,23 +268,12 @@ Public Class ModuloImpresion
             strCadena += "".PadRight((40 - objEquipo.NombreSucursal.Length) / 2, " ") & objEquipo.NombreSucursal & Chr(13) & Chr(10)
         End If
         strCadena += Chr(13) & Chr(10)
-        Dim strDireccion1 As String
-        If objEquipo.DireccionSucursal.Length > 40 Then
-            Dim intEspacioIndex = objEquipo.DireccionSucursal.Substring(0, 40).LastIndexOf(" ")
-            Dim strDireccion2 As String
-            If (intEspacioIndex >= 0) Then
-                strDireccion1 = objEquipo.DireccionSucursal.Substring(0, intEspacioIndex)
-                strDireccion2 = objEquipo.DireccionSucursal.Substring(intEspacioIndex + 1)
-            Else
-                strDireccion1 = objEquipo.NombreSucursal.Substring(0, 40)
-                strDireccion2 = objEquipo.NombreSucursal.Substring(40)
-            End If
-            strCadena += "".PadRight((40 - strDireccion1.Length) / 2, " ") + strDireccion1 & Chr(13) & Chr(10)
-            strCadena += "".PadRight((40 - strDireccion2.Length) / 2, " ") + strDireccion2 & Chr(13) & Chr(10)
-        Else
-            strDireccion1 = objEquipo.DireccionSucursal
-            strCadena += "".PadRight((40 - strDireccion1.Length) / 2, " ") + strDireccion1 & Chr(13) & Chr(10)
-        End If
+        Dim strDireccion As String = objEquipo.DireccionSucursal
+        While strDireccion.Length > 40
+            strCadena += strDireccion.Substring(0, 40) & Chr(13) & Chr(10)
+            strDireccion = strDireccion.Substring(40)
+        End While
+        If strDireccion.Length > 0 Then strCadena += "".PadRight((40 - strDireccion.Length) / 2, " ") + strDireccion & Chr(13) & Chr(10)
         Dim strTelefono As String = "TELEFONO: " + objEquipo.TelefonoSucursal
         strCadena += "".PadRight((40 - strTelefono.Length) / 2, " ") + strTelefono & Chr(13) & Chr(10)
         strCadena += Chr(13) & Chr(10)
@@ -349,32 +338,33 @@ Public Class ModuloImpresion
         Return strTotales
     End Function
 
-    Public Shared Sub ImprimirFactura(ByVal objFactura As ClsComprobante)
+    Public Shared Sub ImprimirFactura(ByVal objImpresion As ClsComprobante)
         Dim strFactura As String = ""
         Try
-            strFactura += ImprimirEncabezado(objFactura.equipo, objFactura.empresa, Date.Now.ToString("dd-MM-yyyy"), objFactura.usuario.CodigoUsuario)
+            strFactura += ImprimirEncabezado(objImpresion.equipo, objImpresion.empresa, Date.Now.ToString("dd-MM-yyyy"), objImpresion.usuario.CodigoUsuario)
             strFactura += Chr(13) & Chr(10)
-            If objFactura.strClaveNumerica <> "" Then
+            If objImpresion.strClaveNumerica <> "" Then
                 strFactura += "Clave numerica".PadLeft(27, " ") & Chr(13) & Chr(10)
-                strFactura += objFactura.strClaveNumerica.Substring(0, 25).PadLeft(32, " ") & Chr(13) & Chr(10)
-                strFactura += objFactura.strClaveNumerica.Substring(25, 25).PadLeft(32, " ") & Chr(13) & Chr(10)
+                strFactura += objImpresion.strClaveNumerica.Substring(0, 25).PadLeft(32, " ") & Chr(13) & Chr(10)
+                strFactura += objImpresion.strClaveNumerica.Substring(25, 25).PadLeft(32, " ") & Chr(13) & Chr(10)
             End If
             strFactura += Chr(13) & Chr(10)
-            strFactura += "       Sucursal: " & objFactura.equipo.IdSucursal.ToString().PadRight(4, " ") & "Terminal: " & objFactura.equipo.IdTerminal & Chr(13) & Chr(10)
+            strFactura += "Sucursal: " & objImpresion.equipo.NombreSucursal & Chr(13) & Chr(10)
+            strFactura += "Terminal: " & objImpresion.equipo.IdTerminal & Chr(13) & Chr(10)
             strFactura += Chr(13) & Chr(10)
-            strFactura += "Factura Nro: " & objFactura.strId & Chr(13) & Chr(10)
-            strFactura += "Vendedor: " & objFactura.strVendedor.Substring(0, If(objFactura.strVendedor.Length < 30, objFactura.strVendedor.Length, 30)) & Chr(13) & Chr(10)
-            strFactura += "Nombre: " & objFactura.strNombre.Substring(0, If(objFactura.strNombre.Length < 32, objFactura.strNombre.Length, 32)) & Chr(13) & Chr(10)
-            strFactura += "Fecha: " & objFactura.strFecha & Chr(13) & Chr(10)
-            If objFactura.strDocumento <> "" Then strFactura += "Documento: " & objFactura.strDocumento & Chr(13) & Chr(10)
+            strFactura += "Factura Nro: " & objImpresion.strId & Chr(13) & Chr(10)
+            strFactura += "Vendedor: " & objImpresion.strVendedor.Substring(0, If(objImpresion.strVendedor.Length < 30, objImpresion.strVendedor.Length, 30)) & Chr(13) & Chr(10)
+            strFactura += "Nombre: " & objImpresion.strNombre.Substring(0, If(objImpresion.strNombre.Length < 32, objImpresion.strNombre.Length, 32)) & Chr(13) & Chr(10)
+            strFactura += "Fecha: " & objImpresion.strFecha & Chr(13) & Chr(10)
+            If objImpresion.strDocumento <> "" Then strFactura += "Documento: " & objImpresion.strDocumento & Chr(13) & Chr(10)
             strFactura += Chr(13) & Chr(10)
-            strFactura += ImprimirDesglosePago(objFactura.arrDesglosePago)
+            strFactura += ImprimirDesglosePago(objImpresion.arrDesglosePago)
             strFactura += "".PadRight(40, "_") & Chr(13) & Chr(10)
-            strFactura += ImprimirDetalle(objFactura.arrDetalleComprobante)
+            strFactura += ImprimirDetalle(objImpresion.arrDetalleComprobante)
             strFactura += "".PadRight(40, "_") & Chr(13) & Chr(10) & Chr(13) & Chr(10)
-            strFactura += ImprimirTotales(objFactura)
-            strFactura += "Pago con:".PadLeft(23, " ") & objFactura.strPagoCon.ToString.PadLeft(17, " ") & Chr(13) & Chr(10)
-            strFactura += "Cambio:".PadLeft(23, " ") & objFactura.strCambio.ToString.PadLeft(17, " ") & Chr(13) & Chr(10)
+            strFactura += ImprimirTotales(objImpresion)
+            strFactura += "Pago con:".PadLeft(23, " ") & objImpresion.strPagoCon.ToString.PadLeft(17, " ") & Chr(13) & Chr(10)
+            strFactura += "Cambio:".PadLeft(23, " ") & objImpresion.strCambio.ToString.PadLeft(17, " ") & Chr(13) & Chr(10)
             strFactura += Chr(13) & Chr(10) & Chr(13) & Chr(10)
             strFactura += "     IMPUESTO DE VENTAS INCLUIDO." & Chr(13) & Chr(10)
             strFactura += " AUTORIZADO MEDIANTE RESOLUCION NUMERO" & Chr(13) & Chr(10)
@@ -385,7 +375,112 @@ Public Class ModuloImpresion
             Throw New Exception("Error formulando el string de impresion:" + ex.Message)
         End Try
         Try
-            SendStringToPrinter(objFactura.equipo.ImpresoraFactura, strFactura)
+            SendStringToPrinter(objImpresion.equipo.ImpresoraFactura, strFactura)
+        Catch ex As Exception
+            Throw New Exception("Error invokando a SendStringToPrinter:" + ex.Message)
+        End Try
+    End Sub
+
+    Public Shared Sub ImprimirProforma(ByVal objImpresion As ClsComprobante)
+        Dim strFactura As String = ""
+        Try
+            strFactura += "            FACTURA PROFORMA" & Chr(13) & Chr(10)
+            strFactura += ImprimirEncabezado(objImpresion.equipo, objImpresion.empresa, Date.Now.ToString("dd-MM-yyyy"), objImpresion.usuario.CodigoUsuario)
+            strFactura += Chr(13) & Chr(10)
+            strFactura += Chr(13) & Chr(10)
+            strFactura += "Sucursal: " & objImpresion.equipo.NombreSucursal & Chr(13) & Chr(10)
+            strFactura += "Terminal: " & objImpresion.equipo.IdTerminal & Chr(13) & Chr(10)
+            strFactura += Chr(13) & Chr(10)
+            strFactura += "Proforma Nro: " & objImpresion.strId & Chr(13) & Chr(10)
+            strFactura += "Vendedor: " & objImpresion.strVendedor.Substring(0, If(objImpresion.strVendedor.Length < 30, objImpresion.strVendedor.Length, 30)) & Chr(13) & Chr(10)
+            strFactura += "Nombre: " & objImpresion.strNombre.Substring(0, If(objImpresion.strNombre.Length < 32, objImpresion.strNombre.Length, 32)) & Chr(13) & Chr(10)
+            strFactura += "Fecha: " & objImpresion.strFecha & Chr(13) & Chr(10)
+            If objImpresion.strDocumento <> "" Then strFactura += "Documento: " & objImpresion.strDocumento & Chr(13) & Chr(10)
+            strFactura += Chr(13) & Chr(10)
+            strFactura += ImprimirDetalle(objImpresion.arrDetalleComprobante)
+            strFactura += "".PadRight(40, "_") & Chr(13) & Chr(10) & Chr(13) & Chr(10)
+            strFactura += ImprimirTotales(objImpresion)
+            strFactura += Chr(13) & Chr(10) & Chr(13) & Chr(10)
+            strFactura += "       GRACIAS POR PREFERIRNOS" & Chr(13) & Chr(10)
+            strFactura += Chr(&HA) & Chr(&H1D) & "V" & Chr(66) & Chr(0)
+        Catch ex As Exception
+            Throw New Exception("Error formulando el string de impresion:" + ex.Message)
+        End Try
+        Try
+            SendStringToPrinter(objImpresion.equipo.ImpresoraFactura, strFactura)
+        Catch ex As Exception
+            Throw New Exception("Error invokando a SendStringToPrinter:" + ex.Message)
+        End Try
+    End Sub
+
+    Public Shared Sub ImprimirApartado(ByVal objImpresion As ClsComprobante)
+        Dim strFactura As String = ""
+        Try
+            strFactura += "                APARTADO" & Chr(13) & Chr(10)
+            strFactura += ImprimirEncabezado(objImpresion.equipo, objImpresion.empresa, Date.Now.ToString("dd-MM-yyyy"), objImpresion.usuario.CodigoUsuario)
+            strFactura += Chr(13) & Chr(10)
+            strFactura += Chr(13) & Chr(10)
+            strFactura += "Sucursal: " & objImpresion.equipo.NombreSucursal & Chr(13) & Chr(10)
+            strFactura += "Terminal: " & objImpresion.equipo.IdTerminal & Chr(13) & Chr(10)
+            strFactura += Chr(13) & Chr(10)
+            strFactura += "Apartado Nro: " & objImpresion.strId & Chr(13) & Chr(10)
+            strFactura += "Vendedor: " & objImpresion.strVendedor.Substring(0, If(objImpresion.strVendedor.Length < 30, objImpresion.strVendedor.Length, 30)) & Chr(13) & Chr(10)
+            strFactura += "Nombre: " & objImpresion.strNombre.Substring(0, If(objImpresion.strNombre.Length < 32, objImpresion.strNombre.Length, 32)) & Chr(13) & Chr(10)
+            strFactura += "Fecha: " & objImpresion.strFecha & Chr(13) & Chr(10)
+            If objImpresion.strDocumento <> "" Then strFactura += "Documento: " & objImpresion.strDocumento & Chr(13) & Chr(10)
+            strFactura += Chr(13) & Chr(10)
+            strFactura += ImprimirDesglosePago(objImpresion.arrDesglosePago)
+            strFactura += "".PadRight(40, "_") & Chr(13) & Chr(10)
+            strFactura += ImprimirDetalle(objImpresion.arrDetalleComprobante)
+            strFactura += "".PadRight(40, "_") & Chr(13) & Chr(10) & Chr(13) & Chr(10)
+            strFactura += ImprimirTotales(objImpresion)
+            strFactura += Chr(13) & Chr(10) & Chr(13) & Chr(10)
+            strFactura += "       GRACIAS POR PREFERIRNOS" & Chr(13) & Chr(10)
+            strFactura += Chr(&HA) & Chr(&H1D) & "V" & Chr(66) & Chr(0)
+        Catch ex As Exception
+            Throw New Exception("Error formulando el string de impresion:" + ex.Message)
+        End Try
+        Try
+            SendStringToPrinter(objImpresion.equipo.ImpresoraFactura, strFactura)
+        Catch ex As Exception
+            Throw New Exception("Error invokando a SendStringToPrinter:" + ex.Message)
+        End Try
+    End Sub
+
+    Public Shared Sub ImprimirOrdenServicio(ByVal objImpresion As ClsComprobante)
+        Dim strFactura As String = ""
+        Try
+            strFactura += "           ORDEN DE SERVICIO" & Chr(13) & Chr(10)
+            strFactura += ImprimirEncabezado(objImpresion.equipo, objImpresion.empresa, Date.Now.ToString("dd-MM-yyyy"), objImpresion.usuario.CodigoUsuario)
+            strFactura += Chr(13) & Chr(10)
+            strFactura += Chr(13) & Chr(10)
+            strFactura += "Sucursal: " & objImpresion.equipo.NombreSucursal & Chr(13) & Chr(10)
+            strFactura += "Terminal: " & objImpresion.equipo.IdTerminal & Chr(13) & Chr(10)
+            strFactura += Chr(13) & Chr(10)
+            strFactura += "Orden Nro: " & objImpresion.strId & Chr(13) & Chr(10)
+            strFactura += "Vendedor: " & objImpresion.strVendedor.Substring(0, If(objImpresion.strVendedor.Length < 30, objImpresion.strVendedor.Length, 30)) & Chr(13) & Chr(10)
+            strFactura += "Nombre: " & objImpresion.strNombre.Substring(0, If(objImpresion.strNombre.Length < 32, objImpresion.strNombre.Length, 32)) & Chr(13) & Chr(10)
+            strFactura += "Fecha: " & objImpresion.strFecha & Chr(13) & Chr(10)
+            If objImpresion.strDocumento <> "" Then strFactura += "Documento: " & objImpresion.strDocumento & Chr(13) & Chr(10)
+            strFactura += Chr(13) & Chr(10)
+            strFactura += ImprimirDesglosePago(objImpresion.arrDesglosePago)
+            strFactura += "".PadRight(40, "_") & Chr(13) & Chr(10)
+            strFactura += ImprimirDetalle(objImpresion.arrDetalleComprobante)
+            strFactura += "".PadRight(40, "_") & Chr(13) & Chr(10) & Chr(13) & Chr(10)
+            strFactura += ImprimirTotales(objImpresion)
+            strFactura += Chr(13) & Chr(10) & Chr(13) & Chr(10)
+            Dim leyenda As String = objImpresion.strDocumento
+            While leyenda.Length > 40
+                strFactura += leyenda.Substring(0, 40) & Chr(13) & Chr(10)
+                leyenda = leyenda.Substring(40)
+            End While
+            If leyenda.Length > 0 Then strFactura += "".PadRight((40 - leyenda.Length) / 2, " ") + leyenda & Chr(13) & Chr(10)
+            strFactura += Chr(&HA) & Chr(&H1D) & "V" & Chr(66) & Chr(0)
+        Catch ex As Exception
+            Throw New Exception("Error formulando el string de impresion:" + ex.Message)
+        End Try
+        Try
+            SendStringToPrinter(objImpresion.equipo.ImpresoraFactura, strFactura)
         Catch ex As Exception
             Throw New Exception("Error invokando a SendStringToPrinter:" + ex.Message)
         End Try

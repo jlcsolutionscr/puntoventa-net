@@ -1,12 +1,10 @@
 Imports System.Threading.Tasks
-Imports LeandroSoftware.Core.Dominio.Entidades
 Imports LeandroSoftware.ClienteWCF
 
 Public Class FrmBusquedaProducto
 #Region "Variables"
-    Private producto As Producto
     Public bolIncluyeServicios As Boolean
-    Public intTipoPrecio As Integer
+    Public intIdSucursal As Integer
     Private intTotalEmpresas As Integer
     Private intIndiceDePagina As Integer
     Private intFilasPorPagina As Integer = 13
@@ -19,6 +17,7 @@ Public Class FrmBusquedaProducto
         dgvListado.AutoGenerateColumns = False
         Dim dvcIdProducto As New DataGridViewTextBoxColumn
         Dim dvcCodigo As New DataGridViewTextBoxColumn
+        Dim dvcCodigoProveedor As New DataGridViewTextBoxColumn
         Dim dvcDescripcion As New DataGridViewTextBoxColumn
         Dim dvcCantidad As New DataGridViewTextBoxColumn
         Dim dvcPrecioCosto As New DataGridViewTextBoxColumn
@@ -32,6 +31,11 @@ Public Class FrmBusquedaProducto
         dvcCodigo.HeaderText = "Código"
         dvcCodigo.Width = 100
         dgvListado.Columns.Add(dvcCodigo)
+
+        dvcCodigoProveedor.DataPropertyName = "CodigoProveedor"
+        dvcCodigoProveedor.HeaderText = "Código Prov"
+        dvcCodigoProveedor.Width = 100
+        dgvListado.Columns.Add(dvcCodigoProveedor)
 
         dvcDescripcion.DataPropertyName = "Descripcion"
         dvcDescripcion.HeaderText = "Descripción"
@@ -66,7 +70,7 @@ Public Class FrmBusquedaProducto
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
         Try
-            dgvListado.DataSource = Await Puntoventa.ObtenerListadoProductos(FrmPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, bolIncluyeServicios, FrmPrincipal.usuarioGlobal.Token, cboLinea.SelectedValue, TxtCodigo.Text, TxtDesc.Text)
+            dgvListado.DataSource = Await Puntoventa.ObtenerListadoProductos(FrmPrincipal.empresaGlobal.IdEmpresa, intIdSucursal, intNumeroPagina, intFilasPorPagina, bolIncluyeServicios, FrmPrincipal.usuarioGlobal.Token, cboLinea.SelectedValue, TxtCodigo.Text, txtCodigoProveedor.Text, TxtDesc.Text)
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -77,7 +81,7 @@ Public Class FrmBusquedaProducto
 
     Private Async Function ValidarCantidadProductos() As Task
         Try
-            intTotalEmpresas = Await Puntoventa.ObtenerTotalListaProductos(FrmPrincipal.empresaGlobal.IdEmpresa, bolIncluyeServicios, FrmPrincipal.usuarioGlobal.Token, cboLinea.SelectedValue, TxtCodigo.Text, TxtDesc.Text)
+            intTotalEmpresas = Await Puntoventa.ObtenerTotalListaProductos(FrmPrincipal.empresaGlobal.IdEmpresa, intIdSucursal, bolIncluyeServicios, FrmPrincipal.usuarioGlobal.Token, cboLinea.SelectedValue, TxtCodigo.Text, txtCodigoProveedor.Text, TxtDesc.Text)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()

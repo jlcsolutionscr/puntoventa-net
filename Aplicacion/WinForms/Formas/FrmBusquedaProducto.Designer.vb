@@ -36,6 +36,8 @@ Partial Class FrmBusquedaProducto
         Me.btnFirst = New System.Windows.Forms.Button()
         Me.Label2 = New System.Windows.Forms.Label()
         Me.cboLinea = New System.Windows.Forms.ComboBox()
+        Me.txtCodigoProveedor = New System.Windows.Forms.TextBox()
+        Me.Label1 = New System.Windows.Forms.Label()
         CType(Me.dgvListado, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -44,7 +46,7 @@ Partial Class FrmBusquedaProducto
         Me.CmdFiltro.BackColor = System.Drawing.SystemColors.ControlLightLight
         Me.CmdFiltro.Cursor = System.Windows.Forms.Cursors.Default
         Me.CmdFiltro.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.CmdFiltro.Location = New System.Drawing.Point(601, 57)
+        Me.CmdFiltro.Location = New System.Drawing.Point(702, 83)
         Me.CmdFiltro.Name = "CmdFiltro"
         Me.CmdFiltro.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.CmdFiltro.Size = New System.Drawing.Size(81, 21)
@@ -59,11 +61,11 @@ Partial Class FrmBusquedaProducto
         Me.TxtDesc.BackColor = System.Drawing.SystemColors.Window
         Me.TxtDesc.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.TxtDesc.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.TxtDesc.Location = New System.Drawing.Point(80, 58)
+        Me.TxtDesc.Location = New System.Drawing.Point(106, 84)
         Me.TxtDesc.MaxLength = 200
         Me.TxtDesc.Name = "TxtDesc"
         Me.TxtDesc.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.TxtDesc.Size = New System.Drawing.Size(516, 20)
+        Me.TxtDesc.Size = New System.Drawing.Size(590, 20)
         Me.TxtDesc.TabIndex = 1
         '
         'TxtCodigo
@@ -72,11 +74,11 @@ Partial Class FrmBusquedaProducto
         Me.TxtCodigo.BackColor = System.Drawing.SystemColors.Window
         Me.TxtCodigo.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.TxtCodigo.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.TxtCodigo.Location = New System.Drawing.Point(80, 32)
+        Me.TxtCodigo.Location = New System.Drawing.Point(106, 32)
         Me.TxtCodigo.MaxLength = 50
         Me.TxtCodigo.Name = "TxtCodigo"
         Me.TxtCodigo.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.TxtCodigo.Size = New System.Drawing.Size(242, 20)
+        Me.TxtCodigo.Size = New System.Drawing.Size(260, 20)
         Me.TxtCodigo.TabIndex = 0
         '
         'Id2Label
@@ -84,12 +86,12 @@ Partial Class FrmBusquedaProducto
         Me.Id2Label.BackColor = System.Drawing.Color.Transparent
         Me.Id2Label.Cursor = System.Windows.Forms.Cursors.Default
         Me.Id2Label.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Id2Label.Location = New System.Drawing.Point(9, 59)
+        Me.Id2Label.Location = New System.Drawing.Point(35, 85)
         Me.Id2Label.Name = "Id2Label"
         Me.Id2Label.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Id2Label.Size = New System.Drawing.Size(65, 17)
         Me.Id2Label.TabIndex = 5
-        Me.Id2Label.Text = "Descripción"
+        Me.Id2Label.Text = "Descripción:"
         Me.Id2Label.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'IdLabel
@@ -97,12 +99,12 @@ Partial Class FrmBusquedaProducto
         Me.IdLabel.BackColor = System.Drawing.Color.Transparent
         Me.IdLabel.Cursor = System.Windows.Forms.Cursors.Default
         Me.IdLabel.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.IdLabel.Location = New System.Drawing.Point(9, 33)
+        Me.IdLabel.Location = New System.Drawing.Point(35, 33)
         Me.IdLabel.Name = "IdLabel"
         Me.IdLabel.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.IdLabel.Size = New System.Drawing.Size(65, 17)
         Me.IdLabel.TabIndex = 4
-        Me.IdLabel.Text = "Código"
+        Me.IdLabel.Text = "Código:"
         Me.IdLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'dgvListado
@@ -112,19 +114,19 @@ Partial Class FrmBusquedaProducto
         Me.dgvListado.AllowUserToResizeColumns = False
         Me.dgvListado.AllowUserToResizeRows = False
         Me.dgvListado.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.dgvListado.Location = New System.Drawing.Point(12, 120)
+        Me.dgvListado.Location = New System.Drawing.Point(12, 148)
         Me.dgvListado.Name = "dgvListado"
         Me.dgvListado.ReadOnly = True
         Me.dgvListado.RowHeadersVisible = False
         Me.dgvListado.ScrollBars = System.Windows.Forms.ScrollBars.None
-        Me.dgvListado.Size = New System.Drawing.Size(670, 310)
+        Me.dgvListado.Size = New System.Drawing.Size(770, 310)
         Me.dgvListado.TabIndex = 5
         Me.dgvListado.TabStop = False
         '
         'chkExacta
         '
         Me.chkExacta.AutoSize = True
-        Me.chkExacta.Location = New System.Drawing.Point(572, 31)
+        Me.chkExacta.Location = New System.Drawing.Point(381, 34)
         Me.chkExacta.Name = "chkExacta"
         Me.chkExacta.Size = New System.Drawing.Size(110, 17)
         Me.chkExacta.TabIndex = 3
@@ -135,7 +137,7 @@ Partial Class FrmBusquedaProducto
         'lblPagina
         '
         Me.lblPagina.AutoSize = True
-        Me.lblPagina.Location = New System.Drawing.Point(484, 441)
+        Me.lblPagina.Location = New System.Drawing.Point(584, 469)
         Me.lblPagina.Name = "lblPagina"
         Me.lblPagina.Size = New System.Drawing.Size(77, 13)
         Me.lblPagina.TabIndex = 28
@@ -146,7 +148,7 @@ Partial Class FrmBusquedaProducto
         Me.btnLast.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnLast.Enabled = False
         Me.btnLast.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnLast.Location = New System.Drawing.Point(654, 436)
+        Me.btnLast.Location = New System.Drawing.Point(754, 464)
         Me.btnLast.Name = "btnLast"
         Me.btnLast.Size = New System.Drawing.Size(29, 23)
         Me.btnLast.TabIndex = 9
@@ -159,7 +161,7 @@ Partial Class FrmBusquedaProducto
         Me.btnNext.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnNext.Enabled = False
         Me.btnNext.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnNext.Location = New System.Drawing.Point(625, 436)
+        Me.btnNext.Location = New System.Drawing.Point(725, 464)
         Me.btnNext.Name = "btnNext"
         Me.btnNext.Size = New System.Drawing.Size(29, 23)
         Me.btnNext.TabIndex = 8
@@ -172,7 +174,7 @@ Partial Class FrmBusquedaProducto
         Me.btnPrevious.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnPrevious.Enabled = False
         Me.btnPrevious.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnPrevious.Location = New System.Drawing.Point(596, 436)
+        Me.btnPrevious.Location = New System.Drawing.Point(696, 464)
         Me.btnPrevious.Name = "btnPrevious"
         Me.btnPrevious.Size = New System.Drawing.Size(29, 23)
         Me.btnPrevious.TabIndex = 7
@@ -185,7 +187,7 @@ Partial Class FrmBusquedaProducto
         Me.btnFirst.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnFirst.Enabled = False
         Me.btnFirst.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnFirst.Location = New System.Drawing.Point(567, 436)
+        Me.btnFirst.Location = New System.Drawing.Point(667, 464)
         Me.btnFirst.Name = "btnFirst"
         Me.btnFirst.Size = New System.Drawing.Size(29, 23)
         Me.btnFirst.TabIndex = 6
@@ -198,22 +200,48 @@ Partial Class FrmBusquedaProducto
         Me.Label2.BackColor = System.Drawing.Color.Transparent
         Me.Label2.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label2.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label2.Location = New System.Drawing.Point(9, 84)
+        Me.Label2.Location = New System.Drawing.Point(35, 110)
         Me.Label2.Name = "Label2"
         Me.Label2.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label2.Size = New System.Drawing.Size(65, 17)
         Me.Label2.TabIndex = 39
-        Me.Label2.Text = "Línea"
+        Me.Label2.Text = "Línea:"
         Me.Label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'cboLinea
         '
         Me.cboLinea.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cboLinea.FormattingEnabled = True
-        Me.cboLinea.Location = New System.Drawing.Point(80, 84)
+        Me.cboLinea.Location = New System.Drawing.Point(106, 110)
         Me.cboLinea.Name = "cboLinea"
-        Me.cboLinea.Size = New System.Drawing.Size(242, 21)
+        Me.cboLinea.Size = New System.Drawing.Size(320, 21)
         Me.cboLinea.TabIndex = 38
+        '
+        'txtCodigoProveedor
+        '
+        Me.txtCodigoProveedor.AcceptsReturn = True
+        Me.txtCodigoProveedor.BackColor = System.Drawing.SystemColors.Window
+        Me.txtCodigoProveedor.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtCodigoProveedor.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtCodigoProveedor.Location = New System.Drawing.Point(106, 58)
+        Me.txtCodigoProveedor.MaxLength = 50
+        Me.txtCodigoProveedor.Name = "txtCodigoProveedor"
+        Me.txtCodigoProveedor.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtCodigoProveedor.Size = New System.Drawing.Size(260, 20)
+        Me.txtCodigoProveedor.TabIndex = 40
+        '
+        'Label1
+        '
+        Me.Label1.BackColor = System.Drawing.Color.Transparent
+        Me.Label1.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label1.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label1.Location = New System.Drawing.Point(-2, 59)
+        Me.Label1.Name = "Label1"
+        Me.Label1.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label1.Size = New System.Drawing.Size(102, 17)
+        Me.Label1.TabIndex = 41
+        Me.Label1.Text = "Código proveedor:"
+        Me.Label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'FrmBusquedaProducto
         '
@@ -221,7 +249,9 @@ Partial Class FrmBusquedaProducto
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
-        Me.ClientSize = New System.Drawing.Size(695, 472)
+        Me.ClientSize = New System.Drawing.Size(795, 499)
+        Me.Controls.Add(Me.txtCodigoProveedor)
+        Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.Label2)
         Me.Controls.Add(Me.cboLinea)
         Me.Controls.Add(Me.lblPagina)
@@ -259,4 +289,6 @@ Partial Class FrmBusquedaProducto
     Private WithEvents btnFirst As System.Windows.Forms.Button
     Public WithEvents Label2 As Label
     Friend WithEvents cboLinea As ComboBox
+    Public WithEvents txtCodigoProveedor As TextBox
+    Public WithEvents Label1 As Label
 End Class

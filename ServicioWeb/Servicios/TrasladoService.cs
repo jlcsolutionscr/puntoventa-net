@@ -19,11 +19,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         Sucursal ObtenerSucursal(int intIdSucursal);
         IEnumerable<Sucursal> ObtenerListaSucursales(int intIdEmpresa, string strNombre);
         Traslado AgregarTraslado(Traslado traslado);
-        void ActualizarTraslado(Traslado traslado);
+        void AplicarTraslado(int intIdTraslado, int intIdUsuario);
         void AnularTraslado(int intIdTraslado, int intIdUsuario);
         Traslado ObtenerTraslado(int intIdTraslado);
-        int ObtenerTotalListaTraslados(int intIdEmpresa, int intIdTraslado, string strNombre);
-        IEnumerable<Traslado> ObtenerListaTraslados(int intIdEmpresa, int numPagina, int cantRec, int intIdTraslado, string strNombre);
+        int ObtenerTotalListaTraslados(int intIdEmpresa, int intIdTraslado);
+        IEnumerable<Traslado> ObtenerListaTraslados(int intIdEmpresa, int numPagina, int cantRec, int intIdTraslado);
     }
 
     public class TrasladoService : ITrasladoService
@@ -164,7 +164,35 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         public Traslado AgregarTraslado(Traslado traslado)
         {
-            decimal decTotalInventario = 0;
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    Empresa empresa = dbContext.EmpresaRepository.Find(traslado.IdEmpresa);
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
+                    traslado.IdAsiento = 0;
+                    dbContext.TrasladoRepository.Add(traslado);
+                    dbContext.Commit();
+                }
+                catch (BusinessException ex)
+                {
+                    dbContext.RollBack();
+                    throw ex;
+                }
+                catch (Exception ex)
+                {
+                    dbContext.RollBack();
+                    log.Error("Error al agregar el registro de devolución: ", ex);
+                    throw new Exception("Se produjo un error agregando la información de la devolución. Por favor consulte con su proveedor.");
+                }
+            }
+            return traslado;
+        }
+
+        public void AplicarTraslado(int intIdTraslado, int intIdUsuario)
+        {
+            /*decimal decTotalInventario = 0;
             ParametroContable ivaPorPagarParam = null;
             ParametroContable efectivoParam = null;
             ParametroContable trasladosParam = null;
@@ -173,72 +201,108 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             dtbInventarios.Columns.Add("IdLinea", typeof(int));
             dtbInventarios.Columns.Add("Total", typeof(decimal));
             dtbInventarios.PrimaryKey = new DataColumn[] { dtbInventarios.Columns[0] };
-            Asiento asiento = null;
+            Asiento asiento = null;*/
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 try
                 {
+                    Traslado traslado = dbContext.TrasladoRepository.Find(intIdTraslado);
+                    if (traslado == null) throw new Exception("El registro de traslado por aplicar no existe.");
                     Empresa empresa = dbContext.EmpresaRepository.Find(traslado.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
-                    if (empresa.Contabiliza)
+                    /*if (empresa.Contabiliza)
                     {
                         ivaPorPagarParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.IVAPorPagar).FirstOrDefault();
                         efectivoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.Efectivo).FirstOrDefault();
                         if (ivaPorPagarParam == null || efectivoParam == null)
                             throw new BusinessException("La parametrización contable está incompleta y no se puede continuar. Por favor verificar.");
-                    }
-                    traslado.IdAsiento = 0;
-                    dbContext.TrasladoRepository.Add(traslado);
+                    }*/
+                    traslado.Aplicado = true;
+                    traslado.IdAplicadoPor = intIdUsuario;
+                    dbContext.NotificarModificacion(traslado);
                     foreach (var detalleTraslado in traslado.DetalleTraslado)
                     {
                         Producto producto = dbContext.ProductoRepository.Include("Linea").FirstOrDefault(x => x.IdProducto == detalleTraslado.IdProducto);
                         if (producto == null)
                             throw new Exception("El producto asignado al detalle del traslado no existe");
-                        if (producto.Tipo == StaticTipoProducto.ServicioProfesionales)
+                        if (producto.Tipo != StaticTipoProducto.Producto)
                             throw new BusinessException("El tipo de producto por trasladar no puede ser un servicio. Por favor verificar.");
-                        else if (producto.Tipo == StaticTipoProducto.Producto)
+                        ExistenciaPorSucursal existencias = dbContext.ExistenciaPorSucursalRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == traslado.IdSucursalOrigen).FirstOrDefault();
+                        if (existencias != null)
                         {
-                            MovimientoProducto movimiento = new MovimientoProducto
+                            existencias.Cantidad -= detalleTraslado.Cantidad;
+                            dbContext.NotificarModificacion(existencias);
+                        }
+                        else
+                        {
+                            ExistenciaPorSucursal nuevoRegistro = new ExistenciaPorSucursal
                             {
-                                IdProducto = producto.IdProducto,
-                                Fecha = DateTime.Now,
-                                Referencia = traslado.NoDocumento,
-                                Cantidad = detalleTraslado.Cantidad,
-                                PrecioCosto = detalleTraslado.PrecioCosto
+                                IdEmpresa = traslado.IdEmpresa,
+                                IdSucursal = traslado.IdSucursalOrigen,
+                                IdProducto = detalleTraslado.IdProducto,
+                                Cantidad = detalleTraslado.Cantidad * -1
                             };
-                            if (traslado.Tipo == 0)
+                            dbContext.ExistenciaPorSucursalRepository.Add(nuevoRegistro);
+                        }
+                        MovimientoProducto movimiento = new MovimientoProducto
+                        {
+                            IdProducto = producto.IdProducto,
+                            IdSucursal = traslado.IdSucursalOrigen,
+                            Fecha = DateTime.Now,
+                            Referencia = traslado.NoDocumento,
+                            PrecioCosto = detalleTraslado.PrecioCosto,
+                            Origen = "Salida por traslado entre sucursales",
+                            Tipo = StaticTipoMovimientoProducto.Salida,
+                            Cantidad = detalleTraslado.Cantidad
+                        };
+                        producto.MovimientoProducto.Add(movimiento);
+                        existencias = dbContext.ExistenciaPorSucursalRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == traslado.IdSucursalDestino).FirstOrDefault();
+                        if (existencias != null)
+                        {
+                            existencias.Cantidad += detalleTraslado.Cantidad;
+                            dbContext.NotificarModificacion(existencias);
+                        }
+                        else
+                        {
+                            ExistenciaPorSucursal nuevoRegistro = new ExistenciaPorSucursal
                             {
-                                movimiento.Origen = "Registro de traslado entrante";
-                                movimiento.Tipo = StaticTipoMovimientoProducto.Entrada;
-                                producto.Cantidad += detalleTraslado.Cantidad;
-                            }
+                                IdEmpresa = traslado.IdEmpresa,
+                                IdSucursal = traslado.IdSucursalDestino,
+                                IdProducto = detalleTraslado.IdProducto,
+                                Cantidad = detalleTraslado.Cantidad
+                            };
+                            dbContext.ExistenciaPorSucursalRepository.Add(nuevoRegistro);
+                        }
+                        movimiento = new MovimientoProducto
+                        {
+                            IdProducto = producto.IdProducto,
+                            IdSucursal = traslado.IdSucursalDestino,
+                            Fecha = DateTime.Now,
+                            Referencia = traslado.NoDocumento,
+                            PrecioCosto = detalleTraslado.PrecioCosto,
+                            Origen = "Ingreso por traslado entre sucursales",
+                            Tipo = StaticTipoMovimientoProducto.Entrada,
+                            Cantidad = detalleTraslado.Cantidad
+                        };
+                        producto.MovimientoProducto.Add(movimiento);
+                        /*if (empresa.Contabiliza)
+                        {
+                            decimal decTotalPorLinea = Math.Round(detalleTraslado.PrecioCosto * detalleTraslado.Cantidad, 2, MidpointRounding.AwayFromZero);
+                            decTotalInventario += decTotalPorLinea;
+                            int intExiste = dtbInventarios.Rows.IndexOf(dtbInventarios.Rows.Find(producto.Linea.IdLinea));
+                            if (intExiste >= 0)
+                                dtbInventarios.Rows[intExiste]["Total"] = (decimal)dtbInventarios.Rows[intExiste]["Total"] + decTotalPorLinea;
                             else
                             {
-                                movimiento.Origen = "Registro de traslado saliente";
-                                movimiento.Tipo = StaticTipoMovimientoProducto.Salida;
-                                producto.Cantidad -= detalleTraslado.Cantidad;
+                                DataRow data = dtbInventarios.NewRow();
+                                data["IdLinea"] = producto.Linea.IdLinea;
+                                data["Total"] = decTotalPorLinea;
+                                dtbInventarios.Rows.Add(data);
                             }
-                            producto.MovimientoProducto.Add(movimiento);
-                            dbContext.NotificarModificacion(producto);
-                            if (empresa.Contabiliza)
-                            {
-                                decimal decTotalPorLinea = Math.Round(detalleTraslado.PrecioCosto * detalleTraslado.Cantidad, 2, MidpointRounding.AwayFromZero);
-                                decTotalInventario += decTotalPorLinea;
-                                int intExiste = dtbInventarios.Rows.IndexOf(dtbInventarios.Rows.Find(producto.Linea.IdLinea));
-                                if (intExiste >= 0)
-                                    dtbInventarios.Rows[intExiste]["Total"] = (decimal)dtbInventarios.Rows[intExiste]["Total"] + decTotalPorLinea;
-                                else
-                                {
-                                    DataRow data = dtbInventarios.NewRow();
-                                    data["IdLinea"] = producto.Linea.IdLinea;
-                                    data["Total"] = decTotalPorLinea;
-                                    dtbInventarios.Rows.Add(data);
-                                }
-                            }
-                        }
+                        }*/
                     }
-                    if (empresa.Contabiliza)
+                    /*if (empresa.Contabiliza)
                     {
                         decimal decTotalDiff = decTotalInventario - traslado.Total;
                         if (decTotalDiff != 0)
@@ -300,16 +364,16 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                         IContabilidadService servicioContabilidad = new ContabilidadService();
                         servicioContabilidad.AgregarAsiento(dbContext, asiento);
-                    }
+                    } */
                     dbContext.Commit();
-                    if (asiento != null)
+                    /*if (asiento != null)
                     {
                         traslado.IdAsiento = asiento.IdAsiento;
                         dbContext.NotificarModificacion(traslado);
                         asiento.Detalle += traslado.IdTraslado;
                         dbContext.NotificarModificacion(asiento);
                     }
-                    dbContext.Commit();
+                    dbContext.Commit();*/
                 }
                 catch (BusinessException ex)
                 {
@@ -319,35 +383,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    log.Error("Error al agregar el registro de devolución: ", ex);
-                    throw new Exception("Se produjo un error agregando la información de la devolución. Por favor consulte con su proveedor.");
-                }
-            }
-            return traslado;
-        }
-
-        public void ActualizarTraslado(Traslado traslado)
-        {
-            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
-            {
-                try
-                {
-                    Empresa empresa = dbContext.EmpresaRepository.Find(traslado.IdEmpresa);
-                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
-                    dbContext.NotificarModificacion(traslado);
-                    dbContext.Commit();
-                }
-                catch (BusinessException ex)
-                {
-                    dbContext.RollBack();
-                    throw ex;
-                }
-                catch (Exception ex)
-                {
-                    dbContext.RollBack();
-                    log.Error("Error al actualizar el registro de traslado: ", ex);
-                    throw new Exception("Se produjo un error actualizando la información del traslado. Por favor consulte con su proveedor.");
+                    log.Error("Error al aplicar el registro de traslado: ", ex);
+                    throw new Exception("Se produjo un error aplicando la información del traslado. Por favor consulte con su proveedor.");
                 }
             }
         }
@@ -366,35 +403,73 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     traslado.Nulo = true;
                     traslado.IdAnuladoPor = intIdUsuario;
                     dbContext.NotificarModificacion(traslado);
-                    foreach (var detalleTraslado in traslado.DetalleTraslado)
+                    if (traslado.Aplicado)
                     {
-                        Producto producto = dbContext.ProductoRepository.Find(detalleTraslado.IdProducto);
-                        if (producto == null)
-                            throw new Exception("El producto asignado al detalle de la devolución no existe");
-                        if (producto.Tipo == StaticTipoProducto.Producto)
+                        foreach (var detalleTraslado in traslado.DetalleTraslado)
                         {
-                            MovimientoProducto movimiento = new MovimientoProducto
+                            Producto producto = dbContext.ProductoRepository.Include("Linea").FirstOrDefault(x => x.IdProducto == detalleTraslado.IdProducto);
+                            if (producto == null)
+                                throw new Exception("El producto asignado al detalle del traslado no existe");
+                            if (producto.Tipo != StaticTipoProducto.Producto)
+                                throw new BusinessException("El tipo de producto por trasladar no puede ser un servicio. Por favor verificar.");
+                            ExistenciaPorSucursal existencias = dbContext.ExistenciaPorSucursalRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == traslado.IdSucursalOrigen).FirstOrDefault();
+                            if (existencias != null)
                             {
-                                IdProducto = producto.IdProducto,
-                                Fecha = DateTime.Now,
-                                Referencia = traslado.NoDocumento,
-                                Cantidad = detalleTraslado.Cantidad,
-                                PrecioCosto = detalleTraslado.PrecioCosto
-                            };
-                            if (traslado.Tipo == 0)
-                            {
-                                movimiento.Origen = "Anulación registro de traslado entrante";
-                                movimiento.Tipo = StaticTipoMovimientoProducto.Salida;
-                                producto.Cantidad -= detalleTraslado.Cantidad;
+                                existencias.Cantidad += detalleTraslado.Cantidad;
+                                dbContext.NotificarModificacion(existencias);
                             }
                             else
                             {
-                                movimiento.Origen = "Anulación registro de traslado saliente";
-                                movimiento.Tipo = StaticTipoMovimientoProducto.Entrada;
-                                producto.Cantidad += detalleTraslado.Cantidad;
+                                ExistenciaPorSucursal nuevoRegistro = new ExistenciaPorSucursal
+                                {
+                                    IdEmpresa = traslado.IdEmpresa,
+                                    IdSucursal = traslado.IdSucursalOrigen,
+                                    IdProducto = detalleTraslado.IdProducto,
+                                    Cantidad = detalleTraslado.Cantidad
+                                };
+                                dbContext.ExistenciaPorSucursalRepository.Add(nuevoRegistro);
                             }
+                            MovimientoProducto movimiento = new MovimientoProducto
+                            {
+                                IdProducto = producto.IdProducto,
+                                IdSucursal = traslado.IdSucursalOrigen,
+                                Fecha = DateTime.Now,
+                                Referencia = traslado.NoDocumento,
+                                PrecioCosto = detalleTraslado.PrecioCosto,
+                                Origen = "Ingreso por anulación de traslado entre sucursales",
+                                Tipo = StaticTipoMovimientoProducto.Entrada,
+                                Cantidad = detalleTraslado.Cantidad
+                            };
                             producto.MovimientoProducto.Add(movimiento);
-                            dbContext.NotificarModificacion(producto);
+                            existencias = dbContext.ExistenciaPorSucursalRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == traslado.IdSucursalDestino).FirstOrDefault();
+                            if (existencias != null)
+                            {
+                                existencias.Cantidad -= detalleTraslado.Cantidad;
+                                dbContext.NotificarModificacion(existencias);
+                            }
+                            else
+                            {
+                                ExistenciaPorSucursal nuevoRegistro = new ExistenciaPorSucursal
+                                {
+                                    IdEmpresa = traslado.IdEmpresa,
+                                    IdSucursal = traslado.IdSucursalDestino,
+                                    IdProducto = detalleTraslado.IdProducto,
+                                    Cantidad = detalleTraslado.Cantidad * -1
+                                };
+                                dbContext.ExistenciaPorSucursalRepository.Add(nuevoRegistro);
+                            }
+                            movimiento = new MovimientoProducto
+                            {
+                                IdProducto = producto.IdProducto,
+                                IdSucursal = traslado.IdSucursalDestino,
+                                Fecha = DateTime.Now,
+                                Referencia = traslado.NoDocumento,
+                                PrecioCosto = detalleTraslado.PrecioCosto,
+                                Origen = "Salida por anulación de traslado entre sucursales",
+                                Tipo = StaticTipoMovimientoProducto.Salida,
+                                Cantidad = detalleTraslado.Cantidad
+                            };
+                            producto.MovimientoProducto.Add(movimiento);
                         }
                     }
                     if (traslado.IdAsiento > 0)
@@ -434,7 +509,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public int ObtenerTotalListaTraslados(int intIdEmpresa, int intIdTraslado, string strNombre)
+        public int ObtenerTotalListaTraslados(int intIdEmpresa, int intIdTraslado)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -443,8 +518,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     var listaTraslados = dbContext.TrasladoRepository.Where(x => !x.Nulo & x.IdEmpresa == intIdEmpresa);
                     if (intIdTraslado > 0)
                         listaTraslados = listaTraslados.Where(x => x.IdTraslado == intIdTraslado);
-                    else if (!strNombre.Equals(string.Empty))
-                        listaTraslados = listaTraslados.Where(x => x.Sucursal.Nombre.Contains(strNombre));
                     return listaTraslados.Count();
                 }
                 catch (Exception ex)
@@ -455,7 +528,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<Traslado> ObtenerListaTraslados(int intIdEmpresa, int numPagina, int cantRec, int intIdTraslado, string strNombre)
+        public IEnumerable<Traslado> ObtenerListaTraslados(int intIdEmpresa, int numPagina, int cantRec, int intIdTraslado)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -464,8 +537,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     var listaTraslados = dbContext.TrasladoRepository.Include("Sucursal").Where(x => !x.Nulo & x.IdEmpresa == intIdEmpresa);
                     if (intIdTraslado > 0)
                         listaTraslados = listaTraslados.Where(x => x.IdTraslado == intIdTraslado);
-                    else if (!strNombre.Equals(string.Empty))
-                        listaTraslados = listaTraslados.Where(x => x.Sucursal.Nombre.Contains(strNombre));
                     return listaTraslados.OrderByDescending(x => x.IdTraslado).Skip((numPagina - 1) * cantRec).Take(cantRec).ToList();
                 }
                 catch (Exception ex)

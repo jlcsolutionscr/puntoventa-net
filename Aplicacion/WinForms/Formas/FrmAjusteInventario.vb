@@ -287,7 +287,7 @@ Public Class FrmAjusteInventario
     Private Sub BtnBusProd_Click(sender As Object, e As EventArgs) Handles btnBusProd.Click
         Dim formBusProd As New FrmBusquedaProducto With {
             .bolIncluyeServicios = False,
-            .intTipoPrecio = 1
+            .intIdSucursal = FrmPrincipal.equipoGlobal.IdSucursal
         }
         FrmPrincipal.strBusqueda = ""
         formBusProd.ShowDialog()

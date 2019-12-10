@@ -91,6 +91,10 @@ Partial Class FrmEmpresa
         Me.txtNombreCertificado = New System.Windows.Forms.TextBox()
         Me.Label16 = New System.Windows.Forms.Label()
         Me.ofdAbrirDocumento = New System.Windows.Forms.OpenFileDialog()
+        Me.txtLeyendaOrdenServicio = New System.Windows.Forms.TextBox()
+        Me.Label15 = New System.Windows.Forms.Label()
+        Me.txtPorcentajeDescMaximo = New System.Windows.Forms.TextBox()
+        Me.Label23 = New System.Windows.Forms.Label()
         Me.gpbSucursal.SuspendLayout()
         Me.GroupBox1.SuspendLayout()
         Me.SuspendLayout()
@@ -477,13 +481,13 @@ Partial Class FrmEmpresa
         Me.txtFechaRenovacion.BackColor = System.Drawing.SystemColors.Window
         Me.txtFechaRenovacion.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtFechaRenovacion.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtFechaRenovacion.Location = New System.Drawing.Point(122, 395)
+        Me.txtFechaRenovacion.Location = New System.Drawing.Point(122, 462)
         Me.txtFechaRenovacion.MaxLength = 10
         Me.txtFechaRenovacion.Name = "txtFechaRenovacion"
         Me.txtFechaRenovacion.ReadOnly = True
         Me.txtFechaRenovacion.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtFechaRenovacion.Size = New System.Drawing.Size(85, 20)
-        Me.txtFechaRenovacion.TabIndex = 13
+        Me.txtFechaRenovacion.TabIndex = 15
         Me.txtFechaRenovacion.TabStop = False
         '
         'Label9
@@ -491,7 +495,7 @@ Partial Class FrmEmpresa
         Me.Label9.BackColor = System.Drawing.Color.Transparent
         Me.Label9.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label9.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label9.Location = New System.Drawing.Point(4, 398)
+        Me.Label9.Location = New System.Drawing.Point(4, 465)
         Me.Label9.Name = "Label9"
         Me.Label9.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label9.Size = New System.Drawing.Size(112, 17)
@@ -978,12 +982,69 @@ Partial Class FrmEmpresa
         Me.Label16.Text = "Certificado:"
         Me.Label16.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
+        'txtLeyendaOrdenServicio
+        '
+        Me.txtLeyendaOrdenServicio.AcceptsReturn = True
+        Me.txtLeyendaOrdenServicio.BackColor = System.Drawing.SystemColors.Window
+        Me.txtLeyendaOrdenServicio.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtLeyendaOrdenServicio.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtLeyendaOrdenServicio.Location = New System.Drawing.Point(122, 395)
+        Me.txtLeyendaOrdenServicio.MaxLength = 500
+        Me.txtLeyendaOrdenServicio.Multiline = True
+        Me.txtLeyendaOrdenServicio.Name = "txtLeyendaOrdenServicio"
+        Me.txtLeyendaOrdenServicio.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtLeyendaOrdenServicio.Size = New System.Drawing.Size(313, 35)
+        Me.txtLeyendaOrdenServicio.TabIndex = 13
+        '
+        'Label15
+        '
+        Me.Label15.BackColor = System.Drawing.Color.Transparent
+        Me.Label15.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label15.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label15.Location = New System.Drawing.Point(4, 398)
+        Me.Label15.Name = "Label15"
+        Me.Label15.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label15.Size = New System.Drawing.Size(112, 17)
+        Me.Label15.TabIndex = 263
+        Me.Label15.Text = "Nota orden servicio:"
+        Me.Label15.TextAlign = System.Drawing.ContentAlignment.TopRight
+        '
+        'txtPorcentajeDescMaximo
+        '
+        Me.txtPorcentajeDescMaximo.AcceptsReturn = True
+        Me.txtPorcentajeDescMaximo.BackColor = System.Drawing.SystemColors.Window
+        Me.txtPorcentajeDescMaximo.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtPorcentajeDescMaximo.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtPorcentajeDescMaximo.Location = New System.Drawing.Point(122, 436)
+        Me.txtPorcentajeDescMaximo.MaxLength = 6
+        Me.txtPorcentajeDescMaximo.Name = "txtPorcentajeDescMaximo"
+        Me.txtPorcentajeDescMaximo.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtPorcentajeDescMaximo.Size = New System.Drawing.Size(38, 20)
+        Me.txtPorcentajeDescMaximo.TabIndex = 14
+        '
+        'Label23
+        '
+        Me.Label23.BackColor = System.Drawing.Color.Transparent
+        Me.Label23.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label23.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label23.Location = New System.Drawing.Point(-26, 439)
+        Me.Label23.Name = "Label23"
+        Me.Label23.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label23.Size = New System.Drawing.Size(142, 17)
+        Me.Label23.TabIndex = 266
+        Me.Label23.Text = "Porc max descuento:"
+        Me.Label23.TextAlign = System.Drawing.ContentAlignment.TopRight
+        '
         'FrmEmpresa
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
-        Me.ClientSize = New System.Drawing.Size(898, 457)
+        Me.ClientSize = New System.Drawing.Size(898, 495)
+        Me.Controls.Add(Me.txtPorcentajeDescMaximo)
+        Me.Controls.Add(Me.Label23)
+        Me.Controls.Add(Me.txtLeyendaOrdenServicio)
+        Me.Controls.Add(Me.Label15)
         Me.Controls.Add(Me.GroupBox1)
         Me.Controls.Add(Me.gpbSucursal)
         Me.Controls.Add(Me.txtFechaRenovacion)
@@ -1021,7 +1082,9 @@ Partial Class FrmEmpresa
         Me.KeyPreview = True
         Me.Location = New System.Drawing.Point(73, 22)
         Me.MaximizeBox = False
+        Me.MaximumSize = New System.Drawing.Size(914, 534)
         Me.MinimizeBox = False
+        Me.MinimumSize = New System.Drawing.Size(914, 534)
         Me.Name = "FrmEmpresa"
         Me.ShowInTaskbar = False
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
@@ -1088,4 +1151,8 @@ Partial Class FrmEmpresa
     Public WithEvents Label14 As Label
     Public WithEvents txtUltimoFE As TextBox
     Public WithEvents Label13 As Label
+    Public WithEvents txtLeyendaOrdenServicio As TextBox
+    Public WithEvents Label15 As Label
+    Public WithEvents txtPorcentajeDescMaximo As TextBox
+    Public WithEvents Label23 As Label
 End Class

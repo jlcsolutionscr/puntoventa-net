@@ -17,15 +17,6 @@ Public Class FrmEmpresa
 #End Region
 
 #Region "Métodos"
-    Private Function ValidarCampos(ByRef pCampo As String) As Boolean
-        If txtNombreEmpresa.Text = "" Then
-            pCampo = "Nombre"
-            Return False
-        Else
-            Return True
-        End If
-    End Function
-
     Private Async Function CargarListadoBarrios(IdProvincia As Integer, IdCanton As Integer, IdDistrito As Integer) As Task
         Try
             cboCanton.ValueMember = "Id"
@@ -78,6 +69,8 @@ Public Class FrmEmpresa
             txtDireccion.Text = datos.Direccion
             txtTelefono.Text = datos.Telefono
             txtCorreoNotificacion.Text = datos.CorreoNotificacion
+            txtLeyendaOrdenServicio.Text = datos.LeyendaOrdenServicio
+            txtPorcentajeDescMaximo.Text = datos.PorcentajeDescMaximo
             txtFechaRenovacion.Text = Format(datos.FechaVence, "dd/MM/yyyy")
             txtNombreCertificado.Text = datos.NombreCertificado
             txtPinCertificado.Text = datos.PinCertificado
@@ -152,6 +145,8 @@ Public Class FrmEmpresa
         datos.Direccion = txtDireccion.Text
         datos.Telefono = txtTelefono.Text
         datos.CorreoNotificacion = txtCorreoNotificacion.Text
+        datos.LeyendaOrdenServicio = txtLeyendaOrdenServicio.Text
+        datos.PorcentajeDescMaximo = txtPorcentajeDescMaximo.Text
         datos.NombreCertificado = txtNombreCertificado.Text
         datos.PinCertificado = txtPinCertificado.Text
         datos.UsuarioHacienda = txtUsuarioATV.Text
@@ -215,7 +210,7 @@ Public Class FrmEmpresa
         End If
     End Sub
 
-    Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As KeyPressEventArgs) Handles txtIdentificacion.KeyPress, txtTelefono.KeyPress
+    Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As KeyPressEventArgs) Handles txtIdentificacion.KeyPress, txtTelefono.KeyPress, txtPorcentajeDescMaximo.KeyPress
         FrmPrincipal.ValidaNumero(e, sender, True, 2, ".")
     End Sub
 

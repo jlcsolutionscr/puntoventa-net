@@ -79,7 +79,7 @@ Public Class FrmUsuario
     Private Async Sub CargarCombos()
         cboRole.ValueMember = "Id"
         cboRole.DisplayMember = "Descripcion"
-        cboRole.DataSource = Await Puntoventa.ObtenerListadoRoles(FrmPrincipal.usuarioGlobal.Token)
+        cboRole.DataSource = Await Puntoventa.ObtenerListadoRolesPorEmpresa(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
     End Sub
 #End Region
 

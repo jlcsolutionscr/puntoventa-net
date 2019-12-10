@@ -17,6 +17,7 @@ using System.Web;
 using System.ServiceModel.Web;
 using System.Net;
 using System.Web.Script.Serialization;
+using System.Threading.Tasks;
 
 namespace LeandroSoftware.ServicioWeb.EndPoints
 {
@@ -188,6 +189,38 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             }
         }
 
+        public string ObtenerListadoReportePorEmpresa(int intIdEmpresa)
+        {
+            try
+            {
+                IList<LlaveDescripcion> listadoEmpresas = servicioMantenimiento.ObtenerListadoReportePorEmpresa(intIdEmpresa);
+                string strRespuesta = "";
+                if (listadoEmpresas.Count > 0)
+                    strRespuesta = serializer.Serialize(listadoEmpresas);
+                return strRespuesta;
+            }
+            catch (Exception ex)
+            {
+                throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
+            }
+        }
+
+        public string ObtenerListadoRolePorEmpresa(int intIdEmpresa)
+        {
+            try
+            {
+                IList<LlaveDescripcion> listadoEmpresas = servicioMantenimiento.ObtenerListadoRolePorEmpresa(intIdEmpresa);
+                string strRespuesta = "";
+                if (listadoEmpresas.Count > 0)
+                    strRespuesta = serializer.Serialize(listadoEmpresas);
+                return strRespuesta;
+            }
+            catch (Exception ex)
+            {
+                throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
+            }
+        }
+
         public string ObtenerSucursalPorEmpresa(int intIdEmpresa, int intIdSucursal)
         {
             try
@@ -241,6 +274,22 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             try
             {
                 IList<LlaveDescripcion> listadoEmpresas = (List<LlaveDescripcion>)servicioMantenimiento.ObtenerListadoCatalogoReportes();
+                string strRespuesta = "";
+                if (listadoEmpresas.Count > 0)
+                    strRespuesta = serializer.Serialize(listadoEmpresas);
+                return strRespuesta;
+            }
+            catch (Exception ex)
+            {
+                throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
+            }
+        }
+
+        public string ObtenerListadoRoles()
+        {
+            try
+            {
+                IList<LlaveDescripcion> listadoEmpresas = (List<LlaveDescripcion>)servicioMantenimiento.ObtenerListadoRoles();
                 string strRespuesta = "";
                 if (listadoEmpresas.Count > 0)
                     strRespuesta = serializer.Serialize(listadoEmpresas);
@@ -391,6 +440,38 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             }
         }
 
+        public void ActualizarListadoReporte(string strDatos)
+        {
+            try
+            {
+                JObject parametrosJO = JObject.Parse(strDatos);
+                int intIdEmpresa = int.Parse(parametrosJO.Property("Id").Value.ToString());
+                string strListado = parametrosJO.Property("Datos").Value.ToString();
+                List<ReportePorEmpresa> listado = serializer.Deserialize<List<ReportePorEmpresa>>(strListado);
+                servicioMantenimiento.ActualizarReportePorEmpresa(intIdEmpresa, listado);
+            }
+            catch (Exception ex)
+            {
+                throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
+            }
+        }
+
+        public void ActualizarListadoRoles(string strDatos)
+        {
+            try
+            {
+                JObject parametrosJO = JObject.Parse(strDatos);
+                int intIdEmpresa = int.Parse(parametrosJO.Property("Id").Value.ToString());
+                string strListado = parametrosJO.Property("Datos").Value.ToString();
+                List<RolePorEmpresa> listado = serializer.Deserialize<List<RolePorEmpresa>>(strListado);
+                servicioMantenimiento.ActualizarRolePorEmpresa(intIdEmpresa, listado);
+            }
+            catch (Exception ex)
+            {
+                throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
+            }
+        }
+
         public void ActualizarLogoEmpresa(string strDatos)
         {
             try
@@ -512,13 +593,18 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
 
         public void ProcesarDocumentosElectronicosPendientes()
         {
+            Task.Run(() => RunSyncProcesarPendientes());
+        }
+
+        public void RunSyncProcesarPendientes()
+        {
             servicioFacturacion.ProcesarDocumentosElectronicosPendientes(servicioEnvioCorreo, configuracionGeneral);
-            servicioFacturacion.ProcesarCorreoRecepcion(servicioEnvioCorreo, servicioRecepcionCorreo, configuracionGeneral, configuracionRecepcion);
+            servicioFacturacion.ProcesarCorreoRecepcion(servicioEnvioCorreo, servicioRecepcionCorreo, configuracionGeneral, configuracionRecepcion));
         }
 
         public void LimpiarRegistrosInvalidos()
         {
-            servicioMantenimiento.EliminarRegistroAutenticacionInvalidos();
+            Task.Run(() => servicioMantenimiento.EliminarRegistroAutenticacionInvalidos());
         }
 
         public string ObtenerUltimaVersionApp()

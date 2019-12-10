@@ -1,5 +1,5 @@
 <Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
-Partial Class FrmProforma
+Partial Class FrmApartado
     Inherits System.Windows.Forms.Form
 
     'Form overrides dispose to clean up the component list.
@@ -13,7 +13,7 @@ Partial Class FrmProforma
 
     'Required by the Windows Form Designer
     Private components As System.ComponentModel.IContainer
-    Public WithEvents txtTextoAdicional As System.Windows.Forms.TextBox
+    Public WithEvents txtDocumento As System.Windows.Forms.TextBox
     Public WithEvents btnBusProd As System.Windows.Forms.Button
     Public WithEvents btnAnular As System.Windows.Forms.Button
     Public WithEvents btnAgregar As System.Windows.Forms.Button
@@ -23,7 +23,7 @@ Partial Class FrmProforma
     Public WithEvents btnEliminar As System.Windows.Forms.Button
     Public WithEvents btnInsertar As System.Windows.Forms.Button
     Public WithEvents txtImpuesto As System.Windows.Forms.TextBox
-    Public WithEvents txtIdProforma As System.Windows.Forms.TextBox
+    Public WithEvents txtIdApartado As System.Windows.Forms.TextBox
     Public WithEvents txtTotal As System.Windows.Forms.TextBox
     Public WithEvents txtSubTotal As System.Windows.Forms.TextBox
     Public WithEvents _lblLabels_11 As System.Windows.Forms.Label
@@ -37,8 +37,8 @@ Partial Class FrmProforma
     'It can be modified using the Windows Form Designer.
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FrmProforma))
-        Me.txtTextoAdicional = New System.Windows.Forms.TextBox()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FrmApartado))
+        Me.txtDocumento = New System.Windows.Forms.TextBox()
         Me.btnBusProd = New System.Windows.Forms.Button()
         Me.btnAnular = New System.Windows.Forms.Button()
         Me.btnAgregar = New System.Windows.Forms.Button()
@@ -48,7 +48,7 @@ Partial Class FrmProforma
         Me.btnEliminar = New System.Windows.Forms.Button()
         Me.btnInsertar = New System.Windows.Forms.Button()
         Me.txtImpuesto = New System.Windows.Forms.TextBox()
-        Me.txtIdProforma = New System.Windows.Forms.TextBox()
+        Me.txtIdApartado = New System.Windows.Forms.TextBox()
         Me.txtTotal = New System.Windows.Forms.TextBox()
         Me.txtSubTotal = New System.Windows.Forms.TextBox()
         Me._lblLabels_11 = New System.Windows.Forms.Label()
@@ -83,24 +83,43 @@ Partial Class FrmProforma
         Me._lblLabels_7 = New System.Windows.Forms.Label()
         Me._lblLabels_6 = New System.Windows.Forms.Label()
         Me._lblLabels_1 = New System.Windows.Forms.Label()
-        Me.btnGenerarPDF = New System.Windows.Forms.Button()
+        Me.txtSaldoPorPagar = New System.Windows.Forms.TextBox()
+        Me.Label10 = New System.Windows.Forms.Label()
+        Me.txtAutorizacion = New System.Windows.Forms.TextBox()
+        Me.lblAutorizacion = New System.Windows.Forms.Label()
+        Me.txtTipoTarjeta = New System.Windows.Forms.TextBox()
+        Me.lblTipoTarjeta = New System.Windows.Forms.Label()
+        Me.cboTipoBanco = New System.Windows.Forms.ComboBox()
+        Me.lblBanco = New System.Windows.Forms.Label()
+        Me.cboTipoMoneda = New System.Windows.Forms.ComboBox()
+        Me.Label2 = New System.Windows.Forms.Label()
+        Me.grdDesglosePago = New System.Windows.Forms.DataGridView()
+        Me.txtTipoCambio = New System.Windows.Forms.TextBox()
+        Me.btnEliminarPago = New System.Windows.Forms.Button()
+        Me.btnInsertarPago = New System.Windows.Forms.Button()
+        Me.txtMontoPago = New System.Windows.Forms.TextBox()
+        Me.cboFormaPago = New System.Windows.Forms.ComboBox()
+        Me.Label4 = New System.Windows.Forms.Label()
+        Me.Label5 = New System.Windows.Forms.Label()
+        Me.Label9 = New System.Windows.Forms.Label()
         CType(Me.grdDetalleProforma, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.grdDesglosePago, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
-        'txtTextoAdicional
+        'txtDocumento
         '
-        Me.txtTextoAdicional.AcceptsReturn = True
-        Me.txtTextoAdicional.BackColor = System.Drawing.SystemColors.Window
-        Me.txtTextoAdicional.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtTextoAdicional.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtTextoAdicional.Location = New System.Drawing.Point(104, 386)
-        Me.txtTextoAdicional.MaxLength = 500
-        Me.txtTextoAdicional.Multiline = True
-        Me.txtTextoAdicional.Name = "txtTextoAdicional"
-        Me.txtTextoAdicional.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtTextoAdicional.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-        Me.txtTextoAdicional.Size = New System.Drawing.Size(704, 45)
-        Me.txtTextoAdicional.TabIndex = 81
+        Me.txtDocumento.AcceptsReturn = True
+        Me.txtDocumento.BackColor = System.Drawing.SystemColors.Window
+        Me.txtDocumento.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtDocumento.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtDocumento.Location = New System.Drawing.Point(104, 545)
+        Me.txtDocumento.MaxLength = 500
+        Me.txtDocumento.Multiline = True
+        Me.txtDocumento.Name = "txtDocumento"
+        Me.txtDocumento.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtDocumento.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
+        Me.txtDocumento.Size = New System.Drawing.Size(704, 45)
+        Me.txtDocumento.TabIndex = 81
         '
         'btnBusProd
         '
@@ -171,7 +190,7 @@ Partial Class FrmProforma
         Me.btnImprimir.Size = New System.Drawing.Size(64, 21)
         Me.btnImprimir.TabIndex = 81
         Me.btnImprimir.TabStop = False
-        Me.btnImprimir.Text = "&Imprimir"
+        Me.btnImprimir.Text = "&Reporte"
         Me.btnImprimir.UseVisualStyleBackColor = False
         '
         'btnGuardar
@@ -232,20 +251,20 @@ Partial Class FrmProforma
         Me.txtImpuesto.TabStop = False
         Me.txtImpuesto.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
-        'txtIdProforma
+        'txtIdApartado
         '
-        Me.txtIdProforma.AcceptsReturn = True
-        Me.txtIdProforma.BackColor = System.Drawing.SystemColors.Window
-        Me.txtIdProforma.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtIdProforma.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtIdProforma.Location = New System.Drawing.Point(102, 39)
-        Me.txtIdProforma.MaxLength = 0
-        Me.txtIdProforma.Name = "txtIdProforma"
-        Me.txtIdProforma.ReadOnly = True
-        Me.txtIdProforma.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtIdProforma.Size = New System.Drawing.Size(73, 20)
-        Me.txtIdProforma.TabIndex = 0
-        Me.txtIdProforma.TabStop = False
+        Me.txtIdApartado.AcceptsReturn = True
+        Me.txtIdApartado.BackColor = System.Drawing.SystemColors.Window
+        Me.txtIdApartado.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtIdApartado.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtIdApartado.Location = New System.Drawing.Point(102, 39)
+        Me.txtIdApartado.MaxLength = 0
+        Me.txtIdApartado.Name = "txtIdApartado"
+        Me.txtIdApartado.ReadOnly = True
+        Me.txtIdApartado.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtIdApartado.Size = New System.Drawing.Size(73, 20)
+        Me.txtIdApartado.TabIndex = 0
+        Me.txtIdApartado.TabStop = False
         '
         'txtTotal
         '
@@ -284,7 +303,7 @@ Partial Class FrmProforma
         Me._lblLabels_11.BackColor = System.Drawing.Color.Transparent
         Me._lblLabels_11.Cursor = System.Windows.Forms.Cursors.Default
         Me._lblLabels_11.ForeColor = System.Drawing.SystemColors.ControlText
-        Me._lblLabels_11.Location = New System.Drawing.Point(-2, 386)
+        Me._lblLabels_11.Location = New System.Drawing.Point(-2, 545)
         Me._lblLabels_11.Name = "_lblLabels_11"
         Me._lblLabels_11.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me._lblLabels_11.Size = New System.Drawing.Size(100, 19)
@@ -354,7 +373,7 @@ Partial Class FrmProforma
         Me._lblLabels_0.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me._lblLabels_0.Size = New System.Drawing.Size(88, 19)
         Me._lblLabels_0.TabIndex = 13
-        Me._lblLabels_0.Text = "Proforma No.:"
+        Me._lblLabels_0.Text = "Apartado No.:"
         Me._lblLabels_0.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'grdDetalleProforma
@@ -377,7 +396,7 @@ Partial Class FrmProforma
         'btnBuscarCliente
         '
         Me.btnBuscarCliente.Image = CType(resources.GetObject("btnBuscarCliente.Image"), System.Drawing.Image)
-        Me.btnBuscarCliente.Location = New System.Drawing.Point(766, 40)
+        Me.btnBuscarCliente.Location = New System.Drawing.Point(762, 40)
         Me.btnBuscarCliente.Name = "btnBuscarCliente"
         Me.btnBuscarCliente.Size = New System.Drawing.Size(20, 20)
         Me.btnBuscarCliente.TabIndex = 4
@@ -405,7 +424,7 @@ Partial Class FrmProforma
         Me.txtVendedor.BackColor = System.Drawing.SystemColors.Window
         Me.txtVendedor.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtVendedor.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtVendedor.Location = New System.Drawing.Point(537, 9)
+        Me.txtVendedor.Location = New System.Drawing.Point(510, 9)
         Me.txtVendedor.MaxLength = 0
         Me.txtVendedor.Name = "txtVendedor"
         Me.txtVendedor.ReadOnly = True
@@ -417,7 +436,7 @@ Partial Class FrmProforma
         'btnBuscaVendedor
         '
         Me.btnBuscaVendedor.Image = CType(resources.GetObject("btnBuscaVendedor.Image"), System.Drawing.Image)
-        Me.btnBuscaVendedor.Location = New System.Drawing.Point(786, 8)
+        Me.btnBuscaVendedor.Location = New System.Drawing.Point(762, 8)
         Me.btnBuscaVendedor.Name = "btnBuscaVendedor"
         Me.btnBuscaVendedor.Size = New System.Drawing.Size(20, 20)
         Me.btnBuscaVendedor.TabIndex = 2
@@ -429,7 +448,7 @@ Partial Class FrmProforma
         Me.Label11.BackColor = System.Drawing.Color.Transparent
         Me.Label11.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label11.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label11.Location = New System.Drawing.Point(466, 9)
+        Me.Label11.Location = New System.Drawing.Point(439, 9)
         Me.Label11.Name = "Label11"
         Me.Label11.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label11.Size = New System.Drawing.Size(65, 19)
@@ -714,30 +733,305 @@ Partial Class FrmProforma
         Me._lblLabels_1.Text = "Código"
         Me._lblLabels_1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
-        'btnGenerarPDF
+        'txtSaldoPorPagar
         '
-        Me.btnGenerarPDF.BackColor = System.Drawing.SystemColors.ButtonHighlight
-        Me.btnGenerarPDF.Cursor = System.Windows.Forms.Cursors.Default
-        Me.btnGenerarPDF.Enabled = False
-        Me.btnGenerarPDF.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.btnGenerarPDF.Location = New System.Drawing.Point(328, 8)
-        Me.btnGenerarPDF.Name = "btnGenerarPDF"
-        Me.btnGenerarPDF.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.btnGenerarPDF.Size = New System.Drawing.Size(64, 21)
-        Me.btnGenerarPDF.TabIndex = 189
-        Me.btnGenerarPDF.TabStop = False
-        Me.btnGenerarPDF.Text = "A&brir PDF"
-        Me.btnGenerarPDF.UseVisualStyleBackColor = False
+        Me.txtSaldoPorPagar.AcceptsReturn = True
+        Me.txtSaldoPorPagar.BackColor = System.Drawing.SystemColors.Window
+        Me.txtSaldoPorPagar.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtSaldoPorPagar.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtSaldoPorPagar.Location = New System.Drawing.Point(734, 513)
+        Me.txtSaldoPorPagar.MaxLength = 0
+        Me.txtSaldoPorPagar.Name = "txtSaldoPorPagar"
+        Me.txtSaldoPorPagar.ReadOnly = True
+        Me.txtSaldoPorPagar.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtSaldoPorPagar.Size = New System.Drawing.Size(73, 20)
+        Me.txtSaldoPorPagar.TabIndex = 186
+        Me.txtSaldoPorPagar.TabStop = False
+        Me.txtSaldoPorPagar.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
-        'FrmProforma
+        'Label10
+        '
+        Me.Label10.BackColor = System.Drawing.Color.Transparent
+        Me.Label10.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label10.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label10.Location = New System.Drawing.Point(637, 514)
+        Me.Label10.Name = "Label10"
+        Me.Label10.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label10.Size = New System.Drawing.Size(91, 17)
+        Me.Label10.TabIndex = 194
+        Me.Label10.Text = "Saldo por Pagar:"
+        Me.Label10.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
+        'txtAutorizacion
+        '
+        Me.txtAutorizacion.AcceptsReturn = True
+        Me.txtAutorizacion.BackColor = System.Drawing.SystemColors.Window
+        Me.txtAutorizacion.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtAutorizacion.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtAutorizacion.Location = New System.Drawing.Point(372, 410)
+        Me.txtAutorizacion.MaxLength = 0
+        Me.txtAutorizacion.Name = "txtAutorizacion"
+        Me.txtAutorizacion.ReadOnly = True
+        Me.txtAutorizacion.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtAutorizacion.Size = New System.Drawing.Size(125, 20)
+        Me.txtAutorizacion.TabIndex = 179
+        '
+        'lblAutorizacion
+        '
+        Me.lblAutorizacion.BackColor = System.Drawing.Color.Transparent
+        Me.lblAutorizacion.Cursor = System.Windows.Forms.Cursors.Default
+        Me.lblAutorizacion.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.lblAutorizacion.Location = New System.Drawing.Point(372, 390)
+        Me.lblAutorizacion.Name = "lblAutorizacion"
+        Me.lblAutorizacion.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.lblAutorizacion.Size = New System.Drawing.Size(125, 19)
+        Me.lblAutorizacion.TabIndex = 193
+        Me.lblAutorizacion.Text = "Autorización"
+        Me.lblAutorizacion.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'txtTipoTarjeta
+        '
+        Me.txtTipoTarjeta.AcceptsReturn = True
+        Me.txtTipoTarjeta.BackColor = System.Drawing.SystemColors.Window
+        Me.txtTipoTarjeta.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtTipoTarjeta.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtTipoTarjeta.Location = New System.Drawing.Point(302, 410)
+        Me.txtTipoTarjeta.MaxLength = 0
+        Me.txtTipoTarjeta.Name = "txtTipoTarjeta"
+        Me.txtTipoTarjeta.ReadOnly = True
+        Me.txtTipoTarjeta.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtTipoTarjeta.Size = New System.Drawing.Size(70, 20)
+        Me.txtTipoTarjeta.TabIndex = 178
+        '
+        'lblTipoTarjeta
+        '
+        Me.lblTipoTarjeta.BackColor = System.Drawing.Color.Transparent
+        Me.lblTipoTarjeta.Cursor = System.Windows.Forms.Cursors.Default
+        Me.lblTipoTarjeta.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.lblTipoTarjeta.Location = New System.Drawing.Point(302, 390)
+        Me.lblTipoTarjeta.Name = "lblTipoTarjeta"
+        Me.lblTipoTarjeta.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.lblTipoTarjeta.Size = New System.Drawing.Size(70, 19)
+        Me.lblTipoTarjeta.TabIndex = 192
+        Me.lblTipoTarjeta.Text = "Tipo Tarjeta"
+        Me.lblTipoTarjeta.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'cboTipoBanco
+        '
+        Me.cboTipoBanco.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
+        Me.cboTipoBanco.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
+        Me.cboTipoBanco.BackColor = System.Drawing.SystemColors.Window
+        Me.cboTipoBanco.Cursor = System.Windows.Forms.Cursors.Default
+        Me.cboTipoBanco.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.cboTipoBanco.Enabled = False
+        Me.cboTipoBanco.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.cboTipoBanco.IntegralHeight = False
+        Me.cboTipoBanco.ItemHeight = 13
+        Me.cboTipoBanco.Location = New System.Drawing.Point(179, 410)
+        Me.cboTipoBanco.Name = "cboTipoBanco"
+        Me.cboTipoBanco.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.cboTipoBanco.Size = New System.Drawing.Size(123, 21)
+        Me.cboTipoBanco.TabIndex = 177
+        '
+        'lblBanco
+        '
+        Me.lblBanco.BackColor = System.Drawing.Color.Transparent
+        Me.lblBanco.Cursor = System.Windows.Forms.Cursors.Default
+        Me.lblBanco.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.lblBanco.Location = New System.Drawing.Point(179, 390)
+        Me.lblBanco.Name = "lblBanco"
+        Me.lblBanco.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.lblBanco.Size = New System.Drawing.Size(123, 19)
+        Me.lblBanco.TabIndex = 191
+        Me.lblBanco.Text = "Banco Adquiriente"
+        Me.lblBanco.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'cboTipoMoneda
+        '
+        Me.cboTipoMoneda.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
+        Me.cboTipoMoneda.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
+        Me.cboTipoMoneda.BackColor = System.Drawing.SystemColors.Window
+        Me.cboTipoMoneda.Cursor = System.Windows.Forms.Cursors.Default
+        Me.cboTipoMoneda.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.cboTipoMoneda.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.cboTipoMoneda.IntegralHeight = False
+        Me.cboTipoMoneda.ItemHeight = 13
+        Me.cboTipoMoneda.Location = New System.Drawing.Point(498, 410)
+        Me.cboTipoMoneda.Name = "cboTipoMoneda"
+        Me.cboTipoMoneda.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.cboTipoMoneda.Size = New System.Drawing.Size(129, 21)
+        Me.cboTipoMoneda.TabIndex = 180
+        '
+        'Label2
+        '
+        Me.Label2.BackColor = System.Drawing.Color.Transparent
+        Me.Label2.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label2.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label2.Location = New System.Drawing.Point(498, 390)
+        Me.Label2.Name = "Label2"
+        Me.Label2.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label2.Size = New System.Drawing.Size(129, 19)
+        Me.Label2.TabIndex = 190
+        Me.Label2.Text = "Moneda"
+        Me.Label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'grdDesglosePago
+        '
+        Me.grdDesglosePago.AllowUserToAddRows = False
+        Me.grdDesglosePago.AllowUserToDeleteRows = False
+        Me.grdDesglosePago.AllowUserToResizeColumns = False
+        Me.grdDesglosePago.AllowUserToResizeRows = False
+        Me.grdDesglosePago.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        Me.grdDesglosePago.Location = New System.Drawing.Point(8, 437)
+        Me.grdDesglosePago.MultiSelect = False
+        Me.grdDesglosePago.Name = "grdDesglosePago"
+        Me.grdDesglosePago.ReadOnly = True
+        Me.grdDesglosePago.RowHeadersVisible = False
+        Me.grdDesglosePago.RowHeadersWidth = 30
+        Me.grdDesglosePago.Size = New System.Drawing.Size(800, 67)
+        Me.grdDesglosePago.TabIndex = 183
+        Me.grdDesglosePago.TabStop = False
+        '
+        'txtTipoCambio
+        '
+        Me.txtTipoCambio.AcceptsReturn = True
+        Me.txtTipoCambio.BackColor = System.Drawing.SystemColors.Window
+        Me.txtTipoCambio.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtTipoCambio.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtTipoCambio.Location = New System.Drawing.Point(627, 410)
+        Me.txtTipoCambio.MaxLength = 0
+        Me.txtTipoCambio.Name = "txtTipoCambio"
+        Me.txtTipoCambio.ReadOnly = True
+        Me.txtTipoCambio.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtTipoCambio.Size = New System.Drawing.Size(73, 20)
+        Me.txtTipoCambio.TabIndex = 181
+        Me.txtTipoCambio.TabStop = False
+        Me.txtTipoCambio.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        '
+        'btnEliminarPago
+        '
+        Me.btnEliminarPago.BackColor = System.Drawing.SystemColors.ButtonHighlight
+        Me.btnEliminarPago.Cursor = System.Windows.Forms.Cursors.Default
+        Me.btnEliminarPago.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.btnEliminarPago.Location = New System.Drawing.Point(87, 510)
+        Me.btnEliminarPago.Name = "btnEliminarPago"
+        Me.btnEliminarPago.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.btnEliminarPago.Size = New System.Drawing.Size(73, 25)
+        Me.btnEliminarPago.TabIndex = 185
+        Me.btnEliminarPago.TabStop = False
+        Me.btnEliminarPago.Text = "&Eliminar"
+        Me.btnEliminarPago.UseVisualStyleBackColor = False
+        '
+        'btnInsertarPago
+        '
+        Me.btnInsertarPago.BackColor = System.Drawing.SystemColors.ButtonHighlight
+        Me.btnInsertarPago.Cursor = System.Windows.Forms.Cursors.Default
+        Me.btnInsertarPago.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.btnInsertarPago.Location = New System.Drawing.Point(7, 510)
+        Me.btnInsertarPago.Name = "btnInsertarPago"
+        Me.btnInsertarPago.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.btnInsertarPago.Size = New System.Drawing.Size(73, 25)
+        Me.btnInsertarPago.TabIndex = 184
+        Me.btnInsertarPago.TabStop = False
+        Me.btnInsertarPago.Text = "Insertar"
+        Me.btnInsertarPago.UseVisualStyleBackColor = False
+        '
+        'txtMontoPago
+        '
+        Me.txtMontoPago.AcceptsReturn = True
+        Me.txtMontoPago.BackColor = System.Drawing.SystemColors.Window
+        Me.txtMontoPago.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtMontoPago.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtMontoPago.Location = New System.Drawing.Point(699, 410)
+        Me.txtMontoPago.MaxLength = 0
+        Me.txtMontoPago.Name = "txtMontoPago"
+        Me.txtMontoPago.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtMontoPago.Size = New System.Drawing.Size(109, 20)
+        Me.txtMontoPago.TabIndex = 182
+        Me.txtMontoPago.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        '
+        'cboFormaPago
+        '
+        Me.cboFormaPago.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
+        Me.cboFormaPago.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
+        Me.cboFormaPago.BackColor = System.Drawing.SystemColors.Window
+        Me.cboFormaPago.Cursor = System.Windows.Forms.Cursors.Default
+        Me.cboFormaPago.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.cboFormaPago.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.cboFormaPago.IntegralHeight = False
+        Me.cboFormaPago.ItemHeight = 13
+        Me.cboFormaPago.Location = New System.Drawing.Point(8, 410)
+        Me.cboFormaPago.Name = "cboFormaPago"
+        Me.cboFormaPago.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.cboFormaPago.Size = New System.Drawing.Size(171, 21)
+        Me.cboFormaPago.TabIndex = 176
+        '
+        'Label4
+        '
+        Me.Label4.BackColor = System.Drawing.Color.Transparent
+        Me.Label4.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label4.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label4.Location = New System.Drawing.Point(699, 390)
+        Me.Label4.Name = "Label4"
+        Me.Label4.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label4.Size = New System.Drawing.Size(109, 19)
+        Me.Label4.TabIndex = 188
+        Me.Label4.Text = "Monto"
+        Me.Label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'Label5
+        '
+        Me.Label5.BackColor = System.Drawing.Color.Transparent
+        Me.Label5.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label5.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label5.Location = New System.Drawing.Point(8, 390)
+        Me.Label5.Name = "Label5"
+        Me.Label5.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label5.Size = New System.Drawing.Size(171, 19)
+        Me.Label5.TabIndex = 187
+        Me.Label5.Text = "Forma de Pago"
+        Me.Label5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'Label9
+        '
+        Me.Label9.BackColor = System.Drawing.Color.Transparent
+        Me.Label9.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label9.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label9.Location = New System.Drawing.Point(624, 390)
+        Me.Label9.Name = "Label9"
+        Me.Label9.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label9.Size = New System.Drawing.Size(76, 19)
+        Me.Label9.TabIndex = 189
+        Me.Label9.Text = "Tipo Cambio"
+        Me.Label9.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'FrmApartado
         '
         Me.AcceptButton = Me.btnInsertar
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
         Me.AutoScroll = True
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.BackColor = System.Drawing.SystemColors.Control
-        Me.ClientSize = New System.Drawing.Size(817, 443)
-        Me.Controls.Add(Me.btnGenerarPDF)
+        Me.ClientSize = New System.Drawing.Size(817, 600)
+        Me.Controls.Add(Me.txtSaldoPorPagar)
+        Me.Controls.Add(Me.Label10)
+        Me.Controls.Add(Me.txtAutorizacion)
+        Me.Controls.Add(Me.lblAutorizacion)
+        Me.Controls.Add(Me.txtTipoTarjeta)
+        Me.Controls.Add(Me.lblTipoTarjeta)
+        Me.Controls.Add(Me.cboTipoBanco)
+        Me.Controls.Add(Me.lblBanco)
+        Me.Controls.Add(Me.cboTipoMoneda)
+        Me.Controls.Add(Me.Label2)
+        Me.Controls.Add(Me.grdDesglosePago)
+        Me.Controls.Add(Me.txtTipoCambio)
+        Me.Controls.Add(Me.btnEliminarPago)
+        Me.Controls.Add(Me.btnInsertarPago)
+        Me.Controls.Add(Me.txtMontoPago)
+        Me.Controls.Add(Me.cboFormaPago)
+        Me.Controls.Add(Me.Label4)
+        Me.Controls.Add(Me.Label5)
+        Me.Controls.Add(Me.Label9)
         Me.Controls.Add(Me.txtPorcDesc)
         Me.Controls.Add(Me.Label13)
         Me.Controls.Add(Me.txtCodigo)
@@ -764,7 +1058,7 @@ Partial Class FrmProforma
         Me.Controls.Add(Me.txtNombreCliente)
         Me.Controls.Add(Me.btnBuscarCliente)
         Me.Controls.Add(Me.grdDetalleProforma)
-        Me.Controls.Add(Me.txtTextoAdicional)
+        Me.Controls.Add(Me.txtDocumento)
         Me.Controls.Add(Me.btnBusProd)
         Me.Controls.Add(Me.btnAnular)
         Me.Controls.Add(Me.btnAgregar)
@@ -774,7 +1068,7 @@ Partial Class FrmProforma
         Me.Controls.Add(Me.btnEliminar)
         Me.Controls.Add(Me.btnInsertar)
         Me.Controls.Add(Me.txtImpuesto)
-        Me.Controls.Add(Me.txtIdProforma)
+        Me.Controls.Add(Me.txtIdApartado)
         Me.Controls.Add(Me.txtTotal)
         Me.Controls.Add(Me.txtSubTotal)
         Me.Controls.Add(Me._lblLabels_11)
@@ -788,14 +1082,13 @@ Partial Class FrmProforma
         Me.KeyPreview = True
         Me.Location = New System.Drawing.Point(73, 22)
         Me.MaximizeBox = False
-        Me.MaximumSize = New System.Drawing.Size(833, 482)
         Me.MinimizeBox = False
-        Me.MinimumSize = New System.Drawing.Size(833, 482)
-        Me.Name = "FrmProforma"
+        Me.Name = "FrmApartado"
         Me.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
-        Me.Text = "Módulo de Proformas"
+        Me.Text = "Módulo de Apartados"
         CType(Me.grdDetalleProforma, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.grdDesglosePago, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -825,5 +1118,23 @@ Partial Class FrmProforma
     Public WithEvents _lblLabels_7 As Label
     Public WithEvents _lblLabels_6 As Label
     Public WithEvents _lblLabels_1 As Label
-    Public WithEvents btnGenerarPDF As Button
+    Public WithEvents txtSaldoPorPagar As TextBox
+    Public WithEvents Label10 As Label
+    Public WithEvents txtAutorizacion As TextBox
+    Public WithEvents lblAutorizacion As Label
+    Public WithEvents txtTipoTarjeta As TextBox
+    Public WithEvents lblTipoTarjeta As Label
+    Public WithEvents cboTipoBanco As ComboBox
+    Public WithEvents lblBanco As Label
+    Public WithEvents cboTipoMoneda As ComboBox
+    Public WithEvents Label2 As Label
+    Public WithEvents grdDesglosePago As DataGridView
+    Public WithEvents txtTipoCambio As TextBox
+    Public WithEvents btnEliminarPago As Button
+    Public WithEvents btnInsertarPago As Button
+    Public WithEvents txtMontoPago As TextBox
+    Public WithEvents cboFormaPago As ComboBox
+    Public WithEvents Label4 As Label
+    Public WithEvents Label5 As Label
+    Public WithEvents Label9 As Label
 End Class

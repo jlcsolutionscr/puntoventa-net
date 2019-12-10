@@ -9,6 +9,7 @@ Public Class FrmMovimientoProducto
     Private intCantidadDePaginas As Integer
     Private producto As Producto
     Public intIdProducto As Integer
+    Public intIdSucursal As Integer
 #End Region
 
 #Region "Metodos"
@@ -57,7 +58,7 @@ Public Class FrmMovimientoProducto
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Threading.Tasks.Task
         Try
-            dgvListado.DataSource = Await Puntoventa.ObtenerMovimientosPorProducto(intIdProducto, intNumeroPagina, intFilasPorPagina, FechaInicio.Value.ToString("dd/MM/yyyy"), FechaFinal.Value.ToString("dd/MM/yyyy"), FrmPrincipal.usuarioGlobal.Token)
+            dgvListado.DataSource = Await Puntoventa.ObtenerMovimientosPorProducto(intIdProducto, intIdSucursal, intNumeroPagina, intFilasPorPagina, FechaInicio.Value.ToString("dd/MM/yyyy"), FechaFinal.Value.ToString("dd/MM/yyyy"), FrmPrincipal.usuarioGlobal.Token)
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -68,7 +69,7 @@ Public Class FrmMovimientoProducto
 
     Private Async Function ValidarCantidadEmpresas() As Threading.Tasks.Task
         Try
-            intTotalEmpresas = Await Puntoventa.ObtenerTotalMovimientosPorProducto(intIdProducto, FechaInicio.Value.ToString("dd/MM/yyyy"), FechaFinal.Value.ToString("dd/MM/yyyy"), FrmPrincipal.usuarioGlobal.Token)
+            intTotalEmpresas = Await Puntoventa.ObtenerTotalMovimientosPorProducto(intIdProducto, intIdSucursal, FechaInicio.Value.ToString("dd/MM/yyyy"), FechaFinal.Value.ToString("dd/MM/yyyy"), FrmPrincipal.usuarioGlobal.Token)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()

@@ -257,7 +257,7 @@ Public Class FrmTrasladoMercaderia
             End Try
             If traslado IsNot Nothing Then
                 txtIdTraslado.Text = traslado.IdTraslado
-                cboIdSucursal.SelectedValue = traslado.IdSucursal
+                cboIdSucursal.SelectedValue = traslado.IdSucursalOrigen
                 txtFecha.Text = traslado.Fecha
                 txtDocumento.Text = traslado.NoDocumento
                 If traslado.Tipo = 0 Then
@@ -283,7 +283,7 @@ Public Class FrmTrasladoMercaderia
     Private Sub btnBusProd_Click(sender As Object, e As EventArgs) Handles btnBusProd.Click
         Dim formBusProd As New FrmBusquedaProducto With {
             .bolIncluyeServicios = False,
-            .intTipoPrecio = 1
+            .intIdSucursal = FrmPrincipal.equipoGlobal.IdSucursal
         }
         FrmPrincipal.strBusqueda = ""
         formBusProd.ShowDialog()
@@ -302,7 +302,7 @@ Public Class FrmTrasladoMercaderia
                 traslado = New Traslado With {
                     .IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa,
                     .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
-                    .IdSucursal = cboIdSucursal.SelectedValue,
+                    .IdSucursalOrigen = cboIdSucursal.SelectedValue,
                     .Fecha = FrmPrincipal.ObtenerFechaFormateada(Now()),
                     .Tipo = If(rbEntrante.Checked = True, 0, 1),
                     .NoDocumento = txtDocumento.Text,

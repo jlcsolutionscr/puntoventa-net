@@ -34,7 +34,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         List<ReporteVentasPorLineaResumen> ObtenerReporteVentasPorLineaResumen(int intIdEmpresa, string strFechaInicial, string strFechaFinal);
         List<ReporteVentasPorLineaDetalle> ObtenerReporteVentasPorLineaDetalle(int intIdEmpresa, int intIdLinea, string strFechaInicial, string strFechaFinal);
         List<ReporteCierreDeCaja> ObtenerReporteCierreDeCaja(int intIdCierre);
-        List<ReporteInventario> ObtenerReporteInventario(int intIdEmpresa, int intIdLinea, string strCodigo, string strDescripcion);
+        List<ReporteInventario> ObtenerReporteInventario(int intIdEmpresa, int intIdSucursal, int intIdLinea, string strCodigo, string strDescripcion);
         List<ReporteMovimientosContables> ObtenerReporteMovimientosContables(int intIdEmpresa, string strFechaInicial, string strFechaFinal);
         List<ReporteBalanceComprobacion> ObtenerReporteBalanceComprobacion(int intIdEmpresa, int intMes = 0, int intAnnio = 0);
         List<ReportePerdidasyGanancias> ObtenerReportePerdidasyGanancias(int intIdEmpresa);
@@ -875,7 +875,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public List<ReporteInventario> ObtenerReporteInventario(int intIdEmpresa, int intIdLinea, string strCodigo, string strDescripcion)
+        public List<ReporteInventario> ObtenerReporteInventario(int intIdEmpresa, int intIdSucursal, int intIdLinea, string strCodigo, string strDescripcion)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -889,15 +889,16 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         listaProductos = listaProductos.Where(x => x.Codigo.Contains(strCodigo));
                     else if (!strDescripcion.Equals(string.Empty))
                         listaProductos = listaProductos.Where(x => x.Descripcion.Contains(strDescripcion));
-                    var detalle = listaProductos.Select(a => new { a.IdProducto, a.Codigo, a.Descripcion, a.Cantidad, a.PrecioCosto, a.PrecioVenta1 });
-
+                    var detalle = listaProductos.Select(a => new { a.IdProducto, a.Codigo, a.Descripcion, a.PrecioCosto, a.PrecioVenta1 }).ToList();
                     foreach (var value in detalle)
                     {
+                        var existencias = dbContext.ExistenciaPorSucursalRepository.AsNoTracking().Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdProducto == value.IdProducto).FirstOrDefault();
+                        decimal decCantidad = existencias != null ? existencias.Cantidad : 0;
                         ReporteInventario reporteLinea = new ReporteInventario();
                         reporteLinea.IdProducto = value.IdProducto;
                         reporteLinea.Codigo = value.Codigo;
                         reporteLinea.Descripcion = value.Descripcion;
-                        reporteLinea.Cantidad = value.Cantidad;
+                        reporteLinea.Cantidad = decCantidad;
                         reporteLinea.PrecioCosto = value.PrecioCosto;
                         reporteLinea.PrecioVenta = value.PrecioVenta1;
                         listaReporte.Add(reporteLinea);

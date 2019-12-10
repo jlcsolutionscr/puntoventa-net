@@ -35,6 +35,7 @@ namespace LeandroSoftware.Activator
                 CmdCancelar.Enabled = true;
                 string strError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
                 MessageBox.Show(strError, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Application.Exit();
             }
         }
 

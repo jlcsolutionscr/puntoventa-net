@@ -153,6 +153,62 @@ namespace LeandroSoftware.ClienteWCF
             }
         }
 
+        public static async Task<List<LlaveDescripcion>> ObtenerListadoReportePorEmpresa(int intIdEmpresa, string strToken)
+        {
+            try
+            {
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+                if (strToken != "")
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", strToken);
+                HttpResponseMessage httpResponse = await httpClient.GetAsync(strServicioURL + "/obtenerlistadoreporteporempresa?idempresa=" + intIdEmpresa);
+                if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
+                {
+                    string strError = serializer.Deserialize<string>(httpResponse.Content.ReadAsStringAsync().Result);
+                    throw new Exception(strError);
+                }
+                if (httpResponse.StatusCode != HttpStatusCode.OK)
+                    throw new Exception(httpResponse.ReasonPhrase);
+                List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
+                string responseContent = await httpResponse.Content.ReadAsStringAsync();
+                string strResponse = serializer.Deserialize<string>(responseContent);
+                if (strResponse != "")
+                    listado = serializer.Deserialize<List<LlaveDescripcion>>(strResponse);
+                return listado;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public static async Task<List<LlaveDescripcion>> ObtenerListadoRolePorEmpresa(int intIdEmpresa, string strToken)
+        {
+            try
+            {
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+                if (strToken != "")
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", strToken);
+                HttpResponseMessage httpResponse = await httpClient.GetAsync(strServicioURL + "/obtenerlistadoroleporempresa?idempresa=" + intIdEmpresa);
+                if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
+                {
+                    string strError = serializer.Deserialize<string>(httpResponse.Content.ReadAsStringAsync().Result);
+                    throw new Exception(strError);
+                }
+                if (httpResponse.StatusCode != HttpStatusCode.OK)
+                    throw new Exception(httpResponse.ReasonPhrase);
+                List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
+                string responseContent = await httpResponse.Content.ReadAsStringAsync();
+                string strResponse = serializer.Deserialize<string>(responseContent);
+                if (strResponse != "")
+                    listado = serializer.Deserialize<List<LlaveDescripcion>>(strResponse);
+                return listado;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         public static async Task<SucursalPorEmpresa> ObtenerSucursalPorEmpresa(int intIdEmpresa, int intIdSucursal, string strToken)
         {
             try
@@ -245,6 +301,34 @@ namespace LeandroSoftware.ClienteWCF
                 if (strToken != "")
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", strToken);
                 HttpResponseMessage httpResponse = await httpClient.GetAsync(strServicioURL + "/obtenerlistadocatalogoreportes");
+                if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
+                {
+                    string strError = serializer.Deserialize<string>(httpResponse.Content.ReadAsStringAsync().Result);
+                    throw new Exception(strError);
+                }
+                if (httpResponse.StatusCode != HttpStatusCode.OK)
+                    throw new Exception(httpResponse.ReasonPhrase);
+                List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
+                string responseContent = await httpResponse.Content.ReadAsStringAsync();
+                string strResponse = serializer.Deserialize<string>(responseContent);
+                if (strResponse != "")
+                    listado = serializer.Deserialize<List<LlaveDescripcion>>(strResponse);
+                return listado;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public static async Task<List<LlaveDescripcion>> ObtenerListadoRoles(string strToken)
+        {
+            try
+            {
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+                if (strToken != "")
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", strToken);
+                HttpResponseMessage httpResponse = await httpClient.GetAsync(strServicioURL + "/obtenerlistadoroles");
                 if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
                 {
                     string strError = serializer.Deserialize<string>(httpResponse.Content.ReadAsStringAsync().Result);
@@ -411,6 +495,54 @@ namespace LeandroSoftware.ClienteWCF
                 if (strToken != "")
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", strToken);
                 HttpResponseMessage httpResponse = await httpClient.PostAsync(strServicioURL + "/actualizarempresa", contentJson);
+                if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
+                {
+                    string strError = serializer.Deserialize<string>(httpResponse.Content.ReadAsStringAsync().Result);
+                    throw new Exception(strError);
+                }
+                if (httpResponse.StatusCode != HttpStatusCode.OK)
+                    throw new Exception(httpResponse.ReasonPhrase);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public static async Task ActualizarReportePorEmpresa(int intIdEmpresa, List<ReportePorEmpresa> listado, string strToken)
+        {
+            try
+            {
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+                string strListado = serializer.Serialize(listado);
+                StringContent contentJson = serializarDatosConId(intIdEmpresa, strListado);
+                if (strToken != "")
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", strToken);
+                HttpResponseMessage httpResponse = await httpClient.PostAsync(strServicioURL + "/actualizarlistadoreportes", contentJson);
+                if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
+                {
+                    string strError = serializer.Deserialize<string>(httpResponse.Content.ReadAsStringAsync().Result);
+                    throw new Exception(strError);
+                }
+                if (httpResponse.StatusCode != HttpStatusCode.OK)
+                    throw new Exception(httpResponse.ReasonPhrase);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public static async Task ActualizarRolePorEmpresa(int intIdEmpresa, List<RolePorEmpresa> listado, string strToken)
+        {
+            try
+            {
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+                string strListado = serializer.Serialize(listado);
+                StringContent contentJson = serializarDatosConId(intIdEmpresa, strListado);
+                if (strToken != "")
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", strToken);
+                HttpResponseMessage httpResponse = await httpClient.PostAsync(strServicioURL + "/actualizarlistadoroles", contentJson);
                 if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
                 {
                     string strError = serializer.Deserialize<string>(httpResponse.Content.ReadAsStringAsync().Result);

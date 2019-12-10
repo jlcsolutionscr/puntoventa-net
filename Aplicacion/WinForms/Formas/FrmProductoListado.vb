@@ -16,6 +16,7 @@ Public Class FrmProductoListado
         dgvListado.AutoGenerateColumns = False
         Dim dvcIdProducto As New DataGridViewTextBoxColumn
         Dim dvcCodigo As New DataGridViewTextBoxColumn
+        Dim dvcCodigoProveedor As New DataGridViewTextBoxColumn
         Dim dvcDescripcion As New DataGridViewTextBoxColumn
         Dim dvcCantidad As New DataGridViewTextBoxColumn
         Dim dvcPrecioCosto As New DataGridViewTextBoxColumn
@@ -29,6 +30,11 @@ Public Class FrmProductoListado
         dvcCodigo.HeaderText = "Código"
         dvcCodigo.Width = 100
         dgvListado.Columns.Add(dvcCodigo)
+
+        dvcCodigoProveedor.DataPropertyName = "CodigoProveedor"
+        dvcCodigoProveedor.HeaderText = "Código Prov"
+        dvcCodigoProveedor.Width = 100
+        dgvListado.Columns.Add(dvcCodigoProveedor)
 
         dvcDescripcion.DataPropertyName = "Descripcion"
         dvcDescripcion.HeaderText = "Descripción"
@@ -56,7 +62,7 @@ Public Class FrmProductoListado
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
         Try
-            listado = Await Puntoventa.ObtenerListadoProductos(FrmPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, True, FrmPrincipal.usuarioGlobal.Token, cboLinea.SelectedValue, txtCodigo.Text, txtDescripcion.Text)
+            listado = Await Puntoventa.ObtenerListadoProductos(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, intNumeroPagina, intFilasPorPagina, True, FrmPrincipal.usuarioGlobal.Token, cboLinea.SelectedValue, txtCodigo.Text, txtDescripcion.Text)
             dgvListado.DataSource = listado
             If listado.Count() > 0 Then
                 btnEditar.Enabled = True
@@ -74,7 +80,7 @@ Public Class FrmProductoListado
 
     Private Async Function ValidarCantidadProductos() As Task
         Try
-            intTotalEmpresas = Await Puntoventa.ObtenerTotalListaProductos(FrmPrincipal.empresaGlobal.IdEmpresa, True, FrmPrincipal.usuarioGlobal.Token, cboLinea.SelectedValue, txtCodigo.Text, txtDescripcion.Text)
+            intTotalEmpresas = Await Puntoventa.ObtenerTotalListaProductos(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, True, FrmPrincipal.usuarioGlobal.Token, cboLinea.SelectedValue, txtCodigo.Text, txtDescripcion.Text)
         Catch ex As Exception
             Throw ex
         End Try

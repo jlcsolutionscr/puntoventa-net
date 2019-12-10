@@ -11,7 +11,7 @@ Public Class FrmCompra
     Private dblTotal As Decimal = 0
     Private dblSaldoPorPagar As Decimal = 0
     Private I As Short
-    Private dtbDatosLocal, dtbDetalleCompra, dtbDesglosePago As DataTable
+    Private dtbDetalleCompra, dtbDesglosePago As DataTable
     Private dtrRowDetCompra, dtrRowDesglosePago As DataRow
     Private arrDetalleCompra As List(Of ModuloImpresion.ClsDetalleComprobante)
     Private arrDesglosePago As List(Of ModuloImpresion.ClsDesgloseFormaPago)
@@ -244,7 +244,7 @@ Public Class FrmCompra
     Private Sub CargarLineaDetalleCompra(ByVal producto As Producto, intCantidad As Integer, dblPrecioCosto As Decimal)
         Dim intIndice As Integer = dtbDetalleCompra.Rows.IndexOf(dtbDetalleCompra.Rows.Find(producto.IdProducto))
         If intIndice >= 0 Then
-            dtbDetalleCompra.Rows(intIndice).Item(1) = producto.Codigo
+            dtbDetalleCompra.Rows(intIndice).Item(1) = producto.CodigoProveedor
             dtbDetalleCompra.Rows(intIndice).Item(2) = producto.Descripcion
             dtbDetalleCompra.Rows(intIndice).Item(3) += intCantidad
             dtbDetalleCompra.Rows(intIndice).Item(4) = dblPrecioCosto
@@ -254,7 +254,7 @@ Public Class FrmCompra
         Else
             dtrRowDetCompra = dtbDetalleCompra.NewRow
             dtrRowDetCompra.Item(0) = producto.IdProducto
-            dtrRowDetCompra.Item(1) = producto.Codigo
+            dtrRowDetCompra.Item(1) = producto.CodigoProveedor
             dtrRowDetCompra.Item(2) = producto.Descripcion
             dtrRowDetCompra.Item(3) = intCantidad
             dtrRowDetCompra.Item(4) = dblPrecioCosto
@@ -347,6 +347,10 @@ Public Class FrmCompra
         cboTipoMoneda.ValueMember = "Id"
         cboTipoMoneda.DisplayMember = "Descripcion"
         cboTipoMoneda.DataSource = Await Puntoventa.ObtenerListadoTipoMoneda(FrmPrincipal.usuarioGlobal.Token)
+        cboSucursal.ValueMember = "Id"
+        cboSucursal.DisplayMember = "Descripcion"
+        cboSucursal.DataSource = Await Puntoventa.ObtenerListadoSucursales(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+        cboSucursal.SelectedValue = FrmPrincipal.equipoGlobal.IdSucursal
     End Sub
 
     Private Sub CargarDatosProducto(producto As Producto)
@@ -358,21 +362,17 @@ Public Class FrmCompra
             Exit Sub
         Else
             Dim decTasaImpuesto As Decimal = producto.ParametroImpuesto.TasaImpuesto
-            txtCodigo.Text = producto.Codigo
+            txtCodigo.Text = producto.CodigoProveedor
             If txtCantidad.Text = "" Then txtCantidad.Text = "1"
             txtDescripcion.Text = producto.Descripcion
             txtPrecioCosto.Text = producto.PrecioCosto
-            If FrmPrincipal.empresaGlobal.ModificaDescProducto = True Then
-                txtDescripcion.Focus()
-            Else
-                txtPrecioCosto.Focus()
-            End If
+            txtPrecioCosto.Focus()
         End If
     End Sub
 
     Private Async Function CargarAutoCompletarProducto() As Task
         Dim source As AutoCompleteStringCollection = New AutoCompleteStringCollection()
-        Dim listOfProducts As IList(Of Producto) = Await Puntoventa.ObtenerListadoProductos(FrmPrincipal.empresaGlobal.IdEmpresa, 1, 0, True, FrmPrincipal.usuarioGlobal.Token)
+        Dim listOfProducts As IList(Of Producto) = Await Puntoventa.ObtenerListadoProductos(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, 1, 0, True, FrmPrincipal.usuarioGlobal.Token)
         For Each producto As Producto In listOfProducts
             source.Add(String.Concat(producto.Codigo, " ", producto.Descripcion))
         Next
@@ -575,7 +575,7 @@ Public Class FrmCompra
     Private Async Sub BtnBusProd_Click(sender As Object, e As EventArgs) Handles btnBusProd.Click
         Dim formBusProd As New FrmBusquedaProducto With {
             .bolIncluyeServicios = False,
-            .intTipoPrecio = 0
+            .intIdSucursal = cboSucursal.SelectedValue
         }
         FrmPrincipal.strBusqueda = ""
         formBusProd.ShowDialog()
@@ -615,6 +615,7 @@ Public Class FrmCompra
             btnGuardar.Enabled = False
             compra = New Compra With {
                 .IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa,
+                .IdSucursal = FrmPrincipal.equipoGlobal.IdSucursal,
                 .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
                 .IdProveedor = proveedor.IdProveedor,
                 .Fecha = Now(),
@@ -867,7 +868,7 @@ Public Class FrmCompra
     Private Async Sub TxtCodigo_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtCodigo.PreviewKeyDown
         If e.KeyCode = Keys.Tab Then
             Try
-                producto = Await Puntoventa.ObtenerProductoPorCodigo(FrmPrincipal.empresaGlobal.IdEmpresa, txtCodigo.Text, FrmPrincipal.usuarioGlobal.Token)
+                producto = Await Puntoventa.ObtenerProductoPorCodigoProveedor(FrmPrincipal.empresaGlobal.IdEmpresa, txtCodigo.Text, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub

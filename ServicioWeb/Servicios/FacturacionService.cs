@@ -31,29 +31,34 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         Cliente ObtenerCliente(int intIdCliente);
         Cliente ValidaIdentificacionCliente(int intIdEmpresa, string strIdentificacion);
         int ObtenerTotalListaClientes(int intIdEmpresa, string strNombre, bool incluyeClienteContado = false);
-        IEnumerable<LlaveDescripcion> ObtenerListadoClientes(int intIdEmpresa, int numPagina, int cantRec, string strNombre);
+        IList<LlaveDescripcion> ObtenerListadoClientes(int intIdEmpresa, int numPagina, int cantRec, string strNombre);
         string AgregarFactura(Factura factura, ConfiguracionGeneral datos);
         void AnularFactura(int intIdFactura, int intIdUsuario, ConfiguracionGeneral datos);
         Factura ObtenerFactura(int intIdFactura);
         int ObtenerTotalListaFacturas(int intIdEmpresa, int intIdFactura, string strNombre);
-        IEnumerable<FacturaDetalle> ObtenerListadoFacturas(int intIdEmpresa, int numPagina, int cantRec, int intIdFactura, string strNombre);
+        IList<FacturaDetalle> ObtenerListadoFacturas(int intIdEmpresa, int numPagina, int cantRec, int intIdFactura, string strNombre);
         string AgregarProforma(Proforma proforma);
         void ActualizarProforma(Proforma proforma);
         void AnularProforma(int intIdProforma, int intIdUsuario);
         Proforma ObtenerProforma(int intIdProforma);
         int ObtenerTotalListaProformas(int intIdEmpresa, int intIdProforma, string strNombre);
-        IEnumerable<FacturaDetalle> ObtenerListadoProformas(int intIdEmpresa, int numPagina, int cantRec, int intIdProforma, string strNombre);
+        IList<FacturaDetalle> ObtenerListadoProformas(int intIdEmpresa, int numPagina, int cantRec, int intIdProforma, string strNombre);
+        string AgregarApartado(Apartado apartado);
+        void AnularApartado(int intIdApartado, int intIdUsuario);
+        Apartado ObtenerApartado(int intIdApartado);
+        int ObtenerTotalListaApartados(int intIdEmpresa, int intIdApartado, string strNombre);
+        IList<FacturaDetalle> ObtenerListadoApartados(int intIdEmpresa, int numPagina, int cantRec, int intIdApartado, string strNombre);
         string AgregarOrdenServicio(OrdenServicio ordenServicio);
         void ActualizarOrdenServicio(OrdenServicio ordenServicio);
         void AnularOrdenServicio(int intIdOrdenServicio, int intIdUsuario);
         OrdenServicio ObtenerOrdenServicio(int intIdOrdenServicio);
         int ObtenerTotalListaOrdenServicio(int intIdEmpresa, int intIdOrdenServicio, string strNombre);
-        IEnumerable<FacturaDetalle> ObtenerListadoOrdenServicio(int intIdEmpresa, int numPagina, int cantRec, int intIdOrdenServicio, string strNombre);
-        DevolucionCliente AgregarDevolucionCliente(DevolucionCliente devolucion);
+        IList<FacturaDetalle> ObtenerListadoOrdenServicio(int intIdEmpresa, int numPagina, int cantRec, int intIdOrdenServicio, string strNombre);
+        string AgregarDevolucionCliente(DevolucionCliente devolucion, ConfiguracionGeneral datos);
         void AnularDevolucionCliente(int intIdDevolucion, int intIdUsuario);
         DevolucionCliente ObtenerDevolucionCliente(int intIdDevolucion);
         int ObtenerTotalListaDevolucionesPorCliente(int intIdEmpresa, int intIdDevolucion, string strNombre);
-        IEnumerable<DevolucionCliente> ObtenerListadoDevolucionesPorCliente(int intIdEmpresa, int numPagina, int cantRec, int intIdDevolucion, string strNombre);
+        IList<FacturaDetalle> ObtenerListadoDevolucionesPorCliente(int intIdEmpresa, int numPagina, int cantRec, int intIdDevolucion, string strNombre);
         IList<DocumentoDetalle> ObtenerListadoDocumentosElectronicosPendientes();
         IList<DocumentoDetalle> ObtenerListadoDocumentosElectronicosEnProceso(int intIdEmpresa);
         void ProcesarDocumentosElectronicosPendientes(ICorreoService servicioEnvioCorreo, ConfiguracionGeneral datos);
@@ -256,7 +261,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoClientes(int intIdEmpresa, int numPagina, int cantRec, string strNombre)
+        public IList<LlaveDescripcion> ObtenerListadoClientes(int intIdEmpresa, int numPagina, int cantRec, string strNombre)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -333,6 +338,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         proforma.Aplicado = true;
                         dbContext.NotificarModificacion(proforma);
                     }
+                    if (factura.IdApartado > 0)
+                    {
+                        Apartado apartado = dbContext.ApartadoRepository.Find(factura.IdApartado);
+                        apartado.Aplicado = true;
+                        dbContext.NotificarModificacion(apartado);
+                    }
                     if (empresa.Contabiliza)
                     {
                         ingresosVentasParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.IngresosPorVentas).FirstOrDefault();
@@ -364,12 +375,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         if (vendedor == null) throw new BusinessException("La empresa no posee registrado ningún vendedor");
                         factura.IdVendedor = vendedor.IdVendedor;
                     }
+                    Cliente cliente = dbContext.ClienteRepository.Find(factura.IdCliente);
+                    if (cliente == null) throw new Exception("El cliente asignado a la factura no existe.");
+                    if (cliente.IdCliente > 1)
+                    {
+                        if (cliente.IdTipoIdentificacion == 0 && cliente.Identificacion.Length != 9) throw new BusinessException("El cliente posee una identificación de tipo 'Cedula física' con una longitud inadecuada. Deben ser 9 caracteres.");
+                        if (cliente.IdTipoIdentificacion == 1 && cliente.Identificacion.Length != 10) throw new BusinessException("El cliente posee una identificación de tipo 'Cedula jurídica' con una longitud inadecuada. Deben ser 10 caracteres");
+                        if (cliente.IdTipoIdentificacion > 1 && (cliente.Identificacion.Length != 11 || cliente.Identificacion.Length != 12)) throw new BusinessException("El cliente posee una identificación de tipo 'DIMEX o DITE' con una longitud inadecuada. Deben ser 11 o 12 caracteres");
+                    }
                     dbContext.FacturaRepository.Add(factura);
                     if (factura.IdCondicionVenta == StaticCondicionVenta.Credito)
                     {
-                        Cliente cliente = dbContext.ClienteRepository.Find(factura.IdCliente);
-                        if (cliente == null)
-                            throw new Exception("El cliente asignado a la factura no existe.");
                         ICuentaPorCobrarService servicioCuentaPorCobrar = new CuentaPorCobrarService();
                         cuentaPorCobrar = new CuentaPorCobrar
                         {
@@ -395,21 +411,39 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     foreach (var detalleFactura in factura.DetalleFactura)
                     {
                         Producto producto = dbContext.ProductoRepository.Include("Linea").FirstOrDefault(x => x.IdProducto == detalleFactura.IdProducto);
+                        if (producto == null)
+                            throw new Exception("El producto asignado al detalle de la devolución no existe.");
                         if (producto.Tipo == StaticTipoProducto.Producto)
                         {
+                            ExistenciaPorSucursal existencias = dbContext.ExistenciaPorSucursalRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == factura.IdSucursal).FirstOrDefault();
+                            if (existencias != null)
+                            {
+                                existencias.Cantidad -= detalleFactura.Cantidad;
+                                dbContext.NotificarModificacion(existencias);
+                            }
+                            else
+                            {
+                                ExistenciaPorSucursal nuevoRegistro = new ExistenciaPorSucursal
+                                {
+                                    IdEmpresa = factura.IdEmpresa,
+                                    IdSucursal = factura.IdSucursal,
+                                    IdProducto = detalleFactura.IdProducto,
+                                    Cantidad = detalleFactura.Cantidad * -1
+                                };
+                                dbContext.ExistenciaPorSucursalRepository.Add(nuevoRegistro);
+                            }
                             MovimientoProducto movimiento = new MovimientoProducto
                             {
                                 IdProducto = producto.IdProducto,
+                                IdSucursal = factura.IdSucursal,
                                 Fecha = DateTime.Now,
                                 Tipo = StaticTipoMovimientoProducto.Salida,
-                                Origen = "Registro de facturación.",
-                                Referencia = factura.TextoAdicional,
+                                Origen = "Registro de facturación",
+                                Referencia = "",
                                 Cantidad = detalleFactura.Cantidad,
                                 PrecioCosto = detalleFactura.PrecioCosto
                             };
                             producto.MovimientoProducto.Add(movimiento);
-                            producto.Cantidad -= detalleFactura.Cantidad;
-                            dbContext.NotificarModificacion(producto);
                         }
                         if (empresa.Contabiliza)
                         {
@@ -651,8 +685,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     DocumentoElectronico documentoFE = null;
                     if (!empresa.RegimenSimplificado)
-                    {
-                        Cliente cliente = dbContext.ClienteRepository.Find(factura.IdCliente);                        
+                    {                       
                         if (factura.IdCliente > 1)
                             documentoFE = ComprobanteElectronicoService.GeneraFacturaElectronica(factura, factura.Empresa, cliente, dbContext, decTipoDeCambio);
                         else
@@ -686,21 +719,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         Task.Run(() => ComprobanteElectronicoService.EnviarDocumentoElectronico(empresa.IdEmpresa, documentoFE.IdDocumento, datos));
                     }
-                    Factura newFactura = dbContext.FacturaRepository.Include("Cliente.Barrio.Distrito.Canton.Provincia").Include("Vendedor").Include("DetalleFactura.Producto.TipoProducto").Include("DesglosePagoFactura.FormaPago").Include("DesglosePagoFactura.TipoMoneda").FirstOrDefault(x => x.IdFactura == factura.IdFactura);
-                    newFactura.Empresa = null;
-                    foreach (DetalleFactura detalle in newFactura.DetalleFactura)
-                    {
-                        detalle.Factura = null;
-                        detalle.Producto.Empresa = null;
-                        detalle.Producto.Linea = null;
-                        detalle.Producto.MovimientoProducto = null;
-                    }
-                    foreach (DesglosePagoFactura desglosePago in newFactura.DesglosePagoFactura)
-                        desglosePago.Factura = null;
-                    newFactura.Cliente.Empresa = null;
-                    newFactura.Cliente.Factura = null;
-                    newFactura.Vendedor.Empresa = null;
-                    return newFactura.IdFactura.ToString();
+                    return factura.IdFactura.ToString();
                 }
                 catch (BusinessException ex)
                 {
@@ -731,60 +750,68 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (empresa.FechaVence < DateTime.Today) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
                     if (empresa.TipoContrato == 2 && empresa.CantidadDisponible == 0) throw new BusinessException("El disponible de documentos electrónicos fue agotado. Por favor, pongase en contacto con su proveedor del servicio.");
                     Cliente cliente = dbContext.ClienteRepository.Find(factura.IdCliente);
-                    if (!empresa.RegimenSimplificado && factura.IdDocElectronicoRev == null)
+                    if (!empresa.RegimenSimplificado)
                     {
-                        DocumentoElectronico documentoNC = null;
-                        DocumentoElectronico documento = dbContext.DocumentoElectronicoRepository.Where(x => x.ClaveNumerica == factura.IdDocElectronico).FirstOrDefault();
-                        if (documento.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado)
+                        if (factura.IdDocElectronicoRev == null)
                         {
-                            string criteria = factura.Fecha.ToString("dd/MM/yyyy");
-                            TipoDeCambioDolar tipoDeCambio = dbContext.TipoDeCambioDolarRepository.Find(criteria);
-                            if (tipoDeCambio != null)
+                            DocumentoElectronico documentoNC = null;
+                            DocumentoElectronico documento = dbContext.DocumentoElectronicoRepository.Where(x => x.ClaveNumerica == factura.IdDocElectronico).FirstOrDefault();
+                            if (documento.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado)
                             {
-                                documentoNC = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronica(factura, factura.Empresa, cliente, dbContext, tipoDeCambio.ValorTipoCambio);
-                                factura.IdDocElectronicoRev = documentoNC.ClaveNumerica;
+                                string criteria = factura.Fecha.ToString("dd/MM/yyyy");
+                                TipoDeCambioDolar tipoDeCambio = dbContext.TipoDeCambioDolarRepository.Find(criteria);
+                                if (tipoDeCambio != null)
+                                {
+                                    documentoNC = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronica(factura, factura.Empresa, cliente, dbContext, tipoDeCambio.ValorTipoCambio);
+                                    factura.IdDocElectronicoRev = documentoNC.ClaveNumerica;
+                                }
+                                else
+                                {
+                                    throw new BusinessException("El tipo de cambio para la fecha " + criteria + " no ha sido actualizado. Por favor consulte con su proveedor.");
+                                }
+                                dbContext.NotificarModificacion(factura);
+                                dbContext.Commit();
+                                if (documentoNC != null)
+                                {
+                                    Task.Run(() => ComprobanteElectronicoService.EnviarDocumentoElectronico(empresa.IdEmpresa, documentoNC.IdDocumento, datos));
+                                }
+                            }
+                            else if (documento.EstadoEnvio == StaticEstadoDocumentoElectronico.Rechazado)
+                            {
+                                AnularRegistroFactura(factura, intIdUsuario, dbContext);
+                                dbContext.Commit();
                             }
                             else
                             {
-                                throw new BusinessException("El tipo de cambio para la fecha " + criteria + " no ha sido actualizado. Por favor consulte con su proveedor.");
+                                throw new BusinessException("El documento electrónico no ha sido procesado por el Ministerio de Hacienda. La factura no puede ser reversada en este momento.");
                             }
-                            dbContext.NotificarModificacion(factura);
-                            dbContext.Commit();
-                            if (documentoNC != null)
-                            {
-                                Task.Run(() => ComprobanteElectronicoService.EnviarDocumentoElectronico(empresa.IdEmpresa, documentoNC.IdDocumento, datos));
-                            }
-                        }
-                        else if (documento.EstadoEnvio == StaticEstadoDocumentoElectronico.Rechazado)
-                        {
-                            AnularRegistroFactura(factura, intIdUsuario, dbContext);
-                            dbContext.Commit();
                         }
                         else
                         {
-                            throw new BusinessException("El documento electrónico no ha sido procesado por el Ministerio de Hacienda. La factura no puede ser reversada en este momento.");
+                            if (factura.Nulo == false && factura.IdDocElectronicoRev != null)
+                            {
+                                DocumentoElectronico documento = dbContext.DocumentoElectronicoRepository.Where(x => x.ClaveNumerica == factura.IdDocElectronicoRev).FirstOrDefault();
+                                if (documento.EstadoEnvio != StaticEstadoDocumentoElectronico.Aceptado && documento.EstadoEnvio != StaticEstadoDocumentoElectronico.Rechazado)
+                                {
+                                    throw new BusinessException("La factura se encuentra en proceso de anulación ya que posee una nota de crédito pendiente de procesar por el Ministerio de Hacienda.");
+                                }
+                                if (documento.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado)
+                                {
+                                    AnularRegistroFactura(factura, intIdUsuario, dbContext);
+                                    dbContext.Commit();
+                                } else
+                                {
+                                    factura.IdDocElectronicoRev = null;
+                                    dbContext.NotificarModificacion(factura);
+                                    dbContext.Commit();
+                                }
+                            }
                         }
                     }
                     else
                     {
-                        if (factura.Nulo == false && factura.IdDocElectronicoRev != null)
-                        {
-                            DocumentoElectronico documento = dbContext.DocumentoElectronicoRepository.Where(x => x.ClaveNumerica == factura.IdDocElectronicoRev).FirstOrDefault();
-                            if (documento.EstadoEnvio != StaticEstadoDocumentoElectronico.Aceptado && documento.EstadoEnvio != StaticEstadoDocumentoElectronico.Rechazado)
-                            {
-                                throw new BusinessException("La factura se encuentra en proceso de anulación ya que posee una nota de crédito pendiente de procesar por el Ministerio de Hacienda.");
-                            }
-                            if (documento.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado)
-                            {
-                                AnularRegistroFactura(factura, intIdUsuario, dbContext);
-                                dbContext.Commit();
-                            } else
-                            {
-                                factura.IdDocElectronicoRev = null;
-                                dbContext.NotificarModificacion(factura);
-                                dbContext.Commit();
-                            }
-                        }
+                        AnularRegistroFactura(factura, intIdUsuario, dbContext);
+                        dbContext.Commit();
                     }
                 }
                 catch (BusinessException ex)
@@ -809,20 +836,27 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             foreach (var detalleFactura in factura.DetalleFactura)
             {
                 Producto producto = dbContext.ProductoRepository.Find(detalleFactura.IdProducto);
+                if (producto == null)
+                    throw new Exception("El producto asignado al detalle de la devolución no existe.");
                 if (producto.Tipo == StaticTipoProducto.Producto)
                 {
+                    ExistenciaPorSucursal existencias = dbContext.ExistenciaPorSucursalRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == factura.IdSucursal).FirstOrDefault();
+                    if (existencias == null)
+                        throw new BusinessException("El producto " + producto.IdProducto + " no posee registro de existencias. Por favor consulte con su proveedor.");
+                    existencias.Cantidad += detalleFactura.Cantidad;
+                    dbContext.NotificarModificacion(existencias);
                     MovimientoProducto movimiento = new MovimientoProducto
                     {
                         IdProducto = producto.IdProducto,
+                        IdSucursal = factura.IdSucursal,
                         Fecha = DateTime.Now,
                         Tipo = StaticTipoMovimientoProducto.Entrada,
-                        Origen = "Anulación registro de facturación.",
+                        Origen = "Anulación de registro de facturación",
                         Referencia = factura.TextoAdicional,
                         Cantidad = detalleFactura.Cantidad,
                         PrecioCosto = detalleFactura.PrecioCosto
                     };
                     producto.MovimientoProducto.Add(movimiento);
-                    producto.Cantidad += detalleFactura.Cantidad;
                     dbContext.NotificarModificacion(producto);
                 }
             }
@@ -855,7 +889,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    Factura factura = dbContext.FacturaRepository.Include("ParametroExoneracion").Include("Cliente.Barrio.Distrito.Canton.Provincia").Include("Vendedor").Include("DetalleFactura.Producto.TipoProducto").Include("DesglosePagoFactura.FormaPago").Include("DesglosePagoFactura.TipoMoneda").FirstOrDefault(x => x.IdFactura == intIdFactura);
+                    Factura factura = dbContext.FacturaRepository.Include("Cliente.Barrio.Distrito.Canton.Provincia").Include("Vendedor").Include("DetalleFactura.Producto.TipoProducto").Include("DesglosePagoFactura.FormaPago").Include("DesglosePagoFactura.TipoMoneda").FirstOrDefault(x => x.IdFactura == intIdFactura);
                     foreach (DetalleFactura detalle in factura.DetalleFactura)
                         detalle.Factura = null;
                     foreach (DesglosePagoFactura desglosePago in factura.DesglosePagoFactura)
@@ -892,7 +926,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<FacturaDetalle> ObtenerListadoFacturas(int intIdEmpresa, int numPagina, int cantRec, int intIdFactura, string strNombre)
+        public IList<FacturaDetalle> ObtenerListadoFacturas(int intIdEmpresa, int numPagina, int cantRec, int intIdFactura, string strNombre)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -950,12 +984,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(proforma.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (proforma.Aplicado == true) throw new BusinessException("La proforma no puede ser modificada porque ya fue facturada.");
+                    Proforma ordenNoTracking = dbContext.ProformaRepository.AsNoTracking().Where(x => x.IdProforma == proforma.IdProforma).FirstOrDefault();
+                    if (ordenNoTracking != null && ordenNoTracking.Aplicado == true) throw new BusinessException("La proforma no puede ser modificada porque ya fue facturada.");
+                    proforma.Vendedor = null;
+                    proforma.ParametroExoneracion = null;
                     List<DetalleProforma> listadoDetalleAnterior = dbContext.DetalleProformaRepository.Where(x => x.IdProforma == proforma.IdProforma).ToList();
+                    List<DetalleProforma> listadoDetalle = proforma.DetalleProforma.ToList();
+                    proforma.DetalleProforma = null;
                     foreach (DetalleProforma detalle in listadoDetalleAnterior)
                         dbContext.NotificarEliminacion(detalle);
                     dbContext.NotificarModificacion(proforma);
-                    foreach (DetalleProforma detalle in proforma.DetalleProforma)
+                    foreach (DetalleProforma detalle in listadoDetalle)
                         dbContext.DetalleProformaRepository.Add(detalle);
                     dbContext.Commit();
                 }
@@ -966,7 +1005,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    log.Error("Error al actualizar el registro de proforma de facturación: ", ex);
+                    log.Error("Error al actualizar el registro de proforma: ", ex);
                     throw new Exception("Se produjo un error actualizando la información de la proforma. Por favor consulte con su proveedor.");
                 }
             }
@@ -1009,7 +1048,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    Proforma proforma = dbContext.ProformaRepository.Include("Cliente.Barrio.Distrito.Canton.Provincia").Include("Vendedor").Include("DetalleProforma.Producto.TipoProducto").FirstOrDefault(x => x.IdProforma == intIdProforma);
+                    Proforma proforma = dbContext.ProformaRepository.Include("ParametroExoneracion").Include("Cliente.Barrio.Distrito.Canton.Provincia").Include("Vendedor").Include("DetalleProforma.Producto.TipoProducto").FirstOrDefault(x => x.IdProforma == intIdProforma);
                     foreach (DetalleProforma detalle in proforma.DetalleProforma)
                         detalle.Proforma = null;
                     return proforma;
@@ -1041,12 +1080,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     log.Error("Error al obtener el total del listado de registros de proforma de facturación: ", ex);
-                    throw new Exception("Se produjo un consultando el total del listado de proformas. Por favor consulte con su proveedor.");
+                    throw new Exception("Se produjo un error consultando el total del listado de proformas. Por favor consulte con su proveedor.");
                 }
             }
         }
 
-        public IEnumerable<FacturaDetalle> ObtenerListadoProformas(int intIdEmpresa, int numPagina, int cantRec, int intIdProforma, string strNombre)
+        public IList<FacturaDetalle> ObtenerListadoProformas(int intIdEmpresa, int numPagina, int cantRec, int intIdProforma, string strNombre)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -1073,7 +1112,135 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     log.Error("Error al obtener el listado de registros de proforma de facturación: ", ex);
-                    throw new Exception("Se produjo un consultando el listado de proformas. Por favor consulte con su proveedor.");
+                    throw new Exception("Se produjo un error consultando el listado de proformas. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public string AgregarApartado(Apartado apartado)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    Empresa empresa = dbContext.EmpresaRepository.Find(apartado.IdEmpresa);
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    dbContext.ApartadoRepository.Add(apartado);
+                    dbContext.Commit();
+                    return apartado.IdApartado.ToString();
+                }
+                catch (Exception ex)
+                {
+                    dbContext.RollBack();
+                    log.Error("Error al agregar el registro de apartado de facturación: ", ex);
+                    throw new Exception("Se produjo un error agregando la información del apartado. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public void AnularApartado(int intIdApartado, int intIdUsuario)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    Apartado apartado = dbContext.ApartadoRepository.Find(intIdApartado);
+                    if (apartado == null) throw new Exception("El apartado por anular no existe.");
+                    if (apartado.Nulo == true) throw new BusinessException("El apartado ya ha sido anulado.");
+                    if (apartado.Aplicado == true) throw new BusinessException("El apartado no puede ser anulado porque ya fue facturada.");
+                    Empresa empresa = dbContext.EmpresaRepository.Find(apartado.IdEmpresa);
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    apartado.Nulo = true;
+                    apartado.IdAnuladoPor = intIdUsuario;
+                    dbContext.NotificarModificacion(apartado);
+                    dbContext.Commit();
+                }
+                catch (BusinessException ex)
+                {
+                    dbContext.RollBack();
+                    throw ex;
+                }
+                catch (Exception ex)
+                {
+                    dbContext.RollBack();
+                    log.Error("Error al anular el registro de apartado de facturación: ", ex);
+                    throw new Exception("Se produjo un error anulando el apartado. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+        public Apartado ObtenerApartado(int intIdApartado)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    Apartado apartado = dbContext.ApartadoRepository.Include("Cliente.Barrio.Distrito.Canton.Provincia").Include("Vendedor").Include("DetalleApartado.Producto.TipoProducto").Include("DesglosePagoApartado.FormaPago").Include("DesglosePagoApartado.TipoMoneda").FirstOrDefault(x => x.IdApartado == intIdApartado);
+                    foreach (DetalleApartado detalle in apartado.DetalleApartado)
+                        detalle.Apartado = null;
+                    foreach (DesglosePagoApartado desglosePago in apartado.DesglosePagoApartado)
+                        desglosePago.Apartado = null;
+                    return apartado;
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al obtener el registro de apartado de facturación: ", ex);
+                    throw new Exception("Se produjo un error consultando la información del apartado. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public int ObtenerTotalListaApartados(int intIdEmpresa, int intIdApartado, string strNombre)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    var listaApartados = dbContext.ApartadoRepository.Where(x => !x.Nulo && !x.Aplicado && x.IdEmpresa == intIdEmpresa);
+                    if (intIdApartado > 0)
+                        listaApartados = listaApartados.Where(x => !x.Nulo && x.IdApartado == intIdApartado);
+                    else
+                    {
+                        if (!strNombre.Equals(string.Empty))
+                            listaApartados = listaApartados.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.Cliente.Nombre.Contains(strNombre));
+                    }
+                    return listaApartados.Count();
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al obtener el total del listado de registros de apartados: ", ex);
+                    throw new Exception("Se produjo un error consultando el total del listado de apartados. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+        
+        public IList<FacturaDetalle> ObtenerListadoApartados(int intIdEmpresa, int numPagina, int cantRec, int intIdApartado, string strNombre)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                var listaApartado = new List<FacturaDetalle>();
+                try
+                {
+                    var listado = dbContext.ApartadoRepository.Include("Cliente").Where(x => !x.Nulo && !x.Aplicado && x.IdEmpresa == intIdEmpresa);
+                    if (intIdApartado > 0)
+                        listado = listado.Where(x => !x.Nulo && x.IdApartado == intIdApartado);
+                    else
+                    {
+                        if (!strNombre.Equals(string.Empty))
+                            listado = listado.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.Cliente.Nombre.Contains(strNombre));
+                    }
+                    listado = listado.OrderByDescending(x => x.IdApartado).Skip((numPagina - 1) * cantRec).Take(cantRec);
+                    foreach (var Apartado in listado)
+                    {
+                        string strEstado = "Activa";
+                        FacturaDetalle item = new FacturaDetalle(Apartado.IdApartado, Apartado.Cliente.Nombre, Apartado.Fecha.ToString("dd/MM/yyyy"), Apartado.Gravado, Apartado.Exonerado, Apartado.Excento, Apartado.Impuesto, Apartado.Total, strEstado);
+                        listaApartado.Add(item);
+                    }
+                    return listaApartado;
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al obtener el listado de registros de apartados: ", ex);
+                    throw new Exception("Se produjo un error consultando el listado de apartados. Por favor consulte con su proveedor.");
                 }
             }
         }
@@ -1170,9 +1337,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    OrdenServicio ordenServicio = dbContext.OrdenServicioRepository.Include("DetalleOrdenServicio.Producto").Include("Cliente").Include("Vendedor").FirstOrDefault(x => x.IdOrden == intIdOrdenServicio);
+                    OrdenServicio ordenServicio = dbContext.OrdenServicioRepository.Include("Cliente.Barrio.Distrito.Canton.Provincia").Include("Vendedor").Include("DetalleOrdenServicio.Producto.TipoProducto").Include("DesglosePagoOrdenServicio.FormaPago").Include("DesglosePagoOrdenServicio.TipoMoneda").FirstOrDefault(x => x.IdOrden == intIdOrdenServicio);
                     foreach (DetalleOrdenServicio detalle in ordenServicio.DetalleOrdenServicio)
                         detalle.OrdenServicio = null;
+                    foreach (DesglosePagoOrdenServicio desglosePago in ordenServicio.DesglosePagoOrdenServicio)
+                        desglosePago.OrdenServicio = null;
                     return ordenServicio;
                 }
                 catch (Exception ex)
@@ -1199,12 +1368,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     log.Error("Error al obtener el total del listado de registros de proforma de facturación: ", ex);
-                    throw new Exception("Se produjo un consultando el total del listado de proformas. Por favor consulte con su proveedor.");
+                    throw new Exception("Se produjo un error consultando el total del listado de proformas. Por favor consulte con su proveedor.");
                 }
             }
         }
 
-        public IEnumerable<FacturaDetalle> ObtenerListadoOrdenServicio(int intIdEmpresa, int numPagina, int cantRec, int intIdOrdenServicio, string strNombre)
+        public IList<FacturaDetalle> ObtenerListadoOrdenServicio(int intIdEmpresa, int numPagina, int cantRec, int intIdOrdenServicio, string strNombre)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -1228,12 +1397,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     log.Error("Error al obtener el listado de registros de proforma de facturación: ", ex);
-                    throw new Exception("Se produjo un consultando el listado de proformas. Por favor consulte con su proveedor.");
+                    throw new Exception("Se produjo un error consultando el listado de proformas. Por favor consulte con su proveedor.");
                 }
             }
         }
 
-        public DevolucionCliente AgregarDevolucionCliente(DevolucionCliente devolucion)
+        public string AgregarDevolucionCliente(DevolucionCliente devolucion, ConfiguracionGeneral datos)
         {
             decimal decTotalImpuesto = 0;
             decimal decTotalCostos = 0;
@@ -1254,12 +1423,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
+                    Factura factura = dbContext.FacturaRepository.AsNoTracking().Include("DetalleFactura").FirstOrDefault(x => x.IdFactura == devolucion.IdFactura);
+                    if (factura == null) throw new Exception("La factura asignada a la devolución no existe");
+                    if (factura.Nulo) throw new BusinessException("La factura asingada a la devolución está anulada.");
                     Empresa empresa = dbContext.EmpresaRepository.Find(devolucion.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
-                    Factura factura = dbContext.FacturaRepository.Include("DetalleFactura").FirstOrDefault(x => x.IdFactura == devolucion.IdFactura);
-                    if (factura == null)
-                        throw new Exception("La factura asignada a la devolución no existe");
                     if (empresa.Contabiliza)
                     {
                         ingresosVentasParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.IngresosPorVentas).FirstOrDefault();
@@ -1272,54 +1441,55 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     devolucion.IdAsiento = 0;
                     decTotalImpuesto = devolucion.Impuesto;
+                    devolucion.IdTipoMoneda = factura.IdTipoMoneda;
+                    devolucion.IdSucursal = factura.IdSucursal;
+                    devolucion.IdTerminal = factura.IdTerminal;
                     foreach (DetalleFactura detalle in factura.DetalleFactura)
                     {
                         decSubTotalFactura += detalle.Cantidad * detalle.PrecioVenta;
                     }
                     foreach (var detalleDevolucion in devolucion.DetalleDevolucionCliente)
                     {
-                        if (detalleDevolucion.CantDevolucion > 0)
+                        Producto producto = dbContext.ProductoRepository.Include("Linea").FirstOrDefault(x => x.IdProducto == detalleDevolucion.IdProducto);
+                        if (producto == null)
+                            throw new Exception("El producto asignado al detalle de la devolución no existe");
+                        if (producto.Tipo != StaticTipoProducto.Producto)
+                            throw new BusinessException("El tipo de producto por devolver no puede ser un servicio. Por favor verificar.");
+                        ExistenciaPorSucursal existencias = dbContext.ExistenciaPorSucursalRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == factura.IdSucursal).FirstOrDefault();
+                        if (existencias == null)
+                            throw new BusinessException("El producto " + producto.IdProducto + " no posee registro de existencias. Por favor consulte con su proveedor.");
+                        existencias.Cantidad += detalleDevolucion.Cantidad;
+                        dbContext.NotificarModificacion(existencias);
+                        detalleDevolucion.Descripcion = producto.Descripcion;
+                        MovimientoProducto movimientoProducto = new MovimientoProducto
                         {
-                            Producto producto = dbContext.ProductoRepository.Include("Linea").FirstOrDefault(x => x.IdProducto == detalleDevolucion.IdProducto);
-                            if (producto == null)
-                                throw new Exception("El producto asignado al detalle de la devolución no existe");
-                            if (producto.Tipo == StaticTipoProducto.ServicioProfesionales)
-                                throw new BusinessException("El tipo de producto por devolver no puede ser un servicio. Por favor verificar.");
-                            else if (producto.Tipo == StaticTipoProducto.Producto)
+                            IdProducto = producto.IdProducto,
+                            Fecha = DateTime.Now,
+                            Tipo = StaticTipoMovimientoProducto.Entrada,
+                            Origen = "Registro de devolución de mercancía del cliente.",
+                            Referencia = devolucion.IdFactura.ToString(),
+                            Cantidad = detalleDevolucion.CantDevolucion,
+                            PrecioCosto = detalleDevolucion.PrecioCosto
+                        };
+                        producto.MovimientoProducto.Add(movimientoProducto);
+                        if (empresa.Contabiliza)
+                        {
+                            decimal decTotalCostoPorLinea = Math.Round(detalleDevolucion.PrecioCosto * detalleDevolucion.CantDevolucion, 2, MidpointRounding.AwayFromZero);
+                            decTotalCostos += decTotalCostoPorLinea;
+                            decimal decTotalPorLinea = detalleDevolucion.PrecioVenta * detalleDevolucion.CantDevolucion;
+                            decTotalPorLinea = Math.Round(decTotalPorLinea - (factura.Descuento / decSubTotalFactura * decTotalPorLinea), 2, MidpointRounding.AwayFromZero);
+                            if (!detalleDevolucion.Excento)
+                                decTotalPorLinea = Math.Round(decTotalPorLinea / (1 + (detalleDevolucion.PorcentajeIVA / 100)), 2, MidpointRounding.AwayFromZero);
+                            decTotalIngresos += decTotalPorLinea;
+                            int intExiste = dtbInventarios.Rows.IndexOf(dtbInventarios.Rows.Find(producto.Linea.IdLinea));
+                            if (intExiste >= 0)
+                                dtbInventarios.Rows[intExiste]["Total"] = (decimal)dtbInventarios.Rows[intExiste]["Total"] + decTotalCostoPorLinea;
+                            else
                             {
-                                producto.Cantidad += detalleDevolucion.CantDevolucion;
-                                dbContext.NotificarModificacion(producto);
-                                MovimientoProducto movimientoProducto = new MovimientoProducto
-                                {
-                                    IdProducto = producto.IdProducto,
-                                    Fecha = DateTime.Now,
-                                    Tipo = StaticTipoMovimientoProducto.Entrada,
-                                    Origen = "Registro de devolución de mercancía del cliente.",
-                                    Referencia = devolucion.IdFactura.ToString(),
-                                    Cantidad = detalleDevolucion.CantDevolucion,
-                                    PrecioCosto = detalleDevolucion.PrecioCosto
-                                };
-                                producto.MovimientoProducto.Add(movimientoProducto);
-                                if (empresa.Contabiliza)
-                                {
-                                    decimal decTotalCostoPorLinea = Math.Round(detalleDevolucion.PrecioCosto * detalleDevolucion.CantDevolucion, 2, MidpointRounding.AwayFromZero);
-                                    decTotalCostos += decTotalCostoPorLinea;
-                                    decimal decTotalPorLinea = detalleDevolucion.PrecioVenta * detalleDevolucion.CantDevolucion;
-                                    decTotalPorLinea = Math.Round(decTotalPorLinea - (factura.Descuento / decSubTotalFactura * decTotalPorLinea), 2, MidpointRounding.AwayFromZero);
-                                    if (!detalleDevolucion.Excento)
-                                        decTotalPorLinea = Math.Round(decTotalPorLinea / (1 + (detalleDevolucion.PorcentajeIVA / 100)), 2, MidpointRounding.AwayFromZero);
-                                    decTotalIngresos += decTotalPorLinea;
-                                    int intExiste = dtbInventarios.Rows.IndexOf(dtbInventarios.Rows.Find(producto.Linea.IdLinea));
-                                    if (intExiste >= 0)
-                                        dtbInventarios.Rows[intExiste]["Total"] = (decimal)dtbInventarios.Rows[intExiste]["Total"] + decTotalCostoPorLinea;
-                                    else
-                                    {
-                                        DataRow data = dtbInventarios.NewRow();
-                                        data["IdLinea"] = producto.Linea.IdLinea;
-                                        data["Total"] = decTotalCostoPorLinea;
-                                        dtbInventarios.Rows.Add(data);
-                                    }
-                                }
+                                DataRow data = dtbInventarios.NewRow();
+                                data["IdLinea"] = producto.Linea.IdLinea;
+                                data["Total"] = decTotalCostoPorLinea;
+                                dtbInventarios.Rows.Add(data);
                             }
                         }
                     }
@@ -1483,6 +1653,36 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         IContabilidadService servicioContabilidad = new ContabilidadService();
                         servicioContabilidad.AgregarAsiento(dbContext, asiento);
                     }
+                    if (!empresa.RegimenSimplificado)
+                    {
+                        DocumentoElectronico documento = dbContext.DocumentoElectronicoRepository.Where(x => x.ClaveNumerica == factura.IdDocElectronico).FirstOrDefault();
+                        if (documento.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado)
+                        {
+                            Cliente cliente = dbContext.ClienteRepository.Find(factura.IdCliente);
+                            DocumentoElectronico documentoNC;
+                            string criteria = factura.Fecha.ToString("dd/MM/yyyy");
+                            TipoDeCambioDolar tipoDeCambio = dbContext.TipoDeCambioDolarRepository.Find(criteria);
+                            if (tipoDeCambio != null)
+                            {
+                                documentoNC = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronicaParcial(devolucion, empresa, cliente, dbContext, tipoDeCambio.ValorTipoCambio);
+                                factura.IdDocElectronicoRev = documentoNC.ClaveNumerica;
+                            }
+                            else
+                            {
+                                throw new BusinessException("El tipo de cambio para la fecha " + criteria + " no ha sido actualizado. Por favor consulte con su proveedor.");
+                            }
+                            dbContext.NotificarModificacion(factura);
+                            dbContext.Commit();
+                            if (documentoNC != null)
+                            {
+                                Task.Run(() => ComprobanteElectronicoService.EnviarDocumentoElectronico(empresa.IdEmpresa, documentoNC.IdDocumento, datos));
+                            }
+                        }
+                        else
+                        {
+                            throw new BusinessException("No se pueden realizar operaciones de dovolución ya que el documento electrónico asignado a la factura no ha sido procesado.");
+                        }
+                    }
                     dbContext.Commit();
                     if (movimientoCuentaPorCobrar != null)
                     {
@@ -1512,7 +1712,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     throw new Exception("Se produjo un error agregando la información de la devolución. Por favor consulte con su proveedor.");
                 }
             }
-            return devolucion;
+            return devolucion.IdDevolucion.ToString();
         }
 
         public void AnularDevolucionCliente(int intIdDevolucion, int intIdUsuario)
@@ -1527,30 +1727,34 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     if (devolucion.Procesado) throw new BusinessException("El registro ya fue procesado por el cierre. No es posible registrar la transacción.");
+                    Factura factura = dbContext.FacturaRepository.AsNoTracking().Include("DetalleFactura").FirstOrDefault(x => x.IdFactura == devolucion.IdFactura);
+                    if (factura == null) throw new Exception("La factura asignada a la devolución no existe");
+                    if (factura.Nulo) throw new BusinessException("La factura asingada a la devolución está anulada.");
                     devolucion.Nulo = true;
                     devolucion.IdAnuladoPor = intIdUsuario;
                     dbContext.NotificarModificacion(devolucion);
                     foreach (var detalleDevolucion in devolucion.DetalleDevolucionCliente)
                     {
                         Producto producto = dbContext.ProductoRepository.Find(detalleDevolucion.IdProducto);
-                        if (producto == null)
-                            throw new Exception("El producto asignado al detalle de la devolución no existe");
-                        if (producto.Tipo == StaticTipoProducto.Producto)
+                        if (producto == null) throw new Exception("El producto asignado al detalle de la devolución no existe");
+                        if (producto.Tipo != StaticTipoProducto.Producto)
+                            throw new BusinessException("El tipo de producto por devolver no puede ser un servicio. Por favor verificar.");
+                        ExistenciaPorSucursal existencias = dbContext.ExistenciaPorSucursalRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == factura.IdSucursal).FirstOrDefault();
+                        if (existencias == null)
+                            throw new BusinessException("El producto " + producto.IdProducto + " no posee registro de existencias. Por favor consulte con su proveedor.");
+                        existencias.Cantidad -= detalleDevolucion.Cantidad;
+                        dbContext.NotificarModificacion(existencias);
+                        MovimientoProducto movimientoProducto = new MovimientoProducto
                         {
-                            producto.Cantidad -= detalleDevolucion.CantDevolucion;
-                            dbContext.NotificarModificacion(producto);
-                            MovimientoProducto movimientoProducto = new MovimientoProducto
-                            {
-                                IdProducto = producto.IdProducto,
-                                Fecha = DateTime.Now,
-                                Tipo = StaticTipoMovimientoProducto.Salida,
-                                Origen = "Anulación de registro de devolución de mercancía del cliente.",
-                                Referencia = devolucion.IdFactura.ToString(),
-                                Cantidad = detalleDevolucion.CantDevolucion,
-                                PrecioCosto = detalleDevolucion.PrecioCosto
-                            };
-                            producto.MovimientoProducto.Add(movimientoProducto);
-                        }
+                            IdProducto = producto.IdProducto,
+                            Fecha = DateTime.Now,
+                            Tipo = StaticTipoMovimientoProducto.Salida,
+                            Origen = "Anulación de registro de devolución de mercancía del cliente.",
+                            Referencia = devolucion.IdFactura.ToString(),
+                            Cantidad = detalleDevolucion.CantDevolucion,
+                            PrecioCosto = detalleDevolucion.PrecioCosto
+                        };
+                        producto.MovimientoProducto.Add(movimientoProducto);
                     }
                     if (devolucion.IdMovimientoCxC > 0)
                     {
@@ -1594,7 +1798,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    return dbContext.DevolucionClienteRepository.Include("DetalleDevolucionCliente.Producto").FirstOrDefault(x => x.IdDevolucion == intIdDevolucion);
+                    return dbContext.DevolucionClienteRepository.Include("Cliente").Include("DetalleDevolucionCliente.Producto.TipoProducto").FirstOrDefault(x => x.IdDevolucion == intIdDevolucion);
                 }
                 catch (Exception ex)
                 {
@@ -1625,18 +1829,26 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<DevolucionCliente> ObtenerListadoDevolucionesPorCliente(int intIdEmpresa, int numPagina, int cantRec, int intIdDevolucion, string strNombre)
+        public IList<FacturaDetalle> ObtenerListadoDevolucionesPorCliente(int intIdEmpresa, int numPagina, int cantRec, int intIdDevolucion, string strNombre)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
+                var listaDevoluciones = new List<FacturaDetalle>();
                 try
                 {
-                    var listaDevoluciones = dbContext.DevolucionClienteRepository.Include("Factura").Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa);
+                    var listado = dbContext.DevolucionClienteRepository.Include("Factura").Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa);
                     if (intIdDevolucion > 0)
-                        listaDevoluciones = listaDevoluciones.Where(x => x.IdDevolucion == intIdDevolucion);
+                        listado = listado.Where(x => x.IdDevolucion == intIdDevolucion);
                     else if (!strNombre.Equals(string.Empty))
-                        listaDevoluciones = listaDevoluciones.Where(x => x.Cliente.Nombre.Contains(strNombre));
-                    return listaDevoluciones.OrderByDescending(x => x.IdDevolucion).Skip((numPagina - 1) * cantRec).Take(cantRec).ToList();
+                        listado = listado.Where(x => x.Cliente.Nombre.Contains(strNombre));
+                    listado = listado.OrderByDescending(x => x.IdDevolucion).Skip((numPagina - 1) * cantRec).Take(cantRec);
+                    foreach (var devolucion in listado)
+                    {
+                        string strEstado = "Activa";
+                        FacturaDetalle item = new FacturaDetalle(devolucion.IdDevolucion, devolucion.Cliente.Nombre, devolucion.Fecha.ToString("dd/MM/yyyy"), devolucion.Gravado, 0, devolucion.Excento, devolucion.Impuesto, devolucion.Total, strEstado);
+                        listaDevoluciones.Add(item);
+                    }
+                    return listaDevoluciones;
                 }
                 catch (Exception ex)
                 {
@@ -2280,7 +2492,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         dbContext.Commit();
                         if (documentoElectronico.IdTipoDocumento == (int)TipoDocumento.NotaCreditoElectronica)
                         {
-                            Factura factura = dbContext.FacturaRepository.Where(x => x.IdDocElectronicoRev == strClave).FirstOrDefault();
+                            Factura factura = dbContext.FacturaRepository.Include("DetalleFactura.Producto").Include("DesglosePagoFactura").Where(x => x.IdDocElectronicoRev == strClave).FirstOrDefault();
                             if (factura != null)
                             {
                                 if (!factura.Nulo)

@@ -11,6 +11,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public OrdenServicio()
         {
             DetalleOrdenServicio = new HashSet<DetalleOrdenServicio>();
+            DesglosePagoOrdenServicio = new HashSet<DesglosePagoOrdenServicio>();
         }
 
         [ForeignKey("Empresa")]
@@ -24,15 +25,15 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         [ForeignKey("Vendedor")]
         public int IdVendedor { get; set; }
         public DateTime Fecha { get; set; }
-        public string Observaciones1 { get; set; }
-        public string Observaciones2 { get; set; }
-        public string Observaciones3 { get; set; }
-        public string Observaciones4 { get; set; }
-        public string Observaciones5 { get; set; }
+        public string Telefono { get; set; }
+        public string Descripcion { get; set; }
+        public string FechaEntrega { get; set; }
+        public string OtrosDetalles { get; set; }
         public decimal Excento { get; set; }
         public decimal Gravado { get; set; }
         public decimal Descuento { get; set; }
         public decimal Impuesto { get; set; }
+        public decimal MontoAdelanto { get; set; }
         [NotMapped]
         public decimal Total { get { return Excento + Gravado + Impuesto; } }
         [NotMapped]
@@ -46,5 +47,6 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public Cliente Cliente { get; set; }
         public Vendedor Vendedor { get; set; }
         public ICollection<DetalleOrdenServicio> DetalleOrdenServicio { get; set; }
+        public ICollection<DesglosePagoOrdenServicio> DesglosePagoOrdenServicio { get; set; }
     }
 }

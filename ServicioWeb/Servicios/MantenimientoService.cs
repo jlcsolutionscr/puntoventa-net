@@ -8,10 +8,7 @@ using LeandroSoftware.Core.Dominio.Entidades;
 using LeandroSoftware.ServicioWeb.Contexto;
 using log4net;
 using Unity;
-using System.Text;
 using LeandroSoftware.Core.Utilitario;
-using System.Web.Script.Serialization;
-using LeandroSoftware.Core.CustomClasses;
 using System.Globalization;
 
 namespace LeandroSoftware.ServicioWeb.Servicios
@@ -35,8 +32,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         string AgregarEmpresa(Empresa empresa);
         Empresa ObtenerEmpresa(int intIdEmpresa);
         void ActualizarEmpresa(Empresa empresa);
-        List<ReportePorEmpresa> ObtenerCatalogoReportePorEmpresa(int intIdEmpresa);
-        void ActualizarCatalogoReporte(int intIdEmpresa, List<ReportePorEmpresa> listado);
+        List<LlaveDescripcion> ObtenerListadoReportePorEmpresa(int intIdEmpresa);
+        List<LlaveDescripcion> ObtenerListadoRolePorEmpresa(int intIdEmpresa);
+        void ActualizarReportePorEmpresa(int intIdEmpresa, List<ReportePorEmpresa> listado);
+        void ActualizarRolePorEmpresa(int intIdEmpresa, List<RolePorEmpresa> listado);
         string ObtenerLogotipoEmpresa(int intIdEmpresa);
         void ActualizarLogoEmpresa(int intIdEmpresa, string strLogo);
         void ActualizarCertificadoEmpresa(int intIdEmpresa, string strCertificado);
@@ -64,6 +63,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         IEnumerable<LlaveDescripcion> ObtenerListadoVendedores(int intIdEmpresa, string strNombre);
         // Métodos para administrar los roles del sistema
         Role ObtenerRole(int intIdRole);
+
         IEnumerable<LlaveDescripcion> ObtenerListadoRoles();
         // Métodos para administrar las líneas de producto
         void AgregarLinea(Linea linea);
@@ -82,10 +82,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         void EliminarProducto(int intIdProducto);
         Producto ObtenerProducto(int intIdProducto);
         Producto ObtenerProductoPorCodigo(int intIdEmpresa, string strCodigo);
-        int ObtenerTotalListaProductos(int intIdEmpresa, bool bolIncluyeServicios, int intIdLinea, string strCodigo, string strDescripcion);
-        IEnumerable<ProductoDetalle> ObtenerListadoProductos(int intIdEmpresa, int numPagina, int cantRec, bool bolIncluyeServicios, int intIdLinea, string strCodigo, string strDescripcion);
-        int ObtenerTotalMovimientosPorProducto(int intIdProducto, string strFechaInicial, string strFechaFinal);
-        IEnumerable<MovimientoProducto> ObtenerMovimientosPorProducto(int intIdProducto, int numPagina, int cantRec, string strFechaInicial, string strFechaFinal);
+        Producto ObtenerProductoPorCodigoProveedor(int intIdEmpresa, string strCodigo);
+        int ObtenerTotalListaProductos(int intIdEmpresa, int intIdSucursal, bool bolIncluyeServicios, int intIdLinea, string strCodigo, string strCodigoProveedor, string strDescripcion);
+        IEnumerable<ProductoDetalle> ObtenerListadoProductos(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, bool bolIncluyeServicios, int intIdLinea, string strCodigo, string strCodigoProveedor, string strDescripcion);
+        int ObtenerTotalMovimientosPorProducto(int intIdProducto, int intIdSucursal, string strFechaInicial, string strFechaFinal);
+        IList<MovimientoProducto> ObtenerMovimientosPorProducto(int intIdProducto, int intIdSucursal, int numPagina, int cantRec, string strFechaInicial, string strFechaFinal);
         // Métodos para obtener las condiciones de venta para facturación
         IEnumerable<LlaveDescripcion> ObtenerListadoCondicionVenta();
         // Métodos para obtener las formas de pago por tipo de servicio
@@ -232,7 +233,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     var listado = dbContext.SucursalPorEmpresaRepository.Where(x => x.IdEmpresa == intIdEmpresa);
                     foreach (SucursalPorEmpresa value in listado)
                     {
-                        LlaveDescripcion item = new LlaveDescripcion(value.Empresa.IdEmpresa, value.Empresa.NombreComercial);
+                        LlaveDescripcion item = new LlaveDescripcion(value.IdSucursal, value.NombreSucursal);
                         listaEmpresa.Add(item);
                     }
                     return listaEmpresa;
@@ -637,16 +638,22 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public List<ReportePorEmpresa> ObtenerCatalogoReportePorEmpresa(int intIdEmpresa)
+        public List<LlaveDescripcion> ObtenerListadoReportePorEmpresa(int intIdEmpresa)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
+                var listaReportes = new List<LlaveDescripcion>();
                 try
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    List<ReportePorEmpresa> listadoReportePorEmpresa = dbContext.ReportePorEmpresaRepository.Where(x => x.IdEmpresa == intIdEmpresa).ToList();
-                    return listadoReportePorEmpresa;
+                    var listado = dbContext.ReportePorEmpresaRepository.Include("CatalogoReporte").Where(x => x.IdEmpresa == intIdEmpresa);
+                    foreach (var value in listado)
+                    {
+                        LlaveDescripcion item = new LlaveDescripcion(value.IdReporte, value.CatalogoReporte.NombreReporte);
+                        listaReportes.Add(item);
+                    }
+                    return listaReportes;
                 }
                 catch (BusinessException ex)
                 {
@@ -660,7 +667,30 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void ActualizarCatalogoReporte(int intIdEmpresa, List<ReportePorEmpresa> listado)
+        public List<LlaveDescripcion> ObtenerListadoRolePorEmpresa(int intIdEmpresa)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                var listaRoles = new List<LlaveDescripcion>();
+                try
+                {
+                    var listado = dbContext.RolePorEmpresaRepository.Include("Role").Where(x => x.IdEmpresa == intIdEmpresa && x.IdRole >= 50);
+                    foreach (var value in listado)
+                    {
+                        LlaveDescripcion item = new LlaveDescripcion(value.IdRole, value.Role.Descripcion);
+                        listaRoles.Add(item);
+                    }
+                    return listaRoles;
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al obtener el listado de registros de roles de usuario: ", ex);
+                    throw new Exception("Se produjo un error consultando el listado de roles de acceso. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public void ActualizarReportePorEmpresa(int intIdEmpresa, List<ReportePorEmpresa> listado)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -675,8 +705,29 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    log.Error("Error al obtener el logotipo de la empresa: ", ex);
-                    throw new Exception("Se produjo un error consultando el logotipo de la empresa. Por favor consulte con su proveedor.");
+                    log.Error("Error al actualizar el listado de reportes por empresa: ", ex);
+                    throw new Exception("Se produjo un error al actualizar el listado de reportes por empresa. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public void ActualizarRolePorEmpresa(int intIdEmpresa, List<RolePorEmpresa> listado)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    List<RolePorEmpresa> listadoReportePorEmpresaAnt = dbContext.RolePorEmpresaRepository.Where(x => x.IdEmpresa == intIdEmpresa).ToList();
+                    foreach (RolePorEmpresa reporte in listadoReportePorEmpresaAnt)
+                        dbContext.RolePorEmpresaRepository.Remove(reporte);
+                    foreach (RolePorEmpresa reporte in listado)
+                        dbContext.RolePorEmpresaRepository.Add(reporte);
+                    dbContext.Commit();
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al actualizar el listado de roles por empresa: ", ex);
+                    throw new Exception("Se produjo un error al actualizar el listado de roles por empresa. Por favor consulte con su proveedor.");
                 }
             }
         }
@@ -1532,9 +1583,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     Empresa empresa = dbContext.EmpresaRepository.Find(producto.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
-                    bool existe = dbContext.ProductoRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.Codigo == producto.Codigo && x.IdProducto != producto.IdProducto).Count() > 0;
-                    if (existe) throw new BusinessException("El código de producto ingresado ya está registrado en la empresa.");
+                    bool existe = dbContext.ProductoRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto != producto.IdProducto && x.Codigo == producto.Codigo).Count() > 0;
+                    if (existe) throw new BusinessException("El código del producto ingresado ya está registrado en la empresa.");
                     producto.ParametroImpuesto = null;
+                    producto.Proveedor = null;
                     dbContext.NotificarModificacion(producto);
                     dbContext.Commit();
                 }
@@ -1635,8 +1687,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     Producto producto = dbContext.ProductoRepository.Include("ParametroImpuesto").Include("Proveedor").FirstOrDefault(x => x.IdProducto == intIdProducto);
                     producto.Proveedor.Producto = null;
-                    foreach (MovimientoProducto movimiento in producto.MovimientoProducto)
-                        movimiento.Producto = null;
                     return producto;
                 }
                 catch (Exception ex)
@@ -1663,22 +1713,42 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public int ObtenerTotalListaProductos(int intIdEmpresa, bool bolIncluyeServicios, int intIdLinea, string strCodigo, string strDescripcion)
+        public Producto ObtenerProductoPorCodigoProveedor(int intIdEmpresa, string strCodigo)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 try
                 {
-                    var listaProductos = dbContext.ProductoRepository.Where(x => x.IdEmpresa == intIdEmpresa);
+                    return dbContext.ProductoRepository.Include("ParametroImpuesto").Where(x => x.IdEmpresa == intIdEmpresa && x.CodigoProveedor.Equals(strCodigo)).FirstOrDefault();
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al obtener el producto: ", ex);
+                    throw new Exception("Se produjo un error consultando la información del producto. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public int ObtenerTotalListaProductos(int intIdEmpresa, int intIdSucursal, bool bolIncluyeServicios, int intIdLinea, string strCodigo, string strCodigoProveedor, string strDescripcion)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    var listado = dbContext.ProductoRepository
+                        .Join(dbContext.ExistenciaPorSucursalRepository, y => y.IdProducto, z => z.IdProducto, (x, y) => new { x, y })
+                        .Where(x => x.x.IdEmpresa == x.y.IdEmpresa && x.x.IdEmpresa == intIdEmpresa && x.y.IdSucursal == intIdSucursal);
                     if (intIdLinea > 0)
-                        listaProductos = listaProductos.Where(x => x.IdLinea == intIdLinea);
+                        listado = listado.Where(x => x.x.IdLinea == intIdLinea);
                     if (!strCodigo.Equals(string.Empty))
-                        listaProductos = listaProductos.Where(x => x.Codigo.Contains(strCodigo));
+                        listado = listado.Where(x => x.x.Codigo.Contains(strCodigo));
+                    if (!strCodigoProveedor.Equals(string.Empty))
+                        listado = listado.Where(x => x.x.CodigoProveedor.Contains(strCodigoProveedor));
                     if (!strDescripcion.Equals(string.Empty))
-                        listaProductos = listaProductos.Where(x => x.Descripcion.Contains(strDescripcion));
+                        listado = listado.Where(x => x.x.Descripcion.Contains(strDescripcion));
                     if (!bolIncluyeServicios)
-                        listaProductos = listaProductos.Where(x => x.Tipo == StaticTipoProducto.Producto);
-                    return listaProductos.Count();
+                        listado = listado.Where(x => x.x.Tipo == StaticTipoProducto.Producto);
+                    return listado.Count();
                 }
                 catch (Exception ex)
                 {
@@ -1688,18 +1758,20 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<ProductoDetalle> ObtenerListadoProductos(int intIdEmpresa, int numPagina, int cantRec, bool bolIncluyeServicios, int intIdLinea, string strCodigo, string strDescripcion)
+        public IEnumerable<ProductoDetalle> ObtenerListadoProductos(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, bool bolIncluyeServicios, int intIdLinea, string strCodigo, string strCodigoProveedor, string strDescripcion)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 var listaProducto = new List<ProductoDetalle>();
                 try
                 {
-                    var listado = dbContext.ProductoRepository.Where(x => x.IdEmpresa == intIdEmpresa);
+                    var listado = dbContext.ProductoRepository.Where(x => x.IdEmpresa == x.IdEmpresa && x.IdEmpresa == intIdEmpresa);
                     if (intIdLinea > 0)
                         listado = listado.Where(x => x.IdLinea == intIdLinea);
                     if (!strCodigo.Equals(string.Empty))
                         listado = listado.Where(x => x.Codigo.Contains(strCodigo));
+                    if (!strCodigoProveedor.Equals(string.Empty))
+                        listado = listado.Where(x => x.CodigoProveedor.Contains(strCodigoProveedor));
                     if (!strDescripcion.Equals(string.Empty))
                         listado = listado.Where(x => x.Descripcion.Contains(strDescripcion));
                     if (!bolIncluyeServicios)
@@ -1708,9 +1780,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         listado = listado.OrderBy(x => x.Codigo).Skip((numPagina - 1) * cantRec).Take(cantRec);
                     else
                         listado = listado.OrderBy(x => x.Codigo);
-                    foreach (Producto value in listado)
+                    var lineas = listado.ToList();
+                    foreach (var value in lineas)
                     {
-                        ProductoDetalle item = new ProductoDetalle(value.IdProducto, value.Codigo, value.Descripcion, value.Cantidad, value.PrecioCosto, value.PrecioVenta1);
+                        var existencias = dbContext.ExistenciaPorSucursalRepository.AsNoTracking().Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdProducto == value.IdProducto).FirstOrDefault();
+                        decimal decCantidad = existencias != null ? existencias.Cantidad : 0;
+                        ProductoDetalle item = new ProductoDetalle(value.IdProducto, value.Codigo, value.CodigoProveedor, value.Descripcion, decCantidad, value.PrecioCosto, value.PrecioVenta1);
                         listaProducto.Add(item);
                     }
                     return listaProducto;
@@ -1723,7 +1798,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public int ObtenerTotalMovimientosPorProducto(int intIdProducto, string strFechaInicial, string strFechaFinal)
+        public int ObtenerTotalMovimientosPorProducto(int intIdProducto, int intIdSucursal, string strFechaInicial, string strFechaFinal)
         {
             DateTime datFechaInicial = DateTime.ParseExact(strFechaInicial + " 00:00:01", strFormat, provider);
             DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
@@ -1731,7 +1806,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    var listaMovimientos = dbContext.MovimientoProductoRepository.Where(x => x.IdProducto == intIdProducto && x.Fecha > datFechaInicial && x.Fecha < datFechaFinal);
+                    var listaMovimientos = dbContext.MovimientoProductoRepository.Where(x => x.IdProducto == intIdProducto && x.IdSucursal == intIdSucursal && x.Fecha > datFechaInicial && x.Fecha < datFechaFinal);
                     return listaMovimientos.Count();
                 }
                 catch (Exception ex)
@@ -1742,7 +1817,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<MovimientoProducto> ObtenerMovimientosPorProducto(int intIdProducto, int numPagina, int cantRec, string strFechaInicial, string strFechaFinal)
+        public IList<MovimientoProducto> ObtenerMovimientosPorProducto(int intIdProducto, int intIdSucursal, int numPagina, int cantRec, string strFechaInicial, string strFechaFinal)
         {
             DateTime datFechaInicial = DateTime.ParseExact(strFechaInicial + " 00:00:01", strFormat, provider);
             DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
@@ -1750,7 +1825,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    var listaMovimientos = dbContext.MovimientoProductoRepository.Where(x => x.IdProducto == intIdProducto && x.Fecha >= datFechaInicial && x.Fecha <= datFechaFinal);
+                    var listaMovimientos = dbContext.MovimientoProductoRepository.Where(x => x.IdProducto == intIdProducto && x.IdSucursal == intIdSucursal && x.Fecha >= datFechaInicial && x.Fecha <= datFechaFinal);
                     if (cantRec > 0)
                         return listaMovimientos.OrderByDescending(x => x.Fecha).Skip((numPagina - 1) * cantRec).Take(cantRec).ToList();
                     else
@@ -1771,7 +1846,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 var listaCondicionVenta = new List<LlaveDescripcion>();
                 try
                 {
-                    var listado = dbContext.CondicionVentaRepository;
+                    var listado = dbContext.CondicionVentaRepository.Where(x => new[] { 1, 2 }.Contains(x.IdCondicionVenta));
                     foreach (var value in listado)
                     {
                         LlaveDescripcion item = new LlaveDescripcion(value.IdCondicionVenta, value.Descripcion);
@@ -2191,22 +2266,38 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     foreach (var detalleAjuste in ajusteInventario.DetalleAjusteInventario)
                     {
                         Producto producto = dbContext.ProductoRepository.Include("Linea").FirstOrDefault(x => x.IdProducto == detalleAjuste.IdProducto);
-                        if (producto.Tipo == StaticTipoProducto.Producto)
+                        if (producto == null)
+                            throw new Exception("El producto asignado al detalle de la devolución no existe.");
+                        if (producto.Tipo != StaticTipoProducto.Producto)
+                            throw new BusinessException("El tipo de producto por ajustar no puede ser un servicio. Por favor verificar.");
+                        ExistenciaPorSucursal existencias = dbContext.ExistenciaPorSucursalRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == ajusteInventario.IdSucursal).FirstOrDefault();
+                        if (existencias != null)
                         {
-                            MovimientoProducto movimiento = new MovimientoProducto
-                            {
-                                IdProducto = producto.IdProducto,
-                                Fecha = DateTime.Now,
-                                Tipo = detalleAjuste.Cantidad < 0 ? StaticTipoMovimientoProducto.Salida : StaticTipoMovimientoProducto.Entrada,
-                                Origen = "Registro de ajuste de inventario.",
-                                Referencia = detalleAjuste.IdAjuste.ToString(),
-                                Cantidad = detalleAjuste.Cantidad < 0 ? detalleAjuste.Cantidad * -1 : detalleAjuste.Cantidad,
-                                PrecioCosto = detalleAjuste.PrecioCosto
-                            };
-                            producto.MovimientoProducto.Add(movimiento);
-                            producto.Cantidad += detalleAjuste.Cantidad;
-                            dbContext.NotificarModificacion(producto);
+                            existencias.Cantidad -= detalleAjuste.Cantidad;
+                            dbContext.NotificarModificacion(existencias);
                         }
+                        else
+                        {
+                            ExistenciaPorSucursal nuevoRegistro = new ExistenciaPorSucursal
+                            {
+                                IdEmpresa = ajusteInventario.IdEmpresa,
+                                IdSucursal = ajusteInventario.IdSucursal,
+                                IdProducto = detalleAjuste.IdProducto,
+                                Cantidad = detalleAjuste.Cantidad
+                            };
+                            dbContext.ExistenciaPorSucursalRepository.Add(nuevoRegistro);
+                        }
+                        MovimientoProducto movimiento = new MovimientoProducto
+                        {
+                            IdProducto = producto.IdProducto,
+                            Fecha = DateTime.Now,
+                            Tipo = detalleAjuste.Cantidad < 0 ? StaticTipoMovimientoProducto.Salida : StaticTipoMovimientoProducto.Entrada,
+                            Origen = "Registro de ajuste de inventario.",
+                            Referencia = detalleAjuste.IdAjuste.ToString(),
+                            Cantidad = detalleAjuste.Cantidad < 0 ? detalleAjuste.Cantidad * -1 : detalleAjuste.Cantidad,
+                            PrecioCosto = detalleAjuste.PrecioCosto
+                        };
+                        producto.MovimientoProducto.Add(movimiento);
                         //if (empresa.Contabiliza)
                         //{
                         //    if (producto.Tipo == StaticTipoProducto.Producto)
@@ -2473,22 +2564,24 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     foreach (var detalleAjuste in ajusteInventario.DetalleAjusteInventario)
                     {
                         Producto producto = dbContext.ProductoRepository.Include("Linea").FirstOrDefault(x => x.IdProducto == detalleAjuste.IdProducto);
-                        if (producto.Tipo == StaticTipoProducto.Producto)
+                        if (producto == null)
+                            throw new Exception("El producto asignado al detalle de la devolución no existe.");
+                        if (producto.Tipo != StaticTipoProducto.Producto)
+                            throw new BusinessException("El tipo de producto por ajustar no puede ser un servicio. Por favor verificar.");
+                        ExistenciaPorSucursal existencias = dbContext.ExistenciaPorSucursalRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == ajusteInventario.IdSucursal).FirstOrDefault();
+                        if (existencias == null)
+                            throw new BusinessException("El producto " + producto.IdProducto + " no posee registro de existencias. Por favor consulte con su proveedor.");
+                        MovimientoProducto movimiento = new MovimientoProducto
                         {
-                            MovimientoProducto movimiento = new MovimientoProducto
-                            {
-                                IdProducto = producto.IdProducto,
-                                Fecha = DateTime.Now,
-                                Tipo = detalleAjuste.Cantidad < 0 ? StaticTipoMovimientoProducto.Entrada : StaticTipoMovimientoProducto.Salida,
-                                Origen = "Registro de reversión de ajuste de inventario.",
-                                Referencia = detalleAjuste.IdAjuste.ToString(),
-                                Cantidad = detalleAjuste.Cantidad < 0 ? detalleAjuste.Cantidad * -1 : detalleAjuste.Cantidad,
-                                PrecioCosto = detalleAjuste.PrecioCosto
-                            };
-                            producto.MovimientoProducto.Add(movimiento);
-                            producto.Cantidad -= detalleAjuste.Cantidad;
-                            dbContext.NotificarModificacion(producto);
-                        }
+                            IdProducto = producto.IdProducto,
+                            Fecha = DateTime.Now,
+                            Tipo = detalleAjuste.Cantidad < 0 ? StaticTipoMovimientoProducto.Entrada : StaticTipoMovimientoProducto.Salida,
+                            Origen = "Registro de reversión de ajuste de inventario.",
+                            Referencia = detalleAjuste.IdAjuste.ToString(),
+                            Cantidad = detalleAjuste.Cantidad < 0 ? detalleAjuste.Cantidad * -1 : detalleAjuste.Cantidad,
+                            PrecioCosto = detalleAjuste.PrecioCosto
+                        };
+                        producto.MovimientoProducto.Add(movimiento);
                     }
                     dbContext.Commit();
                 }

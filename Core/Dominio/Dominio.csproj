@@ -63,14 +63,18 @@
     </Compile>
     <Compile Include="Entidades\DesglosePagoDevolucionCliente.cs" />
     <Compile Include="Entidades\DesglosePagoDevolucionProveedor.cs" />
+    <Compile Include="Entidades\DesglosePagoApartado.cs" />
+    <Compile Include="Entidades\DesglosePagoOrdenServicio.cs" />
     <Compile Include="Entidades\DetalleAjusteInventario.cs" />
     <Compile Include="Entidades\DetalleDevolucionProveedor.cs" />
+    <Compile Include="Entidades\DetalleApartado.cs" />
     <Compile Include="Entidades\Distrito.cs" />
     <Compile Include="Entidades\DevolucionProveedor.cs" />
     <Compile Include="Entidades\CondicionVenta.cs" />
     <Compile Include="Entidades\DocumentoElectronico.cs" />
     <Compile Include="Entidades\Padron.cs" />
     <Compile Include="Entidades\ParametroImpuesto.cs" />
+    <Compile Include="Entidades\Apartado.cs" />
     <Compile Include="Entidades\RegistroAutenticacion.cs" />
     <Compile Include="Entidades\ParametroSistema.cs" />
     <Compile Include="Entidades\OrdenServicio.cs" />
@@ -84,6 +88,8 @@
     <Compile Include="Entidades\Provincia.cs" />
     <Compile Include="Entidades\RegistroRespuestaHacienda.cs" />
     <Compile Include="Entidades\ReportePorEmpresa.cs" />
+    <Compile Include="Entidades\RolePorEmpresa.cs" />
+    <Compile Include="Entidades\ExistenciaPorSucursal.cs" />
     <Compile Include="Entidades\SucursalPorEmpresa.cs" />
     <Compile Include="Entidades\TipoDeCambioDolar.cs" />
     <Compile Include="Entidades\TipoIdentificacion.cs" />

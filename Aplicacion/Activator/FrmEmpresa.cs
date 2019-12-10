@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Web.Script.Serialization;
 using System.Windows.Forms;
 using System.Data;
 using System.Threading.Tasks;
@@ -15,7 +14,7 @@ namespace LeandroSoftware.Activator
 {
     public partial class FrmEmpresa : Form
     {
-        private DataTable dtModuloPorEmpresa;
+        private DataTable dtRolePorEmpresa;
         private DataTable dtReportePorEmpresa;
         private Empresa empresa;
         private SucursalPorEmpresa sucursal;
@@ -23,6 +22,8 @@ namespace LeandroSoftware.Activator
         private bool bolLoading = true;
         private bool bolLogoModificado = false;
         private bool bolCertificadoModificado = false;
+        private bool bolListadoReporteModificado = false;
+        private bool bolListadoRoleModificado = false;
         private bool bolSucursalNueva = true;
         private bool bolTerminalNueva = true;
         private string strRutaCertificado;
@@ -37,16 +38,16 @@ namespace LeandroSoftware.Activator
 
         private void IniciaMaestroDetalle()
         {
-            dtModuloPorEmpresa = new DataTable();
-            dtModuloPorEmpresa.Columns.Add("Id", typeof(int));
-            dtModuloPorEmpresa.Columns.Add("Descripcion", typeof(string));
+            dtRolePorEmpresa = new DataTable();
+            dtRolePorEmpresa.Columns.Add("Id", typeof(int));
+            dtRolePorEmpresa.Columns.Add("Descripcion", typeof(string));
             DataColumn[] columns = new DataColumn[1];
-            columns[0] = dtModuloPorEmpresa.Columns[0];
-            dtModuloPorEmpresa.PrimaryKey = columns;
+            columns[0] = dtRolePorEmpresa.Columns[0];
+            dtRolePorEmpresa.PrimaryKey = columns;
 
             dtReportePorEmpresa = new DataTable();
             dtReportePorEmpresa.Columns.Add("Id", typeof(int));
-            dtReportePorEmpresa.Columns.Add("NombreReporte", typeof(string));
+            dtReportePorEmpresa.Columns.Add("Descripcion", typeof(string));
             columns = new DataColumn[1];
             columns[0] = dtReportePorEmpresa.Columns[0];
             dtReportePorEmpresa.PrimaryKey = columns;
@@ -54,9 +55,9 @@ namespace LeandroSoftware.Activator
 
         private void CargarLineaDetalleReporte()
         {
-            if (cboReportePorEmpresa.SelectedValue != null)
+            if (cboReportes.SelectedValue != null)
             {
-                string strValor = cboReportePorEmpresa.SelectedValue.ToString();
+                string strValor = cboReportes.SelectedValue.ToString();
                 if (dtReportePorEmpresa.Rows.IndexOf(dtReportePorEmpresa.Rows.Find(strValor)) >= 0)
                 {
                     MessageBox.Show("El reporte seleccionado ya fue agregado al detalle.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -64,10 +65,30 @@ namespace LeandroSoftware.Activator
                 else
                 {
                     DataRow objRowEquipo = dtReportePorEmpresa.NewRow();
-                    objRowEquipo["Id"] = cboReportePorEmpresa.SelectedValue;
-                    objRowEquipo["NombreReporte"] = cboReportePorEmpresa.Text;
+                    objRowEquipo["Id"] = cboReportes.SelectedValue;
+                    objRowEquipo["Descripcion"] = cboReportes.Text;
                     dtReportePorEmpresa.Rows.Add(objRowEquipo);
                     dgvReportePorEmpresa.Refresh();
+                }
+            }
+        }
+
+        private void CargarLineaDetalleRole()
+        {
+            if (cboRoles.SelectedValue != null)
+            {
+                string strValor = cboRoles.SelectedValue.ToString();
+                if (dtRolePorEmpresa.Rows.IndexOf(dtRolePorEmpresa.Rows.Find(strValor)) >= 0)
+                {
+                    MessageBox.Show("El role seleccionado ya fue agregado al detalle.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    DataRow objRowEquipo = dtRolePorEmpresa.NewRow();
+                    objRowEquipo["Id"] = cboRoles.SelectedValue;
+                    objRowEquipo["Descripcion"] = cboRoles.Text;
+                    dtRolePorEmpresa.Rows.Add(objRowEquipo);
+                    dgvRolePorEmpresa.Refresh();
                 }
             }
         }
@@ -81,49 +102,69 @@ namespace LeandroSoftware.Activator
             dgvReportePorEmpresa.AutoGenerateColumns = false;
 
             dvcReportePorEmpresa.DataPropertyName = "Id";
-            dvcReportePorEmpresa.HeaderText = "";
-            dvcReportePorEmpresa.Width = 20;
+            dvcReportePorEmpresa.HeaderText = "Id";
+            dvcReportePorEmpresa.Width = 40;
             dvcReportePorEmpresa.Visible = true;
             dvcReportePorEmpresa.ReadOnly = true;
             dgvReportePorEmpresa.Columns.Add(dvcReportePorEmpresa);
 
-            dvcNombreReporte.DataPropertyName = "NombreReporte";
+            dvcNombreReporte.DataPropertyName = "Descripcion";
             dvcNombreReporte.HeaderText = "Reporte";
-            dvcNombreReporte.Width = 322;
+            dvcNombreReporte.Width = 302;
             dvcNombreReporte.Visible = true;
             dvcNombreReporte.ReadOnly = true;
             dgvReportePorEmpresa.Columns.Add(dvcNombreReporte);
+
+            DataGridViewTextBoxColumn dvcIdRole = new DataGridViewTextBoxColumn();
+            DataGridViewTextBoxColumn dvcNombreRole = new DataGridViewTextBoxColumn();
+
+            dgvRolePorEmpresa.Columns.Clear();
+            dgvRolePorEmpresa.AutoGenerateColumns = false;
+
+            dvcIdRole.DataPropertyName = "Id";
+            dvcIdRole.HeaderText = "Id";
+            dvcIdRole.Width = 40;
+            dvcIdRole.Visible = true;
+            dvcIdRole.ReadOnly = true;
+            dgvRolePorEmpresa.Columns.Add(dvcIdRole);
+
+            dvcNombreRole.DataPropertyName = "Descripcion";
+            dvcNombreRole.HeaderText = "Role";
+            dvcNombreRole.Width = 302;
+            dvcNombreRole.Visible = true;
+            dvcNombreRole.ReadOnly = true;
+            dgvRolePorEmpresa.Columns.Add(dvcNombreRole);
         }
 
         public async Task CargarListaParametros()
         {
-
-            IList<LlaveDescripcion> dsTipoIdentificacion = Array.Empty<LlaveDescripcion>();
-            dsTipoIdentificacion = await Administrador.ObtenerListadoTipoIdentificacion(strToken);
-            cboTipoIdentificacion.DataSource = dsTipoIdentificacion;
             cboTipoIdentificacion.ValueMember = "Id";
             cboTipoIdentificacion.DisplayMember = "Descripcion";
+            IList<LlaveDescripcion> dsTipoIdentificacion = await Administrador.ObtenerListadoTipoIdentificacion(strToken);
+            cboTipoIdentificacion.DataSource = dsTipoIdentificacion;
             // Carga listado reportes
-            IList<LlaveDescripcion> dsReportes = Array.Empty<LlaveDescripcion>();
-            dsReportes = await Administrador.ObtenerListadoCatalogoReportes(strToken);
-            cboReportePorEmpresa.DataSource = dsReportes;
-            cboReportePorEmpresa.ValueMember = "Id";
-            cboReportePorEmpresa.DisplayMember = "Descripcion";
+            cboReportes.ValueMember = "Id";
+            cboReportes.DisplayMember = "Descripcion";
+            IList<LlaveDescripcion> dsReportes = await Administrador.ObtenerListadoCatalogoReportes(strToken);
+            cboReportes.DataSource = dsReportes;
+            cboRoles.ValueMember = "Id";
+            cboRoles.DisplayMember = "Descripcion";
+            IList<LlaveDescripcion> dsRoles = await Administrador.ObtenerListadoRoles(strToken);
+            cboRoles.DataSource = dsRoles;
             // Carga Tipo Contrato
+            cboTipoContrato.ValueMember = "Id";
+            cboTipoContrato.DisplayMember = "Descripcion";
             IList<LlaveDescripcion> dsTipoContrato = new List<LlaveDescripcion>();
             LlaveDescripcion tipo = new LlaveDescripcion(1, "Pago mensual o anual");
             dsTipoContrato.Add(tipo);
             tipo = new LlaveDescripcion(2, "Limite de documentos anual");
             dsTipoContrato.Add(tipo);
             cboTipoContrato.DataSource = dsTipoContrato;
-            cboTipoContrato.ValueMember = "Id";
-            cboTipoContrato.DisplayMember = "Descripcion";
         }
 
         public async Task CargarProvincias()
         {
-            IList<LlaveDescripcion> dsDataSet = Array.Empty<LlaveDescripcion>();
-            dsDataSet = await Administrador.ObtenerListadoProvincias(strToken);
+            IList<LlaveDescripcion> dsDataSet = await Administrador.ObtenerListadoProvincias(strToken);
             cboProvincia.DataSource = dsDataSet;
             cboProvincia.ValueMember = "Id";
             cboProvincia.DisplayMember = "Descripcion";
@@ -131,8 +172,7 @@ namespace LeandroSoftware.Activator
 
         public async Task CargarCantones(int intIdProvincia)
         {
-            IList<LlaveDescripcion> dsDataSet = Array.Empty<LlaveDescripcion>();
-            dsDataSet = await Administrador.ObtenerListadoCantones(intIdProvincia, strToken);
+            IList<LlaveDescripcion> dsDataSet = await Administrador.ObtenerListadoCantones(intIdProvincia, strToken);
             cboCanton.DataSource = dsDataSet;
             cboCanton.ValueMember = "Id";
             cboCanton.DisplayMember = "Descripcion";
@@ -140,8 +180,7 @@ namespace LeandroSoftware.Activator
 
         public async Task CargarDistritos(int intIdProvincia, int intIdCanton)
         {
-            IList<LlaveDescripcion> dsDataSet = Array.Empty<LlaveDescripcion>();
-            dsDataSet = await Administrador.ObtenerListadoDistritos(intIdProvincia, intIdCanton, strToken);
+            IList<LlaveDescripcion> dsDataSet = await Administrador.ObtenerListadoDistritos(intIdProvincia, intIdCanton, strToken);
             cboDistrito.DataSource = dsDataSet;
             cboDistrito.ValueMember = "Id";
             cboDistrito.DisplayMember = "Descripcion";
@@ -149,8 +188,7 @@ namespace LeandroSoftware.Activator
 
         public async Task CargarBarrios(int intIdProvincia, int intIdCanton, int intIdDistrito)
         {
-            IList<LlaveDescripcion> dsDataSet = Array.Empty<LlaveDescripcion>();
-            dsDataSet = await Administrador.ObtenerListadoBarrios(intIdProvincia, intIdCanton, intIdDistrito, strToken);
+            IList<LlaveDescripcion> dsDataSet = await Administrador.ObtenerListadoBarrios(intIdProvincia, intIdCanton, intIdDistrito, strToken);
             cboBarrio.DataSource = dsDataSet;
             cboBarrio.ValueMember = "Id";
             cboBarrio.DisplayMember = "Descripcion";
@@ -246,6 +284,7 @@ namespace LeandroSoftware.Activator
                 await CargarListaParametros();
                 await CargarProvincias();
                 dgvReportePorEmpresa.DataSource = dtReportePorEmpresa;
+                dgvRolePorEmpresa.DataSource = dtRolePorEmpresa;
                 if (bolEditing)
                 {
                     empresa = await Administrador.ObtenerEmpresa(intIdEmpresa, strToken);
@@ -271,18 +310,14 @@ namespace LeandroSoftware.Activator
                         txtPinCertificado.Text = empresa.PinCertificado;
                         txtUsuarioATV.Text = empresa.UsuarioHacienda;
                         txtClaveATV.Text = empresa.ClaveHacienda;
-                        txtPorcentajeInstalacion.Text = empresa.PorcentajeInstalacion.ToString();
                         txtLineasFactura.Text = empresa.LineasPorFactura.ToString();
-                        txtCodigoServInst.Text = empresa.CodigoServicioInst.ToString();
                         if (empresa.FechaVence != null) txtFecha.Text = DateTime.Parse(empresa.FechaVence.ToString()).ToString("dd-MM-yyyy");
                         cboTipoContrato.SelectedValue = empresa.TipoContrato;
                         txtCantidadDocumentos.Text = empresa.CantidadDisponible.ToString();
                         chkContabiliza.Checked = empresa.Contabiliza;
-                        chkIncluyeInsumosEnFactura.Checked = empresa.IncluyeInsumosEnFactura;
                         chkAutoCompleta.Checked = empresa.AutoCompletaProducto;
-                        chkModificaDesc.Checked = empresa.ModificaDescProducto;
                         chkCierrePorTurnos.Checked = empresa.CierrePorTurnos;
-                        chkDesgloseInst.Checked = empresa.DesglosaServicioInst;
+                        chkRecibeDocumentos.Checked = empresa.RecepcionGastos;
                         chkFacturaElectronica.Checked = empresa.PermiteFacturar;
                         chkRegimenSimplificado.Checked = empresa.RegimenSimplificado;
                         if (empresa.Logotipo != null)
@@ -301,14 +336,24 @@ namespace LeandroSoftware.Activator
                         {
                             picLogo.Image = null;
                         }
-                        foreach (var reporte in empresa.ReportePorEmpresa)
+                        IList<LlaveDescripcion> reportePorEmpresa = await Administrador.ObtenerListadoReportePorEmpresa(empresa.IdEmpresa, strToken);
+                        foreach (var reporte in reportePorEmpresa)
                         {
                             DataRow objRowEquipo = dtReportePorEmpresa.NewRow();
-                            objRowEquipo["Id"] = reporte.IdReporte;
-                            objRowEquipo["NombreReporte"] = reporte.CatalogoReporte.NombreReporte;
+                            objRowEquipo["Id"] = reporte.Id;
+                            objRowEquipo["Descripcion"] = reporte.Descripcion;
                             dtReportePorEmpresa.Rows.Add(objRowEquipo);
-                            dgvReportePorEmpresa.Refresh();
                         }
+                        dgvReportePorEmpresa.Refresh();
+                        IList<LlaveDescripcion> rolePorEmpresa = await Administrador.ObtenerListadoRolePorEmpresa(empresa.IdEmpresa, strToken);
+                        foreach (var role in rolePorEmpresa)
+                        {
+                            DataRow objRowEquipo = dtRolePorEmpresa.NewRow();
+                            objRowEquipo["Id"] = role.Id;
+                            objRowEquipo["Descripcion"] = role.Descripcion;
+                            dtRolePorEmpresa.Rows.Add(objRowEquipo);
+                        }
+                        dgvRolePorEmpresa.Refresh();
                     }
                     else
                     {
@@ -373,9 +418,7 @@ namespace LeandroSoftware.Activator
                 empresa.PinCertificado = txtPinCertificado.Text;
                 empresa.UsuarioHacienda = txtUsuarioATV.Text;
                 empresa.ClaveHacienda = txtClaveATV.Text;
-                empresa.PorcentajeInstalacion = int.Parse(txtPorcentajeInstalacion.Text);
                 empresa.LineasPorFactura = int.Parse(txtLineasFactura.Text);
-                empresa.CodigoServicioInst = int.Parse(txtCodigoServInst.Text);
                 if (txtFecha.Text != "  /  /")
                 {
                     empresa.FechaVence = DateTime.ParseExact(txtFecha.Text + " 23:59:59", "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
@@ -388,21 +431,11 @@ namespace LeandroSoftware.Activator
                 empresa.TipoContrato = (int)cboTipoContrato.SelectedValue;
                 empresa.CantidadDisponible = int.Parse(txtCantidadDocumentos.Text);
                 empresa.Contabiliza = chkContabiliza.Checked;
-                empresa.IncluyeInsumosEnFactura = chkIncluyeInsumosEnFactura.Checked;
                 empresa.AutoCompletaProducto = chkAutoCompleta.Checked;
-                empresa.ModificaDescProducto = chkModificaDesc.Checked;
                 empresa.CierrePorTurnos = chkCierrePorTurnos.Checked;
-                empresa.DesglosaServicioInst = chkDesgloseInst.Checked;
+                empresa.RecepcionGastos = chkRecibeDocumentos.Checked;
                 empresa.PermiteFacturar = chkFacturaElectronica.Checked;
                 empresa.RegimenSimplificado = chkRegimenSimplificado.Checked;
-                empresa.ReportePorEmpresa.Clear();
-                foreach (DataRow row in dtReportePorEmpresa.Rows)
-                {
-                    ReportePorEmpresa reporte = new ReportePorEmpresa();
-                    if (txtIdEmpresa.Text != "") reporte.IdEmpresa = empresa.IdEmpresa;
-                    reporte.IdReporte = int.Parse(row["Id"].ToString());
-                    empresa.ReportePorEmpresa.Add(reporte);
-                }
                 if (txtIdEmpresa.Text == "")
                 {
                     txtIdEmpresa.Text = await Administrador.AgregarEmpresa(empresa, strToken);
@@ -432,6 +465,30 @@ namespace LeandroSoftware.Activator
                 {
                     byte[] bytCertificado = File.ReadAllBytes(strRutaCertificado);
                     await Administrador.ActualizarCertificadoEmpresa(int.Parse(txtIdEmpresa.Text), Convert.ToBase64String(bytCertificado), strToken);
+                }
+                if (bolListadoReporteModificado)
+                {
+                    List<ReportePorEmpresa> listado = new List<ReportePorEmpresa>();
+                    foreach (DataRow row in dtReportePorEmpresa.Rows)
+                    {
+                        ReportePorEmpresa reporte = new ReportePorEmpresa();
+                        reporte.IdEmpresa = int.Parse(txtIdEmpresa.Text);
+                        reporte.IdReporte = int.Parse(row["Id"].ToString());
+                        listado.Add(reporte);
+                    }
+                    await Administrador.ActualizarReportePorEmpresa(int.Parse(txtIdEmpresa.Text), listado, strToken);
+                }
+                if (bolListadoRoleModificado)
+                {
+                    List<RolePorEmpresa> listado = new List<RolePorEmpresa>();
+                    foreach (DataRow row in dtRolePorEmpresa.Rows)
+                    {
+                        RolePorEmpresa reporte = new RolePorEmpresa();
+                        reporte.IdEmpresa = int.Parse(txtIdEmpresa.Text);
+                        reporte.IdRole = int.Parse(row["Id"].ToString());
+                        listado.Add(reporte);
+                    }
+                    await Administrador.ActualizarRolePorEmpresa(int.Parse(txtIdEmpresa.Text), listado, strToken);
                 }
                 if (sucursal != null)
                 {
@@ -495,13 +552,26 @@ namespace LeandroSoftware.Activator
 
         private void BtnInsertaReporte_Click(object sender, EventArgs e)
         {
+            bolListadoReporteModificado = true;
             CargarLineaDetalleReporte();
         }
 
         private void BtnEliminaReporte_Click(object sender, EventArgs e)
         {
-            if (dtReportePorEmpresa.Rows.Count > 0)
-                dtReportePorEmpresa.Rows.Remove(dtReportePorEmpresa.Rows.Find(dgvReportePorEmpresa.CurrentRow.Cells[0].Value));
+            bolListadoReporteModificado = true;
+            if (dtReportePorEmpresa.Rows.Count > 0) dtReportePorEmpresa.Rows.Remove(dtReportePorEmpresa.Rows.Find(dgvReportePorEmpresa.CurrentRow.Cells[0].Value));
+        }
+
+        private void btnInsertaRole_Click(object sender, EventArgs e)
+        {
+            bolListadoRoleModificado = true;
+            CargarLineaDetalleRole();
+        }
+
+        private void btnEliminaRole_Click(object sender, EventArgs e)
+        {
+            bolListadoRoleModificado = true;
+            if (dtRolePorEmpresa.Rows.Count > 0) dtRolePorEmpresa.Rows.Remove(dtRolePorEmpresa.Rows.Find(dgvRolePorEmpresa.CurrentRow.Cells[0].Value));
         }
 
         private void BtnCargarLogo_Click(object sender, EventArgs e)

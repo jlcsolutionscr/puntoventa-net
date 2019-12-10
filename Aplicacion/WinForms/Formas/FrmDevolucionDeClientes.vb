@@ -1,12 +1,13 @@
 Imports System.Collections.Generic
 Imports LeandroSoftware.Core.TiposComunes
 Imports LeandroSoftware.Core.Dominio.Entidades
+Imports LeandroSoftware.ClienteWCF
 
 Public Class FrmDevolucionDeClientes
 #Region "Variables"
     Private dblExcento, decGravado, decSubTotal As Decimal
     Private I As Short
-    Private dtbDatosLocal, dtbDetalleDevolucion As DataTable
+    Private dtbDetalleDevolucion As DataTable
     Private dtrRowDetDevolucion As DataRow
     Private arrDetalleDevolucion As List(Of ModuloImpresion.ClsDetalleComprobante)
     Private devolucion As DevolucionCliente
@@ -159,36 +160,27 @@ Public Class FrmDevolucionDeClientes
         decSubTotal = 0
         For I = 0 To dtbDetalleDevolucion.Rows.Count - 1
             If dtbDetalleDevolucion.Rows(I).Item(8) > 0 Then
-                Dim decTotalPorLinea As Decimal = dtbDetalleDevolucion.Rows(I).Item(5).Value * dtbDetalleDevolucion.Rows(I).Item(8).Value
-                If dtbDetalleDevolucion.Rows(I).Item(6) = 0 Then
+                Dim decTotalPorLinea = dtbDetalleDevolucion.Rows(I).Item(5) * dtbDetalleDevolucion.Rows(I).Item(8)
+                If dtbDetalleDevolucion.Rows(I).Item(7) = False Then
                     decGravado += decTotalPorLinea
-                    decImpuesto += decTotalPorLinea * dtbDetalleDevolucion.Rows(I).Item(8).Value
+                    decImpuesto += decTotalPorLinea * dtbDetalleDevolucion.Rows(I).Item(9) / 100
                 Else
                     dblExcento += decTotalPorLinea
                 End If
             End If
         Next
         decSubTotal = decGravado + dblExcento
-        If decSubTotal > 0 And factura.Descuento > 0 Then
-            decImpuesto = 0
-            For I = 0 To dtbDetalleDevolucion.Rows.Count - 1
-                Dim decDescuentoPorLinea As Decimal = 0
-                Dim decTotalPorLinea As Decimal = dtbDetalleDevolucion.Rows(I).Item(5).Value * dtbDetalleDevolucion.Rows(I).Item(8).Value
-                decDescuentoPorLinea = decTotalPorLinea - (factura.Descuento / decSubTotal * decTotalPorLinea)
-                decImpuesto += decDescuentoPorLinea * dtbDetalleDevolucion.Rows(I).Item(8).Value
-            Next
-        End If
         decGravado = Math.Round(decGravado, 2, MidpointRounding.AwayFromZero)
         dblExcento = Math.Round(dblExcento, 2, MidpointRounding.AwayFromZero)
         decImpuesto = Math.Round(decImpuesto, 2, MidpointRounding.AwayFromZero)
         txtSubTotal.Text = FormatNumber(decSubTotal, 2)
         txtImpuesto.Text = FormatNumber(decImpuesto, 2)
-        txtTotal.Text = FormatNumber(dblExcento + decGravado + CDbl(txtImpuesto.Text), 2)
+        txtTotal.Text = FormatNumber(dblExcento + decGravado + decImpuesto, 2)
     End Sub
 
-    Private Sub CargarFactura(intIdFactura As Integer)
+    Private Async Sub CargarFactura(intIdFactura As Integer)
         Try
-            'factura = servicioFacturacion.ObtenerFactura(intIdFactura)
+            factura = Await Puntoventa.ObtenerFactura(intIdFactura, FrmPrincipal.usuarioGlobal.Token)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
@@ -221,7 +213,7 @@ Public Class FrmDevolucionDeClientes
         End Try
     End Sub
 
-    Private Sub grdDetalleDevolucion_CellEndEdit(sender As Object, e As System.Windows.Forms.DataGridViewCellEventArgs) Handles grdDetalleDevolucion.CellEndEdit
+    Private Sub grdDetalleDevolucion_CellEndEdit(sender As Object, e As DataGridViewCellEventArgs) Handles grdDetalleDevolucion.CellEndEdit
         If grdDetalleDevolucion.CurrentCell.Value.ToString() = "" Then
             grdDetalleDevolucion.CurrentCell.Value = 0
         Else
@@ -253,14 +245,15 @@ Public Class FrmDevolucionDeClientes
         CmdAnular.Enabled = False
         CmdGuardar.Enabled = True
         CmdImprimir.Enabled = False
+        btnBuscarFactura.Enabled = True
         txtIdFactura.Focus()
     End Sub
 
-    Private Sub CmdAnular_Click(sender As Object, e As EventArgs) Handles CmdAnular.Click
+    Private Async Sub CmdAnular_Click(sender As Object, e As EventArgs) Handles CmdAnular.Click
         If txtIdDevolucion.Text <> "" Then
             If MessageBox.Show("Desea anular este registro?", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
                 Try
-                    'servicioFacturacion.AnularDevolucionCliente(txtIdDevolucion.Text, FrmMenuPrincipal.usuarioGlobal.IdUsuario)
+                    Await Puntoventa.AnularDevolucionCliente(txtIdDevolucion.Text, FrmPrincipal.usuarioGlobal.IdUsuario, FrmPrincipal.usuarioGlobal.Token)
                 Catch ex As Exception
                     MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
@@ -271,23 +264,22 @@ Public Class FrmDevolucionDeClientes
         End If
     End Sub
 
-    Private Sub CmdBuscar_Click(sender As Object, e As EventArgs) Handles CmdBuscar.Click
+    Private Async Sub CmdBuscar_Click(sender As Object, e As EventArgs) Handles CmdBuscar.Click
         Dim formBusqueda As New FrmBusquedaDevolucionCliente()
         FrmPrincipal.intBusqueda = 0
         formBusqueda.ShowDialog()
         If FrmPrincipal.intBusqueda > 0 Then
             Try
-                'devolucion = servicioFacturacion.ObtenerDevolucionCliente(FrmMenuPrincipal.intBusqueda)
+                devolucion = Await Puntoventa.ObtenerDevolucionCliente(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
             If devolucion IsNot Nothing Then
-                'factura = servicioFacturacion.ObtenerFactura(devolucion.IdFactura)
                 txtIdDevolucion.Text = devolucion.IdDevolucion
                 txtIdFactura.Text = devolucion.IdFactura
                 cliente = devolucion.Cliente
-                txtCliente.Text = factura.Cliente.Nombre
+                txtCliente.Text = cliente.Nombre
                 txtFecha.Text = devolucion.Fecha
                 CargarDetalleDevolucion(devolucion)
                 CargarTotales()
@@ -295,6 +287,7 @@ Public Class FrmDevolucionDeClientes
                 CmdImprimir.Enabled = True
                 CmdAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
                 CmdGuardar.Enabled = False
+                btnBuscarFactura.Enabled = False
             End If
         End If
     End Sub
@@ -309,8 +302,9 @@ Public Class FrmDevolucionDeClientes
         End If
     End Sub
 
-    Private Sub CmdGuardar_Click(sender As Object, e As EventArgs) Handles CmdGuardar.Click
+    Private Async Sub CmdGuardar_Click(sender As Object, e As EventArgs) Handles CmdGuardar.Click
         If Not cliente Is Nothing And txtFecha.Text <> "" And Not factura Is Nothing And CDbl(txtTotal.Text) > 0 Then
+            CmdGuardar.Enabled = False
             If txtIdDevolucion.Text = "" Then
                 devolucion = New DevolucionCliente With {
                     .IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa,
@@ -323,21 +317,23 @@ Public Class FrmDevolucionDeClientes
                     .Impuesto = CDbl(txtImpuesto.Text)
                 }
                 For I = 0 To dtbDetalleDevolucion.Rows.Count - 1
-                    detalleDevolucion = New DetalleDevolucionCliente With {
-                        .IdProducto = dtbDetalleDevolucion.Rows(I).Item(0),
-                        .Cantidad = dtbDetalleDevolucion.Rows(I).Item(3),
-                        .PrecioCosto = dtbDetalleDevolucion.Rows(I).Item(4),
-                        .PrecioVenta = dtbDetalleDevolucion.Rows(I).Item(5),
-                        .Excento = dtbDetalleDevolucion.Rows(I).Item(7),
-                        .CantDevolucion = dtbDetalleDevolucion.Rows(I).Item(8),
-                        .PorcentajeIVA = dtbDetalleDevolucion.Rows(I).Item(9)
-                    }
-                    devolucion.DetalleDevolucionCliente.Add(detalleDevolucion)
+                    If dtbDetalleDevolucion.Rows(I).Item(8) > 0 Then
+                        detalleDevolucion = New DetalleDevolucionCliente With {
+                            .IdProducto = dtbDetalleDevolucion.Rows(I).Item(0),
+                            .Cantidad = dtbDetalleDevolucion.Rows(I).Item(3),
+                            .PrecioCosto = dtbDetalleDevolucion.Rows(I).Item(4),
+                            .PrecioVenta = dtbDetalleDevolucion.Rows(I).Item(5),
+                            .Excento = dtbDetalleDevolucion.Rows(I).Item(7),
+                            .CantDevolucion = dtbDetalleDevolucion.Rows(I).Item(8),
+                            .PorcentajeIVA = dtbDetalleDevolucion.Rows(I).Item(9)
+                        }
+                        devolucion.DetalleDevolucionCliente.Add(detalleDevolucion)
+                    End If
                 Next
                 Try
-                    'devolucion = servicioFacturacion.AgregarDevolucionCliente(devolucion)
-                    txtIdDevolucion.Text = devolucion.IdDevolucion
+                    txtIdDevolucion.Text = Await Puntoventa.AgregarDevolucionCliente(devolucion, FrmPrincipal.usuarioGlobal.Token)
                 Catch ex As Exception
+                    CmdGuardar.Enabled = True
                     txtIdDevolucion.Text = ""
                     MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
@@ -350,6 +346,7 @@ Public Class FrmDevolucionDeClientes
             CmdAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
             CmdImprimir.Focus()
             CmdGuardar.Enabled = False
+            btnBuscarFactura.Enabled = False
         Else
             MessageBox.Show("Información incompleta.  Favor verificar. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End If
@@ -370,10 +367,10 @@ Public Class FrmDevolucionDeClientes
                 .strImpuesto = txtImpuesto.Text,
                 .strTotal = txtTotal.Text
             }
-            arrDetalleDevolucion = New List(Of ModuloImpresion.clsDetalleComprobante)
+            arrDetalleDevolucion = New List(Of ModuloImpresion.ClsDetalleComprobante)
             For I = 0 To dtbDetalleDevolucion.Rows.Count - 1
                 If dtbDetalleDevolucion.Rows(I).Item(8) > 0 Then
-                    detalleComprobante = New ModuloImpresion.clsDetalleComprobante With {
+                    detalleComprobante = New ModuloImpresion.ClsDetalleComprobante With {
                         .strDescripcion = dtbDetalleDevolucion.Rows(I).Item(1) + "-" + dtbDetalleDevolucion.Rows(I).Item(2),
                         .strCantidad = CDbl(dtbDetalleDevolucion.Rows(I).Item(8)),
                         .strPrecio = FormatNumber(dtbDetalleDevolucion.Rows(I).Item(5), 2),

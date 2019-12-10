@@ -367,9 +367,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             TarifaSpecified = true,
                             Monto = decMontoImpuestoPorLinea
                         };
-                        if (factura.PorcentajeExoneracion > 0)
+                        if (cliente.PorcentajeExoneracion > 0)
                         {
-                            decimal decMontoGravado = detalleFactura.PrecioVenta * (1 - (Convert.ToDecimal(factura.PorcentajeExoneracion) / 100));
+                            decimal decMontoGravado = detalleFactura.PrecioVenta * (1 - (Convert.ToDecimal(cliente.PorcentajeExoneracion) / 100));
                             decimal decMontoExonerado = Math.Round(detalleFactura.PrecioVenta - decMontoGravado, 2, MidpointRounding.AwayFromZero);
                             decMontoGravadoPorLinea = Math.Round(decMontoGravado, 2, MidpointRounding.AwayFromZero) * detalleFactura.Cantidad;
                             decMontoExoneradoPorLinea = Math.Round(decMontoExonerado, 2, MidpointRounding.AwayFromZero) * detalleFactura.Cantidad;
@@ -377,11 +377,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             decMontoImpuestoPorLinea -= decMontoImpuestoExonerado;
                             FacturaElectronicaExoneracionType exoneracionType = new FacturaElectronicaExoneracionType
                             {
-                                TipoDocumento = (FacturaElectronicaExoneracionTypeTipoDocumento)factura.IdTipoExoneracion - 1,
-                                NumeroDocumento = factura.NumDocExoneracion,
-                                NombreInstitucion = factura.NombreInstExoneracion,
-                                FechaEmision = factura.FechaEmisionDoc,
-                                PorcentajeExoneracion = factura.PorcentajeExoneracion.ToString(),
+                                TipoDocumento = (FacturaElectronicaExoneracionTypeTipoDocumento)cliente.IdTipoExoneracion - 1,
+                                NumeroDocumento = cliente.NumDocExoneracion,
+                                NombreInstitucion = cliente.NombreInstExoneracion,
+                                FechaEmision = cliente.FechaEmisionDoc,
+                                PorcentajeExoneracion = cliente.PorcentajeExoneracion.ToString(),
                                 MontoExoneracion = decMontoImpuestoExonerado
                             };
                             impuestoType.Exoneracion = exoneracionType;
@@ -895,9 +895,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             TarifaSpecified = true,
                             Monto = decMontoImpuestoPorLinea
                         };
-                        if (factura.PorcentajeExoneracion > 0)
+                        if (cliente.PorcentajeExoneracion > 0)
                         {
-                            decimal decMontoGravado = detalleFactura.PrecioVenta * (1 - (Convert.ToDecimal(factura.PorcentajeExoneracion) / 100));
+                            decimal decMontoGravado = detalleFactura.PrecioVenta * (1 - (Convert.ToDecimal(cliente.PorcentajeExoneracion) / 100));
                             decimal decMontoExonerado = Math.Round(detalleFactura.PrecioVenta - decMontoGravado, 2, MidpointRounding.AwayFromZero);
                             decMontoGravadoPorLinea = Math.Round(decMontoGravado, 2, MidpointRounding.AwayFromZero) * detalleFactura.Cantidad;
                             decMontoExoneradoPorLinea = Math.Round(decMontoExonerado, 2, MidpointRounding.AwayFromZero) * detalleFactura.Cantidad;
@@ -905,11 +905,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             decMontoImpuestoPorLinea -= decMontoImpuestoExonerado;
                             NotaCreditoElectronicaExoneracionType exoneracionType = new NotaCreditoElectronicaExoneracionType
                             {
-                                TipoDocumento = (NotaCreditoElectronicaExoneracionTypeTipoDocumento)factura.IdTipoExoneracion - 1,
-                                NumeroDocumento = factura.NumDocExoneracion,
-                                NombreInstitucion = factura.NombreInstExoneracion,
-                                FechaEmision = factura.FechaEmisionDoc,
-                                PorcentajeExoneracion = factura.PorcentajeExoneracion.ToString(),
+                                TipoDocumento = (NotaCreditoElectronicaExoneracionTypeTipoDocumento)cliente.IdTipoExoneracion - 1,
+                                NumeroDocumento = cliente.NumDocExoneracion,
+                                NombreInstitucion = cliente.NombreInstExoneracion,
+                                FechaEmision = cliente.FechaEmisionDoc,
+                                PorcentajeExoneracion = cliente.PorcentajeExoneracion.ToString(),
                                 MontoExoneracion = decMontoImpuestoExonerado
                             };
                             impuestoType.Exoneracion = exoneracionType;
@@ -1029,6 +1029,272 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     documentoXml.Load(msDatosXML);
                 }
                 return RegistrarDocumentoElectronico(empresa, documentoXml, null, dbContext, factura.IdSucursal, factura.IdTerminal, TipoDocumento.NotaCreditoElectronica, false, strCorreoNotificacion);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public static DocumentoElectronico GenerarNotaDeCreditoElectronicaParcial(DevolucionCliente devolucion, Empresa empresa, Cliente cliente, IDbContext dbContext, decimal decTipoCambioDolar)
+        {
+            try
+            {
+                string strCorreoNotificacion = "";
+                if (cliente.IdCliente > 1)
+                {
+                    if (cliente.CorreoElectronico == null || cliente.CorreoElectronico.Length == 0)
+                    {
+                        throw new BusinessException("El cliente seleccionado debe poseer una dirección de correo electrónico para ser notificado.");
+                    }
+                    else
+                    {
+                        strCorreoNotificacion = cliente.CorreoElectronico;
+                    }
+                }
+                if (empresa.CodigoActividad == "") throw new BusinessException("Debe ingresar el código de actividad económica en el mantenimiento de la empresa.");
+                NotaCreditoElectronica notaCreditoElectronica = new NotaCreditoElectronica
+                {
+                    Clave = "",
+                    CodigoActividad = empresa.CodigoActividad,
+                    NumeroConsecutivo = "",
+                    FechaEmision = devolucion.Fecha
+                };
+                NotaCreditoElectronicaEmisorType emisor = new NotaCreditoElectronicaEmisorType();
+                NotaCreditoElectronicaIdentificacionType identificacionEmisorType = new NotaCreditoElectronicaIdentificacionType
+                {
+                    Tipo = (NotaCreditoElectronicaIdentificacionTypeTipo)empresa.IdTipoIdentificacion,
+                    Numero = empresa.Identificacion
+                };
+                emisor.Identificacion = identificacionEmisorType;
+                emisor.Nombre = empresa.NombreEmpresa;
+                emisor.NombreComercial = empresa.NombreComercial;
+                if (empresa.Telefono.Length > 0)
+                {
+                    NotaCreditoElectronicaTelefonoType telefonoType = new NotaCreditoElectronicaTelefonoType
+                    {
+                        CodigoPais = "506",
+                        NumTelefono = empresa.Telefono
+                    };
+                    emisor.Telefono = telefonoType;
+                }
+                emisor.CorreoElectronico = empresa.CorreoNotificacion;
+                NotaCreditoElectronicaUbicacionType ubicacionType = new NotaCreditoElectronicaUbicacionType
+                {
+                    Provincia = empresa.IdProvincia.ToString(),
+                    Canton = empresa.IdCanton.ToString("D2"),
+                    Distrito = empresa.IdDistrito.ToString("D2"),
+                    Barrio = empresa.IdBarrio.ToString("D2"),
+                    OtrasSenas = empresa.Direccion
+                };
+                emisor.Ubicacion = ubicacionType;
+                notaCreditoElectronica.Emisor = emisor;
+                if (devolucion.IdCliente > 1)
+                {
+                    NotaCreditoElectronicaReceptorType receptor = new NotaCreditoElectronicaReceptorType();
+                    NotaCreditoElectronicaIdentificacionType identificacionReceptorType = new NotaCreditoElectronicaIdentificacionType
+                    {
+                        Tipo = (NotaCreditoElectronicaIdentificacionTypeTipo)cliente.IdTipoIdentificacion,
+                        Numero = cliente.Identificacion
+                    };
+                    receptor.Identificacion = identificacionReceptorType;
+                    receptor.Nombre = cliente.Nombre;
+                    if (cliente.NombreComercial.Length > 0)
+                        receptor.NombreComercial = cliente.NombreComercial;
+                    if (cliente.Telefono.Length > 0)
+                    {
+                        NotaCreditoElectronicaTelefonoType telefonoType = new NotaCreditoElectronicaTelefonoType
+                        {
+                            CodigoPais = "506",
+                            NumTelefono = cliente.Telefono
+                        };
+                        receptor.Telefono = telefonoType;
+                    }
+                    if (cliente.Fax.Length > 0)
+                    {
+                        NotaCreditoElectronicaTelefonoType faxType = new NotaCreditoElectronicaTelefonoType
+                        {
+                            CodigoPais = "506",
+                            NumTelefono = cliente.Fax
+                        };
+                        receptor.Fax = faxType;
+                    }
+                    receptor.CorreoElectronico = cliente.CorreoElectronico;
+                    ubicacionType = new NotaCreditoElectronicaUbicacionType
+                    {
+                        Provincia = cliente.IdProvincia.ToString(),
+                        Canton = cliente.IdCanton.ToString("D2"),
+                        Distrito = cliente.IdDistrito.ToString("D2"),
+                        Barrio = cliente.IdBarrio.ToString("D2"),
+                        OtrasSenas = cliente.Direccion
+                    };
+                    receptor.Ubicacion = ubicacionType;
+                    notaCreditoElectronica.Receptor = receptor;
+                }
+                notaCreditoElectronica.CondicionVenta = NotaCreditoElectronicaCondicionVenta.Item01;
+                List<NotaCreditoElectronicaMedioPago> medioPagoList = new List<NotaCreditoElectronicaMedioPago>();
+                NotaCreditoElectronicaMedioPago medioPago = NotaCreditoElectronicaMedioPago.Item99;
+                medioPagoList.Add(medioPago);
+                notaCreditoElectronica.MedioPago = medioPagoList.ToArray();
+                List<NotaCreditoElectronicaLineaDetalle> detalleServicioList = new List<NotaCreditoElectronicaLineaDetalle>();
+                decimal decTotalMercanciasGravadas = 0;
+                decimal decTotalServiciosGravados = 0;
+                decimal decTotalMercanciasExcentas = 0;
+                decimal decTotalServiciosExcentos = 0;
+                decimal decTotalMercanciasExoneradas = 0;
+                decimal decTotalServiciosExonerados = 0;
+                decimal decTotalImpuestos = 0;
+                foreach (DetalleDevolucionCliente detalleFactura in devolucion.DetalleDevolucionCliente)
+                {
+                    NotaCreditoElectronicaLineaDetalle lineaDetalle = new NotaCreditoElectronicaLineaDetalle();
+                    lineaDetalle.NumeroLinea = (detalleServicioList.Count() + 1).ToString();
+                    lineaDetalle.Codigo = detalleFactura.Producto.Codigo;
+                    lineaDetalle.Cantidad = detalleFactura.Cantidad;
+                    if (detalleFactura.Producto.Tipo == StaticTipoProducto.Producto)
+                        lineaDetalle.UnidadMedida = NotaCreditoElectronicaUnidadMedidaType.Unid;
+                    else if (detalleFactura.Producto.Tipo == StaticTipoProducto.ServicioProfesionales)
+                        lineaDetalle.UnidadMedida = NotaCreditoElectronicaUnidadMedidaType.Sp;
+                    else
+                        lineaDetalle.UnidadMedida = NotaCreditoElectronicaUnidadMedidaType.Os;
+                    lineaDetalle.Detalle = detalleFactura.Descripcion;
+                    lineaDetalle.PrecioUnitario = Math.Round(detalleFactura.PrecioVenta, 2, MidpointRounding.AwayFromZero);
+                    decimal decTotalPorLinea = 0;
+                    decimal decMontoImpuestoPorLinea = 0;
+                    if (!detalleFactura.Excento)
+                    {
+                        decimal decMontoGravadoPorLinea = lineaDetalle.PrecioUnitario * detalleFactura.Cantidad;
+                        decimal decMontoExoneradoPorLinea = 0;
+                        decMontoImpuestoPorLinea = Math.Round(detalleFactura.PrecioVenta * detalleFactura.PorcentajeIVA / 100, 2, MidpointRounding.AwayFromZero) * detalleFactura.Cantidad;
+                        NotaCreditoElectronicaImpuestoType impuestoType = new NotaCreditoElectronicaImpuestoType
+                        {
+                            Codigo = NotaCreditoElectronicaImpuestoTypeCodigo.Item01,
+                            CodigoTarifa = (NotaCreditoElectronicaImpuestoTypeCodigoTarifa)detalleFactura.Producto.IdImpuesto - 1,
+                            CodigoTarifaSpecified = true,
+                            Tarifa = detalleFactura.PorcentajeIVA,
+                            TarifaSpecified = true,
+                            Monto = decMontoImpuestoPorLinea
+                        };
+                        if (cliente.PorcentajeExoneracion > 0)
+                        {
+                            decimal decMontoGravado = detalleFactura.PrecioVenta * (1 - (Convert.ToDecimal(cliente.PorcentajeExoneracion) / 100));
+                            decimal decMontoExonerado = Math.Round(detalleFactura.PrecioVenta - decMontoGravado, 2, MidpointRounding.AwayFromZero);
+                            decMontoGravadoPorLinea = Math.Round(decMontoGravado, 2, MidpointRounding.AwayFromZero) * detalleFactura.Cantidad;
+                            decMontoExoneradoPorLinea = Math.Round(decMontoExonerado, 2, MidpointRounding.AwayFromZero) * detalleFactura.Cantidad;
+                            decimal decMontoImpuestoExonerado = Math.Round(decMontoExonerado * detalleFactura.PorcentajeIVA / 100, 2, MidpointRounding.AwayFromZero) * detalleFactura.Cantidad;
+                            decMontoImpuestoPorLinea -= decMontoImpuestoExonerado;
+                            NotaCreditoElectronicaExoneracionType exoneracionType = new NotaCreditoElectronicaExoneracionType
+                            {
+                                TipoDocumento = (NotaCreditoElectronicaExoneracionTypeTipoDocumento)cliente.IdTipoExoneracion - 1,
+                                NumeroDocumento = cliente.NumDocExoneracion,
+                                NombreInstitucion = cliente.NombreInstExoneracion,
+                                FechaEmision = cliente.FechaEmisionDoc,
+                                PorcentajeExoneracion = cliente.PorcentajeExoneracion.ToString(),
+                                MontoExoneracion = decMontoImpuestoExonerado
+                            };
+                            impuestoType.Exoneracion = exoneracionType;
+                            lineaDetalle.ImpuestoNeto = decMontoImpuestoPorLinea;
+                            lineaDetalle.ImpuestoNetoSpecified = true;
+                        }
+
+                        lineaDetalle.Impuesto = new NotaCreditoElectronicaImpuestoType[] { impuestoType };
+                        decTotalImpuestos += decMontoImpuestoPorLinea;
+                        if (detalleFactura.Producto.Tipo == StaticTipoProducto.Producto)
+                        {
+                            decTotalMercanciasGravadas += decMontoGravadoPorLinea;
+                            decTotalMercanciasExoneradas += decMontoExoneradoPorLinea;
+                        }
+                        else
+                        {
+                            decTotalServiciosGravados += decMontoGravadoPorLinea;
+                            decTotalServiciosExonerados += decMontoExoneradoPorLinea;
+                        }
+                        decTotalPorLinea = decMontoGravadoPorLinea + decMontoExoneradoPorLinea;
+                    }
+                    else
+                    {
+                        decimal decMontoExcento = Math.Round(detalleFactura.PrecioVenta, 2, MidpointRounding.AwayFromZero) * detalleFactura.Cantidad;
+                        if (detalleFactura.Producto.Tipo == StaticTipoProducto.Producto)
+                            decTotalMercanciasExcentas += decMontoExcento;
+                        else
+                            decTotalServiciosExcentos += decMontoExcento;
+                        decTotalPorLinea += decMontoExcento;
+                    }
+                    lineaDetalle.SubTotal = decTotalPorLinea;
+                    lineaDetalle.MontoTotal = decTotalPorLinea;
+                    lineaDetalle.MontoTotalLinea = decTotalPorLinea + decMontoImpuestoPorLinea;
+                    detalleServicioList.Add(lineaDetalle);
+                }
+                notaCreditoElectronica.DetalleServicio = detalleServicioList.ToArray();
+                NotaCreditoElectronicaResumenFactura resumenFactura = new NotaCreditoElectronicaResumenFactura();
+                NotaCreditoElectronicaCodigoMonedaType codigoMonedaType = null;
+                if (devolucion.IdTipoMoneda == StaticTipoMoneda.Dolares)
+                {
+                    codigoMonedaType = new NotaCreditoElectronicaCodigoMonedaType
+                    {
+                        CodigoMoneda = NotaCreditoElectronicaCodigoMonedaTypeCodigoMoneda.USD,
+                        TipoCambio = decTipoCambioDolar
+                    };
+                }
+                else if (devolucion.IdTipoMoneda == StaticTipoMoneda.Colones)
+                {
+                    codigoMonedaType = new NotaCreditoElectronicaCodigoMonedaType
+                    {
+                        CodigoMoneda = NotaCreditoElectronicaCodigoMonedaTypeCodigoMoneda.CRC,
+                        TipoCambio = 1
+                    };
+                }
+                resumenFactura.CodigoTipoMoneda = codigoMonedaType;
+                resumenFactura.TotalMercanciasGravadas = decTotalMercanciasGravadas;
+                resumenFactura.TotalMercanciasGravadasSpecified = true;
+                resumenFactura.TotalMercExonerada = decTotalMercanciasExoneradas;
+                resumenFactura.TotalMercExoneradaSpecified = true;
+                resumenFactura.TotalMercanciasExentas = decTotalMercanciasExcentas;
+                resumenFactura.TotalMercanciasExentasSpecified = true;
+                resumenFactura.TotalServGravados = decTotalServiciosGravados;
+                resumenFactura.TotalServGravadosSpecified = true;
+                resumenFactura.TotalServExonerado = decTotalServiciosExonerados;
+                resumenFactura.TotalServExoneradoSpecified = true;
+                resumenFactura.TotalServExentos = decTotalServiciosExcentos;
+                resumenFactura.TotalServExentosSpecified = true;
+                resumenFactura.TotalGravado = decTotalMercanciasGravadas + decTotalServiciosGravados;
+                resumenFactura.TotalGravadoSpecified = true;
+                resumenFactura.TotalExonerado = decTotalMercanciasExoneradas + decTotalServiciosExonerados;
+                resumenFactura.TotalExoneradoSpecified = true;
+                resumenFactura.TotalExento = decTotalMercanciasExcentas + decTotalServiciosExcentos;
+                resumenFactura.TotalExentoSpecified = true;
+                resumenFactura.TotalVenta = resumenFactura.TotalGravado + resumenFactura.TotalExonerado + resumenFactura.TotalExento;
+                resumenFactura.TotalVentaNeta = resumenFactura.TotalVenta;
+                if (decTotalImpuestos > 0)
+                {
+                    resumenFactura.TotalImpuesto = decTotalImpuestos;
+                    resumenFactura.TotalImpuestoSpecified = true;
+                }
+                resumenFactura.TotalComprobante = resumenFactura.TotalVentaNeta + decTotalImpuestos;
+                notaCreditoElectronica.ResumenFactura = resumenFactura;
+                NotaCreditoElectronicaInformacionReferencia informacionReferencia = new NotaCreditoElectronicaInformacionReferencia
+                {
+                    TipoDoc = NotaCreditoElectronicaInformacionReferenciaTipoDoc.Item01,
+                    Numero = devolucion.IdDocElectronico,
+                    FechaEmision = devolucion.Fecha,
+                    Codigo = NotaCreditoElectronicaInformacionReferenciaCodigo.Item01,
+                    Razon = "Anulación del documento factura electronica con la respectiva clave númerica."
+                };
+                notaCreditoElectronica.InformacionReferencia = new NotaCreditoElectronicaInformacionReferencia[] { informacionReferencia };
+                XmlDocument documentoXml = new XmlDocument();
+                XmlWriterSettings settings = new XmlWriterSettings
+                {
+                    Indent = true,
+                    OmitXmlDeclaration = true
+                };
+                XmlSerializer serializer = new XmlSerializer(notaCreditoElectronica.GetType());
+                using (MemoryStream msDatosXML = new MemoryStream())
+                using (XmlWriter writer = XmlWriter.Create(msDatosXML, settings))
+                {
+                    serializer.Serialize(writer, notaCreditoElectronica);
+                    msDatosXML.Position = 0;
+                    documentoXml.Load(msDatosXML);
+                }
+                return RegistrarDocumentoElectronico(empresa, documentoXml, null, dbContext, devolucion.IdSucursal, devolucion.IdTerminal, TipoDocumento.NotaCreditoElectronica, false, strCorreoNotificacion);
             }
             catch (Exception ex)
             {

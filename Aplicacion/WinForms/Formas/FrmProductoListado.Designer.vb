@@ -39,6 +39,8 @@ Partial Class FrmProductoListado
         Me.Label1 = New System.Windows.Forms.Label()
         Me.Label2 = New System.Windows.Forms.Label()
         Me.cboLinea = New System.Windows.Forms.ComboBox()
+        Me.Label3 = New System.Windows.Forms.Label()
+        Me.txtCodigoProveedor = New System.Windows.Forms.TextBox()
         CType(Me.dgvListado, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -49,26 +51,26 @@ Partial Class FrmProductoListado
         Me.dgvListado.AllowUserToResizeColumns = False
         Me.dgvListado.AllowUserToResizeRows = False
         Me.dgvListado.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.dgvListado.Location = New System.Drawing.Point(12, 115)
+        Me.dgvListado.Location = New System.Drawing.Point(12, 132)
         Me.dgvListado.Name = "dgvListado"
         Me.dgvListado.ReadOnly = True
         Me.dgvListado.RowHeadersVisible = False
         Me.dgvListado.ScrollBars = System.Windows.Forms.ScrollBars.None
-        Me.dgvListado.Size = New System.Drawing.Size(670, 330)
-        Me.dgvListado.TabIndex = 6
+        Me.dgvListado.Size = New System.Drawing.Size(770, 330)
+        Me.dgvListado.TabIndex = 4
         Me.dgvListado.TabStop = False
         '
         'txtDescripcion
         '
-        Me.txtDescripcion.Location = New System.Drawing.Point(77, 24)
+        Me.txtDescripcion.Location = New System.Drawing.Point(103, 24)
         Me.txtDescripcion.Name = "txtDescripcion"
-        Me.txtDescripcion.Size = New System.Drawing.Size(320, 20)
+        Me.txtDescripcion.Size = New System.Drawing.Size(403, 20)
         Me.txtDescripcion.TabIndex = 0
         '
         'lblDescripcion
         '
         Me.lblDescripcion.AutoSize = True
-        Me.lblDescripcion.Location = New System.Drawing.Point(5, 27)
+        Me.lblDescripcion.Location = New System.Drawing.Point(31, 27)
         Me.lblDescripcion.Name = "lblDescripcion"
         Me.lblDescripcion.Size = New System.Drawing.Size(66, 13)
         Me.lblDescripcion.TabIndex = 2
@@ -76,30 +78,30 @@ Partial Class FrmProductoListado
         '
         'btnAgregar
         '
-        Me.btnAgregar.Location = New System.Drawing.Point(436, 22)
+        Me.btnAgregar.Location = New System.Drawing.Point(536, 22)
         Me.btnAgregar.Name = "btnAgregar"
         Me.btnAgregar.Size = New System.Drawing.Size(78, 22)
-        Me.btnAgregar.TabIndex = 3
+        Me.btnAgregar.TabIndex = 6
         Me.btnAgregar.TabStop = False
         Me.btnAgregar.Text = "Agregar"
         Me.btnAgregar.UseVisualStyleBackColor = True
         '
         'btnEditar
         '
-        Me.btnEditar.Location = New System.Drawing.Point(520, 22)
+        Me.btnEditar.Location = New System.Drawing.Point(620, 22)
         Me.btnEditar.Name = "btnEditar"
         Me.btnEditar.Size = New System.Drawing.Size(78, 22)
-        Me.btnEditar.TabIndex = 4
+        Me.btnEditar.TabIndex = 7
         Me.btnEditar.TabStop = False
         Me.btnEditar.Text = "Editar"
         Me.btnEditar.UseVisualStyleBackColor = True
         '
         'btnEliminar
         '
-        Me.btnEliminar.Location = New System.Drawing.Point(604, 22)
+        Me.btnEliminar.Location = New System.Drawing.Point(704, 22)
         Me.btnEliminar.Name = "btnEliminar"
         Me.btnEliminar.Size = New System.Drawing.Size(78, 22)
-        Me.btnEliminar.TabIndex = 5
+        Me.btnEliminar.TabIndex = 8
         Me.btnEliminar.TabStop = False
         Me.btnEliminar.Text = "Eliminar"
         Me.btnEliminar.UseVisualStyleBackColor = True
@@ -107,17 +109,17 @@ Partial Class FrmProductoListado
         'btnFiltrar
         '
         Me.btnFiltrar.Image = CType(resources.GetObject("btnFiltrar.Image"), System.Drawing.Image)
-        Me.btnFiltrar.Location = New System.Drawing.Point(403, 22)
+        Me.btnFiltrar.Location = New System.Drawing.Point(508, 23)
         Me.btnFiltrar.Name = "btnFiltrar"
         Me.btnFiltrar.Size = New System.Drawing.Size(22, 22)
-        Me.btnFiltrar.TabIndex = 2
+        Me.btnFiltrar.TabIndex = 5
         Me.btnFiltrar.TabStop = False
         Me.btnFiltrar.UseVisualStyleBackColor = True
         '
         'lblPagina
         '
         Me.lblPagina.AutoSize = True
-        Me.lblPagina.Location = New System.Drawing.Point(439, 456)
+        Me.lblPagina.Location = New System.Drawing.Point(584, 473)
         Me.lblPagina.Name = "lblPagina"
         Me.lblPagina.Size = New System.Drawing.Size(77, 13)
         Me.lblPagina.TabIndex = 33
@@ -128,7 +130,7 @@ Partial Class FrmProductoListado
         Me.btnLast.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnLast.Enabled = False
         Me.btnLast.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnLast.Location = New System.Drawing.Point(654, 451)
+        Me.btnLast.Location = New System.Drawing.Point(754, 468)
         Me.btnLast.Name = "btnLast"
         Me.btnLast.Size = New System.Drawing.Size(29, 23)
         Me.btnLast.TabIndex = 10
@@ -141,7 +143,7 @@ Partial Class FrmProductoListado
         Me.btnNext.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnNext.Enabled = False
         Me.btnNext.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnNext.Location = New System.Drawing.Point(625, 451)
+        Me.btnNext.Location = New System.Drawing.Point(725, 468)
         Me.btnNext.Name = "btnNext"
         Me.btnNext.Size = New System.Drawing.Size(29, 23)
         Me.btnNext.TabIndex = 9
@@ -154,7 +156,7 @@ Partial Class FrmProductoListado
         Me.btnPrevious.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnPrevious.Enabled = False
         Me.btnPrevious.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnPrevious.Location = New System.Drawing.Point(596, 451)
+        Me.btnPrevious.Location = New System.Drawing.Point(696, 468)
         Me.btnPrevious.Name = "btnPrevious"
         Me.btnPrevious.Size = New System.Drawing.Size(29, 23)
         Me.btnPrevious.TabIndex = 8
@@ -167,7 +169,7 @@ Partial Class FrmProductoListado
         Me.btnFirst.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnFirst.Enabled = False
         Me.btnFirst.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnFirst.Location = New System.Drawing.Point(567, 451)
+        Me.btnFirst.Location = New System.Drawing.Point(667, 468)
         Me.btnFirst.Name = "btnFirst"
         Me.btnFirst.Size = New System.Drawing.Size(29, 23)
         Me.btnFirst.TabIndex = 7
@@ -177,15 +179,15 @@ Partial Class FrmProductoListado
         '
         'txtCodigo
         '
-        Me.txtCodigo.Location = New System.Drawing.Point(77, 50)
+        Me.txtCodigo.Location = New System.Drawing.Point(103, 50)
         Me.txtCodigo.Name = "txtCodigo"
-        Me.txtCodigo.Size = New System.Drawing.Size(262, 20)
+        Me.txtCodigo.Size = New System.Drawing.Size(260, 20)
         Me.txtCodigo.TabIndex = 1
         '
         'Label1
         '
         Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(28, 53)
+        Me.Label1.Location = New System.Drawing.Point(54, 53)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(43, 13)
         Me.Label1.TabIndex = 35
@@ -196,29 +198,47 @@ Partial Class FrmProductoListado
         Me.Label2.BackColor = System.Drawing.Color.Transparent
         Me.Label2.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label2.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label2.Location = New System.Drawing.Point(6, 76)
+        Me.Label2.Location = New System.Drawing.Point(32, 102)
         Me.Label2.Name = "Label2"
         Me.Label2.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label2.Size = New System.Drawing.Size(65, 17)
         Me.Label2.TabIndex = 37
-        Me.Label2.Text = "Línea"
+        Me.Label2.Text = "Línea:"
         Me.Label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'cboLinea
         '
         Me.cboLinea.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cboLinea.FormattingEnabled = True
-        Me.cboLinea.Location = New System.Drawing.Point(77, 76)
+        Me.cboLinea.Location = New System.Drawing.Point(103, 102)
         Me.cboLinea.Name = "cboLinea"
-        Me.cboLinea.Size = New System.Drawing.Size(306, 21)
-        Me.cboLinea.TabIndex = 36
+        Me.cboLinea.Size = New System.Drawing.Size(320, 21)
+        Me.cboLinea.TabIndex = 3
+        '
+        'Label3
+        '
+        Me.Label3.AutoSize = True
+        Me.Label3.Location = New System.Drawing.Point(3, 79)
+        Me.Label3.Name = "Label3"
+        Me.Label3.Size = New System.Drawing.Size(94, 13)
+        Me.Label3.TabIndex = 39
+        Me.Label3.Text = "Código proveedor:"
+        '
+        'txtCodigoProveedor
+        '
+        Me.txtCodigoProveedor.Location = New System.Drawing.Point(103, 76)
+        Me.txtCodigoProveedor.Name = "txtCodigoProveedor"
+        Me.txtCodigoProveedor.Size = New System.Drawing.Size(260, 20)
+        Me.txtCodigoProveedor.TabIndex = 2
         '
         'FrmProductoListado
         '
         Me.AcceptButton = Me.btnFiltrar
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(695, 481)
+        Me.ClientSize = New System.Drawing.Size(795, 504)
+        Me.Controls.Add(Me.Label3)
+        Me.Controls.Add(Me.txtCodigoProveedor)
         Me.Controls.Add(Me.Label2)
         Me.Controls.Add(Me.cboLinea)
         Me.Controls.Add(Me.Label1)
@@ -260,4 +280,6 @@ Partial Class FrmProductoListado
     Friend WithEvents Label1 As System.Windows.Forms.Label
     Public WithEvents Label2 As System.Windows.Forms.Label
     Friend WithEvents cboLinea As System.Windows.Forms.ComboBox
+    Friend WithEvents Label3 As Label
+    Friend WithEvents txtCodigoProveedor As TextBox
 End Class

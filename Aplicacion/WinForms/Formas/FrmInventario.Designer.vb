@@ -32,6 +32,8 @@ Partial Class FrmInventario
         Me.btnPrevious = New System.Windows.Forms.Button()
         Me.btnFirst = New System.Windows.Forms.Button()
         Me.btnCardex = New System.Windows.Forms.Button()
+        Me.cboSucursal = New System.Windows.Forms.ComboBox()
+        Me.Label1 = New System.Windows.Forms.Label()
         CType(Me.dgvListado, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -121,7 +123,7 @@ Partial Class FrmInventario
         Me.dgvListado.AllowUserToResizeColumns = False
         Me.dgvListado.AllowUserToResizeRows = False
         Me.dgvListado.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing
-        Me.dgvListado.Location = New System.Drawing.Point(8, 90)
+        Me.dgvListado.Location = New System.Drawing.Point(8, 126)
         Me.dgvListado.Name = "dgvListado"
         Me.dgvListado.ReadOnly = True
         Me.dgvListado.RowHeadersVisible = False
@@ -153,11 +155,12 @@ Partial Class FrmInventario
         Me.cboLinea.Name = "cboLinea"
         Me.cboLinea.Size = New System.Drawing.Size(306, 21)
         Me.cboLinea.TabIndex = 2
+        Me.cboLinea.TabStop = False
         '
         'lblPagina
         '
         Me.lblPagina.AutoSize = True
-        Me.lblPagina.Location = New System.Drawing.Point(508, 411)
+        Me.lblPagina.Location = New System.Drawing.Point(508, 447)
         Me.lblPagina.Name = "lblPagina"
         Me.lblPagina.Size = New System.Drawing.Size(77, 13)
         Me.lblPagina.TabIndex = 33
@@ -168,7 +171,7 @@ Partial Class FrmInventario
         Me.btnLast.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnLast.Enabled = False
         Me.btnLast.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnLast.Location = New System.Drawing.Point(678, 406)
+        Me.btnLast.Location = New System.Drawing.Point(678, 442)
         Me.btnLast.Name = "btnLast"
         Me.btnLast.Size = New System.Drawing.Size(29, 23)
         Me.btnLast.TabIndex = 9
@@ -181,7 +184,7 @@ Partial Class FrmInventario
         Me.btnNext.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnNext.Enabled = False
         Me.btnNext.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnNext.Location = New System.Drawing.Point(649, 406)
+        Me.btnNext.Location = New System.Drawing.Point(649, 442)
         Me.btnNext.Name = "btnNext"
         Me.btnNext.Size = New System.Drawing.Size(29, 23)
         Me.btnNext.TabIndex = 8
@@ -194,7 +197,7 @@ Partial Class FrmInventario
         Me.btnPrevious.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnPrevious.Enabled = False
         Me.btnPrevious.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnPrevious.Location = New System.Drawing.Point(620, 406)
+        Me.btnPrevious.Location = New System.Drawing.Point(620, 442)
         Me.btnPrevious.Name = "btnPrevious"
         Me.btnPrevious.Size = New System.Drawing.Size(29, 23)
         Me.btnPrevious.TabIndex = 7
@@ -207,7 +210,7 @@ Partial Class FrmInventario
         Me.btnFirst.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnFirst.Enabled = False
         Me.btnFirst.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnFirst.Location = New System.Drawing.Point(591, 406)
+        Me.btnFirst.Location = New System.Drawing.Point(591, 442)
         Me.btnFirst.Name = "btnFirst"
         Me.btnFirst.Size = New System.Drawing.Size(29, 23)
         Me.btnFirst.TabIndex = 6
@@ -220,7 +223,7 @@ Partial Class FrmInventario
         Me.btnCardex.BackColor = System.Drawing.SystemColors.ButtonHighlight
         Me.btnCardex.Cursor = System.Windows.Forms.Cursors.Default
         Me.btnCardex.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.btnCardex.Location = New System.Drawing.Point(12, 406)
+        Me.btnCardex.Location = New System.Drawing.Point(12, 442)
         Me.btnCardex.Name = "btnCardex"
         Me.btnCardex.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.btnCardex.Size = New System.Drawing.Size(73, 21)
@@ -229,13 +232,38 @@ Partial Class FrmInventario
         Me.btnCardex.Text = "Kardex"
         Me.btnCardex.UseVisualStyleBackColor = False
         '
+        'cboSucursal
+        '
+        Me.cboSucursal.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.cboSucursal.FormattingEnabled = True
+        Me.cboSucursal.Location = New System.Drawing.Point(79, 92)
+        Me.cboSucursal.Name = "cboSucursal"
+        Me.cboSucursal.Size = New System.Drawing.Size(306, 21)
+        Me.cboSucursal.TabIndex = 3
+        Me.cboSucursal.TabStop = False
+        '
+        'Label1
+        '
+        Me.Label1.BackColor = System.Drawing.Color.Transparent
+        Me.Label1.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label1.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label1.Location = New System.Drawing.Point(8, 92)
+        Me.Label1.Name = "Label1"
+        Me.Label1.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label1.Size = New System.Drawing.Size(65, 19)
+        Me.Label1.TabIndex = 36
+        Me.Label1.Text = "Sucursal:"
+        Me.Label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
         'FrmInventario
         '
         Me.AcceptButton = Me.CmdFiltrar
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
-        Me.ClientSize = New System.Drawing.Size(716, 437)
+        Me.ClientSize = New System.Drawing.Size(716, 475)
+        Me.Controls.Add(Me.cboSucursal)
+        Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.btnCardex)
         Me.Controls.Add(Me.lblPagina)
         Me.Controls.Add(Me.btnLast)
@@ -256,7 +284,9 @@ Partial Class FrmInventario
         Me.KeyPreview = True
         Me.Location = New System.Drawing.Point(73, 22)
         Me.MaximizeBox = False
+        Me.MaximumSize = New System.Drawing.Size(732, 514)
         Me.MinimizeBox = False
+        Me.MinimumSize = New System.Drawing.Size(732, 514)
         Me.Name = "FrmInventario"
         Me.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
@@ -281,4 +311,6 @@ Partial Class FrmInventario
     Private WithEvents btnPrevious As System.Windows.Forms.Button
     Private WithEvents btnFirst As System.Windows.Forms.Button
     Friend WithEvents btnCardex As System.Windows.Forms.Button
+    Friend WithEvents cboSucursal As ComboBox
+    Friend WithEvents Label1 As Label
 End Class

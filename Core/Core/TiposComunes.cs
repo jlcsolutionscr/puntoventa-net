@@ -464,10 +464,11 @@ namespace LeandroSoftware.Core.TiposComunes
         {
         }
 
-        public ProductoDetalle(int id, string codigo, string descripcion, decimal cantidad, decimal precioCosto, decimal precioVenta1)
+        public ProductoDetalle(int id, string codigo, string codigoProveedor, string descripcion, decimal cantidad, decimal precioCosto, decimal precioVenta1)
         {
             Id = id;
             Codigo = codigo;
+            CodigoProveedor = codigoProveedor;
             Descripcion = descripcion;
             Cantidad = cantidad;
             PrecioCosto = precioCosto;
@@ -475,6 +476,7 @@ namespace LeandroSoftware.Core.TiposComunes
         }
         public int Id { get; set; }
         public string Codigo { get; set; }
+        public string CodigoProveedor { get; set; }
         public string Descripcion { get; set; }
         public decimal Cantidad { get; set; }
         public decimal PrecioCosto { get; set; }

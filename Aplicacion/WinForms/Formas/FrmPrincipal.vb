@@ -2,7 +2,6 @@ Imports System.Threading
 Imports System.Configuration
 Imports LeandroSoftware.Core.Dominio.Entidades
 Imports System.Collections.Generic
-Imports System.IO
 Imports System.Linq
 Imports LeandroSoftware.ClienteWCF
 Imports LeandroSoftware.Core.Utilitario
@@ -27,6 +26,9 @@ Public Class FrmPrincipal
     Public strContrasena As String
     Public strIdEmpresa As String
     Public bolSalir As Boolean = False
+    Public bolModificaDescripcion As Boolean = False
+    Public bolAplicaDescuento As Boolean = False
+    Public bolModificaPrecioVenta As Boolean = False
 #End Region
 
 #Region "Métodos"
@@ -243,6 +245,13 @@ Public Class FrmPrincipal
             .MdiParent = Me
         }
         formOrdenServicio.Show()
+    End Sub
+
+    Private Sub MnuCapturaApartado_Click(sender As Object, e As EventArgs) Handles MnuCapturaApartado.Click
+        Dim formApartado As New FrmApartado With {
+            .MdiParent = Me
+        }
+        formApartado.Show()
     End Sub
 
     Public Sub MnuCapturaProforma_Click(sender As Object, e As EventArgs) Handles MnuCapturaProforma.Click
@@ -486,18 +495,33 @@ Public Class FrmPrincipal
         Dim formInicio As New FrmInicio()
         formInicio.ShowDialog()
         mnuMenuPrincipal.Visible = True
-        If ValidarEmpresa(empresa) Or bolEsAdministrador = True Then
+        If ValidarEmpresa(empresa) Then
             For Each reportePorEmpresa As ReportePorEmpresa In empresaGlobal.ReportePorEmpresa.OrderBy(Function(obj) obj.IdReporte)
                 lstListaReportes.Add(reportePorEmpresa.CatalogoReporte.NombreReporte)
             Next
-            For Each permiso As RolePorUsuario In usuarioGlobal.RolePorUsuario
-                Try
-                    objMenu = mnuMenuPrincipal.Items(permiso.Role.MenuPadre)
-                    objMenu.Visible = True
-                    objMenu.DropDownItems(permiso.Role.MenuItem).Visible = True
-                Catch ex As Exception
-                End Try
-            Next
+            If usuarioGlobal.RolePorUsuario.First().IdRole = 1 Then
+                bolModificaDescripcion = True
+                bolAplicaDescuento = True
+                bolModificaPrecioVenta = True
+                For Each item As ToolStripMenuItem In mnuMenuPrincipal.Items
+                    item.Visible = True
+                    For Each subItem As ToolStripItem In item.DropDownItems
+                        subItem.Visible = True
+                    Next
+                Next
+            Else
+                For Each permiso As RolePorUsuario In usuarioGlobal.RolePorUsuario
+                    Try
+                        If permiso.IdRole = 50 Then bolModificaDescripcion = True
+                        If permiso.IdRole = 51 Then bolAplicaDescuento = True
+                        If permiso.IdRole = 52 Then bolModificaPrecioVenta = True
+                        objMenu = mnuMenuPrincipal.Items(permiso.Role.MenuPadre)
+                        objMenu.Visible = True
+                        objMenu.DropDownItems(permiso.Role.MenuItem).Visible = True
+                    Catch ex As Exception
+                    End Try
+                Next
+            End If
         Else
             If usuarioGlobal.Modifica Then
                 MessageBox.Show("La información de la empresa requiere ser actualizada. Por favor ingrese al mantenimiento de Empresa para completar la información.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)

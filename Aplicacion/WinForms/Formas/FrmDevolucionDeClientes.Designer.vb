@@ -1,9 +1,9 @@
-<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
 Partial Class FrmDevolucionDeClientes
     Inherits System.Windows.Forms.Form
 
     'Form overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()> _
+    <System.Diagnostics.DebuggerNonUserCode()>
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         If disposing AndAlso components IsNot Nothing Then
             components.Dispose()
@@ -34,8 +34,9 @@ Partial Class FrmDevolucionDeClientes
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.
     'Do not modify it using the code editor.
-    <System.Diagnostics.DebuggerStepThrough()> _
+    <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FrmDevolucionDeClientes))
         Me.CmdAnular = New System.Windows.Forms.Button()
         Me.CmdAgregar = New System.Windows.Forms.Button()
         Me.CmdBuscar = New System.Windows.Forms.Button()
@@ -57,8 +58,6 @@ Partial Class FrmDevolucionDeClientes
         Me.grdDetalleDevolucion = New System.Windows.Forms.DataGridView()
         Me.btnBuscarFactura = New System.Windows.Forms.Button()
         Me.txtCliente = New System.Windows.Forms.TextBox()
-        Me.txtDescuento = New System.Windows.Forms.TextBox()
-        Me.Label1 = New System.Windows.Forms.Label()
         CType(Me.grdDetalleDevolucion, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -139,9 +138,8 @@ Partial Class FrmDevolucionDeClientes
         Me.txtImpuesto.AcceptsReturn = True
         Me.txtImpuesto.BackColor = System.Drawing.SystemColors.Window
         Me.txtImpuesto.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtImpuesto.Enabled = False
         Me.txtImpuesto.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtImpuesto.Location = New System.Drawing.Point(733, 423)
+        Me.txtImpuesto.Location = New System.Drawing.Point(739, 377)
         Me.txtImpuesto.MaxLength = 0
         Me.txtImpuesto.Name = "txtImpuesto"
         Me.txtImpuesto.ReadOnly = True
@@ -156,7 +154,6 @@ Partial Class FrmDevolucionDeClientes
         Me.txtIdDevolucion.AcceptsReturn = True
         Me.txtIdDevolucion.BackColor = System.Drawing.SystemColors.Window
         Me.txtIdDevolucion.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtIdDevolucion.Enabled = False
         Me.txtIdDevolucion.ForeColor = System.Drawing.SystemColors.WindowText
         Me.txtIdDevolucion.Location = New System.Drawing.Point(72, 40)
         Me.txtIdDevolucion.MaxLength = 0
@@ -172,9 +169,8 @@ Partial Class FrmDevolucionDeClientes
         Me.txtTotal.AcceptsReturn = True
         Me.txtTotal.BackColor = System.Drawing.SystemColors.Window
         Me.txtTotal.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtTotal.Enabled = False
         Me.txtTotal.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtTotal.Location = New System.Drawing.Point(733, 447)
+        Me.txtTotal.Location = New System.Drawing.Point(739, 401)
         Me.txtTotal.MaxLength = 0
         Me.txtTotal.Name = "txtTotal"
         Me.txtTotal.ReadOnly = True
@@ -202,9 +198,8 @@ Partial Class FrmDevolucionDeClientes
         Me.txtSubTotal.AcceptsReturn = True
         Me.txtSubTotal.BackColor = System.Drawing.SystemColors.Window
         Me.txtSubTotal.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtSubTotal.Enabled = False
         Me.txtSubTotal.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtSubTotal.Location = New System.Drawing.Point(733, 371)
+        Me.txtSubTotal.Location = New System.Drawing.Point(739, 351)
         Me.txtSubTotal.MaxLength = 0
         Me.txtSubTotal.Name = "txtSubTotal"
         Me.txtSubTotal.ReadOnly = True
@@ -219,9 +214,8 @@ Partial Class FrmDevolucionDeClientes
         Me.txtFecha.AcceptsReturn = True
         Me.txtFecha.BackColor = System.Drawing.SystemColors.Window
         Me.txtFecha.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtFecha.Enabled = False
         Me.txtFecha.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtFecha.Location = New System.Drawing.Point(72, 92)
+        Me.txtFecha.Location = New System.Drawing.Point(739, 66)
         Me.txtFecha.MaxLength = 0
         Me.txtFecha.Name = "txtFecha"
         Me.txtFecha.ReadOnly = True
@@ -235,7 +229,7 @@ Partial Class FrmDevolucionDeClientes
         Me.LblImpuesto.BackColor = System.Drawing.Color.Transparent
         Me.LblImpuesto.Cursor = System.Windows.Forms.Cursors.Default
         Me.LblImpuesto.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.LblImpuesto.Location = New System.Drawing.Point(662, 426)
+        Me.LblImpuesto.Location = New System.Drawing.Point(668, 380)
         Me.LblImpuesto.Name = "LblImpuesto"
         Me.LblImpuesto.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.LblImpuesto.Size = New System.Drawing.Size(65, 19)
@@ -248,7 +242,7 @@ Partial Class FrmDevolucionDeClientes
         Me.LblTotal.BackColor = System.Drawing.Color.Transparent
         Me.LblTotal.Cursor = System.Windows.Forms.Cursors.Default
         Me.LblTotal.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.LblTotal.Location = New System.Drawing.Point(662, 450)
+        Me.LblTotal.Location = New System.Drawing.Point(668, 404)
         Me.LblTotal.Name = "LblTotal"
         Me.LblTotal.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.LblTotal.Size = New System.Drawing.Size(65, 19)
@@ -261,7 +255,7 @@ Partial Class FrmDevolucionDeClientes
         Me.lblSubTotal.BackColor = System.Drawing.Color.Transparent
         Me.lblSubTotal.Cursor = System.Windows.Forms.Cursors.Default
         Me.lblSubTotal.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.lblSubTotal.Location = New System.Drawing.Point(662, 374)
+        Me.lblSubTotal.Location = New System.Drawing.Point(668, 354)
         Me.lblSubTotal.Name = "lblSubTotal"
         Me.lblSubTotal.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.lblSubTotal.Size = New System.Drawing.Size(65, 19)
@@ -287,10 +281,10 @@ Partial Class FrmDevolucionDeClientes
         Me.lblLabel3.BackColor = System.Drawing.Color.Transparent
         Me.lblLabel3.Cursor = System.Windows.Forms.Cursors.Default
         Me.lblLabel3.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.lblLabel3.Location = New System.Drawing.Point(9, 93)
+        Me.lblLabel3.Location = New System.Drawing.Point(687, 67)
         Me.lblLabel3.Name = "lblLabel3"
         Me.lblLabel3.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.lblLabel3.Size = New System.Drawing.Size(57, 19)
+        Me.lblLabel3.Size = New System.Drawing.Size(46, 19)
         Me.lblLabel3.TabIndex = 12
         Me.lblLabel3.Text = "Fecha:"
         Me.lblLabel3.TextAlign = System.Drawing.ContentAlignment.MiddleRight
@@ -300,10 +294,10 @@ Partial Class FrmDevolucionDeClientes
         Me.lblLabel2.BackColor = System.Drawing.Color.Transparent
         Me.lblLabel2.Cursor = System.Windows.Forms.Cursors.Default
         Me.lblLabel2.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.lblLabel2.Location = New System.Drawing.Point(178, 66)
+        Me.lblLabel2.Location = New System.Drawing.Point(184, 67)
         Me.lblLabel2.Name = "lblLabel2"
         Me.lblLabel2.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.lblLabel2.Size = New System.Drawing.Size(63, 19)
+        Me.lblLabel2.Size = New System.Drawing.Size(43, 19)
         Me.lblLabel2.TabIndex = 11
         Me.lblLabel2.Text = "Cliente:"
         Me.lblLabel2.TextAlign = System.Drawing.ContentAlignment.MiddleRight
@@ -328,7 +322,7 @@ Partial Class FrmDevolucionDeClientes
         Me.grdDetalleDevolucion.AllowUserToResizeColumns = False
         Me.grdDetalleDevolucion.AllowUserToResizeRows = False
         Me.grdDetalleDevolucion.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.grdDetalleDevolucion.Location = New System.Drawing.Point(6, 118)
+        Me.grdDetalleDevolucion.Location = New System.Drawing.Point(12, 98)
         Me.grdDetalleDevolucion.MultiSelect = False
         Me.grdDetalleDevolucion.Name = "grdDetalleDevolucion"
         Me.grdDetalleDevolucion.RowHeadersVisible = False
@@ -337,7 +331,8 @@ Partial Class FrmDevolucionDeClientes
         '
         'btnBuscarFactura
         '
-        Me.btnBuscarFactura.Location = New System.Drawing.Point(154, 65)
+        Me.btnBuscarFactura.Image = CType(resources.GetObject("btnBuscarFactura.Image"), System.Drawing.Image)
+        Me.btnBuscarFactura.Location = New System.Drawing.Point(154, 66)
         Me.btnBuscarFactura.Name = "btnBuscarFactura"
         Me.btnBuscarFactura.Size = New System.Drawing.Size(20, 20)
         Me.btnBuscarFactura.TabIndex = 136
@@ -350,53 +345,21 @@ Partial Class FrmDevolucionDeClientes
         Me.txtCliente.BackColor = System.Drawing.SystemColors.Window
         Me.txtCliente.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtCliente.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtCliente.Location = New System.Drawing.Point(247, 66)
+        Me.txtCliente.Location = New System.Drawing.Point(231, 66)
         Me.txtCliente.MaxLength = 0
         Me.txtCliente.Name = "txtCliente"
         Me.txtCliente.ReadOnly = True
         Me.txtCliente.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtCliente.Size = New System.Drawing.Size(446, 20)
+        Me.txtCliente.Size = New System.Drawing.Size(428, 20)
         Me.txtCliente.TabIndex = 2
         Me.txtCliente.TabStop = False
-        '
-        'txtDescuento
-        '
-        Me.txtDescuento.AcceptsReturn = True
-        Me.txtDescuento.BackColor = System.Drawing.SystemColors.Window
-        Me.txtDescuento.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtDescuento.Enabled = False
-        Me.txtDescuento.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtDescuento.Location = New System.Drawing.Point(733, 397)
-        Me.txtDescuento.MaxLength = 0
-        Me.txtDescuento.Name = "txtDescuento"
-        Me.txtDescuento.ReadOnly = True
-        Me.txtDescuento.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtDescuento.Size = New System.Drawing.Size(73, 20)
-        Me.txtDescuento.TabIndex = 15
-        Me.txtDescuento.TabStop = False
-        Me.txtDescuento.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
-        '
-        'Label1
-        '
-        Me.Label1.BackColor = System.Drawing.Color.Transparent
-        Me.Label1.Cursor = System.Windows.Forms.Cursors.Default
-        Me.Label1.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label1.Location = New System.Drawing.Point(662, 400)
-        Me.Label1.Name = "Label1"
-        Me.Label1.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label1.Size = New System.Drawing.Size(65, 19)
-        Me.Label1.TabIndex = 138
-        Me.Label1.Text = "Descuento:"
-        Me.Label1.TextAlign = System.Drawing.ContentAlignment.TopRight
         '
         'FrmDevolucionDeClientes
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
-        Me.ClientSize = New System.Drawing.Size(814, 476)
-        Me.Controls.Add(Me.txtDescuento)
-        Me.Controls.Add(Me.Label1)
+        Me.ClientSize = New System.Drawing.Size(825, 434)
         Me.Controls.Add(Me.btnBuscarFactura)
         Me.Controls.Add(Me.txtCliente)
         Me.Controls.Add(Me.grdDetalleDevolucion)
@@ -437,6 +400,4 @@ Partial Class FrmDevolucionDeClientes
     Friend WithEvents grdDetalleDevolucion As System.Windows.Forms.DataGridView
     Friend WithEvents btnBuscarFactura As System.Windows.Forms.Button
     Public WithEvents txtCliente As System.Windows.Forms.TextBox
-    Public WithEvents txtDescuento As System.Windows.Forms.TextBox
-    Public WithEvents Label1 As System.Windows.Forms.Label
 End Class

@@ -12,6 +12,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public Empresa()
         {
             ReportePorEmpresa = new HashSet<ReportePorEmpresa>();
+            RolePorEmpresa = new HashSet<RolePorEmpresa>();
         }
         [Key]
         public int IdEmpresa { get; set; }
@@ -35,11 +36,6 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public int LineasPorFactura { get; set; }
         public bool Contabiliza { get; set; }
         public bool AutoCompletaProducto { get; set; }
-        public bool ModificaDescProducto { get; set; }
-        public bool DesglosaServicioInst { get; set; }
-        public double PorcentajeInstalacion { get; set; }
-        public int CodigoServicioInst { get; set; }
-        public bool IncluyeInsumosEnFactura { get; set; }
         public bool CierrePorTurnos { get; set; }
         public bool CierreEnEjecucion { get; set; }
         public bool RegimenSimplificado { get; set; }
@@ -51,6 +47,8 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public string UsuarioHacienda { get; set; }
         public string ClaveHacienda { get; set; }
         public string CorreoNotificacion { get; set; }
+        public decimal PorcentajeDescMaximo { get; set; }
+        public string LeyendaOrdenServicio { get; set; }
         public byte[] Logotipo { get; set; }
         public string AccessToken { get; set; }
         public int? ExpiresIn { get; set; }
@@ -67,5 +65,6 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         [ForeignKey("IdProvincia, IdCanton, IdDistrito, IdBarrio")]
         public Barrio Barrio { get; set; }
         public ICollection<ReportePorEmpresa> ReportePorEmpresa { get; set; }
+        public ICollection<RolePorEmpresa> RolePorEmpresa { get; set; }
     }
 }
