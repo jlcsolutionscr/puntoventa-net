@@ -1901,7 +1901,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         {
                             try
                             {
-
                                 ProcesarMensajeReceptor(dbContext, correo, config, true);
                                 servicioRecepcionCorreo.EliminarMensaje(datos.CuentaIvaAcreditable, datos.ClaveIvaAcreditable, correo.MessageNumber);
                                 stringBuilder.AppendLine("PROCESADO: Documento con IVA acreditable con asunto " + correo.Subject);
@@ -1981,7 +1980,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             if (correo.Attachments.Count == 0) throw new BusinessException("El correo no contiene los archivos requeridos o ninguno de los archivos adjuntos corresponde a un documento electrónico válido para ser aceptado.");
             foreach (Attachment archivo in correo.Attachments)
             {
-                if (strDatos == "" && archivo.FileName.EndsWith(".xml"))
+                if (strDatos == "" && archivo.FileName.ToUpper().EndsWith(".XML"))
                 {
                     XmlDocument documentoXml = new XmlDocument();
                     try
