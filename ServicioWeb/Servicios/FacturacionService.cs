@@ -2282,17 +2282,18 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 if (strDatos == "" && archivo.FileName.ToUpper().EndsWith(".XML"))
                 {
+                    string strXml = "";
                     XmlDocument documentoXml = new XmlDocument();
                     try
                     {
-                        string strXml = Encoding.UTF8.GetString(archivo.Content);
+                        strXml = Encoding.UTF8.GetString(archivo.Content);
                         documentoXml.LoadXml(strXml);
                     }
                     catch
                     {
                         try
                         {
-                            string strXml = Encoding.ASCII.GetString(archivo.Content);
+                            strXml = Encoding.ASCII.GetString(archivo.Content);
                             strXml = strXml.Substring(strXml.IndexOf("<?xml"));
                             documentoXml.LoadXml(strXml);
                         }
@@ -2301,8 +2302,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             throw new BusinessException("El archivo XML del documento electrónico no se posee el formato adecuado para ser procesado: " + ex.Message);
                         }
                     }
+                    
                     if (documentoXml.DocumentElement.Name == "FacturaElectronica" || documentoXml.DocumentElement.Name == "NotaCreditoElectronica")
                     {
+                        if (strXml.Contains("v4.2/facturaElectronica"))
+                            throw new BusinessException("El documento electrónico no contiene el formato V4.3 requerido por el Ministerio de Hacienda. Consulte con el emisor de su factura de gastos");
                         if (documentoXml.GetElementsByTagName("Otros").Count > 0)
                         {
                             XmlNode otrosNode = documentoXml.GetElementsByTagName("Otros").Item(0);

@@ -305,8 +305,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     lineaDetalle.Cantidad = detalleFactura.Cantidad;
                     if (detalleFactura.UnidadMedida == "Und")
                         lineaDetalle.UnidadMedida = FacturaElectronicaCompraUnidadMedidaType.Unid;
-                    else if (detalleFactura.UnidadMedida == "SP")
+                    else if (detalleFactura.UnidadMedida == "Sp")
                         lineaDetalle.UnidadMedida = FacturaElectronicaCompraUnidadMedidaType.Sp;
+                    else if (detalleFactura.UnidadMedida == "Spe")
+                        lineaDetalle.UnidadMedida = FacturaElectronicaCompraUnidadMedidaType.Spe;
+                    else if (detalleFactura.UnidadMedida == "St")
+                        lineaDetalle.UnidadMedida = FacturaElectronicaCompraUnidadMedidaType.St;
                     else
                         lineaDetalle.UnidadMedida = FacturaElectronicaCompraUnidadMedidaType.Os;
                     lineaDetalle.Detalle = detalleFactura.Descripcion;
