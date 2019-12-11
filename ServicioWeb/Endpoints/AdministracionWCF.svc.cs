@@ -71,10 +71,6 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             servicioReportes = unityContainer.Resolve<IReporteService>();
         }
 
-        public void Options()
-        {
-        }
-
         public string ValidarCredencialesAdmin(string strUsuario, string strClave)
         {
             try
@@ -598,8 +594,27 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
 
         public void RunSyncProcesarPendientes()
         {
-            servicioFacturacion.ProcesarDocumentosElectronicosPendientes(servicioEnvioCorreo, configuracionGeneral);
-            servicioFacturacion.ProcesarCorreoRecepcion(servicioEnvioCorreo, servicioRecepcionCorreo, configuracionGeneral, configuracionRecepcion));
+            try
+            {
+                using (UnityContainer singletonContainer = new UnityContainer())
+                {
+                    string connString = WebConfigurationManager.ConnectionStrings["LeandroContext"].ConnectionString;
+                    singletonContainer.RegisterType<IDbContext, LeandroContext>(new InjectionConstructor(connString));
+                    singletonContainer.RegisterType<ICorreoService, CorreoService>(new InjectionConstructor(appSettings["smtpEmailHost"], appSettings["smtpEmailPort"], appSettings["smtpEmailAccount"], appSettings["smtpEmailPass"], appSettings["smtpSSLHost"]));
+                    singletonContainer.RegisterType<IServerMailService, ServerMailService>(new InjectionConstructor(appSettings["pop3EmailHost"], appSettings["pop3EmailPort"]));
+                    singletonContainer.RegisterType<IFacturacionService, FacturacionService>();
+                    ICorreoService servicioEnvioCorreo = singletonContainer.Resolve<ICorreoService>();
+                    IServerMailService servicioRecepcionCorreo = singletonContainer.Resolve<IServerMailService>();
+                    IFacturacionService servicioFacturacion = singletonContainer.Resolve<IFacturacionService>();
+                    servicioFacturacion.ProcesarDocumentosElectronicosPendientes(servicioEnvioCorreo, configuracionGeneral);
+                    servicioFacturacion.ProcesarCorreoRecepcion(servicioEnvioCorreo, servicioRecepcionCorreo, configuracionGeneral, configuracionRecepcion);
+                }
+            }
+            catch (Exception ex)
+            {
+                JArray jarrayObj = new JArray();
+                servicioEnvioCorreo.SendEmail(configuracionGeneral.CorreoCuentaFacturacion, new string[] { configuracionGeneral.CorreoNotificacionErrores }, new string[] { }, "Error en el procesamiento de documentos pendientes", "Ocurrio un error en el procesamiento de documentos pendientes: " + ex.Message, false, jarrayObj);
+            }
         }
 
         public void LimpiarRegistrosInvalidos()

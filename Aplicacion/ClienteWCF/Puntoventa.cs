@@ -1248,6 +1248,14 @@ namespace LeandroSoftware.ClienteWCF
             return serializer.Deserialize<string>(strId);
         }
 
+        public static async Task<string> AgregarFacturaCompra(FacturaCompra facturaCompra, string strToken)
+        {
+            string strEntidad = serializer.Serialize(facturaCompra);
+            string strDatos = "{NombreMetodo: 'AgregarFacturaCompra', Entidad: " + strEntidad + "}";
+            string strId = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            return serializer.Deserialize<string>(strId);
+        }
+
         public static async Task AnularFactura(int intIdFactura, int intIdUsuario, string strToken)
         {
             string strDatos = "{NombreMetodo: 'AnularFactura', Parametros: {IdFactura: " + intIdFactura + ", IdUsuario: " + intIdUsuario + "}}";
@@ -1276,7 +1284,7 @@ namespace LeandroSoftware.ClienteWCF
 
         public static async Task<DevolucionCliente> ObtenerDevolucionCliente(int intIdDevolucion, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerDevolucion', Parametros: {IdDevolucion: " + intIdDevolucion + "}}";
+            string strDatos = "{NombreMetodo: 'ObtenerDevolucionCliente', Parametros: {IdDevolucion: " + intIdDevolucion + "}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             DevolucionCliente devolucion = null;
             if (respuesta != "")

@@ -61,6 +61,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
         private static Vendedor vendedor;
         private static Egreso egreso;
         private static Factura factura;
+        private static FacturaCompra facturaCompra;
         private static DevolucionCliente devolucionCliente;
         private static Compra compra;
         private static Proforma proforma;
@@ -77,10 +78,12 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
         private static int intIdDocumento;
         private static int intIdLinea;
         private static int intIdProducto;
+        private static int intIdCuentaBanco;
         private static int intIdCuentaEgreso;
         private static int intIdCuentaIngreso;
         private static int intIdEgreso;
         private static int intIdIngreso;
+        private static int intIdVendedor;
         private static int intIdFactura;
         private static int intIdDevolucion;
         private static int intIdCompra;
@@ -354,7 +357,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         servicioMantenimiento.ActualizarBancoAdquiriente(bancoAdquiriente);
                         break;
                     case "EliminarBancoAdquiriente":
-                        int intIdBancoAdquiriente = int.Parse(parametrosJO.Property("IdBancoAdquiriente").Value.ToString());
+                        intIdBancoAdquiriente = int.Parse(parametrosJO.Property("IdBancoAdquiriente").Value.ToString());
                         servicioMantenimiento.EliminarBancoAdquiriente(intIdBancoAdquiriente);
                         break;
                     case "AgregarCliente":
@@ -366,7 +369,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         servicioFacturacion.ActualizarCliente(cliente);
                         break;
                     case "EliminarCliente":
-                        int intIdCliente = int.Parse(parametrosJO.Property("IdCliente").Value.ToString());
+                        intIdCliente = int.Parse(parametrosJO.Property("IdCliente").Value.ToString());
                         servicioFacturacion.EliminarCliente(intIdCliente);
                         break;
                     case "AgregarLinea":
@@ -378,7 +381,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         servicioMantenimiento.ActualizarLinea(linea);
                         break;
                     case "EliminarLinea":
-                        int intIdLinea = int.Parse(parametrosJO.Property("IdLinea").Value.ToString());
+                        intIdLinea = int.Parse(parametrosJO.Property("IdLinea").Value.ToString());
                         servicioMantenimiento.EliminarLinea(intIdLinea);
                         break;
                     case "AgregarProveedor":
@@ -390,7 +393,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         servicioCompra.ActualizarProveedor(proveedor);
                         break;
                     case "EliminarProveedor":
-                        int intIdProveedor = int.Parse(parametrosJO.Property("IdProveedor").Value.ToString());
+                        intIdProveedor = int.Parse(parametrosJO.Property("IdProveedor").Value.ToString());
                         servicioCompra.EliminarProveedor(intIdProveedor);
                         break;
                     case "AgregarProducto":
@@ -402,7 +405,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         servicioMantenimiento.ActualizarProducto(producto);
                         break;
                     case "EliminarProducto":
-                        int intIdProducto = int.Parse(parametrosJO.Property("IdProducto").Value.ToString());
+                        intIdProducto = int.Parse(parametrosJO.Property("IdProducto").Value.ToString());
                         servicioMantenimiento.EliminarProducto(intIdProducto);
                         break;
                     case "AgregarUsuario":
@@ -426,7 +429,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         servicioEgreso.ActualizarCuentaEgreso(cuentaEgreso);
                         break;
                     case "EliminarCuentaEgreso":
-                        int intIdCuentaEgreso = int.Parse(parametrosJO.Property("IdCuentaEgreso").Value.ToString());
+                        intIdCuentaEgreso = int.Parse(parametrosJO.Property("IdCuentaEgreso").Value.ToString());
                         servicioEgreso.EliminarCuentaEgreso(intIdCuentaEgreso);
                         break;
                     case "AgregarCuentaBanco":
@@ -438,7 +441,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         servicioBanca.ActualizarCuentaBanco(cuentaBanco);
                         break;
                     case "EliminarCuentaBanco":
-                        int intIdCuentaBanco = int.Parse(parametrosJO.Property("IdCuentaBanco").Value.ToString());
+                        intIdCuentaBanco = int.Parse(parametrosJO.Property("IdCuentaBanco").Value.ToString());
                         servicioBanca.EliminarCuentaBanco(intIdCuentaBanco);
                         break;
                     case "AgregarVendedor":
@@ -450,11 +453,11 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         servicioMantenimiento.ActualizarVendedor(vendedor);
                         break;
                     case "EliminarVendedor":
-                        int intIdVendedor = int.Parse(parametrosJO.Property("IdVendedor").Value.ToString());
+                        intIdVendedor = int.Parse(parametrosJO.Property("IdVendedor").Value.ToString());
                         servicioMantenimiento.EliminarVendedor(intIdVendedor);
                         break;
                     case "AnularEgreso":
-                        int intIdEgreso = int.Parse(parametrosJO.Property("IdEgreso").Value.ToString());
+                        intIdEgreso = int.Parse(parametrosJO.Property("IdEgreso").Value.ToString());
                         intIdUsuario = int.Parse(parametrosJO.Property("IdUsuario").Value.ToString());
                         servicioEgreso.AnularEgreso(intIdEgreso, intIdUsuario);
                         break;
@@ -463,17 +466,22 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         servicioEgreso.ActualizarEgreso(egreso);
                         break;
                     case "AnularFactura":
-                        int intIdFactura = int.Parse(parametrosJO.Property("IdFactura").Value.ToString());
+                        intIdFactura = int.Parse(parametrosJO.Property("IdFactura").Value.ToString());
                         intIdUsuario = int.Parse(parametrosJO.Property("IdUsuario").Value.ToString());
                         servicioFacturacion.AnularFactura(intIdFactura, intIdUsuario, configuracionGeneral);
                         break;
+                    case "AnularDevolucionCliente":
+                        intIdDevolucion = int.Parse(parametrosJO.Property("IdDevolucion").Value.ToString());
+                        intIdUsuario = int.Parse(parametrosJO.Property("IdUsuario").Value.ToString());
+                        servicioFacturacion.AnularDevolucionCliente(intIdDevolucion, intIdUsuario, configuracionGeneral);
+                        break;
                     case "AnularCompra":
-                        int intIdCompra = int.Parse(parametrosJO.Property("IdCompra").Value.ToString());
+                        intIdCompra = int.Parse(parametrosJO.Property("IdCompra").Value.ToString());
                         intIdUsuario = int.Parse(parametrosJO.Property("IdUsuario").Value.ToString());
                         servicioCompra.AnularCompra(intIdCompra, intIdUsuario);
                         break;
                     case "AnularProforma":
-                        int intIdProforma = int.Parse(parametrosJO.Property("IdProforma").Value.ToString());
+                        intIdProforma = int.Parse(parametrosJO.Property("IdProforma").Value.ToString());
                         intIdUsuario = int.Parse(parametrosJO.Property("IdUsuario").Value.ToString());
                         servicioFacturacion.AnularProforma(intIdProforma, intIdUsuario);
                         break;
@@ -482,12 +490,12 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         servicioFacturacion.ActualizarProforma(proforma);
                         break;
                     case "AnularApartado":
-                        int intIdApartado = int.Parse(parametrosJO.Property("IdApartado").Value.ToString());
+                        intIdApartado = int.Parse(parametrosJO.Property("IdApartado").Value.ToString());
                         intIdUsuario = int.Parse(parametrosJO.Property("IdUsuario").Value.ToString());
                         servicioFacturacion.AnularApartado(intIdApartado, intIdUsuario);
                         break;
                     case "AnularOrdenServicio":
-                        int intIdOrdenServicio = int.Parse(parametrosJO.Property("IdOrdenServicio").Value.ToString());
+                        intIdOrdenServicio = int.Parse(parametrosJO.Property("IdOrdenServicio").Value.ToString());
                         intIdUsuario = int.Parse(parametrosJO.Property("IdUsuario").Value.ToString());
                         servicioFacturacion.AnularOrdenServicio(intIdOrdenServicio, intIdUsuario);
                         break;
@@ -1222,6 +1230,11 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         string strIdFactura = servicioFacturacion.AgregarFactura(factura, configuracionGeneral);
                         strRespuesta = serializer.Serialize(strIdFactura);
                         break;
+                    case "AgregarFacturaCompra":
+                        facturaCompra = serializer.Deserialize<FacturaCompra>(strEntidad);
+                        string strIdFacturaCompra = servicioFacturacion.AgregarFacturaCompra(facturaCompra, configuracionGeneral);
+                        strRespuesta = serializer.Serialize(strIdFacturaCompra);
+                        break;
                     case "ObtenerFactura":
                         intIdFactura = int.Parse(parametrosJO.Property("IdFactura").Value.ToString());
                         factura = servicioFacturacion.ObtenerFactura(intIdFactura);
@@ -1251,7 +1264,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         strRespuesta = serializer.Serialize(strIdDevolucionCliente);
                         break;
                     case "ObtenerDevolucionCliente":
-                        intIdDevolucion = int.Parse(parametrosJO.Property("IdDevolucionCliente").Value.ToString());
+                        intIdDevolucion = int.Parse(parametrosJO.Property("IdDevolucion").Value.ToString());
                         devolucionCliente = servicioFacturacion.ObtenerDevolucionCliente(intIdDevolucion);
                         if (devolucionCliente != null)
                             strRespuesta = serializer.Serialize(devolucionCliente);

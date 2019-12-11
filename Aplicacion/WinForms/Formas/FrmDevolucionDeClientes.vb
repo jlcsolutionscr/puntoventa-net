@@ -83,7 +83,7 @@ Public Class FrmDevolucionDeClientes
         dvcPrecioVenta.HeaderText = "Precio"
         dvcPrecioVenta.Width = 75
         dvcPrecioVenta.DefaultCellStyle = FrmPrincipal.dgvDecimal
-        dvcPrecioVenta.ReadOnly = False
+        dvcPrecioVenta.ReadOnly = True
         grdDetalleDevolucion.Columns.Add(dvcPrecioVenta)
 
         dvcTotal.DataPropertyName = "TOTAL"
@@ -140,7 +140,7 @@ Public Class FrmDevolucionDeClientes
                 dtrRowDetDevolucion.Item(0) = detalle.IdProducto
                 dtrRowDetDevolucion.Item(1) = detalle.Producto.Codigo
                 dtrRowDetDevolucion.Item(2) = detalle.Producto.Descripcion
-                dtrRowDetDevolucion.Item(3) = detalle.Cantidad
+                dtrRowDetDevolucion.Item(3) = detalle.Cantidad - detalle.CantDevuelto
                 dtrRowDetDevolucion.Item(4) = detalle.PrecioCosto
                 dtrRowDetDevolucion.Item(5) = detalle.PrecioVenta
                 dtrRowDetDevolucion.Item(6) = dtrRowDetDevolucion.Item(3) * dtrRowDetDevolucion.Item(5)
@@ -217,9 +217,7 @@ Public Class FrmDevolucionDeClientes
         If grdDetalleDevolucion.CurrentCell.Value.ToString() = "" Then
             grdDetalleDevolucion.CurrentCell.Value = 0
         Else
-            If grdDetalleDevolucion.CurrentCell.ColumnIndex = 5 Then
-                grdDetalleDevolucion.CurrentRow.Cells(6).Value = grdDetalleDevolucion.CurrentRow.Cells(3).Value * grdDetalleDevolucion.CurrentCell.Value
-            ElseIf grdDetalleDevolucion.CurrentCell.ColumnIndex = 8 Then
+            If grdDetalleDevolucion.CurrentCell.ColumnIndex = 8 Then
                 If grdDetalleDevolucion.CurrentCell.Value > grdDetalleDevolucion.CurrentRow.Cells(3).Value Then
                     MessageBox.Show("La cantidad ingresada de artículos por devolver excede la cantidad de artículos de la factura.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     grdDetalleDevolucion.CurrentCell.Value = 0
@@ -229,7 +227,7 @@ Public Class FrmDevolucionDeClientes
         CargarTotales()
     End Sub
 
-    Private Sub CmdAgregar_Click(sender As Object, e As EventArgs) Handles CmdAgregar.Click
+    Private Sub BtnAgregar_Click(sender As Object, e As EventArgs) Handles btnAgregar.Click
         txtIdDevolucion.Text = ""
         txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
         cliente = Nothing
@@ -242,14 +240,14 @@ Public Class FrmDevolucionDeClientes
         txtSubTotal.Text = FormatNumber(0, 2)
         txtImpuesto.Text = FormatNumber(0, 2)
         txtTotal.Text = FormatNumber(0, 2)
-        CmdAnular.Enabled = False
-        CmdGuardar.Enabled = True
-        CmdImprimir.Enabled = False
+        btnAnular.Enabled = False
+        btnGuardar.Enabled = True
+        btnImprimir.Enabled = False
         btnBuscarFactura.Enabled = True
         txtIdFactura.Focus()
     End Sub
 
-    Private Async Sub CmdAnular_Click(sender As Object, e As EventArgs) Handles CmdAnular.Click
+    Private Async Sub BtnAnular_Click(sender As Object, e As EventArgs) Handles btnAnular.Click
         If txtIdDevolucion.Text <> "" Then
             If MessageBox.Show("Desea anular este registro?", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
                 Try
@@ -259,12 +257,12 @@ Public Class FrmDevolucionDeClientes
                     Exit Sub
                 End Try
                 MessageBox.Show("Transacción procesada satisfactoriamente. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
-                CmdAgregar_Click(CmdAgregar, New EventArgs())
+                BtnAgregar_Click(btnAgregar, New EventArgs())
             End If
         End If
     End Sub
 
-    Private Async Sub CmdBuscar_Click(sender As Object, e As EventArgs) Handles CmdBuscar.Click
+    Private Async Sub BtnBuscar_Click(sender As Object, e As EventArgs) Handles btnBuscar.Click
         Dim formBusqueda As New FrmBusquedaDevolucionCliente()
         FrmPrincipal.intBusqueda = 0
         formBusqueda.ShowDialog()
@@ -284,9 +282,9 @@ Public Class FrmDevolucionDeClientes
                 CargarDetalleDevolucion(devolucion)
                 CargarTotales()
                 grdDetalleDevolucion.ReadOnly = True
-                CmdImprimir.Enabled = True
-                CmdAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
-                CmdGuardar.Enabled = False
+                btnImprimir.Enabled = True
+                btnAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
+                btnGuardar.Enabled = False
                 btnBuscarFactura.Enabled = False
             End If
         End If
@@ -302,9 +300,9 @@ Public Class FrmDevolucionDeClientes
         End If
     End Sub
 
-    Private Async Sub CmdGuardar_Click(sender As Object, e As EventArgs) Handles CmdGuardar.Click
+    Private Async Sub BtnGuardar_Click(sender As Object, e As EventArgs) Handles btnGuardar.Click
         If Not cliente Is Nothing And txtFecha.Text <> "" And Not factura Is Nothing And CDbl(txtTotal.Text) > 0 Then
-            CmdGuardar.Enabled = False
+            btnGuardar.Enabled = False
             If txtIdDevolucion.Text = "" Then
                 devolucion = New DevolucionCliente With {
                     .IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa,
@@ -333,7 +331,7 @@ Public Class FrmDevolucionDeClientes
                 Try
                     txtIdDevolucion.Text = Await Puntoventa.AgregarDevolucionCliente(devolucion, FrmPrincipal.usuarioGlobal.Token)
                 Catch ex As Exception
-                    CmdGuardar.Enabled = True
+                    btnGuardar.Enabled = True
                     txtIdDevolucion.Text = ""
                     MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
@@ -341,18 +339,18 @@ Public Class FrmDevolucionDeClientes
             End If
             MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
             grdDetalleDevolucion.ReadOnly = True
-            CmdImprimir.Enabled = True
-            CmdAgregar.Enabled = True
-            CmdAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
-            CmdImprimir.Focus()
-            CmdGuardar.Enabled = False
+            btnImprimir.Enabled = True
+            btnAgregar.Enabled = True
+            btnAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
+            btnImprimir.Focus()
+            btnGuardar.Enabled = False
             btnBuscarFactura.Enabled = False
         Else
             MessageBox.Show("Información incompleta.  Favor verificar. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End If
     End Sub
 
-    Private Sub CmdImprimir_Click(sender As Object, e As EventArgs) Handles CmdImprimir.Click
+    Private Sub BtnImprimir_Click(sender As Object, e As EventArgs) Handles btnImprimir.Click
         If txtIdDevolucion.Text <> "" Then
             comprobante = New ModuloImpresion.ClsComprobante With {
                 .usuario = FrmPrincipal.usuarioGlobal,

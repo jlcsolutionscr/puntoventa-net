@@ -68,10 +68,12 @@
     <Compile Include="Entidades\DetalleAjusteInventario.cs" />
     <Compile Include="Entidades\DetalleDevolucionProveedor.cs" />
     <Compile Include="Entidades\DetalleApartado.cs" />
+    <Compile Include="Entidades\DetalleFacturaCompra.cs" />
     <Compile Include="Entidades\Distrito.cs" />
     <Compile Include="Entidades\DevolucionProveedor.cs" />
     <Compile Include="Entidades\CondicionVenta.cs" />
     <Compile Include="Entidades\DocumentoElectronico.cs" />
+    <Compile Include="Entidades\FacturaCompra.cs" />
     <Compile Include="Entidades\Padron.cs" />
     <Compile Include="Entidades\ParametroImpuesto.cs" />
     <Compile Include="Entidades\Apartado.cs" />

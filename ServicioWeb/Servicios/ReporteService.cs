@@ -1451,7 +1451,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                     decMontoPorLinea = decMontoPorLinea * (100 - porcentaje) / 100;
                                 }
                                 string strTarifa = lineaDetalle["Impuesto"]["Tarifa"].InnerText;
-                                if (lineaDetalle["UnidadMedida"].InnerText == "Sp")
+                                if (lineaDetalle["UnidadMedida"].InnerText == "Os" || lineaDetalle["UnidadMedida"].InnerText == "Sp" || lineaDetalle["UnidadMedida"].InnerText == "Spe" || lineaDetalle["UnidadMedida"].InnerText == "St")
                                 {
                                     switch (strTarifa)
                                     {
@@ -1496,7 +1496,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             }
                             else
                             {
-                                if (lineaDetalle["UnidadMedida"].InnerText == "Sp")
+                                if (lineaDetalle["UnidadMedida"].InnerText == "Os" || lineaDetalle["UnidadMedida"].InnerText == "Sp" || lineaDetalle["UnidadMedida"].InnerText == "Spe" || lineaDetalle["UnidadMedida"].InnerText == "St")
                                     decVentaServiciosExento += decMontoPorLinea;
                                 else
                                     decVentaBienesExento += decMontoPorLinea;
@@ -1552,7 +1552,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                     decMontoPorLinea = decMontoPorLinea * (100 - porcentaje) / 100;
                                 }
                                 string strTarifa = lineaDetalle["Impuesto"]["Tarifa"].InnerText;
-                                if (lineaDetalle["UnidadMedida"].InnerText == "Sp")
+                                if (lineaDetalle["UnidadMedida"].InnerText == "Os" || lineaDetalle["UnidadMedida"].InnerText == "Sp" || lineaDetalle["UnidadMedida"].InnerText == "Spe" || lineaDetalle["UnidadMedida"].InnerText == "St")
                                 {
                                     switch (strTarifa)
                                     {
@@ -1597,7 +1597,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             }
                             else
                             {
-                                if (lineaDetalle["UnidadMedida"].InnerText == "Sp")
+                                if (lineaDetalle["UnidadMedida"].InnerText == "Os" || lineaDetalle["UnidadMedida"].InnerText == "Sp" || lineaDetalle["UnidadMedida"].InnerText == "Spe" || lineaDetalle["UnidadMedida"].InnerText == "St")
                                     decVentaServiciosExento += decMontoPorLinea;
                                 else
                                     decVentaBienesExento += decMontoPorLinea;
@@ -1697,7 +1697,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                         decMontoPorLinea = decMontoPorLinea * (100 - porcentaje) / 100;
                                     }
                                     string strTarifa = lineaDetalle["Impuesto"]["Tarifa"].InnerText;
-                                    if (lineaDetalle["UnidadMedida"].InnerText == "Sp")
+                                    if (lineaDetalle["UnidadMedida"].InnerText == "Os" || lineaDetalle["UnidadMedida"].InnerText == "Sp" || lineaDetalle["UnidadMedida"].InnerText == "Spe" || lineaDetalle["UnidadMedida"].InnerText == "St")
                                     {
                                         switch (strTarifa)
                                         {
@@ -1752,7 +1752,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 }
                                 else
                                 {
-                                    if (lineaDetalle["UnidadMedida"].InnerText == "Sp")
+                                    if (lineaDetalle["UnidadMedida"].InnerText == "Os" || lineaDetalle["UnidadMedida"].InnerText == "Sp" || lineaDetalle["UnidadMedida"].InnerText == "Spe" || lineaDetalle["UnidadMedida"].InnerText == "St")
                                         decCompraServiciosExento += decMontoPorLinea;
                                     else
                                         decCompraBienesExento += decMontoPorLinea;

@@ -7,9 +7,6 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
     [ServiceContract]
     public interface IAdministracionWCF
     {
-        [WebInvoke(Method = "OPTIONS", UriTemplate = "*")]
-        void Options();
-
         [OperationContract]
         [WebGet(UriTemplate = "validarcredencialesadmin?usuario={usuario}&clave={clave}", ResponseFormat = WebMessageFormat.Json)]
         string ValidarCredencialesAdmin(string usuario, string clave);

@@ -28,6 +28,7 @@ namespace LeandroSoftware.ServicioWeb.Contexto
         DbSet<CuentaPorPagar> CuentaPorPagarRepository { get; set; }
         DbSet<ExistenciaPorSucursal> ExistenciaPorSucursalRepository { get; set; }
         DbSet<Factura> FacturaRepository { get; set; }
+        DbSet<FacturaCompra> FacturaCompraRepository { get; set; }
         DbSet<Compra> CompraRepository { get; set; }
         DbSet<DesgloseMovimientoCuentaPorCobrar> DesgloseMovimientoCuentaPorCobrarRepository { get; set; }
         DbSet<DesgloseMovimientoCuentaPorPagar> DesgloseMovimientoCuentaPorPagarRepository { get; set; }
@@ -47,6 +48,7 @@ namespace LeandroSoftware.ServicioWeb.Contexto
         DbSet<DetalleDevolucionCliente> DetalleDevolucionClienteRepository { get; set; }
         DbSet<DetalleDevolucionProveedor> DetalleDevolucionProveedorRepository { get; set; }
         DbSet<DetalleFactura> DetalleFacturaRepository { get; set; }
+        DbSet<DetalleFacturaCompra> DetalleFacturaCompraRepository { get; set; }
         DbSet<DetalleOrdenCompra> DetalleOrdenCompraRepository { get; set; }
         DbSet<DetalleOrdenServicio> DetalleOrdenServicioRepository { get; set; }
         DbSet<DetalleProforma> DetalleProformaRepository { get; set; }
@@ -140,6 +142,7 @@ namespace LeandroSoftware.ServicioWeb.Contexto
         public DbSet<CuentaPorPagar> CuentaPorPagarRepository { get; set; }
         public DbSet<ExistenciaPorSucursal> ExistenciaPorSucursalRepository { get; set; }
         public DbSet<Factura> FacturaRepository { get; set; }
+        public DbSet<FacturaCompra> FacturaCompraRepository { get; set; }
         public DbSet<Compra> CompraRepository { get; set; }
         public DbSet<DesgloseMovimientoCuentaPorCobrar> DesgloseMovimientoCuentaPorCobrarRepository { get; set; }
         public DbSet<DesgloseMovimientoCuentaPorPagar> DesgloseMovimientoCuentaPorPagarRepository { get; set; }
@@ -159,6 +162,7 @@ namespace LeandroSoftware.ServicioWeb.Contexto
         public DbSet<DetalleDevolucionCliente> DetalleDevolucionClienteRepository { get; set; }
         public DbSet<DetalleDevolucionProveedor> DetalleDevolucionProveedorRepository { get; set; }
         public DbSet<DetalleFactura> DetalleFacturaRepository { get; set; }
+        public DbSet<DetalleFacturaCompra> DetalleFacturaCompraRepository { get; set; }
         public DbSet<DetalleOrdenCompra> DetalleOrdenCompraRepository { get; set; }
         public DbSet<DetalleOrdenServicio> DetalleOrdenServicioRepository { get; set; }
         public DbSet<DetalleProforma> DetalleProformaRepository { get; set; }

@@ -1,3 +1,5 @@
+Imports LeandroSoftware.ClienteWCF
+
 Public Class FrmBusquedaDevolucionCliente
 #Region "Variables"
     Private intTotalEmpresas As Integer
@@ -10,18 +12,23 @@ Public Class FrmBusquedaDevolucionCliente
 #Region "Métodos"
     Private Sub EstablecerPropiedadesDataGridView()
         Dim dvcId As New DataGridViewTextBoxColumn
+        Dim dvcFecha As New DataGridViewTextBoxColumn
         Dim dvcNombre As New DataGridViewTextBoxColumn
         Dim dvcTopeCredito As New DataGridViewTextBoxColumn
 
         dgvListado.Columns.Clear()
         dgvListado.AutoGenerateColumns = False
         dvcId.HeaderText = "Id"
-        dvcId.DataPropertyName = "IdDevolucion"
+        dvcId.DataPropertyName = "IdFactura"
         dvcId.Width = 50
         dgvListado.Columns.Add(dvcId)
+        dvcFecha.HeaderText = "Fecha"
+        dvcFecha.DataPropertyName = "Fecha"
+        dvcFecha.Width = 70
+        dgvListado.Columns.Add(dvcFecha)
         dvcNombre.HeaderText = "Cliente"
         dvcNombre.DataPropertyName = "NombreCliente"
-        dvcNombre.Width = 450
+        dvcNombre.Width = 380
         dgvListado.Columns.Add(dvcNombre)
         dvcTopeCredito.HeaderText = "Total"
         dvcTopeCredito.DataPropertyName = "Total"
@@ -30,25 +37,25 @@ Public Class FrmBusquedaDevolucionCliente
         dgvListado.Columns.Add(dvcTopeCredito)
     End Sub
 
-    Private Sub ActualizarDatos(ByVal intNumeroPagina As Integer)
+    Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Threading.Tasks.Task
         Try
-            'dgvListado.DataSource = servicioFacturacion.ObtenerListaDevolucionesPorCliente(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, intId, txtNombre.Text)
+            dgvListado.DataSource = Await Puntoventa.ObtenerListadoDevolucionesPorCliente(FrmPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, FrmPrincipal.usuarioGlobal.Token, intId, txtNombre.Text)
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
-            Exit Sub
+            Exit Function
         End Try
         dgvListado.Refresh()
-    End Sub
+    End Function
 
-    Private Sub ValidarCantidadEmpresas()
+    Private Async Function ValidarCantidadEmpresas() As Threading.Tasks.Task
         Try
-            'intTotalEmpresas = servicioFacturacion.ObtenerTotalListaDevolucionesPorCliente(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intId, txtNombre.Text)
+            intTotalEmpresas = Await Puntoventa.ObtenerTotalListaDevolucionesPorCliente(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token, intId, txtNombre.Text)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
-            Exit Sub
+            Exit Function
         End Try
         intCantidadDePaginas = Math.Truncate(intTotalEmpresas / intFilasPorPagina) + IIf((intTotalEmpresas Mod intFilasPorPagina) = 0, 0, 1)
 
@@ -63,7 +70,7 @@ Public Class FrmBusquedaDevolucionCliente
             btnPrevious.Enabled = False
             btnFirst.Enabled = False
         End If
-    End Sub
+    End Function
 #End Region
 
 #Region "Eventos Controles"
@@ -76,31 +83,31 @@ Public Class FrmBusquedaDevolucionCliente
         ActualizarDatos(intIndiceDePagina)
     End Sub
 
-    Private Sub btnPrevious_Click(sender As Object, e As EventArgs) Handles btnPrevious.Click
+    Private Async Sub btnPrevious_Click(sender As Object, e As EventArgs) Handles btnPrevious.Click
         If intIndiceDePagina > 1 Then
             intIndiceDePagina -= 1
-            ActualizarDatos(intIndiceDePagina)
+            Await ActualizarDatos(intIndiceDePagina)
         End If
     End Sub
 
-    Private Sub btnNext_Click(sender As Object, e As EventArgs) Handles btnNext.Click
+    Private Async Sub btnNext_Click(sender As Object, e As EventArgs) Handles btnNext.Click
         If intCantidadDePaginas > intIndiceDePagina Then
             intIndiceDePagina += 1
-            ActualizarDatos(intIndiceDePagina)
+            Await ActualizarDatos(intIndiceDePagina)
         End If
     End Sub
 
-    Private Sub btnLast_Click(sender As Object, e As EventArgs) Handles btnLast.Click
+    Private Async Sub btnLast_Click(sender As Object, e As EventArgs) Handles btnLast.Click
         intIndiceDePagina = intCantidadDePaginas
-        ActualizarDatos(intIndiceDePagina)
+        Await ActualizarDatos(intIndiceDePagina)
     End Sub
 
-    Private Sub FrmBusProd_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+    Private Async Sub FrmBusProd_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
             EstablecerPropiedadesDataGridView()
-            ValidarCantidadEmpresas()
+            Await ValidarCantidadEmpresas()
             intIndiceDePagina = 1
-            ActualizarDatos(intIndiceDePagina)
+            Await ActualizarDatos(intIndiceDePagina)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -115,15 +122,15 @@ Public Class FrmBusquedaDevolucionCliente
         End If
     End Sub
 
-    Private Sub btnFiltrar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnFiltrar.Click
+    Private Async Sub btnFiltrar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnFiltrar.Click
         If txtId.Text = "" Then
             intId = 0
         Else
             intId = CInt(txtId.Text)
         End If
-        ValidarCantidadEmpresas()
+        Await ValidarCantidadEmpresas()
         intIndiceDePagina = 1
-        ActualizarDatos(intIndiceDePagina)
+        Await ActualizarDatos(intIndiceDePagina)
     End Sub
 #End Region
 End Class

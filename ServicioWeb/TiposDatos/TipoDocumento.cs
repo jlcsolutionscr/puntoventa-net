@@ -8,6 +8,7 @@
         TiqueteElectronico=4,
         MensajeReceptorAceptado=5,
         MensajeReceptorAceptadoParcial = 6,
-        MensajeReceptorRechazado = 7
+        MensajeReceptorRechazado = 7,
+        FacturaElectronicaCompra = 8
     }
 }
