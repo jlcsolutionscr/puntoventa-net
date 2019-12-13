@@ -51,7 +51,6 @@ namespace LeandroSoftware.Core.Utilitario
                 int lineaPos = 217;
                 if (datos.Clave != null)
                 {
-                    
                     gfx.DrawString("Clave: ", font, XBrushes.Black, new XRect(20, lineaPos, 80, 12), XStringFormats.TopLeft);
                     gfx.DrawString(datos.Clave, font, XBrushes.Black, new XRect(110, lineaPos, 200, 12), XStringFormats.TopLeft);
                     gfx.DrawString("Consecutivo: ", font, XBrushes.Black, new XRect(370, lineaPos, 80, 12), XStringFormats.TopLeft);
