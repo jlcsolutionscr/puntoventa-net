@@ -2710,7 +2710,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             strTitle = "Nota de débito electrónica de emisor " + empresa.NombreComercial;
                             datos.TituloDocumento = "NOTA DE DEBITO ELECTRONICA";
                         }
-                        string datosXml = Encoding.Default.GetString(documentoElectronico.DatosDocumento);
+                        string datosXml = Encoding.UTF8.GetString(documentoElectronico.DatosDocumento);
                         XmlDocument documentoXml = new XmlDocument();
                         documentoXml.LoadXml(datosXml);
                         datos.NombreEmpresa = empresa.NombreEmpresa;
