@@ -32,6 +32,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
         private IBancaService servicioBanca;
         private IReporteService servicioReportes;
         private IContabilidadService servicioContabilidad;
+        private ITrasladoService servicioTraslado;
         IUnityContainer unityContainer;
         private static decimal decTipoCambioDolar;
         private static System.Collections.Specialized.NameValueCollection appSettings = WebConfigurationManager.AppSettings;
@@ -69,6 +70,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
         private static Apartado apartado;
         private static DocumentoElectronico documento;
         private static CierreCaja cierre;
+        private static Traslado traslado;
         private static int intIdEmpresa;
         private static int intIdSucursal;
         private static int intIdUsuario;
@@ -97,6 +99,9 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
         private static int intIdProveedor;
         private static int intIdTipoPago;
         private static int intIdBancoAdquiriente;
+        private static int intIdTraslado;
+        private static int intIdSucursalOrigen;
+        private static int intIdSucursalDestino;
         bool bolIncluyeServicios;
         bool bolNulo;
         string strClave;
@@ -126,6 +131,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             unityContainer.RegisterType<IBancaService, BancaService>();
             unityContainer.RegisterType<IReporteService, ReporteService>();
             unityContainer.RegisterType<IContabilidadService, ContabilidadService>();
+            unityContainer.RegisterType<ITrasladoService, TrasladoService>();
             servicioEnvioCorreo = unityContainer.Resolve<ICorreoService>();
             servicioMantenimiento = unityContainer.Resolve<IMantenimientoService>();
             servicioFacturacion = unityContainer.Resolve<IFacturacionService>();
@@ -134,6 +140,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             servicioBanca = unityContainer.Resolve<IBancaService>();
             servicioReportes = unityContainer.Resolve<IReporteService>();
             servicioContabilidad = unityContainer.Resolve<IContabilidadService>();
+            servicioTraslado = unityContainer.Resolve<ITrasladoService>();
             try
             {
                 decTipoCambioDolar = ComprobanteElectronicoService.ObtenerTipoCambioVenta(configuracionGeneral.ConsultaIndicadoresEconomicosURL, configuracionGeneral.OperacionSoap, DateTime.Now, unityContainer);
@@ -502,6 +509,16 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                     case "ActualizarOrdenServicio":
                         ordenServicio = serializer.Deserialize<OrdenServicio>(strEntidad);
                         servicioFacturacion.ActualizarOrdenServicio(ordenServicio);
+                        break;
+                    case "AplicarTraslado":
+                        intIdTraslado = int.Parse(parametrosJO.Property("IdTraslado").Value.ToString());
+                        intIdUsuario = int.Parse(parametrosJO.Property("IdUsuario").Value.ToString());
+                        servicioTraslado.AplicarTraslado(intIdTraslado, intIdUsuario);
+                        break;
+                    case "AnularTraslado":
+                        intIdTraslado = int.Parse(parametrosJO.Property("IdTraslado").Value.ToString());
+                        intIdUsuario = int.Parse(parametrosJO.Property("IdUsuario").Value.ToString());
+                        servicioTraslado.AnularTraslado(intIdTraslado, intIdUsuario);
                         break;
                     case "EnviarDocumentoElectronicoPendiente":
                         intIdDocumento = int.Parse(parametrosJO.Property("IdDocumento").Value.ToString());
@@ -1411,6 +1428,56 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         documento = servicioFacturacion.ObtenerRespuestaDocumentoElectronicoEnviado(intIdDocumento, configuracionGeneral);
                         if (documento != null)
                             strRespuesta = serializer.Serialize(documento);
+                        break;
+                    case "AutorizacionPrecioExtraordinario":
+                        string strCodigoUsuario = parametrosJO.Property("CodigoUsuario").Value.ToString();
+                        strClave = parametrosJO.Property("Clave").Value.ToString();
+                        intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
+                        bool autorizado = servicioMantenimiento.AutorizacionPrecioExtraordinario(strCodigoUsuario, strClave, intIdEmpresa);
+                        strRespuesta = autorizado.ToString();
+                        break;
+                    case "ObtenerListadoSucursalDestino":
+                        intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
+                        intIdSucursalOrigen = int.Parse(parametrosJO.Property("IdSucursalOrigen").Value.ToString());
+                        IList<LlaveDescripcion> listadoSucursalesDestino = servicioTraslado.ObtenerListadoSucursalDestino(intIdEmpresa, intIdSucursalOrigen);
+                        if (listadoSucursalesDestino.Count > 0)
+                            strRespuesta = serializer.Serialize(listadoSucursalesDestino);
+                        break;
+                    case "AgregarTraslado":
+                        traslado = serializer.Deserialize<Traslado>(strEntidad);
+                        string strIdTraslado = servicioTraslado.AgregarTraslado(traslado);
+                        strRespuesta = serializer.Serialize(strIdTraslado);
+                        break;
+                    case "ObtenerTraslado":
+                        intIdTraslado = int.Parse(parametrosJO.Property("IdTraslado").Value.ToString());
+                        traslado = servicioTraslado.ObtenerTraslado(intIdTraslado);
+                        if (traslado != null)
+                            strRespuesta = serializer.Serialize(traslado);
+                        break;
+                    case "ObtenerTotalListaTraslados":
+                        intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
+                        intIdSucursalOrigen = int.Parse(parametrosJO.Property("IdSucursalOrigen").Value.ToString());
+                        intIdTraslado = int.Parse(parametrosJO.Property("IdTraslado").Value.ToString());
+                        int intTotalTraslados = servicioTraslado.ObtenerTotalListaTraslados(intIdEmpresa, intIdSucursalOrigen, intIdTraslado);
+                        strRespuesta = intTotalTraslados.ToString();
+                        break;
+                    case "ObtenerListaTraslados":
+                        intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
+                        intIdSucursalOrigen = int.Parse(parametrosJO.Property("IdSucursalOrigen").Value.ToString());
+                        intNumeroPagina = int.Parse(parametrosJO.Property("NumeroPagina").Value.ToString());
+                        intFilasPorPagina = int.Parse(parametrosJO.Property("FilasPorPagina").Value.ToString());
+                        intIdTraslado = int.Parse(parametrosJO.Property("IdTraslado").Value.ToString());
+                        IList<TrasladoDetalle> listadoTraslados = servicioTraslado.ObtenerListaTraslados(intIdEmpresa, intIdSucursalOrigen, intNumeroPagina, intFilasPorPagina, intIdTraslado);
+                        if (listadoTraslados.Count > 0)
+                            strRespuesta = serializer.Serialize(listadoTraslados);
+                        break;
+                    case "ObtenerListaTrasladosPorAplicar":
+                        intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
+                        intIdSucursalDestino = int.Parse(parametrosJO.Property("intIdSucursalDestino").Value.ToString());
+                        intIdTraslado = int.Parse(parametrosJO.Property("IdTraslado").Value.ToString());
+                        IList<TrasladoDetalle> listadoTrasladosPorAplicar = servicioTraslado.ObtenerListaTrasladosPorAplicar(intIdEmpresa, intIdSucursalDestino, intIdTraslado);
+                        if (listadoTrasladosPorAplicar.Count > 0)
+                            strRespuesta = serializer.Serialize(listadoTrasladosPorAplicar);
                         break;
                     default:
                         throw new Exception("El método solicitado no ha sido implementado: " + strNombreMetodo);

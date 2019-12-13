@@ -512,6 +512,25 @@ namespace LeandroSoftware.Core.TiposComunes
         public string Estado { get; set; }
     }
 
+    public class TrasladoDetalle
+    {
+        public TrasladoDetalle()
+        {
+        }
+
+        public TrasladoDetalle(int id, string fecha, string sucursalDestino, decimal total)
+        {
+            IdTraslado = id;
+            Fecha = fecha;
+            SucursalDestino = sucursalDestino;
+            Total = total;
+        }
+        public int IdTraslado { get; set; }
+        public string Fecha { get; set; }
+        public string SucursalDestino { get; set; }
+        public decimal Total { get; set; }
+    }
+
     public class CompraDetalle
     {
         public CompraDetalle()

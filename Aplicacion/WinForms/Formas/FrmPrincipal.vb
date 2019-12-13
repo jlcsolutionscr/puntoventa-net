@@ -184,13 +184,6 @@ Public Class FrmPrincipal
         formUsuarioListado.Show()
     End Sub
 
-    Public Sub MnuMantSucursal_Click(sender As Object, e As EventArgs) Handles MnuMantSucursal.Click
-        Dim formSucursalListado As New FrmSucursalListado With {
-            .MdiParent = Me
-        }
-        formSucursalListado.Show()
-    End Sub
-
     Private Sub MnuMantCE_Click(sender As Object, e As EventArgs) Handles MnuMantCE.Click
         Dim formCuentaEgresoListado As New FrmCuentaEgresoListado With {
             .MdiParent = Me
@@ -205,7 +198,7 @@ Public Class FrmPrincipal
         formCuentaIngresoListado.Show()
     End Sub
 
-    Private Sub MnuMantCB_Click(sender As Object, e As EventArgs) Handles MnuMantCB.Click
+    Private Sub MnuMantCB_Click(sender As Object, e As EventArgs) 
         Dim formCuentaBancoListado As New FrmCuentaBancoListado With {
             .MdiParent = Me
         }
@@ -366,32 +359,32 @@ Public Class FrmPrincipal
         formMovimientoBanco.Show()
     End Sub
 
-    Private Sub MnuContaAsiento_Click(sender As Object, e As EventArgs) Handles mnuContaAsiento.Click
+    Private Sub MnuContaAsiento_Click(sender As Object, e As EventArgs) Handles MnuContaAsiento.Click
         Dim formAsientoDiario As New FrmAsientoContable With {
             .MdiParent = Me
         }
         formAsientoDiario.Show()
     End Sub
 
-    Private Sub MnuContaCierre_Click(sender As Object, e As EventArgs) Handles mnuContaCierre.Click
+    Private Sub MnuContaCierre_Click(sender As Object, e As EventArgs) Handles MnuContaCierre.Click
         Dim formcierreContable As New FrmCierreContable With {
             .MdiParent = Me
         }
         formcierreContable.Show()
     End Sub
 
-    Private Sub MnuContaReporte_Click(sender As Object, e As EventArgs) Handles mnuContaReporte.Click
+    Private Sub MnuContaReporte_Click(sender As Object, e As EventArgs) Handles MnuContaReporte.Click
         Dim formMenuReportesContabilidad As New FrmMenuReportesContables With {
             .MdiParent = Me
         }
         formMenuReportesContabilidad.Show()
     End Sub
 
-    Private Sub MnuDocElectADE_Click(sender As Object, e As EventArgs) Handles MnuDocElectADE.Click
-        Dim formMenuAceptarComprobanteElectronico As New FrmAceptarDocumentoElectronico With {
+    Private Sub MnuDocElectFC_Click(sender As Object, e As EventArgs) Handles MnuDocElectFC.Click
+        Dim formFacturaCompra As New FrmFacturaCompra With {
             .MdiParent = Me
         }
-        formMenuAceptarComprobanteElectronico.Show()
+        formFacturaCompra.Show()
     End Sub
 
     Private Sub MnuDocElectCDE_Click(sender As Object, e As EventArgs) Handles MnuDocElectCDE.Click
@@ -515,6 +508,9 @@ Public Class FrmPrincipal
                         If permiso.IdRole = 50 Then bolModificaDescripcion = True
                         If permiso.IdRole = 51 Then bolAplicaDescuento = True
                         If permiso.IdRole = 52 Then bolModificaPrecioVenta = True
+                        If permiso.Role.MenuItem = "MnuBCMov" Then
+                            MessageBox.Show("La información de la empresa requiere ser actualizada.")
+                        End If
                         objMenu = mnuMenuPrincipal.Items(permiso.Role.MenuPadre)
                         objMenu.Visible = True
                         objMenu.DropDownItems(permiso.Role.MenuItem).Visible = True

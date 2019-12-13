@@ -84,7 +84,6 @@ namespace LeandroSoftware.ServicioWeb.Contexto
         DbSet<RolePorEmpresa> RolePorEmpresaRepository { get; set; }
         DbSet<RolePorUsuario> RolePorUsuarioRepository { get; set; }
         DbSet<SaldoMensualContable> SaldoMensualContableRepository { get; set; }
-        DbSet<Sucursal> SucursalRepository { get; set; }
         DbSet<SucursalPorEmpresa> SucursalPorEmpresaRepository { get; set; }
         DbSet<TerminalPorSucursal> TerminalPorSucursalRepository { get; set; }
         DbSet<TipoDeCambioDolar> TipoDeCambioDolarRepository { get; set; }
@@ -198,7 +197,6 @@ namespace LeandroSoftware.ServicioWeb.Contexto
         public DbSet<RolePorEmpresa> RolePorEmpresaRepository { get; set; }
         public DbSet<RolePorUsuario> RolePorUsuarioRepository { get; set; }
         public DbSet<SaldoMensualContable> SaldoMensualContableRepository { get; set; }
-        public DbSet<Sucursal> SucursalRepository { get; set; }
         public DbSet<SucursalPorEmpresa> SucursalPorEmpresaRepository { get; set; }
         public DbSet<TerminalPorSucursal> TerminalPorSucursalRepository { get; set; }
         public DbSet<TipoDeCambioDolar> TipoDeCambioDolarRepository { get; set; }

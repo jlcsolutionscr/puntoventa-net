@@ -2302,7 +2302,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             throw new BusinessException("El archivo XML del documento electrónico no se posee el formato adecuado para ser procesado: " + ex.Message);
                         }
                     }
-                    
                     if (documentoXml.DocumentElement.Name == "FacturaElectronica" || documentoXml.DocumentElement.Name == "NotaCreditoElectronica")
                     {
                         if (strXml.Contains("v4.2/facturaElectronica"))
@@ -2667,7 +2666,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 string strBody;
                 string strTitle = "";
                 JArray jarrayObj = new JArray();
-                if (documentoElectronico.EsMensajeReceptor == "N")
+                if (documentoElectronico.IdTipoDocumento == (int)TipoDocumento.FacturaElectronica || documentoElectronico.IdTipoDocumento == (int)TipoDocumento.NotaCreditoElectronica || documentoElectronico.IdTipoDocumento == (int)TipoDocumento.NotaDebitoElectronica)
                 {
                     if (documentoElectronico.EstadoEnvio == "aceptado" && strCorreoReceptor != "")
                     {
@@ -2695,107 +2694,105 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         {
                             datos.Logotipo = null;
                         }
-                        if (documentoElectronico.IdTipoDocumento == (int)TipoDocumento.FacturaElectronica || documentoElectronico.IdTipoDocumento == (int)TipoDocumento.NotaCreditoElectronica || documentoElectronico.IdTipoDocumento == (int)TipoDocumento.NotaDebitoElectronica)
+                        
+                        if (documentoElectronico.IdTipoDocumento == (int)TipoDocumento.FacturaElectronica)
                         {
-                            if (documentoElectronico.IdTipoDocumento == (int)TipoDocumento.FacturaElectronica)
-                            {
-                                strTitle = "Factura electrónica de emisor " + empresa.NombreComercial;
-                                datos.TituloDocumento = "FACTURA ELECTRONICA";
-                            }
-                            else if (documentoElectronico.IdTipoDocumento == (int)TipoDocumento.NotaCreditoElectronica)
-                            {
-                                strTitle = "Nota de crédito electrónica de emisor " + empresa.NombreComercial;
-                                datos.TituloDocumento = "NOTA DE CREDITO ELECTRONICA";
-                            }
-                            else
-                            {
-                                strTitle = "Nota de débito electrónica de emisor " + empresa.NombreComercial;
-                                datos.TituloDocumento = "NOTA DE DEBITO ELECTRONICA";
-                            }
-                            string datosXml = Encoding.Default.GetString(documentoElectronico.DatosDocumento);
-                            XmlDocument documentoXml = new XmlDocument();
-                            documentoXml.LoadXml(datosXml);
-                            datos.NombreEmpresa = empresa.NombreEmpresa;
-                            datos.NombreComercial = empresa.NombreComercial;
-                            datos.Consecutivo = documentoElectronico.Consecutivo;
-                            datos.PlazoCredito = documentoXml.GetElementsByTagName("PlazoCredito").Count > 0 ? documentoXml.GetElementsByTagName("PlazoCredito").Item(0).InnerText : "";
-                            datos.Clave = documentoElectronico.ClaveNumerica;
-                            datos.CondicionVenta = ObtenerValoresCodificados.ObtenerCondicionDeVenta(int.Parse(documentoXml.GetElementsByTagName("CondicionVenta").Item(0).InnerText));
-                            datos.Fecha = documentoElectronico.Fecha.ToString("dd/MM/yyyy hh:mm:ss");
-                            datos.MedioPago = ObtenerValoresCodificados.ObtenerMedioDePago(int.Parse(documentoXml.GetElementsByTagName("MedioPago").Item(0).InnerText));
-                            XmlNode emisorNode = documentoXml.GetElementsByTagName("Emisor").Item(0);
-                            datos.NombreEmisor = emisorNode["Nombre"] != null && emisorNode["Nombre"].ChildNodes.Count > 0 ? emisorNode["Nombre"].InnerText : "";
-                            datos.NombreComercialEmisor = emisorNode["NombreComercial"] != null && emisorNode["NombreComercial"].ChildNodes.Count > 0 ? emisorNode["NombreComercial"].InnerText : "";
-                            datos.IdentificacionEmisor = emisorNode["Identificacion"]["Numero"].InnerText;
-                            datos.CorreoElectronicoEmisor = emisorNode["CorreoElectronico"].InnerText;
-                            datos.TelefonoEmisor = emisorNode["Telefono"] != null && emisorNode["Telefono"].ChildNodes.Count > 0 ? emisorNode["Telefono"]["NumTelefono"].InnerText : "";
-                            datos.FaxEmisor = emisorNode["Fax"] != null && emisorNode["Fax"].ChildNodes.Count > 0 ? emisorNode["Fax"]["NumTelefono"].InnerText : "";
-                            int intProvincia = int.Parse(emisorNode["Ubicacion"]["Provincia"].InnerText);
-                            int intCanton = int.Parse(emisorNode["Ubicacion"]["Canton"].InnerText);
-                            int intDistrito = int.Parse(emisorNode["Ubicacion"]["Distrito"].InnerText);
-                            int intBarrio = int.Parse(emisorNode["Ubicacion"]["Barrio"].InnerText);
-                            datos.ProvinciaEmisor = dbContext.ProvinciaRepository.Where(x => x.IdProvincia == intProvincia).FirstOrDefault().Descripcion;
-                            datos.CantonEmisor = dbContext.CantonRepository.Where(x => x.IdProvincia == intProvincia && x.IdCanton == intCanton).FirstOrDefault().Descripcion;
-                            datos.DistritoEmisor = dbContext.DistritoRepository.Where(x => x.IdProvincia == intProvincia && x.IdCanton == intCanton && x.IdDistrito == intDistrito).FirstOrDefault().Descripcion;
-                            datos.BarrioEmisor = dbContext.BarrioRepository.Where(x => x.IdProvincia == intProvincia && x.IdCanton == intCanton && x.IdDistrito == intDistrito && x.IdBarrio == intBarrio).FirstOrDefault().Descripcion;
-                            datos.DireccionEmisor = emisorNode["Ubicacion"]["OtrasSenas"].InnerText;
-                            string strExoneracionLeyenda = "";
-                            if (documentoXml.GetElementsByTagName("Receptor").Count > 0)
-                            {
-                                XmlNode receptorNode = documentoXml.GetElementsByTagName("Receptor").Item(0);
-                                datos.PoseeReceptor = true;
-                                datos.NombreReceptor = receptorNode["Nombre"] != null && receptorNode["Nombre"].ChildNodes.Count > 0 ? receptorNode["Nombre"].InnerText : "";
-                                datos.NombreComercialReceptor = receptorNode["NombreComercial"] != null && receptorNode["NombreComercial"].ChildNodes.Count > 0 ? receptorNode["NombreComercial"].InnerText : "";
-                                datos.IdentificacionReceptor = receptorNode["Identificacion"]["Numero"].InnerText;
-                                datos.CorreoElectronicoReceptor = receptorNode["CorreoElectronico"].InnerText;
-                                datos.TelefonoReceptor = receptorNode["Telefono"] != null && receptorNode["Telefono"].ChildNodes.Count > 0 ? receptorNode["Telefono"]["NumTelefono"].InnerText : "";
-                                datos.FaxReceptor = receptorNode["Fax"] != null && receptorNode["Fax"].ChildNodes.Count > 0 ? receptorNode["Fax"]["NumTelefono"].InnerText : "";
-                                intProvincia = int.Parse(receptorNode["Ubicacion"]["Provincia"].InnerText);
-                                intCanton = int.Parse(receptorNode["Ubicacion"]["Canton"].InnerText);
-                                intDistrito = int.Parse(receptorNode["Ubicacion"]["Distrito"].InnerText);
-                                intBarrio = int.Parse(receptorNode["Ubicacion"]["Barrio"].InnerText);
-                                datos.ProvinciaReceptor = dbContext.ProvinciaRepository.Where(x => x.IdProvincia == intProvincia).FirstOrDefault().Descripcion;
-                                datos.CantonReceptor = dbContext.CantonRepository.Where(x => x.IdProvincia == intProvincia && x.IdCanton == intCanton).FirstOrDefault().Descripcion;
-                                datos.DistritoReceptor = dbContext.DistritoRepository.Where(x => x.IdProvincia == intProvincia && x.IdCanton == intCanton && x.IdDistrito == intDistrito).FirstOrDefault().Descripcion;
-                                datos.BarrioReceptor = dbContext.BarrioRepository.Where(x => x.IdProvincia == intProvincia && x.IdCanton == intCanton && x.IdDistrito == intDistrito && x.IdBarrio == intBarrio).FirstOrDefault().Descripcion;
-                                datos.DireccionReceptor = receptorNode["Ubicacion"]["OtrasSenas"].InnerText;
-                            }
-                            foreach (XmlNode lineaDetalle in documentoXml.GetElementsByTagName("LineaDetalle"))
-                            {
-                                if (lineaDetalle["Impuesto"] != null)
-                                {
-                                    if (lineaDetalle["Impuesto"]["Exoneracion"] != null)
-                                    {
-                                        if (strExoneracionLeyenda.Length == 0) strExoneracionLeyenda = "Se aplica exoneración segun oficio " + lineaDetalle["Impuesto"]["Exoneracion"]["NumeroDocumento"].InnerText + " por un porcentaje del " + lineaDetalle["Impuesto"]["Exoneracion"]["PorcentajeExoneracion"].InnerText + "% del valor gravado.";
-                                    }
-                                }
-                                EstructuraPDFDetalleServicio detalle = new EstructuraPDFDetalleServicio
-                                {
-                                    Cantidad = lineaDetalle["Cantidad"].InnerText,
-                                    Codigo = lineaDetalle["Codigo"].InnerText,
-                                    Detalle = lineaDetalle["Detalle"].InnerText,
-                                    PrecioUnitario = string.Format("{0:N2}", Convert.ToDouble(lineaDetalle["PrecioUnitario"].InnerText, CultureInfo.InvariantCulture)),
-                                    TotalLinea = string.Format("{0:N2}", Convert.ToDouble(lineaDetalle["MontoTotalLinea"].InnerText, CultureInfo.InvariantCulture))
-                                };
-                                datos.DetalleServicio.Add(detalle);
-                            }
-                            string otrosTextos = documentoXml.GetElementsByTagName("Otros") != null && documentoXml.GetElementsByTagName("Otros").Count > 0 ? documentoXml.GetElementsByTagName("Otros").Item(0)["OtroTexto"].InnerText : "";
-                            if (strExoneracionLeyenda.Length > 0)
-                            {
-                                if (otrosTextos.Length > 0) otrosTextos += " ";
-                                otrosTextos += strExoneracionLeyenda;
-                            }
-                            if (otrosTextos.Length > 0) datos.OtrosTextos = otrosTextos;
-                            XmlNode resumenFacturaNode = documentoXml.GetElementsByTagName("ResumenFactura").Item(0);
-                            datos.TotalGravado = string.Format("{0:N2}", Convert.ToDouble(resumenFacturaNode["TotalGravado"].InnerText, CultureInfo.InvariantCulture));
-                            datos.TotalExonerado = resumenFacturaNode["TotalExonerado"] != null && resumenFacturaNode["TotalExonerado"].ChildNodes.Count > 0 ? string.Format("{0:N2}", Convert.ToDouble(resumenFacturaNode["TotalExonerado"].InnerText, CultureInfo.InvariantCulture)) : "0.00000";
-                            datos.TotalExento = string.Format("{0:N2}", Convert.ToDouble(resumenFacturaNode["TotalExento"].InnerText, CultureInfo.InvariantCulture));
-                            datos.Descuento = resumenFacturaNode["TotalDescuentos"] != null && resumenFacturaNode["TotalDescuentos"].ChildNodes.Count > 0 ? string.Format("{0:N2}", Convert.ToDouble(resumenFacturaNode["TotalDescuentos"].InnerText, CultureInfo.InvariantCulture)) : "0.00000";
-                            datos.Impuesto = resumenFacturaNode["TotalImpuesto"] != null && resumenFacturaNode["TotalImpuesto"].ChildNodes.Count > 0 ? string.Format("{0:N2}", Convert.ToDouble(resumenFacturaNode["TotalImpuesto"].InnerText, CultureInfo.InvariantCulture)) : "0.00000";
-                            datos.TotalGeneral = string.Format("{0:N2}", Convert.ToDouble(resumenFacturaNode["TotalComprobante"].InnerText, CultureInfo.InvariantCulture));
-                            datos.CodigoMoneda = resumenFacturaNode["CodigoTipoMoneda"] != null && resumenFacturaNode["CodigoTipoMoneda"].ChildNodes.Count > 0 ? resumenFacturaNode["CodigoTipoMoneda"]["CodigoMoneda"].InnerText : "CRC";
-                            datos.TipoDeCambio = resumenFacturaNode["CodigoTipoMoneda"] != null && resumenFacturaNode["CodigoTipoMoneda"].ChildNodes.Count > 0 ? resumenFacturaNode["CodigoTipoMoneda"]["TipoCambio"].InnerText : "1.00000";
+                            strTitle = "Factura electrónica de emisor " + empresa.NombreComercial;
+                            datos.TituloDocumento = "FACTURA ELECTRONICA";
                         }
+                        else if (documentoElectronico.IdTipoDocumento == (int)TipoDocumento.NotaCreditoElectronica)
+                        {
+                            strTitle = "Nota de crédito electrónica de emisor " + empresa.NombreComercial;
+                            datos.TituloDocumento = "NOTA DE CREDITO ELECTRONICA";
+                        }
+                        else
+                        {
+                            strTitle = "Nota de débito electrónica de emisor " + empresa.NombreComercial;
+                            datos.TituloDocumento = "NOTA DE DEBITO ELECTRONICA";
+                        }
+                        string datosXml = Encoding.Default.GetString(documentoElectronico.DatosDocumento);
+                        XmlDocument documentoXml = new XmlDocument();
+                        documentoXml.LoadXml(datosXml);
+                        datos.NombreEmpresa = empresa.NombreEmpresa;
+                        datos.NombreComercial = empresa.NombreComercial;
+                        datos.Consecutivo = documentoElectronico.Consecutivo;
+                        datos.PlazoCredito = documentoXml.GetElementsByTagName("PlazoCredito").Count > 0 ? documentoXml.GetElementsByTagName("PlazoCredito").Item(0).InnerText : "";
+                        datos.Clave = documentoElectronico.ClaveNumerica;
+                        datos.CondicionVenta = ObtenerValoresCodificados.ObtenerCondicionDeVenta(int.Parse(documentoXml.GetElementsByTagName("CondicionVenta").Item(0).InnerText));
+                        datos.Fecha = documentoElectronico.Fecha.ToString("dd/MM/yyyy hh:mm:ss");
+                        datos.MedioPago = ObtenerValoresCodificados.ObtenerMedioDePago(int.Parse(documentoXml.GetElementsByTagName("MedioPago").Item(0).InnerText));
+                        XmlNode emisorNode = documentoXml.GetElementsByTagName("Emisor").Item(0);
+                        datos.NombreEmisor = emisorNode["Nombre"] != null && emisorNode["Nombre"].ChildNodes.Count > 0 ? emisorNode["Nombre"].InnerText : "";
+                        datos.NombreComercialEmisor = emisorNode["NombreComercial"] != null && emisorNode["NombreComercial"].ChildNodes.Count > 0 ? emisorNode["NombreComercial"].InnerText : "";
+                        datos.IdentificacionEmisor = emisorNode["Identificacion"]["Numero"].InnerText;
+                        datos.CorreoElectronicoEmisor = emisorNode["CorreoElectronico"].InnerText;
+                        datos.TelefonoEmisor = emisorNode["Telefono"] != null && emisorNode["Telefono"].ChildNodes.Count > 0 ? emisorNode["Telefono"]["NumTelefono"].InnerText : "";
+                        datos.FaxEmisor = emisorNode["Fax"] != null && emisorNode["Fax"].ChildNodes.Count > 0 ? emisorNode["Fax"]["NumTelefono"].InnerText : "";
+                        int intProvincia = int.Parse(emisorNode["Ubicacion"]["Provincia"].InnerText);
+                        int intCanton = int.Parse(emisorNode["Ubicacion"]["Canton"].InnerText);
+                        int intDistrito = int.Parse(emisorNode["Ubicacion"]["Distrito"].InnerText);
+                        int intBarrio = int.Parse(emisorNode["Ubicacion"]["Barrio"].InnerText);
+                        datos.ProvinciaEmisor = dbContext.ProvinciaRepository.Where(x => x.IdProvincia == intProvincia).FirstOrDefault().Descripcion;
+                        datos.CantonEmisor = dbContext.CantonRepository.Where(x => x.IdProvincia == intProvincia && x.IdCanton == intCanton).FirstOrDefault().Descripcion;
+                        datos.DistritoEmisor = dbContext.DistritoRepository.Where(x => x.IdProvincia == intProvincia && x.IdCanton == intCanton && x.IdDistrito == intDistrito).FirstOrDefault().Descripcion;
+                        datos.BarrioEmisor = dbContext.BarrioRepository.Where(x => x.IdProvincia == intProvincia && x.IdCanton == intCanton && x.IdDistrito == intDistrito && x.IdBarrio == intBarrio).FirstOrDefault().Descripcion;
+                        datos.DireccionEmisor = emisorNode["Ubicacion"]["OtrasSenas"].InnerText;
+                        string strExoneracionLeyenda = "";
+                        if (documentoXml.GetElementsByTagName("Receptor").Count > 0)
+                        {
+                            XmlNode receptorNode = documentoXml.GetElementsByTagName("Receptor").Item(0);
+                            datos.PoseeReceptor = true;
+                            datos.NombreReceptor = receptorNode["Nombre"] != null && receptorNode["Nombre"].ChildNodes.Count > 0 ? receptorNode["Nombre"].InnerText : "";
+                            datos.NombreComercialReceptor = receptorNode["NombreComercial"] != null && receptorNode["NombreComercial"].ChildNodes.Count > 0 ? receptorNode["NombreComercial"].InnerText : "";
+                            datos.IdentificacionReceptor = receptorNode["Identificacion"]["Numero"].InnerText;
+                            datos.CorreoElectronicoReceptor = receptorNode["CorreoElectronico"].InnerText;
+                            datos.TelefonoReceptor = receptorNode["Telefono"] != null && receptorNode["Telefono"].ChildNodes.Count > 0 ? receptorNode["Telefono"]["NumTelefono"].InnerText : "";
+                            datos.FaxReceptor = receptorNode["Fax"] != null && receptorNode["Fax"].ChildNodes.Count > 0 ? receptorNode["Fax"]["NumTelefono"].InnerText : "";
+                            intProvincia = int.Parse(receptorNode["Ubicacion"]["Provincia"].InnerText);
+                            intCanton = int.Parse(receptorNode["Ubicacion"]["Canton"].InnerText);
+                            intDistrito = int.Parse(receptorNode["Ubicacion"]["Distrito"].InnerText);
+                            intBarrio = int.Parse(receptorNode["Ubicacion"]["Barrio"].InnerText);
+                            datos.ProvinciaReceptor = dbContext.ProvinciaRepository.Where(x => x.IdProvincia == intProvincia).FirstOrDefault().Descripcion;
+                            datos.CantonReceptor = dbContext.CantonRepository.Where(x => x.IdProvincia == intProvincia && x.IdCanton == intCanton).FirstOrDefault().Descripcion;
+                            datos.DistritoReceptor = dbContext.DistritoRepository.Where(x => x.IdProvincia == intProvincia && x.IdCanton == intCanton && x.IdDistrito == intDistrito).FirstOrDefault().Descripcion;
+                            datos.BarrioReceptor = dbContext.BarrioRepository.Where(x => x.IdProvincia == intProvincia && x.IdCanton == intCanton && x.IdDistrito == intDistrito && x.IdBarrio == intBarrio).FirstOrDefault().Descripcion;
+                            datos.DireccionReceptor = receptorNode["Ubicacion"]["OtrasSenas"].InnerText;
+                        }
+                        foreach (XmlNode lineaDetalle in documentoXml.GetElementsByTagName("LineaDetalle"))
+                        {
+                            if (lineaDetalle["Impuesto"] != null)
+                            {
+                                if (lineaDetalle["Impuesto"]["Exoneracion"] != null)
+                                {
+                                    if (strExoneracionLeyenda.Length == 0) strExoneracionLeyenda = "Se aplica exoneración segun oficio " + lineaDetalle["Impuesto"]["Exoneracion"]["NumeroDocumento"].InnerText + " por un porcentaje del " + lineaDetalle["Impuesto"]["Exoneracion"]["PorcentajeExoneracion"].InnerText + "% del valor gravado.";
+                                }
+                            }
+                            EstructuraPDFDetalleServicio detalle = new EstructuraPDFDetalleServicio
+                            {
+                                Cantidad = lineaDetalle["Cantidad"].InnerText,
+                                Codigo = lineaDetalle["Codigo"].InnerText,
+                                Detalle = lineaDetalle["Detalle"].InnerText,
+                                PrecioUnitario = string.Format("{0:N2}", Convert.ToDouble(lineaDetalle["PrecioUnitario"].InnerText, CultureInfo.InvariantCulture)),
+                                TotalLinea = string.Format("{0:N2}", Convert.ToDouble(lineaDetalle["MontoTotalLinea"].InnerText, CultureInfo.InvariantCulture))
+                            };
+                            datos.DetalleServicio.Add(detalle);
+                        }
+                        string otrosTextos = documentoXml.GetElementsByTagName("Otros") != null && documentoXml.GetElementsByTagName("Otros").Count > 0 ? documentoXml.GetElementsByTagName("Otros").Item(0)["OtroTexto"].InnerText : "";
+                        if (strExoneracionLeyenda.Length > 0)
+                        {
+                            if (otrosTextos.Length > 0) otrosTextos += " ";
+                            otrosTextos += strExoneracionLeyenda;
+                        }
+                        if (otrosTextos.Length > 0) datos.OtrosTextos = otrosTextos;
+                        XmlNode resumenFacturaNode = documentoXml.GetElementsByTagName("ResumenFactura").Item(0);
+                        datos.TotalGravado = string.Format("{0:N2}", Convert.ToDouble(resumenFacturaNode["TotalGravado"].InnerText, CultureInfo.InvariantCulture));
+                        datos.TotalExonerado = resumenFacturaNode["TotalExonerado"] != null && resumenFacturaNode["TotalExonerado"].ChildNodes.Count > 0 ? string.Format("{0:N2}", Convert.ToDouble(resumenFacturaNode["TotalExonerado"].InnerText, CultureInfo.InvariantCulture)) : "0.00000";
+                        datos.TotalExento = string.Format("{0:N2}", Convert.ToDouble(resumenFacturaNode["TotalExento"].InnerText, CultureInfo.InvariantCulture));
+                        datos.Descuento = resumenFacturaNode["TotalDescuentos"] != null && resumenFacturaNode["TotalDescuentos"].ChildNodes.Count > 0 ? string.Format("{0:N2}", Convert.ToDouble(resumenFacturaNode["TotalDescuentos"].InnerText, CultureInfo.InvariantCulture)) : "0.00000";
+                        datos.Impuesto = resumenFacturaNode["TotalImpuesto"] != null && resumenFacturaNode["TotalImpuesto"].ChildNodes.Count > 0 ? string.Format("{0:N2}", Convert.ToDouble(resumenFacturaNode["TotalImpuesto"].InnerText, CultureInfo.InvariantCulture)) : "0.00000";
+                        datos.TotalGeneral = string.Format("{0:N2}", Convert.ToDouble(resumenFacturaNode["TotalComprobante"].InnerText, CultureInfo.InvariantCulture));
+                        datos.CodigoMoneda = resumenFacturaNode["CodigoTipoMoneda"] != null && resumenFacturaNode["CodigoTipoMoneda"].ChildNodes.Count > 0 ? resumenFacturaNode["CodigoTipoMoneda"]["CodigoMoneda"].InnerText : "CRC";
+                        datos.TipoDeCambio = resumenFacturaNode["CodigoTipoMoneda"] != null && resumenFacturaNode["CodigoTipoMoneda"].ChildNodes.Count > 0 ? resumenFacturaNode["CodigoTipoMoneda"]["TipoCambio"].InnerText : "1.00000";
                         byte[] pdfAttactment = UtilitarioPDF.GenerarPDFFacturaElectronica(datos);
                         JObject jobDatosAdjuntos1 = new JObject
                         {

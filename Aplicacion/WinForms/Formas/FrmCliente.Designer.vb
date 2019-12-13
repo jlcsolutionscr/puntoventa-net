@@ -376,10 +376,10 @@ Partial Class FrmCliente
         Me.Label5.BackColor = System.Drawing.Color.Transparent
         Me.Label5.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label5.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label5.Location = New System.Drawing.Point(-9, 147)
+        Me.Label5.Location = New System.Drawing.Point(298, 120)
         Me.Label5.Name = "Label5"
         Me.Label5.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label5.Size = New System.Drawing.Size(142, 17)
+        Me.Label5.Size = New System.Drawing.Size(58, 17)
         Me.Label5.TabIndex = 59
         Me.Label5.Text = "Cantón:"
         Me.Label5.TextAlign = System.Drawing.ContentAlignment.TopRight
@@ -394,7 +394,7 @@ Partial Class FrmCliente
         Me.cboCanton.ForeColor = System.Drawing.SystemColors.WindowText
         Me.cboCanton.IntegralHeight = False
         Me.cboCanton.ItemHeight = 13
-        Me.cboCanton.Location = New System.Drawing.Point(139, 144)
+        Me.cboCanton.Location = New System.Drawing.Point(362, 117)
         Me.cboCanton.Name = "cboCanton"
         Me.cboCanton.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.cboCanton.Size = New System.Drawing.Size(153, 21)
@@ -405,7 +405,7 @@ Partial Class FrmCliente
         Me.Label6.BackColor = System.Drawing.Color.Transparent
         Me.Label6.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label6.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label6.Location = New System.Drawing.Point(298, 120)
+        Me.Label6.Location = New System.Drawing.Point(75, 147)
         Me.Label6.Name = "Label6"
         Me.Label6.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label6.Size = New System.Drawing.Size(58, 17)
@@ -423,7 +423,7 @@ Partial Class FrmCliente
         Me.cboDistrito.ForeColor = System.Drawing.SystemColors.WindowText
         Me.cboDistrito.IntegralHeight = False
         Me.cboDistrito.ItemHeight = 13
-        Me.cboDistrito.Location = New System.Drawing.Point(362, 117)
+        Me.cboDistrito.Location = New System.Drawing.Point(139, 144)
         Me.cboDistrito.Name = "cboDistrito"
         Me.cboDistrito.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.cboDistrito.Size = New System.Drawing.Size(153, 21)

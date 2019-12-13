@@ -50,9 +50,9 @@ Partial Class FrmLineaListado
         '
         'txtDescripcion
         '
-        Me.txtDescripcion.Location = New System.Drawing.Point(77, 24)
+        Me.txtDescripcion.Location = New System.Drawing.Point(84, 24)
         Me.txtDescripcion.Name = "txtDescripcion"
-        Me.txtDescripcion.Size = New System.Drawing.Size(320, 20)
+        Me.txtDescripcion.Size = New System.Drawing.Size(313, 20)
         Me.txtDescripcion.TabIndex = 0
         '
         'lblDescripcion

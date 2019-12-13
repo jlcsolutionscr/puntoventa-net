@@ -20,11 +20,10 @@ Partial Class FrmTrasladoMercaderia
     Public WithEvents btnImprimir As System.Windows.Forms.Button
     Public WithEvents btnGuardar As System.Windows.Forms.Button
     Public WithEvents btnEliminar As System.Windows.Forms.Button
-    Public WithEvents cboIdSucursal As System.Windows.Forms.ComboBox
     Public WithEvents btnInsertar As System.Windows.Forms.Button
     Public WithEvents txtIdTraslado As System.Windows.Forms.TextBox
     Public WithEvents txtTotal As System.Windows.Forms.TextBox
-    Public WithEvents txtDocumento As System.Windows.Forms.TextBox
+    Public WithEvents txtReferencia As System.Windows.Forms.TextBox
     Public WithEvents txtFecha As System.Windows.Forms.TextBox
     Public WithEvents LblTotal As System.Windows.Forms.Label
     Public WithEvents lblLabel4 As System.Windows.Forms.Label
@@ -34,7 +33,7 @@ Partial Class FrmTrasladoMercaderia
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.
     'Do not modify it using the code editor.
-    <System.Diagnostics.DebuggerStepThrough()> _
+    <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.btnBusProd = New System.Windows.Forms.Button()
         Me.btnAnular = New System.Windows.Forms.Button()
@@ -43,11 +42,10 @@ Partial Class FrmTrasladoMercaderia
         Me.btnImprimir = New System.Windows.Forms.Button()
         Me.btnGuardar = New System.Windows.Forms.Button()
         Me.btnEliminar = New System.Windows.Forms.Button()
-        Me.cboIdSucursal = New System.Windows.Forms.ComboBox()
         Me.btnInsertar = New System.Windows.Forms.Button()
         Me.txtIdTraslado = New System.Windows.Forms.TextBox()
         Me.txtTotal = New System.Windows.Forms.TextBox()
-        Me.txtDocumento = New System.Windows.Forms.TextBox()
+        Me.txtReferencia = New System.Windows.Forms.TextBox()
         Me.txtFecha = New System.Windows.Forms.TextBox()
         Me.LblTotal = New System.Windows.Forms.Label()
         Me.lblLabel4 = New System.Windows.Forms.Label()
@@ -65,13 +63,10 @@ Partial Class FrmTrasladoMercaderia
         Me._lblLabels_7 = New System.Windows.Forms.Label()
         Me._lblLabels_6 = New System.Windows.Forms.Label()
         Me._lblLabels_1 = New System.Windows.Forms.Label()
-        Me.gbTipo = New System.Windows.Forms.GroupBox()
-        Me.rbSaliente = New System.Windows.Forms.RadioButton()
-        Me.rbEntrante = New System.Windows.Forms.RadioButton()
-        Me.btnImportar = New System.Windows.Forms.Button()
-        Me.btnExportar = New System.Windows.Forms.Button()
+        Me.cboIdSucursalDestino = New System.Windows.Forms.ComboBox()
+        Me.Label2 = New System.Windows.Forms.Label()
+        Me.txtNombreSucursalOrigen = New System.Windows.Forms.TextBox()
         CType(Me.grdDetalleTraslado, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.gbTipo.SuspendLayout()
         Me.SuspendLayout()
         '
         'btnBusProd
@@ -79,7 +74,7 @@ Partial Class FrmTrasladoMercaderia
         Me.btnBusProd.BackColor = System.Drawing.SystemColors.ButtonHighlight
         Me.btnBusProd.Cursor = System.Windows.Forms.Cursors.Default
         Me.btnBusProd.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.btnBusProd.Location = New System.Drawing.Point(167, 386)
+        Me.btnBusProd.Location = New System.Drawing.Point(170, 430)
         Me.btnBusProd.Name = "btnBusProd"
         Me.btnBusProd.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.btnBusProd.Size = New System.Drawing.Size(73, 25)
@@ -165,7 +160,7 @@ Partial Class FrmTrasladoMercaderia
         Me.btnEliminar.BackColor = System.Drawing.SystemColors.ButtonHighlight
         Me.btnEliminar.Cursor = System.Windows.Forms.Cursors.Default
         Me.btnEliminar.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.btnEliminar.Location = New System.Drawing.Point(87, 386)
+        Me.btnEliminar.Location = New System.Drawing.Point(90, 430)
         Me.btnEliminar.Name = "btnEliminar"
         Me.btnEliminar.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.btnEliminar.Size = New System.Drawing.Size(73, 25)
@@ -174,25 +169,12 @@ Partial Class FrmTrasladoMercaderia
         Me.btnEliminar.Text = "&Eliminar"
         Me.btnEliminar.UseVisualStyleBackColor = False
         '
-        'cboIdSucursal
-        '
-        Me.cboIdSucursal.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
-        Me.cboIdSucursal.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
-        Me.cboIdSucursal.BackColor = System.Drawing.SystemColors.Window
-        Me.cboIdSucursal.Cursor = System.Windows.Forms.Cursors.Default
-        Me.cboIdSucursal.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.cboIdSucursal.Location = New System.Drawing.Point(72, 64)
-        Me.cboIdSucursal.Name = "cboIdSucursal"
-        Me.cboIdSucursal.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.cboIdSucursal.Size = New System.Drawing.Size(351, 21)
-        Me.cboIdSucursal.TabIndex = 1
-        '
         'btnInsertar
         '
         Me.btnInsertar.BackColor = System.Drawing.SystemColors.ButtonHighlight
         Me.btnInsertar.Cursor = System.Windows.Forms.Cursors.Default
         Me.btnInsertar.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.btnInsertar.Location = New System.Drawing.Point(7, 386)
+        Me.btnInsertar.Location = New System.Drawing.Point(10, 430)
         Me.btnInsertar.Name = "btnInsertar"
         Me.btnInsertar.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.btnInsertar.Size = New System.Drawing.Size(73, 25)
@@ -208,7 +190,7 @@ Partial Class FrmTrasladoMercaderia
         Me.txtIdTraslado.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtIdTraslado.Enabled = False
         Me.txtIdTraslado.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtIdTraslado.Location = New System.Drawing.Point(72, 40)
+        Me.txtIdTraslado.Location = New System.Drawing.Point(113, 41)
         Me.txtIdTraslado.MaxLength = 0
         Me.txtIdTraslado.Name = "txtIdTraslado"
         Me.txtIdTraslado.ReadOnly = True
@@ -224,7 +206,7 @@ Partial Class FrmTrasladoMercaderia
         Me.txtTotal.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtTotal.Enabled = False
         Me.txtTotal.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtTotal.Location = New System.Drawing.Point(734, 386)
+        Me.txtTotal.Location = New System.Drawing.Point(738, 430)
         Me.txtTotal.MaxLength = 0
         Me.txtTotal.Name = "txtTotal"
         Me.txtTotal.ReadOnly = True
@@ -234,18 +216,18 @@ Partial Class FrmTrasladoMercaderia
         Me.txtTotal.TabStop = False
         Me.txtTotal.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
-        'txtDocumento
+        'txtReferencia
         '
-        Me.txtDocumento.AcceptsReturn = True
-        Me.txtDocumento.BackColor = System.Drawing.SystemColors.Window
-        Me.txtDocumento.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtDocumento.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtDocumento.Location = New System.Drawing.Point(497, 90)
-        Me.txtDocumento.MaxLength = 0
-        Me.txtDocumento.Name = "txtDocumento"
-        Me.txtDocumento.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtDocumento.Size = New System.Drawing.Size(81, 20)
-        Me.txtDocumento.TabIndex = 3
+        Me.txtReferencia.AcceptsReturn = True
+        Me.txtReferencia.BackColor = System.Drawing.SystemColors.Window
+        Me.txtReferencia.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtReferencia.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtReferencia.Location = New System.Drawing.Point(113, 146)
+        Me.txtReferencia.MaxLength = 200
+        Me.txtReferencia.Name = "txtReferencia"
+        Me.txtReferencia.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtReferencia.Size = New System.Drawing.Size(697, 20)
+        Me.txtReferencia.TabIndex = 3
         '
         'txtFecha
         '
@@ -254,7 +236,7 @@ Partial Class FrmTrasladoMercaderia
         Me.txtFecha.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtFecha.Enabled = False
         Me.txtFecha.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtFecha.Location = New System.Drawing.Point(497, 64)
+        Me.txtFecha.Location = New System.Drawing.Point(113, 67)
         Me.txtFecha.MaxLength = 0
         Me.txtFecha.Name = "txtFecha"
         Me.txtFecha.ReadOnly = True
@@ -268,7 +250,7 @@ Partial Class FrmTrasladoMercaderia
         Me.LblTotal.BackColor = System.Drawing.Color.Transparent
         Me.LblTotal.Cursor = System.Windows.Forms.Cursors.Default
         Me.LblTotal.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.LblTotal.Location = New System.Drawing.Point(663, 389)
+        Me.LblTotal.Location = New System.Drawing.Point(667, 433)
         Me.LblTotal.Name = "LblTotal"
         Me.LblTotal.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.LblTotal.Size = New System.Drawing.Size(65, 19)
@@ -281,12 +263,12 @@ Partial Class FrmTrasladoMercaderia
         Me.lblLabel4.BackColor = System.Drawing.Color.Transparent
         Me.lblLabel4.Cursor = System.Windows.Forms.Cursors.Default
         Me.lblLabel4.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.lblLabel4.Location = New System.Drawing.Point(423, 90)
+        Me.lblLabel4.Location = New System.Drawing.Point(17, 147)
         Me.lblLabel4.Name = "lblLabel4"
         Me.lblLabel4.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.lblLabel4.Size = New System.Drawing.Size(68, 18)
+        Me.lblLabel4.Size = New System.Drawing.Size(90, 18)
         Me.lblLabel4.TabIndex = 13
-        Me.lblLabel4.Text = "Doc. No:"
+        Me.lblLabel4.Text = "Referencia:"
         Me.lblLabel4.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'lblLabel3
@@ -294,10 +276,10 @@ Partial Class FrmTrasladoMercaderia
         Me.lblLabel3.BackColor = System.Drawing.Color.Transparent
         Me.lblLabel3.Cursor = System.Windows.Forms.Cursors.Default
         Me.lblLabel3.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.lblLabel3.Location = New System.Drawing.Point(434, 65)
+        Me.lblLabel3.Location = New System.Drawing.Point(60, 68)
         Me.lblLabel3.Name = "lblLabel3"
         Me.lblLabel3.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.lblLabel3.Size = New System.Drawing.Size(57, 19)
+        Me.lblLabel3.Size = New System.Drawing.Size(47, 19)
         Me.lblLabel3.TabIndex = 12
         Me.lblLabel3.Text = "Fecha:"
         Me.lblLabel3.TextAlign = System.Drawing.ContentAlignment.MiddleRight
@@ -307,12 +289,12 @@ Partial Class FrmTrasladoMercaderia
         Me.lblLabel2.BackColor = System.Drawing.Color.Transparent
         Me.lblLabel2.Cursor = System.Windows.Forms.Cursors.Default
         Me.lblLabel2.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.lblLabel2.Location = New System.Drawing.Point(3, 64)
+        Me.lblLabel2.Location = New System.Drawing.Point(14, 94)
         Me.lblLabel2.Name = "lblLabel2"
         Me.lblLabel2.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.lblLabel2.Size = New System.Drawing.Size(63, 19)
+        Me.lblLabel2.Size = New System.Drawing.Size(93, 19)
         Me.lblLabel2.TabIndex = 11
-        Me.lblLabel2.Text = "Sucursal:"
+        Me.lblLabel2.Text = "Sucursal origen:"
         Me.lblLabel2.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'lblLabel0
@@ -320,7 +302,7 @@ Partial Class FrmTrasladoMercaderia
         Me.lblLabel0.BackColor = System.Drawing.Color.Transparent
         Me.lblLabel0.Cursor = System.Windows.Forms.Cursors.Default
         Me.lblLabel0.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.lblLabel0.Location = New System.Drawing.Point(0, 40)
+        Me.lblLabel0.Location = New System.Drawing.Point(41, 41)
         Me.lblLabel0.Name = "lblLabel0"
         Me.lblLabel0.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.lblLabel0.Size = New System.Drawing.Size(69, 19)
@@ -335,7 +317,7 @@ Partial Class FrmTrasladoMercaderia
         Me.grdDetalleTraslado.AllowUserToResizeColumns = False
         Me.grdDetalleTraslado.AllowUserToResizeRows = False
         Me.grdDetalleTraslado.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.grdDetalleTraslado.Location = New System.Drawing.Point(7, 180)
+        Me.grdDetalleTraslado.Location = New System.Drawing.Point(11, 224)
         Me.grdDetalleTraslado.MultiSelect = False
         Me.grdDetalleTraslado.Name = "grdDetalleTraslado"
         Me.grdDetalleTraslado.ReadOnly = True
@@ -346,7 +328,7 @@ Partial Class FrmTrasladoMercaderia
         '
         'txtCodigo
         '
-        Me.txtCodigo.Location = New System.Drawing.Point(50, 154)
+        Me.txtCodigo.Location = New System.Drawing.Point(54, 198)
         Me.txtCodigo.Name = "txtCodigo"
         Me.txtCodigo.Size = New System.Drawing.Size(252, 20)
         Me.txtCodigo.TabIndex = 66
@@ -356,7 +338,7 @@ Partial Class FrmTrasladoMercaderia
         Me.Label1.BackColor = System.Drawing.Color.Transparent
         Me.Label1.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label1.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label1.Location = New System.Drawing.Point(302, 134)
+        Me.Label1.Location = New System.Drawing.Point(306, 178)
         Me.Label1.Name = "Label1"
         Me.Label1.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label1.Size = New System.Drawing.Size(345, 19)
@@ -370,7 +352,7 @@ Partial Class FrmTrasladoMercaderia
         Me.txtDescripcion.BackColor = System.Drawing.SystemColors.Window
         Me.txtDescripcion.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtDescripcion.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtDescripcion.Location = New System.Drawing.Point(302, 154)
+        Me.txtDescripcion.Location = New System.Drawing.Point(306, 198)
         Me.txtDescripcion.MaxLength = 0
         Me.txtDescripcion.Name = "txtDescripcion"
         Me.txtDescripcion.ReadOnly = True
@@ -385,7 +367,7 @@ Partial Class FrmTrasladoMercaderia
         Me.txtUnidad.BackColor = System.Drawing.SystemColors.Window
         Me.txtUnidad.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtUnidad.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtUnidad.Location = New System.Drawing.Point(647, 154)
+        Me.txtUnidad.Location = New System.Drawing.Point(651, 198)
         Me.txtUnidad.MaxLength = 0
         Me.txtUnidad.Name = "txtUnidad"
         Me.txtUnidad.ReadOnly = True
@@ -401,7 +383,7 @@ Partial Class FrmTrasladoMercaderia
         Me.txtPrecioCosto.BackColor = System.Drawing.SystemColors.Window
         Me.txtPrecioCosto.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtPrecioCosto.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtPrecioCosto.Location = New System.Drawing.Point(707, 154)
+        Me.txtPrecioCosto.Location = New System.Drawing.Point(711, 198)
         Me.txtPrecioCosto.MaxLength = 0
         Me.txtPrecioCosto.Name = "txtPrecioCosto"
         Me.txtPrecioCosto.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -416,7 +398,7 @@ Partial Class FrmTrasladoMercaderia
         Me.txtCantidad.BackColor = System.Drawing.SystemColors.Window
         Me.txtCantidad.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtCantidad.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtCantidad.Location = New System.Drawing.Point(7, 154)
+        Me.txtCantidad.Location = New System.Drawing.Point(11, 198)
         Me.txtCantidad.MaxLength = 0
         Me.txtCantidad.Name = "txtCantidad"
         Me.txtCantidad.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -430,7 +412,7 @@ Partial Class FrmTrasladoMercaderia
         Me._lblLabels_8.BackColor = System.Drawing.Color.Transparent
         Me._lblLabels_8.Cursor = System.Windows.Forms.Cursors.Default
         Me._lblLabels_8.ForeColor = System.Drawing.SystemColors.ControlText
-        Me._lblLabels_8.Location = New System.Drawing.Point(647, 134)
+        Me._lblLabels_8.Location = New System.Drawing.Point(651, 178)
         Me._lblLabels_8.Name = "_lblLabels_8"
         Me._lblLabels_8.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me._lblLabels_8.Size = New System.Drawing.Size(60, 19)
@@ -443,7 +425,7 @@ Partial Class FrmTrasladoMercaderia
         Me._lblLabels_7.BackColor = System.Drawing.Color.Transparent
         Me._lblLabels_7.Cursor = System.Windows.Forms.Cursors.Default
         Me._lblLabels_7.ForeColor = System.Drawing.SystemColors.ControlText
-        Me._lblLabels_7.Location = New System.Drawing.Point(707, 134)
+        Me._lblLabels_7.Location = New System.Drawing.Point(711, 178)
         Me._lblLabels_7.Name = "_lblLabels_7"
         Me._lblLabels_7.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me._lblLabels_7.Size = New System.Drawing.Size(99, 19)
@@ -456,7 +438,7 @@ Partial Class FrmTrasladoMercaderia
         Me._lblLabels_6.BackColor = System.Drawing.Color.Transparent
         Me._lblLabels_6.Cursor = System.Windows.Forms.Cursors.Default
         Me._lblLabels_6.ForeColor = System.Drawing.SystemColors.ControlText
-        Me._lblLabels_6.Location = New System.Drawing.Point(7, 134)
+        Me._lblLabels_6.Location = New System.Drawing.Point(11, 178)
         Me._lblLabels_6.Name = "_lblLabels_6"
         Me._lblLabels_6.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me._lblLabels_6.Size = New System.Drawing.Size(43, 19)
@@ -469,7 +451,7 @@ Partial Class FrmTrasladoMercaderia
         Me._lblLabels_1.BackColor = System.Drawing.Color.Transparent
         Me._lblLabels_1.Cursor = System.Windows.Forms.Cursors.Default
         Me._lblLabels_1.ForeColor = System.Drawing.SystemColors.ControlText
-        Me._lblLabels_1.Location = New System.Drawing.Point(50, 134)
+        Me._lblLabels_1.Location = New System.Drawing.Point(54, 178)
         Me._lblLabels_1.Name = "_lblLabels_1"
         Me._lblLabels_1.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me._lblLabels_1.Size = New System.Drawing.Size(252, 19)
@@ -477,67 +459,47 @@ Partial Class FrmTrasladoMercaderia
         Me._lblLabels_1.Text = "Código"
         Me._lblLabels_1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
-        'gbTipo
+        'cboIdSucursalDestino
         '
-        Me.gbTipo.Controls.Add(Me.rbSaliente)
-        Me.gbTipo.Controls.Add(Me.rbEntrante)
-        Me.gbTipo.Location = New System.Drawing.Point(610, 51)
-        Me.gbTipo.Name = "gbTipo"
-        Me.gbTipo.Size = New System.Drawing.Size(127, 68)
-        Me.gbTipo.TabIndex = 75
-        Me.gbTipo.TabStop = False
-        Me.gbTipo.Text = "Entrante / Saliente"
+        Me.cboIdSucursalDestino.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
+        Me.cboIdSucursalDestino.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
+        Me.cboIdSucursalDestino.BackColor = System.Drawing.SystemColors.Window
+        Me.cboIdSucursalDestino.Cursor = System.Windows.Forms.Cursors.Default
+        Me.cboIdSucursalDestino.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.cboIdSucursalDestino.Location = New System.Drawing.Point(113, 119)
+        Me.cboIdSucursalDestino.Name = "cboIdSucursalDestino"
+        Me.cboIdSucursalDestino.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.cboIdSucursalDestino.Size = New System.Drawing.Size(351, 21)
+        Me.cboIdSucursalDestino.TabIndex = 78
         '
-        'rbSaliente
+        'Label2
         '
-        Me.rbSaliente.AutoSize = True
-        Me.rbSaliente.Location = New System.Drawing.Point(18, 42)
-        Me.rbSaliente.Name = "rbSaliente"
-        Me.rbSaliente.Size = New System.Drawing.Size(63, 17)
-        Me.rbSaliente.TabIndex = 1
-        Me.rbSaliente.Text = "Saliente"
-        Me.rbSaliente.UseVisualStyleBackColor = True
+        Me.Label2.BackColor = System.Drawing.Color.Transparent
+        Me.Label2.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label2.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label2.Location = New System.Drawing.Point(14, 120)
+        Me.Label2.Name = "Label2"
+        Me.Label2.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label2.Size = New System.Drawing.Size(93, 19)
+        Me.Label2.TabIndex = 79
+        Me.Label2.Text = "Sucursal destino:"
+        Me.Label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
-        'rbEntrante
+        'txtNombreSucursalOrigen
         '
-        Me.rbEntrante.AutoSize = True
-        Me.rbEntrante.Checked = True
-        Me.rbEntrante.Location = New System.Drawing.Point(18, 19)
-        Me.rbEntrante.Name = "rbEntrante"
-        Me.rbEntrante.Size = New System.Drawing.Size(65, 17)
-        Me.rbEntrante.TabIndex = 0
-        Me.rbEntrante.TabStop = True
-        Me.rbEntrante.Text = "Entrante"
-        Me.rbEntrante.UseVisualStyleBackColor = True
-        '
-        'btnImportar
-        '
-        Me.btnImportar.BackColor = System.Drawing.SystemColors.ButtonHighlight
-        Me.btnImportar.Cursor = System.Windows.Forms.Cursors.Default
-        Me.btnImportar.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.btnImportar.Location = New System.Drawing.Point(328, 8)
-        Me.btnImportar.Name = "btnImportar"
-        Me.btnImportar.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.btnImportar.Size = New System.Drawing.Size(64, 21)
-        Me.btnImportar.TabIndex = 76
-        Me.btnImportar.TabStop = False
-        Me.btnImportar.Text = "&Importar"
-        Me.btnImportar.UseVisualStyleBackColor = False
-        '
-        'btnExportar
-        '
-        Me.btnExportar.BackColor = System.Drawing.SystemColors.ButtonHighlight
-        Me.btnExportar.Cursor = System.Windows.Forms.Cursors.Default
-        Me.btnExportar.Enabled = False
-        Me.btnExportar.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.btnExportar.Location = New System.Drawing.Point(392, 8)
-        Me.btnExportar.Name = "btnExportar"
-        Me.btnExportar.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.btnExportar.Size = New System.Drawing.Size(64, 21)
-        Me.btnExportar.TabIndex = 77
-        Me.btnExportar.TabStop = False
-        Me.btnExportar.Text = "&Exportar"
-        Me.btnExportar.UseVisualStyleBackColor = False
+        Me.txtNombreSucursalOrigen.AcceptsReturn = True
+        Me.txtNombreSucursalOrigen.BackColor = System.Drawing.SystemColors.Window
+        Me.txtNombreSucursalOrigen.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtNombreSucursalOrigen.Enabled = False
+        Me.txtNombreSucursalOrigen.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtNombreSucursalOrigen.Location = New System.Drawing.Point(113, 93)
+        Me.txtNombreSucursalOrigen.MaxLength = 0
+        Me.txtNombreSucursalOrigen.Name = "txtNombreSucursalOrigen"
+        Me.txtNombreSucursalOrigen.ReadOnly = True
+        Me.txtNombreSucursalOrigen.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtNombreSucursalOrigen.Size = New System.Drawing.Size(351, 20)
+        Me.txtNombreSucursalOrigen.TabIndex = 80
+        Me.txtNombreSucursalOrigen.TabStop = False
         '
         'FrmTrasladoMercaderia
         '
@@ -545,10 +507,10 @@ Partial Class FrmTrasladoMercaderia
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
-        Me.ClientSize = New System.Drawing.Size(814, 418)
-        Me.Controls.Add(Me.btnExportar)
-        Me.Controls.Add(Me.btnImportar)
-        Me.Controls.Add(Me.gbTipo)
+        Me.ClientSize = New System.Drawing.Size(823, 463)
+        Me.Controls.Add(Me.txtNombreSucursalOrigen)
+        Me.Controls.Add(Me.cboIdSucursalDestino)
+        Me.Controls.Add(Me.Label2)
         Me.Controls.Add(Me.txtCodigo)
         Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.txtDescripcion)
@@ -567,11 +529,10 @@ Partial Class FrmTrasladoMercaderia
         Me.Controls.Add(Me.btnImprimir)
         Me.Controls.Add(Me.btnGuardar)
         Me.Controls.Add(Me.btnEliminar)
-        Me.Controls.Add(Me.cboIdSucursal)
         Me.Controls.Add(Me.btnInsertar)
         Me.Controls.Add(Me.txtIdTraslado)
         Me.Controls.Add(Me.txtTotal)
-        Me.Controls.Add(Me.txtDocumento)
+        Me.Controls.Add(Me.txtReferencia)
         Me.Controls.Add(Me.txtFecha)
         Me.Controls.Add(Me.LblTotal)
         Me.Controls.Add(Me.lblLabel4)
@@ -584,14 +545,14 @@ Partial Class FrmTrasladoMercaderia
         Me.KeyPreview = True
         Me.Location = New System.Drawing.Point(73, 22)
         Me.MaximizeBox = False
+        Me.MaximumSize = New System.Drawing.Size(839, 502)
         Me.MinimizeBox = False
+        Me.MinimumSize = New System.Drawing.Size(839, 502)
         Me.Name = "FrmTrasladoMercaderia"
         Me.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Módulo de Traslado de Mercancía"
         CType(Me.grdDetalleTraslado, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.gbTipo.ResumeLayout(False)
-        Me.gbTipo.PerformLayout()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -607,9 +568,7 @@ Partial Class FrmTrasladoMercaderia
     Public WithEvents _lblLabels_7 As System.Windows.Forms.Label
     Public WithEvents _lblLabels_6 As System.Windows.Forms.Label
     Public WithEvents _lblLabels_1 As System.Windows.Forms.Label
-    Friend WithEvents gbTipo As System.Windows.Forms.GroupBox
-    Friend WithEvents rbSaliente As System.Windows.Forms.RadioButton
-    Friend WithEvents rbEntrante As System.Windows.Forms.RadioButton
-    Public WithEvents btnImportar As System.Windows.Forms.Button
-    Public WithEvents btnExportar As System.Windows.Forms.Button
+    Public WithEvents cboIdSucursalDestino As ComboBox
+    Public WithEvents Label2 As Label
+    Public WithEvents txtNombreSucursalOrigen As TextBox
 End Class

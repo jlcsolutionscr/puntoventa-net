@@ -97,7 +97,6 @@
     <Compile Include="Entidades\TipoIdentificacion.cs" />
     <Compile Include="Entidades\ParametroExoneracion.cs" />
     <Compile Include="Entidades\Traslado.cs" />
-    <Compile Include="Entidades\Sucursal.cs" />
     <Compile Include="Entidades\DesglosePagoIngreso.cs" />
     <Compile Include="Entidades\Ingreso.cs" />
     <Compile Include="Entidades\CuentaIngreso.cs" />

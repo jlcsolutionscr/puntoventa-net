@@ -1,6 +1,8 @@
 Imports System.Collections.Generic
 Imports LeandroSoftware.Core.Dominio.Entidades
 Imports System.Xml
+Imports System.Threading.Tasks
+Imports LeandroSoftware.ClienteWCF
 
 Public Class FrmTrasladoMercaderia
 #Region "Variables"
@@ -133,63 +135,60 @@ Public Class FrmTrasladoMercaderia
         txtTotal.Text = FormatNumber(dblTotal, 2)
     End Sub
 
-    Private Sub CargarCombos()
-        cboIdSucursal.ValueMember = "IdSucursal"
-        cboIdSucursal.DisplayMember = "Nombre"
-        'cboIdSucursal.DataSource = servicioTraslados.ObtenerListaSucursales(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
-        cboIdSucursal.SelectedValue = 0
-    End Sub
+    Private Async Function CargarCombos() As Task
+        cboIdSucursalDestino.ValueMember = "IdSucursal"
+        cboIdSucursalDestino.DisplayMember = "Nombre"
+        cboIdSucursalDestino.DataSource = Await Puntoventa.ObtenerListadoSucursalDestino(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, FrmPrincipal.usuarioGlobal.Token)
+        cboIdSucursalDestino.SelectedValue = 0
+    End Function
 
-    Private Sub ValidarProducto()
-        If Not bolInit Then
-            If txtCodigo.Text <> "" Then
-                If FrmPrincipal.empresaGlobal.AutoCompletaProducto = True Then
-                    If txtCodigo.Text.IndexOf(" ") >= 0 Then
-                        txtCodigo.Text = txtCodigo.Text.Substring(0, txtCodigo.Text.IndexOf(" "))
-                    End If
-                End If
-                Try
-                    'producto = servicioMantenimiento.ObtenerProductoPorCodigo(txtCodigo.Text)
-                Catch ex As Exception
-                    MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                    Exit Sub
-                End Try
-                If producto Is Nothing Then
-                    MessageBox.Show("El código ingresado no existe. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-                    txtCodigo.Text = ""
-                    txtUnidad.Text = ""
-                    txtCantidad.Text = "1"
-                    txtPrecioCosto.Text = ""
-                    txtCodigo.Focus()
-                    Exit Sub
-                End If
-                If txtCantidad.Text = "" Then txtCantidad.Text = "1"
-                txtDescripcion.Text = producto.Descripcion
-                txtPrecioCosto.Text = FormatNumber(producto.PrecioCosto, 2)
-                txtUnidad.Text = IIf(producto.Tipo = 1, "UND", "SP")
+    Private Sub CargarDatosProducto(producto As Producto)
+        If producto Is Nothing Then
+            txtCodigo.Text = ""
+            txtDescripcion.Text = ""
+            txtPrecioCosto.Text = FormatNumber(0, 2)
+            txtUnidad.Text = ""
+            txtCodigo.Focus()
+            Exit Sub
+        Else
+            Dim decTasaImpuesto As Decimal = producto.ParametroImpuesto.TasaImpuesto
+            txtCodigo.Text = producto.Codigo
+            If txtCantidad.Text = "" Then txtCantidad.Text = "1"
+            txtDescripcion.Text = producto.Descripcion
+            txtPrecioCosto.Text = FormatNumber(producto.PrecioCosto, 2)
+            txtUnidad.Text = IIf(producto.Tipo = 1, "UND", IIf(producto.Tipo = 2, "SP", "OS"))
+            If FrmPrincipal.bolModificaDescripcion = True Then
+                txtDescripcion.Focus()
+            Else
+                txtPrecioCosto.Focus()
             End If
         End If
     End Sub
 
-    Private Sub CargarAutoCompletarProducto()
+    Private Async Function CargarAutoCompletarProducto() As Task
         Dim source As AutoCompleteStringCollection = New AutoCompleteStringCollection()
-        'listOfProducts = servicioMantenimiento.ObtenerListaProductos(FrmMenuPrincipal.empresaGlobal.IdEmpresa, 1, 0, True)
+        Dim listOfProducts As IList(Of Producto) = Await Puntoventa.ObtenerListadoProductos(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, 1, 0, True, FrmPrincipal.usuarioGlobal.Token)
         For Each producto As Producto In listOfProducts
             source.Add(String.Concat(producto.Codigo, " ", producto.Descripcion))
         Next
         txtCodigo.AutoCompleteCustomSource = source
         txtCodigo.AutoCompleteSource = AutoCompleteSource.CustomSource
         txtCodigo.AutoCompleteMode = AutoCompleteMode.SuggestAppend
-    End Sub
+    End Function
 #End Region
 
 #Region "Eventos Controles"
-    Private Sub FrmTraslado_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+    Private Sub FrmTraslado_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        KeyPreview = True
+    End Sub
+
+    Private Async Sub FrmTraslado_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
             txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
-            CargarCombos()
+            txtNombreSucursalOrigen.Text = FrmPrincipal.equipoGlobal.NombreSucursal
+            Await CargarCombos()
             If FrmPrincipal.empresaGlobal.AutoCompletaProducto = True Then
-                CargarAutoCompletarProducto()
+                Await CargarAutoCompletarProducto()
             End If
             IniciaDetalleTraslado()
             EstablecerPropiedadesDataGridView()
@@ -206,9 +205,8 @@ Public Class FrmTrasladoMercaderia
     Private Sub CmdAgregar_Click(sender As Object, e As EventArgs) Handles btnAgregar.Click
         txtIdTraslado.Text = ""
         txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
-        cboIdSucursal.SelectedValue = 0
-        txtDocumento.Text = ""
-        rbEntrante.Checked = True
+        txtNombreSucursalOrigen.Text = FrmPrincipal.equipoGlobal.NombreSucursal
+        txtReferencia.Text = ""
         dtbDetalleTraslado.Rows.Clear()
         grdDetalleTraslado.Refresh()
         txtTotal.Text = FormatNumber(0, 2)
@@ -222,18 +220,15 @@ Public Class FrmTrasladoMercaderia
         btnBusProd.Enabled = True
         btnAnular.Enabled = False
         btnGuardar.Enabled = True
-        btnImportar.Enabled = True
-        btnExportar.Enabled = False
         btnImprimir.Enabled = False
-        gbTipo.Enabled = True
-        cboIdSucursal.Focus()
+        cboIdSucursalDestino.Focus()
     End Sub
 
-    Private Sub btnAnular_Click(sender As Object, e As EventArgs) Handles btnAnular.Click
+    Private Async Sub btnAnular_Click(sender As Object, e As EventArgs) Handles btnAnular.Click
         If txtIdTraslado.Text <> "" Then
             If MessageBox.Show("Desea anular este registro?", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
                 Try
-                    'servicioTraslados.AnularTraslado(txtIdTraslado.Text, FrmMenuPrincipal.usuarioGlobal.IdUsuario)
+                    Await Puntoventa.AnularTraslado(txtIdTraslado.Text, FrmPrincipal.usuarioGlobal.IdUsuario, FrmPrincipal.usuarioGlobal.Token)
                 Catch ex As Exception
                     MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
@@ -244,68 +239,65 @@ Public Class FrmTrasladoMercaderia
         End If
     End Sub
 
-    Private Sub btnBuscar_Click(sender As Object, e As EventArgs) Handles btnBuscar.Click
+    Private Async Sub btnBuscar_Click(sender As Object, e As EventArgs) Handles btnBuscar.Click
         Dim formBusqueda As New FrmBusquedaTraslado()
         FrmPrincipal.intBusqueda = 0
         formBusqueda.ShowDialog()
         If FrmPrincipal.intBusqueda > 0 Then
             Try
-                'traslado = servicioTraslados.ObtenerTraslado(FrmMenuPrincipal.intBusqueda)
+                traslado = Await Puntoventa.ObtenerTraslado(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
             If traslado IsNot Nothing Then
                 txtIdTraslado.Text = traslado.IdTraslado
-                cboIdSucursal.SelectedValue = traslado.IdSucursalOrigen
+                txtNombreSucursalOrigen.Text = FrmPrincipal.equipoGlobal.NombreSucursal
+                cboIdSucursalDestino.SelectedValue = traslado.IdSucursalDestino
                 txtFecha.Text = traslado.Fecha
-                txtDocumento.Text = traslado.NoDocumento
-                If traslado.Tipo = 0 Then
-                    rbEntrante.Checked = True
-                Else
-                    rbSaliente.Checked = True
-                End If
+                txtReferencia.Text = traslado.Referencia
                 CargarDetalleTraslado(traslado)
                 CargarTotales()
                 btnInsertar.Enabled = False
                 btnEliminar.Enabled = False
                 btnBusProd.Enabled = False
-                btnImportar.Enabled = False
-                btnExportar.Enabled = rbSaliente.Checked
                 btnImprimir.Enabled = True
                 btnAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
                 btnGuardar.Enabled = False
-                gbTipo.Enabled = False
             End If
-            End If
+        End If
     End Sub
 
-    Private Sub btnBusProd_Click(sender As Object, e As EventArgs) Handles btnBusProd.Click
+    Private Async Sub BtnBusProd_Click(sender As Object, e As EventArgs) Handles btnBusProd.Click
         Dim formBusProd As New FrmBusquedaProducto With {
-            .bolIncluyeServicios = False,
+            .bolIncluyeServicios = True,
             .intIdSucursal = FrmPrincipal.equipoGlobal.IdSucursal
         }
         FrmPrincipal.strBusqueda = ""
         formBusProd.ShowDialog()
         If Not FrmPrincipal.strBusqueda.Equals("") Then
-            txtCodigo.Text = FrmPrincipal.strBusqueda
-            ValidarProducto()
+            Dim intIdProducto As Integer = Integer.Parse(FrmPrincipal.strBusqueda)
+            Try
+                producto = Await Puntoventa.ObtenerProducto(intIdProducto, FrmPrincipal.usuarioGlobal.Token)
+            Catch ex As Exception
+                MessageBox.Show("Error al obtener la información del producto seleccionado. Intente mas tarde.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Exit Sub
+            End Try
+            CargarDatosProducto(producto)
         End If
-        txtCodigo.Focus()
     End Sub
 
-    Private Sub btnGuardar_Click(sender As Object, e As EventArgs) Handles btnGuardar.Click
+    Private Async Sub btnGuardar_Click(sender As Object, e As EventArgs) Handles btnGuardar.Click
         btnImprimir.Focus()
         btnGuardar.Enabled = False
-        If Not cboIdSucursal.SelectedValue Is Nothing And txtFecha.Text <> "" And txtDocumento.Text <> "" And CDbl(txtTotal.Text) > 0 And (rbEntrante.Checked Or rbSaliente.Checked) Then
+        If Not cboIdSucursalDestino.SelectedValue Is Nothing And txtFecha.Text <> "" And txtReferencia.Text <> "" And CDbl(txtTotal.Text) > 0 Then
             If txtIdTraslado.Text = "" Then
                 traslado = New Traslado With {
                     .IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa,
                     .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
-                    .IdSucursalOrigen = cboIdSucursal.SelectedValue,
+                    .IdSucursalOrigen = FrmPrincipal.equipoGlobal.IdSucursal,
                     .Fecha = FrmPrincipal.ObtenerFechaFormateada(Now()),
-                    .Tipo = If(rbEntrante.Checked = True, 0, 1),
-                    .NoDocumento = txtDocumento.Text,
+                    .Referencia = txtReferencia.Text,
                     .Total = dblTotal
                 }
                 For I = 0 To dtbDetalleTraslado.Rows.Count - 1
@@ -318,8 +310,7 @@ Public Class FrmTrasladoMercaderia
                     traslado.DetalleTraslado.Add(detalleTraslado)
                 Next
                 Try
-                    'traslado = servicioTraslados.AgregarTraslado(traslado)
-                    txtIdTraslado.Text = traslado.IdTraslado
+                    txtIdTraslado.Text = Await Puntoventa.AgregarTraslado(traslado, FrmPrincipal.usuarioGlobal.Token)
                 Catch ex As Exception
                     txtIdTraslado.Text = ""
                     btnGuardar.Enabled = True
@@ -327,20 +318,8 @@ Public Class FrmTrasladoMercaderia
                     MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
                 End Try
-            Else
-                traslado.NoDocumento = txtDocumento.Text
-                Try
-                    'servicioTraslados.ActualizarTraslado(traslado)
-                Catch ex As Exception
-                    btnGuardar.Enabled = True
-                    btnGuardar.Focus()
-                    MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                    Exit Sub
-                End Try
             End If
             MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
-            btnImportar.Enabled = False
-            btnExportar.Enabled = rbSaliente.Checked
             btnImprimir.Enabled = True
             btnAgregar.Enabled = True
             btnAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
@@ -349,7 +328,6 @@ Public Class FrmTrasladoMercaderia
             btnInsertar.Enabled = False
             btnEliminar.Enabled = False
             btnBusProd.Enabled = False
-            gbTipo.Enabled = False
         Else
             MessageBox.Show("Información incompleta.  Favor verificar. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End If
@@ -362,15 +340,15 @@ Public Class FrmTrasladoMercaderia
                 .empresa = FrmPrincipal.empresaGlobal,
                 .equipo = FrmPrincipal.equipoGlobal,
                 .strId = txtIdTraslado.Text,
-                .strNombre = cboIdSucursal.Text,
+                .strNombre = txtNombreSucursalOrigen.Text,
                 .strFecha = txtFecha.Text,
-                .strFormaPago = If(rbEntrante.Checked = True, "Entrante", "Saliente"),
-                .strEnviadoPor = If(rbEntrante.Checked = True, cboIdSucursal.Text, FrmPrincipal.empresaGlobal.NombreEmpresa),
+                .strFormaPago = cboIdSucursalDestino.SelectedText,
+                .strEnviadoPor = FrmPrincipal.usuarioGlobal.CodigoUsuario,
                 .strTotal = txtTotal.Text
             }
-            arrDetalleTraslado = New List(Of ModuloImpresion.clsDetalleComprobante)
+            arrDetalleTraslado = New List(Of ModuloImpresion.ClsDetalleComprobante)
             For I = 0 To dtbDetalleTraslado.Rows.Count - 1
-                detalleComprobante = New ModuloImpresion.clsDetalleComprobante With {
+                detalleComprobante = New ModuloImpresion.ClsDetalleComprobante With {
                     .strDescripcion = dtbDetalleTraslado.Rows(I).Item(1) + "-" + dtbDetalleTraslado.Rows(I).Item(2),
                     .strCantidad = CDbl(dtbDetalleTraslado.Rows(I).Item(3)),
                     .strPrecio = FormatNumber(dtbDetalleTraslado.Rows(I).Item(4), 2),
@@ -388,109 +366,31 @@ Public Class FrmTrasladoMercaderia
         End If
     End Sub
 
-    Private Sub btnImportar_Click(sender As Object, e As EventArgs) Handles btnImportar.Click
-        Dim xmlFileOpenDialog As New OpenFileDialog With {
-            .Filter = "Extensible Markup Language (*.xml)|*.xml",
-            .Title = "Select the XML file to be imported"
-        }
-        If xmlFileOpenDialog.ShowDialog() = System.Windows.Forms.DialogResult.OK Then
-            Dim xmlDoc As New XmlDocument()
-            xmlDoc.Load(xmlFileOpenDialog.OpenFile())
-            Dim trasladoXmlNodo As XmlNodeList = xmlDoc.DocumentElement.SelectNodes("/Traslado")
-            txtDocumento.Text = trasladoXmlNodo.Item(0).SelectSingleNode("DocumentoNro").InnerText
-            rbEntrante.Checked = True
-            dtbDetalleTraslado.Rows.Clear()
-            Dim detalleTrasladoXmlNodo As XmlNodeList = xmlDoc.DocumentElement.SelectNodes("/Traslado/DetalleTraslado/Producto")
-            For Each lineaDetalle As XmlNode In detalleTrasladoXmlNodo
-                dtrRowDetTraslado = dtbDetalleTraslado.NewRow
-                dtrRowDetTraslado.Item(0) = lineaDetalle.SelectSingleNode("IdProducto").InnerText
-                dtrRowDetTraslado.Item(1) = lineaDetalle.SelectSingleNode("Código").InnerText
-                dtrRowDetTraslado.Item(2) = lineaDetalle.SelectSingleNode("Descripción").InnerText
-                dtrRowDetTraslado.Item(3) = CDbl(lineaDetalle.SelectSingleNode("Cantidad").InnerText)
-                dtrRowDetTraslado.Item(4) = CDbl(lineaDetalle.SelectSingleNode("PrecioCosto").InnerText)
-                dtrRowDetTraslado.Item(5) = dtrRowDetTraslado.Item(3) * dtrRowDetTraslado.Item(4)
-                dtrRowDetTraslado.Item(6) = IIf(lineaDetalle.SelectSingleNode("Excento").InnerText = "true", True, False)
-                dtbDetalleTraslado.Rows.Add(dtrRowDetTraslado)
-            Next
-            CargarTotales()
-        End If
-
-
-    End Sub
-
-    Private Sub btnExportar_Click(sender As Object, e As EventArgs) Handles btnExportar.Click
-        Dim xmlFileSaveDialog As New SaveFileDialog With {
-            .Filter = "Extensible Markup Language (*.xml)|*.xml",
-            .Title = "Enter the XML file name to be created"
-        }
-        If xmlFileSaveDialog.ShowDialog = DialogResult.OK Then
-            Dim strPath As String = xmlFileSaveDialog.FileName
-            Dim writer As New XmlTextWriter(strPath, System.Text.Encoding.UTF8)
-            With writer
-                .WriteStartDocument(True)
-                .Formatting = Formatting.Indented
-                .Indentation = 2
-                .WriteStartElement("Traslado")
-                .WriteStartElement("IdTraslado")
-                .WriteString(txtIdTraslado.Text)
-                .WriteEndElement()
-                .WriteStartElement("DocumentoNro")
-                .WriteString(txtDocumento.Text)
-                .WriteEndElement()
-                .WriteStartElement("Fecha")
-                .WriteString(txtFecha.Text)
-                .WriteEndElement()
-                .WriteStartElement("Envia")
-                .WriteString(FrmPrincipal.empresaGlobal.NombreEmpresa)
-                .WriteEndElement()
-                .WriteStartElement("Total")
-                .WriteString(txtTotal.Text)
-                .WriteEndElement()
-                .WriteStartElement("DetalleTraslado")
-                For I = 0 To dtbDetalleTraslado.Rows.Count - 1
-                    .WriteStartElement("Producto")
-                    .WriteStartElement("IdProducto")
-                    .WriteString(dtbDetalleTraslado.Rows(I).Item(0))
-                    .WriteEndElement()
-                    .WriteStartElement("Código")
-                    .WriteString(dtbDetalleTraslado.Rows(I).Item(1))
-                    .WriteEndElement()
-                    .WriteStartElement("Descripción")
-                    .WriteString(dtbDetalleTraslado.Rows(I).Item(2))
-                    .WriteEndElement()
-                    .WriteStartElement("Cantidad")
-                    .WriteString(dtbDetalleTraslado.Rows(I).Item(3))
-                    .WriteEndElement()
-                    .WriteStartElement("PrecioCosto")
-                    .WriteString(dtbDetalleTraslado.Rows(I).Item(4))
-                    .WriteEndElement()
-                    .WriteStartElement("Excento")
-                    .WriteString(dtbDetalleTraslado.Rows(I).Item(6))
-                    .WriteEndElement()
-                    .WriteEndElement()
-                Next
-                .WriteEndElement()
-                .WriteEndElement()
-                .WriteEndDocument()
-                .Close()
-            End With
-        End If
-    End Sub
-
-    Private Sub btnInsertar_Click(sender As Object, e As EventArgs) Handles btnInsertar.Click
-        If txtCodigo.Text <> "" And txtCantidad.Text <> "" Then
+    Private Async Sub BtnInsertar_Click(sender As Object, e As EventArgs) Handles btnInsertar.Click
+        If producto Is Nothing Then
+            If txtCodigo.Text <> "" Then
+                producto = Await Puntoventa.ObtenerProductoPorCodigo(FrmPrincipal.empresaGlobal.IdEmpresa, txtCodigo.Text, FrmPrincipal.usuarioGlobal.Token)
+                If producto IsNot Nothing Then
+                    CargarLineaDetalleTraslado(producto)
+                    txtCodigo.Text = ""
+                    producto = Nothing
+                    txtCodigo.Focus()
+                End If
+            End If
+        Else
             CargarLineaDetalleTraslado(producto)
-            CargarTotales()
+            txtCantidad.Text = "1"
             txtCodigo.Text = ""
             txtDescripcion.Text = ""
-            txtCantidad.Text = "1"
+            txtUnidad.Text = ""
             txtPrecioCosto.Text = ""
+            producto = Nothing
             txtCodigo.Focus()
         End If
     End Sub
 
-    Private Sub btnEliminar_Click(sender As Object, e As EventArgs) Handles btnEliminar.Click
-        If dtbDetalleTraslado.Rows.Count > 0 Then
+    Private Sub CmdEliminar_Click(sender As Object, e As EventArgs) Handles btnEliminar.Click
+        If grdDetalleTraslado.Rows.Count > 0 Then
             dtbDetalleTraslado.Rows.Remove(dtbDetalleTraslado.Rows.Find(grdDetalleTraslado.CurrentRow.Cells(0).Value))
             grdDetalleTraslado.Refresh()
             CargarTotales()
@@ -503,15 +403,23 @@ Public Class FrmTrasladoMercaderia
         txtPrecioCosto.Text = FormatNumber(txtPrecioCosto.Text, 2)
     End Sub
 
-    Private Sub txtCodigo_Validated(ByVal sender As Object, ByVal e As EventArgs) Handles txtCodigo.Validated
-        ValidarProducto()
+    Private Async Sub TxtCodigo_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtCodigo.PreviewKeyDown
+        If e.KeyCode = Keys.Tab Then
+            Try
+                producto = Await Puntoventa.ObtenerProductoPorCodigo(FrmPrincipal.empresaGlobal.IdEmpresa, txtCodigo.Text, FrmPrincipal.usuarioGlobal.Token)
+            Catch ex As Exception
+                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Exit Sub
+            End Try
+            CargarDatosProducto(producto)
+        End If
     End Sub
 
-    Private Sub txtPlazo_KeyPress(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs)
-        FrmPrincipal.ValidaNumero(e, sender, False, 0)
+    Private Sub TxtCantidad_Validated(sender As Object, e As EventArgs) Handles txtCantidad.Validated
+        If txtCantidad.Text = "" Then txtCantidad.Text = "1"
     End Sub
 
-    Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs) Handles txtPrecioCosto.KeyPress
+    Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As KeyPressEventArgs) Handles txtCantidad.KeyPress, txtPrecioCosto.KeyPress
         FrmPrincipal.ValidaNumero(e, sender, True, 2, ".")
     End Sub
 #End Region

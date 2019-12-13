@@ -784,6 +784,34 @@ Public Class FrmProforma
         End If
     End Sub
 
+    Private Async Sub TxtPrecio_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtPrecio.PreviewKeyDown
+        If producto IsNot Nothing Then
+            If e.KeyCode = Keys.ControlKey Then
+                FrmPrincipal.strCodigoUsuario = ""
+                FrmPrincipal.strContrasena = ""
+                FrmPrincipal.strBusqueda = ""
+                Dim formAutorizacion As New FrmAutorizaPrecio
+                formAutorizacion.ShowDialog()
+                If FrmPrincipal.strCodigoUsuario <> "" And FrmPrincipal.strContrasena <> "" And FrmPrincipal.strBusqueda <> "" Then
+                    Dim autorizado As Boolean
+                    Try
+                        autorizado = Await Puntoventa.AutorizacionPrecioExtraordinario(FrmPrincipal.strCodigoUsuario, FrmPrincipal.strContrasena, FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+                    Catch ex As Exception
+                        MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        Exit Sub
+                    End Try
+                    If autorizado Then
+                        txtPrecio.Text = FormatNumber(FrmPrincipal.strBusqueda)
+                        Dim decTasaImpuesto As Decimal = producto.ParametroImpuesto.TasaImpuesto
+                        decPrecioVenta = Math.Round(CDbl(txtPrecio.Text) * (1 + (decTasaImpuesto / 100)), 2, MidpointRounding.AwayFromZero)
+                    Else
+                        MessageBox.Show("Los credenciales ingresados no tienen permisos para modificar el precio de venta.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                    End If
+                End If
+            End If
+        End If
+    End Sub
+
     Private Sub TxtCantidad_Validated(sender As Object, e As EventArgs) Handles txtCantidad.Validated
         If txtCantidad.Text = "" Then txtCantidad.Text = "1"
     End Sub

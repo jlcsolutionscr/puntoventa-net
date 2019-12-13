@@ -1533,8 +1533,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     TipoDoc = NotaCreditoElectronicaInformacionReferenciaTipoDoc.Item01,
                     Numero = referencia,
                     FechaEmision = devolucion.Fecha,
-                    Codigo = NotaCreditoElectronicaInformacionReferenciaCodigo.Item01,
-                    Razon = "Devolución de mercadería de factura electrónica con la respectiva clave númerica."
+                    Codigo = NotaCreditoElectronicaInformacionReferenciaCodigo.Item03,
+                    Razon = "Ajuste de monto de factura electrónica por devolución de mercancía."
                 };
                 notaCreditoElectronica.InformacionReferencia = new NotaCreditoElectronicaInformacionReferencia[] { informacionReferencia };
                 XmlDocument documentoXml = new XmlDocument();
@@ -1796,7 +1796,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 NotaDebitoElectronica.ResumenFactura = resumenFactura;
                 NotaDebitoElectronicaInformacionReferencia informacionReferencia = new NotaDebitoElectronicaInformacionReferencia
                 {
-                    TipoDoc = NotaDebitoElectronicaInformacionReferenciaTipoDoc.Item01,
+                    TipoDoc = NotaDebitoElectronicaInformacionReferenciaTipoDoc.Item03,
                     Numero = referencia,
                     FechaEmision = devolucion.Fecha,
                     Codigo = NotaDebitoElectronicaInformacionReferenciaCodigo.Item01,
@@ -2076,7 +2076,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     Random rnd = new Random();
                     int intRandom = rnd.Next(10000000, 99999999);
-                    strClaveNumerica = "506" + fechaEmision.Day.ToString().PadLeft(2, '0') + fechaEmision.ToString("MM") + fechaEmision.ToString("yy") + strIdentificacionEmisor + strConsucutivo + "1" + intRandom.ToString();
+                    if (tipoDocumento == TipoDocumento.FacturaElectronicaCompra)
+                        strClaveNumerica = "506" + fechaEmision.Day.ToString().PadLeft(2, '0') + fechaEmision.ToString("MM") + fechaEmision.ToString("yy") + strIdentificacionReceptor + strConsucutivo + "1" + intRandom.ToString();
+                    else
+                        strClaveNumerica = "506" + fechaEmision.Day.ToString().PadLeft(2, '0') + fechaEmision.ToString("MM") + fechaEmision.ToString("yy") + strIdentificacionEmisor + strConsucutivo + "1" + intRandom.ToString();
                     documentoXml.GetElementsByTagName("Clave").Item(0).InnerText = strClaveNumerica;
                     documentoXml.GetElementsByTagName("NumeroConsecutivo").Item(0).InnerText = strConsucutivo;
                 }

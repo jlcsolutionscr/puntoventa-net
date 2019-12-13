@@ -15,15 +15,14 @@ namespace LeandroSoftware.Core.Dominio.Entidades
 
         [ForeignKey("Empresa")]
         public int IdEmpresa { get; set; }
-        public int IdSucursalOrigen { get; set; }
-        public int IdSucursalDestino { get; set; }
         [Key]
         public int IdTraslado { get; set; }
         [ForeignKey("Usuario")]
         public int IdUsuario { get; set; }
-        public int Tipo { get; set; }
+        public int IdSucursalOrigen { get; set; }
+        public int IdSucursalDestino { get; set; }
         public DateTime Fecha { get; set; }
-        public string NoDocumento { get; set; }
+        public string Referencia { get; set; }
         public decimal Total { get; set; }
         public int IdAsiento { get; set; }
         public bool Aplicado { get; set; }

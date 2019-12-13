@@ -43,9 +43,10 @@ Partial Class FrmPrincipal
         Me.mnuArchivoCambio = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuArchivoSalir = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuParam = New System.Windows.Forms.ToolStripMenuItem()
-        Me.MnuParamPC = New System.Windows.Forms.ToolStripMenuItem()
-        Me.MnuParamBA = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuParamEmpresa = New System.Windows.Forms.ToolStripMenuItem()
+        Me.MnuParamBA = New System.Windows.Forms.ToolStripMenuItem()
+        Me.MnuParamCB = New System.Windows.Forms.ToolStripMenuItem()
+        Me.MnuParamPC = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuParamRegistro = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuMant = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuMantCliente = New System.Windows.Forms.ToolStripMenuItem()
@@ -53,10 +54,8 @@ Partial Class FrmPrincipal
         Me.MnuMantProveedor = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuMantProducto = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuMantUsuario = New System.Windows.Forms.ToolStripMenuItem()
-        Me.MnuMantSucursal = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuMantCE = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuMantCI = New System.Windows.Forms.ToolStripMenuItem()
-        Me.MnuMantCB = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuMantCC = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuMantInv = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuMantVend = New System.Windows.Forms.ToolStripMenuItem()
@@ -74,8 +73,8 @@ Partial Class FrmPrincipal
         Me.MnuCapturaEgreso = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuCapturaAI = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuDocElect = New System.Windows.Forms.ToolStripMenuItem()
+        Me.MnuDocElectFC = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuDocElectCDE = New System.Windows.Forms.ToolStripMenuItem()
-        Me.MnuDocElectADE = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuDocElectRDE = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuCC = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuApRCxC = New System.Windows.Forms.ToolStripMenuItem()
@@ -86,10 +85,10 @@ Partial Class FrmPrincipal
         Me.MnuImpCxP = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuBC = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuBCMov = New System.Windows.Forms.ToolStripMenuItem()
-        Me.mnuConta = New System.Windows.Forms.ToolStripMenuItem()
-        Me.mnuContaAsiento = New System.Windows.Forms.ToolStripMenuItem()
-        Me.mnuContaCierre = New System.Windows.Forms.ToolStripMenuItem()
-        Me.mnuContaReporte = New System.Windows.Forms.ToolStripMenuItem()
+        Me.MnuConta = New System.Windows.Forms.ToolStripMenuItem()
+        Me.MnuContaAsiento = New System.Windows.Forms.ToolStripMenuItem()
+        Me.MnuContaCierre = New System.Windows.Forms.ToolStripMenuItem()
+        Me.MnuContaReporte = New System.Windows.Forms.ToolStripMenuItem()
         Me.picLoader = New System.Windows.Forms.PictureBox()
         Me.mnuMenuPrincipal.SuspendLayout()
         CType(Me.picLoader, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -97,7 +96,7 @@ Partial Class FrmPrincipal
         '
         'mnuMenuPrincipal
         '
-        Me.mnuMenuPrincipal.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MnuArchivo, Me.MnuParam, Me.MnuMant, Me.MnuCaptura, Me.MnuDocElect, Me.MnuCC, Me.MnuBC, Me.mnuConta})
+        Me.mnuMenuPrincipal.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MnuArchivo, Me.MnuParam, Me.MnuMant, Me.MnuCaptura, Me.MnuDocElect, Me.MnuCC, Me.MnuBC, Me.MnuConta})
         Me.mnuMenuPrincipal.Location = New System.Drawing.Point(0, 0)
         Me.mnuMenuPrincipal.Name = "mnuMenuPrincipal"
         Me.mnuMenuPrincipal.Size = New System.Drawing.Size(1276, 24)
@@ -109,50 +108,50 @@ Partial Class FrmPrincipal
         Me.MnuArchivo.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuArchivoCierre, Me.MnuArchivoReporte, Me.mnuArchivoCambio, Me.MnuArchivoSalir})
         Me.MnuArchivo.MergeAction = System.Windows.Forms.MergeAction.Remove
         Me.MnuArchivo.Name = "MnuArchivo"
-        Me.MnuArchivo.Size = New System.Drawing.Size(60, 20)
+        Me.MnuArchivo.Size = New System.Drawing.Size(122, 20)
         Me.MnuArchivo.Text = "Archivo"
         '
         'mnuArchivoCierre
         '
         Me.mnuArchivoCierre.Name = "mnuArchivoCierre"
-        Me.mnuArchivoCierre.Size = New System.Drawing.Size(179, 22)
+        Me.mnuArchivoCierre.Size = New System.Drawing.Size(180, 22)
         Me.mnuArchivoCierre.Text = "Cierre de Caja"
         Me.mnuArchivoCierre.Visible = False
         '
         'MnuArchivoReporte
         '
         Me.MnuArchivoReporte.Name = "MnuArchivoReporte"
-        Me.MnuArchivoReporte.Size = New System.Drawing.Size(179, 22)
+        Me.MnuArchivoReporte.Size = New System.Drawing.Size(180, 22)
         Me.MnuArchivoReporte.Text = "Menu de Reportes"
         Me.MnuArchivoReporte.Visible = False
         '
         'mnuArchivoCambio
         '
         Me.mnuArchivoCambio.Name = "mnuArchivoCambio"
-        Me.mnuArchivoCambio.Size = New System.Drawing.Size(179, 22)
+        Me.mnuArchivoCambio.Size = New System.Drawing.Size(180, 22)
         Me.mnuArchivoCambio.Text = "Cambio Contraseña"
         '
         'MnuArchivoSalir
         '
         Me.MnuArchivoSalir.Name = "MnuArchivoSalir"
-        Me.MnuArchivoSalir.Size = New System.Drawing.Size(179, 22)
+        Me.MnuArchivoSalir.Size = New System.Drawing.Size(180, 22)
         Me.MnuArchivoSalir.Text = "Salir"
         '
         'MnuParam
         '
-        Me.MnuParam.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MnuParamPC, Me.MnuParamBA, Me.MnuParamEmpresa, Me.MnuParamRegistro})
+        Me.MnuParam.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MnuParamEmpresa, Me.MnuParamBA, Me.MnuParamCB, Me.MnuParamPC, Me.MnuParamRegistro})
         Me.MnuParam.MergeAction = System.Windows.Forms.MergeAction.Remove
         Me.MnuParam.Name = "MnuParam"
         Me.MnuParam.Size = New System.Drawing.Size(79, 20)
         Me.MnuParam.Text = "Parámetros"
         Me.MnuParam.Visible = False
         '
-        'MnuParamPC
+        'MnuParamEmpresa
         '
-        Me.MnuParamPC.Name = "MnuParamPC"
-        Me.MnuParamPC.Size = New System.Drawing.Size(180, 22)
-        Me.MnuParamPC.Text = "Parámetro Contable"
-        Me.MnuParamPC.Visible = False
+        Me.MnuParamEmpresa.Name = "MnuParamEmpresa"
+        Me.MnuParamEmpresa.Size = New System.Drawing.Size(180, 22)
+        Me.MnuParamEmpresa.Text = "Empresa"
+        Me.MnuParamEmpresa.Visible = False
         '
         'MnuParamBA
         '
@@ -161,12 +160,18 @@ Partial Class FrmPrincipal
         Me.MnuParamBA.Text = "Banco Adquiriente"
         Me.MnuParamBA.Visible = False
         '
-        'MnuParamEmpresa
+        'MnuParamCB
         '
-        Me.MnuParamEmpresa.Name = "MnuParamEmpresa"
-        Me.MnuParamEmpresa.Size = New System.Drawing.Size(180, 22)
-        Me.MnuParamEmpresa.Text = "Empresa"
-        Me.MnuParamEmpresa.Visible = False
+        Me.MnuParamCB.Name = "MnuParamCB"
+        Me.MnuParamCB.Size = New System.Drawing.Size(180, 22)
+        Me.MnuParamCB.Text = "Cuentas Bancarias"
+        '
+        'MnuParamPC
+        '
+        Me.MnuParamPC.Name = "MnuParamPC"
+        Me.MnuParamPC.Size = New System.Drawing.Size(180, 22)
+        Me.MnuParamPC.Text = "Parámetro Contable"
+        Me.MnuParamPC.Visible = False
         '
         'MnuParamRegistro
         '
@@ -176,7 +181,7 @@ Partial Class FrmPrincipal
         '
         'MnuMant
         '
-        Me.MnuMant.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MnuMantCliente, Me.MnuMantLinea, Me.MnuMantProveedor, Me.MnuMantProducto, Me.MnuMantUsuario, Me.MnuMantSucursal, Me.MnuMantCE, Me.MnuMantCI, Me.MnuMantCB, Me.MnuMantCC, Me.MnuMantInv, Me.MnuMantVend})
+        Me.MnuMant.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MnuMantCliente, Me.MnuMantLinea, Me.MnuMantProveedor, Me.MnuMantProducto, Me.MnuMantUsuario, Me.MnuMantCE, Me.MnuMantCI, Me.MnuMantCC, Me.MnuMantInv, Me.MnuMantVend})
         Me.MnuMant.MergeAction = System.Windows.Forms.MergeAction.Remove
         Me.MnuMant.Name = "MnuMant"
         Me.MnuMant.Size = New System.Drawing.Size(101, 20)
@@ -218,13 +223,6 @@ Partial Class FrmPrincipal
         Me.MnuMantUsuario.Text = "Usuarios"
         Me.MnuMantUsuario.Visible = False
         '
-        'MnuMantSucursal
-        '
-        Me.MnuMantSucursal.Name = "MnuMantSucursal"
-        Me.MnuMantSucursal.Size = New System.Drawing.Size(180, 22)
-        Me.MnuMantSucursal.Text = "Sucursales"
-        Me.MnuMantSucursal.Visible = False
-        '
         'MnuMantCE
         '
         Me.MnuMantCE.Name = "MnuMantCE"
@@ -238,13 +236,6 @@ Partial Class FrmPrincipal
         Me.MnuMantCI.Size = New System.Drawing.Size(180, 22)
         Me.MnuMantCI.Text = "Cuentas de Ingresos"
         Me.MnuMantCI.Visible = False
-        '
-        'MnuMantCB
-        '
-        Me.MnuMantCB.Name = "MnuMantCB"
-        Me.MnuMantCB.Size = New System.Drawing.Size(180, 22)
-        Me.MnuMantCB.Text = "Cuentas Bancarias"
-        Me.MnuMantCB.Visible = False
         '
         'MnuMantCC
         '
@@ -362,11 +353,18 @@ Partial Class FrmPrincipal
         '
         'MnuDocElect
         '
-        Me.MnuDocElect.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MnuDocElectCDE, Me.MnuDocElectADE, Me.MnuDocElectRDE})
+        Me.MnuDocElect.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MnuDocElectFC, Me.MnuDocElectCDE, Me.MnuDocElectRDE})
         Me.MnuDocElect.Name = "MnuDocElect"
         Me.MnuDocElect.Size = New System.Drawing.Size(154, 20)
         Me.MnuDocElect.Text = "Documentos Electrónicos"
         Me.MnuDocElect.Visible = False
+        '
+        'MnuDocElectFC
+        '
+        Me.MnuDocElectFC.Name = "MnuDocElectFC"
+        Me.MnuDocElectFC.Size = New System.Drawing.Size(258, 22)
+        Me.MnuDocElectFC.Text = "Generar factura de compra"
+        Me.MnuDocElectFC.Visible = False
         '
         'MnuDocElectCDE
         '
@@ -374,13 +372,6 @@ Partial Class FrmPrincipal
         Me.MnuDocElectCDE.Size = New System.Drawing.Size(258, 22)
         Me.MnuDocElectCDE.Text = "Consultar documentos pendientes"
         Me.MnuDocElectCDE.Visible = False
-        '
-        'MnuDocElectADE
-        '
-        Me.MnuDocElectADE.Name = "MnuDocElectADE"
-        Me.MnuDocElectADE.Size = New System.Drawing.Size(258, 22)
-        Me.MnuDocElectADE.Text = "Aceptar documentos electrónicos"
-        Me.MnuDocElectADE.Visible = False
         '
         'MnuDocElectRDE
         '
@@ -455,34 +446,34 @@ Partial Class FrmPrincipal
         Me.MnuBCMov.Text = "Ingreso/Actualización de Movimientos"
         Me.MnuBCMov.Visible = False
         '
-        'mnuConta
+        'MnuConta
         '
-        Me.mnuConta.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuContaAsiento, Me.mnuContaCierre, Me.mnuContaReporte})
-        Me.mnuConta.Name = "mnuConta"
-        Me.mnuConta.Size = New System.Drawing.Size(87, 20)
-        Me.mnuConta.Text = "Contabilidad"
-        Me.mnuConta.Visible = False
+        Me.MnuConta.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MnuContaAsiento, Me.MnuContaCierre, Me.MnuContaReporte})
+        Me.MnuConta.Name = "MnuConta"
+        Me.MnuConta.Size = New System.Drawing.Size(87, 20)
+        Me.MnuConta.Text = "Contabilidad"
+        Me.MnuConta.Visible = False
         '
-        'mnuContaAsiento
+        'MnuContaAsiento
         '
-        Me.mnuContaAsiento.Name = "mnuContaAsiento"
-        Me.mnuContaAsiento.Size = New System.Drawing.Size(233, 22)
-        Me.mnuContaAsiento.Text = "Ingreso de Asientos Contables"
-        Me.mnuContaAsiento.Visible = False
+        Me.MnuContaAsiento.Name = "MnuContaAsiento"
+        Me.MnuContaAsiento.Size = New System.Drawing.Size(233, 22)
+        Me.MnuContaAsiento.Text = "Ingreso de Asientos Contables"
+        Me.MnuContaAsiento.Visible = False
         '
-        'mnuContaCierre
+        'MnuContaCierre
         '
-        Me.mnuContaCierre.Name = "mnuContaCierre"
-        Me.mnuContaCierre.Size = New System.Drawing.Size(233, 22)
-        Me.mnuContaCierre.Text = "Cierre Mensual"
-        Me.mnuContaCierre.Visible = False
+        Me.MnuContaCierre.Name = "MnuContaCierre"
+        Me.MnuContaCierre.Size = New System.Drawing.Size(233, 22)
+        Me.MnuContaCierre.Text = "Cierre Mensual"
+        Me.MnuContaCierre.Visible = False
         '
-        'mnuContaReporte
+        'MnuContaReporte
         '
-        Me.mnuContaReporte.Name = "mnuContaReporte"
-        Me.mnuContaReporte.Size = New System.Drawing.Size(233, 22)
-        Me.mnuContaReporte.Text = "Menú de Reportes"
-        Me.mnuContaReporte.Visible = False
+        Me.MnuContaReporte.Name = "MnuContaReporte"
+        Me.MnuContaReporte.Size = New System.Drawing.Size(233, 22)
+        Me.MnuContaReporte.Text = "Menú de Reportes"
+        Me.MnuContaReporte.Visible = False
         '
         'picLoader
         '
@@ -525,14 +516,13 @@ Partial Class FrmPrincipal
     Friend WithEvents MnuBC As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents MnuBCMov As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents mnuArchivoCambio As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents mnuConta As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents mnuContaAsiento As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents MnuConta As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents MnuContaAsiento As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents MnuCapturaEgreso As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents MnuMantCI As System.Windows.Forms.ToolStripMenuItem
     Public WithEvents MnuApRCxC As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents MnuAnRCxC As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents MnuImpCxC As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents MnuMantCB As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents MnuMantCC As System.Windows.Forms.ToolStripMenuItem
     Public WithEvents MnuCapturaOrdenServicio As System.Windows.Forms.ToolStripMenuItem
     Public WithEvents MnuDevolucionCliente As System.Windows.Forms.ToolStripMenuItem
@@ -541,10 +531,9 @@ Partial Class FrmPrincipal
     Friend WithEvents MnuParamBA As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents MnuMantCE As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents MnuCapturaIngreso As System.Windows.Forms.ToolStripMenuItem
-    Public WithEvents MnuMantSucursal As System.Windows.Forms.ToolStripMenuItem
     Public WithEvents MnuCapturaTraslado As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents mnuContaCierre As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents mnuContaReporte As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents MnuContaCierre As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents MnuContaReporte As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents MnuImpCxP As System.Windows.Forms.ToolStripMenuItem
     Public WithEvents MnuCapturaProforma As System.Windows.Forms.ToolStripMenuItem
     Public WithEvents MnuDevolucionProveedor As System.Windows.Forms.ToolStripMenuItem
@@ -553,9 +542,10 @@ Partial Class FrmPrincipal
     Friend WithEvents picLoader As PictureBox
     Friend WithEvents MnuDocElect As ToolStripMenuItem
     Friend WithEvents MnuDocElectCDE As ToolStripMenuItem
-    Friend WithEvents MnuDocElectADE As ToolStripMenuItem
+    Friend WithEvents MnuDocElectFC As ToolStripMenuItem
     Friend WithEvents MnuDocElectRDE As ToolStripMenuItem
     Friend WithEvents MnuParamEmpresa As ToolStripMenuItem
     Friend WithEvents MnuParamRegistro As ToolStripMenuItem
     Public WithEvents MnuCapturaApartado As ToolStripMenuItem
+    Friend WithEvents MnuParamCB As ToolStripMenuItem
 End Class

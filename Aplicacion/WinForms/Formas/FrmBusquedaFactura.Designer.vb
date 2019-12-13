@@ -51,7 +51,7 @@ Partial Class FrmBusquedaFactura
         'btnFiltrar
         '
         Me.btnFiltrar.Image = CType(resources.GetObject("btnFiltrar.Image"), System.Drawing.Image)
-        Me.btnFiltrar.Location = New System.Drawing.Point(560, 10)
+        Me.btnFiltrar.Location = New System.Drawing.Point(610, 10)
         Me.btnFiltrar.Name = "btnFiltrar"
         Me.btnFiltrar.Size = New System.Drawing.Size(22, 22)
         Me.btnFiltrar.TabIndex = 2
@@ -69,9 +69,9 @@ Partial Class FrmBusquedaFactura
         '
         'txtNombre
         '
-        Me.txtNombre.Location = New System.Drawing.Point(195, 12)
+        Me.txtNombre.Location = New System.Drawing.Point(190, 12)
         Me.txtNombre.Name = "txtNombre"
-        Me.txtNombre.Size = New System.Drawing.Size(359, 20)
+        Me.txtNombre.Size = New System.Drawing.Size(414, 20)
         Me.txtNombre.TabIndex = 1
         '
         'btnLast

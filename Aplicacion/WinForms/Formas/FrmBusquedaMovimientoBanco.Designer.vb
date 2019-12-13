@@ -49,7 +49,7 @@ Partial Class FrmBusquedaMovimientoBanco
         'btnFiltrar
         '
         Me.btnFiltrar.Image = CType(resources.GetObject("btnFiltrar.Image"), System.Drawing.Image)
-        Me.btnFiltrar.Location = New System.Drawing.Point(454, 10)
+        Me.btnFiltrar.Location = New System.Drawing.Point(610, 10)
         Me.btnFiltrar.Name = "btnFiltrar"
         Me.btnFiltrar.Size = New System.Drawing.Size(22, 22)
         Me.btnFiltrar.TabIndex = 1
@@ -67,9 +67,9 @@ Partial Class FrmBusquedaMovimientoBanco
         '
         'txtDescripcion
         '
-        Me.txtDescripcion.Location = New System.Drawing.Point(89, 12)
+        Me.txtDescripcion.Location = New System.Drawing.Point(84, 12)
         Me.txtDescripcion.Name = "txtDescripcion"
-        Me.txtDescripcion.Size = New System.Drawing.Size(359, 20)
+        Me.txtDescripcion.Size = New System.Drawing.Size(520, 20)
         Me.txtDescripcion.TabIndex = 0
         '
         'lblPagina

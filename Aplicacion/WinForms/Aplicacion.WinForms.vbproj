@@ -247,12 +247,6 @@
     <Compile Include="Formas\FrmMenuCuentaIngreso.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Formas\FrmBusquedaCuentaPorPagar.Designer.vb">
-      <DependentUpon>FrmBusquedaCuentaPorPagar.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Formas\FrmBusquedaCuentaPorPagar.vb">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="Formas\FrmBusquedaOrdenServicio.Designer.vb">
       <DependentUpon>FrmBusquedaOrdenServicio.vb</DependentUpon>
     </Compile>
@@ -335,18 +329,6 @@
       <DependentUpon>FrmTrasladoMercaderia.vb</DependentUpon>
     </Compile>
     <Compile Include="Formas\FrmTrasladoMercaderia.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Formas\FrmSucursalListado.Designer.vb">
-      <DependentUpon>FrmSucursalListado.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Formas\FrmSucursalListado.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Formas\FrmSucursal.Designer.vb">
-      <DependentUpon>FrmSucursal.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Formas\FrmSucursal.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Formas\FrmBusquedaIngreso.Designer.vb">
@@ -547,10 +529,10 @@
     <Compile Include="Formas\FrmAplicaReciboCxC.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Formas\FrmAutoriza.Designer.vb">
-      <DependentUpon>FrmAutoriza.vb</DependentUpon>
+    <Compile Include="Formas\FrmAutorizaPrecio.Designer.vb">
+      <DependentUpon>FrmAutorizaPrecio.vb</DependentUpon>
     </Compile>
-    <Compile Include="Formas\FrmAutoriza.vb">
+    <Compile Include="Formas\FrmAutorizaPrecio.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Formas\FrmBusquedaProducto.Designer.vb">
@@ -776,10 +758,6 @@
       <DependentUpon>FrmMenuCuentaIngreso.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Formas\FrmBusquedaCuentaPorPagar.resX">
-      <DependentUpon>FrmBusquedaCuentaPorPagar.vb</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="Formas\FrmBusquedaOrdenServicio.resX">
       <DependentUpon>FrmBusquedaOrdenServicio.vb</DependentUpon>
       <SubType>Designer</SubType>
@@ -828,12 +806,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Formas\FrmTrasladoMercaderia.resx">
       <DependentUpon>FrmTrasladoMercaderia.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Formas\FrmSucursalListado.resx">
-      <DependentUpon>FrmSucursalListado.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Formas\FrmSucursal.resx">
-      <DependentUpon>FrmSucursal.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Formas\FrmBusquedaIngreso.resX">
       <DependentUpon>FrmBusquedaIngreso.vb</DependentUpon>
@@ -954,8 +926,8 @@
       <DependentUpon>FrmAsientoContable.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Formas\FrmAutoriza.resx">
-      <DependentUpon>FrmAutoriza.vb</DependentUpon>
+    <EmbeddedResource Include="Formas\FrmAutorizaPrecio.resx">
+      <DependentUpon>FrmAutorizaPrecio.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Formas\FrmBusquedaProducto.resx">
       <DependentUpon>FrmBusquedaProducto.vb</DependentUpon>

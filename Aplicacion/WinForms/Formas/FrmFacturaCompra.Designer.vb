@@ -16,7 +16,7 @@ Partial Class FrmFacturaCompra
     Public WithEvents txtTextoAdicional As System.Windows.Forms.TextBox
     Public WithEvents btnAgregar As System.Windows.Forms.Button
     Public WithEvents btnGuardar As System.Windows.Forms.Button
-    Public WithEvents txtIdProforma As System.Windows.Forms.TextBox
+    Public WithEvents txtIdFactCompra As System.Windows.Forms.TextBox
     Public WithEvents _lblLabels_11 As System.Windows.Forms.Label
     Public WithEvents _lblLabels_0 As System.Windows.Forms.Label
     'NOTE: The following procedure is required by the Windows Form Designer
@@ -26,7 +26,7 @@ Partial Class FrmFacturaCompra
         Me.txtTextoAdicional = New System.Windows.Forms.TextBox()
         Me.btnAgregar = New System.Windows.Forms.Button()
         Me.btnGuardar = New System.Windows.Forms.Button()
-        Me.txtIdProforma = New System.Windows.Forms.TextBox()
+        Me.txtIdFactCompra = New System.Windows.Forms.TextBox()
         Me._lblLabels_11 = New System.Windows.Forms.Label()
         Me._lblLabels_0 = New System.Windows.Forms.Label()
         Me.txtFecha = New System.Windows.Forms.TextBox()
@@ -102,7 +102,7 @@ Partial Class FrmFacturaCompra
         Me.txtTextoAdicional.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtTextoAdicional.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
         Me.txtTextoAdicional.Size = New System.Drawing.Size(704, 45)
-        Me.txtTextoAdicional.TabIndex = 55
+        Me.txtTextoAdicional.TabIndex = 59
         '
         'btnAgregar
         '
@@ -132,20 +132,20 @@ Partial Class FrmFacturaCompra
         Me.btnGuardar.Text = "&Guardar"
         Me.btnGuardar.UseVisualStyleBackColor = False
         '
-        'txtIdProforma
+        'txtIdFactCompra
         '
-        Me.txtIdProforma.AcceptsReturn = True
-        Me.txtIdProforma.BackColor = System.Drawing.SystemColors.Window
-        Me.txtIdProforma.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtIdProforma.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtIdProforma.Location = New System.Drawing.Point(102, 39)
-        Me.txtIdProforma.MaxLength = 0
-        Me.txtIdProforma.Name = "txtIdProforma"
-        Me.txtIdProforma.ReadOnly = True
-        Me.txtIdProforma.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtIdProforma.Size = New System.Drawing.Size(73, 20)
-        Me.txtIdProforma.TabIndex = 0
-        Me.txtIdProforma.TabStop = False
+        Me.txtIdFactCompra.AcceptsReturn = True
+        Me.txtIdFactCompra.BackColor = System.Drawing.SystemColors.Window
+        Me.txtIdFactCompra.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtIdFactCompra.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtIdFactCompra.Location = New System.Drawing.Point(102, 39)
+        Me.txtIdFactCompra.MaxLength = 0
+        Me.txtIdFactCompra.Name = "txtIdFactCompra"
+        Me.txtIdFactCompra.ReadOnly = True
+        Me.txtIdFactCompra.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtIdFactCompra.Size = New System.Drawing.Size(73, 20)
+        Me.txtIdFactCompra.TabIndex = 0
+        Me.txtIdFactCompra.TabStop = False
         '
         '_lblLabels_11
         '
@@ -261,7 +261,7 @@ Partial Class FrmFacturaCompra
         Me.Label6.BackColor = System.Drawing.Color.Transparent
         Me.Label6.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label6.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label6.Location = New System.Drawing.Point(367, 94)
+        Me.Label6.Location = New System.Drawing.Point(40, 122)
         Me.Label6.Name = "Label6"
         Me.Label6.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label6.Size = New System.Drawing.Size(58, 17)
@@ -279,21 +279,21 @@ Partial Class FrmFacturaCompra
         Me.cboDistrito.ForeColor = System.Drawing.SystemColors.WindowText
         Me.cboDistrito.IntegralHeight = False
         Me.cboDistrito.ItemHeight = 13
-        Me.cboDistrito.Location = New System.Drawing.Point(431, 91)
+        Me.cboDistrito.Location = New System.Drawing.Point(104, 119)
         Me.cboDistrito.Name = "cboDistrito"
         Me.cboDistrito.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.cboDistrito.Size = New System.Drawing.Size(250, 21)
-        Me.cboDistrito.TabIndex = 5
+        Me.cboDistrito.TabIndex = 6
         '
         'Label5
         '
         Me.Label5.BackColor = System.Drawing.Color.Transparent
         Me.Label5.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label5.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label5.Location = New System.Drawing.Point(-1, 122)
+        Me.Label5.Location = New System.Drawing.Point(365, 94)
         Me.Label5.Name = "Label5"
         Me.Label5.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label5.Size = New System.Drawing.Size(99, 17)
+        Me.Label5.Size = New System.Drawing.Size(60, 17)
         Me.Label5.TabIndex = 198
         Me.Label5.Text = "Cantón:"
         Me.Label5.TextAlign = System.Drawing.ContentAlignment.TopRight
@@ -308,21 +308,21 @@ Partial Class FrmFacturaCompra
         Me.cboCanton.ForeColor = System.Drawing.SystemColors.WindowText
         Me.cboCanton.IntegralHeight = False
         Me.cboCanton.ItemHeight = 13
-        Me.cboCanton.Location = New System.Drawing.Point(104, 119)
+        Me.cboCanton.Location = New System.Drawing.Point(431, 91)
         Me.cboCanton.Name = "cboCanton"
         Me.cboCanton.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.cboCanton.Size = New System.Drawing.Size(250, 21)
-        Me.cboCanton.TabIndex = 6
+        Me.cboCanton.TabIndex = 5
         '
         'Label4
         '
         Me.Label4.BackColor = System.Drawing.Color.Transparent
         Me.Label4.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label4.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label4.Location = New System.Drawing.Point(-1, 95)
+        Me.Label4.Location = New System.Drawing.Point(31, 95)
         Me.Label4.Name = "Label4"
         Me.Label4.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label4.Size = New System.Drawing.Size(99, 17)
+        Me.Label4.Size = New System.Drawing.Size(67, 17)
         Me.Label4.TabIndex = 197
         Me.Label4.Text = "Provincia:"
         Me.Label4.TextAlign = System.Drawing.ContentAlignment.TopRight
@@ -443,7 +443,7 @@ Partial Class FrmFacturaCompra
         Me.txtIdentificacion.BackColor = System.Drawing.SystemColors.Window
         Me.txtIdentificacion.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtIdentificacion.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtIdentificacion.Location = New System.Drawing.Point(393, 65)
+        Me.txtIdentificacion.Location = New System.Drawing.Point(431, 65)
         Me.txtIdentificacion.MaxLength = 12
         Me.txtIdentificacion.Name = "txtIdentificacion"
         Me.txtIdentificacion.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -494,7 +494,7 @@ Partial Class FrmFacturaCompra
         Me.lblLabel3.BackColor = System.Drawing.Color.Transparent
         Me.lblLabel3.Cursor = System.Windows.Forms.Cursors.Default
         Me.lblLabel3.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.lblLabel3.Location = New System.Drawing.Point(307, 68)
+        Me.lblLabel3.Location = New System.Drawing.Point(345, 68)
         Me.lblLabel3.Name = "lblLabel3"
         Me.lblLabel3.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.lblLabel3.Size = New System.Drawing.Size(80, 17)
@@ -757,14 +757,13 @@ Partial Class FrmFacturaCompra
         Me.cboTipoImpuesto.BackColor = System.Drawing.SystemColors.Window
         Me.cboTipoImpuesto.Cursor = System.Windows.Forms.Cursors.Default
         Me.cboTipoImpuesto.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cboTipoImpuesto.Enabled = False
         Me.cboTipoImpuesto.ForeColor = System.Drawing.SystemColors.WindowText
         Me.cboTipoImpuesto.Items.AddRange(New Object() {"UND", "MT2", "MT3", "MT", "LT", "GL", "CTO", "CUB", "PAQ", "LAM", "VAR", "PZA"})
         Me.cboTipoImpuesto.Location = New System.Drawing.Point(444, 20)
         Me.cboTipoImpuesto.Name = "cboTipoImpuesto"
         Me.cboTipoImpuesto.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.cboTipoImpuesto.Size = New System.Drawing.Size(366, 21)
-        Me.cboTipoImpuesto.TabIndex = 228
+        Me.cboTipoImpuesto.TabIndex = 52
         '
         '_LblTotal_6
         '
@@ -793,7 +792,7 @@ Partial Class FrmFacturaCompra
         Me.cboUnidadMedida.Name = "cboUnidadMedida"
         Me.cboUnidadMedida.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.cboUnidadMedida.Size = New System.Drawing.Size(54, 21)
-        Me.cboUnidadMedida.TabIndex = 221
+        Me.cboUnidadMedida.TabIndex = 54
         '
         '_lblSubTotal_5
         '
@@ -814,7 +813,7 @@ Partial Class FrmFacturaCompra
         Me.txtCodigo.MaxLength = 13
         Me.txtCodigo.Name = "txtCodigo"
         Me.txtCodigo.Size = New System.Drawing.Size(149, 20)
-        Me.txtCodigo.TabIndex = 215
+        Me.txtCodigo.TabIndex = 51
         '
         'Label1
         '
@@ -840,7 +839,7 @@ Partial Class FrmFacturaCompra
         Me.txtDescripcion.Name = "txtDescripcion"
         Me.txtDescripcion.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtDescripcion.Size = New System.Drawing.Size(455, 20)
-        Me.txtDescripcion.TabIndex = 216
+        Me.txtDescripcion.TabIndex = 53
         '
         'txtPrecio
         '
@@ -853,7 +852,7 @@ Partial Class FrmFacturaCompra
         Me.txtPrecio.Name = "txtPrecio"
         Me.txtPrecio.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtPrecio.Size = New System.Drawing.Size(100, 20)
-        Me.txtPrecio.TabIndex = 218
+        Me.txtPrecio.TabIndex = 55
         Me.txtPrecio.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'txtCantidad
@@ -867,7 +866,7 @@ Partial Class FrmFacturaCompra
         Me.txtCantidad.Name = "txtCantidad"
         Me.txtCantidad.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtCantidad.Size = New System.Drawing.Size(43, 20)
-        Me.txtCantidad.TabIndex = 214
+        Me.txtCantidad.TabIndex = 50
         Me.txtCantidad.Text = "1"
         Me.txtCantidad.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         '
@@ -924,7 +923,7 @@ Partial Class FrmFacturaCompra
         Me.grdDetalleProforma.RowHeadersVisible = False
         Me.grdDetalleProforma.RowHeadersWidth = 30
         Me.grdDetalleProforma.Size = New System.Drawing.Size(800, 200)
-        Me.grdDetalleProforma.TabIndex = 222
+        Me.grdDetalleProforma.TabIndex = 56
         Me.grdDetalleProforma.TabStop = False
         '
         'btnEliminar
@@ -935,10 +934,10 @@ Partial Class FrmFacturaCompra
         Me.btnEliminar.Location = New System.Drawing.Point(90, 289)
         Me.btnEliminar.Name = "btnEliminar"
         Me.btnEliminar.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.btnEliminar.Size = New System.Drawing.Size(73, 25)
-        Me.btnEliminar.TabIndex = 220
+        Me.btnEliminar.Size = New System.Drawing.Size(99, 25)
+        Me.btnEliminar.TabIndex = 58
         Me.btnEliminar.TabStop = False
-        Me.btnEliminar.Text = "&Eliminar"
+        Me.btnEliminar.Text = "&Limpiar detalle"
         Me.btnEliminar.UseVisualStyleBackColor = False
         '
         'btnInsertar
@@ -950,13 +949,14 @@ Partial Class FrmFacturaCompra
         Me.btnInsertar.Name = "btnInsertar"
         Me.btnInsertar.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.btnInsertar.Size = New System.Drawing.Size(73, 25)
-        Me.btnInsertar.TabIndex = 219
+        Me.btnInsertar.TabIndex = 57
         Me.btnInsertar.TabStop = False
         Me.btnInsertar.Text = "Insertar"
         Me.btnInsertar.UseVisualStyleBackColor = False
         '
         'FrmFacturaCompra
         '
+        Me.AcceptButton = Me.btnInsertar
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
         Me.AutoScroll = True
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
@@ -978,9 +978,9 @@ Partial Class FrmFacturaCompra
         Me.Controls.Add(Me.Label7)
         Me.Controls.Add(Me.cboBarrio)
         Me.Controls.Add(Me.Label6)
-        Me.Controls.Add(Me.cboDistrito)
         Me.Controls.Add(Me.Label5)
         Me.Controls.Add(Me.cboCanton)
+        Me.Controls.Add(Me.cboDistrito)
         Me.Controls.Add(Me.Label4)
         Me.Controls.Add(Me.cboProvincia)
         Me.Controls.Add(Me.Label3)
@@ -1000,7 +1000,7 @@ Partial Class FrmFacturaCompra
         Me.Controls.Add(Me.txtTextoAdicional)
         Me.Controls.Add(Me.btnAgregar)
         Me.Controls.Add(Me.btnGuardar)
-        Me.Controls.Add(Me.txtIdProforma)
+        Me.Controls.Add(Me.txtIdFactCompra)
         Me.Controls.Add(Me._lblLabels_11)
         Me.Controls.Add(Me._lblLabels_0)
         Me.Cursor = System.Windows.Forms.Cursors.Default

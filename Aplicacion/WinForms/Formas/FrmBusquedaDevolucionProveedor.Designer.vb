@@ -51,7 +51,7 @@ Partial Class FrmBusquedaDevolucionProveedor
         'btnFiltrar
         '
         Me.btnFiltrar.Image = CType(resources.GetObject("btnFiltrar.Image"), System.Drawing.Image)
-        Me.btnFiltrar.Location = New System.Drawing.Point(571, 10)
+        Me.btnFiltrar.Location = New System.Drawing.Point(610, 10)
         Me.btnFiltrar.Name = "btnFiltrar"
         Me.btnFiltrar.Size = New System.Drawing.Size(22, 22)
         Me.btnFiltrar.TabIndex = 2
@@ -71,7 +71,7 @@ Partial Class FrmBusquedaDevolucionProveedor
         '
         Me.txtNombre.Location = New System.Drawing.Point(206, 12)
         Me.txtNombre.Name = "txtNombre"
-        Me.txtNombre.Size = New System.Drawing.Size(359, 20)
+        Me.txtNombre.Size = New System.Drawing.Size(398, 20)
         Me.txtNombre.TabIndex = 1
         '
         'lblPagina

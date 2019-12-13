@@ -55,7 +55,7 @@ Partial Class FrmDetalleDocumentoElectronico
         '
         'btnMostrarRespuesta
         '
-        Me.btnMostrarRespuesta.Location = New System.Drawing.Point(467, 415)
+        Me.btnMostrarRespuesta.Location = New System.Drawing.Point(439, 415)
         Me.btnMostrarRespuesta.Name = "btnMostrarRespuesta"
         Me.btnMostrarRespuesta.Size = New System.Drawing.Size(100, 22)
         Me.btnMostrarRespuesta.TabIndex = 4
@@ -66,7 +66,7 @@ Partial Class FrmDetalleDocumentoElectronico
         'lblPagina
         '
         Me.lblPagina.AutoSize = True
-        Me.lblPagina.Location = New System.Drawing.Point(583, 420)
+        Me.lblPagina.Location = New System.Drawing.Point(555, 420)
         Me.lblPagina.Name = "lblPagina"
         Me.lblPagina.Size = New System.Drawing.Size(77, 13)
         Me.lblPagina.TabIndex = 44
@@ -161,7 +161,7 @@ Partial Class FrmDetalleDocumentoElectronico
         '
         'btnMostrarXML
         '
-        Me.btnMostrarXML.Location = New System.Drawing.Point(361, 415)
+        Me.btnMostrarXML.Location = New System.Drawing.Point(333, 415)
         Me.btnMostrarXML.Name = "btnMostrarXML"
         Me.btnMostrarXML.Size = New System.Drawing.Size(100, 22)
         Me.btnMostrarXML.TabIndex = 3

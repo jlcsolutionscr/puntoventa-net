@@ -55,7 +55,7 @@ Partial Class FrmEstadoDocumentoElectronico
         Me.picLoader.InitialImage = Nothing
         Me.picLoader.Location = New System.Drawing.Point(4, 2)
         Me.picLoader.Name = "picLoader"
-        Me.picLoader.Size = New System.Drawing.Size(788, 461)
+        Me.picLoader.Size = New System.Drawing.Size(788, 433)
         Me.picLoader.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage
         Me.picLoader.TabIndex = 36
         Me.picLoader.TabStop = False

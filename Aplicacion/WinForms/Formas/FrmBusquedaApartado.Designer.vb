@@ -17,7 +17,7 @@ Partial Class FrmBusquedaApartado
     'It can be modified using the Windows Form Designer.
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FrmBusquedaProforma))
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FrmBusquedaApartado))
         Me.dgvListado = New System.Windows.Forms.DataGridView()
         Me.btnFiltrar = New System.Windows.Forms.Button()
         Me.lblDescripcion = New System.Windows.Forms.Label()
@@ -51,7 +51,7 @@ Partial Class FrmBusquedaApartado
         'btnFiltrar
         '
         Me.btnFiltrar.Image = CType(resources.GetObject("btnFiltrar.Image"), System.Drawing.Image)
-        Me.btnFiltrar.Location = New System.Drawing.Point(559, 10)
+        Me.btnFiltrar.Location = New System.Drawing.Point(610, 10)
         Me.btnFiltrar.Name = "btnFiltrar"
         Me.btnFiltrar.Size = New System.Drawing.Size(22, 22)
         Me.btnFiltrar.TabIndex = 2
@@ -69,9 +69,9 @@ Partial Class FrmBusquedaApartado
         '
         'txtNombre
         '
-        Me.txtNombre.Location = New System.Drawing.Point(194, 12)
+        Me.txtNombre.Location = New System.Drawing.Point(189, 12)
         Me.txtNombre.Name = "txtNombre"
-        Me.txtNombre.Size = New System.Drawing.Size(359, 20)
+        Me.txtNombre.Size = New System.Drawing.Size(415, 20)
         Me.txtNombre.TabIndex = 1
         '
         'lblPagina
@@ -151,7 +151,7 @@ Partial Class FrmBusquedaApartado
         Me.txtId.Size = New System.Drawing.Size(87, 20)
         Me.txtId.TabIndex = 0
         '
-        'FrmBusquedaProforma
+        'FrmBusquedaApartado
         '
         Me.AcceptButton = Me.btnFiltrar
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -174,7 +174,7 @@ Partial Class FrmBusquedaApartado
         Me.Location = New System.Drawing.Point(3, 22)
         Me.MaximizeBox = False
         Me.MinimizeBox = False
-        Me.Name = "FrmBusquedaProforma"
+        Me.Name = "FrmBusquedaApartado"
         Me.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Búsqueda de Proformas"

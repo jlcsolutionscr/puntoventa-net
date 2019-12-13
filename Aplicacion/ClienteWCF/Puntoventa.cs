@@ -205,6 +205,16 @@ namespace LeandroSoftware.ClienteWCF
             return listado;
         }
 
+        public static async Task<List<LlaveDescripcion>> ObtenerListadoSucursalDestino(int intIdEmpresa, int intIdSucursalOrigen, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'ObtenerListadoSucursalDestino', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursalOrigen: " + intIdSucursalOrigen  + "}}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<LlaveDescripcion>>(respuesta);
+            return listado;
+        }
+
         public static async Task<SucursalPorEmpresa> ObtenerSucursalPorEmpresa(int intIdEmpresa, int intIdSucursal, string strToken)
         {
             string strDatos = "{NombreMetodo: 'ObtenerSucursalPorEmpresa', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + "}}";
@@ -1496,6 +1506,66 @@ namespace LeandroSoftware.ClienteWCF
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 
+        public static async Task<int> ObtenerTotalListaTraslados(int intIdEmpresa, int intIdSucursalOrigen, string strToken, int intIdTraslado = 0)
+        {
+            string strDatos = "{NombreMetodo: 'ObtenerTotalListaTraslados', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursalOrigen: " + intIdSucursalOrigen + ", IdTraslado: " + intIdTraslado + "}}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            int intCantidad = 0;
+            if (respuesta != "")
+                intCantidad = serializer.Deserialize<int>(respuesta);
+            return intCantidad;
+        }
+
+        public static async Task<List<TrasladoDetalle>> ObtenerListaTraslados(int intIdEmpresa, int intIdSucursalOrigen, int intNumeroPagina, int intFilasPorPagina, string strToken, int intIdTraslado = 0)
+        {
+            string strDatos = "{NombreMetodo: 'ObtenerListaTraslados', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursalOrigen: " + intIdSucursalOrigen + ", NumeroPagina: " + intNumeroPagina + ",FilasPorPagina: " + intFilasPorPagina + ", IdTraslado: " + intIdTraslado + "}}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            List<TrasladoDetalle> listado = new List<TrasladoDetalle>();
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<TrasladoDetalle>>(respuesta);
+            return listado;
+        }
+
+        public static async Task<List<TrasladoDetalle>> ObtenerListaTrasladosPorAplicar(int intIdEmpresa, int intIdSucursalDestino, string strToken, int intIdTraslado = 0)
+        {
+            string strDatos = "{NombreMetodo: 'ObtenerListaTrasladosPorAplicar', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursalDestino: " + intIdSucursalDestino + ", IdTraslado: " + intIdTraslado + "}}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            List<TrasladoDetalle> listado = new List<TrasladoDetalle>();
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<TrasladoDetalle>>(respuesta);
+            return listado;
+        }
+
+        public static async Task<Traslado> ObtenerTraslado(int intIdTraslado, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'ObtenerTraslado', Parametros: {IdTraslado: " + intIdTraslado + "}}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            Traslado Traslado = null;
+            if (respuesta != "")
+                Traslado = serializer.Deserialize<Traslado>(respuesta);
+            return Traslado;
+        }
+
+        public static async Task<string> AgregarTraslado(Traslado Traslado, string strToken)
+        {
+            string strEntidad = serializer.Serialize(Traslado);
+            string strDatos = "{NombreMetodo: 'AgregarTraslado', Entidad: " + strEntidad + "}";
+            string strId = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            return serializer.Deserialize<string>(strId);
+        }
+
+        public static async Task AplicarTraslado(int intIdTraslado, int intIdUsuario, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'AplicarTraslado', Parametros: {IdTraslado: " + intIdTraslado + ", IdUsuario: " + intIdUsuario + "}}";
+            await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
+        }
+
+        public static async Task AnularTraslado(int intIdTraslado, int intIdUsuario, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'AnularTraslado', Parametros: {IdTraslado: " + intIdTraslado + ", IdUsuario: " + intIdUsuario + "}}";
+            await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
+        }
+
         public static async Task<DocumentoElectronico> ObtenerDocumentoElectronico(int intIdDocumento, string strToken)
         {
             string strDatos = "{NombreMetodo: 'ObtenerDocumentoElectronico', Parametros: {IdDocumento: " + intIdDocumento + "}}";
@@ -1572,6 +1642,13 @@ namespace LeandroSoftware.ClienteWCF
         {
             string strDatos = "{NombreMetodo: 'EnviarNotificacionDocumentoElectronico', Parametros: {IdDocumento: " + intIdDocumento + ", CorreoReceptor: '" + strCorreoReceptor + "'}}";
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
+        }
+
+        public static async Task<bool> AutorizacionPrecioExtraordinario(string strCodigoUsuario, string strClave, int intIdEmpresa, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'AutorizacionPrecioExtraordinario', Parametros: {CodigoUsuario: '" + strCodigoUsuario + "', Clave: '" + strClave + "', IdEmpresa: " + intIdEmpresa + "}}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            return bool.Parse(respuesta);
         }
     }
 }
