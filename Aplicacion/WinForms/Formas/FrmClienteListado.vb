@@ -3,7 +3,7 @@ Imports LeandroSoftware.ClienteWCF
 
 Public Class FrmClienteListado
 #Region "Variables"
-    Private intTotalEmpresas As Integer
+    Private intTotalRegistros As Integer
     Private intIndiceDePagina As Integer
     Private intFilasPorPagina As Integer = 16
     Private intCantidadDePaginas As Integer
@@ -45,16 +45,15 @@ Public Class FrmClienteListado
         dgvListado.Refresh()
     End Function
 
-    Private Async Function ValidarCantidadClientes() As Task
+    Private Async Function ValidarCantidadRegistros() As Task
         Try
-            intTotalEmpresas = Await Puntoventa.ObtenerTotalListaClientes(FrmPrincipal.empresaGlobal.IdEmpresa, txtNombre.Text, FrmPrincipal.usuarioGlobal.Token)
+            intTotalRegistros = Await Puntoventa.ObtenerTotalListaClientes(FrmPrincipal.empresaGlobal.IdEmpresa, txtNombre.Text, FrmPrincipal.usuarioGlobal.Token)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
             Exit Function
         End Try
-        intCantidadDePaginas = Math.Truncate(intTotalEmpresas / intFilasPorPagina) + IIf((intTotalEmpresas Mod intFilasPorPagina) = 0, 0, 1)
-
+        intCantidadDePaginas = Math.Truncate(intTotalRegistros / intFilasPorPagina) + IIf((intTotalRegistros Mod intFilasPorPagina) = 0, 0, 1)
         If intCantidadDePaginas > 1 Then
             btnLast.Enabled = True
             btnNext.Enabled = True
@@ -97,7 +96,7 @@ Public Class FrmClienteListado
     Private Async Sub FrmClienteListado_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
             EstablecerPropiedadesDataGridView()
-            Await ValidarCantidadClientes()
+            Await ValidarCantidadRegistros()
             intIndiceDePagina = 1
             Await ActualizarDatos(intIndiceDePagina)
         Catch ex As Exception
@@ -111,7 +110,7 @@ Public Class FrmClienteListado
         .intIdCliente = 0
         }
         formMant.ShowDialog()
-        Await ValidarCantidadClientes()
+        Await ValidarCantidadRegistros()
         intIndiceDePagina = 1
         Await ActualizarDatos(intIndiceDePagina)
     End Sub
@@ -132,14 +131,14 @@ Public Class FrmClienteListado
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
-            Await ValidarCantidadClientes()
+            Await ValidarCantidadRegistros()
             intIndiceDePagina = 1
             Await ActualizarDatos(intIndiceDePagina)
         End If
     End Sub
 
     Private Async Sub BtnFiltrar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnFiltrar.Click
-        Await ValidarCantidadClientes()
+        Await ValidarCantidadRegistros()
         intIndiceDePagina = 1
         Await ActualizarDatos(intIndiceDePagina)
     End Sub

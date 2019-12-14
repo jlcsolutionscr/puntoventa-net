@@ -132,14 +132,13 @@ Partial Class FrmAjusteInventario
         Me.txtIdAjuste.AcceptsReturn = True
         Me.txtIdAjuste.BackColor = System.Drawing.SystemColors.Window
         Me.txtIdAjuste.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtIdAjuste.Enabled = False
         Me.txtIdAjuste.ForeColor = System.Drawing.SystemColors.WindowText
         Me.txtIdAjuste.Location = New System.Drawing.Point(72, 40)
         Me.txtIdAjuste.MaxLength = 0
         Me.txtIdAjuste.Name = "txtIdAjuste"
         Me.txtIdAjuste.ReadOnly = True
         Me.txtIdAjuste.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtIdAjuste.Size = New System.Drawing.Size(73, 20)
+        Me.txtIdAjuste.Size = New System.Drawing.Size(65, 20)
         Me.txtIdAjuste.TabIndex = 0
         Me.txtIdAjuste.TabStop = False
         '
@@ -150,11 +149,11 @@ Partial Class FrmAjusteInventario
         Me.txtDescAjuste.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtDescAjuste.ForeColor = System.Drawing.SystemColors.WindowText
         Me.txtDescAjuste.Location = New System.Drawing.Point(72, 92)
-        Me.txtDescAjuste.MaxLength = 0
+        Me.txtDescAjuste.MaxLength = 220
         Me.txtDescAjuste.Multiline = True
         Me.txtDescAjuste.Name = "txtDescAjuste"
         Me.txtDescAjuste.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtDescAjuste.Size = New System.Drawing.Size(574, 40)
+        Me.txtDescAjuste.Size = New System.Drawing.Size(680, 40)
         Me.txtDescAjuste.TabIndex = 1
         '
         'txtFecha
@@ -162,14 +161,13 @@ Partial Class FrmAjusteInventario
         Me.txtFecha.AcceptsReturn = True
         Me.txtFecha.BackColor = System.Drawing.SystemColors.Window
         Me.txtFecha.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtFecha.Enabled = False
         Me.txtFecha.ForeColor = System.Drawing.SystemColors.WindowText
         Me.txtFecha.Location = New System.Drawing.Point(72, 66)
         Me.txtFecha.MaxLength = 0
         Me.txtFecha.Name = "txtFecha"
         Me.txtFecha.ReadOnly = True
         Me.txtFecha.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtFecha.Size = New System.Drawing.Size(73, 20)
+        Me.txtFecha.Size = New System.Drawing.Size(65, 20)
         Me.txtFecha.TabIndex = 4
         Me.txtFecha.TabStop = False
         '
@@ -219,7 +217,7 @@ Partial Class FrmAjusteInventario
         Me.grdDetalleAjusteInventario.AllowUserToResizeColumns = False
         Me.grdDetalleAjusteInventario.AllowUserToResizeRows = False
         Me.grdDetalleAjusteInventario.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.grdDetalleAjusteInventario.Location = New System.Drawing.Point(6, 192)
+        Me.grdDetalleAjusteInventario.Location = New System.Drawing.Point(12, 192)
         Me.grdDetalleAjusteInventario.MultiSelect = False
         Me.grdDetalleAjusteInventario.Name = "grdDetalleAjusteInventario"
         Me.grdDetalleAjusteInventario.ReadOnly = True
@@ -229,7 +227,7 @@ Partial Class FrmAjusteInventario
         '
         'txtCodigo
         '
-        Me.txtCodigo.Location = New System.Drawing.Point(47, 166)
+        Me.txtCodigo.Location = New System.Drawing.Point(53, 166)
         Me.txtCodigo.Name = "txtCodigo"
         Me.txtCodigo.Size = New System.Drawing.Size(270, 20)
         Me.txtCodigo.TabIndex = 47
@@ -239,7 +237,7 @@ Partial Class FrmAjusteInventario
         Me.Label2.BackColor = System.Drawing.Color.Transparent
         Me.Label2.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label2.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label2.Location = New System.Drawing.Point(317, 146)
+        Me.Label2.Location = New System.Drawing.Point(323, 146)
         Me.Label2.Name = "Label2"
         Me.Label2.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label2.Size = New System.Drawing.Size(347, 19)
@@ -253,7 +251,7 @@ Partial Class FrmAjusteInventario
         Me.txtDescripcion.BackColor = System.Drawing.SystemColors.Window
         Me.txtDescripcion.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtDescripcion.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtDescripcion.Location = New System.Drawing.Point(317, 166)
+        Me.txtDescripcion.Location = New System.Drawing.Point(323, 166)
         Me.txtDescripcion.MaxLength = 0
         Me.txtDescripcion.Name = "txtDescripcion"
         Me.txtDescripcion.ReadOnly = True
@@ -268,12 +266,12 @@ Partial Class FrmAjusteInventario
         Me.txtPrecioCosto.BackColor = System.Drawing.SystemColors.Window
         Me.txtPrecioCosto.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtPrecioCosto.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtPrecioCosto.Location = New System.Drawing.Point(657, 166)
+        Me.txtPrecioCosto.Location = New System.Drawing.Point(663, 166)
         Me.txtPrecioCosto.MaxLength = 0
         Me.txtPrecioCosto.Name = "txtPrecioCosto"
         Me.txtPrecioCosto.ReadOnly = True
         Me.txtPrecioCosto.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtPrecioCosto.Size = New System.Drawing.Size(88, 20)
+        Me.txtPrecioCosto.Size = New System.Drawing.Size(89, 20)
         Me.txtPrecioCosto.TabIndex = 49
         Me.txtPrecioCosto.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
@@ -282,7 +280,7 @@ Partial Class FrmAjusteInventario
         Me.Label1.BackColor = System.Drawing.Color.Transparent
         Me.Label1.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label1.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label1.Location = New System.Drawing.Point(658, 146)
+        Me.Label1.Location = New System.Drawing.Point(664, 146)
         Me.Label1.Name = "Label1"
         Me.Label1.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label1.Size = New System.Drawing.Size(87, 19)
@@ -296,7 +294,7 @@ Partial Class FrmAjusteInventario
         Me.txtCantidad.BackColor = System.Drawing.SystemColors.Window
         Me.txtCantidad.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtCantidad.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtCantidad.Location = New System.Drawing.Point(6, 166)
+        Me.txtCantidad.Location = New System.Drawing.Point(12, 166)
         Me.txtCantidad.MaxLength = 0
         Me.txtCantidad.Name = "txtCantidad"
         Me.txtCantidad.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -309,7 +307,7 @@ Partial Class FrmAjusteInventario
         Me.lblLabel6.BackColor = System.Drawing.Color.Transparent
         Me.lblLabel6.Cursor = System.Windows.Forms.Cursors.Default
         Me.lblLabel6.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.lblLabel6.Location = New System.Drawing.Point(6, 146)
+        Me.lblLabel6.Location = New System.Drawing.Point(12, 146)
         Me.lblLabel6.Name = "lblLabel6"
         Me.lblLabel6.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.lblLabel6.Size = New System.Drawing.Size(41, 19)
@@ -322,7 +320,7 @@ Partial Class FrmAjusteInventario
         Me.lblLabel1.BackColor = System.Drawing.Color.Transparent
         Me.lblLabel1.Cursor = System.Windows.Forms.Cursors.Default
         Me.lblLabel1.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.lblLabel1.Location = New System.Drawing.Point(47, 146)
+        Me.lblLabel1.Location = New System.Drawing.Point(53, 146)
         Me.lblLabel1.Name = "lblLabel1"
         Me.lblLabel1.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.lblLabel1.Size = New System.Drawing.Size(270, 19)
@@ -335,7 +333,7 @@ Partial Class FrmAjusteInventario
         Me.btnBusProd.BackColor = System.Drawing.SystemColors.ButtonHighlight
         Me.btnBusProd.Cursor = System.Windows.Forms.Cursors.Default
         Me.btnBusProd.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.btnBusProd.Location = New System.Drawing.Point(166, 445)
+        Me.btnBusProd.Location = New System.Drawing.Point(172, 445)
         Me.btnBusProd.Name = "btnBusProd"
         Me.btnBusProd.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.btnBusProd.Size = New System.Drawing.Size(73, 25)
@@ -349,7 +347,7 @@ Partial Class FrmAjusteInventario
         Me.btnEliminar.BackColor = System.Drawing.SystemColors.ButtonHighlight
         Me.btnEliminar.Cursor = System.Windows.Forms.Cursors.Default
         Me.btnEliminar.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.btnEliminar.Location = New System.Drawing.Point(86, 445)
+        Me.btnEliminar.Location = New System.Drawing.Point(92, 445)
         Me.btnEliminar.Name = "btnEliminar"
         Me.btnEliminar.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.btnEliminar.Size = New System.Drawing.Size(73, 25)
@@ -363,7 +361,7 @@ Partial Class FrmAjusteInventario
         Me.btnInsertar.BackColor = System.Drawing.SystemColors.ButtonHighlight
         Me.btnInsertar.Cursor = System.Windows.Forms.Cursors.Default
         Me.btnInsertar.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.btnInsertar.Location = New System.Drawing.Point(6, 445)
+        Me.btnInsertar.Location = New System.Drawing.Point(12, 445)
         Me.btnInsertar.Name = "btnInsertar"
         Me.btnInsertar.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.btnInsertar.Size = New System.Drawing.Size(73, 25)
@@ -377,7 +375,7 @@ Partial Class FrmAjusteInventario
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
-        Me.ClientSize = New System.Drawing.Size(752, 478)
+        Me.ClientSize = New System.Drawing.Size(765, 482)
         Me.Controls.Add(Me.btnBusProd)
         Me.Controls.Add(Me.btnEliminar)
         Me.Controls.Add(Me.btnInsertar)

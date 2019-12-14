@@ -73,6 +73,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     traslado.IdAsiento = 0;
+                    foreach(var detalle in traslado.DetalleTraslado)
+                    {
+                        var existencias = dbContext.ExistenciaPorSucursalRepository.AsNoTracking().Where(x => x.IdEmpresa == empresa.IdEmpresa && x.IdSucursal == traslado.IdSucursalOrigen && x.IdProducto == detalle.IdProducto).FirstOrDefault();
+                        if (existencias == null)
+                            throw new BusinessException("El producto " + detalle.IdProducto + " no posee registro de existencias en la sucursal origen del traslado.");
+                        if (detalle.Cantidad > existencias.Cantidad)
+                            throw new BusinessException("La cantidad indicada para el produco " + detalle.IdProducto + " supera las existencias en la sucursal origen del traslado.");
+                    }
                     dbContext.TrasladoRepository.Add(traslado);
                     dbContext.Commit();
                 }
@@ -107,7 +115,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    Traslado traslado = dbContext.TrasladoRepository.Find(intIdTraslado);
+                    Traslado traslado = dbContext.TrasladoRepository.Include("DetalleTraslado").Where(x => x.IdTraslado == intIdTraslado).FirstOrDefault();
                     if (traslado == null) throw new Exception("El registro de traslado por aplicar no existe.");
                     Empresa empresa = dbContext.EmpresaRepository.Find(traslado.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
@@ -151,9 +159,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             IdProducto = producto.IdProducto,
                             IdSucursal = traslado.IdSucursalOrigen,
                             Fecha = DateTime.Now,
-                            Referencia = traslado.Referencia.Substring(0, 100),
                             PrecioCosto = detalleTraslado.PrecioCosto,
-                            Origen = "Salida por traslado entre sucursales",
+                            Origen = "Salida de mercancía por traslado entre sucursales",
                             Tipo = StaticTipoMovimientoProducto.Salida,
                             Cantidad = detalleTraslado.Cantidad
                         };
@@ -180,9 +187,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             IdProducto = producto.IdProducto,
                             IdSucursal = traslado.IdSucursalDestino,
                             Fecha = DateTime.Now,
-                            Referencia = traslado.Referencia.Substring(0,100),
                             PrecioCosto = detalleTraslado.PrecioCosto,
-                            Origen = "Ingreso por traslado entre sucursales",
+                            Origen = "Ingreso de mercancía por traslado entre sucursales",
                             Tipo = StaticTipoMovimientoProducto.Entrada,
                             Cantidad = detalleTraslado.Cantidad
                         };
@@ -344,7 +350,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    return dbContext.TrasladoRepository.Include("DetalleTraslado.Producto").FirstOrDefault(x => x.IdTraslado == intIdTraslado);
+                    Traslado traslado = dbContext.TrasladoRepository.Include("DetalleTraslado.Producto.ParametroImpuesto").FirstOrDefault(x => x.IdTraslado == intIdTraslado);
+                    foreach (var detalle in traslado.DetalleTraslado)
+                        detalle.Traslado = null;
+                    return traslado;
                 }
                 catch (Exception ex)
                 {
@@ -383,11 +392,15 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     var listado = dbContext.TrasladoRepository.Where(x => !x.Nulo && !x.Aplicado && x.IdEmpresa == intIdEmpresa && x.IdSucursalOrigen == intIdSucursalOrigen);
                     if (intIdTraslado > 0)
                         listado = listado.Where(x => x.IdTraslado == intIdTraslado);
-                    listado.OrderByDescending(x => x.IdTraslado).Skip((numPagina - 1) * cantRec).Take(cantRec).ToList();
-                    foreach (var traslado in listado)
+                    listado = listado.OrderByDescending(x => x.IdTraslado).Skip((numPagina - 1) * cantRec).Take(cantRec);
+                    var lineas = listado.ToList();
+                    foreach (var traslado in lineas)
                     {
-                        SucursalPorEmpresa sucursalDestino = dbContext.SucursalPorEmpresaRepository.Find(traslado.IdSucursalDestino);
-                        TrasladoDetalle item = new TrasladoDetalle(traslado.IdTraslado, traslado.Fecha.ToString("dd/MM/yyyy"), sucursalDestino.NombreSucursal, traslado.Total);
+                        string strNombreSucursal = "NOMBRE DE SUCURSAL NO DISPONIBLE";
+                        SucursalPorEmpresa sucursalDestino = dbContext.SucursalPorEmpresaRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == traslado.IdSucursalDestino).FirstOrDefault();
+                        if (sucursalDestino != null)
+                            strNombreSucursal = sucursalDestino.NombreSucursal;
+                        TrasladoDetalle item = new TrasladoDetalle(traslado.IdTraslado, traslado.Fecha.ToString("dd/MM/yyyy"), strNombreSucursal, traslado.Total);
                         listaTraslado.Add(item);
                     }
                     return listaTraslado;
@@ -407,14 +420,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 var listaTraslado = new List<TrasladoDetalle>();
                 try
                 {
-                    var listado = dbContext.TrasladoRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursalDestino == intIdSucursalDestino);
+                    var listado = dbContext.TrasladoRepository.Where(x => !x.Nulo && !x.Aplicado && x.IdEmpresa == intIdEmpresa && x.IdSucursalDestino == intIdSucursalDestino);
                     if (intIdTraslado > 0)
                         listado = listado.Where(x => x.IdTraslado == intIdTraslado);
-                    listado.OrderByDescending(x => x.IdTraslado).ToList();
-                    foreach (var traslado in listado)
+                    var lineas = listado.ToList();
+                    foreach (var traslado in lineas)
                     {
-                        SucursalPorEmpresa sucursalOrigen = dbContext.SucursalPorEmpresaRepository.Find(traslado.IdSucursalOrigen);
-                        TrasladoDetalle item = new TrasladoDetalle(traslado.IdTraslado, traslado.Fecha.ToString("dd/MM/yyyy"), sucursalOrigen.NombreSucursal, traslado.Total);
+                        string strNombreSucursal = "NOMBRE DE SUCURSAL NO DISPONIBLE";
+                        SucursalPorEmpresa sucursalDestino = dbContext.SucursalPorEmpresaRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == traslado.IdSucursalOrigen).FirstOrDefault();
+                        if (sucursalDestino != null)
+                            strNombreSucursal = sucursalDestino.NombreSucursal;
+                        TrasladoDetalle item = new TrasladoDetalle(traslado.IdTraslado, traslado.Fecha.ToString("dd/MM/yyyy"), strNombreSucursal, traslado.Total);
                         listaTraslado.Add(item);
                     }
                     return listaTraslado;

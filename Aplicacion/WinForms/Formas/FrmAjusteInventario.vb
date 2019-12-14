@@ -1,4 +1,6 @@
 Imports System.Collections.Generic
+Imports System.Threading.Tasks
+Imports LeandroSoftware.ClienteWCF
 Imports LeandroSoftware.Core.Dominio.Entidades
 
 Public Class FrmAjusteInventario
@@ -10,7 +12,7 @@ Public Class FrmAjusteInventario
     Private ajusteInventario As AjusteInventario
     Private detalleAjusteInventario As DetalleAjusteInventario
     Private comprobante As ModuloImpresion.ClsAjusteInventario
-    Private detalleComprobante As ModuloImpresion.clsDetalleComprobante
+    Private detalleComprobante As ModuloImpresion.ClsDetalleComprobante
     Private bolInit As Boolean = True
     Private producto As Producto
 #End Region
@@ -24,7 +26,6 @@ Public Class FrmAjusteInventario
         dtbDetalleAjusteInventario.Columns.Add("CANTIDAD", GetType(Decimal))
         dtbDetalleAjusteInventario.Columns.Add("PRECIOCOSTO", GetType(Decimal))
         dtbDetalleAjusteInventario.Columns.Add("TOTAL", GetType(Decimal))
-        dtbDetalleAjusteInventario.Columns.Add("EXCENTO", GetType(Integer))
         dtbDetalleAjusteInventario.PrimaryKey = {dtbDetalleAjusteInventario.Columns(0)}
     End Sub
 
@@ -39,7 +40,6 @@ Public Class FrmAjusteInventario
         Dim dvcPrecioCosto As New DataGridViewTextBoxColumn
         Dim dvcPrecioVenta As New DataGridViewTextBoxColumn
         Dim dvcTotal As New DataGridViewTextBoxColumn
-        Dim dvcExc As New DataGridViewCheckBoxColumn
 
         dvcIdProducto.DataPropertyName = "IDPRODUCTO"
         dvcIdProducto.HeaderText = "IdP"
@@ -53,7 +53,7 @@ Public Class FrmAjusteInventario
 
         dvcDescripcion.DataPropertyName = "DESCRIPCION"
         dvcDescripcion.HeaderText = "Descripción"
-        dvcDescripcion.Width = 340
+        dvcDescripcion.Width = 360
         grdDetalleAjusteInventario.Columns.Add(dvcDescripcion)
 
         dvcCantidad.DataPropertyName = "CANTIDAD"
@@ -73,11 +73,6 @@ Public Class FrmAjusteInventario
         dvcTotal.Width = 100
         dvcTotal.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleAjusteInventario.Columns.Add(dvcTotal)
-
-        dvcExc.DataPropertyName = "EXCENTO"
-        dvcExc.HeaderText = "Exc"
-        dvcExc.Width = 20
-        grdDetalleAjusteInventario.Columns.Add(dvcExc)
     End Sub
 
     Private Sub CargarDetalleAjusteInventario(ByVal ajusteInventario As AjusteInventario)
@@ -90,7 +85,6 @@ Public Class FrmAjusteInventario
             dtrRowDetAjusteInventario.Item(3) = detalle.Cantidad
             dtrRowDetAjusteInventario.Item(4) = detalle.PrecioCosto
             dtrRowDetAjusteInventario.Item(5) = dtrRowDetAjusteInventario.Item(3) * dtrRowDetAjusteInventario.Item(4)
-            dtrRowDetAjusteInventario.Item(6) = detalle.Excento
             dtbDetalleAjusteInventario.Rows.Add(dtrRowDetAjusteInventario)
         Next
         grdDetalleAjusteInventario.Refresh()
@@ -104,7 +98,6 @@ Public Class FrmAjusteInventario
             dtbDetalleAjusteInventario.Rows(intIndice).Item(3) += txtCantidad.Text
             dtbDetalleAjusteInventario.Rows(intIndice).Item(4) = producto.PrecioCosto
             dtbDetalleAjusteInventario.Rows(intIndice).Item(5) = dtbDetalleAjusteInventario.Rows(intIndice).Item(3) * dtbDetalleAjusteInventario.Rows(intIndice).Item(4)
-            dtbDetalleAjusteInventario.Rows(intIndice).Item(6) = producto.ParametroImpuesto.TasaImpuesto = 0
         Else
             dtrRowDetAjusteInventario = dtbDetalleAjusteInventario.NewRow
             dtrRowDetAjusteInventario.Item(0) = producto.IdProducto
@@ -113,46 +106,55 @@ Public Class FrmAjusteInventario
             dtrRowDetAjusteInventario.Item(3) = txtCantidad.Text
             dtrRowDetAjusteInventario.Item(4) = producto.PrecioCosto
             dtrRowDetAjusteInventario.Item(5) = dtrRowDetAjusteInventario.Item(3) * dtrRowDetAjusteInventario.Item(4)
-            dtrRowDetAjusteInventario.Item(6) = producto.ParametroImpuesto.TasaImpuesto = 0
             dtbDetalleAjusteInventario.Rows.Add(dtrRowDetAjusteInventario)
         End If
         grdDetalleAjusteInventario.Refresh()
     End Sub
 
-    Private Sub ValidarProducto()
-        If Not bolInit Then
-            If txtCodigo.Text <> "" Then
-                If FrmPrincipal.empresaGlobal.AutoCompletaProducto = True Then
-                    If txtCodigo.Text.IndexOf(" ") >= 0 Then
-                        txtCodigo.Text = txtCodigo.Text.Substring(0, txtCodigo.Text.IndexOf(" "))
-                    End If
-                End If
-                Try
-                    'producto = servicioMantenimiento.ObtenerProductoPorCodigo(txtCodigo.Text)
-                Catch ex As Exception
-                    MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                    Exit Sub
-                End Try
-                If producto Is Nothing Then
-                    MessageBox.Show("El código ingresado no existe. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-                    txtCodigo.Text = ""
-                    txtCantidad.Text = "1"
-                    txtPrecioCosto.Text = ""
-                    txtCodigo.Focus()
-                    Exit Sub
-                End If
-                If txtCantidad.Text = "" Then txtCantidad.Text = "1"
-                txtDescripcion.Text = producto.Descripcion
-                txtPrecioCosto.Text = FormatNumber(producto.PrecioCosto, 2)
+    Private Sub CargarDatosProducto(producto As Producto)
+        If producto Is Nothing Then
+            txtCodigo.Text = ""
+            txtDescripcion.Text = ""
+            txtPrecioCosto.Text = FormatNumber(0, 2)
+            txtCodigo.Focus()
+            Exit Sub
+        Else
+            Dim decTasaImpuesto As Decimal = producto.ParametroImpuesto.TasaImpuesto
+            txtCodigo.Text = producto.Codigo
+            If txtCantidad.Text = "" Then txtCantidad.Text = "1"
+            txtDescripcion.Text = producto.Descripcion
+            txtPrecioCosto.Text = FormatNumber(producto.PrecioCosto, 2)
+            If FrmPrincipal.bolModificaDescripcion = True Then
+                txtDescripcion.Focus()
+            Else
+                txtPrecioCosto.Focus()
             End If
         End If
     End Sub
+
+    Private Async Function CargarAutoCompletarProducto() As Task
+        Dim source As AutoCompleteStringCollection = New AutoCompleteStringCollection()
+        Dim listOfProducts As IList(Of Producto) = Await Puntoventa.ObtenerListadoProductos(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, 1, 0, True, FrmPrincipal.usuarioGlobal.Token)
+        For Each producto As Producto In listOfProducts
+            source.Add(String.Concat(producto.Codigo, " ", producto.Descripcion))
+        Next
+        txtCodigo.AutoCompleteCustomSource = source
+        txtCodigo.AutoCompleteSource = AutoCompleteSource.CustomSource
+        txtCodigo.AutoCompleteMode = AutoCompleteMode.SuggestAppend
+    End Function
 #End Region
 
 #Region "Eventos Controles"
-    Private Sub FrmAjusteInventario_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+    Private Sub FrmAjusteInventario_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        KeyPreview = True
+    End Sub
+
+    Private Async Sub FrmAjusteInventario_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
             txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
+            If FrmPrincipal.empresaGlobal.AutoCompletaProducto = True Then
+                Await CargarAutoCompletarProducto()
+            End If
             IniciaDetalleAjusteInventario()
             EstablecerPropiedadesDataGridView()
             grdDetalleAjusteInventario.DataSource = dtbDetalleAjusteInventario
@@ -176,11 +178,11 @@ Public Class FrmAjusteInventario
         txtDescAjuste.Focus()
     End Sub
 
-    Private Sub CmdAnular_Click(sender As Object, e As EventArgs) Handles CmdAnular.Click
+    Private Async Sub CmdAnular_Click(sender As Object, e As EventArgs) Handles CmdAnular.Click
         If txtIdAjuste.Text <> "" Then
             If MessageBox.Show("Desea anular este registro?", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
                 Try
-                    'servicioMantenimiento.AnularAjusteInventario(txtIdAjuste.Text, FrmMenuPrincipal.usuarioGlobal.IdUsuario)
+                    Await Puntoventa.AnularAjusteInventario(txtIdAjuste.Text, FrmPrincipal.usuarioGlobal.IdUsuario, FrmPrincipal.usuarioGlobal.Token)
                 Catch ex As Exception
                     MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
@@ -191,13 +193,13 @@ Public Class FrmAjusteInventario
         End If
     End Sub
 
-    Private Sub CmdBuscar_Click(sender As Object, e As EventArgs) Handles CmdBuscar.Click
+    Private Async Sub CmdBuscar_Click(sender As Object, e As EventArgs) Handles CmdBuscar.Click
         Dim formBusqueda As New FrmBusquedaAjusteInventario()
         FrmPrincipal.intBusqueda = 0
         formBusqueda.ShowDialog()
         If FrmPrincipal.intBusqueda > 0 Then
             Try
-                'ajusteInventario = servicioMantenimiento.ObtenerAjusteInventario(FrmMenuPrincipal.intBusqueda)
+                ajusteInventario = Await Puntoventa.ObtenerAjusteInventario(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
@@ -214,7 +216,7 @@ Public Class FrmAjusteInventario
         End If
     End Sub
 
-    Private Sub CmdGuardar_Click(sender As Object, e As EventArgs) Handles CmdGuardar.Click
+    Private Async Sub CmdGuardar_Click(sender As Object, e As EventArgs) Handles CmdGuardar.Click
         If txtFecha.Text = "" Or txtDescAjuste.Text = "" Or grdDetalleAjusteInventario.RowCount = 0 Then
             MessageBox.Show("Información incompleta.  Favor verificar. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
@@ -222,6 +224,7 @@ Public Class FrmAjusteInventario
         If txtIdAjuste.Text = "" Then
             ajusteInventario = New AjusteInventario With {
                 .IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa,
+                .IdSucursal = FrmPrincipal.equipoGlobal.IdSucursal,
                 .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
                 .Fecha = Now(),
                 .Descripcion = txtDescAjuste.Text
@@ -230,14 +233,12 @@ Public Class FrmAjusteInventario
                 detalleAjusteInventario = New DetalleAjusteInventario With {
                     .IdProducto = dtbDetalleAjusteInventario.Rows(I).Item(0),
                     .Cantidad = dtbDetalleAjusteInventario.Rows(I).Item(3),
-                    .PrecioCosto = dtbDetalleAjusteInventario.Rows(I).Item(4),
-                    .Excento = dtbDetalleAjusteInventario.Rows(I).Item(6)
+                    .PrecioCosto = dtbDetalleAjusteInventario.Rows(I).Item(4)
                 }
                 ajusteInventario.DetalleAjusteInventario.Add(detalleAjusteInventario)
             Next
             Try
-                'ajusteInventario = servicioMantenimiento.AgregarAjusteInventario(ajusteInventario)
-                txtIdAjuste.Text = ajusteInventario.IdAjuste
+                txtIdAjuste.Text = Await Puntoventa.AgregarAjusteInventario(ajusteInventario, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
                 txtIdAjuste.Text = ""
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -262,10 +263,10 @@ Public Class FrmAjusteInventario
                 .strFecha = txtFecha.Text,
                 .strDescripcion = txtDescAjuste.Text
             }
-            arrDetalleAjusteInventario = New List(Of ModuloImpresion.clsDetalleComprobante)
+            arrDetalleAjusteInventario = New List(Of ModuloImpresion.ClsDetalleComprobante)
             For I = 0 To dtbDetalleAjusteInventario.Rows.Count - 1
                 If dtbDetalleAjusteInventario.Rows(I).Item(7) > 0 Then
-                    detalleComprobante = New ModuloImpresion.clsDetalleComprobante With {
+                    detalleComprobante = New ModuloImpresion.ClsDetalleComprobante With {
                         .strDescripcion = dtbDetalleAjusteInventario.Rows(I).Item(1) + "-" + dtbDetalleAjusteInventario.Rows(I).Item(2),
                         .strCantidad = CDbl(dtbDetalleAjusteInventario.Rows(I).Item(7)),
                         .strPrecio = FormatNumber(dtbDetalleAjusteInventario.Rows(I).Item(4), 2),
@@ -284,7 +285,7 @@ Public Class FrmAjusteInventario
         End If
     End Sub
 
-    Private Sub BtnBusProd_Click(sender As Object, e As EventArgs) Handles btnBusProd.Click
+    Private Async Sub BtnBusProd_Click(sender As Object, e As EventArgs) Handles btnBusProd.Click
         Dim formBusProd As New FrmBusquedaProducto With {
             .bolIncluyeServicios = False,
             .intIdSucursal = FrmPrincipal.equipoGlobal.IdSucursal
@@ -292,19 +293,35 @@ Public Class FrmAjusteInventario
         FrmPrincipal.strBusqueda = ""
         formBusProd.ShowDialog()
         If Not FrmPrincipal.strBusqueda.Equals("") Then
-            txtCodigo.Text = FrmPrincipal.strBusqueda
-            ValidarProducto()
+            Dim intIdProducto As Integer = Integer.Parse(FrmPrincipal.strBusqueda)
+            Try
+                producto = Await Puntoventa.ObtenerProducto(intIdProducto, FrmPrincipal.usuarioGlobal.Token)
+            Catch ex As Exception
+                MessageBox.Show("Error al obtener la información del producto seleccionado. Intente mas tarde.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Exit Sub
+            End Try
+            CargarDatosProducto(producto)
         End If
-        txtCodigo.Focus()
     End Sub
 
-    Private Sub BtnInsertar_Click(sender As Object, e As EventArgs) Handles btnInsertar.Click
-        If txtCodigo.Text <> "" And txtCantidad.Text <> "" Then
+    Private Async Sub BtnInsertar_Click(sender As Object, e As EventArgs) Handles btnInsertar.Click
+        If producto Is Nothing Then
+            If txtCodigo.Text <> "" Then
+                producto = Await Puntoventa.ObtenerProductoPorCodigo(FrmPrincipal.empresaGlobal.IdEmpresa, txtCodigo.Text, FrmPrincipal.usuarioGlobal.Token)
+                If producto IsNot Nothing Then
+                    CargarLineaDetalleAjusteInventario(producto)
+                    txtCodigo.Text = ""
+                    producto = Nothing
+                    txtCodigo.Focus()
+                End If
+            End If
+        Else
             CargarLineaDetalleAjusteInventario(producto)
+            txtCantidad.Text = "1"
             txtCodigo.Text = ""
             txtDescripcion.Text = ""
-            txtCantidad.Text = "1"
             txtPrecioCosto.Text = ""
+            producto = Nothing
             txtCodigo.Focus()
         End If
     End Sub
@@ -317,8 +334,24 @@ Public Class FrmAjusteInventario
         End If
     End Sub
 
+    Private Async Sub TxtCodigo_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtCodigo.PreviewKeyDown
+        If e.KeyCode = Keys.Tab Then
+            Try
+                producto = Await Puntoventa.ObtenerProductoPorCodigo(FrmPrincipal.empresaGlobal.IdEmpresa, txtCodigo.Text, FrmPrincipal.usuarioGlobal.Token)
+            Catch ex As Exception
+                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Exit Sub
+            End Try
+            CargarDatosProducto(producto)
+        End If
+    End Sub
+
+    Private Sub TxtCantidad_Validated(sender As Object, e As EventArgs) Handles txtCantidad.Validated
+        If txtCantidad.Text = "" Then txtCantidad.Text = "1"
+    End Sub
+
     Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As KeyPressEventArgs) Handles txtCantidad.KeyPress
-        FrmPrincipal.ValidaNumero(e, sender, True, 2, ".")
+        FrmPrincipal.ValidaNumero(e, sender, True, 2, ".", True)
     End Sub
 #End Region
 End Class

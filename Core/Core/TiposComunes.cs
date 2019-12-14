@@ -518,17 +518,34 @@ namespace LeandroSoftware.Core.TiposComunes
         {
         }
 
-        public TrasladoDetalle(int id, string fecha, string sucursalDestino, decimal total)
+        public TrasladoDetalle(int id, string fecha, string nombreSucursal, decimal total)
         {
             IdTraslado = id;
             Fecha = fecha;
-            SucursalDestino = sucursalDestino;
+            NombreSucursal = nombreSucursal;
             Total = total;
         }
         public int IdTraslado { get; set; }
         public string Fecha { get; set; }
-        public string SucursalDestino { get; set; }
+        public string NombreSucursal { get; set; }
         public decimal Total { get; set; }
+    }
+
+    public class AjusteInventarioDetalle
+    {
+        public AjusteInventarioDetalle()
+        {
+        }
+
+        public AjusteInventarioDetalle(int id, string fecha, string descripcion)
+        {
+            IdAjuste = id;
+            Fecha = fecha;
+            Descripcion = descripcion;
+        }
+        public int IdAjuste { get; set; }
+        public string Fecha { get; set; }
+        public string Descripcion { get; set; }
     }
 
     public class CompraDetalle

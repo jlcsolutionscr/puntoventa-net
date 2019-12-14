@@ -1566,6 +1566,50 @@ namespace LeandroSoftware.ClienteWCF
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 
+        public static async Task<int> ObtenerTotalListaAjusteInventario(int intIdEmpresa, string strToken, int intIdAjuste = 0, string strDescripcion = "")
+        {
+            string strDatos = "{NombreMetodo: 'ObtenerTotalListaAjusteInventario', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdAjuste: " + intIdAjuste + ", Descripcion: '" + strDescripcion + "'}}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            int intCantidad = 0;
+            if (respuesta != "")
+                intCantidad = serializer.Deserialize<int>(respuesta);
+            return intCantidad;
+        }
+
+        public static async Task<List<AjusteInventarioDetalle>> ObtenerListadoAjusteInventario(int intIdEmpresa, int intNumeroPagina, int intFilasPorPagina, string strToken, int intIdAjuste = 0, string strDescripcion = "")
+        {
+            string strDatos = "{NombreMetodo: 'ObtenerListadoAjusteInventario', Parametros: {IdEmpresa: " + intIdEmpresa + ", NumeroPagina: " + intNumeroPagina + ",FilasPorPagina: " + intFilasPorPagina + ", IdAjuste: " + intIdAjuste + ", Descripcion: '" + strDescripcion + "'}}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            List<AjusteInventarioDetalle> listado = new List<AjusteInventarioDetalle>();
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<AjusteInventarioDetalle>>(respuesta);
+            return listado;
+        }
+
+        public static async Task<AjusteInventario> ObtenerAjusteInventario(int intIdAjusteInventario, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'ObtenerAjusteInventario', Parametros: {IdAjuste: " + intIdAjusteInventario + "}}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            AjusteInventario ajusteInventario = null;
+            if (respuesta != "")
+                ajusteInventario = serializer.Deserialize<AjusteInventario>(respuesta);
+            return ajusteInventario;
+        }
+
+        public static async Task<string> AgregarAjusteInventario(AjusteInventario AjusteInventario, string strToken)
+        {
+            string strEntidad = serializer.Serialize(AjusteInventario);
+            string strDatos = "{NombreMetodo: 'AgregarAjusteInventario', Entidad: " + strEntidad + "}";
+            string strId = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            return serializer.Deserialize<string>(strId);
+        }
+
+        public static async Task AnularAjusteInventario(int intIdAjusteInventario, int intIdUsuario, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'AnularAjusteInventario', Parametros: {IdAjuste: " + intIdAjusteInventario + ", IdUsuario: " + intIdUsuario + "}}";
+            await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
+        }
+
         public static async Task<DocumentoElectronico> ObtenerDocumentoElectronico(int intIdDocumento, string strToken)
         {
             string strDatos = "{NombreMetodo: 'ObtenerDocumentoElectronico', Parametros: {IdDocumento: " + intIdDocumento + "}}";

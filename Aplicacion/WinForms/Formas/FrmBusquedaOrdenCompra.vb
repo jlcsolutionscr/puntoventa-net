@@ -1,6 +1,6 @@
 Public Class FrmBusquedaOrdenCompra
 #Region "Variables"
-    Private intTotalEmpresas As Integer
+    Private intTotalRegistros As Integer
     Private intIndiceDePagina As Integer
     Private intFilasPorPagina As Integer = 13
     Private intCantidadDePaginas As Integer
@@ -43,16 +43,15 @@ Public Class FrmBusquedaOrdenCompra
         dgvListado.Refresh()
     End Sub
 
-    Private Sub ValidarCantidadEmpresas()
+    Private Sub ValidarCantidadRegistros()
         Try
-            'intTotalEmpresas = servicioCompras.ObtenerTotalListaOrdenesCompra(FrmMenuPrincipal.empresaGlobal.IdEmpresa, bolIncluyeTodo, intId, txtNombre.Text)
+            'intTotalRegistros = servicioCompras.ObtenerTotalListaOrdenesCompra(FrmMenuPrincipal.empresaGlobal.IdEmpresa, bolIncluyeTodo, intId, txtNombre.Text)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
             Exit Sub
         End Try
-        intCantidadDePaginas = Math.Truncate(intTotalEmpresas / intFilasPorPagina) + IIf((intTotalEmpresas Mod intFilasPorPagina) = 0, 0, 1)
-
+        intCantidadDePaginas = Math.Truncate(intTotalRegistros / intFilasPorPagina) + IIf((intTotalRegistros Mod intFilasPorPagina) = 0, 0, 1)
         If intCantidadDePaginas > 1 Then
             btnLast.Enabled = True
             btnNext.Enabled = True
@@ -103,7 +102,7 @@ Public Class FrmBusquedaOrdenCompra
     Private Sub FrmBusProd_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
             EstablecerPropiedadesDataGridView()
-            ValidarCantidadEmpresas()
+            ValidarCantidadRegistros()
             intIndiceDePagina = 1
             ActualizarDatos(intIndiceDePagina)
         Catch ex As Exception
@@ -126,7 +125,7 @@ Public Class FrmBusquedaOrdenCompra
         Else
             intId = CInt(txtId.Text)
         End If
-        ValidarCantidadEmpresas()
+        ValidarCantidadRegistros()
         intIndiceDePagina = 1
         ActualizarDatos(intIndiceDePagina)
     End Sub

@@ -36,7 +36,7 @@ Public Class FrmPrincipal
         Return FormatDateTime(fecha, DateFormat.ShortDate)
     End Function
 
-    Public Sub ValidaNumero(ByVal e As KeyPressEventArgs, ByVal oText As TextBox, Optional ByVal pbConPuntoDec As Boolean = True, Optional ByVal pnNumDecimal As Integer = 2, Optional ByVal psSimbolo As String = ".")
+    Public Sub ValidaNumero(ByVal e As KeyPressEventArgs, ByVal oText As TextBox, Optional ByVal pbConPuntoDec As Boolean = True, Optional ByVal pnNumDecimal As Integer = 2, Optional ByVal psSimbolo As String = ".", Optional ByVal bolNegativo As Boolean = False)
         Dim nDig As Integer
         Dim sTexto As String = String.Concat(oText.Text, e.KeyChar)
         If Asc(e.KeyChar) = Keys.Back Or Asc(e.KeyChar) = Keys.Return Then
@@ -44,7 +44,9 @@ Public Class FrmPrincipal
             Exit Sub
         End If
         If pbConPuntoDec Then
-            If Char.IsDigit(e.KeyChar) Or e.KeyChar = psSimbolo Then
+            If bolNegativo And Asc(e.KeyChar) = 45 Then
+                e.Handled = False
+            ElseIf Char.IsDigit(e.KeyChar) Or e.KeyChar = psSimbolo Then
                 e.Handled = False
             ElseIf Char.IsControl(e.KeyChar) Then
                 e.Handled = False
@@ -61,7 +63,9 @@ Public Class FrmPrincipal
                 End If
             End If
         Else
-            If Char.IsDigit(e.KeyChar) Then
+            If bolNegativo And Asc(e.KeyChar) = Keys.Subtract Then
+                e.Handled = False
+            ElseIf Char.IsDigit(e.KeyChar) Then
                 e.Handled = False
             ElseIf Char.IsControl(e.KeyChar) Then
                 e.Handled = False
@@ -254,21 +258,14 @@ Public Class FrmPrincipal
         formProforma.Show()
     End Sub
 
-    Public Sub MnuCapturaCompra_Click(sender As Object, e As EventArgs) Handles MnuCapturaCompra.Click
-        Dim formCompra As New FrmCompra With {
-            .MdiParent = Me
-        }
-        formCompra.Show()
-    End Sub
-
-    Public Sub MnuCapturaOrden_Click(sender As Object, e As EventArgs) Handles MnuCapturaOrden.Click
+    Public Sub MnuCapturaOrden_Click(sender As Object, e As EventArgs)
         Dim formOrdenCompra As New FrmOrdenCompra With {
             .MdiParent = Me
         }
         formOrdenCompra.Show()
     End Sub
 
-    Private Sub MnuCapturaDevolucionProveedor_Click(sender As Object, e As EventArgs) Handles MnuDevolucionProveedor.Click
+    Private Sub MnuCapturaDevolucionProveedor_Click(sender As Object, e As EventArgs)
         Dim formDevolucionProveedores As New FrmDevolucionAProveedores With {
             .MdiParent = Me
         }
@@ -282,32 +279,19 @@ Public Class FrmPrincipal
         formDevolucionClientes.Show()
     End Sub
 
-    Private Sub MnuCapturaTraslado_Click(sender As Object, e As EventArgs) Handles MnuCapturaTraslado.Click
-        Dim formTraslado As New FrmTrasladoMercaderia With {
-            .MdiParent = Me
-        }
-        formTraslado.Show()
-    End Sub
 
-    Private Sub MnuCapturaIngreso_Click(sender As Object, e As EventArgs) Handles MnuCapturaIngreso.Click
+    Private Sub MnuCapturaIngreso_Click(sender As Object, e As EventArgs)
         Dim formIngreso As New FrmIngreso With {
             .MdiParent = Me
         }
         formIngreso.Show()
     End Sub
 
-    Private Sub MnuCapturaEgreso_Click(sender As Object, e As EventArgs) Handles MnuCapturaEgreso.Click
+    Private Sub MnuCapturaEgreso_Click(sender As Object, e As EventArgs)
         Dim formEgreso As New FrmEgreso With {
             .MdiParent = Me
         }
         formEgreso.Show()
-    End Sub
-
-    Private Sub MnuCapturaAI_Click(sender As Object, e As EventArgs) Handles MnuCapturaAI.Click
-        Dim formAjusteInventario As New FrmAjusteInventario With {
-            .MdiParent = Me
-        }
-        formAjusteInventario.Show()
     End Sub
 
     Public Sub MnuApRCxC_Click(sender As Object, e As EventArgs) Handles MnuApRCxC.Click
@@ -543,6 +527,34 @@ Public Class FrmPrincipal
             .NullValue = "0",
             .Alignment = DataGridViewContentAlignment.MiddleCenter
         }
+    End Sub
+
+    Private Sub MnuCompraRegistro_Click(sender As Object, e As EventArgs) Handles MnuCompraRegistro.Click
+        Dim formCompra As New FrmCompra With {
+            .MdiParent = Me
+        }
+        formCompra.Show()
+    End Sub
+
+    Private Sub MnuCompraTraslado_Click(sender As Object, e As EventArgs) Handles MnuCompraTraslado.Click
+        Dim formTraslado As New FrmTrasladoMercaderia With {
+           .MdiParent = Me
+       }
+        formTraslado.Show()
+    End Sub
+
+    Private Sub MnuCompraAplicTraslado_Click(sender As Object, e As EventArgs) Handles MnuCompraAplicTraslado.Click
+        Dim formAplicaTraslado As New FrmAplicaTraslado With {
+           .MdiParent = Me
+       }
+        formAplicaTraslado.Show()
+    End Sub
+
+    Private Sub MnuCompraAjusteInv_Click(sender As Object, e As EventArgs) Handles MnuCompraAjusteInv.Click
+        Dim formAjusteInventario As New FrmAjusteInventario With {
+            .MdiParent = Me
+        }
+        formAjusteInventario.Show()
     End Sub
 #End Region
 End Class

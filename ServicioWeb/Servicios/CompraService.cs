@@ -292,8 +292,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             IdSucursal = compra.IdSucursal,
                             Fecha = DateTime.Now,
                             Tipo = StaticTipoMovimientoProducto.Entrada,
-                            Origen = "Registro de compra",
-                            Referencia = compra.NoDocumento,
+                            Origen = "Registro de compra de mercancía",
                             Cantidad = detalleCompra.Cantidad,
                             PrecioCosto = detalleCompra.PrecioCosto
                         };
@@ -579,8 +578,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             IdSucursal = compra.IdSucursal,
                             Fecha = DateTime.Now,
                             Tipo = StaticTipoMovimientoProducto.Salida,
-                            Origen = "Anulación registro de compra",
-                            Referencia = compra.NoDocumento,
+                            Origen = "Anulación registro de comprade mercancía",
                             Cantidad = detalleCompra.Cantidad,
                             PrecioCosto = detalleCompra.PrecioCosto
                         };
@@ -913,8 +911,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 IdSucursal = compra.IdSucursal,
                                 Fecha = DateTime.Now,
                                 Tipo = StaticTipoMovimientoProducto.Salida,
-                                Origen = "Registro de devolución de mercancía al proveedor.",
-                                Referencia = devolucion.IdCompra.ToString(),
+                                Origen = "Registro de devolución de mercancía al proveedor",
                                 Cantidad = detalleDevolucion.CantDevolucion,
                                 PrecioCosto = detalleDevolucion.PrecioCosto
                             };
@@ -1139,8 +1136,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             IdSucursal = compra.IdSucursal,
                             Fecha = DateTime.Now,
                             Tipo = StaticTipoMovimientoProducto.Entrada,
-                            Origen = "Anulación de registro de devolución de mercancía al proveedor.",
-                            Referencia = devolucion.IdCompra.ToString(),
+                            Origen = "Anulación de registro de devolución de mercancía al proveedor",
                             Cantidad = detalleDevolucion.CantDevolucion,
                             PrecioCosto = detalleDevolucion.PrecioCosto
                         };

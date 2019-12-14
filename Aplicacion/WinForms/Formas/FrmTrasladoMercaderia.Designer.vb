@@ -188,7 +188,6 @@ Partial Class FrmTrasladoMercaderia
         Me.txtIdTraslado.AcceptsReturn = True
         Me.txtIdTraslado.BackColor = System.Drawing.SystemColors.Window
         Me.txtIdTraslado.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtIdTraslado.Enabled = False
         Me.txtIdTraslado.ForeColor = System.Drawing.SystemColors.WindowText
         Me.txtIdTraslado.Location = New System.Drawing.Point(113, 41)
         Me.txtIdTraslado.MaxLength = 0
@@ -234,7 +233,6 @@ Partial Class FrmTrasladoMercaderia
         Me.txtFecha.AcceptsReturn = True
         Me.txtFecha.BackColor = System.Drawing.SystemColors.Window
         Me.txtFecha.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtFecha.Enabled = False
         Me.txtFecha.ForeColor = System.Drawing.SystemColors.WindowText
         Me.txtFecha.Location = New System.Drawing.Point(113, 67)
         Me.txtFecha.MaxLength = 0
@@ -490,7 +488,6 @@ Partial Class FrmTrasladoMercaderia
         Me.txtNombreSucursalOrigen.AcceptsReturn = True
         Me.txtNombreSucursalOrigen.BackColor = System.Drawing.SystemColors.Window
         Me.txtNombreSucursalOrigen.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtNombreSucursalOrigen.Enabled = False
         Me.txtNombreSucursalOrigen.ForeColor = System.Drawing.SystemColors.WindowText
         Me.txtNombreSucursalOrigen.Location = New System.Drawing.Point(113, 93)
         Me.txtNombreSucursalOrigen.MaxLength = 0

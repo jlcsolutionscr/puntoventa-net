@@ -3,7 +3,7 @@ Imports LeandroSoftware.ClienteWCF
 
 Public Class FrmBusquedaEgreso
 #Region "Variables"
-    Private intTotalEmpresas As Integer
+    Private intTotalRegistros As Integer
     Private intIndiceDePagina As Integer
     Private intFilasPorPagina As Integer = 13
     Private intCantidadDePaginas As Integer
@@ -38,15 +38,15 @@ Public Class FrmBusquedaEgreso
         dgvListado.Refresh()
     End Function
 
-    Private Async Function ValidarCantidadEgresos() As Task
+    Private Async Function ValidarCantidadRegistros() As Task
         Try
-            intTotalEmpresas = Await Puntoventa.ObtenerTotalListaEgresos(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token, intId, "", txtDetalle.Text)
+            intTotalRegistros = Await Puntoventa.ObtenerTotalListaEgresos(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token, intId, "", txtDetalle.Text)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
             Exit Function
         End Try
-        intCantidadDePaginas = Math.Truncate(intTotalEmpresas / intFilasPorPagina) + IIf((intTotalEmpresas Mod intFilasPorPagina) = 0, 0, 1)
+        intCantidadDePaginas = Math.Truncate(intTotalRegistros / intFilasPorPagina) + IIf((intTotalRegistros Mod intFilasPorPagina) = 0, 0, 1)
         If intCantidadDePaginas > 1 Then
             btnLast.Enabled = True
             btnNext.Enabled = True
@@ -93,7 +93,7 @@ Public Class FrmBusquedaEgreso
     Private Async Sub FrmBusEgreso_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
             EstablecerPropiedadesDataGridView()
-            Await ValidarCantidadEgresos()
+            Await ValidarCantidadRegistros()
             intIndiceDePagina = 1
             Await ActualizarDatos(intIndiceDePagina)
         Catch ex As Exception
@@ -116,7 +116,7 @@ Public Class FrmBusquedaEgreso
         Else
             intId = CInt(txtId.Text)
         End If
-        Await ValidarCantidadEgresos()
+        Await ValidarCantidadRegistros()
         intIndiceDePagina = 1
         Await ActualizarDatos(intIndiceDePagina)
     End Sub

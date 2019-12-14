@@ -5,7 +5,7 @@ Public Class FrmBusquedaProducto
 #Region "Variables"
     Public bolIncluyeServicios As Boolean
     Public intIdSucursal As Integer
-    Private intTotalEmpresas As Integer
+    Private intTotalRegistros As Integer
     Private intIndiceDePagina As Integer
     Private intFilasPorPagina As Integer = 13
     Private intCantidadDePaginas As Integer
@@ -79,15 +79,15 @@ Public Class FrmBusquedaProducto
         dgvListado.Refresh()
     End Function
 
-    Private Async Function ValidarCantidadProductos() As Task
+    Private Async Function ValidarCantidadRegistros() As Task
         Try
-            intTotalEmpresas = Await Puntoventa.ObtenerTotalListaProductos(FrmPrincipal.empresaGlobal.IdEmpresa, intIdSucursal, bolIncluyeServicios, FrmPrincipal.usuarioGlobal.Token, cboLinea.SelectedValue, TxtCodigo.Text, txtCodigoProveedor.Text, TxtDesc.Text)
+            intTotalRegistros = Await Puntoventa.ObtenerTotalListaProductos(FrmPrincipal.empresaGlobal.IdEmpresa, intIdSucursal, bolIncluyeServicios, FrmPrincipal.usuarioGlobal.Token, cboLinea.SelectedValue, TxtCodigo.Text, txtCodigoProveedor.Text, TxtDesc.Text)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
             Exit Function
         End Try
-        intCantidadDePaginas = Math.Truncate(intTotalEmpresas / intFilasPorPagina) + IIf((intTotalEmpresas Mod intFilasPorPagina) = 0, 0, 1)
+        intCantidadDePaginas = Math.Truncate(intTotalRegistros / intFilasPorPagina) + IIf((intTotalRegistros Mod intFilasPorPagina) = 0, 0, 1)
         If intCantidadDePaginas > 1 Then
             btnLast.Enabled = True
             btnNext.Enabled = True
@@ -128,7 +128,7 @@ Public Class FrmBusquedaProducto
     End Sub
 
     Private Async Sub CmdFiltro_Click(sender As Object, e As EventArgs) Handles CmdFiltro.Click
-        Await ValidarCantidadProductos()
+        Await ValidarCantidadRegistros()
         intIndiceDePagina = 1
         Await ActualizarDatos(intIndiceDePagina)
     End Sub
@@ -144,7 +144,7 @@ Public Class FrmBusquedaProducto
         Try
             Await CargarComboBox()
             EstablecerPropiedadesDataGridView()
-            Await ValidarCantidadProductos()
+            Await ValidarCantidadRegistros()
             intIndiceDePagina = 1
             Await ActualizarDatos(intIndiceDePagina)
         Catch ex As Exception

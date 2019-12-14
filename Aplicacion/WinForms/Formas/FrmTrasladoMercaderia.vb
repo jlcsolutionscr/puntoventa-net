@@ -29,7 +29,6 @@ Public Class FrmTrasladoMercaderia
         dtbDetalleTraslado.Columns.Add("CANTIDAD", GetType(Decimal))
         dtbDetalleTraslado.Columns.Add("PRECIOCOSTO", GetType(Decimal))
         dtbDetalleTraslado.Columns.Add("TOTAL", GetType(Decimal))
-        dtbDetalleTraslado.Columns.Add("EXCENTO", GetType(Integer))
         dtbDetalleTraslado.PrimaryKey = {dtbDetalleTraslado.Columns(0)}
     End Sub
 
@@ -79,13 +78,6 @@ Public Class FrmTrasladoMercaderia
         dvcTotal.Width = 100
         dvcTotal.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleTraslado.Columns.Add(dvcTotal)
-
-        dvcExc.DataPropertyName = "EXCENTO"
-        dvcExc.HeaderText = "Exc"
-        dvcExc.Width = 20
-        dvcExc.Visible = True
-        dvcExc.ReadOnly = True
-        grdDetalleTraslado.Columns.Add(dvcExc)
     End Sub
 
     Private Sub CargarDetalleTraslado(ByVal traslado As Traslado)
@@ -98,7 +90,6 @@ Public Class FrmTrasladoMercaderia
             dtrRowDetTraslado.Item(3) = detalle.Cantidad
             dtrRowDetTraslado.Item(4) = detalle.PrecioCosto
             dtrRowDetTraslado.Item(5) = dtrRowDetTraslado.Item(3) * dtrRowDetTraslado.Item(4)
-            dtrRowDetTraslado.Item(6) = detalle.Producto.ParametroImpuesto.TasaImpuesto = 0
             dtbDetalleTraslado.Rows.Add(dtrRowDetTraslado)
         Next
         grdDetalleTraslado.Refresh()
@@ -112,7 +103,6 @@ Public Class FrmTrasladoMercaderia
             dtbDetalleTraslado.Rows(intIndice).Item(3) += txtCantidad.Text
             dtbDetalleTraslado.Rows(intIndice).Item(4) = producto.PrecioCosto
             dtbDetalleTraslado.Rows(intIndice).Item(5) = dtbDetalleTraslado.Rows(intIndice).Item(3) * dtbDetalleTraslado.Rows(intIndice).Item(4)
-            dtbDetalleTraslado.Rows(intIndice).Item(6) = producto.ParametroImpuesto.TasaImpuesto = 0
         Else
             dtrRowDetTraslado = dtbDetalleTraslado.NewRow
             dtrRowDetTraslado.Item(0) = producto.IdProducto
@@ -121,10 +111,10 @@ Public Class FrmTrasladoMercaderia
             dtrRowDetTraslado.Item(3) = txtCantidad.Text
             dtrRowDetTraslado.Item(4) = producto.PrecioCosto
             dtrRowDetTraslado.Item(5) = dtrRowDetTraslado.Item(3) * dtrRowDetTraslado.Item(4)
-            dtrRowDetTraslado.Item(6) = producto.ParametroImpuesto.TasaImpuesto = 0
             dtbDetalleTraslado.Rows.Add(dtrRowDetTraslado)
         End If
         grdDetalleTraslado.Refresh()
+        CargarTotales()
     End Sub
 
     Private Sub CargarTotales()
@@ -136,10 +126,10 @@ Public Class FrmTrasladoMercaderia
     End Sub
 
     Private Async Function CargarCombos() As Task
-        cboIdSucursalDestino.ValueMember = "IdSucursal"
-        cboIdSucursalDestino.DisplayMember = "Nombre"
+        cboIdSucursalDestino.ValueMember = "Id"
+        cboIdSucursalDestino.DisplayMember = "Descripcion"
         cboIdSucursalDestino.DataSource = Await Puntoventa.ObtenerListadoSucursalDestino(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, FrmPrincipal.usuarioGlobal.Token)
-        cboIdSucursalDestino.SelectedValue = 0
+        cboIdSucursalDestino.SelectedIndex = 0
     End Function
 
     Private Sub CargarDatosProducto(producto As Producto)
@@ -270,7 +260,7 @@ Public Class FrmTrasladoMercaderia
 
     Private Async Sub BtnBusProd_Click(sender As Object, e As EventArgs) Handles btnBusProd.Click
         Dim formBusProd As New FrmBusquedaProducto With {
-            .bolIncluyeServicios = True,
+            .bolIncluyeServicios = False,
             .intIdSucursal = FrmPrincipal.equipoGlobal.IdSucursal
         }
         FrmPrincipal.strBusqueda = ""
@@ -288,14 +278,15 @@ Public Class FrmTrasladoMercaderia
     End Sub
 
     Private Async Sub btnGuardar_Click(sender As Object, e As EventArgs) Handles btnGuardar.Click
-        btnImprimir.Focus()
-        btnGuardar.Enabled = False
-        If Not cboIdSucursalDestino.SelectedValue Is Nothing And txtFecha.Text <> "" And txtReferencia.Text <> "" And CDbl(txtTotal.Text) > 0 Then
+        If Not cboIdSucursalDestino.SelectedValue Is Nothing And txtFecha.Text <> "" And CDbl(txtTotal.Text) > 0 Then
+            btnImprimir.Focus()
+            btnGuardar.Enabled = False
             If txtIdTraslado.Text = "" Then
                 traslado = New Traslado With {
                     .IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa,
                     .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
                     .IdSucursalOrigen = FrmPrincipal.equipoGlobal.IdSucursal,
+                    .IdSucursalDestino = cboIdSucursalDestino.SelectedValue,
                     .Fecha = FrmPrincipal.ObtenerFechaFormateada(Now()),
                     .Referencia = txtReferencia.Text,
                     .Total = dblTotal
@@ -304,8 +295,7 @@ Public Class FrmTrasladoMercaderia
                     detalleTraslado = New DetalleTraslado With {
                         .IdProducto = dtbDetalleTraslado.Rows(I).Item(0),
                         .Cantidad = dtbDetalleTraslado.Rows(I).Item(3),
-                        .PrecioCosto = dtbDetalleTraslado.Rows(I).Item(4),
-                        .Excento = dtbDetalleTraslado.Rows(I).Item(6)
+                        .PrecioCosto = dtbDetalleTraslado.Rows(I).Item(4)
                     }
                     traslado.DetalleTraslado.Add(detalleTraslado)
                 Next
@@ -396,11 +386,6 @@ Public Class FrmTrasladoMercaderia
             CargarTotales()
             txtCodigo.Focus()
         End If
-    End Sub
-
-    Private Sub PrecioCosto_Validated(ByVal sender As Object, ByVal e As EventArgs) Handles txtPrecioCosto.Validated
-        If txtPrecioCosto.Text = "" Then txtPrecioCosto.Text = "0"
-        txtPrecioCosto.Text = FormatNumber(txtPrecioCosto.Text, 2)
     End Sub
 
     Private Async Sub TxtCodigo_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtCodigo.PreviewKeyDown

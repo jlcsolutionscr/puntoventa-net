@@ -15,7 +15,6 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public decimal Cantidad { get; set; }
         public string Tipo { get; set; }
         public string Origen { get; set; }
-        public string Referencia { get; set; }
         public decimal PrecioCosto { get; set; }
     }
 }

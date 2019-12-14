@@ -3,7 +3,7 @@ Imports LeandroSoftware.Core.Dominio.Entidades
 
 Public Class FrmMovimientoProducto
 #Region "Variables"
-    Private intTotalEmpresas As Integer
+    Private intTotalRegistros As Integer
     Private intIndiceDePagina As Integer
     Private intFilasPorPagina As Integer = 13
     Private intCantidadDePaginas As Integer
@@ -19,7 +19,6 @@ Public Class FrmMovimientoProducto
         Dim dvcFecha As New DataGridViewTextBoxColumn
         Dim dvcTipo As New DataGridViewTextBoxColumn
         Dim dvcOrigen As New DataGridViewTextBoxColumn
-        Dim dvcReferencia As New DataGridViewTextBoxColumn
         Dim dvcCantidad As New DataGridViewTextBoxColumn
         Dim dvcPrecioCosto As New DataGridViewTextBoxColumn
 
@@ -35,13 +34,8 @@ Public Class FrmMovimientoProducto
 
         dvcOrigen.DataPropertyName = "Origen"
         dvcOrigen.HeaderText = "Origen"
-        dvcOrigen.Width = 200
+        dvcOrigen.Width = 300
         dgvListado.Columns.Add(dvcOrigen)
-
-        dvcReferencia.DataPropertyName = "Referencia"
-        dvcReferencia.HeaderText = "Referencia"
-        dvcReferencia.Width = 100
-        dgvListado.Columns.Add(dvcReferencia)
 
         dvcCantidad.DataPropertyName = "Cantidad"
         dvcCantidad.HeaderText = "Cant"
@@ -67,16 +61,15 @@ Public Class FrmMovimientoProducto
         dgvListado.Refresh()
     End Function
 
-    Private Async Function ValidarCantidadEmpresas() As Threading.Tasks.Task
+    Private Async Function ValidarCantidadRegistros() As Threading.Tasks.Task
         Try
-            intTotalEmpresas = Await Puntoventa.ObtenerTotalMovimientosPorProducto(intIdProducto, intIdSucursal, FechaInicio.Value.ToString("dd/MM/yyyy"), FechaFinal.Value.ToString("dd/MM/yyyy"), FrmPrincipal.usuarioGlobal.Token)
+            intTotalRegistros = Await Puntoventa.ObtenerTotalMovimientosPorProducto(intIdProducto, intIdSucursal, FechaInicio.Value.ToString("dd/MM/yyyy"), FechaFinal.Value.ToString("dd/MM/yyyy"), FrmPrincipal.usuarioGlobal.Token)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
             Exit Function
         End Try
-        intCantidadDePaginas = Math.Truncate(intTotalEmpresas / intFilasPorPagina) + IIf((intTotalEmpresas Mod intFilasPorPagina) = 0, 0, 1)
-
+        intCantidadDePaginas = Math.Truncate(intTotalRegistros / intFilasPorPagina) + IIf((intTotalRegistros Mod intFilasPorPagina) = 0, 0, 1)
         If intCantidadDePaginas > 1 Then
             btnLast.Enabled = True
             btnNext.Enabled = True
@@ -117,7 +110,7 @@ Public Class FrmMovimientoProducto
     End Sub
 
     Private Async Sub CmdFiltrar_Click(sender As Object, e As EventArgs) Handles CmdFiltrar.Click
-        Await ValidarCantidadEmpresas()
+        Await ValidarCantidadRegistros()
         intIndiceDePagina = 1
         Await ActualizarDatos(intIndiceDePagina)
     End Sub
@@ -127,7 +120,7 @@ Public Class FrmMovimientoProducto
             EstablecerPropiedadesDataGridView()
             FechaInicio.Text = "01/" & Date.Now.Month & "/" & Date.Now.Year
             FechaFinal.Text = Date.DaysInMonth(Date.Now.Year, Date.Now.Month) & "/" & Date.Now.Month & "/" & Date.Now.Year
-            Await ValidarCantidadEmpresas()
+            Await ValidarCantidadRegistros()
             intIndiceDePagina = 1
             Await ActualizarDatos(intIndiceDePagina)
         Catch ex As Exception

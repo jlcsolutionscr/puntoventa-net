@@ -16,9 +16,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
     public interface IMantenimientoService
     {
         // Métodos para administrar parametros del sistema
-        IEnumerable<EquipoRegistrado> ObtenerListadoTerminalesDisponibles(string strUsuario, string strClave, string strIdentificacion, int intTipoDispositivo);
-        IEnumerable<LlaveDescripcion> ObtenerListadoEmpresasAdministrador();
-        IEnumerable<LlaveDescripcion> ObtenerListadoEmpresasPorTerminal(string strDispositivoId);
+        IList<EquipoRegistrado> ObtenerListadoTerminalesDisponibles(string strUsuario, string strClave, string strIdentificacion, int intTipoDispositivo);
+        IList<LlaveDescripcion> ObtenerListadoEmpresasAdministrador();
+        IList<LlaveDescripcion> ObtenerListadoEmpresasPorTerminal(string strDispositivoId);
         void RegistrarTerminal(string strUsuario, string strClave, string strIdentificacion, int intIdSucursal, int intIdTerminal, int intTipoDispositivo, string strDispositivoId);
         Usuario ValidarCredencialesAdmin(string strUsuario, string strClave);
         Usuario ValidarCredenciales(string strUsuario, string strClave, string id);
@@ -27,9 +27,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         void ActualizarVersionApp(string strVersion);
         string ObtenerUltimaVersionApp();
         // Métodos para administrar las empresas
-        IEnumerable<LlaveDescripcion> ObtenerListadoEmpresa();
-        IEnumerable<LlaveDescripcion> ObtenerListadoSucursales(int intIdEmpresa);
-        IEnumerable<LlaveDescripcion> ObtenerListadoTerminales(int intIdEmpresa, int intIdSucursal);
+        IList<LlaveDescripcion> ObtenerListadoEmpresa();
+        IList<LlaveDescripcion> ObtenerListadoSucursales(int intIdEmpresa);
+        IList<LlaveDescripcion> ObtenerListadoTerminales(int intIdEmpresa, int intIdSucursal);
         string AgregarEmpresa(Empresa empresa);
         Empresa ObtenerEmpresa(int intIdEmpresa);
         void ActualizarEmpresa(Empresa empresa);
@@ -54,28 +54,28 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         void AgregarUsuarioPorEmpresa(int intIdUsuario, int intIdEmpresa);
         void EliminarUsuario(int intIdUsuario);
         Usuario ObtenerUsuario(int intIdUsuario);
-        IEnumerable<LlaveDescripcion> ObtenerListadoUsuarios(int intIdEmpresa, string strCodigo);
+        IList<LlaveDescripcion> ObtenerListadoUsuarios(int intIdEmpresa, string strCodigo);
         // Métodos para administrar los vendedores del sistema
         void AgregarVendedor(Vendedor vendedor);
         void ActualizarVendedor(Vendedor vendedor);
         void EliminarVendedor(int intIdVendedor);
         Vendedor ObtenerVendedor(int intIdVendedor);
         Vendedor ObtenerVendedorPorDefecto(int intIdEmpresa);
-        IEnumerable<LlaveDescripcion> ObtenerListadoVendedores(int intIdEmpresa, string strNombre);
+        IList<LlaveDescripcion> ObtenerListadoVendedores(int intIdEmpresa, string strNombre);
         // Métodos para administrar los roles del sistema
         Role ObtenerRole(int intIdRole);
 
-        IEnumerable<LlaveDescripcion> ObtenerListadoRoles();
+        IList<LlaveDescripcion> ObtenerListadoRoles();
         // Métodos para administrar las líneas de producto
         void AgregarLinea(Linea linea);
         void ActualizarLinea(Linea linea);
         void EliminarLinea(int intIdLinea);
         Linea ObtenerLinea(int intIdLinea);
-        IEnumerable<LlaveDescripcion> ObtenerListadoLineas(int intIdEmpresa, string strDescripcion);
+        IList<LlaveDescripcion> ObtenerListadoLineas(int intIdEmpresa, string strDescripcion);
         // Métodos para administrar los productos
-        IEnumerable<LlaveDescripcion> ObtenerListadoTipoProducto();
-        IEnumerable<LlaveDescripcion> ObtenerListadoTipoExoneracion();
-        IEnumerable<LlaveDescripcion> ObtenerListadoTipoImpuesto();
+        IList<LlaveDescripcion> ObtenerListadoTipoProducto();
+        IList<LlaveDescripcion> ObtenerListadoTipoExoneracion();
+        IList<LlaveDescripcion> ObtenerListadoTipoImpuesto();
         ParametroImpuesto ObtenerParametroImpuesto(int intIdImpuesto);
         void AgregarProducto(Producto producto);
         void ActualizarProducto(Producto producto);
@@ -85,45 +85,44 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         Producto ObtenerProductoPorCodigo(int intIdEmpresa, string strCodigo);
         Producto ObtenerProductoPorCodigoProveedor(int intIdEmpresa, string strCodigo);
         int ObtenerTotalListaProductos(int intIdEmpresa, int intIdSucursal, bool bolIncluyeServicios, int intIdLinea, string strCodigo, string strCodigoProveedor, string strDescripcion);
-        IEnumerable<ProductoDetalle> ObtenerListadoProductos(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, bool bolIncluyeServicios, int intIdLinea, string strCodigo, string strCodigoProveedor, string strDescripcion);
+        IList<ProductoDetalle> ObtenerListadoProductos(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, bool bolIncluyeServicios, int intIdLinea, string strCodigo, string strCodigoProveedor, string strDescripcion);
         int ObtenerTotalMovimientosPorProducto(int intIdProducto, int intIdSucursal, string strFechaInicial, string strFechaFinal);
         IList<MovimientoProducto> ObtenerMovimientosPorProducto(int intIdProducto, int intIdSucursal, int numPagina, int cantRec, string strFechaInicial, string strFechaFinal);
         // Métodos para obtener las condiciones de venta para facturación
-        IEnumerable<LlaveDescripcion> ObtenerListadoCondicionVenta();
+        IList<LlaveDescripcion> ObtenerListadoCondicionVenta();
         // Métodos para obtener las formas de pago por tipo de servicio
-        IEnumerable<LlaveDescripcion> ObtenerListadoFormaPagoFactura();
-        IEnumerable<LlaveDescripcion> ObtenerListadoFormaPagoCompra();
-        IEnumerable<LlaveDescripcion> ObtenerListadoFormaPagoEgreso();
-        IEnumerable<LlaveDescripcion> ObtenerListadoFormaPagoIngreso();
-        IEnumerable<LlaveDescripcion> ObtenerListadoFormaPagoMovimientoCxC();
-        IEnumerable<LlaveDescripcion> ObtenerListadoFormaPagoMovimientoCxP();
+        IList<LlaveDescripcion> ObtenerListadoFormaPagoFactura();
+        IList<LlaveDescripcion> ObtenerListadoFormaPagoCompra();
+        IList<LlaveDescripcion> ObtenerListadoFormaPagoEgreso();
+        IList<LlaveDescripcion> ObtenerListadoFormaPagoIngreso();
+        IList<LlaveDescripcion> ObtenerListadoFormaPagoMovimientoCxC();
+        IList<LlaveDescripcion> ObtenerListadoFormaPagoMovimientoCxP();
         // Métodos para administrar los parámetros de banco adquiriente
         void AgregarBancoAdquiriente(BancoAdquiriente bancoAdquiriente);
         void ActualizarBancoAdquiriente(BancoAdquiriente bancoAdquiriente);
         void EliminarBancoAdquiriente(int intIdBanco);
         BancoAdquiriente ObtenerBancoAdquiriente(int intIdBanco);
-        IEnumerable<LlaveDescripcion> ObtenerListadoBancoAdquiriente(int intIdEmpresa, string strDescripcion);
+        IList<LlaveDescripcion> ObtenerListadoBancoAdquiriente(int intIdEmpresa, string strDescripcion);
         // Métodos para administrar los parámetros de tipo de moneda
         TipoMoneda AgregarTipoMoneda(TipoMoneda tipoMoneda);
         void ActualizarTipoMoneda(TipoMoneda tipoMoneda);
         void EliminarTipoMoneda(int intIdTipoMoneda);
         TipoMoneda ObtenerTipoMoneda(int intIdTipoMoneda);
-        IEnumerable<LlaveDescripcion> ObtenerListadoTipoMoneda();
+        IList<LlaveDescripcion> ObtenerListadoTipoMoneda();
         // Métodos para administrar los ajustes de inventario
-        AjusteInventario AgregarAjusteInventario(AjusteInventario ajusteInventario);
-        void ActualizarAjusteInventario(AjusteInventario ajusteInventario);
+        string AgregarAjusteInventario(AjusteInventario ajusteInventario);
         void AnularAjusteInventario(int intIdAjusteInventario, int intIdUsuario);
         AjusteInventario ObtenerAjusteInventario(int intIdAjusteInventario);
-        int ObtenerTotalListaAjustes(int intIdEmpresa, int intIdAjusteInventario, string strDescripcion);
-        IEnumerable<LlaveDescripcion> ObtenerListadoAjustes(int intIdEmpresa, int numPagina, int cantRec, int intIdAjusteInventario, string strDescripcion);
+        int ObtenerTotalListaAjusteInventario(int intIdEmpresa, int intIdAjusteInventario, string strDescripcion);
+        IList<AjusteInventarioDetalle> ObtenerListadoAjusteInventario(int intIdEmpresa, int numPagina, int cantRec, int intIdAjusteInventario, string strDescripcion);
         // Métodos para obtener parámetros generales del sistema
-        IEnumerable<LlaveDescripcion> ObtenerListadoTipoIdentificacion();
-        IEnumerable<LlaveDescripcion> ObtenerListadoCatalogoReportes();
+        IList<LlaveDescripcion> ObtenerListadoTipoIdentificacion();
+        IList<LlaveDescripcion> ObtenerListadoCatalogoReportes();
         CatalogoReporte ObtenerCatalogoReporte(int intIdReporte);
-        IEnumerable<LlaveDescripcion> ObtenerListadoProvincias();
-        IEnumerable<LlaveDescripcion> ObtenerListadoCantones(int intIdProvincia);
-        IEnumerable<LlaveDescripcion> ObtenerListadoDistritos(int intIdProvincia, int intIdCanton);
-        IEnumerable<LlaveDescripcion> ObtenerListadoBarrios(int intIdProvincia, int intIdCanton, int intIdDistrito);
+        IList<LlaveDescripcion> ObtenerListadoProvincias();
+        IList<LlaveDescripcion> ObtenerListadoCantones(int intIdProvincia);
+        IList<LlaveDescripcion> ObtenerListadoDistritos(int intIdProvincia, int intIdCanton);
+        IList<LlaveDescripcion> ObtenerListadoBarrios(int intIdProvincia, int intIdCanton, int intIdDistrito);
         IList<LlaveDescripcion> ObtenerListadoTipodePrecio();
         void ValidarRegistroAutenticacion(string strToken, int intRole);
         void EliminarRegistroAutenticacionInvalidos();
@@ -148,7 +147,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<EquipoRegistrado> ObtenerListadoTerminalesDisponibles(string strUsuario, string strClave, string strIdentificacion, int intTipoDispositivo)
+        public IList<EquipoRegistrado> ObtenerListadoTerminalesDisponibles(string strUsuario, string strClave, string strIdentificacion, int intTipoDispositivo)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -201,7 +200,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoEmpresasAdministrador()
+        public IList<LlaveDescripcion> ObtenerListadoEmpresasAdministrador()
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -224,7 +223,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoSucursales(int intIdEmpresa)
+        public IList<LlaveDescripcion> ObtenerListadoSucursales(int intIdEmpresa)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -247,7 +246,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
         
-        public IEnumerable<LlaveDescripcion> ObtenerListadoTerminales(int intIdEmpresa, int intIdSucursal)
+        public IList<LlaveDescripcion> ObtenerListadoTerminales(int intIdEmpresa, int intIdSucursal)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -270,7 +269,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoEmpresasPorTerminal(string strDispositivoId)
+        public IList<LlaveDescripcion> ObtenerListadoEmpresasPorTerminal(string strDispositivoId)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -577,7 +576,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             return strUltimaVersion;
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoEmpresa()
+        public IList<LlaveDescripcion> ObtenerListadoEmpresa()
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -1149,7 +1148,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoUsuarios(int intIdEmpresa, string strCodigo)
+        public IList<LlaveDescripcion> ObtenerListadoUsuarios(int intIdEmpresa, string strCodigo)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -1304,7 +1303,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoVendedores(int intIdEmpresa, string strNombre)
+        public IList<LlaveDescripcion> ObtenerListadoVendedores(int intIdEmpresa, string strNombre)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -1346,7 +1345,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoRoles()
+        public IList<LlaveDescripcion> ObtenerListadoRoles()
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -1468,7 +1467,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoLineas(int intIdEmpresa, string strDescripcion)
+        public IList<LlaveDescripcion> ObtenerListadoLineas(int intIdEmpresa, string strDescripcion)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -1494,7 +1493,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoTipoProducto()
+        public IList<LlaveDescripcion> ObtenerListadoTipoProducto()
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -1517,7 +1516,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoTipoExoneracion()
+        public IList<LlaveDescripcion> ObtenerListadoTipoExoneracion()
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -1540,7 +1539,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoTipoImpuesto()
+        public IList<LlaveDescripcion> ObtenerListadoTipoImpuesto()
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -1792,7 +1791,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<ProductoDetalle> ObtenerListadoProductos(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, bool bolIncluyeServicios, int intIdLinea, string strCodigo, string strCodigoProveedor, string strDescripcion)
+        public IList<ProductoDetalle> ObtenerListadoProductos(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, bool bolIncluyeServicios, int intIdLinea, string strCodigo, string strCodigoProveedor, string strDescripcion)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -1873,7 +1872,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoCondicionVenta()
+        public IList<LlaveDescripcion> ObtenerListadoCondicionVenta()
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -1896,7 +1895,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoFormaPagoFactura()
+        public IList<LlaveDescripcion> ObtenerListadoFormaPagoFactura()
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -1919,7 +1918,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoFormaPagoCompra()
+        public IList<LlaveDescripcion> ObtenerListadoFormaPagoCompra()
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -1942,7 +1941,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoFormaPagoEgreso()
+        public IList<LlaveDescripcion> ObtenerListadoFormaPagoEgreso()
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -1965,7 +1964,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoFormaPagoIngreso()
+        public IList<LlaveDescripcion> ObtenerListadoFormaPagoIngreso()
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -1988,7 +1987,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoFormaPagoMovimientoCxC()
+        public IList<LlaveDescripcion> ObtenerListadoFormaPagoMovimientoCxC()
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -2011,7 +2010,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoFormaPagoMovimientoCxP()
+        public IList<LlaveDescripcion> ObtenerListadoFormaPagoMovimientoCxP()
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -2134,7 +2133,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoBancoAdquiriente(int intIdEmpresa, string strDescripcion)
+        public IList<LlaveDescripcion> ObtenerListadoBancoAdquiriente(int intIdEmpresa, string strDescripcion)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -2243,7 +2242,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoTipoMoneda()
+        public IList<LlaveDescripcion> ObtenerListadoTipoMoneda()
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -2266,17 +2265,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public AjusteInventario AgregarAjusteInventario(AjusteInventario ajusteInventario)
+        public string AgregarAjusteInventario(AjusteInventario ajusteInventario)
         {
-            //decimal decTotalAjustePorLinea = 0;
-            //ParametroContable lineaParam = null;
-            DataTable dtbInventarios = new DataTable();
-            dtbInventarios.Columns.Add("IdLinea", typeof(int));
-            dtbInventarios.Columns.Add("Total", typeof(decimal));
-            dtbInventarios.PrimaryKey = new DataColumn[] { dtbInventarios.Columns[0] };
-            //CuentaPorCobrar cuentaPorCobrar = null;
-            //Asiento asiento = null;
-            //MovimientoBanco movimientoBanco = null;
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 try
@@ -2284,18 +2274,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     Empresa empresa = dbContext.EmpresaRepository.Find(ajusteInventario.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
-                    //if (empresa.Contabiliza)
-                    //{
-                    //    ingresosVentasParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.IngresosPorVentas).FirstOrDefault();
-                    //    costoVentasParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.CostosDeVentas).FirstOrDefault();
-                    //    ivaPorPagarParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.IVAPorPagar).FirstOrDefault();
-                    //    efectivoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.Efectivo).FirstOrDefault();
-                    //    cuentaPorCobrarClientesParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.CuentasPorCobrarClientes).FirstOrDefault();
-                    //    cuentaPorCobrarTarjetaParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.CuentasPorCobrarTarjeta).FirstOrDefault();
-                    //    gastoComisionParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.GastoComisionTarjeta).FirstOrDefault();
-                    //    if (ingresosVentasParam == null || costoVentasParam == null || ivaPorPagarParam == null || efectivoParam == null || cuentaPorCobrarClientesParam == null || cuentaPorCobrarTarjetaParam == null || gastoComisionParam == null)
-                    //        throw new BusinessException("La parametrización contable está incompleta y no se puede continuar. Por favor verificar.");
-                    //}
                     dbContext.AjusteInventarioRepository.Add(ajusteInventario);
                     foreach (var detalleAjuste in ajusteInventario.DetalleAjusteInventario)
                     {
@@ -2305,239 +2283,22 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         if (producto.Tipo != StaticTipoProducto.Producto)
                             throw new BusinessException("El tipo de producto por ajustar no puede ser un servicio. Por favor verificar.");
                         ExistenciaPorSucursal existencias = dbContext.ExistenciaPorSucursalRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == ajusteInventario.IdSucursal).FirstOrDefault();
-                        if (existencias != null)
-                        {
-                            existencias.Cantidad -= detalleAjuste.Cantidad;
-                            dbContext.NotificarModificacion(existencias);
-                        }
-                        else
-                        {
-                            ExistenciaPorSucursal nuevoRegistro = new ExistenciaPorSucursal
-                            {
-                                IdEmpresa = ajusteInventario.IdEmpresa,
-                                IdSucursal = ajusteInventario.IdSucursal,
-                                IdProducto = detalleAjuste.IdProducto,
-                                Cantidad = detalleAjuste.Cantidad
-                            };
-                            dbContext.ExistenciaPorSucursalRepository.Add(nuevoRegistro);
-                        }
+                        if (existencias == null)
+                            throw new BusinessException("El producto " + producto.IdProducto + " no posee registro de existencias. Por favor consulte con su proveedor.");
+                        existencias.Cantidad += detalleAjuste.Cantidad;
+                        dbContext.NotificarModificacion(existencias);
                         MovimientoProducto movimiento = new MovimientoProducto
                         {
                             IdProducto = producto.IdProducto,
+                            IdSucursal = ajusteInventario.IdSucursal,
                             Fecha = DateTime.Now,
                             Tipo = detalleAjuste.Cantidad < 0 ? StaticTipoMovimientoProducto.Salida : StaticTipoMovimientoProducto.Entrada,
-                            Origen = "Registro de ajuste de inventario.",
-                            Referencia = detalleAjuste.IdAjuste.ToString(),
+                            Origen = "Registro de ajuste de inventario",
                             Cantidad = detalleAjuste.Cantidad < 0 ? detalleAjuste.Cantidad * -1 : detalleAjuste.Cantidad,
                             PrecioCosto = detalleAjuste.PrecioCosto
                         };
                         producto.MovimientoProducto.Add(movimiento);
-                        //if (empresa.Contabiliza)
-                        //{
-                        //    if (producto.Tipo == StaticTipoProducto.Producto)
-                        //    {
-                        //        decimal decTotalPorLinea = detalleFactura.PrecioVenta * detalleFactura.Cantidad;
-                        //        decTotalPorLinea = Math.Round(decTotalPorLinea - (factura.Descuento / decSubTotalFactura * decTotalPorLinea), 2, MidpointRounding.AwayFromZero);
-                        //        if (!producto.Excento)
-                        //            decTotalPorLinea = Math.Round(decTotalPorLinea / (1 + (factura.PorcentajeIVA / 100)), 2, MidpointRounding.AwayFromZero);
-                        //        decTotalMercancia += decTotalPorLinea;
-                        //        decTotalCostoVentas += producto.PrecioCosto * detalleFactura.Cantidad;
-                        //        int intExiste = dtbInventarios.Rows.IndexOf(dtbInventarios.Rows.Find(producto.Linea.IdLinea));
-                        //        if (intExiste >= 0)
-                        //            dtbInventarios.Rows[intExiste]["Total"] = (decimal)dtbInventarios.Rows[intExiste]["Total"] + (producto.PrecioCosto * detalleFactura.Cantidad);
-                        //        else
-                        //        {
-                        //            DataRow data = dtbInventarios.NewRow();
-                        //            data["IdLinea"] = producto.Linea.IdLinea;
-                        //            data["Total"] = producto.PrecioCosto * detalleFactura.Cantidad;
-                        //            dtbInventarios.Rows.Add(data);
-                        //        }
-                        //    }
-                        //    else
-                        //    {
-                        //        decimal decTotalPorLinea = detalleFactura.PrecioVenta * detalleFactura.Cantidad;
-                        //        decTotalPorLinea = Math.Round(decTotalPorLinea - (factura.Descuento / decSubTotalFactura * decTotalPorLinea), 2, MidpointRounding.AwayFromZero);
-                        //        if (!producto.Excento)
-                        //            decTotalPorLinea = Math.Round(decTotalPorLinea / (1 + (factura.PorcentajeIVA / 100)), 2, MidpointRounding.AwayFromZero);
-                        //        decTotalServicios += decTotalPorLinea;
-                        //        int intExiste = dtbIngresosPorServicios.Rows.IndexOf(dtbIngresosPorServicios.Rows.Find(producto.Linea.IdLinea));
-                        //        if (intExiste >= 0)
-                        //            dtbIngresosPorServicios.Rows[intExiste]["Total"] = (decimal)dtbIngresosPorServicios.Rows[intExiste]["Total"] + decTotalPorLinea;
-                        //        else
-                        //        {
-                        //            DataRow data = dtbIngresosPorServicios.NewRow();
-                        //            data["IdLinea"] = detalleFactura.Producto.Linea.IdLinea;
-                        //            data["Total"] = Math.Round(decTotalPorLinea, 2, MidpointRounding.AwayFromZero);
-                        //            dtbIngresosPorServicios.Rows.Add(data);
-                        //        }
-                        //    }
-                        //}
                     }
-                    //if (empresa.Contabiliza)
-                    //{
-                    //    decimal decTotalDiff = decTotalMercancia + decTotalImpuesto + decTotalServicios - factura.Total;
-                    //    if (decTotalDiff != 0)
-                    //    {
-                    //        if (decTotalDiff >= 1 || decTotalDiff <= -1)
-                    //            throw new Exception("La diferencia de ajuste sobrepasa el valor permitido.");
-                    //        if (decTotalMercancia > 0)
-                    //            decTotalMercancia -= decTotalDiff;
-                    //        else
-                    //        {
-                    //            dtbIngresosPorServicios.Rows[0]["Total"] = (decimal)dtbIngresosPorServicios.Rows[0]["Total"] - decTotalDiff;
-                    //            decTotalServicios -= decTotalDiff;
-                    //        }
-                    //    }
-                    //    int intLineaDetalleAsiento = 0;
-                    //    asiento = new Asiento();
-                    //    asiento.IdEmpresa = factura.IdEmpresa;
-                    //    asiento.Fecha = factura.Fecha;
-                    //    asiento.TotalCredito = 0;
-                    //    asiento.TotalDebito = 0;
-                    //    asiento.Detalle = "Registro de venta de mercancía de Factura nro. ";
-                    //    DetalleAsiento detalleAsiento = null;
-                    //    foreach (var desglosePago in factura.DesglosePagoFactura)
-                    //    {
-                    //        if (desglosePago.IdFormaPago == StaticFormaPago.Efectivo)
-                    //        {
-                    //            detalleAsiento = new DetalleAsiento();
-                    //            intLineaDetalleAsiento += 1;
-                    //            detalleAsiento.Linea = intLineaDetalleAsiento;
-                    //            detalleAsiento.IdCuenta = efectivoParam.IdCuenta;
-                    //            detalleAsiento.Debito = desglosePago.MontoLocal;
-                    //            detalleAsiento.SaldoAnterior = dbContext.CatalogoContableRepository.Find(detalleAsiento.IdCuenta).SaldoActual;
-                    //            asiento.DetalleAsiento.Add(detalleAsiento);
-                    //            asiento.TotalDebito += detalleAsiento.Debito;
-                    //        }
-                    //        else if (desglosePago.IdFormaPago == StaticFormaPago.Credito)
-                    //        {
-                    //            detalleAsiento = new DetalleAsiento();
-                    //            intLineaDetalleAsiento += 1;
-                    //            detalleAsiento.Linea = intLineaDetalleAsiento;
-                    //            detalleAsiento.IdCuenta = cuentaPorCobrarClientesParam.IdCuenta;
-                    //            detalleAsiento.Debito = desglosePago.MontoLocal;
-                    //            detalleAsiento.SaldoAnterior = dbContext.CatalogoContableRepository.Find(detalleAsiento.IdCuenta).SaldoActual;
-                    //            asiento.DetalleAsiento.Add(detalleAsiento);
-                    //            asiento.TotalDebito += detalleAsiento.Debito;
-                    //        }
-                    //        else if (desglosePago.IdFormaPago == StaticFormaPago.Cheque || desglosePago.IdFormaPago == StaticFormaPago.TransferenciaDepositoBancario)
-                    //        {
-                    //            detalleAsiento = new DetalleAsiento();
-                    //            intLineaDetalleAsiento += 1;
-                    //            detalleAsiento.Linea = intLineaDetalleAsiento;
-                    //            bancoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.CuentaDeBancos && x.IdProducto == desglosePago.IdCuentaBanco).FirstOrDefault();
-                    //            if (bancoParam == null)
-                    //                throw new BusinessException("No existe parametrización contable para la cuenta bancaría " + desglosePago.IdCuentaBanco + " y no se puede continuar. Por favor verificar.");
-                    //            detalleAsiento.IdCuenta = bancoParam.IdCuenta;
-                    //            detalleAsiento.Debito = desglosePago.MontoLocal;
-                    //            detalleAsiento.SaldoAnterior = dbContext.CatalogoContableRepository.Find(detalleAsiento.IdCuenta).SaldoActual;
-                    //            asiento.DetalleAsiento.Add(detalleAsiento);
-                    //            asiento.TotalDebito += detalleAsiento.Debito;
-                    //        }
-                    //        else if (desglosePago.IdFormaPago == StaticFormaPago.Tarjeta)
-                    //        {
-                    //            BancoAdquiriente bancoAdquiriente = dbContext.BancoAdquirienteRepository.Find(desglosePago.IdCuentaBanco);
-                    //            decTotalGastoComisionTarjeta = Math.Round(desglosePago.MontoLocal * (bancoAdquiriente.PorcentajeComision / 100), 2, MidpointRounding.AwayFromZero);
-                    //            decTotalImpuestoRetenido = Math.Round(desglosePago.MontoLocal * (bancoAdquiriente.PorcentajeRetencion / 100), 2, MidpointRounding.AwayFromZero);
-                    //            decTotalIngresosTarjeta = Math.Round(desglosePago.MontoLocal - decTotalGastoComisionTarjeta - decTotalImpuestoRetenido, 2, MidpointRounding.AwayFromZero);
-                    //            detalleAsiento = new DetalleAsiento();
-                    //            intLineaDetalleAsiento += 1;
-                    //            detalleAsiento.Linea = intLineaDetalleAsiento;
-                    //            detalleAsiento.IdCuenta = cuentaPorCobrarTarjetaParam.IdCuenta;
-                    //            detalleAsiento.Debito = decTotalIngresosTarjeta;
-                    //            detalleAsiento.SaldoAnterior = dbContext.CatalogoContableRepository.Find(detalleAsiento.IdCuenta).SaldoActual;
-                    //            asiento.DetalleAsiento.Add(detalleAsiento);
-                    //            asiento.TotalDebito += detalleAsiento.Debito;
-                    //            if (decTotalImpuestoRetenido > 0)
-                    //            {
-                    //                detalleAsiento = new DetalleAsiento();
-                    //                intLineaDetalleAsiento += 1;
-                    //                detalleAsiento.Linea = intLineaDetalleAsiento;
-                    //                detalleAsiento.IdCuenta = ivaPorPagarParam.IdCuenta;
-                    //                detalleAsiento.Debito = decTotalImpuestoRetenido;
-                    //                detalleAsiento.SaldoAnterior = dbContext.CatalogoContableRepository.Find(detalleAsiento.IdCuenta).SaldoActual;
-                    //                asiento.DetalleAsiento.Add(detalleAsiento);
-                    //                asiento.TotalDebito += detalleAsiento.Debito;
-                    //            }
-                    //            if (decTotalGastoComisionTarjeta > 0)
-                    //            {
-                    //                detalleAsiento = new DetalleAsiento();
-                    //                intLineaDetalleAsiento += 1;
-                    //                detalleAsiento.Linea = intLineaDetalleAsiento;
-                    //                detalleAsiento.IdCuenta = gastoComisionParam.IdCuenta;
-                    //                detalleAsiento.Debito = decTotalGastoComisionTarjeta;
-                    //                detalleAsiento.SaldoAnterior = dbContext.CatalogoContableRepository.Find(detalleAsiento.IdCuenta).SaldoActual;
-                    //                asiento.DetalleAsiento.Add(detalleAsiento);
-                    //                asiento.TotalDebito += detalleAsiento.Debito;
-                    //            }
-                    //        }
-                    //    }
-                    //    if (decTotalMercancia > 0)
-                    //    {
-                    //        detalleAsiento = new DetalleAsiento();
-                    //        intLineaDetalleAsiento += 1;
-                    //        detalleAsiento.Linea = intLineaDetalleAsiento;
-                    //        detalleAsiento.IdCuenta = ingresosVentasParam.IdCuenta;
-                    //        detalleAsiento.Credito = decTotalMercancia;
-                    //        detalleAsiento.SaldoAnterior = dbContext.CatalogoContableRepository.Find(detalleAsiento.IdCuenta).SaldoActual;
-                    //        asiento.DetalleAsiento.Add(detalleAsiento);
-                    //        asiento.TotalCredito += detalleAsiento.Credito;
-                    //    }
-                    //    if (decTotalImpuesto > 0)
-                    //    {
-                    //        detalleAsiento = new DetalleAsiento();
-                    //        intLineaDetalleAsiento += 1;
-                    //        detalleAsiento.Linea = intLineaDetalleAsiento;
-                    //        detalleAsiento.IdCuenta = ivaPorPagarParam.IdCuenta;
-                    //        detalleAsiento.Credito = decTotalImpuesto;
-                    //        asiento.DetalleAsiento.Add(detalleAsiento);
-                    //        detalleAsiento.SaldoAnterior = dbContext.CatalogoContableRepository.Find(detalleAsiento.IdCuenta).SaldoActual;
-                    //        asiento.TotalCredito += detalleAsiento.Credito;
-                    //    }
-                    //    foreach (DataRow data in dtbIngresosPorServicios.Rows)
-                    //    {
-                    //        detalleAsiento = new DetalleAsiento();
-                    //        intLineaDetalleAsiento += 1;
-                    //        detalleAsiento.Linea = intLineaDetalleAsiento;
-                    //        int intIdLinea = (int)data["IdLinea"];
-                    //        lineaParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.LineaDeServicios && x.IdProducto == intIdLinea).FirstOrDefault();
-                    //        if (lineaParam == null)
-                    //            throw new BusinessException("No existe parametrización contable para la línea de servicios " + intIdLinea + " y no se puede continuar. Por favor verificar.");
-                    //        detalleAsiento.IdCuenta = lineaParam.IdCuenta;
-                    //        detalleAsiento.Credito = (decimal)data["Total"];
-                    //        detalleAsiento.SaldoAnterior = dbContext.CatalogoContableRepository.Find(detalleAsiento.IdCuenta).SaldoActual;
-                    //        asiento.DetalleAsiento.Add(detalleAsiento);
-                    //        asiento.TotalCredito += detalleAsiento.Credito;
-                    //    }
-                    //    if (decTotalCostoVentas > 0)
-                    //    {
-                    //        detalleAsiento = new DetalleAsiento();
-                    //        intLineaDetalleAsiento += 1;
-                    //        detalleAsiento.Linea = intLineaDetalleAsiento;
-                    //        detalleAsiento.IdCuenta = costoVentasParam.IdCuenta;
-                    //        detalleAsiento.Debito = decTotalCostoVentas;
-                    //        detalleAsiento.SaldoAnterior = dbContext.CatalogoContableRepository.Find(detalleAsiento.IdCuenta).SaldoActual;
-                    //        asiento.DetalleAsiento.Add(detalleAsiento);
-                    //        asiento.TotalDebito += detalleAsiento.Debito;
-                    //        foreach (DataRow data in dtbInventarios.Rows)
-                    //        {
-                    //            detalleAsiento = new DetalleAsiento();
-                    //            intLineaDetalleAsiento += 1;
-                    //            detalleAsiento.Linea = intLineaDetalleAsiento;
-                    //            int intIdLinea = (int)data["IdLinea"];
-                    //            lineaParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.LineaDeProductos && x.IdProducto == intIdLinea).FirstOrDefault();
-                    //            if (lineaParam == null)
-                    //                throw new BusinessException("No existe parametrización contable para la línea de producto " + intIdLinea + " y no se puede continuar. Por favor verificar.");
-                    //            detalleAsiento.IdCuenta = lineaParam.IdCuenta;
-                    //            detalleAsiento.Credito = (decimal)data["Total"];
-                    //            detalleAsiento.SaldoAnterior = dbContext.CatalogoContableRepository.Find(detalleAsiento.IdCuenta).SaldoActual;
-                    //            asiento.DetalleAsiento.Add(detalleAsiento);
-                    //            asiento.TotalCredito += detalleAsiento.Credito;
-                    //        }
-                    //    }
-                    //    IContabilidadService servicioContabilidad = new ContabilidadService();
-                    //    servicioContabilidad.AgregarAsiento(dbContext, asiento);
-                    //}
                     dbContext.Commit();
                 }
                 catch (BusinessException ex)
@@ -2552,34 +2313,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     throw new Exception("Se produjo un error guardando la información del ajuste de inventario. Por favor consulte con su proveedor.");
                 }
             }
-            return ajusteInventario;
+            return ajusteInventario.IdAjuste.ToString();
         }
 
-        public void ActualizarAjusteInventario(AjusteInventario ajusteInventario)
-        {
-            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
-            {
-                try
-                {
-                    Empresa empresa = dbContext.EmpresaRepository.Find(ajusteInventario.IdEmpresa);
-                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
-                    dbContext.NotificarModificacion(ajusteInventario);
-                    dbContext.Commit();
-                }
-                catch (BusinessException ex)
-                {
-                    dbContext.RollBack();
-                    throw ex;
-                }
-                catch (Exception ex)
-                {
-                    dbContext.RollBack();
-                    log.Error("Error al actualizar el registro de facturación: ", ex);
-                    throw new Exception("Se produjo un error actualizando la información de la factura. Por favor consulte con su proveedor.");
-                }
-            }
-        }
         public void AnularAjusteInventario(int intIdAjusteInventario, int intIdUsuario)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
@@ -2605,13 +2341,15 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         ExistenciaPorSucursal existencias = dbContext.ExistenciaPorSucursalRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == ajusteInventario.IdSucursal).FirstOrDefault();
                         if (existencias == null)
                             throw new BusinessException("El producto " + producto.IdProducto + " no posee registro de existencias. Por favor consulte con su proveedor.");
+                        existencias.Cantidad -= detalleAjuste.Cantidad;
+                        dbContext.NotificarModificacion(existencias);
                         MovimientoProducto movimiento = new MovimientoProducto
                         {
                             IdProducto = producto.IdProducto,
+                            IdSucursal = ajusteInventario.IdSucursal,
                             Fecha = DateTime.Now,
                             Tipo = detalleAjuste.Cantidad < 0 ? StaticTipoMovimientoProducto.Entrada : StaticTipoMovimientoProducto.Salida,
-                            Origen = "Registro de reversión de ajuste de inventario.",
-                            Referencia = detalleAjuste.IdAjuste.ToString(),
+                            Origen = "Registro de reversión de ajuste de inventario",
                             Cantidad = detalleAjuste.Cantidad < 0 ? detalleAjuste.Cantidad * -1 : detalleAjuste.Cantidad,
                             PrecioCosto = detalleAjuste.PrecioCosto
                         };
@@ -2639,8 +2377,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    dbContext.AjusteInventarioRepository.Find(intIdAjusteInventario);
-                    return dbContext.AjusteInventarioRepository.Include("DetalleAjusteInventario.Producto.TipoProducto").FirstOrDefault(x => x.IdAjuste == intIdAjusteInventario);
+                    AjusteInventario ajuste = dbContext.AjusteInventarioRepository.Include("DetalleAjusteInventario.Producto.TipoProducto").FirstOrDefault(x => x.IdAjuste == intIdAjusteInventario);
+                    foreach (var detalle in ajuste.DetalleAjusteInventario)
+                        detalle.AjusteInventario = null;
+                    return ajuste;
                 }
                 catch (Exception ex)
                 {
@@ -2650,7 +2390,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public int ObtenerTotalListaAjustes(int intIdEmpresa, int intIdAjusteInventario, string strDescripcion)
+        public int ObtenerTotalListaAjusteInventario(int intIdEmpresa, int intIdAjusteInventario, string strDescripcion)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -2671,11 +2411,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoAjustes(int intIdEmpresa, int numPagina, int cantRec, int intIdAjusteInventario, string strDescripcion)
+        public IList<AjusteInventarioDetalle> ObtenerListadoAjusteInventario(int intIdEmpresa, int numPagina, int cantRec, int intIdAjusteInventario, string strDescripcion)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
-                var listaAjustes = new List<LlaveDescripcion>();
+                var listaAjustes = new List<AjusteInventarioDetalle>();
                 try
                 {
                     var listado = dbContext.AjusteInventarioRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa);
@@ -2686,7 +2426,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     listado = listado.OrderByDescending(x => x.IdAjuste).Skip((numPagina - 1) * cantRec).Take(cantRec);
                     foreach (var value in listado)
                     {
-                        LlaveDescripcion item = new LlaveDescripcion(value.IdAjuste, value.Descripcion);
+                        AjusteInventarioDetalle item = new AjusteInventarioDetalle(value.IdAjuste, value.Fecha.ToString("dd/MM/yyyy"), value.Descripcion);
                         listaAjustes.Add(item);
                     }
                     return listaAjustes;
@@ -2699,7 +2439,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoTipoIdentificacion()
+        public IList<LlaveDescripcion> ObtenerListadoTipoIdentificacion()
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -2722,7 +2462,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoCatalogoReportes()
+        public IList<LlaveDescripcion> ObtenerListadoCatalogoReportes()
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -2745,7 +2485,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoProvincias()
+        public IList<LlaveDescripcion> ObtenerListadoProvincias()
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -2768,7 +2508,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoCantones(int intIdProvincia)
+        public IList<LlaveDescripcion> ObtenerListadoCantones(int intIdProvincia)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -2791,7 +2531,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoDistritos(int intIdProvincia, int intIdCanton)
+        public IList<LlaveDescripcion> ObtenerListadoDistritos(int intIdProvincia, int intIdCanton)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -2814,7 +2554,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoBarrios(int intIdProvincia, int intIdCanton, int intIdDistrito)
+        public IList<LlaveDescripcion> ObtenerListadoBarrios(int intIdProvincia, int intIdCanton, int intIdDistrito)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {

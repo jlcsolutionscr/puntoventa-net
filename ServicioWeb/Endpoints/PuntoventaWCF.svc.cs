@@ -71,6 +71,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
         private static DocumentoElectronico documento;
         private static CierreCaja cierre;
         private static Traslado traslado;
+        private static AjusteInventario ajusteInventario;
         private static int intIdEmpresa;
         private static int intIdSucursal;
         private static int intIdUsuario;
@@ -100,6 +101,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
         private static int intIdTipoPago;
         private static int intIdBancoAdquiriente;
         private static int intIdTraslado;
+        private static int intIdAjuste;
         private static int intIdSucursalOrigen;
         private static int intIdSucursalDestino;
         bool bolIncluyeServicios;
@@ -519,6 +521,11 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         intIdTraslado = int.Parse(parametrosJO.Property("IdTraslado").Value.ToString());
                         intIdUsuario = int.Parse(parametrosJO.Property("IdUsuario").Value.ToString());
                         servicioTraslado.AnularTraslado(intIdTraslado, intIdUsuario);
+                        break;
+                    case "AnularAjusteInventario":
+                        intIdAjuste = int.Parse(parametrosJO.Property("IdAjuste").Value.ToString());
+                        intIdUsuario = int.Parse(parametrosJO.Property("IdUsuario").Value.ToString());
+                        servicioMantenimiento.AnularAjusteInventario(intIdAjuste, intIdUsuario);
                         break;
                     case "EnviarDocumentoElectronicoPendiente":
                         intIdDocumento = int.Parse(parametrosJO.Property("IdDocumento").Value.ToString());
@@ -1473,11 +1480,39 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         break;
                     case "ObtenerListaTrasladosPorAplicar":
                         intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
-                        intIdSucursalDestino = int.Parse(parametrosJO.Property("intIdSucursalDestino").Value.ToString());
+                        intIdSucursalDestino = int.Parse(parametrosJO.Property("IdSucursalDestino").Value.ToString());
                         intIdTraslado = int.Parse(parametrosJO.Property("IdTraslado").Value.ToString());
                         IList<TrasladoDetalle> listadoTrasladosPorAplicar = servicioTraslado.ObtenerListaTrasladosPorAplicar(intIdEmpresa, intIdSucursalDestino, intIdTraslado);
                         if (listadoTrasladosPorAplicar.Count > 0)
                             strRespuesta = serializer.Serialize(listadoTrasladosPorAplicar);
+                        break;
+                    case "AgregarAjusteInventario":
+                        ajusteInventario = serializer.Deserialize<AjusteInventario>(strEntidad);
+                        string strIdAjuste = servicioMantenimiento.AgregarAjusteInventario(ajusteInventario);
+                        strRespuesta = serializer.Serialize(strIdAjuste);
+                        break;
+                    case "ObtenerAjusteInventario":
+                        intIdAjuste = int.Parse(parametrosJO.Property("IdAjuste").Value.ToString());
+                        ajusteInventario = servicioMantenimiento.ObtenerAjusteInventario(intIdAjuste);
+                        if (ajusteInventario != null)
+                            strRespuesta = serializer.Serialize(ajusteInventario);
+                        break;
+                    case "ObtenerTotalListaAjusteInventario":
+                        intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
+                        intIdAjuste = int.Parse(parametrosJO.Property("IdAjuste").Value.ToString());
+                        strDescripcion = parametrosJO.Property("Descripcion").Value.ToString();
+                        int intTotalAjusteInventarios = servicioMantenimiento.ObtenerTotalListaAjusteInventario(intIdEmpresa, intIdSucursalOrigen, strDescripcion);
+                        strRespuesta = intTotalAjusteInventarios.ToString();
+                        break;
+                    case "ObtenerListadoAjusteInventario":
+                        intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
+                        intNumeroPagina = int.Parse(parametrosJO.Property("NumeroPagina").Value.ToString());
+                        intFilasPorPagina = int.Parse(parametrosJO.Property("FilasPorPagina").Value.ToString());
+                        intIdAjuste = int.Parse(parametrosJO.Property("IdAjuste").Value.ToString());
+                        strDescripcion = parametrosJO.Property("Descripcion").Value.ToString();
+                        IList<AjusteInventarioDetalle> listadoAjusteInventarios = servicioMantenimiento.ObtenerListadoAjusteInventario(intIdEmpresa, intNumeroPagina, intFilasPorPagina, intIdAjuste, strDescripcion);
+                        if (listadoAjusteInventarios.Count > 0)
+                            strRespuesta = serializer.Serialize(listadoAjusteInventarios);
                         break;
                     default:
                         throw new Exception("El método solicitado no ha sido implementado: " + strNombreMetodo);

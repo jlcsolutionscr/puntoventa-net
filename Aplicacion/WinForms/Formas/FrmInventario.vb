@@ -2,10 +2,11 @@ Imports LeandroSoftware.ClienteWCF
 
 Public Class FrmInventario
 #Region "Variables"
-    Private intTotalEmpresas As Integer
+    Private intTotalRegistros As Integer
     Private intIndiceDePagina As Integer
     Private intFilasPorPagina As Integer = 13
     Private intCantidadDePaginas As Integer
+    Private intIdSucursal As Integer
 #End Region
 
 #Region "Metodos"
@@ -74,15 +75,15 @@ Public Class FrmInventario
         dgvListado.Refresh()
     End Function
 
-    Private Async Function ValidarCantidadEmpresas() As Threading.Tasks.Task
+    Private Async Function ValidarCantidadRegistros() As Threading.Tasks.Task
         Try
-            intTotalEmpresas = Await Puntoventa.ObtenerTotalListaProductos(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, False, FrmPrincipal.usuarioGlobal.Token, cboLinea.SelectedValue, txtCodigo.Text, txtDescripcion.Text)
+            intTotalRegistros = Await Puntoventa.ObtenerTotalListaProductos(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, False, FrmPrincipal.usuarioGlobal.Token, cboLinea.SelectedValue, txtCodigo.Text, txtDescripcion.Text)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
             Exit Function
         End Try
-        intCantidadDePaginas = Math.Truncate(intTotalEmpresas / intFilasPorPagina) + IIf((intTotalEmpresas Mod intFilasPorPagina) = 0, 0, 1)
+        intCantidadDePaginas = Math.Truncate(intTotalRegistros / intFilasPorPagina) + IIf((intTotalRegistros Mod intFilasPorPagina) = 0, 0, 1)
         If intCantidadDePaginas > 1 Then
             btnLast.Enabled = True
             btnNext.Enabled = True
@@ -123,7 +124,8 @@ Public Class FrmInventario
     End Sub
 
     Private Async Sub CmdFiltrar_Click(sender As Object, e As EventArgs) Handles CmdFiltrar.Click
-        Await ValidarCantidadEmpresas()
+        intIdSucursal = cboSucursal.SelectedValue
+        Await ValidarCantidadRegistros()
         intIndiceDePagina = 1
         Await ActualizarDatos(intIndiceDePagina)
     End Sub
@@ -132,7 +134,7 @@ Public Class FrmInventario
         Try
             Await CargarComboBox()
             EstablecerPropiedadesDataGridView()
-            Await ValidarCantidadEmpresas()
+            Await ValidarCantidadRegistros()
             intIndiceDePagina = 1
             Await ActualizarDatos(intIndiceDePagina)
         Catch ex As Exception
@@ -158,7 +160,7 @@ Public Class FrmInventario
             If dgvListado.CurrentRow.Cells(0).Value.ToString <> "" Then
                 Dim movimiento As New FrmMovimientoProducto With {
                     .intIdProducto = dgvListado.CurrentRow.Cells(0).Value,
-                    .intIdSucursal = cboSucursal.SelectedValue
+                    .intIdSucursal = intIdSucursal
                 }
                 movimiento.ShowDialog()
             End If
