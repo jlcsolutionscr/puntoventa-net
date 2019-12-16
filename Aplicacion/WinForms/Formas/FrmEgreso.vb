@@ -6,8 +6,6 @@ Imports LeandroSoftware.ClienteWCF
 
 Public Class FrmEgreso
 #Region "Variables"
-    Private strUsuario, Valida, strEmpresa As String
-    Private dtbDatos As DataTable
     Private dblTotal As Decimal = 0
     Private dblSaldoPorPagar As Decimal = 0
     Private dblTotalPago As Decimal = 0
@@ -79,7 +77,7 @@ Public Class FrmEgreso
         grdDesglosePago.Columns.Add(dvcDescBanco)
 
         dvcNroCheque.DataPropertyName = "NROCHEQUE"
-        dvcNroCheque.HeaderText = "Nro. Cheque"
+        dvcNroCheque.HeaderText = "Referencia"
         dvcNroCheque.Width = 100
         dvcNroCheque.Visible = True
         dvcNroCheque.ReadOnly = True
@@ -122,7 +120,7 @@ Public Class FrmEgreso
             dtrRowDesglosePago.Item(0) = detalle.IdFormaPago
             dtrRowDesglosePago.Item(1) = detalle.FormaPago.Descripcion
             dtrRowDesglosePago.Item(2) = detalle.IdCuentaBanco
-            dtrRowDesglosePago.Item(3) = detalle.CuentaBanco.Descripcion
+            dtrRowDesglosePago.Item(3) = detalle.DescripcionCuenta
             dtrRowDesglosePago.Item(4) = detalle.NroMovimiento
             dtrRowDesglosePago.Item(5) = detalle.IdTipoMoneda
             dtrRowDesglosePago.Item(6) = detalle.TipoMoneda.Descripcion
@@ -311,6 +309,7 @@ Public Class FrmEgreso
         If txtIdEgreso.Text = "" Then
             egreso = New Egreso With {
                 .IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa,
+                .IdSucursal = FrmPrincipal.equipoGlobal.IdSucursal,
                 .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
                 .Fecha = txtFecha.Text,
                 .IdCuenta = cboCuentaEgreso.SelectedValue,
@@ -335,14 +334,6 @@ Public Class FrmEgreso
                 txtIdEgreso.Text = Await Puntoventa.AgregarEgreso(egreso, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
                 txtIdEgreso.Text = ""
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Exit Sub
-            End Try
-        Else
-            egreso.Detalle = txtDetalle.Text
-            Try
-                Await Puntoventa.ActualizarEgreso(egreso, FrmPrincipal.usuarioGlobal.Token)
-            Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
@@ -476,7 +467,7 @@ Public Class FrmEgreso
         txtSaldoPorPagar.Text = FormatNumber(dblSaldoPorPagar, 2)
     End Sub
 
-    Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs) Handles txtTotal.KeyPress, txtMonto.KeyPress
+    Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As KeyPressEventArgs) Handles txtTotal.KeyPress, txtMonto.KeyPress
         FrmPrincipal.ValidaNumero(e, sender, True, 2, ".")
     End Sub
 #End Region

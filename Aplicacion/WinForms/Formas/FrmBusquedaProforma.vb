@@ -41,7 +41,7 @@ Public Class FrmBusquedaProforma
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
         Try
-            dgvListado.DataSource = Await Puntoventa.ObtenerListadoProformas(FrmPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, FrmPrincipal.usuarioGlobal.Token, intId, txtNombre.Text)
+            dgvListado.DataSource = Await Puntoventa.ObtenerListadoProformas(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, intNumeroPagina, intFilasPorPagina, FrmPrincipal.usuarioGlobal.Token, intId, txtNombre.Text)
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -53,14 +53,13 @@ Public Class FrmBusquedaProforma
 
     Private Async Function ValidarCantidadProformas() As Task
         Try
-            intTotalProformas = Await Puntoventa.ObtenerTotalListaProformas(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token, intId, txtNombre.Text)
+            intTotalProformas = Await Puntoventa.ObtenerTotalListaProformas(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FrmPrincipal.usuarioGlobal.Token, intId, txtNombre.Text)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
             Exit Function
         End Try
         intCantidadDePaginas = Math.Truncate(intTotalProformas / intFilasPorPagina) + IIf((intTotalProformas Mod intFilasPorPagina) = 0, 0, 1)
-
         If intCantidadDePaginas > 1 Then
             btnLast.Enabled = True
             btnNext.Enabled = True
@@ -72,6 +71,14 @@ Public Class FrmBusquedaProforma
             btnPrevious.Enabled = False
             btnFirst.Enabled = False
         End If
+    End Function
+
+    Private Async Function CargarCombos() As Task
+        cboSucursal.ValueMember = "Id"
+        cboSucursal.DisplayMember = "Descripcion"
+        cboSucursal.DataSource = Await Puntoventa.ObtenerListadoSucursales(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+        cboSucursal.SelectedValue = FrmPrincipal.equipoGlobal.IdSucursal
+        cboSucursal.Enabled = FrmPrincipal.usuarioGlobal.Modifica
     End Function
 #End Region
 
@@ -106,6 +113,7 @@ Public Class FrmBusquedaProforma
 
     Private Async Sub FrmBusProd_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
+            Await CargarCombos()
             EstablecerPropiedadesDataGridView()
             Await ValidarCantidadProformas()
             intIndiceDePagina = 1

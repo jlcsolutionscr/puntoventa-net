@@ -99,7 +99,7 @@ Public Class FrmProveedor
         If txtPlazo.Text = "" Then txtPlazo.Text = "0"
     End Sub
 
-    Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs) Handles txtPlazo.KeyPress
+    Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As KeyPressEventArgs) Handles txtPlazo.KeyPress
         FrmPrincipal.ValidaNumero(e, sender, False, 0)
     End Sub
 #End Region

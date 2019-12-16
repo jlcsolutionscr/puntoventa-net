@@ -524,11 +524,6 @@ Public Class FrmFactura
             decPrecioVenta = ObtenerPrecioVentaPorCliente(cliente, producto)
             txtPrecio.Text = FormatNumber(decPrecioVenta / (1 + (decTasaImpuesto / 100)), 2)
             txtUnidad.Text = IIf(producto.Tipo = 1, "UND", IIf(producto.Tipo = 2, "SP", "OS"))
-            If FrmPrincipal.bolModificaDescripcion = True Then
-                txtDescripcion.Focus()
-            Else
-                txtPrecio.Focus()
-            End If
         End If
     End Sub
 
@@ -666,6 +661,7 @@ Public Class FrmFactura
                 .Nombre = "CLIENTE DE CONTADO"
             }
             txtNombreCliente.Text = cliente.Nombre
+            txtNombreCliente.ReadOnly = False
         Catch ex As Exception
             MessageBox.Show("Error al consultar el cliente de contado. Por favor consulte con su proveedor.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -719,7 +715,7 @@ Public Class FrmFactura
                 bolInit = True
                 txtIdFactura.Text = factura.IdFactura
                 cliente = factura.Cliente
-                txtNombreCliente.Text = factura.Cliente.Nombre
+                txtNombreCliente.Text = factura.NombreCliente
                 txtFecha.Text = factura.Fecha
                 txtDocumento.Text = factura.TextoAdicional
                 intIdProforma = factura.IdProforma
@@ -780,7 +776,7 @@ Public Class FrmFactura
                 bolInit = True
                 txtIdFactura.Text = ""
                 cliente = ordenServicio.Cliente
-                txtNombreCliente.Text = ordenServicio.Cliente.Nombre
+                txtNombreCliente.Text = ordenServicio.NombreCliente
                 txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
                 txtDocumento.Text = ""
                 cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado
@@ -831,7 +827,7 @@ Public Class FrmFactura
                 bolInit = True
                 txtIdFactura.Text = ""
                 cliente = apartado.Cliente
-                txtNombreCliente.Text = apartado.Cliente.Nombre
+                txtNombreCliente.Text = ordenServicio.NombreCliente
                 txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
                 txtDocumento.Text = ""
                 cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado
@@ -882,7 +878,7 @@ Public Class FrmFactura
                 bolInit = True
                 txtIdFactura.Text = ""
                 cliente = proforma.Cliente
-                txtNombreCliente.Text = proforma.Cliente.Nombre
+                txtNombreCliente.Text = proforma.NombreCliente
                 txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
                 txtDocumento.Text = ""
                 cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado
@@ -945,6 +941,7 @@ Public Class FrmFactura
             Try
                 cliente = Await Puntoventa.ObtenerCliente(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
                 txtNombreCliente.Text = cliente.Nombre
+                txtNombreCliente.ReadOnly = True
                 If cliente.Vendedor IsNot Nothing Then
                     vendedor = cliente.Vendedor
                     txtVendedor.Text = vendedor.Nombre
@@ -1022,6 +1019,7 @@ Public Class FrmFactura
                 .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
                 .IdTipoMoneda = cboTipoMoneda.SelectedValue,
                 .IdCliente = cliente.IdCliente,
+                .NombreCliente = txtNombreCliente.Text,
                 .IdCondicionVenta = cboCondicionVenta.SelectedValue,
                 .PlazoCredito = IIf(txtPlazoCredito.Text = "", 0, txtPlazoCredito.Text),
                 .Fecha = Now(),
@@ -1425,7 +1423,7 @@ Public Class FrmFactura
     End Sub
 
     Private Async Sub TxtCodigo_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtCodigo.PreviewKeyDown
-        If e.KeyCode = Keys.Tab Then
+        If e.KeyCode = Keys.Enter Then
             Try
                 producto = Await Puntoventa.ObtenerProductoPorCodigo(FrmPrincipal.empresaGlobal.IdEmpresa, txtCodigo.Text, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception

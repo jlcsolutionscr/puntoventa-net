@@ -113,39 +113,41 @@ Partial Class FrmPrincipal
         'mnuArchivoCierre
         '
         Me.mnuArchivoCierre.Name = "mnuArchivoCierre"
-        Me.mnuArchivoCierre.Size = New System.Drawing.Size(179, 22)
+        Me.mnuArchivoCierre.Size = New System.Drawing.Size(180, 22)
         Me.mnuArchivoCierre.Text = "Cierre de Caja"
         Me.mnuArchivoCierre.Visible = False
         '
         'MnuArchivoIngreso
         '
         Me.MnuArchivoIngreso.Name = "MnuArchivoIngreso"
-        Me.MnuArchivoIngreso.Size = New System.Drawing.Size(179, 22)
+        Me.MnuArchivoIngreso.Size = New System.Drawing.Size(180, 22)
         Me.MnuArchivoIngreso.Text = "Ingresos de efectivo"
+        Me.MnuArchivoIngreso.Visible = False
         '
         'MnuArchivoEgreso
         '
         Me.MnuArchivoEgreso.Name = "MnuArchivoEgreso"
-        Me.MnuArchivoEgreso.Size = New System.Drawing.Size(179, 22)
+        Me.MnuArchivoEgreso.Size = New System.Drawing.Size(180, 22)
         Me.MnuArchivoEgreso.Text = "Egresos de efectivo"
+        Me.MnuArchivoEgreso.Visible = False
         '
         'MnuArchivoReporte
         '
         Me.MnuArchivoReporte.Name = "MnuArchivoReporte"
-        Me.MnuArchivoReporte.Size = New System.Drawing.Size(179, 22)
+        Me.MnuArchivoReporte.Size = New System.Drawing.Size(180, 22)
         Me.MnuArchivoReporte.Text = "Menu de Reportes"
         Me.MnuArchivoReporte.Visible = False
         '
         'mnuArchivoCambio
         '
         Me.mnuArchivoCambio.Name = "mnuArchivoCambio"
-        Me.mnuArchivoCambio.Size = New System.Drawing.Size(179, 22)
+        Me.mnuArchivoCambio.Size = New System.Drawing.Size(180, 22)
         Me.mnuArchivoCambio.Text = "Cambio Contraseña"
         '
         'MnuArchivoSalir
         '
         Me.MnuArchivoSalir.Name = "MnuArchivoSalir"
-        Me.MnuArchivoSalir.Size = New System.Drawing.Size(179, 22)
+        Me.MnuArchivoSalir.Size = New System.Drawing.Size(180, 22)
         Me.MnuArchivoSalir.Text = "Salir"
         '
         'MnuParam
@@ -176,6 +178,7 @@ Partial Class FrmPrincipal
         Me.MnuParamCB.Name = "MnuParamCB"
         Me.MnuParamCB.Size = New System.Drawing.Size(180, 22)
         Me.MnuParamCB.Text = "Cuentas Bancarias"
+        Me.MnuParamCB.Visible = False
         '
         'MnuParamPC
         '
@@ -189,6 +192,7 @@ Partial Class FrmPrincipal
         Me.MnuParamRegistro.Name = "MnuParamRegistro"
         Me.MnuParamRegistro.Size = New System.Drawing.Size(180, 22)
         Me.MnuParamRegistro.Text = "Registrar Equipo"
+        Me.MnuParamRegistro.Visible = False
         '
         'MnuMant
         '
@@ -325,30 +329,35 @@ Partial Class FrmPrincipal
         Me.MnuCompraRegistro.Name = "MnuCompraRegistro"
         Me.MnuCompraRegistro.Size = New System.Drawing.Size(207, 22)
         Me.MnuCompraRegistro.Text = "Compras"
+        Me.MnuCompraRegistro.Visible = False
         '
         'MnuCompraTraslado
         '
         Me.MnuCompraTraslado.Name = "MnuCompraTraslado"
         Me.MnuCompraTraslado.Size = New System.Drawing.Size(207, 22)
         Me.MnuCompraTraslado.Text = "Ingreso de traslados"
+        Me.MnuCompraTraslado.Visible = False
         '
         'MnuCompraAplicTraslado
         '
         Me.MnuCompraAplicTraslado.Name = "MnuCompraAplicTraslado"
         Me.MnuCompraAplicTraslado.Size = New System.Drawing.Size(207, 22)
         Me.MnuCompraAplicTraslado.Text = "Aplicacion de traslados"
+        Me.MnuCompraAplicTraslado.Visible = False
         '
         'MnuCompraAjusteInv
         '
         Me.MnuCompraAjusteInv.Name = "MnuCompraAjusteInv"
         Me.MnuCompraAjusteInv.Size = New System.Drawing.Size(207, 22)
         Me.MnuCompraAjusteInv.Text = "Ajustes de inventario"
+        Me.MnuCompraAjusteInv.Visible = False
         '
         'MnuCompraDevolucion
         '
         Me.MnuCompraDevolucion.Name = "MnuCompraDevolucion"
         Me.MnuCompraDevolucion.Size = New System.Drawing.Size(207, 22)
         Me.MnuCompraDevolucion.Text = "Devolucion de proveedor"
+        Me.MnuCompraDevolucion.Visible = False
         '
         'MnuDocElect
         '

@@ -279,21 +279,6 @@ Public Class FrmPrincipal
         formDevolucionClientes.Show()
     End Sub
 
-
-    Private Sub MnuCapturaIngreso_Click(sender As Object, e As EventArgs)
-        Dim formIngreso As New FrmIngreso With {
-            .MdiParent = Me
-        }
-        formIngreso.Show()
-    End Sub
-
-    Private Sub MnuCapturaEgreso_Click(sender As Object, e As EventArgs)
-        Dim formEgreso As New FrmEgreso With {
-            .MdiParent = Me
-        }
-        formEgreso.Show()
-    End Sub
-
     Public Sub MnuApRCxC_Click(sender As Object, e As EventArgs) Handles MnuApRCxC.Click
         Dim formReciboCxC As New FrmAplicaReciboCxC With {
             .MdiParent = Me
@@ -555,6 +540,20 @@ Public Class FrmPrincipal
             .MdiParent = Me
         }
         formAjusteInventario.Show()
+    End Sub
+
+    Private Sub MnuArchivoIngreso_Click(sender As Object, e As EventArgs) Handles MnuArchivoIngreso.Click
+        Dim formIngreso As New FrmIngreso With {
+            .MdiParent = Me
+        }
+        formIngreso.Show()
+    End Sub
+
+    Private Sub MnuArchivoEgreso_Click(sender As Object, e As EventArgs) Handles MnuArchivoEgreso.Click
+        Dim formEgreso As New FrmEgreso With {
+            .MdiParent = Me
+        }
+        formEgreso.Show()
     End Sub
 #End Region
 End Class

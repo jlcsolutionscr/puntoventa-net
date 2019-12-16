@@ -29,6 +29,8 @@ Partial Class FrmBusquedaCompra
         Me.btnFirst = New System.Windows.Forms.Button()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.txtId = New System.Windows.Forms.TextBox()
+        Me.cboSucursal = New System.Windows.Forms.ComboBox()
+        Me.Label6 = New System.Windows.Forms.Label()
         CType(Me.dgvListado, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -61,7 +63,7 @@ Partial Class FrmBusquedaCompra
         'lblDescripcion
         '
         Me.lblDescripcion.AutoSize = True
-        Me.lblDescripcion.Location = New System.Drawing.Point(141, 15)
+        Me.lblDescripcion.Location = New System.Drawing.Point(109, 15)
         Me.lblDescripcion.Name = "lblDescripcion"
         Me.lblDescripcion.Size = New System.Drawing.Size(59, 13)
         Me.lblDescripcion.TabIndex = 8
@@ -69,9 +71,9 @@ Partial Class FrmBusquedaCompra
         '
         'txtNombre
         '
-        Me.txtNombre.Location = New System.Drawing.Point(206, 12)
+        Me.txtNombre.Location = New System.Drawing.Point(174, 12)
         Me.txtNombre.Name = "txtNombre"
-        Me.txtNombre.Size = New System.Drawing.Size(398, 20)
+        Me.txtNombre.Size = New System.Drawing.Size(430, 20)
         Me.txtNombre.TabIndex = 1
         '
         'lblPagina
@@ -148,8 +150,31 @@ Partial Class FrmBusquedaCompra
         '
         Me.txtId.Location = New System.Drawing.Point(48, 12)
         Me.txtId.Name = "txtId"
-        Me.txtId.Size = New System.Drawing.Size(87, 20)
+        Me.txtId.Size = New System.Drawing.Size(55, 20)
         Me.txtId.TabIndex = 0
+        '
+        'cboSucursal
+        '
+        Me.cboSucursal.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.cboSucursal.FormattingEnabled = True
+        Me.cboSucursal.Location = New System.Drawing.Point(70, 354)
+        Me.cboSucursal.Name = "cboSucursal"
+        Me.cboSucursal.Size = New System.Drawing.Size(300, 21)
+        Me.cboSucursal.TabIndex = 151
+        Me.cboSucursal.TabStop = False
+        '
+        'Label6
+        '
+        Me.Label6.BackColor = System.Drawing.Color.Transparent
+        Me.Label6.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label6.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label6.Location = New System.Drawing.Point(12, 356)
+        Me.Label6.Name = "Label6"
+        Me.Label6.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label6.Size = New System.Drawing.Size(52, 19)
+        Me.Label6.TabIndex = 152
+        Me.Label6.Text = "Sucursal:"
+        Me.Label6.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'FrmBusquedaCompra
         '
@@ -158,6 +183,8 @@ Partial Class FrmBusquedaCompra
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(644, 387)
+        Me.Controls.Add(Me.cboSucursal)
+        Me.Controls.Add(Me.Label6)
         Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.txtId)
         Me.Controls.Add(Me.lblPagina)
@@ -194,4 +221,6 @@ Partial Class FrmBusquedaCompra
     Private WithEvents btnFirst As System.Windows.Forms.Button
     Friend WithEvents Label1 As System.Windows.Forms.Label
     Friend WithEvents txtId As System.Windows.Forms.TextBox
+    Friend WithEvents cboSucursal As ComboBox
+    Friend WithEvents Label6 As Label
 End Class

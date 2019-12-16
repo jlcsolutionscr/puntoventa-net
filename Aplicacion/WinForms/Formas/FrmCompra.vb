@@ -351,6 +351,7 @@ Public Class FrmCompra
         cboSucursal.DisplayMember = "Descripcion"
         cboSucursal.DataSource = Await Puntoventa.ObtenerListadoSucursales(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
         cboSucursal.SelectedValue = FrmPrincipal.equipoGlobal.IdSucursal
+        cboSucursal.Enabled = FrmPrincipal.usuarioGlobal.Modifica
     End Sub
 
     Private Sub CargarDatosProducto(producto As Producto)
@@ -866,7 +867,7 @@ Public Class FrmCompra
     End Sub
 
     Private Async Sub TxtCodigo_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtCodigo.PreviewKeyDown
-        If e.KeyCode = Keys.Tab Then
+        If e.KeyCode = Keys.Enter Then
             Try
                 producto = Await Puntoventa.ObtenerProductoPorCodigoProveedor(FrmPrincipal.empresaGlobal.IdEmpresa, txtCodigo.Text, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception

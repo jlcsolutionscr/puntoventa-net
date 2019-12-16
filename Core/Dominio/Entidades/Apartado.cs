@@ -16,6 +16,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
 
         [ForeignKey("Empresa")]
         public int IdEmpresa { get; set; }
+        public int IdSucursal { get; set; }
         [Key]
         public int IdApartado { get; set; }
         [ForeignKey("Usuario")]
@@ -24,6 +25,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public int IdTipoMoneda { get; set; }
         [ForeignKey("Cliente")]
         public int IdCliente { get; set; }
+        public string NombreCliente { get; set; }
         public DateTime Fecha { get; set; }
         public string TextoAdicional { get; set; }
         [ForeignKey("Vendedor")]
@@ -36,8 +38,6 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public decimal MontoAdelanto { get; set; }
         [NotMapped]
         public decimal Total { get { return Excento + Gravado + Exonerado + Impuesto - Descuento; } }
-        [NotMapped]
-        public string NombreCliente { get { if (Cliente == null) return ""; else return Cliente.Nombre; } }
         [ForeignKey("ParametroExoneracion")]
         public int IdTipoExoneracion { get; set; }
         public string NumDocExoneracion { get; set; }

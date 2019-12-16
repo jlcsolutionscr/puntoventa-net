@@ -12,8 +12,10 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public int IdFormaPago { get; set; }
         [Key, Column(Order = 2), ForeignKey("TipoMoneda")]
         public int IdTipoMoneda { get; set; }
-        [Key, Column(Order = 3), ForeignKey("CuentaBanco")]
+        [Key, Column(Order = 3)]
         public int IdCuentaBanco { get; set; }
+        [NotMapped]
+        public string DescripcionCuenta { get; set; }
         public string Beneficiario { get; set; }
         public string NroMovimiento { get; set; }
         public decimal MontoLocal { get; set; }
@@ -22,6 +24,5 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public Egreso Egreso { get; set; }
         public FormaPago FormaPago { get; set; }
         public TipoMoneda TipoMoneda { get; set; }
-        public CuentaBanco CuentaBanco { get; set; }
     }
 }

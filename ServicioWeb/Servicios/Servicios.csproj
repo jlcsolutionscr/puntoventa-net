@@ -48,10 +48,8 @@
     <Compile Include="CompraService.cs" />
     <Compile Include="ConfiguracionRecepcion.cs" />
     <Compile Include="ContabilidadService.cs" />
-    <Compile Include="IngresoService.cs" />
-    <Compile Include="CuentaPorCobrarService.cs" />
-    <Compile Include="CuentaPorPagarService.cs" />
-    <Compile Include="EgresoService.cs" />
+    <Compile Include="CuentaPorProcesarService.cs" />
+    <Compile Include="FlujoCajaService.cs" />
     <Compile Include="FacturacionService.cs" />
     <Compile Include="ServerMailService.cs" />
     <Compile Include="MantenimientoService.cs" />

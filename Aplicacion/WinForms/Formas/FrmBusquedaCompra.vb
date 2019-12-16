@@ -1,8 +1,9 @@
+Imports System.Threading.Tasks
 Imports LeandroSoftware.ClienteWCF
 
 Public Class FrmBusquedaCompra
 #Region "Variables"
-    Private intTotalCompras As Integer
+    Private intTotalRegistros As Integer
     Private intIndiceDePagina As Integer
     Private intFilasPorPagina As Integer = 13
     Private intCantidadDePaginas As Integer
@@ -38,9 +39,9 @@ Public Class FrmBusquedaCompra
         dgvListado.Columns.Add(dvcTotal)
     End Sub
 
-    Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Threading.Tasks.Task
+    Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
         Try
-            dgvListado.DataSource = Await Puntoventa.ObtenerListadoCompras(FrmPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, FrmPrincipal.usuarioGlobal.Token, intId, txtNombre.Text)
+            dgvListado.DataSource = Await Puntoventa.ObtenerListadoCompras(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, intNumeroPagina, intFilasPorPagina, FrmPrincipal.usuarioGlobal.Token, intId, txtNombre.Text)
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -50,16 +51,15 @@ Public Class FrmBusquedaCompra
         dgvListado.Refresh()
     End Function
 
-    Private Async Function ValidarCantidadCompras() As Threading.Tasks.Task
+    Private Async Function ValidarCantidadCompras() As Task
         Try
-            intTotalCompras = Await Puntoventa.ObtenerTotalListaCompras(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token, intId, txtNombre.Text)
+            intTotalRegistros = Await Puntoventa.ObtenerTotalListaCompras(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FrmPrincipal.usuarioGlobal.Token, intId, txtNombre.Text)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
             Exit Function
         End Try
-        intCantidadDePaginas = Math.Truncate(intTotalCompras / intFilasPorPagina) + IIf((intTotalCompras Mod intFilasPorPagina) = 0, 0, 1)
-
+        intCantidadDePaginas = Math.Truncate(intTotalRegistros / intFilasPorPagina) + IIf((intTotalRegistros Mod intFilasPorPagina) = 0, 0, 1)
         If intCantidadDePaginas > 1 Then
             btnLast.Enabled = True
             btnNext.Enabled = True
@@ -72,10 +72,18 @@ Public Class FrmBusquedaCompra
             btnFirst.Enabled = False
         End If
     End Function
+
+    Private Async Function CargarCombos() As Task
+        cboSucursal.ValueMember = "Id"
+        cboSucursal.DisplayMember = "Descripcion"
+        cboSucursal.DataSource = Await Puntoventa.ObtenerListadoSucursales(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+        cboSucursal.SelectedValue = FrmPrincipal.equipoGlobal.IdSucursal
+        cboSucursal.Enabled = FrmPrincipal.usuarioGlobal.Modifica
+    End Function
 #End Region
 
 #Region "Eventos Controles"
-    Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs) Handles txtId.KeyPress
+    Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As KeyPressEventArgs) Handles txtId.KeyPress
         FrmPrincipal.ValidaNumero(e, sender, True, 0)
     End Sub
 
@@ -105,6 +113,7 @@ Public Class FrmBusquedaCompra
 
     Private Async Sub FrmBusProd_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
+            Await CargarCombos()
             EstablecerPropiedadesDataGridView()
             Await ValidarCantidadCompras()
             intIndiceDePagina = 1

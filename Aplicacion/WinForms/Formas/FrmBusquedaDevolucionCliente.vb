@@ -40,7 +40,7 @@ Public Class FrmBusquedaDevolucionCliente
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Threading.Tasks.Task
         Try
-            dgvListado.DataSource = Await Puntoventa.ObtenerListadoDevolucionesPorCliente(FrmPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, FrmPrincipal.usuarioGlobal.Token, intId, txtNombre.Text)
+            dgvListado.DataSource = Await Puntoventa.ObtenerListadoDevolucionesPorCliente(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, intNumeroPagina, intFilasPorPagina, FrmPrincipal.usuarioGlobal.Token, intId, txtNombre.Text)
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -52,7 +52,7 @@ Public Class FrmBusquedaDevolucionCliente
 
     Private Async Function ValidarCantidadRegistros() As Task
         Try
-            intTotalRegistros = Await Puntoventa.ObtenerTotalListaDevolucionesPorCliente(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token, intId, txtNombre.Text)
+            intTotalRegistros = Await Puntoventa.ObtenerTotalListaDevolucionesPorCliente(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FrmPrincipal.usuarioGlobal.Token, intId, txtNombre.Text)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -71,16 +71,24 @@ Public Class FrmBusquedaDevolucionCliente
             btnFirst.Enabled = False
         End If
     End Function
+
+    Private Async Function CargarCombos() As Task
+        cboSucursal.ValueMember = "Id"
+        cboSucursal.DisplayMember = "Descripcion"
+        cboSucursal.DataSource = Await Puntoventa.ObtenerListadoSucursales(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+        cboSucursal.SelectedValue = FrmPrincipal.equipoGlobal.IdSucursal
+        cboSucursal.Enabled = FrmPrincipal.usuarioGlobal.Modifica
+    End Function
 #End Region
 
 #Region "Eventos Controles"
-    Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs) Handles txtId.KeyPress
+    Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As KeyPressEventArgs) Handles txtId.KeyPress
         FrmPrincipal.ValidaNumero(e, sender, True, 0)
     End Sub
 
-    Private Sub btnFirst_Click(sender As Object, e As EventArgs) Handles btnFirst.Click
+    Private Async Sub btnFirst_Click(sender As Object, e As EventArgs) Handles btnFirst.Click
         intIndiceDePagina = 1
-        ActualizarDatos(intIndiceDePagina)
+        Await ActualizarDatos(intIndiceDePagina)
     End Sub
 
     Private Async Sub btnPrevious_Click(sender As Object, e As EventArgs) Handles btnPrevious.Click
@@ -104,6 +112,7 @@ Public Class FrmBusquedaDevolucionCliente
 
     Private Async Sub FrmBusProd_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
+            Await CargarCombos()
             EstablecerPropiedadesDataGridView()
             Await ValidarCantidadRegistros()
             intIndiceDePagina = 1

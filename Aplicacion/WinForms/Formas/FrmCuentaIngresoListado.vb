@@ -1,4 +1,6 @@
-﻿Public Class FrmCuentaIngresoListado
+﻿Imports LeandroSoftware.ClienteWCF
+
+Public Class FrmCuentaIngresoListado
 #Region "Variables"
 #End Region
 
@@ -10,7 +12,7 @@
         dgvListado.Columns.Clear()
         dgvListado.AutoGenerateColumns = False
         dvcId.HeaderText = "Id"
-        dvcId.DataPropertyName = "IdCuenta"
+        dvcId.DataPropertyName = "Id"
         dvcId.Width = 50
         dgvListado.Columns.Add(dvcId)
         dvcDescripcion.HeaderText = "Descripción"
@@ -19,11 +21,10 @@
         dgvListado.Columns.Add(dvcDescripcion)
     End Sub
 
-    Private Sub ActualizarDatos()
+    Private Async Function ActualizarDatos() As Threading.Tasks.Task
         Try
-            Dim listado As IList = Nothing 'servicioIngresos.ObtenerListaCuentasIngreso(FrmMenuPrincipal.empresaGlobal.IdEmpresa, txtDescripcion.Text)
-            dgvListado.DataSource = listado
-            If listado.Count() > 0 Then
+            dgvListado.DataSource = Await Puntoventa.ObtenerListadoCuentasIngreso(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token, txtDescripcion.Text)
+            If dgvListado.Rows.Count > 0 Then
                 btnEditar.Enabled = True
                 btnEliminar.Enabled = True
             Else
@@ -33,64 +34,61 @@
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
-            Exit Sub
+            Exit Function
         End Try
         dgvListado.Refresh()
-    End Sub
+    End Function
 #End Region
 
 #Region "Eventos Controles"
-    Private Sub FrmCuentaIngresoListado_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+    Private Async Sub FrmCuentaIngresoListado_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
             EstablecerPropiedadesDataGridView()
-            ActualizarDatos()
+            Await ActualizarDatos()
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
         End Try
     End Sub
 
-    Private Sub btnAgregar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnAgregar.Click
-        'Dim formMant As New FrmCuentaIngreso With {
-        '    .intIdCuenta = 0,
-        '    .servicioIngresos = servicioIngresos
-        '}
-        'formMant.ShowDialog()
-        ActualizarDatos()
+    Private Async Sub btnAgregar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnAgregar.Click
+        Dim formMant As New FrmCuentaIngreso With {
+            .intIdCuenta = 0
+        }
+        formMant.ShowDialog()
+        Await ActualizarDatos()
     End Sub
 
-    Private Sub btnEditar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEditar.Click
-        'Dim formMant As New FrmCuentaIngreso With {
-        '    .intIdCuenta = dgvDatos.CurrentRow.Cells(0).Value,
-        '    .servicioIngresos = servicioIngresos
-        '}
-        'formMant.ShowDialog()
-        ActualizarDatos()
+    Private Async Sub btnEditar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEditar.Click
+        Dim formmant As New FrmCuentaIngreso With {
+            .intIdCuenta = dgvListado.CurrentRow.Cells(0).Value
+        }
+        formmant.ShowDialog()
+        Await ActualizarDatos()
     End Sub
 
-    Private Sub btnEliminar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEliminar.Click
+    Private Async Sub btnEliminar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEliminar.Click
         If MessageBox.Show("Desea eliminar el registro actual", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
             Try
-                'servicioIngresos.EliminarCuentaIngreso(dgvDatos.CurrentRow.Cells(0).Value)
+                Await Puntoventa.EliminarCuentaIngreso(dgvListado.CurrentRow.Cells(0).Value, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
-            ActualizarDatos()
+            Await ActualizarDatos()
         End If
     End Sub
 
-    Private Sub btnFiltrar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnFiltrar.Click
-        ActualizarDatos()
+    Private Async Sub btnFiltrar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnFiltrar.Click
+        Await ActualizarDatos()
     End Sub
 
-    Private Sub FlexProducto_DoubleClick(ByVal sender As Object, ByVal e As EventArgs) Handles dgvListado.DoubleClick
-        'Dim formMant As New FrmCuentaIngreso With {
-        '    .intIdCuenta = dgvDatos.CurrentRow.Cells(0).Value,
-        '    .servicioIngresos = servicioIngresos
-        '}
-        'formMant.ShowDialog()
-        ActualizarDatos()
+    Private Async Sub FlexProducto_DoubleClick(ByVal sender As Object, ByVal e As EventArgs) Handles dgvListado.DoubleClick
+        Dim formmant As New FrmCuentaIngreso With {
+            .intIdCuenta = dgvListado.CurrentRow.Cells(0).Value
+        }
+        formmant.ShowDialog()
+        Await ActualizarDatos()
     End Sub
 #End Region
 End Class

@@ -16,8 +16,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         void ActualizarCuentaBanco(CuentaBanco cuentaBanco);
         void EliminarCuentaBanco(int intIdCuenta);
         CuentaBanco ObtenerCuentaBanco(int intIdCuenta);
-        IEnumerable<LlaveDescripcion> ObtenerListadoCuentasBanco(int intIdEmpresa, string strDescripcion = "");
-        IEnumerable<TipoMovimientoBanco> ObtenerTipoMovimientoBanco();
+        IList<LlaveDescripcion> ObtenerListadoCuentasBanco(int intIdEmpresa, string strDescripcion = "");
+        IList<TipoMovimientoBanco> ObtenerTipoMovimientoBanco();
         MovimientoBanco AgregarMovimientoBanco(MovimientoBanco movimiento);
         MovimientoBanco AgregarMovimientoBanco(IDbContext dbContext, MovimientoBanco movimiento);
         void ActualizarMovimientoBanco(MovimientoBanco movimiento);
@@ -25,7 +25,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         void AnularMovimientoBanco(IDbContext dbContext, int intIdMovimiento, int intIdUsuario);
         MovimientoBanco ObtenerMovimientoBanco(int intIdMovimiento);
         int ObtenerTotalListaMovimientos(int intIdEmpresa, string strDescripcion = "");
-        IEnumerable<MovimientoBanco> ObtenerListadoMovimientos(int intIdEmpresa, int numPagina, int cantRec, string strDescripcion = "");
+        IList<MovimientoBanco> ObtenerListadoMovimientos(int intIdEmpresa, int numPagina, int cantRec, string strDescripcion = "");
     }
 
     public class BancaService : IBancaService
@@ -151,7 +151,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoCuentasBanco(int intIdEmpresa, string strDescripcion = "")
+        public IList<LlaveDescripcion> ObtenerListadoCuentasBanco(int intIdEmpresa, string strDescripcion = "")
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -177,7 +177,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<TipoMovimientoBanco> ObtenerTipoMovimientoBanco()
+        public IList<TipoMovimientoBanco> ObtenerTipoMovimientoBanco()
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -391,7 +391,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<MovimientoBanco> ObtenerListadoMovimientos(int intIdEmpresa, int numPagina, int cantRec, string strDescripcion = "")
+        public IList<MovimientoBanco> ObtenerListadoMovimientos(int intIdEmpresa, int numPagina, int cantRec, string strDescripcion = "")
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {

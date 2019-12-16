@@ -445,11 +445,6 @@ Public Class FrmApartado
             decPrecioVenta = ObtenerPrecioVentaPorCliente(cliente, producto)
             txtPrecio.Text = FormatNumber(decPrecioVenta / (1 + (decTasaImpuesto / 100)), 2)
             txtUnidad.Text = IIf(producto.Tipo = 1, "UND", IIf(producto.Tipo = 2, "SP", "OS"))
-            If FrmPrincipal.bolModificaDescripcion = True Then
-                txtDescripcion.Focus()
-            Else
-                txtPrecio.Focus()
-            End If
         End If
     End Sub
 
@@ -566,6 +561,7 @@ Public Class FrmApartado
                 .Nombre = "CLIENTE DE CONTADO"
             }
             txtNombreCliente.Text = cliente.Nombre
+            txtNombreCliente.ReadOnly = False
         Catch ex As Exception
             MessageBox.Show("Error al consultar el cliente de contado. Por favor consulte con su proveedor.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -618,7 +614,7 @@ Public Class FrmApartado
                 bolInit = True
                 txtIdApartado.Text = apartado.IdApartado
                 cliente = apartado.Cliente
-                txtNombreCliente.Text = apartado.Cliente.Nombre
+                txtNombreCliente.Text = apartado.NombreCliente
                 txtFecha.Text = apartado.Fecha
                 txtDocumento.Text = apartado.TextoAdicional
                 If apartado.PorcentajeExoneracion > 0 Then
@@ -678,6 +674,7 @@ Public Class FrmApartado
             Try
                 cliente = Await Puntoventa.ObtenerCliente(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
                 txtNombreCliente.Text = cliente.Nombre
+                txtNombreCliente.ReadOnly = True
                 If cliente.Vendedor IsNot Nothing Then
                     vendedor = cliente.Vendedor
                     txtVendedor.Text = vendedor.Nombre
@@ -736,9 +733,11 @@ Public Class FrmApartado
             btnGuardar.Enabled = False
             apartado = New Apartado With {
                 .IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa,
+                .IdSucursal = FrmPrincipal.equipoGlobal.IdSucursal,
                 .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
                 .IdTipoMoneda = 1,
                 .IdCliente = cliente.IdCliente,
+                .NombreCliente = txtNombreCliente.Text,
                 .IdTipoExoneracion = IIf(cliente.PorcentajeExoneracion > 0, cliente.IdTipoExoneracion, 1),
                 .NumDocExoneracion = txtNumDocExoneracion.Text,
                 .NombreInstExoneracion = txtNombreInstExoneracion.Text,
@@ -1095,7 +1094,7 @@ Public Class FrmApartado
     End Sub
 
     Private Async Sub TxtCodigo_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtCodigo.PreviewKeyDown
-        If e.KeyCode = Keys.Tab Then
+        If e.KeyCode = Keys.Enter Then
             Try
                 producto = Await Puntoventa.ObtenerProductoPorCodigo(FrmPrincipal.empresaGlobal.IdEmpresa, txtCodigo.Text, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception

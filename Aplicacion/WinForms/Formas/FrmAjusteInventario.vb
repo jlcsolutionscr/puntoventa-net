@@ -124,11 +124,6 @@ Public Class FrmAjusteInventario
             If txtCantidad.Text = "" Then txtCantidad.Text = "1"
             txtDescripcion.Text = producto.Descripcion
             txtPrecioCosto.Text = FormatNumber(producto.PrecioCosto, 2)
-            If FrmPrincipal.bolModificaDescripcion = True Then
-                txtDescripcion.Focus()
-            Else
-                txtPrecioCosto.Focus()
-            End If
         End If
     End Sub
 
@@ -335,7 +330,7 @@ Public Class FrmAjusteInventario
     End Sub
 
     Private Async Sub TxtCodigo_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtCodigo.PreviewKeyDown
-        If e.KeyCode = Keys.Tab Then
+        If e.KeyCode = Keys.Enter Then
             Try
                 producto = Await Puntoventa.ObtenerProductoPorCodigo(FrmPrincipal.empresaGlobal.IdEmpresa, txtCodigo.Text, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception

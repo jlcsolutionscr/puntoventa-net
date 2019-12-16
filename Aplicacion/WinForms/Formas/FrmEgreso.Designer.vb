@@ -593,7 +593,9 @@ Partial Class FrmEgreso
         Me.KeyPreview = True
         Me.Location = New System.Drawing.Point(73, 22)
         Me.MaximizeBox = False
+        Me.MaximumSize = New System.Drawing.Size(733, 402)
         Me.MinimizeBox = False
+        Me.MinimumSize = New System.Drawing.Size(733, 402)
         Me.Name = "FrmEgreso"
         Me.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen

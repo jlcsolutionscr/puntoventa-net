@@ -13,22 +13,33 @@ Public Class FrmBusquedaEgreso
 #Region "Métodos"
     Private Sub EstablecerPropiedadesDataGridView()
         Dim dvcId As New DataGridViewTextBoxColumn
+        Dim dvcFecha As New DataGridViewTextBoxColumn
         Dim dvcDescripcion As New DataGridViewTextBoxColumn
+        Dim dvcMonto As New DataGridViewTextBoxColumn
         dgvListado.Columns.Clear()
         dgvListado.AutoGenerateColumns = False
         dvcId.HeaderText = "Id"
         dvcId.DataPropertyName = "Id"
         dvcId.Width = 50
         dgvListado.Columns.Add(dvcId)
-        dvcDescripcion.HeaderText = "Descripción"
-        dvcDescripcion.DataPropertyName = "Descripcion"
-        dvcDescripcion.Width = 600
+        dvcFecha.HeaderText = "Fecha"
+        dvcFecha.DataPropertyName = "Fecha"
+        dvcFecha.Width = 70
+        dgvListado.Columns.Add(dvcFecha)
+        dvcDescripcion.HeaderText = "Detalle"
+        dvcDescripcion.DataPropertyName = "Detalle"
+        dvcDescripcion.Width = 400
         dgvListado.Columns.Add(dvcDescripcion)
+        dvcMonto.HeaderText = "Total"
+        dvcMonto.DataPropertyName = "Total"
+        dvcMonto.Width = 100
+        dvcMonto.DefaultCellStyle = FrmPrincipal.dgvDecimal
+        dgvListado.Columns.Add(dvcMonto)
     End Sub
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
         Try
-            dgvListado.DataSource = Await Puntoventa.ObtenerListadoEgresos(FrmPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, FrmPrincipal.usuarioGlobal.Token, intId, "", txtDetalle.Text)
+            dgvListado.DataSource = Await Puntoventa.ObtenerListadoEgresos(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, intNumeroPagina, intFilasPorPagina, FrmPrincipal.usuarioGlobal.Token, intId, "", txtDetalle.Text)
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -39,13 +50,7 @@ Public Class FrmBusquedaEgreso
     End Function
 
     Private Async Function ValidarCantidadRegistros() As Task
-        Try
-            intTotalRegistros = Await Puntoventa.ObtenerTotalListaEgresos(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token, intId, "", txtDetalle.Text)
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-            Exit Function
-        End Try
+        intTotalRegistros = Await Puntoventa.ObtenerTotalListaEgresos(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FrmPrincipal.usuarioGlobal.Token, intId, "", txtDetalle.Text)
         intCantidadDePaginas = Math.Truncate(intTotalRegistros / intFilasPorPagina) + IIf((intTotalRegistros Mod intFilasPorPagina) = 0, 0, 1)
         If intCantidadDePaginas > 1 Then
             btnLast.Enabled = True
@@ -59,10 +64,18 @@ Public Class FrmBusquedaEgreso
             btnFirst.Enabled = False
         End If
     End Function
+
+    Private Async Function CargarCombos() As Task
+        cboSucursal.ValueMember = "Id"
+        cboSucursal.DisplayMember = "Descripcion"
+        cboSucursal.DataSource = Await Puntoventa.ObtenerListadoSucursales(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+        cboSucursal.SelectedValue = FrmPrincipal.equipoGlobal.IdSucursal
+        cboSucursal.Enabled = FrmPrincipal.usuarioGlobal.Modifica
+    End Function
 #End Region
 
 #Region "Eventos Controles"
-    Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs) Handles txtId.KeyPress
+    Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As KeyPressEventArgs) Handles txtId.KeyPress
         FrmPrincipal.ValidaNumero(e, sender, True, 0)
     End Sub
 
@@ -92,6 +105,7 @@ Public Class FrmBusquedaEgreso
 
     Private Async Sub FrmBusEgreso_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
+            Await CargarCombos()
             EstablecerPropiedadesDataGridView()
             Await ValidarCantidadRegistros()
             intIndiceDePagina = 1

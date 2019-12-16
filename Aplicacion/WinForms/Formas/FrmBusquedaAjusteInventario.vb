@@ -34,7 +34,7 @@ Public Class FrmBusquedaAjusteInventario
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
         Try
-            dgvListado.DataSource = Await Puntoventa.ObtenerListadoAjusteInventario(FrmPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, FrmPrincipal.usuarioGlobal.Token, intId, txtDescripcion.Text)
+            dgvListado.DataSource = Await Puntoventa.ObtenerListadoAjusteInventario(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, intNumeroPagina, intFilasPorPagina, FrmPrincipal.usuarioGlobal.Token, intId, txtDescripcion.Text)
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -46,7 +46,7 @@ Public Class FrmBusquedaAjusteInventario
 
     Private Async Function ValidarCantidadRegistros() As Task
         Try
-            intTotalRegistros = Await Puntoventa.ObtenerTotalListaAjusteInventario(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token, intId, txtDescripcion.Text)
+            intTotalRegistros = Await Puntoventa.ObtenerTotalListaAjusteInventario(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FrmPrincipal.usuarioGlobal.Token, intId, txtDescripcion.Text)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -65,10 +65,18 @@ Public Class FrmBusquedaAjusteInventario
             btnFirst.Enabled = False
         End If
     End Function
+
+    Private Async Function CargarCombos() As Task
+        cboSucursal.ValueMember = "Id"
+        cboSucursal.DisplayMember = "Descripcion"
+        cboSucursal.DataSource = Await Puntoventa.ObtenerListadoSucursales(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+        cboSucursal.SelectedValue = FrmPrincipal.equipoGlobal.IdSucursal
+        cboSucursal.Enabled = FrmPrincipal.usuarioGlobal.Modifica
+    End Function
 #End Region
 
 #Region "Eventos Controles"
-    Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs) Handles txtId.KeyPress
+    Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As KeyPressEventArgs) Handles txtId.KeyPress
         FrmPrincipal.ValidaNumero(e, sender, True, 0)
     End Sub
 
@@ -98,6 +106,7 @@ Public Class FrmBusquedaAjusteInventario
 
     Private Async Sub FrmBusProd_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
+            Await CargarCombos()
             EstablecerPropiedadesDataGridView()
             Await ValidarCantidadRegistros()
             intIndiceDePagina = 1

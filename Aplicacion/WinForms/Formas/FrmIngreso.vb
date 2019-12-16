@@ -1,11 +1,11 @@
 Imports System.Collections.Generic
 Imports LeandroSoftware.Core.TiposComunes
 Imports LeandroSoftware.Core.Dominio.Entidades
+Imports LeandroSoftware.ClienteWCF
+Imports System.Threading.Tasks
 
 Public Class FrmIngreso
 #Region "Variables"
-    Private strUsuario, Valida, strEmpresa As String
-    Private dtbDatos As DataTable
     Private dblTotal As Decimal = 0
     Private dblSaldoPorPagar As Decimal = 0
     Private dblTotalPago As Decimal = 0
@@ -15,9 +15,8 @@ Public Class FrmIngreso
     Private arrDesglosePago As List(Of ModuloImpresion.ClsDesgloseFormaPago)
     Private ingreso As Ingreso
     Private desglosePago As DesglosePagoIngreso
-    Private cuentaIngreso As CuentaIngreso
     Private comprobante As ModuloImpresion.ClsIngreso
-    Private desglosePagoImpresion As ModuloImpresion.clsDesgloseFormaPago
+    Private desglosePagoImpresion As ModuloImpresion.ClsDesgloseFormaPago
     Private bolInit As Boolean = True
 #End Region
 
@@ -45,8 +44,7 @@ Public Class FrmIngreso
         Dim dvcDescFormaPago As New DataGridViewTextBoxColumn
         Dim dvcIdCuentaBanco As New DataGridViewTextBoxColumn
         Dim dvcDescBanco As New DataGridViewTextBoxColumn
-        Dim dvcTipoTarjeta As New DataGridViewTextBoxColumn
-        Dim dvcNroMovimiento As New DataGridViewTextBoxColumn
+        Dim dvcNroCheque As New DataGridViewTextBoxColumn
         Dim dvcIdTipoMoneda As New DataGridViewTextBoxColumn
         Dim dvcDescTipoMoneda As New DataGridViewTextBoxColumn
         Dim dvcMontoLocal As New DataGridViewTextBoxColumn
@@ -73,24 +71,17 @@ Public Class FrmIngreso
 
         dvcDescBanco.DataPropertyName = "DESCBANCO"
         dvcDescBanco.HeaderText = "Banco"
-        dvcDescBanco.Width = 140
+        dvcDescBanco.Width = 150
         dvcDescBanco.Visible = True
         dvcDescBanco.ReadOnly = True
         grdDesglosePago.Columns.Add(dvcDescBanco)
 
-        dvcTipoTarjeta.DataPropertyName = "TIPOTARJETA"
-        dvcTipoTarjeta.HeaderText = "Tipo Tarjeta"
-        dvcTipoTarjeta.Width = 100
-        dvcTipoTarjeta.Visible = True
-        dvcTipoTarjeta.ReadOnly = True
-        grdDesglosePago.Columns.Add(dvcTipoTarjeta)
-
-        dvcNroMovimiento.DataPropertyName = "NROMOVIMIENTO"
-        dvcNroMovimiento.HeaderText = "Movimiento #"
-        dvcNroMovimiento.Width = 100
-        dvcNroMovimiento.Visible = True
-        dvcNroMovimiento.ReadOnly = True
-        grdDesglosePago.Columns.Add(dvcNroMovimiento)
+        dvcNroCheque.DataPropertyName = "NROCHEQUE"
+        dvcNroCheque.HeaderText = "Referencia"
+        dvcNroCheque.Width = 100
+        dvcNroCheque.Visible = True
+        dvcNroCheque.ReadOnly = True
+        grdDesglosePago.Columns.Add(dvcNroCheque)
 
         dvcIdTipoMoneda.DataPropertyName = "IDTIPOMONEDA"
         dvcIdTipoMoneda.HeaderText = "TipoMoneda"
@@ -100,14 +91,14 @@ Public Class FrmIngreso
 
         dvcDescTipoMoneda.DataPropertyName = "DESCTIPOMONEDA"
         dvcDescTipoMoneda.HeaderText = "Moneda"
-        dvcDescTipoMoneda.Width = 70
+        dvcDescTipoMoneda.Width = 90
         dvcDescTipoMoneda.Visible = True
         dvcDescTipoMoneda.ReadOnly = True
         grdDesglosePago.Columns.Add(dvcDescTipoMoneda)
 
         dvcMontoLocal.DataPropertyName = "MONTOLOCAL"
         dvcMontoLocal.HeaderText = "Monto Local"
-        dvcMontoLocal.Width = 100
+        dvcMontoLocal.Width = 110
         dvcMontoLocal.Visible = True
         dvcMontoLocal.ReadOnly = True
         dvcMontoLocal.DefaultCellStyle = FrmPrincipal.dgvDecimal
@@ -115,7 +106,7 @@ Public Class FrmIngreso
 
         dvcMontoForaneo.DataPropertyName = "MONTOFORANEO"
         dvcMontoForaneo.HeaderText = "Monto Exterior"
-        dvcMontoForaneo.Width = 100
+        dvcMontoForaneo.Width = 110
         dvcMontoForaneo.Visible = True
         dvcMontoForaneo.ReadOnly = True
         dvcMontoForaneo.DefaultCellStyle = FrmPrincipal.dgvDecimal
@@ -129,13 +120,7 @@ Public Class FrmIngreso
             dtrRowDesglosePago.Item(0) = detalle.IdFormaPago
             dtrRowDesglosePago.Item(1) = detalle.FormaPago.Descripcion
             dtrRowDesglosePago.Item(2) = detalle.IdCuentaBanco
-            If detalle.IdFormaPago = StaticFormaPago.Tarjeta Then
-                Dim banco As BancoAdquiriente = Nothing 'servicioMantenimiento.ObtenerBancoAdquiriente(detalle.IdCuentaBanco)
-                dtrRowDesglosePago.Item(3) = banco.Descripcion
-            Else
-                Dim banco As CuentaBanco = Nothing 'servicioAuxiliarBancario.ObtenerCuentaBanco(detalle.IdCuentaBanco)
-                dtrRowDesglosePago.Item(3) = banco.Descripcion
-            End If
+            dtrRowDesglosePago.Item(3) = detalle.DescripcionCuenta
             dtrRowDesglosePago.Item(4) = detalle.TipoTarjeta
             dtrRowDesglosePago.Item(5) = detalle.NroMovimiento
             dtrRowDesglosePago.Item(6) = detalle.IdTipoMoneda
@@ -192,38 +177,36 @@ Public Class FrmIngreso
         txtSaldoPorPagar.Text = FormatNumber(dblSaldoPorPagar, 2)
     End Sub
 
-    Private Sub CargarCombos()
-        cboCuentaIngreso.ValueMember = "IdCuenta"
+    Private Async Function CargarCombos() As Task
+        cboCuentaIngreso.ValueMember = "Id"
         cboCuentaIngreso.DisplayMember = "Descripcion"
-        'cboCuentaIngreso.DataSource = servicioIngresos.ObtenerListaCuentasIngreso(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
-        cboFormaPago.ValueMember = "IdFormaPago"
+        cboCuentaIngreso.DataSource = Await Puntoventa.ObtenerListadoCuentasIngreso(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+        cboFormaPago.ValueMember = "Id"
         cboFormaPago.DisplayMember = "Descripcion"
-        'cboFormaPago.DataSource = servicioMantenimiento.ObtenerListaFormaPagoIngreso()
-        cboTipoMoneda.ValueMember = "IdTipoMoneda"
-        cboTipoMoneda.DisplayMember = "Descripcion"
-        'cboTipoMoneda.DataSource = servicioMantenimiento.ObtenerListaTipoMoneda()
-        cboCuentaIngreso.SelectedValue = 0
-    End Sub
-
-    Private Sub CargarListaBancoAdquiriente()
-        'cboTipoBanco.DataSource = servicioMantenimiento.ObtenerListaBancoAdquiriente(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
-        cboTipoBanco.ValueMember = "IdBanco"
-        cboTipoBanco.DisplayMember = "Codigo"
-    End Sub
-
-    Private Sub CargarListaCuentaBanco()
-        'cboTipoBanco.DataSource = servicioAuxiliarBancario.ObtenerListaCuentasBanco(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
-        cboTipoBanco.ValueMember = "IdCuenta"
+        cboFormaPago.DataSource = Await Puntoventa.ObtenerListadoFormaPagoIngreso(FrmPrincipal.usuarioGlobal.Token)
+        cboTipoBanco.ValueMember = "Id"
         cboTipoBanco.DisplayMember = "Descripcion"
-    End Sub
+        cboTipoBanco.DataSource = Await Puntoventa.ObtenerListadoBancoAdquiriente(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+        cboTipoMoneda.ValueMember = "Id"
+        cboTipoMoneda.DisplayMember = "Descripcion"
+        cboTipoMoneda.DataSource = Await Puntoventa.ObtenerListadoTipoMoneda(FrmPrincipal.usuarioGlobal.Token)
+    End Function
+
+    Private Async Function CargarListaBancoAdquiriente() As Task
+        cboTipoBanco.DataSource = Await Puntoventa.ObtenerListadoBancoAdquiriente(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+    End Function
+
+    Private Async Function CargarListaCuentaBanco() As Task
+        cboTipoBanco.DataSource = Await Puntoventa.ObtenerListadoCuentasBanco(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+    End Function
 #End Region
 
 #Region "Eventos Controles"
-    Private Sub FrmIngreso_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+    Private Async Sub FrmIngreso_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
             txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
-            CargarCombos()
-            CargarListaBancoAdquiriente()
+            Await CargarCombos()
+            Await CargarListaBancoAdquiriente()
             IniciaDetallePago()
             EstablecerPropiedadesDataGridView()
             grdDesglosePago.DataSource = dtbDesglosePago
@@ -263,11 +246,11 @@ Public Class FrmIngreso
         txtMonto.Text = ""
     End Sub
 
-    Private Sub CmdAnular_Click(sender As Object, e As EventArgs) Handles CmdAnular.Click
+    Private Async Sub CmdAnular_Click(sender As Object, e As EventArgs) Handles CmdAnular.Click
         If txtIdIngreso.Text <> "" Then
             If MessageBox.Show("Desea anular este registro?", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
                 Try
-                    'servicioIngresos.AnularIngreso(txtIdIngreso.Text, FrmMenuPrincipal.usuarioGlobal.IdUsuario)
+                    Await Puntoventa.AnularIngreso(txtIdIngreso.Text, FrmPrincipal.usuarioGlobal.IdUsuario, FrmPrincipal.usuarioGlobal.Token)
                 Catch ex As Exception
                     MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
@@ -278,13 +261,13 @@ Public Class FrmIngreso
         End If
     End Sub
 
-    Private Sub CmdBuscar_Click(sender As Object, e As EventArgs) Handles CmdBuscar.Click
+    Private Async Sub CmdBuscar_Click(sender As Object, e As EventArgs) Handles CmdBuscar.Click
         Dim formBusqueda As New FrmBusquedaIngreso()
         FrmPrincipal.intBusqueda = 0
         formBusqueda.ShowDialog()
         If FrmPrincipal.intBusqueda > 0 Then
             Try
-                'ingreso = servicioIngresos.ObtenerIngreso(FrmMenuPrincipal.intBusqueda)
+                ingreso = Await Puntoventa.ObtenerIngreso(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
@@ -307,7 +290,7 @@ Public Class FrmIngreso
         End If
     End Sub
 
-    Private Sub CmdGuardar_Click(sender As Object, e As EventArgs) Handles CmdGuardar.Click
+    Private Async Sub CmdGuardar_Click(sender As Object, e As EventArgs) Handles CmdGuardar.Click
         If cboCuentaIngreso.SelectedValue Is Nothing Then
             MessageBox.Show("Debe seleccionar el tipo de cuenta por aplicar al ingreso.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
@@ -335,6 +318,7 @@ Public Class FrmIngreso
         If txtIdIngreso.Text = "" Then
             ingreso = New Ingreso With {
                 .IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa,
+                .IdSucursal = FrmPrincipal.equipoGlobal.IdSucursal,
                 .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
                 .Fecha = txtFecha.Text,
                 .IdCuenta = cboCuentaIngreso.SelectedValue,
@@ -356,8 +340,7 @@ Public Class FrmIngreso
                 ingreso.DesglosePagoIngreso.Add(desglosePago)
             Next
             Try
-                'ingreso = servicioIngresos.AgregarIngreso(ingreso)
-                txtIdIngreso.Text = ingreso.IdIngreso
+                txtIdIngreso.Text = Await Puntoventa.AgregarIngreso(ingreso, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
                 txtIdIngreso.Text = ""
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -402,35 +385,17 @@ Public Class FrmIngreso
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
-            'Else
-            '    Dim strUsuario, strEmpresa As String
-            '    Dim dtbDatos As DataTable
-            '    Dim formReport As New frmRptViewer
-            '    Dim reptVentas As New rptIngreso
-            '    Try
-            '        strUsuario = FrmMenuPrincipal.usuarioGlobal.CodigoUsuario
-            '        strEmpresa = FrmMenuPrincipal.empresaGlobal.NombreEmpresa
-            '        'dtbDatos = servicioReportes.ObtenerReporteIngreso(txtIdIngreso.Text)
-            '    Catch ex As Exception
-            '        MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            '        Exit Sub
-            '    End Try
-            '    reptVentas.SetDataSource(dtbDatos)
-            '    reptVentas.SetParameterValue(0, strUsuario)
-            '    reptVentas.SetParameterValue(1, strEmpresa)
-            '    formReport.crtViewer.ReportSource = reptVentas
-            '    formReport.ShowDialog()
         End If
     End Sub
 
-    Private Sub cboFormaPago_SelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs) Handles cboFormaPago.SelectedValueChanged
+    Private Async Sub cboFormaPago_SelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs) Handles cboFormaPago.SelectedValueChanged
         If Not bolInit And Not cboFormaPago.SelectedValue Is Nothing Then
             cboTipoBanco.SelectedIndex = 0
             cboTipoMoneda.SelectedValue = StaticValoresPorDefecto.MonedaDelSistema
             txtTipoTarjeta.Text = ""
             txtDocumento.Text = ""
             If cboFormaPago.SelectedValue <> StaticFormaPago.Cheque And cboFormaPago.SelectedValue <> StaticFormaPago.TransferenciaDepositoBancario Then
-                CargarListaBancoAdquiriente()
+                Await CargarListaBancoAdquiriente()
                 cboTipoBanco.Width = 194
                 lblBanco.Width = 194
                 lblBanco.Text = "Banco Adquiriente"
@@ -451,9 +416,9 @@ Public Class FrmIngreso
                     cboTipoMoneda.Enabled = False
                 End If
             Else
-                CargarListaCuentaBanco()
-                cboTipoBanco.Width = 264
-                lblBanco.Width = 264
+                Await CargarListaCuentaBanco()
+                cboTipoBanco.Width = 244
+                lblBanco.Width = 244
                 lblBanco.Text = "Cuenta Bancaria"
                 cboTipoBanco.Enabled = True
                 txtTipoTarjeta.ReadOnly = True
@@ -510,18 +475,19 @@ Public Class FrmIngreso
         End If
     End Sub
 
-    Private Sub txtMonto_Validated(sender As Object, e As EventArgs) Handles txtMonto.Validated
+    Private Sub TxtMonto_Validated(sender As Object, e As EventArgs) Handles txtMonto.Validated
         If txtMonto.Text <> "" Then txtMonto.Text = FormatNumber(txtMonto.Text, 2)
     End Sub
 
-    Private Sub txtTotal_Validated(ByVal sender As Object, ByVal e As EventArgs) Handles txtTotal.Validated
+    Private Sub TxtTotal_Validated(ByVal sender As Object, ByVal e As EventArgs) Handles txtTotal.Validated
         txtTotal.Text = FormatNumber(IIf(txtTotal.Text = "", 0, txtTotal.Text), 2)
         dblTotal = CDbl(txtTotal.Text)
         dblSaldoPorPagar = dblTotal - dblTotalPago
+        txtMonto.Text = FormatNumber(dblSaldoPorPagar, 2)
         txtSaldoPorPagar.Text = FormatNumber(dblSaldoPorPagar, 2)
     End Sub
 
-    Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs) Handles txtTotal.KeyPress
+    Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As KeyPressEventArgs) Handles txtTotal.KeyPress
         FrmPrincipal.ValidaNumero(e, sender, True, 2, ".")
     End Sub
 #End Region

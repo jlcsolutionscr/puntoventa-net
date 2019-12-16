@@ -13,6 +13,8 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         [Key, Column(Order = 2), ForeignKey("TipoMoneda")]
         public int IdTipoMoneda { get; set; }
         public int IdCuentaBanco { get; set; }
+        [NotMapped]
+        public string DescripcionCuenta { get; set; }
         public string TipoTarjeta { get; set; }
         public string NroMovimiento { get; set; }
         public decimal MontoLocal { get; set; }

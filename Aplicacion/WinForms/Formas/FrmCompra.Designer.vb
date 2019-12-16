@@ -812,7 +812,7 @@ Partial Class FrmCompra
         Me.Label11.BackColor = System.Drawing.Color.Transparent
         Me.Label11.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label11.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label11.Location = New System.Drawing.Point(13, 91)
+        Me.Label11.Location = New System.Drawing.Point(13, 92)
         Me.Label11.Name = "Label11"
         Me.Label11.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label11.Size = New System.Drawing.Size(89, 19)
@@ -914,7 +914,7 @@ Partial Class FrmCompra
         Me.cboSucursal.FormattingEnabled = True
         Me.cboSucursal.Location = New System.Drawing.Point(484, 91)
         Me.cboSucursal.Name = "cboSucursal"
-        Me.cboSucursal.Size = New System.Drawing.Size(306, 21)
+        Me.cboSucursal.Size = New System.Drawing.Size(300, 21)
         Me.cboSucursal.TabIndex = 145
         Me.cboSucursal.TabStop = False
         '
@@ -923,7 +923,7 @@ Partial Class FrmCompra
         Me.Label6.BackColor = System.Drawing.Color.Transparent
         Me.Label6.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label6.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label6.Location = New System.Drawing.Point(417, 91)
+        Me.Label6.Location = New System.Drawing.Point(417, 92)
         Me.Label6.Name = "Label6"
         Me.Label6.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label6.Size = New System.Drawing.Size(61, 19)
@@ -933,7 +933,6 @@ Partial Class FrmCompra
         '
         'FrmCompra
         '
-        Me.AcceptButton = Me.btnInsertar
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control

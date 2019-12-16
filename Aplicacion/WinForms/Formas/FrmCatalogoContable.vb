@@ -124,7 +124,7 @@ Public Class FrmCatalogoContable
         txtSaldoActual.Text = FormatNumber(txtSaldoActual.Text, 2)
     End Sub
 
-    Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs) Handles txtSaldoActual.KeyPress
+    Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As KeyPressEventArgs) Handles txtSaldoActual.KeyPress
         FrmPrincipal.ValidaNumero(e, sender, True, 2, ".")
     End Sub
 #End Region

@@ -601,4 +601,23 @@ namespace LeandroSoftware.Core.TiposComunes
         public string EsMensajeReceptor { get; set; }
         public string CorreoNotificacion { get; set; }
     }
+
+    public class FlujoEfectivoDetalle
+    {
+        public FlujoEfectivoDetalle()
+        {
+        }
+
+        public FlujoEfectivoDetalle(int id, string fecha, string detalle, decimal total)
+        {
+            Id = id;
+            Fecha = fecha;
+            Detalle = detalle;
+            Total = total;
+        }
+        public int Id { get; set; }
+        public string Fecha { get; set; }
+        public string Detalle { get; set; }
+        public decimal Total { get; set; }
+    }
 }

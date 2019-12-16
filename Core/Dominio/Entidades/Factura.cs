@@ -27,6 +27,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public decimal TipoDeCambioDolar { get; set; }
         [ForeignKey("Cliente")]
         public int IdCliente { get; set; }
+        public string NombreCliente { get; set; }
         [ForeignKey("CondicionVenta")]
         public int IdCondicionVenta { get; set; }
         public int PlazoCredito { get; set; }
@@ -43,8 +44,6 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public decimal MontoAdelanto { get; set; }
         [NotMapped]
         public decimal Total { get { return Excento + Gravado + Exonerado + Impuesto - Descuento; } }
-        [NotMapped]
-        public string NombreCliente { get { if (Cliente == null) return ""; else return Cliente.Nombre; } }
         public int IdCxC { get; set; }
         public int IdAsiento { get; set; }
         public int IdMovBanco { get; set; }

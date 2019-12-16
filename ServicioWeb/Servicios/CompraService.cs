@@ -18,25 +18,25 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         void EliminarProveedor(int intIdCuenta);
         Proveedor ObtenerProveedor(int intIdCuenta);
         int ObtenerTotalListaProveedores(int intIdEmpresa, string strNombre);
-        IEnumerable<LlaveDescripcion> ObtenerListadoProveedores(int intIdEmpresa, int numPagina, int cantRec, string strNombre);
+        IList<LlaveDescripcion> ObtenerListadoProveedores(int intIdEmpresa, int numPagina, int cantRec, string strNombre);
         string AgregarCompra(Compra compra);
         void ActualizarCompra(Compra compra);
         void AnularCompra(int intIdCompra, int intIdUsuario);
         Compra ObtenerCompra(int intIdCompra);
-        int ObtenerTotalListaCompras(int intIdEmpresa, int intIdCompra, string strNombre);
-        IEnumerable<CompraDetalle> ObtenerListadoCompras(int intIdEmpresa, int numPagina, int cantRec, int intIdCompra, string strNombre);
+        int ObtenerTotalListaCompras(int intIdEmpresa, int intIdSucursal, int intIdCompra, string strNombre);
+        IList<CompraDetalle> ObtenerListadoCompras(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, int intIdCompra, string strNombre);
         void AgregarOrdenCompra(OrdenCompra ordenCompra);
         void ActualizarOrdenCompra(OrdenCompra ordenCompra);
         void AnularOrdenCompra(int intIdOrdenCompra, int intIdUsuario);
         OrdenCompra ObtenerOrdenCompra(int intIdOrdenCompra);
         int ObtenerTotalListaOrdenesCompra(int intIdEmpresa, bool bolIncluyeTodo, int intIdOrdenCompra, string strNombre);
-        IEnumerable<OrdenCompra> ObtenerListadoOrdenesCompra(int intIdEmpresa, bool bolIncluyeTodo, int numPagina, int cantRec, int intIdOrdenCompra, string strNombre);
-        IEnumerable<Compra> ObtenerListadoComprasPorProveedor(int intIdProveedor);
+        IList<OrdenCompra> ObtenerListadoOrdenesCompra(int intIdEmpresa, bool bolIncluyeTodo, int numPagina, int cantRec, int intIdOrdenCompra, string strNombre);
+        IList<Compra> ObtenerListadoComprasPorProveedor(int intIdProveedor);
         void AgregarDevolucionProveedor(DevolucionProveedor devolucion);
         void AnularDevolucionProveedor(int intIdDevolucion, int intIdUsuario);
         DevolucionProveedor ObtenerDevolucionProveedor(int intIdDevolucion);
         int ObtenerTotalListaDevolucionesPorProveedor(int intIdEmpresa, int intIdDevolucion, string strNombre);
-        IEnumerable<DevolucionProveedor> ObtenerListadoDevolucionesPorProveedor(int intIdEmpresa, int numPagina, int cantRec, int intIdDevolucion, string strNombre);
+        IList<DevolucionProveedor> ObtenerListadoDevolucionesPorProveedor(int intIdEmpresa, int numPagina, int cantRec, int intIdDevolucion, string strNombre);
     }
 
     public class CompraService : ICompraService
@@ -177,7 +177,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoProveedores(int intIdEmpresa, int numPagina, int cantRec, string strNombre)
+        public IList<LlaveDescripcion> ObtenerListadoProveedores(int intIdEmpresa, int numPagina, int cantRec, string strNombre)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -648,13 +648,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public int ObtenerTotalListaCompras(int intIdEmpresa, int intIdCompra, string strNombre)
+        public int ObtenerTotalListaCompras(int intIdEmpresa, int intIdSucursal, int intIdCompra, string strNombre)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 try
                 {
-                    var listaCompras = dbContext.CompraRepository.Where(x => x.IdEmpresa == intIdEmpresa);
+                    var listaCompras = dbContext.CompraRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
                     if (intIdCompra > 0)
                         listaCompras = listaCompras.Where(x => x.IdCompra == intIdCompra);
                     else if (!strNombre.Equals(string.Empty))
@@ -669,14 +669,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<CompraDetalle> ObtenerListadoCompras(int intIdEmpresa, int numPagina, int cantRec, int intIdCompra, string strNombre)
+        public IList<CompraDetalle> ObtenerListadoCompras(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, int intIdCompra, string strNombre)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 var listaCompras = new List<CompraDetalle>();
                 try
                 {
-                    var listado = dbContext.CompraRepository.Include("Proveedor").Where(x => !x.Nulo & x.IdEmpresa == intIdEmpresa);
+                    var listado = dbContext.CompraRepository.Include("Proveedor").Where(x => !x.Nulo & x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
                     if (intIdCompra > 0)
                         listado = listado.Where(x => x.IdCompra == intIdCompra);
                     else if (!strNombre.Equals(string.Empty))
@@ -817,7 +817,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<OrdenCompra> ObtenerListadoOrdenesCompra(int intIdEmpresa, bool bolIncluyeTodo, int numPagina, int cantRec, int intIdOrdenCompra, string strNombre)
+        public IList<OrdenCompra> ObtenerListadoOrdenesCompra(int intIdEmpresa, bool bolIncluyeTodo, int numPagina, int cantRec, int intIdOrdenCompra, string strNombre)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -840,7 +840,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<Compra> ObtenerListadoComprasPorProveedor(int intIdProveedor)
+        public IList<Compra> ObtenerListadoComprasPorProveedor(int intIdProveedor)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -1215,7 +1215,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<DevolucionProveedor> ObtenerListadoDevolucionesPorProveedor(int intIdEmpresa, int numPagina, int cantRec, int intIdDevolucion, string strNombre)
+        public IList<DevolucionProveedor> ObtenerListadoDevolucionesPorProveedor(int intIdEmpresa, int numPagina, int cantRec, int intIdDevolucion, string strNombre)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {

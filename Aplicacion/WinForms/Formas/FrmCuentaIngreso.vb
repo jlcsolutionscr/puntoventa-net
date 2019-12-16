@@ -1,4 +1,5 @@
 Imports LeandroSoftware.Core.Dominio.Entidades
+Imports LeandroSoftware.ClienteWCF
 
 Public Class FrmCuentaIngreso
 #Region "Variables"
@@ -18,12 +19,12 @@ Public Class FrmCuentaIngreso
 #End Region
 
 #Region "Eventos Controles"
-    Private Sub FrmCuentaIngreso_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+    Private Async Sub FrmCuentaIngreso_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         If intIdCuenta > 0 Then
             Try
-                'datos = servicioIngresos.obtenerCuentaIngreso(intIdCuenta)
+                datos = Await Puntoventa.ObtenerCuentaIngreso(intIdCuenta, FrmPrincipal.usuarioGlobal.Token)
                 If datos Is Nothing Then
-                    MessageBox.Show("La cuenta de ingreso seleccionada no existe", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                    MessageBox.Show("La cuenta de egreso seleccionada no existe", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                     Close()
                     Exit Sub
                 End If
@@ -42,7 +43,7 @@ Public Class FrmCuentaIngreso
         Close()
     End Sub
 
-    Private Sub btnGuardar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnGuardar.Click
+    Private Async Sub btnGuardar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnGuardar.Click
         btnCancelar.Focus()
         btnGuardar.Enabled = False
         Dim strCampo As String = ""
@@ -56,9 +57,9 @@ Public Class FrmCuentaIngreso
         datos.Descripcion = txtDescripcion.Text
         Try
             If datos.IdCuenta = 0 Then
-                'servicioIngresos.AgregarCuentaIngreso(datos)
+                Await Puntoventa.AgregarCuentaIngreso(datos, FrmPrincipal.usuarioGlobal.Token)
             Else
-                'servicioIngresos.ActualizarCuentaIngreso(datos)
+                Await Puntoventa.ActualizarCuentaIngreso(datos, FrmPrincipal.usuarioGlobal.Token)
             End If
         Catch ex As Exception
             btnGuardar.Enabled = True

@@ -56,7 +56,7 @@ Public Class FrmDetalleDocumentoElectronico
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
         Try
-            listadoDocumentosProcesados = Await Puntoventa.ObtenerListadoDocumentosElectronicosProcesados(FrmPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, FrmPrincipal.usuarioGlobal.Token)
+            listadoDocumentosProcesados = Await Puntoventa.ObtenerListadoDocumentosElectronicosProcesados(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, intNumeroPagina, intFilasPorPagina, FrmPrincipal.usuarioGlobal.Token)
             dgvDatos.DataSource = listadoDocumentosProcesados
             If listadoDocumentosProcesados.Count() > 0 Then
                 btnMostrarRespuesta.Enabled = True
@@ -74,7 +74,7 @@ Public Class FrmDetalleDocumentoElectronico
 
     Private Async Function ObtenerCantidadDocumentosProcesados() As Task
         Try
-            intTotalDocumentos = Await Puntoventa.ObtenerTotalDocumentosElectronicosProcesados(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+            intTotalDocumentos = Await Puntoventa.ObtenerTotalDocumentosElectronicosProcesados(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -93,6 +93,14 @@ Public Class FrmDetalleDocumentoElectronico
             btnPrevious.Enabled = False
             btnFirst.Enabled = False
         End If
+    End Function
+
+    Private Async Function CargarCombos() As Task
+        cboSucursal.ValueMember = "Id"
+        cboSucursal.DisplayMember = "Descripcion"
+        cboSucursal.DataSource = Await Puntoventa.ObtenerListadoSucursales(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+        cboSucursal.SelectedValue = FrmPrincipal.equipoGlobal.IdSucursal
+        cboSucursal.Enabled = FrmPrincipal.usuarioGlobal.Modifica
     End Function
 #End Region
 
@@ -123,6 +131,7 @@ Public Class FrmDetalleDocumentoElectronico
 
     Private Async Sub FrmDetalleDocumentoElectronico_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
+            Await CargarCombos()
             rtxDetalleRespuesta.Visible = False
             EstablecerPropiedadesDataGridView()
             picLoader.Visible = True

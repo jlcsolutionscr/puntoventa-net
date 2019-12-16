@@ -36,6 +36,12 @@ Public Class FrmSeguridad
         End If
     End Sub
 
+    Private Sub TxtUsuario_KeyPress(sender As Object, e As KeyPressEventArgs) Handles TxtUsuario.KeyPress
+        If Asc(e.KeyChar) = Keys.Space Then
+            e.Handled = True
+        End If
+    End Sub
+
     Private Sub TxtClave_TextChanged(sender As Object, e As EventArgs) Handles TxtClave.TextChanged
         If TxtUsuario.Text <> "" And TxtClave.Text <> "" Then
             CmdAceptar.Enabled = True
@@ -44,11 +50,9 @@ Public Class FrmSeguridad
         End If
     End Sub
 
-    Private Sub txtIdentificacion_TextChanged(sender As Object, e As EventArgs)
-        If TxtUsuario.Text <> "" And TxtClave.Text <> "" Then
-            CmdAceptar.Enabled = True
-        Else
-            CmdAceptar.Enabled = False
+    Private Sub TxtClave_KeyPress(sender As Object, e As KeyPressEventArgs) Handles TxtClave.KeyPress
+        If Asc(e.KeyChar) = Keys.Space Then
+            e.Handled = True
         End If
     End Sub
 #End Region

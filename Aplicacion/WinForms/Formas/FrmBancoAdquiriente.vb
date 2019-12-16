@@ -96,7 +96,7 @@ Public Class FrmBancoAdquiriente
         txtComision.Text = FormatNumber(txtComision.Text, 2)
     End Sub
 
-    Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs) Handles txtRetencion.KeyPress, txtComision.KeyPress
+    Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As KeyPressEventArgs) Handles txtRetencion.KeyPress, txtComision.KeyPress
         FrmPrincipal.ValidaNumero(e, sender, True, 2, ".")
     End Sub
 #End Region

@@ -284,7 +284,7 @@ Partial Class FrmFactura
         Me.txtPrecio.ReadOnly = True
         Me.txtPrecio.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtPrecio.Size = New System.Drawing.Size(100, 20)
-        Me.txtPrecio.TabIndex = 54
+        Me.txtPrecio.TabIndex = 55
         Me.txtPrecio.TabStop = False
         Me.txtPrecio.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
@@ -294,12 +294,12 @@ Partial Class FrmFactura
         Me.txtCantidad.BackColor = System.Drawing.SystemColors.Window
         Me.txtCantidad.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtCantidad.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtCantidad.Location = New System.Drawing.Point(8, 152)
+        Me.txtCantidad.Location = New System.Drawing.Point(589, 152)
         Me.txtCantidad.MaxLength = 0
         Me.txtCantidad.Name = "txtCantidad"
         Me.txtCantidad.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtCantidad.Size = New System.Drawing.Size(43, 20)
-        Me.txtCantidad.TabIndex = 50
+        Me.txtCantidad.TabIndex = 52
         Me.txtCantidad.Text = "1"
         Me.txtCantidad.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         '
@@ -410,7 +410,7 @@ Partial Class FrmFactura
         Me._lblLabels_6.BackColor = System.Drawing.Color.Transparent
         Me._lblLabels_6.Cursor = System.Windows.Forms.Cursors.Default
         Me._lblLabels_6.ForeColor = System.Drawing.SystemColors.ControlText
-        Me._lblLabels_6.Location = New System.Drawing.Point(8, 132)
+        Me._lblLabels_6.Location = New System.Drawing.Point(589, 132)
         Me._lblLabels_6.Name = "_lblLabels_6"
         Me._lblLabels_6.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me._lblLabels_6.Size = New System.Drawing.Size(43, 19)
@@ -423,7 +423,7 @@ Partial Class FrmFactura
         Me._lblLabels_1.BackColor = System.Drawing.Color.Transparent
         Me._lblLabels_1.Cursor = System.Windows.Forms.Cursors.Default
         Me._lblLabels_1.ForeColor = System.Drawing.SystemColors.ControlText
-        Me._lblLabels_1.Location = New System.Drawing.Point(51, 132)
+        Me._lblLabels_1.Location = New System.Drawing.Point(8, 132)
         Me._lblLabels_1.Name = "_lblLabels_1"
         Me._lblLabels_1.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me._lblLabels_1.Size = New System.Drawing.Size(236, 19)
@@ -529,20 +529,21 @@ Partial Class FrmFactura
         Me.txtDescripcion.BackColor = System.Drawing.SystemColors.Window
         Me.txtDescripcion.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtDescripcion.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtDescripcion.Location = New System.Drawing.Point(287, 152)
+        Me.txtDescripcion.Location = New System.Drawing.Point(244, 152)
         Me.txtDescripcion.MaxLength = 0
         Me.txtDescripcion.Name = "txtDescripcion"
         Me.txtDescripcion.ReadOnly = True
         Me.txtDescripcion.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtDescripcion.Size = New System.Drawing.Size(345, 20)
-        Me.txtDescripcion.TabIndex = 52
+        Me.txtDescripcion.TabIndex = 51
+        Me.txtDescripcion.TabStop = False
         '
         'Label1
         '
         Me.Label1.BackColor = System.Drawing.Color.Transparent
         Me.Label1.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label1.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label1.Location = New System.Drawing.Point(287, 132)
+        Me.Label1.Location = New System.Drawing.Point(244, 132)
         Me.Label1.Name = "Label1"
         Me.Label1.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label1.Size = New System.Drawing.Size(345, 19)
@@ -559,7 +560,6 @@ Partial Class FrmFactura
         Me.txtNombreCliente.Location = New System.Drawing.Point(264, 39)
         Me.txtNombreCliente.MaxLength = 0
         Me.txtNombreCliente.Name = "txtNombreCliente"
-        Me.txtNombreCliente.ReadOnly = True
         Me.txtNombreCliente.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtNombreCliente.Size = New System.Drawing.Size(406, 20)
         Me.txtNombreCliente.TabIndex = 3
@@ -839,10 +839,10 @@ Partial Class FrmFactura
         '
         'txtCodigo
         '
-        Me.txtCodigo.Location = New System.Drawing.Point(51, 152)
+        Me.txtCodigo.Location = New System.Drawing.Point(8, 152)
         Me.txtCodigo.Name = "txtCodigo"
         Me.txtCodigo.Size = New System.Drawing.Size(236, 20)
-        Me.txtCodigo.TabIndex = 51
+        Me.txtCodigo.TabIndex = 50
         '
         'btnOrdenServicio
         '
@@ -1166,7 +1166,7 @@ Partial Class FrmFactura
         Me.txtPorcDesc.ReadOnly = True
         Me.txtPorcDesc.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtPorcDesc.Size = New System.Drawing.Size(38, 20)
-        Me.txtPorcDesc.TabIndex = 164
+        Me.txtPorcDesc.TabIndex = 54
         Me.txtPorcDesc.TabStop = False
         Me.txtPorcDesc.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         '
@@ -1228,7 +1228,6 @@ Partial Class FrmFactura
         '
         'FrmFactura
         '
-        Me.AcceptButton = Me.btnInsertar
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
         Me.AutoScroll = True
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink

@@ -71,7 +71,7 @@ Public Class FrmBusquedaOrdenCompra
 #End Region
 
 #Region "Eventos Controles"
-    Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs) Handles txtId.KeyPress
+    Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As KeyPressEventArgs) Handles txtId.KeyPress
         FrmPrincipal.ValidaNumero(e, sender, True, 0)
     End Sub
 

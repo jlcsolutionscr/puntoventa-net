@@ -113,8 +113,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         string AgregarAjusteInventario(AjusteInventario ajusteInventario);
         void AnularAjusteInventario(int intIdAjusteInventario, int intIdUsuario);
         AjusteInventario ObtenerAjusteInventario(int intIdAjusteInventario);
-        int ObtenerTotalListaAjusteInventario(int intIdEmpresa, int intIdAjusteInventario, string strDescripcion);
-        IList<AjusteInventarioDetalle> ObtenerListadoAjusteInventario(int intIdEmpresa, int numPagina, int cantRec, int intIdAjusteInventario, string strDescripcion);
+        int ObtenerTotalListaAjusteInventario(int intIdEmpresa, int intIdSucursal, int intIdAjusteInventario, string strDescripcion);
+        IList<AjusteInventarioDetalle> ObtenerListadoAjusteInventario(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, int intIdAjusteInventario, string strDescripcion);
         // Métodos para obtener parámetros generales del sistema
         IList<LlaveDescripcion> ObtenerListadoTipoIdentificacion();
         IList<LlaveDescripcion> ObtenerListadoCatalogoReportes();
@@ -2390,13 +2390,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public int ObtenerTotalListaAjusteInventario(int intIdEmpresa, int intIdAjusteInventario, string strDescripcion)
+        public int ObtenerTotalListaAjusteInventario(int intIdEmpresa, int intIdSucursal, int intIdAjusteInventario, string strDescripcion)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 try
                 {
-                    var listaAjusteInventario = dbContext.AjusteInventarioRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa);
+                    var listaAjusteInventario = dbContext.AjusteInventarioRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
                     if (intIdAjusteInventario > 0)
                         listaAjusteInventario = listaAjusteInventario.Where(x => !x.Nulo && x.IdAjuste == intIdAjusteInventario);
                     else if (!strDescripcion.Equals(string.Empty))
@@ -2411,14 +2411,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IList<AjusteInventarioDetalle> ObtenerListadoAjusteInventario(int intIdEmpresa, int numPagina, int cantRec, int intIdAjusteInventario, string strDescripcion)
+        public IList<AjusteInventarioDetalle> ObtenerListadoAjusteInventario(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, int intIdAjusteInventario, string strDescripcion)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 var listaAjustes = new List<AjusteInventarioDetalle>();
                 try
                 {
-                    var listado = dbContext.AjusteInventarioRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa);
+                    var listado = dbContext.AjusteInventarioRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
                     if (intIdAjusteInventario > 0)
                         listado = listado.Where(x => !x.Nulo && x.IdAjuste == intIdAjusteInventario);
                     else if (!strDescripcion.Equals(string.Empty))

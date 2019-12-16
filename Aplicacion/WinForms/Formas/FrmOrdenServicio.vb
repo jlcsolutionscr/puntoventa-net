@@ -436,11 +436,6 @@ Public Class FrmOrdenServicio
             decPrecioVenta = ObtenerPrecioVentaPorCliente(cliente, producto)
             txtPrecio.Text = FormatNumber(decPrecioVenta / (1 + (decTasaImpuesto / 100)), 2)
             txtUnidad.Text = IIf(producto.Tipo = 1, "UND", IIf(producto.Tipo = 2, "SP", "OS"))
-            If FrmPrincipal.bolModificaDescripcion = True Then
-                txtDescripcion.Focus()
-            Else
-                txtPrecio.Focus()
-            End If
         End If
     End Sub
 
@@ -544,6 +539,7 @@ Public Class FrmOrdenServicio
                 .Nombre = "CLIENTE DE CONTADO"
             }
             txtNombreCliente.Text = cliente.Nombre
+            txtNombreCliente.ReadOnly = False
         Catch ex As Exception
             MessageBox.Show("Error al consultar el cliente de contado. Por favor consulte con su proveedor.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -593,7 +589,7 @@ Public Class FrmOrdenServicio
                 bolInit = True
                 txtIdOrdenServicio.Text = ordenServicio.IdOrden
                 cliente = ordenServicio.Cliente
-                txtNombreCliente.Text = ordenServicio.Cliente.Nombre
+                txtNombreCliente.Text = ordenServicio.NombreCliente
                 txtFecha.Text = ordenServicio.Fecha
                 txtTelefono.Text = ordenServicio.Telefono
                 txtDescripcionOrden.Text = ordenServicio.Descripcion
@@ -645,6 +641,7 @@ Public Class FrmOrdenServicio
             Try
                 cliente = Await Puntoventa.ObtenerCliente(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
                 txtNombreCliente.Text = cliente.Nombre
+                txtNombreCliente.ReadOnly = True
                 txtTelefono.Text = cliente.Telefono & IIf(cliente.Celular <> "", " " & cliente.Celular, "")
                 If cliente.Vendedor IsNot Nothing Then
                     vendedor = cliente.Vendedor
@@ -695,9 +692,11 @@ Public Class FrmOrdenServicio
         If txtIdOrdenServicio.Text = "" Then
             ordenServicio = New OrdenServicio With {
                 .IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa,
+                .IdSucursal = FrmPrincipal.equipoGlobal.IdSucursal,
                 .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario
             }
             ordenServicio.IdCliente = cliente.IdCliente
+            ordenServicio.NombreCliente = txtNombreCliente.Text
             ordenServicio.Fecha = FrmPrincipal.ObtenerFechaFormateada(Now())
             ordenServicio.IdVendedor = vendedor.IdVendedor
             ordenServicio.Telefono = txtTelefono.Text
@@ -1079,7 +1078,7 @@ Public Class FrmOrdenServicio
     End Sub
 
     Private Async Sub TxtCodigo_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtCodigo.PreviewKeyDown
-        If e.KeyCode = Keys.Tab Then
+        If e.KeyCode = Keys.Enter Then
             Try
                 producto = Await Puntoventa.ObtenerProductoPorCodigo(FrmPrincipal.empresaGlobal.IdEmpresa, txtCodigo.Text, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception

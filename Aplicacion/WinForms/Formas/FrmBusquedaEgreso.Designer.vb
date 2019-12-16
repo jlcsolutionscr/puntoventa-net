@@ -29,6 +29,8 @@ Partial Class FrmBusquedaEgreso
         Me.txtId = New System.Windows.Forms.TextBox()
         Me.Label2 = New System.Windows.Forms.Label()
         Me.txtDetalle = New System.Windows.Forms.TextBox()
+        Me.cboSucursal = New System.Windows.Forms.ComboBox()
+        Me.Label6 = New System.Windows.Forms.Label()
         CType(Me.dgvListado, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -151,6 +153,29 @@ Partial Class FrmBusquedaEgreso
         Me.txtDetalle.Size = New System.Drawing.Size(456, 20)
         Me.txtDetalle.TabIndex = 2
         '
+        'cboSucursal
+        '
+        Me.cboSucursal.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.cboSucursal.FormattingEnabled = True
+        Me.cboSucursal.Location = New System.Drawing.Point(70, 362)
+        Me.cboSucursal.Name = "cboSucursal"
+        Me.cboSucursal.Size = New System.Drawing.Size(300, 21)
+        Me.cboSucursal.TabIndex = 155
+        Me.cboSucursal.TabStop = False
+        '
+        'Label6
+        '
+        Me.Label6.BackColor = System.Drawing.Color.Transparent
+        Me.Label6.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label6.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label6.Location = New System.Drawing.Point(12, 362)
+        Me.Label6.Name = "Label6"
+        Me.Label6.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label6.Size = New System.Drawing.Size(52, 19)
+        Me.Label6.TabIndex = 156
+        Me.Label6.Text = "Sucursal:"
+        Me.Label6.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
         'FrmBusquedaEgreso
         '
         Me.AcceptButton = Me.btnFiltrar
@@ -158,6 +183,8 @@ Partial Class FrmBusquedaEgreso
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(644, 395)
+        Me.Controls.Add(Me.cboSucursal)
+        Me.Controls.Add(Me.Label6)
         Me.Controls.Add(Me.Label2)
         Me.Controls.Add(Me.txtDetalle)
         Me.Controls.Add(Me.Label1)
@@ -194,4 +221,6 @@ Partial Class FrmBusquedaEgreso
     Friend WithEvents txtId As System.Windows.Forms.TextBox
     Friend WithEvents Label2 As System.Windows.Forms.Label
     Friend WithEvents txtDetalle As System.Windows.Forms.TextBox
+    Friend WithEvents cboSucursal As ComboBox
+    Friend WithEvents Label6 As Label
 End Class

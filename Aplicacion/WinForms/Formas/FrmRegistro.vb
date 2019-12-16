@@ -86,5 +86,23 @@ Public Class FrmRegistro
         intIdSucursal = dgvDatos.CurrentRow.Cells(0).Value
         intIdTerminal = dgvDatos.CurrentRow.Cells(2).Value
     End Sub
+
+    Private Sub TxtUsuario_KeyPress(sender As Object, e As KeyPressEventArgs) Handles txtUsuario.KeyPress
+        If Asc(e.KeyChar) = Keys.Space Then
+            e.Handled = True
+        End If
+    End Sub
+
+    Private Sub TxtClave_KeyPress(sender As Object, e As KeyPressEventArgs) Handles txtClave.KeyPress
+        If Asc(e.KeyChar) = Keys.Space Then
+            e.Handled = True
+        End If
+    End Sub
+
+    Private Sub TxtIdentificacion_KeyPress(sender As Object, e As KeyPressEventArgs) Handles txtIdentificacion.KeyPress
+        If Asc(e.KeyChar) = Keys.Space Then
+            e.Handled = True
+        End If
+    End Sub
 #End Region
 End Class
