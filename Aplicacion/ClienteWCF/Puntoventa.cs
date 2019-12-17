@@ -395,6 +395,26 @@ namespace LeandroSoftware.ClienteWCF
             return listado;
         }
 
+        public static async Task<List<LlaveDescripcion>> ObtenerListadoFormaPagoMovimientoCxC(string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'ObtenerListadoFormaPagoMovimientoCxC'}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<LlaveDescripcion>>(respuesta);
+            return listado;
+        }
+
+        public static async Task<List<LlaveDescripcion>> ObtenerListadoFormaPagoMovimientoCxP(string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'ObtenerListadoFormaPagoMovimientoCxP'}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<LlaveDescripcion>>(respuesta);
+            return listado;
+        }
+
         public static async Task<List<LlaveDescripcion>> ObtenerListadoRolesPorEmpresa(int intIdEmpresa, string strToken)
         {
             string strDatos = "{NombreMetodo: 'ObtenerListadoRolesPorEmpresa', Parametros: {IdEmpresa: " + intIdEmpresa + "}}";
@@ -1694,6 +1714,32 @@ namespace LeandroSoftware.ClienteWCF
         public static async Task AnularAjusteInventario(int intIdAjusteInventario, int intIdUsuario, string strToken)
         {
             string strDatos = "{NombreMetodo: 'AnularAjusteInventario', Parametros: {IdAjuste: " + intIdAjusteInventario + ", IdUsuario: " + intIdUsuario + "}}";
+            await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
+        }
+
+        public static async Task AplicarMovimientoCxC(MovimientoCuentaPorCobrar movimiento, string strToken)
+        {
+            string strEntidad = serializer.Serialize(movimiento);
+            string strDatos = "{NombreMetodo: 'AplicarMovimientoCxC', Entidad: " + strEntidad + "}";
+            await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
+        }
+
+        public static async Task AnularMovimientoCxC(int intIdMovimientoCxC, int intIdUsuario, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'AnularMovimientoCxC', Parametros: {IdMovimientoCxC: " + intIdMovimientoCxC + ", IdUsuario: " + intIdUsuario + "}}";
+            await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
+        }
+
+        public static async Task AplicarMovimientoCxP(MovimientoCuentaPorPagar movimiento, string strToken)
+        {
+            string strEntidad = serializer.Serialize(movimiento);
+            string strDatos = "{NombreMetodo: 'AplicarMovimientoCxP', Entidad: " + strEntidad + "}";
+            await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
+        }
+
+        public static async Task AnularMovimientoCxP(int intIdMovimientoCxP, int intIdUsuario, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'AnularMovimientoCxP', Parametros: {IdMovimientoCxP: " + intIdMovimientoCxP + ", IdUsuario: " + intIdUsuario + "}}";
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 

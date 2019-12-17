@@ -1,6 +1,8 @@
 Imports System.Collections.Generic
 Imports LeandroSoftware.Core.TiposComunes
 Imports LeandroSoftware.Core.Dominio.Entidades
+Imports System.Threading.Tasks
+Imports LeandroSoftware.ClienteWCF
 
 Public Class FrmAplicaReciboCxC
 #Region "Variables"
@@ -17,8 +19,8 @@ Public Class FrmAplicaReciboCxC
     Private desgloseMovimiento As DesgloseMovimientoCuentaPorCobrar
     Private desglosePagoMovimiento As DesglosePagoMovimientoCuentaPorCobrar
     Private reciboComprobante As ModuloImpresion.ClsRecibo
-    Private desglosePagoImpresion As ModuloImpresion.clsDesgloseFormaPago
-    Private arrDesglosePago, arrDesgloseMov As List(Of ModuloImpresion.clsDesgloseFormaPago)
+    Private desglosePagoImpresion As ModuloImpresion.ClsDesgloseFormaPago
+    Private arrDesglosePago, arrDesgloseMov As List(Of ModuloImpresion.ClsDesgloseFormaPago)
 #End Region
 
 #Region "Métodos"
@@ -233,34 +235,32 @@ Public Class FrmAplicaReciboCxC
         txtSaldoPorPagar.Text = FormatNumber(dblSaldoPorPagar, 2)
     End Sub
 
-    Private Sub CargarCombos()
-        cboFormaPago.ValueMember = "IdFormaPago"
+    Private Async Function CargarCombos() As Task
+        cboFormaPago.ValueMember = "Id"
         cboFormaPago.DisplayMember = "Descripcion"
-        'cboFormaPago.DataSource = servicioMantenimiento.ObtenerListaFormaPagoMovimientoCxC()
-        cboTipoMoneda.ValueMember = "IdTipoMoneda"
+        cboFormaPago.DataSource = Await Puntoventa.ObtenerListadoFormaPagoMovimientoCxC(FrmPrincipal.usuarioGlobal.Token)
+        cboTipoMoneda.ValueMember = "Id"
         cboTipoMoneda.DisplayMember = "Descripcion"
-        'cboTipoMoneda.DataSource = servicioMantenimiento.ObtenerListaTipoMoneda()
-    End Sub
-
-    Private Sub CargarListaBancoAdquiriente()
-        'cboTipoBanco.DataSource = servicioMantenimiento.ObtenerListaBancoAdquiriente(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
-        cboTipoBanco.ValueMember = "IdBanco"
-        cboTipoBanco.DisplayMember = "Codigo"
-    End Sub
-
-    Private Sub CargarListaCuentaBanco()
-        'cboTipoBanco.DataSource = servicioAuxiliarBancario.ObtenerListaCuentasBanco(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
-        cboTipoBanco.ValueMember = "IdCuenta"
+        cboTipoMoneda.DataSource = Await Puntoventa.ObtenerListadoTipoMoneda(FrmPrincipal.usuarioGlobal.Token)
+        cboTipoBanco.ValueMember = "Id"
         cboTipoBanco.DisplayMember = "Descripcion"
-    End Sub
+        cboTipoBanco.DataSource = Await Puntoventa.ObtenerListadoBancoAdquiriente(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+    End Function
+
+    Private Async Function CargarListaBancoAdquiriente() As Task
+        cboTipoBanco.DataSource = Await Puntoventa.ObtenerListadoBancoAdquiriente(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+    End Function
+
+    Private Async Function CargarListaCuentaBanco() As Task
+        cboTipoBanco.DataSource = Await Puntoventa.ObtenerListadoCuentasBanco(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+    End Function
 #End Region
 
 #Region "Eventos Controles"
-    Private Sub FrmAplicaReciboCxCClientes_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+    Private Async Sub FrmAplicaReciboCxCClientes_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
             txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
-            CargarCombos()
-            CargarListaBancoAdquiriente()
+            Await CargarCombos()
             IniciaDetalleMovimiento()
             EstablecerPropiedadesDataGridView()
             grdDesgloseCuenta.DataSource = dtbDesgloseCuenta
@@ -278,7 +278,8 @@ Public Class FrmAplicaReciboCxC
         End Try
     End Sub
 
-    Private Sub CmdAgregar_Click(sender As Object, e As EventArgs) Handles CmdAgregar.Click
+    Private Async Sub CmdAgregar_Click(sender As Object, e As EventArgs) Handles CmdAgregar.Click
+        Await CargarListaBancoAdquiriente()
         cliente = Nothing
         txtNombreCliente.Text = ""
         cboCuentaPorCobrar.DataSource = Nothing
@@ -306,7 +307,7 @@ Public Class FrmAplicaReciboCxC
         txtMonto.Text = ""
     End Sub
 
-    Private Sub CmdGuardar_Click(sender As Object, e As EventArgs) Handles CmdGuardar.Click
+    Private Async Sub CmdGuardar_Click(sender As Object, e As EventArgs) Handles CmdGuardar.Click
         If cliente Is Nothing Or txtFecha.Text = "" Or txtDescripcion.Text = "" Then
             MessageBox.Show("Información incompleta.  Favor verificar. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
@@ -326,6 +327,7 @@ Public Class FrmAplicaReciboCxC
 
         movimiento = New MovimientoCuentaPorCobrar With {
             .IdEmpresa = cuentaPorCobrar.IdEmpresa,
+            .IdSucursal = FrmPrincipal.equipoGlobal.IdSucursal,
             .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
             .IdPropietario = cliente.IdCliente,
             .Tipo = StaticTipoAbono.AbonoEfectivo,
@@ -353,7 +355,7 @@ Public Class FrmAplicaReciboCxC
             movimiento.DesglosePagoMovimientoCuentaPorCobrar.Add(desglosePagoMovimiento)
         Next
         Try
-            'servicioCuentaPorCobrar.AplicarMovimientoCxC(movimiento)
+            Await Puntoventa.AplicarMovimientoCxC(movimiento, FrmPrincipal.usuarioGlobal.Token)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
@@ -405,14 +407,14 @@ Public Class FrmAplicaReciboCxC
         End Try
     End Sub
 
-    Private Sub cboFormaPago_SelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs) Handles cboFormaPago.SelectedValueChanged
+    Private Async Sub cboFormaPago_SelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs) Handles cboFormaPago.SelectedValueChanged
         If Not bolInit And Not cboFormaPago.SelectedValue Is Nothing Then
             cboTipoBanco.SelectedIndex = 0
             cboTipoMoneda.SelectedValue = StaticValoresPorDefecto.MonedaDelSistema
             txtTipoTarjeta.Text = ""
             txtDocumento.Text = ""
             If cboFormaPago.SelectedValue <> StaticFormaPago.Cheque And cboFormaPago.SelectedValue <> StaticFormaPago.TransferenciaDepositoBancario Then
-                CargarListaBancoAdquiriente()
+                Await CargarListaBancoAdquiriente()
                 cboTipoBanco.Width = 194
                 lblBanco.Width = 194
                 lblBanco.Text = "Banco Adquiriente"
@@ -433,7 +435,7 @@ Public Class FrmAplicaReciboCxC
                     cboTipoMoneda.Enabled = False
                 End If
             Else
-                CargarListaCuentaBanco()
+                Await CargarListaCuentaBanco()
                 cboTipoBanco.Width = 264
                 lblBanco.Width = 264
                 lblBanco.Text = "Cuenta Bancaria"

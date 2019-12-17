@@ -2,15 +2,19 @@ Imports System.Collections.Generic
 Imports LeandroSoftware.Core.TiposComunes
 Imports LeandroSoftware.Core.Dominio.Entidades
 
-Public Class FrmAnulaReciboCxC
+Public Class FrmGestionReciboCxC
 #Region "Variables"
     Private I As Short
-    Private dtbDatosLocal, dtbDetalleMovimiento As DataTable
+    Private dtbDetalleMovimiento As DataTable
     Private dtrRowDetMovimiento As DataRow
     Private bolInit As Boolean = True
     Private listadoMovimientos As IEnumerable(Of MovimientoCuentaPorCobrar)
     Private movimientoCuentaPorCobrar As MovimientoCuentaPorCobrar
     Private cliente As Cliente
+
+    Private reciboComprobante As ModuloImpresion.ClsRecibo
+    Private desglosePagoImpresion As ModuloImpresion.ClsDesgloseFormaPago
+    Private arrDesgloseMov, arrDesglosePago As List(Of ModuloImpresion.ClsDesgloseFormaPago)
 #End Region
 
 #Region "Métodos"
@@ -132,6 +136,52 @@ Public Class FrmAnulaReciboCxC
             End Try
             txtNombreCliente.Text = cliente.Nombre
             CargarDetalleMovimiento(cliente.IdCliente)
+        End If
+    End Sub
+
+    Private Sub CmdImprimir_Click(sender As Object, e As EventArgs) Handles CmdImprimir.Click
+        If grdDetalleRecibo.Rows.Count > 0 Then
+            If grdDetalleRecibo.CurrentRow.Cells(0).Value.ToString <> "" Then
+                'movimientoCuentaPorCobrar = servicioCuentaPorCobrar.ObtenerMovimiento(grdDetalleRecibo.CurrentRow.Cells(0).Value)
+                reciboComprobante = New ModuloImpresion.ClsRecibo With {
+                    .usuario = FrmPrincipal.usuarioGlobal,
+                    .empresa = FrmPrincipal.empresaGlobal,
+                    .equipo = FrmPrincipal.equipoGlobal,
+                    .strConsecutivo = movimientoCuentaPorCobrar.IdMovCxC,
+                    .strNombre = txtNombreCliente.Text,
+                    .strFechaAbono = movimientoCuentaPorCobrar.Fecha,
+                    .strTotalAbono = FormatNumber(movimientoCuentaPorCobrar.Monto, 2)
+                }
+                arrDesgloseMov = New List(Of ModuloImpresion.ClsDesgloseFormaPago)()
+                For Each desgloseMovimiento As DesgloseMovimientoCuentaPorCobrar In movimientoCuentaPorCobrar.DesgloseMovimientoCuentaPorCobrar
+                    desglosePagoImpresion = New ModuloImpresion.ClsDesgloseFormaPago With {
+                        .strDescripcion = desgloseMovimiento.CuentaPorCobrar.NroDocOrig,
+                        .strMonto = FormatNumber(desgloseMovimiento.Monto, 2)
+                    }
+                    arrDesgloseMov.Add(desglosePagoImpresion)
+                Next
+                reciboComprobante.arrDesgloseMov = arrDesgloseMov
+                arrDesglosePago = New List(Of ModuloImpresion.ClsDesgloseFormaPago)()
+                For Each desglosePago As DesglosePagoMovimientoCuentaPorCobrar In movimientoCuentaPorCobrar.DesglosePagoMovimientoCuentaPorCobrar
+                    desglosePagoImpresion = New ModuloImpresion.ClsDesgloseFormaPago With {
+                        .strDescripcion = desglosePago.FormaPago.Descripcion,
+                        .strMonto = FormatNumber(desglosePago.MontoLocal, 2),
+                        .strNroDoc = desglosePago.NroMovimiento
+                    }
+                    arrDesglosePago.Add(desglosePagoImpresion)
+                Next
+                reciboComprobante.arrDesglosePago = arrDesglosePago
+                Try
+                    ModuloImpresion.ImprimirReciboCxC(reciboComprobante)
+                Catch ex As Exception
+                    MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    Exit Sub
+                End Try
+            Else
+                MessageBox.Show("Debe seleccionar un registro para imprimir", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            End If
+        Else
+            MessageBox.Show("No existen registros para imprimir", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End If
     End Sub
 

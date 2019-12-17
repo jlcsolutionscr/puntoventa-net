@@ -406,6 +406,7 @@ Public Class FrmProforma
                 txtVendedor.Text = IIf(vendedor IsNot Nothing, vendedor.Nombre, "")
                 CargarDetalleProforma(proforma)
                 CargarTotales()
+                txtNombreCliente.ReadOnly = True
                 btnImprimir.Enabled = True
                 btnBuscaVendedor.Enabled = False
                 btnBuscarCliente.Enabled = False
@@ -775,11 +776,16 @@ Public Class FrmProforma
         If e.KeyCode = Keys.Enter Then
             Try
                 producto = Await Puntoventa.ObtenerProductoPorCodigo(FrmPrincipal.empresaGlobal.IdEmpresa, txtCodigo.Text, FrmPrincipal.usuarioGlobal.Token)
+                If producto IsNot Nothing Then
+                    CargarDatosProducto(producto)
+                    txtCantidad.Focus()
+                Else
+                    txtCodigo.Text = ""
+                End If
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
-            CargarDatosProducto(producto)
         End If
     End Sub
 
@@ -807,6 +813,18 @@ Public Class FrmProforma
                         MessageBox.Show("Los credenciales ingresados no tienen permisos para modificar el precio de venta.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
                     End If
                 End If
+            ElseIf e.KeyCode = Keys.Enter Then
+                BtnInsertar_Click(btnInsertar, New EventArgs())
+            End If
+        End If
+    End Sub
+
+    Private Sub TxtCantidad_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtCantidad.PreviewKeyDown
+        If e.KeyCode = Keys.Enter Then
+            If CDbl(txtPrecio.Text) > 0 Then
+                BtnInsertar_Click(btnInsertar, New EventArgs())
+            Else
+                txtPrecio.Focus()
             End If
         End If
     End Sub

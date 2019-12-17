@@ -1,5 +1,5 @@
 <Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
-Partial Class FrmAnulaReciboCxP
+Partial Class FrmGestionReciboCxP
     Inherits System.Windows.Forms.Form
 
     'Form overrides dispose to clean up the component list.
@@ -19,12 +19,13 @@ Partial Class FrmAnulaReciboCxP
     'It can be modified using the Windows Form Designer.
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FrmAnulaReciboCxP))
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FrmGestionReciboCxP))
         Me.CmdAnular = New System.Windows.Forms.Button()
         Me._lblLabels_2 = New System.Windows.Forms.Label()
         Me.grdDetalleRecibo = New System.Windows.Forms.DataGridView()
         Me.txtNombreProveedor = New System.Windows.Forms.TextBox()
         Me.btnBuscarProveedor = New System.Windows.Forms.Button()
+        Me.CmdImprimir = New System.Windows.Forms.Button()
         CType(Me.grdDetalleRecibo, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -98,12 +99,27 @@ Partial Class FrmAnulaReciboCxP
         Me.btnBuscarProveedor.TabStop = False
         Me.btnBuscarProveedor.UseVisualStyleBackColor = True
         '
-        'FrmAnulaReciboCxP
+        'CmdImprimir
+        '
+        Me.CmdImprimir.BackColor = System.Drawing.SystemColors.ButtonHighlight
+        Me.CmdImprimir.Cursor = System.Windows.Forms.Cursors.Default
+        Me.CmdImprimir.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.CmdImprimir.Location = New System.Drawing.Point(562, 10)
+        Me.CmdImprimir.Name = "CmdImprimir"
+        Me.CmdImprimir.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.CmdImprimir.Size = New System.Drawing.Size(64, 21)
+        Me.CmdImprimir.TabIndex = 12
+        Me.CmdImprimir.TabStop = False
+        Me.CmdImprimir.Text = "&Imprimir"
+        Me.CmdImprimir.UseVisualStyleBackColor = False
+        '
+        'FrmGestionReciboCxP
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(708, 303)
+        Me.Controls.Add(Me.CmdImprimir)
         Me.Controls.Add(Me.txtNombreProveedor)
         Me.Controls.Add(Me.btnBuscarProveedor)
         Me.Controls.Add(Me.grdDetalleRecibo)
@@ -115,7 +131,7 @@ Partial Class FrmAnulaReciboCxP
         Me.Location = New System.Drawing.Point(73, 22)
         Me.MaximizeBox = False
         Me.MinimizeBox = False
-        Me.Name = "FrmAnulaReciboCxP"
+        Me.Name = "FrmGestionReciboCxP"
         Me.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Anular Recibo a Cuentas por Pagar"
@@ -127,4 +143,5 @@ Partial Class FrmAnulaReciboCxP
     Friend WithEvents grdDetalleRecibo As System.Windows.Forms.DataGridView
     Public WithEvents txtNombreProveedor As System.Windows.Forms.TextBox
     Friend WithEvents btnBuscarProveedor As System.Windows.Forms.Button
+    Public WithEvents CmdImprimir As Button
 End Class

@@ -294,31 +294,17 @@ Public Class FrmPrincipal
     End Sub
 
     Public Sub MnuAnRCxC_Click(sender As Object, e As EventArgs) Handles MnuAnRCxC.Click
-        Dim formAnulaRecCxC As New FrmAnulaReciboCxC With {
+        Dim formAnulaRecCxC As New FrmGestionReciboCxC With {
             .MdiParent = Me
         }
         formAnulaRecCxC.Show()
     End Sub
 
     Public Sub MnuAnRCxP_Click(sender As Object, e As EventArgs) Handles MnuAnRCxP.Click
-        Dim formAnulaRecCxP As New FrmAnulaReciboCxP With {
+        Dim formAnulaRecCxP As New FrmGestionReciboCxP With {
             .MdiParent = Me
         }
         formAnulaRecCxP.Show()
-    End Sub
-
-    Public Sub MnuImpCxC_Click(sender As Object, e As EventArgs) Handles MnuImpCxC.Click
-        Dim formImprimirRecCxC As New FrmImprimirReciboCxC With {
-            .MdiParent = Me
-        }
-        formImprimirRecCxC.Show()
-    End Sub
-
-    Public Sub MnuImpCxP_Click(sender As Object, e As EventArgs) Handles MnuImpCxP.Click
-        Dim formImprimirRecCxP As New FrmImprimirReciboCxP With {
-            .MdiParent = Me
-        }
-        formImprimirRecCxP.Show()
     End Sub
 
     Private Sub MnuBCMov_Click(sender As Object, e As EventArgs) Handles MnuBCMov.Click

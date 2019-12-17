@@ -2,19 +2,19 @@ Imports System.Collections.Generic
 Imports LeandroSoftware.Core.TiposComunes
 Imports LeandroSoftware.Core.Dominio.Entidades
 
-Public Class FrmImprimirReciboCxP
+Public Class FrmGestionReciboCxP
 #Region "Variables"
     Private I As Short
-    Private dtbDetalleMovimiento As DataTable
+    Private dtbDatosLocal, dtbDetalleMovimiento As DataTable
     Private dtrRowDetMovimiento As DataRow
-    Private dblSaldo As Decimal
     Private bolInit As Boolean = True
     Private listadoMovimientos As IEnumerable(Of MovimientoCuentaPorPagar)
     Private movimientoCuentaPorPagar As MovimientoCuentaPorPagar
-    Private reciboComprobante As ModuloImpresion.ClsRecibo
-    Private desglosePagoImpresion As ModuloImpresion.clsDesgloseFormaPago
-    Private arrDesgloseMov, arrDesglosePago As List(Of ModuloImpresion.clsDesgloseFormaPago)
     Private proveedor As Proveedor
+
+    Private reciboComprobante As ModuloImpresion.ClsRecibo
+    Private desglosePagoImpresion As ModuloImpresion.ClsDesgloseFormaPago
+    Private arrDesgloseMov, arrDesglosePago As List(Of ModuloImpresion.ClsDesgloseFormaPago)
 #End Region
 
 #Region "Métodos"
@@ -59,12 +59,12 @@ Public Class FrmImprimirReciboCxP
 
         dvcRecibo.DataPropertyName = "RECIBO"
         dvcRecibo.HeaderText = "Recibo"
-        dvcRecibo.Width = 100
+        dvcRecibo.Width = 140
         grdDetalleRecibo.Columns.Add(dvcRecibo)
 
         dvcDescripcion.DataPropertyName = "DESCRIPCION"
         dvcDescripcion.HeaderText = "Descripción"
-        dvcDescripcion.Width = 240
+        dvcDescripcion.Width = 200
         grdDetalleRecibo.Columns.Add(dvcDescripcion)
 
         dvcFecha.DataPropertyName = "FECHA"
@@ -105,16 +105,41 @@ Public Class FrmImprimirReciboCxP
 #End Region
 
 #Region "Eventos Controles"
-    Private Sub FrmAnulaReciboCxP_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        Try
-            IniciaDetalleMovimiento()
-            EstablecerPropiedadesDataGridView()
-            grdDetalleRecibo.DataSource = dtbDetalleMovimiento
-            bolInit = False
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-        End Try
+    Private Sub CmdAnular_Click(sender As Object, e As EventArgs) Handles CmdAnular.Click
+        If grdDetalleRecibo.Rows.Count > 0 Then
+            If grdDetalleRecibo.CurrentRow.Cells(0).Value.ToString <> "" Then
+                If MessageBox.Show("Desea anular este registro?", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
+                    Try
+                        'servicioCuentaPorPagar.AnularMovimientoCxP(grdDetalleRecibo.CurrentRow.Cells(0).Value, FrmMenuPrincipal.usuarioGlobal.IdUsuario)
+                    Catch ex As Exception
+                        MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        Exit Sub
+                    End Try
+                    MessageBox.Show("Transacción procesada satisfactoriamente. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                    CargarDetalleMovimiento(proveedor.IdProveedor)
+                End If
+            Else
+                MessageBox.Show("Debe seleccionar un registro para procesar", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            End If
+        Else
+            MessageBox.Show("No existen registros para procesar", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        End If
+    End Sub
+
+    Private Sub btnBuscarProveedor_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnBuscarProveedor.Click
+        Dim formBusquedaProveedor As New FrmBusquedaProveedor()
+        FrmPrincipal.intBusqueda = 0
+        formBusquedaProveedor.ShowDialog()
+        If FrmPrincipal.intBusqueda > 0 Then
+            Try
+                'proveedor = servicioCompras.ObtenerProveedor(FrmMenuPrincipal.intBusqueda)
+            Catch ex As Exception
+                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Exit Sub
+            End Try
+            txtNombreProveedor.Text = proveedor.Nombre
+            CargarDetalleMovimiento(proveedor.IdProveedor)
+        End If
     End Sub
 
     Private Sub CmdImprimir_Click(sender As Object, e As EventArgs) Handles CmdImprimir.Click
@@ -131,18 +156,18 @@ Public Class FrmImprimirReciboCxP
                     .strFechaAbono = movimientoCuentaPorPagar.Fecha,
                     .strTotalAbono = FormatNumber(movimientoCuentaPorPagar.Monto, 2)
                 }
-                arrDesgloseMov = New List(Of ModuloImpresion.clsDesgloseFormaPago)()
+                arrDesgloseMov = New List(Of ModuloImpresion.ClsDesgloseFormaPago)()
                 For Each desgloseMovimiento As DesgloseMovimientoCuentaPorPagar In movimientoCuentaPorPagar.DesgloseMovimientoCuentaPorPagar
-                    desglosePagoImpresion = New ModuloImpresion.clsDesgloseFormaPago With {
+                    desglosePagoImpresion = New ModuloImpresion.ClsDesgloseFormaPago With {
                         .strDescripcion = desgloseMovimiento.CuentaPorPagar.NroDocOrig,
                         .strMonto = FormatNumber(desgloseMovimiento.Monto, 2)
                     }
                     arrDesgloseMov.Add(desglosePagoImpresion)
                 Next
                 reciboComprobante.arrDesgloseMov = arrDesgloseMov
-                arrDesglosePago = New List(Of ModuloImpresion.clsDesgloseFormaPago)()
+                arrDesglosePago = New List(Of ModuloImpresion.ClsDesgloseFormaPago)()
                 For Each desglosePago As DesglosePagoMovimientoCuentaPorPagar In movimientoCuentaPorPagar.DesglosePagoMovimientoCuentaPorPagar
-                    desglosePagoImpresion = New ModuloImpresion.clsDesgloseFormaPago With {
+                    desglosePagoImpresion = New ModuloImpresion.ClsDesgloseFormaPago With {
                         .strDescripcion = desglosePago.FormaPago.Descripcion,
                         .strMonto = FormatNumber(desglosePago.MontoLocal, 2),
                         .strNroDoc = desglosePago.NroMovimiento
@@ -164,20 +189,17 @@ Public Class FrmImprimirReciboCxP
         End If
     End Sub
 
-    Private Sub btnBuscarProveedor_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnBuscarProveedor.Click
-        Dim formBusquedaProveedor As New FrmBusquedaProveedor()
-        FrmPrincipal.intBusqueda = 0
-        formBusquedaProveedor.ShowDialog()
-        If FrmPrincipal.intBusqueda > 0 Then
-            Try
-                'proveedor = servicioCompras.ObtenerProveedor(FrmMenuPrincipal.intBusqueda)
-            Catch ex As Exception
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Exit Sub
-            End Try
-            txtNombreProveedor.Text = proveedor.Nombre
-            CargarDetalleMovimiento(proveedor.IdProveedor)
-        End If
+    Private Sub FrmAnulaReciboCxP_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+        Try
+            IniciaDetalleMovimiento()
+            EstablecerPropiedadesDataGridView()
+            grdDetalleRecibo.DataSource = dtbDetalleMovimiento
+            bolInit = False
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Close()
+            Exit Sub
+        End Try
     End Sub
 #End Region
 End Class

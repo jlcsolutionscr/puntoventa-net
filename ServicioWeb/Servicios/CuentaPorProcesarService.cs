@@ -13,8 +13,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
     public interface ICuentaPorProcesarService
     {
         CuentaPorCobrar ObtenerCuentaPorCobrar(int intIdCxC);
-        IEnumerable<CuentaPorCobrar> ObtenerListaCuentasPorCobrar(int intIdPropietario, int intIdTipo);
-        IEnumerable<MovimientoCuentaPorCobrar> ObtenerListaMovimientos(int intIdPropietario);
+        IList<LlaveDescripcion> ObtenerListadoCuentasPorCobrar(int intIdEmpresa, int intIdTipo, int intIdPropietario);
+        IList<CuentaDetalle> ObtenerListadoMovimientosCxC(int intIdEmpresa, int intIdSucursal, int intIdPropietario);
         void AplicarMovimientoCxC(MovimientoCuentaPorCobrar movimiento);
         void AnularMovimientoCxC(int intIdMov, int intIdUsuario);
         MovimientoCuentaPorCobrar ObtenerMovimientoCxC(int intIdMov);
@@ -23,10 +23,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         CuentaPorPagar AgregarCuentaPorPagar(CuentaPorPagar cuenta);
         void AnularCuentaPorPagar(int intIdCuentaPorPagar, int intIdUsuario);
         CuentaPorPagar ObtenerCuentaPorPagar(int intIdCxP);
-        IEnumerable<CuentaPorPagar> ObtenerListaCuentasPorPagarPorPropietario(int intIdTipo, int intIdPropietario);
-        IEnumerable<MovimientoCuentaPorPagar> ObtenerListaMovimientos(int intTipoPropietario, int intIdPropietario);
-        int ObtenerTotalListaCuentasPorPagar(int intIdEmpresa, int intTipo, string strNombre);
-        IEnumerable<CuentaPorPagar> ObtenerListaCuentasPorPagar(int intIdEmpresa, int intTipo, int numPagina, int cantRec, string strNombre);
+        IList<LlaveDescripcion> ObtenerListadoCuentasPorPagar(int intIdEmpresa, int intIdTipo, int intIdPropietario);
+        IList<CuentaDetalle> ObtenerListadoMovimientosCxP(int intIdEmpresa, int intIdSucursal, int intIdPropietario);
         void AplicarMovimientoCxP(MovimientoCuentaPorPagar movimiento);
         void AnularMovimientoCxP(int intIdMov, int intIdUsuario);
         MovimientoCuentaPorPagar ObtenerMovimientoCxP(int intIdMov);
@@ -72,13 +70,20 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<CuentaPorCobrar> ObtenerListaCuentasPorCobrar(int intIdPropietario, int intIdTipo)
+        public IList<LlaveDescripcion> ObtenerListadoCuentasPorCobrar(int intIdEmpresa, int intIdTipo, int intIdPropietario)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
+                var listaCuentas = new List<LlaveDescripcion>();
                 try
                 {
-                    return dbContext.CuentaPorCobrarRepository.Where(x => !x.Nulo & x.Saldo > 0 & x.Tipo == intIdTipo & x.IdPropietario == intIdPropietario).ToList();
+                    var listado = dbContext.CuentaPorCobrarRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.Tipo == intIdTipo && x.IdPropietario == intIdPropietario && x.Nulo == false && x.Saldo > 0).OrderByDescending(x => x.Fecha);
+                    foreach (var value in listado)
+                    {
+                        LlaveDescripcion item = new LlaveDescripcion(value.IdCxC, value.Referencia);
+                        listaCuentas.Add(item);
+                    }
+                    return listaCuentas;
                 }
                 catch (Exception ex)
                 {
@@ -88,13 +93,20 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<MovimientoCuentaPorCobrar> ObtenerListaMovimientos(int intIdPropietario)
+        public IList<CuentaDetalle> ObtenerListadoMovimientosCxC(int intIdEmpresa, int intIdSucursal, int intIdPropietario)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
+                var listaMovimientos = new List<CuentaDetalle>();
                 try
                 {
-                    return dbContext.MovimientoCuentaPorCobrarRepository.Include("Usuario").Where(x => !x.Nulo & x.IdPropietario == intIdPropietario).OrderByDescending(x => x.IdMovCxC).ToList();
+                    var listado = dbContext.MovimientoCuentaPorCobrarRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdPropietario == intIdPropietario).OrderByDescending(x => x.IdMovCxC);
+                    foreach (var value in listado)
+                    {
+                        CuentaDetalle item = new CuentaDetalle(value.IdMovCxC, value.Fecha.ToString("dd/MM/yyyy"), value.Descripcion, value.Monto);
+                        listaMovimientos.Add(item);
+                    }
+                    return listaMovimientos;
                 }
                 catch (Exception ex)
                 {
@@ -243,7 +255,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 detalleAsiento = new DetalleAsiento();
                                 intLineaDetalleAsiento += 1;
                                 detalleAsiento.Linea = intLineaDetalleAsiento;
-                                bancoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.CuentaDeBancos & x.IdProducto == desglosePago.IdCuentaBanco).FirstOrDefault();
+                                bancoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.CuentaDeBancos && x.IdProducto == desglosePago.IdCuentaBanco).FirstOrDefault();
                                 if (bancoParam == null)
                                     throw new BusinessException("No existe parametrización contable para la cuenta bancaría " + desglosePago.IdCuentaBanco + " y no se puede continuar. Por favor verificar.");
                                 detalleAsiento.IdCuenta = bancoParam.IdCuenta;
@@ -353,7 +365,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    return dbContext.CuentaPorCobrarRepository.Where(a => a.Tipo == intIdTipo & a.IdPropietario == intIdPropietario & a.Nulo == false & DbFunctions.DiffDays(a.Fecha, DateTime.Now) > a.Plazo).Count();
+                    return dbContext.CuentaPorCobrarRepository.Where(a => a.Tipo == intIdTipo && a.IdPropietario == intIdPropietario && a.Nulo == false && DbFunctions.DiffDays(a.Fecha, DateTime.Now) > a.Plazo).Count();
                 }
                 catch (Exception ex)
                 {
@@ -369,7 +381,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    return dbContext.CuentaPorCobrarRepository.Where(a => a.Tipo == intIdTipo & a.IdPropietario == intIdPropietario & a.Nulo == false).Sum(a => (decimal?)a.Saldo) ?? 0;
+                    return dbContext.CuentaPorCobrarRepository.Where(a => a.Tipo == intIdTipo && a.IdPropietario == intIdPropietario && a.Nulo == false).Sum(a => (decimal?)a.Saldo) ?? 0;
                 }
                 catch (Exception ex)
                 {
@@ -502,29 +514,20 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<CuentaPorPagar> ObtenerListaCuentasPorPagarPorPropietario(int intIdTipo, int intIdPropietario)
+        public IList<CuentaDetalle> ObtenerListadoMovimientosCxP(int intIdEmpresa, int intIdSucursal, int intIdPropietario)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
+                var listaMovimientos = new List<CuentaDetalle>();
                 try
                 {
-                    return dbContext.CuentaPorPagarRepository.Where(x => !x.Nulo & x.Saldo > 0 & x.Tipo == intIdTipo & x.IdPropietario == intIdPropietario).ToList();
-                }
-                catch (Exception ex)
-                {
-                    log.Error("Error al obtener el listado de cuentas por pagar de un proveedor: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de cuenta por pagar. Por favor consulte con su proveedor.");
-                }
-            }
-        }
-
-        public IEnumerable<MovimientoCuentaPorPagar> ObtenerListaMovimientos(int intTipoPropietario, int intIdPropietario)
-        {
-            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
-            {
-                try
-                {
-                    return dbContext.MovimientoCuentaPorPagarRepository.Include("Usuario").Where(x => !x.Nulo & x.TipoPropietario == intTipoPropietario & x.IdPropietario == intIdPropietario).OrderByDescending(x => x.IdMovCxP).ToList();
+                    var listado = dbContext.MovimientoCuentaPorPagarRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdPropietario == intIdPropietario).OrderByDescending(x => x.IdMovCxP);
+                    foreach (var value in listado)
+                    {
+                        CuentaDetalle item = new CuentaDetalle(value.IdMovCxP, value.Fecha.ToString("dd/MM/yyyy"), value.Descripcion, value.Monto);
+                        listaMovimientos.Add(item);
+                    }
+                    return listaMovimientos;
                 }
                 catch (Exception ex)
                 {
@@ -540,7 +543,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    var listaCuentas = dbContext.CuentaPorPagarRepository.Where(x => x.IdEmpresa == intIdEmpresa & x.Tipo == intTipo & x.Nulo == false);
+                    var listaCuentas = dbContext.CuentaPorPagarRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.Tipo == intTipo && x.Nulo == false);
                     return listaCuentas.Count();
                 }
                 catch (Exception ex)
@@ -551,22 +554,25 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<CuentaPorPagar> ObtenerListaCuentasPorPagar(int intIdEmpresa, int intTipo, int numPagina, int cantRec, string strNombre)
+        public IList<LlaveDescripcion> ObtenerListadoCuentasPorPagar(int intIdEmpresa, int intIdTipo, int intIdPropietario)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
+                var listaCuentas = new List<LlaveDescripcion>();
                 try
                 {
-                    var listaCuentas = dbContext.CuentaPorPagarRepository.Where(x => x.IdEmpresa == intIdEmpresa & x.Tipo == intTipo & x.Nulo == false);
-                    if (cantRec == 0)
-                        return listaCuentas.OrderByDescending(x => x.Fecha).ToList();
-                    else
-                        return listaCuentas.OrderByDescending(x => x.Fecha).Skip((numPagina - 1) * cantRec).Take(cantRec).ToList();
+                    var listado = dbContext.CuentaPorPagarRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.Tipo == intIdTipo && x.IdPropietario == intIdPropietario && x.Nulo == false && x.Saldo > 0).OrderByDescending(x => x.Fecha);
+                    foreach (var value in listado)
+                    {
+                        LlaveDescripcion item = new LlaveDescripcion(value.IdCxP, value.Referencia);
+                        listaCuentas.Add(item);
+                    }
+                    return listaCuentas;
                 }
                 catch (Exception ex)
                 {
-                    log.Error("Error al obtener el listado de cuentas por pagar a particulares: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de cuentas por pagar a particulares. Por favor consulte con su proveedor.");
+                    log.Error("Error al obtener el listado de cuentas por pagar: ", ex);
+                    throw new Exception("Se produjo un error consultando el listado de cuentas por pagar. Por favor consulte con su proveedor.");
                 }
             }
         }
@@ -668,7 +674,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 detalleAsiento = new DetalleAsiento();
                                 intLineaDetalleAsiento += 1;
                                 detalleAsiento.Linea = intLineaDetalleAsiento;
-                                bancoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.CuentaDeBancos & x.IdProducto == desglosePago.IdCuentaBanco).FirstOrDefault();
+                                bancoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.CuentaDeBancos && x.IdProducto == desglosePago.IdCuentaBanco).FirstOrDefault();
                                 if (bancoParam == null)
                                     throw new BusinessException("No existe parametrización contable para la cuenta bancaría " + desglosePago.IdCuentaBanco + " y no se puede continuar. Por favor verificar.");
                                 detalleAsiento.IdCuenta = bancoParam.IdCuenta;
@@ -775,7 +781,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    return dbContext.CuentaPorPagarRepository.Where(a => a.Tipo == intIdTipo & a.IdPropietario == intIdPropietario & a.Nulo == false & DbFunctions.DiffDays(a.Fecha, DateTime.Now) > a.Plazo).Count();
+                    return dbContext.CuentaPorPagarRepository.Where(a => a.Tipo == intIdTipo && a.IdPropietario == intIdPropietario && a.Nulo == false && DbFunctions.DiffDays(a.Fecha, DateTime.Now) > a.Plazo).Count();
                 }
                 catch (Exception ex)
                 {
@@ -791,7 +797,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    return dbContext.CuentaPorPagarRepository.Where(a => a.Tipo == intIdTipo & a.IdPropietario == intIdPropietario & a.Nulo == false).Sum(a => (decimal?)a.Saldo) ?? 0;
+                    return dbContext.CuentaPorPagarRepository.Where(a => a.Tipo == intIdTipo && a.IdPropietario == intIdPropietario && a.Nulo == false).Sum(a => (decimal?)a.Saldo) ?? 0;
                 }
                 catch (Exception ex)
                 {

@@ -271,22 +271,16 @@
     <Compile Include="Formas\FrmMenuCuentaDeBalance.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Formas\FrmImprimirReciboCxP.Designer.vb">
-      <DependentUpon>FrmImprimirReciboCxP.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Formas\FrmImprimirReciboCxP.vb">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="Formas\FrmAplicaReciboCxP.Designer.vb">
       <DependentUpon>FrmAplicaReciboCxP.vb</DependentUpon>
     </Compile>
     <Compile Include="Formas\FrmAplicaReciboCxP.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Formas\FrmAnulaReciboCxP.Designer.vb">
-      <DependentUpon>FrmAnulaReciboCxP.vb</DependentUpon>
+    <Compile Include="Formas\FrmGestionReciboCxP.Designer.vb">
+      <DependentUpon>FrmGestionReciboCxP.vb</DependentUpon>
     </Compile>
-    <Compile Include="Formas\FrmAnulaReciboCxP.vb">
+    <Compile Include="Formas\FrmGestionReciboCxP.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Formas\FrmMovimientoProducto.Designer.vb">
@@ -523,10 +517,10 @@
     <Compile Include="Formas\FrmClienteListado.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Formas\FrmAnulaReciboCxC.Designer.vb">
-      <DependentUpon>FrmAnulaReciboCxC.vb</DependentUpon>
+    <Compile Include="Formas\FrmGestionReciboCxC.Designer.vb">
+      <DependentUpon>FrmGestionReciboCxC.vb</DependentUpon>
     </Compile>
-    <Compile Include="Formas\FrmAnulaReciboCxC.vb">
+    <Compile Include="Formas\FrmGestionReciboCxC.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Formas\FrmAplicaReciboCxC.Designer.vb">
@@ -593,12 +587,6 @@
       <DependentUpon>FrmFactura.vb</DependentUpon>
     </Compile>
     <Compile Include="Formas\FrmFactura.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Formas\FrmImprimirReciboCxC.Designer.vb">
-      <DependentUpon>FrmImprimirReciboCxC.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Formas\FrmImprimirReciboCxC.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Formas\FrmInventario.Designer.vb">
@@ -779,14 +767,11 @@
       <DependentUpon>FrmMenuCuentaDeBalance.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Formas\FrmImprimirReciboCxP.resX">
-      <DependentUpon>FrmImprimirReciboCxP.vb</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Formas\FrmAplicaReciboCxP.resx">
       <DependentUpon>FrmAplicaReciboCxP.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Formas\FrmAnulaReciboCxP.resx">
-      <DependentUpon>FrmAnulaReciboCxP.vb</DependentUpon>
+    <EmbeddedResource Include="Formas\FrmGestionReciboCxP.resx">
+      <DependentUpon>FrmGestionReciboCxP.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Formas\FrmMovimientoProducto.resx">
       <DependentUpon>FrmMovimientoProducto.vb</DependentUpon>
@@ -926,8 +911,8 @@
       <DependentUpon>FrmActualizarClave.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Formas\FrmAnulaReciboCxC.resx">
-      <DependentUpon>FrmAnulaReciboCxC.vb</DependentUpon>
+    <EmbeddedResource Include="Formas\FrmGestionReciboCxC.resx">
+      <DependentUpon>FrmGestionReciboCxC.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Formas\FrmAplicaReciboCxC.resx">
       <DependentUpon>FrmAplicaReciboCxC.vb</DependentUpon>
@@ -965,9 +950,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Formas\FrmFactura.resx">
       <DependentUpon>FrmFactura.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Formas\FrmImprimirReciboCxC.resX">
-      <DependentUpon>FrmImprimirReciboCxC.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Formas\FrmInicio.resX">
       <DependentUpon>FrmInicio.vb</DependentUpon>

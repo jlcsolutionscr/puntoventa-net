@@ -620,4 +620,23 @@ namespace LeandroSoftware.Core.TiposComunes
         public string Detalle { get; set; }
         public decimal Total { get; set; }
     }
+
+    public class CuentaDetalle
+    {
+        public CuentaDetalle()
+        {
+        }
+
+        public CuentaDetalle(int id, string fecha, string descripcion, decimal total)
+        {
+            Id = id;
+            Fecha = fecha;
+            Descripcion = descripcion;
+            Total = total;
+        }
+        public int Id { get; set; }
+        public string Fecha { get; set; }
+        public string Descripcion { get; set; }
+        public decimal Total { get; set; }
+    }
 }
