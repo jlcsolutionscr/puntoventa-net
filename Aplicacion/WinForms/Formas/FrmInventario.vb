@@ -6,7 +6,7 @@ Public Class FrmInventario
     Private intIndiceDePagina As Integer
     Private intFilasPorPagina As Integer = 13
     Private intCantidadDePaginas As Integer
-    Private intIdSucursal As Integer
+    Private intIdSucursal As Integer = FrmPrincipal.equipoGlobal.IdSucursal
 #End Region
 
 #Region "Metodos"

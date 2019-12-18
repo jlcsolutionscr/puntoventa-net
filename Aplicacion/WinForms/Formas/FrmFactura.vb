@@ -609,6 +609,7 @@ Public Class FrmFactura
         txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
         txtDocumento.Text = ""
         cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado
+        cboCondicionVenta.Enabled = False
         txtPlazoCredito.Text = ""
         txtTipoExoneracion.Text = ""
         txtNumDocExoneracion.Text = ""
@@ -739,6 +740,7 @@ Public Class FrmFactura
                 txtPagoDelCliente.Text = FormatNumber(factura.MontoPagado, 2)
                 txtCambio.Text = FormatNumber(txtPagoDelCliente.Text - decTotal, 2)
                 txtMontoAdelanto.Text = FormatNumber(decMontoAdelanto, 2)
+                cboCondicionVenta.Enabled = False
                 txtNombreCliente.ReadOnly = True
                 btnInsertar.Enabled = False
                 btnEliminar.Enabled = False
@@ -780,6 +782,7 @@ Public Class FrmFactura
                 txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
                 txtDocumento.Text = ""
                 cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado
+                cboCondicionVenta.Enabled = cliente.IdCliente > 1
                 txtPlazoCredito.Text = ""
                 vendedor = ordenServicio.Vendedor
                 txtVendedor.Text = IIf(vendedor IsNot Nothing, vendedor.Nombre, "")
@@ -806,6 +809,8 @@ Public Class FrmFactura
                 btnGenerarPDF.Enabled = False
                 btnBuscarCliente.Enabled = True
                 bolInit = False
+                txtPagoDelCliente.Focus()
+                txtPagoDelCliente.SelectAll()
             Else
                 MessageBox.Show("No existe registro de orden de servicio asociado al identificador seleccionado", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End If
@@ -831,6 +836,7 @@ Public Class FrmFactura
                 txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
                 txtDocumento.Text = ""
                 cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado
+                cboCondicionVenta.Enabled = cliente.IdCliente > 1
                 txtPlazoCredito.Text = ""
                 vendedor = apartado.Vendedor
                 txtVendedor.Text = IIf(vendedor IsNot Nothing, vendedor.Nombre, "")
@@ -857,6 +863,8 @@ Public Class FrmFactura
                 btnGenerarPDF.Enabled = False
                 btnBuscarCliente.Enabled = True
                 bolInit = False
+                txtPagoDelCliente.Focus()
+                txtPagoDelCliente.SelectAll()
             Else
                 MessageBox.Show("No existe registro de orden de servicio asociado al identificador seleccionado", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End If
@@ -882,6 +890,7 @@ Public Class FrmFactura
                 txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
                 txtDocumento.Text = ""
                 cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado
+                cboCondicionVenta.Enabled = cliente.IdCliente > 1
                 txtPlazoCredito.Text = ""
                 vendedor = proforma.Vendedor
                 txtVendedor.Text = IIf(vendedor IsNot Nothing, vendedor.Nombre, "")
@@ -908,6 +917,8 @@ Public Class FrmFactura
                 btnGenerarPDF.Enabled = False
                 btnBuscarCliente.Enabled = True
                 bolInit = False
+                txtPagoDelCliente.Focus()
+                txtPagoDelCliente.SelectAll()
             Else
                 MessageBox.Show("No existe registro de orden de servicio asociado al identificador seleccionado", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End If
@@ -942,6 +953,7 @@ Public Class FrmFactura
                 cliente = Await Puntoventa.ObtenerCliente(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
                 txtNombreCliente.Text = cliente.Nombre
                 txtNombreCliente.ReadOnly = True
+                cboCondicionVenta.Enabled = True
                 If cliente.Vendedor IsNot Nothing Then
                     vendedor = cliente.Vendedor
                     txtVendedor.Text = vendedor.Nombre
@@ -981,7 +993,7 @@ Public Class FrmFactura
         If Not FrmPrincipal.strBusqueda.Equals("") Then
             Dim intIdProducto As Integer = Integer.Parse(FrmPrincipal.strBusqueda)
             Try
-                producto = Await Puntoventa.ObtenerProducto(intIdProducto, FrmPrincipal.usuarioGlobal.Token)
+                producto = Await Puntoventa.ObtenerProducto(intIdProducto, FrmPrincipal.equipoGlobal.IdSucursal, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
                 MessageBox.Show("Error al obtener la información del producto seleccionado. Intente mas tarde.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
@@ -1248,19 +1260,8 @@ Public Class FrmFactura
         End If
     End Sub
 
-    Private Async Sub BtnInsertar_Click(sender As Object, e As EventArgs) Handles btnInsertar.Click
-        If producto Is Nothing Then
-            If txtCodigo.Text <> "" Then
-                producto = Await Puntoventa.ObtenerProductoPorCodigo(FrmPrincipal.empresaGlobal.IdEmpresa, txtCodigo.Text, FrmPrincipal.usuarioGlobal.Token)
-                If producto IsNot Nothing Then
-                    decPrecioVenta = ObtenerPrecioVentaPorCliente(cliente, producto)
-                    CargarLineaDetalleFactura(producto, producto.Descripcion, txtCantidad.Text, decPrecioVenta, txtPorcDesc.Text)
-                    txtCodigo.Text = ""
-                    producto = Nothing
-                    txtCodigo.Focus()
-                End If
-            End If
-        Else
+    Private Sub BtnInsertar_Click(sender As Object, e As EventArgs) Handles btnInsertar.Click
+        If producto IsNot Nothing Then
             Dim strError As String = ""
             If txtDescripcion.Text = "" Then strError = "La descripción no puede estar en blanco"
             If decPrecioVenta <= 0 Then strError = "El precio del producto no puede ser igual o menor a 0"
@@ -1425,7 +1426,7 @@ Public Class FrmFactura
     Private Async Sub TxtCodigo_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtCodigo.PreviewKeyDown
         If e.KeyCode = Keys.Enter Then
             Try
-                producto = Await Puntoventa.ObtenerProductoPorCodigo(FrmPrincipal.empresaGlobal.IdEmpresa, txtCodigo.Text, FrmPrincipal.usuarioGlobal.Token)
+                producto = Await Puntoventa.ObtenerProductoPorCodigo(FrmPrincipal.empresaGlobal.IdEmpresa, txtCodigo.Text, FrmPrincipal.equipoGlobal.IdSucursal, FrmPrincipal.usuarioGlobal.Token)
                 If producto IsNot Nothing Then
                     CargarDatosProducto(producto)
                     txtCantidad.Focus()
@@ -1459,6 +1460,9 @@ Public Class FrmFactura
                         txtPrecio.Text = FormatNumber(FrmPrincipal.strBusqueda)
                         Dim decTasaImpuesto As Decimal = producto.ParametroImpuesto.TasaImpuesto
                         decPrecioVenta = Math.Round(CDbl(txtPrecio.Text) * (1 + (decTasaImpuesto / 100)), 2, MidpointRounding.AwayFromZero)
+                        Dim decPrecioOriginal = ObtenerPrecioVentaPorCliente(cliente, producto)
+                        decPrecioOriginal = Math.Round(decPrecioOriginal / (1 + (decTasaImpuesto / 100)), 2, MidpointRounding.AwayFromZero)
+                        txtPorcDesc.Text = FormatNumber(100 - (CDbl(txtPrecio.Text) * 100 / decPrecioOriginal), 2)
                     Else
                         MessageBox.Show("Los credenciales ingresados no tienen permisos para modificar el precio de venta.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
                     End If
@@ -1479,6 +1483,20 @@ Public Class FrmFactura
         End If
     End Sub
 
+    Private Sub txtPagoDelCliente_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtPagoDelCliente.PreviewKeyDown
+        If e.KeyCode = Keys.Enter Then
+            If txtPagoDelCliente.Text = "" Then
+                txtPagoDelCliente.Text = FormatNumber(CDbl(txtTotal.Text), 2)
+            ElseIf txtPagoDelCliente.Text < CDbl(txtTotal.Text) Then
+                txtPagoDelCliente.Text = FormatNumber(CDbl(txtTotal.Text), 2)
+                MessageBox.Show("El monto con el que el cliente paga no puede ser menor al total de la factura. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            Else
+                txtPagoDelCliente.Text = FormatNumber(txtPagoDelCliente.Text, 2)
+            End If
+            txtCambio.Text = FormatNumber(txtPagoDelCliente.Text - decTotal, 2)
+        End If
+    End Sub
+
     Private Sub TxtCantidad_Validated(sender As Object, e As EventArgs) Handles txtCantidad.Validated
         If txtCantidad.Text = "" Then txtCantidad.Text = "1"
     End Sub
@@ -1493,17 +1511,6 @@ Public Class FrmFactura
         Else
             txtMontoPago.Text = FormatNumber(txtMontoPago.Text, 2)
         End If
-    End Sub
-
-    Private Sub TxtMontoPagado_Validated(sender As Object, e As EventArgs) Handles txtPagoDelCliente.Validated
-        If txtPagoDelCliente.Text = "" Then
-            txtPagoDelCliente.Text = FormatNumber(0, 2)
-        ElseIf txtPagoDelCliente.Text < CDbl(txtTotal.Text) Then
-            txtPagoDelCliente.Text = FormatNumber(0, 2)
-            MessageBox.Show("El monto con el que el cliente paga no puede ser menor al total de la factura. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-        End If
-        txtPagoDelCliente.Text = FormatNumber(txtPagoDelCliente.Text, 2)
-        txtCambio.Text = FormatNumber(txtPagoDelCliente.Text - decTotal, 2)
     End Sub
 
     Private Sub ValidaDigitosSinDecimal(sender As Object, e As KeyPressEventArgs)

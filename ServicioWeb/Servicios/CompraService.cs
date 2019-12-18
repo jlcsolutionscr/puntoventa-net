@@ -230,6 +230,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     Empresa empresa = dbContext.EmpresaRepository.Find(compra.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
+                    Compra existeFactura = dbContext.CompraRepository.AsNoTracking().Where(x => x.NoDocumento == compra.NoDocumento).FirstOrDefault();
+                    if (existeFactura != null) throw new BusinessException("El número de factura por registrar en la compra ya existe. . .");
                     if (compra.IdOrdenCompra > 0)
                     {
                         OrdenCompra ordenCompra = dbContext.OrdenRepository.Find(compra.IdOrdenCompra);
@@ -634,6 +636,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         detalle.Compra = null;
                         detalle.Producto.Proveedor = null;
+                        detalle.PrecioVenta = detalle.Producto.PrecioVenta1;
                     }
                     foreach (DesglosePagoCompra desglosePago in compra.DesglosePagoCompra)
                         desglosePago.Compra = null;

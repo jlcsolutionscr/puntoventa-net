@@ -81,9 +81,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         void ActualizarProducto(Producto producto);
         void ActualizarPrecioVentaProductos(int intIdEmpresa, int intIdLinea, string strCodigo, string strDescripcion, decimal decPorcentajeAumento);
         void EliminarProducto(int intIdProducto);
-        Producto ObtenerProducto(int intIdProducto);
-        Producto ObtenerProductoPorCodigo(int intIdEmpresa, string strCodigo);
-        Producto ObtenerProductoPorCodigoProveedor(int intIdEmpresa, string strCodigo);
+        Producto ObtenerProducto(int intIdProducto, int intIdSucursal);
+        Producto ObtenerProductoPorCodigo(int intIdEmpresa, string strCodigo, int intIdSucursal);
+        Producto ObtenerProductoPorCodigoProveedor(int intIdEmpresa, string strCodigo, int intIdSucursal);
         int ObtenerTotalListaProductos(int intIdEmpresa, int intIdSucursal, bool bolIncluyeServicios, int intIdLinea, string strCodigo, string strCodigoProveedor, string strDescripcion);
         IList<ProductoDetalle> ObtenerListadoProductos(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, bool bolIncluyeServicios, int intIdLinea, string strCodigo, string strCodigoProveedor, string strDescripcion);
         int ObtenerTotalMovimientosPorProducto(int intIdProducto, int intIdSucursal, string strFechaInicial, string strFechaFinal);
@@ -1588,8 +1588,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(producto.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    bool existe = dbContext.ProductoRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.Codigo == producto.Codigo).Count() > 0;
+                    bool existe = dbContext.ProductoRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.Codigo == producto.Codigo).Count() > 0;
                     if (existe) throw new BusinessException("El código de producto ingresado ya está registrado en la empresa.");
+                    if (producto.Tipo == 4)
+                    {
+                        bool transitorio = dbContext.ProductoRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.Tipo == 4).Count() > 0;
+                        if (transitorio) throw new BusinessException("Ya existe un producto de tipo 'Transitorio' registrado en la empresa.");
+                    }
                     dbContext.ProductoRepository.Add(producto);
                     dbContext.Commit();
                 }
@@ -1618,6 +1623,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     bool existe = dbContext.ProductoRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto != producto.IdProducto && x.Codigo == producto.Codigo).Count() > 0;
                     if (existe) throw new BusinessException("El código del producto ingresado ya está registrado en la empresa.");
+                    if (producto.Tipo == 4)
+                    {
+                        bool transitorio = dbContext.ProductoRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.Tipo == 4).Count() > 0;
+                        if (transitorio) throw new BusinessException("Ya existe un producto de tipo 'Transitorio' registrado en la empresa.");
+                    }
                     producto.ParametroImpuesto = null;
                     producto.Proveedor = null;
                     dbContext.NotificarModificacion(producto);
@@ -1712,14 +1722,20 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public Producto ObtenerProducto(int intIdProducto)
+        public Producto ObtenerProducto(int intIdProducto, int intIdSucursal)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 try
                 {
                     Producto producto = dbContext.ProductoRepository.Include("ParametroImpuesto").Include("Proveedor").FirstOrDefault(x => x.IdProducto == intIdProducto);
-                    producto.Proveedor.Producto = null;
+                    if (producto != null)
+                    {
+                        var existencias = dbContext.ExistenciaPorSucursalRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == intIdProducto && x.IdSucursal == intIdSucursal).FirstOrDefault();
+                        decimal decCantidad = existencias != null ? existencias.Cantidad : 0;
+                        producto.Proveedor.Producto = null;
+                        producto.Existencias = decCantidad;
+                    }
                     return producto;
                 }
                 catch (Exception ex)
@@ -1730,13 +1746,20 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public Producto ObtenerProductoPorCodigo(int intIdEmpresa, string strCodigo)
+        public Producto ObtenerProductoPorCodigo(int intIdEmpresa, string strCodigo, int intIdSucursal)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 try
                 {
-                    return dbContext.ProductoRepository.Include("ParametroImpuesto").Where(x => x.IdEmpresa == intIdEmpresa && x.Codigo.Equals(strCodigo)).FirstOrDefault();
+                    Producto producto = dbContext.ProductoRepository.Include("ParametroImpuesto").Where(x => x.IdEmpresa == intIdEmpresa && x.Codigo.Equals(strCodigo)).FirstOrDefault();
+                    if (producto != null)
+                    {
+                        var existencias = dbContext.ExistenciaPorSucursalRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == intIdSucursal).FirstOrDefault();
+                        decimal decCantidad = existencias != null ? existencias.Cantidad : 0;
+                        producto.Existencias = decCantidad;
+                    }
+                    return producto;
                 }
                 catch (Exception ex)
                 {
@@ -1746,13 +1769,20 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public Producto ObtenerProductoPorCodigoProveedor(int intIdEmpresa, string strCodigo)
+        public Producto ObtenerProductoPorCodigoProveedor(int intIdEmpresa, string strCodigo, int intIdSucursal)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 try
                 {
-                    return dbContext.ProductoRepository.Include("ParametroImpuesto").Where(x => x.IdEmpresa == intIdEmpresa && x.CodigoProveedor.Equals(strCodigo)).FirstOrDefault();
+                    Producto producto = dbContext.ProductoRepository.Include("ParametroImpuesto").Where(x => x.IdEmpresa == intIdEmpresa && x.CodigoProveedor.Equals(strCodigo)).FirstOrDefault();
+                    if (producto != null)
+                    {
+                        var existencias = dbContext.ExistenciaPorSucursalRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == intIdSucursal).FirstOrDefault();
+                        decimal decCantidad = existencias != null ? existencias.Cantidad : 0;
+                        producto.Existencias = decCantidad;
+                    }
+                    return producto;
                 }
                 catch (Exception ex)
                 {

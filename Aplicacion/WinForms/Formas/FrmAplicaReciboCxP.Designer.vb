@@ -148,7 +148,6 @@ Partial Class FrmAplicaReciboCxP
         Me.txtFecha.AcceptsReturn = True
         Me.txtFecha.BackColor = System.Drawing.SystemColors.Window
         Me.txtFecha.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtFecha.Enabled = False
         Me.txtFecha.ForeColor = System.Drawing.SystemColors.WindowText
         Me.txtFecha.Location = New System.Drawing.Point(86, 77)
         Me.txtFecha.MaxLength = 0
@@ -544,7 +543,6 @@ Partial Class FrmAplicaReciboCxP
         Me.txtNombreProveedor.AcceptsReturn = True
         Me.txtNombreProveedor.BackColor = System.Drawing.SystemColors.Window
         Me.txtNombreProveedor.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtNombreProveedor.Enabled = False
         Me.txtNombreProveedor.ForeColor = System.Drawing.SystemColors.WindowText
         Me.txtNombreProveedor.Location = New System.Drawing.Point(85, 49)
         Me.txtNombreProveedor.MaxLength = 0

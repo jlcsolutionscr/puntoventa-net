@@ -92,6 +92,11 @@ Public Class FrmProducto
         If txtPrecioImpuesto3.Text <> "" Then txtPrecioVenta3.Text = FormatoPrecio(txtPrecioImpuesto3.Text / (1 + (parametroImpuesto.TasaImpuesto / 100)), 2)
         If txtPrecioImpuesto4.Text <> "" Then txtPrecioVenta4.Text = FormatoPrecio(txtPrecioImpuesto4.Text / (1 + (parametroImpuesto.TasaImpuesto / 100)), 2)
         If txtPrecioImpuesto5.Text <> "" Then txtPrecioVenta5.Text = FormatoPrecio(txtPrecioImpuesto5.Text / (1 + (parametroImpuesto.TasaImpuesto / 100)), 2)
+        If CDbl(txtPrecioCosto.Text) > 0 Then
+            txtPorcUtilidad.Text = (CDbl(txtPrecioVenta1.Text) / CDbl(txtPrecioCosto.Text) * 100) - 100
+        Else
+            txtPorcUtilidad.Text = "100"
+        End If
     End Function
 #End Region
 
@@ -100,7 +105,7 @@ Public Class FrmProducto
         Try
             Await CargarCombos()
             If intIdProducto > 0 Then
-                datos = Await Puntoventa.ObtenerProducto(intIdProducto, FrmPrincipal.usuarioGlobal.Token)
+                datos = Await Puntoventa.ObtenerProducto(intIdProducto, FrmPrincipal.equipoGlobal.IdSucursal, FrmPrincipal.usuarioGlobal.Token)
                 If datos Is Nothing Then
                     Throw New Exception("El producto seleccionado no existe")
                 End If
@@ -119,11 +124,6 @@ Public Class FrmProducto
                 txtPrecioImpuesto4.Text = FormatoPrecio(datos.PrecioVenta4, 2)
                 txtPrecioImpuesto5.Text = FormatoPrecio(datos.PrecioVenta5, 2)
                 cboTipoImpuesto.SelectedValue = datos.IdImpuesto
-                If datos.PrecioCosto > 0 Then
-                    txtPorcUtilidad.Text = (datos.PrecioVenta1 / datos.PrecioCosto * 100) - 100
-                Else
-                    txtPorcUtilidad.Text = "100"
-                End If
                 txtIndExistencia.Text = FormatoPrecio(datos.IndExistencia, 2)
                 If datos.Imagen IsNot Nothing Then
                     ptbImagen.Image = Bytes_Imagen(datos.Imagen)
@@ -252,12 +252,38 @@ Public Class FrmProducto
         If txtPrecioVenta1.Text = "" Then txtPrecioVenta1.Text = "0"
         txtPrecioVenta1.Text = FormatoPrecio(txtPrecioVenta1.Text, 2)
         txtPrecioImpuesto1.Text = FormatoPrecio(txtPrecioVenta1.Text * (1 + (parametroImpuesto.TasaImpuesto / 100)), 2)
+        txtPrecioVenta2.Text = FormatoPrecio(txtPrecioVenta1.Text, 2)
+        txtPrecioImpuesto2.Text = FormatoPrecio(txtPrecioImpuesto1.Text, 2)
+        txtPrecioVenta3.Text = FormatoPrecio(txtPrecioVenta1.Text, 2)
+        txtPrecioImpuesto3.Text = FormatoPrecio(txtPrecioImpuesto1.Text, 2)
+        txtPrecioVenta4.Text = FormatoPrecio(txtPrecioVenta1.Text, 2)
+        txtPrecioImpuesto4.Text = FormatoPrecio(txtPrecioImpuesto1.Text, 2)
+        txtPrecioVenta5.Text = FormatoPrecio(txtPrecioVenta1.Text, 2)
+        txtPrecioImpuesto5.Text = FormatoPrecio(txtPrecioImpuesto1.Text, 2)
+        If CDbl(txtPrecioCosto.Text) > 0 Then
+            txtPorcUtilidad.Text = (CDbl(txtPrecioVenta1.Text) / CDbl(txtPrecioCosto.Text) * 100) - 100
+        Else
+            txtPorcUtilidad.Text = "100"
+        End If
     End Sub
 
     Private Sub txtPrecioImpuesto1_Validating(sender As Object, e As EventArgs) Handles txtPrecioImpuesto1.Validated
         If txtPrecioImpuesto1.Text = "" Then txtPrecioImpuesto1.Text = "0"
         txtPrecioImpuesto1.Text = FormatoPrecio(txtPrecioImpuesto1.Text, 2)
         txtPrecioVenta1.Text = FormatoPrecio(Math.Round(txtPrecioImpuesto1.Text / (1 + (parametroImpuesto.TasaImpuesto / 100)), 3, MidpointRounding.AwayFromZero), 2)
+        txtPrecioVenta2.Text = FormatoPrecio(txtPrecioVenta1.Text, 2)
+        txtPrecioImpuesto2.Text = FormatoPrecio(txtPrecioImpuesto1.Text, 2)
+        txtPrecioVenta3.Text = FormatoPrecio(txtPrecioVenta1.Text, 2)
+        txtPrecioImpuesto3.Text = FormatoPrecio(txtPrecioImpuesto1.Text, 2)
+        txtPrecioVenta4.Text = FormatoPrecio(txtPrecioVenta1.Text, 2)
+        txtPrecioImpuesto4.Text = FormatoPrecio(txtPrecioImpuesto1.Text, 2)
+        txtPrecioVenta5.Text = FormatoPrecio(txtPrecioVenta1.Text, 2)
+        txtPrecioImpuesto5.Text = FormatoPrecio(txtPrecioImpuesto1.Text, 2)
+        If CDbl(txtPrecioCosto.Text) > 0 Then
+            txtPorcUtilidad.Text = (CDbl(txtPrecioVenta1.Text) / CDbl(txtPrecioCosto.Text) * 100) - 100
+        Else
+            txtPorcUtilidad.Text = "100"
+        End If
     End Sub
 
     Private Sub PrecioVenta2_Validating(sender As Object, e As EventArgs) Handles txtPrecioVenta2.Validated
@@ -327,8 +353,8 @@ Public Class FrmProducto
         End If
     End Sub
 
-    Private Sub Utilidad_Validated(sender As Object, e As EventArgs) Handles txtPrecioCosto.Validated, txtPrecioVenta1.Validated
-        If txtPrecioCosto.Text <> "0.00" Then
+    Private Sub Utilidad_Validated(sender As Object, e As EventArgs) Handles txtPrecioCosto.Validated
+        If CDbl(txtPrecioCosto.Text) > 0 Then
             txtPorcUtilidad.Text = (CDbl(txtPrecioVenta1.Text) / CDbl(txtPrecioCosto.Text) * 100) - 100
         Else
             txtPorcUtilidad.Text = "100"

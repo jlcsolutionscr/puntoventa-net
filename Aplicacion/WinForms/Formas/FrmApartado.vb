@@ -715,7 +715,7 @@ Public Class FrmApartado
         If Not FrmPrincipal.strBusqueda.Equals("") Then
             Dim intIdProducto As Integer = Integer.Parse(FrmPrincipal.strBusqueda)
             Try
-                producto = Await Puntoventa.ObtenerProducto(intIdProducto, FrmPrincipal.usuarioGlobal.Token)
+                producto = Await Puntoventa.ObtenerProducto(intIdProducto, FrmPrincipal.equipoGlobal.IdSucursal, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
                 MessageBox.Show("Error al obtener la información del producto seleccionado. Intente mas tarde.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
@@ -938,19 +938,8 @@ Public Class FrmApartado
         End If
     End Sub
 
-    Private Async Sub BtnInsertar_Click(sender As Object, e As EventArgs) Handles btnInsertar.Click
-        If producto Is Nothing Then
-            If txtCodigo.Text <> "" Then
-                producto = Await Puntoventa.ObtenerProductoPorCodigo(FrmPrincipal.empresaGlobal.IdEmpresa, txtCodigo.Text, FrmPrincipal.usuarioGlobal.Token)
-                If producto IsNot Nothing Then
-                    decPrecioVenta = ObtenerPrecioVentaPorCliente(cliente, producto)
-                    CargarLineaDetalleProforma(producto, producto.Descripcion, txtCantidad.Text, decPrecioVenta, txtPorcDesc.Text)
-                    txtCodigo.Text = ""
-                    producto = Nothing
-                    txtCodigo.Focus()
-                End If
-            End If
-        Else
+    Private Sub BtnInsertar_Click(sender As Object, e As EventArgs) Handles btnInsertar.Click
+        If producto IsNot Nothing Then
             Dim strError As String = ""
             If txtDescripcion.Text = "" Then strError = "La descripción no puede estar en blanco"
             If decPrecioVenta <= 0 Then strError = "El precio del producto no puede ser igual o menor a 0"
@@ -1097,7 +1086,7 @@ Public Class FrmApartado
     Private Async Sub TxtCodigo_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtCodigo.PreviewKeyDown
         If e.KeyCode = Keys.Enter Then
             Try
-                producto = Await Puntoventa.ObtenerProductoPorCodigo(FrmPrincipal.empresaGlobal.IdEmpresa, txtCodigo.Text, FrmPrincipal.usuarioGlobal.Token)
+                producto = Await Puntoventa.ObtenerProductoPorCodigo(FrmPrincipal.empresaGlobal.IdEmpresa, txtCodigo.Text, FrmPrincipal.equipoGlobal.IdSucursal, FrmPrincipal.usuarioGlobal.Token)
                 If producto IsNot Nothing Then
                     CargarDatosProducto(producto)
                     txtCantidad.Focus()
@@ -1131,6 +1120,9 @@ Public Class FrmApartado
                         txtPrecio.Text = FormatNumber(FrmPrincipal.strBusqueda)
                         Dim decTasaImpuesto As Decimal = producto.ParametroImpuesto.TasaImpuesto
                         decPrecioVenta = Math.Round(CDbl(txtPrecio.Text) * (1 + (decTasaImpuesto / 100)), 2, MidpointRounding.AwayFromZero)
+                        Dim decPrecioOriginal = ObtenerPrecioVentaPorCliente(cliente, producto)
+                        decPrecioOriginal = Math.Round(decPrecioOriginal / (1 + (decTasaImpuesto / 100)), 2, MidpointRounding.AwayFromZero)
+                        txtPorcDesc.Text = FormatNumber(100 - (CDbl(txtPrecio.Text) * 100 / decPrecioOriginal), 2)
                     Else
                         MessageBox.Show("Los credenciales ingresados no tienen permisos para modificar el precio de venta.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
                     End If

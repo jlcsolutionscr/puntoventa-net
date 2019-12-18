@@ -983,9 +983,9 @@ namespace LeandroSoftware.ClienteWCF
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 
-        public static async Task<Producto> ObtenerProducto(int intIdProducto, string strToken)
+        public static async Task<Producto> ObtenerProducto(int intIdProducto, int intIdSucursal, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerProducto', Parametros: {IdProducto: " + intIdProducto + "}}";
+            string strDatos = "{NombreMetodo: 'ObtenerProducto', Parametros: {IdProducto: " + intIdProducto + ", IdSucursal: " + intIdSucursal + "}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             Producto producto = null;
             if (respuesta != "")
@@ -993,9 +993,9 @@ namespace LeandroSoftware.ClienteWCF
             return producto;
         }
 
-        public static async Task<Producto> ObtenerProductoPorCodigo(int intIdEmpresa, string strCodigo, string strToken)
+        public static async Task<Producto> ObtenerProductoPorCodigo(int intIdEmpresa, string strCodigo, int intIdSucursal, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerProductoPorCodigo', Parametros: {IdEmpresa: " + intIdEmpresa + ", Codigo: '" + strCodigo + "'}}";
+            string strDatos = "{NombreMetodo: 'ObtenerProductoPorCodigo', Parametros: {IdEmpresa: " + intIdEmpresa + ", Codigo: '" + strCodigo + "', IdSucursal: " + intIdSucursal + "}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             Producto producto = null;
             if (respuesta != "")
@@ -1003,9 +1003,9 @@ namespace LeandroSoftware.ClienteWCF
             return producto;
         }
 
-        public static async Task<Producto> ObtenerProductoPorCodigoProveedor(int intIdEmpresa, string strCodigo, string strToken)
+        public static async Task<Producto> ObtenerProductoPorCodigoProveedor(int intIdEmpresa, string strCodigo, int intIdSucursal, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerProductoPorCodigoProveedor', Parametros: {IdEmpresa: " + intIdEmpresa + ", Codigo: '" + strCodigo + "'}}";
+            string strDatos = "{NombreMetodo: 'ObtenerProductoPorCodigoProveedor', Parametros: {IdEmpresa: " + intIdEmpresa + ", Codigo: '" + strCodigo + "', IdSucursal: " + intIdSucursal + "}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             Producto producto = null;
             if (respuesta != "")
@@ -1717,6 +1717,46 @@ namespace LeandroSoftware.ClienteWCF
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 
+        public static async Task<CuentaPorCobrar> ObtenerCuentaPorCobrar(int intIdCxC, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'ObtenerCuentaPorCobrar', Parametros: {IdCxC: " + intIdCxC + "}}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            CuentaPorCobrar cuentaPorCobrar = null;
+            if (respuesta != "")
+                cuentaPorCobrar = serializer.Deserialize<CuentaPorCobrar>(respuesta);
+            return cuentaPorCobrar;
+        }
+
+        public static async Task<List<LlaveDescripcion>> ObtenerListadoCuentasPorCobrar(int intIdEmpresa, int intIdTipo, int intIdPropietario, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'ObtenerListadoCuentasPorCobrar', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdTipo: " + intIdTipo + ", IdPropietario: " + intIdPropietario + "}}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<LlaveDescripcion>>(respuesta);
+            return listado;
+        }
+
+        public static async Task<List<CuentaDetalle>> ObtenerListaMovimientosCxC(int intIdEmpresa, int intIdSucursal, int intIdPropietario, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'ObtenerListaMovimientosCxC', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", IdPropietario: " + intIdPropietario + "}}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            List<CuentaDetalle> listado = new List<CuentaDetalle>();
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<CuentaDetalle>>(respuesta);
+            return listado;
+        }
+
+        public static async Task<MovimientoCuentaPorCobrar> ObtenerMovimientoCxC(int intIdMovimiento, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'ObtenerMovimientoCxC', Parametros: {IdMovimiento: " + intIdMovimiento + "}}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            MovimientoCuentaPorCobrar movimientoCxC = null;
+            if (respuesta != "")
+                movimientoCxC = serializer.Deserialize<MovimientoCuentaPorCobrar>(respuesta);
+            return movimientoCxC;
+        }
+
         public static async Task AplicarMovimientoCxC(MovimientoCuentaPorCobrar movimiento, string strToken)
         {
             string strEntidad = serializer.Serialize(movimiento);
@@ -1728,6 +1768,46 @@ namespace LeandroSoftware.ClienteWCF
         {
             string strDatos = "{NombreMetodo: 'AnularMovimientoCxC', Parametros: {IdMovimientoCxC: " + intIdMovimientoCxC + ", IdUsuario: " + intIdUsuario + "}}";
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
+        }
+
+        public static async Task<CuentaPorPagar> ObtenerCuentaPorPagar(int intIdCxP, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'ObtenerCuentaPorPagar', Parametros: {IdCxP: " + intIdCxP + "}}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            CuentaPorPagar cuentaPorPagar = null;
+            if (respuesta != "")
+                cuentaPorPagar = serializer.Deserialize<CuentaPorPagar>(respuesta);
+            return cuentaPorPagar;
+        }
+
+        public static async Task<List<LlaveDescripcion>> ObtenerListadoCuentasPorPagar(int intIdEmpresa, int intIdTipo, int intIdPropietario, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'ObtenerListadoCuentasPorPagar', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdTipo: " + intIdTipo + ", IdPropietario: " + intIdPropietario + "}}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<LlaveDescripcion>>(respuesta);
+            return listado;
+        }
+
+        public static async Task<List<CuentaDetalle>> ObtenerListaMovimientosCxP(int intIdEmpresa, int intIdSucursal, int intIdPropietario, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'ObtenerListaMovimientosCxP', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", IdPropietario: " + intIdPropietario + "}}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            List<CuentaDetalle> listado = new List<CuentaDetalle>();
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<CuentaDetalle>>(respuesta);
+            return listado;
+        }
+
+        public static async Task<MovimientoCuentaPorPagar> ObtenerMovimientoCxP(int intIdMovimiento, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'ObtenerMovimientoCxP', Parametros: {IdMovimiento: " + intIdMovimiento + "}}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            MovimientoCuentaPorPagar movimientoCxP = null;
+            if (respuesta != "")
+                movimientoCxP = serializer.Deserialize<MovimientoCuentaPorPagar>(respuesta);
+            return movimientoCxP;
         }
 
         public static async Task AplicarMovimientoCxP(MovimientoCuentaPorPagar movimiento, string strToken)

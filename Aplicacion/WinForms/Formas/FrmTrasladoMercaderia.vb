@@ -268,7 +268,7 @@ Public Class FrmTrasladoMercaderia
         If Not FrmPrincipal.strBusqueda.Equals("") Then
             Dim intIdProducto As Integer = Integer.Parse(FrmPrincipal.strBusqueda)
             Try
-                producto = Await Puntoventa.ObtenerProducto(intIdProducto, FrmPrincipal.usuarioGlobal.Token)
+                producto = Await Puntoventa.ObtenerProducto(intIdProducto, FrmPrincipal.equipoGlobal.IdSucursal, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
                 MessageBox.Show("Error al obtener la información del producto seleccionado. Intente mas tarde.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
@@ -356,18 +356,8 @@ Public Class FrmTrasladoMercaderia
         End If
     End Sub
 
-    Private Async Sub BtnInsertar_Click(sender As Object, e As EventArgs) Handles btnInsertar.Click
-        If producto Is Nothing Then
-            If txtCodigo.Text <> "" Then
-                producto = Await Puntoventa.ObtenerProductoPorCodigo(FrmPrincipal.empresaGlobal.IdEmpresa, txtCodigo.Text, FrmPrincipal.usuarioGlobal.Token)
-                If producto IsNot Nothing Then
-                    CargarLineaDetalleTraslado(producto)
-                    txtCodigo.Text = ""
-                    producto = Nothing
-                    txtCodigo.Focus()
-                End If
-            End If
-        Else
+    Private Sub BtnInsertar_Click(sender As Object, e As EventArgs) Handles btnInsertar.Click
+        If producto IsNot Nothing Then
             CargarLineaDetalleTraslado(producto)
             txtCantidad.Text = "1"
             txtCodigo.Text = ""
@@ -391,7 +381,7 @@ Public Class FrmTrasladoMercaderia
     Private Async Sub TxtCodigo_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtCodigo.PreviewKeyDown
         If e.KeyCode = Keys.Tab Then
             Try
-                producto = Await Puntoventa.ObtenerProductoPorCodigo(FrmPrincipal.empresaGlobal.IdEmpresa, txtCodigo.Text, FrmPrincipal.usuarioGlobal.Token)
+                producto = Await Puntoventa.ObtenerProductoPorCodigo(FrmPrincipal.empresaGlobal.IdEmpresa, txtCodigo.Text, FrmPrincipal.equipoGlobal.IdSucursal, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub

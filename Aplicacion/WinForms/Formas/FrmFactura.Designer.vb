@@ -973,6 +973,7 @@ Partial Class FrmFactura
         Me.cboCondicionVenta.BackColor = System.Drawing.SystemColors.Window
         Me.cboCondicionVenta.Cursor = System.Windows.Forms.Cursors.Default
         Me.cboCondicionVenta.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.cboCondicionVenta.Enabled = False
         Me.cboCondicionVenta.ForeColor = System.Drawing.SystemColors.WindowText
         Me.cboCondicionVenta.IntegralHeight = False
         Me.cboCondicionVenta.ItemHeight = 13

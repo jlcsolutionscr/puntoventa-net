@@ -317,6 +317,7 @@ Public Class FrmProforma
         txtIdProforma.Text = ""
         txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
         txtTextoAdicional.Text = ""
+        txtTelefono.Text = ""
         txtTipoExoneracion.Text = ""
         txtNumDocExoneracion.Text = ""
         txtNombreInstExoneracion.Text = ""
@@ -395,6 +396,7 @@ Public Class FrmProforma
                 txtNombreCliente.Text = proforma.NombreCliente
                 txtFecha.Text = proforma.Fecha
                 txtTextoAdicional.Text = proforma.TextoAdicional
+                txtTelefono.Text = proforma.Telefono
                 If proforma.PorcentajeExoneracion > 0 Then
                     txtTipoExoneracion.Text = proforma.ParametroExoneracion.Descripcion
                     txtNumDocExoneracion.Text = proforma.NumDocExoneracion
@@ -446,6 +448,7 @@ Public Class FrmProforma
                 cliente = Await Puntoventa.ObtenerCliente(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
                 txtNombreCliente.Text = cliente.Nombre
                 txtNombreCliente.ReadOnly = True
+                txtTelefono.Text = cliente.Telefono
                 If cliente.Vendedor IsNot Nothing Then
                     vendedor = cliente.Vendedor
                     txtVendedor.Text = vendedor.Nombre
@@ -485,7 +488,7 @@ Public Class FrmProforma
         If Not FrmPrincipal.strBusqueda.Equals("") Then
             Dim intIdProducto As Integer = Integer.Parse(FrmPrincipal.strBusqueda)
             Try
-                producto = Await Puntoventa.ObtenerProducto(intIdProducto, FrmPrincipal.usuarioGlobal.Token)
+                producto = Await Puntoventa.ObtenerProducto(intIdProducto, FrmPrincipal.equipoGlobal.IdSucursal, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
                 MessageBox.Show("Error al obtener la información del producto seleccionado. Intente mas tarde.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
@@ -516,6 +519,7 @@ Public Class FrmProforma
                 .PorcentajeExoneracion = cliente.PorcentajeExoneracion,
                 .Fecha = Now(),
                 .TextoAdicional = txtTextoAdicional.Text,
+                .Telefono = txtTelefono.Text,
                 .IdVendedor = vendedor.IdVendedor,
                 .Excento = decExcento,
                 .Gravado = decGravado,
@@ -707,19 +711,8 @@ Public Class FrmProforma
         End If
     End Sub
 
-    Private Async Sub BtnInsertar_Click(sender As Object, e As EventArgs) Handles btnInsertar.Click
-        If producto Is Nothing Then
-            If txtCodigo.Text <> "" Then
-                producto = Await Puntoventa.ObtenerProductoPorCodigo(FrmPrincipal.empresaGlobal.IdEmpresa, txtCodigo.Text, FrmPrincipal.usuarioGlobal.Token)
-                If producto IsNot Nothing Then
-                    decPrecioVenta = ObtenerPrecioVentaPorCliente(cliente, producto)
-                    CargarLineaDetalleProforma(producto, producto.Descripcion, txtCantidad.Text, decPrecioVenta, txtPorcDesc.Text)
-                    txtCodigo.Text = ""
-                    producto = Nothing
-                    txtCodigo.Focus()
-                End If
-            End If
-        Else
+    Private Sub BtnInsertar_Click(sender As Object, e As EventArgs) Handles btnInsertar.Click
+        If producto IsNot Nothing Then
             Dim strError As String = ""
             If txtDescripcion.Text = "" Then strError = "La descripción no puede estar en blanco"
             If decPrecioVenta <= 0 Then strError = "El precio del producto no puede ser igual o menor a 0"
@@ -748,19 +741,21 @@ Public Class FrmProforma
         End If
     End Sub
 
-    Private Sub txtPorcDesc_Validated(sender As Object, e As EventArgs) Handles txtPorcDesc.Validated
-        If txtPorcDesc.Text = "" Then txtPorcDesc.Text = "0"
-        If producto IsNot Nothing Then
-            Dim decTasaImpuesto As Decimal = producto.ParametroImpuesto.TasaImpuesto
-            decPrecioVenta = ObtenerPrecioVentaPorCliente(cliente, producto) / (1 + (decTasaImpuesto / 100))
-            If CDbl(txtPorcDesc.Text) > FrmPrincipal.empresaGlobal.PorcentajeDescMaximo Then
-                MessageBox.Show("El porcentaje ingresado es mayor al parametro establecido para la empresa", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                txtPorcDesc.Text = "0"
-                txtPrecio.Text = FormatNumber(decPrecioVenta, 2)
-            Else
-                Dim decPorcDesc As Decimal = CDbl(txtPorcDesc.Text) / 100
-                txtPrecio.Text = FormatNumber(decPrecioVenta - (decPrecioVenta * decPorcDesc), 2)
-                If txtPrecio.Text <> "" Then decPrecioVenta = Math.Round(CDbl(txtPrecio.Text) * (1 + (decTasaImpuesto / 100)), 2, MidpointRounding.AwayFromZero)
+    Private Sub txtPorcDesc_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtCodigo.PreviewKeyDown
+        If e.KeyCode = Keys.Enter Then
+            If txtPorcDesc.Text = "" Then txtPorcDesc.Text = "0"
+            If producto IsNot Nothing Then
+                Dim decTasaImpuesto As Decimal = producto.ParametroImpuesto.TasaImpuesto
+                decPrecioVenta = ObtenerPrecioVentaPorCliente(cliente, producto) / (1 + (decTasaImpuesto / 100))
+                If CDbl(txtPorcDesc.Text) > FrmPrincipal.empresaGlobal.PorcentajeDescMaximo Then
+                    MessageBox.Show("El porcentaje ingresado es mayor al parametro establecido para la empresa", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    txtPorcDesc.Text = "0"
+                    txtPrecio.Text = FormatNumber(decPrecioVenta, 2)
+                Else
+                    Dim decPorcDesc As Decimal = CDbl(txtPorcDesc.Text) / 100
+                    txtPrecio.Text = FormatNumber(decPrecioVenta - (decPrecioVenta * decPorcDesc), 2)
+                    If txtPrecio.Text <> "" Then decPrecioVenta = Math.Round(CDbl(txtPrecio.Text) * (1 + (decTasaImpuesto / 100)), 2, MidpointRounding.AwayFromZero)
+                End If
             End If
         End If
     End Sub
@@ -775,7 +770,7 @@ Public Class FrmProforma
     Private Async Sub TxtCodigo_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtCodigo.PreviewKeyDown
         If e.KeyCode = Keys.Enter Then
             Try
-                producto = Await Puntoventa.ObtenerProductoPorCodigo(FrmPrincipal.empresaGlobal.IdEmpresa, txtCodigo.Text, FrmPrincipal.usuarioGlobal.Token)
+                producto = Await Puntoventa.ObtenerProductoPorCodigo(FrmPrincipal.empresaGlobal.IdEmpresa, txtCodigo.Text, FrmPrincipal.equipoGlobal.IdSucursal, FrmPrincipal.usuarioGlobal.Token)
                 If producto IsNot Nothing Then
                     CargarDatosProducto(producto)
                     txtCantidad.Focus()
@@ -806,9 +801,12 @@ Public Class FrmProforma
                         Exit Sub
                     End Try
                     If autorizado Then
-                        txtPrecio.Text = FormatNumber(FrmPrincipal.strBusqueda)
+                        txtPrecio.Text = FormatNumber(FrmPrincipal.strBusqueda, 2)
                         Dim decTasaImpuesto As Decimal = producto.ParametroImpuesto.TasaImpuesto
                         decPrecioVenta = Math.Round(CDbl(txtPrecio.Text) * (1 + (decTasaImpuesto / 100)), 2, MidpointRounding.AwayFromZero)
+                        Dim decPrecioOriginal = ObtenerPrecioVentaPorCliente(cliente, producto)
+                        decPrecioOriginal = Math.Round(decPrecioOriginal / (1 + (decTasaImpuesto / 100)), 2, MidpointRounding.AwayFromZero)
+                        txtPorcDesc.Text = FormatNumber(100 - (CDbl(txtPrecio.Text) * 100 / decPrecioOriginal), 2)
                     Else
                         MessageBox.Show("Los credenciales ingresados no tienen permisos para modificar el precio de venta.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
                     End If

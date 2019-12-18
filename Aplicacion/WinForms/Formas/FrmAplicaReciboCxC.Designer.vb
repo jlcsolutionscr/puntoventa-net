@@ -121,11 +121,11 @@ Partial Class FrmAplicaReciboCxC
         Me.txtDescripcion.BackColor = System.Drawing.SystemColors.Window
         Me.txtDescripcion.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtDescripcion.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtDescripcion.Location = New System.Drawing.Point(86, 103)
+        Me.txtDescripcion.Location = New System.Drawing.Point(85, 101)
         Me.txtDescripcion.MaxLength = 0
         Me.txtDescripcion.Name = "txtDescripcion"
         Me.txtDescripcion.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtDescripcion.Size = New System.Drawing.Size(322, 20)
+        Me.txtDescripcion.Size = New System.Drawing.Size(405, 20)
         Me.txtDescripcion.TabIndex = 4
         '
         'txtFecha
@@ -133,9 +133,8 @@ Partial Class FrmAplicaReciboCxC
         Me.txtFecha.AcceptsReturn = True
         Me.txtFecha.BackColor = System.Drawing.SystemColors.Window
         Me.txtFecha.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtFecha.Enabled = False
         Me.txtFecha.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtFecha.Location = New System.Drawing.Point(86, 77)
+        Me.txtFecha.Location = New System.Drawing.Point(85, 75)
         Me.txtFecha.MaxLength = 0
         Me.txtFecha.Name = "txtFecha"
         Me.txtFecha.ReadOnly = True
@@ -162,7 +161,7 @@ Partial Class FrmAplicaReciboCxC
         Me._lblLabels_5.BackColor = System.Drawing.Color.Transparent
         Me._lblLabels_5.Cursor = System.Windows.Forms.Cursors.Default
         Me._lblLabels_5.ForeColor = System.Drawing.SystemColors.ControlText
-        Me._lblLabels_5.Location = New System.Drawing.Point(6, 103)
+        Me._lblLabels_5.Location = New System.Drawing.Point(5, 101)
         Me._lblLabels_5.Name = "_lblLabels_5"
         Me._lblLabels_5.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me._lblLabels_5.Size = New System.Drawing.Size(73, 19)
@@ -175,7 +174,7 @@ Partial Class FrmAplicaReciboCxC
         Me._lblLabels_3.BackColor = System.Drawing.Color.Transparent
         Me._lblLabels_3.Cursor = System.Windows.Forms.Cursors.Default
         Me._lblLabels_3.ForeColor = System.Drawing.SystemColors.ControlText
-        Me._lblLabels_3.Location = New System.Drawing.Point(10, 77)
+        Me._lblLabels_3.Location = New System.Drawing.Point(9, 75)
         Me._lblLabels_3.Name = "_lblLabels_3"
         Me._lblLabels_3.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me._lblLabels_3.Size = New System.Drawing.Size(69, 19)
@@ -543,7 +542,6 @@ Partial Class FrmAplicaReciboCxC
         Me.txtNombreCliente.AcceptsReturn = True
         Me.txtNombreCliente.BackColor = System.Drawing.SystemColors.Window
         Me.txtNombreCliente.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtNombreCliente.Enabled = False
         Me.txtNombreCliente.ForeColor = System.Drawing.SystemColors.WindowText
         Me.txtNombreCliente.Location = New System.Drawing.Point(85, 49)
         Me.txtNombreCliente.MaxLength = 0

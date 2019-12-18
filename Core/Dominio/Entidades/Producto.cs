@@ -36,6 +36,8 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public byte[] Imagen { get; set; }
         [NotMapped]
         public string TipoProductoDesc { get { if (TipoProducto == null) return ""; else return TipoProducto.Descripcion; } }
+        [NotMapped]
+        public decimal Existencias { get; set; }
 
         public Linea Linea { get; set; }
         public Empresa Empresa { get; set; }

@@ -38,6 +38,8 @@ Public Class FrmCompra
         dtbDetalleCompra.Columns.Add("TOTAL", GetType(Decimal))
         dtbDetalleCompra.Columns.Add("EXCENTO", GetType(Integer))
         dtbDetalleCompra.Columns.Add("PORCENTAJEIVA", GetType(Decimal))
+        dtbDetalleCompra.Columns.Add("PRECIOVENTA", GetType(Decimal))
+        dtbDetalleCompra.Columns.Add("UTILIDAD", GetType(Decimal))
         dtbDetalleCompra.PrimaryKey = {dtbDetalleCompra.Columns(0)}
 
         dtbDesglosePago = New DataTable()
@@ -62,10 +64,11 @@ Public Class FrmCompra
         Dim dvcDescripcion As New DataGridViewTextBoxColumn
         Dim dvcCantidad As New DataGridViewTextBoxColumn
         Dim dvcPrecioCosto As New DataGridViewTextBoxColumn
-        Dim dvcPrecioVenta As New DataGridViewTextBoxColumn
         Dim dvcTotal As New DataGridViewTextBoxColumn
         Dim dvcExc As New DataGridViewTextBoxColumn
         Dim dvcPorcentajeIVA As New DataGridViewTextBoxColumn
+        Dim dvcPrecioVenta As New DataGridViewTextBoxColumn
+        Dim dvcUtilidad As New DataGridViewTextBoxColumn
 
         dvcIdProducto.DataPropertyName = "IDPRODUCTO"
         dvcIdProducto.HeaderText = "IdP"
@@ -89,7 +92,7 @@ Public Class FrmCompra
         grdDetalleCompra.Columns.Add(dvcCantidad)
 
         dvcPrecioCosto.DataPropertyName = "PRECIOCOSTO"
-        dvcPrecioCosto.HeaderText = "Precio"
+        dvcPrecioCosto.HeaderText = "Precio Costo"
         dvcPrecioCosto.Width = 80
         dvcPrecioCosto.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleCompra.Columns.Add(dvcPrecioCosto)
@@ -111,6 +114,18 @@ Public Class FrmCompra
         dvcPorcentajeIVA.Width = 0
         dvcPorcentajeIVA.Visible = False
         grdDetalleCompra.Columns.Add(dvcPorcentajeIVA)
+
+        dvcPrecioVenta.DataPropertyName = "PRECIOVENTA"
+        dvcPrecioVenta.HeaderText = "Precio Venta"
+        dvcPrecioVenta.Width = 80
+        dvcPrecioVenta.DefaultCellStyle = FrmPrincipal.dgvDecimal
+        grdDetalleCompra.Columns.Add(dvcPrecioVenta)
+
+        dvcUtilidad.DataPropertyName = "UTILIDAD"
+        dvcUtilidad.HeaderText = "Utilidad"
+        dvcUtilidad.Width = 54
+        dvcUtilidad.DefaultCellStyle = FrmPrincipal.dgvDecimal
+        grdDetalleCompra.Columns.Add(dvcUtilidad)
 
         grdDesglosePago.Columns.Clear()
         grdDesglosePago.AutoGenerateColumns = False
@@ -134,7 +149,7 @@ Public Class FrmCompra
 
         dvcDescFormaPago.DataPropertyName = "DESCFORMAPAGO"
         dvcDescFormaPago.HeaderText = "Forma de Pago"
-        dvcDescFormaPago.Width = 120
+        dvcDescFormaPago.Width = 154
         dvcDescFormaPago.Visible = True
         dvcDescFormaPago.ReadOnly = True
         grdDesglosePago.Columns.Add(dvcDescFormaPago)
@@ -147,7 +162,7 @@ Public Class FrmCompra
 
         dvcDescBanco.DataPropertyName = "DESCBANCO"
         dvcDescBanco.HeaderText = "Banco"
-        dvcDescBanco.Width = 200
+        dvcDescBanco.Width = 300
         dvcDescBanco.Visible = True
         dvcDescBanco.ReadOnly = True
         grdDesglosePago.Columns.Add(dvcDescBanco)
@@ -201,6 +216,8 @@ Public Class FrmCompra
             dtrRowDetCompra.Item(5) = dtrRowDetCompra.Item(3) * dtrRowDetCompra.Item(4)
             dtrRowDetCompra.Item(6) = detalle.PorcentajeIVA = 0
             dtrRowDetCompra.Item(7) = detalle.PorcentajeIVA
+            dtrRowDetCompra.Item(8) = detalle.PrecioVenta
+            dtrRowDetCompra.Item(9) = (detalle.PrecioVenta * 100 / detalle.PrecioCosto) - 100
             dtbDetalleCompra.Rows.Add(dtrRowDetCompra)
         Next
         grdDetalleCompra.Refresh()
@@ -218,6 +235,8 @@ Public Class FrmCompra
             dtrRowDetCompra.Item(5) = dtrRowDetCompra.Item(3) * dtrRowDetCompra.Item(4)
             dtrRowDetCompra.Item(6) = detalle.PorcentajeIVA = 0
             dtrRowDetCompra.Item(7) = detalle.PorcentajeIVA
+            dtrRowDetCompra.Item(8) = detalle.PrecioVenta
+            dtrRowDetCompra.Item(9) = (detalle.PrecioVenta * 100 / detalle.PrecioCosto) - 100
             dtbDetalleCompra.Rows.Add(dtrRowDetCompra)
         Next
         grdDetalleCompra.Refresh()
@@ -251,6 +270,8 @@ Public Class FrmCompra
             dtbDetalleCompra.Rows(intIndice).Item(5) = dtbDetalleCompra.Rows(intIndice).Item(3) * dtbDetalleCompra.Rows(intIndice).Item(4)
             dtbDetalleCompra.Rows(intIndice).Item(6) = producto.ParametroImpuesto.TasaImpuesto = 0
             dtbDetalleCompra.Rows(intIndice).Item(7) = producto.ParametroImpuesto.TasaImpuesto
+            dtbDetalleCompra.Rows(intIndice).Item(8) = producto.PrecioVenta1
+            dtbDetalleCompra.Rows(intIndice).Item(9) = (producto.PrecioVenta1 * 100 / dblPrecioCosto) - 100
         Else
             dtrRowDetCompra = dtbDetalleCompra.NewRow
             dtrRowDetCompra.Item(0) = producto.IdProducto
@@ -261,6 +282,8 @@ Public Class FrmCompra
             dtrRowDetCompra.Item(5) = dtrRowDetCompra.Item(3) * dtrRowDetCompra.Item(4)
             dtrRowDetCompra.Item(6) = producto.ParametroImpuesto.TasaImpuesto = 0
             dtrRowDetCompra.Item(7) = producto.ParametroImpuesto.TasaImpuesto
+            dtrRowDetCompra.Item(8) = producto.PrecioVenta1
+            dtrRowDetCompra.Item(9) = (producto.PrecioVenta1 * 100 / dblPrecioCosto) - 100
             dtbDetalleCompra.Rows.Add(dtrRowDetCompra)
         End If
         grdDetalleCompra.Refresh()
@@ -334,7 +357,7 @@ Public Class FrmCompra
         txtSaldoPorPagar.Text = FormatNumber(dblSaldoPorPagar, 2)
     End Sub
 
-    Private Async Sub CargarCombos()
+    Private Async Function CargarCombos() As Task
         cboCondicionVenta.ValueMember = "Id"
         cboCondicionVenta.DisplayMember = "Descripcion"
         cboCondicionVenta.DataSource = Await Puntoventa.ObtenerListadoCondicionVenta(FrmPrincipal.usuarioGlobal.Token)
@@ -352,22 +375,29 @@ Public Class FrmCompra
         cboSucursal.DataSource = Await Puntoventa.ObtenerListadoSucursales(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
         cboSucursal.SelectedValue = FrmPrincipal.equipoGlobal.IdSucursal
         cboSucursal.Enabled = FrmPrincipal.usuarioGlobal.Modifica
-    End Sub
+    End Function
 
     Private Sub CargarDatosProducto(producto As Producto)
         If producto Is Nothing Then
+            txtCodigoProveedor.Text = ""
             txtCodigo.Text = ""
             txtDescripcion.Text = ""
             txtPrecioCosto.Text = FormatNumber(0, 2)
-            txtCodigo.Focus()
+            txtPrecioVenta.Text = ""
+            txtUtilidad.Text = ""
+            txtCodigoProveedor.Focus()
             Exit Sub
         Else
             Dim decTasaImpuesto As Decimal = producto.ParametroImpuesto.TasaImpuesto
-            txtCodigo.Text = producto.CodigoProveedor
-            If txtCantidad.Text = "" Then txtCantidad.Text = "1"
+            txtCodigoProveedor.Text = producto.CodigoProveedor
+            txtCodigo.Text = producto.Codigo
             txtDescripcion.Text = producto.Descripcion
-            txtPrecioCosto.Text = producto.PrecioCosto
-            txtPrecioCosto.Focus()
+            txtExistencias.Text = producto.Existencias
+            If txtCantidad.Text = "" Then txtCantidad.Text = "1"
+            txtPrecioCosto.Text = FormatNumber(producto.PrecioCosto, 2)
+            txtPrecioVenta.Text = FormatNumber(producto.PrecioVenta1, 2)
+            txtUtilidad.Text = FormatNumber((producto.PrecioVenta1 * 100 / producto.PrecioCosto) - 100, 2)
+            txtCantidad.Focus()
         End If
     End Sub
 
@@ -377,9 +407,9 @@ Public Class FrmCompra
         For Each producto As Producto In listOfProducts
             source.Add(String.Concat(producto.Codigo, " ", producto.Descripcion))
         Next
-        txtCodigo.AutoCompleteCustomSource = source
-        txtCodigo.AutoCompleteSource = AutoCompleteSource.CustomSource
-        txtCodigo.AutoCompleteMode = AutoCompleteMode.SuggestAppend
+        txtCodigoProveedor.AutoCompleteCustomSource = source
+        txtCodigoProveedor.AutoCompleteSource = AutoCompleteSource.CustomSource
+        txtCodigoProveedor.AutoCompleteMode = AutoCompleteMode.SuggestAppend
     End Function
 #End Region
 
@@ -392,10 +422,11 @@ Public Class FrmCompra
         Try
             txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
             txtIdOrdenCompra.Text = "0"
-            CargarCombos()
+            Await CargarCombos()
             If FrmPrincipal.empresaGlobal.AutoCompletaProducto = True Then
                 Await CargarAutoCompletarProducto()
             End If
+            btnBusProd.Enabled = True
             IniciaDetalleCompra()
             EstablecerPropiedadesDataGridView()
             grdDetalleCompra.DataSource = dtbDetalleCompra
@@ -433,9 +464,12 @@ Public Class FrmCompra
         txtImpuesto.Text = FormatNumber(0, 2)
         txtTotal.Text = FormatNumber(0, 2)
         txtCantidad.Text = "1"
+        txtCodigoProveedor.Text = ""
         txtCodigo.Text = ""
         txtDescripcion.Text = ""
         txtPrecioCosto.Text = ""
+        txtPrecioVenta.Text = ""
+        txtUtilidad.Text = ""
         dtbDesglosePago.Rows.Clear()
         grdDesglosePago.Refresh()
         txtMonto.Text = ""
@@ -583,7 +617,7 @@ Public Class FrmCompra
         If Not FrmPrincipal.strBusqueda.Equals("") Then
             Dim intIdProducto As Integer = Integer.Parse(FrmPrincipal.strBusqueda)
             Try
-                producto = Await Puntoventa.ObtenerProducto(intIdProducto, FrmPrincipal.usuarioGlobal.Token)
+                producto = Await Puntoventa.ObtenerProducto(intIdProducto, cboSucursal.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
                 MessageBox.Show("Error al obtener la información del producto seleccionado. Intente mas tarde.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
@@ -720,18 +754,8 @@ Public Class FrmCompra
         End If
     End Sub
 
-    Private Async Sub BtnInsertar_Click(sender As Object, e As EventArgs) Handles btnInsertar.Click
-        If producto Is Nothing Then
-            If txtCodigo.Text <> "" Then
-                producto = Await Puntoventa.ObtenerProductoPorCodigo(FrmPrincipal.empresaGlobal.IdEmpresa, txtCodigo.Text, FrmPrincipal.usuarioGlobal.Token)
-                If producto IsNot Nothing Then
-                    CargarLineaDetalleCompra(producto, txtCantidad.Text, txtPrecioCosto.Text)
-                    txtCodigo.Text = ""
-                    producto = Nothing
-                    txtCodigo.Focus()
-                End If
-            End If
-        Else
+    Private Sub BtnInsertar_Click(sender As Object, e As EventArgs) Handles btnInsertar.Click
+        If producto IsNot Nothing Then
             Dim strError As String = ""
             If txtDescripcion.Text = "" Then strError = "La descripción no puede estar en blanco"
             If txtPrecioCosto.Text <= "" Then strError = "El precio de costo del producto no puede estar en blanco"
@@ -740,12 +764,15 @@ Public Class FrmCompra
                 Exit Sub
             End If
             CargarLineaDetalleCompra(producto, txtCantidad.Text, txtPrecioCosto.Text)
-            txtCantidad.Text = "1"
+            txtCodigoProveedor.Text = ""
             txtCodigo.Text = ""
             txtDescripcion.Text = ""
+            txtCantidad.Text = "1"
             txtPrecioCosto.Text = ""
+            txtPrecioVenta.Text = ""
+            txtUtilidad.Text = ""
             producto = Nothing
-            txtCodigo.Focus()
+            txtCodigoProveedor.Focus()
         End If
     End Sub
 
@@ -754,7 +781,7 @@ Public Class FrmCompra
             dtbDetalleCompra.Rows.Remove(dtbDetalleCompra.Rows.Find(grdDetalleCompra.CurrentRow.Cells(0).Value))
             grdDetalleCompra.Refresh()
             CargarTotales()
-            txtCodigo.Focus()
+            txtCodigoProveedor.Focus()
         End If
     End Sub
 
@@ -861,20 +888,35 @@ Public Class FrmCompra
         CargarTotalesPago()
     End Sub
 
-    Private Sub PrecioCosto_Validated(ByVal sender As Object, ByVal e As EventArgs) Handles txtPrecioCosto.Validated
-        If txtPrecioCosto.Text = "" Then txtPrecioCosto.Text = "0"
-        txtPrecioCosto.Text = FormatNumber(txtPrecioCosto.Text, 2)
-    End Sub
-
-    Private Async Sub TxtCodigo_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtCodigo.PreviewKeyDown
+    Private Async Sub txtCodigoProveedor_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtCodigoProveedor.PreviewKeyDown
         If e.KeyCode = Keys.Enter Then
             Try
-                producto = Await Puntoventa.ObtenerProductoPorCodigoProveedor(FrmPrincipal.empresaGlobal.IdEmpresa, txtCodigo.Text, FrmPrincipal.usuarioGlobal.Token)
+                producto = Await Puntoventa.ObtenerProductoPorCodigoProveedor(FrmPrincipal.empresaGlobal.IdEmpresa, txtCodigoProveedor.Text, cboSucursal.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
             CargarDatosProducto(producto)
+        End If
+    End Sub
+
+    Private Async Sub txtCodigo_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtCodigoProveedor.PreviewKeyDown
+        If e.KeyCode = Keys.Enter Then
+            Try
+                producto = Await Puntoventa.ObtenerProductoPorCodigo(FrmPrincipal.empresaGlobal.IdEmpresa, txtCodigo.Text, cboSucursal.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
+            Catch ex As Exception
+                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Exit Sub
+            End Try
+            CargarDatosProducto(producto)
+        End If
+    End Sub
+
+    Private Sub txtPrecioCosto_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtPrecioCosto.PreviewKeyDown
+        If e.KeyCode = Keys.Enter Then
+            If txtPrecioCosto.Text = "" Then txtPrecioCosto.Text = "0"
+            txtPrecioCosto.Text = FormatNumber(txtPrecioCosto.Text, 2)
+            txtUtilidad.Text = FormatNumber((producto.PrecioVenta1 * 100 / CDbl(txtPrecioCosto.Text)) - 100, 2)
         End If
     End Sub
 

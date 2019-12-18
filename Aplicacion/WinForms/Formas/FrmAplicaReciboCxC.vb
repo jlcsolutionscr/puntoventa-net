@@ -518,7 +518,7 @@ Public Class FrmAplicaReciboCxC
         End If
     End Sub
 
-    Private Sub btnBuscarCliente_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnBuscarCliente.Click
+    Private Async Sub btnBuscarCliente_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnBuscarCliente.Click
         Dim formBusquedaCliente As New FrmBusquedaCliente()
         FrmPrincipal.intBusqueda = 0
         formBusquedaCliente.ShowDialog()
@@ -528,7 +528,7 @@ Public Class FrmAplicaReciboCxC
                 Exit Sub
             End If
             Try
-                'cliente = servicioFacturacion.ObtenerCliente(FrmMenuPrincipal.intBusqueda)
+                cliente = Await Puntoventa.ObtenerCliente(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
@@ -536,9 +536,9 @@ Public Class FrmAplicaReciboCxC
             txtNombreCliente.Text = cliente.Nombre
             bolInit = True
             Try
-                'cboCuentaPorCobrar.DataSource = servicioCuentaPorCobrar.ObtenerListaCuentasPorCobrar(cliente.IdCliente, StaticTipoCuentaPorCobrar.Clientes)
-                cboCuentaPorCobrar.ValueMember = "IdCxC"
-                cboCuentaPorCobrar.DisplayMember = "DescReferencia"
+                cboCuentaPorCobrar.ValueMember = "Id"
+                cboCuentaPorCobrar.DisplayMember = "Descripcion"
+                cboCuentaPorCobrar.DataSource = Await Puntoventa.ObtenerListadoCuentasPorCobrar(FrmPrincipal.empresaGlobal.IdEmpresa, StaticTipoCuentaPorCobrar.Clientes, cliente.IdCliente, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
@@ -558,10 +558,10 @@ Public Class FrmAplicaReciboCxC
         End If
     End Sub
 
-    Private Sub cboCuentaPorCobrar_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboCuentaPorCobrar.SelectedValueChanged
+    Private Async Sub cboCuentaPorCobrar_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboCuentaPorCobrar.SelectedValueChanged
         If Not bolInit And cboCuentaPorCobrar.SelectedValue IsNot Nothing Then
             Try
-                'cuentaPorCobrar = servicioCuentaPorCobrar.ObtenerCuentaPorCobrar(cboCuentaPorCobrar.SelectedValue)
+                cuentaPorCobrar = Await Puntoventa.ObtenerCuentaPorCobrar(cboCuentaPorCobrar.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub

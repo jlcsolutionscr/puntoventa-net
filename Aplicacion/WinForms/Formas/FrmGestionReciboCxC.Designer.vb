@@ -34,7 +34,7 @@ Partial Class FrmGestionReciboCxC
         Me.CmdAnular.BackColor = System.Drawing.SystemColors.ButtonHighlight
         Me.CmdAnular.Cursor = System.Windows.Forms.Cursors.Default
         Me.CmdAnular.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.CmdAnular.Location = New System.Drawing.Point(632, 13)
+        Me.CmdAnular.Location = New System.Drawing.Point(568, 13)
         Me.CmdAnular.Name = "CmdAnular"
         Me.CmdAnular.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.CmdAnular.Size = New System.Drawing.Size(64, 21)
@@ -68,7 +68,7 @@ Partial Class FrmGestionReciboCxC
         Me.grdDetalleRecibo.Name = "grdDetalleRecibo"
         Me.grdDetalleRecibo.ReadOnly = True
         Me.grdDetalleRecibo.RowHeadersVisible = False
-        Me.grdDetalleRecibo.Size = New System.Drawing.Size(684, 352)
+        Me.grdDetalleRecibo.Size = New System.Drawing.Size(620, 352)
         Me.grdDetalleRecibo.StandardTab = True
         Me.grdDetalleRecibo.TabIndex = 3
         Me.grdDetalleRecibo.TabStop = False
@@ -78,21 +78,20 @@ Partial Class FrmGestionReciboCxC
         Me.txtNombreCliente.AcceptsReturn = True
         Me.txtNombreCliente.BackColor = System.Drawing.SystemColors.Window
         Me.txtNombreCliente.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtNombreCliente.Enabled = False
         Me.txtNombreCliente.ForeColor = System.Drawing.SystemColors.WindowText
         Me.txtNombreCliente.Location = New System.Drawing.Point(72, 13)
         Me.txtNombreCliente.MaxLength = 0
         Me.txtNombreCliente.Name = "txtNombreCliente"
         Me.txtNombreCliente.ReadOnly = True
         Me.txtNombreCliente.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtNombreCliente.Size = New System.Drawing.Size(405, 20)
+        Me.txtNombreCliente.Size = New System.Drawing.Size(394, 20)
         Me.txtNombreCliente.TabIndex = 0
         Me.txtNombreCliente.TabStop = False
         '
         'btnBuscarCliente
         '
         Me.btnBuscarCliente.Image = CType(resources.GetObject("btnBuscarCliente.Image"), System.Drawing.Image)
-        Me.btnBuscarCliente.Location = New System.Drawing.Point(478, 13)
+        Me.btnBuscarCliente.Location = New System.Drawing.Point(472, 12)
         Me.btnBuscarCliente.Name = "btnBuscarCliente"
         Me.btnBuscarCliente.Size = New System.Drawing.Size(20, 20)
         Me.btnBuscarCliente.TabIndex = 11
@@ -104,7 +103,7 @@ Partial Class FrmGestionReciboCxC
         Me.CmdImprimir.BackColor = System.Drawing.SystemColors.ButtonHighlight
         Me.CmdImprimir.Cursor = System.Windows.Forms.Cursors.Default
         Me.CmdImprimir.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.CmdImprimir.Location = New System.Drawing.Point(562, 13)
+        Me.CmdImprimir.Location = New System.Drawing.Point(498, 13)
         Me.CmdImprimir.Name = "CmdImprimir"
         Me.CmdImprimir.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.CmdImprimir.Size = New System.Drawing.Size(64, 21)
@@ -118,7 +117,7 @@ Partial Class FrmGestionReciboCxC
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
-        Me.ClientSize = New System.Drawing.Size(708, 413)
+        Me.ClientSize = New System.Drawing.Size(646, 413)
         Me.Controls.Add(Me.CmdImprimir)
         Me.Controls.Add(Me.txtNombreCliente)
         Me.Controls.Add(Me.btnBuscarCliente)

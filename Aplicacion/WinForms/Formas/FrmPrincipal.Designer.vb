@@ -321,6 +321,7 @@ Partial Class FrmPrincipal
         Me.MnuCompra.Name = "MnuCompra"
         Me.MnuCompra.Size = New System.Drawing.Size(163, 20)
         Me.MnuCompra.Text = "Movimientos de mercancia"
+        Me.MnuCompra.Visible = False
         '
         'MnuCompraRegistro
         '

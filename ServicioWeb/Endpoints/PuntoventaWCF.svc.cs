@@ -75,7 +75,9 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
         private static CierreCaja cierre;
         private static Traslado traslado;
         private static AjusteInventario ajusteInventario;
+        private static CuentaPorCobrar cuentaPorCobrar;
         private static MovimientoCuentaPorCobrar movimientoCxC;
+        private static CuentaPorPagar cuentaPorPagar;
         private static MovimientoCuentaPorPagar movimientoCxP;
         private static int intIdEmpresa;
         private static int intIdSucursal;
@@ -1136,21 +1138,24 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         break;
                     case "ObtenerProducto":
                         intIdLlave1 = int.Parse(parametrosJO.Property("IdProducto").Value.ToString());
-                        producto = servicioMantenimiento.ObtenerProducto(intIdLlave1);
+                        intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
+                        producto = servicioMantenimiento.ObtenerProducto(intIdLlave1, intIdSucursal);
                         if (producto != null)
                             strRespuesta = serializer.Serialize(producto);
                         break;
                     case "ObtenerProductoPorCodigo":
                         intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                         strCodigo = parametrosJO.Property("Codigo").Value.ToString();
-                        producto = servicioMantenimiento.ObtenerProductoPorCodigo(intIdEmpresa, strCodigo);
+                        intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
+                        producto = servicioMantenimiento.ObtenerProductoPorCodigo(intIdEmpresa, strCodigo, intIdSucursal);
                         if (producto != null)
                             strRespuesta = serializer.Serialize(producto);
                         break;
                     case "ObtenerProductoPorCodigoProveedor":
                         intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                         strCodigo = parametrosJO.Property("Codigo").Value.ToString();
-                        producto = servicioMantenimiento.ObtenerProductoPorCodigoProveedor(intIdEmpresa, strCodigo);
+                        intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
+                        producto = servicioMantenimiento.ObtenerProductoPorCodigoProveedor(intIdEmpresa, strCodigo, intIdSucursal);
                         if (producto != null)
                             strRespuesta = serializer.Serialize(producto);
                         break;
@@ -1499,6 +1504,20 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         if (apartado != null)
                             strRespuesta = serializer.Serialize(apartado);
                         break;
+                    case "ObtenerCuentaPorCobrar":
+                        intIdLlave1 = int.Parse(parametrosJO.Property("IdCxC").Value.ToString());
+                        cuentaPorCobrar = servicioCuentaPorProcesar.ObtenerCuentaPorCobrar(intIdLlave1);
+                        if (cuentaPorCobrar != null)
+                            strRespuesta = serializer.Serialize(cuentaPorCobrar);
+                        break;
+                    case "ObtenerListadoCuentasPorCobrar":
+                        intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
+                        intIdLlave1 = int.Parse(parametrosJO.Property("IdTipo").Value.ToString());
+                        intIdPropietario = int.Parse(parametrosJO.Property("IdPropietario").Value.ToString());
+                        IList<LlaveDescripcion> listadoCuentasPorCobrar = servicioCuentaPorProcesar.ObtenerListadoCuentasPorCobrar(intIdEmpresa, intIdLlave1, intIdPropietario);
+                        if (listadoCuentasPorCobrar.Count > 0)
+                            strRespuesta = serializer.Serialize(listadoCuentasPorCobrar);
+                        break;
                     case "ObtenerListaMovimientosCxC":
                         intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                         intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
@@ -1506,6 +1525,40 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         IList<CuentaDetalle> listadoMovimientosCxC = servicioCuentaPorProcesar.ObtenerListadoMovimientosCxC(intIdEmpresa, intIdSucursal, intIdPropietario);
                         if (listadoMovimientosCxC.Count > 0)
                             strRespuesta = serializer.Serialize(listadoMovimientosCxC);
+                        break;
+                    case "ObtenerMovimientoCxC":
+                        intIdLlave1 = int.Parse(parametrosJO.Property("IdMovimiento").Value.ToString());
+                        movimientoCxC = servicioCuentaPorProcesar.ObtenerMovimientoCxC(intIdLlave1);
+                        if (movimientoCxC != null)
+                            strRespuesta = serializer.Serialize(movimientoCxC);
+                        break;
+                    case "ObtenerCuentaPorPagar":
+                        intIdLlave1 = int.Parse(parametrosJO.Property("IdCxP").Value.ToString());
+                        cuentaPorPagar = servicioCuentaPorProcesar.ObtenerCuentaPorPagar(intIdLlave1);
+                        if (cuentaPorPagar != null)
+                            strRespuesta = serializer.Serialize(cuentaPorPagar);
+                        break;
+                    case "ObtenerListadoCuentasPorPagar":
+                        intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
+                        intIdLlave1 = int.Parse(parametrosJO.Property("IdTipo").Value.ToString());
+                        intIdPropietario = int.Parse(parametrosJO.Property("IdPropietario").Value.ToString());
+                        IList<LlaveDescripcion> listadoCuentasPorPagar = servicioCuentaPorProcesar.ObtenerListadoCuentasPorPagar(intIdEmpresa, intIdLlave1, intIdPropietario);
+                        if (listadoCuentasPorPagar.Count > 0)
+                            strRespuesta = serializer.Serialize(listadoCuentasPorPagar);
+                        break;
+                    case "ObtenerListaMovimientosCxP":
+                        intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
+                        intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
+                        intIdPropietario = int.Parse(parametrosJO.Property("IdPropietario").Value.ToString());
+                        IList<CuentaDetalle> listadoMovimientosCxP = servicioCuentaPorProcesar.ObtenerListadoMovimientosCxP(intIdEmpresa, intIdSucursal, intIdPropietario);
+                        if (listadoMovimientosCxP.Count > 0)
+                            strRespuesta = serializer.Serialize(listadoMovimientosCxP);
+                        break;
+                    case "ObtenerMovimientoCxP":
+                        intIdLlave1 = int.Parse(parametrosJO.Property("IdMovimiento").Value.ToString());
+                        movimientoCxP = servicioCuentaPorProcesar.ObtenerMovimientoCxP(intIdLlave1);
+                        if (movimientoCxP != null)
+                            strRespuesta = serializer.Serialize(movimientoCxP);
                         break;
                     case "ObtenerListadoDocumentosElectronicosEnProceso":
                         intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
