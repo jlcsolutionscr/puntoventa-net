@@ -35,6 +35,11 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public string TextoAdicional { get; set; }
         [ForeignKey("Vendedor")]
         public int IdVendedor { get; set; }
+        public int IdTipoExoneracion { get; set; }
+        public string NumDocExoneracion { get; set; }
+        public string NombreInstExoneracion { get; set; }
+        public DateTime FechaEmisionDoc { get; set; }
+        public int PorcentajeExoneracion { get; set; }
         public decimal Excento { get; set; }
         public decimal Gravado { get; set; }
         public decimal Exonerado { get; set; }

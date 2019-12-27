@@ -34,6 +34,8 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public int IdImpuesto { get; set; }
         public int IndExistencia { get; set; }
         public byte[] Imagen { get; set; }
+        public string Observacion { get; set; }
+        public bool Activo { get; set; }
         [NotMapped]
         public string TipoProductoDesc { get { if (TipoProducto == null) return ""; else return TipoProducto.Descripcion; } }
         [NotMapped]

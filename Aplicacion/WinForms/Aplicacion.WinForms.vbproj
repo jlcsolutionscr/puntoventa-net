@@ -133,6 +133,12 @@
     <Compile Include="Formas\FrmAceptarDocumentoElectronico.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Formas\FrmAplicaReciboCxP.Designer.vb">
+      <DependentUpon>FrmAplicaReciboCxP.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Formas\FrmAplicaReciboCxP.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Formas\FrmBusquedaAjusteInventario.Designer.vb">
       <DependentUpon>FrmBusquedaAjusteInventario.vb</DependentUpon>
     </Compile>
@@ -211,6 +217,18 @@
     <Compile Include="Formas\FrmFacturaCompra.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Formas\FrmCargaProductoTransitorio.Designer.vb">
+      <DependentUpon>FrmCargaProductoTransitorio.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Formas\FrmCargaProductoTransitorio.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Formas\FrmGestionReciboCxP.Designer.vb">
+      <DependentUpon>FrmGestionReciboCxP.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Formas\FrmGestionReciboCxP.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Formas\FrmProforma.Designer.vb">
       <DependentUpon>FrmProforma.vb</DependentUpon>
     </Compile>
@@ -269,18 +287,6 @@
       <DependentUpon>FrmMenuCuentaDeBalance.vb</DependentUpon>
     </Compile>
     <Compile Include="Formas\FrmMenuCuentaDeBalance.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Formas\FrmAplicaReciboCxP.Designer.vb">
-      <DependentUpon>FrmAplicaReciboCxP.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Formas\FrmAplicaReciboCxP.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Formas\FrmGestionReciboCxP.Designer.vb">
-      <DependentUpon>FrmGestionReciboCxP.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Formas\FrmGestionReciboCxP.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Formas\FrmMovimientoProducto.Designer.vb">
@@ -686,6 +692,9 @@
     <EmbeddedResource Include="Formas\FrmAceptarDocumentoElectronico.resx">
       <DependentUpon>FrmAceptarDocumentoElectronico.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Formas\FrmAplicaReciboCxP.resx">
+      <DependentUpon>FrmAplicaReciboCxP.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Formas\FrmBusquedaAjusteInventario.resX">
       <DependentUpon>FrmBusquedaAjusteInventario.vb</DependentUpon>
       <SubType>Designer</SubType>
@@ -730,6 +739,12 @@
     <EmbeddedResource Include="Formas\FrmFacturaCompra.resx">
       <DependentUpon>FrmFacturaCompra.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Formas\FrmCargaProductoTransitorio.resx">
+      <DependentUpon>FrmCargaProductoTransitorio.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Formas\FrmGestionReciboCxP.resx">
+      <DependentUpon>FrmGestionReciboCxP.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Formas\FrmProforma.resx">
       <DependentUpon>FrmProforma.vb</DependentUpon>
     </EmbeddedResource>
@@ -766,12 +781,6 @@
     <EmbeddedResource Include="Formas\FrmMenuCuentaDeBalance.resx">
       <DependentUpon>FrmMenuCuentaDeBalance.vb</DependentUpon>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Formas\FrmAplicaReciboCxP.resx">
-      <DependentUpon>FrmAplicaReciboCxP.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Formas\FrmGestionReciboCxP.resx">
-      <DependentUpon>FrmGestionReciboCxP.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Formas\FrmMovimientoProducto.resx">
       <DependentUpon>FrmMovimientoProducto.vb</DependentUpon>

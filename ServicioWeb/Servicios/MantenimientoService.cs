@@ -82,10 +82,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         void ActualizarPrecioVentaProductos(int intIdEmpresa, int intIdLinea, string strCodigo, string strDescripcion, decimal decPorcentajeAumento);
         void EliminarProducto(int intIdProducto);
         Producto ObtenerProducto(int intIdProducto, int intIdSucursal);
+        Producto ObtenerProductoTransitorio(int intIdEmpresa);
         Producto ObtenerProductoPorCodigo(int intIdEmpresa, string strCodigo, int intIdSucursal);
         Producto ObtenerProductoPorCodigoProveedor(int intIdEmpresa, string strCodigo, int intIdSucursal);
-        int ObtenerTotalListaProductos(int intIdEmpresa, int intIdSucursal, bool bolIncluyeServicios, int intIdLinea, string strCodigo, string strCodigoProveedor, string strDescripcion);
-        IList<ProductoDetalle> ObtenerListadoProductos(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, bool bolIncluyeServicios, int intIdLinea, string strCodigo, string strCodigoProveedor, string strDescripcion);
+        int ObtenerTotalListaProductos(int intIdEmpresa, bool bolIncluyeServicios, bool bolFiltraActivos, int intIdLinea, string strCodigo, string strCodigoProveedor, string strDescripcion);
+        IList<ProductoDetalle> ObtenerListadoProductos(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, bool bolIncluyeServicios, bool bolFiltraActivos, int intIdLinea, string strCodigo, string strCodigoProveedor, string strDescripcion);
         int ObtenerTotalMovimientosPorProducto(int intIdProducto, int intIdSucursal, string strFechaInicial, string strFechaFinal);
         IList<MovimientoProducto> ObtenerMovimientosPorProducto(int intIdProducto, int intIdSucursal, int numPagina, int cantRec, string strFechaInicial, string strFechaFinal);
         // Métodos para obtener las condiciones de venta para facturación
@@ -1625,7 +1626,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (existe) throw new BusinessException("El código del producto ingresado ya está registrado en la empresa.");
                     if (producto.Tipo == 4)
                     {
-                        bool transitorio = dbContext.ProductoRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.Tipo == 4).Count() > 0;
+                        bool transitorio = dbContext.ProductoRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto != producto.IdProducto && x.Tipo == 4).Count() > 0;
                         if (transitorio) throw new BusinessException("Ya existe un producto de tipo 'Transitorio' registrado en la empresa.");
                     }
                     producto.ParametroImpuesto = null;
@@ -1746,6 +1747,22 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
+        public Producto ObtenerProductoTransitorio(int intIdEmpresa)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    return dbContext.ProductoRepository.FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.Tipo == 4);
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al obtener el código de producto transitorio: ", ex);
+                    throw new Exception("Se produjo un error consultando el producto transitorio. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
         public Producto ObtenerProductoPorCodigo(int intIdEmpresa, string strCodigo, int intIdSucursal)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
@@ -1792,43 +1809,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public int ObtenerTotalListaProductos(int intIdEmpresa, int intIdSucursal, bool bolIncluyeServicios, int intIdLinea, string strCodigo, string strCodigoProveedor, string strDescripcion)
+        public int ObtenerTotalListaProductos(int intIdEmpresa, bool bolIncluyeServicios, bool bolFiltraActivos, int intIdLinea, string strCodigo, string strCodigoProveedor, string strDescripcion)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 try
                 {
-                    var listado = dbContext.ProductoRepository
-                        .Join(dbContext.ExistenciaPorSucursalRepository, y => y.IdProducto, z => z.IdProducto, (x, y) => new { x, y })
-                        .Where(x => x.x.IdEmpresa == x.y.IdEmpresa && x.x.IdEmpresa == intIdEmpresa && x.y.IdSucursal == intIdSucursal);
-                    if (intIdLinea > 0)
-                        listado = listado.Where(x => x.x.IdLinea == intIdLinea);
-                    if (!strCodigo.Equals(string.Empty))
-                        listado = listado.Where(x => x.x.Codigo.Contains(strCodigo));
-                    if (!strCodigoProveedor.Equals(string.Empty))
-                        listado = listado.Where(x => x.x.CodigoProveedor.Contains(strCodigoProveedor));
-                    if (!strDescripcion.Equals(string.Empty))
-                        listado = listado.Where(x => x.x.Descripcion.Contains(strDescripcion));
-                    if (!bolIncluyeServicios)
-                        listado = listado.Where(x => x.x.Tipo == StaticTipoProducto.Producto);
-                    return listado.Count();
-                }
-                catch (Exception ex)
-                {
-                    log.Error("Error al obtener el listado de productos por criterios: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de productos por criterio. Por favor consulte con su proveedor.");
-                }
-            }
-        }
-
-        public IList<ProductoDetalle> ObtenerListadoProductos(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, bool bolIncluyeServicios, int intIdLinea, string strCodigo, string strCodigoProveedor, string strDescripcion)
-        {
-            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
-            {
-                var listaProducto = new List<ProductoDetalle>();
-                try
-                {
-                    var listado = dbContext.ProductoRepository.Where(x => x.IdEmpresa == x.IdEmpresa && x.IdEmpresa == intIdEmpresa);
+                    var listado = dbContext.ProductoRepository.Where(x => x.IdEmpresa == intIdEmpresa);
                     if (intIdLinea > 0)
                         listado = listado.Where(x => x.IdLinea == intIdLinea);
                     if (!strCodigo.Equals(string.Empty))
@@ -1839,6 +1826,38 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         listado = listado.Where(x => x.Descripcion.Contains(strDescripcion));
                     if (!bolIncluyeServicios)
                         listado = listado.Where(x => x.Tipo == StaticTipoProducto.Producto);
+                    if (bolFiltraActivos)
+                        listado = listado.Where(x => x.Activo);
+                    return listado.Count();
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al obtener el listado de productos por criterios: ", ex);
+                    throw new Exception("Se produjo un error consultando el listado de productos por criterio. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public IList<ProductoDetalle> ObtenerListadoProductos(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, bool bolIncluyeServicios, bool bolFiltraActivos, int intIdLinea, string strCodigo, string strCodigoProveedor, string strDescripcion)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                var listaProducto = new List<ProductoDetalle>();
+                try
+                {
+                    var listado = dbContext.ProductoRepository.Where(x => x.IdEmpresa == intIdEmpresa);
+                    if (intIdLinea > 0)
+                        listado = listado.Where(x => x.IdLinea == intIdLinea);
+                    if (!strCodigo.Equals(string.Empty))
+                        listado = listado.Where(x => x.Codigo.Contains(strCodigo));
+                    if (!strCodigoProveedor.Equals(string.Empty))
+                        listado = listado.Where(x => x.CodigoProveedor.Contains(strCodigoProveedor));
+                    if (!strDescripcion.Equals(string.Empty))
+                        listado = listado.Where(x => x.Descripcion.Contains(strDescripcion));
+                    if (!bolIncluyeServicios)
+                        listado = listado.Where(x => x.Tipo == StaticTipoProducto.Producto);
+                    if (bolFiltraActivos)
+                        listado = listado.Where(x => x.Activo);
                     if (cantRec > 0)
                         listado = listado.OrderBy(x => x.Codigo).Skip((numPagina - 1) * cantRec).Take(cantRec);
                     else
@@ -1848,7 +1867,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         var existencias = dbContext.ExistenciaPorSucursalRepository.AsNoTracking().Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdProducto == value.IdProducto).FirstOrDefault();
                         decimal decCantidad = existencias != null ? existencias.Cantidad : 0;
-                        ProductoDetalle item = new ProductoDetalle(value.IdProducto, value.Codigo, value.CodigoProveedor, value.Descripcion, decCantidad, value.PrecioCosto, value.PrecioVenta1);
+                        ProductoDetalle item = new ProductoDetalle(value.IdProducto, value.Codigo, value.CodigoProveedor, value.Descripcion, decCantidad, value.PrecioCosto, value.PrecioVenta1, value.Observacion, value.Activo);
                         listaProducto.Add(item);
                     }
                     return listaProducto;

@@ -39,7 +39,6 @@ Public Class FrmProforma
         dtbDetalleProforma.Columns.Add("EXCENTO", GetType(Integer))
         dtbDetalleProforma.Columns.Add("PORCENTAJEIVA", GetType(Decimal))
         dtbDetalleProforma.Columns.Add("PORCDESCUENTO", GetType(Decimal))
-        dtbDetalleProforma.PrimaryKey = {dtbDetalleProforma.Columns(0)}
     End Sub
 
     Private Sub EstablecerPropiedadesDataGridView()
@@ -141,15 +140,14 @@ Public Class FrmProforma
     End Sub
 
     Private Sub CargarLineaDetalleProforma(producto As Producto, strDescripcion As String, decCantidad As Decimal, decPrecio As Decimal, decPorcDesc As Decimal)
-        Dim intIndice As Integer = dtbDetalleProforma.Rows.IndexOf(dtbDetalleProforma.Rows.Find(producto.IdProducto))
         Dim decTasaImpuesto As Decimal = producto.ParametroImpuesto.TasaImpuesto
         Dim decPrecioGravado As Decimal = decPrecio
         If decTasaImpuesto > 0 Then
             decPrecioGravado = Math.Round(decPrecio / (1 + (decTasaImpuesto / 100)), 3, MidpointRounding.AwayFromZero)
             If cliente.AplicaTasaDiferenciada Then decTasaImpuesto = cliente.ParametroImpuesto.TasaImpuesto
         End If
-        If intIndice >= 0 Then
-            dtbDetalleProforma.Rows(intIndice).Item(1) = producto.Codigo
+        Dim intIndice As Integer = ObtenerIndice(dtbDetalleProforma, producto.IdProducto)
+        If producto.Tipo = 1 And intIndice >= 0 Then
             dtbDetalleProforma.Rows(intIndice).Item(2) = strDescripcion
             dtbDetalleProforma.Rows(intIndice).Item(3) += decCantidad
             dtbDetalleProforma.Rows(intIndice).Item(4) = decPrecioGravado
@@ -173,6 +171,16 @@ Public Class FrmProforma
         grdDetalleProforma.Refresh()
         CargarTotales()
     End Sub
+
+    Private Function ObtenerIndice(table As DataTable, intValor As Integer) As Integer
+        Dim intIndice As Integer = -1
+        Dim intPosicion As Integer = 0
+        For Each row As DataRow In table.Rows
+            If row(0) = intValor Then intIndice = intPosicion
+            intPosicion += 1
+        Next
+        Return intIndice
+    End Function
 
     Private Sub CargarTotales()
         decSubTotal = 0
@@ -253,13 +261,19 @@ Public Class FrmProforma
 
     Private Async Function CargarAutoCompletarProducto() As Task
         Dim source As AutoCompleteStringCollection = New AutoCompleteStringCollection()
-        Dim listOfProducts As IList(Of Producto) = Await Puntoventa.ObtenerListadoProductos(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, 1, 0, True, FrmPrincipal.usuarioGlobal.Token)
+        Dim listOfProducts As IList(Of Producto) = Await Puntoventa.ObtenerListadoProductos(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, 1, 0, True, True, FrmPrincipal.usuarioGlobal.Token)
         For Each producto As Producto In listOfProducts
             source.Add(String.Concat(producto.Codigo, " ", producto.Descripcion))
         Next
         txtCodigo.AutoCompleteCustomSource = source
         txtCodigo.AutoCompleteSource = AutoCompleteSource.CustomSource
         txtCodigo.AutoCompleteMode = AutoCompleteMode.SuggestAppend
+    End Function
+
+    Private Async Function CargarCombos() As Task
+        cboTipoMoneda.ValueMember = "Id"
+        cboTipoMoneda.DisplayMember = "Descripcion"
+        cboTipoMoneda.DataSource = Await Puntoventa.ObtenerListadoTipoMoneda(FrmPrincipal.usuarioGlobal.Token)
     End Function
 #End Region
 
@@ -271,6 +285,9 @@ Public Class FrmProforma
     Private Async Sub FrmFactura_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
             txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
+            Await CargarCombos()
+            cboTipoMoneda.SelectedValue = FrmPrincipal.empresaGlobal.IdTipoMoneda
+            txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmPrincipal.decTipoCambioDolar.ToString())
             If FrmPrincipal.empresaGlobal.AutoCompletaProducto = True Then Await CargarAutoCompletarProducto()
             IniciaTablasDeDetalle()
             EstablecerPropiedadesDataGridView()
@@ -290,12 +307,14 @@ Public Class FrmProforma
             Catch ex As Exception
                 Throw New Exception("Error al consultar el cliente de contado. Por favor consulte con su proveedor.")
             End Try
-            Try
-                vendedor = Await Puntoventa.ObtenerVendedorPorDefecto(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
-                txtVendedor.Text = vendedor.Nombre
-            Catch ex As Exception
-                Throw New Exception("Debe ingresar al menos un vendedor para generar la facturación. . .")
-            End Try
+            If FrmPrincipal.empresaGlobal.AsignaVendedorPorDefecto Then
+                Try
+                    vendedor = Await Puntoventa.ObtenerVendedorPorDefecto(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+                    txtVendedor.Text = vendedor.Nombre
+                Catch ex As Exception
+                    Throw New Exception("Debe agregar al menos un vendedor al catalogo de vendedores para poder continuar.")
+                End Try
+            End If
             If FrmPrincipal.bolModificaDescripcion Then txtDescripcion.ReadOnly = False
             If FrmPrincipal.bolAplicaDescuento Then
                 txtPorcDesc.ReadOnly = False
@@ -316,6 +335,8 @@ Public Class FrmProforma
         bolInit = True
         txtIdProforma.Text = ""
         txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
+        cboTipoMoneda.SelectedValue = FrmPrincipal.empresaGlobal.IdTipoMoneda
+        txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmPrincipal.decTipoCambioDolar.ToString())
         txtTextoAdicional.Text = ""
         txtTelefono.Text = ""
         txtTipoExoneracion.Text = ""
@@ -351,14 +372,19 @@ Public Class FrmProforma
             Close()
             Exit Sub
         End Try
-        Try
-            vendedor = Await Puntoventa.ObtenerVendedorPorDefecto(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
-            txtVendedor.Text = vendedor.Nombre
-        Catch ex As Exception
-            MessageBox.Show("Debe ingresar al menos un vendedor para generar la facturación. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-            Exit Sub
-        End Try
+        If FrmPrincipal.empresaGlobal.AsignaVendedorPorDefecto Then
+            Try
+                vendedor = Await Puntoventa.ObtenerVendedorPorDefecto(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+                txtVendedor.Text = vendedor.Nombre
+            Catch ex As Exception
+                MessageBox.Show("Debe agregar al menos un vendedor al catalogo de vendedores para poder continuar.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Close()
+                Exit Sub
+            End Try
+        Else
+            vendedor = Nothing
+            txtVendedor.Text = ""
+        End If
         bolInit = False
         txtCodigo.Focus()
     End Sub
@@ -494,6 +520,7 @@ Public Class FrmProforma
                 Exit Sub
             End Try
             CargarDatosProducto(producto)
+            txtCantidad.Focus()
         End If
     End Sub
 
@@ -734,7 +761,7 @@ Public Class FrmProforma
 
     Private Sub CmdEliminar_Click(sender As Object, e As EventArgs) Handles btnEliminar.Click
         If grdDetalleProforma.Rows.Count > 0 Then
-            dtbDetalleProforma.Rows.Remove(dtbDetalleProforma.Rows.Find(grdDetalleProforma.CurrentRow.Cells(0).Value))
+            dtbDetalleProforma.Rows.RemoveAt(grdDetalleProforma.CurrentRow.Index)
             grdDetalleProforma.Refresh()
             CargarTotales()
             txtCodigo.Focus()
@@ -768,19 +795,39 @@ Public Class FrmProforma
     End Sub
 
     Private Async Sub TxtCodigo_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtCodigo.PreviewKeyDown
-        If e.KeyCode = Keys.Enter Then
+        If e.KeyCode = Keys.ControlKey Then
+            If FrmPrincipal.productoTranstorio IsNot Nothing Then
+                Dim formCargar As New FrmCargaProductoTransitorio
+                formCargar.ShowDialog()
+                If FrmPrincipal.productoTranstorio.PrecioVenta1 > 0 Then
+                    CargarLineaDetalleProforma(FrmPrincipal.productoTranstorio, FrmPrincipal.productoTranstorio.Descripcion, FrmPrincipal.productoTranstorio.Existencias, FrmPrincipal.productoTranstorio.PrecioVenta1, 0)
+                End If
+            End If
+        ElseIf e.KeyCode = Keys.Enter Or e.KeyCode = Keys.Tab Then
             Try
                 producto = Await Puntoventa.ObtenerProductoPorCodigo(FrmPrincipal.empresaGlobal.IdEmpresa, txtCodigo.Text, FrmPrincipal.equipoGlobal.IdSucursal, FrmPrincipal.usuarioGlobal.Token)
-                If producto IsNot Nothing Then
+                If producto IsNot Nothing And producto.Activo Then
                     CargarDatosProducto(producto)
                     txtCantidad.Focus()
                 Else
                     txtCodigo.Text = ""
+                    txtDescripcion.Text = ""
+                    txtCantidad.Text = "1"
+                    txtUnidad.Text = ""
+                    txtPorcDesc.Text = "0"
+                    txtPrecio.Text = ""
+                    txtCodigo.Focus()
                 End If
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
+        End If
+    End Sub
+
+    Private Sub cboTipoMoneda_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboTipoMoneda.SelectedIndexChanged
+        If Not bolInit And Not cboTipoMoneda.SelectedValue Is Nothing Then
+            txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmPrincipal.decTipoCambioDolar.ToString())
         End If
     End Sub
 

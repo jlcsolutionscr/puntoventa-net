@@ -29,6 +29,7 @@ Public Class FrmPrincipal
     Public bolModificaDescripcion As Boolean = False
     Public bolAplicaDescuento As Boolean = False
     Public bolModificaPrecioVenta As Boolean = False
+    Public productoTranstorio As Producto
 #End Region
 
 #Region "Métodos"
@@ -463,9 +464,6 @@ Public Class FrmPrincipal
                         If permiso.IdRole = 50 Then bolModificaDescripcion = True
                         If permiso.IdRole = 51 Then bolAplicaDescuento = True
                         If permiso.IdRole = 52 Then bolModificaPrecioVenta = True
-                        If permiso.Role.MenuItem = "MnuBCMov" Then
-                            MessageBox.Show("La información de la empresa requiere ser actualizada.")
-                        End If
                         objMenu = mnuMenuPrincipal.Items(permiso.Role.MenuPadre)
                         objMenu.Visible = True
                         objMenu.DropDownItems(permiso.Role.MenuItem).Visible = True
@@ -488,6 +486,7 @@ Public Class FrmPrincipal
                 Exit Sub
             End If
         End If
+        productoTranstorio = Await Puntoventa.ObtenerProductoTransitorio(empresaGlobal.IdEmpresa, usuarioGlobal.Token)
         dgvDecimal = New DataGridViewCellStyle With {
             .Format = "N2",
             .NullValue = "0",

@@ -7,6 +7,7 @@ Public Class FrmInventario
     Private intFilasPorPagina As Integer = 13
     Private intCantidadDePaginas As Integer
     Private intIdSucursal As Integer = FrmPrincipal.equipoGlobal.IdSucursal
+    Private bolInit As Boolean = True
 #End Region
 
 #Region "Metodos"
@@ -15,19 +16,28 @@ Public Class FrmInventario
         dgvListado.AutoGenerateColumns = False
         Dim dvcIdProducto As New DataGridViewTextBoxColumn
         Dim dvcCodigo As New DataGridViewTextBoxColumn
+        Dim dvcCodigoProveedor As New DataGridViewTextBoxColumn
         Dim dvcDescripcion As New DataGridViewTextBoxColumn
         Dim dvcCantidad As New DataGridViewTextBoxColumn
         Dim dvcPrecioCosto As New DataGridViewTextBoxColumn
         Dim dvcPrecioVenta1 As New DataGridViewTextBoxColumn
+        Dim dvcActivo As New DataGridViewCheckBoxColumn
+        Dim dvcObservacion As New DataGridViewTextBoxColumn
+
         dvcIdProducto.DataPropertyName = "Id"
-        dvcIdProducto.HeaderText = "PK"
+        dvcIdProducto.HeaderText = "Id"
         dvcIdProducto.Visible = False
         dgvListado.Columns.Add(dvcIdProducto)
 
         dvcCodigo.DataPropertyName = "Codigo"
         dvcCodigo.HeaderText = "Código"
-        dvcCodigo.Width = 120
+        dvcCodigo.Width = 100
         dgvListado.Columns.Add(dvcCodigo)
+
+        dvcCodigoProveedor.DataPropertyName = "CodigoProveedor"
+        dvcCodigoProveedor.HeaderText = "Código Prov"
+        dvcCodigoProveedor.Width = 100
+        dgvListado.Columns.Add(dvcCodigoProveedor)
 
         dvcDescripcion.DataPropertyName = "Descripcion"
         dvcDescripcion.HeaderText = "Descripción"
@@ -36,7 +46,7 @@ Public Class FrmInventario
 
         dvcCantidad.DataPropertyName = "Cantidad"
         dvcCantidad.HeaderText = "Cant"
-        dvcCantidad.Width = 48
+        dvcCantidad.Width = 50
         dvcCantidad.DefaultCellStyle = FrmPrincipal.dgvDecimal
         dgvListado.Columns.Add(dvcCantidad)
 
@@ -51,6 +61,18 @@ Public Class FrmInventario
         dvcPrecioVenta1.Width = 100
         dvcPrecioVenta1.DefaultCellStyle = FrmPrincipal.dgvDecimal
         dgvListado.Columns.Add(dvcPrecioVenta1)
+
+        dvcActivo.DataPropertyName = "ACTIVO"
+        dvcActivo.HeaderText = "A"
+        dvcActivo.Width = 20
+        dvcActivo.Visible = True
+        dvcActivo.ReadOnly = True
+        dgvListado.Columns.Add(dvcActivo)
+
+        dvcObservacion.DataPropertyName = "Observacion"
+        dvcObservacion.HeaderText = "Observaciones"
+        dvcObservacion.Width = 200
+        dgvListado.Columns.Add(dvcObservacion)
     End Sub
 
     Private Async Function CargarComboBox() As Threading.Tasks.Task
@@ -66,7 +88,7 @@ Public Class FrmInventario
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Threading.Tasks.Task
         Try
-            dgvListado.DataSource = Await Puntoventa.ObtenerListadoProductos(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, intNumeroPagina, intFilasPorPagina, False, FrmPrincipal.usuarioGlobal.Token, cboLinea.SelectedValue, txtCodigo.Text, txtDescripcion.Text)
+            dgvListado.DataSource = Await Puntoventa.ObtenerListadoProductos(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, intNumeroPagina, intFilasPorPagina, False, chkFiltrarActivos.Checked, FrmPrincipal.usuarioGlobal.Token, cboLinea.SelectedValue, txtCodigo.Text, txtCodigoProveedor.Text, txtDescripcion.Text)
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -77,7 +99,7 @@ Public Class FrmInventario
 
     Private Async Function ValidarCantidadRegistros() As Threading.Tasks.Task
         Try
-            intTotalRegistros = Await Puntoventa.ObtenerTotalListaProductos(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, False, FrmPrincipal.usuarioGlobal.Token, cboLinea.SelectedValue, txtCodigo.Text, txtDescripcion.Text)
+            intTotalRegistros = Await Puntoventa.ObtenerTotalListaProductos(FrmPrincipal.empresaGlobal.IdEmpresa, False, chkFiltrarActivos.Checked, FrmPrincipal.usuarioGlobal.Token, cboLinea.SelectedValue, txtCodigo.Text, txtCodigoProveedor.Text, txtDescripcion.Text)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -124,7 +146,6 @@ Public Class FrmInventario
     End Sub
 
     Private Async Sub CmdFiltrar_Click(sender As Object, e As EventArgs) Handles CmdFiltrar.Click
-        intIdSucursal = cboSucursal.SelectedValue
         Await ValidarCantidadRegistros()
         intIndiceDePagina = 1
         Await ActualizarDatos(intIndiceDePagina)
@@ -135,6 +156,7 @@ Public Class FrmInventario
             Await CargarComboBox()
             EstablecerPropiedadesDataGridView()
             Await ValidarCantidadRegistros()
+            bolInit = False
             intIndiceDePagina = 1
             Await ActualizarDatos(intIndiceDePagina)
         Catch ex As Exception
@@ -164,6 +186,29 @@ Public Class FrmInventario
                 }
                 movimiento.ShowDialog()
             End If
+        End If
+    End Sub
+
+    Private Async Sub chkFiltrarActivos_CheckedChanged(sender As Object, e As EventArgs) Handles chkFiltrarActivos.CheckedChanged
+        Await ValidarCantidadRegistros()
+        intIndiceDePagina = 1
+        Await ActualizarDatos(intIndiceDePagina)
+    End Sub
+
+    Private Async Sub cboSucursal_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboSucursal.SelectedIndexChanged
+        If Not bolInit And Not cboSucursal.SelectedValue Is Nothing Then
+            intIdSucursal = cboSucursal.SelectedValue
+            Await ValidarCantidadRegistros()
+            intIndiceDePagina = 1
+            Await ActualizarDatos(intIndiceDePagina)
+        End If
+    End Sub
+
+    Private Async Sub cboLinea_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboLinea.SelectedIndexChanged
+        If Not bolInit And Not cboLinea.SelectedValue Is Nothing Then
+            Await ValidarCantidadRegistros()
+            intIndiceDePagina = 1
+            Await ActualizarDatos(intIndiceDePagina)
         End If
     End Sub
 #End Region

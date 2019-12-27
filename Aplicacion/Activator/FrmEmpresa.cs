@@ -320,6 +320,7 @@ namespace LeandroSoftware.Activator
                         chkRecibeDocumentos.Checked = empresa.RecepcionGastos;
                         chkFacturaElectronica.Checked = empresa.PermiteFacturar;
                         chkRegimenSimplificado.Checked = empresa.RegimenSimplificado;
+                        chkAsignaVendedor.Checked = empresa.AsignaVendedorPorDefecto;
                         if (empresa.Logotipo != null)
                         {
                             try
@@ -436,6 +437,7 @@ namespace LeandroSoftware.Activator
                 empresa.RecepcionGastos = chkRecibeDocumentos.Checked;
                 empresa.PermiteFacturar = chkFacturaElectronica.Checked;
                 empresa.RegimenSimplificado = chkRegimenSimplificado.Checked;
+                empresa.AsignaVendedorPorDefecto = chkAsignaVendedor.Checked;
                 if (txtIdEmpresa.Text == "")
                 {
                     txtIdEmpresa.Text = await Administrador.AgregarEmpresa(empresa, strToken);
@@ -496,7 +498,10 @@ namespace LeandroSoftware.Activator
                     sucursal.Direccion = txtDireccionSucursal.Text;
                     sucursal.Telefono = txtTelefonoSucursal.Text;
                     if (bolSucursalNueva)
+                    {
                         await Administrador.AgregarSucursalPorEmpresa(sucursal, strToken);
+                        bolSucursalNueva = false;
+                    }
                     else
                         await Administrador.ActualizarSucursalPorEmpresa(sucursal, strToken);
                     if (terminal != null)
@@ -504,7 +509,10 @@ namespace LeandroSoftware.Activator
                         terminal.ValorRegistro = txtValorRegistro.Text;
                         terminal.IdTipoDispositivo = chkDispositivoMovil.Checked ? StaticTipoDispisitivo.AppMovil : StaticTipoDispisitivo.AppEscritorio;
                         if (bolTerminalNueva)
+                        {
                             await Administrador.AgregarTerminalPorSucursal(terminal, strToken);
+                            bolTerminalNueva = false;
+                        }
                         else
                             await Administrador.ActualizarTerminalPorSucursal(terminal, strToken);
                     }

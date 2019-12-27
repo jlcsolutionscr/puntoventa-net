@@ -22,6 +22,9 @@ Public Class FrmBusquedaProducto
         Dim dvcCantidad As New DataGridViewTextBoxColumn
         Dim dvcPrecioCosto As New DataGridViewTextBoxColumn
         Dim dvcPrecioVenta1 As New DataGridViewTextBoxColumn
+        Dim dvcUtilidad As New DataGridViewTextBoxColumn
+        Dim dvcObservacion As New DataGridViewTextBoxColumn
+
         dvcIdProducto.DataPropertyName = "Id"
         dvcIdProducto.HeaderText = "Id"
         dvcIdProducto.Visible = False
@@ -39,12 +42,12 @@ Public Class FrmBusquedaProducto
 
         dvcDescripcion.DataPropertyName = "Descripcion"
         dvcDescripcion.HeaderText = "Descripción"
-        dvcDescripcion.Width = 320
+        dvcDescripcion.Width = 350
         dgvListado.Columns.Add(dvcDescripcion)
 
         dvcCantidad.DataPropertyName = "Cantidad"
         dvcCantidad.HeaderText = "Cant"
-        dvcCantidad.Width = 48
+        dvcCantidad.Width = 50
         dvcCantidad.DefaultCellStyle = FrmPrincipal.dgvDecimal
         dgvListado.Columns.Add(dvcCantidad)
 
@@ -59,6 +62,17 @@ Public Class FrmBusquedaProducto
         dvcPrecioVenta1.Width = 100
         dvcPrecioVenta1.DefaultCellStyle = FrmPrincipal.dgvDecimal
         dgvListado.Columns.Add(dvcPrecioVenta1)
+
+        dvcUtilidad.DataPropertyName = "Utilidad"
+        dvcUtilidad.HeaderText = "Util"
+        dvcUtilidad.Width = 50
+        dvcUtilidad.DefaultCellStyle = FrmPrincipal.dgvDecimal
+        dgvListado.Columns.Add(dvcUtilidad)
+
+        dvcObservacion.DataPropertyName = "Observacion"
+        dvcObservacion.HeaderText = "Observaciones"
+        dvcObservacion.Width = 150
+        dgvListado.Columns.Add(dvcObservacion)
     End Sub
 
     Private Async Function CargarComboBox() As Task
@@ -70,7 +84,7 @@ Public Class FrmBusquedaProducto
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
         Try
-            dgvListado.DataSource = Await Puntoventa.ObtenerListadoProductos(FrmPrincipal.empresaGlobal.IdEmpresa, intIdSucursal, intNumeroPagina, intFilasPorPagina, bolIncluyeServicios, FrmPrincipal.usuarioGlobal.Token, cboLinea.SelectedValue, TxtCodigo.Text, txtCodigoProveedor.Text, TxtDesc.Text)
+            dgvListado.DataSource = Await Puntoventa.ObtenerListadoProductos(FrmPrincipal.empresaGlobal.IdEmpresa, intIdSucursal, intNumeroPagina, intFilasPorPagina, bolIncluyeServicios, True, FrmPrincipal.usuarioGlobal.Token, cboLinea.SelectedValue, TxtCodigo.Text, txtCodigoProveedor.Text, TxtDesc.Text)
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -81,7 +95,7 @@ Public Class FrmBusquedaProducto
 
     Private Async Function ValidarCantidadRegistros() As Task
         Try
-            intTotalRegistros = Await Puntoventa.ObtenerTotalListaProductos(FrmPrincipal.empresaGlobal.IdEmpresa, intIdSucursal, bolIncluyeServicios, FrmPrincipal.usuarioGlobal.Token, cboLinea.SelectedValue, TxtCodigo.Text, txtCodigoProveedor.Text, TxtDesc.Text)
+            intTotalRegistros = Await Puntoventa.ObtenerTotalListaProductos(FrmPrincipal.empresaGlobal.IdEmpresa, bolIncluyeServicios, True, FrmPrincipal.usuarioGlobal.Token, cboLinea.SelectedValue, TxtCodigo.Text, txtCodigoProveedor.Text, TxtDesc.Text)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()

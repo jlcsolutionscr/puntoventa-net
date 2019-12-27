@@ -117,6 +117,7 @@
             this.txtCodigoActividad = new System.Windows.Forms.TextBox();
             this.label31 = new System.Windows.Forms.Label();
             this.txtFecha = new System.Windows.Forms.MaskedTextBox();
+            this.chkAsignaVendedor = new System.Windows.Forms.CheckBox();
             this.tabContainer.SuspendLayout();
             this.TabGeneral.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picLogo)).BeginInit();
@@ -1336,6 +1337,18 @@
             this.txtFecha.TabIndex = 21;
             this.txtFecha.ValidatingType = typeof(System.DateTime);
             // 
+            // chkAsignaVendedor
+            // 
+            this.chkAsignaVendedor.AutoSize = true;
+            this.chkAsignaVendedor.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chkAsignaVendedor.Location = new System.Drawing.Point(424, 579);
+            this.chkAsignaVendedor.Name = "chkAsignaVendedor";
+            this.chkAsignaVendedor.Size = new System.Drawing.Size(163, 17);
+            this.chkAsignaVendedor.TabIndex = 209;
+            this.chkAsignaVendedor.TabStop = false;
+            this.chkAsignaVendedor.Text = "Asigna vendedor por defecto";
+            this.chkAsignaVendedor.UseVisualStyleBackColor = true;
+            // 
             // FrmEmpresa
             // 
             this.AcceptButton = this.btnInsertaRole;
@@ -1343,7 +1356,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(193)))), ((int)(((byte)(215)))), ((int)(((byte)(225)))));
-            this.ClientSize = new System.Drawing.Size(851, 596);
+            this.ClientSize = new System.Drawing.Size(851, 605);
+            this.Controls.Add(this.chkAsignaVendedor);
             this.Controls.Add(this.txtFecha);
             this.Controls.Add(this.txtCodigoActividad);
             this.Controls.Add(this.label31);
@@ -1396,8 +1410,8 @@
             this.Controls.Add(this._lblLabels_0);
             this.Controls.Add(this.cmdUpdate);
             this.Controls.Add(this.cmdCancel);
-            this.MaximumSize = new System.Drawing.Size(867, 635);
-            this.MinimumSize = new System.Drawing.Size(867, 635);
+            this.MaximumSize = new System.Drawing.Size(867, 644);
+            this.MinimumSize = new System.Drawing.Size(867, 644);
             this.Name = "FrmEmpresa";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Registrar/Actualizar datos de la empresa seleccionada";
@@ -1504,6 +1518,7 @@
         public System.Windows.Forms.Button btnEliminaRole;
         public System.Windows.Forms.Button btnInsertaRole;
         internal System.Windows.Forms.DataGridView dgvRolePorEmpresa;
+        internal System.Windows.Forms.CheckBox chkAsignaVendedor;
     }
 }
 

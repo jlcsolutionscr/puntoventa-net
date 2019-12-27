@@ -1,9 +1,9 @@
-<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
 Partial Class FrmAplicaReciboCxP
     Inherits System.Windows.Forms.Form
 
     'Form overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()> _
+    <System.Diagnostics.DebuggerNonUserCode()>
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         If disposing AndAlso components IsNot Nothing Then
             components.Dispose()
@@ -17,11 +17,9 @@ Partial Class FrmAplicaReciboCxP
     Public WithEvents CmdGuardar As System.Windows.Forms.Button
     Public WithEvents txtMontoAbono As System.Windows.Forms.TextBox
     Public WithEvents txtDescripcion As System.Windows.Forms.TextBox
-    Public WithEvents Recibo As System.Windows.Forms.TextBox
     Public WithEvents txtFecha As System.Windows.Forms.TextBox
     Public WithEvents _lblLabels_6 As System.Windows.Forms.Label
     Public WithEvents _lblLabels_5 As System.Windows.Forms.Label
-    Public WithEvents _lblLabels_4 As System.Windows.Forms.Label
     Public WithEvents _lblLabels_3 As System.Windows.Forms.Label
     Public WithEvents _lblLabels_2 As System.Windows.Forms.Label
     'NOTE: The following procedure is required by the Windows Form Designer
@@ -33,29 +31,25 @@ Partial Class FrmAplicaReciboCxP
         Me.CmdGuardar = New System.Windows.Forms.Button()
         Me.txtMontoAbono = New System.Windows.Forms.TextBox()
         Me.txtDescripcion = New System.Windows.Forms.TextBox()
-        Me.Recibo = New System.Windows.Forms.TextBox()
         Me.txtFecha = New System.Windows.Forms.TextBox()
         Me._lblLabels_6 = New System.Windows.Forms.Label()
         Me._lblLabels_5 = New System.Windows.Forms.Label()
-        Me._lblLabels_4 = New System.Windows.Forms.Label()
         Me._lblLabels_3 = New System.Windows.Forms.Label()
         Me._lblLabels_2 = New System.Windows.Forms.Label()
         Me.CmdImprimir = New System.Windows.Forms.Button()
         Me.txtDocumento = New System.Windows.Forms.TextBox()
         Me.Label7 = New System.Windows.Forms.Label()
-        Me.cboCuentaBanco = New System.Windows.Forms.ComboBox()
+        Me.txtBeneficiario = New System.Windows.Forms.TextBox()
+        Me.lblTipoTarjeta = New System.Windows.Forms.Label()
+        Me.cboTipoBanco = New System.Windows.Forms.ComboBox()
         Me.lblBanco = New System.Windows.Forms.Label()
-        Me.cboTipoMoneda = New System.Windows.Forms.ComboBox()
-        Me.Label2 = New System.Windows.Forms.Label()
         Me.grdDesglosePago = New System.Windows.Forms.DataGridView()
-        Me.txtTipoCambio = New System.Windows.Forms.TextBox()
         Me.btnEliminarPago = New System.Windows.Forms.Button()
         Me.btnInsertarPago = New System.Windows.Forms.Button()
-        Me.txtMonto = New System.Windows.Forms.TextBox()
+        Me.txtMontoPago = New System.Windows.Forms.TextBox()
         Me.cboFormaPago = New System.Windows.Forms.ComboBox()
         Me.Label4 = New System.Windows.Forms.Label()
         Me.Label5 = New System.Windows.Forms.Label()
-        Me.Label9 = New System.Windows.Forms.Label()
         Me.cboCuentaPorPagar = New System.Windows.Forms.ComboBox()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.txtTotalAbonado = New System.Windows.Forms.TextBox()
@@ -71,6 +65,8 @@ Partial Class FrmAplicaReciboCxP
         Me.Label3 = New System.Windows.Forms.Label()
         Me.txtMontoOriginal = New System.Windows.Forms.TextBox()
         Me.Label6 = New System.Windows.Forms.Label()
+        Me.txtRecibo = New System.Windows.Forms.TextBox()
+        Me.Label11 = New System.Windows.Forms.Label()
         CType(Me.grdDesglosePago, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.grdDesgloseCuenta, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -123,25 +119,12 @@ Partial Class FrmAplicaReciboCxP
         Me.txtDescripcion.BackColor = System.Drawing.SystemColors.Window
         Me.txtDescripcion.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtDescripcion.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtDescripcion.Location = New System.Drawing.Point(86, 103)
+        Me.txtDescripcion.Location = New System.Drawing.Point(85, 101)
         Me.txtDescripcion.MaxLength = 0
         Me.txtDescripcion.Name = "txtDescripcion"
         Me.txtDescripcion.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtDescripcion.Size = New System.Drawing.Size(322, 20)
-        Me.txtDescripcion.TabIndex = 4
-        '
-        'Recibo
-        '
-        Me.Recibo.AcceptsReturn = True
-        Me.Recibo.BackColor = System.Drawing.SystemColors.Window
-        Me.Recibo.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.Recibo.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.Recibo.Location = New System.Drawing.Point(302, 76)
-        Me.Recibo.MaxLength = 0
-        Me.Recibo.Name = "Recibo"
-        Me.Recibo.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Recibo.Size = New System.Drawing.Size(106, 20)
-        Me.Recibo.TabIndex = 3
+        Me.txtDescripcion.Size = New System.Drawing.Size(475, 20)
+        Me.txtDescripcion.TabIndex = 2
         '
         'txtFecha
         '
@@ -149,13 +132,13 @@ Partial Class FrmAplicaReciboCxP
         Me.txtFecha.BackColor = System.Drawing.SystemColors.Window
         Me.txtFecha.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtFecha.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtFecha.Location = New System.Drawing.Point(86, 77)
+        Me.txtFecha.Location = New System.Drawing.Point(85, 75)
         Me.txtFecha.MaxLength = 0
         Me.txtFecha.Name = "txtFecha"
         Me.txtFecha.ReadOnly = True
         Me.txtFecha.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtFecha.Size = New System.Drawing.Size(73, 20)
-        Me.txtFecha.TabIndex = 2
+        Me.txtFecha.TabIndex = 1
         Me.txtFecha.TabStop = False
         '
         '_lblLabels_6
@@ -176,7 +159,7 @@ Partial Class FrmAplicaReciboCxP
         Me._lblLabels_5.BackColor = System.Drawing.Color.Transparent
         Me._lblLabels_5.Cursor = System.Windows.Forms.Cursors.Default
         Me._lblLabels_5.ForeColor = System.Drawing.SystemColors.ControlText
-        Me._lblLabels_5.Location = New System.Drawing.Point(6, 103)
+        Me._lblLabels_5.Location = New System.Drawing.Point(5, 101)
         Me._lblLabels_5.Name = "_lblLabels_5"
         Me._lblLabels_5.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me._lblLabels_5.Size = New System.Drawing.Size(73, 19)
@@ -184,25 +167,12 @@ Partial Class FrmAplicaReciboCxP
         Me._lblLabels_5.Text = "Descripción:"
         Me._lblLabels_5.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
-        '_lblLabels_4
-        '
-        Me._lblLabels_4.BackColor = System.Drawing.Color.Transparent
-        Me._lblLabels_4.Cursor = System.Windows.Forms.Cursors.Default
-        Me._lblLabels_4.ForeColor = System.Drawing.SystemColors.ControlText
-        Me._lblLabels_4.Location = New System.Drawing.Point(230, 76)
-        Me._lblLabels_4.Name = "_lblLabels_4"
-        Me._lblLabels_4.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me._lblLabels_4.Size = New System.Drawing.Size(69, 19)
-        Me._lblLabels_4.TabIndex = 11
-        Me._lblLabels_4.Text = "Recibo No:"
-        Me._lblLabels_4.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        '
         '_lblLabels_3
         '
         Me._lblLabels_3.BackColor = System.Drawing.Color.Transparent
         Me._lblLabels_3.Cursor = System.Windows.Forms.Cursors.Default
         Me._lblLabels_3.ForeColor = System.Drawing.SystemColors.ControlText
-        Me._lblLabels_3.Location = New System.Drawing.Point(10, 77)
+        Me._lblLabels_3.Location = New System.Drawing.Point(9, 75)
         Me._lblLabels_3.Name = "_lblLabels_3"
         Me._lblLabels_3.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me._lblLabels_3.Size = New System.Drawing.Size(69, 19)
@@ -243,7 +213,7 @@ Partial Class FrmAplicaReciboCxP
         Me.txtDocumento.BackColor = System.Drawing.SystemColors.Window
         Me.txtDocumento.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtDocumento.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtDocumento.Location = New System.Drawing.Point(372, 384)
+        Me.txtDocumento.Location = New System.Drawing.Point(549, 384)
         Me.txtDocumento.MaxLength = 0
         Me.txtDocumento.Name = "txtDocumento"
         Me.txtDocumento.ReadOnly = True
@@ -256,30 +226,57 @@ Partial Class FrmAplicaReciboCxP
         Me.Label7.BackColor = System.Drawing.Color.Transparent
         Me.Label7.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label7.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label7.Location = New System.Drawing.Point(372, 364)
+        Me.Label7.Location = New System.Drawing.Point(549, 364)
         Me.Label7.Name = "Label7"
         Me.Label7.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label7.Size = New System.Drawing.Size(100, 19)
         Me.Label7.TabIndex = 111
-        Me.Label7.Text = "Nro. Documento"
+        Me.Label7.Text = "Documento"
         Me.Label7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
-        'cboCuentaBanco
+        'txtBeneficiario
         '
-        Me.cboCuentaBanco.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
-        Me.cboCuentaBanco.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
-        Me.cboCuentaBanco.BackColor = System.Drawing.SystemColors.Window
-        Me.cboCuentaBanco.Cursor = System.Windows.Forms.Cursors.Default
-        Me.cboCuentaBanco.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cboCuentaBanco.Enabled = False
-        Me.cboCuentaBanco.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.cboCuentaBanco.IntegralHeight = False
-        Me.cboCuentaBanco.ItemHeight = 13
-        Me.cboCuentaBanco.Location = New System.Drawing.Point(108, 384)
-        Me.cboCuentaBanco.Name = "cboCuentaBanco"
-        Me.cboCuentaBanco.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.cboCuentaBanco.Size = New System.Drawing.Size(264, 21)
-        Me.cboCuentaBanco.TabIndex = 10
+        Me.txtBeneficiario.AcceptsReturn = True
+        Me.txtBeneficiario.BackColor = System.Drawing.SystemColors.Window
+        Me.txtBeneficiario.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtBeneficiario.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtBeneficiario.Location = New System.Drawing.Point(479, 384)
+        Me.txtBeneficiario.MaxLength = 0
+        Me.txtBeneficiario.Name = "txtBeneficiario"
+        Me.txtBeneficiario.ReadOnly = True
+        Me.txtBeneficiario.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtBeneficiario.Size = New System.Drawing.Size(70, 20)
+        Me.txtBeneficiario.TabIndex = 11
+        '
+        'lblTipoTarjeta
+        '
+        Me.lblTipoTarjeta.BackColor = System.Drawing.Color.Transparent
+        Me.lblTipoTarjeta.Cursor = System.Windows.Forms.Cursors.Default
+        Me.lblTipoTarjeta.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.lblTipoTarjeta.Location = New System.Drawing.Point(479, 364)
+        Me.lblTipoTarjeta.Name = "lblTipoTarjeta"
+        Me.lblTipoTarjeta.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.lblTipoTarjeta.Size = New System.Drawing.Size(70, 19)
+        Me.lblTipoTarjeta.TabIndex = 110
+        Me.lblTipoTarjeta.Text = "Beneficiario"
+        Me.lblTipoTarjeta.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'cboTipoBanco
+        '
+        Me.cboTipoBanco.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
+        Me.cboTipoBanco.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
+        Me.cboTipoBanco.BackColor = System.Drawing.SystemColors.Window
+        Me.cboTipoBanco.Cursor = System.Windows.Forms.Cursors.Default
+        Me.cboTipoBanco.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.cboTipoBanco.Enabled = False
+        Me.cboTipoBanco.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.cboTipoBanco.IntegralHeight = False
+        Me.cboTipoBanco.ItemHeight = 13
+        Me.cboTipoBanco.Location = New System.Drawing.Point(108, 384)
+        Me.cboTipoBanco.Name = "cboTipoBanco"
+        Me.cboTipoBanco.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.cboTipoBanco.Size = New System.Drawing.Size(371, 21)
+        Me.cboTipoBanco.TabIndex = 10
         '
         'lblBanco
         '
@@ -289,39 +286,10 @@ Partial Class FrmAplicaReciboCxP
         Me.lblBanco.Location = New System.Drawing.Point(108, 364)
         Me.lblBanco.Name = "lblBanco"
         Me.lblBanco.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.lblBanco.Size = New System.Drawing.Size(264, 19)
+        Me.lblBanco.Size = New System.Drawing.Size(371, 19)
         Me.lblBanco.TabIndex = 109
         Me.lblBanco.Text = "Banco"
         Me.lblBanco.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
-        '
-        'cboTipoMoneda
-        '
-        Me.cboTipoMoneda.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
-        Me.cboTipoMoneda.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
-        Me.cboTipoMoneda.BackColor = System.Drawing.SystemColors.Window
-        Me.cboTipoMoneda.Cursor = System.Windows.Forms.Cursors.Default
-        Me.cboTipoMoneda.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cboTipoMoneda.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.cboTipoMoneda.IntegralHeight = False
-        Me.cboTipoMoneda.ItemHeight = 13
-        Me.cboTipoMoneda.Location = New System.Drawing.Point(472, 384)
-        Me.cboTipoMoneda.Name = "cboTipoMoneda"
-        Me.cboTipoMoneda.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.cboTipoMoneda.Size = New System.Drawing.Size(105, 21)
-        Me.cboTipoMoneda.TabIndex = 14
-        '
-        'Label2
-        '
-        Me.Label2.BackColor = System.Drawing.Color.Transparent
-        Me.Label2.Cursor = System.Windows.Forms.Cursors.Default
-        Me.Label2.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label2.Location = New System.Drawing.Point(472, 364)
-        Me.Label2.Name = "Label2"
-        Me.Label2.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label2.Size = New System.Drawing.Size(105, 19)
-        Me.Label2.TabIndex = 108
-        Me.Label2.Text = "Moneda"
-        Me.Label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
         'grdDesglosePago
         '
@@ -339,22 +307,6 @@ Partial Class FrmAplicaReciboCxP
         Me.grdDesglosePago.Size = New System.Drawing.Size(750, 89)
         Me.grdDesglosePago.TabIndex = 17
         Me.grdDesglosePago.TabStop = False
-        '
-        'txtTipoCambio
-        '
-        Me.txtTipoCambio.AcceptsReturn = True
-        Me.txtTipoCambio.BackColor = System.Drawing.SystemColors.Window
-        Me.txtTipoCambio.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtTipoCambio.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtTipoCambio.Location = New System.Drawing.Point(577, 384)
-        Me.txtTipoCambio.MaxLength = 0
-        Me.txtTipoCambio.Name = "txtTipoCambio"
-        Me.txtTipoCambio.ReadOnly = True
-        Me.txtTipoCambio.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtTipoCambio.Size = New System.Drawing.Size(73, 20)
-        Me.txtTipoCambio.TabIndex = 15
-        Me.txtTipoCambio.TabStop = False
-        Me.txtTipoCambio.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'btnEliminarPago
         '
@@ -384,19 +336,19 @@ Partial Class FrmAplicaReciboCxP
         Me.btnInsertarPago.Text = "Insertar"
         Me.btnInsertarPago.UseVisualStyleBackColor = False
         '
-        'txtMonto
+        'txtMontoPago
         '
-        Me.txtMonto.AcceptsReturn = True
-        Me.txtMonto.BackColor = System.Drawing.SystemColors.Window
-        Me.txtMonto.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtMonto.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtMonto.Location = New System.Drawing.Point(649, 384)
-        Me.txtMonto.MaxLength = 0
-        Me.txtMonto.Name = "txtMonto"
-        Me.txtMonto.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtMonto.Size = New System.Drawing.Size(109, 20)
-        Me.txtMonto.TabIndex = 16
-        Me.txtMonto.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        Me.txtMontoPago.AcceptsReturn = True
+        Me.txtMontoPago.BackColor = System.Drawing.SystemColors.Window
+        Me.txtMontoPago.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtMontoPago.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtMontoPago.Location = New System.Drawing.Point(649, 384)
+        Me.txtMontoPago.MaxLength = 0
+        Me.txtMontoPago.Name = "txtMontoPago"
+        Me.txtMontoPago.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtMontoPago.Size = New System.Drawing.Size(109, 20)
+        Me.txtMontoPago.TabIndex = 16
+        Me.txtMontoPago.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'cboFormaPago
         '
@@ -439,19 +391,6 @@ Partial Class FrmAplicaReciboCxP
         Me.Label5.TabIndex = 105
         Me.Label5.Text = "Forma de Pago"
         Me.Label5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
-        '
-        'Label9
-        '
-        Me.Label9.BackColor = System.Drawing.Color.Transparent
-        Me.Label9.Cursor = System.Windows.Forms.Cursors.Default
-        Me.Label9.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label9.Location = New System.Drawing.Point(574, 364)
-        Me.Label9.Name = "Label9"
-        Me.Label9.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label9.Size = New System.Drawing.Size(76, 19)
-        Me.Label9.TabIndex = 107
-        Me.Label9.Text = "Tipo Cambio"
-        Me.Label9.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
         'cboCuentaPorPagar
         '
@@ -666,6 +605,32 @@ Partial Class FrmAplicaReciboCxP
         Me.Label6.Text = "Monto Original"
         Me.Label6.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
+        'txtRecibo
+        '
+        Me.txtRecibo.AcceptsReturn = True
+        Me.txtRecibo.BackColor = System.Drawing.SystemColors.Window
+        Me.txtRecibo.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtRecibo.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtRecibo.Location = New System.Drawing.Point(639, 101)
+        Me.txtRecibo.MaxLength = 0
+        Me.txtRecibo.Name = "txtRecibo"
+        Me.txtRecibo.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtRecibo.Size = New System.Drawing.Size(119, 20)
+        Me.txtRecibo.TabIndex = 3
+        '
+        'Label11
+        '
+        Me.Label11.BackColor = System.Drawing.Color.Transparent
+        Me.Label11.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label11.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label11.Location = New System.Drawing.Point(560, 101)
+        Me.Label11.Name = "Label11"
+        Me.Label11.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label11.Size = New System.Drawing.Size(73, 19)
+        Me.Label11.TabIndex = 158
+        Me.Label11.Text = "Recibo Nro:"
+        Me.Label11.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
         'FrmAplicaReciboCxP
         '
         Me.AcceptButton = Me.btnInsertar
@@ -673,6 +638,8 @@ Partial Class FrmAplicaReciboCxP
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(767, 539)
+        Me.Controls.Add(Me.txtRecibo)
+        Me.Controls.Add(Me.Label11)
         Me.Controls.Add(Me.txtMontoOriginal)
         Me.Controls.Add(Me.Label6)
         Me.Controls.Add(Me.txtSaldoActual)
@@ -690,29 +657,25 @@ Partial Class FrmAplicaReciboCxP
         Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.txtDocumento)
         Me.Controls.Add(Me.Label7)
-        Me.Controls.Add(Me.cboCuentaBanco)
+        Me.Controls.Add(Me.txtBeneficiario)
+        Me.Controls.Add(Me.lblTipoTarjeta)
+        Me.Controls.Add(Me.cboTipoBanco)
         Me.Controls.Add(Me.lblBanco)
-        Me.Controls.Add(Me.cboTipoMoneda)
-        Me.Controls.Add(Me.Label2)
         Me.Controls.Add(Me.grdDesglosePago)
-        Me.Controls.Add(Me.txtTipoCambio)
         Me.Controls.Add(Me.btnEliminarPago)
         Me.Controls.Add(Me.btnInsertarPago)
-        Me.Controls.Add(Me.txtMonto)
+        Me.Controls.Add(Me.txtMontoPago)
         Me.Controls.Add(Me.cboFormaPago)
         Me.Controls.Add(Me.Label4)
         Me.Controls.Add(Me.Label5)
-        Me.Controls.Add(Me.Label9)
         Me.Controls.Add(Me.CmdImprimir)
         Me.Controls.Add(Me.CmdAgregar)
         Me.Controls.Add(Me.CmdGuardar)
         Me.Controls.Add(Me.txtMontoAbono)
         Me.Controls.Add(Me.txtDescripcion)
-        Me.Controls.Add(Me.Recibo)
         Me.Controls.Add(Me.txtFecha)
         Me.Controls.Add(Me._lblLabels_6)
         Me.Controls.Add(Me._lblLabels_5)
-        Me.Controls.Add(Me._lblLabels_4)
         Me.Controls.Add(Me._lblLabels_3)
         Me.Controls.Add(Me._lblLabels_2)
         Me.Cursor = System.Windows.Forms.Cursors.Default
@@ -720,7 +683,9 @@ Partial Class FrmAplicaReciboCxP
         Me.KeyPreview = True
         Me.Location = New System.Drawing.Point(73, 22)
         Me.MaximizeBox = False
+        Me.MaximumSize = New System.Drawing.Size(783, 578)
         Me.MinimizeBox = False
+        Me.MinimumSize = New System.Drawing.Size(783, 578)
         Me.Name = "FrmAplicaReciboCxP"
         Me.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
@@ -734,19 +699,17 @@ Partial Class FrmAplicaReciboCxP
     Public WithEvents CmdImprimir As System.Windows.Forms.Button
     Public WithEvents txtDocumento As System.Windows.Forms.TextBox
     Public WithEvents Label7 As System.Windows.Forms.Label
-    Public WithEvents cboCuentaBanco As System.Windows.Forms.ComboBox
+    Public WithEvents txtBeneficiario As System.Windows.Forms.TextBox
+    Public WithEvents lblTipoTarjeta As System.Windows.Forms.Label
+    Public WithEvents cboTipoBanco As System.Windows.Forms.ComboBox
     Public WithEvents lblBanco As System.Windows.Forms.Label
-    Public WithEvents cboTipoMoneda As System.Windows.Forms.ComboBox
-    Public WithEvents Label2 As System.Windows.Forms.Label
     Public WithEvents grdDesglosePago As System.Windows.Forms.DataGridView
-    Public WithEvents txtTipoCambio As System.Windows.Forms.TextBox
     Public WithEvents btnEliminarPago As System.Windows.Forms.Button
     Public WithEvents btnInsertarPago As System.Windows.Forms.Button
-    Public WithEvents txtMonto As System.Windows.Forms.TextBox
+    Public WithEvents txtMontoPago As System.Windows.Forms.TextBox
     Public WithEvents cboFormaPago As System.Windows.Forms.ComboBox
     Public WithEvents Label4 As System.Windows.Forms.Label
     Public WithEvents Label5 As System.Windows.Forms.Label
-    Public WithEvents Label9 As System.Windows.Forms.Label
     Public WithEvents cboCuentaPorPagar As System.Windows.Forms.ComboBox
     Public WithEvents Label1 As System.Windows.Forms.Label
     Public WithEvents txtTotalAbonado As System.Windows.Forms.TextBox
@@ -762,4 +725,6 @@ Partial Class FrmAplicaReciboCxP
     Public WithEvents Label3 As System.Windows.Forms.Label
     Public WithEvents txtMontoOriginal As System.Windows.Forms.TextBox
     Public WithEvents Label6 As System.Windows.Forms.Label
+    Public WithEvents txtRecibo As TextBox
+    Public WithEvents Label11 As Label
 End Class

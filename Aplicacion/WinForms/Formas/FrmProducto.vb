@@ -128,6 +128,8 @@ Public Class FrmProducto
                 If datos.Imagen IsNot Nothing Then
                     ptbImagen.Image = Bytes_Imagen(datos.Imagen)
                 End If
+                txtObservacion.Text = datos.Observacion
+                chkActivo.Checked = datos.Activo
                 Await CalcularPrecioSinImpuesto(datos.IdImpuesto)
             Else
                 datos = New Producto
@@ -181,11 +183,13 @@ Public Class FrmProducto
         datos.Tipo = cboTipoProducto.SelectedValue
         datos.IdImpuesto = cboTipoImpuesto.SelectedValue
         datos.IndExistencia = txtIndExistencia.Text
-        If ptbImagen.Image IsNot Nothing Then
-            datos.Imagen = Imagen_Bytes(ptbImagen.Image)
-        Else
-            datos.Imagen = Nothing
-        End If
+        'If ptbImagen.Image IsNot Nothing Then
+        '    datos.Imagen = Imagen_Bytes(ptbImagen.Image)
+        'Else
+        '    datos.Imagen = Nothing
+        'End If
+        datos.Observacion = txtObservacion.Text
+        datos.Activo = chkActivo.Checked
         Try
             If datos.IdProducto = 0 Then
                 Await Puntoventa.AgregarProducto(datos, FrmPrincipal.usuarioGlobal.Token)

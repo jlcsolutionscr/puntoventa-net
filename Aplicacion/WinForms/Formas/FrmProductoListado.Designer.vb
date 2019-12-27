@@ -41,6 +41,7 @@ Partial Class FrmProductoListado
         Me.cboLinea = New System.Windows.Forms.ComboBox()
         Me.Label3 = New System.Windows.Forms.Label()
         Me.txtCodigoProveedor = New System.Windows.Forms.TextBox()
+        Me.chkFiltrarActivos = New System.Windows.Forms.CheckBox()
         CType(Me.dgvListado, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -231,12 +232,23 @@ Partial Class FrmProductoListado
         Me.txtCodigoProveedor.Size = New System.Drawing.Size(260, 20)
         Me.txtCodigoProveedor.TabIndex = 2
         '
+        'chkFiltrarActivos
+        '
+        Me.chkFiltrarActivos.AutoSize = True
+        Me.chkFiltrarActivos.Location = New System.Drawing.Point(448, 103)
+        Me.chkFiltrarActivos.Name = "chkFiltrarActivos"
+        Me.chkFiltrarActivos.Size = New System.Drawing.Size(138, 17)
+        Me.chkFiltrarActivos.TabIndex = 45
+        Me.chkFiltrarActivos.Text = "Filtrar productos activos"
+        Me.chkFiltrarActivos.UseVisualStyleBackColor = True
+        '
         'FrmProductoListado
         '
         Me.AcceptButton = Me.btnFiltrar
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(795, 504)
+        Me.Controls.Add(Me.chkFiltrarActivos)
         Me.Controls.Add(Me.Label3)
         Me.Controls.Add(Me.txtCodigoProveedor)
         Me.Controls.Add(Me.Label2)
@@ -282,4 +294,5 @@ Partial Class FrmProductoListado
     Friend WithEvents cboLinea As System.Windows.Forms.ComboBox
     Friend WithEvents Label3 As Label
     Friend WithEvents txtCodigoProveedor As TextBox
+    Friend WithEvents chkFiltrarActivos As CheckBox
 End Class

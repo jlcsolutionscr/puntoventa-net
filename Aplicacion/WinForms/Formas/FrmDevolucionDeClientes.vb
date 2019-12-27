@@ -120,12 +120,12 @@ Public Class FrmDevolucionDeClientes
             dtrRowDetDevolucion.Item(0) = detalle.IdProducto
             dtrRowDetDevolucion.Item(1) = detalle.Producto.Codigo
             dtrRowDetDevolucion.Item(2) = detalle.Producto.Descripcion
-            dtrRowDetDevolucion.Item(3) = detalle.Cantidad
+            dtrRowDetDevolucion.Item(3) = 0
             dtrRowDetDevolucion.Item(4) = detalle.PrecioCosto
             dtrRowDetDevolucion.Item(5) = detalle.PrecioVenta
             dtrRowDetDevolucion.Item(6) = dtrRowDetDevolucion.Item(3) * dtrRowDetDevolucion.Item(5)
             dtrRowDetDevolucion.Item(7) = detalle.Excento
-            dtrRowDetDevolucion.Item(8) = detalle.CantDevolucion
+            dtrRowDetDevolucion.Item(8) = detalle.Cantidad
             dtrRowDetDevolucion.Item(9) = detalle.PorcentajeIVA
             dtbDetalleDevolucion.Rows.Add(dtrRowDetDevolucion)
         Next
@@ -318,11 +318,10 @@ Public Class FrmDevolucionDeClientes
                     If dtbDetalleDevolucion.Rows(I).Item(8) > 0 Then
                         detalleDevolucion = New DetalleDevolucionCliente With {
                             .IdProducto = dtbDetalleDevolucion.Rows(I).Item(0),
-                            .Cantidad = dtbDetalleDevolucion.Rows(I).Item(3),
                             .PrecioCosto = dtbDetalleDevolucion.Rows(I).Item(4),
                             .PrecioVenta = dtbDetalleDevolucion.Rows(I).Item(5),
                             .Excento = dtbDetalleDevolucion.Rows(I).Item(7),
-                            .CantDevolucion = dtbDetalleDevolucion.Rows(I).Item(8),
+                            .Cantidad = dtbDetalleDevolucion.Rows(I).Item(8),
                             .PorcentajeIVA = dtbDetalleDevolucion.Rows(I).Item(9)
                         }
                         devolucion.DetalleDevolucionCliente.Add(detalleDevolucion)

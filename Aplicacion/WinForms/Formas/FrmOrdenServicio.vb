@@ -29,6 +29,7 @@ Public Class FrmOrdenServicio
     Private arrDetalleOrden As List(Of ModuloImpresion.ClsDetalleComprobante)
     Private arrDesglosePago As List(Of ModuloImpresion.ClsDesgloseFormaPago)
 #End Region
+
 #Region "Métodos"
     Private Sub IniciaTablasDeDetalle()
         dtbDetalleOrdenServicio = New DataTable()
@@ -41,10 +42,8 @@ Public Class FrmOrdenServicio
         dtbDetalleOrdenServicio.Columns.Add("EXCENTO", GetType(Integer))
         dtbDetalleOrdenServicio.Columns.Add("PORCENTAJEIVA", GetType(Decimal))
         dtbDetalleOrdenServicio.Columns.Add("PORCDESCUENTO", GetType(Decimal))
-        dtbDetalleOrdenServicio.PrimaryKey = {dtbDetalleOrdenServicio.Columns(0)}
 
         dtbDesglosePago = New DataTable()
-        dtbDesglosePago.Columns.Add("IDCONSECUTIVO", GetType(Integer))
         dtbDesglosePago.Columns.Add("IDFORMAPAGO", GetType(Integer))
         dtbDesglosePago.Columns.Add("DESCFORMAPAGO", GetType(String))
         dtbDesglosePago.Columns.Add("IDCUENTABANCO", GetType(Integer))
@@ -52,10 +51,9 @@ Public Class FrmOrdenServicio
         dtbDesglosePago.Columns.Add("TIPOTARJETA", GetType(String))
         dtbDesglosePago.Columns.Add("NROMOVIMIENTO", GetType(String))
         dtbDesglosePago.Columns.Add("IDTIPOMONEDA", GetType(Integer))
-        dtbDesglosePago.Columns.Add("DESCTIPOMONEDA", GetType(String))
         dtbDesglosePago.Columns.Add("MONTOLOCAL", GetType(Decimal))
-        dtbDesglosePago.Columns.Add("MONTOFORANEO", GetType(Decimal))
-        dtbDesglosePago.PrimaryKey = {dtbDesglosePago.Columns(0)}
+        dtbDesglosePago.Columns.Add("TIPODECAMBIO", GetType(Decimal))
+        dtbDesglosePago.PrimaryKey = {dtbDesglosePago.Columns(0), dtbDesglosePago.Columns(2), dtbDesglosePago.Columns(6)}
     End Sub
 
     Private Sub EstablecerPropiedadesDataGridView()
@@ -149,9 +147,8 @@ Public Class FrmOrdenServicio
         Dim dvcNroMovimiento As New DataGridViewTextBoxColumn
         Dim dvcPlazo As New DataGridViewTextBoxColumn
         Dim dvcIdTipoMoneda As New DataGridViewTextBoxColumn
-        Dim dvcDescTipoMoneda As New DataGridViewTextBoxColumn
         Dim dvcMontoLocal As New DataGridViewTextBoxColumn
-        Dim dvcMontoForaneo As New DataGridViewTextBoxColumn
+        Dim dvcTipoCambio As New DataGridViewTextBoxColumn
 
         dvcIdConsecutivo.DataPropertyName = "IDCONSECUTIVO"
         dvcIdConsecutivo.HeaderText = "IdConsecutivo"
@@ -180,7 +177,7 @@ Public Class FrmOrdenServicio
 
         dvcDescBanco.DataPropertyName = "DESCBANCO"
         dvcDescBanco.HeaderText = "Banco"
-        dvcDescBanco.Width = 150
+        dvcDescBanco.Width = 240
         dvcDescBanco.Visible = True
         dvcDescBanco.ReadOnly = True
         grdDesglosePago.Columns.Add(dvcDescBanco)
@@ -205,13 +202,6 @@ Public Class FrmOrdenServicio
         dvcIdTipoMoneda.Visible = False
         grdDesglosePago.Columns.Add(dvcIdTipoMoneda)
 
-        dvcDescTipoMoneda.DataPropertyName = "DESCTIPOMONEDA"
-        dvcDescTipoMoneda.HeaderText = "Moneda"
-        dvcDescTipoMoneda.Width = 90
-        dvcDescTipoMoneda.Visible = True
-        dvcDescTipoMoneda.ReadOnly = True
-        grdDesglosePago.Columns.Add(dvcDescTipoMoneda)
-
         dvcMontoLocal.DataPropertyName = "MONTOLOCAL"
         dvcMontoLocal.HeaderText = "Monto Local"
         dvcMontoLocal.Width = 110
@@ -220,13 +210,13 @@ Public Class FrmOrdenServicio
         dvcMontoLocal.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDesglosePago.Columns.Add(dvcMontoLocal)
 
-        dvcMontoForaneo.DataPropertyName = "MONTOFORANEO"
-        dvcMontoForaneo.HeaderText = "Monto Exterior"
-        dvcMontoForaneo.Width = 110
-        dvcMontoForaneo.Visible = True
-        dvcMontoForaneo.ReadOnly = True
-        dvcMontoForaneo.DefaultCellStyle = FrmPrincipal.dgvDecimal
-        grdDesglosePago.Columns.Add(dvcMontoForaneo)
+        dvcTipoCambio.DataPropertyName = "TIPODECAMBIO"
+        dvcTipoCambio.HeaderText = "Tipo Cambio"
+        dvcTipoCambio.Width = 110
+        dvcTipoCambio.Visible = True
+        dvcTipoCambio.ReadOnly = True
+        dvcTipoCambio.DefaultCellStyle = FrmPrincipal.dgvDecimal
+        grdDesglosePago.Columns.Add(dvcTipoCambio)
     End Sub
 
     Private Sub CargarDetalleOrdenServicio(ByVal ordenServicio As OrdenServicio)
@@ -247,41 +237,33 @@ Public Class FrmOrdenServicio
         grdDetalleOrdenServicio.Refresh()
     End Sub
 
-    Private Async Function CargarDesglosePago(ordenServicio As OrdenServicio) As Task
+    Private Sub CargarDesglosePago(ordenServicio As OrdenServicio)
         dtbDesglosePago.Rows.Clear()
         For Each detalle As DesglosePagoOrdenServicio In ordenServicio.DesglosePagoOrdenServicio
             dtrRowDesglosePago = dtbDesglosePago.NewRow
-            dtrRowDesglosePago.Item(0) = detalle.IdConsecutivo
-            dtrRowDesglosePago.Item(1) = detalle.IdFormaPago
-            dtrRowDesglosePago.Item(2) = detalle.FormaPago.Descripcion
-            dtrRowDesglosePago.Item(3) = detalle.IdCuentaBanco
-            If detalle.IdFormaPago = StaticFormaPago.Tarjeta Then
-                Dim banco As BancoAdquiriente = Await Puntoventa.ObtenerBancoAdquiriente(detalle.IdCuentaBanco, FrmPrincipal.usuarioGlobal.Token)
-                dtrRowDesglosePago.Item(4) = banco.Descripcion
-            ElseIf detalle.IdFormaPago = StaticFormaPago.Cheque Or detalle.IdFormaPago = StaticFormaPago.TransferenciaDepositoBancario Then
-                Dim banco As CuentaBanco = Await Puntoventa.ObtenerCuentaBanco(detalle.IdCuentaBanco, FrmPrincipal.usuarioGlobal.Token)
-                dtrRowDesglosePago.Item(4) = banco.Descripcion
-            End If
-            dtrRowDesglosePago.Item(5) = detalle.TipoTarjeta
-            dtrRowDesglosePago.Item(6) = detalle.NroMovimiento
-            dtrRowDesglosePago.Item(7) = detalle.IdTipoMoneda
-            dtrRowDesglosePago.Item(8) = detalle.TipoMoneda.Descripcion
-            dtrRowDesglosePago.Item(9) = detalle.MontoLocal
-            dtrRowDesglosePago.Item(10) = detalle.MontoForaneo
+            dtrRowDesglosePago.Item(0) = detalle.IdFormaPago
+            dtrRowDesglosePago.Item(1) = detalle.FormaPago.Descripcion
+            dtrRowDesglosePago.Item(2) = detalle.IdCuentaBanco
+            dtrRowDesglosePago.Item(3) = detalle.DescripcionCuenta
+            dtrRowDesglosePago.Item(4) = detalle.TipoTarjeta
+            dtrRowDesglosePago.Item(5) = detalle.NroMovimiento
+            dtrRowDesglosePago.Item(6) = detalle.IdTipoMoneda
+            dtrRowDesglosePago.Item(7) = detalle.MontoLocal
+            dtrRowDesglosePago.Item(8) = detalle.TipoDeCambio
             dtbDesglosePago.Rows.Add(dtrRowDesglosePago)
         Next
         grdDesglosePago.Refresh()
-    End Function
+    End Sub
 
     Private Sub CargarLineaDetalleOrdenServicio(producto As Producto, strDescripcion As String, decCantidad As Decimal, decPrecio As Decimal, decPorcDesc As Decimal)
-        Dim intIndice As Integer = dtbDetalleOrdenServicio.Rows.IndexOf(dtbDetalleOrdenServicio.Rows.Find(producto.IdProducto))
         Dim decTasaImpuesto As Decimal = producto.ParametroImpuesto.TasaImpuesto
         Dim decPrecioGravado As Decimal = decPrecio
         If decTasaImpuesto > 0 Then
             decPrecioGravado = Math.Round(decPrecio / (1 + (decTasaImpuesto / 100)), 3, MidpointRounding.AwayFromZero)
             If cliente.AplicaTasaDiferenciada Then decTasaImpuesto = cliente.ParametroImpuesto.TasaImpuesto
         End If
-        If intIndice >= 0 Then
+        Dim intIndice As Integer = ObtenerIndice(dtbDetalleOrdenServicio, producto.IdProducto)
+        If producto.Tipo = 1 And intIndice >= 0 Then
             dtbDetalleOrdenServicio.Rows(intIndice).Item(1) = producto.Codigo
             dtbDetalleOrdenServicio.Rows(intIndice).Item(2) = strDescripcion
             dtbDetalleOrdenServicio.Rows(intIndice).Item(3) += decCantidad
@@ -307,23 +289,37 @@ Public Class FrmOrdenServicio
         CargarTotales()
     End Sub
 
+    Private Function ObtenerIndice(table As DataTable, intValor As Integer) As Integer
+        Dim intIndice As Integer = -1
+        Dim intPosicion As Integer = 0
+        For Each row As DataRow In table.Rows
+            If row(0) = intValor Then intIndice = intPosicion
+            intPosicion += 1
+        Next
+        Return intIndice
+    End Function
+
     Private Sub CargarLineaDesglosePago()
-        Dim dblMontoLocal, dblMontoForaneo As Decimal
-        dblMontoForaneo = CDbl(txtMontoPago.Text)
-        dblMontoLocal = CDbl(txtMontoPago.Text)
+        Dim objPkDesglose(2) As Object
+        objPkDesglose(0) = cboFormaPago.SelectedValue
+        objPkDesglose(1) = cboTipoBanco.SelectedValue
+        If dtbDesglosePago.Rows.Contains(objPkDesglose) Then
+            MessageBox.Show("La forma de pago seleccionada ya fue agregada al detalle de pago.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Exit Sub
+        End If
+        Dim decMontoPago, decTipoCambio As Decimal
+        decMontoPago = CDbl(txtMontoPago.Text)
+        decTipoCambio = CDbl(txtTipoCambio.Text)
         dtrRowDesglosePago = dtbDesglosePago.NewRow
-        shtConsecutivoPago += 1
-        dtrRowDesglosePago.Item(0) = shtConsecutivoPago
-        dtrRowDesglosePago.Item(1) = cboFormaPago.SelectedValue
-        dtrRowDesglosePago.Item(2) = cboFormaPago.Text
-        dtrRowDesglosePago.Item(3) = cboTipoBanco.SelectedValue
-        dtrRowDesglosePago.Item(4) = cboTipoBanco.Text
-        dtrRowDesglosePago.Item(5) = txtTipoTarjeta.Text
-        dtrRowDesglosePago.Item(6) = txtAutorizacion.Text
-        dtrRowDesglosePago.Item(7) = cboTipoMoneda.SelectedValue
-        dtrRowDesglosePago.Item(8) = cboTipoMoneda.Text
-        dtrRowDesglosePago.Item(9) = dblMontoLocal
-        dtrRowDesglosePago.Item(10) = dblMontoForaneo
+        dtrRowDesglosePago.Item(0) = cboFormaPago.SelectedValue
+        dtrRowDesglosePago.Item(1) = cboFormaPago.Text
+        dtrRowDesglosePago.Item(2) = cboTipoBanco.SelectedValue
+        dtrRowDesglosePago.Item(3) = cboTipoBanco.Text
+        dtrRowDesglosePago.Item(4) = txtTipoTarjeta.Text
+        dtrRowDesglosePago.Item(5) = txtAutorizacion.Text
+        dtrRowDesglosePago.Item(6) = cboTipoMoneda.SelectedValue
+        dtrRowDesglosePago.Item(7) = decMontoPago
+        dtrRowDesglosePago.Item(8) = decTipoCambio
         dtbDesglosePago.Rows.Add(dtrRowDesglosePago)
         grdDesglosePago.Refresh()
     End Sub
@@ -359,7 +355,7 @@ Public Class FrmOrdenServicio
     Private Sub CargarTotalesPago()
         decTotalPago = 0
         For I = 0 To dtbDesglosePago.Rows.Count - 1
-            decTotalPago = decTotalPago + CDbl(dtbDesglosePago.Rows(I).Item(10))
+            decTotalPago = decTotalPago + CDbl(dtbDesglosePago.Rows(I).Item(7))
         Next
         decSaldoPorPagar = decTotal - decTotalPago
         txtMontoPago.Text = FormatNumber(decSaldoPorPagar, 2)
@@ -440,7 +436,7 @@ Public Class FrmOrdenServicio
 
     Private Async Function CargarAutoCompletarProducto() As Task
         Dim source As AutoCompleteStringCollection = New AutoCompleteStringCollection()
-        Dim listOfProducts As IList(Of Producto) = Await Puntoventa.ObtenerListadoProductos(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, 1, 0, True, FrmPrincipal.usuarioGlobal.Token)
+        Dim listOfProducts As IList(Of Producto) = Await Puntoventa.ObtenerListadoProductos(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, 1, 0, True, True, FrmPrincipal.usuarioGlobal.Token)
         For Each producto As Producto In listOfProducts
             source.Add(String.Concat(producto.Codigo, " ", producto.Descripcion))
         Next
@@ -455,6 +451,9 @@ Public Class FrmOrdenServicio
         Try
             txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
             Await CargarCombos()
+            cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
+            cboTipoMoneda.SelectedValue = FrmPrincipal.empresaGlobal.IdTipoMoneda
+            txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmPrincipal.decTipoCambioDolar.ToString())
             Await CargarListaBancoAdquiriente()
             If FrmPrincipal.empresaGlobal.AutoCompletaProducto = True Then Await CargarAutoCompletarProducto()
             IniciaTablasDeDetalle()
@@ -476,12 +475,14 @@ Public Class FrmOrdenServicio
             Catch ex As Exception
                 Throw New Exception("Error al consultar el cliente de contado. Por favor consulte con su proveedor.")
             End Try
-            Try
-                vendedor = Await Puntoventa.ObtenerVendedorPorDefecto(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
-                txtVendedor.Text = vendedor.Nombre
-            Catch ex As Exception
-                Throw New Exception("Debe ingresar al menos un vendedor para generar la facturación. . .")
-            End Try
+            If FrmPrincipal.empresaGlobal.AsignaVendedorPorDefecto Then
+                Try
+                    vendedor = Await Puntoventa.ObtenerVendedorPorDefecto(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+                    txtVendedor.Text = vendedor.Nombre
+                Catch ex As Exception
+                    Throw New Exception("Debe agregar al menos un vendedor al catalogo de vendedores para poder continuar.")
+                End Try
+            End If
             txtSaldoPorPagar.Text = FormatNumber(decSaldoPorPagar, 2)
             shtConsecutivoPago = 0
             If FrmPrincipal.bolModificaDescripcion Then txtDescripcion.ReadOnly = False
@@ -504,6 +505,10 @@ Public Class FrmOrdenServicio
         bolInit = True
         txtIdOrdenServicio.Text = ""
         txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
+        cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
+        cboTipoMoneda.SelectedValue = FrmPrincipal.empresaGlobal.IdTipoMoneda
+        txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmPrincipal.decTipoCambioDolar.ToString())
+        txtTipoCambio.Text =
         txtTelefono.Text = ""
         txtDescripcionOrden.Text = ""
         txtFechaEntrega.Text = ""
@@ -544,14 +549,19 @@ Public Class FrmOrdenServicio
             Close()
             Exit Sub
         End Try
-        Try
-            vendedor = Await Puntoventa.ObtenerVendedorPorDefecto(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
-            txtVendedor.Text = vendedor.Nombre
-        Catch ex As Exception
-            MessageBox.Show("Debe ingresar al menos un vendedor para generar la facturación. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-            Exit Sub
-        End Try
+        If FrmPrincipal.empresaGlobal.AsignaVendedorPorDefecto Then
+            Try
+                vendedor = Await Puntoventa.ObtenerVendedorPorDefecto(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+                txtVendedor.Text = vendedor.Nombre
+            Catch ex As Exception
+                MessageBox.Show("Debe agregar al menos un vendedor al catalogo de vendedores para poder continuar.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Close()
+                Exit Sub
+            End Try
+        Else
+            vendedor = Nothing
+            txtVendedor.Text = ""
+        End If
         bolInit = False
         txtMontoPago.Text = ""
         shtConsecutivoPago = 0
@@ -597,7 +607,7 @@ Public Class FrmOrdenServicio
                 vendedor = ordenServicio.Vendedor
                 txtVendedor.Text = IIf(vendedor IsNot Nothing, vendedor.Nombre, "")
                 CargarDetalleOrdenServicio(ordenServicio)
-                Await CargarDesglosePago(ordenServicio)
+                CargarDesglosePago(ordenServicio)
                 CargarTotales()
                 CargarTotalesPago()
                 txtNombreCliente.ReadOnly = True
@@ -675,6 +685,7 @@ Public Class FrmOrdenServicio
                 Exit Sub
             End Try
             CargarDatosProducto(producto)
+            txtCantidad.Focus()
         End If
     End Sub
 
@@ -697,7 +708,7 @@ Public Class FrmOrdenServicio
             }
             ordenServicio.IdCliente = cliente.IdCliente
             ordenServicio.NombreCliente = txtNombreCliente.Text
-            ordenServicio.Fecha = FrmPrincipal.ObtenerFechaFormateada(Now())
+            ordenServicio.Fecha = Now()
             ordenServicio.IdVendedor = vendedor.IdVendedor
             ordenServicio.Telefono = txtTelefono.Text
             ordenServicio.Descripcion = txtDescripcionOrden.Text
@@ -708,14 +719,8 @@ Public Class FrmOrdenServicio
             ordenServicio.Descuento = 0
             ordenServicio.Impuesto = decImpuesto
             ordenServicio.MontoAdelanto = decTotalPago
-            If txtIdOrdenServicio.Text <> "" Then
-                ordenServicio.DetalleOrdenServicio.Clear()
-            End If
             For I = 0 To dtbDetalleOrdenServicio.Rows.Count - 1
                 detalleOrdenServicio = New DetalleOrdenServicio
-                If txtIdOrdenServicio.Text <> "" Then
-                    detalleOrdenServicio.IdOrden = ordenServicio.IdOrden
-                End If
                 detalleOrdenServicio.IdProducto = dtbDetalleOrdenServicio.Rows(I).Item(0)
                 detalleOrdenServicio.Descripcion = dtbDetalleOrdenServicio.Rows(I).Item(2)
                 detalleOrdenServicio.Cantidad = dtbDetalleOrdenServicio.Rows(I).Item(3)
@@ -727,13 +732,14 @@ Public Class FrmOrdenServicio
             Next
             For I = 0 To dtbDesglosePago.Rows.Count - 1
                 desglosePago = New DesglosePagoOrdenServicio With {
-                    .IdFormaPago = dtbDesglosePago.Rows(I).Item(1),
-                    .IdCuentaBanco = dtbDesglosePago.Rows(I).Item(3),
-                    .TipoTarjeta = dtbDesglosePago.Rows(I).Item(5),
-                    .NroMovimiento = dtbDesglosePago.Rows(I).Item(6),
-                    .IdTipoMoneda = dtbDesglosePago.Rows(I).Item(7),
-                    .MontoLocal = dtbDesglosePago.Rows(I).Item(9),
-                    .MontoForaneo = dtbDesglosePago.Rows(I).Item(10)
+                    .IdFormaPago = dtbDesglosePago.Rows(I).Item(0),
+                    .IdCuentaBanco = dtbDesglosePago.Rows(I).Item(2),
+                    .TipoTarjeta = dtbDesglosePago.Rows(I).Item(4),
+                    .NroMovimiento = dtbDesglosePago.Rows(I).Item(5),
+                    .IdTipoMoneda = dtbDesglosePago.Rows(I).Item(6),
+                    .Fecha = Now(),
+                    .MontoLocal = dtbDesglosePago.Rows(I).Item(7),
+                    .TipoDeCambio = dtbDesglosePago.Rows(I).Item(8)
                 }
                 ordenServicio.DesglosePagoOrdenServicio.Add(desglosePago)
             Next
@@ -763,9 +769,9 @@ Public Class FrmOrdenServicio
                 detalleOrdenServicio.Descripcion = dtbDetalleOrdenServicio.Rows(I).Item(2)
                 detalleOrdenServicio.Cantidad = dtbDetalleOrdenServicio.Rows(I).Item(3)
                 detalleOrdenServicio.PrecioVenta = dtbDetalleOrdenServicio.Rows(I).Item(4)
-                detalleOrdenServicio.Excento = dtbDetalleOrdenServicio.Rows(I).Item(6)
-                detalleOrdenServicio.PorcentajeIVA = dtbDetalleOrdenServicio.Rows(I).Item(7)
-                detalleOrdenServicio.PorcDescuento = dtbDetalleOrdenServicio.Rows(I).Item(8)
+                detalleOrdenServicio.Excento = dtbDetalleOrdenServicio.Rows(I).Item(5)
+                detalleOrdenServicio.PorcentajeIVA = dtbDetalleOrdenServicio.Rows(I).Item(6)
+                detalleOrdenServicio.PorcDescuento = dtbDetalleOrdenServicio.Rows(I).Item(7)
                 ordenServicio.DetalleOrdenServicio.Add(detalleOrdenServicio)
             Next
             Try
@@ -821,7 +827,7 @@ Public Class FrmOrdenServicio
                 For I = 0 To dtbDesglosePago.Rows.Count - 1
                     desglosePagoImpresion = New ModuloImpresion.ClsDesgloseFormaPago With {
                     .strDescripcion = dtbDesglosePago.Rows(I).Item(2),
-                    .strMonto = FormatNumber(dtbDesglosePago.Rows(I).Item(10)),
+                    .strMonto = FormatNumber(dtbDesglosePago.Rows(I).Item(8)),
                     .strNroDoc = dtbDesglosePago.Rows(I).Item(5)
                 }
                     arrDesglosePago.Add(desglosePagoImpresion)
@@ -942,9 +948,9 @@ Public Class FrmOrdenServicio
         End If
     End Sub
 
-    Private Sub CmdEliminar_Click(sender As Object, e As EventArgs) Handles btnEliminar.Click
+    Private Sub BtnEliminar_Click(sender As Object, e As EventArgs) Handles btnEliminar.Click
         If grdDetalleOrdenServicio.Rows.Count > 0 Then
-            dtbDetalleOrdenServicio.Rows.Remove(dtbDetalleOrdenServicio.Rows.Find(grdDetalleOrdenServicio.CurrentRow.Cells(0).Value))
+            dtbDetalleOrdenServicio.Rows.RemoveAt(grdDetalleOrdenServicio.CurrentRow.Index)
             grdDetalleOrdenServicio.Refresh()
             CargarTotales()
             txtCodigo.Focus()
@@ -1001,7 +1007,7 @@ Public Class FrmOrdenServicio
         End If
     End Sub
 
-    Private Sub CboTipoMoneda_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboTipoMoneda.SelectedValueChanged
+    Private Sub CboTipoMoneda_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboTipoMoneda.SelectedIndexChanged
         If Not bolInit And Not cboTipoMoneda.SelectedValue Is Nothing Then
             txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmPrincipal.decTipoCambioDolar.ToString())
         End If
@@ -1067,14 +1073,28 @@ Public Class FrmOrdenServicio
     End Sub
 
     Private Async Sub TxtCodigo_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtCodigo.PreviewKeyDown
-        If e.KeyCode = Keys.Enter Then
+        If e.KeyCode = Keys.ControlKey Then
+            If FrmPrincipal.productoTranstorio IsNot Nothing Then
+                Dim formCargar As New FrmCargaProductoTransitorio
+                formCargar.ShowDialog()
+                If FrmPrincipal.productoTranstorio.PrecioVenta1 > 0 Then
+                    CargarLineaDetalleOrdenServicio(FrmPrincipal.productoTranstorio, FrmPrincipal.productoTranstorio.Descripcion, FrmPrincipal.productoTranstorio.Existencias, FrmPrincipal.productoTranstorio.PrecioVenta1, 0)
+                End If
+            End If
+        ElseIf e.KeyCode = Keys.Enter Or e.KeyCode = Keys.Tab Then
             Try
                 producto = Await Puntoventa.ObtenerProductoPorCodigo(FrmPrincipal.empresaGlobal.IdEmpresa, txtCodigo.Text, FrmPrincipal.equipoGlobal.IdSucursal, FrmPrincipal.usuarioGlobal.Token)
-                If producto IsNot Nothing Then
+                If producto IsNot Nothing And producto.Activo Then
                     CargarDatosProducto(producto)
                     txtCantidad.Focus()
                 Else
                     txtCodigo.Text = ""
+                    txtDescripcion.Text = ""
+                    txtCantidad.Text = "1"
+                    txtUnidad.Text = ""
+                    txtPorcDesc.Text = "0"
+                    txtPrecio.Text = ""
+                    txtCodigo.Focus()
                 End If
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)

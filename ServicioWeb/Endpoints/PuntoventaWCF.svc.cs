@@ -95,6 +95,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
         private static int intFilasPorPagina;
         private static int intTotalLista;
         bool bolIncluyeServicios;
+        bool bolFiltraActivos;
         bool bolNulo;
         string strClave;
         string strIdentificacion;
@@ -1113,13 +1114,13 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         break;
                     case "ObtenerTotalListaProductos":
                         intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
-                        intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
                         bolIncluyeServicios = bool.Parse(parametrosJO.Property("IncluyeServicios").Value.ToString());
+                        bolFiltraActivos = bool.Parse(parametrosJO.Property("FiltraActivos").Value.ToString());
                         intIdLlave1 = parametrosJO.Property("IdLinea") != null ? int.Parse(parametrosJO.Property("IdLinea").Value.ToString()) : 0;
                         strCodigo = parametrosJO.Property("Codigo") != null ? parametrosJO.Property("Codigo").Value.ToString() : "";
                         strCodigoProveedor = parametrosJO.Property("CodigoProveedor") != null ? parametrosJO.Property("CodigoProveedor").Value.ToString() : "";
                         strDescripcion = parametrosJO.Property("Descripcion") != null ? parametrosJO.Property("Descripcion").Value.ToString() : "";
-                        intTotalLista = servicioMantenimiento.ObtenerTotalListaProductos(intIdEmpresa, intIdSucursal, bolIncluyeServicios, intIdLlave1, strCodigo, strCodigoProveedor, strDescripcion);
+                        intTotalLista = servicioMantenimiento.ObtenerTotalListaProductos(intIdEmpresa, bolIncluyeServicios, bolFiltraActivos, intIdLlave1, strCodigo, strCodigoProveedor, strDescripcion);
                         strRespuesta = serializer.Serialize(intTotalLista);
                         break;
                     case "ObtenerListadoProductos":
@@ -1128,11 +1129,12 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         intNumeroPagina = int.Parse(parametrosJO.Property("NumeroPagina").Value.ToString());
                         intFilasPorPagina = int.Parse(parametrosJO.Property("FilasPorPagina").Value.ToString());
                         bolIncluyeServicios = bool.Parse(parametrosJO.Property("IncluyeServicios").Value.ToString());
+                        bolFiltraActivos = bool.Parse(parametrosJO.Property("FiltraActivos").Value.ToString());
                         intIdLlave1 = parametrosJO.Property("IdLinea") != null ? int.Parse(parametrosJO.Property("IdLinea").Value.ToString()) : 0;
                         strCodigo = parametrosJO.Property("Codigo") != null ? parametrosJO.Property("Codigo").Value.ToString() : "";
                         strCodigoProveedor = parametrosJO.Property("CodigoProveedor") != null ? parametrosJO.Property("CodigoProveedor").Value.ToString() : "";
                         strDescripcion = parametrosJO.Property("Descripcion") != null ? parametrosJO.Property("Descripcion").Value.ToString() : "";
-                        IList<ProductoDetalle> listadoProducto = (List<ProductoDetalle>)servicioMantenimiento.ObtenerListadoProductos(intIdEmpresa, intIdSucursal, intNumeroPagina, intFilasPorPagina, bolIncluyeServicios, intIdLlave1, strCodigo, strCodigoProveedor, strDescripcion);
+                        IList<ProductoDetalle> listadoProducto = (List<ProductoDetalle>)servicioMantenimiento.ObtenerListadoProductos(intIdEmpresa, intIdSucursal, intNumeroPagina, intFilasPorPagina, bolIncluyeServicios, bolFiltraActivos, intIdLlave1, strCodigo, strCodigoProveedor, strDescripcion);
                         if (listadoProducto.Count > 0)
                             strRespuesta = serializer.Serialize(listadoProducto);
                         break;
@@ -1140,6 +1142,12 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         intIdLlave1 = int.Parse(parametrosJO.Property("IdProducto").Value.ToString());
                         intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
                         producto = servicioMantenimiento.ObtenerProducto(intIdLlave1, intIdSucursal);
+                        if (producto != null)
+                            strRespuesta = serializer.Serialize(producto);
+                        break;
+                    case "ObtenerProductoTransitorio":
+                        intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
+                        producto = servicioMantenimiento.ObtenerProductoTransitorio(intIdEmpresa);
                         if (producto != null)
                             strRespuesta = serializer.Serialize(producto);
                         break;

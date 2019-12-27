@@ -6,9 +6,11 @@ namespace LeandroSoftware.Core.Dominio.Entidades
     [Table("detallefactura")]
     public partial class DetalleFactura
     {
-        [Key, Column(Order = 0), ForeignKey("Factura")]
+        [Key]
+        public int IdConsecutivo { get; set; }
+        [ForeignKey("Factura")]
         public int IdFactura { get; set; }
-        [Key, Column(Order = 1), ForeignKey("Producto")]
+        [ForeignKey("Producto")]
         public int IdProducto { get; set; }
         public string Descripcion { get; set; }
         public decimal Cantidad { get; set; }

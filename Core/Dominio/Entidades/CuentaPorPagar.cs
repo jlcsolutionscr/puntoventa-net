@@ -14,6 +14,8 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public int IdCxP { get; set; }
         [ForeignKey("Usuario")]
         public int IdUsuario { get; set; }
+        [ForeignKey("TipoMoneda")]
+        public int IdTipoMoneda { get; set; }
         public int IdPropietario { get; set; }
         public string Descripcion { get; set; }
         public string Referencia { get; set; }
@@ -31,5 +33,6 @@ namespace LeandroSoftware.Core.Dominio.Entidades
 
         public Empresa Empresa { get; set; }
         public Usuario Usuario { get; set; }
+        public TipoMoneda TipoMoneda { get; set; }
     }
 }

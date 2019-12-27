@@ -1,6 +1,8 @@
 Imports System.Collections.Generic
 Imports LeandroSoftware.Core.TiposComunes
 Imports LeandroSoftware.Core.Dominio.Entidades
+Imports System.Threading.Tasks
+Imports LeandroSoftware.ClienteWCF
 
 Public Class FrmAplicaReciboCxP
 #Region "Variables"
@@ -17,8 +19,8 @@ Public Class FrmAplicaReciboCxP
     Private desgloseMovimiento As DesgloseMovimientoCuentaPorPagar
     Private desglosePagoMovimiento As DesglosePagoMovimientoCuentaPorPagar
     Private reciboComprobante As ModuloImpresion.ClsRecibo
-    Private desglosePagoImpresion As ModuloImpresion.clsDesgloseFormaPago
-    Private arrDesglosePago, arrDesgloseMov As List(Of ModuloImpresion.clsDesgloseFormaPago)
+    Private desglosePagoImpresion As ModuloImpresion.ClsDesgloseFormaPago
+    Private arrDesglosePago, arrDesgloseMov As List(Of ModuloImpresion.ClsDesgloseFormaPago)
 #End Region
 
 #Region "Métodos"
@@ -35,30 +37,29 @@ Public Class FrmAplicaReciboCxP
         dtbDesglosePago.Columns.Add("DESCFORMAPAGO", GetType(String))
         dtbDesglosePago.Columns.Add("IDBANCO", GetType(Integer))
         dtbDesglosePago.Columns.Add("DESCBANCO", GetType(String))
-        dtbDesglosePago.Columns.Add("DOCUMENTO", GetType(String))
-        dtbDesglosePago.Columns.Add("BENEFICIARIO", GetType(String))
+        dtbDesglosePago.Columns.Add("TIPOTARJETA", GetType(String))
+        dtbDesglosePago.Columns.Add("AUTORIZACION", GetType(String))
         dtbDesglosePago.Columns.Add("IDTIPOMONEDA", GetType(Integer))
-        dtbDesglosePago.Columns.Add("DESCTIPOMONEDA", GetType(String))
         dtbDesglosePago.Columns.Add("MONTOLOCAL", GetType(Decimal))
-        dtbDesglosePago.Columns.Add("MONTOFORANEO", GetType(Decimal))
-        dtbDesglosePago.PrimaryKey = {dtbDesglosePago.Columns(0), dtbDesglosePago.Columns(2), dtbDesglosePago.Columns(6)}
+        dtbDesglosePago.Columns.Add("TIPODECAMBIO", GetType(Decimal))
+        dtbDesglosePago.PrimaryKey = {dtbDesglosePago.Columns(0), dtbDesglosePago.Columns(2)}
     End Sub
 
     Private Sub EstablecerPropiedadesDataGridView()
         grdDesgloseCuenta.Columns.Clear()
         grdDesgloseCuenta.AutoGenerateColumns = False
 
-        Dim dvcIdCxC As New DataGridViewTextBoxColumn
+        Dim dvcIdCxP As New DataGridViewTextBoxColumn
         Dim dvcDescripcion As New DataGridViewTextBoxColumn
         Dim dvcMonto As New DataGridViewTextBoxColumn
         Dim dvcDocOriginal As New DataGridViewTextBoxColumn
 
-        dvcIdCxC.DataPropertyName = "IDCXP"
-        dvcIdCxC.HeaderText = "Id"
-        dvcIdCxC.Width = 70
-        dvcIdCxC.Visible = True
-        dvcIdCxC.ReadOnly = True
-        grdDesgloseCuenta.Columns.Add(dvcIdCxC)
+        dvcIdCxP.DataPropertyName = "IDCXP"
+        dvcIdCxP.HeaderText = "Id"
+        dvcIdCxP.Width = 70
+        dvcIdCxP.Visible = True
+        dvcIdCxP.ReadOnly = True
+        grdDesgloseCuenta.Columns.Add(dvcIdCxP)
 
         dvcDescripcion.DataPropertyName = "DESCRIPCION"
         dvcDescripcion.HeaderText = "Desripción"
@@ -89,12 +90,11 @@ Public Class FrmAplicaReciboCxP
         Dim dvcDescTipoPago As New DataGridViewTextBoxColumn
         Dim dvcIdBanco As New DataGridViewTextBoxColumn
         Dim dvcDescBanco As New DataGridViewTextBoxColumn
-        Dim dvcDocumento As New DataGridViewTextBoxColumn
-        Dim dvcBeneficiario As New DataGridViewTextBoxColumn
+        Dim dvcTipoTarjeta As New DataGridViewTextBoxColumn
+        Dim dvcAutorizacion As New DataGridViewTextBoxColumn
         Dim dvcIdTipoMoneda As New DataGridViewTextBoxColumn
-        Dim dvcDescTipoMoneda As New DataGridViewTextBoxColumn
         Dim dvcMontoLocal As New DataGridViewTextBoxColumn
-        Dim dvcMontoForaneo As New DataGridViewTextBoxColumn
+        Dim dvcTipoCambio As New DataGridViewTextBoxColumn
 
         dvcIdTipoPago.DataPropertyName = "IDFORMAPAGO"
         dvcIdTipoPago.HeaderText = "Id"
@@ -117,37 +117,30 @@ Public Class FrmAplicaReciboCxP
 
         dvcDescBanco.DataPropertyName = "DESCBANCO"
         dvcDescBanco.HeaderText = "Banco"
-        dvcDescBanco.Width = 140
+        dvcDescBanco.Width = 210
         dvcDescBanco.Visible = True
         dvcDescBanco.ReadOnly = True
         grdDesglosePago.Columns.Add(dvcDescBanco)
 
-        dvcDocumento.DataPropertyName = "DOCUMENTO"
-        dvcDocumento.HeaderText = "Doc."
-        dvcDocumento.Width = 50
-        dvcDocumento.Visible = True
-        dvcDocumento.ReadOnly = True
-        grdDesglosePago.Columns.Add(dvcDocumento)
+        dvcTipoTarjeta.DataPropertyName = "TIPOTARJETA"
+        dvcTipoTarjeta.HeaderText = "Tipo Tarjeta"
+        dvcTipoTarjeta.Width = 100
+        dvcTipoTarjeta.Visible = True
+        dvcTipoTarjeta.ReadOnly = True
+        grdDesglosePago.Columns.Add(dvcTipoTarjeta)
 
-        dvcBeneficiario.DataPropertyName = "BENEFICIARIO"
-        dvcBeneficiario.HeaderText = "Beneficiario"
-        dvcBeneficiario.Width = 150
-        dvcBeneficiario.Visible = True
-        dvcBeneficiario.ReadOnly = True
-        grdDesglosePago.Columns.Add(dvcBeneficiario)
+        dvcAutorizacion.DataPropertyName = "AUTORIZACION"
+        dvcAutorizacion.HeaderText = "Movimiento #"
+        dvcAutorizacion.Width = 100
+        dvcAutorizacion.Visible = True
+        dvcAutorizacion.ReadOnly = True
+        grdDesglosePago.Columns.Add(dvcAutorizacion)
 
         dvcIdTipoMoneda.DataPropertyName = "IDTIPOMONEDA"
         dvcIdTipoMoneda.HeaderText = "TipoMoneda"
         dvcIdTipoMoneda.Width = 0
         dvcIdTipoMoneda.Visible = False
         grdDesglosePago.Columns.Add(dvcIdTipoMoneda)
-
-        dvcDescTipoMoneda.DataPropertyName = "DESCTIPOMONEDA"
-        dvcDescTipoMoneda.HeaderText = "Moneda"
-        dvcDescTipoMoneda.Width = 70
-        dvcDescTipoMoneda.Visible = True
-        dvcDescTipoMoneda.ReadOnly = True
-        grdDesglosePago.Columns.Add(dvcDescTipoMoneda)
 
         dvcMontoLocal.DataPropertyName = "MONTOLOCAL"
         dvcMontoLocal.HeaderText = "Monto Local"
@@ -157,13 +150,13 @@ Public Class FrmAplicaReciboCxP
         dvcMontoLocal.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDesglosePago.Columns.Add(dvcMontoLocal)
 
-        dvcMontoForaneo.DataPropertyName = "MONTOFORANEO"
-        dvcMontoForaneo.HeaderText = "Monto Exterior"
-        dvcMontoForaneo.Width = 100
-        dvcMontoForaneo.Visible = True
-        dvcMontoForaneo.ReadOnly = True
-        dvcMontoForaneo.DefaultCellStyle = FrmPrincipal.dgvDecimal
-        grdDesglosePago.Columns.Add(dvcMontoForaneo)
+        dvcTipoCambio.DataPropertyName = "TIPODECAMBIO"
+        dvcTipoCambio.HeaderText = "Tipo Cambio"
+        dvcTipoCambio.Width = 100
+        dvcTipoCambio.Visible = True
+        dvcTipoCambio.ReadOnly = True
+        dvcTipoCambio.DefaultCellStyle = FrmPrincipal.dgvDecimal
+        grdDesglosePago.Columns.Add(dvcTipoCambio)
     End Sub
 
     Private Sub CargarLineaDesgloseCuenta()
@@ -185,38 +178,27 @@ Public Class FrmAplicaReciboCxP
     End Sub
 
     Private Sub CargarLineaDesglosePago()
-        Dim intIndice As Integer
         Dim objPkDesglose(2) As Object
-        Dim dblMontoLocal, dblMontoForaneo As Decimal
         objPkDesglose(0) = cboFormaPago.SelectedValue
-        objPkDesglose(1) = cboCuentaBanco.SelectedValue
-        objPkDesglose(2) = cboTipoMoneda.SelectedValue
-        dblMontoForaneo = CDbl(txtMonto.Text)
-        dblMontoLocal = CDbl(txtMonto.Text) * CDbl(txtTipoCambio.Text)
-        If dblMontoLocal > dblSaldoPorPagar Then
-            dblMontoLocal = dblSaldoPorPagar
-            dblMontoForaneo = dblMontoLocal / CDbl(txtTipoCambio.Text)
-        End If
+        objPkDesglose(1) = cboTipoBanco.SelectedValue
         If dtbDesglosePago.Rows.Contains(objPkDesglose) Then
-            intIndice = dtbDesglosePago.Rows.IndexOf(dtbDesglosePago.Rows.Find(objPkDesglose))
-            dtbDesglosePago.Rows(intIndice).Item(4) = txtDocumento.Text
-            dtbDesglosePago.Rows(intIndice).Item(5) = txtNombreProveedor.Text
-            dtbDesglosePago.Rows(intIndice).Item(8) = dblMontoLocal
-            dtbDesglosePago.Rows(intIndice).Item(9) = dblMontoForaneo
-        Else
-            dtrRowDesglosePago = dtbDesglosePago.NewRow
-            dtrRowDesglosePago.Item(0) = cboFormaPago.SelectedValue
-            dtrRowDesglosePago.Item(1) = cboFormaPago.Text
-            dtrRowDesglosePago.Item(2) = cboCuentaBanco.SelectedValue
-            dtrRowDesglosePago.Item(3) = cboCuentaBanco.Text
-            dtrRowDesglosePago.Item(4) = txtDocumento.Text
-            dtrRowDesglosePago.Item(5) = txtNombreProveedor.Text
-            dtrRowDesglosePago.Item(6) = cboTipoMoneda.SelectedValue
-            dtrRowDesglosePago.Item(7) = cboTipoMoneda.Text
-            dtrRowDesglosePago.Item(8) = dblMontoLocal
-            dtrRowDesglosePago.Item(9) = dblMontoForaneo
-            dtbDesglosePago.Rows.Add(dtrRowDesglosePago)
+            MessageBox.Show("La forma de pago seleccionada ya fue agregada al detalle de pago.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Exit Sub
         End If
+        Dim decMontoPago, decTipoCambio As Decimal
+        decMontoPago = CDbl(txtMontoPago.Text)
+        decTipoCambio = IIf(cuentaPorPagar.IdTipoMoneda = 1, 1, FrmPrincipal.decTipoCambioDolar)
+        dtrRowDesglosePago = dtbDesglosePago.NewRow
+        dtrRowDesglosePago.Item(0) = cboFormaPago.SelectedValue
+        dtrRowDesglosePago.Item(1) = cboFormaPago.Text
+        dtrRowDesglosePago.Item(2) = cboTipoBanco.SelectedValue
+        dtrRowDesglosePago.Item(3) = cboTipoBanco.Text
+        dtrRowDesglosePago.Item(4) = txtBeneficiario.Text
+        dtrRowDesglosePago.Item(5) = txtDocumento.Text
+        dtrRowDesglosePago.Item(6) = cuentaPorPagar.IdTipoMoneda
+        dtrRowDesglosePago.Item(7) = decMontoPago
+        dtrRowDesglosePago.Item(8) = decTipoCambio
+        dtbDesglosePago.Rows.Add(dtrRowDesglosePago)
         grdDesglosePago.Refresh()
     End Sub
 
@@ -227,39 +209,35 @@ Public Class FrmAplicaReciboCxP
             dblTotal = dblTotal + CDbl(dtbDesgloseCuenta.Rows(I).Item(2))
         Next
         For I = 0 To dtbDesglosePago.Rows.Count - 1
-            dblTotalPago = dblTotalPago + CDbl(dtbDesglosePago.Rows(I).Item(8))
+            dblTotalPago = dblTotalPago + CDbl(dtbDesglosePago.Rows(I).Item(7))
         Next
         dblSaldoPorPagar = dblTotal - dblTotalPago
         txtSaldoPorPagar.Text = FormatNumber(dblSaldoPorPagar, 2)
+        txtMontoPago.Text = FormatNumber(dblSaldoPorPagar, 2)
     End Sub
 
-    Private Sub CargarCombos()
-        cboFormaPago.ValueMember = "IdFormaPago"
+    Private Async Function CargarCombos() As Task
+        cboFormaPago.ValueMember = "Id"
         cboFormaPago.DisplayMember = "Descripcion"
-        'cboFormaPago.DataSource = servicioMantenimiento.ObtenerListaFormaPagoMovimientoCxP()
-        cboCuentaBanco.ValueMember = "IdCuenta"
-        cboCuentaBanco.DisplayMember = "Descripcion"
-        'cboCuentaBanco.DataSource = servicioAuxiliarBancario.ObtenerListaCuentasBanco(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
-        cboTipoMoneda.ValueMember = "IdTipoMoneda"
-        cboTipoMoneda.DisplayMember = "Descripcion"
-        'cboTipoMoneda.DataSource = servicioMantenimiento.ObtenerListaTipoMoneda()
-    End Sub
+        cboFormaPago.DataSource = Await Puntoventa.ObtenerListadoFormaPagoMovimientoCxP(FrmPrincipal.usuarioGlobal.Token)
+        cboTipoBanco.ValueMember = "Id"
+        cboTipoBanco.DisplayMember = "Descripcion"
+        cboTipoBanco.DataSource = Await Puntoventa.ObtenerListadoCuentasBanco(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+    End Function
 #End Region
 
 #Region "Eventos Controles"
-    Private Sub FrmAplicaReciboCxP_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+    Private Async Sub FrmAplicaReciboCxPProveedores_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
             txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
-            CargarCombos()
+            Await CargarCombos()
             IniciaDetalleMovimiento()
             EstablecerPropiedadesDataGridView()
             grdDesgloseCuenta.DataSource = dtbDesgloseCuenta
             grdDesglosePago.DataSource = dtbDesglosePago
             bolInit = False
             cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
-            cboTipoMoneda.SelectedValue = StaticValoresPorDefecto.MonedaDelSistema
             txtMontoAbono.Text = FormatNumber(0, 2)
-            txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmPrincipal.decTipoCambioDolar.ToString())
             txtSaldoPorPagar.Text = FormatNumber(dblSaldoPorPagar, 2)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -272,7 +250,6 @@ Public Class FrmAplicaReciboCxP
         proveedor = Nothing
         txtNombreProveedor.Text = ""
         cboCuentaPorPagar.DataSource = Nothing
-        Recibo.Text = ""
         txtDescripcion.Text = ""
         dtbDesgloseCuenta.Rows.Clear()
         grdDesgloseCuenta.Refresh()
@@ -282,7 +259,7 @@ Public Class FrmAplicaReciboCxP
         txtMontoOriginal.Text = ""
         txtTotalAbonado.Text = ""
         txtMontoAbono.Text = FormatNumber(dblTotal, 2)
-        txtMonto.Text = ""
+        txtMontoPago.Text = ""
         dblTotalPago = 0
         dblSaldoPorPagar = 0
         txtSaldoPorPagar.Text = FormatNumber(dblSaldoPorPagar, 2)
@@ -293,12 +270,11 @@ Public Class FrmAplicaReciboCxP
         btnEliminarPago.Enabled = True
         CmdGuardar.Enabled = True
         cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
-        cboTipoMoneda.SelectedValue = StaticValoresPorDefecto.MonedaDelSistema
-        txtMonto.Text = ""
+        txtMontoPago.Text = ""
     End Sub
 
-    Private Sub CmdGuardar_Click(sender As Object, e As EventArgs) Handles CmdGuardar.Click
-        If proveedor Is Nothing Or txtFecha.Text = "" Or Recibo.Text = "" Or txtDescripcion.Text = "" Then
+    Private Async Sub CmdGuardar_Click(sender As Object, e As EventArgs) Handles CmdGuardar.Click
+        If proveedor Is Nothing Or txtFecha.Text = "" Or txtDescripcion.Text = "" Or txtRecibo.Text = "" Then
             MessageBox.Show("Información incompleta.  Favor verificar. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         End If
@@ -317,12 +293,12 @@ Public Class FrmAplicaReciboCxP
 
         movimiento = New MovimientoCuentaPorPagar With {
             .IdEmpresa = cuentaPorPagar.IdEmpresa,
+            .IdSucursal = FrmPrincipal.equipoGlobal.IdSucursal,
             .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
             .IdPropietario = proveedor.IdProveedor,
             .Tipo = StaticTipoAbono.AbonoEfectivo,
-            .TipoPropietario = StaticTipoCuentaPorPagar.Proveedores,
-            .Recibo = Recibo.Text,
             .Descripcion = txtDescripcion.Text,
+            .Recibo = txtRecibo.Text,
             .Monto = dblTotal,
             .Fecha = Now()
         }
@@ -337,16 +313,17 @@ Public Class FrmAplicaReciboCxP
             desglosePagoMovimiento = New DesglosePagoMovimientoCuentaPorPagar With {
                 .IdFormaPago = dtbDesglosePago.Rows(I).Item(0),
                 .IdCuentaBanco = dtbDesglosePago.Rows(I).Item(2),
-                .NroMovimiento = dtbDesglosePago.Rows(I).Item(4),
-                .Beneficiario = dtbDesglosePago.Rows(I).Item(5),
+                .Beneficiario = dtbDesglosePago.Rows(I).Item(4),
+                .NroMovimiento = dtbDesglosePago.Rows(I).Item(5),
                 .IdTipoMoneda = dtbDesglosePago.Rows(I).Item(6),
-                .MontoLocal = dtbDesglosePago.Rows(I).Item(8),
-                .MontoForaneo = dtbDesglosePago.Rows(I).Item(9)
+                .Fecha = Now(),
+                .MontoLocal = dtbDesglosePago.Rows(I).Item(7),
+                .TipoDeCambio = dtbDesglosePago.Rows(I).Item(8)
             }
             movimiento.DesglosePagoMovimientoCuentaPorPagar.Add(desglosePagoMovimiento)
         Next
         Try
-            'servicioCuentaPorPagar.AplicarMovimientoCxP(movimiento)
+            Await Puntoventa.AplicarMovimientoCxP(movimiento, FrmPrincipal.usuarioGlobal.Token)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
@@ -367,26 +344,25 @@ Public Class FrmAplicaReciboCxP
             .empresa = FrmPrincipal.empresaGlobal,
             .equipo = FrmPrincipal.equipoGlobal,
             .strConsecutivo = movimiento.IdMovCxP,
-            .strRecibo = txtDocumento.Text,
             .strNombre = txtNombreProveedor.Text,
             .strFechaAbono = txtFecha.Text,
             .strTotalAbono = FormatNumber(dblTotal, 2)
         }
-        arrDesgloseMov = New List(Of ModuloImpresion.clsDesgloseFormaPago)()
+        arrDesgloseMov = New List(Of ModuloImpresion.ClsDesgloseFormaPago)()
         For I = 0 To dtbDesgloseCuenta.Rows.Count - 1
-            desglosePagoImpresion = New ModuloImpresion.clsDesgloseFormaPago With {
+            desglosePagoImpresion = New ModuloImpresion.ClsDesgloseFormaPago With {
                 .strDescripcion = dtbDesgloseCuenta.Rows(I).Item(3),
                 .strMonto = FormatNumber(dtbDesgloseCuenta.Rows(I).Item(2), 2)
             }
             arrDesgloseMov.Add(desglosePagoImpresion)
         Next
         reciboComprobante.arrDesgloseMov = arrDesgloseMov
-        arrDesglosePago = New List(Of ModuloImpresion.clsDesgloseFormaPago)()
+        arrDesglosePago = New List(Of ModuloImpresion.ClsDesgloseFormaPago)()
         For I = 0 To dtbDesglosePago.Rows.Count - 1
-            desglosePagoImpresion = New ModuloImpresion.clsDesgloseFormaPago With {
+            desglosePagoImpresion = New ModuloImpresion.ClsDesgloseFormaPago With {
                 .strDescripcion = dtbDesglosePago.Rows(I).Item(1),
-                .strMonto = FormatNumber(dtbDesglosePago.Rows(I).Item(9), 2),
-                .strNroDoc = dtbDesglosePago.Rows(I).Item(4)
+                .strMonto = FormatNumber(dtbDesglosePago.Rows(I).Item(6), 2),
+                .strNroDoc = dtbDesglosePago.Rows(I).Item(5)
             }
             arrDesglosePago.Add(desglosePagoImpresion)
         Next
@@ -399,33 +375,17 @@ Public Class FrmAplicaReciboCxP
         End Try
     End Sub
 
-    Private Sub cboFormaPago_SelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs) Handles cboFormaPago.SelectedValueChanged
+    Private Sub CboFormaPago_SelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs) Handles cboFormaPago.SelectedValueChanged
         If Not bolInit And Not cboFormaPago.SelectedValue Is Nothing Then
-            cboCuentaBanco.SelectedIndex = 0
-            cboTipoMoneda.SelectedValue = StaticValoresPorDefecto.MonedaDelSistema
+            cboTipoBanco.SelectedIndex = 0
+            txtBeneficiario.Text = ""
             txtDocumento.Text = ""
-            If cboFormaPago.SelectedValue <> StaticFormaPago.TransferenciaDepositoBancario And cboFormaPago.SelectedValue <> StaticFormaPago.Cheque Then
-                cboCuentaBanco.Enabled = False
-                txtDocumento.ReadOnly = True
-                txtDocumento.Text = ""
-                cboTipoMoneda.Enabled = True
-            Else
-                cboCuentaBanco.Enabled = True
-                txtDocumento.ReadOnly = False
-                cboTipoMoneda.Enabled = False
-            End If
-        End If
-    End Sub
-
-    Private Sub cboTipoMoneda_SelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs) Handles cboTipoMoneda.SelectedValueChanged
-        If Not bolInit And Not cboTipoMoneda.SelectedValue Is Nothing Then
-            txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmPrincipal.decTipoCambioDolar.ToString())
         End If
     End Sub
 
     Private Sub CmdInsertar_Click(sender As Object, e As EventArgs) Handles btnInsertar.Click
         If cboCuentaPorPagar.SelectedValue > 0 And txtMontoAbono.Text <> "" Then
-            If CDbl(txtMontoAbono.Text) <= 0 Then
+            If CDbl(txtMontoAbono.Text) < 1 Then
                 MessageBox.Show("El monto del abono debe ser mayor a cero.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End If
@@ -448,46 +408,41 @@ Public Class FrmAplicaReciboCxP
     End Sub
 
     Private Sub CmdInsertarPago_Click(sender As Object, e As EventArgs) Handles btnInsertarPago.Click
-        If cboFormaPago.SelectedValue > 0 And cboTipoMoneda.SelectedValue > 0 And cboCuentaBanco.SelectedValue > 0 And dblTotal > 0 And txtMonto.Text <> "" Then
+        If cboFormaPago.SelectedValue > 0 And cboTipoBanco.SelectedValue > 0 And dblTotal > 0 And txtMontoPago.Text <> "" Then
             If dblSaldoPorPagar = 0 Then
                 MessageBox.Show("El monto por cancelar ya se encuentra cubierto. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End If
             If cboFormaPago.SelectedValue = StaticFormaPago.Cheque Or cboFormaPago.SelectedValue = StaticFormaPago.TransferenciaDepositoBancario Then
-                If txtDocumento.Text = "" Then
-                    MessageBox.Show("Debe ingresar el nombre del beneficiario para esta forma de pago.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                If txtBeneficiario.Text = "" Or txtDocumento.Text = "" Then
+                    MessageBox.Show("Debe ingresar el número de documento correspondiente al movimiento.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
                 End If
             End If
             CargarLineaDesglosePago()
             cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
-            cboTipoMoneda.SelectedValue = StaticValoresPorDefecto.MonedaDelSistema
-            txtMonto.Text = ""
+            txtMontoPago.Text = ""
             CargarTotalesPago()
             cboFormaPago.Focus()
         End If
     End Sub
 
     Private Sub CmdEliminarPago_Click(sender As Object, e As EventArgs) Handles btnEliminarPago.Click
-        Dim objPkDesglose(2) As Object
         If dtbDesglosePago.Rows.Count > 0 Then
-            objPkDesglose(0) = grdDesglosePago.CurrentRow.Cells(0).Value
-            objPkDesglose(1) = grdDesglosePago.CurrentRow.Cells(2).Value
-            objPkDesglose(2) = grdDesglosePago.CurrentRow.Cells(6).Value
-            dtbDesglosePago.Rows.Remove(dtbDesglosePago.Rows.Find(objPkDesglose))
+            dtbDesglosePago.Rows.RemoveAt(grdDesglosePago.CurrentRow.Index)
             grdDesglosePago.Refresh()
             CargarTotalesPago()
             cboFormaPago.Focus()
         End If
     End Sub
 
-    Private Sub btnBuscarProveedor_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnBuscarProveedor.Click
+    Private Async Sub btnBuscarProveedor_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnBuscarProveedor.Click
         Dim formBusquedaProveedor As New FrmBusquedaProveedor()
         FrmPrincipal.intBusqueda = 0
         formBusquedaProveedor.ShowDialog()
         If FrmPrincipal.intBusqueda > 0 Then
             Try
-                'proveedor = servicioCompras.ObtenerProveedor(FrmMenuPrincipal.intBusqueda)
+                proveedor = Await Puntoventa.ObtenerProveedor(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
@@ -495,9 +450,9 @@ Public Class FrmAplicaReciboCxP
             txtNombreProveedor.Text = proveedor.Nombre
             bolInit = True
             Try
-                'cboCuentaPorPagar.DataSource = servicioCuentaPorPagar.ObtenerListaCuentasPorPagarPorPropietario(StaticTipoCuentaPorPagar.Proveedores, proveedor.IdProveedor)
-                cboCuentaPorPagar.ValueMember = "IdCxP"
-                cboCuentaPorPagar.DisplayMember = "DescReferencia"
+                cboCuentaPorPagar.ValueMember = "Id"
+                cboCuentaPorPagar.DisplayMember = "Descripcion"
+                cboCuentaPorPagar.DataSource = Await Puntoventa.ObtenerListadoCuentasPorPagar(FrmPrincipal.empresaGlobal.IdEmpresa, StaticTipoCuentaPorPagar.Proveedores, proveedor.IdProveedor, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
@@ -517,10 +472,10 @@ Public Class FrmAplicaReciboCxP
         End If
     End Sub
 
-    Private Sub cboCuentaPorPagar_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboCuentaPorPagar.SelectedValueChanged
+    Private Async Sub cboCuentaPorPagar_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboCuentaPorPagar.SelectedValueChanged
         If Not bolInit And cboCuentaPorPagar.SelectedValue IsNot Nothing Then
             Try
-                'cuentaPorPagar = servicioCuentaPorPagar.ObtenerCuentaPorPagar(cboCuentaPorPagar.SelectedValue)
+                cuentaPorPagar = Await Puntoventa.ObtenerCuentaPorPagar(cboCuentaPorPagar.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
@@ -531,15 +486,15 @@ Public Class FrmAplicaReciboCxP
         End If
     End Sub
 
-    Private Sub txtMonto_Validated(sender As Object, e As EventArgs) Handles txtMonto.Validated
-        If txtMonto.Text <> "" Then txtMonto.Text = FormatNumber(txtMonto.Text, 2)
+    Private Sub txtMonto_Validated(sender As Object, e As EventArgs) Handles txtMontoPago.Validated
+        If txtMontoPago.Text <> "" Then txtMontoPago.Text = FormatNumber(txtMontoPago.Text, 2)
     End Sub
 
     Private Sub txtMontoAbono_Validated(sender As Object, e As EventArgs) Handles txtMontoAbono.Validated
         If txtMontoAbono.Text <> "" Then txtMontoAbono.Text = FormatNumber(txtMontoAbono.Text, 2)
     End Sub
 
-    Private Sub txtMontoAbono_KeyPress(ByVal sender As Object, ByVal e As KeyPressEventArgs) Handles txtMontoAbono.KeyPress, txtMonto.KeyPress
+    Private Sub txtMontoAbono_KeyPress(ByVal sender As Object, ByVal e As KeyPressEventArgs) Handles txtMontoAbono.KeyPress, txtMontoPago.KeyPress
         FrmPrincipal.ValidaNumero(e, sender, True, 2, ".")
     End Sub
 #End Region

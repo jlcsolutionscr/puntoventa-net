@@ -8,6 +8,7 @@ Public Class FrmProductoListado
     Private intFilasPorPagina As Integer = 16
     Private intCantidadDePaginas As Integer
     Private listado As IList
+    Private bolInit As Boolean = True
 #End Region
 
 #Region "Métodos"
@@ -21,6 +22,7 @@ Public Class FrmProductoListado
         Dim dvcCantidad As New DataGridViewTextBoxColumn
         Dim dvcPrecioCosto As New DataGridViewTextBoxColumn
         Dim dvcPrecioVenta1 As New DataGridViewTextBoxColumn
+        Dim dvcActivo As New DataGridViewCheckBoxColumn
         dvcIdProducto.DataPropertyName = "Id"
         dvcIdProducto.HeaderText = "Id"
         dvcIdProducto.Visible = False
@@ -38,8 +40,15 @@ Public Class FrmProductoListado
 
         dvcDescripcion.DataPropertyName = "Descripcion"
         dvcDescripcion.HeaderText = "Descripción"
-        dvcDescripcion.Width = 320
+        dvcDescripcion.Width = 300
         dgvListado.Columns.Add(dvcDescripcion)
+
+        dvcActivo.DataPropertyName = "ACTIVO"
+        dvcActivo.HeaderText = "A"
+        dvcActivo.Width = 20
+        dvcActivo.Visible = True
+        dvcActivo.ReadOnly = True
+        dgvListado.Columns.Add(dvcActivo)
 
         dvcCantidad.DataPropertyName = "Cantidad"
         dvcCantidad.HeaderText = "Cant"
@@ -62,7 +71,7 @@ Public Class FrmProductoListado
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
         Try
-            listado = Await Puntoventa.ObtenerListadoProductos(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, intNumeroPagina, intFilasPorPagina, True, FrmPrincipal.usuarioGlobal.Token, cboLinea.SelectedValue, txtCodigo.Text, txtDescripcion.Text)
+            listado = Await Puntoventa.ObtenerListadoProductos(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, intNumeroPagina, intFilasPorPagina, True, chkFiltrarActivos.Checked, FrmPrincipal.usuarioGlobal.Token, cboLinea.SelectedValue, txtCodigo.Text, txtDescripcion.Text)
             dgvListado.DataSource = listado
             If listado.Count() > 0 Then
                 btnEditar.Enabled = True
@@ -80,7 +89,7 @@ Public Class FrmProductoListado
 
     Private Async Function ValidarCantidadRegistros() As Task
         Try
-            intTotalRegistros = Await Puntoventa.ObtenerTotalListaProductos(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, True, FrmPrincipal.usuarioGlobal.Token, cboLinea.SelectedValue, txtCodigo.Text, txtDescripcion.Text)
+            intTotalRegistros = Await Puntoventa.ObtenerTotalListaProductos(FrmPrincipal.empresaGlobal.IdEmpresa, True, chkFiltrarActivos.Checked, FrmPrincipal.usuarioGlobal.Token, cboLinea.SelectedValue, txtCodigo.Text, txtDescripcion.Text)
         Catch ex As Exception
             Throw ex
         End Try
@@ -136,6 +145,7 @@ Public Class FrmProductoListado
             Await CargarComboBox()
             EstablecerPropiedadesDataGridView()
             Await ValidarCantidadRegistros()
+            bolInit = False
             intIndiceDePagina = 1
             Await ActualizarDatos(intIndiceDePagina)
         Catch ex As Exception
@@ -188,6 +198,20 @@ Public Class FrmProductoListado
         }
         formMant.ShowDialog()
         Await ActualizarDatos(intIndiceDePagina)
+    End Sub
+
+    Private Async Sub chkFiltrarActivos_CheckedChanged(sender As Object, e As EventArgs) Handles chkFiltrarActivos.CheckedChanged
+        Await ValidarCantidadRegistros()
+        intIndiceDePagina = 1
+        Await ActualizarDatos(intIndiceDePagina)
+    End Sub
+
+    Private Async Sub cboLinea_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboLinea.SelectedIndexChanged
+        If Not bolInit And Not cboLinea.SelectedValue Is Nothing Then
+            Await ValidarCantidadRegistros()
+            intIndiceDePagina = 1
+            Await ActualizarDatos(intIndiceDePagina)
+        End If
     End Sub
 #End Region
 End Class

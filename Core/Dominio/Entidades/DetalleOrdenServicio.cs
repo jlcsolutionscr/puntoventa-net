@@ -10,9 +10,11 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         {
         }
 
-        [Key, Column(Order = 0), ForeignKey("OrdenServicio")]
+        [Key]
+        public int IdConsecutivo { get; set; }
+        [ForeignKey("OrdenServicio")]
         public int IdOrden { get; set; }
-        [Key, Column(Order = 1), ForeignKey("Producto")]
+        [ForeignKey("Producto")]
         public int IdProducto { get; set; }
         public string Descripcion { get; set; }
         public decimal Cantidad { get; set; }

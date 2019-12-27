@@ -1,9 +1,9 @@
-<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
 Partial Class FrmGestionReciboCxP
     Inherits System.Windows.Forms.Form
 
     'Form overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()> _
+    <System.Diagnostics.DebuggerNonUserCode()>
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         If disposing AndAlso components IsNot Nothing Then
             components.Dispose()
@@ -34,7 +34,7 @@ Partial Class FrmGestionReciboCxP
         Me.CmdAnular.BackColor = System.Drawing.SystemColors.ButtonHighlight
         Me.CmdAnular.Cursor = System.Windows.Forms.Cursors.Default
         Me.CmdAnular.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.CmdAnular.Location = New System.Drawing.Point(632, 10)
+        Me.CmdAnular.Location = New System.Drawing.Point(568, 13)
         Me.CmdAnular.Name = "CmdAnular"
         Me.CmdAnular.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.CmdAnular.Size = New System.Drawing.Size(64, 21)
@@ -48,10 +48,10 @@ Partial Class FrmGestionReciboCxP
         Me._lblLabels_2.BackColor = System.Drawing.Color.Transparent
         Me._lblLabels_2.Cursor = System.Windows.Forms.Cursors.Default
         Me._lblLabels_2.ForeColor = System.Drawing.SystemColors.ControlText
-        Me._lblLabels_2.Location = New System.Drawing.Point(-2, 12)
+        Me._lblLabels_2.Location = New System.Drawing.Point(2, 14)
         Me._lblLabels_2.Name = "_lblLabels_2"
         Me._lblLabels_2.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me._lblLabels_2.Size = New System.Drawing.Size(68, 19)
+        Me._lblLabels_2.Size = New System.Drawing.Size(64, 19)
         Me._lblLabels_2.TabIndex = 9
         Me._lblLabels_2.Text = "Proveedor:"
         Me._lblLabels_2.TextAlign = System.Drawing.ContentAlignment.MiddleRight
@@ -63,12 +63,12 @@ Partial Class FrmGestionReciboCxP
         Me.grdDetalleRecibo.AllowUserToResizeColumns = False
         Me.grdDetalleRecibo.AllowUserToResizeRows = False
         Me.grdDetalleRecibo.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.grdDetalleRecibo.Location = New System.Drawing.Point(12, 38)
+        Me.grdDetalleRecibo.Location = New System.Drawing.Point(12, 47)
         Me.grdDetalleRecibo.MultiSelect = False
         Me.grdDetalleRecibo.Name = "grdDetalleRecibo"
         Me.grdDetalleRecibo.ReadOnly = True
         Me.grdDetalleRecibo.RowHeadersVisible = False
-        Me.grdDetalleRecibo.Size = New System.Drawing.Size(684, 252)
+        Me.grdDetalleRecibo.Size = New System.Drawing.Size(620, 352)
         Me.grdDetalleRecibo.StandardTab = True
         Me.grdDetalleRecibo.TabIndex = 3
         Me.grdDetalleRecibo.TabStop = False
@@ -78,21 +78,20 @@ Partial Class FrmGestionReciboCxP
         Me.txtNombreProveedor.AcceptsReturn = True
         Me.txtNombreProveedor.BackColor = System.Drawing.SystemColors.Window
         Me.txtNombreProveedor.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtNombreProveedor.Enabled = False
         Me.txtNombreProveedor.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtNombreProveedor.Location = New System.Drawing.Point(72, 12)
+        Me.txtNombreProveedor.Location = New System.Drawing.Point(72, 13)
         Me.txtNombreProveedor.MaxLength = 0
         Me.txtNombreProveedor.Name = "txtNombreProveedor"
         Me.txtNombreProveedor.ReadOnly = True
         Me.txtNombreProveedor.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtNombreProveedor.Size = New System.Drawing.Size(405, 20)
+        Me.txtNombreProveedor.Size = New System.Drawing.Size(394, 20)
         Me.txtNombreProveedor.TabIndex = 0
         Me.txtNombreProveedor.TabStop = False
         '
         'btnBuscarProveedor
         '
         Me.btnBuscarProveedor.Image = CType(resources.GetObject("btnBuscarProveedor.Image"), System.Drawing.Image)
-        Me.btnBuscarProveedor.Location = New System.Drawing.Point(478, 12)
+        Me.btnBuscarProveedor.Location = New System.Drawing.Point(472, 12)
         Me.btnBuscarProveedor.Name = "btnBuscarProveedor"
         Me.btnBuscarProveedor.Size = New System.Drawing.Size(20, 20)
         Me.btnBuscarProveedor.TabIndex = 11
@@ -104,7 +103,7 @@ Partial Class FrmGestionReciboCxP
         Me.CmdImprimir.BackColor = System.Drawing.SystemColors.ButtonHighlight
         Me.CmdImprimir.Cursor = System.Windows.Forms.Cursors.Default
         Me.CmdImprimir.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.CmdImprimir.Location = New System.Drawing.Point(562, 10)
+        Me.CmdImprimir.Location = New System.Drawing.Point(498, 13)
         Me.CmdImprimir.Name = "CmdImprimir"
         Me.CmdImprimir.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.CmdImprimir.Size = New System.Drawing.Size(64, 21)
@@ -118,7 +117,7 @@ Partial Class FrmGestionReciboCxP
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
-        Me.ClientSize = New System.Drawing.Size(708, 303)
+        Me.ClientSize = New System.Drawing.Size(646, 413)
         Me.Controls.Add(Me.CmdImprimir)
         Me.Controls.Add(Me.txtNombreProveedor)
         Me.Controls.Add(Me.btnBuscarProveedor)
@@ -134,7 +133,7 @@ Partial Class FrmGestionReciboCxP
         Me.Name = "FrmGestionReciboCxP"
         Me.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
-        Me.Text = "Anular Recibo a Cuentas por Pagar"
+        Me.Text = "Gestión de Abonos sobre Cuentas por Pagar"
         CType(Me.grdDetalleRecibo, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()

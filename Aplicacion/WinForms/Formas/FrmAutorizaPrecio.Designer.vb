@@ -42,7 +42,7 @@ Partial Class FrmAutorizaPrecio
         Me.CmdCancelar.Cursor = System.Windows.Forms.Cursors.Default
         Me.CmdCancelar.DialogResult = System.Windows.Forms.DialogResult.Cancel
         Me.CmdCancelar.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.CmdCancelar.Location = New System.Drawing.Point(121, 103)
+        Me.CmdCancelar.Location = New System.Drawing.Point(149, 103)
         Me.CmdCancelar.Name = "CmdCancelar"
         Me.CmdCancelar.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.CmdCancelar.Size = New System.Drawing.Size(81, 25)
@@ -56,7 +56,7 @@ Partial Class FrmAutorizaPrecio
         Me.CmdAceptar.Cursor = System.Windows.Forms.Cursors.Default
         Me.CmdAceptar.DialogResult = System.Windows.Forms.DialogResult.OK
         Me.CmdAceptar.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.CmdAceptar.Location = New System.Drawing.Point(25, 103)
+        Me.CmdAceptar.Location = New System.Drawing.Point(53, 103)
         Me.CmdAceptar.Name = "CmdAceptar"
         Me.CmdAceptar.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.CmdAceptar.Size = New System.Drawing.Size(81, 25)
@@ -76,20 +76,21 @@ Partial Class FrmAutorizaPrecio
         Me.TxtClave.Name = "TxtClave"
         Me.TxtClave.PasswordChar = Global.Microsoft.VisualBasic.ChrW(42)
         Me.TxtClave.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.TxtClave.Size = New System.Drawing.Size(89, 20)
+        Me.TxtClave.Size = New System.Drawing.Size(114, 20)
         Me.TxtClave.TabIndex = 1
         '
         'TxtUsuario
         '
         Me.TxtUsuario.AcceptsReturn = True
         Me.TxtUsuario.BackColor = System.Drawing.SystemColors.Window
+        Me.TxtUsuario.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper
         Me.TxtUsuario.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.TxtUsuario.ForeColor = System.Drawing.SystemColors.WindowText
         Me.TxtUsuario.Location = New System.Drawing.Point(96, 17)
         Me.TxtUsuario.MaxLength = 0
         Me.TxtUsuario.Name = "TxtUsuario"
         Me.TxtUsuario.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.TxtUsuario.Size = New System.Drawing.Size(89, 20)
+        Me.TxtUsuario.Size = New System.Drawing.Size(114, 20)
         Me.TxtUsuario.TabIndex = 0
         '
         'LblClave
@@ -129,7 +130,7 @@ Partial Class FrmAutorizaPrecio
         Me.txtPrecio.MaxLength = 0
         Me.txtPrecio.Name = "txtPrecio"
         Me.txtPrecio.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtPrecio.Size = New System.Drawing.Size(89, 20)
+        Me.txtPrecio.Size = New System.Drawing.Size(114, 20)
         Me.txtPrecio.TabIndex = 2
         '
         'Label1
@@ -152,7 +153,7 @@ Partial Class FrmAutorizaPrecio
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.CancelButton = Me.CmdCancelar
-        Me.ClientSize = New System.Drawing.Size(230, 139)
+        Me.ClientSize = New System.Drawing.Size(281, 139)
         Me.ControlBox = False
         Me.Controls.Add(Me.txtPrecio)
         Me.Controls.Add(Me.Label1)
@@ -166,13 +167,13 @@ Partial Class FrmAutorizaPrecio
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
         Me.Location = New System.Drawing.Point(3, 22)
         Me.MaximizeBox = False
-        Me.MaximumSize = New System.Drawing.Size(246, 178)
+        Me.MaximumSize = New System.Drawing.Size(297, 178)
         Me.MinimizeBox = False
-        Me.MinimumSize = New System.Drawing.Size(246, 178)
+        Me.MinimumSize = New System.Drawing.Size(297, 178)
         Me.Name = "FrmAutorizaPrecio"
         Me.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
-        Me.Text = "Autorización especial"
+        Me.Text = "Autorización de precio de venta especial"
         Me.ResumeLayout(False)
         Me.PerformLayout()
 

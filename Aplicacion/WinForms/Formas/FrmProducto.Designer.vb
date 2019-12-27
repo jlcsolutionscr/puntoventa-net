@@ -80,6 +80,9 @@ Partial Class FrmProducto
         Me.Label8 = New System.Windows.Forms.Label()
         Me.txtPorcUtilidad = New System.Windows.Forms.TextBox()
         Me.Label9 = New System.Windows.Forms.Label()
+        Me.txtObservacion = New System.Windows.Forms.TextBox()
+        Me.Label10 = New System.Windows.Forms.Label()
+        Me.chkActivo = New System.Windows.Forms.CheckBox()
         CType(Me.ptbImagen, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -679,12 +682,52 @@ Partial Class FrmProducto
         Me.Label9.Text = "Porcentaje utilidad:"
         Me.Label9.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
+        'txtObservacion
+        '
+        Me.txtObservacion.AcceptsReturn = True
+        Me.txtObservacion.BackColor = System.Drawing.SystemColors.Window
+        Me.txtObservacion.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtObservacion.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtObservacion.Location = New System.Drawing.Point(121, 474)
+        Me.txtObservacion.MaxLength = 200
+        Me.txtObservacion.Name = "txtObservacion"
+        Me.txtObservacion.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtObservacion.Size = New System.Drawing.Size(651, 20)
+        Me.txtObservacion.TabIndex = 17
+        '
+        'Label10
+        '
+        Me.Label10.BackColor = System.Drawing.Color.Transparent
+        Me.Label10.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label10.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label10.Location = New System.Drawing.Point(32, 475)
+        Me.Label10.Name = "Label10"
+        Me.Label10.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label10.Size = New System.Drawing.Size(83, 17)
+        Me.Label10.TabIndex = 153
+        Me.Label10.Text = "Observaciones:"
+        Me.Label10.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
+        'chkActivo
+        '
+        Me.chkActivo.AutoSize = True
+        Me.chkActivo.Location = New System.Drawing.Point(121, 500)
+        Me.chkActivo.Name = "chkActivo"
+        Me.chkActivo.Size = New System.Drawing.Size(101, 17)
+        Me.chkActivo.TabIndex = 18
+        Me.chkActivo.TabStop = False
+        Me.chkActivo.Text = "Producto activo"
+        Me.chkActivo.UseVisualStyleBackColor = True
+        '
         'FrmProducto
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
-        Me.ClientSize = New System.Drawing.Size(785, 483)
+        Me.ClientSize = New System.Drawing.Size(785, 527)
+        Me.Controls.Add(Me.chkActivo)
+        Me.Controls.Add(Me.txtObservacion)
+        Me.Controls.Add(Me.Label10)
         Me.Controls.Add(Me.txtPorcUtilidad)
         Me.Controls.Add(Me.Label9)
         Me.Controls.Add(Me.txtCodigoProveedor)
@@ -735,9 +778,7 @@ Partial Class FrmProducto
         Me.KeyPreview = True
         Me.Location = New System.Drawing.Point(73, 22)
         Me.MaximizeBox = False
-        Me.MaximumSize = New System.Drawing.Size(801, 522)
         Me.MinimizeBox = False
-        Me.MinimumSize = New System.Drawing.Size(801, 522)
         Me.Name = "FrmProducto"
         Me.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.ShowInTaskbar = False
@@ -778,4 +819,7 @@ Partial Class FrmProducto
     Public WithEvents Label8 As Label
     Public WithEvents txtPorcUtilidad As TextBox
     Public WithEvents Label9 As Label
+    Public WithEvents txtObservacion As TextBox
+    Public WithEvents Label10 As Label
+    Friend WithEvents chkActivo As CheckBox
 End Class

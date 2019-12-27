@@ -929,9 +929,9 @@ namespace LeandroSoftware.ClienteWCF
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 
-        public static async Task<int> ObtenerTotalListaProductos(int intIdEmpresa, int intIdSucursal, bool bolIncluyeServicios, string strToken, int intIdLinea = 0, string strCodigo = "", string strCodigoProveedor = "", string strDescripcion = "")
+        public static async Task<int> ObtenerTotalListaProductos(int intIdEmpresa, bool bolIncluyeServicios, bool bolFiltraActivos, string strToken, int intIdLinea = 0, string strCodigo = "", string strCodigoProveedor = "", string strDescripcion = "")
         {
-            string strDatos = "{NombreMetodo: 'ObtenerTotalListaProductos', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", IncluyeServicios: '" + bolIncluyeServicios + "', IdLinea: " + intIdLinea + ", Codigo: '" + strCodigo + "', CodigoProveedor: '" + strCodigoProveedor + "', Descripcion: '" + strDescripcion + "'}}";
+            string strDatos = "{NombreMetodo: 'ObtenerTotalListaProductos', Parametros: {IdEmpresa: " + intIdEmpresa + ", IncluyeServicios: '" + bolIncluyeServicios + "', FiltraActivos: '" + bolFiltraActivos + "', IdLinea: " + intIdLinea + ", Codigo: '" + strCodigo + "', CodigoProveedor: '" + strCodigoProveedor + "', Descripcion: '" + strDescripcion + "'}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             int intCantidad = 0;
             if (respuesta != "")
@@ -939,9 +939,9 @@ namespace LeandroSoftware.ClienteWCF
             return intCantidad;
         }
 
-        public static async Task<List<ProductoDetalle>> ObtenerListadoProductos(int intIdEmpresa, int intIdSucursal, int intNumeroPagina, int intFilasPorPagina, bool bolIncluyeServicios, string strToken, int intIdLinea = 0, string strCodigo = "", string strCodigoProveedor = "", string strDescripcion = "")
+        public static async Task<List<ProductoDetalle>> ObtenerListadoProductos(int intIdEmpresa, int intIdSucursal, int intNumeroPagina, int intFilasPorPagina, bool bolIncluyeServicios, bool bolFiltraActivos, string strToken, int intIdLinea = 0, string strCodigo = "", string strCodigoProveedor = "", string strDescripcion = "")
         {
-            string strDatos = "{NombreMetodo: 'ObtenerListadoProductos', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", NumeroPagina: " + intNumeroPagina + ", FilasPorPagina: " + intFilasPorPagina + ", IncluyeServicios: '" + bolIncluyeServicios + "', IdLinea: " + intIdLinea + ", Codigo: '" + strCodigo + "', CodigoProveedor: '" + strCodigoProveedor + "', Descripcion: '" + strDescripcion + "'}}";
+            string strDatos = "{NombreMetodo: 'ObtenerListadoProductos', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", NumeroPagina: " + intNumeroPagina + ", FilasPorPagina: " + intFilasPorPagina + ", IncluyeServicios: '" + bolIncluyeServicios + "', FiltraActivos: '" + bolFiltraActivos + "', IdLinea: " + intIdLinea + ", Codigo: '" + strCodigo + "', CodigoProveedor: '" + strCodigoProveedor + "', Descripcion: '" + strDescripcion + "'}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             List<ProductoDetalle> listado = new List<ProductoDetalle>();
             if (respuesta != "")
@@ -986,6 +986,16 @@ namespace LeandroSoftware.ClienteWCF
         public static async Task<Producto> ObtenerProducto(int intIdProducto, int intIdSucursal, string strToken)
         {
             string strDatos = "{NombreMetodo: 'ObtenerProducto', Parametros: {IdProducto: " + intIdProducto + ", IdSucursal: " + intIdSucursal + "}}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            Producto producto = null;
+            if (respuesta != "")
+                producto = serializer.Deserialize<Producto>(respuesta);
+            return producto;
+        }
+
+        public static async Task<Producto> ObtenerProductoTransitorio(int intIdEmpresa, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'ObtenerProductoTransitorio', Parametros: {IdEmpresa: " + intIdEmpresa + "}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             Producto producto = null;
             if (respuesta != "")
