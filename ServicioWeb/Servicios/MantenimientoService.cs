@@ -1815,7 +1815,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    var listado = dbContext.ProductoRepository.Where(x => x.IdEmpresa == intIdEmpresa);
+                    var listado = dbContext.ProductoRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.Tipo != StaticTipoProducto.Transitorio);
                     if (intIdLinea > 0)
                         listado = listado.Where(x => x.IdLinea == intIdLinea);
                     if (!strCodigo.Equals(string.Empty))
@@ -1845,7 +1845,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 var listaProducto = new List<ProductoDetalle>();
                 try
                 {
-                    var listado = dbContext.ProductoRepository.Where(x => x.IdEmpresa == intIdEmpresa);
+                    var listado = dbContext.ProductoRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.Tipo != StaticTipoProducto.Transitorio);
                     if (intIdLinea > 0)
                         listado = listado.Where(x => x.IdLinea == intIdLinea);
                     if (!strCodigo.Equals(string.Empty))

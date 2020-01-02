@@ -382,7 +382,7 @@ Public Class FrmPrincipal
         Try
             strUltimaVersionApp = Await Puntoventa.ObtenerUltimaVersionApp()
         Catch ex As Exception
-            MessageBox.Show("No fue posible acceder al servicio web de facturación electrónica. Consulte con su proveedor del servicio.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            MessageBox.Show("No fue posible acceder al servicio web: " & ex.Message & ". Consulte con su proveedor del servicio.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Close()
             Exit Sub
         End Try

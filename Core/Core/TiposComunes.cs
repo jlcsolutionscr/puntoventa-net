@@ -49,7 +49,8 @@ namespace LeandroSoftware.Core.TiposComunes
     {
         public static readonly int Producto = 1;
         public static readonly int ServicioProfesionales = 2;
-        public static readonly int OtrosServicios = 2;
+        public static readonly int OtrosServicios = 3;
+        public static readonly int Transitorio = 4;
     };
 
     public static class StaticTipoMovimientoProducto

@@ -3,6 +3,7 @@ Imports LeandroSoftware.Core.Dominio.Entidades
 Imports System.Xml
 Imports System.Threading.Tasks
 Imports LeandroSoftware.ClienteWCF
+Imports LeandroSoftware.Core.TiposComunes
 
 Public Class FrmTrasladoMercaderia
 #Region "Variables"
@@ -52,13 +53,13 @@ Public Class FrmTrasladoMercaderia
 
         dvcCodigo.DataPropertyName = "CODIGO"
         dvcCodigo.HeaderText = "Código"
-        dvcCodigo.Width = 225
+        dvcCodigo.Width = 200
         dvcCodigo.ReadOnly = True
         grdDetalleTraslado.Columns.Add(dvcCodigo)
 
         dvcDescripcion.DataPropertyName = "DESCRIPCION"
         dvcDescripcion.HeaderText = "Descripción"
-        dvcDescripcion.Width = 300
+        dvcDescripcion.Width = 320
         grdDetalleTraslado.Columns.Add(dvcDescripcion)
 
         dvcCantidad.DataPropertyName = "CANTIDAD"
@@ -69,7 +70,7 @@ Public Class FrmTrasladoMercaderia
 
         dvcPrecioCosto.DataPropertyName = "PRECIOCOSTO"
         dvcPrecioCosto.HeaderText = "Precio"
-        dvcPrecioCosto.Width = 75
+        dvcPrecioCosto.Width = 100
         dvcPrecioCosto.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleTraslado.Columns.Add(dvcPrecioCosto)
 
@@ -136,6 +137,8 @@ Public Class FrmTrasladoMercaderia
         If producto Is Nothing Then
             txtCodigo.Text = ""
             txtDescripcion.Text = ""
+            txtExistencias.Text = ""
+            txtCantidad.Text = ""
             txtPrecioCosto.Text = FormatNumber(0, 2)
             txtUnidad.Text = ""
             txtCodigo.Focus()
@@ -143,15 +146,11 @@ Public Class FrmTrasladoMercaderia
         Else
             Dim decTasaImpuesto As Decimal = producto.ParametroImpuesto.TasaImpuesto
             txtCodigo.Text = producto.Codigo
-            If txtCantidad.Text = "" Then txtCantidad.Text = "1"
             txtDescripcion.Text = producto.Descripcion
+            txtExistencias.Text = producto.Existencias
+            txtCantidad.Text = ""
             txtPrecioCosto.Text = FormatNumber(producto.PrecioCosto, 2)
             txtUnidad.Text = IIf(producto.Tipo = 1, "UND", IIf(producto.Tipo = 2, "SP", "OS"))
-            If FrmPrincipal.bolModificaDescripcion = True Then
-                txtDescripcion.Focus()
-            Else
-                txtPrecioCosto.Focus()
-            End If
         End If
     End Sub
 
@@ -184,7 +183,7 @@ Public Class FrmTrasladoMercaderia
             EstablecerPropiedadesDataGridView()
             grdDetalleTraslado.DataSource = dtbDetalleTraslado
             bolInit = False
-            txtCantidad.Text = "1"
+            txtCantidad.Text = ""
             txtTotal.Text = FormatNumber(0, 2)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -201,9 +200,10 @@ Public Class FrmTrasladoMercaderia
         grdDetalleTraslado.Refresh()
         txtTotal.Text = FormatNumber(0, 2)
         txtCodigo.Text = ""
-        txtUnidad.Text = ""
-        txtCantidad.Text = "1"
         txtDescripcion.Text = ""
+        txtUnidad.Text = ""
+        txtExistencias.Text = ""
+        txtCantidad.Text = ""
         txtPrecioCosto.Text = ""
         btnInsertar.Enabled = True
         btnEliminar.Enabled = True
@@ -274,6 +274,7 @@ Public Class FrmTrasladoMercaderia
                 Exit Sub
             End Try
             CargarDatosProducto(producto)
+            txtCantidad.Focus()
         End If
     End Sub
 
@@ -359,9 +360,10 @@ Public Class FrmTrasladoMercaderia
     Private Sub BtnInsertar_Click(sender As Object, e As EventArgs) Handles btnInsertar.Click
         If producto IsNot Nothing Then
             CargarLineaDetalleTraslado(producto)
-            txtCantidad.Text = "1"
             txtCodigo.Text = ""
             txtDescripcion.Text = ""
+            txtExistencias.Text = ""
+            txtCantidad.Text = ""
             txtUnidad.Text = ""
             txtPrecioCosto.Text = ""
             producto = Nothing
@@ -379,19 +381,45 @@ Public Class FrmTrasladoMercaderia
     End Sub
 
     Private Async Sub TxtCodigo_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtCodigo.PreviewKeyDown
-        If e.KeyCode = Keys.Tab Then
+        If e.KeyCode = Keys.Enter Or e.KeyCode = Keys.Tab Then
             Try
                 producto = Await Puntoventa.ObtenerProductoPorCodigo(FrmPrincipal.empresaGlobal.IdEmpresa, txtCodigo.Text, FrmPrincipal.equipoGlobal.IdSucursal, FrmPrincipal.usuarioGlobal.Token)
+                If producto IsNot Nothing And producto.Activo And producto.Tipo = StaticTipoProducto.Producto Then
+                    CargarDatosProducto(producto)
+                    txtCantidad.Focus()
+                Else
+                    txtCodigo.Text = ""
+                    txtDescripcion.Text = ""
+                    txtExistencias.Text = ""
+                    txtCantidad.Text = ""
+                    txtUnidad.Text = ""
+                    txtPrecioCosto.Text = ""
+                    txtCodigo.Focus()
+                End If
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
-            CargarDatosProducto(producto)
         End If
     End Sub
 
-    Private Sub TxtCantidad_Validated(sender As Object, e As EventArgs) Handles txtCantidad.Validated
-        If txtCantidad.Text = "" Then txtCantidad.Text = "1"
+    Private Sub TxtCantidad_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtCantidad.PreviewKeyDown
+        If e.KeyCode = Keys.Enter Then
+            If txtCantidad.Text <> "" And CDbl(txtPrecioCosto.Text) > 0 Then
+                BtnInsertar_Click(btnInsertar, New EventArgs())
+            ElseIf txtCantidad.Text <> "" Then
+                txtPrecioCosto.Focus()
+            End If
+        End If
+    End Sub
+
+    Private Sub txtCantidad_TextChanged(sender As Object, e As EventArgs) Handles txtCantidad.TextChanged
+        If txtCantidad.Text <> "" Then
+            If CDbl(txtCantidad.Text) > producto.Existencias Then
+                MessageBox.Show("La cantidad por trasladar no puede ser mayor a las existencias del producto.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                txtCantidad.Text = ""
+            End If
+        End If
     End Sub
 
     Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As KeyPressEventArgs) Handles txtCantidad.KeyPress, txtPrecioCosto.KeyPress

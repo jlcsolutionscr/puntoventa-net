@@ -66,6 +66,8 @@ Partial Class FrmTrasladoMercaderia
         Me.cboIdSucursalDestino = New System.Windows.Forms.ComboBox()
         Me.Label2 = New System.Windows.Forms.Label()
         Me.txtNombreSucursalOrigen = New System.Windows.Forms.TextBox()
+        Me.txtExistencias = New System.Windows.Forms.TextBox()
+        Me.Label15 = New System.Windows.Forms.Label()
         CType(Me.grdDetalleTraslado, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -78,7 +80,7 @@ Partial Class FrmTrasladoMercaderia
         Me.btnBusProd.Name = "btnBusProd"
         Me.btnBusProd.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.btnBusProd.Size = New System.Drawing.Size(73, 25)
-        Me.btnBusProd.TabIndex = 13
+        Me.btnBusProd.TabIndex = 74
         Me.btnBusProd.TabStop = False
         Me.btnBusProd.Text = "&Buscar"
         Me.btnBusProd.UseVisualStyleBackColor = False
@@ -164,7 +166,7 @@ Partial Class FrmTrasladoMercaderia
         Me.btnEliminar.Name = "btnEliminar"
         Me.btnEliminar.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.btnEliminar.Size = New System.Drawing.Size(73, 25)
-        Me.btnEliminar.TabIndex = 12
+        Me.btnEliminar.TabIndex = 73
         Me.btnEliminar.TabStop = False
         Me.btnEliminar.Text = "&Eliminar"
         Me.btnEliminar.UseVisualStyleBackColor = False
@@ -178,7 +180,7 @@ Partial Class FrmTrasladoMercaderia
         Me.btnInsertar.Name = "btnInsertar"
         Me.btnInsertar.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.btnInsertar.Size = New System.Drawing.Size(73, 25)
-        Me.btnInsertar.TabIndex = 11
+        Me.btnInsertar.TabIndex = 72
         Me.btnInsertar.TabStop = False
         Me.btnInsertar.Text = "Insertar"
         Me.btnInsertar.UseVisualStyleBackColor = False
@@ -211,7 +213,7 @@ Partial Class FrmTrasladoMercaderia
         Me.txtTotal.ReadOnly = True
         Me.txtTotal.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtTotal.Size = New System.Drawing.Size(73, 20)
-        Me.txtTotal.TabIndex = 16
+        Me.txtTotal.TabIndex = 75
         Me.txtTotal.TabStop = False
         Me.txtTotal.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
@@ -321,22 +323,22 @@ Partial Class FrmTrasladoMercaderia
         Me.grdDetalleTraslado.ReadOnly = True
         Me.grdDetalleTraslado.RowHeadersVisible = False
         Me.grdDetalleTraslado.Size = New System.Drawing.Size(800, 200)
-        Me.grdDetalleTraslado.TabIndex = 10
+        Me.grdDetalleTraslado.TabIndex = 71
         Me.grdDetalleTraslado.TabStop = False
         '
         'txtCodigo
         '
-        Me.txtCodigo.Location = New System.Drawing.Point(54, 198)
+        Me.txtCodigo.Location = New System.Drawing.Point(11, 198)
         Me.txtCodigo.Name = "txtCodigo"
-        Me.txtCodigo.Size = New System.Drawing.Size(252, 20)
-        Me.txtCodigo.TabIndex = 66
+        Me.txtCodigo.Size = New System.Drawing.Size(202, 20)
+        Me.txtCodigo.TabIndex = 65
         '
         'Label1
         '
         Me.Label1.BackColor = System.Drawing.Color.Transparent
         Me.Label1.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label1.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label1.Location = New System.Drawing.Point(306, 178)
+        Me.Label1.Location = New System.Drawing.Point(213, 178)
         Me.Label1.Name = "Label1"
         Me.Label1.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label1.Size = New System.Drawing.Size(345, 19)
@@ -350,13 +352,13 @@ Partial Class FrmTrasladoMercaderia
         Me.txtDescripcion.BackColor = System.Drawing.SystemColors.Window
         Me.txtDescripcion.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtDescripcion.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtDescripcion.Location = New System.Drawing.Point(306, 198)
+        Me.txtDescripcion.Location = New System.Drawing.Point(213, 198)
         Me.txtDescripcion.MaxLength = 0
         Me.txtDescripcion.Name = "txtDescripcion"
         Me.txtDescripcion.ReadOnly = True
         Me.txtDescripcion.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtDescripcion.Size = New System.Drawing.Size(345, 20)
-        Me.txtDescripcion.TabIndex = 67
+        Me.txtDescripcion.TabIndex = 66
         Me.txtDescripcion.TabStop = False
         '
         'txtUnidad
@@ -371,7 +373,7 @@ Partial Class FrmTrasladoMercaderia
         Me.txtUnidad.ReadOnly = True
         Me.txtUnidad.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtUnidad.Size = New System.Drawing.Size(60, 20)
-        Me.txtUnidad.TabIndex = 68
+        Me.txtUnidad.TabIndex = 69
         Me.txtUnidad.TabStop = False
         Me.txtUnidad.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         '
@@ -386,7 +388,7 @@ Partial Class FrmTrasladoMercaderia
         Me.txtPrecioCosto.Name = "txtPrecioCosto"
         Me.txtPrecioCosto.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtPrecioCosto.Size = New System.Drawing.Size(100, 20)
-        Me.txtPrecioCosto.TabIndex = 69
+        Me.txtPrecioCosto.TabIndex = 70
         Me.txtPrecioCosto.TabStop = False
         Me.txtPrecioCosto.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
@@ -396,13 +398,12 @@ Partial Class FrmTrasladoMercaderia
         Me.txtCantidad.BackColor = System.Drawing.SystemColors.Window
         Me.txtCantidad.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtCantidad.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtCantidad.Location = New System.Drawing.Point(11, 198)
+        Me.txtCantidad.Location = New System.Drawing.Point(608, 198)
         Me.txtCantidad.MaxLength = 0
         Me.txtCantidad.Name = "txtCantidad"
         Me.txtCantidad.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtCantidad.Size = New System.Drawing.Size(43, 20)
-        Me.txtCantidad.TabIndex = 65
-        Me.txtCantidad.Text = "1"
+        Me.txtCantidad.TabIndex = 68
         Me.txtCantidad.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         '
         '_lblLabels_8
@@ -436,7 +437,7 @@ Partial Class FrmTrasladoMercaderia
         Me._lblLabels_6.BackColor = System.Drawing.Color.Transparent
         Me._lblLabels_6.Cursor = System.Windows.Forms.Cursors.Default
         Me._lblLabels_6.ForeColor = System.Drawing.SystemColors.ControlText
-        Me._lblLabels_6.Location = New System.Drawing.Point(11, 178)
+        Me._lblLabels_6.Location = New System.Drawing.Point(608, 178)
         Me._lblLabels_6.Name = "_lblLabels_6"
         Me._lblLabels_6.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me._lblLabels_6.Size = New System.Drawing.Size(43, 19)
@@ -449,10 +450,10 @@ Partial Class FrmTrasladoMercaderia
         Me._lblLabels_1.BackColor = System.Drawing.Color.Transparent
         Me._lblLabels_1.Cursor = System.Windows.Forms.Cursors.Default
         Me._lblLabels_1.ForeColor = System.Drawing.SystemColors.ControlText
-        Me._lblLabels_1.Location = New System.Drawing.Point(54, 178)
+        Me._lblLabels_1.Location = New System.Drawing.Point(11, 178)
         Me._lblLabels_1.Name = "_lblLabels_1"
         Me._lblLabels_1.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me._lblLabels_1.Size = New System.Drawing.Size(252, 19)
+        Me._lblLabels_1.Size = New System.Drawing.Size(202, 19)
         Me._lblLabels_1.TabIndex = 70
         Me._lblLabels_1.Text = "Código"
         Me._lblLabels_1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
@@ -498,13 +499,43 @@ Partial Class FrmTrasladoMercaderia
         Me.txtNombreSucursalOrigen.TabIndex = 80
         Me.txtNombreSucursalOrigen.TabStop = False
         '
+        'txtExistencias
+        '
+        Me.txtExistencias.AcceptsReturn = True
+        Me.txtExistencias.BackColor = System.Drawing.SystemColors.Window
+        Me.txtExistencias.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtExistencias.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtExistencias.Location = New System.Drawing.Point(558, 198)
+        Me.txtExistencias.MaxLength = 0
+        Me.txtExistencias.Name = "txtExistencias"
+        Me.txtExistencias.ReadOnly = True
+        Me.txtExistencias.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtExistencias.Size = New System.Drawing.Size(50, 20)
+        Me.txtExistencias.TabIndex = 67
+        Me.txtExistencias.TabStop = False
+        Me.txtExistencias.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
+        '
+        'Label15
+        '
+        Me.Label15.BackColor = System.Drawing.Color.Transparent
+        Me.Label15.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label15.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label15.Location = New System.Drawing.Point(558, 178)
+        Me.Label15.Name = "Label15"
+        Me.Label15.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label15.Size = New System.Drawing.Size(50, 19)
+        Me.Label15.TabIndex = 156
+        Me.Label15.Text = "Stock"
+        Me.Label15.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
         'FrmTrasladoMercaderia
         '
-        Me.AcceptButton = Me.btnInsertar
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(823, 463)
+        Me.Controls.Add(Me.txtExistencias)
+        Me.Controls.Add(Me.Label15)
         Me.Controls.Add(Me.txtNombreSucursalOrigen)
         Me.Controls.Add(Me.cboIdSucursalDestino)
         Me.Controls.Add(Me.Label2)
@@ -568,4 +599,6 @@ Partial Class FrmTrasladoMercaderia
     Public WithEvents cboIdSucursalDestino As ComboBox
     Public WithEvents Label2 As Label
     Public WithEvents txtNombreSucursalOrigen As TextBox
+    Public WithEvents txtExistencias As TextBox
+    Public WithEvents Label15 As Label
 End Class

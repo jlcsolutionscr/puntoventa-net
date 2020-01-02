@@ -534,12 +534,12 @@ Partial Class FrmProforma
         Me.Label8.BackColor = System.Drawing.Color.Transparent
         Me.Label8.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label8.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label8.Location = New System.Drawing.Point(41, 124)
+        Me.Label8.Location = New System.Drawing.Point(8, 124)
         Me.Label8.Name = "Label8"
         Me.Label8.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label8.Size = New System.Drawing.Size(133, 19)
+        Me.Label8.Size = New System.Drawing.Size(166, 19)
         Me.Label8.TabIndex = 161
-        Me.Label8.Text = "Información exoneración:"
+        Me.Label8.Text = "Datos exoneración:"
         Me.Label8.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'txtFechaExoneracion

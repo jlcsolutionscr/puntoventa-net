@@ -577,6 +577,7 @@ Public Class FrmProforma
                 Exit Sub
             End Try
         Else
+            proforma.IdProforma = txtIdProforma.Text
             proforma.TextoAdicional = txtTextoAdicional.Text
             proforma.Excento = decExcento
             proforma.Gravado = decGravado

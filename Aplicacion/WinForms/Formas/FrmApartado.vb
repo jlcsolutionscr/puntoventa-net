@@ -291,7 +291,7 @@ Public Class FrmApartado
     End Function
 
     Private Sub CargarLineaDesglosePago()
-        Dim objPkDesglose(2) As Object
+        Dim objPkDesglose(1) As Object
         objPkDesglose(0) = cboFormaPago.SelectedValue
         objPkDesglose(1) = cboTipoBanco.SelectedValue
         If dtbDesglosePago.Rows.Contains(objPkDesglose) Then
@@ -980,8 +980,8 @@ Public Class FrmApartado
                     Exit Sub
                 End Try
                 cboTipoBanco.SelectedIndex = 0
-                cboTipoBanco.Width = 123
-                lblBanco.Width = 123
+                cboTipoBanco.Width = 325
+                lblBanco.Width = 325
                 lblBanco.Text = "Banco Adquiriente"
                 lblAutorizacion.Text = "Autorización"
                 txtTipoTarjeta.Visible = True
@@ -1004,8 +1004,8 @@ Public Class FrmApartado
                     Exit Sub
                 End Try
                 cboTipoBanco.SelectedIndex = 0
-                cboTipoBanco.Width = 193
-                lblBanco.Width = 193
+                cboTipoBanco.Width = 395
+                lblBanco.Width = 395
                 lblBanco.Text = "Cuenta Bancaria"
                 lblAutorizacion.Text = "Nro. Mov"
                 cboTipoBanco.Enabled = True
@@ -1092,7 +1092,7 @@ Public Class FrmApartado
         ElseIf e.KeyCode = Keys.Enter Or e.KeyCode = Keys.Tab Then
             Try
                 producto = Await Puntoventa.ObtenerProductoPorCodigo(FrmPrincipal.empresaGlobal.IdEmpresa, txtCodigo.Text, FrmPrincipal.equipoGlobal.IdSucursal, FrmPrincipal.usuarioGlobal.Token)
-                If producto IsNot Nothing Then
+                If producto IsNot Nothing And producto.Activo And producto.Tipo = StaticTipoProducto.Producto Then
                     CargarDatosProducto(producto)
                     txtCantidad.Focus()
                 Else
