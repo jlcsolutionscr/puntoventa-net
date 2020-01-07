@@ -9,7 +9,6 @@ Public Class FrmCompra
     Private decExcento, decGravado, decSaldoPorPagar As Decimal
     Private decTotalPago As Decimal = 0
     Private decTotal As Decimal = 0
-    Private dblSaldoPorPagar As Decimal = 0
     Private I As Short
     Private dtbDetalleCompra, dtbDesglosePago As DataTable
     Private dtrRowDetCompra, dtrRowDesglosePago As DataRow
@@ -90,7 +89,7 @@ Public Class FrmCompra
         grdDetalleCompra.Columns.Add(dvcCantidad)
 
         dvcPrecioCosto.DataPropertyName = "PRECIOCOSTO"
-        dvcPrecioCosto.HeaderText = "Precio Costo"
+        dvcPrecioCosto.HeaderText = "P. Costo"
         dvcPrecioCosto.Width = 80
         dvcPrecioCosto.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleCompra.Columns.Add(dvcPrecioCosto)
@@ -114,7 +113,7 @@ Public Class FrmCompra
         grdDetalleCompra.Columns.Add(dvcPorcentajeIVA)
 
         dvcPrecioVenta.DataPropertyName = "PRECIOVENTA"
-        dvcPrecioVenta.HeaderText = "Precio Venta"
+        dvcPrecioVenta.HeaderText = "P. Venta"
         dvcPrecioVenta.Width = 80
         dvcPrecioVenta.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleCompra.Columns.Add(dvcPrecioVenta)
@@ -290,7 +289,7 @@ Public Class FrmCompra
     End Function
 
     Private Sub CargarLineaDesglosePago()
-        Dim objPkDesglose(2) As Object
+        Dim objPkDesglose(1) As Object
         objPkDesglose(0) = cboFormaPago.SelectedValue
         objPkDesglose(1) = cboCuentaBanco.SelectedValue
         If dtbDesglosePago.Rows.Contains(objPkDesglose) Then
@@ -331,9 +330,9 @@ Public Class FrmCompra
         txtSubTotal.Text = FormatNumber(decSubTotal, 2)
         txtImpuesto.Text = FormatNumber(txtImpuesto.Text, 2)
         txtTotal.Text = FormatNumber(decTotal, 2)
-        dblSaldoPorPagar = decTotal - decTotalPago
-        txtSaldoPorPagar.Text = FormatNumber(dblSaldoPorPagar, 2)
-        txtMontoPago.Text = FormatNumber(dblSaldoPorPagar, 2)
+        decSaldoPorPagar = decTotal - decTotalPago
+        txtSaldoPorPagar.Text = FormatNumber(decSaldoPorPagar, 2)
+        txtMontoPago.Text = FormatNumber(decSaldoPorPagar, 2)
     End Sub
 
     Private Sub CargarTotalesPago()
@@ -429,7 +428,7 @@ Public Class FrmCompra
             txtDescuento.Text = FormatNumber(0, 2)
             txtImpuesto.Text = FormatNumber(0, 2)
             txtTotal.Text = FormatNumber(0, 2)
-            txtSaldoPorPagar.Text = FormatNumber(dblSaldoPorPagar, 2)
+            txtSaldoPorPagar.Text = FormatNumber(decSaldoPorPagar, 2)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -450,7 +449,7 @@ Public Class FrmCompra
         txtPlazoCredito.Text = ""
         dtbDetalleCompra.Rows.Clear()
         grdDetalleCompra.Refresh()
-        dblSaldoPorPagar = 0
+        decSaldoPorPagar = 0
         txtSubTotal.Text = FormatNumber(0, 2)
         txtDescuento.Text = FormatNumber(0, 2)
         txtImpuesto.Text = FormatNumber(0, 2)
@@ -465,8 +464,8 @@ Public Class FrmCompra
         dtbDesglosePago.Rows.Clear()
         grdDesglosePago.Refresh()
         txtMontoPago.Text = ""
-        dblSaldoPorPagar = 0
-        txtSaldoPorPagar.Text = FormatNumber(dblSaldoPorPagar, 2)
+        decSaldoPorPagar = 0
+        txtSaldoPorPagar.Text = FormatNumber(decSaldoPorPagar, 2)
         decTotal = 0
         decTotalPago = 0
         txtDescuento.ReadOnly = False
@@ -626,11 +625,11 @@ Public Class FrmCompra
             Exit Sub
         End If
         If cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado Then
-            If dblSaldoPorPagar > 0 Then
+            If decSaldoPorPagar > 0 Then
                 MessageBox.Show("El total del desglose de pago de la compra no es suficiente para cubrir el saldo por pagar actual.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                 Exit Sub
             End If
-            If dblSaldoPorPagar < 0 Then
+            If decSaldoPorPagar < 0 Then
                 MessageBox.Show("El total del desglose de pago de la compra es superior al saldo por pagar.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                 Exit Sub
             End If
@@ -758,6 +757,7 @@ Public Class FrmCompra
             txtCodigoProveedor.Text = ""
             txtCodigo.Text = ""
             txtDescripcion.Text = ""
+            txtExistencias.Text = ""
             txtCantidad.Text = "1"
             txtPrecioCosto.Text = ""
             txtPrecioVenta.Text = ""
@@ -821,7 +821,7 @@ Public Class FrmCompra
 
     Private Sub BtnInsertarPago_Click(sender As Object, e As EventArgs) Handles btnInsertarPago.Click
         If cboFormaPago.SelectedValue > 0 And cboTipoMoneda.SelectedValue > 0 And cboCuentaBanco.SelectedValue > 0 And decTotal > 0 And txtMontoPago.Text <> "" Then
-            If dblSaldoPorPagar = 0 Then
+            If decSaldoPorPagar = 0 Then
                 MessageBox.Show("El monto de por cancelar ya se encuentra cubierto. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End If

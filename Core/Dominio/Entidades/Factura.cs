@@ -35,6 +35,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public string TextoAdicional { get; set; }
         [ForeignKey("Vendedor")]
         public int IdVendedor { get; set; }
+        [ForeignKey("ParametroExoneracion")]
         public int IdTipoExoneracion { get; set; }
         public string NumDocExoneracion { get; set; }
         public string NombreInstExoneracion { get; set; }
@@ -67,6 +68,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public Empresa Empresa { get; set; }
         public Usuario Usuario { get; set; }
         public TipoMoneda TipoMoneda { get; set; }
+        public ParametroExoneracion ParametroExoneracion { get; set; }
         public Vendedor Vendedor { get; set; }
         public ICollection<DetalleFactura> DetalleFactura { get; set; }
         public ICollection<DesglosePagoFactura> DesglosePagoFactura { get; set; }

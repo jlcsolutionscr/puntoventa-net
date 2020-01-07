@@ -1629,6 +1629,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         bool transitorio = dbContext.ProductoRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto != producto.IdProducto && x.Tipo == 4).Count() > 0;
                         if (transitorio) throw new BusinessException("Ya existe un producto de tipo 'Transitorio' registrado en la empresa.");
                     }
+                    if (producto.Imagen == null)
+                    {
+                        byte[] imagen = dbContext.ProductoRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto).FirstOrDefault().Imagen;
+                        producto.Imagen = imagen;
+                    }
                     producto.ParametroImpuesto = null;
                     producto.Proveedor = null;
                     dbContext.NotificarModificacion(producto);

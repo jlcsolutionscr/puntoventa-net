@@ -634,7 +634,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    Compra compra = dbContext.CompraRepository.Include("Proveedor").Include("DetalleCompra.Producto.TipoProducto").Include("DesglosePagoCompra.CuentaBanco").Include("DesglosePagoCompra.FormaPago").Include("DesglosePagoCompra.TipoMoneda").FirstOrDefault(x => x.IdCompra == intIdCompra);
+                    Compra compra = dbContext.CompraRepository.Include("Proveedor").Include("DetalleCompra.Producto.TipoProducto").Include("DesglosePagoCompra.FormaPago").Include("DesglosePagoCompra.TipoMoneda").FirstOrDefault(x => x.IdCompra == intIdCompra);
                     foreach (DetalleCompra detalle in compra.DetalleCompra)
                     {
                         detalle.Compra = null;

@@ -38,12 +38,6 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public decimal MontoAdelanto { get; set; }
         [NotMapped]
         public decimal Total { get { return Excento + Gravado + Exonerado + Impuesto - Descuento; } }
-        [ForeignKey("ParametroExoneracion")]
-        public int IdTipoExoneracion { get; set; }
-        public string NumDocExoneracion { get; set; }
-        public string NombreInstExoneracion { get; set; }
-        public DateTime FechaEmisionDoc { get; set; }
-        public int PorcentajeExoneracion { get; set; }
         public bool Nulo { get; set; }
         public int? IdAnuladoPor { get; set; }
         public bool Aplicado { get; set; }
@@ -53,7 +47,6 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public Usuario Usuario { get; set; }
         public TipoMoneda TipoMoneda { get; set; }
         public Vendedor Vendedor { get; set; }
-        public ParametroExoneracion ParametroExoneracion { get; set; }
         public ICollection<DetalleApartado> DetalleApartado { get; set; }
         public ICollection<DesglosePagoApartado> DesglosePagoApartado { get; set; }
     }

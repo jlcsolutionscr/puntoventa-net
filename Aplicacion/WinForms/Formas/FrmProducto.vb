@@ -131,6 +131,7 @@ Public Class FrmProducto
                 txtObservacion.Text = datos.Observacion
                 chkActivo.Checked = datos.Activo
                 Await CalcularPrecioSinImpuesto(datos.IdImpuesto)
+                txtPrecioImpuesto1.Focus()
             Else
                 datos = New Producto
                 parametroImpuesto = Await Puntoventa.ObtenerParametroImpuesto(8, FrmPrincipal.usuarioGlobal.Token)

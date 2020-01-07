@@ -66,7 +66,7 @@ namespace LeandroSoftware.ServicioWeb
                     }
                     Emails.Add(email);
                     counter++;
-                    if (counter > 15) break;
+                    if (counter > 50) break;
                 }
                 return Emails;
             }

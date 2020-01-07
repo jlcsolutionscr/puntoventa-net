@@ -932,7 +932,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    Factura factura = dbContext.FacturaRepository.Include("Cliente.Barrio.Distrito.Canton.Provincia").Include("Vendedor").Include("DetalleFactura.Producto.TipoProducto").Include("DesglosePagoFactura.FormaPago").Include("DesglosePagoFactura.TipoMoneda").FirstOrDefault(x => x.IdFactura == intIdFactura);
+                    Factura factura = dbContext.FacturaRepository.Include("ParametroExoneracion").Include("Cliente.Barrio.Distrito.Canton.Provincia").Include("Vendedor").Include("DetalleFactura.Producto.TipoProducto").Include("DesglosePagoFactura.FormaPago").Include("DesglosePagoFactura.TipoMoneda").FirstOrDefault(x => x.IdFactura == intIdFactura);
                     foreach (DetalleFactura detalle in factura.DetalleFactura)
                         detalle.Factura = null;
                     foreach (DesglosePagoFactura desglosePago in factura.DesglosePagoFactura)
@@ -1048,7 +1048,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     Proforma ordenNoTracking = dbContext.ProformaRepository.AsNoTracking().Where(x => x.IdProforma == proforma.IdProforma).FirstOrDefault();
                     if (ordenNoTracking != null && ordenNoTracking.Aplicado == true) throw new BusinessException("La proforma no puede ser modificada porque ya fue facturada.");
                     proforma.Vendedor = null;
-                    proforma.ParametroExoneracion = null;
+                    proforma.TipoMoneda = null;
                     List<DetalleProforma> listadoDetalleAnterior = dbContext.DetalleProformaRepository.Where(x => x.IdProforma == proforma.IdProforma).ToList();
                     List<DetalleProforma> listadoDetalle = proforma.DetalleProforma.ToList();
                     proforma.DetalleProforma = null;
@@ -1109,7 +1109,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    Proforma proforma = dbContext.ProformaRepository.Include("ParametroExoneracion").Include("Cliente.Barrio.Distrito.Canton.Provincia").Include("Vendedor").Include("DetalleProforma.Producto.TipoProducto").FirstOrDefault(x => x.IdProforma == intIdProforma);
+                    Proforma proforma = dbContext.ProformaRepository.Include("Cliente.ParametroImpuesto").Include("Cliente.ParametroExoneracion").Include("Cliente.Barrio.Distrito.Canton.Provincia").Include("Vendedor").Include("DetalleProforma.Producto.TipoProducto").FirstOrDefault(x => x.IdProforma == intIdProforma);
                     foreach (DetalleProforma detalle in proforma.DetalleProforma)
                         detalle.Proforma = null;
                     return proforma;
@@ -1235,7 +1235,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    Apartado apartado = dbContext.ApartadoRepository.Include("Cliente.Barrio.Distrito.Canton.Provincia").Include("Vendedor").Include("DetalleApartado.Producto.TipoProducto").Include("DesglosePagoApartado.FormaPago").Include("DesglosePagoApartado.TipoMoneda").FirstOrDefault(x => x.IdApartado == intIdApartado);
+                    Apartado apartado = dbContext.ApartadoRepository.Include("Cliente.ParametroImpuesto").Include("Cliente.ParametroExoneracion").Include("Cliente.Barrio.Distrito.Canton.Provincia").Include("Vendedor").Include("DetalleApartado.Producto.TipoProducto").Include("DesglosePagoApartado.FormaPago").Include("DesglosePagoApartado.TipoMoneda").FirstOrDefault(x => x.IdApartado == intIdApartado);
                     foreach (DetalleApartado detalle in apartado.DetalleApartado)
                         detalle.Apartado = null;
                     foreach (DesglosePagoApartado desglosePago in apartado.DesglosePagoApartado)
@@ -1356,6 +1356,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     OrdenServicio ordenNoTracking = dbContext.OrdenServicioRepository.AsNoTracking().Where(x => x.IdOrden == ordenServicio.IdOrden).FirstOrDefault();
                     if (ordenNoTracking != null && ordenNoTracking.Aplicado == true) throw new BusinessException("La orden de servicio no puede ser modificada porque ya fue facturada.");
                     ordenServicio.Vendedor = null;
+                    ordenServicio.TipoMoneda = null;
                     List<DetalleOrdenServicio> listadoDetalleAnterior = dbContext.DetalleOrdenServicioRepository.Where(x => x.IdOrden == ordenServicio.IdOrden).ToList();
                     List<DetalleOrdenServicio> listadoDetalle = ordenServicio.DetalleOrdenServicio.ToList();
                     ordenServicio.DetalleOrdenServicio = null;
@@ -1416,7 +1417,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    OrdenServicio ordenServicio = dbContext.OrdenServicioRepository.Include("Cliente.Barrio.Distrito.Canton.Provincia").Include("Vendedor").Include("DetalleOrdenServicio.Producto.TipoProducto").Include("DesglosePagoOrdenServicio.FormaPago").Include("DesglosePagoOrdenServicio.TipoMoneda").FirstOrDefault(x => x.IdOrden == intIdOrdenServicio);
+                    OrdenServicio ordenServicio = dbContext.OrdenServicioRepository.Include("Cliente.ParametroImpuesto").Include("Cliente.ParametroExoneracion").Include("Cliente.Barrio.Distrito.Canton.Provincia").Include("Vendedor").Include("DetalleOrdenServicio.Producto.TipoProducto").Include("DesglosePagoOrdenServicio.FormaPago").Include("DesglosePagoOrdenServicio.TipoMoneda").FirstOrDefault(x => x.IdOrden == intIdOrdenServicio);
                     foreach (DetalleOrdenServicio detalle in ordenServicio.DetalleOrdenServicio)
                         detalle.OrdenServicio = null;
                     foreach (DesglosePagoOrdenServicio desglosePago in ordenServicio.DesglosePagoOrdenServicio)

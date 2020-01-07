@@ -35,6 +35,7 @@ Public Class FrmProforma
         dtbDetalleProforma.Columns.Add("DESCRIPCION", GetType(String))
         dtbDetalleProforma.Columns.Add("CANTIDAD", GetType(Decimal))
         dtbDetalleProforma.Columns.Add("PRECIO", GetType(Decimal))
+        dtbDetalleProforma.Columns.Add("PRECIOIVA", GetType(Decimal))
         dtbDetalleProforma.Columns.Add("TOTAL", GetType(Decimal))
         dtbDetalleProforma.Columns.Add("EXCENTO", GetType(Integer))
         dtbDetalleProforma.Columns.Add("PORCENTAJEIVA", GetType(Decimal))
@@ -91,7 +92,7 @@ Public Class FrmProforma
         dvcPorcDescuento.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleProforma.Columns.Add(dvcPorcDescuento)
 
-        dvcPrecio.DataPropertyName = "PRECIO"
+        dvcPrecio.DataPropertyName = "PRECIOIVA"
         dvcPrecio.HeaderText = "Precio/U"
         dvcPrecio.Width = 75
         dvcPrecio.Visible = True
@@ -130,10 +131,11 @@ Public Class FrmProforma
             dtrRowDetProforma.Item(2) = detalle.Descripcion
             dtrRowDetProforma.Item(3) = detalle.Cantidad
             dtrRowDetProforma.Item(4) = detalle.PrecioVenta
-            dtrRowDetProforma.Item(5) = dtrRowDetProforma.Item(3) * dtrRowDetProforma.Item(4)
-            dtrRowDetProforma.Item(6) = detalle.Excento
-            dtrRowDetProforma.Item(7) = detalle.PorcentajeIVA
-            dtrRowDetProforma.Item(8) = detalle.PorcDescuento
+            dtrRowDetProforma.Item(5) = Math.Round(detalle.PrecioVenta * (1 + (detalle.PorcentajeIVA / 100)), 2, MidpointRounding.AwayFromZero)
+            dtrRowDetProforma.Item(6) = dtrRowDetProforma.Item(3) * dtrRowDetProforma.Item(5)
+            dtrRowDetProforma.Item(7) = detalle.Excento
+            dtrRowDetProforma.Item(8) = detalle.PorcentajeIVA
+            dtrRowDetProforma.Item(9) = detalle.PorcDescuento
             dtbDetalleProforma.Rows.Add(dtrRowDetProforma)
         Next
         grdDetalleProforma.Refresh()
@@ -142,19 +144,22 @@ Public Class FrmProforma
     Private Sub CargarLineaDetalleProforma(producto As Producto, strDescripcion As String, decCantidad As Decimal, decPrecio As Decimal, decPorcDesc As Decimal)
         Dim decTasaImpuesto As Decimal = producto.ParametroImpuesto.TasaImpuesto
         Dim decPrecioGravado As Decimal = decPrecio
+        Dim decPrecioIva As Decimal = decPrecio
         If decTasaImpuesto > 0 Then
             decPrecioGravado = Math.Round(decPrecio / (1 + (decTasaImpuesto / 100)), 3, MidpointRounding.AwayFromZero)
             If cliente.AplicaTasaDiferenciada Then decTasaImpuesto = cliente.ParametroImpuesto.TasaImpuesto
+            decPrecioIva = Math.Round(decPrecioGravado * (1 + (decTasaImpuesto / 100)), 2, MidpointRounding.AwayFromZero)
         End If
         Dim intIndice As Integer = ObtenerIndice(dtbDetalleProforma, producto.IdProducto)
         If producto.Tipo = 1 And intIndice >= 0 Then
             dtbDetalleProforma.Rows(intIndice).Item(2) = strDescripcion
             dtbDetalleProforma.Rows(intIndice).Item(3) += decCantidad
             dtbDetalleProforma.Rows(intIndice).Item(4) = decPrecioGravado
-            dtbDetalleProforma.Rows(intIndice).Item(5) = decCantidad * decPrecioGravado
-            dtbDetalleProforma.Rows(intIndice).Item(6) = decTasaImpuesto = 0
-            dtbDetalleProforma.Rows(intIndice).Item(7) = decTasaImpuesto
-            dtbDetalleProforma.Rows(intIndice).Item(8) = decPorcDesc
+            dtbDetalleProforma.Rows(intIndice).Item(5) = decPrecioIva
+            dtbDetalleProforma.Rows(intIndice).Item(6) = decCantidad * decPrecioIva
+            dtbDetalleProforma.Rows(intIndice).Item(7) = decTasaImpuesto = 0
+            dtbDetalleProforma.Rows(intIndice).Item(8) = decTasaImpuesto
+            dtbDetalleProforma.Rows(intIndice).Item(9) = decPorcDesc
         Else
             dtrRowDetProforma = dtbDetalleProforma.NewRow
             dtrRowDetProforma.Item(0) = producto.IdProducto
@@ -162,10 +167,11 @@ Public Class FrmProforma
             dtrRowDetProforma.Item(2) = strDescripcion
             dtrRowDetProforma.Item(3) = decCantidad
             dtrRowDetProforma.Item(4) = decPrecioGravado
-            dtrRowDetProforma.Item(5) = decCantidad * decPrecioGravado
-            dtrRowDetProforma.Item(6) = decTasaImpuesto = 0
-            dtrRowDetProforma.Item(7) = decTasaImpuesto
-            dtrRowDetProforma.Item(8) = decPorcDesc
+            dtrRowDetProforma.Item(5) = decPrecioIva
+            dtrRowDetProforma.Item(6) = decCantidad * decPrecioIva
+            dtrRowDetProforma.Item(7) = decTasaImpuesto = 0
+            dtrRowDetProforma.Item(8) = decTasaImpuesto
+            dtrRowDetProforma.Item(9) = decPorcDesc
             dtbDetalleProforma.Rows.Add(dtrRowDetProforma)
         End If
         grdDetalleProforma.Refresh()
@@ -191,7 +197,7 @@ Public Class FrmProforma
         Dim intPorcentajeExoneracion As Integer = 0
         If txtPorcentajeExoneracion.Text <> "" Then intPorcentajeExoneracion = CInt(txtPorcentajeExoneracion.Text)
         For I = 0 To dtbDetalleProforma.Rows.Count - 1
-            Dim decTasaImpuesto As Decimal = dtbDetalleProforma.Rows(I).Item(7)
+            Dim decTasaImpuesto As Decimal = dtbDetalleProforma.Rows(I).Item(8)
             If decTasaImpuesto > 0 Then
                 Dim decImpuestoProducto As Decimal = dtbDetalleProforma.Rows(I).Item(4) * decTasaImpuesto / 100
                 If intPorcentajeExoneracion > 0 Then
@@ -423,12 +429,12 @@ Public Class FrmProforma
                 txtFecha.Text = proforma.Fecha
                 txtTextoAdicional.Text = proforma.TextoAdicional
                 txtTelefono.Text = proforma.Telefono
-                If proforma.PorcentajeExoneracion > 0 Then
-                    txtTipoExoneracion.Text = proforma.ParametroExoneracion.Descripcion
-                    txtNumDocExoneracion.Text = proforma.NumDocExoneracion
-                    txtNombreInstExoneracion.Text = proforma.NombreInstExoneracion
-                    txtFechaExoneracion.Text = proforma.FechaEmisionDoc
-                    txtPorcentajeExoneracion.Text = proforma.PorcentajeExoneracion
+                If cliente.PorcentajeExoneracion > 0 Then
+                    txtTipoExoneracion.Text = cliente.ParametroExoneracion.Descripcion
+                    txtNumDocExoneracion.Text = cliente.NumDocExoneracion
+                    txtNombreInstExoneracion.Text = cliente.NombreInstExoneracion
+                    txtFechaExoneracion.Text = cliente.FechaEmisionDoc
+                    txtPorcentajeExoneracion.Text = cliente.PorcentajeExoneracion
                 End If
                 vendedor = proforma.Vendedor
                 txtVendedor.Text = IIf(vendedor IsNot Nothing, vendedor.Nombre, "")
@@ -536,14 +542,9 @@ Public Class FrmProforma
                 .IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa,
                 .IdSucursal = FrmPrincipal.equipoGlobal.IdSucursal,
                 .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
-                .IdTipoMoneda = 1,
+                .IdTipoMoneda = cboTipoMoneda.SelectedValue,
                 .IdCliente = cliente.IdCliente,
                 .NombreCliente = txtNombreCliente.Text,
-                .IdTipoExoneracion = IIf(cliente.PorcentajeExoneracion > 0, cliente.IdTipoExoneracion, 1),
-                .NumDocExoneracion = txtNumDocExoneracion.Text,
-                .NombreInstExoneracion = txtNombreInstExoneracion.Text,
-                .FechaEmisionDoc = IIf(cliente.PorcentajeExoneracion > 0, cliente.FechaEmisionDoc, Now()),
-                .PorcentajeExoneracion = cliente.PorcentajeExoneracion,
                 .Fecha = Now(),
                 .TextoAdicional = txtTextoAdicional.Text,
                 .Telefono = txtTelefono.Text,
@@ -561,9 +562,9 @@ Public Class FrmProforma
                     .Descripcion = dtbDetalleProforma.Rows(I).Item(2),
                     .Cantidad = dtbDetalleProforma.Rows(I).Item(3),
                     .PrecioVenta = dtbDetalleProforma.Rows(I).Item(4),
-                    .Excento = dtbDetalleProforma.Rows(I).Item(6),
-                    .PorcentajeIVA = dtbDetalleProforma.Rows(I).Item(7),
-                    .PorcDescuento = dtbDetalleProforma.Rows(I).Item(8)
+                    .Excento = dtbDetalleProforma.Rows(I).Item(7),
+                    .PorcentajeIVA = dtbDetalleProforma.Rows(I).Item(8),
+                    .PorcDescuento = dtbDetalleProforma.Rows(I).Item(9)
                 }
                 proforma.DetalleProforma.Add(detalleProforma)
             Next
@@ -591,9 +592,9 @@ Public Class FrmProforma
                 detalleProforma.Descripcion = dtbDetalleProforma.Rows(I).Item(2)
                 detalleProforma.Cantidad = dtbDetalleProforma.Rows(I).Item(3)
                 detalleProforma.PrecioVenta = dtbDetalleProforma.Rows(I).Item(4)
-                detalleProforma.Excento = dtbDetalleProforma.Rows(I).Item(6)
-                detalleProforma.PorcentajeIVA = dtbDetalleProforma.Rows(I).Item(7)
-                detalleProforma.PorcDescuento = dtbDetalleProforma.Rows(I).Item(8)
+                detalleProforma.Excento = dtbDetalleProforma.Rows(I).Item(7)
+                detalleProforma.PorcentajeIVA = dtbDetalleProforma.Rows(I).Item(8)
+                detalleProforma.PorcDescuento = dtbDetalleProforma.Rows(I).Item(9)
                 proforma.DetalleProforma.Add(detalleProforma)
             Next
             Try
@@ -639,7 +640,7 @@ Public Class FrmProforma
                     .strCantidad = CDbl(dtbDetalleProforma.Rows(I).Item(3)),
                     .strPrecio = FormatNumber(dtbDetalleProforma.Rows(I).Item(4), 2),
                     .strTotalLinea = FormatNumber(CDbl(dtbDetalleProforma.Rows(I).Item(3)) * CDbl(dtbDetalleProforma.Rows(I).Item(4)), 2),
-                    .strExcento = IIf(dtbDetalleProforma.Rows(I).Item(6) = 0, "G", "E")
+                    .strExcento = IIf(dtbDetalleProforma.Rows(I).Item(7) = 0, "G", "E")
                 }
                     arrDetalleOrden.Add(detalleComprobante)
                 Next

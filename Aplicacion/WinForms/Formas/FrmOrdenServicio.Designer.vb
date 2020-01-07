@@ -103,6 +103,12 @@ Partial Class FrmOrdenServicio
         Me.Label7 = New System.Windows.Forms.Label()
         Me.txtTipoCambio = New System.Windows.Forms.TextBox()
         Me.Label11 = New System.Windows.Forms.Label()
+        Me.txtFechaExoneracion = New System.Windows.Forms.TextBox()
+        Me.Label12 = New System.Windows.Forms.Label()
+        Me.txtTipoExoneracion = New System.Windows.Forms.TextBox()
+        Me.txtPorcentajeExoneracion = New System.Windows.Forms.TextBox()
+        Me.txtNombreInstExoneracion = New System.Windows.Forms.TextBox()
+        Me.txtNumDocExoneracion = New System.Windows.Forms.TextBox()
         CType(Me.grdDetalleOrdenServicio, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.grdDesglosePago, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -290,7 +296,7 @@ Partial Class FrmOrdenServicio
         Me.txtFecha.BackColor = System.Drawing.SystemColors.Window
         Me.txtFecha.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtFecha.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtFecha.Location = New System.Drawing.Point(94, 87)
+        Me.txtFecha.Location = New System.Drawing.Point(94, 114)
         Me.txtFecha.MaxLength = 0
         Me.txtFecha.Name = "txtFecha"
         Me.txtFecha.ReadOnly = True
@@ -343,7 +349,7 @@ Partial Class FrmOrdenServicio
         Me._lblLabels_3.BackColor = System.Drawing.Color.Transparent
         Me._lblLabels_3.Cursor = System.Windows.Forms.Cursors.Default
         Me._lblLabels_3.ForeColor = System.Drawing.SystemColors.ControlText
-        Me._lblLabels_3.Location = New System.Drawing.Point(31, 87)
+        Me._lblLabels_3.Location = New System.Drawing.Point(31, 114)
         Me._lblLabels_3.Name = "_lblLabels_3"
         Me._lblLabels_3.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me._lblLabels_3.Size = New System.Drawing.Size(57, 19)
@@ -964,7 +970,7 @@ Partial Class FrmOrdenServicio
         Me.cboTipoMoneda.ForeColor = System.Drawing.SystemColors.WindowText
         Me.cboTipoMoneda.IntegralHeight = False
         Me.cboTipoMoneda.ItemHeight = 13
-        Me.cboTipoMoneda.Location = New System.Drawing.Point(94, 113)
+        Me.cboTipoMoneda.Location = New System.Drawing.Point(236, 114)
         Me.cboTipoMoneda.Name = "cboTipoMoneda"
         Me.cboTipoMoneda.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.cboTipoMoneda.Size = New System.Drawing.Size(129, 21)
@@ -975,7 +981,7 @@ Partial Class FrmOrdenServicio
         Me.Label7.BackColor = System.Drawing.Color.Transparent
         Me.Label7.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label7.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label7.Location = New System.Drawing.Point(28, 113)
+        Me.Label7.Location = New System.Drawing.Point(170, 114)
         Me.Label7.Name = "Label7"
         Me.Label7.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label7.Size = New System.Drawing.Size(60, 19)
@@ -989,7 +995,7 @@ Partial Class FrmOrdenServicio
         Me.txtTipoCambio.BackColor = System.Drawing.SystemColors.Window
         Me.txtTipoCambio.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtTipoCambio.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtTipoCambio.Location = New System.Drawing.Point(328, 113)
+        Me.txtTipoCambio.Location = New System.Drawing.Point(454, 114)
         Me.txtTipoCambio.MaxLength = 0
         Me.txtTipoCambio.Name = "txtTipoCambio"
         Me.txtTipoCambio.ReadOnly = True
@@ -1004,7 +1010,7 @@ Partial Class FrmOrdenServicio
         Me.Label11.BackColor = System.Drawing.Color.Transparent
         Me.Label11.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label11.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label11.Location = New System.Drawing.Point(246, 113)
+        Me.Label11.Location = New System.Drawing.Point(372, 114)
         Me.Label11.Name = "Label11"
         Me.Label11.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label11.Size = New System.Drawing.Size(76, 19)
@@ -1012,12 +1018,110 @@ Partial Class FrmOrdenServicio
         Me.Label11.Text = "Tipo Cambio:"
         Me.Label11.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
+        'txtFechaExoneracion
+        '
+        Me.txtFechaExoneracion.AcceptsReturn = True
+        Me.txtFechaExoneracion.BackColor = System.Drawing.SystemColors.Window
+        Me.txtFechaExoneracion.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtFechaExoneracion.Enabled = False
+        Me.txtFechaExoneracion.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtFechaExoneracion.Location = New System.Drawing.Point(668, 88)
+        Me.txtFechaExoneracion.MaxLength = 0
+        Me.txtFechaExoneracion.Name = "txtFechaExoneracion"
+        Me.txtFechaExoneracion.ReadOnly = True
+        Me.txtFechaExoneracion.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtFechaExoneracion.Size = New System.Drawing.Size(73, 20)
+        Me.txtFechaExoneracion.TabIndex = 200
+        Me.txtFechaExoneracion.TabStop = False
+        '
+        'Label12
+        '
+        Me.Label12.BackColor = System.Drawing.Color.Transparent
+        Me.Label12.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label12.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label12.Location = New System.Drawing.Point(69, 88)
+        Me.Label12.Name = "Label12"
+        Me.Label12.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label12.Size = New System.Drawing.Size(104, 19)
+        Me.Label12.TabIndex = 199
+        Me.Label12.Text = "Datos exoneración:"
+        Me.Label12.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
+        'txtTipoExoneracion
+        '
+        Me.txtTipoExoneracion.AcceptsReturn = True
+        Me.txtTipoExoneracion.BackColor = System.Drawing.SystemColors.Window
+        Me.txtTipoExoneracion.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtTipoExoneracion.Enabled = False
+        Me.txtTipoExoneracion.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtTipoExoneracion.Location = New System.Drawing.Point(179, 88)
+        Me.txtTipoExoneracion.MaxLength = 0
+        Me.txtTipoExoneracion.Name = "txtTipoExoneracion"
+        Me.txtTipoExoneracion.ReadOnly = True
+        Me.txtTipoExoneracion.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtTipoExoneracion.Size = New System.Drawing.Size(188, 20)
+        Me.txtTipoExoneracion.TabIndex = 198
+        Me.txtTipoExoneracion.TabStop = False
+        '
+        'txtPorcentajeExoneracion
+        '
+        Me.txtPorcentajeExoneracion.AcceptsReturn = True
+        Me.txtPorcentajeExoneracion.BackColor = System.Drawing.SystemColors.Window
+        Me.txtPorcentajeExoneracion.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtPorcentajeExoneracion.Enabled = False
+        Me.txtPorcentajeExoneracion.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtPorcentajeExoneracion.Location = New System.Drawing.Point(747, 88)
+        Me.txtPorcentajeExoneracion.MaxLength = 0
+        Me.txtPorcentajeExoneracion.Name = "txtPorcentajeExoneracion"
+        Me.txtPorcentajeExoneracion.ReadOnly = True
+        Me.txtPorcentajeExoneracion.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtPorcentajeExoneracion.Size = New System.Drawing.Size(39, 20)
+        Me.txtPorcentajeExoneracion.TabIndex = 197
+        Me.txtPorcentajeExoneracion.TabStop = False
+        '
+        'txtNombreInstExoneracion
+        '
+        Me.txtNombreInstExoneracion.AcceptsReturn = True
+        Me.txtNombreInstExoneracion.BackColor = System.Drawing.SystemColors.Window
+        Me.txtNombreInstExoneracion.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtNombreInstExoneracion.Enabled = False
+        Me.txtNombreInstExoneracion.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtNombreInstExoneracion.Location = New System.Drawing.Point(481, 88)
+        Me.txtNombreInstExoneracion.MaxLength = 0
+        Me.txtNombreInstExoneracion.Name = "txtNombreInstExoneracion"
+        Me.txtNombreInstExoneracion.ReadOnly = True
+        Me.txtNombreInstExoneracion.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtNombreInstExoneracion.Size = New System.Drawing.Size(181, 20)
+        Me.txtNombreInstExoneracion.TabIndex = 196
+        '
+        'txtNumDocExoneracion
+        '
+        Me.txtNumDocExoneracion.AcceptsReturn = True
+        Me.txtNumDocExoneracion.BackColor = System.Drawing.SystemColors.Window
+        Me.txtNumDocExoneracion.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtNumDocExoneracion.Enabled = False
+        Me.txtNumDocExoneracion.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtNumDocExoneracion.Location = New System.Drawing.Point(373, 88)
+        Me.txtNumDocExoneracion.MaxLength = 0
+        Me.txtNumDocExoneracion.Name = "txtNumDocExoneracion"
+        Me.txtNumDocExoneracion.ReadOnly = True
+        Me.txtNumDocExoneracion.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtNumDocExoneracion.Size = New System.Drawing.Size(103, 20)
+        Me.txtNumDocExoneracion.TabIndex = 195
+        Me.txtNumDocExoneracion.TabStop = False
+        '
         'FrmOrdenServicio
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(822, 673)
+        Me.Controls.Add(Me.txtFechaExoneracion)
+        Me.Controls.Add(Me.Label12)
+        Me.Controls.Add(Me.txtTipoExoneracion)
+        Me.Controls.Add(Me.txtPorcentajeExoneracion)
+        Me.Controls.Add(Me.txtNombreInstExoneracion)
+        Me.Controls.Add(Me.txtNumDocExoneracion)
         Me.Controls.Add(Me.txtTipoCambio)
         Me.Controls.Add(Me.Label11)
         Me.Controls.Add(Me.cboTipoMoneda)
@@ -1146,4 +1250,10 @@ Partial Class FrmOrdenServicio
     Public WithEvents Label7 As Label
     Public WithEvents txtTipoCambio As TextBox
     Public WithEvents Label11 As Label
+    Public WithEvents txtFechaExoneracion As TextBox
+    Public WithEvents Label12 As Label
+    Public WithEvents txtTipoExoneracion As TextBox
+    Public WithEvents txtPorcentajeExoneracion As TextBox
+    Public WithEvents txtNombreInstExoneracion As TextBox
+    Public WithEvents txtNumDocExoneracion As TextBox
 End Class

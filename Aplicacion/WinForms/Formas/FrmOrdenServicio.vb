@@ -10,7 +10,7 @@ Imports LeandroSoftware.Core.Utilitario
 Public Class FrmOrdenServicio
 #Region "Variables"
     Private strMotivoRechazo As String
-    Private decSubTotal, decExcento, decGravado, decImpuesto, decTotal, decTotalPago, decSaldoPorPagar, decPrecioVenta As Decimal
+    Private decSubTotal, decExcento, decGravado, decExonerado, decImpuesto, decTotal, decTotalPago, decSaldoPorPagar, decPrecioVenta As Decimal
     Private I, shtConsecutivoPago As Short
     Private dtbDatosLocal, dtbDetalleOrdenServicio, dtbDesglosePago As DataTable
     Private dtrRowDetOrdenServicio, dtrRowDesglosePago As DataRow
@@ -38,6 +38,7 @@ Public Class FrmOrdenServicio
         dtbDetalleOrdenServicio.Columns.Add("DESCRIPCION", GetType(String))
         dtbDetalleOrdenServicio.Columns.Add("CANTIDAD", GetType(Decimal))
         dtbDetalleOrdenServicio.Columns.Add("PRECIO", GetType(Decimal))
+        dtbDetalleOrdenServicio.Columns.Add("PRECIOIVA", GetType(Decimal))
         dtbDetalleOrdenServicio.Columns.Add("TOTAL", GetType(Decimal))
         dtbDetalleOrdenServicio.Columns.Add("EXCENTO", GetType(Integer))
         dtbDetalleOrdenServicio.Columns.Add("PORCENTAJEIVA", GetType(Decimal))
@@ -106,7 +107,7 @@ Public Class FrmOrdenServicio
         dvcPorcDescuento.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleOrdenServicio.Columns.Add(dvcPorcDescuento)
 
-        dvcPrecio.DataPropertyName = "PRECIO"
+        dvcPrecio.DataPropertyName = "PRECIOIVA"
         dvcPrecio.HeaderText = "Precio/U"
         dvcPrecio.Width = 75
         dvcPrecio.Visible = True
@@ -228,10 +229,11 @@ Public Class FrmOrdenServicio
             dtrRowDetOrdenServicio.Item(2) = detalle.Descripcion
             dtrRowDetOrdenServicio.Item(3) = detalle.Cantidad
             dtrRowDetOrdenServicio.Item(4) = detalle.PrecioVenta
-            dtrRowDetOrdenServicio.Item(5) = dtrRowDetOrdenServicio.Item(3) * dtrRowDetOrdenServicio.Item(4)
-            dtrRowDetOrdenServicio.Item(6) = detalle.Excento
-            dtrRowDetOrdenServicio.Item(7) = detalle.PorcentajeIVA
-            dtrRowDetOrdenServicio.Item(8) = detalle.PorcDescuento
+            dtrRowDetOrdenServicio.Item(5) = Math.Round(detalle.PrecioVenta * (1 + (detalle.PorcentajeIVA / 100)), 2, MidpointRounding.AwayFromZero)
+            dtrRowDetOrdenServicio.Item(6) = dtrRowDetOrdenServicio.Item(3) * dtrRowDetOrdenServicio.Item(5)
+            dtrRowDetOrdenServicio.Item(7) = detalle.Excento
+            dtrRowDetOrdenServicio.Item(8) = detalle.PorcentajeIVA
+            dtrRowDetOrdenServicio.Item(9) = detalle.PorcDescuento
             dtbDetalleOrdenServicio.Rows.Add(dtrRowDetOrdenServicio)
         Next
         grdDetalleOrdenServicio.Refresh()
@@ -258,9 +260,11 @@ Public Class FrmOrdenServicio
     Private Sub CargarLineaDetalleOrdenServicio(producto As Producto, strDescripcion As String, decCantidad As Decimal, decPrecio As Decimal, decPorcDesc As Decimal)
         Dim decTasaImpuesto As Decimal = producto.ParametroImpuesto.TasaImpuesto
         Dim decPrecioGravado As Decimal = decPrecio
+        Dim decPrecioIva As Decimal = decPrecio
         If decTasaImpuesto > 0 Then
             decPrecioGravado = Math.Round(decPrecio / (1 + (decTasaImpuesto / 100)), 3, MidpointRounding.AwayFromZero)
             If cliente.AplicaTasaDiferenciada Then decTasaImpuesto = cliente.ParametroImpuesto.TasaImpuesto
+            decPrecioIva = Math.Round(decPrecioGravado * (1 + (decTasaImpuesto / 100)), 2, MidpointRounding.AwayFromZero)
         End If
         Dim intIndice As Integer = ObtenerIndice(dtbDetalleOrdenServicio, producto.IdProducto)
         If producto.Tipo = 1 And intIndice >= 0 Then
@@ -268,10 +272,11 @@ Public Class FrmOrdenServicio
             dtbDetalleOrdenServicio.Rows(intIndice).Item(2) = strDescripcion
             dtbDetalleOrdenServicio.Rows(intIndice).Item(3) += decCantidad
             dtbDetalleOrdenServicio.Rows(intIndice).Item(4) = decPrecioGravado
-            dtbDetalleOrdenServicio.Rows(intIndice).Item(5) = decCantidad * decPrecioGravado
-            dtbDetalleOrdenServicio.Rows(intIndice).Item(6) = decTasaImpuesto = 0
-            dtbDetalleOrdenServicio.Rows(intIndice).Item(7) = decTasaImpuesto
-            dtbDetalleOrdenServicio.Rows(intIndice).Item(8) = decPorcDesc
+            dtbDetalleOrdenServicio.Rows(intIndice).Item(5) = decPrecioIva
+            dtbDetalleOrdenServicio.Rows(intIndice).Item(6) = decCantidad * decPrecioIva
+            dtbDetalleOrdenServicio.Rows(intIndice).Item(7) = decTasaImpuesto = 0
+            dtbDetalleOrdenServicio.Rows(intIndice).Item(8) = decTasaImpuesto
+            dtbDetalleOrdenServicio.Rows(intIndice).Item(9) = decPorcDesc
         Else
             dtrRowDetOrdenServicio = dtbDetalleOrdenServicio.NewRow
             dtrRowDetOrdenServicio.Item(0) = producto.IdProducto
@@ -279,10 +284,11 @@ Public Class FrmOrdenServicio
             dtrRowDetOrdenServicio.Item(2) = strDescripcion
             dtrRowDetOrdenServicio.Item(3) = decCantidad
             dtrRowDetOrdenServicio.Item(4) = decPrecioGravado
-            dtrRowDetOrdenServicio.Item(5) = decCantidad * decPrecioGravado
-            dtrRowDetOrdenServicio.Item(6) = decTasaImpuesto = 0
-            dtrRowDetOrdenServicio.Item(7) = decTasaImpuesto
-            dtrRowDetOrdenServicio.Item(8) = decPorcDesc
+            dtrRowDetOrdenServicio.Item(5) = decPrecioIva
+            dtrRowDetOrdenServicio.Item(6) = decCantidad * decPrecioIva
+            dtrRowDetOrdenServicio.Item(7) = decTasaImpuesto = 0
+            dtrRowDetOrdenServicio.Item(8) = decTasaImpuesto
+            dtrRowDetOrdenServicio.Item(9) = decPorcDesc
             dtbDetalleOrdenServicio.Rows.Add(dtrRowDetOrdenServicio)
         End If
         grdDetalleOrdenServicio.Refresh()
@@ -327,20 +333,31 @@ Public Class FrmOrdenServicio
     Private Sub CargarTotales()
         decSubTotal = 0
         decGravado = 0
+        decExonerado = 0
         decExcento = 0
         decImpuesto = 0
+        Dim intPorcentajeExoneracion As Integer = 0
+        If txtPorcentajeExoneracion.Text <> "" Then intPorcentajeExoneracion = CInt(txtPorcentajeExoneracion.Text)
         For I = 0 To dtbDetalleOrdenServicio.Rows.Count - 1
-            Dim decTasaImpuesto As Decimal = dtbDetalleOrdenServicio.Rows(I).Item(7)
+            Dim decTasaImpuesto As Decimal = dtbDetalleOrdenServicio.Rows(I).Item(8)
             If decTasaImpuesto > 0 Then
                 Dim decImpuestoProducto As Decimal = dtbDetalleOrdenServicio.Rows(I).Item(4) * decTasaImpuesto / 100
-                decGravado += Math.Round(dtbDetalleOrdenServicio.Rows(I).Item(4), 2, MidpointRounding.AwayFromZero) * dtbDetalleOrdenServicio.Rows(I).Item(3)
+                If intPorcentajeExoneracion > 0 Then
+                    Dim decGravadoPorcentual = dtbDetalleOrdenServicio.Rows(I).Item(4) * (1 - (intPorcentajeExoneracion / 100))
+                    decGravado += Math.Round(decGravadoPorcentual, 2, MidpointRounding.AwayFromZero) * dtbDetalleOrdenServicio.Rows(I).Item(3)
+                    decExonerado += Math.Round(dtbDetalleOrdenServicio.Rows(I).Item(4) - decGravadoPorcentual, 2, MidpointRounding.AwayFromZero) * dtbDetalleOrdenServicio.Rows(I).Item(3)
+                    decImpuestoProducto = decGravadoPorcentual * decTasaImpuesto / 100
+                Else
+                    decGravado += Math.Round(dtbDetalleOrdenServicio.Rows(I).Item(4), 2, MidpointRounding.AwayFromZero) * dtbDetalleOrdenServicio.Rows(I).Item(3)
+                End If
                 decImpuesto += Math.Round(decImpuestoProducto, 2, MidpointRounding.AwayFromZero) * dtbDetalleOrdenServicio.Rows(I).Item(3)
             Else
                 decExcento += Math.Round(dtbDetalleOrdenServicio.Rows(I).Item(4), 2, MidpointRounding.AwayFromZero) * dtbDetalleOrdenServicio.Rows(I).Item(3)
             End If
         Next
-        decSubTotal = decGravado + decExcento
+        decSubTotal = decGravado + decExcento + decExonerado
         decGravado = Math.Round(decGravado, 2, MidpointRounding.AwayFromZero)
+        decExonerado = Math.Round(decExonerado, 2, MidpointRounding.AwayFromZero)
         decExcento = Math.Round(decExcento, 2, MidpointRounding.AwayFromZero)
         decImpuesto = Math.Round(decImpuesto, 2, MidpointRounding.AwayFromZero)
         decTotal = Math.Round(decSubTotal + decImpuesto, 2, MidpointRounding.AwayFromZero)
@@ -604,6 +621,13 @@ Public Class FrmOrdenServicio
                 txtDescripcionOrden.Text = ordenServicio.Descripcion
                 txtFechaEntrega.Text = ordenServicio.FechaEntrega
                 txtOtrosDetalles.Text = ordenServicio.OtrosDetalles
+                If cliente.PorcentajeExoneracion > 0 Then
+                    txtTipoExoneracion.Text = cliente.ParametroExoneracion.Descripcion
+                    txtNumDocExoneracion.Text = cliente.NumDocExoneracion
+                    txtNombreInstExoneracion.Text = cliente.NombreInstExoneracion
+                    txtFechaExoneracion.Text = cliente.FechaEmisionDoc
+                    txtPorcentajeExoneracion.Text = cliente.PorcentajeExoneracion
+                End If
                 vendedor = ordenServicio.Vendedor
                 txtVendedor.Text = IIf(vendedor IsNot Nothing, vendedor.Nombre, "")
                 CargarDetalleOrdenServicio(ordenServicio)
@@ -657,6 +681,19 @@ Public Class FrmOrdenServicio
                     vendedor = cliente.Vendedor
                     txtVendedor.Text = vendedor.Nombre
                 End If
+                If cliente.PorcentajeExoneracion > 0 Then
+                    txtTipoExoneracion.Text = cliente.ParametroExoneracion.Descripcion
+                    txtNumDocExoneracion.Text = cliente.NumDocExoneracion
+                    txtNombreInstExoneracion.Text = cliente.NombreInstExoneracion
+                    txtFechaExoneracion.Text = cliente.FechaEmisionDoc
+                    txtPorcentajeExoneracion.Text = cliente.PorcentajeExoneracion
+                Else
+                    txtTipoExoneracion.Text = ""
+                    txtNumDocExoneracion.Text = ""
+                    txtNombreInstExoneracion.Text = ""
+                    txtFechaExoneracion.Text = ""
+                    txtPorcentajeExoneracion.Text = ""
+                End If
                 CargarTotales()
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -704,30 +741,32 @@ Public Class FrmOrdenServicio
             ordenServicio = New OrdenServicio With {
                 .IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa,
                 .IdSucursal = FrmPrincipal.equipoGlobal.IdSucursal,
-                .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario
+                .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
+                .IdTipoMoneda = cboTipoMoneda.SelectedValue,
+                .IdCliente = cliente.IdCliente,
+                .NombreCliente = txtNombreCliente.Text,
+                .Fecha = Now(),
+                .IdVendedor = vendedor.IdVendedor,
+                .Telefono = txtTelefono.Text,
+                .Descripcion = txtDescripcionOrden.Text,
+                .FechaEntrega = txtFechaEntrega.Text,
+                .OtrosDetalles = txtOtrosDetalles.Text,
+                .Excento = decExcento,
+                .Gravado = decGravado,
+                .Exonerado = decExonerado,
+                .Descuento = 0,
+                .Impuesto = decImpuesto,
+                .MontoAdelanto = decTotalPago
             }
-            ordenServicio.IdCliente = cliente.IdCliente
-            ordenServicio.NombreCliente = txtNombreCliente.Text
-            ordenServicio.Fecha = Now()
-            ordenServicio.IdVendedor = vendedor.IdVendedor
-            ordenServicio.Telefono = txtTelefono.Text
-            ordenServicio.Descripcion = txtDescripcionOrden.Text
-            ordenServicio.FechaEntrega = txtFechaEntrega.Text
-            ordenServicio.OtrosDetalles = txtOtrosDetalles.Text
-            ordenServicio.Excento = decExcento
-            ordenServicio.Gravado = decGravado
-            ordenServicio.Descuento = 0
-            ordenServicio.Impuesto = decImpuesto
-            ordenServicio.MontoAdelanto = decTotalPago
             For I = 0 To dtbDetalleOrdenServicio.Rows.Count - 1
                 detalleOrdenServicio = New DetalleOrdenServicio
                 detalleOrdenServicio.IdProducto = dtbDetalleOrdenServicio.Rows(I).Item(0)
                 detalleOrdenServicio.Descripcion = dtbDetalleOrdenServicio.Rows(I).Item(2)
                 detalleOrdenServicio.Cantidad = dtbDetalleOrdenServicio.Rows(I).Item(3)
                 detalleOrdenServicio.PrecioVenta = dtbDetalleOrdenServicio.Rows(I).Item(4)
-                detalleOrdenServicio.Excento = dtbDetalleOrdenServicio.Rows(I).Item(6)
-                detalleOrdenServicio.PorcentajeIVA = dtbDetalleOrdenServicio.Rows(I).Item(7)
-                detalleOrdenServicio.PorcDescuento = dtbDetalleOrdenServicio.Rows(I).Item(8)
+                detalleOrdenServicio.Excento = dtbDetalleOrdenServicio.Rows(I).Item(7)
+                detalleOrdenServicio.PorcentajeIVA = dtbDetalleOrdenServicio.Rows(I).Item(8)
+                detalleOrdenServicio.PorcDescuento = dtbDetalleOrdenServicio.Rows(I).Item(9)
                 ordenServicio.DetalleOrdenServicio.Add(detalleOrdenServicio)
             Next
             For I = 0 To dtbDesglosePago.Rows.Count - 1
@@ -759,6 +798,7 @@ Public Class FrmOrdenServicio
             ordenServicio.OtrosDetalles = txtOtrosDetalles.Text
             ordenServicio.Excento = decExcento
             ordenServicio.Gravado = decGravado
+            ordenServicio.Exonerado = decExonerado
             ordenServicio.Descuento = 0
             ordenServicio.Impuesto = CDbl(txtImpuesto.Text)
             ordenServicio.DetalleOrdenServicio.Clear()
@@ -769,9 +809,9 @@ Public Class FrmOrdenServicio
                 detalleOrdenServicio.Descripcion = dtbDetalleOrdenServicio.Rows(I).Item(2)
                 detalleOrdenServicio.Cantidad = dtbDetalleOrdenServicio.Rows(I).Item(3)
                 detalleOrdenServicio.PrecioVenta = dtbDetalleOrdenServicio.Rows(I).Item(4)
-                detalleOrdenServicio.Excento = dtbDetalleOrdenServicio.Rows(I).Item(5)
-                detalleOrdenServicio.PorcentajeIVA = dtbDetalleOrdenServicio.Rows(I).Item(6)
-                detalleOrdenServicio.PorcDescuento = dtbDetalleOrdenServicio.Rows(I).Item(7)
+                detalleOrdenServicio.Excento = dtbDetalleOrdenServicio.Rows(I).Item(7)
+                detalleOrdenServicio.PorcentajeIVA = dtbDetalleOrdenServicio.Rows(I).Item(8)
+                detalleOrdenServicio.PorcDescuento = dtbDetalleOrdenServicio.Rows(I).Item(9)
                 ordenServicio.DetalleOrdenServicio.Add(detalleOrdenServicio)
             Next
             Try
@@ -818,7 +858,7 @@ Public Class FrmOrdenServicio
                     .strCantidad = CDbl(dtbDetalleOrdenServicio.Rows(I).Item(3)),
                     .strPrecio = FormatNumber(dtbDetalleOrdenServicio.Rows(I).Item(4), 2),
                     .strTotalLinea = FormatNumber(CDbl(dtbDetalleOrdenServicio.Rows(I).Item(3)) * CDbl(dtbDetalleOrdenServicio.Rows(I).Item(4)), 2),
-                    .strExcento = IIf(dtbDetalleOrdenServicio.Rows(I).Item(6) = 0, "G", "E")
+                    .strExcento = IIf(dtbDetalleOrdenServicio.Rows(I).Item(7) = 0, "G", "E")
                 }
                     arrDetalleOrden.Add(detalleComprobante)
                 Next
@@ -1159,6 +1199,12 @@ Public Class FrmOrdenServicio
             txtMontoPago.Text = "0.00"
         Else
             txtMontoPago.Text = FormatNumber(txtMontoPago.Text, 2)
+        End If
+    End Sub
+
+    Private Sub TxtMontoPago_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtMontoPago.PreviewKeyDown
+        If e.KeyCode = Keys.Enter And txtIdOrdenServicio.Text = "" And txtMontoPago.Text <> "" Then
+            BtnInsertarPago_Click(btnInsertarPago, New EventArgs())
         End If
     End Sub
 

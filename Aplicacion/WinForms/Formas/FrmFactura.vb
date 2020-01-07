@@ -39,6 +39,7 @@ Public Class FrmFactura
         dtbDetalleFactura.Columns.Add("DESCRIPCION", GetType(String))
         dtbDetalleFactura.Columns.Add("CANTIDAD", GetType(Decimal))
         dtbDetalleFactura.Columns.Add("PRECIO", GetType(Decimal))
+        dtbDetalleFactura.Columns.Add("PRECIOIVA", GetType(Decimal))
         dtbDetalleFactura.Columns.Add("TOTAL", GetType(Decimal))
         dtbDetalleFactura.Columns.Add("EXCENTO", GetType(Integer))
         dtbDetalleFactura.Columns.Add("PRECIOCOSTO", GetType(Decimal))
@@ -109,7 +110,7 @@ Public Class FrmFactura
         dvcPorcDescuento.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleFactura.Columns.Add(dvcPorcDescuento)
 
-        dvcPrecio.DataPropertyName = "PRECIO"
+        dvcPrecio.DataPropertyName = "PRECIOIVA"
         dvcPrecio.HeaderText = "Precio/U"
         dvcPrecio.Width = 75
         dvcPrecio.Visible = True
@@ -237,11 +238,12 @@ Public Class FrmFactura
             dtrRowDetFactura.Item(2) = detalle.Descripcion
             dtrRowDetFactura.Item(3) = detalle.Cantidad
             dtrRowDetFactura.Item(4) = detalle.PrecioVenta
-            dtrRowDetFactura.Item(5) = dtrRowDetFactura.Item(3) * dtrRowDetFactura.Item(4)
-            dtrRowDetFactura.Item(6) = detalle.Excento
-            dtrRowDetFactura.Item(7) = detalle.PrecioCosto
-            dtrRowDetFactura.Item(8) = detalle.PorcentajeIVA
-            dtrRowDetFactura.Item(9) = detalle.PorcDescuento
+            dtrRowDetFactura.Item(5) = Math.Round(detalle.PrecioVenta * (1 + (detalle.PorcentajeIVA / 100)), 2, MidpointRounding.AwayFromZero)
+            dtrRowDetFactura.Item(6) = dtrRowDetFactura.Item(3) * dtrRowDetFactura.Item(5)
+            dtrRowDetFactura.Item(7) = detalle.Excento
+            dtrRowDetFactura.Item(8) = detalle.PrecioCosto
+            dtrRowDetFactura.Item(9) = detalle.PorcentajeIVA
+            dtrRowDetFactura.Item(10) = detalle.PorcDescuento
             dtbDetalleFactura.Rows.Add(dtrRowDetFactura)
         Next
         grdDetalleFactura.Refresh()
@@ -256,11 +258,12 @@ Public Class FrmFactura
             dtrRowDetFactura.Item(2) = detalle.Descripcion
             dtrRowDetFactura.Item(3) = detalle.Cantidad
             dtrRowDetFactura.Item(4) = detalle.PrecioVenta
-            dtrRowDetFactura.Item(5) = dtrRowDetFactura.Item(3) * dtrRowDetFactura.Item(4)
-            dtrRowDetFactura.Item(6) = detalle.Excento
-            dtrRowDetFactura.Item(7) = detalle.Producto.PrecioCosto
-            dtrRowDetFactura.Item(8) = detalle.PorcentajeIVA
-            dtrRowDetFactura.Item(9) = detalle.PorcDescuento
+            dtrRowDetFactura.Item(5) = Math.Round(detalle.PrecioVenta * (1 + (detalle.PorcentajeIVA / 100)), 2, MidpointRounding.AwayFromZero)
+            dtrRowDetFactura.Item(6) = dtrRowDetFactura.Item(3) * dtrRowDetFactura.Item(5)
+            dtrRowDetFactura.Item(7) = detalle.Excento
+            dtrRowDetFactura.Item(8) = detalle.Producto.PrecioCosto
+            dtrRowDetFactura.Item(9) = detalle.PorcentajeIVA
+            dtrRowDetFactura.Item(10) = detalle.PorcDescuento
             dtbDetalleFactura.Rows.Add(dtrRowDetFactura)
         Next
         grdDetalleFactura.Refresh()
@@ -275,11 +278,12 @@ Public Class FrmFactura
             dtrRowDetFactura.Item(2) = detalle.Descripcion
             dtrRowDetFactura.Item(3) = detalle.Cantidad
             dtrRowDetFactura.Item(4) = detalle.PrecioVenta
-            dtrRowDetFactura.Item(5) = dtrRowDetFactura.Item(3) * dtrRowDetFactura.Item(4)
-            dtrRowDetFactura.Item(6) = detalle.Excento
-            dtrRowDetFactura.Item(7) = detalle.Producto.PrecioCosto
-            dtrRowDetFactura.Item(8) = detalle.PorcentajeIVA
-            dtrRowDetFactura.Item(9) = detalle.PorcDescuento
+            dtrRowDetFactura.Item(5) = Math.Round(detalle.PrecioVenta * (1 + (detalle.PorcentajeIVA / 100)), 2, MidpointRounding.AwayFromZero)
+            dtrRowDetFactura.Item(6) = dtrRowDetFactura.Item(3) * dtrRowDetFactura.Item(5)
+            dtrRowDetFactura.Item(7) = detalle.Excento
+            dtrRowDetFactura.Item(8) = detalle.Producto.PrecioCosto
+            dtrRowDetFactura.Item(9) = detalle.PorcentajeIVA
+            dtrRowDetFactura.Item(10) = detalle.PorcDescuento
             dtbDetalleFactura.Rows.Add(dtrRowDetFactura)
         Next
         grdDetalleFactura.Refresh()
@@ -294,11 +298,12 @@ Public Class FrmFactura
             dtrRowDetFactura.Item(2) = detalle.Descripcion
             dtrRowDetFactura.Item(3) = detalle.Cantidad
             dtrRowDetFactura.Item(4) = detalle.PrecioVenta
-            dtrRowDetFactura.Item(5) = dtrRowDetFactura.Item(3) * dtrRowDetFactura.Item(4)
-            dtrRowDetFactura.Item(6) = detalle.Excento
-            dtrRowDetFactura.Item(7) = detalle.Producto.PrecioCosto
-            dtrRowDetFactura.Item(8) = detalle.PorcentajeIVA
-            dtrRowDetFactura.Item(9) = detalle.PorcDescuento
+            dtrRowDetFactura.Item(5) = Math.Round(detalle.PrecioVenta * (1 + (detalle.PorcentajeIVA / 100)), 2, MidpointRounding.AwayFromZero)
+            dtrRowDetFactura.Item(6) = dtrRowDetFactura.Item(3) * dtrRowDetFactura.Item(5)
+            dtrRowDetFactura.Item(7) = detalle.Excento
+            dtrRowDetFactura.Item(8) = detalle.Producto.PrecioCosto
+            dtrRowDetFactura.Item(9) = detalle.PorcentajeIVA
+            dtrRowDetFactura.Item(10) = detalle.PorcDescuento
             dtbDetalleFactura.Rows.Add(dtrRowDetFactura)
         Next
         grdDetalleFactura.Refresh()
@@ -325,9 +330,11 @@ Public Class FrmFactura
     Private Sub CargarLineaDetalleFactura(producto As Producto, strDescripcion As String, decCantidad As Decimal, decPrecio As Decimal, decPorcDesc As Decimal)
         Dim decTasaImpuesto As Decimal = producto.ParametroImpuesto.TasaImpuesto
         Dim decPrecioGravado As Decimal = decPrecio
+        Dim decPrecioIva As Decimal = decPrecio
         If decTasaImpuesto > 0 Then
             decPrecioGravado = Math.Round(decPrecio / (1 + (decTasaImpuesto / 100)), 3, MidpointRounding.AwayFromZero)
             If cliente.AplicaTasaDiferenciada Then decTasaImpuesto = cliente.ParametroImpuesto.TasaImpuesto
+            decPrecioIva = Math.Round(decPrecioGravado * (1 + (decTasaImpuesto / 100)), 2, MidpointRounding.AwayFromZero)
         End If
         Dim intIndice As Integer = ObtenerIndice(dtbDetalleFactura, producto.IdProducto)
         If producto.Tipo = 1 And intIndice >= 0 Then
@@ -335,11 +342,12 @@ Public Class FrmFactura
             dtbDetalleFactura.Rows(intIndice).Item(2) = strDescripcion
             dtbDetalleFactura.Rows(intIndice).Item(3) += decCantidad
             dtbDetalleFactura.Rows(intIndice).Item(4) = decPrecioGravado
-            dtbDetalleFactura.Rows(intIndice).Item(5) = decCantidad * decPrecioGravado
-            dtbDetalleFactura.Rows(intIndice).Item(6) = decTasaImpuesto = 0
-            dtbDetalleFactura.Rows(intIndice).Item(7) = producto.PrecioCosto
-            dtbDetalleFactura.Rows(intIndice).Item(8) = decTasaImpuesto
-            dtbDetalleFactura.Rows(intIndice).Item(9) = decPorcDesc
+            dtbDetalleFactura.Rows(intIndice).Item(5) = decPrecioIva
+            dtbDetalleFactura.Rows(intIndice).Item(6) = decCantidad * decPrecioIva
+            dtbDetalleFactura.Rows(intIndice).Item(7) = decTasaImpuesto = 0
+            dtbDetalleFactura.Rows(intIndice).Item(8) = producto.PrecioCosto
+            dtbDetalleFactura.Rows(intIndice).Item(9) = decTasaImpuesto
+            dtbDetalleFactura.Rows(intIndice).Item(10) = decPorcDesc
         Else
             dtrRowDetFactura = dtbDetalleFactura.NewRow
             dtrRowDetFactura.Item(0) = producto.IdProducto
@@ -347,11 +355,12 @@ Public Class FrmFactura
             dtrRowDetFactura.Item(2) = strDescripcion
             dtrRowDetFactura.Item(3) = decCantidad
             dtrRowDetFactura.Item(4) = decPrecioGravado
-            dtrRowDetFactura.Item(5) = decCantidad * decPrecioGravado
-            dtrRowDetFactura.Item(6) = decTasaImpuesto = 0
-            dtrRowDetFactura.Item(7) = producto.PrecioCosto
-            dtrRowDetFactura.Item(8) = decTasaImpuesto
-            dtrRowDetFactura.Item(9) = decPorcDesc
+            dtrRowDetFactura.Item(5) = decPrecioIva
+            dtrRowDetFactura.Item(6) = decCantidad * decPrecioIva
+            dtrRowDetFactura.Item(7) = decTasaImpuesto = 0
+            dtrRowDetFactura.Item(8) = producto.PrecioCosto
+            dtrRowDetFactura.Item(9) = decTasaImpuesto
+            dtrRowDetFactura.Item(10) = decPorcDesc
             dtbDetalleFactura.Rows.Add(dtrRowDetFactura)
         End If
         grdDetalleFactura.Refresh()
@@ -387,8 +396,8 @@ Public Class FrmFactura
         dtrRowDesglosePago.Item(4) = txtTipoTarjeta.Text
         dtrRowDesglosePago.Item(5) = txtAutorizacion.Text
         dtrRowDesglosePago.Item(6) = cboTipoMoneda.SelectedValue
-        dtrRowDesglosePago.Item(7) = decTipoCambio
-        dtrRowDesglosePago.Item(8) = decMontoPago
+        dtrRowDesglosePago.Item(7) = decMontoPago
+        dtrRowDesglosePago.Item(8) = decTipoCambio
         dtbDesglosePago.Rows.Add(dtrRowDesglosePago)
         grdDesglosePago.Refresh()
     End Sub
@@ -403,7 +412,7 @@ Public Class FrmFactura
         Dim intPorcentajeExoneracion As Integer = 0
         If txtPorcentajeExoneracion.Text <> "" Then intPorcentajeExoneracion = CInt(txtPorcentajeExoneracion.Text)
         For I = 0 To dtbDetalleFactura.Rows.Count - 1
-            Dim decTasaImpuesto As Decimal = dtbDetalleFactura.Rows(I).Item(8)
+            Dim decTasaImpuesto As Decimal = dtbDetalleFactura.Rows(I).Item(9)
             If decTasaImpuesto > 0 Then
                 Dim decImpuestoProducto As Decimal = dtbDetalleFactura.Rows(I).Item(4) * decTasaImpuesto / 100
                 If intPorcentajeExoneracion > 0 Then
@@ -433,7 +442,7 @@ Public Class FrmFactura
         decSaldoPorPagar = decTotal - decTotalPago - decMontoAdelanto
         txtMontoPago.Text = FormatNumber(decSaldoPorPagar, 2)
         txtSaldoPorPagar.Text = FormatNumber(decSaldoPorPagar, 2)
-        txtPagoDelCliente.Text = FormatNumber(decTotal, 2)
+        txtPagoDelCliente.Text = FormatNumber(decSaldoPorPagar, 2)
     End Sub
 
     Private Sub CargarTotalesPago()
@@ -579,7 +588,6 @@ Public Class FrmFactura
                     Throw New Exception("Debe agregar al menos un vendedor al catalogo de vendedores para poder continuar.")
                 End Try
             End If
-            txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmPrincipal.decTipoCambioDolar.ToString())
             decMontoAdelanto = 0
             txtMontoAdelanto.Text = FormatNumber(decMontoAdelanto, 2)
             decSaldoPorPagar = 0
@@ -726,12 +734,12 @@ Public Class FrmFactura
                 intIdApartado = factura.IdApartado
                 cboCondicionVenta.SelectedValue = factura.IdCondicionVenta
                 txtPlazoCredito.Text = factura.PlazoCredito
-                If cliente.PorcentajeExoneracion > 0 Then
-                    txtTipoExoneracion.Text = cliente.ParametroExoneracion.Descripcion
-                    txtNumDocExoneracion.Text = cliente.NumDocExoneracion
-                    txtNombreInstExoneracion.Text = cliente.NombreInstExoneracion
-                    txtFechaExoneracion.Text = cliente.FechaEmisionDoc
-                    txtPorcentajeExoneracion.Text = cliente.PorcentajeExoneracion
+                If factura.PorcentajeExoneracion > 0 Then
+                    txtTipoExoneracion.Text = factura.ParametroExoneracion.Descripcion
+                    txtNumDocExoneracion.Text = factura.NumDocExoneracion
+                    txtNombreInstExoneracion.Text = factura.NombreInstExoneracion
+                    txtFechaExoneracion.Text = factura.FechaEmisionDoc
+                    txtPorcentajeExoneracion.Text = factura.PorcentajeExoneracion
                 End If
                 vendedor = factura.Vendedor
                 txtVendedor.Text = IIf(vendedor IsNot Nothing, vendedor.Nombre, "")
@@ -741,7 +749,7 @@ Public Class FrmFactura
                 CargarTotales()
                 CargarTotalesPago()
                 txtPagoDelCliente.Text = FormatNumber(factura.MontoPagado, 2)
-                txtCambio.Text = FormatNumber(txtPagoDelCliente.Text - decTotal, 2)
+                txtCambio.Text = FormatNumber(txtPagoDelCliente.Text - (decTotal - factura.MontoAdelanto), 2)
                 txtMontoAdelanto.Text = FormatNumber(decMontoAdelanto, 2)
                 cboCondicionVenta.Enabled = False
                 txtNombreCliente.ReadOnly = True
@@ -788,6 +796,13 @@ Public Class FrmFactura
                 cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado
                 cboCondicionVenta.Enabled = cliente.IdCliente > 1
                 txtPlazoCredito.Text = ""
+                If cliente.PorcentajeExoneracion > 0 Then
+                    txtTipoExoneracion.Text = cliente.ParametroExoneracion.Descripcion
+                    txtNumDocExoneracion.Text = cliente.NumDocExoneracion
+                    txtNombreInstExoneracion.Text = cliente.NombreInstExoneracion
+                    txtFechaExoneracion.Text = cliente.FechaEmisionDoc
+                    txtPorcentajeExoneracion.Text = cliente.PorcentajeExoneracion
+                End If
                 vendedor = ordenServicio.Vendedor
                 txtVendedor.Text = IIf(vendedor IsNot Nothing, vendedor.Nombre, "")
                 intIdProforma = 0
@@ -837,12 +852,19 @@ Public Class FrmFactura
                 txtIdFactura.Text = ""
                 cliente = apartado.Cliente
                 cboTipoMoneda.SelectedValue = apartado.IdTipoMoneda
-                txtNombreCliente.Text = ordenServicio.NombreCliente
+                txtNombreCliente.Text = apartado.NombreCliente
                 txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
                 txtDocumento.Text = ""
                 cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado
                 cboCondicionVenta.Enabled = cliente.IdCliente > 1
                 txtPlazoCredito.Text = ""
+                If cliente.PorcentajeExoneracion > 0 Then
+                    txtTipoExoneracion.Text = cliente.ParametroExoneracion.Descripcion
+                    txtNumDocExoneracion.Text = cliente.NumDocExoneracion
+                    txtNombreInstExoneracion.Text = cliente.NombreInstExoneracion
+                    txtFechaExoneracion.Text = cliente.FechaEmisionDoc
+                    txtPorcentajeExoneracion.Text = cliente.PorcentajeExoneracion
+                End If
                 vendedor = apartado.Vendedor
                 txtVendedor.Text = IIf(vendedor IsNot Nothing, vendedor.Nombre, "")
                 intIdProforma = 0
@@ -898,6 +920,13 @@ Public Class FrmFactura
                 cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado
                 cboCondicionVenta.Enabled = cliente.IdCliente > 1
                 txtPlazoCredito.Text = ""
+                If cliente.PorcentajeExoneracion > 0 Then
+                    txtTipoExoneracion.Text = cliente.ParametroExoneracion.Descripcion
+                    txtNumDocExoneracion.Text = cliente.NumDocExoneracion
+                    txtNombreInstExoneracion.Text = cliente.NombreInstExoneracion
+                    txtFechaExoneracion.Text = cliente.FechaEmisionDoc
+                    txtPorcentajeExoneracion.Text = cliente.PorcentajeExoneracion
+                End If
                 vendedor = proforma.Vendedor
                 txtVendedor.Text = IIf(vendedor IsNot Nothing, vendedor.Nombre, "")
                 intIdProforma = proforma.IdProforma
@@ -1054,7 +1083,11 @@ Public Class FrmFactura
                 .Nulo = False,
                 .IdOrdenServicio = intIdOrdenServicio,
                 .IdProforma = intIdProforma,
-                .IdApartado = intIdApartado
+                .IdApartado = intIdApartado,
+                .IdTipoExoneracion = cliente.IdTipoExoneracion,
+                .NombreInstExoneracion = cliente.NombreInstExoneracion,
+                .FechaEmisionDoc = cliente.FechaEmisionDoc,
+                .PorcentajeExoneracion = cliente.PorcentajeExoneracion
             }
             For I = 0 To dtbDetalleFactura.Rows.Count - 1
                 detalleFactura = New DetalleFactura With {
@@ -1062,23 +1095,23 @@ Public Class FrmFactura
                     .Descripcion = dtbDetalleFactura.Rows(I).Item(2),
                     .Cantidad = dtbDetalleFactura.Rows(I).Item(3),
                     .PrecioVenta = dtbDetalleFactura.Rows(I).Item(4),
-                    .Excento = dtbDetalleFactura.Rows(I).Item(6),
-                    .PrecioCosto = dtbDetalleFactura.Rows(I).Item(7),
-                    .PorcentajeIVA = dtbDetalleFactura.Rows(I).Item(8),
-                    .PorcDescuento = dtbDetalleFactura.Rows(I).Item(9)
+                    .Excento = dtbDetalleFactura.Rows(I).Item(7),
+                    .PrecioCosto = dtbDetalleFactura.Rows(I).Item(8),
+                    .PorcentajeIVA = dtbDetalleFactura.Rows(I).Item(9),
+                    .PorcDescuento = dtbDetalleFactura.Rows(I).Item(10)
                 }
                 factura.DetalleFactura.Add(detalleFactura)
             Next
             For I = 0 To dtbDesglosePago.Rows.Count - 1
                 desglosePago = New DesglosePagoFactura With {
-                    .IdFormaPago = dtbDesglosePago.Rows(I).Item(1),
-                    .IdCuentaBanco = dtbDesglosePago.Rows(I).Item(3),
-                    .TipoTarjeta = dtbDesglosePago.Rows(I).Item(5),
-                    .NroMovimiento = dtbDesglosePago.Rows(I).Item(6),
-                    .IdTipoMoneda = dtbDesglosePago.Rows(I).Item(7),
+                    .IdFormaPago = dtbDesglosePago.Rows(I).Item(0),
+                    .IdCuentaBanco = dtbDesglosePago.Rows(I).Item(2),
+                    .TipoTarjeta = dtbDesglosePago.Rows(I).Item(4),
+                    .NroMovimiento = dtbDesglosePago.Rows(I).Item(5),
+                    .IdTipoMoneda = dtbDesglosePago.Rows(I).Item(6),
                     .Fecha = Now(),
-                    .MontoLocal = dtbDesglosePago.Rows(I).Item(8),
-                    .TipoDeCambio = dtbDesglosePago.Rows(I).Item(9)
+                    .MontoLocal = dtbDesglosePago.Rows(I).Item(7),
+                    .TipoDeCambio = dtbDesglosePago.Rows(I).Item(8)
                 }
                 factura.DesglosePagoFactura.Add(desglosePago)
             Next
@@ -1503,16 +1536,16 @@ Public Class FrmFactura
     End Sub
 
     Private Sub txtPagoDelCliente_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtPagoDelCliente.PreviewKeyDown
-        If e.KeyCode = Keys.Enter Then
+        If e.KeyCode = Keys.Enter Or e.KeyCode = Keys.Tab Then
             If txtPagoDelCliente.Text = "" Then
-                txtPagoDelCliente.Text = FormatNumber(CDbl(txtTotal.Text), 2)
-            ElseIf txtPagoDelCliente.Text < CDbl(txtTotal.Text) Then
-                txtPagoDelCliente.Text = FormatNumber(CDbl(txtTotal.Text), 2)
+                txtPagoDelCliente.Text = FormatNumber(CDbl(txtSaldoPorPagar.Text), 2)
+            ElseIf txtPagoDelCliente.Text < CDbl(txtSaldoPorPagar.Text) Then
+                txtPagoDelCliente.Text = FormatNumber(CDbl(txtSaldoPorPagar.Text), 2)
                 MessageBox.Show("El monto con el que el cliente paga no puede ser menor al total de la factura. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Else
                 txtPagoDelCliente.Text = FormatNumber(txtPagoDelCliente.Text, 2)
             End If
-            txtCambio.Text = FormatNumber(txtPagoDelCliente.Text - decTotal, 2)
+            txtCambio.Text = FormatNumber(txtPagoDelCliente.Text - (decTotal - CDbl(txtMontoAdelanto.Text)), 2)
         End If
     End Sub
 
@@ -1529,6 +1562,12 @@ Public Class FrmFactura
             txtMontoPago.Text = "0.00"
         Else
             txtMontoPago.Text = FormatNumber(txtMontoPago.Text, 2)
+        End If
+    End Sub
+
+    Private Sub TxtMontoPago_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtMontoPago.PreviewKeyDown
+        If e.KeyCode = Keys.Enter And txtMontoPago.Text <> "" Then
+            BtnInsertarPago_Click(btnInsertarPago, New EventArgs())
         End If
     End Sub
 
