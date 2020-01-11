@@ -152,11 +152,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                         FormUrlEncodedContent formContent = new FormUrlEncodedContent(new[]
                         {
-                            new KeyValuePair<string, string>("tcIndicador", "318"),
-                            new KeyValuePair<string, string>("tcFechaInicio", fechaConsulta.ToString("dd/MM/yyyy")),
-                            new KeyValuePair<string, string>("tcFechaFinal", fechaConsulta.ToString("dd/MM/yyyy")),
-                            new KeyValuePair<string, string>("tcNombre", "System"),
-                            new KeyValuePair<string, string>("tnSubNiveles", "N")
+                            new KeyValuePair<string, string>("Indicador", "318"),
+                            new KeyValuePair<string, string>("FechaInicio", fechaConsulta.ToString("dd/MM/yyyy")),
+                            new KeyValuePair<string, string>("FechaFinal", fechaConsulta.ToString("dd/MM/yyyy")),
+                            new KeyValuePair<string, string>("Nombre", "System"),
+                            new KeyValuePair<string, string>("SubNiveles", "N"),
+                            new KeyValuePair<string, string>("CorreoElectronico", "jason.lopez.cordoba@hotmail.com"),
+                            new KeyValuePair<string, string>("Token", "42OJOAIBO0")
                         });
                         HttpResponseMessage httpResponse = httpClient.PostAsync(strServicioURL + "/ObtenerIndicadoresEconomicos", formContent).Result;
                         if (httpResponse.StatusCode == HttpStatusCode.OK)
