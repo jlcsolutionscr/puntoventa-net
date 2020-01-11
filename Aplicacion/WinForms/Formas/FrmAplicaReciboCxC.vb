@@ -179,7 +179,7 @@ Public Class FrmAplicaReciboCxC
     End Sub
 
     Private Sub CargarLineaDesglosePago()
-        Dim objPkDesglose(2) As Object
+        Dim objPkDesglose(1) As Object
         objPkDesglose(0) = cboFormaPago.SelectedValue
         objPkDesglose(1) = cboTipoBanco.SelectedValue
         If dtbDesglosePago.Rows.Contains(objPkDesglose) Then
@@ -384,7 +384,7 @@ Public Class FrmAplicaReciboCxC
         End Try
     End Sub
 
-    Private Async Sub cboFormaPago_SelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs) Handles cboFormaPago.SelectedValueChanged
+    Private Async Sub cboFormaPago_SelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs) Handles cboFormaPago.SelectedIndexChanged
         If Not bolInit And Not cboFormaPago.SelectedValue Is Nothing Then
             cboTipoBanco.SelectedIndex = 0
             txtTipoTarjeta.Text = ""
@@ -396,9 +396,10 @@ Public Class FrmAplicaReciboCxC
                     MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
                 End Try
-                cboTipoBanco.Width = 194
-                lblBanco.Width = 194
+                cboTipoBanco.Width = 371
+                lblBanco.Width = 371
                 lblBanco.Text = "Banco Adquiriente"
+                lblAutorizacion.Text = "Autorización"
                 txtTipoTarjeta.Visible = True
                 lblTipoTarjeta.Visible = True
                 If cboFormaPago.SelectedValue = StaticFormaPago.Tarjeta Then
@@ -418,9 +419,10 @@ Public Class FrmAplicaReciboCxC
                     MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
                 End Try
-                cboTipoBanco.Width = 264
-                lblBanco.Width = 264
+                cboTipoBanco.Width = 441
+                lblBanco.Width = 441
                 lblBanco.Text = "Cuenta Bancaria"
+                lblAutorizacion.Text = "Nro. Mov"
                 cboTipoBanco.Enabled = True
                 txtTipoTarjeta.ReadOnly = True
                 txtTipoTarjeta.Visible = False
@@ -528,7 +530,7 @@ Public Class FrmAplicaReciboCxC
         End If
     End Sub
 
-    Private Async Sub cboCuentaPorCobrar_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboCuentaPorCobrar.SelectedValueChanged
+    Private Async Sub cboCuentaPorCobrar_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboCuentaPorCobrar.SelectedIndexChanged
         If Not bolInit And cboCuentaPorCobrar.SelectedValue IsNot Nothing Then
             Try
                 cuentaPorCobrar = Await Puntoventa.ObtenerCuentaPorCobrar(cboCuentaPorCobrar.SelectedValue, FrmPrincipal.usuarioGlobal.Token)

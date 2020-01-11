@@ -17,9 +17,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         void AplicarTraslado(int intIdTraslado, int intIdUsuario);
         void AnularTraslado(int intIdTraslado, int intIdUsuario);
         Traslado ObtenerTraslado(int intIdTraslado);
-        int ObtenerTotalListaTraslados(int intIdEmpresa, int intIdSucursalOrigen, int intIdTraslado);
-        IList<TrasladoDetalle> ObtenerListaTraslados(int intIdEmpresa, int intIdSucursalOrigen, int numPagina, int cantRec, int intIdTraslado);
-        IList<TrasladoDetalle> ObtenerListaTrasladosPorAplicar(int intIdEmpresa, int intIdSucursalDestino, int intIdTraslado);
+        int ObtenerTotalListaTraslados(int intIdEmpresa, int intIdSucursalOrigen, bool bolAplicado, int intIdTraslado);
+        IList<TrasladoDetalle> ObtenerListadoTraslados(int intIdEmpresa, int intIdSucursalOrigen, bool bolAplicado, int numPagina, int cantRec, int intIdTraslado);
     }
 
     public class TrasladoService : ITrasladoService
@@ -351,6 +350,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     Traslado traslado = dbContext.TrasladoRepository.Include("DetalleTraslado.Producto.ParametroImpuesto").FirstOrDefault(x => x.IdTraslado == intIdTraslado);
+                    SucursalPorEmpresa sucursalOrigen = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == traslado.IdEmpresa && x.IdSucursal == traslado.IdSucursalOrigen);
+                    traslado.NombreSucursalOrigen = sucursalOrigen.NombreSucursal;
+                    SucursalPorEmpresa sucursalDestino = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == traslado.IdEmpresa && x.IdSucursal == traslado.IdSucursalDestino);
+                    traslado.NombreSucursalDestino = sucursalDestino.NombreSucursal;
                     foreach (var detalle in traslado.DetalleTraslado)
                         detalle.Traslado = null;
                     return traslado;
@@ -363,13 +366,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public int ObtenerTotalListaTraslados(int intIdEmpresa, int intIdSucursalOrigen, int intIdTraslado)
+        public int ObtenerTotalListaTraslados(int intIdEmpresa, int intIdSucursalOrigen, bool bolAplicado, int intIdTraslado)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 try
                 {
-                    var listaTraslados = dbContext.TrasladoRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursalOrigen == intIdSucursalOrigen);
+                    var listaTraslados = dbContext.TrasladoRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursalOrigen == intIdSucursalOrigen && x.Aplicado == bolAplicado);
                     if (intIdTraslado > 0)
                         listaTraslados = listaTraslados.Where(x => x.IdTraslado == intIdTraslado);
                     return listaTraslados.Count();
@@ -382,14 +385,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IList<TrasladoDetalle> ObtenerListaTraslados(int intIdEmpresa, int intIdSucursalOrigen, int numPagina, int cantRec, int intIdTraslado)
+        public IList<TrasladoDetalle> ObtenerListadoTraslados(int intIdEmpresa, int intIdSucursalOrigen, bool bolAplicado, int numPagina, int cantRec, int intIdTraslado)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 var listaTraslado = new List<TrasladoDetalle>();
                 try
                 {
-                    var listado = dbContext.TrasladoRepository.Where(x => !x.Nulo && !x.Aplicado && x.IdEmpresa == intIdEmpresa && x.IdSucursalOrigen == intIdSucursalOrigen);
+                    var listado = dbContext.TrasladoRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursalOrigen == intIdSucursalOrigen && x.Aplicado == bolAplicado);
                     if (intIdTraslado > 0)
                         listado = listado.Where(x => x.IdTraslado == intIdTraslado);
                     listado = listado.OrderByDescending(x => x.IdTraslado).Skip((numPagina - 1) * cantRec).Take(cantRec);
@@ -398,36 +401,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         string strNombreSucursal = "NOMBRE DE SUCURSAL NO DISPONIBLE";
                         SucursalPorEmpresa sucursalDestino = dbContext.SucursalPorEmpresaRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == traslado.IdSucursalDestino).FirstOrDefault();
-                        if (sucursalDestino != null)
-                            strNombreSucursal = sucursalDestino.NombreSucursal;
-                        TrasladoDetalle item = new TrasladoDetalle(traslado.IdTraslado, traslado.Fecha.ToString("dd/MM/yyyy"), strNombreSucursal, traslado.Total);
-                        listaTraslado.Add(item);
-                    }
-                    return listaTraslado;
-                }
-                catch (Exception ex)
-                {
-                    log.Error("Error al obtener el listado de registros de traslado: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de traslados. Por favor consulte con su proveedor.");
-                }
-            }
-        }
-
-        public IList<TrasladoDetalle> ObtenerListaTrasladosPorAplicar(int intIdEmpresa, int intIdSucursalDestino, int intIdTraslado)
-        {
-            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
-            {
-                var listaTraslado = new List<TrasladoDetalle>();
-                try
-                {
-                    var listado = dbContext.TrasladoRepository.Where(x => !x.Nulo && !x.Aplicado && x.IdEmpresa == intIdEmpresa && x.IdSucursalDestino == intIdSucursalDestino);
-                    if (intIdTraslado > 0)
-                        listado = listado.Where(x => x.IdTraslado == intIdTraslado);
-                    var lineas = listado.ToList();
-                    foreach (var traslado in lineas)
-                    {
-                        string strNombreSucursal = "NOMBRE DE SUCURSAL NO DISPONIBLE";
-                        SucursalPorEmpresa sucursalDestino = dbContext.SucursalPorEmpresaRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == traslado.IdSucursalOrigen).FirstOrDefault();
                         if (sucursalDestino != null)
                             strNombreSucursal = sucursalDestino.NombreSucursal;
                         TrasladoDetalle item = new TrasladoDetalle(traslado.IdTraslado, traslado.Fecha.ToString("dd/MM/yyyy"), strNombreSucursal, traslado.Total);

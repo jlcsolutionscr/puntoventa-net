@@ -13,6 +13,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public string NombreSucursal { get; set; }
         public string Direccion { get; set; }
         public string Telefono { get; set; }
+        public int ConsecOrdenServicio { get; set; }
 
         public Empresa Empresa { get; set; }
     }

@@ -82,11 +82,13 @@ Public Class FrmEmpresa
             txtTelefonoSucursal.Text = datosSucursal.Telefono
             txtIdTerminal.Text = datosTerminal.IdTerminal
             txtNombreImpresora.Text = datosTerminal.ImpresoraFactura
+            chkImpresoraMatriz.Checked = datosTerminal.ImpresoraMatriz
             txtUltimoFE.Text = datosTerminal.UltimoDocFE
             txtUltimoND.Text = datosTerminal.UltimoDocND
             txtUltimoNC.Text = datosTerminal.UltimoDocNC
             txtUltimoTE.Text = datosTerminal.UltimoDocTE
             txtUltimoMR.Text = datosTerminal.UltimoDocMR
+            txtUltimoFEC.Text = datosTerminal.UltimoDocFEC
             bolInit = False
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -165,15 +167,22 @@ Public Class FrmEmpresa
                 datosSucursal.Direccion = txtDireccionSucursal.Text
                 datosSucursal.Telefono = txtTelefonoSucursal.Text
                 Await Puntoventa.ActualizarSucursalPorEmpresa(datosSucursal, FrmPrincipal.usuarioGlobal.Token)
+                FrmPrincipal.equipoGlobal.NombreSucursal = txtNombreSucursal.Text
+                FrmPrincipal.equipoGlobal.DireccionSucursal = txtDireccionSucursal.Text
+                FrmPrincipal.equipoGlobal.TelefonoSucursal = txtTelefonoSucursal.Text
             End If
             If bolTerminalActualizada Then
                 datosTerminal.ImpresoraFactura = txtNombreImpresora.Text
+                datosTerminal.ImpresoraMatriz = chkImpresoraMatriz.Checked
                 datosTerminal.UltimoDocFE = txtUltimoFE.Text
                 datosTerminal.UltimoDocND = txtUltimoND.Text
                 datosTerminal.UltimoDocNC = txtUltimoNC.Text
                 datosTerminal.UltimoDocTE = txtUltimoTE.Text
                 datosTerminal.UltimoDocMR = txtUltimoMR.Text
+                datosTerminal.UltimoDocFEC = txtUltimoFEC.Text
                 Await Puntoventa.ActualizarTerminalPorSucursal(datosTerminal, FrmPrincipal.usuarioGlobal.Token)
+                FrmPrincipal.equipoGlobal.ImpresoraFactura = txtNombreImpresora.Text
+                FrmPrincipal.equipoGlobal.ImpresoraMatriz = chkImpresoraMatriz.Checked
             End If
         Catch ex As Exception
             btnGuardar.Enabled = True
@@ -210,7 +219,11 @@ Public Class FrmEmpresa
         End If
     End Sub
 
-    Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As KeyPressEventArgs) Handles txtIdentificacion.KeyPress, txtTelefono.KeyPress, txtPorcentajeDescMaximo.KeyPress
+    Private Sub ValidaDigitosSinDecimal(ByVal sender As Object, ByVal e As KeyPressEventArgs) Handles txtIdentificacion.KeyPress, txtTelefono.KeyPress, txtUltimoFE.KeyPress, txtUltimoND.KeyPress, txtUltimoNC.KeyPress, txtUltimoTE.KeyPress, txtUltimoMR.KeyPress, txtUltimoFEC.KeyPress
+        FrmPrincipal.ValidaNumero(e, sender, True, 0, ".")
+    End Sub
+
+    Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As KeyPressEventArgs) Handles txtPorcentajeDescMaximo.KeyPress
         FrmPrincipal.ValidaNumero(e, sender, True, 2, ".")
     End Sub
 
@@ -218,7 +231,7 @@ Public Class FrmEmpresa
         bolSucursalActualizada = True
     End Sub
 
-    Private Sub TextFieldTerminal_Validated(sender As Object, e As EventArgs) Handles txtNombreImpresora.Validated, txtUltimoFE.Validated, txtUltimoND.Validated, txtUltimoNC.Validated, txtUltimoTE.Validated, txtUltimoMR.Validated
+    Private Sub TextFieldTerminal_Validated(sender As Object, e As EventArgs) Handles txtNombreImpresora.Validated, txtUltimoFE.Validated, txtUltimoND.Validated, txtUltimoNC.Validated, txtUltimoTE.Validated, txtUltimoMR.Validated, txtUltimoFEC.Validated
         bolTerminalActualizada = True
     End Sub
 

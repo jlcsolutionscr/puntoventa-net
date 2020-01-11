@@ -810,7 +810,7 @@ Partial Class FrmCierreDeCaja
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
-        Me.ClientSize = New System.Drawing.Size(544, 447)
+        Me.ClientSize = New System.Drawing.Size(1149, 447)
         Me.Controls.Add(Me.txtTotalIngresosTarjeta)
         Me.Controls.Add(Me.Label26)
         Me.Controls.Add(Me.btnImprimir)

@@ -205,7 +205,6 @@ Partial Class FrmTrasladoMercaderia
         Me.txtTotal.AcceptsReturn = True
         Me.txtTotal.BackColor = System.Drawing.SystemColors.Window
         Me.txtTotal.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtTotal.Enabled = False
         Me.txtTotal.ForeColor = System.Drawing.SystemColors.WindowText
         Me.txtTotal.Location = New System.Drawing.Point(738, 430)
         Me.txtTotal.MaxLength = 0

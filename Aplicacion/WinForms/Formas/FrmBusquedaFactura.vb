@@ -113,8 +113,8 @@ Public Class FrmBusquedaFactura
 
     Private Async Sub FrmBusProd_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
-            Await CargarCombos()
             EstablecerPropiedadesDataGridView()
+            Await CargarCombos()
             Await ValidarCantidadRegistros()
             intIndiceDePagina = 1
             Await ActualizarDatos(intIndiceDePagina)
@@ -133,14 +133,18 @@ Public Class FrmBusquedaFactura
     End Sub
 
     Private Async Sub btnFiltrar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnFiltrar.Click
-        If txtId.Text = "" Then
-            intId = 0
-        Else
+        If txtId.Text <> "" Then
             intId = CInt(txtId.Text)
+        Else
+            intId = 0
         End If
         Await ValidarCantidadRegistros()
         intIndiceDePagina = 1
         Await ActualizarDatos(intIndiceDePagina)
+    End Sub
+
+    Private Sub cboSucursal_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboSucursal.SelectedIndexChanged
+        btnFiltrar_Click(btnFiltrar, New EventArgs())
     End Sub
 #End Region
 End Class

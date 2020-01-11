@@ -109,6 +109,7 @@
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Transactions" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Web.Services" />
     <Reference Include="System.Windows.Forms">
@@ -151,10 +152,10 @@
     <Compile Include="Formas\FrmBusquedaApartado.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Formas\FrmAplicaTraslado.Designer.vb">
-      <DependentUpon>FrmAplicaTraslado.vb</DependentUpon>
+    <Compile Include="Formas\FrmAplicaTrasladoListado.Designer.vb">
+      <DependentUpon>FrmAplicaTrasladoListado.vb</DependentUpon>
     </Compile>
-    <Compile Include="Formas\FrmAplicaTraslado.vb">
+    <Compile Include="Formas\FrmAplicaTrasladoListado.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Formas\FrmBusquedaVendedor.Designer.vb">
@@ -329,6 +330,12 @@
       <DependentUpon>FrmRegistro.vb</DependentUpon>
     </Compile>
     <Compile Include="Formas\FrmRegistro.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Formas\FrmDetalleTraslado.Designer.vb">
+      <DependentUpon>FrmDetalleTraslado.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Formas\FrmDetalleTraslado.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Formas\FrmTrasladoMercaderia.Designer.vb">
@@ -703,8 +710,8 @@
       <DependentUpon>FrmBusquedaApartado.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Formas\FrmAplicaTraslado.resX">
-      <DependentUpon>FrmAplicaTraslado.vb</DependentUpon>
+    <EmbeddedResource Include="Formas\FrmAplicaTrasladoListado.resX">
+      <DependentUpon>FrmAplicaTrasladoListado.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Formas\FrmBusquedaVendedor.resX">
@@ -807,6 +814,9 @@
     <EmbeddedResource Include="Formas\FrmRegistro.resX">
       <DependentUpon>FrmRegistro.vb</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Formas\FrmDetalleTraslado.resx">
+      <DependentUpon>FrmDetalleTraslado.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Formas\FrmTrasladoMercaderia.resx">
       <DependentUpon>FrmTrasladoMercaderia.vb</DependentUpon>

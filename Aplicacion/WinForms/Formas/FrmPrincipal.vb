@@ -514,7 +514,7 @@ Public Class FrmPrincipal
     End Sub
 
     Private Sub MnuCompraAplicTraslado_Click(sender As Object, e As EventArgs) Handles MnuCompraAplicTraslado.Click
-        Dim formAplicaTraslado As New FrmAplicaTraslado With {
+        Dim formAplicaTraslado As New FrmAplicaTrasladoListado With {
            .MdiParent = Me
        }
         formAplicaTraslado.Show()

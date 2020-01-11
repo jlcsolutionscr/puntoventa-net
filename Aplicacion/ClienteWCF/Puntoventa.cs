@@ -1623,9 +1623,9 @@ namespace LeandroSoftware.ClienteWCF
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 
-        public static async Task<int> ObtenerTotalListaTraslados(int intIdEmpresa, int intIdSucursalOrigen, string strToken, int intIdTraslado = 0)
+        public static async Task<int> ObtenerTotalListaTraslados(int intIdEmpresa, int intIdSucursalOrigen, bool bolAplicado, string strToken, int intIdTraslado = 0)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerTotalListaTraslados', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursalOrigen: " + intIdSucursalOrigen + ", IdTraslado: " + intIdTraslado + "}}";
+            string strDatos = "{NombreMetodo: 'ObtenerTotalListaTraslados', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursalOrigen: " + intIdSucursalOrigen + ", Aplicado: '" + bolAplicado + "', IdTraslado: " + intIdTraslado + "}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             int intCantidad = 0;
             if (respuesta != "")
@@ -1633,19 +1633,9 @@ namespace LeandroSoftware.ClienteWCF
             return intCantidad;
         }
 
-        public static async Task<List<TrasladoDetalle>> ObtenerListaTraslados(int intIdEmpresa, int intIdSucursalOrigen, int intNumeroPagina, int intFilasPorPagina, string strToken, int intIdTraslado = 0)
+        public static async Task<List<TrasladoDetalle>> ObtenerListadoTraslados(int intIdEmpresa, int intIdSucursalOrigen, bool bolAplicado, int intNumeroPagina, int intFilasPorPagina, string strToken, int intIdTraslado = 0)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerListaTraslados', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursalOrigen: " + intIdSucursalOrigen + ", NumeroPagina: " + intNumeroPagina + ",FilasPorPagina: " + intFilasPorPagina + ", IdTraslado: " + intIdTraslado + "}}";
-            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
-            List<TrasladoDetalle> listado = new List<TrasladoDetalle>();
-            if (respuesta != "")
-                listado = serializer.Deserialize<List<TrasladoDetalle>>(respuesta);
-            return listado;
-        }
-
-        public static async Task<List<TrasladoDetalle>> ObtenerListaTrasladosPorAplicar(int intIdEmpresa, int intIdSucursalDestino, string strToken, int intIdTraslado = 0)
-        {
-            string strDatos = "{NombreMetodo: 'ObtenerListaTrasladosPorAplicar', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursalDestino: " + intIdSucursalDestino + ", IdTraslado: " + intIdTraslado + "}}";
+            string strDatos = "{NombreMetodo: 'ObtenerListadoTraslados', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursalOrigen: " + intIdSucursalOrigen + ", Aplicado: '" + bolAplicado + "', NumeroPagina: " + intNumeroPagina + ",FilasPorPagina: " + intFilasPorPagina + ", IdTraslado: " + intIdTraslado + "}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             List<TrasladoDetalle> listado = new List<TrasladoDetalle>();
             if (respuesta != "")

@@ -2,6 +2,7 @@ Imports System.Collections.Generic
 Imports System.Threading.Tasks
 Imports LeandroSoftware.ClienteWCF
 Imports LeandroSoftware.Core.Dominio.Entidades
+Imports LeandroSoftware.Core.TiposComunes
 
 Public Class FrmAjusteInventario
 #Region "Variables"
@@ -330,14 +331,37 @@ Public Class FrmAjusteInventario
     End Sub
 
     Private Async Sub TxtCodigo_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtCodigo.PreviewKeyDown
-        If e.KeyCode = Keys.Enter Then
+        If e.KeyCode = Keys.F1 Then
+            BtnBusProd_Click(btnBusProd, New EventArgs())
+        ElseIf e.KeyCode = Keys.Enter Or e.KeyCode = Keys.Tab Then
             Try
-                producto = Await Puntoventa.ObtenerProductoPorCodigo(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, txtCodigo.Text, FrmPrincipal.usuarioGlobal.Token)
+                producto = Await Puntoventa.ObtenerProductoPorCodigo(FrmPrincipal.empresaGlobal.IdEmpresa, txtCodigo.Text, cboSucursal.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
+                If producto IsNot Nothing Then
+                    If producto.Activo And producto.Tipo = StaticTipoProducto.Producto Then
+                        CargarDatosProducto(producto)
+                        txtCantidad.Focus()
+                    End If
+                Else
+                    txtCodigo.Text = ""
+                    txtDescripcion.Text = ""
+                    txtCantidad.Text = ""
+                    txtPrecioCosto.Text = ""
+                    txtCodigo.Focus()
+                End If
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
-            CargarDatosProducto(producto)
+        End If
+    End Sub
+
+    Private Sub TxtCantidad_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtCantidad.PreviewKeyDown
+        If e.KeyCode = Keys.Enter Then
+            If txtCantidad.Text <> "" And CDbl(txtPrecioCosto.Text) > 0 Then
+                BtnInsertar_Click(btnInsertar, New EventArgs())
+            ElseIf txtCantidad.Text <> "" Then
+                txtPrecioCosto.Focus()
+            End If
         End If
     End Sub
 

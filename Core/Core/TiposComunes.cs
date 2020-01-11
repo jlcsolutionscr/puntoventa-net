@@ -442,6 +442,7 @@ namespace LeandroSoftware.Core.TiposComunes
         public string DireccionSucursal { get; set; }
         public string TelefonoSucursal { get; set; }
         public string ImpresoraFactura { get; set; }
+        public bool ImpresoraMatriz { get; set; }
     }
 
     public class LlaveDescripcion

@@ -195,20 +195,16 @@ Public Class FrmInventario
         Await ActualizarDatos(intIndiceDePagina)
     End Sub
 
-    Private Async Sub cboSucursal_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboSucursal.SelectedIndexChanged
+    Private Sub cboSucursal_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboSucursal.SelectedIndexChanged
         If Not bolInit And Not cboSucursal.SelectedValue Is Nothing Then
             intIdSucursal = cboSucursal.SelectedValue
-            Await ValidarCantidadRegistros()
-            intIndiceDePagina = 1
-            Await ActualizarDatos(intIndiceDePagina)
+            CmdFiltrar_Click(CmdFiltrar, New EventArgs())
         End If
     End Sub
 
-    Private Async Sub cboLinea_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboLinea.SelectedIndexChanged
+    Private Sub cboLinea_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboLinea.SelectedIndexChanged
         If Not bolInit And Not cboLinea.SelectedValue Is Nothing Then
-            Await ValidarCantidadRegistros()
-            intIndiceDePagina = 1
-            Await ActualizarDatos(intIndiceDePagina)
+            CmdFiltrar_Click(CmdFiltrar, New EventArgs())
         End If
     End Sub
 #End Region

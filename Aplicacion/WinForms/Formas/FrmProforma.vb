@@ -797,7 +797,9 @@ Public Class FrmProforma
     End Sub
 
     Private Async Sub TxtCodigo_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtCodigo.PreviewKeyDown
-        If e.KeyCode = Keys.ControlKey Then
+        If e.KeyCode = Keys.F1 Then
+            BtnBusProd_Click(btnBusProd, New EventArgs())
+        ElseIf e.KeyCode = Keys.ControlKey Then
             If FrmPrincipal.productoTranstorio IsNot Nothing Then
                 Dim formCargar As New FrmCargaProductoTransitorio
                 formCargar.ShowDialog()
@@ -808,9 +810,11 @@ Public Class FrmProforma
         ElseIf e.KeyCode = Keys.Enter Or e.KeyCode = Keys.Tab Then
             Try
                 producto = Await Puntoventa.ObtenerProductoPorCodigo(FrmPrincipal.empresaGlobal.IdEmpresa, txtCodigo.Text, FrmPrincipal.equipoGlobal.IdSucursal, FrmPrincipal.usuarioGlobal.Token)
-                If producto IsNot Nothing And producto.Activo Then
-                    CargarDatosProducto(producto)
-                    txtCantidad.Focus()
+                If producto IsNot Nothing Then
+                    If producto.Activo Then
+                        CargarDatosProducto(producto)
+                        txtCantidad.Focus()
+                    End If
                 Else
                     txtCodigo.Text = ""
                     txtDescripcion.Text = ""

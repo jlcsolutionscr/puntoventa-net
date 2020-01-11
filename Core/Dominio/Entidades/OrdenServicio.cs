@@ -19,6 +19,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public int IdSucursal { get; set; }
         [Key]
         public int IdOrden { get; set; }
+        public int ConsecOrdenServicio { get; set; }
         [ForeignKey("Usuario")]
         public int IdUsuario { get; set; }
         [ForeignKey("TipoMoneda")]
@@ -30,6 +31,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public int IdVendedor { get; set; }
         public DateTime Fecha { get; set; }
         public string Telefono { get; set; }
+        public string Direccion { get; set; }
         public string Descripcion { get; set; }
         public string FechaEntrega { get; set; }
         public string OtrosDetalles { get; set; }

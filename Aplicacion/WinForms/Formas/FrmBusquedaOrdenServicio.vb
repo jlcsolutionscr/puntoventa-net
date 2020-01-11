@@ -142,5 +142,9 @@ Public Class FrmBusquedaOrdenServicio
         intIndiceDePagina = 1
         Await ActualizarDatos(intIndiceDePagina)
     End Sub
+
+    Private Sub cboSucursal_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboSucursal.SelectedIndexChanged
+        btnFiltrar_Click(btnFiltrar, New EventArgs())
+    End Sub
 #End Region
 End Class

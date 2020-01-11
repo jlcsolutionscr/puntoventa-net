@@ -50,7 +50,7 @@ Partial Class FrmBusquedaProducto
         Me.CmdFiltro.Name = "CmdFiltro"
         Me.CmdFiltro.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.CmdFiltro.Size = New System.Drawing.Size(81, 21)
-        Me.CmdFiltro.TabIndex = 4
+        Me.CmdFiltro.TabIndex = 6
         Me.CmdFiltro.TabStop = False
         Me.CmdFiltro.Text = "Filtrar"
         Me.CmdFiltro.UseVisualStyleBackColor = False
@@ -66,7 +66,7 @@ Partial Class FrmBusquedaProducto
         Me.TxtDesc.Name = "TxtDesc"
         Me.TxtDesc.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.TxtDesc.Size = New System.Drawing.Size(839, 20)
-        Me.TxtDesc.TabIndex = 1
+        Me.TxtDesc.TabIndex = 3
         '
         'TxtCodigo
         '
@@ -129,7 +129,7 @@ Partial Class FrmBusquedaProducto
         Me.chkExacta.Location = New System.Drawing.Point(381, 34)
         Me.chkExacta.Name = "chkExacta"
         Me.chkExacta.Size = New System.Drawing.Size(110, 17)
-        Me.chkExacta.TabIndex = 3
+        Me.chkExacta.TabIndex = 7
         Me.chkExacta.TabStop = False
         Me.chkExacta.Text = "Búsqueda Exacta"
         Me.chkExacta.UseVisualStyleBackColor = True
@@ -215,7 +215,7 @@ Partial Class FrmBusquedaProducto
         Me.cboLinea.Location = New System.Drawing.Point(106, 110)
         Me.cboLinea.Name = "cboLinea"
         Me.cboLinea.Size = New System.Drawing.Size(320, 21)
-        Me.cboLinea.TabIndex = 38
+        Me.cboLinea.TabIndex = 4
         '
         'txtCodigoProveedor
         '
@@ -228,7 +228,7 @@ Partial Class FrmBusquedaProducto
         Me.txtCodigoProveedor.Name = "txtCodigoProveedor"
         Me.txtCodigoProveedor.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtCodigoProveedor.Size = New System.Drawing.Size(260, 20)
-        Me.txtCodigoProveedor.TabIndex = 40
+        Me.txtCodigoProveedor.TabIndex = 2
         '
         'Label1
         '

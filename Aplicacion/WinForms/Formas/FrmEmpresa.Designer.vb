@@ -58,6 +58,8 @@ Partial Class FrmEmpresa
         Me.txtFechaRenovacion = New System.Windows.Forms.TextBox()
         Me.Label9 = New System.Windows.Forms.Label()
         Me.gpbSucursal = New System.Windows.Forms.GroupBox()
+        Me.txtUltimoFEC = New System.Windows.Forms.TextBox()
+        Me.Label27 = New System.Windows.Forms.Label()
         Me.txtIdTerminal = New System.Windows.Forms.TextBox()
         Me.Label22 = New System.Windows.Forms.Label()
         Me.txtNombreImpresora = New System.Windows.Forms.TextBox()
@@ -95,6 +97,7 @@ Partial Class FrmEmpresa
         Me.Label15 = New System.Windows.Forms.Label()
         Me.txtPorcentajeDescMaximo = New System.Windows.Forms.TextBox()
         Me.Label23 = New System.Windows.Forms.Label()
+        Me.chkImpresoraMatriz = New System.Windows.Forms.CheckBox()
         Me.gpbSucursal.SuspendLayout()
         Me.GroupBox1.SuspendLayout()
         Me.SuspendLayout()
@@ -507,6 +510,9 @@ Partial Class FrmEmpresa
         '
         Me.gpbSucursal.BackColor = System.Drawing.SystemColors.Control
         Me.gpbSucursal.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None
+        Me.gpbSucursal.Controls.Add(Me.chkImpresoraMatriz)
+        Me.gpbSucursal.Controls.Add(Me.txtUltimoFEC)
+        Me.gpbSucursal.Controls.Add(Me.Label27)
         Me.gpbSucursal.Controls.Add(Me.txtIdTerminal)
         Me.gpbSucursal.Controls.Add(Me.Label22)
         Me.gpbSucursal.Controls.Add(Me.txtNombreImpresora)
@@ -534,10 +540,36 @@ Partial Class FrmEmpresa
         Me.gpbSucursal.Location = New System.Drawing.Point(450, 182)
         Me.gpbSucursal.Name = "gpbSucursal"
         Me.gpbSucursal.Padding = New System.Windows.Forms.Padding(6, 3, 6, 3)
-        Me.gpbSucursal.Size = New System.Drawing.Size(437, 263)
+        Me.gpbSucursal.Size = New System.Drawing.Size(437, 300)
         Me.gpbSucursal.TabIndex = 14
         Me.gpbSucursal.TabStop = False
         Me.gpbSucursal.Text = "Datos de la Terminal en Uso"
+        '
+        'txtUltimoFEC
+        '
+        Me.txtUltimoFEC.AcceptsReturn = True
+        Me.txtUltimoFEC.BackColor = System.Drawing.SystemColors.Window
+        Me.txtUltimoFEC.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtUltimoFEC.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtUltimoFEC.Location = New System.Drawing.Point(340, 253)
+        Me.txtUltimoFEC.MaxLength = 20
+        Me.txtUltimoFEC.Name = "txtUltimoFEC"
+        Me.txtUltimoFEC.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtUltimoFEC.Size = New System.Drawing.Size(70, 20)
+        Me.txtUltimoFEC.TabIndex = 112
+        '
+        'Label27
+        '
+        Me.Label27.BackColor = System.Drawing.Color.Transparent
+        Me.Label27.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label27.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label27.Location = New System.Drawing.Point(213, 256)
+        Me.Label27.Name = "Label27"
+        Me.Label27.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label27.Size = New System.Drawing.Size(121, 17)
+        Me.Label27.TabIndex = 112
+        Me.Label27.Text = "Ultima Factura Compra:"
+        Me.Label27.TextAlign = System.Drawing.ContentAlignment.TopRight
         '
         'txtIdTerminal
         '
@@ -577,7 +609,7 @@ Partial Class FrmEmpresa
         Me.txtNombreImpresora.MaxLength = 20
         Me.txtNombreImpresora.Name = "txtNombreImpresora"
         Me.txtNombreImpresora.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtNombreImpresora.Size = New System.Drawing.Size(85, 20)
+        Me.txtNombreImpresora.Size = New System.Drawing.Size(143, 20)
         Me.txtNombreImpresora.TabIndex = 105
         '
         'Label21
@@ -599,7 +631,7 @@ Partial Class FrmEmpresa
         Me.txtUltimoMR.BackColor = System.Drawing.SystemColors.Window
         Me.txtUltimoMR.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtUltimoMR.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtUltimoMR.Location = New System.Drawing.Point(335, 201)
+        Me.txtUltimoMR.Location = New System.Drawing.Point(340, 227)
         Me.txtUltimoMR.MaxLength = 20
         Me.txtUltimoMR.Name = "txtUltimoMR"
         Me.txtUltimoMR.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -611,7 +643,7 @@ Partial Class FrmEmpresa
         Me.Label20.BackColor = System.Drawing.Color.Transparent
         Me.Label20.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label20.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label20.Location = New System.Drawing.Point(208, 204)
+        Me.Label20.Location = New System.Drawing.Point(213, 230)
         Me.Label20.Name = "Label20"
         Me.Label20.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label20.Size = New System.Drawing.Size(121, 17)
@@ -625,19 +657,19 @@ Partial Class FrmEmpresa
         Me.txtUltimoTE.BackColor = System.Drawing.SystemColors.Window
         Me.txtUltimoTE.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtUltimoTE.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtUltimoTE.Location = New System.Drawing.Point(335, 175)
+        Me.txtUltimoTE.Location = New System.Drawing.Point(340, 201)
         Me.txtUltimoTE.MaxLength = 20
         Me.txtUltimoTE.Name = "txtUltimoTE"
         Me.txtUltimoTE.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtUltimoTE.Size = New System.Drawing.Size(70, 20)
-        Me.txtUltimoTE.TabIndex = 109
+        Me.txtUltimoTE.TabIndex = 108
         '
         'Label19
         '
         Me.Label19.BackColor = System.Drawing.Color.Transparent
         Me.Label19.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label19.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label19.Location = New System.Drawing.Point(208, 178)
+        Me.Label19.Location = New System.Drawing.Point(213, 204)
         Me.Label19.Name = "Label19"
         Me.Label19.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label19.Size = New System.Drawing.Size(121, 17)
@@ -651,19 +683,19 @@ Partial Class FrmEmpresa
         Me.txtUltimoNC.BackColor = System.Drawing.SystemColors.Window
         Me.txtUltimoNC.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtUltimoNC.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtUltimoNC.Location = New System.Drawing.Point(134, 229)
+        Me.txtUltimoNC.Location = New System.Drawing.Point(139, 255)
         Me.txtUltimoNC.MaxLength = 20
         Me.txtUltimoNC.Name = "txtUltimoNC"
         Me.txtUltimoNC.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtUltimoNC.Size = New System.Drawing.Size(70, 20)
-        Me.txtUltimoNC.TabIndex = 108
+        Me.txtUltimoNC.TabIndex = 111
         '
         'Label17
         '
         Me.Label17.BackColor = System.Drawing.Color.Transparent
         Me.Label17.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label17.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label17.Location = New System.Drawing.Point(7, 232)
+        Me.Label17.Location = New System.Drawing.Point(12, 258)
         Me.Label17.Name = "Label17"
         Me.Label17.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label17.Size = New System.Drawing.Size(121, 17)
@@ -677,19 +709,19 @@ Partial Class FrmEmpresa
         Me.txtUltimoND.BackColor = System.Drawing.SystemColors.Window
         Me.txtUltimoND.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtUltimoND.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtUltimoND.Location = New System.Drawing.Point(134, 203)
+        Me.txtUltimoND.Location = New System.Drawing.Point(139, 229)
         Me.txtUltimoND.MaxLength = 20
         Me.txtUltimoND.Name = "txtUltimoND"
         Me.txtUltimoND.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtUltimoND.Size = New System.Drawing.Size(70, 20)
-        Me.txtUltimoND.TabIndex = 107
+        Me.txtUltimoND.TabIndex = 109
         '
         'Label14
         '
         Me.Label14.BackColor = System.Drawing.Color.Transparent
         Me.Label14.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label14.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label14.Location = New System.Drawing.Point(7, 206)
+        Me.Label14.Location = New System.Drawing.Point(12, 232)
         Me.Label14.Name = "Label14"
         Me.Label14.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label14.Size = New System.Drawing.Size(121, 17)
@@ -703,19 +735,19 @@ Partial Class FrmEmpresa
         Me.txtUltimoFE.BackColor = System.Drawing.SystemColors.Window
         Me.txtUltimoFE.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtUltimoFE.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtUltimoFE.Location = New System.Drawing.Point(134, 175)
+        Me.txtUltimoFE.Location = New System.Drawing.Point(139, 201)
         Me.txtUltimoFE.MaxLength = 20
         Me.txtUltimoFE.Name = "txtUltimoFE"
         Me.txtUltimoFE.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtUltimoFE.Size = New System.Drawing.Size(70, 20)
-        Me.txtUltimoFE.TabIndex = 106
+        Me.txtUltimoFE.TabIndex = 107
         '
         'Label13
         '
         Me.Label13.BackColor = System.Drawing.Color.Transparent
         Me.Label13.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label13.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label13.Location = New System.Drawing.Point(7, 178)
+        Me.Label13.Location = New System.Drawing.Point(12, 204)
         Me.Label13.Name = "Label13"
         Me.Label13.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label13.Size = New System.Drawing.Size(121, 17)
@@ -1035,6 +1067,17 @@ Partial Class FrmEmpresa
         Me.Label23.Text = "Porc max descuento:"
         Me.Label23.TextAlign = System.Drawing.ContentAlignment.TopRight
         '
+        'chkImpresoraMatriz
+        '
+        Me.chkImpresoraMatriz.AutoSize = True
+        Me.chkImpresoraMatriz.Location = New System.Drawing.Point(262, 176)
+        Me.chkImpresoraMatriz.Name = "chkImpresoraMatriz"
+        Me.chkImpresoraMatriz.Size = New System.Drawing.Size(117, 17)
+        Me.chkImpresoraMatriz.TabIndex = 106
+        Me.chkImpresoraMatriz.TabStop = False
+        Me.chkImpresoraMatriz.Text = "Impresora de matriz"
+        Me.chkImpresoraMatriz.UseVisualStyleBackColor = True
+        '
         'FrmEmpresa
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -1155,4 +1198,7 @@ Partial Class FrmEmpresa
     Public WithEvents Label15 As Label
     Public WithEvents txtPorcentajeDescMaximo As TextBox
     Public WithEvents Label23 As Label
+    Public WithEvents txtUltimoFEC As TextBox
+    Public WithEvents Label27 As Label
+    Friend WithEvents chkImpresoraMatriz As CheckBox
 End Class

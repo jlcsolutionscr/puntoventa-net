@@ -97,6 +97,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
         bool bolIncluyeServicios;
         bool bolFiltraActivos;
         bool bolNulo;
+        bool bolAplicado;
         string strClave;
         string strIdentificacion;
         string strCodigo;
@@ -1629,27 +1630,21 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                     case "ObtenerTotalListaTraslados":
                         intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                         intIdSucursal = int.Parse(parametrosJO.Property("IdSucursalOrigen").Value.ToString());
+                        bolAplicado = bool.Parse(parametrosJO.Property("Aplicado").Value.ToString());
                         intIdLlave1 = int.Parse(parametrosJO.Property("IdTraslado").Value.ToString());
-                        int intTotalTraslados = servicioTraslado.ObtenerTotalListaTraslados(intIdEmpresa, intIdSucursal, intIdLlave1);
+                        int intTotalTraslados = servicioTraslado.ObtenerTotalListaTraslados(intIdEmpresa, intIdSucursal, bolAplicado, intIdLlave1);
                         strRespuesta = intTotalTraslados.ToString();
                         break;
-                    case "ObtenerListaTraslados":
+                    case "ObtenerListadoTraslados":
                         intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                         intIdSucursal = int.Parse(parametrosJO.Property("IdSucursalOrigen").Value.ToString());
+                        bolAplicado = bool.Parse(parametrosJO.Property("Aplicado").Value.ToString());
                         intNumeroPagina = int.Parse(parametrosJO.Property("NumeroPagina").Value.ToString());
                         intFilasPorPagina = int.Parse(parametrosJO.Property("FilasPorPagina").Value.ToString());
                         intIdLlave1 = int.Parse(parametrosJO.Property("IdTraslado").Value.ToString());
-                        IList<TrasladoDetalle> listadoTraslados = servicioTraslado.ObtenerListaTraslados(intIdEmpresa, intIdSucursal, intNumeroPagina, intFilasPorPagina, intIdLlave1);
+                        IList<TrasladoDetalle> listadoTraslados = servicioTraslado.ObtenerListadoTraslados(intIdEmpresa, intIdSucursal, bolAplicado, intNumeroPagina, intFilasPorPagina, intIdLlave1);
                         if (listadoTraslados.Count > 0)
                             strRespuesta = serializer.Serialize(listadoTraslados);
-                        break;
-                    case "ObtenerListaTrasladosPorAplicar":
-                        intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
-                        intIdSucursal = int.Parse(parametrosJO.Property("IdSucursalDestino").Value.ToString());
-                        intIdLlave1 = int.Parse(parametrosJO.Property("IdTraslado").Value.ToString());
-                        IList<TrasladoDetalle> listadoTrasladosPorAplicar = servicioTraslado.ObtenerListaTrasladosPorAplicar(intIdEmpresa, intIdSucursal, intIdLlave1);
-                        if (listadoTrasladosPorAplicar.Count > 0)
-                            strRespuesta = serializer.Serialize(listadoTrasladosPorAplicar);
                         break;
                     case "AgregarAjusteInventario":
                         ajusteInventario = serializer.Deserialize<AjusteInventario>(strEntidad);

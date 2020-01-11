@@ -1332,6 +1332,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(ordenServicio.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == ordenServicio.IdEmpresa && x.IdSucursal == ordenServicio.IdSucursal);
+                    sucursal.ConsecOrdenServicio += 1;
+                    dbContext.NotificarModificacion(sucursal);
+                    ordenServicio.ConsecOrdenServicio = sucursal.ConsecOrdenServicio;
                     dbContext.OrdenServicioRepository.Add(ordenServicio);
                     dbContext.Commit();
                     return ordenServicio.IdOrden.ToString();

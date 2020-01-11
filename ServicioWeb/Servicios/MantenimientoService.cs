@@ -466,7 +466,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         NombreSucursal = sucursal.NombreSucursal,
                         DireccionSucursal = sucursal.Direccion,
                         TelefonoSucursal = sucursal.Telefono,
-                        ImpresoraFactura = terminal.ImpresoraFactura
+                        ImpresoraFactura = terminal.ImpresoraFactura,
+                        ImpresoraMatriz = terminal.ImpresoraMatriz
                     };
                     usuario.UsuarioPorEmpresa = new HashSet<UsuarioPorEmpresa>();
                     string strToken = GenerarRegistroAutenticacion(StaticRolePorUsuario.USUARIO_SISTEMA);

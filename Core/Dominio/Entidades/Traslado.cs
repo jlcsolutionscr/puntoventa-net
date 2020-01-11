@@ -20,7 +20,11 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         [ForeignKey("Usuario")]
         public int IdUsuario { get; set; }
         public int IdSucursalOrigen { get; set; }
+        [NotMapped]
+        public string NombreSucursalOrigen { get; set; }
         public int IdSucursalDestino { get; set; }
+        [NotMapped]
+        public string NombreSucursalDestino { get; set; }
         public DateTime Fecha { get; set; }
         public string Referencia { get; set; }
         public decimal Total { get; set; }

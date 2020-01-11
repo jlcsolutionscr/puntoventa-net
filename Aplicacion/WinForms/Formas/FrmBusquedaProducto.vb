@@ -76,9 +76,9 @@ Public Class FrmBusquedaProducto
     End Sub
 
     Private Async Function CargarComboBox() As Task
-        cboLinea.DataSource = Await Puntoventa.ObtenerListadoLineas(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
         cboLinea.ValueMember = "Id"
         cboLinea.DisplayMember = "Descripcion"
+        cboLinea.DataSource = Await Puntoventa.ObtenerListadoLineas(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
         cboLinea.SelectedValue = 0
     End Function
 
@@ -166,6 +166,10 @@ Public Class FrmBusquedaProducto
             Close()
             Exit Sub
         End Try
+    End Sub
+
+    Private Sub cboLinea_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboLinea.SelectedIndexChanged
+        CmdFiltro_Click(CmdFiltro, New EventArgs())
     End Sub
 #End Region
 End Class

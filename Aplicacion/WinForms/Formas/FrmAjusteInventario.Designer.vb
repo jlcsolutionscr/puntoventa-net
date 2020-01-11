@@ -229,17 +229,17 @@ Partial Class FrmAjusteInventario
         '
         'txtCodigo
         '
-        Me.txtCodigo.Location = New System.Drawing.Point(53, 193)
+        Me.txtCodigo.Location = New System.Drawing.Point(12, 193)
         Me.txtCodigo.Name = "txtCodigo"
         Me.txtCodigo.Size = New System.Drawing.Size(270, 20)
-        Me.txtCodigo.TabIndex = 47
+        Me.txtCodigo.TabIndex = 5
         '
         'Label2
         '
         Me.Label2.BackColor = System.Drawing.Color.Transparent
         Me.Label2.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label2.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label2.Location = New System.Drawing.Point(323, 173)
+        Me.Label2.Location = New System.Drawing.Point(282, 173)
         Me.Label2.Name = "Label2"
         Me.Label2.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label2.Size = New System.Drawing.Size(347, 19)
@@ -253,13 +253,13 @@ Partial Class FrmAjusteInventario
         Me.txtDescripcion.BackColor = System.Drawing.SystemColors.Window
         Me.txtDescripcion.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtDescripcion.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtDescripcion.Location = New System.Drawing.Point(323, 193)
+        Me.txtDescripcion.Location = New System.Drawing.Point(282, 193)
         Me.txtDescripcion.MaxLength = 0
         Me.txtDescripcion.Name = "txtDescripcion"
         Me.txtDescripcion.ReadOnly = True
         Me.txtDescripcion.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtDescripcion.Size = New System.Drawing.Size(340, 20)
-        Me.txtDescripcion.TabIndex = 48
+        Me.txtDescripcion.TabIndex = 6
         Me.txtDescripcion.TabStop = False
         '
         'txtPrecioCosto
@@ -274,7 +274,7 @@ Partial Class FrmAjusteInventario
         Me.txtPrecioCosto.ReadOnly = True
         Me.txtPrecioCosto.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtPrecioCosto.Size = New System.Drawing.Size(89, 20)
-        Me.txtPrecioCosto.TabIndex = 49
+        Me.txtPrecioCosto.TabIndex = 8
         Me.txtPrecioCosto.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'Label1
@@ -296,12 +296,12 @@ Partial Class FrmAjusteInventario
         Me.txtCantidad.BackColor = System.Drawing.SystemColors.Window
         Me.txtCantidad.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtCantidad.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtCantidad.Location = New System.Drawing.Point(12, 193)
+        Me.txtCantidad.Location = New System.Drawing.Point(622, 193)
         Me.txtCantidad.MaxLength = 0
         Me.txtCantidad.Name = "txtCantidad"
         Me.txtCantidad.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtCantidad.Size = New System.Drawing.Size(41, 20)
-        Me.txtCantidad.TabIndex = 46
+        Me.txtCantidad.TabIndex = 7
         Me.txtCantidad.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         '
         'lblLabel6
@@ -309,7 +309,7 @@ Partial Class FrmAjusteInventario
         Me.lblLabel6.BackColor = System.Drawing.Color.Transparent
         Me.lblLabel6.Cursor = System.Windows.Forms.Cursors.Default
         Me.lblLabel6.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.lblLabel6.Location = New System.Drawing.Point(12, 173)
+        Me.lblLabel6.Location = New System.Drawing.Point(622, 173)
         Me.lblLabel6.Name = "lblLabel6"
         Me.lblLabel6.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.lblLabel6.Size = New System.Drawing.Size(41, 19)
@@ -322,7 +322,7 @@ Partial Class FrmAjusteInventario
         Me.lblLabel1.BackColor = System.Drawing.Color.Transparent
         Me.lblLabel1.Cursor = System.Windows.Forms.Cursors.Default
         Me.lblLabel1.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.lblLabel1.Location = New System.Drawing.Point(53, 173)
+        Me.lblLabel1.Location = New System.Drawing.Point(12, 173)
         Me.lblLabel1.Name = "lblLabel1"
         Me.lblLabel1.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.lblLabel1.Size = New System.Drawing.Size(270, 19)

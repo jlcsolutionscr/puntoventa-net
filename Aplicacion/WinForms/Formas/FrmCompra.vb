@@ -876,7 +876,9 @@ Public Class FrmCompra
     End Sub
 
     Private Async Sub txtCodigoProveedor_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtCodigoProveedor.PreviewKeyDown
-        If e.KeyCode = Keys.ControlKey Then
+        If e.KeyCode = Keys.F1 Then
+            BtnBusProd_Click(btnBusProd, New EventArgs())
+        ElseIf e.KeyCode = Keys.ControlKey Then
             If FrmPrincipal.productoTranstorio IsNot Nothing Then
                 Dim formCargar As New FrmCargaProductoTransitorio
                 formCargar.ShowDialog()
@@ -887,11 +889,18 @@ Public Class FrmCompra
         ElseIf e.KeyCode = Keys.Enter Or e.KeyCode = Keys.Tab Then
             Try
                 producto = Await Puntoventa.ObtenerProductoPorCodigoProveedor(FrmPrincipal.empresaGlobal.IdEmpresa, txtCodigoProveedor.Text, cboSucursal.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
-                If producto IsNot Nothing And producto.Activo Then
-                    CargarDatosProducto(producto)
-                    txtCantidad.Focus()
+                If producto IsNot Nothing Then
+                    If producto.Activo Then
+                        CargarDatosProducto(producto)
+                        txtCantidad.Focus()
+                    End If
                 Else
                     txtCodigo.Text = ""
+                    txtDescripcion.Text = ""
+                    txtExistencias.Text = ""
+                    txtCantidad.Text = "1"
+                    txtPrecioCosto.Text = ""
+                    txtCodigo.Focus()
                 End If
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -901,15 +910,20 @@ Public Class FrmCompra
     End Sub
 
     Private Async Sub txtCodigo_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtCodigo.PreviewKeyDown
-        If e.KeyCode = Keys.Enter Or e.KeyCode = Keys.Tab Then
+        If e.KeyCode = Keys.F1 Then
+            BtnBusProd_Click(btnBusProd, New EventArgs())
+        ElseIf e.KeyCode = Keys.Enter Or e.KeyCode = Keys.Tab Then
             Try
                 producto = Await Puntoventa.ObtenerProductoPorCodigo(FrmPrincipal.empresaGlobal.IdEmpresa, txtCodigo.Text, cboSucursal.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
-                If producto IsNot Nothing And producto.Activo Then
-                    CargarDatosProducto(producto)
-                    txtCantidad.Focus()
+                If producto IsNot Nothing Then
+                    If producto.Activo Then
+                        CargarDatosProducto(producto)
+                        txtCantidad.Focus()
+                    End If
                 Else
                     txtCodigo.Text = ""
                     txtDescripcion.Text = ""
+                    txtExistencias.Text = ""
                     txtCantidad.Text = "1"
                     txtPrecioCosto.Text = ""
                     txtCodigo.Focus()

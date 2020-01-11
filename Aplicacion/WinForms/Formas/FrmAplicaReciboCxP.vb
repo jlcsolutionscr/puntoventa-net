@@ -178,7 +178,7 @@ Public Class FrmAplicaReciboCxP
     End Sub
 
     Private Sub CargarLineaDesglosePago()
-        Dim objPkDesglose(2) As Object
+        Dim objPkDesglose(1) As Object
         objPkDesglose(0) = cboFormaPago.SelectedValue
         objPkDesglose(1) = cboTipoBanco.SelectedValue
         If dtbDesglosePago.Rows.Contains(objPkDesglose) Then

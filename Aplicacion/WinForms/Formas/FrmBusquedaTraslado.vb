@@ -41,7 +41,7 @@ Public Class FrmBusquedaTraslado
         Dim intId As Integer = 0
         If strId <> "" Then intId = CInt(txtId.Text)
         Try
-            dgvListado.DataSource = Await Puntoventa.ObtenerListaTraslados(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, intNumeroPagina, intFilasPorPagina, FrmPrincipal.usuarioGlobal.Token, intId)
+            dgvListado.DataSource = Await Puntoventa.ObtenerListadoTraslados(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, False, intNumeroPagina, intFilasPorPagina, FrmPrincipal.usuarioGlobal.Token, intId)
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -55,7 +55,7 @@ Public Class FrmBusquedaTraslado
         Dim intId As Integer = 0
         If strId <> "" Then intId = CInt(txtId.Text)
         Try
-            intTotalRegistros = Await Puntoventa.ObtenerTotalListaTraslados(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, FrmPrincipal.usuarioGlobal.Token, intId)
+            intTotalRegistros = Await Puntoventa.ObtenerTotalListaTraslados(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, False, FrmPrincipal.usuarioGlobal.Token, intId)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()

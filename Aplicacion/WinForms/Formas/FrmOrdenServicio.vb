@@ -525,8 +525,8 @@ Public Class FrmOrdenServicio
         cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
         cboTipoMoneda.SelectedValue = FrmPrincipal.empresaGlobal.IdTipoMoneda
         txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmPrincipal.decTipoCambioDolar.ToString())
-        txtTipoCambio.Text =
         txtTelefono.Text = ""
+        txtDireccion.Text = ""
         txtDescripcionOrden.Text = ""
         txtFechaEntrega.Text = ""
         txtOtrosDetalles.Text = ""
@@ -618,8 +618,9 @@ Public Class FrmOrdenServicio
                 txtNombreCliente.Text = ordenServicio.NombreCliente
                 txtFecha.Text = ordenServicio.Fecha
                 txtTelefono.Text = ordenServicio.Telefono
+                txtDireccion.Text = ordenServicio.Direccion
                 txtDescripcionOrden.Text = ordenServicio.Descripcion
-                txtFechaEntrega.Text = ordenServicio.FechaEntrega
+                txtFechaEntrega.Value = ordenServicio.FechaEntrega
                 txtOtrosDetalles.Text = ordenServicio.OtrosDetalles
                 If cliente.PorcentajeExoneracion > 0 Then
                     txtTipoExoneracion.Text = cliente.ParametroExoneracion.Descripcion
@@ -748,8 +749,9 @@ Public Class FrmOrdenServicio
                 .Fecha = Now(),
                 .IdVendedor = vendedor.IdVendedor,
                 .Telefono = txtTelefono.Text,
+                .Direccion = txtDireccion.Text,
                 .Descripcion = txtDescripcionOrden.Text,
-                .FechaEntrega = txtFechaEntrega.Text,
+                .FechaEntrega = txtFechaEntrega.Value.ToString(),
                 .OtrosDetalles = txtOtrosDetalles.Text,
                 .Excento = decExcento,
                 .Gravado = decGravado,
@@ -793,8 +795,9 @@ Public Class FrmOrdenServicio
             End Try
         Else
             ordenServicio.Telefono = txtTelefono.Text
+            ordenServicio.Direccion = txtDireccion.Text
             ordenServicio.Descripcion = txtDescripcionOrden.Text
-            ordenServicio.FechaEntrega = txtFechaEntrega.Text
+            ordenServicio.FechaEntrega = txtFechaEntrega.Value.ToString()
             ordenServicio.OtrosDetalles = txtOtrosDetalles.Text
             ordenServicio.Excento = decExcento
             ordenServicio.Gravado = decGravado
@@ -834,7 +837,7 @@ Public Class FrmOrdenServicio
         btnBuscarCliente.Enabled = False
     End Sub
 
-    Private Sub CmdImprimir_Click(sender As Object, e As EventArgs) Handles btnImprimir.Click
+    Private Sub BtnImprimir_Click(sender As Object, e As EventArgs) Handles btnImprimir.Click
         If txtIdOrdenServicio.Text <> "" Then
             Try
                 comprobanteImpresion = New ModuloImpresion.ClsComprobante With {
@@ -844,8 +847,8 @@ Public Class FrmOrdenServicio
                     .strId = txtIdOrdenServicio.Text,
                     .strVendedor = txtVendedor.Text,
                     .strNombre = txtNombreCliente.Text,
-                    .strDocumento = FrmPrincipal.empresaGlobal.LeyendaOrdenServicio,
-                    .strFecha = txtFecha.Text,
+                    .strDocumento = txtDescripcion.Text,
+                    .strFecha = ordenServicio.Fecha.ToString(),
                     .strSubTotal = txtSubTotal.Text,
                     .strDescuento = "0.00",
                     .strImpuesto = txtImpuesto.Text,
@@ -1113,7 +1116,9 @@ Public Class FrmOrdenServicio
     End Sub
 
     Private Async Sub TxtCodigo_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtCodigo.PreviewKeyDown
-        If e.KeyCode = Keys.ControlKey Then
+        If e.KeyCode = Keys.F1 Then
+            BtnBusProd_Click(btnBusProd, New EventArgs())
+        ElseIf e.KeyCode = Keys.ControlKey Then
             If FrmPrincipal.productoTranstorio IsNot Nothing Then
                 Dim formCargar As New FrmCargaProductoTransitorio
                 formCargar.ShowDialog()
@@ -1124,9 +1129,11 @@ Public Class FrmOrdenServicio
         ElseIf e.KeyCode = Keys.Enter Or e.KeyCode = Keys.Tab Then
             Try
                 producto = Await Puntoventa.ObtenerProductoPorCodigo(FrmPrincipal.empresaGlobal.IdEmpresa, txtCodigo.Text, FrmPrincipal.equipoGlobal.IdSucursal, FrmPrincipal.usuarioGlobal.Token)
-                If producto IsNot Nothing And producto.Activo Then
-                    CargarDatosProducto(producto)
-                    txtCantidad.Focus()
+                If producto IsNot Nothing Then
+                    If producto.Activo Then
+                        CargarDatosProducto(producto)
+                        txtCantidad.Focus()
+                    End If
                 Else
                     txtCodigo.Text = ""
                     txtDescripcion.Text = ""

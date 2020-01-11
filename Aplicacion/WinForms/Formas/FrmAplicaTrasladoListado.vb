@@ -1,8 +1,9 @@
 Imports System.Threading.Tasks
 Imports LeandroSoftware.ClienteWCF
 
-Public Class FrmBusquedaApartado
+Public Class FrmAplicaTrasladoListado
 #Region "Variables"
+    Private dtListaEstado As New DataTable, drListaEstado As DataRow
     Private intTotalRegistros As Integer
     Private intIndiceDePagina As Integer
     Private intFilasPorPagina As Integer = 13
@@ -12,37 +13,35 @@ Public Class FrmBusquedaApartado
 
 #Region "Métodos"
     Private Sub EstablecerPropiedadesDataGridView()
-        dgvListado.Columns.Clear()
-        dgvListado.AutoGenerateColumns = False
         Dim dvcId As New DataGridViewTextBoxColumn
         Dim dvcFecha As New DataGridViewTextBoxColumn
-        Dim dvcNombreCliente As New DataGridViewTextBoxColumn
-        Dim dvcTotal As New DataGridViewTextBoxColumn
+        Dim dvcNombre As New DataGridViewTextBoxColumn
+        Dim dvcTopeCredito As New DataGridViewTextBoxColumn
+
         dgvListado.Columns.Clear()
         dgvListado.AutoGenerateColumns = False
         dvcId.HeaderText = "Id"
-        dvcId.DataPropertyName = "IdFactura"
+        dvcId.DataPropertyName = "IdTraslado"
         dvcId.Width = 50
         dgvListado.Columns.Add(dvcId)
         dvcFecha.HeaderText = "Fecha"
         dvcFecha.DataPropertyName = "Fecha"
         dvcFecha.Width = 70
         dgvListado.Columns.Add(dvcFecha)
-        dvcNombreCliente.HeaderText = "Cliente"
-        dvcNombreCliente.DataPropertyName = "NombreCliente"
-        dvcNombreCliente.Width = 400
-        dgvListado.Columns.Add(dvcNombreCliente)
-        dvcTotal.HeaderText = "Total"
-        dvcTotal.DataPropertyName = "Total"
-        dvcTotal.Width = 100
-        dvcTotal.DefaultCellStyle = FrmPrincipal.dgvDecimal
-        dgvListado.Columns.Add(dvcTotal)
+        dvcNombre.HeaderText = "Origen del traslado"
+        dvcNombre.DataPropertyName = "NombreSucursal"
+        dvcNombre.Width = 400
+        dgvListado.Columns.Add(dvcNombre)
+        dvcTopeCredito.HeaderText = "Total"
+        dvcTopeCredito.DataPropertyName = "Total"
+        dvcTopeCredito.Width = 100
+        dvcTopeCredito.DefaultCellStyle = FrmPrincipal.dgvDecimal
+        dgvListado.Columns.Add(dvcTopeCredito)
     End Sub
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
         Try
-            dgvListado.DataSource = Await Puntoventa.ObtenerListadoApartados(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, intNumeroPagina, intFilasPorPagina, FrmPrincipal.usuarioGlobal.Token, intId, txtNombre.Text)
-            lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
+            dgvListado.DataSource = Await Puntoventa.ObtenerListadoTraslados(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, cboEstado.SelectedValue, intNumeroPagina, intFilasPorPagina, FrmPrincipal.usuarioGlobal.Token, intId)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -51,9 +50,9 @@ Public Class FrmBusquedaApartado
         dgvListado.Refresh()
     End Function
 
-    Private Async Function ValidarCantidadApartados() As Task
+    Private Async Function ValidarCantidadRegistros() As Task
         Try
-            intTotalRegistros = Await Puntoventa.ObtenerTotalListaApartados(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FrmPrincipal.usuarioGlobal.Token, intId, txtNombre.Text)
+            intTotalRegistros = Await Puntoventa.ObtenerTotalListaTraslados(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, cboEstado.SelectedValue, FrmPrincipal.usuarioGlobal.Token, intId)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -79,6 +78,21 @@ Public Class FrmBusquedaApartado
         cboSucursal.DataSource = Await Puntoventa.ObtenerListadoSucursales(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
         cboSucursal.SelectedValue = FrmPrincipal.equipoGlobal.IdSucursal
         cboSucursal.Enabled = FrmPrincipal.usuarioGlobal.Modifica
+        dtListaEstado.Clear()
+        dtListaEstado.Columns.Add(New DataColumn("IdEstado", GetType(Boolean)))
+        dtListaEstado.Columns.Add(New DataColumn("Descripcion", GetType(String)))
+        drListaEstado = dtListaEstado.NewRow()
+        drListaEstado(0) = False
+        drListaEstado(1) = "Por Aplicar"
+        dtListaEstado.Rows.Add(drListaEstado)
+        drListaEstado = dtListaEstado.NewRow()
+        drListaEstado(0) = True
+        drListaEstado(1) = "Aplicado"
+        dtListaEstado.Rows.Add(drListaEstado)
+        cboEstado.ValueMember = "IdEstado"
+        cboEstado.DisplayMember = "Descripcion"
+        cboEstado.DataSource = dtListaEstado
+        cboEstado.SelectedValue = 0
     End Function
 #End Region
 
@@ -113,38 +127,52 @@ Public Class FrmBusquedaApartado
 
     Private Async Sub FrmBusProd_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
-            Await CargarCombos()
             EstablecerPropiedadesDataGridView()
-            Await ValidarCantidadApartados()
+            Await CargarCombos()
+            Await ValidarCantidadRegistros()
             intIndiceDePagina = 1
             Await ActualizarDatos(intIndiceDePagina)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
-            Exit Sub
         End Try
     End Sub
 
-    Private Sub FlexProducto_DoubleClick(ByVal sender As Object, ByVal e As EventArgs) Handles dgvListado.DoubleClick
+    Private Async Sub FlexProducto_DoubleClick(ByVal sender As Object, ByVal e As EventArgs) Handles dgvListado.DoubleClick
         If dgvListado.RowCount > 0 Then
             FrmPrincipal.intBusqueda = dgvListado.CurrentRow.Cells(0).Value
-            Close()
+            Dim FormDetalleTraslado As New FrmDetalleTraslado()
+            FormDetalleTraslado.ShowDialog()
+            Await ActualizarDatos(intIndiceDePagina)
         End If
     End Sub
 
     Private Async Sub btnFiltrar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnFiltrar.Click
-        If txtId.Text = "" Then
-            intId = 0
-        Else
+        If txtId.Text <> "" Then
             intId = CInt(txtId.Text)
+        Else
+            intId = 0
         End If
-        Await ValidarCantidadApartados()
+        Await ValidarCantidadRegistros()
         intIndiceDePagina = 1
         Await ActualizarDatos(intIndiceDePagina)
     End Sub
 
+    Private Sub cboEstado_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboEstado.SelectedIndexChanged
+        btnFiltrar_Click(btnFiltrar, New EventArgs())
+    End Sub
+
     Private Sub cboSucursal_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboSucursal.SelectedIndexChanged
         btnFiltrar_Click(btnFiltrar, New EventArgs())
+    End Sub
+
+    Private Async Sub btnDetalle_Click(sender As Object, e As EventArgs)
+        If dgvListado.RowCount > 0 Then
+            FrmPrincipal.intBusqueda = dgvListado.CurrentRow.Cells(0).Value
+            Dim FormDetalleTraslado As New FrmDetalleTraslado()
+            FormDetalleTraslado.ShowDialog()
+            Await ActualizarDatos(intIndiceDePagina)
+        End If
     End Sub
 #End Region
 End Class

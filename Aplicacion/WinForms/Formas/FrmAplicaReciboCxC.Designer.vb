@@ -38,7 +38,7 @@ Partial Class FrmAplicaReciboCxC
         Me._lblLabels_2 = New System.Windows.Forms.Label()
         Me.CmdImprimir = New System.Windows.Forms.Button()
         Me.txtDocumento = New System.Windows.Forms.TextBox()
-        Me.Label7 = New System.Windows.Forms.Label()
+        Me.lblAutorizacion = New System.Windows.Forms.Label()
         Me.txtTipoTarjeta = New System.Windows.Forms.TextBox()
         Me.lblTipoTarjeta = New System.Windows.Forms.Label()
         Me.cboTipoBanco = New System.Windows.Forms.ComboBox()
@@ -219,18 +219,18 @@ Partial Class FrmAplicaReciboCxC
         Me.txtDocumento.Size = New System.Drawing.Size(100, 20)
         Me.txtDocumento.TabIndex = 13
         '
-        'Label7
+        'lblAutorizacion
         '
-        Me.Label7.BackColor = System.Drawing.Color.Transparent
-        Me.Label7.Cursor = System.Windows.Forms.Cursors.Default
-        Me.Label7.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label7.Location = New System.Drawing.Point(549, 364)
-        Me.Label7.Name = "Label7"
-        Me.Label7.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label7.Size = New System.Drawing.Size(100, 19)
-        Me.Label7.TabIndex = 111
-        Me.Label7.Text = "Documento"
-        Me.Label7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        Me.lblAutorizacion.BackColor = System.Drawing.Color.Transparent
+        Me.lblAutorizacion.Cursor = System.Windows.Forms.Cursors.Default
+        Me.lblAutorizacion.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.lblAutorizacion.Location = New System.Drawing.Point(549, 364)
+        Me.lblAutorizacion.Name = "lblAutorizacion"
+        Me.lblAutorizacion.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.lblAutorizacion.Size = New System.Drawing.Size(100, 19)
+        Me.lblAutorizacion.TabIndex = 111
+        Me.lblAutorizacion.Text = "Documento"
+        Me.lblAutorizacion.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
         'txtTipoTarjeta
         '
@@ -626,7 +626,7 @@ Partial Class FrmAplicaReciboCxC
         Me.Controls.Add(Me.cboCuentaPorCobrar)
         Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.txtDocumento)
-        Me.Controls.Add(Me.Label7)
+        Me.Controls.Add(Me.lblAutorizacion)
         Me.Controls.Add(Me.txtTipoTarjeta)
         Me.Controls.Add(Me.lblTipoTarjeta)
         Me.Controls.Add(Me.cboTipoBanco)
@@ -668,7 +668,7 @@ Partial Class FrmAplicaReciboCxC
     End Sub
     Public WithEvents CmdImprimir As System.Windows.Forms.Button
     Public WithEvents txtDocumento As System.Windows.Forms.TextBox
-    Public WithEvents Label7 As System.Windows.Forms.Label
+    Public WithEvents lblAutorizacion As System.Windows.Forms.Label
     Public WithEvents txtTipoTarjeta As System.Windows.Forms.TextBox
     Public WithEvents lblTipoTarjeta As System.Windows.Forms.Label
     Public WithEvents cboTipoBanco As System.Windows.Forms.ComboBox
