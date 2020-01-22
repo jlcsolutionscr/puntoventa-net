@@ -4,7 +4,7 @@ Imports LeandroSoftware.Core.Dominio.Entidades
 Imports System.Threading.Tasks
 Imports LeandroSoftware.ClienteWCF
 
-Public Class FrmAplicaReciboCxC
+Public Class FrmAplicaAbonoCxC
 #Region "Variables"
     Private I As Integer
     Private dblTotal As Decimal = 0
@@ -220,7 +220,7 @@ Public Class FrmAplicaReciboCxC
     Private Async Function CargarCombos() As Task
         cboFormaPago.ValueMember = "Id"
         cboFormaPago.DisplayMember = "Descripcion"
-        cboFormaPago.DataSource = Await Puntoventa.ObtenerListadoFormaPagoMovimientoCxC(FrmPrincipal.usuarioGlobal.Token)
+        cboFormaPago.DataSource = Await Puntoventa.ObtenerListadoFormaPagoCliente(FrmPrincipal.usuarioGlobal.Token)
         cboTipoBanco.ValueMember = "Id"
         cboTipoBanco.DisplayMember = "Descripcion"
         cboTipoBanco.DataSource = Await Puntoventa.ObtenerListadoBancoAdquiriente(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
@@ -255,7 +255,7 @@ Public Class FrmAplicaReciboCxC
         End Try
     End Sub
 
-    Private Async Sub CmdAgregar_Click(sender As Object, e As EventArgs) Handles CmdAgregar.Click
+    Private Async Sub BtnAgregar_Click(sender As Object, e As EventArgs) Handles CmdAgregar.Click
         Await CargarListaBancoAdquiriente()
         cliente = Nothing
         txtNombreCliente.Text = ""
@@ -279,11 +279,12 @@ Public Class FrmAplicaReciboCxC
         btnInsertarPago.Enabled = True
         btnEliminarPago.Enabled = True
         CmdGuardar.Enabled = True
+        CmdImprimir.Enabled = False
         cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
         txtMontoPago.Text = ""
     End Sub
 
-    Private Async Sub CmdGuardar_Click(sender As Object, e As EventArgs) Handles CmdGuardar.Click
+    Private Async Sub BtnGuardar_Click(sender As Object, e As EventArgs) Handles CmdGuardar.Click
         If cliente Is Nothing Or txtFecha.Text = "" Or txtDescripcion.Text = "" Then
             MessageBox.Show("Información incompleta.  Favor verificar. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
@@ -325,7 +326,6 @@ Public Class FrmAplicaReciboCxC
                 .TipoTarjeta = dtbDesglosePago.Rows(I).Item(4),
                 .NroMovimiento = dtbDesglosePago.Rows(I).Item(5),
                 .IdTipoMoneda = dtbDesglosePago.Rows(I).Item(6),
-                .Fecha = Now(),
                 .MontoLocal = dtbDesglosePago.Rows(I).Item(7),
                 .TipoDeCambio = dtbDesglosePago.Rows(I).Item(8)
             }
@@ -347,7 +347,7 @@ Public Class FrmAplicaReciboCxC
         btnEliminarPago.Enabled = False
     End Sub
 
-    Private Sub CmdImprimir_Click(ByVal sender As Object, ByVal e As EventArgs) Handles CmdImprimir.Click
+    Private Sub BtnImprimir_Click(ByVal sender As Object, ByVal e As EventArgs) Handles CmdImprimir.Click
         reciboComprobante = New ModuloImpresion.ClsRecibo With {
             .usuario = FrmPrincipal.usuarioGlobal,
             .empresa = FrmPrincipal.empresaGlobal,
@@ -359,20 +359,13 @@ Public Class FrmAplicaReciboCxC
         }
         arrDesgloseMov = New List(Of ModuloImpresion.ClsDesgloseFormaPago)()
         For I = 0 To dtbDesgloseCuenta.Rows.Count - 1
-            desglosePagoImpresion = New ModuloImpresion.ClsDesgloseFormaPago With {
-                .strDescripcion = dtbDesgloseCuenta.Rows(I).Item(3),
-                .strMonto = FormatNumber(dtbDesgloseCuenta.Rows(I).Item(2), 2)
-            }
+            desglosePagoImpresion = New ModuloImpresion.ClsDesgloseFormaPago(dtbDesglosePago.Rows(I).Item(3), FormatNumber(dtbDesglosePago.Rows(I).Item(2), 2))
             arrDesgloseMov.Add(desglosePagoImpresion)
         Next
         reciboComprobante.arrDesgloseMov = arrDesgloseMov
         arrDesglosePago = New List(Of ModuloImpresion.ClsDesgloseFormaPago)()
         For I = 0 To dtbDesglosePago.Rows.Count - 1
-            desglosePagoImpresion = New ModuloImpresion.ClsDesgloseFormaPago With {
-                .strDescripcion = dtbDesglosePago.Rows(I).Item(1),
-                .strMonto = FormatNumber(dtbDesglosePago.Rows(I).Item(6), 2),
-                .strNroDoc = dtbDesglosePago.Rows(I).Item(5)
-            }
+            desglosePagoImpresion = New ModuloImpresion.ClsDesgloseFormaPago(dtbDesglosePago.Rows(I).Item(1), FormatNumber(dtbDesglosePago.Rows(I).Item(7), 2))
             arrDesglosePago.Add(desglosePagoImpresion)
         Next
         reciboComprobante.arrDesglosePago = arrDesglosePago
@@ -432,7 +425,7 @@ Public Class FrmAplicaReciboCxC
         End If
     End Sub
 
-    Private Sub CmdInsertar_Click(sender As Object, e As EventArgs) Handles btnInsertar.Click
+    Private Sub BtnInsertar_Click(sender As Object, e As EventArgs) Handles btnInsertar.Click
         If cboCuentaPorCobrar.SelectedValue > 0 And txtMontoAbono.Text <> "" Then
             If CDbl(txtMontoAbono.Text) < 1 Then
                 MessageBox.Show("El monto del abono debe ser mayor a cero.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -445,7 +438,7 @@ Public Class FrmAplicaReciboCxC
         End If
     End Sub
 
-    Private Sub CmdEliminar_Click(sender As Object, e As EventArgs) Handles btnEliminar.Click
+    Private Sub BtnEliminar_Click(sender As Object, e As EventArgs) Handles btnEliminar.Click
         Dim objPkDesglose(0) As Object
         If dtbDesgloseCuenta.Rows.Count > 0 Then
             objPkDesglose(0) = grdDesgloseCuenta.CurrentRow.Cells(0).Value
@@ -456,22 +449,11 @@ Public Class FrmAplicaReciboCxC
         End If
     End Sub
 
-    Private Sub CmdInsertarPago_Click(sender As Object, e As EventArgs) Handles btnInsertarPago.Click
+    Private Sub BtnInsertarPago_Click(sender As Object, e As EventArgs) Handles btnInsertarPago.Click
         If cboFormaPago.SelectedValue > 0 And cboTipoBanco.SelectedValue > 0 And dblTotal > 0 And txtMontoPago.Text <> "" Then
             If dblSaldoPorPagar = 0 Then
                 MessageBox.Show("El monto por cancelar ya se encuentra cubierto. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
-            End If
-            If cboFormaPago.SelectedValue = StaticFormaPago.Tarjeta Then
-                If txtTipoTarjeta.Text = "" Or txtDocumento.Text = "" Then
-                    MessageBox.Show("Debe ingresar el banco dueño de la tarjeta y el número de autorización del movimiento.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                    Exit Sub
-                End If
-            ElseIf cboFormaPago.SelectedValue = StaticFormaPago.Cheque Or cboFormaPago.SelectedValue = StaticFormaPago.TransferenciaDepositoBancario Then
-                If txtDocumento.Text = "" Then
-                    MessageBox.Show("Debe ingresar el número de documento correspondiente al movimiento.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                    Exit Sub
-                End If
             End If
             CargarLineaDesglosePago()
             cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
@@ -481,7 +463,7 @@ Public Class FrmAplicaReciboCxC
         End If
     End Sub
 
-    Private Sub CmdEliminarPago_Click(sender As Object, e As EventArgs) Handles btnEliminarPago.Click
+    Private Sub BtnEliminarPago_Click(sender As Object, e As EventArgs) Handles btnEliminarPago.Click
         If dtbDesglosePago.Rows.Count > 0 Then
             dtbDesglosePago.Rows.RemoveAt(grdDesglosePago.CurrentRow.Index)
             grdDesglosePago.Refresh()

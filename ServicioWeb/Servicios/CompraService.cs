@@ -65,7 +65,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(proveedor.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     dbContext.ProveedorRepository.Add(proveedor);
                     dbContext.Commit();
                 }
@@ -91,7 +90,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(proveedor.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     dbContext.NotificarModificacion(proveedor);
                     dbContext.Commit();
                 }
@@ -119,7 +117,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (proveedor == null) throw new Exception("El proveedor por eliminar no existe.");
                     Empresa empresa = dbContext.EmpresaRepository.Find(proveedor.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     dbContext.ProveedorRepository.Remove(proveedor);
                     dbContext.Commit();
                 }
@@ -229,7 +226,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(compra.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == compra.IdEmpresa && x.IdSucursal == compra.IdSucursal);
+                    if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     Compra existeFactura = dbContext.CompraRepository.AsNoTracking().Where(x => x.NoDocumento == compra.NoDocumento && !x.Nulo).FirstOrDefault();
                     if (existeFactura != null) throw new BusinessException("El número de factura por registrar en la compra ya existe. . .");
                     if (compra.IdOrdenCompra > 0)
@@ -256,6 +255,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         cuentaPorPagar = new CuentaPorPagar
                         {
                             IdEmpresa = compra.IdEmpresa,
+                            IdSucursal = compra.IdSucursal,
                             IdUsuario = compra.IdUsuario,
                             IdTipoMoneda = compra.IdTipoMoneda,
                             IdPropietario = compra.IdProveedor,
@@ -530,7 +530,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(compra.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == compra.IdEmpresa && x.IdSucursal == compra.IdSucursal);
+                    if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     dbContext.NotificarModificacion(compra);
                     dbContext.Commit();
                 }
@@ -557,7 +559,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     Compra compra = dbContext.CompraRepository.Include("DetalleCompra").FirstOrDefault(x => x.IdCompra == intIdCompra);
                     Empresa empresa = dbContext.EmpresaRepository.Find(compra.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == compra.IdEmpresa && x.IdSucursal == compra.IdSucursal);
+                    if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     if (compra.Procesado) throw new BusinessException("El registro ya fue procesado por el cierre. No es posible registrar la transacción.");
                     compra.Nulo = true;
                     compra.IdAnuladoPor = intIdUsuario;
@@ -770,7 +774,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (ordenCompra == null) throw new Exception("La orden de compra por anular no existe.");
                     Empresa empresa = dbContext.EmpresaRepository.Find(ordenCompra.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     if (ordenCompra.Aplicado == true) throw new BusinessException("La orden de servicio no puede ser anulada porque ya genero un registro de compra.");
                     ordenCompra.Nulo = true;
                     ordenCompra.IdAnuladoPor = intIdUsuario;
@@ -880,7 +883,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (compra.Nulo) throw new BusinessException("La compra asingada a la devolución está anulada.");
                     Empresa empresa = dbContext.EmpresaRepository.Find(devolucion.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
+                    //if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     devolucion.IdAsiento = 0;
                     foreach (var detalleDevolucion in devolucion.DetalleDevolucionProveedor)
                     {
@@ -936,7 +939,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (devolucion == null) throw new Exception("La devolución por anular no existe.");
                     Empresa empresa = dbContext.EmpresaRepository.Find(devolucion.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
+                    //if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     if (devolucion.Procesado) throw new BusinessException("El registro ya fue procesado por el cierre. No es posible registrar la transacción.");
                     Compra compra = dbContext.CompraRepository.AsNoTracking().Where(x => x.IdCompra == devolucion.IdCompra).FirstOrDefault();
                     if (compra == null) throw new Exception("La compra asignada a la devolución no existe.");

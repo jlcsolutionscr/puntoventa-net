@@ -355,9 +355,9 @@ namespace LeandroSoftware.ClienteWCF
             return listado;
         }
 
-        public static async Task<List<LlaveDescripcion>> ObtenerListadoFormaPagoEgreso(string strToken)
+        public static async Task<List<LlaveDescripcion>> ObtenerListadoFormaPagoEmpresa(string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerListadoFormaPagoEgreso'}";
+            string strDatos = "{NombreMetodo: 'ObtenerListadoFormaPagoEmpresa'}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
             if (respuesta != "")
@@ -365,49 +365,9 @@ namespace LeandroSoftware.ClienteWCF
             return listado;
         }
 
-        public static async Task<List<LlaveDescripcion>> ObtenerListadoFormaPagoIngreso(string strToken)
+        public static async Task<List<LlaveDescripcion>> ObtenerListadoFormaPagoCliente(string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerListadoFormaPagoIngreso'}";
-            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
-            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
-            if (respuesta != "")
-                listado = serializer.Deserialize<List<LlaveDescripcion>>(respuesta);
-            return listado;
-        }
-
-        public static async Task<List<LlaveDescripcion>> ObtenerListadoFormaPagoFactura(string strToken)
-        {
-            string strDatos = "{NombreMetodo: 'ObtenerListadoFormaPagoFactura'}";
-            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
-            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
-            if (respuesta != "")
-                listado = serializer.Deserialize<List<LlaveDescripcion>>(respuesta);
-            return listado;
-        }
-
-        public static async Task<List<LlaveDescripcion>> ObtenerListadoFormaPagoCompra(string strToken)
-        {
-            string strDatos = "{NombreMetodo: 'ObtenerListadoFormaPagoCompra'}";
-            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
-            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
-            if (respuesta != "")
-                listado = serializer.Deserialize<List<LlaveDescripcion>>(respuesta);
-            return listado;
-        }
-
-        public static async Task<List<LlaveDescripcion>> ObtenerListadoFormaPagoMovimientoCxC(string strToken)
-        {
-            string strDatos = "{NombreMetodo: 'ObtenerListadoFormaPagoMovimientoCxC'}";
-            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
-            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
-            if (respuesta != "")
-                listado = serializer.Deserialize<List<LlaveDescripcion>>(respuesta);
-            return listado;
-        }
-
-        public static async Task<List<LlaveDescripcion>> ObtenerListadoFormaPagoMovimientoCxP(string strToken)
-        {
-            string strDatos = "{NombreMetodo: 'ObtenerListadoFormaPagoMovimientoCxP'}";
+            string strDatos = "{NombreMetodo: 'ObtenerListadoFormaPagoCliente'}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
             if (respuesta != "")
@@ -475,19 +435,49 @@ namespace LeandroSoftware.ClienteWCF
             return listado;
         }
 
-        public static async Task<List<ReporteVentas>> ObtenerReporteVentasPorCliente(int intIdEmpresa, string strFechaInicial, string strFechaFinal, int intIdCliente, bool bolNulo, int intIdTipoPago, int intIdBancoAdquiriente, string strToken)
+        public static async Task<List<ReporteDetalle>> ObtenerReporteProformas(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, bool bolNulo, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerReporteVentasPorCliente', Parametros: {IdEmpresa: " + intIdEmpresa + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "', IdCliente: " + intIdCliente + ", isNulo: '" + bolNulo + "', IdTipoPago: " + intIdTipoPago + ", IdBancoAdquiriente: " + intIdBancoAdquiriente + "}}";
+            string strDatos = "{NombreMetodo: 'ObtenerReporteProformas', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "', isNulo: '" + bolNulo + "'}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
-            List<ReporteVentas> listado = new List<ReporteVentas>();
+            List<ReporteDetalle> listado = new List<ReporteDetalle>();
             if (respuesta != "")
-                listado = serializer.Deserialize<List<ReporteVentas>>(respuesta);
+                listado = serializer.Deserialize<List<ReporteDetalle>>(respuesta);
             return listado;
         }
 
-        public static async Task<List<ReporteVentasPorVendedor>> ObtenerReporteVentasPorVendedor(int intIdEmpresa, string strFechaInicial, string strFechaFinal, int intIdVendedor, string strToken)
+        public static async Task<List<ReporteDetalle>> ObtenerReporteApartados(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, bool bolNulo, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerReporteVentasPorVendedor', Parametros: {IdEmpresa: " + intIdEmpresa + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "', IdVendedor: " + intIdVendedor + "}}";
+            string strDatos = "{NombreMetodo: 'ObtenerReporteApartados', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "', isNulo: '" + bolNulo + "'}}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            List<ReporteDetalle> listado = new List<ReporteDetalle>();
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<ReporteDetalle>>(respuesta);
+            return listado;
+        }
+
+        public static async Task<List<ReporteDetalle>> ObtenerReporteOrdenesServicio(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, bool bolNulo, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'ObtenerReporteOrdenesServicio', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "', isNulo: '" + bolNulo + "'}}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            List<ReporteDetalle> listado = new List<ReporteDetalle>();
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<ReporteDetalle>>(respuesta);
+            return listado;
+        }
+
+        public static async Task<List<ReporteDetalle>> ObtenerReporteVentasPorCliente(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, int intIdCliente, bool bolNulo, int intIdTipoPago, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'ObtenerReporteVentasPorCliente', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "', IdCliente: " + intIdCliente + ", isNulo: '" + bolNulo + "', IdTipoPago: " + intIdTipoPago + "}}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            List<ReporteDetalle> listado = new List<ReporteDetalle>();
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<ReporteDetalle>>(respuesta);
+            return listado;
+        }
+
+        public static async Task<List<ReporteVentasPorVendedor>> ObtenerReporteVentasPorVendedor(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, int intIdVendedor, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'ObtenerReporteVentasPorVendedor', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "', IdVendedor: " + intIdVendedor + "}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             List<ReporteVentasPorVendedor> listado = new List<ReporteVentasPorVendedor>();
             if (respuesta != "")
@@ -495,59 +485,59 @@ namespace LeandroSoftware.ClienteWCF
             return listado;
         }
 
-        public static async Task<List<ReporteCompras>> ObtenerReporteComprasPorProveedor(int intIdEmpresa, string strFechaInicial, string strFechaFinal, int intIdProveedor, bool bolNulo, int intFormaPago, string strToken)
+        public static async Task<List<ReporteDetalle>> ObtenerReporteComprasPorProveedor(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, int intIdProveedor, bool bolNulo, int intFormaPago, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerReporteComprasPorProveedor', Parametros: {IdEmpresa: " + intIdEmpresa + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "', IdProveedor: " + intIdProveedor + ", isNulo: '" + bolNulo + "', FormaPago: " + intFormaPago + "}}";
+            string strDatos = "{NombreMetodo: 'ObtenerReporteComprasPorProveedor', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "', IdProveedor: " + intIdProveedor + ", isNulo: '" + bolNulo + "', IdTipoPago: " + intFormaPago + "}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
-            List<ReporteCompras> listado = new List<ReporteCompras>();
+            List<ReporteDetalle> listado = new List<ReporteDetalle>();
             if (respuesta != "")
-                listado = serializer.Deserialize<List<ReporteCompras>>(respuesta);
+                listado = serializer.Deserialize<List<ReporteDetalle>>(respuesta);
             return listado;
         }
 
-        public static async Task<List<ReporteCuentasPorCobrar>> ObtenerReporteCuentasPorCobrarClientes(int intIdEmpresa, string strFechaInicial, string strFechaFinal, int intIdCliente, string strToken)
+        public static async Task<List<ReporteCuentas>> ObtenerReporteCuentasPorCobrarClientes(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, int intIdCliente, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerReporteCuentasPorCobrarClientes', Parametros: {IdEmpresa: " + intIdEmpresa + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "', IdCliente: " + intIdCliente + "}}";
+            string strDatos = "{NombreMetodo: 'ObtenerReporteCuentasPorCobrarClientes', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "', IdCliente: " + intIdCliente + "}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
-            List<ReporteCuentasPorCobrar> listado = new List<ReporteCuentasPorCobrar>();
+            List<ReporteCuentas> listado = new List<ReporteCuentas>();
             if (respuesta != "")
-                listado = serializer.Deserialize<List<ReporteCuentasPorCobrar>>(respuesta);
+                listado = serializer.Deserialize<List<ReporteCuentas>>(respuesta);
             return listado;
         }
 
-        public static async Task<List<ReporteCuentasPorPagar>> ObtenerReporteCuentasPorPagarProveedores(int intIdEmpresa, string strFechaInicial, string strFechaFinal, int intIdProveedor, string strToken)
+        public static async Task<List<ReporteCuentas>> ObtenerReporteCuentasPorPagarProveedores(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, int intIdProveedor, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerReporteCuentasPorPagarProveedores', Parametros: {IdEmpresa: " + intIdEmpresa + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "', IdProveedor: " + intIdProveedor + "}}";
+            string strDatos = "{NombreMetodo: 'ObtenerReporteCuentasPorPagarProveedores', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "', IdProveedor: " + intIdProveedor + "}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
-            List<ReporteCuentasPorPagar> listado = new List<ReporteCuentasPorPagar>();
+            List<ReporteCuentas> listado = new List<ReporteCuentas>();
             if (respuesta != "")
-                listado = serializer.Deserialize<List<ReporteCuentasPorPagar>>(respuesta);
+                listado = serializer.Deserialize<List<ReporteCuentas>>(respuesta);
             return listado;
         }
 
-        public static async Task<List<ReporteMovimientosCxC>> ObtenerReporteMovimientosCxCClientes(int intIdEmpresa, string strFechaInicial, string strFechaFinal, int intIdCliente, string strToken)
+        public static async Task<List<ReporteGrupoDetalle>> ObtenerReporteMovimientosCxCClientes(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, int intIdCliente, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerReporteMovimientosCxCClientes', Parametros: {IdEmpresa: " + intIdEmpresa + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "', IdCliente: " + intIdCliente + "}}";
+            string strDatos = "{NombreMetodo: 'ObtenerReporteMovimientosCxCClientes', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "', IdCliente: " + intIdCliente + "}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
-            List<ReporteMovimientosCxC> listado = new List<ReporteMovimientosCxC>();
+            List<ReporteGrupoDetalle> listado = new List<ReporteGrupoDetalle>();
             if (respuesta != "")
-                listado = serializer.Deserialize<List<ReporteMovimientosCxC>>(respuesta);
+                listado = serializer.Deserialize<List<ReporteGrupoDetalle>>(respuesta);
             return listado;
         }
 
-        public static async Task<List<ReporteMovimientosCxP>> ObtenerReporteMovimientosCxPProveedores(int intIdEmpresa, string strFechaInicial, string strFechaFinal, int intIdProveedor, string strToken)
+        public static async Task<List<ReporteGrupoDetalle>> ObtenerReporteMovimientosCxPProveedores(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, int intIdProveedor, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerReporteMovimientosCxPProveedores', Parametros: {IdEmpresa: " + intIdEmpresa + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "', IdProveedor: " + intIdProveedor + "}}";
+            string strDatos = "{NombreMetodo: 'ObtenerReporteMovimientosCxPProveedores', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "', IdProveedor: " + intIdProveedor + "}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
-            List<ReporteMovimientosCxP> listado = new List<ReporteMovimientosCxP>();
+            List<ReporteGrupoDetalle> listado = new List<ReporteGrupoDetalle>();
             if (respuesta != "")
-                listado = serializer.Deserialize<List<ReporteMovimientosCxP>>(respuesta);
+                listado = serializer.Deserialize<List<ReporteGrupoDetalle>>(respuesta);
             return listado;
         }
 
-        public static async Task<List<ReporteMovimientosBanco>> ObtenerReporteMovimientosBanco(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strToken)
+        public static async Task<List<ReporteMovimientosBanco>> ObtenerReporteMovimientosBanco(int intIdCuenta, string strFechaInicial, string strFechaFinal, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerReporteMovimientosBanco', Parametros: {IdEmpresa: " + intIdEmpresa + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "'}}";
+            string strDatos = "{NombreMetodo: 'ObtenerReporteMovimientosBanco', Parametros: {IdCuenta: " + intIdCuenta + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "'}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             List<ReporteMovimientosBanco> listado = new List<ReporteMovimientosBanco>();
             if (respuesta != "")
@@ -555,39 +545,39 @@ namespace LeandroSoftware.ClienteWCF
             return listado;
         }
 
-        public static async Task<List<ReporteEstadoResultados>> ObtenerReporteEstadoResultados(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strToken)
+        public static async Task<List<DescripcionValor>> ObtenerReporteEstadoResultados(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerReporteEstadoResultados', Parametros: {IdEmpresa: " + intIdEmpresa + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "'}}";
+            string strDatos = "{NombreMetodo: 'ObtenerReporteEstadoResultados', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "'}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
-            List<ReporteEstadoResultados> listado = new List<ReporteEstadoResultados>();
+            List<DescripcionValor> listado = new List<DescripcionValor>();
             if (respuesta != "")
-                listado = serializer.Deserialize<List<ReporteEstadoResultados>>(respuesta);
+                listado = serializer.Deserialize<List<DescripcionValor>>(respuesta);
             return listado;
         }
 
-        public static async Task<List<ReporteDetalleEgreso>> ObtenerReporteDetalleEgreso(int intIdEmpresa, int intIdCuentaEgreso, string strFechaInicial, string strFechaFinal, string strToken)
+        public static async Task<List<ReporteGrupoDetalle>> ObtenerReporteDetalleEgreso(int intIdEmpresa, int intIdSucursal, int intIdCuentaEgreso, string strFechaInicial, string strFechaFinal, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerReporteDetalleEgreso', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdCuentaEgreso: " + intIdCuentaEgreso + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "'}}";
+            string strDatos = "{NombreMetodo: 'ObtenerReporteDetalleEgreso', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", IdCuentaEgreso: " + intIdCuentaEgreso + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "'}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
-            List<ReporteDetalleEgreso> listado = new List<ReporteDetalleEgreso>();
+            List<ReporteGrupoDetalle> listado = new List<ReporteGrupoDetalle>();
             if (respuesta != "")
-                listado = serializer.Deserialize<List<ReporteDetalleEgreso>>(respuesta);
+                listado = serializer.Deserialize<List<ReporteGrupoDetalle>>(respuesta);
             return listado;
         }
 
-        public static async Task<List<ReporteDetalleIngreso>> ObtenerReporteDetalleIngreso(int intIdEmpresa, int intIdCuentaIngreso, string strFechaInicial, string strFechaFinal, string strToken)
+        public static async Task<List<ReporteGrupoDetalle>> ObtenerReporteDetalleIngreso(int intIdEmpresa, int intIdSucursal, int intIdCuentaIngreso, string strFechaInicial, string strFechaFinal, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerReporteDetalleIngreso', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdCuentaIngreso: " + intIdCuentaIngreso + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "'}}";
+            string strDatos = "{NombreMetodo: 'ObtenerReporteDetalleIngreso', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", IdCuentaIngreso: " + intIdCuentaIngreso + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "'}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
-            List<ReporteDetalleIngreso> listado = new List<ReporteDetalleIngreso>();
+            List<ReporteGrupoDetalle> listado = new List<ReporteGrupoDetalle>();
             if (respuesta != "")
-                listado = serializer.Deserialize<List<ReporteDetalleIngreso>>(respuesta);
+                listado = serializer.Deserialize<List<ReporteGrupoDetalle>>(respuesta);
             return listado;
         }
 
-        public static async Task<List<ReporteVentasPorLineaResumen>> ObtenerReporteVentasPorLineaResumen(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strToken)
+        public static async Task<List<ReporteVentasPorLineaResumen>> ObtenerReporteVentasPorLineaResumen(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerReporteVentasPorLineaResumen', Parametros: {IdEmpresa: " + intIdEmpresa + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "'}}";
+            string strDatos = "{NombreMetodo: 'ObtenerReporteVentasPorLineaResumen', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "'}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             List<ReporteVentasPorLineaResumen> listado = new List<ReporteVentasPorLineaResumen>();
             if (respuesta != "")
@@ -595,9 +585,9 @@ namespace LeandroSoftware.ClienteWCF
             return listado;
         }
 
-        public static async Task<List<ReporteVentasPorLineaDetalle>> ObtenerReporteVentasPorLineaDetalle(int intIdEmpresa, int intIdLinea, string strFechaInicial, string strFechaFinal, string strToken)
+        public static async Task<List<ReporteVentasPorLineaDetalle>> ObtenerReporteVentasPorLineaDetalle(int intIdEmpresa, int intIdSucursal, int intIdLinea, string strFechaInicial, string strFechaFinal, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerReporteVentasPorLineaDetalle', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdLinea: " + intIdLinea + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "'}}";
+            string strDatos = "{NombreMetodo: 'ObtenerReporteVentasPorLineaDetalle', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", IdLinea: " + intIdLinea + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "'}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             List<ReporteVentasPorLineaDetalle> listado = new List<ReporteVentasPorLineaDetalle>();
             if (respuesta != "")
@@ -605,9 +595,9 @@ namespace LeandroSoftware.ClienteWCF
             return listado;
         }
 
-        public static async Task<List<ReporteDocumentoElectronico>> ObtenerReporteFacturasElectronicasEmitidas(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strToken)
+        public static async Task<List<ReporteDocumentoElectronico>> ObtenerReporteFacturasElectronicasEmitidas(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerReporteFacturasElectronicasEmitidas', Parametros: {IdEmpresa: " + intIdEmpresa + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "'}}";
+            string strDatos = "{NombreMetodo: 'ObtenerReporteFacturasElectronicasEmitidas', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "'}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             List<ReporteDocumentoElectronico> listado = new List<ReporteDocumentoElectronico>();
             if (respuesta != "")
@@ -615,9 +605,9 @@ namespace LeandroSoftware.ClienteWCF
             return listado;
         }
 
-        public static async Task<List<ReporteDocumentoElectronico>> ObtenerReporteNotasCreditoElectronicasEmitidas(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strToken)
+        public static async Task<List<ReporteDocumentoElectronico>> ObtenerReporteNotasCreditoElectronicasEmitidas(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerReporteNotasCreditoElectronicasEmitidas', Parametros: {IdEmpresa: " + intIdEmpresa + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "'}}";
+            string strDatos = "{NombreMetodo: 'ObtenerReporteNotasCreditoElectronicasEmitidas', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "'}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             List<ReporteDocumentoElectronico> listado = new List<ReporteDocumentoElectronico>();
             if (respuesta != "")
@@ -625,9 +615,9 @@ namespace LeandroSoftware.ClienteWCF
             return listado;
         }
 
-        public static async Task<List<ReporteDocumentoElectronico>> ObtenerReporteFacturasElectronicasRecibidas(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strToken)
+        public static async Task<List<ReporteDocumentoElectronico>> ObtenerReporteFacturasElectronicasRecibidas(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerReporteFacturasElectronicasRecibidas', Parametros: {IdEmpresa: " + intIdEmpresa + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "'}}";
+            string strDatos = "{NombreMetodo: 'ObtenerReporteFacturasElectronicasRecibidas', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "'}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             List<ReporteDocumentoElectronico> listado = new List<ReporteDocumentoElectronico>();
             if (respuesta != "")
@@ -635,9 +625,9 @@ namespace LeandroSoftware.ClienteWCF
             return listado;
         }
 
-        public static async Task<List<ReporteDocumentoElectronico>> ObtenerReporteNotasCreditoElectronicasRecibidas(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strToken)
+        public static async Task<List<ReporteDocumentoElectronico>> ObtenerReporteNotasCreditoElectronicasRecibidas(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerReporteNotasCreditoElectronicasRecibidas', Parametros: {IdEmpresa: " + intIdEmpresa + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "'}}";
+            string strDatos = "{NombreMetodo: 'ObtenerReporteNotasCreditoElectronicasRecibidas', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "'}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             List<ReporteDocumentoElectronico> listado = new List<ReporteDocumentoElectronico>();
             if (respuesta != "")
@@ -645,9 +635,9 @@ namespace LeandroSoftware.ClienteWCF
             return listado;
         }
 
-        public static async Task<List<ReporteResumenMovimiento>> ObtenerReporteResumenDocumentosElectronicos(int intIdEmpresa, string strFechaInicial, string strFechaFinal, string strToken)
+        public static async Task<List<ReporteResumenMovimiento>> ObtenerReporteResumenDocumentosElectronicos(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerReporteResumenDocumentosElectronicos', Parametros: {IdEmpresa: " + intIdEmpresa + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "'}}";
+            string strDatos = "{NombreMetodo: 'ObtenerReporteResumenDocumentosElectronicos', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "'}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             List<ReporteResumenMovimiento> listado = new List<ReporteResumenMovimiento>();
             if (respuesta != "")
@@ -655,9 +645,9 @@ namespace LeandroSoftware.ClienteWCF
             return listado;
         }
 
-        public static async Task<CierreCaja> GenerarDatosCierreCaja(int intIdEmpresa, string strFechaCierre, string strToken)
+        public static async Task<CierreCaja> GenerarDatosCierreCaja(int intIdEmpresa, int intIdSucursal, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'GenerarDatosCierreCaja', Parametros: {IdEmpresa: " + intIdEmpresa + ", FechaCierre: '" + strFechaCierre + "'}}";
+            string strDatos = "{NombreMetodo: 'GenerarDatosCierreCaja', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + "}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             CierreCaja cierre = null;
             if (respuesta != "")
@@ -672,19 +662,19 @@ namespace LeandroSoftware.ClienteWCF
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 
-        public static async Task AbortarCierreCaja(int intIdEmpresa, string strToken)
+        public static async Task AbortarCierreCaja(int intIdEmpresa, int intIdSucursal, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'AbortarCierreCaja', Parametros: {IdEmpresa: " + intIdEmpresa + "}}";
+            string strDatos = "{NombreMetodo: 'AbortarCierreCaja', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + "}}";
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 
-        public static async Task<List<ReporteCierreDeCaja>> ObtenerReporteCierreDeCaja(int intIdCierre, string strToken)
+        public static async Task<List<DescripcionValor>> ObtenerReporteCierreDeCaja(int intIdCierre, string strToken)
         {
             string strDatos = "{NombreMetodo: 'ObtenerReporteCierreDeCaja', Parametros: {IdCierre: " + intIdCierre + "}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
-            List<ReporteCierreDeCaja> listado = new List<ReporteCierreDeCaja>();
+            List<DescripcionValor> listado = new List<DescripcionValor>();
             if (respuesta != "")
-                listado = serializer.Deserialize<List<ReporteCierreDeCaja>>(respuesta);
+                listado = serializer.Deserialize<List<DescripcionValor>>(respuesta);
             return listado;
         }
 
@@ -1764,9 +1754,9 @@ namespace LeandroSoftware.ClienteWCF
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 
-        public static async Task AnularMovimientoCxC(int intIdMovimientoCxC, int intIdUsuario, string strToken)
+        public static async Task AnularMovimientoCxC(int intIdMovimiento, int intIdUsuario, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'AnularMovimientoCxC', Parametros: {IdMovimientoCxC: " + intIdMovimientoCxC + ", IdUsuario: " + intIdUsuario + "}}";
+            string strDatos = "{NombreMetodo: 'AnularMovimientoCxC', Parametros: {IdMovimiento: " + intIdMovimiento + ", IdUsuario: " + intIdUsuario + "}}";
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 
@@ -1817,9 +1807,95 @@ namespace LeandroSoftware.ClienteWCF
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 
-        public static async Task AnularMovimientoCxP(int intIdMovimientoCxP, int intIdUsuario, string strToken)
+        public static async Task AnularMovimientoCxP(int intIdMovimiento, int intIdUsuario, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'AnularMovimientoCxP', Parametros: {IdMovimientoCxP: " + intIdMovimientoCxP + ", IdUsuario: " + intIdUsuario + "}}";
+            string strDatos = "{NombreMetodo: 'AnularMovimientoCxP', Parametros: {IdMovimiento: " + intIdMovimiento + ", IdUsuario: " + intIdUsuario + "}}";
+            await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
+        }
+
+        public static async Task<List<LlaveDescripcion>> ObtenerListadoApartadosConSaldo(int intIdEmpresa, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'ObtenerListadoApartadosConSaldo', Parametros: {IdEmpresa: " + intIdEmpresa + "}}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<LlaveDescripcion>>(respuesta);
+            return listado;
+        }
+
+        public static async Task<List<CuentaDetalle>> ObtenerListadoMovimientosApartado(int intIdEmpresa, int intIdSucursal, int intIdApartado, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'ObtenerListadoMovimientosApartado', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", IdApartado: " + intIdApartado + "}}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            List<CuentaDetalle> listado = new List<CuentaDetalle>();
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<CuentaDetalle>>(respuesta);
+            return listado;
+        }
+
+        public static async Task<MovimientoApartado> ObtenerMovimientoApartado(int intIdMovimiento, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'ObtenerMovimientoApartado', Parametros: {IdMovimiento: " + intIdMovimiento + "}}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            MovimientoApartado movimientoCxC = null;
+            if (respuesta != "")
+                movimientoCxC = serializer.Deserialize<MovimientoApartado>(respuesta);
+            return movimientoCxC;
+        }
+
+        public static async Task AplicarMovimientoApartado(MovimientoApartado movimiento, string strToken)
+        {
+            string strEntidad = serializer.Serialize(movimiento);
+            string strDatos = "{NombreMetodo: 'AplicarMovimientoApartado', Entidad: " + strEntidad + "}";
+            await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
+        }
+
+        public static async Task AnularMovimientoApartado(int intIdMovimiento, int intIdUsuario, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'AnularMovimientoApartado', Parametros: {IdMovimiento: " + intIdMovimiento + ", IdUsuario: " + intIdUsuario + "}}";
+            await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
+        }
+
+        public static async Task<List<LlaveDescripcion>> ObtenerListadoOrdenesServicioConSaldo(int intIdEmpresa, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'ObtenerListadoOrdenesServicioConSaldo', Parametros: {IdEmpresa: " + intIdEmpresa + "}}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<LlaveDescripcion>>(respuesta);
+            return listado;
+        }
+
+        public static async Task<List<CuentaDetalle>> ObtenerListadoMovimientosOrdenServicio(int intIdEmpresa, int intIdSucursal, int intIdOrdenServicio, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'ObtenerListadoMovimientosOrdenServicio', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", IdOrden: " + intIdOrdenServicio + "}}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            List<CuentaDetalle> listado = new List<CuentaDetalle>();
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<CuentaDetalle>>(respuesta);
+            return listado;
+        }
+
+        public static async Task<MovimientoOrdenServicio> ObtenerMovimientoOrdenServicio(int intIdMovimiento, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'ObtenerMovimientoOrdenServicio', Parametros: {IdMovimiento: " + intIdMovimiento + "}}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            MovimientoOrdenServicio movimientoCxC = null;
+            if (respuesta != "")
+                movimientoCxC = serializer.Deserialize<MovimientoOrdenServicio>(respuesta);
+            return movimientoCxC;
+        }
+
+        public static async Task AplicarMovimientoOrdenServicio(MovimientoOrdenServicio movimiento, string strToken)
+        {
+            string strEntidad = serializer.Serialize(movimiento);
+            string strDatos = "{NombreMetodo: 'AplicarMovimientoOrdenServicio', Entidad: " + strEntidad + "}";
+            await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
+        }
+
+        public static async Task AnularMovimientoOrdenServicio(int intIdMovimiento, int intIdUsuario, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'AnularMovimientoOrdenServicio', Parametros: {IdMovimiento: " + intIdMovimiento + ", IdUsuario: " + intIdUsuario + "}}";
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 
@@ -1833,15 +1909,36 @@ namespace LeandroSoftware.ClienteWCF
             return documento;
         }
 
-        public static async Task<DocumentoElectronico> ObtenerDocumentoElectronicoPorIdFactura(int intIdFactura, string strToken)
+        public static async Task<int> ObtenerTotalListaCierreCaja(int intIdEmpresa, int intIdSucursal, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerDocumentoElectronicoPorIdFactura', Parametros: {IdFactura: " + intIdFactura + "}}";
+            string strDatos = "{NombreMetodo: 'ObtenerTotalListaCierreCaja', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + "}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
-            DocumentoElectronico documento = null;
+            int intCantidad = 0;
             if (respuesta != "")
-                documento = serializer.Deserialize<DocumentoElectronico>(respuesta);
-            return documento;
+                intCantidad = serializer.Deserialize<int>(respuesta);
+            return intCantidad;
         }
+
+        public static async Task<List<LlaveDescripcion>> ObtenerListadoCierreCaja(int intIdEmpresa, int intIdSucursal, int intNumeroPagina, int intFilasPorPagina, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'ObtenerListadoCierreCaja', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", NumeroPagina: " + intNumeroPagina + ",FilasPorPagina: " + intFilasPorPagina + "}}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<LlaveDescripcion>>(respuesta);
+            return listado;
+        }
+
+        public static async Task<CierreCaja> ObtenerCierreCaja(int intIdCierre, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'ObtenerCierreCaja', Parametros: {IdCierre: " + intIdCierre + "}}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            CierreCaja cierre = null;
+            if (respuesta != "")
+                cierre = serializer.Deserialize<CierreCaja>(respuesta);
+            return cierre;
+        }
+
 
         public static async Task GeneraMensajeReceptor(string strMensaje, int intIdEmpresa, int intSucursal, int intTerminal, int intEstado, string strToken)
         {

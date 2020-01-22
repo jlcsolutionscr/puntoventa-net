@@ -69,7 +69,10 @@ Public Class FrmEmpresa
             txtDireccion.Text = datos.Direccion
             txtTelefono.Text = datos.Telefono
             txtCorreoNotificacion.Text = datos.CorreoNotificacion
+            txtLeyendaFactura.Text = datos.LeyendaFactura
             txtLeyendaOrdenServicio.Text = datos.LeyendaOrdenServicio
+            txtLeyendaApartado.Text = datos.LeyendaApartado
+            txtLeyendaProforma.Text = datos.LeyendaProforma
             txtPorcentajeDescMaximo.Text = datos.PorcentajeDescMaximo
             txtFechaRenovacion.Text = Format(datos.FechaVence, "dd/MM/yyyy")
             txtNombreCertificado.Text = datos.NombreCertificado
@@ -147,7 +150,10 @@ Public Class FrmEmpresa
         datos.Direccion = txtDireccion.Text
         datos.Telefono = txtTelefono.Text
         datos.CorreoNotificacion = txtCorreoNotificacion.Text
+        datos.LeyendaFactura = txtLeyendaFactura.Text
         datos.LeyendaOrdenServicio = txtLeyendaOrdenServicio.Text
+        datos.LeyendaApartado = txtLeyendaApartado.Text
+        datos.LeyendaProforma = txtLeyendaProforma.Text
         datos.PorcentajeDescMaximo = txtPorcentajeDescMaximo.Text
         datos.NombreCertificado = txtNombreCertificado.Text
         datos.PinCertificado = txtPinCertificado.Text

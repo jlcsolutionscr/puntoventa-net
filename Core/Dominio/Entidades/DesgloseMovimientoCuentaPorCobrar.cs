@@ -12,7 +12,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public int IdCxC { get; set; }
         public decimal Monto { get; set; }
 
-        public MovimientoCuentaPorCobrar MovimientoCuentaPorCobrar { get; set; }
+        public MovimientoApartado MovimientoCuentaPorCobrar { get; set; }
         public CuentaPorCobrar CuentaPorCobrar { get; set; }
     }
 }

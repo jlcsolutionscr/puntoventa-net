@@ -333,7 +333,7 @@ Public Class FrmTrasladoMercaderia
                 .strId = txtIdTraslado.Text,
                 .strNombre = txtNombreSucursalOrigen.Text,
                 .strFecha = txtFecha.Text,
-                .strFormaPago = cboIdSucursalDestino.SelectedText,
+                .strFormaPago = cboIdSucursalDestino.Text,
                 .strEnviadoPor = FrmPrincipal.usuarioGlobal.CodigoUsuario,
                 .strTotal = txtTotal.Text
             }

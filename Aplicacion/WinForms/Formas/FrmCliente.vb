@@ -1,4 +1,5 @@
 Imports System.Threading.Tasks
+Imports System.Globalization
 Imports LeandroSoftware.Core.Dominio.Entidades
 Imports LeandroSoftware.ClienteWCF
 
@@ -7,6 +8,7 @@ Public Class FrmCliente
     Public intIdCliente As Integer
     Private datos As Cliente
     Private bolInit As Boolean = True
+    Private provider As CultureInfo = CultureInfo.InvariantCulture
 #End Region
 
 #Region "Métodos"
@@ -93,7 +95,7 @@ Public Class FrmCliente
                 cboTipoImpuesto.SelectedValue = 8
                 cboTipoExoneracion.SelectedValue = 1
                 txtPorcentajeExoneracion.Text = "0"
-                txtFechaExoneracion.Text = "01/01/2019"
+                txtFechaExoneracion.Value = Date.ParseExact("01/01/2019", "dd/MM/yyyy", provider)
             End If
             bolInit = False
         Catch ex As Exception

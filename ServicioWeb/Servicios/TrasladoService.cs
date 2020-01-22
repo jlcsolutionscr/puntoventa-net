@@ -70,7 +70,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(traslado.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == traslado.IdEmpresa && x.IdSucursal == traslado.IdSucursalOrigen);
+                    if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     traslado.IdAsiento = 0;
                     foreach(var detalle in traslado.DetalleTraslado)
                     {
@@ -118,7 +120,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (traslado == null) throw new Exception("El registro de traslado por aplicar no existe.");
                     Empresa empresa = dbContext.EmpresaRepository.Find(traslado.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == traslado.IdEmpresa && x.IdSucursal == traslado.IdSucursalDestino);
+                    if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     if (empresa.Contabiliza)
                     {
                         ivaPorPagarParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.IVAPorPagar).FirstOrDefault();
@@ -318,7 +322,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (traslado.Nulo) throw new Exception("El registro de traslado ya ha sido anulado.");
                     Empresa empresa = dbContext.EmpresaRepository.Find(traslado.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == traslado.IdEmpresa && x.IdSucursal == traslado.IdSucursalOrigen);
+                    if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     traslado.Nulo = true;
                     traslado.IdAnuladoPor = intIdUsuario;
                     dbContext.NotificarModificacion(traslado);

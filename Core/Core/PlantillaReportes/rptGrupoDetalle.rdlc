@@ -29,8 +29,8 @@
           <DataField>Fecha</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
-        <Field Name="IdMov">
-          <DataField>IdMov</DataField>
+        <Field Name="Id">
+          <DataField>Id</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
         <Field Name="Total">
@@ -39,9 +39,9 @@
         </Field>
       </Fields>
       <rd:DataSetInfo>
-        <rd:DataSetName>LeandroSoftware.Puntoventa.CommonTypes</rd:DataSetName>
-        <rd:TableName>ReporteDetalleEgreso</rd:TableName>
-        <rd:ObjectDataSourceType>LeandroSoftware.Puntoventa.CommonTypes.ReporteDetalleEgreso, CommonTypes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</rd:ObjectDataSourceType>
+        <rd:DataSetName>LeandroSoftware.Core.TiposComunes</rd:DataSetName>
+        <rd:TableName>ReporteGrupoDetalle</rd:TableName>
+        <rd:ObjectDataSourceType>LeandroSoftware.Core.TiposComunes.ReporteGrupoDetalle, Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</rd:ObjectDataSourceType>
       </rd:DataSetInfo>
     </DataSet>
   </DataSets>
@@ -175,14 +175,14 @@
                   <TablixCells>
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="IdMov">
+                        <Textbox Name="Id">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!IdMov.Value</Value>
+                                  <Value>=Fields!Id.Value</Value>
                                   <Style>
                                     <FontFamily>Tahoma</FontFamily>
                                   </Style>
@@ -193,7 +193,7 @@
                               </Style>
                             </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>IdMov</rd:DefaultName>
+                          <rd:DefaultName>Id</rd:DefaultName>
                           <Style>
                             <Border>
                               <Style>None</Style>
@@ -354,7 +354,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>Total por grupo:</Value>
+                                  <Value>Total:</Value>
                                   <Style>
                                     <FontFamily>Tahoma</FontFamily>
                                     <FontWeight>Bold</FontWeight>
@@ -565,7 +565,7 @@
                               <Paragraph>
                                 <TextRuns>
                                   <TextRun>
-                                    <Value>Cuenta egreso:</Value>
+                                    <Value>Grupo:</Value>
                                     <Style>
                                       <FontFamily>Tahoma</FontFamily>
                                       <FontWeight>Bold</FontWeight>
@@ -573,7 +573,7 @@
                                   </TextRun>
                                 </TextRuns>
                                 <Style>
-                                  <TextAlign>Left</TextAlign>
+                                  <TextAlign>Right</TextAlign>
                                 </Style>
                               </Paragraph>
                             </Paragraphs>
@@ -687,7 +687,7 @@
             <DataSetName>dstDatos</DataSetName>
             <Top>0.0441cm</Top>
             <Left>0.77325cm</Left>
-            <Height>3.81354cm</Height>
+            <Height>3.81353cm</Height>
             <Width>19.967cm</Width>
             <Style>
               <Border>
@@ -916,7 +916,7 @@
                 <Paragraph>
                   <TextRuns>
                     <TextRun>
-                      <Value>Reporte detallado de Egresos</Value>
+                      <Value>=Parameters!pNombreReporte.Value</Value>
                       <Style>
                         <FontFamily>Tahoma</FontFamily>
                         <FontWeight>Bold</FontWeight>
@@ -1206,6 +1206,10 @@
       <DataType>String</DataType>
       <Prompt>ReportParameter1</Prompt>
     </ReportParameter>
+    <ReportParameter Name="pNombreReporte">
+      <DataType>String</DataType>
+      <Prompt>ReportParameter1</Prompt>
+    </ReportParameter>
   </ReportParameters>
   <ReportParametersLayout>
     <GridLayoutDefinition>
@@ -1231,6 +1235,11 @@
           <ColumnIndex>0</ColumnIndex>
           <RowIndex>1</RowIndex>
           <ParameterName>pFechaHasta</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>1</ColumnIndex>
+          <RowIndex>1</RowIndex>
+          <ParameterName>pNombreReporte</ParameterName>
         </CellDefinition>
       </CellDefinitions>
     </GridLayoutDefinition>

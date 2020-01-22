@@ -92,12 +92,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         // Métodos para obtener las condiciones de venta para facturación
         IList<LlaveDescripcion> ObtenerListadoCondicionVenta();
         // Métodos para obtener las formas de pago por tipo de servicio
-        IList<LlaveDescripcion> ObtenerListadoFormaPagoFactura();
-        IList<LlaveDescripcion> ObtenerListadoFormaPagoCompra();
-        IList<LlaveDescripcion> ObtenerListadoFormaPagoEgreso();
-        IList<LlaveDescripcion> ObtenerListadoFormaPagoIngreso();
-        IList<LlaveDescripcion> ObtenerListadoFormaPagoMovimientoCxC();
-        IList<LlaveDescripcion> ObtenerListadoFormaPagoMovimientoCxP();
+        IList<LlaveDescripcion> ObtenerListadoFormaPagoCliente();
+        IList<LlaveDescripcion> ObtenerListadoFormaPagoEmpresa();
         // Métodos para administrar los parámetros de banco adquiriente
         void AgregarBancoAdquiriente(BancoAdquiriente bancoAdquiriente);
         void ActualizarBancoAdquiriente(BancoAdquiriente bancoAdquiriente);
@@ -1622,7 +1618,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(producto.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     bool existe = dbContext.ProductoRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto != producto.IdProducto && x.Codigo == producto.Codigo).Count() > 0;
                     if (existe) throw new BusinessException("El código del producto ingresado ya está registrado en la empresa.");
                     if (producto.Tipo == 4)
@@ -1662,7 +1657,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     var listaProductos = dbContext.ProductoRepository.Where(x => x.IdEmpresa == intIdEmpresa);
                     if (intIdLinea > 0)
                         listaProductos = listaProductos.Where(x => x.IdLinea == intIdLinea);
@@ -1706,7 +1700,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (producto == null) throw new BusinessException("El producto por eliminar no existe.");
                     Empresa empresa = dbContext.EmpresaRepository.Find(producto.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     dbContext.ProductoRepository.Remove(producto);
                     dbContext.Commit();
                 }
@@ -1950,7 +1943,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IList<LlaveDescripcion> ObtenerListadoFormaPagoFactura()
+        public IList<LlaveDescripcion> ObtenerListadoFormaPagoCliente()
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -1973,7 +1966,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IList<LlaveDescripcion> ObtenerListadoFormaPagoCompra()
+        public IList<LlaveDescripcion> ObtenerListadoFormaPagoEmpresa()
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -1991,98 +1984,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     log.Error("Error al obtener el listado de formas de pago para compras: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de formas de pago. Por favor consulte con su proveedor.");
-                }
-            }
-        }
-
-        public IList<LlaveDescripcion> ObtenerListadoFormaPagoEgreso()
-        {
-            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
-            {
-                var listaFormaPagoEgreso = new List<LlaveDescripcion>();
-                try
-                {
-                    var listado = dbContext.FormaPagoRepository.Where(x => new[] { StaticFormaPago.Efectivo, StaticFormaPago.TransferenciaDepositoBancario, StaticFormaPago.Cheque, StaticFormaPago.Tarjeta }.Contains(x.IdFormaPago));
-                    foreach (var value in listado)
-                    {
-                        LlaveDescripcion item = new LlaveDescripcion(value.IdFormaPago, value.Descripcion);
-                        listaFormaPagoEgreso.Add(item);
-                    }
-                    return listaFormaPagoEgreso;
-                }
-                catch (Exception ex)
-                {
-                    log.Error("Error al obtener el listado de formas de pago para egresos: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de formas de pago. Por favor consulte con su proveedor.");
-                }
-            }
-        }
-
-        public IList<LlaveDescripcion> ObtenerListadoFormaPagoIngreso()
-        {
-            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
-            {
-                var listaFormaPagoIngreso = new List<LlaveDescripcion>();
-                try
-                {
-                    var listado = dbContext.FormaPagoRepository.Where(x => new[] { StaticFormaPago.Efectivo, StaticFormaPago.TransferenciaDepositoBancario, StaticFormaPago.Cheque }.Contains(x.IdFormaPago));
-                    foreach (var value in listado)
-                    {
-                        LlaveDescripcion item = new LlaveDescripcion(value.IdFormaPago, value.Descripcion);
-                        listaFormaPagoIngreso.Add(item);
-                    }
-                    return listaFormaPagoIngreso;
-                }
-                catch (Exception ex)
-                {
-                    log.Error("Error al obtener el listado de formas de pago para egresos: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de formas de pago. Por favor consulte con su proveedor.");
-                }
-            }
-        }
-
-        public IList<LlaveDescripcion> ObtenerListadoFormaPagoMovimientoCxC()
-        {
-            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
-            {
-                var listaFormaPagoCxC = new List<LlaveDescripcion>();
-                try
-                {
-                    var listado = dbContext.FormaPagoRepository.Where(x => new[] { StaticFormaPago.Efectivo, StaticFormaPago.TransferenciaDepositoBancario, StaticFormaPago.Cheque, StaticFormaPago.Tarjeta }.Contains(x.IdFormaPago));
-                    foreach (var value in listado)
-                    {
-                        LlaveDescripcion item = new LlaveDescripcion(value.IdFormaPago, value.Descripcion);
-                        listaFormaPagoCxC.Add(item);
-                    }
-                    return listaFormaPagoCxC;
-                }
-                catch (Exception ex)
-                {
-                    log.Error("Error al obtener el listado de formas de pago para movimientos de cuentas por cobrar: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de formas de pago. Por favor consulte con su proveedor.");
-                }
-            }
-        }
-
-        public IList<LlaveDescripcion> ObtenerListadoFormaPagoMovimientoCxP()
-        {
-            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
-            {
-                var listaFormaPagoCxP = new List<LlaveDescripcion>();
-                try
-                {
-                    var listado = dbContext.FormaPagoRepository.Where(x => new[] { StaticFormaPago.Efectivo, StaticFormaPago.TransferenciaDepositoBancario, StaticFormaPago.Cheque }.Contains(x.IdFormaPago));
-                    foreach (var value in listado)
-                    {
-                        LlaveDescripcion item = new LlaveDescripcion(value.IdFormaPago, value.Descripcion);
-                        listaFormaPagoCxP.Add(item);
-                    }
-                    return listaFormaPagoCxP;
-                }
-                catch (Exception ex)
-                {
-                    log.Error("Error al obtener el listado de formas de pago para movimientos de cuentas por pagar: ", ex);
                     throw new Exception("Se produjo un error consultando el listado de formas de pago. Por favor consulte con su proveedor.");
                 }
             }
@@ -2121,7 +2022,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(bancoAdquiriente.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     dbContext.NotificarModificacion(bancoAdquiriente);
                     dbContext.Commit();
                 }
@@ -2149,7 +2049,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (banco == null) throw new BusinessException("El banco adquiriente por eliminar no existe.");
                     Empresa empresa = dbContext.EmpresaRepository.Find(banco.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     dbContext.BancoAdquirienteRepository.Remove(banco);
                     dbContext.Commit();
                 }
@@ -2328,7 +2227,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(ajusteInventario.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == ajusteInventario.IdEmpresa && x.IdSucursal == ajusteInventario.IdSucursal);
+                    if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     dbContext.AjusteInventarioRepository.Add(ajusteInventario);
                     foreach (var detalleAjuste in ajusteInventario.DetalleAjusteInventario)
                     {
@@ -2382,7 +2283,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (ajusteInventario.Nulo == true) throw new BusinessException("El registro de ajuste de inventario ya ha sido anulado.");
                     Empresa empresa = dbContext.EmpresaRepository.Find(ajusteInventario.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == ajusteInventario.IdEmpresa && x.IdSucursal == ajusteInventario.IdSucursal);
+                    if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     ajusteInventario.Nulo = true;
                     ajusteInventario.IdAnuladoPor = intIdUsuario;
                     dbContext.NotificarModificacion(ajusteInventario);

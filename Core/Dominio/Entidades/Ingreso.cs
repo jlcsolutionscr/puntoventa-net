@@ -8,11 +8,6 @@ namespace LeandroSoftware.Core.Dominio.Entidades
     [Table("ingreso")]
     public partial class Ingreso
     {
-        public Ingreso()
-        {
-            DesglosePagoIngreso = new HashSet<DesglosePagoIngreso>();
-        }
-
         [ForeignKey("Empresa")]
         public int IdEmpresa { get; set; }
         public int IdSucursal { get; set; }
@@ -31,6 +26,5 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public bool Procesado { get; set; }
 
         public Empresa Empresa { get; set; }
-        public ICollection<DesglosePagoIngreso> DesglosePagoIngreso { get; set; }
     }
 }

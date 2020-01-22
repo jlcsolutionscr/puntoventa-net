@@ -37,6 +37,7 @@ Partial Class FrmPrincipal
         Me.mnuMenuPrincipal = New System.Windows.Forms.MenuStrip()
         Me.MnuArchivo = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuArchivoCierre = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuArchivoConsultaCierre = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuArchivoIngreso = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuArchivoEgreso = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuArchivoReporte = New System.Windows.Forms.ToolStripMenuItem()
@@ -87,6 +88,10 @@ Partial Class FrmPrincipal
         Me.MnuContaCierre = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuContaReporte = New System.Windows.Forms.ToolStripMenuItem()
         Me.picLoader = New System.Windows.Forms.PictureBox()
+        Me.MnuApRApartado = New System.Windows.Forms.ToolStripMenuItem()
+        Me.MnuApROrdenServicio = New System.Windows.Forms.ToolStripMenuItem()
+        Me.MnuAnRApartado = New System.Windows.Forms.ToolStripMenuItem()
+        Me.MnuAnROrdenServicio = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuMenuPrincipal.SuspendLayout()
         CType(Me.picLoader, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -102,7 +107,7 @@ Partial Class FrmPrincipal
         '
         'MnuArchivo
         '
-        Me.MnuArchivo.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuArchivoCierre, Me.MnuArchivoIngreso, Me.MnuArchivoEgreso, Me.MnuArchivoReporte, Me.mnuArchivoCambio, Me.MnuArchivoSalir})
+        Me.MnuArchivo.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuArchivoCierre, Me.mnuArchivoConsultaCierre, Me.MnuArchivoIngreso, Me.MnuArchivoEgreso, Me.MnuArchivoReporte, Me.mnuArchivoCambio, Me.MnuArchivoSalir})
         Me.MnuArchivo.MergeAction = System.Windows.Forms.MergeAction.Remove
         Me.MnuArchivo.Name = "MnuArchivo"
         Me.MnuArchivo.Size = New System.Drawing.Size(60, 20)
@@ -111,41 +116,47 @@ Partial Class FrmPrincipal
         'mnuArchivoCierre
         '
         Me.mnuArchivoCierre.Name = "mnuArchivoCierre"
-        Me.mnuArchivoCierre.Size = New System.Drawing.Size(179, 22)
+        Me.mnuArchivoCierre.Size = New System.Drawing.Size(197, 22)
         Me.mnuArchivoCierre.Text = "Cierre de Caja"
         Me.mnuArchivoCierre.Visible = False
+        '
+        'mnuArchivoConsultaCierre
+        '
+        Me.mnuArchivoConsultaCierre.Name = "mnuArchivoConsultaCierre"
+        Me.mnuArchivoConsultaCierre.Size = New System.Drawing.Size(197, 22)
+        Me.mnuArchivoConsultaCierre.Text = "Consulta Cierre de Caja"
         '
         'MnuArchivoIngreso
         '
         Me.MnuArchivoIngreso.Name = "MnuArchivoIngreso"
-        Me.MnuArchivoIngreso.Size = New System.Drawing.Size(179, 22)
+        Me.MnuArchivoIngreso.Size = New System.Drawing.Size(197, 22)
         Me.MnuArchivoIngreso.Text = "Ingresos de efectivo"
         Me.MnuArchivoIngreso.Visible = False
         '
         'MnuArchivoEgreso
         '
         Me.MnuArchivoEgreso.Name = "MnuArchivoEgreso"
-        Me.MnuArchivoEgreso.Size = New System.Drawing.Size(179, 22)
+        Me.MnuArchivoEgreso.Size = New System.Drawing.Size(197, 22)
         Me.MnuArchivoEgreso.Text = "Egresos de efectivo"
         Me.MnuArchivoEgreso.Visible = False
         '
         'MnuArchivoReporte
         '
         Me.MnuArchivoReporte.Name = "MnuArchivoReporte"
-        Me.MnuArchivoReporte.Size = New System.Drawing.Size(179, 22)
+        Me.MnuArchivoReporte.Size = New System.Drawing.Size(197, 22)
         Me.MnuArchivoReporte.Text = "Menu de Reportes"
         Me.MnuArchivoReporte.Visible = False
         '
         'mnuArchivoCambio
         '
         Me.mnuArchivoCambio.Name = "mnuArchivoCambio"
-        Me.mnuArchivoCambio.Size = New System.Drawing.Size(179, 22)
+        Me.mnuArchivoCambio.Size = New System.Drawing.Size(197, 22)
         Me.mnuArchivoCambio.Text = "Cambio Contraseña"
         '
         'MnuArchivoSalir
         '
         Me.MnuArchivoSalir.Name = "MnuArchivoSalir"
-        Me.MnuArchivoSalir.Size = New System.Drawing.Size(179, 22)
+        Me.MnuArchivoSalir.Size = New System.Drawing.Size(197, 22)
         Me.MnuArchivoSalir.Text = "Salir"
         '
         'MnuParam
@@ -389,39 +400,39 @@ Partial Class FrmPrincipal
         '
         'MnuCC
         '
-        Me.MnuCC.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MnuApRCxC, Me.MnuApRCxP, Me.MnuAnRCxC, Me.MnuAnRCxP})
+        Me.MnuCC.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MnuApRCxC, Me.MnuApRCxP, Me.MnuApRApartado, Me.MnuApROrdenServicio, Me.MnuAnRCxC, Me.MnuAnRCxP, Me.MnuAnRApartado, Me.MnuAnROrdenServicio})
         Me.MnuCC.MergeAction = System.Windows.Forms.MergeAction.Remove
         Me.MnuCC.Name = "MnuCC"
-        Me.MnuCC.Size = New System.Drawing.Size(103, 20)
-        Me.MnuCC.Text = "Crédito y Cobro"
+        Me.MnuCC.Size = New System.Drawing.Size(110, 20)
+        Me.MnuCC.Text = "Gestión de Pagos"
         Me.MnuCC.Visible = False
         '
         'MnuApRCxC
         '
         Me.MnuApRCxC.Name = "MnuApRCxC"
-        Me.MnuApRCxC.Size = New System.Drawing.Size(285, 22)
+        Me.MnuApRCxC.Size = New System.Drawing.Size(274, 22)
         Me.MnuApRCxC.Text = "Aplicar Pago sobre Cuenta por Cobrar"
         Me.MnuApRCxC.Visible = False
         '
         'MnuApRCxP
         '
         Me.MnuApRCxP.Name = "MnuApRCxP"
-        Me.MnuApRCxP.Size = New System.Drawing.Size(285, 22)
+        Me.MnuApRCxP.Size = New System.Drawing.Size(274, 22)
         Me.MnuApRCxP.Text = "Aplicar Pago sobre Cuenta por Pagar"
         Me.MnuApRCxP.Visible = False
         '
         'MnuAnRCxC
         '
         Me.MnuAnRCxC.Name = "MnuAnRCxC"
-        Me.MnuAnRCxC.Size = New System.Drawing.Size(285, 22)
-        Me.MnuAnRCxC.Text = "Gestionar Recibos de Cuenta por Cobrar"
+        Me.MnuAnRCxC.Size = New System.Drawing.Size(274, 22)
+        Me.MnuAnRCxC.Text = "Gestionar Pago de Cuenta por Cobrar"
         Me.MnuAnRCxC.Visible = False
         '
         'MnuAnRCxP
         '
         Me.MnuAnRCxP.Name = "MnuAnRCxP"
-        Me.MnuAnRCxP.Size = New System.Drawing.Size(285, 22)
-        Me.MnuAnRCxP.Text = "Gestionar Recibos de Cuenta por Pagar"
+        Me.MnuAnRCxP.Size = New System.Drawing.Size(274, 22)
+        Me.MnuAnRCxP.Text = "Gestionar Pagos de Cuenta por Pagar"
         Me.MnuAnRCxP.Visible = False
         '
         'MnuBC
@@ -483,6 +494,30 @@ Partial Class FrmPrincipal
         Me.picLoader.TabStop = False
         Me.picLoader.Visible = False
         '
+        'MnuApRApartado
+        '
+        Me.MnuApRApartado.Name = "MnuApRApartado"
+        Me.MnuApRApartado.Size = New System.Drawing.Size(274, 22)
+        Me.MnuApRApartado.Text = "Aplicar Pago sobre Apartado"
+        '
+        'MnuApROrdenServicio
+        '
+        Me.MnuApROrdenServicio.Name = "MnuApROrdenServicio"
+        Me.MnuApROrdenServicio.Size = New System.Drawing.Size(274, 22)
+        Me.MnuApROrdenServicio.Text = "Aplicar Pago sobre Orden de Servicio"
+        '
+        'MnuAnRApartado
+        '
+        Me.MnuAnRApartado.Name = "MnuAnRApartado"
+        Me.MnuAnRApartado.Size = New System.Drawing.Size(274, 22)
+        Me.MnuAnRApartado.Text = "Gestionar Pago de Apartado"
+        '
+        'MnuAnROrdenServicio
+        '
+        Me.MnuAnROrdenServicio.Name = "MnuAnROrdenServicio"
+        Me.MnuAnROrdenServicio.Size = New System.Drawing.Size(274, 22)
+        Me.MnuAnROrdenServicio.Text = "Gestionar Pago de Orden de Servicio"
+        '
         'FrmPrincipal
         '
         Me.BackColor = System.Drawing.SystemColors.AppWorkspace
@@ -542,4 +577,9 @@ Partial Class FrmPrincipal
     Friend WithEvents MnuCompraAplicTraslado As ToolStripMenuItem
     Friend WithEvents MnuCompraAjusteInv As ToolStripMenuItem
     Friend WithEvents MnuCompraDevolucion As ToolStripMenuItem
+    Friend WithEvents mnuArchivoConsultaCierre As ToolStripMenuItem
+    Friend WithEvents MnuApRApartado As ToolStripMenuItem
+    Friend WithEvents MnuApROrdenServicio As ToolStripMenuItem
+    Friend WithEvents MnuAnRApartado As ToolStripMenuItem
+    Friend WithEvents MnuAnROrdenServicio As ToolStripMenuItem
 End Class

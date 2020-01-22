@@ -345,42 +345,42 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             }
         }
 
-        public string ObtenerDatosReporte(int tipo, int idempresa, string fechainicial, string fechafinal)
+        public string ObtenerDatosReporte(int tipo, int idempresa, int idsucursal, string fechainicial, string fechafinal)
         {
             string strRespuesta = "";
             switch (tipo)
             {
                 case 1:
                     {
-                        List<ReporteDocumentoElectronico> listado = servicioReportes.ObtenerReporteFacturasElectronicasEmitidas(idempresa, fechainicial, fechafinal);
+                        List<ReporteDocumentoElectronico> listado = servicioReportes.ObtenerReporteFacturasElectronicasEmitidas(idempresa, idsucursal, fechainicial, fechafinal);
                         if (listado.Count > 0)
                             strRespuesta = serializer.Serialize(listado);
                         break;
                     }
                 case 2:
                     {
-                        List<ReporteDocumentoElectronico> listado = servicioReportes.ObtenerReporteNotasCreditoElectronicasEmitidas(idempresa, fechainicial, fechafinal);
+                        List<ReporteDocumentoElectronico> listado = servicioReportes.ObtenerReporteNotasCreditoElectronicasEmitidas(idempresa, idsucursal, fechainicial, fechafinal);
                         if (listado.Count > 0)
                             strRespuesta = serializer.Serialize(listado);
                         break;
                     }
                 case 3:
                     {
-                        List<ReporteDocumentoElectronico> listado = servicioReportes.ObtenerReporteFacturasElectronicasRecibidas(idempresa, fechainicial, fechafinal);
+                        List<ReporteDocumentoElectronico> listado = servicioReportes.ObtenerReporteFacturasElectronicasRecibidas(idempresa, idsucursal, fechainicial, fechafinal);
                         if (listado.Count > 0)
                             strRespuesta = serializer.Serialize(listado);
                         break;
                     }
                 case 4:
                     {
-                        List<ReporteDocumentoElectronico> listado = servicioReportes.ObtenerReporteNotasCreditoElectronicasRecibidas(idempresa, fechainicial, fechafinal);
+                        List<ReporteDocumentoElectronico> listado = servicioReportes.ObtenerReporteNotasCreditoElectronicasRecibidas(idempresa, idsucursal, fechainicial, fechafinal);
                         if (listado.Count > 0)
                             strRespuesta = serializer.Serialize(listado);
                         break;
                     }
                 case 5:
                     {
-                        List<ReporteResumenMovimiento> listado = servicioReportes.ObtenerReporteResumenDocumentosElectronicos(idempresa, fechainicial, fechafinal);
+                        List<ReporteResumenMovimiento> listado = servicioReportes.ObtenerReporteResumenDocumentosElectronicos(idempresa, idsucursal, fechainicial, fechafinal);
                         if (listado.Count > 0)
                             strRespuesta = serializer.Serialize(listado);
                         break;

@@ -111,6 +111,9 @@ Partial Class FrmOrdenServicio
         Me.txtFechaEntrega = New System.Windows.Forms.DateTimePicker()
         Me.txtDireccion = New System.Windows.Forms.TextBox()
         Me.Label14 = New System.Windows.Forms.Label()
+        Me.txtExistencias = New System.Windows.Forms.TextBox()
+        Me.Label16 = New System.Windows.Forms.Label()
+        Me.cboHoraEntrega = New System.Windows.Forms.ComboBox()
         CType(Me.grdDetalleOrdenServicio, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.grdDesglosePago, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -184,7 +187,7 @@ Partial Class FrmOrdenServicio
         Me.btnImprimir.Size = New System.Drawing.Size(64, 21)
         Me.btnImprimir.TabIndex = 33
         Me.btnImprimir.TabStop = False
-        Me.btnImprimir.Text = "&Imprimir"
+        Me.btnImprimir.Text = "&Tiquete"
         Me.btnImprimir.UseVisualStyleBackColor = False
         '
         'btnGuardar
@@ -782,7 +785,7 @@ Partial Class FrmOrdenServicio
         Me.txtPorcDesc.ReadOnly = True
         Me.txtPorcDesc.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtPorcDesc.Size = New System.Drawing.Size(38, 20)
-        Me.txtPorcDesc.TabIndex = 34
+        Me.txtPorcDesc.TabIndex = 35
         Me.txtPorcDesc.TabStop = False
         Me.txtPorcDesc.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         '
@@ -803,7 +806,7 @@ Partial Class FrmOrdenServicio
         '
         Me.txtCodigo.Location = New System.Drawing.Point(11, 263)
         Me.txtCodigo.Name = "txtCodigo"
-        Me.txtCodigo.Size = New System.Drawing.Size(236, 20)
+        Me.txtCodigo.Size = New System.Drawing.Size(216, 20)
         Me.txtCodigo.TabIndex = 30
         '
         'Label1
@@ -825,12 +828,12 @@ Partial Class FrmOrdenServicio
         Me.txtDescripcion.BackColor = System.Drawing.SystemColors.Window
         Me.txtDescripcion.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtDescripcion.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtDescripcion.Location = New System.Drawing.Point(247, 263)
+        Me.txtDescripcion.Location = New System.Drawing.Point(227, 263)
         Me.txtDescripcion.MaxLength = 0
         Me.txtDescripcion.Name = "txtDescripcion"
         Me.txtDescripcion.ReadOnly = True
         Me.txtDescripcion.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtDescripcion.Size = New System.Drawing.Size(345, 20)
+        Me.txtDescripcion.Size = New System.Drawing.Size(325, 20)
         Me.txtDescripcion.TabIndex = 31
         Me.txtDescripcion.TabStop = False
         '
@@ -846,7 +849,7 @@ Partial Class FrmOrdenServicio
         Me.txtUnidad.ReadOnly = True
         Me.txtUnidad.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtUnidad.Size = New System.Drawing.Size(38, 20)
-        Me.txtUnidad.TabIndex = 33
+        Me.txtUnidad.TabIndex = 34
         Me.txtUnidad.TabStop = False
         Me.txtUnidad.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         '
@@ -862,7 +865,7 @@ Partial Class FrmOrdenServicio
         Me.txtPrecio.ReadOnly = True
         Me.txtPrecio.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtPrecio.Size = New System.Drawing.Size(100, 20)
-        Me.txtPrecio.TabIndex = 35
+        Me.txtPrecio.TabIndex = 36
         Me.txtPrecio.TabStop = False
         Me.txtPrecio.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
@@ -877,7 +880,7 @@ Partial Class FrmOrdenServicio
         Me.txtCantidad.Name = "txtCantidad"
         Me.txtCantidad.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtCantidad.Size = New System.Drawing.Size(43, 20)
-        Me.txtCantidad.TabIndex = 32
+        Me.txtCantidad.TabIndex = 33
         Me.txtCantidad.Text = "1"
         Me.txtCantidad.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         '
@@ -1134,12 +1137,61 @@ Partial Class FrmOrdenServicio
         Me.Label14.Text = "Dirección:"
         Me.Label14.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
+        'txtExistencias
+        '
+        Me.txtExistencias.AcceptsReturn = True
+        Me.txtExistencias.BackColor = System.Drawing.SystemColors.Window
+        Me.txtExistencias.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtExistencias.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtExistencias.Location = New System.Drawing.Point(552, 263)
+        Me.txtExistencias.MaxLength = 0
+        Me.txtExistencias.Name = "txtExistencias"
+        Me.txtExistencias.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtExistencias.Size = New System.Drawing.Size(40, 20)
+        Me.txtExistencias.TabIndex = 32
+        Me.txtExistencias.TabStop = False
+        Me.txtExistencias.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
+        '
+        'Label16
+        '
+        Me.Label16.BackColor = System.Drawing.Color.Transparent
+        Me.Label16.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label16.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label16.Location = New System.Drawing.Point(552, 243)
+        Me.Label16.Name = "Label16"
+        Me.Label16.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label16.Size = New System.Drawing.Size(40, 19)
+        Me.Label16.TabIndex = 203
+        Me.Label16.Text = "Stock"
+        Me.Label16.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'cboHoraEntrega
+        '
+        Me.cboHoraEntrega.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
+        Me.cboHoraEntrega.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
+        Me.cboHoraEntrega.BackColor = System.Drawing.SystemColors.Window
+        Me.cboHoraEntrega.Cursor = System.Windows.Forms.Cursors.Default
+        Me.cboHoraEntrega.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.cboHoraEntrega.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.cboHoraEntrega.IntegralHeight = False
+        Me.cboHoraEntrega.ItemHeight = 13
+        Me.cboHoraEntrega.Items.AddRange(New Object() {"Por la mañana", "Por la tarde"})
+        Me.cboHoraEntrega.Location = New System.Drawing.Point(398, 141)
+        Me.cboHoraEntrega.Name = "cboHoraEntrega"
+        Me.cboHoraEntrega.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.cboHoraEntrega.Size = New System.Drawing.Size(129, 21)
+        Me.cboHoraEntrega.TabIndex = 204
+        Me.cboHoraEntrega.TabStop = False
+        '
         'FrmOrdenServicio
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(822, 679)
+        Me.Controls.Add(Me.cboHoraEntrega)
+        Me.Controls.Add(Me.txtExistencias)
+        Me.Controls.Add(Me.Label16)
         Me.Controls.Add(Me.txtDireccion)
         Me.Controls.Add(Me.Label14)
         Me.Controls.Add(Me.txtFechaEntrega)
@@ -1283,4 +1335,7 @@ Partial Class FrmOrdenServicio
     Friend WithEvents txtFechaEntrega As DateTimePicker
     Public WithEvents txtDireccion As TextBox
     Public WithEvents Label14 As Label
+    Public WithEvents txtExistencias As TextBox
+    Public WithEvents Label16 As Label
+    Public WithEvents cboHoraEntrega As ComboBox
 End Class

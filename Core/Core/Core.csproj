@@ -69,14 +69,19 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <EmbeddedResource Include="PlantillaReportes\rptDescripcionValor.rdlc" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="PlantillaReportes\rptComprobanteElectronico.rdlc" />
-    <EmbeddedResource Include="PlantillaReportes\rptDetalleEgresos.rdlc" />
+    <EmbeddedResource Include="PlantillaReportes\rptGrupoDetalle.rdlc" />
     <EmbeddedResource Include="PlantillaReportes\rptResumenComprobanteElectronico.rdlc" />
     <EmbeddedResource Include="PlantillaReportes\rptResumenMovimientos.rdlc" />
-    <EmbeddedResource Include="PlantillaReportes\rptVentas.rdlc" />
+    <EmbeddedResource Include="PlantillaReportes\rptDetalle.rdlc" />
+    <EmbeddedResource Include="PlantillaReportes\rptCuentas.rdlc" />
     <EmbeddedResource Include="PlantillaReportes\rptVentasPorVendedor.rdlc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\DataSources\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

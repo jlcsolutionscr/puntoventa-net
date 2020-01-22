@@ -19,6 +19,7 @@ Public Class FrmProforma
     Private cliente As Cliente
     Private vendedor As Vendedor
     Private bolInit As Boolean = True
+    Private provider As CultureInfo = CultureInfo.InvariantCulture
     'Impresion de tiquete
     Private comprobanteImpresion As ModuloImpresion.ClsComprobante
     Private detalleComprobante As ModuloImpresion.ClsDetalleComprobante
@@ -40,6 +41,7 @@ Public Class FrmProforma
         dtbDetalleProforma.Columns.Add("EXCENTO", GetType(Integer))
         dtbDetalleProforma.Columns.Add("PORCENTAJEIVA", GetType(Decimal))
         dtbDetalleProforma.Columns.Add("PORCDESCUENTO", GetType(Decimal))
+        dtbDetalleProforma.Columns.Add("VALORDESCUENTO", GetType(Decimal))
     End Sub
 
     Private Sub EstablecerPropiedadesDataGridView()
@@ -51,6 +53,7 @@ Public Class FrmProforma
         Dim dvcDescripcion As New DataGridViewTextBoxColumn
         Dim dvcCantidad As New DataGridViewTextBoxColumn
         Dim dvcPorcDescuento As New DataGridViewTextBoxColumn
+        Dim dvcDescuento As New DataGridViewTextBoxColumn
         Dim dvcPrecio As New DataGridViewTextBoxColumn
         Dim dvcTotal As New DataGridViewTextBoxColumn
         Dim dvcExc As New DataGridViewCheckBoxColumn
@@ -64,14 +67,14 @@ Public Class FrmProforma
 
         dvcCodigo.DataPropertyName = "CODIGO"
         dvcCodigo.HeaderText = "Código"
-        dvcCodigo.Width = 205
+        dvcCodigo.Width = 110
         dvcCodigo.Visible = True
         dvcCodigo.ReadOnly = True
         grdDetalleProforma.Columns.Add(dvcCodigo)
 
         dvcDescripcion.DataPropertyName = "DESCRIPCION"
         dvcDescripcion.HeaderText = "Descripción"
-        dvcDescripcion.Width = 280
+        dvcDescripcion.Width = 300
         dvcDescripcion.Visible = True
         dvcDescripcion.ReadOnly = True
         grdDetalleProforma.Columns.Add(dvcDescripcion)
@@ -91,6 +94,14 @@ Public Class FrmProforma
         dvcPorcDescuento.ReadOnly = True
         dvcPorcDescuento.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleProforma.Columns.Add(dvcPorcDescuento)
+
+        dvcDescuento.DataPropertyName = "VALORDESCUENTO"
+        dvcDescuento.HeaderText = "Desc"
+        dvcDescuento.Width = 75
+        dvcDescuento.Visible = True
+        dvcDescuento.ReadOnly = True
+        dvcDescuento.DefaultCellStyle = FrmPrincipal.dgvDecimal
+        grdDetalleProforma.Columns.Add(dvcDescuento)
 
         dvcPrecio.DataPropertyName = "PRECIOIVA"
         dvcPrecio.HeaderText = "Precio/U"
@@ -136,6 +147,7 @@ Public Class FrmProforma
             dtrRowDetProforma.Item(7) = detalle.Excento
             dtrRowDetProforma.Item(8) = detalle.PorcentajeIVA
             dtrRowDetProforma.Item(9) = detalle.PorcDescuento
+            dtrRowDetProforma.Item(10) = (dtrRowDetProforma.Item(5) * 100 / (100 - detalle.PorcDescuento)) - dtrRowDetProforma.Item(5)
             dtbDetalleProforma.Rows.Add(dtrRowDetProforma)
         Next
         grdDetalleProforma.Refresh()
@@ -152,14 +164,16 @@ Public Class FrmProforma
         End If
         Dim intIndice As Integer = ObtenerIndice(dtbDetalleProforma, producto.IdProducto)
         If producto.Tipo = 1 And intIndice >= 0 Then
+            Dim decNewCantidad = dtbDetalleProforma.Rows(intIndice).Item(3) + decCantidad
             dtbDetalleProforma.Rows(intIndice).Item(2) = strDescripcion
-            dtbDetalleProforma.Rows(intIndice).Item(3) += decCantidad
+            dtbDetalleProforma.Rows(intIndice).Item(3) = decNewCantidad
             dtbDetalleProforma.Rows(intIndice).Item(4) = decPrecioGravado
             dtbDetalleProforma.Rows(intIndice).Item(5) = decPrecioIva
-            dtbDetalleProforma.Rows(intIndice).Item(6) = decCantidad * decPrecioIva
+            dtbDetalleProforma.Rows(intIndice).Item(6) = decNewCantidad * decPrecioIva
             dtbDetalleProforma.Rows(intIndice).Item(7) = decTasaImpuesto = 0
             dtbDetalleProforma.Rows(intIndice).Item(8) = decTasaImpuesto
             dtbDetalleProforma.Rows(intIndice).Item(9) = decPorcDesc
+            dtbDetalleProforma.Rows(intIndice).Item(10) = (decPrecioIva * 100 / (100 - decPorcDesc)) - decPrecioIva
         Else
             dtrRowDetProforma = dtbDetalleProforma.NewRow
             dtrRowDetProforma.Item(0) = producto.IdProducto
@@ -172,6 +186,7 @@ Public Class FrmProforma
             dtrRowDetProforma.Item(7) = decTasaImpuesto = 0
             dtrRowDetProforma.Item(8) = decTasaImpuesto
             dtrRowDetProforma.Item(9) = decPorcDesc
+            dtrRowDetProforma.Item(10) = (decPrecioIva * 100 / (100 - decPorcDesc)) - decPrecioIva
             dtbDetalleProforma.Rows.Add(dtrRowDetProforma)
         End If
         grdDetalleProforma.Refresh()
@@ -250,6 +265,7 @@ Public Class FrmProforma
         If producto Is Nothing Then
             txtCodigo.Text = ""
             txtDescripcion.Text = ""
+            txtExistencias.Text = ""
             txtPrecio.Text = FormatNumber(0, 2)
             txtUnidad.Text = ""
             txtCodigo.Focus()
@@ -259,8 +275,9 @@ Public Class FrmProforma
             txtCodigo.Text = producto.Codigo
             If txtCantidad.Text = "" Then txtCantidad.Text = "1"
             txtDescripcion.Text = producto.Descripcion
+            txtExistencias.Text = producto.Existencias
             decPrecioVenta = ObtenerPrecioVentaPorCliente(cliente, producto)
-            txtPrecio.Text = FormatNumber(decPrecioVenta / (1 + (decTasaImpuesto / 100)), 2)
+            txtPrecio.Text = FormatNumber(decPrecioVenta, 2)
             txtUnidad.Text = IIf(producto.Tipo = 1, "UND", IIf(producto.Tipo = 2, "SP", "OS"))
         End If
     End Sub
@@ -304,15 +321,17 @@ Public Class FrmProforma
             txtSubTotal.Text = FormatNumber(0, 2)
             txtImpuesto.Text = FormatNumber(0, 2)
             txtTotal.Text = FormatNumber(0, 2)
-            Try
-                cliente = New Cliente With {
-                    .IdCliente = 1,
-                    .Nombre = "CLIENTE DE CONTADO"
-                }
-                txtNombreCliente.Text = cliente.Nombre
-            Catch ex As Exception
-                Throw New Exception("Error al consultar el cliente de contado. Por favor consulte con su proveedor.")
-            End Try
+            cliente = New Cliente With {
+                .IdCliente = 1,
+                .Nombre = "CLIENTE DE CONTADO",
+                .Telefono = "",
+                .IdTipoExoneracion = 1,
+                .PorcentajeExoneracion = 0,
+                .NombreInstExoneracion = "",
+                .NumDocExoneracion = "",
+                .FechaEmisionDoc = Date.ParseExact("01/01/2019", "dd/MM/yyyy", provider)
+            }
+            txtNombreCliente.Text = cliente.Nombre
             If FrmPrincipal.empresaGlobal.AsignaVendedorPorDefecto Then
                 Try
                     vendedor = Await Puntoventa.ObtenerVendedorPorDefecto(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
@@ -359,6 +378,7 @@ Public Class FrmProforma
         txtUnidad.Text = ""
         txtCantidad.Text = "1"
         txtDescripcion.Text = ""
+        txtExistencias.Text = ""
         txtPorcDesc.Text = "0"
         txtPrecio.Text = ""
         decTotal = 0
@@ -366,18 +386,18 @@ Public Class FrmProforma
         btnImprimir.Enabled = False
         btnBuscaVendedor.Enabled = True
         btnBuscarCliente.Enabled = True
-        Try
-            cliente = New Cliente With {
-                .IdCliente = 1,
-                .Nombre = "CLIENTE DE CONTADO"
-            }
-            txtNombreCliente.Text = cliente.Nombre
-            txtNombreCliente.ReadOnly = False
-        Catch ex As Exception
-            MessageBox.Show("Error al consultar el cliente de contado. Por favor consulte con su proveedor.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-            Exit Sub
-        End Try
+        cliente = New Cliente With {
+            .IdCliente = 1,
+            .Nombre = "CLIENTE DE CONTADO",
+            .Telefono = "",
+            .IdTipoExoneracion = 1,
+            .PorcentajeExoneracion = 0,
+            .NombreInstExoneracion = "",
+            .NumDocExoneracion = "",
+            .FechaEmisionDoc = Date.ParseExact("01/01/2019", "dd/MM/yyyy", provider)
+        }
+        txtNombreCliente.Text = cliente.Nombre
+        txtNombreCliente.ReadOnly = False
         If FrmPrincipal.empresaGlobal.AsignaVendedorPorDefecto Then
             Try
                 vendedor = Await Puntoventa.ObtenerVendedorPorDefecto(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
@@ -626,6 +646,7 @@ Public Class FrmProforma
                     .strId = txtIdProforma.Text,
                     .strVendedor = txtVendedor.Text,
                     .strNombre = txtNombreCliente.Text,
+                    .strTelefono = txtTelefono.Text,
                     .strDocumento = "",
                     .strFecha = txtFecha.Text,
                     .strSubTotal = txtSubTotal.Text,
@@ -753,6 +774,7 @@ Public Class FrmProforma
             txtCantidad.Text = "1"
             txtCodigo.Text = ""
             txtDescripcion.Text = ""
+            txtExistencias.Text = ""
             txtUnidad.Text = ""
             txtPorcDesc.Text = "0"
             txtPrecio.Text = ""
@@ -770,20 +792,21 @@ Public Class FrmProforma
         End If
     End Sub
 
-    Private Sub txtPorcDesc_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtCodigo.PreviewKeyDown
-        If e.KeyCode = Keys.Enter Then
+    Private Sub txtPorcDesc_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtPorcDesc.PreviewKeyDown
+        If e.KeyCode = Keys.Enter Or e.KeyCode = Keys.Tab Then
             If txtPorcDesc.Text = "" Then txtPorcDesc.Text = "0"
             If producto IsNot Nothing Then
                 Dim decTasaImpuesto As Decimal = producto.ParametroImpuesto.TasaImpuesto
-                decPrecioVenta = ObtenerPrecioVentaPorCliente(cliente, producto) / (1 + (decTasaImpuesto / 100))
+                decPrecioVenta = ObtenerPrecioVentaPorCliente(cliente, producto)
                 If CDbl(txtPorcDesc.Text) > FrmPrincipal.empresaGlobal.PorcentajeDescMaximo Then
                     MessageBox.Show("El porcentaje ingresado es mayor al parametro establecido para la empresa", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     txtPorcDesc.Text = "0"
                     txtPrecio.Text = FormatNumber(decPrecioVenta, 2)
                 Else
                     Dim decPorcDesc As Decimal = CDbl(txtPorcDesc.Text) / 100
-                    txtPrecio.Text = FormatNumber(decPrecioVenta - (decPrecioVenta * decPorcDesc), 2)
-                    If txtPrecio.Text <> "" Then decPrecioVenta = Math.Round(CDbl(txtPrecio.Text) * (1 + (decTasaImpuesto / 100)), 2, MidpointRounding.AwayFromZero)
+                    decPrecioVenta = decPrecioVenta - (decPrecioVenta * decPorcDesc)
+                    txtPrecio.Text = FormatNumber(decPrecioVenta, 2)
+                    If e.KeyCode = Keys.Enter Then BtnInsertar_Click(btnInsertar, New EventArgs())
                 End If
             End If
         End If
@@ -792,7 +815,7 @@ Public Class FrmProforma
     Private Sub Precio_KeyUp(sender As Object, e As KeyEventArgs) Handles txtPrecio.KeyUp
         If producto IsNot Nothing Then
             Dim decTasaImpuesto As Decimal = producto.ParametroImpuesto.TasaImpuesto
-            If txtPrecio.Text <> "" Then decPrecioVenta = Math.Round(CDbl(txtPrecio.Text) * (1 + (decTasaImpuesto / 100)), 2, MidpointRounding.AwayFromZero)
+            If txtPrecio.Text <> "" Then decPrecioVenta = Math.Round(CDbl(txtPrecio.Text), 2, MidpointRounding.AwayFromZero)
         End If
     End Sub
 
@@ -818,6 +841,7 @@ Public Class FrmProforma
                 Else
                     txtCodigo.Text = ""
                     txtDescripcion.Text = ""
+                    txtExistencias.Text = ""
                     txtCantidad.Text = "1"
                     txtUnidad.Text = ""
                     txtPorcDesc.Text = "0"
@@ -856,9 +880,8 @@ Public Class FrmProforma
                     If autorizado Then
                         txtPrecio.Text = FormatNumber(FrmPrincipal.strBusqueda, 2)
                         Dim decTasaImpuesto As Decimal = producto.ParametroImpuesto.TasaImpuesto
-                        decPrecioVenta = Math.Round(CDbl(txtPrecio.Text) * (1 + (decTasaImpuesto / 100)), 2, MidpointRounding.AwayFromZero)
+                        decPrecioVenta = Math.Round(CDbl(txtPrecio.Text), 2, MidpointRounding.AwayFromZero)
                         Dim decPrecioOriginal = ObtenerPrecioVentaPorCliente(cliente, producto)
-                        decPrecioOriginal = Math.Round(decPrecioOriginal / (1 + (decTasaImpuesto / 100)), 2, MidpointRounding.AwayFromZero)
                         txtPorcDesc.Text = FormatNumber(100 - (CDbl(txtPrecio.Text) * 100 / decPrecioOriginal), 2)
                     Else
                         MessageBox.Show("Los credenciales ingresados no tienen permisos para modificar el precio de venta.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)

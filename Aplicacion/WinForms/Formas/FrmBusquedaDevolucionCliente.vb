@@ -38,7 +38,7 @@ Public Class FrmBusquedaDevolucionCliente
         dgvListado.Columns.Add(dvcTopeCredito)
     End Sub
 
-    Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Threading.Tasks.Task
+    Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
         Try
             dgvListado.DataSource = Await Puntoventa.ObtenerListadoDevolucionesPorCliente(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, intNumeroPagina, intFilasPorPagina, FrmPrincipal.usuarioGlobal.Token, intId, txtNombre.Text)
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas

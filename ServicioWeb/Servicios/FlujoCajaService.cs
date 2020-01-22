@@ -7,6 +7,7 @@ using LeandroSoftware.Core.Dominio.Entidades;
 using LeandroSoftware.ServicioWeb.Contexto;
 using log4net;
 using Unity;
+using System.Globalization;
 
 namespace LeandroSoftware.ServicioWeb.Servicios
 {
@@ -18,7 +19,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         CuentaIngreso ObtenerCuentaIngreso(int intIdCuenta);
         IList<LlaveDescripcion> ObtenerListadoCuentasIngreso(int intIdEmpresa, string strDescripcion = "");
         string AgregarIngreso(Ingreso ingreso);
-        void ActualizarIngreso(Ingreso ingreso);
         void AnularIngreso(int intIdIngreso, int intIdUsuario);
         Ingreso ObtenerIngreso(int intIdIngreso);
         int ObtenerTotalListaIngresos(int intIdEmpresa, int intIdSucursal, int intIdIngreso = 0, string strRecibidoDe = "", string strDetalle = "");
@@ -29,11 +29,16 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         CuentaEgreso ObtenerCuentaEgreso(int intIdCuenta);
         IList<LlaveDescripcion> ObtenerListadoCuentasEgreso(int intIdEmpresa, string strDescripcion);
         string AgregarEgreso(Egreso egreso);
-        void ActualizarEgreso(Egreso egreso);
         void AnularEgreso(int intIdEgreso, int intIdUsuario);
         Egreso ObtenerEgreso(int intIdEgreso);
         int ObtenerTotalListaEgresos(int intIdEmpresa, int intIdSucursal, int intIdEgreso, string strBeneficiario, string strDetalle);
         IList<FlujoEfectivoDetalle> ObtenerListadoEgresos(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, int intIdEgreso, string strBeneficiario, string strDetalle);
+        CierreCaja GenerarDatosCierreCaja(int intIdEmpresa, int intIdSucursal);
+        void GuardarDatosCierreCaja(CierreCaja cierre);
+        void AbortarCierreCaja(int intIdEmpresa, int intIdSucursal);
+        int ObtenerTotalListaCierreCaja(int intIdEmpresa, int intIdSucursal);
+        IList<LlaveDescripcion> ObtenerListadoCierreCaja(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec);
+        CierreCaja ObtenerCierreCaja(int intIdCierreCaja);
     }
 
     public class FlujoCajaService : IFlujoCajaService
@@ -62,7 +67,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(cuenta.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     dbContext.CuentaIngresoRepository.Add(cuenta);
                     dbContext.Commit();
                 }
@@ -88,7 +92,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(cuenta.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     dbContext.NotificarModificacion(cuenta);
                     dbContext.Commit();
                 }
@@ -116,7 +119,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (cuenta == null) throw new Exception("La cuenta de ingreso por eliminar no existe.");
                     Empresa empresa = dbContext.EmpresaRepository.Find(cuenta.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     dbContext.CuentaIngresoRepository.Remove(cuenta);
                     dbContext.Commit();
                 }
@@ -183,24 +185,21 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         public string AgregarIngreso(Ingreso ingreso)
         {
-            decimal decTotalIngresosTarjeta = 0;
-            decimal decTotalImpuestoRetenido = 0;
-            decimal decTotalGastoComisionTarjeta = 0;
             ParametroContable efectivo = null;
-            ParametroContable bancoParam = null;
             ParametroContable ingresoParam = null;
             ParametroContable cuentaPorCobrarTarjetaParam = null;
             ParametroContable gastoComisionParam = null;
             ParametroContable ivaPorPagarParam = null;
             Asiento asiento = null;
-            MovimientoBanco movimientoBanco = null;
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 try
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(ingreso.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == ingreso.IdEmpresa && x.IdSucursal == ingreso.IdSucursal);
+                    if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     if (empresa.Contabiliza)
                     {
                         efectivo = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.Efectivo).FirstOrDefault();
@@ -216,34 +215,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     ingreso.IdAsiento = 0;
                     ingreso.IdMovBanco = 0;
                     dbContext.IngresoRepository.Add(ingreso);
-                    foreach (var desglosePago in ingreso.DesglosePagoIngreso)
-                    {
-                        if (desglosePago.IdFormaPago == StaticFormaPago.Cheque || desglosePago.IdFormaPago == StaticFormaPago.TransferenciaDepositoBancario)
-                        {
-                            movimientoBanco = new MovimientoBanco();
-                            CuentaBanco cuentaBanco = dbContext.CuentaBancoRepository.Find(desglosePago.IdCuentaBanco);
-                            if (cuentaBanco == null)
-                                throw new Exception("La cuenta bancaria asignada al movimiento no existe");
-                            movimientoBanco.IdCuenta = cuentaBanco.IdCuenta;
-                            movimientoBanco.IdUsuario = ingreso.IdUsuario;
-                            movimientoBanco.Fecha = ingreso.Fecha;
-                            if (desglosePago.IdFormaPago == StaticFormaPago.Cheque)
-                            {
-                                movimientoBanco.IdTipo = StaticTipoMovimientoBanco.ChequeEntrante;
-                                movimientoBanco.Descripcion = "Recepción de cheque bancario por registro de ingreso. ";
-                            }
-                            else
-                            {
-                                movimientoBanco.IdTipo = StaticTipoMovimientoBanco.TransferenciaDeposito;
-                                movimientoBanco.Descripcion = "Recepción de depósito bancario por registro de ingreso. ";
-                            }
-                            movimientoBanco.Numero = desglosePago.NroMovimiento;
-                            movimientoBanco.Beneficiario = empresa.NombreEmpresa;
-                            movimientoBanco.Monto = desglosePago.MontoLocal;
-                            IBancaService servicioAuxiliarBancario = new BancaService();
-                            servicioAuxiliarBancario.AgregarMovimientoBanco(dbContext, movimientoBanco);
-                        }
-                    }
                     if (empresa.Contabiliza)
                     {
                         int intLineaDetalleAsiento = 0;
@@ -256,71 +227,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             Detalle = "Registro de ingreso nro. "
                         };
                         DetalleAsiento detalleAsiento = null;
-                        foreach (var desglosePago in ingreso.DesglosePagoIngreso)
-                        {
-                            if (desglosePago.IdFormaPago == StaticFormaPago.Efectivo)
-                            {
-                                detalleAsiento = new DetalleAsiento();
-                                intLineaDetalleAsiento += 1;
-                                detalleAsiento.Linea = intLineaDetalleAsiento;
-                                detalleAsiento.IdCuenta = efectivo.IdCuenta;
-                                detalleAsiento.Debito = desglosePago.MontoLocal;
-                                detalleAsiento.SaldoAnterior = dbContext.CatalogoContableRepository.Find(detalleAsiento.IdCuenta).SaldoActual;
-                                asiento.DetalleAsiento.Add(detalleAsiento);
-                                asiento.TotalDebito += detalleAsiento.Debito;
-                            }
-                            else if (desglosePago.IdFormaPago == StaticFormaPago.Cheque || desglosePago.IdFormaPago == StaticFormaPago.TransferenciaDepositoBancario)
-                            {
-                                detalleAsiento = new DetalleAsiento();
-                                intLineaDetalleAsiento += 1;
-                                detalleAsiento.Linea = intLineaDetalleAsiento;
-                                bancoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.CuentaDeBancos & x.IdProducto == desglosePago.IdCuentaBanco).FirstOrDefault();
-                                if (bancoParam == null)
-                                    throw new BusinessException("No existe parametrización contable para la cuenta bancaría " + desglosePago.IdCuentaBanco + " y no se puede continuar. Por favor verificar.");
-                                detalleAsiento.IdCuenta = bancoParam.IdCuenta;
-                                detalleAsiento.Debito = desglosePago.MontoLocal;
-                                detalleAsiento.SaldoAnterior = dbContext.CatalogoContableRepository.Find(detalleAsiento.IdCuenta).SaldoActual;
-                                asiento.DetalleAsiento.Add(detalleAsiento);
-                                asiento.TotalDebito += detalleAsiento.Debito;
-                            }
-                            else if (desglosePago.IdFormaPago == StaticFormaPago.Tarjeta)
-                            {
-                                BancoAdquiriente bancoAdquiriente = dbContext.BancoAdquirienteRepository.Find(desglosePago.IdCuentaBanco);
-                                decTotalGastoComisionTarjeta = Math.Round(desglosePago.MontoLocal * (bancoAdquiriente.PorcentajeComision / 100), 2, MidpointRounding.AwayFromZero);
-                                decTotalImpuestoRetenido = Math.Round(desglosePago.MontoLocal * (bancoAdquiriente.PorcentajeRetencion / 100), 2, MidpointRounding.AwayFromZero);
-                                decTotalIngresosTarjeta = Math.Round(desglosePago.MontoLocal - decTotalGastoComisionTarjeta - decTotalImpuestoRetenido, 2, MidpointRounding.AwayFromZero);
-                                detalleAsiento = new DetalleAsiento();
-                                intLineaDetalleAsiento += 1;
-                                detalleAsiento.Linea = intLineaDetalleAsiento;
-                                detalleAsiento.IdCuenta = cuentaPorCobrarTarjetaParam.IdCuenta;
-                                detalleAsiento.Debito = decTotalIngresosTarjeta;
-                                detalleAsiento.SaldoAnterior = dbContext.CatalogoContableRepository.Find(detalleAsiento.IdCuenta).SaldoActual;
-                                asiento.DetalleAsiento.Add(detalleAsiento);
-                                asiento.TotalDebito += detalleAsiento.Debito;
-                                if (decTotalImpuestoRetenido > 0)
-                                {
-                                    detalleAsiento = new DetalleAsiento();
-                                    intLineaDetalleAsiento += 1;
-                                    detalleAsiento.Linea = intLineaDetalleAsiento;
-                                    detalleAsiento.IdCuenta = ivaPorPagarParam.IdCuenta;
-                                    detalleAsiento.Debito = decTotalImpuestoRetenido;
-                                    detalleAsiento.SaldoAnterior = dbContext.CatalogoContableRepository.Find(detalleAsiento.IdCuenta).SaldoActual;
-                                    asiento.DetalleAsiento.Add(detalleAsiento);
-                                    asiento.TotalDebito += detalleAsiento.Debito;
-                                }
-                                if (decTotalGastoComisionTarjeta > 0)
-                                {
-                                    detalleAsiento = new DetalleAsiento();
-                                    intLineaDetalleAsiento += 1;
-                                    detalleAsiento.Linea = intLineaDetalleAsiento;
-                                    detalleAsiento.IdCuenta = gastoComisionParam.IdCuenta;
-                                    detalleAsiento.Debito = decTotalGastoComisionTarjeta;
-                                    detalleAsiento.SaldoAnterior = dbContext.CatalogoContableRepository.Find(detalleAsiento.IdCuenta).SaldoActual;
-                                    asiento.DetalleAsiento.Add(detalleAsiento);
-                                    asiento.TotalDebito += detalleAsiento.Debito;
-                                }
-                            }
-                        }
+                        detalleAsiento = new DetalleAsiento();
+                        intLineaDetalleAsiento += 1;
+                        detalleAsiento.Linea = intLineaDetalleAsiento;
+                        detalleAsiento.IdCuenta = efectivo.IdCuenta;
+                        detalleAsiento.Debito = ingreso.Monto;
+                        detalleAsiento.SaldoAnterior = dbContext.CatalogoContableRepository.Find(detalleAsiento.IdCuenta).SaldoActual;
+                        asiento.DetalleAsiento.Add(detalleAsiento);
+                        asiento.TotalDebito += detalleAsiento.Debito;
                         detalleAsiento = new DetalleAsiento();
                         intLineaDetalleAsiento += 1;
                         detalleAsiento.Linea = intLineaDetalleAsiento;
@@ -343,13 +257,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         asiento.Detalle += ingreso.IdIngreso;
                         dbContext.NotificarModificacion(asiento);
                     }
-                    if (movimientoBanco != null)
-                    {
-                        ingreso.IdMovBanco = movimientoBanco.IdMov;
-                        dbContext.NotificarModificacion(ingreso);
-                        movimientoBanco.Descripcion += ingreso.IdIngreso;
-                        dbContext.NotificarModificacion(movimientoBanco);
-                    }
                     dbContext.Commit();
                 }
                 catch (BusinessException ex)
@@ -367,32 +274,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             return ingreso.IdIngreso.ToString();
         }
 
-        public void ActualizarIngreso(Ingreso ingreso)
-        {
-            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
-            {
-                try
-                {
-                    Empresa empresa = dbContext.EmpresaRepository.Find(ingreso.IdEmpresa);
-                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
-                    dbContext.NotificarModificacion(ingreso);
-                    dbContext.Commit();
-                }
-                catch (BusinessException ex)
-                {
-                    dbContext.RollBack();
-                    throw ex;
-                }
-                catch (Exception ex)
-                {
-                    dbContext.RollBack();
-                    log.Error("Error al actualizar el registro de ingreso: ", ex);
-                    throw new Exception("Se produjo un error actualizando la información del ingreso. Por favor consulte con su proveedor.");
-                }
-            }
-        }
-
         public void AnularIngreso(int intIdIngreso, int intIdUsuario)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
@@ -403,7 +284,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (ingreso == null) throw new Exception("El ingreso por anular no existe");
                     Empresa empresa = dbContext.EmpresaRepository.Find(ingreso.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == ingreso.IdEmpresa && x.IdSucursal == ingreso.IdSucursal);
+                    if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     if (ingreso.Procesado) throw new BusinessException("El registro ya fue procesado por el cierre. No es posible registrar la transacción.");
                     ingreso.Nulo = true;
                     ingreso.IdAnuladoPor = intIdUsuario;
@@ -412,11 +295,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         IContabilidadService servicioContabilidad = new ContabilidadService();
                         servicioContabilidad.ReversarAsientoContable(dbContext, ingreso.IdAsiento);
-                    }
-                    if (ingreso.IdMovBanco > 0)
-                    {
-                        IBancaService servicioAuxiliarBancario = new BancaService();
-                        servicioAuxiliarBancario.AnularMovimientoBanco(dbContext, ingreso.IdMovBanco, intIdUsuario);
                     }
                     dbContext.Commit();
                 }
@@ -440,21 +318,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    Ingreso ingreso = dbContext.IngresoRepository.Include("DesglosePagoIngreso.FormaPago").Include("DesglosePagoIngreso.TipoMoneda").FirstOrDefault(x => x.IdIngreso == intIdIngreso);
-                    foreach (DesglosePagoIngreso desglosePago in ingreso.DesglosePagoIngreso)
-                    {
-                        if (desglosePago.IdFormaPago == StaticFormaPago.Tarjeta)
-                        {
-                            BancoAdquiriente banco = dbContext.BancoAdquirienteRepository.Find(desglosePago.IdCuentaBanco);
-                            desglosePago.DescripcionCuenta = banco.Descripcion;
-                        }
-                        else
-                        {
-                            CuentaBanco banco = dbContext.CuentaBancoRepository.Find(desglosePago.IdCuentaBanco);
-                            desglosePago.DescripcionCuenta = banco.Descripcion;
-                        }
-                        desglosePago.Ingreso = null;
-                    }
+                    Ingreso ingreso = dbContext.IngresoRepository.FirstOrDefault(x => x.IdIngreso == intIdIngreso);
                     return ingreso;
                 }
                 catch (Exception ex)
@@ -532,7 +396,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(cuenta.IdEmpresa); ;
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     dbContext.CuentaEgresoRepository.Add(cuenta);
                     dbContext.Commit();
                 }
@@ -558,7 +421,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(cuenta.IdEmpresa); ;
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     dbContext.NotificarModificacion(cuenta);
                     dbContext.Commit();
                 }
@@ -586,7 +448,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (cuentaEgreso == null) throw new Exception("La cuenta de egreso por eliminar no existe.");
                     Empresa empresa = dbContext.EmpresaRepository.Find(cuentaEgreso.IdEmpresa); ;
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     dbContext.CuentaEgresoRepository.Remove(cuentaEgreso);
                     dbContext.Commit();
                 }
@@ -654,17 +515,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         public string AgregarEgreso(Egreso egreso)
         {
             ParametroContable efectivo = null;
-            ParametroContable bancoParam = null;
             ParametroContable egresoParam = null;
             Asiento asiento = null;
-            MovimientoBanco movimientoBanco = null;
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 try
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(egreso.IdEmpresa); ;
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == egreso.IdEmpresa && x.IdSucursal == egreso.IdSucursal);
+                    if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     if (empresa.Contabiliza)
                     {
                         efectivo = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.Efectivo).FirstOrDefault();
@@ -677,39 +538,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     egreso.IdAsiento = 0;
                     egreso.IdMovBanco = 0;
                     dbContext.EgresoRepository.Add(egreso);
-                    foreach (var desglosePago in egreso.DesglosePagoEgreso)
-                    {
-                        if (desglosePago.IdFormaPago == StaticFormaPago.Cheque || desglosePago.IdFormaPago == StaticFormaPago.TransferenciaDepositoBancario || desglosePago.IdFormaPago == StaticFormaPago.Tarjeta)
-                        {
-                            movimientoBanco = new MovimientoBanco();
-                            CuentaBanco cuentaBanco = dbContext.CuentaBancoRepository.Find(desglosePago.IdCuentaBanco);
-                            if (cuentaBanco == null)
-                                throw new Exception("La cuenta bancaria asignada al movimiento no existe");
-                            movimientoBanco.IdCuenta = cuentaBanco.IdCuenta;
-                            movimientoBanco.IdUsuario = egreso.IdUsuario;
-                            movimientoBanco.Fecha = egreso.Fecha;
-                            if (desglosePago.IdFormaPago == StaticFormaPago.Cheque)
-                            {
-                                movimientoBanco.IdTipo = StaticTipoMovimientoBanco.ChequeSaliente;
-                                movimientoBanco.Descripcion = "Emisión de cheque bancario por registro de pago egreso nro. ";
-                            }
-                            else if (desglosePago.IdFormaPago == StaticFormaPago.Cheque)
-                            {
-                                movimientoBanco.IdTipo = StaticTipoMovimientoBanco.TransferenciaDeposito;
-                                movimientoBanco.Descripcion = "Emisión de transferencia por registro pago de egreso nro. ";
-                            }
-                            else if (desglosePago.IdFormaPago == StaticFormaPago.Tarjeta)
-                            {
-                                movimientoBanco.IdTipo = StaticTipoMovimientoBanco.NotaDebito;
-                                movimientoBanco.Descripcion = "Nota de débito por registro de pago de egreso nro. ";
-                            }
-                            movimientoBanco.Numero = desglosePago.NroMovimiento;
-                            movimientoBanco.Beneficiario = desglosePago.Beneficiario;
-                            movimientoBanco.Monto = desglosePago.MontoLocal;
-                            IBancaService servicioAuxiliarBancario = new BancaService();
-                            servicioAuxiliarBancario.AgregarMovimientoBanco(dbContext, movimientoBanco);
-                        }
-                    }
                     if (empresa.Contabiliza)
                     {
                         int intLineaDetalleAsiento = 0;
@@ -732,34 +560,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         detalleAsiento.SaldoAnterior = dbContext.CatalogoContableRepository.Find(detalleAsiento.IdCuenta).SaldoActual;
                         asiento.DetalleAsiento.Add(detalleAsiento);
                         asiento.TotalDebito += detalleAsiento.Debito;
-                        foreach (var desglosePago in egreso.DesglosePagoEgreso)
-                        {
-                            if (desglosePago.IdFormaPago == StaticFormaPago.Efectivo)
-                            {
-                                detalleAsiento = new DetalleAsiento();
-                                intLineaDetalleAsiento += 1;
-                                detalleAsiento.Linea = intLineaDetalleAsiento;
-                                detalleAsiento.IdCuenta = efectivo.IdCuenta;
-                                detalleAsiento.Credito = desglosePago.MontoLocal;
-                                detalleAsiento.SaldoAnterior = dbContext.CatalogoContableRepository.Find(detalleAsiento.IdCuenta).SaldoActual;
-                                asiento.DetalleAsiento.Add(detalleAsiento);
-                                asiento.TotalCredito += detalleAsiento.Credito;
-                            }
-                            else if (desglosePago.IdFormaPago == StaticFormaPago.Cheque || desglosePago.IdFormaPago == StaticFormaPago.TransferenciaDepositoBancario || desglosePago.IdFormaPago == StaticFormaPago.Tarjeta)
-                            {
-                                detalleAsiento = new DetalleAsiento();
-                                intLineaDetalleAsiento += 1;
-                                detalleAsiento.Linea = intLineaDetalleAsiento;
-                                bancoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.CuentaDeBancos & x.IdProducto == desglosePago.IdCuentaBanco).FirstOrDefault();
-                                if (bancoParam == null)
-                                    throw new BusinessException("No existe parametrización contable para la cuenta bancaría " + desglosePago.IdCuentaBanco + " y no se puede continuar. Por favor verificar.");
-                                detalleAsiento.IdCuenta = bancoParam.IdCuenta;
-                                detalleAsiento.Credito = desglosePago.MontoLocal;
-                                detalleAsiento.SaldoAnterior = dbContext.CatalogoContableRepository.Find(detalleAsiento.IdCuenta).SaldoActual;
-                                asiento.DetalleAsiento.Add(detalleAsiento);
-                                asiento.TotalCredito += detalleAsiento.Credito;
-                            }
-                        }
+                        detalleAsiento = new DetalleAsiento();
+                        intLineaDetalleAsiento += 1;
+                        detalleAsiento.Linea = intLineaDetalleAsiento;
+                        detalleAsiento.IdCuenta = efectivo.IdCuenta;
+                        detalleAsiento.Credito = egreso.Monto;
+                        detalleAsiento.SaldoAnterior = dbContext.CatalogoContableRepository.Find(detalleAsiento.IdCuenta).SaldoActual;
+                        asiento.DetalleAsiento.Add(detalleAsiento);
+                        asiento.TotalCredito += detalleAsiento.Credito;
                         IContabilidadService servicioContabilidad = new ContabilidadService();
                         servicioContabilidad.AgregarAsiento(dbContext, asiento);
                     }
@@ -770,13 +578,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         dbContext.NotificarModificacion(egreso);
                         asiento.Detalle += egreso.IdEgreso;
                         dbContext.NotificarModificacion(asiento);
-                    }
-                    if (movimientoBanco != null)
-                    {
-                        egreso.IdMovBanco = movimientoBanco.IdMov;
-                        dbContext.NotificarModificacion(egreso);
-                        movimientoBanco.Descripcion += egreso.IdEgreso;
-                        dbContext.NotificarModificacion(movimientoBanco);
                     }
                     dbContext.Commit();
                     return egreso.IdEgreso.ToString();
@@ -795,32 +596,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void ActualizarEgreso(Egreso egreso)
-        {
-            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
-            {
-                try
-                {
-                    Empresa empresa = dbContext.EmpresaRepository.Find(egreso.IdEmpresa); ;
-                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
-                    dbContext.NotificarModificacion(egreso);
-                    dbContext.Commit();
-                }
-                catch (BusinessException ex)
-                {
-                    dbContext.RollBack();
-                    throw ex;
-                }
-                catch (Exception ex)
-                {
-                    dbContext.RollBack();
-                    log.Error("Error al actualizar el registro de egreso: ", ex);
-                    throw new Exception("Se produjo un error actualizando la información del egreso. Por favor consulte con su proveedor.");
-                }
-            }
-        }
-
         public void AnularEgreso(int intIdEgreso, int intIdUsuario)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
@@ -831,7 +606,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (egreso == null) throw new Exception("El egreso por anular no existe");
                     Empresa empresa = dbContext.EmpresaRepository.Find(egreso.IdEmpresa); ;
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == egreso.IdEmpresa && x.IdSucursal == egreso.IdSucursal);
+                    if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     if (egreso.Procesado) throw new BusinessException("El registro ya fue procesado por el cierre. No es posible registrar la transacción.");
                     egreso.Nulo = true;
                     egreso.IdAnuladoPor = intIdUsuario;
@@ -840,11 +617,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         IContabilidadService servicioContabilidad = new ContabilidadService();
                         servicioContabilidad.ReversarAsientoContable(dbContext, egreso.IdAsiento);
-                    }
-                    if (egreso.IdMovBanco > 0)
-                    {
-                        IBancaService servicioAuxiliarBancario = new BancaService();
-                        servicioAuxiliarBancario.AnularMovimientoBanco(dbContext, egreso.IdMovBanco, intIdUsuario);
                     }
                     dbContext.Commit();
                 }
@@ -868,13 +640,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    Egreso egreso = dbContext.EgresoRepository.Include("DesglosePagoEgreso.FormaPago").Include("DesglosePagoEgreso.TipoMoneda").FirstOrDefault(x => x.IdEgreso == intIdEgreso);
-                    foreach (DesglosePagoEgreso desglosePago in egreso.DesglosePagoEgreso)
-                    {
-                        CuentaBanco banco = dbContext.CuentaBancoRepository.Find(desglosePago.IdCuentaBanco);
-                        desglosePago.DescripcionCuenta = banco.Descripcion;
-                        desglosePago.Egreso = null;
-                    }
+                    Egreso egreso = dbContext.EgresoRepository.FirstOrDefault(x => x.IdEgreso == intIdEgreso);
                     return egreso;
                 }
                 catch (Exception ex)
@@ -940,6 +706,314 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     log.Error("Error al obtener el listado de registros de egreso: ", ex);
                     throw new Exception("Se produjo un error consultando el listado de egresos. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public CierreCaja GenerarDatosCierreCaja(int intIdEmpresa, int intIdSucursal)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
+                try
+                {
+                    CultureInfo provider = CultureInfo.InvariantCulture;
+                    if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
+                    sucursal.CierreEnEjecucion = true;
+                    dbContext.Commit();
+                    CierreCaja cierre = new CierreCaja
+                    {
+                        IdEmpresa = intIdEmpresa,
+                        IdSucursal = intIdSucursal
+                    };
+                    CierreCaja cierreAnterior = cierreAnterior = dbContext.CierreCajaRepository.OrderByDescending(b => b.IdCierre).FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
+                    if (cierreAnterior != null)
+                        cierre.FondoInicio = cierreAnterior.FondoCierre;
+                    else
+                        cierre.FondoInicio = 0;
+                    cierre.AdelantosApartadoEfectivo = 0;
+                    cierre.AdelantosApartadoTarjeta = 0;
+                    cierre.AdelantosApartadoBancos = 0;
+                    cierre.AdelantosOrdenEfectivo = 0;
+                    cierre.AdelantosOrdenTarjeta = 0;
+                    cierre.AdelantosOrdenBancos = 0;
+                    cierre.VentasEfectivo = 0;
+                    cierre.VentasTarjeta = 0;
+                    cierre.VentasBancos = 0;
+                    cierre.PagosCxCEfectivo = 0;
+                    cierre.PagosCxCTarjeta = 0;
+                    cierre.PagosCxCBancos = 0;
+                    cierre.DevolucionesProveedores = 0;
+                    cierre.IngresosEfectivo = 0;
+                    cierre.ComprasEfectivo = 0;
+                    cierre.ComprasBancos = 0;
+                    cierre.PagosCxPEfectivo = 0;
+                    cierre.PagosCxPBancos = 0;
+                    cierre.DevolucionesClientes = 0;
+                    cierre.EgresosEfectivo = 0;
+                    cierre.RetencionTarjeta = 0;
+                    cierre.ComisionTarjeta = 0;
+                    cierre.VentasCredito = 0;
+                    cierre.ComprasCredito = 0;
+                    cierre.DepositoBancario = 0;
+
+                    var apartados = dbContext.ApartadoRepository.Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Procesado).ToList();
+                    if (apartados.Count > 0)
+                    {
+                        var pagosApartados = apartados.Join(dbContext.DesglosePagoApartadoRepository, x => x.IdApartado, y => y.IdApartado, (x, y) => new { x, y })
+                            .GroupBy(x => new { x.y.IdFormaPago, x.y.IdCuentaBanco }).Select(x => new { IdFormaPago = x.Min(y => y.y.IdFormaPago), IdCuentaBanco = x.Min(y => y.y.IdCuentaBanco), Total = x.Sum(y => y.y.MontoLocal) });
+                        foreach (var dato in pagosApartados)
+                        {
+                            if (dato.IdFormaPago == StaticFormaPago.Efectivo)
+                                cierre.AdelantosApartadoEfectivo = dato.Total;
+                            else if (dato.IdFormaPago == StaticFormaPago.Tarjeta)
+                            {
+                                cierre.AdelantosApartadoTarjeta += dato.Total;
+                                BancoAdquiriente banco = dbContext.BancoAdquirienteRepository.Find(dato.IdCuentaBanco);
+                                cierre.RetencionTarjeta += (dato.Total * banco.PorcentajeRetencion / 100);
+                                cierre.ComisionTarjeta += (dato.Total * banco.PorcentajeComision / 100);
+                            }
+                            else
+                                cierre.AdelantosApartadoBancos += dato.Total;
+                        }
+                    }
+
+                    var ordenes = dbContext.OrdenServicioRepository.Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Procesado).ToList();
+                    if (ordenes.Count > 0)
+                    {
+                        var pagosOrdenes = ordenes.Join(dbContext.DesglosePagoOrdenServicioRepository, x => x.IdOrden, y => y.IdOrden, (x, y) => new { x, y })
+                            .GroupBy(x => new { x.y.IdFormaPago, x.y.IdCuentaBanco }).Select(x => new { IdFormaPago = x.Min(y => y.y.IdFormaPago), IdCuentaBanco = x.Min(y => y.y.IdCuentaBanco), Total = x.Sum(y => y.y.MontoLocal) });
+                        foreach (var dato in pagosOrdenes)
+                        {
+                            if (dato.IdFormaPago == StaticFormaPago.Efectivo)
+                                cierre.AdelantosOrdenEfectivo = dato.Total;
+                            else if (dato.IdFormaPago == StaticFormaPago.Tarjeta)
+                            {
+                                cierre.AdelantosOrdenTarjeta += dato.Total;
+                                BancoAdquiriente banco = dbContext.BancoAdquirienteRepository.Find(dato.IdCuentaBanco);
+                                cierre.RetencionTarjeta += (dato.Total * banco.PorcentajeRetencion / 100);
+                                cierre.ComisionTarjeta += (dato.Total * banco.PorcentajeComision / 100);
+                            }
+                            else
+                                cierre.AdelantosOrdenBancos += dato.Total;
+                        }
+                    }
+
+                    var facturasCredito = dbContext.FacturaRepository.Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdCondicionVenta == StaticCondicionVenta.Credito && !x.Procesado).ToList();
+                    if (facturasCredito.Count > 0) cierre.VentasCredito = facturasCredito.Sum(y => y.Total);
+
+                    var facturas = dbContext.FacturaRepository.Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdCondicionVenta != StaticCondicionVenta.Credito && !x.Procesado).ToList();
+                    if (facturas.Count > 0)
+                    {
+                        var pagosFacturas = facturas.Join(dbContext.DesglosePagoFacturaRepository, x => x.IdFactura, y => y.IdFactura, (x, y) => new { x, y })
+                            .GroupBy(x => new { x.y.IdFormaPago, x.y.IdCuentaBanco }).Select(x => new { IdFormaPago = x.Min(y => y.y.IdFormaPago), IdCuentaBanco = x.Min(y => y.y.IdCuentaBanco), Total = x.Sum(y => y.y.MontoLocal) });
+                        foreach (var dato in pagosFacturas)
+                        {
+                            if (dato.IdFormaPago == StaticFormaPago.Efectivo)
+                                cierre.VentasEfectivo = dato.Total;
+                            else if (dato.IdFormaPago == StaticFormaPago.Tarjeta)
+                            {
+                                cierre.VentasTarjeta += dato.Total;
+                                BancoAdquiriente banco = dbContext.BancoAdquirienteRepository.Find(dato.IdCuentaBanco);
+                                cierre.RetencionTarjeta += (dato.Total * banco.PorcentajeRetencion / 100);
+                                cierre.ComisionTarjeta += (dato.Total * banco.PorcentajeComision / 100);
+                            }
+                            else
+                                cierre.VentasBancos += dato.Total;
+                        }
+                    }
+
+                    var movimientosCxC = dbContext.MovimientoCuentaPorCobrarRepository.Where(x => x.Tipo == 1 && x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Procesado).ToList();
+                    if (movimientosCxC.Count > 0)
+                    {
+                        var pagosCxC = movimientosCxC.Join(dbContext.DesglosePagoMovimientoCuentaPorCobrarRepository, x => x.IdMovCxC, y => y.IdMovCxC, (x, y) => new { x, y })
+                            .GroupBy(x => new { x.y.IdFormaPago, x.y.IdCuentaBanco }).Select(x => new { IdFormaPago = x.Min(y => y.y.IdFormaPago), IdCuentaBanco = x.Min(y => y.y.IdCuentaBanco), Total = x.Sum(y => y.y.MontoLocal) });
+                        foreach (var dato in pagosCxC)
+                        {
+                            if (dato.IdFormaPago == StaticFormaPago.Efectivo)
+                                cierre.PagosCxCEfectivo = dato.Total;
+                            else if (dato.IdFormaPago == StaticFormaPago.Tarjeta)
+                            {
+                                cierre.PagosCxCTarjeta += dato.Total;
+                                BancoAdquiriente banco = dbContext.BancoAdquirienteRepository.Find(dato.IdCuentaBanco);
+                                cierre.RetencionTarjeta += (dato.Total * banco.PorcentajeRetencion / 100);
+                                cierre.ComisionTarjeta += (dato.Total * banco.PorcentajeComision / 100);
+                            }
+                            else
+                                cierre.PagosCxCBancos += dato.Total;
+                        }
+                    }
+
+                    var ingresosEfectivo = dbContext.IngresoRepository.Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Procesado).ToList();
+                    if (ingresosEfectivo.Count > 0) cierre.IngresosEfectivo = ingresosEfectivo.Sum(x => x.Monto);
+
+                    //var movDevolucionesProveedores = dbContext.DevolucionProveedorRepository.Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Procesado).Join(dbContext.DesglosePagoDevolucionProveedorRepository, x => x.IdDevolucion, y => y.IdDevolucion, (x, y) => new { x, y })
+                    //    .GroupBy(x => x.y.IdFormaPago).Select(x => new { x.Key, Total = x.Sum(y => y.y.MontoLocal) });
+                    //foreach (var dato in movDevolucionesProveedores)
+                    //{
+                    //    if (dato.Key == StaticFormaPago.Efectivo)
+                    //        cierre.DevolucionesProveedores = dato.Total;
+                    //}
+
+                    var comprasCredito = dbContext.CompraRepository.Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdCondicionVenta == StaticCondicionVenta.Credito && !x.Procesado).ToList();
+                    if (comprasCredito.Count > 0) cierre.ComprasCredito = comprasCredito.Sum(y => y.Total);
+
+                    var compras = dbContext.CompraRepository.Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdCondicionVenta != StaticCondicionVenta.Credito && !x.Procesado).ToList();
+                    if (compras.Count > 0)
+                    {
+                        var pagosCompras = compras.Join(dbContext.DesglosePagoCompraRepository, x => x.IdCompra, y => y.IdCompra, (x, y) => new { x, y })
+                            .GroupBy(x => x.y.IdFormaPago).Select(x => new { x.Key, Total = x.Sum(y => y.y.MontoLocal) });
+                        foreach (var dato in pagosCompras)
+                        {
+                            if (dato.Key == StaticFormaPago.Efectivo)
+                                cierre.ComprasEfectivo = dato.Total;
+                            else
+                                cierre.ComprasBancos += dato.Total;
+                        }
+                    }
+
+                    var movimientosCxP = dbContext.MovimientoCuentaPorPagarRepository.Where(x => x.Tipo == 1 && x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Procesado).ToList();
+                    if (movimientosCxP.Count > 0)
+                    {
+                        var pagosCxP = movimientosCxP.Join(dbContext.DesglosePagoMovimientoCuentaPorPagarRepository, x => x.IdMovCxP, y => y.IdMovCxP, (x, y) => new { x, y })
+                        .GroupBy(x => x.y.IdFormaPago).Select(x => new { x.Key, Total = x.Sum(y => y.y.MontoLocal) });
+                        foreach (var dato in pagosCxP)
+                        {
+                            if (dato.Key == StaticFormaPago.Efectivo)
+                                cierre.PagosCxPEfectivo = dato.Total;
+                            else
+                                cierre.PagosCxPBancos = dato.Total;
+                        }
+                    }
+
+                    var egresosEfectivo = dbContext.EgresoRepository.Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Procesado).ToList();
+                    if (egresosEfectivo.Count > 0) cierre.EgresosEfectivo = egresosEfectivo.Sum(x => x.Monto);
+
+                    return cierre;
+                }
+                catch (BusinessException ex)
+                {
+                    throw ex;
+                }
+                catch (Exception ex)
+                {
+                    sucursal.CierreEnEjecucion = false;
+                    dbContext.Commit();
+                    log.Error("Error al general el cierre diario: ", ex);
+                    throw new Exception("Se produjo un error generando la información del cierre diario. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public void GuardarDatosCierreCaja(CierreCaja cierre)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                using (var dbContextTransaction = dbContext.GetDatabaseTransaction())
+                {
+                    try
+                    {
+                        if (cierre.IdCierre > 0) throw new BusinessException("La información del cierre ya fue registrada. No es posible continuar con la transacción.");
+                        SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == cierre.IdEmpresa && x.IdSucursal == cierre.IdSucursal);
+                        if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                        object[] objParameters = new object[2];
+                        objParameters.SetValue(cierre.IdEmpresa, 0);
+                        objParameters.SetValue(cierre.IdSucursal, 1);
+                        dbContext.ExecuteProcedure("MarcaRegistrosProcesados", objParameters);
+                        dbContext.CierreCajaRepository.Add(cierre);
+                        sucursal.CierreEnEjecucion = false;
+                        dbContext.Commit();
+                        dbContextTransaction.Commit();
+                    }
+                    catch (BusinessException ex)
+                    {
+                        throw ex;
+                    }
+                    catch (Exception ex)
+                    {
+                        dbContextTransaction.Rollback();
+                        log.Error("Error al actualizar el cierre diario: ", ex);
+                        throw new Exception("Se produjo un error actualizando la información del cierre diario. Por favor consulte con su proveedor.");
+                    }
+                }
+            }
+        }
+
+        public void AbortarCierreCaja(int intIdEmpresa, int intIdSucursal)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
+                    if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    sucursal.CierreEnEjecucion = false;
+                    dbContext.Commit();
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al finalizar el cierre diario: ", ex);
+                    throw new Exception("Se produjo un error finalizando el proceso de cierre diario. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public int ObtenerTotalListaCierreCaja(int intIdEmpresa, int intIdSucursal)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    return dbContext.CierreCajaRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal).Count();
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al obtener el total del listado de registros de cierres de efectivo: ", ex);
+                    throw new Exception("Se produjo un error consultando el total del listado de cierres de efectivo. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public IList<LlaveDescripcion> ObtenerListadoCierreCaja(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                var listadoEgreso = new List<LlaveDescripcion>();
+                try
+                {
+                    var listado = dbContext.CierreCajaRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
+                    listado = listado.OrderByDescending(x => x.IdCierre).Skip((numPagina - 1) * cantRec).Take(cantRec);
+                    foreach (var value in listado)
+                    {
+                        LlaveDescripcion item = new LlaveDescripcion(value.IdCierre, value.FechaCierre.ToString());
+                        listadoEgreso.Add(item);
+                    }
+                    return listadoEgreso;
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al obtener el listado de cierres de efectivo procesados: ", ex);
+                    throw new Exception("Se produjo un error consultando el listado de cierres de efectivo procesados. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public CierreCaja ObtenerCierreCaja(int intIdCierreCaja)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    CierreCaja cierre = dbContext.CierreCajaRepository.Include("DetalleEfectivoCierreCaja").FirstOrDefault(x => x.IdCierre == intIdCierreCaja);
+                    foreach (var item in cierre.DetalleEfectivoCierreCaja)
+                        item.CierreCaja = null;
+                    return cierre;
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al obtener el registro de cierre de caja: ", ex);
+                    throw new Exception("Se produjo un error consultando la información del cierre de caja. Por favor consulte con su proveedor.");
                 }
             }
         }

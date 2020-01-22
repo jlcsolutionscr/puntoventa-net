@@ -34,6 +34,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public string Direccion { get; set; }
         public string Descripcion { get; set; }
         public string FechaEntrega { get; set; }
+        public string HoraEntrega { get; set; }
         public string OtrosDetalles { get; set; }
         public decimal Excento { get; set; }
         public decimal Gravado { get; set; }
@@ -42,10 +43,11 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public decimal Impuesto { get; set; }
         public decimal MontoAdelanto { get; set; }
         [NotMapped]
-        public decimal Total { get { return Excento + Gravado + Exonerado + Impuesto; } }
+        public decimal Total { get { return Excento + Gravado + Exonerado + Impuesto - Descuento; } }
         public bool Nulo { get; set; }
         public int? IdAnuladoPor { get; set; }
         public bool Aplicado { get; set; }
+        public bool Procesado { get; set; }
 
         public Empresa Empresa { get; set; }
         public Usuario Usuario { get; set; }

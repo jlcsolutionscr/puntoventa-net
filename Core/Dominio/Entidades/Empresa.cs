@@ -37,7 +37,6 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public bool Contabiliza { get; set; }
         public bool AutoCompletaProducto { get; set; }
         public bool CierrePorTurnos { get; set; }
-        public bool CierreEnEjecucion { get; set; }
         public bool RegimenSimplificado { get; set; }
         public bool PermiteFacturar { get; set; }
         public bool RecepcionGastos { get; set; }
@@ -49,6 +48,9 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public string ClaveHacienda { get; set; }
         public string CorreoNotificacion { get; set; }
         public decimal PorcentajeDescMaximo { get; set; }
+        public string LeyendaFactura { get; set; }
+        public string LeyendaProforma { get; set; }
+        public string LeyendaApartado { get; set; }
         public string LeyendaOrdenServicio { get; set; }
         public byte[] Logotipo { get; set; }
         public string AccessToken { get; set; }

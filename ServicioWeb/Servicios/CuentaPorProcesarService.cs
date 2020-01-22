@@ -28,6 +28,16 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         MovimientoCuentaPorPagar ObtenerMovimientoCxP(int intIdMovimiento);
         int ObtenerCantidadCxPVencidas(int intIdPropietario, int intIdTipo);
         decimal ObtenerSaldoCuentasPorPagar(int intIdPropietario, int intIdTipo);
+        IList<LlaveDescripcion> ObtenerListadoApartadosConSaldo(int intIdEmpresa);
+        IList<CuentaDetalle> ObtenerListadoMovimientosApartado(int intIdEmpresa, int intIdSucursal, int intIdApartado);
+        void AplicarMovimientoApartado(MovimientoApartado movimiento);
+        void AnularMovimientoApartado(int intIdMovimiento, int intIdUsuario);
+        MovimientoApartado ObtenerMovimientoApartado(int intIdMovimiento);
+        IList<LlaveDescripcion> ObtenerListadoOrdenesServicioConSaldo(int intIdEmpresa);
+        IList<CuentaDetalle> ObtenerListadoMovimientosOrdenServicio(int intIdEmpresa, int intIdSucursal, int intIdOrden);
+        void AplicarMovimientoOrdenServicio(MovimientoOrdenServicio movimiento);
+        void AnularMovimientoOrdenServicio(int intIdMovimiento, int intIdUsuario);
+        MovimientoOrdenServicio ObtenerMovimientoOrdenServicio(int intIdMovimiento);
     }
 
     public class CuentaPorProcesarService : ICuentaPorProcesarService
@@ -125,7 +135,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(movimiento.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == movimiento.IdEmpresa && x.IdSucursal == movimiento.IdSucursal);
+                    if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     if (empresa.Contabiliza)
                     {
                         efectivoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.Efectivo).FirstOrDefault();
@@ -307,7 +319,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (movimiento == null) throw new Exception("El movimiento de cuenta por cobrar no existe");
                     Empresa empresa = dbContext.EmpresaRepository.Find(movimiento.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == movimiento.IdEmpresa && x.IdSucursal == movimiento.IdSucursal);
+                    if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     if (movimiento.Procesado) throw new BusinessException("El registro ya fue procesado por el cierre. No es posible registrar la transacción.");
                     movimiento.Nulo = true;
                     movimiento.IdAnuladoPor = intIdUsuario;
@@ -451,7 +465,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(movimiento.IdEmpresa); ;
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == movimiento.IdEmpresa && x.IdSucursal == movimiento.IdSucursal);
+                    if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     if (empresa.Contabiliza)
                     {
                         efectivoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.Efectivo).FirstOrDefault();
@@ -589,7 +605,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (movimiento == null) throw new Exception("El movimiento de cuenta por Pagar no existe");
                     Empresa empresa = dbContext.EmpresaRepository.Find(movimiento.IdEmpresa); ;
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == movimiento.IdEmpresa && x.IdSucursal == movimiento.IdSucursal);
+                    if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     if (movimiento.Procesado) throw new BusinessException("El registro ya fue procesado por el cierre. No es posible registrar la transacción.");
                     movimiento.Nulo = true;
                     movimiento.IdAnuladoPor = intIdUsuario;
@@ -668,6 +686,340 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     log.Error("Error al obtener el saldo total de cuentas por pagar activas de un proveedor: ", ex);
                     throw new Exception("Se produjo un error al ejecutar la transacción. Por favor consulte con su proveedor.");
                 }
+            }
+        }
+
+        public IList<LlaveDescripcion> ObtenerListadoApartadosConSaldo(int intIdEmpresa)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                var listaCuentas = new List<LlaveDescripcion>();
+                try
+                {
+                    var listado = dbContext.ApartadoRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.Nulo == false && x.Aplicado == false && x.Excento + x.Gravado + x.Exonerado + x.Impuesto - x.Descuento - x.MontoAdelanto > 0).OrderByDescending(x => x.Fecha);
+                    foreach (var value in listado)
+                    {
+                        LlaveDescripcion item = new LlaveDescripcion(value.IdApartado, "Apartado " + value.IdApartado + " de " + value.NombreCliente);
+                        listaCuentas.Add(item);
+                    }
+                    return listaCuentas;
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al obtener el listado de apartados pendientes: ", ex);
+                    throw new Exception("Se produjo un error consultando el listado de apartados pendientes. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public IList<CuentaDetalle> ObtenerListadoMovimientosApartado(int intIdEmpresa, int intIdSucursal, int intIdApartado)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                var listaMovimientos = new List<CuentaDetalle>();
+                try
+                {
+                    var listado = dbContext.MovimientoApartadoRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdApartado == intIdApartado).OrderByDescending(x => x.IdMovApartado);
+                    foreach (var value in listado)
+                    {
+                        CuentaDetalle item = new CuentaDetalle(value.IdMovApartado, value.Fecha.ToString("dd/MM/yyyy"), value.Descripcion, value.Monto);
+                        listaMovimientos.Add(item);
+                    }
+                    return listaMovimientos;
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al obtener el listado de movimientos del apartado: ", ex);
+                    throw new Exception("Se produjo un error consultando el listado de movimientos del apartado. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public void AplicarMovimientoApartado(MovimientoApartado movimiento)
+        {
+            MovimientoBanco movimientoBanco = null;
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    Empresa empresa = dbContext.EmpresaRepository.Find(movimiento.IdEmpresa);
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == movimiento.IdEmpresa && x.IdSucursal == movimiento.IdSucursal);
+                    if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
+                    movimiento.IdAsiento = 0;
+                    movimiento.IdMovBanco = 0;
+                    dbContext.MovimientoApartadoRepository.Add(movimiento);
+                    Apartado apartado = dbContext.ApartadoRepository.Find(movimiento.IdApartado);
+                    if (apartado == null)
+                        throw new Exception("El registro de apartado asociado al movimiento no existe");
+                    apartado.MontoAdelanto += movimiento.Monto;
+                    dbContext.NotificarModificacion(apartado);
+                    foreach (var desglosePago in movimiento.DesglosePagoMovimientoApartado)
+                    {
+                        if (desglosePago.IdFormaPago == StaticFormaPago.Cheque || desglosePago.IdFormaPago == StaticFormaPago.TransferenciaDepositoBancario)
+                        {
+                            movimientoBanco = new MovimientoBanco();
+                            CuentaBanco cuentaBanco = dbContext.CuentaBancoRepository.Find(desglosePago.IdCuentaBanco);
+                            if (cuentaBanco == null)
+                                throw new Exception("La cuenta bancaria asignada al movimiento no existe");
+                            movimientoBanco.IdCuenta = cuentaBanco.IdCuenta;
+                            movimientoBanco.IdUsuario = movimiento.IdUsuario;
+                            movimientoBanco.Fecha = movimiento.Fecha;
+                            if (desglosePago.IdFormaPago == StaticFormaPago.Cheque)
+                            {
+                                movimientoBanco.IdTipo = StaticTipoMovimientoBanco.ChequeEntrante;
+                                movimientoBanco.Descripcion = "Recepción de cheque bancario por abono a cuentas por cobrar recibo nro. ";
+                            }
+                            else
+                            {
+                                movimientoBanco.IdTipo = StaticTipoMovimientoBanco.TransferenciaDeposito;
+                                movimientoBanco.Descripcion = "Recepción de depósito bancario por abono a cuentas por cobrar recibo nro. ";
+                            }
+                            movimientoBanco.Numero = desglosePago.NroMovimiento;
+                            movimientoBanco.Beneficiario = empresa.NombreEmpresa;
+                            movimientoBanco.Monto = desglosePago.MontoLocal;
+                            IBancaService servicioAuxiliarBancario = new BancaService();
+                            servicioAuxiliarBancario.AgregarMovimientoBanco(dbContext, movimientoBanco);
+                        }
+                    }
+                    dbContext.Commit();
+                    if (movimientoBanco != null)
+                    {
+                        movimientoBanco.Descripcion += movimiento.IdMovApartado;
+                        dbContext.NotificarModificacion(movimientoBanco);
+                        movimiento.IdMovBanco = movimientoBanco.IdMov;
+                        dbContext.NotificarModificacion(movimiento);
+                    }
+                    dbContext.Commit();
+                }
+                catch (BusinessException ex)
+                {
+                    dbContext.RollBack();
+                    throw ex;
+                }
+                catch (Exception ex)
+                {
+                    dbContext.RollBack();
+                    log.Error("Error al aplicar el movimiento al registro de apartado: ", ex);
+                    throw new Exception("Se produjo un error aplicando el movimiento al registro de apartado. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public void AnularMovimientoApartado(int intIdMovimiento, int intIdUsuario)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    MovimientoApartado movimiento = dbContext.MovimientoApartadoRepository.FirstOrDefault(x => x.IdMovApartado == intIdMovimiento);
+                    if (movimiento == null) throw new Exception("El movimiento de cuenta por cobrar no existe");
+                    Empresa empresa = dbContext.EmpresaRepository.Find(movimiento.IdEmpresa);
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == movimiento.IdEmpresa && x.IdSucursal == movimiento.IdSucursal);
+                    if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
+                    if (movimiento.Procesado) throw new BusinessException("El registro ya fue procesado por el cierre. No es posible registrar la transacción.");
+                    movimiento.Nulo = true;
+                    movimiento.IdAnuladoPor = intIdUsuario;
+                    dbContext.NotificarModificacion(movimiento);
+                    Apartado apartado = dbContext.ApartadoRepository.Find(movimiento.IdApartado);
+                    if (apartado == null)
+                        throw new Exception("El registro de apartado asociado al movimiento no existe");
+                    apartado.MontoAdelanto -= movimiento.Monto;
+                    dbContext.NotificarModificacion(apartado);
+                    dbContext.Commit();
+                }
+                catch (BusinessException ex)
+                {
+                    dbContext.RollBack();
+                    throw ex;
+                }
+                catch (Exception ex)
+                {
+                    dbContext.RollBack();
+                    log.Error("Error al anular el movimiento del registro de apartado: ", ex);
+                    throw new Exception("Se produjo un error anulando el movimiento del registro de apartado. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public MovimientoApartado ObtenerMovimientoApartado(int intIdMovimiento)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                MovimientoApartado movimiento = dbContext.MovimientoApartadoRepository.Include("Apartado").Include("DesglosePagoMovimientoApartado.FormaPago").FirstOrDefault(x => x.IdMovApartado == intIdMovimiento);
+                foreach (var detalle in movimiento.DesglosePagoMovimientoApartado)
+                    detalle.MovimientoApartado = null;
+                return movimiento;
+            }
+        }
+
+        public IList<LlaveDescripcion> ObtenerListadoOrdenesServicioConSaldo(int intIdEmpresa)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                var listaCuentas = new List<LlaveDescripcion>();
+                try
+                {
+                    var listado = dbContext.OrdenServicioRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.Nulo == false && x.Aplicado == false && x.Excento + x.Gravado + x.Exonerado + x.Impuesto - x.Descuento - x.MontoAdelanto > 0).OrderByDescending(x => x.Fecha);
+                    foreach (var value in listado)
+                    {
+                        LlaveDescripcion item = new LlaveDescripcion(value.IdOrden, "Orden servicio " + value.IdOrden + " de " + value.NombreCliente);
+                        listaCuentas.Add(item);
+                    }
+                    return listaCuentas;
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al obtener el listado de ordenes de servicio pendientes: ", ex);
+                    throw new Exception("Se produjo un error consultando el listado de ordenes de servicio pendientes. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public IList<CuentaDetalle> ObtenerListadoMovimientosOrdenServicio(int intIdEmpresa, int intIdSucursal, int intIdOrden)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                var listaMovimientos = new List<CuentaDetalle>();
+                try
+                {
+                    var listado = dbContext.MovimientoOrdenServicioRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdOrden == intIdOrden).OrderByDescending(x => x.IdMovOrden);
+                    foreach (var value in listado)
+                    {
+                        CuentaDetalle item = new CuentaDetalle(value.IdMovOrden, value.Fecha.ToString("dd/MM/yyyy"), value.Descripcion, value.Monto);
+                        listaMovimientos.Add(item);
+                    }
+                    return listaMovimientos;
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al obtener el listado de movimientos de la orden de servicio: ", ex);
+                    throw new Exception("Se produjo un error consultando el listado de movimientos de la orden de servicio. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public void AplicarMovimientoOrdenServicio(MovimientoOrdenServicio movimiento)
+        {
+            MovimientoBanco movimientoBanco = null;
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    Empresa empresa = dbContext.EmpresaRepository.Find(movimiento.IdEmpresa);
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == movimiento.IdEmpresa && x.IdSucursal == movimiento.IdSucursal);
+                    if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
+                    movimiento.IdAsiento = 0;
+                    movimiento.IdMovBanco = 0;
+                    dbContext.MovimientoOrdenServicioRepository.Add(movimiento);
+                    OrdenServicio ordenServicio = dbContext.OrdenServicioRepository.Find(movimiento.IdOrden);
+                    if (ordenServicio == null)
+                        throw new Exception("El registro de orden de servicio asociado al movimiento no existe");
+                    ordenServicio.MontoAdelanto += movimiento.Monto;
+                    dbContext.NotificarModificacion(ordenServicio);
+                    foreach (var desglosePago in movimiento.DesglosePagoMovimientoOrdenServicio)
+                    {
+                        if (desglosePago.IdFormaPago == StaticFormaPago.Cheque || desglosePago.IdFormaPago == StaticFormaPago.TransferenciaDepositoBancario)
+                        {
+                            movimientoBanco = new MovimientoBanco();
+                            CuentaBanco cuentaBanco = dbContext.CuentaBancoRepository.Find(desglosePago.IdCuentaBanco);
+                            if (cuentaBanco == null)
+                                throw new Exception("La cuenta bancaria asignada al movimiento no existe");
+                            movimientoBanco.IdCuenta = cuentaBanco.IdCuenta;
+                            movimientoBanco.IdUsuario = movimiento.IdUsuario;
+                            movimientoBanco.Fecha = movimiento.Fecha;
+                            if (desglosePago.IdFormaPago == StaticFormaPago.Cheque)
+                            {
+                                movimientoBanco.IdTipo = StaticTipoMovimientoBanco.ChequeEntrante;
+                                movimientoBanco.Descripcion = "Recepción de cheque bancario por abono a cuentas por cobrar recibo nro. ";
+                            }
+                            else
+                            {
+                                movimientoBanco.IdTipo = StaticTipoMovimientoBanco.TransferenciaDeposito;
+                                movimientoBanco.Descripcion = "Recepción de depósito bancario por abono a cuentas por cobrar recibo nro. ";
+                            }
+                            movimientoBanco.Numero = desglosePago.NroMovimiento;
+                            movimientoBanco.Beneficiario = empresa.NombreEmpresa;
+                            movimientoBanco.Monto = desglosePago.MontoLocal;
+                            IBancaService servicioAuxiliarBancario = new BancaService();
+                            servicioAuxiliarBancario.AgregarMovimientoBanco(dbContext, movimientoBanco);
+                        }
+                    }
+                    dbContext.Commit();
+                    if (movimientoBanco != null)
+                    {
+                        movimientoBanco.Descripcion += movimiento.IdMovOrden;
+                        dbContext.NotificarModificacion(movimientoBanco);
+                        movimiento.IdMovBanco = movimientoBanco.IdMov;
+                        dbContext.NotificarModificacion(movimiento);
+                    }
+                    dbContext.Commit();
+                }
+                catch (BusinessException ex)
+                {
+                    dbContext.RollBack();
+                    throw ex;
+                }
+                catch (Exception ex)
+                {
+                    dbContext.RollBack();
+                    log.Error("Error al aplicar el movimiento a la orden de servicio: ", ex);
+                    throw new Exception("Se produjo un error aplicando el movimiento a la orden de servicio. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public void AnularMovimientoOrdenServicio(int intIdMovimiento, int intIdUsuario)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    MovimientoOrdenServicio movimiento = dbContext.MovimientoOrdenServicioRepository.FirstOrDefault(x => x.IdMovOrden == intIdMovimiento);
+                    if (movimiento == null) throw new Exception("El movimiento de cuenta por cobrar no existe");
+                    Empresa empresa = dbContext.EmpresaRepository.Find(movimiento.IdEmpresa);
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == movimiento.IdEmpresa && x.IdSucursal == movimiento.IdSucursal);
+                    if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
+                    if (movimiento.Procesado) throw new BusinessException("El registro ya fue procesado por el cierre. No es posible registrar la transacción.");
+                    movimiento.Nulo = true;
+                    movimiento.IdAnuladoPor = intIdUsuario;
+                    dbContext.NotificarModificacion(movimiento);
+                    OrdenServicio ordenServicio = dbContext.OrdenServicioRepository.Find(movimiento.IdOrden);
+                    if (ordenServicio == null)
+                        throw new Exception("El registro de apartado asociado al movimiento no existe");
+                    ordenServicio.MontoAdelanto -= movimiento.Monto;
+                    dbContext.NotificarModificacion(ordenServicio);
+                    dbContext.Commit();
+                }
+                catch (BusinessException ex)
+                {
+                    dbContext.RollBack();
+                    throw ex;
+                }
+                catch (Exception ex)
+                {
+                    dbContext.RollBack();
+                    log.Error("Error al anular el movimiento del registro de apartado: ", ex);
+                    throw new Exception("Se produjo un error anulando el movimiento del registro de apartado. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public MovimientoOrdenServicio ObtenerMovimientoOrdenServicio(int intIdMovimiento)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                MovimientoOrdenServicio movimiento = dbContext.MovimientoOrdenServicioRepository.Include("OrdenServicio").Include("DesglosePagoMovimientoOrdenServicio.FormaPago").FirstOrDefault(x => x.IdMovOrden == intIdMovimiento);
+                foreach (var detalle in movimiento.DesglosePagoMovimientoOrdenServicio)
+                    detalle.MovimientoOrdenServicio = null;
+                return movimiento;
             }
         }
     }

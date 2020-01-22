@@ -113,8 +113,8 @@ Public Class FrmBusquedaApartado
 
     Private Async Sub FrmBusProd_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
-            Await CargarCombos()
             EstablecerPropiedadesDataGridView()
+            Await CargarCombos()
             Await ValidarCantidadApartados()
             intIndiceDePagina = 1
             Await ActualizarDatos(intIndiceDePagina)

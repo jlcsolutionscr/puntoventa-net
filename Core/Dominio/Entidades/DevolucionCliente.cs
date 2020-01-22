@@ -15,6 +15,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
 
         [ForeignKey("Empresa")]
         public int IdEmpresa { get; set; }
+        public int IdSucursal { get; set; }
         [Key]
         public int IdDevolucion { get; set; }
         [ForeignKey("Factura")]
@@ -29,12 +30,6 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public decimal Impuesto { get; set; }
         [NotMapped]
         public decimal Total { get { return Excento + Gravado + Impuesto; } }
-        [NotMapped]
-        public int IdTipoMoneda { get; set; }
-        [NotMapped]
-        public int IdSucursal { get; set; }
-        [NotMapped]
-        public int IdTerminal { get; set; }
         public int IdMovimientoCxC { get; set; }
         public int IdAsiento { get; set; }
         public bool Nulo { get; set; }

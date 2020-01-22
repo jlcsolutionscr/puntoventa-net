@@ -134,10 +134,22 @@
     <Compile Include="Formas\FrmAceptarDocumentoElectronico.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Formas\FrmAplicaReciboCxP.Designer.vb">
-      <DependentUpon>FrmAplicaReciboCxP.vb</DependentUpon>
+    <Compile Include="Formas\FrmAplicaAbonoOrdenServicio.Designer.vb">
+      <DependentUpon>FrmAplicaAbonoOrdenServicio.vb</DependentUpon>
     </Compile>
-    <Compile Include="Formas\FrmAplicaReciboCxP.vb">
+    <Compile Include="Formas\FrmAplicaAbonoOrdenServicio.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Formas\FrmAplicaAbonoApartado.Designer.vb">
+      <DependentUpon>FrmAplicaAbonoApartado.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Formas\FrmAplicaAbonoApartado.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Formas\FrmAplicaAbonoCxP.Designer.vb">
+      <DependentUpon>FrmAplicaAbonoCxP.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Formas\FrmAplicaAbonoCxP.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Formas\FrmBusquedaAjusteInventario.Designer.vb">
@@ -156,6 +168,18 @@
       <DependentUpon>FrmAplicaTrasladoListado.vb</DependentUpon>
     </Compile>
     <Compile Include="Formas\FrmAplicaTrasladoListado.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Formas\FrmConsultaCierreCaja.designer.vb">
+      <DependentUpon>FrmConsultaCierreCaja.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Formas\FrmConsultaCierreCaja.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Formas\FrmCierreDeCajaListado.Designer.vb">
+      <DependentUpon>FrmCierreDeCajaListado.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Formas\FrmCierreDeCajaListado.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Formas\FrmBusquedaVendedor.Designer.vb">
@@ -224,10 +248,22 @@
     <Compile Include="Formas\FrmCargaProductoTransitorio.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Formas\FrmGestionReciboCxP.Designer.vb">
-      <DependentUpon>FrmGestionReciboCxP.vb</DependentUpon>
+    <Compile Include="Formas\FrmGestionAbonoOrdenServicio.Designer.vb">
+      <DependentUpon>FrmGestionAbonoOrdenServicio.vb</DependentUpon>
     </Compile>
-    <Compile Include="Formas\FrmGestionReciboCxP.vb">
+    <Compile Include="Formas\FrmGestionAbonoOrdenServicio.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Formas\FrmGestionAbonoApartado.Designer.vb">
+      <DependentUpon>FrmGestionAbonoApartado.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Formas\FrmGestionAbonoApartado.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Formas\FrmGestionAbonoCxP.Designer.vb">
+      <DependentUpon>FrmGestionAbonoCxP.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Formas\FrmGestionAbonoCxP.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Formas\FrmProforma.Designer.vb">
@@ -530,16 +566,16 @@
     <Compile Include="Formas\FrmClienteListado.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Formas\FrmGestionReciboCxC.Designer.vb">
-      <DependentUpon>FrmGestionReciboCxC.vb</DependentUpon>
+    <Compile Include="Formas\FrmGestionAbonoCxC.Designer.vb">
+      <DependentUpon>FrmGestionAbonoCxC.vb</DependentUpon>
     </Compile>
-    <Compile Include="Formas\FrmGestionReciboCxC.vb">
+    <Compile Include="Formas\FrmGestionAbonoCxC.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Formas\FrmAplicaReciboCxC.Designer.vb">
-      <DependentUpon>FrmAplicaReciboCxC.vb</DependentUpon>
+    <Compile Include="Formas\FrmAplicaAbonoCxC.Designer.vb">
+      <DependentUpon>FrmAplicaAbonoCxC.vb</DependentUpon>
     </Compile>
-    <Compile Include="Formas\FrmAplicaReciboCxC.vb">
+    <Compile Include="Formas\FrmAplicaAbonoCxC.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Formas\FrmAutorizaPrecio.Designer.vb">
@@ -699,8 +735,14 @@
     <EmbeddedResource Include="Formas\FrmAceptarDocumentoElectronico.resx">
       <DependentUpon>FrmAceptarDocumentoElectronico.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Formas\FrmAplicaReciboCxP.resx">
-      <DependentUpon>FrmAplicaReciboCxP.vb</DependentUpon>
+    <EmbeddedResource Include="Formas\FrmAplicaAbonoOrdenServicio.resx">
+      <DependentUpon>FrmAplicaAbonoOrdenServicio.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Formas\FrmAplicaAbonoApartado.resx">
+      <DependentUpon>FrmAplicaAbonoApartado.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Formas\FrmAplicaAbonoCxP.resx">
+      <DependentUpon>FrmAplicaAbonoCxP.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Formas\FrmBusquedaAjusteInventario.resX">
       <DependentUpon>FrmBusquedaAjusteInventario.vb</DependentUpon>
@@ -712,6 +754,13 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Formas\FrmAplicaTrasladoListado.resX">
       <DependentUpon>FrmAplicaTrasladoListado.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Formas\FrmConsultaCierreCaja.resx">
+      <DependentUpon>FrmConsultaCierreCaja.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Formas\FrmCierreDeCajaListado.resX">
+      <DependentUpon>FrmCierreDeCajaListado.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Formas\FrmBusquedaVendedor.resX">
@@ -749,8 +798,14 @@
     <EmbeddedResource Include="Formas\FrmCargaProductoTransitorio.resx">
       <DependentUpon>FrmCargaProductoTransitorio.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Formas\FrmGestionReciboCxP.resx">
-      <DependentUpon>FrmGestionReciboCxP.vb</DependentUpon>
+    <EmbeddedResource Include="Formas\FrmGestionAbonoOrdenServicio.resx">
+      <DependentUpon>FrmGestionAbonoOrdenServicio.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Formas\FrmGestionAbonoApartado.resx">
+      <DependentUpon>FrmGestionAbonoApartado.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Formas\FrmGestionAbonoCxP.resx">
+      <DependentUpon>FrmGestionAbonoCxP.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Formas\FrmProforma.resx">
       <DependentUpon>FrmProforma.vb</DependentUpon>
@@ -930,11 +985,11 @@
       <DependentUpon>FrmActualizarClave.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Formas\FrmGestionReciboCxC.resx">
-      <DependentUpon>FrmGestionReciboCxC.vb</DependentUpon>
+    <EmbeddedResource Include="Formas\FrmGestionAbonoCxC.resx">
+      <DependentUpon>FrmGestionAbonoCxC.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Formas\FrmAplicaReciboCxC.resx">
-      <DependentUpon>FrmAplicaReciboCxC.vb</DependentUpon>
+    <EmbeddedResource Include="Formas\FrmAplicaAbonoCxC.resx">
+      <DependentUpon>FrmAplicaAbonoCxC.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Formas\FrmAsientoContable.resX">
       <DependentUpon>FrmAsientoContable.vb</DependentUpon>
@@ -1029,32 +1084,32 @@
   <ItemGroup>
     <PublishFile Include="ADODB">
       <Visible>False</Visible>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
       <Group>
       </Group>
       <TargetPath>
       </TargetPath>
-      <PublishState>Include</PublishState>
-      <IncludeHash>True</IncludeHash>
       <FileType>Assembly</FileType>
     </PublishFile>
     <PublishFile Include="MSDATASRC">
       <Visible>False</Visible>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
       <Group>
       </Group>
       <TargetPath>
       </TargetPath>
-      <PublishState>Include</PublishState>
-      <IncludeHash>True</IncludeHash>
       <FileType>Assembly</FileType>
     </PublishFile>
     <PublishFile Include="stdole">
       <Visible>False</Visible>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
       <Group>
       </Group>
       <TargetPath>
       </TargetPath>
-      <PublishState>Include</PublishState>
-      <IncludeHash>True</IncludeHash>
       <FileType>Assembly</FileType>
     </PublishFile>
   </ItemGroup>

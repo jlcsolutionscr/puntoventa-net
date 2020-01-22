@@ -112,6 +112,13 @@ Public Class FrmPrincipal
         formCierre.Show()
     End Sub
 
+    Private Sub mnuArchivoConsultaCierre_Click(sender As Object, e As EventArgs) Handles mnuArchivoConsultaCierre.Click
+        Dim formBusquedaCierreCaja As New FrmCierreDeCajaListado With {
+            .MdiParent = Me
+        }
+        formBusquedaCierreCaja.Show()
+    End Sub
+
     Public Sub MnuArchivoReporte_Click(sender As Object, e As EventArgs) Handles MnuArchivoReporte.Click
         Dim formRptMenu As New FrmMenuReportes With {
             .MdiParent = Me
@@ -281,31 +288,59 @@ Public Class FrmPrincipal
     End Sub
 
     Public Sub MnuApRCxC_Click(sender As Object, e As EventArgs) Handles MnuApRCxC.Click
-        Dim formReciboCxC As New FrmAplicaReciboCxC With {
+        Dim formReciboCxC As New FrmAplicaAbonoCxC With {
             .MdiParent = Me
         }
         formReciboCxC.Show()
     End Sub
 
     Public Sub MnuApRCxP_Click(sender As Object, e As EventArgs) Handles MnuApRCxP.Click
-        Dim formReciboCxP As New FrmAplicaReciboCxP With {
+        Dim formReciboCxP As New FrmAplicaAbonoCxP With {
             .MdiParent = Me
         }
         formReciboCxP.Show()
     End Sub
 
+    Private Sub MnuApRApartado_Click(sender As Object, e As EventArgs) Handles MnuApRApartado.Click
+        Dim formReciboApartado As New FrmAplicaAbonoApartado With {
+            .MdiParent = Me
+        }
+        formReciboApartado.Show()
+    End Sub
+
+    Private Sub MnuApROrdenServicio_Click(sender As Object, e As EventArgs) Handles MnuApROrdenServicio.Click
+        Dim formReciboOrdenServicio As New FrmAplicaAbonoOrdenServicio With {
+            .MdiParent = Me
+        }
+        formReciboOrdenServicio.Show()
+    End Sub
+
     Public Sub MnuAnRCxC_Click(sender As Object, e As EventArgs) Handles MnuAnRCxC.Click
-        Dim formAnulaRecCxC As New FrmGestionReciboCxC With {
+        Dim formAnulaRecCxC As New FrmGestionAbonoCxC With {
             .MdiParent = Me
         }
         formAnulaRecCxC.Show()
     End Sub
 
     Public Sub MnuAnRCxP_Click(sender As Object, e As EventArgs) Handles MnuAnRCxP.Click
-        Dim formAnulaRecCxP As New FrmGestionReciboCxP With {
+        Dim formAnulaRecCxP As New FrmGestionAbonoCxP With {
             .MdiParent = Me
         }
         formAnulaRecCxP.Show()
+    End Sub
+
+    Private Sub MnuAnRApartado_Click(sender As Object, e As EventArgs) Handles MnuAnRApartado.Click
+        Dim formAnulaRecApartado As New FrmGestionAbonoApartado With {
+            .MdiParent = Me
+        }
+        formAnulaRecApartado.Show()
+    End Sub
+
+    Private Sub MnuAnROrdenServicio_Click(sender As Object, e As EventArgs) Handles MnuAnROrdenServicio.Click
+        Dim formAnulaRecOrdenServicio As New FrmGestionAbonoOrdenServicio With {
+            .MdiParent = Me
+        }
+        formAnulaRecOrdenServicio.Show()
     End Sub
 
     Private Sub MnuBCMov_Click(sender As Object, e As EventArgs) Handles MnuBCMov.Click
@@ -356,6 +391,48 @@ Public Class FrmPrincipal
         }
         formDetalleDocumentoElectronico.Show()
     End Sub
+
+    Private Sub MnuCompraRegistro_Click(sender As Object, e As EventArgs) Handles MnuCompraRegistro.Click
+        Dim formCompra As New FrmCompra With {
+            .MdiParent = Me
+        }
+        formCompra.Show()
+    End Sub
+
+    Private Sub MnuCompraTraslado_Click(sender As Object, e As EventArgs) Handles MnuCompraTraslado.Click
+        Dim formTraslado As New FrmTrasladoMercaderia With {
+           .MdiParent = Me
+       }
+        formTraslado.Show()
+    End Sub
+
+    Private Sub MnuCompraAplicTraslado_Click(sender As Object, e As EventArgs) Handles MnuCompraAplicTraslado.Click
+        Dim formAplicaTraslado As New FrmAplicaTrasladoListado With {
+           .MdiParent = Me
+       }
+        formAplicaTraslado.Show()
+    End Sub
+
+    Private Sub MnuCompraAjusteInv_Click(sender As Object, e As EventArgs) Handles MnuCompraAjusteInv.Click
+        Dim formAjusteInventario As New FrmAjusteInventario With {
+            .MdiParent = Me
+        }
+        formAjusteInventario.Show()
+    End Sub
+
+    Private Sub MnuArchivoIngreso_Click(sender As Object, e As EventArgs) Handles MnuArchivoIngreso.Click
+        Dim formIngreso As New FrmIngreso With {
+            .MdiParent = Me
+        }
+        formIngreso.Show()
+    End Sub
+
+    Private Sub MnuArchivoEgreso_Click(sender As Object, e As EventArgs) Handles MnuArchivoEgreso.Click
+        Dim formEgreso As New FrmEgreso With {
+            .MdiParent = Me
+        }
+        formEgreso.Show()
+    End Sub
 #End Region
 
 #Region "Eventos Formulario"
@@ -382,7 +459,7 @@ Public Class FrmPrincipal
         Try
             strUltimaVersionApp = Await Puntoventa.ObtenerUltimaVersionApp()
         Catch ex As Exception
-            MessageBox.Show("No fue posible acceder al servicio web: " & ex.Message & ". Consulte con su proveedor del servicio.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            MessageBox.Show("No fue posible acceder al servicio web. Consulte con su proveedor del servicio.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Close()
             Exit Sub
         End Try
@@ -497,48 +574,6 @@ Public Class FrmPrincipal
             .NullValue = "0",
             .Alignment = DataGridViewContentAlignment.MiddleCenter
         }
-    End Sub
-
-    Private Sub MnuCompraRegistro_Click(sender As Object, e As EventArgs) Handles MnuCompraRegistro.Click
-        Dim formCompra As New FrmCompra With {
-            .MdiParent = Me
-        }
-        formCompra.Show()
-    End Sub
-
-    Private Sub MnuCompraTraslado_Click(sender As Object, e As EventArgs) Handles MnuCompraTraslado.Click
-        Dim formTraslado As New FrmTrasladoMercaderia With {
-           .MdiParent = Me
-       }
-        formTraslado.Show()
-    End Sub
-
-    Private Sub MnuCompraAplicTraslado_Click(sender As Object, e As EventArgs) Handles MnuCompraAplicTraslado.Click
-        Dim formAplicaTraslado As New FrmAplicaTrasladoListado With {
-           .MdiParent = Me
-       }
-        formAplicaTraslado.Show()
-    End Sub
-
-    Private Sub MnuCompraAjusteInv_Click(sender As Object, e As EventArgs) Handles MnuCompraAjusteInv.Click
-        Dim formAjusteInventario As New FrmAjusteInventario With {
-            .MdiParent = Me
-        }
-        formAjusteInventario.Show()
-    End Sub
-
-    Private Sub MnuArchivoIngreso_Click(sender As Object, e As EventArgs) Handles MnuArchivoIngreso.Click
-        Dim formIngreso As New FrmIngreso With {
-            .MdiParent = Me
-        }
-        formIngreso.Show()
-    End Sub
-
-    Private Sub MnuArchivoEgreso_Click(sender As Object, e As EventArgs) Handles MnuArchivoEgreso.Click
-        Dim formEgreso As New FrmEgreso With {
-            .MdiParent = Me
-        }
-        formEgreso.Show()
     End Sub
 #End Region
 End Class

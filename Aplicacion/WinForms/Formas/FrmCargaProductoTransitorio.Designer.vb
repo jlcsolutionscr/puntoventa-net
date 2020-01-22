@@ -60,7 +60,7 @@ Partial Class FrmCargaProductoTransitorio
         Me.txtDescripcion.MaxLength = 200
         Me.txtDescripcion.Name = "txtDescripcion"
         Me.txtDescripcion.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtDescripcion.Size = New System.Drawing.Size(570, 20)
+        Me.txtDescripcion.Size = New System.Drawing.Size(504, 20)
         Me.txtDescripcion.TabIndex = 0
         '
         'lblPrecioVenta1
@@ -96,7 +96,7 @@ Partial Class FrmCargaProductoTransitorio
         'btnCancelar
         '
         Me.btnCancelar.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.btnCancelar.Location = New System.Drawing.Point(364, 158)
+        Me.btnCancelar.Location = New System.Drawing.Point(317, 159)
         Me.btnCancelar.Name = "btnCancelar"
         Me.btnCancelar.Size = New System.Drawing.Size(78, 22)
         Me.btnCancelar.TabIndex = 52
@@ -106,7 +106,7 @@ Partial Class FrmCargaProductoTransitorio
         '
         'btnAgregar
         '
-        Me.btnAgregar.Location = New System.Drawing.Point(280, 158)
+        Me.btnAgregar.Location = New System.Drawing.Point(233, 159)
         Me.btnAgregar.Name = "btnAgregar"
         Me.btnAgregar.Size = New System.Drawing.Size(78, 22)
         Me.btnAgregar.TabIndex = 51
@@ -179,7 +179,7 @@ Partial Class FrmCargaProductoTransitorio
         Me.Label2.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label2.Size = New System.Drawing.Size(83, 17)
         Me.Label2.TabIndex = 147
-        Me.Label2.Text = "Precio con IVA:"
+        Me.Label2.Text = "Cantidad:"
         Me.Label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'txtCantidad
@@ -192,7 +192,7 @@ Partial Class FrmCargaProductoTransitorio
         Me.txtCantidad.MaxLength = 0
         Me.txtCantidad.Name = "txtCantidad"
         Me.txtCantidad.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtCantidad.Size = New System.Drawing.Size(68, 20)
+        Me.txtCantidad.Size = New System.Drawing.Size(106, 20)
         Me.txtCantidad.TabIndex = 4
         Me.txtCantidad.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
@@ -203,7 +203,7 @@ Partial Class FrmCargaProductoTransitorio
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.CancelButton = Me.btnCancelar
-        Me.ClientSize = New System.Drawing.Size(699, 195)
+        Me.ClientSize = New System.Drawing.Size(621, 195)
         Me.Controls.Add(Me.Label2)
         Me.Controls.Add(Me.txtCantidad)
         Me.Controls.Add(Me.Label1)
@@ -221,8 +221,9 @@ Partial Class FrmCargaProductoTransitorio
         Me.KeyPreview = True
         Me.Location = New System.Drawing.Point(73, 22)
         Me.MaximizeBox = False
+        Me.MaximumSize = New System.Drawing.Size(637, 234)
         Me.MinimizeBox = False
-        Me.MinimumSize = New System.Drawing.Size(715, 204)
+        Me.MinimumSize = New System.Drawing.Size(637, 234)
         Me.Name = "FrmCargaProductoTransitorio"
         Me.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.ShowInTaskbar = False

@@ -16,7 +16,6 @@ Partial Class FrmAjusteInventario
     Public WithEvents CmdAnular As System.Windows.Forms.Button
     Public WithEvents CmdAgregar As System.Windows.Forms.Button
     Public WithEvents CmdBuscar As System.Windows.Forms.Button
-    Public WithEvents CmdImprimir As System.Windows.Forms.Button
     Public WithEvents CmdGuardar As System.Windows.Forms.Button
     Public WithEvents txtIdAjuste As System.Windows.Forms.TextBox
     Public WithEvents txtDescAjuste As System.Windows.Forms.TextBox
@@ -32,7 +31,6 @@ Partial Class FrmAjusteInventario
         Me.CmdAnular = New System.Windows.Forms.Button()
         Me.CmdAgregar = New System.Windows.Forms.Button()
         Me.CmdBuscar = New System.Windows.Forms.Button()
-        Me.CmdImprimir = New System.Windows.Forms.Button()
         Me.CmdGuardar = New System.Windows.Forms.Button()
         Me.txtIdAjuste = New System.Windows.Forms.TextBox()
         Me.txtDescAjuste = New System.Windows.Forms.TextBox()
@@ -63,7 +61,7 @@ Partial Class FrmAjusteInventario
         Me.CmdAnular.Cursor = System.Windows.Forms.Cursors.Default
         Me.CmdAnular.Enabled = False
         Me.CmdAnular.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.CmdAnular.Location = New System.Drawing.Point(200, 8)
+        Me.CmdAnular.Location = New System.Drawing.Point(136, 8)
         Me.CmdAnular.Name = "CmdAnular"
         Me.CmdAnular.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.CmdAnular.Size = New System.Drawing.Size(64, 21)
@@ -77,7 +75,7 @@ Partial Class FrmAjusteInventario
         Me.CmdAgregar.BackColor = System.Drawing.SystemColors.ButtonHighlight
         Me.CmdAgregar.Cursor = System.Windows.Forms.Cursors.Default
         Me.CmdAgregar.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.CmdAgregar.Location = New System.Drawing.Point(264, 8)
+        Me.CmdAgregar.Location = New System.Drawing.Point(200, 8)
         Me.CmdAgregar.Name = "CmdAgregar"
         Me.CmdAgregar.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.CmdAgregar.Size = New System.Drawing.Size(64, 21)
@@ -91,7 +89,7 @@ Partial Class FrmAjusteInventario
         Me.CmdBuscar.BackColor = System.Drawing.SystemColors.ButtonHighlight
         Me.CmdBuscar.Cursor = System.Windows.Forms.Cursors.Default
         Me.CmdBuscar.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.CmdBuscar.Location = New System.Drawing.Point(136, 8)
+        Me.CmdBuscar.Location = New System.Drawing.Point(72, 8)
         Me.CmdBuscar.Name = "CmdBuscar"
         Me.CmdBuscar.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.CmdBuscar.Size = New System.Drawing.Size(64, 21)
@@ -99,21 +97,6 @@ Partial Class FrmAjusteInventario
         Me.CmdBuscar.TabStop = False
         Me.CmdBuscar.Text = "B&uscar"
         Me.CmdBuscar.UseVisualStyleBackColor = False
-        '
-        'CmdImprimir
-        '
-        Me.CmdImprimir.BackColor = System.Drawing.SystemColors.ButtonHighlight
-        Me.CmdImprimir.Cursor = System.Windows.Forms.Cursors.Default
-        Me.CmdImprimir.Enabled = False
-        Me.CmdImprimir.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.CmdImprimir.Location = New System.Drawing.Point(72, 8)
-        Me.CmdImprimir.Name = "CmdImprimir"
-        Me.CmdImprimir.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.CmdImprimir.Size = New System.Drawing.Size(64, 21)
-        Me.CmdImprimir.TabIndex = 32
-        Me.CmdImprimir.TabStop = False
-        Me.CmdImprimir.Text = "&Imprimir"
-        Me.CmdImprimir.UseVisualStyleBackColor = False
         '
         'CmdGuardar
         '
@@ -419,7 +402,6 @@ Partial Class FrmAjusteInventario
         Me.Controls.Add(Me.CmdAnular)
         Me.Controls.Add(Me.CmdAgregar)
         Me.Controls.Add(Me.CmdBuscar)
-        Me.Controls.Add(Me.CmdImprimir)
         Me.Controls.Add(Me.CmdGuardar)
         Me.Controls.Add(Me.txtIdAjuste)
         Me.Controls.Add(Me.txtDescAjuste)

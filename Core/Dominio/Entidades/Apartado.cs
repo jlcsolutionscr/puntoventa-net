@@ -19,6 +19,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public int IdSucursal { get; set; }
         [Key]
         public int IdApartado { get; set; }
+        public int ConsecApartado { get; set; }
         [ForeignKey("Usuario")]
         public int IdUsuario { get; set; }
         [ForeignKey("TipoMoneda")]
@@ -41,6 +42,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public bool Nulo { get; set; }
         public int? IdAnuladoPor { get; set; }
         public bool Aplicado { get; set; }
+        public bool Procesado { get; set; }
 
         public Cliente Cliente { get; set; }
         public Empresa Empresa { get; set; }

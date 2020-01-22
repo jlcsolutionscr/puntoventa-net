@@ -76,8 +76,8 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
         string ObtenerListadoDistritos(int idprovincia, int idcanton);
 
         [OperationContract]
-        [WebGet(UriTemplate = "obtenerdatosreporte?tipo={tipo}&idempresa={idempresa}&fechainicial={fechainicial}&fechafinal={fechafinal}", ResponseFormat = WebMessageFormat.Json)]
-        string ObtenerDatosReporte(int tipo, int idempresa, string fechainicial, string fechafinal);
+        [WebGet(UriTemplate = "obtenerdatosreporte?tipo={tipo}&idempresa={idempresa}&idsucursal={idsucursal}&fechainicial={fechainicial}&fechafinal={fechafinal}", ResponseFormat = WebMessageFormat.Json)]
+        string ObtenerDatosReporte(int tipo, int idempresa, int idsucursal, string fechainicial, string fechafinal);
 
         [OperationContract]
         [WebGet(UriTemplate = "obtenerlistadobarrios?idprovincia={idprovincia}&idcanton={idcanton}&iddistrito={iddistrito}", ResponseFormat = WebMessageFormat.Json)]

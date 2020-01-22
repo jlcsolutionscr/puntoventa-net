@@ -351,7 +351,7 @@ Public Class FrmCompra
         cboCondicionVenta.DataSource = Await Puntoventa.ObtenerListadoCondicionVenta(FrmPrincipal.usuarioGlobal.Token)
         cboFormaPago.ValueMember = "Id"
         cboFormaPago.DisplayMember = "Descripcion"
-        cboFormaPago.DataSource = Await Puntoventa.ObtenerListadoFormaPagoCompra(FrmPrincipal.usuarioGlobal.Token)
+        cboFormaPago.DataSource = Await Puntoventa.ObtenerListadoFormaPagoEmpresa(FrmPrincipal.usuarioGlobal.Token)
         cboCuentaBanco.ValueMember = "Id"
         cboCuentaBanco.DisplayMember = "Descripcion"
         cboCuentaBanco.DataSource = Await Puntoventa.ObtenerListadoCuentasBanco(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
@@ -670,7 +670,6 @@ Public Class FrmCompra
                     .NroMovimiento = dtbDesglosePago.Rows(I).Item(4),
                     .Beneficiario = txtProveedor.Text,
                     .IdTipoMoneda = dtbDesglosePago.Rows(I).Item(5),
-                    .Fecha = Now(),
                     .MontoLocal = dtbDesglosePago.Rows(I).Item(6),
                     .TipoDeCambio = dtbDesglosePago.Rows(I).Item(7)
                 }
@@ -727,11 +726,7 @@ Public Class FrmCompra
             comprobanteImpresion.arrDetalleComprobante = arrDetalleCompra
             arrDesglosePago = New List(Of ModuloImpresion.ClsDesgloseFormaPago)
             For I = 0 To dtbDesglosePago.Rows.Count - 1
-                desglosePagoImpresion = New ModuloImpresion.ClsDesgloseFormaPago With {
-                    .strDescripcion = dtbDesglosePago.Rows(I).Item(1),
-                    .strMonto = FormatNumber(dtbDesglosePago.Rows(I).Item(6)),
-                    .strNroDoc = dtbDesglosePago.Rows(I).Item(5)
-                }
+                desglosePagoImpresion = New ModuloImpresion.ClsDesgloseFormaPago(dtbDesglosePago.Rows(I).Item(1), FormatNumber(dtbDesglosePago.Rows(I).Item(6), 2))
                 arrDesglosePago.Add(desglosePagoImpresion)
             Next
             comprobanteImpresion.arrDesglosePago = arrDesglosePago
@@ -824,12 +819,6 @@ Public Class FrmCompra
             If decSaldoPorPagar = 0 Then
                 MessageBox.Show("El monto de por cancelar ya se encuentra cubierto. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
-            End If
-            If cboFormaPago.SelectedValue = StaticFormaPago.Cheque Then
-                If txtReferencia.Text = "" Then
-                    MessageBox.Show("Debe ingresar el número de cheque.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                    Exit Sub
-                End If
             End If
             CargarLineaDesglosePago()
             cboFormaPago.SelectedValue = StaticFormaPago.Efectivo

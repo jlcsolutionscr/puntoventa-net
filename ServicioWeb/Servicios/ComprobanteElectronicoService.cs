@@ -152,11 +152,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                         FormUrlEncodedContent formContent = new FormUrlEncodedContent(new[]
                         {
-                            new KeyValuePair<string, string>("tcIndicador", "318"),
-                            new KeyValuePair<string, string>("tcFechaInicio", fechaConsulta.ToString("dd/MM/yyyy")),
-                            new KeyValuePair<string, string>("tcFechaFinal", fechaConsulta.ToString("dd/MM/yyyy")),
-                            new KeyValuePair<string, string>("tcNombre", "System"),
-                            new KeyValuePair<string, string>("tnSubNiveles", "N")
+                            new KeyValuePair<string, string>("Indicador", "318"),
+                            new KeyValuePair<string, string>("FechaInicio", fechaConsulta.ToString("dd/MM/yyyy")),
+                            new KeyValuePair<string, string>("FechaFinal", fechaConsulta.ToString("dd/MM/yyyy")),
+                            new KeyValuePair<string, string>("Nombre", "System"),
+                            new KeyValuePair<string, string>("SubNiveles", "N"),
+                            new KeyValuePair<string, string>("CorreoElectronico", "jason.lopez.cordoba@hotmail.com"),
+                            new KeyValuePair<string, string>("Token", "42OJOAIBO0")
                         });
                         HttpResponseMessage httpResponse = httpClient.PostAsync(strServicioURL + "/ObtenerIndicadoresEconomicos", formContent).Result;
                         if (httpResponse.StatusCode == HttpStatusCode.OK)
@@ -1484,7 +1486,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 notaCreditoElectronica.DetalleServicio = detalleServicioList.ToArray();
                 NotaCreditoElectronicaResumenFactura resumenFactura = new NotaCreditoElectronicaResumenFactura();
                 NotaCreditoElectronicaCodigoMonedaType codigoMonedaType = null;
-                if (devolucion.IdTipoMoneda == StaticTipoMoneda.Dolares)
+                if (factura.IdTipoMoneda == StaticTipoMoneda.Dolares)
                 {
                     codigoMonedaType = new NotaCreditoElectronicaCodigoMonedaType
                     {
@@ -1492,7 +1494,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         TipoCambio = decTipoCambioDolar
                     };
                 }
-                else if (devolucion.IdTipoMoneda == StaticTipoMoneda.Colones)
+                else if (factura.IdTipoMoneda == StaticTipoMoneda.Colones)
                 {
                     codigoMonedaType = new NotaCreditoElectronicaCodigoMonedaType
                     {
@@ -1551,7 +1553,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     msDatosXML.Position = 0;
                     documentoXml.Load(msDatosXML);
                 }
-                return RegistrarDocumentoElectronico(empresa, documentoXml, null, dbContext, devolucion.IdSucursal, devolucion.IdTerminal, TipoDocumento.NotaCreditoElectronica, false, strCorreoNotificacion);
+                return RegistrarDocumentoElectronico(empresa, documentoXml, null, dbContext, factura.IdSucursal, factura.IdTerminal, TipoDocumento.NotaCreditoElectronica, false, strCorreoNotificacion);
             }
             catch (Exception ex)
             {
@@ -1559,7 +1561,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public static DocumentoElectronico GenerarNotaDeDebitoElectronicaParcial(DevolucionCliente devolucion, Empresa empresa, Cliente cliente, IDbContext dbContext, decimal decTipoCambioDolar, string referencia)
+        public static DocumentoElectronico GenerarNotaDeDebitoElectronicaParcial(DevolucionCliente devolucion, Factura factura, Empresa empresa, Cliente cliente, IDbContext dbContext, decimal decTipoCambioDolar, string referencia)
         {
             try
             {
@@ -1750,7 +1752,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 NotaDebitoElectronica.DetalleServicio = detalleServicioList.ToArray();
                 NotaDebitoElectronicaResumenFactura resumenFactura = new NotaDebitoElectronicaResumenFactura();
                 NotaDebitoElectronicaCodigoMonedaType codigoMonedaType = null;
-                if (devolucion.IdTipoMoneda == StaticTipoMoneda.Dolares)
+                if (factura.IdTipoMoneda == StaticTipoMoneda.Dolares)
                 {
                     codigoMonedaType = new NotaDebitoElectronicaCodigoMonedaType
                     {
@@ -1758,7 +1760,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         TipoCambio = decTipoCambioDolar
                     };
                 }
-                else if (devolucion.IdTipoMoneda == StaticTipoMoneda.Colones)
+                else if (factura.IdTipoMoneda == StaticTipoMoneda.Colones)
                 {
                     codigoMonedaType = new NotaDebitoElectronicaCodigoMonedaType
                     {
@@ -1817,7 +1819,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     msDatosXML.Position = 0;
                     documentoXml.Load(msDatosXML);
                 }
-                return RegistrarDocumentoElectronico(empresa, documentoXml, null, dbContext, devolucion.IdSucursal, devolucion.IdTerminal, TipoDocumento.NotaDebitoElectronica, false, strCorreoNotificacion);
+                return RegistrarDocumentoElectronico(empresa, documentoXml, null, dbContext, factura.IdSucursal, factura.IdTerminal, TipoDocumento.NotaDebitoElectronica, false, strCorreoNotificacion);
             }
             catch (Exception ex)
             {

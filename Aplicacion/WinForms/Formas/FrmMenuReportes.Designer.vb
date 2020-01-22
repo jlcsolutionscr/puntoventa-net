@@ -35,6 +35,8 @@ Partial Class FrmMenuReportes
         Me.Label1 = New System.Windows.Forms.Label()
         Me.btnBuscarProveedor = New System.Windows.Forms.Button()
         Me.btnBuscarCliente = New System.Windows.Forms.Button()
+        Me.cboSucursal = New System.Windows.Forms.ComboBox()
+        Me.Label6 = New System.Windows.Forms.Label()
         Me.SuspendLayout()
         '
         'txtProveedor
@@ -92,7 +94,7 @@ Partial Class FrmMenuReportes
         Me.LstReporte.BackColor = System.Drawing.SystemColors.Window
         Me.LstReporte.Cursor = System.Windows.Forms.Cursors.Default
         Me.LstReporte.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.LstReporte.Location = New System.Drawing.Point(12, 125)
+        Me.LstReporte.Location = New System.Drawing.Point(12, 156)
         Me.LstReporte.Name = "LstReporte"
         Me.LstReporte.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.LstReporte.Size = New System.Drawing.Size(314, 225)
@@ -187,11 +189,36 @@ Partial Class FrmMenuReportes
         Me.btnBuscarCliente.TabStop = False
         Me.btnBuscarCliente.UseVisualStyleBackColor = True
         '
+        'cboSucursal
+        '
+        Me.cboSucursal.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.cboSucursal.FormattingEnabled = True
+        Me.cboSucursal.Location = New System.Drawing.Point(71, 124)
+        Me.cboSucursal.Name = "cboSucursal"
+        Me.cboSucursal.Size = New System.Drawing.Size(255, 21)
+        Me.cboSucursal.TabIndex = 155
+        Me.cboSucursal.TabStop = False
+        '
+        'Label6
+        '
+        Me.Label6.BackColor = System.Drawing.Color.Transparent
+        Me.Label6.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label6.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label6.Location = New System.Drawing.Point(13, 124)
+        Me.Label6.Name = "Label6"
+        Me.Label6.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label6.Size = New System.Drawing.Size(52, 19)
+        Me.Label6.TabIndex = 156
+        Me.Label6.Text = "Sucursal:"
+        Me.Label6.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
         'FrmMenuReportes
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(338, 361)
+        Me.ClientSize = New System.Drawing.Size(338, 392)
+        Me.Controls.Add(Me.cboSucursal)
+        Me.Controls.Add(Me.Label6)
         Me.Controls.Add(Me.btnBuscarProveedor)
         Me.Controls.Add(Me.txtProveedor)
         Me.Controls.Add(Me.btnBuscarCliente)
@@ -224,4 +251,6 @@ Partial Class FrmMenuReportes
     Public WithEvents Id2Label As Label
     Public WithEvents Label2 As Label
     Public WithEvents Label1 As Label
+    Friend WithEvents cboSucursal As ComboBox
+    Friend WithEvents Label6 As Label
 End Class

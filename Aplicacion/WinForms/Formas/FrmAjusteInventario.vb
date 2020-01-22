@@ -180,7 +180,6 @@ Public Class FrmAjusteInventario
         grdDetalleAjusteInventario.Refresh()
         CmdAnular.Enabled = False
         CmdGuardar.Enabled = True
-        CmdImprimir.Enabled = False
         txtDescAjuste.Focus()
     End Sub
 
@@ -215,7 +214,6 @@ Public Class FrmAjusteInventario
                 txtFecha.Text = ajusteInventario.Fecha
                 txtDescAjuste.Text = ajusteInventario.Descripcion
                 CargarDetalleAjusteInventario(ajusteInventario)
-                CmdImprimir.Enabled = True
                 CmdAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
                 CmdGuardar.Enabled = False
             End If
@@ -252,44 +250,12 @@ Public Class FrmAjusteInventario
             End Try
         End If
         MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
-        CmdImprimir.Enabled = True
         CmdAgregar.Enabled = True
         CmdAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
-        CmdImprimir.Focus()
+        CmdAgregar.Focus()
         CmdGuardar.Enabled = False
     End Sub
 
-    Private Sub CmdImprimir_Click(sender As Object, e As EventArgs) Handles CmdImprimir.Click
-        If txtIdAjuste.Text <> "" Then
-            comprobante = New ModuloImpresion.ClsAjusteInventario With {
-                .usuario = FrmPrincipal.usuarioGlobal,
-                .empresa = FrmPrincipal.empresaGlobal,
-                .equipo = FrmPrincipal.equipoGlobal,
-                .strId = txtIdAjuste.Text,
-                .strFecha = txtFecha.Text,
-                .strDescripcion = txtDescAjuste.Text
-            }
-            arrDetalleAjusteInventario = New List(Of ModuloImpresion.ClsDetalleComprobante)
-            For I = 0 To dtbDetalleAjusteInventario.Rows.Count - 1
-                If dtbDetalleAjusteInventario.Rows(I).Item(7) > 0 Then
-                    detalleComprobante = New ModuloImpresion.ClsDetalleComprobante With {
-                        .strDescripcion = dtbDetalleAjusteInventario.Rows(I).Item(1) + "-" + dtbDetalleAjusteInventario.Rows(I).Item(2),
-                        .strCantidad = CDbl(dtbDetalleAjusteInventario.Rows(I).Item(7)),
-                        .strPrecio = FormatNumber(dtbDetalleAjusteInventario.Rows(I).Item(4), 2),
-                        .strTotalLinea = FormatNumber(CDbl(dtbDetalleAjusteInventario.Rows(I).Item(7)) * CDbl(dtbDetalleAjusteInventario.Rows(I).Item(4)), 2)
-                    }
-                    arrDetalleAjusteInventario.Add(detalleComprobante)
-                End If
-            Next
-            comprobante.arrDetalleComprobante = arrDetalleAjusteInventario
-            Try
-                ModuloImpresion.ImprimirAjusteInventario(comprobante)
-            Catch ex As Exception
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Exit Sub
-            End Try
-        End If
-    End Sub
 
     Private Async Sub BtnBusProd_Click(sender As Object, e As EventArgs) Handles btnBusProd.Click
         Dim formBusProd As New FrmBusquedaProducto With {

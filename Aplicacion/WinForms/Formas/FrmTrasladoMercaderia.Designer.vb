@@ -140,7 +140,7 @@ Partial Class FrmTrasladoMercaderia
         Me.btnImprimir.Size = New System.Drawing.Size(64, 21)
         Me.btnImprimir.TabIndex = 32
         Me.btnImprimir.TabStop = False
-        Me.btnImprimir.Text = "&Imprimir"
+        Me.btnImprimir.Text = "&Tiquete"
         Me.btnImprimir.UseVisualStyleBackColor = False
         '
         'btnGuardar

@@ -15,7 +15,6 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public int IdFormaPago { get; set; }
         [ForeignKey("TipoMoneda")]
         public int IdTipoMoneda { get; set; }
-        public DateTime Fecha { get; set; }
         public int IdCuentaBanco { get; set; }
         [NotMapped]
         public string DescripcionCuenta { get; set; }
@@ -24,7 +23,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public decimal MontoLocal { get; set; }
         public decimal TipoDeCambio { get; set; }
 
-        public MovimientoCuentaPorCobrar MovimientoCuentaPorCobrar { get; set; }
+        public MovimientoApartado MovimientoCuentaPorCobrar { get; set; }
         public FormaPago FormaPago { get; set; }
         public TipoMoneda TipoMoneda { get; set; }
     }

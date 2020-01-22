@@ -64,8 +64,11 @@
     <Compile Include="Entidades\DesglosePagoDevolucionCliente.cs" />
     <Compile Include="Entidades\DesglosePagoDevolucionProveedor.cs" />
     <Compile Include="Entidades\DesglosePagoApartado.cs" />
+    <Compile Include="Entidades\DesglosePagoMovimientoApartado.cs" />
+    <Compile Include="Entidades\DesglosePagoMovimientoOrdenServicio.cs" />
     <Compile Include="Entidades\DesglosePagoOrdenServicio.cs" />
     <Compile Include="Entidades\DetalleAjusteInventario.cs" />
+    <Compile Include="Entidades\DetalleEfectivoCierreCaja.cs" />
     <Compile Include="Entidades\DetalleDevolucionProveedor.cs" />
     <Compile Include="Entidades\DetalleApartado.cs" />
     <Compile Include="Entidades\DetalleFacturaCompra.cs" />
@@ -74,6 +77,8 @@
     <Compile Include="Entidades\CondicionVenta.cs" />
     <Compile Include="Entidades\DocumentoElectronico.cs" />
     <Compile Include="Entidades\FacturaCompra.cs" />
+    <Compile Include="Entidades\MovimientoApartado.cs" />
+    <Compile Include="Entidades\MovimientoOrdenServicio.cs" />
     <Compile Include="Entidades\Padron.cs" />
     <Compile Include="Entidades\ParametroImpuesto.cs" />
     <Compile Include="Entidades\Apartado.cs" />
@@ -97,10 +102,8 @@
     <Compile Include="Entidades\TipoIdentificacion.cs" />
     <Compile Include="Entidades\ParametroExoneracion.cs" />
     <Compile Include="Entidades\Traslado.cs" />
-    <Compile Include="Entidades\DesglosePagoIngreso.cs" />
     <Compile Include="Entidades\Ingreso.cs" />
     <Compile Include="Entidades\CuentaIngreso.cs" />
-    <Compile Include="Entidades\DesglosePagoEgreso.cs" />
     <Compile Include="Entidades\DesglosePagoMovimientoCuentaPorPagar.cs" />
     <Compile Include="Entidades\DesglosePagoMovimientoCuentaPorCobrar.cs" />
     <Compile Include="Entidades\DesglosePagoFactura.cs" />

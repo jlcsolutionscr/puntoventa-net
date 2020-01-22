@@ -1,5 +1,5 @@
 <Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
-Partial Class FrmGestionReciboCxP
+Partial Class FrmGestionAbonoCxC
     Inherits System.Windows.Forms.Form
 
     'Form overrides dispose to clean up the component list.
@@ -19,12 +19,12 @@ Partial Class FrmGestionReciboCxP
     'It can be modified using the Windows Form Designer.
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FrmGestionReciboCxP))
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FrmGestionAbonoCxC))
         Me.CmdAnular = New System.Windows.Forms.Button()
         Me._lblLabels_2 = New System.Windows.Forms.Label()
         Me.grdDetalleRecibo = New System.Windows.Forms.DataGridView()
-        Me.txtNombreProveedor = New System.Windows.Forms.TextBox()
-        Me.btnBuscarProveedor = New System.Windows.Forms.Button()
+        Me.txtNombreCliente = New System.Windows.Forms.TextBox()
+        Me.btnBuscarCliente = New System.Windows.Forms.Button()
         Me.CmdImprimir = New System.Windows.Forms.Button()
         CType(Me.grdDetalleRecibo, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -48,12 +48,12 @@ Partial Class FrmGestionReciboCxP
         Me._lblLabels_2.BackColor = System.Drawing.Color.Transparent
         Me._lblLabels_2.Cursor = System.Windows.Forms.Cursors.Default
         Me._lblLabels_2.ForeColor = System.Drawing.SystemColors.ControlText
-        Me._lblLabels_2.Location = New System.Drawing.Point(2, 14)
+        Me._lblLabels_2.Location = New System.Drawing.Point(15, 14)
         Me._lblLabels_2.Name = "_lblLabels_2"
         Me._lblLabels_2.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me._lblLabels_2.Size = New System.Drawing.Size(64, 19)
+        Me._lblLabels_2.Size = New System.Drawing.Size(51, 19)
         Me._lblLabels_2.TabIndex = 9
-        Me._lblLabels_2.Text = "Proveedor:"
+        Me._lblLabels_2.Text = "Cliente:"
         Me._lblLabels_2.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'grdDetalleRecibo
@@ -73,30 +73,30 @@ Partial Class FrmGestionReciboCxP
         Me.grdDetalleRecibo.TabIndex = 3
         Me.grdDetalleRecibo.TabStop = False
         '
-        'txtNombreProveedor
+        'txtNombreCliente
         '
-        Me.txtNombreProveedor.AcceptsReturn = True
-        Me.txtNombreProveedor.BackColor = System.Drawing.SystemColors.Window
-        Me.txtNombreProveedor.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtNombreProveedor.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtNombreProveedor.Location = New System.Drawing.Point(72, 13)
-        Me.txtNombreProveedor.MaxLength = 0
-        Me.txtNombreProveedor.Name = "txtNombreProveedor"
-        Me.txtNombreProveedor.ReadOnly = True
-        Me.txtNombreProveedor.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtNombreProveedor.Size = New System.Drawing.Size(394, 20)
-        Me.txtNombreProveedor.TabIndex = 0
-        Me.txtNombreProveedor.TabStop = False
+        Me.txtNombreCliente.AcceptsReturn = True
+        Me.txtNombreCliente.BackColor = System.Drawing.SystemColors.Window
+        Me.txtNombreCliente.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtNombreCliente.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtNombreCliente.Location = New System.Drawing.Point(72, 13)
+        Me.txtNombreCliente.MaxLength = 0
+        Me.txtNombreCliente.Name = "txtNombreCliente"
+        Me.txtNombreCliente.ReadOnly = True
+        Me.txtNombreCliente.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtNombreCliente.Size = New System.Drawing.Size(394, 20)
+        Me.txtNombreCliente.TabIndex = 0
+        Me.txtNombreCliente.TabStop = False
         '
-        'btnBuscarProveedor
+        'btnBuscarCliente
         '
-        Me.btnBuscarProveedor.Image = CType(resources.GetObject("btnBuscarProveedor.Image"), System.Drawing.Image)
-        Me.btnBuscarProveedor.Location = New System.Drawing.Point(472, 12)
-        Me.btnBuscarProveedor.Name = "btnBuscarProveedor"
-        Me.btnBuscarProveedor.Size = New System.Drawing.Size(20, 20)
-        Me.btnBuscarProveedor.TabIndex = 11
-        Me.btnBuscarProveedor.TabStop = False
-        Me.btnBuscarProveedor.UseVisualStyleBackColor = True
+        Me.btnBuscarCliente.Image = CType(resources.GetObject("btnBuscarCliente.Image"), System.Drawing.Image)
+        Me.btnBuscarCliente.Location = New System.Drawing.Point(472, 12)
+        Me.btnBuscarCliente.Name = "btnBuscarCliente"
+        Me.btnBuscarCliente.Size = New System.Drawing.Size(20, 20)
+        Me.btnBuscarCliente.TabIndex = 11
+        Me.btnBuscarCliente.TabStop = False
+        Me.btnBuscarCliente.UseVisualStyleBackColor = True
         '
         'CmdImprimir
         '
@@ -112,15 +112,15 @@ Partial Class FrmGestionReciboCxP
         Me.CmdImprimir.Text = "&Imprimir"
         Me.CmdImprimir.UseVisualStyleBackColor = False
         '
-        'FrmGestionReciboCxP
+        'FrmGestionReciboCxC
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(646, 413)
         Me.Controls.Add(Me.CmdImprimir)
-        Me.Controls.Add(Me.txtNombreProveedor)
-        Me.Controls.Add(Me.btnBuscarProveedor)
+        Me.Controls.Add(Me.txtNombreCliente)
+        Me.Controls.Add(Me.btnBuscarCliente)
         Me.Controls.Add(Me.grdDetalleRecibo)
         Me.Controls.Add(Me.CmdAnular)
         Me.Controls.Add(Me._lblLabels_2)
@@ -130,17 +130,17 @@ Partial Class FrmGestionReciboCxP
         Me.Location = New System.Drawing.Point(73, 22)
         Me.MaximizeBox = False
         Me.MinimizeBox = False
-        Me.Name = "FrmGestionReciboCxP"
+        Me.Name = "FrmGestionReciboCxC"
         Me.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
-        Me.Text = "Gestión de Abonos sobre Cuentas por Pagar"
+        Me.Text = "Gestión de Abonos sobre Cuentas por Cobrar"
         CType(Me.grdDetalleRecibo, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
     End Sub
     Friend WithEvents grdDetalleRecibo As System.Windows.Forms.DataGridView
-    Public WithEvents txtNombreProveedor As System.Windows.Forms.TextBox
-    Friend WithEvents btnBuscarProveedor As System.Windows.Forms.Button
+    Public WithEvents txtNombreCliente As System.Windows.Forms.TextBox
+    Friend WithEvents btnBuscarCliente As System.Windows.Forms.Button
     Public WithEvents CmdImprimir As Button
 End Class

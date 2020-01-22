@@ -123,6 +123,8 @@ Partial Class FrmFactura
         Me.Label2 = New System.Windows.Forms.Label()
         Me.txtTipoCambio = New System.Windows.Forms.TextBox()
         Me.Label9 = New System.Windows.Forms.Label()
+        Me.txtExistencias = New System.Windows.Forms.TextBox()
+        Me.Label16 = New System.Windows.Forms.Label()
         CType(Me.grdDetalleFactura, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.grdDesglosePago, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -227,7 +229,7 @@ Partial Class FrmFactura
         Me.btnImprimir.Size = New System.Drawing.Size(64, 21)
         Me.btnImprimir.TabIndex = 81
         Me.btnImprimir.TabStop = False
-        Me.btnImprimir.Text = "&Imprimir"
+        Me.btnImprimir.Text = "&Tiquete"
         Me.btnImprimir.UseVisualStyleBackColor = False
         '
         'btnGuardar
@@ -529,12 +531,12 @@ Partial Class FrmFactura
         Me.txtDescripcion.BackColor = System.Drawing.SystemColors.Window
         Me.txtDescripcion.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtDescripcion.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtDescripcion.Location = New System.Drawing.Point(245, 169)
+        Me.txtDescripcion.Location = New System.Drawing.Point(225, 169)
         Me.txtDescripcion.MaxLength = 0
         Me.txtDescripcion.Name = "txtDescripcion"
         Me.txtDescripcion.ReadOnly = True
         Me.txtDescripcion.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtDescripcion.Size = New System.Drawing.Size(345, 20)
+        Me.txtDescripcion.Size = New System.Drawing.Size(325, 20)
         Me.txtDescripcion.TabIndex = 51
         Me.txtDescripcion.TabStop = False
         '
@@ -770,11 +772,12 @@ Partial Class FrmFactura
         '
         Me.Label10.BackColor = System.Drawing.Color.Transparent
         Me.Label10.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label10.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label10.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label10.Location = New System.Drawing.Point(638, 560)
+        Me.Label10.Location = New System.Drawing.Point(620, 560)
         Me.Label10.Name = "Label10"
         Me.Label10.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label10.Size = New System.Drawing.Size(91, 17)
+        Me.Label10.Size = New System.Drawing.Size(109, 17)
         Me.Label10.TabIndex = 92
         Me.Label10.Text = "Saldo por Pagar:"
         Me.Label10.TextAlign = System.Drawing.ContentAlignment.MiddleRight
@@ -783,7 +786,7 @@ Partial Class FrmFactura
         '
         Me.txtCodigo.Location = New System.Drawing.Point(9, 169)
         Me.txtCodigo.Name = "txtCodigo"
-        Me.txtCodigo.Size = New System.Drawing.Size(236, 20)
+        Me.txtCodigo.Size = New System.Drawing.Size(216, 20)
         Me.txtCodigo.TabIndex = 50
         '
         'btnOrdenServicio
@@ -857,6 +860,7 @@ Partial Class FrmFactura
         Me.txtPagoDelCliente.AcceptsReturn = True
         Me.txtPagoDelCliente.BackColor = System.Drawing.SystemColors.Window
         Me.txtPagoDelCliente.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtPagoDelCliente.Enabled = False
         Me.txtPagoDelCliente.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!)
         Me.txtPagoDelCliente.ForeColor = System.Drawing.SystemColors.WindowText
         Me.txtPagoDelCliente.Location = New System.Drawing.Point(281, 558)
@@ -873,10 +877,10 @@ Partial Class FrmFactura
         Me.Label3.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label3.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label3.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label3.Location = New System.Drawing.Point(167, 560)
+        Me.Label3.Location = New System.Drawing.Point(168, 560)
         Me.Label3.Name = "Label3"
         Me.Label3.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label3.Size = New System.Drawing.Size(108, 17)
+        Me.Label3.Size = New System.Drawing.Size(107, 17)
         Me.Label3.TabIndex = 98
         Me.Label3.Text = "Pago del cliente:"
         Me.Label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight
@@ -888,7 +892,7 @@ Partial Class FrmFactura
         Me.txtCambio.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtCambio.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!)
         Me.txtCambio.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtCambio.Location = New System.Drawing.Point(431, 558)
+        Me.txtCambio.Location = New System.Drawing.Point(422, 558)
         Me.txtCambio.MaxLength = 0
         Me.txtCambio.Name = "txtCambio"
         Me.txtCambio.ReadOnly = True
@@ -904,10 +908,10 @@ Partial Class FrmFactura
         Me.Label6.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label6.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label6.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label6.Location = New System.Drawing.Point(356, 560)
+        Me.Label6.Location = New System.Drawing.Point(360, 560)
         Me.Label6.Name = "Label6"
         Me.Label6.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label6.Size = New System.Drawing.Size(69, 17)
+        Me.Label6.Size = New System.Drawing.Size(56, 17)
         Me.Label6.TabIndex = 100
         Me.Label6.Text = "Cambio:"
         Me.Label6.TextAlign = System.Drawing.ContentAlignment.MiddleRight
@@ -1141,7 +1145,7 @@ Partial Class FrmFactura
         Me.txtMontoAdelanto.BackColor = System.Drawing.SystemColors.Window
         Me.txtMontoAdelanto.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtMontoAdelanto.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtMontoAdelanto.Location = New System.Drawing.Point(563, 558)
+        Me.txtMontoAdelanto.Location = New System.Drawing.Point(552, 558)
         Me.txtMontoAdelanto.MaxLength = 0
         Me.txtMontoAdelanto.Name = "txtMontoAdelanto"
         Me.txtMontoAdelanto.ReadOnly = True
@@ -1156,7 +1160,7 @@ Partial Class FrmFactura
         Me.Label14.BackColor = System.Drawing.Color.Transparent
         Me.Label14.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label14.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label14.Location = New System.Drawing.Point(501, 560)
+        Me.Label14.Location = New System.Drawing.Point(490, 560)
         Me.Label14.Name = "Label14"
         Me.Label14.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label14.Size = New System.Drawing.Size(56, 17)
@@ -1236,6 +1240,33 @@ Partial Class FrmFactura
         Me.Label9.Text = "Tipo Cambio:"
         Me.Label9.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
+        'txtExistencias
+        '
+        Me.txtExistencias.AcceptsReturn = True
+        Me.txtExistencias.BackColor = System.Drawing.SystemColors.Window
+        Me.txtExistencias.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtExistencias.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtExistencias.Location = New System.Drawing.Point(550, 169)
+        Me.txtExistencias.MaxLength = 0
+        Me.txtExistencias.Name = "txtExistencias"
+        Me.txtExistencias.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtExistencias.Size = New System.Drawing.Size(40, 20)
+        Me.txtExistencias.TabIndex = 196
+        Me.txtExistencias.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
+        '
+        'Label16
+        '
+        Me.Label16.BackColor = System.Drawing.Color.Transparent
+        Me.Label16.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label16.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label16.Location = New System.Drawing.Point(550, 149)
+        Me.Label16.Name = "Label16"
+        Me.Label16.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label16.Size = New System.Drawing.Size(40, 19)
+        Me.Label16.TabIndex = 195
+        Me.Label16.Text = "Stock"
+        Me.Label16.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
         'FrmFactura
         '
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
@@ -1243,6 +1274,8 @@ Partial Class FrmFactura
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(817, 642)
+        Me.Controls.Add(Me.txtExistencias)
+        Me.Controls.Add(Me.Label16)
         Me.Controls.Add(Me.cboTipoMoneda)
         Me.Controls.Add(Me.Label2)
         Me.Controls.Add(Me.txtTipoCambio)
@@ -1390,4 +1423,6 @@ Partial Class FrmFactura
     Public WithEvents Label2 As Label
     Public WithEvents txtTipoCambio As TextBox
     Public WithEvents Label9 As Label
+    Public WithEvents txtExistencias As TextBox
+    Public WithEvents Label16 As Label
 End Class

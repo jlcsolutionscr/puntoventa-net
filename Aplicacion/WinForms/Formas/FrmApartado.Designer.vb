@@ -102,6 +102,8 @@ Partial Class FrmApartado
         Me.Label4 = New System.Windows.Forms.Label()
         Me.Label5 = New System.Windows.Forms.Label()
         Me.Label9 = New System.Windows.Forms.Label()
+        Me.txtExistencias = New System.Windows.Forms.TextBox()
+        Me.Label16 = New System.Windows.Forms.Label()
         CType(Me.grdDetalleApartado, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.grdDesglosePago, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -190,7 +192,7 @@ Partial Class FrmApartado
         Me.btnImprimir.Size = New System.Drawing.Size(64, 21)
         Me.btnImprimir.TabIndex = 81
         Me.btnImprimir.TabStop = False
-        Me.btnImprimir.Text = "&Reporte"
+        Me.btnImprimir.Text = "&Tiquete"
         Me.btnImprimir.UseVisualStyleBackColor = False
         '
         'btnGuardar
@@ -608,7 +610,7 @@ Partial Class FrmApartado
         '
         Me.txtCodigo.Location = New System.Drawing.Point(8, 140)
         Me.txtCodigo.Name = "txtCodigo"
-        Me.txtCodigo.Size = New System.Drawing.Size(236, 20)
+        Me.txtCodigo.Size = New System.Drawing.Size(216, 20)
         Me.txtCodigo.TabIndex = 30
         '
         'Label1
@@ -630,12 +632,12 @@ Partial Class FrmApartado
         Me.txtDescripcion.BackColor = System.Drawing.SystemColors.Window
         Me.txtDescripcion.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtDescripcion.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtDescripcion.Location = New System.Drawing.Point(244, 140)
+        Me.txtDescripcion.Location = New System.Drawing.Point(224, 140)
         Me.txtDescripcion.MaxLength = 0
         Me.txtDescripcion.Name = "txtDescripcion"
         Me.txtDescripcion.ReadOnly = True
         Me.txtDescripcion.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtDescripcion.Size = New System.Drawing.Size(345, 20)
+        Me.txtDescripcion.Size = New System.Drawing.Size(325, 20)
         Me.txtDescripcion.TabIndex = 31
         Me.txtDescripcion.TabStop = False
         '
@@ -1010,6 +1012,33 @@ Partial Class FrmApartado
         Me.Label9.Text = "Tipo Cambio:"
         Me.Label9.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
+        'txtExistencias
+        '
+        Me.txtExistencias.AcceptsReturn = True
+        Me.txtExistencias.BackColor = System.Drawing.SystemColors.Window
+        Me.txtExistencias.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtExistencias.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtExistencias.Location = New System.Drawing.Point(549, 140)
+        Me.txtExistencias.MaxLength = 0
+        Me.txtExistencias.Name = "txtExistencias"
+        Me.txtExistencias.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtExistencias.Size = New System.Drawing.Size(40, 20)
+        Me.txtExistencias.TabIndex = 198
+        Me.txtExistencias.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
+        '
+        'Label16
+        '
+        Me.Label16.BackColor = System.Drawing.Color.Transparent
+        Me.Label16.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label16.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label16.Location = New System.Drawing.Point(549, 120)
+        Me.Label16.Name = "Label16"
+        Me.Label16.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label16.Size = New System.Drawing.Size(40, 19)
+        Me.Label16.TabIndex = 197
+        Me.Label16.Text = "Stock"
+        Me.Label16.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
         'FrmApartado
         '
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
@@ -1017,6 +1046,8 @@ Partial Class FrmApartado
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(817, 616)
+        Me.Controls.Add(Me.txtExistencias)
+        Me.Controls.Add(Me.Label16)
         Me.Controls.Add(Me.txtSaldoPorPagar)
         Me.Controls.Add(Me.Label10)
         Me.Controls.Add(Me.txtAutorizacion)
@@ -1143,4 +1174,6 @@ Partial Class FrmApartado
     Public WithEvents Label4 As Label
     Public WithEvents Label5 As Label
     Public WithEvents Label9 As Label
+    Public WithEvents txtExistencias As TextBox
+    Public WithEvents Label16 As Label
 End Class

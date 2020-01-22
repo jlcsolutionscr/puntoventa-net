@@ -15,7 +15,6 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public int IdFormaPago { get; set; }
         [ForeignKey("TipoMoneda")]
         public int IdTipoMoneda { get; set; }
-        public DateTime Fecha { get; set; }
         public int IdCuentaBanco { get; set; }
         [NotMapped]
         public string DescripcionCuenta { get; set; }

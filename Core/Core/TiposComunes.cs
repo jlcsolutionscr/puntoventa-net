@@ -158,9 +158,9 @@ namespace LeandroSoftware.Core.TiposComunes
         public static readonly string Rechazado = "rechazado";
     };
 
-    public class ReporteVentas
+    public class ReporteDetalle
     {
-        public int IdFactura { get; set; }
+        public int Id { get; set; }
         public string Fecha { get; set; }
         public string Nombre { get; set; }
         public string NoDocumento { get; set; }
@@ -179,33 +179,11 @@ namespace LeandroSoftware.Core.TiposComunes
         public decimal Total { get; set; }
     }
 
-    public class ReporteCompras
-    {
-        public int IdCompra { get; set; }
-        public string Fecha { get; set; }
-        public string Nombre { get; set; }
-        public string NoDocumento { get; set; }
-        public decimal Impuesto { get; set; }
-        public decimal Total { get; set; }
-    }
-
-    public class ReporteCuentasPorCobrar
+    public class ReporteCuentas
     {
         public int IdPropietario { get; set; }
         public string Nombre { get; set; }
-        public int IdCxC { get; set; }
-        public string Fecha { get; set; }
-        public string Descripcion { get; set; }
-        public string Referencia { get; set; }
-        public decimal Total { get; set; }
-        public decimal Saldo { get; set; }
-    }
-
-    public class ReporteCuentasPorPagar
-    {
-        public int IdPropietario { get; set; }
-        public string Nombre { get; set; }
-        public int IdCxP { get; set; }
+        public int IdCuenta { get; set; }
         public string Fecha { get; set; }
         public string Descripcion { get; set; }
         public string Referencia { get; set; }
@@ -261,25 +239,25 @@ namespace LeandroSoftware.Core.TiposComunes
         public decimal Saldo { get; set; }
     }
 
-    public class ReporteEstadoResultados
+    public class DescripcionValor
     {
-        public string NombreTipoRegistro { get; set; }
+        public DescripcionValor()
+        {
+        }
+
+        public DescripcionValor(string descripcion, decimal valor)
+        {
+            Descripcion = descripcion;
+            Valor = valor;
+        }
+
         public string Descripcion { get; set; }
         public decimal Valor { get; set; }
     }
 
-    public class ReporteDetalleEgreso
+    public class ReporteGrupoDetalle
     {
-        public int IdMov { get; set; }
-        public string Descripcion { get; set; }
-        public string Detalle { get; set; }
-        public string Fecha { get; set; }
-        public decimal Total { get; set; }
-    }
-
-    public class ReporteDetalleIngreso
-    {
-        public int IdMov { get; set; }
+        public int Id { get; set; }
         public string Descripcion { get; set; }
         public string Detalle { get; set; }
         public string Fecha { get; set; }
@@ -315,30 +293,6 @@ namespace LeandroSoftware.Core.TiposComunes
         public decimal Impuesto { get; set; }
         public decimal Descuento { get; set; }
         public decimal PorcentajeIVA { get; set; }
-    }
-
-    public class ReporteCierreDeCaja
-    {
-        public decimal FondoInicio { get; set; }
-        public decimal VentasPorMayor { get; set; }
-        public decimal VentasDetalle { get; set; }
-        public decimal VentasContado { get; set; }
-        public decimal VentasCredito { get; set; }
-        public decimal VentasTarjeta { get; set; }
-        public decimal OtrasVentas { get; set; }
-        public decimal RetencionIVA { get; set; }
-        public decimal ComisionVT { get; set; }
-        public decimal Liquidacion { get; set; }
-        public decimal IngresoCxCEfectivo { get; set; }
-        public decimal IngresoCxCTarjeta { get; set; }
-        public decimal DevolucionesProveedores { get; set; }
-        public decimal OtrosIngresos { get; set; }
-        public decimal ComprasContado { get; set; }
-        public decimal ComprasCredito { get; set; }
-        public decimal OtrasCompras { get; set; }
-        public decimal EgresoCxPEfectivo { get; set; }
-        public decimal DevolucionesClientes { get; set; }
-        public decimal OtrosEgresos { get; set; }
     }
 
     public class ReporteInventario
@@ -394,8 +348,6 @@ namespace LeandroSoftware.Core.TiposComunes
         public string Beneficiario { get; set; }
         public decimal Monto { get; set; }
         public string MontoEnLetras { get; set; }
-        public string Descripcion { get; set; }
-        public decimal MontoLocal { get; set; }
     }
 
     public class ReporteIngreso
@@ -406,8 +358,6 @@ namespace LeandroSoftware.Core.TiposComunes
         public string Detalle { get; set; }
         public decimal Monto { get; set; }
         public string MontoEnLetras { get; set; }
-        public string Descripcion { get; set; }
-        public decimal MontoLocal { get; set; }
     }
 
     public class ReporteDocumentoElectronico

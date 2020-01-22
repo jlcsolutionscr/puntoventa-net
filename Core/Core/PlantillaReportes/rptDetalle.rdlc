@@ -21,8 +21,8 @@
           <DataField>Fecha</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
-        <Field Name="IdFactura">
-          <DataField>IdFactura</DataField>
+        <Field Name="Id">
+          <DataField>Id</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
         <Field Name="Impuesto">
@@ -43,9 +43,9 @@
         </Field>
       </Fields>
       <rd:DataSetInfo>
-        <rd:DataSetName>LeandroSoftware.Puntoventa.CommonTypes</rd:DataSetName>
-        <rd:TableName>ReporteVentas</rd:TableName>
-        <rd:ObjectDataSourceType>LeandroSoftware.Puntoventa.CommonTypes.ReporteVentas, CommonTypes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</rd:ObjectDataSourceType>
+        <rd:DataSetName>LeandroSoftware.Core.TiposComunes</rd:DataSetName>
+        <rd:TableName>ReporteDetalle</rd:TableName>
+        <rd:ObjectDataSourceType>LeandroSoftware.Core.TiposComunes.ReporteDetalle, Core, Version=2.0.8.0, Culture=neutral, PublicKeyToken=null</rd:ObjectDataSourceType>
       </rd:DataSetInfo>
     </DataSet>
   </DataSets>
@@ -78,14 +78,14 @@
                   <TablixCells>
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="IdFactura">
+                        <Textbox Name="Id">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!IdFactura.Value</Value>
+                                  <Value>=Fields!Id.Value</Value>
                                   <Style>
                                     <FontFamily>Tahoma</FontFamily>
                                   </Style>
@@ -96,7 +96,7 @@
                               </Style>
                             </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>IdFactura</rd:DefaultName>
+                          <rd:DefaultName>Id</rd:DefaultName>
                           <Style>
                             <Border>
                               <Style>None</Style>
@@ -452,7 +452,7 @@
                 <Paragraph>
                   <TextRuns>
                     <TextRun>
-                      <Value>Id Fact.</Value>
+                      <Value>Id</Value>
                       <Style>
                         <FontFamily>Tahoma</FontFamily>
                         <FontWeight>Bold</FontWeight>

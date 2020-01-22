@@ -3,18 +3,17 @@ Imports LeandroSoftware.Core.TiposComunes
 Imports LeandroSoftware.Core.Dominio.Entidades
 Imports LeandroSoftware.ClienteWCF
 
-Public Class FrmGestionReciboCxC
+Public Class FrmGestionAbonoOrdenServicio
 #Region "Variables"
     Private dtbDetalleMovimiento As DataTable
     Private dtrRowDetMovimiento As DataRow
     Private bolInit As Boolean = True
     Private listadoMovimientos As IList(Of CuentaDetalle)
-    Private movimientoCuentaPorCobrar As MovimientoCuentaPorCobrar
-    Private cliente As Cliente
+    Private movimientoOrdenServicio As MovimientoOrdenServicio
+    Private ordenServicio As OrdenServicio
     'Variables de impresion
     Private reciboComprobante As ModuloImpresion.ClsRecibo
     Private desglosePagoImpresion As ModuloImpresion.ClsDesgloseFormaPago
-    Private arrDesgloseMov, arrDesglosePago As List(Of ModuloImpresion.ClsDesgloseFormaPago)
 #End Region
 
 #Region "Métodos"
@@ -58,10 +57,10 @@ Public Class FrmGestionReciboCxC
         grdDetalleRecibo.Columns.Add(dvcMonto)
     End Sub
 
-    Private Async Sub CargarDetalleMovimiento(ByVal intIdCliente As Integer)
+    Private Async Sub CargarDetalleMovimiento(ByVal intIdOrdenServicio As Integer)
         dtbDetalleMovimiento.Rows.Clear()
         Try
-            listadoMovimientos = Await Puntoventa.ObtenerListaMovimientosCxC(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, intIdCliente, FrmPrincipal.usuarioGlobal.Token)
+            listadoMovimientos = Await Puntoventa.ObtenerListadoMovimientosOrdenServicio(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, intIdOrdenServicio, FrmPrincipal.usuarioGlobal.Token)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
@@ -84,13 +83,13 @@ Public Class FrmGestionReciboCxC
             If grdDetalleRecibo.CurrentRow.Cells(0).Value.ToString <> "" Then
                 If MessageBox.Show("Desea anular este registro?", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
                     Try
-                        Await Puntoventa.AnularMovimientoCxC(grdDetalleRecibo.CurrentRow.Cells(0).Value, FrmPrincipal.usuarioGlobal.IdUsuario, FrmPrincipal.usuarioGlobal.Token)
+                        Await Puntoventa.AnularMovimientoOrdenServicio(grdDetalleRecibo.CurrentRow.Cells(0).Value, FrmPrincipal.usuarioGlobal.IdUsuario, FrmPrincipal.usuarioGlobal.Token)
                     Catch ex As Exception
                         MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         Exit Sub
                     End Try
                     MessageBox.Show("Transacción procesada satisfactoriamente. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
-                    CargarDetalleMovimiento(cliente.IdCliente)
+                    CargarDetalleMovimiento(ordenServicio.IdCliente)
                 End If
             Else
                 MessageBox.Show("Debe seleccionar un registro para procesar", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
@@ -100,60 +99,47 @@ Public Class FrmGestionReciboCxC
         End If
     End Sub
 
-    Private Async Sub btnBuscarCliente_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnBuscarCliente.Click
-        Dim formBusquedaCliente As New FrmBusquedaCliente()
+    Private Async Sub btnBuscarOrdenServicio_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnBuscarOrdenServicio.Click
+        Dim formBusquedaCliente As New FrmBusquedaOrdenServicio()
         FrmPrincipal.intBusqueda = 0
         formBusquedaCliente.ShowDialog()
         If FrmPrincipal.intBusqueda > 0 Then
-            If FrmPrincipal.intBusqueda = StaticValoresPorDefecto.ClienteContado Then
-                MessageBox.Show("El cliente indicado no corresponde a un cliente de crédito", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Exit Sub
-            End If
             Try
-                cliente = Await Puntoventa.ObtenerCliente(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
+                ordenServicio = Await Puntoventa.ObtenerOrdenServicio(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
-            txtNombreCliente.Text = cliente.Nombre
-            CargarDetalleMovimiento(cliente.IdCliente)
+            txtNombreCliente.Text = "Orden de servicio " & ordenServicio.IdOrden & " de " & ordenServicio.NombreCliente
+            CargarDetalleMovimiento(ordenServicio.IdOrden)
         End If
     End Sub
 
     Private Async Sub CmdImprimir_Click(sender As Object, e As EventArgs) Handles CmdImprimir.Click
         If grdDetalleRecibo.Rows.Count > 0 Then
             If grdDetalleRecibo.CurrentRow.Cells(0).Value.ToString <> "" Then
-                movimientoCuentaPorCobrar = Await Puntoventa.ObtenerMovimientoCxC(grdDetalleRecibo.CurrentRow.Cells(0).Value, FrmPrincipal.usuarioGlobal.Token)
+                Try
+                    movimientoOrdenServicio = Await Puntoventa.ObtenerMovimientoOrdenServicio(grdDetalleRecibo.CurrentRow.Cells(0).Value, FrmPrincipal.usuarioGlobal.Token)
+                Catch ex As Exception
+                    MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    Exit Sub
+                End Try
                 reciboComprobante = New ModuloImpresion.ClsRecibo With {
                     .usuario = FrmPrincipal.usuarioGlobal,
                     .empresa = FrmPrincipal.empresaGlobal,
                     .equipo = FrmPrincipal.equipoGlobal,
-                    .strConsecutivo = movimientoCuentaPorCobrar.IdMovCxC,
-                    .strNombre = txtNombreCliente.Text,
-                    .strFechaAbono = movimientoCuentaPorCobrar.Fecha,
-                    .strTotalAbono = FormatNumber(movimientoCuentaPorCobrar.Monto, 2)
+                    .strConsecutivo = movimientoOrdenServicio.IdMovOrden,
+                    .strNombre = movimientoOrdenServicio.OrdenServicio.NombreCliente,
+                    .strFechaAbono = movimientoOrdenServicio.Fecha,
+                    .strTotalAbono = FormatNumber(movimientoOrdenServicio.Monto, 2)
                 }
-                arrDesgloseMov = New List(Of ModuloImpresion.ClsDesgloseFormaPago)()
-                For Each desgloseMovimiento As DesgloseMovimientoCuentaPorCobrar In movimientoCuentaPorCobrar.DesgloseMovimientoCuentaPorCobrar
-                    desglosePagoImpresion = New ModuloImpresion.ClsDesgloseFormaPago With {
-                        .strDescripcion = desgloseMovimiento.CuentaPorCobrar.NroDocOrig,
-                        .strMonto = FormatNumber(desgloseMovimiento.Monto, 2)
-                    }
-                    arrDesgloseMov.Add(desglosePagoImpresion)
+                reciboComprobante.arrDesglosePago = New List(Of ModuloImpresion.ClsDesgloseFormaPago)()
+                For Each desglosePago As DesglosePagoMovimientoOrdenServicio In movimientoOrdenServicio.DesglosePagoMovimientoOrdenServicio
+                    desglosePagoImpresion = New ModuloImpresion.ClsDesgloseFormaPago(desglosePago.FormaPago.Descripcion, FormatNumber(desglosePago.MontoLocal, 2))
+                    reciboComprobante.arrDesglosePago.Add(desglosePagoImpresion)
                 Next
-                reciboComprobante.arrDesgloseMov = arrDesgloseMov
-                arrDesglosePago = New List(Of ModuloImpresion.ClsDesgloseFormaPago)()
-                For Each desglosePago As DesglosePagoMovimientoCuentaPorCobrar In movimientoCuentaPorCobrar.DesglosePagoMovimientoCuentaPorCobrar
-                    desglosePagoImpresion = New ModuloImpresion.ClsDesgloseFormaPago With {
-                        .strDescripcion = desglosePago.FormaPago.Descripcion,
-                        .strMonto = FormatNumber(desglosePago.MontoLocal, 2),
-                        .strNroDoc = desglosePago.NroMovimiento
-                    }
-                    arrDesglosePago.Add(desglosePagoImpresion)
-                Next
-                reciboComprobante.arrDesglosePago = arrDesglosePago
                 Try
-                    ModuloImpresion.ImprimirReciboCxC(reciboComprobante)
+                    ModuloImpresion.ImprimirReciboOrdenServicio(reciboComprobante)
                 Catch ex As Exception
                     MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
@@ -161,12 +147,10 @@ Public Class FrmGestionReciboCxC
             Else
                 MessageBox.Show("Debe seleccionar un registro para imprimir", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             End If
-        Else
-            MessageBox.Show("No existen registros para imprimir", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End If
     End Sub
 
-    Private Sub FrmAnulaReciboCxC_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+    Private Sub FrmGestionAbonoOrdenServicio_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
             IniciaDetalleMovimiento()
             EstablecerPropiedadesDataGridView()

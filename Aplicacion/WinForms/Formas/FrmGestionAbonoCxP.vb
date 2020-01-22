@@ -3,7 +3,7 @@ Imports LeandroSoftware.Core.TiposComunes
 Imports LeandroSoftware.Core.Dominio.Entidades
 Imports LeandroSoftware.ClienteWCF
 
-Public Class FrmGestionReciboCxP
+Public Class FrmGestionAbonoCxP
 #Region "Variables"
     Private dtbDetalleMovimiento As DataTable
     Private dtrRowDetMovimiento As DataRow
@@ -130,21 +130,14 @@ Public Class FrmGestionReciboCxP
                     .strTotalAbono = FormatNumber(MovimientoCuentaPorPagar.Monto, 2)
                 }
                 arrDesgloseMov = New List(Of ModuloImpresion.ClsDesgloseFormaPago)()
-                For Each desgloseMovimiento As DesgloseMovimientoCuentaPorPagar In MovimientoCuentaPorPagar.DesgloseMovimientoCuentaPorPagar
-                    desglosePagoImpresion = New ModuloImpresion.ClsDesgloseFormaPago With {
-                        .strDescripcion = desgloseMovimiento.CuentaPorPagar.NroDocOrig,
-                        .strMonto = FormatNumber(desgloseMovimiento.Monto, 2)
-                    }
+                For Each desgloseMovimiento As DesgloseMovimientoCuentaPorPagar In movimientoCuentaPorPagar.DesgloseMovimientoCuentaPorPagar
+                    desglosePagoImpresion = New ModuloImpresion.ClsDesgloseFormaPago(desgloseMovimiento.CuentaPorPagar.NroDocOrig, FormatNumber(desgloseMovimiento.Monto, 2))
                     arrDesgloseMov.Add(desglosePagoImpresion)
                 Next
                 reciboComprobante.arrDesgloseMov = arrDesgloseMov
                 arrDesglosePago = New List(Of ModuloImpresion.ClsDesgloseFormaPago)()
                 For Each desglosePago As DesglosePagoMovimientoCuentaPorPagar In MovimientoCuentaPorPagar.DesglosePagoMovimientoCuentaPorPagar
-                    desglosePagoImpresion = New ModuloImpresion.ClsDesgloseFormaPago With {
-                        .strDescripcion = desglosePago.FormaPago.Descripcion,
-                        .strMonto = FormatNumber(desglosePago.MontoLocal, 2),
-                        .strNroDoc = desglosePago.NroMovimiento
-                    }
+                    desglosePagoImpresion = New ModuloImpresion.ClsDesgloseFormaPago(desglosePago.FormaPago.Descripcion, FormatNumber(desglosePago.MontoLocal, 2))
                     arrDesglosePago.Add(desglosePagoImpresion)
                 Next
                 reciboComprobante.arrDesglosePago = arrDesglosePago

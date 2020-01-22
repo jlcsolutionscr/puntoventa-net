@@ -36,11 +36,11 @@ namespace LeandroSoftware.ServicioWeb.Contexto
         DbSet<DesglosePagoCompra> DesglosePagoCompraRepository { get; set; }
         DbSet<DesglosePagoDevolucionCliente> DesglosePagoDevolucionClienteRepository { get; set; }
         DbSet<DesglosePagoDevolucionProveedor> DesglosePagoDevolucionProveedorRepository { get; set; }
-        DbSet<DesglosePagoEgreso> DesglosePagoEgresoRepository { get; set; }
         DbSet<DesglosePagoFactura> DesglosePagoFacturaRepository { get; set; }
-        DbSet<DesglosePagoIngreso> DesglosePagoIngresoRepository { get; set; }
+        DbSet<DesglosePagoMovimientoApartado> DesglosePagoMovimientoApartado { get; set; }
         DbSet<DesglosePagoMovimientoCuentaPorCobrar> DesglosePagoMovimientoCuentaPorCobrarRepository { get; set; }
         DbSet<DesglosePagoMovimientoCuentaPorPagar> DesglosePagoMovimientoCuentaPorPagarRepository { get; set; }
+        DbSet<DesglosePagoMovimientoOrdenServicio> DesglosePagoMovimientoOrdenServicio { get; set; }
         DbSet<DesglosePagoOrdenServicio> DesglosePagoOrdenServicioRepository { get; set; }
         DbSet<DetalleAsiento> DetalleAsientoRepository { get; set; }
         DbSet<DetalleApartado> DetalleApartadoRepository { get; set; }
@@ -62,10 +62,12 @@ namespace LeandroSoftware.ServicioWeb.Contexto
         DbSet<FormaPago> FormaPagoRepository { get; set; }
         DbSet<Ingreso> IngresoRepository { get; set; }
         DbSet<Linea> LineaRepository { get; set; }
+        DbSet<MovimientoApartado> MovimientoApartadoRepository { get; set; }
+        DbSet<MovimientoBanco> MovimientoBancoRepository { get; set; }
         DbSet<MovimientoCuentaPorCobrar> MovimientoCuentaPorCobrarRepository { get; set; }
         DbSet<MovimientoCuentaPorPagar> MovimientoCuentaPorPagarRepository { get; set; }
-        DbSet<MovimientoBanco> MovimientoBancoRepository { get; set; }
         DbSet<MovimientoProducto> MovimientoProductoRepository { get; set; }
+        DbSet<MovimientoOrdenServicio> MovimientoOrdenServicioRepository { get; set; }
         DbSet<OrdenCompra> OrdenRepository { get; set; }
         DbSet<OrdenServicio> OrdenServicioRepository { get; set; }
         DbSet<Padron> PadronRepository { get; set; }
@@ -149,11 +151,11 @@ namespace LeandroSoftware.ServicioWeb.Contexto
         public DbSet<DesglosePagoCompra> DesglosePagoCompraRepository { get; set; }
         public DbSet<DesglosePagoDevolucionCliente> DesglosePagoDevolucionClienteRepository { get; set; }
         public DbSet<DesglosePagoDevolucionProveedor> DesglosePagoDevolucionProveedorRepository { get; set; }
-        public DbSet<DesglosePagoEgreso> DesglosePagoEgresoRepository { get; set; }
         public DbSet<DesglosePagoFactura> DesglosePagoFacturaRepository { get; set; }
-        public DbSet<DesglosePagoIngreso> DesglosePagoIngresoRepository { get; set; }
+        public DbSet<DesglosePagoMovimientoApartado> DesglosePagoMovimientoApartado { get; set; }
         public DbSet<DesglosePagoMovimientoCuentaPorCobrar> DesglosePagoMovimientoCuentaPorCobrarRepository { get; set; }
         public DbSet<DesglosePagoMovimientoCuentaPorPagar> DesglosePagoMovimientoCuentaPorPagarRepository { get; set; }
+        public DbSet<DesglosePagoMovimientoOrdenServicio> DesglosePagoMovimientoOrdenServicio { get; set; }
         public DbSet<DesglosePagoOrdenServicio> DesglosePagoOrdenServicioRepository { get; set; }
         public DbSet<DetalleAsiento> DetalleAsientoRepository { get; set; }
         public DbSet<DetalleApartado> DetalleApartadoRepository { get; set; }
@@ -175,9 +177,11 @@ namespace LeandroSoftware.ServicioWeb.Contexto
         public DbSet<FormaPago> FormaPagoRepository { get; set; }
         public DbSet<Ingreso> IngresoRepository { get; set; }
         public DbSet<Linea> LineaRepository { get; set; }
+        public DbSet<MovimientoApartado> MovimientoApartadoRepository { get; set; }
+        public DbSet<MovimientoBanco> MovimientoBancoRepository { get; set; }
         public DbSet<MovimientoCuentaPorCobrar> MovimientoCuentaPorCobrarRepository { get; set; }
         public DbSet<MovimientoCuentaPorPagar> MovimientoCuentaPorPagarRepository { get; set; }
-        public DbSet<MovimientoBanco> MovimientoBancoRepository { get; set; }
+        public DbSet<MovimientoOrdenServicio> MovimientoOrdenServicioRepository { get; set; }
         public DbSet<MovimientoProducto> MovimientoProductoRepository { get; set; }
         public DbSet<OrdenCompra> OrdenRepository { get; set; }
         public DbSet<OrdenServicio> OrdenServicioRepository { get; set; }
