@@ -87,7 +87,7 @@ Public Class FrmCierreDeCaja
             cierreCaja.FondoCierre = CDbl(txtCierreEfectivoProx.Text)
             cierreCaja.Observaciones = txtObservaciones.Text
             cierreCaja.DetalleEfectivoCierreCaja.Clear()
-            For Each c As Control In Controls
+            For Each c As Control In grbDetalleEfectivo.Controls
                 If c.Name.Contains("txtCantidad") Then
                     Dim denominacion As String = c.Name.Substring(11)
                     Dim detalle As DetalleEfectivoCierreCaja = New DetalleEfectivoCierreCaja With {
@@ -287,10 +287,10 @@ Public Class FrmCierreDeCaja
         End If
     End Sub
 
-    Private Sub txtDepositoBancario_Validated(sender As Object, e As EventArgs) Handles txtRetiroEfectivo.Validated
-        If txtRetiroEfectivo.Text = "" Then txtRetiroEfectivo.Text = "0"
-        txtRetiroEfectivo.Text = FormatNumber(txtRetiroEfectivo.Text, 2)
-        txtCierreEfectivoProx.Text = FormatNumber(CDbl(txtTotalEfectivo.Text) - CDbl(txtRetiroEfectivo.Text), 2)
+    Private Sub txtCierreEfectivoProx_Validated(sender As Object, e As EventArgs) Handles txtCierreEfectivoProx.Validated
+        If txtCierreEfectivoProx.Text = "" Then txtCierreEfectivoProx.Text = "0"
+        txtCierreEfectivoProx.Text = FormatNumber(txtCierreEfectivoProx.Text, 2)
+        txtRetiroEfectivo.Text = FormatNumber(CDbl(txtTotalEfectivo.Text) - CDbl(txtCierreEfectivoProx.Text), 2)
     End Sub
 
     Private Async Sub FrmCierreDeCaja_Closing(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles MyBase.Closing

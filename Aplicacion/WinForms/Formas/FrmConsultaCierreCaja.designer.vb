@@ -1156,7 +1156,6 @@ Partial Class FrmConsultaCierreCaja
         Me.txtObservaciones.Size = New System.Drawing.Size(865, 20)
         Me.txtObservaciones.TabIndex = 148
         Me.txtObservaciones.TabStop = False
-        Me.txtObservaciones.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'Label13
         '

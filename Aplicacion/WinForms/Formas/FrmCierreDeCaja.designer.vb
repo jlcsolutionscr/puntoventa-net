@@ -128,14 +128,14 @@ Partial Class FrmCierreDeCaja
         Me.Label12 = New System.Windows.Forms.Label()
         Me.txtObservaciones = New System.Windows.Forms.TextBox()
         Me.Label13 = New System.Windows.Forms.Label()
-        Me.GroupBox1 = New System.Windows.Forms.GroupBox()
+        Me.grbDetalleEfectivo = New System.Windows.Forms.GroupBox()
         Me.Label40 = New System.Windows.Forms.Label()
         Me.Label39 = New System.Windows.Forms.Label()
         Me.Label38 = New System.Windows.Forms.Label()
         Me.Label37 = New System.Windows.Forms.Label()
         Me.Label36 = New System.Windows.Forms.Label()
         Me.Label35 = New System.Windows.Forms.Label()
-        Me.GroupBox1.SuspendLayout()
+        Me.grbDetalleEfectivo.SuspendLayout()
         Me.SuspendLayout()
         '
         'txtFondoInicio
@@ -1605,7 +1605,6 @@ Partial Class FrmCierreDeCaja
         Me.txtCierreEfectivoProx.Location = New System.Drawing.Point(857, 493)
         Me.txtCierreEfectivoProx.MaxLength = 0
         Me.txtCierreEfectivoProx.Name = "txtCierreEfectivoProx"
-        Me.txtCierreEfectivoProx.ReadOnly = True
         Me.txtCierreEfectivoProx.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtCierreEfectivoProx.Size = New System.Drawing.Size(105, 20)
         Me.txtCierreEfectivoProx.TabIndex = 146
@@ -1636,6 +1635,7 @@ Partial Class FrmCierreDeCaja
         Me.txtRetiroEfectivo.Location = New System.Drawing.Point(857, 467)
         Me.txtRetiroEfectivo.MaxLength = 0
         Me.txtRetiroEfectivo.Name = "txtRetiroEfectivo"
+        Me.txtRetiroEfectivo.ReadOnly = True
         Me.txtRetiroEfectivo.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtRetiroEfectivo.Size = New System.Drawing.Size(105, 20)
         Me.txtRetiroEfectivo.TabIndex = 144
@@ -1654,7 +1654,7 @@ Partial Class FrmCierreDeCaja
         Me.Label12.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label12.Size = New System.Drawing.Size(132, 17)
         Me.Label12.TabIndex = 145
-        Me.Label12.Text = "Retiro de efectivo"
+        Me.Label12.Text = "Total de entrega"
         Me.Label12.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'txtObservaciones
@@ -1670,7 +1670,6 @@ Partial Class FrmCierreDeCaja
         Me.txtObservaciones.Size = New System.Drawing.Size(865, 20)
         Me.txtObservaciones.TabIndex = 148
         Me.txtObservaciones.TabStop = False
-        Me.txtObservaciones.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'Label13
         '
@@ -1686,50 +1685,50 @@ Partial Class FrmCierreDeCaja
         Me.Label13.Text = "Observaciones"
         Me.Label13.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
-        'GroupBox1
+        'grbDetalleEfectivo
         '
-        Me.GroupBox1.Controls.Add(Me.Label40)
-        Me.GroupBox1.Controls.Add(Me.Label39)
-        Me.GroupBox1.Controls.Add(Me.Label38)
-        Me.GroupBox1.Controls.Add(Me.Label37)
-        Me.GroupBox1.Controls.Add(Me.Label36)
-        Me.GroupBox1.Controls.Add(Me.Label35)
-        Me.GroupBox1.Controls.Add(Me.txtTotal50000)
-        Me.GroupBox1.Controls.Add(Me.txtCantidad50000)
-        Me.GroupBox1.Controls.Add(Me.Label46)
-        Me.GroupBox1.Controls.Add(Me.txtTotal20000)
-        Me.GroupBox1.Controls.Add(Me.txtCantidad20000)
-        Me.GroupBox1.Controls.Add(Me.Label45)
-        Me.GroupBox1.Controls.Add(Me.txtTotal10000)
-        Me.GroupBox1.Controls.Add(Me.txtCantidad10000)
-        Me.GroupBox1.Controls.Add(Me.Label44)
-        Me.GroupBox1.Controls.Add(Me.txtTotal5000)
-        Me.GroupBox1.Controls.Add(Me.txtCantidad5000)
-        Me.GroupBox1.Controls.Add(Me.Label43)
-        Me.GroupBox1.Controls.Add(Me.txtTotal1000)
-        Me.GroupBox1.Controls.Add(Me.txtCantidad1000)
-        Me.GroupBox1.Controls.Add(Me.Label42)
-        Me.GroupBox1.Controls.Add(Me.txtTotal2000)
-        Me.GroupBox1.Controls.Add(Me.txtCantidad2000)
-        Me.GroupBox1.Controls.Add(Me.Label41)
-        Me.GroupBox1.Controls.Add(Me.txtTotal500)
-        Me.GroupBox1.Controls.Add(Me.txtCantidad500)
-        Me.GroupBox1.Controls.Add(Me.txtTotal100)
-        Me.GroupBox1.Controls.Add(Me.txtCantidad100)
-        Me.GroupBox1.Controls.Add(Me.txtTotal50)
-        Me.GroupBox1.Controls.Add(Me.txtCantidad50)
-        Me.GroupBox1.Controls.Add(Me.txtTotal25)
-        Me.GroupBox1.Controls.Add(Me.txtCantidad25)
-        Me.GroupBox1.Controls.Add(Me.txtTotal10)
-        Me.GroupBox1.Controls.Add(Me.txtCantidad10)
-        Me.GroupBox1.Controls.Add(Me.txtTotal5)
-        Me.GroupBox1.Controls.Add(Me.txtCantidad5)
-        Me.GroupBox1.Location = New System.Drawing.Point(316, 283)
-        Me.GroupBox1.Name = "GroupBox1"
-        Me.GroupBox1.Size = New System.Drawing.Size(656, 177)
-        Me.GroupBox1.TabIndex = 150
-        Me.GroupBox1.TabStop = False
-        Me.GroupBox1.Text = "Detalle del efectivo en Flujo de Caja"
+        Me.grbDetalleEfectivo.Controls.Add(Me.Label40)
+        Me.grbDetalleEfectivo.Controls.Add(Me.Label39)
+        Me.grbDetalleEfectivo.Controls.Add(Me.Label38)
+        Me.grbDetalleEfectivo.Controls.Add(Me.Label37)
+        Me.grbDetalleEfectivo.Controls.Add(Me.Label36)
+        Me.grbDetalleEfectivo.Controls.Add(Me.Label35)
+        Me.grbDetalleEfectivo.Controls.Add(Me.txtTotal50000)
+        Me.grbDetalleEfectivo.Controls.Add(Me.txtCantidad50000)
+        Me.grbDetalleEfectivo.Controls.Add(Me.Label46)
+        Me.grbDetalleEfectivo.Controls.Add(Me.txtTotal20000)
+        Me.grbDetalleEfectivo.Controls.Add(Me.txtCantidad20000)
+        Me.grbDetalleEfectivo.Controls.Add(Me.Label45)
+        Me.grbDetalleEfectivo.Controls.Add(Me.txtTotal10000)
+        Me.grbDetalleEfectivo.Controls.Add(Me.txtCantidad10000)
+        Me.grbDetalleEfectivo.Controls.Add(Me.Label44)
+        Me.grbDetalleEfectivo.Controls.Add(Me.txtTotal5000)
+        Me.grbDetalleEfectivo.Controls.Add(Me.txtCantidad5000)
+        Me.grbDetalleEfectivo.Controls.Add(Me.Label43)
+        Me.grbDetalleEfectivo.Controls.Add(Me.txtTotal1000)
+        Me.grbDetalleEfectivo.Controls.Add(Me.txtCantidad1000)
+        Me.grbDetalleEfectivo.Controls.Add(Me.Label42)
+        Me.grbDetalleEfectivo.Controls.Add(Me.txtTotal2000)
+        Me.grbDetalleEfectivo.Controls.Add(Me.txtCantidad2000)
+        Me.grbDetalleEfectivo.Controls.Add(Me.Label41)
+        Me.grbDetalleEfectivo.Controls.Add(Me.txtTotal500)
+        Me.grbDetalleEfectivo.Controls.Add(Me.txtCantidad500)
+        Me.grbDetalleEfectivo.Controls.Add(Me.txtTotal100)
+        Me.grbDetalleEfectivo.Controls.Add(Me.txtCantidad100)
+        Me.grbDetalleEfectivo.Controls.Add(Me.txtTotal50)
+        Me.grbDetalleEfectivo.Controls.Add(Me.txtCantidad50)
+        Me.grbDetalleEfectivo.Controls.Add(Me.txtTotal25)
+        Me.grbDetalleEfectivo.Controls.Add(Me.txtCantidad25)
+        Me.grbDetalleEfectivo.Controls.Add(Me.txtTotal10)
+        Me.grbDetalleEfectivo.Controls.Add(Me.txtCantidad10)
+        Me.grbDetalleEfectivo.Controls.Add(Me.txtTotal5)
+        Me.grbDetalleEfectivo.Controls.Add(Me.txtCantidad5)
+        Me.grbDetalleEfectivo.Location = New System.Drawing.Point(316, 283)
+        Me.grbDetalleEfectivo.Name = "grbDetalleEfectivo"
+        Me.grbDetalleEfectivo.Size = New System.Drawing.Size(656, 177)
+        Me.grbDetalleEfectivo.TabIndex = 150
+        Me.grbDetalleEfectivo.TabStop = False
+        Me.grbDetalleEfectivo.Text = "Detalle del efectivo en Flujo de Caja"
         '
         'Label40
         '
@@ -1815,7 +1814,7 @@ Partial Class FrmCierreDeCaja
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(982, 561)
-        Me.Controls.Add(Me.GroupBox1)
+        Me.Controls.Add(Me.grbDetalleEfectivo)
         Me.Controls.Add(Me.txtObservaciones)
         Me.Controls.Add(Me.Label13)
         Me.Controls.Add(Me.txtCierreEfectivoProx)
@@ -1897,8 +1896,8 @@ Partial Class FrmCierreDeCaja
         Me.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Cierre Diario"
-        Me.GroupBox1.ResumeLayout(False)
-        Me.GroupBox1.PerformLayout()
+        Me.grbDetalleEfectivo.ResumeLayout(False)
+        Me.grbDetalleEfectivo.PerformLayout()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -1999,7 +1998,7 @@ Partial Class FrmCierreDeCaja
     Public WithEvents Label12 As Label
     Public WithEvents txtObservaciones As TextBox
     Public WithEvents Label13 As Label
-    Friend WithEvents GroupBox1 As GroupBox
+    Friend WithEvents grbDetalleEfectivo As GroupBox
     Public WithEvents Label40 As Label
     Public WithEvents Label39 As Label
     Public WithEvents Label38 As Label

@@ -157,14 +157,6 @@ Public Class FrmAplicaAbonoApartado
         cboTipoBanco.DataSource = Await Puntoventa.ObtenerListadoBancoAdquiriente(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
     End Function
 
-    Private Async Function CargarApartados() As Task
-        bolInit = True
-        cboApartado.ValueMember = "Id"
-        cboApartado.DisplayMember = "Descripcion"
-        cboApartado.DataSource = Await Puntoventa.ObtenerListadoApartadosConSaldo(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
-        bolInit = False
-    End Function
-
     Private Async Function CargarListaBancoAdquiriente() As Task
         cboTipoBanco.DataSource = Await Puntoventa.ObtenerListadoBancoAdquiriente(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
     End Function
@@ -181,19 +173,11 @@ Public Class FrmAplicaAbonoApartado
             EstablecerPropiedadesDataGridView()
             txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
             Await CargarCombos()
-            Await CargarApartados()
-            Try
-                apartado = Await Puntoventa.ObtenerApartado(cboApartado.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
-            Catch ex As Exception
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Exit Sub
-            End Try
-            txtMontoTotal.Text = FormatNumber(apartado.Total, 2)
-            txtSaldoActual.Text = FormatNumber(apartado.Total - apartado.MontoAdelanto, 2)
+            decTotal = 0
+            txtMonto.Text = FormatNumber(decTotal, 2)
             grdDesglosePago.DataSource = dtbDesglosePago
             bolInit = False
             cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
-            txtMonto.Text = FormatNumber(0, 2)
             txtSaldoPorPagar.Text = FormatNumber(decSaldoPorPagar, 2)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -204,14 +188,10 @@ Public Class FrmAplicaAbonoApartado
 
     Private Async Sub BtnAgregar_Click(sender As Object, e As EventArgs) Handles CmdAgregar.Click
         Await CargarListaBancoAdquiriente()
-        Try
-            apartado = Await Puntoventa.ObtenerApartado(cboApartado.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Exit Sub
-        End Try
-        txtMontoTotal.Text = FormatNumber(apartado.Total, 2)
-        txtSaldoActual.Text = FormatNumber(apartado.Total - apartado.MontoAdelanto, 2)
+        apartado = Nothing
+        txtNombreCliente.Text = ""
+        txtMontoTotal.Text = ""
+        txtSaldoActual.Text = ""
         txtDescripcion.Text = ""
         dtbDesglosePago.Rows.Clear()
         grdDesglosePago.Refresh()
@@ -246,7 +226,6 @@ Public Class FrmAplicaAbonoApartado
             MessageBox.Show("El total del desglose de pago del movimiento es superior al saldo por pagar.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         End If
-
         movimiento = New MovimientoApartado With {
             .IdEmpresa = apartado.IdEmpresa,
             .IdSucursal = FrmPrincipal.equipoGlobal.IdSucursal,
@@ -380,23 +359,6 @@ Public Class FrmAplicaAbonoApartado
         End If
     End Sub
 
-    Private Async Sub cboApartado_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboApartado.SelectedIndexChanged, cboApartado.SelectedIndexChanged
-        If Not bolInit And cboApartado.SelectedValue IsNot Nothing Then
-            Try
-                apartado = Await Puntoventa.ObtenerApartado(cboApartado.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
-            Catch ex As Exception
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Exit Sub
-            End Try
-            txtMontoTotal.Text = FormatNumber(apartado.Total, 2)
-            txtSaldoActual.Text = FormatNumber(apartado.Total - apartado.MontoAdelanto, 2)
-            dtbDesglosePago.Rows.Clear()
-            grdDesglosePago.Refresh()
-            CargarTotalesPago()
-            txtMontoPago.Text = ""
-        End If
-    End Sub
-
     Private Sub TxtMontoPago_Validated(sender As Object, e As EventArgs) Handles txtMontoPago.Validated
         If txtMontoPago.Text <> "" Then txtMontoPago.Text = FormatNumber(txtMontoPago.Text, 2)
     End Sub
@@ -413,6 +375,27 @@ Public Class FrmAplicaAbonoApartado
 
     Private Sub Valida_KeyPress(ByVal sender As Object, ByVal e As KeyPressEventArgs) Handles txtMonto.KeyPress, txtMontoPago.KeyPress
         FrmPrincipal.ValidaNumero(e, sender, True, 2, ".")
+    End Sub
+
+    Private Async Sub btnBuscarApartado_Click(sender As Object, e As EventArgs) Handles btnBuscarApartado.Click
+        Dim formBusquedaCliente As New FrmBusquedaApartado()
+        FrmPrincipal.intBusqueda = 0
+        formBusquedaCliente.ShowDialog()
+        If FrmPrincipal.intBusqueda > 0 Then
+            Try
+                apartado = Await Puntoventa.ObtenerApartado(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
+            Catch ex As Exception
+                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Exit Sub
+            End Try
+            txtNombreCliente.Text = "Apartado " & apartado.IdApartado & " de " & apartado.NombreCliente
+            txtMontoTotal.Text = FormatNumber(apartado.Total, 2)
+            txtSaldoActual.Text = FormatNumber(apartado.Total - apartado.MontoAdelanto, 2)
+            dtbDesglosePago.Rows.Clear()
+            grdDesglosePago.Refresh()
+            CargarTotalesPago()
+            txtMontoPago.Text = ""
+        End If
     End Sub
 #End Region
 End Class

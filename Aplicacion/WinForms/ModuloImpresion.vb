@@ -759,18 +759,25 @@ Public Class ModuloImpresion
                 lineas.Add(New ClsLineaImpresion(0, objImpresion.arrDesglosePago(i).strDescripcion, 0, 155, 10, StringAlignment.Near, False))
                 lineas.Add(New ClsLineaImpresion(1, objImpresion.arrDesglosePago(i).strMonto, 155, 131, 10, StringAlignment.Far, False))
             Next
-            lineas.Add(New ClsLineaImpresion(2, "Total de ingresos: " & objImpresion.strDescuento, 0, 286, 10, StringAlignment.Near, False))
+            lineas.Add(New ClsLineaImpresion(0, "Total de ingresos", 0, 286, 10, StringAlignment.Near, False))
+            lineas.Add(New ClsLineaImpresion(2, objImpresion.strDescuento, 0, 286, 10, StringAlignment.Far, False))
             lineas.Add(New ClsLineaImpresion(1, "Detalle de Egresos", 0, 286, 10, StringAlignment.Center, False))
             For i As Integer = 0 To objImpresion.arrDetalleComprobante.Count - 1
                 lineas.Add(New ClsLineaImpresion(0, objImpresion.arrDetalleComprobante(i).strDescripcion, 0, 155, 10, StringAlignment.Near, False))
                 lineas.Add(New ClsLineaImpresion(1, objImpresion.arrDetalleComprobante(i).strTotalLinea, 155, 131, 10, StringAlignment.Far, False))
             Next
-            lineas.Add(New ClsLineaImpresion(2, "Total de egresos: " & objImpresion.strImpuesto, 0, 286, 10, StringAlignment.Near, False))
-            lineas.Add(New ClsLineaImpresion(1, "Cierre de efectivo: " & objImpresion.strClaveNumerica, 0, 286, 10, StringAlignment.Near, True))
-            lineas.Add(New ClsLineaImpresion(1, "Efectivo en caja: " & objImpresion.strNombre, 0, 286, 10, StringAlignment.Near, False))
-            lineas.Add(New ClsLineaImpresion(1, "Diferen. efectivo: " & objImpresion.strDireccion, 0, 286, 10, StringAlignment.Near, False))
-            lineas.Add(New ClsLineaImpresion(1, "Retiro de efectivo: " & objImpresion.strCambio, 0, 286, 10, StringAlignment.Near, False))
-            lineas.Add(New ClsLineaImpresion(1, "Efectivo en caja: " & objImpresion.strPagoCon, 0, 286, 10, StringAlignment.Near, False))
+            lineas.Add(New ClsLineaImpresion(0, "Total de egresos", 0, 155, 10, StringAlignment.Near, False))
+            lineas.Add(New ClsLineaImpresion(2, objImpresion.strImpuesto, 155, 131, 10, StringAlignment.Far, False))
+            lineas.Add(New ClsLineaImpresion(0, "Cierre de efectivo", 0, 286, 10, StringAlignment.Near, True))
+            lineas.Add(New ClsLineaImpresion(1, objImpresion.strClaveNumerica, 0, 286, 10, StringAlignment.Far, True))
+            lineas.Add(New ClsLineaImpresion(0, "Efectivo en caja", 0, 286, 10, StringAlignment.Near, False))
+            lineas.Add(New ClsLineaImpresion(1, objImpresion.strNombre, 0, 286, 10, StringAlignment.Far, False))
+            lineas.Add(New ClsLineaImpresion(0, "Diferencia", 0, 286, 10, StringAlignment.Near, False))
+            lineas.Add(New ClsLineaImpresion(1, objImpresion.strDireccion, 0, 286, 10, StringAlignment.Far, False))
+            lineas.Add(New ClsLineaImpresion(0, "Total de entrega", 0, 286, 10, StringAlignment.Near, True))
+            lineas.Add(New ClsLineaImpresion(1, objImpresion.strCambio, 0, 286, 10, StringAlignment.Far, True))
+            lineas.Add(New ClsLineaImpresion(0, "Efectivo en caja", 0, 286, 10, StringAlignment.Near, False))
+            lineas.Add(New ClsLineaImpresion(2, objImpresion.strPagoCon, 0, 286, 10, StringAlignment.Far, False))
             Dim observaciones As String = "Nota: " & objImpresion.strDocumento
             While observaciones.Length > 34
                 lineas.Add(New ClsLineaImpresion(1, observaciones.Substring(0, 34), 0, 286, 10, StringAlignment.Near, False))

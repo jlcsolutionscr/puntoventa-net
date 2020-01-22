@@ -157,14 +157,6 @@ Public Class FrmAplicaAbonoOrdenServicio
         cboTipoBanco.DataSource = Await Puntoventa.ObtenerListadoBancoAdquiriente(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
     End Function
 
-    Private Async Function CargarOrdenServicio() As Task
-        bolInit = True
-        cboOrdenServicio.ValueMember = "Id"
-        cboOrdenServicio.DisplayMember = "Descripcion"
-        cboOrdenServicio.DataSource = Await Puntoventa.ObtenerListadoOrdenesServicioConSaldo(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
-        bolInit = False
-    End Function
-
     Private Async Function CargarListaBancoAdquiriente() As Task
         cboTipoBanco.DataSource = Await Puntoventa.ObtenerListadoBancoAdquiriente(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
     End Function
@@ -181,19 +173,11 @@ Public Class FrmAplicaAbonoOrdenServicio
             EstablecerPropiedadesDataGridView()
             txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
             Await CargarCombos()
-            Await CargarOrdenServicio()
-            Try
-                ordenServicio = Await Puntoventa.ObtenerOrdenServicio(cboOrdenServicio.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
-            Catch ex As Exception
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Exit Sub
-            End Try
-            txtMontoTotal.Text = FormatNumber(ordenServicio.Total, 2)
-            txtSaldoActual.Text = FormatNumber(ordenServicio.Total - ordenServicio.MontoAdelanto, 2)
+            decTotal = 0
+            txtMonto.Text = FormatNumber(decTotal, 2)
             grdDesglosePago.DataSource = dtbDesglosePago
             bolInit = False
             cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
-            txtMonto.Text = FormatNumber(0, 2)
             txtSaldoPorPagar.Text = FormatNumber(decSaldoPorPagar, 2)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -204,14 +188,10 @@ Public Class FrmAplicaAbonoOrdenServicio
 
     Private Async Sub BtnAgregar_Click(sender As Object, e As EventArgs) Handles CmdAgregar.Click
         Await CargarListaBancoAdquiriente()
-        Try
-            ordenServicio = Await Puntoventa.ObtenerOrdenServicio(cboOrdenServicio.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Exit Sub
-        End Try
-        txtMontoTotal.Text = FormatNumber(ordenServicio.Total, 2)
-        txtSaldoActual.Text = FormatNumber(ordenServicio.Total - ordenServicio.MontoAdelanto, 2)
+        ordenServicio = Nothing
+        txtNombreCliente.Text = ""
+        txtMontoTotal.Text = ""
+        txtSaldoActual.Text = ""
         txtDescripcion.Text = ""
         dtbDesglosePago.Rows.Clear()
         grdDesglosePago.Refresh()
@@ -246,7 +226,6 @@ Public Class FrmAplicaAbonoOrdenServicio
             MessageBox.Show("El total del desglose de pago del movimiento es superior al saldo por pagar.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         End If
-
         movimiento = New MovimientoOrdenServicio With {
             .IdEmpresa = ordenServicio.IdEmpresa,
             .IdSucursal = FrmPrincipal.equipoGlobal.IdSucursal,
@@ -380,23 +359,6 @@ Public Class FrmAplicaAbonoOrdenServicio
         End If
     End Sub
 
-    Private Async Sub cboOrdenServicio_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboOrdenServicio.SelectedIndexChanged, cboOrdenServicio.SelectedIndexChanged
-        If Not bolInit And cboOrdenServicio.SelectedValue IsNot Nothing Then
-            Try
-                ordenServicio = Await Puntoventa.ObtenerOrdenServicio(cboOrdenServicio.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
-            Catch ex As Exception
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Exit Sub
-            End Try
-            txtMontoTotal.Text = FormatNumber(ordenServicio.Total, 2)
-            txtSaldoActual.Text = FormatNumber(ordenServicio.Total - ordenServicio.MontoAdelanto, 2)
-            dtbDesglosePago.Rows.Clear()
-            grdDesglosePago.Refresh()
-            CargarTotalesPago()
-            txtMontoPago.Text = ""
-        End If
-    End Sub
-
     Private Sub TxtMontoPago_Validated(sender As Object, e As EventArgs) Handles txtMontoPago.Validated
         If txtMontoPago.Text <> "" Then txtMontoPago.Text = FormatNumber(txtMontoPago.Text, 2)
     End Sub
@@ -413,6 +375,27 @@ Public Class FrmAplicaAbonoOrdenServicio
 
     Private Sub Valida_KeyPress(ByVal sender As Object, ByVal e As KeyPressEventArgs) Handles txtMonto.KeyPress, txtMontoPago.KeyPress
         FrmPrincipal.ValidaNumero(e, sender, True, 2, ".")
+    End Sub
+
+    Private Async Sub btnBuscarOrdenServicio_Click(sender As Object, e As EventArgs) Handles btnBuscarOrdenServicio.Click
+        Dim formBusquedaCliente As New FrmBusquedaOrdenServicio()
+        FrmPrincipal.intBusqueda = 0
+        formBusquedaCliente.ShowDialog()
+        If FrmPrincipal.intBusqueda > 0 Then
+            Try
+                ordenServicio = Await Puntoventa.ObtenerOrdenServicio(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
+            Catch ex As Exception
+                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Exit Sub
+            End Try
+            txtNombreCliente.Text = "OrdenServicio " & ordenServicio.IdOrden & " de " & ordenServicio.NombreCliente
+            txtMontoTotal.Text = FormatNumber(ordenServicio.Total, 2)
+            txtSaldoActual.Text = FormatNumber(ordenServicio.Total - ordenServicio.MontoAdelanto, 2)
+            dtbDesglosePago.Rows.Clear()
+            grdDesglosePago.Refresh()
+            CargarTotalesPago()
+            txtMontoPago.Text = ""
+        End If
     End Sub
 #End Region
 End Class
