@@ -1,0 +1,7 @@
+export const SET_SERVICE_URL = 'config/SET_SERVICE_URL'
+export const SET_APP_READY = 'config/SET_APP_READY'
+export const SET_IDENTIFIER_LIST = 'config/SET_IDENTIFIER_LIST'
+export const GET_AVAILABLE_DEVICES = 'config/GET_AVAILABLE_DEVICES'
+export const SET_TERMINAL_LIST = 'config/SET_TERMINAL_LIST'
+export const SET_DEVICE_REGISTERED = 'config/SET_DEVICE_REGISTERED'
+export const SET_SIGNUP_ERROR = 'config/SET_SIGNUP_ERROR'
