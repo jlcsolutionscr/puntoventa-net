@@ -41,14 +41,14 @@ Public Class FrmMovimientoBanco
 
     Private Sub CmdAnular_Click(sender As Object, e As EventArgs) Handles CmdAnular.Click
         If txtIdMov.Text <> "" And cboIdCuenta.SelectedValue <> Nothing And cboIdTipo.SelectedValue <> Nothing Then
-            If MessageBox.Show("Desea anular este registro?", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
+            If MessageBox.Show("Desea anular este registro?", "JLC Solutions CR", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
                 Try
                     'servicioAuxiliarBancario.AnularMovimientoBanco(txtIdMov.Text, FrmMenuPrincipal.usuarioGlobal.IdUsuario)
                 Catch ex As Exception
-                    MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
                 End Try
-                MessageBox.Show("Transacción procesada satisfactoriamente. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                MessageBox.Show("Transacción procesada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 CmdAgregar_Click(CmdAgregar, New EventArgs())
             End If
         End If
@@ -62,7 +62,7 @@ Public Class FrmMovimientoBanco
             Try
                 'movimiento = servicioAuxiliarBancario.ObtenerMovimientoBanco(FrmMenuPrincipal.intBusqueda)
             Catch ex As Exception
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
             If movimiento IsNot Nothing Then
@@ -102,7 +102,7 @@ Public Class FrmMovimientoBanco
                     txtIdMov.Text = movimiento.IdMov
                 Catch ex As Exception
                     txtIdMov.Text = ""
-                    MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
                 End Try
             Else
@@ -112,18 +112,18 @@ Public Class FrmMovimientoBanco
                 Try
                     'servicioAuxiliarBancario.ActualizarMovimientoBanco(movimiento)
                 Catch ex As Exception
-                    MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
                 End Try
             End If
-            MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
             CmdImprimir.Enabled = True
             CmdAgregar.Enabled = True
             CmdAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
             CmdImprimir.Focus()
             CmdGuardar.Enabled = FrmPrincipal.usuarioGlobal.Modifica
         Else
-            MessageBox.Show("Información incompleta.  Favor verificar. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            MessageBox.Show("Información incompleta.  Favor verificar. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End If
     End Sub
 
@@ -138,7 +138,7 @@ Public Class FrmMovimientoBanco
             CargarCombos()
             txtMonto.Text = FormatNumber(0, 2)
         Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
         End Try
     End Sub

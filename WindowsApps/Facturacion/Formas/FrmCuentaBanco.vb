@@ -30,7 +30,7 @@ Public Class FrmCuentaBanco
             Try
                 datos = Await Puntoventa.ObtenerCuentaBanco(intIdCuenta, FrmPrincipal.usuarioGlobal.Token)
                 If datos Is Nothing Then
-                    MessageBox.Show("La cuenta bancaria seleccionada no existe", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                    MessageBox.Show("La cuenta bancaria seleccionada no existe", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                     Close()
                     Exit Sub
                 End If
@@ -39,7 +39,7 @@ Public Class FrmCuentaBanco
                 txtDescripcion.Text = datos.Descripcion
                 txtSaldo.Text = FormatNumber(datos.Saldo, 2)
             Catch ex As Exception
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Close()
             End Try
         Else
@@ -57,7 +57,7 @@ Public Class FrmCuentaBanco
         btnGuardar.Enabled = False
         Dim strCampo As String = ""
         If Not ValidarCampos(strCampo) Then
-            MessageBox.Show("El campo " & strCampo & " es requerido", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            MessageBox.Show("El campo " & strCampo & " es requerido", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         End If
         If datos.IdCuenta = 0 Then
@@ -75,10 +75,10 @@ Public Class FrmCuentaBanco
         Catch ex As Exception
             btnGuardar.Enabled = True
             btnGuardar.Focus()
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
         End Try
-        MessageBox.Show("Registro guardado satisfactoriamente", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        MessageBox.Show("Registro guardado satisfactoriamente", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
         Close()
     End Sub
 

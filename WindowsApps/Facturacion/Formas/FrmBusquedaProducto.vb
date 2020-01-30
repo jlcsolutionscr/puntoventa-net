@@ -7,7 +7,7 @@ Public Class FrmBusquedaProducto
     Public intIdSucursal As Integer
     Private intTotalRegistros As Integer
     Private intIndiceDePagina As Integer
-    Private intFilasPorPagina As Integer = 13
+    Private intFilasPorPagina As Integer = 16
     Private intCantidadDePaginas As Integer
 #End Region
 
@@ -32,12 +32,12 @@ Public Class FrmBusquedaProducto
 
         dvcCodigo.DataPropertyName = "Codigo"
         dvcCodigo.HeaderText = "Código"
-        dvcCodigo.Width = 100
+        dvcCodigo.Width = 110
         dgvListado.Columns.Add(dvcCodigo)
 
         dvcCodigoProveedor.DataPropertyName = "CodigoProveedor"
         dvcCodigoProveedor.HeaderText = "Código Prov"
-        dvcCodigoProveedor.Width = 100
+        dvcCodigoProveedor.Width = 110
         dgvListado.Columns.Add(dvcCodigoProveedor)
 
         dvcDescripcion.DataPropertyName = "Descripcion"
@@ -87,7 +87,7 @@ Public Class FrmBusquedaProducto
             dgvListado.DataSource = Await Puntoventa.ObtenerListadoProductos(FrmPrincipal.empresaGlobal.IdEmpresa, intIdSucursal, intNumeroPagina, intFilasPorPagina, bolIncluyeServicios, True, FrmPrincipal.usuarioGlobal.Token, cboLinea.SelectedValue, TxtCodigo.Text, txtCodigoProveedor.Text, TxtDesc.Text)
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Function
         End Try
         dgvListado.Refresh()
@@ -97,7 +97,7 @@ Public Class FrmBusquedaProducto
         Try
             intTotalRegistros = Await Puntoventa.ObtenerTotalListaProductos(FrmPrincipal.empresaGlobal.IdEmpresa, bolIncluyeServicios, True, FrmPrincipal.usuarioGlobal.Token, cboLinea.SelectedValue, TxtCodigo.Text, txtCodigoProveedor.Text, TxtDesc.Text)
         Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
             Exit Function
         End Try
@@ -162,7 +162,7 @@ Public Class FrmBusquedaProducto
             intIndiceDePagina = 1
             Await ActualizarDatos(intIndiceDePagina)
         Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
             Exit Sub
         End Try

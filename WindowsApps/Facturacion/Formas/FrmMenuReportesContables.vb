@@ -22,7 +22,7 @@ Public Class FrmMenuReportesContables
                     Try
                         'dtbDatos = servicioReportes.ObtenerReporteMovimientosContables(FrmMenuPrincipal.empresaGlobal.IdEmpresa, dtpFechaInicial.Text, dtpFechaFinal.Text)
                     Catch ex As Exception
-                        MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         Exit Sub
                     End Try
                     'reptMovimientosContables.SetDataSource(dtbDatos)
@@ -37,7 +37,7 @@ Public Class FrmMenuReportesContables
                     Try
                         'dtbDatos = servicioReportes.ObtenerReporteBalanceComprobacion(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intMes, intAnnio)
                     Catch ex As Exception
-                        MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         Exit Sub
                     End Try
                     'reptBalanceComprobacion.SetDataSource(dtbDatos)
@@ -52,7 +52,7 @@ Public Class FrmMenuReportesContables
                     Try
                         'dtbDatos = servicioReportes.ObtenerReporteBalanceComprobacion(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
                     Catch ex As Exception
-                        MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         Exit Sub
                     End Try
                     'reptBalanceComprobacion.SetDataSource(dtbDatos)
@@ -67,7 +67,7 @@ Public Class FrmMenuReportesContables
                     Try
                         'dtbDatos = servicioReportes.ObtenerReportePerdidasyGanancias(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
                     Catch ex As Exception
-                        MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         Exit Sub
                     End Try
                     'reptPerdidasyGanancias.SetDataSource(dtbDatos)
@@ -82,7 +82,7 @@ Public Class FrmMenuReportesContables
                         Try
                             'dtbDatos = servicioReportes.ObtenerReporteDetalleMovimientosCuentasDeBalance(FrmMenuPrincipal.empresaGlobal.IdEmpresa, FrmMenuPrincipal.intBusqueda, dtpFechaInicial.Text, dtpFechaFinal.Text)
                         Catch ex As Exception
-                            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                             Exit Sub
                         End Try
                         'reptDetalleBalanceComprobacion.SetDataSource(dtbDatos)

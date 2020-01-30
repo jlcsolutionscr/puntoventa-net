@@ -15,7 +15,7 @@ Public Class FrmConsultaCierreCaja
     Private dtrRowDetEfectivo As DataRow
     Private cierreCaja As CierreCaja
     Private lstReporte As List(Of DescripcionValor)
-    Private assembly As Assembly = Assembly.LoadFrom("Core.dll")
+    Private ReadOnly assembly As Assembly = Assembly.LoadFrom("Core.dll")
     Private comprobanteImpresion As ModuloImpresion.ClsComprobante
 #End Region
 
@@ -139,18 +139,19 @@ Public Class FrmConsultaCierreCaja
             txtSaldo.Text = FormatNumber(decEfectivoEnCaja - CDbl(txtTotalEfectivo.Text), 2)
             btnReporte.Focus()
         Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
         End Try
     End Sub
 
-    Private Async Sub btnImprimir_Click(sender As Object, e As EventArgs) Handles btnReporte.Click
-        Dim newFormReport As FrmReportViewer = New FrmReportViewer
-        newFormReport.Visible = False
+    Private Async Sub BtnImprimir_Click(sender As Object, e As EventArgs) Handles btnReporte.Click
+        Dim newFormReport As FrmReportViewer = New FrmReportViewer With {
+            .Visible = False
+        }
         Try
             lstReporte = Await Puntoventa.ObtenerReporteCierreDeCaja(cierreCaja.IdCierre, FrmPrincipal.usuarioGlobal.Token)
         Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
         End Try
         Dim rds As ReportDataSource = New ReportDataSource("dstDatos", lstReporte)
@@ -168,7 +169,7 @@ Public Class FrmConsultaCierreCaja
         newFormReport.ShowDialog()
     End Sub
 
-    Private Sub btnTiquete_Click(sender As Object, e As EventArgs) Handles btnTiquete.Click
+    Private Sub BtnTiquete_Click(sender As Object, e As EventArgs) Handles btnTiquete.Click
         Try
             comprobanteImpresion = New ModuloImpresion.ClsComprobante With {
                 .usuario = FrmPrincipal.usuarioGlobal,
@@ -185,39 +186,41 @@ Public Class FrmConsultaCierreCaja
                 .strDocumento = cierreCaja.Observaciones
             }
 
-            comprobanteImpresion.arrDesglosePago = New List(Of ModuloImpresion.ClsDesgloseFormaPago)
-            comprobanteImpresion.arrDesglosePago.Add(New ModuloImpresion.ClsDesgloseFormaPago("Inicio efectivo", FormatNumber(cierreCaja.FondoInicio)))
-            comprobanteImpresion.arrDesglosePago.Add(New ModuloImpresion.ClsDesgloseFormaPago("Abonos a apartados", FormatNumber(cierreCaja.AdelantosApartadoEfectivo)))
-            comprobanteImpresion.arrDesglosePago.Add(New ModuloImpresion.ClsDesgloseFormaPago("Abonos a ordenes", FormatNumber(cierreCaja.AdelantosOrdenEfectivo)))
-            comprobanteImpresion.arrDesglosePago.Add(New ModuloImpresion.ClsDesgloseFormaPago("Ventas efectivo", FormatNumber(cierreCaja.VentasEfectivo)))
-            comprobanteImpresion.arrDesglosePago.Add(New ModuloImpresion.ClsDesgloseFormaPago("Abonos a CxC", FormatNumber(cierreCaja.PagosCxCEfectivo)))
-            comprobanteImpresion.arrDesglosePago.Add(New ModuloImpresion.ClsDesgloseFormaPago("Devol. proveedores", FormatNumber(cierreCaja.DevolucionesProveedores)))
-            comprobanteImpresion.arrDesglosePago.Add(New ModuloImpresion.ClsDesgloseFormaPago("Otros ingresos", FormatNumber(cierreCaja.IngresosEfectivo)))
-            comprobanteImpresion.arrDetalleComprobante = New List(Of ModuloImpresion.ClsDetalleComprobante)
-            comprobanteImpresion.arrDetalleComprobante.Add(New ModuloImpresion.ClsDetalleComprobante With {
+            comprobanteImpresion.arrDesglosePago = New List(Of ModuloImpresion.ClsDesgloseFormaPago) From {
+                New ModuloImpresion.ClsDesgloseFormaPago("Inicio efectivo", FormatNumber(cierreCaja.FondoInicio)),
+                New ModuloImpresion.ClsDesgloseFormaPago("Abonos a apartados", FormatNumber(cierreCaja.AdelantosApartadoEfectivo)),
+                New ModuloImpresion.ClsDesgloseFormaPago("Abonos a ordenes", FormatNumber(cierreCaja.AdelantosOrdenEfectivo)),
+                New ModuloImpresion.ClsDesgloseFormaPago("Ventas efectivo", FormatNumber(cierreCaja.VentasEfectivo)),
+                New ModuloImpresion.ClsDesgloseFormaPago("Abonos a CxC", FormatNumber(cierreCaja.PagosCxCEfectivo)),
+                New ModuloImpresion.ClsDesgloseFormaPago("Devol. proveedores", FormatNumber(cierreCaja.DevolucionesProveedores)),
+                New ModuloImpresion.ClsDesgloseFormaPago("Otros ingresos", FormatNumber(cierreCaja.IngresosEfectivo))
+            }
+            comprobanteImpresion.arrDetalleComprobante = New List(Of ModuloImpresion.ClsDetalleComprobante) From {
+                New ModuloImpresion.ClsDetalleComprobante With {
                 .strDescripcion = "Compras efectivo",
                 .strTotalLinea = FormatNumber(cierreCaja.ComprasEfectivo)
-            })
-            comprobanteImpresion.arrDetalleComprobante.Add(New ModuloImpresion.ClsDetalleComprobante With {
+            },
+                New ModuloImpresion.ClsDetalleComprobante With {
                 .strDescripcion = "Pagos a CxP",
                 .strTotalLinea = FormatNumber(cierreCaja.PagosCxPEfectivo)
-            })
-            comprobanteImpresion.arrDetalleComprobante.Add(New ModuloImpresion.ClsDetalleComprobante With {
+            },
+                New ModuloImpresion.ClsDetalleComprobante With {
                 .strDescripcion = "Devol. clientes",
                 .strTotalLinea = FormatNumber(cierreCaja.DevolucionesClientes)
-            })
-            comprobanteImpresion.arrDetalleComprobante.Add(New ModuloImpresion.ClsDetalleComprobante With {
+            },
+                New ModuloImpresion.ClsDetalleComprobante With {
                 .strDescripcion = "Otros egresos",
                 .strTotalLinea = FormatNumber(cierreCaja.EgresosEfectivo)
-            })
+            }
+            }
             ModuloImpresion.ImprimirCierreEfectivo(comprobanteImpresion)
         Catch ex As Exception
-            MessageBox.Show("Error al tratar de imprimir: " & ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("Error al tratar de imprimir: " & ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
         End Try
     End Sub
 
-    Private Sub txtDepositoBancario_Validated(sender As Object, e As EventArgs) Handles txtRetiroEfectivo.Validated
+    Private Sub TxtDepositoBancario_Validated(sender As Object, e As EventArgs) Handles txtRetiroEfectivo.Validated
         If txtRetiroEfectivo.Text = "" Then txtRetiroEfectivo.Text = "0"
         txtRetiroEfectivo.Text = FormatNumber(txtRetiroEfectivo.Text, 2)
         txtCierreEfectivoProx.Text = FormatNumber(CDbl(txtTotalEfectivo.Text) - CDbl(txtRetiroEfectivo.Text), 2)

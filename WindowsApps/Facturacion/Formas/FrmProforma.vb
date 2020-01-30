@@ -351,7 +351,7 @@ Public Class FrmProforma
             End If
             txtCodigo.Focus()
         Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
         End Try
     End Sub
@@ -405,7 +405,7 @@ Public Class FrmProforma
                 vendedor = Await Puntoventa.ObtenerVendedorPorDefecto(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
                 txtVendedor.Text = vendedor.Nombre
             Catch ex As Exception
-                MessageBox.Show("Debe agregar al menos un vendedor al catalogo de vendedores para poder continuar.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Debe agregar al menos un vendedor al catalogo de vendedores para poder continuar.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Close()
                 Exit Sub
             End Try
@@ -419,14 +419,14 @@ Public Class FrmProforma
 
     Private Async Sub BtnAnular_Click(sender As Object, e As EventArgs) Handles btnAnular.Click
         If txtIdProforma.Text <> "" Then
-            If MessageBox.Show("Desea anular este registro?", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
+            If MessageBox.Show("Desea anular este registro?", "JLC Solutions CR", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
                 Try
                     Await Puntoventa.AnularProforma(txtIdProforma.Text, FrmPrincipal.usuarioGlobal.IdUsuario, FrmPrincipal.usuarioGlobal.Token)
                 Catch ex As Exception
-                    MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
                 End Try
-                MessageBox.Show("Transacción procesada satisfactoriamente. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                MessageBox.Show("Transacción procesada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 BtnAgregar_Click(btnAgregar, New EventArgs())
             End If
         End If
@@ -440,7 +440,7 @@ Public Class FrmProforma
             Try
                 proforma = Await Puntoventa.ObtenerProforma(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
             If proforma IsNot Nothing Then
@@ -472,7 +472,7 @@ Public Class FrmProforma
                 btnAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
                 bolInit = False
             Else
-                MessageBox.Show("No existe registro de proforma asociado al identificador seleccionado", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("No existe registro de proforma asociado al identificador seleccionado", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End If
         End If
     End Sub
@@ -486,11 +486,11 @@ Public Class FrmProforma
                 vendedor = Await Puntoventa.ObtenerVendedor(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
                 txtVendedor.Text = vendedor.Nombre
             Catch ex As Exception
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
             If vendedor Is Nothing Then
-                MessageBox.Show("El vendedor seleccionado no existe. Consulte a su proveedor.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("El vendedor seleccionado no existe. Consulte a su proveedor.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End If
         End If
@@ -525,11 +525,11 @@ Public Class FrmProforma
                 End If
                 CargarTotales()
             Catch ex As Exception
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
             If cliente Is Nothing Then
-                MessageBox.Show("El cliente de contado no se encuentra registrado en el sistema. Consulte a su proveedor.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("El cliente de contado no se encuentra registrado en el sistema. Consulte a su proveedor.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End If
         End If
@@ -547,7 +547,7 @@ Public Class FrmProforma
             Try
                 producto = Await Puntoventa.ObtenerProducto(intIdProducto, FrmPrincipal.equipoGlobal.IdSucursal, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
-                MessageBox.Show("Error al obtener la información del producto seleccionado. Intente mas tarde.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Error al obtener la información del producto seleccionado. Intente mas tarde.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
             CargarDatosProducto(producto)
@@ -557,7 +557,7 @@ Public Class FrmProforma
 
     Private Async Sub BtnGuardar_Click(sender As Object, e As EventArgs) Handles btnGuardar.Click
         If cliente Is Nothing Or vendedor Is Nothing Or txtFecha.Text = "" Or decTotal = 0 Then
-            MessageBox.Show("Información incompleta.  Favor verificar. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            MessageBox.Show("Información incompleta.  Favor verificar. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         End If
         btnImprimir.Focus()
@@ -599,7 +599,7 @@ Public Class FrmProforma
                 txtIdProforma.Text = ""
                 btnGuardar.Enabled = True
                 btnGuardar.Focus()
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
         Else
@@ -627,11 +627,11 @@ Public Class FrmProforma
             Catch ex As Exception
                 btnGuardar.Enabled = True
                 btnGuardar.Focus()
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
         End If
-        MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
         btnImprimir.Enabled = True
         btnImprimir.Focus()
         btnGenerarPDF.Enabled = True
@@ -649,7 +649,7 @@ Public Class FrmProforma
                 Try
                     proforma = Await Puntoventa.ObtenerProforma(txtIdProforma.Text, FrmPrincipal.usuarioGlobal.Token)
                 Catch ex As Exception
-                    MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
                 End Try
             End If
@@ -683,7 +683,7 @@ Public Class FrmProforma
                 comprobanteImpresion.arrDetalleComprobante = arrDetalleOrden
                 ModuloImpresion.ImprimirProforma(comprobanteImpresion)
             Catch ex As Exception
-                MessageBox.Show("Error al tratar de imprimir: " & ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Error al tratar de imprimir: " & ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
         End If
@@ -695,7 +695,7 @@ Public Class FrmProforma
                 Try
                     proforma = Await Puntoventa.ObtenerProforma(txtIdProforma.Text, FrmPrincipal.usuarioGlobal.Token)
                 Catch ex As Exception
-                    MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
                 End Try
             End If
@@ -779,7 +779,7 @@ Public Class FrmProforma
                 File.WriteAllBytes(pdfFilePath, pdfBytes)
                 Process.Start(pdfFilePath)
             Catch ex As Exception
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
         End If
@@ -791,7 +791,7 @@ Public Class FrmProforma
             If txtDescripcion.Text = "" Then strError = "La descripción no puede estar en blanco"
             If decPrecioVenta <= 0 Then strError = "El precio del producto no puede ser igual o menor a 0"
             If strError <> "" Then
-                MessageBox.Show(strError, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show(strError, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End If
             CargarLineaDetalleProforma(producto, txtDescripcion.Text, txtCantidad.Text, decPrecioVenta, txtPorcDesc.Text)
@@ -823,7 +823,7 @@ Public Class FrmProforma
                 Dim decTasaImpuesto As Decimal = producto.ParametroImpuesto.TasaImpuesto
                 decPrecioVenta = ObtenerPrecioVentaPorCliente(cliente, producto)
                 If CDbl(txtPorcDesc.Text) > FrmPrincipal.empresaGlobal.PorcentajeDescMaximo Then
-                    MessageBox.Show("El porcentaje ingresado es mayor al parametro establecido para la empresa", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    MessageBox.Show("El porcentaje ingresado es mayor al parametro establecido para la empresa", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     txtPorcDesc.Text = "0"
                     txtPrecio.Text = FormatNumber(decPrecioVenta, 2)
                 Else
@@ -873,7 +873,7 @@ Public Class FrmProforma
                     txtCodigo.Focus()
                 End If
             Catch ex As Exception
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
         End If
@@ -898,7 +898,7 @@ Public Class FrmProforma
                     Try
                         autorizado = Await Puntoventa.AutorizacionPrecioExtraordinario(FrmPrincipal.strCodigoUsuario, FrmPrincipal.strContrasena, FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
                     Catch ex As Exception
-                        MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         Exit Sub
                     End Try
                     If autorizado Then
@@ -908,7 +908,7 @@ Public Class FrmProforma
                         Dim decPrecioOriginal = ObtenerPrecioVentaPorCliente(cliente, producto)
                         txtPorcDesc.Text = FormatNumber(100 - (CDbl(txtPrecio.Text) * 100 / decPrecioOriginal), 2)
                     Else
-                        MessageBox.Show("Los credenciales ingresados no tienen permisos para modificar el precio de venta.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                        MessageBox.Show("Los credenciales ingresados no tienen permisos para modificar el precio de venta.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
                     End If
                 End If
             ElseIf e.KeyCode = Keys.Enter Then

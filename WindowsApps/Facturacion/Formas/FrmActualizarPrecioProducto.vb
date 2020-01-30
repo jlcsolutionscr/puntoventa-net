@@ -58,7 +58,7 @@ Public Class FrmActualizarPrecioProducto
         Try
             'GrdDetalle.DataSource = servicioMantenimiento.ObtenerListaProductos(FrmMenuPrincipal.empresaGlobal.IdEmpresa, 1, 0, False, cboLinea.SelectedValue, txtCodigo.Text, txtDescripcion.Text)
         Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
         End Try
         txtCodigo.Text = ""
@@ -73,19 +73,19 @@ Public Class FrmActualizarPrecioProducto
             cboLinea.SelectedValue = 0
             'GrdDetalle.DataSource = servicioMantenimiento.ObtenerListaProductos(FrmMenuPrincipal.empresaGlobal.IdEmpresa, 1, 0, False)
         Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
         End Try
     End Sub
 
     Private Sub BtnAplicar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnAplicar.Click
         If GrdDetalle.RowCount > 0 And txtPorcentaje.Text <> "" Then
-            If MessageBox.Show("Desea proceder con la aplicación de aumento sobre el precio de venta de los productos listados?", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+            If MessageBox.Show("Desea proceder con la aplicación de aumento sobre el precio de venta de los productos listados?", "JLC Solutions CR", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
                 'servicioMantenimiento.ActualizarPrecioVentaProductos(FrmMenuPrincipal.empresaGlobal.IdEmpresa, cboLinea.SelectedValue, txtCodigo.Text, txtDescripcion.Text, Decimal.Parse(txtPorcentaje.Text))
-                MessageBox.Show("Debe listar al menos un producto o ingresar el porcentaje de aumento.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Debe listar al menos un producto o ingresar el porcentaje de aumento.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End If
         Else
-            MessageBox.Show("Debe listar al menos un producto o ingresar el porcentaje de aumento.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("Debe listar al menos un producto o ingresar el porcentaje de aumento.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End If
     End Sub
 

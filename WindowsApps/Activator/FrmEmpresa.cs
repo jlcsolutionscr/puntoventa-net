@@ -304,7 +304,7 @@ namespace LeandroSoftware.Activator
                         cboDistrito.SelectedValue = empresa.IdDistrito;
                         cboBarrio.SelectedValue = empresa.IdBarrio;
                         txtDireccion.Text = empresa.Direccion;
-                        txtTelefono.Text = empresa.Telefono;
+                        txtTelefono.Text = empresa.Telefono1;
                         txtCorreoNotificacion.Text = empresa.CorreoNotificacion;
                         txtNombreCertificado.Text = empresa.NombreCertificado;
                         txtPinCertificado.Text = empresa.PinCertificado;
@@ -316,7 +316,6 @@ namespace LeandroSoftware.Activator
                         txtCantidadDocumentos.Text = empresa.CantidadDisponible.ToString();
                         chkContabiliza.Checked = empresa.Contabiliza;
                         chkAutoCompleta.Checked = empresa.AutoCompletaProducto;
-                        chkCierrePorTurnos.Checked = empresa.CierrePorTurnos;
                         chkRecibeDocumentos.Checked = empresa.RecepcionGastos;
                         chkFacturaElectronica.Checked = empresa.PermiteFacturar;
                         chkRegimenSimplificado.Checked = empresa.RegimenSimplificado;
@@ -413,7 +412,7 @@ namespace LeandroSoftware.Activator
                 empresa.IdDistrito = (int)cboDistrito.SelectedValue;
                 empresa.IdBarrio = (int)cboBarrio.SelectedValue;
                 empresa.Direccion = txtDireccion.Text;
-                empresa.Telefono = txtTelefono.Text;
+                empresa.Telefono1 = txtTelefono.Text;
                 empresa.CorreoNotificacion = txtCorreoNotificacion.Text;
                 empresa.NombreCertificado = txtNombreCertificado.Text;
                 empresa.PinCertificado = txtPinCertificado.Text;
@@ -433,7 +432,6 @@ namespace LeandroSoftware.Activator
                 empresa.CantidadDisponible = int.Parse(txtCantidadDocumentos.Text);
                 empresa.Contabiliza = chkContabiliza.Checked;
                 empresa.AutoCompletaProducto = chkAutoCompleta.Checked;
-                empresa.CierrePorTurnos = chkCierrePorTurnos.Checked;
                 empresa.RecepcionGastos = chkRecibeDocumentos.Checked;
                 empresa.PermiteFacturar = chkFacturaElectronica.Checked;
                 empresa.RegimenSimplificado = chkRegimenSimplificado.Checked;

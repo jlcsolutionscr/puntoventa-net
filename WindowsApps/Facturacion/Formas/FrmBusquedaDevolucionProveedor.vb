@@ -35,7 +35,7 @@ Public Class FrmBusquedaDevolucionProveedor
             'dgvListado.DataSource = servicioCompras.ObtenerListaDevolucionesPorProveedor(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, intId, txtNombre.Text)
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
             Exit Sub
         End Try
@@ -46,7 +46,7 @@ Public Class FrmBusquedaDevolucionProveedor
         Try
             'intTotalRegistros = servicioCompras.ObtenerTotalListaDevolucionesPorProveedor(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intId, txtNombre.Text)
         Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
             Exit Sub
         End Try
@@ -101,7 +101,7 @@ Public Class FrmBusquedaDevolucionProveedor
             intIndiceDePagina = 1
             ActualizarDatos(intIndiceDePagina)
         Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
             Exit Sub
         End Try

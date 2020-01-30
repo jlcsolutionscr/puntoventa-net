@@ -121,6 +121,8 @@ Partial Class FrmFactura
         Me.Label9 = New System.Windows.Forms.Label()
         Me.txtExistencias = New System.Windows.Forms.TextBox()
         Me.Label16 = New System.Windows.Forms.Label()
+        Me.txtReferencia = New System.Windows.Forms.TextBox()
+        Me.Label3 = New System.Windows.Forms.Label()
         CType(Me.grdDetalleFactura, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.grdDesglosePago, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -1202,6 +1204,35 @@ Partial Class FrmFactura
         Me.Label16.Text = "Stock"
         Me.Label16.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
+        'txtReferencia
+        '
+        Me.txtReferencia.AcceptsReturn = True
+        Me.txtReferencia.BackColor = System.Drawing.SystemColors.Window
+        Me.txtReferencia.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtReferencia.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtReferencia.Location = New System.Drawing.Point(553, 90)
+        Me.txtReferencia.MaxLength = 0
+        Me.txtReferencia.Name = "txtReferencia"
+        Me.txtReferencia.ReadOnly = True
+        Me.txtReferencia.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtReferencia.Size = New System.Drawing.Size(145, 20)
+        Me.txtReferencia.TabIndex = 197
+        Me.txtReferencia.TabStop = False
+        Me.txtReferencia.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        '
+        'Label3
+        '
+        Me.Label3.BackColor = System.Drawing.Color.Transparent
+        Me.Label3.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label3.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label3.Location = New System.Drawing.Point(471, 90)
+        Me.Label3.Name = "Label3"
+        Me.Label3.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label3.Size = New System.Drawing.Size(76, 19)
+        Me.Label3.TabIndex = 198
+        Me.Label3.Text = "Referencia:"
+        Me.Label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
         'FrmFactura
         '
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
@@ -1209,6 +1240,8 @@ Partial Class FrmFactura
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(817, 642)
+        Me.Controls.Add(Me.Label3)
+        Me.Controls.Add(Me.txtReferencia)
         Me.Controls.Add(Me.txtExistencias)
         Me.Controls.Add(Me.Label16)
         Me.Controls.Add(Me.cboTipoMoneda)
@@ -1352,4 +1385,6 @@ Partial Class FrmFactura
     Public WithEvents Label9 As Label
     Public WithEvents txtExistencias As TextBox
     Public WithEvents Label16 As Label
+    Public WithEvents txtReferencia As TextBox
+    Public WithEvents Label3 As Label
 End Class

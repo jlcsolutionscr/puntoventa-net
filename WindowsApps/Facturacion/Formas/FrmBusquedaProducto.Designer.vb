@@ -119,7 +119,7 @@ Partial Class FrmBusquedaProducto
         Me.dgvListado.ReadOnly = True
         Me.dgvListado.RowHeadersVisible = False
         Me.dgvListado.ScrollBars = System.Windows.Forms.ScrollBars.None
-        Me.dgvListado.Size = New System.Drawing.Size(1020, 380)
+        Me.dgvListado.Size = New System.Drawing.Size(1020, 375)
         Me.dgvListado.TabIndex = 5
         Me.dgvListado.TabStop = False
         '

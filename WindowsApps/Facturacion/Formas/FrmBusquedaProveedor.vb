@@ -30,7 +30,7 @@ Public Class FrmBusquedaProveedor
             dgvListado.DataSource = Await Puntoventa.ObtenerListadoProveedores(FrmPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, txtNombre.Text, FrmPrincipal.usuarioGlobal.Token)
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
             Exit Function
         End Try
@@ -41,7 +41,7 @@ Public Class FrmBusquedaProveedor
         Try
             intTotalRegistros = Await Puntoventa.ObtenerTotalListaProveedores(FrmPrincipal.empresaGlobal.IdEmpresa, txtNombre.Text, FrmPrincipal.usuarioGlobal.Token)
         Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
             Exit Function
         End Try
@@ -92,7 +92,7 @@ Public Class FrmBusquedaProveedor
             intIndiceDePagina = 1
             Await ActualizarDatos(intIndiceDePagina)
         Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
         End Try
     End Sub

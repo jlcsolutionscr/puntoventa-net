@@ -34,7 +34,7 @@ Public Class FrmBusquedaMovimientoBanco
             'dgvListado.DataSource = servicioAuxiliarBancario.ObtenerListaMovimientos(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, txtDescripcion.Text)
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
             Exit Sub
         End Try
@@ -45,7 +45,7 @@ Public Class FrmBusquedaMovimientoBanco
         Try
             'intTotalRegistros = servicioAuxiliarBancario.ObtenerTotalListaMovimientos(FrmMenuPrincipal.empresaGlobal.IdEmpresa, txtDescripcion.Text)
         Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
             Exit Sub
         End Try
@@ -96,7 +96,7 @@ Public Class FrmBusquedaMovimientoBanco
             intIndiceDePagina = 1
             ActualizarDatos(intIndiceDePagina)
         Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
             Exit Sub
         End Try

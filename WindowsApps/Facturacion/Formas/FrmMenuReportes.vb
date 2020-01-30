@@ -37,7 +37,7 @@ Public Class FrmMenuReportes
             FechaInicio.Text = "01/" & Date.Now.Month & "/" & Date.Now.Year
             FechaFinal.Text = Date.DaysInMonth(Date.Now.Year, Date.Now.Month) & "/" & Date.Now.Month & "/" & Date.Now.Year
         Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
             Exit Sub
         End Try
@@ -51,7 +51,7 @@ Public Class FrmMenuReportes
                 cliente = Await Puntoventa.ObtenerCliente(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
                 txtCliente.Text = cliente.Nombre
             Catch ex As Exception
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
 
@@ -67,7 +67,7 @@ Public Class FrmMenuReportes
                 proveedor = Await Puntoventa.ObtenerProveedor(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
                 txtProveedor.Text = proveedor.Nombre
             Catch ex As Exception
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
 
@@ -92,7 +92,7 @@ Public Class FrmMenuReportes
                     Try
                         datosReporte = Await Puntoventa.ObtenerReporteProformas(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FechaInicio.Text, FechaFinal.Text, StaticTipoNulo.NoNulo, FrmPrincipal.usuarioGlobal.Token)
                     Catch ex As Exception
-                        MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         CmdVistaPrevia.Enabled = True
                         Exit Sub
                     End Try
@@ -115,7 +115,7 @@ Public Class FrmMenuReportes
                     Try
                         datosReporte = Await Puntoventa.ObtenerReporteProformas(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FechaInicio.Text, FechaFinal.Text, StaticTipoNulo.Nulo, FrmPrincipal.usuarioGlobal.Token)
                     Catch ex As Exception
-                        MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         CmdVistaPrevia.Enabled = True
                         Exit Sub
                     End Try
@@ -138,7 +138,7 @@ Public Class FrmMenuReportes
                     Try
                         datosReporte = Await Puntoventa.ObtenerReporteApartados(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FechaInicio.Text, FechaFinal.Text, StaticTipoNulo.NoNulo, FrmPrincipal.usuarioGlobal.Token)
                     Catch ex As Exception
-                        MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         CmdVistaPrevia.Enabled = True
                         Exit Sub
                     End Try
@@ -161,7 +161,7 @@ Public Class FrmMenuReportes
                     Try
                         datosReporte = Await Puntoventa.ObtenerReporteApartados(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FechaInicio.Text, FechaFinal.Text, StaticTipoNulo.Nulo, FrmPrincipal.usuarioGlobal.Token)
                     Catch ex As Exception
-                        MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         CmdVistaPrevia.Enabled = True
                         Exit Sub
                     End Try
@@ -184,7 +184,7 @@ Public Class FrmMenuReportes
                     Try
                         datosReporte = Await Puntoventa.ObtenerReporteOrdenesServicio(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FechaInicio.Text, FechaFinal.Text, StaticTipoNulo.NoNulo, FrmPrincipal.usuarioGlobal.Token)
                     Catch ex As Exception
-                        MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         CmdVistaPrevia.Enabled = True
                         Exit Sub
                     End Try
@@ -207,7 +207,7 @@ Public Class FrmMenuReportes
                     Try
                         datosReporte = Await Puntoventa.ObtenerReporteOrdenesServicio(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FechaInicio.Text, FechaFinal.Text, StaticTipoNulo.Nulo, FrmPrincipal.usuarioGlobal.Token)
                     Catch ex As Exception
-                        MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         CmdVistaPrevia.Enabled = True
                         Exit Sub
                     End Try
@@ -234,7 +234,7 @@ Public Class FrmMenuReportes
                         dtListaFormaPago = Await Puntoventa.ObtenerListadoCondicionVentaYFormaPagoFactura(FrmPrincipal.usuarioGlobal.Token)
                         formaMenuTipoTransaccion.clFormasPago = dtListaFormaPago
                     Catch ex As Exception
-                        MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         CmdVistaPrevia.Enabled = True
                         Exit Sub
                     End Try
@@ -257,7 +257,7 @@ Public Class FrmMenuReportes
                             Try
                                 datosReporte = Await Puntoventa.ObtenerReporteVentasPorCliente(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FechaInicio.Text, FechaFinal.Text, intIdCliente, StaticTipoNulo.NoNulo, intFormaPago, FrmPrincipal.usuarioGlobal.Token)
                             Catch ex As Exception
-                                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                                 CmdVistaPrevia.Enabled = True
                                 Exit Sub
                             End Try
@@ -283,7 +283,7 @@ Public Class FrmMenuReportes
                     Try
                         datosReporte = Await Puntoventa.ObtenerReporteVentasPorCliente(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FechaInicio.Text, FechaFinal.Text, intIdCliente, StaticTipoNulo.Nulo, -1, FrmPrincipal.usuarioGlobal.Token)
                     Catch ex As Exception
-                        MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         CmdVistaPrevia.Enabled = True
                         Exit Sub
                     End Try
@@ -308,7 +308,7 @@ Public Class FrmMenuReportes
                         Try
                             datosReporte = Await Puntoventa.ObtenerReporteVentasPorVendedor(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FechaInicio.Text, FechaFinal.Text, FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
                         Catch ex As Exception
-                            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                             CmdVistaPrevia.Enabled = True
                             Exit Sub
                         End Try
@@ -335,7 +335,7 @@ Public Class FrmMenuReportes
                         dtListaFormaPago = Await Puntoventa.ObtenerListadoCondicionVentaYFormaPagoCompra(FrmPrincipal.usuarioGlobal.Token)
                         formaMenuTipoTransaccion.clFormasPago = dtListaFormaPago
                     Catch ex As Exception
-                        MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         CmdVistaPrevia.Enabled = True
                         Exit Sub
                     End Try
@@ -356,7 +356,7 @@ Public Class FrmMenuReportes
                             Try
                                 datosReporte = Await Puntoventa.ObtenerReporteComprasPorProveedor(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FechaInicio.Text, FechaFinal.Text, intIdProveedor, StaticTipoNulo.NoNulo, intFormaPago, FrmPrincipal.usuarioGlobal.Token)
                             Catch ex As Exception
-                                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                                 Exit Sub
                             End Try
                             Dim rds As ReportDataSource = New ReportDataSource("dstDatos", datosReporte)
@@ -380,7 +380,7 @@ Public Class FrmMenuReportes
                     Try
                         datosReporte = Await Puntoventa.ObtenerReporteComprasPorProveedor(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FechaInicio.Text, FechaFinal.Text, intIdProveedor, StaticTipoNulo.Nulo, -1, FrmPrincipal.usuarioGlobal.Token)
                     Catch ex As Exception
-                        MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         Exit Sub
                     End Try
                     Dim rds As ReportDataSource = New ReportDataSource("dstDatos", datosReporte)
@@ -402,7 +402,7 @@ Public Class FrmMenuReportes
                     Try
                         datosReporte = Await Puntoventa.ObtenerReporteCuentasPorCobrarClientes(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FechaInicio.Text, FechaFinal.Text, intIdCliente, FrmPrincipal.usuarioGlobal.Token)
                     Catch ex As Exception
-                        MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         Exit Sub
                     End Try
                     Dim rds As ReportDataSource = New ReportDataSource("dstDatos", datosReporte)
@@ -424,7 +424,7 @@ Public Class FrmMenuReportes
                     Try
                         datosReporte = Await Puntoventa.ObtenerReporteCuentasPorPagarProveedores(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FechaInicio.Text, FechaFinal.Text, intIdProveedor, FrmPrincipal.usuarioGlobal.Token)
                     Catch ex As Exception
-                        MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         Exit Sub
                     End Try
                     Dim rds As ReportDataSource = New ReportDataSource("dstDatos", datosReporte)
@@ -446,7 +446,7 @@ Public Class FrmMenuReportes
                     Try
                         datosReporte = Await Puntoventa.ObtenerReporteMovimientosCxCClientes(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FechaInicio.Text, FechaFinal.Text, intIdCliente, FrmPrincipal.usuarioGlobal.Token)
                     Catch ex As Exception
-                        MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         Exit Sub
                     End Try
                     Dim rds As ReportDataSource = New ReportDataSource("dstDatos", datosReporte)
@@ -468,7 +468,7 @@ Public Class FrmMenuReportes
                     Try
                         datosReporte = Await Puntoventa.ObtenerReporteMovimientosCxPProveedores(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FechaInicio.Text, FechaFinal.Text, intIdProveedor, FrmPrincipal.usuarioGlobal.Token)
                     Catch ex As Exception
-                        MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         Exit Sub
                     End Try
                     Dim rds As ReportDataSource = New ReportDataSource("dstDatos", datosReporte)
@@ -494,7 +494,7 @@ Public Class FrmMenuReportes
                 '            Try
                 '                datosReporte = Await Puntoventa.ObtenerReporteMovimientosBanco(FrmPrincipal.intBusqueda, FechaInicio.Text, FechaFinal.Text, FrmPrincipal.usuarioGlobal.Token)
                 '            Catch ex As Exception
-                '                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                '                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 '                Exit Sub
                 '            End Try
                 '            reptConciliacionBancaria.SetDataSource(datosReporte)
@@ -509,7 +509,7 @@ Public Class FrmMenuReportes
                     Try
                         datosReporte = Await Puntoventa.ObtenerReporteEstadoResultados(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FechaInicio.Text, FechaFinal.Text, FrmPrincipal.usuarioGlobal.Token)
                     Catch ex As Exception
-                        MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         CmdVistaPrevia.Enabled = True
                         Exit Sub
                     End Try
@@ -533,7 +533,7 @@ Public Class FrmMenuReportes
                         Try
                             datosReporte = Await Puntoventa.ObtenerReporteDetalleEgreso(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FrmPrincipal.intBusqueda, FechaInicio.Text, FechaFinal.Text, FrmPrincipal.usuarioGlobal.Token)
                         Catch ex As Exception
-                            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                             CmdVistaPrevia.Enabled = True
                             Exit Sub
                         End Try
@@ -559,7 +559,7 @@ Public Class FrmMenuReportes
                         Try
                             datosReporte = Await Puntoventa.ObtenerReporteDetalleIngreso(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FrmPrincipal.intBusqueda, FechaInicio.Text, FechaFinal.Text, FrmPrincipal.usuarioGlobal.Token)
                         Catch ex As Exception
-                            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                             Exit Sub
                         End Try
                         Dim rds As ReportDataSource = New ReportDataSource("dstDatos", datosReporte)
@@ -583,11 +583,11 @@ Public Class FrmMenuReportes
                 '    Try
                 '        datosReporte = Await Puntoventa.ObtenerReporteVentasPorLineaResumen(FrmPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text, FrmPrincipal.usuarioGlobal.Token)
                 '    Catch ex As Exception
-                '        MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                '        MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 '        Exit Sub
                 '    End Try
                 '    If datosReporte.Count = 0 Then
-                '        MessageBox.Show("No existen registros de ventas para los parámetros ingresados", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error, FrmPrincipal.usuarioGlobal.Token)
+                '        MessageBox.Show("No existen registros de ventas para los parámetros ingresados", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error, FrmPrincipal.usuarioGlobal.Token)
                 '        Exit Sub
                 '    End If
                 '    reptVentasxLineaResumen.SetDataSource(datosReporte)
@@ -603,11 +603,11 @@ Public Class FrmMenuReportes
                 '        Try
                 '            datosReporte = Await Puntoventa.ObtenerReporteVentasPorLineaDetalle(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.intBusqueda, FechaInicio.Text, FechaFinal.Text, FrmPrincipal.usuarioGlobal.Token)
                 '        Catch ex As Exception
-                '            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                '            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 '            Exit Sub
                 '        End Try
                 '        If datosReporte.Count = 0 Then
-                '            MessageBox.Show("No existen registros de ventas para los parámetros ingresados", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                '            MessageBox.Show("No existen registros de ventas para los parámetros ingresados", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 '            Exit Sub
                 '        End If
                 '        reptVentasxLineaDetalle.SetDataSource(datosReporte)
@@ -621,7 +621,7 @@ Public Class FrmMenuReportes
                     Try
                         datosReporte = Await Puntoventa.ObtenerReporteFacturasElectronicasEmitidas(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FechaInicio.Text, FechaFinal.Text, FrmPrincipal.usuarioGlobal.Token)
                     Catch ex As Exception
-                        MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         CmdVistaPrevia.Enabled = True
                         Exit Sub
                     End Try
@@ -644,7 +644,7 @@ Public Class FrmMenuReportes
                     Try
                         datosReporte = Await Puntoventa.ObtenerReporteNotasCreditoElectronicasEmitidas(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FechaInicio.Text, FechaFinal.Text, FrmPrincipal.usuarioGlobal.Token)
                     Catch ex As Exception
-                        MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         CmdVistaPrevia.Enabled = True
                         Exit Sub
                     End Try
@@ -667,7 +667,7 @@ Public Class FrmMenuReportes
                     Try
                         datosReporte = Await Puntoventa.ObtenerReporteFacturasElectronicasRecibidas(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FechaInicio.Text, FechaFinal.Text, FrmPrincipal.usuarioGlobal.Token)
                     Catch ex As Exception
-                        MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         CmdVistaPrevia.Enabled = True
                         Exit Sub
                     End Try
@@ -690,7 +690,7 @@ Public Class FrmMenuReportes
                     Try
                         datosReporte = Await Puntoventa.ObtenerReporteNotasCreditoElectronicasRecibidas(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FechaInicio.Text, FechaFinal.Text, FrmPrincipal.usuarioGlobal.Token)
                     Catch ex As Exception
-                        MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         CmdVistaPrevia.Enabled = True
                         Exit Sub
                     End Try
@@ -713,7 +713,7 @@ Public Class FrmMenuReportes
                     Try
                         datosReporte = Await Puntoventa.ObtenerReporteResumenDocumentosElectronicos(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FechaInicio.Text, FechaFinal.Text, FrmPrincipal.usuarioGlobal.Token)
                     Catch ex As Exception
-                        MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         CmdVistaPrevia.Enabled = True
                         Exit Sub
                     End Try

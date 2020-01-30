@@ -25,7 +25,7 @@ Public Class FrmLinea
             If intIdLinea > 0 Then
                 datos = Await Puntoventa.ObtenerLinea(intIdLinea, FrmPrincipal.usuarioGlobal.Token)
                 If datos Is Nothing Then
-                    MessageBox.Show("La Línea seleccionada no existe", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                    MessageBox.Show("La Línea seleccionada no existe", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                     Close()
                     Exit Sub
                 End If
@@ -36,7 +36,7 @@ Public Class FrmLinea
             End If
             bolInit = False
         Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
         End Try
     End Sub
@@ -50,7 +50,7 @@ Public Class FrmLinea
         btnGuardar.Enabled = False
         Dim strCampo As String = ""
         If Not ValidarCampos(strCampo) Then
-            MessageBox.Show("El campo " & strCampo & " es requerido", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            MessageBox.Show("El campo " & strCampo & " es requerido", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         End If
         If datos.IdLinea = 0 Then
@@ -64,10 +64,10 @@ Public Class FrmLinea
                 Await Puntoventa.ActualizarLinea(datos, FrmPrincipal.usuarioGlobal.Token)
             End If
         Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
         End Try
-        MessageBox.Show("Registro guardado satisfactoriamente", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        MessageBox.Show("Registro guardado satisfactoriamente", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
         Close()
     End Sub
 

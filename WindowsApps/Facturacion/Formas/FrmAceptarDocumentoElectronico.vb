@@ -10,7 +10,7 @@ Public Class FrmAceptarDocumentoElectronico
 #Region "Eventos Controles"
     Private Async Sub BtnEnviar_Click(sender As Object, e As EventArgs) Handles btnEnviar.Click
         Try
-            If MessageBox.Show("Desea enviar el documento al servicio web de Hacienda?", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
+            If MessageBox.Show("Desea enviar el documento al servicio web de Hacienda?", "JLC Solutions CR", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
                 Dim intEstado As Integer
                 If rbnAceptado.Checked Then
                     intEstado = 0
@@ -20,13 +20,13 @@ Public Class FrmAceptarDocumentoElectronico
                     intEstado = 2
                 End If
                 Await Puntoventa.GeneraMensajeReceptor(strDatos, FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, FrmPrincipal.equipoGlobal.IdTerminal, intEstado, FrmPrincipal.usuarioGlobal.Token)
-                MessageBox.Show("Documento enviado satisfactoriamente. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                MessageBox.Show("Documento enviado satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 Close()
             Else
-                MessageBox.Show("Proceso cancelado por el usuario. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                MessageBox.Show("Proceso cancelado por el usuario. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
             End If
         Catch ex As Exception
-            MessageBox.Show("Error al cargar el documento electrónico: " & ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("Error al cargar el documento electrónico: " & ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
         End Try
     End Sub
@@ -53,7 +53,7 @@ Public Class FrmAceptarDocumentoElectronico
                 txtMensaje.Text = sw.ToString()
                 btnEnviar.Enabled = True
             Catch ex As Exception
-                MessageBox.Show("Error al intentar cargar el archivo. Por favor intente de nuevo o contacte a su proveedor. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Error al intentar cargar el archivo. Por favor intente de nuevo o contacte a su proveedor. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 btnEnviar.Enabled = False
                 Close()
                 Exit Sub

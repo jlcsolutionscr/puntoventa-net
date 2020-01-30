@@ -214,7 +214,7 @@ Public Class FrmFacturaCompra
             txtTotal.Text = FormatNumber(0, 2)
             cboTipoIdentificacion.Focus()
         Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
         End Try
     End Sub
@@ -295,7 +295,7 @@ Public Class FrmFacturaCompra
 
     Private Async Sub BtnGuardar_Click(sender As Object, e As EventArgs) Handles btnGuardar.Click
         If txtFecha.Text = "" Or decTotal = 0 Then
-            MessageBox.Show("Información incompleta.  Favor verificar. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            MessageBox.Show("Información incompleta.  Favor verificar. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         End If
         btnAgregar.Focus()
@@ -352,22 +352,22 @@ Public Class FrmFacturaCompra
                 txtIdFactCompra.Text = ""
                 btnGuardar.Enabled = True
                 btnGuardar.Focus()
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
         End If
-        MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
         BtnAgregar_Click(btnAgregar, New EventArgs())
     End Sub
 
     Private Sub BtnInsertar_Click(sender As Object, e As EventArgs) Handles btnInsertar.Click
         If txtCantidad.Text <> "" And txtCodigo.Text <> "" And txtDescripcion.Text <> "" And txtPrecio.Text <> "" Then
             If txtCantidad.Text = "0" Then
-                MessageBox.Show("La cantidad no puede ser 0. Por favor verifique la información. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("La cantidad no puede ser 0. Por favor verifique la información. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End If
             CargarLineaDetalleFacturaCompra(txtCantidad.Text, txtCodigo.Text, txtDescripcion.Text, cboTipoImpuesto.SelectedValue, 13, cboUnidadMedida.Text, txtPrecio.Text)
         Else
-            MessageBox.Show("Debe ingresar la información requerida para la línea de la factura de compra. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("Debe ingresar la información requerida para la línea de la factura de compra. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End If
     End Sub
 

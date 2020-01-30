@@ -53,7 +53,7 @@ Public Class FrmUsuario
 
     Private Sub CargarLineaDetalleRole(ByVal intIdRole As Integer, ByVal strDescripcion As String)
         If dtbRolePorUsuario.Rows.Contains(intIdRole) Then
-            MessageBox.Show("El role seleccionado ya esta asignado. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            MessageBox.Show("El role seleccionado ya esta asignado. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         Else
             dtrRolePorUsuario = dtbRolePorUsuario.NewRow
             dtrRolePorUsuario.Item(0) = intIdRole
@@ -111,7 +111,7 @@ Public Class FrmUsuario
             End If
             bolInit = False
         Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
         End Try
     End Sub
@@ -125,7 +125,7 @@ Public Class FrmUsuario
         btnGuardar.Enabled = False
         Dim strCampo As String = ""
         If Not ValidarCampos(strCampo) Then
-            MessageBox.Show("El campo " & strCampo & " es requerido", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            MessageBox.Show("El campo " & strCampo & " es requerido", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         End If
         Dim strEncryptedPassword As String
@@ -143,7 +143,7 @@ Public Class FrmUsuario
         Catch ex As Exception
             btnGuardar.Enabled = True
             btnGuardar.Focus()
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         End Try
         datos.CodigoUsuario = txtUsuario.Text
@@ -169,10 +169,10 @@ Public Class FrmUsuario
         Catch ex As Exception
             btnGuardar.Enabled = True
             btnGuardar.Focus()
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
         End Try
-        MessageBox.Show("Registro guardado satisfactoriamente", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        MessageBox.Show("Registro guardado satisfactoriamente", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
         Close()
     End Sub
 
@@ -180,7 +180,7 @@ Public Class FrmUsuario
         If cboRole.SelectedValue IsNot Nothing Then
             CargarLineaDetalleRole(cboRole.SelectedValue, cboRole.Text)
         Else
-            MessageBox.Show("Debe selecionar el Permiso para asignar al usuario", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            MessageBox.Show("Debe selecionar el Permiso para asignar al usuario", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End If
     End Sub
 

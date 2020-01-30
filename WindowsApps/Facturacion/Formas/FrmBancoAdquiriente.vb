@@ -33,12 +33,12 @@ Public Class FrmBancoAdquiriente
             Try
                 datos = Await Puntoventa.ObtenerBancoAdquiriente(intIdBanco, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                 Close()
                 Exit Sub
             End Try
             If datos Is Nothing Then
-                MessageBox.Show("El banco adquiriente seleccionado no existe", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                MessageBox.Show("El banco adquiriente seleccionado no existe", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                 Close()
                 Exit Sub
             End If
@@ -61,7 +61,7 @@ Public Class FrmBancoAdquiriente
         btnGuardar.Enabled = False
         Dim strCampo As String = ""
         If Not ValidarCampos(strCampo) Then
-            MessageBox.Show("El campo " & strCampo & " es requerido", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            MessageBox.Show("El campo " & strCampo & " es requerido", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         End If
         If datos.IdBanco = 0 Then
@@ -77,11 +77,11 @@ Public Class FrmBancoAdquiriente
             Else
                 Await Puntoventa.ActualizarBancoAdquiriente(datos, FrmPrincipal.usuarioGlobal.Token)
             End If
-            MessageBox.Show("Registro guardado satisfactoriamente", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            MessageBox.Show("Registro guardado satisfactoriamente", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
         Catch ex As Exception
             btnGuardar.Enabled = True
             btnGuardar.Focus()
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
         Close()
     End Sub

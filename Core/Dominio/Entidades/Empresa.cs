@@ -37,7 +37,6 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public int LineasPorFactura { get; set; }
         public bool Contabiliza { get; set; }
         public bool AutoCompletaProducto { get; set; }
-        public bool CierrePorTurnos { get; set; }
         public bool RegimenSimplificado { get; set; }
         public bool PermiteFacturar { get; set; }
         public bool RecepcionGastos { get; set; }

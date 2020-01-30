@@ -188,10 +188,10 @@ Public Class FrmDevolucionAProveedores
                 CargarDetalleCompra(compra)
                 CargarTotales()
             Else
-                MessageBox.Show("El número de compra ingresado no existe. Por favor verifique.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("El número de compra ingresado no existe. Por favor verifique.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End If
         Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
 #End Region
@@ -208,7 +208,7 @@ Public Class FrmDevolucionAProveedores
             txtImpuesto.Text = FormatNumber(0, 2)
             txtTotal.Text = FormatNumber(0, 2)
         Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
         End Try
     End Sub
@@ -218,7 +218,7 @@ Public Class FrmDevolucionAProveedores
             grdDetalleDevolucion.CurrentCell.Value = 0
         Else
             If grdDetalleDevolucion.CurrentCell.Value > grdDetalleDevolucion.CurrentRow.Cells(3).Value Then
-                MessageBox.Show("La cantidad ingresada de artículos por devolver excede la cantidad de artículos de la compra.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("La cantidad ingresada de artículos por devolver excede la cantidad de artículos de la compra.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 grdDetalleDevolucion.CurrentCell.Value = 0
             End If
         End If
@@ -246,14 +246,14 @@ Public Class FrmDevolucionAProveedores
 
     Private Sub CmdAnular_Click(sender As Object, e As EventArgs) Handles CmdAnular.Click
         If txtIdDevolucion.Text <> "" Then
-            If MessageBox.Show("Desea anular este registro?", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
+            If MessageBox.Show("Desea anular este registro?", "JLC Solutions CR", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
                 Try
                     'servicioCompras.AnularDevolucionProveedor(txtIdDevolucion.Text, FrmMenuPrincipal.usuarioGlobal.IdUsuario)
                 Catch ex As Exception
-                    MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
                 End Try
-                MessageBox.Show("Transacción procesada satisfactoriamente. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                MessageBox.Show("Transacción procesada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 CmdAgregar_Click(CmdAgregar, New EventArgs())
             End If
         End If
@@ -267,7 +267,7 @@ Public Class FrmDevolucionAProveedores
             Try
                 'devolucion = servicioCompras.ObtenerDevolucionProveedor(FrmMenuPrincipal.intBusqueda)
             Catch ex As Exception
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
             If devolucion IsNot Nothing Then
@@ -299,7 +299,7 @@ Public Class FrmDevolucionAProveedores
 
     Private Sub CmdGuardar_Click(sender As Object, e As EventArgs) Handles CmdGuardar.Click
         If proveedor Is Nothing Or txtFecha.Text = "" Or compra Is Nothing Or CDbl(txtTotal.Text) = 0 Then
-            MessageBox.Show("Información incompleta.  Favor verificar. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            MessageBox.Show("Información incompleta.  Favor verificar. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End If
         If txtIdDevolucion.Text = "" Then
             devolucion = New DevolucionProveedor With {
@@ -328,11 +328,11 @@ Public Class FrmDevolucionAProveedores
                 txtIdDevolucion.Text = devolucion.IdDevolucion
             Catch ex As Exception
                 txtIdDevolucion.Text = ""
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
         End If
-        MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
         grdDetalleDevolucion.ReadOnly = True
         CmdImprimir.Enabled = True
         CmdAgregar.Enabled = True
@@ -372,7 +372,7 @@ Public Class FrmDevolucionAProveedores
             Try
                 ModuloImpresion.ImprimirDevolucionProveedor(comprobante)
             Catch ex As Exception
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
         End If

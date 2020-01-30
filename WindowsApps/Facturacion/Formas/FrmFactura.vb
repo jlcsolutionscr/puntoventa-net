@@ -401,7 +401,7 @@ Public Class FrmFactura
         objPkDesglose(0) = cboFormaPago.SelectedValue
         objPkDesglose(1) = cboTipoBanco.SelectedValue
         If dtbDesglosePago.Rows.Contains(objPkDesglose) Then
-            MessageBox.Show("La forma de pago seleccionada ya fue agregada al detalle de pago.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("La forma de pago seleccionada ya fue agregada al detalle de pago.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
         End If
         Dim decMontoPago, decTipoCambio As Decimal
@@ -627,7 +627,7 @@ Public Class FrmFactura
             End If
             txtCodigo.Focus()
         Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
         End Try
     End Sub
@@ -639,6 +639,7 @@ Public Class FrmFactura
         cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
         cboTipoMoneda.SelectedValue = FrmPrincipal.empresaGlobal.IdTipoMoneda
         txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmPrincipal.decTipoCambioDolar.ToString())
+        txtReferencia.Text = ""
         txtDocumento.Text = ""
         cboTipoMoneda.Enabled = True
         cboCondicionVenta.Enabled = True
@@ -702,7 +703,7 @@ Public Class FrmFactura
             txtNombreCliente.Text = cliente.Nombre
             txtNombreCliente.ReadOnly = False
         Catch ex As Exception
-            MessageBox.Show("Error al consultar el cliente de contado. Por favor consulte con su proveedor.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("Error al consultar el cliente de contado. Por favor consulte con su proveedor.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
             Exit Sub
         End Try
@@ -711,7 +712,7 @@ Public Class FrmFactura
                 vendedor = Await Puntoventa.ObtenerVendedorPorDefecto(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
                 txtVendedor.Text = vendedor.Nombre
             Catch ex As Exception
-                MessageBox.Show("Debe agregar al menos un vendedor al catalogo de vendedores para poder continuar.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Debe agregar al menos un vendedor al catalogo de vendedores para poder continuar.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Close()
                 Exit Sub
             End Try
@@ -728,14 +729,14 @@ Public Class FrmFactura
 
     Private Async Sub BtnAnular_Click(sender As Object, e As EventArgs) Handles btnAnular.Click
         If txtIdFactura.Text <> "" Then
-            If MessageBox.Show("Desea anular este registro?", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
+            If MessageBox.Show("Desea anular este registro?", "JLC Solutions CR", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
                 Try
                     Await Puntoventa.AnularFactura(txtIdFactura.Text, FrmPrincipal.usuarioGlobal.IdUsuario, FrmPrincipal.usuarioGlobal.Token)
                 Catch ex As Exception
-                    MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
                 End Try
-                MessageBox.Show("Transacción procesada satisfactoriamente. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                MessageBox.Show("Transacción procesada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 BtnAgregar_Click(btnAgregar, New EventArgs())
             End If
         End If
@@ -749,7 +750,7 @@ Public Class FrmFactura
             Try
                 factura = Await Puntoventa.ObtenerFactura(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
             If factura IsNot Nothing Then
@@ -762,6 +763,9 @@ Public Class FrmFactura
                 intIdProforma = factura.IdProforma
                 intIdOrdenServicio = factura.IdOrdenServicio
                 intIdApartado = factura.IdApartado
+                If factura.IdProforma > 0 Then txtReferencia.Text = "Proforma nro. " & factura.IdProforma
+                If factura.IdOrdenServicio > 0 Then txtReferencia.Text = "Orden de servicio nro. " & factura.IdOrdenServicio
+                If factura.IdApartado > 0 Then txtReferencia.Text = "Apartado nro. " & factura.IdApartado
                 cboCondicionVenta.SelectedValue = factura.IdCondicionVenta
                 txtPlazoCredito.Text = factura.PlazoCredito
                 If factura.PorcentajeExoneracion > 0 Then
@@ -799,7 +803,7 @@ Public Class FrmFactura
                 btnGuardar.Enabled = False
                 bolInit = False
             Else
-                MessageBox.Show("No existe registro de factura asociado al identificador seleccionado", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("No existe registro de factura asociado al identificador seleccionado", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End If
         End If
     End Sub
@@ -812,7 +816,7 @@ Public Class FrmFactura
             Try
                 ordenServicio = Await Puntoventa.ObtenerOrdenServicio(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
             If ordenServicio IsNot Nothing Then
@@ -821,6 +825,7 @@ Public Class FrmFactura
                 cliente = ordenServicio.Cliente
                 cboTipoMoneda.SelectedValue = ordenServicio.IdTipoMoneda
                 txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmPrincipal.decTipoCambioDolar.ToString())
+                txtReferencia.Text = "Orden de servicio nro. " & ordenServicio.IdOrden
                 txtNombreCliente.Text = ordenServicio.NombreCliente
                 txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
                 txtDocumento.Text = ""
@@ -862,7 +867,7 @@ Public Class FrmFactura
                 btnBuscarCliente.Enabled = True
                 bolInit = False
             Else
-                MessageBox.Show("No existe registro de orden de servicio asociado al identificador seleccionado", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("No existe registro de orden de servicio asociado al identificador seleccionado", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End If
         End If
     End Sub
@@ -875,7 +880,7 @@ Public Class FrmFactura
             Try
                 apartado = Await Puntoventa.ObtenerApartado(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
             If apartado IsNot Nothing Then
@@ -884,6 +889,7 @@ Public Class FrmFactura
                 cliente = apartado.Cliente
                 cboTipoMoneda.SelectedValue = apartado.IdTipoMoneda
                 txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmPrincipal.decTipoCambioDolar.ToString())
+                txtReferencia.Text = "Apartado nro. " & apartado.IdApartado
                 txtNombreCliente.Text = apartado.NombreCliente
                 txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
                 txtDocumento.Text = ""
@@ -925,7 +931,7 @@ Public Class FrmFactura
                 btnBuscarCliente.Enabled = True
                 bolInit = False
             Else
-                MessageBox.Show("No existe registro de orden de servicio asociado al identificador seleccionado", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("No existe registro de orden de servicio asociado al identificador seleccionado", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End If
         End If
     End Sub
@@ -938,7 +944,7 @@ Public Class FrmFactura
             Try
                 proforma = Await Puntoventa.ObtenerProforma(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
             If proforma IsNot Nothing Then
@@ -947,6 +953,7 @@ Public Class FrmFactura
                 cliente = proforma.Cliente
                 cboTipoMoneda.SelectedValue = proforma.IdTipoMoneda
                 txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmPrincipal.decTipoCambioDolar.ToString())
+                txtReferencia.Text = "Proforma nro. " & proforma.IdProforma
                 txtNombreCliente.Text = proforma.NombreCliente
                 txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
                 txtDocumento.Text = ""
@@ -988,7 +995,7 @@ Public Class FrmFactura
                 btnBuscarCliente.Enabled = True
                 bolInit = False
             Else
-                MessageBox.Show("No existe registro de orden de servicio asociado al identificador seleccionado", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("No existe registro de orden de servicio asociado al identificador seleccionado", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End If
         End If
     End Sub
@@ -1002,11 +1009,11 @@ Public Class FrmFactura
                 vendedor = Await Puntoventa.ObtenerVendedor(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
                 txtVendedor.Text = vendedor.Nombre
             Catch ex As Exception
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
             If vendedor Is Nothing Then
-                MessageBox.Show("El vendedor seleccionado no existe. Consulte a su proveedor.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("El vendedor seleccionado no existe. Consulte a su proveedor.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End If
         End If
@@ -1041,11 +1048,11 @@ Public Class FrmFactura
                 End If
                 CargarTotales()
             Catch ex As Exception
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
             If cliente Is Nothing Then
-                MessageBox.Show("El cliente de contado no se encuentra registrado en el sistema. Consulte a su proveedor.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("El cliente de contado no se encuentra registrado en el sistema. Consulte a su proveedor.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End If
         End If
@@ -1063,7 +1070,7 @@ Public Class FrmFactura
             Try
                 producto = Await Puntoventa.ObtenerProducto(intIdProducto, FrmPrincipal.equipoGlobal.IdSucursal, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
-                MessageBox.Show("Error al obtener la información del producto seleccionado. Intente mas tarde.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Error al obtener la información del producto seleccionado. Intente mas tarde.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
             CargarDatosProducto(producto)
@@ -1073,16 +1080,16 @@ Public Class FrmFactura
 
     Private Async Sub BtnGuardar_Click(sender As Object, e As EventArgs) Handles btnGuardar.Click
         If cliente Is Nothing Or vendedor Is Nothing Or txtFecha.Text = "" Or decTotal = 0 Then
-            MessageBox.Show("Información incompleta.  Favor verificar. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            MessageBox.Show("Información incompleta.  Favor verificar. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         End If
         If cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado Then
             If decSaldoPorPagar > 0 Then
-                MessageBox.Show("El total del desglose de pago de la factura no es suficiente para cubrir el saldo por pagar actual.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                MessageBox.Show("El total del desglose de pago de la factura no es suficiente para cubrir el saldo por pagar actual.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                 Exit Sub
             End If
             If decSaldoPorPagar < 0 Then
-                MessageBox.Show("El total del desglose de pago de la factura es superior al saldo por pagar.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                MessageBox.Show("El total del desglose de pago de la factura es superior al saldo por pagar.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                 Exit Sub
             End If
         End If
@@ -1095,7 +1102,7 @@ Public Class FrmFactura
                 If FrmPrincipal.intBusqueda > 0 Then
                     decPagoCliente = FrmPrincipal.intBusqueda
                 Else
-                    MessageBox.Show("Proceso cancelado por el usuario. Intente guardar de nuevo.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                    MessageBox.Show("Proceso cancelado por el usuario. Intente guardar de nuevo.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                     Exit Sub
                 End If
             Else
@@ -1164,11 +1171,11 @@ Public Class FrmFactura
                 txtIdFactura.Text = ""
                 btnGuardar.Enabled = True
                 btnGuardar.Focus()
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
         End If
-        MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
         btnImprimir.Enabled = True
         btnImprimir.Focus()
         cboTipoMoneda.Enabled = False
@@ -1195,7 +1202,7 @@ Public Class FrmFactura
                 Try
                     factura = Await Puntoventa.ObtenerFactura(txtIdFactura.Text, FrmPrincipal.usuarioGlobal.Token)
                 Catch ex As Exception
-                    MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
                 End Try
             End If
@@ -1242,7 +1249,7 @@ Public Class FrmFactura
                 comprobanteImpresion.arrDesglosePago = arrDesglosePago
                 ModuloImpresion.ImprimirFactura(comprobanteImpresion)
             Catch ex As Exception
-                MessageBox.Show("Error al tratar de imprimir: " & ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Error al tratar de imprimir: " & ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
         End If
@@ -1254,7 +1261,7 @@ Public Class FrmFactura
                 Try
                     factura = Await Puntoventa.ObtenerFactura(txtIdFactura.Text, FrmPrincipal.usuarioGlobal.Token)
                 Catch ex As Exception
-                    MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
                 End Try
             End If
@@ -1338,7 +1345,7 @@ Public Class FrmFactura
                 File.WriteAllBytes(pdfFilePath, pdfBytes)
                 Process.Start(pdfFilePath)
             Catch ex As Exception
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
         End If
@@ -1350,7 +1357,7 @@ Public Class FrmFactura
             If txtDescripcion.Text = "" Then strError = "La descripción no puede estar en blanco"
             If decPrecioVenta <= 0 Then strError = "El precio del producto no puede ser igual o menor a 0"
             If strError <> "" Then
-                MessageBox.Show(strError, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show(strError, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End If
             CargarLineaDetalleFactura(producto, txtDescripcion.Text, txtCantidad.Text, decPrecioVenta, txtPorcDesc.Text)
@@ -1383,7 +1390,7 @@ Public Class FrmFactura
                 Try
                     Await CargarListaBancoAdquiriente()
                 Catch ex As Exception
-                    MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
                 End Try
                 cboTipoBanco.SelectedIndex = 0
@@ -1407,7 +1414,7 @@ Public Class FrmFactura
                     Await CargarListaCuentaBanco()
                 Catch ex As Exception
                     cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
-                    MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
                 End Try
                 cboTipoBanco.SelectedIndex = 0
@@ -1450,7 +1457,7 @@ Public Class FrmFactura
     Private Sub BtnInsertarPago_Click(sender As Object, e As EventArgs) Handles btnInsertarPago.Click
         If cboFormaPago.SelectedValue > 0 And cboTipoMoneda.SelectedValue > 0 And cboTipoBanco.SelectedValue > 0 And decTotal > 0 And txtMontoPago.Text <> "" Then
             If decSaldoPorPagar = 0 Then
-                MessageBox.Show("El monto de por cancelar ya se encuentra cubierto. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("El monto de por cancelar ya se encuentra cubierto. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End If
             CargarLineaDesglosePago()
@@ -1475,7 +1482,7 @@ Public Class FrmFactura
             Dim decTasaImpuesto As Decimal = producto.ParametroImpuesto.TasaImpuesto
             decPrecioVenta = ObtenerPrecioVentaPorCliente(cliente, producto)
             If CDbl(txtPorcDesc.Text) > FrmPrincipal.empresaGlobal.PorcentajeDescMaximo Then
-                MessageBox.Show("El porcentaje ingresado es mayor al parametro establecido para la empresa", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("El porcentaje ingresado es mayor al parametro establecido para la empresa", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 txtPorcDesc.Text = "0"
                 txtPrecio.Text = FormatNumber(decPrecioVenta, 2)
             Else
@@ -1522,7 +1529,7 @@ Public Class FrmFactura
                     txtCodigo.Focus()
                 End If
             Catch ex As Exception
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
         End If
@@ -1535,7 +1542,7 @@ Public Class FrmFactura
                 Dim decTasaImpuesto As Decimal = producto.ParametroImpuesto.TasaImpuesto
                 decPrecioVenta = ObtenerPrecioVentaPorCliente(cliente, producto)
                 If CDbl(txtPorcDesc.Text) > FrmPrincipal.empresaGlobal.PorcentajeDescMaximo Then
-                    MessageBox.Show("El porcentaje ingresado es mayor al parametro establecido para la empresa", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    MessageBox.Show("El porcentaje ingresado es mayor al parametro establecido para la empresa", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     txtPorcDesc.Text = "0"
                     txtPrecio.Text = FormatNumber(decPrecioVenta, 2)
                 Else
@@ -1561,7 +1568,7 @@ Public Class FrmFactura
                     Try
                         autorizado = Await Puntoventa.AutorizacionPrecioExtraordinario(FrmPrincipal.strCodigoUsuario, FrmPrincipal.strContrasena, FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
                     Catch ex As Exception
-                        MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         Exit Sub
                     End Try
                     If autorizado Then
@@ -1570,7 +1577,7 @@ Public Class FrmFactura
                         Dim decPrecioOriginal = ObtenerPrecioVentaPorCliente(cliente, producto)
                         txtPorcDesc.Text = FormatNumber(100 - (CDbl(txtPrecio.Text) * 100 / decPrecioOriginal), 2)
                     Else
-                        MessageBox.Show("Los credenciales ingresados no tienen permisos para modificar el precio de venta.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                        MessageBox.Show("Los credenciales ingresados no tienen permisos para modificar el precio de venta.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
                     End If
                 End If
             ElseIf e.KeyCode = Keys.Enter Then

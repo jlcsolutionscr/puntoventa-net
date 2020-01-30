@@ -43,12 +43,12 @@ Public Class FrmEstadoDocumentoElectronico
             listadoDocumentosPendientes = Await Puntoventa.ObtenerListadoDocumentosElectronicosEnProceso(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
             dgvDatos.DataSource = listadoDocumentosPendientes
             If listadoDocumentosPendientes.Count() = 0 Then
-                MessageBox.Show("No existen registros pendientes. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                MessageBox.Show("No existen registros pendientes. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 Close()
             End If
             picLoader.Visible = False
         Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
             Exit Sub
         End Try
@@ -62,7 +62,7 @@ Public Class FrmEstadoDocumentoElectronico
             EstablecerPropiedadesDataGridView()
             ActualizarDatos()
         Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
         End Try
     End Sub

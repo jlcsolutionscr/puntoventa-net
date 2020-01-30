@@ -183,7 +183,7 @@ Public Class FrmAplicaAbonoCxC
         objPkDesglose(0) = cboFormaPago.SelectedValue
         objPkDesglose(1) = cboTipoBanco.SelectedValue
         If dtbDesglosePago.Rows.Contains(objPkDesglose) Then
-            MessageBox.Show("La forma de pago seleccionada ya fue agregada al detalle de pago.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("La forma de pago seleccionada ya fue agregada al detalle de pago.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
         End If
         Dim decMontoPago, decTipoCambio As Decimal
@@ -253,7 +253,7 @@ Public Class FrmAplicaAbonoCxC
             txtMontoAbono.Text = FormatNumber(0, 2)
             txtSaldoPorPagar.Text = FormatNumber(dblSaldoPorPagar, 2)
         Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
             Exit Sub
         End Try
@@ -290,19 +290,19 @@ Public Class FrmAplicaAbonoCxC
 
     Private Async Sub BtnGuardar_Click(sender As Object, e As EventArgs) Handles CmdGuardar.Click
         If cliente Is Nothing Or txtFecha.Text = "" Then
-            MessageBox.Show("Información incompleta.  Favor verificar. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            MessageBox.Show("Información incompleta.  Favor verificar. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         End If
         If dblTotal = 0 Then
-            MessageBox.Show("Debe ingresar el monto del abono para guardar el movimiento.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            MessageBox.Show("Debe ingresar el monto del abono para guardar el movimiento.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         End If
         If dblSaldoPorPagar > 0 Then
-            MessageBox.Show("El total del desglose de pago del movimiento no es suficiente para cubrir el saldo por pagar actual.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            MessageBox.Show("El total del desglose de pago del movimiento no es suficiente para cubrir el saldo por pagar actual.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         End If
         If dblSaldoPorPagar < 0 Then
-            MessageBox.Show("El total del desglose de pago del movimiento es superior al saldo por pagar.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            MessageBox.Show("El total del desglose de pago del movimiento es superior al saldo por pagar.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         End If
 
@@ -338,10 +338,10 @@ Public Class FrmAplicaAbonoCxC
         Try
             Await Puntoventa.AplicarMovimientoCxC(movimiento, FrmPrincipal.usuarioGlobal.Token)
         Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
         End Try
-        MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
         CmdAgregar.Enabled = True
         CmdImprimir.Enabled = True
         CmdImprimir.Focus()
@@ -376,7 +376,7 @@ Public Class FrmAplicaAbonoCxC
         Try
             ModuloImpresion.ImprimirReciboCxC(reciboComprobante)
         Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
         End Try
     End Sub
@@ -390,7 +390,7 @@ Public Class FrmAplicaAbonoCxC
                 Try
                     Await CargarListaBancoAdquiriente()
                 Catch ex As Exception
-                    MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
                 End Try
                 cboTipoBanco.Width = 371
@@ -413,7 +413,7 @@ Public Class FrmAplicaAbonoCxC
                     Await CargarListaCuentaBanco()
                 Catch ex As Exception
                     cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
-                    MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
                 End Try
                 cboTipoBanco.Width = 441
@@ -432,7 +432,7 @@ Public Class FrmAplicaAbonoCxC
     Private Sub BtnInsertar_Click(sender As Object, e As EventArgs) Handles btnInsertar.Click
         If cboCuentaPorCobrar.SelectedValue > 0 And txtMontoAbono.Text <> "" Then
             If CDbl(txtMontoAbono.Text) < 1 Then
-                MessageBox.Show("El monto del abono debe ser mayor a cero.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("El monto del abono debe ser mayor a cero.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End If
             CargarLineaDesgloseCuenta()
@@ -456,7 +456,7 @@ Public Class FrmAplicaAbonoCxC
     Private Sub BtnInsertarPago_Click(sender As Object, e As EventArgs) Handles btnInsertarPago.Click
         If cboFormaPago.SelectedValue > 0 And cboTipoBanco.SelectedValue > 0 And dblTotal > 0 And txtMontoPago.Text <> "" Then
             If dblSaldoPorPagar = 0 Then
-                MessageBox.Show("El monto por cancelar ya se encuentra cubierto. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("El monto por cancelar ya se encuentra cubierto. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End If
             CargarLineaDesglosePago()
@@ -482,13 +482,13 @@ Public Class FrmAplicaAbonoCxC
         formBusquedaCliente.ShowDialog()
         If FrmPrincipal.intBusqueda > 0 Then
             If FrmPrincipal.intBusqueda = StaticValoresPorDefecto.ClienteContado Then
-                MessageBox.Show("El cliente indicado no corresponde a un cliente de crédito", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("El cliente indicado no corresponde a un cliente de crédito", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End If
             Try
                 cliente = Await Puntoventa.ObtenerCliente(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
             txtNombreCliente.Text = cliente.Nombre
@@ -498,7 +498,7 @@ Public Class FrmAplicaAbonoCxC
                 cboCuentaPorCobrar.DisplayMember = "Descripcion"
                 cboCuentaPorCobrar.DataSource = Await Puntoventa.ObtenerListadoCuentasPorCobrar(FrmPrincipal.empresaGlobal.IdEmpresa, StaticTipoCuentaPorCobrar.Clientes, cliente.IdCliente, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
             cboCuentaPorCobrar.SelectedValue = 0
@@ -521,7 +521,7 @@ Public Class FrmAplicaAbonoCxC
             Try
                 cuentaPorCobrar = Await Puntoventa.ObtenerCuentaPorCobrar(cboCuentaPorCobrar.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
             txtMontoOriginal.Text = FormatNumber(cuentaPorCobrar.Total, 2)

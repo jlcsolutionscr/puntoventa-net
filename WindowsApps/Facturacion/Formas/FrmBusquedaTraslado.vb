@@ -44,7 +44,7 @@ Public Class FrmBusquedaTraslado
             dgvListado.DataSource = Await Puntoventa.ObtenerListadoTraslados(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, False, intNumeroPagina, intFilasPorPagina, FrmPrincipal.usuarioGlobal.Token, intId)
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
             Exit Function
         End Try
@@ -57,7 +57,7 @@ Public Class FrmBusquedaTraslado
         Try
             intTotalRegistros = Await Puntoventa.ObtenerTotalListaTraslados(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, False, FrmPrincipal.usuarioGlobal.Token, intId)
         Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
             Exit Function
         End Try
@@ -113,7 +113,7 @@ Public Class FrmBusquedaTraslado
             intIndiceDePagina = 1
             Await ActualizarDatos(intIndiceDePagina, txtId.Text)
         Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
         End Try
     End Sub

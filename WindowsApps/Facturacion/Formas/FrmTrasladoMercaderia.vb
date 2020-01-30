@@ -181,7 +181,7 @@ Public Class FrmTrasladoMercaderia
                 Await CargarAutoCompletarProducto()
             End If
             If cboIdSucursalDestino.Items.Count = 0 Then
-                MessageBox.Show("La empresa no posee sucursales adicionales.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                MessageBox.Show("La empresa no posee sucursales adicionales.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 Close()
                 Exit Sub
             End If
@@ -191,7 +191,7 @@ Public Class FrmTrasladoMercaderia
             txtCantidad.Text = ""
             txtTotal.Text = FormatNumber(0, 2)
         Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
         End Try
     End Sub
@@ -221,14 +221,14 @@ Public Class FrmTrasladoMercaderia
 
     Private Async Sub btnAnular_Click(sender As Object, e As EventArgs) Handles btnAnular.Click
         If txtIdTraslado.Text <> "" Then
-            If MessageBox.Show("Desea anular este registro?", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
+            If MessageBox.Show("Desea anular este registro?", "JLC Solutions CR", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
                 Try
                     Await Puntoventa.AnularTraslado(txtIdTraslado.Text, FrmPrincipal.usuarioGlobal.IdUsuario, FrmPrincipal.usuarioGlobal.Token)
                 Catch ex As Exception
-                    MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
                 End Try
-                MessageBox.Show("Transacción procesada satisfactoriamente. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                MessageBox.Show("Transacción procesada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 CmdAgregar_Click(btnAgregar, New EventArgs())
             End If
         End If
@@ -242,7 +242,7 @@ Public Class FrmTrasladoMercaderia
             Try
                 traslado = Await Puntoventa.ObtenerTraslado(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
             If traslado IsNot Nothing Then
@@ -275,7 +275,7 @@ Public Class FrmTrasladoMercaderia
             Try
                 producto = Await Puntoventa.ObtenerProducto(intIdProducto, FrmPrincipal.equipoGlobal.IdSucursal, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
-                MessageBox.Show("Error al obtener la información del producto seleccionado. Intente mas tarde.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Error al obtener la información del producto seleccionado. Intente mas tarde.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
             CargarDatosProducto(producto)
@@ -311,11 +311,11 @@ Public Class FrmTrasladoMercaderia
                     txtIdTraslado.Text = ""
                     btnGuardar.Enabled = True
                     btnGuardar.Focus()
-                    MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
                 End Try
             End If
-            MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
             btnImprimir.Enabled = True
             btnAgregar.Enabled = True
             btnAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
@@ -325,7 +325,7 @@ Public Class FrmTrasladoMercaderia
             btnEliminar.Enabled = False
             btnBusProd.Enabled = False
         Else
-            MessageBox.Show("Información incompleta.  Favor verificar. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            MessageBox.Show("Información incompleta.  Favor verificar. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End If
     End Sub
 
@@ -356,7 +356,7 @@ Public Class FrmTrasladoMercaderia
             Try
                 ModuloImpresion.ImprimirTraslado(comprobante)
             Catch ex As Exception
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
         End If
@@ -406,7 +406,7 @@ Public Class FrmTrasladoMercaderia
                     txtCodigo.Focus()
                 End If
             Catch ex As Exception
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
         End If
@@ -425,7 +425,7 @@ Public Class FrmTrasladoMercaderia
     Private Sub txtCantidad_TextChanged(sender As Object, e As EventArgs) Handles txtCantidad.TextChanged
         If txtCantidad.Text <> "" Then
             If CDbl(txtCantidad.Text) > producto.Existencias Then
-                MessageBox.Show("La cantidad por trasladar no puede ser mayor a las existencias del producto.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("La cantidad por trasladar no puede ser mayor a las existencias del producto.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 txtCantidad.Text = ""
             End If
         End If

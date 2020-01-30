@@ -22,7 +22,7 @@ Public Class FrmProcesoCierre
 
 #Region "Eventos Controles"
     Private Sub CmdCambiarFecha_Click(sender As Object, e As EventArgs) Handles CmdCambiarFecha.Click
-        If MessageBox.Show("Desea ejecutar el cambio de fecha calendario?", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
+        If MessageBox.Show("Desea ejecutar el cambio de fecha calendario?", "JLC Solutions CR", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
             FechaDia = CDate(txtFecha.Text)
             FechaDia = FechaDia.AddDays(1)
             strFecha = "'" & DatePart(DateInterval.Year, FechaDia) & "/" & DatePart(DateInterval.Month, FechaDia) & "/" & DatePart(DateInterval.Day, FechaDia) & "'"
@@ -30,7 +30,7 @@ Public Class FrmProcesoCierre
             'FrmMenuPrincipal.objGenericoCN.EjecutarSQL(SQLString)
             SQLString = "UPDATE Usuario Set FondoInicio = FondoInicio + Aporte + VentasContado + IngresosCxC + OtrosIngresos - ComprasContado - SalidasCxP - OtrosGastos"
             'FrmMenuPrincipal.objGenericoCN.EjecutarSQL(SQLString)
-            MessageBox.Show("Cambio de Fecha concluido satisfactoriamente. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            MessageBox.Show("Cambio de Fecha concluido satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
             EvaluaEstado()
             REM FrmMenuPrincipal.FechaSistema = CDate(FrmMenuPrincipal.objGenericoCN.ObtenerValor("SELECT FechaDia FROM Calendario WHERE IdModulo = 1"))
             REM remFrmMenuPrincipal.StrFecha = DatePart(DateInterval.Year, FrmMenuPrincipal.FechaSistema) & "/" & DatePart(DateInterval.Month, FrmMenuPrincipal.FechaSistema) & "/" & DatePart(DateInterval.Day, FrmMenuPrincipal.FechaSistema)
@@ -42,7 +42,7 @@ Public Class FrmProcesoCierre
     End Sub
 
     Private Sub CmdEjecutar_Click(sender As Object, e As EventArgs) Handles CmdEjecutar.Click
-        If MessageBox.Show("Desea ejecutar el proceso de cálculo y acreditación de Interés?", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
+        If MessageBox.Show("Desea ejecutar el proceso de cálculo y acreditación de Interés?", "JLC Solutions CR", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
             Try
                 FechaDia = CDate(txtFecha.Text)
                 strFecha = "'" & DatePart(DateInterval.Year, FechaDia) & "/" & DatePart(DateInterval.Month, FechaDia) & "/" & DatePart(DateInterval.Day, FechaDia) & "'"
@@ -61,12 +61,12 @@ Public Class FrmProcesoCierre
                     End If
                 Next
             Catch ex As Exception
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
         End If
         'SQLString = "UPDATE Calendario SET Estado = 1 WHERE IdModulo = 1 AND IdEmpresa = " & FrmMenuPrincipal.intEmpresa
         'FrmMenuPrincipal.objGenericoCN.EjecutarSQL(SQLString)
-        MessageBox.Show("Proceso concluido satisfactoriamente. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        MessageBox.Show("Proceso concluido satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
         EvaluaEstado()
         CmdCambiarFecha.Enabled = True
         CmdCambiarFecha.Focus()
@@ -84,7 +84,7 @@ Public Class FrmProcesoCierre
                 CmdCambiarFecha.Enabled = False
             End If
         Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
         End Try
     End Sub

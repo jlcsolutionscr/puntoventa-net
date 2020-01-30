@@ -6,15 +6,10 @@ Imports LeandroSoftware.Core.TiposComunes
 
 Public Class FrmAjusteInventario
 #Region "Variables"
-    Private I As Short
-    Private dtbDatosLocal, dtbDetalleAjusteInventario As DataTable
+    Private dtbDetalleAjusteInventario As DataTable
     Private dtrRowDetAjusteInventario As DataRow
-    Private arrDetalleAjusteInventario As List(Of ModuloImpresion.ClsDetalleComprobante)
     Private ajusteInventario As AjusteInventario
     Private detalleAjusteInventario As DetalleAjusteInventario
-    Private comprobante As ModuloImpresion.ClsAjusteInventario
-    Private detalleComprobante As ModuloImpresion.ClsDetalleComprobante
-    Private bolInit As Boolean = True
     Private producto As Producto
 #End Region
 
@@ -164,9 +159,8 @@ Public Class FrmAjusteInventario
             IniciaDetalleAjusteInventario()
             EstablecerPropiedadesDataGridView()
             grdDetalleAjusteInventario.DataSource = dtbDetalleAjusteInventario
-            bolInit = False
         Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
             Exit Sub
         End Try
@@ -185,14 +179,14 @@ Public Class FrmAjusteInventario
 
     Private Async Sub CmdAnular_Click(sender As Object, e As EventArgs) Handles CmdAnular.Click
         If txtIdAjuste.Text <> "" Then
-            If MessageBox.Show("Desea anular este registro?", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
+            If MessageBox.Show("Desea anular este registro?", "JLC Solutions CR", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
                 Try
                     Await Puntoventa.AnularAjusteInventario(txtIdAjuste.Text, FrmPrincipal.usuarioGlobal.IdUsuario, FrmPrincipal.usuarioGlobal.Token)
                 Catch ex As Exception
-                    MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
                 End Try
-                MessageBox.Show("Transacción procesada satisfactoriamente. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                MessageBox.Show("Transacción procesada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 CmdAgregar_Click(CmdAgregar, New EventArgs())
             End If
         End If
@@ -206,7 +200,7 @@ Public Class FrmAjusteInventario
             Try
                 ajusteInventario = Await Puntoventa.ObtenerAjusteInventario(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
             If ajusteInventario IsNot Nothing Then
@@ -222,7 +216,7 @@ Public Class FrmAjusteInventario
 
     Private Async Sub CmdGuardar_Click(sender As Object, e As EventArgs) Handles CmdGuardar.Click
         If txtFecha.Text = "" Or txtDescAjuste.Text = "" Or grdDetalleAjusteInventario.RowCount = 0 Then
-            MessageBox.Show("Información incompleta.  Favor verificar. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            MessageBox.Show("Información incompleta.  Favor verificar. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         End If
         If txtIdAjuste.Text = "" Then
@@ -233,7 +227,7 @@ Public Class FrmAjusteInventario
                 .Fecha = Now(),
                 .Descripcion = txtDescAjuste.Text
             }
-            For I = 0 To dtbDetalleAjusteInventario.Rows.Count - 1
+            For I As Integer = 0 To dtbDetalleAjusteInventario.Rows.Count - 1
                 detalleAjusteInventario = New DetalleAjusteInventario With {
                     .IdProducto = dtbDetalleAjusteInventario.Rows(I).Item(0),
                     .Cantidad = dtbDetalleAjusteInventario.Rows(I).Item(3),
@@ -245,11 +239,11 @@ Public Class FrmAjusteInventario
                 txtIdAjuste.Text = Await Puntoventa.AgregarAjusteInventario(ajusteInventario, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
                 txtIdAjuste.Text = ""
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
         End If
-        MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
         CmdAgregar.Enabled = True
         CmdAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
         CmdAgregar.Focus()
@@ -269,7 +263,7 @@ Public Class FrmAjusteInventario
             Try
                 producto = Await Puntoventa.ObtenerProducto(intIdProducto, cboSucursal.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
-                MessageBox.Show("Error al obtener la información del producto seleccionado. Intente mas tarde.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Error al obtener la información del producto seleccionado. Intente mas tarde.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
             CargarDatosProducto(producto)
@@ -315,7 +309,7 @@ Public Class FrmAjusteInventario
                     txtCodigo.Focus()
                 End If
             Catch ex As Exception
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
         End If

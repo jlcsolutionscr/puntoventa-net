@@ -36,7 +36,7 @@ Public Class FrmBusquedaOrdenCompra
             'dgvListado.DataSource = servicioCompras.ObtenerListaOrdenesCompra(FrmMenuPrincipal.empresaGlobal.IdEmpresa, bolIncluyeTodo, intNumeroPagina, intFilasPorPagina, intId, txtNombre.Text)
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
             Exit Sub
         End Try
@@ -47,7 +47,7 @@ Public Class FrmBusquedaOrdenCompra
         Try
             'intTotalRegistros = servicioCompras.ObtenerTotalListaOrdenesCompra(FrmMenuPrincipal.empresaGlobal.IdEmpresa, bolIncluyeTodo, intId, txtNombre.Text)
         Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
             Exit Sub
         End Try
@@ -106,7 +106,7 @@ Public Class FrmBusquedaOrdenCompra
             intIndiceDePagina = 1
             ActualizarDatos(intIndiceDePagina)
         Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
             Exit Sub
         End Try

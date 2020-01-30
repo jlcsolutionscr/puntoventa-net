@@ -18,7 +18,7 @@ Public Class FrmMenuBancoAdquiriente
         Try
             CargarCombos()
         Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
         End Try
     End Sub
@@ -28,7 +28,7 @@ Public Class FrmMenuBancoAdquiriente
             FrmPrincipal.intBusqueda = cboIdBancoAdquiriente.SelectedValue
             Close()
         Else
-            MessageBox.Show("Debe seleccionar una cuenta bancaria para continuar. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("Debe seleccionar una cuenta bancaria para continuar. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End If
     End Sub
 #End Region

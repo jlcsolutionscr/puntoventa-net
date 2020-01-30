@@ -181,11 +181,11 @@ Public Class FrmOrdenCompra
                 Try
                     'producto = servicioMantenimiento.ObtenerProductoPorCodigo(txtCodigo.Text)
                 Catch ex As Exception
-                    MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
                 End Try
                 If producto Is Nothing Then
-                    MessageBox.Show("El código ingresado no existe. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                    MessageBox.Show("El código ingresado no existe. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                     txtCodigo.Text = ""
                     txtCantidad.Text = "1"
                     txtPrecioCosto.Text = ""
@@ -235,7 +235,7 @@ Public Class FrmOrdenCompra
             txtImpuesto.Text = FormatNumber(0, 2)
             txtTotal.Text = FormatNumber(0, 2)
         Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
         End Try
     End Sub
@@ -271,14 +271,14 @@ Public Class FrmOrdenCompra
 
     Private Sub CmdAnular_Click(sender As Object, e As EventArgs) Handles btnAnular.Click
         If txtIdOrdenCompra.Text <> "" Then
-            If MessageBox.Show("Desea anular este registro?", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
+            If MessageBox.Show("Desea anular este registro?", "JLC Solutions CR", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
                 Try
                     'servicioCompras.AnularOrdenCompra(txtIdOrdenCompra.Text, FrmMenuPrincipal.usuarioGlobal.IdUsuario)
                 Catch ex As Exception
-                    MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
                 End Try
-                MessageBox.Show("Transacción procesada satisfactoriamente. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                MessageBox.Show("Transacción procesada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 CmdAgregar_Click(btnAgregar, New EventArgs())
             End If
         End If
@@ -292,7 +292,7 @@ Public Class FrmOrdenCompra
             Try
                 'ordenCompra = servicioCompras.ObtenerOrdenCompra(FrmMenuPrincipal.intBusqueda)
             Catch ex As Exception
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
             If ordenCompra IsNot Nothing Then
@@ -329,7 +329,7 @@ Public Class FrmOrdenCompra
             Try
                 'proveedor = servicioCompras.ObtenerProveedor(FrmMenuPrincipal.intBusqueda)
             Catch ex As Exception
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
             txtProveedor.Text = proveedor.Nombre
@@ -354,7 +354,7 @@ Public Class FrmOrdenCompra
         btnImprimir.Focus()
         btnGuardar.Enabled = False
         If proveedor Is Nothing Or txtFecha.Text = "" Or CDbl(txtTotal.Text) = 0 Then
-            MessageBox.Show("Información incompleta.  Favor verificar. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            MessageBox.Show("Información incompleta.  Favor verificar. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         End If
         If txtIdOrdenCompra.Text = "" Then
@@ -395,7 +395,7 @@ Public Class FrmOrdenCompra
                 txtIdOrdenCompra.Text = ""
                 btnGuardar.Enabled = True
                 btnGuardar.Focus()
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
         Else
@@ -404,11 +404,11 @@ Public Class FrmOrdenCompra
             Catch ex As Exception
                 btnGuardar.Enabled = True
                 btnGuardar.Focus()
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
         End If
-        MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
         btnImprimir.Enabled = True
         btnAgregar.Enabled = True
         btnAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
@@ -426,7 +426,7 @@ Public Class FrmOrdenCompra
             'Try
             '    'dtbDatos = servicioReportes.ObtenerReporteOrdenCompra(txtIdOrdenCompra.Text)
             'Catch ex As Exception
-            '    MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            '    MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             '    Exit Sub
             'End Try
             'strUsuario = FrmPrincipal.usuarioGlobal.CodigoUsuario
@@ -470,7 +470,7 @@ Public Class FrmOrdenCompra
                 txtDescuento.Text = CDbl(Mid(txtDescuento.Text, 1, Len(txtDescuento.Text) - 1)) / 100 * CDbl(txtSubTotal.Text)
             End If
             If CDbl(txtDescuento.Text) > CDbl(txtSubTotal.Text) Then
-                MessageBox.Show("El descuento debe ser menor al SubTotal. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                MessageBox.Show("El descuento debe ser menor al SubTotal. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                 txtDescuento.Text = 0
             End If
             txtDescuento.Text = FormatNumber(txtDescuento.Text, 2)

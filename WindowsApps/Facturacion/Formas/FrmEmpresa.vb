@@ -29,7 +29,7 @@ Public Class FrmEmpresa
             cboBarrio.DisplayMember = "Descripcion"
             cboBarrio.DataSource = Await Puntoventa.ObtenerListadoBarrios(IdProvincia, IdCanton, IdDistrito, FrmPrincipal.usuarioGlobal.Token)
         Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Function
 
@@ -51,7 +51,7 @@ Public Class FrmEmpresa
             datosSucursal = Await Puntoventa.ObtenerSucursalPorEmpresa(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, FrmPrincipal.usuarioGlobal.Token)
             datosTerminal = Await Puntoventa.ObtenerTerminalPorSucursal(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, FrmPrincipal.equipoGlobal.IdTerminal, FrmPrincipal.usuarioGlobal.Token)
             If datos Is Nothing Then
-                MessageBox.Show("Error al cargar los datos de la empresa.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                MessageBox.Show("Error al cargar los datos de la empresa.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                 Close()
                 Exit Sub
             End If
@@ -98,7 +98,7 @@ Public Class FrmEmpresa
             txtUltimoFEC.Text = datosTerminal.UltimoDocFEC
             bolInit = False
         Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
         End Try
     End Sub
@@ -125,7 +125,7 @@ Public Class FrmEmpresa
             txtConsecProforma.Text.Length = 0 Or
             txtConsecOrdenServicio.Text.Length = 0 Or
             txtConsecApartado.Text.Length = 0 Then
-            MessageBox.Show("Existen campos requeridos que no fueron ingresados. Por favor verifique la información. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("Existen campos requeridos que no fueron ingresados. Por favor verifique la información. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
         End If
         If Not FrmPrincipal.empresaGlobal.RegimenSimplificado Then
@@ -134,7 +134,7 @@ Public Class FrmEmpresa
                 txtUsuarioATV.Text.Length = 0 Or
                 txtClaveATV.Text.Length = 0 Or
                 txtCodigoActividad.Text.Length = 0 Then
-                MessageBox.Show("Los datos para generar los documentos electrónicos son requeridos. Por favor verifique la información. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Los datos para generar los documentos electrónicos son requeridos. Por favor verifique la información. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End If
             If txtUltimoFE.Text.Length = 0 Or
@@ -142,7 +142,7 @@ Public Class FrmEmpresa
                 txtUltimoNC.Text.Length = 0 Or
                 txtUltimoTE.Text.Length = 0 Or
                 txtUltimoMR.Text.Length = 0 Then
-                MessageBox.Show("La numeración de los últimos documentos electrónicos es requerida. Por favor verifique la información. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("La numeración de los últimos documentos electrónicos es requerida. Por favor verifique la información. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End If
         End If
@@ -204,10 +204,10 @@ Public Class FrmEmpresa
         Catch ex As Exception
             btnGuardar.Enabled = True
             btnGuardar.Focus()
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
         End Try
-        MessageBox.Show("Registro guardado satisfactoriamente", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        MessageBox.Show("Registro guardado satisfactoriamente", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
         Close()
     End Sub
 
@@ -262,7 +262,7 @@ Public Class FrmEmpresa
                 txtNombreCertificado.Text = Path.GetFileName(strRutaCertificado)
                 bolCertificadoModificado = True
             Catch ex As Exception
-                MessageBox.Show("Error al intentar cargar el certificado. Verifique que sea un archivo .p12 válido. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Error al intentar cargar el certificado. Verifique que sea un archivo .p12 válido. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
         End If
     End Sub

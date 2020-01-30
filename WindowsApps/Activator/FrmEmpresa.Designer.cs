@@ -54,7 +54,6 @@
             this.txtCorreoNotificacion = new System.Windows.Forms.TextBox();
             this.Label11 = new System.Windows.Forms.Label();
             this.txtNombreEmpresa = new System.Windows.Forms.TextBox();
-            this.chkCierrePorTurnos = new System.Windows.Forms.CheckBox();
             this.chkRecibeDocumentos = new System.Windows.Forms.CheckBox();
             this.chkAutoCompleta = new System.Windows.Forms.CheckBox();
             this.chkContabiliza = new System.Windows.Forms.CheckBox();
@@ -435,18 +434,6 @@
             this.txtNombreEmpresa.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.txtNombreEmpresa.Size = new System.Drawing.Size(313, 20);
             this.txtNombreEmpresa.TabIndex = 2;
-            // 
-            // chkCierrePorTurnos
-            // 
-            this.chkCierrePorTurnos.AutoSize = true;
-            this.chkCierrePorTurnos.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkCierrePorTurnos.Location = new System.Drawing.Point(424, 556);
-            this.chkCierrePorTurnos.Name = "chkCierrePorTurnos";
-            this.chkCierrePorTurnos.Size = new System.Drawing.Size(116, 17);
-            this.chkCierrePorTurnos.TabIndex = 44;
-            this.chkCierrePorTurnos.TabStop = false;
-            this.chkCierrePorTurnos.Text = "Cierre por períodos";
-            this.chkCierrePorTurnos.UseVisualStyleBackColor = true;
             // 
             // chkRecibeDocumentos
             // 
@@ -1341,7 +1328,7 @@
             // 
             this.chkAsignaVendedor.AutoSize = true;
             this.chkAsignaVendedor.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkAsignaVendedor.Location = new System.Drawing.Point(424, 579);
+            this.chkAsignaVendedor.Location = new System.Drawing.Point(424, 556);
             this.chkAsignaVendedor.Name = "chkAsignaVendedor";
             this.chkAsignaVendedor.Size = new System.Drawing.Size(163, 17);
             this.chkAsignaVendedor.TabIndex = 209;
@@ -1356,7 +1343,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(193)))), ((int)(((byte)(215)))), ((int)(((byte)(225)))));
-            this.ClientSize = new System.Drawing.Size(851, 605);
+            this.ClientSize = new System.Drawing.Size(851, 597);
             this.Controls.Add(this.chkAsignaVendedor);
             this.Controls.Add(this.txtFecha);
             this.Controls.Add(this.txtCodigoActividad);
@@ -1389,7 +1376,6 @@
             this.Controls.Add(this.txtCorreoNotificacion);
             this.Controls.Add(this.Label11);
             this.Controls.Add(this.txtNombreEmpresa);
-            this.Controls.Add(this.chkCierrePorTurnos);
             this.Controls.Add(this.chkRecibeDocumentos);
             this.Controls.Add(this.chkAutoCompleta);
             this.Controls.Add(this.chkContabiliza);
@@ -1410,8 +1396,8 @@
             this.Controls.Add(this._lblLabels_0);
             this.Controls.Add(this.cmdUpdate);
             this.Controls.Add(this.cmdCancel);
-            this.MaximumSize = new System.Drawing.Size(867, 644);
-            this.MinimumSize = new System.Drawing.Size(867, 644);
+            this.MaximumSize = new System.Drawing.Size(867, 636);
+            this.MinimumSize = new System.Drawing.Size(867, 636);
             this.Name = "FrmEmpresa";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Registrar/Actualizar datos de la empresa seleccionada";
@@ -1455,7 +1441,6 @@
         public System.Windows.Forms.TextBox txtCorreoNotificacion;
         public System.Windows.Forms.Label Label11;
         public System.Windows.Forms.TextBox txtNombreEmpresa;
-        internal System.Windows.Forms.CheckBox chkCierrePorTurnos;
         internal System.Windows.Forms.CheckBox chkRecibeDocumentos;
         internal System.Windows.Forms.CheckBox chkAutoCompleta;
         internal System.Windows.Forms.CheckBox chkContabiliza;

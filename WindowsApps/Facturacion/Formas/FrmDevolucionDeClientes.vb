@@ -182,7 +182,7 @@ Public Class FrmDevolucionDeClientes
         Try
             factura = Await Puntoventa.ObtenerFactura(intIdFactura, FrmPrincipal.usuarioGlobal.Token)
         Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
         End Try
         If factura IsNot Nothing Then
@@ -191,7 +191,7 @@ Public Class FrmDevolucionDeClientes
             CargarDetalleFactura(factura)
             CargarTotales()
         Else
-            MessageBox.Show("El número de factura ingresado no existe. Por favor verifique.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("El número de factura ingresado no existe. Por favor verifique.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End If
     End Sub
 #End Region
@@ -208,7 +208,7 @@ Public Class FrmDevolucionDeClientes
             txtImpuesto.Text = FormatNumber(0, 2)
             txtTotal.Text = FormatNumber(0, 2)
         Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
         End Try
     End Sub
@@ -219,7 +219,7 @@ Public Class FrmDevolucionDeClientes
         Else
             If grdDetalleDevolucion.CurrentCell.ColumnIndex = 8 Then
                 If grdDetalleDevolucion.CurrentCell.Value > grdDetalleDevolucion.CurrentRow.Cells(3).Value Then
-                    MessageBox.Show("La cantidad ingresada de artículos por devolver excede la cantidad de artículos de la factura.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    MessageBox.Show("La cantidad ingresada de artículos por devolver excede la cantidad de artículos de la factura.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     grdDetalleDevolucion.CurrentCell.Value = 0
                 End If
             End If
@@ -249,14 +249,14 @@ Public Class FrmDevolucionDeClientes
 
     Private Async Sub BtnAnular_Click(sender As Object, e As EventArgs) Handles btnAnular.Click
         If txtIdDevolucion.Text <> "" Then
-            If MessageBox.Show("Desea anular este registro?", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
+            If MessageBox.Show("Desea anular este registro?", "JLC Solutions CR", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
                 Try
                     Await Puntoventa.AnularDevolucionCliente(txtIdDevolucion.Text, FrmPrincipal.usuarioGlobal.IdUsuario, FrmPrincipal.usuarioGlobal.Token)
                 Catch ex As Exception
-                    MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
                 End Try
-                MessageBox.Show("Transacción procesada satisfactoriamente. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                MessageBox.Show("Transacción procesada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 BtnAgregar_Click(btnAgregar, New EventArgs())
             End If
         End If
@@ -270,7 +270,7 @@ Public Class FrmDevolucionDeClientes
             Try
                 devolucion = Await Puntoventa.ObtenerDevolucionCliente(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
             If devolucion IsNot Nothing Then
@@ -332,11 +332,11 @@ Public Class FrmDevolucionDeClientes
                 Catch ex As Exception
                     btnGuardar.Enabled = True
                     txtIdDevolucion.Text = ""
-                    MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
                 End Try
             End If
-            MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
             grdDetalleDevolucion.ReadOnly = True
             btnImprimir.Enabled = True
             btnAgregar.Enabled = True
@@ -345,7 +345,7 @@ Public Class FrmDevolucionDeClientes
             btnGuardar.Enabled = False
             btnBuscarFactura.Enabled = False
         Else
-            MessageBox.Show("Información incompleta.  Favor verificar. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            MessageBox.Show("Información incompleta.  Favor verificar. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End If
     End Sub
 
@@ -380,7 +380,7 @@ Public Class FrmDevolucionDeClientes
             Try
                 ModuloImpresion.ImprimirDevolucionCliente(comprobante)
             Catch ex As Exception
-                MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
         End If

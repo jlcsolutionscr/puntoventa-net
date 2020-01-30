@@ -11,7 +11,7 @@ Public Class FrmSeguridad
             CmdAceptar.Enabled = True
             CmdCancelar.Enabled = True
         Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
             Exit Sub
         End Try

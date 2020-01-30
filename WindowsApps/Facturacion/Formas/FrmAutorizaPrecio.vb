@@ -16,10 +16,10 @@ Public Class FrmAutorizaPrecio
                 FrmPrincipal.strBusqueda = txtPrecio.Text
                 Close()
             Else
-                MessageBox.Show("Información incompleta. Por favor verifique. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Información incompleta. Por favor verifique. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End If
         Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             TxtUsuario.Focus()
         End Try
     End Sub

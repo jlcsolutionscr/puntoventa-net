@@ -30,6 +30,7 @@ Public Class FrmPrincipal
     Public bolAplicaDescuento As Boolean = False
     Public bolModificaPrecioVenta As Boolean = False
     Public productoTranstorio As Producto
+    Public bolDescargaFinalizada As Boolean = False
 #End Region
 
 #Region "Métodos"
@@ -134,7 +135,7 @@ Public Class FrmPrincipal
     End Sub
 
     Public Sub MnuArchivoSalir_Click(sender As Object, e As EventArgs) Handles MnuArchivoSalir.Click
-        If MessageBox.Show("Desea salir del sistema", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then Close()
+        If MessageBox.Show("Desea salir del sistema", "JLC Solutions CR", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then Close()
     End Sub
 
     Private Sub MnuParamPC_Click(sender As Object, e As EventArgs) Handles MnuParamPC.Click
@@ -449,14 +450,14 @@ Public Class FrmPrincipal
         Try
             appSettings = ConfigurationManager.AppSettings
         Catch ex As Exception
-            MessageBox.Show("Error al cargar el archivo de configuración del sistema. Por favor contacte con su proveedor del servicio. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("Error al cargar el archivo de configuración del sistema. Por favor contacte con su proveedor del servicio. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
             Exit Sub
         End Try
         Try
             If appSettings.Get("Administrator") IsNot Nothing Then bolEsAdministrador = True
         Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
             Exit Sub
         End Try
@@ -466,7 +467,7 @@ Public Class FrmPrincipal
         Try
             strUltimaVersionApp = Await Puntoventa.ObtenerUltimaVersionApp()
         Catch ex As Exception
-            MessageBox.Show("No fue posible acceder al servicio web. Consulte con su proveedor del servicio.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            MessageBox.Show("No fue posible acceder al servicio web. Consulte con su proveedor del servicio.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Close()
             Exit Sub
         End Try
@@ -474,6 +475,7 @@ Public Class FrmPrincipal
             picLoader.Visible = False
             Dim formDescarga As New FrmDescargaActualizacion()
             formDescarga.ShowDialog()
+            If bolDescargaFinalizada Then Application.Exit()
         End If
         Dim strIdentificadoEquipoLocal = Utilitario.ObtenerIdentificadorEquipo()
         If bolEsAdministrador Then
@@ -482,7 +484,7 @@ Public Class FrmPrincipal
             Do
                 listaEmpresa = Await Puntoventa.ObtenerListadoEmpresasPorTerminal(strIdentificadoEquipoLocal)
                 If listaEmpresa.Count = 0 Then
-                    If MessageBox.Show("El equipo no se encuentra registrado. Desea proceder con el registro?", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
+                    If MessageBox.Show("El equipo no se encuentra registrado. Desea proceder con el registro?", "JLC Solutions CR", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
                         Dim formRegistro As New FrmRegistro()
                         formRegistro.ShowDialog()
                         If bolSalir Then
@@ -516,7 +518,7 @@ Public Class FrmPrincipal
                     Dim strEncryptedPassword As String = Utilitario.EncriptarDatos(strContrasena)
                     empresa = Await Puntoventa.ValidarCredenciales(strCodigoUsuario, strEncryptedPassword, strIdEmpresa, strIdentificadoEquipoLocal)
                 Catch ex As Exception
-                    MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 End Try
                 picLoader.Visible = False
             End If
@@ -557,7 +559,7 @@ Public Class FrmPrincipal
             End If
         Else
             If usuarioGlobal.Modifica Then
-                MessageBox.Show("La información de la empresa requiere ser actualizada. Por favor ingrese al mantenimiento de Empresa para completar la información.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("La información de la empresa requiere ser actualizada. Por favor ingrese al mantenimiento de Empresa para completar la información.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Try
                     objMenu = mnuMenuPrincipal.Items("MnuParam")
                     objMenu.Visible = True
@@ -565,7 +567,7 @@ Public Class FrmPrincipal
                 Catch ex As Exception
                 End Try
             Else
-                MessageBox.Show("La información de la empresa requiere ser actualizada por un usuario administrador.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("La información de la empresa requiere ser actualizada por un usuario administrador.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Close()
                 Exit Sub
             End If

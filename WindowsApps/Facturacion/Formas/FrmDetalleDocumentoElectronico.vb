@@ -65,7 +65,7 @@ Public Class FrmDetalleDocumentoElectronico
             End If
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
             Exit Function
         End Try
@@ -76,7 +76,7 @@ Public Class FrmDetalleDocumentoElectronico
         Try
             intTotalDocumentos = Await Puntoventa.ObtenerTotalDocumentosElectronicosProcesados(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
         Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
             Exit Function
         End Try
@@ -140,7 +140,7 @@ Public Class FrmDetalleDocumentoElectronico
             Await ActualizarDatos(intIndiceDePagina)
             picLoader.Visible = False
         Catch ex As Exception
-            MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
         End Try
     End Sub
@@ -179,7 +179,7 @@ Public Class FrmDetalleDocumentoElectronico
             End If
         Catch ex As Exception
             rtxDetalleRespuesta.Visible = False
-            MessageBox.Show("Error al procesar la petición de datos del documento electrónico. Contacte a su proveedor. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("Error al procesar la petición de datos del documento electrónico. Contacte a su proveedor. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
 
@@ -187,7 +187,7 @@ Public Class FrmDetalleDocumentoElectronico
         Dim strCorreoReceptor = ""
         Dim intIndex As Integer = dgvDatos.CurrentRow.Index
         Dim documento As DocumentoDetalle = listadoDocumentosProcesados.Item(intIndex)
-        If MessageBox.Show("Desea utilizar la dirección(es) de correo electrónico registrada(s) en el documento?", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+        If MessageBox.Show("Desea utilizar la dirección(es) de correo electrónico registrada(s) en el documento?", "JLC Solutions CR", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
             strCorreoReceptor = documento.CorreoNotificacion
         Else
             strCorreoReceptor = InputBox("Ingrese la(s) dirección(es) de correo electrónico donde se enviará el comprobante, separados por punto y coma:")
@@ -197,13 +197,13 @@ Public Class FrmDetalleDocumentoElectronico
             Try
                 Await Puntoventa.EnviarNotificacion(documento.IdDocumento, strCorreoReceptor, FrmPrincipal.usuarioGlobal.Token)
                 picLoader.Visible = False
-                MessageBox.Show("Comprobante electrónico enviado satisfactoriamente. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                MessageBox.Show("Comprobante electrónico enviado satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
             Catch ex As Exception
                 picLoader.Visible = False
-                MessageBox.Show("Error al enviar el comprobante:" & ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Error al enviar el comprobante:" & ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
         Else
-            MessageBox.Show("Debe ingresar la dirección(es) de correo electrónico para hacer el envío del comprobante. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("Debe ingresar la dirección(es) de correo electrónico para hacer el envío del comprobante. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End If
     End Sub
 
@@ -241,7 +241,7 @@ Public Class FrmDetalleDocumentoElectronico
             End If
         Catch ex As Exception
             rtxDetalleRespuesta.Visible = False
-            MessageBox.Show("Error al procesar la petición de datos del documento electrónico. Contacte a su proveedor. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("Error al procesar la petición de datos del documento electrónico. Contacte a su proveedor. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
 #End Region
