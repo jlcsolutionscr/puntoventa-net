@@ -18,6 +18,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public int IdSucursal { get; set; }
         [Key]
         public int IdProforma { get; set; }
+        public int ConsecProforma { get; set; }
         [ForeignKey("Usuario")]
         public int IdUsuario { get; set; }
         [ForeignKey("TipoMoneda")]

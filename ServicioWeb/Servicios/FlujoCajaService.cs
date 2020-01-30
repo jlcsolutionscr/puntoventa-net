@@ -756,7 +756,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     cierre.ComisionTarjeta = 0;
                     cierre.VentasCredito = 0;
                     cierre.ComprasCredito = 0;
-                    cierre.DepositoBancario = 0;
+                    cierre.RetiroEfectivo = 0;
 
                     var apartados = dbContext.ApartadoRepository.Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Procesado).ToList();
                     if (apartados.Count > 0)

@@ -20,6 +20,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public int IdTerminal { get; set; }
         [Key]
         public int IdFactura { get; set; }
+        public int ConsecFactura { get; set; }
         [ForeignKey("Usuario")]
         public int IdUsuario { get; set; }
         [ForeignKey("TipoMoneda")]

@@ -44,7 +44,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public decimal ComisionTarjeta { get; set; }
         public decimal VentasCredito { get; set; }
         public decimal ComprasCredito { get; set; }
-        public decimal DepositoBancario { get; set; }
+        public decimal RetiroEfectivo { get; set; }
         public decimal FondoCierre { get; set; }
         public string Observaciones { get; set; }
 

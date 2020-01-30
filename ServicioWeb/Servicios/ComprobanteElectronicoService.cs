@@ -261,12 +261,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 receptor.Identificacion = identificacionEmisorType;
                 receptor.Nombre = empresa.NombreEmpresa;
                 receptor.NombreComercial = empresa.NombreComercial;
-                if (empresa.Telefono.Length > 0)
+                if (empresa.Telefono1.Length > 0)
                 {
                     FacturaElectronicaCompraTelefonoType telefonoType = new FacturaElectronicaCompraTelefonoType
                     {
                         CodigoPais = "506",
-                        NumTelefono = empresa.Telefono
+                        NumTelefono = empresa.Telefono1
                     };
                     receptor.Telefono = telefonoType;
                 }
@@ -498,12 +498,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 emisor.Identificacion = identificacionEmisorType;
                 emisor.Nombre = empresa.NombreEmpresa;
                 emisor.NombreComercial = empresa.NombreComercial;
-                if (empresa.Telefono.Length > 0)
+                if (empresa.Telefono1.Length > 0)
                 {
                     FacturaElectronicaTelefonoType telefonoType = new FacturaElectronicaTelefonoType
                     {
                         CodigoPais = "506",
-                        NumTelefono = empresa.Telefono
+                        NumTelefono = empresa.Telefono1
                     };
                     emisor.Telefono = telefonoType;
                 }
@@ -791,12 +791,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 emisor.Identificacion = identificacionEmisorType;
                 emisor.Nombre = empresa.NombreEmpresa;
                 emisor.NombreComercial = empresa.NombreComercial;
-                if (empresa.Telefono.Length > 0)
+                if (empresa.Telefono1.Length > 0)
                 {
                     TiqueteElectronicoTelefonoType telefonoType = new TiqueteElectronicoTelefonoType
                     {
                         CodigoPais = "506",
-                        NumTelefono = empresa.Telefono
+                        NumTelefono = empresa.Telefono1
                     };
                     emisor.Telefono = telefonoType;
                 }
@@ -1023,12 +1023,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 emisor.Identificacion = identificacionEmisorType;
                 emisor.Nombre = empresa.NombreEmpresa;
                 emisor.NombreComercial = empresa.NombreComercial;
-                if (empresa.Telefono.Length > 0)
+                if (empresa.Telefono1.Length > 0)
                 {
                     NotaCreditoElectronicaTelefonoType telefonoType = new NotaCreditoElectronicaTelefonoType
                     {
                         CodigoPais = "506",
-                        NumTelefono = empresa.Telefono
+                        NumTelefono = empresa.Telefono1
                     };
                     emisor.Telefono = telefonoType;
                 }
@@ -1328,12 +1328,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 emisor.Identificacion = identificacionEmisorType;
                 emisor.Nombre = empresa.NombreEmpresa;
                 emisor.NombreComercial = empresa.NombreComercial;
-                if (empresa.Telefono.Length > 0)
+                if (empresa.Telefono1.Length > 0)
                 {
                     NotaCreditoElectronicaTelefonoType telefonoType = new NotaCreditoElectronicaTelefonoType
                     {
                         CodigoPais = "506",
-                        NumTelefono = empresa.Telefono
+                        NumTelefono = empresa.Telefono1
                     };
                     emisor.Telefono = telefonoType;
                 }
@@ -1594,12 +1594,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 emisor.Identificacion = identificacionEmisorType;
                 emisor.Nombre = empresa.NombreEmpresa;
                 emisor.NombreComercial = empresa.NombreComercial;
-                if (empresa.Telefono.Length > 0)
+                if (empresa.Telefono1.Length > 0)
                 {
                     NotaDebitoElectronicaTelefonoType telefonoType = new NotaDebitoElectronicaTelefonoType
                     {
                         CodigoPais = "506",
-                        NumTelefono = empresa.Telefono
+                        NumTelefono = empresa.Telefono1
                     };
                     emisor.Telefono = telefonoType;
                 }

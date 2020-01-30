@@ -368,7 +368,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         decTipoDeCambio = tipoDeCambio.ValorTipoCambio;
                     }
                     factura.TipoDeCambioDolar = decTipoDeCambio;
-                    
                     if (terminal.IdTipoDispositivo == StaticTipoDispisitivo.AppMovil)
                     {
                         Vendedor vendedor = dbContext.VendedorRepository.Where(x => x.IdEmpresa == factura.IdEmpresa).FirstOrDefault();
@@ -383,6 +382,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         if (cliente.IdTipoIdentificacion == 1 && cliente.Identificacion.Length != 10) throw new BusinessException("El cliente posee una identificación de tipo 'Cedula jurídica' con una longitud inadecuada. Deben ser 10 caracteres");
                         if (cliente.IdTipoIdentificacion > 1 && (cliente.Identificacion.Length != 11 || cliente.Identificacion.Length != 12)) throw new BusinessException("El cliente posee una identificación de tipo 'DIMEX o DITE' con una longitud inadecuada. Deben ser 11 o 12 caracteres");
                     }
+                    sucursal.ConsecFactura += 1;
+                    dbContext.NotificarModificacion(sucursal);
+                    factura.ConsecFactura = sucursal.ConsecFactura;
                     dbContext.FacturaRepository.Add(factura);
                     if (factura.IdCondicionVenta == StaticCondicionVenta.Credito)
                     {
@@ -398,8 +400,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             NroDocOrig = factura.IdFactura,
                             Fecha = factura.Fecha,
                             Tipo = StaticTipoCuentaPorCobrar.Clientes,
-                            Total = factura.Total,
-                            Saldo = factura.Total,
+                            Total = factura.Total - factura.MontoAdelanto,
+                            Saldo = factura.Total - factura.MontoAdelanto,
                             Nulo = false
                         };
                         dbContext.CuentaPorCobrarRepository.Add(cuentaPorCobrar);
@@ -1029,6 +1031,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(proforma.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == proforma.IdEmpresa && x.IdSucursal == proforma.IdSucursal);
+                    if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    sucursal.ConsecProforma += 1;
+                    dbContext.NotificarModificacion(sucursal);
+                    proforma.ConsecProforma = sucursal.ConsecProforma;
                     dbContext.ProformaRepository.Add(proforma);
                     dbContext.Commit();
                     return proforma.IdProforma.ToString();
@@ -2526,7 +2533,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         string[] arrCorreoReceptor = strCorreoReceptor.Split(';');
                         strBody = "Estimado cliente, adjunto encontrará el detalle del documento electrónico en formato PDF y XML con clave " + documentoElectronico.ClaveNumerica + " y la respuesta de aceptación del Ministerio de Hacienda.";
-                        EstructuraPDF datos = new EstructuraPDF();
+                        EstructuraFacturaPDF datos = new EstructuraFacturaPDF();
                         try
                         {
                             string apPath = HostingEnvironment.ApplicationPhysicalPath + "images\\Logo.png";

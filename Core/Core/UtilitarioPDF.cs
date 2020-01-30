@@ -10,7 +10,7 @@ namespace LeandroSoftware.Core.Utilitario
 {
     public static class UtilitarioPDF
     {
-        public static byte[] GenerarPDFFacturaElectronica(EstructuraPDF datos)
+        public static byte[] GenerarPDFFacturaElectronica(EstructuraFacturaPDF datos)
         {
             try
             {
@@ -50,6 +50,9 @@ namespace LeandroSoftware.Core.Utilitario
                 gfx.DrawString(datos.TituloDocumento, font, XBrushes.Black, new XRect(210, 190, 200, 15), XStringFormats.TopLeft);
                 font = new XFont("Arial", 8, XFontStyle.Regular, options);
                 int lineaPos = 217;
+                gfx.DrawString("Registro número:", font, XBrushes.Black, new XRect(20, lineaPos, 80, 12), XStringFormats.TopLeft);
+                gfx.DrawString(datos.ConsecInterno, font, XBrushes.Black, new XRect(110, lineaPos, 80, 12), XStringFormats.TopLeft);
+                lineaPos += 12;
                 if (datos.Clave != null)
                 {
                     gfx.DrawString("Clave: ", font, XBrushes.Black, new XRect(20, lineaPos, 80, 12), XStringFormats.TopLeft);
@@ -204,7 +207,48 @@ namespace LeandroSoftware.Core.Utilitario
                     }
                 }
 
-                string filename = datos.Clave + ".pdf";
+                MemoryStream stream = new MemoryStream();
+                document.Save(stream, false);
+                byte[] bytes = stream.ToArray();
+                return bytes;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public static byte[] GenerarPDFListadoProductos(EstructuraListadoProductosPDF datos)
+        {
+            try
+            {
+                PdfDocument document = new PdfDocument();
+                XPdfFontOptions options = new XPdfFontOptions(PdfFontEncoding.Unicode, PdfFontEmbedding.Always);
+                document.Info.Title = datos.TituloDocumento;
+                PdfPage page = document.AddPage();
+                XGraphics gfx = XGraphics.FromPdfPage(page);
+                XFont font = new XFont("Arial", 10, XFontStyle.BoldItalic, options);
+                XTextFormatter tf = new XTextFormatter(gfx)
+                {
+                    Alignment = XParagraphAlignment.Right
+                };
+                font = new XFont("Courier New", 12, XFontStyle.Bold, options);
+                gfx.DrawString(datos.TituloDocumento, font, XBrushes.Black, new XRect(0, 20, page.Width, 15), XStringFormats.TopCenter);
+                int lineaPos = 23;
+                foreach (EstructuraPDFDetalleProducto linea in datos.DetalleProducto)
+                {
+                    lineaPos += 12;
+                    gfx.DrawString(linea.Descripcion, font, XBrushes.Black, new XRect(10, lineaPos, page.Width - 20, 12), XStringFormats.TopLeft);
+                    lineaPos += 12;
+                    gfx.DrawString(linea.Codigo, font, XBrushes.Black, new XRect(10, lineaPos, 50, 12), XStringFormats.TopCenter);
+                    gfx.DrawString(linea.CodigoProveedor, font, XBrushes.Black, new XRect(60, lineaPos, 50, 12), XStringFormats.TopLeft);
+                    gfx.DrawString(linea.Existencias, font, XBrushes.Black, new XRect(110, lineaPos, 30, 12), XStringFormats.TopCenter);
+                    tf.DrawString(linea.PrecioCosto, font, XBrushes.Black, new XRect(140, lineaPos, 100, 12), XStringFormats.TopLeft);
+                    tf.DrawString(linea.PrecioVenta, font, XBrushes.Black, new XRect(240, lineaPos, 100, 12), XStringFormats.TopLeft);
+                    tf.DrawString(linea.TotalLinea, font, XBrushes.Black, new XRect(340, lineaPos, 100, 12), XStringFormats.TopLeft);
+                }
+                gfx.DrawString("Total inventario: " + datos.TotalInventario, font, XBrushes.Black, new XRect(0, 20, page.Width, 15), XStringFormats.TopLeft);
+
                 MemoryStream stream = new MemoryStream();
                 document.Save(stream, false);
                 byte[] bytes = stream.ToArray();

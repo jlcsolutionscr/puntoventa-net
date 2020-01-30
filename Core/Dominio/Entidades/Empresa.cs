@@ -29,7 +29,8 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         [ForeignKey("TipoMoneda")]
         public int IdTipoMoneda { get; set; }
         public string Direccion { get; set; }
-        public string Telefono { get; set; }
+        public string Telefono1 { get; set; }
+        public string Telefono2 { get; set; }
         public int TipoContrato { get; set; }
         public int CantidadDisponible { get; set; }
         public DateTime? FechaVence { get; set; }
@@ -41,6 +42,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public bool PermiteFacturar { get; set; }
         public bool RecepcionGastos { get; set; }
         public bool AsignaVendedorPorDefecto { get; set; }
+        public bool IngresaPagoCliente { get; set; }
         public byte[] Certificado { get; set; }
         public string NombreCertificado { get; set; }
         public string PinCertificado { get; set; }

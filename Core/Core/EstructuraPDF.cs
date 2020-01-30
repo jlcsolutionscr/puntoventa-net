@@ -4,9 +4,9 @@ using System.Collections.Generic;
 
 namespace LeandroSoftware.Core.TiposComunes
 {
-    public class EstructuraPDF
+    public class EstructuraFacturaPDF
     {
-        public EstructuraPDF()
+        public EstructuraFacturaPDF()
         {
             DetalleServicio = new HashSet<EstructuraPDFDetalleServicio>();
         }
@@ -14,6 +14,7 @@ namespace LeandroSoftware.Core.TiposComunes
         public string TituloDocumento { get; set; }
         public string NombreComercial { get; set; }
         public string NombreEmpresa { get; set; }
+        public string ConsecInterno { get; set; }
         public string Consecutivo { get; set; }
         public string PlazoCredito { get; set; }
         public string Clave { get; set; }
@@ -64,6 +65,30 @@ namespace LeandroSoftware.Core.TiposComunes
         public string Codigo { get; set; }
         public string Detalle { get; set; }
         public string PrecioUnitario { get; set; }
+        public string TotalLinea { get; set; }
+    }
+
+    public class EstructuraListadoProductosPDF
+    {
+        public EstructuraListadoProductosPDF()
+        {
+            DetalleProducto = new HashSet<EstructuraPDFDetalleProducto>();
+        }
+
+        public string TituloDocumento { get; set; }
+        public string TotalInventario { get; set; }
+        public ICollection<EstructuraPDFDetalleProducto> DetalleProducto { get; set; }
+    }
+
+    public class EstructuraPDFDetalleProducto
+    {
+
+        public string Codigo { get; set; }
+        public string CodigoProveedor { get; set; }
+        public string Descripcion { get; set; }
+        public string Existencias { get; set; }
+        public string PrecioCosto { get; set; }
+        public string PrecioVenta { get; set; }
         public string TotalLinea { get; set; }
     }
 }

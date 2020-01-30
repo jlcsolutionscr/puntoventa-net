@@ -14,7 +14,6 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public int IdTerminal { get; set; }
         public string ValorRegistro { get; set; }
         public string ImpresoraFactura { get; set; }
-        public bool ImpresoraMatriz { get; set; }
         public int UltimoDocFE { get; set; }
         public int UltimoDocND { get; set; }
         public int UltimoDocNC { get; set; }
