@@ -685,6 +685,12 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                     case "ObtenerTipoCambioDolar":
                         strRespuesta = decTipoCambioDolar.ToString();
                         break;
+                    case "ValidarUsuarioHacienda":
+                        strCodigo = parametrosJO.Property("CodigoUsuario").Value.ToString();
+                        strClave = parametrosJO.Property("Clave").Value.ToString();
+                        bool bolValido = servicioMantenimiento.ValidarUsuarioHacienda(strCodigo, strClave, configuracionGeneral);
+                        strRespuesta = serializer.Serialize(bolValido);
+                        break;
                     case "ObtenerListadoTipodePrecio":
                         IList<LlaveDescripcion> listadoTipodePrecio = servicioMantenimiento.ObtenerListadoTipodePrecio();
                         if (listadoTipodePrecio.Count > 0)

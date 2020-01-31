@@ -345,12 +345,10 @@ Public Class FrmFactura
 
     Private Sub CargarLineaDetalleFactura(producto As Producto, strDescripcion As String, decCantidad As Decimal, decPrecio As Decimal, decPorcDesc As Decimal)
         Dim decTasaImpuesto As Decimal = producto.ParametroImpuesto.TasaImpuesto
+        If cliente.AplicaTasaDiferenciada Then decTasaImpuesto = cliente.ParametroImpuesto.TasaImpuesto
         Dim decPrecioGravado As Decimal = decPrecio
-        Dim decPrecioIva As Decimal = decPrecio
         If decTasaImpuesto > 0 Then
             decPrecioGravado = Math.Round(decPrecio / (1 + (decTasaImpuesto / 100)), 3, MidpointRounding.AwayFromZero)
-            If cliente.AplicaTasaDiferenciada Then decTasaImpuesto = cliente.ParametroImpuesto.TasaImpuesto
-            decPrecioIva = Math.Round(decPrecioGravado * (1 + (decTasaImpuesto / 100)), 2, MidpointRounding.AwayFromZero)
         End If
         Dim intIndice As Integer = ObtenerIndice(dtbDetalleFactura, producto.IdProducto)
         If producto.Tipo = 1 And intIndice >= 0 Then
@@ -359,13 +357,13 @@ Public Class FrmFactura
             dtbDetalleFactura.Rows(intIndice).Item(2) = strDescripcion
             dtbDetalleFactura.Rows(intIndice).Item(3) = decNewCantidad
             dtbDetalleFactura.Rows(intIndice).Item(4) = decPrecioGravado
-            dtbDetalleFactura.Rows(intIndice).Item(5) = decPrecioIva
-            dtbDetalleFactura.Rows(intIndice).Item(6) = decNewCantidad * decPrecioIva
+            dtbDetalleFactura.Rows(intIndice).Item(5) = decPrecio
+            dtbDetalleFactura.Rows(intIndice).Item(6) = decNewCantidad * decPrecio
             dtbDetalleFactura.Rows(intIndice).Item(7) = decTasaImpuesto = 0
             dtbDetalleFactura.Rows(intIndice).Item(8) = producto.PrecioCosto
             dtbDetalleFactura.Rows(intIndice).Item(9) = decTasaImpuesto
             dtbDetalleFactura.Rows(intIndice).Item(10) = decPorcDesc
-            dtbDetalleFactura.Rows(intIndice).Item(10) = (decPrecioIva * 100 / (100 - decPorcDesc)) - decPrecioIva
+            dtbDetalleFactura.Rows(intIndice).Item(10) = (decPrecio * 100 / (100 - decPorcDesc)) - decPrecio
         Else
             dtrRowDetFactura = dtbDetalleFactura.NewRow
             dtrRowDetFactura.Item(0) = producto.IdProducto
@@ -373,13 +371,13 @@ Public Class FrmFactura
             dtrRowDetFactura.Item(2) = strDescripcion
             dtrRowDetFactura.Item(3) = decCantidad
             dtrRowDetFactura.Item(4) = decPrecioGravado
-            dtrRowDetFactura.Item(5) = decPrecioIva
-            dtrRowDetFactura.Item(6) = decCantidad * decPrecioIva
+            dtrRowDetFactura.Item(5) = decPrecio
+            dtrRowDetFactura.Item(6) = decCantidad * decPrecio
             dtrRowDetFactura.Item(7) = decTasaImpuesto = 0
             dtrRowDetFactura.Item(8) = producto.PrecioCosto
             dtrRowDetFactura.Item(9) = decTasaImpuesto
             dtrRowDetFactura.Item(10) = decPorcDesc
-            dtrRowDetFactura.Item(11) = (decPrecioIva * 100 / (100 - decPorcDesc)) - decPrecioIva
+            dtrRowDetFactura.Item(11) = (decPrecio * 100 / (100 - decPorcDesc)) - decPrecio
             dtbDetalleFactura.Rows.Add(dtrRowDetFactura)
         End If
         grdDetalleFactura.Refresh()
@@ -527,6 +525,10 @@ Public Class FrmFactura
             End If
         Else
             decPrecioVenta = producto.PrecioVenta1
+        End If
+        If cliente.AplicaTasaDiferenciada Then
+            decPrecioVenta = Math.Round(decPrecioVenta / (1 + (producto.ParametroImpuesto.TasaImpuesto / 100)), 3)
+            decPrecioVenta = Math.Round(decPrecioVenta * (1 + (cliente.ParametroImpuesto.TasaImpuesto / 100)), 2)
         End If
         Return decPrecioVenta
     End Function

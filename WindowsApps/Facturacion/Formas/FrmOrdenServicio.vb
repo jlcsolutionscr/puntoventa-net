@@ -270,12 +270,10 @@ Public Class FrmOrdenServicio
 
     Private Sub CargarLineaDetalleOrdenServicio(producto As Producto, strDescripcion As String, decCantidad As Decimal, decPrecio As Decimal, decPorcDesc As Decimal)
         Dim decTasaImpuesto As Decimal = producto.ParametroImpuesto.TasaImpuesto
+        If cliente.AplicaTasaDiferenciada Then decTasaImpuesto = cliente.ParametroImpuesto.TasaImpuesto
         Dim decPrecioGravado As Decimal = decPrecio
-        Dim decPrecioIva As Decimal = decPrecio
         If decTasaImpuesto > 0 Then
             decPrecioGravado = Math.Round(decPrecio / (1 + (decTasaImpuesto / 100)), 3, MidpointRounding.AwayFromZero)
-            If cliente.AplicaTasaDiferenciada Then decTasaImpuesto = cliente.ParametroImpuesto.TasaImpuesto
-            decPrecioIva = Math.Round(decPrecioGravado * (1 + (decTasaImpuesto / 100)), 2, MidpointRounding.AwayFromZero)
         End If
         Dim intIndice As Integer = ObtenerIndice(dtbDetalleOrdenServicio, producto.IdProducto)
         If producto.Tipo = 1 And intIndice >= 0 Then
@@ -284,12 +282,12 @@ Public Class FrmOrdenServicio
             dtbDetalleOrdenServicio.Rows(intIndice).Item(2) = strDescripcion
             dtbDetalleOrdenServicio.Rows(intIndice).Item(3) = decNewCantidad
             dtbDetalleOrdenServicio.Rows(intIndice).Item(4) = decPrecioGravado
-            dtbDetalleOrdenServicio.Rows(intIndice).Item(5) = decPrecioIva
-            dtbDetalleOrdenServicio.Rows(intIndice).Item(6) = decNewCantidad * decPrecioIva
+            dtbDetalleOrdenServicio.Rows(intIndice).Item(5) = decPrecio
+            dtbDetalleOrdenServicio.Rows(intIndice).Item(6) = decNewCantidad * decPrecio
             dtbDetalleOrdenServicio.Rows(intIndice).Item(7) = decTasaImpuesto = 0
             dtbDetalleOrdenServicio.Rows(intIndice).Item(8) = decTasaImpuesto
             dtbDetalleOrdenServicio.Rows(intIndice).Item(9) = decPorcDesc
-            dtbDetalleOrdenServicio.Rows(intIndice).Item(10) = (decPrecioIva * 100 / (100 - decPorcDesc)) - decPrecioIva
+            dtbDetalleOrdenServicio.Rows(intIndice).Item(10) = (decPrecio * 100 / (100 - decPorcDesc)) - decPrecio
         Else
             dtrRowDetOrdenServicio = dtbDetalleOrdenServicio.NewRow
             dtrRowDetOrdenServicio.Item(0) = producto.IdProducto
@@ -297,12 +295,12 @@ Public Class FrmOrdenServicio
             dtrRowDetOrdenServicio.Item(2) = strDescripcion
             dtrRowDetOrdenServicio.Item(3) = decCantidad
             dtrRowDetOrdenServicio.Item(4) = decPrecioGravado
-            dtrRowDetOrdenServicio.Item(5) = decPrecioIva
-            dtrRowDetOrdenServicio.Item(6) = decCantidad * decPrecioIva
+            dtrRowDetOrdenServicio.Item(5) = decPrecio
+            dtrRowDetOrdenServicio.Item(6) = decCantidad * decPrecio
             dtrRowDetOrdenServicio.Item(7) = decTasaImpuesto = 0
             dtrRowDetOrdenServicio.Item(8) = decTasaImpuesto
             dtrRowDetOrdenServicio.Item(9) = decPorcDesc
-            dtrRowDetOrdenServicio.Item(10) = (decPrecioIva * 100 / (100 - decPorcDesc)) - decPrecioIva
+            dtrRowDetOrdenServicio.Item(10) = (decPrecio * 100 / (100 - decPorcDesc)) - decPrecio
             dtbDetalleOrdenServicio.Rows.Add(dtrRowDetOrdenServicio)
         End If
         grdDetalleOrdenServicio.Refresh()
@@ -442,6 +440,10 @@ Public Class FrmOrdenServicio
             End If
         Else
             decPrecioVenta = producto.PrecioVenta1
+        End If
+        If cliente.AplicaTasaDiferenciada Then
+            decPrecioVenta = Math.Round(decPrecioVenta / (1 + (producto.ParametroImpuesto.TasaImpuesto / 100)), 3)
+            decPrecioVenta = Math.Round(decPrecioVenta * (1 + (cliente.ParametroImpuesto.TasaImpuesto / 100)), 2)
         End If
         Return decPrecioVenta
     End Function

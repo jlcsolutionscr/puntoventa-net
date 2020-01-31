@@ -91,7 +91,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        private static async Task<TokenType> ObtenerToken(string strServicioTokenURL, string strClientId, string strUsuario, string strPassword)
+        public static async Task<TokenType> ObtenerToken(string strServicioTokenURL, string strClientId, string strUsuario, string strPassword)
         {
             try
             {
@@ -103,6 +103,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     new KeyValuePair<string, string>("password", strPassword)
                 });
                 HttpResponseMessage httpResponse = await httpClient.PostAsync(strServicioTokenURL + "/token", formContent);
+                if (httpResponse.StatusCode != HttpStatusCode.OK) throw new Exception(httpResponse.ReasonPhrase);
                 string responseContent = await httpResponse.Content.ReadAsStringAsync();
                 TokenType objToken = new JavaScriptSerializer().Deserialize<TokenType>(responseContent);
                 objToken.emitedAt = DateTime.Now;
@@ -2202,7 +2203,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 }
                                 byte[] mensajeEncoded = Encoding.UTF8.GetBytes(documentoXml.OuterXml);
                                 string strComprobanteXML = Convert.ToBase64String(mensajeEncoded);
-                                ValidarToken(dbContext, empresa, datos.ServicioTokenURL, datos.ClientId);
+                                try
+                                {
+                                    ValidarToken(dbContext, empresa, datos.ServicioTokenURL, datos.ClientId);
+                                }
+                                catch (Exception ex)
+                                {
+                                    documento.EstadoEnvio = StaticEstadoDocumentoElectronico.Registrado;
+                                    documento.ErrorEnvio = "No se logro obtener un token: " + ex.Message;
+                                    dbContext.NotificarModificacion(documento);
+                                    dbContext.Commit();
+                                }
                                 if (empresa.AccessToken != null)
                                 {
                                     string JsonObject = "{\"clave\": \"" + documento.ClaveNumerica + "\",\"fecha\": \"" + documento.Fecha.ToString("yyyy-MM-ddTHH:mm:ssss") + "\"," +
@@ -2253,13 +2264,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                         }
                                         dbContext.NotificarModificacion(documento);
                                     }
-                                    dbContext.Commit();
-                                }
-                                else
-                                {
-                                    documento.EstadoEnvio = StaticEstadoDocumentoElectronico.Registrado;
-                                    documento.ErrorEnvio = "No se logro obtener un token válido para la empresa correspondiente al documento electrónico.";
-                                    dbContext.NotificarModificacion(documento);
                                     dbContext.Commit();
                                 }
                             }

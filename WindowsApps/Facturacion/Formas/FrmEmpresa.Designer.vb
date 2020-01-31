@@ -113,8 +113,13 @@ Partial Class FrmEmpresa
         Me.Label29 = New System.Windows.Forms.Label()
         Me.txtTelefono2 = New System.Windows.Forms.TextBox()
         Me.Label30 = New System.Windows.Forms.Label()
+        Me.Label35 = New System.Windows.Forms.Label()
+        Me.btnLimpiarLogo = New System.Windows.Forms.Button()
+        Me.btnCargarLogo = New System.Windows.Forms.Button()
+        Me.picLogo = New System.Windows.Forms.PictureBox()
         Me.gpbSucursal.SuspendLayout()
         Me.GroupBox1.SuspendLayout()
+        CType(Me.picLogo, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'txtTelefono1
@@ -559,10 +564,10 @@ Partial Class FrmEmpresa
         Me.gpbSucursal.Controls.Add(Me.Label12)
         Me.gpbSucursal.Cursor = System.Windows.Forms.Cursors.Default
         Me.gpbSucursal.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.gpbSucursal.Location = New System.Drawing.Point(450, 168)
+        Me.gpbSucursal.Location = New System.Drawing.Point(444, 275)
         Me.gpbSucursal.Name = "gpbSucursal"
         Me.gpbSucursal.Padding = New System.Windows.Forms.Padding(6, 3, 6, 3)
-        Me.gpbSucursal.Size = New System.Drawing.Size(437, 309)
+        Me.gpbSucursal.Size = New System.Drawing.Size(813, 195)
         Me.gpbSucursal.TabIndex = 14
         Me.gpbSucursal.TabStop = False
         Me.gpbSucursal.Text = "Datos de la Terminal en Uso"
@@ -573,7 +578,7 @@ Partial Class FrmEmpresa
         Me.txtConsecApartado.BackColor = System.Drawing.SystemColors.Window
         Me.txtConsecApartado.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtConsecApartado.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtConsecApartado.Location = New System.Drawing.Point(353, 166)
+        Me.txtConsecApartado.Location = New System.Drawing.Point(340, 166)
         Me.txtConsecApartado.MaxLength = 0
         Me.txtConsecApartado.Name = "txtConsecApartado"
         Me.txtConsecApartado.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -585,7 +590,7 @@ Partial Class FrmEmpresa
         Me.Label34.BackColor = System.Drawing.Color.Transparent
         Me.Label34.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label34.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label34.Location = New System.Drawing.Point(229, 169)
+        Me.Label34.Location = New System.Drawing.Point(216, 169)
         Me.Label34.Name = "Label34"
         Me.Label34.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label34.Size = New System.Drawing.Size(118, 17)
@@ -599,7 +604,7 @@ Partial Class FrmEmpresa
         Me.txtConsecOrdenServicio.BackColor = System.Drawing.SystemColors.Window
         Me.txtConsecOrdenServicio.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtConsecOrdenServicio.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtConsecOrdenServicio.Location = New System.Drawing.Point(152, 166)
+        Me.txtConsecOrdenServicio.Location = New System.Drawing.Point(139, 166)
         Me.txtConsecOrdenServicio.MaxLength = 0
         Me.txtConsecOrdenServicio.Name = "txtConsecOrdenServicio"
         Me.txtConsecOrdenServicio.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -611,7 +616,7 @@ Partial Class FrmEmpresa
         Me.Label33.BackColor = System.Drawing.Color.Transparent
         Me.Label33.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label33.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label33.Location = New System.Drawing.Point(28, 169)
+        Me.Label33.Location = New System.Drawing.Point(15, 169)
         Me.Label33.Name = "Label33"
         Me.Label33.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label33.Size = New System.Drawing.Size(118, 17)
@@ -625,7 +630,7 @@ Partial Class FrmEmpresa
         Me.txtConsecProforma.BackColor = System.Drawing.SystemColors.Window
         Me.txtConsecProforma.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtConsecProforma.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtConsecProforma.Location = New System.Drawing.Point(353, 138)
+        Me.txtConsecProforma.Location = New System.Drawing.Point(340, 138)
         Me.txtConsecProforma.MaxLength = 0
         Me.txtConsecProforma.Name = "txtConsecProforma"
         Me.txtConsecProforma.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -637,7 +642,7 @@ Partial Class FrmEmpresa
         Me.Label32.BackColor = System.Drawing.Color.Transparent
         Me.Label32.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label32.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label32.Location = New System.Drawing.Point(232, 141)
+        Me.Label32.Location = New System.Drawing.Point(219, 141)
         Me.Label32.Name = "Label32"
         Me.Label32.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label32.Size = New System.Drawing.Size(115, 17)
@@ -651,7 +656,7 @@ Partial Class FrmEmpresa
         Me.txtConsecFactura.BackColor = System.Drawing.SystemColors.Window
         Me.txtConsecFactura.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtConsecFactura.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtConsecFactura.Location = New System.Drawing.Point(152, 140)
+        Me.txtConsecFactura.Location = New System.Drawing.Point(139, 140)
         Me.txtConsecFactura.MaxLength = 0
         Me.txtConsecFactura.Name = "txtConsecFactura"
         Me.txtConsecFactura.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -663,7 +668,7 @@ Partial Class FrmEmpresa
         Me.Label31.BackColor = System.Drawing.Color.Transparent
         Me.Label31.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label31.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label31.Location = New System.Drawing.Point(31, 143)
+        Me.Label31.Location = New System.Drawing.Point(18, 143)
         Me.Label31.Name = "Label31"
         Me.Label31.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label31.Size = New System.Drawing.Size(115, 17)
@@ -677,7 +682,7 @@ Partial Class FrmEmpresa
         Me.txtUltimoFEC.BackColor = System.Drawing.SystemColors.Window
         Me.txtUltimoFEC.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtUltimoFEC.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtUltimoFEC.Location = New System.Drawing.Point(353, 274)
+        Me.txtUltimoFEC.Location = New System.Drawing.Point(729, 97)
         Me.txtUltimoFEC.MaxLength = 0
         Me.txtUltimoFEC.Name = "txtUltimoFEC"
         Me.txtUltimoFEC.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -689,7 +694,7 @@ Partial Class FrmEmpresa
         Me.Label27.BackColor = System.Drawing.Color.Transparent
         Me.Label27.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label27.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label27.Location = New System.Drawing.Point(226, 277)
+        Me.Label27.Location = New System.Drawing.Point(602, 100)
         Me.Label27.Name = "Label27"
         Me.Label27.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label27.Size = New System.Drawing.Size(121, 17)
@@ -703,7 +708,7 @@ Partial Class FrmEmpresa
         Me.txtIdTerminal.BackColor = System.Drawing.SystemColors.Window
         Me.txtIdTerminal.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtIdTerminal.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtIdTerminal.Location = New System.Drawing.Point(117, 198)
+        Me.txtIdTerminal.Location = New System.Drawing.Point(475, 21)
         Me.txtIdTerminal.MaxLength = 6
         Me.txtIdTerminal.Name = "txtIdTerminal"
         Me.txtIdTerminal.ReadOnly = True
@@ -717,10 +722,10 @@ Partial Class FrmEmpresa
         Me.Label22.BackColor = System.Drawing.Color.Transparent
         Me.Label22.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label22.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label22.Location = New System.Drawing.Point(54, 201)
+        Me.Label22.Location = New System.Drawing.Point(417, 24)
         Me.Label22.Name = "Label22"
         Me.Label22.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label22.Size = New System.Drawing.Size(57, 17)
+        Me.Label22.Size = New System.Drawing.Size(52, 17)
         Me.Label22.TabIndex = 98
         Me.Label22.Text = "Terminal:"
         Me.Label22.TextAlign = System.Drawing.ContentAlignment.TopRight
@@ -731,7 +736,7 @@ Partial Class FrmEmpresa
         Me.txtNombreImpresora.BackColor = System.Drawing.SystemColors.Window
         Me.txtNombreImpresora.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtNombreImpresora.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtNombreImpresora.Location = New System.Drawing.Point(281, 198)
+        Me.txtNombreImpresora.Location = New System.Drawing.Point(639, 21)
         Me.txtNombreImpresora.MaxLength = 20
         Me.txtNombreImpresora.Name = "txtNombreImpresora"
         Me.txtNombreImpresora.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -743,7 +748,7 @@ Partial Class FrmEmpresa
         Me.Label21.BackColor = System.Drawing.Color.Transparent
         Me.Label21.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label21.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label21.Location = New System.Drawing.Point(175, 201)
+        Me.Label21.Location = New System.Drawing.Point(533, 24)
         Me.Label21.Name = "Label21"
         Me.Label21.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label21.Size = New System.Drawing.Size(100, 17)
@@ -757,7 +762,7 @@ Partial Class FrmEmpresa
         Me.txtUltimoMR.BackColor = System.Drawing.SystemColors.Window
         Me.txtUltimoMR.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtUltimoMR.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtUltimoMR.Location = New System.Drawing.Point(353, 248)
+        Me.txtUltimoMR.Location = New System.Drawing.Point(729, 71)
         Me.txtUltimoMR.MaxLength = 0
         Me.txtUltimoMR.Name = "txtUltimoMR"
         Me.txtUltimoMR.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -769,7 +774,7 @@ Partial Class FrmEmpresa
         Me.Label20.BackColor = System.Drawing.Color.Transparent
         Me.Label20.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label20.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label20.Location = New System.Drawing.Point(226, 251)
+        Me.Label20.Location = New System.Drawing.Point(602, 74)
         Me.Label20.Name = "Label20"
         Me.Label20.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label20.Size = New System.Drawing.Size(121, 17)
@@ -783,7 +788,7 @@ Partial Class FrmEmpresa
         Me.txtUltimoTE.BackColor = System.Drawing.SystemColors.Window
         Me.txtUltimoTE.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtUltimoTE.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtUltimoTE.Location = New System.Drawing.Point(353, 224)
+        Me.txtUltimoTE.Location = New System.Drawing.Point(729, 47)
         Me.txtUltimoTE.MaxLength = 0
         Me.txtUltimoTE.Name = "txtUltimoTE"
         Me.txtUltimoTE.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -795,7 +800,7 @@ Partial Class FrmEmpresa
         Me.Label19.BackColor = System.Drawing.Color.Transparent
         Me.Label19.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label19.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label19.Location = New System.Drawing.Point(226, 227)
+        Me.Label19.Location = New System.Drawing.Point(602, 50)
         Me.Label19.Name = "Label19"
         Me.Label19.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label19.Size = New System.Drawing.Size(121, 17)
@@ -809,7 +814,7 @@ Partial Class FrmEmpresa
         Me.txtUltimoNC.BackColor = System.Drawing.SystemColors.Window
         Me.txtUltimoNC.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtUltimoNC.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtUltimoNC.Location = New System.Drawing.Point(152, 276)
+        Me.txtUltimoNC.Location = New System.Drawing.Point(528, 99)
         Me.txtUltimoNC.MaxLength = 0
         Me.txtUltimoNC.Name = "txtUltimoNC"
         Me.txtUltimoNC.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -821,10 +826,10 @@ Partial Class FrmEmpresa
         Me.Label17.BackColor = System.Drawing.Color.Transparent
         Me.Label17.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label17.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label17.Location = New System.Drawing.Point(25, 279)
+        Me.Label17.Location = New System.Drawing.Point(414, 102)
         Me.Label17.Name = "Label17"
         Me.Label17.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label17.Size = New System.Drawing.Size(121, 17)
+        Me.Label17.Size = New System.Drawing.Size(108, 17)
         Me.Label17.TabIndex = 90
         Me.Label17.Text = "Ultima Nota Crédito:"
         Me.Label17.TextAlign = System.Drawing.ContentAlignment.TopRight
@@ -835,7 +840,7 @@ Partial Class FrmEmpresa
         Me.txtUltimoND.BackColor = System.Drawing.SystemColors.Window
         Me.txtUltimoND.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtUltimoND.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtUltimoND.Location = New System.Drawing.Point(152, 250)
+        Me.txtUltimoND.Location = New System.Drawing.Point(528, 73)
         Me.txtUltimoND.MaxLength = 0
         Me.txtUltimoND.Name = "txtUltimoND"
         Me.txtUltimoND.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -847,10 +852,10 @@ Partial Class FrmEmpresa
         Me.Label14.BackColor = System.Drawing.Color.Transparent
         Me.Label14.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label14.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label14.Location = New System.Drawing.Point(25, 253)
+        Me.Label14.Location = New System.Drawing.Point(414, 76)
         Me.Label14.Name = "Label14"
         Me.Label14.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label14.Size = New System.Drawing.Size(121, 17)
+        Me.Label14.Size = New System.Drawing.Size(108, 17)
         Me.Label14.TabIndex = 88
         Me.Label14.Text = "Ultima Nota Débito:"
         Me.Label14.TextAlign = System.Drawing.ContentAlignment.TopRight
@@ -861,7 +866,7 @@ Partial Class FrmEmpresa
         Me.txtUltimoFE.BackColor = System.Drawing.SystemColors.Window
         Me.txtUltimoFE.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtUltimoFE.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtUltimoFE.Location = New System.Drawing.Point(152, 224)
+        Me.txtUltimoFE.Location = New System.Drawing.Point(528, 47)
         Me.txtUltimoFE.MaxLength = 0
         Me.txtUltimoFE.Name = "txtUltimoFE"
         Me.txtUltimoFE.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -873,10 +878,10 @@ Partial Class FrmEmpresa
         Me.Label13.BackColor = System.Drawing.Color.Transparent
         Me.Label13.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label13.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label13.Location = New System.Drawing.Point(25, 227)
+        Me.Label13.Location = New System.Drawing.Point(414, 50)
         Me.Label13.Name = "Label13"
         Me.Label13.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label13.Size = New System.Drawing.Size(121, 17)
+        Me.Label13.Size = New System.Drawing.Size(108, 17)
         Me.Label13.TabIndex = 86
         Me.Label13.Text = "Ultima Factura Elect:"
         Me.Label13.TextAlign = System.Drawing.ContentAlignment.TopRight
@@ -887,7 +892,7 @@ Partial Class FrmEmpresa
         Me.txtNombreSucursal.BackColor = System.Drawing.SystemColors.Window
         Me.txtNombreSucursal.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtNombreSucursal.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtNombreSucursal.Location = New System.Drawing.Point(117, 47)
+        Me.txtNombreSucursal.Location = New System.Drawing.Point(104, 47)
         Me.txtNombreSucursal.MaxLength = 40
         Me.txtNombreSucursal.Name = "txtNombreSucursal"
         Me.txtNombreSucursal.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -899,7 +904,7 @@ Partial Class FrmEmpresa
         Me.Label3.BackColor = System.Drawing.Color.Transparent
         Me.Label3.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label3.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label3.Location = New System.Drawing.Point(32, 50)
+        Me.Label3.Location = New System.Drawing.Point(19, 50)
         Me.Label3.Name = "Label3"
         Me.Label3.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label3.Size = New System.Drawing.Size(79, 17)
@@ -913,7 +918,7 @@ Partial Class FrmEmpresa
         Me.txtTelefonoSucursal.BackColor = System.Drawing.SystemColors.Window
         Me.txtTelefonoSucursal.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtTelefonoSucursal.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtTelefonoSucursal.Location = New System.Drawing.Point(117, 114)
+        Me.txtTelefonoSucursal.Location = New System.Drawing.Point(104, 114)
         Me.txtTelefonoSucursal.MaxLength = 20
         Me.txtTelefonoSucursal.Name = "txtTelefonoSucursal"
         Me.txtTelefonoSucursal.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -926,7 +931,7 @@ Partial Class FrmEmpresa
         Me.txtDireccionSucursal.BackColor = System.Drawing.SystemColors.Window
         Me.txtDireccionSucursal.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtDireccionSucursal.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtDireccionSucursal.Location = New System.Drawing.Point(117, 73)
+        Me.txtDireccionSucursal.Location = New System.Drawing.Point(104, 73)
         Me.txtDireccionSucursal.MaxLength = 80
         Me.txtDireccionSucursal.Multiline = True
         Me.txtDireccionSucursal.Name = "txtDireccionSucursal"
@@ -939,7 +944,7 @@ Partial Class FrmEmpresa
         Me.Label10.BackColor = System.Drawing.Color.Transparent
         Me.Label10.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label10.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label10.Location = New System.Drawing.Point(32, 117)
+        Me.Label10.Location = New System.Drawing.Point(19, 117)
         Me.Label10.Name = "Label10"
         Me.Label10.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label10.Size = New System.Drawing.Size(79, 17)
@@ -952,7 +957,7 @@ Partial Class FrmEmpresa
         Me.Label11.BackColor = System.Drawing.Color.Transparent
         Me.Label11.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label11.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label11.Location = New System.Drawing.Point(32, 76)
+        Me.Label11.Location = New System.Drawing.Point(19, 76)
         Me.Label11.Name = "Label11"
         Me.Label11.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label11.Size = New System.Drawing.Size(79, 17)
@@ -966,7 +971,7 @@ Partial Class FrmEmpresa
         Me.txtIdSucursal.BackColor = System.Drawing.SystemColors.Window
         Me.txtIdSucursal.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtIdSucursal.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtIdSucursal.Location = New System.Drawing.Point(117, 21)
+        Me.txtIdSucursal.Location = New System.Drawing.Point(104, 21)
         Me.txtIdSucursal.MaxLength = 6
         Me.txtIdSucursal.Name = "txtIdSucursal"
         Me.txtIdSucursal.ReadOnly = True
@@ -980,7 +985,7 @@ Partial Class FrmEmpresa
         Me.Label12.BackColor = System.Drawing.Color.Transparent
         Me.Label12.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label12.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label12.Location = New System.Drawing.Point(54, 24)
+        Me.Label12.Location = New System.Drawing.Point(41, 24)
         Me.Label12.Name = "Label12"
         Me.Label12.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label12.Size = New System.Drawing.Size(57, 17)
@@ -992,6 +997,10 @@ Partial Class FrmEmpresa
         '
         Me.GroupBox1.BackColor = System.Drawing.SystemColors.Control
         Me.GroupBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None
+        Me.GroupBox1.Controls.Add(Me.Label35)
+        Me.GroupBox1.Controls.Add(Me.btnLimpiarLogo)
+        Me.GroupBox1.Controls.Add(Me.btnCargarLogo)
+        Me.GroupBox1.Controls.Add(Me.picLogo)
         Me.GroupBox1.Controls.Add(Me.btnCargarCertificado)
         Me.GroupBox1.Controls.Add(Me.txtClaveATV)
         Me.GroupBox1.Controls.Add(Me.Label25)
@@ -1003,10 +1012,10 @@ Partial Class FrmEmpresa
         Me.GroupBox1.Controls.Add(Me.Label16)
         Me.GroupBox1.Cursor = System.Windows.Forms.Cursors.Default
         Me.GroupBox1.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.GroupBox1.Location = New System.Drawing.Point(450, 25)
+        Me.GroupBox1.Location = New System.Drawing.Point(444, 25)
         Me.GroupBox1.Name = "GroupBox1"
         Me.GroupBox1.Padding = New System.Windows.Forms.Padding(6, 3, 6, 3)
-        Me.GroupBox1.Size = New System.Drawing.Size(437, 137)
+        Me.GroupBox1.Size = New System.Drawing.Size(813, 244)
         Me.GroupBox1.TabIndex = 262
         Me.GroupBox1.TabStop = False
         Me.GroupBox1.Text = "Datos para la generación de Documentos Electrónicos"
@@ -1017,7 +1026,7 @@ Partial Class FrmEmpresa
         Me.btnCargarCertificado.Cursor = System.Windows.Forms.Cursors.Default
         Me.btnCargarCertificado.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.btnCargarCertificado.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.btnCargarCertificado.Location = New System.Drawing.Point(377, 23)
+        Me.btnCargarCertificado.Location = New System.Drawing.Point(364, 22)
         Me.btnCargarCertificado.Name = "btnCargarCertificado"
         Me.btnCargarCertificado.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.btnCargarCertificado.Size = New System.Drawing.Size(47, 26)
@@ -1033,11 +1042,11 @@ Partial Class FrmEmpresa
         Me.txtClaveATV.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtClaveATV.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtClaveATV.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtClaveATV.Location = New System.Drawing.Point(111, 104)
+        Me.txtClaveATV.Location = New System.Drawing.Point(104, 104)
         Me.txtClaveATV.MaxLength = 100
         Me.txtClaveATV.Name = "txtClaveATV"
         Me.txtClaveATV.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtClaveATV.Size = New System.Drawing.Size(313, 20)
+        Me.txtClaveATV.Size = New System.Drawing.Size(306, 20)
         Me.txtClaveATV.TabIndex = 53
         '
         'Label25
@@ -1046,7 +1055,7 @@ Partial Class FrmEmpresa
         Me.Label25.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label25.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label25.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label25.Location = New System.Drawing.Point(14, 107)
+        Me.Label25.Location = New System.Drawing.Point(7, 107)
         Me.Label25.Name = "Label25"
         Me.Label25.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label25.Size = New System.Drawing.Size(91, 17)
@@ -1061,11 +1070,11 @@ Partial Class FrmEmpresa
         Me.txtUsuarioATV.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtUsuarioATV.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtUsuarioATV.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtUsuarioATV.Location = New System.Drawing.Point(111, 78)
+        Me.txtUsuarioATV.Location = New System.Drawing.Point(104, 78)
         Me.txtUsuarioATV.MaxLength = 100
         Me.txtUsuarioATV.Name = "txtUsuarioATV"
         Me.txtUsuarioATV.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtUsuarioATV.Size = New System.Drawing.Size(313, 20)
+        Me.txtUsuarioATV.Size = New System.Drawing.Size(306, 20)
         Me.txtUsuarioATV.TabIndex = 52
         '
         'Label24
@@ -1074,7 +1083,7 @@ Partial Class FrmEmpresa
         Me.Label24.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label24.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label24.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label24.Location = New System.Drawing.Point(20, 81)
+        Me.Label24.Location = New System.Drawing.Point(13, 81)
         Me.Label24.Name = "Label24"
         Me.Label24.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label24.Size = New System.Drawing.Size(85, 17)
@@ -1089,7 +1098,7 @@ Partial Class FrmEmpresa
         Me.txtPinCertificado.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtPinCertificado.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtPinCertificado.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtPinCertificado.Location = New System.Drawing.Point(111, 52)
+        Me.txtPinCertificado.Location = New System.Drawing.Point(104, 52)
         Me.txtPinCertificado.MaxLength = 4
         Me.txtPinCertificado.Name = "txtPinCertificado"
         Me.txtPinCertificado.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -1102,7 +1111,7 @@ Partial Class FrmEmpresa
         Me.Label18.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label18.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label18.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label18.Location = New System.Drawing.Point(17, 55)
+        Me.Label18.Location = New System.Drawing.Point(10, 55)
         Me.Label18.Name = "Label18"
         Me.Label18.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label18.Size = New System.Drawing.Size(88, 17)
@@ -1117,12 +1126,12 @@ Partial Class FrmEmpresa
         Me.txtNombreCertificado.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtNombreCertificado.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtNombreCertificado.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtNombreCertificado.Location = New System.Drawing.Point(111, 26)
+        Me.txtNombreCertificado.Location = New System.Drawing.Point(104, 26)
         Me.txtNombreCertificado.MaxLength = 200
         Me.txtNombreCertificado.Name = "txtNombreCertificado"
         Me.txtNombreCertificado.ReadOnly = True
         Me.txtNombreCertificado.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtNombreCertificado.Size = New System.Drawing.Size(260, 20)
+        Me.txtNombreCertificado.Size = New System.Drawing.Size(254, 20)
         Me.txtNombreCertificado.TabIndex = 50
         Me.txtNombreCertificado.TabStop = False
         '
@@ -1132,7 +1141,7 @@ Partial Class FrmEmpresa
         Me.Label16.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label16.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label16.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label16.Location = New System.Drawing.Point(35, 27)
+        Me.Label16.Location = New System.Drawing.Point(28, 27)
         Me.Label16.Name = "Label16"
         Me.Label16.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label16.Size = New System.Drawing.Size(73, 17)
@@ -1150,7 +1159,7 @@ Partial Class FrmEmpresa
         Me.txtLeyendaOrdenServicio.MaxLength = 500
         Me.txtLeyendaOrdenServicio.Name = "txtLeyendaOrdenServicio"
         Me.txtLeyendaOrdenServicio.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtLeyendaOrdenServicio.Size = New System.Drawing.Size(764, 20)
+        Me.txtLeyendaOrdenServicio.Size = New System.Drawing.Size(1135, 20)
         Me.txtLeyendaOrdenServicio.TabIndex = 17
         '
         'Label15
@@ -1202,7 +1211,7 @@ Partial Class FrmEmpresa
         Me.txtLeyendaFactura.MaxLength = 500
         Me.txtLeyendaFactura.Name = "txtLeyendaFactura"
         Me.txtLeyendaFactura.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtLeyendaFactura.Size = New System.Drawing.Size(764, 20)
+        Me.txtLeyendaFactura.Size = New System.Drawing.Size(1135, 20)
         Me.txtLeyendaFactura.TabIndex = 16
         '
         'Label26
@@ -1228,7 +1237,7 @@ Partial Class FrmEmpresa
         Me.txtLeyendaProforma.MaxLength = 500
         Me.txtLeyendaProforma.Name = "txtLeyendaProforma"
         Me.txtLeyendaProforma.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtLeyendaProforma.Size = New System.Drawing.Size(764, 20)
+        Me.txtLeyendaProforma.Size = New System.Drawing.Size(1135, 20)
         Me.txtLeyendaProforma.TabIndex = 18
         '
         'Label28
@@ -1254,7 +1263,7 @@ Partial Class FrmEmpresa
         Me.txtLeyendaApartado.MaxLength = 500
         Me.txtLeyendaApartado.Name = "txtLeyendaApartado"
         Me.txtLeyendaApartado.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtLeyendaApartado.Size = New System.Drawing.Size(764, 20)
+        Me.txtLeyendaApartado.Size = New System.Drawing.Size(1135, 20)
         Me.txtLeyendaApartado.TabIndex = 19
         '
         'Label29
@@ -1296,12 +1305,67 @@ Partial Class FrmEmpresa
         Me.Label30.Text = "Teléfono 2:"
         Me.Label30.TextAlign = System.Drawing.ContentAlignment.TopRight
         '
+        'Label35
+        '
+        Me.Label35.BackColor = System.Drawing.Color.Transparent
+        Me.Label35.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label35.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label35.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label35.Location = New System.Drawing.Point(437, 22)
+        Me.Label35.Name = "Label35"
+        Me.Label35.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label35.Size = New System.Drawing.Size(350, 17)
+        Me.Label35.TabIndex = 274
+        Me.Label35.Text = "Logotipo para la empresa"
+        Me.Label35.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'btnLimpiarLogo
+        '
+        Me.btnLimpiarLogo.BackColor = System.Drawing.SystemColors.ButtonHighlight
+        Me.btnLimpiarLogo.Cursor = System.Windows.Forms.Cursors.Default
+        Me.btnLimpiarLogo.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnLimpiarLogo.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.btnLimpiarLogo.Location = New System.Drawing.Point(521, 208)
+        Me.btnLimpiarLogo.Name = "btnLimpiarLogo"
+        Me.btnLimpiarLogo.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.btnLimpiarLogo.Size = New System.Drawing.Size(78, 26)
+        Me.btnLimpiarLogo.TabIndex = 272
+        Me.btnLimpiarLogo.TabStop = False
+        Me.btnLimpiarLogo.Text = "Limpiar logo"
+        Me.btnLimpiarLogo.UseVisualStyleBackColor = False
+        '
+        'btnCargarLogo
+        '
+        Me.btnCargarLogo.BackColor = System.Drawing.SystemColors.ButtonHighlight
+        Me.btnCargarLogo.Cursor = System.Windows.Forms.Cursors.Default
+        Me.btnCargarLogo.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnCargarLogo.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.btnCargarLogo.Location = New System.Drawing.Point(437, 208)
+        Me.btnCargarLogo.Name = "btnCargarLogo"
+        Me.btnCargarLogo.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.btnCargarLogo.Size = New System.Drawing.Size(78, 26)
+        Me.btnCargarLogo.TabIndex = 271
+        Me.btnCargarLogo.TabStop = False
+        Me.btnCargarLogo.Text = "Cargar logo"
+        Me.btnCargarLogo.UseVisualStyleBackColor = False
+        '
+        'picLogo
+        '
+        Me.picLogo.BackColor = System.Drawing.Color.White
+        Me.picLogo.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
+        Me.picLogo.Location = New System.Drawing.Point(437, 42)
+        Me.picLogo.Name = "picLogo"
+        Me.picLogo.Size = New System.Drawing.Size(350, 160)
+        Me.picLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
+        Me.picLogo.TabIndex = 273
+        Me.picLogo.TabStop = False
+        '
         'FrmEmpresa
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
-        Me.ClientSize = New System.Drawing.Size(898, 597)
+        Me.ClientSize = New System.Drawing.Size(1270, 597)
         Me.Controls.Add(Me.txtTelefono2)
         Me.Controls.Add(Me.Label30)
         Me.Controls.Add(Me.txtLeyendaApartado)
@@ -1360,6 +1424,7 @@ Partial Class FrmEmpresa
         Me.gpbSucursal.PerformLayout()
         Me.GroupBox1.ResumeLayout(False)
         Me.GroupBox1.PerformLayout()
+        CType(Me.picLogo, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -1440,4 +1505,8 @@ Partial Class FrmEmpresa
     Public WithEvents Label32 As Label
     Public WithEvents txtConsecFactura As TextBox
     Public WithEvents Label31 As Label
+    Public WithEvents Label35 As Label
+    Public WithEvents btnLimpiarLogo As Button
+    Public WithEvents btnCargarLogo As Button
+    Friend WithEvents picLogo As PictureBox
 End Class

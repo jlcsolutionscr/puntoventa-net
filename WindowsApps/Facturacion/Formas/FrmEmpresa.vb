@@ -13,6 +13,7 @@ Public Class FrmEmpresa
     Private bolSucursalActualizada As Boolean = False
     Private bolTerminalActualizada As Boolean = False
     Private bolCertificadoModificado As Boolean = False
+    Private bolLogoModificado As Boolean = False
     Private strRutaCertificado As String
 #End Region
 
@@ -48,6 +49,7 @@ Public Class FrmEmpresa
         Try
             Await CargarCombos()
             datos = Await Puntoventa.ObtenerEmpresa(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+            Dim logotipo As Byte() = Await Puntoventa.ObtenerLogotipoEmpresa(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
             datosSucursal = Await Puntoventa.ObtenerSucursalPorEmpresa(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, FrmPrincipal.usuarioGlobal.Token)
             datosTerminal = Await Puntoventa.ObtenerTerminalPorSucursal(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, FrmPrincipal.equipoGlobal.IdTerminal, FrmPrincipal.usuarioGlobal.Token)
             If datos Is Nothing Then
@@ -96,6 +98,13 @@ Public Class FrmEmpresa
             txtUltimoTE.Text = datosTerminal.UltimoDocTE
             txtUltimoMR.Text = datosTerminal.UltimoDocMR
             txtUltimoFEC.Text = datosTerminal.UltimoDocFEC
+            If logotipo IsNot Nothing Then
+                Dim logoImage As Image
+                Using ms As New MemoryStream(logotipo)
+                    logoImage = Image.FromStream(ms)
+                End Using
+                picLogo.Image = logoImage
+            End If
             bolInit = False
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -145,6 +154,11 @@ Public Class FrmEmpresa
                 MessageBox.Show("La numeración de los últimos documentos electrónicos es requerida. Por favor verifique la información. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End If
+            Dim usuarioValido As Boolean = Await Puntoventa.ValidarUsuarioHacienda(txtUsuarioATV.Text, txtClaveATV.Text, FrmPrincipal.usuarioGlobal.Token)
+            If usuarioValido = False Then
+                MessageBox.Show("Los credenciales para validar el usuario en el ATV son incorrectos. Por favor verifique la información. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Exit Sub
+            End If
         End If
         datos.NombreEmpresa = txtNombreEmpresa.Text
         datos.NombreComercial = txtNombreComercial.Text
@@ -176,6 +190,18 @@ Public Class FrmEmpresa
             If bolCertificadoModificado And txtNombreCertificado.Text.Length > 0 Then
                 Dim bytCertificado As Byte() = File.ReadAllBytes(strRutaCertificado)
                 Await Puntoventa.ActualizarCertificadoEmpresa(txtIdEmpresa.Text, Convert.ToBase64String(bytCertificado), FrmPrincipal.usuarioGlobal.Token)
+            End If
+            If bolLogoModificado Then
+                If picLogo.Image IsNot Nothing Then
+                    Dim bytLogotipo As Byte()
+                    Using stream As MemoryStream = New MemoryStream()
+                        picLogo.Image.Save(stream, Imaging.ImageFormat.Png)
+                        bytLogotipo = stream.ToArray()
+                    End Using
+                    Await Puntoventa.ActualizarLogoEmpresa(txtIdEmpresa.Text, Convert.ToBase64String(bytLogotipo), FrmPrincipal.usuarioGlobal.Token)
+                Else
+                    Await Puntoventa.RemoverLogoEmpresa(txtIdEmpresa.Text, FrmPrincipal.usuarioGlobal.Token)
+                End If
             End If
             If bolSucursalActualizada Then
                 datosSucursal.NombreSucursal = txtNombreSucursal.Text
@@ -264,6 +290,28 @@ Public Class FrmEmpresa
             Catch ex As Exception
                 MessageBox.Show("Error al intentar cargar el certificado. Verifique que sea un archivo .p12 válido. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
+        End If
+    End Sub
+
+    Private Sub btnCargarLogo_Click(sender As Object, e As EventArgs) Handles btnCargarLogo.Click
+        ofdAbrirDocumento.DefaultExt = "png"
+        ofdAbrirDocumento.Filter = "PNG Image Files|*.png;"
+        Dim result As DialogResult = ofdAbrirDocumento.ShowDialog()
+        If result = DialogResult.OK Then
+            Try
+                picLogo.Image = Image.FromFile(ofdAbrirDocumento.FileName)
+                bolLogoModificado = True
+            Catch ex As Exception
+                MessageBox.Show("Error al intentar cargar el certificado. Verifique que sea un archivo .PNG válido. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End Try
+        End If
+    End Sub
+
+    Private Sub btnLimpiarLogo_Click(sender As Object, e As EventArgs) Handles btnLimpiarLogo.Click
+        Dim dialogResult As DialogResult = MessageBox.Show("Desea eliminar el logotipo de la empresa?", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+        If dialogResult = DialogResult.Yes Then
+            picLogo.Image = Nothing
+            bolLogoModificado = True
         End If
     End Sub
 #End Region

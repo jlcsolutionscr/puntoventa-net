@@ -175,6 +175,16 @@ namespace LeandroSoftware.ClienteWCF
             }
         }
 
+        public static async Task<bool> ValidarUsuarioHacienda(string strCodigoUsuario, string strClave, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'ValidarUsuarioHacienda', Parametros: {CodigoUsuario: '" + strCodigoUsuario + "', Clave: '" + strClave + "'}}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            bool valido = false;
+            if (respuesta != "")
+                valido = serializer.Deserialize<bool>(respuesta);
+            return valido;
+        }
+
         public static async Task<Empresa> ObtenerEmpresa(int intIdEmpresa, string strToken)
         {
             string strDatos = "{NombreMetodo: 'ObtenerEmpresa', Parametros: {IdEmpresa: " + intIdEmpresa + "}}";

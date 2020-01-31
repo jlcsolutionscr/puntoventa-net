@@ -20,13 +20,10 @@ namespace LeandroSoftware.Activator
         private SucursalPorEmpresa sucursal;
         private TerminalPorSucursal terminal;
         private bool bolLoading = true;
-        private bool bolLogoModificado = false;
-        private bool bolCertificadoModificado = false;
         private bool bolListadoReporteModificado = false;
         private bool bolListadoRoleModificado = false;
         private bool bolSucursalNueva = true;
         private bool bolTerminalNueva = true;
-        private string strRutaCertificado;
         private string strToken;
         public bool bolEditing;
         public int intIdEmpresa = -1;
@@ -38,19 +35,19 @@ namespace LeandroSoftware.Activator
 
         private void IniciaMaestroDetalle()
         {
-            dtRolePorEmpresa = new DataTable();
-            dtRolePorEmpresa.Columns.Add("Id", typeof(int));
-            dtRolePorEmpresa.Columns.Add("Descripcion", typeof(string));
-            DataColumn[] columns = new DataColumn[1];
-            columns[0] = dtRolePorEmpresa.Columns[0];
-            dtRolePorEmpresa.PrimaryKey = columns;
-
             dtReportePorEmpresa = new DataTable();
             dtReportePorEmpresa.Columns.Add("Id", typeof(int));
             dtReportePorEmpresa.Columns.Add("Descripcion", typeof(string));
-            columns = new DataColumn[1];
+            DataColumn[] columns = new DataColumn[1];
             columns[0] = dtReportePorEmpresa.Columns[0];
             dtReportePorEmpresa.PrimaryKey = columns;
+
+            dtRolePorEmpresa = new DataTable();
+            dtRolePorEmpresa.Columns.Add("Id", typeof(int));
+            dtRolePorEmpresa.Columns.Add("Descripcion", typeof(string));
+            columns = new DataColumn[1];
+            columns[0] = dtRolePorEmpresa.Columns[0];
+            dtRolePorEmpresa.PrimaryKey = columns;
         }
 
         private void CargarLineaDetalleReporte()
@@ -306,10 +303,6 @@ namespace LeandroSoftware.Activator
                         txtDireccion.Text = empresa.Direccion;
                         txtTelefono.Text = empresa.Telefono1;
                         txtCorreoNotificacion.Text = empresa.CorreoNotificacion;
-                        txtNombreCertificado.Text = empresa.NombreCertificado;
-                        txtPinCertificado.Text = empresa.PinCertificado;
-                        txtUsuarioATV.Text = empresa.UsuarioHacienda;
-                        txtClaveATV.Text = empresa.ClaveHacienda;
                         txtLineasFactura.Text = empresa.LineasPorFactura.ToString();
                         if (empresa.FechaVence != null) txtFecha.Text = DateTime.Parse(empresa.FechaVence.ToString()).ToString("dd-MM-yyyy");
                         cboTipoContrato.SelectedValue = empresa.TipoContrato;
@@ -320,22 +313,6 @@ namespace LeandroSoftware.Activator
                         chkFacturaElectronica.Checked = empresa.PermiteFacturar;
                         chkRegimenSimplificado.Checked = empresa.RegimenSimplificado;
                         chkAsignaVendedor.Checked = empresa.AsignaVendedorPorDefecto;
-                        if (empresa.Logotipo != null)
-                        {
-                            try
-                            {
-                                using (MemoryStream ms = new MemoryStream(empresa.Logotipo))
-                                    picLogo.Image = Image.FromStream(ms);
-                            }
-                            catch (Exception)
-                            {
-                                picLogo.Image = null;
-                            }
-                        }
-                        else
-                        {
-                            picLogo.Image = null;
-                        }
                         IList<LlaveDescripcion> reportePorEmpresa = await Administrador.ObtenerListadoReportePorEmpresa(empresa.IdEmpresa, strToken);
                         foreach (var reporte in reportePorEmpresa)
                         {
@@ -379,7 +356,7 @@ namespace LeandroSoftware.Activator
 
         private bool ValidarCampos()
         {
-            if (txtIdEmpresa.Text == "" & txtNombreEmpresa.Text == "" & txtUsuarioATV.Text == "" & txtClaveATV.Text == "")
+            if (txtIdEmpresa.Text == "" & txtNombreEmpresa.Text == "")
                 return false;
             else
             {
@@ -414,10 +391,10 @@ namespace LeandroSoftware.Activator
                 empresa.Direccion = txtDireccion.Text;
                 empresa.Telefono1 = txtTelefono.Text;
                 empresa.CorreoNotificacion = txtCorreoNotificacion.Text;
-                empresa.NombreCertificado = txtNombreCertificado.Text;
-                empresa.PinCertificado = txtPinCertificado.Text;
-                empresa.UsuarioHacienda = txtUsuarioATV.Text;
-                empresa.ClaveHacienda = txtClaveATV.Text;
+                empresa.NombreCertificado = "";
+                empresa.PinCertificado = "";
+                empresa.UsuarioHacienda = "";
+                empresa.ClaveHacienda = "";
                 empresa.LineasPorFactura = int.Parse(txtLineasFactura.Text);
                 if (txtFecha.Text != "  /  /")
                 {
@@ -443,28 +420,6 @@ namespace LeandroSoftware.Activator
                 else
                 {
                     await Administrador.ActualizarEmpresa(empresa, strToken);
-                }
-                if (bolLogoModificado)
-                {
-                    if (picLogo.Image != null)
-                    {
-                        byte[] bytLogotipo;
-                        using (MemoryStream stream = new MemoryStream())
-                        {
-                            picLogo.Image.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
-                            bytLogotipo = stream.ToArray();
-                        }
-                        await Administrador.ActualizarLogoEmpresa(int.Parse(txtIdEmpresa.Text), Convert.ToBase64String(bytLogotipo), strToken);
-                    }
-                    else
-                    {
-                        await Administrador.RemoverLogoEmpresa(int.Parse(txtIdEmpresa.Text), strToken);
-                    }
-                }
-                if (bolCertificadoModificado && txtNombreCertificado.Text != "")
-                {
-                    byte[] bytCertificado = File.ReadAllBytes(strRutaCertificado);
-                    await Administrador.ActualizarCertificadoEmpresa(int.Parse(txtIdEmpresa.Text), Convert.ToBase64String(bytCertificado), strToken);
                 }
                 if (bolListadoReporteModificado)
                 {
@@ -578,55 +533,6 @@ namespace LeandroSoftware.Activator
         {
             bolListadoRoleModificado = true;
             if (dtRolePorEmpresa.Rows.Count > 0) dtRolePorEmpresa.Rows.Remove(dtRolePorEmpresa.Rows.Find(dgvRolePorEmpresa.CurrentRow.Cells[0].Value));
-        }
-
-        private void BtnCargarLogo_Click(object sender, EventArgs e)
-        {
-            ofdAbrirDocumento.DefaultExt = "png";
-            ofdAbrirDocumento.Filter = "PNG Image Files|*.png;";
-            DialogResult result = ofdAbrirDocumento.ShowDialog();
-            if (result == DialogResult.OK)
-            {
-                try
-                {
-                    picLogo.Image = Image.FromFile(ofdAbrirDocumento.FileName);
-                    bolLogoModificado = true;
-                }
-                catch (Exception)
-                {
-                    MessageBox.Show("Error al intentar cargar el archivo. Verifique que sea un archivo de imagen válido. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-        }
-
-        private void btnLimpiarLogo_Click(object sender, EventArgs e)
-        {
-            DialogResult dialogResult = MessageBox.Show("Desea eliminar el logotipo?", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if (dialogResult == DialogResult.Yes)
-            {
-                picLogo.Image = null;
-                bolLogoModificado = true;
-            }
-        }
-
-        private void BtnCargarCertificado_Click(object sender, EventArgs e)
-        {
-            ofdAbrirDocumento.DefaultExt = "p12";
-            ofdAbrirDocumento.Filter = "Certificate Files|*.p12;";
-            DialogResult result = ofdAbrirDocumento.ShowDialog();
-            if (result == DialogResult.OK)
-            {
-                try
-                {
-                    strRutaCertificado = ofdAbrirDocumento.FileName;
-                    txtNombreCertificado.Text = Path.GetFileName(strRutaCertificado);
-                    bolCertificadoModificado = true;
-                }
-                catch (Exception)
-                {
-                    MessageBox.Show("Error al intentar cargar el certificado. Verifique que sea un archivo .p12 válido. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
         }
 
         private void BtnCargarSucursal_Click(object sender, EventArgs e)

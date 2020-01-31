@@ -23,6 +23,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         Usuario ValidarCredencialesAdmin(string strUsuario, string strClave);
         Usuario ValidarCredenciales(string strUsuario, string strClave, string id);
         Empresa ValidarCredenciales(string strUsuario, string strClave, int intIdEmpresa, string strValorRegistro);
+        bool ValidarUsuarioHacienda(string strUsuario, string strClave, ConfiguracionGeneral config);
         bool AutorizacionPrecioExtraordinario(string strUsuario, string strClave, int intIdEmpresa);
         void ActualizarVersionApp(string strVersion);
         string ObtenerUltimaVersionApp();
@@ -495,6 +496,21 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     throw new Exception("Error en la validación de los credenciales suministrados por favor verifique la información. . .");
                 }
             }
+        }
+
+        public bool ValidarUsuarioHacienda(string strUsuario, string strClave, ConfiguracionGeneral config)
+        {
+            bool bolRespuesta = false;
+            try
+            {
+                TokenType token = ComprobanteElectronicoService.ObtenerToken(config.ServicioTokenURL, config.ClientId, strUsuario, strClave).Result;
+                if (token.access_token != null) bolRespuesta = true;
+            }
+            catch (Exception ex)
+            {
+                log.Error("Error al validar los credenciales del usuario en Hacienda: ", ex);
+            }
+            return bolRespuesta;
         }
 
         public bool AutorizacionPrecioExtraordinario(string strUsuario, string strClave, int intIdEmpresa)
