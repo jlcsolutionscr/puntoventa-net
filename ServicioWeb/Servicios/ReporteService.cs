@@ -936,8 +936,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     listaReporte.Add(reporteLinea);
                     reporteLinea = new DescripcionValor("Fondo de inicio de caja", datosCierre.PagosCxCBancos);
                     listaReporte.Add(reporteLinea);
-                    reporteLinea = new DescripcionValor("Fondo de inicio de caja", datosCierre.DevolucionesProveedores);
-                    listaReporte.Add(reporteLinea);
                     reporteLinea = new DescripcionValor("Fondo de inicio de caja", datosCierre.IngresosEfectivo);
                     listaReporte.Add(reporteLinea);
                     reporteLinea = new DescripcionValor("Fondo de inicio de caja", datosCierre.ComprasEfectivo);
@@ -949,8 +947,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     reporteLinea = new DescripcionValor("Fondo de inicio de caja", datosCierre.PagosCxPEfectivo);
                     listaReporte.Add(reporteLinea);
                     reporteLinea = new DescripcionValor("Fondo de inicio de caja", datosCierre.PagosCxPBancos);
-                    listaReporte.Add(reporteLinea);
-                    reporteLinea = new DescripcionValor("Fondo de inicio de caja", datosCierre.DevolucionesClientes);
                     listaReporte.Add(reporteLinea);
                     reporteLinea = new DescripcionValor("Fondo de inicio de caja", datosCierre.EgresosEfectivo);
                     listaReporte.Add(reporteLinea);

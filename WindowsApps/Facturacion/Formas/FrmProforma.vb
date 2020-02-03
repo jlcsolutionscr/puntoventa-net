@@ -447,7 +447,7 @@ Public Class FrmProforma
             End Try
             If proforma IsNot Nothing Then
                 bolInit = True
-                txtIdProforma.Text = proforma.IdProforma
+                txtIdProforma.Text = proforma.ConsecProforma
                 cliente = proforma.Cliente
                 txtNombreCliente.Text = proforma.NombreCliente
                 txtFecha.Text = proforma.Fecha
@@ -596,7 +596,11 @@ Public Class FrmProforma
                 proforma.DetalleProforma.Add(detalleProforma)
             Next
             Try
-                txtIdProforma.Text = Await Puntoventa.AgregarProforma(proforma, FrmPrincipal.usuarioGlobal.Token)
+                Dim strIdConsec As String = Await Puntoventa.AgregarProforma(proforma, FrmPrincipal.usuarioGlobal.Token)
+                Dim arrIdConsec = strIdConsec.Split("-")
+                proforma.IdProforma = arrIdConsec(0)
+                proforma.ConsecProforma = arrIdConsec(1)
+                txtIdProforma.Text = proforma.ConsecProforma
             Catch ex As Exception
                 txtIdProforma.Text = ""
                 btnGuardar.Enabled = True
@@ -605,7 +609,6 @@ Public Class FrmProforma
                 Exit Sub
             End Try
         Else
-            proforma.IdProforma = txtIdProforma.Text
             proforma.TextoAdicional = txtTextoAdicional.Text
             proforma.Excento = decExcento
             proforma.Gravado = decGravado
@@ -921,10 +924,12 @@ Public Class FrmProforma
 
     Private Sub TxtCantidad_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtCantidad.PreviewKeyDown
         If e.KeyCode = Keys.Enter Then
-            If CDbl(txtPrecio.Text) > 0 Then
-                BtnInsertar_Click(btnInsertar, New EventArgs())
-            Else
-                txtPrecio.Focus()
+            If producto IsNot Nothing Then
+                If CDbl(txtPrecio.Text) > 0 Then
+                    BtnInsertar_Click(btnInsertar, New EventArgs())
+                Else
+                    txtPrecio.Focus()
+                End If
             End If
         End If
     End Sub

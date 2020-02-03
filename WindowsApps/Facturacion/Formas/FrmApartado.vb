@@ -638,7 +638,7 @@ Public Class FrmApartado
             End Try
             If apartado IsNot Nothing Then
                 bolInit = True
-                txtIdApartado.Text = apartado.IdApartado
+                txtIdApartado.Text = apartado.ConsecApartado
                 cliente = apartado.Cliente
                 txtNombreCliente.Text = apartado.NombreCliente
                 txtFecha.Text = apartado.Fecha
@@ -805,7 +805,11 @@ Public Class FrmApartado
                 apartado.DesglosePagoApartado.Add(desglosePago)
             Next
             Try
-                txtIdApartado.Text = Await Puntoventa.AgregarApartado(apartado, FrmPrincipal.usuarioGlobal.Token)
+                Dim strIdConsec As String = Await Puntoventa.AgregarApartado(apartado, FrmPrincipal.usuarioGlobal.Token)
+                Dim arrIdConsec = strIdConsec.Split("-")
+                apartado.IdApartado = arrIdConsec(0)
+                apartado.ConsecApartado = arrIdConsec(1)
+                txtIdApartado.Text = apartado.ConsecApartado
             Catch ex As Exception
                 txtIdApartado.Text = ""
                 btnGuardar.Enabled = True
@@ -1185,10 +1189,12 @@ Public Class FrmApartado
 
     Private Sub TxtCantidad_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtCantidad.PreviewKeyDown
         If e.KeyCode = Keys.Enter Then
-            If CDbl(txtPrecio.Text) > 0 Then
-                BtnInsertar_Click(btnInsertar, New EventArgs())
-            Else
-                txtPrecio.Focus()
+            If producto IsNot Nothing Then
+                If CDbl(txtPrecio.Text) > 0 Then
+                    BtnInsertar_Click(btnInsertar, New EventArgs())
+                Else
+                    txtPrecio.Focus()
+                End If
             End If
         End If
     End Sub
@@ -1204,6 +1210,9 @@ Public Class FrmApartado
     Private Sub TxtMontoPago_Validated(sender As Object, e As EventArgs) Handles txtMontoPago.Validated
         If txtMontoPago.Text = "" Then
             txtMontoPago.Text = "0.00"
+        ElseIf CDbl(txtMontoPago.Text) > decSaldoPorPagar Then
+            MessageBox.Show("El monto ingresado no puede sar mayor al saldo por pagar", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            txtMontoPago.Text = FormatNumber(decSaldoPorPagar, 2)
         Else
             txtMontoPago.Text = FormatNumber(txtMontoPago.Text, 2)
         End If
@@ -1211,7 +1220,12 @@ Public Class FrmApartado
 
     Private Sub TxtMontoPago_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtMontoPago.PreviewKeyDown
         If e.KeyCode = Keys.Enter And txtIdApartado.Text = "" And txtMontoPago.Text <> "" Then
-            BtnInsertarPago_Click(btnInsertarPago, New EventArgs())
+            If CDbl(txtMontoPago.Text) > decSaldoPorPagar Then
+                MessageBox.Show("El monto ingresado no puede sar mayor al saldo por pagar", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                txtMontoPago.Text = FormatNumber(decSaldoPorPagar, 2)
+            Else
+                BtnInsertarPago_Click(btnInsertarPago, New EventArgs())
+            End If
         End If
     End Sub
 

@@ -629,7 +629,7 @@ Public Class FrmOrdenServicio
             End Try
             If ordenServicio IsNot Nothing Then
                 bolInit = True
-                txtIdOrdenServicio.Text = ordenServicio.IdOrden
+                txtIdOrdenServicio.Text = ordenServicio.ConsecOrdenServicio
                 cliente = ordenServicio.Cliente
                 txtNombreCliente.Text = ordenServicio.NombreCliente
                 txtFecha.Text = ordenServicio.Fecha
@@ -805,7 +805,11 @@ Public Class FrmOrdenServicio
                 ordenServicio.DesglosePagoOrdenServicio.Add(desglosePago)
             Next
             Try
-                txtIdOrdenServicio.Text = Await Puntoventa.AgregarOrdenServicio(ordenServicio, FrmPrincipal.usuarioGlobal.Token)
+                Dim strIdConsec As String = Await Puntoventa.AgregarOrdenServicio(ordenServicio, FrmPrincipal.usuarioGlobal.Token)
+                Dim arrIdConsec = strIdConsec.Split("-")
+                ordenServicio.IdOrden = arrIdConsec(0)
+                ordenServicio.ConsecOrdenServicio = arrIdConsec(1)
+                txtIdOrdenServicio.Text = ordenServicio.ConsecOrdenServicio
             Catch ex As Exception
                 txtIdOrdenServicio.Text = ""
                 btnGuardar.Enabled = True
@@ -875,12 +879,14 @@ Public Class FrmOrdenServicio
                     .empresa = FrmPrincipal.empresaGlobal,
                     .equipo = FrmPrincipal.equipoGlobal,
                     .strId = ordenServicio.ConsecOrdenServicio,
+                    .strFecha = txtFecha.Text,
                     .strVendedor = txtVendedor.Text,
                     .strNombre = txtNombreCliente.Text,
                     .strTelefono = txtTelefono.Text,
                     .strDireccion = txtDireccion.Text,
-                    .strDocumento = txtOtrosDetalles.Text,
-                    .strFecha = ordenServicio.FechaEntrega.ToString() & " - " & cboHoraEntrega.Text,
+                    .strDescripcion = txtDescripcion.Text,
+                    .strDetalle = txtOtrosDetalles.Text,
+                    .strDocumento = ordenServicio.FechaEntrega.ToString() & " - " & cboHoraEntrega.Text,
                     .strSubTotal = txtSubTotal.Text,
                     .strDescuento = "0.00",
                     .strImpuesto = txtImpuesto.Text,
@@ -1213,10 +1219,12 @@ Public Class FrmOrdenServicio
 
     Private Sub TxtCantidad_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtCantidad.PreviewKeyDown
         If e.KeyCode = Keys.Enter Then
-            If CDbl(txtPrecio.Text) > 0 Then
-                BtnInsertar_Click(btnInsertar, New EventArgs())
-            Else
-                txtPrecio.Focus()
+            If producto IsNot Nothing Then
+                If CDbl(txtPrecio.Text) > 0 Then
+                    BtnInsertar_Click(btnInsertar, New EventArgs())
+                Else
+                    txtPrecio.Focus()
+                End If
             End If
         End If
     End Sub
@@ -1232,6 +1240,9 @@ Public Class FrmOrdenServicio
     Private Sub TxtMontoPago_Validated(sender As Object, e As EventArgs) Handles txtMontoPago.Validated
         If txtMontoPago.Text = "" Then
             txtMontoPago.Text = "0.00"
+        ElseIf CDbl(txtMontoPago.Text) > decSaldoPorPagar Then
+            MessageBox.Show("El monto ingresado no puede sar mayor al saldo por pagar", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            txtMontoPago.Text = FormatNumber(decSaldoPorPagar, 2)
         Else
             txtMontoPago.Text = FormatNumber(txtMontoPago.Text, 2)
         End If
@@ -1239,7 +1250,12 @@ Public Class FrmOrdenServicio
 
     Private Sub TxtMontoPago_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtMontoPago.PreviewKeyDown
         If e.KeyCode = Keys.Enter And txtIdOrdenServicio.Text = "" And txtMontoPago.Text <> "" Then
-            BtnInsertarPago_Click(btnInsertarPago, New EventArgs())
+            If CDbl(txtMontoPago.Text) > decSaldoPorPagar Then
+                MessageBox.Show("El monto ingresado no puede sar mayor al saldo por pagar", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                txtMontoPago.Text = FormatNumber(decSaldoPorPagar, 2)
+            Else
+                BtnInsertarPago_Click(btnInsertarPago, New EventArgs())
+            End If
         End If
     End Sub
 

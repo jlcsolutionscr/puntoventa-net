@@ -104,6 +104,8 @@ Public Class ModuloImpresion
         Public strNombre As String
         Public strTelefono As String
         Public strDireccion As String
+        Public strDescripcion As String
+        Public strDetalle As String
         Public strDocumento As String
         Public strFormaPago As String
         Public strEnviadoPor As String
@@ -350,7 +352,8 @@ Public Class ModuloImpresion
                 lineas.Add(New ClsLineaImpresion(2, objImpresion.strClaveNumerica.Substring(25, 25), 0, 286, 10, StringAlignment.Center, False))
             End If
             lineas.Add(New ClsLineaImpresion(1, "Factura Nro: " & objImpresion.strId, 0, 286, 10, StringAlignment.Near, False))
-            lineas.Add(New ClsLineaImpresion(2, "Fecha: " & objImpresion.strFecha, 0, 286, 10, StringAlignment.Near, False))
+            lineas.Add(New ClsLineaImpresion(1, "Fecha: " & objImpresion.strFecha, 0, 286, 10, StringAlignment.Near, False))
+            If objImpresion.strDocumento.Length > 0 Then lineas.Add(New ClsLineaImpresion(1, "Ref: " & objImpresion.strDocumento, 0, 286, 10, StringAlignment.Near, False))
             lineas.Add(New ClsLineaImpresion(1, "Vendedor: " & objImpresion.strVendedor, 0, 286, 10, StringAlignment.Near, False))
             lineas.Add(New ClsLineaImpresion(1, "Cliente: " & objImpresion.strNombre, 0, 286, 10, StringAlignment.Near, False))
             lineas.Add(New ClsLineaImpresion(1, "Teléfono: " & objImpresion.strTelefono, 0, 286, 10, StringAlignment.Near, False))
@@ -452,10 +455,11 @@ Public Class ModuloImpresion
         Try
             ImprimirEncabezado(objImpresion.equipo, objImpresion.empresa, Date.Now.ToString("dd-MM-yyyy"), objImpresion.usuario.CodigoUsuario, "ORDEN DE SERVICIO")
             lineas.Add(New ClsLineaImpresion(1, "Orden Nro: " & objImpresion.strId, 0, 286, 10, StringAlignment.Near, True))
+            lineas.Add(New ClsLineaImpresion(1, "Fecha: " & objImpresion.strFecha, 0, 286, 10, StringAlignment.Near, False))
             lineas.Add(New ClsLineaImpresion(1, "Vendedor: " & objImpresion.strVendedor, 0, 286, 10, StringAlignment.Near, False))
             lineas.Add(New ClsLineaImpresion(1, "Cliente: " & objImpresion.strNombre, 0, 286, 10, StringAlignment.Near, True))
             lineas.Add(New ClsLineaImpresion(1, "Teléfono: " & objImpresion.strTelefono, 0, 286, 10, StringAlignment.Near, False))
-            lineas.Add(New ClsLineaImpresion(1, "Entrega: " & objImpresion.strFecha, 0, 286, 10, StringAlignment.Near, True))
+            lineas.Add(New ClsLineaImpresion(1, "Entrega: " & objImpresion.strDocumento, 0, 286, 10, StringAlignment.Near, True))
             Dim direccion As String = objImpresion.strDireccion
             If direccion.Length > 25 Then
                 lineas.Add(New ClsLineaImpresion(1, "Dirección: " & direccion.Substring(0, 25), 0, 286, 10, StringAlignment.Near, False))
@@ -470,7 +474,19 @@ Public Class ModuloImpresion
             Else
                 lineas.Add(New ClsLineaImpresion(2, "Dirección: NO HAY DIRECCION", 0, 286, 10, StringAlignment.Near, False))
             End If
-            Dim notas As String = objImpresion.strDocumento
+            Dim descripcion As String = objImpresion.strDescripcion
+            If descripcion.Length > 25 Then
+                lineas.Add(New ClsLineaImpresion(1, "Dirección: " & descripcion.Substring(0, 25), 0, 286, 10, StringAlignment.Near, False))
+                descripcion = direccion.Substring(25)
+                While direccion.Length > 34
+                    lineas.Add(New ClsLineaImpresion(1, direccion.Substring(0, 34), 0, 286, 10, StringAlignment.Near, False))
+                    direccion = direccion.Substring(34)
+                End While
+                lineas.Add(New ClsLineaImpresion(2, direccion, 0, 286, 10, StringAlignment.Near, False))
+            ElseIf direccion.Length > 0 Then
+                lineas.Add(New ClsLineaImpresion(2, "Dirección: " & direccion, 0, 286, 10, StringAlignment.Near, False))
+            End If
+            Dim notas As String = objImpresion.strDetalle
             If notas.Length > 27 Then
                 lineas.Add(New ClsLineaImpresion(1, "Notas: " & notas.Substring(0, 27), 0, 286, 10, StringAlignment.Near, False))
                 notas = notas.Substring(27)
@@ -481,8 +497,6 @@ Public Class ModuloImpresion
                 lineas.Add(New ClsLineaImpresion(2, notas, 0, 286, 10, StringAlignment.Near, False))
             ElseIf notas.Length > 0 Then
                 lineas.Add(New ClsLineaImpresion(2, "Notas: " & notas, 0, 286, 10, StringAlignment.Near, False))
-            Else
-                lineas.Add(New ClsLineaImpresion(2, "Notas:", 0, 286, 10, StringAlignment.Near, False))
             End If
             ImprimirDesglosePago(objImpresion.arrDesglosePago)
             ImprimirDetalle(objImpresion.arrDetalleComprobante)

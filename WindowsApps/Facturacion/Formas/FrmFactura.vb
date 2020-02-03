@@ -456,7 +456,7 @@ Public Class FrmFactura
         txtSubTotal.Text = FormatNumber(decSubTotal, 2)
         txtImpuesto.Text = FormatNumber(decImpuesto, 2)
         txtTotal.Text = FormatNumber(decTotal, 2)
-        decSaldoPorPagar = decTotal - decTotalPago - decMontoAdelanto
+        decSaldoPorPagar = decTotal - decMontoAdelanto - decTotalPago
         txtMontoPago.Text = FormatNumber(decSaldoPorPagar, 2)
         txtSaldoPorPagar.Text = FormatNumber(decSaldoPorPagar, 2)
     End Sub
@@ -468,7 +468,7 @@ Public Class FrmFactura
             If dtbDesglosePago.Rows(I).Item(0) = StaticFormaPago.Efectivo Then decPagoEfectivo = CDbl(dtbDesglosePago.Rows(I).Item(7))
             decTotalPago = decTotalPago + CDbl(dtbDesglosePago.Rows(I).Item(7))
         Next
-        decSaldoPorPagar = decTotal - decTotalPago - decMontoAdelanto
+        decSaldoPorPagar = decTotal - decMontoAdelanto - decTotalPago
         txtMontoPago.Text = FormatNumber(decSaldoPorPagar, 2)
         txtSaldoPorPagar.Text = FormatNumber(decSaldoPorPagar, 2)
     End Sub
@@ -757,7 +757,7 @@ Public Class FrmFactura
             End Try
             If factura IsNot Nothing Then
                 bolInit = True
-                txtIdFactura.Text = factura.IdFactura
+                txtIdFactura.Text = factura.ConsecFactura
                 cliente = factura.Cliente
                 txtNombreCliente.Text = factura.NombreCliente
                 txtFecha.Text = factura.Fecha
@@ -765,9 +765,18 @@ Public Class FrmFactura
                 intIdProforma = factura.IdProforma
                 intIdOrdenServicio = factura.IdOrdenServicio
                 intIdApartado = factura.IdApartado
-                If factura.IdProforma > 0 Then txtReferencia.Text = "Proforma nro. " & factura.IdProforma
-                If factura.IdOrdenServicio > 0 Then txtReferencia.Text = "Orden de servicio nro. " & factura.IdOrdenServicio
-                If factura.IdApartado > 0 Then txtReferencia.Text = "Apartado nro. " & factura.IdApartado
+                If factura.IdProforma > 0 Then
+                    proforma = Await Puntoventa.ObtenerProforma(factura.IdProforma, FrmPrincipal.usuarioGlobal.Token)
+                    txtReferencia.Text = "Proforma nro. " & proforma.ConsecProforma
+                End If
+                If factura.IdOrdenServicio > 0 Then
+                    ordenServicio = Await Puntoventa.ObtenerOrdenServicio(factura.IdOrdenServicio, FrmPrincipal.usuarioGlobal.Token)
+                    txtReferencia.Text = "Orden de servicio nro. " & ordenServicio.ConsecOrdenServicio
+                End If
+                If factura.IdApartado > 0 Then
+                    apartado = Await Puntoventa.ObtenerApartado(factura.IdApartado, FrmPrincipal.usuarioGlobal.Token)
+                    txtReferencia.Text = "Apartado nro. " & apartado.ConsecApartado
+                End If
                 cboCondicionVenta.SelectedValue = factura.IdCondicionVenta
                 txtPlazoCredito.Text = factura.PlazoCredito
                 If factura.PorcentajeExoneracion > 0 Then
@@ -827,7 +836,7 @@ Public Class FrmFactura
                 cliente = ordenServicio.Cliente
                 cboTipoMoneda.SelectedValue = ordenServicio.IdTipoMoneda
                 txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmPrincipal.decTipoCambioDolar.ToString())
-                txtReferencia.Text = "Orden de servicio nro. " & ordenServicio.IdOrden
+                txtReferencia.Text = "Orden de servicio nro. " & ordenServicio.ConsecOrdenServicio
                 txtNombreCliente.Text = ordenServicio.NombreCliente
                 txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
                 txtDocumento.Text = ""
@@ -868,6 +877,8 @@ Public Class FrmFactura
                 btnGenerarPDF.Enabled = False
                 btnBuscarCliente.Enabled = True
                 bolInit = False
+                txtMontoPago.Focus()
+                txtMontoPago.SelectAll()
             Else
                 MessageBox.Show("No existe registro de orden de servicio asociado al identificador seleccionado", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End If
@@ -891,7 +902,7 @@ Public Class FrmFactura
                 cliente = apartado.Cliente
                 cboTipoMoneda.SelectedValue = apartado.IdTipoMoneda
                 txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmPrincipal.decTipoCambioDolar.ToString())
-                txtReferencia.Text = "Apartado nro. " & apartado.IdApartado
+                txtReferencia.Text = "Apartado nro. " & apartado.ConsecApartado
                 txtNombreCliente.Text = apartado.NombreCliente
                 txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
                 txtDocumento.Text = ""
@@ -932,6 +943,8 @@ Public Class FrmFactura
                 btnGenerarPDF.Enabled = False
                 btnBuscarCliente.Enabled = True
                 bolInit = False
+                txtMontoPago.Focus()
+                txtMontoPago.SelectAll()
             Else
                 MessageBox.Show("No existe registro de orden de servicio asociado al identificador seleccionado", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End If
@@ -955,7 +968,7 @@ Public Class FrmFactura
                 cliente = proforma.Cliente
                 cboTipoMoneda.SelectedValue = proforma.IdTipoMoneda
                 txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmPrincipal.decTipoCambioDolar.ToString())
-                txtReferencia.Text = "Proforma nro. " & proforma.IdProforma
+                txtReferencia.Text = "Proforma nro. " & proforma.ConsecProforma
                 txtNombreCliente.Text = proforma.NombreCliente
                 txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
                 txtDocumento.Text = ""
@@ -996,6 +1009,8 @@ Public Class FrmFactura
                 btnGenerarPDF.Enabled = False
                 btnBuscarCliente.Enabled = True
                 bolInit = False
+                txtMontoPago.Focus()
+                txtMontoPago.SelectAll()
             Else
                 MessageBox.Show("No existe registro de orden de servicio asociado al identificador seleccionado", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End If
@@ -1168,7 +1183,11 @@ Public Class FrmFactura
                 factura.DesglosePagoFactura.Add(desglosePago)
             Next
             Try
-                txtIdFactura.Text = Await Puntoventa.AgregarFactura(factura, FrmPrincipal.usuarioGlobal.Token)
+                Dim strIdConsec As String = Await Puntoventa.AgregarFactura(factura, FrmPrincipal.usuarioGlobal.Token)
+                Dim arrIdConsec = strIdConsec.Split("-")
+                factura.IdFactura = arrIdConsec(0)
+                factura.ConsecFactura = arrIdConsec(1)
+                txtIdFactura.Text = factura.ConsecFactura
             Catch ex As Exception
                 txtIdFactura.Text = ""
                 btnGuardar.Enabled = True
@@ -1214,17 +1233,17 @@ Public Class FrmFactura
                     .empresa = FrmPrincipal.empresaGlobal,
                     .equipo = FrmPrincipal.equipoGlobal,
                     .strId = factura.ConsecFactura,
+                    .strFecha = txtFecha.Text,
                     .strVendedor = txtVendedor.Text,
                     .strNombre = txtNombreCliente.Text,
-                    .strDocumento = txtDocumento.Text,
-                    .strFecha = txtFecha.Text,
+                    .strDocumento = txtReferencia.Text,
                     .strTelefono = cliente.Telefono,
                     .strSubTotal = txtSubTotal.Text,
                     .strDescuento = "0.00",
                     .strImpuesto = txtImpuesto.Text,
                     .strTotal = txtTotal.Text,
                     .strPagoCon = FormatNumber(decPagoCliente, 2),
-                    .strCambio = FormatNumber(decPagoCliente - CDbl(txtTotal.Text), 2)
+                    .strCambio = FormatNumber(decPagoCliente - decPagoEfectivo, 2)
                 }
                 If factura.IdDocElectronico IsNot Nothing Then
                     comprobanteImpresion.strClaveNumerica = factura.IdDocElectronico
@@ -1590,10 +1609,12 @@ Public Class FrmFactura
 
     Private Sub TxtCantidad_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtCantidad.PreviewKeyDown
         If e.KeyCode = Keys.Enter Then
-            If CDbl(txtPrecio.Text) > 0 Then
-                BtnInsertar_Click(btnInsertar, New EventArgs())
-            Else
-                txtPrecio.Focus()
+            If producto IsNot Nothing Then
+                If CDbl(txtPrecio.Text) > 0 Then
+                    BtnInsertar_Click(btnInsertar, New EventArgs())
+                Else
+                    txtPrecio.Focus()
+                End If
             End If
         End If
     End Sub
@@ -1609,6 +1630,9 @@ Public Class FrmFactura
     Private Sub TxtMontoPago_Validated(sender As Object, e As EventArgs) Handles txtMontoPago.Validated
         If txtMontoPago.Text = "" Then
             txtMontoPago.Text = "0.00"
+        ElseIf CDbl(txtMontoPago.Text) > decSaldoPorPagar Then
+            MessageBox.Show("El monto ingresado no puede sar mayor al saldo por pagar", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            txtMontoPago.Text = FormatNumber(decSaldoPorPagar, 2)
         Else
             txtMontoPago.Text = FormatNumber(txtMontoPago.Text, 2)
         End If
@@ -1616,7 +1640,12 @@ Public Class FrmFactura
 
     Private Sub TxtMontoPago_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtMontoPago.PreviewKeyDown
         If e.KeyCode = Keys.Enter And txtMontoPago.Text <> "" Then
-            BtnInsertarPago_Click(btnInsertarPago, New EventArgs())
+            If CDbl(txtMontoPago.Text) > decSaldoPorPagar Then
+                MessageBox.Show("El monto ingresado no puede sar mayor al saldo por pagar", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                txtMontoPago.Text = FormatNumber(decSaldoPorPagar, 2)
+            Else
+                BtnInsertarPago_Click(btnInsertarPago, New EventArgs())
+            End If
         End If
     End Sub
 

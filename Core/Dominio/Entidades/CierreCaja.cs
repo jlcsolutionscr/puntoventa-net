@@ -11,6 +11,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public CierreCaja()
         {
             DetalleEfectivoCierreCaja = new HashSet<DetalleEfectivoCierreCaja>();
+            DetalleMovimientoCierreCaja = new HashSet<DetalleMovimientoCierreCaja>();
         }
 
         [ForeignKey("Empresa")]
@@ -33,13 +34,11 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public decimal PagosCxCEfectivo { get; set; }
         public decimal PagosCxCTarjeta { get; set; }
         public decimal PagosCxCBancos { get; set; }
-        public decimal DevolucionesProveedores { get; set; }
         public decimal ComprasEfectivo { get; set; }
         public decimal ComprasBancos { get; set; }
         public decimal EgresosEfectivo { get; set; }
         public decimal PagosCxPEfectivo { get; set; }
         public decimal PagosCxPBancos { get; set; }
-        public decimal DevolucionesClientes { get; set; }
         public decimal RetencionTarjeta { get; set; }
         public decimal ComisionTarjeta { get; set; }
         public decimal VentasCredito { get; set; }
@@ -51,5 +50,6 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public Empresa Empresa { get; set; }
 
         public ICollection<DetalleEfectivoCierreCaja> DetalleEfectivoCierreCaja { get; set; }
+        public ICollection<DetalleMovimientoCierreCaja> DetalleMovimientoCierreCaja { get; set; }
     }
 }

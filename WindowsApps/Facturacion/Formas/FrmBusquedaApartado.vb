@@ -15,15 +15,20 @@ Public Class FrmBusquedaApartado
         dgvListado.Columns.Clear()
         dgvListado.AutoGenerateColumns = False
         Dim dvcId As New DataGridViewTextBoxColumn
+        Dim dvcConsecutivo As New DataGridViewTextBoxColumn
         Dim dvcFecha As New DataGridViewTextBoxColumn
         Dim dvcNombreCliente As New DataGridViewTextBoxColumn
         Dim dvcTotal As New DataGridViewTextBoxColumn
         dgvListado.Columns.Clear()
         dgvListado.AutoGenerateColumns = False
-        dvcId.HeaderText = "Id"
         dvcId.DataPropertyName = "IdFactura"
-        dvcId.Width = 50
+        dvcId.Width = 0
+        dvcId.Visible = False
         dgvListado.Columns.Add(dvcId)
+        dvcConsecutivo.HeaderText = "Consecutivo"
+        dvcConsecutivo.DataPropertyName = "Consecutivo"
+        dvcConsecutivo.Width = 50
+        dgvListado.Columns.Add(dvcConsecutivo)
         dvcFecha.HeaderText = "Fecha"
         dvcFecha.DataPropertyName = "Fecha"
         dvcFecha.Width = 70

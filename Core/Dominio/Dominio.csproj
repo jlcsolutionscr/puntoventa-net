@@ -72,6 +72,7 @@
     <Compile Include="Entidades\DetalleDevolucionProveedor.cs" />
     <Compile Include="Entidades\DetalleApartado.cs" />
     <Compile Include="Entidades\DetalleFacturaCompra.cs" />
+    <Compile Include="Entidades\DetalleMovimientoCierreCaja.cs" />
     <Compile Include="Entidades\Distrito.cs" />
     <Compile Include="Entidades\DevolucionProveedor.cs" />
     <Compile Include="Entidades\CondicionVenta.cs" />

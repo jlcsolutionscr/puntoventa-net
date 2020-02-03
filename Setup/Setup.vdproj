@@ -511,7 +511,7 @@
                 {
                 "Name" = "8:.NET Framework"
                 "Message" = "8:[VSDNETMSG]"
-                "FrameworkVersion" = "8:v4.0                     "
+                "FrameworkVersion" = "8:v4.0                      "
                 "AllowLaterVersions" = "11:FALSE"
                 "InstallUrl" = "8:http://go.microsoft.com/fwlink/?LinkId=9832"
                 }
@@ -554,9 +554,14 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Core, Version=2.0.12.0, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Core, Version=2.0.14.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_115EA80E86B3847241FFC364DE3E2F8C"
+                    {
+                    "Name" = "8:Core.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:Core.dll"
             "TargetName" = "8:"
@@ -583,6 +588,11 @@
             "AssemblyAsmDisplayName" = "8:PdfSharp, Version=1.32.3057.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_129A3CAF975C3667C57943D15B4F6DC5"
+                    {
+                    "Name" = "8:PdfSharp.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:PdfSharp.dll"
             "TargetName" = "8:"
@@ -609,6 +619,11 @@
             "AssemblyAsmDisplayName" = "8:Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_141A41CC24CD20E4BECF87A110DA322B"
+                    {
+                    "Name" = "8:Newtonsoft.Json.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:Newtonsoft.Json.dll"
             "TargetName" = "8:"
@@ -776,9 +791,14 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Dominio, Version=2.0.12.0, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Dominio, Version=2.0.14.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_34BA8D8C74F41CB069D2C1FEBB4EC572"
+                    {
+                    "Name" = "8:Dominio.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:Dominio.dll"
             "TargetName" = "8:"
@@ -988,9 +1008,14 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:ClienteWCF, Version=2.0.12.0, Culture=neutral, processorArchitecture=x86"
+            "AssemblyAsmDisplayName" = "8:ClienteWCF, Version=2.0.14.0, Culture=neutral, processorArchitecture=x86"
                 "ScatterAssemblies"
                 {
+                    "_9DBD11FC4D9D15FD4C7E7BF7DB5D3191"
+                    {
+                    "Name" = "8:ClienteWCF.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:ClienteWCF.dll"
             "TargetName" = "8:"
@@ -1241,15 +1266,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:PuntoventaJLC"
-        "ProductCode" = "8:{BEEE0CB3-EDF5-405E-AA44-0690DAB38904}"
-        "PackageCode" = "8:{0060CDE4-768E-432A-AE85-EAEB21503E8C}"
+        "ProductCode" = "8:{A6166546-799F-4B43-B5EF-F7FF02E68F96}"
+        "PackageCode" = "8:{76B6146E-C1A9-46E2-9C32-327755C340A0}"
         "UpgradeCode" = "8:{9F4F56C6-17E9-4C36-9940-81BDB1283F7F}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:2.0.13"
+        "ProductVersion" = "8:2.0.14"
         "Manufacturer" = "8:JLC Solutions"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
