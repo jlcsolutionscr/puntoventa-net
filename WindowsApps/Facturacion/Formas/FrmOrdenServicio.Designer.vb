@@ -1176,7 +1176,7 @@ Partial Class FrmOrdenServicio
         Me.cboHoraEntrega.ForeColor = System.Drawing.SystemColors.WindowText
         Me.cboHoraEntrega.IntegralHeight = False
         Me.cboHoraEntrega.ItemHeight = 13
-        Me.cboHoraEntrega.Items.AddRange(New Object() {"Por la mañana", "Por la tarde"})
+        Me.cboHoraEntrega.Items.AddRange(New Object() {"Mañana", "Tarde"})
         Me.cboHoraEntrega.Location = New System.Drawing.Point(398, 141)
         Me.cboHoraEntrega.Name = "cboHoraEntrega"
         Me.cboHoraEntrega.RightToLeft = System.Windows.Forms.RightToLeft.No

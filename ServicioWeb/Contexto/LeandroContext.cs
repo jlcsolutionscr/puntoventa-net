@@ -37,10 +37,10 @@ namespace LeandroSoftware.ServicioWeb.Contexto
         DbSet<DesglosePagoDevolucionCliente> DesglosePagoDevolucionClienteRepository { get; set; }
         DbSet<DesglosePagoDevolucionProveedor> DesglosePagoDevolucionProveedorRepository { get; set; }
         DbSet<DesglosePagoFactura> DesglosePagoFacturaRepository { get; set; }
-        DbSet<DesglosePagoMovimientoApartado> DesglosePagoMovimientoApartado { get; set; }
+        DbSet<DesglosePagoMovimientoApartado> DesglosePagoMovimientoApartadoRepository { get; set; }
         DbSet<DesglosePagoMovimientoCuentaPorCobrar> DesglosePagoMovimientoCuentaPorCobrarRepository { get; set; }
         DbSet<DesglosePagoMovimientoCuentaPorPagar> DesglosePagoMovimientoCuentaPorPagarRepository { get; set; }
-        DbSet<DesglosePagoMovimientoOrdenServicio> DesglosePagoMovimientoOrdenServicio { get; set; }
+        DbSet<DesglosePagoMovimientoOrdenServicio> DesglosePagoMovimientoOrdenServicioRepository { get; set; }
         DbSet<DesglosePagoOrdenServicio> DesglosePagoOrdenServicioRepository { get; set; }
         DbSet<DetalleAsiento> DetalleAsientoRepository { get; set; }
         DbSet<DetalleApartado> DetalleApartadoRepository { get; set; }
@@ -152,10 +152,10 @@ namespace LeandroSoftware.ServicioWeb.Contexto
         public DbSet<DesglosePagoDevolucionCliente> DesglosePagoDevolucionClienteRepository { get; set; }
         public DbSet<DesglosePagoDevolucionProveedor> DesglosePagoDevolucionProveedorRepository { get; set; }
         public DbSet<DesglosePagoFactura> DesglosePagoFacturaRepository { get; set; }
-        public DbSet<DesglosePagoMovimientoApartado> DesglosePagoMovimientoApartado { get; set; }
+        public DbSet<DesglosePagoMovimientoApartado> DesglosePagoMovimientoApartadoRepository { get; set; }
         public DbSet<DesglosePagoMovimientoCuentaPorCobrar> DesglosePagoMovimientoCuentaPorCobrarRepository { get; set; }
         public DbSet<DesglosePagoMovimientoCuentaPorPagar> DesglosePagoMovimientoCuentaPorPagarRepository { get; set; }
-        public DbSet<DesglosePagoMovimientoOrdenServicio> DesglosePagoMovimientoOrdenServicio { get; set; }
+        public DbSet<DesglosePagoMovimientoOrdenServicio> DesglosePagoMovimientoOrdenServicioRepository { get; set; }
         public DbSet<DesglosePagoOrdenServicio> DesglosePagoOrdenServicioRepository { get; set; }
         public DbSet<DetalleAsiento> DetalleAsientoRepository { get; set; }
         public DbSet<DetalleApartado> DetalleApartadoRepository { get; set; }

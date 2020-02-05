@@ -22,7 +22,7 @@ Public Class FrmCierreDeCaja
     Private Sub CalcularFlujoEfectivo()
         decTotalEnCaja = CDbl(txtTotal5.Text) + CDbl(txtTotal10.Text) + CDbl(txtTotal25.Text) + CDbl(txtTotal50.Text) + CDbl(txtTotal100.Text) + CDbl(txtTotal500.Text) + CDbl(txtTotal1000.Text) + CDbl(txtTotal2000.Text) + CDbl(txtTotal5000.Text) + CDbl(txtTotal10000.Text) + CDbl(txtTotal20000.Text) + CDbl(txtTotal50000.Text)
         txtEfectivoCaja.Text = FormatNumber(decTotalEnCaja, 2)
-        txtSaldo.Text = FormatNumber(decTotalEnCaja - CDbl(txtTotalEfectivo.Text), 2)
+        txtSobrante.Text = FormatNumber(decTotalEnCaja - CDbl(txtTotalEfectivo.Text), 2)
     End Sub
 #End Region
 
@@ -74,6 +74,7 @@ Public Class FrmCierreDeCaja
         txtTotalEgresos.Text = FormatNumber(cierreCaja.ComprasEfectivo + cierreCaja.PagosCxPEfectivo + cierreCaja.EgresosEfectivo, 2)
         txtTotalEfectivo.Text = FormatNumber(CDbl(txtFondoInicio.Text) + CDbl(txtTotalIngresos.Text) - CDbl(txtTotalEgresos.Text), 2)
         txtTotalIngresosTarjeta.Text = FormatNumber(CDbl(txtVentasTarjeta02.Text) + CDbl(txtPagosCxCTarjeta12.Text), 2)
+        txtSobrante.Text = FormatNumber(0 - CDbl(txtTotalEfectivo.Text), 2)
         txtRetiroEfectivo.Text = FormatNumber(cierreCaja.RetiroEfectivo, 2)
         txtCierreEfectivoProx.Text = FormatNumber(CDbl(txtTotalEfectivo.Text), 2)
         MessageBox.Show("Verifique la información del cierre. Si desea registrar el cierre presione el botón Guardar.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
@@ -147,7 +148,7 @@ Public Class FrmCierreDeCaja
                 .strImpuesto = txtTotalEgresos.Text,
                 .strClaveNumerica = txtTotalEfectivo.Text,
                 .strNombre = txtEfectivoCaja.Text,
-                .strDireccion = txtSaldo.Text,
+                .strDireccion = txtSobrante.Text,
                 .strCambio = txtRetiroEfectivo.Text,
                 .strPagoCon = txtCierreEfectivoProx.Text,
                 .strDocumento = cierreCaja.Observaciones

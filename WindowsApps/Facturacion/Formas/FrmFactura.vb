@@ -793,7 +793,7 @@ Public Class FrmFactura
                 CargarDesglosePago(factura)
                 CargarTotales()
                 CargarTotalesPago()
-                decPagoCliente = 0
+                decPagoCliente = factura.MontoPagado
                 txtMontoAdelanto.Text = FormatNumber(decMontoAdelanto, 2)
                 cboTipoMoneda.Enabled = False
                 cboCondicionVenta.Enabled = False
@@ -1123,7 +1123,7 @@ Public Class FrmFactura
                     Exit Sub
                 End If
             Else
-                decPagoCliente = decTotal
+                decPagoCliente = decPagoEfectivo
             End If
             btnImprimir.Focus()
             btnGuardar.Enabled = False
@@ -1233,7 +1233,7 @@ Public Class FrmFactura
                     .empresa = FrmPrincipal.empresaGlobal,
                     .equipo = FrmPrincipal.equipoGlobal,
                     .strId = factura.ConsecFactura,
-                    .strFecha = txtFecha.Text,
+                    .strFecha = factura.Fecha.ToString(),
                     .strVendedor = txtVendedor.Text,
                     .strNombre = txtNombreCliente.Text,
                     .strDocumento = txtReferencia.Text,
@@ -1253,7 +1253,7 @@ Public Class FrmFactura
                 arrDetalleFactura = New List(Of ModuloImpresion.ClsDetalleComprobante)
                 For I = 0 To dtbDetalleFactura.Rows.Count - 1
                     detalleComprobante = New ModuloImpresion.ClsDetalleComprobante With {
-                    .strDescripcion = dtbDetalleFactura.Rows(I).Item(1) + "-" + dtbDetalleFactura.Rows(I).Item(2),
+                    .strDescripcion = dtbDetalleFactura.Rows(I).Item(2),
                     .strCantidad = CDbl(dtbDetalleFactura.Rows(I).Item(3)),
                     .strPrecio = FormatNumber(dtbDetalleFactura.Rows(I).Item(4), 2),
                     .strTotalLinea = FormatNumber(CDbl(dtbDetalleFactura.Rows(I).Item(3)) * CDbl(dtbDetalleFactura.Rows(I).Item(4)), 2),

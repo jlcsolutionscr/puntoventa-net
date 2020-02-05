@@ -398,7 +398,7 @@ Public Class FrmAplicaAbonoApartado
                 MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
-            txtNombreCliente.Text = "Apartado " & apartado.IdApartado & " de " & apartado.NombreCliente
+            txtNombreCliente.Text = "Apartado " & apartado.ConsecApartado & " de " & apartado.NombreCliente
             txtMontoTotal.Text = FormatNumber(apartado.Total, 2)
             txtSaldoActual.Text = FormatNumber(apartado.Total - apartado.MontoAdelanto, 2)
             dtbDesglosePago.Rows.Clear()

@@ -639,7 +639,7 @@ Public Class FrmOrdenServicio
                 txtDireccion.Text = ordenServicio.Direccion
                 txtDescripcionOrden.Text = ordenServicio.Descripcion
                 txtFechaEntrega.Value = ordenServicio.FechaEntrega
-                cboHoraEntrega.SelectedIndex = IIf(ordenServicio.HoraEntrega = "Por la tarde", 1, 0)
+                cboHoraEntrega.SelectedIndex = IIf(ordenServicio.HoraEntrega = "Tarde", 1, 0)
                 txtOtrosDetalles.Text = ordenServicio.OtrosDetalles
                 If cliente.PorcentajeExoneracion > 0 Then
                     txtTipoExoneracion.Text = cliente.ParametroExoneracion.Descripcion
@@ -879,14 +879,14 @@ Public Class FrmOrdenServicio
                     .empresa = FrmPrincipal.empresaGlobal,
                     .equipo = FrmPrincipal.equipoGlobal,
                     .strId = ordenServicio.ConsecOrdenServicio,
-                    .strFecha = txtFecha.Text,
+                    .strFecha = ordenServicio.Fecha.ToString(),
                     .strVendedor = txtVendedor.Text,
                     .strNombre = txtNombreCliente.Text,
                     .strTelefono = txtTelefono.Text,
                     .strDireccion = txtDireccion.Text,
-                    .strDescripcion = txtDescripcion.Text,
+                    .strDescripcion = txtDescripcionOrden.Text,
                     .strDetalle = txtOtrosDetalles.Text,
-                    .strDocumento = ordenServicio.FechaEntrega.ToString() & " - " & cboHoraEntrega.Text,
+                    .strDocumento = ordenServicio.FechaEntrega.ToString() & "-" & cboHoraEntrega.Text,
                     .strSubTotal = txtSubTotal.Text,
                     .strDescuento = "0.00",
                     .strImpuesto = txtImpuesto.Text,
@@ -897,7 +897,7 @@ Public Class FrmOrdenServicio
                 arrDetalleOrden = New List(Of ModuloImpresion.ClsDetalleComprobante)
                 For I = 0 To dtbDetalleOrdenServicio.Rows.Count - 1
                     detalleComprobante = New ModuloImpresion.ClsDetalleComprobante With {
-                    .strDescripcion = dtbDetalleOrdenServicio.Rows(I).Item(1) + "-" + dtbDetalleOrdenServicio.Rows(I).Item(2),
+                    .strDescripcion = dtbDetalleOrdenServicio.Rows(I).Item(2),
                     .strCantidad = CDbl(dtbDetalleOrdenServicio.Rows(I).Item(3)),
                     .strPrecio = FormatNumber(dtbDetalleOrdenServicio.Rows(I).Item(4), 2),
                     .strTotalLinea = FormatNumber(CDbl(dtbDetalleOrdenServicio.Rows(I).Item(3)) * CDbl(dtbDetalleOrdenServicio.Rows(I).Item(4)), 2),

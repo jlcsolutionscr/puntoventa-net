@@ -71,7 +71,7 @@ Partial Class FrmDetalleCierreCaja
         Me.Name = "FrmDetalleCierreCaja"
         Me.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
-        Me.Text = "Búsqueda de Proformas"
+        Me.Text = "Detalle de Movimientos del Cierre de Caja"
         CType(Me.dgvListado, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
 

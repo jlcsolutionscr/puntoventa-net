@@ -398,7 +398,7 @@ Public Class FrmAplicaAbonoOrdenServicio
                 MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
-            txtNombreCliente.Text = "OrdenServicio " & ordenServicio.IdOrden & " de " & ordenServicio.NombreCliente
+            txtNombreCliente.Text = "OrdenServicio " & ordenServicio.ConsecOrdenServicio & " de " & ordenServicio.NombreCliente
             txtMontoTotal.Text = FormatNumber(ordenServicio.Total, 2)
             txtSaldoActual.Text = FormatNumber(ordenServicio.Total - ordenServicio.MontoAdelanto, 2)
             dtbDesglosePago.Rows.Clear()
