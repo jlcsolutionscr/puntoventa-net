@@ -1,4 +1,5 @@
 Imports System.Collections.Generic
+Imports System.Linq
 Imports LeandroSoftware.ClienteWCF
 Imports LeandroSoftware.Core.TiposComunes
 Imports LeandroSoftware.Core.Dominio.Entidades
@@ -40,41 +41,39 @@ Public Class FrmCierreDeCaja
             Exit Sub
         End Try
         txtFondoInicio.Text = FormatNumber(cierreCaja.FondoInicio, 2)
-        txtAdelantosApartadoEfectivo.Text = FormatNumber(cierreCaja.AdelantosApartadoEfectivo, 2)
-        txtAdelantosApartadoBancos.Text = FormatNumber(cierreCaja.AdelantosApartadoBancos, 2)
-        txtAdelantosApartadoTarjeta.Text = FormatNumber(cierreCaja.AdelantosApartadoTarjeta, 2)
+        txtAdelantosApartadoEfectivo05.Text = FormatNumber(cierreCaja.AdelantosApartadoEfectivo, 2)
+        txtAdelantosApartadoBancos07.Text = FormatNumber(cierreCaja.AdelantosApartadoBancos, 2)
+        txtAdelantosApartadoTarjeta06.Text = FormatNumber(cierreCaja.AdelantosApartadoTarjeta, 2)
         txtTotalAdelantosApartado.Text = FormatNumber(cierreCaja.AdelantosApartadoEfectivo + cierreCaja.AdelantosApartadoBancos + cierreCaja.AdelantosApartadoTarjeta, 2)
-        txtAdelantosOrdenEfectivo.Text = FormatNumber(cierreCaja.AdelantosOrdenEfectivo, 2)
-        txtAdelantosOrdenBancos.Text = FormatNumber(cierreCaja.AdelantosOrdenBancos, 2)
-        txtAdelantosOrdenTarjeta.Text = FormatNumber(cierreCaja.AdelantosOrdenTarjeta, 2)
+        txtAdelantosOrdenEfectivo08.Text = FormatNumber(cierreCaja.AdelantosOrdenEfectivo, 2)
+        txtAdelantosOrdenBancos10.Text = FormatNumber(cierreCaja.AdelantosOrdenBancos, 2)
+        txtAdelantosOrdenTarjeta09.Text = FormatNumber(cierreCaja.AdelantosOrdenTarjeta, 2)
         txtTotalAdelantosOrden.Text = FormatNumber(cierreCaja.AdelantosOrdenEfectivo + cierreCaja.AdelantosOrdenBancos + cierreCaja.AdelantosOrdenTarjeta, 2)
-        txtVentasEfectivo.Text = FormatNumber(cierreCaja.VentasEfectivo, 2)
-        txtVentasCredito.Text = FormatNumber(cierreCaja.VentasCredito, 2)
-        txtVentasTarjeta.Text = FormatNumber(cierreCaja.VentasTarjeta, 2)
-        txtVentasBancos.Text = FormatNumber(cierreCaja.VentasBancos, 2)
+        txtVentasEfectivo01.Text = FormatNumber(cierreCaja.VentasEfectivo, 2)
+        txtVentasCredito04.Text = FormatNumber(cierreCaja.VentasCredito, 2)
+        txtVentasTarjeta02.Text = FormatNumber(cierreCaja.VentasTarjeta, 2)
+        txtVentasBancos03.Text = FormatNumber(cierreCaja.VentasBancos, 2)
         txtRetencionIVA.Text = FormatNumber(cierreCaja.RetencionTarjeta, 2)
         txtComision.Text = FormatNumber(cierreCaja.ComisionTarjeta, 2)
         txtLiquidacionTarjeta.Text = FormatNumber(cierreCaja.VentasTarjeta - cierreCaja.RetencionTarjeta - cierreCaja.ComisionTarjeta, 2)
         txtTotalVentas.Text = FormatNumber(cierreCaja.VentasEfectivo + cierreCaja.VentasCredito + cierreCaja.VentasTarjeta + cierreCaja.VentasBancos, 2)
-        txtPagosCxCEfectivo.Text = FormatNumber(cierreCaja.PagosCxCEfectivo, 2)
-        txtPagosCxCBancos.Text = FormatNumber(cierreCaja.PagosCxCBancos, 2)
-        txtPagosCxCTarjeta.Text = FormatNumber(cierreCaja.PagosCxCTarjeta, 2)
+        txtPagosCxCEfectivo11.Text = FormatNumber(cierreCaja.PagosCxCEfectivo, 2)
+        txtPagosCxCBancos13.Text = FormatNumber(cierreCaja.PagosCxCBancos, 2)
+        txtPagosCxCTarjeta12.Text = FormatNumber(cierreCaja.PagosCxCTarjeta, 2)
         txtTotalPagoCxC.Text = FormatNumber(cierreCaja.PagosCxCEfectivo + cierreCaja.PagosCxCBancos + cierreCaja.PagosCxCTarjeta, 2)
-        txtDevolucionesProveedores.Text = FormatNumber(cierreCaja.DevolucionesProveedores, 2)
-        txtIngresosEfectivo.Text = FormatNumber(cierreCaja.IngresosEfectivo, 2)
-        txtTotalIngresos.Text = FormatNumber(cierreCaja.AdelantosApartadoEfectivo + cierreCaja.AdelantosOrdenEfectivo + cierreCaja.VentasEfectivo + cierreCaja.PagosCxCEfectivo + cierreCaja.DevolucionesClientes + cierreCaja.IngresosEfectivo, 2)
-        txtComprasEfectivo.Text = FormatNumber(cierreCaja.ComprasEfectivo, 2)
-        txtComprasBancos.Text = FormatNumber(cierreCaja.ComprasBancos, 2)
-        txtComprasCredito.Text = FormatNumber(cierreCaja.ComprasCredito, 2)
+        txtIngresosEfectivo14.Text = FormatNumber(cierreCaja.IngresosEfectivo, 2)
+        txtTotalIngresos.Text = FormatNumber(cierreCaja.AdelantosApartadoEfectivo + cierreCaja.AdelantosOrdenEfectivo + cierreCaja.VentasEfectivo + cierreCaja.PagosCxCEfectivo + cierreCaja.IngresosEfectivo, 2)
+        txtComprasEfectivo15.Text = FormatNumber(cierreCaja.ComprasEfectivo, 2)
+        txtComprasBancos16.Text = FormatNumber(cierreCaja.ComprasBancos, 2)
+        txtComprasCredito17.Text = FormatNumber(cierreCaja.ComprasCredito, 2)
         txtTotalCompras.Text = FormatNumber(cierreCaja.ComprasEfectivo + cierreCaja.ComprasBancos + cierreCaja.ComprasCredito, 2)
-        txtPagosCxPEfectivo.Text = FormatNumber(cierreCaja.PagosCxPEfectivo, 2)
-        txtPagosCxPBancos.Text = FormatNumber(cierreCaja.PagosCxPBancos, 2)
+        txtPagosCxPEfectivo18.Text = FormatNumber(cierreCaja.PagosCxPEfectivo, 2)
+        txtPagosCxPBancos19.Text = FormatNumber(cierreCaja.PagosCxPBancos, 2)
         txtTotalPagoCxP.Text = FormatNumber(cierreCaja.PagosCxPEfectivo + cierreCaja.PagosCxPBancos, 2)
-        txtDevolucionesClientes.Text = FormatNumber(cierreCaja.DevolucionesClientes, 2)
-        txtEgresosEfectivo.Text = FormatNumber(cierreCaja.EgresosEfectivo, 2)
-        txtTotalEgresos.Text = FormatNumber(cierreCaja.ComprasEfectivo + cierreCaja.PagosCxPEfectivo + cierreCaja.DevolucionesClientes + cierreCaja.EgresosEfectivo, 2)
+        txtEgresosEfectivo20.Text = FormatNumber(cierreCaja.EgresosEfectivo, 2)
+        txtTotalEgresos.Text = FormatNumber(cierreCaja.ComprasEfectivo + cierreCaja.PagosCxPEfectivo + cierreCaja.EgresosEfectivo, 2)
         txtTotalEfectivo.Text = FormatNumber(CDbl(txtFondoInicio.Text) + CDbl(txtTotalIngresos.Text) - CDbl(txtTotalEgresos.Text), 2)
-        txtTotalIngresosTarjeta.Text = FormatNumber(CDbl(txtVentasTarjeta.Text) + CDbl(txtPagosCxCTarjeta.Text), 2)
+        txtTotalIngresosTarjeta.Text = FormatNumber(CDbl(txtVentasTarjeta02.Text) + CDbl(txtPagosCxCTarjeta12.Text), 2)
         txtRetiroEfectivo.Text = FormatNumber(cierreCaja.RetiroEfectivo, 2)
         txtCierreEfectivoProx.Text = FormatNumber(CDbl(txtTotalEfectivo.Text), 2)
         MessageBox.Show("Verifique la información del cierre. Si desea registrar el cierre presione el botón Guardar.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
@@ -159,7 +158,6 @@ Public Class FrmCierreDeCaja
                 New ModuloImpresion.ClsDesgloseFormaPago("Adelanto orden.", FormatNumber(cierreCaja.AdelantosOrdenEfectivo)),
                 New ModuloImpresion.ClsDesgloseFormaPago("Ventas efectivo", FormatNumber(cierreCaja.VentasEfectivo)),
                 New ModuloImpresion.ClsDesgloseFormaPago("Abonos a CxC", FormatNumber(cierreCaja.PagosCxCEfectivo)),
-                New ModuloImpresion.ClsDesgloseFormaPago("Devol. proveedo", FormatNumber(cierreCaja.DevolucionesProveedores)),
                 New ModuloImpresion.ClsDesgloseFormaPago("Otros ingresos", FormatNumber(cierreCaja.IngresosEfectivo))
             }
             comprobanteImpresion.arrDetalleComprobante = New List(Of ModuloImpresion.ClsDetalleComprobante) From {
@@ -170,10 +168,6 @@ Public Class FrmCierreDeCaja
                 New ModuloImpresion.ClsDetalleComprobante With {
                 .strDescripcion = "Pagos a CxP",
                 .strTotalLinea = FormatNumber(cierreCaja.PagosCxPEfectivo)
-            },
-                New ModuloImpresion.ClsDetalleComprobante With {
-                .strDescripcion = "Devol. clientes",
-                .strTotalLinea = FormatNumber(cierreCaja.DevolucionesClientes)
             },
                 New ModuloImpresion.ClsDetalleComprobante With {
                 .strDescripcion = "Otros egresos",
@@ -237,6 +231,17 @@ Public Class FrmCierreDeCaja
 
     Private Sub ValidaDigitosSinDecimal(sender As Object, e As KeyPressEventArgs) Handles txtCantidad5.KeyPress, txtCantidad10.KeyPress, txtCantidad25.KeyPress, txtCantidad50.KeyPress, txtCantidad100.KeyPress, txtCantidad500.KeyPress, txtCantidad1000.KeyPress, txtCantidad2000.KeyPress, txtCantidad5000.KeyPress, txtCantidad10000.KeyPress, txtCantidad20000.KeyPress, txtCantidad50000.KeyPress
         FrmPrincipal.ValidaNumero(e, sender, False, 0)
+    End Sub
+
+    Private Sub TextField_DoubleClick(sender As Object, e As EventArgs) Handles txtVentasEfectivo01.DoubleClick, txtVentasBancos03.DoubleClick, txtVentasTarjeta02.DoubleClick, txtVentasCredito04.DoubleClick, txtAdelantosApartadoEfectivo05.DoubleClick, txtAdelantosApartadoTarjeta06.DoubleClick, txtAdelantosApartadoBancos07.DoubleClick, txtAdelantosOrdenEfectivo08.DoubleClick, txtAdelantosOrdenTarjeta09.DoubleClick, txtAdelantosOrdenBancos10.DoubleClick, txtPagosCxCEfectivo11.DoubleClick, txtPagosCxCTarjeta12.DoubleClick, txtPagosCxCBancos13.DoubleClick, txtIngresosEfectivo14.DoubleClick, txtComprasEfectivo15.DoubleClick, txtComprasBancos16.DoubleClick, txtComprasCredito17.DoubleClick, txtPagosCxPEfectivo18.DoubleClick, txtPagosCxPBancos19.DoubleClick, txtEgresosEfectivo20.DoubleClick
+        Dim current As TextBox = Controls(sender.Name)
+        If CDbl(current.Text) > 0 Then
+            Dim intTipo As Integer = CInt(sender.Name.ToString().Substring(sender.Name.ToString().Length - 2))
+            Dim detalle As List(Of DetalleMovimientoCierreCaja) = cierreCaja.DetalleMovimientoCierreCaja.Where(Function(x) x.Tipo = intTipo).ToList()
+            Dim formDetalle As New FrmDetalleCierreCaja()
+            formDetalle.dtDatos = detalle
+            formDetalle.ShowDialog()
+        End If
     End Sub
 
     Private Sub ValidaDigitos(sender As Object, e As KeyPressEventArgs) Handles txtRetiroEfectivo.KeyPress

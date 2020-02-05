@@ -446,9 +446,10 @@ namespace LeandroSoftware.Core.TiposComunes
         {
         }
 
-        public FacturaDetalle(int id, string nombreCliente, string fecha, decimal gravado, decimal exonerado, decimal excento, decimal impuesto, decimal total, string estado)
+        public FacturaDetalle(int id, int consecutivo, string nombreCliente, string fecha, decimal gravado, decimal exonerado, decimal excento, decimal impuesto, decimal total, string estado)
         {
             IdFactura = id;
+            Consecutivo = consecutivo;
             NombreCliente = nombreCliente;
             Fecha = fecha;
             Gravado = gravado;
@@ -459,6 +460,7 @@ namespace LeandroSoftware.Core.TiposComunes
             Estado = estado;
         }
         public int IdFactura { get; set; }
+        public int Consecutivo { get; set; }
         public string NombreCliente { get; set; }
         public string Fecha { get; set; }
         public decimal Gravado { get; set; }
@@ -559,13 +561,13 @@ namespace LeandroSoftware.Core.TiposComunes
         public string CorreoNotificacion { get; set; }
     }
 
-    public class FlujoEfectivoDetalle
+    public class CierreDeEfectivo
     {
-        public FlujoEfectivoDetalle()
+        public CierreDeEfectivo()
         {
         }
 
-        public FlujoEfectivoDetalle(int id, string fecha, string detalle, decimal total)
+        public CierreDeEfectivo(int id, string fecha, string detalle, decimal total)
         {
             Id = id;
             Fecha = fecha;
@@ -578,13 +580,13 @@ namespace LeandroSoftware.Core.TiposComunes
         public decimal Total { get; set; }
     }
 
-    public class CuentaDetalle
+    public class EfectivoDetalle
     {
-        public CuentaDetalle()
+        public EfectivoDetalle()
         {
         }
 
-        public CuentaDetalle(int id, string fecha, string descripcion, decimal total)
+        public EfectivoDetalle(int id, string fecha, string descripcion, decimal total)
         {
             Id = id;
             Fecha = fecha;

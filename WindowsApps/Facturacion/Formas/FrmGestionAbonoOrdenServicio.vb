@@ -8,7 +8,7 @@ Public Class FrmGestionAbonoOrdenServicio
     Private dtbDetalleMovimiento As DataTable
     Private dtrRowDetMovimiento As DataRow
     Private bolInit As Boolean = True
-    Private listadoMovimientos As IList(Of CuentaDetalle)
+    Private listadoMovimientos As IList(Of EfectivoDetalle)
     Private movimientoOrdenServicio As MovimientoOrdenServicio
     Private ordenServicio As OrdenServicio
     'Variables de impresion
@@ -65,7 +65,7 @@ Public Class FrmGestionAbonoOrdenServicio
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
         End Try
-        For Each mov As CuentaDetalle In listadoMovimientos
+        For Each mov As EfectivoDetalle In listadoMovimientos
             dtrRowDetMovimiento = dtbDetalleMovimiento.NewRow
             dtrRowDetMovimiento.Item(0) = mov.Id
             dtrRowDetMovimiento.Item(1) = mov.Fecha

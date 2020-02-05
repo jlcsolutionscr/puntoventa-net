@@ -148,6 +148,7 @@ Public Class FrmProducto
                 txtPrecioImpuesto4.Text = FormatoPrecio(0, 2)
                 txtPrecioImpuesto5.Text = FormatoPrecio(0, 2)
                 txtIndExistencia.Text = FormatoPrecio(0, 2)
+                chkActivo.Checked = True
             End If
             bolInit = False
         Catch ex As Exception

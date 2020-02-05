@@ -22,7 +22,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         void AnularIngreso(int intIdIngreso, int intIdUsuario);
         Ingreso ObtenerIngreso(int intIdIngreso);
         int ObtenerTotalListaIngresos(int intIdEmpresa, int intIdSucursal, int intIdIngreso = 0, string strRecibidoDe = "", string strDetalle = "");
-        IList<FlujoEfectivoDetalle> ObtenerListadoIngresos(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, int intIdIngreso = 0, string strRecibidoDe = "", string strDetalle = "");
+        IList<EfectivoDetalle> ObtenerListadoIngresos(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, int intIdIngreso = 0, string strRecibidoDe = "", string strDetalle = "");
         void AgregarCuentaEgreso(CuentaEgreso cuenta);
         void ActualizarCuentaEgreso(CuentaEgreso cuenta);
         void EliminarCuentaEgreso(int intIdCuenta);
@@ -32,7 +32,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         void AnularEgreso(int intIdEgreso, int intIdUsuario);
         Egreso ObtenerEgreso(int intIdEgreso);
         int ObtenerTotalListaEgresos(int intIdEmpresa, int intIdSucursal, int intIdEgreso, string strBeneficiario, string strDetalle);
-        IList<FlujoEfectivoDetalle> ObtenerListadoEgresos(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, int intIdEgreso, string strBeneficiario, string strDetalle);
+        IList<EfectivoDetalle> ObtenerListadoEgresos(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, int intIdEgreso, string strBeneficiario, string strDetalle);
         CierreCaja GenerarDatosCierreCaja(int intIdEmpresa, int intIdSucursal);
         void GuardarDatosCierreCaja(CierreCaja cierre);
         void AbortarCierreCaja(int intIdEmpresa, int intIdSucursal);
@@ -355,11 +355,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IList<FlujoEfectivoDetalle> ObtenerListadoIngresos(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, int intIdIngreso = 0, string strRecibidoDe = "", string strDetalle = "")
+        public IList<EfectivoDetalle> ObtenerListadoIngresos(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, int intIdIngreso = 0, string strRecibidoDe = "", string strDetalle = "")
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
-                var listadoIngreso = new List<FlujoEfectivoDetalle>();
+                var listadoIngreso = new List<EfectivoDetalle>();
                 try
                 {
                     var listado = dbContext.IngresoRepository.Where(x => !x.Nulo & x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
@@ -375,7 +375,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     listado = listado.OrderByDescending(x => x.IdIngreso).Skip((numPagina - 1) * cantRec).Take(cantRec);
                     foreach (var value in listado)
                     {
-                        FlujoEfectivoDetalle item = new FlujoEfectivoDetalle(value.IdIngreso, value.Fecha.ToString("dd/MM/yyyy"), value.Detalle, value.Monto);
+                        EfectivoDetalle item = new EfectivoDetalle(value.IdIngreso, value.Fecha.ToString("dd/MM/yyyy"), value.Detalle, value.Monto);
                         listadoIngreso.Add(item);
                     }
                     return listadoIngreso;
@@ -677,11 +677,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IList<FlujoEfectivoDetalle> ObtenerListadoEgresos(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, int intIdEgreso, string strBeneficiario, string strDetalle)
+        public IList<EfectivoDetalle> ObtenerListadoEgresos(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, int intIdEgreso, string strBeneficiario, string strDetalle)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
-                var listadoEgreso = new List<FlujoEfectivoDetalle>();
+                var listadoEgreso = new List<EfectivoDetalle>();
                 try
                 {
                     var listado = dbContext.EgresoRepository.Where(x => !x.Nulo & x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
@@ -697,7 +697,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     listado = listado.OrderByDescending(x => x.IdEgreso).Skip((numPagina - 1) * cantRec).Take(cantRec);
                     foreach (var value in listado)
                     {
-                        FlujoEfectivoDetalle item = new FlujoEfectivoDetalle(value.IdEgreso, value.Fecha.ToString("dd/MM/yyyy"), value.Detalle, value.Monto);
+                        EfectivoDetalle item = new EfectivoDetalle(value.IdEgreso, value.Fecha.ToString("dd/MM/yyyy"), value.Detalle, value.Monto);
                         listadoEgreso.Add(item);
                     }
                     return listadoEgreso;
@@ -727,6 +727,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         IdEmpresa = intIdEmpresa,
                         IdSucursal = intIdSucursal
                     };
+                    List<DetalleMovimientoCierreCaja> listaMovimientos = new List<DetalleMovimientoCierreCaja>();
                     CierreCaja cierreAnterior = cierreAnterior = dbContext.CierreCajaRepository.OrderByDescending(b => b.IdCierre).FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
                     if (cierreAnterior != null)
                         cierre.FondoInicio = cierreAnterior.FondoCierre;
@@ -744,13 +745,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     cierre.PagosCxCEfectivo = 0;
                     cierre.PagosCxCTarjeta = 0;
                     cierre.PagosCxCBancos = 0;
-                    cierre.DevolucionesProveedores = 0;
                     cierre.IngresosEfectivo = 0;
                     cierre.ComprasEfectivo = 0;
                     cierre.ComprasBancos = 0;
                     cierre.PagosCxPEfectivo = 0;
                     cierre.PagosCxPBancos = 0;
-                    cierre.DevolucionesClientes = 0;
                     cierre.EgresosEfectivo = 0;
                     cierre.RetencionTarjeta = 0;
                     cierre.ComisionTarjeta = 0;
@@ -758,24 +757,118 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     cierre.ComprasCredito = 0;
                     cierre.RetiroEfectivo = 0;
 
+                    var facturas = dbContext.FacturaRepository.Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdCondicionVenta != StaticCondicionVenta.Credito && !x.Procesado).ToList();
+                    if (facturas.Count > 0)
+                    {
+                        var pagosFacturas = facturas.Join(dbContext.DesglosePagoFacturaRepository, x => x.IdFactura, y => y.IdFactura, (x, y) => new { x, y })
+                            .Select(y => new { y.x.ConsecFactura, y.x.Fecha, y.x.NombreCliente, y.y.IdFormaPago, y.y.IdCuentaBanco, y.y.MontoLocal });
+                        foreach (var dato in pagosFacturas)
+                        {
+                            if (dato.IdFormaPago == StaticFormaPago.Efectivo)
+                            {
+                                cierre.VentasEfectivo += dato.MontoLocal;
+                                listaMovimientos.Add(new DetalleMovimientoCierreCaja
+                                {
+                                    IdReferencia = dato.ConsecFactura,
+                                    Tipo = 1,
+                                    Fecha = dato.Fecha,
+                                    Descripcion = dato.NombreCliente,
+                                    Total = dato.MontoLocal
+                                });
+                            }
+                            else if (dato.IdFormaPago == StaticFormaPago.Tarjeta)
+                            {
+                                cierre.VentasTarjeta += dato.MontoLocal;
+                                BancoAdquiriente banco = dbContext.BancoAdquirienteRepository.Find(dato.IdCuentaBanco);
+                                cierre.RetencionTarjeta += (dato.MontoLocal * banco.PorcentajeRetencion / 100);
+                                cierre.ComisionTarjeta += (dato.MontoLocal * banco.PorcentajeComision / 100);
+                                listaMovimientos.Add(new DetalleMovimientoCierreCaja
+                                {
+                                    IdReferencia = dato.ConsecFactura,
+                                    Tipo = 2,
+                                    Fecha = dato.Fecha,
+                                    Descripcion = dato.NombreCliente,
+                                    Total = dato.MontoLocal
+                                });
+                            }
+                            else
+                            {
+                                cierre.VentasBancos += dato.MontoLocal;
+                                listaMovimientos.Add(new DetalleMovimientoCierreCaja
+                                {
+                                    IdReferencia = dato.ConsecFactura,
+                                    Tipo = 3,
+                                    Fecha = dato.Fecha,
+                                    Descripcion = dato.NombreCliente,
+                                    Total = dato.MontoLocal
+                                });
+                            }
+                        }
+                    }
+
+                    var facturasCredito = dbContext.FacturaRepository.Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdCondicionVenta == StaticCondicionVenta.Credito && !x.Procesado).ToList();
+                    if (facturasCredito.Count > 0)
+                    {
+                        foreach (var dato in facturasCredito)
+                        {
+                            cierre.VentasCredito += dato.Total;
+                            listaMovimientos.Add(new DetalleMovimientoCierreCaja
+                            {
+                                IdReferencia = dato.ConsecFactura,
+                                Tipo = 4,
+                                Fecha = dato.Fecha,
+                                Descripcion = dato.NombreCliente,
+                                Total = dato.Total
+                            });
+                        }
+                    }
+
                     var apartados = dbContext.ApartadoRepository.Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Procesado).ToList();
                     if (apartados.Count > 0)
                     {
                         var pagosApartados = apartados.Join(dbContext.DesglosePagoApartadoRepository, x => x.IdApartado, y => y.IdApartado, (x, y) => new { x, y })
-                            .GroupBy(x => new { x.y.IdFormaPago, x.y.IdCuentaBanco }).Select(x => new { IdFormaPago = x.Min(y => y.y.IdFormaPago), IdCuentaBanco = x.Min(y => y.y.IdCuentaBanco), Total = x.Sum(y => y.y.MontoLocal) });
+                            .Select(y => new { y.x.ConsecApartado, y.x.Fecha, y.x.NombreCliente, y.y.IdFormaPago, y.y.IdCuentaBanco, y.y.MontoLocal });
                         foreach (var dato in pagosApartados)
                         {
                             if (dato.IdFormaPago == StaticFormaPago.Efectivo)
-                                cierre.AdelantosApartadoEfectivo = dato.Total;
+                            {
+                                cierre.AdelantosApartadoEfectivo += dato.MontoLocal;
+                                listaMovimientos.Add(new DetalleMovimientoCierreCaja
+                                {
+                                    IdReferencia = dato.ConsecApartado,
+                                    Tipo = 5,
+                                    Fecha = dato.Fecha,
+                                    Descripcion = dato.NombreCliente,
+                                    Total = dato.MontoLocal
+                                });
+                            }
                             else if (dato.IdFormaPago == StaticFormaPago.Tarjeta)
                             {
-                                cierre.AdelantosApartadoTarjeta += dato.Total;
+                                cierre.AdelantosApartadoTarjeta += dato.MontoLocal;
                                 BancoAdquiriente banco = dbContext.BancoAdquirienteRepository.Find(dato.IdCuentaBanco);
-                                cierre.RetencionTarjeta += (dato.Total * banco.PorcentajeRetencion / 100);
-                                cierre.ComisionTarjeta += (dato.Total * banco.PorcentajeComision / 100);
+                                cierre.RetencionTarjeta += (dato.MontoLocal * banco.PorcentajeRetencion / 100);
+                                cierre.ComisionTarjeta += (dato.MontoLocal * banco.PorcentajeComision / 100);
+                                listaMovimientos.Add(new DetalleMovimientoCierreCaja
+                                {
+                                    IdReferencia = dato.ConsecApartado,
+                                    Tipo = 6,
+                                    Fecha = dato.Fecha,
+                                    Descripcion = dato.NombreCliente,
+                                    Total = dato.MontoLocal
+                                });
                             }
                             else
-                                cierre.AdelantosApartadoBancos += dato.Total;
+                            {
+                                cierre.AdelantosApartadoBancos += dato.MontoLocal;
+                                listaMovimientos.Add(new DetalleMovimientoCierreCaja
+                                {
+                                    IdReferencia = dato.ConsecApartado,
+                                    Tipo = 7,
+                                    Fecha = dato.Fecha,
+                                    Descripcion = dato.NombreCliente,
+                                    Total = dato.MontoLocal
+                                });
+                            }
                         }
                     }
 
@@ -783,44 +876,48 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (ordenes.Count > 0)
                     {
                         var pagosOrdenes = ordenes.Join(dbContext.DesglosePagoOrdenServicioRepository, x => x.IdOrden, y => y.IdOrden, (x, y) => new { x, y })
-                            .GroupBy(x => new { x.y.IdFormaPago, x.y.IdCuentaBanco }).Select(x => new { IdFormaPago = x.Min(y => y.y.IdFormaPago), IdCuentaBanco = x.Min(y => y.y.IdCuentaBanco), Total = x.Sum(y => y.y.MontoLocal) });
+                            .Select(y => new { y.x.ConsecOrdenServicio, y.x.Fecha, y.x.NombreCliente, y.y.IdFormaPago, y.y.IdCuentaBanco, y.y.MontoLocal });
                         foreach (var dato in pagosOrdenes)
                         {
                             if (dato.IdFormaPago == StaticFormaPago.Efectivo)
-                                cierre.AdelantosOrdenEfectivo = dato.Total;
+                            {
+                                cierre.AdelantosOrdenEfectivo += dato.MontoLocal;
+                                listaMovimientos.Add(new DetalleMovimientoCierreCaja
+                                {
+                                    IdReferencia = dato.ConsecOrdenServicio,
+                                    Tipo = 8,
+                                    Fecha = dato.Fecha,
+                                    Descripcion = dato.NombreCliente,
+                                    Total = dato.MontoLocal
+                                });
+                            }
                             else if (dato.IdFormaPago == StaticFormaPago.Tarjeta)
                             {
-                                cierre.AdelantosOrdenTarjeta += dato.Total;
+                                cierre.AdelantosOrdenTarjeta += dato.MontoLocal;
                                 BancoAdquiriente banco = dbContext.BancoAdquirienteRepository.Find(dato.IdCuentaBanco);
-                                cierre.RetencionTarjeta += (dato.Total * banco.PorcentajeRetencion / 100);
-                                cierre.ComisionTarjeta += (dato.Total * banco.PorcentajeComision / 100);
+                                cierre.RetencionTarjeta += (dato.MontoLocal * banco.PorcentajeRetencion / 100);
+                                cierre.ComisionTarjeta += (dato.MontoLocal * banco.PorcentajeComision / 100);
+                                listaMovimientos.Add(new DetalleMovimientoCierreCaja
+                                {
+                                    IdReferencia = dato.ConsecOrdenServicio,
+                                    Tipo = 9,
+                                    Fecha = dato.Fecha,
+                                    Descripcion = dato.NombreCliente,
+                                    Total = dato.MontoLocal
+                                });
                             }
                             else
-                                cierre.AdelantosOrdenBancos += dato.Total;
-                        }
-                    }
-
-                    var facturasCredito = dbContext.FacturaRepository.Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdCondicionVenta == StaticCondicionVenta.Credito && !x.Procesado).ToList();
-                    if (facturasCredito.Count > 0) cierre.VentasCredito = facturasCredito.Sum(y => y.Total);
-
-                    var facturas = dbContext.FacturaRepository.Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdCondicionVenta != StaticCondicionVenta.Credito && !x.Procesado).ToList();
-                    if (facturas.Count > 0)
-                    {
-                        var pagosFacturas = facturas.Join(dbContext.DesglosePagoFacturaRepository, x => x.IdFactura, y => y.IdFactura, (x, y) => new { x, y })
-                            .GroupBy(x => new { x.y.IdFormaPago, x.y.IdCuentaBanco }).Select(x => new { IdFormaPago = x.Min(y => y.y.IdFormaPago), IdCuentaBanco = x.Min(y => y.y.IdCuentaBanco), Total = x.Sum(y => y.y.MontoLocal) });
-                        foreach (var dato in pagosFacturas)
-                        {
-                            if (dato.IdFormaPago == StaticFormaPago.Efectivo)
-                                cierre.VentasEfectivo = dato.Total;
-                            else if (dato.IdFormaPago == StaticFormaPago.Tarjeta)
                             {
-                                cierre.VentasTarjeta += dato.Total;
-                                BancoAdquiriente banco = dbContext.BancoAdquirienteRepository.Find(dato.IdCuentaBanco);
-                                cierre.RetencionTarjeta += (dato.Total * banco.PorcentajeRetencion / 100);
-                                cierre.ComisionTarjeta += (dato.Total * banco.PorcentajeComision / 100);
+                                cierre.AdelantosOrdenBancos += dato.MontoLocal;
+                                listaMovimientos.Add(new DetalleMovimientoCierreCaja
+                                {
+                                    IdReferencia = dato.ConsecOrdenServicio,
+                                    Tipo = 10,
+                                    Fecha = dato.Fecha,
+                                    Descripcion = dato.NombreCliente,
+                                    Total = dato.MontoLocal
+                                });
                             }
-                            else
-                                cierre.VentasBancos += dato.Total;
                         }
                     }
 
@@ -828,25 +925,67 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (movimientosCxC.Count > 0)
                     {
                         var pagosCxC = movimientosCxC.Join(dbContext.DesglosePagoMovimientoCuentaPorCobrarRepository, x => x.IdMovCxC, y => y.IdMovCxC, (x, y) => new { x, y })
-                            .GroupBy(x => new { x.y.IdFormaPago, x.y.IdCuentaBanco }).Select(x => new { IdFormaPago = x.Min(y => y.y.IdFormaPago), IdCuentaBanco = x.Min(y => y.y.IdCuentaBanco), Total = x.Sum(y => y.y.MontoLocal) });
+                            .Select(y => new { y.x.IdMovCxC, y.x.Fecha, y.x.Descripcion, y.y.IdFormaPago, y.y.IdCuentaBanco, y.y.MontoLocal });
                         foreach (var dato in pagosCxC)
                         {
                             if (dato.IdFormaPago == StaticFormaPago.Efectivo)
-                                cierre.PagosCxCEfectivo = dato.Total;
+                            {
+                                cierre.PagosCxCEfectivo += dato.MontoLocal;
+                                listaMovimientos.Add(new DetalleMovimientoCierreCaja
+                                {
+                                    IdReferencia = dato.IdMovCxC,
+                                    Tipo = 11,
+                                    Fecha = dato.Fecha,
+                                    Descripcion = dato.Descripcion,
+                                    Total = dato.MontoLocal
+                                });
+                            }
                             else if (dato.IdFormaPago == StaticFormaPago.Tarjeta)
                             {
-                                cierre.PagosCxCTarjeta += dato.Total;
+                                cierre.PagosCxCTarjeta += dato.MontoLocal;
                                 BancoAdquiriente banco = dbContext.BancoAdquirienteRepository.Find(dato.IdCuentaBanco);
-                                cierre.RetencionTarjeta += (dato.Total * banco.PorcentajeRetencion / 100);
-                                cierre.ComisionTarjeta += (dato.Total * banco.PorcentajeComision / 100);
+                                cierre.RetencionTarjeta += (dato.MontoLocal * banco.PorcentajeRetencion / 100);
+                                cierre.ComisionTarjeta += (dato.MontoLocal * banco.PorcentajeComision / 100);
+                                listaMovimientos.Add(new DetalleMovimientoCierreCaja
+                                {
+                                    IdReferencia = dato.IdMovCxC,
+                                    Tipo = 12,
+                                    Fecha = dato.Fecha,
+                                    Descripcion = dato.Descripcion,
+                                    Total = dato.MontoLocal
+                                });
                             }
                             else
-                                cierre.PagosCxCBancos += dato.Total;
+                            {
+                                cierre.PagosCxCBancos += dato.MontoLocal;
+                                listaMovimientos.Add(new DetalleMovimientoCierreCaja
+                                {
+                                    IdReferencia = dato.IdMovCxC,
+                                    Tipo = 13,
+                                    Fecha = dato.Fecha,
+                                    Descripcion = dato.Descripcion,
+                                    Total = dato.MontoLocal
+                                });
+                            }
                         }
                     }
 
                     var ingresosEfectivo = dbContext.IngresoRepository.Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Procesado).ToList();
-                    if (ingresosEfectivo.Count > 0) cierre.IngresosEfectivo = ingresosEfectivo.Sum(x => x.Monto);
+                    if (ingresosEfectivo.Count > 0)
+                    {
+                        foreach (var dato in ingresosEfectivo)
+                        {
+                            cierre.IngresosEfectivo += dato.Monto;
+                            listaMovimientos.Add(new DetalleMovimientoCierreCaja
+                            {
+                                IdReferencia = dato.IdIngreso,
+                                Tipo = 14,
+                                Fecha = dato.Fecha,
+                                Descripcion = dato.Detalle,
+                                Total = dato.Monto
+                            });
+                        }
+                    }
 
                     //var movDevolucionesProveedores = dbContext.DevolucionProveedorRepository.Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Procesado).Join(dbContext.DesglosePagoDevolucionProveedorRepository, x => x.IdDevolucion, y => y.IdDevolucion, (x, y) => new { x, y })
                     //    .GroupBy(x => x.y.IdFormaPago).Select(x => new { x.Key, Total = x.Sum(y => y.y.MontoLocal) });
@@ -856,20 +995,54 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     //        cierre.DevolucionesProveedores = dato.Total;
                     //}
 
-                    var comprasCredito = dbContext.CompraRepository.Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdCondicionVenta == StaticCondicionVenta.Credito && !x.Procesado).ToList();
-                    if (comprasCredito.Count > 0) cierre.ComprasCredito = comprasCredito.Sum(y => y.Total);
-
                     var compras = dbContext.CompraRepository.Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdCondicionVenta != StaticCondicionVenta.Credito && !x.Procesado).ToList();
                     if (compras.Count > 0)
                     {
                         var pagosCompras = compras.Join(dbContext.DesglosePagoCompraRepository, x => x.IdCompra, y => y.IdCompra, (x, y) => new { x, y })
-                            .GroupBy(x => x.y.IdFormaPago).Select(x => new { x.Key, Total = x.Sum(y => y.y.MontoLocal) });
+                            .Select(y => new { y.x.IdCompra, y.x.Fecha, y.x.NombreProveedor, y.y.IdFormaPago, y.y.MontoLocal });
                         foreach (var dato in pagosCompras)
                         {
-                            if (dato.Key == StaticFormaPago.Efectivo)
-                                cierre.ComprasEfectivo = dato.Total;
+                            if (dato.IdFormaPago == StaticFormaPago.Efectivo)
+                            {
+                                cierre.ComprasEfectivo += dato.MontoLocal;
+                                listaMovimientos.Add(new DetalleMovimientoCierreCaja
+                                {
+                                    IdReferencia = dato.IdCompra,
+                                    Tipo = 15,
+                                    Fecha = dato.Fecha,
+                                    Descripcion = dato.NombreProveedor,
+                                    Total = dato.MontoLocal
+                                });
+                            }
                             else
-                                cierre.ComprasBancos += dato.Total;
+                            {
+                                cierre.ComprasBancos += dato.MontoLocal;
+                                listaMovimientos.Add(new DetalleMovimientoCierreCaja
+                                {
+                                    IdReferencia = dato.IdCompra,
+                                    Tipo = 16,
+                                    Fecha = dato.Fecha,
+                                    Descripcion = dato.NombreProveedor,
+                                    Total = dato.MontoLocal
+                                });
+                            }
+                        }
+                    }
+
+                    var comprasCredito = dbContext.CompraRepository.Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdCondicionVenta == StaticCondicionVenta.Credito && !x.Procesado).ToList();
+                    if (comprasCredito.Count > 0)
+                    {
+                        foreach (var dato in comprasCredito)
+                        {
+                            cierre.ComprasCredito += dato.Total;
+                            listaMovimientos.Add(new DetalleMovimientoCierreCaja
+                            {
+                                IdReferencia = dato.IdCompra,
+                                Tipo = 17,
+                                Fecha = dato.Fecha,
+                                Descripcion = dato.NombreProveedor,
+                                Total = dato.Total
+                            });
                         }
                     }
 
@@ -877,19 +1050,53 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (movimientosCxP.Count > 0)
                     {
                         var pagosCxP = movimientosCxP.Join(dbContext.DesglosePagoMovimientoCuentaPorPagarRepository, x => x.IdMovCxP, y => y.IdMovCxP, (x, y) => new { x, y })
-                        .GroupBy(x => x.y.IdFormaPago).Select(x => new { x.Key, Total = x.Sum(y => y.y.MontoLocal) });
+                            .Select(y => new { y.x.IdMovCxP, y.x.Fecha, y.x.Descripcion, y.y.IdFormaPago, y.y.MontoLocal });
                         foreach (var dato in pagosCxP)
                         {
-                            if (dato.Key == StaticFormaPago.Efectivo)
-                                cierre.PagosCxPEfectivo = dato.Total;
+                            if (dato.IdFormaPago == StaticFormaPago.Efectivo)
+                            {
+                                cierre.PagosCxPEfectivo += dato.MontoLocal;
+                                listaMovimientos.Add(new DetalleMovimientoCierreCaja
+                                {
+                                    IdReferencia = dato.IdMovCxP,
+                                    Tipo = 18,
+                                    Fecha = dato.Fecha,
+                                    Descripcion = dato.Descripcion,
+                                    Total = dato.MontoLocal
+                                });
+                            }
                             else
-                                cierre.PagosCxPBancos = dato.Total;
+                            {
+                                cierre.PagosCxPBancos += dato.MontoLocal;
+                                listaMovimientos.Add(new DetalleMovimientoCierreCaja
+                                {
+                                    IdReferencia = dato.IdMovCxP,
+                                    Tipo = 19,
+                                    Fecha = dato.Fecha,
+                                    Descripcion = dato.Descripcion,
+                                    Total = dato.MontoLocal
+                                });
+                            }
                         }
                     }
 
                     var egresosEfectivo = dbContext.EgresoRepository.Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Procesado).ToList();
-                    if (egresosEfectivo.Count > 0) cierre.EgresosEfectivo = egresosEfectivo.Sum(x => x.Monto);
-
+                    if (ingresosEfectivo.Count > 0)
+                    {
+                        foreach (var dato in ingresosEfectivo)
+                        {
+                            cierre.EgresosEfectivo += dato.Monto;
+                            listaMovimientos.Add(new DetalleMovimientoCierreCaja
+                            {
+                                IdReferencia = dato.IdIngreso,
+                                Tipo = 20,
+                                Fecha = dato.Fecha,
+                                Descripcion = dato.Detalle,
+                                Total = dato.Monto
+                            });
+                        }
+                    }
+                    cierre.DetalleMovimientoCierreCaja = listaMovimientos;
                     return cierre;
                 }
                 catch (BusinessException ex)
@@ -1005,7 +1212,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    CierreCaja cierre = dbContext.CierreCajaRepository.Include("DetalleEfectivoCierreCaja").FirstOrDefault(x => x.IdCierre == intIdCierreCaja);
+                    CierreCaja cierre = dbContext.CierreCajaRepository.Include("DetalleMovimientoCierreCaja").Include("DetalleEfectivoCierreCaja").FirstOrDefault(x => x.IdCierre == intIdCierreCaja);
+                    foreach (var item in cierre.DetalleMovimientoCierreCaja)
+                        item.CierreCaja = null;
                     foreach (var item in cierre.DetalleEfectivoCierreCaja)
                         item.CierreCaja = null;
                     return cierre;

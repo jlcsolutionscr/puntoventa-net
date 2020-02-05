@@ -32,48 +32,44 @@ Partial Class FrmConsultaCierreCaja
         Me.Label9 = New System.Windows.Forms.Label()
         Me.Label4 = New System.Windows.Forms.Label()
         Me.Label3 = New System.Windows.Forms.Label()
-        Me.txtVentasEfectivo = New System.Windows.Forms.TextBox()
+        Me.txtVentasEfectivo01 = New System.Windows.Forms.TextBox()
         Me.txtTotalIngresos = New System.Windows.Forms.TextBox()
-        Me.txtIngresosEfectivo = New System.Windows.Forms.TextBox()
-        Me.txtVentasTarjeta = New System.Windows.Forms.TextBox()
-        Me.txtVentasCredito = New System.Windows.Forms.TextBox()
-        Me.txtPagosCxCEfectivo = New System.Windows.Forms.TextBox()
+        Me.txtIngresosEfectivo14 = New System.Windows.Forms.TextBox()
+        Me.txtVentasTarjeta02 = New System.Windows.Forms.TextBox()
+        Me.txtVentasCredito04 = New System.Windows.Forms.TextBox()
+        Me.txtPagosCxCEfectivo11 = New System.Windows.Forms.TextBox()
         Me.Label6 = New System.Windows.Forms.Label()
         Me.Label5 = New System.Windows.Forms.Label()
         Me.Label8 = New System.Windows.Forms.Label()
-        Me.txtComprasEfectivo = New System.Windows.Forms.TextBox()
+        Me.txtComprasEfectivo15 = New System.Windows.Forms.TextBox()
         Me.txtTotalEgresos = New System.Windows.Forms.TextBox()
-        Me.txtComprasCredito = New System.Windows.Forms.TextBox()
+        Me.txtComprasCredito17 = New System.Windows.Forms.TextBox()
         Me.Label15 = New System.Windows.Forms.Label()
-        Me.txtEgresosEfectivo = New System.Windows.Forms.TextBox()
-        Me.txtPagosCxPEfectivo = New System.Windows.Forms.TextBox()
+        Me.txtEgresosEfectivo20 = New System.Windows.Forms.TextBox()
+        Me.txtPagosCxPEfectivo18 = New System.Windows.Forms.TextBox()
         Me.Label16 = New System.Windows.Forms.Label()
-        Me.txtComprasBancos = New System.Windows.Forms.TextBox()
+        Me.txtComprasBancos16 = New System.Windows.Forms.TextBox()
         Me.txtTotalVentas = New System.Windows.Forms.TextBox()
         Me.txtTotalCompras = New System.Windows.Forms.TextBox()
         Me.txtRetencionIVA = New System.Windows.Forms.TextBox()
         Me.Label19 = New System.Windows.Forms.Label()
         Me.txtComision = New System.Windows.Forms.TextBox()
         Me.txtLiquidacionTarjeta = New System.Windows.Forms.TextBox()
-        Me.txtVentasBancos = New System.Windows.Forms.TextBox()
-        Me.txtDevolucionesProveedores = New System.Windows.Forms.TextBox()
-        Me.Label24 = New System.Windows.Forms.Label()
-        Me.txtDevolucionesClientes = New System.Windows.Forms.TextBox()
-        Me.Label25 = New System.Windows.Forms.Label()
+        Me.txtVentasBancos03 = New System.Windows.Forms.TextBox()
         Me.btnReporte = New System.Windows.Forms.Button()
         Me.txtTotalIngresosTarjeta = New System.Windows.Forms.TextBox()
         Me.Label26 = New System.Windows.Forms.Label()
-        Me.txtAdelantosApartadoEfectivo = New System.Windows.Forms.TextBox()
+        Me.txtAdelantosApartadoEfectivo05 = New System.Windows.Forms.TextBox()
         Me.Label22 = New System.Windows.Forms.Label()
-        Me.txtAdelantosApartadoBancos = New System.Windows.Forms.TextBox()
-        Me.txtAdelantosApartadoTarjeta = New System.Windows.Forms.TextBox()
-        Me.txtAdelantosOrdenTarjeta = New System.Windows.Forms.TextBox()
-        Me.txtAdelantosOrdenBancos = New System.Windows.Forms.TextBox()
-        Me.txtAdelantosOrdenEfectivo = New System.Windows.Forms.TextBox()
+        Me.txtAdelantosApartadoBancos07 = New System.Windows.Forms.TextBox()
+        Me.txtAdelantosApartadoTarjeta06 = New System.Windows.Forms.TextBox()
+        Me.txtAdelantosOrdenTarjeta09 = New System.Windows.Forms.TextBox()
+        Me.txtAdelantosOrdenBancos10 = New System.Windows.Forms.TextBox()
+        Me.txtAdelantosOrdenEfectivo08 = New System.Windows.Forms.TextBox()
         Me.Label30 = New System.Windows.Forms.Label()
-        Me.txtPagosCxCBancos = New System.Windows.Forms.TextBox()
-        Me.txtPagosCxCTarjeta = New System.Windows.Forms.TextBox()
-        Me.txtPagosCxPBancos = New System.Windows.Forms.TextBox()
+        Me.txtPagosCxCBancos13 = New System.Windows.Forms.TextBox()
+        Me.txtPagosCxCTarjeta12 = New System.Windows.Forms.TextBox()
+        Me.txtPagosCxPBancos19 = New System.Windows.Forms.TextBox()
         Me.txtTotalAdelantosApartado = New System.Windows.Forms.TextBox()
         Me.txtTotalAdelantosOrden = New System.Windows.Forms.TextBox()
         Me.btnTiquete = New System.Windows.Forms.Button()
@@ -107,7 +103,7 @@ Partial Class FrmConsultaCierreCaja
         Me.txtFondoInicio.BackColor = System.Drawing.SystemColors.Window
         Me.txtFondoInicio.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtFondoInicio.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtFondoInicio.Location = New System.Drawing.Point(205, 346)
+        Me.txtFondoInicio.Location = New System.Drawing.Point(205, 294)
         Me.txtFondoInicio.MaxLength = 0
         Me.txtFondoInicio.Name = "txtFondoInicio"
         Me.txtFondoInicio.ReadOnly = True
@@ -123,7 +119,7 @@ Partial Class FrmConsultaCierreCaja
         Me.txtTotalEfectivo.BackColor = System.Drawing.SystemColors.Window
         Me.txtTotalEfectivo.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtTotalEfectivo.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtTotalEfectivo.Location = New System.Drawing.Point(205, 424)
+        Me.txtTotalEfectivo.Location = New System.Drawing.Point(205, 372)
         Me.txtTotalEfectivo.MaxLength = 0
         Me.txtTotalEfectivo.Name = "txtTotalEfectivo"
         Me.txtTotalEfectivo.ReadOnly = True
@@ -138,7 +134,7 @@ Partial Class FrmConsultaCierreCaja
         Me.Label11.BackColor = System.Drawing.Color.Transparent
         Me.Label11.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label11.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label11.Location = New System.Drawing.Point(91, 348)
+        Me.Label11.Location = New System.Drawing.Point(91, 296)
         Me.Label11.Name = "Label11"
         Me.Label11.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label11.Size = New System.Drawing.Size(106, 17)
@@ -165,7 +161,7 @@ Partial Class FrmConsultaCierreCaja
         Me.Label9.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label9.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label9.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label9.Location = New System.Drawing.Point(65, 425)
+        Me.Label9.Location = New System.Drawing.Point(65, 373)
         Me.Label9.Name = "Label9"
         Me.Label9.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label9.Size = New System.Drawing.Size(132, 17)
@@ -178,7 +174,7 @@ Partial Class FrmConsultaCierreCaja
         Me.Label4.BackColor = System.Drawing.Color.Transparent
         Me.Label4.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label4.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label4.Location = New System.Drawing.Point(41, 374)
+        Me.Label4.Location = New System.Drawing.Point(41, 322)
         Me.Label4.Name = "Label4"
         Me.Label4.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label4.Size = New System.Drawing.Size(156, 17)
@@ -191,7 +187,7 @@ Partial Class FrmConsultaCierreCaja
         Me.Label3.BackColor = System.Drawing.Color.Transparent
         Me.Label3.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label3.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label3.Location = New System.Drawing.Point(85, 193)
+        Me.Label3.Location = New System.Drawing.Point(85, 167)
         Me.Label3.Name = "Label3"
         Me.Label3.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label3.Size = New System.Drawing.Size(112, 17)
@@ -199,21 +195,21 @@ Partial Class FrmConsultaCierreCaja
         Me.Label3.Text = "Ingresos varios:"
         Me.Label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
-        'txtVentasEfectivo
+        'txtVentasEfectivo01
         '
-        Me.txtVentasEfectivo.AcceptsReturn = True
-        Me.txtVentasEfectivo.BackColor = System.Drawing.SystemColors.Window
-        Me.txtVentasEfectivo.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtVentasEfectivo.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtVentasEfectivo.Location = New System.Drawing.Point(205, 62)
-        Me.txtVentasEfectivo.MaxLength = 0
-        Me.txtVentasEfectivo.Name = "txtVentasEfectivo"
-        Me.txtVentasEfectivo.ReadOnly = True
-        Me.txtVentasEfectivo.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtVentasEfectivo.Size = New System.Drawing.Size(105, 20)
-        Me.txtVentasEfectivo.TabIndex = 1
-        Me.txtVentasEfectivo.TabStop = False
-        Me.txtVentasEfectivo.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        Me.txtVentasEfectivo01.AcceptsReturn = True
+        Me.txtVentasEfectivo01.BackColor = System.Drawing.SystemColors.Window
+        Me.txtVentasEfectivo01.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtVentasEfectivo01.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtVentasEfectivo01.Location = New System.Drawing.Point(205, 62)
+        Me.txtVentasEfectivo01.MaxLength = 0
+        Me.txtVentasEfectivo01.Name = "txtVentasEfectivo01"
+        Me.txtVentasEfectivo01.ReadOnly = True
+        Me.txtVentasEfectivo01.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtVentasEfectivo01.Size = New System.Drawing.Size(105, 20)
+        Me.txtVentasEfectivo01.TabIndex = 1
+        Me.txtVentasEfectivo01.TabStop = False
+        Me.txtVentasEfectivo01.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'txtTotalIngresos
         '
@@ -221,7 +217,7 @@ Partial Class FrmConsultaCierreCaja
         Me.txtTotalIngresos.BackColor = System.Drawing.SystemColors.Window
         Me.txtTotalIngresos.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtTotalIngresos.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtTotalIngresos.Location = New System.Drawing.Point(205, 372)
+        Me.txtTotalIngresos.Location = New System.Drawing.Point(205, 320)
         Me.txtTotalIngresos.MaxLength = 0
         Me.txtTotalIngresos.Name = "txtTotalIngresos"
         Me.txtTotalIngresos.ReadOnly = True
@@ -231,69 +227,69 @@ Partial Class FrmConsultaCierreCaja
         Me.txtTotalIngresos.TabStop = False
         Me.txtTotalIngresos.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
-        'txtIngresosEfectivo
+        'txtIngresosEfectivo14
         '
-        Me.txtIngresosEfectivo.AcceptsReturn = True
-        Me.txtIngresosEfectivo.BackColor = System.Drawing.SystemColors.Window
-        Me.txtIngresosEfectivo.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtIngresosEfectivo.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtIngresosEfectivo.Location = New System.Drawing.Point(205, 192)
-        Me.txtIngresosEfectivo.MaxLength = 0
-        Me.txtIngresosEfectivo.Name = "txtIngresosEfectivo"
-        Me.txtIngresosEfectivo.ReadOnly = True
-        Me.txtIngresosEfectivo.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtIngresosEfectivo.Size = New System.Drawing.Size(105, 20)
-        Me.txtIngresosEfectivo.TabIndex = 6
-        Me.txtIngresosEfectivo.TabStop = False
-        Me.txtIngresosEfectivo.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        Me.txtIngresosEfectivo14.AcceptsReturn = True
+        Me.txtIngresosEfectivo14.BackColor = System.Drawing.SystemColors.Window
+        Me.txtIngresosEfectivo14.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtIngresosEfectivo14.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtIngresosEfectivo14.Location = New System.Drawing.Point(205, 166)
+        Me.txtIngresosEfectivo14.MaxLength = 0
+        Me.txtIngresosEfectivo14.Name = "txtIngresosEfectivo14"
+        Me.txtIngresosEfectivo14.ReadOnly = True
+        Me.txtIngresosEfectivo14.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtIngresosEfectivo14.Size = New System.Drawing.Size(105, 20)
+        Me.txtIngresosEfectivo14.TabIndex = 6
+        Me.txtIngresosEfectivo14.TabStop = False
+        Me.txtIngresosEfectivo14.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
-        'txtVentasTarjeta
+        'txtVentasTarjeta02
         '
-        Me.txtVentasTarjeta.AcceptsReturn = True
-        Me.txtVentasTarjeta.BackColor = System.Drawing.SystemColors.Window
-        Me.txtVentasTarjeta.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtVentasTarjeta.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtVentasTarjeta.Location = New System.Drawing.Point(438, 62)
-        Me.txtVentasTarjeta.MaxLength = 0
-        Me.txtVentasTarjeta.Name = "txtVentasTarjeta"
-        Me.txtVentasTarjeta.ReadOnly = True
-        Me.txtVentasTarjeta.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtVentasTarjeta.Size = New System.Drawing.Size(105, 20)
-        Me.txtVentasTarjeta.TabIndex = 15
-        Me.txtVentasTarjeta.TabStop = False
-        Me.txtVentasTarjeta.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        Me.txtVentasTarjeta02.AcceptsReturn = True
+        Me.txtVentasTarjeta02.BackColor = System.Drawing.SystemColors.Window
+        Me.txtVentasTarjeta02.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtVentasTarjeta02.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtVentasTarjeta02.Location = New System.Drawing.Point(438, 62)
+        Me.txtVentasTarjeta02.MaxLength = 0
+        Me.txtVentasTarjeta02.Name = "txtVentasTarjeta02"
+        Me.txtVentasTarjeta02.ReadOnly = True
+        Me.txtVentasTarjeta02.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtVentasTarjeta02.Size = New System.Drawing.Size(105, 20)
+        Me.txtVentasTarjeta02.TabIndex = 15
+        Me.txtVentasTarjeta02.TabStop = False
+        Me.txtVentasTarjeta02.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
-        'txtVentasCredito
+        'txtVentasCredito04
         '
-        Me.txtVentasCredito.AcceptsReturn = True
-        Me.txtVentasCredito.BackColor = System.Drawing.SystemColors.Window
-        Me.txtVentasCredito.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtVentasCredito.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtVentasCredito.Location = New System.Drawing.Point(556, 62)
-        Me.txtVentasCredito.MaxLength = 0
-        Me.txtVentasCredito.Name = "txtVentasCredito"
-        Me.txtVentasCredito.ReadOnly = True
-        Me.txtVentasCredito.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtVentasCredito.Size = New System.Drawing.Size(105, 20)
-        Me.txtVentasCredito.TabIndex = 14
-        Me.txtVentasCredito.TabStop = False
-        Me.txtVentasCredito.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        Me.txtVentasCredito04.AcceptsReturn = True
+        Me.txtVentasCredito04.BackColor = System.Drawing.SystemColors.Window
+        Me.txtVentasCredito04.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtVentasCredito04.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtVentasCredito04.Location = New System.Drawing.Point(556, 62)
+        Me.txtVentasCredito04.MaxLength = 0
+        Me.txtVentasCredito04.Name = "txtVentasCredito04"
+        Me.txtVentasCredito04.ReadOnly = True
+        Me.txtVentasCredito04.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtVentasCredito04.Size = New System.Drawing.Size(105, 20)
+        Me.txtVentasCredito04.TabIndex = 14
+        Me.txtVentasCredito04.TabStop = False
+        Me.txtVentasCredito04.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
-        'txtPagosCxCEfectivo
+        'txtPagosCxCEfectivo11
         '
-        Me.txtPagosCxCEfectivo.AcceptsReturn = True
-        Me.txtPagosCxCEfectivo.BackColor = System.Drawing.SystemColors.Window
-        Me.txtPagosCxCEfectivo.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtPagosCxCEfectivo.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtPagosCxCEfectivo.Location = New System.Drawing.Point(205, 140)
-        Me.txtPagosCxCEfectivo.MaxLength = 0
-        Me.txtPagosCxCEfectivo.Name = "txtPagosCxCEfectivo"
-        Me.txtPagosCxCEfectivo.ReadOnly = True
-        Me.txtPagosCxCEfectivo.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtPagosCxCEfectivo.Size = New System.Drawing.Size(105, 20)
-        Me.txtPagosCxCEfectivo.TabIndex = 4
-        Me.txtPagosCxCEfectivo.TabStop = False
-        Me.txtPagosCxCEfectivo.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        Me.txtPagosCxCEfectivo11.AcceptsReturn = True
+        Me.txtPagosCxCEfectivo11.BackColor = System.Drawing.SystemColors.Window
+        Me.txtPagosCxCEfectivo11.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtPagosCxCEfectivo11.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtPagosCxCEfectivo11.Location = New System.Drawing.Point(205, 140)
+        Me.txtPagosCxCEfectivo11.MaxLength = 0
+        Me.txtPagosCxCEfectivo11.Name = "txtPagosCxCEfectivo11"
+        Me.txtPagosCxCEfectivo11.ReadOnly = True
+        Me.txtPagosCxCEfectivo11.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtPagosCxCEfectivo11.Size = New System.Drawing.Size(105, 20)
+        Me.txtPagosCxCEfectivo11.TabIndex = 4
+        Me.txtPagosCxCEfectivo11.TabStop = False
+        Me.txtPagosCxCEfectivo11.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'Label6
         '
@@ -313,7 +309,7 @@ Partial Class FrmConsultaCierreCaja
         Me.Label5.BackColor = System.Drawing.Color.Transparent
         Me.Label5.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label5.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label5.Location = New System.Drawing.Point(90, 231)
+        Me.Label5.Location = New System.Drawing.Point(90, 205)
         Me.Label5.Name = "Label5"
         Me.Label5.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label5.Size = New System.Drawing.Size(107, 17)
@@ -326,7 +322,7 @@ Partial Class FrmConsultaCierreCaja
         Me.Label8.BackColor = System.Drawing.Color.Transparent
         Me.Label8.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label8.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label8.Location = New System.Drawing.Point(44, 399)
+        Me.Label8.Location = New System.Drawing.Point(44, 347)
         Me.Label8.Name = "Label8"
         Me.Label8.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label8.Size = New System.Drawing.Size(153, 17)
@@ -334,21 +330,21 @@ Partial Class FrmConsultaCierreCaja
         Me.Label8.Text = "Total de Egresos en Efectivo"
         Me.Label8.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
-        'txtComprasEfectivo
+        'txtComprasEfectivo15
         '
-        Me.txtComprasEfectivo.AcceptsReturn = True
-        Me.txtComprasEfectivo.BackColor = System.Drawing.SystemColors.Window
-        Me.txtComprasEfectivo.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtComprasEfectivo.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtComprasEfectivo.Location = New System.Drawing.Point(205, 230)
-        Me.txtComprasEfectivo.MaxLength = 0
-        Me.txtComprasEfectivo.Name = "txtComprasEfectivo"
-        Me.txtComprasEfectivo.ReadOnly = True
-        Me.txtComprasEfectivo.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtComprasEfectivo.Size = New System.Drawing.Size(105, 20)
-        Me.txtComprasEfectivo.TabIndex = 8
-        Me.txtComprasEfectivo.TabStop = False
-        Me.txtComprasEfectivo.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        Me.txtComprasEfectivo15.AcceptsReturn = True
+        Me.txtComprasEfectivo15.BackColor = System.Drawing.SystemColors.Window
+        Me.txtComprasEfectivo15.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtComprasEfectivo15.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtComprasEfectivo15.Location = New System.Drawing.Point(205, 204)
+        Me.txtComprasEfectivo15.MaxLength = 0
+        Me.txtComprasEfectivo15.Name = "txtComprasEfectivo15"
+        Me.txtComprasEfectivo15.ReadOnly = True
+        Me.txtComprasEfectivo15.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtComprasEfectivo15.Size = New System.Drawing.Size(105, 20)
+        Me.txtComprasEfectivo15.TabIndex = 8
+        Me.txtComprasEfectivo15.TabStop = False
+        Me.txtComprasEfectivo15.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'txtTotalEgresos
         '
@@ -356,7 +352,7 @@ Partial Class FrmConsultaCierreCaja
         Me.txtTotalEgresos.BackColor = System.Drawing.SystemColors.Window
         Me.txtTotalEgresos.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtTotalEgresos.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtTotalEgresos.Location = New System.Drawing.Point(205, 398)
+        Me.txtTotalEgresos.Location = New System.Drawing.Point(205, 346)
         Me.txtTotalEgresos.MaxLength = 0
         Me.txtTotalEgresos.Name = "txtTotalEgresos"
         Me.txtTotalEgresos.ReadOnly = True
@@ -366,28 +362,28 @@ Partial Class FrmConsultaCierreCaja
         Me.txtTotalEgresos.TabStop = False
         Me.txtTotalEgresos.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
-        'txtComprasCredito
+        'txtComprasCredito17
         '
-        Me.txtComprasCredito.AcceptsReturn = True
-        Me.txtComprasCredito.BackColor = System.Drawing.SystemColors.Window
-        Me.txtComprasCredito.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtComprasCredito.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtComprasCredito.Location = New System.Drawing.Point(556, 230)
-        Me.txtComprasCredito.MaxLength = 0
-        Me.txtComprasCredito.Name = "txtComprasCredito"
-        Me.txtComprasCredito.ReadOnly = True
-        Me.txtComprasCredito.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtComprasCredito.Size = New System.Drawing.Size(105, 20)
-        Me.txtComprasCredito.TabIndex = 22
-        Me.txtComprasCredito.TabStop = False
-        Me.txtComprasCredito.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        Me.txtComprasCredito17.AcceptsReturn = True
+        Me.txtComprasCredito17.BackColor = System.Drawing.SystemColors.Window
+        Me.txtComprasCredito17.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtComprasCredito17.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtComprasCredito17.Location = New System.Drawing.Point(556, 204)
+        Me.txtComprasCredito17.MaxLength = 0
+        Me.txtComprasCredito17.Name = "txtComprasCredito17"
+        Me.txtComprasCredito17.ReadOnly = True
+        Me.txtComprasCredito17.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtComprasCredito17.Size = New System.Drawing.Size(105, 20)
+        Me.txtComprasCredito17.TabIndex = 22
+        Me.txtComprasCredito17.TabStop = False
+        Me.txtComprasCredito17.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'Label15
         '
         Me.Label15.BackColor = System.Drawing.Color.Transparent
         Me.Label15.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label15.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label15.Location = New System.Drawing.Point(76, 309)
+        Me.Label15.Location = New System.Drawing.Point(76, 257)
         Me.Label15.Name = "Label15"
         Me.Label15.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label15.Size = New System.Drawing.Size(121, 17)
@@ -395,44 +391,44 @@ Partial Class FrmConsultaCierreCaja
         Me.Label15.Text = "Egresos varios:"
         Me.Label15.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
-        'txtEgresosEfectivo
+        'txtEgresosEfectivo20
         '
-        Me.txtEgresosEfectivo.AcceptsReturn = True
-        Me.txtEgresosEfectivo.BackColor = System.Drawing.SystemColors.Window
-        Me.txtEgresosEfectivo.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtEgresosEfectivo.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtEgresosEfectivo.Location = New System.Drawing.Point(205, 308)
-        Me.txtEgresosEfectivo.MaxLength = 0
-        Me.txtEgresosEfectivo.Name = "txtEgresosEfectivo"
-        Me.txtEgresosEfectivo.ReadOnly = True
-        Me.txtEgresosEfectivo.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtEgresosEfectivo.Size = New System.Drawing.Size(105, 20)
-        Me.txtEgresosEfectivo.TabIndex = 9
-        Me.txtEgresosEfectivo.TabStop = False
-        Me.txtEgresosEfectivo.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        Me.txtEgresosEfectivo20.AcceptsReturn = True
+        Me.txtEgresosEfectivo20.BackColor = System.Drawing.SystemColors.Window
+        Me.txtEgresosEfectivo20.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtEgresosEfectivo20.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtEgresosEfectivo20.Location = New System.Drawing.Point(205, 256)
+        Me.txtEgresosEfectivo20.MaxLength = 0
+        Me.txtEgresosEfectivo20.Name = "txtEgresosEfectivo20"
+        Me.txtEgresosEfectivo20.ReadOnly = True
+        Me.txtEgresosEfectivo20.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtEgresosEfectivo20.Size = New System.Drawing.Size(105, 20)
+        Me.txtEgresosEfectivo20.TabIndex = 9
+        Me.txtEgresosEfectivo20.TabStop = False
+        Me.txtEgresosEfectivo20.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
-        'txtPagosCxPEfectivo
+        'txtPagosCxPEfectivo18
         '
-        Me.txtPagosCxPEfectivo.AcceptsReturn = True
-        Me.txtPagosCxPEfectivo.BackColor = System.Drawing.SystemColors.Window
-        Me.txtPagosCxPEfectivo.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtPagosCxPEfectivo.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtPagosCxPEfectivo.Location = New System.Drawing.Point(205, 256)
-        Me.txtPagosCxPEfectivo.MaxLength = 0
-        Me.txtPagosCxPEfectivo.Name = "txtPagosCxPEfectivo"
-        Me.txtPagosCxPEfectivo.ReadOnly = True
-        Me.txtPagosCxPEfectivo.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtPagosCxPEfectivo.Size = New System.Drawing.Size(105, 20)
-        Me.txtPagosCxPEfectivo.TabIndex = 10
-        Me.txtPagosCxPEfectivo.TabStop = False
-        Me.txtPagosCxPEfectivo.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        Me.txtPagosCxPEfectivo18.AcceptsReturn = True
+        Me.txtPagosCxPEfectivo18.BackColor = System.Drawing.SystemColors.Window
+        Me.txtPagosCxPEfectivo18.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtPagosCxPEfectivo18.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtPagosCxPEfectivo18.Location = New System.Drawing.Point(205, 230)
+        Me.txtPagosCxPEfectivo18.MaxLength = 0
+        Me.txtPagosCxPEfectivo18.Name = "txtPagosCxPEfectivo18"
+        Me.txtPagosCxPEfectivo18.ReadOnly = True
+        Me.txtPagosCxPEfectivo18.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtPagosCxPEfectivo18.Size = New System.Drawing.Size(105, 20)
+        Me.txtPagosCxPEfectivo18.TabIndex = 10
+        Me.txtPagosCxPEfectivo18.TabStop = False
+        Me.txtPagosCxPEfectivo18.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'Label16
         '
         Me.Label16.BackColor = System.Drawing.Color.Transparent
         Me.Label16.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label16.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label16.Location = New System.Drawing.Point(50, 257)
+        Me.Label16.Location = New System.Drawing.Point(50, 231)
         Me.Label16.Name = "Label16"
         Me.Label16.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label16.Size = New System.Drawing.Size(147, 17)
@@ -440,21 +436,21 @@ Partial Class FrmConsultaCierreCaja
         Me.Label16.Text = "Pagos CxP:"
         Me.Label16.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
-        'txtComprasBancos
+        'txtComprasBancos16
         '
-        Me.txtComprasBancos.AcceptsReturn = True
-        Me.txtComprasBancos.BackColor = System.Drawing.SystemColors.Window
-        Me.txtComprasBancos.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtComprasBancos.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtComprasBancos.Location = New System.Drawing.Point(321, 230)
-        Me.txtComprasBancos.MaxLength = 0
-        Me.txtComprasBancos.Name = "txtComprasBancos"
-        Me.txtComprasBancos.ReadOnly = True
-        Me.txtComprasBancos.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtComprasBancos.Size = New System.Drawing.Size(105, 20)
-        Me.txtComprasBancos.TabIndex = 23
-        Me.txtComprasBancos.TabStop = False
-        Me.txtComprasBancos.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        Me.txtComprasBancos16.AcceptsReturn = True
+        Me.txtComprasBancos16.BackColor = System.Drawing.SystemColors.Window
+        Me.txtComprasBancos16.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtComprasBancos16.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtComprasBancos16.Location = New System.Drawing.Point(321, 204)
+        Me.txtComprasBancos16.MaxLength = 0
+        Me.txtComprasBancos16.Name = "txtComprasBancos16"
+        Me.txtComprasBancos16.ReadOnly = True
+        Me.txtComprasBancos16.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtComprasBancos16.Size = New System.Drawing.Size(105, 20)
+        Me.txtComprasBancos16.TabIndex = 23
+        Me.txtComprasBancos16.TabStop = False
+        Me.txtComprasBancos16.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'txtTotalVentas
         '
@@ -478,7 +474,7 @@ Partial Class FrmConsultaCierreCaja
         Me.txtTotalCompras.BackColor = System.Drawing.SystemColors.Window
         Me.txtTotalCompras.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtTotalCompras.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtTotalCompras.Location = New System.Drawing.Point(674, 230)
+        Me.txtTotalCompras.Location = New System.Drawing.Point(674, 204)
         Me.txtTotalCompras.MaxLength = 0
         Me.txtTotalCompras.Name = "txtTotalCompras"
         Me.txtTotalCompras.ReadOnly = True
@@ -549,79 +545,21 @@ Partial Class FrmConsultaCierreCaja
         Me.txtLiquidacionTarjeta.TabStop = False
         Me.txtLiquidacionTarjeta.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
-        'txtVentasBancos
+        'txtVentasBancos03
         '
-        Me.txtVentasBancos.AcceptsReturn = True
-        Me.txtVentasBancos.BackColor = System.Drawing.SystemColors.Window
-        Me.txtVentasBancos.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtVentasBancos.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtVentasBancos.Location = New System.Drawing.Point(321, 62)
-        Me.txtVentasBancos.MaxLength = 0
-        Me.txtVentasBancos.Name = "txtVentasBancos"
-        Me.txtVentasBancos.ReadOnly = True
-        Me.txtVentasBancos.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtVentasBancos.Size = New System.Drawing.Size(105, 20)
-        Me.txtVentasBancos.TabIndex = 19
-        Me.txtVentasBancos.TabStop = False
-        Me.txtVentasBancos.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
-        '
-        'txtDevolucionesProveedores
-        '
-        Me.txtDevolucionesProveedores.AcceptsReturn = True
-        Me.txtDevolucionesProveedores.BackColor = System.Drawing.SystemColors.Window
-        Me.txtDevolucionesProveedores.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtDevolucionesProveedores.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtDevolucionesProveedores.Location = New System.Drawing.Point(205, 166)
-        Me.txtDevolucionesProveedores.MaxLength = 0
-        Me.txtDevolucionesProveedores.Name = "txtDevolucionesProveedores"
-        Me.txtDevolucionesProveedores.ReadOnly = True
-        Me.txtDevolucionesProveedores.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtDevolucionesProveedores.Size = New System.Drawing.Size(105, 20)
-        Me.txtDevolucionesProveedores.TabIndex = 5
-        Me.txtDevolucionesProveedores.TabStop = False
-        Me.txtDevolucionesProveedores.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
-        '
-        'Label24
-        '
-        Me.Label24.BackColor = System.Drawing.Color.Transparent
-        Me.Label24.Cursor = System.Windows.Forms.Cursors.Default
-        Me.Label24.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label24.Location = New System.Drawing.Point(47, 167)
-        Me.Label24.Name = "Label24"
-        Me.Label24.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label24.Size = New System.Drawing.Size(150, 17)
-        Me.Label24.TabIndex = 65
-        Me.Label24.Text = "Devoluciones Proveedores:"
-        Me.Label24.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        '
-        'txtDevolucionesClientes
-        '
-        Me.txtDevolucionesClientes.AcceptsReturn = True
-        Me.txtDevolucionesClientes.BackColor = System.Drawing.SystemColors.Window
-        Me.txtDevolucionesClientes.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtDevolucionesClientes.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtDevolucionesClientes.Location = New System.Drawing.Point(205, 282)
-        Me.txtDevolucionesClientes.MaxLength = 0
-        Me.txtDevolucionesClientes.Name = "txtDevolucionesClientes"
-        Me.txtDevolucionesClientes.ReadOnly = True
-        Me.txtDevolucionesClientes.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtDevolucionesClientes.Size = New System.Drawing.Size(105, 20)
-        Me.txtDevolucionesClientes.TabIndex = 11
-        Me.txtDevolucionesClientes.TabStop = False
-        Me.txtDevolucionesClientes.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
-        '
-        'Label25
-        '
-        Me.Label25.BackColor = System.Drawing.Color.Transparent
-        Me.Label25.Cursor = System.Windows.Forms.Cursors.Default
-        Me.Label25.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label25.Location = New System.Drawing.Point(47, 283)
-        Me.Label25.Name = "Label25"
-        Me.Label25.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label25.Size = New System.Drawing.Size(150, 17)
-        Me.Label25.TabIndex = 67
-        Me.Label25.Text = "Devoluciones a Clientes:"
-        Me.Label25.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        Me.txtVentasBancos03.AcceptsReturn = True
+        Me.txtVentasBancos03.BackColor = System.Drawing.SystemColors.Window
+        Me.txtVentasBancos03.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtVentasBancos03.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtVentasBancos03.Location = New System.Drawing.Point(321, 62)
+        Me.txtVentasBancos03.MaxLength = 0
+        Me.txtVentasBancos03.Name = "txtVentasBancos03"
+        Me.txtVentasBancos03.ReadOnly = True
+        Me.txtVentasBancos03.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtVentasBancos03.Size = New System.Drawing.Size(105, 20)
+        Me.txtVentasBancos03.TabIndex = 19
+        Me.txtVentasBancos03.TabStop = False
+        Me.txtVentasBancos03.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'btnReporte
         '
@@ -666,21 +604,21 @@ Partial Class FrmConsultaCierreCaja
         Me.Label26.Text = "Total:"
         Me.Label26.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
-        'txtAdelantosApartadoEfectivo
+        'txtAdelantosApartadoEfectivo05
         '
-        Me.txtAdelantosApartadoEfectivo.AcceptsReturn = True
-        Me.txtAdelantosApartadoEfectivo.BackColor = System.Drawing.SystemColors.Window
-        Me.txtAdelantosApartadoEfectivo.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtAdelantosApartadoEfectivo.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtAdelantosApartadoEfectivo.Location = New System.Drawing.Point(205, 88)
-        Me.txtAdelantosApartadoEfectivo.MaxLength = 0
-        Me.txtAdelantosApartadoEfectivo.Name = "txtAdelantosApartadoEfectivo"
-        Me.txtAdelantosApartadoEfectivo.ReadOnly = True
-        Me.txtAdelantosApartadoEfectivo.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtAdelantosApartadoEfectivo.Size = New System.Drawing.Size(105, 20)
-        Me.txtAdelantosApartadoEfectivo.TabIndex = 73
-        Me.txtAdelantosApartadoEfectivo.TabStop = False
-        Me.txtAdelantosApartadoEfectivo.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        Me.txtAdelantosApartadoEfectivo05.AcceptsReturn = True
+        Me.txtAdelantosApartadoEfectivo05.BackColor = System.Drawing.SystemColors.Window
+        Me.txtAdelantosApartadoEfectivo05.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtAdelantosApartadoEfectivo05.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtAdelantosApartadoEfectivo05.Location = New System.Drawing.Point(205, 88)
+        Me.txtAdelantosApartadoEfectivo05.MaxLength = 0
+        Me.txtAdelantosApartadoEfectivo05.Name = "txtAdelantosApartadoEfectivo05"
+        Me.txtAdelantosApartadoEfectivo05.ReadOnly = True
+        Me.txtAdelantosApartadoEfectivo05.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtAdelantosApartadoEfectivo05.Size = New System.Drawing.Size(105, 20)
+        Me.txtAdelantosApartadoEfectivo05.TabIndex = 73
+        Me.txtAdelantosApartadoEfectivo05.TabStop = False
+        Me.txtAdelantosApartadoEfectivo05.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'Label22
         '
@@ -695,85 +633,85 @@ Partial Class FrmConsultaCierreCaja
         Me.Label22.Text = "Adelantos Apartados:"
         Me.Label22.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
-        'txtAdelantosApartadoBancos
+        'txtAdelantosApartadoBancos07
         '
-        Me.txtAdelantosApartadoBancos.AcceptsReturn = True
-        Me.txtAdelantosApartadoBancos.BackColor = System.Drawing.SystemColors.Window
-        Me.txtAdelantosApartadoBancos.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtAdelantosApartadoBancos.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtAdelantosApartadoBancos.Location = New System.Drawing.Point(321, 88)
-        Me.txtAdelantosApartadoBancos.MaxLength = 0
-        Me.txtAdelantosApartadoBancos.Name = "txtAdelantosApartadoBancos"
-        Me.txtAdelantosApartadoBancos.ReadOnly = True
-        Me.txtAdelantosApartadoBancos.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtAdelantosApartadoBancos.Size = New System.Drawing.Size(105, 20)
-        Me.txtAdelantosApartadoBancos.TabIndex = 75
-        Me.txtAdelantosApartadoBancos.TabStop = False
-        Me.txtAdelantosApartadoBancos.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        Me.txtAdelantosApartadoBancos07.AcceptsReturn = True
+        Me.txtAdelantosApartadoBancos07.BackColor = System.Drawing.SystemColors.Window
+        Me.txtAdelantosApartadoBancos07.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtAdelantosApartadoBancos07.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtAdelantosApartadoBancos07.Location = New System.Drawing.Point(321, 88)
+        Me.txtAdelantosApartadoBancos07.MaxLength = 0
+        Me.txtAdelantosApartadoBancos07.Name = "txtAdelantosApartadoBancos07"
+        Me.txtAdelantosApartadoBancos07.ReadOnly = True
+        Me.txtAdelantosApartadoBancos07.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtAdelantosApartadoBancos07.Size = New System.Drawing.Size(105, 20)
+        Me.txtAdelantosApartadoBancos07.TabIndex = 75
+        Me.txtAdelantosApartadoBancos07.TabStop = False
+        Me.txtAdelantosApartadoBancos07.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
-        'txtAdelantosApartadoTarjeta
+        'txtAdelantosApartadoTarjeta06
         '
-        Me.txtAdelantosApartadoTarjeta.AcceptsReturn = True
-        Me.txtAdelantosApartadoTarjeta.BackColor = System.Drawing.SystemColors.Window
-        Me.txtAdelantosApartadoTarjeta.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtAdelantosApartadoTarjeta.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtAdelantosApartadoTarjeta.Location = New System.Drawing.Point(438, 88)
-        Me.txtAdelantosApartadoTarjeta.MaxLength = 0
-        Me.txtAdelantosApartadoTarjeta.Name = "txtAdelantosApartadoTarjeta"
-        Me.txtAdelantosApartadoTarjeta.ReadOnly = True
-        Me.txtAdelantosApartadoTarjeta.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtAdelantosApartadoTarjeta.Size = New System.Drawing.Size(105, 20)
-        Me.txtAdelantosApartadoTarjeta.TabIndex = 77
-        Me.txtAdelantosApartadoTarjeta.TabStop = False
-        Me.txtAdelantosApartadoTarjeta.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        Me.txtAdelantosApartadoTarjeta06.AcceptsReturn = True
+        Me.txtAdelantosApartadoTarjeta06.BackColor = System.Drawing.SystemColors.Window
+        Me.txtAdelantosApartadoTarjeta06.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtAdelantosApartadoTarjeta06.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtAdelantosApartadoTarjeta06.Location = New System.Drawing.Point(438, 88)
+        Me.txtAdelantosApartadoTarjeta06.MaxLength = 0
+        Me.txtAdelantosApartadoTarjeta06.Name = "txtAdelantosApartadoTarjeta06"
+        Me.txtAdelantosApartadoTarjeta06.ReadOnly = True
+        Me.txtAdelantosApartadoTarjeta06.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtAdelantosApartadoTarjeta06.Size = New System.Drawing.Size(105, 20)
+        Me.txtAdelantosApartadoTarjeta06.TabIndex = 77
+        Me.txtAdelantosApartadoTarjeta06.TabStop = False
+        Me.txtAdelantosApartadoTarjeta06.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
-        'txtAdelantosOrdenTarjeta
+        'txtAdelantosOrdenTarjeta09
         '
-        Me.txtAdelantosOrdenTarjeta.AcceptsReturn = True
-        Me.txtAdelantosOrdenTarjeta.BackColor = System.Drawing.SystemColors.Window
-        Me.txtAdelantosOrdenTarjeta.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtAdelantosOrdenTarjeta.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtAdelantosOrdenTarjeta.Location = New System.Drawing.Point(438, 114)
-        Me.txtAdelantosOrdenTarjeta.MaxLength = 0
-        Me.txtAdelantosOrdenTarjeta.Name = "txtAdelantosOrdenTarjeta"
-        Me.txtAdelantosOrdenTarjeta.ReadOnly = True
-        Me.txtAdelantosOrdenTarjeta.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtAdelantosOrdenTarjeta.Size = New System.Drawing.Size(105, 20)
-        Me.txtAdelantosOrdenTarjeta.TabIndex = 83
-        Me.txtAdelantosOrdenTarjeta.TabStop = False
-        Me.txtAdelantosOrdenTarjeta.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        Me.txtAdelantosOrdenTarjeta09.AcceptsReturn = True
+        Me.txtAdelantosOrdenTarjeta09.BackColor = System.Drawing.SystemColors.Window
+        Me.txtAdelantosOrdenTarjeta09.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtAdelantosOrdenTarjeta09.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtAdelantosOrdenTarjeta09.Location = New System.Drawing.Point(438, 114)
+        Me.txtAdelantosOrdenTarjeta09.MaxLength = 0
+        Me.txtAdelantosOrdenTarjeta09.Name = "txtAdelantosOrdenTarjeta09"
+        Me.txtAdelantosOrdenTarjeta09.ReadOnly = True
+        Me.txtAdelantosOrdenTarjeta09.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtAdelantosOrdenTarjeta09.Size = New System.Drawing.Size(105, 20)
+        Me.txtAdelantosOrdenTarjeta09.TabIndex = 83
+        Me.txtAdelantosOrdenTarjeta09.TabStop = False
+        Me.txtAdelantosOrdenTarjeta09.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
-        'txtAdelantosOrdenBancos
+        'txtAdelantosOrdenBancos10
         '
-        Me.txtAdelantosOrdenBancos.AcceptsReturn = True
-        Me.txtAdelantosOrdenBancos.BackColor = System.Drawing.SystemColors.Window
-        Me.txtAdelantosOrdenBancos.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtAdelantosOrdenBancos.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtAdelantosOrdenBancos.Location = New System.Drawing.Point(321, 114)
-        Me.txtAdelantosOrdenBancos.MaxLength = 0
-        Me.txtAdelantosOrdenBancos.Name = "txtAdelantosOrdenBancos"
-        Me.txtAdelantosOrdenBancos.ReadOnly = True
-        Me.txtAdelantosOrdenBancos.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtAdelantosOrdenBancos.Size = New System.Drawing.Size(105, 20)
-        Me.txtAdelantosOrdenBancos.TabIndex = 81
-        Me.txtAdelantosOrdenBancos.TabStop = False
-        Me.txtAdelantosOrdenBancos.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        Me.txtAdelantosOrdenBancos10.AcceptsReturn = True
+        Me.txtAdelantosOrdenBancos10.BackColor = System.Drawing.SystemColors.Window
+        Me.txtAdelantosOrdenBancos10.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtAdelantosOrdenBancos10.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtAdelantosOrdenBancos10.Location = New System.Drawing.Point(321, 114)
+        Me.txtAdelantosOrdenBancos10.MaxLength = 0
+        Me.txtAdelantosOrdenBancos10.Name = "txtAdelantosOrdenBancos10"
+        Me.txtAdelantosOrdenBancos10.ReadOnly = True
+        Me.txtAdelantosOrdenBancos10.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtAdelantosOrdenBancos10.Size = New System.Drawing.Size(105, 20)
+        Me.txtAdelantosOrdenBancos10.TabIndex = 81
+        Me.txtAdelantosOrdenBancos10.TabStop = False
+        Me.txtAdelantosOrdenBancos10.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
-        'txtAdelantosOrdenEfectivo
+        'txtAdelantosOrdenEfectivo08
         '
-        Me.txtAdelantosOrdenEfectivo.AcceptsReturn = True
-        Me.txtAdelantosOrdenEfectivo.BackColor = System.Drawing.SystemColors.Window
-        Me.txtAdelantosOrdenEfectivo.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtAdelantosOrdenEfectivo.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtAdelantosOrdenEfectivo.Location = New System.Drawing.Point(205, 114)
-        Me.txtAdelantosOrdenEfectivo.MaxLength = 0
-        Me.txtAdelantosOrdenEfectivo.Name = "txtAdelantosOrdenEfectivo"
-        Me.txtAdelantosOrdenEfectivo.ReadOnly = True
-        Me.txtAdelantosOrdenEfectivo.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtAdelantosOrdenEfectivo.Size = New System.Drawing.Size(105, 20)
-        Me.txtAdelantosOrdenEfectivo.TabIndex = 79
-        Me.txtAdelantosOrdenEfectivo.TabStop = False
-        Me.txtAdelantosOrdenEfectivo.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        Me.txtAdelantosOrdenEfectivo08.AcceptsReturn = True
+        Me.txtAdelantosOrdenEfectivo08.BackColor = System.Drawing.SystemColors.Window
+        Me.txtAdelantosOrdenEfectivo08.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtAdelantosOrdenEfectivo08.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtAdelantosOrdenEfectivo08.Location = New System.Drawing.Point(205, 114)
+        Me.txtAdelantosOrdenEfectivo08.MaxLength = 0
+        Me.txtAdelantosOrdenEfectivo08.Name = "txtAdelantosOrdenEfectivo08"
+        Me.txtAdelantosOrdenEfectivo08.ReadOnly = True
+        Me.txtAdelantosOrdenEfectivo08.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtAdelantosOrdenEfectivo08.Size = New System.Drawing.Size(105, 20)
+        Me.txtAdelantosOrdenEfectivo08.TabIndex = 79
+        Me.txtAdelantosOrdenEfectivo08.TabStop = False
+        Me.txtAdelantosOrdenEfectivo08.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'Label30
         '
@@ -788,53 +726,53 @@ Partial Class FrmConsultaCierreCaja
         Me.Label30.Text = "Adelantos Ordenes de Servicio:"
         Me.Label30.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
-        'txtPagosCxCBancos
+        'txtPagosCxCBancos13
         '
-        Me.txtPagosCxCBancos.AcceptsReturn = True
-        Me.txtPagosCxCBancos.BackColor = System.Drawing.SystemColors.Window
-        Me.txtPagosCxCBancos.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtPagosCxCBancos.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtPagosCxCBancos.Location = New System.Drawing.Point(321, 140)
-        Me.txtPagosCxCBancos.MaxLength = 0
-        Me.txtPagosCxCBancos.Name = "txtPagosCxCBancos"
-        Me.txtPagosCxCBancos.ReadOnly = True
-        Me.txtPagosCxCBancos.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtPagosCxCBancos.Size = New System.Drawing.Size(105, 20)
-        Me.txtPagosCxCBancos.TabIndex = 85
-        Me.txtPagosCxCBancos.TabStop = False
-        Me.txtPagosCxCBancos.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        Me.txtPagosCxCBancos13.AcceptsReturn = True
+        Me.txtPagosCxCBancos13.BackColor = System.Drawing.SystemColors.Window
+        Me.txtPagosCxCBancos13.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtPagosCxCBancos13.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtPagosCxCBancos13.Location = New System.Drawing.Point(321, 140)
+        Me.txtPagosCxCBancos13.MaxLength = 0
+        Me.txtPagosCxCBancos13.Name = "txtPagosCxCBancos13"
+        Me.txtPagosCxCBancos13.ReadOnly = True
+        Me.txtPagosCxCBancos13.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtPagosCxCBancos13.Size = New System.Drawing.Size(105, 20)
+        Me.txtPagosCxCBancos13.TabIndex = 85
+        Me.txtPagosCxCBancos13.TabStop = False
+        Me.txtPagosCxCBancos13.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
-        'txtPagosCxCTarjeta
+        'txtPagosCxCTarjeta12
         '
-        Me.txtPagosCxCTarjeta.AcceptsReturn = True
-        Me.txtPagosCxCTarjeta.BackColor = System.Drawing.SystemColors.Window
-        Me.txtPagosCxCTarjeta.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtPagosCxCTarjeta.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtPagosCxCTarjeta.Location = New System.Drawing.Point(438, 140)
-        Me.txtPagosCxCTarjeta.MaxLength = 0
-        Me.txtPagosCxCTarjeta.Name = "txtPagosCxCTarjeta"
-        Me.txtPagosCxCTarjeta.ReadOnly = True
-        Me.txtPagosCxCTarjeta.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtPagosCxCTarjeta.Size = New System.Drawing.Size(105, 20)
-        Me.txtPagosCxCTarjeta.TabIndex = 87
-        Me.txtPagosCxCTarjeta.TabStop = False
-        Me.txtPagosCxCTarjeta.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        Me.txtPagosCxCTarjeta12.AcceptsReturn = True
+        Me.txtPagosCxCTarjeta12.BackColor = System.Drawing.SystemColors.Window
+        Me.txtPagosCxCTarjeta12.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtPagosCxCTarjeta12.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtPagosCxCTarjeta12.Location = New System.Drawing.Point(438, 140)
+        Me.txtPagosCxCTarjeta12.MaxLength = 0
+        Me.txtPagosCxCTarjeta12.Name = "txtPagosCxCTarjeta12"
+        Me.txtPagosCxCTarjeta12.ReadOnly = True
+        Me.txtPagosCxCTarjeta12.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtPagosCxCTarjeta12.Size = New System.Drawing.Size(105, 20)
+        Me.txtPagosCxCTarjeta12.TabIndex = 87
+        Me.txtPagosCxCTarjeta12.TabStop = False
+        Me.txtPagosCxCTarjeta12.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
-        'txtPagosCxPBancos
+        'txtPagosCxPBancos19
         '
-        Me.txtPagosCxPBancos.AcceptsReturn = True
-        Me.txtPagosCxPBancos.BackColor = System.Drawing.SystemColors.Window
-        Me.txtPagosCxPBancos.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtPagosCxPBancos.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtPagosCxPBancos.Location = New System.Drawing.Point(321, 257)
-        Me.txtPagosCxPBancos.MaxLength = 0
-        Me.txtPagosCxPBancos.Name = "txtPagosCxPBancos"
-        Me.txtPagosCxPBancos.ReadOnly = True
-        Me.txtPagosCxPBancos.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtPagosCxPBancos.Size = New System.Drawing.Size(105, 20)
-        Me.txtPagosCxPBancos.TabIndex = 89
-        Me.txtPagosCxPBancos.TabStop = False
-        Me.txtPagosCxPBancos.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        Me.txtPagosCxPBancos19.AcceptsReturn = True
+        Me.txtPagosCxPBancos19.BackColor = System.Drawing.SystemColors.Window
+        Me.txtPagosCxPBancos19.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtPagosCxPBancos19.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtPagosCxPBancos19.Location = New System.Drawing.Point(321, 231)
+        Me.txtPagosCxPBancos19.MaxLength = 0
+        Me.txtPagosCxPBancos19.Name = "txtPagosCxPBancos19"
+        Me.txtPagosCxPBancos19.ReadOnly = True
+        Me.txtPagosCxPBancos19.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtPagosCxPBancos19.Size = New System.Drawing.Size(105, 20)
+        Me.txtPagosCxPBancos19.TabIndex = 89
+        Me.txtPagosCxPBancos19.TabStop = False
+        Me.txtPagosCxPBancos19.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'txtTotalAdelantosApartado
         '
@@ -888,7 +826,7 @@ Partial Class FrmConsultaCierreCaja
         Me.txtEfectivoCaja.BackColor = System.Drawing.SystemColors.Window
         Me.txtEfectivoCaja.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtEfectivoCaja.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtEfectivoCaja.Location = New System.Drawing.Point(857, 309)
+        Me.txtEfectivoCaja.Location = New System.Drawing.Point(857, 289)
         Me.txtEfectivoCaja.MaxLength = 0
         Me.txtEfectivoCaja.Name = "txtEfectivoCaja"
         Me.txtEfectivoCaja.ReadOnly = True
@@ -905,7 +843,7 @@ Partial Class FrmConsultaCierreCaja
         Me.Label47.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label47.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label47.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label47.Location = New System.Drawing.Point(717, 310)
+        Me.Label47.Location = New System.Drawing.Point(717, 290)
         Me.Label47.Name = "Label47"
         Me.Label47.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label47.Size = New System.Drawing.Size(132, 17)
@@ -919,7 +857,7 @@ Partial Class FrmConsultaCierreCaja
         Me.txtSaldo.BackColor = System.Drawing.SystemColors.Window
         Me.txtSaldo.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtSaldo.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtSaldo.Location = New System.Drawing.Point(857, 335)
+        Me.txtSaldo.Location = New System.Drawing.Point(857, 315)
         Me.txtSaldo.MaxLength = 0
         Me.txtSaldo.Name = "txtSaldo"
         Me.txtSaldo.ReadOnly = True
@@ -936,7 +874,7 @@ Partial Class FrmConsultaCierreCaja
         Me.Label48.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label48.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label48.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label48.Location = New System.Drawing.Point(717, 336)
+        Me.Label48.Location = New System.Drawing.Point(717, 316)
         Me.Label48.Name = "Label48"
         Me.Label48.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label48.Size = New System.Drawing.Size(132, 17)
@@ -1057,7 +995,7 @@ Partial Class FrmConsultaCierreCaja
         Me.txtTotalPagoCxP.BackColor = System.Drawing.SystemColors.Window
         Me.txtTotalPagoCxP.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtTotalPagoCxP.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtTotalPagoCxP.Location = New System.Drawing.Point(674, 256)
+        Me.txtTotalPagoCxP.Location = New System.Drawing.Point(674, 230)
         Me.txtTotalPagoCxP.MaxLength = 0
         Me.txtTotalPagoCxP.Name = "txtTotalPagoCxP"
         Me.txtTotalPagoCxP.ReadOnly = True
@@ -1086,7 +1024,7 @@ Partial Class FrmConsultaCierreCaja
         Me.txtCierreEfectivoProx.BackColor = System.Drawing.SystemColors.Window
         Me.txtCierreEfectivoProx.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtCierreEfectivoProx.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtCierreEfectivoProx.Location = New System.Drawing.Point(857, 387)
+        Me.txtCierreEfectivoProx.Location = New System.Drawing.Point(857, 367)
         Me.txtCierreEfectivoProx.MaxLength = 0
         Me.txtCierreEfectivoProx.Name = "txtCierreEfectivoProx"
         Me.txtCierreEfectivoProx.ReadOnly = True
@@ -1103,7 +1041,7 @@ Partial Class FrmConsultaCierreCaja
         Me.Label7.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label7.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label7.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label7.Location = New System.Drawing.Point(677, 388)
+        Me.Label7.Location = New System.Drawing.Point(677, 368)
         Me.Label7.Name = "Label7"
         Me.Label7.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label7.Size = New System.Drawing.Size(172, 17)
@@ -1117,7 +1055,7 @@ Partial Class FrmConsultaCierreCaja
         Me.txtRetiroEfectivo.BackColor = System.Drawing.SystemColors.Window
         Me.txtRetiroEfectivo.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtRetiroEfectivo.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtRetiroEfectivo.Location = New System.Drawing.Point(857, 361)
+        Me.txtRetiroEfectivo.Location = New System.Drawing.Point(857, 341)
         Me.txtRetiroEfectivo.MaxLength = 0
         Me.txtRetiroEfectivo.Name = "txtRetiroEfectivo"
         Me.txtRetiroEfectivo.ReadOnly = True
@@ -1134,7 +1072,7 @@ Partial Class FrmConsultaCierreCaja
         Me.Label12.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label12.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label12.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label12.Location = New System.Drawing.Point(717, 362)
+        Me.Label12.Location = New System.Drawing.Point(717, 342)
         Me.Label12.Name = "Label12"
         Me.Label12.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label12.Size = New System.Drawing.Size(132, 17)
@@ -1148,7 +1086,7 @@ Partial Class FrmConsultaCierreCaja
         Me.txtObservaciones.BackColor = System.Drawing.SystemColors.Window
         Me.txtObservaciones.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtObservaciones.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtObservaciones.Location = New System.Drawing.Point(97, 460)
+        Me.txtObservaciones.Location = New System.Drawing.Point(97, 438)
         Me.txtObservaciones.MaxLength = 0
         Me.txtObservaciones.Name = "txtObservaciones"
         Me.txtObservaciones.ReadOnly = True
@@ -1163,7 +1101,7 @@ Partial Class FrmConsultaCierreCaja
         Me.Label13.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label13.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label13.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label13.Location = New System.Drawing.Point(9, 461)
+        Me.Label13.Location = New System.Drawing.Point(9, 439)
         Me.Label13.Name = "Label13"
         Me.Label13.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label13.Size = New System.Drawing.Size(82, 17)
@@ -1178,7 +1116,7 @@ Partial Class FrmConsultaCierreCaja
         Me.dgvDetalleEfectivoCierreCaja.AllowUserToResizeColumns = False
         Me.dgvDetalleEfectivoCierreCaja.AllowUserToResizeRows = False
         Me.dgvDetalleEfectivoCierreCaja.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.dgvDetalleEfectivoCierreCaja.Location = New System.Drawing.Point(341, 290)
+        Me.dgvDetalleEfectivoCierreCaja.Location = New System.Drawing.Point(341, 270)
         Me.dgvDetalleEfectivoCierreCaja.Name = "dgvDetalleEfectivoCierreCaja"
         Me.dgvDetalleEfectivoCierreCaja.ReadOnly = True
         Me.dgvDetalleEfectivoCierreCaja.RowHeadersVisible = False
@@ -1190,7 +1128,7 @@ Partial Class FrmConsultaCierreCaja
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
-        Me.ClientSize = New System.Drawing.Size(978, 497)
+        Me.ClientSize = New System.Drawing.Size(978, 478)
         Me.Controls.Add(Me.dgvDetalleEfectivoCierreCaja)
         Me.Controls.Add(Me.txtObservaciones)
         Me.Controls.Add(Me.Label13)
@@ -1213,25 +1151,21 @@ Partial Class FrmConsultaCierreCaja
         Me.Controls.Add(Me.btnTiquete)
         Me.Controls.Add(Me.txtTotalAdelantosOrden)
         Me.Controls.Add(Me.txtTotalAdelantosApartado)
-        Me.Controls.Add(Me.txtPagosCxPBancos)
-        Me.Controls.Add(Me.txtPagosCxCTarjeta)
-        Me.Controls.Add(Me.txtPagosCxCBancos)
-        Me.Controls.Add(Me.txtAdelantosOrdenTarjeta)
-        Me.Controls.Add(Me.txtAdelantosOrdenBancos)
-        Me.Controls.Add(Me.txtAdelantosOrdenEfectivo)
+        Me.Controls.Add(Me.txtPagosCxPBancos19)
+        Me.Controls.Add(Me.txtPagosCxCTarjeta12)
+        Me.Controls.Add(Me.txtPagosCxCBancos13)
+        Me.Controls.Add(Me.txtAdelantosOrdenTarjeta09)
+        Me.Controls.Add(Me.txtAdelantosOrdenBancos10)
+        Me.Controls.Add(Me.txtAdelantosOrdenEfectivo08)
         Me.Controls.Add(Me.Label30)
-        Me.Controls.Add(Me.txtAdelantosApartadoTarjeta)
-        Me.Controls.Add(Me.txtAdelantosApartadoBancos)
-        Me.Controls.Add(Me.txtAdelantosApartadoEfectivo)
+        Me.Controls.Add(Me.txtAdelantosApartadoTarjeta06)
+        Me.Controls.Add(Me.txtAdelantosApartadoBancos07)
+        Me.Controls.Add(Me.txtAdelantosApartadoEfectivo05)
         Me.Controls.Add(Me.Label22)
         Me.Controls.Add(Me.txtTotalIngresosTarjeta)
         Me.Controls.Add(Me.Label26)
         Me.Controls.Add(Me.btnReporte)
-        Me.Controls.Add(Me.txtDevolucionesClientes)
-        Me.Controls.Add(Me.Label25)
-        Me.Controls.Add(Me.txtDevolucionesProveedores)
-        Me.Controls.Add(Me.Label24)
-        Me.Controls.Add(Me.txtVentasBancos)
+        Me.Controls.Add(Me.txtVentasBancos03)
         Me.Controls.Add(Me.txtLiquidacionTarjeta)
         Me.Controls.Add(Me.Label21)
         Me.Controls.Add(Me.txtComision)
@@ -1240,23 +1174,23 @@ Partial Class FrmConsultaCierreCaja
         Me.Controls.Add(Me.Label19)
         Me.Controls.Add(Me.txtTotalCompras)
         Me.Controls.Add(Me.txtTotalVentas)
-        Me.Controls.Add(Me.txtComprasBancos)
-        Me.Controls.Add(Me.txtPagosCxPEfectivo)
+        Me.Controls.Add(Me.txtComprasBancos16)
+        Me.Controls.Add(Me.txtPagosCxPEfectivo18)
         Me.Controls.Add(Me.Label16)
-        Me.Controls.Add(Me.txtPagosCxCEfectivo)
+        Me.Controls.Add(Me.txtPagosCxCEfectivo11)
         Me.Controls.Add(Me.Label6)
-        Me.Controls.Add(Me.txtEgresosEfectivo)
+        Me.Controls.Add(Me.txtEgresosEfectivo20)
         Me.Controls.Add(Me.Label15)
-        Me.Controls.Add(Me.txtVentasEfectivo)
+        Me.Controls.Add(Me.txtVentasEfectivo01)
         Me.Controls.Add(Me.txtTotalIngresos)
-        Me.Controls.Add(Me.txtIngresosEfectivo)
-        Me.Controls.Add(Me.txtVentasTarjeta)
-        Me.Controls.Add(Me.txtVentasCredito)
-        Me.Controls.Add(Me.txtComprasCredito)
+        Me.Controls.Add(Me.txtIngresosEfectivo14)
+        Me.Controls.Add(Me.txtVentasTarjeta02)
+        Me.Controls.Add(Me.txtVentasCredito04)
+        Me.Controls.Add(Me.txtComprasCredito17)
         Me.Controls.Add(Me.txtFondoInicio)
         Me.Controls.Add(Me.txtTotalEfectivo)
         Me.Controls.Add(Me.txtTotalEgresos)
-        Me.Controls.Add(Me.txtComprasEfectivo)
+        Me.Controls.Add(Me.txtComprasEfectivo15)
         Me.Controls.Add(Me.Label11)
         Me.Controls.Add(Me.Label10)
         Me.Controls.Add(Me.Label9)
@@ -1277,48 +1211,44 @@ Partial Class FrmConsultaCierreCaja
         Me.PerformLayout()
 
     End Sub
-    Public WithEvents txtVentasEfectivo As System.Windows.Forms.TextBox
+    Public WithEvents txtVentasEfectivo01 As System.Windows.Forms.TextBox
     Public WithEvents txtTotalIngresos As System.Windows.Forms.TextBox
-    Public WithEvents txtIngresosEfectivo As System.Windows.Forms.TextBox
-    Public WithEvents txtVentasTarjeta As System.Windows.Forms.TextBox
-    Public WithEvents txtVentasCredito As System.Windows.Forms.TextBox
-    Public WithEvents txtPagosCxCEfectivo As System.Windows.Forms.TextBox
+    Public WithEvents txtIngresosEfectivo14 As System.Windows.Forms.TextBox
+    Public WithEvents txtVentasTarjeta02 As System.Windows.Forms.TextBox
+    Public WithEvents txtVentasCredito04 As System.Windows.Forms.TextBox
+    Public WithEvents txtPagosCxCEfectivo11 As System.Windows.Forms.TextBox
     Public WithEvents Label6 As System.Windows.Forms.Label
     Public WithEvents Label5 As System.Windows.Forms.Label
     Public WithEvents Label8 As System.Windows.Forms.Label
-    Public WithEvents txtComprasEfectivo As System.Windows.Forms.TextBox
+    Public WithEvents txtComprasEfectivo15 As System.Windows.Forms.TextBox
     Public WithEvents txtTotalEgresos As System.Windows.Forms.TextBox
-    Public WithEvents txtComprasCredito As System.Windows.Forms.TextBox
+    Public WithEvents txtComprasCredito17 As System.Windows.Forms.TextBox
     Public WithEvents Label15 As System.Windows.Forms.Label
-    Public WithEvents txtEgresosEfectivo As System.Windows.Forms.TextBox
-    Public WithEvents txtPagosCxPEfectivo As System.Windows.Forms.TextBox
+    Public WithEvents txtEgresosEfectivo20 As System.Windows.Forms.TextBox
+    Public WithEvents txtPagosCxPEfectivo18 As System.Windows.Forms.TextBox
     Public WithEvents Label16 As System.Windows.Forms.Label
-    Public WithEvents txtComprasBancos As System.Windows.Forms.TextBox
+    Public WithEvents txtComprasBancos16 As System.Windows.Forms.TextBox
     Public WithEvents txtTotalVentas As System.Windows.Forms.TextBox
     Public WithEvents txtTotalCompras As System.Windows.Forms.TextBox
     Public WithEvents txtRetencionIVA As System.Windows.Forms.TextBox
     Public WithEvents Label19 As System.Windows.Forms.Label
     Public WithEvents txtComision As System.Windows.Forms.TextBox
     Public WithEvents txtLiquidacionTarjeta As System.Windows.Forms.TextBox
-    Public WithEvents txtVentasBancos As System.Windows.Forms.TextBox
-    Public WithEvents txtDevolucionesProveedores As System.Windows.Forms.TextBox
-    Public WithEvents Label24 As System.Windows.Forms.Label
-    Public WithEvents txtDevolucionesClientes As System.Windows.Forms.TextBox
-    Public WithEvents Label25 As System.Windows.Forms.Label
+    Public WithEvents txtVentasBancos03 As System.Windows.Forms.TextBox
     Public WithEvents btnReporte As System.Windows.Forms.Button
     Public WithEvents txtTotalIngresosTarjeta As System.Windows.Forms.TextBox
     Public WithEvents Label26 As System.Windows.Forms.Label
-    Public WithEvents txtAdelantosApartadoEfectivo As TextBox
+    Public WithEvents txtAdelantosApartadoEfectivo05 As TextBox
     Public WithEvents Label22 As Label
-    Public WithEvents txtAdelantosApartadoBancos As TextBox
-    Public WithEvents txtAdelantosApartadoTarjeta As TextBox
-    Public WithEvents txtAdelantosOrdenTarjeta As TextBox
-    Public WithEvents txtAdelantosOrdenBancos As TextBox
-    Public WithEvents txtAdelantosOrdenEfectivo As TextBox
+    Public WithEvents txtAdelantosApartadoBancos07 As TextBox
+    Public WithEvents txtAdelantosApartadoTarjeta06 As TextBox
+    Public WithEvents txtAdelantosOrdenTarjeta09 As TextBox
+    Public WithEvents txtAdelantosOrdenBancos10 As TextBox
+    Public WithEvents txtAdelantosOrdenEfectivo08 As TextBox
     Public WithEvents Label30 As Label
-    Public WithEvents txtPagosCxCBancos As TextBox
-    Public WithEvents txtPagosCxCTarjeta As TextBox
-    Public WithEvents txtPagosCxPBancos As TextBox
+    Public WithEvents txtPagosCxCBancos13 As TextBox
+    Public WithEvents txtPagosCxCTarjeta12 As TextBox
+    Public WithEvents txtPagosCxPBancos19 As TextBox
     Public WithEvents txtTotalAdelantosApartado As TextBox
     Public WithEvents txtTotalAdelantosOrden As TextBox
     Public WithEvents btnTiquete As Button

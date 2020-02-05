@@ -175,6 +175,16 @@ namespace LeandroSoftware.ClienteWCF
             }
         }
 
+        public static async Task<bool> ValidarUsuarioHacienda(string strCodigoUsuario, string strClave, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'ValidarUsuarioHacienda', Parametros: {CodigoUsuario: '" + strCodigoUsuario + "', Clave: '" + strClave + "'}}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            bool valido = false;
+            if (respuesta != "")
+                valido = serializer.Deserialize<bool>(respuesta);
+            return valido;
+        }
+
         public static async Task<Empresa> ObtenerEmpresa(int intIdEmpresa, string strToken)
         {
             string strDatos = "{NombreMetodo: 'ObtenerEmpresa', Parametros: {IdEmpresa: " + intIdEmpresa + "}}";
@@ -645,17 +655,17 @@ namespace LeandroSoftware.ClienteWCF
             return listado;
         }
 
-        public static async Task<CierreCaja> GenerarDatosCierreCaja(int intIdEmpresa, int intIdSucursal, string strToken)
+        public static async Task<Core.Dominio.Entidades.CierreCaja> GenerarDatosCierreCaja(int intIdEmpresa, int intIdSucursal, string strToken)
         {
             string strDatos = "{NombreMetodo: 'GenerarDatosCierreCaja', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + "}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
-            CierreCaja cierre = null;
+            Core.Dominio.Entidades.CierreCaja cierre = null;
             if (respuesta != "")
-                cierre = serializer.Deserialize<CierreCaja>(respuesta);
+                cierre = serializer.Deserialize<Core.Dominio.Entidades.CierreCaja>(respuesta);
             return cierre;
         }
 
-        public static async Task GuardarDatosCierreCaja(CierreCaja cierre, string strToken)
+        public static async Task GuardarDatosCierreCaja(Core.Dominio.Entidades.CierreCaja cierre, string strToken)
         {
             string strEntidad = serializer.Serialize(cierre);
             string strDatos = "{NombreMetodo: 'GuardarDatosCierreCaja', Entidad: " + strEntidad + "}";
@@ -1249,13 +1259,13 @@ namespace LeandroSoftware.ClienteWCF
             return intCantidad;
         }
 
-        public static async Task<List<FlujoEfectivoDetalle>> ObtenerListadoEgresos(int intIdEmpresa, int intIdSucursal, int intNumeroPagina, int intFilasPorPagina, string strToken, int intIdEgreso = 0, string strBeneficiario = "", string strDetalle = "")
+        public static async Task<List<EfectivoDetalle>> ObtenerListadoEgresos(int intIdEmpresa, int intIdSucursal, int intNumeroPagina, int intFilasPorPagina, string strToken, int intIdEgreso = 0, string strBeneficiario = "", string strDetalle = "")
         {
             string strDatos = "{NombreMetodo: 'ObtenerListadoEgresos', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", NumeroPagina: " + intNumeroPagina + ",FilasPorPagina: " + intFilasPorPagina + ", IdEgreso: " + intIdEgreso + ", Beneficiario: '" + strBeneficiario + "', Detalle: '" + strDetalle + "'}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
-            List<FlujoEfectivoDetalle> listado = new List<FlujoEfectivoDetalle>();
+            List<EfectivoDetalle> listado = new List<EfectivoDetalle>();
             if (respuesta != "")
-                listado = serializer.Deserialize<List<FlujoEfectivoDetalle>>(respuesta);
+                listado = serializer.Deserialize<List<EfectivoDetalle>>(respuesta);
             return listado;
         }
 
@@ -1293,13 +1303,13 @@ namespace LeandroSoftware.ClienteWCF
             return intCantidad;
         }
 
-        public static async Task<List<FlujoEfectivoDetalle>> ObtenerListadoIngresos(int intIdEmpresa, int intIdSucursal, int intNumeroPagina, int intFilasPorPagina, string strToken, int intIdIngreso = 0, string strBeneficiario = "", string strDetalle = "")
+        public static async Task<List<EfectivoDetalle>> ObtenerListadoIngresos(int intIdEmpresa, int intIdSucursal, int intNumeroPagina, int intFilasPorPagina, string strToken, int intIdIngreso = 0, string strBeneficiario = "", string strDetalle = "")
         {
             string strDatos = "{NombreMetodo: 'ObtenerListadoIngresos', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", NumeroPagina: " + intNumeroPagina + ",FilasPorPagina: " + intFilasPorPagina + ", IdIngreso: " + intIdIngreso + ", Beneficiario: '" + strBeneficiario + "', Detalle: '" + strDetalle + "'}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
-            List<FlujoEfectivoDetalle> listado = new List<FlujoEfectivoDetalle>();
+            List<EfectivoDetalle> listado = new List<EfectivoDetalle>();
             if (respuesta != "")
-                listado = serializer.Deserialize<List<FlujoEfectivoDetalle>>(respuesta);
+                listado = serializer.Deserialize<List<EfectivoDetalle>>(respuesta);
             return listado;
         }
 
@@ -1727,13 +1737,13 @@ namespace LeandroSoftware.ClienteWCF
             return listado;
         }
 
-        public static async Task<List<CuentaDetalle>> ObtenerListaMovimientosCxC(int intIdEmpresa, int intIdSucursal, int intIdPropietario, string strToken)
+        public static async Task<List<EfectivoDetalle>> ObtenerListaMovimientosCxC(int intIdEmpresa, int intIdSucursal, int intIdPropietario, string strToken)
         {
             string strDatos = "{NombreMetodo: 'ObtenerListaMovimientosCxC', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", IdPropietario: " + intIdPropietario + "}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
-            List<CuentaDetalle> listado = new List<CuentaDetalle>();
+            List<EfectivoDetalle> listado = new List<EfectivoDetalle>();
             if (respuesta != "")
-                listado = serializer.Deserialize<List<CuentaDetalle>>(respuesta);
+                listado = serializer.Deserialize<List<EfectivoDetalle>>(respuesta);
             return listado;
         }
 
@@ -1780,13 +1790,13 @@ namespace LeandroSoftware.ClienteWCF
             return listado;
         }
 
-        public static async Task<List<CuentaDetalle>> ObtenerListaMovimientosCxP(int intIdEmpresa, int intIdSucursal, int intIdPropietario, string strToken)
+        public static async Task<List<EfectivoDetalle>> ObtenerListaMovimientosCxP(int intIdEmpresa, int intIdSucursal, int intIdPropietario, string strToken)
         {
             string strDatos = "{NombreMetodo: 'ObtenerListaMovimientosCxP', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", IdPropietario: " + intIdPropietario + "}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
-            List<CuentaDetalle> listado = new List<CuentaDetalle>();
+            List<EfectivoDetalle> listado = new List<EfectivoDetalle>();
             if (respuesta != "")
-                listado = serializer.Deserialize<List<CuentaDetalle>>(respuesta);
+                listado = serializer.Deserialize<List<EfectivoDetalle>>(respuesta);
             return listado;
         }
 
@@ -1823,13 +1833,13 @@ namespace LeandroSoftware.ClienteWCF
             return listado;
         }
 
-        public static async Task<List<CuentaDetalle>> ObtenerListadoMovimientosApartado(int intIdEmpresa, int intIdSucursal, int intIdApartado, string strToken)
+        public static async Task<List<EfectivoDetalle>> ObtenerListadoMovimientosApartado(int intIdEmpresa, int intIdSucursal, int intIdApartado, string strToken)
         {
             string strDatos = "{NombreMetodo: 'ObtenerListadoMovimientosApartado', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", IdApartado: " + intIdApartado + "}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
-            List<CuentaDetalle> listado = new List<CuentaDetalle>();
+            List<EfectivoDetalle> listado = new List<EfectivoDetalle>();
             if (respuesta != "")
-                listado = serializer.Deserialize<List<CuentaDetalle>>(respuesta);
+                listado = serializer.Deserialize<List<EfectivoDetalle>>(respuesta);
             return listado;
         }
 
@@ -1866,13 +1876,13 @@ namespace LeandroSoftware.ClienteWCF
             return listado;
         }
 
-        public static async Task<List<CuentaDetalle>> ObtenerListadoMovimientosOrdenServicio(int intIdEmpresa, int intIdSucursal, int intIdOrdenServicio, string strToken)
+        public static async Task<List<EfectivoDetalle>> ObtenerListadoMovimientosOrdenServicio(int intIdEmpresa, int intIdSucursal, int intIdOrdenServicio, string strToken)
         {
             string strDatos = "{NombreMetodo: 'ObtenerListadoMovimientosOrdenServicio', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", IdOrden: " + intIdOrdenServicio + "}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
-            List<CuentaDetalle> listado = new List<CuentaDetalle>();
+            List<EfectivoDetalle> listado = new List<EfectivoDetalle>();
             if (respuesta != "")
-                listado = serializer.Deserialize<List<CuentaDetalle>>(respuesta);
+                listado = serializer.Deserialize<List<EfectivoDetalle>>(respuesta);
             return listado;
         }
 
@@ -1929,13 +1939,13 @@ namespace LeandroSoftware.ClienteWCF
             return listado;
         }
 
-        public static async Task<CierreCaja> ObtenerCierreCaja(int intIdCierre, string strToken)
+        public static async Task<Core.Dominio.Entidades.CierreCaja> ObtenerCierreCaja(int intIdCierre, string strToken)
         {
             string strDatos = "{NombreMetodo: 'ObtenerCierreCaja', Parametros: {IdCierre: " + intIdCierre + "}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
-            CierreCaja cierre = null;
+            Core.Dominio.Entidades.CierreCaja cierre = null;
             if (respuesta != "")
-                cierre = serializer.Deserialize<CierreCaja>(respuesta);
+                cierre = serializer.Deserialize<Core.Dominio.Entidades.CierreCaja>(respuesta);
             return cierre;
         }
 

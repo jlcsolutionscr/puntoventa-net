@@ -263,12 +263,10 @@ Public Class FrmApartado
 
     Private Sub CargarLineaDetalleApartado(producto As Producto, strDescripcion As String, decCantidad As Decimal, decPrecio As Decimal, decPorcDesc As Decimal)
         Dim decTasaImpuesto As Decimal = producto.ParametroImpuesto.TasaImpuesto
+        If cliente.AplicaTasaDiferenciada Then decTasaImpuesto = cliente.ParametroImpuesto.TasaImpuesto
         Dim decPrecioGravado As Decimal = decPrecio
-        Dim decPrecioIva As Decimal = decPrecio
         If decTasaImpuesto > 0 Then
             decPrecioGravado = Math.Round(decPrecio / (1 + (decTasaImpuesto / 100)), 3, MidpointRounding.AwayFromZero)
-            If cliente.AplicaTasaDiferenciada Then decTasaImpuesto = cliente.ParametroImpuesto.TasaImpuesto
-            decPrecioIva = Math.Round(decPrecioGravado * (1 + (decTasaImpuesto / 100)), 2, MidpointRounding.AwayFromZero)
         End If
         Dim intIndice As Integer = ObtenerIndice(dtbDetalleApartado, producto.IdProducto)
         If producto.Tipo = 1 And intIndice >= 0 Then
@@ -276,12 +274,12 @@ Public Class FrmApartado
             dtbDetalleApartado.Rows(intIndice).Item(2) = strDescripcion
             dtbDetalleApartado.Rows(intIndice).Item(3) = decNewCantidad
             dtbDetalleApartado.Rows(intIndice).Item(4) = decPrecioGravado
-            dtbDetalleApartado.Rows(intIndice).Item(5) = decPrecioIva
-            dtbDetalleApartado.Rows(intIndice).Item(6) = decNewCantidad * decPrecioIva
+            dtbDetalleApartado.Rows(intIndice).Item(5) = decPrecio
+            dtbDetalleApartado.Rows(intIndice).Item(6) = decNewCantidad * decPrecio
             dtbDetalleApartado.Rows(intIndice).Item(7) = decTasaImpuesto = 0
             dtbDetalleApartado.Rows(intIndice).Item(8) = decTasaImpuesto
             dtbDetalleApartado.Rows(intIndice).Item(9) = decPorcDesc
-            dtbDetalleApartado.Rows(intIndice).Item(10) = (decPrecioIva * 100 / (100 - decPorcDesc)) - decPrecioIva
+            dtbDetalleApartado.Rows(intIndice).Item(10) = (decPrecio * 100 / (100 - decPorcDesc)) - decPrecio
         Else
             dtrRowDetApartado = dtbDetalleApartado.NewRow
             dtrRowDetApartado.Item(0) = producto.IdProducto
@@ -289,12 +287,12 @@ Public Class FrmApartado
             dtrRowDetApartado.Item(2) = strDescripcion
             dtrRowDetApartado.Item(3) = decCantidad
             dtrRowDetApartado.Item(4) = decPrecioGravado
-            dtrRowDetApartado.Item(5) = decPrecioIva
-            dtrRowDetApartado.Item(6) = decCantidad * decPrecioIva
+            dtrRowDetApartado.Item(5) = decPrecio
+            dtrRowDetApartado.Item(6) = decCantidad * decPrecio
             dtrRowDetApartado.Item(7) = decTasaImpuesto = 0
             dtrRowDetApartado.Item(8) = decTasaImpuesto
             dtrRowDetApartado.Item(9) = decPorcDesc
-            dtrRowDetApartado.Item(10) = (decPrecioIva * 100 / (100 - decPorcDesc)) - decPrecioIva
+            dtrRowDetApartado.Item(10) = (decPrecio * 100 / (100 - decPorcDesc)) - decPrecio
             dtbDetalleApartado.Rows.Add(dtrRowDetApartado)
         End If
         grdDetalleApartado.Refresh()
@@ -434,6 +432,10 @@ Public Class FrmApartado
             End If
         Else
             decPrecioVenta = producto.PrecioVenta1
+        End If
+        If cliente.AplicaTasaDiferenciada Then
+            decPrecioVenta = Math.Round(decPrecioVenta / (1 + (producto.ParametroImpuesto.TasaImpuesto / 100)), 3)
+            decPrecioVenta = Math.Round(decPrecioVenta * (1 + (cliente.ParametroImpuesto.TasaImpuesto / 100)), 2)
         End If
         Return decPrecioVenta
     End Function
@@ -636,7 +638,7 @@ Public Class FrmApartado
             End Try
             If apartado IsNot Nothing Then
                 bolInit = True
-                txtIdApartado.Text = apartado.IdApartado
+                txtIdApartado.Text = apartado.ConsecApartado
                 cliente = apartado.Cliente
                 txtNombreCliente.Text = apartado.NombreCliente
                 txtFecha.Text = apartado.Fecha
@@ -803,7 +805,11 @@ Public Class FrmApartado
                 apartado.DesglosePagoApartado.Add(desglosePago)
             Next
             Try
-                txtIdApartado.Text = Await Puntoventa.AgregarApartado(apartado, FrmPrincipal.usuarioGlobal.Token)
+                Dim strIdConsec As String = Await Puntoventa.AgregarApartado(apartado, FrmPrincipal.usuarioGlobal.Token)
+                Dim arrIdConsec = strIdConsec.Split("-")
+                apartado.IdApartado = arrIdConsec(0)
+                apartado.ConsecApartado = arrIdConsec(1)
+                txtIdApartado.Text = apartado.ConsecApartado
             Catch ex As Exception
                 txtIdApartado.Text = ""
                 btnGuardar.Enabled = True
@@ -1183,10 +1189,12 @@ Public Class FrmApartado
 
     Private Sub TxtCantidad_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtCantidad.PreviewKeyDown
         If e.KeyCode = Keys.Enter Then
-            If CDbl(txtPrecio.Text) > 0 Then
-                BtnInsertar_Click(btnInsertar, New EventArgs())
-            Else
-                txtPrecio.Focus()
+            If producto IsNot Nothing Then
+                If CDbl(txtPrecio.Text) > 0 Then
+                    BtnInsertar_Click(btnInsertar, New EventArgs())
+                Else
+                    txtPrecio.Focus()
+                End If
             End If
         End If
     End Sub
@@ -1202,6 +1210,9 @@ Public Class FrmApartado
     Private Sub TxtMontoPago_Validated(sender As Object, e As EventArgs) Handles txtMontoPago.Validated
         If txtMontoPago.Text = "" Then
             txtMontoPago.Text = "0.00"
+        ElseIf CDbl(txtMontoPago.Text) > decSaldoPorPagar Then
+            MessageBox.Show("El monto ingresado no puede sar mayor al saldo por pagar", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            txtMontoPago.Text = FormatNumber(decSaldoPorPagar, 2)
         Else
             txtMontoPago.Text = FormatNumber(txtMontoPago.Text, 2)
         End If
@@ -1209,7 +1220,12 @@ Public Class FrmApartado
 
     Private Sub TxtMontoPago_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtMontoPago.PreviewKeyDown
         If e.KeyCode = Keys.Enter And txtIdApartado.Text = "" And txtMontoPago.Text <> "" Then
-            BtnInsertarPago_Click(btnInsertarPago, New EventArgs())
+            If CDbl(txtMontoPago.Text) > decSaldoPorPagar Then
+                MessageBox.Show("El monto ingresado no puede sar mayor al saldo por pagar", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                txtMontoPago.Text = FormatNumber(decSaldoPorPagar, 2)
+            Else
+                BtnInsertarPago_Click(btnInsertarPago, New EventArgs())
+            End If
         End If
     End Sub
 

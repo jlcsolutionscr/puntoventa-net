@@ -14,7 +14,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
     {
         CuentaPorCobrar ObtenerCuentaPorCobrar(int intIdCxC);
         IList<LlaveDescripcion> ObtenerListadoCuentasPorCobrar(int intIdEmpresa, int intIdTipo, int intIdPropietario);
-        IList<CuentaDetalle> ObtenerListadoMovimientosCxC(int intIdEmpresa, int intIdSucursal, int intIdPropietario);
+        IList<EfectivoDetalle> ObtenerListadoMovimientosCxC(int intIdEmpresa, int intIdSucursal, int intIdPropietario);
         void AplicarMovimientoCxC(MovimientoCuentaPorCobrar movimiento);
         void AnularMovimientoCxC(int intIdMovimiento, int intIdUsuario);
         MovimientoCuentaPorCobrar ObtenerMovimientoCxC(int intIdMovimiento);
@@ -22,19 +22,19 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         decimal ObtenerSaldoCuentasPorCobrar(int intIdPropietario, int intIdTipo);
         CuentaPorPagar ObtenerCuentaPorPagar(int intIdCxP);
         IList<LlaveDescripcion> ObtenerListadoCuentasPorPagar(int intIdEmpresa, int intIdTipo, int intIdPropietario);
-        IList<CuentaDetalle> ObtenerListadoMovimientosCxP(int intIdEmpresa, int intIdSucursal, int intIdPropietario);
+        IList<EfectivoDetalle> ObtenerListadoMovimientosCxP(int intIdEmpresa, int intIdSucursal, int intIdPropietario);
         void AplicarMovimientoCxP(MovimientoCuentaPorPagar movimiento);
         void AnularMovimientoCxP(int intIdMovimiento, int intIdUsuario);
         MovimientoCuentaPorPagar ObtenerMovimientoCxP(int intIdMovimiento);
         int ObtenerCantidadCxPVencidas(int intIdPropietario, int intIdTipo);
         decimal ObtenerSaldoCuentasPorPagar(int intIdPropietario, int intIdTipo);
         IList<LlaveDescripcion> ObtenerListadoApartadosConSaldo(int intIdEmpresa);
-        IList<CuentaDetalle> ObtenerListadoMovimientosApartado(int intIdEmpresa, int intIdSucursal, int intIdApartado);
+        IList<EfectivoDetalle> ObtenerListadoMovimientosApartado(int intIdEmpresa, int intIdSucursal, int intIdApartado);
         void AplicarMovimientoApartado(MovimientoApartado movimiento);
         void AnularMovimientoApartado(int intIdMovimiento, int intIdUsuario);
         MovimientoApartado ObtenerMovimientoApartado(int intIdMovimiento);
         IList<LlaveDescripcion> ObtenerListadoOrdenesServicioConSaldo(int intIdEmpresa);
-        IList<CuentaDetalle> ObtenerListadoMovimientosOrdenServicio(int intIdEmpresa, int intIdSucursal, int intIdOrden);
+        IList<EfectivoDetalle> ObtenerListadoMovimientosOrdenServicio(int intIdEmpresa, int intIdSucursal, int intIdOrden);
         void AplicarMovimientoOrdenServicio(MovimientoOrdenServicio movimiento);
         void AnularMovimientoOrdenServicio(int intIdMovimiento, int intIdUsuario);
         MovimientoOrdenServicio ObtenerMovimientoOrdenServicio(int intIdMovimiento);
@@ -93,17 +93,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IList<CuentaDetalle> ObtenerListadoMovimientosCxC(int intIdEmpresa, int intIdSucursal, int intIdPropietario)
+        public IList<EfectivoDetalle> ObtenerListadoMovimientosCxC(int intIdEmpresa, int intIdSucursal, int intIdPropietario)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
-                var listaMovimientos = new List<CuentaDetalle>();
+                var listaMovimientos = new List<EfectivoDetalle>();
                 try
                 {
                     var listado = dbContext.MovimientoCuentaPorCobrarRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdPropietario == intIdPropietario).OrderByDescending(x => x.IdMovCxC);
                     foreach (var value in listado)
                     {
-                        CuentaDetalle item = new CuentaDetalle(value.IdMovCxC, value.Fecha.ToString("dd/MM/yyyy"), value.Descripcion, value.Monto);
+                        EfectivoDetalle item = new EfectivoDetalle(value.IdMovCxC, value.Fecha.ToString("dd/MM/yyyy"), value.Descripcion, value.Monto);
                         listaMovimientos.Add(item);
                     }
                     return listaMovimientos;
@@ -429,17 +429,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IList<CuentaDetalle> ObtenerListadoMovimientosCxP(int intIdEmpresa, int intIdSucursal, int intIdPropietario)
+        public IList<EfectivoDetalle> ObtenerListadoMovimientosCxP(int intIdEmpresa, int intIdSucursal, int intIdPropietario)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
-                var listaMovimientos = new List<CuentaDetalle>();
+                var listaMovimientos = new List<EfectivoDetalle>();
                 try
                 {
                     var listado = dbContext.MovimientoCuentaPorPagarRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdPropietario == intIdPropietario).OrderByDescending(x => x.IdMovCxP);
                     foreach (var value in listado)
                     {
-                        CuentaDetalle item = new CuentaDetalle(value.IdMovCxP, value.Fecha.ToString("dd/MM/yyyy"), value.Descripcion, value.Monto);
+                        EfectivoDetalle item = new EfectivoDetalle(value.IdMovCxP, value.Fecha.ToString("dd/MM/yyyy"), value.Descripcion, value.Monto);
                         listaMovimientos.Add(item);
                     }
                     return listaMovimientos;
@@ -712,17 +712,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IList<CuentaDetalle> ObtenerListadoMovimientosApartado(int intIdEmpresa, int intIdSucursal, int intIdApartado)
+        public IList<EfectivoDetalle> ObtenerListadoMovimientosApartado(int intIdEmpresa, int intIdSucursal, int intIdApartado)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
-                var listaMovimientos = new List<CuentaDetalle>();
+                var listaMovimientos = new List<EfectivoDetalle>();
                 try
                 {
                     var listado = dbContext.MovimientoApartadoRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdApartado == intIdApartado).OrderByDescending(x => x.IdMovApartado);
                     foreach (var value in listado)
                     {
-                        CuentaDetalle item = new CuentaDetalle(value.IdMovApartado, value.Fecha.ToString("dd/MM/yyyy"), value.Descripcion, value.Monto);
+                        EfectivoDetalle item = new EfectivoDetalle(value.IdMovApartado, value.Fecha.ToString("dd/MM/yyyy"), value.Descripcion, value.Monto);
                         listaMovimientos.Add(item);
                     }
                     return listaMovimientos;
@@ -879,17 +879,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IList<CuentaDetalle> ObtenerListadoMovimientosOrdenServicio(int intIdEmpresa, int intIdSucursal, int intIdOrden)
+        public IList<EfectivoDetalle> ObtenerListadoMovimientosOrdenServicio(int intIdEmpresa, int intIdSucursal, int intIdOrden)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
-                var listaMovimientos = new List<CuentaDetalle>();
+                var listaMovimientos = new List<EfectivoDetalle>();
                 try
                 {
                     var listado = dbContext.MovimientoOrdenServicioRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdOrden == intIdOrden).OrderByDescending(x => x.IdMovOrden);
                     foreach (var value in listado)
                     {
-                        CuentaDetalle item = new CuentaDetalle(value.IdMovOrden, value.Fecha.ToString("dd/MM/yyyy"), value.Descripcion, value.Monto);
+                        EfectivoDetalle item = new EfectivoDetalle(value.IdMovOrden, value.Fecha.ToString("dd/MM/yyyy"), value.Descripcion, value.Monto);
                         listaMovimientos.Add(item);
                     }
                     return listaMovimientos;

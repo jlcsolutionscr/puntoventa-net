@@ -174,6 +174,12 @@
     <Compile Include="Formas\FrmAplicaTrasladoListado.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Formas\FrmDetalleCierreCaja.Designer.vb">
+      <DependentUpon>FrmDetalleCierreCaja.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Formas\FrmDetalleCierreCaja.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Formas\FrmConsultaCierreCaja.designer.vb">
       <DependentUpon>FrmConsultaCierreCaja.vb</DependentUpon>
     </Compile>
@@ -764,6 +770,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Formas\FrmAplicaTrasladoListado.resX">
       <DependentUpon>FrmAplicaTrasladoListado.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Formas\FrmDetalleCierreCaja.resX">
+      <DependentUpon>FrmDetalleCierreCaja.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Formas\FrmConsultaCierreCaja.resx">

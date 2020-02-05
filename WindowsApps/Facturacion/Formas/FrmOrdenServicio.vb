@@ -270,12 +270,10 @@ Public Class FrmOrdenServicio
 
     Private Sub CargarLineaDetalleOrdenServicio(producto As Producto, strDescripcion As String, decCantidad As Decimal, decPrecio As Decimal, decPorcDesc As Decimal)
         Dim decTasaImpuesto As Decimal = producto.ParametroImpuesto.TasaImpuesto
+        If cliente.AplicaTasaDiferenciada Then decTasaImpuesto = cliente.ParametroImpuesto.TasaImpuesto
         Dim decPrecioGravado As Decimal = decPrecio
-        Dim decPrecioIva As Decimal = decPrecio
         If decTasaImpuesto > 0 Then
             decPrecioGravado = Math.Round(decPrecio / (1 + (decTasaImpuesto / 100)), 3, MidpointRounding.AwayFromZero)
-            If cliente.AplicaTasaDiferenciada Then decTasaImpuesto = cliente.ParametroImpuesto.TasaImpuesto
-            decPrecioIva = Math.Round(decPrecioGravado * (1 + (decTasaImpuesto / 100)), 2, MidpointRounding.AwayFromZero)
         End If
         Dim intIndice As Integer = ObtenerIndice(dtbDetalleOrdenServicio, producto.IdProducto)
         If producto.Tipo = 1 And intIndice >= 0 Then
@@ -284,12 +282,12 @@ Public Class FrmOrdenServicio
             dtbDetalleOrdenServicio.Rows(intIndice).Item(2) = strDescripcion
             dtbDetalleOrdenServicio.Rows(intIndice).Item(3) = decNewCantidad
             dtbDetalleOrdenServicio.Rows(intIndice).Item(4) = decPrecioGravado
-            dtbDetalleOrdenServicio.Rows(intIndice).Item(5) = decPrecioIva
-            dtbDetalleOrdenServicio.Rows(intIndice).Item(6) = decNewCantidad * decPrecioIva
+            dtbDetalleOrdenServicio.Rows(intIndice).Item(5) = decPrecio
+            dtbDetalleOrdenServicio.Rows(intIndice).Item(6) = decNewCantidad * decPrecio
             dtbDetalleOrdenServicio.Rows(intIndice).Item(7) = decTasaImpuesto = 0
             dtbDetalleOrdenServicio.Rows(intIndice).Item(8) = decTasaImpuesto
             dtbDetalleOrdenServicio.Rows(intIndice).Item(9) = decPorcDesc
-            dtbDetalleOrdenServicio.Rows(intIndice).Item(10) = (decPrecioIva * 100 / (100 - decPorcDesc)) - decPrecioIva
+            dtbDetalleOrdenServicio.Rows(intIndice).Item(10) = (decPrecio * 100 / (100 - decPorcDesc)) - decPrecio
         Else
             dtrRowDetOrdenServicio = dtbDetalleOrdenServicio.NewRow
             dtrRowDetOrdenServicio.Item(0) = producto.IdProducto
@@ -297,12 +295,12 @@ Public Class FrmOrdenServicio
             dtrRowDetOrdenServicio.Item(2) = strDescripcion
             dtrRowDetOrdenServicio.Item(3) = decCantidad
             dtrRowDetOrdenServicio.Item(4) = decPrecioGravado
-            dtrRowDetOrdenServicio.Item(5) = decPrecioIva
-            dtrRowDetOrdenServicio.Item(6) = decCantidad * decPrecioIva
+            dtrRowDetOrdenServicio.Item(5) = decPrecio
+            dtrRowDetOrdenServicio.Item(6) = decCantidad * decPrecio
             dtrRowDetOrdenServicio.Item(7) = decTasaImpuesto = 0
             dtrRowDetOrdenServicio.Item(8) = decTasaImpuesto
             dtrRowDetOrdenServicio.Item(9) = decPorcDesc
-            dtrRowDetOrdenServicio.Item(10) = (decPrecioIva * 100 / (100 - decPorcDesc)) - decPrecioIva
+            dtrRowDetOrdenServicio.Item(10) = (decPrecio * 100 / (100 - decPorcDesc)) - decPrecio
             dtbDetalleOrdenServicio.Rows.Add(dtrRowDetOrdenServicio)
         End If
         grdDetalleOrdenServicio.Refresh()
@@ -442,6 +440,10 @@ Public Class FrmOrdenServicio
             End If
         Else
             decPrecioVenta = producto.PrecioVenta1
+        End If
+        If cliente.AplicaTasaDiferenciada Then
+            decPrecioVenta = Math.Round(decPrecioVenta / (1 + (producto.ParametroImpuesto.TasaImpuesto / 100)), 3)
+            decPrecioVenta = Math.Round(decPrecioVenta * (1 + (cliente.ParametroImpuesto.TasaImpuesto / 100)), 2)
         End If
         Return decPrecioVenta
     End Function
@@ -627,7 +629,7 @@ Public Class FrmOrdenServicio
             End Try
             If ordenServicio IsNot Nothing Then
                 bolInit = True
-                txtIdOrdenServicio.Text = ordenServicio.IdOrden
+                txtIdOrdenServicio.Text = ordenServicio.ConsecOrdenServicio
                 cliente = ordenServicio.Cliente
                 txtNombreCliente.Text = ordenServicio.NombreCliente
                 txtFecha.Text = ordenServicio.Fecha
@@ -803,7 +805,11 @@ Public Class FrmOrdenServicio
                 ordenServicio.DesglosePagoOrdenServicio.Add(desglosePago)
             Next
             Try
-                txtIdOrdenServicio.Text = Await Puntoventa.AgregarOrdenServicio(ordenServicio, FrmPrincipal.usuarioGlobal.Token)
+                Dim strIdConsec As String = Await Puntoventa.AgregarOrdenServicio(ordenServicio, FrmPrincipal.usuarioGlobal.Token)
+                Dim arrIdConsec = strIdConsec.Split("-")
+                ordenServicio.IdOrden = arrIdConsec(0)
+                ordenServicio.ConsecOrdenServicio = arrIdConsec(1)
+                txtIdOrdenServicio.Text = ordenServicio.ConsecOrdenServicio
             Catch ex As Exception
                 txtIdOrdenServicio.Text = ""
                 btnGuardar.Enabled = True
@@ -873,12 +879,14 @@ Public Class FrmOrdenServicio
                     .empresa = FrmPrincipal.empresaGlobal,
                     .equipo = FrmPrincipal.equipoGlobal,
                     .strId = ordenServicio.ConsecOrdenServicio,
+                    .strFecha = txtFecha.Text,
                     .strVendedor = txtVendedor.Text,
                     .strNombre = txtNombreCliente.Text,
                     .strTelefono = txtTelefono.Text,
                     .strDireccion = txtDireccion.Text,
-                    .strDocumento = txtOtrosDetalles.Text,
-                    .strFecha = ordenServicio.FechaEntrega.ToString() & " - " & cboHoraEntrega.Text,
+                    .strDescripcion = txtDescripcion.Text,
+                    .strDetalle = txtOtrosDetalles.Text,
+                    .strDocumento = ordenServicio.FechaEntrega.ToString() & " - " & cboHoraEntrega.Text,
                     .strSubTotal = txtSubTotal.Text,
                     .strDescuento = "0.00",
                     .strImpuesto = txtImpuesto.Text,
@@ -1211,10 +1219,12 @@ Public Class FrmOrdenServicio
 
     Private Sub TxtCantidad_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtCantidad.PreviewKeyDown
         If e.KeyCode = Keys.Enter Then
-            If CDbl(txtPrecio.Text) > 0 Then
-                BtnInsertar_Click(btnInsertar, New EventArgs())
-            Else
-                txtPrecio.Focus()
+            If producto IsNot Nothing Then
+                If CDbl(txtPrecio.Text) > 0 Then
+                    BtnInsertar_Click(btnInsertar, New EventArgs())
+                Else
+                    txtPrecio.Focus()
+                End If
             End If
         End If
     End Sub
@@ -1230,6 +1240,9 @@ Public Class FrmOrdenServicio
     Private Sub TxtMontoPago_Validated(sender As Object, e As EventArgs) Handles txtMontoPago.Validated
         If txtMontoPago.Text = "" Then
             txtMontoPago.Text = "0.00"
+        ElseIf CDbl(txtMontoPago.Text) > decSaldoPorPagar Then
+            MessageBox.Show("El monto ingresado no puede sar mayor al saldo por pagar", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            txtMontoPago.Text = FormatNumber(decSaldoPorPagar, 2)
         Else
             txtMontoPago.Text = FormatNumber(txtMontoPago.Text, 2)
         End If
@@ -1237,7 +1250,12 @@ Public Class FrmOrdenServicio
 
     Private Sub TxtMontoPago_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtMontoPago.PreviewKeyDown
         If e.KeyCode = Keys.Enter And txtIdOrdenServicio.Text = "" And txtMontoPago.Text <> "" Then
-            BtnInsertarPago_Click(btnInsertarPago, New EventArgs())
+            If CDbl(txtMontoPago.Text) > decSaldoPorPagar Then
+                MessageBox.Show("El monto ingresado no puede sar mayor al saldo por pagar", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                txtMontoPago.Text = FormatNumber(decSaldoPorPagar, 2)
+            Else
+                BtnInsertarPago_Click(btnInsertarPago, New EventArgs())
+            End If
         End If
     End Sub
 
