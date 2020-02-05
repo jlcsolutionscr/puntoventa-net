@@ -4,7 +4,9 @@ import {
   SET_DEVICE_REGISTERED,
   SET_IDENTIFIER_LIST,
   SET_TERMINAL_LIST,
-  SET_SIGNUP_ERROR
+  SET_SIGNUP_ERROR,
+  SET_CONFIG_ERROR,
+  SET_TERMINAL
 } from './types'
 
 export const configReducer = (state = {}, { type, payload }) => {
@@ -21,6 +23,10 @@ export const configReducer = (state = {}, { type, payload }) => {
       return { ...state, availableTerminalList: payload.terminalList }
     case SET_SIGNUP_ERROR:
       return { ...state, signUpError: payload.error }
+    case SET_CONFIG_ERROR:
+      return { ...state, configError: payload.error }
+    case SET_TERMINAL:
+      return { ...state, terminal: payload.entity }
     default:
       return state
   }

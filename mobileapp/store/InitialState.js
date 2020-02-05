@@ -13,6 +13,8 @@ export const INITIAL_STATE = {
     identifierList: [],
     availableTerminalList: [],
     signUpError: '',
+    configError: '',
+    terminal: null
   },
   session: {
     authorized: false,
@@ -45,7 +47,7 @@ export const INITIAL_STATE = {
     error: ''
   },
   invoice: {
-    paymentBankId: null,
+    paymentMethodId: 1,
     customer: null,
     product: null,
     customerName: '',

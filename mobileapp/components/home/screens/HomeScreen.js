@@ -12,6 +12,7 @@ const HomeScreen = (props) => {
   let actualizaClienteDisabled = true
   let actualizaProductoDisabled = true
   let listadoDocumentosDisabled = true
+  let configuracionDisabled = props.company.RegimenSimplificado
   props.company.Usuario.RolePorUsuario.forEach(item => {
     if (item.Role.MenuItem == 'MnuCapturaFactura') generaFacturaDisabled = false
     if (item.Role.MenuItem == 'MnuMantCliente') actualizaClienteDisabled = false
@@ -41,7 +42,7 @@ const HomeScreen = (props) => {
         style={styles.button}
         titleUpperCase
         disabled={listadoDocumentosDisabled}
-        title='Documentos electrónicos emitidos'
+        title='Gestión Documentos electrónicos'
         onPress={() => props.navigation.navigate('Documentos')}
       />
       <Button
@@ -61,11 +62,19 @@ const HomeScreen = (props) => {
         onPress={() => props.navigation.navigate('Producto')}
       />
       <Button
-        containerStyle={{...styles.buttonContainer, marginBottom: 0}}
+        containerStyle={{...styles.buttonContainer}}
         style={styles.button}
         titleUpperCase
         title='Generar reportes'
         onPress={() => props.navigation.navigate('Reporte')}
+      />
+      <Button
+        containerStyle={{...styles.buttonContainer, marginBottom: 0}}
+        style={styles.button}
+        titleUpperCase
+        disabled={configuracionDisabled}
+        title='Configurar parámetros'
+        onPress={() => props.navigation.navigate('Configuracion')}
       />
     </View>
   )

@@ -7,12 +7,16 @@ import {
   SET_IDENTIFIER_LIST,
   SET_TERMINAL_LIST,
   SET_SIGNUP_ERROR,
+  SET_CONFIG_ERROR,
+  SET_TERMINAL
 } from './types'
 
 import {
   getCompanyIdentifiers,
   getTerminalsAvailablePerId,
-  registerDevice
+  registerDevice,
+  getConfiguration,
+  saveConfiguration
 } from '../../utils/domainHelper'
 
 import { startLoader, stopLoader, setModalError } from '../ui/actions'
@@ -57,6 +61,20 @@ export const setSignUpError = (error) => {
   return {
     type: SET_SIGNUP_ERROR,
     payload: { error }
+  }
+}
+
+export const setConfigError = (message) => {
+  return {
+    type: SET_CONFIG_ERROR,
+    payload: { message }
+  }
+}
+
+export const setTerminal = (entity) => {
+  return {
+    type: SET_TERMINAL,
+    payload: { entity }
   }
 }
 
@@ -137,6 +155,45 @@ export function signUp (user, password, id, branchId, terminalId) {
     } catch (error) {
       dispatch(stopLoader())
       dispatch(setSignUpError(error))
+    }
+  }
+}
+
+
+export function getConfig()
+{
+  return async (dispatch, getState) => {
+    const { serviceURL } = getState().config
+    const { token, company } = getState().session
+    dispatch(startLoader())
+    dispatch(setConfigError(''))
+    try {
+      const entity = await getConfiguration(serviceURL, token, company.IdEmpresa, company.EquipoRegistrado.IdSucursal, company.EquipoRegistrado.IdTerminal)
+      dispatch(setTerminal(entity))
+      dispatch(stopLoader())
+    } catch (error) {
+      dispatch(setConfigError(error))
+      dispatch(stopLoader())
+      
+    }
+  }
+}
+
+export function saveConfig(terminal)
+{
+  return async (dispatch, getState) => {
+    const { serviceURL } = getState().config
+    const { token } = getState().session
+    dispatch(startLoader())
+    dispatch(setConfigError(''))
+    try {
+      await saveConfiguration(serviceURL, token, terminal)
+      dispatch(setTerminal(entity))
+      dispatch(stopLoader())
+    } catch (error) {
+      dispatch(setConfigError(error))
+      dispatch(stopLoader())
+      
     }
   }
 }

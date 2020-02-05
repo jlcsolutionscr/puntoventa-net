@@ -77,7 +77,7 @@ export function setParameters () {
     dispatch(startLoader())
     dispatch(setProductError(''))
     try {
-      let newList = await getProductList(serviceURL, token, company.IdEmpresa, company.EquipoRegistrado.IdSucursal)
+      let newList = await getProductList(serviceURL, token, company.IdEmpresa, company.EquipoRegistrado.IdSucursal, '')
       dispatch(setProductList(newList))
       newList = await getProductTypeList(serviceURL, token)
       dispatch(setTypeList(newList))

@@ -46,8 +46,8 @@ class ProcessedDocumentScreen extends Component {
   render () {
     const { processedList, processedPage, processedCount } = this.props
     const previousDisabled = processedPage === 1
-    const nextDisabled = processedPage * 10 > processedCount
     const lastPage = Math.ceil(processedCount / 10)
+    const nextDisabled = processedPage === lastPage
     const rows = processedList.map((item, index) => {
       const buttonDisabled = item.NombreReceptor == 'CLIENTE DE CONTADO' || item.EsMensajeReceptor == 'S' || item.EstadoEnvio != 'aceptado'
       return <View key={index} style={[styles.columnsAlign, styles.contentRow]}>

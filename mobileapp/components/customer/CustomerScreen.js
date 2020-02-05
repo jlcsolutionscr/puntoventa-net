@@ -82,8 +82,8 @@ class CustomerScreen extends Component {
           aplicaTarifaDif: customer.AplicaTasaDiferenciada,
           idImpuesto: customer.IdImpuesto,
           idTipoExoneracion: customer.IdTipoExoneracion,
-          codigoDocumento: customer.NumDocExoneracion != null ? customer.NumDocExoneracion : '',
-          nombreInstitucion: customer.NombreInstExoneracion != null ? customer.NombreInstExoneracion : '',
+          codigoDocumento: customer.NumDocExoneracion,
+          nombreInstitucion: customer.NombreInstExoneracion,
           fechaEmision: customer.FechaEmisionDoc.DateTime.substr(0, 10),
           porcentajeExoneracion: customer.PorcentajeExoneracion.toString()
         })

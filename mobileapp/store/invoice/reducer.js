@@ -1,6 +1,6 @@
 import {
   SET_ERROR,
-  SET_PAYMENT_BANK_ID,
+  SET_PAYMENT_METHOD_ID,
   SET_EXONERATION_TYPE,
   SET_EXONERATION_DESC,
   SET_EXONERATION_CODE,
@@ -27,8 +27,8 @@ export const invoiceReducer = (state = {}, { type, payload }) => {
   switch (type) {
     case SET_ERROR:
       return { ...state, error: payload.error }
-    case SET_PAYMENT_BANK_ID:
-      return { ...state, paymentBankId: payload.id }
+    case SET_PAYMENT_METHOD_ID:
+      return { ...state, paymentMethodId: payload.id }
     case SET_EXONERATION_TYPE:
       return { ...state, exonerationType: payload.id }
     case SET_EXONERATION_DESC:

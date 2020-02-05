@@ -12,6 +12,7 @@ import ProcessedNavigator from '../document/ProcessedNavigator'
 import CustomerScreen from '../customer/CustomerScreen'
 import ProductScreen from '../product/ProductScreen'
 import ReportScreen from '../report/ReportScreen'
+import ConfigScreen from '../config/ConfigScreen'
 
 const { width, height } = Dimensions.get('window')
 const rem = width / 411.42857142857144
@@ -125,6 +126,16 @@ class HomeNavigator extends Component {
           navigationOptions: () => ({
             headerTintColor: 'white',
             title: 'Generación de reportes',
+            headerTitleStyle: styles.tabBarText,
+            headerStyle: styles.background
+          })
+        },
+        Configuracion: {
+          screen: ConfigScreen,
+          path: 'Configuración',
+          navigationOptions: () => ({
+            headerTintColor: 'white',
+            title: 'Configuración de parámetros',
             headerTitleStyle: styles.tabBarText,
             headerStyle: styles.background
           })

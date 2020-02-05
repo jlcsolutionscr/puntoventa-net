@@ -64,7 +64,7 @@ class LoginScreen extends Component {
             selectedValue={companyId}
             items={identifiers}
             resetValue={false}
-            onValueChange={(value, itemPosition) => this.handleOnChange({companyId: itemValue})}
+            onValueChange={(value, itemPosition) => this.handleOnChange({companyId: value})}
           />
           <Button
             title="Ingresar"

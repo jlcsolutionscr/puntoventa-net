@@ -46,6 +46,27 @@ export async function validateCredentials(serviceURL, user, password, companyId,
   }
 }
 
+export async function getConfiguration(serviceURL, token, companyId, branchId, terminalId) {
+  try {
+    const data = "{NombreMetodo: 'ObtenerTerminalPorSucursal', Parametros: {IdEmpresa: " + companyId + ", IdSucursal: " + branchId + ", IdTerminal: " + terminalId + "}}"
+    const response = await postWithResponse(serviceURL + "/ejecutarconsulta", token, data)
+    if (response === null) return []
+    return response
+  } catch (e) {
+    throw e.message
+  }
+}
+
+export async function saveConfiguration(serviceURL, token, terminal) {
+  try {
+    const entidad = JSON.stringify(terminal)
+    const data = "{NombreMetodo: 'ActualizarTerminalPorSucursal', Entidad: " + entidad + "}"
+    await post(serviceURL + "/ejecutar", token, data)
+  } catch (e) {
+    throw e.message
+  }
+}
+
 export async function getIdTypeList(serviceURL, token) {
   try {
     const data = "{NombreMetodo: 'ObtenerListadoTipoIdentificacion'}"
@@ -194,9 +215,9 @@ export async function getProductProviderList(serviceURL, token, idCompany) {
   }
 }
 
-export async function getProductList(serviceURL, token, idCompany, idBranch) {
+export async function getProductList(serviceURL, token, idCompany, idBranch, filterText) {
   try {
-    const data = "{NombreMetodo: 'ObtenerListadoProductos', Parametros: {IdEmpresa: " + idCompany + ", IdSucursal: " + idBranch + ", NumeroPagina: 1, FilasPorPagina: 0, IncluyeServicios: 'true', FiltraActivos: 'true', IdLinea: 0, Codigo: '', Descripcion: ''}}"
+    const data = "{NombreMetodo: 'ObtenerListadoProductos', Parametros: {IdEmpresa: " + idCompany + ", IdSucursal: " + idBranch + ", NumeroPagina: 1, FilasPorPagina: 50, IncluyeServicios: 'true', FiltraActivos: 'true', IdLinea: 0, Codigo: '', Descripcion: '" + filterText + "'}}"
     const response = await postWithResponse(serviceURL + "/ejecutarconsulta", token, data)
     if (response === null) return []
     return response
@@ -243,9 +264,14 @@ export async function getExonerationTypeList(serviceURL, token) {
   }
 }
 
-export async function getPaymentBankId(serviceURL, token, idCompany) {
+export async function getPaymentBankId(serviceURL, token, idCompany, paymentMethod) {
   try {
-    const data = "{NombreMetodo: 'ObtenerListadoBancoAdquiriente', Parametros: {IdEmpresa: " + idCompany + "}}"
+    let data
+    if (paymentMethod === 1 || paymentMethod === 2) {
+      data = "{NombreMetodo: 'ObtenerListadoBancoAdquiriente', Parametros: {IdEmpresa: " + idCompany + "}}"
+    } else {
+      data = "{NombreMetodo: 'ObtenerListadoCuentasBanco', Parametros: {IdEmpresa: " + idCompany + "}}"
+    }
     const response = await postWithResponse(serviceURL + "/ejecutarconsulta", token, data)
     if (response === null) return null
     if (response.length == 0) return null
@@ -255,21 +281,32 @@ export async function getPaymentBankId(serviceURL, token, idCompany) {
   }
 }
 
-export function getCustomerPrice(priceId, product) {
-  switch (priceId) {
+export function getCustomerPrice(customer, product) {
+  let customerPrice = 0
+  switch (customer.IdTipoPrecio) {
     case 1:
-      return product.PrecioVenta1
+      customerPrice = product.PrecioVenta1
+      break
     case 2:
-      return product.PrecioVenta2
+      customerPrice = product.PrecioVenta2
+      break
     case 3:
-      return product.PrecioVenta3
+      customerPrice = product.PrecioVenta3
+      break
     case 4:
-      return product.PrecioVenta4
+      customerPrice = product.PrecioVenta4
+      break
     case 5:
-      return product.PrecioVenta5
+      customerPrice = product.PrecioVenta5
+      break
     default:
-      return product.PrecioVenta1
+      customerPrice = product.PrecioVenta1
   }
+  if (customer.AplicaTasaDiferenciada) {
+    customerPrice = roundNumber(customerPrice / (1 + (product.ParametroImpuesto.TasaImpuesto / 100)), 3)
+    customerPrice = roundNumber(customerPrice * (1 + (customer.ParametroImpuesto.TasaImpuesto / 100)), 2)
+  }
+  return customerPrice
 }
 
 export function getInvoiceSummary(products, exonerationPercentage) {
@@ -282,7 +319,7 @@ export function getInvoiceSummary(products, exonerationPercentage) {
     let total = 0
     let totalCosto = 0
     products.forEach(item => {
-      const precioUnitario = item.PrecioVenta
+      const precioUnitario = roundNumber(item.PrecioVenta / (1 + (item.PorcentajeIVA / 100)), 3)
       if (item.PorcentajeIVA > 0) {
         let impuestoUnitario = precioUnitario * item.PorcentajeIVA / 100
         if (exonerationPercentage > 0) {
@@ -314,8 +351,9 @@ export function getInvoiceSummary(products, exonerationPercentage) {
   }
 }
 
-export async function saveInvoiceEntity(serviceURL, token, products, bankId, company, idCustomer, customerName, excento, gravado, exonerado, impuesto, totalCosto, total, exonerationType, exonerationCode, exonerationEntity, exonerationDate, exonerationPercentage) {
+export async function saveInvoiceEntity(serviceURL, token, products, paymentMethodId, company, idCustomer, customerName, excento, gravado, exonerado, impuesto, totalCosto, total, exonerationType, exonerationCode, exonerationEntity, exonerationDate, exonerationPercentage) {
   try {
+    const bankId = await getPaymentBankId(serviceURL, token, company.IdEmpresa, paymentMethodId)
     const detalleFactura = []
     products.forEach(item => {
       const detalle = {
@@ -334,8 +372,8 @@ export async function saveInvoiceEntity(serviceURL, token, products, bankId, com
     const desglosePagoFactura = [{
       IdConsecutivo: 0,
       IdFactura: 0,
-      IdFormaPago: 1,
-      IdTipoMoneda: 1,
+      IdFormaPago: paymentMethodId,
+      IdTipoMoneda: company.IdTipoMoneda,
       IdCuentaBanco: bankId,
       TipoTarjeta: '',
       NroMovimiento: '',
@@ -476,7 +514,7 @@ export async function sendDocumentByEmail(serviceURL, token, idDocument, emailTo
   }
 }
 
-export async function sendReportEmail(serviceURL, token, idCompany, reportName, startDate, endDate) {
+export async function sendReportEmail(serviceURL, token, idCompany, idBranch, reportName, startDate, endDate) {
   try {
     let methodName = '';
     switch (reportName) {
@@ -511,7 +549,7 @@ export async function sendReportEmail(serviceURL, token, idCompany, reportName, 
         methodName = ''
     }
     if (methodName != '') {
-      data = "{NombreMetodo: '" + methodName + "', Parametros: {IdEmpresa: " + idCompany + ", FechaInicial: '" + startDate + "', FechaFinal: '" + endDate + "', FormatoReporte: 'PDF'}}"
+      data = "{NombreMetodo: '" + methodName + "', Parametros: {IdEmpresa: " + idCompany + ", IdSucursal: " + idBranch + ", FechaInicial: '" + startDate + "', FechaFinal: '" + endDate + "', FormatoReporte: 'PDF'}}"
       await post(serviceURL + "/ejecutar", token, data)
     }
   } catch (e) {
