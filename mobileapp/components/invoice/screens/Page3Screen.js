@@ -2,13 +2,14 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 
-import { saveInvoice, setParameters, resetInvoice } from '../../../store/invoice/actions'
+import { setPaymentMethodId, saveInvoice, setParameters, resetInvoice } from '../../../store/invoice/actions'
 
 import { formatCurrency } from '../../../utils/formatHelper'
 
 import { Dimensions, StyleSheet, View, Text, Animated } from 'react-native'
 import Button from '../../custom/Button'
 import SuccessfulIcon from '../../../assets/checked.png'
+import Dropdown from '../../custom/Dropdown'
 
 const { width, height } = Dimensions.get('window')
 const rem = width / 411.42857142857144
@@ -37,6 +38,7 @@ class Page3Screen extends Component {
   render () {
     const { gravado, exonerado, excento, subTotal, impuesto, total, successful, error } = this.props
     const buttonDisabled = total == 0 || error != ''
+    let paymentMethods = [{value: 1, label: 'EFECTIVO'}, {value: 2, label: 'TARJETA'}, {value: 3, label: 'CHEQUE'}, {value: 4, label: 'TRANSFERENCIA'}]
     return (<View key='1' style={styles.container}>
       {error !== '' && <Text style={{color: 'red', textAlign: 'center'}}>{error}</Text>}
       <Text style={styles.title}>{'RESUMEN DE FACTURA'}</Text>
@@ -54,6 +56,12 @@ class Page3Screen extends Component {
         <Text style={styles.columnLeft}>{'Total'}</Text>
         <Text style={styles.columnRight}>{formatCurrency(total)}</Text>
       </View>
+      <Dropdown
+          selectedValue={this.props.paymentMethodId}
+          items={paymentMethods}
+          resetValue={false}
+          onValueChange={(value, itemPosition) => this.props.setPaymentMethodId(value)}
+        />
       <Button
         title={successful ? 'Nueva factura': 'Generar'}
         titleUpperCase
@@ -114,6 +122,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => {
   return {
+    paymentMethodId: state.invoice.paymentMethodId,
     gravado: state.invoice.gravado,
     exonerado: state.invoice.exonerado,
     excento: state.invoice.excento,
@@ -127,6 +136,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({
+    setPaymentMethodId,
     saveInvoice,
     setParameters,
     resetInvoice

@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 
 import {
+  filterProductList,
   getProduct,
   setProductDescription,
   setProductQuantity,
@@ -20,8 +21,6 @@ import CircleButton from '../../custom/CircleButton'
 import removeIcon from '../../../assets/minus-26-white.png'
 
 const { width, height } = Dimensions.get('window')
-console.log('width', width)
-console.log('height', height)
 const rem = width / 411.42857142857144
 const remY = height / 683.4285714285714
 
@@ -46,6 +45,7 @@ class Page2Screen extends Component {
         label='Seleccione un producto'
         items={productOptions}
         resetValue
+        onTextChange={(text) => this.props.filterProductList(text)}
         onItemSelect={(item) => this.props.getProduct(item.id)} />
       <TextField
         label='Descripción'
@@ -152,6 +152,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({
+    filterProductList,
     getProduct,
     setProductDescription,
     setProductQuantity,

@@ -1,5 +1,5 @@
 export const SET_ERROR = 'invoice/SET_ERROR'
-export const SET_PAYMENT_BANK_ID = 'invoice/SET_PAYMENT_BANK_ID'
+export const SET_PAYMENT_METHOD_ID = 'invoice/SET_PAYMENT_METHOD_ID'
 export const SET_EXONERATION_TYPE = 'invoice/SET_EXONERATION_TYPE'
 export const SET_EXONERATION_DESC = 'invoice/SET_EXONERATION_DESC'
 export const SET_EXONERATION_CODE = 'invoice/SET_EXONERATION_CODE'

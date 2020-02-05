@@ -73,7 +73,7 @@ export function generateReportEmail (reportName, startDate, endDate) {
     dispatch(setReportMessage(''))
     dispatch(setReportError(''))
     try {
-      await sendReportEmail(serviceURL, token, company.IdEmpresa, reportName, startDate, endDate)
+      await sendReportEmail(serviceURL, token, company.IdEmpresa, company.EquipoRegistrado.IdSucursal, reportName, startDate, endDate)
       dispatch(setReportMessage('Reporte enviado al correo satisfactoriamente.'))
       dispatch(stopLoader())
     } catch (error) {

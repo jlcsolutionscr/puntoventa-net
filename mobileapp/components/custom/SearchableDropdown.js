@@ -32,6 +32,7 @@ class Dropdown extends Component {
           onFocus={() => this.setState({focus: true})}
           onBlur={() => this.setState({focus: false})}
           onItemSelect={this.props.onItemSelect}
+          onTextChange={this.props.onTextChange}
           containerStyle={{ padding: 0 }}
           itemStyle={styles.item}
           itemTextStyle={styles.itemText}

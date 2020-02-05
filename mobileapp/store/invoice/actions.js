@@ -1,6 +1,6 @@
 import {
   SET_ERROR,
-  SET_PAYMENT_BANK_ID,
+  SET_PAYMENT_METHOD_ID,
   SET_EXONERATION_TYPE,
   SET_EXONERATION_DESC,
   SET_EXONERATION_CODE,
@@ -27,12 +27,9 @@ import { setCustomerList } from '../customer/actions'
 import { setProductList } from '../product/actions'
 import { startLoader, stopLoader } from '../ui/actions'
 
-import { roundNumber } from '../../utils/formatHelper'
-
 import {
   getCustomerList,
   getProductList,
-  getPaymentBankId,
   getCustomerEntity,
   getProductEntity,
   getCustomerPrice,
@@ -50,9 +47,9 @@ export const setInvoiceError = (error) => {
   }
 }
 
-export const setPaymentBankId = (id) => {
+export const setPaymentMethodId = (id) => {
   return {
-    type: SET_PAYMENT_BANK_ID,
+    type: SET_PAYMENT_METHOD_ID,
     payload: { id }
   }
 }
@@ -200,9 +197,9 @@ export function setParameters () {
     const { token, company } = getState().session
     const { customerList } = getState().customer
     const { productList } = getState().product
-    const { paymentBankId } = getState().invoice
     dispatch(startLoader())
     dispatch(setInvoiceError(''))
+    dispatch(setPaymentMethodId(1))
     try {
       const customer = await getCustomerEntity(serviceURL, token, 1)
       if (customer != null) {
@@ -213,15 +210,24 @@ export function setParameters () {
         dispatch(setCustomerList(newList))
       }
       if (productList.length == 0) {
-        let newList = await getProductList(serviceURL, token, company.IdEmpresa, company.EquipoRegistrado.IdSucursal)
+        let newList = await getProductList(serviceURL, token, company.IdEmpresa, company.EquipoRegistrado.IdSucursal, '')
       dispatch(setProductList(newList))
       }
-      if (paymentBankId == null) {
-        const id = await getPaymentBankId(serviceURL, token, company.IdEmpresa)
-        if (id == null) throw 'El banco adquiriente no se encuentra parametrizado. Por favor verifique los parámatros de su empresa.'
-        dispatch(setPaymentBankId(id))
-      }
       dispatch(stopLoader())
+    } catch (error) {
+      dispatch(stopLoader())
+      dispatch(setInvoiceError(error))
+    }
+  }
+}
+
+export function filterProductList (text) {
+  return async (dispatch, getState) => {
+    const { serviceURL } = getState().config
+    const { token } = getState().session
+    try {
+      let newList = await getProductList(serviceURL, token, company.IdEmpresa, company.EquipoRegistrado.IdSucursal, text)
+      dispatch(setProductList(newList))
     } catch (error) {
       dispatch(stopLoader())
       dispatch(setInvoiceError(error))
@@ -275,9 +281,10 @@ export function getProduct (idProduct) {
       const product = await getProductEntity(serviceURL, token, idProduct, company.EquipoRegistrado.IdSucursal)
       if (product != null) {
         let precio = product.PrecioVenta1
-        if (customer != null) precio = getCustomerPrice(customer.IdTipoPrecio, product)
-        product.PrecioVenta = roundNumber(precio / (1 + (product.ParametroImpuesto.TasaImpuesto / 100)), 3)
+        if (customer != null) precio = getCustomerPrice(customer, product)
+        product.PrecioVenta = precio
         dispatch(setProduct(product))
+        dispatch(filterProductList(''))
       }
     } catch (error) {
       dispatch(setInvoiceError(error))
@@ -338,7 +345,7 @@ export function saveInvoice () {
     const { serviceURL } = getState().config
     const { token, company } = getState().session
     const {
-      paymentBankId,
+      paymentMethodId,
       customer,
       customerName,
       exonerationType,
@@ -361,7 +368,7 @@ export function saveInvoice () {
         serviceURL,
         token,
         products,
-        paymentBankId,
+        paymentMethodId,
         company,
         customer.IdCliente,
         customerName,
