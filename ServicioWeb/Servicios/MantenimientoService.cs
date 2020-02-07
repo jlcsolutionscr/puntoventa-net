@@ -8,10 +8,7 @@ using LeandroSoftware.Core.Dominio.Entidades;
 using LeandroSoftware.ServicioWeb.Contexto;
 using log4net;
 using Unity;
-using System.Text;
 using LeandroSoftware.Core.Utilitario;
-using System.Web.Script.Serialization;
-using LeandroSoftware.Core.CustomClasses;
 using System.Globalization;
 
 namespace LeandroSoftware.ServicioWeb.Servicios
@@ -19,24 +16,28 @@ namespace LeandroSoftware.ServicioWeb.Servicios
     public interface IMantenimientoService
     {
         // Métodos para administrar parametros del sistema
-        IEnumerable<EquipoRegistrado> ObtenerListadoTerminalesDisponibles(string strUsuario, string strClave, string strIdentificacion, int intTipoDispositivo);
-        IEnumerable<LlaveDescripcion> ObtenerListadoEmpresasAdministrador();
-        IEnumerable<LlaveDescripcion> ObtenerListadoEmpresasPorTerminal(string strDispositivoId);
+        IList<EquipoRegistrado> ObtenerListadoTerminalesDisponibles(string strUsuario, string strClave, string strIdentificacion, int intTipoDispositivo);
+        IList<LlaveDescripcion> ObtenerListadoEmpresasAdministrador();
+        IList<LlaveDescripcion> ObtenerListadoEmpresasPorTerminal(string strDispositivoId);
         void RegistrarTerminal(string strUsuario, string strClave, string strIdentificacion, int intIdSucursal, int intIdTerminal, int intTipoDispositivo, string strDispositivoId);
         Usuario ValidarCredencialesAdmin(string strUsuario, string strClave);
         Usuario ValidarCredenciales(string strUsuario, string strClave, string id);
         Empresa ValidarCredenciales(string strUsuario, string strClave, int intIdEmpresa, string strValorRegistro);
+        bool ValidarUsuarioHacienda(string strUsuario, string strClave, ConfiguracionGeneral config);
+        bool AutorizacionPrecioExtraordinario(string strUsuario, string strClave, int intIdEmpresa);
         void ActualizarVersionApp(string strVersion);
         string ObtenerUltimaVersionApp();
         // Métodos para administrar las empresas
-        IEnumerable<LlaveDescripcion> ObtenerListadoEmpresa();
-        IEnumerable<LlaveDescripcion> ObtenerListadoSucursales(int intIdEmpresa);
-        IEnumerable<LlaveDescripcion> ObtenerListadoTerminales(int intIdEmpresa, int intIdSucursal);
+        IList<LlaveDescripcion> ObtenerListadoEmpresa();
+        IList<LlaveDescripcion> ObtenerListadoSucursales(int intIdEmpresa);
+        IList<LlaveDescripcion> ObtenerListadoTerminales(int intIdEmpresa, int intIdSucursal);
         string AgregarEmpresa(Empresa empresa);
         Empresa ObtenerEmpresa(int intIdEmpresa);
         void ActualizarEmpresa(Empresa empresa);
-        List<ReportePorEmpresa> ObtenerCatalogoReportePorEmpresa(int intIdEmpresa);
-        void ActualizarCatalogoReporte(int intIdEmpresa, List<ReportePorEmpresa> listado);
+        List<LlaveDescripcion> ObtenerListadoReportePorEmpresa(int intIdEmpresa);
+        List<LlaveDescripcion> ObtenerListadoRolePorEmpresa(int intIdEmpresa);
+        void ActualizarReportePorEmpresa(int intIdEmpresa, List<ReportePorEmpresa> listado);
+        void ActualizarRolePorEmpresa(int intIdEmpresa, List<RolePorEmpresa> listado);
         string ObtenerLogotipoEmpresa(int intIdEmpresa);
         void ActualizarLogoEmpresa(int intIdEmpresa, string strLogo);
         void ActualizarCertificadoEmpresa(int intIdEmpresa, string strCertificado);
@@ -54,74 +55,72 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         void AgregarUsuarioPorEmpresa(int intIdUsuario, int intIdEmpresa);
         void EliminarUsuario(int intIdUsuario);
         Usuario ObtenerUsuario(int intIdUsuario);
-        IEnumerable<LlaveDescripcion> ObtenerListadoUsuarios(int intIdEmpresa, string strCodigo);
+        IList<LlaveDescripcion> ObtenerListadoUsuarios(int intIdEmpresa, string strCodigo);
         // Métodos para administrar los vendedores del sistema
         void AgregarVendedor(Vendedor vendedor);
         void ActualizarVendedor(Vendedor vendedor);
         void EliminarVendedor(int intIdVendedor);
         Vendedor ObtenerVendedor(int intIdVendedor);
         Vendedor ObtenerVendedorPorDefecto(int intIdEmpresa);
-        IEnumerable<LlaveDescripcion> ObtenerListadoVendedores(int intIdEmpresa, string strNombre);
+        IList<LlaveDescripcion> ObtenerListadoVendedores(int intIdEmpresa, string strNombre);
         // Métodos para administrar los roles del sistema
         Role ObtenerRole(int intIdRole);
-        IEnumerable<LlaveDescripcion> ObtenerListadoRoles();
+
+        IList<LlaveDescripcion> ObtenerListadoRoles();
         // Métodos para administrar las líneas de producto
         void AgregarLinea(Linea linea);
         void ActualizarLinea(Linea linea);
         void EliminarLinea(int intIdLinea);
         Linea ObtenerLinea(int intIdLinea);
-        IEnumerable<LlaveDescripcion> ObtenerListadoLineas(int intIdEmpresa, string strDescripcion);
+        IList<LlaveDescripcion> ObtenerListadoLineas(int intIdEmpresa, string strDescripcion);
         // Métodos para administrar los productos
-        IEnumerable<LlaveDescripcion> ObtenerListadoTipoProducto();
-        IEnumerable<LlaveDescripcion> ObtenerListadoTipoExoneracion();
-        IEnumerable<LlaveDescripcion> ObtenerListadoTipoImpuesto();
+        IList<LlaveDescripcion> ObtenerListadoTipoProducto();
+        IList<LlaveDescripcion> ObtenerListadoTipoExoneracion();
+        IList<LlaveDescripcion> ObtenerListadoTipoImpuesto();
         ParametroImpuesto ObtenerParametroImpuesto(int intIdImpuesto);
         void AgregarProducto(Producto producto);
         void ActualizarProducto(Producto producto);
         void ActualizarPrecioVentaProductos(int intIdEmpresa, int intIdLinea, string strCodigo, string strDescripcion, decimal decPorcentajeAumento);
         void EliminarProducto(int intIdProducto);
-        Producto ObtenerProducto(int intIdProducto);
-        Producto ObtenerProductoPorCodigo(int intIdEmpresa, string strCodigo);
-        int ObtenerTotalListaProductos(int intIdEmpresa, bool bolIncluyeServicios, int intIdLinea, string strCodigo, string strDescripcion);
-        IEnumerable<ProductoDetalle> ObtenerListadoProductos(int intIdEmpresa, int numPagina, int cantRec, bool bolIncluyeServicios, int intIdLinea, string strCodigo, string strDescripcion);
-        int ObtenerTotalMovimientosPorProducto(int intIdProducto, string strFechaInicial, string strFechaFinal);
-        IEnumerable<MovimientoProducto> ObtenerMovimientosPorProducto(int intIdProducto, int numPagina, int cantRec, string strFechaInicial, string strFechaFinal);
+        Producto ObtenerProducto(int intIdProducto, int intIdSucursal);
+        Producto ObtenerProductoTransitorio(int intIdEmpresa);
+        Producto ObtenerProductoPorCodigo(int intIdEmpresa, string strCodigo, int intIdSucursal);
+        Producto ObtenerProductoPorCodigoProveedor(int intIdEmpresa, string strCodigo, int intIdSucursal);
+        int ObtenerTotalListaProductos(int intIdEmpresa, bool bolIncluyeServicios, bool bolFiltraActivos, int intIdLinea, string strCodigo, string strCodigoProveedor, string strDescripcion);
+        IList<ProductoDetalle> ObtenerListadoProductos(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, bool bolIncluyeServicios, bool bolFiltraActivos, int intIdLinea, string strCodigo, string strCodigoProveedor, string strDescripcion);
+        int ObtenerTotalMovimientosPorProducto(int intIdProducto, int intIdSucursal, string strFechaInicial, string strFechaFinal);
+        IList<MovimientoProducto> ObtenerMovimientosPorProducto(int intIdProducto, int intIdSucursal, int numPagina, int cantRec, string strFechaInicial, string strFechaFinal);
         // Métodos para obtener las condiciones de venta para facturación
-        IEnumerable<LlaveDescripcion> ObtenerListadoCondicionVenta();
+        IList<LlaveDescripcion> ObtenerListadoCondicionVenta();
         // Métodos para obtener las formas de pago por tipo de servicio
-        IEnumerable<LlaveDescripcion> ObtenerListadoFormaPagoFactura();
-        IEnumerable<LlaveDescripcion> ObtenerListadoFormaPagoCompra();
-        IEnumerable<LlaveDescripcion> ObtenerListadoFormaPagoEgreso();
-        IEnumerable<LlaveDescripcion> ObtenerListadoFormaPagoIngreso();
-        IEnumerable<LlaveDescripcion> ObtenerListadoFormaPagoMovimientoCxC();
-        IEnumerable<LlaveDescripcion> ObtenerListadoFormaPagoMovimientoCxP();
+        IList<LlaveDescripcion> ObtenerListadoFormaPagoCliente();
+        IList<LlaveDescripcion> ObtenerListadoFormaPagoEmpresa();
         // Métodos para administrar los parámetros de banco adquiriente
         void AgregarBancoAdquiriente(BancoAdquiriente bancoAdquiriente);
         void ActualizarBancoAdquiriente(BancoAdquiriente bancoAdquiriente);
         void EliminarBancoAdquiriente(int intIdBanco);
         BancoAdquiriente ObtenerBancoAdquiriente(int intIdBanco);
-        IEnumerable<LlaveDescripcion> ObtenerListadoBancoAdquiriente(int intIdEmpresa, string strDescripcion);
+        IList<LlaveDescripcion> ObtenerListadoBancoAdquiriente(int intIdEmpresa, string strDescripcion);
         // Métodos para administrar los parámetros de tipo de moneda
         TipoMoneda AgregarTipoMoneda(TipoMoneda tipoMoneda);
         void ActualizarTipoMoneda(TipoMoneda tipoMoneda);
         void EliminarTipoMoneda(int intIdTipoMoneda);
         TipoMoneda ObtenerTipoMoneda(int intIdTipoMoneda);
-        IEnumerable<LlaveDescripcion> ObtenerListadoTipoMoneda();
+        IList<LlaveDescripcion> ObtenerListadoTipoMoneda();
         // Métodos para administrar los ajustes de inventario
-        AjusteInventario AgregarAjusteInventario(AjusteInventario ajusteInventario);
-        void ActualizarAjusteInventario(AjusteInventario ajusteInventario);
+        string AgregarAjusteInventario(AjusteInventario ajusteInventario);
         void AnularAjusteInventario(int intIdAjusteInventario, int intIdUsuario);
         AjusteInventario ObtenerAjusteInventario(int intIdAjusteInventario);
-        int ObtenerTotalListaAjustes(int intIdEmpresa, int intIdAjusteInventario, string strDescripcion);
-        IEnumerable<LlaveDescripcion> ObtenerListadoAjustes(int intIdEmpresa, int numPagina, int cantRec, int intIdAjusteInventario, string strDescripcion);
+        int ObtenerTotalListaAjusteInventario(int intIdEmpresa, int intIdSucursal, int intIdAjusteInventario, string strDescripcion);
+        IList<AjusteInventarioDetalle> ObtenerListadoAjusteInventario(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, int intIdAjusteInventario, string strDescripcion);
         // Métodos para obtener parámetros generales del sistema
-        IEnumerable<LlaveDescripcion> ObtenerListadoTipoIdentificacion();
-        IEnumerable<LlaveDescripcion> ObtenerListadoCatalogoReportes();
+        IList<LlaveDescripcion> ObtenerListadoTipoIdentificacion();
+        IList<LlaveDescripcion> ObtenerListadoCatalogoReportes();
         CatalogoReporte ObtenerCatalogoReporte(int intIdReporte);
-        IEnumerable<LlaveDescripcion> ObtenerListadoProvincias();
-        IEnumerable<LlaveDescripcion> ObtenerListadoCantones(int intIdProvincia);
-        IEnumerable<LlaveDescripcion> ObtenerListadoDistritos(int intIdProvincia, int intIdCanton);
-        IEnumerable<LlaveDescripcion> ObtenerListadoBarrios(int intIdProvincia, int intIdCanton, int intIdDistrito);
+        IList<LlaveDescripcion> ObtenerListadoProvincias();
+        IList<LlaveDescripcion> ObtenerListadoCantones(int intIdProvincia);
+        IList<LlaveDescripcion> ObtenerListadoDistritos(int intIdProvincia, int intIdCanton);
+        IList<LlaveDescripcion> ObtenerListadoBarrios(int intIdProvincia, int intIdCanton, int intIdDistrito);
         IList<LlaveDescripcion> ObtenerListadoTipodePrecio();
         void ValidarRegistroAutenticacion(string strToken, int intRole);
         void EliminarRegistroAutenticacionInvalidos();
@@ -146,7 +145,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<EquipoRegistrado> ObtenerListadoTerminalesDisponibles(string strUsuario, string strClave, string strIdentificacion, int intTipoDispositivo)
+        public IList<EquipoRegistrado> ObtenerListadoTerminalesDisponibles(string strUsuario, string strClave, string strIdentificacion, int intTipoDispositivo)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -158,7 +157,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (empresa.FechaVence < DateTime.Today) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
                     if (empresa.TipoContrato == 2 && empresa.CantidadDisponible == 0) throw new BusinessException("El disponible de documentos electrónicos fue agotado. Por favor, pongase en contacto con su proveedor del servicio.");
                     UsuarioPorEmpresa usuarioEmpresa = dbContext.UsuarioPorEmpresaRepository.Include("Usuario").FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa && x.Usuario.CodigoUsuario == strUsuario.ToUpper());
-                    if (strUsuario.ToUpper() != "JASLOP" && usuarioEmpresa == null) throw new BusinessException("Usuario no registrado en la empresa indicada. Por favor verifique la información suministrada.");
+                    if (strUsuario.ToUpper() != "JASLOP" && usuarioEmpresa == null) throw new BusinessException("Usuario no registrado en la empresa suministrada. Por favor verifique la información suministrada.");
                     Usuario usuario = null;
                     if (strUsuario.ToUpper() == "JASLOP")
                     {
@@ -199,7 +198,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoEmpresasAdministrador()
+        public IList<LlaveDescripcion> ObtenerListadoEmpresasAdministrador()
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -222,7 +221,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoSucursales(int intIdEmpresa)
+        public IList<LlaveDescripcion> ObtenerListadoSucursales(int intIdEmpresa)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -232,7 +231,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     var listado = dbContext.SucursalPorEmpresaRepository.Where(x => x.IdEmpresa == intIdEmpresa);
                     foreach (SucursalPorEmpresa value in listado)
                     {
-                        LlaveDescripcion item = new LlaveDescripcion(value.Empresa.IdEmpresa, value.Empresa.NombreComercial);
+                        LlaveDescripcion item = new LlaveDescripcion(value.IdSucursal, value.NombreSucursal);
                         listaEmpresa.Add(item);
                     }
                     return listaEmpresa;
@@ -245,7 +244,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
         
-        public IEnumerable<LlaveDescripcion> ObtenerListadoTerminales(int intIdEmpresa, int intIdSucursal)
+        public IList<LlaveDescripcion> ObtenerListadoTerminales(int intIdEmpresa, int intIdSucursal)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -268,7 +267,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoEmpresasPorTerminal(string strDispositivoId)
+        public IList<LlaveDescripcion> ObtenerListadoEmpresasPorTerminal(string strDispositivoId)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -302,7 +301,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (empresa.FechaVence < DateTime.Today) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
                     if (empresa.TipoContrato == 2 && empresa.CantidadDisponible == 0) throw new BusinessException("El disponible de documentos electrónicos fue agotado. Por favor, pongase en contacto con su proveedor del servicio.");
                     UsuarioPorEmpresa usuarioEmpresa = dbContext.UsuarioPorEmpresaRepository.Include("Usuario").FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa && x.Usuario.CodigoUsuario == strUsuario.ToUpper());
-                    if (strUsuario.ToUpper() != "JASLOP" && usuarioEmpresa == null) throw new BusinessException("Usuario no registrado en la empresa indicada. Por favor verifique la información suministrada.");
+                    if (strUsuario.ToUpper() != "JASLOP" && usuarioEmpresa == null) throw new BusinessException("Usuario no registrado en la empresa suministrada. Por favor verifique la información suministrada.");
                     Usuario usuario = null;
                     if (strUsuario.ToUpper() == "JASLOP")
                     {
@@ -387,7 +386,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     else
                     {
                         usuarioEmpresa = dbContext.UsuarioPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa && x.Usuario.CodigoUsuario == strUsuario.ToUpper());
-                        if (usuarioEmpresa == null) throw new BusinessException("Usuario no registrado en la empresa indicada. Por favor verifique la información suministrada.");
+                        if (usuarioEmpresa == null) throw new BusinessException("Usuario no registrado en la empresa suministrada. Por favor verifique la información suministrada.");
                         usuario = dbContext.UsuarioRepository.Include("RolePorUsuario.Role").FirstOrDefault(x => x.IdUsuario == usuarioEmpresa.IdUsuario);
                     }
                     if (usuario.Clave != strClave) throw new BusinessException("Los credenciales suministrados no son válidos. Verifique los credenciales suministrados.");
@@ -409,7 +408,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (BusinessException ex)
                 {
-                    log.Error("Error al validar credenciales para la identificación: " + strIdentificacion + " Error: " + ex.Message);
                     throw ex;
                 }
                 catch (Exception ex)
@@ -436,7 +434,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     else
                     {
                         usuarioEmpresa = dbContext.UsuarioPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.Usuario.CodigoUsuario == strUsuario.ToUpper());
-                        if (usuarioEmpresa == null) throw new BusinessException("Usuario no registrado en la empresa indicada. Por favor verifique la información suministrada.");
+                        if (usuarioEmpresa == null) throw new BusinessException("Usuario no registrado en la empresa suministrada. Por favor verifique la información suministrada.");
                         usuario = dbContext.UsuarioRepository.Include("RolePorUsuario.Role").FirstOrDefault(x => x.IdUsuario == usuarioEmpresa.IdUsuario);
                     }
                     if (usuario.Clave != strClave) throw new BusinessException("Los credenciales suministrados no son válidos. Verifique los credenciales suministrados.");
@@ -490,7 +488,56 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (BusinessException ex)
                 {
-                    log.Error("Error al validar credenciales para la terminal: " + strValorRegistro + " Error: " + ex.Message);
+                    throw ex;
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al validar los credenciales del usuario por terminal: ", ex);
+                    throw new Exception("Error en la validación de los credenciales suministrados por favor verifique la información. . .");
+                }
+            }
+        }
+
+        public bool ValidarUsuarioHacienda(string strUsuario, string strClave, ConfiguracionGeneral config)
+        {
+            bool bolRespuesta = false;
+            try
+            {
+                TokenType token = ComprobanteElectronicoService.ObtenerToken(config.ServicioTokenURL, config.ClientId, strUsuario, strClave).Result;
+                if (token.access_token != null) bolRespuesta = true;
+            }
+            catch (Exception ex)
+            {
+                log.Error("Error al validar los credenciales del usuario en Hacienda: ", ex);
+            }
+            return bolRespuesta;
+        }
+
+        public bool AutorizacionPrecioExtraordinario(string strUsuario, string strClave, int intIdEmpresa)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                bool bolAutorizado = false;
+                try
+                {
+                    Usuario usuario = null;
+                    UsuarioPorEmpresa usuarioEmpresa = null;
+                    usuarioEmpresa = dbContext.UsuarioPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.Usuario.CodigoUsuario == strUsuario.ToUpper());
+                    if (usuarioEmpresa == null) throw new BusinessException("Usuario no registrado en la empresa suministrada. Por favor verifique la información suministrada.");
+                    usuario = dbContext.UsuarioRepository.Include("RolePorUsuario.Role").FirstOrDefault(x => x.IdUsuario == usuarioEmpresa.IdUsuario);
+                    if (usuario.Clave != strClave) throw new BusinessException("Los credenciales suministrados no son válidos. Verifique los credenciales suministrados.");
+                    foreach (var role in usuario.RolePorUsuario)
+                    {
+                        if (role.IdRole == 52)
+                        {
+                            bolAutorizado = true;
+                            break;
+                        }
+                    }
+                    return bolAutorizado;
+                }
+                catch (BusinessException ex)
+                {
                     throw ex;
                 }
                 catch (Exception ex)
@@ -542,7 +589,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             return strUltimaVersion;
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoEmpresa()
+        public IList<LlaveDescripcion> ObtenerListadoEmpresa()
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -637,16 +684,22 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public List<ReportePorEmpresa> ObtenerCatalogoReportePorEmpresa(int intIdEmpresa)
+        public List<LlaveDescripcion> ObtenerListadoReportePorEmpresa(int intIdEmpresa)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
+                var listaReportes = new List<LlaveDescripcion>();
                 try
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    List<ReportePorEmpresa> listadoReportePorEmpresa = dbContext.ReportePorEmpresaRepository.Where(x => x.IdEmpresa == intIdEmpresa).ToList();
-                    return listadoReportePorEmpresa;
+                    var listado = dbContext.ReportePorEmpresaRepository.Include("CatalogoReporte").Where(x => x.IdEmpresa == intIdEmpresa);
+                    foreach (var value in listado)
+                    {
+                        LlaveDescripcion item = new LlaveDescripcion(value.IdReporte, value.CatalogoReporte.NombreReporte);
+                        listaReportes.Add(item);
+                    }
+                    return listaReportes;
                 }
                 catch (BusinessException ex)
                 {
@@ -660,7 +713,30 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void ActualizarCatalogoReporte(int intIdEmpresa, List<ReportePorEmpresa> listado)
+        public List<LlaveDescripcion> ObtenerListadoRolePorEmpresa(int intIdEmpresa)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                var listaRoles = new List<LlaveDescripcion>();
+                try
+                {
+                    var listado = dbContext.RolePorEmpresaRepository.Include("Role").Where(x => x.IdEmpresa == intIdEmpresa && x.IdRole >= 50);
+                    foreach (var value in listado)
+                    {
+                        LlaveDescripcion item = new LlaveDescripcion(value.IdRole, value.Role.Descripcion);
+                        listaRoles.Add(item);
+                    }
+                    return listaRoles;
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al obtener el listado de registros de roles de usuario: ", ex);
+                    throw new Exception("Se produjo un error consultando el listado de roles de acceso. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public void ActualizarReportePorEmpresa(int intIdEmpresa, List<ReportePorEmpresa> listado)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -675,8 +751,29 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    log.Error("Error al obtener el logotipo de la empresa: ", ex);
-                    throw new Exception("Se produjo un error consultando el logotipo de la empresa. Por favor consulte con su proveedor.");
+                    log.Error("Error al actualizar el listado de reportes por empresa: ", ex);
+                    throw new Exception("Se produjo un error al actualizar el listado de reportes por empresa. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public void ActualizarRolePorEmpresa(int intIdEmpresa, List<RolePorEmpresa> listado)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    List<RolePorEmpresa> listadoReportePorEmpresaAnt = dbContext.RolePorEmpresaRepository.Where(x => x.IdEmpresa == intIdEmpresa).ToList();
+                    foreach (RolePorEmpresa reporte in listadoReportePorEmpresaAnt)
+                        dbContext.RolePorEmpresaRepository.Remove(reporte);
+                    foreach (RolePorEmpresa reporte in listado)
+                        dbContext.RolePorEmpresaRepository.Add(reporte);
+                    dbContext.Commit();
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al actualizar el listado de roles por empresa: ", ex);
+                    throw new Exception("Se produjo un error al actualizar el listado de roles por empresa. Por favor consulte con su proveedor.");
                 }
             }
         }
@@ -1064,7 +1161,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoUsuarios(int intIdEmpresa, string strCodigo)
+        public IList<LlaveDescripcion> ObtenerListadoUsuarios(int intIdEmpresa, string strCodigo)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -1219,7 +1316,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoVendedores(int intIdEmpresa, string strNombre)
+        public IList<LlaveDescripcion> ObtenerListadoVendedores(int intIdEmpresa, string strNombre)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -1261,7 +1358,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoRoles()
+        public IList<LlaveDescripcion> ObtenerListadoRoles()
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -1383,7 +1480,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoLineas(int intIdEmpresa, string strDescripcion)
+        public IList<LlaveDescripcion> ObtenerListadoLineas(int intIdEmpresa, string strDescripcion)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -1409,7 +1506,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoTipoProducto()
+        public IList<LlaveDescripcion> ObtenerListadoTipoProducto()
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -1432,7 +1529,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoTipoExoneracion()
+        public IList<LlaveDescripcion> ObtenerListadoTipoExoneracion()
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -1455,7 +1552,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoTipoImpuesto()
+        public IList<LlaveDescripcion> ObtenerListadoTipoImpuesto()
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -1504,8 +1601,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(producto.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    bool existe = dbContext.ProductoRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.Codigo == producto.Codigo).Count() > 0;
+                    bool existe = dbContext.ProductoRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.Codigo == producto.Codigo).Count() > 0;
                     if (existe) throw new BusinessException("El código de producto ingresado ya está registrado en la empresa.");
+                    if (producto.Tipo == 4)
+                    {
+                        bool transitorio = dbContext.ProductoRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.Tipo == 4).Count() > 0;
+                        if (transitorio) throw new BusinessException("Ya existe un producto de tipo 'Transitorio' registrado en la empresa.");
+                    }
                     dbContext.ProductoRepository.Add(producto);
                     dbContext.Commit();
                 }
@@ -1531,10 +1633,20 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(producto.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
-                    bool existe = dbContext.ProductoRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.Codigo == producto.Codigo && x.IdProducto != producto.IdProducto).Count() > 0;
-                    if (existe) throw new BusinessException("El código de producto ingresado ya está registrado en la empresa.");
+                    bool existe = dbContext.ProductoRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto != producto.IdProducto && x.Codigo == producto.Codigo).Count() > 0;
+                    if (existe) throw new BusinessException("El código del producto ingresado ya está registrado en la empresa.");
+                    if (producto.Tipo == 4)
+                    {
+                        bool transitorio = dbContext.ProductoRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto != producto.IdProducto && x.Tipo == 4).Count() > 0;
+                        if (transitorio) throw new BusinessException("Ya existe un producto de tipo 'Transitorio' registrado en la empresa.");
+                    }
+                    if (producto.Imagen == null)
+                    {
+                        byte[] imagen = dbContext.ProductoRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto).FirstOrDefault().Imagen;
+                        producto.Imagen = imagen;
+                    }
                     producto.ParametroImpuesto = null;
+                    producto.Proveedor = null;
                     dbContext.NotificarModificacion(producto);
                     dbContext.Commit();
                 }
@@ -1560,7 +1672,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     var listaProductos = dbContext.ProductoRepository.Where(x => x.IdEmpresa == intIdEmpresa);
                     if (intIdLinea > 0)
                         listaProductos = listaProductos.Where(x => x.IdLinea == intIdLinea);
@@ -1604,7 +1715,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (producto == null) throw new BusinessException("El producto por eliminar no existe.");
                     Empresa empresa = dbContext.EmpresaRepository.Find(producto.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     dbContext.ProductoRepository.Remove(producto);
                     dbContext.Commit();
                 }
@@ -1627,16 +1737,20 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public Producto ObtenerProducto(int intIdProducto)
+        public Producto ObtenerProducto(int intIdProducto, int intIdSucursal)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 try
                 {
                     Producto producto = dbContext.ProductoRepository.Include("ParametroImpuesto").Include("Proveedor").FirstOrDefault(x => x.IdProducto == intIdProducto);
-                    producto.Proveedor.Producto = null;
-                    foreach (MovimientoProducto movimiento in producto.MovimientoProducto)
-                        movimiento.Producto = null;
+                    if (producto != null)
+                    {
+                        var existencias = dbContext.ExistenciaPorSucursalRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == intIdProducto && x.IdSucursal == intIdSucursal).FirstOrDefault();
+                        decimal decCantidad = existencias != null ? existencias.Cantidad : 0;
+                        producto.Proveedor.Producto = null;
+                        producto.Existencias = decCantidad;
+                    }
                     return producto;
                 }
                 catch (Exception ex)
@@ -1647,13 +1761,36 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public Producto ObtenerProductoPorCodigo(int intIdEmpresa, string strCodigo)
+        public Producto ObtenerProductoTransitorio(int intIdEmpresa)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 try
                 {
-                    return dbContext.ProductoRepository.Include("ParametroImpuesto").Where(x => x.IdEmpresa == intIdEmpresa && x.Codigo.Equals(strCodigo)).FirstOrDefault();
+                    return dbContext.ProductoRepository.FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.Tipo == 4);
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al obtener el código de producto transitorio: ", ex);
+                    throw new Exception("Se produjo un error consultando el producto transitorio. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public Producto ObtenerProductoPorCodigo(int intIdEmpresa, string strCodigo, int intIdSucursal)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    Producto producto = dbContext.ProductoRepository.Include("ParametroImpuesto").Where(x => x.IdEmpresa == intIdEmpresa && x.Codigo.Equals(strCodigo)).FirstOrDefault();
+                    if (producto != null)
+                    {
+                        var existencias = dbContext.ExistenciaPorSucursalRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == intIdSucursal).FirstOrDefault();
+                        decimal decCantidad = existencias != null ? existencias.Cantidad : 0;
+                        producto.Existencias = decCantidad;
+                    }
+                    return producto;
                 }
                 catch (Exception ex)
                 {
@@ -1663,22 +1800,49 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public int ObtenerTotalListaProductos(int intIdEmpresa, bool bolIncluyeServicios, int intIdLinea, string strCodigo, string strDescripcion)
+        public Producto ObtenerProductoPorCodigoProveedor(int intIdEmpresa, string strCodigo, int intIdSucursal)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 try
                 {
-                    var listaProductos = dbContext.ProductoRepository.Where(x => x.IdEmpresa == intIdEmpresa);
+                    Producto producto = dbContext.ProductoRepository.Include("ParametroImpuesto").Where(x => x.IdEmpresa == intIdEmpresa && x.CodigoProveedor.Equals(strCodigo)).FirstOrDefault();
+                    if (producto != null)
+                    {
+                        var existencias = dbContext.ExistenciaPorSucursalRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == intIdSucursal).FirstOrDefault();
+                        decimal decCantidad = existencias != null ? existencias.Cantidad : 0;
+                        producto.Existencias = decCantidad;
+                    }
+                    return producto;
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al obtener el producto: ", ex);
+                    throw new Exception("Se produjo un error consultando la información del producto. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public int ObtenerTotalListaProductos(int intIdEmpresa, bool bolIncluyeServicios, bool bolFiltraActivos, int intIdLinea, string strCodigo, string strCodigoProveedor, string strDescripcion)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    var listado = dbContext.ProductoRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.Tipo != StaticTipoProducto.Transitorio);
                     if (intIdLinea > 0)
-                        listaProductos = listaProductos.Where(x => x.IdLinea == intIdLinea);
+                        listado = listado.Where(x => x.IdLinea == intIdLinea);
                     if (!strCodigo.Equals(string.Empty))
-                        listaProductos = listaProductos.Where(x => x.Codigo.Contains(strCodigo));
+                        listado = listado.Where(x => x.Codigo.Contains(strCodigo));
+                    if (!strCodigoProveedor.Equals(string.Empty))
+                        listado = listado.Where(x => x.CodigoProveedor.Contains(strCodigoProveedor));
                     if (!strDescripcion.Equals(string.Empty))
-                        listaProductos = listaProductos.Where(x => x.Descripcion.Contains(strDescripcion));
+                        listado = listado.Where(x => x.Descripcion.Contains(strDescripcion));
                     if (!bolIncluyeServicios)
-                        listaProductos = listaProductos.Where(x => x.Tipo == StaticTipoProducto.Producto);
-                    return listaProductos.Count();
+                        listado = listado.Where(x => x.Tipo == StaticTipoProducto.Producto);
+                    if (bolFiltraActivos)
+                        listado = listado.Where(x => x.Activo);
+                    return listado.Count();
                 }
                 catch (Exception ex)
                 {
@@ -1688,29 +1852,36 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<ProductoDetalle> ObtenerListadoProductos(int intIdEmpresa, int numPagina, int cantRec, bool bolIncluyeServicios, int intIdLinea, string strCodigo, string strDescripcion)
+        public IList<ProductoDetalle> ObtenerListadoProductos(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, bool bolIncluyeServicios, bool bolFiltraActivos, int intIdLinea, string strCodigo, string strCodigoProveedor, string strDescripcion)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 var listaProducto = new List<ProductoDetalle>();
                 try
                 {
-                    var listado = dbContext.ProductoRepository.Where(x => x.IdEmpresa == intIdEmpresa);
+                    var listado = dbContext.ProductoRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.Tipo != StaticTipoProducto.Transitorio);
                     if (intIdLinea > 0)
                         listado = listado.Where(x => x.IdLinea == intIdLinea);
                     if (!strCodigo.Equals(string.Empty))
                         listado = listado.Where(x => x.Codigo.Contains(strCodigo));
+                    if (!strCodigoProveedor.Equals(string.Empty))
+                        listado = listado.Where(x => x.CodigoProveedor.Contains(strCodigoProveedor));
                     if (!strDescripcion.Equals(string.Empty))
                         listado = listado.Where(x => x.Descripcion.Contains(strDescripcion));
                     if (!bolIncluyeServicios)
                         listado = listado.Where(x => x.Tipo == StaticTipoProducto.Producto);
+                    if (bolFiltraActivos)
+                        listado = listado.Where(x => x.Activo);
                     if (cantRec > 0)
                         listado = listado.OrderBy(x => x.Codigo).Skip((numPagina - 1) * cantRec).Take(cantRec);
                     else
                         listado = listado.OrderBy(x => x.Codigo);
-                    foreach (Producto value in listado)
+                    var lineas = listado.ToList();
+                    foreach (var value in lineas)
                     {
-                        ProductoDetalle item = new ProductoDetalle(value.IdProducto, value.Codigo, value.Descripcion, value.Cantidad, value.PrecioCosto, value.PrecioVenta1);
+                        var existencias = dbContext.ExistenciaPorSucursalRepository.AsNoTracking().Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdProducto == value.IdProducto).FirstOrDefault();
+                        decimal decCantidad = existencias != null ? existencias.Cantidad : 0;
+                        ProductoDetalle item = new ProductoDetalle(value.IdProducto, value.Codigo, value.CodigoProveedor, value.Descripcion, decCantidad, value.PrecioCosto, value.PrecioVenta1, value.Observacion, value.Activo);
                         listaProducto.Add(item);
                     }
                     return listaProducto;
@@ -1723,7 +1894,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public int ObtenerTotalMovimientosPorProducto(int intIdProducto, string strFechaInicial, string strFechaFinal)
+        public int ObtenerTotalMovimientosPorProducto(int intIdProducto, int intIdSucursal, string strFechaInicial, string strFechaFinal)
         {
             DateTime datFechaInicial = DateTime.ParseExact(strFechaInicial + " 00:00:01", strFormat, provider);
             DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
@@ -1731,7 +1902,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    var listaMovimientos = dbContext.MovimientoProductoRepository.Where(x => x.IdProducto == intIdProducto && x.Fecha > datFechaInicial && x.Fecha < datFechaFinal);
+                    var listaMovimientos = dbContext.MovimientoProductoRepository.Where(x => x.IdProducto == intIdProducto && x.IdSucursal == intIdSucursal && x.Fecha > datFechaInicial && x.Fecha < datFechaFinal);
                     return listaMovimientos.Count();
                 }
                 catch (Exception ex)
@@ -1742,7 +1913,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<MovimientoProducto> ObtenerMovimientosPorProducto(int intIdProducto, int numPagina, int cantRec, string strFechaInicial, string strFechaFinal)
+        public IList<MovimientoProducto> ObtenerMovimientosPorProducto(int intIdProducto, int intIdSucursal, int numPagina, int cantRec, string strFechaInicial, string strFechaFinal)
         {
             DateTime datFechaInicial = DateTime.ParseExact(strFechaInicial + " 00:00:01", strFormat, provider);
             DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
@@ -1750,7 +1921,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    var listaMovimientos = dbContext.MovimientoProductoRepository.Where(x => x.IdProducto == intIdProducto && x.Fecha >= datFechaInicial && x.Fecha <= datFechaFinal);
+                    var listaMovimientos = dbContext.MovimientoProductoRepository.Where(x => x.IdProducto == intIdProducto && x.IdSucursal == intIdSucursal && x.Fecha >= datFechaInicial && x.Fecha <= datFechaFinal);
                     if (cantRec > 0)
                         return listaMovimientos.OrderByDescending(x => x.Fecha).Skip((numPagina - 1) * cantRec).Take(cantRec).ToList();
                     else
@@ -1764,14 +1935,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoCondicionVenta()
+        public IList<LlaveDescripcion> ObtenerListadoCondicionVenta()
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 var listaCondicionVenta = new List<LlaveDescripcion>();
                 try
                 {
-                    var listado = dbContext.CondicionVentaRepository;
+                    var listado = dbContext.CondicionVentaRepository.Where(x => new[] { 1, 2 }.Contains(x.IdCondicionVenta));
                     foreach (var value in listado)
                     {
                         LlaveDescripcion item = new LlaveDescripcion(value.IdCondicionVenta, value.Descripcion);
@@ -1787,7 +1958,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoFormaPagoFactura()
+        public IList<LlaveDescripcion> ObtenerListadoFormaPagoCliente()
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -1810,7 +1981,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoFormaPagoCompra()
+        public IList<LlaveDescripcion> ObtenerListadoFormaPagoEmpresa()
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -1828,98 +1999,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     log.Error("Error al obtener el listado de formas de pago para compras: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de formas de pago. Por favor consulte con su proveedor.");
-                }
-            }
-        }
-
-        public IEnumerable<LlaveDescripcion> ObtenerListadoFormaPagoEgreso()
-        {
-            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
-            {
-                var listaFormaPagoEgreso = new List<LlaveDescripcion>();
-                try
-                {
-                    var listado = dbContext.FormaPagoRepository.Where(x => new[] { StaticFormaPago.Efectivo, StaticFormaPago.TransferenciaDepositoBancario, StaticFormaPago.Cheque, StaticFormaPago.Tarjeta }.Contains(x.IdFormaPago));
-                    foreach (var value in listado)
-                    {
-                        LlaveDescripcion item = new LlaveDescripcion(value.IdFormaPago, value.Descripcion);
-                        listaFormaPagoEgreso.Add(item);
-                    }
-                    return listaFormaPagoEgreso;
-                }
-                catch (Exception ex)
-                {
-                    log.Error("Error al obtener el listado de formas de pago para egresos: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de formas de pago. Por favor consulte con su proveedor.");
-                }
-            }
-        }
-
-        public IEnumerable<LlaveDescripcion> ObtenerListadoFormaPagoIngreso()
-        {
-            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
-            {
-                var listaFormaPagoIngreso = new List<LlaveDescripcion>();
-                try
-                {
-                    var listado = dbContext.FormaPagoRepository.Where(x => new[] { StaticFormaPago.Efectivo, StaticFormaPago.TransferenciaDepositoBancario, StaticFormaPago.Cheque }.Contains(x.IdFormaPago));
-                    foreach (var value in listado)
-                    {
-                        LlaveDescripcion item = new LlaveDescripcion(value.IdFormaPago, value.Descripcion);
-                        listaFormaPagoIngreso.Add(item);
-                    }
-                    return listaFormaPagoIngreso;
-                }
-                catch (Exception ex)
-                {
-                    log.Error("Error al obtener el listado de formas de pago para egresos: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de formas de pago. Por favor consulte con su proveedor.");
-                }
-            }
-        }
-
-        public IEnumerable<LlaveDescripcion> ObtenerListadoFormaPagoMovimientoCxC()
-        {
-            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
-            {
-                var listaFormaPagoCxC = new List<LlaveDescripcion>();
-                try
-                {
-                    var listado = dbContext.FormaPagoRepository.Where(x => new[] { StaticFormaPago.Efectivo, StaticFormaPago.TransferenciaDepositoBancario, StaticFormaPago.Cheque, StaticFormaPago.Tarjeta }.Contains(x.IdFormaPago));
-                    foreach (var value in listado)
-                    {
-                        LlaveDescripcion item = new LlaveDescripcion(value.IdFormaPago, value.Descripcion);
-                        listaFormaPagoCxC.Add(item);
-                    }
-                    return listaFormaPagoCxC;
-                }
-                catch (Exception ex)
-                {
-                    log.Error("Error al obtener el listado de formas de pago para movimientos de cuentas por cobrar: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de formas de pago. Por favor consulte con su proveedor.");
-                }
-            }
-        }
-
-        public IEnumerable<LlaveDescripcion> ObtenerListadoFormaPagoMovimientoCxP()
-        {
-            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
-            {
-                var listaFormaPagoCxP = new List<LlaveDescripcion>();
-                try
-                {
-                    var listado = dbContext.FormaPagoRepository.Where(x => new[] { StaticFormaPago.Efectivo, StaticFormaPago.TransferenciaDepositoBancario, StaticFormaPago.Cheque }.Contains(x.IdFormaPago));
-                    foreach (var value in listado)
-                    {
-                        LlaveDescripcion item = new LlaveDescripcion(value.IdFormaPago, value.Descripcion);
-                        listaFormaPagoCxP.Add(item);
-                    }
-                    return listaFormaPagoCxP;
-                }
-                catch (Exception ex)
-                {
-                    log.Error("Error al obtener el listado de formas de pago para movimientos de cuentas por pagar: ", ex);
                     throw new Exception("Se produjo un error consultando el listado de formas de pago. Por favor consulte con su proveedor.");
                 }
             }
@@ -1958,7 +2037,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(bancoAdquiriente.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     dbContext.NotificarModificacion(bancoAdquiriente);
                     dbContext.Commit();
                 }
@@ -1986,7 +2064,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (banco == null) throw new BusinessException("El banco adquiriente por eliminar no existe.");
                     Empresa empresa = dbContext.EmpresaRepository.Find(banco.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     dbContext.BancoAdquirienteRepository.Remove(banco);
                     dbContext.Commit();
                 }
@@ -2025,7 +2102,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoBancoAdquiriente(int intIdEmpresa, string strDescripcion)
+        public IList<LlaveDescripcion> ObtenerListadoBancoAdquiriente(int intIdEmpresa, string strDescripcion)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -2134,7 +2211,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoTipoMoneda()
+        public IList<LlaveDescripcion> ObtenerListadoTipoMoneda()
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -2157,262 +2234,42 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public AjusteInventario AgregarAjusteInventario(AjusteInventario ajusteInventario)
+        public string AgregarAjusteInventario(AjusteInventario ajusteInventario)
         {
-            //decimal decTotalAjustePorLinea = 0;
-            //ParametroContable lineaParam = null;
-            DataTable dtbInventarios = new DataTable();
-            dtbInventarios.Columns.Add("IdLinea", typeof(int));
-            dtbInventarios.Columns.Add("Total", typeof(decimal));
-            dtbInventarios.PrimaryKey = new DataColumn[] { dtbInventarios.Columns[0] };
-            //CuentaPorCobrar cuentaPorCobrar = null;
-            //Asiento asiento = null;
-            //MovimientoBanco movimientoBanco = null;
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 try
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(ajusteInventario.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
-                    //if (empresa.Contabiliza)
-                    //{
-                    //    ingresosVentasParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.IngresosPorVentas).FirstOrDefault();
-                    //    costoVentasParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.CostosDeVentas).FirstOrDefault();
-                    //    ivaPorPagarParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.IVAPorPagar).FirstOrDefault();
-                    //    efectivoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.Efectivo).FirstOrDefault();
-                    //    cuentaPorCobrarClientesParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.CuentasPorCobrarClientes).FirstOrDefault();
-                    //    cuentaPorCobrarTarjetaParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.CuentasPorCobrarTarjeta).FirstOrDefault();
-                    //    gastoComisionParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.GastoComisionTarjeta).FirstOrDefault();
-                    //    if (ingresosVentasParam == null || costoVentasParam == null || ivaPorPagarParam == null || efectivoParam == null || cuentaPorCobrarClientesParam == null || cuentaPorCobrarTarjetaParam == null || gastoComisionParam == null)
-                    //        throw new BusinessException("La parametrización contable está incompleta y no se puede continuar. Por favor verificar.");
-                    //}
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == ajusteInventario.IdEmpresa && x.IdSucursal == ajusteInventario.IdSucursal);
+                    if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     dbContext.AjusteInventarioRepository.Add(ajusteInventario);
                     foreach (var detalleAjuste in ajusteInventario.DetalleAjusteInventario)
                     {
                         Producto producto = dbContext.ProductoRepository.Include("Linea").FirstOrDefault(x => x.IdProducto == detalleAjuste.IdProducto);
-                        if (producto.Tipo == StaticTipoProducto.Producto)
+                        if (producto == null)
+                            throw new Exception("El producto asignado al detalle de la devolución no existe.");
+                        if (producto.Tipo != StaticTipoProducto.Producto)
+                            throw new BusinessException("El tipo de producto por ajustar no puede ser un servicio. Por favor verificar.");
+                        ExistenciaPorSucursal existencias = dbContext.ExistenciaPorSucursalRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == ajusteInventario.IdSucursal).FirstOrDefault();
+                        if (existencias == null)
+                            throw new BusinessException("El producto " + producto.IdProducto + " no posee registro de existencias. Por favor consulte con su proveedor.");
+                        existencias.Cantidad += detalleAjuste.Cantidad;
+                        dbContext.NotificarModificacion(existencias);
+                        MovimientoProducto movimiento = new MovimientoProducto
                         {
-                            MovimientoProducto movimiento = new MovimientoProducto
-                            {
-                                IdProducto = producto.IdProducto,
-                                Fecha = DateTime.Now,
-                                Tipo = detalleAjuste.Cantidad < 0 ? StaticTipoMovimientoProducto.Salida : StaticTipoMovimientoProducto.Entrada,
-                                Origen = "Registro de ajuste de inventario.",
-                                Referencia = detalleAjuste.IdAjuste.ToString(),
-                                Cantidad = detalleAjuste.Cantidad < 0 ? detalleAjuste.Cantidad * -1 : detalleAjuste.Cantidad,
-                                PrecioCosto = detalleAjuste.PrecioCosto
-                            };
-                            producto.MovimientoProducto.Add(movimiento);
-                            producto.Cantidad += detalleAjuste.Cantidad;
-                            dbContext.NotificarModificacion(producto);
-                        }
-                        //if (empresa.Contabiliza)
-                        //{
-                        //    if (producto.Tipo == StaticTipoProducto.Producto)
-                        //    {
-                        //        decimal decTotalPorLinea = detalleFactura.PrecioVenta * detalleFactura.Cantidad;
-                        //        decTotalPorLinea = Math.Round(decTotalPorLinea - (factura.Descuento / decSubTotalFactura * decTotalPorLinea), 2, MidpointRounding.AwayFromZero);
-                        //        if (!producto.Excento)
-                        //            decTotalPorLinea = Math.Round(decTotalPorLinea / (1 + (factura.PorcentajeIVA / 100)), 2, MidpointRounding.AwayFromZero);
-                        //        decTotalMercancia += decTotalPorLinea;
-                        //        decTotalCostoVentas += producto.PrecioCosto * detalleFactura.Cantidad;
-                        //        int intExiste = dtbInventarios.Rows.IndexOf(dtbInventarios.Rows.Find(producto.Linea.IdLinea));
-                        //        if (intExiste >= 0)
-                        //            dtbInventarios.Rows[intExiste]["Total"] = (decimal)dtbInventarios.Rows[intExiste]["Total"] + (producto.PrecioCosto * detalleFactura.Cantidad);
-                        //        else
-                        //        {
-                        //            DataRow data = dtbInventarios.NewRow();
-                        //            data["IdLinea"] = producto.Linea.IdLinea;
-                        //            data["Total"] = producto.PrecioCosto * detalleFactura.Cantidad;
-                        //            dtbInventarios.Rows.Add(data);
-                        //        }
-                        //    }
-                        //    else
-                        //    {
-                        //        decimal decTotalPorLinea = detalleFactura.PrecioVenta * detalleFactura.Cantidad;
-                        //        decTotalPorLinea = Math.Round(decTotalPorLinea - (factura.Descuento / decSubTotalFactura * decTotalPorLinea), 2, MidpointRounding.AwayFromZero);
-                        //        if (!producto.Excento)
-                        //            decTotalPorLinea = Math.Round(decTotalPorLinea / (1 + (factura.PorcentajeIVA / 100)), 2, MidpointRounding.AwayFromZero);
-                        //        decTotalServicios += decTotalPorLinea;
-                        //        int intExiste = dtbIngresosPorServicios.Rows.IndexOf(dtbIngresosPorServicios.Rows.Find(producto.Linea.IdLinea));
-                        //        if (intExiste >= 0)
-                        //            dtbIngresosPorServicios.Rows[intExiste]["Total"] = (decimal)dtbIngresosPorServicios.Rows[intExiste]["Total"] + decTotalPorLinea;
-                        //        else
-                        //        {
-                        //            DataRow data = dtbIngresosPorServicios.NewRow();
-                        //            data["IdLinea"] = detalleFactura.Producto.Linea.IdLinea;
-                        //            data["Total"] = Math.Round(decTotalPorLinea, 2, MidpointRounding.AwayFromZero);
-                        //            dtbIngresosPorServicios.Rows.Add(data);
-                        //        }
-                        //    }
-                        //}
+                            IdProducto = producto.IdProducto,
+                            IdSucursal = ajusteInventario.IdSucursal,
+                            Fecha = DateTime.Now,
+                            Tipo = detalleAjuste.Cantidad < 0 ? StaticTipoMovimientoProducto.Salida : StaticTipoMovimientoProducto.Entrada,
+                            Origen = "Registro de ajuste de inventario",
+                            Cantidad = detalleAjuste.Cantidad < 0 ? detalleAjuste.Cantidad * -1 : detalleAjuste.Cantidad,
+                            PrecioCosto = detalleAjuste.PrecioCosto
+                        };
+                        producto.MovimientoProducto.Add(movimiento);
                     }
-                    //if (empresa.Contabiliza)
-                    //{
-                    //    decimal decTotalDiff = decTotalMercancia + decTotalImpuesto + decTotalServicios - factura.Total;
-                    //    if (decTotalDiff != 0)
-                    //    {
-                    //        if (decTotalDiff >= 1 || decTotalDiff <= -1)
-                    //            throw new Exception("La diferencia de ajuste sobrepasa el valor permitido.");
-                    //        if (decTotalMercancia > 0)
-                    //            decTotalMercancia -= decTotalDiff;
-                    //        else
-                    //        {
-                    //            dtbIngresosPorServicios.Rows[0]["Total"] = (decimal)dtbIngresosPorServicios.Rows[0]["Total"] - decTotalDiff;
-                    //            decTotalServicios -= decTotalDiff;
-                    //        }
-                    //    }
-                    //    int intLineaDetalleAsiento = 0;
-                    //    asiento = new Asiento();
-                    //    asiento.IdEmpresa = factura.IdEmpresa;
-                    //    asiento.Fecha = factura.Fecha;
-                    //    asiento.TotalCredito = 0;
-                    //    asiento.TotalDebito = 0;
-                    //    asiento.Detalle = "Registro de venta de mercancía de Factura nro. ";
-                    //    DetalleAsiento detalleAsiento = null;
-                    //    foreach (var desglosePago in factura.DesglosePagoFactura)
-                    //    {
-                    //        if (desglosePago.IdFormaPago == StaticFormaPago.Efectivo)
-                    //        {
-                    //            detalleAsiento = new DetalleAsiento();
-                    //            intLineaDetalleAsiento += 1;
-                    //            detalleAsiento.Linea = intLineaDetalleAsiento;
-                    //            detalleAsiento.IdCuenta = efectivoParam.IdCuenta;
-                    //            detalleAsiento.Debito = desglosePago.MontoLocal;
-                    //            detalleAsiento.SaldoAnterior = dbContext.CatalogoContableRepository.Find(detalleAsiento.IdCuenta).SaldoActual;
-                    //            asiento.DetalleAsiento.Add(detalleAsiento);
-                    //            asiento.TotalDebito += detalleAsiento.Debito;
-                    //        }
-                    //        else if (desglosePago.IdFormaPago == StaticFormaPago.Credito)
-                    //        {
-                    //            detalleAsiento = new DetalleAsiento();
-                    //            intLineaDetalleAsiento += 1;
-                    //            detalleAsiento.Linea = intLineaDetalleAsiento;
-                    //            detalleAsiento.IdCuenta = cuentaPorCobrarClientesParam.IdCuenta;
-                    //            detalleAsiento.Debito = desglosePago.MontoLocal;
-                    //            detalleAsiento.SaldoAnterior = dbContext.CatalogoContableRepository.Find(detalleAsiento.IdCuenta).SaldoActual;
-                    //            asiento.DetalleAsiento.Add(detalleAsiento);
-                    //            asiento.TotalDebito += detalleAsiento.Debito;
-                    //        }
-                    //        else if (desglosePago.IdFormaPago == StaticFormaPago.Cheque || desglosePago.IdFormaPago == StaticFormaPago.TransferenciaDepositoBancario)
-                    //        {
-                    //            detalleAsiento = new DetalleAsiento();
-                    //            intLineaDetalleAsiento += 1;
-                    //            detalleAsiento.Linea = intLineaDetalleAsiento;
-                    //            bancoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.CuentaDeBancos && x.IdProducto == desglosePago.IdCuentaBanco).FirstOrDefault();
-                    //            if (bancoParam == null)
-                    //                throw new BusinessException("No existe parametrización contable para la cuenta bancaría " + desglosePago.IdCuentaBanco + " y no se puede continuar. Por favor verificar.");
-                    //            detalleAsiento.IdCuenta = bancoParam.IdCuenta;
-                    //            detalleAsiento.Debito = desglosePago.MontoLocal;
-                    //            detalleAsiento.SaldoAnterior = dbContext.CatalogoContableRepository.Find(detalleAsiento.IdCuenta).SaldoActual;
-                    //            asiento.DetalleAsiento.Add(detalleAsiento);
-                    //            asiento.TotalDebito += detalleAsiento.Debito;
-                    //        }
-                    //        else if (desglosePago.IdFormaPago == StaticFormaPago.Tarjeta)
-                    //        {
-                    //            BancoAdquiriente bancoAdquiriente = dbContext.BancoAdquirienteRepository.Find(desglosePago.IdCuentaBanco);
-                    //            decTotalGastoComisionTarjeta = Math.Round(desglosePago.MontoLocal * (bancoAdquiriente.PorcentajeComision / 100), 2, MidpointRounding.AwayFromZero);
-                    //            decTotalImpuestoRetenido = Math.Round(desglosePago.MontoLocal * (bancoAdquiriente.PorcentajeRetencion / 100), 2, MidpointRounding.AwayFromZero);
-                    //            decTotalIngresosTarjeta = Math.Round(desglosePago.MontoLocal - decTotalGastoComisionTarjeta - decTotalImpuestoRetenido, 2, MidpointRounding.AwayFromZero);
-                    //            detalleAsiento = new DetalleAsiento();
-                    //            intLineaDetalleAsiento += 1;
-                    //            detalleAsiento.Linea = intLineaDetalleAsiento;
-                    //            detalleAsiento.IdCuenta = cuentaPorCobrarTarjetaParam.IdCuenta;
-                    //            detalleAsiento.Debito = decTotalIngresosTarjeta;
-                    //            detalleAsiento.SaldoAnterior = dbContext.CatalogoContableRepository.Find(detalleAsiento.IdCuenta).SaldoActual;
-                    //            asiento.DetalleAsiento.Add(detalleAsiento);
-                    //            asiento.TotalDebito += detalleAsiento.Debito;
-                    //            if (decTotalImpuestoRetenido > 0)
-                    //            {
-                    //                detalleAsiento = new DetalleAsiento();
-                    //                intLineaDetalleAsiento += 1;
-                    //                detalleAsiento.Linea = intLineaDetalleAsiento;
-                    //                detalleAsiento.IdCuenta = ivaPorPagarParam.IdCuenta;
-                    //                detalleAsiento.Debito = decTotalImpuestoRetenido;
-                    //                detalleAsiento.SaldoAnterior = dbContext.CatalogoContableRepository.Find(detalleAsiento.IdCuenta).SaldoActual;
-                    //                asiento.DetalleAsiento.Add(detalleAsiento);
-                    //                asiento.TotalDebito += detalleAsiento.Debito;
-                    //            }
-                    //            if (decTotalGastoComisionTarjeta > 0)
-                    //            {
-                    //                detalleAsiento = new DetalleAsiento();
-                    //                intLineaDetalleAsiento += 1;
-                    //                detalleAsiento.Linea = intLineaDetalleAsiento;
-                    //                detalleAsiento.IdCuenta = gastoComisionParam.IdCuenta;
-                    //                detalleAsiento.Debito = decTotalGastoComisionTarjeta;
-                    //                detalleAsiento.SaldoAnterior = dbContext.CatalogoContableRepository.Find(detalleAsiento.IdCuenta).SaldoActual;
-                    //                asiento.DetalleAsiento.Add(detalleAsiento);
-                    //                asiento.TotalDebito += detalleAsiento.Debito;
-                    //            }
-                    //        }
-                    //    }
-                    //    if (decTotalMercancia > 0)
-                    //    {
-                    //        detalleAsiento = new DetalleAsiento();
-                    //        intLineaDetalleAsiento += 1;
-                    //        detalleAsiento.Linea = intLineaDetalleAsiento;
-                    //        detalleAsiento.IdCuenta = ingresosVentasParam.IdCuenta;
-                    //        detalleAsiento.Credito = decTotalMercancia;
-                    //        detalleAsiento.SaldoAnterior = dbContext.CatalogoContableRepository.Find(detalleAsiento.IdCuenta).SaldoActual;
-                    //        asiento.DetalleAsiento.Add(detalleAsiento);
-                    //        asiento.TotalCredito += detalleAsiento.Credito;
-                    //    }
-                    //    if (decTotalImpuesto > 0)
-                    //    {
-                    //        detalleAsiento = new DetalleAsiento();
-                    //        intLineaDetalleAsiento += 1;
-                    //        detalleAsiento.Linea = intLineaDetalleAsiento;
-                    //        detalleAsiento.IdCuenta = ivaPorPagarParam.IdCuenta;
-                    //        detalleAsiento.Credito = decTotalImpuesto;
-                    //        asiento.DetalleAsiento.Add(detalleAsiento);
-                    //        detalleAsiento.SaldoAnterior = dbContext.CatalogoContableRepository.Find(detalleAsiento.IdCuenta).SaldoActual;
-                    //        asiento.TotalCredito += detalleAsiento.Credito;
-                    //    }
-                    //    foreach (DataRow data in dtbIngresosPorServicios.Rows)
-                    //    {
-                    //        detalleAsiento = new DetalleAsiento();
-                    //        intLineaDetalleAsiento += 1;
-                    //        detalleAsiento.Linea = intLineaDetalleAsiento;
-                    //        int intIdLinea = (int)data["IdLinea"];
-                    //        lineaParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.LineaDeServicios && x.IdProducto == intIdLinea).FirstOrDefault();
-                    //        if (lineaParam == null)
-                    //            throw new BusinessException("No existe parametrización contable para la línea de servicios " + intIdLinea + " y no se puede continuar. Por favor verificar.");
-                    //        detalleAsiento.IdCuenta = lineaParam.IdCuenta;
-                    //        detalleAsiento.Credito = (decimal)data["Total"];
-                    //        detalleAsiento.SaldoAnterior = dbContext.CatalogoContableRepository.Find(detalleAsiento.IdCuenta).SaldoActual;
-                    //        asiento.DetalleAsiento.Add(detalleAsiento);
-                    //        asiento.TotalCredito += detalleAsiento.Credito;
-                    //    }
-                    //    if (decTotalCostoVentas > 0)
-                    //    {
-                    //        detalleAsiento = new DetalleAsiento();
-                    //        intLineaDetalleAsiento += 1;
-                    //        detalleAsiento.Linea = intLineaDetalleAsiento;
-                    //        detalleAsiento.IdCuenta = costoVentasParam.IdCuenta;
-                    //        detalleAsiento.Debito = decTotalCostoVentas;
-                    //        detalleAsiento.SaldoAnterior = dbContext.CatalogoContableRepository.Find(detalleAsiento.IdCuenta).SaldoActual;
-                    //        asiento.DetalleAsiento.Add(detalleAsiento);
-                    //        asiento.TotalDebito += detalleAsiento.Debito;
-                    //        foreach (DataRow data in dtbInventarios.Rows)
-                    //        {
-                    //            detalleAsiento = new DetalleAsiento();
-                    //            intLineaDetalleAsiento += 1;
-                    //            detalleAsiento.Linea = intLineaDetalleAsiento;
-                    //            int intIdLinea = (int)data["IdLinea"];
-                    //            lineaParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.LineaDeProductos && x.IdProducto == intIdLinea).FirstOrDefault();
-                    //            if (lineaParam == null)
-                    //                throw new BusinessException("No existe parametrización contable para la línea de producto " + intIdLinea + " y no se puede continuar. Por favor verificar.");
-                    //            detalleAsiento.IdCuenta = lineaParam.IdCuenta;
-                    //            detalleAsiento.Credito = (decimal)data["Total"];
-                    //            detalleAsiento.SaldoAnterior = dbContext.CatalogoContableRepository.Find(detalleAsiento.IdCuenta).SaldoActual;
-                    //            asiento.DetalleAsiento.Add(detalleAsiento);
-                    //            asiento.TotalCredito += detalleAsiento.Credito;
-                    //        }
-                    //    }
-                    //    IContabilidadService servicioContabilidad = new ContabilidadService();
-                    //    servicioContabilidad.AgregarAsiento(dbContext, asiento);
-                    //}
                     dbContext.Commit();
                 }
                 catch (BusinessException ex)
@@ -2427,34 +2284,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     throw new Exception("Se produjo un error guardando la información del ajuste de inventario. Por favor consulte con su proveedor.");
                 }
             }
-            return ajusteInventario;
+            return ajusteInventario.IdAjuste.ToString();
         }
 
-        public void ActualizarAjusteInventario(AjusteInventario ajusteInventario)
-        {
-            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
-            {
-                try
-                {
-                    Empresa empresa = dbContext.EmpresaRepository.Find(ajusteInventario.IdEmpresa);
-                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
-                    dbContext.NotificarModificacion(ajusteInventario);
-                    dbContext.Commit();
-                }
-                catch (BusinessException ex)
-                {
-                    dbContext.RollBack();
-                    throw ex;
-                }
-                catch (Exception ex)
-                {
-                    dbContext.RollBack();
-                    log.Error("Error al actualizar el registro de facturación: ", ex);
-                    throw new Exception("Se produjo un error actualizando la información de la factura. Por favor consulte con su proveedor.");
-                }
-            }
-        }
         public void AnularAjusteInventario(int intIdAjusteInventario, int intIdUsuario)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
@@ -2466,29 +2298,35 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (ajusteInventario.Nulo == true) throw new BusinessException("El registro de ajuste de inventario ya ha sido anulado.");
                     Empresa empresa = dbContext.EmpresaRepository.Find(ajusteInventario.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == ajusteInventario.IdEmpresa && x.IdSucursal == ajusteInventario.IdSucursal);
+                    if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     ajusteInventario.Nulo = true;
                     ajusteInventario.IdAnuladoPor = intIdUsuario;
                     dbContext.NotificarModificacion(ajusteInventario);
                     foreach (var detalleAjuste in ajusteInventario.DetalleAjusteInventario)
                     {
                         Producto producto = dbContext.ProductoRepository.Include("Linea").FirstOrDefault(x => x.IdProducto == detalleAjuste.IdProducto);
-                        if (producto.Tipo == StaticTipoProducto.Producto)
+                        if (producto == null)
+                            throw new Exception("El producto asignado al detalle de la devolución no existe.");
+                        if (producto.Tipo != StaticTipoProducto.Producto)
+                            throw new BusinessException("El tipo de producto por ajustar no puede ser un servicio. Por favor verificar.");
+                        ExistenciaPorSucursal existencias = dbContext.ExistenciaPorSucursalRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == ajusteInventario.IdSucursal).FirstOrDefault();
+                        if (existencias == null)
+                            throw new BusinessException("El producto " + producto.IdProducto + " no posee registro de existencias. Por favor consulte con su proveedor.");
+                        existencias.Cantidad -= detalleAjuste.Cantidad;
+                        dbContext.NotificarModificacion(existencias);
+                        MovimientoProducto movimiento = new MovimientoProducto
                         {
-                            MovimientoProducto movimiento = new MovimientoProducto
-                            {
-                                IdProducto = producto.IdProducto,
-                                Fecha = DateTime.Now,
-                                Tipo = detalleAjuste.Cantidad < 0 ? StaticTipoMovimientoProducto.Entrada : StaticTipoMovimientoProducto.Salida,
-                                Origen = "Registro de reversión de ajuste de inventario.",
-                                Referencia = detalleAjuste.IdAjuste.ToString(),
-                                Cantidad = detalleAjuste.Cantidad < 0 ? detalleAjuste.Cantidad * -1 : detalleAjuste.Cantidad,
-                                PrecioCosto = detalleAjuste.PrecioCosto
-                            };
-                            producto.MovimientoProducto.Add(movimiento);
-                            producto.Cantidad -= detalleAjuste.Cantidad;
-                            dbContext.NotificarModificacion(producto);
-                        }
+                            IdProducto = producto.IdProducto,
+                            IdSucursal = ajusteInventario.IdSucursal,
+                            Fecha = DateTime.Now,
+                            Tipo = detalleAjuste.Cantidad < 0 ? StaticTipoMovimientoProducto.Entrada : StaticTipoMovimientoProducto.Salida,
+                            Origen = "Registro de reversión de ajuste de inventario",
+                            Cantidad = detalleAjuste.Cantidad < 0 ? detalleAjuste.Cantidad * -1 : detalleAjuste.Cantidad,
+                            PrecioCosto = detalleAjuste.PrecioCosto
+                        };
+                        producto.MovimientoProducto.Add(movimiento);
                     }
                     dbContext.Commit();
                 }
@@ -2512,8 +2350,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    dbContext.AjusteInventarioRepository.Find(intIdAjusteInventario);
-                    return dbContext.AjusteInventarioRepository.Include("DetalleAjusteInventario.Producto.TipoProducto").FirstOrDefault(x => x.IdAjuste == intIdAjusteInventario);
+                    AjusteInventario ajuste = dbContext.AjusteInventarioRepository.Include("DetalleAjusteInventario.Producto.TipoProducto").FirstOrDefault(x => x.IdAjuste == intIdAjusteInventario);
+                    foreach (var detalle in ajuste.DetalleAjusteInventario)
+                        detalle.AjusteInventario = null;
+                    return ajuste;
                 }
                 catch (Exception ex)
                 {
@@ -2523,13 +2363,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public int ObtenerTotalListaAjustes(int intIdEmpresa, int intIdAjusteInventario, string strDescripcion)
+        public int ObtenerTotalListaAjusteInventario(int intIdEmpresa, int intIdSucursal, int intIdAjusteInventario, string strDescripcion)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 try
                 {
-                    var listaAjusteInventario = dbContext.AjusteInventarioRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa);
+                    var listaAjusteInventario = dbContext.AjusteInventarioRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
                     if (intIdAjusteInventario > 0)
                         listaAjusteInventario = listaAjusteInventario.Where(x => !x.Nulo && x.IdAjuste == intIdAjusteInventario);
                     else if (!strDescripcion.Equals(string.Empty))
@@ -2544,14 +2384,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoAjustes(int intIdEmpresa, int numPagina, int cantRec, int intIdAjusteInventario, string strDescripcion)
+        public IList<AjusteInventarioDetalle> ObtenerListadoAjusteInventario(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, int intIdAjusteInventario, string strDescripcion)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
-                var listaAjustes = new List<LlaveDescripcion>();
+                var listaAjustes = new List<AjusteInventarioDetalle>();
                 try
                 {
-                    var listado = dbContext.AjusteInventarioRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa);
+                    var listado = dbContext.AjusteInventarioRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
                     if (intIdAjusteInventario > 0)
                         listado = listado.Where(x => !x.Nulo && x.IdAjuste == intIdAjusteInventario);
                     else if (!strDescripcion.Equals(string.Empty))
@@ -2559,7 +2399,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     listado = listado.OrderByDescending(x => x.IdAjuste).Skip((numPagina - 1) * cantRec).Take(cantRec);
                     foreach (var value in listado)
                     {
-                        LlaveDescripcion item = new LlaveDescripcion(value.IdAjuste, value.Descripcion);
+                        AjusteInventarioDetalle item = new AjusteInventarioDetalle(value.IdAjuste, value.Fecha.ToString("dd/MM/yyyy"), value.Descripcion);
                         listaAjustes.Add(item);
                     }
                     return listaAjustes;
@@ -2572,7 +2412,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoTipoIdentificacion()
+        public IList<LlaveDescripcion> ObtenerListadoTipoIdentificacion()
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -2595,7 +2435,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoCatalogoReportes()
+        public IList<LlaveDescripcion> ObtenerListadoCatalogoReportes()
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -2618,7 +2458,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoProvincias()
+        public IList<LlaveDescripcion> ObtenerListadoProvincias()
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -2641,7 +2481,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoCantones(int intIdProvincia)
+        public IList<LlaveDescripcion> ObtenerListadoCantones(int intIdProvincia)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -2664,7 +2504,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoDistritos(int intIdProvincia, int intIdCanton)
+        public IList<LlaveDescripcion> ObtenerListadoDistritos(int intIdProvincia, int intIdCanton)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -2687,7 +2527,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoBarrios(int intIdProvincia, int intIdCanton, int intIdDistrito)
+        public IList<LlaveDescripcion> ObtenerListadoBarrios(int intIdProvincia, int intIdCanton, int intIdDistrito)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {

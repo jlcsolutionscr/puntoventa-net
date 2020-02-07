@@ -16,8 +16,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         void ActualizarCuentaBanco(CuentaBanco cuentaBanco);
         void EliminarCuentaBanco(int intIdCuenta);
         CuentaBanco ObtenerCuentaBanco(int intIdCuenta);
-        IEnumerable<LlaveDescripcion> ObtenerListadoCuentasBanco(int intIdEmpresa, string strDescripcion = "");
-        IEnumerable<TipoMovimientoBanco> ObtenerTipoMovimientoBanco();
+        IList<LlaveDescripcion> ObtenerListadoCuentasBanco(int intIdEmpresa, string strDescripcion = "");
+        IList<TipoMovimientoBanco> ObtenerTipoMovimientoBanco();
         MovimientoBanco AgregarMovimientoBanco(MovimientoBanco movimiento);
         MovimientoBanco AgregarMovimientoBanco(IDbContext dbContext, MovimientoBanco movimiento);
         void ActualizarMovimientoBanco(MovimientoBanco movimiento);
@@ -25,7 +25,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         void AnularMovimientoBanco(IDbContext dbContext, int intIdMovimiento, int intIdUsuario);
         MovimientoBanco ObtenerMovimientoBanco(int intIdMovimiento);
         int ObtenerTotalListaMovimientos(int intIdEmpresa, string strDescripcion = "");
-        IEnumerable<MovimientoBanco> ObtenerListadoMovimientos(int intIdEmpresa, int numPagina, int cantRec, string strDescripcion = "");
+        IList<MovimientoBanco> ObtenerListadoMovimientos(int intIdEmpresa, int numPagina, int cantRec, string strDescripcion = "");
     }
 
     public class BancaService : IBancaService
@@ -58,7 +58,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(cuentaBanco.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     dbContext.CuentaBancoRepository.Add(cuentaBanco);
                     dbContext.Commit();
                 }
@@ -84,7 +83,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(cuentaBanco.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     dbContext.NotificarModificacion(cuentaBanco);
                     dbContext.Commit();
                 }
@@ -112,7 +110,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (cuentaBanco == null) throw new Exception("La cuenta bancaria por eliminar no existe.");
                     Empresa empresa = dbContext.EmpresaRepository.Find(cuentaBanco.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     dbContext.CuentaBancoRepository.Remove(cuentaBanco);
                     dbContext.Commit();
                 }
@@ -151,7 +148,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<LlaveDescripcion> ObtenerListadoCuentasBanco(int intIdEmpresa, string strDescripcion = "")
+        public IList<LlaveDescripcion> ObtenerListadoCuentasBanco(int intIdEmpresa, string strDescripcion = "")
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -177,7 +174,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<TipoMovimientoBanco> ObtenerTipoMovimientoBanco()
+        public IList<TipoMovimientoBanco> ObtenerTipoMovimientoBanco()
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -203,7 +200,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (cuenta == null) throw new Exception("La cuenta bancaria asignada al movimiento no existe.");
                     Empresa empresa = dbContext.EmpresaRepository.Find(cuenta.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     TipoMovimientoBanco tipo = dbContext.TipoMovimientoBancoRepository.Find(movimiento.IdTipo);
                     if (tipo == null)
                         throw new Exception("El tipo de movimiento no existe.");
@@ -239,7 +235,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 if (cuenta == null) throw new Exception("La cuenta bancaria asignada al movimiento no existe.");
                 Empresa empresa = dbContext.EmpresaRepository.Find(cuenta.IdEmpresa);
                 if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                 TipoMovimientoBanco tipo = dbContext.TipoMovimientoBancoRepository.Find(movimiento.IdTipo);
                 if (tipo == null)
                     throw new Exception("El tipo de movimiento no existe.");
@@ -274,7 +269,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (cuenta == null) throw new Exception("La cuenta bancaria asignada al movimiento no existe.");
                     Empresa empresa = dbContext.EmpresaRepository.Find(cuenta.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     dbContext.NotificarModificacion(movimiento);
                     dbContext.Commit();
                 }
@@ -304,7 +298,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (cuenta == null) throw new Exception("La cuenta bancaria asignada al movimiento no existe.");
                     Empresa empresa = dbContext.EmpresaRepository.Find(cuenta.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     movimiento.Nulo = true;
                     movimiento.IdAnuladoPor = intIdUsuario;
                     dbContext.NotificarModificacion(movimiento);
@@ -336,7 +329,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 if (cuenta == null) throw new Exception("La cuenta bancaria asignada al movimiento no existe.");
                 Empresa empresa = dbContext.EmpresaRepository.Find(cuenta.IdEmpresa);
                 if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                 movimiento.Nulo = true;
                 movimiento.IdAnuladoPor = intIdUsuario;
                 dbContext.NotificarModificacion(movimiento);
@@ -391,7 +383,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<MovimientoBanco> ObtenerListadoMovimientos(int intIdEmpresa, int numPagina, int cantRec, string strDescripcion = "")
+        public IList<MovimientoBanco> ObtenerListadoMovimientos(int intIdEmpresa, int numPagina, int cantRec, string strDescripcion = "")
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {

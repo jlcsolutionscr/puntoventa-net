@@ -6,9 +6,11 @@ namespace LeandroSoftware.Core.Dominio.Entidades
     [Table("detallefactura")]
     public partial class DetalleFactura
     {
-        [Key, Column(Order = 0), ForeignKey("Factura")]
+        [Key]
+        public int IdConsecutivo { get; set; }
+        [ForeignKey("Factura")]
         public int IdFactura { get; set; }
-        [Key, Column(Order = 1), ForeignKey("Producto")]
+        [ForeignKey("Producto")]
         public int IdProducto { get; set; }
         public string Descripcion { get; set; }
         public decimal Cantidad { get; set; }
@@ -16,6 +18,8 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public bool Excento { get; set; }
         public decimal PrecioCosto { get; set; }
         public decimal PorcentajeIVA { get; set; }
+        public decimal PorcDescuento { get; set; }
+        public decimal CantDevuelto { get; set; }
 
         public Factura Factura { get; set; }
         public Producto Producto { get; set; }

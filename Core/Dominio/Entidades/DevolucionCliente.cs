@@ -11,11 +11,11 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public DevolucionCliente()
         {
             DetalleDevolucionCliente = new HashSet<DetalleDevolucionCliente>();
-            DesglosePagoDevolucionCliente = new HashSet<DesglosePagoDevolucionCliente>();
         }
 
         [ForeignKey("Empresa")]
         public int IdEmpresa { get; set; }
+        public int IdSucursal { get; set; }
         [Key]
         public int IdDevolucion { get; set; }
         [ForeignKey("Factura")]
@@ -45,6 +45,5 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public Usuario Usuario { get; set; }
         public Cliente Cliente { get; set; }
         public ICollection<DetalleDevolucionCliente> DetalleDevolucionCliente { get; set; }
-        public ICollection<DesglosePagoDevolucionCliente> DesglosePagoDevolucionCliente { get; set; }
     }
 }

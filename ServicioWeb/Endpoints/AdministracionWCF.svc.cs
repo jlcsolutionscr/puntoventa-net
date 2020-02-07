@@ -40,17 +40,14 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             appSettings["strClientId"].ToString(),
             appSettings["strServicioTokenURL"].ToString(),
             appSettings["strComprobantesCallbackURL"].ToString(),
-            appSettings["strCorreoNotificacionErrores"].ToString(),
-            appSettings["facturaEmailFrom"].ToString()
+            appSettings["strCorreoNotificacionErrores"].ToString()
         );
         private readonly ConfiguracionRecepcion configuracionRecepcion = new ConfiguracionRecepcion
         (
             appSettings["pop3IvaAccount"].ToString(),
             appSettings["pop3IvaPass"].ToString(),
             appSettings["pop3GastoAccount"].ToString(),
-            appSettings["pop3GastoPass"].ToString(),
-            appSettings["strCorreoNotificacionErrores"].ToString(),
-            appSettings["recepcionEmailFrom"].ToString()
+            appSettings["pop3GastoPass"].ToString()
         );
 
         public AdministracionWCF()
@@ -69,10 +66,6 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             servicioFacturacion = unityContainer.Resolve<IFacturacionService>();
             servicioMantenimiento = unityContainer.Resolve<IMantenimientoService>();
             servicioReportes = unityContainer.Resolve<IReporteService>();
-        }
-
-        public void Options()
-        {
         }
 
         public string ValidarCredencialesAdmin(string strUsuario, string strClave)
@@ -189,6 +182,38 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             }
         }
 
+        public string ObtenerListadoReportePorEmpresa(int intIdEmpresa)
+        {
+            try
+            {
+                IList<LlaveDescripcion> listadoEmpresas = servicioMantenimiento.ObtenerListadoReportePorEmpresa(intIdEmpresa);
+                string strRespuesta = "";
+                if (listadoEmpresas.Count > 0)
+                    strRespuesta = serializer.Serialize(listadoEmpresas);
+                return strRespuesta;
+            }
+            catch (Exception ex)
+            {
+                throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
+            }
+        }
+
+        public string ObtenerListadoRolePorEmpresa(int intIdEmpresa)
+        {
+            try
+            {
+                IList<LlaveDescripcion> listadoEmpresas = servicioMantenimiento.ObtenerListadoRolePorEmpresa(intIdEmpresa);
+                string strRespuesta = "";
+                if (listadoEmpresas.Count > 0)
+                    strRespuesta = serializer.Serialize(listadoEmpresas);
+                return strRespuesta;
+            }
+            catch (Exception ex)
+            {
+                throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
+            }
+        }
+
         public string ObtenerSucursalPorEmpresa(int intIdEmpresa, int intIdSucursal)
         {
             try
@@ -253,6 +278,22 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             }
         }
 
+        public string ObtenerListadoRoles()
+        {
+            try
+            {
+                IList<LlaveDescripcion> listadoEmpresas = (List<LlaveDescripcion>)servicioMantenimiento.ObtenerListadoRoles();
+                string strRespuesta = "";
+                if (listadoEmpresas.Count > 0)
+                    strRespuesta = serializer.Serialize(listadoEmpresas);
+                return strRespuesta;
+            }
+            catch (Exception ex)
+            {
+                throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
+            }
+        }
+
         public string ObtenerListadoProvincias()
         {
             try
@@ -301,42 +342,42 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             }
         }
 
-        public string ObtenerDatosReporte(int tipo, int idempresa, string fechainicial, string fechafinal)
+        public string ObtenerDatosReporte(int tipo, int idempresa, int idsucursal, string fechainicial, string fechafinal)
         {
             string strRespuesta = "";
             switch (tipo)
             {
                 case 1:
                     {
-                        List<ReporteDocumentoElectronico> listado = servicioReportes.ObtenerReporteFacturasElectronicasEmitidas(idempresa, fechainicial, fechafinal);
+                        List<ReporteDocumentoElectronico> listado = servicioReportes.ObtenerReporteFacturasElectronicasEmitidas(idempresa, idsucursal, fechainicial, fechafinal);
                         if (listado.Count > 0)
                             strRespuesta = serializer.Serialize(listado);
                         break;
                     }
                 case 2:
                     {
-                        List<ReporteDocumentoElectronico> listado = servicioReportes.ObtenerReporteNotasCreditoElectronicasEmitidas(idempresa, fechainicial, fechafinal);
+                        List<ReporteDocumentoElectronico> listado = servicioReportes.ObtenerReporteNotasCreditoElectronicasEmitidas(idempresa, idsucursal, fechainicial, fechafinal);
                         if (listado.Count > 0)
                             strRespuesta = serializer.Serialize(listado);
                         break;
                     }
                 case 3:
                     {
-                        List<ReporteDocumentoElectronico> listado = servicioReportes.ObtenerReporteFacturasElectronicasRecibidas(idempresa, fechainicial, fechafinal);
+                        List<ReporteDocumentoElectronico> listado = servicioReportes.ObtenerReporteFacturasElectronicasRecibidas(idempresa, idsucursal, fechainicial, fechafinal);
                         if (listado.Count > 0)
                             strRespuesta = serializer.Serialize(listado);
                         break;
                     }
                 case 4:
                     {
-                        List<ReporteDocumentoElectronico> listado = servicioReportes.ObtenerReporteNotasCreditoElectronicasRecibidas(idempresa, fechainicial, fechafinal);
+                        List<ReporteDocumentoElectronico> listado = servicioReportes.ObtenerReporteNotasCreditoElectronicasRecibidas(idempresa, idsucursal, fechainicial, fechafinal);
                         if (listado.Count > 0)
                             strRespuesta = serializer.Serialize(listado);
                         break;
                     }
                 case 5:
                     {
-                        List<ReporteResumenMovimiento> listado = servicioReportes.ObtenerReporteResumenDocumentosElectronicos(idempresa, fechainicial, fechafinal);
+                        List<ReporteResumenMovimiento> listado = servicioReportes.ObtenerReporteResumenDocumentosElectronicos(idempresa, idsucursal, fechainicial, fechafinal);
                         if (listado.Count > 0)
                             strRespuesta = serializer.Serialize(listado);
                         break;
@@ -385,6 +426,38 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                 string strEntidad = parametrosJO.Property("Entidad").Value.ToString();
                 Empresa empresa = serializer.Deserialize<Empresa>(strEntidad);
                 servicioMantenimiento.ActualizarEmpresa(empresa);
+            }
+            catch (Exception ex)
+            {
+                throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
+            }
+        }
+
+        public void ActualizarListadoReporte(string strDatos)
+        {
+            try
+            {
+                JObject parametrosJO = JObject.Parse(strDatos);
+                int intIdEmpresa = int.Parse(parametrosJO.Property("Id").Value.ToString());
+                string strListado = parametrosJO.Property("Datos").Value.ToString();
+                List<ReportePorEmpresa> listado = serializer.Deserialize<List<ReportePorEmpresa>>(strListado);
+                servicioMantenimiento.ActualizarReportePorEmpresa(intIdEmpresa, listado);
+            }
+            catch (Exception ex)
+            {
+                throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
+            }
+        }
+
+        public void ActualizarListadoRoles(string strDatos)
+        {
+            try
+            {
+                JObject parametrosJO = JObject.Parse(strDatos);
+                int intIdEmpresa = int.Parse(parametrosJO.Property("Id").Value.ToString());
+                string strListado = parametrosJO.Property("Datos").Value.ToString();
+                List<RolePorEmpresa> listado = serializer.Deserialize<List<RolePorEmpresa>>(strListado);
+                servicioMantenimiento.ActualizarRolePorEmpresa(intIdEmpresa, listado);
             }
             catch (Exception ex)
             {
@@ -537,7 +610,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             catch (Exception ex)
             {
                 JArray jarrayObj = new JArray();
-                servicioEnvioCorreo.SendEmail(configuracionGeneral.CorreoCuentaFacturacion, new string[] { configuracionGeneral.CorreoNotificacionErrores }, new string[] { }, "Error en el procesamiento de documentos pendientes", "Ocurrio un error en el procesamiento de documentos pendientes: " + ex.Message, false, jarrayObj);
+                servicioEnvioCorreo.SendEmail(new string[] { configuracionGeneral.CorreoNotificacionErrores }, new string[] { }, "Error en el procesamiento de documentos pendientes", "Ocurrio un error en el procesamiento de documentos pendientes: " + ex.Message, false, jarrayObj);
             }
         }
 

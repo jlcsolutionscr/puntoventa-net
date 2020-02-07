@@ -19,6 +19,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public int UltimoDocNC { get; set; }
         public int UltimoDocTE { get; set; }
         public int UltimoDocMR { get; set; }
+        public int UltimoDocFEC { get; set; }
         public int IdTipoDispositivo { get; set; }
 
         [ForeignKey("IdEmpresa")]

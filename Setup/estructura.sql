@@ -1121,14 +1121,16 @@ CREATE TABLE movimientocuentaporpagar (
 --
 
 CREATE TABLE movimientoproducto (
+  IdMovimiento int(11) NOT NULL AUTO_INCREMENT,
   IdProducto int(11) NOT NULL,
+  IdSucursal int(11) NOT NULL,
   Fecha datetime NOT NULL,
   Cantidad double NOT NULL,
   Tipo varchar(10) NOT NULL,
   Origen varchar(100) NOT NULL,
   Referencia varchar(100) NOT NULL,
   PrecioCosto double NOT NULL,
-  PRIMARY KEY (IdProducto,Fecha)
+  PRIMARY KEY (IdMovimiento)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------

@@ -12,6 +12,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public Empresa()
         {
             ReportePorEmpresa = new HashSet<ReportePorEmpresa>();
+            RolePorEmpresa = new HashSet<RolePorEmpresa>();
         }
         [Key]
         public int IdEmpresa { get; set; }
@@ -28,29 +29,30 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         [ForeignKey("TipoMoneda")]
         public int IdTipoMoneda { get; set; }
         public string Direccion { get; set; }
-        public string Telefono { get; set; }
+        public string Telefono1 { get; set; }
+        public string Telefono2 { get; set; }
         public int TipoContrato { get; set; }
         public int CantidadDisponible { get; set; }
         public DateTime? FechaVence { get; set; }
         public int LineasPorFactura { get; set; }
         public bool Contabiliza { get; set; }
         public bool AutoCompletaProducto { get; set; }
-        public bool ModificaDescProducto { get; set; }
-        public bool DesglosaServicioInst { get; set; }
-        public double PorcentajeInstalacion { get; set; }
-        public int CodigoServicioInst { get; set; }
-        public bool IncluyeInsumosEnFactura { get; set; }
-        public bool CierrePorTurnos { get; set; }
-        public bool CierreEnEjecucion { get; set; }
         public bool RegimenSimplificado { get; set; }
         public bool PermiteFacturar { get; set; }
         public bool RecepcionGastos { get; set; }
+        public bool AsignaVendedorPorDefecto { get; set; }
+        public bool IngresaPagoCliente { get; set; }
         public byte[] Certificado { get; set; }
         public string NombreCertificado { get; set; }
         public string PinCertificado { get; set; }
         public string UsuarioHacienda { get; set; }
         public string ClaveHacienda { get; set; }
         public string CorreoNotificacion { get; set; }
+        public decimal PorcentajeDescMaximo { get; set; }
+        public string LeyendaFactura { get; set; }
+        public string LeyendaProforma { get; set; }
+        public string LeyendaApartado { get; set; }
+        public string LeyendaOrdenServicio { get; set; }
         public byte[] Logotipo { get; set; }
         public string AccessToken { get; set; }
         public int? ExpiresIn { get; set; }
@@ -67,5 +69,6 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         [ForeignKey("IdProvincia, IdCanton, IdDistrito, IdBarrio")]
         public Barrio Barrio { get; set; }
         public ICollection<ReportePorEmpresa> ReportePorEmpresa { get; set; }
+        public ICollection<RolePorEmpresa> RolePorEmpresa { get; set; }
     }
 }

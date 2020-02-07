@@ -16,6 +16,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
 
         [ForeignKey("Empresa")]
         public int IdEmpresa { get; set; }
+        public int IdSucursal { get; set; }
         [Key]
         public int IdMovCxP { get; set; }
         [ForeignKey("Usuario")]

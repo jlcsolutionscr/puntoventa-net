@@ -20,10 +20,10 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         [ForeignKey("Linea")]
         public int IdLinea { get; set; }
         public string Codigo { get; set; }
+        public string CodigoProveedor { get; set; }
         [ForeignKey("Proveedor")]
         public int IdProveedor { get; set; }
         public string Descripcion { get; set; }
-        public decimal Cantidad { get; set; }
         public decimal PrecioCosto { get; set; }
         public decimal PrecioVenta1 { get; set; }
         public decimal PrecioVenta2 { get; set; }
@@ -34,8 +34,13 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public int IdImpuesto { get; set; }
         public int IndExistencia { get; set; }
         public byte[] Imagen { get; set; }
+        public string Marca { get; set; }
+        public string Observacion { get; set; }
+        public bool Activo { get; set; }
         [NotMapped]
         public string TipoProductoDesc { get { if (TipoProducto == null) return ""; else return TipoProducto.Descripcion; } }
+        [NotMapped]
+        public decimal Existencias { get; set; }
 
         public Linea Linea { get; set; }
         public Empresa Empresa { get; set; }

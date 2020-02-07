@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -15,10 +16,12 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         [ForeignKey("TipoMoneda")]
         public int IdTipoMoneda { get; set; }
         public int IdCuentaBanco { get; set; }
+        [NotMapped]
+        public string DescripcionCuenta { get; set; }
         public string TipoTarjeta { get; set; }
         public string NroMovimiento { get; set; }
         public decimal MontoLocal { get; set; }
-        public decimal MontoForaneo { get; set; }
+        public decimal TipoDeCambio { get; set; }
 
         public Factura Factura { get; set; }
         public FormaPago FormaPago { get; set; }

@@ -33,6 +33,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="FacturaElectronicaCompra.cs" />
     <Compile Include="TipoDocumento.cs" />
     <Compile Include="FacturaElectronica.cs" />
     <Compile Include="MensajeHacienda.cs" />

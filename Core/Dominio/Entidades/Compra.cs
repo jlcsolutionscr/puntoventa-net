@@ -16,10 +16,14 @@ namespace LeandroSoftware.Core.Dominio.Entidades
 
         [ForeignKey("Empresa")]
         public int IdEmpresa { get; set; }
+        public int IdSucursal { get; set; }
         [Key]
         public int IdCompra { get; set; }
         [ForeignKey("Usuario")]
         public int IdUsuario { get; set; }
+        [ForeignKey("TipoMoneda")]
+        public int IdTipoMoneda { get; set; }
+        public decimal TipoDeCambioDolar { get; set; }
         [ForeignKey("Proveedor")]
         public int IdProveedor { get; set; }
         [ForeignKey("CondicionVenta")]
@@ -45,6 +49,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
 
         public Empresa Empresa { get; set; }
         public Usuario Usuario { get; set; }
+        public TipoMoneda TipoMoneda { get; set; }
         public Proveedor Proveedor { get; set; }
         public CondicionVenta CondicionVenta { get; set; }
         public ICollection<DetalleCompra> DetalleCompra { get; set; }

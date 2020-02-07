@@ -32,5 +32,10 @@ using System.Runtime.InteropServices;
 // Puede especificar todos los valores o establecer como predeterminados los números de versión de compilación y de revisión 
 // mediante el asterisco ('*'), como se muestra a continuación:
 // [assembly: AssemblyVersion("1.0.*")]
+<<<<<<< HEAD
 [assembly: AssemblyVersion("3.1.1.0")]
 [assembly: AssemblyFileVersion("3.1.1.0")]
+=======
+[assembly: AssemblyVersion("4.0.0.0")]
+[assembly: AssemblyFileVersion("4.0.0.0")]
+>>>>>>> 658485f21ea9ccdc1cb2f3eb5ebcab2958b737d1

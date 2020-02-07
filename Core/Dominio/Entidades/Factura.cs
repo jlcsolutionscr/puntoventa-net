@@ -20,6 +20,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public int IdTerminal { get; set; }
         [Key]
         public int IdFactura { get; set; }
+        public int ConsecFactura { get; set; }
         [ForeignKey("Usuario")]
         public int IdUsuario { get; set; }
         [ForeignKey("TipoMoneda")]
@@ -27,6 +28,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public decimal TipoDeCambioDolar { get; set; }
         [ForeignKey("Cliente")]
         public int IdCliente { get; set; }
+        public string NombreCliente { get; set; }
         [ForeignKey("CondicionVenta")]
         public int IdCondicionVenta { get; set; }
         public int PlazoCredito { get; set; }
@@ -34,27 +36,27 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public string TextoAdicional { get; set; }
         [ForeignKey("Vendedor")]
         public int IdVendedor { get; set; }
-        public decimal Excento { get; set; }
-        public decimal Gravado { get; set; }
-        public decimal Exonerado { get; set; }
-        public decimal Descuento { get; set; }
-        public decimal Impuesto { get; set; }
-        public decimal MontoPagado { get; set; }
-        [NotMapped]
-        public decimal Total { get { return Excento + Gravado + Exonerado + Impuesto - Descuento; } }
-        [NotMapped]
-        public string NombreCliente { get { if (Cliente == null) return ""; else return Cliente.Nombre; } }
         [ForeignKey("ParametroExoneracion")]
         public int IdTipoExoneracion { get; set; }
         public string NumDocExoneracion { get; set; }
         public string NombreInstExoneracion { get; set; }
         public DateTime FechaEmisionDoc { get; set; }
         public int PorcentajeExoneracion { get; set; }
+        public decimal Excento { get; set; }
+        public decimal Gravado { get; set; }
+        public decimal Exonerado { get; set; }
+        public decimal Descuento { get; set; }
+        public decimal Impuesto { get; set; }
+        public decimal MontoPagado { get; set; }
+        public decimal MontoAdelanto { get; set; }
+        [NotMapped]
+        public decimal Total { get { return Excento + Gravado + Exonerado + Impuesto - Descuento; } }
         public int IdCxC { get; set; }
         public int IdAsiento { get; set; }
         public int IdMovBanco { get; set; }
         public int IdOrdenServicio { get; set; }
         public int IdProforma { get; set; }
+        public int IdApartado { get; set; }
         public decimal TotalCosto { get; set; }
         public bool Nulo { get; set; }
         public int? IdAnuladoPor { get; set; }
@@ -67,8 +69,8 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public Empresa Empresa { get; set; }
         public Usuario Usuario { get; set; }
         public TipoMoneda TipoMoneda { get; set; }
-        public Vendedor Vendedor { get; set; }
         public ParametroExoneracion ParametroExoneracion { get; set; }
+        public Vendedor Vendedor { get; set; }
         public ICollection<DetalleFactura> DetalleFactura { get; set; }
         public ICollection<DesglosePagoFactura> DesglosePagoFactura { get; set; }
     }

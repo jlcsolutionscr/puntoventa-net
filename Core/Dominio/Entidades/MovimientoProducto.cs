@@ -7,16 +7,14 @@ namespace LeandroSoftware.Core.Dominio.Entidades
     [Table("movimientoproducto")]
     public partial class MovimientoProducto
     {
-        [Key, Column(Order = 0), ForeignKey("Producto")]
+        [Key]
+        public int IdMovimiento { get; set; }
         public int IdProducto { get; set; }
-        [Key, Column(Order = 1)]
+        public int IdSucursal { get; set; }
         public DateTime Fecha { get; set; }
         public decimal Cantidad { get; set; }
         public string Tipo { get; set; }
         public string Origen { get; set; }
-        public string Referencia { get; set; }
         public decimal PrecioCosto { get; set; }
-
-        public Producto Producto { get; set; }
     }
 }

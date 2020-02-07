@@ -49,7 +49,8 @@ namespace LeandroSoftware.Core.TiposComunes
     {
         public static readonly int Producto = 1;
         public static readonly int ServicioProfesionales = 2;
-        public static readonly int OtrosServicios = 2;
+        public static readonly int OtrosServicios = 3;
+        public static readonly int Transitorio = 4;
     };
 
     public static class StaticTipoMovimientoProducto
@@ -157,9 +158,9 @@ namespace LeandroSoftware.Core.TiposComunes
         public static readonly string Rechazado = "rechazado";
     };
 
-    public class ReporteVentas
+    public class ReporteDetalle
     {
-        public int IdFactura { get; set; }
+        public int Id { get; set; }
         public string Fecha { get; set; }
         public string Nombre { get; set; }
         public string NoDocumento { get; set; }
@@ -178,33 +179,11 @@ namespace LeandroSoftware.Core.TiposComunes
         public decimal Total { get; set; }
     }
 
-    public class ReporteCompras
-    {
-        public int IdCompra { get; set; }
-        public string Fecha { get; set; }
-        public string Nombre { get; set; }
-        public string NoDocumento { get; set; }
-        public decimal Impuesto { get; set; }
-        public decimal Total { get; set; }
-    }
-
-    public class ReporteCuentasPorCobrar
+    public class ReporteCuentas
     {
         public int IdPropietario { get; set; }
         public string Nombre { get; set; }
-        public int IdCxC { get; set; }
-        public string Fecha { get; set; }
-        public string Descripcion { get; set; }
-        public string Referencia { get; set; }
-        public decimal Total { get; set; }
-        public decimal Saldo { get; set; }
-    }
-
-    public class ReporteCuentasPorPagar
-    {
-        public int IdPropietario { get; set; }
-        public string Nombre { get; set; }
-        public int IdCxP { get; set; }
+        public int IdCuenta { get; set; }
         public string Fecha { get; set; }
         public string Descripcion { get; set; }
         public string Referencia { get; set; }
@@ -260,25 +239,25 @@ namespace LeandroSoftware.Core.TiposComunes
         public decimal Saldo { get; set; }
     }
 
-    public class ReporteEstadoResultados
+    public class DescripcionValor
     {
-        public string NombreTipoRegistro { get; set; }
+        public DescripcionValor()
+        {
+        }
+
+        public DescripcionValor(string descripcion, decimal valor)
+        {
+            Descripcion = descripcion;
+            Valor = valor;
+        }
+
         public string Descripcion { get; set; }
         public decimal Valor { get; set; }
     }
 
-    public class ReporteDetalleEgreso
+    public class ReporteGrupoDetalle
     {
-        public int IdMov { get; set; }
-        public string Descripcion { get; set; }
-        public string Detalle { get; set; }
-        public string Fecha { get; set; }
-        public decimal Total { get; set; }
-    }
-
-    public class ReporteDetalleIngreso
-    {
-        public int IdMov { get; set; }
+        public int Id { get; set; }
         public string Descripcion { get; set; }
         public string Detalle { get; set; }
         public string Fecha { get; set; }
@@ -314,30 +293,6 @@ namespace LeandroSoftware.Core.TiposComunes
         public decimal Impuesto { get; set; }
         public decimal Descuento { get; set; }
         public decimal PorcentajeIVA { get; set; }
-    }
-
-    public class ReporteCierreDeCaja
-    {
-        public decimal FondoInicio { get; set; }
-        public decimal VentasPorMayor { get; set; }
-        public decimal VentasDetalle { get; set; }
-        public decimal VentasContado { get; set; }
-        public decimal VentasCredito { get; set; }
-        public decimal VentasTarjeta { get; set; }
-        public decimal OtrasVentas { get; set; }
-        public decimal RetencionIVA { get; set; }
-        public decimal ComisionVT { get; set; }
-        public decimal Liquidacion { get; set; }
-        public decimal IngresoCxCEfectivo { get; set; }
-        public decimal IngresoCxCTarjeta { get; set; }
-        public decimal DevolucionesProveedores { get; set; }
-        public decimal OtrosIngresos { get; set; }
-        public decimal ComprasContado { get; set; }
-        public decimal ComprasCredito { get; set; }
-        public decimal OtrasCompras { get; set; }
-        public decimal EgresoCxPEfectivo { get; set; }
-        public decimal DevolucionesClientes { get; set; }
-        public decimal OtrosEgresos { get; set; }
     }
 
     public class ReporteInventario
@@ -393,8 +348,6 @@ namespace LeandroSoftware.Core.TiposComunes
         public string Beneficiario { get; set; }
         public decimal Monto { get; set; }
         public string MontoEnLetras { get; set; }
-        public string Descripcion { get; set; }
-        public decimal MontoLocal { get; set; }
     }
 
     public class ReporteIngreso
@@ -405,8 +358,6 @@ namespace LeandroSoftware.Core.TiposComunes
         public string Detalle { get; set; }
         public decimal Monto { get; set; }
         public string MontoEnLetras { get; set; }
-        public string Descripcion { get; set; }
-        public decimal MontoLocal { get; set; }
     }
 
     public class ReporteDocumentoElectronico
@@ -464,21 +415,29 @@ namespace LeandroSoftware.Core.TiposComunes
         {
         }
 
-        public ProductoDetalle(int id, string codigo, string descripcion, decimal cantidad, decimal precioCosto, decimal precioVenta1)
+        public ProductoDetalle(int id, string codigo, string codigoProveedor, string descripcion, decimal cantidad, decimal precioCosto, decimal precioVenta1, string observacion, bool activo)
         {
             Id = id;
             Codigo = codigo;
+            CodigoProveedor = codigoProveedor;
             Descripcion = descripcion;
             Cantidad = cantidad;
             PrecioCosto = precioCosto;
             PrecioVenta1 = precioVenta1;
+            Observacion = observacion;
+            Utilidad = precioCosto > 0 ? (precioVenta1 * 100 / precioCosto) - 100 : PrecioVenta1 > 0 ? 100 : 0;
+            Activo = activo;
         }
         public int Id { get; set; }
         public string Codigo { get; set; }
+        public string CodigoProveedor { get; set; }
         public string Descripcion { get; set; }
         public decimal Cantidad { get; set; }
         public decimal PrecioCosto { get; set; }
         public decimal PrecioVenta1 { get; set; }
+        public string Observacion { get; set; }
+        public decimal Utilidad { get; set; }
+        public bool Activo { get; set; }
     }
 
     public class FacturaDetalle
@@ -487,9 +446,10 @@ namespace LeandroSoftware.Core.TiposComunes
         {
         }
 
-        public FacturaDetalle(int id, string nombreCliente, string fecha, decimal gravado, decimal exonerado, decimal excento, decimal impuesto, decimal total, string estado)
+        public FacturaDetalle(int id, int consecutivo, string nombreCliente, string fecha, decimal gravado, decimal exonerado, decimal excento, decimal impuesto, decimal total, string estado)
         {
             IdFactura = id;
+            Consecutivo = consecutivo;
             NombreCliente = nombreCliente;
             Fecha = fecha;
             Gravado = gravado;
@@ -500,6 +460,7 @@ namespace LeandroSoftware.Core.TiposComunes
             Estado = estado;
         }
         public int IdFactura { get; set; }
+        public int Consecutivo { get; set; }
         public string NombreCliente { get; set; }
         public string Fecha { get; set; }
         public decimal Gravado { get; set; }
@@ -508,6 +469,42 @@ namespace LeandroSoftware.Core.TiposComunes
         public decimal Impuesto { get; set; }
         public decimal Total { get; set; }
         public string Estado { get; set; }
+    }
+
+    public class TrasladoDetalle
+    {
+        public TrasladoDetalle()
+        {
+        }
+
+        public TrasladoDetalle(int id, string fecha, string nombreSucursal, decimal total)
+        {
+            IdTraslado = id;
+            Fecha = fecha;
+            NombreSucursal = nombreSucursal;
+            Total = total;
+        }
+        public int IdTraslado { get; set; }
+        public string Fecha { get; set; }
+        public string NombreSucursal { get; set; }
+        public decimal Total { get; set; }
+    }
+
+    public class AjusteInventarioDetalle
+    {
+        public AjusteInventarioDetalle()
+        {
+        }
+
+        public AjusteInventarioDetalle(int id, string fecha, string descripcion)
+        {
+            IdAjuste = id;
+            Fecha = fecha;
+            Descripcion = descripcion;
+        }
+        public int IdAjuste { get; set; }
+        public string Fecha { get; set; }
+        public string Descripcion { get; set; }
     }
 
     public class CompraDetalle
@@ -562,5 +559,43 @@ namespace LeandroSoftware.Core.TiposComunes
         public decimal MontoTotal { get; set; }
         public string EsMensajeReceptor { get; set; }
         public string CorreoNotificacion { get; set; }
+    }
+
+    public class CierreDeEfectivo
+    {
+        public CierreDeEfectivo()
+        {
+        }
+
+        public CierreDeEfectivo(int id, string fecha, string detalle, decimal total)
+        {
+            Id = id;
+            Fecha = fecha;
+            Detalle = detalle;
+            Total = total;
+        }
+        public int Id { get; set; }
+        public string Fecha { get; set; }
+        public string Detalle { get; set; }
+        public decimal Total { get; set; }
+    }
+
+    public class EfectivoDetalle
+    {
+        public EfectivoDetalle()
+        {
+        }
+
+        public EfectivoDetalle(int id, string fecha, string descripcion, decimal total)
+        {
+            Id = id;
+            Fecha = fecha;
+            Descripcion = descripcion;
+            Total = total;
+        }
+        public int Id { get; set; }
+        public string Fecha { get; set; }
+        public string Descripcion { get; set; }
+        public decimal Total { get; set; }
     }
 }

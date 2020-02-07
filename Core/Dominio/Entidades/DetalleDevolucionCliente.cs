@@ -10,11 +10,12 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public int IdDevolucion { get; set; }
         [Key, Column(Order = 1), ForeignKey("Producto")]
         public int IdProducto { get; set; }
+        [NotMapped]
+        public string Descripcion { get; set; }
         public decimal Cantidad { get; set; }
         public decimal PrecioCosto { get; set; }
         public decimal PrecioVenta { get; set; }
         public bool Excento { get; set; }
-        public decimal CantDevolucion { get; set; }
         public decimal PorcentajeIVA { get; set; }
 
         public DevolucionCliente DevolucionCliente { get; set; }

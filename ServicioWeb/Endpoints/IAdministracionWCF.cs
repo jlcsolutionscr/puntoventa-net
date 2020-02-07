@@ -7,9 +7,6 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
     [ServiceContract]
     public interface IAdministracionWCF
     {
-        [WebInvoke(Method = "OPTIONS", UriTemplate = "*")]
-        void Options();
-
         [OperationContract]
         [WebGet(UriTemplate = "validarcredencialesadmin?usuario={usuario}&clave={clave}", ResponseFormat = WebMessageFormat.Json)]
         string ValidarCredencialesAdmin(string usuario, string clave);
@@ -39,6 +36,14 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
         string ObtenerLogotipoEmpresa(int idempresa);
 
         [OperationContract]
+        [WebGet(UriTemplate = "obtenerlistadoreporteporempresa?idempresa={idempresa}", ResponseFormat = WebMessageFormat.Json)]
+        string ObtenerListadoReportePorEmpresa(int idempresa);
+
+        [OperationContract]
+        [WebGet(UriTemplate = "obtenerlistadoroleporempresa?idempresa={idempresa}", ResponseFormat = WebMessageFormat.Json)]
+        string ObtenerListadoRolePorEmpresa(int idempresa);
+
+        [OperationContract]
         [WebGet(UriTemplate = "obtenersucursalporempresa?idempresa={idempresa}&idsucursal={idsucursal}", ResponseFormat = WebMessageFormat.Json)]
         string ObtenerSucursalPorEmpresa(int idempresa, int idsucursal);
 
@@ -55,6 +60,10 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
         string ObtenerListadoCatalogoReportes();
 
         [OperationContract]
+        [WebGet(UriTemplate = "obtenerlistadoroles", ResponseFormat = WebMessageFormat.Json)]
+        string ObtenerListadoRoles();
+
+        [OperationContract]
         [WebGet(UriTemplate = "obtenerlistadoprovincias", ResponseFormat = WebMessageFormat.Json)]
         string ObtenerListadoProvincias();
 
@@ -67,8 +76,8 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
         string ObtenerListadoDistritos(int idprovincia, int idcanton);
 
         [OperationContract]
-        [WebGet(UriTemplate = "obtenerdatosreporte?tipo={tipo}&idempresa={idempresa}&fechainicial={fechainicial}&fechafinal={fechafinal}", ResponseFormat = WebMessageFormat.Json)]
-        string ObtenerDatosReporte(int tipo, int idempresa, string fechainicial, string fechafinal);
+        [WebGet(UriTemplate = "obtenerdatosreporte?tipo={tipo}&idempresa={idempresa}&idsucursal={idsucursal}&fechainicial={fechainicial}&fechafinal={fechafinal}", ResponseFormat = WebMessageFormat.Json)]
+        string ObtenerDatosReporte(int tipo, int idempresa, int idsucursal, string fechainicial, string fechafinal);
 
         [OperationContract]
         [WebGet(UriTemplate = "obtenerlistadobarrios?idprovincia={idprovincia}&idcanton={idcanton}&iddistrito={iddistrito}", ResponseFormat = WebMessageFormat.Json)]
@@ -81,6 +90,14 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
         [OperationContract]
         [WebInvoke(Method = "POST", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, UriTemplate = "actualizarempresa")]
         void ActualizarEmpresa(string strDatos);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, UriTemplate = "actualizarlistadoreportes")]
+        void ActualizarListadoReporte(string strDatos);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, UriTemplate = "actualizarlistadoroles")]
+        void ActualizarListadoRoles(string strDatos);
 
         [OperationContract]
         [WebInvoke(Method = "POST", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, UriTemplate = "actualizarlogoempresa")]
