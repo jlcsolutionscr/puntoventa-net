@@ -677,7 +677,7 @@ Public Class FrmProforma
                 arrDetalleOrden = New List(Of ModuloImpresion.ClsDetalleComprobante)
                 For I = 0 To dtbDetalleProforma.Rows.Count - 1
                     detalleComprobante = New ModuloImpresion.ClsDetalleComprobante With {
-                    .strDescripcion = dtbDetalleProforma.Rows(I).Item(2),
+                    .strDescripcion = dtbDetalleProforma.Rows(I).Item(1) + "-" + dtbDetalleProforma.Rows(I).Item(2),
                     .strCantidad = CDbl(dtbDetalleProforma.Rows(I).Item(3)),
                     .strPrecio = FormatNumber(dtbDetalleProforma.Rows(I).Item(4), 2),
                     .strTotalLinea = FormatNumber(CDbl(dtbDetalleProforma.Rows(I).Item(3)) * CDbl(dtbDetalleProforma.Rows(I).Item(4)), 2),

@@ -897,7 +897,7 @@ Public Class FrmOrdenServicio
                 arrDetalleOrden = New List(Of ModuloImpresion.ClsDetalleComprobante)
                 For I = 0 To dtbDetalleOrdenServicio.Rows.Count - 1
                     detalleComprobante = New ModuloImpresion.ClsDetalleComprobante With {
-                    .strDescripcion = dtbDetalleOrdenServicio.Rows(I).Item(2),
+                    .strDescripcion = dtbDetalleOrdenServicio.Rows(I).Item(1) + "-" + dtbDetalleOrdenServicio.Rows(I).Item(2),
                     .strCantidad = CDbl(dtbDetalleOrdenServicio.Rows(I).Item(3)),
                     .strPrecio = FormatNumber(dtbDetalleOrdenServicio.Rows(I).Item(4), 2),
                     .strTotalLinea = FormatNumber(CDbl(dtbDetalleOrdenServicio.Rows(I).Item(3)) * CDbl(dtbDetalleOrdenServicio.Rows(I).Item(4)), 2),

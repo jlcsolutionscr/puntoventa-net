@@ -19,6 +19,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         Traslado ObtenerTraslado(int intIdTraslado);
         int ObtenerTotalListaTraslados(int intIdEmpresa, int intIdSucursalOrigen, bool bolAplicado, int intIdTraslado);
         IList<TrasladoDetalle> ObtenerListadoTraslados(int intIdEmpresa, int intIdSucursalOrigen, bool bolAplicado, int numPagina, int cantRec, int intIdTraslado);
+        int ObtenerTotalListaTrasladosPorAplicar(int intIdEmpresa, int intIdSucursalDestino, bool bolAplicado);
+        IList<TrasladoDetalle> ObtenerListadoTrasladosPorAplicar(int intIdEmpresa, int intIdSucursalDestino, bool bolAplicado, int numPagina, int cantRec);
     }
 
     public class TrasladoService : ITrasladoService
@@ -418,6 +420,52 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     log.Error("Error al obtener el listado de registros de traslado: ", ex);
                     throw new Exception("Se produjo un error consultando el listado de traslados. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public int ObtenerTotalListaTrasladosPorAplicar(int intIdEmpresa, int intIdSucursalDestino, bool bolAplicado)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    var listaTraslados = dbContext.TrasladoRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursalDestino == intIdSucursalDestino && x.Aplicado == bolAplicado);
+                    return listaTraslados.Count();
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al obtener el total del listado de registros de traslados por aplicar: ", ex);
+                    throw new Exception("Se produjo un error consultando el total del listado de traslados por aplicar. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public IList<TrasladoDetalle> ObtenerListadoTrasladosPorAplicar(int intIdEmpresa, int intIdSucursalDestino, bool bolAplicado, int numPagina, int cantRec)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                var listaTraslado = new List<TrasladoDetalle>();
+                try
+                {
+                    var listado = dbContext.TrasladoRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursalDestino == intIdSucursalDestino && x.Aplicado == bolAplicado);
+                    listado = listado.OrderByDescending(x => x.IdTraslado).Skip((numPagina - 1) * cantRec).Take(cantRec);
+                    var lineas = listado.ToList();
+                    foreach (var traslado in lineas)
+                    {
+                        string strNombreSucursal = "NOMBRE DE SUCURSAL NO DISPONIBLE";
+                        SucursalPorEmpresa sucursalDestino = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == traslado.IdSucursalOrigen);
+                        if (sucursalDestino != null)
+                            strNombreSucursal = sucursalDestino.NombreSucursal;
+                        TrasladoDetalle item = new TrasladoDetalle(traslado.IdTraslado, traslado.Fecha.ToString("dd/MM/yyyy"), strNombreSucursal, traslado.Total);
+                        listaTraslado.Add(item);
+                    }
+                    return listaTraslado;
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al obtener el listado de registros de traslados por aplicar: ", ex);
+                    throw new Exception("Se produjo un error consultando el listado de traslados por aplicar. Por favor consulte con su proveedor.");
                 }
             }
         }

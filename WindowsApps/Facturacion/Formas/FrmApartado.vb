@@ -865,7 +865,7 @@ Public Class FrmApartado
                 arrDetalleOrden = New List(Of ModuloImpresion.ClsDetalleComprobante)
                 For I = 0 To dtbDetalleApartado.Rows.Count - 1
                     detalleComprobante = New ModuloImpresion.ClsDetalleComprobante With {
-                    .strDescripcion = dtbDetalleApartado.Rows(I).Item(2),
+                    .strDescripcion = dtbDetalleApartado.Rows(I).Item(1) + "-" + dtbDetalleApartado.Rows(I).Item(2),
                     .strCantidad = CDbl(dtbDetalleApartado.Rows(I).Item(3)),
                     .strPrecio = FormatNumber(dtbDetalleApartado.Rows(I).Item(4), 2),
                     .strTotalLinea = FormatNumber(CDbl(dtbDetalleApartado.Rows(I).Item(3)) * CDbl(dtbDetalleApartado.Rows(I).Item(4)), 2),
