@@ -1208,6 +1208,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.Commit();
                     return apartado.IdApartado.ToString() + "-" + apartado.ConsecApartado.ToString();
                 }
+                catch (BusinessException ex)
+                {
+                    dbContext.RollBack();
+                    throw ex;
+                }
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
@@ -1362,6 +1367,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.OrdenServicioRepository.Add(ordenServicio);
                     dbContext.Commit();
                     return ordenServicio.IdOrden.ToString() + "-" + ordenServicio.ConsecOrdenServicio.ToString();
+                }
+                catch (BusinessException ex)
+                {
+                    dbContext.RollBack();
+                    throw ex;
                 }
                 catch (Exception ex)
                 {
