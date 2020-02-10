@@ -3,6 +3,9 @@ Imports LeandroSoftware.Core.TiposComunes
 Imports LeandroSoftware.Core.Dominio.Entidades
 Imports LeandroSoftware.ClienteWCF
 Imports System.Threading.Tasks
+Imports System.IO
+Imports System.Globalization
+Imports LeandroSoftware.Core.Utilitario
 
 Public Class FrmCompra
 #Region "Variables"
@@ -31,6 +34,7 @@ Public Class FrmCompra
         dtbDetalleCompra = New DataTable()
         dtbDetalleCompra.Columns.Add("IDPRODUCTO", GetType(Integer))
         dtbDetalleCompra.Columns.Add("CODIGO", GetType(String))
+        dtbDetalleCompra.Columns.Add("CODIGOINTERNO", GetType(String))
         dtbDetalleCompra.Columns.Add("DESCRIPCION", GetType(String))
         dtbDetalleCompra.Columns.Add("CANTIDAD", GetType(Decimal))
         dtbDetalleCompra.Columns.Add("PRECIOCOSTO", GetType(Decimal))
@@ -58,6 +62,7 @@ Public Class FrmCompra
 
         Dim dvcIdProducto As New DataGridViewTextBoxColumn
         Dim dvcCodigo As New DataGridViewTextBoxColumn
+        Dim dvcCodigoInterno As New DataGridViewTextBoxColumn
         Dim dvcDescripcion As New DataGridViewTextBoxColumn
         Dim dvcCantidad As New DataGridViewTextBoxColumn
         Dim dvcPrecioCosto As New DataGridViewTextBoxColumn
@@ -73,13 +78,19 @@ Public Class FrmCompra
         grdDetalleCompra.Columns.Add(dvcIdProducto)
 
         dvcCodigo.DataPropertyName = "CODIGO"
-        dvcCodigo.HeaderText = "Código"
-        dvcCodigo.Width = 190
+        dvcCodigo.HeaderText = "Cod Prov"
+        dvcCodigo.Width = 110
         grdDetalleCompra.Columns.Add(dvcCodigo)
+
+        dvcCodigoInterno.DataPropertyName = "CODIGOINTERNO"
+        dvcCodigoInterno.HeaderText = "Cod Int"
+        dvcCodigoInterno.Width = 110
+        grdDetalleCompra.Columns.Add(dvcCodigoInterno)
+
 
         dvcDescripcion.DataPropertyName = "DESCRIPCION"
         dvcDescripcion.HeaderText = "Descripción"
-        dvcDescripcion.Width = 350
+        dvcDescripcion.Width = 320
         grdDetalleCompra.Columns.Add(dvcDescripcion)
 
         dvcCantidad.DataPropertyName = "CANTIDAD"
@@ -198,15 +209,16 @@ Public Class FrmCompra
         For Each detalle As DetalleCompra In compra.DetalleCompra
             dtrRowDetCompra = dtbDetalleCompra.NewRow
             dtrRowDetCompra.Item(0) = detalle.IdProducto
-            dtrRowDetCompra.Item(1) = detalle.Producto.Codigo
-            dtrRowDetCompra.Item(2) = detalle.Producto.Descripcion
-            dtrRowDetCompra.Item(3) = detalle.Cantidad
-            dtrRowDetCompra.Item(4) = detalle.PrecioCosto
-            dtrRowDetCompra.Item(5) = dtrRowDetCompra.Item(3) * dtrRowDetCompra.Item(4)
-            dtrRowDetCompra.Item(6) = detalle.PorcentajeIVA = 0
-            dtrRowDetCompra.Item(7) = detalle.PorcentajeIVA
-            dtrRowDetCompra.Item(8) = detalle.PrecioVenta
-            dtrRowDetCompra.Item(9) = (detalle.PrecioVenta * 100 / detalle.PrecioCosto) - 100
+            dtrRowDetCompra.Item(1) = detalle.Producto.CodigoProveedor
+            dtrRowDetCompra.Item(2) = detalle.Producto.Codigo
+            dtrRowDetCompra.Item(3) = detalle.Producto.Descripcion
+            dtrRowDetCompra.Item(4) = detalle.Cantidad
+            dtrRowDetCompra.Item(5) = detalle.PrecioCosto
+            dtrRowDetCompra.Item(6) = dtrRowDetCompra.Item(4) * dtrRowDetCompra.Item(5)
+            dtrRowDetCompra.Item(7) = detalle.PorcentajeIVA = 0
+            dtrRowDetCompra.Item(8) = detalle.PorcentajeIVA
+            dtrRowDetCompra.Item(9) = detalle.PrecioVenta
+            dtrRowDetCompra.Item(10) = (detalle.PrecioVenta * 100 / detalle.PrecioCosto) - 100
             dtbDetalleCompra.Rows.Add(dtrRowDetCompra)
         Next
         grdDetalleCompra.Refresh()
@@ -217,15 +229,16 @@ Public Class FrmCompra
         For Each detalle As DetalleOrdenCompra In ordenCompra.DetalleOrdenCompra
             dtrRowDetCompra = dtbDetalleCompra.NewRow
             dtrRowDetCompra.Item(0) = detalle.IdProducto
-            dtrRowDetCompra.Item(1) = detalle.Producto.Codigo
-            dtrRowDetCompra.Item(2) = detalle.Producto.Descripcion
-            dtrRowDetCompra.Item(3) = detalle.Cantidad
-            dtrRowDetCompra.Item(4) = detalle.PrecioCosto
-            dtrRowDetCompra.Item(5) = dtrRowDetCompra.Item(3) * dtrRowDetCompra.Item(4)
-            dtrRowDetCompra.Item(6) = detalle.PorcentajeIVA = 0
-            dtrRowDetCompra.Item(7) = detalle.PorcentajeIVA
-            dtrRowDetCompra.Item(8) = detalle.PrecioVenta
-            dtrRowDetCompra.Item(9) = (detalle.PrecioVenta * 100 / detalle.PrecioCosto) - 100
+            dtrRowDetCompra.Item(1) = detalle.Producto.CodigoProveedor
+            dtrRowDetCompra.Item(2) = detalle.Producto.Codigo
+            dtrRowDetCompra.Item(3) = detalle.Producto.Descripcion
+            dtrRowDetCompra.Item(4) = detalle.Cantidad
+            dtrRowDetCompra.Item(5) = detalle.PrecioCosto
+            dtrRowDetCompra.Item(6) = dtrRowDetCompra.Item(4) * dtrRowDetCompra.Item(5)
+            dtrRowDetCompra.Item(7) = detalle.PorcentajeIVA = 0
+            dtrRowDetCompra.Item(8) = detalle.PorcentajeIVA
+            dtrRowDetCompra.Item(9) = detalle.PrecioVenta
+            dtrRowDetCompra.Item(10) = (detalle.PrecioVenta * 100 / detalle.PrecioCosto) - 100
             dtbDetalleCompra.Rows.Add(dtrRowDetCompra)
         Next
         grdDetalleCompra.Refresh()
@@ -252,26 +265,28 @@ Public Class FrmCompra
         Dim intIndice As Integer = ObtenerIndice(dtbDetalleCompra, producto.IdProducto)
         If producto.Tipo = 1 And intIndice >= 0 Then
             dtbDetalleCompra.Rows(intIndice).Item(1) = producto.CodigoProveedor
-            dtbDetalleCompra.Rows(intIndice).Item(2) = producto.Descripcion
-            dtbDetalleCompra.Rows(intIndice).Item(3) += intCantidad
-            dtbDetalleCompra.Rows(intIndice).Item(4) = dblPrecioCosto
-            dtbDetalleCompra.Rows(intIndice).Item(5) = dtbDetalleCompra.Rows(intIndice).Item(3) * dtbDetalleCompra.Rows(intIndice).Item(4)
-            dtbDetalleCompra.Rows(intIndice).Item(6) = producto.ParametroImpuesto.TasaImpuesto = 0
-            dtbDetalleCompra.Rows(intIndice).Item(7) = producto.ParametroImpuesto.TasaImpuesto
-            dtbDetalleCompra.Rows(intIndice).Item(8) = producto.PrecioVenta1
-            dtbDetalleCompra.Rows(intIndice).Item(9) = (producto.PrecioVenta1 * 100 / dblPrecioCosto) - 100
+            dtbDetalleCompra.Rows(intIndice).Item(2) = producto.Codigo
+            dtbDetalleCompra.Rows(intIndice).Item(3) = producto.Descripcion
+            dtbDetalleCompra.Rows(intIndice).Item(4) += intCantidad
+            dtbDetalleCompra.Rows(intIndice).Item(5) = dblPrecioCosto
+            dtbDetalleCompra.Rows(intIndice).Item(6) = dtbDetalleCompra.Rows(intIndice).Item(4) * dtbDetalleCompra.Rows(intIndice).Item(5)
+            dtbDetalleCompra.Rows(intIndice).Item(7) = producto.ParametroImpuesto.TasaImpuesto = 0
+            dtbDetalleCompra.Rows(intIndice).Item(8) = producto.ParametroImpuesto.TasaImpuesto
+            dtbDetalleCompra.Rows(intIndice).Item(9) = producto.PrecioVenta1
+            dtbDetalleCompra.Rows(intIndice).Item(10) = (producto.PrecioVenta1 * 100 / dblPrecioCosto) - 100
         Else
             dtrRowDetCompra = dtbDetalleCompra.NewRow
             dtrRowDetCompra.Item(0) = producto.IdProducto
             dtrRowDetCompra.Item(1) = producto.CodigoProveedor
-            dtrRowDetCompra.Item(2) = producto.Descripcion
-            dtrRowDetCompra.Item(3) = intCantidad
-            dtrRowDetCompra.Item(4) = dblPrecioCosto
-            dtrRowDetCompra.Item(5) = dtrRowDetCompra.Item(3) * dtrRowDetCompra.Item(4)
-            dtrRowDetCompra.Item(6) = producto.ParametroImpuesto.TasaImpuesto = 0
-            dtrRowDetCompra.Item(7) = producto.ParametroImpuesto.TasaImpuesto
-            dtrRowDetCompra.Item(8) = producto.PrecioVenta1
-            dtrRowDetCompra.Item(9) = (producto.PrecioVenta1 * 100 / dblPrecioCosto) - 100
+            dtrRowDetCompra.Item(2) = producto.Codigo
+            dtrRowDetCompra.Item(3) = producto.Descripcion
+            dtrRowDetCompra.Item(4) = intCantidad
+            dtrRowDetCompra.Item(5) = dblPrecioCosto
+            dtrRowDetCompra.Item(6) = dtrRowDetCompra.Item(4) * dtrRowDetCompra.Item(5)
+            dtrRowDetCompra.Item(7) = producto.ParametroImpuesto.TasaImpuesto = 0
+            dtrRowDetCompra.Item(8) = producto.ParametroImpuesto.TasaImpuesto
+            dtrRowDetCompra.Item(9) = producto.PrecioVenta1
+            dtrRowDetCompra.Item(10) = (producto.PrecioVenta1 * 100 / dblPrecioCosto) - 100
             dtbDetalleCompra.Rows.Add(dtrRowDetCompra)
         End If
         grdDetalleCompra.Refresh()
@@ -317,10 +332,10 @@ Public Class FrmCompra
         decExcento = 0
         decGravado = 0
         For I = 0 To dtbDetalleCompra.Rows.Count - 1
-            If dtbDetalleCompra.Rows(I).Item(6) = 0 Then
-                decGravado += dtbDetalleCompra.Rows(I).Item(5)
+            If dtbDetalleCompra.Rows(I).Item(7) = 0 Then
+                decGravado += dtbDetalleCompra.Rows(I).Item(6)
             Else
-                decExcento += dtbDetalleCompra.Rows(I).Item(5)
+                decExcento += dtbDetalleCompra.Rows(I).Item(6)
             End If
         Next
         decSubTotal = decGravado + decExcento
@@ -478,6 +493,7 @@ Public Class FrmCompra
         btnAnular.Enabled = False
         btnGuardar.Enabled = True
         btnImprimir.Enabled = False
+        btnGenerarPDF.Enabled = False
         btnBuscarProveedor.Enabled = True
         txtMontoPago.Text = ""
         txtProveedor.Focus()
@@ -531,6 +547,7 @@ Public Class FrmCompra
                 btnEliminarPago.Enabled = False
                 btnBusProd.Enabled = False
                 btnImprimir.Enabled = True
+                btnGenerarPDF.Enabled = True
                 btnBuscarProveedor.Enabled = False
                 btnAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
                 btnGuardar.Enabled = FrmPrincipal.usuarioGlobal.Modifica
@@ -574,6 +591,7 @@ Public Class FrmCompra
                 btnAnular.Enabled = False
                 btnGuardar.Enabled = True
                 btnImprimir.Enabled = False
+                btnGenerarPDF.Enabled = False
                 btnBuscarProveedor.Enabled = True
             Else
                 MessageBox.Show("No existe registro de orden de compra asociado al identificador seleccionado", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -598,8 +616,7 @@ Public Class FrmCompra
 
     Private Async Sub BtnBusProd_Click(sender As Object, e As EventArgs) Handles btnBusProd.Click
         Dim formBusProd As New FrmBusquedaProducto With {
-            .bolIncluyeServicios = False,
-            .intIdSucursal = cboSucursal.SelectedValue
+            .bolIncluyeServicios = False
         }
         FrmPrincipal.strBusqueda = ""
         formBusProd.ShowDialog()
@@ -677,7 +694,8 @@ Public Class FrmCompra
                 compra.DesglosePagoCompra.Add(desglosePago)
             Next
             Try
-                txtIdCompra.Text = Await Puntoventa.AgregarCompra(compra, FrmPrincipal.usuarioGlobal.Token)
+                compra.IdCompra = Await Puntoventa.AgregarCompra(compra, FrmPrincipal.usuarioGlobal.Token)
+                txtIdCompra.Text = compra.IdCompra
             Catch ex As Exception
                 txtIdCompra.Text = ""
                 btnGuardar.Enabled = True
@@ -688,6 +706,7 @@ Public Class FrmCompra
         End If
         MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
         btnImprimir.Enabled = True
+        btnGenerarPDF.Enabled = True
         btnAgregar.Enabled = True
         btnAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
         btnImprimir.Focus()
@@ -717,10 +736,10 @@ Public Class FrmCompra
             arrDetalleCompra = New List(Of ModuloImpresion.ClsDetalleComprobante)
             For I = 0 To dtbDetalleCompra.Rows.Count - 1
                 detalleComprobante = New ModuloImpresion.ClsDetalleComprobante With {
-                    .strDescripcion = dtbDetalleCompra.Rows(I).Item(1) + "-" + dtbDetalleCompra.Rows(I).Item(2),
-                    .strCantidad = CDbl(dtbDetalleCompra.Rows(I).Item(3)),
-                    .strPrecio = FormatNumber(dtbDetalleCompra.Rows(I).Item(4), 2),
-                    .strTotalLinea = FormatNumber(CDbl(dtbDetalleCompra.Rows(I).Item(3)) * CDbl(dtbDetalleCompra.Rows(I).Item(4)), 2)
+                    .strDescripcion = dtbDetalleCompra.Rows(I).Item(1) + "-" + dtbDetalleCompra.Rows(I).Item(3),
+                    .strCantidad = CDbl(dtbDetalleCompra.Rows(I).Item(4)),
+                    .strPrecio = FormatNumber(dtbDetalleCompra.Rows(I).Item(5), 2),
+                    .strTotalLinea = FormatNumber(CDbl(dtbDetalleCompra.Rows(I).Item(4)) * CDbl(dtbDetalleCompra.Rows(I).Item(5)), 2)
                 }
                 arrDetalleCompra.Add(detalleComprobante)
             Next
@@ -733,6 +752,93 @@ Public Class FrmCompra
             comprobanteImpresion.arrDesglosePago = arrDesglosePago
             Try
                 ModuloImpresion.ImprimirCompra(comprobanteImpresion)
+            Catch ex As Exception
+                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Exit Sub
+            End Try
+        End If
+    End Sub
+
+    Private Async Sub BtnGenerarPDF_Click(sender As Object, e As EventArgs) Handles btnGenerarPDF.Click
+        If txtIdCompra.Text <> "" Then
+            Dim datos As EstructuraPDF = New EstructuraPDF()
+            Try
+                Dim poweredByImage As Image = My.Resources.logo
+                datos.PoweredByLogotipo = poweredByImage
+            Catch ex As Exception
+                datos.PoweredByLogotipo = Nothing
+            End Try
+            Try
+                Dim logotipo As Byte() = Await Puntoventa.ObtenerLogotipoEmpresa(compra.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+                Dim logoImage As Image
+                Using ms As New MemoryStream(logotipo)
+                    logoImage = Image.FromStream(ms)
+                End Using
+                datos.Logotipo = logoImage
+            Catch ex As Exception
+                datos.Logotipo = Nothing
+            End Try
+            datos.TituloDocumento = "COMPRA DE MERCADERIA"
+            datos.NombreEmpresa = FrmPrincipal.empresaGlobal.NombreEmpresa
+            datos.NombreComercial = FrmPrincipal.empresaGlobal.NombreComercial
+            datos.ConsecInterno = compra.IdCompra
+            datos.Consecutivo = Nothing
+            datos.Clave = Nothing
+            datos.CondicionVenta = IIf(compra.IdCondicionVenta = StaticCondicionVenta.Credito, "Crédito", "Contado")
+            datos.PlazoCredito = ""
+            datos.Fecha = compra.Fecha.ToString("dd/MM/yyyy hh:mm:ss")
+            datos.MedioPago = ""
+            datos.NombreEmisor = FrmPrincipal.empresaGlobal.NombreEmpresa
+            datos.NombreComercialEmisor = FrmPrincipal.empresaGlobal.NombreComercial
+            datos.IdentificacionEmisor = FrmPrincipal.empresaGlobal.Identificacion
+            datos.CorreoElectronicoEmisor = FrmPrincipal.empresaGlobal.CorreoNotificacion
+            datos.TelefonoEmisor = FrmPrincipal.empresaGlobal.Telefono1 + IIf(FrmPrincipal.empresaGlobal.Telefono2.Length > 0, " - " + FrmPrincipal.empresaGlobal.Telefono2, "")
+            datos.FaxEmisor = ""
+            datos.ProvinciaEmisor = FrmPrincipal.empresaGlobal.Barrio.Distrito.Canton.Provincia.Descripcion
+            datos.CantonEmisor = FrmPrincipal.empresaGlobal.Barrio.Distrito.Canton.Descripcion
+            datos.DistritoEmisor = FrmPrincipal.empresaGlobal.Barrio.Distrito.Descripcion
+            datos.BarrioEmisor = FrmPrincipal.empresaGlobal.Barrio.Descripcion
+            datos.DireccionEmisor = FrmPrincipal.empresaGlobal.Direccion
+            If compra.IdProveedor > 1 Then
+                datos.PoseeReceptor = True
+                datos.NombreReceptor = proveedor.Nombre
+                datos.NombreComercialReceptor = proveedor.Nombre
+                datos.IdentificacionReceptor = proveedor.Identificacion
+                datos.CorreoElectronicoReceptor = ""
+                datos.TelefonoReceptor = proveedor.Telefono1
+                datos.FaxReceptor = proveedor.Telefono2
+                datos.ProvinciaReceptor = ""
+                datos.CantonReceptor = ""
+                datos.DistritoReceptor = ""
+                datos.BarrioReceptor = ""
+                datos.DireccionReceptor = proveedor.Direccion
+            End If
+            For I = 0 To dtbDetalleCompra.Rows.Count - 1
+                Dim decPrecioVenta As Decimal = dtbDetalleCompra.Rows(I).Item(5)
+                Dim decTotalLinea As Decimal = dtbDetalleCompra.Rows(I).Item(4) * decPrecioVenta
+                Dim detalle As EstructuraPDFDetalleServicio = New EstructuraPDFDetalleServicio With {
+                    .Cantidad = dtbDetalleCompra.Rows(I).Item(4),
+                    .Codigo = dtbDetalleCompra.Rows(I).Item(1),
+                    .Detalle = dtbDetalleCompra.Rows(I).Item(3),
+                    .PrecioUnitario = decPrecioVenta.ToString("N2", CultureInfo.InvariantCulture),
+                    .TotalLinea = decTotalLinea.ToString("N2", CultureInfo.InvariantCulture)
+                }
+                datos.DetalleServicio.Add(detalle)
+            Next
+            datos.OtrosTextos = ""
+            datos.TotalGravado = decGravado.ToString("N2", CultureInfo.InvariantCulture)
+            datos.TotalExonerado = "0.00"
+            datos.TotalExento = decExcento.ToString("N2", CultureInfo.InvariantCulture)
+            datos.Descuento = txtDescuento.Text
+            datos.Impuesto = txtImpuesto.Text
+            datos.TotalGeneral = decTotal.ToString("N2", CultureInfo.InvariantCulture)
+            datos.CodigoMoneda = IIf(compra.IdTipoMoneda = 1, "CRC", "USD")
+            datos.TipoDeCambio = 1
+            Try
+                Dim pdfBytes As Byte() = UtilitarioPDF.GenerarPDF(datos)
+                Dim pdfFilePath As String = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\COMPRA-" + txtIdCompra.Text + ".pdf"
+                File.WriteAllBytes(pdfFilePath, pdfBytes)
+                Process.Start(pdfFilePath)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
@@ -877,25 +983,29 @@ Public Class FrmCompra
                 End If
             End If
         ElseIf e.KeyCode = Keys.Enter Or e.KeyCode = Keys.Tab Then
-            Try
-                producto = Await Puntoventa.ObtenerProductoPorCodigoProveedor(FrmPrincipal.empresaGlobal.IdEmpresa, txtCodigoProveedor.Text, cboSucursal.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
-                If producto IsNot Nothing Then
-                    If producto.Activo Then
-                        CargarDatosProducto(producto)
-                        txtCantidad.Focus()
+            If txtCodigoProveedor.Text <> "" Then
+                Try
+                    producto = Await Puntoventa.ObtenerProductoPorCodigoProveedor(FrmPrincipal.empresaGlobal.IdEmpresa, txtCodigoProveedor.Text, cboSucursal.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
+                    If producto IsNot Nothing Then
+                        If producto.Activo Then
+                            CargarDatosProducto(producto)
+                            txtCantidad.Focus()
+                        End If
+                    Else
+                        txtCodigo.Text = ""
+                        txtDescripcion.Text = ""
+                        txtExistencias.Text = ""
+                        txtCantidad.Text = "1"
+                        txtPrecioCosto.Text = ""
+                        txtCodigoProveedor.Focus()
                     End If
-                Else
-                    txtCodigo.Text = ""
-                    txtDescripcion.Text = ""
-                    txtExistencias.Text = ""
-                    txtCantidad.Text = "1"
-                    txtPrecioCosto.Text = ""
-                    txtCodigo.Focus()
-                End If
-            Catch ex As Exception
-                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Exit Sub
-            End Try
+                Catch ex As Exception
+                    MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    Exit Sub
+                End Try
+            Else
+                txtCodigo.Focus()
+            End If
         End If
     End Sub
 
@@ -903,25 +1013,27 @@ Public Class FrmCompra
         If e.KeyCode = Keys.F1 Then
             BtnBusProd_Click(btnBusProd, New EventArgs())
         ElseIf e.KeyCode = Keys.Enter Or e.KeyCode = Keys.Tab Then
-            Try
-                producto = Await Puntoventa.ObtenerProductoPorCodigo(FrmPrincipal.empresaGlobal.IdEmpresa, txtCodigo.Text, cboSucursal.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
-                If producto IsNot Nothing Then
-                    If producto.Activo Then
-                        CargarDatosProducto(producto)
-                        txtCantidad.Focus()
+            If txtCodigo.Text <> "" Then
+                Try
+                    producto = Await Puntoventa.ObtenerProductoPorCodigo(FrmPrincipal.empresaGlobal.IdEmpresa, txtCodigo.Text, cboSucursal.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
+                    If producto IsNot Nothing Then
+                        If producto.Activo Then
+                            CargarDatosProducto(producto)
+                            txtCantidad.Focus()
+                        End If
+                    Else
+                        txtCodigo.Text = ""
+                        txtDescripcion.Text = ""
+                        txtExistencias.Text = ""
+                        txtCantidad.Text = "1"
+                        txtPrecioCosto.Text = ""
+                        txtCodigo.Focus()
                     End If
-                Else
-                    txtCodigo.Text = ""
-                    txtDescripcion.Text = ""
-                    txtExistencias.Text = ""
-                    txtCantidad.Text = "1"
-                    txtPrecioCosto.Text = ""
-                    txtCodigo.Focus()
-                End If
-            Catch ex As Exception
-                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Exit Sub
-            End Try
+                Catch ex As Exception
+                    MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    Exit Sub
+                End Try
+            End If
         End If
     End Sub
 

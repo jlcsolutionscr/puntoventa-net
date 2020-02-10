@@ -9,7 +9,7 @@ Imports LeandroSoftware.Core.Utilitario
 
 Public Class FrmApartado
 #Region "Variables"
-    Private decExcento, decGravado, decExonerado, decImpuesto, decTotal, decSubTotal, decPrecioVenta, decTotalPago, decSaldoPorPagar As Decimal
+    Private decExcento, decGravado, decExonerado, decImpuesto, decTotal, decSubTotal, decPrecioVenta, decPagoEfectivo, decPagoCliente, decTotalPago, decSaldoPorPagar As Decimal
     Private I, shtConsecutivoPago As Short
     Private dtbDetalleApartado, dtbDesglosePago As DataTable
     Private dtrRowDetApartado, dtrRowDesglosePago As DataRow
@@ -375,7 +375,9 @@ Public Class FrmApartado
 
     Private Sub CargarTotalesPago()
         decTotalPago = 0
+        decPagoEfectivo = 0
         For I = 0 To dtbDesglosePago.Rows.Count - 1
+            If dtbDesglosePago.Rows(I).Item(0) = StaticFormaPago.Efectivo Then decPagoEfectivo = CDbl(dtbDesglosePago.Rows(I).Item(7))
             decTotalPago = decTotalPago + CDbl(dtbDesglosePago.Rows(I).Item(7))
         Next
         decSaldoPorPagar = decTotal - decTotalPago
@@ -736,8 +738,7 @@ Public Class FrmApartado
 
     Private Async Sub BtnBusProd_Click(sender As Object, e As EventArgs) Handles btnBusProd.Click
         Dim formBusProd As New FrmBusquedaProducto With {
-            .bolIncluyeServicios = False,
-            .intIdSucursal = FrmPrincipal.equipoGlobal.IdSucursal
+            .bolIncluyeServicios = False
         }
         FrmPrincipal.strBusqueda = ""
         formBusProd.ShowDialog()
@@ -760,6 +761,21 @@ Public Class FrmApartado
             Exit Sub
         End If
         If txtIdApartado.Text = "" Then
+            If FrmPrincipal.empresaGlobal.IngresaPagoCliente And decPagoEfectivo > 0 Then
+                Dim formPagoFactura As New FrmPagoEfectivo()
+                formPagoFactura.decTotalEfectivo = decPagoEfectivo
+                formPagoFactura.decPagoCliente = 0
+                FrmPrincipal.intBusqueda = 0
+                formPagoFactura.ShowDialog()
+                If FrmPrincipal.intBusqueda > 0 Then
+                    decPagoCliente = FrmPrincipal.intBusqueda
+                Else
+                    MessageBox.Show("Proceso cancelado por el usuario. Intente guardar de nuevo.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                    Exit Sub
+                End If
+            Else
+                decPagoCliente = decPagoEfectivo
+            End If
             btnImprimir.Focus()
             btnGuardar.Enabled = False
             apartado = New Apartado With {
@@ -817,8 +833,16 @@ Public Class FrmApartado
                 MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
+            If FrmPrincipal.empresaGlobal.IngresaPagoCliente And decPagoEfectivo > 0 Then
+                BtnImprimir_Click(btnImprimir, New EventArgs())
+                Dim formPagoFactura As New FrmPagoEfectivo()
+                formPagoFactura.decTotalEfectivo = decPagoEfectivo
+                formPagoFactura.decPagoCliente = decPagoCliente
+                formPagoFactura.ShowDialog()
+            Else
+                MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            End If
         End If
-        MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
         btnImprimir.Enabled = True
         btnImprimir.Focus()
         btnGuardar.Enabled = False
@@ -859,8 +883,10 @@ Public Class FrmApartado
                     .strDescuento = "0.00",
                     .strImpuesto = txtImpuesto.Text,
                     .strTotal = txtTotal.Text,
-                    .strPagoCon = FormatNumber(decTotalPago, 2),
-                    .strCambio = FormatNumber(decSaldoPorPagar, 2)
+                    .strAdelanto = FormatNumber(apartado.MontoAdelanto, 2),
+                    .strSaldo = FormatNumber(apartado.Total - apartado.MontoAdelanto, 2),
+                    .strPagoCon = FormatNumber(decPagoCliente, 2),
+                    .strCambio = FormatNumber(decPagoCliente - decPagoEfectivo, 2)
                 }
                 arrDetalleOrden = New List(Of ModuloImpresion.ClsDetalleComprobante)
                 For I = 0 To dtbDetalleApartado.Rows.Count - 1
@@ -898,7 +924,7 @@ Public Class FrmApartado
                     Exit Sub
                 End Try
             End If
-            Dim datos As EstructuraFacturaPDF = New EstructuraFacturaPDF()
+            Dim datos As EstructuraPDF = New EstructuraPDF()
             Try
                 Dim poweredByImage As Image = My.Resources.logo
                 datos.PoweredByLogotipo = poweredByImage
@@ -973,7 +999,7 @@ Public Class FrmApartado
             datos.CodigoMoneda = IIf(apartado.IdTipoMoneda = 1, "CRC", "USD")
             datos.TipoDeCambio = 1
             Try
-                Dim pdfBytes As Byte() = UtilitarioPDF.GenerarPDFFacturaElectronica(datos)
+                Dim pdfBytes As Byte() = UtilitarioPDF.GenerarPDF(datos)
                 Dim pdfFilePath As String = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\PROFORMA-" + txtIdApartado.Text + ".pdf"
                 File.WriteAllBytes(pdfFilePath, pdfBytes)
                 Process.Start(pdfFilePath)

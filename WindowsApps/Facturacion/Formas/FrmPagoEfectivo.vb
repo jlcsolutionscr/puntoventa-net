@@ -1,6 +1,7 @@
-Public Class FrmPagoFactura
+Public Class FrmPagoEfectivo
 #Region "Variables"
     Public decTotalEfectivo As Decimal = 0
+    Public decPagoCliente As Decimal = 0
     Private decCambio As Decimal = 0
 #End Region
 
@@ -10,10 +11,18 @@ Public Class FrmPagoFactura
     End Sub
 
     Private Sub FrmPagoFactura_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        decCambio = 0 - decTotalEfectivo
+        decCambio = decPagoCliente - decTotalEfectivo
         txtTotalPagoEfectivo.Text = FormatNumber(decTotalEfectivo, 2)
+        txtPagoDelCliente.Text = FormatNumber(decPagoCliente, 2)
         txtCambio.Text = FormatNumber(decCambio, 2)
-        txtPagoDelCliente.Focus()
+        If decPagoCliente > 0 Then
+            txtPagoDelCliente.ReadOnly = True
+            btnGuardar.Text = "Cerrar"
+            btnGuardar.Focus()
+        Else
+            txtPagoDelCliente.Focus()
+        End If
+
     End Sub
 
     Private Sub btnGuardar_Click(sender As Object, e As EventArgs) Handles btnGuardar.Click
@@ -34,7 +43,7 @@ Public Class FrmPagoFactura
             Else
                 txtPagoDelCliente.Text = FormatNumber(txtPagoDelCliente.Text, 2)
             End If
-            txtCambio.Text = FormatNumber(txtPagoDelCliente.Text - (decTotalEfectivo), 2)
+            txtCambio.Text = FormatNumber(txtPagoDelCliente.Text - decTotalEfectivo, 2)
         End If
     End Sub
 

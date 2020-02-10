@@ -539,8 +539,7 @@ Public Class FrmProforma
 
     Private Async Sub BtnBusProd_Click(sender As Object, e As EventArgs) Handles btnBusProd.Click
         Dim formBusProd As New FrmBusquedaProducto With {
-            .bolIncluyeServicios = True,
-            .intIdSucursal = FrmPrincipal.equipoGlobal.IdSucursal
+            .bolIncluyeServicios = True
         }
         FrmPrincipal.strBusqueda = ""
         formBusProd.ShowDialog()
@@ -704,7 +703,7 @@ Public Class FrmProforma
                     Exit Sub
                 End Try
             End If
-            Dim datos As EstructuraFacturaPDF = New EstructuraFacturaPDF()
+            Dim datos As EstructuraPDF = New EstructuraPDF()
             Try
                 Dim poweredByImage As Image = My.Resources.logo
                 datos.PoweredByLogotipo = poweredByImage
@@ -779,7 +778,7 @@ Public Class FrmProforma
             datos.CodigoMoneda = IIf(proforma.IdTipoMoneda = 1, "CRC", "USD")
             datos.TipoDeCambio = 1
             Try
-                Dim pdfBytes As Byte() = UtilitarioPDF.GenerarPDFFacturaElectronica(datos)
+                Dim pdfBytes As Byte() = UtilitarioPDF.GenerarPDF(datos)
                 Dim pdfFilePath As String = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\PROFORMA-" + txtIdProforma.Text + ".pdf"
                 File.WriteAllBytes(pdfFilePath, pdfBytes)
                 Process.Start(pdfFilePath)

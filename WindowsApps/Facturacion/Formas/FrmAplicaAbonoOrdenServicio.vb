@@ -10,6 +10,7 @@ Public Class FrmAplicaAbonoOrdenServicio
     Private decTotal As Decimal = 0
     Private decTotalPago As Decimal = 0
     Private decSaldoPorPagar As Decimal = 0
+    Private decPagoEfectivo, decPagoCliente As Decimal
     Private dtbDesglosePago As DataTable
     Private dtrRowDesglosePago As DataRow
     Private bolInit As Boolean = True
@@ -140,7 +141,9 @@ Public Class FrmAplicaAbonoOrdenServicio
 
     Private Sub CargarTotalesPago()
         decTotalPago = 0
+        decPagoEfectivo = 0
         For I = 0 To dtbDesglosePago.Rows.Count - 1
+            If dtbDesglosePago.Rows(I).Item(0) = StaticFormaPago.Efectivo Then decPagoEfectivo = CDbl(dtbDesglosePago.Rows(I).Item(7))
             decTotalPago = decTotalPago + CDbl(dtbDesglosePago.Rows(I).Item(7))
         Next
         decSaldoPorPagar = decTotal - decTotalPago
@@ -230,6 +233,21 @@ Public Class FrmAplicaAbonoOrdenServicio
             MessageBox.Show("El total del desglose de pago del movimiento es superior al saldo por pagar.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         End If
+        If FrmPrincipal.empresaGlobal.IngresaPagoCliente And decPagoEfectivo > 0 Then
+            Dim formPagoFactura As New FrmPagoEfectivo()
+            formPagoFactura.decTotalEfectivo = decPagoEfectivo
+            formPagoFactura.decPagoCliente = 0
+            FrmPrincipal.intBusqueda = 0
+            formPagoFactura.ShowDialog()
+            If FrmPrincipal.intBusqueda > 0 Then
+                decPagoCliente = FrmPrincipal.intBusqueda
+            Else
+                MessageBox.Show("Proceso cancelado por el usuario. Intente guardar de nuevo.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                Exit Sub
+            End If
+        Else
+            decPagoCliente = decPagoEfectivo
+        End If
         movimiento = New MovimientoOrdenServicio With {
             .IdEmpresa = ordenServicio.IdEmpresa,
             .IdSucursal = FrmPrincipal.equipoGlobal.IdSucursal,
@@ -258,7 +276,15 @@ Public Class FrmAplicaAbonoOrdenServicio
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
         End Try
-        MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        If FrmPrincipal.empresaGlobal.IngresaPagoCliente And decPagoEfectivo > 0 Then
+            BtnImprimir_Click(CmdImprimir, New EventArgs())
+            Dim formPagoFactura As New FrmPagoEfectivo()
+            formPagoFactura.decTotalEfectivo = decPagoEfectivo
+            formPagoFactura.decPagoCliente = decPagoCliente
+            formPagoFactura.ShowDialog()
+        Else
+            MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        End If
         CmdAgregar.Enabled = True
         CmdImprimir.Enabled = True
         CmdImprimir.Focus()
@@ -276,7 +302,9 @@ Public Class FrmAplicaAbonoOrdenServicio
             .strConsecutivo = movimiento.IdMovOrden,
             .strNombre = ordenServicio.NombreCliente,
             .strFechaAbono = txtFecha.Text,
-            .strTotalAbono = FormatNumber(decTotal, 2)
+            .strTotalAbono = FormatNumber(decTotal, 2),
+            .strPagoCon = FormatNumber(decPagoCliente, 2),
+            .strCambio = FormatNumber(decPagoCliente - decPagoEfectivo, 2)
         }
         reciboComprobante.arrDesglosePago = New List(Of ModuloImpresion.ClsDesgloseFormaPago)
         For I = 0 To dtbDesglosePago.Rows.Count - 1

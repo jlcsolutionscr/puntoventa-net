@@ -4,9 +4,9 @@ using System.Collections.Generic;
 
 namespace LeandroSoftware.Core.TiposComunes
 {
-    public class EstructuraFacturaPDF
+    public class EstructuraPDF
     {
-        public EstructuraFacturaPDF()
+        public EstructuraPDF()
         {
             DetalleServicio = new HashSet<EstructuraPDFDetalleServicio>();
         }

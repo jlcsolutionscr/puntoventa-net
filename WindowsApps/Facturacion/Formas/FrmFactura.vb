@@ -1077,8 +1077,7 @@ Public Class FrmFactura
 
     Private Async Sub BtnBusProd_Click(sender As Object, e As EventArgs) Handles btnBusProd.Click
         Dim formBusProd As New FrmBusquedaProducto With {
-            .bolIncluyeServicios = True,
-            .intIdSucursal = FrmPrincipal.equipoGlobal.IdSucursal
+            .bolIncluyeServicios = True
         }
         FrmPrincipal.strBusqueda = ""
         formBusProd.ShowDialog()
@@ -1112,8 +1111,9 @@ Public Class FrmFactura
         End If
         If txtIdFactura.Text = "" Then
             If FrmPrincipal.empresaGlobal.IngresaPagoCliente And decPagoEfectivo > 0 Then
-                Dim formPagoFactura As New FrmPagoFactura()
+                Dim formPagoFactura As New FrmPagoEfectivo()
                 formPagoFactura.decTotalEfectivo = decPagoEfectivo
+                formPagoFactura.decPagoCliente = 0
                 FrmPrincipal.intBusqueda = 0
                 formPagoFactura.ShowDialog()
                 If FrmPrincipal.intBusqueda > 0 Then
@@ -1196,7 +1196,15 @@ Public Class FrmFactura
                 Exit Sub
             End Try
         End If
-        MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        If FrmPrincipal.empresaGlobal.IngresaPagoCliente And decPagoEfectivo > 0 Then
+            BtnImprimir_Click(btnImprimir, New EventArgs())
+            Dim formPagoFactura As New FrmPagoEfectivo()
+            formPagoFactura.decTotalEfectivo = decPagoEfectivo
+            formPagoFactura.decPagoCliente = decPagoCliente
+            formPagoFactura.ShowDialog()
+        Else
+            MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        End If
         btnImprimir.Enabled = True
         btnImprimir.Focus()
         cboTipoMoneda.Enabled = False
@@ -1286,7 +1294,7 @@ Public Class FrmFactura
                     Exit Sub
                 End Try
             End If
-            Dim datos As EstructuraFacturaPDF = New EstructuraFacturaPDF()
+            Dim datos As EstructuraPDF = New EstructuraPDF()
             Try
                 Dim poweredByImage As Image = My.Resources.logo
                 datos.PoweredByLogotipo = poweredByImage
@@ -1361,7 +1369,7 @@ Public Class FrmFactura
             datos.CodigoMoneda = IIf(factura.IdTipoMoneda = 1, "CRC", "USD")
             datos.TipoDeCambio = factura.TipoDeCambioDolar.ToString("N2", CultureInfo.InvariantCulture)
             Try
-                Dim pdfBytes As Byte() = UtilitarioPDF.GenerarPDFFacturaElectronica(datos)
+                Dim pdfBytes As Byte() = UtilitarioPDF.GenerarPDF(datos)
                 Dim pdfFilePath As String = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\FAC-" + factura.IdDocElectronico + ".pdf"
                 File.WriteAllBytes(pdfFilePath, pdfBytes)
                 Process.Start(pdfFilePath)
