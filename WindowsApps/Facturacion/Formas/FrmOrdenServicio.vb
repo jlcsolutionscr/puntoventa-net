@@ -906,7 +906,7 @@ Public Class FrmOrdenServicio
                     .empresa = FrmPrincipal.empresaGlobal,
                     .equipo = FrmPrincipal.equipoGlobal,
                     .strId = ordenServicio.ConsecOrdenServicio,
-                    .strFecha = ordenServicio.Fecha.ToString(),
+                    .strFecha = ordenServicio.Fecha.ToString("dd/MM/yyyy hh:mm:ss"),
                     .strVendedor = txtVendedor.Text,
                     .strNombre = txtNombreCliente.Text,
                     .strTelefono = txtTelefono.Text,

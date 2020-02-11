@@ -787,7 +787,11 @@ Public Class FrmCompra
             datos.CondicionVenta = IIf(compra.IdCondicionVenta = StaticCondicionVenta.Credito, "Crédito", "Contado")
             datos.PlazoCredito = ""
             datos.Fecha = compra.Fecha.ToString("dd/MM/yyyy hh:mm:ss")
-            datos.MedioPago = ""
+            If dtbDesglosePago.Rows.Count > 1 Then
+                datos.MedioPago = "Otros"
+            Else
+                datos.MedioPago = ObtenerValoresCodificados.ObtenerMedioDePago(dtbDesglosePago.Rows(0).Item(0))
+            End If
             datos.NombreEmisor = FrmPrincipal.empresaGlobal.NombreEmpresa
             datos.NombreComercialEmisor = FrmPrincipal.empresaGlobal.NombreComercial
             datos.IdentificacionEmisor = FrmPrincipal.empresaGlobal.Identificacion
@@ -814,13 +818,12 @@ Public Class FrmCompra
                 datos.DireccionReceptor = proveedor.Direccion
             End If
             For I = 0 To dtbDetalleCompra.Rows.Count - 1
-                Dim decPrecioVenta As Decimal = dtbDetalleCompra.Rows(I).Item(5)
-                Dim decTotalLinea As Decimal = dtbDetalleCompra.Rows(I).Item(4) * decPrecioVenta
+                Dim decTotalLinea As Decimal = CDbl(dtbDetalleCompra.Rows(I).Item(4)) * CDbl(dtbDetalleCompra.Rows(I).Item(5))
                 Dim detalle As EstructuraPDFDetalleServicio = New EstructuraPDFDetalleServicio With {
-                    .Cantidad = dtbDetalleCompra.Rows(I).Item(4),
+                    .Cantidad = CDbl(dtbDetalleCompra.Rows(I).Item(4)),
                     .Codigo = dtbDetalleCompra.Rows(I).Item(1),
                     .Detalle = dtbDetalleCompra.Rows(I).Item(3),
-                    .PrecioUnitario = decPrecioVenta.ToString("N2", CultureInfo.InvariantCulture),
+                    .PrecioUnitario = CDbl(dtbDetalleCompra.Rows(I).Item(5)).ToString("N2", CultureInfo.InvariantCulture),
                     .TotalLinea = decTotalLinea.ToString("N2", CultureInfo.InvariantCulture)
                 }
                 datos.DetalleServicio.Add(detalle)

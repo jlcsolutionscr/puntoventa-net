@@ -667,7 +667,7 @@ Public Class FrmProforma
                     .strNombre = txtNombreCliente.Text,
                     .strTelefono = txtTelefono.Text,
                     .strDocumento = "",
-                    .strFecha = proforma.Fecha.ToString(),
+                    .strFecha = proforma.Fecha.ToString("dd/MM/yyyy hh:mm:ss"),
                     .strSubTotal = txtSubTotal.Text,
                     .strDescuento = "0.00",
                     .strImpuesto = txtImpuesto.Text,

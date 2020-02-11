@@ -1241,7 +1241,7 @@ Public Class FrmFactura
                     .empresa = FrmPrincipal.empresaGlobal,
                     .equipo = FrmPrincipal.equipoGlobal,
                     .strId = factura.ConsecFactura,
-                    .strFecha = factura.Fecha.ToString(),
+                    .strFecha = factura.Fecha.ToString("dd/MM/yyyy hh:mm:ss"),
                     .strVendedor = txtVendedor.Text,
                     .strNombre = txtNombreCliente.Text,
                     .strDocumento = txtReferencia.Text,
@@ -1320,8 +1320,11 @@ Public Class FrmFactura
             If factura.IdDocElectronico <> "" Then datos.Consecutivo = factura.IdDocElectronico.Substring(21, 20)
             datos.CondicionVenta = ObtenerValoresCodificados.ObtenerCondicionDeVenta(factura.IdCondicionVenta)
             datos.Fecha = factura.Fecha.ToString("dd/MM/yyyy hh:mm:ss")
-            Dim listaDesglosePago As IList(Of DesglosePagoFactura) = factura.DesglosePagoFactura
-            datos.MedioPago = ObtenerValoresCodificados.ObtenerMedioDePago(listaDesglosePago(0).IdFormaPago)
+            If dtbDesglosePago.Rows.Count > 1 Then
+                datos.MedioPago = "Otros"
+            Else
+                datos.MedioPago = ObtenerValoresCodificados.ObtenerMedioDePago(dtbDesglosePago.Rows(0).Item(0))
+            End If
             datos.NombreEmisor = FrmPrincipal.empresaGlobal.NombreEmpresa
             datos.NombreComercialEmisor = FrmPrincipal.empresaGlobal.NombreComercial
             datos.IdentificacionEmisor = FrmPrincipal.empresaGlobal.Identificacion
@@ -1348,13 +1351,13 @@ Public Class FrmFactura
                 datos.BarrioReceptor = cliente.Barrio.Descripcion
                 datos.DireccionReceptor = cliente.Direccion
             End If
-            For Each linea As DetalleFactura In factura.DetalleFactura
-                Dim decTotalLinea As Decimal = linea.Cantidad * linea.PrecioVenta
+            For I = 0 To dtbDetalleFactura.Rows.Count - 1
+                Dim decTotalLinea As Decimal = CDbl(dtbDetalleFactura.Rows(I).Item(3)) * CDbl(dtbDetalleFactura.Rows(I).Item(4))
                 Dim detalle As EstructuraPDFDetalleServicio = New EstructuraPDFDetalleServicio With {
-                .Cantidad = linea.Cantidad,
-                .Codigo = linea.Producto.Codigo,
-                .Detalle = linea.Descripcion,
-                .PrecioUnitario = linea.PrecioVenta.ToString("N2", CultureInfo.InvariantCulture),
+                .Cantidad = CDbl(dtbDetalleFactura.Rows(I).Item(3)),
+                .Codigo = dtbDetalleFactura.Rows(I).Item(1),
+                .Detalle = dtbDetalleFactura.Rows(I).Item(2),
+                .PrecioUnitario = CDbl(dtbDetalleFactura.Rows(I).Item(4)).ToString("N2", CultureInfo.InvariantCulture),
                 .TotalLinea = decTotalLinea.ToString("N2", CultureInfo.InvariantCulture)
             }
                 datos.DetalleServicio.Add(detalle)

@@ -878,7 +878,7 @@ Public Class FrmApartado
                     .strNombre = txtNombreCliente.Text,
                     .strTelefono = cliente.Telefono,
                     .strDocumento = "",
-                    .strFecha = apartado.Fecha.ToString(),
+                    .strFecha = apartado.Fecha.ToString("dd/MM/yyyy hh:mm:ss"),
                     .strSubTotal = txtSubTotal.Text,
                     .strDescuento = "0.00",
                     .strImpuesto = txtImpuesto.Text,
