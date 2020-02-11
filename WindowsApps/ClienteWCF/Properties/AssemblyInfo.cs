@@ -32,10 +32,5 @@ using System.Runtime.InteropServices;
 // Puede especificar todos los valores o usar los números de compilación y de revisión predeterminados
 // mediante el carácter "*", como se muestra a continuación:
 // [assembly: AssemblyVersion("1.0.*")]
-<<<<<<< HEAD:Aplicacion/ClienteWCF/Properties/AssemblyInfo.cs
-[assembly: AssemblyVersion("3.1.1.0")]
-[assembly: AssemblyFileVersion("3.1.1.0")]
-=======
-[assembly: AssemblyVersion("4.0.0.0")]
-[assembly: AssemblyFileVersion("4.0.0.0")]
->>>>>>> 658485f21ea9ccdc1cb2f3eb5ebcab2958b737d1:WindowsApps/ClienteWCF/Properties/AssemblyInfo.cs
+[assembly: AssemblyVersion("4.0.1.0")]
+[assembly: AssemblyFileVersion("4.0.1.0")]

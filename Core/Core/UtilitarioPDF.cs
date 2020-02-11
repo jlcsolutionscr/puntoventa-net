@@ -10,7 +10,7 @@ namespace LeandroSoftware.Core.Utilitario
 {
     public static class UtilitarioPDF
     {
-        public static byte[] GenerarPDFFacturaElectronica(EstructuraFacturaPDF datos)
+        public static byte[] GenerarPDF(EstructuraPDF datos)
         {
             try
             {

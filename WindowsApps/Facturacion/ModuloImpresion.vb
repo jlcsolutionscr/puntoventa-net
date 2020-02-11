@@ -80,6 +80,8 @@ Public Class ModuloImpresion
         Public strNombre As String
         Public strFechaAbono As String
         Public strTotalAbono As String
+        Public strPagoCon As String
+        Public strCambio As String
         Public arrDesgloseMov As IList(Of ClsDesgloseFormaPago)
         Public arrDesglosePago As IList(Of ClsDesgloseFormaPago)
     End Class
@@ -114,6 +116,8 @@ Public Class ModuloImpresion
         Public strDescuento As String
         Public strImpuesto As String
         Public strTotal As String
+        Public strAdelanto As String
+        Public strSaldo As String
         Public strPagoCon As String
         Public strCambio As String
         Public strClaveNumerica As String
@@ -367,14 +371,10 @@ Public Class ModuloImpresion
             End If
             ImprimirDetalle(objImpresion.arrDetalleComprobante)
             ImprimirTotales(objImpresion)
-            If objImpresion.strPagoCon <> "0.00" Then
-                lineas.Add(New ClsLineaImpresion(0, "Pago con:", 0, 54, 10, StringAlignment.Far, False))
-                lineas.Add(New ClsLineaImpresion(1, objImpresion.strPagoCon, 54, 46, 10, StringAlignment.Far, False))
-                lineas.Add(New ClsLineaImpresion(0, "Cambio:", 0, 54, 10, StringAlignment.Far, False))
-                lineas.Add(New ClsLineaImpresion(3, objImpresion.strCambio, 54, 46, 10, StringAlignment.Far, False))
-            Else
-                lineas.Add(New ClsLineaImpresion(3, " ", 54, 46, 10, StringAlignment.Far, False))
-            End If
+            lineas.Add(New ClsLineaImpresion(0, "Pago con:", 0, 54, 10, StringAlignment.Far, False))
+            lineas.Add(New ClsLineaImpresion(1, objImpresion.strPagoCon, 54, 46, 10, StringAlignment.Far, False))
+            lineas.Add(New ClsLineaImpresion(0, "Cambio:", 0, 54, 10, StringAlignment.Far, False))
+            lineas.Add(New ClsLineaImpresion(2, objImpresion.strCambio, 54, 46, 10, StringAlignment.Far, False))
             If objImpresion.empresa.LeyendaFactura.Length > 0 Then
                 Dim leyenda As String = objImpresion.empresa.LeyendaFactura
                 While leyenda.Length > 32
@@ -385,8 +385,8 @@ Public Class ModuloImpresion
             End If
             If objImpresion.arrDesglosePago.Count = 0 Then lineas.Add(New ClsLineaImpresion(2, "Firma: _________________________", 0, 100, 10, StringAlignment.Near, False))
             lineas.Add(New ClsLineaImpresion(1, "AUTORIZADO MEDIANTE RESOLUCION", 0, 100, 10, StringAlignment.Center, False))
-            lineas.Add(New ClsLineaImpresion(1, "DGT-R-48-2016 DEL 07-OCT-2016", 0, 100, 10, StringAlignment.Center, False))
-            lineas.Add(New ClsLineaImpresion(3, "GRACIAS POR PREFERIRNOS", 0, 100, 10, StringAlignment.Center, False))
+            lineas.Add(New ClsLineaImpresion(2, "DGT-R-48-2016 DEL 07-OCT-2016", 0, 100, 10, StringAlignment.Center, False))
+            lineas.Add(New ClsLineaImpresion(1, "GRACIAS POR PREFERIRNOS", 0, 100, 10, StringAlignment.Center, False))
         Catch ex As Exception
             Throw New Exception("Error formulando el string de impresion:" + ex.Message)
         End Try
@@ -408,6 +408,7 @@ Public Class ModuloImpresion
             lineas.Add(New ClsLineaImpresion(1, "Teléfono: " & objImpresion.strTelefono, 0, 100, 10, StringAlignment.Near, False))
             ImprimirDetalle(objImpresion.arrDetalleComprobante)
             ImprimirTotales(objImpresion)
+            lineas.Add(New ClsLineaImpresion(2, " ", 54, 46, 10, StringAlignment.Far, False))
             If objImpresion.empresa.LeyendaProforma.Length > 0 Then
                 Dim leyenda As String = objImpresion.empresa.LeyendaProforma
                 While leyenda.Length > 32
@@ -439,10 +440,14 @@ Public Class ModuloImpresion
             If objImpresion.arrDesglosePago.Count > 0 Then ImprimirDesglosePago(objImpresion.arrDesglosePago)
             ImprimirDetalle(objImpresion.arrDetalleComprobante)
             ImprimirTotales(objImpresion)
+            lineas.Add(New ClsLineaImpresion(0, "Pago con:", 0, 54, 10, StringAlignment.Far, False))
+            lineas.Add(New ClsLineaImpresion(1, objImpresion.strPagoCon, 54, 46, 10, StringAlignment.Far, False))
+            lineas.Add(New ClsLineaImpresion(0, "Cambio:", 0, 54, 10, StringAlignment.Far, False))
+            lineas.Add(New ClsLineaImpresion(1, objImpresion.strCambio, 54, 46, 10, StringAlignment.Far, False))
             lineas.Add(New ClsLineaImpresion(0, "Abono inicial:", 0, 54, 10, StringAlignment.Far, True))
             lineas.Add(New ClsLineaImpresion(1, objImpresion.strPagoCon, 54, 46, 10, StringAlignment.Far, True))
             lineas.Add(New ClsLineaImpresion(0, "Saldo por pagar:", 0, 54, 10, StringAlignment.Far, True))
-            lineas.Add(New ClsLineaImpresion(3, objImpresion.strCambio, 54, 46, 10, StringAlignment.Far, True))
+            lineas.Add(New ClsLineaImpresion(2, objImpresion.strCambio, 54, 46, 10, StringAlignment.Far, True))
             If objImpresion.empresa.LeyendaApartado.Length > 0 Then
                 Dim leyenda As String = objImpresion.empresa.LeyendaApartado
                 While leyenda.Length > 32
@@ -500,9 +505,13 @@ Public Class ModuloImpresion
             ImprimirDetalle(objImpresion.arrDetalleComprobante)
             ImprimirTotales(objImpresion)
             lineas.Add(New ClsLineaImpresion(0, "Abono inicial:", 0, 54, 10, StringAlignment.Far, True))
-            lineas.Add(New ClsLineaImpresion(1, objImpresion.strPagoCon, 54, 46, 10, StringAlignment.Far, True))
+            lineas.Add(New ClsLineaImpresion(1, objImpresion.strAdelanto, 54, 46, 10, StringAlignment.Far, True))
             lineas.Add(New ClsLineaImpresion(0, "Saldo por pagar:", 0, 54, 10, StringAlignment.Far, True))
-            lineas.Add(New ClsLineaImpresion(3, objImpresion.strCambio, 54, 46, 10, StringAlignment.Far, True))
+            lineas.Add(New ClsLineaImpresion(3, objImpresion.strSaldo, 54, 46, 10, StringAlignment.Far, True))
+            lineas.Add(New ClsLineaImpresion(0, "Pago con:", 0, 54, 10, StringAlignment.Far, False))
+            lineas.Add(New ClsLineaImpresion(1, objImpresion.strPagoCon, 54, 46, 10, StringAlignment.Far, False))
+            lineas.Add(New ClsLineaImpresion(0, "Cambio:", 0, 54, 10, StringAlignment.Far, False))
+            lineas.Add(New ClsLineaImpresion(2, objImpresion.strCambio, 54, 46, 10, StringAlignment.Far, False))
             If objImpresion.empresa.LeyendaOrdenServicio.Length > 0 Then
                 Dim leyenda As String = objImpresion.empresa.LeyendaOrdenServicio
                 While leyenda.Length > 32
@@ -522,19 +531,23 @@ Public Class ModuloImpresion
         End Try
     End Sub
 
-    Public Shared Sub ImprimirCompra(ByVal objCompra As ClsComprobante)
-        'Dim strCompra As String = ""
-        'Dim lengthPerLine As Integer = objCompra.equipo.LargoLineaTiquete
-        'strCompra += ImprimirEncabezado(objCompra.equipo, objCompra.empresa, Date.Now.ToString("dd-MM-yyyy"), objCompra.usuario.CodigoUsuario, "TIQUETE DE COMPRA")
-        'strCompra += Chr(13) & Chr(10)
-        'strCompra += "  Compra Nro: " & objCompra.strId & Chr(13) & Chr(10)
-        'strCompra += "  Proveedor: " & objCompra.strNombre.Substring(0, If(objCompra.strNombre.Length < (lengthPerLine - 13), objCompra.strNombre.Length, (lengthPerLine - 13))) & Chr(13) & Chr(10)
-        'strCompra += "  Fecha: " & objCompra.strFecha & Chr(13) & Chr(10)
-        'strCompra += ImprimirDesglosePago(objCompra.arrDesglosePago, lengthPerLine)
-        'strCompra += ImprimirDetalle(objCompra.arrDetalleComprobante, lengthPerLine)
-        'strCompra += ImprimirTotales(objCompra, lengthPerLine)
-        'strCompra += Chr(&HA) & Chr(&H1D) & "V" & Chr(66) & Chr(0)
-        'SendStringToPrinter(objCompra.equipo.ImpresoraFactura, strCompra)
+    Public Shared Sub ImprimirCompra(ByVal objImpresion As ClsComprobante)
+        lineas.Clear()
+        Try
+            ImprimirEncabezado(objImpresion.equipo, objImpresion.empresa, Date.Now.ToString("dd-MM-yyyy"), objImpresion.usuario.CodigoUsuario, "TIQUETE PROFORMA")
+            lineas.Add(New ClsLineaImpresion(1, "Compra Nro: " & objImpresion.strId, 0, 100, 10, StringAlignment.Near, False))
+            lineas.Add(New ClsLineaImpresion(1, "Fecha: " & objImpresion.strFecha, 0, 100, 10, StringAlignment.Near, False))
+            lineas.Add(New ClsLineaImpresion(2, "Proveedor: " & objImpresion.strNombre, 0, 100, 10, StringAlignment.Near, False))
+            ImprimirDetalle(objImpresion.arrDetalleComprobante)
+            ImprimirTotales(objImpresion)
+        Catch ex As Exception
+            Throw New Exception("Error formulando el string de impresion:" + ex.Message)
+        End Try
+        Try
+            ImprimirTiquete(objImpresion.equipo.ImpresoraFactura)
+        Catch ex As Exception
+            Throw New Exception("Error invokando a ImprimirTiquete:" + ex.Message)
+        End Try
     End Sub
 
     Public Shared Sub ImprimirDevolucionCliente(ByVal objImpresion As ClsComprobante)
@@ -547,7 +560,8 @@ Public Class ModuloImpresion
             lineas.Add(New ClsLineaImpresion(2, "Fecha: " & objImpresion.strFecha, 0, 100, 10, StringAlignment.Near, False))
             ImprimirDetalle(objImpresion.arrDetalleComprobante)
             ImprimirTotales(objImpresion)
-            lineas.Add(New ClsLineaImpresion(3, "GRACIAS POR PREFERIRNOS", 0, 100, 10, StringAlignment.Center, False))
+            lineas.Add(New ClsLineaImpresion(2, " ", 54, 46, 10, StringAlignment.Far, False))
+            lineas.Add(New ClsLineaImpresion(1, "GRACIAS POR PREFERIRNOS", 0, 100, 10, StringAlignment.Center, False))
         Catch ex As Exception
             Throw New Exception("Error formulando el string de impresion:" + ex.Message)
         End Try
@@ -568,7 +582,8 @@ Public Class ModuloImpresion
             lineas.Add(New ClsLineaImpresion(2, "Fecha: " & objImpresion.strFecha, 0, 100, 10, StringAlignment.Near, False))
             ImprimirDetalle(objImpresion.arrDetalleComprobante)
             ImprimirTotales(objImpresion)
-            lineas.Add(New ClsLineaImpresion(3, "Recibido por: __________________________", 0, 100, 10, StringAlignment.Center, False))
+            lineas.Add(New ClsLineaImpresion(1, "Recibido por: __________________________", 0, 100, 10, StringAlignment.Center, False))
+            lineas.Add(New ClsLineaImpresion(1, " ", 54, 46, 10, StringAlignment.Far, False))
         Catch ex As Exception
             Throw New Exception("Error formulando el string de impresion:" + ex.Message)
         End Try
@@ -588,8 +603,9 @@ Public Class ModuloImpresion
             lineas.Add(New ClsLineaImpresion(1, "Destino: " & objImpresion.strFormaPago, 0, 100, 10, StringAlignment.Near, False))
             lineas.Add(New ClsLineaImpresion(2, "Enviado por: " & objImpresion.strEnviadoPor, 0, 100, 10, StringAlignment.Near, False))
             ImprimirDetalle(objImpresion.arrDetalleComprobante)
-            lineas.Add(New ClsLineaImpresion(2, "Total: " & objImpresion.strTotal, 0, 100, 10, StringAlignment.Near, False))
-            lineas.Add(New ClsLineaImpresion(3, "Recibido por: __________________________", 0, 100, 10, StringAlignment.Near, False))
+            lineas.Add(New ClsLineaImpresion(3, "Monto total: " & objImpresion.strTotal, 0, 100, 10, StringAlignment.Near, False))
+            lineas.Add(New ClsLineaImpresion(1, "Recibido por: __________________________", 0, 100, 10, StringAlignment.Near, False))
+            lineas.Add(New ClsLineaImpresion(1, " ", 54, 46, 10, StringAlignment.Far, False))
         Catch ex As Exception
             Throw New Exception("Error formulando el string de impresion:" + ex.Message)
         End Try
@@ -617,8 +633,12 @@ Public Class ModuloImpresion
             lineas.Add(New ClsLineaImpresion(1, "".PadRight(42, "_"), 0, 100, 10, StringAlignment.Near, False))
             ImprimirDesglosePago(objImpresion.arrDesglosePago)
             lineas.Add(New ClsLineaImpresion(0, "Monto Total:", 0, 54, 10, StringAlignment.Far, True))
-            lineas.Add(New ClsLineaImpresion(2, objImpresion.strTotalAbono, 54, 46, 10, StringAlignment.Far, True))
-            lineas.Add(New ClsLineaImpresion(3, "GRACIAS POR PREFERIRNOS", 0, 100, 10, StringAlignment.Center, False))
+            lineas.Add(New ClsLineaImpresion(1, objImpresion.strTotalAbono, 54, 46, 10, StringAlignment.Far, True))
+            lineas.Add(New ClsLineaImpresion(0, "Pago con:", 0, 54, 10, StringAlignment.Far, False))
+            lineas.Add(New ClsLineaImpresion(1, objImpresion.strPagoCon, 54, 46, 10, StringAlignment.Far, False))
+            lineas.Add(New ClsLineaImpresion(0, "Cambio:", 0, 54, 10, StringAlignment.Far, False))
+            lineas.Add(New ClsLineaImpresion(2, objImpresion.strCambio, 54, 46, 10, StringAlignment.Far, False))
+            lineas.Add(New ClsLineaImpresion(1, "GRACIAS POR PREFERIRNOS", 0, 100, 10, StringAlignment.Center, False))
         Catch ex As Exception
             Throw New Exception("Error formulando el string de impresion:" + ex.Message)
         End Try
@@ -646,8 +666,12 @@ Public Class ModuloImpresion
             lineas.Add(New ClsLineaImpresion(1, "".PadRight(42, "_"), 0, 100, 10, StringAlignment.Near, False))
             ImprimirDesglosePago(objImpresion.arrDesglosePago)
             lineas.Add(New ClsLineaImpresion(0, "Monto Total:", 0, 54, 10, StringAlignment.Far, True))
-            lineas.Add(New ClsLineaImpresion(2, objImpresion.strTotalAbono, 54, 46, 10, StringAlignment.Far, True))
-            lineas.Add(New ClsLineaImpresion(3, "GRACIAS POR PREFERIRNOS", 0, 100, 10, StringAlignment.Center, False))
+            lineas.Add(New ClsLineaImpresion(1, objImpresion.strTotalAbono, 54, 46, 10, StringAlignment.Far, True))
+            lineas.Add(New ClsLineaImpresion(0, "Pago con:", 0, 54, 10, StringAlignment.Far, False))
+            lineas.Add(New ClsLineaImpresion(1, objImpresion.strPagoCon, 54, 46, 10, StringAlignment.Far, False))
+            lineas.Add(New ClsLineaImpresion(0, "Cambio:", 0, 54, 10, StringAlignment.Far, False))
+            lineas.Add(New ClsLineaImpresion(2, objImpresion.strCambio, 54, 46, 10, StringAlignment.Far, False))
+            lineas.Add(New ClsLineaImpresion(1, "GRACIAS POR PREFERIRNOS", 0, 100, 10, StringAlignment.Center, False))
         Catch ex As Exception
             Throw New Exception("Error formulando el string de impresion:" + ex.Message)
         End Try
@@ -667,8 +691,12 @@ Public Class ModuloImpresion
             lineas.Add(New ClsLineaImpresion(2, "Cliente: " & objImpresion.strNombre, 0, 100, 10, StringAlignment.Near, False))
             ImprimirDesglosePago(objImpresion.arrDesglosePago)
             lineas.Add(New ClsLineaImpresion(0, "Monto Total:", 0, 54, 10, StringAlignment.Far, True))
-            lineas.Add(New ClsLineaImpresion(2, objImpresion.strTotalAbono, 54, 46, 10, StringAlignment.Far, True))
-            lineas.Add(New ClsLineaImpresion(3, "GRACIAS POR PREFERIRNOS", 0, 100, 10, StringAlignment.Center, False))
+            lineas.Add(New ClsLineaImpresion(1, objImpresion.strTotalAbono, 54, 46, 10, StringAlignment.Far, True))
+            lineas.Add(New ClsLineaImpresion(0, "Pago con:", 0, 54, 10, StringAlignment.Far, False))
+            lineas.Add(New ClsLineaImpresion(1, objImpresion.strPagoCon, 54, 46, 10, StringAlignment.Far, False))
+            lineas.Add(New ClsLineaImpresion(0, "Cambio:", 0, 54, 10, StringAlignment.Far, False))
+            lineas.Add(New ClsLineaImpresion(2, objImpresion.strCambio, 54, 46, 10, StringAlignment.Far, False))
+            lineas.Add(New ClsLineaImpresion(1, "GRACIAS POR PREFERIRNOS", 0, 100, 10, StringAlignment.Center, False))
         Catch ex As Exception
             Throw New Exception("Error formulando el string de impresion:" + ex.Message)
         End Try
@@ -688,8 +716,12 @@ Public Class ModuloImpresion
             lineas.Add(New ClsLineaImpresion(2, "Cliente: " & objImpresion.strNombre, 0, 100, 10, StringAlignment.Near, False))
             ImprimirDesglosePago(objImpresion.arrDesglosePago)
             lineas.Add(New ClsLineaImpresion(0, "Monto Total:", 0, 54, 10, StringAlignment.Far, True))
-            lineas.Add(New ClsLineaImpresion(2, objImpresion.strTotalAbono, 54, 46, 10, StringAlignment.Far, True))
-            lineas.Add(New ClsLineaImpresion(3, "GRACIAS POR PREFERIRNOS", 0, 100, 10, StringAlignment.Center, False))
+            lineas.Add(New ClsLineaImpresion(1, objImpresion.strTotalAbono, 54, 46, 10, StringAlignment.Far, True))
+            lineas.Add(New ClsLineaImpresion(0, "Pago con:", 0, 54, 10, StringAlignment.Far, False))
+            lineas.Add(New ClsLineaImpresion(1, objImpresion.strPagoCon, 54, 46, 10, StringAlignment.Far, False))
+            lineas.Add(New ClsLineaImpresion(0, "Cambio:", 0, 54, 10, StringAlignment.Far, False))
+            lineas.Add(New ClsLineaImpresion(2, objImpresion.strCambio, 54, 46, 10, StringAlignment.Far, False))
+            lineas.Add(New ClsLineaImpresion(1, "GRACIAS POR PREFERIRNOS", 0, 100, 10, StringAlignment.Center, False))
         Catch ex As Exception
             Throw New Exception("Error formulando el string de impresion:" + ex.Message)
         End Try

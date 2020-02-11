@@ -1,5 +1,5 @@
 <Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
-Partial Class FrmPagoFactura
+Partial Class FrmPagoEfectivo
     Inherits System.Windows.Forms.Form
 
     'Form overrides dispose to clean up the component list.
@@ -49,7 +49,7 @@ Partial Class FrmPagoFactura
         Me.txtCambio.AcceptsReturn = True
         Me.txtCambio.BackColor = System.Drawing.SystemColors.Window
         Me.txtCambio.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtCambio.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.txtCambio.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtCambio.ForeColor = System.Drawing.SystemColors.WindowText
         Me.txtCambio.Location = New System.Drawing.Point(227, 120)
         Me.txtCambio.MaxLength = 0
@@ -135,7 +135,7 @@ Partial Class FrmPagoFactura
         Me.Label1.Text = "Total pago en efectivo:"
         Me.Label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
-        'FrmPagoFactura
+        'FrmPagoEfectivo
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
@@ -154,7 +154,7 @@ Partial Class FrmPagoFactura
         Me.MaximumSize = New System.Drawing.Size(419, 272)
         Me.MinimizeBox = False
         Me.MinimumSize = New System.Drawing.Size(419, 272)
-        Me.Name = "FrmPagoFactura"
+        Me.Name = "FrmPagoEfectivo"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Ingrese el monto correspondiente al pago del cliente"
         Me.ResumeLayout(False)

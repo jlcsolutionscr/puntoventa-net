@@ -112,6 +112,7 @@ Partial Class FrmCompra
         Me.Label4 = New System.Windows.Forms.Label()
         Me.txtTipoCambio = New System.Windows.Forms.TextBox()
         Me.Label9 = New System.Windows.Forms.Label()
+        Me.btnGenerarPDF = New System.Windows.Forms.Button()
         CType(Me.grdDetalleCompra, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.grdDesglosePago, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -888,7 +889,6 @@ Partial Class FrmCompra
         Me.txtCodigo.Name = "txtCodigo"
         Me.txtCodigo.Size = New System.Drawing.Size(135, 20)
         Me.txtCodigo.TabIndex = 21
-        Me.txtCodigo.TabStop = False
         '
         'Label7
         '
@@ -1048,12 +1048,28 @@ Partial Class FrmCompra
         Me.Label9.Text = "Tipo Cambio:"
         Me.Label9.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
+        'btnGenerarPDF
+        '
+        Me.btnGenerarPDF.BackColor = System.Drawing.SystemColors.ButtonHighlight
+        Me.btnGenerarPDF.Cursor = System.Windows.Forms.Cursors.Default
+        Me.btnGenerarPDF.Enabled = False
+        Me.btnGenerarPDF.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.btnGenerarPDF.Location = New System.Drawing.Point(328, 8)
+        Me.btnGenerarPDF.Name = "btnGenerarPDF"
+        Me.btnGenerarPDF.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.btnGenerarPDF.Size = New System.Drawing.Size(64, 21)
+        Me.btnGenerarPDF.TabIndex = 195
+        Me.btnGenerarPDF.TabStop = False
+        Me.btnGenerarPDF.Text = "A&brir PDF"
+        Me.btnGenerarPDF.UseVisualStyleBackColor = False
+        '
         'FrmCompra
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(952, 607)
+        Me.Controls.Add(Me.btnGenerarPDF)
         Me.Controls.Add(Me.cboTipoMoneda)
         Me.Controls.Add(Me.Label4)
         Me.Controls.Add(Me.txtTipoCambio)
@@ -1181,4 +1197,5 @@ Partial Class FrmCompra
     Public WithEvents Label4 As Label
     Public WithEvents txtTipoCambio As TextBox
     Public WithEvents Label9 As Label
+    Public WithEvents btnGenerarPDF As Button
 End Class

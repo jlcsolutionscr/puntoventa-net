@@ -380,7 +380,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         if (cliente.IdTipoIdentificacion == 0 && cliente.Identificacion.Length != 9) throw new BusinessException("El cliente posee una identificación de tipo 'Cedula física' con una longitud inadecuada. Deben ser 9 caracteres.");
                         if (cliente.IdTipoIdentificacion == 1 && cliente.Identificacion.Length != 10) throw new BusinessException("El cliente posee una identificación de tipo 'Cedula jurídica' con una longitud inadecuada. Deben ser 10 caracteres");
-                        if (cliente.IdTipoIdentificacion > 1 && (cliente.Identificacion.Length != 11 || cliente.Identificacion.Length != 12)) throw new BusinessException("El cliente posee una identificación de tipo 'DIMEX o DITE' con una longitud inadecuada. Deben ser 11 o 12 caracteres");
+                        if (cliente.IdTipoIdentificacion > 1 && (cliente.Identificacion.Length < 11 || cliente.Identificacion.Length > 12)) throw new BusinessException("El cliente posee una identificación de tipo 'DIMEX o DITE' con una longitud inadecuada. Deben ser 11 o 12 caracteres");
                     }
                     sucursal.ConsecFactura += 1;
                     dbContext.NotificarModificacion(sucursal);
@@ -2543,7 +2543,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         string[] arrCorreoReceptor = strCorreoReceptor.Split(';');
                         strBody = "Estimado cliente, adjunto encontrará el detalle del documento electrónico en formato PDF y XML con clave " + documentoElectronico.ClaveNumerica + " y la respuesta de aceptación del Ministerio de Hacienda.";
-                        EstructuraFacturaPDF datos = new EstructuraFacturaPDF();
+                        EstructuraPDF datos = new EstructuraPDF();
                         try
                         {
                             string apPath = HostingEnvironment.ApplicationPhysicalPath + "images\\Logo.png";
@@ -2665,7 +2665,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         datos.TotalGeneral = string.Format("{0:N2}", Convert.ToDouble(resumenFacturaNode["TotalComprobante"].InnerText, CultureInfo.InvariantCulture));
                         datos.CodigoMoneda = resumenFacturaNode["CodigoTipoMoneda"] != null && resumenFacturaNode["CodigoTipoMoneda"].ChildNodes.Count > 0 ? resumenFacturaNode["CodigoTipoMoneda"]["CodigoMoneda"].InnerText : "CRC";
                         datos.TipoDeCambio = resumenFacturaNode["CodigoTipoMoneda"] != null && resumenFacturaNode["CodigoTipoMoneda"].ChildNodes.Count > 0 ? resumenFacturaNode["CodigoTipoMoneda"]["TipoCambio"].InnerText : "1.00000";
-                        byte[] pdfAttactment = UtilitarioPDF.GenerarPDFFacturaElectronica(datos);
+                        byte[] pdfAttactment = UtilitarioPDF.GenerarPDF(datos);
                         JObject jobDatosAdjuntos1 = new JObject
                         {
                             ["nombre"] = documentoElectronico.ClaveNumerica + ".pdf",

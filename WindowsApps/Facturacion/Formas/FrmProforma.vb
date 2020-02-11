@@ -539,8 +539,7 @@ Public Class FrmProforma
 
     Private Async Sub BtnBusProd_Click(sender As Object, e As EventArgs) Handles btnBusProd.Click
         Dim formBusProd As New FrmBusquedaProducto With {
-            .bolIncluyeServicios = True,
-            .intIdSucursal = FrmPrincipal.equipoGlobal.IdSucursal
+            .bolIncluyeServicios = True
         }
         FrmPrincipal.strBusqueda = ""
         formBusProd.ShowDialog()
@@ -668,7 +667,7 @@ Public Class FrmProforma
                     .strNombre = txtNombreCliente.Text,
                     .strTelefono = txtTelefono.Text,
                     .strDocumento = "",
-                    .strFecha = proforma.Fecha.ToString(),
+                    .strFecha = proforma.Fecha.ToString("dd/MM/yyyy hh:mm:ss"),
                     .strSubTotal = txtSubTotal.Text,
                     .strDescuento = "0.00",
                     .strImpuesto = txtImpuesto.Text,
@@ -677,7 +676,7 @@ Public Class FrmProforma
                 arrDetalleOrden = New List(Of ModuloImpresion.ClsDetalleComprobante)
                 For I = 0 To dtbDetalleProforma.Rows.Count - 1
                     detalleComprobante = New ModuloImpresion.ClsDetalleComprobante With {
-                    .strDescripcion = dtbDetalleProforma.Rows(I).Item(2),
+                    .strDescripcion = dtbDetalleProforma.Rows(I).Item(1) + "-" + dtbDetalleProforma.Rows(I).Item(2),
                     .strCantidad = CDbl(dtbDetalleProforma.Rows(I).Item(3)),
                     .strPrecio = FormatNumber(dtbDetalleProforma.Rows(I).Item(4), 2),
                     .strTotalLinea = FormatNumber(CDbl(dtbDetalleProforma.Rows(I).Item(3)) * CDbl(dtbDetalleProforma.Rows(I).Item(4)), 2),
@@ -704,7 +703,7 @@ Public Class FrmProforma
                     Exit Sub
                 End Try
             End If
-            Dim datos As EstructuraFacturaPDF = New EstructuraFacturaPDF()
+            Dim datos As EstructuraPDF = New EstructuraPDF()
             Try
                 Dim poweredByImage As Image = My.Resources.logo
                 datos.PoweredByLogotipo = poweredByImage
@@ -779,7 +778,7 @@ Public Class FrmProforma
             datos.CodigoMoneda = IIf(proforma.IdTipoMoneda = 1, "CRC", "USD")
             datos.TipoDeCambio = 1
             Try
-                Dim pdfBytes As Byte() = UtilitarioPDF.GenerarPDFFacturaElectronica(datos)
+                Dim pdfBytes As Byte() = UtilitarioPDF.GenerarPDF(datos)
                 Dim pdfFilePath As String = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\PROFORMA-" + txtIdProforma.Text + ".pdf"
                 File.WriteAllBytes(pdfFilePath, pdfBytes)
                 Process.Start(pdfFilePath)

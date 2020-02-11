@@ -1746,6 +1746,23 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         if (listadoTraslados.Count > 0)
                             strRespuesta = serializer.Serialize(listadoTraslados);
                         break;
+                    case "ObtenerTotalListaTrasladosPorAplicar":
+                        intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
+                        intIdSucursal = int.Parse(parametrosJO.Property("IdSucursalDestino").Value.ToString());
+                        bolAplicado = bool.Parse(parametrosJO.Property("Aplicado").Value.ToString());
+                        int intTotalTrasladosPorAplicar = servicioTraslado.ObtenerTotalListaTrasladosPorAplicar(intIdEmpresa, intIdSucursal, bolAplicado);
+                        strRespuesta = intTotalTrasladosPorAplicar.ToString();
+                        break;
+                    case "ObtenerListadoTrasladosPorAplicar":
+                        intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
+                        intIdSucursal = int.Parse(parametrosJO.Property("IdSucursalDestino").Value.ToString());
+                        bolAplicado = bool.Parse(parametrosJO.Property("Aplicado").Value.ToString());
+                        intNumeroPagina = int.Parse(parametrosJO.Property("NumeroPagina").Value.ToString());
+                        intFilasPorPagina = int.Parse(parametrosJO.Property("FilasPorPagina").Value.ToString());
+                        IList<TrasladoDetalle> listadoTrasladosPorAplicar = servicioTraslado.ObtenerListadoTrasladosPorAplicar(intIdEmpresa, intIdSucursal, bolAplicado, intNumeroPagina, intFilasPorPagina);
+                        if (listadoTrasladosPorAplicar.Count > 0)
+                            strRespuesta = serializer.Serialize(listadoTrasladosPorAplicar);
+                        break;
                     case "AgregarAjusteInventario":
                         ajusteInventario = serializer.Deserialize<AjusteInventario>(strEntidad);
                         string strIdAjuste = servicioMantenimiento.AgregarAjusteInventario(ajusteInventario);

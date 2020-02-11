@@ -1077,8 +1077,7 @@ Public Class FrmFactura
 
     Private Async Sub BtnBusProd_Click(sender As Object, e As EventArgs) Handles btnBusProd.Click
         Dim formBusProd As New FrmBusquedaProducto With {
-            .bolIncluyeServicios = True,
-            .intIdSucursal = FrmPrincipal.equipoGlobal.IdSucursal
+            .bolIncluyeServicios = True
         }
         FrmPrincipal.strBusqueda = ""
         formBusProd.ShowDialog()
@@ -1112,8 +1111,9 @@ Public Class FrmFactura
         End If
         If txtIdFactura.Text = "" Then
             If FrmPrincipal.empresaGlobal.IngresaPagoCliente And decPagoEfectivo > 0 Then
-                Dim formPagoFactura As New FrmPagoFactura()
+                Dim formPagoFactura As New FrmPagoEfectivo()
                 formPagoFactura.decTotalEfectivo = decPagoEfectivo
+                formPagoFactura.decPagoCliente = 0
                 FrmPrincipal.intBusqueda = 0
                 formPagoFactura.ShowDialog()
                 If FrmPrincipal.intBusqueda > 0 Then
@@ -1196,7 +1196,15 @@ Public Class FrmFactura
                 Exit Sub
             End Try
         End If
-        MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        If FrmPrincipal.empresaGlobal.IngresaPagoCliente And decPagoEfectivo > 0 Then
+            BtnImprimir_Click(btnImprimir, New EventArgs())
+            Dim formPagoFactura As New FrmPagoEfectivo()
+            formPagoFactura.decTotalEfectivo = decPagoEfectivo
+            formPagoFactura.decPagoCliente = decPagoCliente
+            formPagoFactura.ShowDialog()
+        Else
+            MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        End If
         btnImprimir.Enabled = True
         btnImprimir.Focus()
         cboTipoMoneda.Enabled = False
@@ -1233,7 +1241,7 @@ Public Class FrmFactura
                     .empresa = FrmPrincipal.empresaGlobal,
                     .equipo = FrmPrincipal.equipoGlobal,
                     .strId = factura.ConsecFactura,
-                    .strFecha = factura.Fecha.ToString(),
+                    .strFecha = factura.Fecha.ToString("dd/MM/yyyy hh:mm:ss"),
                     .strVendedor = txtVendedor.Text,
                     .strNombre = txtNombreCliente.Text,
                     .strDocumento = txtReferencia.Text,
@@ -1253,7 +1261,7 @@ Public Class FrmFactura
                 arrDetalleFactura = New List(Of ModuloImpresion.ClsDetalleComprobante)
                 For I = 0 To dtbDetalleFactura.Rows.Count - 1
                     detalleComprobante = New ModuloImpresion.ClsDetalleComprobante With {
-                    .strDescripcion = dtbDetalleFactura.Rows(I).Item(2),
+                    .strDescripcion = dtbDetalleFactura.Rows(I).Item(1) + "-" + dtbDetalleFactura.Rows(I).Item(2),
                     .strCantidad = CDbl(dtbDetalleFactura.Rows(I).Item(3)),
                     .strPrecio = FormatNumber(dtbDetalleFactura.Rows(I).Item(4), 2),
                     .strTotalLinea = FormatNumber(CDbl(dtbDetalleFactura.Rows(I).Item(3)) * CDbl(dtbDetalleFactura.Rows(I).Item(4)), 2),
@@ -1286,7 +1294,7 @@ Public Class FrmFactura
                     Exit Sub
                 End Try
             End If
-            Dim datos As EstructuraFacturaPDF = New EstructuraFacturaPDF()
+            Dim datos As EstructuraPDF = New EstructuraPDF()
             Try
                 Dim poweredByImage As Image = My.Resources.logo
                 datos.PoweredByLogotipo = poweredByImage
@@ -1312,8 +1320,11 @@ Public Class FrmFactura
             If factura.IdDocElectronico <> "" Then datos.Consecutivo = factura.IdDocElectronico.Substring(21, 20)
             datos.CondicionVenta = ObtenerValoresCodificados.ObtenerCondicionDeVenta(factura.IdCondicionVenta)
             datos.Fecha = factura.Fecha.ToString("dd/MM/yyyy hh:mm:ss")
-            Dim listaDesglosePago As IList(Of DesglosePagoFactura) = factura.DesglosePagoFactura
-            datos.MedioPago = ObtenerValoresCodificados.ObtenerMedioDePago(listaDesglosePago(0).IdFormaPago)
+            If dtbDesglosePago.Rows.Count > 1 Then
+                datos.MedioPago = "Otros"
+            Else
+                datos.MedioPago = ObtenerValoresCodificados.ObtenerMedioDePago(dtbDesglosePago.Rows(0).Item(0))
+            End If
             datos.NombreEmisor = FrmPrincipal.empresaGlobal.NombreEmpresa
             datos.NombreComercialEmisor = FrmPrincipal.empresaGlobal.NombreComercial
             datos.IdentificacionEmisor = FrmPrincipal.empresaGlobal.Identificacion
@@ -1340,13 +1351,13 @@ Public Class FrmFactura
                 datos.BarrioReceptor = cliente.Barrio.Descripcion
                 datos.DireccionReceptor = cliente.Direccion
             End If
-            For Each linea As DetalleFactura In factura.DetalleFactura
-                Dim decTotalLinea As Decimal = linea.Cantidad * linea.PrecioVenta
+            For I = 0 To dtbDetalleFactura.Rows.Count - 1
+                Dim decTotalLinea As Decimal = CDbl(dtbDetalleFactura.Rows(I).Item(3)) * CDbl(dtbDetalleFactura.Rows(I).Item(4))
                 Dim detalle As EstructuraPDFDetalleServicio = New EstructuraPDFDetalleServicio With {
-                .Cantidad = linea.Cantidad,
-                .Codigo = linea.Producto.Codigo,
-                .Detalle = linea.Descripcion,
-                .PrecioUnitario = linea.PrecioVenta.ToString("N2", CultureInfo.InvariantCulture),
+                .Cantidad = CDbl(dtbDetalleFactura.Rows(I).Item(3)),
+                .Codigo = dtbDetalleFactura.Rows(I).Item(1),
+                .Detalle = dtbDetalleFactura.Rows(I).Item(2),
+                .PrecioUnitario = CDbl(dtbDetalleFactura.Rows(I).Item(4)).ToString("N2", CultureInfo.InvariantCulture),
                 .TotalLinea = decTotalLinea.ToString("N2", CultureInfo.InvariantCulture)
             }
                 datos.DetalleServicio.Add(detalle)
@@ -1361,7 +1372,7 @@ Public Class FrmFactura
             datos.CodigoMoneda = IIf(factura.IdTipoMoneda = 1, "CRC", "USD")
             datos.TipoDeCambio = factura.TipoDeCambioDolar.ToString("N2", CultureInfo.InvariantCulture)
             Try
-                Dim pdfBytes As Byte() = UtilitarioPDF.GenerarPDFFacturaElectronica(datos)
+                Dim pdfBytes As Byte() = UtilitarioPDF.GenerarPDF(datos)
                 Dim pdfFilePath As String = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\FAC-" + factura.IdDocElectronico + ".pdf"
                 File.WriteAllBytes(pdfFilePath, pdfBytes)
                 Process.Start(pdfFilePath)
