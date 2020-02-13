@@ -644,7 +644,7 @@ Public Class FrmFactura
         txtReferencia.Text = ""
         txtDocumento.Text = ""
         cboTipoMoneda.Enabled = True
-        cboCondicionVenta.Enabled = True
+        cboCondicionVenta.Enabled = False
         cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado
         txtPlazoCredito.Text = ""
         txtTipoExoneracion.Text = ""

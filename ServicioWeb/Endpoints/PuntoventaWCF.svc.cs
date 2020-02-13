@@ -186,6 +186,18 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             }
         }
 
+        public string ObtenerUltimaVersionMobileApp()
+        {
+            try
+            {
+                return "{\"Version\": \"" + servicioMantenimiento.ObtenerUltimaVersionMobileApp() + "\"}";
+            }
+            catch (Exception ex)
+            {
+                throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
+            }
+        }
+
         public Stream DescargarActualizacion()
         {
             try

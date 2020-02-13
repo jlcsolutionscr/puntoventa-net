@@ -12,6 +12,10 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
         string ObtenerUltimaVersionApp();
 
         [OperationContract]
+        [WebGet(UriTemplate = "obtenerultimaversionmobileapp", ResponseFormat = WebMessageFormat.Json)]
+        string ObtenerUltimaVersionMobileApp();
+
+        [OperationContract]
         [WebGet(UriTemplate = "descargaractualizacion")]
         Stream DescargarActualizacion();
 

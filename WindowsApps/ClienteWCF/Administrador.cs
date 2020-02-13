@@ -50,14 +50,14 @@ namespace LeandroSoftware.ClienteWCF
             return response;
         }
 
-        public static async Task ActualizarVersionApp(string strVersion, byte[] bytZipFile, string strToken)
+        public static async Task ActualizarVersionApp(string strValor, byte[] bytZipFile, string strToken)
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
-            string strDatos = serializer.Serialize("{Version: '" + strVersion + "'}");
+            string strDatos = serializer.Serialize("{IdParametro: 1, Valor: '" + strValor + "'}");
             StringContent contentJson = new StringContent(strDatos, Encoding.UTF8, "application/json");
             if (strToken != "")
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", strToken);
-            HttpResponseMessage httpResponse = await httpClient.PostAsync(strServicioURL + "/actualizarversionapp", contentJson);
+            HttpResponseMessage httpResponse = await httpClient.PostAsync(strServicioURL + "/actualizarparametrosistema", contentJson);
             if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
             {
                 string strError = serializer.Deserialize<string>(httpResponse.Content.ReadAsStringAsync().Result);
@@ -70,6 +70,51 @@ namespace LeandroSoftware.ClienteWCF
             client.Headers[HttpRequestHeader.ContentType] = "application/octet-stream";
             client.Headers[HttpRequestHeader.Authorization] = "bearer " + strToken;
             client.UploadData(strServicioURL + "/actualizararchivoaplicacion", bytZipFile);
+        }
+
+        public static async Task<List<ParametroSistema>> ObtenerListadoParametros(string strToken)
+        {
+            try
+            {
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+                if (strToken != "")
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", strToken);
+                HttpResponseMessage httpResponse = await httpClient.GetAsync(strServicioURL + "/obtenerlistadoparametros");
+                if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
+                {
+                    string strError = serializer.Deserialize<string>(httpResponse.Content.ReadAsStringAsync().Result);
+                    throw new Exception(strError);
+                }
+                if (httpResponse.StatusCode != HttpStatusCode.OK)
+                    throw new Exception(httpResponse.ReasonPhrase);
+                List<ParametroSistema> listado = new List<ParametroSistema>();
+                string responseContent = await httpResponse.Content.ReadAsStringAsync();
+                string strResponse = serializer.Deserialize<string>(responseContent);
+                if (strResponse != "")
+                    listado = serializer.Deserialize<List<ParametroSistema>>(strResponse);
+                return listado;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public static async Task ActualizarParametroSistema(int intIdParametro, string strValor, string strToken)
+        {
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+            string strDatos = serializer.Serialize("{IdParametro: " + intIdParametro + ", Valor: '" + strValor + "'}");
+            StringContent contentJson = new StringContent(strDatos, Encoding.UTF8, "application/json");
+            if (strToken != "")
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", strToken);
+            HttpResponseMessage httpResponse = await httpClient.PostAsync(strServicioURL + "/actualizarparametrosistema", contentJson);
+            if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
+            {
+                string strError = serializer.Deserialize<string>(httpResponse.Content.ReadAsStringAsync().Result);
+                throw new Exception(strError);
+            }
+            if (httpResponse.StatusCode != HttpStatusCode.OK)
+                throw new Exception(httpResponse.ReasonPhrase);
         }
 
         public static async Task<Usuario> ValidarCredencialesAdmin(string strUsuario, string strClave)

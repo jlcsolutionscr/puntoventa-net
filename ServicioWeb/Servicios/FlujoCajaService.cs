@@ -1179,14 +1179,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
 
                     var egresosEfectivo = dbContext.EgresoRepository.Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Procesado).ToList();
-                    if (ingresosEfectivo.Count > 0)
+                    if (egresosEfectivo.Count > 0)
                     {
-                        foreach (var dato in ingresosEfectivo)
+                        foreach (var dato in egresosEfectivo)
                         {
                             cierre.EgresosEfectivo += dato.Monto;
                             listaMovimientos.Add(new DetalleMovimientoCierreCaja
                             {
-                                IdReferencia = dato.IdIngreso,
+                                IdReferencia = dato.IdEgreso,
                                 Tipo = 20,
                                 Fecha = dato.Fecha,
                                 Descripcion = "Egreso de efectivo: " + dato.Detalle,

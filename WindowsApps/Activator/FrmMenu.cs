@@ -53,5 +53,14 @@ namespace LeandroSoftware.Activator
             };
             formDocumentosEnProceso.Show();
         }
+
+        private void parametrosDelSistemaToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FrmParametrosSistema formParametrosSistema = new FrmParametrosSistema
+            {
+                MdiParent = this
+            };
+            formParametrosSistema.Show();
+        }
     }
 }

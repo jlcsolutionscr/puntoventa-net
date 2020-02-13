@@ -664,13 +664,30 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             }
         }
 
-        public void ActualizarVersionApp(string strDatos)
+        public string ObtenerListadoParametros()
+        {
+            try
+            {
+                IList<ParametroSistema> listadoEmpresas = servicioMantenimiento.ObtenerListadoParametros();
+                string strRespuesta = "";
+                if (listadoEmpresas.Count > 0)
+                    strRespuesta = serializer.Serialize(listadoEmpresas);
+                return strRespuesta;
+            }
+            catch (Exception ex)
+            {
+                throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
+            }
+        }
+
+        public void ActualizarParametroSistema(string strDatos)
         {
             try
             {
                 JObject parametrosJO = JObject.Parse(strDatos);
-                string strVersion = parametrosJO.Property("Version").Value.ToString();
-                servicioMantenimiento.ActualizarVersionApp(strVersion);
+                int intId = int.Parse(parametrosJO.Property("IdParametro").Value.ToString());
+                string strValor = parametrosJO.Property("Valor").Value.ToString();
+                servicioMantenimiento.ActualizarParametroSistema(intId, strValor);
             }
             catch (Exception ex)
             {

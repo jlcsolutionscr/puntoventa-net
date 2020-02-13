@@ -1586,6 +1586,55 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         };
                         producto.MovimientoProducto.Add(movimientoProducto);
                     }
+                    if (factura.IdCondicionVenta == StaticCondicionVenta.Credito)
+                    {
+                        BancoAdquiriente cuentaBanco = dbContext.BancoAdquirienteRepository.FirstOrDefault();
+                        if (cuentaBanco == null) throw new BusinessException("La empresa no posee ningun banco adquiriente parametrizado");
+                        CuentaPorCobrar cxc = dbContext.CuentaPorCobrarRepository.Find(factura.IdCxC);
+                        if (cxc == null) throw new BusinessException("La cuenta por cobrar asignada a la factura de la devolución no existe");
+                        cxc.Saldo -= devolucion.Total;
+                        dbContext.NotificarModificacion(cxc);
+                        MovimientoCuentaPorCobrar mov = new MovimientoCuentaPorCobrar();
+                        mov.IdEmpresa = devolucion.IdEmpresa;
+                        mov.IdUsuario = devolucion.IdUsuario;
+                        mov.IdPropietario = factura.IdCliente;
+                        mov.IdSucursal = devolucion.IdSucursal;
+                        mov.Tipo = StaticTipoAbono.AbonoEfectivo;
+                        mov.Descripcion = "Abono por devolución de mercancías";
+                        mov.Monto = devolucion.Total;
+                        mov.Fecha = DateTime.Now;
+                        DesgloseMovimientoCuentaPorCobrar desgloseMovimiento = new DesgloseMovimientoCuentaPorCobrar();
+                        desgloseMovimiento.IdCxC = factura.IdCxC;
+                        desgloseMovimiento.Monto = devolucion.Total;
+                        mov.DesgloseMovimientoCuentaPorCobrar.Add(desgloseMovimiento);
+                        DesglosePagoMovimientoCuentaPorCobrar desglosePagoMovimiento = new DesglosePagoMovimientoCuentaPorCobrar();
+                        desglosePagoMovimiento.IdFormaPago = StaticFormaPago.Efectivo;
+                        desglosePagoMovimiento.IdCuentaBanco = cuentaBanco.IdBanco;
+                        desglosePagoMovimiento.TipoTarjeta = "";
+                        desglosePagoMovimiento.NroMovimiento = "";
+                        desglosePagoMovimiento.IdTipoMoneda = factura.IdTipoMoneda;
+                        desglosePagoMovimiento.MontoLocal = devolucion.Total;
+                        desglosePagoMovimiento.TipoDeCambio = factura.TipoDeCambioDolar;
+                        mov.DesglosePagoMovimientoCuentaPorCobrar.Add(desglosePagoMovimiento);
+                        dbContext.MovimientoCuentaPorCobrarRepository.Add(mov);
+                    }
+                    else
+                    {
+                        CuentaEgreso cuenta = dbContext.CuentaEgresoRepository.FirstOrDefault();
+                        if (cuenta == null) throw new BusinessException("La empresa no posee ninguna cuenta de egresos parametrizada");
+                        Egreso egreso = new Egreso();
+                        egreso.IdEmpresa = devolucion.IdEmpresa;
+                        egreso.IdSucursal = devolucion.IdSucursal;
+                        egreso.IdUsuario = devolucion.IdUsuario;
+                        egreso.Fecha = DateTime.Now;
+                        egreso.IdCuenta = cuenta.IdCuenta;
+                        egreso.Beneficiario = factura.NombreCliente;
+                        egreso.Detalle = "Egreso de efectivo por devolución de mercancías";
+                        egreso.Monto = devolucion.Total;
+                        egreso.Nulo = false;
+                        egreso.Procesado = false;
+                        dbContext.EgresoRepository.Add(egreso);
+                    }
                     DocumentoElectronico documentoNC = null;
                     if (!empresa.RegimenSimplificado && factura.IdDocElectronico != null)
                     {

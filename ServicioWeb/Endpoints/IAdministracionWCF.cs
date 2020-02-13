@@ -148,7 +148,11 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
         void ActualizarArchivoAplicacion(Stream fileStream);
 
         [OperationContract]
-        [WebInvoke(Method = "POST", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, UriTemplate = "actualizarversionapp")]
-        void ActualizarVersionApp(string strDatos);
+        [WebGet(UriTemplate = "obtenerlistadoparametros", ResponseFormat = WebMessageFormat.Json)]
+        string ObtenerListadoParametros();
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, UriTemplate = "actualizarparametrosistema")]
+        void ActualizarParametroSistema(string strDatos);
     }
 }

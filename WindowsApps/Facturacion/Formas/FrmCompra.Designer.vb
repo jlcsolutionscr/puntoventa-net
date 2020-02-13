@@ -317,7 +317,7 @@ Partial Class FrmCompra
         Me.txtFactura.MaxLength = 0
         Me.txtFactura.Name = "txtFactura"
         Me.txtFactura.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtFactura.Size = New System.Drawing.Size(165, 20)
+        Me.txtFactura.Size = New System.Drawing.Size(141, 20)
         Me.txtFactura.TabIndex = 4
         '
         'txtSubTotal
@@ -766,7 +766,7 @@ Partial Class FrmCompra
         Me.txtPlazoCredito.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtPlazoCredito.Enabled = False
         Me.txtPlazoCredito.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtPlazoCredito.Location = New System.Drawing.Point(795, 66)
+        Me.txtPlazoCredito.Location = New System.Drawing.Point(762, 92)
         Me.txtPlazoCredito.MaxLength = 300
         Me.txtPlazoCredito.Name = "txtPlazoCredito"
         Me.txtPlazoCredito.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -780,7 +780,7 @@ Partial Class FrmCompra
         Me.Label12.BackColor = System.Drawing.Color.Transparent
         Me.Label12.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label12.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label12.Location = New System.Drawing.Point(702, 66)
+        Me.Label12.Location = New System.Drawing.Point(669, 92)
         Me.Label12.Name = "Label12"
         Me.Label12.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label12.Size = New System.Drawing.Size(87, 19)
@@ -793,7 +793,7 @@ Partial Class FrmCompra
         Me.Label11.BackColor = System.Drawing.Color.Transparent
         Me.Label11.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label11.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label11.Location = New System.Drawing.Point(436, 66)
+        Me.Label11.Location = New System.Drawing.Point(403, 92)
         Me.Label11.Name = "Label11"
         Me.Label11.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label11.Size = New System.Drawing.Size(89, 19)
@@ -811,7 +811,7 @@ Partial Class FrmCompra
         Me.cboCondicionVenta.ForeColor = System.Drawing.SystemColors.WindowText
         Me.cboCondicionVenta.IntegralHeight = False
         Me.cboCondicionVenta.ItemHeight = 13
-        Me.cboCondicionVenta.Location = New System.Drawing.Point(531, 66)
+        Me.cboCondicionVenta.Location = New System.Drawing.Point(498, 92)
         Me.cboCondicionVenta.Name = "cboCondicionVenta"
         Me.cboCondicionVenta.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.cboCondicionVenta.Size = New System.Drawing.Size(165, 21)
@@ -866,7 +866,7 @@ Partial Class FrmCompra
         Me.cboSucursal.FormattingEnabled = True
         Me.cboSucursal.Location = New System.Drawing.Point(108, 92)
         Me.cboSucursal.Name = "cboSucursal"
-        Me.cboSucursal.Size = New System.Drawing.Size(300, 21)
+        Me.cboSucursal.Size = New System.Drawing.Size(289, 21)
         Me.cboSucursal.TabIndex = 145
         Me.cboSucursal.TabStop = False
         '
@@ -1025,7 +1025,7 @@ Partial Class FrmCompra
         Me.txtTipoCambio.BackColor = System.Drawing.SystemColors.Window
         Me.txtTipoCambio.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtTipoCambio.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtTipoCambio.Location = New System.Drawing.Point(336, 119)
+        Me.txtTipoCambio.Location = New System.Drawing.Point(324, 119)
         Me.txtTipoCambio.MaxLength = 0
         Me.txtTipoCambio.Name = "txtTipoCambio"
         Me.txtTipoCambio.ReadOnly = True
@@ -1040,7 +1040,7 @@ Partial Class FrmCompra
         Me.Label9.BackColor = System.Drawing.Color.Transparent
         Me.Label9.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label9.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label9.Location = New System.Drawing.Point(254, 119)
+        Me.Label9.Location = New System.Drawing.Point(242, 119)
         Me.Label9.Name = "Label9"
         Me.Label9.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label9.Size = New System.Drawing.Size(76, 19)

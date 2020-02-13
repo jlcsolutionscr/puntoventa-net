@@ -31,9 +31,10 @@
             this.MenuStrip1 = new System.Windows.Forms.MenuStrip();
             this.tsRegistrarEmpresa = new System.Windows.Forms.ToolStripMenuItem();
             this.tsSubirNuevaVersionApp = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsSalir = new System.Windows.Forms.ToolStripMenuItem();
             this.documentosPendientesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.consultarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsSalir = new System.Windows.Forms.ToolStripMenuItem();
+            this.parametrosDelSistemaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -42,6 +43,7 @@
             this.MenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsRegistrarEmpresa,
             this.tsSubirNuevaVersionApp,
+            this.parametrosDelSistemaToolStripMenuItem,
             this.documentosPendientesToolStripMenuItem,
             this.tsSalir});
             this.MenuStrip1.Location = new System.Drawing.Point(0, 0);
@@ -61,17 +63,10 @@
             // tsSubirNuevaVersionApp
             // 
             this.tsSubirNuevaVersionApp.Name = "tsSubirNuevaVersionApp";
-            this.tsSubirNuevaVersionApp.Size = new System.Drawing.Size(169, 20);
+            this.tsSubirNuevaVersionApp.Size = new System.Drawing.Size(168, 20);
             this.tsSubirNuevaVersionApp.Text = "Subir Nueva Version del App";
             this.tsSubirNuevaVersionApp.Visible = false;
             this.tsSubirNuevaVersionApp.Click += new System.EventHandler(this.tsSubirNuevaVersionApp_Click);
-            // 
-            // tsSalir
-            // 
-            this.tsSalir.Name = "tsSalir";
-            this.tsSalir.Size = new System.Drawing.Size(41, 20);
-            this.tsSalir.Text = "Salir";
-            this.tsSalir.Click += new System.EventHandler(this.tsSalir_Click);
             // 
             // documentosPendientesToolStripMenuItem
             // 
@@ -84,9 +79,23 @@
             // consultarToolStripMenuItem
             // 
             this.consultarToolStripMenuItem.Name = "consultarToolStripMenuItem";
-            this.consultarToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.consultarToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
             this.consultarToolStripMenuItem.Text = "Consultar";
             this.consultarToolStripMenuItem.Click += new System.EventHandler(this.ConsultarToolStripMenuItem_Click);
+            // 
+            // tsSalir
+            // 
+            this.tsSalir.Name = "tsSalir";
+            this.tsSalir.Size = new System.Drawing.Size(41, 20);
+            this.tsSalir.Text = "Salir";
+            this.tsSalir.Click += new System.EventHandler(this.tsSalir_Click);
+            // 
+            // parametrosDelSistemaToolStripMenuItem
+            // 
+            this.parametrosDelSistemaToolStripMenuItem.Name = "parametrosDelSistemaToolStripMenuItem";
+            this.parametrosDelSistemaToolStripMenuItem.Size = new System.Drawing.Size(141, 20);
+            this.parametrosDelSistemaToolStripMenuItem.Text = "Parametros del sistema";
+            this.parametrosDelSistemaToolStripMenuItem.Click += new System.EventHandler(this.parametrosDelSistemaToolStripMenuItem_Click);
             // 
             // FrmMenu
             // 
@@ -114,5 +123,6 @@
         private System.Windows.Forms.ToolStripMenuItem tsSubirNuevaVersionApp;
         private System.Windows.Forms.ToolStripMenuItem documentosPendientesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem consultarToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem parametrosDelSistemaToolStripMenuItem;
     }
 }

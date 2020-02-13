@@ -9,7 +9,7 @@ Imports LeandroSoftware.Core.Utilitario
 
 Public Class FrmCompra
 #Region "Variables"
-    Private decExcento, decGravado, decSaldoPorPagar As Decimal
+    Private decExcento, decGravado, decImpuesto, decSaldoPorPagar As Decimal
     Private decTotalPago As Decimal = 0
     Private decTotal As Decimal = 0
     Private I As Short
@@ -329,21 +329,27 @@ Public Class FrmCompra
 
     Private Sub CargarTotales()
         Dim decSubTotal As Decimal = 0
+        Dim decTasaIva As Decimal = 0
+        Dim decPorcDesc As Decimal = 0
         decExcento = 0
         decGravado = 0
+        decImpuesto = 0
         For I = 0 To dtbDetalleCompra.Rows.Count - 1
             If dtbDetalleCompra.Rows(I).Item(7) = 0 Then
+                decTasaIva = dtbDetalleCompra.Rows(I).Item(8)
                 decGravado += dtbDetalleCompra.Rows(I).Item(6)
             Else
                 decExcento += dtbDetalleCompra.Rows(I).Item(6)
             End If
         Next
         decSubTotal = decGravado + decExcento
+        If decSubTotal > 0 Then decPorcDesc = CDbl(txtDescuento.Text) / decSubTotal
+        If decGravado > 0 Then decImpuesto = Math.Round(decGravado - (decGravado * decPorcDesc), 2, MidpointRounding.AwayFromZero) * decTasaIva / 100
         decGravado = Math.Round(decGravado, 2, MidpointRounding.AwayFromZero)
         decExcento = Math.Round(decExcento, 2, MidpointRounding.AwayFromZero)
-        decTotal = Math.Round(decExcento + decGravado + CDbl(txtImpuesto.Text) - CDbl(txtDescuento.Text), 2, MidpointRounding.AwayFromZero)
+        decTotal = Math.Round(decExcento + decGravado + decImpuesto - CDbl(txtDescuento.Text), 2, MidpointRounding.AwayFromZero)
         txtSubTotal.Text = FormatNumber(decSubTotal, 2)
-        txtImpuesto.Text = FormatNumber(txtImpuesto.Text, 2)
+        txtImpuesto.Text = FormatNumber(decImpuesto, 2)
         txtTotal.Text = FormatNumber(decTotal, 2)
         decSaldoPorPagar = decTotal - decTotalPago
         txtSaldoPorPagar.Text = FormatNumber(decSaldoPorPagar, 2)
@@ -674,10 +680,10 @@ Public Class FrmCompra
             For I = 0 To dtbDetalleCompra.Rows.Count - 1
                 detalleCompra = New DetalleCompra With {
                     .IdProducto = dtbDetalleCompra.Rows(I).Item(0),
-                    .Cantidad = dtbDetalleCompra.Rows(I).Item(3),
-                    .PrecioCosto = dtbDetalleCompra.Rows(I).Item(4),
-                    .Excento = dtbDetalleCompra.Rows(I).Item(6),
-                    .PorcentajeIVA = dtbDetalleCompra.Rows(I).Item(7)
+                    .Cantidad = dtbDetalleCompra.Rows(I).Item(4),
+                    .PrecioCosto = dtbDetalleCompra.Rows(I).Item(5),
+                    .Excento = dtbDetalleCompra.Rows(I).Item(7),
+                    .PorcentajeIVA = dtbDetalleCompra.Rows(I).Item(8)
                 }
                 compra.DetalleCompra.Add(detalleCompra)
             Next
@@ -948,30 +954,33 @@ Public Class FrmCompra
         End If
     End Sub
 
-    Private Sub Descuento_Leave(sender As Object, e As EventArgs) Handles txtDescuento.Validated
-        If txtDescuento.Text = "" Then
-            txtDescuento.Text = FormatNumber(0, 2)
-        Else
-            If InStr(txtDescuento.Text, "%") Then
-                txtDescuento.Text = CDbl(Mid(txtDescuento.Text, 1, Len(txtDescuento.Text) - 1)) / 100 * CDbl(txtSubTotal.Text)
+    Private Sub Descuento_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtDescuento.PreviewKeyDown
+        If e.KeyCode = Keys.Enter Or e.KeyCode = Keys.Tab Then
+            If txtDescuento.Text = "" Then
+                txtDescuento.Text = FormatNumber(0, 2)
+            Else
+                If InStr(txtDescuento.Text, "%") Then
+                    txtDescuento.Text = CDbl(Mid(txtDescuento.Text, 1, Len(txtDescuento.Text) - 1)) / 100 * CDbl(txtSubTotal.Text)
+                End If
+                If txtDescuento.Text > CDbl(txtSubTotal.Text) Then
+                    MessageBox.Show("El descuento debe ser menor al SubTotal. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                    txtDescuento.Text = 0
+                End If
+                txtDescuento.Text = FormatNumber(txtDescuento.Text, 2)
             End If
-            If txtDescuento.Text > CDbl(txtSubTotal.Text) Then
-                MessageBox.Show("El descuento debe ser menor al SubTotal. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-                txtDescuento.Text = 0
-            End If
-            txtDescuento.Text = FormatNumber(txtDescuento.Text, 2)
+            CargarTotales()
+            CargarTotalesPago()
         End If
-        txtTotal.Text = FormatNumber(CDbl(txtSubTotal.Text) + CDbl(txtImpuesto.Text) - CDbl(txtDescuento.Text), 2)
-        decTotal = CDbl(txtTotal.Text)
-        CargarTotalesPago()
     End Sub
 
-    Private Sub TxtImpuesto_Leave(sender As Object, e As EventArgs) Handles txtImpuesto.Validated
-        If txtImpuesto.Text = "" Then txtImpuesto.Text = "0"
-        txtImpuesto.Text = FormatNumber(txtImpuesto.Text, 2)
-        txtTotal.Text = FormatNumber(CDbl(txtSubTotal.Text) + CDbl(txtImpuesto.Text) - CDbl(txtDescuento.Text), 2)
-        decTotal = CDbl(txtTotal.Text)
-        CargarTotalesPago()
+    Private Sub TxtImpuesto_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtImpuesto.PreviewKeyDown
+        If e.KeyCode = Keys.Enter Or e.KeyCode = Keys.Tab Then
+            If txtImpuesto.Text = "" Then txtImpuesto.Text = "0"
+            txtImpuesto.Text = FormatNumber(txtImpuesto.Text, 2)
+            txtTotal.Text = FormatNumber(CDbl(txtSubTotal.Text) + CDbl(txtImpuesto.Text) - CDbl(txtDescuento.Text), 2)
+            decTotal = CDbl(txtTotal.Text)
+            CargarTotalesPago()
+        End If
     End Sub
 
     Private Async Sub txtCodigoProveedor_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtCodigoProveedor.PreviewKeyDown
@@ -1007,7 +1016,7 @@ Public Class FrmCompra
                     Exit Sub
                 End Try
             Else
-                txtCodigo.Focus()
+                If e.KeyCode = Keys.Enter Then txtCodigo.Focus()
             End If
         End If
     End Sub

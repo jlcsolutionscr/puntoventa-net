@@ -1637,7 +1637,7 @@ CREATE TABLE traslado (
 CREATE TABLE usuario (
   IdUsuario int(11) NOT NULL AUTO_INCREMENT,
   CodigoUsuario varchar(10) NOT NULL,
-  Clave varchar(1000) NOT NULL,
+  Clave varchar(100) NOT NULL,
   Modifica tinyint(1) NOT NULL,
   PermiteRegistrarDispositivo tinyint(1) DEFAULT NULL,
   PRIMARY KEY (IdUsuario)

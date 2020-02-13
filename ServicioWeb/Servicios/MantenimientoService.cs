@@ -25,8 +25,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         Empresa ValidarCredenciales(string strUsuario, string strClave, int intIdEmpresa, string strValorRegistro);
         bool ValidarUsuarioHacienda(string strUsuario, string strClave, ConfiguracionGeneral config);
         bool AutorizacionPrecioExtraordinario(string strUsuario, string strClave, int intIdEmpresa);
-        void ActualizarVersionApp(string strVersion);
         string ObtenerUltimaVersionApp();
+        string ObtenerUltimaVersionMobileApp();
+        IList<ParametroSistema> ObtenerListadoParametros();
+        void ActualizarParametroSistema(int intIdParametro, string strValor);
         // Métodos para administrar las empresas
         IList<LlaveDescripcion> ObtenerListadoEmpresa();
         IList<LlaveDescripcion> ObtenerListadoSucursales(int intIdEmpresa);
@@ -548,26 +550,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void ActualizarVersionApp(string strVersion)
-        {
-            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
-            {
-                try
-                {
-                    var version = dbContext.ParametroSistemaRepository.Where(x => x.Descripcion == "Version").FirstOrDefault();
-                    if (version is null) throw new BusinessException("No se logró obtener el parámetro con descripción 'Version' de la tabla de parámetros del sistema.");
-                    version.Valor = strVersion;
-                    dbContext.Commit();
-                }
-                catch (Exception ex)
-                {
-                    dbContext.RollBack();
-                    log.Error("Error al agregar la empresa: ", ex);
-                    throw new Exception("Se produjo un error agregando la información de la empresa. Por favor consulte con su proveedor.");
-                }
-            }
-        }
-
         public string ObtenerUltimaVersionApp()
         {
             string strUltimaVersion = "";
@@ -575,7 +557,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    var version = dbContext.ParametroSistemaRepository.Where(x => x.Descripcion == "Version").FirstOrDefault();
+                    var version = dbContext.ParametroSistemaRepository.Where(x => x.IdParametro == 1).FirstOrDefault();
                     if (version is null) throw new BusinessException("No se logró obtener el parámetro con descripción 'Version' de la tabla de parámetros del sistema.");
                     strUltimaVersion = version.Valor;
                 }
@@ -587,6 +569,65 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
             }
             return strUltimaVersion;
+        }
+
+        public string ObtenerUltimaVersionMobileApp()
+        {
+            string strUltimaVersion = "";
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    var version = dbContext.ParametroSistemaRepository.Where(x => x.IdParametro == 4).FirstOrDefault();
+                    if (version is null) throw new BusinessException("No se logró obtener el parámetro con descripción 'Version' de la tabla de parámetros del sistema.");
+                    strUltimaVersion = version.Valor;
+                }
+                catch (Exception ex)
+                {
+                    dbContext.RollBack();
+                    log.Error("Error al consultar el parámetro 'Version' del sistema: ", ex);
+                    throw new Exception("Se produjo un error consultado la versión actual del sistema. Por favor consulte con su proveedor.");
+                }
+            }
+            return strUltimaVersion;
+        }
+
+        public IList<ParametroSistema> ObtenerListadoParametros()
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                var listaEmpresa = new List<LlaveDescripcion>();
+                try
+                {
+                    return dbContext.ParametroSistemaRepository.ToList();
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al consultar el listado d parámetros del sistema: ", ex);
+                    throw new Exception("Error al consultar el listado d parámetros del sistema. . .");
+                }
+            }
+        }
+
+        public void ActualizarParametroSistema(int intIdParametro, string strValor)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    var parametro = dbContext.ParametroSistemaRepository.Where(x => x.IdParametro == intIdParametro).FirstOrDefault();
+                    if (parametro is null) throw new BusinessException("No se logró obtener el parámetro con Id: " + intIdParametro + " de la tabla de parámetros del sistema.");
+                    parametro.Valor = strValor;
+                    dbContext.NotificarModificacion(parametro);
+                    dbContext.Commit();
+                }
+                catch (Exception ex)
+                {
+                    dbContext.RollBack();
+                    log.Error("Error al actualizar el parámetro del sistema: ", ex);
+                    throw new Exception("Se produjo un error actualizando el parámetro del sistema. Por favor consulte con su proveedor.");
+                }
+            }
         }
 
         public IList<LlaveDescripcion> ObtenerListadoEmpresa()

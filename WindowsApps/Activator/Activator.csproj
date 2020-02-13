@@ -104,6 +104,12 @@
     <Compile Include="FrmEmpresa.Designer.cs">
       <DependentUpon>FrmEmpresa.cs</DependentUpon>
     </Compile>
+    <Compile Include="FrmParametrosSistema.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmParametrosSistema.Designer.cs">
+      <DependentUpon>FrmParametrosSistema.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrmSubirActualizacion.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -126,6 +132,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FrmEmpresa.resx">
       <DependentUpon>FrmEmpresa.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmParametrosSistema.resx">
+      <DependentUpon>FrmParametrosSistema.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FrmSubirActualizacion.resx">
       <DependentUpon>FrmSubirActualizacion.cs</DependentUpon>

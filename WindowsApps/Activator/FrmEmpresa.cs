@@ -391,10 +391,6 @@ namespace LeandroSoftware.Activator
                 empresa.Direccion = txtDireccion.Text;
                 empresa.Telefono1 = txtTelefono.Text;
                 empresa.CorreoNotificacion = txtCorreoNotificacion.Text;
-                empresa.NombreCertificado = "";
-                empresa.PinCertificado = "";
-                empresa.UsuarioHacienda = "";
-                empresa.ClaveHacienda = "";
                 empresa.LineasPorFactura = int.Parse(txtLineasFactura.Text);
                 if (txtFecha.Text != "  /  /")
                 {
