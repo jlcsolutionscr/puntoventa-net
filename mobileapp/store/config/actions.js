@@ -12,6 +12,7 @@ import {
 } from './types'
 
 import {
+  getLatestAppVersion,
   getCompanyIdentifiers,
   getTerminalsAvailablePerId,
   registerDevice,
@@ -30,10 +31,10 @@ export const setServiceURL = (serviceURL) => {
   }
 }
 
-export const setAppReady = (deviceId) => {
+export const setAppReady = (deviceId, status) => {
   return {
     type: SET_APP_READY,
-    payload: { deviceId }
+    payload: { deviceId, status }
   }
 }
 
@@ -86,10 +87,16 @@ export function validateAppState () {
     dispatch(setModalError(''))
     try {
       const deviceId = await DeviceInfo.getAndroidId()
-      const identifierList = await getCompanyIdentifiers(serviceURL, deviceId)
-      if (identifierList.length > 0) dispatch(setDeviceRegistered())
-      dispatch(setIdentifierList(identifierList))
-      dispatch(setAppReady(deviceId))
+      const latestApp = await getLatestAppVersion(serviceURL)
+      const currentVersion = await DeviceInfo.getVersion()
+      if (latestApp.Version !== currentVersion) {
+        dispatch(setAppReady(deviceId, 'outdated'))
+      } else {
+        const identifierList = await getCompanyIdentifiers(serviceURL, deviceId)
+        if (identifierList.length > 0) dispatch(setDeviceRegistered())
+        dispatch(setIdentifierList(identifierList))
+        dispatch(setAppReady(deviceId, 'ready'))
+      }
       dispatch(stopLoader())
     } catch (error) {
       dispatch(stopLoader())

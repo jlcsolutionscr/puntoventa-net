@@ -1,12 +1,12 @@
 export const INITIAL_STATE = {
   ui: {
-    appReady: false,
     loading: true,
     loaderVisible: false,
     splashScreenDone: false,
     error: ''
   },
   config: {
+    appReady: 'pending',
     deviceId: null,
     serviceURL: '',
     isDeviceRegistered: false,

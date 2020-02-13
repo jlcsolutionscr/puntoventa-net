@@ -2,6 +2,17 @@ import { get, getWithResponse, post, postWithResponse } from '../utils/requestHe
 import CryptoJS from 'crypto-js'
 import { roundNumber } from '../utils/formatHelper'
 
+export async function getLatestAppVersion(serviceURL) {
+  try {
+    const endpoint = serviceURL + "/obtenerultimaversionmobileapp"
+    const response = await getWithResponse(endpoint)
+    if (response === null) return []
+    return response
+  } catch (e) {
+    throw e.message
+  }
+}
+
 export async function getCompanyIdentifiers(serviceURL, deviceId) {
   try {
     const endpoint = serviceURL + "/obtenerlistadoempresas?dispositivo=" + deviceId
@@ -361,7 +372,7 @@ export async function saveInvoiceEntity(serviceURL, token, products, paymentMeth
         IdProducto: item.IdProducto,
         Descripcion: item.Descripcion,
         Cantidad: item.Cantidad,
-        PrecioVenta: item.PrecioVenta,
+        PrecioVenta: roundNumber(item.PrecioVenta / (1 + (item.PorcentajeIVA / 100)), 3),
         Excento: item.Excento,
         PrecioCosto: item.PrecioCosto,
         CostoInstalacion: 0,

@@ -14,7 +14,7 @@ export const configReducer = (state = {}, { type, payload }) => {
     case SET_SERVICE_URL:
       return { ...state, serviceURL: payload.serviceURL }
     case SET_APP_READY:
-      return { ...state, deviceId: payload.deviceId, appReady: true }
+      return { ...state, deviceId: payload.deviceId, appReady: payload.status }
     case SET_DEVICE_REGISTERED:
       return { ...state, isDeviceRegistered: true }
     case SET_IDENTIFIER_LIST:

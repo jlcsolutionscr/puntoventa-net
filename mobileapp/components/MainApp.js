@@ -12,6 +12,7 @@ const { width } = Dimensions.get('window')
 const rem = width / 411.42857142857144
 
 import SplashScreen from './custom/SplashScreen'
+import OutdatedScreen from './outdated/OutdatedScreen'
 import LoginNavigator from './login/LoginNavigator'
 import HomeNavigator from './home/HomeNavigator'
 import Loader from './custom/Loader'
@@ -39,12 +40,23 @@ class MainApp extends Component {
   render() {
     const { appReady, company, loaderVisible, authorized, error, logOut } = this.props
     const { splashScreenDone } = this.state
+    let requiredConfig = false
+    if (company && !company.RegimenSimplificado) {
+      requiredConfig = company.UsuarioHacienda === "" ||
+      company.ClaveHacienda === "" ||
+      company.NombreCertificado === "" ||
+      company.PinCertificado === ""
+    }
     const rootComponent = (
-      !splashScreenDone || !appReady ?
+      !splashScreenDone || appReady === 'pending' ?
         null :
-        authorized ?
-          <HomeNavigator company={company} logOut={logOut} /> :
-          <LoginNavigator />
+        appReady === 'outdated' ?
+          <OutdatedScreen messageId={1} handleBackPress={this.handleBackPress} /> :
+          !authorized ?
+            <LoginNavigator /> :
+            !requiredConfig ?
+              <HomeNavigator company={company} logOut={logOut} /> :
+              <OutdatedScreen messageId={2} handleBackPress={logOut} />
     )
     const visibility = splashScreenDone && loaderVisible
     const modalVisible = error !== ''
