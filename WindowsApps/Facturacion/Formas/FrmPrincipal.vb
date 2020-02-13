@@ -482,7 +482,13 @@ Public Class FrmPrincipal
             listaEmpresa = Await Puntoventa.ObtenerListadoEmpresasAdministrador()
         Else
             Do
-                listaEmpresa = Await Puntoventa.ObtenerListadoEmpresasPorTerminal(strIdentificadoEquipoLocal)
+                Try
+                    listaEmpresa = Await Puntoventa.ObtenerListadoEmpresasPorTerminal(strIdentificadoEquipoLocal)
+                Catch ex As Exception
+                    MessageBox.Show("No fue posible acceder al servicio web. Consulte con su proveedor del servicio.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                    Close()
+                    Exit Sub
+                End Try
                 If listaEmpresa.Count = 0 Then
                     If MessageBox.Show("El equipo no se encuentra registrado. Desea proceder con el registro?", "JLC Solutions CR", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
                         Dim formRegistro As New FrmRegistro()

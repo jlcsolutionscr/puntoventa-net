@@ -8,7 +8,7 @@ namespace LeandroSoftware.Core.Servicios
 {
     public interface ICorreoService
     {
-        void SendEmail(string emailFrom, string[] emailTo, string[] ccTo, string subject, string body, bool isBodyHtml, JArray strAttachments);
+        void SendEmail(string[] emailTo, string[] ccTo, string subject, string body, bool isBodyHtml, JArray strAttachments);
     }
 
     public class CorreoService : ICorreoService
@@ -28,7 +28,7 @@ namespace LeandroSoftware.Core.Servicios
             sslHost = strSSLHost;
         }
 
-        public void SendEmail(string emailFrom, string[] emailTo, string[] ccTo, string subject, string body, bool isBodyHtml, JArray strAttachments)
+        public void SendEmail(string[] emailTo, string[] ccTo, string subject, string body, bool isBodyHtml, JArray strAttachments)
         {
             if (emailTo == null || emailTo.Length == 0)
             {
@@ -53,7 +53,7 @@ namespace LeandroSoftware.Core.Servicios
                 smtpClient.Credentials = new NetworkCredential(mailUserAddress, mailUserPassword);
             using (MailMessage message = new MailMessage())
             {
-                message.From = new MailAddress(emailFrom);
+                message.From = new MailAddress(mailUserAddress);
                 message.Subject = subject;
                 message.SubjectEncoding = System.Text.Encoding.UTF8;
                 message.Body = body;
@@ -84,7 +84,7 @@ namespace LeandroSoftware.Core.Servicios
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("Error al intentar enviar el mensaje: " + ex.InnerException);
+                    throw ex;
                 }
             };
         }

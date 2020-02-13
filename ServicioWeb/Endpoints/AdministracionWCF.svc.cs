@@ -40,17 +40,14 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             appSettings["strClientId"].ToString(),
             appSettings["strServicioTokenURL"].ToString(),
             appSettings["strComprobantesCallbackURL"].ToString(),
-            appSettings["strCorreoNotificacionErrores"].ToString(),
-            appSettings["facturaEmailFrom"].ToString()
+            appSettings["strCorreoNotificacionErrores"].ToString()
         );
         private readonly ConfiguracionRecepcion configuracionRecepcion = new ConfiguracionRecepcion
         (
             appSettings["pop3IvaAccount"].ToString(),
             appSettings["pop3IvaPass"].ToString(),
             appSettings["pop3GastoAccount"].ToString(),
-            appSettings["pop3GastoPass"].ToString(),
-            appSettings["strCorreoNotificacionErrores"].ToString(),
-            appSettings["recepcionEmailFrom"].ToString()
+            appSettings["pop3GastoPass"].ToString()
         );
 
         public AdministracionWCF()
@@ -613,7 +610,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             catch (Exception ex)
             {
                 JArray jarrayObj = new JArray();
-                servicioEnvioCorreo.SendEmail(configuracionGeneral.CorreoCuentaFacturacion, new string[] { configuracionGeneral.CorreoNotificacionErrores }, new string[] { }, "Error en el procesamiento de documentos pendientes", "Ocurrio un error en el procesamiento de documentos pendientes: " + ex.Message, false, jarrayObj);
+                servicioEnvioCorreo.SendEmail(new string[] { configuracionGeneral.CorreoNotificacionErrores }, new string[] { }, "Error en el procesamiento de documentos pendientes", "Ocurrio un error en el procesamiento de documentos pendientes: " + ex.Message, false, jarrayObj);
             }
         }
 

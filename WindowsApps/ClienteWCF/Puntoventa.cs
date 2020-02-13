@@ -1643,6 +1643,26 @@ namespace LeandroSoftware.ClienteWCF
             return listado;
         }
 
+        public static async Task<int> ObtenerTotalListaTrasladosPorAplicar(int intIdEmpresa, int intIdSucursalDestino, bool bolAplicado, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'ObtenerTotalListaTrasladosPorAplicar', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursalDestino: " + intIdSucursalDestino + ", Aplicado: '" + bolAplicado + "'}}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            int intCantidad = 0;
+            if (respuesta != "")
+                intCantidad = serializer.Deserialize<int>(respuesta);
+            return intCantidad;
+        }
+
+        public static async Task<List<TrasladoDetalle>> ObtenerListadoTrasladosPorAplicar(int intIdEmpresa, int intIdSucursalDestino, bool bolAplicado, int intNumeroPagina, int intFilasPorPagina, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'ObtenerListadoTrasladosPorAplicar', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursalDestino: " + intIdSucursalDestino + ", Aplicado: '" + bolAplicado + "', NumeroPagina: " + intNumeroPagina + ",FilasPorPagina: " + intFilasPorPagina + "}}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            List<TrasladoDetalle> listado = new List<TrasladoDetalle>();
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<TrasladoDetalle>>(respuesta);
+            return listado;
+        }
+
         public static async Task<Traslado> ObtenerTraslado(int intIdTraslado, string strToken)
         {
             string strDatos = "{NombreMetodo: 'ObtenerTraslado', Parametros: {IdTraslado: " + intIdTraslado + "}}";

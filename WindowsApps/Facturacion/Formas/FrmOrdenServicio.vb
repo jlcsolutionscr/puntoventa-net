@@ -10,7 +10,7 @@ Imports LeandroSoftware.Core.Utilitario
 Public Class FrmOrdenServicio
 #Region "Variables"
     Private strMotivoRechazo As String
-    Private decSubTotal, decExcento, decGravado, decExonerado, decImpuesto, decTotal, decTotalPago, decSaldoPorPagar, decPrecioVenta As Decimal
+    Private decSubTotal, decExcento, decGravado, decExonerado, decImpuesto, decTotal, decPagoEfectivo, decPagoCliente, decTotalPago, decSaldoPorPagar, decPrecioVenta As Decimal
     Private I, shtConsecutivoPago As Short
     Private dtbDatosLocal, dtbDetalleOrdenServicio, dtbDesglosePago As DataTable
     Private dtrRowDetOrdenServicio, dtrRowDesglosePago As DataRow
@@ -383,7 +383,9 @@ Public Class FrmOrdenServicio
 
     Private Sub CargarTotalesPago()
         decTotalPago = 0
+        decPagoEfectivo = 0
         For I = 0 To dtbDesglosePago.Rows.Count - 1
+            If dtbDesglosePago.Rows(I).Item(0) = StaticFormaPago.Efectivo Then decPagoEfectivo = CDbl(dtbDesglosePago.Rows(I).Item(7))
             decTotalPago = decTotalPago + CDbl(dtbDesglosePago.Rows(I).Item(7))
         Next
         decSaldoPorPagar = decTotal - decTotalPago
@@ -491,6 +493,7 @@ Public Class FrmOrdenServicio
             cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
             cboTipoMoneda.SelectedValue = FrmPrincipal.empresaGlobal.IdTipoMoneda
             txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmPrincipal.decTipoCambioDolar.ToString())
+            txtFechaEntrega.Value = Today()
             cboHoraEntrega.SelectedIndex = 0
             Await CargarListaBancoAdquiriente()
             If FrmPrincipal.empresaGlobal.AutoCompletaProducto = True Then Await CargarAutoCompletarProducto()
@@ -543,6 +546,7 @@ Public Class FrmOrdenServicio
         cboTipoMoneda.SelectedValue = FrmPrincipal.empresaGlobal.IdTipoMoneda
         txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmPrincipal.decTipoCambioDolar.ToString())
         cboTipoMoneda.Enabled = True
+        txtFechaEntrega.Value = Today()
         cboHoraEntrega.SelectedIndex = 0
         txtTelefono.Text = ""
         txtDireccion.Text = ""
@@ -639,7 +643,7 @@ Public Class FrmOrdenServicio
                 txtDireccion.Text = ordenServicio.Direccion
                 txtDescripcionOrden.Text = ordenServicio.Descripcion
                 txtFechaEntrega.Value = ordenServicio.FechaEntrega
-                cboHoraEntrega.SelectedIndex = IIf(ordenServicio.HoraEntrega = "Por la tarde", 1, 0)
+                cboHoraEntrega.SelectedIndex = IIf(ordenServicio.HoraEntrega = "Tarde", 1, 0)
                 txtOtrosDetalles.Text = ordenServicio.OtrosDetalles
                 If cliente.PorcentajeExoneracion > 0 Then
                     txtTipoExoneracion.Text = cliente.ParametroExoneracion.Descripcion
@@ -729,8 +733,7 @@ Public Class FrmOrdenServicio
 
     Private Async Sub BtnBusProd_Click(sender As Object, e As EventArgs) Handles btnBusProd.Click
         Dim formBusProd As New FrmBusquedaProducto With {
-            .bolIncluyeServicios = True,
-            .intIdSucursal = FrmPrincipal.equipoGlobal.IdSucursal
+            .bolIncluyeServicios = True
         }
         FrmPrincipal.strBusqueda = ""
         formBusProd.ShowDialog()
@@ -756,9 +759,24 @@ Public Class FrmOrdenServicio
             MessageBox.Show("El total del desglose de pago de la factura es superior al saldo por pagar.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         End If
-        btnImprimir.Focus()
-        btnGuardar.Enabled = False
+        If FrmPrincipal.empresaGlobal.IngresaPagoCliente And decPagoEfectivo > 0 Then
+            Dim formPagoFactura As New FrmPagoEfectivo()
+            formPagoFactura.decTotalEfectivo = decPagoEfectivo
+            formPagoFactura.decPagoCliente = 0
+            FrmPrincipal.intBusqueda = 0
+            formPagoFactura.ShowDialog()
+            If FrmPrincipal.intBusqueda > 0 Then
+                decPagoCliente = FrmPrincipal.intBusqueda
+            Else
+                MessageBox.Show("Proceso cancelado por el usuario. Intente guardar de nuevo.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                Exit Sub
+            End If
+        Else
+            decPagoCliente = decPagoEfectivo
+        End If
         If txtIdOrdenServicio.Text = "" Then
+            btnImprimir.Focus()
+            btnGuardar.Enabled = False
             ordenServicio = New OrdenServicio With {
                 .IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa,
                 .IdSucursal = FrmPrincipal.equipoGlobal.IdSucursal,
@@ -817,6 +835,15 @@ Public Class FrmOrdenServicio
                 MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
+            If FrmPrincipal.empresaGlobal.IngresaPagoCliente And decPagoEfectivo > 0 Then
+                BtnImprimir_Click(btnImprimir, New EventArgs())
+                Dim formPagoFactura As New FrmPagoEfectivo()
+                formPagoFactura.decTotalEfectivo = decPagoEfectivo
+                formPagoFactura.decPagoCliente = decPagoCliente
+                formPagoFactura.ShowDialog()
+            Else
+                MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            End If
         Else
             ordenServicio.Telefono = txtTelefono.Text
             ordenServicio.Direccion = txtDireccion.Text
@@ -850,8 +877,8 @@ Public Class FrmOrdenServicio
                 MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
+            MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
         End If
-        MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
         btnImprimir.Enabled = True
         btnImprimir.Focus()
         btnGuardar.Enabled = True
@@ -879,18 +906,20 @@ Public Class FrmOrdenServicio
                     .empresa = FrmPrincipal.empresaGlobal,
                     .equipo = FrmPrincipal.equipoGlobal,
                     .strId = ordenServicio.ConsecOrdenServicio,
-                    .strFecha = txtFecha.Text,
+                    .strFecha = ordenServicio.Fecha.ToString("dd/MM/yyyy hh:mm:ss"),
                     .strVendedor = txtVendedor.Text,
                     .strNombre = txtNombreCliente.Text,
                     .strTelefono = txtTelefono.Text,
                     .strDireccion = txtDireccion.Text,
-                    .strDescripcion = txtDescripcion.Text,
+                    .strDescripcion = txtDescripcionOrden.Text,
                     .strDetalle = txtOtrosDetalles.Text,
-                    .strDocumento = ordenServicio.FechaEntrega.ToString() & " - " & cboHoraEntrega.Text,
+                    .strDocumento = ordenServicio.FechaEntrega.ToString() & "-" & cboHoraEntrega.Text,
                     .strSubTotal = txtSubTotal.Text,
                     .strDescuento = "0.00",
                     .strImpuesto = txtImpuesto.Text,
                     .strTotal = txtTotal.Text,
+                    .strAdelanto = FormatNumber(ordenServicio.MontoAdelanto, 2),
+                    .strSaldo = FormatNumber(ordenServicio.Total - ordenServicio.MontoAdelanto, 2),
                     .strPagoCon = FormatNumber(decTotalPago, 2),
                     .strCambio = FormatNumber(decSaldoPorPagar, 2)
                 }
@@ -930,7 +959,7 @@ Public Class FrmOrdenServicio
                     Exit Sub
                 End Try
             End If
-            Dim datos As EstructuraFacturaPDF = New EstructuraFacturaPDF()
+            Dim datos As EstructuraPDF = New EstructuraPDF()
                 Try
                     Dim poweredByImage As Image = My.Resources.logo
                     datos.PoweredByLogotipo = poweredByImage
@@ -1004,7 +1033,7 @@ Public Class FrmOrdenServicio
                 datos.CodigoMoneda = "CRC"
                 datos.TipoDeCambio = 1
                 Try
-                    Dim pdfBytes As Byte() = UtilitarioPDF.GenerarPDFFacturaElectronica(datos)
+                    Dim pdfBytes As Byte() = UtilitarioPDF.GenerarPDF(datos)
                     Dim pdfFilePath As String = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\ORDENSERVICIO-" + txtIdOrdenServicio.Text + ".pdf"
                     File.WriteAllBytes(pdfFilePath, pdfBytes)
                     Process.Start(pdfFilePath)

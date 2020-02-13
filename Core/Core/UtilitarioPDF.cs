@@ -10,7 +10,7 @@ namespace LeandroSoftware.Core.Utilitario
 {
     public static class UtilitarioPDF
     {
-        public static byte[] GenerarPDFFacturaElectronica(EstructuraFacturaPDF datos)
+        public static byte[] GenerarPDF(EstructuraPDF datos)
         {
             try
             {
@@ -19,7 +19,6 @@ namespace LeandroSoftware.Core.Utilitario
                 document.Info.Title = datos.TituloDocumento;
                 PdfPage page = document.AddPage();
                 XGraphics gfx = XGraphics.FromPdfPage(page);
-
                 XFont font = new XFont("Arial", 10, XFontStyle.BoldItalic, options);
                 XTextFormatter tf = new XTextFormatter(gfx)
                 {
@@ -30,14 +29,12 @@ namespace LeandroSoftware.Core.Utilitario
                     XImage image = XImage.FromGdiPlusImage(datos.Logotipo);
                     gfx.DrawImage(image, 20, 60, 175, 80);
                 }
-
                 if (datos.PoweredByLogotipo != null)
                 {
                     tf.DrawString("Powered by", font, XBrushes.Black, new XRect(20, 35, gfx.PageSize.Width - 142.5, 15), XStringFormats.TopLeft);
                     XImage poweredByImage = XImage.FromGdiPlusImage(datos.PoweredByLogotipo);
                     gfx.DrawImage(poweredByImage, gfx.PageSize.Width - 117.5, 20, 87.5, 40);
                 }
-
                 font = new XFont("Courier New", 12, XFontStyle.Bold, options);
                 gfx.DrawString(datos.NombreComercial.ToUpper(), font, XBrushes.Black, new XRect(210, 60, 300, 15), XStringFormats.TopLeft);
                 font = new XFont("Courier New", 10, XFontStyle.Bold, options);
@@ -45,7 +42,7 @@ namespace LeandroSoftware.Core.Utilitario
                 gfx.DrawString("IDENTIFICACION: " + datos.IdentificacionEmisor, font, XBrushes.Black, new XRect(210, 100, 200, 15), XStringFormats.TopLeft);
                 gfx.DrawString(datos.DireccionEmisor, font, XBrushes.Black, new XRect(210, 115, 200, 15), XStringFormats.TopLeft);
                 gfx.DrawString("CORREO: " + datos.CorreoElectronicoEmisor, font, XBrushes.Black, new XRect(210, 130, 200, 15), XStringFormats.TopLeft);
-                gfx.DrawString("TELEFONO: " + datos.TelefonoEmisor + (datos.FaxEmisor.Length > 0 ? " Fax: "+datos.FaxEmisor : ""), font, XBrushes.Black, new XRect(210, 145, 200, 15), XStringFormats.TopLeft);
+                gfx.DrawString("TELEFONO: " + datos.TelefonoEmisor + (datos.FaxEmisor.Length > 0 ? " Fax: " + datos.FaxEmisor : ""), font, XBrushes.Black, new XRect(210, 145, 200, 15), XStringFormats.TopLeft);
                 font = new XFont("Courier New", 12, XFontStyle.Bold, options);
                 gfx.DrawString(datos.TituloDocumento, font, XBrushes.Black, new XRect(210, 190, 200, 15), XStringFormats.TopLeft);
                 font = new XFont("Arial", 8, XFontStyle.Regular, options);

@@ -17,7 +17,6 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
         private IFacturacionService servicioFacturacion;
         private static System.Collections.Specialized.NameValueCollection appSettings = WebConfigurationManager.AppSettings;
         private static string strCorreoNotificacionErrores = appSettings["strCorreoNotificacionErrores"].ToString();
-        private static string strCorreoEnvio = appSettings["facturaEmailFrom"].ToString();
 
         public RecepcionWCF()
         {
@@ -33,7 +32,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
 
         public void RecibirRespuestaHacienda(RespuestaHaciendaDTO mensaje)
         {
-            servicioFacturacion.ProcesarRespuestaHacienda(mensaje, servicioEnvioCorreo, strCorreoEnvio, strCorreoNotificacionErrores);
+            servicioFacturacion.ProcesarRespuestaHacienda(mensaje, servicioEnvioCorreo, strCorreoNotificacionErrores);
         }
 
         public void Dispose()

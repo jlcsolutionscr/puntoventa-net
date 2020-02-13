@@ -29,7 +29,7 @@ namespace LeandroSoftware.ServicioWeb
             try
             {
                 string strOperacion = request.Properties["HttpOperationName"].ToString();
-                if (!new string[] { "Options", "ObtenerUltimaVersionApp", "DescargarActualizacion", "LimpiarRegistrosInvalidos", "ProcesarDocumentosElectronicosPendientes", "ValidarCredencialesAdmin", "ValidarCredenciales", "ObtenerListadoEmpresasAdministrador", "ObtenerListadoEmpresasPorTerminal", "ObtenerListadoTerminalesDisponibles", "RegistrarTerminal" }.Contains(strOperacion))
+                if (!new string[] { "", "ObtenerUltimaVersionApp", "DescargarActualizacion", "LimpiarRegistrosInvalidos", "ProcesarDocumentosElectronicosPendientes", "ValidarCredencialesAdmin", "ValidarCredenciales", "ObtenerListadoEmpresasAdministrador", "ObtenerListadoEmpresasPorTerminal", "ObtenerListadoTerminalesDisponibles", "RegistrarTerminal" }.Contains(strOperacion))
                 {
                     IncomingWebRequestContext incomingRequest = WebOperationContext.Current.IncomingRequest;
                     WebHeaderCollection headers = incomingRequest.Headers;
@@ -39,7 +39,12 @@ namespace LeandroSoftware.ServicioWeb
                     strToken = strToken.Substring(7);
                     servicioMantenimiento.ValidarRegistroAutenticacion(strToken, StaticRolePorUsuario.USUARIO_SISTEMA);
                 }
-                return null;
+                var httpRequest = (HttpRequestMessageProperty)request.Properties[HttpRequestMessageProperty.Name];
+                return new
+                {
+                    origin = httpRequest.Headers["Origin"],
+                    handlePreflight = httpRequest.Method.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase)
+                };
             }
             catch (Exception ex)
             {
@@ -51,6 +56,17 @@ namespace LeandroSoftware.ServicioWeb
         {
             try
             {
+                var state = (dynamic)correlationState;
+                if (state.handlePreflight)
+                {
+                    reply = Message.CreateMessage(MessageVersion.None, "PreflightReturn");
+
+                    var httpResponse = new HttpResponseMessageProperty();
+                    reply.Properties.Add(HttpResponseMessageProperty.Name, httpResponse);
+
+                    httpResponse.SuppressEntityBody = true;
+                    httpResponse.StatusCode = HttpStatusCode.OK;
+                }
                 var httpHeader = reply.Properties["httpResponse"] as HttpResponseMessageProperty;
                 foreach (var item in requiredHeaders)
                 {

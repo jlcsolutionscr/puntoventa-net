@@ -106,7 +106,7 @@ Partial Class FrmCierreDeCaja
         Me.Label46 = New System.Windows.Forms.Label()
         Me.txtEfectivoCaja = New System.Windows.Forms.TextBox()
         Me.Label47 = New System.Windows.Forms.Label()
-        Me.txtSaldo = New System.Windows.Forms.TextBox()
+        Me.txtSobrante = New System.Windows.Forms.TextBox()
         Me.Label48 = New System.Windows.Forms.Label()
         Me.Label49 = New System.Windows.Forms.Label()
         Me.Label23 = New System.Windows.Forms.Label()
@@ -1369,22 +1369,22 @@ Partial Class FrmCierreDeCaja
         Me.Label47.Text = "Efectivo en caja"
         Me.Label47.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
-        'txtSaldo
+        'txtSobrante
         '
-        Me.txtSaldo.AcceptsReturn = True
-        Me.txtSaldo.BackColor = System.Drawing.SystemColors.Window
-        Me.txtSaldo.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtSaldo.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtSaldo.Location = New System.Drawing.Point(522, 467)
-        Me.txtSaldo.MaxLength = 0
-        Me.txtSaldo.Name = "txtSaldo"
-        Me.txtSaldo.ReadOnly = True
-        Me.txtSaldo.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtSaldo.Size = New System.Drawing.Size(105, 20)
-        Me.txtSaldo.TabIndex = 134
-        Me.txtSaldo.TabStop = False
-        Me.txtSaldo.Text = "0.00"
-        Me.txtSaldo.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        Me.txtSobrante.AcceptsReturn = True
+        Me.txtSobrante.BackColor = System.Drawing.SystemColors.Window
+        Me.txtSobrante.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtSobrante.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtSobrante.Location = New System.Drawing.Point(522, 467)
+        Me.txtSobrante.MaxLength = 0
+        Me.txtSobrante.Name = "txtSobrante"
+        Me.txtSobrante.ReadOnly = True
+        Me.txtSobrante.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtSobrante.Size = New System.Drawing.Size(105, 20)
+        Me.txtSobrante.TabIndex = 134
+        Me.txtSobrante.TabStop = False
+        Me.txtSobrante.Text = "0.00"
+        Me.txtSobrante.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'Label48
         '
@@ -1769,7 +1769,7 @@ Partial Class FrmCierreDeCaja
         Me.Controls.Add(Me.Label50)
         Me.Controls.Add(Me.Label23)
         Me.Controls.Add(Me.Label49)
-        Me.Controls.Add(Me.txtSaldo)
+        Me.Controls.Add(Me.txtSobrante)
         Me.Controls.Add(Me.Label48)
         Me.Controls.Add(Me.txtEfectivoCaja)
         Me.Controls.Add(Me.Label47)
@@ -1913,7 +1913,7 @@ Partial Class FrmCierreDeCaja
     Public WithEvents Label46 As Label
     Public WithEvents txtEfectivoCaja As TextBox
     Public WithEvents Label47 As Label
-    Public WithEvents txtSaldo As TextBox
+    Public WithEvents txtSobrante As TextBox
     Public WithEvents Label48 As Label
     Public WithEvents Label49 As Label
     Public WithEvents Label23 As Label
