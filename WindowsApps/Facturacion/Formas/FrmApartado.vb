@@ -629,6 +629,7 @@ Public Class FrmApartado
 
     Private Async Sub BtnBuscar_Click(sender As Object, e As EventArgs) Handles btnBuscar.Click
         Dim formBusqueda As New FrmBusquedaApartado()
+        formBusqueda.bolIncluyeEstado = True
         FrmPrincipal.intBusqueda = 0
         formBusqueda.ShowDialog()
         If FrmPrincipal.intBusqueda > 0 Then
@@ -670,7 +671,7 @@ Public Class FrmApartado
                 btnImprimir.Enabled = True
                 btnBuscaVendedor.Enabled = False
                 btnBuscarCliente.Enabled = False
-                btnAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
+                btnAnular.Enabled = apartado.Aplicado = False And FrmPrincipal.usuarioGlobal.Modifica
                 btnGuardar.Enabled = False
                 bolInit = False
             Else
@@ -756,8 +757,14 @@ Public Class FrmApartado
     End Sub
 
     Private Async Sub BtnGuardar_Click(sender As Object, e As EventArgs) Handles btnGuardar.Click
-        If cliente Is Nothing Or vendedor Is Nothing Or txtFecha.Text = "" Or decTotal = 0 Then
-            MessageBox.Show("Información incompleta.  Favor verificar. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        If vendedor Is Nothing Then
+            MessageBox.Show("Debe seleccionar el vendedor para poder guardar el registro.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            Exit Sub
+        ElseIf decTotal = 0 Then
+            MessageBox.Show("Debe agregar líneas de detalle para guardar el registro.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            Exit Sub
+        ElseIf decSaldoPorPagar < 0 Then
+            MessageBox.Show("El total del desglose de pago de la factura es superior al saldo por pagar.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         End If
         If txtIdApartado.Text = "" Then

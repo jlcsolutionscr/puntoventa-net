@@ -3,11 +3,14 @@ Imports LeandroSoftware.ClienteWCF
 
 Public Class FrmBusquedaApartado
 #Region "Variables"
+    Private dtListaEstado As New DataTable, drListaEstado As DataRow
     Private intTotalRegistros As Integer
     Private intIndiceDePagina As Integer
     Private intFilasPorPagina As Integer = 13
     Private intCantidadDePaginas As Integer
     Private intId As Integer = 0
+    Private bolInit As Boolean = False
+    Public bolIncluyeEstado As Boolean = False
 #End Region
 
 #Region "Métodos"
@@ -46,7 +49,7 @@ Public Class FrmBusquedaApartado
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
         Try
-            dgvListado.DataSource = Await Puntoventa.ObtenerListadoApartados(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, intNumeroPagina, intFilasPorPagina, FrmPrincipal.usuarioGlobal.Token, intId, txtNombre.Text)
+            dgvListado.DataSource = Await Puntoventa.ObtenerListadoApartados(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FechaInicio.Value.ToString("dd/MM/yyyy"), FechaFinal.Value.ToString("dd/MM/yyyy"), cboEstado.SelectedValue, intNumeroPagina, intFilasPorPagina, FrmPrincipal.usuarioGlobal.Token, intId, txtNombre.Text)
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -58,7 +61,7 @@ Public Class FrmBusquedaApartado
 
     Private Async Function ValidarCantidadApartados() As Task
         Try
-            intTotalRegistros = Await Puntoventa.ObtenerTotalListaApartados(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FrmPrincipal.usuarioGlobal.Token, intId, txtNombre.Text)
+            intTotalRegistros = Await Puntoventa.ObtenerTotalListaApartados(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FechaInicio.Value.ToString("dd/MM/yyyy"), FechaFinal.Value.ToString("dd/MM/yyyy"), cboEstado.SelectedValue, FrmPrincipal.usuarioGlobal.Token, intId, txtNombre.Text)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -84,6 +87,21 @@ Public Class FrmBusquedaApartado
         cboSucursal.DataSource = Await Puntoventa.ObtenerListadoSucursales(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
         cboSucursal.SelectedValue = FrmPrincipal.equipoGlobal.IdSucursal
         cboSucursal.Enabled = FrmPrincipal.usuarioGlobal.Modifica
+        dtListaEstado.Clear()
+        dtListaEstado.Columns.Add(New DataColumn("IdEstado", GetType(Boolean)))
+        dtListaEstado.Columns.Add(New DataColumn("Descripcion", GetType(String)))
+        drListaEstado = dtListaEstado.NewRow()
+        drListaEstado(0) = False
+        drListaEstado(1) = "Por Aplicar"
+        dtListaEstado.Rows.Add(drListaEstado)
+        drListaEstado = dtListaEstado.NewRow()
+        drListaEstado(0) = True
+        drListaEstado(1) = "Aplicado"
+        dtListaEstado.Rows.Add(drListaEstado)
+        cboEstado.ValueMember = "IdEstado"
+        cboEstado.DisplayMember = "Descripcion"
+        cboEstado.DataSource = dtListaEstado
+        cboEstado.SelectedValue = 0
     End Function
 #End Region
 
@@ -118,11 +136,16 @@ Public Class FrmBusquedaApartado
 
     Private Async Sub FrmBusProd_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
+            cboEstado.Visible = bolIncluyeEstado
+            lblEstado.Visible = bolIncluyeEstado
             EstablecerPropiedadesDataGridView()
+            FechaInicio.Value = CDate("01/01/" & Now.Year)
+            FechaFinal.Value = Now
             Await CargarCombos()
             Await ValidarCantidadApartados()
             intIndiceDePagina = 1
             Await ActualizarDatos(intIndiceDePagina)
+            bolInit = True
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -148,8 +171,12 @@ Public Class FrmBusquedaApartado
         Await ActualizarDatos(intIndiceDePagina)
     End Sub
 
+    Private Sub cboEstado_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboEstado.SelectedIndexChanged
+        If bolInit Then btnFiltrar_Click(btnFiltrar, New EventArgs())
+    End Sub
+
     Private Sub cboSucursal_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboSucursal.SelectedIndexChanged
-        btnFiltrar_Click(btnFiltrar, New EventArgs())
+        If bolInit Then btnFiltrar_Click(btnFiltrar, New EventArgs())
     End Sub
 #End Region
 End Class

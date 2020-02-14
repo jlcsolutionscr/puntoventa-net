@@ -283,49 +283,52 @@ Public Class FrmTrasladoMercaderia
     End Sub
 
     Private Async Sub btnGuardar_Click(sender As Object, e As EventArgs) Handles btnGuardar.Click
-        If Not cboIdSucursalDestino.SelectedValue Is Nothing And txtFecha.Text <> "" And CDbl(txtTotal.Text) > 0 Then
-            btnImprimir.Focus()
-            btnGuardar.Enabled = False
-            If txtIdTraslado.Text = "" Then
-                traslado = New Traslado With {
-                    .IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa,
-                    .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
-                    .IdSucursalOrigen = FrmPrincipal.equipoGlobal.IdSucursal,
-                    .IdSucursalDestino = cboIdSucursalDestino.SelectedValue,
-                    .Fecha = FrmPrincipal.ObtenerFechaFormateada(Now()),
-                    .Referencia = txtReferencia.Text,
-                    .Total = dblTotal
-                }
-                For I = 0 To dtbDetalleTraslado.Rows.Count - 1
-                    detalleTraslado = New DetalleTraslado With {
-                        .IdProducto = dtbDetalleTraslado.Rows(I).Item(0),
-                        .Cantidad = dtbDetalleTraslado.Rows(I).Item(3),
-                        .PrecioCosto = dtbDetalleTraslado.Rows(I).Item(4)
-                    }
-                    traslado.DetalleTraslado.Add(detalleTraslado)
-                Next
-                Try
-                    txtIdTraslado.Text = Await Puntoventa.AgregarTraslado(traslado, FrmPrincipal.usuarioGlobal.Token)
-                Catch ex As Exception
-                    txtIdTraslado.Text = ""
-                    btnGuardar.Enabled = True
-                    btnGuardar.Focus()
-                    MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                    Exit Sub
-                End Try
-            End If
-            MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
-            btnImprimir.Enabled = True
-            btnAgregar.Enabled = True
-            btnAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
-            btnImprimir.Focus()
-            btnGuardar.Enabled = False
-            btnInsertar.Enabled = False
-            btnEliminar.Enabled = False
-            btnBusProd.Enabled = False
-        Else
-            MessageBox.Show("Información incompleta.  Favor verificar. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        If Not cboIdSucursalDestino.SelectedValue Is Nothing Then
+            MessageBox.Show("Debe seleccionar la sucursal destino para guardar el registro.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            Exit Sub
+        ElseIf CDbl(txtTotal.Text) = 0 Then
+            MessageBox.Show("Debe agregar líneas de detalle para guardar el registro.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            Exit Sub
         End If
+        btnImprimir.Focus()
+        btnGuardar.Enabled = False
+        If txtIdTraslado.Text = "" Then
+            traslado = New Traslado With {
+                .IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa,
+                .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
+                .IdSucursalOrigen = FrmPrincipal.equipoGlobal.IdSucursal,
+                .IdSucursalDestino = cboIdSucursalDestino.SelectedValue,
+                .Fecha = FrmPrincipal.ObtenerFechaFormateada(Now()),
+                .Referencia = txtReferencia.Text,
+                .Total = dblTotal
+            }
+            For I = 0 To dtbDetalleTraslado.Rows.Count - 1
+                detalleTraslado = New DetalleTraslado With {
+                    .IdProducto = dtbDetalleTraslado.Rows(I).Item(0),
+                    .Cantidad = dtbDetalleTraslado.Rows(I).Item(3),
+                    .PrecioCosto = dtbDetalleTraslado.Rows(I).Item(4)
+                }
+                traslado.DetalleTraslado.Add(detalleTraslado)
+            Next
+            Try
+                txtIdTraslado.Text = Await Puntoventa.AgregarTraslado(traslado, FrmPrincipal.usuarioGlobal.Token)
+            Catch ex As Exception
+                txtIdTraslado.Text = ""
+                btnGuardar.Enabled = True
+                btnGuardar.Focus()
+                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Exit Sub
+            End Try
+        End If
+        MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        btnImprimir.Enabled = True
+        btnAgregar.Enabled = True
+        btnAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
+        btnImprimir.Focus()
+        btnGuardar.Enabled = False
+        btnInsertar.Enabled = False
+        btnEliminar.Enabled = False
+        btnBusProd.Enabled = False
     End Sub
 
     Private Sub btnImprimir_Click(sender As Object, e As EventArgs) Handles btnImprimir.Click

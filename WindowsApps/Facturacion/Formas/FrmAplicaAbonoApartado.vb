@@ -217,19 +217,16 @@ Public Class FrmAplicaAbonoApartado
     End Sub
 
     Private Async Sub BtnGuardar_Click(sender As Object, e As EventArgs) Handles CmdGuardar.Click
-        If apartado Is Nothing Or txtFecha.Text = "" Then
-            MessageBox.Show("Información incompleta.  Favor verificar. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        If apartado Is Nothing Then
+            MessageBox.Show("Debe seleccionar el apartado para poder guardar el registro.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
-        End If
-        If decTotal = 0 Then
-            MessageBox.Show("Debe ingresar el monto del abono para guardar el movimiento.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        ElseIf decTotal = 0 Then
+            MessageBox.Show("Debe ingresar el monto del abono para guardar el registro.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
-        End If
-        If decSaldoPorPagar > 0 Then
-            MessageBox.Show("El total del desglose de pago del movimiento no es suficiente para cubrir el saldo por pagar actual.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        ElseIf decSaldoPorPagar > 0 Then
+            MessageBox.Show("El total del desglose de pago no es suficiente para cubrir el saldo por pagar actual.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
-        End If
-        If decSaldoPorPagar < 0 Then
+        ElseIf decSaldoPorPagar < 0 Then
             MessageBox.Show("El total del desglose de pago del movimiento es superior al saldo por pagar.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         End If

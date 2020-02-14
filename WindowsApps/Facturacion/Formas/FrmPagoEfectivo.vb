@@ -21,6 +21,7 @@ Public Class FrmPagoEfectivo
             btnGuardar.Focus()
         Else
             txtPagoDelCliente.Focus()
+            txtPagoDelCliente.SelectAll()
         End If
 
     End Sub

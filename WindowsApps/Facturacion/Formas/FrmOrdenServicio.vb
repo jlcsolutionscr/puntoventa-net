@@ -574,6 +574,7 @@ Public Class FrmOrdenServicio
         decTotalPago = 0
         btnInsertarPago.Enabled = True
         btnEliminarPago.Enabled = True
+        btnGuardar.Enabled = True
         btnAnular.Enabled = False
         btnImprimir.Enabled = False
         btnBuscaVendedor.Enabled = True
@@ -622,6 +623,7 @@ Public Class FrmOrdenServicio
 
     Private Async Sub BtnBuscar_Click(sender As Object, e As EventArgs) Handles btnBuscar.Click
         Dim formBusqueda As New FrmBusquedaOrdenServicio()
+        formBusqueda.bolIncluyeEstado = True
         FrmPrincipal.intBusqueda = 0
         formBusqueda.ShowDialog()
         If FrmPrincipal.intBusqueda > 0 Then
@@ -665,7 +667,8 @@ Public Class FrmOrdenServicio
                 btnBuscarCliente.Enabled = False
                 btnInsertarPago.Enabled = False
                 btnEliminarPago.Enabled = False
-                btnAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
+                btnGuardar.Enabled = ordenServicio.Aplicado = False
+                btnAnular.Enabled = ordenServicio.Aplicado = False And FrmPrincipal.usuarioGlobal.Modifica
                 bolInit = False
             Else
                 MessageBox.Show("No existe registro de OrdenServicio asociado al identificador seleccionado", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -751,11 +754,13 @@ Public Class FrmOrdenServicio
     End Sub
 
     Private Async Sub BtnGuardar_Click(sender As Object, e As EventArgs) Handles btnGuardar.Click
-        If cliente Is Nothing Or vendedor Is Nothing Or txtFecha.Text = "" Or CDbl(txtTotal.Text) = 0 Then
-            MessageBox.Show("Información incompleta.  Favor verificar. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        If vendedor Is Nothing Then
+            MessageBox.Show("Debe seleccionar el vendedor para poder guardar el registro.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
-        End If
-        If decSaldoPorPagar < 0 Then
+        ElseIf decTotal = 0 Then
+            MessageBox.Show("Debe agregar líneas de detalle para guardar el registro.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            Exit Sub
+        ElseIf decSaldoPorPagar < 0 Then
             MessageBox.Show("El total del desglose de pago de la factura es superior al saldo por pagar.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         End If

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Data;
+using System.Globalization;
 using System.Data.Entity.Infrastructure;
 using System.Collections.Generic;
 using LeandroSoftware.Core.TiposComunes;
@@ -23,8 +24,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         void ActualizarCompra(Compra compra);
         void AnularCompra(int intIdCompra, int intIdUsuario);
         Compra ObtenerCompra(int intIdCompra);
-        int ObtenerTotalListaCompras(int intIdEmpresa, int intIdSucursal, int intIdCompra, string strNombre);
-        IList<CompraDetalle> ObtenerListadoCompras(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, int intIdCompra, string strNombre);
+        int ObtenerTotalListaCompras(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, int intIdCompra, string strNombre);
+        IList<CompraDetalle> ObtenerListadoCompras(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, int numPagina, int cantRec, int intIdCompra, string strNombre);
         void AgregarOrdenCompra(OrdenCompra ordenCompra);
         void ActualizarOrdenCompra(OrdenCompra ordenCompra);
         void AnularOrdenCompra(int intIdOrdenCompra, int intIdUsuario);
@@ -43,6 +44,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
     {
         private static IUnityContainer localContainer;
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static CultureInfo provider = CultureInfo.InvariantCulture;
+        private static string strFormat = "dd/MM/yyyy HH:mm:ss";
 
         public CompraService(IUnityContainer Container)
         {
@@ -674,13 +677,15 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public int ObtenerTotalListaCompras(int intIdEmpresa, int intIdSucursal, int intIdCompra, string strNombre)
+        public int ObtenerTotalListaCompras(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, int intIdCompra, string strNombre)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 try
                 {
-                    var listaCompras = dbContext.CompraRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
+                    DateTime datFechaInicial = DateTime.ParseExact(strFechaInicial + " 00:00:01", strFormat, provider);
+                    DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
+                    var listaCompras = dbContext.CompraRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Fecha >= datFechaInicial && x.Fecha <= datFechaFinal);
                     if (intIdCompra > 0)
                         listaCompras = listaCompras.Where(x => x.IdCompra == intIdCompra);
                     else if (!strNombre.Equals(string.Empty))
@@ -695,14 +700,16 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IList<CompraDetalle> ObtenerListadoCompras(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, int intIdCompra, string strNombre)
+        public IList<CompraDetalle> ObtenerListadoCompras(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, int numPagina, int cantRec, int intIdCompra, string strNombre)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 var listaCompras = new List<CompraDetalle>();
                 try
                 {
-                    var listado = dbContext.CompraRepository.Include("Proveedor").Where(x => !x.Nulo & x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
+                    DateTime datFechaInicial = DateTime.ParseExact(strFechaInicial + " 00:00:01", strFormat, provider);
+                    DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
+                    var listado = dbContext.CompraRepository.Include("Proveedor").Where(x => !x.Nulo & x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Fecha >= datFechaInicial && x.Fecha <= datFechaFinal);
                     if (intIdCompra > 0)
                         listado = listado.Where(x => x.IdCompra == intIdCompra);
                     else if (!strNombre.Equals(string.Empty))

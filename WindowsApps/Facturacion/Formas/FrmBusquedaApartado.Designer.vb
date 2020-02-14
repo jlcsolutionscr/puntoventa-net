@@ -31,6 +31,12 @@ Partial Class FrmBusquedaApartado
         Me.txtId = New System.Windows.Forms.TextBox()
         Me.cboSucursal = New System.Windows.Forms.ComboBox()
         Me.Label6 = New System.Windows.Forms.Label()
+        Me.FechaFinal = New System.Windows.Forms.DateTimePicker()
+        Me.FechaInicio = New System.Windows.Forms.DateTimePicker()
+        Me.Label2 = New System.Windows.Forms.Label()
+        Me.Label3 = New System.Windows.Forms.Label()
+        Me.lblEstado = New System.Windows.Forms.Label()
+        Me.cboEstado = New System.Windows.Forms.ComboBox()
         CType(Me.dgvListado, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -41,7 +47,7 @@ Partial Class FrmBusquedaApartado
         Me.dgvListado.AllowUserToResizeColumns = False
         Me.dgvListado.AllowUserToResizeRows = False
         Me.dgvListado.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.dgvListado.Location = New System.Drawing.Point(12, 38)
+        Me.dgvListado.Location = New System.Drawing.Point(12, 64)
         Me.dgvListado.Name = "dgvListado"
         Me.dgvListado.ReadOnly = True
         Me.dgvListado.RowHeadersVisible = False
@@ -63,7 +69,7 @@ Partial Class FrmBusquedaApartado
         'lblDescripcion
         '
         Me.lblDescripcion.AutoSize = True
-        Me.lblDescripcion.Location = New System.Drawing.Point(109, 15)
+        Me.lblDescripcion.Location = New System.Drawing.Point(0, 41)
         Me.lblDescripcion.Name = "lblDescripcion"
         Me.lblDescripcion.Size = New System.Drawing.Size(42, 13)
         Me.lblDescripcion.TabIndex = 8
@@ -71,15 +77,15 @@ Partial Class FrmBusquedaApartado
         '
         'txtNombre
         '
-        Me.txtNombre.Location = New System.Drawing.Point(157, 12)
+        Me.txtNombre.Location = New System.Drawing.Point(48, 38)
         Me.txtNombre.Name = "txtNombre"
-        Me.txtNombre.Size = New System.Drawing.Size(447, 20)
+        Me.txtNombre.Size = New System.Drawing.Size(584, 20)
         Me.txtNombre.TabIndex = 1
         '
         'lblPagina
         '
         Me.lblPagina.AutoSize = True
-        Me.lblPagina.Location = New System.Drawing.Point(389, 359)
+        Me.lblPagina.Location = New System.Drawing.Point(389, 385)
         Me.lblPagina.Name = "lblPagina"
         Me.lblPagina.Size = New System.Drawing.Size(77, 13)
         Me.lblPagina.TabIndex = 23
@@ -90,7 +96,7 @@ Partial Class FrmBusquedaApartado
         Me.btnLast.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnLast.Enabled = False
         Me.btnLast.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnLast.Location = New System.Drawing.Point(603, 354)
+        Me.btnLast.Location = New System.Drawing.Point(603, 380)
         Me.btnLast.Name = "btnLast"
         Me.btnLast.Size = New System.Drawing.Size(29, 23)
         Me.btnLast.TabIndex = 7
@@ -103,7 +109,7 @@ Partial Class FrmBusquedaApartado
         Me.btnNext.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnNext.Enabled = False
         Me.btnNext.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnNext.Location = New System.Drawing.Point(574, 354)
+        Me.btnNext.Location = New System.Drawing.Point(574, 380)
         Me.btnNext.Name = "btnNext"
         Me.btnNext.Size = New System.Drawing.Size(29, 23)
         Me.btnNext.TabIndex = 6
@@ -116,7 +122,7 @@ Partial Class FrmBusquedaApartado
         Me.btnPrevious.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnPrevious.Enabled = False
         Me.btnPrevious.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnPrevious.Location = New System.Drawing.Point(545, 354)
+        Me.btnPrevious.Location = New System.Drawing.Point(545, 380)
         Me.btnPrevious.Name = "btnPrevious"
         Me.btnPrevious.Size = New System.Drawing.Size(29, 23)
         Me.btnPrevious.TabIndex = 5
@@ -129,7 +135,7 @@ Partial Class FrmBusquedaApartado
         Me.btnFirst.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnFirst.Enabled = False
         Me.btnFirst.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnFirst.Location = New System.Drawing.Point(516, 354)
+        Me.btnFirst.Location = New System.Drawing.Point(516, 380)
         Me.btnFirst.Name = "btnFirst"
         Me.btnFirst.Size = New System.Drawing.Size(29, 23)
         Me.btnFirst.TabIndex = 4
@@ -157,7 +163,7 @@ Partial Class FrmBusquedaApartado
         '
         Me.cboSucursal.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cboSucursal.FormattingEnabled = True
-        Me.cboSucursal.Location = New System.Drawing.Point(70, 354)
+        Me.cboSucursal.Location = New System.Drawing.Point(70, 380)
         Me.cboSucursal.Name = "cboSucursal"
         Me.cboSucursal.Size = New System.Drawing.Size(300, 21)
         Me.cboSucursal.TabIndex = 149
@@ -168,7 +174,7 @@ Partial Class FrmBusquedaApartado
         Me.Label6.BackColor = System.Drawing.Color.Transparent
         Me.Label6.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label6.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label6.Location = New System.Drawing.Point(12, 356)
+        Me.Label6.Location = New System.Drawing.Point(12, 382)
         Me.Label6.Name = "Label6"
         Me.Label6.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label6.Size = New System.Drawing.Size(52, 19)
@@ -176,13 +182,86 @@ Partial Class FrmBusquedaApartado
         Me.Label6.Text = "Sucursal:"
         Me.Label6.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
+        'FechaFinal
+        '
+        Me.FechaFinal.Format = System.Windows.Forms.DateTimePickerFormat.Custom
+        Me.FechaFinal.Location = New System.Drawing.Point(318, 12)
+        Me.FechaFinal.Name = "FechaFinal"
+        Me.FechaFinal.Size = New System.Drawing.Size(84, 20)
+        Me.FechaFinal.TabIndex = 152
+        Me.FechaFinal.Value = New Date(2013, 6, 9, 0, 0, 0, 0)
+        '
+        'FechaInicio
+        '
+        Me.FechaInicio.Format = System.Windows.Forms.DateTimePickerFormat.Custom
+        Me.FechaInicio.Location = New System.Drawing.Point(176, 12)
+        Me.FechaInicio.Name = "FechaInicio"
+        Me.FechaInicio.Size = New System.Drawing.Size(84, 20)
+        Me.FechaInicio.TabIndex = 151
+        Me.FechaInicio.Value = New Date(2013, 6, 9, 0, 0, 0, 0)
+        '
+        'Label2
+        '
+        Me.Label2.BackColor = System.Drawing.SystemColors.Control
+        Me.Label2.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label2.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label2.Location = New System.Drawing.Point(270, 12)
+        Me.Label2.Name = "Label2"
+        Me.Label2.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label2.Size = New System.Drawing.Size(42, 17)
+        Me.Label2.TabIndex = 154
+        Me.Label2.Text = "Hasta:"
+        Me.Label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
+        'Label3
+        '
+        Me.Label3.BackColor = System.Drawing.SystemColors.Control
+        Me.Label3.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label3.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label3.Location = New System.Drawing.Point(128, 12)
+        Me.Label3.Name = "Label3"
+        Me.Label3.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label3.Size = New System.Drawing.Size(42, 17)
+        Me.Label3.TabIndex = 153
+        Me.Label3.Text = "Desde:"
+        Me.Label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
+        'lblEstado
+        '
+        Me.lblEstado.BackColor = System.Drawing.Color.Transparent
+        Me.lblEstado.Cursor = System.Windows.Forms.Cursors.Default
+        Me.lblEstado.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.lblEstado.Location = New System.Drawing.Point(421, 12)
+        Me.lblEstado.Name = "lblEstado"
+        Me.lblEstado.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.lblEstado.Size = New System.Drawing.Size(52, 19)
+        Me.lblEstado.TabIndex = 160
+        Me.lblEstado.Text = "Estado:"
+        Me.lblEstado.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
+        'cboEstado
+        '
+        Me.cboEstado.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.cboEstado.FormattingEnabled = True
+        Me.cboEstado.Location = New System.Drawing.Point(479, 12)
+        Me.cboEstado.Name = "cboEstado"
+        Me.cboEstado.Size = New System.Drawing.Size(124, 21)
+        Me.cboEstado.TabIndex = 159
+        Me.cboEstado.TabStop = False
+        '
         'FrmBusquedaApartado
         '
         Me.AcceptButton = Me.btnFiltrar
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
-        Me.ClientSize = New System.Drawing.Size(644, 387)
+        Me.ClientSize = New System.Drawing.Size(644, 415)
+        Me.Controls.Add(Me.lblEstado)
+        Me.Controls.Add(Me.cboEstado)
+        Me.Controls.Add(Me.FechaFinal)
+        Me.Controls.Add(Me.FechaInicio)
+        Me.Controls.Add(Me.Label2)
+        Me.Controls.Add(Me.Label3)
         Me.Controls.Add(Me.cboSucursal)
         Me.Controls.Add(Me.Label6)
         Me.Controls.Add(Me.Label1)
@@ -200,7 +279,9 @@ Partial Class FrmBusquedaApartado
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
         Me.Location = New System.Drawing.Point(3, 22)
         Me.MaximizeBox = False
+        Me.MaximumSize = New System.Drawing.Size(660, 454)
         Me.MinimizeBox = False
+        Me.MinimumSize = New System.Drawing.Size(660, 454)
         Me.Name = "FrmBusquedaApartado"
         Me.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
@@ -223,4 +304,10 @@ Partial Class FrmBusquedaApartado
     Friend WithEvents txtId As System.Windows.Forms.TextBox
     Friend WithEvents cboSucursal As ComboBox
     Friend WithEvents Label6 As Label
+    Friend WithEvents FechaFinal As DateTimePicker
+    Friend WithEvents FechaInicio As DateTimePicker
+    Public WithEvents Label2 As Label
+    Public WithEvents Label3 As Label
+    Friend WithEvents lblEstado As Label
+    Friend WithEvents cboEstado As ComboBox
 End Class

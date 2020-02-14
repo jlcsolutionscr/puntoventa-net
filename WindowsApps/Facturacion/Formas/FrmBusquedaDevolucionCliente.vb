@@ -8,6 +8,7 @@ Public Class FrmBusquedaDevolucionCliente
     Private intFilasPorPagina As Integer = 13
     Private intCantidadDePaginas As Integer
     Private intId As Integer = 0
+    Private bolInit As Boolean = False
 #End Region
 
 #Region "Métodos"
@@ -40,7 +41,7 @@ Public Class FrmBusquedaDevolucionCliente
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
         Try
-            dgvListado.DataSource = Await Puntoventa.ObtenerListadoDevolucionesPorCliente(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, intNumeroPagina, intFilasPorPagina, FrmPrincipal.usuarioGlobal.Token, intId, txtNombre.Text)
+            dgvListado.DataSource = Await Puntoventa.ObtenerListadoDevolucionesPorCliente(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FechaInicio.Value.ToString("dd/MM/yyyy"), FechaFinal.Value.ToString("dd/MM/yyyy"), intNumeroPagina, intFilasPorPagina, FrmPrincipal.usuarioGlobal.Token, intId, txtNombre.Text)
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -52,7 +53,7 @@ Public Class FrmBusquedaDevolucionCliente
 
     Private Async Function ValidarCantidadRegistros() As Task
         Try
-            intTotalRegistros = Await Puntoventa.ObtenerTotalListaDevolucionesPorCliente(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FrmPrincipal.usuarioGlobal.Token, intId, txtNombre.Text)
+            intTotalRegistros = Await Puntoventa.ObtenerTotalListaDevolucionesPorCliente(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FechaInicio.Value.ToString("dd/MM/yyyy"), FechaFinal.Value.ToString("dd/MM/yyyy"), FrmPrincipal.usuarioGlobal.Token, intId, txtNombre.Text)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -112,11 +113,14 @@ Public Class FrmBusquedaDevolucionCliente
 
     Private Async Sub FrmBusProd_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
-            Await CargarCombos()
             EstablecerPropiedadesDataGridView()
+            FechaInicio.Value = CDate("01/01/" & Now.Year)
+            FechaFinal.Value = Now
+            Await CargarCombos()
             Await ValidarCantidadRegistros()
             intIndiceDePagina = 1
             Await ActualizarDatos(intIndiceDePagina)
+            bolInit = True
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -140,6 +144,10 @@ Public Class FrmBusquedaDevolucionCliente
         Await ValidarCantidadRegistros()
         intIndiceDePagina = 1
         Await ActualizarDatos(intIndiceDePagina)
+    End Sub
+
+    Private Sub cboSucursal_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboSucursal.SelectedIndexChanged
+        If bolInit Then btnFiltrar_Click(btnFiltrar, New EventArgs())
     End Sub
 #End Region
 End Class

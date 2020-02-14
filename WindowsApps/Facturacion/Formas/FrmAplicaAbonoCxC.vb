@@ -7,9 +7,9 @@ Imports LeandroSoftware.ClienteWCF
 Public Class FrmAplicaAbonoCxC
 #Region "Variables"
     Private I As Integer
-    Private dblTotal As Decimal = 0
-    Private dblTotalPago As Decimal = 0
-    Private dblSaldoPorPagar As Decimal = 0
+    Private decTotal As Decimal = 0
+    Private decTotalPago As Decimal = 0
+    Private decSaldoPorPagar As Decimal = 0
     Private decPagoEfectivo, decPagoCliente As Decimal
     Private dtbDesglosePago, dtbDesgloseCuenta As DataTable
     Private dtrRowDesglosePago, dtrRowDesgloseCuenta As DataRow
@@ -205,19 +205,19 @@ Public Class FrmAplicaAbonoCxC
     End Sub
 
     Private Sub CargarTotalesPago()
-        dblTotal = 0
-        dblTotalPago = 0
+        decTotal = 0
+        decTotalPago = 0
         decPagoEfectivo = 0
         For I = 0 To dtbDesgloseCuenta.Rows.Count - 1
-            dblTotal = dblTotal + CDbl(dtbDesgloseCuenta.Rows(I).Item(2))
+            decTotal = decTotal + CDbl(dtbDesgloseCuenta.Rows(I).Item(2))
         Next
         For I = 0 To dtbDesglosePago.Rows.Count - 1
             If dtbDesglosePago.Rows(I).Item(0) = StaticFormaPago.Efectivo Then decPagoEfectivo = CDbl(dtbDesglosePago.Rows(I).Item(7))
-            dblTotalPago = dblTotalPago + CDbl(dtbDesglosePago.Rows(I).Item(7))
+            decTotalPago = decTotalPago + CDbl(dtbDesglosePago.Rows(I).Item(7))
         Next
-        dblSaldoPorPagar = dblTotal - dblTotalPago
-        txtSaldoPorPagar.Text = FormatNumber(dblSaldoPorPagar, 2)
-        txtMontoPago.Text = FormatNumber(dblSaldoPorPagar, 2)
+        decSaldoPorPagar = decTotal - decTotalPago
+        txtSaldoPorPagar.Text = FormatNumber(decSaldoPorPagar, 2)
+        txtMontoPago.Text = FormatNumber(decSaldoPorPagar, 2)
     End Sub
 
     Private Async Function CargarCombos() As Task
@@ -254,7 +254,7 @@ Public Class FrmAplicaAbonoCxC
             bolInit = False
             cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
             txtMontoAbono.Text = FormatNumber(0, 2)
-            txtSaldoPorPagar.Text = FormatNumber(dblSaldoPorPagar, 2)
+            txtSaldoPorPagar.Text = FormatNumber(decSaldoPorPagar, 2)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -272,14 +272,14 @@ Public Class FrmAplicaAbonoCxC
         grdDesgloseCuenta.Refresh()
         dtbDesglosePago.Rows.Clear()
         grdDesglosePago.Refresh()
-        dblTotal = 0
+        decTotal = 0
         txtMontoOriginal.Text = ""
         txtTotalAbonado.Text = ""
-        txtMontoAbono.Text = FormatNumber(dblTotal, 2)
+        txtMontoAbono.Text = FormatNumber(decTotal, 2)
         txtMontoPago.Text = ""
-        dblTotalPago = 0
-        dblSaldoPorPagar = 0
-        txtSaldoPorPagar.Text = FormatNumber(dblSaldoPorPagar, 2)
+        decTotalPago = 0
+        decSaldoPorPagar = 0
+        txtSaldoPorPagar.Text = FormatNumber(decSaldoPorPagar, 2)
         txtMontoAbono.ReadOnly = False
         btnInsertar.Enabled = True
         btnEliminar.Enabled = True
@@ -292,19 +292,16 @@ Public Class FrmAplicaAbonoCxC
     End Sub
 
     Private Async Sub BtnGuardar_Click(sender As Object, e As EventArgs) Handles CmdGuardar.Click
-        If cliente Is Nothing Or txtFecha.Text = "" Then
-            MessageBox.Show("Información incompleta.  Favor verificar. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        If cliente Is Nothing Then
+            MessageBox.Show("Debe seleccionar el cliente para poder guardar el registro.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
-        End If
-        If dblTotal = 0 Then
-            MessageBox.Show("Debe ingresar el monto del abono para guardar el movimiento.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        ElseIf decTotal = 0 Then
+            MessageBox.Show("Debe ingresar el monto del abono para guardar el registro.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
-        End If
-        If dblSaldoPorPagar > 0 Then
-            MessageBox.Show("El total del desglose de pago del movimiento no es suficiente para cubrir el saldo por pagar actual.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        ElseIf decSaldoPorPagar > 0 Then
+            MessageBox.Show("El total del desglose de pago no es suficiente para cubrir el saldo por pagar actual.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
-        End If
-        If dblSaldoPorPagar < 0 Then
+        ElseIf decSaldoPorPagar < 0 Then
             MessageBox.Show("El total del desglose de pago del movimiento es superior al saldo por pagar.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         End If
@@ -330,7 +327,7 @@ Public Class FrmAplicaAbonoCxC
             .IdPropietario = cliente.IdCliente,
             .Tipo = StaticTipoAbono.AbonoEfectivo,
             .Descripcion = txtDescripcion.Text,
-            .Monto = dblTotal,
+            .Monto = decTotal,
             .Fecha = Now()
         }
         For I = 0 To grdDesgloseCuenta.Rows.Count - 1
@@ -384,7 +381,7 @@ Public Class FrmAplicaAbonoCxC
             .strConsecutivo = movimiento.IdMovCxC,
             .strNombre = txtNombreCliente.Text,
             .strFechaAbono = txtFecha.Text,
-            .strTotalAbono = FormatNumber(dblTotal, 2),
+            .strTotalAbono = FormatNumber(decTotal, 2),
             .strPagoCon = FormatNumber(decPagoCliente, 2),
             .strCambio = FormatNumber(decPagoCliente - decPagoEfectivo, 2)
         }
@@ -481,8 +478,8 @@ Public Class FrmAplicaAbonoCxC
     End Sub
 
     Private Sub BtnInsertarPago_Click(sender As Object, e As EventArgs) Handles btnInsertarPago.Click
-        If cboFormaPago.SelectedValue > 0 And cboTipoBanco.SelectedValue > 0 And dblTotal > 0 And txtMontoPago.Text <> "" Then
-            If dblSaldoPorPagar = 0 Then
+        If cboFormaPago.SelectedValue > 0 And cboTipoBanco.SelectedValue > 0 And decTotal > 0 And txtMontoPago.Text <> "" Then
+            If decSaldoPorPagar = 0 Then
                 MessageBox.Show("El monto por cancelar ya se encuentra cubierto. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End If
@@ -535,11 +532,11 @@ Public Class FrmAplicaAbonoCxC
             txtSaldoActual.Text = ""
             dtbDesglosePago.Rows.Clear()
             grdDesglosePago.Refresh()
-            dblTotal = 0
-            dblTotalPago = 0
-            dblSaldoPorPagar = 0
-            txtMontoAbono.Text = FormatNumber(dblTotal, 2)
-            txtSaldoPorPagar.Text = FormatNumber(dblSaldoPorPagar, 2)
+            decTotal = 0
+            decTotalPago = 0
+            decSaldoPorPagar = 0
+            txtMontoAbono.Text = FormatNumber(decTotal, 2)
+            txtSaldoPorPagar.Text = FormatNumber(decSaldoPorPagar, 2)
         End If
     End Sub
 

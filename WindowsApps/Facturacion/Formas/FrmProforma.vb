@@ -385,6 +385,7 @@ Public Class FrmProforma
         txtPorcDesc.Text = "0"
         txtPrecio.Text = ""
         decTotal = 0
+        btnGuardar.Enabled = True
         btnAnular.Enabled = False
         btnImprimir.Enabled = False
         btnGenerarPDF.Enabled = False
@@ -436,6 +437,7 @@ Public Class FrmProforma
 
     Private Async Sub BtnBuscar_Click(sender As Object, e As EventArgs) Handles btnBuscar.Click
         Dim formBusqueda As New FrmBusquedaProforma()
+        formBusqueda.bolIncluyeEstado = True
         FrmPrincipal.intBusqueda = 0
         formBusqueda.ShowDialog()
         If FrmPrincipal.intBusqueda > 0 Then
@@ -471,7 +473,8 @@ Public Class FrmProforma
                 btnGenerarPDF.Enabled = True
                 btnBuscaVendedor.Enabled = False
                 btnBuscarCliente.Enabled = False
-                btnAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
+                btnGuardar.Enabled = proforma.Aplicado = False
+                btnAnular.Enabled = proforma.Aplicado = False And FrmPrincipal.usuarioGlobal.Modifica
                 bolInit = False
             Else
                 MessageBox.Show("No existe registro de proforma asociado al identificador seleccionado", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -557,8 +560,11 @@ Public Class FrmProforma
     End Sub
 
     Private Async Sub BtnGuardar_Click(sender As Object, e As EventArgs) Handles btnGuardar.Click
-        If cliente Is Nothing Or vendedor Is Nothing Or txtFecha.Text = "" Or decTotal = 0 Then
-            MessageBox.Show("Información incompleta.  Favor verificar. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        If vendedor Is Nothing Then
+            MessageBox.Show("Debe seleccionar el vendedor para poder guardar el registro.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            Exit Sub
+        ElseIf decTotal = 0 Then
+            MessageBox.Show("Debe agregar líneas de detalle para guardar el registro.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         End If
         btnImprimir.Focus()

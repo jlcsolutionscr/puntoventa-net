@@ -83,7 +83,7 @@ Public Class FrmBusquedaProducto
         cboSucursal.DisplayMember = "Descripcion"
         cboSucursal.DataSource = Await Puntoventa.ObtenerListadoSucursales(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
         cboSucursal.SelectedValue = FrmPrincipal.equipoGlobal.IdSucursal
-        cboSucursal.Enabled = FrmPrincipal.usuarioGlobal.Modifica
+        cboSucursal.Enabled = True
     End Function
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
