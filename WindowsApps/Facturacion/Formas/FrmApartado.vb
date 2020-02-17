@@ -616,7 +616,7 @@ Public Class FrmApartado
         If txtIdApartado.Text <> "" Then
             If MessageBox.Show("Desea anular este registro?", "JLC Solutions CR", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
                 Try
-                    Await Puntoventa.AnularApartado(txtIdApartado.Text, FrmPrincipal.usuarioGlobal.IdUsuario, FrmPrincipal.usuarioGlobal.Token)
+                    Await Puntoventa.AnularApartado(apartado.IdApartado, FrmPrincipal.usuarioGlobal.IdUsuario, FrmPrincipal.usuarioGlobal.Token)
                 Catch ex As Exception
                     MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
