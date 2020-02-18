@@ -991,7 +991,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public static DocumentoElectronico GenerarNotaDeCreditoElectronica(Factura factura, Empresa empresa, Cliente cliente, IDbContext dbContext, decimal decTipoCambioDolar)
+        public static DocumentoElectronico GenerarNotaDeCreditoElectronica(Factura factura, Empresa empresa, Cliente cliente, IDbContext dbContext, DateTime dttFecha, decimal decTipoCambioDolar)
         {
             try
             {
@@ -1013,7 +1013,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     Clave = "",
                     CodigoActividad = empresa.CodigoActividad,
                     NumeroConsecutivo = "",
-                    FechaEmision = factura.Fecha
+                    FechaEmision = dttFecha
                 };
                 NotaCreditoElectronicaEmisorType emisor = new NotaCreditoElectronicaEmisorType();
                 NotaCreditoElectronicaIdentificacionType identificacionEmisorType = new NotaCreditoElectronicaIdentificacionType
@@ -1296,7 +1296,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public static DocumentoElectronico GenerarNotaDeCreditoElectronicaParcial(DevolucionCliente devolucion, Factura factura, Empresa empresa, Cliente cliente, IDbContext dbContext, decimal decTipoCambioDolar, string referencia)
+        public static DocumentoElectronico GenerarNotaDeCreditoElectronicaParcial(DevolucionCliente devolucion, Factura factura, Empresa empresa, Cliente cliente, IDbContext dbContext, DateTime dttFecha, decimal decTipoCambioDolar, string referencia)
         {
             try
             {
@@ -1318,7 +1318,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     Clave = "",
                     CodigoActividad = empresa.CodigoActividad,
                     NumeroConsecutivo = "",
-                    FechaEmision = devolucion.Fecha
+                    FechaEmision = dttFecha
                 };
                 NotaCreditoElectronicaEmisorType emisor = new NotaCreditoElectronicaEmisorType();
                 NotaCreditoElectronicaIdentificacionType identificacionEmisorType = new NotaCreditoElectronicaIdentificacionType
@@ -1562,7 +1562,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public static DocumentoElectronico GenerarNotaDeDebitoElectronicaParcial(DevolucionCliente devolucion, Factura factura, Empresa empresa, Cliente cliente, IDbContext dbContext, decimal decTipoCambioDolar, string referencia)
+        public static DocumentoElectronico GenerarNotaDeDebitoElectronicaParcial(DevolucionCliente devolucion, Factura factura, Empresa empresa, Cliente cliente, IDbContext dbContext, DateTime dttFecha, decimal decTipoCambioDolar, string referencia)
         {
             try
             {
@@ -1584,7 +1584,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     Clave = "",
                     CodigoActividad = empresa.CodigoActividad,
                     NumeroConsecutivo = "",
-                    FechaEmision = devolucion.Fecha
+                    FechaEmision = dttFecha
                 };
                 NotaDebitoElectronicaEmisorType emisor = new NotaDebitoElectronicaEmisorType();
                 NotaDebitoElectronicaIdentificacionType identificacionEmisorType = new NotaDebitoElectronicaIdentificacionType

@@ -148,6 +148,19 @@ Public Class FrmAjusteInventario
         KeyPreview = True
     End Sub
 
+    Private Sub FrmAjusteInventario_KeyDown(sender As Object, e As KeyEventArgs) Handles MyBase.KeyDown
+        If e.KeyCode = Keys.F1 Then
+            BtnBusProd_Click(btnBusProd, New EventArgs())
+        ElseIf e.KeyCode = Keys.F3 Then
+            BtnBuscar_Click(btnBuscar, New EventArgs())
+        ElseIf e.KeyCode = Keys.F4 Then
+            BtnAgregar_Click(btnAgregar, New EventArgs())
+        ElseIf e.KeyCode = Keys.F10 And btnGuardar.Enabled Then
+            BtnGuardar_Click(btnGuardar, New EventArgs())
+        End If
+        e.Handled = False
+    End Sub
+
     Private Async Sub FrmAjusteInventario_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
             txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
@@ -166,18 +179,18 @@ Public Class FrmAjusteInventario
         End Try
     End Sub
 
-    Private Sub CmdAgregar_Click(sender As Object, e As EventArgs) Handles CmdAgregar.Click
+    Private Sub BtnAgregar_Click(sender As Object, e As EventArgs) Handles btnAgregar.Click
         txtIdAjuste.Text = ""
         txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
         txtDescAjuste.Text = ""
         dtbDetalleAjusteInventario.Rows.Clear()
         grdDetalleAjusteInventario.Refresh()
-        CmdAnular.Enabled = False
-        CmdGuardar.Enabled = True
+        btnAnular.Enabled = False
+        btnGuardar.Enabled = True
         txtDescAjuste.Focus()
     End Sub
 
-    Private Async Sub CmdAnular_Click(sender As Object, e As EventArgs) Handles CmdAnular.Click
+    Private Async Sub BtnAnular_Click(sender As Object, e As EventArgs) Handles btnAnular.Click
         If txtIdAjuste.Text <> "" Then
             If MessageBox.Show("Desea anular este registro?", "JLC Solutions CR", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
                 Try
@@ -187,12 +200,12 @@ Public Class FrmAjusteInventario
                     Exit Sub
                 End Try
                 MessageBox.Show("Transacción procesada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
-                CmdAgregar_Click(CmdAgregar, New EventArgs())
+                BtnAgregar_Click(BtnAgregar, New EventArgs())
             End If
         End If
     End Sub
 
-    Private Async Sub CmdBuscar_Click(sender As Object, e As EventArgs) Handles CmdBuscar.Click
+    Private Async Sub BtnBuscar_Click(sender As Object, e As EventArgs) Handles btnBuscar.Click
         Dim formBusqueda As New FrmBusquedaAjusteInventario()
         FrmPrincipal.intBusqueda = 0
         formBusqueda.ShowDialog()
@@ -208,13 +221,13 @@ Public Class FrmAjusteInventario
                 txtFecha.Text = ajusteInventario.Fecha
                 txtDescAjuste.Text = ajusteInventario.Descripcion
                 CargarDetalleAjusteInventario(ajusteInventario)
-                CmdAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
-                CmdGuardar.Enabled = False
+                BtnAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
+                btnGuardar.Enabled = False
             End If
         End If
     End Sub
 
-    Private Async Sub CmdGuardar_Click(sender As Object, e As EventArgs) Handles CmdGuardar.Click
+    Private Async Sub BtnGuardar_Click(sender As Object, e As EventArgs) Handles btnGuardar.Click
         If txtFecha.Text = "" Or txtDescAjuste.Text = "" Or grdDetalleAjusteInventario.RowCount = 0 Then
             MessageBox.Show("Información incompleta.  Favor verificar. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
@@ -244,10 +257,10 @@ Public Class FrmAjusteInventario
             End Try
         End If
         MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
-        CmdAgregar.Enabled = True
-        CmdAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
-        CmdAgregar.Focus()
-        CmdGuardar.Enabled = False
+        btnAgregar.Enabled = True
+        btnAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
+        btnAgregar.Focus()
+        btnGuardar.Enabled = False
     End Sub
 
 

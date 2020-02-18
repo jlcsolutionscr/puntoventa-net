@@ -13,8 +13,8 @@ Partial Class FrmAplicaAbonoCxC
 
     'Required by the Windows Form Designer
     Private components As System.ComponentModel.IContainer
-    Public WithEvents CmdAgregar As System.Windows.Forms.Button
-    Public WithEvents CmdGuardar As System.Windows.Forms.Button
+    Public WithEvents btnAgregar As System.Windows.Forms.Button
+    Public WithEvents btnGuardar As System.Windows.Forms.Button
     Public WithEvents txtMontoAbono As System.Windows.Forms.TextBox
     Public WithEvents txtDescripcion As System.Windows.Forms.TextBox
     Public WithEvents txtFecha As System.Windows.Forms.TextBox
@@ -27,8 +27,8 @@ Partial Class FrmAplicaAbonoCxC
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FrmAplicaAbonoCxC))
-        Me.CmdAgregar = New System.Windows.Forms.Button()
-        Me.CmdGuardar = New System.Windows.Forms.Button()
+        Me.btnAgregar = New System.Windows.Forms.Button()
+        Me.btnGuardar = New System.Windows.Forms.Button()
         Me.txtMontoAbono = New System.Windows.Forms.TextBox()
         Me.txtDescripcion = New System.Windows.Forms.TextBox()
         Me.txtFecha = New System.Windows.Forms.TextBox()
@@ -36,7 +36,7 @@ Partial Class FrmAplicaAbonoCxC
         Me._lblLabels_5 = New System.Windows.Forms.Label()
         Me._lblLabels_3 = New System.Windows.Forms.Label()
         Me._lblLabels_2 = New System.Windows.Forms.Label()
-        Me.CmdImprimir = New System.Windows.Forms.Button()
+        Me.btnImprimir = New System.Windows.Forms.Button()
         Me.txtDocumento = New System.Windows.Forms.TextBox()
         Me.lblAutorizacion = New System.Windows.Forms.Label()
         Me.txtTipoTarjeta = New System.Windows.Forms.TextBox()
@@ -69,33 +69,33 @@ Partial Class FrmAplicaAbonoCxC
         CType(Me.grdDesgloseCuenta, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
-        'CmdAgregar
+        'btnAgregar
         '
-        Me.CmdAgregar.BackColor = System.Drawing.SystemColors.ButtonHighlight
-        Me.CmdAgregar.Cursor = System.Windows.Forms.Cursors.Default
-        Me.CmdAgregar.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.CmdAgregar.Location = New System.Drawing.Point(136, 8)
-        Me.CmdAgregar.Name = "CmdAgregar"
-        Me.CmdAgregar.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.CmdAgregar.Size = New System.Drawing.Size(64, 21)
-        Me.CmdAgregar.TabIndex = 0
-        Me.CmdAgregar.TabStop = False
-        Me.CmdAgregar.Text = "&Nuevo"
-        Me.CmdAgregar.UseVisualStyleBackColor = False
+        Me.btnAgregar.BackColor = System.Drawing.SystemColors.ButtonHighlight
+        Me.btnAgregar.Cursor = System.Windows.Forms.Cursors.Default
+        Me.btnAgregar.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.btnAgregar.Location = New System.Drawing.Point(136, 8)
+        Me.btnAgregar.Name = "btnAgregar"
+        Me.btnAgregar.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.btnAgregar.Size = New System.Drawing.Size(64, 21)
+        Me.btnAgregar.TabIndex = 0
+        Me.btnAgregar.TabStop = False
+        Me.btnAgregar.Text = "&Nuevo"
+        Me.btnAgregar.UseVisualStyleBackColor = False
         '
-        'CmdGuardar
+        'btnGuardar
         '
-        Me.CmdGuardar.BackColor = System.Drawing.SystemColors.ButtonHighlight
-        Me.CmdGuardar.Cursor = System.Windows.Forms.Cursors.Default
-        Me.CmdGuardar.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.CmdGuardar.Location = New System.Drawing.Point(8, 8)
-        Me.CmdGuardar.Name = "CmdGuardar"
-        Me.CmdGuardar.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.CmdGuardar.Size = New System.Drawing.Size(64, 21)
-        Me.CmdGuardar.TabIndex = 0
-        Me.CmdGuardar.TabStop = False
-        Me.CmdGuardar.Text = "&Guardar"
-        Me.CmdGuardar.UseVisualStyleBackColor = False
+        Me.btnGuardar.BackColor = System.Drawing.SystemColors.ButtonHighlight
+        Me.btnGuardar.Cursor = System.Windows.Forms.Cursors.Default
+        Me.btnGuardar.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.btnGuardar.Location = New System.Drawing.Point(8, 8)
+        Me.btnGuardar.Name = "btnGuardar"
+        Me.btnGuardar.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.btnGuardar.Size = New System.Drawing.Size(64, 21)
+        Me.btnGuardar.TabIndex = 0
+        Me.btnGuardar.TabStop = False
+        Me.btnGuardar.Text = "&Guardar"
+        Me.btnGuardar.UseVisualStyleBackColor = False
         '
         'txtMontoAbono
         '
@@ -191,19 +191,19 @@ Partial Class FrmAplicaAbonoCxC
         Me._lblLabels_2.Text = "Cliente:"
         Me._lblLabels_2.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
-        'CmdImprimir
+        'btnImprimir
         '
-        Me.CmdImprimir.BackColor = System.Drawing.SystemColors.ButtonHighlight
-        Me.CmdImprimir.Cursor = System.Windows.Forms.Cursors.Default
-        Me.CmdImprimir.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.CmdImprimir.Location = New System.Drawing.Point(72, 8)
-        Me.CmdImprimir.Name = "CmdImprimir"
-        Me.CmdImprimir.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.CmdImprimir.Size = New System.Drawing.Size(64, 21)
-        Me.CmdImprimir.TabIndex = 0
-        Me.CmdImprimir.TabStop = False
-        Me.CmdImprimir.Text = "&Tiquete"
-        Me.CmdImprimir.UseVisualStyleBackColor = False
+        Me.btnImprimir.BackColor = System.Drawing.SystemColors.ButtonHighlight
+        Me.btnImprimir.Cursor = System.Windows.Forms.Cursors.Default
+        Me.btnImprimir.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.btnImprimir.Location = New System.Drawing.Point(72, 8)
+        Me.btnImprimir.Name = "btnImprimir"
+        Me.btnImprimir.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.btnImprimir.Size = New System.Drawing.Size(64, 21)
+        Me.btnImprimir.TabIndex = 0
+        Me.btnImprimir.TabStop = False
+        Me.btnImprimir.Text = "&Tiquete"
+        Me.btnImprimir.UseVisualStyleBackColor = False
         '
         'txtDocumento
         '
@@ -638,9 +638,9 @@ Partial Class FrmAplicaAbonoCxC
         Me.Controls.Add(Me.cboFormaPago)
         Me.Controls.Add(Me.Label4)
         Me.Controls.Add(Me.Label5)
-        Me.Controls.Add(Me.CmdImprimir)
-        Me.Controls.Add(Me.CmdAgregar)
-        Me.Controls.Add(Me.CmdGuardar)
+        Me.Controls.Add(Me.btnImprimir)
+        Me.Controls.Add(Me.btnAgregar)
+        Me.Controls.Add(Me.btnGuardar)
         Me.Controls.Add(Me.txtMontoAbono)
         Me.Controls.Add(Me.txtDescripcion)
         Me.Controls.Add(Me.txtFecha)
@@ -666,7 +666,7 @@ Partial Class FrmAplicaAbonoCxC
         Me.PerformLayout()
 
     End Sub
-    Public WithEvents CmdImprimir As System.Windows.Forms.Button
+    Public WithEvents btnImprimir As System.Windows.Forms.Button
     Public WithEvents txtDocumento As System.Windows.Forms.TextBox
     Public WithEvents lblAutorizacion As System.Windows.Forms.Label
     Public WithEvents txtTipoTarjeta As System.Windows.Forms.TextBox

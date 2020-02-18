@@ -230,11 +230,22 @@ Public Class FrmAplicaAbonoCxP
 #End Region
 
 #Region "Eventos Controles"
-    Private Sub FrmAplicaReciboCxPProveedores_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+    Private Sub FrmAplicaAbonoCxP_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         KeyPreview = True
     End Sub
 
-    Private Async Sub FrmAplicaReciboCxPProveedores_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+    Private Sub FrmAplicaAbonoCxP_KeyDown(sender As Object, e As KeyEventArgs) Handles MyBase.KeyDown
+        If e.KeyCode = Keys.F4 Then
+            BtnAgregar_Click(btnAgregar, New EventArgs())
+        ElseIf e.KeyCode = Keys.F10 And btnGuardar.Enabled Then
+            BtnGuardar_Click(btnGuardar, New EventArgs())
+        ElseIf e.KeyCode = Keys.F11 And btnImprimir.Enabled Then
+            BtnImprimir_Click(btnImprimir, New EventArgs())
+        End If
+        e.Handled = False
+    End Sub
+
+    Private Async Sub FrmAplicaAbonoCxP_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
             txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
             Await CargarCombos()

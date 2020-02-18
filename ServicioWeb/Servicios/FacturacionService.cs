@@ -808,11 +808,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             DocumentoElectronico documento = dbContext.DocumentoElectronicoRepository.Where(x => x.ClaveNumerica == factura.IdDocElectronico).FirstOrDefault();
                             if (documento.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado)
                             {
-                                string criteria = factura.Fecha.ToString("dd/MM/yyyy");
+                                DateTime fechaDocumento = DateTime.UtcNow.AddHours(-6);
+                                string criteria = fechaDocumento.ToString("dd/MM/yyyy");
                                 TipoDeCambioDolar tipoDeCambio = dbContext.TipoDeCambioDolarRepository.Find(criteria);
                                 if (tipoDeCambio != null)
                                 {
-                                    documentoNC = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronica(factura, factura.Empresa, cliente, dbContext, tipoDeCambio.ValorTipoCambio);
+                                    documentoNC = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronica(factura, factura.Empresa, cliente, dbContext, fechaDocumento, tipoDeCambio.ValorTipoCambio);
                                     factura.IdDocElectronicoRev = documentoNC.ClaveNumerica;
                                 }
                                 else
@@ -1660,11 +1661,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         if (documento.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado)
                         {
                             Cliente cliente = dbContext.ClienteRepository.Find(factura.IdCliente);
-                            string criteria = factura.Fecha.ToString("dd/MM/yyyy");
+                            DateTime fechaDocumento = DateTime.UtcNow.AddHours(-6);
+                            string criteria = fechaDocumento.ToString("dd/MM/yyyy");
                             TipoDeCambioDolar tipoDeCambio = dbContext.TipoDeCambioDolarRepository.Find(criteria);
                             if (tipoDeCambio != null)
                             {
-                                documentoNC = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronicaParcial(devolucion, factura, empresa, cliente, dbContext, tipoDeCambio.ValorTipoCambio, factura.IdDocElectronico);
+                                documentoNC = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronicaParcial(devolucion, factura, empresa, cliente, dbContext, fechaDocumento, tipoDeCambio.ValorTipoCambio, factura.IdDocElectronico);
                                 devolucion.IdDocElectronico = documentoNC.ClaveNumerica;
                             }
                             else
@@ -1776,11 +1778,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             DocumentoElectronico documento = dbContext.DocumentoElectronicoRepository.Where(x => x.ClaveNumerica == factura.IdDocElectronico).FirstOrDefault();
                             if (documento.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado)
                             {
-                                string criteria = factura.Fecha.ToString("dd/MM/yyyy");
+                                DateTime fechaDocumento = DateTime.UtcNow.AddHours(-6);
+                                string criteria = fechaDocumento.ToString("dd/MM/yyyy");
                                 TipoDeCambioDolar tipoDeCambio = dbContext.TipoDeCambioDolarRepository.Find(criteria);
                                 if (tipoDeCambio != null)
                                 {
-                                    documentoND = ComprobanteElectronicoService.GenerarNotaDeDebitoElectronicaParcial(devolucion, factura, empresa, devolucion.Cliente, dbContext, tipoDeCambio.ValorTipoCambio, devolucion.IdDocElectronico);
+                                    documentoND = ComprobanteElectronicoService.GenerarNotaDeDebitoElectronicaParcial(devolucion, factura, empresa, devolucion.Cliente, dbContext, fechaDocumento, tipoDeCambio.ValorTipoCambio, devolucion.IdDocElectronico);
                                     devolucion.IdDocElectronicoRev = documentoND.ClaveNumerica;
                                 }
                                 else

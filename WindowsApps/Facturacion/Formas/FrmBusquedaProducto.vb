@@ -88,7 +88,7 @@ Public Class FrmBusquedaProducto
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
         Try
-            dgvListado.DataSource = Await Puntoventa.ObtenerListadoProductos(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, intNumeroPagina, intFilasPorPagina, bolIncluyeServicios, True, FrmPrincipal.usuarioGlobal.Token, cboLinea.SelectedValue, TxtCodigo.Text, txtCodigoProveedor.Text, TxtDesc.Text)
+            dgvListado.DataSource = Await Puntoventa.ObtenerListadoProductos(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, intNumeroPagina, intFilasPorPagina, bolIncluyeServicios, True, FrmPrincipal.usuarioGlobal.Token, cboLinea.SelectedValue, txtCodigo.Text, txtCodigoProveedor.Text, txtDesc.Text)
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -99,7 +99,7 @@ Public Class FrmBusquedaProducto
 
     Private Async Function ValidarCantidadRegistros() As Task
         Try
-            intTotalRegistros = Await Puntoventa.ObtenerTotalListaProductos(FrmPrincipal.empresaGlobal.IdEmpresa, bolIncluyeServicios, True, FrmPrincipal.usuarioGlobal.Token, cboLinea.SelectedValue, TxtCodigo.Text, txtCodigoProveedor.Text, TxtDesc.Text)
+            intTotalRegistros = Await Puntoventa.ObtenerTotalListaProductos(FrmPrincipal.empresaGlobal.IdEmpresa, bolIncluyeServicios, True, FrmPrincipal.usuarioGlobal.Token, cboLinea.SelectedValue, txtCodigo.Text, txtCodigoProveedor.Text, txtDesc.Text)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -121,6 +121,19 @@ Public Class FrmBusquedaProducto
 #End Region
 
 #Region "Eventos Controles"
+    Private Sub FrmBusProd_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        KeyPreview = True
+    End Sub
+
+    Private Sub FrmBusProd_KeyDown(sender As Object, e As KeyEventArgs) Handles MyBase.KeyDown
+        If e.KeyCode = Keys.PageUp And btnPrevious.Enabled Then
+            btnPrevious_Click(btnPrevious, New EventArgs())
+        ElseIf e.KeyCode = Keys.PageDown And btnNext.Enabled Then
+            btnNext_Click(btnNext, New EventArgs())
+        End If
+        e.Handled = False
+    End Sub
+
     Private Async Sub btnFirst_Click(sender As Object, e As EventArgs) Handles btnFirst.Click
         intIndiceDePagina = 1
         Await ActualizarDatos(intIndiceDePagina)
@@ -165,6 +178,7 @@ Public Class FrmBusquedaProducto
             Await ValidarCantidadRegistros()
             intIndiceDePagina = 1
             Await ActualizarDatos(intIndiceDePagina)
+            txtDesc.Focus()
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()

@@ -239,16 +239,27 @@ Public Class FrmAplicaAbonoCxC
 #End Region
 
 #Region "Eventos Controles"
-    Private Sub FrmFactura_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+    Private Sub FrmAplicaAbonoCxC_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         KeyPreview = True
     End Sub
 
-    Private Async Sub FrmAplicaReciboCxCClientes_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+    Private Sub FrmAplicaAbonoCxC_KeyDown(sender As Object, e As KeyEventArgs) Handles MyBase.KeyDown
+        If e.KeyCode = Keys.F4 Then
+            BtnAgregar_Click(btnAgregar, New EventArgs())
+        ElseIf e.KeyCode = Keys.F10 And btnGuardar.Enabled Then
+            BtnGuardar_Click(btnGuardar, New EventArgs())
+        ElseIf e.KeyCode = Keys.F11 And btnImprimir.Enabled Then
+            BtnImprimir_Click(btnImprimir, New EventArgs())
+        End If
+        e.Handled = False
+    End Sub
+
+    Private Async Sub FrmAplicaAbonoCxC_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
-            txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
-            Await CargarCombos()
             IniciaDetalleMovimiento()
             EstablecerPropiedadesDataGridView()
+            txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
+            Await CargarCombos()
             grdDesgloseCuenta.DataSource = dtbDesgloseCuenta
             grdDesglosePago.DataSource = dtbDesglosePago
             bolInit = False
@@ -262,7 +273,7 @@ Public Class FrmAplicaAbonoCxC
         End Try
     End Sub
 
-    Private Async Sub BtnAgregar_Click(sender As Object, e As EventArgs) Handles CmdAgregar.Click
+    Private Async Sub BtnAgregar_Click(sender As Object, e As EventArgs) Handles btnAgregar.Click
         Await CargarListaBancoAdquiriente()
         cliente = Nothing
         txtNombreCliente.Text = ""
@@ -285,13 +296,13 @@ Public Class FrmAplicaAbonoCxC
         btnEliminar.Enabled = True
         btnInsertarPago.Enabled = True
         btnEliminarPago.Enabled = True
-        CmdGuardar.Enabled = True
-        CmdImprimir.Enabled = False
+        btnGuardar.Enabled = True
+        btnImprimir.Enabled = False
         cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
         txtMontoPago.Text = ""
     End Sub
 
-    Private Async Sub BtnGuardar_Click(sender As Object, e As EventArgs) Handles CmdGuardar.Click
+    Private Async Sub BtnGuardar_Click(sender As Object, e As EventArgs) Handles btnGuardar.Click
         If cliente Is Nothing Then
             MessageBox.Show("Debe seleccionar el cliente para poder guardar el registro.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
@@ -356,7 +367,7 @@ Public Class FrmAplicaAbonoCxC
             Exit Sub
         End Try
         If FrmPrincipal.empresaGlobal.IngresaPagoCliente And decPagoEfectivo > 0 Then
-            BtnImprimir_Click(CmdImprimir, New EventArgs())
+            BtnImprimir_Click(btnImprimir, New EventArgs())
             Dim formPagoFactura As New FrmPagoEfectivo()
             formPagoFactura.decTotalEfectivo = decPagoEfectivo
             formPagoFactura.decPagoCliente = decPagoCliente
@@ -364,16 +375,16 @@ Public Class FrmAplicaAbonoCxC
         Else
             MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
         End If
-        CmdAgregar.Enabled = True
-        CmdImprimir.Enabled = True
-        CmdImprimir.Focus()
+        btnAgregar.Enabled = True
+        btnImprimir.Enabled = True
+        btnImprimir.Focus()
         txtMontoAbono.ReadOnly = True
-        CmdGuardar.Enabled = False
+        btnGuardar.Enabled = False
         btnInsertarPago.Enabled = False
         btnEliminarPago.Enabled = False
     End Sub
 
-    Private Sub BtnImprimir_Click(ByVal sender As Object, ByVal e As EventArgs) Handles CmdImprimir.Click
+    Private Sub BtnImprimir_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnImprimir.Click
         reciboComprobante = New ModuloImpresion.ClsRecibo With {
             .usuario = FrmPrincipal.usuarioGlobal,
             .empresa = FrmPrincipal.empresaGlobal,

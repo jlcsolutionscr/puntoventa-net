@@ -17,6 +17,23 @@ Public Class FrmEgreso
 #End Region
 
 #Region "Eventos Controles"
+    Private Sub FrmEgreso_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        KeyPreview = True
+    End Sub
+
+    Private Sub FrmEgreso_KeyDown(sender As Object, e As KeyEventArgs) Handles MyBase.KeyDown
+        If e.KeyCode = Keys.F3 Then
+            BtnBuscar_Click(btnBuscar, New EventArgs())
+        ElseIf e.KeyCode = Keys.F4 Then
+            BtnAgregar_Click(btnAgregar, New EventArgs())
+        ElseIf e.KeyCode = Keys.F10 And btnGuardar.Enabled Then
+            BtnGuardar_Click(btnGuardar, New EventArgs())
+        ElseIf e.KeyCode = Keys.F11 And btnImprimir.Enabled Then
+            BtnImprimir_Click(btnImprimir, New EventArgs())
+        End If
+        e.Handled = False
+    End Sub
+
     Private Async Sub FrmEgreso_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
             txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
@@ -27,19 +44,19 @@ Public Class FrmEgreso
         End Try
     End Sub
 
-    Private Sub CmdAgregar_Click(sender As Object, e As EventArgs) Handles CmdAgregar.Click
+    Private Sub BtnAgregar_Click(sender As Object, e As EventArgs) Handles btnAgregar.Click
         txtIdEgreso.Text = ""
         txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
         cboCuentaEgreso.SelectedIndex = 0
         txtBeneficiario.Text = ""
         txtDetalle.Text = ""
         txtMonto.Text = ""
-        CmdAnular.Enabled = False
-        CmdGuardar.Enabled = True
-        CmdImprimir.Enabled = False
+        btnAnular.Enabled = False
+        btnGuardar.Enabled = True
+        btnImprimir.Enabled = False
     End Sub
 
-    Private Async Sub CmdAnular_Click(sender As Object, e As EventArgs) Handles CmdAnular.Click
+    Private Async Sub BtnAnular_Click(sender As Object, e As EventArgs) Handles btnAnular.Click
         If txtIdEgreso.Text <> "" Then
             If MessageBox.Show("Desea anular este registro?", "JLC Solutions CR", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
                 Try
@@ -49,12 +66,12 @@ Public Class FrmEgreso
                     Exit Sub
                 End Try
                 MessageBox.Show("Transacción procesada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
-                CmdAgregar_Click(CmdAgregar, New EventArgs())
+                BtnAgregar_Click(btnAgregar, New EventArgs())
             End If
         End If
     End Sub
 
-    Private Async Sub CmdBuscar_Click(sender As Object, e As EventArgs) Handles CmdBuscar.Click
+    Private Async Sub BtnBuscar_Click(sender As Object, e As EventArgs) Handles btnBuscar.Click
         Dim formBusqueda As New FrmBusquedaEgreso()
         FrmPrincipal.intBusqueda = 0
         formBusqueda.ShowDialog()
@@ -73,14 +90,14 @@ Public Class FrmEgreso
                 txtDetalle.Text = egreso.Detalle
                 txtMonto.Text = FormatNumber(egreso.Monto, 2)
                 txtMonto.ReadOnly = True
-                CmdImprimir.Enabled = True
-                CmdAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
-                CmdGuardar.Enabled = False
+                btnImprimir.Enabled = True
+                btnAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
+                btnGuardar.Enabled = False
             End If
         End If
     End Sub
 
-    Private Async Sub CmdGuardar_Click(sender As Object, e As EventArgs) Handles CmdGuardar.Click
+    Private Async Sub BtnGuardar_Click(sender As Object, e As EventArgs) Handles btnGuardar.Click
         If cboCuentaEgreso.SelectedValue Is Nothing Then
             MessageBox.Show("Debe seleccionar el tipo de cuenta por aplicar al egreso.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
@@ -118,14 +135,14 @@ Public Class FrmEgreso
             End Try
         End If
         MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
-        CmdImprimir.Enabled = True
-        CmdAgregar.Enabled = True
-        CmdAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
-        CmdImprimir.Focus()
-        CmdGuardar.Enabled = False
+        btnImprimir.Enabled = True
+        btnAgregar.Enabled = True
+        btnAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
+        btnImprimir.Focus()
+        btnGuardar.Enabled = False
     End Sub
 
-    Private Sub CmdImprimir_Click(sender As Object, e As EventArgs) Handles CmdImprimir.Click
+    Private Sub BtnImprimir_Click(sender As Object, e As EventArgs) Handles btnImprimir.Click
         If txtIdEgreso.Text <> "" Then
             comprobante = New ModuloImpresion.ClsEgreso With {
                 .usuario = FrmPrincipal.usuarioGlobal,

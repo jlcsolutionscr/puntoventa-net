@@ -303,11 +303,34 @@ Public Class FrmProforma
 #End Region
 
 #Region "Eventos Controles"
-    Private Sub FrmFactura_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+    Private Sub FrmProforma_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         KeyPreview = True
     End Sub
 
-    Private Async Sub FrmFactura_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+    Private Sub FrmProforma_KeyDown(sender As Object, e As KeyEventArgs) Handles MyBase.KeyDown
+        If e.KeyCode = Keys.F1 Then
+            BtnBusProd_Click(btnBusProd, New EventArgs())
+        ElseIf e.KeyCode = Keys.F2 Then
+            If FrmPrincipal.productoTranstorio IsNot Nothing Then
+                Dim formCargar As New FrmCargaProductoTransitorio
+                formCargar.ShowDialog()
+                If FrmPrincipal.productoTranstorio.PrecioVenta1 > 0 Then
+                    CargarLineaDetalleProforma(FrmPrincipal.productoTranstorio, FrmPrincipal.productoTranstorio.Descripcion, FrmPrincipal.productoTranstorio.Existencias, FrmPrincipal.productoTranstorio.PrecioVenta1, 0)
+                End If
+            End If
+        ElseIf e.KeyCode = Keys.F3 Then
+            BtnBuscar_Click(btnBuscar, New EventArgs())
+        ElseIf e.KeyCode = Keys.F4 Then
+            BtnAgregar_Click(btnAgregar, New EventArgs())
+        ElseIf e.KeyCode = Keys.F10 And btnGuardar.Enabled Then
+            BtnGuardar_Click(btnGuardar, New EventArgs())
+        ElseIf e.KeyCode = Keys.F11 And btnImprimir.Enabled Then
+            BtnImprimir_Click(btnImprimir, New EventArgs())
+        End If
+        e.Handled = False
+    End Sub
+
+    Private Async Sub FrmProforma_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
             txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
             Await CargarCombos()
@@ -854,17 +877,7 @@ Public Class FrmProforma
     End Sub
 
     Private Async Sub TxtCodigo_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtCodigo.PreviewKeyDown
-        If e.KeyCode = Keys.F1 Then
-            BtnBusProd_Click(btnBusProd, New EventArgs())
-        ElseIf e.KeyCode = Keys.ControlKey Then
-            If FrmPrincipal.productoTranstorio IsNot Nothing Then
-                Dim formCargar As New FrmCargaProductoTransitorio
-                formCargar.ShowDialog()
-                If FrmPrincipal.productoTranstorio.PrecioVenta1 > 0 Then
-                    CargarLineaDetalleProforma(FrmPrincipal.productoTranstorio, FrmPrincipal.productoTranstorio.Descripcion, FrmPrincipal.productoTranstorio.Existencias, FrmPrincipal.productoTranstorio.PrecioVenta1, 0)
-                End If
-            End If
-        ElseIf e.KeyCode = Keys.Enter Or e.KeyCode = Keys.Tab Then
+        If e.KeyCode = Keys.Enter Or e.KeyCode = Keys.Tab Then
             Try
                 producto = Await Puntoventa.ObtenerProductoPorCodigo(FrmPrincipal.empresaGlobal.IdEmpresa, txtCodigo.Text, FrmPrincipal.equipoGlobal.IdSucursal, FrmPrincipal.usuarioGlobal.Token)
                 If producto IsNot Nothing Then

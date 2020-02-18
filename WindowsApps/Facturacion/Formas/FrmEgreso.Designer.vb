@@ -13,11 +13,11 @@ Partial Class FrmEgreso
 
     'Required by the Windows Form Designer
     Private components As System.ComponentModel.IContainer
-    Public WithEvents CmdAnular As System.Windows.Forms.Button
-    Public WithEvents CmdAgregar As System.Windows.Forms.Button
-    Public WithEvents CmdBuscar As System.Windows.Forms.Button
-    Public WithEvents CmdImprimir As System.Windows.Forms.Button
-    Public WithEvents CmdGuardar As System.Windows.Forms.Button
+    Public WithEvents btnAnular As System.Windows.Forms.Button
+    Public WithEvents btnAgregar As System.Windows.Forms.Button
+    Public WithEvents btnBuscar As System.Windows.Forms.Button
+    Public WithEvents btnImprimir As System.Windows.Forms.Button
+    Public WithEvents btnGuardar As System.Windows.Forms.Button
     Public WithEvents txtMonto As System.Windows.Forms.TextBox
     Public WithEvents cboCuentaEgreso As System.Windows.Forms.ComboBox
     Public WithEvents txtIdEgreso As System.Windows.Forms.TextBox
@@ -32,11 +32,11 @@ Partial Class FrmEgreso
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
-        Me.CmdAnular = New System.Windows.Forms.Button()
-        Me.CmdAgregar = New System.Windows.Forms.Button()
-        Me.CmdBuscar = New System.Windows.Forms.Button()
-        Me.CmdImprimir = New System.Windows.Forms.Button()
-        Me.CmdGuardar = New System.Windows.Forms.Button()
+        Me.btnAnular = New System.Windows.Forms.Button()
+        Me.btnAgregar = New System.Windows.Forms.Button()
+        Me.btnBuscar = New System.Windows.Forms.Button()
+        Me.btnImprimir = New System.Windows.Forms.Button()
+        Me.btnGuardar = New System.Windows.Forms.Button()
         Me.txtMonto = New System.Windows.Forms.TextBox()
         Me.cboCuentaEgreso = New System.Windows.Forms.ComboBox()
         Me.txtIdEgreso = New System.Windows.Forms.TextBox()
@@ -51,77 +51,77 @@ Partial Class FrmEgreso
         Me.Label4 = New System.Windows.Forms.Label()
         Me.SuspendLayout()
         '
-        'CmdAnular
+        'btnAnular
         '
-        Me.CmdAnular.BackColor = System.Drawing.SystemColors.ButtonHighlight
-        Me.CmdAnular.Cursor = System.Windows.Forms.Cursors.Default
-        Me.CmdAnular.Enabled = False
-        Me.CmdAnular.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.CmdAnular.Location = New System.Drawing.Point(200, 8)
-        Me.CmdAnular.Name = "CmdAnular"
-        Me.CmdAnular.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.CmdAnular.Size = New System.Drawing.Size(64, 21)
-        Me.CmdAnular.TabIndex = 0
-        Me.CmdAnular.TabStop = False
-        Me.CmdAnular.Text = "&Anular"
-        Me.CmdAnular.UseVisualStyleBackColor = False
+        Me.btnAnular.BackColor = System.Drawing.SystemColors.ButtonHighlight
+        Me.btnAnular.Cursor = System.Windows.Forms.Cursors.Default
+        Me.btnAnular.Enabled = False
+        Me.btnAnular.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.btnAnular.Location = New System.Drawing.Point(200, 8)
+        Me.btnAnular.Name = "btnAnular"
+        Me.btnAnular.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.btnAnular.Size = New System.Drawing.Size(64, 21)
+        Me.btnAnular.TabIndex = 0
+        Me.btnAnular.TabStop = False
+        Me.btnAnular.Text = "&Anular"
+        Me.btnAnular.UseVisualStyleBackColor = False
         '
-        'CmdAgregar
+        'btnAgregar
         '
-        Me.CmdAgregar.BackColor = System.Drawing.SystemColors.ButtonHighlight
-        Me.CmdAgregar.Cursor = System.Windows.Forms.Cursors.Default
-        Me.CmdAgregar.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.CmdAgregar.Location = New System.Drawing.Point(264, 8)
-        Me.CmdAgregar.Name = "CmdAgregar"
-        Me.CmdAgregar.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.CmdAgregar.Size = New System.Drawing.Size(64, 21)
-        Me.CmdAgregar.TabIndex = 0
-        Me.CmdAgregar.TabStop = False
-        Me.CmdAgregar.Text = "&Nuevo"
-        Me.CmdAgregar.UseVisualStyleBackColor = False
+        Me.btnAgregar.BackColor = System.Drawing.SystemColors.ButtonHighlight
+        Me.btnAgregar.Cursor = System.Windows.Forms.Cursors.Default
+        Me.btnAgregar.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.btnAgregar.Location = New System.Drawing.Point(264, 8)
+        Me.btnAgregar.Name = "btnAgregar"
+        Me.btnAgregar.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.btnAgregar.Size = New System.Drawing.Size(64, 21)
+        Me.btnAgregar.TabIndex = 0
+        Me.btnAgregar.TabStop = False
+        Me.btnAgregar.Text = "&Nuevo"
+        Me.btnAgregar.UseVisualStyleBackColor = False
         '
-        'CmdBuscar
+        'btnBuscar
         '
-        Me.CmdBuscar.BackColor = System.Drawing.SystemColors.ButtonHighlight
-        Me.CmdBuscar.Cursor = System.Windows.Forms.Cursors.Default
-        Me.CmdBuscar.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.CmdBuscar.Location = New System.Drawing.Point(136, 8)
-        Me.CmdBuscar.Name = "CmdBuscar"
-        Me.CmdBuscar.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.CmdBuscar.Size = New System.Drawing.Size(64, 21)
-        Me.CmdBuscar.TabIndex = 0
-        Me.CmdBuscar.TabStop = False
-        Me.CmdBuscar.Text = "B&uscar"
-        Me.CmdBuscar.UseVisualStyleBackColor = False
+        Me.btnBuscar.BackColor = System.Drawing.SystemColors.ButtonHighlight
+        Me.btnBuscar.Cursor = System.Windows.Forms.Cursors.Default
+        Me.btnBuscar.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.btnBuscar.Location = New System.Drawing.Point(136, 8)
+        Me.btnBuscar.Name = "btnBuscar"
+        Me.btnBuscar.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.btnBuscar.Size = New System.Drawing.Size(64, 21)
+        Me.btnBuscar.TabIndex = 0
+        Me.btnBuscar.TabStop = False
+        Me.btnBuscar.Text = "B&uscar"
+        Me.btnBuscar.UseVisualStyleBackColor = False
         '
-        'CmdImprimir
+        'btnImprimir
         '
-        Me.CmdImprimir.BackColor = System.Drawing.SystemColors.ButtonHighlight
-        Me.CmdImprimir.Cursor = System.Windows.Forms.Cursors.Default
-        Me.CmdImprimir.Enabled = False
-        Me.CmdImprimir.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.CmdImprimir.Location = New System.Drawing.Point(72, 8)
-        Me.CmdImprimir.Name = "CmdImprimir"
-        Me.CmdImprimir.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.CmdImprimir.Size = New System.Drawing.Size(64, 21)
-        Me.CmdImprimir.TabIndex = 0
-        Me.CmdImprimir.TabStop = False
-        Me.CmdImprimir.Text = "&Tiquete"
-        Me.CmdImprimir.UseVisualStyleBackColor = False
+        Me.btnImprimir.BackColor = System.Drawing.SystemColors.ButtonHighlight
+        Me.btnImprimir.Cursor = System.Windows.Forms.Cursors.Default
+        Me.btnImprimir.Enabled = False
+        Me.btnImprimir.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.btnImprimir.Location = New System.Drawing.Point(72, 8)
+        Me.btnImprimir.Name = "btnImprimir"
+        Me.btnImprimir.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.btnImprimir.Size = New System.Drawing.Size(64, 21)
+        Me.btnImprimir.TabIndex = 0
+        Me.btnImprimir.TabStop = False
+        Me.btnImprimir.Text = "&Tiquete"
+        Me.btnImprimir.UseVisualStyleBackColor = False
         '
-        'CmdGuardar
+        'btnGuardar
         '
-        Me.CmdGuardar.BackColor = System.Drawing.SystemColors.ButtonHighlight
-        Me.CmdGuardar.Cursor = System.Windows.Forms.Cursors.Default
-        Me.CmdGuardar.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.CmdGuardar.Location = New System.Drawing.Point(8, 8)
-        Me.CmdGuardar.Name = "CmdGuardar"
-        Me.CmdGuardar.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.CmdGuardar.Size = New System.Drawing.Size(64, 21)
-        Me.CmdGuardar.TabIndex = 0
-        Me.CmdGuardar.TabStop = False
-        Me.CmdGuardar.Text = "&Guardar"
-        Me.CmdGuardar.UseVisualStyleBackColor = False
+        Me.btnGuardar.BackColor = System.Drawing.SystemColors.ButtonHighlight
+        Me.btnGuardar.Cursor = System.Windows.Forms.Cursors.Default
+        Me.btnGuardar.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.btnGuardar.Location = New System.Drawing.Point(8, 8)
+        Me.btnGuardar.Name = "btnGuardar"
+        Me.btnGuardar.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.btnGuardar.Size = New System.Drawing.Size(64, 21)
+        Me.btnGuardar.TabIndex = 0
+        Me.btnGuardar.TabStop = False
+        Me.btnGuardar.Text = "&Guardar"
+        Me.btnGuardar.UseVisualStyleBackColor = False
         '
         'txtMonto
         '
@@ -292,11 +292,11 @@ Partial Class FrmEgreso
         Me.Controls.Add(Me.txtBeneficiario)
         Me.Controls.Add(Me.Label4)
         Me.Controls.Add(Me.Label1)
-        Me.Controls.Add(Me.CmdAnular)
-        Me.Controls.Add(Me.CmdAgregar)
-        Me.Controls.Add(Me.CmdBuscar)
-        Me.Controls.Add(Me.CmdImprimir)
-        Me.Controls.Add(Me.CmdGuardar)
+        Me.Controls.Add(Me.btnAnular)
+        Me.Controls.Add(Me.btnAgregar)
+        Me.Controls.Add(Me.btnBuscar)
+        Me.Controls.Add(Me.btnImprimir)
+        Me.Controls.Add(Me.btnGuardar)
         Me.Controls.Add(Me.txtMonto)
         Me.Controls.Add(Me.cboCuentaEgreso)
         Me.Controls.Add(Me.txtIdEgreso)

@@ -14,8 +14,8 @@ Partial Class FrmBusquedaProducto
     'Required by the Windows Form Designer
     Private components As System.ComponentModel.IContainer
     Public WithEvents CmdFiltro As System.Windows.Forms.Button
-    Public WithEvents TxtDesc As System.Windows.Forms.TextBox
-    Public WithEvents TxtCodigo As System.Windows.Forms.TextBox
+    Public WithEvents txtDesc As System.Windows.Forms.TextBox
+    Public WithEvents txtCodigo As System.Windows.Forms.TextBox
     Public WithEvents Id2Label As System.Windows.Forms.Label
     Public WithEvents IdLabel As System.Windows.Forms.Label
     'NOTE: The following procedure is required by the Windows Form Designer
@@ -23,8 +23,8 @@ Partial Class FrmBusquedaProducto
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
         Me.CmdFiltro = New System.Windows.Forms.Button()
-        Me.TxtDesc = New System.Windows.Forms.TextBox()
-        Me.TxtCodigo = New System.Windows.Forms.TextBox()
+        Me.txtDesc = New System.Windows.Forms.TextBox()
+        Me.txtCodigo = New System.Windows.Forms.TextBox()
         Me.Id2Label = New System.Windows.Forms.Label()
         Me.IdLabel = New System.Windows.Forms.Label()
         Me.dgvListado = New System.Windows.Forms.DataGridView()
@@ -57,31 +57,31 @@ Partial Class FrmBusquedaProducto
         Me.CmdFiltro.Text = "Filtrar"
         Me.CmdFiltro.UseVisualStyleBackColor = False
         '
-        'TxtDesc
+        'txtDesc
         '
-        Me.TxtDesc.AcceptsReturn = True
-        Me.TxtDesc.BackColor = System.Drawing.SystemColors.Window
-        Me.TxtDesc.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.TxtDesc.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.TxtDesc.Location = New System.Drawing.Point(106, 84)
-        Me.TxtDesc.MaxLength = 200
-        Me.TxtDesc.Name = "TxtDesc"
-        Me.TxtDesc.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.TxtDesc.Size = New System.Drawing.Size(839, 20)
-        Me.TxtDesc.TabIndex = 3
+        Me.txtDesc.AcceptsReturn = True
+        Me.txtDesc.BackColor = System.Drawing.SystemColors.Window
+        Me.txtDesc.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtDesc.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtDesc.Location = New System.Drawing.Point(106, 84)
+        Me.txtDesc.MaxLength = 200
+        Me.txtDesc.Name = "txtDesc"
+        Me.txtDesc.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtDesc.Size = New System.Drawing.Size(839, 20)
+        Me.txtDesc.TabIndex = 3
         '
-        'TxtCodigo
+        'txtCodigo
         '
-        Me.TxtCodigo.AcceptsReturn = True
-        Me.TxtCodigo.BackColor = System.Drawing.SystemColors.Window
-        Me.TxtCodigo.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.TxtCodigo.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.TxtCodigo.Location = New System.Drawing.Point(106, 32)
-        Me.TxtCodigo.MaxLength = 50
-        Me.TxtCodigo.Name = "TxtCodigo"
-        Me.TxtCodigo.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.TxtCodigo.Size = New System.Drawing.Size(260, 20)
-        Me.TxtCodigo.TabIndex = 0
+        Me.txtCodigo.AcceptsReturn = True
+        Me.txtCodigo.BackColor = System.Drawing.SystemColors.Window
+        Me.txtCodigo.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtCodigo.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtCodigo.Location = New System.Drawing.Point(106, 32)
+        Me.txtCodigo.MaxLength = 50
+        Me.txtCodigo.Name = "txtCodigo"
+        Me.txtCodigo.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtCodigo.Size = New System.Drawing.Size(260, 20)
+        Me.txtCodigo.TabIndex = 0
         '
         'Id2Label
         '
@@ -289,8 +289,8 @@ Partial Class FrmBusquedaProducto
         Me.Controls.Add(Me.chkExacta)
         Me.Controls.Add(Me.dgvListado)
         Me.Controls.Add(Me.CmdFiltro)
-        Me.Controls.Add(Me.TxtDesc)
-        Me.Controls.Add(Me.TxtCodigo)
+        Me.Controls.Add(Me.txtDesc)
+        Me.Controls.Add(Me.txtCodigo)
         Me.Controls.Add(Me.Id2Label)
         Me.Controls.Add(Me.IdLabel)
         Me.Cursor = System.Windows.Forms.Cursors.Default

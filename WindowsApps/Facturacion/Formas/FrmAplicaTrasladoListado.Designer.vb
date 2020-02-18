@@ -53,7 +53,7 @@ Partial Class FrmAplicaTrasladoListado
         'btnFiltrar
         '
         Me.btnFiltrar.Image = CType(resources.GetObject("btnFiltrar.Image"), System.Drawing.Image)
-        Me.btnFiltrar.Location = New System.Drawing.Point(610, 10)
+        Me.btnFiltrar.Location = New System.Drawing.Point(610, 12)
         Me.btnFiltrar.Name = "btnFiltrar"
         Me.btnFiltrar.Size = New System.Drawing.Size(22, 22)
         Me.btnFiltrar.TabIndex = 2

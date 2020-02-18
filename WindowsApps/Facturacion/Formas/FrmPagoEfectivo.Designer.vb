@@ -49,14 +49,14 @@ Partial Class FrmPagoEfectivo
         Me.txtCambio.AcceptsReturn = True
         Me.txtCambio.BackColor = System.Drawing.SystemColors.Window
         Me.txtCambio.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtCambio.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtCambio.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtCambio.Location = New System.Drawing.Point(227, 120)
+        Me.txtCambio.Font = New System.Drawing.Font("Arial Narrow", 18.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.txtCambio.ForeColor = System.Drawing.Color.Red
+        Me.txtCambio.Location = New System.Drawing.Point(223, 120)
         Me.txtCambio.MaxLength = 0
         Me.txtCambio.Name = "txtCambio"
         Me.txtCambio.ReadOnly = True
         Me.txtCambio.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtCambio.Size = New System.Drawing.Size(131, 26)
+        Me.txtCambio.Size = New System.Drawing.Size(151, 35)
         Me.txtCambio.TabIndex = 3
         Me.txtCambio.TabStop = False
         Me.txtCambio.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
@@ -65,14 +65,14 @@ Partial Class FrmPagoEfectivo
         '
         Me.Label6.BackColor = System.Drawing.Color.Transparent
         Me.Label6.Cursor = System.Windows.Forms.Cursors.Default
-        Me.Label6.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label6.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label6.Location = New System.Drawing.Point(46, 120)
+        Me.Label6.Font = New System.Drawing.Font("Arial Narrow", 18.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label6.ForeColor = System.Drawing.Color.Red
+        Me.Label6.Location = New System.Drawing.Point(99, 122)
         Me.Label6.Name = "Label6"
         Me.Label6.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label6.Size = New System.Drawing.Size(175, 26)
+        Me.Label6.Size = New System.Drawing.Size(118, 26)
         Me.Label6.TabIndex = 104
-        Me.Label6.Text = "Vuelto:"
+        Me.Label6.Text = "Su vuelto:"
         Me.Label6.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'txtPagoDelCliente
@@ -80,13 +80,13 @@ Partial Class FrmPagoEfectivo
         Me.txtPagoDelCliente.AcceptsReturn = True
         Me.txtPagoDelCliente.BackColor = System.Drawing.SystemColors.Window
         Me.txtPagoDelCliente.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtPagoDelCliente.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.txtPagoDelCliente.Font = New System.Drawing.Font("Arial Narrow", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtPagoDelCliente.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtPagoDelCliente.Location = New System.Drawing.Point(227, 79)
+        Me.txtPagoDelCliente.Location = New System.Drawing.Point(223, 79)
         Me.txtPagoDelCliente.MaxLength = 0
         Me.txtPagoDelCliente.Name = "txtPagoDelCliente"
         Me.txtPagoDelCliente.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtPagoDelCliente.Size = New System.Drawing.Size(131, 26)
+        Me.txtPagoDelCliente.Size = New System.Drawing.Size(151, 29)
         Me.txtPagoDelCliente.TabIndex = 2
         Me.txtPagoDelCliente.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
@@ -94,12 +94,12 @@ Partial Class FrmPagoEfectivo
         '
         Me.Label3.BackColor = System.Drawing.Color.Transparent
         Me.Label3.Cursor = System.Windows.Forms.Cursors.Default
-        Me.Label3.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label3.Font = New System.Drawing.Font("Arial Narrow", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label3.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label3.Location = New System.Drawing.Point(75, 79)
+        Me.Label3.Location = New System.Drawing.Point(79, 79)
         Me.Label3.Name = "Label3"
         Me.Label3.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label3.Size = New System.Drawing.Size(146, 26)
+        Me.Label3.Size = New System.Drawing.Size(138, 26)
         Me.Label3.TabIndex = 103
         Me.Label3.Text = "Pago del cliente:"
         Me.Label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight
@@ -109,14 +109,14 @@ Partial Class FrmPagoEfectivo
         Me.txtTotalPagoEfectivo.AcceptsReturn = True
         Me.txtTotalPagoEfectivo.BackColor = System.Drawing.SystemColors.Window
         Me.txtTotalPagoEfectivo.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtTotalPagoEfectivo.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.txtTotalPagoEfectivo.Font = New System.Drawing.Font("Arial Narrow", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtTotalPagoEfectivo.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtTotalPagoEfectivo.Location = New System.Drawing.Point(227, 35)
+        Me.txtTotalPagoEfectivo.Location = New System.Drawing.Point(223, 35)
         Me.txtTotalPagoEfectivo.MaxLength = 0
         Me.txtTotalPagoEfectivo.Name = "txtTotalPagoEfectivo"
         Me.txtTotalPagoEfectivo.ReadOnly = True
         Me.txtTotalPagoEfectivo.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtTotalPagoEfectivo.Size = New System.Drawing.Size(131, 26)
+        Me.txtTotalPagoEfectivo.Size = New System.Drawing.Size(151, 29)
         Me.txtTotalPagoEfectivo.TabIndex = 1
         Me.txtTotalPagoEfectivo.TabStop = False
         Me.txtTotalPagoEfectivo.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
@@ -125,12 +125,12 @@ Partial Class FrmPagoEfectivo
         '
         Me.Label1.BackColor = System.Drawing.Color.Transparent
         Me.Label1.Cursor = System.Windows.Forms.Cursors.Default
-        Me.Label1.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label1.Font = New System.Drawing.Font("Arial Narrow", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label1.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label1.Location = New System.Drawing.Point(20, 35)
+        Me.Label1.Location = New System.Drawing.Point(31, 35)
         Me.Label1.Name = "Label1"
         Me.Label1.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label1.Size = New System.Drawing.Size(201, 26)
+        Me.Label1.Size = New System.Drawing.Size(186, 26)
         Me.Label1.TabIndex = 106
         Me.Label1.Text = "Total pago en efectivo:"
         Me.Label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight
@@ -156,7 +156,7 @@ Partial Class FrmPagoEfectivo
         Me.MinimumSize = New System.Drawing.Size(419, 272)
         Me.Name = "FrmPagoEfectivo"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
-        Me.Text = "Ingrese el monto correspondiente al pago del cliente"
+        Me.Text = "Detalle de pago en efectivo"
         Me.ResumeLayout(False)
         Me.PerformLayout()
 

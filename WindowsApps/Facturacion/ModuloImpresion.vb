@@ -144,99 +144,7 @@ Public Class ModuloImpresion
     End Class
 #End Region
 
-#Region "Métodos sobrecargados"
-    <StructLayout(LayoutKind.Sequential, CharSet:=CharSet.Unicode)>
-    Structure DOCINFOW
-        <MarshalAs(UnmanagedType.LPWStr)> Public pDocName As String
-        <MarshalAs(UnmanagedType.LPWStr)> Public pOutputFile As String
-        <MarshalAs(UnmanagedType.LPWStr)> Public pDataType As String
-    End Structure
-
-    <DllImport("winspool.Drv", EntryPoint:="OpenPrinterW",
-        SetLastError:=True, CharSet:=CharSet.Unicode,
-        ExactSpelling:=True, CallingConvention:=CallingConvention.StdCall)>
-    Private Shared Function OpenPrinter(ByVal src As String, ByRef hPrinter As IntPtr, ByVal pd As Integer) As Boolean
-    End Function
-    <DllImport("winspool.Drv", EntryPoint:="ClosePrinter",
-        SetLastError:=True, CharSet:=CharSet.Unicode,
-        ExactSpelling:=True, CallingConvention:=CallingConvention.StdCall)>
-    Private Shared Function ClosePrinter(ByVal hPrinter As IntPtr) As Boolean
-    End Function
-    <DllImport("winspool.Drv", EntryPoint:="StartDocPrinterW",
-        SetLastError:=True, CharSet:=CharSet.Unicode,
-        ExactSpelling:=True, CallingConvention:=CallingConvention.StdCall)>
-    Private Shared Function StartDocPrinter(ByVal hPrinter As IntPtr, ByVal level As Integer, ByRef pDI As DOCINFOW) As Boolean
-    End Function
-    <DllImport("winspool.Drv", EntryPoint:="EndDocPrinter",
-        SetLastError:=True, CharSet:=CharSet.Unicode,
-        ExactSpelling:=True, CallingConvention:=CallingConvention.StdCall)>
-    Private Shared Function EndDocPrinter(ByVal hPrinter As IntPtr) As Boolean
-    End Function
-    <DllImport("winspool.Drv", EntryPoint:="StartPagePrinter",
-        SetLastError:=True, CharSet:=CharSet.Unicode,
-        ExactSpelling:=True, CallingConvention:=CallingConvention.StdCall)>
-    Private Shared Function StartPagePrinter(ByVal hPrinter As IntPtr) As Boolean
-    End Function
-    <DllImport("winspool.Drv", EntryPoint:="EndPagePrinter",
-        SetLastError:=True, CharSet:=CharSet.Unicode,
-        ExactSpelling:=True, CallingConvention:=CallingConvention.StdCall)>
-    Private Shared Function EndPagePrinter(ByVal hPrinter As IntPtr) As Boolean
-    End Function
-    <DllImport("winspool.Drv", EntryPoint:="WritePrinter",
-        SetLastError:=True, CharSet:=CharSet.Unicode,
-        ExactSpelling:=True, CallingConvention:=CallingConvention.StdCall)>
-    Private Shared Function WritePrinter(ByVal hPrinter As IntPtr, ByVal pBytes As IntPtr, ByVal dwCount As Integer, ByRef dwWritten As Integer) As Boolean
-    End Function
-
-    Private Shared Function SendBytesToPrinter(ByVal szPrinterName As String, ByVal pBytes As IntPtr, ByVal dwCount As Integer) As Boolean
-        Dim hPrinter As IntPtr          ' The printer handle. 
-        Dim dwError As Integer            ' Last error - in case there was trouble. 
-        Dim di As New DOCINFOW          ' Describes your document (name, port, data type). 
-        Dim dwWritten As Integer          ' The number of bytes written by WritePrinter(). 
-        Dim bSuccess As Boolean         ' Your success code. 
-        Try
-            With di
-                .pDocName = "Document from Leandro Software"
-                .pDataType = "RAW"
-            End With
-            bSuccess = False
-            If OpenPrinter(szPrinterName, hPrinter, 0) Then
-                If StartDocPrinter(hPrinter, 1, di) Then
-                    If StartPagePrinter(hPrinter) Then
-                        bSuccess = WritePrinter(hPrinter, pBytes, dwCount, dwWritten)
-                        EndPagePrinter(hPrinter)
-                    End If
-                    EndDocPrinter(hPrinter)
-                End If
-                ClosePrinter(hPrinter)
-            End If
-            If bSuccess = False Then
-                dwError = Marshal.GetLastWin32Error()
-            End If
-        Catch ex As Exception
-            Throw New Exception("Error en SendBytesToPrinter: " & szPrinterName)
-        End Try
-        Return bSuccess
-    End Function
-
-    Private Shared Sub SendStringToPrinter(ByVal szPrinterName As String, ByVal strInput As String)
-        Dim pBytes As IntPtr
-        Dim dwCount As Integer
-        Dim bSuccess As Boolean
-        Try
-            Dim strDataString = strInput + Chr(12)
-            dwCount = strDataString.Length
-            pBytes = Marshal.StringToCoTaskMemAnsi(strDataString)
-            bSuccess = SendBytesToPrinter(szPrinterName, pBytes, dwCount)
-            If Not bSuccess Then
-                Throw New Exception("No se logro imprimir el tiquete en el dispositivo: " & szPrinterName)
-            End If
-            Marshal.FreeCoTaskMem(pBytes)
-        Catch ex As Exception
-            Throw New Exception("Error en SendStringToPrinter: " & szPrinterName)
-        End Try
-    End Sub
-
+#Region "Métodos sobrcargados"
     Private Shared Sub ImprimirTiquete(szPrinterName As String)
         Dim doc As PrintDocument = New PrintDocument()
         doc.PrinterSettings.PrinterName = szPrinterName
@@ -311,12 +219,12 @@ Public Class ModuloImpresion
     End Sub
 
     Private Shared Sub ImprimirDetalle(objDetalleComprobante As IList(Of ClsDetalleComprobante))
-        lineas.Add(New ClsLineaImpresion(1, "".PadRight(42, "_"), 0, 100, 10, StringAlignment.Near, False))
+        lineas.Add(New ClsLineaImpresion(1, "".PadRight(32, "_"), 0, 100, 10, StringAlignment.Near, False))
         lineas.Add(New ClsLineaImpresion(1, "Descripción", 0, 100, 10, StringAlignment.Near, False))
         lineas.Add(New ClsLineaImpresion(0, "Cant", 0, 15, 10, StringAlignment.Center, False))
         lineas.Add(New ClsLineaImpresion(0, "P/U", 15, 40, 10, StringAlignment.Far, False))
         lineas.Add(New ClsLineaImpresion(1, "Total", 55, 40, 10, StringAlignment.Far, False))
-        lineas.Add(New ClsLineaImpresion(1, "".PadRight(42, "_"), 0, 100, 10, StringAlignment.Near, False))
+        lineas.Add(New ClsLineaImpresion(1, "".PadRight(32, "_"), 0, 100, 10, StringAlignment.Near, False))
         For i As Integer = 0 To objDetalleComprobante.Count - 1
             If CDbl(objDetalleComprobante(i).strPrecio) > 0 Then
                 Dim strLinea As String = objDetalleComprobante(i).strDescripcion
@@ -331,7 +239,7 @@ Public Class ModuloImpresion
                 lineas.Add(New ClsLineaImpresion(1, objDetalleComprobante(i).strExcento, 95, 5, 10, StringAlignment.Far, False))
             End If
         Next
-        lineas.Add(New ClsLineaImpresion(1, "".PadRight(42, "_"), 0, 100, 10, StringAlignment.Near, False))
+        lineas.Add(New ClsLineaImpresion(1, "".PadRight(32, "_"), 0, 100, 10, StringAlignment.Near, False))
     End Sub
 
     Private Shared Sub ImprimirTotales(objComprobante As ClsComprobante)
@@ -360,7 +268,12 @@ Public Class ModuloImpresion
             lineas.Add(New ClsLineaImpresion(1, "Fecha: " & objImpresion.strFecha, 0, 100, 10, StringAlignment.Near, False))
             If objImpresion.strDocumento.Length > 0 Then lineas.Add(New ClsLineaImpresion(1, "Ref: " & objImpresion.strDocumento, 0, 100, 10, StringAlignment.Near, False))
             lineas.Add(New ClsLineaImpresion(1, "Vendedor: " & objImpresion.strVendedor, 0, 100, 10, StringAlignment.Near, False))
-            lineas.Add(New ClsLineaImpresion(1, "Cliente: " & objImpresion.strNombre, 0, 100, 10, StringAlignment.Near, False))
+            Dim nombre As String = "Cliente: " & objImpresion.strNombre
+            While nombre.Length > 32
+                lineas.Add(New ClsLineaImpresion(1, nombre.Substring(0, 32), 0, 100, 10, StringAlignment.Near, False))
+                nombre = nombre.Substring(32)
+            End While
+            lineas.Add(New ClsLineaImpresion(1, nombre, 0, 100, 10, StringAlignment.Near, False))
             lineas.Add(New ClsLineaImpresion(1, "Teléfono: " & objImpresion.strTelefono, 0, 100, 10, StringAlignment.Near, False))
             If objImpresion.arrDesglosePago.Count > 0 Then
                 ImprimirDesglosePago(objImpresion.arrDesglosePago)
@@ -404,7 +317,12 @@ Public Class ModuloImpresion
             lineas.Add(New ClsLineaImpresion(1, "Proforma Nro: " & objImpresion.strId, 0, 100, 10, StringAlignment.Near, False))
             lineas.Add(New ClsLineaImpresion(2, "Fecha: " & objImpresion.strFecha, 0, 100, 10, StringAlignment.Near, False))
             lineas.Add(New ClsLineaImpresion(1, "Vendedor: " & objImpresion.strVendedor, 0, 100, 10, StringAlignment.Near, False))
-            lineas.Add(New ClsLineaImpresion(1, "Cliente: " & objImpresion.strNombre, 0, 100, 10, StringAlignment.Near, False))
+            Dim nombre As String = "Cliente: " & objImpresion.strNombre
+            While nombre.Length > 32
+                lineas.Add(New ClsLineaImpresion(1, nombre.Substring(0, 32), 0, 100, 10, StringAlignment.Near, False))
+                nombre = nombre.Substring(32)
+            End While
+            lineas.Add(New ClsLineaImpresion(1, nombre, 0, 100, 10, StringAlignment.Near, False))
             lineas.Add(New ClsLineaImpresion(1, "Teléfono: " & objImpresion.strTelefono, 0, 100, 10, StringAlignment.Near, False))
             ImprimirDetalle(objImpresion.arrDetalleComprobante)
             ImprimirTotales(objImpresion)
@@ -435,7 +353,12 @@ Public Class ModuloImpresion
             lineas.Add(New ClsLineaImpresion(1, "Apartado Nro: " & objImpresion.strId, 0, 100, 10, StringAlignment.Near, False))
             lineas.Add(New ClsLineaImpresion(2, "Fecha: " & objImpresion.strFecha, 0, 100, 10, StringAlignment.Near, False))
             lineas.Add(New ClsLineaImpresion(1, "Vendedor: " & objImpresion.strVendedor, 0, 100, 10, StringAlignment.Near, False))
-            lineas.Add(New ClsLineaImpresion(1, "Cliente: " & objImpresion.strNombre, 0, 100, 10, StringAlignment.Near, False))
+            Dim nombre As String = "Cliente: " & objImpresion.strNombre
+            While nombre.Length > 32
+                lineas.Add(New ClsLineaImpresion(1, nombre.Substring(0, 32), 0, 100, 10, StringAlignment.Near, False))
+                nombre = nombre.Substring(32)
+            End While
+            lineas.Add(New ClsLineaImpresion(1, nombre, 0, 100, 10, StringAlignment.Near, False))
             lineas.Add(New ClsLineaImpresion(1, "Teléfono: " & objImpresion.strTelefono, 0, 100, 10, StringAlignment.Near, False))
             If objImpresion.arrDesglosePago.Count > 0 Then ImprimirDesglosePago(objImpresion.arrDesglosePago)
             ImprimirDetalle(objImpresion.arrDetalleComprobante)
@@ -474,7 +397,12 @@ Public Class ModuloImpresion
             lineas.Add(New ClsLineaImpresion(1, "Orden Nro: " & objImpresion.strId, 0, 100, 10, StringAlignment.Near, True))
             lineas.Add(New ClsLineaImpresion(1, "Fecha: " & objImpresion.strFecha, 0, 100, 10, StringAlignment.Near, False))
             lineas.Add(New ClsLineaImpresion(1, "Vendedor: " & objImpresion.strVendedor, 0, 100, 10, StringAlignment.Near, False))
-            lineas.Add(New ClsLineaImpresion(1, "Cliente: " & objImpresion.strNombre, 0, 100, 10, StringAlignment.Near, True))
+            Dim nombre As String = "Cliente: " & objImpresion.strNombre
+            While nombre.Length > 32
+                lineas.Add(New ClsLineaImpresion(1, nombre.Substring(0, 32), 0, 100, 10, StringAlignment.Near, False))
+                nombre = nombre.Substring(32)
+            End While
+            lineas.Add(New ClsLineaImpresion(1, nombre, 0, 100, 10, StringAlignment.Near, False))
             lineas.Add(New ClsLineaImpresion(1, "Teléfono: " & objImpresion.strTelefono, 0, 100, 10, StringAlignment.Near, False))
             lineas.Add(New ClsLineaImpresion(1, "Entrega: " & objImpresion.strDocumento, 0, 100, 10, StringAlignment.Near, True))
             If objImpresion.strDireccion.Length > 0 Then
@@ -556,7 +484,12 @@ Public Class ModuloImpresion
             ImprimirEncabezado(objImpresion.equipo, objImpresion.empresa, Date.Now.ToString("dd-MM-yyyy"), objImpresion.usuario.CodigoUsuario, "DEVOLUCION CLIENTE")
             lineas.Add(New ClsLineaImpresion(1, "Mov. Nro: " & objImpresion.strId, 0, 100, 10, StringAlignment.Near, False))
             lineas.Add(New ClsLineaImpresion(1, "Fact Nro: " & objImpresion.strDocumento, 0, 100, 10, StringAlignment.Near, False))
-            lineas.Add(New ClsLineaImpresion(1, "Cliente: " & objImpresion.strNombre, 0, 100, 10, StringAlignment.Near, False))
+            Dim nombre As String = "Cliente: " & objImpresion.strNombre
+            While nombre.Length > 32
+                lineas.Add(New ClsLineaImpresion(1, nombre.Substring(0, 32), 0, 100, 10, StringAlignment.Near, False))
+                nombre = nombre.Substring(32)
+            End While
+            lineas.Add(New ClsLineaImpresion(1, nombre, 0, 100, 10, StringAlignment.Near, False))
             lineas.Add(New ClsLineaImpresion(2, "Fecha: " & objImpresion.strFecha, 0, 100, 10, StringAlignment.Near, False))
             ImprimirDetalle(objImpresion.arrDetalleComprobante)
             ImprimirTotales(objImpresion)
@@ -578,7 +511,12 @@ Public Class ModuloImpresion
             ImprimirEncabezado(objImpresion.equipo, objImpresion.empresa, Date.Now.ToString("dd-MM-yyyy"), objImpresion.usuario.CodigoUsuario, "DEVOLUCION PROVEEDOR")
             lineas.Add(New ClsLineaImpresion(1, "Mov. Nro: " & objImpresion.strId, 0, 100, 10, StringAlignment.Near, False))
             lineas.Add(New ClsLineaImpresion(1, "Compra Nro: " & objImpresion.strDocumento, 0, 100, 10, StringAlignment.Near, False))
-            lineas.Add(New ClsLineaImpresion(1, "Proveedor: " & objImpresion.strNombre, 0, 100, 10, StringAlignment.Near, False))
+            Dim nombre As String = "Proveedor: " & objImpresion.strNombre
+            While nombre.Length > 32
+                lineas.Add(New ClsLineaImpresion(1, nombre.Substring(0, 32), 0, 100, 10, StringAlignment.Near, False))
+                nombre = nombre.Substring(32)
+            End While
+            lineas.Add(New ClsLineaImpresion(1, nombre, 0, 100, 10, StringAlignment.Near, False))
             lineas.Add(New ClsLineaImpresion(2, "Fecha: " & objImpresion.strFecha, 0, 100, 10, StringAlignment.Near, False))
             ImprimirDetalle(objImpresion.arrDetalleComprobante)
             ImprimirTotales(objImpresion)
@@ -623,14 +561,19 @@ Public Class ModuloImpresion
             ImprimirEncabezado(objImpresion.equipo, objImpresion.empresa, Date.Now.ToString("dd-MM-yyyy"), objImpresion.usuario.CodigoUsuario, "RECIBO ABONO CXC")
             lineas.Add(New ClsLineaImpresion(1, "Consecutivo: " & objImpresion.strConsecutivo, 0, 100, 10, StringAlignment.Near, False))
             lineas.Add(New ClsLineaImpresion(1, "Fecha: " & objImpresion.strFechaAbono, 0, 100, 10, StringAlignment.Near, False))
-            lineas.Add(New ClsLineaImpresion(2, "Cliente: " & objImpresion.strNombre, 0, 100, 10, StringAlignment.Near, False))
+            Dim nombre As String = "Cliente: " & objImpresion.strNombre
+            While nombre.Length > 32
+                lineas.Add(New ClsLineaImpresion(1, nombre.Substring(0, 32), 0, 100, 10, StringAlignment.Near, False))
+                nombre = nombre.Substring(32)
+            End While
+            lineas.Add(New ClsLineaImpresion(1, nombre, 0, 100, 10, StringAlignment.Near, False))
             lineas.Add(New ClsLineaImpresion(1, "Desglose CxC Abonadas", 0, 100, 10, StringAlignment.Near, False))
-            lineas.Add(New ClsLineaImpresion(1, "".PadRight(42, "_"), 0, 100, 10, StringAlignment.Near, False))
+            lineas.Add(New ClsLineaImpresion(1, "".PadRight(32, "_"), 0, 100, 10, StringAlignment.Near, False))
             For i = 0 To objImpresion.arrDesgloseMov.Count - 1
                 lineas.Add(New ClsLineaImpresion(0, objImpresion.arrDesgloseMov(i).strDescripcion, 0, 54, 10, StringAlignment.Near, False))
                 lineas.Add(New ClsLineaImpresion(1, objImpresion.arrDesgloseMov(i).strMonto, 54, 46, 10, StringAlignment.Far, False))
             Next
-            lineas.Add(New ClsLineaImpresion(1, "".PadRight(42, "_"), 0, 100, 10, StringAlignment.Near, False))
+            lineas.Add(New ClsLineaImpresion(1, "".PadRight(32, "_"), 0, 100, 10, StringAlignment.Near, False))
             ImprimirDesglosePago(objImpresion.arrDesglosePago)
             lineas.Add(New ClsLineaImpresion(0, "Monto Total:", 0, 54, 10, StringAlignment.Far, True))
             lineas.Add(New ClsLineaImpresion(1, objImpresion.strTotalAbono, 54, 46, 10, StringAlignment.Far, True))
@@ -656,14 +599,19 @@ Public Class ModuloImpresion
             ImprimirEncabezado(objImpresion.equipo, objImpresion.empresa, Date.Now.ToString("dd-MM-yyyy"), objImpresion.usuario.CodigoUsuario, "RECIBO ABONO CXP")
             lineas.Add(New ClsLineaImpresion(1, "Consecutivo: " & objImpresion.strConsecutivo, 0, 100, 10, StringAlignment.Near, False))
             lineas.Add(New ClsLineaImpresion(1, "Fecha: " & objImpresion.strFechaAbono, 0, 100, 10, StringAlignment.Near, False))
-            lineas.Add(New ClsLineaImpresion(2, "Proveedor: " & objImpresion.strNombre, 0, 100, 10, StringAlignment.Near, False))
+            Dim nombre As String = "Proveedor: " & objImpresion.strNombre
+            While nombre.Length > 32
+                lineas.Add(New ClsLineaImpresion(1, nombre.Substring(0, 32), 0, 100, 10, StringAlignment.Near, False))
+                nombre = nombre.Substring(32)
+            End While
+            lineas.Add(New ClsLineaImpresion(1, nombre, 0, 100, 10, StringAlignment.Near, False))
             lineas.Add(New ClsLineaImpresion(1, "Desglose CxP Abonadas", 0, 100, 10, StringAlignment.Near, False))
-            lineas.Add(New ClsLineaImpresion(1, "".PadRight(42, "_"), 0, 100, 10, StringAlignment.Near, False))
+            lineas.Add(New ClsLineaImpresion(1, "".PadRight(32, "_"), 0, 100, 10, StringAlignment.Near, False))
             For i = 0 To objImpresion.arrDesgloseMov.Count - 1
                 lineas.Add(New ClsLineaImpresion(0, objImpresion.arrDesgloseMov(i).strDescripcion, 0, 54, 10, StringAlignment.Near, False))
                 lineas.Add(New ClsLineaImpresion(1, objImpresion.arrDesgloseMov(i).strMonto, 54, 46, 10, StringAlignment.Far, False))
             Next
-            lineas.Add(New ClsLineaImpresion(1, "".PadRight(42, "_"), 0, 100, 10, StringAlignment.Near, False))
+            lineas.Add(New ClsLineaImpresion(1, "".PadRight(32, "_"), 0, 100, 10, StringAlignment.Near, False))
             ImprimirDesglosePago(objImpresion.arrDesglosePago)
             lineas.Add(New ClsLineaImpresion(0, "Monto Total:", 0, 54, 10, StringAlignment.Far, True))
             lineas.Add(New ClsLineaImpresion(1, objImpresion.strTotalAbono, 54, 46, 10, StringAlignment.Far, True))
@@ -688,7 +636,12 @@ Public Class ModuloImpresion
             ImprimirEncabezado(objImpresion.equipo, objImpresion.empresa, Date.Now.ToString("dd-MM-yyyy"), objImpresion.usuario.CodigoUsuario, "RECIBO ABONO APARTADO")
             lineas.Add(New ClsLineaImpresion(1, "Consecutivo: " & objImpresion.strConsecutivo, 0, 100, 10, StringAlignment.Near, False))
             lineas.Add(New ClsLineaImpresion(1, "Fecha: " & objImpresion.strFechaAbono, 0, 100, 10, StringAlignment.Near, False))
-            lineas.Add(New ClsLineaImpresion(2, "Cliente: " & objImpresion.strNombre, 0, 100, 10, StringAlignment.Near, False))
+            Dim nombre As String = "Cliente: " & objImpresion.strNombre
+            While nombre.Length > 32
+                lineas.Add(New ClsLineaImpresion(1, nombre.Substring(0, 32), 0, 100, 10, StringAlignment.Near, False))
+                nombre = nombre.Substring(32)
+            End While
+            lineas.Add(New ClsLineaImpresion(1, nombre, 0, 100, 10, StringAlignment.Near, False))
             ImprimirDesglosePago(objImpresion.arrDesglosePago)
             lineas.Add(New ClsLineaImpresion(0, "Monto Total:", 0, 54, 10, StringAlignment.Far, True))
             lineas.Add(New ClsLineaImpresion(1, objImpresion.strTotalAbono, 54, 46, 10, StringAlignment.Far, True))
@@ -713,7 +666,12 @@ Public Class ModuloImpresion
             ImprimirEncabezado(objImpresion.equipo, objImpresion.empresa, Date.Now.ToString("dd-MM-yyyy"), objImpresion.usuario.CodigoUsuario, "RECIBO ABONO ORDEN SERV")
             lineas.Add(New ClsLineaImpresion(1, "Consecutivo: " & objImpresion.strConsecutivo, 0, 100, 10, StringAlignment.Near, False))
             lineas.Add(New ClsLineaImpresion(1, "Fecha: " & objImpresion.strFechaAbono, 0, 100, 10, StringAlignment.Near, False))
-            lineas.Add(New ClsLineaImpresion(2, "Cliente: " & objImpresion.strNombre, 0, 100, 10, StringAlignment.Near, False))
+            Dim nombre As String = "Cliente: " & objImpresion.strNombre
+            While nombre.Length > 32
+                lineas.Add(New ClsLineaImpresion(1, nombre.Substring(0, 32), 0, 100, 10, StringAlignment.Near, False))
+                nombre = nombre.Substring(32)
+            End While
+            lineas.Add(New ClsLineaImpresion(1, nombre, 0, 100, 10, StringAlignment.Near, False))
             ImprimirDesglosePago(objImpresion.arrDesglosePago)
             lineas.Add(New ClsLineaImpresion(0, "Monto Total:", 0, 54, 10, StringAlignment.Far, True))
             lineas.Add(New ClsLineaImpresion(1, objImpresion.strTotalAbono, 54, 46, 10, StringAlignment.Far, True))
