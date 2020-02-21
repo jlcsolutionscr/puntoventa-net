@@ -91,7 +91,7 @@ Public Class FrmProforma
         dvcPorcDescuento.HeaderText = "Desc"
         dvcPorcDescuento.Width = 40
         dvcPorcDescuento.Visible = True
-        dvcPorcDescuento.ReadOnly = True
+        dvcPorcDescuento.ReadOnly = False
         dvcPorcDescuento.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleProforma.Columns.Add(dvcPorcDescuento)
 
@@ -157,9 +157,7 @@ Public Class FrmProforma
         Dim decTasaImpuesto As Decimal = producto.ParametroImpuesto.TasaImpuesto
         If cliente.AplicaTasaDiferenciada Then decTasaImpuesto = cliente.ParametroImpuesto.TasaImpuesto
         Dim decPrecioGravado As Decimal = decPrecio
-        If decTasaImpuesto > 0 Then
-            decPrecioGravado = Math.Round(decPrecio / (1 + (decTasaImpuesto / 100)), 3, MidpointRounding.AwayFromZero)
-        End If
+        If decTasaImpuesto > 0 Then decPrecioGravado = Math.Round(decPrecio / (1 + (decTasaImpuesto / 100)), 3, MidpointRounding.AwayFromZero)
         Dim intIndice As Integer = ObtenerIndice(dtbDetalleProforma, producto.IdProducto)
         If producto.Tipo = 1 And intIndice >= 0 Then
             Dim decNewCantidad = dtbDetalleProforma.Rows(intIndice).Item(3) + decCantidad
@@ -305,6 +303,22 @@ Public Class FrmProforma
 #Region "Eventos Controles"
     Private Sub FrmProforma_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         KeyPreview = True
+        For Each ctl As Control In Controls
+            If TypeOf (ctl) Is TextBox Then
+                AddHandler DirectCast(ctl, TextBox).Enter, AddressOf EnterTexboxHandler
+                AddHandler DirectCast(ctl, TextBox).Leave, AddressOf LeaveTexboxHandler
+            End If
+        Next
+    End Sub
+
+    Private Sub EnterTexboxHandler(sender As Object, e As EventArgs)
+        Dim textbox As TextBox = DirectCast(sender, TextBox)
+        textbox.BackColor = Color.PeachPuff
+    End Sub
+
+    Private Sub LeaveTexboxHandler(sender As Object, e As EventArgs)
+        Dim textbox As TextBox = DirectCast(sender, TextBox)
+        textbox.BackColor = Color.White
     End Sub
 
     Private Sub FrmProforma_KeyDown(sender As Object, e As KeyEventArgs) Handles MyBase.KeyDown
@@ -585,6 +599,7 @@ Public Class FrmProforma
     Private Async Sub BtnGuardar_Click(sender As Object, e As EventArgs) Handles btnGuardar.Click
         If vendedor Is Nothing Then
             MessageBox.Show("Debe seleccionar el vendedor para poder guardar el registro.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            BtnBuscaVendedor_Click(btnBuscaVendedor, New EventArgs())
             Exit Sub
         ElseIf decTotal = 0 Then
             MessageBox.Show("Debe agregar líneas de detalle para guardar el registro.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
@@ -908,6 +923,47 @@ Public Class FrmProforma
         End If
     End Sub
 
+    Private Sub grdDetalleProforma_EditingControlShowing(sender As Object, e As DataGridViewEditingControlShowingEventArgs) Handles grdDetalleProforma.EditingControlShowing
+        If grdDetalleProforma.CurrentCell.ColumnIndex = 4 Then
+            Dim tb As TextBox = e.Control
+            If tb IsNot Nothing Then
+                AddHandler CType(e.Control, TextBox).KeyPress, AddressOf TextBox_keyPress
+            End If
+        End If
+    End Sub
+
+    Private Sub grdDetalleProforma_CellValueChanged(sender As Object, e As DataGridViewCellEventArgs) Handles grdDetalleProforma.CellValueChanged
+        If e.ColumnIndex = 4 Then
+            Dim decPorcDesc As Decimal = 0
+            If Not IsDBNull(grdDetalleProforma.Rows(e.RowIndex).Cells(e.ColumnIndex).Value) Then
+                decPorcDesc = grdDetalleProforma.Rows(e.RowIndex).Cells(e.ColumnIndex).Value
+            End If
+            Dim decPorMax As Decimal = FrmPrincipal.empresaGlobal.PorcentajeDescMaximo
+            If decPorcDesc > decPorMax Then
+                MessageBox.Show("El porcentaje ingresado es mayor al parametro establecido para la empresa", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                grdDetalleProforma.Rows(e.RowIndex).Cells(e.ColumnIndex).Value = 0
+            Else
+                Dim decCantidad As Decimal = grdDetalleProforma.Rows(e.RowIndex).Cells(3).Value
+                Dim decTasaImpuesto As Decimal = grdDetalleProforma.Rows(e.RowIndex).Cells(9).Value
+                Dim decPrecio As Decimal = grdDetalleProforma.Rows(e.RowIndex).Cells(6).Value + grdDetalleProforma.Rows(e.RowIndex).Cells(5).Value
+                Dim decMontoDesc = decPrecio / 100 * decPorcDesc
+                decPrecio = decPrecio - decMontoDesc
+                Dim decPrecioGravado As Decimal = decPrecio
+                If decTasaImpuesto > 0 Then decPrecioGravado = Math.Round(decPrecio / (1 + (decTasaImpuesto / 100)), 3, MidpointRounding.AwayFromZero)
+                dtbDetalleProforma.Rows(e.RowIndex).Item(4) = decPrecioGravado
+                dtbDetalleProforma.Rows(e.RowIndex).Item(5) = decPrecio
+                dtbDetalleProforma.Rows(e.RowIndex).Item(6) = decCantidad * decPrecio
+                dtbDetalleProforma.Rows(e.RowIndex).Item(9) = decPorcDesc
+                dtbDetalleProforma.Rows(e.RowIndex).Item(10) = decMontoDesc
+                CargarTotales()
+            End If
+        End If
+    End Sub
+
+    Private Sub TextBox_keyPress(ByVal sender As Object, ByVal e As KeyPressEventArgs)
+        If Char.IsDigit(CChar(CStr(e.KeyChar))) = False Then e.Handled = True
+    End Sub
+
     Private Async Sub TxtPrecio_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtPrecio.PreviewKeyDown
         If producto IsNot Nothing Then
             If e.KeyCode = Keys.ControlKey Then
@@ -960,7 +1016,7 @@ Public Class FrmProforma
         sender.SelectAll()
     End Sub
 
-    Private Sub ValidaDigitosSinDecimal(sender As Object, e As KeyPressEventArgs)
+    Private Sub ValidaDigitosSinDecimal(sender As Object, e As KeyPressEventArgs) Handles txtTelefono.KeyPress
         FrmPrincipal.ValidaNumero(e, sender, False, 0)
     End Sub
 

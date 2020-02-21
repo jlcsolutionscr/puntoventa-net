@@ -104,7 +104,7 @@ Public Class FrmApartado
         dvcPorcDescuento.HeaderText = "%"
         dvcPorcDescuento.Width = 40
         dvcPorcDescuento.Visible = True
-        dvcPorcDescuento.ReadOnly = True
+        dvcPorcDescuento.ReadOnly = False
         dvcPorcDescuento.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleApartado.Columns.Add(dvcPorcDescuento)
 
@@ -478,6 +478,22 @@ Public Class FrmApartado
 #Region "Eventos Controles"
     Private Sub FrmApartado_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         KeyPreview = True
+        For Each ctl As Control In Controls
+            If TypeOf (ctl) Is TextBox Then
+                AddHandler DirectCast(ctl, TextBox).Enter, AddressOf EnterTexboxHandler
+                AddHandler DirectCast(ctl, TextBox).Leave, AddressOf LeaveTexboxHandler
+            End If
+        Next
+    End Sub
+
+    Private Sub EnterTexboxHandler(sender As Object, e As EventArgs)
+        Dim textbox As TextBox = DirectCast(sender, TextBox)
+        textbox.BackColor = Color.PeachPuff
+    End Sub
+
+    Private Sub LeaveTexboxHandler(sender As Object, e As EventArgs)
+        Dim textbox As TextBox = DirectCast(sender, TextBox)
+        textbox.BackColor = Color.White
     End Sub
 
     Private Sub FrmApartado_KeyDown(sender As Object, e As KeyEventArgs) Handles MyBase.KeyDown
@@ -568,6 +584,7 @@ Public Class FrmApartado
         cboTipoMoneda.SelectedValue = FrmPrincipal.empresaGlobal.IdTipoMoneda
         txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmPrincipal.decTipoCambioDolar.ToString())
         cboTipoMoneda.Enabled = True
+        txtTelefono.Text = ""
         txtDocumento.Text = ""
         txtTipoExoneracion.Text = ""
         txtNumDocExoneracion.Text = ""
@@ -670,6 +687,7 @@ Public Class FrmApartado
                 txtFecha.Text = apartado.Fecha
                 cboTipoMoneda.SelectedValue = apartado.IdTipoMoneda
                 txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmPrincipal.decTipoCambioDolar.ToString())
+                txtTelefono.Text = apartado.Telefono
                 txtDocumento.Text = apartado.TextoAdicional
                 If cliente.PorcentajeExoneracion > 0 Then
                     txtTipoExoneracion.Text = cliente.ParametroExoneracion.Descripcion
@@ -684,6 +702,7 @@ Public Class FrmApartado
                 CargarDesglosePago(apartado)
                 CargarTotales()
                 CargarTotalesPago()
+                decPagoCliente = apartado.MontoPagado
                 cboTipoMoneda.Enabled = False
                 txtNombreCliente.ReadOnly = True
                 btnInsertar.Enabled = False
@@ -730,6 +749,7 @@ Public Class FrmApartado
             Try
                 cliente = Await Puntoventa.ObtenerCliente(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
                 txtNombreCliente.Text = cliente.Nombre
+                txtTelefono.Text = cliente.Telefono
                 txtNombreCliente.ReadOnly = True
                 If cliente.Vendedor IsNot Nothing Then
                     vendedor = cliente.Vendedor
@@ -782,9 +802,13 @@ Public Class FrmApartado
     Private Async Sub BtnGuardar_Click(sender As Object, e As EventArgs) Handles btnGuardar.Click
         If vendedor Is Nothing Then
             MessageBox.Show("Debe seleccionar el vendedor para poder guardar el registro.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            BtnBuscaVendedor_Click(btnBuscaVendedor, New EventArgs())
             Exit Sub
         ElseIf decTotal = 0 Then
             MessageBox.Show("Debe agregar líneas de detalle para guardar el registro.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            Exit Sub
+        ElseIf decSaldoPorPagar = 0 Then
+            MessageBox.Show("El apartado no puede ser cancelado en su totalidad.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         ElseIf decSaldoPorPagar < 0 Then
             MessageBox.Show("El total del desglose de pago de la factura es superior al saldo por pagar.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
@@ -816,6 +840,7 @@ Public Class FrmApartado
                 .IdCliente = cliente.IdCliente,
                 .NombreCliente = txtNombreCliente.Text,
                 .Fecha = Now(),
+                .Telefono = txtTelefono.Text,
                 .TextoAdicional = txtDocumento.Text,
                 .IdVendedor = vendedor.IdVendedor,
                 .Excento = decExcento,
@@ -824,6 +849,7 @@ Public Class FrmApartado
                 .Descuento = 0,
                 .Impuesto = decImpuesto,
                 .MontoAdelanto = decTotalPago,
+                .MontoPagado = decPagoCliente,
                 .Nulo = False
             }
             For I = 0 To dtbDetalleApartado.Rows.Count - 1
@@ -906,7 +932,7 @@ Public Class FrmApartado
                     .strId = apartado.ConsecApartado,
                     .strVendedor = txtVendedor.Text,
                     .strNombre = txtNombreCliente.Text,
-                    .strTelefono = cliente.Telefono,
+                    .strTelefono = apartado.Telefono,
                     .strDocumento = "",
                     .strFecha = apartado.Fecha.ToString("dd/MM/yyyy hh:mm:ss"),
                     .strSubTotal = txtSubTotal.Text,
@@ -1175,6 +1201,47 @@ Public Class FrmApartado
         End If
     End Sub
 
+    Private Sub grdDetalleApartado_EditingControlShowing(sender As Object, e As DataGridViewEditingControlShowingEventArgs) Handles grdDetalleApartado.EditingControlShowing
+        If grdDetalleApartado.CurrentCell.ColumnIndex = 4 Then
+            Dim tb As TextBox = e.Control
+            If tb IsNot Nothing Then
+                AddHandler CType(e.Control, TextBox).KeyPress, AddressOf TextBox_keyPress
+            End If
+        End If
+    End Sub
+
+    Private Sub grdDetalleApartado_CellValueChanged(sender As Object, e As DataGridViewCellEventArgs) Handles grdDetalleApartado.CellValueChanged
+        If e.ColumnIndex = 4 Then
+            Dim decPorcDesc As Decimal = 0
+            If Not IsDBNull(grdDetalleApartado.Rows(e.RowIndex).Cells(e.ColumnIndex).Value) Then
+                decPorcDesc = grdDetalleApartado.Rows(e.RowIndex).Cells(e.ColumnIndex).Value
+            End If
+            Dim decPorMax As Decimal = FrmPrincipal.empresaGlobal.PorcentajeDescMaximo
+            If decPorcDesc > decPorMax Then
+                MessageBox.Show("El porcentaje ingresado es mayor al parametro establecido para la empresa", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                grdDetalleApartado.Rows(e.RowIndex).Cells(e.ColumnIndex).Value = 0
+            Else
+                Dim decCantidad As Decimal = grdDetalleApartado.Rows(e.RowIndex).Cells(3).Value
+                Dim decTasaImpuesto As Decimal = grdDetalleApartado.Rows(e.RowIndex).Cells(9).Value
+                Dim decPrecio As Decimal = grdDetalleApartado.Rows(e.RowIndex).Cells(6).Value + grdDetalleApartado.Rows(e.RowIndex).Cells(5).Value
+                Dim decMontoDesc = decPrecio / 100 * decPorcDesc
+                decPrecio = decPrecio - decMontoDesc
+                Dim decPrecioGravado As Decimal = decPrecio
+                If decTasaImpuesto > 0 Then decPrecioGravado = Math.Round(decPrecio / (1 + (decTasaImpuesto / 100)), 3, MidpointRounding.AwayFromZero)
+                dtbDetalleApartado.Rows(e.RowIndex).Item(4) = decPrecioGravado
+                dtbDetalleApartado.Rows(e.RowIndex).Item(5) = decPrecio
+                dtbDetalleApartado.Rows(e.RowIndex).Item(6) = decCantidad * decPrecio
+                dtbDetalleApartado.Rows(e.RowIndex).Item(9) = decPorcDesc
+                dtbDetalleApartado.Rows(e.RowIndex).Item(10) = decMontoDesc
+                CargarTotales()
+            End If
+        End If
+    End Sub
+
+    Private Sub TextBox_keyPress(ByVal sender As Object, ByVal e As KeyPressEventArgs)
+        If Char.IsDigit(CChar(CStr(e.KeyChar))) = False Then e.Handled = True
+    End Sub
+
     Private Async Sub TxtCodigo_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtCodigo.PreviewKeyDown
         If e.KeyCode = Keys.Enter Or e.KeyCode = Keys.Tab Then
             Try
@@ -1275,7 +1342,7 @@ Public Class FrmApartado
         End If
     End Sub
 
-    Private Sub ValidaDigitosSinDecimal(sender As Object, e As KeyPressEventArgs)
+    Private Sub ValidaDigitosSinDecimal(sender As Object, e As KeyPressEventArgs) Handles txtTelefono.KeyPress
         FrmPrincipal.ValidaNumero(e, sender, False, 0)
     End Sub
 

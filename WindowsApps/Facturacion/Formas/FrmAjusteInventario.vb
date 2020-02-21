@@ -146,6 +146,22 @@ Public Class FrmAjusteInventario
 #Region "Eventos Controles"
     Private Sub FrmAjusteInventario_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         KeyPreview = True
+        For Each ctl As Control In Controls
+            If TypeOf (ctl) Is TextBox Then
+                AddHandler DirectCast(ctl, TextBox).Enter, AddressOf EnterTexboxHandler
+                AddHandler DirectCast(ctl, TextBox).Leave, AddressOf LeaveTexboxHandler
+            End If
+        Next
+    End Sub
+
+    Private Sub EnterTexboxHandler(sender As Object, e As EventArgs)
+        Dim textbox As TextBox = DirectCast(sender, TextBox)
+        textbox.BackColor = Color.PeachPuff
+    End Sub
+
+    Private Sub LeaveTexboxHandler(sender As Object, e As EventArgs)
+        Dim textbox As TextBox = DirectCast(sender, TextBox)
+        textbox.BackColor = Color.White
     End Sub
 
     Private Sub FrmAjusteInventario_KeyDown(sender As Object, e As KeyEventArgs) Handles MyBase.KeyDown

@@ -105,7 +105,6 @@ Partial Class FrmFactura
         Me.txtFecha = New System.Windows.Forms.TextBox()
         Me.Label15 = New System.Windows.Forms.Label()
         Me.txtPorcentajeExoneracion = New System.Windows.Forms.TextBox()
-        Me.txtNombreInstExoneracion = New System.Windows.Forms.TextBox()
         Me.txtNumDocExoneracion = New System.Windows.Forms.TextBox()
         Me.txtTipoExoneracion = New System.Windows.Forms.TextBox()
         Me.Label8 = New System.Windows.Forms.Label()
@@ -123,6 +122,8 @@ Partial Class FrmFactura
         Me.Label16 = New System.Windows.Forms.Label()
         Me.txtReferencia = New System.Windows.Forms.TextBox()
         Me.Label3 = New System.Windows.Forms.Label()
+        Me.txtTelefono = New System.Windows.Forms.TextBox()
+        Me.Label6 = New System.Windows.Forms.Label()
         CType(Me.grdDetalleFactura, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.grdDesglosePago, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -506,7 +507,6 @@ Partial Class FrmFactura
         Me.grdDetalleFactura.Location = New System.Drawing.Point(9, 195)
         Me.grdDetalleFactura.MultiSelect = False
         Me.grdDetalleFactura.Name = "grdDetalleFactura"
-        Me.grdDetalleFactura.ReadOnly = True
         Me.grdDetalleFactura.RowHeadersVisible = False
         Me.grdDetalleFactura.RowHeadersWidth = 30
         Me.grdDetalleFactura.Size = New System.Drawing.Size(800, 200)
@@ -519,7 +519,7 @@ Partial Class FrmFactura
         Me.btnBuscarCliente.Location = New System.Drawing.Point(671, 39)
         Me.btnBuscarCliente.Name = "btnBuscarCliente"
         Me.btnBuscarCliente.Size = New System.Drawing.Size(20, 20)
-        Me.btnBuscarCliente.TabIndex = 4
+        Me.btnBuscarCliente.TabIndex = 3
         Me.btnBuscarCliente.TabStop = False
         Me.btnBuscarCliente.UseVisualStyleBackColor = True
         '
@@ -562,7 +562,7 @@ Partial Class FrmFactura
         Me.txtNombreCliente.Name = "txtNombreCliente"
         Me.txtNombreCliente.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtNombreCliente.Size = New System.Drawing.Size(406, 20)
-        Me.txtNombreCliente.TabIndex = 3
+        Me.txtNombreCliente.TabIndex = 2
         Me.txtNombreCliente.TabStop = False
         '
         'txtAutorizacion
@@ -796,7 +796,7 @@ Partial Class FrmFactura
         Me.btnOrdenServicio.Name = "btnOrdenServicio"
         Me.btnOrdenServicio.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.btnOrdenServicio.Size = New System.Drawing.Size(96, 21)
-        Me.btnOrdenServicio.TabIndex = 6
+        Me.btnOrdenServicio.TabIndex = 16
         Me.btnOrdenServicio.TabStop = False
         Me.btnOrdenServicio.Text = "Cargar Orden"
         Me.btnOrdenServicio.UseVisualStyleBackColor = False
@@ -848,7 +848,7 @@ Partial Class FrmFactura
         Me.btnProforma.Name = "btnProforma"
         Me.btnProforma.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.btnProforma.Size = New System.Drawing.Size(96, 21)
-        Me.btnProforma.TabIndex = 10
+        Me.btnProforma.TabIndex = 15
         Me.btnProforma.TabStop = False
         Me.btnProforma.Text = "Cargar Proforma"
         Me.btnProforma.UseVisualStyleBackColor = False
@@ -868,7 +868,7 @@ Partial Class FrmFactura
         Me.cboCondicionVenta.Name = "cboCondicionVenta"
         Me.cboCondicionVenta.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.cboCondicionVenta.Size = New System.Drawing.Size(302, 21)
-        Me.cboCondicionVenta.TabIndex = 11
+        Me.cboCondicionVenta.TabIndex = 5
         '
         'Label7
         '
@@ -896,7 +896,7 @@ Partial Class FrmFactura
         Me.txtPlazoCredito.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtPlazoCredito.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
         Me.txtPlazoCredito.Size = New System.Drawing.Size(42, 20)
-        Me.txtPlazoCredito.TabIndex = 12
+        Me.txtPlazoCredito.TabIndex = 6
         Me.txtPlazoCredito.TabStop = False
         '
         'Label12
@@ -962,29 +962,14 @@ Partial Class FrmFactura
         Me.txtPorcentajeExoneracion.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtPorcentajeExoneracion.Enabled = False
         Me.txtPorcentajeExoneracion.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtPorcentajeExoneracion.Location = New System.Drawing.Point(655, 118)
+        Me.txtPorcentajeExoneracion.Location = New System.Drawing.Point(769, 118)
         Me.txtPorcentajeExoneracion.MaxLength = 0
         Me.txtPorcentajeExoneracion.Name = "txtPorcentajeExoneracion"
         Me.txtPorcentajeExoneracion.ReadOnly = True
         Me.txtPorcentajeExoneracion.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtPorcentajeExoneracion.Size = New System.Drawing.Size(39, 20)
-        Me.txtPorcentajeExoneracion.TabIndex = 159
+        Me.txtPorcentajeExoneracion.TabIndex = 14
         Me.txtPorcentajeExoneracion.TabStop = False
-        '
-        'txtNombreInstExoneracion
-        '
-        Me.txtNombreInstExoneracion.AcceptsReturn = True
-        Me.txtNombreInstExoneracion.BackColor = System.Drawing.SystemColors.Window
-        Me.txtNombreInstExoneracion.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtNombreInstExoneracion.Enabled = False
-        Me.txtNombreInstExoneracion.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtNombreInstExoneracion.Location = New System.Drawing.Point(397, 118)
-        Me.txtNombreInstExoneracion.MaxLength = 0
-        Me.txtNombreInstExoneracion.Name = "txtNombreInstExoneracion"
-        Me.txtNombreInstExoneracion.ReadOnly = True
-        Me.txtNombreInstExoneracion.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtNombreInstExoneracion.Size = New System.Drawing.Size(181, 20)
-        Me.txtNombreInstExoneracion.TabIndex = 157
         '
         'txtNumDocExoneracion
         '
@@ -993,13 +978,13 @@ Partial Class FrmFactura
         Me.txtNumDocExoneracion.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtNumDocExoneracion.Enabled = False
         Me.txtNumDocExoneracion.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtNumDocExoneracion.Location = New System.Drawing.Point(292, 118)
+        Me.txtNumDocExoneracion.Location = New System.Drawing.Point(595, 118)
         Me.txtNumDocExoneracion.MaxLength = 0
         Me.txtNumDocExoneracion.Name = "txtNumDocExoneracion"
         Me.txtNumDocExoneracion.ReadOnly = True
         Me.txtNumDocExoneracion.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtNumDocExoneracion.Size = New System.Drawing.Size(103, 20)
-        Me.txtNumDocExoneracion.TabIndex = 156
+        Me.txtNumDocExoneracion.TabIndex = 12
         Me.txtNumDocExoneracion.TabStop = False
         '
         'txtTipoExoneracion
@@ -1009,13 +994,13 @@ Partial Class FrmFactura
         Me.txtTipoExoneracion.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtTipoExoneracion.Enabled = False
         Me.txtTipoExoneracion.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtTipoExoneracion.Location = New System.Drawing.Point(102, 118)
+        Me.txtTipoExoneracion.Location = New System.Drawing.Point(440, 118)
         Me.txtTipoExoneracion.MaxLength = 0
         Me.txtTipoExoneracion.Name = "txtTipoExoneracion"
         Me.txtTipoExoneracion.ReadOnly = True
         Me.txtTipoExoneracion.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtTipoExoneracion.Size = New System.Drawing.Size(188, 20)
-        Me.txtTipoExoneracion.TabIndex = 160
+        Me.txtTipoExoneracion.Size = New System.Drawing.Size(154, 20)
+        Me.txtTipoExoneracion.TabIndex = 11
         Me.txtTipoExoneracion.TabStop = False
         '
         'Label8
@@ -1023,7 +1008,7 @@ Partial Class FrmFactura
         Me.Label8.BackColor = System.Drawing.Color.Transparent
         Me.Label8.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label8.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label8.Location = New System.Drawing.Point(16, 118)
+        Me.Label8.Location = New System.Drawing.Point(354, 118)
         Me.Label8.Name = "Label8"
         Me.Label8.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label8.Size = New System.Drawing.Size(80, 19)
@@ -1038,13 +1023,13 @@ Partial Class FrmFactura
         Me.txtFechaExoneracion.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtFechaExoneracion.Enabled = False
         Me.txtFechaExoneracion.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtFechaExoneracion.Location = New System.Drawing.Point(580, 118)
+        Me.txtFechaExoneracion.Location = New System.Drawing.Point(699, 118)
         Me.txtFechaExoneracion.MaxLength = 0
         Me.txtFechaExoneracion.Name = "txtFechaExoneracion"
         Me.txtFechaExoneracion.ReadOnly = True
         Me.txtFechaExoneracion.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtFechaExoneracion.Size = New System.Drawing.Size(73, 20)
-        Me.txtFechaExoneracion.TabIndex = 162
+        Me.txtFechaExoneracion.Size = New System.Drawing.Size(69, 20)
+        Me.txtFechaExoneracion.TabIndex = 13
         Me.txtFechaExoneracion.TabStop = False
         '
         'txtPorcDesc
@@ -1114,7 +1099,7 @@ Partial Class FrmFactura
         Me.btnApartado.Name = "btnApartado"
         Me.btnApartado.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.btnApartado.Size = New System.Drawing.Size(96, 21)
-        Me.btnApartado.TabIndex = 167
+        Me.btnApartado.TabIndex = 17
         Me.btnApartado.TabStop = False
         Me.btnApartado.Text = "Cargar Apartado"
         Me.btnApartado.UseVisualStyleBackColor = False
@@ -1133,7 +1118,8 @@ Partial Class FrmFactura
         Me.cboTipoMoneda.Name = "cboTipoMoneda"
         Me.cboTipoMoneda.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.cboTipoMoneda.Size = New System.Drawing.Size(129, 21)
-        Me.cboTipoMoneda.TabIndex = 191
+        Me.cboTipoMoneda.TabIndex = 7
+        Me.cboTipoMoneda.TabStop = False
         '
         'Label2
         '
@@ -1160,7 +1146,7 @@ Partial Class FrmFactura
         Me.txtTipoCambio.ReadOnly = True
         Me.txtTipoCambio.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtTipoCambio.Size = New System.Drawing.Size(73, 20)
-        Me.txtTipoCambio.TabIndex = 192
+        Me.txtTipoCambio.TabIndex = 8
         Me.txtTipoCambio.TabStop = False
         Me.txtTipoCambio.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
@@ -1216,7 +1202,7 @@ Partial Class FrmFactura
         Me.txtReferencia.ReadOnly = True
         Me.txtReferencia.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtReferencia.Size = New System.Drawing.Size(145, 20)
-        Me.txtReferencia.TabIndex = 197
+        Me.txtReferencia.TabIndex = 9
         Me.txtReferencia.TabStop = False
         Me.txtReferencia.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
@@ -1233,6 +1219,33 @@ Partial Class FrmFactura
         Me.Label3.Text = "Referencia:"
         Me.Label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
+        'txtTelefono
+        '
+        Me.txtTelefono.AcceptsReturn = True
+        Me.txtTelefono.BackColor = System.Drawing.SystemColors.Window
+        Me.txtTelefono.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtTelefono.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtTelefono.Location = New System.Drawing.Point(102, 118)
+        Me.txtTelefono.MaxLength = 8
+        Me.txtTelefono.Name = "txtTelefono"
+        Me.txtTelefono.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtTelefono.Size = New System.Drawing.Size(106, 20)
+        Me.txtTelefono.TabIndex = 10
+        Me.txtTelefono.TabStop = False
+        '
+        'Label6
+        '
+        Me.Label6.BackColor = System.Drawing.Color.Transparent
+        Me.Label6.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label6.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label6.Location = New System.Drawing.Point(24, 118)
+        Me.Label6.Name = "Label6"
+        Me.Label6.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label6.Size = New System.Drawing.Size(72, 19)
+        Me.Label6.TabIndex = 202
+        Me.Label6.Text = "Telefono:"
+        Me.Label6.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
         'FrmFactura
         '
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
@@ -1240,6 +1253,8 @@ Partial Class FrmFactura
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(817, 642)
+        Me.Controls.Add(Me.txtTelefono)
+        Me.Controls.Add(Me.Label6)
         Me.Controls.Add(Me.Label3)
         Me.Controls.Add(Me.txtReferencia)
         Me.Controls.Add(Me.txtExistencias)
@@ -1257,7 +1272,6 @@ Partial Class FrmFactura
         Me.Controls.Add(Me.Label8)
         Me.Controls.Add(Me.txtTipoExoneracion)
         Me.Controls.Add(Me.txtPorcentajeExoneracion)
-        Me.Controls.Add(Me.txtNombreInstExoneracion)
         Me.Controls.Add(Me.txtNumDocExoneracion)
         Me.Controls.Add(Me.txtFecha)
         Me.Controls.Add(Me.Label15)
@@ -1369,7 +1383,6 @@ Partial Class FrmFactura
     Public WithEvents txtFecha As TextBox
     Public WithEvents Label15 As Label
     Public WithEvents txtPorcentajeExoneracion As TextBox
-    Public WithEvents txtNombreInstExoneracion As TextBox
     Public WithEvents txtNumDocExoneracion As TextBox
     Public WithEvents txtTipoExoneracion As TextBox
     Public WithEvents Label8 As Label
@@ -1387,4 +1400,6 @@ Partial Class FrmFactura
     Public WithEvents Label16 As Label
     Public WithEvents txtReferencia As TextBox
     Public WithEvents Label3 As Label
+    Public WithEvents txtTelefono As TextBox
+    Public WithEvents Label6 As Label
 End Class

@@ -167,12 +167,12 @@ Public Class FrmAplicaAbonoCxC
         objPkDesglose(0) = cboCuentaPorCobrar.SelectedValue
         If dtbDesgloseCuenta.Rows.Contains(objPkDesglose) Then
             intIndice = dtbDesgloseCuenta.Rows.IndexOf(dtbDesgloseCuenta.Rows.Find(objPkDesglose))
-            dtbDesgloseCuenta.Rows(intIndice).Item(2) = CDbl(txtMontoAbono.Text)
+            dtbDesgloseCuenta.Rows(intIndice).Item(2) = CDbl(txtMonto.Text)
         Else
             dtrRowDesgloseCuenta = dtbDesgloseCuenta.NewRow
             dtrRowDesgloseCuenta.Item(0) = cboCuentaPorCobrar.SelectedValue
             dtrRowDesgloseCuenta.Item(1) = cboCuentaPorCobrar.Text
-            dtrRowDesgloseCuenta.Item(2) = CDbl(txtMontoAbono.Text)
+            dtrRowDesgloseCuenta.Item(2) = CDbl(txtMonto.Text)
             dtrRowDesgloseCuenta.Item(3) = cuentaPorCobrar.NroDocOrig
             dtbDesgloseCuenta.Rows.Add(dtrRowDesgloseCuenta)
         End If
@@ -241,6 +241,22 @@ Public Class FrmAplicaAbonoCxC
 #Region "Eventos Controles"
     Private Sub FrmAplicaAbonoCxC_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         KeyPreview = True
+        For Each ctl As Control In Controls
+            If TypeOf (ctl) Is TextBox Then
+                AddHandler DirectCast(ctl, TextBox).Enter, AddressOf EnterTexboxHandler
+                AddHandler DirectCast(ctl, TextBox).Leave, AddressOf LeaveTexboxHandler
+            End If
+        Next
+    End Sub
+
+    Private Sub EnterTexboxHandler(sender As Object, e As EventArgs)
+        Dim textbox As TextBox = DirectCast(sender, TextBox)
+        textbox.BackColor = Color.PeachPuff
+    End Sub
+
+    Private Sub LeaveTexboxHandler(sender As Object, e As EventArgs)
+        Dim textbox As TextBox = DirectCast(sender, TextBox)
+        textbox.BackColor = Color.White
     End Sub
 
     Private Sub FrmAplicaAbonoCxC_KeyDown(sender As Object, e As KeyEventArgs) Handles MyBase.KeyDown
@@ -264,7 +280,7 @@ Public Class FrmAplicaAbonoCxC
             grdDesglosePago.DataSource = dtbDesglosePago
             bolInit = False
             cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
-            txtMontoAbono.Text = FormatNumber(0, 2)
+            txtMonto.Text = FormatNumber(0, 2)
             txtSaldoPorPagar.Text = FormatNumber(decSaldoPorPagar, 2)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -286,12 +302,12 @@ Public Class FrmAplicaAbonoCxC
         decTotal = 0
         txtMontoOriginal.Text = ""
         txtTotalAbonado.Text = ""
-        txtMontoAbono.Text = FormatNumber(decTotal, 2)
+        txtMonto.Text = FormatNumber(decTotal, 2)
         txtMontoPago.Text = ""
         decTotalPago = 0
         decSaldoPorPagar = 0
         txtSaldoPorPagar.Text = FormatNumber(decSaldoPorPagar, 2)
-        txtMontoAbono.ReadOnly = False
+        txtMonto.ReadOnly = False
         btnInsertar.Enabled = True
         btnEliminar.Enabled = True
         btnInsertarPago.Enabled = True
@@ -378,7 +394,7 @@ Public Class FrmAplicaAbonoCxC
         btnAgregar.Enabled = True
         btnImprimir.Enabled = True
         btnImprimir.Focus()
-        txtMontoAbono.ReadOnly = True
+        txtMonto.ReadOnly = True
         btnGuardar.Enabled = False
         btnInsertarPago.Enabled = False
         btnEliminarPago.Enabled = False
@@ -465,13 +481,13 @@ Public Class FrmAplicaAbonoCxC
     End Sub
 
     Private Sub BtnInsertar_Click(sender As Object, e As EventArgs) Handles btnInsertar.Click
-        If cboCuentaPorCobrar.SelectedValue > 0 And txtMontoAbono.Text <> "" Then
-            If CDbl(txtMontoAbono.Text) < 1 Then
+        If cboCuentaPorCobrar.SelectedValue > 0 And txtMonto.Text <> "" Then
+            If CDbl(txtMonto.Text) < 1 Then
                 MessageBox.Show("El monto del abono debe ser mayor a cero.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End If
             CargarLineaDesgloseCuenta()
-            txtMontoAbono.Text = ""
+            txtMonto.Text = ""
             CargarTotalesPago()
             cboCuentaPorCobrar.Focus()
         End If
@@ -546,7 +562,7 @@ Public Class FrmAplicaAbonoCxC
             decTotal = 0
             decTotalPago = 0
             decSaldoPorPagar = 0
-            txtMontoAbono.Text = FormatNumber(decTotal, 2)
+            txtMonto.Text = FormatNumber(decTotal, 2)
             txtSaldoPorPagar.Text = FormatNumber(decSaldoPorPagar, 2)
         End If
     End Sub
@@ -575,11 +591,11 @@ Public Class FrmAplicaAbonoCxC
         End If
     End Sub
 
-    Private Sub txtMontoAbono_Validated(sender As Object, e As EventArgs) Handles txtMontoAbono.Validated
-        If txtMontoAbono.Text <> "" Then txtMontoAbono.Text = FormatNumber(txtMontoAbono.Text, 2)
+    Private Sub txtMontoAbono_Validated(sender As Object, e As EventArgs) Handles txtMonto.Validated
+        If txtMonto.Text <> "" Then txtMonto.Text = FormatNumber(txtMonto.Text, 2)
     End Sub
 
-    Private Sub txtMontoAbono_KeyPress(ByVal sender As Object, ByVal e As KeyPressEventArgs) Handles txtMontoAbono.KeyPress, txtMontoPago.KeyPress
+    Private Sub txtMontoAbono_KeyPress(ByVal sender As Object, ByVal e As KeyPressEventArgs) Handles txtMonto.KeyPress, txtMontoPago.KeyPress
         FrmPrincipal.ValidaNumero(e, sender, True, 2, ".")
     End Sub
 #End Region

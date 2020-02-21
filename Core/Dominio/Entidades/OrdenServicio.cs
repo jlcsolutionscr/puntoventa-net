@@ -42,6 +42,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public decimal Descuento { get; set; }
         public decimal Impuesto { get; set; }
         public decimal MontoAdelanto { get; set; }
+        public decimal MontoPagado { get; set; }
         [NotMapped]
         public decimal Total { get { return Excento + Gravado + Exonerado + Impuesto - Descuento; } }
         public bool Nulo { get; set; }

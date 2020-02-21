@@ -368,9 +368,9 @@ Public Class ModuloImpresion
             lineas.Add(New ClsLineaImpresion(0, "Cambio:", 0, 54, 10, StringAlignment.Far, False))
             lineas.Add(New ClsLineaImpresion(1, objImpresion.strCambio, 54, 46, 10, StringAlignment.Far, False))
             lineas.Add(New ClsLineaImpresion(0, "Abono inicial:", 0, 54, 10, StringAlignment.Far, True))
-            lineas.Add(New ClsLineaImpresion(1, objImpresion.strPagoCon, 54, 46, 10, StringAlignment.Far, True))
+            lineas.Add(New ClsLineaImpresion(1, objImpresion.strAdelanto, 54, 46, 10, StringAlignment.Far, True))
             lineas.Add(New ClsLineaImpresion(0, "Saldo por pagar:", 0, 54, 10, StringAlignment.Far, True))
-            lineas.Add(New ClsLineaImpresion(2, objImpresion.strCambio, 54, 46, 10, StringAlignment.Far, True))
+            lineas.Add(New ClsLineaImpresion(2, objImpresion.strSaldo, 54, 46, 10, StringAlignment.Far, True))
             If objImpresion.empresa.LeyendaApartado.Length > 0 Then
                 Dim leyenda As String = objImpresion.empresa.LeyendaApartado
                 While leyenda.Length > 32
@@ -432,14 +432,14 @@ Public Class ModuloImpresion
             If objImpresion.arrDesglosePago.Count > 0 Then ImprimirDesglosePago(objImpresion.arrDesglosePago)
             ImprimirDetalle(objImpresion.arrDetalleComprobante)
             ImprimirTotales(objImpresion)
-            lineas.Add(New ClsLineaImpresion(0, "Abono inicial:", 0, 54, 10, StringAlignment.Far, True))
-            lineas.Add(New ClsLineaImpresion(1, objImpresion.strAdelanto, 54, 46, 10, StringAlignment.Far, True))
-            lineas.Add(New ClsLineaImpresion(0, "Saldo por pagar:", 0, 54, 10, StringAlignment.Far, True))
-            lineas.Add(New ClsLineaImpresion(3, objImpresion.strSaldo, 54, 46, 10, StringAlignment.Far, True))
             lineas.Add(New ClsLineaImpresion(0, "Pago con:", 0, 54, 10, StringAlignment.Far, False))
             lineas.Add(New ClsLineaImpresion(1, objImpresion.strPagoCon, 54, 46, 10, StringAlignment.Far, False))
             lineas.Add(New ClsLineaImpresion(0, "Cambio:", 0, 54, 10, StringAlignment.Far, False))
-            lineas.Add(New ClsLineaImpresion(2, objImpresion.strCambio, 54, 46, 10, StringAlignment.Far, False))
+            lineas.Add(New ClsLineaImpresion(1, objImpresion.strCambio, 54, 46, 10, StringAlignment.Far, False))
+            lineas.Add(New ClsLineaImpresion(0, "Abono inicial:", 0, 54, 10, StringAlignment.Far, True))
+            lineas.Add(New ClsLineaImpresion(1, objImpresion.strAdelanto, 54, 46, 10, StringAlignment.Far, True))
+            lineas.Add(New ClsLineaImpresion(0, "Saldo por pagar:", 0, 54, 10, StringAlignment.Far, True))
+            lineas.Add(New ClsLineaImpresion(2, objImpresion.strSaldo, 54, 46, 10, StringAlignment.Far, True))
             If objImpresion.empresa.LeyendaOrdenServicio.Length > 0 Then
                 Dim leyenda As String = objImpresion.empresa.LeyendaOrdenServicio
                 While leyenda.Length > 32
@@ -777,6 +777,8 @@ Public Class ModuloImpresion
             lineas.Add(New ClsLineaImpresion(1, objImpresion.strCambio, 0, 100, 10, StringAlignment.Far, True))
             lineas.Add(New ClsLineaImpresion(0, "Efectivo en caja", 0, 100, 10, StringAlignment.Near, False))
             lineas.Add(New ClsLineaImpresion(2, objImpresion.strPagoCon, 0, 100, 10, StringAlignment.Far, False))
+            lineas.Add(New ClsLineaImpresion(0, "Total de ventas", 0, 100, 10, StringAlignment.Near, False))
+            lineas.Add(New ClsLineaImpresion(2, objImpresion.strAdelanto, 0, 100, 10, StringAlignment.Far, False))
             Dim observaciones As String = "Nota: " & objImpresion.strDocumento
             While observaciones.Length > 32
                 lineas.Add(New ClsLineaImpresion(1, observaciones.Substring(0, 32), 0, 100, 10, StringAlignment.Near, False))

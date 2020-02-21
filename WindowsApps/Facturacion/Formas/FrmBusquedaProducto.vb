@@ -4,6 +4,7 @@ Imports LeandroSoftware.ClienteWCF
 Public Class FrmBusquedaProducto
 #Region "Variables"
     Public bolIncluyeServicios As Boolean
+    Public bolIncluyePrecioCosto As Boolean = False
     Private intTotalRegistros As Integer
     Private intIndiceDePagina As Integer
     Private intFilasPorPagina As Integer = 16
@@ -50,11 +51,13 @@ Public Class FrmBusquedaProducto
         dvcCantidad.DefaultCellStyle = FrmPrincipal.dgvDecimal
         dgvListado.Columns.Add(dvcCantidad)
 
-        dvcPrecioCosto.DataPropertyName = "PrecioCosto"
-        dvcPrecioCosto.HeaderText = "Precio Costo"
-        dvcPrecioCosto.Width = 100
-        dvcPrecioCosto.DefaultCellStyle = FrmPrincipal.dgvDecimal
-        dgvListado.Columns.Add(dvcPrecioCosto)
+        If bolIncluyePrecioCosto Then
+            dvcPrecioCosto.DataPropertyName = "PrecioCosto"
+            dvcPrecioCosto.HeaderText = "Precio Costo"
+            dvcPrecioCosto.Width = 100
+            dvcPrecioCosto.DefaultCellStyle = FrmPrincipal.dgvDecimal
+            dgvListado.Columns.Add(dvcPrecioCosto)
+        End If
 
         dvcPrecioVenta1.DataPropertyName = "PrecioVenta1"
         dvcPrecioVenta1.HeaderText = "Precio Venta"
@@ -70,7 +73,7 @@ Public Class FrmBusquedaProducto
 
         dvcObservacion.DataPropertyName = "Observacion"
         dvcObservacion.HeaderText = "Observaciones"
-        dvcObservacion.Width = 150
+        dvcObservacion.Width = IIf(bolIncluyePrecioCosto, 150, 250)
         dgvListado.Columns.Add(dvcObservacion)
     End Sub
 
@@ -121,11 +124,27 @@ Public Class FrmBusquedaProducto
 #End Region
 
 #Region "Eventos Controles"
-    Private Sub FrmBusProd_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+    Private Sub FrmBusquedaProducto_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         KeyPreview = True
+        For Each ctl As Control In Controls
+            If TypeOf (ctl) Is TextBox Then
+                AddHandler DirectCast(ctl, TextBox).Enter, AddressOf EnterTexboxHandler
+                AddHandler DirectCast(ctl, TextBox).Leave, AddressOf LeaveTexboxHandler
+            End If
+        Next
     End Sub
 
-    Private Sub FrmBusProd_KeyDown(sender As Object, e As KeyEventArgs) Handles MyBase.KeyDown
+    Private Sub EnterTexboxHandler(sender As Object, e As EventArgs)
+        Dim textbox As TextBox = DirectCast(sender, TextBox)
+        textbox.BackColor = Color.PeachPuff
+    End Sub
+
+    Private Sub LeaveTexboxHandler(sender As Object, e As EventArgs)
+        Dim textbox As TextBox = DirectCast(sender, TextBox)
+        textbox.BackColor = Color.White
+    End Sub
+
+    Private Sub FrmBusquedaProducto_KeyDown(sender As Object, e As KeyEventArgs) Handles MyBase.KeyDown
         If e.KeyCode = Keys.PageUp And btnPrevious.Enabled Then
             btnPrevious_Click(btnPrevious, New EventArgs())
         ElseIf e.KeyCode = Keys.PageDown And btnNext.Enabled Then

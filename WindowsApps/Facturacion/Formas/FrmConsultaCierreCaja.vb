@@ -87,6 +87,22 @@ Public Class FrmConsultaCierreCaja
 #Region "Eventos Controles"
     Private Sub FrmCierre_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         KeyPreview = True
+        For Each ctl As Control In Controls
+            If TypeOf (ctl) Is TextBox Then
+                AddHandler DirectCast(ctl, TextBox).Enter, AddressOf EnterTexboxHandler
+                AddHandler DirectCast(ctl, TextBox).Leave, AddressOf LeaveTexboxHandler
+            End If
+        Next
+    End Sub
+
+    Private Sub EnterTexboxHandler(sender As Object, e As EventArgs)
+        Dim textbox As TextBox = DirectCast(sender, TextBox)
+        textbox.BackColor = Color.PeachPuff
+    End Sub
+
+    Private Sub LeaveTexboxHandler(sender As Object, e As EventArgs)
+        Dim textbox As TextBox = DirectCast(sender, TextBox)
+        textbox.BackColor = Color.White
     End Sub
     Private Async Sub FrmCierre_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         strUsuario = FrmPrincipal.usuarioGlobal.CodigoUsuario
@@ -182,7 +198,8 @@ Public Class FrmConsultaCierreCaja
                 .strDireccion = txtSaldo.Text,
                 .strCambio = txtRetiroEfectivo.Text,
                 .strPagoCon = txtCierreEfectivoProx.Text,
-                .strDocumento = cierreCaja.Observaciones
+                .strDocumento = cierreCaja.Observaciones,
+                .strAdelanto = txtTotalVentas.Text
             }
 
             comprobanteImpresion.arrDesglosePago = New List(Of ModuloImpresion.ClsDesgloseFormaPago) From {

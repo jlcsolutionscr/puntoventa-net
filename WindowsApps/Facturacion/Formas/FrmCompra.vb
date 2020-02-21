@@ -426,6 +426,22 @@ Public Class FrmCompra
 #Region "Eventos Controles"
     Private Sub FrmCompra_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         KeyPreview = True
+        For Each ctl As Control In Controls
+            If TypeOf (ctl) Is TextBox Then
+                AddHandler DirectCast(ctl, TextBox).Enter, AddressOf EnterTexboxHandler
+                AddHandler DirectCast(ctl, TextBox).Leave, AddressOf LeaveTexboxHandler
+            End If
+        Next
+    End Sub
+
+    Private Sub EnterTexboxHandler(sender As Object, e As EventArgs)
+        Dim textbox As TextBox = DirectCast(sender, TextBox)
+        textbox.BackColor = Color.PeachPuff
+    End Sub
+
+    Private Sub LeaveTexboxHandler(sender As Object, e As EventArgs)
+        Dim textbox As TextBox = DirectCast(sender, TextBox)
+        textbox.BackColor = Color.White
     End Sub
 
     Private Sub FrmCompra_KeyDown(sender As Object, e As KeyEventArgs) Handles MyBase.KeyDown
@@ -646,7 +662,8 @@ Public Class FrmCompra
 
     Private Async Sub BtnBusProd_Click(sender As Object, e As EventArgs) Handles btnBusProd.Click
         Dim formBusProd As New FrmBusquedaProducto With {
-            .bolIncluyeServicios = False
+            .bolIncluyeServicios = False,
+            .bolIncluyePrecioCosto = True
         }
         FrmPrincipal.strBusqueda = ""
         formBusProd.ShowDialog()
@@ -665,9 +682,11 @@ Public Class FrmCompra
     Private Async Sub BtnGuardar_Click(sender As Object, e As EventArgs) Handles btnGuardar.Click
         If proveedor Is Nothing Then
             MessageBox.Show("Debe seleccionar el proveedor para poder guardar el registro.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            BtnBuscarProveedor_Click(btnBuscarProveedor, New EventArgs())
             Exit Sub
         ElseIf txtFactura.Text = "" Then
             MessageBox.Show("Debe ingresar la referencia de la factura de compra para guardar el registro.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            txtFactura.Focus()
             Exit Sub
         ElseIf decTotal = 0 Then
             MessageBox.Show("Debe agregar líneas de detalle para guardar el registro.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)

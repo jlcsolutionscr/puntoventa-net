@@ -92,8 +92,11 @@ Partial Class FrmPrincipal
         Me.MnuContaCierre = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuContaReporte = New System.Windows.Forms.ToolStripMenuItem()
         Me.picLoader = New System.Windows.Forms.PictureBox()
+        Me.stsPrincipal = New System.Windows.Forms.StatusStrip()
+        Me.tslUsuario = New System.Windows.Forms.ToolStripStatusLabel()
         Me.mnuMenuPrincipal.SuspendLayout()
         CType(Me.picLoader, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.stsPrincipal.SuspendLayout()
         Me.SuspendLayout()
         '
         'mnuMenuPrincipal
@@ -518,11 +521,29 @@ Partial Class FrmPrincipal
         Me.picLoader.TabStop = False
         Me.picLoader.Visible = False
         '
+        'stsPrincipal
+        '
+        Me.stsPrincipal.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.stsPrincipal.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.tslUsuario})
+        Me.stsPrincipal.Location = New System.Drawing.Point(0, 516)
+        Me.stsPrincipal.Name = "stsPrincipal"
+        Me.stsPrincipal.Size = New System.Drawing.Size(1276, 22)
+        Me.stsPrincipal.TabIndex = 5
+        '
+        'tslUsuario
+        '
+        Me.tslUsuario.BackColor = System.Drawing.SystemColors.Control
+        Me.tslUsuario.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.tslUsuario.ForeColor = System.Drawing.SystemColors.ActiveCaptionText
+        Me.tslUsuario.Name = "tslUsuario"
+        Me.tslUsuario.Size = New System.Drawing.Size(0, 17)
+        '
         'FrmPrincipal
         '
         Me.BackColor = System.Drawing.SystemColors.AppWorkspace
         Me.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
-        Me.ClientSize = New System.Drawing.Size(1276, 542)
+        Me.ClientSize = New System.Drawing.Size(1276, 538)
+        Me.Controls.Add(Me.stsPrincipal)
         Me.Controls.Add(Me.picLoader)
         Me.Controls.Add(Me.mnuMenuPrincipal)
         Me.Cursor = System.Windows.Forms.Cursors.Default
@@ -536,6 +557,8 @@ Partial Class FrmPrincipal
         Me.mnuMenuPrincipal.ResumeLayout(False)
         Me.mnuMenuPrincipal.PerformLayout()
         CType(Me.picLoader, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.stsPrincipal.ResumeLayout(False)
+        Me.stsPrincipal.PerformLayout()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -582,4 +605,6 @@ Partial Class FrmPrincipal
     Friend WithEvents MnuApROrdenServicio As ToolStripMenuItem
     Friend WithEvents MnuAnRApartado As ToolStripMenuItem
     Friend WithEvents MnuAnROrdenServicio As ToolStripMenuItem
+    Friend WithEvents stsPrincipal As StatusStrip
+    Friend WithEvents tslUsuario As ToolStripStatusLabel
 End Class

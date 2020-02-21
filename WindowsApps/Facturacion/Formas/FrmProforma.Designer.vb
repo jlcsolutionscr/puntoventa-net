@@ -375,7 +375,6 @@ Partial Class FrmProforma
         Me.grdDetalleProforma.Location = New System.Drawing.Point(8, 201)
         Me.grdDetalleProforma.MultiSelect = False
         Me.grdDetalleProforma.Name = "grdDetalleProforma"
-        Me.grdDetalleProforma.ReadOnly = True
         Me.grdDetalleProforma.RowHeadersVisible = False
         Me.grdDetalleProforma.RowHeadersWidth = 30
         Me.grdDetalleProforma.Size = New System.Drawing.Size(800, 200)
@@ -749,7 +748,7 @@ Partial Class FrmProforma
         Me.txtTelefono.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtTelefono.ForeColor = System.Drawing.SystemColors.WindowText
         Me.txtTelefono.Location = New System.Drawing.Point(102, 65)
-        Me.txtTelefono.MaxLength = 20
+        Me.txtTelefono.MaxLength = 8
         Me.txtTelefono.Name = "txtTelefono"
         Me.txtTelefono.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtTelefono.Size = New System.Drawing.Size(126, 20)
@@ -765,7 +764,7 @@ Partial Class FrmProforma
         Me.Label2.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label2.Size = New System.Drawing.Size(88, 19)
         Me.Label2.TabIndex = 191
-        Me.Label2.Text = "Teléfonos:"
+        Me.Label2.Text = "Teléfono:"
         Me.Label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'cboTipoMoneda

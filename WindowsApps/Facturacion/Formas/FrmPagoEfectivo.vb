@@ -8,6 +8,34 @@ Public Class FrmPagoEfectivo
 #Region "Eventos Controles"
     Private Sub FrmPagoFactura_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         KeyPreview = True
+        For Each ctl As Control In Controls
+            If TypeOf (ctl) Is TextBox Then
+                AddHandler DirectCast(ctl, TextBox).Enter, AddressOf EnterTexboxHandler
+                AddHandler DirectCast(ctl, TextBox).Leave, AddressOf LeaveTexboxHandler
+            End If
+        Next
+    End Sub
+
+    Private Sub EnterTexboxHandler(sender As Object, e As EventArgs)
+        Dim textbox As TextBox = DirectCast(sender, TextBox)
+        textbox.BackColor = Color.PeachPuff
+    End Sub
+
+    Private Sub LeaveTexboxHandler(sender As Object, e As EventArgs)
+        Dim textbox As TextBox = DirectCast(sender, TextBox)
+        textbox.BackColor = Color.White
+    End Sub
+
+    Private Sub FrmProforma_KeyDown(sender As Object, e As KeyEventArgs) Handles MyBase.KeyDown
+        If e.KeyCode = Keys.F10 And btnGuardar.Enabled And txtPagoDelCliente.ReadOnly = False Then
+            If txtPagoDelCliente.Text <> "" Then
+                FrmPrincipal.intBusqueda = txtPagoDelCliente.Text
+                Close()
+            Else
+                MessageBox.Show("Debe ingresar el monto de pago del cliente para poder continuar. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End If
+        End If
+        e.Handled = False
     End Sub
 
     Private Sub FrmPagoFactura_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
