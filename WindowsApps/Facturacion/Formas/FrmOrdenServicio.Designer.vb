@@ -398,7 +398,6 @@ Partial Class FrmOrdenServicio
         Me.grdDetalleOrdenServicio.Location = New System.Drawing.Point(11, 289)
         Me.grdDetalleOrdenServicio.MultiSelect = False
         Me.grdDetalleOrdenServicio.Name = "grdDetalleOrdenServicio"
-        Me.grdDetalleOrdenServicio.ReadOnly = True
         Me.grdDetalleOrdenServicio.RowHeadersVisible = False
         Me.grdDetalleOrdenServicio.RowHeadersWidth = 30
         Me.grdDetalleOrdenServicio.Size = New System.Drawing.Size(800, 200)
@@ -474,7 +473,7 @@ Partial Class FrmOrdenServicio
         Me.txtTelefono.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtTelefono.ForeColor = System.Drawing.SystemColors.WindowText
         Me.txtTelefono.Location = New System.Drawing.Point(94, 140)
-        Me.txtTelefono.MaxLength = 500
+        Me.txtTelefono.MaxLength = 8
         Me.txtTelefono.Name = "txtTelefono"
         Me.txtTelefono.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtTelefono.Size = New System.Drawing.Size(106, 20)
@@ -499,13 +498,13 @@ Partial Class FrmOrdenServicio
         Me.txtOtrosDetalles.BackColor = System.Drawing.SystemColors.Window
         Me.txtOtrosDetalles.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtOtrosDetalles.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtOtrosDetalles.Location = New System.Drawing.Point(94, 218)
+        Me.txtOtrosDetalles.Location = New System.Drawing.Point(94, 192)
         Me.txtOtrosDetalles.MaxLength = 500
         Me.txtOtrosDetalles.Name = "txtOtrosDetalles"
         Me.txtOtrosDetalles.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtOtrosDetalles.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
         Me.txtOtrosDetalles.Size = New System.Drawing.Size(717, 20)
-        Me.txtOtrosDetalles.TabIndex = 15
+        Me.txtOtrosDetalles.TabIndex = 14
         '
         'txtDescripcionOrden
         '
@@ -513,19 +512,19 @@ Partial Class FrmOrdenServicio
         Me.txtDescripcionOrden.BackColor = System.Drawing.SystemColors.Window
         Me.txtDescripcionOrden.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtDescripcionOrden.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtDescripcionOrden.Location = New System.Drawing.Point(94, 192)
+        Me.txtDescripcionOrden.Location = New System.Drawing.Point(94, 166)
         Me.txtDescripcionOrden.MaxLength = 500
         Me.txtDescripcionOrden.Name = "txtDescripcionOrden"
         Me.txtDescripcionOrden.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtDescripcionOrden.Size = New System.Drawing.Size(716, 20)
-        Me.txtDescripcionOrden.TabIndex = 14
+        Me.txtDescripcionOrden.TabIndex = 13
         '
         'Label4
         '
         Me.Label4.BackColor = System.Drawing.Color.Transparent
         Me.Label4.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label4.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label4.Location = New System.Drawing.Point(16, 192)
+        Me.Label4.Location = New System.Drawing.Point(16, 166)
         Me.Label4.Name = "Label4"
         Me.Label4.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label4.Size = New System.Drawing.Size(72, 19)
@@ -551,7 +550,7 @@ Partial Class FrmOrdenServicio
         Me.Label6.BackColor = System.Drawing.Color.Transparent
         Me.Label6.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label6.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label6.Location = New System.Drawing.Point(0, 218)
+        Me.Label6.Location = New System.Drawing.Point(0, 192)
         Me.Label6.Name = "Label6"
         Me.Label6.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label6.Size = New System.Drawing.Size(88, 19)
@@ -1118,19 +1117,19 @@ Partial Class FrmOrdenServicio
         Me.txtDireccion.BackColor = System.Drawing.SystemColors.Window
         Me.txtDireccion.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtDireccion.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtDireccion.Location = New System.Drawing.Point(94, 166)
+        Me.txtDireccion.Location = New System.Drawing.Point(94, 218)
         Me.txtDireccion.MaxLength = 500
         Me.txtDireccion.Name = "txtDireccion"
         Me.txtDireccion.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtDireccion.Size = New System.Drawing.Size(716, 20)
-        Me.txtDireccion.TabIndex = 13
+        Me.txtDireccion.TabIndex = 15
         '
         'Label14
         '
         Me.Label14.BackColor = System.Drawing.Color.Transparent
         Me.Label14.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label14.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label14.Location = New System.Drawing.Point(16, 166)
+        Me.Label14.Location = New System.Drawing.Point(16, 218)
         Me.Label14.Name = "Label14"
         Me.Label14.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label14.Size = New System.Drawing.Size(72, 19)

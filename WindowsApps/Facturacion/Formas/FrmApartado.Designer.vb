@@ -104,6 +104,8 @@ Partial Class FrmApartado
         Me.Label9 = New System.Windows.Forms.Label()
         Me.txtExistencias = New System.Windows.Forms.TextBox()
         Me.Label16 = New System.Windows.Forms.Label()
+        Me.txtTelefono = New System.Windows.Forms.TextBox()
+        Me.Label3 = New System.Windows.Forms.Label()
         CType(Me.grdDetalleApartado, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.grdDesglosePago, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -388,7 +390,6 @@ Partial Class FrmApartado
         Me.grdDetalleApartado.Location = New System.Drawing.Point(8, 165)
         Me.grdDetalleApartado.MultiSelect = False
         Me.grdDetalleApartado.Name = "grdDetalleApartado"
-        Me.grdDetalleApartado.ReadOnly = True
         Me.grdDetalleApartado.RowHeadersVisible = False
         Me.grdDetalleApartado.RowHeadersWidth = 30
         Me.grdDetalleApartado.Size = New System.Drawing.Size(800, 200)
@@ -1039,6 +1040,32 @@ Partial Class FrmApartado
         Me.Label16.Text = "Stock"
         Me.Label16.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
+        'txtTelefono
+        '
+        Me.txtTelefono.AcceptsReturn = True
+        Me.txtTelefono.BackColor = System.Drawing.Color.White
+        Me.txtTelefono.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtTelefono.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtTelefono.Location = New System.Drawing.Point(494, 91)
+        Me.txtTelefono.MaxLength = 8
+        Me.txtTelefono.Name = "txtTelefono"
+        Me.txtTelefono.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtTelefono.Size = New System.Drawing.Size(106, 20)
+        Me.txtTelefono.TabIndex = 11
+        '
+        'Label3
+        '
+        Me.Label3.BackColor = System.Drawing.Color.Transparent
+        Me.Label3.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label3.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label3.Location = New System.Drawing.Point(416, 91)
+        Me.Label3.Name = "Label3"
+        Me.Label3.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label3.Size = New System.Drawing.Size(72, 19)
+        Me.Label3.TabIndex = 200
+        Me.Label3.Text = "Telefono:"
+        Me.Label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
         'FrmApartado
         '
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
@@ -1046,6 +1073,8 @@ Partial Class FrmApartado
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(817, 616)
+        Me.Controls.Add(Me.txtTelefono)
+        Me.Controls.Add(Me.Label3)
         Me.Controls.Add(Me.txtExistencias)
         Me.Controls.Add(Me.Label16)
         Me.Controls.Add(Me.txtSaldoPorPagar)
@@ -1176,4 +1205,6 @@ Partial Class FrmApartado
     Public WithEvents Label9 As Label
     Public WithEvents txtExistencias As TextBox
     Public WithEvents Label16 As Label
+    Public WithEvents txtTelefono As TextBox
+    Public WithEvents Label3 As Label
 End Class

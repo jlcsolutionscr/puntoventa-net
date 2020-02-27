@@ -20,6 +20,25 @@ Public Class FrmLinea
 #End Region
 
 #Region "Eventos Controles"
+    Private Sub FrmLinea_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        For Each ctl As Control In Controls
+            If TypeOf (ctl) Is TextBox Then
+                AddHandler DirectCast(ctl, TextBox).Enter, AddressOf EnterTexboxHandler
+                AddHandler DirectCast(ctl, TextBox).Leave, AddressOf LeaveTexboxHandler
+            End If
+        Next
+    End Sub
+
+    Private Sub EnterTexboxHandler(sender As Object, e As EventArgs)
+        Dim textbox As TextBox = DirectCast(sender, TextBox)
+        textbox.BackColor = Color.PeachPuff
+    End Sub
+
+    Private Sub LeaveTexboxHandler(sender As Object, e As EventArgs)
+        Dim textbox As TextBox = DirectCast(sender, TextBox)
+        textbox.BackColor = Color.White
+    End Sub
+
     Private Async Sub FrmLinea_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
             If intIdLinea > 0 Then
@@ -69,10 +88,6 @@ Public Class FrmLinea
         End Try
         MessageBox.Show("Registro guardado satisfactoriamente", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
         Close()
-    End Sub
-
-    Private Sub FrmLinea_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-
     End Sub
 #End Region
 End Class

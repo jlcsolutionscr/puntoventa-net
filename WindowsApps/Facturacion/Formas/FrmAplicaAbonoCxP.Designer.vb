@@ -15,7 +15,7 @@ Partial Class FrmAplicaAbonoCxP
     Private components As System.ComponentModel.IContainer
     Public WithEvents btnAgregar As System.Windows.Forms.Button
     Public WithEvents btnGuardar As System.Windows.Forms.Button
-    Public WithEvents txtMontoAbono As System.Windows.Forms.TextBox
+    Public WithEvents txtMonto As System.Windows.Forms.TextBox
     Public WithEvents txtDescripcion As System.Windows.Forms.TextBox
     Public WithEvents txtFecha As System.Windows.Forms.TextBox
     Public WithEvents _lblLabels_6 As System.Windows.Forms.Label
@@ -29,7 +29,7 @@ Partial Class FrmAplicaAbonoCxP
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FrmAplicaAbonoCxP))
         Me.btnAgregar = New System.Windows.Forms.Button()
         Me.btnGuardar = New System.Windows.Forms.Button()
-        Me.txtMontoAbono = New System.Windows.Forms.TextBox()
+        Me.txtMonto = New System.Windows.Forms.TextBox()
         Me.txtDescripcion = New System.Windows.Forms.TextBox()
         Me.txtFecha = New System.Windows.Forms.TextBox()
         Me._lblLabels_6 = New System.Windows.Forms.Label()
@@ -99,19 +99,19 @@ Partial Class FrmAplicaAbonoCxP
         Me.btnGuardar.Text = "&Guardar"
         Me.btnGuardar.UseVisualStyleBackColor = False
         '
-        'txtMontoAbono
+        'txtMonto
         '
-        Me.txtMontoAbono.AcceptsReturn = True
-        Me.txtMontoAbono.BackColor = System.Drawing.SystemColors.Window
-        Me.txtMontoAbono.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtMontoAbono.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtMontoAbono.Location = New System.Drawing.Point(651, 147)
-        Me.txtMontoAbono.MaxLength = 0
-        Me.txtMontoAbono.Name = "txtMontoAbono"
-        Me.txtMontoAbono.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtMontoAbono.Size = New System.Drawing.Size(107, 20)
-        Me.txtMontoAbono.TabIndex = 8
-        Me.txtMontoAbono.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        Me.txtMonto.AcceptsReturn = True
+        Me.txtMonto.BackColor = System.Drawing.SystemColors.Window
+        Me.txtMonto.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtMonto.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtMonto.Location = New System.Drawing.Point(651, 147)
+        Me.txtMonto.MaxLength = 0
+        Me.txtMonto.Name = "txtMonto"
+        Me.txtMonto.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtMonto.Size = New System.Drawing.Size(107, 20)
+        Me.txtMonto.TabIndex = 8
+        Me.txtMonto.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'txtDescripcion
         '
@@ -671,7 +671,7 @@ Partial Class FrmAplicaAbonoCxP
         Me.Controls.Add(Me.btnImprimir)
         Me.Controls.Add(Me.btnAgregar)
         Me.Controls.Add(Me.btnGuardar)
-        Me.Controls.Add(Me.txtMontoAbono)
+        Me.Controls.Add(Me.txtMonto)
         Me.Controls.Add(Me.txtDescripcion)
         Me.Controls.Add(Me.txtFecha)
         Me.Controls.Add(Me._lblLabels_6)

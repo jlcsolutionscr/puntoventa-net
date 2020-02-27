@@ -105,7 +105,7 @@ Public Class FrmOrdenServicio
         dvcPorcDescuento.HeaderText = "Desc"
         dvcPorcDescuento.Width = 40
         dvcPorcDescuento.Visible = True
-        dvcPorcDescuento.ReadOnly = True
+        dvcPorcDescuento.ReadOnly = False
         dvcPorcDescuento.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleOrdenServicio.Columns.Add(dvcPorcDescuento)
 
@@ -486,6 +486,22 @@ Public Class FrmOrdenServicio
 #Region "Eventos Controles"
     Private Sub FrmOrdenServicio_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         KeyPreview = True
+        For Each ctl As Control In Controls
+            If TypeOf (ctl) Is TextBox Then
+                AddHandler DirectCast(ctl, TextBox).Enter, AddressOf EnterTexboxHandler
+                AddHandler DirectCast(ctl, TextBox).Leave, AddressOf LeaveTexboxHandler
+            End If
+        Next
+    End Sub
+
+    Private Sub EnterTexboxHandler(sender As Object, e As EventArgs)
+        Dim textbox As TextBox = DirectCast(sender, TextBox)
+        textbox.BackColor = Color.PeachPuff
+    End Sub
+
+    Private Sub LeaveTexboxHandler(sender As Object, e As EventArgs)
+        Dim textbox As TextBox = DirectCast(sender, TextBox)
+        textbox.BackColor = Color.White
     End Sub
 
     Private Sub FrmOrdenServicio_KeyDown(sender As Object, e As KeyEventArgs) Handles MyBase.KeyDown
@@ -687,6 +703,7 @@ Public Class FrmOrdenServicio
                 CargarDesglosePago(ordenServicio)
                 CargarTotales()
                 CargarTotalesPago()
+                decPagoCliente = ordenServicio.MontoPagado
                 cboTipoMoneda.Enabled = False
                 txtNombreCliente.ReadOnly = True
                 btnImprimir.Enabled = True
@@ -783,9 +800,13 @@ Public Class FrmOrdenServicio
     Private Async Sub BtnGuardar_Click(sender As Object, e As EventArgs) Handles btnGuardar.Click
         If vendedor Is Nothing Then
             MessageBox.Show("Debe seleccionar el vendedor para poder guardar el registro.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            BtnBuscaVendedor_Click(btnBuscaVendedor, New EventArgs())
             Exit Sub
         ElseIf decTotal = 0 Then
             MessageBox.Show("Debe agregar líneas de detalle para guardar el registro.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            Exit Sub
+        ElseIf decSaldoPorPagar = 0 Then
+            MessageBox.Show("La orden de servicio no puede ser cancelada en su totalidad.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         ElseIf decSaldoPorPagar < 0 Then
             MessageBox.Show("El total del desglose de pago de la factura es superior al saldo por pagar.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
@@ -829,7 +850,9 @@ Public Class FrmOrdenServicio
                 .Exonerado = decExonerado,
                 .Descuento = 0,
                 .Impuesto = decImpuesto,
-                .MontoAdelanto = decTotalPago
+                .MontoAdelanto = decTotalPago,
+                .MontoPagado = decPagoCliente,
+                .Nulo = False
             }
             For I = 0 To dtbDetalleOrdenServicio.Rows.Count - 1
                 detalleOrdenServicio = New DetalleOrdenServicio
@@ -952,8 +975,8 @@ Public Class FrmOrdenServicio
                     .strTotal = txtTotal.Text,
                     .strAdelanto = FormatNumber(ordenServicio.MontoAdelanto, 2),
                     .strSaldo = FormatNumber(ordenServicio.Total - ordenServicio.MontoAdelanto, 2),
-                    .strPagoCon = FormatNumber(decTotalPago, 2),
-                    .strCambio = FormatNumber(decSaldoPorPagar, 2)
+                    .strPagoCon = FormatNumber(decPagoCliente, 2),
+                    .strCambio = FormatNumber(decPagoCliente - decPagoEfectivo, 2)
                 }
                 arrDetalleOrden = New List(Of ModuloImpresion.ClsDetalleComprobante)
                 For I = 0 To dtbDetalleOrdenServicio.Rows.Count - 1
@@ -1236,6 +1259,47 @@ Public Class FrmOrdenServicio
         End If
     End Sub
 
+    Private Sub grdDetalleOrdenServicio_EditingControlShowing(sender As Object, e As DataGridViewEditingControlShowingEventArgs) Handles grdDetalleOrdenServicio.EditingControlShowing
+        If grdDetalleOrdenServicio.CurrentCell.ColumnIndex = 4 Then
+            Dim tb As TextBox = e.Control
+            If tb IsNot Nothing Then
+                AddHandler CType(e.Control, TextBox).KeyPress, AddressOf TextBox_keyPress
+            End If
+        End If
+    End Sub
+
+    Private Sub grdDetalleOrdenServicio_CellValueChanged(sender As Object, e As DataGridViewCellEventArgs) Handles grdDetalleOrdenServicio.CellValueChanged
+        If e.ColumnIndex = 4 Then
+            Dim decPorcDesc As Decimal = 0
+            If Not IsDBNull(grdDetalleOrdenServicio.Rows(e.RowIndex).Cells(e.ColumnIndex).Value) Then
+                decPorcDesc = grdDetalleOrdenServicio.Rows(e.RowIndex).Cells(e.ColumnIndex).Value
+            End If
+            Dim decPorMax As Decimal = FrmPrincipal.empresaGlobal.PorcentajeDescMaximo
+            If decPorcDesc > decPorMax Then
+                MessageBox.Show("El porcentaje ingresado es mayor al parametro establecido para la empresa", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                grdDetalleOrdenServicio.Rows(e.RowIndex).Cells(e.ColumnIndex).Value = 0
+            Else
+                Dim decCantidad As Decimal = grdDetalleOrdenServicio.Rows(e.RowIndex).Cells(3).Value
+                Dim decTasaImpuesto As Decimal = grdDetalleOrdenServicio.Rows(e.RowIndex).Cells(9).Value
+                Dim decPrecio As Decimal = grdDetalleOrdenServicio.Rows(e.RowIndex).Cells(6).Value + grdDetalleOrdenServicio.Rows(e.RowIndex).Cells(5).Value
+                Dim decMontoDesc = decPrecio / 100 * decPorcDesc
+                decPrecio = decPrecio - decMontoDesc
+                Dim decPrecioGravado As Decimal = decPrecio
+                If decTasaImpuesto > 0 Then decPrecioGravado = Math.Round(decPrecio / (1 + (decTasaImpuesto / 100)), 3, MidpointRounding.AwayFromZero)
+                dtbDetalleOrdenServicio.Rows(e.RowIndex).Item(4) = decPrecioGravado
+                dtbDetalleOrdenServicio.Rows(e.RowIndex).Item(5) = decPrecio
+                dtbDetalleOrdenServicio.Rows(e.RowIndex).Item(6) = decCantidad * decPrecio
+                dtbDetalleOrdenServicio.Rows(e.RowIndex).Item(9) = decPorcDesc
+                dtbDetalleOrdenServicio.Rows(e.RowIndex).Item(10) = decMontoDesc
+                CargarTotales()
+            End If
+        End If
+    End Sub
+
+    Private Sub TextBox_keyPress(ByVal sender As Object, ByVal e As KeyPressEventArgs)
+        If Char.IsDigit(CChar(CStr(e.KeyChar))) = False Then e.Handled = True
+    End Sub
+
     Private Async Sub TxtPrecio_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtPrecio.PreviewKeyDown
         If producto IsNot Nothing Then
             If e.KeyCode = Keys.ControlKey Then
@@ -1310,7 +1374,7 @@ Public Class FrmOrdenServicio
         End If
     End Sub
 
-    Private Sub ValidaDigitosSinDecimal(sender As Object, e As KeyPressEventArgs)
+    Private Sub ValidaDigitosSinDecimal(sender As Object, e As KeyPressEventArgs) Handles txtTelefono.KeyPress
         FrmPrincipal.ValidaNumero(e, sender, False, 0)
     End Sub
 

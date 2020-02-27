@@ -529,6 +529,7 @@ Public Class FrmPrincipal
                 picLoader.Visible = False
             End If
         Loop While empresa Is Nothing
+        stsPrincipal.Items("tslUsuario").Text = "Usuario: " & empresa.Usuario.CodigoUsuario & "   Sucursal: " & empresa.EquipoRegistrado.NombreSucursal
         usuarioGlobal = empresa.Usuario
         empresaGlobal = empresa
         equipoGlobal = empresa.EquipoRegistrado

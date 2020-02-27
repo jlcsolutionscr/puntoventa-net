@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
 using System.Windows.Forms;
 using System.Data;
 using System.Threading.Tasks;
@@ -313,6 +311,7 @@ namespace LeandroSoftware.Activator
                         chkFacturaElectronica.Checked = empresa.PermiteFacturar;
                         chkRegimenSimplificado.Checked = empresa.RegimenSimplificado;
                         chkAsignaVendedor.Checked = empresa.AsignaVendedorPorDefecto;
+                        chkIngresaPagoCliente.Checked = empresa.IngresaPagoCliente;
                         IList<LlaveDescripcion> reportePorEmpresa = await Administrador.ObtenerListadoReportePorEmpresa(empresa.IdEmpresa, strToken);
                         foreach (var reporte in reportePorEmpresa)
                         {
@@ -409,6 +408,7 @@ namespace LeandroSoftware.Activator
                 empresa.PermiteFacturar = chkFacturaElectronica.Checked;
                 empresa.RegimenSimplificado = chkRegimenSimplificado.Checked;
                 empresa.AsignaVendedorPorDefecto = chkAsignaVendedor.Checked;
+                empresa.IngresaPagoCliente = chkIngresaPagoCliente.Checked;
                 if (txtIdEmpresa.Text == "")
                 {
                     txtIdEmpresa.Text = await Administrador.AgregarEmpresa(empresa, strToken);

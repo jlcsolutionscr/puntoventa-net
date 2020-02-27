@@ -102,6 +102,7 @@
             this.btnInsertaReporte = new System.Windows.Forms.Button();
             this.dgvReportePorEmpresa = new System.Windows.Forms.DataGridView();
             this.tabContainer = new System.Windows.Forms.TabControl();
+            this.chkIngresaPagoCliente = new System.Windows.Forms.CheckBox();
             this.TabRoles.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvRolePorEmpresa)).BeginInit();
             this.tabReportes.SuspendLayout();
@@ -254,7 +255,7 @@
             // 
             this.chkFacturaElectronica.AutoSize = true;
             this.chkFacturaElectronica.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkFacturaElectronica.Location = new System.Drawing.Point(32, 497);
+            this.chkFacturaElectronica.Location = new System.Drawing.Point(85, 447);
             this.chkFacturaElectronica.Name = "chkFacturaElectronica";
             this.chkFacturaElectronica.Size = new System.Drawing.Size(99, 17);
             this.chkFacturaElectronica.TabIndex = 40;
@@ -301,14 +302,14 @@
             this.txtNombreEmpresa.MaxLength = 80;
             this.txtNombreEmpresa.Name = "txtNombreEmpresa";
             this.txtNombreEmpresa.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.txtNombreEmpresa.Size = new System.Drawing.Size(313, 20);
+            this.txtNombreEmpresa.Size = new System.Drawing.Size(310, 20);
             this.txtNombreEmpresa.TabIndex = 2;
             // 
             // chkRecibeDocumentos
             // 
             this.chkRecibeDocumentos.AutoSize = true;
             this.chkRecibeDocumentos.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkRecibeDocumentos.Location = new System.Drawing.Point(207, 543);
+            this.chkRecibeDocumentos.Location = new System.Drawing.Point(85, 516);
             this.chkRecibeDocumentos.Name = "chkRecibeDocumentos";
             this.chkRecibeDocumentos.Size = new System.Drawing.Size(187, 17);
             this.chkRecibeDocumentos.TabIndex = 45;
@@ -320,7 +321,7 @@
             // 
             this.chkAutoCompleta.AutoSize = true;
             this.chkAutoCompleta.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkAutoCompleta.Location = new System.Drawing.Point(207, 520);
+            this.chkAutoCompleta.Location = new System.Drawing.Point(260, 493);
             this.chkAutoCompleta.Name = "chkAutoCompleta";
             this.chkAutoCompleta.Size = new System.Drawing.Size(189, 17);
             this.chkAutoCompleta.TabIndex = 43;
@@ -332,7 +333,7 @@
             // 
             this.chkContabiliza.AutoSize = true;
             this.chkContabiliza.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkContabiliza.Location = new System.Drawing.Point(32, 520);
+            this.chkContabiliza.Location = new System.Drawing.Point(85, 470);
             this.chkContabiliza.Name = "chkContabiliza";
             this.chkContabiliza.Size = new System.Drawing.Size(77, 17);
             this.chkContabiliza.TabIndex = 46;
@@ -478,7 +479,7 @@
             this.txtNombreComercial.MaxLength = 80;
             this.txtNombreComercial.Name = "txtNombreComercial";
             this.txtNombreComercial.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.txtNombreComercial.Size = new System.Drawing.Size(313, 20);
+            this.txtNombreComercial.Size = new System.Drawing.Size(310, 20);
             this.txtNombreComercial.TabIndex = 3;
             // 
             // Label1
@@ -531,7 +532,7 @@
             this._lblLabels_1.Cursor = System.Windows.Forms.Cursors.Default;
             this._lblLabels_1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this._lblLabels_1.ForeColor = System.Drawing.SystemColors.ControlText;
-            this._lblLabels_1.Location = new System.Drawing.Point(18, 409);
+            this._lblLabels_1.Location = new System.Drawing.Point(249, 383);
             this._lblLabels_1.Name = "_lblLabels_1";
             this._lblLabels_1.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this._lblLabels_1.Size = new System.Drawing.Size(113, 17);
@@ -557,7 +558,7 @@
             // 
             this.chkRegimenSimplificado.AutoSize = true;
             this.chkRegimenSimplificado.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkRegimenSimplificado.Location = new System.Drawing.Point(207, 497);
+            this.chkRegimenSimplificado.Location = new System.Drawing.Point(260, 470);
             this.chkRegimenSimplificado.Name = "chkRegimenSimplificado";
             this.chkRegimenSimplificado.Size = new System.Drawing.Size(127, 17);
             this.chkRegimenSimplificado.TabIndex = 41;
@@ -572,7 +573,7 @@
             this.txtCantidadDocumentos.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.txtCantidadDocumentos.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtCantidadDocumentos.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.txtCantidadDocumentos.Location = new System.Drawing.Point(136, 459);
+            this.txtCantidadDocumentos.Location = new System.Drawing.Point(401, 406);
             this.txtCantidadDocumentos.MaxLength = 0;
             this.txtCantidadDocumentos.Name = "txtCantidadDocumentos";
             this.txtCantidadDocumentos.RightToLeft = System.Windows.Forms.RightToLeft.No;
@@ -586,7 +587,7 @@
             this.label7.Cursor = System.Windows.Forms.Cursors.Default;
             this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label7.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label7.Location = new System.Drawing.Point(17, 462);
+            this.label7.Location = new System.Drawing.Point(282, 409);
             this.label7.Name = "label7";
             this.label7.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.label7.Size = new System.Drawing.Size(113, 17);
@@ -599,7 +600,7 @@
             this.cboTipoContrato.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboTipoContrato.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboTipoContrato.FormattingEnabled = true;
-            this.cboTipoContrato.Location = new System.Drawing.Point(136, 432);
+            this.cboTipoContrato.Location = new System.Drawing.Point(136, 406);
             this.cboTipoContrato.Name = "cboTipoContrato";
             this.cboTipoContrato.Size = new System.Drawing.Size(126, 21);
             this.cboTipoContrato.TabIndex = 22;
@@ -610,7 +611,7 @@
             this.label30.Cursor = System.Windows.Forms.Cursors.Default;
             this.label30.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label30.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label30.Location = new System.Drawing.Point(17, 433);
+            this.label30.Location = new System.Drawing.Point(17, 407);
             this.label30.Name = "label30";
             this.label30.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.label30.Size = new System.Drawing.Size(113, 17);
@@ -648,7 +649,7 @@
             // 
             // txtFecha
             // 
-            this.txtFecha.Location = new System.Drawing.Point(137, 406);
+            this.txtFecha.Location = new System.Drawing.Point(368, 380);
             this.txtFecha.Mask = "00/00/0000";
             this.txtFecha.Name = "txtFecha";
             this.txtFecha.Size = new System.Drawing.Size(82, 20);
@@ -659,7 +660,7 @@
             // 
             this.chkAsignaVendedor.AutoSize = true;
             this.chkAsignaVendedor.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkAsignaVendedor.Location = new System.Drawing.Point(32, 543);
+            this.chkAsignaVendedor.Location = new System.Drawing.Point(85, 493);
             this.chkAsignaVendedor.Name = "chkAsignaVendedor";
             this.chkAsignaVendedor.Size = new System.Drawing.Size(163, 17);
             this.chkAsignaVendedor.TabIndex = 209;
@@ -1085,6 +1086,18 @@
             this.tabContainer.TabIndex = 24;
             this.tabContainer.TabStop = false;
             // 
+            // chkIngresaPagoCliente
+            // 
+            this.chkIngresaPagoCliente.AutoSize = true;
+            this.chkIngresaPagoCliente.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chkIngresaPagoCliente.Location = new System.Drawing.Point(260, 447);
+            this.chkIngresaPagoCliente.Name = "chkIngresaPagoCliente";
+            this.chkIngresaPagoCliente.Size = new System.Drawing.Size(139, 17);
+            this.chkIngresaPagoCliente.TabIndex = 263;
+            this.chkIngresaPagoCliente.TabStop = false;
+            this.chkIngresaPagoCliente.Text = "Ingresa pago del cliente";
+            this.chkIngresaPagoCliente.UseVisualStyleBackColor = true;
+            // 
             // FrmEmpresa
             // 
             this.AcceptButton = this.btnInsertaRole;
@@ -1092,7 +1105,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(193)))), ((int)(((byte)(215)))), ((int)(((byte)(225)))));
-            this.ClientSize = new System.Drawing.Size(851, 571);
+            this.ClientSize = new System.Drawing.Size(851, 569);
+            this.Controls.Add(this.chkIngresaPagoCliente);
             this.Controls.Add(this.txtDescripcionTerminal);
             this.Controls.Add(this.chkDispositivoMovil);
             this.Controls.Add(this.lblSucursal);
@@ -1240,6 +1254,7 @@
         public System.Windows.Forms.Button btnInsertaReporte;
         internal System.Windows.Forms.DataGridView dgvReportePorEmpresa;
         private System.Windows.Forms.TabControl tabContainer;
+        internal System.Windows.Forms.CheckBox chkIngresaPagoCliente;
     }
 }
 

@@ -172,6 +172,22 @@ Public Class FrmAplicaAbonoOrdenServicio
 #Region "Eventos Controles"
     Private Sub FrmAplicaAbonoOrdenServicio_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         KeyPreview = True
+        For Each ctl As Control In Controls
+            If TypeOf (ctl) Is TextBox Then
+                AddHandler DirectCast(ctl, TextBox).Enter, AddressOf EnterTexboxHandler
+                AddHandler DirectCast(ctl, TextBox).Leave, AddressOf LeaveTexboxHandler
+            End If
+        Next
+    End Sub
+
+    Private Sub EnterTexboxHandler(sender As Object, e As EventArgs)
+        Dim textbox As TextBox = DirectCast(sender, TextBox)
+        textbox.BackColor = Color.PeachPuff
+    End Sub
+
+    Private Sub LeaveTexboxHandler(sender As Object, e As EventArgs)
+        Dim textbox As TextBox = DirectCast(sender, TextBox)
+        textbox.BackColor = Color.White
     End Sub
 
     Private Sub FrmAplicaAbonoOrdenServicio_KeyDown(sender As Object, e As KeyEventArgs) Handles MyBase.KeyDown
@@ -233,6 +249,9 @@ Public Class FrmAplicaAbonoOrdenServicio
             Exit Sub
         ElseIf decTotal = 0 Then
             MessageBox.Show("Debe ingresar el monto del abono para guardar el registro.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            Exit Sub
+        ElseIf decSaldoPorPagar = 0 Then
+            MessageBox.Show("La orden de servicio no puede ser cancelada en su totalidad.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         ElseIf decSaldoPorPagar > 0 Then
             MessageBox.Show("El total del desglose de pago no es suficiente para cubrir el saldo por pagar actual.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
@@ -409,14 +428,16 @@ Public Class FrmAplicaAbonoOrdenServicio
         End If
     End Sub
 
-    Private Sub TxtMonto_Validated(sender As Object, e As EventArgs) Handles txtMonto.Validated
-        If txtMonto.Text = "" Then txtMonto.Text = "0"
-        txtMonto.Text = FormatNumber(txtMonto.Text, 2)
-        decTotal = CDec(txtMonto.Text)
-        dtbDesglosePago.Rows.Clear()
-        grdDesglosePago.Refresh()
-        CargarTotalesPago()
-        txtMontoPago.Text = FormatNumber(decSaldoPorPagar, 2)
+    Private Sub TxtMonto_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtMonto.PreviewKeyDown
+        If e.KeyCode = Keys.Enter Or e.KeyCode = Keys.Tab Then
+            If txtMonto.Text = "" Then txtMonto.Text = "0"
+            txtMonto.Text = FormatNumber(txtMonto.Text, 2)
+            decTotal = CDec(txtMonto.Text)
+            dtbDesglosePago.Rows.Clear()
+            grdDesglosePago.Refresh()
+            CargarTotalesPago()
+            txtMontoPago.Text = FormatNumber(decSaldoPorPagar, 2)
+        End If
     End Sub
 
     Private Sub Valida_KeyPress(ByVal sender As Object, ByVal e As KeyPressEventArgs) Handles txtMonto.KeyPress, txtMontoPago.KeyPress

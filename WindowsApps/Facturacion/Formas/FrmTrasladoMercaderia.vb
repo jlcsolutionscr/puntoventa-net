@@ -9,7 +9,7 @@ Public Class FrmTrasladoMercaderia
 #Region "Variables"
     Private dblTotal As Decimal
     Private I As Short
-    Private dtbDatosLocal, dtbDetalleTraslado As DataTable
+    Private dtbDetalleTraslado As DataTable
     Private dtrRowDetTraslado As DataRow
     Private arrDetalleTraslado As List(Of ModuloImpresion.ClsDetalleComprobante)
     Private traslado As Traslado
@@ -166,11 +166,27 @@ Public Class FrmTrasladoMercaderia
 #End Region
 
 #Region "Eventos Controles"
-    Private Sub FrmTraslado_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+    Private Sub FrmTrasladoMercaderia_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         KeyPreview = True
+        For Each ctl As Control In Controls
+            If TypeOf (ctl) Is TextBox Then
+                AddHandler DirectCast(ctl, TextBox).Enter, AddressOf EnterTexboxHandler
+                AddHandler DirectCast(ctl, TextBox).Leave, AddressOf LeaveTexboxHandler
+            End If
+        Next
     End Sub
 
-    Private Async Sub FrmTraslado_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+    Private Sub EnterTexboxHandler(sender As Object, e As EventArgs)
+        Dim textbox As TextBox = DirectCast(sender, TextBox)
+        textbox.BackColor = Color.PeachPuff
+    End Sub
+
+    Private Sub LeaveTexboxHandler(sender As Object, e As EventArgs)
+        Dim textbox As TextBox = DirectCast(sender, TextBox)
+        textbox.BackColor = Color.White
+    End Sub
+
+    Private Async Sub FrmTrasladoMercaderia_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
             IniciaDetalleTraslado()
             EstablecerPropiedadesDataGridView()
@@ -283,8 +299,9 @@ Public Class FrmTrasladoMercaderia
     End Sub
 
     Private Async Sub btnGuardar_Click(sender As Object, e As EventArgs) Handles btnGuardar.Click
-        If Not cboIdSucursalDestino.SelectedValue Is Nothing Then
+        If cboIdSucursalDestino.SelectedValue Is Nothing Then
             MessageBox.Show("Debe seleccionar la sucursal destino para guardar el registro.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            cboIdSucursalDestino.Focus()
             Exit Sub
         ElseIf CDbl(txtTotal.Text) = 0 Then
             MessageBox.Show("Debe agregar líneas de detalle para guardar el registro.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)

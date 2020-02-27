@@ -21,6 +21,25 @@ Public Class FrmProcesoCierre
 #End Region
 
 #Region "Eventos Controles"
+    Private Sub FrmProcesoCierre_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        For Each ctl As Control In Controls
+            If TypeOf (ctl) Is TextBox Then
+                AddHandler DirectCast(ctl, TextBox).Enter, AddressOf EnterTexboxHandler
+                AddHandler DirectCast(ctl, TextBox).Leave, AddressOf LeaveTexboxHandler
+            End If
+        Next
+    End Sub
+
+    Private Sub EnterTexboxHandler(sender As Object, e As EventArgs)
+        Dim textbox As TextBox = DirectCast(sender, TextBox)
+        textbox.BackColor = Color.PeachPuff
+    End Sub
+
+    Private Sub LeaveTexboxHandler(sender As Object, e As EventArgs)
+        Dim textbox As TextBox = DirectCast(sender, TextBox)
+        textbox.BackColor = Color.White
+    End Sub
+
     Private Sub CmdCambiarFecha_Click(sender As Object, e As EventArgs) Handles CmdCambiarFecha.Click
         If MessageBox.Show("Desea ejecutar el cambio de fecha calendario?", "JLC Solutions CR", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
             FechaDia = CDate(txtFecha.Text)

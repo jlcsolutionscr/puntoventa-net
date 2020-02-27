@@ -110,7 +110,7 @@ Public Class FrmFactura
         dvcPorcDescuento.HeaderText = "Desc"
         dvcPorcDescuento.Width = 40
         dvcPorcDescuento.Visible = True
-        dvcPorcDescuento.ReadOnly = True
+        dvcPorcDescuento.ReadOnly = False
         dvcPorcDescuento.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleFactura.Columns.Add(dvcPorcDescuento)
 
@@ -363,7 +363,7 @@ Public Class FrmFactura
             dtbDetalleFactura.Rows(intIndice).Item(8) = producto.PrecioCosto
             dtbDetalleFactura.Rows(intIndice).Item(9) = decTasaImpuesto
             dtbDetalleFactura.Rows(intIndice).Item(10) = decPorcDesc
-            dtbDetalleFactura.Rows(intIndice).Item(10) = (decPrecio * 100 / (100 - decPorcDesc)) - decPrecio
+            dtbDetalleFactura.Rows(intIndice).Item(11) = (decPrecio * 100 / (100 - decPorcDesc)) - decPrecio
         Else
             dtrRowDetFactura = dtbDetalleFactura.NewRow
             dtrRowDetFactura.Item(0) = producto.IdProducto
@@ -569,6 +569,22 @@ Public Class FrmFactura
 #Region "Eventos Controles"
     Private Sub FrmFactura_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         KeyPreview = True
+        For Each ctl As Control In Controls
+            If TypeOf (ctl) Is TextBox Then
+                AddHandler DirectCast(ctl, TextBox).Enter, AddressOf EnterTexboxHandler
+                AddHandler DirectCast(ctl, TextBox).Leave, AddressOf LeaveTexboxHandler
+            End If
+        Next
+    End Sub
+
+    Private Sub EnterTexboxHandler(sender As Object, e As EventArgs)
+        Dim textbox As TextBox = DirectCast(sender, TextBox)
+        textbox.BackColor = Color.PeachPuff
+    End Sub
+
+    Private Sub LeaveTexboxHandler(sender As Object, e As EventArgs)
+        Dim textbox As TextBox = DirectCast(sender, TextBox)
+        textbox.BackColor = Color.White
     End Sub
 
     Private Sub FrmFactura_KeyDown(sender As Object, e As KeyEventArgs) Handles MyBase.KeyDown
@@ -664,6 +680,7 @@ Public Class FrmFactura
         cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
         cboTipoMoneda.SelectedValue = FrmPrincipal.empresaGlobal.IdTipoMoneda
         txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmPrincipal.decTipoCambioDolar.ToString())
+        txtTelefono.Text = ""
         txtReferencia.Text = ""
         txtDocumento.Text = ""
         cboTipoMoneda.Enabled = True
@@ -672,7 +689,6 @@ Public Class FrmFactura
         txtPlazoCredito.Text = ""
         txtTipoExoneracion.Text = ""
         txtNumDocExoneracion.Text = ""
-        txtNombreInstExoneracion.Text = ""
         txtFechaExoneracion.Text = ""
         txtPorcentajeExoneracion.Text = ""
         dtbDetalleFactura.Rows.Clear()
@@ -784,6 +800,7 @@ Public Class FrmFactura
                 cliente = factura.Cliente
                 txtNombreCliente.Text = factura.NombreCliente
                 txtFecha.Text = factura.Fecha
+                txtTelefono.Text = factura.Telefono
                 txtDocumento.Text = factura.TextoAdicional
                 intIdProforma = factura.IdProforma
                 intIdOrdenServicio = factura.IdOrdenServicio
@@ -805,7 +822,6 @@ Public Class FrmFactura
                 If factura.PorcentajeExoneracion > 0 Then
                     txtTipoExoneracion.Text = factura.ParametroExoneracion.Descripcion
                     txtNumDocExoneracion.Text = factura.NumDocExoneracion
-                    txtNombreInstExoneracion.Text = factura.NombreInstExoneracion
                     txtFechaExoneracion.Text = factura.FechaEmisionDoc
                     txtPorcentajeExoneracion.Text = factura.PorcentajeExoneracion
                 End If
@@ -862,6 +878,7 @@ Public Class FrmFactura
                 txtReferencia.Text = "Orden de servicio nro. " & ordenServicio.ConsecOrdenServicio
                 txtNombreCliente.Text = ordenServicio.NombreCliente
                 txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
+                txtTelefono.Text = ordenServicio.Telefono
                 txtDocumento.Text = ""
                 cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado
                 cboCondicionVenta.Enabled = cliente.IdCliente > 1
@@ -869,7 +886,6 @@ Public Class FrmFactura
                 If cliente.PorcentajeExoneracion > 0 Then
                     txtTipoExoneracion.Text = cliente.ParametroExoneracion.Descripcion
                     txtNumDocExoneracion.Text = cliente.NumDocExoneracion
-                    txtNombreInstExoneracion.Text = cliente.NombreInstExoneracion
                     txtFechaExoneracion.Text = cliente.FechaEmisionDoc
                     txtPorcentajeExoneracion.Text = cliente.PorcentajeExoneracion
                 End If
@@ -928,6 +944,7 @@ Public Class FrmFactura
                 txtReferencia.Text = "Apartado nro. " & apartado.ConsecApartado
                 txtNombreCliente.Text = apartado.NombreCliente
                 txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
+                txtTelefono.Text = apartado.Telefono
                 txtDocumento.Text = ""
                 cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado
                 cboCondicionVenta.Enabled = cliente.IdCliente > 1
@@ -935,7 +952,6 @@ Public Class FrmFactura
                 If cliente.PorcentajeExoneracion > 0 Then
                     txtTipoExoneracion.Text = cliente.ParametroExoneracion.Descripcion
                     txtNumDocExoneracion.Text = cliente.NumDocExoneracion
-                    txtNombreInstExoneracion.Text = cliente.NombreInstExoneracion
                     txtFechaExoneracion.Text = cliente.FechaEmisionDoc
                     txtPorcentajeExoneracion.Text = cliente.PorcentajeExoneracion
                 End If
@@ -994,6 +1010,7 @@ Public Class FrmFactura
                 txtReferencia.Text = "Proforma nro. " & proforma.ConsecProforma
                 txtNombreCliente.Text = proforma.NombreCliente
                 txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
+                txtTelefono.Text = proforma.Telefono
                 txtDocumento.Text = ""
                 cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado
                 cboCondicionVenta.Enabled = cliente.IdCliente > 1
@@ -1001,7 +1018,6 @@ Public Class FrmFactura
                 If cliente.PorcentajeExoneracion > 0 Then
                     txtTipoExoneracion.Text = cliente.ParametroExoneracion.Descripcion
                     txtNumDocExoneracion.Text = cliente.NumDocExoneracion
-                    txtNombreInstExoneracion.Text = cliente.NombreInstExoneracion
                     txtFechaExoneracion.Text = cliente.FechaEmisionDoc
                     txtPorcentajeExoneracion.Text = cliente.PorcentajeExoneracion
                 End If
@@ -1068,6 +1084,7 @@ Public Class FrmFactura
                 cliente = Await Puntoventa.ObtenerCliente(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
                 txtNombreCliente.Text = cliente.Nombre
                 txtNombreCliente.ReadOnly = True
+                txtTelefono.Text = cliente.Telefono
                 cboCondicionVenta.Enabled = True
                 If cliente.Vendedor IsNot Nothing Then
                     vendedor = cliente.Vendedor
@@ -1076,13 +1093,11 @@ Public Class FrmFactura
                 If cliente.PorcentajeExoneracion > 0 Then
                     txtTipoExoneracion.Text = cliente.ParametroExoneracion.Descripcion
                     txtNumDocExoneracion.Text = cliente.NumDocExoneracion
-                    txtNombreInstExoneracion.Text = cliente.NombreInstExoneracion
                     txtFechaExoneracion.Text = cliente.FechaEmisionDoc
                     txtPorcentajeExoneracion.Text = cliente.PorcentajeExoneracion
                 Else
                     txtTipoExoneracion.Text = ""
                     txtNumDocExoneracion.Text = ""
-                    txtNombreInstExoneracion.Text = ""
                     txtFechaExoneracion.Text = ""
                     txtPorcentajeExoneracion.Text = ""
                 End If
@@ -1120,6 +1135,7 @@ Public Class FrmFactura
     Private Async Sub BtnGuardar_Click(sender As Object, e As EventArgs) Handles btnGuardar.Click
         If vendedor Is Nothing Then
             MessageBox.Show("Debe seleccionar el vendedor para poder guardar el registro.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            BtnBuscaVendedor_Click(btnBuscaVendedor, New EventArgs())
             Exit Sub
         ElseIf decTotal = 0 Then
             MessageBox.Show("Debe agregar líneas de detalle para guardar el registro.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
@@ -1553,6 +1569,47 @@ Public Class FrmFactura
         End If
     End Sub
 
+    Private Sub grdDetalleFactura_EditingControlShowing(sender As Object, e As DataGridViewEditingControlShowingEventArgs) Handles grdDetalleFactura.EditingControlShowing
+        If grdDetalleFactura.CurrentCell.ColumnIndex = 4 Then
+            Dim tb As TextBox = e.Control
+            If tb IsNot Nothing Then
+                AddHandler CType(e.Control, TextBox).KeyPress, AddressOf TextBox_keyPress
+            End If
+        End If
+    End Sub
+
+    Private Sub grdDetalleFactura_CellValueChanged(sender As Object, e As DataGridViewCellEventArgs) Handles grdDetalleFactura.CellValueChanged
+        If e.ColumnIndex = 4 Then
+            Dim decPorcDesc As Decimal = 0
+            If Not IsDBNull(grdDetalleFactura.Rows(e.RowIndex).Cells(e.ColumnIndex).Value) Then
+                decPorcDesc = grdDetalleFactura.Rows(e.RowIndex).Cells(e.ColumnIndex).Value
+            End If
+            Dim decPorMax As Decimal = FrmPrincipal.empresaGlobal.PorcentajeDescMaximo
+            If decPorcDesc > decPorMax Then
+                MessageBox.Show("El porcentaje ingresado es mayor al parametro establecido para la empresa", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                grdDetalleFactura.Rows(e.RowIndex).Cells(e.ColumnIndex).Value = 0
+            Else
+                Dim decCantidad As Decimal = grdDetalleFactura.Rows(e.RowIndex).Cells(3).Value
+                Dim decTasaImpuesto As Decimal = grdDetalleFactura.Rows(e.RowIndex).Cells(10).Value
+                Dim decPrecio As Decimal = grdDetalleFactura.Rows(e.RowIndex).Cells(6).Value + grdDetalleFactura.Rows(e.RowIndex).Cells(5).Value
+                Dim decMontoDesc = decPrecio / 100 * decPorcDesc
+                decPrecio = decPrecio - decMontoDesc
+                Dim decPrecioGravado As Decimal = decPrecio
+                If decTasaImpuesto > 0 Then decPrecioGravado = Math.Round(decPrecio / (1 + (decTasaImpuesto / 100)), 3, MidpointRounding.AwayFromZero)
+                dtbDetalleFactura.Rows(e.RowIndex).Item(4) = decPrecioGravado
+                dtbDetalleFactura.Rows(e.RowIndex).Item(5) = decPrecio
+                dtbDetalleFactura.Rows(e.RowIndex).Item(6) = decCantidad * decPrecio
+                dtbDetalleFactura.Rows(e.RowIndex).Item(10) = decPorcDesc
+                dtbDetalleFactura.Rows(e.RowIndex).Item(11) = decMontoDesc
+                CargarTotales()
+            End If
+        End If
+    End Sub
+
+    Private Sub TextBox_keyPress(ByVal sender As Object, ByVal e As KeyPressEventArgs)
+        If Char.IsDigit(CChar(CStr(e.KeyChar))) = False Then e.Handled = True
+    End Sub
+
     Private Async Sub TxtCodigo_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtCodigo.PreviewKeyDown
         If e.KeyCode = Keys.Enter Or e.KeyCode = Keys.Tab Then
             Try
@@ -1670,6 +1727,10 @@ Public Class FrmFactura
                 BtnInsertarPago_Click(btnInsertarPago, New EventArgs())
             End If
         End If
+    End Sub
+
+    Private Sub ValidaDigitosSinDecimal(sender As Object, e As KeyPressEventArgs) Handles txtTelefono.KeyPress
+        FrmPrincipal.ValidaNumero(e, sender, False, 0)
     End Sub
 
     Private Sub ValidaDigitos(sender As Object, e As KeyPressEventArgs) Handles txtCantidad.KeyPress, txtPorcDesc.KeyPress, txtPrecio.KeyPress, txtMontoPago.KeyPress
