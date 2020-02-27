@@ -8,8 +8,8 @@
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint .",
-    "build-android-dev": "export ENVFILE=.env && cd android && ./gradlew assembleRelease",
-    "build-android-prod": "export ENVFILE=.env.production && cd android && ./gradlew bundleRelease"
+    "build-android-dev": "cd android && export ENVFILE=.env && ./gradlew assembleRelease",
+    "build-android-prod": "cd android && export ENVFILE=.env.production && ./gradlew bundleRelease"
   },
   "dependencies": {
     "@react-native-community/async-storage": "1.6.2",
