@@ -737,11 +737,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="My Project\Settings.Designer.vb">
-      <AutoGen>True</AutoGen>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <DependentUpon>Settings.settings</DependentUpon>
-    </Compile>
     <Compile Include="Formas\FrmReportViewer.Designer.vb">
       <DependentUpon>FrmReportViewer.vb</DependentUpon>
     </Compile>
@@ -1098,11 +1093,6 @@
     <None Include="My Project\app.manifest" />
     <None Include="My Project\DataSources\LeandroSoftware.Core.TiposComunes.LlaveDescripcion.datasource" />
     <None Include="My Project\DataSources\LeandroSoftware.Core.TiposComunes.ReporteResumenMovimiento.datasource" />
-    <None Include="My Project\Settings.settings">
-      <CustomToolNamespace>My</CustomToolNamespace>
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.vb</LastGenOutput>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <PublishFile Include="ADODB">
@@ -1154,10 +1144,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="My Project\Application.myapp">
-      <Generator>MyApplicationCodeGenerator</Generator>
-      <LastGenOutput>Application.Designer.vb</LastGenOutput>
-    </Content>
     <None Include="packages.config" />
     <None Include="Resources\logo.png" />
     <None Include="Resources\emptyImage.bmp" />
@@ -1187,7 +1173,12 @@
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="My Project\Application.myapp">
+      <Generator>MyApplicationCodeGenerator</Generator>
+      <LastGenOutput>Application.Designer.vb</LastGenOutput>
+    </None>
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
   <PropertyGroup>
     <PreBuildEvent>

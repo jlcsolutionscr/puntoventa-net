@@ -22,6 +22,8 @@ Public Class FrmOrdenServicio
     Private cliente As Cliente
     Private vendedor As Vendedor
     Private bolInit As Boolean = True
+    Private bolAutorizando As Boolean = False
+    Private provider As CultureInfo = CultureInfo.InvariantCulture
     'Impresion de tiquete
     Private comprobanteImpresion As ModuloImpresion.ClsComprobante
     Private detalleComprobante As ModuloImpresion.ClsDetalleComprobante
@@ -551,8 +553,12 @@ Public Class FrmOrdenServicio
             cliente = New Cliente With {
                 .IdCliente = 1,
                 .Nombre = "CLIENTE DE CONTADO",
+                .Telefono = "",
                 .IdTipoExoneracion = 1,
-                .PorcentajeExoneracion = 0
+                .PorcentajeExoneracion = 0,
+                .NombreInstExoneracion = "",
+                .NumDocExoneracion = "",
+                .FechaEmisionDoc = Date.ParseExact("01/01/2019", "dd/MM/yyyy", provider)
             }
             txtNombreCliente.Text = cliente.Nombre
             If FrmPrincipal.empresaGlobal.AsignaVendedorPorDefecto Then
@@ -623,11 +629,15 @@ Public Class FrmOrdenServicio
         btnBuscaVendedor.Enabled = True
         btnBuscarCliente.Enabled = True
         cliente = New Cliente With {
-            .IdCliente = 1,
-            .Nombre = "CLIENTE DE CONTADO",
-            .IdTipoExoneracion = 1,
-            .PorcentajeExoneracion = 0
-        }
+                .IdCliente = 1,
+                .Nombre = "CLIENTE DE CONTADO",
+                .Telefono = "",
+                .IdTipoExoneracion = 1,
+                .PorcentajeExoneracion = 0,
+                .NombreInstExoneracion = "",
+                .NumDocExoneracion = "",
+                .FechaEmisionDoc = Date.ParseExact("01/01/2019", "dd/MM/yyyy", provider)
+            }
         txtNombreCliente.Text = cliente.Nombre
         txtNombreCliente.ReadOnly = False
         If FrmPrincipal.empresaGlobal.AsignaVendedorPorDefecto Then
@@ -1207,30 +1217,123 @@ Public Class FrmOrdenServicio
         End If
     End Sub
 
-    Private Sub txtPorcDesc_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtPorcDesc.PreviewKeyDown
-        If e.KeyCode = Keys.Enter Or e.KeyCode = Keys.Tab Then
-            If txtPorcDesc.Text = "" Then txtPorcDesc.Text = "0"
-            If producto IsNot Nothing Then
-                Dim decTasaImpuesto As Decimal = producto.ParametroImpuesto.TasaImpuesto
-                decPrecioVenta = ObtenerPrecioVentaPorCliente(cliente, producto)
-                If CDbl(txtPorcDesc.Text) > FrmPrincipal.empresaGlobal.PorcentajeDescMaximo Then
-                    MessageBox.Show("El porcentaje ingresado es mayor al parametro establecido para la empresa", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                    txtPorcDesc.Text = "0"
-                    txtPrecio.Text = FormatNumber(decPrecioVenta, 2)
-                Else
-                    Dim decPorcDesc As Decimal = CDbl(txtPorcDesc.Text) / 100
-                    decPrecioVenta = decPrecioVenta - (decPrecioVenta * decPorcDesc)
-                    txtPrecio.Text = FormatNumber(decPrecioVenta, 2)
-                    If e.KeyCode = Keys.Enter Then BtnInsertar_Click(btnInsertar, New EventArgs())
-                End If
-            End If
-        End If
-    End Sub
-
     Private Sub Precio_KeyUp(sender As Object, e As KeyEventArgs) Handles txtPrecio.KeyUp
         If producto IsNot Nothing Then
             Dim decTasaImpuesto As Decimal = producto.ParametroImpuesto.TasaImpuesto
             If txtPrecio.Text <> "" Then decPrecioVenta = Math.Round(CDbl(txtPrecio.Text), 2, MidpointRounding.AwayFromZero)
+        End If
+    End Sub
+
+    Private Sub grdDetalleOrdenServicio_EditingControlShowing(sender As Object, e As DataGridViewEditingControlShowingEventArgs) Handles grdDetalleOrdenServicio.EditingControlShowing
+        If grdDetalleOrdenServicio.CurrentCell.ColumnIndex = 4 Then
+            Dim tb As TextBox = e.Control
+            If tb IsNot Nothing Then
+                AddHandler CType(e.Control, TextBox).KeyPress, AddressOf TextBox_keyPress
+            End If
+        End If
+    End Sub
+
+    Private Sub TextBox_keyPress(ByVal sender As Object, ByVal e As KeyPressEventArgs)
+        If Char.IsDigit(CChar(CStr(e.KeyChar))) = False Then e.Handled = True
+    End Sub
+
+    Private Async Sub grdDetalleOrdenServicio_CellValueChanged(sender As Object, e As DataGridViewCellEventArgs) Handles grdDetalleOrdenServicio.CellValueChanged
+        If e.ColumnIndex = 4 And Not bolAutorizando Then
+            bolAutorizando = True
+            Dim decPorcDesc As Decimal = 0
+            If Not IsDBNull(grdDetalleOrdenServicio.Rows(e.RowIndex).Cells(e.ColumnIndex).Value) Then
+                decPorcDesc = grdDetalleOrdenServicio.Rows(e.RowIndex).Cells(e.ColumnIndex).Value
+            End If
+            If Not FrmPrincipal.usuarioGlobal.Modifica And decPorcDesc > FrmPrincipal.empresaGlobal.PorcentajeDescMaximo Then
+                If MessageBox.Show("El porcentaje ingresado es mayor al parámetro establecido para la empresa. Desea ingresar una autorización?", "JLC Solutions CR", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
+                    FrmPrincipal.strCodigoUsuario = ""
+                    FrmPrincipal.strContrasena = ""
+                    FrmPrincipal.strBusqueda = ""
+                    Dim formAutorizacion As New FrmAutorizaPrecio
+                    formAutorizacion.ShowDialog()
+                    If FrmPrincipal.strCodigoUsuario <> "" And FrmPrincipal.strContrasena <> "" And FrmPrincipal.strBusqueda <> "" Then
+                        Dim autorizado As Boolean
+                        Try
+                            autorizado = Await Puntoventa.AutorizacionPrecioExtraordinario(FrmPrincipal.strCodigoUsuario, FrmPrincipal.strContrasena, FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+                        Catch ex As Exception
+                            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                            Exit Sub
+                        End Try
+                        If autorizado Then
+                            decPorcDesc = FrmPrincipal.strBusqueda
+                            grdDetalleOrdenServicio.Rows(e.RowIndex).Cells(e.ColumnIndex).Value = FrmPrincipal.strBusqueda
+                        Else
+                            MessageBox.Show("Los credenciales ingresados son incorrectos.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                            decPorcDesc = 0
+                            grdDetalleOrdenServicio.Rows(e.RowIndex).Cells(e.ColumnIndex).Value = 0
+                        End If
+                    End If
+                Else
+                    decPorcDesc = 0
+                    grdDetalleOrdenServicio.Rows(e.RowIndex).Cells(e.ColumnIndex).Value = 0
+                End If
+            End If
+            Dim decCantidad As Decimal = grdDetalleOrdenServicio.Rows(e.RowIndex).Cells(3).Value
+            Dim decTasaImpuesto As Decimal = grdDetalleOrdenServicio.Rows(e.RowIndex).Cells(9).Value
+            Dim decPrecio As Decimal = grdDetalleOrdenServicio.Rows(e.RowIndex).Cells(6).Value + grdDetalleOrdenServicio.Rows(e.RowIndex).Cells(5).Value
+            Dim decMontoDesc = decPrecio / 100 * decPorcDesc
+            decPrecio = decPrecio - decMontoDesc
+            Dim decPrecioGravado As Decimal = decPrecio
+            If decTasaImpuesto > 0 Then decPrecioGravado = Math.Round(decPrecio / (1 + (decTasaImpuesto / 100)), 3, MidpointRounding.AwayFromZero)
+            dtbDetalleOrdenServicio.Rows(e.RowIndex).Item(4) = decPrecioGravado
+            dtbDetalleOrdenServicio.Rows(e.RowIndex).Item(5) = decPrecio
+            dtbDetalleOrdenServicio.Rows(e.RowIndex).Item(6) = decCantidad * decPrecio
+            dtbDetalleOrdenServicio.Rows(e.RowIndex).Item(9) = decPorcDesc
+            dtbDetalleOrdenServicio.Rows(e.RowIndex).Item(10) = decMontoDesc
+            CargarTotales()
+            bolAutorizando = False
+        End If
+    End Sub
+
+    Private Async Sub txtPorcDesc_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtPorcDesc.PreviewKeyDown
+        If e.KeyCode = Keys.Enter Or e.KeyCode = Keys.Tab Then
+            If txtPorcDesc.Text = "" Then txtPorcDesc.Text = "0"
+            If producto IsNot Nothing Then
+                decPrecioVenta = ObtenerPrecioVentaPorCliente(cliente, producto)
+                If Not FrmPrincipal.usuarioGlobal.Modifica And CDbl(txtPorcDesc.Text) > FrmPrincipal.empresaGlobal.PorcentajeDescMaximo Then
+                    If MessageBox.Show("El porcentaje ingresado es mayor al parámetro establecido para la empresa. Desea ingresar una autorización?", "JLC Solutions CR", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
+                        FrmPrincipal.strCodigoUsuario = ""
+                        FrmPrincipal.strContrasena = ""
+                        FrmPrincipal.strBusqueda = ""
+                        Dim formAutorizacion As New FrmAutorizaPrecio
+                        formAutorizacion.ShowDialog()
+                        If FrmPrincipal.strCodigoUsuario <> "" And FrmPrincipal.strContrasena <> "" And FrmPrincipal.strBusqueda <> "" Then
+                            Dim autorizado As Boolean
+                            Try
+                                autorizado = Await Puntoventa.AutorizacionPrecioExtraordinario(FrmPrincipal.strCodigoUsuario, FrmPrincipal.strContrasena, FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+                            Catch ex As Exception
+                                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                                Exit Sub
+                            End Try
+                            If autorizado Then
+                                txtPorcDesc.Text = FrmPrincipal.strBusqueda
+                            Else
+                                MessageBox.Show("Los credenciales ingresados son incorrectos.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                                txtPorcDesc.Text = 0
+                            End If
+                        End If
+                    Else
+                        txtPorcDesc.Text = 0
+                    End If
+                End If
+                Dim decPorcDesc As Decimal = CDbl(txtPorcDesc.Text) / 100
+                decPrecioVenta -= (decPrecioVenta * decPorcDesc)
+                txtPrecio.Text = FormatNumber(decPrecioVenta, 2)
+                If e.KeyCode = Keys.Enter Then BtnInsertar_Click(btnInsertar, New EventArgs())
+            End If
+        End If
+    End Sub
+
+    Private Sub TxtPrecio_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtPrecio.PreviewKeyDown
+        If producto IsNot Nothing Then
+            If e.KeyCode = Keys.Enter Then
+                BtnInsertar_Click(btnInsertar, New EventArgs())
+            End If
         End If
     End Sub
 
@@ -1256,79 +1359,6 @@ Public Class FrmOrdenServicio
                 MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
-        End If
-    End Sub
-
-    Private Sub grdDetalleOrdenServicio_EditingControlShowing(sender As Object, e As DataGridViewEditingControlShowingEventArgs) Handles grdDetalleOrdenServicio.EditingControlShowing
-        If grdDetalleOrdenServicio.CurrentCell.ColumnIndex = 4 Then
-            Dim tb As TextBox = e.Control
-            If tb IsNot Nothing Then
-                AddHandler CType(e.Control, TextBox).KeyPress, AddressOf TextBox_keyPress
-            End If
-        End If
-    End Sub
-
-    Private Sub grdDetalleOrdenServicio_CellValueChanged(sender As Object, e As DataGridViewCellEventArgs) Handles grdDetalleOrdenServicio.CellValueChanged
-        If e.ColumnIndex = 4 Then
-            Dim decPorcDesc As Decimal = 0
-            If Not IsDBNull(grdDetalleOrdenServicio.Rows(e.RowIndex).Cells(e.ColumnIndex).Value) Then
-                decPorcDesc = grdDetalleOrdenServicio.Rows(e.RowIndex).Cells(e.ColumnIndex).Value
-            End If
-            Dim decPorMax As Decimal = FrmPrincipal.empresaGlobal.PorcentajeDescMaximo
-            If decPorcDesc > decPorMax Then
-                MessageBox.Show("El porcentaje ingresado es mayor al parametro establecido para la empresa", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                grdDetalleOrdenServicio.Rows(e.RowIndex).Cells(e.ColumnIndex).Value = 0
-            Else
-                Dim decCantidad As Decimal = grdDetalleOrdenServicio.Rows(e.RowIndex).Cells(3).Value
-                Dim decTasaImpuesto As Decimal = grdDetalleOrdenServicio.Rows(e.RowIndex).Cells(9).Value
-                Dim decPrecio As Decimal = grdDetalleOrdenServicio.Rows(e.RowIndex).Cells(6).Value + grdDetalleOrdenServicio.Rows(e.RowIndex).Cells(5).Value
-                Dim decMontoDesc = decPrecio / 100 * decPorcDesc
-                decPrecio = decPrecio - decMontoDesc
-                Dim decPrecioGravado As Decimal = decPrecio
-                If decTasaImpuesto > 0 Then decPrecioGravado = Math.Round(decPrecio / (1 + (decTasaImpuesto / 100)), 3, MidpointRounding.AwayFromZero)
-                dtbDetalleOrdenServicio.Rows(e.RowIndex).Item(4) = decPrecioGravado
-                dtbDetalleOrdenServicio.Rows(e.RowIndex).Item(5) = decPrecio
-                dtbDetalleOrdenServicio.Rows(e.RowIndex).Item(6) = decCantidad * decPrecio
-                dtbDetalleOrdenServicio.Rows(e.RowIndex).Item(9) = decPorcDesc
-                dtbDetalleOrdenServicio.Rows(e.RowIndex).Item(10) = decMontoDesc
-                CargarTotales()
-            End If
-        End If
-    End Sub
-
-    Private Sub TextBox_keyPress(ByVal sender As Object, ByVal e As KeyPressEventArgs)
-        If Char.IsDigit(CChar(CStr(e.KeyChar))) = False Then e.Handled = True
-    End Sub
-
-    Private Async Sub TxtPrecio_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtPrecio.PreviewKeyDown
-        If producto IsNot Nothing Then
-            If e.KeyCode = Keys.ControlKey Then
-                FrmPrincipal.strCodigoUsuario = ""
-                FrmPrincipal.strContrasena = ""
-                FrmPrincipal.strBusqueda = ""
-                Dim formAutorizacion As New FrmAutorizaPrecio
-                formAutorizacion.ShowDialog()
-                If FrmPrincipal.strCodigoUsuario <> "" And FrmPrincipal.strContrasena <> "" And FrmPrincipal.strBusqueda <> "" Then
-                    Dim autorizado As Boolean
-                    Try
-                        autorizado = Await Puntoventa.AutorizacionPrecioExtraordinario(FrmPrincipal.strCodigoUsuario, FrmPrincipal.strContrasena, FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
-                    Catch ex As Exception
-                        MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                        Exit Sub
-                    End Try
-                    If autorizado Then
-                        txtPrecio.Text = FormatNumber(FrmPrincipal.strBusqueda)
-                        Dim decTasaImpuesto As Decimal = producto.ParametroImpuesto.TasaImpuesto
-                        decPrecioVenta = Math.Round(CDbl(txtPrecio.Text), 2, MidpointRounding.AwayFromZero)
-                        Dim decPrecioOriginal = ObtenerPrecioVentaPorCliente(cliente, producto)
-                        txtPorcDesc.Text = FormatNumber(100 - (CDbl(txtPrecio.Text) * 100 / decPrecioOriginal), 2)
-                    Else
-                        MessageBox.Show("Los credenciales ingresados no tienen permisos para modificar el precio de venta.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
-                    End If
-                End If
-            ElseIf e.KeyCode = Keys.Enter Then
-                BtnInsertar_Click(btnInsertar, New EventArgs())
-            End If
         End If
     End Sub
 
