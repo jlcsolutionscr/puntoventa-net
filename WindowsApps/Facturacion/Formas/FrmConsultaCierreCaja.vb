@@ -112,6 +112,7 @@ Public Class FrmConsultaCierreCaja
         dgvDetalleEfectivoCierreCaja.DataSource = dtbDetalleEfectivo
         Try
             cierreCaja = Await Puntoventa.ObtenerCierreCaja(intIdCierre, FrmPrincipal.usuarioGlobal.Token)
+            Dim decTotalTarjeta = cierreCaja.VentasTarjeta + cierreCaja.AdelantosApartadoTarjeta + cierreCaja.AdelantosOrdenTarjeta + cierreCaja.PagosCxCTarjeta
             txtFondoInicio.Text = FormatNumber(cierreCaja.FondoInicio, 2)
             txtAdelantosApartadoEfectivo05.Text = FormatNumber(cierreCaja.AdelantosApartadoEfectivo, 2)
             txtAdelantosApartadoBancos07.Text = FormatNumber(cierreCaja.AdelantosApartadoBancos, 2)
@@ -127,7 +128,7 @@ Public Class FrmConsultaCierreCaja
             txtVentasBancos03.Text = FormatNumber(cierreCaja.VentasBancos, 2)
             txtRetencionIVA.Text = FormatNumber(cierreCaja.RetencionTarjeta, 2)
             txtComision.Text = FormatNumber(cierreCaja.ComisionTarjeta, 2)
-            txtLiquidacionTarjeta.Text = FormatNumber(cierreCaja.VentasTarjeta - cierreCaja.RetencionTarjeta - cierreCaja.ComisionTarjeta, 2)
+            txtLiquidacionTarjeta.Text = FormatNumber(decTotalTarjeta - cierreCaja.RetencionTarjeta - cierreCaja.ComisionTarjeta, 2)
             txtTotalVentas.Text = FormatNumber(cierreCaja.VentasEfectivo + cierreCaja.VentasCredito + cierreCaja.VentasTarjeta + cierreCaja.VentasBancos, 2)
             txtPagosCxCEfectivo11.Text = FormatNumber(cierreCaja.PagosCxCEfectivo, 2)
             txtPagosCxCBancos13.Text = FormatNumber(cierreCaja.PagosCxCBancos, 2)
@@ -145,7 +146,7 @@ Public Class FrmConsultaCierreCaja
             txtEgresosEfectivo20.Text = FormatNumber(cierreCaja.EgresosEfectivo, 2)
             txtTotalEgresos.Text = FormatNumber(cierreCaja.ComprasEfectivo + cierreCaja.PagosCxPEfectivo + cierreCaja.EgresosEfectivo, 2)
             txtTotalEfectivo.Text = FormatNumber(CDbl(txtFondoInicio.Text) + CDbl(txtTotalIngresos.Text) - CDbl(txtTotalEgresos.Text), 2)
-            txtTotalIngresosTarjeta.Text = FormatNumber(CDbl(txtVentasTarjeta02.Text) + CDbl(txtPagosCxCTarjeta12.Text), 2)
+            txtTotalIngresosTarjeta.Text = FormatNumber(decTotalTarjeta, 2)
             txtRetiroEfectivo.Text = FormatNumber(cierreCaja.RetiroEfectivo, 2)
             txtCierreEfectivoProx.Text = FormatNumber(CDbl(txtTotalEfectivo.Text) - CDbl(txtRetiroEfectivo.Text), 2)
             txtObservaciones.Text = cierreCaja.Observaciones

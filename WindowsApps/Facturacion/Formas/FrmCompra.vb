@@ -783,9 +783,9 @@ Public Class FrmCompra
             arrDetalleCompra = New List(Of ModuloImpresion.ClsDetalleComprobante)
             For I = 0 To dtbDetalleCompra.Rows.Count - 1
                 detalleComprobante = New ModuloImpresion.ClsDetalleComprobante With {
-                    .strDescripcion = dtbDetalleCompra.Rows(I).Item(1) + "-" + dtbDetalleCompra.Rows(I).Item(3),
+                    .strDescripcion = dtbDetalleCompra.Rows(I).Item(2) + "  " + dtbDetalleCompra.Rows(I).Item(3),
                     .strCantidad = CDbl(dtbDetalleCompra.Rows(I).Item(4)),
-                    .strPrecio = FormatNumber(dtbDetalleCompra.Rows(I).Item(5), 2),
+                    .strPrecio = FormatNumber(dtbDetalleCompra.Rows(I).Item(9), 2),
                     .strTotalLinea = FormatNumber(CDbl(dtbDetalleCompra.Rows(I).Item(4)) * CDbl(dtbDetalleCompra.Rows(I).Item(5)), 2)
                 }
                 arrDetalleCompra.Add(detalleComprobante)

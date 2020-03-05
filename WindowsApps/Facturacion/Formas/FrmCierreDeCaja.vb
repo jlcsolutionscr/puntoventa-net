@@ -14,7 +14,7 @@ Public Class FrmCierreDeCaja
     Private cierreCaja As CierreCaja
     Private lstReporte As List(Of DescripcionValor)
     Private ReadOnly assembly As Assembly = Assembly.LoadFrom("Core.dll")
-    Private comprobanteImpresion As ModuloImpresion.ClsComprobante
+    Private comprobanteImpresion As ModuloImpresion.ClsCierreCaja
     Private initialized As Boolean = False
 #End Region
 
@@ -57,6 +57,7 @@ Public Class FrmCierreDeCaja
             Close()
             Exit Sub
         End Try
+        Dim decTotalTarjeta = cierreCaja.VentasTarjeta + cierreCaja.AdelantosApartadoTarjeta + cierreCaja.AdelantosOrdenTarjeta + cierreCaja.PagosCxCTarjeta
         txtFondoInicio.Text = FormatNumber(cierreCaja.FondoInicio, 2)
         txtAdelantosApartadoEfectivo05.Text = FormatNumber(cierreCaja.AdelantosApartadoEfectivo, 2)
         txtAdelantosApartadoBancos07.Text = FormatNumber(cierreCaja.AdelantosApartadoBancos, 2)
@@ -72,7 +73,7 @@ Public Class FrmCierreDeCaja
         txtVentasBancos03.Text = FormatNumber(cierreCaja.VentasBancos, 2)
         txtRetencionIVA.Text = FormatNumber(cierreCaja.RetencionTarjeta, 2)
         txtComision.Text = FormatNumber(cierreCaja.ComisionTarjeta, 2)
-        txtLiquidacionTarjeta.Text = FormatNumber(cierreCaja.VentasTarjeta - cierreCaja.RetencionTarjeta - cierreCaja.ComisionTarjeta, 2)
+        txtLiquidacionTarjeta.Text = FormatNumber(decTotalTarjeta - cierreCaja.RetencionTarjeta - cierreCaja.ComisionTarjeta, 2)
         txtTotalVentas.Text = FormatNumber(cierreCaja.VentasEfectivo + cierreCaja.VentasCredito + cierreCaja.VentasTarjeta + cierreCaja.VentasBancos, 2)
         txtPagosCxCEfectivo11.Text = FormatNumber(cierreCaja.PagosCxCEfectivo, 2)
         txtPagosCxCBancos13.Text = FormatNumber(cierreCaja.PagosCxCBancos, 2)
@@ -90,7 +91,7 @@ Public Class FrmCierreDeCaja
         txtEgresosEfectivo20.Text = FormatNumber(cierreCaja.EgresosEfectivo, 2)
         txtTotalEgresos.Text = FormatNumber(cierreCaja.ComprasEfectivo + cierreCaja.PagosCxPEfectivo + cierreCaja.EgresosEfectivo, 2)
         txtTotalEfectivo.Text = FormatNumber(CDbl(txtFondoInicio.Text) + CDbl(txtTotalIngresos.Text) - CDbl(txtTotalEgresos.Text), 2)
-        txtTotalIngresosTarjeta.Text = FormatNumber(CDbl(txtVentasTarjeta02.Text) + CDbl(txtPagosCxCTarjeta12.Text), 2)
+        txtTotalIngresosTarjeta.Text = FormatNumber(decTotalTarjeta, 2)
         txtSobrante.Text = FormatNumber(0 - CDbl(txtTotalEfectivo.Text), 2)
         txtRetiroEfectivo.Text = FormatNumber(cierreCaja.RetiroEfectivo, 2)
         txtCierreEfectivoProx.Text = FormatNumber(CDbl(txtTotalEfectivo.Text), 2)
@@ -156,22 +157,26 @@ Public Class FrmCierreDeCaja
 
     Private Sub BtnTiquete_Click(sender As Object, e As EventArgs) Handles btnTiquete.Click
         Try
-            comprobanteImpresion = New ModuloImpresion.ClsComprobante With {
+            comprobanteImpresion = New ModuloImpresion.ClsCierreCaja With {
                 .usuario = FrmPrincipal.usuarioGlobal,
                 .empresa = FrmPrincipal.empresaGlobal,
                 .equipo = FrmPrincipal.equipoGlobal,
                 .strFecha = cierreCaja.FechaCierre,
-                .strDescuento = txtTotalIngresos.Text,
-                .strImpuesto = txtTotalEgresos.Text,
-                .strClaveNumerica = txtTotalEfectivo.Text,
-                .strNombre = txtEfectivoCaja.Text,
-                .strDireccion = txtSobrante.Text,
-                .strCambio = txtRetiroEfectivo.Text,
-                .strPagoCon = txtCierreEfectivoProx.Text,
-                .strDocumento = cierreCaja.Observaciones,
-                .strAdelanto = txtTotalVentas.Text
+                .strTotalIngresos = txtTotalIngresos.Text,
+                .strTotalEgresos = txtTotalEgresos.Text,
+                .strTotalEfectivo = txtTotalEfectivo.Text,
+                .strEfectivoCaja = txtEfectivoCaja.Text,
+                .strSobrante = txtSobrante.Text,
+                .strRetiroEfectivo = txtRetiroEfectivo.Text,
+                .strCierreEfectivoProx = txtCierreEfectivoProx.Text,
+                .strObservaciones = txtObservaciones.Text,
+                .strVentasEfectivo = txtVentasEfectivo01.Text,
+                .strVentasTarjeta = txtVentasTarjeta02.Text,
+                .strVentasTransferencia = txtVentasBancos03.Text,
+                .strVentasCredito = txtVentasCredito04.Text,
+                .strTotalVentas = txtTotalVentas.Text
             }
-            comprobanteImpresion.arrDesglosePago = New List(Of ModuloImpresion.ClsDesgloseFormaPago) From {
+            comprobanteImpresion.arrDetalleIngresos = New List(Of ModuloImpresion.ClsDesgloseFormaPago) From {
                 New ModuloImpresion.ClsDesgloseFormaPago("Inicio efectivo", FormatNumber(cierreCaja.FondoInicio)),
                 New ModuloImpresion.ClsDesgloseFormaPago("Adelanto apart.", FormatNumber(cierreCaja.AdelantosApartadoEfectivo)),
                 New ModuloImpresion.ClsDesgloseFormaPago("Adelanto orden.", FormatNumber(cierreCaja.AdelantosOrdenEfectivo)),
@@ -179,19 +184,10 @@ Public Class FrmCierreDeCaja
                 New ModuloImpresion.ClsDesgloseFormaPago("Abonos a CxC", FormatNumber(cierreCaja.PagosCxCEfectivo)),
                 New ModuloImpresion.ClsDesgloseFormaPago("Otros ingresos", FormatNumber(cierreCaja.IngresosEfectivo))
             }
-            comprobanteImpresion.arrDetalleComprobante = New List(Of ModuloImpresion.ClsDetalleComprobante) From {
-                New ModuloImpresion.ClsDetalleComprobante With {
-                .strDescripcion = "Compras efect.",
-                .strTotalLinea = FormatNumber(cierreCaja.ComprasEfectivo)
-            },
-                New ModuloImpresion.ClsDetalleComprobante With {
-                .strDescripcion = "Pagos a CxP",
-                .strTotalLinea = FormatNumber(cierreCaja.PagosCxPEfectivo)
-            },
-                New ModuloImpresion.ClsDetalleComprobante With {
-                .strDescripcion = "Otros egresos",
-                .strTotalLinea = FormatNumber(cierreCaja.EgresosEfectivo)
-            }
+            comprobanteImpresion.arrDetalleEgresos = New List(Of ModuloImpresion.ClsDesgloseFormaPago) From {
+                New ModuloImpresion.ClsDesgloseFormaPago("Compras efect.", FormatNumber(cierreCaja.ComprasEfectivo)),
+                New ModuloImpresion.ClsDesgloseFormaPago("Pagos a CxP", FormatNumber(cierreCaja.PagosCxPEfectivo)),
+                New ModuloImpresion.ClsDesgloseFormaPago("Otros egresos", FormatNumber(cierreCaja.EgresosEfectivo))
             }
             ModuloImpresion.ImprimirCierreEfectivo(comprobanteImpresion)
         Catch ex As Exception

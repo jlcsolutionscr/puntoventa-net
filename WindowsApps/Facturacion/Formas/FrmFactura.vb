@@ -1266,9 +1266,9 @@ Public Class FrmFactura
 
     Private Async Sub BtnImprimir_Click(sender As Object, e As EventArgs) Handles btnImprimir.Click
         If txtIdFactura.Text <> "" Then
-            If factura.ConsecFactura = 0 Then
+            If Not FrmPrincipal.empresaGlobal.RegimenSimplificado And factura.IdDocElectronico Is Nothing Then
                 Try
-                    factura = Await Puntoventa.ObtenerFactura(txtIdFactura.Text, FrmPrincipal.usuarioGlobal.Token)
+                    factura = Await Puntoventa.ObtenerFactura(factura.IdFactura, FrmPrincipal.usuarioGlobal.Token)
                 Catch ex As Exception
                     MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
@@ -1325,9 +1325,9 @@ Public Class FrmFactura
 
     Private Async Sub BtnGenerarPDF_Click(sender As Object, e As EventArgs) Handles btnGenerarPDF.Click
         If txtIdFactura.Text <> "" Then
-            If factura.ConsecFactura = 0 Then
+            If Not FrmPrincipal.empresaGlobal.RegimenSimplificado And factura.IdDocElectronico Is Nothing Then
                 Try
-                    factura = Await Puntoventa.ObtenerFactura(txtIdFactura.Text, FrmPrincipal.usuarioGlobal.Token)
+                    factura = Await Puntoventa.ObtenerFactura(factura.IdFactura, FrmPrincipal.usuarioGlobal.Token)
                 Catch ex As Exception
                     MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
