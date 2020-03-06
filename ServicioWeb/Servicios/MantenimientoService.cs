@@ -1916,7 +1916,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         listaProductos = listaProductos.Where(x => x.Descripcion.Contains(strDescripcion));
                     if (bolFiltraExistencias)
                     {
-                        var listado = listaProductos.Join(dbContext.ExistenciaPorSucursalRepository, x => x.IdProducto, y => y.IdProducto, (x, y) => new { x, y }).Where(x => x.y.IdEmpresa == intIdEmpresa && x.y.IdSucursal == intIdSucursal && x.y.Cantidad > 0).OrderByDescending(x => x.x.Codigo).Skip((numPagina - 1) * cantRec).Take(cantRec).ToList();
+                        var listado = listaProductos.Join(dbContext.ExistenciaPorSucursalRepository, x => x.IdProducto, y => y.IdProducto, (x, y) => new { x, y }).Where(x => x.y.IdEmpresa == intIdEmpresa && x.y.IdSucursal == intIdSucursal && x.y.Cantidad > 0).OrderBy(x => x.x.Codigo).Skip((numPagina - 1) * cantRec).Take(cantRec).ToList();
                         foreach (var value in listado)
                         {
                             ProductoDetalle item = new ProductoDetalle(value.x.IdProducto, value.x.Codigo, value.x.CodigoProveedor, value.x.Descripcion, value.y.Cantidad, value.x.PrecioCosto, value.x.PrecioVenta1, value.x.Observacion, value.x.Activo);
@@ -1925,7 +1925,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     else
                     {
-                        var listado = listaProductos.OrderByDescending(x => x.Codigo).Skip((numPagina - 1) * cantRec).Take(cantRec).ToList();
+                        var listado = listaProductos.OrderBy(x => x.Codigo).Skip((numPagina - 1) * cantRec).Take(cantRec).ToList();
                         foreach (var value in listado)
                         {
                             var existencias = dbContext.ExistenciaPorSucursalRepository.AsNoTracking().Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdProducto == value.IdProducto).FirstOrDefault();

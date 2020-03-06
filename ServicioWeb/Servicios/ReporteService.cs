@@ -978,7 +978,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         listaProductos = listaProductos.Where(x => x.Descripcion.Contains(strDescripcion));
                     if (bolFiltraExistencias)
                     {
-                        var listado = listaProductos.Join(dbContext.ExistenciaPorSucursalRepository, x => x.IdProducto, y => y.IdProducto, (x, y) => new { x, y }).Where(x => x.y.IdEmpresa == intIdEmpresa && x.y.IdSucursal == intIdSucursal && x.y.Cantidad > 0).OrderByDescending(x => x.x.Codigo).ToList();
+                        var listado = listaProductos.Join(dbContext.ExistenciaPorSucursalRepository, x => x.IdProducto, y => y.IdProducto, (x, y) => new { x, y }).Where(x => x.y.IdEmpresa == intIdEmpresa && x.y.IdSucursal == intIdSucursal && x.y.Cantidad > 0).OrderBy(x => x.x.Codigo).ToList();
                         foreach (var value in listado)
                         {
                             ReporteInventario item = new ReporteInventario(value.x.IdProducto, value.x.Codigo, value.x.Descripcion, value.y.Cantidad, value.x.PrecioCosto, value.x.PrecioVenta1);

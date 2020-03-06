@@ -133,7 +133,7 @@ Partial Class FrmInventario
         Me.dgvListado.RowHeadersVisible = False
         Me.dgvListado.ScrollBars = System.Windows.Forms.ScrollBars.None
         Me.dgvListado.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.dgvListado.Size = New System.Drawing.Size(1013, 380)
+        Me.dgvListado.Size = New System.Drawing.Size(1003, 377)
         Me.dgvListado.TabIndex = 5
         Me.dgvListado.TabStop = False
         '
@@ -175,7 +175,7 @@ Partial Class FrmInventario
         Me.btnLast.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnLast.Enabled = False
         Me.btnLast.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnLast.Location = New System.Drawing.Point(1003, 537)
+        Me.btnLast.Location = New System.Drawing.Point(987, 537)
         Me.btnLast.Name = "btnLast"
         Me.btnLast.Size = New System.Drawing.Size(29, 23)
         Me.btnLast.TabIndex = 9
@@ -188,7 +188,7 @@ Partial Class FrmInventario
         Me.btnNext.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnNext.Enabled = False
         Me.btnNext.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnNext.Location = New System.Drawing.Point(974, 537)
+        Me.btnNext.Location = New System.Drawing.Point(958, 537)
         Me.btnNext.Name = "btnNext"
         Me.btnNext.Size = New System.Drawing.Size(29, 23)
         Me.btnNext.TabIndex = 8
@@ -201,7 +201,7 @@ Partial Class FrmInventario
         Me.btnPrevious.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnPrevious.Enabled = False
         Me.btnPrevious.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnPrevious.Location = New System.Drawing.Point(945, 537)
+        Me.btnPrevious.Location = New System.Drawing.Point(929, 537)
         Me.btnPrevious.Name = "btnPrevious"
         Me.btnPrevious.Size = New System.Drawing.Size(29, 23)
         Me.btnPrevious.TabIndex = 7
@@ -214,7 +214,7 @@ Partial Class FrmInventario
         Me.btnFirst.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnFirst.Enabled = False
         Me.btnFirst.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnFirst.Location = New System.Drawing.Point(916, 537)
+        Me.btnFirst.Location = New System.Drawing.Point(900, 537)
         Me.btnFirst.Name = "btnFirst"
         Me.btnFirst.Size = New System.Drawing.Size(29, 23)
         Me.btnFirst.TabIndex = 6
@@ -311,7 +311,7 @@ Partial Class FrmInventario
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
-        Me.ClientSize = New System.Drawing.Size(1044, 568)
+        Me.ClientSize = New System.Drawing.Size(1028, 568)
         Me.Controls.Add(Me.chkFiltrarExistencias)
         Me.Controls.Add(Me.chkFiltrarActivos)
         Me.Controls.Add(Me.txtCodigoProveedor)
@@ -338,9 +338,7 @@ Partial Class FrmInventario
         Me.KeyPreview = True
         Me.Location = New System.Drawing.Point(73, 22)
         Me.MaximizeBox = False
-        Me.MaximumSize = New System.Drawing.Size(1060, 607)
         Me.MinimizeBox = False
-        Me.MinimumSize = New System.Drawing.Size(1060, 607)
         Me.Name = "FrmInventario"
         Me.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen

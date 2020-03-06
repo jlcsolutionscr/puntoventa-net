@@ -142,6 +142,7 @@ Public Class ModuloImpresion
         Public strSaldo As String
         Public strPagoCon As String
         Public strCambio As String
+        Public strTipoDocumento As String
         Public strClaveNumerica As String
         Public arrDetalleComprobante As IList(Of ClsDetalleComprobante)
         Public arrDesglosePago As IList(Of ClsDesgloseFormaPago)
@@ -282,7 +283,7 @@ Public Class ModuloImpresion
         Try
             ImprimirEncabezado(objImpresion.equipo, objImpresion.empresa, Date.Now.ToString("dd-MM-yyyy"), objImpresion.usuario.CodigoUsuario, "TIQUETE DE FACTURA")
             If objImpresion.strClaveNumerica <> "" Then
-                lineas.Add(New ClsLineaImpresion(1, "Clave numerica", 0, 100, 10, StringAlignment.Center, False))
+                lineas.Add(New ClsLineaImpresion(1, objImpresion.strTipoDocumento, 0, 100, 10, StringAlignment.Center, False))
                 lineas.Add(New ClsLineaImpresion(1, objImpresion.strClaveNumerica.Substring(0, 25), 0, 100, 10, StringAlignment.Center, False))
                 lineas.Add(New ClsLineaImpresion(2, objImpresion.strClaveNumerica.Substring(25, 25), 0, 100, 10, StringAlignment.Center, False))
             End If

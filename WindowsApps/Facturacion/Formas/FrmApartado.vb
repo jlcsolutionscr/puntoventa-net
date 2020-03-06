@@ -549,14 +549,8 @@ Public Class FrmApartado
             decSaldoPorPagar = 0
             txtSaldoPorPagar.Text = FormatNumber(decSaldoPorPagar, 2)
             If FrmPrincipal.bolModificaDescripcion Then txtDescripcion.ReadOnly = False
-            If FrmPrincipal.bolAplicaDescuento Then
-                txtPorcDesc.ReadOnly = False
-                txtPorcDesc.TabStop = True
-            End If
-            If FrmPrincipal.bolModificaPrecioVenta Then
-                txtPrecio.ReadOnly = False
-                txtPrecio.TabStop = True
-            End If
+            If FrmPrincipal.bolAplicaDescuento Then txtPorcDesc.ReadOnly = False
+            If FrmPrincipal.bolModificaPrecioVenta Then txtPrecio.ReadOnly = False
             txtCodigo.Focus()
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)

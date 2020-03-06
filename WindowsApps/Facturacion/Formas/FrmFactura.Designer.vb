@@ -286,7 +286,6 @@ Partial Class FrmFactura
         Me.txtPrecio.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtPrecio.Size = New System.Drawing.Size(100, 20)
         Me.txtPrecio.TabIndex = 55
-        Me.txtPrecio.TabStop = False
         Me.txtPrecio.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'txtCantidad
@@ -1045,7 +1044,6 @@ Partial Class FrmFactura
         Me.txtPorcDesc.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtPorcDesc.Size = New System.Drawing.Size(38, 20)
         Me.txtPorcDesc.TabIndex = 54
-        Me.txtPorcDesc.TabStop = False
         Me.txtPorcDesc.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         '
         'Label13
