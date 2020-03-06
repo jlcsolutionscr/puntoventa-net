@@ -283,17 +283,6 @@ Public Class FrmProforma
         End If
     End Sub
 
-    Private Async Function CargarAutoCompletarProducto() As Task
-        Dim source As AutoCompleteStringCollection = New AutoCompleteStringCollection()
-        Dim listOfProducts As IList(Of Producto) = Await Puntoventa.ObtenerListadoProductos(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, 1, 0, True, True, FrmPrincipal.usuarioGlobal.Token)
-        For Each producto As Producto In listOfProducts
-            source.Add(String.Concat(producto.Codigo, " ", producto.Descripcion))
-        Next
-        txtCodigo.AutoCompleteCustomSource = source
-        txtCodigo.AutoCompleteSource = AutoCompleteSource.CustomSource
-        txtCodigo.AutoCompleteMode = AutoCompleteMode.SuggestAppend
-    End Function
-
     Private Async Function CargarCombos() As Task
         cboTipoMoneda.ValueMember = "Id"
         cboTipoMoneda.DisplayMember = "Descripcion"
@@ -351,7 +340,6 @@ Public Class FrmProforma
             Await CargarCombos()
             cboTipoMoneda.SelectedValue = FrmPrincipal.empresaGlobal.IdTipoMoneda
             txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmPrincipal.decTipoCambioDolar.ToString())
-            If FrmPrincipal.empresaGlobal.AutoCompletaProducto = True Then Await CargarAutoCompletarProducto()
             IniciaTablasDeDetalle()
             EstablecerPropiedadesDataGridView()
             grdDetalleProforma.DataSource = dtbDetalleProforma

@@ -472,17 +472,6 @@ Public Class FrmOrdenServicio
             txtUnidad.Text = IIf(producto.Tipo = 1, "UND", IIf(producto.Tipo = 2, "SP", "OS"))
         End If
     End Sub
-
-    Private Async Function CargarAutoCompletarProducto() As Task
-        Dim source As AutoCompleteStringCollection = New AutoCompleteStringCollection()
-        Dim listOfProducts As IList(Of Producto) = Await Puntoventa.ObtenerListadoProductos(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, 1, 0, True, True, FrmPrincipal.usuarioGlobal.Token)
-        For Each producto As Producto In listOfProducts
-            source.Add(String.Concat(producto.Codigo, " ", producto.Descripcion))
-        Next
-        txtCodigo.AutoCompleteCustomSource = source
-        txtCodigo.AutoCompleteSource = AutoCompleteSource.CustomSource
-        txtCodigo.AutoCompleteMode = AutoCompleteMode.SuggestAppend
-    End Function
 #End Region
 
 #Region "Eventos Controles"
@@ -541,7 +530,6 @@ Public Class FrmOrdenServicio
             txtFechaEntrega.Value = Today()
             cboHoraEntrega.SelectedIndex = 0
             Await CargarListaBancoAdquiriente()
-            If FrmPrincipal.empresaGlobal.AutoCompletaProducto = True Then Await CargarAutoCompletarProducto()
             grdDetalleOrdenServicio.DataSource = dtbDetalleOrdenServicio
             grdDesglosePago.DataSource = dtbDesglosePago
             bolInit = False

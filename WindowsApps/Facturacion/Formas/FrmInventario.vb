@@ -1,13 +1,21 @@
+Imports System.Collections.Generic
 Imports LeandroSoftware.ClienteWCF
+Imports LeandroSoftware.Core.TiposComunes
+Imports Microsoft.Reporting.WinForms
+Imports System.Reflection
+Imports System.IO
 
 Public Class FrmInventario
 #Region "Variables"
     Private intTotalRegistros As Integer
     Private intIndiceDePagina As Integer
-    Private intFilasPorPagina As Integer = 13
+    Private intFilasPorPagina As Integer = 16
     Private intCantidadDePaginas As Integer
     Private intIdSucursal As Integer = FrmPrincipal.equipoGlobal.IdSucursal
     Private bolInit As Boolean = True
+    Private newFormReport As FrmReportViewer
+    Private assembly As Assembly = Assembly.LoadFrom("Core.dll")
+    Private strEmpresa As String = IIf(FrmPrincipal.empresaGlobal.NombreComercial = "", FrmPrincipal.empresaGlobal.NombreEmpresa, FrmPrincipal.empresaGlobal.NombreComercial)
 #End Region
 
 #Region "Metodos"
@@ -88,7 +96,7 @@ Public Class FrmInventario
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Threading.Tasks.Task
         Try
-            dgvListado.DataSource = Await Puntoventa.ObtenerListadoProductos(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, intNumeroPagina, intFilasPorPagina, False, chkFiltrarActivos.Checked, FrmPrincipal.usuarioGlobal.Token, cboLinea.SelectedValue, txtCodigo.Text, txtCodigoProveedor.Text, txtDescripcion.Text)
+            dgvListado.DataSource = Await Puntoventa.ObtenerListadoProductos(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, intNumeroPagina, intFilasPorPagina, False, chkFiltrarActivos.Checked, chkFiltrarExistencias.Checked, FrmPrincipal.usuarioGlobal.Token, cboLinea.SelectedValue, txtCodigo.Text, txtCodigoProveedor.Text, txtDescripcion.Text)
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -99,7 +107,7 @@ Public Class FrmInventario
 
     Private Async Function ValidarCantidadRegistros() As Threading.Tasks.Task
         Try
-            intTotalRegistros = Await Puntoventa.ObtenerTotalListaProductos(FrmPrincipal.empresaGlobal.IdEmpresa, False, chkFiltrarActivos.Checked, FrmPrincipal.usuarioGlobal.Token, cboLinea.SelectedValue, txtCodigo.Text, txtCodigoProveedor.Text, txtDescripcion.Text)
+            intTotalRegistros = Await Puntoventa.ObtenerTotalListaProductos(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, False, chkFiltrarActivos.Checked, chkFiltrarExistencias.Checked, FrmPrincipal.usuarioGlobal.Token, cboLinea.SelectedValue, txtCodigo.Text, txtCodigoProveedor.Text, txtDescripcion.Text)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -165,9 +173,21 @@ Public Class FrmInventario
     End Sub
 
     Private Async Sub CmdFiltrar_Click(sender As Object, e As EventArgs) Handles CmdFiltrar.Click
-        Await ValidarCantidadRegistros()
-        intIndiceDePagina = 1
-        Await ActualizarDatos(intIndiceDePagina)
+        If CmdFiltrar.Enabled Then
+            CmdFiltrar.Enabled = False
+            btnFirst.Enabled = False
+            btnPrevious.Enabled = False
+            btnNext.Enabled = False
+            btnLast.Enabled = False
+            Await ValidarCantidadRegistros()
+            intIndiceDePagina = 1
+            Await ActualizarDatos(intIndiceDePagina)
+            CmdFiltrar.Enabled = True
+            btnFirst.Enabled = True
+            btnPrevious.Enabled = True
+            btnNext.Enabled = True
+            btnLast.Enabled = True
+        End If
     End Sub
 
     Private Async Sub FrmInventario_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
@@ -184,16 +204,37 @@ Public Class FrmInventario
         End Try
     End Sub
 
-    Private Sub btnReporte_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnReporte.Click
-        'Dim reptInventario As New rptInventario
-        'Dim formReport As New ReportViewer()
-        ''Dim dtbDatos As DataTable
-        ''dtbDatos = servicioReportes.ObtenerReporteInventario(FrmMenuPrincipal.empresaGlobal.IdEmpresa, cboLinea.SelectedValue, txtCodigo.Text, txtDescripcion.Text)
-        ''reptInventario.SetDataSource(dtbDatos)
-        'reptInventario.SetParameterValue(0, FrmPrincipal.usuarioGlobal.CodigoUsuario)
-        'reptInventario.SetParameterValue(1, FrmPrincipal.empresaGlobal.NombreEmpresa)
-        'formReport.crtViewer.ReportSource = reptInventario
-        'formReport.ShowDialog()
+    Private Async Sub btnReporte_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnReporte.Click
+        btnReporte.Enabled = False
+        Dim datosReporte As List(Of ReporteInventario)
+        Try
+            datosReporte = Await Puntoventa.ObtenerReporteInventario(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, chkFiltrarActivos.Checked, chkFiltrarExistencias.Checked, FrmPrincipal.usuarioGlobal.Token, cboLinea.SelectedValue, txtCodigo.Text, txtCodigoProveedor.Text, txtDescripcion.Text)
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            btnReporte.Enabled = True
+            Exit Sub
+        End Try
+        Dim strFecha As String = Now().ToString("dd/MM/yyyy hh:mm:ss")
+        Dim rds As ReportDataSource = New ReportDataSource("dstDatos", datosReporte)
+        newFormReport = New FrmReportViewer
+        newFormReport.Visible = False
+        newFormReport.repReportViewer.LocalReport.DataSources.Clear()
+        newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
+        newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
+        Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptInventario.rdlc")
+        newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
+        Dim parameters(3) As ReportParameter
+        parameters(0) = New ReportParameter("pUsuario", FrmPrincipal.usuarioGlobal.CodigoUsuario)
+        parameters(1) = New ReportParameter("pEmpresa", strEmpresa)
+        parameters(2) = New ReportParameter("pSucursal", cboSucursal.Text)
+        parameters(3) = New ReportParameter("pFecha", strFecha)
+        Try
+            newFormReport.repReportViewer.LocalReport.SetParameters(parameters)
+            newFormReport.ShowDialog()
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+        btnReporte.Enabled = True
     End Sub
 
     Private Sub btnCardex_Click(sender As Object, e As EventArgs) Handles btnCardex.Click
@@ -222,6 +263,12 @@ Public Class FrmInventario
     End Sub
 
     Private Sub cboLinea_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboLinea.SelectedIndexChanged
+        If Not bolInit And Not cboLinea.SelectedValue Is Nothing Then
+            CmdFiltrar_Click(CmdFiltrar, New EventArgs())
+        End If
+    End Sub
+
+    Private Sub chkFiltrarExistencias_CheckedChanged(sender As Object, e As EventArgs) Handles chkFiltrarExistencias.CheckedChanged
         If Not bolInit And Not cboLinea.SelectedValue Is Nothing Then
             CmdFiltrar_Click(CmdFiltrar, New EventArgs())
         End If

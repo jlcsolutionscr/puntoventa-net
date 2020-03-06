@@ -34,8 +34,8 @@ Public Class FrmMenuReportes
     Private Async Sub FrmMenuReportes_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
             Await CargarCombos()
-            FechaInicio.Text = "01/" & Date.Now.Month & "/" & Date.Now.Year
-            FechaFinal.Text = Date.DaysInMonth(Date.Now.Year, Date.Now.Month) & "/" & Date.Now.Month & "/" & Date.Now.Year
+            FechaInicio.Text = Date.Now.Day & "/" & Date.Now.Month & "/" & Date.Now.Year
+            FechaFinal.Text = Date.Now.Day & "/" & Date.Now.Month & "/" & Date.Now.Year
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()

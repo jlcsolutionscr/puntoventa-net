@@ -75,6 +75,7 @@
   <ItemGroup>
     <EmbeddedResource Include="PlantillaReportes\rptComprobanteElectronico.rdlc" />
     <EmbeddedResource Include="PlantillaReportes\rptGrupoDetalle.rdlc" />
+    <EmbeddedResource Include="PlantillaReportes\rptInventario.rdlc" />
     <EmbeddedResource Include="PlantillaReportes\rptResumenComprobanteElectronico.rdlc" />
     <EmbeddedResource Include="PlantillaReportes\rptResumenMovimientos.rdlc" />
     <EmbeddedResource Include="PlantillaReportes\rptDetalle.rdlc" />

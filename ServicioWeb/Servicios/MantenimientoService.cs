@@ -88,8 +88,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         Producto ObtenerProductoTransitorio(int intIdEmpresa);
         Producto ObtenerProductoPorCodigo(int intIdEmpresa, string strCodigo, int intIdSucursal);
         Producto ObtenerProductoPorCodigoProveedor(int intIdEmpresa, string strCodigo, int intIdSucursal);
-        int ObtenerTotalListaProductos(int intIdEmpresa, bool bolIncluyeServicios, bool bolFiltraActivos, int intIdLinea, string strCodigo, string strCodigoProveedor, string strDescripcion);
-        IList<ProductoDetalle> ObtenerListadoProductos(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, bool bolIncluyeServicios, bool bolFiltraActivos, int intIdLinea, string strCodigo, string strCodigoProveedor, string strDescripcion);
+        int ObtenerTotalListaProductos(int intIdEmpresa, int intIdSucursal, bool bolIncluyeServicios, bool bolFiltraActivos, bool bolFiltraExistencias, int intIdLinea, string strCodigo, string strCodigoProveedor, string strDescripcion);
+        IList<ProductoDetalle> ObtenerListadoProductos(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, bool bolIncluyeServicios, bool bolFiltraActivos, bool bolFiltraExistencias, int intIdLinea, string strCodigo, string strCodigoProveedor, string strDescripcion);
         int ObtenerTotalMovimientosPorProducto(int intIdProducto, int intIdSucursal, string strFechaInicial, string strFechaFinal);
         IList<MovimientoProducto> ObtenerMovimientosPorProducto(int intIdProducto, int intIdSucursal, int numPagina, int cantRec, string strFechaInicial, string strFechaFinal);
         // Métodos para obtener las condiciones de venta para facturación
@@ -1864,26 +1864,29 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public int ObtenerTotalListaProductos(int intIdEmpresa, bool bolIncluyeServicios, bool bolFiltraActivos, int intIdLinea, string strCodigo, string strCodigoProveedor, string strDescripcion)
+        public int ObtenerTotalListaProductos(int intIdEmpresa, int intIdSucursal, bool bolIncluyeServicios, bool bolFiltraActivos, bool bolFiltraExistencias, int intIdLinea, string strCodigo, string strCodigoProveedor, string strDescripcion)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 try
                 {
-                    var listado = dbContext.ProductoRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.Tipo != StaticTipoProducto.Transitorio);
-                    if (intIdLinea > 0)
-                        listado = listado.Where(x => x.IdLinea == intIdLinea);
-                    if (!strCodigo.Equals(string.Empty))
-                        listado = listado.Where(x => x.Codigo.Contains(strCodigo));
-                    if (!strCodigoProveedor.Equals(string.Empty))
-                        listado = listado.Where(x => x.CodigoProveedor.Contains(strCodigoProveedor));
-                    if (!strDescripcion.Equals(string.Empty))
-                        listado = listado.Where(x => x.Descripcion.Contains(strDescripcion));
+                    var listaProductos = dbContext.ProductoRepository.Where(x => x.IdEmpresa == intIdEmpresa)
+                        .GroupJoin(dbContext.ExistenciaPorSucursalRepository, x => x.IdProducto, y => y.IdProducto, (x, y) => new { x, y })
+                        .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { x, y })
+                        .Where(x => x.y.IdSucursal == intIdSucursal);
                     if (!bolIncluyeServicios)
-                        listado = listado.Where(x => x.Tipo == StaticTipoProducto.Producto);
+                        listaProductos = listaProductos.Where(x => x.x.x.Tipo == StaticTipoProducto.Producto);
                     if (bolFiltraActivos)
-                        listado = listado.Where(x => x.Activo);
-                    return listado.Count();
+                        listaProductos = listaProductos.Where(x => x.x.x.Activo);
+                    if (intIdLinea > 0)
+                        listaProductos = listaProductos.Where(x => x.x.x.IdLinea == intIdLinea);
+                    else if (!strCodigo.Equals(string.Empty))
+                        listaProductos = listaProductos.Where(x => x.x.x.Codigo.Contains(strCodigo));
+                    else if (!strDescripcion.Equals(string.Empty))
+                        listaProductos = listaProductos.Where(x => x.x.x.Descripcion.Contains(strDescripcion));
+                    if (bolFiltraExistencias)
+                        listaProductos = listaProductos.Where(x => x.y.Cantidad > 0);
+                    return listaProductos.Count();
                 }
                 catch (Exception ex)
                 {
@@ -1893,31 +1896,32 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IList<ProductoDetalle> ObtenerListadoProductos(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, bool bolIncluyeServicios, bool bolFiltraActivos, int intIdLinea, string strCodigo, string strCodigoProveedor, string strDescripcion)
+        public IList<ProductoDetalle> ObtenerListadoProductos(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, bool bolIncluyeServicios, bool bolFiltraActivos, bool bolFiltraExistencias, int intIdLinea, string strCodigo, string strCodigoProveedor, string strDescripcion)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 var listaProducto = new List<ProductoDetalle>();
                 try
                 {
-                    var listado = dbContext.ProductoRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.Tipo != StaticTipoProducto.Transitorio);
-                    if (intIdLinea > 0)
-                        listado = listado.Where(x => x.IdLinea == intIdLinea);
-                    if (!strCodigo.Equals(string.Empty))
-                        listado = listado.Where(x => x.Codigo.Contains(strCodigo));
-                    if (!strCodigoProveedor.Equals(string.Empty))
-                        listado = listado.Where(x => x.CodigoProveedor.Contains(strCodigoProveedor));
-                    if (!strDescripcion.Equals(string.Empty))
-                        listado = listado.Where(x => x.Descripcion.Contains(strDescripcion));
+                    List<ReporteInventario> listaReporte = new List<ReporteInventario>();
+                    var listaProductos = dbContext.ProductoRepository.Where(x => x.IdEmpresa == intIdEmpresa)
+                        .GroupJoin(dbContext.ExistenciaPorSucursalRepository, x => x.IdProducto, y => y.IdProducto, (x, y) => new { x, y })
+                        .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { x, y })
+                        .Where(x => x.y.IdSucursal == intIdSucursal);
                     if (!bolIncluyeServicios)
-                        listado = listado.Where(x => x.Tipo == StaticTipoProducto.Producto);
+                        listaProductos = listaProductos.Where(x => x.x.x.Tipo == StaticTipoProducto.Producto);
                     if (bolFiltraActivos)
-                        listado = listado.Where(x => x.Activo);
-                    if (cantRec > 0)
-                        listado = listado.OrderBy(x => x.Codigo).Skip((numPagina - 1) * cantRec).Take(cantRec);
-                    else
-                        listado = listado.OrderBy(x => x.Codigo);
-                    var lineas = listado.ToList();
+                        listaProductos = listaProductos.Where(x => x.x.x.Activo);
+                    if (intIdLinea > 0)
+                        listaProductos = listaProductos.Where(x => x.x.x.IdLinea == intIdLinea);
+                    else if (!strCodigo.Equals(string.Empty))
+                        listaProductos = listaProductos.Where(x => x.x.x.Codigo.Contains(strCodigo));
+                    else if (!strDescripcion.Equals(string.Empty))
+                        listaProductos = listaProductos.Where(x => x.x.x.Descripcion.Contains(strDescripcion));
+                    if (bolFiltraExistencias)
+                        listaProductos = listaProductos.Where(x => x.y.Cantidad > 0);
+                    listaProductos = listaProductos.OrderByDescending(x => x.x.x.Codigo).Skip((numPagina - 1) * cantRec).Take(cantRec);
+                    var lineas = listaProductos.Select(x => new { x.x.x.IdProducto, x.x.x.Codigo, x.x.x.CodigoProveedor, x.x.x.Descripcion, x.y.Cantidad, x.x.x.PrecioCosto, x.x.x.PrecioVenta1, x.x.x.Observacion, x.x.x.Activo }).ToList();
                     foreach (var value in lineas)
                     {
                         var existencias = dbContext.ExistenciaPorSucursalRepository.AsNoTracking().Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdProducto == value.IdProducto).FirstOrDefault();
@@ -2295,10 +2299,22 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         if (producto.Tipo != StaticTipoProducto.Producto)
                             throw new BusinessException("El tipo de producto por ajustar no puede ser un servicio. Por favor verificar.");
                         ExistenciaPorSucursal existencias = dbContext.ExistenciaPorSucursalRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == ajusteInventario.IdSucursal).FirstOrDefault();
-                        if (existencias == null)
-                            throw new BusinessException("El producto " + producto.IdProducto + " no posee registro de existencias. Por favor consulte con su proveedor.");
-                        existencias.Cantidad += detalleAjuste.Cantidad;
-                        dbContext.NotificarModificacion(existencias);
+                        if (existencias != null)
+                        {
+                            existencias.Cantidad += detalleAjuste.Cantidad;
+                            dbContext.NotificarModificacion(existencias);
+                        }
+                        else
+                        {
+                            ExistenciaPorSucursal nuevoRegistro = new ExistenciaPorSucursal
+                            {
+                                IdEmpresa = ajusteInventario.IdEmpresa,
+                                IdSucursal = ajusteInventario.IdSucursal,
+                                IdProducto = detalleAjuste.IdProducto,
+                                Cantidad = detalleAjuste.Cantidad
+                            };
+                            dbContext.ExistenciaPorSucursalRepository.Add(nuevoRegistro);
+                        }
                         MovimientoProducto movimiento = new MovimientoProducto
                         {
                             IdProducto = producto.IdProducto,

@@ -37,6 +37,7 @@ Partial Class FrmInventario
         Me.txtCodigoProveedor = New System.Windows.Forms.TextBox()
         Me.Label2 = New System.Windows.Forms.Label()
         Me.chkFiltrarActivos = New System.Windows.Forms.CheckBox()
+        Me.chkFiltrarExistencias = New System.Windows.Forms.CheckBox()
         CType(Me.dgvListado, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -132,7 +133,7 @@ Partial Class FrmInventario
         Me.dgvListado.RowHeadersVisible = False
         Me.dgvListado.ScrollBars = System.Windows.Forms.ScrollBars.None
         Me.dgvListado.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.dgvListado.Size = New System.Drawing.Size(1020, 380)
+        Me.dgvListado.Size = New System.Drawing.Size(1013, 380)
         Me.dgvListado.TabIndex = 5
         Me.dgvListado.TabStop = False
         '
@@ -294,6 +295,16 @@ Partial Class FrmInventario
         Me.chkFiltrarActivos.Text = "Filtrar productos activos"
         Me.chkFiltrarActivos.UseVisualStyleBackColor = True
         '
+        'chkFiltrarExistencias
+        '
+        Me.chkFiltrarExistencias.AutoSize = True
+        Me.chkFiltrarExistencias.Location = New System.Drawing.Point(589, 120)
+        Me.chkFiltrarExistencias.Name = "chkFiltrarExistencias"
+        Me.chkFiltrarExistencias.Size = New System.Drawing.Size(195, 17)
+        Me.chkFiltrarExistencias.TabIndex = 45
+        Me.chkFiltrarExistencias.Text = "Filtrar productos con existencias > 0"
+        Me.chkFiltrarExistencias.UseVisualStyleBackColor = True
+        '
         'FrmInventario
         '
         Me.AcceptButton = Me.CmdFiltrar
@@ -301,6 +312,7 @@ Partial Class FrmInventario
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(1044, 568)
+        Me.Controls.Add(Me.chkFiltrarExistencias)
         Me.Controls.Add(Me.chkFiltrarActivos)
         Me.Controls.Add(Me.txtCodigoProveedor)
         Me.Controls.Add(Me.Label2)
@@ -358,4 +370,5 @@ Partial Class FrmInventario
     Public WithEvents txtCodigoProveedor As TextBox
     Public WithEvents Label2 As Label
     Friend WithEvents chkFiltrarActivos As CheckBox
+    Friend WithEvents chkFiltrarExistencias As CheckBox
 End Class

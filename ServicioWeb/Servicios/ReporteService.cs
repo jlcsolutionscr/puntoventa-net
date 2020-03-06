@@ -37,7 +37,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         List<ReporteVentasPorLineaResumen> ObtenerReporteVentasPorLineaResumen(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal);
         List<ReporteVentasPorLineaDetalle> ObtenerReporteVentasPorLineaDetalle(int intIdEmpresa, int intIdSucursal, int intIdLinea, string strFechaInicial, string strFechaFinal);
         List<DescripcionValor> ObtenerReporteCierreDeCaja(int intIdCierre);
-        List<ReporteInventario> ObtenerReporteInventario(int intIdEmpresa, int intIdSucursal, int intIdLinea, string strCodigo, string strDescripcion);
+        List<ReporteInventario> ObtenerReporteInventario(int intIdEmpresa, int intIdSucursal, bool bolFiltraActivos, bool bolFiltraExistencias, int intIdLinea, string strCodigo, string strDescripcion);
         List<ReporteMovimientosContables> ObtenerReporteMovimientosContables(int intIdEmpresa, string strFechaInicial, string strFechaFinal);
         List<ReporteBalanceComprobacion> ObtenerReporteBalanceComprobacion(int intIdEmpresa, int intMes = 0, int intAnnio = 0);
         List<ReportePerdidasyGanancias> ObtenerReportePerdidasyGanancias(int intIdEmpresa, int intIdSucursal);
@@ -140,7 +140,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     List<ReporteDetalle> listaReporte = new List<ReporteDetalle>();
                     var detalleVentas = dbContext.ProformaRepository.Where(s => s.IdEmpresa == intIdEmpresa && s.IdSucursal == intIdSucursal && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal && s.Nulo == bolNulo)
                         .Join(dbContext.ClienteRepository, x => x.IdCliente, y => y.IdCliente, (x, y) => new { x, y })
-                        .Select(z => new { z.x.IdCliente, z.x.Nulo, z.x.IdProforma, z.x.Fecha, NombreCliente = z.x.Cliente.Nombre, z.x.TextoAdicional,  z.x.Impuesto, Total = (z.x.Excento + z.x.Gravado + z.x.Exonerado + z.x.Impuesto - z.x.Descuento) });
+                        .Select(z => new { z.x.IdCliente, z.x.Nulo, z.x.IdProforma, z.x.Fecha, z.x.NombreCliente, z.x.TextoAdicional,  z.x.Impuesto, Total = (z.x.Excento + z.x.Gravado + z.x.Exonerado + z.x.Impuesto - z.x.Descuento) });
                     foreach (var value in detalleVentas)
                     {
                         ReporteDetalle reporteLinea = new ReporteDetalle();
@@ -173,7 +173,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     List<ReporteDetalle> listaReporte = new List<ReporteDetalle>();
                     var detalleVentas = dbContext.ApartadoRepository.Where(s => s.IdEmpresa == intIdEmpresa && s.IdSucursal == intIdSucursal && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal && s.Nulo == bolNulo)
                         .Join(dbContext.ClienteRepository, x => x.IdCliente, y => y.IdCliente, (x, y) => new { x, y })
-                        .Select(z => new { z.x.IdCliente, z.x.Nulo, z.x.IdApartado, z.x.Fecha, NombreCliente = z.x.Cliente.Nombre, z.x.TextoAdicional, z.x.Impuesto, Total = (z.x.Excento + z.x.Gravado + z.x.Exonerado + z.x.Impuesto - z.x.Descuento) });
+                        .Select(z => new { z.x.IdCliente, z.x.Nulo, z.x.IdApartado, z.x.Fecha, z.x.NombreCliente, z.x.TextoAdicional, z.x.Impuesto, Total = (z.x.Excento + z.x.Gravado + z.x.Exonerado + z.x.Impuesto - z.x.Descuento) });
                     foreach (var value in detalleVentas)
                     {
                         ReporteDetalle reporteLinea = new ReporteDetalle();
@@ -206,7 +206,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     List<ReporteDetalle> listaReporte = new List<ReporteDetalle>();
                     var detalleVentas = dbContext.OrdenServicioRepository.Where(s => s.IdEmpresa == intIdEmpresa && s.IdSucursal == intIdSucursal && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal && s.Nulo == bolNulo)
                         .Join(dbContext.ClienteRepository, x => x.IdCliente, y => y.IdCliente, (x, y) => new { x, y })
-                        .Select(z => new { z.x.IdCliente, z.x.Nulo, z.x.IdOrden, z.x.Fecha, NombreCliente = z.x.Cliente.Nombre, z.x.OtrosDetalles, z.x.Impuesto, Total = (z.x.Excento + z.x.Gravado + z.x.Exonerado + z.x.Impuesto - z.x.Descuento) });
+                        .Select(z => new { z.x.IdCliente, z.x.Nulo, z.x.IdOrden, z.x.Fecha, z.x.NombreCliente, z.x.OtrosDetalles, z.x.Impuesto, Total = (z.x.Excento + z.x.Gravado + z.x.Exonerado + z.x.Impuesto - z.x.Descuento) });
                     foreach (var value in detalleVentas)
                     {
                         ReporteDetalle reporteLinea = new ReporteDetalle();
@@ -241,7 +241,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         var detalleVentas = dbContext.FacturaRepository.Where(s => s.IdEmpresa == intIdEmpresa && s.IdSucursal == intIdSucursal && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal && s.Nulo == bolNulo)
                             .Join(dbContext.ClienteRepository, x => x.IdCliente, y => y.IdCliente, (x, y) => new { x, y })
-                            .Select(z => new { z.x.IdCliente, z.x.Nulo, z.x.IdCondicionVenta, z.x.IdFactura, z.x.Fecha, NombreCliente = z.x.Cliente.Nombre, z.x.IdDocElectronico, z.x.Impuesto, Total = (z.x.Excento + z.x.Gravado + z.x.Exonerado + z.x.Impuesto - z.x.Descuento) });
+                            .Select(z => new { z.x.IdCliente, z.x.Nulo, z.x.IdCondicionVenta, z.x.IdFactura, z.x.Fecha, z.x.NombreCliente, z.x.IdDocElectronico, z.x.Impuesto, Total = (z.x.Excento + z.x.Gravado + z.x.Exonerado + z.x.Impuesto - z.x.Descuento) });
                         if (intIdCliente > 0)
                             detalleVentas = detalleVentas.Where(x => x.IdCliente == intIdCliente);
                         foreach (var value in detalleVentas)
@@ -263,7 +263,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         {
                             var detalleVentas = dbContext.FacturaRepository.Where(s => s.IdEmpresa == intIdEmpresa && s.IdSucursal == intIdSucursal && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal && s.Nulo == bolNulo)
                                 .Join(dbContext.ClienteRepository, x => x.IdCliente, y => y.IdCliente, (x, y) => new { x, y })
-                                .Select(z => new { z.x.IdCliente, z.x.Nulo, z.x.IdCondicionVenta, z.x.IdFactura, z.x.Fecha, NombreCliente = z.x.Cliente.Nombre, z.x.IdDocElectronico, z.x.Impuesto, Total = (z.x.Excento + z.x.Gravado + z.x.Exonerado + z.x.Impuesto - z.x.Descuento) });
+                                .Select(z => new { z.x.IdCliente, z.x.Nulo, z.x.IdCondicionVenta, z.x.IdFactura, z.x.Fecha, z.x.NombreCliente, z.x.IdDocElectronico, z.x.Impuesto, Total = (z.x.Excento + z.x.Gravado + z.x.Exonerado + z.x.Impuesto - z.x.Descuento) });
                             if (intTipoPago == StaticReporteCondicionVentaFormaPago.Credito)
                                 detalleVentas = detalleVentas.Where(x => x.IdCondicionVenta == StaticCondicionVenta.Credito);
                             else
@@ -960,30 +960,35 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public List<ReporteInventario> ObtenerReporteInventario(int intIdEmpresa, int intIdSucursal, int intIdLinea, string strCodigo, string strDescripcion)
+        public List<ReporteInventario> ObtenerReporteInventario(int intIdEmpresa, int intIdSucursal, bool bolFiltraActivos, bool bolFiltraExistencias, int intIdLinea, string strCodigo, string strDescripcion)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 try
                 {
                     List<ReporteInventario> listaReporte = new List<ReporteInventario>();
-                    var listaProductos = dbContext.ProductoRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.Tipo == StaticTipoProducto.Producto);
+                    var listaProductos = dbContext.ProductoRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.Tipo == StaticTipoProducto.Producto)
+                        .GroupJoin(dbContext.ExistenciaPorSucursalRepository, x => x.IdProducto, y => y.IdProducto, (x, y) => new { x, y })
+                        .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { x, y })
+                        .Where(x => x.y.IdSucursal == intIdSucursal);
+                    if (bolFiltraActivos)
+                        listaProductos = listaProductos.Where(x => x.x.x.Activo);
                     if (intIdLinea > 0)
-                        listaProductos = listaProductos.Where(x => x.IdLinea == intIdLinea);
+                        listaProductos = listaProductos.Where(x => x.x.x.IdLinea == intIdLinea);
                     else if (!strCodigo.Equals(string.Empty))
-                        listaProductos = listaProductos.Where(x => x.Codigo.Contains(strCodigo));
+                        listaProductos = listaProductos.Where(x => x.x.x.Codigo.Contains(strCodigo));
                     else if (!strDescripcion.Equals(string.Empty))
-                        listaProductos = listaProductos.Where(x => x.Descripcion.Contains(strDescripcion));
-                    var detalle = listaProductos.Select(a => new { a.IdProducto, a.Codigo, a.Descripcion, a.PrecioCosto, a.PrecioVenta1 }).ToList();
-                    foreach (var value in detalle)
+                        listaProductos = listaProductos.Where(x => x.x.x.Descripcion.Contains(strDescripcion));
+                    if (bolFiltraExistencias)
+                        listaProductos = listaProductos.Where(x => x.y.Cantidad > 0);
+                    var lineas = listaProductos.Select(x => new { x.x.x.IdProducto, x.x.x.Codigo, x.x.x.Descripcion, x.y.Cantidad, x.x.x.PrecioCosto, x.x.x.PrecioVenta1 }).ToList();
+                    foreach (var value in lineas)
                     {
-                        var existencias = dbContext.ExistenciaPorSucursalRepository.AsNoTracking().Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdProducto == value.IdProducto).FirstOrDefault();
-                        decimal decCantidad = existencias != null ? existencias.Cantidad : 0;
                         ReporteInventario reporteLinea = new ReporteInventario();
                         reporteLinea.IdProducto = value.IdProducto;
                         reporteLinea.Codigo = value.Codigo;
                         reporteLinea.Descripcion = value.Descripcion;
-                        reporteLinea.Cantidad = decCantidad;
+                        reporteLinea.Cantidad = value.Cantidad;
                         reporteLinea.PrecioCosto = value.PrecioCosto;
                         reporteLinea.PrecioVenta = value.PrecioVenta1;
                         listaReporte.Add(reporteLinea);

@@ -91,6 +91,10 @@ Partial Class FrmEmpresa
         Me.txtIdSucursal = New System.Windows.Forms.TextBox()
         Me.Label12 = New System.Windows.Forms.Label()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
+        Me.Label35 = New System.Windows.Forms.Label()
+        Me.btnLimpiarLogo = New System.Windows.Forms.Button()
+        Me.btnCargarLogo = New System.Windows.Forms.Button()
+        Me.picLogo = New System.Windows.Forms.PictureBox()
         Me.btnCargarCertificado = New System.Windows.Forms.Button()
         Me.txtClaveATV = New System.Windows.Forms.TextBox()
         Me.Label25 = New System.Windows.Forms.Label()
@@ -113,10 +117,6 @@ Partial Class FrmEmpresa
         Me.Label29 = New System.Windows.Forms.Label()
         Me.txtTelefono2 = New System.Windows.Forms.TextBox()
         Me.Label30 = New System.Windows.Forms.Label()
-        Me.Label35 = New System.Windows.Forms.Label()
-        Me.btnLimpiarLogo = New System.Windows.Forms.Button()
-        Me.btnCargarLogo = New System.Windows.Forms.Button()
-        Me.picLogo = New System.Windows.Forms.PictureBox()
         Me.gpbSucursal.SuspendLayout()
         Me.GroupBox1.SuspendLayout()
         CType(Me.picLogo, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -737,10 +737,10 @@ Partial Class FrmEmpresa
         Me.txtNombreImpresora.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtNombreImpresora.ForeColor = System.Drawing.SystemColors.WindowText
         Me.txtNombreImpresora.Location = New System.Drawing.Point(639, 21)
-        Me.txtNombreImpresora.MaxLength = 20
+        Me.txtNombreImpresora.MaxLength = 150
         Me.txtNombreImpresora.Name = "txtNombreImpresora"
         Me.txtNombreImpresora.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtNombreImpresora.Size = New System.Drawing.Size(143, 20)
+        Me.txtNombreImpresora.Size = New System.Drawing.Size(160, 20)
         Me.txtNombreImpresora.TabIndex = 105
         '
         'Label21
@@ -1019,6 +1019,61 @@ Partial Class FrmEmpresa
         Me.GroupBox1.TabIndex = 262
         Me.GroupBox1.TabStop = False
         Me.GroupBox1.Text = "Datos para la generación de Documentos Electrónicos"
+        '
+        'Label35
+        '
+        Me.Label35.BackColor = System.Drawing.Color.Transparent
+        Me.Label35.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label35.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label35.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label35.Location = New System.Drawing.Point(437, 22)
+        Me.Label35.Name = "Label35"
+        Me.Label35.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label35.Size = New System.Drawing.Size(350, 17)
+        Me.Label35.TabIndex = 274
+        Me.Label35.Text = "Logotipo para la empresa"
+        Me.Label35.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'btnLimpiarLogo
+        '
+        Me.btnLimpiarLogo.BackColor = System.Drawing.SystemColors.ButtonHighlight
+        Me.btnLimpiarLogo.Cursor = System.Windows.Forms.Cursors.Default
+        Me.btnLimpiarLogo.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnLimpiarLogo.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.btnLimpiarLogo.Location = New System.Drawing.Point(521, 208)
+        Me.btnLimpiarLogo.Name = "btnLimpiarLogo"
+        Me.btnLimpiarLogo.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.btnLimpiarLogo.Size = New System.Drawing.Size(78, 26)
+        Me.btnLimpiarLogo.TabIndex = 272
+        Me.btnLimpiarLogo.TabStop = False
+        Me.btnLimpiarLogo.Text = "Limpiar logo"
+        Me.btnLimpiarLogo.UseVisualStyleBackColor = False
+        '
+        'btnCargarLogo
+        '
+        Me.btnCargarLogo.BackColor = System.Drawing.SystemColors.ButtonHighlight
+        Me.btnCargarLogo.Cursor = System.Windows.Forms.Cursors.Default
+        Me.btnCargarLogo.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnCargarLogo.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.btnCargarLogo.Location = New System.Drawing.Point(437, 208)
+        Me.btnCargarLogo.Name = "btnCargarLogo"
+        Me.btnCargarLogo.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.btnCargarLogo.Size = New System.Drawing.Size(78, 26)
+        Me.btnCargarLogo.TabIndex = 271
+        Me.btnCargarLogo.TabStop = False
+        Me.btnCargarLogo.Text = "Cargar logo"
+        Me.btnCargarLogo.UseVisualStyleBackColor = False
+        '
+        'picLogo
+        '
+        Me.picLogo.BackColor = System.Drawing.Color.White
+        Me.picLogo.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
+        Me.picLogo.Location = New System.Drawing.Point(437, 42)
+        Me.picLogo.Name = "picLogo"
+        Me.picLogo.Size = New System.Drawing.Size(350, 160)
+        Me.picLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
+        Me.picLogo.TabIndex = 273
+        Me.picLogo.TabStop = False
         '
         'btnCargarCertificado
         '
@@ -1304,61 +1359,6 @@ Partial Class FrmEmpresa
         Me.Label30.TabIndex = 273
         Me.Label30.Text = "Teléfono 2:"
         Me.Label30.TextAlign = System.Drawing.ContentAlignment.TopRight
-        '
-        'Label35
-        '
-        Me.Label35.BackColor = System.Drawing.Color.Transparent
-        Me.Label35.Cursor = System.Windows.Forms.Cursors.Default
-        Me.Label35.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label35.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label35.Location = New System.Drawing.Point(437, 22)
-        Me.Label35.Name = "Label35"
-        Me.Label35.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label35.Size = New System.Drawing.Size(350, 17)
-        Me.Label35.TabIndex = 274
-        Me.Label35.Text = "Logotipo para la empresa"
-        Me.Label35.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
-        '
-        'btnLimpiarLogo
-        '
-        Me.btnLimpiarLogo.BackColor = System.Drawing.SystemColors.ButtonHighlight
-        Me.btnLimpiarLogo.Cursor = System.Windows.Forms.Cursors.Default
-        Me.btnLimpiarLogo.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnLimpiarLogo.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.btnLimpiarLogo.Location = New System.Drawing.Point(521, 208)
-        Me.btnLimpiarLogo.Name = "btnLimpiarLogo"
-        Me.btnLimpiarLogo.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.btnLimpiarLogo.Size = New System.Drawing.Size(78, 26)
-        Me.btnLimpiarLogo.TabIndex = 272
-        Me.btnLimpiarLogo.TabStop = False
-        Me.btnLimpiarLogo.Text = "Limpiar logo"
-        Me.btnLimpiarLogo.UseVisualStyleBackColor = False
-        '
-        'btnCargarLogo
-        '
-        Me.btnCargarLogo.BackColor = System.Drawing.SystemColors.ButtonHighlight
-        Me.btnCargarLogo.Cursor = System.Windows.Forms.Cursors.Default
-        Me.btnCargarLogo.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnCargarLogo.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.btnCargarLogo.Location = New System.Drawing.Point(437, 208)
-        Me.btnCargarLogo.Name = "btnCargarLogo"
-        Me.btnCargarLogo.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.btnCargarLogo.Size = New System.Drawing.Size(78, 26)
-        Me.btnCargarLogo.TabIndex = 271
-        Me.btnCargarLogo.TabStop = False
-        Me.btnCargarLogo.Text = "Cargar logo"
-        Me.btnCargarLogo.UseVisualStyleBackColor = False
-        '
-        'picLogo
-        '
-        Me.picLogo.BackColor = System.Drawing.Color.White
-        Me.picLogo.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
-        Me.picLogo.Location = New System.Drawing.Point(437, 42)
-        Me.picLogo.Name = "picLogo"
-        Me.picLogo.Size = New System.Drawing.Size(350, 160)
-        Me.picLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
-        Me.picLogo.TabIndex = 273
-        Me.picLogo.TabStop = False
         '
         'FrmEmpresa
         '
