@@ -71,7 +71,7 @@ Public Class FrmProductoListado
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
         Try
-            listado = Await Puntoventa.ObtenerListadoProductos(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, intNumeroPagina, intFilasPorPagina, True, chkFiltrarActivos.Checked, FrmPrincipal.usuarioGlobal.Token, cboLinea.SelectedValue, txtCodigo.Text, txtDescripcion.Text)
+            listado = Await Puntoventa.ObtenerListadoProductos(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, intNumeroPagina, intFilasPorPagina, True, False, chkFiltrarActivos.Checked, FrmPrincipal.usuarioGlobal.Token, cboLinea.SelectedValue, txtCodigo.Text, txtDescripcion.Text)
             dgvListado.DataSource = listado
             If listado.Count() > 0 Then
                 btnEditar.Enabled = True
@@ -89,7 +89,7 @@ Public Class FrmProductoListado
 
     Private Async Function ValidarCantidadRegistros() As Task
         Try
-            intTotalRegistros = Await Puntoventa.ObtenerTotalListaProductos(FrmPrincipal.empresaGlobal.IdEmpresa, True, chkFiltrarActivos.Checked, FrmPrincipal.usuarioGlobal.Token, cboLinea.SelectedValue, txtCodigo.Text, txtDescripcion.Text)
+            intTotalRegistros = Await Puntoventa.ObtenerTotalListaProductos(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, True, False, chkFiltrarActivos.Checked, FrmPrincipal.usuarioGlobal.Token, cboLinea.SelectedValue, txtCodigo.Text, txtDescripcion.Text)
         Catch ex As Exception
             Throw ex
         End Try
@@ -206,9 +206,21 @@ Public Class FrmProductoListado
     End Sub
 
     Private Async Sub btnFiltrar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnFiltrar.Click
-        Await ValidarCantidadRegistros()
-        intIndiceDePagina = 1
-        Await ActualizarDatos(intIndiceDePagina)
+        If btnFiltrar.Enabled Then
+            btnFiltrar.Enabled = False
+            btnFirst.Enabled = False
+            btnPrevious.Enabled = False
+            btnNext.Enabled = False
+            btnLast.Enabled = False
+            Await ValidarCantidadRegistros()
+            intIndiceDePagina = 1
+            Await ActualizarDatos(intIndiceDePagina)
+            btnFiltrar.Enabled = True
+            btnFirst.Enabled = True
+            btnPrevious.Enabled = True
+            btnNext.Enabled = True
+            btnLast.Enabled = True
+        End If
     End Sub
 
     Private Async Sub FlexProducto_DoubleClick(ByVal sender As Object, ByVal e As EventArgs) Handles dgvListado.DoubleClick
@@ -219,17 +231,13 @@ Public Class FrmProductoListado
         Await ActualizarDatos(intIndiceDePagina)
     End Sub
 
-    Private Async Sub chkFiltrarActivos_CheckedChanged(sender As Object, e As EventArgs) Handles chkFiltrarActivos.CheckedChanged
-        Await ValidarCantidadRegistros()
-        intIndiceDePagina = 1
-        Await ActualizarDatos(intIndiceDePagina)
+    Private Sub chkFiltrarActivos_CheckedChanged(sender As Object, e As EventArgs) Handles chkFiltrarActivos.CheckedChanged
+        btnFiltrar_Click(btnFiltrar, New EventArgs())
     End Sub
 
-    Private Async Sub cboLinea_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboLinea.SelectedIndexChanged
+    Private Sub cboLinea_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboLinea.SelectedIndexChanged
         If Not bolInit And Not cboLinea.SelectedValue Is Nothing Then
-            Await ValidarCantidadRegistros()
-            intIndiceDePagina = 1
-            Await ActualizarDatos(intIndiceDePagina)
+            btnFiltrar_Click(btnFiltrar, New EventArgs())
         End If
     End Sub
 #End Region

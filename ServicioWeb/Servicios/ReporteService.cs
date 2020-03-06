@@ -967,31 +967,34 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     List<ReporteInventario> listaReporte = new List<ReporteInventario>();
-                    var listaProductos = dbContext.ProductoRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.Tipo == StaticTipoProducto.Producto)
-                        .GroupJoin(dbContext.ExistenciaPorSucursalRepository, x => x.IdProducto, y => y.IdProducto, (x, y) => new { x, y })
-                        .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { x, y })
-                        .Where(x => x.y.IdSucursal == intIdSucursal);
+                    var listaProductos = dbContext.ProductoRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.Tipo == StaticTipoProducto.Producto);
                     if (bolFiltraActivos)
-                        listaProductos = listaProductos.Where(x => x.x.x.Activo);
+                        listaProductos = listaProductos.Where(x => x.Activo);
                     if (intIdLinea > 0)
-                        listaProductos = listaProductos.Where(x => x.x.x.IdLinea == intIdLinea);
+                        listaProductos = listaProductos.Where(x => x.IdLinea == intIdLinea);
                     else if (!strCodigo.Equals(string.Empty))
-                        listaProductos = listaProductos.Where(x => x.x.x.Codigo.Contains(strCodigo));
+                        listaProductos = listaProductos.Where(x => x.Codigo.Contains(strCodigo));
                     else if (!strDescripcion.Equals(string.Empty))
-                        listaProductos = listaProductos.Where(x => x.x.x.Descripcion.Contains(strDescripcion));
+                        listaProductos = listaProductos.Where(x => x.Descripcion.Contains(strDescripcion));
                     if (bolFiltraExistencias)
-                        listaProductos = listaProductos.Where(x => x.y.Cantidad > 0);
-                    var lineas = listaProductos.Select(x => new { x.x.x.IdProducto, x.x.x.Codigo, x.x.x.Descripcion, x.y.Cantidad, x.x.x.PrecioCosto, x.x.x.PrecioVenta1 }).ToList();
-                    foreach (var value in lineas)
                     {
-                        ReporteInventario reporteLinea = new ReporteInventario();
-                        reporteLinea.IdProducto = value.IdProducto;
-                        reporteLinea.Codigo = value.Codigo;
-                        reporteLinea.Descripcion = value.Descripcion;
-                        reporteLinea.Cantidad = value.Cantidad;
-                        reporteLinea.PrecioCosto = value.PrecioCosto;
-                        reporteLinea.PrecioVenta = value.PrecioVenta1;
-                        listaReporte.Add(reporteLinea);
+                        var listado = listaProductos.Join(dbContext.ExistenciaPorSucursalRepository, x => x.IdProducto, y => y.IdProducto, (x, y) => new { x, y }).Where(x => x.y.IdEmpresa == intIdEmpresa && x.y.IdSucursal == intIdSucursal && x.y.Cantidad > 0).OrderByDescending(x => x.x.Codigo).ToList();
+                        foreach (var value in listado)
+                        {
+                            ReporteInventario item = new ReporteInventario(value.x.IdProducto, value.x.Codigo, value.x.Descripcion, value.y.Cantidad, value.x.PrecioCosto, value.x.PrecioVenta1);
+                            listaReporte.Add(item);
+                        }
+                    }
+                    else
+                    {
+                        var listado = listaProductos.ToList();
+                        foreach (var value in listado)
+                        {
+                            var existencias = dbContext.ExistenciaPorSucursalRepository.AsNoTracking().Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdProducto == value.IdProducto).FirstOrDefault();
+                            decimal decCantidad = existencias != null ? existencias.Cantidad : 0;
+                            ReporteInventario item = new ReporteInventario(value.IdProducto, value.Codigo, value.Descripcion, decCantidad, value.PrecioCosto, value.PrecioVenta1);
+                            listaReporte.Add(item);
+                        }
                     }
                     return listaReporte;
                 }

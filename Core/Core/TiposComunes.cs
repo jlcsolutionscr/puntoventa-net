@@ -297,6 +297,16 @@ namespace LeandroSoftware.Core.TiposComunes
 
     public class ReporteInventario
     {
+        public ReporteInventario(int id, string codigo, string descripcion, decimal cantidad, decimal precioCosto, decimal precioVenta)
+        {
+            IdProducto = id;
+            Codigo = codigo;
+            Descripcion = descripcion;
+            Cantidad = cantidad;
+            PrecioCosto = precioCosto;
+            PrecioVenta = precioVenta;
+        }
+
         public int IdProducto { get; set; }
         public string Codigo { get; set; }
         public string Descripcion { get; set; }

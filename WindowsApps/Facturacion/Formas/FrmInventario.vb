@@ -249,10 +249,10 @@ Public Class FrmInventario
         End If
     End Sub
 
-    Private Async Sub chkFiltrarActivos_CheckedChanged(sender As Object, e As EventArgs) Handles chkFiltrarActivos.CheckedChanged
-        Await ValidarCantidadRegistros()
-        intIndiceDePagina = 1
-        Await ActualizarDatos(intIndiceDePagina)
+    Private Sub chkFiltrarActivos_CheckedChanged(sender As Object, e As EventArgs) Handles chkFiltrarActivos.CheckedChanged
+        If Not bolInit And Not cboSucursal.SelectedValue Is Nothing Then
+            CmdFiltrar_Click(CmdFiltrar, New EventArgs())
+        End If
     End Sub
 
     Private Sub cboSucursal_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboSucursal.SelectedIndexChanged
@@ -263,13 +263,13 @@ Public Class FrmInventario
     End Sub
 
     Private Sub cboLinea_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboLinea.SelectedIndexChanged
-        If Not bolInit And Not cboLinea.SelectedValue Is Nothing Then
+        If Not bolInit And Not cboSucursal.SelectedValue Is Nothing Then
             CmdFiltrar_Click(CmdFiltrar, New EventArgs())
         End If
     End Sub
 
     Private Sub chkFiltrarExistencias_CheckedChanged(sender As Object, e As EventArgs) Handles chkFiltrarExistencias.CheckedChanged
-        If Not bolInit And Not cboLinea.SelectedValue Is Nothing Then
+        If Not bolInit And Not cboSucursal.SelectedValue Is Nothing Then
             CmdFiltrar_Click(CmdFiltrar, New EventArgs())
         End If
     End Sub

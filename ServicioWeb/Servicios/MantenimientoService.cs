@@ -1870,23 +1870,22 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    var listaProductos = dbContext.ProductoRepository.Where(x => x.IdEmpresa == intIdEmpresa)
-                        .GroupJoin(dbContext.ExistenciaPorSucursalRepository, x => x.IdProducto, y => y.IdProducto, (x, y) => new { x, y })
-                        .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { x, y })
-                        .Where(x => x.y.IdSucursal == intIdSucursal);
+                    List<ReporteInventario> listaReporte = new List<ReporteInventario>();
+                    var listaProductos = dbContext.ProductoRepository.Where(x => x.IdEmpresa == intIdEmpresa);
                     if (!bolIncluyeServicios)
-                        listaProductos = listaProductos.Where(x => x.x.x.Tipo == StaticTipoProducto.Producto);
+                        listaProductos = listaProductos.Where(x => x.Tipo == StaticTipoProducto.Producto);
                     if (bolFiltraActivos)
-                        listaProductos = listaProductos.Where(x => x.x.x.Activo);
+                        listaProductos = listaProductos.Where(x => x.Activo);
                     if (intIdLinea > 0)
-                        listaProductos = listaProductos.Where(x => x.x.x.IdLinea == intIdLinea);
+                        listaProductos = listaProductos.Where(x => x.IdLinea == intIdLinea);
                     else if (!strCodigo.Equals(string.Empty))
-                        listaProductos = listaProductos.Where(x => x.x.x.Codigo.Contains(strCodigo));
+                        listaProductos = listaProductos.Where(x => x.Codigo.Contains(strCodigo));
                     else if (!strDescripcion.Equals(string.Empty))
-                        listaProductos = listaProductos.Where(x => x.x.x.Descripcion.Contains(strDescripcion));
+                        listaProductos = listaProductos.Where(x => x.Descripcion.Contains(strDescripcion));
                     if (bolFiltraExistencias)
-                        listaProductos = listaProductos.Where(x => x.y.Cantidad > 0);
-                    return listaProductos.Count();
+                        return listaProductos.Join(dbContext.ExistenciaPorSucursalRepository, x => x.IdProducto, y => y.IdProducto, (x, y) => new { x, y }).Where(x => x.y.IdEmpresa == intIdEmpresa && x.y.IdSucursal == intIdSucursal && x.y.Cantidad > 0).Count();
+                    else
+                        return listaProductos.Count();
                 }
                 catch (Exception ex)
                 {
@@ -1903,31 +1902,37 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 var listaProducto = new List<ProductoDetalle>();
                 try
                 {
-                    List<ReporteInventario> listaReporte = new List<ReporteInventario>();
-                    var listaProductos = dbContext.ProductoRepository.Where(x => x.IdEmpresa == intIdEmpresa)
-                        .GroupJoin(dbContext.ExistenciaPorSucursalRepository, x => x.IdProducto, y => y.IdProducto, (x, y) => new { x, y })
-                        .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { x, y })
-                        .Where(x => x.y.IdSucursal == intIdSucursal);
+                    List<ProductoDetalle> listaReporte = new List<ProductoDetalle>();
+                    var listaProductos = dbContext.ProductoRepository.Where(x => x.IdEmpresa == intIdEmpresa);
                     if (!bolIncluyeServicios)
-                        listaProductos = listaProductos.Where(x => x.x.x.Tipo == StaticTipoProducto.Producto);
+                        listaProductos = listaProductos.Where(x => x.Tipo == StaticTipoProducto.Producto);
                     if (bolFiltraActivos)
-                        listaProductos = listaProductos.Where(x => x.x.x.Activo);
+                        listaProductos = listaProductos.Where(x => x.Activo);
                     if (intIdLinea > 0)
-                        listaProductos = listaProductos.Where(x => x.x.x.IdLinea == intIdLinea);
+                        listaProductos = listaProductos.Where(x => x.IdLinea == intIdLinea);
                     else if (!strCodigo.Equals(string.Empty))
-                        listaProductos = listaProductos.Where(x => x.x.x.Codigo.Contains(strCodigo));
+                        listaProductos = listaProductos.Where(x => x.Codigo.Contains(strCodigo));
                     else if (!strDescripcion.Equals(string.Empty))
-                        listaProductos = listaProductos.Where(x => x.x.x.Descripcion.Contains(strDescripcion));
+                        listaProductos = listaProductos.Where(x => x.Descripcion.Contains(strDescripcion));
                     if (bolFiltraExistencias)
-                        listaProductos = listaProductos.Where(x => x.y.Cantidad > 0);
-                    listaProductos = listaProductos.OrderByDescending(x => x.x.x.Codigo).Skip((numPagina - 1) * cantRec).Take(cantRec);
-                    var lineas = listaProductos.Select(x => new { x.x.x.IdProducto, x.x.x.Codigo, x.x.x.CodigoProveedor, x.x.x.Descripcion, x.y.Cantidad, x.x.x.PrecioCosto, x.x.x.PrecioVenta1, x.x.x.Observacion, x.x.x.Activo }).ToList();
-                    foreach (var value in lineas)
                     {
-                        var existencias = dbContext.ExistenciaPorSucursalRepository.AsNoTracking().Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdProducto == value.IdProducto).FirstOrDefault();
-                        decimal decCantidad = existencias != null ? existencias.Cantidad : 0;
-                        ProductoDetalle item = new ProductoDetalle(value.IdProducto, value.Codigo, value.CodigoProveedor, value.Descripcion, decCantidad, value.PrecioCosto, value.PrecioVenta1, value.Observacion, value.Activo);
-                        listaProducto.Add(item);
+                        var listado = listaProductos.Join(dbContext.ExistenciaPorSucursalRepository, x => x.IdProducto, y => y.IdProducto, (x, y) => new { x, y }).Where(x => x.y.IdEmpresa == intIdEmpresa && x.y.IdSucursal == intIdSucursal && x.y.Cantidad > 0).OrderByDescending(x => x.x.Codigo).Skip((numPagina - 1) * cantRec).Take(cantRec).ToList();
+                        foreach (var value in listado)
+                        {
+                            ProductoDetalle item = new ProductoDetalle(value.x.IdProducto, value.x.Codigo, value.x.CodigoProveedor, value.x.Descripcion, value.y.Cantidad, value.x.PrecioCosto, value.x.PrecioVenta1, value.x.Observacion, value.x.Activo);
+                            listaProducto.Add(item);
+                        }
+                    }
+                    else
+                    {
+                        var listado = listaProductos.OrderByDescending(x => x.Codigo).Skip((numPagina - 1) * cantRec).Take(cantRec).ToList();
+                        foreach (var value in listado)
+                        {
+                            var existencias = dbContext.ExistenciaPorSucursalRepository.AsNoTracking().Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdProducto == value.IdProducto).FirstOrDefault();
+                            decimal decCantidad = existencias != null ? existencias.Cantidad : 0;
+                            ProductoDetalle item = new ProductoDetalle(value.IdProducto, value.Codigo, value.CodigoProveedor, value.Descripcion, decCantidad, value.PrecioCosto, value.PrecioVenta1, value.Observacion, value.Activo);
+                            listaProducto.Add(item);
+                        }
                     }
                     return listaProducto;
                 }
