@@ -38,7 +38,7 @@ Partial Class FrmAplicaAbonoCxP
         Me._lblLabels_2 = New System.Windows.Forms.Label()
         Me.btnImprimir = New System.Windows.Forms.Button()
         Me.txtDocumento = New System.Windows.Forms.TextBox()
-        Me.Label7 = New System.Windows.Forms.Label()
+        Me.lblDocumento = New System.Windows.Forms.Label()
         Me.txtBeneficiario = New System.Windows.Forms.TextBox()
         Me.lblTipoTarjeta = New System.Windows.Forms.Label()
         Me.cboTipoBanco = New System.Windows.Forms.ComboBox()
@@ -221,18 +221,18 @@ Partial Class FrmAplicaAbonoCxP
         Me.txtDocumento.Size = New System.Drawing.Size(100, 20)
         Me.txtDocumento.TabIndex = 13
         '
-        'Label7
+        'lblDocumento
         '
-        Me.Label7.BackColor = System.Drawing.Color.Transparent
-        Me.Label7.Cursor = System.Windows.Forms.Cursors.Default
-        Me.Label7.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label7.Location = New System.Drawing.Point(549, 364)
-        Me.Label7.Name = "Label7"
-        Me.Label7.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label7.Size = New System.Drawing.Size(100, 19)
-        Me.Label7.TabIndex = 111
-        Me.Label7.Text = "Documento"
-        Me.Label7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        Me.lblDocumento.BackColor = System.Drawing.Color.Transparent
+        Me.lblDocumento.Cursor = System.Windows.Forms.Cursors.Default
+        Me.lblDocumento.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.lblDocumento.Location = New System.Drawing.Point(549, 364)
+        Me.lblDocumento.Name = "lblDocumento"
+        Me.lblDocumento.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.lblDocumento.Size = New System.Drawing.Size(100, 19)
+        Me.lblDocumento.TabIndex = 111
+        Me.lblDocumento.Text = "Documento"
+        Me.lblDocumento.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
         'txtBeneficiario
         '
@@ -656,7 +656,7 @@ Partial Class FrmAplicaAbonoCxP
         Me.Controls.Add(Me.cboCuentaPorPagar)
         Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.txtDocumento)
-        Me.Controls.Add(Me.Label7)
+        Me.Controls.Add(Me.lblDocumento)
         Me.Controls.Add(Me.txtBeneficiario)
         Me.Controls.Add(Me.lblTipoTarjeta)
         Me.Controls.Add(Me.cboTipoBanco)
@@ -698,7 +698,7 @@ Partial Class FrmAplicaAbonoCxP
     End Sub
     Public WithEvents btnImprimir As System.Windows.Forms.Button
     Public WithEvents txtDocumento As System.Windows.Forms.TextBox
-    Public WithEvents Label7 As System.Windows.Forms.Label
+    Public WithEvents lblDocumento As System.Windows.Forms.Label
     Public WithEvents txtBeneficiario As System.Windows.Forms.TextBox
     Public WithEvents lblTipoTarjeta As System.Windows.Forms.Label
     Public WithEvents cboTipoBanco As System.Windows.Forms.ComboBox

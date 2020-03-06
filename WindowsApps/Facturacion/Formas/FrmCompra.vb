@@ -820,7 +820,9 @@ Public Class FrmCompra
             datos.CondicionVenta = IIf(compra.IdCondicionVenta = StaticCondicionVenta.Credito, "Crédito", "Contado")
             datos.PlazoCredito = ""
             datos.Fecha = compra.Fecha.ToString("dd/MM/yyyy hh:mm:ss")
-            If dtbDesglosePago.Rows.Count > 1 Then
+            If dtbDesglosePago.Rows.Count = 0 Then
+                datos.MedioPago = "Crédito"
+            ElseIf dtbDesglosePago.Rows.Count > 1 Then
                 datos.MedioPago = "Otros"
             Else
                 datos.MedioPago = ObtenerValoresCodificados.ObtenerMedioDePago(dtbDesglosePago.Rows(0).Item(0))
@@ -853,12 +855,13 @@ Public Class FrmCompra
             For I = 0 To dtbDetalleCompra.Rows.Count - 1
                 Dim decTotalLinea As Decimal = CDbl(dtbDetalleCompra.Rows(I).Item(4)) * CDbl(dtbDetalleCompra.Rows(I).Item(5))
                 Dim detalle As EstructuraPDFDetalleServicio = New EstructuraPDFDetalleServicio With {
-                    .Cantidad = CDbl(dtbDetalleCompra.Rows(I).Item(4)),
-                    .Codigo = dtbDetalleCompra.Rows(I).Item(1),
-                    .Detalle = dtbDetalleCompra.Rows(I).Item(3),
-                    .PrecioUnitario = CDbl(dtbDetalleCompra.Rows(I).Item(5)).ToString("N2", CultureInfo.InvariantCulture),
-                    .TotalLinea = decTotalLinea.ToString("N2", CultureInfo.InvariantCulture)
-                }
+                .Cantidad = CDbl(dtbDetalleCompra.Rows(I).Item(4)),
+                .Codigo = dtbDetalleCompra.Rows(I).Item(2),
+                .CodigoProveedor = dtbDetalleCompra.Rows(I).Item(1),
+                .Detalle = dtbDetalleCompra.Rows(I).Item(3),
+                .PrecioUnitario = CDbl(dtbDetalleCompra.Rows(I).Item(5)).ToString("N2", CultureInfo.InvariantCulture),
+                .TotalLinea = decTotalLinea.ToString("N2", CultureInfo.InvariantCulture)
+            }
                 datos.DetalleServicio.Add(detalle)
             Next
             datos.OtrosTextos = ""

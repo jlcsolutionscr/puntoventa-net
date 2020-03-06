@@ -431,6 +431,15 @@ Public Class FrmAplicaAbonoCxP
             cboTipoBanco.SelectedIndex = 0
             txtBeneficiario.Text = ""
             txtDocumento.Text = ""
+            If cboFormaPago.SelectedValue <> StaticFormaPago.Efectivo Then
+                cboTipoBanco.Enabled = True
+                txtBeneficiario.ReadOnly = False
+                txtDocumento.ReadOnly = False
+            Else
+                cboTipoBanco.Enabled = False
+                txtBeneficiario.ReadOnly = True
+                txtDocumento.ReadOnly = True
+            End If
         End If
     End Sub
 
