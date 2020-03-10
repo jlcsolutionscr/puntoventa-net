@@ -1333,7 +1333,7 @@ Public Class FrmFactura
             Catch ex As Exception
                 datos.Logotipo = Nothing
             End Try
-            datos.TituloDocumento = "FACTURA ELECTRONICA"
+            datos.TituloDocumento = IIf(cliente.IdCliente > 1, "FACTURA ELECTRONICA", "TIQUETE ELECTRONICO")
             datos.NombreEmpresa = FrmPrincipal.empresaGlobal.NombreEmpresa
             datos.NombreComercial = FrmPrincipal.empresaGlobal.NombreComercial
             datos.PlazoCredito = IIf(factura.PlazoCredito > 0, factura.PlazoCredito.ToString(), "")

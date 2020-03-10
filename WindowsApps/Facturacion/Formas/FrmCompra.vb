@@ -494,6 +494,7 @@ Public Class FrmCompra
         txtIdOrdenCompra.Text = "0"
         cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado
         txtPlazoCredito.Text = ""
+        txtObservaciones.Text = ""
         dtbDetalleCompra.Rows.Clear()
         grdDetalleCompra.Refresh()
         decSaldoPorPagar = 0
@@ -565,6 +566,7 @@ Public Class FrmCompra
                 txtFactura.Text = compra.NoDocumento
                 cboCondicionVenta.SelectedValue = compra.IdCondicionVenta
                 txtPlazoCredito.Text = compra.PlazoCredito
+                txtObservaciones.Text = compra.Observaciones
                 txtDescuento.Text = FormatNumber(compra.Descuento, 2)
                 txtImpuesto.Text = FormatNumber(compra.Impuesto, 2)
                 CargarDetalleCompra(compra)
@@ -702,6 +704,7 @@ Public Class FrmCompra
                 .Descuento = CDbl(txtDescuento.Text),
                 .Impuesto = CDbl(txtImpuesto.Text),
                 .IdOrdenCompra = txtIdOrdenCompra.Text,
+                .Observaciones = txtObservaciones.Text,
                 .Nulo = False
             }
             For I = 0 To dtbDetalleCompra.Rows.Count - 1
@@ -769,10 +772,9 @@ Public Class FrmCompra
             arrDetalleCompra = New List(Of ModuloImpresion.ClsDetalleComprobante)
             For I = 0 To dtbDetalleCompra.Rows.Count - 1
                 detalleComprobante = New ModuloImpresion.ClsDetalleComprobante With {
-                    .strDescripcion = dtbDetalleCompra.Rows(I).Item(2) + "  " + dtbDetalleCompra.Rows(I).Item(3),
+                    .strDescripcion = dtbDetalleCompra.Rows(I).Item(2) + " - " + dtbDetalleCompra.Rows(I).Item(1) + " - " + dtbDetalleCompra.Rows(I).Item(3),
                     .strCantidad = CDbl(dtbDetalleCompra.Rows(I).Item(4)),
-                    .strPrecio = FormatNumber(dtbDetalleCompra.Rows(I).Item(9), 2),
-                    .strTotalLinea = FormatNumber(CDbl(dtbDetalleCompra.Rows(I).Item(4)) * CDbl(dtbDetalleCompra.Rows(I).Item(5)), 2)
+                    .strPrecio = FormatNumber(dtbDetalleCompra.Rows(I).Item(9), 2)
                 }
                 arrDetalleCompra.Add(detalleComprobante)
             Next

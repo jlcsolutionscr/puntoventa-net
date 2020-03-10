@@ -489,8 +489,22 @@ Public Class ModuloImpresion
             lineas.Add(New ClsLineaImpresion(1, "Compra Nro: " & objImpresion.strId, 0, 100, 10, StringAlignment.Near, False))
             lineas.Add(New ClsLineaImpresion(1, "Fecha: " & objImpresion.strFecha, 0, 100, 10, StringAlignment.Near, False))
             lineas.Add(New ClsLineaImpresion(2, "Proveedor: " & objImpresion.strNombre, 0, 100, 10, StringAlignment.Near, False))
-            ImprimirDetalle(objImpresion.arrDetalleComprobante)
-            ImprimirTotales(objImpresion)
+            lineas.Add(New ClsLineaImpresion(1, "".PadRight(32, "_"), 0, 100, 10, StringAlignment.Near, False))
+            lineas.Add(New ClsLineaImpresion(1, "Descripción", 0, 100, 10, StringAlignment.Near, False))
+            lineas.Add(New ClsLineaImpresion(0, "Cant", 0, 50, 10, StringAlignment.Center, False))
+            lineas.Add(New ClsLineaImpresion(0, "Precio", 50, 50, 10, StringAlignment.Far, False))
+            lineas.Add(New ClsLineaImpresion(1, "".PadRight(32, "_"), 0, 100, 10, StringAlignment.Near, False))
+            For i As Integer = 0 To objImpresion.arrDetalleComprobante.Count - 1
+                Dim strLinea As String = objImpresion.arrDetalleComprobante(i).strDescripcion
+                While strLinea.Length > 32
+                    lineas.Add(New ClsLineaImpresion(1, strLinea.Substring(0, 32), 0, 100, 10, StringAlignment.Near, False))
+                    strLinea = strLinea.Substring(32)
+                End While
+                lineas.Add(New ClsLineaImpresion(1, strLinea, 0, 100, 10, StringAlignment.Near, False))
+                lineas.Add(New ClsLineaImpresion(0, objImpresion.arrDetalleComprobante(i).strCantidad, 0, 50, 10, StringAlignment.Center, False))
+                lineas.Add(New ClsLineaImpresion(1, objImpresion.arrDetalleComprobante(i).strPrecio, 50, 50, 10, StringAlignment.Far, False))
+            Next
+            lineas.Add(New ClsLineaImpresion(1, "".PadRight(32, "_"), 0, 100, 10, StringAlignment.Near, False))
         Catch ex As Exception
             Throw New Exception("Error formulando el string de impresion:" + ex.Message)
         End Try

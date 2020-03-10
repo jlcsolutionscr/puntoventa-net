@@ -31,6 +31,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public int PlazoCredito { get; set; }
         public DateTime Fecha { get; set; }
         public string NoDocumento { get; set; }
+        public string Observaciones { get; set; }
         public decimal Excento { get; set; }
         public decimal Gravado { get; set; }
         public decimal Descuento { get; set; }

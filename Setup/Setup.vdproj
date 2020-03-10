@@ -322,12 +322,6 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_F7EBE8227FA45315D35EEA089E432BDA"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_3ECECD27447042C9B8CD278EB2AE3EB0"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -451,6 +445,12 @@
         "OwnerKey" = "8:_A2E1422F2CB157B1F3668E4421668861"
         "MsmSig" = "8:_UNDEFINED"
         }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_F7EBE8227FA45315D35EEA089E432BDA"
+        "MsmSig" = "8:_UNDEFINED"
+        }
     }
     "Configurations"
     {
@@ -511,7 +511,7 @@
                 {
                 "Name" = "8:.NET Framework"
                 "Message" = "8:[VSDNETMSG]"
-                "FrameworkVersion" = "8:v4.0                            "
+                "FrameworkVersion" = "8:v4.0                             "
                 "AllowLaterVersions" = "11:FALSE"
                 "InstallUrl" = "8:http://go.microsoft.com/fwlink/?LinkId=9832"
                 }
@@ -1266,8 +1266,8 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:PuntoventaJLC"
-        "ProductCode" = "8:{500D6766-4F96-4D0E-8EF8-8DB655676686}"
-        "PackageCode" = "8:{04A02645-5F6C-42F3-8C43-5B19218F8D79}"
+        "ProductCode" = "8:{D562D60B-32FB-4CC5-A5FD-CEAC7D3C2FCE}"
+        "PackageCode" = "8:{B0B9006C-06CF-4987-A7A7-8D7AA70508E6}"
         "UpgradeCode" = "8:{9F4F56C6-17E9-4C36-9940-81BDB1283F7F}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
