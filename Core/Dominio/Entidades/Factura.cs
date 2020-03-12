@@ -61,6 +61,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public decimal TotalCosto { get; set; }
         public bool Nulo { get; set; }
         public int? IdAnuladoPor { get; set; }
+        public string MotivoAnulacion { get; set; }
         public bool Procesado { get; set; }
         public string IdDocElectronico { get; set; }
         public string IdDocElectronicoRev { get; set; }

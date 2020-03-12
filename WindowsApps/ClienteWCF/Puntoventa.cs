@@ -1297,9 +1297,9 @@ namespace LeandroSoftware.ClienteWCF
             return serializer.Deserialize<string>(strId);
         }
 
-        public static async Task AnularEgreso(int intIdEgreso, int intIdUsuario, string strToken)
+        public static async Task AnularEgreso(int intIdEgreso, int intIdUsuario, string strMotivo, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'AnularEgreso', Parametros: {IdEgreso: " + intIdEgreso + ", IdUsuario: " + intIdUsuario + "}}";
+            string strDatos = "{NombreMetodo: 'AnularEgreso', Parametros: {IdEgreso: " + intIdEgreso + ", IdUsuario: " + intIdUsuario + ", MotivoAnulacion: '" + strMotivo + "'}}";
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 
@@ -1341,9 +1341,9 @@ namespace LeandroSoftware.ClienteWCF
             return serializer.Deserialize<string>(strId);
         }
 
-        public static async Task AnularIngreso(int intIdIngreso, int intIdUsuario, string strToken)
+        public static async Task AnularIngreso(int intIdIngreso, int intIdUsuario, string strMotivo, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'AnularIngreso', Parametros: {IdIngreso: " + intIdIngreso + ", IdUsuario: " + intIdUsuario + "}}";
+            string strDatos = "{NombreMetodo: 'AnularIngreso', Parametros: {IdIngreso: " + intIdIngreso + ", IdUsuario: " + intIdUsuario + ", MotivoAnulacion: '" + strMotivo + "'}}";
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 
@@ -1393,9 +1393,9 @@ namespace LeandroSoftware.ClienteWCF
             return serializer.Deserialize<string>(strId);
         }
 
-        public static async Task AnularFactura(int intIdFactura, int intIdUsuario, string strToken)
+        public static async Task AnularFactura(int intIdFactura, int intIdUsuario, string strMotivo, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'AnularFactura', Parametros: {IdFactura: " + intIdFactura + ", IdUsuario: " + intIdUsuario + "}}";
+            string strDatos = "{NombreMetodo: 'AnularFactura', Parametros: {IdFactura: " + intIdFactura + ", IdUsuario: " + intIdUsuario + ", MotivoAnulacion: '" + strMotivo + "'}}";
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 
@@ -1437,9 +1437,9 @@ namespace LeandroSoftware.ClienteWCF
             return serializer.Deserialize<string>(strId);
         }
 
-        public static async Task AnularDevolucionCliente(int intIdDevolucion, int intIdUsuario, string strToken)
+        public static async Task AnularDevolucionCliente(int intIdDevolucion, int intIdUsuario, string strMotivo, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'AnularDevolucionCliente', Parametros: {IdDevolucion: " + intIdDevolucion + ", IdUsuario: " + intIdUsuario + "}}";
+            string strDatos = "{NombreMetodo: 'AnularDevolucionCliente', Parametros: {IdDevolucion: " + intIdDevolucion + ", IdUsuario: " + intIdUsuario + ", MotivoAnulacion: '" + strMotivo + "'}}";
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 
@@ -1488,9 +1488,9 @@ namespace LeandroSoftware.ClienteWCF
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 
-        public static async Task AnularProforma(int intIdProforma, int intIdUsuario, string strToken)
+        public static async Task AnularProforma(int intIdProforma, int intIdUsuario, string strMotivo, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'AnularProforma', Parametros: {IdProforma: " + intIdProforma + ", IdUsuario: " + intIdUsuario + "}}";
+            string strDatos = "{NombreMetodo: 'AnularProforma', Parametros: {IdProforma: " + intIdProforma + ", IdUsuario: " + intIdUsuario + ", MotivoAnulacion: '" + strMotivo + "'}}";
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 
@@ -1532,9 +1532,9 @@ namespace LeandroSoftware.ClienteWCF
             return serializer.Deserialize<string>(strId);
         }
 
-        public static async Task AnularApartado(int intIdApartado, int intIdUsuario, string strToken)
+        public static async Task AnularApartado(int intIdApartado, int intIdUsuario, string strMotivo, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'AnularApartado', Parametros: {IdApartado: " + intIdApartado + ", IdUsuario: " + intIdUsuario + "}}";
+            string strDatos = "{NombreMetodo: 'AnularApartado', Parametros: {IdApartado: " + intIdApartado + ", IdUsuario: " + intIdUsuario + ", MotivoAnulacion: '" + strMotivo + "'}}";
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 
@@ -1583,9 +1583,9 @@ namespace LeandroSoftware.ClienteWCF
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 
-        public static async Task AnularOrdenServicio(int intIdOrdenServicio, int intIdUsuario, string strToken)
+        public static async Task AnularOrdenServicio(int intIdOrdenServicio, int intIdUsuario, string strMotivo, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'AnularOrdenServicio', Parametros: {IdOrdenServicio: " + intIdOrdenServicio + ", IdUsuario: " + intIdUsuario + "}}";
+            string strDatos = "{NombreMetodo: 'AnularOrdenServicio', Parametros: {IdOrdenServicio: " + intIdOrdenServicio + ", IdUsuario: " + intIdUsuario + ", MotivoAnulacion: '" + strMotivo + "'}}";
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 
@@ -1627,9 +1627,9 @@ namespace LeandroSoftware.ClienteWCF
             return serializer.Deserialize<string>(strId);
         }
 
-        public static async Task AnularCompra(int intIdCompra, int intIdUsuario, string strToken)
+        public static async Task AnularCompra(int intIdCompra, int intIdUsuario, string strMotivo, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'AnularCompra', Parametros: {IdCompra: " + intIdCompra + ", IdUsuario: " + intIdUsuario + "}}";
+            string strDatos = "{NombreMetodo: 'AnularCompra', Parametros: {IdCompra: " + intIdCompra + ", IdUsuario: " + intIdUsuario + ", MotivoAnulacion: '" + strMotivo + "'}}";
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 
@@ -1697,9 +1697,9 @@ namespace LeandroSoftware.ClienteWCF
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 
-        public static async Task AnularTraslado(int intIdTraslado, int intIdUsuario, string strToken)
+        public static async Task AnularTraslado(int intIdTraslado, int intIdUsuario, string strMotivo, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'AnularTraslado', Parametros: {IdTraslado: " + intIdTraslado + ", IdUsuario: " + intIdUsuario + "}}";
+            string strDatos = "{NombreMetodo: 'AnularTraslado', Parametros: {IdTraslado: " + intIdTraslado + ", IdUsuario: " + intIdUsuario + ", MotivoAnulacion: '" + strMotivo + "'}}";
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 
@@ -1741,9 +1741,9 @@ namespace LeandroSoftware.ClienteWCF
             return serializer.Deserialize<string>(strId);
         }
 
-        public static async Task AnularAjusteInventario(int intIdAjusteInventario, int intIdUsuario, string strToken)
+        public static async Task AnularAjusteInventario(int intIdAjusteInventario, int intIdUsuario, string strMotivo, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'AnularAjusteInventario', Parametros: {IdAjuste: " + intIdAjusteInventario + ", IdUsuario: " + intIdUsuario + "}}";
+            string strDatos = "{NombreMetodo: 'AnularAjusteInventario', Parametros: {IdAjuste: " + intIdAjusteInventario + ", IdUsuario: " + intIdUsuario + ", MotivoAnulacion: '" + strMotivo + "'}}";
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 
@@ -1794,9 +1794,9 @@ namespace LeandroSoftware.ClienteWCF
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 
-        public static async Task AnularMovimientoCxC(int intIdMovimiento, int intIdUsuario, string strToken)
+        public static async Task AnularMovimientoCxC(int intIdMovimiento, int intIdUsuario, string strMotivo, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'AnularMovimientoCxC', Parametros: {IdMovimiento: " + intIdMovimiento + ", IdUsuario: " + intIdUsuario + "}}";
+            string strDatos = "{NombreMetodo: 'AnularMovimientoCxC', Parametros: {IdMovimiento: " + intIdMovimiento + ", IdUsuario: " + intIdUsuario + ", MotivoAnulacion: '" + strMotivo + "'}}";
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 
@@ -1847,9 +1847,9 @@ namespace LeandroSoftware.ClienteWCF
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 
-        public static async Task AnularMovimientoCxP(int intIdMovimiento, int intIdUsuario, string strToken)
+        public static async Task AnularMovimientoCxP(int intIdMovimiento, int intIdUsuario, string strMotivo, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'AnularMovimientoCxP', Parametros: {IdMovimiento: " + intIdMovimiento + ", IdUsuario: " + intIdUsuario + "}}";
+            string strDatos = "{NombreMetodo: 'AnularMovimientoCxP', Parametros: {IdMovimiento: " + intIdMovimiento + ", IdUsuario: " + intIdUsuario + ", MotivoAnulacion: '" + strMotivo + "'}}";
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 
@@ -1890,9 +1890,9 @@ namespace LeandroSoftware.ClienteWCF
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 
-        public static async Task AnularMovimientoApartado(int intIdMovimiento, int intIdUsuario, string strToken)
+        public static async Task AnularMovimientoApartado(int intIdMovimiento, int intIdUsuario, string strMotivo, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'AnularMovimientoApartado', Parametros: {IdMovimiento: " + intIdMovimiento + ", IdUsuario: " + intIdUsuario + "}}";
+            string strDatos = "{NombreMetodo: 'AnularMovimientoApartado', Parametros: {IdMovimiento: " + intIdMovimiento + ", IdUsuario: " + intIdUsuario + ", MotivoAnulacion: '" + strMotivo + "'}}";
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 
@@ -1933,9 +1933,9 @@ namespace LeandroSoftware.ClienteWCF
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 
-        public static async Task AnularMovimientoOrdenServicio(int intIdMovimiento, int intIdUsuario, string strToken)
+        public static async Task AnularMovimientoOrdenServicio(int intIdMovimiento, int intIdUsuario, string strMotivo, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'AnularMovimientoOrdenServicio', Parametros: {IdMovimiento: " + intIdMovimiento + ", IdUsuario: " + intIdUsuario + "}}";
+            string strDatos = "{NombreMetodo: 'AnularMovimientoOrdenServicio', Parametros: {IdMovimiento: " + intIdMovimiento + ", IdUsuario: " + intIdUsuario + ", MotivoAnulacion: '" + strMotivo + "'}}";
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 

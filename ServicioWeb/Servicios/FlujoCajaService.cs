@@ -19,7 +19,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         CuentaIngreso ObtenerCuentaIngreso(int intIdCuenta);
         IList<LlaveDescripcion> ObtenerListadoCuentasIngreso(int intIdEmpresa, string strDescripcion = "");
         string AgregarIngreso(Ingreso ingreso);
-        void AnularIngreso(int intIdIngreso, int intIdUsuario);
+        void AnularIngreso(int intIdIngreso, int intIdUsuario, string strMotivoAnulacion);
         Ingreso ObtenerIngreso(int intIdIngreso);
         int ObtenerTotalListaIngresos(int intIdEmpresa, int intIdSucursal, int intIdIngreso = 0, string strRecibidoDe = "", string strDetalle = "");
         IList<EfectivoDetalle> ObtenerListadoIngresos(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, int intIdIngreso = 0, string strRecibidoDe = "", string strDetalle = "");
@@ -29,7 +29,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         CuentaEgreso ObtenerCuentaEgreso(int intIdCuenta);
         IList<LlaveDescripcion> ObtenerListadoCuentasEgreso(int intIdEmpresa, string strDescripcion);
         string AgregarEgreso(Egreso egreso);
-        void AnularEgreso(int intIdEgreso, int intIdUsuario);
+        void AnularEgreso(int intIdEgreso, int intIdUsuario, string strMotivoAnulacion);
         Egreso ObtenerEgreso(int intIdEgreso);
         int ObtenerTotalListaEgresos(int intIdEmpresa, int intIdSucursal, int intIdEgreso, string strBeneficiario, string strDetalle);
         IList<EfectivoDetalle> ObtenerListadoEgresos(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, int intIdEgreso, string strBeneficiario, string strDetalle);
@@ -274,7 +274,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             return ingreso.IdIngreso.ToString();
         }
 
-        public void AnularIngreso(int intIdIngreso, int intIdUsuario)
+        public void AnularIngreso(int intIdIngreso, int intIdUsuario, string strMotivoAnulacion)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -596,7 +596,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void AnularEgreso(int intIdEgreso, int intIdUsuario)
+        public void AnularEgreso(int intIdEgreso, int intIdUsuario, string strMotivoAnulacion)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {

@@ -23,6 +23,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public int IdMovBanco { get; set; }
         public bool Nulo { get; set; }
         public int? IdAnuladoPor { get; set; }
+        public string MotivoAnulacion { get; set; }
         public bool Procesado { get; set; }
 
         public Empresa Empresa { get; set; }

@@ -33,6 +33,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public int? IdAplicadoPor { get; set; }
         public bool Nulo { get; set; }
         public int? IdAnuladoPor { get; set; }
+        public string MotivoAnulacion { get; set; }
 
         public Empresa Empresa { get; set; }
         public Usuario Usuario { get; set; }

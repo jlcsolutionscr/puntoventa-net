@@ -635,13 +635,11 @@ Public Class FrmApartado
 
     Private Async Sub BtnAnular_Click(sender As Object, e As EventArgs) Handles btnAnular.Click
         If txtIdApartado.Text <> "" Then
-            If MessageBox.Show("Desea anular este registro?", "JLC Solutions CR", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
-                Try
-                    Await Puntoventa.AnularApartado(apartado.IdApartado, FrmPrincipal.usuarioGlobal.IdUsuario, FrmPrincipal.usuarioGlobal.Token)
-                Catch ex As Exception
-                    MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                    Exit Sub
-                End Try
+            Dim formAnulacion As New FrmMotivoAnulacion()
+            formAnulacion.bolConfirmacion = False
+            formAnulacion.ShowDialog()
+            If formAnulacion.bolConfirmacion Then
+                Await Puntoventa.AnularApartado(apartado.IdApartado, FrmPrincipal.usuarioGlobal.IdUsuario, formAnulacion.strMotivo, FrmPrincipal.usuarioGlobal.Token)
                 MessageBox.Show("Transacción procesada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 BtnAgregar_Click(btnAgregar, New EventArgs())
             End If

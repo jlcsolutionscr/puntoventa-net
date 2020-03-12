@@ -21,8 +21,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         MovimientoBanco AgregarMovimientoBanco(MovimientoBanco movimiento);
         MovimientoBanco AgregarMovimientoBanco(IDbContext dbContext, MovimientoBanco movimiento);
         void ActualizarMovimientoBanco(MovimientoBanco movimiento);
-        void AnularMovimientoBanco(int intIdMovimiento, int intIdUsuario);
-        void AnularMovimientoBanco(IDbContext dbContext, int intIdMovimiento, int intIdUsuario);
+        void AnularMovimientoBanco(int intIdMovimiento, int intIdUsuario, string strMotivoAnulacion);
+        void AnularMovimientoBanco(IDbContext dbContext, int intIdMovimiento, int intIdUsuario, string strMotivoAnulacion);
         MovimientoBanco ObtenerMovimientoBanco(int intIdMovimiento);
         int ObtenerTotalListaMovimientos(int intIdEmpresa, string strDescripcion = "");
         IList<MovimientoBanco> ObtenerListadoMovimientos(int intIdEmpresa, int numPagina, int cantRec, string strDescripcion = "");
@@ -286,7 +286,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void AnularMovimientoBanco(int intIdMovimiento, int intIdUsuario)
+        public void AnularMovimientoBanco(int intIdMovimiento, int intIdUsuario, string strMotivoAnulacion)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -300,6 +300,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     movimiento.Nulo = true;
                     movimiento.IdAnuladoPor = intIdUsuario;
+                    movimiento.MotivoAnulacion = strMotivoAnulacion;
                     dbContext.NotificarModificacion(movimiento);
                     cuenta.Saldo -= movimiento.Monto;
                     dbContext.NotificarModificacion(cuenta);
@@ -319,7 +320,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void AnularMovimientoBanco(IDbContext dbContext, int intIdMovimiento, int intIdUsuario)
+        public void AnularMovimientoBanco(IDbContext dbContext, int intIdMovimiento, int intIdUsuario, string strMotivoAnulacion)
         {
             try
             {
@@ -331,6 +332,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                 movimiento.Nulo = true;
                 movimiento.IdAnuladoPor = intIdUsuario;
+                movimiento.MotivoAnulacion = strMotivoAnulacion;
                 dbContext.NotificarModificacion(movimiento);
                 cuenta.Saldo -= movimiento.Monto;
                 dbContext.NotificarModificacion(cuenta);

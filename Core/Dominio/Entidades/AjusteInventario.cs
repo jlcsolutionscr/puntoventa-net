@@ -23,6 +23,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public string Descripcion { get; set; }
         public bool Nulo { get; set; }
         public int? IdAnuladoPor { get; set; }
+        public string MotivoAnulacion { get; set; }
 
         public Empresa Empresa { get; set; }
         public ICollection<DetalleAjusteInventario> DetalleAjusteInventario { get; set; }

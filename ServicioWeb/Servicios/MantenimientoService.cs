@@ -111,7 +111,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         IList<LlaveDescripcion> ObtenerListadoTipoMoneda();
         // Métodos para administrar los ajustes de inventario
         string AgregarAjusteInventario(AjusteInventario ajusteInventario);
-        void AnularAjusteInventario(int intIdAjusteInventario, int intIdUsuario);
+        void AnularAjusteInventario(int intIdAjusteInventario, int intIdUsuario, string strMotivoAnulacion);
         AjusteInventario ObtenerAjusteInventario(int intIdAjusteInventario);
         int ObtenerTotalListaAjusteInventario(int intIdEmpresa, int intIdSucursal, int intIdAjusteInventario, string strDescripcion);
         IList<AjusteInventarioDetalle> ObtenerListadoAjusteInventario(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, int intIdAjusteInventario, string strDescripcion);
@@ -2353,7 +2353,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             return ajusteInventario.IdAjuste.ToString();
         }
 
-        public void AnularAjusteInventario(int intIdAjusteInventario, int intIdUsuario)
+        public void AnularAjusteInventario(int intIdAjusteInventario, int intIdUsuario, string strMotivoAnulacion)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -2369,6 +2369,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     ajusteInventario.Nulo = true;
                     ajusteInventario.IdAnuladoPor = intIdUsuario;
+                    ajusteInventario.MotivoAnulacion = strMotivoAnulacion;
                     dbContext.NotificarModificacion(ajusteInventario);
                     foreach (var detalleAjuste in ajusteInventario.DetalleAjusteInventario)
                     {

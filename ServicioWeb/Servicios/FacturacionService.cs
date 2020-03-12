@@ -34,29 +34,29 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         IList<LlaveDescripcion> ObtenerListadoClientes(int intIdEmpresa, int numPagina, int cantRec, string strNombre);
         string AgregarFactura(Factura factura, ConfiguracionGeneral datos);
         string AgregarFacturaCompra(FacturaCompra facturaCompra, ConfiguracionGeneral datos);
-        void AnularFactura(int intIdFactura, int intIdUsuario, ConfiguracionGeneral datos);
+        void AnularFactura(int intIdFactura, int intIdUsuario, string strMotivoAnulacion, ConfiguracionGeneral datos);
         Factura ObtenerFactura(int intIdFactura);
         int ObtenerTotalListaFacturas(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, int intIdFactura, string strNombre);
         IList<FacturaDetalle> ObtenerListadoFacturas(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, int numPagina, int cantRec, int intIdFactura, string strNombre);
         string AgregarProforma(Proforma proforma);
         void ActualizarProforma(Proforma proforma);
-        void AnularProforma(int intIdProforma, int intIdUsuario);
+        void AnularProforma(int intIdProforma, int intIdUsuario, string strMotivoAnulacion);
         Proforma ObtenerProforma(int intIdProforma);
         int ObtenerTotalListaProformas(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, bool bolAplicado, int intIdProforma, string strNombre);
         IList<FacturaDetalle> ObtenerListadoProformas(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, bool bolAplicado, int numPagina, int cantRec, int intIdProforma, string strNombre);
         string AgregarApartado(Apartado apartado);
-        void AnularApartado(int intIdApartado, int intIdUsuario);
+        void AnularApartado(int intIdApartado, int intIdUsuario, string strMotivoAnulacion);
         Apartado ObtenerApartado(int intIdApartado);
         int ObtenerTotalListaApartados(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, bool bolAplicado, int intIdApartado, string strNombre);
         IList<FacturaDetalle> ObtenerListadoApartados(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, bool bolAplicado, int numPagina, int cantRec, int intIdApartado, string strNombre);
         string AgregarOrdenServicio(OrdenServicio ordenServicio);
         void ActualizarOrdenServicio(OrdenServicio ordenServicio);
-        void AnularOrdenServicio(int intIdOrdenServicio, int intIdUsuario);
+        void AnularOrdenServicio(int intIdOrdenServicio, int intIdUsuario, string strMotivoAnulacion);
         OrdenServicio ObtenerOrdenServicio(int intIdOrdenServicio);
         int ObtenerTotalListaOrdenServicio(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, bool bolAplicado, int intIdOrdenServicio, string strNombre);
         IList<FacturaDetalle> ObtenerListadoOrdenServicio(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, bool bolAplicado, int numPagina, int cantRec, int intIdOrdenServicio, string strNombre);
         string AgregarDevolucionCliente(DevolucionCliente devolucion, ConfiguracionGeneral datos);
-        void AnularDevolucionCliente(int intIdDevolucion, int intIdUsuario, ConfiguracionGeneral datos);
+        void AnularDevolucionCliente(int intIdDevolucion, int intIdUsuario, string strMotivoAnulacion, ConfiguracionGeneral datos);
         DevolucionCliente ObtenerDevolucionCliente(int intIdDevolucion);
         int ObtenerTotalListaDevolucionesPorCliente(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, int intIdDevolucion, string strNombre);
         IList<FacturaDetalle> ObtenerListadoDevolucionesPorCliente(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, int numPagina, int cantRec, int intIdDevolucion, string strNombre);
@@ -783,7 +783,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void AnularFactura(int intIdFactura, int intIdUsuario, ConfiguracionGeneral datos)
+        public void AnularFactura(int intIdFactura, int intIdUsuario, string strMotivoAnulacion, ConfiguracionGeneral datos)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -800,69 +800,74 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     Cliente cliente = dbContext.ClienteRepository.Find(factura.IdCliente);
-                    if (!empresa.RegimenSimplificado && factura.IdDocElectronico != null)
+                    factura.Nulo = true;
+                    factura.IdAnuladoPor = intIdUsuario;
+                    factura.MotivoAnulacion = strMotivoAnulacion;
+                    dbContext.NotificarModificacion(factura);
+                    foreach (var detalleFactura in factura.DetalleFactura)
                     {
-                        if (factura.IdDocElectronicoRev == null)
+                        Producto producto = dbContext.ProductoRepository.Find(detalleFactura.IdProducto);
+                        if (producto == null)
+                            throw new Exception("El producto asignado al detalle de la devolución no existe.");
+                        if (producto.Tipo == StaticTipoProducto.Producto)
                         {
-                            DocumentoElectronico documentoNC = null;
-                            DocumentoElectronico documento = dbContext.DocumentoElectronicoRepository.Where(x => x.ClaveNumerica == factura.IdDocElectronico).FirstOrDefault();
-                            if (documento.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado)
+                            ExistenciaPorSucursal existencias = dbContext.ExistenciaPorSucursalRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == factura.IdSucursal).FirstOrDefault();
+                            if (existencias == null)
+                                throw new BusinessException("El producto " + producto.IdProducto + " no posee registro de existencias. Por favor consulte con su proveedor.");
+                            decimal cantPorAnular = detalleFactura.Cantidad - detalleFactura.CantDevuelto;
+                            if (cantPorAnular > 0)
                             {
-                                DateTime fechaDocumento = DateTime.UtcNow.AddHours(-6);
-                                string criteria = fechaDocumento.ToString("dd/MM/yyyy");
-                                TipoDeCambioDolar tipoDeCambio = dbContext.TipoDeCambioDolarRepository.Find(criteria);
-                                if (tipoDeCambio != null)
+                                existencias.Cantidad += cantPorAnular;
+                                dbContext.NotificarModificacion(existencias);
+                                MovimientoProducto movimiento = new MovimientoProducto
                                 {
-                                    documentoNC = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronica(factura, factura.Empresa, cliente, dbContext, fechaDocumento, tipoDeCambio.ValorTipoCambio);
-                                    factura.IdDocElectronicoRev = documentoNC.ClaveNumerica;
-                                }
-                                else
-                                {
-                                    throw new BusinessException("El tipo de cambio para la fecha " + criteria + " no ha sido actualizado. Por favor consulte con su proveedor.");
-                                }
-                                dbContext.NotificarModificacion(factura);
-                                dbContext.Commit();
-                                if (documentoNC != null)
-                                {
-                                    Task.Run(() => ComprobanteElectronicoService.EnviarDocumentoElectronico(empresa.IdEmpresa, documentoNC.IdDocumento, datos));
-                                }
-                            }
-                            else if (documento.EstadoEnvio == StaticEstadoDocumentoElectronico.Rechazado)
-                            {
-                                AnularRegistroFactura(factura, intIdUsuario, dbContext);
-                                dbContext.Commit();
-                            }
-                            else
-                            {
-                                throw new BusinessException("El documento electrónico no ha sido procesado por el Ministerio de Hacienda. La factura no puede ser reversada en este momento.");
-                            }
-                        }
-                        else
-                        {
-                            if (factura.Nulo == false && factura.IdDocElectronicoRev != null)
-                            {
-                                DocumentoElectronico documento = dbContext.DocumentoElectronicoRepository.Where(x => x.ClaveNumerica == factura.IdDocElectronicoRev).FirstOrDefault();
-                                if (documento.EstadoEnvio != StaticEstadoDocumentoElectronico.Aceptado && documento.EstadoEnvio != StaticEstadoDocumentoElectronico.Rechazado)
-                                {
-                                    throw new BusinessException("La factura se encuentra en proceso de anulación ya que posee una nota de crédito pendiente de procesar por el Ministerio de Hacienda.");
-                                }
-                                if (documento.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado)
-                                {
-                                    AnularRegistroFactura(factura, intIdUsuario, dbContext);
-                                    dbContext.Commit();
-                                } else
-                                {
-                                    factura.IdDocElectronicoRev = null;
-                                    dbContext.NotificarModificacion(factura);
-                                    dbContext.Commit();
-                                }
+                                    IdProducto = producto.IdProducto,
+                                    IdSucursal = factura.IdSucursal,
+                                    Fecha = DateTime.Now,
+                                    Tipo = StaticTipoMovimientoProducto.Entrada,
+                                    Origen = "Anulación de registro de facturación de mercancía",
+                                    Cantidad = cantPorAnular,
+                                    PrecioCosto = detalleFactura.PrecioCosto
+                                };
+                                producto.MovimientoProducto.Add(movimiento);
                             }
                         }
                     }
-                    else
+                    if (factura.IdCxC > 0)
                     {
-                        AnularRegistroFactura(factura, intIdUsuario, dbContext);
-                        dbContext.Commit();
+                        CuentaPorCobrar cuentaPorCobrar = dbContext.CuentaPorCobrarRepository.Find(factura.IdCxC);
+                        if (cuentaPorCobrar == null)
+                            throw new Exception("La cuenta por cobrar correspondiente a la factura no existe.");
+                        if (cuentaPorCobrar.Total > cuentaPorCobrar.Saldo)
+                            throw new BusinessException("El registro de facturación posee una cuenta por cobrar asociada con abonos procesados. No puede ser reversada.");
+                        cuentaPorCobrar.Nulo = true;
+                        cuentaPorCobrar.IdAnuladoPor = intIdUsuario;
+                        dbContext.NotificarModificacion(cuentaPorCobrar);
+                    }
+                    if (factura.IdMovBanco > 0)
+                    {
+                        IBancaService servicioAuxiliarBancario = new BancaService();
+                        servicioAuxiliarBancario.AnularMovimientoBanco(dbContext, factura.IdMovBanco, intIdUsuario, "Anulación de registro de factura " + factura.ConsecFactura);
+                    }
+                    if (factura.IdAsiento > 0)
+                    {
+                        IContabilidadService servicioContabilidad = new ContabilidadService();
+                        servicioContabilidad.ReversarAsientoContable(dbContext, factura.IdAsiento);
+                    }
+                    DocumentoElectronico documentoNC = null;
+                    if (!empresa.RegimenSimplificado && factura.IdDocElectronico != null)
+                    {
+                        DateTime fechaDocumento = DateTime.UtcNow.AddHours(-6);
+                        string criteria = fechaDocumento.ToString("dd/MM/yyyy");
+                        TipoDeCambioDolar tipoDeCambio = dbContext.TipoDeCambioDolarRepository.Find(criteria);
+                        if (tipoDeCambio == null) throw new BusinessException("El tipo de cambio para la fecha " + criteria + " no ha sido actualizado. Por favor consulte con su proveedor.");
+                        documentoNC = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronica(factura, factura.Empresa, cliente, dbContext, fechaDocumento, tipoDeCambio.ValorTipoCambio);
+                        factura.IdDocElectronicoRev = documentoNC.ClaveNumerica;
+                    }
+                    dbContext.Commit();
+                    if (documentoNC != null)
+                    {
+                        Task.Run(() => ComprobanteElectronicoService.EnviarDocumentoElectronico(empresa.IdEmpresa, documentoNC.IdDocumento, datos));
                     }
                 }
                 catch (BusinessException ex)
@@ -876,63 +881,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     log.Error("Error al anular el registro de facturación: ", ex);
                     throw new Exception("Se produjo un error anulando la factura. Por favor consulte con su proveedor.");
                 }
-            }
-        }
-
-        private void AnularRegistroFactura(Factura factura, int intIdUsuario, IDbContext dbContext)
-        {
-            factura.Nulo = true;
-            factura.IdAnuladoPor = intIdUsuario;
-            dbContext.NotificarModificacion(factura);
-            foreach (var detalleFactura in factura.DetalleFactura)
-            {
-                Producto producto = dbContext.ProductoRepository.Find(detalleFactura.IdProducto);
-                if (producto == null)
-                    throw new Exception("El producto asignado al detalle de la devolución no existe.");
-                if (producto.Tipo == StaticTipoProducto.Producto)
-                {
-                    ExistenciaPorSucursal existencias = dbContext.ExistenciaPorSucursalRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == factura.IdSucursal).FirstOrDefault();
-                    if (existencias == null)
-                        throw new BusinessException("El producto " + producto.IdProducto + " no posee registro de existencias. Por favor consulte con su proveedor.");
-                    decimal cantPorAnular = detalleFactura.Cantidad - detalleFactura.CantDevuelto;
-                    if (cantPorAnular > 0)
-                    {
-                        existencias.Cantidad += cantPorAnular;
-                        dbContext.NotificarModificacion(existencias);
-                        MovimientoProducto movimiento = new MovimientoProducto
-                        {
-                            IdProducto = producto.IdProducto,
-                            IdSucursal = factura.IdSucursal,
-                            Fecha = DateTime.Now,
-                            Tipo = StaticTipoMovimientoProducto.Entrada,
-                            Origen = "Anulación de registro de facturación de mercancía",
-                            Cantidad = cantPorAnular,
-                            PrecioCosto = detalleFactura.PrecioCosto
-                        };
-                        producto.MovimientoProducto.Add(movimiento);
-                    }
-                }
-            }
-            if (factura.IdCxC > 0)
-            {
-                CuentaPorCobrar cuentaPorCobrar = dbContext.CuentaPorCobrarRepository.Find(factura.IdCxC);
-                if (cuentaPorCobrar == null)
-                    throw new Exception("La cuenta por cobrar correspondiente a la factura no existe.");
-                if (cuentaPorCobrar.Total > cuentaPorCobrar.Saldo)
-                    throw new BusinessException("La cuenta por cobrar generada por este registro de facturación ya posee movimientos de abono. No puede ser reversada.");
-                cuentaPorCobrar.Nulo = true;
-                cuentaPorCobrar.IdAnuladoPor = intIdUsuario;
-                dbContext.NotificarModificacion(cuentaPorCobrar);
-            }
-            if (factura.IdMovBanco > 0)
-            {
-                IBancaService servicioAuxiliarBancario = new BancaService();
-                servicioAuxiliarBancario.AnularMovimientoBanco(dbContext, factura.IdMovBanco, intIdUsuario);
-            }
-            if (factura.IdAsiento > 0)
-            {
-                IContabilidadService servicioContabilidad = new ContabilidadService();
-                servicioContabilidad.ReversarAsientoContable(dbContext, factura.IdAsiento);
             }
         }
 
@@ -1091,7 +1039,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void AnularProforma(int intIdProforma, int intIdUsuario)
+        public void AnularProforma(int intIdProforma, int intIdUsuario, string strMotivoAnulacion)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -1233,7 +1181,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void AnularApartado(int intIdApartado, int intIdUsuario)
+        public void AnularApartado(int intIdApartado, int intIdUsuario, string strMotivoAnulacion)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -1432,7 +1380,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void AnularOrdenServicio(int intIdOrdenServicio, int intIdUsuario)
+        public void AnularOrdenServicio(int intIdOrdenServicio, int intIdUsuario, string strMotivoAnulacion)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -1701,7 +1649,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             return devolucion.IdDevolucion.ToString();
         }
 
-        public void AnularDevolucionCliente(int intIdDevolucion, int intIdUsuario, ConfiguracionGeneral datos)
+        public void AnularDevolucionCliente(int intIdDevolucion, int intIdUsuario, string strMotivoAnulacion, ConfiguracionGeneral datos)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -2525,39 +2473,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         };
                         dbContext.RegistroRespuestaHaciendaRepository.Add(registro);
                         dbContext.Commit();
-                        if (documentoElectronico.IdTipoDocumento == (int)TipoDocumento.NotaCreditoElectronica)
-                        {
-                            Factura factura = dbContext.FacturaRepository.Include("DetalleFactura.Producto").Include("DesglosePagoFactura").Where(x => x.IdDocElectronicoRev == strClave).FirstOrDefault();
-                            if (factura != null)
-                            {
-                                if (!factura.Nulo)
-                                {
-                                    if (strEstado == StaticEstadoDocumentoElectronico.Aceptado)
-                                    {
-                                        AnularRegistroFactura(factura, factura.IdUsuario, dbContext);
-                                        dbContext.Commit();
-                                    }
-                                    else
-                                    {
-                                        factura.IdDocElectronicoRev = null;
-                                        dbContext.NotificarModificacion(factura);
-                                        dbContext.Commit();
-                                    }
-                                }
-                            }
-                        }
-                        if ((documentoElectronico.IdTipoDocumento == (int)TipoDocumento.FacturaElectronica || documentoElectronico.IdTipoDocumento == (int)TipoDocumento.TiqueteElectronico) && strEstado == StaticEstadoDocumentoElectronico.Rechazado)
-                        {
-                            Factura factura = dbContext.FacturaRepository.Where(x => x.IdDocElectronico == strClave).FirstOrDefault();
-                            if (factura != null)
-                            {
-                                if (!factura.Nulo)
-                                {
-                                    AnularRegistroFactura(factura, factura.IdUsuario, dbContext);
-                                    dbContext.Commit();
-                                }
-                            }
-                        }
                         if (documentoElectronico.IdTipoDocumento != (int)TipoDocumento.TiqueteElectronico && documentoElectronico.CorreoNotificacion != "") GenerarNotificacionDocumentoElectronico(documentoElectronico, empresa, dbContext, servicioEnvioCorreo, documentoElectronico.CorreoNotificacion, strCorreoNotificacionErrores);
                     }
                 }

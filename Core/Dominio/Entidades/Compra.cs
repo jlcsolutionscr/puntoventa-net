@@ -44,6 +44,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public int IdOrdenCompra { get; set; }
         public bool Nulo { get; set; }
         public int? IdAnuladoPor { get; set; }
+        public string MotivoAnulacion { get; set; }
         public bool Procesado { get; set; }
         [NotMapped]
         public string NombreProveedor { get { if (Proveedor == null) return ""; else return Proveedor.Nombre; } }

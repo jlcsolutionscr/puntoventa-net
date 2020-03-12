@@ -107,6 +107,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
         string strNombre;
         string strBeneficiario;
         string strDetalle;
+        string strMotivoAnulacion;
         string strFechaInicial;
         string strFechaFinal;
         string strRespuesta = "";
@@ -487,32 +488,38 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                     case "AnularEgreso":
                         intIdLlave1 = int.Parse(parametrosJO.Property("IdEgreso").Value.ToString());
                         intIdUsuario = int.Parse(parametrosJO.Property("IdUsuario").Value.ToString());
-                        servicioFlujoCaja.AnularEgreso(intIdLlave1, intIdUsuario);
+                        strMotivoAnulacion = parametrosJO.Property("MotivoAnulacion") != null ? parametrosJO.Property("MotivoAnulacion").Value.ToString() : "";
+                        servicioFlujoCaja.AnularEgreso(intIdLlave1, intIdUsuario, strMotivoAnulacion);
                         break;
                     case "AnularIngreso":
                         intIdLlave1 = int.Parse(parametrosJO.Property("IdIngreso").Value.ToString());
                         intIdUsuario = int.Parse(parametrosJO.Property("IdUsuario").Value.ToString());
-                        servicioFlujoCaja.AnularIngreso(intIdLlave1, intIdUsuario);
+                        strMotivoAnulacion = parametrosJO.Property("MotivoAnulacion") != null ? parametrosJO.Property("MotivoAnulacion").Value.ToString() : "";
+                        servicioFlujoCaja.AnularIngreso(intIdLlave1, intIdUsuario, strMotivoAnulacion);
                         break;
                     case "AnularFactura":
                         intIdLlave1 = int.Parse(parametrosJO.Property("IdFactura").Value.ToString());
                         intIdUsuario = int.Parse(parametrosJO.Property("IdUsuario").Value.ToString());
-                        servicioFacturacion.AnularFactura(intIdLlave1, intIdUsuario, configuracionGeneral);
+                        strMotivoAnulacion = parametrosJO.Property("MotivoAnulacion") != null ? parametrosJO.Property("MotivoAnulacion").Value.ToString() : "";
+                        servicioFacturacion.AnularFactura(intIdLlave1, intIdUsuario, strMotivoAnulacion, configuracionGeneral);
                         break;
                     case "AnularDevolucionCliente":
                         intIdLlave1 = int.Parse(parametrosJO.Property("IdDevolucion").Value.ToString());
                         intIdUsuario = int.Parse(parametrosJO.Property("IdUsuario").Value.ToString());
-                        servicioFacturacion.AnularDevolucionCliente(intIdLlave1, intIdUsuario, configuracionGeneral);
+                        strMotivoAnulacion = parametrosJO.Property("MotivoAnulacion") != null ? parametrosJO.Property("MotivoAnulacion").Value.ToString() : "";
+                        servicioFacturacion.AnularDevolucionCliente(intIdLlave1, intIdUsuario, strMotivoAnulacion, configuracionGeneral);
                         break;
                     case "AnularCompra":
                         intIdLlave1 = int.Parse(parametrosJO.Property("IdCompra").Value.ToString());
                         intIdUsuario = int.Parse(parametrosJO.Property("IdUsuario").Value.ToString());
-                        servicioCompra.AnularCompra(intIdLlave1, intIdUsuario);
+                        strMotivoAnulacion = parametrosJO.Property("MotivoAnulacion") != null ? parametrosJO.Property("MotivoAnulacion").Value.ToString() : "";
+                        servicioCompra.AnularCompra(intIdLlave1, intIdUsuario, strMotivoAnulacion);
                         break;
                     case "AnularProforma":
                         intIdLlave1 = int.Parse(parametrosJO.Property("IdProforma").Value.ToString());
                         intIdUsuario = int.Parse(parametrosJO.Property("IdUsuario").Value.ToString());
-                        servicioFacturacion.AnularProforma(intIdLlave1, intIdUsuario);
+                        strMotivoAnulacion = parametrosJO.Property("MotivoAnulacion") != null ? parametrosJO.Property("MotivoAnulacion").Value.ToString() : "";
+                        servicioFacturacion.AnularProforma(intIdLlave1, intIdUsuario, strMotivoAnulacion);
                         break;
                     case "ActualizarProforma":
                         proforma = serializer.Deserialize<Proforma>(strEntidad);
@@ -521,12 +528,14 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                     case "AnularApartado":
                         intIdLlave1 = int.Parse(parametrosJO.Property("IdApartado").Value.ToString());
                         intIdUsuario = int.Parse(parametrosJO.Property("IdUsuario").Value.ToString());
-                        servicioFacturacion.AnularApartado(intIdLlave1, intIdUsuario);
+                        strMotivoAnulacion = parametrosJO.Property("MotivoAnulacion") != null ? parametrosJO.Property("MotivoAnulacion").Value.ToString() : "";
+                        servicioFacturacion.AnularApartado(intIdLlave1, intIdUsuario, strMotivoAnulacion);
                         break;
                     case "AnularOrdenServicio":
                         intIdLlave1 = int.Parse(parametrosJO.Property("IdOrdenServicio").Value.ToString());
                         intIdUsuario = int.Parse(parametrosJO.Property("IdUsuario").Value.ToString());
-                        servicioFacturacion.AnularOrdenServicio(intIdLlave1, intIdUsuario);
+                        strMotivoAnulacion = parametrosJO.Property("MotivoAnulacion") != null ? parametrosJO.Property("MotivoAnulacion").Value.ToString() : "";
+                        servicioFacturacion.AnularOrdenServicio(intIdLlave1, intIdUsuario, strMotivoAnulacion);
                         break;
                     case "ActualizarOrdenServicio":
                         ordenServicio = serializer.Deserialize<OrdenServicio>(strEntidad);
@@ -540,12 +549,14 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                     case "AnularTraslado":
                         intIdLlave1 = int.Parse(parametrosJO.Property("IdTraslado").Value.ToString());
                         intIdUsuario = int.Parse(parametrosJO.Property("IdUsuario").Value.ToString());
-                        servicioTraslado.AnularTraslado(intIdLlave1, intIdUsuario);
+                        strMotivoAnulacion = parametrosJO.Property("MotivoAnulacion") != null ? parametrosJO.Property("MotivoAnulacion").Value.ToString() : "";
+                        servicioTraslado.AnularTraslado(intIdLlave1, intIdUsuario, strMotivoAnulacion);
                         break;
                     case "AnularAjusteInventario":
                         intIdLlave1 = int.Parse(parametrosJO.Property("IdAjuste").Value.ToString());
                         intIdUsuario = int.Parse(parametrosJO.Property("IdUsuario").Value.ToString());
-                        servicioMantenimiento.AnularAjusteInventario(intIdLlave1, intIdUsuario);
+                        strMotivoAnulacion = parametrosJO.Property("MotivoAnulacion") != null ? parametrosJO.Property("MotivoAnulacion").Value.ToString() : "";
+                        servicioMantenimiento.AnularAjusteInventario(intIdLlave1, intIdUsuario, strMotivoAnulacion);
                         break;
                     case "AplicarMovimientoCxC":
                         movimientoCxC = serializer.Deserialize<MovimientoCuentaPorCobrar>(strEntidad);
@@ -554,7 +565,8 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                     case "AnularMovimientoCxC":
                         intIdLlave1 = int.Parse(parametrosJO.Property("IdMovimiento").Value.ToString());
                         intIdUsuario = int.Parse(parametrosJO.Property("IdUsuario").Value.ToString());
-                        servicioCuentaPorProcesar.AnularMovimientoCxC(intIdLlave1, intIdUsuario);
+                        strMotivoAnulacion = parametrosJO.Property("MotivoAnulacion") != null ? parametrosJO.Property("MotivoAnulacion").Value.ToString() : "";
+                        servicioCuentaPorProcesar.AnularMovimientoCxC(intIdLlave1, intIdUsuario, strMotivoAnulacion);
                         break;
                     case "AplicarMovimientoCxP":
                         movimientoCxP = serializer.Deserialize<MovimientoCuentaPorPagar>(strEntidad);
@@ -563,7 +575,8 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                     case "AnularMovimientoCxP":
                         intIdLlave1 = int.Parse(parametrosJO.Property("IdMovimiento").Value.ToString());
                         intIdUsuario = int.Parse(parametrosJO.Property("IdUsuario").Value.ToString());
-                        servicioCuentaPorProcesar.AnularMovimientoCxP(intIdLlave1, intIdUsuario);
+                        strMotivoAnulacion = parametrosJO.Property("MotivoAnulacion") != null ? parametrosJO.Property("MotivoAnulacion").Value.ToString() : "";
+                        servicioCuentaPorProcesar.AnularMovimientoCxP(intIdLlave1, intIdUsuario, strMotivoAnulacion);
                         break;
                     case "AplicarMovimientoApartado":
                         movimientoApartado = serializer.Deserialize<MovimientoApartado>(strEntidad);
@@ -572,7 +585,8 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                     case "AnularMovimientoApartado":
                         intIdLlave1 = int.Parse(parametrosJO.Property("IdMovimiento").Value.ToString());
                         intIdUsuario = int.Parse(parametrosJO.Property("IdUsuario").Value.ToString());
-                        servicioCuentaPorProcesar.AnularMovimientoApartado(intIdLlave1, intIdUsuario);
+                        strMotivoAnulacion = parametrosJO.Property("MotivoAnulacion") != null ? parametrosJO.Property("MotivoAnulacion").Value.ToString() : "";
+                        servicioCuentaPorProcesar.AnularMovimientoApartado(intIdLlave1, intIdUsuario, strMotivoAnulacion);
                         break;
                     case "AplicarMovimientoOrdenServicio":
                         movimientoOrdenServicio = serializer.Deserialize<MovimientoOrdenServicio>(strEntidad);
@@ -581,7 +595,8 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                     case "AnularMovimientoOrdenServicio":
                         intIdLlave1 = int.Parse(parametrosJO.Property("IdMovimiento").Value.ToString());
                         intIdUsuario = int.Parse(parametrosJO.Property("IdUsuario").Value.ToString());
-                        servicioCuentaPorProcesar.AnularMovimientoOrdenServicio(intIdLlave1, intIdUsuario);
+                        strMotivoAnulacion = parametrosJO.Property("MotivoAnulacion") != null ? parametrosJO.Property("MotivoAnulacion").Value.ToString() : "";
+                        servicioCuentaPorProcesar.AnularMovimientoOrdenServicio(intIdLlave1, intIdUsuario, strMotivoAnulacion);
                         break;
                     case "EnviarDocumentoElectronicoPendiente":
                         intIdLlave1 = int.Parse(parametrosJO.Property("IdDocumento").Value.ToString());
@@ -936,7 +951,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         intIdLlave1 = int.Parse(parametrosJO.Property("IdLinea").Value.ToString());
                         strCodigo = parametrosJO.Property("Codigo") != null ? parametrosJO.Property("Codigo").Value.ToString() : "";
                         strCodigoProveedor = parametrosJO.Property("CodigoProveedor") != null ? parametrosJO.Property("CodigoProveedor").Value.ToString() : "";
-                        strDescripcion = parametrosJO.Property("Descripcion") != null ? parametrosJO.Property("Descripcion").Value.ToString() : "";;
+                        strDescripcion = parametrosJO.Property("Descripcion") != null ? parametrosJO.Property("Descripcion").Value.ToString() : "";
                         IList<ReporteInventario> listadoReporteInventario = servicioReportes.ObtenerReporteInventario(intIdEmpresa, intIdSucursal, bolFiltraActivos, bolFiltraExistencias, intIdLlave1, strCodigo, strDescripcion);
                         if (listadoReporteInventario.Count > 0)
                             strRespuesta = serializer.Serialize(listadoReporteInventario);
@@ -1155,7 +1170,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         break;
                     case "ObtenerListadoLineas":
                         intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
-                        strDescripcion = parametrosJO.Property("Descripcion") != null ? parametrosJO.Property("Descripcion").Value.ToString() : "";;
+                        strDescripcion = parametrosJO.Property("Descripcion") != null ? parametrosJO.Property("Descripcion").Value.ToString() : "";
                         IList<LlaveDescripcion> listadoLinea = servicioMantenimiento.ObtenerListadoLineas(intIdEmpresa, strDescripcion);
                         if (listadoLinea.Count > 0)
                             strRespuesta = serializer.Serialize(listadoLinea);
@@ -1286,7 +1301,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         break;
                     case "ObtenerListadoCuentasEgreso":
                         intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
-                        strDescripcion = parametrosJO.Property("Descripcion") != null ? parametrosJO.Property("Descripcion").Value.ToString() : "";;
+                        strDescripcion = parametrosJO.Property("Descripcion") != null ? parametrosJO.Property("Descripcion").Value.ToString() : "";
                         IList<LlaveDescripcion> listadoCuentaEgreso = servicioFlujoCaja.ObtenerListadoCuentasEgreso(intIdEmpresa, strDescripcion);
                         if (listadoCuentaEgreso.Count > 0)
                             strRespuesta = serializer.Serialize(listadoCuentaEgreso);
@@ -1312,7 +1327,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         break;
                     case "ObtenerListadoCuentasBanco":
                         intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
-                        strDescripcion = parametrosJO.Property("Descripcion") != null ? parametrosJO.Property("Descripcion").Value.ToString() : "";;
+                        strDescripcion = parametrosJO.Property("Descripcion") != null ? parametrosJO.Property("Descripcion").Value.ToString() : "";
                         IList<LlaveDescripcion> listadoCuentaBanco = servicioBanca.ObtenerListadoCuentasBanco(intIdEmpresa, strDescripcion);
                         if (listadoCuentaBanco.Count > 0)
                             strRespuesta = serializer.Serialize(listadoCuentaBanco);

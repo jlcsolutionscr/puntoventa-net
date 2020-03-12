@@ -15,7 +15,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         IList<LlaveDescripcion> ObtenerListadoSucursalDestino(int intIdEmpresa, int intIdSucursalOrigen);
         string AgregarTraslado(Traslado traslado);
         void AplicarTraslado(int intIdTraslado, int intIdUsuario);
-        void AnularTraslado(int intIdTraslado, int intIdUsuario);
+        void AnularTraslado(int intIdTraslado, int intIdUsuario, string strMotivoAnulacion);
         Traslado ObtenerTraslado(int intIdTraslado);
         int ObtenerTotalListaTraslados(int intIdEmpresa, int intIdSucursalOrigen, bool bolAplicado, int intIdTraslado);
         IList<TrasladoDetalle> ObtenerListadoTraslados(int intIdEmpresa, int intIdSucursalOrigen, bool bolAplicado, int numPagina, int cantRec, int intIdTraslado);
@@ -313,7 +313,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void AnularTraslado(int intIdTraslado, int intIdUsuario)
+        public void AnularTraslado(int intIdTraslado, int intIdUsuario, string strMotivoAnulacion)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -329,6 +329,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     traslado.Nulo = true;
                     traslado.IdAnuladoPor = intIdUsuario;
+                    traslado.MotivoAnulacion = strMotivoAnulacion;
                     dbContext.NotificarModificacion(traslado);
                     if (traslado.IdAsiento > 0)
                     {

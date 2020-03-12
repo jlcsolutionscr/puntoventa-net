@@ -16,7 +16,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         IList<LlaveDescripcion> ObtenerListadoCuentasPorCobrar(int intIdEmpresa, int intIdTipo, int intIdPropietario);
         IList<EfectivoDetalle> ObtenerListadoMovimientosCxC(int intIdEmpresa, int intIdSucursal, int intIdPropietario);
         void AplicarMovimientoCxC(MovimientoCuentaPorCobrar movimiento);
-        void AnularMovimientoCxC(int intIdMovimiento, int intIdUsuario);
+        void AnularMovimientoCxC(int intIdMovimiento, int intIdUsuario, string strMotivoAnulacion);
         MovimientoCuentaPorCobrar ObtenerMovimientoCxC(int intIdMovimiento);
         int ObtenerCantidadCxCVencidas(int intIdPropietario, int intIdTipo);
         decimal ObtenerSaldoCuentasPorCobrar(int intIdPropietario, int intIdTipo);
@@ -24,19 +24,19 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         IList<LlaveDescripcion> ObtenerListadoCuentasPorPagar(int intIdEmpresa, int intIdTipo, int intIdPropietario);
         IList<EfectivoDetalle> ObtenerListadoMovimientosCxP(int intIdEmpresa, int intIdSucursal, int intIdPropietario);
         void AplicarMovimientoCxP(MovimientoCuentaPorPagar movimiento);
-        void AnularMovimientoCxP(int intIdMovimiento, int intIdUsuario);
+        void AnularMovimientoCxP(int intIdMovimiento, int intIdUsuario, string strMotivoAnulacion);
         MovimientoCuentaPorPagar ObtenerMovimientoCxP(int intIdMovimiento);
         int ObtenerCantidadCxPVencidas(int intIdPropietario, int intIdTipo);
         decimal ObtenerSaldoCuentasPorPagar(int intIdPropietario, int intIdTipo);
         IList<LlaveDescripcion> ObtenerListadoApartadosConSaldo(int intIdEmpresa);
         IList<EfectivoDetalle> ObtenerListadoMovimientosApartado(int intIdEmpresa, int intIdSucursal, int intIdApartado);
         void AplicarMovimientoApartado(MovimientoApartado movimiento);
-        void AnularMovimientoApartado(int intIdMovimiento, int intIdUsuario);
+        void AnularMovimientoApartado(int intIdMovimiento, int intIdUsuario, string strMotivoAnulacion);
         MovimientoApartado ObtenerMovimientoApartado(int intIdMovimiento);
         IList<LlaveDescripcion> ObtenerListadoOrdenesServicioConSaldo(int intIdEmpresa);
         IList<EfectivoDetalle> ObtenerListadoMovimientosOrdenServicio(int intIdEmpresa, int intIdSucursal, int intIdOrden);
         void AplicarMovimientoOrdenServicio(MovimientoOrdenServicio movimiento);
-        void AnularMovimientoOrdenServicio(int intIdMovimiento, int intIdUsuario);
+        void AnularMovimientoOrdenServicio(int intIdMovimiento, int intIdUsuario, string strMotivoAnulacion);
         MovimientoOrdenServicio ObtenerMovimientoOrdenServicio(int intIdMovimiento);
     }
 
@@ -309,7 +309,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void AnularMovimientoCxC(int intIdMovimiento, int intIdUsuario)
+        public void AnularMovimientoCxC(int intIdMovimiento, int intIdUsuario, string strMotivoAnulacion)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -325,6 +325,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (movimiento.Procesado) throw new BusinessException("El registro ya fue procesado por el cierre. No es posible registrar la transacción.");
                     movimiento.Nulo = true;
                     movimiento.IdAnuladoPor = intIdUsuario;
+                    movimiento.MotivoAnulacion = strMotivoAnulacion;
                     dbContext.NotificarModificacion(movimiento);
                     foreach (DesgloseMovimientoCuentaPorCobrar desgloseMovimiento in movimiento.DesgloseMovimientoCuentaPorCobrar)
                     {
@@ -595,7 +596,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void AnularMovimientoCxP(int intIdMovimiento, int intIdUsuario)
+        public void AnularMovimientoCxP(int intIdMovimiento, int intIdUsuario, string strMotivoAnulacion)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -611,6 +612,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (movimiento.Procesado) throw new BusinessException("El registro ya fue procesado por el cierre. No es posible registrar la transacción.");
                     movimiento.Nulo = true;
                     movimiento.IdAnuladoPor = intIdUsuario;
+                    movimiento.MotivoAnulacion = strMotivoAnulacion;
                     dbContext.NotificarModificacion(movimiento);
                     foreach (DesgloseMovimientoCuentaPorPagar desgloseMovimiento in movimiento.DesgloseMovimientoCuentaPorPagar)
                     {
@@ -628,7 +630,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (movimiento.IdMovBanco > 0)
                     {
                         IBancaService servicioAuxiliarBancario = new BancaService();
-                        servicioAuxiliarBancario.AnularMovimientoBanco(dbContext, movimiento.IdMovBanco, intIdUsuario);
+                        servicioAuxiliarBancario.AnularMovimientoBanco(dbContext, movimiento.IdMovBanco, intIdUsuario, "Anulación de registro de movimiento CxP " + movimiento.IdMovCxP);
                     }
                     dbContext.Commit();
                 }
@@ -807,7 +809,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void AnularMovimientoApartado(int intIdMovimiento, int intIdUsuario)
+        public void AnularMovimientoApartado(int intIdMovimiento, int intIdUsuario, string strMotivoAnulacion)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -823,6 +825,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (movimiento.Procesado) throw new BusinessException("El registro ya fue procesado por el cierre. No es posible registrar la transacción.");
                     movimiento.Nulo = true;
                     movimiento.IdAnuladoPor = intIdUsuario;
+                    movimiento.MotivoAnulacion = strMotivoAnulacion;
                     dbContext.NotificarModificacion(movimiento);
                     Apartado apartado = dbContext.ApartadoRepository.Find(movimiento.IdApartado);
                     if (apartado == null)
@@ -974,7 +977,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void AnularMovimientoOrdenServicio(int intIdMovimiento, int intIdUsuario)
+        public void AnularMovimientoOrdenServicio(int intIdMovimiento, int intIdUsuario, string strMotivoAnulacion)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -990,6 +993,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (movimiento.Procesado) throw new BusinessException("El registro ya fue procesado por el cierre. No es posible registrar la transacción.");
                     movimiento.Nulo = true;
                     movimiento.IdAnuladoPor = intIdUsuario;
+                    movimiento.MotivoAnulacion = strMotivoAnulacion;
                     dbContext.NotificarModificacion(movimiento);
                     OrdenServicio ordenServicio = dbContext.OrdenServicioRepository.Find(movimiento.IdOrden);
                     if (ordenServicio == null)

@@ -22,19 +22,19 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         IList<LlaveDescripcion> ObtenerListadoProveedores(int intIdEmpresa, int numPagina, int cantRec, string strNombre);
         string AgregarCompra(Compra compra);
         void ActualizarCompra(Compra compra);
-        void AnularCompra(int intIdCompra, int intIdUsuario);
+        void AnularCompra(int intIdCompra, int intIdUsuario, string strMotivoAnulacion);
         Compra ObtenerCompra(int intIdCompra);
         int ObtenerTotalListaCompras(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, int intIdCompra, string strNombre);
         IList<CompraDetalle> ObtenerListadoCompras(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, int numPagina, int cantRec, int intIdCompra, string strNombre);
         void AgregarOrdenCompra(OrdenCompra ordenCompra);
         void ActualizarOrdenCompra(OrdenCompra ordenCompra);
-        void AnularOrdenCompra(int intIdOrdenCompra, int intIdUsuario);
+        void AnularOrdenCompra(int intIdOrdenCompra, int intIdUsuario, string strMotivoAnulacion);
         OrdenCompra ObtenerOrdenCompra(int intIdOrdenCompra);
         int ObtenerTotalListaOrdenesCompra(int intIdEmpresa, bool bolIncluyeTodo, int intIdOrdenCompra, string strNombre);
         IList<OrdenCompra> ObtenerListadoOrdenesCompra(int intIdEmpresa, bool bolIncluyeTodo, int numPagina, int cantRec, int intIdOrdenCompra, string strNombre);
         IList<Compra> ObtenerListadoComprasPorProveedor(int intIdProveedor);
         void AgregarDevolucionProveedor(DevolucionProveedor devolucion);
-        void AnularDevolucionProveedor(int intIdDevolucion, int intIdUsuario);
+        void AnularDevolucionProveedor(int intIdDevolucion, int intIdUsuario, string strMotivoAnulacion);
         DevolucionProveedor ObtenerDevolucionProveedor(int intIdDevolucion);
         int ObtenerTotalListaDevolucionesPorProveedor(int intIdEmpresa, int intIdDevolucion, string strNombre);
         IList<DevolucionProveedor> ObtenerListadoDevolucionesPorProveedor(int intIdEmpresa, int numPagina, int cantRec, int intIdDevolucion, string strNombre);
@@ -562,7 +562,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void AnularCompra(int intIdCompra, int intIdUsuario)
+        public void AnularCompra(int intIdCompra, int intIdUsuario, string strMotivoAnulacion)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -577,6 +577,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (compra.Procesado) throw new BusinessException("El registro ya fue procesado por el cierre. No es posible registrar la transacción.");
                     compra.Nulo = true;
                     compra.IdAnuladoPor = intIdUsuario;
+                    compra.MotivoAnulacion = strMotivoAnulacion;
                     dbContext.NotificarModificacion(compra);
                     foreach (var detalleCompra in compra.DetalleCompra)
                     {
@@ -626,7 +627,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (compra.IdMovBanco > 0)
                     {
                         IBancaService servicioAuxiliarBancario = new BancaService();
-                        servicioAuxiliarBancario.AnularMovimientoBanco(dbContext, compra.IdMovBanco, intIdUsuario);
+                        servicioAuxiliarBancario.AnularMovimientoBanco(dbContext, compra.IdMovBanco, intIdUsuario, "Anulación de registro de compra " + compra.IdCompra);
                     }
                     dbContext.Commit();
                 }
@@ -780,7 +781,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void AnularOrdenCompra(int intIdOrdenCompra, int intIdUsuario)
+        public void AnularOrdenCompra(int intIdOrdenCompra, int intIdUsuario, string strMotivoAnulacion)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -945,7 +946,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void AnularDevolucionProveedor(int intIdDevolucion, int intIdUsuario)
+        public void AnularDevolucionProveedor(int intIdDevolucion, int intIdUsuario, string strMotivoAnulacion)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {

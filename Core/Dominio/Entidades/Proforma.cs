@@ -40,6 +40,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public decimal Total { get { return Excento + Gravado + Exonerado + Impuesto - Descuento; } }
         public bool Nulo { get; set; }
         public int? IdAnuladoPor { get; set; }
+        public string MotivoAnulacion { get; set; }
         public bool Aplicado { get; set; }
 
         public Cliente Cliente { get; set; }
