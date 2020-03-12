@@ -315,12 +315,11 @@
           </Border>
         </Style>
       </Body>
-      <Width>8.43921in</Width>
+      <Width>8.42934in</Width>
       <Page>
         <PageHeader>
-          <Height>6.54938cm</Height>
+          <Height>5.54396cm</Height>
           <PrintOnFirstPage>true</PrintOnFirstPage>
-          <PrintOnLastPage>true</PrintOnLastPage>
           <ReportItems>
             <Textbox Name="lblClaveNumerica">
               <CanGrow>true</CanGrow>
@@ -341,7 +340,7 @@
                   </Style>
                 </Paragraph>
               </Paragraphs>
-              <Top>5.65298cm</Top>
+              <Top>4.70048cm</Top>
               <Left>0.37718cm</Left>
               <Height>0.6cm</Height>
               <Width>4.88378cm</Width>
@@ -374,7 +373,7 @@
                   </Style>
                 </Paragraph>
               </Paragraphs>
-              <Top>5.64575cm</Top>
+              <Top>4.69325cm</Top>
               <Left>15.34376cm</Left>
               <Height>0.6cm</Height>
               <Width>2.80868cm</Width>
@@ -408,7 +407,7 @@
                   </Style>
                 </Paragraph>
               </Paragraphs>
-              <Top>5.64575cm</Top>
+              <Top>4.69325cm</Top>
               <Left>18.20095cm</Left>
               <Height>0.6cm</Height>
               <Width>2.82853cm</Width>
@@ -574,10 +573,10 @@
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>pFechaHasta</rd:DefaultName>
-              <Top>4.46876cm</Top>
-              <Left>4.21613cm</Left>
+              <Top>2.98654cm</Top>
+              <Left>13.88819cm</Left>
               <Height>0.6cm</Height>
-              <Width>5.9925cm</Width>
+              <Width>3.92875cm</Width>
               <ZIndex>7</ZIndex>
               <Style>
                 <Border>
@@ -608,8 +607,8 @@
                   </Style>
                 </Paragraph>
               </Paragraphs>
-              <Top>4.46876cm</Top>
-              <Left>2.2012cm</Left>
+              <Top>2.98654cm</Top>
+              <Left>11.87326cm</Left>
               <Height>0.6cm</Height>
               <Width>1.83854cm</Width>
               <ZIndex>8</ZIndex>
@@ -642,10 +641,10 @@
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>pFechaDesde</rd:DefaultName>
-              <Top>3.69237cm</Top>
-              <Left>4.21612cm</Left>
+              <Top>3.72765cm</Top>
+              <Left>4.21613cm</Left>
               <Height>0.6cm</Height>
-              <Width>16.29482cm</Width>
+              <Width>16.81335cm</Width>
               <ZIndex>9</ZIndex>
               <Style>
                 <Border>
@@ -676,8 +675,8 @@
                   </Style>
                 </Paragraph>
               </Paragraphs>
-              <Top>3.69237cm</Top>
-              <Left>1.7001cm</Left>
+              <Top>3.72765cm</Top>
+              <Left>1.70011cm</Left>
               <Height>0.6cm</Height>
               <Width>2.33964cm</Width>
               <ZIndex>10</ZIndex>
@@ -710,7 +709,7 @@
                   </Style>
                 </Paragraph>
               </Paragraphs>
-              <Top>5.65299cm</Top>
+              <Top>4.70049cm</Top>
               <Left>5.26096cm</Left>
               <Height>0.6cm</Height>
               <Width>10.0828cm</Width>
@@ -726,7 +725,7 @@
               </Style>
             </Textbox>
             <Line Name="Line1">
-              <Top>6.43938cm</Top>
+              <Top>5.48688cm</Top>
               <Left>21.17929cm</Left>
               <Height>0cm</Height>
               <Width>-20.7881cm</Width>
@@ -793,7 +792,7 @@
               <Top>2.95126cm</Top>
               <Left>4.21613cm</Left>
               <Height>0.6cm</Height>
-              <Width>2.5cm</Width>
+              <Width>1.91792cm</Width>
               <ZIndex>14</ZIndex>
               <Style>
                 <Border>
@@ -824,10 +823,10 @@
                   </Style>
                 </Paragraph>
               </Paragraphs>
-              <Top>4.46876cm</Top>
-              <Left>10.94742cm</Left>
+              <Top>2.95126cm</Top>
+              <Left>6.31044cm</Left>
               <Height>0.6cm</Height>
-              <Width>1.83854cm</Width>
+              <Width>1.75756cm</Width>
               <ZIndex>15</ZIndex>
               <Style>
                 <Border>
@@ -858,10 +857,10 @@
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>pFechaHasta</rd:DefaultName>
-              <Top>4.46876cm</Top>
-              <Left>12.96235cm</Left>
+              <Top>2.95126cm</Top>
+              <Left>8.24437cm</Left>
               <Height>0.6cm</Height>
-              <Width>5.9925cm</Width>
+              <Width>3.4525cm</Width>
               <ZIndex>16</ZIndex>
               <Style>
                 <Border>
@@ -881,7 +880,7 @@
           </Style>
         </PageHeader>
         <PageFooter>
-          <Height>1.56104cm</Height>
+          <Height>1.13771cm</Height>
           <PrintOnFirstPage>true</PrintOnFirstPage>
           <PrintOnLastPage>true</PrintOnLastPage>
           <ReportItems>
@@ -904,7 +903,7 @@
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>Textbox1</rd:DefaultName>
-              <Top>0.63184cm</Top>
+              <Top>0.17639cm</Top>
               <Left>14.41261cm</Left>
               <Height>0.6cm</Height>
               <Width>6.09833cm</Width>
