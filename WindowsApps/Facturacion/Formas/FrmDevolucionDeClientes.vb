@@ -316,7 +316,7 @@ Public Class FrmDevolucionDeClientes
                 CargarTotales()
                 grdDetalleDevolucion.ReadOnly = True
                 btnImprimir.Enabled = True
-                btnAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
+                btnAnular.Enabled = FrmPrincipal.bolAnularTransacciones
                 btnGuardar.Enabled = False
                 btnBuscarFactura.Enabled = False
             End If
@@ -373,7 +373,7 @@ Public Class FrmDevolucionDeClientes
             grdDetalleDevolucion.ReadOnly = True
             btnImprimir.Enabled = True
             btnAgregar.Enabled = True
-            btnAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
+            btnAnular.Enabled = FrmPrincipal.bolAnularTransacciones
             btnImprimir.Focus()
             btnGuardar.Enabled = False
             btnBuscarFactura.Enabled = False

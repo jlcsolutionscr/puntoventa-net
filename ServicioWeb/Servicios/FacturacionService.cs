@@ -986,7 +986,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
                     var listaFacturas = dbContext.FacturaRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Fecha >= datFechaInicial && x.Fecha <= datFechaFinal);
                     if (intIdFactura > 0)
-                        listaFacturas = listaFacturas.Where(x => !x.Nulo && x.IdFactura == intIdFactura);
+                        listaFacturas = listaFacturas.Where(x => !x.Nulo && x.ConsecFactura == intIdFactura);
                     else if (!strNombre.Equals(string.Empty))
                         listaFacturas = listaFacturas.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.NombreCliente.Contains(strNombre));
                     return listaFacturas.Count();
@@ -1010,7 +1010,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
                     var listado = dbContext.FacturaRepository.Include("Cliente").Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Fecha >= datFechaInicial && x.Fecha <= datFechaFinal);
                     if (intIdFactura > 0)
-                        listado = listado.Where(x => !x.Nulo && x.IdFactura == intIdFactura);
+                        listado = listado.Where(x => !x.Nulo && x.ConsecFactura == intIdFactura);
                     else if (!strNombre.Equals(string.Empty))
                         listado = listado.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.NombreCliente.Contains(strNombre));
                     listado = listado.OrderByDescending(x => x.IdFactura).Skip((numPagina - 1) * cantRec).Take(cantRec);
@@ -1151,7 +1151,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
                     var listaProformas = dbContext.ProformaRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Fecha >= datFechaInicial && x.Fecha <= datFechaFinal && x.Aplicado == bolAplicado);
                     if (intIdProforma > 0)
-                        listaProformas = listaProformas.Where(x => !x.Nulo && x.IdProforma == intIdProforma);
+                        listaProformas = listaProformas.Where(x => !x.Nulo && x.ConsecProforma == intIdProforma);
                     else
                     {
                         if (!strNombre.Equals(string.Empty))
@@ -1178,7 +1178,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
                     var listado = dbContext.ProformaRepository.Include("Cliente").Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Fecha >= datFechaInicial && x.Fecha <= datFechaFinal && x.Aplicado == bolAplicado);
                     if (intIdProforma > 0)
-                        listado = listado.Where(x => !x.Nulo && x.IdProforma == intIdProforma);
+                        listado = listado.Where(x => !x.Nulo && x.ConsecProforma == intIdProforma);
                     else
                     {
                         if (!strNombre.Equals(string.Empty))
@@ -1315,7 +1315,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
                     var listaApartados = dbContext.ApartadoRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Fecha >= datFechaInicial && x.Fecha <= datFechaFinal && x.Aplicado == bolAplicado);
                     if (intIdApartado > 0)
-                        listaApartados = listaApartados.Where(x => !x.Nulo && x.IdApartado == intIdApartado);
+                        listaApartados = listaApartados.Where(x => !x.Nulo && x.ConsecApartado == intIdApartado);
                     else
                     {
                         if (!strNombre.Equals(string.Empty))
@@ -1342,7 +1342,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
                     var listado = dbContext.ApartadoRepository.Include("Cliente").Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Fecha >= datFechaInicial && x.Fecha <= datFechaFinal && x.Aplicado == bolAplicado);
                     if (intIdApartado > 0)
-                        listado = listado.Where(x => !x.Nulo && x.IdApartado == intIdApartado);
+                        listado = listado.Where(x => !x.Nulo && x.ConsecApartado == intIdApartado);
                     else
                     {
                         if (!strNombre.Equals(string.Empty))
@@ -1515,7 +1515,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
                     var listaOrdenesServicio = dbContext.OrdenServicioRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Fecha >= datFechaInicial && x.Fecha <= datFechaFinal && x.Aplicado == bolAplicado);
                     if (intIdOrdenServicio > 0)
-                        listaOrdenesServicio = listaOrdenesServicio.Where(x => x.IdOrden == intIdOrdenServicio);
+                        listaOrdenesServicio = listaOrdenesServicio.Where(x => x.ConsecOrdenServicio == intIdOrdenServicio);
                     if (!strNombre.Equals(string.Empty))
                         listaOrdenesServicio = listaOrdenesServicio.Where(x => x.NombreCliente.Contains(strNombre));
                     return listaOrdenesServicio.Count();
@@ -1539,7 +1539,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
                     var listado = dbContext.OrdenServicioRepository.Include("Cliente").Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Fecha >= datFechaInicial && x.Fecha <= datFechaFinal && x.Aplicado == bolAplicado);
                     if (intIdOrdenServicio > 0)
-                        listado = listado.Where(x => x.IdOrden == intIdOrdenServicio);
+                        listado = listado.Where(x => x.ConsecOrdenServicio == intIdOrdenServicio);
                     if (!strNombre.Equals(string.Empty))
                         listado = listado.Where(x => x.NombreCliente.Contains(strNombre));
                     listado = listado.OrderByDescending(x => x.IdOrden).Skip((numPagina - 1) * cantRec).Take(cantRec);
@@ -1932,7 +1932,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             if (documentoXml.GetElementsByTagName("TotalComprobante").Count > 0)
                                 decTotal = decimal.Parse(documentoXml.GetElementsByTagName("TotalComprobante").Item(0).InnerText, CultureInfo.InvariantCulture);
                         }
-                        DocumentoDetalle item = new DocumentoDetalle(value.IdDocumento, value.ClaveNumerica, value.Consecutivo, value.Fecha.ToString("dd/MM/yyyy"), strNombre, value.EstadoEnvio, decTotal, value.EsMensajeReceptor, value.CorreoNotificacion);
+                        DocumentoDetalle item = new DocumentoDetalle(value.IdDocumento, value.ClaveNumerica, value.Consecutivo, value.Fecha.ToString("dd/MM/yyyy"), strNombre, value.EstadoEnvio, value.ErrorEnvio, decTotal, value.EsMensajeReceptor, value.CorreoNotificacion);
                         listaDocumento.Add(item);
                     }
                     return listaDocumento;
@@ -1993,7 +1993,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             if (documentoXml.GetElementsByTagName("TotalComprobante").Count > 0)
                                 decTotal = decimal.Parse(documentoXml.GetElementsByTagName("TotalComprobante").Item(0).InnerText, CultureInfo.InvariantCulture);
                         }
-                        DocumentoDetalle item = new DocumentoDetalle(value.IdDocumento, value.ClaveNumerica, value.Consecutivo, value.Fecha.ToString("dd/MM/yyyy"), strNombre, value.EstadoEnvio, decTotal, value.EsMensajeReceptor, value.CorreoNotificacion);
+                        DocumentoDetalle item = new DocumentoDetalle(value.IdDocumento, value.ClaveNumerica, value.Consecutivo, value.Fecha.ToString("dd/MM/yyyy"), strNombre, value.EstadoEnvio, value.ErrorEnvio, decTotal, value.EsMensajeReceptor, value.CorreoNotificacion);
                         listaDocumento.Add(item);
                     }
                     return listaDocumento;
@@ -2028,7 +2028,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             List<DocumentoElectronico> listaPendientes = new List<DocumentoElectronico>();
                             try
                             {
-                                listaPendientes = dbContext.DocumentoElectronicoRepository.Where(x => x.EstadoEnvio == StaticEstadoDocumentoElectronico.Registrado || x.EstadoEnvio == StaticEstadoDocumentoElectronico.Enviado).OrderBy(x => x.IdEmpresa).ToList();
+                                listaPendientes = dbContext.DocumentoElectronicoRepository.Where(x => x.EstadoEnvio == StaticEstadoDocumentoElectronico.Registrado || x.EstadoEnvio == StaticEstadoDocumentoElectronico.Enviado || x.EstadoEnvio == StaticEstadoDocumentoElectronico.Procesando).OrderBy(x => x.IdEmpresa).ToList();
                             }
                             catch (Exception ex)
                             {
@@ -2085,6 +2085,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                                     string strError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
                                                     stringBuilder.AppendLine("Error al procesar la respuesta del documento electrónico con id: " + documento.IdDocumento + " Detalle: " + strError);
                                                 }
+                                            }
+                                            else
+                                            {
+                                                dbContext.NotificarModificacion(estadoDoc);
+                                                dbContext.Commit();
                                             }
                                         }
                                     }
@@ -2413,16 +2418,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                         else
                         {
-                            strNombre = "CLIENTE DE CONTADO";
-                            if (documentoXml.GetElementsByTagName("Receptor").Count > 0)
-                            {
-                                XmlNode emisorNode = documentoXml.GetElementsByTagName("Receptor").Item(0);
-                                strNombre = emisorNode["Nombre"].InnerText;
-                            }
+                            strNombre = value.NombreReceptor;
                             if (documentoXml.GetElementsByTagName("TotalComprobante").Count > 0)
                                 decTotal = decimal.Parse(documentoXml.GetElementsByTagName("TotalComprobante").Item(0).InnerText, CultureInfo.InvariantCulture);
                         }
-                        DocumentoDetalle item = new DocumentoDetalle(value.IdDocumento, value.ClaveNumerica, value.Consecutivo, value.Fecha.ToString("dd/MM/yyyy"), strNombre, value.EstadoEnvio, decTotal, value.EsMensajeReceptor, value.CorreoNotificacion);
+                        DocumentoDetalle item = new DocumentoDetalle(value.IdDocumento, value.ClaveNumerica, value.Consecutivo, value.Fecha.ToString("dd/MM/yyyy"), strNombre, value.EstadoEnvio, value.ErrorEnvio, decTotal, value.EsMensajeReceptor, value.CorreoNotificacion);
                         listaDocumento.Add(item);
                     }
                     return listaDocumento;
@@ -2611,7 +2611,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 string strBody;
                 string strTitle = "";
                 JArray jarrayObj = new JArray();
-                if (documentoElectronico.IdTipoDocumento == (int)TipoDocumento.FacturaElectronica || documentoElectronico.IdTipoDocumento == (int)TipoDocumento.NotaCreditoElectronica || documentoElectronico.IdTipoDocumento == (int)TipoDocumento.NotaDebitoElectronica)
+                if (documentoElectronico.IdTipoDocumento == (int)TipoDocumento.FacturaElectronica || documentoElectronico.IdTipoDocumento == (int)TipoDocumento.TiqueteElectronico || documentoElectronico.IdTipoDocumento == (int)TipoDocumento.NotaCreditoElectronica || documentoElectronico.IdTipoDocumento == (int)TipoDocumento.NotaDebitoElectronica)
                 {
                     if (documentoElectronico.EstadoEnvio == "aceptado" && strCorreoReceptor != "")
                     {
@@ -2644,6 +2644,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         {
                             strTitle = "Factura electrónica de emisor " + empresa.NombreComercial;
                             datos.TituloDocumento = "FACTURA ELECTRONICA";
+                        }
+                        else if (documentoElectronico.IdTipoDocumento == (int)TipoDocumento.TiqueteElectronico)
+                        {
+                            strTitle = "Tiquete electrónico de emisor " + empresa.NombreComercial;
+                            datos.TituloDocumento = "TIQUETE ELECTRONICO";
                         }
                         else if (documentoElectronico.IdTipoDocumento == (int)TipoDocumento.NotaCreditoElectronica)
                         {
@@ -2703,6 +2708,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             datos.DistritoReceptor = dbContext.DistritoRepository.Where(x => x.IdProvincia == intProvincia && x.IdCanton == intCanton && x.IdDistrito == intDistrito).FirstOrDefault().Descripcion;
                             datos.BarrioReceptor = dbContext.BarrioRepository.Where(x => x.IdProvincia == intProvincia && x.IdCanton == intCanton && x.IdDistrito == intDistrito && x.IdBarrio == intBarrio).FirstOrDefault().Descripcion;
                             datos.DireccionReceptor = receptorNode["Ubicacion"]["OtrasSenas"].InnerText;
+                        }
+                        else
+                        {
+                            datos.NombreReceptor = documentoElectronico.NombreReceptor;
                         }
                         foreach (XmlNode lineaDetalle in documentoXml.GetElementsByTagName("LineaDetalle"))
                         {

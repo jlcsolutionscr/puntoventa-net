@@ -97,8 +97,8 @@ Public Class FrmMovimientoBanco
                 txtMonto.ReadOnly = True
                 cboIdCuenta.Enabled = False
                 cboIdTipo.Enabled = False
-                CmdAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
-                CmdGuardar.Enabled = FrmPrincipal.usuarioGlobal.Modifica
+                CmdAnular.Enabled = FrmPrincipal.bolAnularTransacciones
+                CmdGuardar.Enabled = False
             End If
         End If
     End Sub
@@ -138,9 +138,9 @@ Public Class FrmMovimientoBanco
             MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
             CmdImprimir.Enabled = True
             CmdAgregar.Enabled = True
-            CmdAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
+            CmdAnular.Enabled = FrmPrincipal.bolAnularTransacciones
             CmdImprimir.Focus()
-            CmdGuardar.Enabled = FrmPrincipal.usuarioGlobal.Modifica
+            CmdGuardar.Enabled = False
         Else
             MessageBox.Show("Información incompleta.  Favor verificar. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End If

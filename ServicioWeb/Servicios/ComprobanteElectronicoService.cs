@@ -458,7 +458,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     msDatosXML.Position = 0;
                     documentoXml.Load(msDatosXML);
                 }
-                return RegistrarDocumentoElectronico(empresa, documentoXml, null, dbContext, facturaCompra.IdSucursal, facturaCompra.IdTerminal, TipoDocumento.FacturaElectronicaCompra, false, strCorreoNotificacion);
+                return RegistrarDocumentoElectronico(empresa, documentoXml, null, dbContext, facturaCompra.IdSucursal, facturaCompra.IdTerminal, TipoDocumento.FacturaElectronicaCompra, false, strCorreoNotificacion, empresa.NombreEmpresa);
             }
             catch (Exception ex)
             {
@@ -751,7 +751,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     msDatosXML.Position = 0;
                     documentoXml.Load(msDatosXML);
                 }
-                return RegistrarDocumentoElectronico(empresa, documentoXml, null, dbContext, factura.IdSucursal, factura.IdTerminal, TipoDocumento.FacturaElectronica, false, strCorreoNotificacion);
+                return RegistrarDocumentoElectronico(empresa, documentoXml, null, dbContext, factura.IdSucursal, factura.IdTerminal, TipoDocumento.FacturaElectronica, false, strCorreoNotificacion, factura.NombreCliente);
             }
             catch (Exception ex)
             {
@@ -983,7 +983,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     msDatosXML.Position = 0;
                     documentoXml.Load(msDatosXML);
                 }
-                return RegistrarDocumentoElectronico(empresa, documentoXml, null, dbContext, factura.IdSucursal, factura.IdTerminal, TipoDocumento.TiqueteElectronico, false, strCorreoNotificacion);
+                return RegistrarDocumentoElectronico(empresa, documentoXml, null, dbContext, factura.IdSucursal, factura.IdTerminal, TipoDocumento.TiqueteElectronico, false, strCorreoNotificacion, factura.NombreCliente);
             }
             catch (Exception ex)
             {
@@ -1288,7 +1288,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     msDatosXML.Position = 0;
                     documentoXml.Load(msDatosXML);
                 }
-                return RegistrarDocumentoElectronico(empresa, documentoXml, null, dbContext, factura.IdSucursal, factura.IdTerminal, TipoDocumento.NotaCreditoElectronica, false, strCorreoNotificacion);
+                return RegistrarDocumentoElectronico(empresa, documentoXml, null, dbContext, factura.IdSucursal, factura.IdTerminal, TipoDocumento.NotaCreditoElectronica, false, strCorreoNotificacion, factura.NombreCliente);
             }
             catch (Exception ex)
             {
@@ -1554,7 +1554,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     msDatosXML.Position = 0;
                     documentoXml.Load(msDatosXML);
                 }
-                return RegistrarDocumentoElectronico(empresa, documentoXml, null, dbContext, factura.IdSucursal, factura.IdTerminal, TipoDocumento.NotaCreditoElectronica, false, strCorreoNotificacion);
+                return RegistrarDocumentoElectronico(empresa, documentoXml, null, dbContext, factura.IdSucursal, factura.IdTerminal, TipoDocumento.NotaCreditoElectronica, false, strCorreoNotificacion, factura.NombreCliente);
             }
             catch (Exception ex)
             {
@@ -1820,7 +1820,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     msDatosXML.Position = 0;
                     documentoXml.Load(msDatosXML);
                 }
-                return RegistrarDocumentoElectronico(empresa, documentoXml, null, dbContext, factura.IdSucursal, factura.IdTerminal, TipoDocumento.NotaDebitoElectronica, false, strCorreoNotificacion);
+                return RegistrarDocumentoElectronico(empresa, documentoXml, null, dbContext, factura.IdSucursal, factura.IdTerminal, TipoDocumento.NotaDebitoElectronica, false, strCorreoNotificacion, factura.NombreCliente);
             }
             catch (Exception ex)
             {
@@ -1941,7 +1941,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     mensajeReceptorXml.Load(msDatosXML);
                 }
                 TipoDocumento tipoDoc = intMensaje == 0 ? TipoDocumento.MensajeReceptorAceptado : intMensaje == 1 ? TipoDocumento.MensajeReceptorAceptadoParcial : TipoDocumento.MensajeReceptorRechazado;
-                DocumentoElectronico documento = RegistrarDocumentoElectronico(empresa, mensajeReceptorXml, documentoXml, dbContext, intSucursal, intTerminal, tipoDoc, bolIvaAcreditable, strCorreoNotificacion);
+                DocumentoElectronico documento = RegistrarDocumentoElectronico(empresa, mensajeReceptorXml, documentoXml, dbContext, intSucursal, intTerminal, tipoDoc, bolIvaAcreditable, strCorreoNotificacion, empresa.NombreEmpresa);
                 return documento;
             }
             catch (BusinessException ex)
@@ -1955,7 +1955,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public static DocumentoElectronico RegistrarDocumentoElectronico(Empresa empresa, XmlDocument documentoXml, XmlDocument documentoOriXml, IDbContext dbContext, int intSucursal, int intTerminal, TipoDocumento tipoDocumento, bool bolIvaAcreditable, string strCorreoNotificacion)
+        public static DocumentoElectronico RegistrarDocumentoElectronico(Empresa empresa, XmlDocument documentoXml, XmlDocument documentoOriXml, IDbContext dbContext, int intSucursal, int intTerminal, TipoDocumento tipoDocumento, bool bolIvaAcreditable, string strCorreoNotificacion, string strNombreReceptor)
         {
             try
             {
@@ -2134,6 +2134,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     IdentificacionReceptor = strIdentificacionReceptor,
                     EsMensajeReceptor = esMensajeReceptor ? "S" : "N",
                     EsIvaAcreditable = bolIvaAcreditable ? "S" : "N",
+                    NombreReceptor = strNombreReceptor,
                     EstadoEnvio = StaticEstadoDocumentoElectronico.Procesando,
                     CorreoNotificacion = strCorreoNotificacion,
                     DatosDocumento = signedDataEncoded,
@@ -2308,20 +2309,28 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             {
                                 string strRespuesta = estadoDocumento.Property("respuesta-xml").Value.ToString();
                                 documento.Respuesta = Convert.FromBase64String(strRespuesta);
-
+                                documento.EstadoEnvio = strEstado;
                             }
-                            documento.EstadoEnvio = strEstado;
+                            else
+                                documento.ErrorEnvio = "El documento se encuentra procesando en el Ministerio de Hacienda";
                         }
                         else
                         {
                             if (httpResponse.StatusCode == HttpStatusCode.BadRequest)
-                                documento.EstadoEnvio = StaticEstadoDocumentoElectronico.Enviado;
-                            if (httpResponse.Headers.Where(x => x.Key == "X-Error-Cause").FirstOrDefault().Value != null)
                             {
-                                IList<string> headers = httpResponse.Headers.Where(x => x.Key == "X-Error-Cause").FirstOrDefault().Value.ToList();
-                                if (headers.Count > 0)
+                                if (httpResponse.Headers.Where(x => x.Key == "X-Error-Cause").FirstOrDefault().Value != null)
                                 {
-                                    documento.ErrorEnvio = headers[0];
+                                    IList<string> headers = httpResponse.Headers.Where(x => x.Key == "X-Error-Cause").FirstOrDefault().Value.ToList();
+                                    if (headers.Count > 0)
+                                    {
+                                        if (headers[0] == "El comprobante [" + documento.ClaveNumerica + "] no ha sido recibido.")
+                                            documento.EstadoEnvio = StaticEstadoDocumentoElectronico.Registrado;
+                                        documento.ErrorEnvio = headers[0];
+                                    }
+                                }
+                                else
+                                {
+                                    documento.ErrorEnvio = httpResponse.ReasonPhrase;
                                 }
                             }
                             else

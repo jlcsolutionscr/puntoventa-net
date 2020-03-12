@@ -320,6 +320,37 @@ namespace LeandroSoftware.Core.TiposComunes
         public decimal PrecioVenta { get; set; }
     }
 
+    public class ReporteCompra
+    {
+        public ReporteCompra()
+        {
+
+        }
+
+        public ReporteCompra(int id, string referencia, string nombreProveedor, string fecha, string codigo, string codigoProveedor, string descripcion, decimal cantidad, decimal precioVenta)
+        {
+            IdCompra = id;
+            Referencia = referencia;
+            NombreProveedor = nombreProveedor;
+            Fecha = fecha;
+            Codigo = codigo;
+            CodigoProveedor = codigoProveedor;
+            Descripcion = descripcion;
+            Cantidad = cantidad;
+            PrecioVenta = precioVenta;
+        }
+
+        public int IdCompra { get; set; }
+        public string Referencia { get; set; }
+        public string NombreProveedor { get; set; }
+        public string Fecha { get; set; }
+        public string Codigo { get; set; }
+        public string CodigoProveedor { get; set; }
+        public string Descripcion { get; set; }
+        public decimal Cantidad { get; set; }
+        public decimal PrecioVenta { get; set; }
+    }
+
     public class ReporteMovimientosContables
     {
         public string Descripcion { get; set; }
@@ -553,7 +584,7 @@ namespace LeandroSoftware.Core.TiposComunes
         {
         }
 
-        public DocumentoDetalle(int id, string clave, string consecutivo, string fecha, string nombre, string estado, decimal monto, string esMensajeReceptor, string correoNotificacion)
+        public DocumentoDetalle(int id, string clave, string consecutivo, string fecha, string nombre, string estado, string error, decimal monto, string esMensajeReceptor, string correoNotificacion)
         {
             IdDocumento = id;
             ClaveNumerica = clave;
@@ -561,6 +592,7 @@ namespace LeandroSoftware.Core.TiposComunes
             Fecha = fecha;
             NombreReceptor = nombre;
             EstadoEnvio = estado;
+            ErrorEnvio = error;
             MontoTotal = monto;
             EsMensajeReceptor = esMensajeReceptor;
             CorreoNotificacion = correoNotificacion;
@@ -571,6 +603,7 @@ namespace LeandroSoftware.Core.TiposComunes
         public string Fecha { get; set; }
         public string NombreReceptor { get; set; }
         public string EstadoEnvio { get; set; }
+        public string ErrorEnvio { get; set; }
         public decimal MontoTotal { get; set; }
         public string EsMensajeReceptor { get; set; }
         public string CorreoNotificacion { get; set; }

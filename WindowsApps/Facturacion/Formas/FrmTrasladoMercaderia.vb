@@ -273,7 +273,7 @@ Public Class FrmTrasladoMercaderia
                 btnEliminar.Enabled = False
                 btnBusProd.Enabled = False
                 btnImprimir.Enabled = True
-                btnAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
+                btnAnular.Enabled = FrmPrincipal.bolAnularTransacciones
                 btnGuardar.Enabled = False
             End If
         End If
@@ -340,7 +340,7 @@ Public Class FrmTrasladoMercaderia
         MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
         btnImprimir.Enabled = True
         btnAgregar.Enabled = True
-        btnAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
+        btnAnular.Enabled = FrmPrincipal.bolAnularTransacciones
         btnImprimir.Focus()
         btnGuardar.Enabled = False
         btnInsertar.Enabled = False

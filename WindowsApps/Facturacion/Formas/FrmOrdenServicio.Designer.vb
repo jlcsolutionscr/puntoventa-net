@@ -781,7 +781,6 @@ Partial Class FrmOrdenServicio
         Me.txtPorcDesc.Location = New System.Drawing.Point(673, 263)
         Me.txtPorcDesc.MaxLength = 0
         Me.txtPorcDesc.Name = "txtPorcDesc"
-        Me.txtPorcDesc.ReadOnly = True
         Me.txtPorcDesc.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtPorcDesc.Size = New System.Drawing.Size(38, 20)
         Me.txtPorcDesc.TabIndex = 35

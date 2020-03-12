@@ -188,8 +188,8 @@ Public Class FrmAsientoContable
                 cmdInsertar.Enabled = False
                 cmdEliminar.Enabled = False
                 CmdImprimir.Enabled = True
-                CmdAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
-                CmdGuardar.Enabled = FrmPrincipal.usuarioGlobal.Modifica
+                CmdAnular.Enabled = FrmPrincipal.bolAnularTransacciones
+                CmdGuardar.Enabled = False
             End If
         End If
     End Sub
@@ -232,9 +232,9 @@ Public Class FrmAsientoContable
             MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
             CmdImprimir.Enabled = True
             CmdAgregar.Enabled = True
-            CmdAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
+            CmdAnular.Enabled = FrmPrincipal.bolAnularTransacciones
             CmdImprimir.Focus()
-            CmdGuardar.Enabled = FrmPrincipal.usuarioGlobal.Modifica
+            CmdGuardar.Enabled = False
             cmdInsertar.Enabled = False
             cmdEliminar.Enabled = False
         Else

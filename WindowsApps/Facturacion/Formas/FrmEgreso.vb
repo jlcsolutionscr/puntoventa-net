@@ -107,7 +107,7 @@ Public Class FrmEgreso
                 txtMonto.Text = FormatNumber(egreso.Monto, 2)
                 txtMonto.ReadOnly = True
                 btnImprimir.Enabled = True
-                btnAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
+                btnAnular.Enabled = FrmPrincipal.bolAnularTransacciones
                 btnGuardar.Enabled = False
             End If
         End If
@@ -153,7 +153,7 @@ Public Class FrmEgreso
         MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
         btnImprimir.Enabled = True
         btnAgregar.Enabled = True
-        btnAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
+        btnAnular.Enabled = FrmPrincipal.bolAnularTransacciones
         btnImprimir.Focus()
         btnGuardar.Enabled = False
     End Sub

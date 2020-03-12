@@ -159,9 +159,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (empresa.FechaVence < DateTime.Today) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
                     if (empresa.TipoContrato == 2 && empresa.CantidadDisponible == 0) throw new BusinessException("El disponible de documentos electrónicos fue agotado. Por favor, pongase en contacto con su proveedor del servicio.");
                     UsuarioPorEmpresa usuarioEmpresa = dbContext.UsuarioPorEmpresaRepository.Include("Usuario").FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa && x.Usuario.CodigoUsuario == strUsuario.ToUpper());
-                    if (strUsuario.ToUpper() != "JASLOP" && usuarioEmpresa == null) throw new BusinessException("Usuario no registrado en la empresa suministrada. Por favor verifique la información suministrada.");
+                    if (strUsuario.ToUpper() != "ADMIN" && usuarioEmpresa == null) throw new BusinessException("Usuario no registrado en la empresa suministrada. Por favor verifique la información suministrada.");
                     Usuario usuario = null;
-                    if (strUsuario.ToUpper() == "JASLOP")
+                    if (strUsuario.ToUpper() == "ADMIN")
                     {
                         usuario = dbContext.UsuarioRepository.Include("RolePorUsuario.Role").FirstOrDefault(x => x.IdUsuario == 1);
                     }
@@ -303,9 +303,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (empresa.FechaVence < DateTime.Today) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
                     if (empresa.TipoContrato == 2 && empresa.CantidadDisponible == 0) throw new BusinessException("El disponible de documentos electrónicos fue agotado. Por favor, pongase en contacto con su proveedor del servicio.");
                     UsuarioPorEmpresa usuarioEmpresa = dbContext.UsuarioPorEmpresaRepository.Include("Usuario").FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa && x.Usuario.CodigoUsuario == strUsuario.ToUpper());
-                    if (strUsuario.ToUpper() != "JASLOP" && usuarioEmpresa == null) throw new BusinessException("Usuario no registrado en la empresa suministrada. Por favor verifique la información suministrada.");
+                    if (strUsuario.ToUpper() != "ADMIN" && usuarioEmpresa == null) throw new BusinessException("Usuario no registrado en la empresa suministrada. Por favor verifique la información suministrada.");
                     Usuario usuario = null;
-                    if (strUsuario.ToUpper() == "JASLOP")
+                    if (strUsuario.ToUpper() == "ADMIN")
                     {
                         usuario = dbContext.UsuarioRepository.Include("RolePorUsuario.Role").FirstOrDefault(x => x.IdUsuario == 1);
                     }
@@ -380,7 +380,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (empresa.TipoContrato == 2 && empresa.CantidadDisponible == 0) throw new BusinessException("El disponible de documentos electrónicos fue agotado. Por favor, pongase en contacto con su proveedor del servicio.");
                     Usuario usuario = null;
                     UsuarioPorEmpresa usuarioEmpresa = null;
-                    if (strUsuario.ToUpper() == "JASLOP")
+                    if (strUsuario.ToUpper() == "ADMIN")
                     {
                         usuarioEmpresa = dbContext.UsuarioPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa);
                         usuario = dbContext.UsuarioRepository.Include("RolePorUsuario.Role").FirstOrDefault(x => x.IdUsuario == 1);
@@ -399,7 +399,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     refEmpresa.Identificacion = empresa.Identificacion;
                     usuarioEmpresa.Empresa = refEmpresa;
                     usuario.UsuarioPorEmpresa.Add(usuarioEmpresa);
-                    int tipoRole = strUsuario.ToUpper() == "JASLOP" ? StaticRolePorUsuario.ADMINISTRADOR : StaticRolePorUsuario.USUARIO_SISTEMA;
+                    int tipoRole = strUsuario.ToUpper() == "ADMIN" ? StaticRolePorUsuario.ADMINISTRADOR : StaticRolePorUsuario.USUARIO_SISTEMA;
                     string strToken = GenerarRegistroAutenticacion(tipoRole);
                     usuario.Token = strToken;
                     foreach (RolePorUsuario role in usuario.RolePorUsuario)
@@ -428,7 +428,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     Usuario usuario = null;
                     UsuarioPorEmpresa usuarioEmpresa = null;
-                    if (strUsuario.ToUpper() == "JASLOP")
+                    if (strUsuario.ToUpper() == "ADMIN")
                     {
                         usuarioEmpresa = dbContext.UsuarioPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == intIdEmpresa);
                         usuario = dbContext.UsuarioRepository.Include("RolePorUsuario.Role").FirstOrDefault(x => x.IdUsuario == 1);
@@ -446,7 +446,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (empresa.TipoContrato == 2 && empresa.CantidadDisponible == 0) throw new BusinessException("El disponible de documentos electrónicos fue agotado. Por favor, pongase en contacto con su proveedor del servicio.");
                     TerminalPorSucursal terminal = null;
                     SucursalPorEmpresa sucursal = null;
-                    if (strUsuario.ToUpper() == "JASLOP")
+                    if (strUsuario.ToUpper() == "ADMIN")
                     {
                         terminal = dbContext.TerminalPorSucursalRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa).FirstOrDefault();
                         sucursal = dbContext.SucursalPorEmpresaRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa && x.IdSucursal == terminal.IdTerminal).FirstOrDefault();
@@ -761,7 +761,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 var listaRoles = new List<LlaveDescripcion>();
                 try
                 {
-                    var listado = dbContext.RolePorEmpresaRepository.Include("Role").Where(x => x.IdEmpresa == intIdEmpresa && x.IdRole >= 50);
+                    var listado = dbContext.RolePorEmpresaRepository.Include("Role").Where(x => x.IdEmpresa == intIdEmpresa && x.IdRole > 2);
                     foreach (var value in listado)
                     {
                         LlaveDescripcion item = new LlaveDescripcion(value.IdRole, value.Role.Descripcion);
@@ -1026,7 +1026,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     usuario.CodigoUsuario = usuario.CodigoUsuario.ToUpper();
-                    if (usuario.CodigoUsuario == "JASLOP" || usuario.CodigoUsuario == "CONTADOR") throw new BusinessException("El código de usuario ingresado no se encuentra disponible. Por favor modifique la información suministrada.");
+                    if (usuario.CodigoUsuario == "ADMIN" || usuario.CodigoUsuario == "CONTADOR") throw new BusinessException("El código de usuario ingresado no se encuentra disponible. Por favor modifique la información suministrada.");
                     List<UsuarioPorEmpresa> empresaUsuario = usuario.UsuarioPorEmpresa.ToList();
                     if (empresaUsuario.Count == 0) throw new BusinessException("El usuario por agregar debe estar vinculado a la empresa actual. Por favor, pongase en contacto con su proveedor del servicio.");
                     Empresa empresa = dbContext.EmpresaRepository.Find(empresaUsuario[0].IdEmpresa);
@@ -1057,7 +1057,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     usuario.CodigoUsuario = usuario.CodigoUsuario.ToUpper();
-                    if (usuario.CodigoUsuario == "JASLOP") throw new BusinessException("El código de usuario ingresado no se encuentra disponible. Por favor modifique la información suministrada.");
+                    if (usuario.CodigoUsuario == "ADMIN" || usuario.CodigoUsuario == "CONTADOR") throw new BusinessException("El código de usuario ingresado no se encuentra disponible. Por favor modifique la información suministrada.");
                     UsuarioPorEmpresa usuarioEmpresa = dbContext.UsuarioPorEmpresaRepository.Where(x => x.IdUsuario == usuario.IdUsuario).FirstOrDefault();
                     if (usuarioEmpresa == null) throw new BusinessException("El usuario por modificar debe estar vinculado a la empresa actual. Por favor, pongase en contacto con su proveedor del servicio.");
                     Empresa empresa = dbContext.EmpresaRepository.Find(usuarioEmpresa.IdEmpresa);
@@ -1880,6 +1880,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         listaProductos = listaProductos.Where(x => x.IdLinea == intIdLinea);
                     else if (!strCodigo.Equals(string.Empty))
                         listaProductos = listaProductos.Where(x => x.Codigo.Contains(strCodigo));
+                    else if (!strCodigoProveedor.Equals(string.Empty))
+                        listaProductos = listaProductos.Where(x => x.CodigoProveedor.Contains(strCodigoProveedor));
                     else if (!strDescripcion.Equals(string.Empty))
                         listaProductos = listaProductos.Where(x => x.Descripcion.Contains(strDescripcion));
                     if (bolFiltraExistencias)
@@ -1912,6 +1914,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         listaProductos = listaProductos.Where(x => x.IdLinea == intIdLinea);
                     else if (!strCodigo.Equals(string.Empty))
                         listaProductos = listaProductos.Where(x => x.Codigo.Contains(strCodigo));
+                    else if (!strCodigoProveedor.Equals(string.Empty))
+                        listaProductos = listaProductos.Where(x => x.CodigoProveedor.Contains(strCodigoProveedor));
                     else if (!strDescripcion.Equals(string.Empty))
                         listaProductos = listaProductos.Where(x => x.Descripcion.Contains(strDescripcion));
                     if (bolFiltraExistencias)

@@ -23,6 +23,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public string IdentificacionReceptor { get; set; }
         public string EsMensajeReceptor { get; set; }
         public string EsIvaAcreditable { get; set; }
+        public string NombreReceptor { get; set; }
         public byte[] DatosDocumento { get; set; }
         public byte[] Respuesta { get; set; }
         public byte[] DatosDocumentoOri { get; set; }

@@ -333,7 +333,7 @@ Public Class FrmOrdenCompra
                     btnGuardar.Enabled = False
                 Else
                     btnBuscarProveedor.Enabled = True
-                    btnAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
+                    btnAnular.Enabled = FrmPrincipal.bolAnularTransacciones
                     btnGuardar.Enabled = True
                 End If
             End If
@@ -429,9 +429,9 @@ Public Class FrmOrdenCompra
         MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
         btnImprimir.Enabled = True
         btnAgregar.Enabled = True
-        btnAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
+        btnAnular.Enabled = FrmPrincipal.bolAnularTransacciones
         btnImprimir.Focus()
-        btnGuardar.Enabled = FrmPrincipal.usuarioGlobal.Modifica
+        btnGuardar.Enabled = False
         btnInsertar.Enabled = False
         btnEliminar.Enabled = False
         btnBusProd.Enabled = False

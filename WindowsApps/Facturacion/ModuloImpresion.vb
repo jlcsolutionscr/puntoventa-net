@@ -487,6 +487,7 @@ Public Class ModuloImpresion
         Try
             ImprimirEncabezado(objImpresion.equipo, objImpresion.empresa, Date.Now.ToString("dd-MM-yyyy"), objImpresion.usuario.CodigoUsuario, "TIQUETE DE COMPRA")
             lineas.Add(New ClsLineaImpresion(1, "Compra Nro: " & objImpresion.strId, 0, 100, 10, StringAlignment.Near, False))
+            lineas.Add(New ClsLineaImpresion(1, "Factura Nro: " & objImpresion.strDocumento, 0, 100, 10, StringAlignment.Near, False))
             lineas.Add(New ClsLineaImpresion(1, "Fecha: " & objImpresion.strFecha, 0, 100, 10, StringAlignment.Near, False))
             lineas.Add(New ClsLineaImpresion(2, "Proveedor: " & objImpresion.strNombre, 0, 100, 10, StringAlignment.Near, False))
             lineas.Add(New ClsLineaImpresion(1, "".PadRight(32, "_"), 0, 100, 10, StringAlignment.Near, False))
@@ -784,12 +785,12 @@ Public Class ModuloImpresion
             lineas.Add(New ClsLineaImpresion(2, objImpresion.usuario.CodigoUsuario, 143, 143, 10, StringAlignment.Far, True))
             Dim strNombreComercial As String = objImpresion.empresa.NombreComercial
             While strNombreComercial.Length > 30
-                lineas.Add(New ClsLineaImpresion(1, strNombreComercial.Substring(0, 30), 0, 0, 12, StringAlignment.Center, True))
+                lineas.Add(New ClsLineaImpresion(1, strNombreComercial.Substring(0, 30), 0, 100, 12, StringAlignment.Center, True))
                 strNombreComercial = strNombreComercial.Substring(30)
             End While
-            lineas.Add(New ClsLineaImpresion(2, strNombreComercial, 0, 0, 12, StringAlignment.Center, True))
+            lineas.Add(New ClsLineaImpresion(2, strNombreComercial, 0, 100, 12, StringAlignment.Center, True))
             lineas.Add(New ClsLineaImpresion(1, "CIERRE DE EFECTIVO", 0, 100, 10, StringAlignment.Center, False))
-            lineas.Add(New ClsLineaImpresion(2, "Fecha: " & objImpresion.strFecha, 20, 266, 10, StringAlignment.Near, False))
+            lineas.Add(New ClsLineaImpresion(2, "Fecha: " & objImpresion.strFecha, 20, 66, 10, StringAlignment.Near, False))
             lineas.Add(New ClsLineaImpresion(1, "Detalle de Ingresos", 0, 100, 10, StringAlignment.Center, False))
             For i As Integer = 0 To objImpresion.arrDetalleIngresos.Count - 1
                 lineas.Add(New ClsLineaImpresion(0, objImpresion.arrDetalleIngresos(i).strDescripcion, 0, 54, 10, StringAlignment.Near, False))
@@ -814,15 +815,15 @@ Public Class ModuloImpresion
             lineas.Add(New ClsLineaImpresion(2, objImpresion.strRetiroEfectivo, 0, 100, 10, StringAlignment.Far, True))
 
             lineas.Add(New ClsLineaImpresion(0, "Ventas efectivo", 0, 100, 10, StringAlignment.Near, True))
-            lineas.Add(New ClsLineaImpresion(1, objImpresion.strVentasEfectivo, 0, 100, 10, StringAlignment.Far, True))
+            lineas.Add(New ClsLineaImpresion(1, objImpresion.strVentasEfectivo, 0, 100, 10, StringAlignment.Far, False))
             lineas.Add(New ClsLineaImpresion(0, "Ventas tarjeta", 0, 100, 10, StringAlignment.Near, True))
-            lineas.Add(New ClsLineaImpresion(1, objImpresion.strVentasTarjeta, 0, 100, 10, StringAlignment.Far, True))
+            lineas.Add(New ClsLineaImpresion(1, objImpresion.strVentasTarjeta, 0, 100, 10, StringAlignment.Far, False))
             lineas.Add(New ClsLineaImpresion(0, "Ventas transfer", 0, 100, 10, StringAlignment.Near, True))
-            lineas.Add(New ClsLineaImpresion(1, objImpresion.strVentasTransferencia, 0, 100, 10, StringAlignment.Far, True))
+            lineas.Add(New ClsLineaImpresion(1, objImpresion.strVentasTransferencia, 0, 100, 10, StringAlignment.Far, False))
             lineas.Add(New ClsLineaImpresion(0, "Ventas crédito", 0, 100, 10, StringAlignment.Near, True))
-            lineas.Add(New ClsLineaImpresion(1, objImpresion.strVentasCredito, 0, 100, 10, StringAlignment.Far, True))
+            lineas.Add(New ClsLineaImpresion(1, objImpresion.strVentasCredito, 0, 100, 10, StringAlignment.Far, False))
             lineas.Add(New ClsLineaImpresion(0, "Total de ventas", 0, 100, 10, StringAlignment.Near, False))
-            lineas.Add(New ClsLineaImpresion(2, objImpresion.strTotalVentas, 0, 100, 10, StringAlignment.Far, False))
+            lineas.Add(New ClsLineaImpresion(2, objImpresion.strTotalVentas, 0, 100, 10, StringAlignment.Far, True))
             Dim observaciones As String = "Nota: " & objImpresion.strObservaciones
             While observaciones.Length > 32
                 lineas.Add(New ClsLineaImpresion(1, observaciones.Substring(0, 32), 0, 100, 10, StringAlignment.Near, False))

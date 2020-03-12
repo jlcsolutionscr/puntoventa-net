@@ -4,8 +4,8 @@ Imports LeandroSoftware.Core.Dominio.Entidades
 Imports LeandroSoftware.ClienteWCF
 Imports System.Threading.Tasks
 Imports System.IO
-Imports System.Globalization
-Imports LeandroSoftware.Core.Utilitario
+Imports Microsoft.Reporting.WinForms
+Imports System.Reflection
 
 Public Class FrmCompra
 #Region "Variables"
@@ -27,6 +27,9 @@ Public Class FrmCompra
     Private detalleComprobante As ModuloImpresion.ClsDetalleComprobante
     Private desglosePagoImpresion As ModuloImpresion.ClsDesgloseFormaPago
     Private bolInit As Boolean = True
+    Private newFormReport As FrmReportViewer
+    Private assembly As Assembly = Assembly.LoadFrom("Core.dll")
+    Private strEmpresa As String = IIf(FrmPrincipal.empresaGlobal.NombreComercial = "", FrmPrincipal.empresaGlobal.NombreEmpresa, FrmPrincipal.empresaGlobal.NombreComercial)
 #End Region
 
 #Region "Métodos"
@@ -383,7 +386,7 @@ Public Class FrmCompra
         cboSucursal.DisplayMember = "Descripcion"
         cboSucursal.DataSource = Await Puntoventa.ObtenerListadoSucursales(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
         cboSucursal.SelectedValue = FrmPrincipal.equipoGlobal.IdSucursal
-        cboSucursal.Enabled = FrmPrincipal.usuarioGlobal.Modifica
+        cboSucursal.Enabled = FrmPrincipal.bolSeleccionaSucursal
     End Function
 
     Private Sub CargarDatosProducto(producto As Producto)
@@ -583,8 +586,8 @@ Public Class FrmCompra
                 btnImprimir.Enabled = True
                 btnGenerarPDF.Enabled = True
                 btnBuscarProveedor.Enabled = False
-                btnAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
-                btnGuardar.Enabled = FrmPrincipal.usuarioGlobal.Modifica
+                btnAnular.Enabled = FrmPrincipal.bolAnularTransacciones
+                btnGuardar.Enabled = False
             End If
         End If
     End Sub
@@ -744,7 +747,7 @@ Public Class FrmCompra
         btnImprimir.Enabled = True
         btnGenerarPDF.Enabled = True
         btnAgregar.Enabled = True
-        btnAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
+        btnAnular.Enabled = FrmPrincipal.bolAnularTransacciones
         btnImprimir.Focus()
         btnGuardar.Enabled = False
         btnInsertar.Enabled = False
@@ -762,6 +765,7 @@ Public Class FrmCompra
                 .empresa = FrmPrincipal.empresaGlobal,
                 .equipo = FrmPrincipal.equipoGlobal,
                 .strId = txtIdCompra.Text,
+                .strDocumento = txtFactura.Text,
                 .strNombre = txtProveedor.Text,
                 .strFecha = txtFecha.Text,
                 .strSubTotal = txtSubTotal.Text,
@@ -794,96 +798,33 @@ Public Class FrmCompra
         End If
     End Sub
 
-    Private Async Sub BtnGenerarPDF_Click(sender As Object, e As EventArgs) Handles btnGenerarPDF.Click
+    Private Sub BtnGenerarPDF_Click(sender As Object, e As EventArgs) Handles btnGenerarPDF.Click
         If txtIdCompra.Text <> "" Then
-            Dim datos As EstructuraPDF = New EstructuraPDF()
-            Try
-                Dim poweredByImage As Image = My.Resources.logo
-                datos.PoweredByLogotipo = poweredByImage
-            Catch ex As Exception
-                datos.PoweredByLogotipo = Nothing
-            End Try
-            Try
-                Dim logotipo As Byte() = Await Puntoventa.ObtenerLogotipoEmpresa(compra.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
-                Dim logoImage As Image
-                Using ms As New MemoryStream(logotipo)
-                    logoImage = Image.FromStream(ms)
-                End Using
-                datos.Logotipo = logoImage
-            Catch ex As Exception
-                datos.Logotipo = Nothing
-            End Try
-            datos.TituloDocumento = "COMPRA DE MERCADERIA"
-            datos.NombreEmpresa = FrmPrincipal.empresaGlobal.NombreEmpresa
-            datos.NombreComercial = FrmPrincipal.empresaGlobal.NombreComercial
-            datos.ConsecInterno = compra.IdCompra
-            datos.Consecutivo = Nothing
-            datos.Clave = Nothing
-            datos.CondicionVenta = IIf(compra.IdCondicionVenta = StaticCondicionVenta.Credito, "Crédito", "Contado")
-            datos.PlazoCredito = ""
-            datos.Fecha = compra.Fecha.ToString("dd/MM/yyyy hh:mm:ss")
-            If dtbDesglosePago.Rows.Count = 0 Then
-                datos.MedioPago = "Crédito"
-            ElseIf dtbDesglosePago.Rows.Count > 1 Then
-                datos.MedioPago = "Otros"
-            Else
-                datos.MedioPago = ObtenerValoresCodificados.ObtenerMedioDePago(dtbDesglosePago.Rows(0).Item(0))
-            End If
-            datos.NombreEmisor = FrmPrincipal.empresaGlobal.NombreEmpresa
-            datos.NombreComercialEmisor = FrmPrincipal.empresaGlobal.NombreComercial
-            datos.IdentificacionEmisor = FrmPrincipal.empresaGlobal.Identificacion
-            datos.CorreoElectronicoEmisor = FrmPrincipal.empresaGlobal.CorreoNotificacion
-            datos.TelefonoEmisor = FrmPrincipal.empresaGlobal.Telefono1 + IIf(FrmPrincipal.empresaGlobal.Telefono2.Length > 0, " - " + FrmPrincipal.empresaGlobal.Telefono2, "")
-            datos.FaxEmisor = ""
-            datos.ProvinciaEmisor = FrmPrincipal.empresaGlobal.Barrio.Distrito.Canton.Provincia.Descripcion
-            datos.CantonEmisor = FrmPrincipal.empresaGlobal.Barrio.Distrito.Canton.Descripcion
-            datos.DistritoEmisor = FrmPrincipal.empresaGlobal.Barrio.Distrito.Descripcion
-            datos.BarrioEmisor = FrmPrincipal.empresaGlobal.Barrio.Descripcion
-            datos.DireccionEmisor = FrmPrincipal.empresaGlobal.Direccion
-            If compra.IdProveedor > 1 Then
-                datos.PoseeReceptor = True
-                datos.NombreReceptor = proveedor.Nombre
-                datos.NombreComercialReceptor = proveedor.Nombre
-                datos.IdentificacionReceptor = proveedor.Identificacion
-                datos.CorreoElectronicoReceptor = ""
-                datos.TelefonoReceptor = proveedor.Telefono1
-                datos.FaxReceptor = proveedor.Telefono2
-                datos.ProvinciaReceptor = ""
-                datos.CantonReceptor = ""
-                datos.DistritoReceptor = ""
-                datos.BarrioReceptor = ""
-                datos.DireccionReceptor = proveedor.Direccion
-            End If
+            btnGenerarPDF.Enabled = False
+            Dim datosReporte As New List(Of ReporteCompra)()
             For I = 0 To dtbDetalleCompra.Rows.Count - 1
-                Dim decTotalLinea As Decimal = CDbl(dtbDetalleCompra.Rows(I).Item(4)) * CDbl(dtbDetalleCompra.Rows(I).Item(5))
-                Dim detalle As EstructuraPDFDetalleServicio = New EstructuraPDFDetalleServicio With {
-                .Cantidad = CDbl(dtbDetalleCompra.Rows(I).Item(4)),
-                .Codigo = dtbDetalleCompra.Rows(I).Item(2),
-                .CodigoProveedor = dtbDetalleCompra.Rows(I).Item(1),
-                .Detalle = dtbDetalleCompra.Rows(I).Item(3),
-                .PrecioUnitario = CDbl(dtbDetalleCompra.Rows(I).Item(5)).ToString("N2", CultureInfo.InvariantCulture),
-                .TotalLinea = decTotalLinea.ToString("N2", CultureInfo.InvariantCulture)
-            }
-                datos.DetalleServicio.Add(detalle)
+                Dim item As New ReporteCompra(compra.IdCompra, compra.NoDocumento, compra.Proveedor.Nombre, compra.Fecha, dtbDetalleCompra.Rows(I).Item(2), dtbDetalleCompra.Rows(I).Item(1), dtbDetalleCompra.Rows(I).Item(3), dtbDetalleCompra.Rows(I).Item(4), dtbDetalleCompra.Rows(I).Item(9))
+                datosReporte.Add(item)
             Next
-            datos.OtrosTextos = ""
-            datos.TotalGravado = decGravado.ToString("N2", CultureInfo.InvariantCulture)
-            datos.TotalExonerado = "0.00"
-            datos.TotalExento = decExcento.ToString("N2", CultureInfo.InvariantCulture)
-            datos.Descuento = txtDescuento.Text
-            datos.Impuesto = txtImpuesto.Text
-            datos.TotalGeneral = decTotal.ToString("N2", CultureInfo.InvariantCulture)
-            datos.CodigoMoneda = IIf(compra.IdTipoMoneda = 1, "CRC", "USD")
-            datos.TipoDeCambio = 1
+            Dim strFecha As String = Now().ToString("dd/MM/yyyy hh:mm:ss")
+            Dim rds As ReportDataSource = New ReportDataSource("dstDatos", datosReporte)
+            newFormReport = New FrmReportViewer
+            newFormReport.Visible = False
+            newFormReport.repReportViewer.LocalReport.DataSources.Clear()
+            newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
+            newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
+            Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptCompra.rdlc")
+            newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
+            Dim parameters(1) As ReportParameter
+            parameters(0) = New ReportParameter("pUsuario", FrmPrincipal.usuarioGlobal.CodigoUsuario)
+            parameters(1) = New ReportParameter("pEmpresa", strEmpresa)
             Try
-                Dim pdfBytes As Byte() = UtilitarioPDF.GenerarPDF(datos)
-                Dim pdfFilePath As String = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\COMPRA-" + txtIdCompra.Text + ".pdf"
-                File.WriteAllBytes(pdfFilePath, pdfBytes)
-                Process.Start(pdfFilePath)
+                newFormReport.repReportViewer.LocalReport.SetParameters(parameters)
+                newFormReport.ShowDialog()
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Exit Sub
             End Try
+            btnGenerarPDF.Enabled = True
         End If
     End Sub
 

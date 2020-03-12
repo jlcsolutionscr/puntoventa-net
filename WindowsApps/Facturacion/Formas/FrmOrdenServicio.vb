@@ -704,7 +704,7 @@ Public Class FrmOrdenServicio
                 btnInsertarPago.Enabled = False
                 btnEliminarPago.Enabled = False
                 btnGuardar.Enabled = ordenServicio.Aplicado = False
-                btnAnular.Enabled = ordenServicio.Aplicado = False And FrmPrincipal.usuarioGlobal.Modifica
+                btnAnular.Enabled = ordenServicio.Aplicado = False And FrmPrincipal.bolAnularTransacciones
                 bolInit = False
             Else
                 MessageBox.Show("No existe registro de OrdenServicio asociado al identificador seleccionado", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -804,22 +804,22 @@ Public Class FrmOrdenServicio
             MessageBox.Show("El total del desglose de pago de la factura es superior al saldo por pagar.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         End If
-        If FrmPrincipal.empresaGlobal.IngresaPagoCliente And decPagoEfectivo > 0 Then
-            Dim formPagoFactura As New FrmPagoEfectivo()
-            formPagoFactura.decTotalEfectivo = decPagoEfectivo
-            formPagoFactura.decPagoCliente = 0
-            FrmPrincipal.intBusqueda = 0
-            formPagoFactura.ShowDialog()
-            If FrmPrincipal.intBusqueda > 0 Then
-                decPagoCliente = FrmPrincipal.intBusqueda
-            Else
-                MessageBox.Show("Proceso cancelado por el usuario. Intente guardar de nuevo.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-                Exit Sub
-            End If
-        Else
-            decPagoCliente = decPagoEfectivo
-        End If
         If txtIdOrdenServicio.Text = "" Then
+            If FrmPrincipal.empresaGlobal.IngresaPagoCliente And decPagoEfectivo > 0 Then
+                Dim formPagoFactura As New FrmPagoEfectivo()
+                formPagoFactura.decTotalEfectivo = decPagoEfectivo
+                formPagoFactura.decPagoCliente = 0
+                FrmPrincipal.intBusqueda = 0
+                formPagoFactura.ShowDialog()
+                If FrmPrincipal.intBusqueda > 0 Then
+                    decPagoCliente = FrmPrincipal.intBusqueda
+                Else
+                    MessageBox.Show("Proceso cancelado por el usuario. Intente guardar de nuevo.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                    Exit Sub
+                End If
+            Else
+                decPagoCliente = decPagoEfectivo
+            End If
             btnImprimir.Focus()
             btnGuardar.Enabled = False
             ordenServicio = New OrdenServicio With {
@@ -928,10 +928,10 @@ Public Class FrmOrdenServicio
         End If
         btnImprimir.Enabled = True
         btnImprimir.Focus()
-        btnGuardar.Enabled = True
+        btnGuardar.Enabled = False
         btnInsertarPago.Enabled = False
         btnEliminarPago.Enabled = False
-        btnAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
+        btnAnular.Enabled = FrmPrincipal.bolAnularTransacciones
         cboTipoMoneda.Enabled = False
         btnBuscaVendedor.Enabled = False
         btnBuscarCliente.Enabled = False
@@ -1226,7 +1226,7 @@ Public Class FrmOrdenServicio
             If Not IsDBNull(grdDetalleOrdenServicio.Rows(e.RowIndex).Cells(e.ColumnIndex).Value) Then
                 decPorcDesc = grdDetalleOrdenServicio.Rows(e.RowIndex).Cells(e.ColumnIndex).Value
             End If
-            If Not FrmPrincipal.usuarioGlobal.Modifica And decPorcDesc > FrmPrincipal.empresaGlobal.PorcentajeDescMaximo Then
+            If Not FrmPrincipal.bolAplicaDescuento And decPorcDesc > FrmPrincipal.empresaGlobal.PorcentajeDescMaximo Then
                 If MessageBox.Show("El porcentaje ingresado es mayor al parámetro establecido para la empresa. Desea ingresar una autorización?", "JLC Solutions CR", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
                     FrmPrincipal.strCodigoUsuario = ""
                     FrmPrincipal.strContrasena = ""
@@ -1277,7 +1277,7 @@ Public Class FrmOrdenServicio
             If txtPorcDesc.Text = "" Then txtPorcDesc.Text = "0"
             If producto IsNot Nothing Then
                 decPrecioVenta = ObtenerPrecioVentaPorCliente(cliente, producto)
-                If Not FrmPrincipal.usuarioGlobal.Modifica And CDbl(txtPorcDesc.Text) > FrmPrincipal.empresaGlobal.PorcentajeDescMaximo Then
+                If Not FrmPrincipal.bolAplicaDescuento And CDbl(txtPorcDesc.Text) > FrmPrincipal.empresaGlobal.PorcentajeDescMaximo Then
                     If MessageBox.Show("El porcentaje ingresado es mayor al parámetro establecido para la empresa. Desea ingresar una autorización?", "JLC Solutions CR", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
                         FrmPrincipal.strCodigoUsuario = ""
                         FrmPrincipal.strContrasena = ""

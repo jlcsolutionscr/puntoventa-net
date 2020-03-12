@@ -77,7 +77,7 @@ Public Class FrmAplicaTrasladoListado
         cboSucursal.DisplayMember = "Descripcion"
         cboSucursal.DataSource = Await Puntoventa.ObtenerListadoSucursales(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
         cboSucursal.SelectedValue = FrmPrincipal.equipoGlobal.IdSucursal
-        cboSucursal.Enabled = FrmPrincipal.usuarioGlobal.Modifica
+        cboSucursal.Enabled = FrmPrincipal.bolSeleccionaSucursal
         dtListaEstado.Clear()
         dtListaEstado.Columns.Add(New DataColumn("IdEstado", GetType(Boolean)))
         dtListaEstado.Columns.Add(New DataColumn("Descripcion", GetType(String)))

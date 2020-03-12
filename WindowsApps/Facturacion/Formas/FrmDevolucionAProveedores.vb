@@ -299,7 +299,7 @@ Public Class FrmDevolucionAProveedores
                 CargarTotales()
                 grdDetalleDevolucion.ReadOnly = True
                 CmdImprimir.Enabled = True
-                CmdAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
+                CmdAnular.Enabled = FrmPrincipal.bolAnularTransacciones
                 CmdGuardar.Enabled = False
             End If
         End If
@@ -354,7 +354,7 @@ Public Class FrmDevolucionAProveedores
         grdDetalleDevolucion.ReadOnly = True
         CmdImprimir.Enabled = True
         CmdAgregar.Enabled = True
-        CmdAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
+        CmdAnular.Enabled = FrmPrincipal.bolAnularTransacciones
         CmdImprimir.Focus()
         CmdGuardar.Enabled = False
     End Sub

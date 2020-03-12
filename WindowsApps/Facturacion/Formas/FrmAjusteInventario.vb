@@ -139,7 +139,7 @@ Public Class FrmAjusteInventario
         cboSucursal.DisplayMember = "Descripcion"
         cboSucursal.DataSource = Await Puntoventa.ObtenerListadoSucursales(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
         cboSucursal.SelectedValue = FrmPrincipal.equipoGlobal.IdSucursal
-        cboSucursal.Enabled = FrmPrincipal.usuarioGlobal.Modifica
+        cboSucursal.Enabled = FrmPrincipal.bolSeleccionaSucursal
     End Function
 #End Region
 
@@ -237,7 +237,7 @@ Public Class FrmAjusteInventario
                 txtFecha.Text = ajusteInventario.Fecha
                 txtDescAjuste.Text = ajusteInventario.Descripcion
                 CargarDetalleAjusteInventario(ajusteInventario)
-                BtnAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
+                btnAnular.Enabled = FrmPrincipal.bolAnularTransacciones
                 btnGuardar.Enabled = False
             End If
         End If
@@ -274,7 +274,7 @@ Public Class FrmAjusteInventario
         End If
         MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
         btnAgregar.Enabled = True
-        btnAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
+        btnAnular.Enabled = FrmPrincipal.bolAnularTransacciones
         btnAgregar.Focus()
         btnGuardar.Enabled = False
     End Sub

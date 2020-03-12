@@ -63,7 +63,6 @@ namespace LeandroSoftware.Core.TiposComunes
     {
         public string Cantidad { get; set; }
         public string Codigo { get; set; }
-        public string CodigoProveedor { get; set; }
         public string Detalle { get; set; }
         public string PrecioUnitario { get; set; }
         public string TotalLinea { get; set; }

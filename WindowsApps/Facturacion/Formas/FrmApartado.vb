@@ -694,7 +694,7 @@ Public Class FrmApartado
                 btnImprimir.Enabled = True
                 btnBuscaVendedor.Enabled = False
                 btnBuscarCliente.Enabled = False
-                btnAnular.Enabled = apartado.Aplicado = False And FrmPrincipal.usuarioGlobal.Modifica
+                btnAnular.Enabled = apartado.Aplicado = False And FrmPrincipal.bolAnularTransacciones
                 btnGuardar.Enabled = False
                 bolInit = False
             Else
@@ -884,7 +884,7 @@ Public Class FrmApartado
         btnImprimir.Focus()
         btnGuardar.Enabled = False
         btnAgregar.Enabled = True
-        btnAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
+        btnAnular.Enabled = FrmPrincipal.bolAnularTransacciones
         btnInsertar.Enabled = False
         btnEliminar.Enabled = False
         btnInsertarPago.Enabled = False
@@ -1182,7 +1182,7 @@ Public Class FrmApartado
             If Not IsDBNull(grdDetalleApartado.Rows(e.RowIndex).Cells(e.ColumnIndex).Value) Then
                 decPorcDesc = grdDetalleApartado.Rows(e.RowIndex).Cells(e.ColumnIndex).Value
             End If
-            If Not FrmPrincipal.usuarioGlobal.Modifica And decPorcDesc > FrmPrincipal.empresaGlobal.PorcentajeDescMaximo Then
+            If Not FrmPrincipal.bolAplicaDescuento And decPorcDesc > FrmPrincipal.empresaGlobal.PorcentajeDescMaximo Then
                 If MessageBox.Show("El porcentaje ingresado es mayor al parámetro establecido para la empresa. Desea ingresar una autorización?", "JLC Solutions CR", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
                     FrmPrincipal.strCodigoUsuario = ""
                     FrmPrincipal.strContrasena = ""
@@ -1233,7 +1233,7 @@ Public Class FrmApartado
             If txtPorcDesc.Text = "" Then txtPorcDesc.Text = "0"
             If producto IsNot Nothing Then
                 decPrecioVenta = ObtenerPrecioVentaPorCliente(cliente, producto)
-                If Not FrmPrincipal.usuarioGlobal.Modifica And CDbl(txtPorcDesc.Text) > FrmPrincipal.empresaGlobal.PorcentajeDescMaximo Then
+                If Not FrmPrincipal.bolAplicaDescuento And CDbl(txtPorcDesc.Text) > FrmPrincipal.empresaGlobal.PorcentajeDescMaximo Then
                     If MessageBox.Show("El porcentaje ingresado es mayor al parámetro establecido para la empresa. Desea ingresar una autorización?", "JLC Solutions CR", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
                         FrmPrincipal.strCodigoUsuario = ""
                         FrmPrincipal.strContrasena = ""

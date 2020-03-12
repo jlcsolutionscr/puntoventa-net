@@ -647,7 +647,6 @@ Public Class FrmFactura
             txtSaldoPorPagar.Text = FormatNumber(decSaldoPorPagar, 2)
             shtConsecutivoPago = 0
             If FrmPrincipal.bolModificaDescripcion Then txtDescripcion.ReadOnly = False
-            If FrmPrincipal.bolAplicaDescuento Then txtPorcDesc.ReadOnly = False
             If FrmPrincipal.bolModificaPrecioVenta Then txtPrecio.ReadOnly = False
             txtCodigo.Focus()
         Catch ex As Exception
@@ -832,7 +831,7 @@ Public Class FrmFactura
                 btnOrdenServicio.Enabled = False
                 btnApartado.Enabled = False
                 btnProforma.Enabled = False
-                btnAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
+                btnAnular.Enabled = FrmPrincipal.bolAnularTransacciones
                 btnGuardar.Enabled = False
                 bolInit = False
             Else
@@ -1233,7 +1232,7 @@ Public Class FrmFactura
         btnGuardar.Enabled = False
         btnGenerarPDF.Enabled = True
         btnAgregar.Enabled = True
-        btnAnular.Enabled = FrmPrincipal.usuarioGlobal.Modifica
+        btnAnular.Enabled = FrmPrincipal.bolAnularTransacciones
         btnInsertar.Enabled = False
         btnEliminar.Enabled = False
         btnInsertarPago.Enabled = False
@@ -1358,9 +1357,9 @@ Public Class FrmFactura
             datos.DistritoEmisor = FrmPrincipal.empresaGlobal.Barrio.Distrito.Descripcion
             datos.BarrioEmisor = FrmPrincipal.empresaGlobal.Barrio.Descripcion
             datos.DireccionEmisor = FrmPrincipal.empresaGlobal.Direccion
+            datos.NombreReceptor = factura.NombreCliente
             If factura.IdCliente > 1 Then
                 datos.PoseeReceptor = True
-                datos.NombreReceptor = cliente.Nombre
                 datos.NombreComercialReceptor = cliente.NombreComercial
                 datos.IdentificacionReceptor = cliente.Identificacion
                 datos.CorreoElectronicoReceptor = cliente.CorreoElectronico
@@ -1573,7 +1572,7 @@ Public Class FrmFactura
             If Not IsDBNull(grdDetalleFactura.Rows(e.RowIndex).Cells(4).Value) Then
                 decPorcDesc = grdDetalleFactura.Rows(e.RowIndex).Cells(4).Value
             End If
-            If Not FrmPrincipal.usuarioGlobal.Modifica And decPorcDesc > FrmPrincipal.empresaGlobal.PorcentajeDescMaximo Then
+            If Not FrmPrincipal.bolAplicaDescuento And decPorcDesc > FrmPrincipal.empresaGlobal.PorcentajeDescMaximo Then
                 If MessageBox.Show("El porcentaje ingresado es mayor al parámetro establecido para la empresa. Desea ingresar una autorización?", "JLC Solutions CR", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
                     FrmPrincipal.strCodigoUsuario = ""
                     FrmPrincipal.strContrasena = ""
@@ -1624,7 +1623,7 @@ Public Class FrmFactura
             If txtPorcDesc.Text = "" Then txtPorcDesc.Text = "0"
             If producto IsNot Nothing Then
                 decPrecioVenta = ObtenerPrecioVentaPorCliente(cliente, producto)
-                If Not FrmPrincipal.usuarioGlobal.Modifica And CDbl(txtPorcDesc.Text) > FrmPrincipal.empresaGlobal.PorcentajeDescMaximo Then
+                If Not FrmPrincipal.bolAplicaDescuento And CDbl(txtPorcDesc.Text) > FrmPrincipal.empresaGlobal.PorcentajeDescMaximo Then
                     If MessageBox.Show("El porcentaje ingresado es mayor al parámetro establecido para la empresa. Desea ingresar una autorización?", "JLC Solutions CR", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
                         FrmPrincipal.strCodigoUsuario = ""
                         FrmPrincipal.strContrasena = ""

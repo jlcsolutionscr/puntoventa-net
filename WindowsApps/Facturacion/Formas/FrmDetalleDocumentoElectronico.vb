@@ -14,6 +14,7 @@ Public Class FrmDetalleDocumentoElectronico
     Private intFilasPorPagina As Integer = 17
     Private intCantidadDePaginas As Integer
     Private bolRespuestaVisible = False
+    Private bolInit As Boolean = False
 #End Region
 
 #Region "Métodos"
@@ -41,7 +42,7 @@ Public Class FrmDetalleDocumentoElectronico
         dgvDatos.Columns.Add(dvcConsecutivo)
         dvcNombreReceptor.HeaderText = "Receptor"
         dvcNombreReceptor.DataPropertyName = "NombreReceptor"
-        dvcNombreReceptor.Width = 350
+        dvcNombreReceptor.Width = 367
         dgvDatos.Columns.Add(dvcNombreReceptor)
         dvcTotal.HeaderText = "Total"
         dvcTotal.DataPropertyName = "MontoTotal"
@@ -81,7 +82,6 @@ Public Class FrmDetalleDocumentoElectronico
             Exit Function
         End Try
         intCantidadDePaginas = Math.Truncate(intTotalDocumentos / intFilasPorPagina) + IIf((intTotalDocumentos Mod intFilasPorPagina) = 0, 0, 1)
-
         If intCantidadDePaginas > 1 Then
             btnLast.Enabled = True
             btnNext.Enabled = True
@@ -100,7 +100,7 @@ Public Class FrmDetalleDocumentoElectronico
         cboSucursal.DisplayMember = "Descripcion"
         cboSucursal.DataSource = Await Puntoventa.ObtenerListadoSucursales(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
         cboSucursal.SelectedValue = FrmPrincipal.equipoGlobal.IdSucursal
-        cboSucursal.Enabled = FrmPrincipal.usuarioGlobal.Modifica
+        cboSucursal.Enabled = FrmPrincipal.bolSeleccionaSucursal
     End Function
 #End Region
 
@@ -152,11 +152,10 @@ Public Class FrmDetalleDocumentoElectronico
             Await CargarCombos()
             rtxDetalleRespuesta.Visible = False
             EstablecerPropiedadesDataGridView()
-            picLoader.Visible = True
             Await ObtenerCantidadDocumentosProcesados()
             intIndiceDePagina = 1
             Await ActualizarDatos(intIndiceDePagina)
-            picLoader.Visible = False
+            bolInit = True
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -205,19 +204,20 @@ Public Class FrmDetalleDocumentoElectronico
         Dim strCorreoReceptor = ""
         Dim intIndex As Integer = dgvDatos.CurrentRow.Index
         Dim documento As DocumentoDetalle = listadoDocumentosProcesados.Item(intIndex)
-        If MessageBox.Show("Desea utilizar la dirección(es) de correo electrónico registrada(s) en el documento?", "JLC Solutions CR", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
-            strCorreoReceptor = documento.CorreoNotificacion
+        If documento.CorreoNotificacion <> "" Then
+            If MessageBox.Show("Desea utilizar la dirección(es) de correo electrónico registrada(s) en el documento?", "JLC Solutions CR", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                strCorreoReceptor = documento.CorreoNotificacion
+            Else
+                strCorreoReceptor = InputBox("Ingrese la(s) dirección(es) de correo electrónico donde se enviará el comprobante, separados por punto y coma:")
+            End If
         Else
             strCorreoReceptor = InputBox("Ingrese la(s) dirección(es) de correo electrónico donde se enviará el comprobante, separados por punto y coma:")
         End If
         If strCorreoReceptor <> "" Then
-            picLoader.Visible = True
             Try
                 Await Puntoventa.EnviarNotificacion(documento.IdDocumento, strCorreoReceptor, FrmPrincipal.usuarioGlobal.Token)
-                picLoader.Visible = False
                 MessageBox.Show("Comprobante electrónico enviado satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
             Catch ex As Exception
-                picLoader.Visible = False
                 MessageBox.Show("Error al enviar el comprobante:" & ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
         Else
@@ -261,6 +261,14 @@ Public Class FrmDetalleDocumentoElectronico
             rtxDetalleRespuesta.Visible = False
             MessageBox.Show("Error al procesar la petición de datos del documento electrónico. Contacte a su proveedor. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
+    End Sub
+
+    Private Async Sub cboSucursal_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboSucursal.SelectedIndexChanged
+        If bolInit Then
+            Await ObtenerCantidadDocumentosProcesados()
+            intIndiceDePagina = 1
+            Await ActualizarDatos(intIndiceDePagina)
+        End If
     End Sub
 #End Region
 End Class

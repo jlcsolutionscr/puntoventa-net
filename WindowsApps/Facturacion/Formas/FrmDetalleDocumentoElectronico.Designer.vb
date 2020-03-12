@@ -22,8 +22,6 @@ Partial Class FrmDetalleDocumentoElectronico
     'No lo modifique con el editor de código.
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FrmDetalleDocumentoElectronico))
-        Me.picLoader = New System.Windows.Forms.PictureBox()
         Me.btnMostrarRespuesta = New System.Windows.Forms.Button()
         Me.lblPagina = New System.Windows.Forms.Label()
         Me.btnLast = New System.Windows.Forms.Button()
@@ -36,24 +34,8 @@ Partial Class FrmDetalleDocumentoElectronico
         Me.btnMostrarXML = New System.Windows.Forms.Button()
         Me.cboSucursal = New System.Windows.Forms.ComboBox()
         Me.Label6 = New System.Windows.Forms.Label()
-        CType(Me.picLoader, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.dgvDatos, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
-        '
-        'picLoader
-        '
-        Me.picLoader.BackColor = System.Drawing.Color.Transparent
-        Me.picLoader.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
-        Me.picLoader.ErrorImage = Nothing
-        Me.picLoader.Image = CType(resources.GetObject("picLoader.Image"), System.Drawing.Image)
-        Me.picLoader.InitialImage = Nothing
-        Me.picLoader.Location = New System.Drawing.Point(0, -1)
-        Me.picLoader.Name = "picLoader"
-        Me.picLoader.Size = New System.Drawing.Size(794, 489)
-        Me.picLoader.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage
-        Me.picLoader.TabIndex = 37
-        Me.picLoader.TabStop = False
-        Me.picLoader.Visible = False
         '
         'btnMostrarRespuesta
         '
@@ -199,7 +181,6 @@ Partial Class FrmDetalleDocumentoElectronico
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(794, 487)
-        Me.Controls.Add(Me.picLoader)
         Me.Controls.Add(Me.cboSucursal)
         Me.Controls.Add(Me.Label6)
         Me.Controls.Add(Me.btnMostrarXML)
@@ -215,14 +196,11 @@ Partial Class FrmDetalleDocumentoElectronico
         Me.Name = "FrmDetalleDocumentoElectronico"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Consulta de Documentos Electrónicos Procesados"
-        CType(Me.picLoader, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.dgvDatos, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
     End Sub
-
-    Friend WithEvents picLoader As PictureBox
     Friend WithEvents btnMostrarRespuesta As Button
     Friend WithEvents lblPagina As Label
     Private WithEvents btnLast As Button
