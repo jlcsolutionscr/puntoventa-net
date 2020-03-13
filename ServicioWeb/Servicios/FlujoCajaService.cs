@@ -290,6 +290,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (ingreso.Procesado) throw new BusinessException("El registro ya fue procesado por el cierre. No es posible registrar la transacción.");
                     ingreso.Nulo = true;
                     ingreso.IdAnuladoPor = intIdUsuario;
+                    ingreso.MotivoAnulacion = strMotivoAnulacion;
                     dbContext.NotificarModificacion(ingreso);
                     if (ingreso.IdAsiento > 0)
                     {
@@ -612,6 +613,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (egreso.Procesado) throw new BusinessException("El registro ya fue procesado por el cierre. No es posible registrar la transacción.");
                     egreso.Nulo = true;
                     egreso.IdAnuladoPor = intIdUsuario;
+                    egreso.MotivoAnulacion = strMotivoAnulacion;
                     dbContext.NotificarModificacion(egreso);
                     if (egreso.IdAsiento > 0)
                     {

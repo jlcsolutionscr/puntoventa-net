@@ -101,9 +101,12 @@ Public Class FrmGestionAbonoCxC
     Private Async Sub CmdAnular_Click(sender As Object, e As EventArgs) Handles CmdAnular.Click
         If grdDetalleRecibo.Rows.Count > 0 Then
             If grdDetalleRecibo.CurrentRow.Cells(0).Value.ToString <> "" Then
-                If MessageBox.Show("Desea anular este registro?", "JLC Solutions CR", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
+                Dim formAnulacion As New FrmMotivoAnulacion()
+                formAnulacion.bolConfirmacion = False
+                formAnulacion.ShowDialog()
+                If formAnulacion.bolConfirmacion Then
                     Try
-                        Await Puntoventa.AnularMovimientoCxC(grdDetalleRecibo.CurrentRow.Cells(0).Value, FrmPrincipal.usuarioGlobal.IdUsuario, "", FrmPrincipal.usuarioGlobal.Token)
+                        Await Puntoventa.AnularMovimientoCxC(grdDetalleRecibo.CurrentRow.Cells(0).Value, FrmPrincipal.usuarioGlobal.IdUsuario, formAnulacion.strMotivo, FrmPrincipal.usuarioGlobal.Token)
                     Catch ex As Exception
                         MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         Exit Sub

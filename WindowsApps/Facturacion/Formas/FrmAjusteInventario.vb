@@ -111,6 +111,7 @@ Public Class FrmAjusteInventario
         If producto Is Nothing Then
             txtCodigo.Text = ""
             txtDescripcion.Text = ""
+            txtExistencias.Text = ""
             txtPrecioCosto.Text = FormatNumber(0, 2)
             txtCodigo.Focus()
             Exit Sub
@@ -119,6 +120,7 @@ Public Class FrmAjusteInventario
             txtCodigo.Text = producto.Codigo
             If txtCantidad.Text = "" Then txtCantidad.Text = "1"
             txtDescripcion.Text = producto.Descripcion
+            txtExistencias.Text = producto.Existencias
             txtPrecioCosto.Text = FormatNumber(producto.PrecioCosto, 2)
         End If
     End Sub
@@ -199,6 +201,11 @@ Public Class FrmAjusteInventario
         txtIdAjuste.Text = ""
         txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
         txtDescAjuste.Text = ""
+        txtCodigo.Text = ""
+        txtDescripcion.Text = ""
+        txtExistencias.Text = ""
+        txtCantidad.Text = "1"
+        txtPrecioCosto.Text = ""
         dtbDetalleAjusteInventario.Rows.Clear()
         grdDetalleAjusteInventario.Refresh()
         btnAnular.Enabled = False
@@ -208,15 +215,18 @@ Public Class FrmAjusteInventario
 
     Private Async Sub BtnAnular_Click(sender As Object, e As EventArgs) Handles btnAnular.Click
         If txtIdAjuste.Text <> "" Then
-            If MessageBox.Show("Desea anular este registro?", "JLC Solutions CR", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
+            Dim formAnulacion As New FrmMotivoAnulacion()
+            formAnulacion.bolConfirmacion = False
+            formAnulacion.ShowDialog()
+            If formAnulacion.bolConfirmacion Then
                 Try
-                    Await Puntoventa.AnularAjusteInventario(txtIdAjuste.Text, FrmPrincipal.usuarioGlobal.IdUsuario, "", FrmPrincipal.usuarioGlobal.Token)
+                    Await Puntoventa.AnularAjusteInventario(txtIdAjuste.Text, FrmPrincipal.usuarioGlobal.IdUsuario, formAnulacion.strMotivo, FrmPrincipal.usuarioGlobal.Token)
                 Catch ex As Exception
                     MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
                 End Try
                 MessageBox.Show("Transacción procesada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
-                BtnAgregar_Click(BtnAgregar, New EventArgs())
+                BtnAgregar_Click(btnAgregar, New EventArgs())
             End If
         End If
     End Sub
@@ -304,6 +314,7 @@ Public Class FrmAjusteInventario
             txtCantidad.Text = "1"
             txtCodigo.Text = ""
             txtDescripcion.Text = ""
+            txtExistencias.Text = ""
             txtPrecioCosto.Text = ""
             producto = Nothing
             txtCodigo.Focus()
@@ -332,6 +343,7 @@ Public Class FrmAjusteInventario
                 Else
                     txtCodigo.Text = ""
                     txtDescripcion.Text = ""
+                    txtExistencias.Text = ""
                     txtCantidad.Text = ""
                     txtPrecioCosto.Text = ""
                     txtCodigo.Focus()

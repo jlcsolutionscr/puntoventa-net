@@ -62,7 +62,6 @@ Partial Class FrmMotivoAnulacion
         '
         Me.TxtMotivo.AcceptsReturn = True
         Me.TxtMotivo.BackColor = System.Drawing.SystemColors.Window
-        Me.TxtMotivo.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper
         Me.TxtMotivo.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.TxtMotivo.ForeColor = System.Drawing.SystemColors.WindowText
         Me.TxtMotivo.Location = New System.Drawing.Point(121, 17)

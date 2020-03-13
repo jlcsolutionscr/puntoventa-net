@@ -1,4 +1,5 @@
 ﻿using System;
+using System;
 using System.Linq;
 using System.Data;
 using System.Data.Entity.Infrastructure;
@@ -65,6 +66,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         void ProcesarDocumentosElectronicosPendientes(ICorreoService servicioEnvioCorreo, ConfiguracionGeneral datos);
         void ProcesarCorreoRecepcion(ICorreoService servicioEnvioCorreo, IServerMailService servicioRecepcionCorreo, ConfiguracionGeneral config, ConfiguracionRecepcion datos);
         void EnviarDocumentoElectronicoPendiente(int intIdDocumento, ConfiguracionGeneral datos);
+        void ReenviarDocumentoElectronico(int intIdDocumento, ConfiguracionGeneral datos);
         DocumentoElectronico ObtenerRespuestaDocumentoElectronicoEnviado(int intIdDocumento, ConfiguracionGeneral datos);
         int ObtenerTotalDocumentosElectronicosProcesados(int intIdEmpresa, int intIdSucursal);
         IList<DocumentoDetalle> ObtenerListadoDocumentosElectronicosProcesados(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec);
@@ -439,7 +441,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 IdSucursal = factura.IdSucursal,
                                 Fecha = DateTime.Now,
                                 Tipo = StaticTipoMovimientoProducto.Salida,
-                                Origen = "Registro de facturación de mercancía",
+                                Origen = "Registro de facturación de mercancía de factura " + factura.ConsecFactura,
                                 Cantidad = detalleFactura.Cantidad,
                                 PrecioCosto = detalleFactura.PrecioCosto
                             };
@@ -825,7 +827,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                     IdSucursal = factura.IdSucursal,
                                     Fecha = DateTime.Now,
                                     Tipo = StaticTipoMovimientoProducto.Entrada,
-                                    Origen = "Anulación de registro de facturación de mercancía",
+                                    Origen = "Anulación de registro de facturación de mercancía de factura " + factura.ConsecFactura,
                                     Cantidad = cantPorAnular,
                                     PrecioCosto = detalleFactura.PrecioCosto
                                 };
@@ -1053,6 +1055,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     proforma.Nulo = true;
                     proforma.IdAnuladoPor = intIdUsuario;
+                    proforma.MotivoAnulacion = strMotivoAnulacion;
                     dbContext.NotificarModificacion(proforma);
                     dbContext.Commit();
                 }
@@ -1198,6 +1201,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     apartado.Nulo = true;
                     apartado.IdAnuladoPor = intIdUsuario;
+                    apartado.MotivoAnulacion = strMotivoAnulacion;
                     dbContext.NotificarModificacion(apartado);
                     dbContext.Commit();
                 }
@@ -1397,6 +1401,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     ordenServicio.Nulo = true;
                     ordenServicio.IdAnuladoPor = intIdUsuario;
+                    ordenServicio.MotivoAnulacion = strMotivoAnulacion;
                     dbContext.NotificarModificacion(ordenServicio);
                     dbContext.Commit();
                 }
@@ -1547,7 +1552,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             IdSucursal = factura.IdSucursal,
                             Fecha = DateTime.Now,
                             Tipo = StaticTipoMovimientoProducto.Entrada,
-                            Origen = "Registro de devolución de mercancía del cliente",
+                            Origen = "Registro de devolución de mercancía del cliente de factura " + factura.ConsecFactura,
                             Cantidad = detalleDevolucion.Cantidad,
                             PrecioCosto = detalleDevolucion.PrecioCosto
                         };
@@ -1669,6 +1674,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (factura.Nulo) throw new BusinessException("La factura asingada a la devolución ya ha sido anulada.");
                     devolucion.Nulo = true;
                     devolucion.IdAnuladoPor = intIdUsuario;
+                    devolucion.MotivoAnulacion = strMotivoAnulacion;
                     devolucion.IdSucursal = factura.IdSucursal;
                     foreach (var detalleDevolucion in devolucion.DetalleDevolucionCliente)
                     {
@@ -1692,7 +1698,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             IdSucursal = factura.IdSucursal,
                             Fecha = DateTime.Now,
                             Tipo = StaticTipoMovimientoProducto.Salida,
-                            Origen = "Anulación de registro de devolución de mercancía del cliente",
+                            Origen = "Anulación de registro de devolución de mercancía del cliente de factura " + factura.ConsecFactura,
                             Cantidad = detalleDevolucion.Cantidad,
                             PrecioCosto = detalleDevolucion.PrecioCosto
                         };
@@ -2266,6 +2272,38 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         throw new Exception("El servicio de factura electrónica se encuentra fuera de servicio. Por favor intente más tarde.");
                     else
                         throw new Exception("Se produjo un error al procesar el documento electrónico pendiente. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public void ReenviarDocumentoElectronico(int intIdDocumento, ConfiguracionGeneral datos)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    DocumentoElectronico documento = dbContext.DocumentoElectronicoRepository.AsNoTracking().FirstOrDefault(x => x.IdDocumento == intIdDocumento);
+                    Empresa empresa = dbContext.EmpresaRepository.Find(documento.IdEmpresa);
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (documento.EstadoEnvio != StaticEstadoDocumentoElectronico.Rechazado) throw new BusinessException("El documento no posee un estado de rechazado por lo que no puede ser reenviado al Ministerio de Hacienda.");
+                    documento.IdConsecutivo = 0;
+                    ComprobanteElectronicoService.RegistrarDocumentoElectronico(empresa, )
+                    if (documentoFE != null)
+                    {
+                        Task.Run(() => ComprobanteElectronicoService.EnviarDocumentoElectronico(empresa.IdEmpresa, documentoFE.IdDocumento, datos));
+                    }
+                }
+                catch (BusinessException ex)
+                {
+                    throw ex;
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al reenviar el documento electrónico pendiente: ", ex);
+                    if (ex.Message == "Service Unavailable")
+                        throw new Exception("El servicio de factura electrónica se encuentra fuera de servicio. Por favor intente más tarde.");
+                    else
+                        throw new Exception("Se produjo un error al reenviar el documento electrónico pendiente. Por favor consulte con su proveedor.");
                 }
             }
         }

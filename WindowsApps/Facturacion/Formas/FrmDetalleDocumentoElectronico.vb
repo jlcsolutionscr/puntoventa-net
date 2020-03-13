@@ -270,5 +270,27 @@ Public Class FrmDetalleDocumentoElectronico
             Await ActualizarDatos(intIndiceDePagina)
         End If
     End Sub
+
+    Private Sub dgvDatos_CellContentClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgvDatos.CellContentClick
+        Dim intIndex As Integer = dgvDatos.CurrentRow.Index
+        Dim documento As DocumentoDetalle = listadoDocumentosProcesados.Item(intIndex)
+        If documento.EstadoEnvio = StaticEstadoDocumentoElectronico.Rechazado Then
+            btnReenviarNotificacion.Enabled = False
+            If documento.EsMensajeReceptor = "N" Then
+                btnGenerar.Enabled = True
+            Else
+                btnGenerar.Enabled = False
+            End If
+        Else
+            btnReenviarNotificacion.Enabled = True
+            btnGenerar.Enabled = False
+        End If
+    End Sub
+
+    Private Sub btnGenerar_Click(sender As Object, e As EventArgs) Handles btnGenerar.Click
+        If MessageBox.Show("Esta seguro de generar nuevamente el documento electronico?", "JLC Solutions CR", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
+
+        End If
+    End Sub
 #End Region
 End Class

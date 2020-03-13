@@ -34,6 +34,7 @@ Partial Class FrmDetalleDocumentoElectronico
         Me.btnMostrarXML = New System.Windows.Forms.Button()
         Me.cboSucursal = New System.Windows.Forms.ComboBox()
         Me.Label6 = New System.Windows.Forms.Label()
+        Me.btnGenerar = New System.Windows.Forms.Button()
         CType(Me.dgvDatos, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -121,7 +122,7 @@ Partial Class FrmDetalleDocumentoElectronico
         Me.dgvDatos.ReadOnly = True
         Me.dgvDatos.RowHeadersVisible = False
         Me.dgvDatos.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-        Me.dgvDatos.Size = New System.Drawing.Size(770, 397)
+        Me.dgvDatos.Size = New System.Drawing.Size(768, 397)
         Me.dgvDatos.TabIndex = 45
         Me.dgvDatos.TabStop = False
         '
@@ -176,11 +177,23 @@ Partial Class FrmDetalleDocumentoElectronico
         Me.Label6.Text = "Sucursal:"
         Me.Label6.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
+        'btnGenerar
+        '
+        Me.btnGenerar.Enabled = False
+        Me.btnGenerar.Location = New System.Drawing.Point(133, 450)
+        Me.btnGenerar.Name = "btnGenerar"
+        Me.btnGenerar.Size = New System.Drawing.Size(147, 22)
+        Me.btnGenerar.TabIndex = 153
+        Me.btnGenerar.TabStop = False
+        Me.btnGenerar.Text = "Generar nuevo documento"
+        Me.btnGenerar.UseVisualStyleBackColor = True
+        '
         'FrmDetalleDocumentoElectronico
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(794, 487)
+        Me.Controls.Add(Me.btnGenerar)
         Me.Controls.Add(Me.cboSucursal)
         Me.Controls.Add(Me.Label6)
         Me.Controls.Add(Me.btnMostrarXML)
@@ -213,4 +226,5 @@ Partial Class FrmDetalleDocumentoElectronico
     Friend WithEvents btnMostrarXML As Button
     Friend WithEvents cboSucursal As ComboBox
     Friend WithEvents Label6 As Label
+    Friend WithEvents btnGenerar As Button
 End Class

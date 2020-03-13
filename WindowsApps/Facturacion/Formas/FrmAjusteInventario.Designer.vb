@@ -52,6 +52,8 @@ Partial Class FrmAjusteInventario
         Me.btnInsertar = New System.Windows.Forms.Button()
         Me.cboSucursal = New System.Windows.Forms.ComboBox()
         Me.Label6 = New System.Windows.Forms.Label()
+        Me.txtExistencias = New System.Windows.Forms.TextBox()
+        Me.Label15 = New System.Windows.Forms.Label()
         CType(Me.grdDetalleAjusteInventario, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -214,7 +216,7 @@ Partial Class FrmAjusteInventario
         '
         Me.txtCodigo.Location = New System.Drawing.Point(12, 193)
         Me.txtCodigo.Name = "txtCodigo"
-        Me.txtCodigo.Size = New System.Drawing.Size(270, 20)
+        Me.txtCodigo.Size = New System.Drawing.Size(135, 20)
         Me.txtCodigo.TabIndex = 5
         '
         'Label2
@@ -222,10 +224,10 @@ Partial Class FrmAjusteInventario
         Me.Label2.BackColor = System.Drawing.Color.Transparent
         Me.Label2.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label2.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label2.Location = New System.Drawing.Point(282, 173)
+        Me.Label2.Location = New System.Drawing.Point(147, 173)
         Me.Label2.Name = "Label2"
         Me.Label2.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label2.Size = New System.Drawing.Size(347, 19)
+        Me.Label2.Size = New System.Drawing.Size(425, 19)
         Me.Label2.TabIndex = 53
         Me.Label2.Text = "Descripción"
         Me.Label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
@@ -236,12 +238,12 @@ Partial Class FrmAjusteInventario
         Me.txtDescripcion.BackColor = System.Drawing.SystemColors.Window
         Me.txtDescripcion.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtDescripcion.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtDescripcion.Location = New System.Drawing.Point(282, 193)
+        Me.txtDescripcion.Location = New System.Drawing.Point(147, 193)
         Me.txtDescripcion.MaxLength = 0
         Me.txtDescripcion.Name = "txtDescripcion"
         Me.txtDescripcion.ReadOnly = True
         Me.txtDescripcion.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtDescripcion.Size = New System.Drawing.Size(340, 20)
+        Me.txtDescripcion.Size = New System.Drawing.Size(425, 20)
         Me.txtDescripcion.TabIndex = 6
         Me.txtDescripcion.TabStop = False
         '
@@ -308,7 +310,7 @@ Partial Class FrmAjusteInventario
         Me.lblLabel1.Location = New System.Drawing.Point(12, 173)
         Me.lblLabel1.Name = "lblLabel1"
         Me.lblLabel1.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.lblLabel1.Size = New System.Drawing.Size(270, 19)
+        Me.lblLabel1.Size = New System.Drawing.Size(135, 19)
         Me.lblLabel1.TabIndex = 50
         Me.lblLabel1.Text = "Código"
         Me.lblLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
@@ -379,12 +381,43 @@ Partial Class FrmAjusteInventario
         Me.Label6.Text = "Sucursal:"
         Me.Label6.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
+        'txtExistencias
+        '
+        Me.txtExistencias.AcceptsReturn = True
+        Me.txtExistencias.BackColor = System.Drawing.SystemColors.Window
+        Me.txtExistencias.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtExistencias.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtExistencias.Location = New System.Drawing.Point(572, 193)
+        Me.txtExistencias.MaxLength = 0
+        Me.txtExistencias.Name = "txtExistencias"
+        Me.txtExistencias.ReadOnly = True
+        Me.txtExistencias.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtExistencias.Size = New System.Drawing.Size(50, 20)
+        Me.txtExistencias.TabIndex = 155
+        Me.txtExistencias.TabStop = False
+        Me.txtExistencias.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
+        '
+        'Label15
+        '
+        Me.Label15.BackColor = System.Drawing.Color.Transparent
+        Me.Label15.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label15.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label15.Location = New System.Drawing.Point(572, 173)
+        Me.Label15.Name = "Label15"
+        Me.Label15.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label15.Size = New System.Drawing.Size(50, 19)
+        Me.Label15.TabIndex = 156
+        Me.Label15.Text = "Stock"
+        Me.Label15.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
         'FrmAjusteInventario
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(765, 510)
+        Me.Controls.Add(Me.txtExistencias)
+        Me.Controls.Add(Me.Label15)
         Me.Controls.Add(Me.cboSucursal)
         Me.Controls.Add(Me.Label6)
         Me.Controls.Add(Me.btnBusProd)
@@ -441,4 +474,6 @@ Partial Class FrmAjusteInventario
     Public WithEvents btnInsertar As System.Windows.Forms.Button
     Friend WithEvents cboSucursal As ComboBox
     Friend WithEvents Label6 As Label
+    Public WithEvents txtExistencias As TextBox
+    Public WithEvents Label15 As Label
 End Class

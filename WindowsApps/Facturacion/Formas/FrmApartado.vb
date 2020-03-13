@@ -639,7 +639,12 @@ Public Class FrmApartado
             formAnulacion.bolConfirmacion = False
             formAnulacion.ShowDialog()
             If formAnulacion.bolConfirmacion Then
-                Await Puntoventa.AnularApartado(apartado.IdApartado, FrmPrincipal.usuarioGlobal.IdUsuario, formAnulacion.strMotivo, FrmPrincipal.usuarioGlobal.Token)
+                Try
+                    Await Puntoventa.AnularApartado(apartado.IdApartado, FrmPrincipal.usuarioGlobal.IdUsuario, formAnulacion.strMotivo, FrmPrincipal.usuarioGlobal.Token)
+                Catch ex As Exception
+                    MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    Exit Sub
+                End Try
                 MessageBox.Show("Transacción procesada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 BtnAgregar_Click(btnAgregar, New EventArgs())
             End If
