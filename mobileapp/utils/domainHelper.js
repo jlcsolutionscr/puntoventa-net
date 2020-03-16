@@ -2,17 +2,6 @@ import { get, getWithResponse, post, postWithResponse } from '../utils/requestHe
 import CryptoJS from 'crypto-js'
 import { roundNumber } from '../utils/formatHelper'
 
-export async function getLatestAppVersion(serviceURL) {
-  try {
-    const endpoint = serviceURL + "/obtenerultimaversionmobileapp"
-    const response = await getWithResponse(endpoint)
-    if (response === null) return []
-    return response
-  } catch (e) {
-    throw e.message
-  }
-}
-
 export async function getCompanyIdentifiers(serviceURL, deviceId) {
   try {
     const endpoint = serviceURL + "/obtenerlistadoempresas?dispositivo=" + deviceId
