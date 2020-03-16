@@ -189,6 +189,7 @@ Partial Class FrmDevolucionDeClientes
         Me.txtIdFactura.Location = New System.Drawing.Point(72, 66)
         Me.txtIdFactura.MaxLength = 0
         Me.txtIdFactura.Name = "txtIdFactura"
+        Me.txtIdFactura.ReadOnly = True
         Me.txtIdFactura.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtIdFactura.Size = New System.Drawing.Size(81, 20)
         Me.txtIdFactura.TabIndex = 1
@@ -215,12 +216,12 @@ Partial Class FrmDevolucionDeClientes
         Me.txtFecha.BackColor = System.Drawing.SystemColors.Window
         Me.txtFecha.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtFecha.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtFecha.Location = New System.Drawing.Point(739, 66)
+        Me.txtFecha.Location = New System.Drawing.Point(749, 66)
         Me.txtFecha.MaxLength = 0
         Me.txtFecha.Name = "txtFecha"
         Me.txtFecha.ReadOnly = True
         Me.txtFecha.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtFecha.Size = New System.Drawing.Size(73, 20)
+        Me.txtFecha.Size = New System.Drawing.Size(63, 20)
         Me.txtFecha.TabIndex = 3
         Me.txtFecha.TabStop = False
         '
@@ -281,7 +282,7 @@ Partial Class FrmDevolucionDeClientes
         Me.lblLabel3.BackColor = System.Drawing.Color.Transparent
         Me.lblLabel3.Cursor = System.Windows.Forms.Cursors.Default
         Me.lblLabel3.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.lblLabel3.Location = New System.Drawing.Point(687, 67)
+        Me.lblLabel3.Location = New System.Drawing.Point(697, 66)
         Me.lblLabel3.Name = "lblLabel3"
         Me.lblLabel3.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.lblLabel3.Size = New System.Drawing.Size(46, 19)
@@ -350,7 +351,7 @@ Partial Class FrmDevolucionDeClientes
         Me.txtCliente.Name = "txtCliente"
         Me.txtCliente.ReadOnly = True
         Me.txtCliente.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtCliente.Size = New System.Drawing.Size(428, 20)
+        Me.txtCliente.Size = New System.Drawing.Size(440, 20)
         Me.txtCliente.TabIndex = 2
         Me.txtCliente.TabStop = False
         '

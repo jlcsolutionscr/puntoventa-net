@@ -179,24 +179,6 @@ Public Class FrmEgreso
                 MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
-            'Else
-            '    Dim strUsuario, strEmpresa As String
-            '    Dim dtbDatos As DataTable
-            '    Dim formReport As New frmRptViewer
-            '    Dim reptVentas As New rptEgreso
-            '    Try
-            '        strUsuario = FrmMenuPrincipal.usuarioGlobal.CodigoUsuario
-            '        strEmpresa = FrmMenuPrincipal.empresaGlobal.NombreEmpresa
-            '        'dtbDatos = servicioReportes.ObtenerReporteEgreso(txtIdEgreso.Text)
-            '    Catch ex As Exception
-            '        MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            '        Exit Sub
-            '    End Try
-            '    reptVentas.SetDataSource(dtbDatos)
-            '    reptVentas.SetParameterValue(0, strUsuario)
-            '    reptVentas.SetParameterValue(1, strEmpresa)
-            '    formReport.crtViewer.ReportSource = reptVentas
-            '    formReport.ShowDialog()
         End If
     End Sub
 

@@ -34,7 +34,7 @@ Public Class FrmMovimientoProducto
 
         dvcOrigen.DataPropertyName = "Origen"
         dvcOrigen.HeaderText = "Origen"
-        dvcOrigen.Width = 300
+        dvcOrigen.Width = 400
         dgvListado.Columns.Add(dvcOrigen)
 
         dvcCantidad.DataPropertyName = "Cantidad"

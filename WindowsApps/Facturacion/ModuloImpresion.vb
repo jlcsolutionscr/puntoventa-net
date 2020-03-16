@@ -741,7 +741,6 @@ Public Class ModuloImpresion
                 concepto = concepto.Substring(32)
             End While
             lineas.Add(New ClsLineaImpresion(2, concepto, 0, 100, 10, StringAlignment.Near, False))
-            ImprimirDesglosePago(objImpresion.arrDesglosePago)
             lineas.Add(New ClsLineaImpresion(3, "Recibido por: __________________", 0, 100, 10, StringAlignment.Near, False))
         Catch ex As Exception
             Throw New Exception("Error formulando el string de impresion:" + ex.Message)
@@ -766,7 +765,6 @@ Public Class ModuloImpresion
                 concepto = concepto.Substring(32)
             End While
             lineas.Add(New ClsLineaImpresion(2, concepto, 0, 100, 10, StringAlignment.Near, False))
-            ImprimirDesglosePago(objImpresion.arrDesglosePago)
             lineas.Add(New ClsLineaImpresion(3, "Recibido por: __________________", 0, 100, 10, StringAlignment.Near, False))
         Catch ex As Exception
             Throw New Exception("Error formulando el string de impresion:" + ex.Message)

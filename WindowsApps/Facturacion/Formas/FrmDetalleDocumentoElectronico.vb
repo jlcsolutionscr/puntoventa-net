@@ -287,9 +287,20 @@ Public Class FrmDetalleDocumentoElectronico
         End If
     End Sub
 
-    Private Sub btnGenerar_Click(sender As Object, e As EventArgs) Handles btnGenerar.Click
+    Private Async Sub btnGenerar_Click(sender As Object, e As EventArgs) Handles btnGenerar.Click
         If MessageBox.Show("Esta seguro de generar nuevamente el documento electronico?", "JLC Solutions CR", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
-
+            btnGenerar.Enabled = False
+            dgvDatos.Enabled = False
+            Dim intIndex As Integer = dgvDatos.CurrentRow.Index
+            Dim documento As DocumentoDetalle = listadoDocumentosProcesados.Item(intIndex)
+            Try
+                Await Puntoventa.ReprocesarDocumentoElectronico(documento.IdDocumento, FrmPrincipal.usuarioGlobal.Token)
+                MessageBox.Show("Transacción procesada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            Catch ex As Exception
+                MessageBox.Show("Error al enviar el comprobante:" & ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End Try
+            btnGenerar.Enabled = True
+            dgvDatos.Enabled = True
         End If
     End Sub
 #End Region

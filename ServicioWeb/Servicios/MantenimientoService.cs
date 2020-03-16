@@ -19,6 +19,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         IList<EquipoRegistrado> ObtenerListadoTerminalesDisponibles(string strUsuario, string strClave, string strIdentificacion, int intTipoDispositivo);
         IList<LlaveDescripcion> ObtenerListadoEmpresasAdministrador();
         IList<LlaveDescripcion> ObtenerListadoEmpresasPorTerminal(string strDispositivoId);
+        bool EnModoMantenimiento();
         void RegistrarTerminal(string strUsuario, string strClave, string strIdentificacion, int intIdSucursal, int intIdTerminal, int intTipoDispositivo, string strDispositivoId);
         Usuario ValidarCredencialesAdmin(string strUsuario, string strClave);
         Usuario ValidarCredenciales(string strUsuario, string strClave, string id);
@@ -288,6 +289,30 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     log.Error("Error al validar la lista de empresas por valor de registro: ", ex);
                     throw new Exception("Error al validar la lista de empresas por valor de registro. . .");
+                }
+            }
+        }
+
+        public bool EnModoMantenimiento()
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    ParametroSistema parametro = dbContext.ParametroSistemaRepository.FirstOrDefault(x => x.IdParametro == 5);
+                    if (parametro == null) throw new BusinessException("El parámetro del modo mantenimiento no se encuentra registrado en el sistema.");
+                    if (parametro.Valor == "SI") return true;
+                    return false;
+                }
+                catch (BusinessException ex)
+                {
+                    dbContext.RollBack();
+                    throw ex;
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al consultar el parámetro de modo mantenimiento del sistema: ", ex);
+                    throw new Exception("No es posible consultar el modo mantenimieto del sistema.");
                 }
             }
         }

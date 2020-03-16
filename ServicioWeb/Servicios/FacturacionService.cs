@@ -66,7 +66,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         void ProcesarDocumentosElectronicosPendientes(ICorreoService servicioEnvioCorreo, ConfiguracionGeneral datos);
         void ProcesarCorreoRecepcion(ICorreoService servicioEnvioCorreo, IServerMailService servicioRecepcionCorreo, ConfiguracionGeneral config, ConfiguracionRecepcion datos);
         void EnviarDocumentoElectronicoPendiente(int intIdDocumento, ConfiguracionGeneral datos);
-        void ReenviarDocumentoElectronico(int intIdDocumento, ConfiguracionGeneral datos);
+        void ReprocesarDocumentoElectronico(int intIdDocumento, ConfiguracionGeneral datos);
         DocumentoElectronico ObtenerRespuestaDocumentoElectronicoEnviado(int intIdDocumento, ConfiguracionGeneral datos);
         int ObtenerTotalDocumentosElectronicosProcesados(int intIdEmpresa, int intIdSucursal);
         IList<DocumentoDetalle> ObtenerListadoDocumentosElectronicosProcesados(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec);
@@ -379,7 +379,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         factura.IdVendedor = vendedor.IdVendedor;
                     }
                     Cliente cliente = dbContext.ClienteRepository.Find(factura.IdCliente);
-                    if (cliente == null) throw new Exception("El cliente asignado a la factura no existe.");
+                    if (cliente == null) throw new BusinessException("El cliente asignado a la factura no existe.");
                     if (cliente.IdCliente > 1)
                     {
                         if (cliente.IdTipoIdentificacion == 0 && cliente.Identificacion.Length != 9) throw new BusinessException("El cliente posee una identificación de tipo 'Cedula física' con una longitud inadecuada. Deben ser 9 caracteres.");
@@ -415,7 +415,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         Producto producto = dbContext.ProductoRepository.Include("Linea").FirstOrDefault(x => x.IdProducto == detalleFactura.IdProducto);
                         if (producto == null)
-                            throw new Exception("El producto asignado al detalle de la devolución no existe.");
+                            throw new BusinessException("El producto asignado al detalle de la devolución no existe.");
                         if (producto.Tipo == StaticTipoProducto.Producto)
                         {
                             ExistenciaPorSucursal existencias = dbContext.ExistenciaPorSucursalRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == factura.IdSucursal).FirstOrDefault();
@@ -480,7 +480,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             movimientoBanco = new MovimientoBanco();
                             CuentaBanco cuentaBanco = dbContext.CuentaBancoRepository.Find(desglosePago.IdCuentaBanco);
                             if (cuentaBanco == null)
-                                throw new Exception("La cuenta bancaria asignada al movimiento no existe.");
+                                throw new BusinessException("La cuenta bancaria asignada al movimiento no existe.");
                             movimientoBanco.IdCuenta = cuentaBanco.IdCuenta;
                             movimientoBanco.IdUsuario = factura.IdUsuario;
                             movimientoBanco.Fecha = factura.Fecha;
@@ -507,7 +507,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         if (decTotalDiff != 0)
                         {
                             if (decTotalDiff >= 1 || decTotalDiff <= -1)
-                                throw new Exception("La diferencia de ajuste sobrepasa el valor permitido.");
+                                throw new BusinessException("La diferencia de ajuste sobrepasa el valor permitido.");
                             if (decTotalIngresosMercancia > 0)
                                 decTotalIngresosMercancia -= decTotalDiff;
                             else
@@ -801,6 +801,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == factura.IdEmpresa && x.IdSucursal == factura.IdSucursal);
                     if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
+                    DevolucionCliente devolucion = dbContext.DevolucionClienteRepository.AsNoTracking().FirstOrDefault(x => x.IdFactura == factura.IdFactura && x.Nulo == false);
+                    if (devolucion != null) throw new BusinessException("La factura posee un registro de devolución de mercancía y no puede ser anulada.");
                     Cliente cliente = dbContext.ClienteRepository.Find(factura.IdCliente);
                     factura.Nulo = true;
                     factura.IdAnuladoPor = intIdUsuario;
@@ -1610,26 +1612,18 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     DocumentoElectronico documentoNC = null;
                     if (!empresa.RegimenSimplificado && factura.IdDocElectronico != null)
                     {
-                        DocumentoElectronico documento = dbContext.DocumentoElectronicoRepository.Where(x => x.ClaveNumerica == factura.IdDocElectronico).FirstOrDefault();
-                        if (documento.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado)
+                        Cliente cliente = dbContext.ClienteRepository.Find(factura.IdCliente);
+                        DateTime fechaDocumento = DateTime.UtcNow.AddHours(-6);
+                        string criteria = fechaDocumento.ToString("dd/MM/yyyy");
+                        TipoDeCambioDolar tipoDeCambio = dbContext.TipoDeCambioDolarRepository.Find(criteria);
+                        if (tipoDeCambio != null)
                         {
-                            Cliente cliente = dbContext.ClienteRepository.Find(factura.IdCliente);
-                            DateTime fechaDocumento = DateTime.UtcNow.AddHours(-6);
-                            string criteria = fechaDocumento.ToString("dd/MM/yyyy");
-                            TipoDeCambioDolar tipoDeCambio = dbContext.TipoDeCambioDolarRepository.Find(criteria);
-                            if (tipoDeCambio != null)
-                            {
-                                documentoNC = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronicaParcial(devolucion, factura, empresa, cliente, dbContext, fechaDocumento, tipoDeCambio.ValorTipoCambio, factura.IdDocElectronico);
-                                devolucion.IdDocElectronico = documentoNC.ClaveNumerica;
-                            }
-                            else
-                            {
-                                throw new BusinessException("El tipo de cambio para la fecha " + criteria + " no ha sido actualizado. Por favor consulte con su proveedor.");
-                            }
+                            documentoNC = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronicaParcial(devolucion, factura, empresa, cliente, dbContext, fechaDocumento, tipoDeCambio.ValorTipoCambio, factura.IdDocElectronico);
+                            devolucion.IdDocElectronico = documentoNC.ClaveNumerica;
                         }
                         else
                         {
-                            throw new BusinessException("No se pueden realizar operaciones de dovolución ya que el documento electrónico asignado a la factura no ha sido procesado.");
+                            throw new BusinessException("El tipo de cambio para la fecha " + criteria + " no ha sido actualizado. Por favor consulte con su proveedor.");
                         }
                     }
                     dbContext.DevolucionClienteRepository.Add(devolucion);
@@ -1727,28 +1721,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     DocumentoElectronico documentoND = null;
                     if (!empresa.RegimenSimplificado && devolucion.IdDocElectronico != null)
                     {
-                        if (factura.IdDocElectronicoRev == null)
+                        DateTime fechaDocumento = DateTime.UtcNow.AddHours(-6);
+                        string criteria = fechaDocumento.ToString("dd/MM/yyyy");
+                        TipoDeCambioDolar tipoDeCambio = dbContext.TipoDeCambioDolarRepository.Find(criteria);
+                        if (tipoDeCambio != null)
                         {
-                            DocumentoElectronico documento = dbContext.DocumentoElectronicoRepository.Where(x => x.ClaveNumerica == factura.IdDocElectronico).FirstOrDefault();
-                            if (documento.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado)
-                            {
-                                DateTime fechaDocumento = DateTime.UtcNow.AddHours(-6);
-                                string criteria = fechaDocumento.ToString("dd/MM/yyyy");
-                                TipoDeCambioDolar tipoDeCambio = dbContext.TipoDeCambioDolarRepository.Find(criteria);
-                                if (tipoDeCambio != null)
-                                {
-                                    documentoND = ComprobanteElectronicoService.GenerarNotaDeDebitoElectronicaParcial(devolucion, factura, empresa, devolucion.Cliente, dbContext, fechaDocumento, tipoDeCambio.ValorTipoCambio, devolucion.IdDocElectronico);
-                                    devolucion.IdDocElectronicoRev = documentoND.ClaveNumerica;
-                                }
-                                else
-                                {
-                                    throw new BusinessException("El tipo de cambio para la fecha " + criteria + " no ha sido actualizado. Por favor consulte con su proveedor.");
-                                }
-                            }
-                            else if (documento.EstadoEnvio != StaticEstadoDocumentoElectronico.Rechazado)
-                            {
-                                throw new BusinessException("El documento electrónico no ha sido procesado por el Ministerio de Hacienda. La devolución no puede ser reversada en este momento.");
-                            }
+                            documentoND = ComprobanteElectronicoService.GenerarNotaDeDebitoElectronicaParcial(devolucion, factura, empresa, devolucion.Cliente, dbContext, fechaDocumento, tipoDeCambio.ValorTipoCambio, devolucion.IdDocElectronico);
+                            devolucion.IdDocElectronicoRev = documentoND.ClaveNumerica;
+                        }
+                        else
+                        {
+                            throw new BusinessException("El tipo de cambio para la fecha " + criteria + " no ha sido actualizado. Por favor consulte con su proveedor.");
                         }
                     }
                     dbContext.NotificarModificacion(devolucion);
@@ -2276,7 +2259,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void ReenviarDocumentoElectronico(int intIdDocumento, ConfiguracionGeneral datos)
+        public void ReprocesarDocumentoElectronico(int intIdDocumento, ConfiguracionGeneral datos)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -2285,12 +2268,57 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     DocumentoElectronico documento = dbContext.DocumentoElectronicoRepository.AsNoTracking().FirstOrDefault(x => x.IdDocumento == intIdDocumento);
                     Empresa empresa = dbContext.EmpresaRepository.Find(documento.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (documento.Reprocesado) throw new BusinessException("El documento ya fue reprocesado y no puede procesarse nuevamente.");
                     if (documento.EstadoEnvio != StaticEstadoDocumentoElectronico.Rechazado) throw new BusinessException("El documento no posee un estado de rechazado por lo que no puede ser reenviado al Ministerio de Hacienda.");
-                    documento.IdConsecutivo = 0;
-                    ComprobanteElectronicoService.RegistrarDocumentoElectronico(empresa, )
-                    if (documentoFE != null)
+                    if (documento.EsMensajeReceptor == "S") throw new BusinessException("No se puede reenviar documento recepcionados, solo documentos emitidos por el sistema.");
+                    DocumentoElectronico nuevoDocumento = null;
+                    if (new int[] { (int)TipoDocumento.FacturaElectronica, (int)TipoDocumento.TiqueteElectronico }.Contains(documento.IdTipoDocumento))
                     {
-                        Task.Run(() => ComprobanteElectronicoService.EnviarDocumentoElectronico(empresa.IdEmpresa, documentoFE.IdDocumento, datos));
+                        Factura factura = dbContext.FacturaRepository.Include("ParametroExoneracion").Include("Cliente.Barrio.Distrito.Canton.Provincia").Include("Vendedor").Include("DetalleFactura.Producto.TipoProducto").Include("DesglosePagoFactura.FormaPago").Include("DesglosePagoFactura.TipoMoneda").FirstOrDefault(x => x.IdDocElectronico == documento.ClaveNumerica);
+                        if (factura == null) throw new BusinessException("La registro origen del documento no existe.");
+                        if ((int)TipoDocumento.FacturaElectronica == documento.IdTipoDocumento)
+                            nuevoDocumento = ComprobanteElectronicoService.GeneraFacturaElectronica(factura, factura.Empresa, factura.Cliente, dbContext, factura.TipoDeCambioDolar);
+                        else
+                            nuevoDocumento = ComprobanteElectronicoService.GeneraTiqueteElectronico(factura, factura.Empresa, factura.Cliente, dbContext, factura.TipoDeCambioDolar);
+                        factura.IdDocElectronico = nuevoDocumento.ClaveNumerica;
+                        dbContext.NotificarModificacion(factura);
+                    }
+                    else if ((int)TipoDocumento.NotaCreditoElectronica == documento.IdTipoDocumento)
+                    {
+                        Factura factura = dbContext.FacturaRepository.Include("ParametroExoneracion").Include("Cliente.Barrio.Distrito.Canton.Provincia").Include("Vendedor").Include("DetalleFactura.Producto.TipoProducto").Include("DesglosePagoFactura.FormaPago").Include("DesglosePagoFactura.TipoMoneda").FirstOrDefault(x => x.IdDocElectronicoRev == documento.ClaveNumerica);
+                        if (factura != null)
+                        {
+                            nuevoDocumento = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronica(factura, factura.Empresa, factura.Cliente, dbContext, documento.Fecha, factura.TipoDeCambioDolar);
+                            factura.IdDocElectronicoRev = nuevoDocumento.ClaveNumerica;
+                            dbContext.NotificarModificacion(factura);
+                        }
+                        else
+                        {
+                            DevolucionCliente devolucion = dbContext.DevolucionClienteRepository.Include("Cliente").Include("DetalleDevolucionCliente.Producto.TipoProducto").FirstOrDefault(x => x.IdDocElectronico == documento.ClaveNumerica);
+                            if (devolucion == null) throw new BusinessException("El registro origen del documento no existe.");
+                            factura = dbContext.FacturaRepository.AsNoTracking().Include("ParametroExoneracion").Include("Cliente.Barrio.Distrito.Canton.Provincia").Include("Vendedor").Include("DetalleFactura.Producto.TipoProducto").Include("DesglosePagoFactura.FormaPago").Include("DesglosePagoFactura.TipoMoneda").FirstOrDefault(x => x.IdFactura == devolucion.IdFactura);
+                            nuevoDocumento = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronicaParcial(devolucion, factura, factura.Empresa, factura.Cliente, dbContext, documento.Fecha, factura.TipoDeCambioDolar, factura.IdDocElectronico);
+                            devolucion.IdDocElectronico = nuevoDocumento.ClaveNumerica;
+                            dbContext.NotificarModificacion(devolucion);
+                        }
+                    }
+                    else if ((int)TipoDocumento.NotaDebitoElectronica == documento.IdTipoDocumento)
+                    {
+                        DevolucionCliente devolucion = dbContext.DevolucionClienteRepository.Include("Cliente").Include("DetalleDevolucionCliente.Producto.TipoProducto").FirstOrDefault(x => x.IdDocElectronicoRev == documento.ClaveNumerica);
+                        if (devolucion == null) throw new BusinessException("El registro origen del documento no existe.");
+                        Factura factura = dbContext.FacturaRepository.AsNoTracking().Include("ParametroExoneracion").Include("Cliente.Barrio.Distrito.Canton.Provincia").Include("Vendedor").Include("DetalleFactura.Producto.TipoProducto").Include("DesglosePagoFactura.FormaPago").Include("DesglosePagoFactura.TipoMoneda").FirstOrDefault(x => x.IdFactura == devolucion.IdFactura);
+                        nuevoDocumento = ComprobanteElectronicoService.GenerarNotaDeDebitoElectronicaParcial(devolucion, factura, empresa, devolucion.Cliente, dbContext, documento.Fecha, factura.TipoDeCambioDolar, devolucion.IdDocElectronico);
+                        devolucion.IdDocElectronicoRev = nuevoDocumento.ClaveNumerica;
+                        dbContext.NotificarModificacion(devolucion);
+                    }
+                    if (nuevoDocumento == null) throw new BusinessException("No fue posible generar un nuevo documento electrónico.");
+                    dbContext.DocumentoElectronicoRepository.Add(nuevoDocumento);
+                    documento.Reprocesado = true;
+                    dbContext.NotificarModificacion(documento);
+                    dbContext.Commit();
+                    if (nuevoDocumento != null)
+                    {
+                        Task.Run(() => ComprobanteElectronicoService.EnviarDocumentoElectronico(empresa.IdEmpresa, nuevoDocumento.IdDocumento, datos));
                     }
                 }
                 catch (BusinessException ex)

@@ -46,7 +46,7 @@ Partial Class FrmMovimientoProducto
         Me.txtCodigo.Name = "txtCodigo"
         Me.txtCodigo.ReadOnly = True
         Me.txtCodigo.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtCodigo.Size = New System.Drawing.Size(187, 20)
+        Me.txtCodigo.Size = New System.Drawing.Size(143, 20)
         Me.txtCodigo.TabIndex = 0
         '
         'txtDescripcion
@@ -60,7 +60,7 @@ Partial Class FrmMovimientoProducto
         Me.txtDescripcion.Name = "txtDescripcion"
         Me.txtDescripcion.ReadOnly = True
         Me.txtDescripcion.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtDescripcion.Size = New System.Drawing.Size(528, 20)
+        Me.txtDescripcion.Size = New System.Drawing.Size(632, 20)
         Me.txtDescripcion.TabIndex = 1
         '
         '_lblLabels_5
@@ -102,7 +102,7 @@ Partial Class FrmMovimientoProducto
         Me.dgvListado.RowHeadersVisible = False
         Me.dgvListado.ScrollBars = System.Windows.Forms.ScrollBars.None
         Me.dgvListado.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.dgvListado.Size = New System.Drawing.Size(599, 310)
+        Me.dgvListado.Size = New System.Drawing.Size(700, 310)
         Me.dgvListado.TabIndex = 5
         Me.dgvListado.TabStop = False
         '
@@ -120,7 +120,7 @@ Partial Class FrmMovimientoProducto
         Me.btnLast.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnLast.Enabled = False
         Me.btnLast.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnLast.Location = New System.Drawing.Point(578, 380)
+        Me.btnLast.Location = New System.Drawing.Point(678, 380)
         Me.btnLast.Name = "btnLast"
         Me.btnLast.Size = New System.Drawing.Size(29, 23)
         Me.btnLast.TabIndex = 9
@@ -133,7 +133,7 @@ Partial Class FrmMovimientoProducto
         Me.btnNext.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnNext.Enabled = False
         Me.btnNext.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnNext.Location = New System.Drawing.Point(549, 380)
+        Me.btnNext.Location = New System.Drawing.Point(649, 380)
         Me.btnNext.Name = "btnNext"
         Me.btnNext.Size = New System.Drawing.Size(29, 23)
         Me.btnNext.TabIndex = 8
@@ -146,7 +146,7 @@ Partial Class FrmMovimientoProducto
         Me.btnPrevious.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnPrevious.Enabled = False
         Me.btnPrevious.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnPrevious.Location = New System.Drawing.Point(520, 380)
+        Me.btnPrevious.Location = New System.Drawing.Point(620, 380)
         Me.btnPrevious.Name = "btnPrevious"
         Me.btnPrevious.Size = New System.Drawing.Size(29, 23)
         Me.btnPrevious.TabIndex = 7
@@ -159,7 +159,7 @@ Partial Class FrmMovimientoProducto
         Me.btnFirst.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnFirst.Enabled = False
         Me.btnFirst.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnFirst.Location = New System.Drawing.Point(491, 380)
+        Me.btnFirst.Location = New System.Drawing.Point(591, 380)
         Me.btnFirst.Name = "btnFirst"
         Me.btnFirst.Size = New System.Drawing.Size(29, 23)
         Me.btnFirst.TabIndex = 6
@@ -172,7 +172,7 @@ Partial Class FrmMovimientoProducto
         Me.CmdFiltrar.BackColor = System.Drawing.SystemColors.ButtonHighlight
         Me.CmdFiltrar.Cursor = System.Windows.Forms.Cursors.Default
         Me.CmdFiltrar.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.CmdFiltrar.Location = New System.Drawing.Point(534, 10)
+        Me.CmdFiltrar.Location = New System.Drawing.Point(635, 10)
         Me.CmdFiltrar.Name = "CmdFiltrar"
         Me.CmdFiltrar.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.CmdFiltrar.Size = New System.Drawing.Size(73, 21)
@@ -184,7 +184,7 @@ Partial Class FrmMovimientoProducto
         'FechaFinal
         '
         Me.FechaFinal.Format = System.Windows.Forms.DateTimePickerFormat.Custom
-        Me.FechaFinal.Location = New System.Drawing.Point(444, 10)
+        Me.FechaFinal.Location = New System.Drawing.Point(473, 10)
         Me.FechaFinal.Name = "FechaFinal"
         Me.FechaFinal.Size = New System.Drawing.Size(84, 20)
         Me.FechaFinal.TabIndex = 35
@@ -193,7 +193,7 @@ Partial Class FrmMovimientoProducto
         'FechaInicio
         '
         Me.FechaInicio.Format = System.Windows.Forms.DateTimePickerFormat.Custom
-        Me.FechaInicio.Location = New System.Drawing.Point(315, 10)
+        Me.FechaInicio.Location = New System.Drawing.Point(344, 10)
         Me.FechaInicio.Name = "FechaInicio"
         Me.FechaInicio.Size = New System.Drawing.Size(84, 20)
         Me.FechaInicio.TabIndex = 34
@@ -204,7 +204,7 @@ Partial Class FrmMovimientoProducto
         Me.Label2.BackColor = System.Drawing.SystemColors.Control
         Me.Label2.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label2.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label2.Location = New System.Drawing.Point(399, 12)
+        Me.Label2.Location = New System.Drawing.Point(428, 12)
         Me.Label2.Name = "Label2"
         Me.Label2.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label2.Size = New System.Drawing.Size(42, 17)
@@ -217,7 +217,7 @@ Partial Class FrmMovimientoProducto
         Me.Label1.BackColor = System.Drawing.SystemColors.Control
         Me.Label1.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label1.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label1.Location = New System.Drawing.Point(270, 12)
+        Me.Label1.Location = New System.Drawing.Point(299, 12)
         Me.Label1.Name = "Label1"
         Me.Label1.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label1.Size = New System.Drawing.Size(42, 17)
@@ -231,7 +231,7 @@ Partial Class FrmMovimientoProducto
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
-        Me.ClientSize = New System.Drawing.Size(616, 412)
+        Me.ClientSize = New System.Drawing.Size(716, 412)
         Me.Controls.Add(Me.FechaFinal)
         Me.Controls.Add(Me.FechaInicio)
         Me.Controls.Add(Me.Label2)

@@ -29,6 +29,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public byte[] DatosDocumentoOri { get; set; }
         public string EstadoEnvio { get; set; }
         public string ErrorEnvio { get; set; }
+        public bool Reprocesado { get; set; }
         public string CorreoNotificacion { get; set; }
     }
 }

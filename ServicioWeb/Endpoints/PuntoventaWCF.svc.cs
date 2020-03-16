@@ -146,6 +146,16 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             catch (Exception ex)
             {
                 log.Error("Error al consultar el tipo de cambio del dolar: ", ex);
+                throw new WebFaultException<string>("No se encuentra el parámetro para el tipo de cambio actual.", HttpStatusCode.InternalServerError);
+            }
+            try
+            {
+                bool modoMantenimiento = servicioMantenimiento.EnModoMantenimiento();
+                if (modoMantenimiento) throw new Exception("El sistema se encuentra en modo mantenimiento y no es posible acceder por el momento.");
+            }
+            catch (Exception ex)
+            {
+                log.Error("Error al consultar el tipo de cambio del dolar: ", ex);
                 throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
             }
             try
@@ -606,6 +616,10 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         intIdLlave1 = int.Parse(parametrosJO.Property("IdDocumento").Value.ToString());
                         string strCorreoReceptor = parametrosJO.Property("CorreoReceptor").Value.ToString();
                         servicioFacturacion.EnviarNotificacionDocumentoElectronico(intIdLlave1, strCorreoReceptor, servicioEnvioCorreo, configuracionGeneral.CorreoNotificacionErrores);
+                        break;
+                    case "ReprocesarDocumentoElectronico":
+                        intIdLlave1 = int.Parse(parametrosJO.Property("IdDocumento").Value.ToString());
+                        servicioFacturacion.ReprocesarDocumentoElectronico(intIdLlave1, configuracionGeneral);
                         break;
                     case "EnviarReporteVentasGenerales":
                         intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());

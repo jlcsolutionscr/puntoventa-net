@@ -186,11 +186,13 @@ Public Class FrmDevolucionDeClientes
             Exit Sub
         End Try
         If factura IsNot Nothing Then
+            txtIdFactura.Text = factura.ConsecFactura
             cliente = factura.Cliente
             txtCliente.Text = factura.Cliente.Nombre
             CargarDetalleFactura(factura)
             CargarTotales()
         Else
+            txtIdFactura.Text = ""
             MessageBox.Show("El número de factura ingresado no existe. Por favor verifique.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End If
     End Sub
@@ -311,7 +313,7 @@ Public Class FrmDevolucionDeClientes
             End Try
             If devolucion IsNot Nothing Then
                 txtIdDevolucion.Text = devolucion.IdDevolucion
-                txtIdFactura.Text = devolucion.IdFactura
+                txtIdFactura.Text = devolucion.ConsecFactura
                 cliente = devolucion.Cliente
                 txtCliente.Text = cliente.Nombre
                 txtFecha.Text = devolucion.Fecha
@@ -331,8 +333,8 @@ Public Class FrmDevolucionDeClientes
         FrmPrincipal.intBusqueda = 0
         formBusqueda.ShowDialog()
         If FrmPrincipal.intBusqueda > 0 Then
-            txtIdFactura.Text = FrmPrincipal.intBusqueda
-            CargarFactura(txtIdFactura.Text)
+            Dim intIdFactura As Integer = FrmPrincipal.intBusqueda
+            CargarFactura(intIdFactura)
         End If
     End Sub
 
@@ -345,6 +347,7 @@ Public Class FrmDevolucionDeClientes
                     .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
                     .IdCliente = factura.IdCliente,
                     .IdFactura = factura.IdFactura,
+                    .ConsecFactura = factura.ConsecFactura,
                     .Fecha = Now(),
                     .Excento = dblExcento,
                     .Gravado = decGravado,
@@ -419,18 +422,6 @@ Public Class FrmDevolucionDeClientes
                 MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
-        End If
-    End Sub
-
-    Private Sub txtIdFactura_Validated(sender As Object, e As EventArgs) Handles txtIdFactura.Validated
-        If txtIdFactura.Text <> "" Then
-            If Not factura Is Nothing Then
-                If txtIdFactura.Text <> factura.IdFactura Or dtbDetalleDevolucion.Rows.Count = 0 Then
-                    CargarFactura(txtIdFactura.Text)
-                End If
-            Else
-                CargarFactura(txtIdFactura.Text)
-            End If
         End If
     End Sub
 #End Region

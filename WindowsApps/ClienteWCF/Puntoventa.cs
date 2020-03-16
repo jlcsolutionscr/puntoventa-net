@@ -26,7 +26,7 @@ namespace LeandroSoftware.ClienteWCF
             if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
             {
                 string strError = httpResponse.Content.ReadAsStringAsync().Result;
-                throw new Exception(strError);
+                throw new Exception(serializer.Deserialize<string>(strError));
             }
             if (httpResponse.StatusCode != HttpStatusCode.OK)
                 throw new Exception(httpResponse.ReasonPhrase);
@@ -665,17 +665,17 @@ namespace LeandroSoftware.ClienteWCF
             return listado;
         }
 
-        public static async Task<Core.Dominio.Entidades.CierreCaja> GenerarDatosCierreCaja(int intIdEmpresa, int intIdSucursal, string strToken)
+        public static async Task<CierreCaja> GenerarDatosCierreCaja(int intIdEmpresa, int intIdSucursal, string strToken)
         {
             string strDatos = "{NombreMetodo: 'GenerarDatosCierreCaja', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + "}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
-            Core.Dominio.Entidades.CierreCaja cierre = null;
+            CierreCaja cierre = null;
             if (respuesta != "")
-                cierre = serializer.Deserialize<Core.Dominio.Entidades.CierreCaja>(respuesta);
+                cierre = serializer.Deserialize<CierreCaja>(respuesta);
             return cierre;
         }
 
-        public static async Task GuardarDatosCierreCaja(Core.Dominio.Entidades.CierreCaja cierre, string strToken)
+        public static async Task GuardarDatosCierreCaja(CierreCaja cierre, string strToken)
         {
             string strEntidad = serializer.Serialize(cierre);
             string strDatos = "{NombreMetodo: 'GuardarDatosCierreCaja', Entidad: " + strEntidad + "}";
@@ -1969,13 +1969,13 @@ namespace LeandroSoftware.ClienteWCF
             return listado;
         }
 
-        public static async Task<Core.Dominio.Entidades.CierreCaja> ObtenerCierreCaja(int intIdCierre, string strToken)
+        public static async Task<CierreCaja> ObtenerCierreCaja(int intIdCierre, string strToken)
         {
             string strDatos = "{NombreMetodo: 'ObtenerCierreCaja', Parametros: {IdCierre: " + intIdCierre + "}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
-            Core.Dominio.Entidades.CierreCaja cierre = null;
+            CierreCaja cierre = null;
             if (respuesta != "")
-                cierre = serializer.Deserialize<Core.Dominio.Entidades.CierreCaja>(respuesta);
+                cierre = serializer.Deserialize<CierreCaja>(respuesta);
             return cierre;
         }
 
@@ -2032,10 +2032,18 @@ namespace LeandroSoftware.ClienteWCF
             return documento;
         }
 
-        public static async Task EnviarNotificacion(int intIdDocumento, string strCorreoReceptor, string strToken)
+        public static async Task<bool> EnviarNotificacion(int intIdDocumento, string strCorreoReceptor, string strToken)
         {
             string strDatos = "{NombreMetodo: 'EnviarNotificacionDocumentoElectronico', Parametros: {IdDocumento: " + intIdDocumento + ", CorreoReceptor: '" + strCorreoReceptor + "'}}";
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
+            return true;
+        }
+
+        public static async Task<bool> ReprocesarDocumentoElectronico(int intIdDocumento, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'ReprocesarDocumentoElectronico', Parametros: {IdDocumento: " + intIdDocumento + "}}";
+            await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
+            return true;
         }
 
         public static async Task<bool> AutorizacionPrecioExtraordinario(string strCodigoUsuario, string strClave, int intIdEmpresa, string strToken)
