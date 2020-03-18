@@ -1980,9 +1980,9 @@ namespace LeandroSoftware.ClienteWCF
         }
 
 
-        public static async Task GeneraMensajeReceptor(string strMensaje, int intIdEmpresa, int intSucursal, int intTerminal, int intEstado, string strToken)
+        public static async Task GenerarMensajeReceptor(string strMensaje, int intIdEmpresa, int intSucursal, int intTerminal, int intEstado, bool bolIvaAcreditable, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'GeneraMensajeReceptor', Parametros: {Datos: '" + strMensaje + "', IdEmpresa: " + intIdEmpresa + ", Sucursal: " + intSucursal + ", Terminal: " + intTerminal + ", Estado: " + intEstado + "}}";
+            string strDatos = "{NombreMetodo: 'GenerarMensajeReceptor', Parametros: {Datos: '" + strMensaje + "', IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intSucursal + ", IdTerminal: " + intTerminal + ", IdEstado: " + intEstado + ", IvaAcreditable: '" + bolIvaAcreditable + "'}}";
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 

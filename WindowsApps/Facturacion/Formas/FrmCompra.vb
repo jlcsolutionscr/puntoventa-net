@@ -9,10 +9,10 @@ Imports System.Reflection
 
 Public Class FrmCompra
 #Region "Variables"
-    Private decExcento, decGravado, decImpuesto, decSaldoPorPagar As Decimal
+    Private decExcento, decGravado, decImpuesto, decSaldoPorPagar, decPrecioVenta As Decimal
     Private decTotalPago As Decimal = 0
     Private decTotal As Decimal = 0
-    Private I As Short
+    Private I, consecDetalle As Short
     Private dtbDetalleCompra, dtbDesglosePago As DataTable
     Private dtrRowDetCompra, dtrRowDesglosePago As DataRow
     Private arrDetalleCompra As List(Of ModuloImpresion.ClsDetalleComprobante)
@@ -46,6 +46,8 @@ Public Class FrmCompra
         dtbDetalleCompra.Columns.Add("PORCENTAJEIVA", GetType(Decimal))
         dtbDetalleCompra.Columns.Add("PRECIOVENTA", GetType(Decimal))
         dtbDetalleCompra.Columns.Add("UTILIDAD", GetType(Decimal))
+        dtbDetalleCompra.Columns.Add("ID", GetType(Integer))
+        dtbDetalleCompra.PrimaryKey = {dtbDetalleCompra.Columns(11)}
 
         dtbDesglosePago = New DataTable()
         dtbDesglosePago.Columns.Add("IDFORMAPAGO", GetType(Integer))
@@ -63,6 +65,7 @@ Public Class FrmCompra
         grdDetalleCompra.Columns.Clear()
         grdDetalleCompra.AutoGenerateColumns = False
 
+        Dim dvcId As New DataGridViewTextBoxColumn
         Dim dvcIdProducto As New DataGridViewTextBoxColumn
         Dim dvcCodigo As New DataGridViewTextBoxColumn
         Dim dvcCodigoInterno As New DataGridViewTextBoxColumn
@@ -74,6 +77,12 @@ Public Class FrmCompra
         Dim dvcPorcentajeIVA As New DataGridViewTextBoxColumn
         Dim dvcPrecioVenta As New DataGridViewTextBoxColumn
         Dim dvcUtilidad As New DataGridViewTextBoxColumn
+
+        dvcId.DataPropertyName = "ID"
+        dvcId.HeaderText = "Id"
+        dvcId.Width = 0
+        dvcId.Visible = False
+        grdDetalleCompra.Columns.Add(dvcId)
 
         dvcIdProducto.DataPropertyName = "IDPRODUCTO"
         dvcIdProducto.HeaderText = "IdP"
@@ -209,7 +218,9 @@ Public Class FrmCompra
 
     Private Sub CargarDetalleCompra(ByVal compra As Compra)
         dtbDetalleCompra.Rows.Clear()
+        consecDetalle = 0
         For Each detalle As DetalleCompra In compra.DetalleCompra
+            consecDetalle += 1
             dtrRowDetCompra = dtbDetalleCompra.NewRow
             dtrRowDetCompra.Item(0) = detalle.IdProducto
             dtrRowDetCompra.Item(1) = detalle.Producto.CodigoProveedor
@@ -222,6 +233,7 @@ Public Class FrmCompra
             dtrRowDetCompra.Item(8) = detalle.PorcentajeIVA
             dtrRowDetCompra.Item(9) = detalle.PrecioVenta
             dtrRowDetCompra.Item(10) = (detalle.PrecioVenta * 100 / detalle.PrecioCosto) - 100
+            dtrRowDetCompra.Item(11) = consecDetalle
             dtbDetalleCompra.Rows.Add(dtrRowDetCompra)
         Next
         grdDetalleCompra.Refresh()
@@ -229,7 +241,9 @@ Public Class FrmCompra
 
     Private Sub CargarDetalleOrdenCompra(ByVal ordenCompra As OrdenCompra)
         dtbDetalleCompra.Rows.Clear()
+        consecDetalle = 0
         For Each detalle As DetalleOrdenCompra In ordenCompra.DetalleOrdenCompra
+            consecDetalle += 1
             dtrRowDetCompra = dtbDetalleCompra.NewRow
             dtrRowDetCompra.Item(0) = detalle.IdProducto
             dtrRowDetCompra.Item(1) = detalle.Producto.CodigoProveedor
@@ -266,6 +280,8 @@ Public Class FrmCompra
 
     Private Sub CargarLineaDetalleCompra(ByVal producto As Producto, intCantidad As Integer, dblPrecioCosto As Decimal)
         Dim intIndice As Integer = ObtenerIndice(dtbDetalleCompra, producto.IdProducto)
+        Dim decPorcUtilidad = 0
+        If decPrecioVenta > 0 Then decPorcUtilidad = (decPrecioVenta * 100 / dblPrecioCosto) - 100
         If producto.Tipo = 1 And intIndice >= 0 Then
             dtbDetalleCompra.Rows(intIndice).Item(1) = producto.CodigoProveedor
             dtbDetalleCompra.Rows(intIndice).Item(2) = producto.Codigo
@@ -276,8 +292,9 @@ Public Class FrmCompra
             dtbDetalleCompra.Rows(intIndice).Item(7) = producto.ParametroImpuesto.TasaImpuesto = 0
             dtbDetalleCompra.Rows(intIndice).Item(8) = producto.ParametroImpuesto.TasaImpuesto
             dtbDetalleCompra.Rows(intIndice).Item(9) = producto.PrecioVenta1
-            dtbDetalleCompra.Rows(intIndice).Item(10) = (producto.PrecioVenta1 * 100 / dblPrecioCosto) - 100
+            dtbDetalleCompra.Rows(intIndice).Item(10) = decPorcUtilidad
         Else
+            consecDetalle += 1
             dtrRowDetCompra = dtbDetalleCompra.NewRow
             dtrRowDetCompra.Item(0) = producto.IdProducto
             dtrRowDetCompra.Item(1) = producto.CodigoProveedor
@@ -289,7 +306,8 @@ Public Class FrmCompra
             dtrRowDetCompra.Item(7) = producto.ParametroImpuesto.TasaImpuesto = 0
             dtrRowDetCompra.Item(8) = producto.ParametroImpuesto.TasaImpuesto
             dtrRowDetCompra.Item(9) = producto.PrecioVenta1
-            dtrRowDetCompra.Item(10) = (producto.PrecioVenta1 * 100 / dblPrecioCosto) - 100
+            dtrRowDetCompra.Item(10) = decPorcUtilidad
+            dtrRowDetCompra.Item(11) = consecDetalle
             dtbDetalleCompra.Rows.Add(dtrRowDetCompra)
         End If
         grdDetalleCompra.Refresh()
@@ -409,7 +427,8 @@ Public Class FrmCompra
             If txtCantidad.Text = "" Then txtCantidad.Text = "1"
             txtPrecioCosto.Text = FormatNumber(producto.PrecioCosto, 2)
             txtPrecioVenta.Text = FormatNumber(producto.PrecioVenta1, 2)
-            If producto.PrecioCosto > 0 Then txtUtilidad.Text = FormatNumber((producto.PrecioVenta1 * 100 / producto.PrecioCosto) - 100, 2)
+            decPrecioVenta = producto.PrecioVenta1 / (1 + (producto.ParametroImpuesto.TasaImpuesto / 100))
+            If producto.PrecioCosto > 0 And decPrecioVenta > 0 Then txtUtilidad.Text = FormatNumber((decPrecioVenta * 100 / producto.PrecioCosto) - 100, 2)
             txtCantidad.Focus()
         End If
     End Sub
@@ -444,7 +463,10 @@ Public Class FrmCompra
                 Dim formCargar As New FrmCargaProductoTransitorio
                 formCargar.ShowDialog()
                 If FrmPrincipal.productoTranstorio.PrecioVenta1 > 0 Then
-                    CargarLineaDetalleCompra(FrmPrincipal.productoTranstorio, FrmPrincipal.productoTranstorio.Existencias, FrmPrincipal.productoTranstorio.PrecioVenta1)
+                    producto = FrmPrincipal.productoTranstorio
+                    decPrecioVenta = 0
+                    Dim decPrecioCosto As Decimal = producto.PrecioVenta1 / (1 + (producto.ParametroImpuesto.TasaImpuesto / 100))
+                    CargarLineaDetalleCompra(producto, producto.Existencias, decPrecioCosto)
                 End If
             End If
         ElseIf e.KeyCode = Keys.F3 Then
@@ -472,6 +494,7 @@ Public Class FrmCompra
             EstablecerPropiedadesDataGridView()
             grdDetalleCompra.DataSource = dtbDetalleCompra
             grdDesglosePago.DataSource = dtbDesglosePago
+            consecDetalle = 0
             bolInit = False
             txtCantidad.Text = "1"
             txtSubTotal.Text = FormatNumber(0, 2)
@@ -500,6 +523,7 @@ Public Class FrmCompra
         txtObservaciones.Text = ""
         dtbDetalleCompra.Rows.Clear()
         grdDetalleCompra.Refresh()
+        consecDetalle = 0
         decSaldoPorPagar = 0
         txtSubTotal.Text = FormatNumber(0, 2)
         txtDescuento.Text = FormatNumber(0, 2)
@@ -856,8 +880,10 @@ Public Class FrmCompra
 
     Private Sub BtnEliminar_Click(sender As Object, e As EventArgs) Handles btnEliminar.Click
         If dtbDetalleCompra.Rows.Count > 0 Then
-            dtbDetalleCompra.Rows.RemoveAt(grdDetalleCompra.CurrentRow.Index)
+            Dim intId = grdDetalleCompra.CurrentRow.Cells(0).Value
+            dtbDetalleCompra.Rows.RemoveAt(dtbDetalleCompra.Rows.IndexOf(dtbDetalleCompra.Rows.Find(intId)))
             grdDetalleCompra.Refresh()
+            If dtbDetalleCompra.Rows.Count = 0 Then consecDetalle = 0
             CargarTotales()
             txtCodigoProveedor.Focus()
         End If
@@ -984,6 +1010,14 @@ Public Class FrmCompra
             Else
                 If e.KeyCode = Keys.Enter Then txtCodigo.Focus()
             End If
+        End If
+    End Sub
+
+    Private Sub txtPrecioCosto_Validated(sender As Object, e As EventArgs) Handles txtPrecioCosto.Validated
+        If txtPrecioCosto.Text = "" Then txtPrecioCosto.Text = "0.00"
+        txtPrecioCosto.Text = FormatNumber(txtPrecioCosto.Text, 2)
+        If CDbl(txtPrecioCosto.Text) > 0 Then
+            txtUtilidad.Text = FormatNumber((decPrecioVenta * 100 / CDbl(txtPrecioCosto.Text)) - 100, 2)
         End If
     End Sub
 

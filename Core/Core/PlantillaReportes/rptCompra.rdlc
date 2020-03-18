@@ -113,6 +113,11 @@
                             <Border>
                               <Style>None</Style>
                             </Border>
+                            <BottomBorder>
+                              <Color>Black</Color>
+                              <Style>Solid</Style>
+                              <Width>1pt</Width>
+                            </BottomBorder>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
                             <PaddingTop>2pt</PaddingTop>
@@ -146,6 +151,11 @@
                             <Border>
                               <Style>None</Style>
                             </Border>
+                            <BottomBorder>
+                              <Color>Black</Color>
+                              <Style>Solid</Style>
+                              <Width>1pt</Width>
+                            </BottomBorder>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
                             <PaddingTop>2pt</PaddingTop>
@@ -179,6 +189,11 @@
                             <Border>
                               <Style>None</Style>
                             </Border>
+                            <BottomBorder>
+                              <Color>Black</Color>
+                              <Style>Solid</Style>
+                              <Width>1pt</Width>
+                            </BottomBorder>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
                             <PaddingTop>2pt</PaddingTop>
@@ -213,6 +228,11 @@
                             <Border>
                               <Style>None</Style>
                             </Border>
+                            <BottomBorder>
+                              <Color>Black</Color>
+                              <Style>Solid</Style>
+                              <Width>1pt</Width>
+                            </BottomBorder>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
                             <PaddingTop>2pt</PaddingTop>
@@ -248,6 +268,11 @@
                             <Border>
                               <Style>None</Style>
                             </Border>
+                            <BottomBorder>
+                              <Color>Black</Color>
+                              <Style>Solid</Style>
+                              <Width>1pt</Width>
+                            </BottomBorder>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
                             <PaddingTop>2pt</PaddingTop>
@@ -295,20 +320,8 @@
               </Border>
             </Style>
           </Tablix>
-          <Line Name="Line2">
-            <Top>0.80265cm</Top>
-            <Left>21.17929cm</Left>
-            <Height>0cm</Height>
-            <Width>-20.79679cm</Width>
-            <ZIndex>1</ZIndex>
-            <Style>
-              <Border>
-                <Style>Solid</Style>
-              </Border>
-            </Style>
-          </Line>
         </ReportItems>
-        <Height>0.34375in</Height>
+        <Height>0.31042in</Height>
         <Style>
           <Border>
             <Style>None</Style>
@@ -318,7 +331,7 @@
       <Width>8.42934in</Width>
       <Page>
         <PageHeader>
-          <Height>5.54396cm</Height>
+          <Height>5.43813cm</Height>
           <PrintOnFirstPage>true</PrintOnFirstPage>
           <ReportItems>
             <Textbox Name="lblClaveNumerica">
@@ -725,10 +738,10 @@
               </Style>
             </Textbox>
             <Line Name="Line1">
-              <Top>5.48688cm</Top>
+              <Top>5.38688cm</Top>
               <Left>21.17929cm</Left>
               <Height>0cm</Height>
-              <Width>-20.7881cm</Width>
+              <Width>-20.8981cm</Width>
               <ZIndex>12</ZIndex>
               <Style>
                 <Border>
@@ -880,7 +893,7 @@
           </Style>
         </PageHeader>
         <PageFooter>
-          <Height>1.13771cm</Height>
+          <Height>1.15771cm</Height>
           <PrintOnFirstPage>true</PrintOnFirstPage>
           <PrintOnLastPage>true</PrintOnLastPage>
           <ReportItems>
@@ -903,7 +916,7 @@
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>Textbox1</rd:DefaultName>
-              <Top>0.17639cm</Top>
+              <Top>0.19639cm</Top>
               <Left>14.41261cm</Left>
               <Height>0.6cm</Height>
               <Width>6.09833cm</Width>

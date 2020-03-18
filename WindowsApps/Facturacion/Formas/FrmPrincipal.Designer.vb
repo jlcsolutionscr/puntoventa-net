@@ -94,6 +94,7 @@ Partial Class FrmPrincipal
         Me.picLoader = New System.Windows.Forms.PictureBox()
         Me.stsPrincipal = New System.Windows.Forms.StatusStrip()
         Me.tslUsuario = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.MnuDocElectADE = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuMenuPrincipal.SuspendLayout()
         CType(Me.picLoader, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.stsPrincipal.SuspendLayout()
@@ -374,7 +375,7 @@ Partial Class FrmPrincipal
         '
         'MnuDocElect
         '
-        Me.MnuDocElect.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MnuDocElectFC, Me.MnuDocElectCDE, Me.MnuDocElectRDE})
+        Me.MnuDocElect.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MnuDocElectFC, Me.MnuDocElectCDE, Me.MnuDocElectRDE, Me.MnuDocElectADE})
         Me.MnuDocElect.Name = "MnuDocElect"
         Me.MnuDocElect.Size = New System.Drawing.Size(154, 20)
         Me.MnuDocElect.Text = "Documentos Electrónicos"
@@ -538,6 +539,13 @@ Partial Class FrmPrincipal
         Me.tslUsuario.Name = "tslUsuario"
         Me.tslUsuario.Size = New System.Drawing.Size(0, 17)
         '
+        'MnuDocElectADE
+        '
+        Me.MnuDocElectADE.Name = "MnuDocElectADE"
+        Me.MnuDocElectADE.Size = New System.Drawing.Size(258, 22)
+        Me.MnuDocElectADE.Text = "Recepcion de facturas recibidas"
+        Me.MnuDocElectADE.Visible = False
+        '
         'FrmPrincipal
         '
         Me.BackColor = System.Drawing.SystemColors.AppWorkspace
@@ -607,4 +615,5 @@ Partial Class FrmPrincipal
     Friend WithEvents MnuAnROrdenServicio As ToolStripMenuItem
     Friend WithEvents stsPrincipal As StatusStrip
     Friend WithEvents tslUsuario As ToolStripStatusLabel
+    Friend WithEvents MnuDocElectADE As ToolStripMenuItem
 End Class

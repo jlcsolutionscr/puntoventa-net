@@ -379,6 +379,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         var detalleCompras = dbContext.CompraRepository.Where(s => s.IdEmpresa == intIdEmpresa && s.IdSucursal == intIdSucursal && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal && s.Nulo == bolNulo)
                             .Join(dbContext.ProveedorRepository, x => x.IdProveedor, y => y.IdProveedor, (x, y) => new { x, y })
                             .Select(z => new { z.x.IdProveedor, z.x.Nulo, z.x.IdCondicionVenta, z.x.IdCompra, z.x.Fecha, NombreProveedor = z.x.Proveedor.Nombre, z.x.NoDocumento, z.x.Impuesto, Total = (z.x.Excento + z.x.Gravado + z.x.Impuesto) });
+                        if (intIdProveedor > 0)
+                            detalleCompras = detalleCompras.Where(x => x.IdProveedor == intIdProveedor);
                         foreach (var value in detalleCompras)
                         {
                             ReporteDetalle reporteLinea = new ReporteDetalle();

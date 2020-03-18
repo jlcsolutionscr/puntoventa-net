@@ -1,6 +1,5 @@
 Imports System.Collections.Generic
 Imports LeandroSoftware.Core.Dominio.Entidades
-Imports System.Xml
 Imports System.Threading.Tasks
 Imports LeandroSoftware.ClienteWCF
 Imports LeandroSoftware.Core.TiposComunes

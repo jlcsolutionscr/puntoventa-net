@@ -17,6 +17,14 @@ Public Class FrmAceptarDocumentoElectronico
         Next
     End Sub
 
+    Private Async Sub FrmAceptarDocumentoElectronico_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+        cboSucursal.ValueMember = "Id"
+        cboSucursal.DisplayMember = "Descripcion"
+        cboSucursal.DataSource = Await Puntoventa.ObtenerListadoSucursales(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+        cboSucursal.SelectedValue = FrmPrincipal.equipoGlobal.IdSucursal
+        cboSucursal.Enabled = FrmPrincipal.bolSeleccionaSucursal
+    End Sub
+
     Private Sub EnterTexboxHandler(sender As Object, e As EventArgs)
         Dim textbox As TextBox = DirectCast(sender, TextBox)
         textbox.BackColor = Color.PeachPuff
@@ -38,7 +46,7 @@ Public Class FrmAceptarDocumentoElectronico
                 Else
                     intEstado = 2
                 End If
-                Await Puntoventa.GeneraMensajeReceptor(strDatos, FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, FrmPrincipal.equipoGlobal.IdTerminal, intEstado, FrmPrincipal.usuarioGlobal.Token)
+                Await Puntoventa.GenerarMensajeReceptor(strDatos, FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, 1, intEstado, chkIvaAcreditable.Checked, FrmPrincipal.usuarioGlobal.Token)
                 MessageBox.Show("Documento enviado satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 Close()
             Else

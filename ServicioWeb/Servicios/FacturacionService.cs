@@ -1,5 +1,4 @@
 ﻿using System;
-using System;
 using System.Linq;
 using System.Data;
 using System.Data.Entity.Infrastructure;
@@ -64,6 +63,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         IList<DocumentoDetalle> ObtenerListadoDocumentosElectronicosPendientes();
         IList<DocumentoDetalle> ObtenerListadoDocumentosElectronicosEnProceso(int intIdEmpresa);
         void ProcesarDocumentosElectronicosPendientes(ICorreoService servicioEnvioCorreo, ConfiguracionGeneral datos);
+        void GenerarMensajeReceptor(string strDatos, int intIdEmpresa, int intSucursal, int intTerminal, int intEstado, bool bolIvaAplicable, ConfiguracionGeneral datos);
         void ProcesarCorreoRecepcion(ICorreoService servicioEnvioCorreo, IServerMailService servicioRecepcionCorreo, ConfiguracionGeneral config, ConfiguracionRecepcion datos);
         void EnviarDocumentoElectronicoPendiente(int intIdDocumento, ConfiguracionGeneral datos);
         void ReprocesarDocumentoElectronico(int intIdDocumento, ConfiguracionGeneral datos);
@@ -2058,6 +2058,38 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 };
                 archivosJArray.Add(jobDatosAdjuntos1);
                 servicioEnvioCorreo.SendEmail(new string[] { datos.CorreoNotificacionErrores }, new string[] { }, "Excepción en la interface de procesamiento de documentos pendientes", "Adjunto el archivo con el detalle de los errores en procesamiento.", false, archivosJArray);
+            }
+        }
+
+        public void GenerarMensajeReceptor(string strDatos, int intIdEmpresa, int intSucursal, int intTerminal, int intEstado, bool bolIvaAplicable, ConfiguracionGeneral datos)
+        {
+            try
+            {
+                using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+                {
+                    Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (empresa.FechaVence < DateTime.Today) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
+                    DocumentoElectronico documentoMR = ComprobanteElectronicoService.GeneraMensajeReceptor(strDatos, empresa, dbContext, intSucursal, intTerminal, intEstado, bolIvaAplicable);
+                    dbContext.DocumentoElectronicoRepository.Add(documentoMR);
+                    dbContext.Commit();
+                    if (documentoMR != null)
+                    {
+                        Task.Run(() => ComprobanteElectronicoService.EnviarDocumentoElectronico(empresa.IdEmpresa, documentoMR.IdDocumento, datos));
+                    }
+                }
+            }
+            catch (BusinessException ex)
+            {
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                log.Error("Error al procesar el mensaje receptor: ", ex);
+                if (ex.Message == "Service Unavailable")
+                    throw new Exception("El servicio de factura electrónica se encuentra fuera de servicio. Por favor intente más tarde.");
+                else
+                    throw new Exception("Se produjo un error al procesar el mensaje receptor. Por favor consulte con su proveedor.");
             }
         }
 

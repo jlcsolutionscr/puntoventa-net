@@ -10,7 +10,7 @@ Imports LeandroSoftware.Core.Utilitario
 Public Class FrmProforma
 #Region "Variables"
     Private decExcento, decGravado, decExonerado, decImpuesto, decTotal, decSubTotal, decPrecioVenta As Decimal
-    Private I As Short
+    Private I, consecDetalle As Short
     Private dtbDetalleProforma As DataTable
     Private dtrRowDetProforma As DataRow
     Private proforma As Proforma
@@ -43,12 +43,15 @@ Public Class FrmProforma
         dtbDetalleProforma.Columns.Add("PORCENTAJEIVA", GetType(Decimal))
         dtbDetalleProforma.Columns.Add("PORCDESCUENTO", GetType(Decimal))
         dtbDetalleProforma.Columns.Add("VALORDESCUENTO", GetType(Decimal))
+        dtbDetalleProforma.Columns.Add("ID", GetType(Integer))
+        dtbDetalleProforma.PrimaryKey = {dtbDetalleProforma.Columns(11)}
     End Sub
 
     Private Sub EstablecerPropiedadesDataGridView()
         grdDetalleProforma.Columns.Clear()
         grdDetalleProforma.AutoGenerateColumns = False
 
+        Dim dvcId As New DataGridViewTextBoxColumn
         Dim dvcIdProducto As New DataGridViewTextBoxColumn
         Dim dvcCodigo As New DataGridViewTextBoxColumn
         Dim dvcDescripcion As New DataGridViewTextBoxColumn
@@ -59,6 +62,12 @@ Public Class FrmProforma
         Dim dvcTotal As New DataGridViewTextBoxColumn
         Dim dvcExc As New DataGridViewCheckBoxColumn
         Dim dvcPorcentajeIVA As New DataGridViewTextBoxColumn
+
+        dvcId.DataPropertyName = "ID"
+        dvcId.HeaderText = "Id"
+        dvcId.Width = 0
+        dvcId.Visible = False
+        grdDetalleProforma.Columns.Add(dvcId)
 
         dvcIdProducto.DataPropertyName = "IDPRODUCTO"
         dvcIdProducto.HeaderText = "IdP"
@@ -136,7 +145,9 @@ Public Class FrmProforma
 
     Private Sub CargarDetalleProforma(proforma As Proforma)
         dtbDetalleProforma.Rows.Clear()
+        consecDetalle = 0
         For Each detalle As DetalleProforma In proforma.DetalleProforma
+            consecDetalle += 1
             dtrRowDetProforma = dtbDetalleProforma.NewRow
             dtrRowDetProforma.Item(0) = detalle.IdProducto
             dtrRowDetProforma.Item(1) = detalle.Producto.Codigo
@@ -149,6 +160,7 @@ Public Class FrmProforma
             dtrRowDetProforma.Item(8) = detalle.PorcentajeIVA
             dtrRowDetProforma.Item(9) = detalle.PorcDescuento
             dtrRowDetProforma.Item(10) = (dtrRowDetProforma.Item(5) * 100 / (100 - detalle.PorcDescuento)) - dtrRowDetProforma.Item(5)
+            dtrRowDetProforma.Item(11) = consecDetalle
             dtbDetalleProforma.Rows.Add(dtrRowDetProforma)
         Next
         grdDetalleProforma.Refresh()
@@ -172,6 +184,7 @@ Public Class FrmProforma
             dtbDetalleProforma.Rows(intIndice).Item(9) = decPorcDesc
             dtbDetalleProforma.Rows(intIndice).Item(10) = (decPrecio * 100 / (100 - decPorcDesc)) - decPrecio
         Else
+            consecDetalle += 1
             dtrRowDetProforma = dtbDetalleProforma.NewRow
             dtrRowDetProforma.Item(0) = producto.IdProducto
             dtrRowDetProforma.Item(1) = producto.Codigo
@@ -184,6 +197,7 @@ Public Class FrmProforma
             dtrRowDetProforma.Item(8) = decTasaImpuesto
             dtrRowDetProforma.Item(9) = decPorcDesc
             dtrRowDetProforma.Item(10) = (decPrecio * 100 / (100 - decPorcDesc)) - decPrecio
+            dtrRowDetProforma.Item(11) = consecDetalle
             dtbDetalleProforma.Rows.Add(dtrRowDetProforma)
         End If
         grdDetalleProforma.Refresh()
@@ -343,6 +357,7 @@ Public Class FrmProforma
             IniciaTablasDeDetalle()
             EstablecerPropiedadesDataGridView()
             grdDetalleProforma.DataSource = dtbDetalleProforma
+            consecDetalle = 0
             bolInit = False
             txtCantidad.Text = "1"
             txtPorcDesc.Text = "0"
@@ -394,6 +409,7 @@ Public Class FrmProforma
         txtPorcentajeExoneracion.Text = ""
         dtbDetalleProforma.Rows.Clear()
         grdDetalleProforma.Refresh()
+        consecDetalle = 0
         txtSubTotal.Text = FormatNumber(0, 2)
         txtImpuesto.Text = FormatNumber(0, 2)
         txtTotal.Text = FormatNumber(0, 2)
@@ -843,8 +859,10 @@ Public Class FrmProforma
 
     Private Sub CmdEliminar_Click(sender As Object, e As EventArgs) Handles btnEliminar.Click
         If grdDetalleProforma.Rows.Count > 0 Then
-            dtbDetalleProforma.Rows.RemoveAt(grdDetalleProforma.CurrentRow.Index)
+            Dim intId = grdDetalleProforma.CurrentRow.Cells(0).Value
+            dtbDetalleProforma.Rows.RemoveAt(dtbDetalleProforma.Rows.IndexOf(dtbDetalleProforma.Rows.Find(intId)))
             grdDetalleProforma.Refresh()
+            If dtbDetalleProforma.Rows.Count = 0 Then consecDetalle = 0
             CargarTotales()
             txtCodigo.Focus()
         End If

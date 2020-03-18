@@ -11,7 +11,7 @@ Public Class FrmOrdenServicio
 #Region "Variables"
     Private strMotivoRechazo As String
     Private decSubTotal, decExcento, decGravado, decExonerado, decImpuesto, decTotal, decPagoEfectivo, decPagoCliente, decTotalPago, decSaldoPorPagar, decPrecioVenta As Decimal
-    Private I, shtConsecutivoPago As Short
+    Private I, consecDetalle As Short
     Private dtbDatosLocal, dtbDetalleOrdenServicio, dtbDesglosePago As DataTable
     Private dtrRowDetOrdenServicio, dtrRowDesglosePago As DataRow
     Private arrDetalleOrdenServicio As ArrayList
@@ -46,6 +46,8 @@ Public Class FrmOrdenServicio
         dtbDetalleOrdenServicio.Columns.Add("PORCENTAJEIVA", GetType(Decimal))
         dtbDetalleOrdenServicio.Columns.Add("PORCDESCUENTO", GetType(Decimal))
         dtbDetalleOrdenServicio.Columns.Add("VALORDESCUENTO", GetType(Decimal))
+        dtbDetalleOrdenServicio.Columns.Add("ID", GetType(Integer))
+        dtbDetalleOrdenServicio.PrimaryKey = {dtbDetalleOrdenServicio.Columns(11)}
 
         dtbDesglosePago = New DataTable()
         dtbDesglosePago.Columns.Add("IDFORMAPAGO", GetType(Integer))
@@ -64,6 +66,7 @@ Public Class FrmOrdenServicio
         grdDetalleOrdenServicio.Columns.Clear()
         grdDetalleOrdenServicio.AutoGenerateColumns = False
 
+        Dim dvcId As New DataGridViewTextBoxColumn
         Dim dvcIdProducto As New DataGridViewTextBoxColumn
         Dim dvcCodigo As New DataGridViewTextBoxColumn
         Dim dvcDescripcion As New DataGridViewTextBoxColumn
@@ -74,6 +77,12 @@ Public Class FrmOrdenServicio
         Dim dvcTotal As New DataGridViewTextBoxColumn
         Dim dvcExc As New DataGridViewCheckBoxColumn
         Dim dvcPorcentajeIVA As New DataGridViewTextBoxColumn
+
+        dvcId.DataPropertyName = "ID"
+        dvcId.HeaderText = "Id"
+        dvcId.Width = 0
+        dvcId.Visible = False
+        grdDetalleOrdenServicio.Columns.Add(dvcId)
 
         dvcIdProducto.DataPropertyName = "IDPRODUCTO"
         dvcIdProducto.HeaderText = "IdP"
@@ -234,7 +243,9 @@ Public Class FrmOrdenServicio
 
     Private Sub CargarDetalleOrdenServicio(ByVal ordenServicio As OrdenServicio)
         dtbDetalleOrdenServicio.Rows.Clear()
+        consecDetalle = 0
         For Each detalle As DetalleOrdenServicio In ordenServicio.DetalleOrdenServicio
+            consecDetalle += 1
             dtrRowDetOrdenServicio = dtbDetalleOrdenServicio.NewRow
             dtrRowDetOrdenServicio.Item(0) = detalle.IdProducto
             dtrRowDetOrdenServicio.Item(1) = detalle.Producto.Codigo
@@ -246,7 +257,8 @@ Public Class FrmOrdenServicio
             dtrRowDetOrdenServicio.Item(7) = detalle.Excento
             dtrRowDetOrdenServicio.Item(8) = detalle.PorcentajeIVA
             dtrRowDetOrdenServicio.Item(9) = detalle.PorcDescuento
-            dtrRowDetOrdenServicio.Item(9) = (dtrRowDetOrdenServicio.Item(5) * 100 / (100 - detalle.PorcDescuento)) - dtrRowDetOrdenServicio.Item(5)
+            dtrRowDetOrdenServicio.Item(10) = (dtrRowDetOrdenServicio.Item(5) * 100 / (100 - detalle.PorcDescuento)) - dtrRowDetOrdenServicio.Item(5)
+            dtrRowDetOrdenServicio.Item(11) = consecDetalle
             dtbDetalleOrdenServicio.Rows.Add(dtrRowDetOrdenServicio)
         Next
         grdDetalleOrdenServicio.Refresh()
@@ -291,6 +303,7 @@ Public Class FrmOrdenServicio
             dtbDetalleOrdenServicio.Rows(intIndice).Item(9) = decPorcDesc
             dtbDetalleOrdenServicio.Rows(intIndice).Item(10) = (decPrecio * 100 / (100 - decPorcDesc)) - decPrecio
         Else
+            consecDetalle += 1
             dtrRowDetOrdenServicio = dtbDetalleOrdenServicio.NewRow
             dtrRowDetOrdenServicio.Item(0) = producto.IdProducto
             dtrRowDetOrdenServicio.Item(1) = producto.Codigo
@@ -303,6 +316,7 @@ Public Class FrmOrdenServicio
             dtrRowDetOrdenServicio.Item(8) = decTasaImpuesto
             dtrRowDetOrdenServicio.Item(9) = decPorcDesc
             dtrRowDetOrdenServicio.Item(10) = (decPrecio * 100 / (100 - decPorcDesc)) - decPrecio
+            dtrRowDetOrdenServicio.Item(11) = consecDetalle
             dtbDetalleOrdenServicio.Rows.Add(dtrRowDetOrdenServicio)
         End If
         grdDetalleOrdenServicio.Refresh()
@@ -532,6 +546,7 @@ Public Class FrmOrdenServicio
             Await CargarListaBancoAdquiriente()
             grdDetalleOrdenServicio.DataSource = dtbDetalleOrdenServicio
             grdDesglosePago.DataSource = dtbDesglosePago
+            consecDetalle = 0
             bolInit = False
             txtCantidad.Text = "1"
             txtPorcDesc.Text = "0"
@@ -558,7 +573,6 @@ Public Class FrmOrdenServicio
                 End Try
             End If
             txtSaldoPorPagar.Text = FormatNumber(decSaldoPorPagar, 2)
-            shtConsecutivoPago = 0
             If FrmPrincipal.bolModificaDescripcion Then txtDescripcion.ReadOnly = False
             If FrmPrincipal.bolAplicaDescuento Then txtPorcDesc.ReadOnly = False
             If FrmPrincipal.bolModificaPrecioVenta Then txtPrecio.ReadOnly = False
@@ -586,6 +600,7 @@ Public Class FrmOrdenServicio
         txtOtrosDetalles.Text = ""
         dtbDetalleOrdenServicio.Rows.Clear()
         grdDetalleOrdenServicio.Refresh()
+        consecDetalle = 0
         txtSubTotal.Text = FormatNumber(0, 2)
         txtImpuesto.Text = FormatNumber(0, 2)
         txtTotal.Text = FormatNumber(0, 2)
@@ -637,7 +652,6 @@ Public Class FrmOrdenServicio
         End If
         bolInit = False
         txtMontoPago.Text = ""
-        shtConsecutivoPago = 0
         txtCodigo.Focus()
     End Sub
 
@@ -1118,8 +1132,10 @@ Public Class FrmOrdenServicio
 
     Private Sub BtnEliminar_Click(sender As Object, e As EventArgs) Handles btnEliminar.Click
         If grdDetalleOrdenServicio.Rows.Count > 0 Then
-            dtbDetalleOrdenServicio.Rows.RemoveAt(grdDetalleOrdenServicio.CurrentRow.Index)
+            Dim intId = grdDetalleOrdenServicio.CurrentRow.Cells(0).Value
+            dtbDetalleOrdenServicio.Rows.RemoveAt(dtbDetalleOrdenServicio.Rows.IndexOf(dtbDetalleOrdenServicio.Rows.Find(intId)))
             grdDetalleOrdenServicio.Refresh()
+            If dtbDetalleOrdenServicio.Rows.Count = 0 Then consecDetalle = 0
             CargarTotales()
             txtCodigo.Focus()
         End If

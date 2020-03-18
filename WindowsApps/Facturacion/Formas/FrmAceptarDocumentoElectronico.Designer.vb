@@ -31,6 +31,9 @@ Partial Class FrmAceptarDocumentoElectronico
         Me.rbnAceptarParcial = New System.Windows.Forms.RadioButton()
         Me.rbnAceptado = New System.Windows.Forms.RadioButton()
         Me.txtMensaje = New System.Windows.Forms.RichTextBox()
+        Me.cboSucursal = New System.Windows.Forms.ComboBox()
+        Me.Label6 = New System.Windows.Forms.Label()
+        Me.chkIvaAcreditable = New System.Windows.Forms.CheckBox()
         Me.grpEstado.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -40,7 +43,7 @@ Partial Class FrmAceptarDocumentoElectronico
         Me.btnEnviar.Cursor = System.Windows.Forms.Cursors.Default
         Me.btnEnviar.Enabled = False
         Me.btnEnviar.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.btnEnviar.Location = New System.Drawing.Point(443, 417)
+        Me.btnEnviar.Location = New System.Drawing.Point(715, 420)
         Me.btnEnviar.Name = "btnEnviar"
         Me.btnEnviar.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.btnEnviar.Size = New System.Drawing.Size(73, 25)
@@ -129,11 +132,49 @@ Partial Class FrmAceptarDocumentoElectronico
         Me.txtMensaje.TabStop = False
         Me.txtMensaje.Text = ""
         '
+        'cboSucursal
+        '
+        Me.cboSucursal.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.cboSucursal.FormattingEnabled = True
+        Me.cboSucursal.Location = New System.Drawing.Point(185, 15)
+        Me.cboSucursal.Name = "cboSucursal"
+        Me.cboSucursal.Size = New System.Drawing.Size(289, 21)
+        Me.cboSucursal.TabIndex = 147
+        Me.cboSucursal.TabStop = False
+        '
+        'Label6
+        '
+        Me.Label6.BackColor = System.Drawing.Color.Transparent
+        Me.Label6.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label6.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label6.Location = New System.Drawing.Point(118, 15)
+        Me.Label6.Name = "Label6"
+        Me.Label6.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label6.Size = New System.Drawing.Size(61, 19)
+        Me.Label6.TabIndex = 148
+        Me.Label6.Text = "Sucursal:"
+        Me.Label6.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
+        'chkIvaAcreditable
+        '
+        Me.chkIvaAcreditable.AutoSize = True
+        Me.chkIvaAcreditable.Checked = True
+        Me.chkIvaAcreditable.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.chkIvaAcreditable.Location = New System.Drawing.Point(445, 421)
+        Me.chkIvaAcreditable.Name = "chkIvaAcreditable"
+        Me.chkIvaAcreditable.Size = New System.Drawing.Size(99, 17)
+        Me.chkIvaAcreditable.TabIndex = 149
+        Me.chkIvaAcreditable.Text = "Acreditar el IVA"
+        Me.chkIvaAcreditable.UseVisualStyleBackColor = True
+        '
         'FrmAceptarDocumentoElectronico
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(800, 457)
+        Me.Controls.Add(Me.chkIvaAcreditable)
+        Me.Controls.Add(Me.cboSucursal)
+        Me.Controls.Add(Me.Label6)
         Me.Controls.Add(Me.txtMensaje)
         Me.Controls.Add(Me.grpEstado)
         Me.Controls.Add(Me.lblEtiqueta)
@@ -158,4 +199,7 @@ Partial Class FrmAceptarDocumentoElectronico
     Friend WithEvents rbnAceptarParcial As RadioButton
     Friend WithEvents rbnAceptado As RadioButton
     Friend WithEvents txtMensaje As RichTextBox
+    Friend WithEvents cboSucursal As ComboBox
+    Friend WithEvents Label6 As Label
+    Friend WithEvents chkIvaAcreditable As CheckBox
 End Class

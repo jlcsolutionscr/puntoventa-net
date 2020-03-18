@@ -57,10 +57,13 @@
             <TablixBody>
               <TablixColumns>
                 <TablixColumn>
-                  <Width>1.99649cm</Width>
+                  <Width>0.98709cm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>9.82446cm</Width>
+                  <Width>8.92614cm</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>2.5cm</Width>
                 </TablixColumn>
                 <TablixColumn>
                   <Width>2.18912cm</Width>
@@ -130,6 +133,39 @@
                             </Paragraph>
                           </Paragraphs>
                           <rd:DefaultName>Nombre</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>None</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="NoDocumento">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!NoDocumento.Value</Value>
+                                  <Style>
+                                    <FontFamily>Tahoma</FontFamily>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Left</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>NoDocumento</rd:DefaultName>
                           <Style>
                             <Border>
                               <Style>None</Style>
@@ -255,6 +291,7 @@
                 <TablixMember />
                 <TablixMember />
                 <TablixMember />
+                <TablixMember />
               </TablixMembers>
             </TablixColumnHierarchy>
             <TablixRowHierarchy>
@@ -271,7 +308,7 @@
             <Top>0.0441cm</Top>
             <Left>0.77325cm</Left>
             <Height>0.67354cm</Height>
-            <Width>19.73769cm</Width>
+            <Width>20.32997cm</Width>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -420,9 +457,9 @@
           </Textbox>
           <Line Name="Line2">
             <Top>0.80265cm</Top>
-            <Left>20.55012cm</Left>
+            <Left>21.18512cm</Left>
             <Height>0cm</Height>
-            <Width>-19.80816cm</Width>
+            <Width>-20.44316cm</Width>
             <ZIndex>5</ZIndex>
             <Style>
               <Border>
@@ -438,7 +475,7 @@
           </Border>
         </Style>
       </Body>
-      <Width>8.5in</Width>
+      <Width>8.45369in</Width>
       <Page>
         <PageHeader>
           <Height>4.65667cm</Height>
@@ -467,7 +504,7 @@
               <Top>3.74798cm</Top>
               <Left>0.77325cm</Left>
               <Height>0.6cm</Height>
-              <Width>1.99649cm</Width>
+              <Width>0.98709cm</Width>
               <Style>
                 <Border>
                   <Style>None</Style>
@@ -497,10 +534,10 @@
                   </Style>
                 </Paragraph>
               </Paragraphs>
-              <Top>3.74798cm</Top>
-              <Left>12.62948cm</Left>
+              <Top>3.74075cm</Top>
+              <Left>13.18648cm</Left>
               <Height>0.6cm</Height>
-              <Width>2.15384cm</Width>
+              <Width>2.18912cm</Width>
               <ZIndex>1</ZIndex>
               <Style>
                 <Border>
@@ -532,9 +569,9 @@
                 </Paragraph>
               </Paragraphs>
               <Top>3.74075cm</Top>
-              <Left>14.82522cm</Left>
+              <Left>15.3756cm</Left>
               <Height>0.6cm</Height>
-              <Width>2.80868cm</Width>
+              <Width>2.85058cm</Width>
               <ZIndex>2</ZIndex>
               <Style>
                 <Border>
@@ -566,7 +603,7 @@
                 </Paragraph>
               </Paragraphs>
               <Top>3.74075cm</Top>
-              <Left>17.68241cm</Left>
+              <Left>18.22618cm</Left>
               <Height>0.6cm</Height>
               <Width>2.82853cm</Width>
               <ZIndex>3</ZIndex>
@@ -868,9 +905,9 @@
                 </Paragraph>
               </Paragraphs>
               <Top>3.74799cm</Top>
-              <Left>2.80502cm</Left>
+              <Left>1.76034cm</Left>
               <Height>0.6cm</Height>
-              <Width>9.78918cm</Width>
+              <Width>8.92614cm</Width>
               <ZIndex>12</ZIndex>
               <Style>
                 <Border>
@@ -884,9 +921,9 @@
             </Textbox>
             <Line Name="Line1">
               <Top>4.52438cm</Top>
-              <Left>20.55012cm</Left>
+              <Left>21.18512cm</Left>
               <Height>0cm</Height>
-              <Width>-19.80816cm</Width>
+              <Width>-20.44316cm</Width>
               <ZIndex>13</ZIndex>
               <Style>
                 <Border>
@@ -894,6 +931,40 @@
                 </Border>
               </Style>
             </Line>
+            <Textbox Name="lblFecha2">
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>Referencia</Value>
+                      <Style>
+                        <FontFamily>Tahoma</FontFamily>
+                        <FontWeight>Bold</FontWeight>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style>
+                    <TextAlign>Center</TextAlign>
+                  </Style>
+                </Paragraph>
+              </Paragraphs>
+              <Top>3.74075cm</Top>
+              <Left>10.68648cm</Left>
+              <Height>0.6cm</Height>
+              <Width>2.5cm</Width>
+              <ZIndex>14</ZIndex>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
           </ReportItems>
           <Style>
             <Border>

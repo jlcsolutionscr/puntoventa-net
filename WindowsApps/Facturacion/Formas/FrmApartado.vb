@@ -10,7 +10,7 @@ Imports LeandroSoftware.Core.Utilitario
 Public Class FrmApartado
 #Region "Variables"
     Private decExcento, decGravado, decExonerado, decImpuesto, decTotal, decSubTotal, decPrecioVenta, decPagoEfectivo, decPagoCliente, decTotalPago, decSaldoPorPagar As Decimal
-    Private I As Short
+    Private I, consecDetalle As Short
     Private dtbDetalleApartado, dtbDesglosePago As DataTable
     Private dtrRowDetApartado, dtrRowDesglosePago As DataRow
     Private apartado As Apartado
@@ -44,6 +44,8 @@ Public Class FrmApartado
         dtbDetalleApartado.Columns.Add("PORCENTAJEIVA", GetType(Decimal))
         dtbDetalleApartado.Columns.Add("PORCDESCUENTO", GetType(Decimal))
         dtbDetalleApartado.Columns.Add("VALORDESCUENTO", GetType(Decimal))
+        dtbDetalleApartado.Columns.Add("ID", GetType(Integer))
+        dtbDetalleApartado.PrimaryKey = {dtbDetalleApartado.Columns(11)}
 
         dtbDesglosePago = New DataTable()
         dtbDesglosePago.Columns.Add("IDFORMAPAGO", GetType(Integer))
@@ -62,6 +64,7 @@ Public Class FrmApartado
         grdDetalleApartado.Columns.Clear()
         grdDetalleApartado.AutoGenerateColumns = False
 
+        Dim dvcId As New DataGridViewTextBoxColumn
         Dim dvcIdProducto As New DataGridViewTextBoxColumn
         Dim dvcCodigo As New DataGridViewTextBoxColumn
         Dim dvcDescripcion As New DataGridViewTextBoxColumn
@@ -72,6 +75,12 @@ Public Class FrmApartado
         Dim dvcTotal As New DataGridViewTextBoxColumn
         Dim dvcExc As New DataGridViewCheckBoxColumn
         Dim dvcPorcentajeIVA As New DataGridViewTextBoxColumn
+
+        dvcId.DataPropertyName = "ID"
+        dvcId.HeaderText = "Id"
+        dvcId.Width = 0
+        dvcId.Visible = False
+        grdDetalleApartado.Columns.Add(dvcId)
 
         dvcIdProducto.DataPropertyName = "IDPRODUCTO"
         dvcIdProducto.HeaderText = "IdP"
@@ -226,7 +235,9 @@ Public Class FrmApartado
 
     Private Sub CargarDetalleApartado(apartado As Apartado)
         dtbDetalleApartado.Rows.Clear()
+        consecDetalle = 0
         For Each detalle As DetalleApartado In apartado.DetalleApartado
+            consecDetalle += 1
             dtrRowDetApartado = dtbDetalleApartado.NewRow
             dtrRowDetApartado.Item(0) = detalle.IdProducto
             dtrRowDetApartado.Item(1) = detalle.Producto.Codigo
@@ -239,6 +250,7 @@ Public Class FrmApartado
             dtrRowDetApartado.Item(8) = detalle.PorcentajeIVA
             dtrRowDetApartado.Item(9) = detalle.PorcDescuento
             dtrRowDetApartado.Item(10) = (dtrRowDetApartado.Item(5) * 100 / (100 - detalle.PorcDescuento)) - dtrRowDetApartado.Item(5)
+            dtrRowDetApartado.Item(11) = consecDetalle
             dtbDetalleApartado.Rows.Add(dtrRowDetApartado)
         Next
         grdDetalleApartado.Refresh()
@@ -282,6 +294,7 @@ Public Class FrmApartado
             dtbDetalleApartado.Rows(intIndice).Item(9) = decPorcDesc
             dtbDetalleApartado.Rows(intIndice).Item(10) = (decPrecio * 100 / (100 - decPorcDesc)) - decPrecio
         Else
+            consecDetalle += 1
             dtrRowDetApartado = dtbDetalleApartado.NewRow
             dtrRowDetApartado.Item(0) = producto.IdProducto
             dtrRowDetApartado.Item(1) = producto.Codigo
@@ -294,6 +307,7 @@ Public Class FrmApartado
             dtrRowDetApartado.Item(8) = decTasaImpuesto
             dtrRowDetApartado.Item(9) = decPorcDesc
             dtrRowDetApartado.Item(10) = (decPrecio * 100 / (100 - decPorcDesc)) - decPrecio
+            dtrRowDetApartado.Item(11) = consecDetalle
             dtbDetalleApartado.Rows.Add(dtrRowDetApartado)
         End If
         grdDetalleApartado.Refresh()
@@ -521,6 +535,7 @@ Public Class FrmApartado
             EstablecerPropiedadesDataGridView()
             grdDetalleApartado.DataSource = dtbDetalleApartado
             grdDesglosePago.DataSource = dtbDesglosePago
+            consecDetalle = 0
             bolInit = False
             txtCantidad.Text = "1"
             txtPorcDesc.Text = "0"
@@ -575,6 +590,7 @@ Public Class FrmApartado
         txtPorcentajeExoneracion.Text = ""
         dtbDetalleApartado.Rows.Clear()
         grdDetalleApartado.Refresh()
+        consecDetalle = 0
         txtSubTotal.Text = FormatNumber(0, 2)
         txtImpuesto.Text = FormatNumber(0, 2)
         txtTotal.Text = FormatNumber(0, 2)
@@ -1074,8 +1090,10 @@ Public Class FrmApartado
 
     Private Sub BtnEliminar_Click(sender As Object, e As EventArgs) Handles btnEliminar.Click
         If grdDetalleApartado.Rows.Count > 0 Then
-            dtbDetalleApartado.Rows.RemoveAt(grdDetalleApartado.CurrentRow.Index)
+            Dim intId = grdDetalleApartado.CurrentRow.Cells(0).Value
+            dtbDetalleApartado.Rows.RemoveAt(dtbDetalleApartado.Rows.IndexOf(dtbDetalleApartado.Rows.Find(intId)))
             grdDetalleApartado.Refresh()
+            If dtbDetalleApartado.Rows.Count = 0 Then consecDetalle = 0
             CargarTotales()
             txtCodigo.Focus()
         End If

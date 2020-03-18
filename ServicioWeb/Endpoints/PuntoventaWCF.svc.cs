@@ -608,6 +608,15 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         strMotivoAnulacion = parametrosJO.Property("MotivoAnulacion") != null ? parametrosJO.Property("MotivoAnulacion").Value.ToString() : "";
                         servicioCuentaPorProcesar.AnularMovimientoOrdenServicio(intIdLlave1, intIdUsuario, strMotivoAnulacion);
                         break;
+                    case "GenerarMensajeReceptor":
+                        strDatos = parametrosJO.Property("Datos").Value.ToString();
+                        intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
+                        intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
+                        intIdLlave1 = int.Parse(parametrosJO.Property("IdTerminal").Value.ToString());
+                        intIdTipoPago = int.Parse(parametrosJO.Property("IdEstado").Value.ToString());
+                        bolAplicado = bool.Parse(parametrosJO.Property("IvaAcreditable").Value.ToString());
+                        servicioFacturacion.GenerarMensajeReceptor(strDatos, intIdEmpresa, intIdSucursal, intIdLlave1, intIdTipoPago, bolAplicado, configuracionGeneral);
+                        break;
                     case "EnviarDocumentoElectronicoPendiente":
                         intIdLlave1 = int.Parse(parametrosJO.Property("IdDocumento").Value.ToString());
                         servicioFacturacion.EnviarDocumentoElectronicoPendiente(intIdLlave1, configuracionGeneral);

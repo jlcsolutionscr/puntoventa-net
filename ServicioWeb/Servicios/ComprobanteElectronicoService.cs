@@ -1875,7 +1875,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         if (strNumeroCedulaEmisor != "")
                             mensajeReceptor.NumeroCedulaEmisor = strNumeroCedulaEmisor;
                         else
-                            throw new BusinessException("No se encuentra el número de identificacion del EMISOR en el archivo XML.");
+                            throw new BusinessException("No se encuentra el número de identificación del EMISOR en el archivo XML.");
                     }
                 }
                 else
@@ -1896,10 +1896,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         if (strNumeroCedulaReceptor != "")
                             mensajeReceptor.NumeroCedulaReceptor = strNumeroCedulaReceptor;
                         else
-                            throw new BusinessException("No se encuentra el número de identificacion del RECEPTOR en el archivo XML.");
+                            throw new BusinessException("No se encuentra el número de identificación del RECEPTOR en el archivo XML.");
                     }
                     if (mensajeReceptor.NumeroCedulaReceptor != empresa.Identificacion)
-                        throw new BusinessException("El número de identificación de la empresa no corresponde con el número de identificacion del RECEPTOR en el archivo XML.");
+                        throw new BusinessException("El número de identificación de la empresa no corresponde con el número de identificación del RECEPTOR en el archivo XML.");
                 }
                 else
                     throw new BusinessException("No se encuentra el nodo RECEPTOR en el archivo XML.");

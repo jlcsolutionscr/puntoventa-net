@@ -10,7 +10,7 @@ Imports LeandroSoftware.Core.Utilitario
 Public Class FrmFactura
 #Region "Variables"
     Private decExcento, decGravado, decExonerado, decImpuesto, decTotalCosto, decTotalPago, decPagoEfectivo, decPagoCliente, decTotal, decSubTotal, decSaldoPorPagar, decPrecioVenta, decMontoAdelanto As Decimal
-    Private I, shtConsecutivoPago As Short
+    Private I, consecDetalle As Short
     Private intIdProforma, intIdOrdenServicio, intIdApartado As Integer
     Private dtbDetalleFactura, dtbDesglosePago As DataTable
     Private dtrRowDetFactura, dtrRowDesglosePago As DataRow
@@ -49,6 +49,8 @@ Public Class FrmFactura
         dtbDetalleFactura.Columns.Add("PORCENTAJEIVA", GetType(Decimal))
         dtbDetalleFactura.Columns.Add("PORCDESCUENTO", GetType(Decimal))
         dtbDetalleFactura.Columns.Add("VALORDESCUENTO", GetType(Decimal))
+        dtbDetalleFactura.Columns.Add("ID", GetType(Integer))
+        dtbDetalleFactura.PrimaryKey = {dtbDetalleFactura.Columns(12)}
 
         dtbDesglosePago = New DataTable()
         dtbDesglosePago.Columns.Add("IDFORMAPAGO", GetType(Integer))
@@ -67,6 +69,7 @@ Public Class FrmFactura
         grdDetalleFactura.Columns.Clear()
         grdDetalleFactura.AutoGenerateColumns = False
 
+        Dim dvcId As New DataGridViewTextBoxColumn
         Dim dvcIdProducto As New DataGridViewTextBoxColumn
         Dim dvcCodigo As New DataGridViewTextBoxColumn
         Dim dvcDescripcion As New DataGridViewTextBoxColumn
@@ -78,6 +81,12 @@ Public Class FrmFactura
         Dim dvcExc As New DataGridViewCheckBoxColumn
         Dim dvcPrecioCosto As New DataGridViewTextBoxColumn
         Dim dvcPorcentajeIVA As New DataGridViewTextBoxColumn
+
+        dvcId.DataPropertyName = "ID"
+        dvcId.HeaderText = "Id"
+        dvcId.Width = 0
+        dvcId.Visible = False
+        grdDetalleFactura.Columns.Add(dvcId)
 
         dvcIdProducto.DataPropertyName = "IDPRODUCTO"
         dvcIdProducto.HeaderText = "IdP"
@@ -244,7 +253,9 @@ Public Class FrmFactura
 
     Private Sub CargarDetalleFactura(factura As Factura)
         dtbDetalleFactura.Rows.Clear()
+        consecDetalle = 0
         For Each detalle As DetalleFactura In factura.DetalleFactura
+            consecDetalle += 1
             dtrRowDetFactura = dtbDetalleFactura.NewRow
             dtrRowDetFactura.Item(0) = detalle.IdProducto
             dtrRowDetFactura.Item(1) = detalle.Producto.Codigo
@@ -258,6 +269,7 @@ Public Class FrmFactura
             dtrRowDetFactura.Item(9) = detalle.PorcentajeIVA
             dtrRowDetFactura.Item(10) = detalle.PorcDescuento
             dtrRowDetFactura.Item(11) = (dtrRowDetFactura.Item(5) * 100 / (100 - detalle.PorcDescuento)) - dtrRowDetFactura.Item(5)
+            dtrRowDetFactura.Item(12) = consecDetalle
             dtbDetalleFactura.Rows.Add(dtrRowDetFactura)
         Next
         grdDetalleFactura.Refresh()
@@ -265,7 +277,9 @@ Public Class FrmFactura
 
     Private Sub CargarDetalleOrdenServicio(ordenServicio As OrdenServicio)
         dtbDetalleFactura.Rows.Clear()
+        consecDetalle = 0
         For Each detalle As DetalleOrdenServicio In ordenServicio.DetalleOrdenServicio
+            consecDetalle += 1
             dtrRowDetFactura = dtbDetalleFactura.NewRow
             dtrRowDetFactura.Item(0) = detalle.IdProducto
             dtrRowDetFactura.Item(1) = detalle.Producto.Codigo
@@ -279,6 +293,7 @@ Public Class FrmFactura
             dtrRowDetFactura.Item(9) = detalle.PorcentajeIVA
             dtrRowDetFactura.Item(10) = detalle.PorcDescuento
             dtrRowDetFactura.Item(11) = (dtrRowDetFactura.Item(5) * 100 / (100 - detalle.PorcDescuento)) - dtrRowDetFactura.Item(5)
+            dtrRowDetFactura.Item(12) = consecDetalle
             dtbDetalleFactura.Rows.Add(dtrRowDetFactura)
         Next
         grdDetalleFactura.Refresh()
@@ -286,7 +301,9 @@ Public Class FrmFactura
 
     Private Sub CargarDetalleFactura(apartado As Apartado)
         dtbDetalleFactura.Rows.Clear()
+        consecDetalle = 0
         For Each detalle As DetalleApartado In apartado.DetalleApartado
+            consecDetalle += 1
             dtrRowDetFactura = dtbDetalleFactura.NewRow
             dtrRowDetFactura.Item(0) = detalle.IdProducto
             dtrRowDetFactura.Item(1) = detalle.Producto.Codigo
@@ -300,6 +317,7 @@ Public Class FrmFactura
             dtrRowDetFactura.Item(9) = detalle.PorcentajeIVA
             dtrRowDetFactura.Item(10) = detalle.PorcDescuento
             dtrRowDetFactura.Item(11) = (dtrRowDetFactura.Item(5) * 100 / (100 - detalle.PorcDescuento)) - dtrRowDetFactura.Item(5)
+            dtrRowDetFactura.Item(12) = consecDetalle
             dtbDetalleFactura.Rows.Add(dtrRowDetFactura)
         Next
         grdDetalleFactura.Refresh()
@@ -307,7 +325,9 @@ Public Class FrmFactura
 
     Private Sub CargarDetalleProforma(proforma As Proforma)
         dtbDetalleFactura.Rows.Clear()
+        consecDetalle = 0
         For Each detalle As DetalleProforma In proforma.DetalleProforma
+            consecDetalle += 1
             dtrRowDetFactura = dtbDetalleFactura.NewRow
             dtrRowDetFactura.Item(0) = detalle.IdProducto
             dtrRowDetFactura.Item(1) = detalle.Producto.Codigo
@@ -321,6 +341,7 @@ Public Class FrmFactura
             dtrRowDetFactura.Item(9) = detalle.PorcentajeIVA
             dtrRowDetFactura.Item(10) = detalle.PorcDescuento
             dtrRowDetFactura.Item(11) = (dtrRowDetFactura.Item(5) * 100 / (100 - detalle.PorcDescuento)) - dtrRowDetFactura.Item(5)
+            dtrRowDetFactura.Item(12) = consecDetalle
             dtbDetalleFactura.Rows.Add(dtrRowDetFactura)
         Next
         grdDetalleFactura.Refresh()
@@ -366,6 +387,7 @@ Public Class FrmFactura
             dtbDetalleFactura.Rows(intIndice).Item(10) = decPorcDesc
             dtbDetalleFactura.Rows(intIndice).Item(11) = (decPrecio * 100 / (100 - decPorcDesc)) - decPrecio
         Else
+            consecDetalle += 1
             dtrRowDetFactura = dtbDetalleFactura.NewRow
             dtrRowDetFactura.Item(0) = producto.IdProducto
             dtrRowDetFactura.Item(1) = producto.Codigo
@@ -379,6 +401,7 @@ Public Class FrmFactura
             dtrRowDetFactura.Item(9) = decTasaImpuesto
             dtrRowDetFactura.Item(10) = decPorcDesc
             dtrRowDetFactura.Item(11) = (decPrecio * 100 / (100 - decPorcDesc)) - decPrecio
+            dtrRowDetFactura.Item(12) = consecDetalle
             dtbDetalleFactura.Rows.Add(dtrRowDetFactura)
         End If
         grdDetalleFactura.Refresh()
@@ -612,6 +635,7 @@ Public Class FrmFactura
             EstablecerPropiedadesDataGridView()
             grdDetalleFactura.DataSource = dtbDetalleFactura
             grdDesglosePago.DataSource = dtbDesglosePago
+            consecDetalle = 0
             bolInit = False
             txtCantidad.Text = "1"
             txtPorcDesc.Text = "0"
@@ -645,7 +669,6 @@ Public Class FrmFactura
             txtMontoAdelanto.Text = FormatNumber(decMontoAdelanto, 2)
             decSaldoPorPagar = 0
             txtSaldoPorPagar.Text = FormatNumber(decSaldoPorPagar, 2)
-            shtConsecutivoPago = 0
             If FrmPrincipal.bolModificaDescripcion Then txtDescripcion.ReadOnly = False
             If FrmPrincipal.bolModificaPrecioVenta Then txtPrecio.ReadOnly = False
             txtCodigo.Focus()
@@ -675,6 +698,7 @@ Public Class FrmFactura
         txtPorcentajeExoneracion.Text = ""
         dtbDetalleFactura.Rows.Clear()
         grdDetalleFactura.Refresh()
+        consecDetalle = 0
         txtSubTotal.Text = FormatNumber(0, 2)
         txtImpuesto.Text = FormatNumber(0, 2)
         txtTotal.Text = FormatNumber(0, 2)
@@ -746,7 +770,6 @@ Public Class FrmFactura
         txtTipoCambio.Text = "1"
         bolInit = False
         txtMontoPago.Text = ""
-        shtConsecutivoPago = 0
         txtCodigo.Focus()
     End Sub
 
@@ -1432,8 +1455,10 @@ Public Class FrmFactura
 
     Private Sub BtnEliminar_Click(sender As Object, e As EventArgs) Handles btnEliminar.Click
         If grdDetalleFactura.Rows.Count > 0 Then
-            dtbDetalleFactura.Rows.RemoveAt(grdDetalleFactura.CurrentRow.Index)
+            Dim intId = grdDetalleFactura.CurrentRow.Cells(0).Value
+            dtbDetalleFactura.Rows.RemoveAt(dtbDetalleFactura.Rows.IndexOf(dtbDetalleFactura.Rows.Find(intId)))
             grdDetalleFactura.Refresh()
+            If dtbDetalleFactura.Rows.Count = 0 Then consecDetalle = 0
             CargarTotales()
             txtCodigo.Focus()
         End If

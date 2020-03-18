@@ -250,7 +250,7 @@ Public Class FrmAplicaAbonoApartado
         ElseIf decTotal = 0 Then
             MessageBox.Show("Debe ingresar el monto del abono para guardar el registro.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
-        ElseIf decSaldoPorPagar = 0 Then
+        ElseIf (apartado.Total - apartado.MontoAdelanto) = decTotal Then
             MessageBox.Show("El apartado no puede ser cancelado en su totalidad.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         ElseIf decSaldoPorPagar > 0 Then

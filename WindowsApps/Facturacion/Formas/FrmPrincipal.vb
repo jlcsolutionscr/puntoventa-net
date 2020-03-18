@@ -443,6 +443,13 @@ Public Class FrmPrincipal
         }
         formEgreso.Show()
     End Sub
+
+    Private Sub MnuDocElectADE_Click(sender As Object, e As EventArgs) Handles MnuDocElectADE.Click
+        Dim formRecepcion As New FrmAceptarDocumentoElectronico With {
+            .MdiParent = Me
+        }
+        formRecepcion.Show()
+    End Sub
 #End Region
 
 #Region "Eventos Formulario"

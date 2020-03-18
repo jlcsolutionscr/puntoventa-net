@@ -250,7 +250,7 @@ Public Class FrmAplicaAbonoOrdenServicio
         ElseIf decTotal = 0 Then
             MessageBox.Show("Debe ingresar el monto del abono para guardar el registro.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
-        ElseIf decSaldoPorPagar = 0 Then
+        ElseIf (ordenServicio.Total - ordenServicio.MontoAdelanto) = decTotal Then
             MessageBox.Show("La orden de servicio no puede ser cancelada en su totalidad.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         ElseIf decSaldoPorPagar > 0 Then

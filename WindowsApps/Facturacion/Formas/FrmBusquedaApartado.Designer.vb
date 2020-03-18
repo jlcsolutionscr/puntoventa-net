@@ -285,7 +285,7 @@ Partial Class FrmBusquedaApartado
         Me.Name = "FrmBusquedaApartado"
         Me.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
-        Me.Text = "Búsqueda de Proformas"
+        Me.Text = "Búsqueda de Apartados"
         CType(Me.dgvListado, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
