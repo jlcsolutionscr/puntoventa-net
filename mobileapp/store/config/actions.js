@@ -1,4 +1,5 @@
 import Config from 'react-native-config'
+import { getAppstoreAppMetadata } from 'react-native-appstore-version-checker'
 
 import {
   SET_SERVICE_URL,
@@ -86,10 +87,10 @@ export function validateAppState () {
     dispatch(startLoader())
     dispatch(setModalError(''))
     try {
+      const metadata = await getAppstoreAppMetadata("com.jlcfacturacion")
       const deviceId = await DeviceInfo.getAndroidId()
-      const latestApp = await getLatestAppVersion(serviceURL)
       const currentVersion = await DeviceInfo.getVersion()
-      if (latestApp.Version !== currentVersion) {
+      if (metadata.version !== currentVersion) {
         dispatch(setAppReady(deviceId, 'outdated'))
       } else {
         const identifierList = await getCompanyIdentifiers(serviceURL, deviceId)
