@@ -1757,13 +1757,23 @@ namespace LeandroSoftware.ClienteWCF
             return cuentaPorCobrar;
         }
 
-        public static async Task<List<LlaveDescripcion>> ObtenerListadoCuentasPorCobrar(int intIdEmpresa, int intIdTipo, int intIdPropietario, string strToken)
+        public static async Task<int> ObtenerTotalListaCuentasPorCobrar(int intIdEmpresa, int intIdSucursal, int intIdTipo, string strReferencia, string strNombrePropietario, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerListadoCuentasPorCobrar', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdTipo: " + intIdTipo + ", IdPropietario: " + intIdPropietario + "}}";
+            string strDatos = "{NombreMetodo: 'ObtenerTotalListaCuentasPorCobrar', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", IdTipo: " + intIdTipo + ", Referencia: '" + strReferencia + "', NombrePropietario: '" + strNombrePropietario + "'}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
-            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
+            int intCantidad = 0;
             if (respuesta != "")
-                listado = serializer.Deserialize<List<LlaveDescripcion>>(respuesta);
+                intCantidad = serializer.Deserialize<int>(respuesta);
+            return intCantidad;
+        }
+
+        public static async Task<List<CuentaPorProcesar>> ObtenerListadoCuentasPorCobrar(int intIdEmpresa, int intIdSucursal, int intIdTipo, int intNumeroPagina, int intFilasPorPagina, string strReferencia, string strNombrePropietario, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'ObtenerListadoCuentasPorCobrar', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", IdTipo: " + intIdTipo + ", NumeroPagina: " + intNumeroPagina + ",FilasPorPagina: " + intFilasPorPagina + ", Referencia: '" + strReferencia + "', NombrePropietario: '" + strNombrePropietario + "'}}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            List<CuentaPorProcesar> listado = new List<CuentaPorProcesar>();
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<CuentaPorProcesar>>(respuesta);
             return listado;
         }
 
@@ -1810,13 +1820,23 @@ namespace LeandroSoftware.ClienteWCF
             return cuentaPorPagar;
         }
 
-        public static async Task<List<LlaveDescripcion>> ObtenerListadoCuentasPorPagar(int intIdEmpresa, int intIdTipo, int intIdPropietario, string strToken)
+        public static async Task<int> ObtenerTotalListaCuentasPorPagar(int intIdEmpresa, int intIdSucursal, int intIdTipo, string strReferencia, string strNombrePropietario, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerListadoCuentasPorPagar', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdTipo: " + intIdTipo + ", IdPropietario: " + intIdPropietario + "}}";
+            string strDatos = "{NombreMetodo: 'ObtenerTotalListaCuentasPorPagar', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", IdTipo: " + intIdTipo + ", Referencia: '" + strReferencia + "', NombrePropietario: '" + strNombrePropietario + "'}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
-            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
+            int intCantidad = 0;
             if (respuesta != "")
-                listado = serializer.Deserialize<List<LlaveDescripcion>>(respuesta);
+                intCantidad = serializer.Deserialize<int>(respuesta);
+            return intCantidad;
+        }
+
+        public static async Task<List<CuentaPorProcesar>> ObtenerListadoCuentasPorPagar(int intIdEmpresa, int intIdSucursal, int intIdTipo, int intNumeroPagina, int intFilasPorPagina, string strReferencia, string strNombrePropietario, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'ObtenerListadoCuentasPorPagar', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", IdTipo: " + intIdTipo + ", NumeroPagina: " + intNumeroPagina + ",FilasPorPagina: " + intFilasPorPagina + ", Referencia: '" + strReferencia + "', NombrePropietario: '" + strNombrePropietario + "'}}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            List<CuentaPorProcesar> listado = new List<CuentaPorProcesar>();
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<CuentaPorProcesar>>(respuesta);
             return listado;
         }
 

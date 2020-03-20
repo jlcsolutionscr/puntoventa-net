@@ -146,16 +146,11 @@ Public Class FrmGestionAbonoCxP
                     .usuario = FrmPrincipal.usuarioGlobal,
                     .empresa = FrmPrincipal.empresaGlobal,
                     .equipo = FrmPrincipal.equipoGlobal,
-                    .strConsecutivo = MovimientoCuentaPorPagar.IdMovCxP,
+                    .strConsecutivo = movimientoCuentaPorPagar.IdMovCxP,
                     .strNombre = txtNombreProveedor.Text,
-                    .strFechaAbono = MovimientoCuentaPorPagar.Fecha,
-                    .strTotalAbono = FormatNumber(MovimientoCuentaPorPagar.Monto, 2)
+                    .strFechaAbono = movimientoCuentaPorPagar.Fecha,
+                    .strTotalAbono = FormatNumber(movimientoCuentaPorPagar.Monto, 2)
                 }
-                arrDesgloseMov = New List(Of ModuloImpresion.ClsDesgloseFormaPago)()
-                For Each desgloseMovimiento As DesgloseMovimientoCuentaPorPagar In movimientoCuentaPorPagar.DesgloseMovimientoCuentaPorPagar
-                    desglosePagoImpresion = New ModuloImpresion.ClsDesgloseFormaPago(desgloseMovimiento.CuentaPorPagar.NroDocOrig, FormatNumber(desgloseMovimiento.Monto, 2))
-                    arrDesgloseMov.Add(desglosePagoImpresion)
-                Next
                 reciboComprobante.arrDesgloseMov = arrDesgloseMov
                 arrDesglosePago = New List(Of ModuloImpresion.ClsDesgloseFormaPago)()
                 For Each desglosePago As DesglosePagoMovimientoCuentaPorPagar In MovimientoCuentaPorPagar.DesglosePagoMovimientoCuentaPorPagar

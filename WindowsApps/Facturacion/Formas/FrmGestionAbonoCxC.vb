@@ -155,11 +155,6 @@ Public Class FrmGestionAbonoCxC
                     .strFechaAbono = movimientoCuentaPorCobrar.Fecha,
                     .strTotalAbono = FormatNumber(movimientoCuentaPorCobrar.Monto, 2)
                 }
-                arrDesgloseMov = New List(Of ModuloImpresion.ClsDesgloseFormaPago)()
-                For Each desgloseMovimiento As DesgloseMovimientoCuentaPorCobrar In movimientoCuentaPorCobrar.DesgloseMovimientoCuentaPorCobrar
-                    desglosePagoImpresion = New ModuloImpresion.ClsDesgloseFormaPago(desgloseMovimiento.CuentaPorCobrar.NroDocOrig, FormatNumber(desgloseMovimiento.Monto, 2))
-                    arrDesgloseMov.Add(desglosePagoImpresion)
-                Next
                 reciboComprobante.arrDesgloseMov = arrDesgloseMov
                 arrDesglosePago = New List(Of ModuloImpresion.ClsDesgloseFormaPago)()
                 For Each desglosePago As DesglosePagoMovimientoCuentaPorCobrar In movimientoCuentaPorCobrar.DesglosePagoMovimientoCuentaPorCobrar

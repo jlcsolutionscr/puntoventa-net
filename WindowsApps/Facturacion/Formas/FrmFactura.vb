@@ -69,7 +69,6 @@ Public Class FrmFactura
         grdDetalleFactura.Columns.Clear()
         grdDetalleFactura.AutoGenerateColumns = False
 
-        Dim dvcId As New DataGridViewTextBoxColumn
         Dim dvcIdProducto As New DataGridViewTextBoxColumn
         Dim dvcCodigo As New DataGridViewTextBoxColumn
         Dim dvcDescripcion As New DataGridViewTextBoxColumn
@@ -81,12 +80,7 @@ Public Class FrmFactura
         Dim dvcExc As New DataGridViewCheckBoxColumn
         Dim dvcPrecioCosto As New DataGridViewTextBoxColumn
         Dim dvcPorcentajeIVA As New DataGridViewTextBoxColumn
-
-        dvcId.DataPropertyName = "ID"
-        dvcId.HeaderText = "Id"
-        dvcId.Width = 0
-        dvcId.Visible = False
-        grdDetalleFactura.Columns.Add(dvcId)
+        Dim dvcId As New DataGridViewTextBoxColumn
 
         dvcIdProducto.DataPropertyName = "IDPRODUCTO"
         dvcIdProducto.HeaderText = "IdP"
@@ -166,6 +160,12 @@ Public Class FrmFactura
         dvcPorcentajeIVA.Width = 0
         dvcPorcentajeIVA.Visible = False
         grdDetalleFactura.Columns.Add(dvcPorcentajeIVA)
+
+        dvcId.DataPropertyName = "ID"
+        dvcId.HeaderText = "Id"
+        dvcId.Width = 0
+        dvcId.Visible = False
+        grdDetalleFactura.Columns.Add(dvcId)
 
         grdDesglosePago.Columns.Clear()
         grdDesglosePago.AutoGenerateColumns = False
@@ -1455,7 +1455,7 @@ Public Class FrmFactura
 
     Private Sub BtnEliminar_Click(sender As Object, e As EventArgs) Handles btnEliminar.Click
         If grdDetalleFactura.Rows.Count > 0 Then
-            Dim intId = grdDetalleFactura.CurrentRow.Cells(0).Value
+            Dim intId = grdDetalleFactura.CurrentRow.Cells(11).Value
             dtbDetalleFactura.Rows.RemoveAt(dtbDetalleFactura.Rows.IndexOf(dtbDetalleFactura.Rows.Find(intId)))
             grdDetalleFactura.Refresh()
             If dtbDetalleFactura.Rows.Count = 0 Then consecDetalle = 0

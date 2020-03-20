@@ -223,14 +223,16 @@ Public Class FrmAplicaAbonoOrdenServicio
     Private Async Sub BtnAgregar_Click(sender As Object, e As EventArgs) Handles btnAgregar.Click
         Await CargarListaBancoAdquiriente()
         ordenServicio = Nothing
-        txtNombreCliente.Text = ""
-        txtMontoTotal.Text = ""
+        txtId.Text = ""
+        txtMontoOriginal.Text = ""
+        txtTotalAbonado.Text = ""
         txtSaldoActual.Text = ""
-        txtDescripcion.Text = ""
+        txtMonto.Text = ""
+        txtSaldoPosterior.Text = ""
+        txtObservaciones.Text = ""
         dtbDesglosePago.Rows.Clear()
         grdDesglosePago.Refresh()
         decTotal = 0
-        txtMonto.Text = FormatNumber(decTotal, 2)
         txtMontoPago.Text = ""
         decTotalPago = 0
         decSaldoPorPagar = 0
@@ -281,8 +283,9 @@ Public Class FrmAplicaAbonoOrdenServicio
             .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
             .IdOrden = ordenServicio.IdOrden,
             .Tipo = StaticTipoAbono.AbonoEfectivo,
-            .Descripcion = txtDescripcion.Text,
+            .Observaciones = txtObservaciones.Text,
             .Monto = decTotal,
+            .SaldoActual = ordenServicio.Total - ordenServicio.MontoAdelanto,
             .Fecha = Now()
         }
         For I = 0 To dtbDesglosePago.Rows.Count - 1
@@ -329,7 +332,9 @@ Public Class FrmAplicaAbonoOrdenServicio
             .strConsecutivo = movimiento.IdMovOrden,
             .strNombre = ordenServicio.NombreCliente,
             .strFechaAbono = txtFecha.Text,
+            .strSaldoAnterior = txtSaldoActual.Text,
             .strTotalAbono = FormatNumber(decTotal, 2),
+            .strSaldoActual = FormatNumber(CDbl(txtSaldoActual.Text) - decTotal, 2),
             .strPagoCon = FormatNumber(decPagoCliente, 2),
             .strCambio = FormatNumber(decPagoCliente - decPagoEfectivo, 2)
         }
@@ -418,6 +423,31 @@ Public Class FrmAplicaAbonoOrdenServicio
         End If
     End Sub
 
+    Private Async Sub btnBuscarOrdenServicio_Click(sender As Object, e As EventArgs) Handles btnBuscarOrdenServicio.Click
+        Dim formBusquedaCliente As New FrmBusquedaOrdenServicio()
+        FrmPrincipal.intBusqueda = 0
+        formBusquedaCliente.ShowDialog()
+        If FrmPrincipal.intBusqueda > 0 Then
+            Try
+                ordenServicio = Await Puntoventa.ObtenerOrdenServicio(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
+            Catch ex As Exception
+                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Exit Sub
+            End Try
+            dtbDesglosePago.Rows.Clear()
+            txtId.Text = ordenServicio.ConsecOrdenServicio
+            txtMontoOriginal.Text = FormatNumber(ordenServicio.Total, 2)
+            txtTotalAbonado.Text = FormatNumber(ordenServicio.MontoAdelanto, 2)
+            txtSaldoActual.Text = FormatNumber(ordenServicio.Total - ordenServicio.MontoAdelanto, 2)
+            decTotal = 0
+            decTotalPago = 0
+            decSaldoPorPagar = 0
+            txtMonto.Text = FormatNumber(decTotal, 2)
+            txtSaldoPosterior.Text = FormatNumber(ordenServicio.Total - ordenServicio.MontoAdelanto, 2)
+            txtSaldoPorPagar.Text = FormatNumber(decSaldoPorPagar, 2)
+        End If
+    End Sub
+
     Private Sub TxtMontoPago_Validated(sender As Object, e As EventArgs) Handles txtMontoPago.Validated
         If txtMontoPago.Text <> "" Then txtMontoPago.Text = FormatNumber(txtMontoPago.Text, 2)
     End Sub
@@ -431,38 +461,20 @@ Public Class FrmAplicaAbonoOrdenServicio
     Private Sub TxtMonto_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtMonto.PreviewKeyDown
         If e.KeyCode = Keys.Enter Or e.KeyCode = Keys.Tab Then
             If txtMonto.Text = "" Then txtMonto.Text = "0"
+            If CDec(txtMonto.Text) > ordenServicio.Total - ordenServicio.MontoAdelanto Then
+                MessageBox.Show("El monto del abono no puede ser mayor al saldo", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                txtMonto.Text = ordenServicio.Total - ordenServicio.MontoAdelanto
+            End If
             txtMonto.Text = FormatNumber(txtMonto.Text, 2)
             decTotal = CDec(txtMonto.Text)
             dtbDesglosePago.Rows.Clear()
-            grdDesglosePago.Refresh()
             CargarTotalesPago()
-            txtMontoPago.Text = FormatNumber(decSaldoPorPagar, 2)
+            txtMontoPago.Text = FormatNumber(decTotal, 2)
         End If
     End Sub
 
     Private Sub Valida_KeyPress(ByVal sender As Object, ByVal e As KeyPressEventArgs) Handles txtMonto.KeyPress, txtMontoPago.KeyPress
         FrmPrincipal.ValidaNumero(e, sender, True, 2, ".")
-    End Sub
-
-    Private Async Sub btnBuscarOrdenServicio_Click(sender As Object, e As EventArgs) Handles btnBuscarOrdenServicio.Click
-        Dim formBusquedaCliente As New FrmBusquedaOrdenServicio()
-        FrmPrincipal.intBusqueda = 0
-        formBusquedaCliente.ShowDialog()
-        If FrmPrincipal.intBusqueda > 0 Then
-            Try
-                ordenServicio = Await Puntoventa.ObtenerOrdenServicio(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
-            Catch ex As Exception
-                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Exit Sub
-            End Try
-            txtNombreCliente.Text = "OrdenServicio " & ordenServicio.ConsecOrdenServicio & " de " & ordenServicio.NombreCliente
-            txtMontoTotal.Text = FormatNumber(ordenServicio.Total, 2)
-            txtSaldoActual.Text = FormatNumber(ordenServicio.Total - ordenServicio.MontoAdelanto, 2)
-            dtbDesglosePago.Rows.Clear()
-            grdDesglosePago.Refresh()
-            CargarTotalesPago()
-            txtMontoPago.Text = ""
-        End If
     End Sub
 #End Region
 End Class

@@ -64,7 +64,6 @@ Public Class FrmApartado
         grdDetalleApartado.Columns.Clear()
         grdDetalleApartado.AutoGenerateColumns = False
 
-        Dim dvcId As New DataGridViewTextBoxColumn
         Dim dvcIdProducto As New DataGridViewTextBoxColumn
         Dim dvcCodigo As New DataGridViewTextBoxColumn
         Dim dvcDescripcion As New DataGridViewTextBoxColumn
@@ -75,12 +74,7 @@ Public Class FrmApartado
         Dim dvcTotal As New DataGridViewTextBoxColumn
         Dim dvcExc As New DataGridViewCheckBoxColumn
         Dim dvcPorcentajeIVA As New DataGridViewTextBoxColumn
-
-        dvcId.DataPropertyName = "ID"
-        dvcId.HeaderText = "Id"
-        dvcId.Width = 0
-        dvcId.Visible = False
-        grdDetalleApartado.Columns.Add(dvcId)
+        Dim dvcId As New DataGridViewTextBoxColumn
 
         dvcIdProducto.DataPropertyName = "IDPRODUCTO"
         dvcIdProducto.HeaderText = "IdP"
@@ -154,6 +148,12 @@ Public Class FrmApartado
         dvcPorcentajeIVA.Width = 0
         dvcPorcentajeIVA.Visible = False
         grdDetalleApartado.Columns.Add(dvcPorcentajeIVA)
+
+        dvcId.DataPropertyName = "ID"
+        dvcId.HeaderText = "Id"
+        dvcId.Width = 0
+        dvcId.Visible = False
+        grdDetalleApartado.Columns.Add(dvcId)
 
         grdDesglosePago.Columns.Clear()
         grdDesglosePago.AutoGenerateColumns = False
@@ -1090,7 +1090,7 @@ Public Class FrmApartado
 
     Private Sub BtnEliminar_Click(sender As Object, e As EventArgs) Handles btnEliminar.Click
         If grdDetalleApartado.Rows.Count > 0 Then
-            Dim intId = grdDetalleApartado.CurrentRow.Cells(0).Value
+            Dim intId = grdDetalleApartado.CurrentRow.Cells(10).Value
             dtbDetalleApartado.Rows.RemoveAt(dtbDetalleApartado.Rows.IndexOf(dtbDetalleApartado.Rows.Find(intId)))
             grdDetalleApartado.Refresh()
             If dtbDetalleApartado.Rows.Count = 0 Then consecDetalle = 0

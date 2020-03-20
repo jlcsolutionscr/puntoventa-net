@@ -150,10 +150,10 @@
     <Compile Include="Formas\FrmAplicaAbonoApartado.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Formas\FrmAplicaAbonoCxP.Designer.vb">
-      <DependentUpon>FrmAplicaAbonoCxP.vb</DependentUpon>
+    <Compile Include="Formas\FrmBusquedaCuentaPorCobrar.Designer.vb">
+      <DependentUpon>FrmBusquedaCuentaPorCobrar.vb</DependentUpon>
     </Compile>
-    <Compile Include="Formas\FrmAplicaAbonoCxP.vb">
+    <Compile Include="Formas\FrmBusquedaCuentaPorCobrar.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Formas\FrmMotivoAnulacion.Designer.vb">
@@ -758,8 +758,9 @@
     <EmbeddedResource Include="Formas\FrmAplicaAbonoApartado.resx">
       <DependentUpon>FrmAplicaAbonoApartado.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Formas\FrmAplicaAbonoCxP.resx">
-      <DependentUpon>FrmAplicaAbonoCxP.vb</DependentUpon>
+    <EmbeddedResource Include="Formas\FrmBusquedaCuentaPorCobrar.resX">
+      <DependentUpon>FrmBusquedaCuentaPorCobrar.vb</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Formas\FrmMotivoAnulacion.resx">
       <DependentUpon>FrmMotivoAnulacion.vb</DependentUpon>

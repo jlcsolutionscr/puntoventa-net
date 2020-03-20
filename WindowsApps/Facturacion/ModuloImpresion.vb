@@ -1,5 +1,4 @@
-﻿Imports System.Runtime.InteropServices
-Imports System.Collections.Generic
+﻿Imports System.Collections.Generic
 Imports LeandroSoftware.Core.Dominio.Entidades
 Imports System.Drawing.Printing
 Imports LeandroSoftware.Core.TiposComunes
@@ -76,10 +75,13 @@ Public Class ModuloImpresion
         Public equipo As EquipoRegistrado
         Public usuario As Usuario
         Public strConsecutivo As String
-        Public strRecibo As String
+        Public strIdCuenta As String
         Public strNombre As String
+        Public strRecibo As String
         Public strFechaAbono As String
+        Public strSaldoAnterior As String
         Public strTotalAbono As String
+        Public strSaldoActual As String
         Public strPagoCon As String
         Public strCambio As String
         Public arrDesgloseMov As IList(Of ClsDesgloseFormaPago)
@@ -594,7 +596,6 @@ Public Class ModuloImpresion
 
     Public Shared Sub ImprimirReciboCxC(ByVal objImpresion As ClsRecibo)
         lineas.Clear()
-        Dim i As Integer
         Try
             ImprimirEncabezado(objImpresion.equipo, objImpresion.empresa, Date.Now.ToString("dd-MM-yyyy"), objImpresion.usuario.CodigoUsuario, "RECIBO ABONO CXC")
             lineas.Add(New ClsLineaImpresion(1, "Consecutivo: " & objImpresion.strConsecutivo, 0, 100, 10, StringAlignment.Near, False))
@@ -605,15 +606,13 @@ Public Class ModuloImpresion
                 nombre = nombre.Substring(32)
             End While
             lineas.Add(New ClsLineaImpresion(1, nombre, 0, 100, 10, StringAlignment.Near, False))
-            lineas.Add(New ClsLineaImpresion(1, "Desglose CxC Abonadas", 0, 100, 10, StringAlignment.Near, False))
-            lineas.Add(New ClsLineaImpresion(1, "".PadRight(32, "_"), 0, 100, 10, StringAlignment.Near, False))
-            For i = 0 To objImpresion.arrDesgloseMov.Count - 1
-                lineas.Add(New ClsLineaImpresion(0, objImpresion.arrDesgloseMov(i).strDescripcion, 0, 54, 10, StringAlignment.Near, False))
-                lineas.Add(New ClsLineaImpresion(1, objImpresion.arrDesgloseMov(i).strMonto, 54, 46, 10, StringAlignment.Far, False))
-            Next
+            lineas.Add(New ClsLineaImpresion(2, "Cuenta nro: " + objImpresion.strIdCuenta, 0, 100, 10, StringAlignment.Near, False))
             lineas.Add(New ClsLineaImpresion(1, "".PadRight(32, "_"), 0, 100, 10, StringAlignment.Near, False))
             ImprimirDesglosePago(objImpresion.arrDesglosePago)
-            lineas.Add(New ClsLineaImpresion(0, "Monto Total:", 0, 54, 10, StringAlignment.Far, True))
+            lineas.Add(New ClsLineaImpresion(2, "".PadRight(32, "_"), 0, 100, 10, StringAlignment.Near, False))
+            lineas.Add(New ClsLineaImpresion(0, "Saldo anterior:", 0, 54, 10, StringAlignment.Far, True))
+            lineas.Add(New ClsLineaImpresion(1, objImpresion.strSaldoAnterior, 54, 46, 10, StringAlignment.Far, False))
+            lineas.Add(New ClsLineaImpresion(0, "Monto abonado:", 0, 54, 10, StringAlignment.Far, True))
             lineas.Add(New ClsLineaImpresion(1, objImpresion.strTotalAbono, 54, 46, 10, StringAlignment.Far, True))
             lineas.Add(New ClsLineaImpresion(0, "Pago con:", 0, 54, 10, StringAlignment.Far, False))
             lineas.Add(New ClsLineaImpresion(1, objImpresion.strPagoCon, 54, 46, 10, StringAlignment.Far, False))
@@ -632,7 +631,6 @@ Public Class ModuloImpresion
 
     Public Shared Sub ImprimirReciboCxP(ByVal objImpresion As ClsRecibo)
         lineas.Clear()
-        Dim i As Integer
         Try
             ImprimirEncabezado(objImpresion.equipo, objImpresion.empresa, Date.Now.ToString("dd-MM-yyyy"), objImpresion.usuario.CodigoUsuario, "RECIBO ABONO CXP")
             lineas.Add(New ClsLineaImpresion(1, "Consecutivo: " & objImpresion.strConsecutivo, 0, 100, 10, StringAlignment.Near, False))
@@ -643,16 +641,15 @@ Public Class ModuloImpresion
                 nombre = nombre.Substring(32)
             End While
             lineas.Add(New ClsLineaImpresion(1, nombre, 0, 100, 10, StringAlignment.Near, False))
-            lineas.Add(New ClsLineaImpresion(1, "Desglose CxP Abonadas", 0, 100, 10, StringAlignment.Near, False))
-            lineas.Add(New ClsLineaImpresion(1, "".PadRight(32, "_"), 0, 100, 10, StringAlignment.Near, False))
-            For i = 0 To objImpresion.arrDesgloseMov.Count - 1
-                lineas.Add(New ClsLineaImpresion(0, objImpresion.arrDesgloseMov(i).strDescripcion, 0, 54, 10, StringAlignment.Near, False))
-                lineas.Add(New ClsLineaImpresion(1, objImpresion.arrDesgloseMov(i).strMonto, 54, 46, 10, StringAlignment.Far, False))
-            Next
+            lineas.Add(New ClsLineaImpresion(2, "Cuenta nro: " + objImpresion.strIdCuenta, 0, 100, 10, StringAlignment.Near, False))
             lineas.Add(New ClsLineaImpresion(1, "".PadRight(32, "_"), 0, 100, 10, StringAlignment.Near, False))
             ImprimirDesglosePago(objImpresion.arrDesglosePago)
-            lineas.Add(New ClsLineaImpresion(0, "Monto Total:", 0, 54, 10, StringAlignment.Far, True))
+            lineas.Add(New ClsLineaImpresion(2, "".PadRight(32, "_"), 0, 100, 10, StringAlignment.Near, False))
+            lineas.Add(New ClsLineaImpresion(0, "Saldo anterior:", 0, 54, 10, StringAlignment.Far, True))
+            lineas.Add(New ClsLineaImpresion(1, objImpresion.strSaldoAnterior, 54, 46, 10, StringAlignment.Far, False))
+            lineas.Add(New ClsLineaImpresion(0, "Monto abonado:", 0, 54, 10, StringAlignment.Far, True))
             lineas.Add(New ClsLineaImpresion(1, objImpresion.strTotalAbono, 54, 46, 10, StringAlignment.Far, True))
+            lineas.Add(New ClsLineaImpresion(0, "Saldo actual:", 0, 54, 10, StringAlignment.Far, True))
             lineas.Add(New ClsLineaImpresion(0, "Pago con:", 0, 54, 10, StringAlignment.Far, False))
             lineas.Add(New ClsLineaImpresion(1, objImpresion.strPagoCon, 54, 46, 10, StringAlignment.Far, False))
             lineas.Add(New ClsLineaImpresion(0, "Cambio:", 0, 54, 10, StringAlignment.Far, False))
@@ -681,8 +678,13 @@ Public Class ModuloImpresion
             End While
             lineas.Add(New ClsLineaImpresion(1, nombre, 0, 100, 10, StringAlignment.Near, False))
             ImprimirDesglosePago(objImpresion.arrDesglosePago)
-            lineas.Add(New ClsLineaImpresion(0, "Monto Total:", 0, 54, 10, StringAlignment.Far, True))
+            lineas.Add(New ClsLineaImpresion(2, "".PadRight(32, "_"), 0, 100, 10, StringAlignment.Near, False))
+            lineas.Add(New ClsLineaImpresion(0, "Saldo anterior:", 0, 54, 10, StringAlignment.Far, True))
+            lineas.Add(New ClsLineaImpresion(1, objImpresion.strSaldoAnterior, 54, 46, 10, StringAlignment.Far, False))
+            lineas.Add(New ClsLineaImpresion(0, "Monto abonado:", 0, 54, 10, StringAlignment.Far, True))
             lineas.Add(New ClsLineaImpresion(1, objImpresion.strTotalAbono, 54, 46, 10, StringAlignment.Far, True))
+            lineas.Add(New ClsLineaImpresion(0, "Saldo actual:", 0, 54, 10, StringAlignment.Far, True))
+            lineas.Add(New ClsLineaImpresion(2, objImpresion.strSaldoActual, 54, 46, 10, StringAlignment.Far, True))
             lineas.Add(New ClsLineaImpresion(0, "Pago con:", 0, 54, 10, StringAlignment.Far, False))
             lineas.Add(New ClsLineaImpresion(1, objImpresion.strPagoCon, 54, 46, 10, StringAlignment.Far, False))
             lineas.Add(New ClsLineaImpresion(0, "Cambio:", 0, 54, 10, StringAlignment.Far, False))
@@ -701,7 +703,7 @@ Public Class ModuloImpresion
     Public Shared Sub ImprimirReciboOrdenServicio(ByVal objImpresion As ClsRecibo)
         lineas.Clear()
         Try
-            ImprimirEncabezado(objImpresion.equipo, objImpresion.empresa, Date.Now.ToString("dd-MM-yyyy"), objImpresion.usuario.CodigoUsuario, "RECIBO ABONO ORDEN SERV")
+            ImprimirEncabezado(objImpresion.equipo, objImpresion.empresa, Date.Now.ToString("dd-MM-yyyy"), objImpresion.usuario.CodigoUsuario, "RECIBO ABONO ORDEN")
             lineas.Add(New ClsLineaImpresion(1, "Consecutivo: " & objImpresion.strConsecutivo, 0, 100, 10, StringAlignment.Near, False))
             lineas.Add(New ClsLineaImpresion(1, "Fecha: " & objImpresion.strFechaAbono, 0, 100, 10, StringAlignment.Near, False))
             Dim nombre As String = "Cliente: " & objImpresion.strNombre
@@ -711,8 +713,13 @@ Public Class ModuloImpresion
             End While
             lineas.Add(New ClsLineaImpresion(1, nombre, 0, 100, 10, StringAlignment.Near, False))
             ImprimirDesglosePago(objImpresion.arrDesglosePago)
-            lineas.Add(New ClsLineaImpresion(0, "Monto Total:", 0, 54, 10, StringAlignment.Far, True))
+            lineas.Add(New ClsLineaImpresion(2, "".PadRight(32, "_"), 0, 100, 10, StringAlignment.Near, False))
+            lineas.Add(New ClsLineaImpresion(0, "Saldo anterior:", 0, 54, 10, StringAlignment.Far, True))
+            lineas.Add(New ClsLineaImpresion(1, objImpresion.strSaldoAnterior, 54, 46, 10, StringAlignment.Far, False))
+            lineas.Add(New ClsLineaImpresion(0, "Monto abonado:", 0, 54, 10, StringAlignment.Far, True))
             lineas.Add(New ClsLineaImpresion(1, objImpresion.strTotalAbono, 54, 46, 10, StringAlignment.Far, True))
+            lineas.Add(New ClsLineaImpresion(0, "Saldo actual:", 0, 54, 10, StringAlignment.Far, True))
+            lineas.Add(New ClsLineaImpresion(2, objImpresion.strSaldoActual, 54, 46, 10, StringAlignment.Far, True))
             lineas.Add(New ClsLineaImpresion(0, "Pago con:", 0, 54, 10, StringAlignment.Far, False))
             lineas.Add(New ClsLineaImpresion(1, objImpresion.strPagoCon, 54, 46, 10, StringAlignment.Far, False))
             lineas.Add(New ClsLineaImpresion(0, "Cambio:", 0, 54, 10, StringAlignment.Far, False))

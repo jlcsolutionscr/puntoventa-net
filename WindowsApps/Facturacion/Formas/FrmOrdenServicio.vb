@@ -66,7 +66,6 @@ Public Class FrmOrdenServicio
         grdDetalleOrdenServicio.Columns.Clear()
         grdDetalleOrdenServicio.AutoGenerateColumns = False
 
-        Dim dvcId As New DataGridViewTextBoxColumn
         Dim dvcIdProducto As New DataGridViewTextBoxColumn
         Dim dvcCodigo As New DataGridViewTextBoxColumn
         Dim dvcDescripcion As New DataGridViewTextBoxColumn
@@ -77,12 +76,7 @@ Public Class FrmOrdenServicio
         Dim dvcTotal As New DataGridViewTextBoxColumn
         Dim dvcExc As New DataGridViewCheckBoxColumn
         Dim dvcPorcentajeIVA As New DataGridViewTextBoxColumn
-
-        dvcId.DataPropertyName = "ID"
-        dvcId.HeaderText = "Id"
-        dvcId.Width = 0
-        dvcId.Visible = False
-        grdDetalleOrdenServicio.Columns.Add(dvcId)
+        Dim dvcId As New DataGridViewTextBoxColumn
 
         dvcIdProducto.DataPropertyName = "IDPRODUCTO"
         dvcIdProducto.HeaderText = "IdP"
@@ -156,6 +150,12 @@ Public Class FrmOrdenServicio
         dvcPorcentajeIVA.Width = 0
         dvcPorcentajeIVA.Visible = False
         grdDetalleOrdenServicio.Columns.Add(dvcPorcentajeIVA)
+
+        dvcId.DataPropertyName = "ID"
+        dvcId.HeaderText = "Id"
+        dvcId.Width = 0
+        dvcId.Visible = False
+        grdDetalleOrdenServicio.Columns.Add(dvcId)
 
         grdDesglosePago.Columns.Clear()
         grdDesglosePago.AutoGenerateColumns = False
@@ -1132,7 +1132,7 @@ Public Class FrmOrdenServicio
 
     Private Sub BtnEliminar_Click(sender As Object, e As EventArgs) Handles btnEliminar.Click
         If grdDetalleOrdenServicio.Rows.Count > 0 Then
-            Dim intId = grdDetalleOrdenServicio.CurrentRow.Cells(0).Value
+            Dim intId = grdDetalleOrdenServicio.CurrentRow.Cells(10).Value
             dtbDetalleOrdenServicio.Rows.RemoveAt(dtbDetalleOrdenServicio.Rows.IndexOf(dtbDetalleOrdenServicio.Rows.Find(intId)))
             grdDetalleOrdenServicio.Refresh()
             If dtbDetalleOrdenServicio.Rows.Count = 0 Then consecDetalle = 0

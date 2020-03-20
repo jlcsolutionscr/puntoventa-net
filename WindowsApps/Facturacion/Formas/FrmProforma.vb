@@ -51,7 +51,6 @@ Public Class FrmProforma
         grdDetalleProforma.Columns.Clear()
         grdDetalleProforma.AutoGenerateColumns = False
 
-        Dim dvcId As New DataGridViewTextBoxColumn
         Dim dvcIdProducto As New DataGridViewTextBoxColumn
         Dim dvcCodigo As New DataGridViewTextBoxColumn
         Dim dvcDescripcion As New DataGridViewTextBoxColumn
@@ -62,12 +61,7 @@ Public Class FrmProforma
         Dim dvcTotal As New DataGridViewTextBoxColumn
         Dim dvcExc As New DataGridViewCheckBoxColumn
         Dim dvcPorcentajeIVA As New DataGridViewTextBoxColumn
-
-        dvcId.DataPropertyName = "ID"
-        dvcId.HeaderText = "Id"
-        dvcId.Width = 0
-        dvcId.Visible = False
-        grdDetalleProforma.Columns.Add(dvcId)
+        Dim dvcId As New DataGridViewTextBoxColumn
 
         dvcIdProducto.DataPropertyName = "IDPRODUCTO"
         dvcIdProducto.HeaderText = "IdP"
@@ -141,6 +135,12 @@ Public Class FrmProforma
         dvcPorcentajeIVA.Width = 0
         dvcPorcentajeIVA.Visible = False
         grdDetalleProforma.Columns.Add(dvcPorcentajeIVA)
+
+        dvcId.DataPropertyName = "ID"
+        dvcId.HeaderText = "Id"
+        dvcId.Width = 0
+        dvcId.Visible = False
+        grdDetalleProforma.Columns.Add(dvcId)
     End Sub
 
     Private Sub CargarDetalleProforma(proforma As Proforma)
@@ -859,7 +859,7 @@ Public Class FrmProforma
 
     Private Sub CmdEliminar_Click(sender As Object, e As EventArgs) Handles btnEliminar.Click
         If grdDetalleProforma.Rows.Count > 0 Then
-            Dim intId = grdDetalleProforma.CurrentRow.Cells(0).Value
+            Dim intId = grdDetalleProforma.CurrentRow.Cells(10).Value
             dtbDetalleProforma.Rows.RemoveAt(dtbDetalleProforma.Rows.IndexOf(dtbDetalleProforma.Rows.Find(intId)))
             grdDetalleProforma.Refresh()
             If dtbDetalleProforma.Rows.Count = 0 Then consecDetalle = 0
