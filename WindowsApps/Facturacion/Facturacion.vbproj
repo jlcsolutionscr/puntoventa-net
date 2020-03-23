@@ -138,6 +138,12 @@
     <Compile Include="Formas\FrmAceptarDocumentoElectronico.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Formas\FrmAplicaAbonoCxP.Designer.vb">
+      <DependentUpon>FrmAplicaAbonoCxP.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Formas\FrmAplicaAbonoCxP.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Formas\FrmAplicaAbonoOrdenServicio.Designer.vb">
       <DependentUpon>FrmAplicaAbonoOrdenServicio.vb</DependentUpon>
     </Compile>
@@ -148,6 +154,12 @@
       <DependentUpon>FrmAplicaAbonoApartado.vb</DependentUpon>
     </Compile>
     <Compile Include="Formas\FrmAplicaAbonoApartado.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Formas\FrmBusquedaCuentaPorPagar.Designer.vb">
+      <DependentUpon>FrmBusquedaCuentaPorPagar.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Formas\FrmBusquedaCuentaPorPagar.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Formas\FrmBusquedaCuentaPorCobrar.Designer.vb">
@@ -752,11 +764,18 @@
     <EmbeddedResource Include="Formas\FrmAceptarDocumentoElectronico.resx">
       <DependentUpon>FrmAceptarDocumentoElectronico.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Formas\FrmAplicaAbonoCxP.resx">
+      <DependentUpon>FrmAplicaAbonoCxP.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Formas\FrmAplicaAbonoOrdenServicio.resx">
       <DependentUpon>FrmAplicaAbonoOrdenServicio.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Formas\FrmAplicaAbonoApartado.resx">
       <DependentUpon>FrmAplicaAbonoApartado.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Formas\FrmBusquedaCuentaPorPagar.resX">
+      <DependentUpon>FrmBusquedaCuentaPorPagar.vb</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Formas\FrmBusquedaCuentaPorCobrar.resX">
       <DependentUpon>FrmBusquedaCuentaPorCobrar.vb</DependentUpon>

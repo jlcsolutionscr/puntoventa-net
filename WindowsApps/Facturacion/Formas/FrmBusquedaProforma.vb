@@ -28,13 +28,13 @@ Public Class FrmBusquedaProforma
         dvcId.Width = 0
         dvcId.Visible = False
         dgvListado.Columns.Add(dvcId)
-        dvcConsecutivo.HeaderText = "Consecutivo"
+        dvcConsecutivo.HeaderText = "Consec"
         dvcConsecutivo.DataPropertyName = "Consecutivo"
         dvcConsecutivo.Width = 50
         dgvListado.Columns.Add(dvcConsecutivo)
         dvcFecha.HeaderText = "Fecha"
         dvcFecha.DataPropertyName = "Fecha"
-        dvcFecha.Width = 70
+        dvcFecha.Width = 67
         dgvListado.Columns.Add(dvcFecha)
         dvcNombreCliente.HeaderText = "Cliente"
         dvcNombreCliente.DataPropertyName = "NombreCliente"

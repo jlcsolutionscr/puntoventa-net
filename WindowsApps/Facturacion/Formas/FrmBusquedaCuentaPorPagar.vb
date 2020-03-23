@@ -1,16 +1,14 @@
 Imports System.Threading.Tasks
 Imports LeandroSoftware.ClienteWCF
 
-Public Class FrmBusquedaApartado
+Public Class FrmBusquedaCuentaPorPagar
 #Region "Variables"
-    Private dtListaEstado As New DataTable, drListaEstado As DataRow
     Private intTotalRegistros As Integer
     Private intIndiceDePagina As Integer
     Private intFilasPorPagina As Integer = 13
     Private intCantidadDePaginas As Integer
     Private intId As Integer = 0
     Private bolInit As Boolean = False
-    Public bolIncluyeEstado As Boolean = False
 #End Region
 
 #Region "Métodos"
@@ -18,38 +16,45 @@ Public Class FrmBusquedaApartado
         dgvListado.Columns.Clear()
         dgvListado.AutoGenerateColumns = False
         Dim dvcId As New DataGridViewTextBoxColumn
-        Dim dvcConsecutivo As New DataGridViewTextBoxColumn
         Dim dvcFecha As New DataGridViewTextBoxColumn
-        Dim dvcNombreCliente As New DataGridViewTextBoxColumn
+        Dim dvcPropietario As New DataGridViewTextBoxColumn
+        Dim dvcReferencia As New DataGridViewTextBoxColumn
         Dim dvcTotal As New DataGridViewTextBoxColumn
+        Dim dvcSaldo As New DataGridViewTextBoxColumn
         dgvListado.Columns.Clear()
         dgvListado.AutoGenerateColumns = False
-        dvcId.DataPropertyName = "IdFactura"
+        dvcId.HeaderText = "IdCxP"
+        dvcId.DataPropertyName = "Id"
         dvcId.Width = 0
         dvcId.Visible = False
         dgvListado.Columns.Add(dvcId)
-        dvcConsecutivo.HeaderText = "Consec"
-        dvcConsecutivo.DataPropertyName = "Consecutivo"
-        dvcConsecutivo.Width = 50
-        dgvListado.Columns.Add(dvcConsecutivo)
         dvcFecha.HeaderText = "Fecha"
         dvcFecha.DataPropertyName = "Fecha"
         dvcFecha.Width = 67
         dgvListado.Columns.Add(dvcFecha)
-        dvcNombreCliente.HeaderText = "Cliente"
-        dvcNombreCliente.DataPropertyName = "NombreCliente"
-        dvcNombreCliente.Width = 400
-        dgvListado.Columns.Add(dvcNombreCliente)
+        dvcPropietario.HeaderText = "Proveedor"
+        dvcPropietario.DataPropertyName = "Propietario"
+        dvcPropietario.Width = 250
+        dgvListado.Columns.Add(dvcPropietario)
+        dvcReferencia.HeaderText = "Factura"
+        dvcReferencia.DataPropertyName = "Referencia"
+        dvcReferencia.Width = 100
+        dgvListado.Columns.Add(dvcReferencia)
         dvcTotal.HeaderText = "Total"
         dvcTotal.DataPropertyName = "Total"
         dvcTotal.Width = 100
         dvcTotal.DefaultCellStyle = FrmPrincipal.dgvDecimal
         dgvListado.Columns.Add(dvcTotal)
+        dvcSaldo.HeaderText = "Saldo"
+        dvcSaldo.DataPropertyName = "Saldo"
+        dvcSaldo.Width = 100
+        dvcSaldo.DefaultCellStyle = FrmPrincipal.dgvDecimal
+        dgvListado.Columns.Add(dvcSaldo)
     End Sub
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
         Try
-            dgvListado.DataSource = Await Puntoventa.ObtenerListadoApartados(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FechaInicio.Value.ToString("dd/MM/yyyy"), FechaFinal.Value.ToString("dd/MM/yyyy"), cboEstado.SelectedValue, intNumeroPagina, intFilasPorPagina, FrmPrincipal.usuarioGlobal.Token, intId, txtNombre.Text)
+            dgvListado.DataSource = Await Puntoventa.ObtenerListadoCuentasPorPagar(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, 1, intNumeroPagina, intFilasPorPagina, txtReferencia.Text, txtNombre.Text, FrmPrincipal.usuarioGlobal.Token)
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -59,9 +64,9 @@ Public Class FrmBusquedaApartado
         dgvListado.Refresh()
     End Function
 
-    Private Async Function ValidarCantidadApartados() As Task
+    Private Async Function ValidarCantidadCxP() As Task
         Try
-            intTotalRegistros = Await Puntoventa.ObtenerTotalListaApartados(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FechaInicio.Value.ToString("dd/MM/yyyy"), FechaFinal.Value.ToString("dd/MM/yyyy"), cboEstado.SelectedValue, FrmPrincipal.usuarioGlobal.Token, intId, txtNombre.Text)
+            intTotalRegistros = Await Puntoventa.ObtenerTotalListaCuentasPorPagar(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, 1, txtReferencia.Text, txtNombre.Text, FrmPrincipal.usuarioGlobal.Token)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -87,26 +92,11 @@ Public Class FrmBusquedaApartado
         cboSucursal.DataSource = Await Puntoventa.ObtenerListadoSucursales(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
         cboSucursal.SelectedValue = FrmPrincipal.equipoGlobal.IdSucursal
         cboSucursal.Enabled = FrmPrincipal.bolSeleccionaSucursal
-        dtListaEstado.Clear()
-        dtListaEstado.Columns.Add(New DataColumn("IdEstado", GetType(Boolean)))
-        dtListaEstado.Columns.Add(New DataColumn("Descripcion", GetType(String)))
-        drListaEstado = dtListaEstado.NewRow()
-        drListaEstado(0) = False
-        drListaEstado(1) = "Por Aplicar"
-        dtListaEstado.Rows.Add(drListaEstado)
-        drListaEstado = dtListaEstado.NewRow()
-        drListaEstado(0) = True
-        drListaEstado(1) = "Aplicado"
-        dtListaEstado.Rows.Add(drListaEstado)
-        cboEstado.ValueMember = "IdEstado"
-        cboEstado.DisplayMember = "Descripcion"
-        cboEstado.DataSource = dtListaEstado
-        cboEstado.SelectedValue = 0
     End Function
 #End Region
 
 #Region "Eventos Controles"
-    Private Sub FrmBusquedaApartado_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+    Private Sub FrmBusquedaCuentaPorPagar_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         For Each ctl As Control In Controls
             If TypeOf (ctl) Is TextBox Then
                 AddHandler DirectCast(ctl, TextBox).Enter, AddressOf EnterTexboxHandler
@@ -125,7 +115,7 @@ Public Class FrmBusquedaApartado
         textbox.BackColor = Color.White
     End Sub
 
-    Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As KeyPressEventArgs) Handles txtId.KeyPress
+    Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As KeyPressEventArgs) Handles txtReferencia.KeyPress
         FrmPrincipal.ValidaNumero(e, sender, True, 0)
     End Sub
 
@@ -153,15 +143,11 @@ Public Class FrmBusquedaApartado
         Await ActualizarDatos(intIndiceDePagina)
     End Sub
 
-    Private Async Sub FrmBusProd_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+    Private Async Sub FrmBusquedaCuentaPorPagar_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
-            cboEstado.Visible = bolIncluyeEstado
-            lblEstado.Visible = bolIncluyeEstado
             EstablecerPropiedadesDataGridView()
-            FechaInicio.Value = CDate("01/01/" & Now.Year)
-            FechaFinal.Value = Now
             Await CargarCombos()
-            Await ValidarCantidadApartados()
+            Await ValidarCantidadCxP()
             intIndiceDePagina = 1
             Await ActualizarDatos(intIndiceDePagina)
             bolInit = True
@@ -180,18 +166,14 @@ Public Class FrmBusquedaApartado
     End Sub
 
     Private Async Sub btnFiltrar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnFiltrar.Click
-        If txtId.Text = "" Then
+        If txtReferencia.Text = "" Then
             intId = 0
         Else
-            intId = CInt(txtId.Text)
+            intId = CInt(txtReferencia.Text)
         End If
-        Await ValidarCantidadApartados()
+        Await ValidarCantidadCxP()
         intIndiceDePagina = 1
         Await ActualizarDatos(intIndiceDePagina)
-    End Sub
-
-    Private Sub cboEstado_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboEstado.SelectedIndexChanged
-        If bolInit Then btnFiltrar_Click(btnFiltrar, New EventArgs())
     End Sub
 
     Private Sub cboSucursal_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboSucursal.SelectedIndexChanged

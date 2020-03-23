@@ -1611,12 +1611,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             if (efectivoParam == null || cuentaPorCobrarTarjetaParam == null || ivaPorPagarParam == null || gastoComisionParam == null || cuentaPorCobrarClientesParam == null)
                                 throw new BusinessException("La parametrización contable está incompleta y no se puede continuar. Por favor verificar.");
                             movimiento.IdAsiento = 0;
-                            foreach (DesgloseMovimientoCuentaPorCobrar desgloseMovimiento in movimiento.DesgloseMovimientoCuentaPorCobrar)
-                            {
-                                CuentaPorCobrar cxc = dbContext.CuentaPorCobrarRepository.Find(desgloseMovimiento.IdCxC);
-                                if (cxc == null)
-                                    throw new Exception("La cuenta por cobrar asignada al movimiento no existe");
-                            }
                             int intLineaDetalleAsiento = 0;
                             asiento = new Asiento
                             {
@@ -1742,12 +1736,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             if (efectivoParam == null || cuentaPorPagarProveedoresParam == null)
                                 throw new BusinessException("La parametrización contable está incompleta y no se puede continuar. Por favor verificar.");
                             movimiento.IdAsiento = 0;
-                            foreach (DesgloseMovimientoCuentaPorPagar desgloseMovimiento in movimiento.DesgloseMovimientoCuentaPorPagar)
-                            {
-                                CuentaPorPagar cxp = dbContext.CuentaPorPagarRepository.Find(desgloseMovimiento.IdCxP);
-                                if (cxp == null)
-                                    throw new Exception("La cuenta por Pagar asignada al movimiento no existe");
-                            }
                             int intLineaDetalleAsiento = 0;
                             asiento = new Asiento
                             {

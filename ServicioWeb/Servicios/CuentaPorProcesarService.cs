@@ -13,28 +13,30 @@ namespace LeandroSoftware.ServicioWeb.Servicios
     public interface ICuentaPorProcesarService
     {
         CuentaPorCobrar ObtenerCuentaPorCobrar(int intIdCxC);
-        IList<LlaveDescripcion> ObtenerListadoCuentasPorCobrar(int intIdEmpresa, int intIdTipo, int intIdPropietario);
-        IList<EfectivoDetalle> ObtenerListadoMovimientosCxC(int intIdEmpresa, int intIdSucursal, int intIdPropietario);
+        int ObtenerTotalListaCuentasPorCobrar(int intIdEmpresa, int intIdSucursal, int intIdTipo, string strReferencia, string strNombrePropietario);
+        List<CuentaPorProcesar> ObtenerListadoCuentasPorCobrar(int intIdEmpresa, int intIdSucursal, int intIdTipo, int numPagina, int cantRec, string strReferencia, string strNombrePropietario);
+        List<EfectivoDetalle> ObtenerListadoMovimientosCxC(int intIdEmpresa, int intIdSucursal, int intIdPropietario);
         void AplicarMovimientoCxC(MovimientoCuentaPorCobrar movimiento);
         void AnularMovimientoCxC(int intIdMovimiento, int intIdUsuario, string strMotivoAnulacion);
         MovimientoCuentaPorCobrar ObtenerMovimientoCxC(int intIdMovimiento);
         int ObtenerCantidadCxCVencidas(int intIdPropietario, int intIdTipo);
         decimal ObtenerSaldoCuentasPorCobrar(int intIdPropietario, int intIdTipo);
         CuentaPorPagar ObtenerCuentaPorPagar(int intIdCxP);
-        IList<LlaveDescripcion> ObtenerListadoCuentasPorPagar(int intIdEmpresa, int intIdTipo, int intIdPropietario);
-        IList<EfectivoDetalle> ObtenerListadoMovimientosCxP(int intIdEmpresa, int intIdSucursal, int intIdPropietario);
+        int ObtenerTotalListaCuentasPorPagar(int intIdEmpresa, int intIdSucursal, int intIdTipo, string strReferencia, string strNombrePropietario);
+        List<CuentaPorProcesar> ObtenerListadoCuentasPorPagar(int intIdEmpresa, int intIdSucursal, int intIdTipo, int numPagina, int cantRec, string strReferencia, string strNombrePropietario);
+        List<EfectivoDetalle> ObtenerListadoMovimientosCxP(int intIdEmpresa, int intIdSucursal, int intIdPropietario);
         void AplicarMovimientoCxP(MovimientoCuentaPorPagar movimiento);
         void AnularMovimientoCxP(int intIdMovimiento, int intIdUsuario, string strMotivoAnulacion);
         MovimientoCuentaPorPagar ObtenerMovimientoCxP(int intIdMovimiento);
         int ObtenerCantidadCxPVencidas(int intIdPropietario, int intIdTipo);
         decimal ObtenerSaldoCuentasPorPagar(int intIdPropietario, int intIdTipo);
-        IList<LlaveDescripcion> ObtenerListadoApartadosConSaldo(int intIdEmpresa);
-        IList<EfectivoDetalle> ObtenerListadoMovimientosApartado(int intIdEmpresa, int intIdSucursal, int intIdApartado);
+        List<LlaveDescripcion> ObtenerListadoApartadosConSaldo(int intIdEmpresa);
+        List<EfectivoDetalle> ObtenerListadoMovimientosApartado(int intIdEmpresa, int intIdSucursal, int intIdApartado);
         void AplicarMovimientoApartado(MovimientoApartado movimiento);
         void AnularMovimientoApartado(int intIdMovimiento, int intIdUsuario, string strMotivoAnulacion);
         MovimientoApartado ObtenerMovimientoApartado(int intIdMovimiento);
-        IList<LlaveDescripcion> ObtenerListadoOrdenesServicioConSaldo(int intIdEmpresa);
-        IList<EfectivoDetalle> ObtenerListadoMovimientosOrdenServicio(int intIdEmpresa, int intIdSucursal, int intIdOrden);
+        List<LlaveDescripcion> ObtenerListadoOrdenesServicioConSaldo(int intIdEmpresa);
+        List<EfectivoDetalle> ObtenerListadoMovimientosOrdenServicio(int intIdEmpresa, int intIdSucursal, int intIdOrden);
         void AplicarMovimientoOrdenServicio(MovimientoOrdenServicio movimiento);
         void AnularMovimientoOrdenServicio(int intIdMovimiento, int intIdUsuario, string strMotivoAnulacion);
         MovimientoOrdenServicio ObtenerMovimientoOrdenServicio(int intIdMovimiento);
@@ -70,17 +72,50 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IList<LlaveDescripcion> ObtenerListadoCuentasPorCobrar(int intIdEmpresa, int intIdTipo, int intIdPropietario)
+        public int ObtenerTotalListaCuentasPorCobrar(int intIdEmpresa, int intIdSucursal, int intIdTipo, string strReferencia, string strNombrePropietario)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
-                var listaCuentas = new List<LlaveDescripcion>();
                 try
                 {
-                    var listado = dbContext.CuentaPorCobrarRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.Tipo == intIdTipo && x.IdPropietario == intIdPropietario && x.Nulo == false && x.Saldo > 0).OrderByDescending(x => x.Fecha);
-                    foreach (var value in listado)
+                    var listado = dbContext.CuentaPorCobrarRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Tipo == intIdTipo && x.Nulo == false && x.Saldo > 0);
+                    if (strReferencia != "")
+                        listado = listado.Where(x => x.Referencia.Contains(strReferencia));
+                    if (strNombrePropietario != "")
                     {
-                        LlaveDescripcion item = new LlaveDescripcion(value.IdCxC, value.Descripcion);
+                        int[] intIdPropietario = dbContext.ClienteRepository.Where(x => x.Nombre.Contains(strNombrePropietario)).Select(x => x.IdCliente).ToArray();
+                        listado = listado.Where(x => intIdPropietario.Contains(x.IdPropietario));
+                    }
+                    return listado.Count();
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al obtener el listado de cuentas por cobrar: ", ex);
+                    throw new Exception("Se produjo un error consultando el listado de cuenta por cobrar. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public List<CuentaPorProcesar> ObtenerListadoCuentasPorCobrar(int intIdEmpresa, int intIdSucursal, int intIdTipo, int numPagina, int cantRec, string strReferencia, string strNombrePropietario)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                var listaCuentas = new List<CuentaPorProcesar>();
+                try
+                {
+                    var listado = dbContext.CuentaPorCobrarRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Tipo == intIdTipo && x.Nulo == false && x.Saldo > 0);
+                    if (strReferencia != "")
+                        listado = listado.Where(x => x.Referencia.Contains(strReferencia));
+                    if (strNombrePropietario != "")
+                    {
+                        int[] intIdPropietario = dbContext.ClienteRepository.Where(x => x.Nombre.Contains(strNombrePropietario)).Select(x => x.IdCliente).ToArray();
+                        listado = listado.Where(x => intIdPropietario.Contains(x.IdPropietario));
+                    }
+                    var lista = listado.OrderBy(x => x.Fecha).Skip((numPagina - 1) * cantRec).Take(cantRec).ToList();
+                    foreach (var value in lista)
+                    {
+                        Cliente cliente = dbContext.ClienteRepository.Find(value.IdPropietario);
+                        CuentaPorProcesar item = new CuentaPorProcesar(value.IdCxC, value.Fecha.ToString("dd/MM/yyyy"), cliente.Nombre, value.Referencia, value.Total, value.Saldo);
                         listaCuentas.Add(item);
                     }
                     return listaCuentas;
@@ -93,17 +128,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IList<EfectivoDetalle> ObtenerListadoMovimientosCxC(int intIdEmpresa, int intIdSucursal, int intIdPropietario)
+        public List<EfectivoDetalle> ObtenerListadoMovimientosCxC(int intIdEmpresa, int intIdSucursal, int intIdPropietario)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 var listaMovimientos = new List<EfectivoDetalle>();
                 try
                 {
-                    var listado = dbContext.MovimientoCuentaPorCobrarRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdPropietario == intIdPropietario).OrderByDescending(x => x.IdMovCxC);
+                    var listado = dbContext.MovimientoCuentaPorCobrarRepository.Include("CuentaPorCobrar").Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdPropietario == intIdPropietario).OrderByDescending(x => x.IdMovCxC);
                     foreach (var value in listado)
                     {
-                        EfectivoDetalle item = new EfectivoDetalle(value.IdMovCxC, value.Fecha.ToString("dd/MM/yyyy"), value.Descripcion, value.Monto);
+                        EfectivoDetalle item = new EfectivoDetalle(value.IdMovCxC, value.Fecha.ToString("dd/MM/yyyy"), "Abono sobre cuenta por cobrar nro " + value.CuentaPorCobrar.Referencia, value.Monto);
                         listaMovimientos.Add(item);
                     }
                     return listaMovimientos;
@@ -151,14 +186,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     movimiento.IdAsiento = 0;
                     movimiento.IdMovBanco = 0;
                     dbContext.MovimientoCuentaPorCobrarRepository.Add(movimiento);
-                    foreach (DesgloseMovimientoCuentaPorCobrar desgloseMovimiento in movimiento.DesgloseMovimientoCuentaPorCobrar)
-                    {
-                        CuentaPorCobrar cxc = dbContext.CuentaPorCobrarRepository.Find(desgloseMovimiento.IdCxC);
-                        if (cxc == null)
-                            throw new Exception("La cuenta por cobrar asignada al movimiento no existe");
-                        cxc.Saldo -= desgloseMovimiento.Monto;
-                        dbContext.NotificarModificacion(cxc);
-                    }
+                    CuentaPorCobrar cxc = dbContext.CuentaPorCobrarRepository.Find(movimiento.IdCxC);
+                    if (cxc == null)
+                        throw new Exception("La cuenta por cobrar asignada al movimiento no existe");
+                    cxc.Saldo -= movimiento.Monto;
+                    dbContext.NotificarModificacion(cxc);
                     foreach (var desglosePago in movimiento.DesglosePagoMovimientoCuentaPorCobrar)
                     {
                         if (desglosePago.IdFormaPago == StaticFormaPago.Cheque || desglosePago.IdFormaPago == StaticFormaPago.TransferenciaDepositoBancario)
@@ -315,7 +347,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    MovimientoCuentaPorCobrar movimiento = dbContext.MovimientoCuentaPorCobrarRepository.Include("DesgloseMovimientoCuentaPorCobrar").FirstOrDefault(x => x.IdMovCxC == intIdMovimiento);
+                    MovimientoCuentaPorCobrar movimiento = dbContext.MovimientoCuentaPorCobrarRepository.FirstOrDefault(x => x.IdMovCxC == intIdMovimiento);
                     if (movimiento == null) throw new Exception("El movimiento de cuenta por cobrar no existe");
                     Empresa empresa = dbContext.EmpresaRepository.Find(movimiento.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
@@ -327,14 +359,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     movimiento.IdAnuladoPor = intIdUsuario;
                     movimiento.MotivoAnulacion = strMotivoAnulacion;
                     dbContext.NotificarModificacion(movimiento);
-                    foreach (DesgloseMovimientoCuentaPorCobrar desgloseMovimiento in movimiento.DesgloseMovimientoCuentaPorCobrar)
-                    {
-                        CuentaPorCobrar cxc = dbContext.CuentaPorCobrarRepository.Find(desgloseMovimiento.IdCxC);
-                        if (cxc == null)
-                            throw new Exception("La cuenta por cobrar asignada al movimiento no existe");
-                        cxc.Saldo += desgloseMovimiento.Monto;
-                        dbContext.NotificarModificacion(cxc);
-                    }
+                    CuentaPorCobrar cxc = dbContext.CuentaPorCobrarRepository.Find(movimiento.IdCxC);
+                    if (cxc == null)
+                        throw new Exception("La cuenta por cobrar asignada al movimiento no existe");
+                    cxc.Saldo += movimiento.Monto;
+                    dbContext.NotificarModificacion(cxc);
                     if (movimiento.IdAsiento > 0)
                     {
                         IContabilidadService servicioContabilidad = new ContabilidadService();
@@ -360,9 +389,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
-                MovimientoCuentaPorCobrar movimiento = dbContext.MovimientoCuentaPorCobrarRepository.Include("DesgloseMovimientoCuentaPorCobrar.CuentaPorCobrar").Include("DesglosePagoMovimientoCuentaPorCobrar.FormaPago").FirstOrDefault(x => x.IdMovCxC == intIdMovimiento);
-                foreach (var detalle in movimiento.DesgloseMovimientoCuentaPorCobrar)
-                    detalle.CuentaPorCobrar = null;
+                MovimientoCuentaPorCobrar movimiento = dbContext.MovimientoCuentaPorCobrarRepository.Include("CuentaPorCobrar").Include("DesglosePagoMovimientoCuentaPorCobrar.FormaPago").FirstOrDefault(x => x.IdMovCxC == intIdMovimiento);
+                movimiento.NombrePropietario = "Información no disponible";
+                Cliente cliente = dbContext.ClienteRepository.Find(movimiento.CuentaPorCobrar.IdPropietario);
+                if (cliente != null) movimiento.NombrePropietario = cliente.Nombre;
                 return movimiento;
             }
         }
@@ -407,40 +437,73 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IList<LlaveDescripcion> ObtenerListadoCuentasPorPagar(int intIdEmpresa, int intIdTipo, int intIdPropietario)
+        public int ObtenerTotalListaCuentasPorPagar(int intIdEmpresa, int intIdSucursal, int intIdTipo, string strReferencia, string strNombrePropietario)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
-                var listaCuentas = new List<LlaveDescripcion>();
                 try
                 {
-                    var listado = dbContext.CuentaPorPagarRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.Tipo == intIdTipo && x.IdPropietario == intIdPropietario && x.Nulo == false && x.Saldo > 0).OrderByDescending(x => x.Fecha);
-                    foreach (var value in listado)
+                    var listado = dbContext.CuentaPorPagarRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Tipo == intIdTipo && x.Nulo == false && x.Saldo > 0);
+                    if (strReferencia != "")
+                        listado = listado.Where(x => x.Referencia.Contains(strReferencia));
+                    if (strNombrePropietario != "")
                     {
-                        LlaveDescripcion item = new LlaveDescripcion(value.IdCxP, value.Descripcion);
+                        int[] intIdPropietario = dbContext.ProveedorRepository.Where(x => x.Nombre.Contains(strNombrePropietario)).Select(x => x.IdProveedor).ToArray();
+                        listado = listado.Where(x => intIdPropietario.Contains(x.IdPropietario));
+                    }
+                    return listado.Count();
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al obtener el listado de cuentas por cobrar: ", ex);
+                    throw new Exception("Se produjo un error consultando el listado de cuenta por cobrar. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public List<CuentaPorProcesar> ObtenerListadoCuentasPorPagar(int intIdEmpresa, int intIdSucursal, int intIdTipo, int numPagina, int cantRec, string strReferencia, string strNombrePropietario)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                var listaCuentas = new List<CuentaPorProcesar>();
+                try
+                {
+                    var listado = dbContext.CuentaPorPagarRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Tipo == intIdTipo && x.Nulo == false && x.Saldo > 0);
+                    if (strReferencia != "")
+                        listado = listado.Where(x => x.Referencia.Contains(strReferencia));
+                    if (strNombrePropietario != "")
+                    {
+                        int[] intIdPropietario = dbContext.ProveedorRepository.Where(x => x.Nombre.Contains(strNombrePropietario)).Select(x => x.IdProveedor).ToArray();
+                        listado = listado.Where(x => intIdPropietario.Contains(x.IdPropietario));
+                    }
+                    var lista = listado.OrderBy(x => x.Fecha).Skip((numPagina - 1) * cantRec).Take(cantRec).ToList();
+                    foreach (var value in lista)
+                    {
+                        Proveedor proveedor = dbContext.ProveedorRepository.Find(value.IdPropietario);
+                        CuentaPorProcesar item = new CuentaPorProcesar(value.IdCxP, value.Fecha.ToString("dd/MM/yyyy"), proveedor.Nombre, value.Referencia, value.Total, value.Saldo);
                         listaCuentas.Add(item);
                     }
                     return listaCuentas;
                 }
                 catch (Exception ex)
                 {
-                    log.Error("Error al obtener el listado de cuentas por pagar: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de cuentas por pagar. Por favor consulte con su proveedor.");
+                    log.Error("Error al obtener el listado de cuentas por cobrar: ", ex);
+                    throw new Exception("Se produjo un error consultando el listado de cuenta por cobrar. Por favor consulte con su proveedor.");
                 }
             }
         }
 
-        public IList<EfectivoDetalle> ObtenerListadoMovimientosCxP(int intIdEmpresa, int intIdSucursal, int intIdPropietario)
+        public List<EfectivoDetalle> ObtenerListadoMovimientosCxP(int intIdEmpresa, int intIdSucursal, int intIdPropietario)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 var listaMovimientos = new List<EfectivoDetalle>();
                 try
                 {
-                    var listado = dbContext.MovimientoCuentaPorPagarRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdPropietario == intIdPropietario).OrderByDescending(x => x.IdMovCxP);
+                    var listado = dbContext.MovimientoCuentaPorPagarRepository.Include("CuentaPorPagar").Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdPropietario == intIdPropietario).OrderByDescending(x => x.IdMovCxP);
                     foreach (var value in listado)
                     {
-                        EfectivoDetalle item = new EfectivoDetalle(value.IdMovCxP, value.Fecha.ToString("dd/MM/yyyy"), value.Descripcion, value.Monto);
+                        EfectivoDetalle item = new EfectivoDetalle(value.IdMovCxP, value.Fecha.ToString("dd/MM/yyyy"), "Abono sobre cuenta por pagar nro " + value.CuentaPorPagar.Referencia, value.Monto);
                         listaMovimientos.Add(item);
                     }
                     return listaMovimientos;
@@ -479,14 +542,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     movimiento.IdAsiento = 0;
                     movimiento.IdMovBanco = 0;
                     dbContext.MovimientoCuentaPorPagarRepository.Add(movimiento);
-                    foreach (DesgloseMovimientoCuentaPorPagar desgloseMovimiento in movimiento.DesgloseMovimientoCuentaPorPagar)
-                    {
-                        CuentaPorPagar cxp = dbContext.CuentaPorPagarRepository.Find(desgloseMovimiento.IdCxP);
-                        if (cxp == null)
-                            throw new Exception("La cuenta por Pagar asignada al movimiento no existe");
-                        cxp.Saldo -= desgloseMovimiento.Monto;
-                        dbContext.NotificarModificacion(cxp);
-                    }
+                    CuentaPorPagar cxp = dbContext.CuentaPorPagarRepository.Find(movimiento.IdCxP);
+                    if (cxp == null)
+                        throw new Exception("La cuenta por Pagar asignada al movimiento no existe");
+                    cxp.Saldo -= movimiento.Monto;
+                    dbContext.NotificarModificacion(cxp);
                     foreach (var desglosePago in movimiento.DesglosePagoMovimientoCuentaPorPagar)
                     {
                         if (desglosePago.IdFormaPago == StaticFormaPago.Cheque || desglosePago.IdFormaPago == StaticFormaPago.TransferenciaDepositoBancario)
@@ -602,7 +662,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    MovimientoCuentaPorPagar movimiento = dbContext.MovimientoCuentaPorPagarRepository.Include("DesgloseMovimientoCuentaPorPagar").FirstOrDefault(x => x.IdMovCxP == intIdMovimiento);
+                    MovimientoCuentaPorPagar movimiento = dbContext.MovimientoCuentaPorPagarRepository.FirstOrDefault(x => x.IdMovCxP == intIdMovimiento);
                     if (movimiento == null) throw new Exception("El movimiento de cuenta por Pagar no existe");
                     Empresa empresa = dbContext.EmpresaRepository.Find(movimiento.IdEmpresa); ;
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
@@ -614,14 +674,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     movimiento.IdAnuladoPor = intIdUsuario;
                     movimiento.MotivoAnulacion = strMotivoAnulacion;
                     dbContext.NotificarModificacion(movimiento);
-                    foreach (DesgloseMovimientoCuentaPorPagar desgloseMovimiento in movimiento.DesgloseMovimientoCuentaPorPagar)
-                    {
-                        CuentaPorPagar cxp = dbContext.CuentaPorPagarRepository.Find(desgloseMovimiento.IdCxP);
-                        if (cxp == null)
-                            throw new Exception("La cuenta por Pagar asignada al movimiento no existe");
-                        cxp.Saldo += desgloseMovimiento.Monto;
-                        dbContext.NotificarModificacion(cxp);
-                    }
+                    CuentaPorPagar cxp = dbContext.CuentaPorPagarRepository.Find(movimiento.IdCxP);
+                    if (cxp == null)
+                        throw new Exception("La cuenta por Pagar asignada al movimiento no existe");
+                    cxp.Saldo += movimiento.Monto;
+                    dbContext.NotificarModificacion(cxp);
                     if (movimiento.IdAsiento > 0)
                     {
                         IContabilidadService servicioContabilidad = new ContabilidadService();
@@ -652,9 +709,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
-                MovimientoCuentaPorPagar movimiento = dbContext.MovimientoCuentaPorPagarRepository.Include("DesgloseMovimientoCuentaPorPagar.CuentaPorPagar").Include("DesglosePagoMovimientoCuentaPorPagar.FormaPago").FirstOrDefault(x => x.IdMovCxP == intIdMovimiento);
-                foreach (var detalle in movimiento.DesgloseMovimientoCuentaPorPagar)
-                    detalle.CuentaPorPagar = null;
+                MovimientoCuentaPorPagar movimiento = dbContext.MovimientoCuentaPorPagarRepository.Include("CuentaPorPagar").Include("DesglosePagoMovimientoCuentaPorPagar.FormaPago").FirstOrDefault(x => x.IdMovCxP == intIdMovimiento);
+                movimiento.NombrePropietario = "Información no disponible";
+                Proveedor proveedor = dbContext.ProveedorRepository.Find(movimiento.CuentaPorPagar.IdPropietario);
+                if (proveedor != null) movimiento.NombrePropietario = proveedor.Nombre;
                 return movimiento;
             }
         }
@@ -691,7 +749,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IList<LlaveDescripcion> ObtenerListadoApartadosConSaldo(int intIdEmpresa)
+        public List<LlaveDescripcion> ObtenerListadoApartadosConSaldo(int intIdEmpresa)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -714,17 +772,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IList<EfectivoDetalle> ObtenerListadoMovimientosApartado(int intIdEmpresa, int intIdSucursal, int intIdApartado)
+        public List<EfectivoDetalle> ObtenerListadoMovimientosApartado(int intIdEmpresa, int intIdSucursal, int intIdApartado)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 var listaMovimientos = new List<EfectivoDetalle>();
                 try
                 {
-                    var listado = dbContext.MovimientoApartadoRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdApartado == intIdApartado).OrderByDescending(x => x.IdMovApartado);
+                    var listado = dbContext.MovimientoApartadoRepository.Include("Apartado").Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdApartado == intIdApartado).OrderByDescending(x => x.IdMovApartado);
                     foreach (var value in listado)
                     {
-                        EfectivoDetalle item = new EfectivoDetalle(value.IdMovApartado, value.Fecha.ToString("dd/MM/yyyy"), value.Descripcion, value.Monto);
+                        EfectivoDetalle item = new EfectivoDetalle(value.IdMovApartado, value.Fecha.ToString("dd/MM/yyyy"), "Abono sobre apartado nro " + + value.Apartado.ConsecApartado, value.Monto);
                         listaMovimientos.Add(item);
                     }
                     return listaMovimientos;
@@ -859,7 +917,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IList<LlaveDescripcion> ObtenerListadoOrdenesServicioConSaldo(int intIdEmpresa)
+        public List<LlaveDescripcion> ObtenerListadoOrdenesServicioConSaldo(int intIdEmpresa)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -882,17 +940,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IList<EfectivoDetalle> ObtenerListadoMovimientosOrdenServicio(int intIdEmpresa, int intIdSucursal, int intIdOrden)
+        public List<EfectivoDetalle> ObtenerListadoMovimientosOrdenServicio(int intIdEmpresa, int intIdSucursal, int intIdOrden)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 var listaMovimientos = new List<EfectivoDetalle>();
                 try
                 {
-                    var listado = dbContext.MovimientoOrdenServicioRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdOrden == intIdOrden).OrderByDescending(x => x.IdMovOrden);
+                    var listado = dbContext.MovimientoOrdenServicioRepository.Include("OrdenServicio").Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdOrden == intIdOrden).OrderByDescending(x => x.IdMovOrden);
                     foreach (var value in listado)
                     {
-                        EfectivoDetalle item = new EfectivoDetalle(value.IdMovOrden, value.Fecha.ToString("dd/MM/yyyy"), value.Descripcion, value.Monto);
+                        EfectivoDetalle item = new EfectivoDetalle(value.IdMovOrden, value.Fecha.ToString("dd/MM/yyyy"), "Abono sobre orden de servicio nro " + +value.OrdenServicio.ConsecOrdenServicio, value.Monto);
                         listaMovimientos.Add(item);
                     }
                     return listaMovimientos;

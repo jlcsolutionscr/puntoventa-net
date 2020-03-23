@@ -24,8 +24,9 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public int IdOrden { get; set; }
         public short Tipo { get; set; }
         public DateTime Fecha { get; set; }
-        public string Descripcion { get; set; }
+        public string Observaciones { get; set; }
         public decimal Monto { get; set; }
+        public decimal SaldoActual { get; set; }
         public int IdAsiento { get; set; }
         public int IdMovBanco { get; set; }
         public bool Nulo { get; set; }

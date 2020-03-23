@@ -208,11 +208,9 @@ Public Class FrmAplicaAbonoApartado
             txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
             Await CargarCombos()
             decTotal = 0
-            txtMonto.Text = FormatNumber(decTotal, 2)
             grdDesglosePago.DataSource = dtbDesglosePago
-            bolInit = False
             cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
-            txtSaldoPorPagar.Text = FormatNumber(decSaldoPorPagar, 2)
+            bolInit = False
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -237,6 +235,8 @@ Public Class FrmAplicaAbonoApartado
         decSaldoPorPagar = 0
         txtSaldoPorPagar.Text = FormatNumber(decSaldoPorPagar, 2)
         txtMonto.ReadOnly = False
+        txtObservaciones.ReadOnly = False
+        txtMontoPago.ReadOnly = False
         btnInsertarPago.Enabled = True
         btnEliminarPago.Enabled = True
         btnGuardar.Enabled = True
@@ -318,6 +318,8 @@ Public Class FrmAplicaAbonoApartado
         btnImprimir.Enabled = True
         btnImprimir.Focus()
         txtMonto.ReadOnly = True
+        txtObservaciones.ReadOnly = True
+        txtMontoPago.ReadOnly = True
         btnGuardar.Enabled = False
         btnInsertarPago.Enabled = False
         btnEliminarPago.Enabled = False
@@ -330,6 +332,7 @@ Public Class FrmAplicaAbonoApartado
             .equipo = FrmPrincipal.equipoGlobal,
             .strConsecutivo = movimiento.IdMovApartado,
             .strNombre = apartado.NombreCliente,
+            .strIdCuenta = apartado.ConsecApartado,
             .strFechaAbono = txtFecha.Text,
             .strSaldoAnterior = txtSaldoActual.Text,
             .strTotalAbono = FormatNumber(decTotal, 2),
@@ -444,6 +447,7 @@ Public Class FrmAplicaAbonoApartado
             txtMonto.Text = FormatNumber(decTotal, 2)
             txtSaldoPosterior.Text = FormatNumber(apartado.Total - apartado.MontoAdelanto, 2)
             txtSaldoPorPagar.Text = FormatNumber(decSaldoPorPagar, 2)
+            txtMonto.Focus()
         End If
     End Sub
 
@@ -466,6 +470,7 @@ Public Class FrmAplicaAbonoApartado
             End If
             txtMonto.Text = FormatNumber(txtMonto.Text, 2)
             decTotal = CDec(txtMonto.Text)
+            txtSaldoPosterior.Text = FormatNumber(apartado.Total - apartado.MontoAdelanto - decTotal, 2)
             dtbDesglosePago.Rows.Clear()
             CargarTotalesPago()
             txtMontoPago.Text = FormatNumber(decTotal, 2)

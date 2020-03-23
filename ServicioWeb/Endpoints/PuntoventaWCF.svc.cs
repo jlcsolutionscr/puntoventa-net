@@ -1230,7 +1230,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
                         bolIncluyeServicios = bool.Parse(parametrosJO.Property("IncluyeServicios").Value.ToString());
                         bolFiltraActivos = bool.Parse(parametrosJO.Property("FiltraActivos").Value.ToString());
-                        bolFiltraExistencias = bool.Parse(parametrosJO.Property("FiltraExistencias").Value.ToString());
+                        bolFiltraExistencias = parametrosJO.Property("FiltraExistencias") != null ? bool.Parse(parametrosJO.Property("FiltraExistencias").Value.ToString()) : false;
                         intIdLlave1 = parametrosJO.Property("IdLinea") != null ? int.Parse(parametrosJO.Property("IdLinea").Value.ToString()) : 0;
                         strCodigo = parametrosJO.Property("Codigo") != null ? parametrosJO.Property("Codigo").Value.ToString() : "";
                         strCodigoProveedor = parametrosJO.Property("CodigoProveedor") != null ? parametrosJO.Property("CodigoProveedor").Value.ToString() : "";
@@ -1245,7 +1245,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         intFilasPorPagina = int.Parse(parametrosJO.Property("FilasPorPagina").Value.ToString());
                         bolIncluyeServicios = bool.Parse(parametrosJO.Property("IncluyeServicios").Value.ToString());
                         bolFiltraActivos = bool.Parse(parametrosJO.Property("FiltraActivos").Value.ToString());
-                        bolFiltraExistencias = bool.Parse(parametrosJO.Property("FiltraExistencias").Value.ToString());
+                        bolFiltraExistencias = parametrosJO.Property("FiltraExistencias") != null ? bool.Parse(parametrosJO.Property("FiltraExistencias").Value.ToString()) : false;
                         intIdLlave1 = parametrosJO.Property("IdLinea") != null ? int.Parse(parametrosJO.Property("IdLinea").Value.ToString()) : 0;
                         strCodigo = parametrosJO.Property("Codigo") != null ? parametrosJO.Property("Codigo").Value.ToString() : "";
                         strCodigoProveedor = parametrosJO.Property("CodigoProveedor") != null ? parametrosJO.Property("CodigoProveedor").Value.ToString() : "";
@@ -1664,11 +1664,24 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         if (cuentaPorCobrar != null)
                             strRespuesta = serializer.Serialize(cuentaPorCobrar);
                         break;
+                    case "ObtenerTotalListaCuentasPorCobrar":
+                        intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
+                        intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
+                        intIdLlave1 = int.Parse(parametrosJO.Property("IdTipo").Value.ToString());
+                        strClave = parametrosJO.Property("Referencia").Value.ToString();
+                        strNombre = parametrosJO.Property("NombrePropietario").Value.ToString();
+                        intTotalLista = servicioCuentaPorProcesar.ObtenerTotalListaCuentasPorCobrar(intIdEmpresa, intIdSucursal, intIdLlave1, strClave, strNombre);
+                        strRespuesta = serializer.Serialize(intTotalLista);
+                        break;
                     case "ObtenerListadoCuentasPorCobrar":
                         intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
+                        intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
                         intIdLlave1 = int.Parse(parametrosJO.Property("IdTipo").Value.ToString());
-                        intIdPropietario = int.Parse(parametrosJO.Property("IdPropietario").Value.ToString());
-                        IList<LlaveDescripcion> listadoCuentasPorCobrar = servicioCuentaPorProcesar.ObtenerListadoCuentasPorCobrar(intIdEmpresa, intIdLlave1, intIdPropietario);
+                        intNumeroPagina = int.Parse(parametrosJO.Property("NumeroPagina").Value.ToString());
+                        intFilasPorPagina = int.Parse(parametrosJO.Property("FilasPorPagina").Value.ToString());
+                        strClave = parametrosJO.Property("Referencia").Value.ToString();
+                        strNombre = parametrosJO.Property("NombrePropietario").Value.ToString();
+                        IList<CuentaPorProcesar> listadoCuentasPorCobrar = servicioCuentaPorProcesar.ObtenerListadoCuentasPorCobrar(intIdEmpresa, intIdSucursal, intIdLlave1, intNumeroPagina, intFilasPorPagina, strClave, strNombre);
                         if (listadoCuentasPorCobrar.Count > 0)
                             strRespuesta = serializer.Serialize(listadoCuentasPorCobrar);
                         break;
@@ -1692,11 +1705,24 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         if (cuentaPorPagar != null)
                             strRespuesta = serializer.Serialize(cuentaPorPagar);
                         break;
+                    case "ObtenerTotalListaCuentasPorPagar":
+                        intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
+                        intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
+                        intIdLlave1 = int.Parse(parametrosJO.Property("IdTipo").Value.ToString());
+                        strClave = parametrosJO.Property("Referencia").Value.ToString();
+                        strNombre = parametrosJO.Property("NombrePropietario").Value.ToString();
+                        intTotalLista = servicioCuentaPorProcesar.ObtenerTotalListaCuentasPorPagar(intIdEmpresa, intIdSucursal, intIdLlave1, strClave, strNombre);
+                        strRespuesta = serializer.Serialize(intTotalLista);
+                        break;
                     case "ObtenerListadoCuentasPorPagar":
                         intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
+                        intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
                         intIdLlave1 = int.Parse(parametrosJO.Property("IdTipo").Value.ToString());
-                        intIdPropietario = int.Parse(parametrosJO.Property("IdPropietario").Value.ToString());
-                        IList<LlaveDescripcion> listadoCuentasPorPagar = servicioCuentaPorProcesar.ObtenerListadoCuentasPorPagar(intIdEmpresa, intIdLlave1, intIdPropietario);
+                        intNumeroPagina = int.Parse(parametrosJO.Property("NumeroPagina").Value.ToString());
+                        intFilasPorPagina = int.Parse(parametrosJO.Property("FilasPorPagina").Value.ToString());
+                        strClave = parametrosJO.Property("Referencia").Value.ToString();
+                        strNombre = parametrosJO.Property("NombrePropietario").Value.ToString();
+                        IList<CuentaPorProcesar> listadoCuentasPorPagar = servicioCuentaPorProcesar.ObtenerListadoCuentasPorPagar(intIdEmpresa, intIdSucursal, intIdLlave1, intNumeroPagina, intFilasPorPagina, strClave, strNombre);
                         if (listadoCuentasPorPagar.Count > 0)
                             strRespuesta = serializer.Serialize(listadoCuentasPorPagar);
                         break;

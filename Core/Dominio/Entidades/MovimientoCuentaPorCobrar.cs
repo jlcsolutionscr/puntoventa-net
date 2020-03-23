@@ -10,7 +10,6 @@ namespace LeandroSoftware.Core.Dominio.Entidades
     {
         public MovimientoCuentaPorCobrar()
         {
-            DesgloseMovimientoCuentaPorCobrar = new HashSet<DesgloseMovimientoCuentaPorCobrar>();
             DesglosePagoMovimientoCuentaPorCobrar = new HashSet<DesglosePagoMovimientoCuentaPorCobrar>();
         }
 
@@ -22,9 +21,14 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         [ForeignKey("Usuario")]
         public int IdUsuario { get; set; }
         public int IdPropietario { get; set; }
+        [NotMapped]
+        public string NombrePropietario { get; set; }
         public short Tipo { get; set; }
+        [ForeignKey("CuentaPorCobrar")]
+        public int IdCxC { get; set; }
         public DateTime Fecha { get; set; }
-        public string Descripcion { get; set; }
+        public string Observaciones { get; set; }
+        public decimal SaldoActual { get; set; }
         public decimal Monto { get; set; }
         public int IdAsiento { get; set; }
         public int IdMovBanco { get; set; }
@@ -35,7 +39,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
 
         public Empresa Empresa { get; set; }
         public Usuario Usuario { get; set; }
-        public ICollection<DesgloseMovimientoCuentaPorCobrar> DesgloseMovimientoCuentaPorCobrar { get; set; }
+        public CuentaPorCobrar CuentaPorCobrar { get; set; }
         public ICollection<DesglosePagoMovimientoCuentaPorCobrar> DesglosePagoMovimientoCuentaPorCobrar { get; set; }
     }
 }

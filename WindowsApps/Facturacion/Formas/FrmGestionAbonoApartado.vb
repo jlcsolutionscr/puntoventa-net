@@ -9,8 +9,9 @@ Public Class FrmGestionAbonoApartado
     Private dtrRowDetMovimiento As DataRow
     Private bolInit As Boolean = True
     Private listadoMovimientos As IList(Of EfectivoDetalle)
-    Private movimientoApartado As MovimientoApartado
+    Private movimiento As MovimientoApartado
     Private apartado As Apartado
+    Private decPagoEfectivo As Decimal
     'Variables de impresion
     Private reciboComprobante As ModuloImpresion.ClsRecibo
     Private desglosePagoImpresion As ModuloImpresion.ClsDesgloseFormaPago
@@ -141,22 +142,31 @@ Public Class FrmGestionAbonoApartado
         If grdDetalleRecibo.Rows.Count > 0 Then
             If grdDetalleRecibo.CurrentRow.Cells(0).Value.ToString <> "" Then
                 Try
-                    movimientoApartado = Await Puntoventa.ObtenerMovimientoApartado(grdDetalleRecibo.CurrentRow.Cells(0).Value, FrmPrincipal.usuarioGlobal.Token)
+                    movimiento = Await Puntoventa.ObtenerMovimientoApartado(grdDetalleRecibo.CurrentRow.Cells(0).Value, FrmPrincipal.usuarioGlobal.Token)
                 Catch ex As Exception
                     MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
                 End Try
+                decPagoEfectivo = 0
+                For Each item As DesglosePagoMovimientoApartado In movimiento.DesglosePagoMovimientoApartado
+                    If item.IdFormaPago = StaticFormaPago.Efectivo Then decPagoEfectivo = item.MontoLocal
+                Next
                 reciboComprobante = New ModuloImpresion.ClsRecibo With {
                     .usuario = FrmPrincipal.usuarioGlobal,
                     .empresa = FrmPrincipal.empresaGlobal,
                     .equipo = FrmPrincipal.equipoGlobal,
-                    .strConsecutivo = movimientoApartado.IdMovApartado,
-                    .strNombre = movimientoApartado.Apartado.NombreCliente,
-                    .strFechaAbono = movimientoApartado.Fecha,
-                    .strTotalAbono = FormatNumber(movimientoApartado.Monto, 2)
+                    .strConsecutivo = movimiento.IdMovApartado,
+                    .strIdCuenta = movimiento.Apartado.ConsecApartado,
+                    .strNombre = movimiento.Apartado.NombreCliente,
+                    .strFechaAbono = movimiento.Fecha,
+                    .strSaldoAnterior = FormatNumber(movimiento.SaldoActual, 2),
+                    .strTotalAbono = FormatNumber(movimiento.Monto, 2),
+                    .strSaldoActual = FormatNumber(movimiento.SaldoActual - movimiento.Monto, 2),
+                    .strPagoCon = FormatNumber(decPagoEfectivo, 2),
+                    .strCambio = FormatNumber(0, 2)
                 }
                 reciboComprobante.arrDesglosePago = New List(Of ModuloImpresion.ClsDesgloseFormaPago)()
-                For Each desglosePago As DesglosePagoMovimientoApartado In movimientoApartado.DesglosePagoMovimientoApartado
+                For Each desglosePago As DesglosePagoMovimientoApartado In movimiento.DesglosePagoMovimientoApartado
                     desglosePagoImpresion = New ModuloImpresion.ClsDesgloseFormaPago(desglosePago.FormaPago.Descripcion, FormatNumber(desglosePago.MontoLocal, 2))
                     reciboComprobante.arrDesglosePago.Add(desglosePagoImpresion)
                 Next

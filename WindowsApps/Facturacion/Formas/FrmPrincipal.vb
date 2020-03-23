@@ -305,10 +305,10 @@ Public Class FrmPrincipal
     End Sub
 
     Public Sub MnuApRCxP_Click(sender As Object, e As EventArgs) Handles MnuApRCxP.Click
-        'Dim formReciboCxP As New FrmAplicaAbonoCxP With {
-        '    .MdiParent = Me
-        '}
-        'formReciboCxP.Show()
+        Dim formReciboCxP As New FrmAplicaAbonoCxP With {
+            .MdiParent = Me
+        }
+        formReciboCxP.Show()
     End Sub
 
     Private Sub MnuApRApartado_Click(sender As Object, e As EventArgs) Handles MnuApRApartado.Click

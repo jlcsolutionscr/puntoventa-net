@@ -996,12 +996,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         movimiento.Nulo = true;
                         movimiento.IdAnuladoPor = intIdUsuario;
                         dbContext.NotificarModificacion(movimiento);
-                        foreach (DesgloseMovimientoCuentaPorPagar desglose in movimiento.DesgloseMovimientoCuentaPorPagar)
-                        {
-                            CuentaPorPagar cuentaPorPagar = dbContext.CuentaPorPagarRepository.Find(desglose.IdCxP);
-                            cuentaPorPagar.Saldo += desglose.Monto;
-                            dbContext.NotificarModificacion(cuentaPorPagar);
-                        }
+                        CuentaPorPagar cuentaPorPagar = dbContext.CuentaPorPagarRepository.Find(movimiento.IdCxP);
+                        cuentaPorPagar.Saldo += movimiento.Monto;
+                        dbContext.NotificarModificacion(cuentaPorPagar);
                     }
                     if (devolucion.IdAsiento > 0)
                     {

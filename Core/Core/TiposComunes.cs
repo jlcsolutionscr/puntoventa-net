@@ -646,4 +646,27 @@ namespace LeandroSoftware.Core.TiposComunes
         public string Descripcion { get; set; }
         public decimal Total { get; set; }
     }
+
+    public class CuentaPorProcesar
+    {
+        public CuentaPorProcesar()
+        {
+        }
+
+        public CuentaPorProcesar(int id, string fecha, string propietario, string referencia, decimal total, decimal saldo)
+        {
+            Id = id;
+            Fecha = fecha;
+            Propietario = propietario;
+            Referencia = referencia;
+            Total = total;
+            Saldo = saldo;
+        }
+        public int Id { get; set; }
+        public string Fecha { get; set; }
+        public string Propietario { get; set; }
+        public string Referencia { get; set; }
+        public decimal Total { get; set; }
+        public decimal Saldo { get; set; }
+    }
 }

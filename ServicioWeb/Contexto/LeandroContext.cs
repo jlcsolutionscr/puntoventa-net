@@ -30,8 +30,6 @@ namespace LeandroSoftware.ServicioWeb.Contexto
         DbSet<Factura> FacturaRepository { get; set; }
         DbSet<FacturaCompra> FacturaCompraRepository { get; set; }
         DbSet<Compra> CompraRepository { get; set; }
-        DbSet<DesgloseMovimientoCuentaPorCobrar> DesgloseMovimientoCuentaPorCobrarRepository { get; set; }
-        DbSet<DesgloseMovimientoCuentaPorPagar> DesgloseMovimientoCuentaPorPagarRepository { get; set; }
         DbSet<DesglosePagoApartado> DesglosePagoApartadoRepository { get; set; }
         DbSet<DesglosePagoCompra> DesglosePagoCompraRepository { get; set; }
         DbSet<DesglosePagoDevolucionCliente> DesglosePagoDevolucionClienteRepository { get; set; }
@@ -145,8 +143,6 @@ namespace LeandroSoftware.ServicioWeb.Contexto
         public DbSet<Factura> FacturaRepository { get; set; }
         public DbSet<FacturaCompra> FacturaCompraRepository { get; set; }
         public DbSet<Compra> CompraRepository { get; set; }
-        public DbSet<DesgloseMovimientoCuentaPorCobrar> DesgloseMovimientoCuentaPorCobrarRepository { get; set; }
-        public DbSet<DesgloseMovimientoCuentaPorPagar> DesgloseMovimientoCuentaPorPagarRepository { get; set; }
         public DbSet<DesglosePagoApartado> DesglosePagoApartadoRepository { get; set; }
         public DbSet<DesglosePagoCompra> DesglosePagoCompraRepository { get; set; }
         public DbSet<DesglosePagoDevolucionCliente> DesglosePagoDevolucionClienteRepository { get; set; }

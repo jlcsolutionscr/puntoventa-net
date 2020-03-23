@@ -1021,11 +1021,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                     }
 
-                    var movimientosCxC = dbContext.MovimientoCuentaPorCobrarRepository.Where(x => x.Tipo == 1 && x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Procesado).ToList();
+                    var movimientosCxC = dbContext.MovimientoCuentaPorCobrarRepository.Include("CuentaPorCobrar").Where(x => x.Tipo == 1 && x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Procesado).ToList();
                     if (movimientosCxC.Count > 0)
                     {
                         var pagosCxC = movimientosCxC.Join(dbContext.DesglosePagoMovimientoCuentaPorCobrarRepository, x => x.IdMovCxC, y => y.IdMovCxC, (x, y) => new { x, y })
-                            .Select(y => new { y.x.IdMovCxC, y.x.Fecha, y.x.Descripcion, y.y.IdFormaPago, y.y.IdCuentaBanco, MontoLocal = y.y.MontoLocal * y.y.TipoDeCambio });
+                            .Select(y => new { y.x.IdMovCxC, y.x.Fecha, y.x.CuentaPorCobrar.Referencia, y.y.IdFormaPago, y.y.IdCuentaBanco, MontoLocal = y.y.MontoLocal * y.y.TipoDeCambio });
                         foreach (var dato in pagosCxC)
                         {
                             if (dato.IdFormaPago == StaticFormaPago.Efectivo)
@@ -1036,7 +1036,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                     IdReferencia = dato.IdMovCxC,
                                     Tipo = 11,
                                     Fecha = dato.Fecha,
-                                    Descripcion = "Abono a cuenta por cobrar: " + dato.Descripcion,
+                                    Descripcion = "Abono a cuenta por cobrar: " + dato.Referencia,
                                     Total = dato.MontoLocal
                                 });
                             }
@@ -1051,7 +1051,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                     IdReferencia = dato.IdMovCxC,
                                     Tipo = 12,
                                     Fecha = dato.Fecha,
-                                    Descripcion = "Abono a cuenta por cobrar: " + dato.Descripcion,
+                                    Descripcion = "Abono a cuenta por cobrar: " + dato.Referencia,
                                     Total = dato.MontoLocal
                                 });
                             }
@@ -1063,7 +1063,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                     IdReferencia = dato.IdMovCxC,
                                     Tipo = 13,
                                     Fecha = dato.Fecha,
-                                    Descripcion = "Abono a cuenta por cobrar: " + dato.Descripcion,
+                                    Descripcion = "Abono a cuenta por cobrar: " + dato.Referencia,
                                     Total = dato.MontoLocal
                                 });
                             }
@@ -1146,11 +1146,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                     }
 
-                    var movimientosCxP = dbContext.MovimientoCuentaPorPagarRepository.Where(x => x.Tipo == 1 && x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Procesado).ToList();
+                    var movimientosCxP = dbContext.MovimientoCuentaPorPagarRepository.Include("CuentaPorPagar").Where(x => x.Tipo == 1 && x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Procesado).ToList();
                     if (movimientosCxP.Count > 0)
                     {
                         var pagosCxP = movimientosCxP.Join(dbContext.DesglosePagoMovimientoCuentaPorPagarRepository, x => x.IdMovCxP, y => y.IdMovCxP, (x, y) => new { x, y })
-                            .Select(y => new { y.x.IdMovCxP, y.x.Fecha, y.x.Descripcion, y.y.IdFormaPago, MontoLocal = y.y.MontoLocal * y.y.TipoDeCambio });
+                            .Select(y => new { y.x.IdMovCxP, y.x.Fecha, y.x.CuentaPorPagar.Referencia, y.y.IdFormaPago, MontoLocal = y.y.MontoLocal * y.y.TipoDeCambio });
                         foreach (var dato in pagosCxP)
                         {
                             if (dato.IdFormaPago == StaticFormaPago.Efectivo)
@@ -1161,7 +1161,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                     IdReferencia = dato.IdMovCxP,
                                     Tipo = 18,
                                     Fecha = dato.Fecha,
-                                    Descripcion = "Abono a cuenta por pagar: " + dato.Descripcion,
+                                    Descripcion = "Abono a cuenta por pagar: " + dato.Referencia,
                                     Total = dato.MontoLocal
                                 });
                             }
@@ -1173,7 +1173,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                     IdReferencia = dato.IdMovCxP,
                                     Tipo = 19,
                                     Fecha = dato.Fecha,
-                                    Descripcion = "Abono a cuenta por pagar: " + dato.Descripcion,
+                                    Descripcion = "Abono a cuenta por pagar: " + dato.Referencia,
                                     Total = dato.MontoLocal
                                 });
                             }

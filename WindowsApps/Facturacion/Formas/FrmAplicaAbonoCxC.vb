@@ -208,11 +208,10 @@ Public Class FrmAplicaAbonoCxC
             EstablecerPropiedadesDataGridView()
             txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
             Await CargarCombos()
+            decTotal = 0
             grdDesglosePago.DataSource = dtbDesglosePago
-            bolInit = False
             cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
-            txtMonto.Text = FormatNumber(0, 2)
-            txtSaldoPorPagar.Text = FormatNumber(decSaldoPorPagar, 2)
+            bolInit = False
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -238,6 +237,8 @@ Public Class FrmAplicaAbonoCxC
         decSaldoPorPagar = 0
         txtSaldoPorPagar.Text = FormatNumber(0, 2)
         txtMonto.ReadOnly = False
+        txtObservaciones.ReadOnly = False
+        txtMontoPago.ReadOnly = False
         btnInsertarPago.Enabled = True
         btnEliminarPago.Enabled = True
         btnGuardar.Enabled = True
@@ -246,8 +247,9 @@ Public Class FrmAplicaAbonoCxC
     End Sub
 
     Private Async Sub BtnGuardar_Click(sender As Object, e As EventArgs) Handles btnGuardar.Click
-        If cliente Is Nothing Then
-            MessageBox.Show("Debe seleccionar el cliente para poder guardar el registro.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        If cuentaPorCobrar Is Nothing Then
+            MessageBox.Show("Debe seleccionar la cuenta por procesar para poder guardar el registro.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            btnBuscarCxC_Click(btnBuscarCxC, New EventArgs())
             Exit Sub
         ElseIf decTotal = 0 Then
             MessageBox.Show("Debe ingresar el monto del abono para guardar el registro.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
@@ -317,6 +319,8 @@ Public Class FrmAplicaAbonoCxC
         btnImprimir.Enabled = True
         btnImprimir.Focus()
         txtMonto.ReadOnly = True
+        txtObservaciones.ReadOnly = True
+        txtMontoPago.ReadOnly = True
         btnGuardar.Enabled = False
         btnInsertarPago.Enabled = False
         btnEliminarPago.Enabled = False
@@ -328,7 +332,7 @@ Public Class FrmAplicaAbonoCxC
             .empresa = FrmPrincipal.empresaGlobal,
             .equipo = FrmPrincipal.equipoGlobal,
             .strConsecutivo = movimiento.IdMovCxC,
-            .strIdCuenta = cuentaPorCobrar.IdCxC,
+            .strIdCuenta = cuentaPorCobrar.Referencia,
             .strNombre = cliente.Nombre,
             .strFechaAbono = txtFecha.Text,
             .strSaldoAnterior = FormatNumber(cuentaPorCobrar.Saldo, 2),
@@ -444,6 +448,7 @@ Public Class FrmAplicaAbonoCxC
             txtMonto.Text = FormatNumber(decTotal, 2)
             txtSaldoPosterior.Text = FormatNumber(cuentaPorCobrar.Saldo, 2)
             txtSaldoPorPagar.Text = FormatNumber(decSaldoPorPagar, 2)
+            txtMonto.Focus()
         End If
     End Sub
 
@@ -466,6 +471,7 @@ Public Class FrmAplicaAbonoCxC
             End If
             txtMonto.Text = FormatNumber(txtMonto.Text, 2)
             decTotal = CDec(txtMonto.Text)
+            txtSaldoPosterior.Text = FormatNumber(cuentaPorCobrar.Saldo - decTotal, 2)
             dtbDesglosePago.Rows.Clear()
             CargarTotalesPago()
             txtMontoPago.Text = FormatNumber(decTotal, 2)

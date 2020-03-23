@@ -88,10 +88,6 @@
     <Compile Include="Entidades\ParametroSistema.cs" />
     <Compile Include="Entidades\OrdenServicio.cs" />
     <Compile Include="Entidades\DetalleOrdenServicio.cs" />
-    <Compile Include="Entidades\DesgloseMovimientoCuentaPorCobrar.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Entidades\DesgloseMovimientoCuentaPorPagar.cs" />
     <Compile Include="Entidades\MovimientoProducto.cs" />
     <Compile Include="Entidades\DetalleTraslado.cs" />
     <Compile Include="Entidades\Provincia.cs" />

@@ -30,7 +30,7 @@ Public Class FrmBusquedaCuentaPorCobrar
         dgvListado.Columns.Add(dvcId)
         dvcFecha.HeaderText = "Fecha"
         dvcFecha.DataPropertyName = "Fecha"
-        dvcFecha.Width = 70
+        dvcFecha.Width = 67
         dgvListado.Columns.Add(dvcFecha)
         dvcPropietario.HeaderText = "Cliente"
         dvcPropietario.DataPropertyName = "Propietario"
