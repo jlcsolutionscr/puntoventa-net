@@ -2183,7 +2183,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     ["contenido"] = Convert.ToBase64String(bytes)
                 };
                 archivosJArray.Add(jobDatosAdjuntos1);
-                servicioEnvioCorreo.SendEmail(new string[] { config.CorreoNotificacionErrores }, new string[] { }, "Detalle del proceso de procesamiento de recepcion de documentos electronicos", "Adjunto el archivo con el detalle del procesamiento.", false, archivosJArray);
+                servicioEnvioCorreo.SendEmail(new string[] { config.CorreoNotificacionErrores }, new string[] { }, "Detalle del proceso de procesamiento de recepción de documentos electrónicos", "Adjunto el archivo con el detalle del procesamiento.", false, archivosJArray);
             }
         }
 
@@ -2191,7 +2191,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         {
             string strDatos = "";
             string strIdentificacion = "";
-            if (correo.Attachments.Count == 0) throw new BusinessException("El correo no contiene los archivos requeridos o ninguno de los archivos adjuntos corresponde a un documento electrónico válido para ser aceptado.");
+            if (correo.Attachments.Count == 0) throw new BusinessException("El correo no contiene ningún archivo adjunto para poder procesar el mensaje de recepción");
             foreach (Attachment archivo in correo.Attachments)
             {
                 if (strDatos == "" && archivo.FileName.ToUpper().EndsWith(".XML"))
