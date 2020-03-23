@@ -17,7 +17,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public int IdUsuario { get; set; }
         public string CodigoUsuario { get; set; }
         public string Clave { get; set; }
-        public bool Modifica { get; set; }
+        public decimal PorcMaxDescuento { get; set; }
         public bool PermiteRegistrarDispositivo { get; set; }
         [NotMapped]
         public string Token;

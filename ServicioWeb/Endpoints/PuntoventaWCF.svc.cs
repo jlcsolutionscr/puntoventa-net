@@ -1813,12 +1813,12 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         if (documento != null)
                             strRespuesta = serializer.Serialize(documento);
                         break;
-                    case "AutorizacionPrecioExtraordinario":
+                    case "AutorizacionPorcentaje":
                         string strCodigoUsuario = parametrosJO.Property("CodigoUsuario").Value.ToString();
                         strClave = parametrosJO.Property("Clave").Value.ToString();
                         intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
-                        bool autorizado = servicioMantenimiento.AutorizacionPrecioExtraordinario(strCodigoUsuario, strClave, intIdEmpresa);
-                        strRespuesta = autorizado.ToString();
+                        decimal decPorcentaje = servicioMantenimiento.AutorizacionPorcentaje(strCodigoUsuario, strClave, intIdEmpresa);
+                        strRespuesta = decPorcentaje.ToString();
                         break;
                     case "ObtenerListadoSucursalDestino":
                         intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());

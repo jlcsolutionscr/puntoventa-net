@@ -25,7 +25,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         Usuario ValidarCredenciales(string strUsuario, string strClave, string id);
         Empresa ValidarCredenciales(string strUsuario, string strClave, int intIdEmpresa, string strValorRegistro);
         bool ValidarUsuarioHacienda(string strUsuario, string strClave, ConfiguracionGeneral config);
-        bool AutorizacionPrecioExtraordinario(string strUsuario, string strClave, int intIdEmpresa);
+        decimal AutorizacionPorcentaje(string strUsuario, string strClave, int intIdEmpresa);
         string ObtenerUltimaVersionApp();
         string ObtenerUltimaVersionMobileApp();
         IList<ParametroSistema> ObtenerListadoParametros();
@@ -540,11 +540,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             return bolRespuesta;
         }
 
-        public bool AutorizacionPrecioExtraordinario(string strUsuario, string strClave, int intIdEmpresa)
+        public decimal AutorizacionPorcentaje(string strUsuario, string strClave, int intIdEmpresa)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
-                bool bolAutorizado = false;
                 try
                 {
                     Usuario usuario = null;
@@ -553,15 +552,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (usuarioEmpresa == null) throw new BusinessException("Usuario no registrado en la empresa suministrada. Por favor verifique la información suministrada.");
                     usuario = dbContext.UsuarioRepository.Include("RolePorUsuario.Role").FirstOrDefault(x => x.IdUsuario == usuarioEmpresa.IdUsuario);
                     if (usuario.Clave != strClave) throw new BusinessException("Los credenciales suministrados no son válidos. Verifique los credenciales suministrados.");
-                    foreach (var role in usuario.RolePorUsuario)
-                    {
-                        if (role.IdRole == 52)
-                        {
-                            bolAutorizado = true;
-                            break;
-                        }
-                    }
-                    return bolAutorizado;
+                    return usuario.PorcMaxDescuento;
                 }
                 catch (BusinessException ex)
                 {

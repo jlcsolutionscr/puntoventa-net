@@ -122,7 +122,7 @@ Public Class FrmUsuario
                 txtIdUsuario.Text = datos.IdUsuario
                 txtUsuario.Text = datos.CodigoUsuario
                 txtPassword.Text = strDecryptedPassword
-                chkModifica.Checked = datos.Modifica
+                txtPorcMaxDescuento.Text = datos.PorcMaxDescuento
                 chkRegistraDispositivo.Checked = datos.PermiteRegistrarDispositivo
                 CargarDetalleRole(datos)
             Else
@@ -167,7 +167,7 @@ Public Class FrmUsuario
         End Try
         datos.CodigoUsuario = txtUsuario.Text
         datos.Clave = strEncryptedPassword
-        datos.Modifica = chkModifica.Checked
+        datos.PorcMaxDescuento = txtPorcMaxDescuento.Text
         datos.PermiteRegistrarDispositivo = chkRegistraDispositivo.Checked
         datos.RolePorUsuario.Clear()
         For I = 0 To dtbRolePorUsuario.Rows.Count - 1
@@ -207,6 +207,14 @@ Public Class FrmUsuario
         If dtbRolePorUsuario.Rows.Count > 0 Then
             dtbRolePorUsuario.Rows.Remove(dtbRolePorUsuario.Rows.Find(dgvRoleXUsuario.CurrentRow.Cells(0).Value))
         End If
+    End Sub
+
+    Private Sub ValidaDigitos(sender As Object, e As KeyPressEventArgs) Handles txtPorcMaxDescuento.KeyPress
+        FrmPrincipal.ValidaNumero(e, sender, True, 2, ".")
+    End Sub
+
+    Private Sub txtPorcMaxDescuento_TextChanged(sender As Object, e As EventArgs) Handles txtPorcMaxDescuento.TextChanged
+        If txtPorcMaxDescuento.Text = "" Then txtPorcMaxDescuento.Text = "0.00"
     End Sub
 #End Region
 End Class

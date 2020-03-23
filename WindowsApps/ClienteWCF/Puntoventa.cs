@@ -2066,11 +2066,14 @@ namespace LeandroSoftware.ClienteWCF
             return true;
         }
 
-        public static async Task<bool> AutorizacionPrecioExtraordinario(string strCodigoUsuario, string strClave, int intIdEmpresa, string strToken)
+        public static async Task<decimal> AutorizacionPorcentaje(string strCodigoUsuario, string strClave, int intIdEmpresa, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'AutorizacionPrecioExtraordinario', Parametros: {CodigoUsuario: '" + strCodigoUsuario + "', Clave: '" + strClave + "', IdEmpresa: " + intIdEmpresa + "}}";
+            string strDatos = "{NombreMetodo: 'AutorizacionPorcentaje', Parametros: {CodigoUsuario: '" + strCodigoUsuario + "', Clave: '" + strClave + "', IdEmpresa: " + intIdEmpresa + "}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
-            return bool.Parse(respuesta);
+            decimal decPorcentaje = 0;
+            if (respuesta != "")
+                decPorcentaje = serializer.Deserialize<decimal>(respuesta);
+            return decPorcentaje;
         }
     }
 }

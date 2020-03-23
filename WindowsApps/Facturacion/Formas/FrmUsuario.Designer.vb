@@ -32,10 +32,11 @@ Partial Class FrmUsuario
         Me.dgvRoleXUsuario = New System.Windows.Forms.DataGridView()
         Me.btnInsertarRole = New System.Windows.Forms.Button()
         Me.btnEliminarRole = New System.Windows.Forms.Button()
-        Me.chkModifica = New System.Windows.Forms.CheckBox()
         Me.chkRegistraDispositivo = New System.Windows.Forms.CheckBox()
         Me.btnCancelar = New System.Windows.Forms.Button()
         Me.btnGuardar = New System.Windows.Forms.Button()
+        Me.txtPorcMaxDescuento = New System.Windows.Forms.TextBox()
+        Me.Label3 = New System.Windows.Forms.Label()
         CType(Me.dgvRoleXUsuario, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -50,7 +51,7 @@ Partial Class FrmUsuario
         Me.txtUsuario.MaxLength = 10
         Me.txtUsuario.Name = "txtUsuario"
         Me.txtUsuario.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtUsuario.Size = New System.Drawing.Size(81, 20)
+        Me.txtUsuario.Size = New System.Drawing.Size(64, 20)
         Me.txtUsuario.TabIndex = 1
         '
         'txtIdUsuario
@@ -100,12 +101,12 @@ Partial Class FrmUsuario
         Me.txtPassword.BackColor = System.Drawing.SystemColors.Window
         Me.txtPassword.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtPassword.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtPassword.Location = New System.Drawing.Point(237, 64)
+        Me.txtPassword.Location = New System.Drawing.Point(221, 64)
         Me.txtPassword.MaxLength = 0
         Me.txtPassword.Name = "txtPassword"
         Me.txtPassword.PasswordChar = Global.Microsoft.VisualBasic.ChrW(42)
         Me.txtPassword.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtPassword.Size = New System.Drawing.Size(122, 20)
+        Me.txtPassword.Size = New System.Drawing.Size(137, 20)
         Me.txtPassword.TabIndex = 2
         '
         'Label1
@@ -113,7 +114,7 @@ Partial Class FrmUsuario
         Me.Label1.BackColor = System.Drawing.Color.Transparent
         Me.Label1.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label1.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label1.Location = New System.Drawing.Point(166, 65)
+        Me.Label1.Location = New System.Drawing.Point(150, 65)
         Me.Label1.Name = "Label1"
         Me.Label1.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label1.Size = New System.Drawing.Size(65, 17)
@@ -189,17 +190,6 @@ Partial Class FrmUsuario
         Me.btnEliminarRole.Text = "&Eliminar"
         Me.btnEliminarRole.UseVisualStyleBackColor = False
         '
-        'chkModifica
-        '
-        Me.chkModifica.AutoSize = True
-        Me.chkModifica.Location = New System.Drawing.Point(149, 362)
-        Me.chkModifica.Name = "chkModifica"
-        Me.chkModifica.Size = New System.Drawing.Size(161, 17)
-        Me.chkModifica.TabIndex = 0
-        Me.chkModifica.TabStop = False
-        Me.chkModifica.Text = "Modificar registros existentes"
-        Me.chkModifica.UseVisualStyleBackColor = True
-        '
         'chkRegistraDispositivo
         '
         Me.chkRegistraDispositivo.AutoSize = True
@@ -229,17 +219,45 @@ Partial Class FrmUsuario
         Me.btnGuardar.Text = "Guardar"
         Me.btnGuardar.UseVisualStyleBackColor = True
         '
+        'txtPorcMaxDescuento
+        '
+        Me.txtPorcMaxDescuento.AcceptsReturn = True
+        Me.txtPorcMaxDescuento.BackColor = System.Drawing.SystemColors.Window
+        Me.txtPorcMaxDescuento.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper
+        Me.txtPorcMaxDescuento.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtPorcMaxDescuento.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtPorcMaxDescuento.Location = New System.Drawing.Point(417, 62)
+        Me.txtPorcMaxDescuento.MaxLength = 10
+        Me.txtPorcMaxDescuento.Name = "txtPorcMaxDescuento"
+        Me.txtPorcMaxDescuento.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtPorcMaxDescuento.Size = New System.Drawing.Size(44, 20)
+        Me.txtPorcMaxDescuento.TabIndex = 3
+        '
+        'Label3
+        '
+        Me.Label3.BackColor = System.Drawing.Color.Transparent
+        Me.Label3.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label3.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label3.Location = New System.Drawing.Point(364, 63)
+        Me.Label3.Name = "Label3"
+        Me.Label3.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label3.Size = New System.Drawing.Size(47, 17)
+        Me.Label3.TabIndex = 57
+        Me.Label3.Text = "% Desc:"
+        Me.Label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
         'FrmUsuario
         '
         Me.AcceptButton = Me.btnInsertarRole
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
-        Me.ClientSize = New System.Drawing.Size(475, 392)
+        Me.ClientSize = New System.Drawing.Size(475, 394)
+        Me.Controls.Add(Me.txtPorcMaxDescuento)
+        Me.Controls.Add(Me.Label3)
         Me.Controls.Add(Me.btnCancelar)
         Me.Controls.Add(Me.btnGuardar)
         Me.Controls.Add(Me.chkRegistraDispositivo)
-        Me.Controls.Add(Me.chkModifica)
         Me.Controls.Add(Me.btnEliminarRole)
         Me.Controls.Add(Me.btnInsertarRole)
         Me.Controls.Add(Me.dgvRoleXUsuario)
@@ -256,7 +274,9 @@ Partial Class FrmUsuario
         Me.KeyPreview = True
         Me.Location = New System.Drawing.Point(73, 22)
         Me.MaximizeBox = False
+        Me.MaximumSize = New System.Drawing.Size(491, 433)
         Me.MinimizeBox = False
+        Me.MinimumSize = New System.Drawing.Size(491, 433)
         Me.Name = "FrmUsuario"
         Me.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.ShowInTaskbar = False
@@ -274,8 +294,9 @@ Partial Class FrmUsuario
     Friend WithEvents dgvRoleXUsuario As System.Windows.Forms.DataGridView
     Public WithEvents btnInsertarRole As System.Windows.Forms.Button
     Public WithEvents btnEliminarRole As System.Windows.Forms.Button
-    Friend WithEvents chkModifica As System.Windows.Forms.CheckBox
     Friend WithEvents chkRegistraDispositivo As System.Windows.Forms.CheckBox
     Friend WithEvents btnCancelar As System.Windows.Forms.Button
     Friend WithEvents btnGuardar As System.Windows.Forms.Button
+    Public WithEvents txtPorcMaxDescuento As TextBox
+    Public WithEvents Label3 As Label
 End Class
