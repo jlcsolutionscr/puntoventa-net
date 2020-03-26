@@ -139,7 +139,7 @@ Public Class FrmBusquedaFactura
     Private Async Sub FrmBusProd_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
             EstablecerPropiedadesDataGridView()
-            FechaInicio.Value = CDate("01/01/" & Now.Year)
+            FechaInicio.Value = Now
             FechaFinal.Value = Now
             Await CargarCombos()
             Await ValidarCantidadRegistros()

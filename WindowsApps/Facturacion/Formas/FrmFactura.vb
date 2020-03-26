@@ -1155,11 +1155,11 @@ Public Class FrmFactura
         ElseIf cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado And decSaldoPorPagar < 0 Then
             MessageBox.Show("El total del desglose de pago del movimiento es superior al saldo por pagar.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
-        ElseIf cboCondicionVenta.SelectedValue = StaticCondicionVenta.Credito And CDbl(txtPlazoCredito.Text) = 0 Then
-            MessageBox.Show("El valor del campo plazo no puede ser 0 para una factura de crédito.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        ElseIf cboCondicionVenta.SelectedValue = StaticCondicionVenta.Credito And (txtPlazoCredito.Text = "" Or txtPlazoCredito.Text = "0") Then
+            MessageBox.Show("El valor del campo plazo no puede ser 0 o nulo para una factura de crédito.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             txtPlazoCredito.Focus()
+            Exit Sub
         End If
-        Exit Sub
         If txtIdFactura.Text = "" Then
             If FrmPrincipal.empresaGlobal.IngresaPagoCliente And decPagoEfectivo > 0 Then
                 Dim formPagoFactura As New FrmPagoEfectivo()
@@ -1749,7 +1749,7 @@ Public Class FrmFactura
         End If
     End Sub
 
-    Private Sub ValidaDigitosSinDecimal(sender As Object, e As KeyPressEventArgs) Handles txtTelefono.KeyPress
+    Private Sub ValidaDigitosSinDecimal(sender As Object, e As KeyPressEventArgs) Handles txtTelefono.KeyPress, txtPlazoCredito.KeyPress
         FrmPrincipal.ValidaNumero(e, sender, False, 0)
     End Sub
 

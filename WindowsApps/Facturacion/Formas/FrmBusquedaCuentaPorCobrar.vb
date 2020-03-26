@@ -9,6 +9,7 @@ Public Class FrmBusquedaCuentaPorCobrar
     Private intCantidadDePaginas As Integer
     Private intId As Integer = 0
     Private bolInit As Boolean = False
+    Public bolPendientes As Boolean = True
 #End Region
 
 #Region "Métodos"
@@ -54,7 +55,7 @@ Public Class FrmBusquedaCuentaPorCobrar
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
         Try
-            dgvListado.DataSource = Await Puntoventa.ObtenerListadoCuentasPorCobrar(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, 1, intNumeroPagina, intFilasPorPagina, txtReferencia.Text, txtNombre.Text, FrmPrincipal.usuarioGlobal.Token)
+            dgvListado.DataSource = Await Puntoventa.ObtenerListadoCuentasPorCobrar(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, 1, bolPendientes, intNumeroPagina, intFilasPorPagina, txtReferencia.Text, txtNombre.Text, FrmPrincipal.usuarioGlobal.Token)
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -66,7 +67,7 @@ Public Class FrmBusquedaCuentaPorCobrar
 
     Private Async Function ValidarCantidadCxC() As Task
         Try
-            intTotalRegistros = Await Puntoventa.ObtenerTotalListaCuentasPorCobrar(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, 1, txtReferencia.Text, txtNombre.Text, FrmPrincipal.usuarioGlobal.Token)
+            intTotalRegistros = Await Puntoventa.ObtenerTotalListaCuentasPorCobrar(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, 1, bolPendientes, txtReferencia.Text, txtNombre.Text, FrmPrincipal.usuarioGlobal.Token)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()

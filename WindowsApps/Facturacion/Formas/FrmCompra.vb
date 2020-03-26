@@ -706,7 +706,7 @@ Public Class FrmCompra
             MessageBox.Show("Debe ingresar la referencia de la factura de compra para guardar el registro.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             txtFactura.Focus()
             Exit Sub
-        ElseIf cboCondicionVenta.SelectedValue = StaticCondicionVenta.Credito And CDbl(txtPlazoCredito.Text) = 0 Then
+        ElseIf cboCondicionVenta.SelectedValue = StaticCondicionVenta.Credito And (txtPlazoCredito.Text = "" Or txtPlazoCredito.Text = "0") Then
             MessageBox.Show("El valor del campo plazo no puede ser 0 para una compra de crédito.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             txtPlazoCredito.Focus()
             Exit Sub

@@ -158,7 +158,7 @@ Public Class FrmBusquedaProforma
             cboEstado.Visible = bolIncluyeEstado
             lblEstado.Visible = bolIncluyeEstado
             EstablecerPropiedadesDataGridView()
-            FechaInicio.Value = CDate("01/01/" & Now.Year)
+            FechaInicio.Value = Now
             FechaFinal.Value = Now
             Await CargarCombos()
             Await ValidarCantidadProformas()

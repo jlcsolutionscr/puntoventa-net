@@ -10,6 +10,7 @@ Public Class FrmGestionAbonoCxC
     Private bolInit As Boolean = True
     Private listadoMovimientos As IList(Of EfectivoDetalle)
     Private movimiento As MovimientoCuentaPorCobrar
+    Private cuentaPorCobrar As CuentaPorCobrar
     Private cliente As Cliente
     Private decPagoEfectivo As Decimal
     'Variables de impresion
@@ -59,10 +60,10 @@ Public Class FrmGestionAbonoCxC
         grdDetalleRecibo.Columns.Add(dvcMonto)
     End Sub
 
-    Private Async Sub CargarDetalleMovimiento(ByVal intIdCliente As Integer)
+    Private Async Sub CargarDetalleMovimiento(intIdCxC As Integer)
         dtbDetalleMovimiento.Rows.Clear()
         Try
-            listadoMovimientos = Await Puntoventa.ObtenerListaMovimientosCxC(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, intIdCliente, FrmPrincipal.usuarioGlobal.Token)
+            listadoMovimientos = Await Puntoventa.ObtenerListaMovimientosCxC(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, intIdCxC, FrmPrincipal.usuarioGlobal.Token)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
@@ -113,7 +114,7 @@ Public Class FrmGestionAbonoCxC
                         Exit Sub
                     End Try
                     MessageBox.Show("Transacción procesada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
-                    CargarDetalleMovimiento(cliente.IdCliente)
+                    CargarDetalleMovimiento(cuentaPorCobrar.IdCxC)
                 End If
             Else
                 MessageBox.Show("Debe seleccionar un registro para procesar", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
@@ -123,23 +124,21 @@ Public Class FrmGestionAbonoCxC
         End If
     End Sub
 
-    Private Async Sub btnBuscarCliente_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnBuscarCliente.Click
-        Dim formBusquedaCliente As New FrmBusquedaCliente()
+    Private Async Sub BtnBuscarCxC_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnBuscarCliente.Click
+        Dim formBusquedaCuentaPorCobrar As New FrmBusquedaCuentaPorCobrar()
+        formBusquedaCuentaPorCobrar.bolPendientes = False
         FrmPrincipal.intBusqueda = 0
-        formBusquedaCliente.ShowDialog()
+        formBusquedaCuentaPorCobrar.ShowDialog()
         If FrmPrincipal.intBusqueda > 0 Then
-            If FrmPrincipal.intBusqueda = StaticValoresPorDefecto.ClienteContado Then
-                MessageBox.Show("El cliente indicado no corresponde a un cliente de crédito", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Exit Sub
-            End If
             Try
-                cliente = Await Puntoventa.ObtenerCliente(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
+                cuentaPorCobrar = Await Puntoventa.ObtenerCuentaPorCobrar(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
+                cliente = Await Puntoventa.ObtenerCliente(cuentaPorCobrar.IdPropietario, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
-            txtNombreCliente.Text = cliente.Nombre
-            CargarDetalleMovimiento(cliente.IdCliente)
+            txtDescripcion.Text = "Cuenta por cobrar de factura " & cuentaPorCobrar.Referencia
+            CargarDetalleMovimiento(cuentaPorCobrar.IdCxC)
         End If
     End Sub
 

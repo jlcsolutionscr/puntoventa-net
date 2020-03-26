@@ -10,6 +10,7 @@ Public Class FrmGestionAbonoCxP
     Private bolInit As Boolean = True
     Private listadoMovimientos As IList(Of EfectivoDetalle)
     Private movimiento As MovimientoCuentaPorPagar
+    Private cuentaPorPagar As CuentaPorPagar
     Private proveedor As Proveedor
     Private decPagoEfectivo As Decimal
     'Variables de impresion
@@ -59,10 +60,10 @@ Public Class FrmGestionAbonoCxP
         grdDetalleRecibo.Columns.Add(dvcMonto)
     End Sub
 
-    Private Async Sub CargarDetalleMovimiento(ByVal intIdProveedor As Integer)
+    Private Async Sub CargarDetalleMovimiento(ByVal intIdCxP As Integer)
         dtbDetalleMovimiento.Rows.Clear()
         Try
-            listadoMovimientos = Await Puntoventa.ObtenerListaMovimientosCxP(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, intIdProveedor, FrmPrincipal.usuarioGlobal.Token)
+            listadoMovimientos = Await Puntoventa.ObtenerListaMovimientosCxP(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, intIdCxP, FrmPrincipal.usuarioGlobal.Token)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
@@ -113,7 +114,7 @@ Public Class FrmGestionAbonoCxP
                         Exit Sub
                     End Try
                     MessageBox.Show("Transacción procesada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
-                    CargarDetalleMovimiento(proveedor.IdProveedor)
+                    CargarDetalleMovimiento(cuentaPorPagar.IdCxP)
                 End If
             Else
                 MessageBox.Show("Debe seleccionar un registro para procesar", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
@@ -123,19 +124,21 @@ Public Class FrmGestionAbonoCxP
         End If
     End Sub
 
-    Private Async Sub btnBuscarProveedor_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnBuscarProveedor.Click
-        Dim formBusquedaProveedor As New FrmBusquedaProveedor()
+    Private Async Sub btnBuscarCxP_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnBuscarProveedor.Click
+        Dim formBusquedaCuentaPorPagar As New FrmBusquedaCuentaPorPagar()
+        formBusquedaCuentaPorPagar.bolPendientes = False
         FrmPrincipal.intBusqueda = 0
-        formBusquedaProveedor.ShowDialog()
+        formBusquedaCuentaPorPagar.ShowDialog()
         If FrmPrincipal.intBusqueda > 0 Then
             Try
-                proveedor = Await Puntoventa.ObtenerProveedor(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
+                cuentaPorPagar = Await Puntoventa.ObtenerCuentaPorPagar(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
+                proveedor = Await Puntoventa.ObtenerProveedor(cuentaPorPagar.IdPropietario, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
-            txtNombreProveedor.Text = proveedor.Nombre
-            CargarDetalleMovimiento(proveedor.IdProveedor)
+            txtDescripcion.Text = "Cuenta por pagar de factura " & cuentaPorPagar.Referencia
+            CargarDetalleMovimiento(cuentaPorPagar.IdCxP)
         End If
     End Sub
 

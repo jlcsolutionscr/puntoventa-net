@@ -929,9 +929,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    DateTime datFechaInicial = DateTime.ParseExact(strFechaInicial + " 00:00:01", strFormat, provider);
-                    DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
-                    var listaFacturas = dbContext.FacturaRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Fecha >= datFechaInicial && x.Fecha <= datFechaFinal);
+                    var listaFacturas = dbContext.FacturaRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
+                    if (strFechaInicial != "")
+                    {
+                        DateTime datFechaInicial = DateTime.ParseExact(strFechaInicial + " 00:00:01", strFormat, provider);
+                        DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
+                        listaFacturas = listaFacturas.Where(x => x.Fecha >= datFechaInicial && x.Fecha <= datFechaFinal);
+                    }
                     if (intIdFactura > 0)
                         listaFacturas = listaFacturas.Where(x => !x.Nulo && x.ConsecFactura == intIdFactura);
                     else if (!strNombre.Equals(string.Empty))
@@ -953,9 +957,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 var listaFactura = new List<FacturaDetalle>();
                 try
                 {
-                    DateTime datFechaInicial = DateTime.ParseExact(strFechaInicial + " 00:00:01", strFormat, provider);
-                    DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
-                    var listado = dbContext.FacturaRepository.Include("Cliente").Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Fecha >= datFechaInicial && x.Fecha <= datFechaFinal);
+                    var listado = dbContext.FacturaRepository.Include("Cliente").Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
+                    if (strFechaInicial != "")
+                    {
+                        DateTime datFechaInicial = DateTime.ParseExact(strFechaInicial + " 00:00:01", strFormat, provider);
+                        DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
+                        listado = listado.Where(x => x.Fecha >= datFechaInicial && x.Fecha <= datFechaFinal);
+                    }
                     if (intIdFactura > 0)
                         listado = listado.Where(x => !x.Nulo && x.ConsecFactura == intIdFactura);
                     else if (!strNombre.Equals(string.Empty))

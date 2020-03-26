@@ -164,7 +164,7 @@ Partial Class FrmInventario
         'lblPagina
         '
         Me.lblPagina.AutoSize = True
-        Me.lblPagina.Location = New System.Drawing.Point(723, 542)
+        Me.lblPagina.Location = New System.Drawing.Point(765, 542)
         Me.lblPagina.Name = "lblPagina"
         Me.lblPagina.Size = New System.Drawing.Size(77, 13)
         Me.lblPagina.TabIndex = 33

@@ -13,18 +13,18 @@ namespace LeandroSoftware.ServicioWeb.Servicios
     public interface ICuentaPorProcesarService
     {
         CuentaPorCobrar ObtenerCuentaPorCobrar(int intIdCxC);
-        int ObtenerTotalListaCuentasPorCobrar(int intIdEmpresa, int intIdSucursal, int intIdTipo, string strReferencia, string strNombrePropietario);
-        List<CuentaPorProcesar> ObtenerListadoCuentasPorCobrar(int intIdEmpresa, int intIdSucursal, int intIdTipo, int numPagina, int cantRec, string strReferencia, string strNombrePropietario);
-        List<EfectivoDetalle> ObtenerListadoMovimientosCxC(int intIdEmpresa, int intIdSucursal, int intIdPropietario);
+        int ObtenerTotalListaCuentasPorCobrar(int intIdEmpresa, int intIdSucursal, int intIdTipo, bool bolPendientes, string strReferencia, string strNombrePropietario);
+        List<CuentaPorProcesar> ObtenerListadoCuentasPorCobrar(int intIdEmpresa, int intIdSucursal, int intIdTipo, bool bolPendientes, int numPagina, int cantRec, string strReferencia, string strNombrePropietario);
+        List<EfectivoDetalle> ObtenerListadoMovimientosCxC(int intIdEmpresa, int intIdSucursal, int intIdCuenta);
         void AplicarMovimientoCxC(MovimientoCuentaPorCobrar movimiento);
         void AnularMovimientoCxC(int intIdMovimiento, int intIdUsuario, string strMotivoAnulacion);
         MovimientoCuentaPorCobrar ObtenerMovimientoCxC(int intIdMovimiento);
         int ObtenerCantidadCxCVencidas(int intIdPropietario, int intIdTipo);
         decimal ObtenerSaldoCuentasPorCobrar(int intIdPropietario, int intIdTipo);
         CuentaPorPagar ObtenerCuentaPorPagar(int intIdCxP);
-        int ObtenerTotalListaCuentasPorPagar(int intIdEmpresa, int intIdSucursal, int intIdTipo, string strReferencia, string strNombrePropietario);
-        List<CuentaPorProcesar> ObtenerListadoCuentasPorPagar(int intIdEmpresa, int intIdSucursal, int intIdTipo, int numPagina, int cantRec, string strReferencia, string strNombrePropietario);
-        List<EfectivoDetalle> ObtenerListadoMovimientosCxP(int intIdEmpresa, int intIdSucursal, int intIdPropietario);
+        int ObtenerTotalListaCuentasPorPagar(int intIdEmpresa, int intIdSucursal, int intIdTipo, bool bolPendientes, string strReferencia, string strNombrePropietario);
+        List<CuentaPorProcesar> ObtenerListadoCuentasPorPagar(int intIdEmpresa, int intIdSucursal, int intIdTipo, bool bolPendientes, int numPagina, int cantRec, string strReferencia, string strNombrePropietario);
+        List<EfectivoDetalle> ObtenerListadoMovimientosCxP(int intIdEmpresa, int intIdSucursal, int intIdCuenta);
         void AplicarMovimientoCxP(MovimientoCuentaPorPagar movimiento);
         void AnularMovimientoCxP(int intIdMovimiento, int intIdUsuario, string strMotivoAnulacion);
         MovimientoCuentaPorPagar ObtenerMovimientoCxP(int intIdMovimiento);
@@ -72,13 +72,15 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public int ObtenerTotalListaCuentasPorCobrar(int intIdEmpresa, int intIdSucursal, int intIdTipo, string strReferencia, string strNombrePropietario)
+        public int ObtenerTotalListaCuentasPorCobrar(int intIdEmpresa, int intIdSucursal, int intIdTipo, bool bolPendientes, string strReferencia, string strNombrePropietario)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 try
                 {
-                    var listado = dbContext.CuentaPorCobrarRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Tipo == intIdTipo && x.Nulo == false && x.Saldo > 0);
+                    var listado = dbContext.CuentaPorCobrarRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Tipo == intIdTipo && x.Nulo == false);
+                    if (bolPendientes)
+                        listado = listado.Where(x => x.Saldo > 0);
                     if (strReferencia != "")
                         listado = listado.Where(x => x.Referencia.Contains(strReferencia));
                     if (strNombrePropietario != "")
@@ -96,14 +98,16 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public List<CuentaPorProcesar> ObtenerListadoCuentasPorCobrar(int intIdEmpresa, int intIdSucursal, int intIdTipo, int numPagina, int cantRec, string strReferencia, string strNombrePropietario)
+        public List<CuentaPorProcesar> ObtenerListadoCuentasPorCobrar(int intIdEmpresa, int intIdSucursal, int intIdTipo, bool bolPendientes, int numPagina, int cantRec, string strReferencia, string strNombrePropietario)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 var listaCuentas = new List<CuentaPorProcesar>();
                 try
                 {
-                    var listado = dbContext.CuentaPorCobrarRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Tipo == intIdTipo && x.Nulo == false && x.Saldo > 0);
+                    var listado = dbContext.CuentaPorCobrarRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Tipo == intIdTipo && x.Nulo == false);
+                    if (bolPendientes)
+                        listado = listado.Where(x => x.Saldo > 0);
                     if (strReferencia != "")
                         listado = listado.Where(x => x.Referencia.Contains(strReferencia));
                     if (strNombrePropietario != "")
@@ -128,14 +132,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public List<EfectivoDetalle> ObtenerListadoMovimientosCxC(int intIdEmpresa, int intIdSucursal, int intIdPropietario)
+        public List<EfectivoDetalle> ObtenerListadoMovimientosCxC(int intIdEmpresa, int intIdSucursal, int intIdCuenta)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 var listaMovimientos = new List<EfectivoDetalle>();
                 try
                 {
-                    var listado = dbContext.MovimientoCuentaPorCobrarRepository.Include("CuentaPorCobrar").Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdPropietario == intIdPropietario).OrderByDescending(x => x.IdMovCxC);
+                    var listado = dbContext.MovimientoCuentaPorCobrarRepository.Include("CuentaPorCobrar").Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdCxC == intIdCuenta).OrderByDescending(x => x.IdMovCxC);
                     foreach (var value in listado)
                     {
                         EfectivoDetalle item = new EfectivoDetalle(value.IdMovCxC, value.Fecha.ToString("dd/MM/yyyy"), "Abono sobre cuenta por cobrar nro " + value.CuentaPorCobrar.Referencia, value.Monto);
@@ -437,13 +441,15 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public int ObtenerTotalListaCuentasPorPagar(int intIdEmpresa, int intIdSucursal, int intIdTipo, string strReferencia, string strNombrePropietario)
+        public int ObtenerTotalListaCuentasPorPagar(int intIdEmpresa, int intIdSucursal, int intIdTipo, bool bolPendientes, string strReferencia, string strNombrePropietario)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 try
                 {
-                    var listado = dbContext.CuentaPorPagarRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Tipo == intIdTipo && x.Nulo == false && x.Saldo > 0);
+                    var listado = dbContext.CuentaPorPagarRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Tipo == intIdTipo && x.Nulo == false);
+                    if (bolPendientes)
+                        listado = listado.Where(x => x.Saldo > 0);
                     if (strReferencia != "")
                         listado = listado.Where(x => x.Referencia.Contains(strReferencia));
                     if (strNombrePropietario != "")
@@ -461,14 +467,16 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public List<CuentaPorProcesar> ObtenerListadoCuentasPorPagar(int intIdEmpresa, int intIdSucursal, int intIdTipo, int numPagina, int cantRec, string strReferencia, string strNombrePropietario)
+        public List<CuentaPorProcesar> ObtenerListadoCuentasPorPagar(int intIdEmpresa, int intIdSucursal, int intIdTipo, bool bolPendientes, int numPagina, int cantRec, string strReferencia, string strNombrePropietario)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 var listaCuentas = new List<CuentaPorProcesar>();
                 try
                 {
-                    var listado = dbContext.CuentaPorPagarRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Tipo == intIdTipo && x.Nulo == false && x.Saldo > 0);
+                    var listado = dbContext.CuentaPorPagarRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Tipo == intIdTipo && x.Nulo == false);
+                    if (bolPendientes)
+                        listado = listado.Where(x => x.Saldo > 0);
                     if (strReferencia != "")
                         listado = listado.Where(x => x.Referencia.Contains(strReferencia));
                     if (strNombrePropietario != "")
@@ -493,14 +501,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public List<EfectivoDetalle> ObtenerListadoMovimientosCxP(int intIdEmpresa, int intIdSucursal, int intIdPropietario)
+        public List<EfectivoDetalle> ObtenerListadoMovimientosCxP(int intIdEmpresa, int intIdSucursal, int intIdCuenta)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 var listaMovimientos = new List<EfectivoDetalle>();
                 try
                 {
-                    var listado = dbContext.MovimientoCuentaPorPagarRepository.Include("CuentaPorPagar").Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdPropietario == intIdPropietario).OrderByDescending(x => x.IdMovCxP);
+                    var listado = dbContext.MovimientoCuentaPorPagarRepository.Include("CuentaPorPagar").Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdCxP == intIdCuenta).OrderByDescending(x => x.IdMovCxP);
                     foreach (var value in listado)
                     {
                         EfectivoDetalle item = new EfectivoDetalle(value.IdMovCxP, value.Fecha.ToString("dd/MM/yyyy"), "Abono sobre cuenta por pagar nro " + value.CuentaPorPagar.Referencia, value.Monto);

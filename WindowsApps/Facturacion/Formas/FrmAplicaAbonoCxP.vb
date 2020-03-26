@@ -15,7 +15,7 @@ Public Class FrmAplicaAbonoCxP
     Private dtrRowDesglosePago As DataRow
     Private bolInit As Boolean = True
     Private cuentaPorPagar As CuentaPorPagar
-    Private cliente As Cliente
+    Private proveedor As Proveedor
     Private movimiento As MovimientoCuentaPorPagar
     Private desglosePagoMovimiento As DesglosePagoMovimientoCuentaPorPagar
     Private reciboComprobante As ModuloImpresion.ClsRecibo
@@ -221,7 +221,7 @@ Public Class FrmAplicaAbonoCxP
 
     Private Async Sub BtnAgregar_Click(sender As Object, e As EventArgs) Handles btnAgregar.Click
         Await CargarListaBancoAdquiriente()
-        cliente = Nothing
+        proveedor = Nothing
         txtId.Text = ""
         txtMontoOriginal.Text = ""
         txtTotalAbonado.Text = ""
@@ -285,7 +285,7 @@ Public Class FrmAplicaAbonoCxP
             .IdEmpresa = cuentaPorPagar.IdEmpresa,
             .IdSucursal = FrmPrincipal.equipoGlobal.IdSucursal,
             .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
-            .IdPropietario = cliente.IdCliente,
+            .IdPropietario = proveedor.IdProveedor,
             .Tipo = StaticTipoAbono.AbonoEfectivo,
             .IdCxP = cuentaPorPagar.IdCxP,
             .Observaciones = txtObservaciones.Text,
@@ -340,7 +340,7 @@ Public Class FrmAplicaAbonoCxP
             .equipo = FrmPrincipal.equipoGlobal,
             .strConsecutivo = movimiento.IdMovCxP,
             .strIdCuenta = cuentaPorPagar.Referencia,
-            .strNombre = cliente.Nombre,
+            .strNombre = proveedor.Nombre,
             .strFechaAbono = txtFecha.Text,
             .strSaldoAnterior = FormatNumber(cuentaPorPagar.Saldo, 2),
             .strTotalAbono = FormatNumber(decTotal, 2),
@@ -439,7 +439,7 @@ Public Class FrmAplicaAbonoCxP
         If FrmPrincipal.intBusqueda > 0 Then
             Try
                 cuentaPorPagar = Await Puntoventa.ObtenerCuentaPorPagar(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
-                cliente = Await Puntoventa.ObtenerCliente(cuentaPorPagar.IdPropietario, FrmPrincipal.usuarioGlobal.Token)
+                proveedor = Await Puntoventa.ObtenerProveedor(cuentaPorPagar.IdPropietario, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub

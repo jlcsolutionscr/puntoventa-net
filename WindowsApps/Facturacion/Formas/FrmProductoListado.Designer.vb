@@ -120,7 +120,7 @@ Partial Class FrmProductoListado
         'lblPagina
         '
         Me.lblPagina.AutoSize = True
-        Me.lblPagina.Location = New System.Drawing.Point(584, 473)
+        Me.lblPagina.Location = New System.Drawing.Point(535, 473)
         Me.lblPagina.Name = "lblPagina"
         Me.lblPagina.Size = New System.Drawing.Size(77, 13)
         Me.lblPagina.TabIndex = 33

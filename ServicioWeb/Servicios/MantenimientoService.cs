@@ -1894,11 +1894,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         listaProductos = listaProductos.Where(x => x.Activo);
                     if (intIdLinea > 0)
                         listaProductos = listaProductos.Where(x => x.IdLinea == intIdLinea);
-                    else if (!strCodigo.Equals(string.Empty))
+                    if (!strCodigo.Equals(string.Empty))
                         listaProductos = listaProductos.Where(x => x.Codigo.Contains(strCodigo));
-                    else if (!strCodigoProveedor.Equals(string.Empty))
+                    if (!strCodigoProveedor.Equals(string.Empty))
                         listaProductos = listaProductos.Where(x => x.CodigoProveedor.Contains(strCodigoProveedor));
-                    else if (!strDescripcion.Equals(string.Empty))
+                    if (!strDescripcion.Equals(string.Empty))
                         listaProductos = listaProductos.Where(x => x.Descripcion.Contains(strDescripcion));
                     if (bolFiltraExistencias)
                         return listaProductos.Join(dbContext.ExistenciaPorSucursalRepository, x => x.IdProducto, y => y.IdProducto, (x, y) => new { x, y }).Where(x => x.y.IdEmpresa == intIdEmpresa && x.y.IdSucursal == intIdSucursal && x.y.Cantidad > 0).Count();
@@ -1928,11 +1928,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         listaProductos = listaProductos.Where(x => x.Activo);
                     if (intIdLinea > 0)
                         listaProductos = listaProductos.Where(x => x.IdLinea == intIdLinea);
-                    else if (!strCodigo.Equals(string.Empty))
+                    if (!strCodigo.Equals(string.Empty))
                         listaProductos = listaProductos.Where(x => x.Codigo.Contains(strCodigo));
-                    else if (!strCodigoProveedor.Equals(string.Empty))
+                    if (!strCodigoProveedor.Equals(string.Empty))
                         listaProductos = listaProductos.Where(x => x.CodigoProveedor.Contains(strCodigoProveedor));
-                    else if (!strDescripcion.Equals(string.Empty))
+                    if (!strDescripcion.Equals(string.Empty))
                         listaProductos = listaProductos.Where(x => x.Descripcion.Contains(strDescripcion));
                     if (bolFiltraExistencias)
                     {

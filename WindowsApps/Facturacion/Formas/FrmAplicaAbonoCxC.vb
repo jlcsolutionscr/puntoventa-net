@@ -425,7 +425,7 @@ Public Class FrmAplicaAbonoCxC
         End If
     End Sub
 
-    Private Async Sub btnBuscarCxC_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnBuscarCxC.Click
+    Private Async Sub BtnBuscarCxC_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnBuscarCxC.Click
         Dim formBusquedaCuentaPorCobrar As New FrmBusquedaCuentaPorCobrar()
         FrmPrincipal.intBusqueda = 0
         formBusquedaCuentaPorCobrar.ShowDialog()

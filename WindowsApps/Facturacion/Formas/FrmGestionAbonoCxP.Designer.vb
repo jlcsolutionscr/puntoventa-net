@@ -23,7 +23,7 @@ Partial Class FrmGestionAbonoCxP
         Me.CmdAnular = New System.Windows.Forms.Button()
         Me._lblLabels_2 = New System.Windows.Forms.Label()
         Me.grdDetalleRecibo = New System.Windows.Forms.DataGridView()
-        Me.txtNombreProveedor = New System.Windows.Forms.TextBox()
+        Me.txtDescripcion = New System.Windows.Forms.TextBox()
         Me.btnBuscarProveedor = New System.Windows.Forms.Button()
         Me.CmdImprimir = New System.Windows.Forms.Button()
         CType(Me.grdDetalleRecibo, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -53,7 +53,7 @@ Partial Class FrmGestionAbonoCxP
         Me._lblLabels_2.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me._lblLabels_2.Size = New System.Drawing.Size(64, 19)
         Me._lblLabels_2.TabIndex = 9
-        Me._lblLabels_2.Text = "Proveedor:"
+        Me._lblLabels_2.Text = "Cuenta:"
         Me._lblLabels_2.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'grdDetalleRecibo
@@ -73,20 +73,20 @@ Partial Class FrmGestionAbonoCxP
         Me.grdDetalleRecibo.TabIndex = 3
         Me.grdDetalleRecibo.TabStop = False
         '
-        'txtNombreProveedor
+        'txtDescripcion
         '
-        Me.txtNombreProveedor.AcceptsReturn = True
-        Me.txtNombreProveedor.BackColor = System.Drawing.SystemColors.Window
-        Me.txtNombreProveedor.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtNombreProveedor.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtNombreProveedor.Location = New System.Drawing.Point(72, 13)
-        Me.txtNombreProveedor.MaxLength = 0
-        Me.txtNombreProveedor.Name = "txtNombreProveedor"
-        Me.txtNombreProveedor.ReadOnly = True
-        Me.txtNombreProveedor.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtNombreProveedor.Size = New System.Drawing.Size(394, 20)
-        Me.txtNombreProveedor.TabIndex = 0
-        Me.txtNombreProveedor.TabStop = False
+        Me.txtDescripcion.AcceptsReturn = True
+        Me.txtDescripcion.BackColor = System.Drawing.SystemColors.Window
+        Me.txtDescripcion.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtDescripcion.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtDescripcion.Location = New System.Drawing.Point(72, 13)
+        Me.txtDescripcion.MaxLength = 0
+        Me.txtDescripcion.Name = "txtDescripcion"
+        Me.txtDescripcion.ReadOnly = True
+        Me.txtDescripcion.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtDescripcion.Size = New System.Drawing.Size(394, 20)
+        Me.txtDescripcion.TabIndex = 0
+        Me.txtDescripcion.TabStop = False
         '
         'btnBuscarProveedor
         '
@@ -112,14 +112,14 @@ Partial Class FrmGestionAbonoCxP
         Me.CmdImprimir.Text = "&Imprimir"
         Me.CmdImprimir.UseVisualStyleBackColor = False
         '
-        'FrmGestionReciboCxP
+        'FrmGestionAbonoCxP
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(646, 413)
         Me.Controls.Add(Me.CmdImprimir)
-        Me.Controls.Add(Me.txtNombreProveedor)
+        Me.Controls.Add(Me.txtDescripcion)
         Me.Controls.Add(Me.btnBuscarProveedor)
         Me.Controls.Add(Me.grdDetalleRecibo)
         Me.Controls.Add(Me.CmdAnular)
@@ -130,7 +130,7 @@ Partial Class FrmGestionAbonoCxP
         Me.Location = New System.Drawing.Point(73, 22)
         Me.MaximizeBox = False
         Me.MinimizeBox = False
-        Me.Name = "FrmGestionReciboCxP"
+        Me.Name = "FrmGestionAbonoCxP"
         Me.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Gestión de Abonos sobre Cuentas por Pagar"
@@ -140,7 +140,7 @@ Partial Class FrmGestionAbonoCxP
 
     End Sub
     Friend WithEvents grdDetalleRecibo As System.Windows.Forms.DataGridView
-    Public WithEvents txtNombreProveedor As System.Windows.Forms.TextBox
+    Public WithEvents txtDescripcion As System.Windows.Forms.TextBox
     Friend WithEvents btnBuscarProveedor As System.Windows.Forms.Button
     Public WithEvents CmdImprimir As Button
 End Class
