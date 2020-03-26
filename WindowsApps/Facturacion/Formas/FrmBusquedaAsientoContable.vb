@@ -133,7 +133,7 @@ Public Class FrmBusquedaAsientoContable
         End If
     End Sub
 
-    Private Sub btnFiltrar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnFiltrar.Click
+    Private Sub BtnFiltrar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnFiltrar.Click
         If txtId.Text = "" Then
             intId = 0
         Else

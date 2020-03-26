@@ -189,7 +189,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    var cliente = dbContext.ClienteRepository.Include("ParametroImpuesto").Include("ParametroExoneracion").Include("Barrio.Distrito.Canton.Provincia").Where(x => x.IdCliente == intIdCliente).FirstOrDefault();
+                    var cliente = dbContext.ClienteRepository.Include("ParametroImpuesto").Include("ParametroExoneracion").Where(x => x.IdCliente == intIdCliente).FirstOrDefault();
                     if (cliente.IdVendedor != null)
                     {
                         var vendedor = dbContext.VendedorRepository.Find(cliente.IdVendedor);
@@ -226,9 +226,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             cliente = new Cliente
                             {
                                 Identificacion = persona.Identificacion,
-                                IdProvincia = persona.IdProvincia,
-                                IdCanton = persona.IdCanton,
-                                IdDistrito = persona.IdDistrito,
                                 Nombre = persona.Nombre + " " + persona.PrimerApellido + " " + persona.SegundoApellido
                             };
                             return cliente;
@@ -399,7 +396,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             IdUsuario = factura.IdUsuario,
                             IdTipoMoneda = factura.IdTipoMoneda,
                             IdPropietario = factura.IdCliente,
-                            Descripcion = "Cuenta por cobrar de Factura nro. ",
                             Referencia = factura.ConsecFactura.ToString(),
                             Fecha = factura.Fecha,
                             Tipo = StaticTipoCuentaPorCobrar.Clientes,
@@ -697,7 +693,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         factura.IdCxC = cuentaPorCobrar.IdCxC;
                         dbContext.NotificarModificacion(factura);
-                        cuentaPorCobrar.Descripcion += factura.IdFactura;
                         cuentaPorCobrar.NroDocOrig = factura.IdFactura;
                         dbContext.NotificarModificacion(cuentaPorCobrar);
                     }
@@ -894,7 +889,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    Factura factura = dbContext.FacturaRepository.Include("ParametroExoneracion").Include("Cliente.Barrio.Distrito.Canton.Provincia").Include("Vendedor").Include("DetalleFactura.Producto.TipoProducto").Include("DesglosePagoFactura.FormaPago").Include("DesglosePagoFactura.TipoMoneda").FirstOrDefault(x => x.IdFactura == intIdFactura);
+                    Factura factura = dbContext.FacturaRepository.Include("ParametroExoneracion").Include("Cliente").Include("Vendedor").Include("DetalleFactura.Producto.TipoProducto").Include("DesglosePagoFactura.FormaPago").Include("DesglosePagoFactura.TipoMoneda").FirstOrDefault(x => x.IdFactura == intIdFactura);
                     foreach (DetalleFactura detalle in factura.DetalleFactura)
                         detalle.Factura = null;
                     foreach (DesglosePagoFactura desglosePago in factura.DesglosePagoFactura)
@@ -1081,7 +1076,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    Proforma proforma = dbContext.ProformaRepository.Include("Cliente.ParametroImpuesto").Include("Cliente.ParametroExoneracion").Include("Cliente.Barrio.Distrito.Canton.Provincia").Include("Vendedor").Include("DetalleProforma.Producto.TipoProducto").FirstOrDefault(x => x.IdProforma == intIdProforma);
+                    Proforma proforma = dbContext.ProformaRepository.Include("Cliente.ParametroImpuesto").Include("Cliente.ParametroExoneracion").Include("Cliente").Include("Vendedor").Include("DetalleProforma.Producto.TipoProducto").FirstOrDefault(x => x.IdProforma == intIdProforma);
                     foreach (DetalleProforma detalle in proforma.DetalleProforma)
                         detalle.Proforma = null;
                     return proforma;
@@ -1226,7 +1221,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    Apartado apartado = dbContext.ApartadoRepository.Include("Cliente.ParametroImpuesto").Include("Cliente.ParametroExoneracion").Include("Cliente.Barrio.Distrito.Canton.Provincia").Include("Vendedor").Include("DetalleApartado.Producto.TipoProducto").Include("DesglosePagoApartado.FormaPago").Include("DesglosePagoApartado.TipoMoneda").FirstOrDefault(x => x.IdApartado == intIdApartado);
+                    Apartado apartado = dbContext.ApartadoRepository.Include("Cliente.ParametroImpuesto").Include("Cliente.ParametroExoneracion").Include("Cliente").Include("Vendedor").Include("DetalleApartado.Producto.TipoProducto").Include("DesglosePagoApartado.FormaPago").Include("DesglosePagoApartado.TipoMoneda").FirstOrDefault(x => x.IdApartado == intIdApartado);
                     foreach (DetalleApartado detalle in apartado.DetalleApartado)
                         detalle.Apartado = null;
                     foreach (DesglosePagoApartado desglosePago in apartado.DesglosePagoApartado)
@@ -1427,7 +1422,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    OrdenServicio ordenServicio = dbContext.OrdenServicioRepository.Include("Cliente.ParametroImpuesto").Include("Cliente.ParametroExoneracion").Include("Cliente.Barrio.Distrito.Canton.Provincia").Include("Vendedor").Include("DetalleOrdenServicio.Producto.TipoProducto").Include("DesglosePagoOrdenServicio.FormaPago").Include("DesglosePagoOrdenServicio.TipoMoneda").FirstOrDefault(x => x.IdOrden == intIdOrdenServicio);
+                    OrdenServicio ordenServicio = dbContext.OrdenServicioRepository.Include("Cliente.ParametroImpuesto").Include("Cliente.ParametroExoneracion").Include("Cliente").Include("Vendedor").Include("DetalleOrdenServicio.Producto.TipoProducto").Include("DesglosePagoOrdenServicio.FormaPago").Include("DesglosePagoOrdenServicio.TipoMoneda").FirstOrDefault(x => x.IdOrden == intIdOrdenServicio);
                     foreach (DetalleOrdenServicio detalle in ordenServicio.DetalleOrdenServicio)
                         detalle.OrdenServicio = null;
                     foreach (DesglosePagoOrdenServicio desglosePago in ordenServicio.DesglosePagoOrdenServicio)
@@ -2301,7 +2296,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     DocumentoElectronico nuevoDocumento = null;
                     if (new int[] { (int)TipoDocumento.FacturaElectronica, (int)TipoDocumento.TiqueteElectronico }.Contains(documento.IdTipoDocumento))
                     {
-                        Factura factura = dbContext.FacturaRepository.Include("ParametroExoneracion").Include("Cliente.Barrio.Distrito.Canton.Provincia").Include("Vendedor").Include("DetalleFactura.Producto.TipoProducto").Include("DesglosePagoFactura.FormaPago").Include("DesglosePagoFactura.TipoMoneda").FirstOrDefault(x => x.IdDocElectronico == documento.ClaveNumerica);
+                        Factura factura = dbContext.FacturaRepository.Include("ParametroExoneracion").Include("Cliente").Include("Vendedor").Include("DetalleFactura.Producto.TipoProducto").Include("DesglosePagoFactura.FormaPago").Include("DesglosePagoFactura.TipoMoneda").FirstOrDefault(x => x.IdDocElectronico == documento.ClaveNumerica);
                         if (factura == null) throw new BusinessException("La registro origen del documento no existe.");
                         if ((int)TipoDocumento.FacturaElectronica == documento.IdTipoDocumento)
                             nuevoDocumento = ComprobanteElectronicoService.GeneraFacturaElectronica(factura, factura.Empresa, factura.Cliente, dbContext, factura.TipoDeCambioDolar);
@@ -2312,7 +2307,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     else if ((int)TipoDocumento.NotaCreditoElectronica == documento.IdTipoDocumento)
                     {
-                        Factura factura = dbContext.FacturaRepository.Include("ParametroExoneracion").Include("Cliente.Barrio.Distrito.Canton.Provincia").Include("Vendedor").Include("DetalleFactura.Producto.TipoProducto").Include("DesglosePagoFactura.FormaPago").Include("DesglosePagoFactura.TipoMoneda").FirstOrDefault(x => x.IdDocElectronicoRev == documento.ClaveNumerica);
+                        Factura factura = dbContext.FacturaRepository.Include("ParametroExoneracion").Include("Cliente").Include("Vendedor").Include("DetalleFactura.Producto.TipoProducto").Include("DesglosePagoFactura.FormaPago").Include("DesglosePagoFactura.TipoMoneda").FirstOrDefault(x => x.IdDocElectronicoRev == documento.ClaveNumerica);
                         if (factura != null)
                         {
                             nuevoDocumento = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronica(factura, factura.Empresa, factura.Cliente, dbContext, documento.Fecha, factura.TipoDeCambioDolar);
@@ -2323,7 +2318,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         {
                             DevolucionCliente devolucion = dbContext.DevolucionClienteRepository.Include("Cliente").Include("DetalleDevolucionCliente.Producto.TipoProducto").FirstOrDefault(x => x.IdDocElectronico == documento.ClaveNumerica);
                             if (devolucion == null) throw new BusinessException("El registro origen del documento no existe.");
-                            factura = dbContext.FacturaRepository.AsNoTracking().Include("ParametroExoneracion").Include("Cliente.Barrio.Distrito.Canton.Provincia").Include("Vendedor").Include("DetalleFactura.Producto.TipoProducto").Include("DesglosePagoFactura.FormaPago").Include("DesglosePagoFactura.TipoMoneda").FirstOrDefault(x => x.IdFactura == devolucion.IdFactura);
+                            factura = dbContext.FacturaRepository.AsNoTracking().Include("ParametroExoneracion").Include("Cliente").Include("Vendedor").Include("DetalleFactura.Producto.TipoProducto").Include("DesglosePagoFactura.FormaPago").Include("DesglosePagoFactura.TipoMoneda").FirstOrDefault(x => x.IdFactura == devolucion.IdFactura);
                             nuevoDocumento = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronicaParcial(devolucion, factura, factura.Empresa, factura.Cliente, dbContext, documento.Fecha, factura.TipoDeCambioDolar, factura.IdDocElectronico);
                             devolucion.IdDocElectronico = nuevoDocumento.ClaveNumerica;
                             dbContext.NotificarModificacion(devolucion);
@@ -2333,7 +2328,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         DevolucionCliente devolucion = dbContext.DevolucionClienteRepository.Include("Cliente").Include("DetalleDevolucionCliente.Producto.TipoProducto").FirstOrDefault(x => x.IdDocElectronicoRev == documento.ClaveNumerica);
                         if (devolucion == null) throw new BusinessException("El registro origen del documento no existe.");
-                        Factura factura = dbContext.FacturaRepository.AsNoTracking().Include("ParametroExoneracion").Include("Cliente.Barrio.Distrito.Canton.Provincia").Include("Vendedor").Include("DetalleFactura.Producto.TipoProducto").Include("DesglosePagoFactura.FormaPago").Include("DesglosePagoFactura.TipoMoneda").FirstOrDefault(x => x.IdFactura == devolucion.IdFactura);
+                        Factura factura = dbContext.FacturaRepository.AsNoTracking().Include("ParametroExoneracion").Include("Cliente").Include("Vendedor").Include("DetalleFactura.Producto.TipoProducto").Include("DesglosePagoFactura.FormaPago").Include("DesglosePagoFactura.TipoMoneda").FirstOrDefault(x => x.IdFactura == devolucion.IdFactura);
                         nuevoDocumento = ComprobanteElectronicoService.GenerarNotaDeDebitoElectronicaParcial(devolucion, factura, empresa, devolucion.Cliente, dbContext, documento.Fecha, factura.TipoDeCambioDolar, devolucion.IdDocElectronico);
                         devolucion.IdDocElectronicoRev = nuevoDocumento.ClaveNumerica;
                         dbContext.NotificarModificacion(devolucion);
@@ -2707,14 +2702,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             datos.CorreoElectronicoReceptor = receptorNode["CorreoElectronico"].InnerText;
                             datos.TelefonoReceptor = receptorNode["Telefono"] != null && receptorNode["Telefono"].ChildNodes.Count > 0 ? receptorNode["Telefono"]["NumTelefono"].InnerText : "";
                             datos.FaxReceptor = receptorNode["Fax"] != null && receptorNode["Fax"].ChildNodes.Count > 0 ? receptorNode["Fax"]["NumTelefono"].InnerText : "";
-                            intProvincia = int.Parse(receptorNode["Ubicacion"]["Provincia"].InnerText);
-                            intCanton = int.Parse(receptorNode["Ubicacion"]["Canton"].InnerText);
-                            intDistrito = int.Parse(receptorNode["Ubicacion"]["Distrito"].InnerText);
-                            intBarrio = int.Parse(receptorNode["Ubicacion"]["Barrio"].InnerText);
-                            datos.ProvinciaReceptor = dbContext.ProvinciaRepository.Where(x => x.IdProvincia == intProvincia).FirstOrDefault().Descripcion;
-                            datos.CantonReceptor = dbContext.CantonRepository.Where(x => x.IdProvincia == intProvincia && x.IdCanton == intCanton).FirstOrDefault().Descripcion;
-                            datos.DistritoReceptor = dbContext.DistritoRepository.Where(x => x.IdProvincia == intProvincia && x.IdCanton == intCanton && x.IdDistrito == intDistrito).FirstOrDefault().Descripcion;
-                            datos.BarrioReceptor = dbContext.BarrioRepository.Where(x => x.IdProvincia == intProvincia && x.IdCanton == intCanton && x.IdDistrito == intDistrito && x.IdBarrio == intBarrio).FirstOrDefault().Descripcion;
                             datos.DireccionReceptor = receptorNode["Ubicacion"]["OtrasSenas"].InnerText;
                         }
                         else

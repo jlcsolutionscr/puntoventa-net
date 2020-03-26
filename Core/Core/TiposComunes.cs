@@ -185,6 +185,8 @@ namespace LeandroSoftware.Core.TiposComunes
         public string Nombre { get; set; }
         public int IdCuenta { get; set; }
         public string Fecha { get; set; }
+        public int Plazo { get; set; }
+        public string FechaVence { get; set; }
         public string Descripcion { get; set; }
         public string Referencia { get; set; }
         public decimal Total { get; set; }

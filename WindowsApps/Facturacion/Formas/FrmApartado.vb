@@ -3,9 +3,9 @@ Imports System.Globalization
 Imports System.IO
 Imports LeandroSoftware.Core.Dominio.Entidades
 Imports System.Threading.Tasks
-Imports LeandroSoftware.ClienteWCF
 Imports LeandroSoftware.Core.TiposComunes
 Imports LeandroSoftware.Core.Utilitario
+Imports LeandroSoftware.ClienteWCF
 
 Public Class FrmApartado
 #Region "Variables"
@@ -410,7 +410,7 @@ Public Class FrmApartado
     End Function
 
     Private Async Function CargarListaBancoAdquiriente() As Task
-        Dim lista As IList = Await Puntoventa.ObtenerListadoBancoAdquiriente(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+        Dim lista As IList = Await Puntoventa.ObtenerListadoBancoAdquiriente(FrmPrincipal.empresaGlobal.IdEmpresa, "", FrmPrincipal.usuarioGlobal.Token)
         If lista.Count() = 0 Then
             Throw New Exception("Debe parametrizar la lista de bancos adquirientes para pagos con tarjeta.")
         Else
@@ -421,7 +421,7 @@ Public Class FrmApartado
     End Function
 
     Private Async Function CargarListaCuentaBanco() As Task
-        Dim lista As IList = Await Puntoventa.ObtenerListadoCuentasBanco(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+        Dim lista As IList = Await Puntoventa.ObtenerListadoCuentasBanco(FrmPrincipal.empresaGlobal.IdEmpresa, "", FrmPrincipal.usuarioGlobal.Token)
         If lista.Count() = 0 Then
             Throw New Exception("Debe parametrizar la lista de bancos para registrar movimientos.")
         Else
@@ -564,7 +564,7 @@ Public Class FrmApartado
             decSaldoPorPagar = 0
             txtSaldoPorPagar.Text = FormatNumber(decSaldoPorPagar, 2)
             If FrmPrincipal.bolModificaDescripcion Then txtDescripcion.ReadOnly = False
-            If FrmPrincipal.bolAplicaDescuento Then txtPorcDesc.ReadOnly = False
+            If FrmPrincipal.bolModificaCliente Then txtPorcDesc.ReadOnly = False
             If FrmPrincipal.bolModificaPrecioVenta Then txtPrecio.ReadOnly = False
             txtCodigo.Focus()
         Catch ex As Exception
@@ -1026,11 +1026,6 @@ Public Class FrmApartado
                 datos.CorreoElectronicoReceptor = cliente.CorreoElectronico
                 datos.TelefonoReceptor = cliente.Telefono
                 datos.FaxReceptor = cliente.Fax
-                Dim barrio As Barrio = cliente.Barrio
-                datos.ProvinciaReceptor = cliente.Barrio.Distrito.Canton.Provincia.Descripcion
-                datos.CantonReceptor = cliente.Barrio.Distrito.Canton.Descripcion
-                datos.DistritoReceptor = cliente.Barrio.Distrito.Descripcion
-                datos.BarrioReceptor = cliente.Barrio.Descripcion
                 datos.DireccionReceptor = cliente.Direccion
             End If
             For I = 0 To dtbDetalleApartado.Rows.Count - 1

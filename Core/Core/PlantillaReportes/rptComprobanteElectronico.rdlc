@@ -21,6 +21,10 @@
           <DataField>ClaveNumerica</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
+        <Field Name="Consecutivo">
+          <DataField>Consecutivo</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
         <Field Name="Fecha">
           <DataField>Fecha</DataField>
           <rd:TypeName>System.String</rd:TypeName>
@@ -43,9 +47,9 @@
         </Field>
       </Fields>
       <rd:DataSetInfo>
-        <rd:DataSetName>LeandroSoftware.Puntoventa.CommonTypes</rd:DataSetName>
+        <rd:DataSetName>LeandroSoftware.Core.TiposComunes</rd:DataSetName>
         <rd:TableName>ReporteDocumentoElectronico</rd:TableName>
-        <rd:ObjectDataSourceType>LeandroSoftware.Puntoventa.CommonTypes.ReporteDocumentoElectronico, CommonTypes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</rd:ObjectDataSourceType>
+        <rd:ObjectDataSourceType>LeandroSoftware.Core.TiposComunes.ReporteDocumentoElectronico, Core, Version=4.0.7.0, Culture=neutral, PublicKeyToken=null</rd:ObjectDataSourceType>
       </rd:DataSetInfo>
     </DataSet>
   </DataSets>
@@ -57,7 +61,10 @@
             <TablixBody>
               <TablixColumns>
                 <TablixColumn>
-                  <Width>11.82095cm</Width>
+                  <Width>9.91859cm</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>3.18058cm</Width>
                 </TablixColumn>
                 <TablixColumn>
                   <Width>2.18912cm</Width>
@@ -108,6 +115,39 @@
                     </TablixCell>
                     <TablixCell>
                       <CellContents>
+                        <Textbox Name="Consecutivo">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!Consecutivo.Value</Value>
+                                  <Style>
+                                    <FontFamily>Tahoma</FontFamily>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Consecutivo</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>None</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
                         <Textbox Name="Fecha">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
@@ -137,7 +177,6 @@
                             <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
-                        <rd:Selected>true</rd:Selected>
                       </CellContents>
                     </TablixCell>
                     <TablixCell>
@@ -219,6 +258,7 @@
                 <TablixMember />
                 <TablixMember />
                 <TablixMember />
+                <TablixMember />
               </TablixMembers>
             </TablixColumnHierarchy>
             <TablixRowHierarchy>
@@ -233,9 +273,9 @@
             </TablixRowHierarchy>
             <DataSetName>dstDatos</DataSetName>
             <Top>0.03528cm</Top>
-            <Left>0.80454cm</Left>
+            <Left>0.28409cm</Left>
             <Height>0.67354cm</Height>
-            <Width>19.73769cm</Width>
+            <Width>21.01591cm</Width>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -264,7 +304,7 @@
             </Paragraphs>
             <rd:DefaultName>pFechaDesde</rd:DefaultName>
             <Top>1.21694cm</Top>
-            <Left>16.53553cm</Left>
+            <Left>17.2933cm</Left>
             <Height>0.6cm</Height>
             <Width>4.0067cm</Width>
             <ZIndex>1</ZIndex>
@@ -298,7 +338,7 @@
               </Paragraph>
             </Paragraphs>
             <Top>1.21694cm</Top>
-            <Left>12.70268cm</Left>
+            <Left>13.46045cm</Left>
             <Height>0.65292cm</Height>
             <Width>3.72702cm</Width>
             <ZIndex>2</ZIndex>
@@ -334,7 +374,7 @@
             </Paragraphs>
             <rd:DefaultName>pFechaDesde</rd:DefaultName>
             <Top>1.21694cm</Top>
-            <Left>8.26212cm</Left>
+            <Left>9.01989cm</Left>
             <Height>0.6cm</Height>
             <Width>4.0067cm</Width>
             <ZIndex>3</ZIndex>
@@ -368,7 +408,7 @@
               </Paragraph>
             </Paragraphs>
             <Top>1.21694cm</Top>
-            <Left>4.42927cm</Left>
+            <Left>5.18704cm</Left>
             <Height>0.65292cm</Height>
             <Width>3.72702cm</Width>
             <ZIndex>4</ZIndex>
@@ -384,9 +424,9 @@
           </Textbox>
           <Line Name="Line2">
             <Top>0.79383cm</Top>
-            <Left>20.58141cm</Left>
+            <Left>21.3cm</Left>
             <Height>0cm</Height>
-            <Width>-19.80816cm</Width>
+            <Width>-21.1cm</Width>
             <ZIndex>5</ZIndex>
             <Style>
               <Border>
@@ -402,7 +442,7 @@
           </Border>
         </Style>
       </Body>
-      <Width>8.5in</Width>
+      <Width>8.46758in</Width>
       <Page>
         <PageHeader>
           <Height>4.60375cm</Height>
@@ -429,9 +469,9 @@
                 </Paragraph>
               </Paragraphs>
               <Top>3.82136cm</Top>
-              <Left>0.80454cm</Left>
+              <Left>0.28409cm</Left>
               <Height>0.6cm</Height>
-              <Width>11.82095cm</Width>
+              <Width>9.91859cm</Width>
               <Style>
                 <Border>
                   <Style>None</Style>
@@ -462,9 +502,9 @@
                 </Paragraph>
               </Paragraphs>
               <Top>3.82136cm</Top>
-              <Left>12.66077cm</Left>
+              <Left>13.38326cm</Left>
               <Height>0.6cm</Height>
-              <Width>2.15384cm</Width>
+              <Width>2.18912cm</Width>
               <ZIndex>1</ZIndex>
               <Style>
                 <Border>
@@ -496,9 +536,9 @@
                 </Paragraph>
               </Paragraphs>
               <Top>3.82136cm</Top>
-              <Left>14.85651cm</Left>
+              <Left>15.57238cm</Left>
               <Height>0.6cm</Height>
-              <Width>2.80868cm</Width>
+              <Width>2.85058cm</Width>
               <ZIndex>2</ZIndex>
               <Style>
                 <Border>
@@ -530,9 +570,9 @@
                 </Paragraph>
               </Paragraphs>
               <Top>3.82136cm</Top>
-              <Left>17.7137cm</Left>
+              <Left>18.42296cm</Left>
               <Height>0.6cm</Height>
-              <Width>2.82853cm</Width>
+              <Width>2.87704cm</Width>
               <ZIndex>3</ZIndex>
               <Style>
                 <Border>
@@ -546,9 +586,9 @@
             </Textbox>
             <Line Name="Line1">
               <Top>4.5272cm</Top>
-              <Left>20.58141cm</Left>
+              <Left>21.3cm</Left>
               <Height>0cm</Height>
-              <Width>-19.80816cm</Width>
+              <Width>-21.1cm</Width>
               <ZIndex>4</ZIndex>
               <Style>
                 <Border>
@@ -814,6 +854,40 @@
               <Height>0.6cm</Height>
               <Width>1.83854cm</Width>
               <ZIndex>12</ZIndex>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
+            <Textbox Name="lblFecha2">
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>Consecutivo</Value>
+                      <Style>
+                        <FontFamily>Tahoma</FontFamily>
+                        <FontWeight>Bold</FontWeight>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style>
+                    <TextAlign>Center</TextAlign>
+                  </Style>
+                </Paragraph>
+              </Paragraphs>
+              <Top>3.82136cm</Top>
+              <Left>10.20268cm</Left>
+              <Height>0.6cm</Height>
+              <Width>3.18058cm</Width>
+              <ZIndex>13</ZIndex>
               <Style>
                 <Border>
                   <Style>None</Style>

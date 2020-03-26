@@ -39,7 +39,7 @@ Public Class FrmBusquedaIngreso
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
         Try
-            dgvListado.DataSource = Await Puntoventa.ObtenerListadoIngresos(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, intNumeroPagina, intFilasPorPagina, FrmPrincipal.usuarioGlobal.Token, intId, "", txtDetalle.Text)
+            dgvListado.DataSource = Await Puntoventa.ObtenerListadoIngresos(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, intNumeroPagina, intFilasPorPagina, intId, "", txtDetalle.Text, FrmPrincipal.usuarioGlobal.Token)
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -50,7 +50,7 @@ Public Class FrmBusquedaIngreso
     End Function
 
     Private Async Function ValidarCantidadRegistros() As Task
-        intTotalRegistros = Await Puntoventa.ObtenerTotalListaIngresos(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FrmPrincipal.usuarioGlobal.Token, intId, "", txtDetalle.Text)
+        intTotalRegistros = Await Puntoventa.ObtenerTotalListaIngresos(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, intId, "", txtDetalle.Text, FrmPrincipal.usuarioGlobal.Token)
         intCantidadDePaginas = Math.Truncate(intTotalRegistros / intFilasPorPagina) + IIf((intTotalRegistros Mod intFilasPorPagina) = 0, 0, 1)
         If intCantidadDePaginas > 1 Then
             btnLast.Enabled = True
@@ -143,7 +143,7 @@ Public Class FrmBusquedaIngreso
         End If
     End Sub
 
-    Private Async Sub btnFiltrar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnFiltrar.Click
+    Private Async Sub BtnFiltrar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnFiltrar.Click
         If txtId.Text = "" Then
             intId = 0
         Else

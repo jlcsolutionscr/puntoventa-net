@@ -8,7 +8,7 @@ Public Class FrmMenuCuentaEgreso
     Private Async Sub CargarCombos()
         cboIdCuentaEgreso.ValueMember = "Id"
         cboIdCuentaEgreso.DisplayMember = "Descripcion"
-        cboIdCuentaEgreso.DataSource = Await Puntoventa.ObtenerListadoCuentasEgreso(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+        cboIdCuentaEgreso.DataSource = Await Puntoventa.ObtenerListadoCuentasEgreso(FrmPrincipal.empresaGlobal.IdEmpresa, "", FrmPrincipal.usuarioGlobal.Token)
         cboIdCuentaEgreso.SelectedValue = 0
     End Sub
 #End Region

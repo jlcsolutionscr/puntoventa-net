@@ -39,10 +39,6 @@ namespace LeandroSoftware.Core.TiposComunes
         public string CorreoElectronicoReceptor { get; set; }
         public string TelefonoReceptor { get; set; }
         public string FaxReceptor { get; set; }
-        public string ProvinciaReceptor { get; set; }
-        public string CantonReceptor { get; set; }
-        public string DistritoReceptor { get; set; }
-        public string BarrioReceptor { get; set; }
         public string DireccionReceptor { get; set; }
         public string TotalGravado { get; set; }
         public string TotalExonerado { get; set; }

@@ -2,10 +2,10 @@ Imports System.Collections.Generic
 Imports LeandroSoftware.Core.TiposComunes
 Imports LeandroSoftware.Core.Dominio.Entidades
 Imports System.Threading.Tasks
-Imports LeandroSoftware.ClienteWCF
 Imports System.IO
 Imports System.Globalization
 Imports LeandroSoftware.Core.Utilitario
+Imports LeandroSoftware.ClienteWCF
 
 Public Class FrmOrdenServicio
 #Region "Variables"
@@ -419,7 +419,7 @@ Public Class FrmOrdenServicio
     End Function
 
     Private Async Function CargarListaBancoAdquiriente() As Task
-        Dim lista As IList = Await Puntoventa.ObtenerListadoBancoAdquiriente(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+        Dim lista As IList = Await Puntoventa.ObtenerListadoBancoAdquiriente(FrmPrincipal.empresaGlobal.IdEmpresa, "", FrmPrincipal.usuarioGlobal.Token)
         If lista.Count() = 0 Then
             Throw New Exception("Debe parametrizar la lista de bancos adquirientes para pagos con tarjeta.")
         Else
@@ -430,7 +430,7 @@ Public Class FrmOrdenServicio
     End Function
 
     Private Async Function CargarListaCuentaBanco() As Task
-        Dim lista As IList = Await Puntoventa.ObtenerListadoCuentasBanco(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+        Dim lista As IList = Await Puntoventa.ObtenerListadoCuentasBanco(FrmPrincipal.empresaGlobal.IdEmpresa, "", FrmPrincipal.usuarioGlobal.Token)
         If lista.Count() = 0 Then
             Throw New Exception("Debe parametrizar la lista de bancos para registrar movimientos.")
         Else
@@ -574,7 +574,7 @@ Public Class FrmOrdenServicio
             End If
             txtSaldoPorPagar.Text = FormatNumber(decSaldoPorPagar, 2)
             If FrmPrincipal.bolModificaDescripcion Then txtDescripcion.ReadOnly = False
-            If FrmPrincipal.bolAplicaDescuento Then txtPorcDesc.ReadOnly = False
+            If FrmPrincipal.bolModificaCliente Then txtPorcDesc.ReadOnly = False
             If FrmPrincipal.bolModificaPrecioVenta Then txtPrecio.ReadOnly = False
             txtCodigo.Focus()
         Catch ex As Exception
@@ -1024,88 +1024,83 @@ Public Class FrmOrdenServicio
                 End Try
             End If
             Dim datos As EstructuraPDF = New EstructuraPDF()
-                Try
-                    Dim poweredByImage As Image = My.Resources.logo
-                    datos.PoweredByLogotipo = poweredByImage
-                Catch ex As Exception
-                    datos.PoweredByLogotipo = Nothing
-                End Try
-                Try
-                    Dim logotipo As Byte() = Await Puntoventa.ObtenerLogotipoEmpresa(ordenServicio.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
-                    Dim logoImage As Image
-                    Using ms As New MemoryStream(logotipo)
-                        logoImage = Image.FromStream(ms)
-                    End Using
-                    datos.Logotipo = logoImage
-                Catch ex As Exception
-                    datos.Logotipo = Nothing
-                End Try
-                datos.TituloDocumento = "ORDEN DE SERVICIO"
-                datos.NombreEmpresa = FrmPrincipal.empresaGlobal.NombreEmpresa
-                datos.NombreComercial = FrmPrincipal.empresaGlobal.NombreComercial
-                datos.ConsecInterno = ordenServicio.ConsecOrdenServicio
-                datos.Consecutivo = Nothing
-                datos.Clave = Nothing
-                datos.CondicionVenta = "Efectivo"
-                datos.PlazoCredito = ""
-                datos.Fecha = ordenServicio.Fecha.ToString("dd/MM/yyyy hh:mm:ss")
-                datos.MedioPago = ""
-                datos.NombreEmisor = FrmPrincipal.empresaGlobal.NombreEmpresa
-                datos.NombreComercialEmisor = FrmPrincipal.empresaGlobal.NombreComercial
-                datos.IdentificacionEmisor = FrmPrincipal.empresaGlobal.Identificacion
-                datos.CorreoElectronicoEmisor = FrmPrincipal.empresaGlobal.CorreoNotificacion
-                datos.TelefonoEmisor = FrmPrincipal.empresaGlobal.Telefono1 + IIf(FrmPrincipal.empresaGlobal.Telefono2.Length > 0, " - " + FrmPrincipal.empresaGlobal.Telefono2, "")
-                datos.FaxEmisor = ""
-                datos.ProvinciaEmisor = FrmPrincipal.empresaGlobal.Barrio.Distrito.Canton.Provincia.Descripcion
-                datos.CantonEmisor = FrmPrincipal.empresaGlobal.Barrio.Distrito.Canton.Descripcion
-                datos.DistritoEmisor = FrmPrincipal.empresaGlobal.Barrio.Distrito.Descripcion
-                datos.BarrioEmisor = FrmPrincipal.empresaGlobal.Barrio.Descripcion
-                datos.DireccionEmisor = FrmPrincipal.empresaGlobal.Direccion
-                If ordenServicio.IdCliente > 1 Then
-                    datos.PoseeReceptor = True
-                    datos.NombreReceptor = cliente.Nombre
-                    datos.NombreComercialReceptor = cliente.NombreComercial
-                    datos.IdentificacionReceptor = cliente.Identificacion
-                    datos.CorreoElectronicoReceptor = cliente.CorreoElectronico
-                    datos.TelefonoReceptor = cliente.Telefono
-                    datos.FaxReceptor = cliente.Fax
-                    Dim barrio As Barrio = cliente.Barrio
-                    datos.ProvinciaReceptor = cliente.Barrio.Distrito.Canton.Provincia.Descripcion
-                    datos.CantonReceptor = cliente.Barrio.Distrito.Canton.Descripcion
-                    datos.DistritoReceptor = cliente.Barrio.Distrito.Descripcion
-                    datos.BarrioReceptor = cliente.Barrio.Descripcion
-                    datos.DireccionReceptor = cliente.Direccion
-                End If
-                For I = 0 To dtbDetalleOrdenServicio.Rows.Count - 1
-                    Dim decPrecioVenta As Decimal = dtbDetalleOrdenServicio.Rows(I).Item(4)
-                    Dim decTotalLinea As Decimal = dtbDetalleOrdenServicio.Rows(I).Item(3) * decPrecioVenta
-                    Dim detalle As EstructuraPDFDetalleServicio = New EstructuraPDFDetalleServicio With {
-                    .Cantidad = dtbDetalleOrdenServicio.Rows(I).Item(3),
-                    .Codigo = dtbDetalleOrdenServicio.Rows(I).Item(1),
-                    .Detalle = dtbDetalleOrdenServicio.Rows(I).Item(2),
-                    .PrecioUnitario = decPrecioVenta.ToString("N2", CultureInfo.InvariantCulture),
-                    .TotalLinea = decTotalLinea.ToString("N2", CultureInfo.InvariantCulture)
-                }
-                    datos.DetalleServicio.Add(detalle)
-                Next
-                datos.TotalGravado = decGravado.ToString("N2", CultureInfo.InvariantCulture)
-                datos.TotalExonerado = "0.00"
-                datos.TotalExento = decExcento.ToString("N2", CultureInfo.InvariantCulture)
-                datos.Descuento = "0.00"
-                datos.Impuesto = decImpuesto.ToString("N2", CultureInfo.InvariantCulture)
-                datos.TotalGeneral = decTotal.ToString("N2", CultureInfo.InvariantCulture)
-                datos.CodigoMoneda = "CRC"
-                datos.TipoDeCambio = 1
-                Try
-                    Dim pdfBytes As Byte() = UtilitarioPDF.GenerarPDF(datos)
-                    Dim pdfFilePath As String = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\ORDENSERVICIO-" + txtIdOrdenServicio.Text + ".pdf"
-                    File.WriteAllBytes(pdfFilePath, pdfBytes)
-                    Process.Start(pdfFilePath)
-                Catch ex As Exception
-                    MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                    Exit Sub
-                End Try
+            Try
+                Dim poweredByImage As Image = My.Resources.logo
+                datos.PoweredByLogotipo = poweredByImage
+            Catch ex As Exception
+                datos.PoweredByLogotipo = Nothing
+            End Try
+            Try
+                Dim logotipo As Byte() = Await Puntoventa.ObtenerLogotipoEmpresa(ordenServicio.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+                Dim logoImage As Image
+                Using ms As New MemoryStream(logotipo)
+                    logoImage = Image.FromStream(ms)
+                End Using
+                datos.Logotipo = logoImage
+            Catch ex As Exception
+                datos.Logotipo = Nothing
+            End Try
+            datos.TituloDocumento = "ORDEN DE SERVICIO"
+            datos.NombreEmpresa = FrmPrincipal.empresaGlobal.NombreEmpresa
+            datos.NombreComercial = FrmPrincipal.empresaGlobal.NombreComercial
+            datos.ConsecInterno = ordenServicio.ConsecOrdenServicio
+            datos.Consecutivo = Nothing
+            datos.Clave = Nothing
+            datos.CondicionVenta = "Efectivo"
+            datos.PlazoCredito = ""
+            datos.Fecha = ordenServicio.Fecha.ToString("dd/MM/yyyy hh:mm:ss")
+            datos.MedioPago = ""
+            datos.NombreEmisor = FrmPrincipal.empresaGlobal.NombreEmpresa
+            datos.NombreComercialEmisor = FrmPrincipal.empresaGlobal.NombreComercial
+            datos.IdentificacionEmisor = FrmPrincipal.empresaGlobal.Identificacion
+            datos.CorreoElectronicoEmisor = FrmPrincipal.empresaGlobal.CorreoNotificacion
+            datos.TelefonoEmisor = FrmPrincipal.empresaGlobal.Telefono1 + IIf(FrmPrincipal.empresaGlobal.Telefono2.Length > 0, " - " + FrmPrincipal.empresaGlobal.Telefono2, "")
+            datos.FaxEmisor = ""
+            datos.ProvinciaEmisor = FrmPrincipal.empresaGlobal.Barrio.Distrito.Canton.Provincia.Descripcion
+            datos.CantonEmisor = FrmPrincipal.empresaGlobal.Barrio.Distrito.Canton.Descripcion
+            datos.DistritoEmisor = FrmPrincipal.empresaGlobal.Barrio.Distrito.Descripcion
+            datos.BarrioEmisor = FrmPrincipal.empresaGlobal.Barrio.Descripcion
+            datos.DireccionEmisor = FrmPrincipal.empresaGlobal.Direccion
+            If ordenServicio.IdCliente > 1 Then
+                datos.PoseeReceptor = True
+                datos.NombreReceptor = cliente.Nombre
+                datos.NombreComercialReceptor = cliente.NombreComercial
+                datos.IdentificacionReceptor = cliente.Identificacion
+                datos.CorreoElectronicoReceptor = cliente.CorreoElectronico
+                datos.TelefonoReceptor = cliente.Telefono
+                datos.FaxReceptor = cliente.Fax
+                datos.DireccionReceptor = cliente.Direccion
             End If
+            For I = 0 To dtbDetalleOrdenServicio.Rows.Count - 1
+                Dim decPrecioVenta As Decimal = dtbDetalleOrdenServicio.Rows(I).Item(4)
+                Dim decTotalLinea As Decimal = dtbDetalleOrdenServicio.Rows(I).Item(3) * decPrecioVenta
+                Dim detalle As EstructuraPDFDetalleServicio = New EstructuraPDFDetalleServicio With {
+                .Cantidad = dtbDetalleOrdenServicio.Rows(I).Item(3),
+                .Codigo = dtbDetalleOrdenServicio.Rows(I).Item(1),
+                .Detalle = dtbDetalleOrdenServicio.Rows(I).Item(2),
+                .PrecioUnitario = decPrecioVenta.ToString("N2", CultureInfo.InvariantCulture),
+                .TotalLinea = decTotalLinea.ToString("N2", CultureInfo.InvariantCulture)
+            }
+                datos.DetalleServicio.Add(detalle)
+            Next
+            datos.TotalGravado = decGravado.ToString("N2", CultureInfo.InvariantCulture)
+            datos.TotalExonerado = "0.00"
+            datos.TotalExento = decExcento.ToString("N2", CultureInfo.InvariantCulture)
+            datos.Descuento = "0.00"
+            datos.Impuesto = decImpuesto.ToString("N2", CultureInfo.InvariantCulture)
+            datos.TotalGeneral = decTotal.ToString("N2", CultureInfo.InvariantCulture)
+            datos.CodigoMoneda = "CRC"
+            datos.TipoDeCambio = 1
+            Try
+                Dim pdfBytes As Byte() = UtilitarioPDF.GenerarPDF(datos)
+                Dim pdfFilePath As String = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\ORDENSERVICIO-" + txtIdOrdenServicio.Text + ".pdf"
+                File.WriteAllBytes(pdfFilePath, pdfBytes)
+                Process.Start(pdfFilePath)
+            Catch ex As Exception
+                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Exit Sub
+            End Try
+        End If
     End Sub
 
     Private Sub BtnInsertar_Click(sender As Object, e As EventArgs) Handles btnInsertar.Click

@@ -1,4 +1,6 @@
-﻿Public Class FrmCatalogoContableListado
+﻿Imports System.Threading.Tasks
+
+Public Class FrmCatalogoContableListado
 #Region "Variables"
 #End Region
 
@@ -48,7 +50,6 @@
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
-            Exit Sub
         End Try
     End Sub
 #End Region
@@ -83,7 +84,7 @@
         End Try
     End Sub
 
-    Private Sub btnAgregar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnAgregar.Click
+    Private Sub BtnAgregar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnAgregar.Click
         'Dim formMant As New FrmCatalogoContable With {
         '    .intIdCuenta = 0,
         '    .servicioContabilidad = servicioContabilidad
@@ -92,7 +93,7 @@
         ActualizarDatos()
     End Sub
 
-    Private Sub btnEditar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEditar.Click
+    Private Sub BtnEditar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEditar.Click
         'Dim formMant As New FrmCatalogoContable With {
         '    .intIdCuenta = dgvDatos.CurrentRow.Cells(0).Value,
         '    .servicioContabilidad = servicioContabilidad
@@ -101,7 +102,7 @@
         ActualizarDatos()
     End Sub
 
-    Private Sub btnEliminar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEliminar.Click
+    Private Sub BtnEliminar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEliminar.Click
         If MessageBox.Show("Desea eliminar el registro actual", "JLC Solutions CR", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
             Try
                 'servicioContabilidad.EliminarCuentaContable(dgvDatos.CurrentRow.Cells(0).Value)
@@ -113,7 +114,7 @@
         End If
     End Sub
 
-    Private Sub btnFiltrar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnFiltrar.Click
+    Private Sub BtnFiltrar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnFiltrar.Click
         ActualizarDatos()
     End Sub
 #End Region

@@ -293,11 +293,6 @@ Public Class FrmFacturaCompra
             cliente = Await Puntoventa.ValidaIdentificacionCliente(FrmPrincipal.empresaGlobal.IdEmpresa, txtIdentificacion.Text, FrmPrincipal.usuarioGlobal.Token)
             If cliente IsNot Nothing Then
                 bolInit = True
-                Await CargarListadoBarrios(cliente.IdProvincia, cliente.IdCanton, cliente.IdDistrito)
-                cboProvincia.SelectedValue = cliente.IdProvincia
-                cboCanton.SelectedValue = cliente.IdCanton
-                cboDistrito.SelectedValue = cliente.IdDistrito
-                cboBarrio.SelectedValue = 0
                 txtNombre.Text = cliente.Nombre
                 bolInit = False
             End If

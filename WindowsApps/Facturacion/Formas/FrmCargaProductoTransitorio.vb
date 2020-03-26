@@ -1,7 +1,6 @@
 Imports LeandroSoftware.Core.Dominio.Entidades
-Imports LeandroSoftware.ClienteWCF
-Imports System.IO
 Imports System.Threading.Tasks
+Imports LeandroSoftware.ClienteWCF
 
 Public Class FrmCargaProductoTransitorio
 #Region "Variables"

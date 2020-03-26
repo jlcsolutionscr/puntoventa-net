@@ -5,7 +5,6 @@ Public Class FrmLinea
 #Region "Variables"
     Public intIdLinea As Integer
     Private datos As Linea
-    Private bolInit As Boolean = True
 #End Region
 
 #Region "Métodos"
@@ -53,18 +52,17 @@ Public Class FrmLinea
             Else
                 datos = New Linea
             End If
-            bolInit = False
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
         End Try
     End Sub
 
-    Private Sub btnCancelar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnCancelar.Click
+    Private Sub BtnCancelar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnCancelar.Click
         Close()
     End Sub
 
-    Private Async Sub btnGuardar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnGuardar.Click
+    Private Async Sub BtnGuardar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnGuardar.Click
         btnCancelar.Focus()
         btnGuardar.Enabled = False
         Dim strCampo As String = ""

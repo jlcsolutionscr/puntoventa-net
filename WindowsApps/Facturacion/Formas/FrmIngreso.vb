@@ -1,6 +1,6 @@
 Imports LeandroSoftware.Core.Dominio.Entidades
-Imports LeandroSoftware.ClienteWCF
 Imports System.Threading.Tasks
+Imports LeandroSoftware.ClienteWCF
 
 Public Class FrmIngreso
 #Region "Variables"
@@ -12,7 +12,7 @@ Public Class FrmIngreso
     Private Async Function CargarCombos() As Task
         cboCuentaIngreso.ValueMember = "Id"
         cboCuentaIngreso.DisplayMember = "Descripcion"
-        cboCuentaIngreso.DataSource = Await Puntoventa.ObtenerListadoCuentasIngreso(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+        cboCuentaIngreso.DataSource = Await Puntoventa.ObtenerListadoCuentasIngreso(FrmPrincipal.empresaGlobal.IdEmpresa, "", FrmPrincipal.usuarioGlobal.Token)
     End Function
 #End Region
 

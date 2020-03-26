@@ -1,11 +1,11 @@
 Imports System.Collections.Generic
 Imports LeandroSoftware.Core.TiposComunes
 Imports LeandroSoftware.Core.Dominio.Entidades
-Imports LeandroSoftware.ClienteWCF
 Imports System.Threading.Tasks
 Imports System.IO
 Imports Microsoft.Reporting.WinForms
 Imports System.Reflection
+Imports LeandroSoftware.ClienteWCF
 
 Public Class FrmCompra
 #Region "Variables"
@@ -396,7 +396,7 @@ Public Class FrmCompra
         cboFormaPago.DataSource = Await Puntoventa.ObtenerListadoFormaPagoEmpresa(FrmPrincipal.usuarioGlobal.Token)
         cboCuentaBanco.ValueMember = "Id"
         cboCuentaBanco.DisplayMember = "Descripcion"
-        cboCuentaBanco.DataSource = Await Puntoventa.ObtenerListadoCuentasBanco(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+        cboCuentaBanco.DataSource = Await Puntoventa.ObtenerListadoCuentasBanco(FrmPrincipal.empresaGlobal.IdEmpresa, "", FrmPrincipal.usuarioGlobal.Token)
         cboTipoMoneda.ValueMember = "Id"
         cboTipoMoneda.DisplayMember = "Descripcion"
         cboTipoMoneda.DataSource = Await Puntoventa.ObtenerListadoTipoMoneda(FrmPrincipal.usuarioGlobal.Token)
@@ -705,6 +705,10 @@ Public Class FrmCompra
         ElseIf txtFactura.Text = "" Then
             MessageBox.Show("Debe ingresar la referencia de la factura de compra para guardar el registro.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             txtFactura.Focus()
+            Exit Sub
+        ElseIf cboCondicionVenta.SelectedValue = StaticCondicionVenta.Credito And CDbl(txtPlazoCredito.Text) = 0 Then
+            MessageBox.Show("El valor del campo plazo no puede ser 0 para una compra de crédito.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            txtPlazoCredito.Focus()
             Exit Sub
         ElseIf decTotal = 0 Then
             MessageBox.Show("Debe agregar líneas de detalle para guardar el registro.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)

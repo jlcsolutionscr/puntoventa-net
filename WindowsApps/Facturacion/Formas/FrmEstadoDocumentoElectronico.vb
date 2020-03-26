@@ -1,4 +1,5 @@
-﻿Imports LeandroSoftware.ClienteWCF
+﻿Imports System.Threading.Tasks
+Imports LeandroSoftware.ClienteWCF
 
 Public Class FrmEstadoDocumentoElectronico
 #Region "Variables"
@@ -37,7 +38,7 @@ Public Class FrmEstadoDocumentoElectronico
         dgvDatos.Columns.Add(dvcEstado)
     End Sub
 
-    Private Async Sub ActualizarDatos()
+    Private Async Function ActualizarDatos() As Task
         Try
             picLoader.Visible = True
             listadoDocumentosPendientes = Await Puntoventa.ObtenerListadoDocumentosElectronicosEnProceso(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
@@ -50,10 +51,10 @@ Public Class FrmEstadoDocumentoElectronico
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
-            Exit Sub
+            Exit Function
         End Try
         dgvDatos.Refresh()
-    End Sub
+    End Function
 #End Region
 
 #Region "Eventos controles"
@@ -76,10 +77,10 @@ Public Class FrmEstadoDocumentoElectronico
         textbox.BackColor = Color.White
     End Sub
 
-    Private Sub FrmEstadoDocumentoElectronico_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+    Private Async Sub FrmEstadoDocumentoElectronico_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
             EstablecerPropiedadesDataGridView()
-            ActualizarDatos()
+            Await ActualizarDatos()
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()

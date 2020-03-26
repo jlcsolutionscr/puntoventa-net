@@ -1,4 +1,5 @@
-﻿Imports LeandroSoftware.ClienteWCF
+﻿Imports System.Threading.Tasks
+Imports LeandroSoftware.ClienteWCF
 
 Public Class FrmBancoAdquirienteListado
 #Region "Variables"
@@ -21,9 +22,9 @@ Public Class FrmBancoAdquirienteListado
         dgvListado.Columns.Add(dvcDescripcion)
     End Sub
 
-    Private Async Sub ActualizarDatos()
+    Private Async Function ActualizarDatos() As Task
         Try
-            listado = Await Puntoventa.ObtenerListadoBancoAdquiriente(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token, txtDescripcion.Text)
+            listado = Await Puntoventa.ObtenerListadoBancoAdquiriente(FrmPrincipal.empresaGlobal.IdEmpresa, txtDescripcion.Text, FrmPrincipal.usuarioGlobal.Token)
             dgvListado.DataSource = listado
             If listado.Count() > 0 Then
                 btnEditar.Enabled = True
@@ -35,10 +36,10 @@ Public Class FrmBancoAdquirienteListado
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
-            Exit Sub
+            Exit Function
         End Try
         dgvListado.Refresh()
-    End Sub
+    End Function
 #End Region
 
 #Region "Eventos Controles"
@@ -61,30 +62,30 @@ Public Class FrmBancoAdquirienteListado
         textbox.BackColor = Color.White
     End Sub
 
-    Private Sub FrmBancoAdquirienteListado_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+    Private Async Sub FrmBancoAdquirienteListado_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
             EstablecerPropiedadesDataGridView()
-            ActualizarDatos()
+            Await ActualizarDatos()
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
         End Try
     End Sub
 
-    Private Sub BtnAgregar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnAgregar.Click
+    Private Async Sub BtnAgregar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnAgregar.Click
         Dim formMant As New FrmBancoAdquiriente With {
             .intIdBanco = 0
         }
         formMant.ShowDialog()
-        ActualizarDatos()
+        Await ActualizarDatos()
     End Sub
 
-    Private Sub BtnEditar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEditar.Click
+    Private Async Sub BtnEditar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEditar.Click
         Dim formMant As New FrmBancoAdquiriente With {
             .intIdBanco = dgvListado.CurrentRow.Cells(0).Value
         }
         formMant.ShowDialog()
-        ActualizarDatos()
+        Await ActualizarDatos()
     End Sub
 
     Private Async Sub BtnEliminar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEliminar.Click
@@ -95,20 +96,20 @@ Public Class FrmBancoAdquirienteListado
                 MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
-            ActualizarDatos()
+            Await ActualizarDatos()
         End If
     End Sub
 
-    Private Sub BtnFiltrar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnFiltrar.Click
-        ActualizarDatos()
+    Private Async Sub BtnFiltrar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnFiltrar.Click
+        Await ActualizarDatos()
     End Sub
 
-    Private Sub FlexProducto_DoubleClick(ByVal sender As Object, ByVal e As EventArgs) Handles dgvListado.DoubleClick
+    Private Async Sub FlexProducto_DoubleClick(ByVal sender As Object, ByVal e As EventArgs) Handles dgvListado.DoubleClick
         Dim formMant As New FrmBancoAdquiriente With {
             .intIdBanco = dgvListado.CurrentRow.Cells(0).Value
         }
         formMant.ShowDialog()
-        ActualizarDatos()
+        Await ActualizarDatos()
     End Sub
 #End Region
 End Class

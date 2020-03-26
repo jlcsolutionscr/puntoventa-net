@@ -1,4 +1,4 @@
-﻿Imports LeandroSoftware.Core.Dominio.Entidades
+﻿Imports System.Threading.Tasks
 Imports LeandroSoftware.ClienteWCF
 
 Public Class FrmCuentaBancoListado
@@ -22,9 +22,9 @@ Public Class FrmCuentaBancoListado
         dgvListado.Columns.Add(dvcDescripcion)
     End Sub
 
-    Private Async Sub ActualizarDatos()
+    Private Async Function ActualizarDatos() As Task
         Try
-            listado = Await Puntoventa.ObtenerListadoCuentasBanco(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token, txtDescripcion.Text)
+            listado = Await Puntoventa.ObtenerListadoCuentasBanco(FrmPrincipal.empresaGlobal.IdEmpresa, txtDescripcion.Text, FrmPrincipal.usuarioGlobal.Token)
             dgvListado.DataSource = listado
             If listado.Count() > 0 Then
                 btnEditar.Enabled = True
@@ -35,10 +35,10 @@ Public Class FrmCuentaBancoListado
             End If
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Exit Sub
+            Exit Function
         End Try
         dgvListado.Refresh()
-    End Sub
+    End Function
 #End Region
 
 #Region "Eventos Controles"
@@ -61,33 +61,33 @@ Public Class FrmCuentaBancoListado
         textbox.BackColor = Color.White
     End Sub
 
-    Private Sub FrmCuentaBancoListado_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+    Private Async Sub FrmCuentaBancoListado_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
             EstablecerPropiedadesDataGridView()
-            ActualizarDatos()
+            Await ActualizarDatos()
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
         End Try
     End Sub
 
-    Private Sub btnAgregar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnAgregar.Click
+    Private Async Sub BtnAgregar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnAgregar.Click
         Dim formMant As New FrmCuentaBanco With {
             .intIdCuenta = 0
         }
         formMant.ShowDialog()
-        ActualizarDatos()
+        Await ActualizarDatos()
     End Sub
 
-    Private Sub btnEditar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEditar.Click
+    Private Async Sub BtnEditar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEditar.Click
         Dim formMant As New FrmCuentaBanco With {
             .intIdCuenta = dgvListado.CurrentRow.Cells(0).Value
         }
         formMant.ShowDialog()
-        ActualizarDatos()
+        Await ActualizarDatos()
     End Sub
 
-    Private Async Sub btnEliminar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEliminar.Click
+    Private Async Sub BtnEliminar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEliminar.Click
         If MessageBox.Show("Desea eliminar el registro actual", "JLC Solutions CR", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
             Try
                 Await Puntoventa.EliminarCuentaBanco(dgvListado.CurrentRow.Cells(0).Value, FrmPrincipal.usuarioGlobal.Token)
@@ -95,20 +95,20 @@ Public Class FrmCuentaBancoListado
                 MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
-            ActualizarDatos()
+            Await ActualizarDatos()
         End If
     End Sub
 
-    Private Sub btnFiltrar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnFiltrar.Click
-        ActualizarDatos()
+    Private Async Sub BtnFiltrar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnFiltrar.Click
+        Await ActualizarDatos()
     End Sub
 
-    Private Sub FlexProducto_DoubleClick(ByVal sender As Object, ByVal e As EventArgs) Handles dgvListado.DoubleClick
+    Private Async Sub FlexProducto_DoubleClick(ByVal sender As Object, ByVal e As EventArgs) Handles dgvListado.DoubleClick
         Dim formMant As New FrmCuentaBanco With {
             .intIdCuenta = dgvListado.CurrentRow.Cells(0).Value
         }
         formMant.ShowDialog()
-        ActualizarDatos()
+        Await ActualizarDatos()
     End Sub
 #End Region
 End Class

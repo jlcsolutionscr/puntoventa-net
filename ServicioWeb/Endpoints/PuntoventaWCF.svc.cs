@@ -141,17 +141,17 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             servicioCuentaPorProcesar = unityContainer.Resolve<ICuentaPorProcesarService>();
             try
             {
-                decTipoCambioDolar = ComprobanteElectronicoService.ObtenerTipoCambioVenta(configuracionGeneral.ConsultaIndicadoresEconomicosURL, configuracionGeneral.OperacionSoap, DateTime.Now, unityContainer);
+                bool modoMantenimiento = servicioMantenimiento.EnModoMantenimiento();
+                if (modoMantenimiento) throw new Exception("El sistema se encuentra en modo mantenimiento y no es posible acceder por el momento.");
             }
             catch (Exception ex)
             {
-                log.Error("Error al consultar el tipo de cambio del dolar: ", ex);
-                throw new WebFaultException<string>("No se encuentra el parámetro para el tipo de cambio actual.", HttpStatusCode.InternalServerError);
+                log.Error("Error al consultar el estado del modo mantenimiento del sistema: ", ex);
+                throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
             }
             try
             {
-                bool modoMantenimiento = servicioMantenimiento.EnModoMantenimiento();
-                if (modoMantenimiento) throw new Exception("El sistema se encuentra en modo mantenimiento y no es posible acceder por el momento.");
+                decTipoCambioDolar = ComprobanteElectronicoService.ObtenerTipoCambioVenta(configuracionGeneral.ConsultaIndicadoresEconomicosURL, configuracionGeneral.OperacionSoap, DateTime.Now, unityContainer);
             }
             catch (Exception ex)
             {

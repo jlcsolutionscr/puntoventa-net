@@ -128,7 +128,7 @@ Public Class FrmBusquedaMovimientoBanco
         End If
     End Sub
 
-    Private Sub btnFiltrar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnFiltrar.Click
+    Private Sub BtnFiltrar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnFiltrar.Click
         ValidarCantidadRegistros()
         intIndiceDePagina = 1
         ActualizarDatos(intIndiceDePagina)

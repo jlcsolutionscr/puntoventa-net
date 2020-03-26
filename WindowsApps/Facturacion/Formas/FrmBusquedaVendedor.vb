@@ -1,3 +1,4 @@
+Imports System.Threading.Tasks
 Imports LeandroSoftware.ClienteWCF
 
 Public Class FrmBusquedaVendedor
@@ -20,16 +21,16 @@ Public Class FrmBusquedaVendedor
         dgvListado.Columns.Add(dvcDescripcion)
     End Sub
 
-    Private Async Sub ActualizarDatos()
+    Private Async Function ActualizarDatos() As Task
         Try
-            dgvListado.DataSource = Await Puntoventa.ObtenerListadoVendedores(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token, txtNombre.Text)
+            dgvListado.DataSource = Await Puntoventa.ObtenerListadoVendedores(FrmPrincipal.empresaGlobal.IdEmpresa, txtNombre.Text, FrmPrincipal.usuarioGlobal.Token)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
-            Exit Sub
+            Exit Function
         End Try
         dgvListado.Refresh()
-    End Sub
+    End Function
 #End Region
 
 #Region "Eventos Controles"
@@ -52,10 +53,10 @@ Public Class FrmBusquedaVendedor
         textbox.BackColor = Color.White
     End Sub
 
-    Private Sub FrmBusVendedor_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+    Private Async Sub FrmBusVendedor_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
             EstablecerPropiedadesDataGridView()
-            ActualizarDatos()
+            Await ActualizarDatos()
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -69,8 +70,8 @@ Public Class FrmBusquedaVendedor
         End If
     End Sub
 
-    Private Sub btnFiltrar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnFiltrar.Click
-        ActualizarDatos()
+    Private Async Sub BtnFiltrar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnFiltrar.Click
+        Await ActualizarDatos()
     End Sub
 #End Region
 End Class

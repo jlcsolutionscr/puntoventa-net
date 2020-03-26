@@ -1,5 +1,5 @@
-Imports LeandroSoftware.Core.Dominio.Entidades
 Imports LeandroSoftware.ClienteWCF
+Imports LeandroSoftware.Core.Dominio.Entidades
 Imports System.IO
 Imports System.Threading.Tasks
 
@@ -53,7 +53,7 @@ Public Class FrmProducto
         cboTipoImpuesto.SelectedValue = 8
         cboLinea.ValueMember = "Id"
         cboLinea.DisplayMember = "Descripcion"
-        cboLinea.DataSource = Await Puntoventa.ObtenerListadoLineas(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+        cboLinea.DataSource = Await Puntoventa.ObtenerListadoLineas(FrmPrincipal.empresaGlobal.IdEmpresa, "", FrmPrincipal.usuarioGlobal.Token)
     End Function
 
     Private Function Bytes_Imagen(Imagen As Byte()) As Image

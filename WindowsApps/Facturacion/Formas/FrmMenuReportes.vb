@@ -1,11 +1,11 @@
 ﻿Imports System.Collections.Generic
-Imports LeandroSoftware.ClienteWCF
 Imports LeandroSoftware.Core.TiposComunes
 Imports LeandroSoftware.Core.Dominio.Entidades
 Imports Microsoft.Reporting.WinForms
 Imports System.Reflection
 Imports System.IO
 Imports System.Threading.Tasks
+Imports LeandroSoftware.ClienteWCF
 
 Public Class FrmMenuReportes
 #Region "Variables"

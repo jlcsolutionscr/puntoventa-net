@@ -271,7 +271,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             IdUsuario = compra.IdUsuario,
                             IdTipoMoneda = compra.IdTipoMoneda,
                             IdPropietario = compra.IdProveedor,
-                            Descripcion = "Cuenta por pagar de Compra nro. ",
                             Referencia = compra.NoDocumento,
                             Fecha = compra.Fecha,
                             Tipo = StaticTipoCuentaPorPagar.Proveedores,
@@ -499,7 +498,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         compra.IdCxP = cuentaPorPagar.IdCxP;
                         dbContext.NotificarModificacion(compra);
-                        cuentaPorPagar.Descripcion += compra.IdCompra;
                         cuentaPorPagar.NroDocOrig = compra.IdCompra;
                         dbContext.NotificarModificacion(cuentaPorPagar);
                     }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -18,10 +17,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         [ForeignKey("TipoMoneda")]
         public int IdTipoMoneda { get; set; }
         public int IdPropietario { get; set; }
-        public string Descripcion { get; set; }
         public string Referencia { get; set; }
-        [NotMapped]
-        public string DescReferencia { get { return Descripcion + " Referencia: " + Referencia; } }
         public int NroDocOrig { get; set; }
         public DateTime Fecha { get; set; }
         public int Plazo { get; set; }

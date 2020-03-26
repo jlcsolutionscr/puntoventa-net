@@ -8,7 +8,7 @@ Public Class FrmMenuCuentaBanco
     Private Async Sub CargarCombos()
         cboIdCuentaBanco.ValueMember = "IdCuenta"
         cboIdCuentaBanco.DisplayMember = "Descripcion"
-        cboIdCuentaBanco.DataSource = Await Puntoventa.ObtenerListadoCuentasBanco(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+        cboIdCuentaBanco.DataSource = Await Puntoventa.ObtenerListadoCuentasBanco(FrmPrincipal.empresaGlobal.IdEmpresa, "", FrmPrincipal.usuarioGlobal.Token)
         cboIdCuentaBanco.SelectedValue = 0
     End Sub
 #End Region

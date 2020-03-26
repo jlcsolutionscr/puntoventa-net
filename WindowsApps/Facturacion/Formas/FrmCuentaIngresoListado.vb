@@ -23,7 +23,7 @@ Public Class FrmCuentaIngresoListado
 
     Private Async Function ActualizarDatos() As Threading.Tasks.Task
         Try
-            dgvListado.DataSource = Await Puntoventa.ObtenerListadoCuentasIngreso(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token, txtDescripcion.Text)
+            dgvListado.DataSource = Await Puntoventa.ObtenerListadoCuentasIngreso(FrmPrincipal.empresaGlobal.IdEmpresa, txtDescripcion.Text, FrmPrincipal.usuarioGlobal.Token)
             If dgvListado.Rows.Count > 0 Then
                 btnEditar.Enabled = True
                 btnEliminar.Enabled = True
@@ -70,7 +70,7 @@ Public Class FrmCuentaIngresoListado
         End Try
     End Sub
 
-    Private Async Sub btnAgregar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnAgregar.Click
+    Private Async Sub BtnAgregar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnAgregar.Click
         Dim formMant As New FrmCuentaIngreso With {
             .intIdCuenta = 0
         }
@@ -78,7 +78,7 @@ Public Class FrmCuentaIngresoListado
         Await ActualizarDatos()
     End Sub
 
-    Private Async Sub btnEditar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEditar.Click
+    Private Async Sub BtnEditar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEditar.Click
         Dim formmant As New FrmCuentaIngreso With {
             .intIdCuenta = dgvListado.CurrentRow.Cells(0).Value
         }
@@ -86,7 +86,7 @@ Public Class FrmCuentaIngresoListado
         Await ActualizarDatos()
     End Sub
 
-    Private Async Sub btnEliminar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEliminar.Click
+    Private Async Sub BtnEliminar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEliminar.Click
         If MessageBox.Show("Desea eliminar el registro actual", "JLC Solutions CR", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
             Try
                 Await Puntoventa.EliminarCuentaIngreso(dgvListado.CurrentRow.Cells(0).Value, FrmPrincipal.usuarioGlobal.Token)
@@ -98,7 +98,7 @@ Public Class FrmCuentaIngresoListado
         End If
     End Sub
 
-    Private Async Sub btnFiltrar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnFiltrar.Click
+    Private Async Sub BtnFiltrar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnFiltrar.Click
         Await ActualizarDatos()
     End Sub
 

@@ -12,7 +12,7 @@ Public Class FrmEgreso
     Private Async Function CargarCombos() As Task
         cboCuentaEgreso.ValueMember = "Id"
         cboCuentaEgreso.DisplayMember = "Descripcion"
-        cboCuentaEgreso.DataSource = Await Puntoventa.ObtenerListadoCuentasEgreso(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+        cboCuentaEgreso.DataSource = Await Puntoventa.ObtenerListadoCuentasEgreso(FrmPrincipal.empresaGlobal.IdEmpresa, "", FrmPrincipal.usuarioGlobal.Token)
     End Function
 #End Region
 

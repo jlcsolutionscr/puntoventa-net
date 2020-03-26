@@ -548,15 +548,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     receptor.Fax = faxType;
                 }
                 receptor.CorreoElectronico = cliente.CorreoElectronico;
-                ubicacionType = new FacturaElectronicaUbicacionType
-                {
-                    Provincia = cliente.IdProvincia.ToString(),
-                    Canton = cliente.IdCanton.ToString("D2"),
-                    Distrito = cliente.IdDistrito.ToString("D2"),
-                    Barrio = cliente.IdBarrio.ToString("D2"),
-                    OtrasSenas = cliente.Direccion
-                };
-                receptor.Ubicacion = ubicacionType;
                 facturaElectronica.Receptor = receptor;
                 facturaElectronica.CondicionVenta = (FacturaElectronicaCondicionVenta)factura.IdCondicionVenta - 1;
                 if (facturaElectronica.CondicionVenta == FacturaElectronicaCondicionVenta.Item02)
@@ -1075,15 +1066,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         receptor.Fax = faxType;
                     }
                     receptor.CorreoElectronico = cliente.CorreoElectronico;
-                    ubicacionType = new NotaCreditoElectronicaUbicacionType
-                    {
-                        Provincia = cliente.IdProvincia.ToString(),
-                        Canton = cliente.IdCanton.ToString("D2"),
-                        Distrito = cliente.IdDistrito.ToString("D2"),
-                        Barrio = cliente.IdBarrio.ToString("D2"),
-                        OtrasSenas = cliente.Direccion
-                    };
-                    receptor.Ubicacion = ubicacionType;
                     notaCreditoElectronica.Receptor = receptor;
                 }
                 notaCreditoElectronica.CondicionVenta = (NotaCreditoElectronicaCondicionVenta)factura.IdCondicionVenta - 1;
@@ -1380,15 +1362,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         receptor.Fax = faxType;
                     }
                     receptor.CorreoElectronico = cliente.CorreoElectronico;
-                    ubicacionType = new NotaCreditoElectronicaUbicacionType
-                    {
-                        Provincia = cliente.IdProvincia.ToString(),
-                        Canton = cliente.IdCanton.ToString("D2"),
-                        Distrito = cliente.IdDistrito.ToString("D2"),
-                        Barrio = cliente.IdBarrio.ToString("D2"),
-                        OtrasSenas = cliente.Direccion
-                    };
-                    receptor.Ubicacion = ubicacionType;
                     notaCreditoElectronica.Receptor = receptor;
                 }
                 notaCreditoElectronica.CondicionVenta = NotaCreditoElectronicaCondicionVenta.Item01;
@@ -1646,15 +1619,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         receptor.Fax = faxType;
                     }
                     receptor.CorreoElectronico = cliente.CorreoElectronico;
-                    ubicacionType = new NotaDebitoElectronicaUbicacionType
-                    {
-                        Provincia = cliente.IdProvincia.ToString(),
-                        Canton = cliente.IdCanton.ToString("D2"),
-                        Distrito = cliente.IdDistrito.ToString("D2"),
-                        Barrio = cliente.IdBarrio.ToString("D2"),
-                        OtrasSenas = cliente.Direccion
-                    };
-                    receptor.Ubicacion = ubicacionType;
                     NotaDebitoElectronica.Receptor = receptor;
                 }
                 NotaDebitoElectronica.CondicionVenta = NotaDebitoElectronicaCondicionVenta.Item01;

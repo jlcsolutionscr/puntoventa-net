@@ -1,9 +1,9 @@
 Imports System.Collections.Generic
-Imports LeandroSoftware.ClienteWCF
 Imports LeandroSoftware.Core.TiposComunes
 Imports Microsoft.Reporting.WinForms
 Imports System.Reflection
 Imports System.IO
+Imports LeandroSoftware.ClienteWCF
 
 Public Class FrmInventario
 #Region "Variables"
@@ -86,7 +86,7 @@ Public Class FrmInventario
     Private Async Function CargarComboBox() As Threading.Tasks.Task
         cboLinea.ValueMember = "Id"
         cboLinea.DisplayMember = "Descripcion"
-        cboLinea.DataSource = Await Puntoventa.ObtenerListadoLineas(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+        cboLinea.DataSource = Await Puntoventa.ObtenerListadoLineas(FrmPrincipal.empresaGlobal.IdEmpresa, "", FrmPrincipal.usuarioGlobal.Token)
         cboLinea.SelectedValue = 0
         cboSucursal.ValueMember = "Id"
         cboSucursal.DisplayMember = "Descripcion"
@@ -96,7 +96,7 @@ Public Class FrmInventario
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Threading.Tasks.Task
         Try
-            dgvListado.DataSource = Await Puntoventa.ObtenerListadoProductos(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, intNumeroPagina, intFilasPorPagina, False, chkFiltrarActivos.Checked, chkFiltrarExistencias.Checked, FrmPrincipal.usuarioGlobal.Token, cboLinea.SelectedValue, txtCodigo.Text, txtCodigoProveedor.Text, txtDescripcion.Text)
+            dgvListado.DataSource = Await Puntoventa.ObtenerListadoProductos(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, intNumeroPagina, intFilasPorPagina, False, chkFiltrarActivos.Checked, chkFiltrarExistencias.Checked, cboLinea.SelectedValue, txtCodigo.Text, txtCodigoProveedor.Text, txtDescripcion.Text, FrmPrincipal.usuarioGlobal.Token)
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -107,7 +107,7 @@ Public Class FrmInventario
 
     Private Async Function ValidarCantidadRegistros() As Threading.Tasks.Task
         Try
-            intTotalRegistros = Await Puntoventa.ObtenerTotalListaProductos(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, False, chkFiltrarActivos.Checked, chkFiltrarExistencias.Checked, FrmPrincipal.usuarioGlobal.Token, cboLinea.SelectedValue, txtCodigo.Text, txtCodigoProveedor.Text, txtDescripcion.Text)
+            intTotalRegistros = Await Puntoventa.ObtenerTotalListaProductos(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, False, chkFiltrarActivos.Checked, chkFiltrarExistencias.Checked, cboLinea.SelectedValue, txtCodigo.Text, txtCodigoProveedor.Text, txtDescripcion.Text, FrmPrincipal.usuarioGlobal.Token)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -208,7 +208,7 @@ Public Class FrmInventario
         btnReporte.Enabled = False
         Dim datosReporte As List(Of ReporteInventario)
         Try
-            datosReporte = Await Puntoventa.ObtenerReporteInventario(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, chkFiltrarActivos.Checked, chkFiltrarExistencias.Checked, FrmPrincipal.usuarioGlobal.Token, cboLinea.SelectedValue, txtCodigo.Text, txtCodigoProveedor.Text, txtDescripcion.Text)
+            datosReporte = Await Puntoventa.ObtenerReporteInventario(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, chkFiltrarActivos.Checked, chkFiltrarExistencias.Checked, cboLinea.SelectedValue, txtCodigo.Text, txtCodigoProveedor.Text, txtDescripcion.Text, FrmPrincipal.usuarioGlobal.Token)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             btnReporte.Enabled = True

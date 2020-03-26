@@ -12,34 +12,19 @@ Public Class FrmCliente
 #End Region
 
 #Region "Métodos"
-    Private Async Function CargarListadoBarrios(IdProvincia As Integer, IdCanton As Integer, IdDistrito As Integer) As Task
-        cboCanton.ValueMember = "Id"
-        cboCanton.DisplayMember = "Descripcion"
-        cboCanton.DataSource = Await Puntoventa.ObtenerListadoCantones(IdProvincia, FrmPrincipal.usuarioGlobal.Token)
-        cboDistrito.ValueMember = "Id"
-        cboDistrito.DisplayMember = "Descripcion"
-        cboDistrito.DataSource = Await Puntoventa.ObtenerListadoDistritos(IdProvincia, IdCanton, FrmPrincipal.usuarioGlobal.Token)
-        cboBarrio.ValueMember = "Id"
-        cboBarrio.DisplayMember = "Descripcion"
-        cboBarrio.DataSource = Await Puntoventa.ObtenerListadoBarrios(IdProvincia, IdCanton, IdDistrito, FrmPrincipal.usuarioGlobal.Token)
-        cboTipoImpuesto.ValueMember = "Id"
-        cboTipoImpuesto.DisplayMember = "Descripcion"
-        cboTipoImpuesto.DataSource = Await Puntoventa.ObtenerListadoTipoImpuesto(FrmPrincipal.usuarioGlobal.Token)
-    End Function
-
     Private Async Function CargarCombos() As Task
         cboTipoIdentificacion.ValueMember = "Id"
         cboTipoIdentificacion.DisplayMember = "Descripcion"
         cboTipoIdentificacion.DataSource = Await Puntoventa.ObtenerListadoTipoIdentificacion(FrmPrincipal.usuarioGlobal.Token)
-        cboProvincia.ValueMember = "Id"
-        cboProvincia.DisplayMember = "Descripcion"
-        cboProvincia.DataSource = Await Puntoventa.ObtenerListadoProvincias(FrmPrincipal.usuarioGlobal.Token)
         cboVendedor.ValueMember = "Id"
         cboVendedor.DisplayMember = "Descripcion"
-        cboVendedor.DataSource = Await Puntoventa.ObtenerListadoVendedores(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+        cboVendedor.DataSource = Await Puntoventa.ObtenerListadoVendedores(FrmPrincipal.empresaGlobal.IdEmpresa, "", FrmPrincipal.usuarioGlobal.Token)
         cboIdTipoPrecio.ValueMember = "Id"
         cboIdTipoPrecio.DisplayMember = "Descripcion"
         cboIdTipoPrecio.DataSource = Await Puntoventa.ObtenerListadoTipodePrecio(FrmPrincipal.usuarioGlobal.Token)
+        cboTipoImpuesto.ValueMember = "Id"
+        cboTipoImpuesto.DisplayMember = "Descripcion"
+        cboTipoImpuesto.DataSource = Await Puntoventa.ObtenerListadoTipoImpuesto(FrmPrincipal.usuarioGlobal.Token)
         cboTipoExoneracion.ValueMember = "Id"
         cboTipoExoneracion.DisplayMember = "Descripcion"
         cboTipoExoneracion.DataSource = Await Puntoventa.ObtenerListadoTipoExoneracion(FrmPrincipal.usuarioGlobal.Token)
@@ -68,20 +53,16 @@ Public Class FrmCliente
 
     Private Async Sub FrmCliente_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
+            If FrmPrincipal.bolModificaCliente Then chkPermiteCredito.Enabled = True
             Await CargarCombos()
             If intIdCliente > 0 Then
                 datos = Await Puntoventa.ObtenerCliente(intIdCliente, FrmPrincipal.usuarioGlobal.Token)
                 If datos Is Nothing Then
                     Throw New Exception("El cliente seleccionado no existe")
                 End If
-                Await CargarListadoBarrios(datos.IdProvincia, datos.IdCanton, datos.IdDistrito)
                 txtIdCliente.Text = datos.IdCliente
                 cboTipoIdentificacion.SelectedValue = datos.IdTipoIdentificacion
                 txtIdentificacion.Text = datos.Identificacion
-                cboProvincia.SelectedValue = datos.IdProvincia
-                cboCanton.SelectedValue = datos.IdCanton
-                cboDistrito.SelectedValue = datos.IdDistrito
-                cboBarrio.SelectedValue = datos.IdBarrio
                 txtDireccion.Text = datos.Direccion
                 txtNombre.Text = datos.Nombre
                 txtNombreComercial.Text = datos.NombreComercial
@@ -89,6 +70,7 @@ Public Class FrmCliente
                 txtCelular.Text = datos.Celular
                 txtFax.Text = datos.Fax
                 txtCorreoElectronico.Text = datos.CorreoElectronico
+                chkPermiteCredito.Checked = datos.PermiteCredito
                 If datos.IdVendedor IsNot Nothing Then cboVendedor.SelectedValue = datos.IdVendedor
                 cboIdTipoPrecio.SelectedValue = datos.IdTipoPrecio
                 chkExonerado.Checked = datos.AplicaTasaDiferenciada
@@ -101,7 +83,6 @@ Public Class FrmCliente
                 txtIdentificacion.ReadOnly = True
             Else
                 datos = New Cliente
-                Await CargarListadoBarrios(1, 1, 1)
                 cboTipoImpuesto.SelectedValue = 8
                 cboTipoExoneracion.SelectedValue = 1
                 txtPorcentajeExoneracion.Text = "0"
@@ -119,7 +100,7 @@ Public Class FrmCliente
     End Sub
 
     Private Async Sub BtnGuardar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnGuardar.Click
-        If cboTipoIdentificacion.SelectedValue Is Nothing Or txtIdentificacion.Text.Length = 0 Or cboProvincia.SelectedValue Is Nothing Or cboCanton.SelectedValue Is Nothing Or cboDistrito.SelectedValue Is Nothing Or cboBarrio.SelectedValue Is Nothing Or txtDireccion.Text.Length = 0 Or txtNombre.Text.Length = 0 Or txtCorreoElectronico.Text.Length = 0 Then
+        If cboTipoIdentificacion.SelectedValue Is Nothing Or txtIdentificacion.Text.Length = 0 Or txtDireccion.Text.Length = 0 Or txtNombre.Text.Length = 0 Or txtCorreoElectronico.Text.Length = 0 Then
             MessageBox.Show("Existen campos requeridos que no se fueron ingresados. Por favor verifique la información. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
         End If
@@ -130,10 +111,6 @@ Public Class FrmCliente
         End If
         datos.IdTipoIdentificacion = cboTipoIdentificacion.SelectedValue
         datos.Identificacion = txtIdentificacion.Text
-        datos.IdProvincia = cboProvincia.SelectedValue
-        datos.IdCanton = cboCanton.SelectedValue
-        datos.IdDistrito = cboDistrito.SelectedValue
-        datos.IdBarrio = cboBarrio.SelectedValue
         datos.Direccion = txtDireccion.Text
         datos.Nombre = txtNombre.Text
         datos.NombreComercial = txtNombreComercial.Text
@@ -141,6 +118,7 @@ Public Class FrmCliente
         datos.Celular = txtCelular.Text
         datos.Fax = txtFax.Text
         datos.CorreoElectronico = txtCorreoElectronico.Text
+        datos.PermiteCredito = chkPermiteCredito.Checked
         datos.IdVendedor = cboVendedor.SelectedValue
         datos.IdTipoPrecio = cboIdTipoPrecio.SelectedValue
         datos.AplicaTasaDiferenciada = chkExonerado.Checked
@@ -150,7 +128,6 @@ Public Class FrmCliente
         datos.NombreInstExoneracion = txtNombreInstExoneracion.Text
         datos.FechaEmisionDoc = txtFechaExoneracion.Value
         datos.PorcentajeExoneracion = txtPorcentajeExoneracion.Text
-        datos.Barrio = Nothing
         Try
             If datos.IdCliente = 0 Then
                 Await Puntoventa.AgregarCliente(datos, FrmPrincipal.usuarioGlobal.Token)
@@ -180,11 +157,6 @@ Public Class FrmCliente
                         txtIdCliente.Text = datos.IdCliente
                         cboTipoIdentificacion.SelectedValue = datos.IdTipoIdentificacion
                         txtIdentificacion.Text = datos.Identificacion
-                        Await CargarListadoBarrios(datos.IdProvincia, datos.IdCanton, datos.IdDistrito)
-                        cboProvincia.SelectedValue = datos.IdProvincia
-                        cboCanton.SelectedValue = datos.IdCanton
-                        cboDistrito.SelectedValue = datos.IdDistrito
-                        cboBarrio.SelectedValue = datos.IdBarrio
                         txtDireccion.Text = datos.Direccion
                         txtNombre.Text = datos.Nombre
                         txtNombreComercial.Text = datos.NombreComercial
@@ -204,11 +176,6 @@ Public Class FrmCliente
                     Else
                         MessageBox.Show("Cliente encontrado en el padrón electoral. Por favor complete la información faltante.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
                         cboTipoIdentificacion.SelectedValue = 0
-                        Await CargarListadoBarrios(cliente.IdProvincia, cliente.IdCanton, cliente.IdDistrito)
-                        cboProvincia.SelectedValue = cliente.IdProvincia
-                        cboCanton.SelectedValue = cliente.IdCanton
-                        cboDistrito.SelectedValue = cliente.IdDistrito
-                        cboBarrio.SelectedValue = 0
                         txtNombre.Text = cliente.Nombre
                     End If
                     bolInit = False
@@ -219,29 +186,6 @@ Public Class FrmCliente
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
-    End Sub
-
-    Private Async Sub CboProvincia_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboProvincia.SelectedIndexChanged
-        If Not bolInit Then
-            bolInit = True
-            Await CargarListadoBarrios(cboProvincia.SelectedValue, 1, 1)
-            bolInit = False
-        End If
-    End Sub
-
-    Private Async Sub CboCanton_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboCanton.SelectedIndexChanged
-        If Not bolInit Then
-            bolInit = True
-            cboDistrito.DataSource = Await Puntoventa.ObtenerListadoDistritos(cboProvincia.SelectedValue, cboCanton.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
-            cboBarrio.DataSource = Await Puntoventa.ObtenerListadoBarrios(cboProvincia.SelectedValue, cboCanton.SelectedValue, 1, FrmPrincipal.usuarioGlobal.Token)
-            bolInit = False
-        End If
-    End Sub
-
-    Private Async Sub CboDistrito_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboDistrito.SelectedIndexChanged
-        If Not bolInit Then
-            cboBarrio.DataSource = Await Puntoventa.ObtenerListadoBarrios(cboProvincia.SelectedValue, cboCanton.SelectedValue, cboDistrito.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
-        End If
     End Sub
 
     Private Sub ValidaDigitos(sender As Object, e As KeyPressEventArgs) Handles txtIdentificacion.KeyPress, txtTelefono.KeyPress, txtCelular.KeyPress, txtFax.KeyPress

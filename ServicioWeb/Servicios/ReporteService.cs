@@ -140,14 +140,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     List<ReporteDetalle> listaReporte = new List<ReporteDetalle>();
                     var detalleVentas = dbContext.ProformaRepository.Where(s => s.IdEmpresa == intIdEmpresa && s.IdSucursal == intIdSucursal && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal && s.Nulo == bolNulo)
                         .Join(dbContext.ClienteRepository, x => x.IdCliente, y => y.IdCliente, (x, y) => new { x, y })
-                        .Select(z => new { z.x.IdCliente, z.x.Nulo, z.x.IdProforma, z.x.Fecha, z.x.NombreCliente, z.x.TextoAdicional,  z.x.Impuesto, Total = (z.x.Excento + z.x.Gravado + z.x.Exonerado + z.x.Impuesto - z.x.Descuento) });
+                        .Select(z => new { z.x.IdCliente, z.x.Nulo, z.x.ConsecProforma, z.x.Fecha, z.x.NombreCliente, z.x.Impuesto, Total = (z.x.Excento + z.x.Gravado + z.x.Exonerado + z.x.Impuesto - z.x.Descuento) });
                     foreach (var value in detalleVentas)
                     {
                         ReporteDetalle reporteLinea = new ReporteDetalle();
-                        reporteLinea.Id = value.IdProforma;
+                        reporteLinea.Id = value.ConsecProforma;
                         reporteLinea.Fecha = value.Fecha.ToString("dd/MM/yyyy");
                         reporteLinea.Nombre = value.NombreCliente;
-                        reporteLinea.NoDocumento = value.TextoAdicional;
+                        reporteLinea.NoDocumento = "";
                         reporteLinea.Impuesto = value.Impuesto;
                         reporteLinea.Total = value.Total;
                         listaReporte.Add(reporteLinea);
@@ -173,14 +173,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     List<ReporteDetalle> listaReporte = new List<ReporteDetalle>();
                     var detalleVentas = dbContext.ApartadoRepository.Where(s => s.IdEmpresa == intIdEmpresa && s.IdSucursal == intIdSucursal && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal && s.Nulo == bolNulo)
                         .Join(dbContext.ClienteRepository, x => x.IdCliente, y => y.IdCliente, (x, y) => new { x, y })
-                        .Select(z => new { z.x.IdCliente, z.x.Nulo, z.x.IdApartado, z.x.Fecha, z.x.NombreCliente, z.x.TextoAdicional, z.x.Impuesto, Total = (z.x.Excento + z.x.Gravado + z.x.Exonerado + z.x.Impuesto - z.x.Descuento) });
+                        .Select(z => new { z.x.IdCliente, z.x.Nulo, z.x.ConsecApartado, z.x.Fecha, z.x.NombreCliente, z.x.Impuesto, Total = (z.x.Excento + z.x.Gravado + z.x.Exonerado + z.x.Impuesto - z.x.Descuento) });
                     foreach (var value in detalleVentas)
                     {
                         ReporteDetalle reporteLinea = new ReporteDetalle();
-                        reporteLinea.Id = value.IdApartado;
+                        reporteLinea.Id = value.ConsecApartado;
                         reporteLinea.Fecha = value.Fecha.ToString("dd/MM/yyyy");
                         reporteLinea.Nombre = value.NombreCliente;
-                        reporteLinea.NoDocumento = value.TextoAdicional;
+                        reporteLinea.NoDocumento = "";
                         reporteLinea.Impuesto = value.Impuesto;
                         reporteLinea.Total = value.Total;
                         listaReporte.Add(reporteLinea);
@@ -206,14 +206,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     List<ReporteDetalle> listaReporte = new List<ReporteDetalle>();
                     var detalleVentas = dbContext.OrdenServicioRepository.Where(s => s.IdEmpresa == intIdEmpresa && s.IdSucursal == intIdSucursal && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal && s.Nulo == bolNulo)
                         .Join(dbContext.ClienteRepository, x => x.IdCliente, y => y.IdCliente, (x, y) => new { x, y })
-                        .Select(z => new { z.x.IdCliente, z.x.Nulo, z.x.IdOrden, z.x.Fecha, z.x.NombreCliente, z.x.OtrosDetalles, z.x.Impuesto, Total = (z.x.Excento + z.x.Gravado + z.x.Exonerado + z.x.Impuesto - z.x.Descuento) });
+                        .Select(z => new { z.x.IdCliente, z.x.Nulo, z.x.ConsecOrdenServicio, z.x.Fecha, z.x.NombreCliente, z.x.Impuesto, Total = (z.x.Excento + z.x.Gravado + z.x.Exonerado + z.x.Impuesto - z.x.Descuento) });
                     foreach (var value in detalleVentas)
                     {
                         ReporteDetalle reporteLinea = new ReporteDetalle();
-                        reporteLinea.Id = value.IdOrden;
+                        reporteLinea.Id = value.ConsecOrdenServicio;
                         reporteLinea.Fecha = value.Fecha.ToString("dd/MM/yyyy");
                         reporteLinea.Nombre = value.NombreCliente;
-                        reporteLinea.NoDocumento = value.OtrosDetalles;
+                        reporteLinea.NoDocumento = "";
                         reporteLinea.Impuesto = value.Impuesto;
                         reporteLinea.Total = value.Total;
                         listaReporte.Add(reporteLinea);
@@ -241,16 +241,16 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         var detalleVentas = dbContext.FacturaRepository.Where(s => s.IdEmpresa == intIdEmpresa && s.IdSucursal == intIdSucursal && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal && s.Nulo == bolNulo)
                             .Join(dbContext.ClienteRepository, x => x.IdCliente, y => y.IdCliente, (x, y) => new { x, y })
-                            .Select(z => new { z.x.IdCliente, z.x.Nulo, z.x.IdCondicionVenta, z.x.IdFactura, z.x.Fecha, z.x.NombreCliente, z.x.IdDocElectronico, z.x.Impuesto, Total = (z.x.Excento + z.x.Gravado + z.x.Exonerado + z.x.Impuesto - z.x.Descuento) });
+                            .Select(z => new { z.x.IdCliente, z.x.Nulo, z.x.IdCondicionVenta, z.x.ConsecFactura, z.x.Fecha, z.x.NombreCliente, z.x.Impuesto, Total = (z.x.Excento + z.x.Gravado + z.x.Exonerado + z.x.Impuesto - z.x.Descuento) });
                         if (intIdCliente > 0)
                             detalleVentas = detalleVentas.Where(x => x.IdCliente == intIdCliente);
                         foreach (var value in detalleVentas)
                         {
                             ReporteDetalle reporteLinea = new ReporteDetalle();
-                            reporteLinea.Id = value.IdFactura;
+                            reporteLinea.Id = value.ConsecFactura;
                             reporteLinea.Fecha = value.Fecha.ToString("dd/MM/yyyy");
                             reporteLinea.Nombre = value.NombreCliente;
-                            reporteLinea.NoDocumento = value.IdDocElectronico;
+                            reporteLinea.NoDocumento = "";
                             reporteLinea.Impuesto = value.Impuesto;
                             reporteLinea.Total = value.Total;
                             listaReporte.Add(reporteLinea);
@@ -263,7 +263,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         {
                             var detalleVentas = dbContext.FacturaRepository.Where(s => s.IdEmpresa == intIdEmpresa && s.IdSucursal == intIdSucursal && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal && s.Nulo == bolNulo)
                                 .Join(dbContext.ClienteRepository, x => x.IdCliente, y => y.IdCliente, (x, y) => new { x, y })
-                                .Select(z => new { z.x.IdCliente, z.x.Nulo, z.x.IdCondicionVenta, z.x.IdFactura, z.x.Fecha, z.x.NombreCliente, z.x.IdDocElectronico, z.x.Impuesto, Total = (z.x.Excento + z.x.Gravado + z.x.Exonerado + z.x.Impuesto - z.x.Descuento) });
+                                .Select(z => new { z.x.IdCliente, z.x.Nulo, z.x.IdCondicionVenta, z.x.ConsecFactura, z.x.Fecha, z.x.NombreCliente, z.x.Impuesto, Total = (z.x.Excento + z.x.Gravado + z.x.Exonerado + z.x.Impuesto - z.x.Descuento) });
                             if (intTipoPago == StaticReporteCondicionVentaFormaPago.Credito)
                                 detalleVentas = detalleVentas.Where(x => x.IdCondicionVenta == StaticCondicionVenta.Credito);
                             else
@@ -273,10 +273,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             foreach (var value in detalleVentas)
                             {
                                 ReporteDetalle reporteLinea = new ReporteDetalle();
-                                reporteLinea.Id = value.IdFactura;
+                                reporteLinea.Id = value.ConsecFactura;
                                 reporteLinea.Fecha = value.Fecha.ToString("dd/MM/yyyy");
                                 reporteLinea.Nombre = value.NombreCliente;
-                                reporteLinea.NoDocumento = value.IdDocElectronico;
+                                reporteLinea.NoDocumento = "";
                                 reporteLinea.Impuesto = value.Impuesto;
                                 reporteLinea.Total = value.Total;
                                 listaReporte.Add(reporteLinea);
@@ -287,7 +287,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             var detalleVentas = dbContext.FacturaRepository.Where(s => s.IdEmpresa == intIdEmpresa && s.IdSucursal == intIdSucursal && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal && s.Nulo == bolNulo)
                                 .Join(dbContext.ClienteRepository, x => x.IdCliente, y => y.IdCliente, (x, y) => new { x, y })
                                 .Join(dbContext.DesglosePagoFacturaRepository, x => x.x.IdFactura, y => y.IdFactura, (x, y) => new { x, y })
-                                .Select(z => new { z.x.x.IdCliente, z.x.x.Nulo, z.x.x.IdCondicionVenta, z.y.IdFormaPago, z.y.IdCuentaBanco, z.x.x.IdFactura, z.x.x.Fecha, NombreCliente = z.x.x.Cliente.Nombre, z.x.x.IdDocElectronico, z.x.x.Impuesto, Total = z.y.MontoLocal, z.x.x.TotalCosto });
+                                .Select(z => new { z.x.x.IdCliente, z.x.x.Nulo, z.x.x.IdCondicionVenta, z.y.IdFormaPago, z.y.IdCuentaBanco, z.x.x.ConsecFactura, z.x.x.Fecha, NombreCliente = z.x.x.Cliente.Nombre, z.x.x.Impuesto, Total = z.y.MontoLocal, z.x.x.TotalCosto });
                             if (intTipoPago == StaticReporteCondicionVentaFormaPago.ContadoEfectivo)
                             {
                                 detalleVentas = detalleVentas.Where(x => x.IdCondicionVenta == StaticCondicionVenta.Contado && x.IdFormaPago == StaticFormaPago.Efectivo);
@@ -309,10 +309,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             foreach (var value in detalleVentas)
                             {
                                 ReporteDetalle reporteLinea = new ReporteDetalle();
-                                reporteLinea.Id = value.IdFactura;
+                                reporteLinea.Id = value.ConsecFactura;
                                 reporteLinea.Fecha = value.Fecha.ToString("dd/MM/yyyy");
                                 reporteLinea.Nombre = value.NombreCliente;
-                                reporteLinea.NoDocumento = value.IdDocElectronico;
+                                reporteLinea.NoDocumento = "";
                                 reporteLinea.Impuesto = value.Impuesto;
                                 reporteLinea.Total = value.Total;
                                 listaReporte.Add(reporteLinea);
@@ -341,17 +341,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     var detalleVentas = dbContext.FacturaRepository.Where(s => s.IdEmpresa == intIdEmpresa && s.IdSucursal == intIdSucursal && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal && s.Nulo == false)
                         .Join(dbContext.VendedorRepository, x => x.IdVendedor, y => y.IdVendedor, (x, y) => new { x, y })
                         .Join(dbContext.DesglosePagoFacturaRepository, x => x.x.IdFactura, y => y.IdFactura, (x, y) => new { x, y })
-                        .Select(z => new { z.x.x.IdVendedor, z.x.y.Nombre, z.x.x.Nulo, z.y.IdFormaPago, z.y.IdCuentaBanco, z.x.x.IdFactura, z.x.x.Fecha, NombreCliente = z.x.x.Cliente.Nombre, z.x.x.IdDocElectronico, Total = z.y.MontoLocal, z.x.x.TotalCosto, z.x.x.Impuesto });
+                        .Select(z => new { z.x.x.IdVendedor, z.x.y.Nombre, z.x.x.Nulo, z.y.IdFormaPago, z.y.IdCuentaBanco, z.x.x.ConsecFactura, z.x.x.Fecha, NombreCliente = z.x.x.Cliente.Nombre, Total = z.y.MontoLocal, z.x.x.TotalCosto, z.x.x.Impuesto });
                     if (intIdVendedor > 0)
                         detalleVentas = detalleVentas.Where(x => x.IdVendedor == intIdVendedor);
                     foreach (var value in detalleVentas)
                     {
                         ReporteVentasPorVendedor reporteLinea = new ReporteVentasPorVendedor();
                         reporteLinea.NombreVendedor = value.Nombre;
-                        reporteLinea.IdFactura = value.IdFactura;
+                        reporteLinea.IdFactura = value.ConsecFactura;
                         reporteLinea.Fecha = value.Fecha.ToString("dd/MM/yyyy");
                         reporteLinea.NombreCliente = value.NombreCliente;
-                        reporteLinea.NoDocumento = value.IdDocElectronico;
+                        reporteLinea.NoDocumento = "";
                         reporteLinea.Total = value.Total;
                         listaReporte.Add(reporteLinea);
                     }
@@ -477,7 +477,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     List<ReporteCuentas> listaReporte = new List<ReporteCuentas>();
                     var detalleCxCClientes = dbContext.CuentaPorCobrarRepository.Where(s => s.IdEmpresa == intIdEmpresa && s.IdSucursal == intIdSucursal && s.Nulo == false && s.Saldo > 0 && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal && s.Tipo == StaticTipoCuentaPorCobrar.Clientes)
                         .Join(dbContext.ClienteRepository, x => x.IdPropietario, y => y.IdCliente, (x, y) => new { x, y })
-                        .Select(z => new { z.x.IdPropietario, z.y.Nombre, z.x.IdCxC, z.x.Descripcion, z.x.Referencia, z.x.Fecha, z.x.Total, z.x.Saldo });
+                        .Select(z => new { z.x.IdPropietario, z.y.Nombre, z.x.IdCxC, z.x.Referencia, z.x.Fecha, z.x.Plazo, z.x.Total, z.x.Saldo });
                     if (intIdCliente > 0)
                         detalleCxCClientes = detalleCxCClientes.Where(x => x.IdPropietario == intIdCliente);
                     foreach (var value in detalleCxCClientes)
@@ -487,7 +487,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         reporteLinea.Nombre = value.Nombre;
                         reporteLinea.IdCuenta = value.IdCxC;
                         reporteLinea.Fecha = value.Fecha.ToString("dd/MM/yyyy");
-                        reporteLinea.Descripcion = value.Descripcion;
+                        reporteLinea.Plazo = value.Plazo;
+                        reporteLinea.FechaVence = value.Fecha.AddDays(value.Plazo).ToString("dd/MM/yyyy");
+                        reporteLinea.Descripcion = "Cuenta por cobrar de factura " + value.Referencia;
                         reporteLinea.Referencia = value.Referencia;
                         reporteLinea.Total = value.Total;
                         reporteLinea.Saldo = value.Saldo;
@@ -514,7 +516,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     List<ReporteCuentas> listaReporte = new List<ReporteCuentas>();
                     var detalleCxPProveedores = dbContext.CuentaPorPagarRepository.Where(s => s.IdEmpresa == intIdEmpresa && s.IdSucursal == intIdSucursal && s.Nulo == false && s.Saldo > 0 && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal && s.Tipo == StaticTipoCuentaPorPagar.Proveedores)
                         .Join(dbContext.ProveedorRepository, x => x.IdPropietario, y => y.IdProveedor, (x, y) => new { x, y })
-                        .Select(z => new { z.x.IdPropietario, z.y.Nombre, z.x.IdCxP, z.x.Fecha, z.x.Descripcion, z.x.Referencia, z.x.Total, z.x.Saldo });
+                        .Select(z => new { z.x.IdPropietario, z.y.Nombre, z.x.IdCxP, z.x.Fecha, z.x.Plazo, z.x.Referencia, z.x.Total, z.x.Saldo });
                     if (intIdProveedor > 0)
                         detalleCxPProveedores = detalleCxPProveedores.Where(x => x.IdPropietario == intIdProveedor);
                     foreach (var value in detalleCxPProveedores)
@@ -524,7 +526,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         reporteLinea.Nombre = value.Nombre;
                         reporteLinea.IdCuenta = value.IdCxP;
                         reporteLinea.Fecha = value.Fecha.ToString("dd/MM/yyyy");
-                        reporteLinea.Descripcion = value.Descripcion + " Fact: " + value.Referencia;
+                        reporteLinea.Plazo = value.Plazo;
+                        reporteLinea.FechaVence = value.Fecha.AddDays(value.Plazo).ToString("dd/MM/yyyy");
+                        reporteLinea.Descripcion = "Cuenta por pagar de compra " + value.Referencia;
+                        reporteLinea.Referencia = value.Referencia;
                         reporteLinea.Total = value.Total;
                         reporteLinea.Saldo = value.Saldo;
                         listaReporte.Add(reporteLinea);
@@ -551,7 +556,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     var cxcClientes = dbContext.CuentaPorCobrarRepository.Where(a => a.IdEmpresa == intIdEmpresa && a.Nulo == false && a.Tipo == StaticTipoCuentaPorCobrar.Clientes)
                         .Join(dbContext.ClienteRepository, a => a.IdPropietario, b => b.IdCliente, (a, b) => new { a, b })
                         .Join(dbContext.MovimientoCuentaPorCobrarRepository, a => a.a.IdCxC, d => d.IdCxC, (b, c) => new { b, c }).Where(s => s.c.IdSucursal == intIdSucursal && !s.c.Nulo && s.c.Fecha >= datFechaInicial && s.c.Fecha <= datFechaFinal)
-                        .Select(d => new { d.b.a.IdPropietario, DescCxC = d.b.a.Descripcion, d.b.b.Nombre, d.b.a.IdCxC, d.b.a.Total, d.b.a.Saldo, d.c.IdMovCxC, d.c.Fecha, d.c.Tipo, d.c.Monto });
+                        .Select(d => new { d.b.a.IdPropietario, d.b.a.Referencia, d.b.b.Nombre, d.b.a.IdCxC, d.b.a.Total, d.b.a.Saldo, d.c.IdMovCxC, d.c.Fecha, d.c.Tipo, d.c.Monto });
                     if (intIdCliente > 0)
                         cxcClientes = cxcClientes.Where(a => a.IdPropietario == intIdCliente);
                     foreach (var value in cxcClientes)
@@ -560,7 +565,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         reporteLinea.Descripcion = value.Nombre;
                         reporteLinea.Id = value.IdMovCxC;
                         reporteLinea.Fecha = value.Fecha.ToString("dd/MM/yyyy");
-                        reporteLinea.Detalle = value.DescCxC;
+                        reporteLinea.Detalle = "Cuenta por cobrar de factura " + value.Referencia;
                         reporteLinea.Total = value.Monto;
                         listaReporte.Add(reporteLinea);
                     }
@@ -586,7 +591,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     var cxpProveedores = dbContext.CuentaPorPagarRepository.Where(a => a.IdEmpresa == intIdEmpresa && a.Nulo == false && a.Tipo == StaticTipoCuentaPorPagar.Proveedores)
                         .Join(dbContext.ProveedorRepository, a => a.IdPropietario, b => b.IdProveedor, (a, b) => new { a, b })
                         .Join(dbContext.MovimientoCuentaPorPagarRepository, a => a.a.IdCxP, d => d.IdCxP, (b, c) => new { b, c }).Where(s => s.c.IdSucursal == intIdSucursal && !s.c.Nulo && s.c.Fecha >= datFechaInicial && s.c.Fecha <= datFechaFinal)
-                        .Select(d => new { d.b.a.IdPropietario, DescCxP = d.b.a.Descripcion, d.b.b.Nombre, d.c.IdCxP, d.b.a.Total, d.b.a.Saldo, d.c.IdMovCxP, d.c.Fecha, d.c.Recibo, d.c.Tipo, d.c.Monto });
+                        .Select(d => new { d.b.a.IdPropietario, d.b.a.Referencia, d.b.b.Nombre, d.c.IdCxP, d.b.a.Total, d.b.a.Saldo, d.c.IdMovCxP, d.c.Fecha, d.c.Recibo, d.c.Tipo, d.c.Monto });
                     if (intIdProveedor > 0)
                         cxpProveedores = cxpProveedores.Where(a => a.IdPropietario == intIdProveedor);
                     foreach (var value in cxpProveedores)
@@ -595,7 +600,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         reporteLinea.Descripcion = value.Nombre;
                         reporteLinea.Id = value.IdMovCxP;
                         reporteLinea.Fecha = value.Fecha.ToString("dd/MM/yyyy");
-                        reporteLinea.Detalle = value.DescCxP;
+                        reporteLinea.Detalle = "Cuenta por pagar de compra " + value.Referencia;
                         reporteLinea.Total = value.Monto;
                         listaReporte.Add(reporteLinea);
                     }

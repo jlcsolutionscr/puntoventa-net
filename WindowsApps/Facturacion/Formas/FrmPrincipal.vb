@@ -3,9 +3,9 @@ Imports System.Configuration
 Imports LeandroSoftware.Core.Dominio.Entidades
 Imports System.Collections.Generic
 Imports System.Linq
-Imports LeandroSoftware.ClienteWCF
 Imports LeandroSoftware.Core.Utilitario
 Imports LeandroSoftware.Core.TiposComunes
+Imports LeandroSoftware.ClienteWCF
 
 Public Class FrmPrincipal
 #Region "Variables"
@@ -29,7 +29,7 @@ Public Class FrmPrincipal
     Public bolSeleccionaSucursal As Boolean = False
     Public bolAnularTransacciones As Boolean = False
     Public bolModificaDescripcion As Boolean = False
-    Public bolAplicaDescuento As Boolean = False
+    Public bolModificaCliente As Boolean = False
     Public bolModificaPrecioVenta As Boolean = False
     Public productoTranstorio As Producto
     Public bolDescargaFinalizada As Boolean = False
@@ -220,7 +220,7 @@ Public Class FrmPrincipal
         formCuentaIngresoListado.Show()
     End Sub
 
-    Private Sub MnuMantCB_Click(sender As Object, e As EventArgs) 
+    Private Sub MnuMantCB_Click(sender As Object, e As EventArgs)
         Dim formCuentaBancoListado As New FrmCuentaBancoListado With {
             .MdiParent = Me
         }
@@ -554,7 +554,7 @@ Public Class FrmPrincipal
             bolSeleccionaSucursal = True
             bolAnularTransacciones = True
             bolModificaDescripcion = True
-            bolAplicaDescuento = True
+            bolModificaCliente = True
             bolModificaPrecioVenta = True
             For Each item As ToolStripMenuItem In mnuMenuPrincipal.Items
                 item.Visible = True
@@ -568,7 +568,7 @@ Public Class FrmPrincipal
                     If permiso.IdRole = 48 Then bolSeleccionaSucursal = True
                     If permiso.IdRole = 49 Then bolAnularTransacciones = True
                     If permiso.IdRole = 50 Then bolModificaDescripcion = True
-                    If permiso.IdRole = 51 Then bolAplicaDescuento = True
+                    If permiso.IdRole = 51 Then bolModificaCliente = True
                     If permiso.IdRole = 52 Then bolModificaPrecioVenta = True
                     objMenu = mnuMenuPrincipal.Items(permiso.Role.MenuPadre)
                     objMenu.Visible = True

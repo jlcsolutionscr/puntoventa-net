@@ -166,7 +166,7 @@ Public Class FrmAplicaTrasladoListado
         End If
     End Sub
 
-    Private Async Sub btnFiltrar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnFiltrar.Click
+    Private Async Sub BtnFiltrar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnFiltrar.Click
         If txtId.Text <> "" Then
             intId = CInt(txtId.Text)
         Else

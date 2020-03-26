@@ -71,6 +71,8 @@
   <ItemGroup>
     <None Include="packages.config" />
     <EmbeddedResource Include="PlantillaReportes\rptDescripcionValor.rdlc" />
+    <None Include="Properties\DataSources\LeandroSoftware.Core.TiposComunes.ReporteCuentas.datasource" />
+    <None Include="Properties\DataSources\LeandroSoftware.Core.TiposComunes.ReporteDocumentoElectronico.datasource" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="PlantillaReportes\rptComprobanteElectronico.rdlc" />

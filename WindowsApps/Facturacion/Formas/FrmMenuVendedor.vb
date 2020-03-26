@@ -8,7 +8,7 @@ Public Class FrmMenuVendedor
     Private Async Sub CargarCombos()
         cboIdVendedor.ValueMember = "Id"
         cboIdVendedor.DisplayMember = "Descripcion"
-        cboIdVendedor.DataSource = Await Puntoventa.ObtenerListadoVendedores(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+        cboIdVendedor.DataSource = Await Puntoventa.ObtenerListadoVendedores(FrmPrincipal.empresaGlobal.IdEmpresa, "", FrmPrincipal.usuarioGlobal.Token)
         cboIdVendedor.SelectedValue = 0
     End Sub
 #End Region

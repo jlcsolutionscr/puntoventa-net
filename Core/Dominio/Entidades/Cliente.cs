@@ -20,10 +20,6 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         [ForeignKey("TipoIdentificacion")]
         public int IdTipoIdentificacion { get; set; }
         public string Identificacion { get; set; }
-        public int IdProvincia { get; set; }
-        public int IdCanton { get; set; }
-        public int IdDistrito { get; set; }
-        public int IdBarrio { get; set; }
         public string Direccion { get; set; }
         public string Nombre { get; set; }
         public string NombreComercial { get; set; }
@@ -43,11 +39,10 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public string NombreInstExoneracion { get; set; }
         public DateTime FechaEmisionDoc { get; set; }
         public int PorcentajeExoneracion { get; set; }
+        public bool PermiteCredito { get; set; }
 
         public Empresa Empresa { get; set; }
         public TipoIdentificacion TipoIdentificacion { get; set; }
-        [ForeignKey("IdProvincia, IdCanton, IdDistrito, IdBarrio")]
-        public Barrio Barrio { get; set; }
         public Vendedor Vendedor { get; set; }
         public ParametroImpuesto ParametroImpuesto { get; set; }
         public ParametroExoneracion ParametroExoneracion { get; set; }

@@ -3,8 +3,8 @@ Imports System.Xml
 Imports LeandroSoftware.Core.Dominio.Entidades
 Imports System.Text
 Imports System.Threading.Tasks
-Imports LeandroSoftware.ClienteWCF
 Imports LeandroSoftware.Core.TiposComunes
+Imports LeandroSoftware.ClienteWCF
 
 Public Class FrmDetalleDocumentoElectronico
 #Region "Variables"

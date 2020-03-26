@@ -1,4 +1,3 @@
-Imports System.Collections.Generic
 Imports LeandroSoftware.Core.Dominio.Entidades
 Imports LeandroSoftware.ClienteWCF
 
