@@ -1595,8 +1595,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     else
                     {
-                        CuentaEgreso cuenta = dbContext.CuentaEgresoRepository.FirstOrDefault();
-                        if (cuenta == null) throw new BusinessException("La empresa no posee ninguna cuenta de egresos parametrizada");
+                        CuentaEgreso cuenta = dbContext.CuentaEgresoRepository.FirstOrDefault(x => x.IdEmpresa == devolucion.IdEmpresa && x.Descripcion.ToUpper().Contains("DEVOLUCION"));
+                        if (cuenta == null) throw new BusinessException("La empresa no posee ninguna cuenta de egresos para devoluciones de clientes parametrizada");
                         Egreso egreso = new Egreso();
                         egreso.IdEmpresa = devolucion.IdEmpresa;
                         egreso.IdSucursal = devolucion.IdSucursal;
@@ -1604,7 +1604,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         egreso.Fecha = DateTime.Now;
                         egreso.IdCuenta = cuenta.IdCuenta;
                         egreso.Beneficiario = factura.NombreCliente;
-                        egreso.Detalle = "Egreso de efectivo por devolución de mercancías";
+                        egreso.Detalle = "Devolución de mercancías de factura " + factura.ConsecFactura;
                         egreso.Monto = devolucion.Total;
                         egreso.Nulo = false;
                         egreso.Procesado = false;
