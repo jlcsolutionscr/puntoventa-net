@@ -35,7 +35,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.txtRecepcion = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.txtVersion = new System.Windows.Forms.TextBox();
+            this.txtModoMantenimiento = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // txtPendientes
@@ -91,31 +91,31 @@
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(37, 68);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(116, 13);
+            this.label3.Size = new System.Drawing.Size(108, 13);
             this.label3.TabIndex = 13;
-            this.label3.Text = "Versión del mobile app:";
+            this.label3.Text = "Modo mantenimiento:";
             // 
-            // txtVersion
+            // txtModoMantenimiento
             // 
-            this.txtVersion.Location = new System.Drawing.Point(159, 65);
-            this.txtVersion.Name = "txtVersion";
-            this.txtVersion.Size = new System.Drawing.Size(212, 20);
-            this.txtVersion.TabIndex = 12;
+            this.txtModoMantenimiento.Location = new System.Drawing.Point(159, 65);
+            this.txtModoMantenimiento.Name = "txtModoMantenimiento";
+            this.txtModoMantenimiento.Size = new System.Drawing.Size(212, 20);
+            this.txtModoMantenimiento.TabIndex = 12;
             // 
-            // FrmVersionMobileApp
+            // FrmParametrosSistema
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(193)))), ((int)(((byte)(215)))), ((int)(((byte)(225)))));
             this.ClientSize = new System.Drawing.Size(388, 140);
             this.Controls.Add(this.label3);
-            this.Controls.Add(this.txtVersion);
+            this.Controls.Add(this.txtModoMantenimiento);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.txtRecepcion);
             this.Controls.Add(this.btnActualizar);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.txtPendientes);
-            this.Name = "FrmVersionMobileApp";
+            this.Name = "FrmParametrosSistema";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Actualizar parámetros del sistema";
             this.Load += new System.EventHandler(this.FrmSubirActualizacion_Load);
@@ -133,6 +133,6 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox txtRecepcion;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox txtVersion;
+        private System.Windows.Forms.TextBox txtModoMantenimiento;
     }
 }

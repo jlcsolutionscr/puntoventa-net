@@ -52,7 +52,7 @@ Public Class FrmProductoListado
 
         dvcCantidad.DataPropertyName = "Cantidad"
         dvcCantidad.HeaderText = "Cant"
-        dvcCantidad.Width = 48
+        dvcCantidad.Width = 47
         dvcCantidad.DefaultCellStyle = FrmPrincipal.dgvDecimal
         dgvListado.Columns.Add(dvcCantidad)
 

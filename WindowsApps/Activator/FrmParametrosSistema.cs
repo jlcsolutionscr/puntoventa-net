@@ -23,7 +23,7 @@ namespace LeandroSoftware.Activator
                 List<ParametroSistema> listado = await Administrador.ObtenerListadoParametros(FrmMenu.strToken);
                 txtPendientes.Text = listado.FirstOrDefault(x => x.IdParametro == 2).Valor;
                 txtRecepcion.Text = listado.FirstOrDefault(x => x.IdParametro == 3).Valor;
-                txtVersion.Text = listado.FirstOrDefault(x => x.IdParametro == 4).Valor;
+                txtModoMantenimiento.Text = listado.FirstOrDefault(x => x.IdParametro == 5).Valor;
                 btnActualizar.Enabled = true;
             }
             catch (Exception ex)
@@ -45,7 +45,7 @@ namespace LeandroSoftware.Activator
                 {
                     await Administrador.ActualizarParametroSistema(2, txtPendientes.Text, FrmMenu.strToken);
                     await Administrador.ActualizarParametroSistema(3, txtRecepcion.Text, FrmMenu.strToken);
-                    await Administrador.ActualizarParametroSistema(4, txtVersion.Text, FrmMenu.strToken);
+                    await Administrador.ActualizarParametroSistema(5, txtModoMantenimiento.Text, FrmMenu.strToken);
                     MessageBox.Show("Actualización procesada satisfactoriamente. . .", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     Close();
                 }

@@ -22,7 +22,7 @@ Public Class FrmClienteListado
         dgvListado.Columns.Add(dvcId)
         dvcDescripcion.HeaderText = "Descripción"
         dvcDescripcion.DataPropertyName = "Descripcion"
-        dvcDescripcion.Width = 600
+        dvcDescripcion.Width = 617
         dgvListado.Columns.Add(dvcDescripcion)
     End Sub
 

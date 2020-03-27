@@ -824,7 +824,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                     IdSucursal = factura.IdSucursal,
                                     Fecha = DateTime.Now,
                                     Tipo = StaticTipoMovimientoProducto.Entrada,
-                                    Origen = "Anulación de registro de facturación de mercancía de factura " + factura.ConsecFactura,
+                                    Origen = "Anulación de registro de facturación " + factura.ConsecFactura,
                                     Cantidad = cantPorAnular,
                                     PrecioCosto = detalleFactura.PrecioCosto
                                 };
@@ -1557,7 +1557,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             IdSucursal = factura.IdSucursal,
                             Fecha = DateTime.Now,
                             Tipo = StaticTipoMovimientoProducto.Entrada,
-                            Origen = "Registro de devolución de mercancía del cliente de factura " + factura.ConsecFactura,
+                            Origen = "Registro de devolución de mercancía de clientes sobre factura " + factura.ConsecFactura,
                             Cantidad = detalleDevolucion.Cantidad,
                             PrecioCosto = detalleDevolucion.PrecioCosto
                         };
@@ -1565,7 +1565,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     if (factura.IdCondicionVenta == StaticCondicionVenta.Credito)
                     {
-                        BancoAdquiriente cuentaBanco = dbContext.BancoAdquirienteRepository.FirstOrDefault();
+                        BancoAdquiriente cuentaBanco = dbContext.BancoAdquirienteRepository.FirstOrDefault(x => x.IdEmpresa == devolucion.IdEmpresa);
                         if (cuentaBanco == null) throw new BusinessException("La empresa no posee ningun banco adquiriente parametrizado");
                         CuentaPorCobrar cxc = dbContext.CuentaPorCobrarRepository.Find(factura.IdCxC);
                         if (cxc == null) throw new BusinessException("La cuenta por cobrar asignada a la factura de la devolución no existe");
@@ -1581,7 +1581,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         mov.SaldoActual = cxc.Saldo;
                         mov.Fecha = DateTime.Now;
                         DesglosePagoMovimientoCuentaPorCobrar desglosePagoMovimiento = new DesglosePagoMovimientoCuentaPorCobrar();
-                        desglosePagoMovimiento.IdFormaPago = StaticFormaPago.Efectivo;
+                        desglosePagoMovimiento.IdFormaPago = StaticFormaPago.TransferenciaDepositoBancario;
                         desglosePagoMovimiento.IdCuentaBanco = cuentaBanco.IdBanco;
                         desglosePagoMovimiento.TipoTarjeta = "";
                         desglosePagoMovimiento.NroMovimiento = "";

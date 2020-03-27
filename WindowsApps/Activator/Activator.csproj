@@ -187,6 +187,10 @@
       <Project>{74E3681E-1245-4268-ADB9-D76DA18B2FE0}</Project>
       <Name>Dominio</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ClienteWCF\ClienteWCF.csproj">
+      <Project>{2602dd72-5aa0-45a2-a4a6-4805da33c318}</Project>
+      <Name>ClienteWCF</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -28,9 +28,12 @@ namespace LeandroSoftware.ServicioWeb
         {
             try
             {
-                servicioMantenimiento = unityContainer.Resolve<IMantenimientoService>();
-                bool modoMantenimiento = servicioMantenimiento.EnModoMantenimiento();
-                if (modoMantenimiento) throw new Exception("El sistema se encuentra en modo mantenimiento y no es posible procesar su solicitud.");
+                if (!request.Properties["Via"].ToString().Contains("AdministracionWCF.svc"))
+                {
+                    servicioMantenimiento = unityContainer.Resolve<IMantenimientoService>();
+                    bool modoMantenimiento = servicioMantenimiento.EnModoMantenimiento();
+                    if (modoMantenimiento) throw new Exception("El sistema se encuentra en modo mantenimiento y no es posible procesar su solicitud.");
+                }
                 string strOperacion = request.Properties["HttpOperationName"].ToString();
                 if (!new string[] { "", "ObtenerUltimaVersionMobileApp", "ObtenerUltimaVersionApp", "DescargarActualizacion", "LimpiarRegistrosInvalidos", "ProcesarDocumentosElectronicosPendientes", "ValidarCredencialesAdmin", "ValidarCredenciales", "ObtenerListadoEmpresasAdministrador", "ObtenerListadoEmpresasPorTerminal", "ObtenerListadoTerminalesDisponibles", "RegistrarTerminal" }.Contains(strOperacion))
                 {
@@ -39,6 +42,7 @@ namespace LeandroSoftware.ServicioWeb
                     string strToken = headers["Authorization"];
                     if (strToken == null) throw new Exception("La sessión del usuario no es válida. Debe reiniciar su sesión.");
                     strToken = strToken.Substring(7);
+                    servicioMantenimiento = unityContainer.Resolve<IMantenimientoService>();
                     servicioMantenimiento.ValidarRegistroAutenticacion(strToken, StaticRolePorUsuario.USUARIO_SISTEMA);
                 }
                 var httpRequest = (HttpRequestMessageProperty)request.Properties[HttpRequestMessageProperty.Name];
