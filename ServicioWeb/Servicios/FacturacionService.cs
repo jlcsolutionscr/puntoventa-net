@@ -856,7 +856,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     DocumentoElectronico documentoNC = null;
                     if (!empresa.RegimenSimplificado && factura.IdDocElectronico != null)
                     {
-                        DocumentoElectronico documento = dbContext.DocumentoElectronicoRepository.Find(factura.IdDocElectronico);
+                        DocumentoElectronico documento = dbContext.DocumentoElectronicoRepository.FirstOrDefault(x => x.ClaveNumerica == factura.IdDocElectronico);
                         if (documento == null)
                             throw new BusinessException("El documento electrónico relacionado con la factura no existe.");
                         if (documento.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado)
@@ -1725,7 +1725,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     DocumentoElectronico documentoND = null;
                     if (!empresa.RegimenSimplificado && devolucion.IdDocElectronico != null)
                     {
-                        DocumentoElectronico documento = dbContext.DocumentoElectronicoRepository.Find(devolucion.IdDocElectronico);
+                        DocumentoElectronico documento = dbContext.DocumentoElectronicoRepository.FirstOrDefault(x => x.ClaveNumerica == devolucion.IdDocElectronico);
                         if (documento == null)
                             throw new BusinessException("El documento electrónico relacionado con la devolución no existe.");
                         if (documento.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado)

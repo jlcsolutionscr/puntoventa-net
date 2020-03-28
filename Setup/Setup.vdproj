@@ -117,6 +117,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_40CEA3FF97A373747A91C7CA2E2694C3"
+        "OwnerKey" = "8:_DDF81ED43DB66AAB1C681EF38049BAF7"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_4B76602F46A56E72CC2A9040F3D6775D"
         "OwnerKey" = "8:_A2BC57FD704A915169BEC07F7429E8BB"
         "MsmSig" = "8:_UNDEFINED"
@@ -159,8 +165,20 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_8E402EA8846AE397EADC1B98FC6CAA6F"
+        "OwnerKey" = "8:_DDF81ED43DB66AAB1C681EF38049BAF7"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_A2BC57FD704A915169BEC07F7429E8BB"
         "OwnerKey" = "8:_3ECECD27447042C9B8CD278EB2AE3EB0"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_A2BC57FD704A915169BEC07F7429E8BB"
+        "OwnerKey" = "8:_DDF81ED43DB66AAB1C681EF38049BAF7"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -273,6 +291,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_DDF81ED43DB66AAB1C681EF38049BAF7"
+        "OwnerKey" = "8:_3ECECD27447042C9B8CD278EB2AE3EB0"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_E1E10F29523FC35E0B21F6BA3B9530E1"
         "OwnerKey" = "8:_C10346D6D9C74405A17CAF02B5B9D7AB"
         "MsmSig" = "8:_UNDEFINED"
@@ -299,6 +323,12 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_3ECECD27447042C9B8CD278EB2AE3EB0"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_DDF81ED43DB66AAB1C681EF38049BAF7"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -481,7 +511,7 @@
                 {
                 "Name" = "8:.NET Framework"
                 "Message" = "8:[VSDNETMSG]"
-                "FrameworkVersion" = "8:v4.0                                 "
+                "FrameworkVersion" = "8:v4.0                                  "
                 "AllowLaterVersions" = "11:FALSE"
                 "InstallUrl" = "8:http://go.microsoft.com/fwlink/?LinkId=9832"
                 }
@@ -589,6 +619,11 @@
             "AssemblyAsmDisplayName" = "8:PdfSharp, Version=1.32.3057.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_27264D5E681819121C4469763D0E4642"
+                    {
+                    "Name" = "8:PdfSharp.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:PdfSharp.dll"
             "TargetName" = "8:"
@@ -694,9 +729,14 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Dominio, Version=4.0.8.0, Culture=neutral, processorArchitecture=x86"
+            "AssemblyAsmDisplayName" = "8:Dominio, Version=4.0.9.0, Culture=neutral, processorArchitecture=x86"
                 "ScatterAssemblies"
                 {
+                    "_40CEA3FF97A373747A91C7CA2E2694C3"
+                    {
+                    "Name" = "8:Dominio.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:Dominio.dll"
             "TargetName" = "8:"
@@ -723,6 +763,11 @@
             "AssemblyAsmDisplayName" = "8:Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_4B76602F46A56E72CC2A9040F3D6775D"
+                    {
+                    "Name" = "8:Newtonsoft.Json.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:Newtonsoft.Json.dll"
             "TargetName" = "8:"
@@ -839,9 +884,14 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Core, Version=4.0.8.0, Culture=neutral, processorArchitecture=x86"
+            "AssemblyAsmDisplayName" = "8:Core, Version=4.0.9.0, Culture=neutral, processorArchitecture=x86"
                 "ScatterAssemblies"
                 {
+                    "_A2BC57FD704A915169BEC07F7429E8BB"
+                    {
+                    "Name" = "8:Core.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:Core.dll"
             "TargetName" = "8:"
@@ -1067,6 +1117,37 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_DDF81ED43DB66AAB1C681EF38049BAF7"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:ClienteWCF, Version=4.0.9.0, Culture=neutral, processorArchitecture=x86"
+                "ScatterAssemblies"
+                {
+                    "_DDF81ED43DB66AAB1C681EF38049BAF7"
+                    {
+                    "Name" = "8:ClienteWCF.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:ClienteWCF.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_5A78B4A4225A47DC84E12965E5D1780F"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_E1E10F29523FC35E0B21F6BA3B9530E1"
             {
             "AssemblyRegister" = "3:1"
@@ -1185,15 +1266,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:PuntoventaJLC"
-        "ProductCode" = "8:{294198A1-3DB3-468F-9EC8-E6B261713C7F}"
-        "PackageCode" = "8:{65C5EEF0-0BEB-4C43-97FA-D246E3A5E7F2}"
+        "ProductCode" = "8:{E9EEDE7B-461E-4895-8B08-43357A65F92B}"
+        "PackageCode" = "8:{C7A689A9-EA21-4C58-8ABE-366183485DFE}"
         "UpgradeCode" = "8:{9F4F56C6-17E9-4C36-9940-81BDB1283F7F}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:4.0.8"
+        "ProductVersion" = "8:4.0.9"
         "Manufacturer" = "8:JLC Solutions"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
