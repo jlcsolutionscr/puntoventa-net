@@ -905,7 +905,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                             strRespuesta = serializer.Serialize(listadoReporteMovimientosCxP);
                         break;
                     case "ObtenerReporteMovimientosBanco":
-                        int intIdCuenta = int.Parse(parametrosJO.Property("IdCuenta").Value.ToString());
+                        intIdCuenta = int.Parse(parametrosJO.Property("IdCuenta").Value.ToString());
                         strFechaInicial = parametrosJO.Property("FechaInicial").Value.ToString();
                         strFechaFinal = parametrosJO.Property("FechaFinal").Value.ToString();
                         IList<ReporteMovimientosBanco> listadoReporteMovimientosBanco = servicioReportes.ObtenerReporteMovimientosBanco(intIdCuenta, strFechaInicial, strFechaFinal);

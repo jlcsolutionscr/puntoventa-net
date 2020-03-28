@@ -61,7 +61,7 @@
                 </Style>
               </Paragraph>
             </Paragraphs>
-            <Top>6.1619cm</Top>
+            <Top>7.1144cm</Top>
             <Left>11.80862cm</Left>
             <Height>0.6cm</Height>
             <Width>4.0067cm</Width>
@@ -94,7 +94,7 @@
                 </Style>
               </Paragraph>
             </Paragraphs>
-            <Top>6.1619cm</Top>
+            <Top>7.1144cm</Top>
             <Left>7.90521cm</Left>
             <Height>0.65292cm</Height>
             <Width>3.72702cm</Width>
@@ -129,8 +129,8 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>pEmpresa</rd:DefaultName>
-            <Top>1.08906cm</Top>
-            <Left>5.53656cm</Left>
+            <Top>1.02009cm</Top>
+            <Left>5.59681cm</Left>
             <Height>0.6cm</Height>
             <Width>10.27875cm</Width>
             <ZIndex>2</ZIndex>
@@ -226,8 +226,8 @@
                 </Style>
               </Paragraph>
             </Paragraphs>
-            <Top>1.95639cm</Top>
-            <Left>5.53656cm</Left>
+            <Top>1.79648cm</Top>
+            <Left>5.59681cm</Left>
             <Height>0.6cm</Height>
             <Width>10.27875cm</Width>
             <ZIndex>5</ZIndex>
@@ -260,8 +260,8 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>pFechaHasta</rd:DefaultName>
-            <Top>2.86176cm</Top>
-            <Left>13.31532cm</Left>
+            <Top>3.74529cm</Top>
+            <Left>13.37556cm</Left>
             <Height>0.6cm</Height>
             <Width>2.5cm</Width>
             <ZIndex>6</ZIndex>
@@ -294,8 +294,8 @@
                 </Style>
               </Paragraph>
             </Paragraphs>
-            <Top>2.86176cm</Top>
-            <Left>11.30038cm</Left>
+            <Top>3.74529cm</Top>
+            <Left>11.36063cm</Left>
             <Height>0.6cm</Height>
             <Width>1.83854cm</Width>
             <ZIndex>7</ZIndex>
@@ -328,8 +328,8 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>pFechaDesde</rd:DefaultName>
-            <Top>2.86176cm</Top>
-            <Left>7.55148cm</Left>
+            <Top>3.74529cm</Top>
+            <Left>7.61174cm</Left>
             <Height>0.6cm</Height>
             <Width>2.5cm</Width>
             <ZIndex>8</ZIndex>
@@ -362,8 +362,8 @@
                 </Style>
               </Paragraph>
             </Paragraphs>
-            <Top>2.86176cm</Top>
-            <Left>5.53656cm</Left>
+            <Top>3.74529cm</Top>
+            <Left>5.59681cm</Left>
             <Height>0.6cm</Height>
             <Width>1.83854cm</Width>
             <ZIndex>9</ZIndex>
@@ -378,7 +378,7 @@
             </Style>
           </Textbox>
           <Line Name="Line2">
-            <Top>5.98551cm</Top>
+            <Top>6.93801cm</Top>
             <Left>15.81532cm</Left>
             <Height>0cm</Height>
             <Width>-9.83337cm</Width>
@@ -530,10 +530,10 @@
               </TablixMembers>
             </TablixRowHierarchy>
             <DataSetName>dstDatos</DataSetName>
-            <Top>5.20912cm</Top>
+            <Top>6.16162cm</Top>
             <Left>5.98699cm</Left>
             <Height>0.6cm</Height>
-            <Width>9.82833cm</Width>
+            <Width>9.82834cm</Width>
             <ZIndex>11</ZIndex>
             <Style>
               <Border>
@@ -560,7 +560,7 @@
                 </Style>
               </Paragraph>
             </Paragraphs>
-            <Top>4.37981cm</Top>
+            <Top>5.33231cm</Top>
             <Left>5.53656cm</Left>
             <Height>0.65292cm</Height>
             <Width>3.72702cm</Width>
@@ -595,7 +595,7 @@
                 </Style>
               </Paragraph>
             </Paragraphs>
-            <Top>9.21261cm</Top>
+            <Top>10.16511cm</Top>
             <Left>11.79854cm</Left>
             <Height>0.6cm</Height>
             <Width>4.0067cm</Width>
@@ -629,7 +629,7 @@
                 </Style>
               </Paragraph>
             </Paragraphs>
-            <Top>9.21261cm</Top>
+            <Top>10.16511cm</Top>
             <Left>7.89513cm</Left>
             <Height>0.65292cm</Height>
             <Width>3.72702cm</Width>
@@ -645,7 +645,7 @@
             </Style>
           </Textbox>
           <Line Name="Line3">
-            <Top>9.03622cm</Top>
+            <Top>9.98872cm</Top>
             <Left>15.80524cm</Left>
             <Height>0cm</Height>
             <Width>-9.83337cm</Width>
@@ -796,7 +796,7 @@
               </TablixMembers>
             </TablixRowHierarchy>
             <DataSetName>dstDatos</DataSetName>
-            <Top>8.25983cm</Top>
+            <Top>9.21233cm</Top>
             <Left>5.97691cm</Left>
             <Height>0.6cm</Height>
             <Width>9.83841cm</Width>
@@ -826,7 +826,7 @@
                 </Style>
               </Paragraph>
             </Paragraphs>
-            <Top>7.43052cm</Top>
+            <Top>8.38302cm</Top>
             <Left>5.52648cm</Left>
             <Height>0.65292cm</Height>
             <Width>3.72702cm</Width>
@@ -842,7 +842,7 @@
             </Style>
           </Textbox>
           <Line Name="Line4">
-            <Top>7.13052cm</Top>
+            <Top>8.08302cm</Top>
             <Left>15.81531cm</Left>
             <Height>0cm</Height>
             <Width>-10.23025cm</Width>
@@ -872,7 +872,7 @@
                 </Style>
               </Paragraph>
             </Paragraphs>
-            <Top>10.77281cm</Top>
+            <Top>11.72531cm</Top>
             <Left>7.55148cm</Left>
             <Height>0.65292cm</Height>
             <Width>4.08075cm</Width>
@@ -907,7 +907,7 @@
                 </Style>
               </Paragraph>
             </Paragraphs>
-            <Top>10.77281cm</Top>
+            <Top>11.72531cm</Top>
             <Left>11.80862cm</Left>
             <Height>0.6cm</Height>
             <Width>4.0067cm</Width>
@@ -922,15 +922,49 @@
               <PaddingBottom>2pt</PaddingBottom>
             </Style>
           </Textbox>
+          <Textbox Name="pNombreReporte2">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=Parameters!pSucursal.Value</Value>
+                    <Style>
+                      <FontFamily>Tahoma</FontFamily>
+                      <FontWeight>Bold</FontWeight>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style>
+                  <TextAlign>Center</TextAlign>
+                </Style>
+              </Paragraph>
+            </Paragraphs>
+            <Top>2.57287cm</Top>
+            <Left>5.59681cm</Left>
+            <Height>0.6cm</Height>
+            <Width>10.27875cm</Width>
+            <ZIndex>21</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+            </Style>
+          </Textbox>
         </ReportItems>
-        <Height>4.82292in</Height>
+        <Height>5.125in</Height>
         <Style>
           <Border>
             <Style>None</Style>
           </Border>
         </Style>
       </Body>
-      <Width>8.5in</Width>
+      <Width>8.47917in</Width>
       <Page>
         <PageHeight>27.94cm</PageHeight>
         <PageWidth>21.59cm</PageWidth>
@@ -965,11 +999,15 @@
       <DataType>String</DataType>
       <Prompt>ReportParameter1</Prompt>
     </ReportParameter>
+    <ReportParameter Name="pSucursal">
+      <DataType>String</DataType>
+      <Prompt>ReportParameter1</Prompt>
+    </ReportParameter>
   </ReportParameters>
   <ReportParametersLayout>
     <GridLayoutDefinition>
-      <NumberOfColumns>4</NumberOfColumns>
-      <NumberOfRows>2</NumberOfRows>
+      <NumberOfColumns>5</NumberOfColumns>
+      <NumberOfRows>1</NumberOfRows>
       <CellDefinitions>
         <CellDefinition>
           <ColumnIndex>0</ColumnIndex>
@@ -982,14 +1020,19 @@
           <ParameterName>pEmpresa</ParameterName>
         </CellDefinition>
         <CellDefinition>
-          <ColumnIndex>3</ColumnIndex>
+          <ColumnIndex>2</ColumnIndex>
           <RowIndex>0</RowIndex>
           <ParameterName>pFechaDesde</ParameterName>
         </CellDefinition>
         <CellDefinition>
-          <ColumnIndex>0</ColumnIndex>
-          <RowIndex>1</RowIndex>
+          <ColumnIndex>3</ColumnIndex>
+          <RowIndex>0</RowIndex>
           <ParameterName>pFechaHasta</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>4</ColumnIndex>
+          <RowIndex>0</RowIndex>
+          <ParameterName>pSucursal</ParameterName>
         </CellDefinition>
       </CellDefinitions>
     </GridLayoutDefinition>

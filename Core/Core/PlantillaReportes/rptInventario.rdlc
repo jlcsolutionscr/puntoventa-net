@@ -74,7 +74,7 @@
               </TablixColumns>
               <TablixRows>
                 <TablixRow>
-                  <Height>0.67354cm</Height>
+                  <Height>0.58216cm</Height>
                   <TablixCells>
                     <TablixCell>
                       <CellContents>
@@ -270,7 +270,7 @@
             <DataSetName>dstDatos</DataSetName>
             <Top>0.0441cm</Top>
             <Left>0.13825cm</Left>
-            <Height>0.67354cm</Height>
+            <Height>0.58216cm</Height>
             <Width>20.72116cm</Width>
             <Style>
               <Border>
@@ -279,7 +279,7 @@
             </Style>
           </Tablix>
           <Line Name="Line2">
-            <Top>0.80265cm</Top>
+            <Top>0.70265cm</Top>
             <Left>20.84116cm</Left>
             <Height>0cm</Height>
             <Width>-20.68129cm</Width>
@@ -291,7 +291,7 @@
             </Style>
           </Line>
         </ReportItems>
-        <Height>0.375in</Height>
+        <Height>0.33333in</Height>
         <Style>
           <Border>
             <Style>None</Style>
@@ -839,7 +839,7 @@
   <ReportParametersLayout>
     <GridLayoutDefinition>
       <NumberOfColumns>4</NumberOfColumns>
-      <NumberOfRows>2</NumberOfRows>
+      <NumberOfRows>1</NumberOfRows>
       <CellDefinitions>
         <CellDefinition>
           <ColumnIndex>0</ColumnIndex>

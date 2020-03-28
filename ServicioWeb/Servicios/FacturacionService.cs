@@ -856,12 +856,18 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     DocumentoElectronico documentoNC = null;
                     if (!empresa.RegimenSimplificado && factura.IdDocElectronico != null)
                     {
-                        DateTime fechaDocumento = DateTime.UtcNow.AddHours(-6);
-                        string criteria = fechaDocumento.ToString("dd/MM/yyyy");
-                        TipoDeCambioDolar tipoDeCambio = dbContext.TipoDeCambioDolarRepository.Find(criteria);
-                        if (tipoDeCambio == null) throw new BusinessException("El tipo de cambio para la fecha " + criteria + " no ha sido actualizado. Por favor consulte con su proveedor.");
-                        documentoNC = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronica(factura, factura.Empresa, cliente, dbContext, fechaDocumento, tipoDeCambio.ValorTipoCambio);
-                        factura.IdDocElectronicoRev = documentoNC.ClaveNumerica;
+                        DocumentoElectronico documento = dbContext.DocumentoElectronicoRepository.Find(factura.IdDocElectronico);
+                        if (documento == null)
+                            throw new BusinessException("El documento electrónico relacionado con la factura no existe.");
+                        if (documento.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado)
+                        {
+                            DateTime fechaDocumento = DateTime.UtcNow.AddHours(-6);
+                            string criteria = fechaDocumento.ToString("dd/MM/yyyy");
+                            TipoDeCambioDolar tipoDeCambio = dbContext.TipoDeCambioDolarRepository.Find(criteria);
+                            if (tipoDeCambio == null) throw new BusinessException("El tipo de cambio para la fecha " + criteria + " no ha sido actualizado. Por favor consulte con su proveedor.");
+                            documentoNC = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronica(factura, factura.Empresa, cliente, dbContext, fechaDocumento, tipoDeCambio.ValorTipoCambio);
+                            factura.IdDocElectronicoRev = documentoNC.ClaveNumerica;
+                        }
                     }
                     dbContext.Commit();
                     if (documentoNC != null)
@@ -1719,17 +1725,23 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     DocumentoElectronico documentoND = null;
                     if (!empresa.RegimenSimplificado && devolucion.IdDocElectronico != null)
                     {
-                        DateTime fechaDocumento = DateTime.UtcNow.AddHours(-6);
-                        string criteria = fechaDocumento.ToString("dd/MM/yyyy");
-                        TipoDeCambioDolar tipoDeCambio = dbContext.TipoDeCambioDolarRepository.Find(criteria);
-                        if (tipoDeCambio != null)
+                        DocumentoElectronico documento = dbContext.DocumentoElectronicoRepository.Find(devolucion.IdDocElectronico);
+                        if (documento == null)
+                            throw new BusinessException("El documento electrónico relacionado con la devolución no existe.");
+                        if (documento.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado)
                         {
-                            documentoND = ComprobanteElectronicoService.GenerarNotaDeDebitoElectronicaParcial(devolucion, factura, empresa, devolucion.Cliente, dbContext, fechaDocumento, tipoDeCambio.ValorTipoCambio, devolucion.IdDocElectronico);
-                            devolucion.IdDocElectronicoRev = documentoND.ClaveNumerica;
-                        }
-                        else
-                        {
-                            throw new BusinessException("El tipo de cambio para la fecha " + criteria + " no ha sido actualizado. Por favor consulte con su proveedor.");
+                            DateTime fechaDocumento = DateTime.UtcNow.AddHours(-6);
+                            string criteria = fechaDocumento.ToString("dd/MM/yyyy");
+                            TipoDeCambioDolar tipoDeCambio = dbContext.TipoDeCambioDolarRepository.Find(criteria);
+                            if (tipoDeCambio != null)
+                            {
+                                documentoND = ComprobanteElectronicoService.GenerarNotaDeDebitoElectronicaParcial(devolucion, factura, empresa, devolucion.Cliente, dbContext, fechaDocumento, tipoDeCambio.ValorTipoCambio, devolucion.IdDocElectronico);
+                                devolucion.IdDocElectronicoRev = documentoND.ClaveNumerica;
+                            }
+                            else
+                            {
+                                throw new BusinessException("El tipo de cambio para la fecha " + criteria + " no ha sido actualizado. Por favor consulte con su proveedor.");
+                            }
                         }
                     }
                     dbContext.NotificarModificacion(devolucion);
@@ -1867,7 +1879,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             if (documentoXml.GetElementsByTagName("TotalComprobante").Count > 0)
                                 decTotal = decimal.Parse(documentoXml.GetElementsByTagName("TotalComprobante").Item(0).InnerText, CultureInfo.InvariantCulture);
                         }
-                        DocumentoDetalle item = new DocumentoDetalle(value.IdDocumento, value.ClaveNumerica, value.Consecutivo, value.Fecha.ToString("dd/MM/yyyy"), strNombre, value.EstadoEnvio, value.ErrorEnvio, decTotal, value.EsMensajeReceptor, value.CorreoNotificacion);
+                        DocumentoDetalle item = new DocumentoDetalle(value.IdDocumento, value.ClaveNumerica, value.Consecutivo, value.Fecha.ToString("dd/MM/yyyy"), strNombre, value.EstadoEnvio, value.ErrorEnvio, decTotal, value.EsMensajeReceptor, value.Reprocesado, value.CorreoNotificacion);
                         listaDocumento.Add(item);
                     }
                     return listaDocumento;
@@ -1928,7 +1940,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             if (documentoXml.GetElementsByTagName("TotalComprobante").Count > 0)
                                 decTotal = decimal.Parse(documentoXml.GetElementsByTagName("TotalComprobante").Item(0).InnerText, CultureInfo.InvariantCulture);
                         }
-                        DocumentoDetalle item = new DocumentoDetalle(value.IdDocumento, value.ClaveNumerica, value.Consecutivo, value.Fecha.ToString("dd/MM/yyyy"), strNombre, value.EstadoEnvio, value.ErrorEnvio, decTotal, value.EsMensajeReceptor, value.CorreoNotificacion);
+                        DocumentoDetalle item = new DocumentoDetalle(value.IdDocumento, value.ClaveNumerica, value.Consecutivo, value.Fecha.ToString("dd/MM/yyyy"), strNombre, value.EstadoEnvio, value.ErrorEnvio, decTotal, value.EsMensajeReceptor, value.Reprocesado, value.CorreoNotificacion);
                         listaDocumento.Add(item);
                     }
                     return listaDocumento;
@@ -2466,7 +2478,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             if (documentoXml.GetElementsByTagName("TotalComprobante").Count > 0)
                                 decTotal = decimal.Parse(documentoXml.GetElementsByTagName("TotalComprobante").Item(0).InnerText, CultureInfo.InvariantCulture);
                         }
-                        DocumentoDetalle item = new DocumentoDetalle(value.IdDocumento, value.ClaveNumerica, value.Consecutivo, value.Fecha.ToString("dd/MM/yyyy"), strNombre, value.EstadoEnvio, value.ErrorEnvio, decTotal, value.EsMensajeReceptor, value.CorreoNotificacion);
+                        DocumentoDetalle item = new DocumentoDetalle(value.IdDocumento, value.ClaveNumerica, value.Consecutivo, value.Fecha.ToString("dd/MM/yyyy"), strNombre, value.EstadoEnvio, value.ErrorEnvio, decTotal, value.EsMensajeReceptor, value.Reprocesado, value.CorreoNotificacion);
                         listaDocumento.Add(item);
                     }
                     return listaDocumento;

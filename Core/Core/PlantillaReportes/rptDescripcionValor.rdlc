@@ -49,7 +49,7 @@
               </TablixColumns>
               <TablixRows>
                 <TablixRow>
-                  <Height>0.67354cm</Height>
+                  <Height>0.58216cm</Height>
                   <TablixCells>
                     <TablixCell>
                       <CellContents>
@@ -140,9 +140,9 @@
               </TablixMembers>
             </TablixRowHierarchy>
             <DataSetName>dstDatos</DataSetName>
-            <Top>0.03528cm</Top>
+            <Top>0.10528cm</Top>
             <Left>3.23871cm</Left>
-            <Height>0.67354cm</Height>
+            <Height>0.58216cm</Height>
             <Width>15.51831cm</Width>
             <Style>
               <Border>
@@ -151,7 +151,7 @@
             </Style>
           </Tablix>
         </ReportItems>
-        <Height>0.78125in</Height>
+        <Height>0.40625in</Height>
         <Style>
           <Border>
             <Style>None</Style>
@@ -161,7 +161,7 @@
       <Width>8.5in</Width>
       <Page>
         <PageHeader>
-          <Height>4.68312cm</Height>
+          <Height>4.47145cm</Height>
           <PrintOnFirstPage>true</PrintOnFirstPage>
           <PrintOnLastPage>true</PrintOnLastPage>
           <ReportItems>
@@ -185,7 +185,7 @@
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>pEmpresa</rd:DefaultName>
-              <Top>1.08624cm</Top>
+              <Top>1cm</Top>
               <Left>5.88535cm</Left>
               <Height>0.6cm</Height>
               <Width>10.27875cm</Width>
@@ -281,7 +281,7 @@
                   </Style>
                 </Paragraph>
               </Paragraphs>
-              <Top>1.95357cm</Top>
+              <Top>1.77639cm</Top>
               <Left>5.88535cm</Left>
               <Height>0.6cm</Height>
               <Width>10.27875cm</Width>
@@ -313,11 +313,45 @@
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>pFechaHora</rd:DefaultName>
-              <Top>3.47458cm</Top>
+              <Top>3.52375cm</Top>
               <Left>5.88535cm</Left>
               <Height>0.6cm</Height>
               <Width>10.27875cm</Width>
               <ZIndex>4</ZIndex>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
+            <Textbox Name="pNombreReporte2">
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>=Parameters!pSucursal.Value</Value>
+                      <Style>
+                        <FontFamily>Tahoma</FontFamily>
+                        <FontWeight>Bold</FontWeight>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style>
+                    <TextAlign>Center</TextAlign>
+                  </Style>
+                </Paragraph>
+              </Paragraphs>
+              <Top>2.55278cm</Top>
+              <Left>5.88535cm</Left>
+              <Height>0.6cm</Height>
+              <Width>10.27875cm</Width>
+              <ZIndex>5</ZIndex>
               <Style>
                 <Border>
                   <Style>None</Style>
@@ -359,11 +393,6 @@
   <ReportParameters>
     <ReportParameter Name="pUsuario">
       <DataType>String</DataType>
-      <DefaultValue>
-        <Values>
-          <Value>JASLOP</Value>
-        </Values>
-      </DefaultValue>
       <Prompt>ReportParameter1</Prompt>
     </ReportParameter>
     <ReportParameter Name="pEmpresa">
@@ -378,11 +407,15 @@
       <DataType>String</DataType>
       <Prompt>ReportParameter1</Prompt>
     </ReportParameter>
+    <ReportParameter Name="pSucursal">
+      <DataType>String</DataType>
+      <Prompt>ReportParameter1</Prompt>
+    </ReportParameter>
   </ReportParameters>
   <ReportParametersLayout>
     <GridLayoutDefinition>
-      <NumberOfColumns>4</NumberOfColumns>
-      <NumberOfRows>2</NumberOfRows>
+      <NumberOfColumns>5</NumberOfColumns>
+      <NumberOfRows>1</NumberOfRows>
       <CellDefinitions>
         <CellDefinition>
           <ColumnIndex>0</ColumnIndex>
@@ -403,6 +436,11 @@
           <ColumnIndex>3</ColumnIndex>
           <RowIndex>0</RowIndex>
           <ParameterName>pFechaHora</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>4</ColumnIndex>
+          <RowIndex>0</RowIndex>
+          <ParameterName>pSucursal</ParameterName>
         </CellDefinition>
       </CellDefinitions>
     </GridLayoutDefinition>

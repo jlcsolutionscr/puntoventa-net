@@ -102,12 +102,13 @@ Public Class FrmMenuReportes
                     newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
                     Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptDetalle.rdlc")
                     newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
-                    Dim parameters(4) As ReportParameter
+                    Dim parameters(5) As ReportParameter
                     parameters(0) = New ReportParameter("pUsuario", strUsuario)
                     parameters(1) = New ReportParameter("pEmpresa", strEmpresa)
                     parameters(2) = New ReportParameter("pNombreReporte", "Reporte de Proformas en General")
                     parameters(3) = New ReportParameter("pFechaDesde", FechaInicio.Text)
                     parameters(4) = New ReportParameter("pFechaHasta", FechaFinal.Text)
+                    parameters(5) = New ReportParameter("pSucursal", cboSucursal.Text)
                     newFormReport.repReportViewer.LocalReport.SetParameters(parameters)
                     newFormReport.ShowDialog()
                 Case "Proformas anuladas"
@@ -125,12 +126,13 @@ Public Class FrmMenuReportes
                     newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
                     Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptDetalle.rdlc")
                     newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
-                    Dim parameters(4) As ReportParameter
+                    Dim parameters(5) As ReportParameter
                     parameters(0) = New ReportParameter("pUsuario", strUsuario)
                     parameters(1) = New ReportParameter("pEmpresa", strEmpresa)
                     parameters(2) = New ReportParameter("pNombreReporte", "Reporte de Proformas Anuladas")
                     parameters(3) = New ReportParameter("pFechaDesde", FechaInicio.Text)
                     parameters(4) = New ReportParameter("pFechaHasta", FechaFinal.Text)
+                    parameters(5) = New ReportParameter("pSucursal", cboSucursal.Text)
                     newFormReport.repReportViewer.LocalReport.SetParameters(parameters)
                     newFormReport.ShowDialog()
                 Case "Apartados en general"
@@ -148,12 +150,13 @@ Public Class FrmMenuReportes
                     newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
                     Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptDetalle.rdlc")
                     newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
-                    Dim parameters(4) As ReportParameter
+                    Dim parameters(5) As ReportParameter
                     parameters(0) = New ReportParameter("pUsuario", strUsuario)
                     parameters(1) = New ReportParameter("pEmpresa", strEmpresa)
                     parameters(2) = New ReportParameter("pNombreReporte", "Reporte de Apartados en General")
                     parameters(3) = New ReportParameter("pFechaDesde", FechaInicio.Text)
                     parameters(4) = New ReportParameter("pFechaHasta", FechaFinal.Text)
+                    parameters(5) = New ReportParameter("pSucursal", cboSucursal.Text)
                     newFormReport.repReportViewer.LocalReport.SetParameters(parameters)
                     newFormReport.ShowDialog()
                 Case "Apartados anulados"
@@ -171,12 +174,13 @@ Public Class FrmMenuReportes
                     newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
                     Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptDetalle.rdlc")
                     newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
-                    Dim parameters(4) As ReportParameter
+                    Dim parameters(5) As ReportParameter
                     parameters(0) = New ReportParameter("pUsuario", strUsuario)
                     parameters(1) = New ReportParameter("pEmpresa", strEmpresa)
                     parameters(2) = New ReportParameter("pNombreReporte", "Reporte de Apartados Anulados")
                     parameters(3) = New ReportParameter("pFechaDesde", FechaInicio.Text)
                     parameters(4) = New ReportParameter("pFechaHasta", FechaFinal.Text)
+                    parameters(5) = New ReportParameter("pSucursal", cboSucursal.Text)
                     newFormReport.repReportViewer.LocalReport.SetParameters(parameters)
                     newFormReport.ShowDialog()
                 Case "Ordenes de servicio en general"
@@ -194,12 +198,13 @@ Public Class FrmMenuReportes
                     newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
                     Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptDetalle.rdlc")
                     newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
-                    Dim parameters(4) As ReportParameter
+                    Dim parameters(5) As ReportParameter
                     parameters(0) = New ReportParameter("pUsuario", strUsuario)
                     parameters(1) = New ReportParameter("pEmpresa", strEmpresa)
                     parameters(2) = New ReportParameter("pNombreReporte", "Reporte de Ordenes de Servicio en General")
                     parameters(3) = New ReportParameter("pFechaDesde", FechaInicio.Text)
                     parameters(4) = New ReportParameter("pFechaHasta", FechaFinal.Text)
+                    parameters(5) = New ReportParameter("pSucursal", cboSucursal.Text)
                     newFormReport.repReportViewer.LocalReport.SetParameters(parameters)
                     newFormReport.ShowDialog()
                 Case "Ordenes de servicio anuladas"
@@ -217,12 +222,13 @@ Public Class FrmMenuReportes
                     newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
                     Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptDetalle.rdlc")
                     newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
-                    Dim parameters(4) As ReportParameter
+                    Dim parameters(5) As ReportParameter
                     parameters(0) = New ReportParameter("pUsuario", strUsuario)
                     parameters(1) = New ReportParameter("pEmpresa", strEmpresa)
                     parameters(2) = New ReportParameter("pNombreReporte", "Reporte de Ordenes de Servicio en General")
                     parameters(3) = New ReportParameter("pFechaDesde", FechaInicio.Text)
                     parameters(4) = New ReportParameter("pFechaHasta", FechaFinal.Text)
+                    parameters(5) = New ReportParameter("pSucursal", cboSucursal.Text)
                     newFormReport.repReportViewer.LocalReport.SetParameters(parameters)
                     newFormReport.ShowDialog()
                 Case "Ventas en general"
@@ -267,12 +273,13 @@ Public Class FrmMenuReportes
                             newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
                             Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptDetalle.rdlc")
                             newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
-                            Dim parameters(4) As ReportParameter
+                            Dim parameters(5) As ReportParameter
                             parameters(0) = New ReportParameter("pUsuario", strUsuario)
                             parameters(1) = New ReportParameter("pEmpresa", strEmpresa)
                             parameters(2) = New ReportParameter("pNombreReporte", strDescripcionReporte)
                             parameters(3) = New ReportParameter("pFechaDesde", FechaInicio.Text)
                             parameters(4) = New ReportParameter("pFechaHasta", FechaFinal.Text)
+                            parameters(5) = New ReportParameter("pSucursal", cboSucursal.Text)
                             newFormReport.repReportViewer.LocalReport.SetParameters(parameters)
                             newFormReport.ShowDialog()
                             CmdVistaPrevia.Enabled = True
@@ -293,12 +300,13 @@ Public Class FrmMenuReportes
                     newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
                     Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptDetalle.rdlc")
                     newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
-                    Dim parameters(4) As ReportParameter
+                    Dim parameters(5) As ReportParameter
                     parameters(0) = New ReportParameter("pUsuario", strUsuario)
                     parameters(1) = New ReportParameter("pEmpresa", strEmpresa)
                     parameters(2) = New ReportParameter("pNombreReporte", "Reporte de Ventas Anuladas")
                     parameters(3) = New ReportParameter("pFechaDesde", FechaInicio.Text)
                     parameters(4) = New ReportParameter("pFechaHasta", FechaFinal.Text)
+                    parameters(5) = New ReportParameter("pSucursal", cboSucursal.Text)
                     newFormReport.repReportViewer.LocalReport.SetParameters(parameters)
                     newFormReport.ShowDialog()
                 Case "Ventas por vendedor"
@@ -318,11 +326,12 @@ Public Class FrmMenuReportes
                         newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
                         Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptVentasPorVendedor.rdlc")
                         newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
-                        Dim parameters(3) As ReportParameter
+                        Dim parameters(4) As ReportParameter
                         parameters(0) = New ReportParameter("pUsuario", strUsuario)
                         parameters(1) = New ReportParameter("pEmpresa", strEmpresa)
                         parameters(2) = New ReportParameter("pFechaDesde", FechaInicio.Text)
                         parameters(3) = New ReportParameter("pFechaHasta", FechaFinal.Text)
+                        parameters(4) = New ReportParameter("pSucursal", cboSucursal.Text)
                         newFormReport.repReportViewer.LocalReport.SetParameters(parameters)
                         newFormReport.ShowDialog()
                     End If
@@ -365,12 +374,13 @@ Public Class FrmMenuReportes
                             newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
                             Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptDetalle.rdlc")
                             newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
-                            Dim parameters(4) As ReportParameter
+                            Dim parameters(5) As ReportParameter
                             parameters(0) = New ReportParameter("pUsuario", strUsuario)
                             parameters(1) = New ReportParameter("pEmpresa", strEmpresa)
                             parameters(2) = New ReportParameter("pNombreReporte", strDescripcionReporte)
                             parameters(3) = New ReportParameter("pFechaDesde", FechaInicio.Text)
                             parameters(4) = New ReportParameter("pFechaHasta", FechaFinal.Text)
+                            parameters(5) = New ReportParameter("pSucursal", cboSucursal.Text)
                             newFormReport.repReportViewer.LocalReport.SetParameters(parameters)
                             newFormReport.ShowDialog()
                         End If
@@ -389,12 +399,13 @@ Public Class FrmMenuReportes
                     newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
                     Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptDetalle.rdlc")
                     newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
-                    Dim parameters(4) As ReportParameter
+                    Dim parameters(5) As ReportParameter
                     parameters(0) = New ReportParameter("pUsuario", strUsuario)
                     parameters(1) = New ReportParameter("pEmpresa", strEmpresa)
                     parameters(2) = New ReportParameter("pNombreReporte", "Reporte de Compras Anuladas")
                     parameters(3) = New ReportParameter("pFechaDesde", FechaInicio.Text)
                     parameters(4) = New ReportParameter("pFechaHasta", FechaFinal.Text)
+                    parameters(5) = New ReportParameter("pSucursal", cboSucursal.Text)
                     newFormReport.repReportViewer.LocalReport.SetParameters(parameters)
                     newFormReport.ShowDialog()
                 Case "Cuentas por cobrar a clientes"
@@ -411,12 +422,13 @@ Public Class FrmMenuReportes
                     newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
                     Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptCuentas.rdlc")
                     newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
-                    Dim parameters(4) As ReportParameter
+                    Dim parameters(5) As ReportParameter
                     parameters(0) = New ReportParameter("pUsuario", strUsuario)
                     parameters(1) = New ReportParameter("pEmpresa", strEmpresa)
                     parameters(2) = New ReportParameter("pNombreReporte", "Reporte de Cuentas por Cobrar a Clientes")
                     parameters(3) = New ReportParameter("pFechaDesde", FechaInicio.Text)
                     parameters(4) = New ReportParameter("pFechaHasta", FechaFinal.Text)
+                    parameters(5) = New ReportParameter("pSucursal", cboSucursal.Text)
                     newFormReport.repReportViewer.LocalReport.SetParameters(parameters)
                     newFormReport.ShowDialog()
                 Case "Cuentas por pagar a proveedores"
@@ -433,12 +445,13 @@ Public Class FrmMenuReportes
                     newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
                     Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptCuentas.rdlc")
                     newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
-                    Dim parameters(4) As ReportParameter
+                    Dim parameters(5) As ReportParameter
                     parameters(0) = New ReportParameter("pUsuario", strUsuario)
                     parameters(1) = New ReportParameter("pEmpresa", strEmpresa)
                     parameters(2) = New ReportParameter("pNombreReporte", "Reporte de Cuentas por Pagar a Proveedores")
                     parameters(3) = New ReportParameter("pFechaDesde", FechaInicio.Text)
                     parameters(4) = New ReportParameter("pFechaHasta", FechaFinal.Text)
+                    parameters(5) = New ReportParameter("pSucursal", cboSucursal.Text)
                     newFormReport.repReportViewer.LocalReport.SetParameters(parameters)
                     newFormReport.ShowDialog()
                 Case "Pagos a cuentas por cobrar de clientes"
@@ -455,12 +468,13 @@ Public Class FrmMenuReportes
                     newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
                     Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptGrupoDetalle.rdlc")
                     newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
-                    Dim parameters(4) As ReportParameter
+                    Dim parameters(5) As ReportParameter
                     parameters(0) = New ReportParameter("pUsuario", strUsuario)
                     parameters(1) = New ReportParameter("pEmpresa", strEmpresa)
                     parameters(2) = New ReportParameter("pNombreReporte", "Reporte de Pagos a Cuentas por Cobrar")
                     parameters(3) = New ReportParameter("pFechaDesde", FechaInicio.Text)
                     parameters(4) = New ReportParameter("pFechaHasta", FechaFinal.Text)
+                    parameters(5) = New ReportParameter("pSucursal", cboSucursal.Text)
                     newFormReport.repReportViewer.LocalReport.SetParameters(parameters)
                     newFormReport.ShowDialog()
                 Case "Pagos a cuentas por pagar de proveedores"
@@ -477,12 +491,13 @@ Public Class FrmMenuReportes
                     newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
                     Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptGrupoDetalle.rdlc")
                     newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
-                    Dim parameters(4) As ReportParameter
+                    Dim parameters(5) As ReportParameter
                     parameters(0) = New ReportParameter("pUsuario", strUsuario)
                     parameters(1) = New ReportParameter("pEmpresa", strEmpresa)
                     parameters(2) = New ReportParameter("pNombreReporte", "Reporte de Pagos a Cuentas por Pagar")
                     parameters(3) = New ReportParameter("pFechaDesde", FechaInicio.Text)
                     parameters(4) = New ReportParameter("pFechaHasta", FechaFinal.Text)
+                    parameters(5) = New ReportParameter("pSucursal", cboSucursal.Text)
                     newFormReport.repReportViewer.LocalReport.SetParameters(parameters)
                     newFormReport.ShowDialog()
                 'Case "Conciliación bancaria"
@@ -519,11 +534,12 @@ Public Class FrmMenuReportes
                     newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
                     Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptResumenMovimientos.rdlc")
                     newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
-                    Dim parameters(3) As ReportParameter
+                    Dim parameters(4) As ReportParameter
                     parameters(0) = New ReportParameter("pUsuario", strUsuario)
                     parameters(1) = New ReportParameter("pEmpresa", strEmpresa)
                     parameters(2) = New ReportParameter("pFechaDesde", FechaInicio.Text)
                     parameters(3) = New ReportParameter("pFechaHasta", FechaFinal.Text)
+                    parameters(4) = New ReportParameter("pSucursal", cboSucursal.Text)
                     newFormReport.repReportViewer.LocalReport.SetParameters(parameters)
                     newFormReport.ShowDialog()
                 Case "Detalle de egresos"
@@ -543,12 +559,13 @@ Public Class FrmMenuReportes
                         newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
                         Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptGrupoDetalle.rdlc")
                         newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
-                        Dim parameters(4) As ReportParameter
+                        Dim parameters(5) As ReportParameter
                         parameters(0) = New ReportParameter("pUsuario", strUsuario)
                         parameters(1) = New ReportParameter("pEmpresa", strEmpresa)
                         parameters(2) = New ReportParameter("pNombreReporte", "Reporte de Detalle de egresos")
                         parameters(3) = New ReportParameter("pFechaDesde", FechaInicio.Text)
                         parameters(4) = New ReportParameter("pFechaHasta", FechaFinal.Text)
+                        parameters(5) = New ReportParameter("pSucursal", cboSucursal.Text)
                         newFormReport.repReportViewer.LocalReport.SetParameters(parameters)
                         newFormReport.ShowDialog()
                     End If
@@ -568,12 +585,13 @@ Public Class FrmMenuReportes
                         newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
                         Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptGrupoDetalle.rdlc")
                         newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
-                        Dim parameters(4) As ReportParameter
+                        Dim parameters(5) As ReportParameter
                         parameters(0) = New ReportParameter("pUsuario", strUsuario)
                         parameters(1) = New ReportParameter("pEmpresa", strEmpresa)
                         parameters(2) = New ReportParameter("pNombreReporte", "Reporte de Detalle de ingresos")
                         parameters(3) = New ReportParameter("pFechaDesde", FechaInicio.Text)
                         parameters(4) = New ReportParameter("pFechaHasta", FechaFinal.Text)
+                        parameters(5) = New ReportParameter("pSucursal", cboSucursal.Text)
                         newFormReport.repReportViewer.LocalReport.SetParameters(parameters)
                         newFormReport.ShowDialog()
                     End If
@@ -631,12 +649,13 @@ Public Class FrmMenuReportes
                     newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
                     Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptComprobanteElectronico.rdlc")
                     newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
-                    Dim parameters(4) As ReportParameter
+                    Dim parameters(5) As ReportParameter
                     parameters(0) = New ReportParameter("pUsuario", strUsuario)
                     parameters(1) = New ReportParameter("pEmpresa", strEmpresa)
                     parameters(2) = New ReportParameter("pNombreReporte", "Listado de Facturas Electrónicas Emitidas")
                     parameters(3) = New ReportParameter("pFechaDesde", FechaInicio.Text)
                     parameters(4) = New ReportParameter("pFechaHasta", FechaFinal.Text)
+                    parameters(5) = New ReportParameter("pSucursal", cboSucursal.Text)
                     newFormReport.repReportViewer.LocalReport.SetParameters(parameters)
                     newFormReport.ShowDialog()
                 Case "Notas de crédito electrónicas emitidas"
@@ -654,12 +673,13 @@ Public Class FrmMenuReportes
                     newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
                     Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptComprobanteElectronico.rdlc")
                     newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
-                    Dim parameters(4) As ReportParameter
+                    Dim parameters(5) As ReportParameter
                     parameters(0) = New ReportParameter("pUsuario", strUsuario)
                     parameters(1) = New ReportParameter("pEmpresa", strEmpresa)
                     parameters(2) = New ReportParameter("pNombreReporte", "Listado de Notas de Crédito Electrónicas Emitidas")
                     parameters(3) = New ReportParameter("pFechaDesde", FechaInicio.Text)
                     parameters(4) = New ReportParameter("pFechaHasta", FechaFinal.Text)
+                    parameters(5) = New ReportParameter("pSucursal", cboSucursal.Text)
                     newFormReport.repReportViewer.LocalReport.SetParameters(parameters)
                     newFormReport.ShowDialog()
                 Case "Facturas electrónicas recibidas"
@@ -677,12 +697,13 @@ Public Class FrmMenuReportes
                     newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
                     Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptComprobanteElectronico.rdlc")
                     newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
-                    Dim parameters(4) As ReportParameter
+                    Dim parameters(5) As ReportParameter
                     parameters(0) = New ReportParameter("pUsuario", strUsuario)
                     parameters(1) = New ReportParameter("pEmpresa", strEmpresa)
                     parameters(2) = New ReportParameter("pNombreReporte", "Listado de Facturas Electrónicas Recibidas")
                     parameters(3) = New ReportParameter("pFechaDesde", FechaInicio.Text)
                     parameters(4) = New ReportParameter("pFechaHasta", FechaFinal.Text)
+                    parameters(5) = New ReportParameter("pSucursal", cboSucursal.Text)
                     newFormReport.repReportViewer.LocalReport.SetParameters(parameters)
                     newFormReport.ShowDialog()
                 Case "Notas de crédito electrónicas recibidas"
@@ -700,12 +721,13 @@ Public Class FrmMenuReportes
                     newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
                     Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptComprobanteElectronico.rdlc")
                     newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
-                    Dim parameters(4) As ReportParameter
+                    Dim parameters(5) As ReportParameter
                     parameters(0) = New ReportParameter("pUsuario", strUsuario)
                     parameters(1) = New ReportParameter("pEmpresa", strEmpresa)
                     parameters(2) = New ReportParameter("pNombreReporte", "Listado de Notas de Crédito Electrónicas Recibidas")
                     parameters(3) = New ReportParameter("pFechaDesde", FechaInicio.Text)
                     parameters(4) = New ReportParameter("pFechaHasta", FechaFinal.Text)
+                    parameters(5) = New ReportParameter("pSucursal", cboSucursal.Text)
                     newFormReport.repReportViewer.LocalReport.SetParameters(parameters)
                     newFormReport.ShowDialog()
                 Case "Resumen de comprobantes electrónicos"
@@ -723,11 +745,12 @@ Public Class FrmMenuReportes
                     newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
                     Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptResumenComprobanteElectronico.rdlc")
                     newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
-                    Dim parameters(3) As ReportParameter
+                    Dim parameters(4) As ReportParameter
                     parameters(0) = New ReportParameter("pUsuario", strUsuario)
                     parameters(1) = New ReportParameter("pEmpresa", strEmpresa)
                     parameters(2) = New ReportParameter("pFechaDesde", FechaInicio.Text)
                     parameters(3) = New ReportParameter("pFechaHasta", FechaFinal.Text)
+                    parameters(4) = New ReportParameter("pSucursal", cboSucursal.Text)
                     newFormReport.repReportViewer.LocalReport.SetParameters(parameters)
                     newFormReport.ShowDialog()
             End Select

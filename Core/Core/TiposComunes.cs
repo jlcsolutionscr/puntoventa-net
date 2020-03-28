@@ -586,7 +586,7 @@ namespace LeandroSoftware.Core.TiposComunes
         {
         }
 
-        public DocumentoDetalle(int id, string clave, string consecutivo, string fecha, string nombre, string estado, string error, decimal monto, string esMensajeReceptor, string correoNotificacion)
+        public DocumentoDetalle(int id, string clave, string consecutivo, string fecha, string nombre, string estado, string error, decimal monto, string esMensajeReceptor, bool reprocesado, string correoNotificacion)
         {
             IdDocumento = id;
             ClaveNumerica = clave;
@@ -597,6 +597,7 @@ namespace LeandroSoftware.Core.TiposComunes
             ErrorEnvio = error;
             MontoTotal = monto;
             EsMensajeReceptor = esMensajeReceptor;
+            Reprocesado = reprocesado;
             CorreoNotificacion = correoNotificacion;
         }
         public int IdDocumento { get; set; }
@@ -608,6 +609,7 @@ namespace LeandroSoftware.Core.TiposComunes
         public string ErrorEnvio { get; set; }
         public decimal MontoTotal { get; set; }
         public string EsMensajeReceptor { get; set; }
+        public bool Reprocesado { get; set; }
         public string CorreoNotificacion { get; set; }
     }
 

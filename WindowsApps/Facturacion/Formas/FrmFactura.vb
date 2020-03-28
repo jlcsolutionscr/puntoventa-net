@@ -1373,7 +1373,9 @@ Public Class FrmFactura
             If factura.IdDocElectronico <> "" Then datos.Consecutivo = factura.IdDocElectronico.Substring(21, 20)
             datos.CondicionVenta = ObtenerValoresCodificados.ObtenerCondicionDeVenta(factura.IdCondicionVenta)
             datos.Fecha = factura.Fecha.ToString("dd/MM/yyyy hh:mm:ss")
-            If dtbDesglosePago.Rows.Count > 1 Then
+            If factura.IdCondicionVenta = StaticCondicionVenta.Credito Then
+                datos.MedioPago = "Crédito"
+            ElseIf dtbDesglosePago.Rows.Count > 1 Then
                 datos.MedioPago = "Otros"
             Else
                 datos.MedioPago = ObtenerValoresCodificados.ObtenerMedioDePago(dtbDesglosePago.Rows(0).Item(0))

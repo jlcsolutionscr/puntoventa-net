@@ -86,7 +86,7 @@
               </TablixColumns>
               <TablixRows>
                 <TablixRow>
-                  <Height>0.67354cm</Height>
+                  <Height>0.58216cm</Height>
                   <TablixCells>
                     <TablixCell>
                       <CellContents>
@@ -312,7 +312,7 @@
             <DataSetName>dstDatos</DataSetName>
             <Top>0.0441cm</Top>
             <Left>0.37718cm</Left>
-            <Height>0.67354cm</Height>
+            <Height>0.58216cm</Height>
             <Width>20.72562cm</Width>
             <Style>
               <Border>
@@ -321,7 +321,7 @@
             </Style>
           </Tablix>
         </ReportItems>
-        <Height>0.31042in</Height>
+        <Height>0.28959in</Height>
         <Style>
           <Border>
             <Style>None</Style>
@@ -455,7 +455,7 @@
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>pEmpresa</rd:DefaultName>
-              <Top>1.02009cm</Top>
+              <Top>1cm</Top>
               <Left>6.17156cm</Left>
               <Height>0.6cm</Height>
               <Width>10.27875cm</Width>
@@ -540,7 +540,7 @@
                 <Paragraph>
                   <TextRuns>
                     <TextRun>
-                      <Value>Reporte de Compra</Value>
+                      <Value>Registro de Compra</Value>
                       <Style>
                         <FontFamily>Tahoma</FontFamily>
                         <FontWeight>Bold</FontWeight>
@@ -552,7 +552,7 @@
                   </Style>
                 </Paragraph>
               </Paragraphs>
-              <Top>1.88742cm</Top>
+              <Top>2cm</Top>
               <Left>6.17156cm</Left>
               <Height>0.6cm</Height>
               <Width>10.27875cm</Width>
@@ -951,11 +951,6 @@
   <ReportParameters>
     <ReportParameter Name="pUsuario">
       <DataType>String</DataType>
-      <DefaultValue>
-        <Values>
-          <Value>JASLOP</Value>
-        </Values>
-      </DefaultValue>
       <Prompt>ReportParameter1</Prompt>
     </ReportParameter>
     <ReportParameter Name="pEmpresa">
@@ -965,8 +960,8 @@
   </ReportParameters>
   <ReportParametersLayout>
     <GridLayoutDefinition>
-      <NumberOfColumns>4</NumberOfColumns>
-      <NumberOfRows>2</NumberOfRows>
+      <NumberOfColumns>2</NumberOfColumns>
+      <NumberOfRows>1</NumberOfRows>
       <CellDefinitions>
         <CellDefinition>
           <ColumnIndex>0</ColumnIndex>

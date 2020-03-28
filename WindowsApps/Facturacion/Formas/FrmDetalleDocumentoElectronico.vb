@@ -274,17 +274,10 @@ Public Class FrmDetalleDocumentoElectronico
     Private Sub dgvDatos_CellContentClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgvDatos.CellContentClick
         Dim intIndex As Integer = dgvDatos.CurrentRow.Index
         Dim documento As DocumentoDetalle = listadoDocumentosProcesados.Item(intIndex)
-        If documento.EstadoEnvio = StaticEstadoDocumentoElectronico.Rechazado Then
-            btnReenviarNotificacion.Enabled = False
-            If documento.EsMensajeReceptor = "N" Then
-                btnGenerar.Enabled = True
-            Else
-                btnGenerar.Enabled = False
-            End If
-        Else
-            btnReenviarNotificacion.Enabled = True
-            btnGenerar.Enabled = False
-        End If
+        btnReenviarNotificacion.Enabled = False
+        btnGenerar.Enabled = False
+        If documento.EstadoEnvio = StaticEstadoDocumentoElectronico.Aceptado And documento.CorreoNotificacion <> "" Then btnReenviarNotificacion.Enabled = True
+        If documento.EstadoEnvio = StaticEstadoDocumentoElectronico.Rechazado And documento.EsMensajeReceptor = "N" And documento.Reprocesado = False Then btnGenerar.Enabled = True
     End Sub
 
     Private Async Sub btnGenerar_Click(sender As Object, e As EventArgs) Handles btnGenerar.Click
@@ -295,6 +288,7 @@ Public Class FrmDetalleDocumentoElectronico
             Dim documento As DocumentoDetalle = listadoDocumentosProcesados.Item(intIndex)
             Try
                 Await Puntoventa.ReprocesarDocumentoElectronico(documento.IdDocumento, FrmPrincipal.usuarioGlobal.Token)
+                listadoDocumentosProcesados.Item(intIndex).Reprocesado = True
                 MessageBox.Show("Transacción procesada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
             Catch ex As Exception
                 MessageBox.Show("Error al enviar el comprobante:" & ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)

@@ -1959,82 +1959,33 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 int intTipoDocumentoElectronico = (int)tipoDocumento;
                 int intIdConsecutivo = 1;
-                int? consecutivoBaseDatos = dbContext.DocumentoElectronicoRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa & x.IdSucursal == intSucursal & x.IdTerminal == intTerminal & x.IdTipoDocumento == intTipoDocumentoElectronico).Max(x => (int?)x.IdConsecutivo);
                 TerminalPorSucursal terminal = dbContext.TerminalPorSucursalRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa & x.IdSucursal == intSucursal & x.IdTerminal == intTerminal).FirstOrDefault();
                 switch (tipoDocumento)
                 {
                     case TipoDocumento.FacturaElectronica:
-                        if (!(consecutivoBaseDatos is null))
-                        {
-                            if (consecutivoBaseDatos >= terminal.UltimoDocFE)
-                                intIdConsecutivo = (int)consecutivoBaseDatos + 1;
-                            else
-                                intIdConsecutivo = terminal.UltimoDocFE + 1;
-                        }
-                        else
-                            intIdConsecutivo = terminal.UltimoDocFE + 1;
+                        intIdConsecutivo = terminal.UltimoDocFE + 1;
                         terminal.UltimoDocFE = intIdConsecutivo;
                         break;
                     case TipoDocumento.NotaDebitoElectronica:
-                        if (!(consecutivoBaseDatos is null))
-                        {
-                            if (consecutivoBaseDatos >= terminal.UltimoDocND)
-                                intIdConsecutivo = (int)consecutivoBaseDatos + 1;
-                            else
-                                intIdConsecutivo = terminal.UltimoDocND + 1;
-                        }
-                        else
-                            intIdConsecutivo = terminal.UltimoDocND + 1;
+                        intIdConsecutivo = terminal.UltimoDocND + 1;
                         terminal.UltimoDocND = intIdConsecutivo;
                         break;
                     case TipoDocumento.NotaCreditoElectronica:
-                        if (!(consecutivoBaseDatos is null))
-                        {
-                            if (consecutivoBaseDatos >= terminal.UltimoDocNC)
-                                intIdConsecutivo = (int)consecutivoBaseDatos + 1;
-                            else
-                                intIdConsecutivo = terminal.UltimoDocNC + 1;
-                        }
-                        else
-                            intIdConsecutivo = terminal.UltimoDocNC + 1;
+                        intIdConsecutivo = terminal.UltimoDocNC + 1;
                         terminal.UltimoDocNC = intIdConsecutivo;
                         break;
                     case TipoDocumento.TiqueteElectronico:
-                        if (!(consecutivoBaseDatos is null))
-                        {
-                            if (consecutivoBaseDatos >= terminal.UltimoDocTE)
-                                intIdConsecutivo = (int)consecutivoBaseDatos + 1;
-                            else
-                                intIdConsecutivo = terminal.UltimoDocTE + 1;
-                        }
-                        else
-                            intIdConsecutivo = terminal.UltimoDocTE + 1;
+                        intIdConsecutivo = terminal.UltimoDocTE + 1;
                         terminal.UltimoDocTE = intIdConsecutivo;
                         break;
                     case TipoDocumento.MensajeReceptorAceptado:
                     case TipoDocumento.MensajeReceptorAceptadoParcial:
                     case TipoDocumento.MensajeReceptorRechazado:
-                        if (!(consecutivoBaseDatos is null))
-                        {
-                            if (consecutivoBaseDatos >= terminal.UltimoDocMR)
-                                intIdConsecutivo = (int)consecutivoBaseDatos + 1;
-                            else
-                                intIdConsecutivo = terminal.UltimoDocTE + 1;
-                        }
-                        else
-                            intIdConsecutivo = terminal.UltimoDocMR + 1;
+                        intIdConsecutivo = terminal.UltimoDocMR + 1;
                         terminal.UltimoDocMR = intIdConsecutivo;
                         break;
                     case TipoDocumento.FacturaElectronicaCompra:
-                        if (!(consecutivoBaseDatos is null))
-                        {
-                            if (consecutivoBaseDatos >= terminal.UltimoDocFEC)
-                                intIdConsecutivo = (int)consecutivoBaseDatos + 1;
-                            else
-                                intIdConsecutivo = terminal.UltimoDocFEC + 1;
-                        }
-                        else
-                            intIdConsecutivo = terminal.UltimoDocFEC + 1;
+                        intIdConsecutivo = terminal.UltimoDocFEC + 1;
                         terminal.UltimoDocTE = intIdConsecutivo;
                         break;
                 }

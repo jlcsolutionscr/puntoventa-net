@@ -25,7 +25,7 @@ Public Class FrmMenuTipoTransaccion
         cboTipoTransaccion.ValueMember = "IdFormaPago"
         cboTipoTransaccion.DisplayMember = "Descripcion"
         cboTipoTransaccion.DataSource = dtListaFormaPago
-        cboTipoTransaccion.SelectedValue = 0
+        cboTipoTransaccion.SelectedValue = -1
     End Sub
 #End Region
 
