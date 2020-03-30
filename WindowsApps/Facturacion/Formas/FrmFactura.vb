@@ -1399,7 +1399,6 @@ Public Class FrmFactura
                 datos.CorreoElectronicoReceptor = cliente.CorreoElectronico
                 datos.TelefonoReceptor = cliente.Telefono
                 datos.FaxReceptor = cliente.Fax
-                datos.DireccionReceptor = cliente.Direccion
             End If
             For I = 0 To dtbDetalleFactura.Rows.Count - 1
                 Dim decTotalLinea As Decimal = CDbl(dtbDetalleFactura.Rows(I).Item(3)) * CDbl(dtbDetalleFactura.Rows(I).Item(4))

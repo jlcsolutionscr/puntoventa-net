@@ -410,6 +410,7 @@ namespace LeandroSoftware.Core.TiposComunes
 
     public class ReporteDocumentoElectronico
     {
+        public string TipoDocumento { get; set; }
         public string ClaveNumerica { get; set; }
 
         public string Consecutivo { get; set; }

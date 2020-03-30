@@ -505,9 +505,9 @@ namespace LeandroSoftware.ClienteWCF
             return listado;
         }
 
-        public static async Task<List<ReporteCuentas>> ObtenerReporteCuentasPorCobrarClientes(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, int intIdCliente, string strToken)
+        public static async Task<List<ReporteCuentas>> ObtenerReporteCuentasPorCobrarClientes(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, int intIdCliente, bool bolActivas, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerReporteCuentasPorCobrarClientes', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "', IdCliente: " + intIdCliente + "}}";
+            string strDatos = "{NombreMetodo: 'ObtenerReporteCuentasPorCobrarClientes', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "', IdCliente: " + intIdCliente + ", Activas: '" + bolActivas + "'}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             List<ReporteCuentas> listado = new List<ReporteCuentas>();
             if (respuesta != "")
@@ -515,9 +515,9 @@ namespace LeandroSoftware.ClienteWCF
             return listado;
         }
 
-        public static async Task<List<ReporteCuentas>> ObtenerReporteCuentasPorPagarProveedores(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, int intIdProveedor, string strToken)
+        public static async Task<List<ReporteCuentas>> ObtenerReporteCuentasPorPagarProveedores(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, int intIdProveedor, bool bolActivas, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerReporteCuentasPorPagarProveedores', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "', IdProveedor: " + intIdProveedor + "}}";
+            string strDatos = "{NombreMetodo: 'ObtenerReporteCuentasPorPagarProveedores', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "', IdProveedor: " + intIdProveedor + ", Activas: '" + bolActivas + "'}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             List<ReporteCuentas> listado = new List<ReporteCuentas>();
             if (respuesta != "")
@@ -605,9 +605,9 @@ namespace LeandroSoftware.ClienteWCF
             return listado;
         }
 
-        public static async Task<List<ReporteDocumentoElectronico>> ObtenerReporteFacturasElectronicasEmitidas(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strToken)
+        public static async Task<List<ReporteDocumentoElectronico>> ObtenerReporteDocumentosElectronicosEmitidos(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerReporteFacturasElectronicasEmitidas', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "'}}";
+            string strDatos = "{NombreMetodo: 'ObtenerReporteDocumentosElectronicosEmitidos', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "'}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             List<ReporteDocumentoElectronico> listado = new List<ReporteDocumentoElectronico>();
             if (respuesta != "")
@@ -625,9 +625,9 @@ namespace LeandroSoftware.ClienteWCF
             return listado;
         }
 
-        public static async Task<List<ReporteDocumentoElectronico>> ObtenerReporteFacturasElectronicasRecibidas(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strToken)
+        public static async Task<List<ReporteDocumentoElectronico>> ObtenerReporteDocumentosElectronicosRecibidos(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerReporteFacturasElectronicasRecibidas', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "'}}";
+            string strDatos = "{NombreMetodo: 'ObtenerReporteDocumentosElectronicosRecibidos', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "'}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             List<ReporteDocumentoElectronico> listado = new List<ReporteDocumentoElectronico>();
             if (respuesta != "")

@@ -176,11 +176,12 @@ Public Class FrmConsultaCierreCaja
         newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
         Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptDescripcionValor.rdlc")
         newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
-        Dim parameters(3) As ReportParameter
+        Dim parameters(4) As ReportParameter
         parameters(0) = New ReportParameter("pUsuario", strUsuario)
         parameters(1) = New ReportParameter("pEmpresa", strEmpresa)
         parameters(2) = New ReportParameter("pNombreReporte", "Cierre de Flujo de Efectivo")
         parameters(3) = New ReportParameter("pFechaHora", cierreCaja.FechaCierre)
+        parameters(4) = New ReportParameter("pSucursal", FrmPrincipal.equipoGlobal.NombreSucursal)
         newFormReport.repReportViewer.LocalReport.SetParameters(parameters)
         newFormReport.ShowDialog()
     End Sub

@@ -1069,7 +1069,6 @@ Public Class FrmOrdenServicio
                 datos.CorreoElectronicoReceptor = cliente.CorreoElectronico
                 datos.TelefonoReceptor = cliente.Telefono
                 datos.FaxReceptor = cliente.Fax
-                datos.DireccionReceptor = cliente.Direccion
             End If
             For I = 0 To dtbDetalleOrdenServicio.Rows.Count - 1
                 Dim decPrecioVenta As Decimal = dtbDetalleOrdenServicio.Rows(I).Item(4)

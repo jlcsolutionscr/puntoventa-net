@@ -1026,7 +1026,6 @@ Public Class FrmApartado
                 datos.CorreoElectronicoReceptor = cliente.CorreoElectronico
                 datos.TelefonoReceptor = cliente.Telefono
                 datos.FaxReceptor = cliente.Fax
-                datos.DireccionReceptor = cliente.Direccion
             End If
             For I = 0 To dtbDetalleApartado.Rows.Count - 1
                 Dim decPrecioVenta As Decimal = dtbDetalleApartado.Rows(I).Item(4)

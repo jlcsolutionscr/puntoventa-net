@@ -2722,7 +2722,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             datos.CorreoElectronicoReceptor = receptorNode["CorreoElectronico"].InnerText;
                             datos.TelefonoReceptor = receptorNode["Telefono"] != null && receptorNode["Telefono"].ChildNodes.Count > 0 ? receptorNode["Telefono"]["NumTelefono"].InnerText : "";
                             datos.FaxReceptor = receptorNode["Fax"] != null && receptorNode["Fax"].ChildNodes.Count > 0 ? receptorNode["Fax"]["NumTelefono"].InnerText : "";
-                            datos.DireccionReceptor = receptorNode["Ubicacion"]["OtrasSenas"].InnerText;
                         }
                         else
                         {

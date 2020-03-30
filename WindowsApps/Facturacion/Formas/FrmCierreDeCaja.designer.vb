@@ -612,7 +612,6 @@ Partial Class FrmCierreDeCaja
         Me.btnReporte.TabStop = False
         Me.btnReporte.Text = "&Reporte"
         Me.btnReporte.UseVisualStyleBackColor = False
-        Me.btnReporte.Visible = False
         '
         'btnGuardar
         '

@@ -26,8 +26,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         List<ReporteDetalle> ObtenerReporteVentasPorCliente(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, int intIdCliente, bool bolNulo, int intTipoPago);
         List<ReporteVentasPorVendedor> ObtenerReporteVentasPorVendedor(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, int intIdVendedor);
         List<ReporteDetalle> ObtenerReporteComprasPorProveedor(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, int intIdProveedor, bool bolNulo, int intTipoPago);
-        List<ReporteCuentas> ObtenerReporteCuentasPorCobrarClientes(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, int intIdCliente);
-        List<ReporteCuentas> ObtenerReporteCuentasPorPagarProveedores(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, int intIdProveedor);
+        List<ReporteCuentas> ObtenerReporteCuentasPorCobrarClientes(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, int intIdCliente, bool bolActivas);
+        List<ReporteCuentas> ObtenerReporteCuentasPorPagarProveedores(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, int intIdProveedor, bool bolActivas);
         List<ReporteGrupoDetalle> ObtenerReporteMovimientosCxCClientes(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, int intIdCliente);
         List<ReporteGrupoDetalle> ObtenerReporteMovimientosCxPProveedores(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, int intIdProveedor);
         List<ReporteMovimientosBanco> ObtenerReporteMovimientosBanco(int intIdCuenta, string strFechaInicial, string strFechaFinal);
@@ -44,19 +44,15 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         List<ReporteDetalleMovimientosCuentasDeBalance> ObtenerReporteDetalleMovimientosCuentasDeBalance(int intIdEmpresa, int intIdCuentaGrupo, string strFechaInicial, string strFechaFinal);
         List<ReporteEgreso> ObtenerReporteEgreso(int intIdEgreso);
         List<ReporteIngreso> ObtenerReporteIngreso(int intIdIngreso);
-        List<ReporteDocumentoElectronico> ObtenerReporteFacturasElectronicasEmitidas(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal);
-        List<ReporteDocumentoElectronico> ObtenerReporteNotasCreditoElectronicasEmitidas(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal);
-        List<ReporteDocumentoElectronico> ObtenerReporteFacturasElectronicasRecibidas(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal);
-        List<ReporteDocumentoElectronico> ObtenerReporteNotasCreditoElectronicasRecibidas(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal);
+        List<ReporteDocumentoElectronico> ObtenerReporteDocumentosElectronicosEmitidos(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal);
+        List<ReporteDocumentoElectronico> ObtenerReporteDocumentosElectronicosRecibidos(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal);
         List<ReporteResumenMovimiento> ObtenerReporteResumenDocumentosElectronicos(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal);
         void EnviarReporteVentasGenerales(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo);
         void EnviarReporteVentasAnuladas(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo);
         void EnviarReporteResumenMovimientos(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo);
         void EnviarReporteDetalleEgresos(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo);
-        void EnviarReporteFacturasEmitidas(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo);
-        void EnviarReporteFacturasRecibidas(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo);
-        void EnviarReporteNotasCreditoEmitidas(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo);
-        void EnviarReporteNotasCreditoRecibidas(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo);
+        void EnviarReporteDocumentosEmitidos(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo);
+        void EnviarReporteDocumentosRecibidos(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo);
         void EnviarReporteResumenMovimientosElectronicos(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo);
 
     }
@@ -466,7 +462,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public List<ReporteCuentas> ObtenerReporteCuentasPorCobrarClientes(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, int intIdCliente)
+        public List<ReporteCuentas> ObtenerReporteCuentasPorCobrarClientes(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, int intIdCliente, bool bolActivas)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -475,9 +471,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     DateTime datFechaInicial = DateTime.ParseExact(strFechaInicial + " 00:00:01", strFormat, provider);
                     DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
                     List<ReporteCuentas> listaReporte = new List<ReporteCuentas>();
-                    var detalleCxCClientes = dbContext.CuentaPorCobrarRepository.Where(s => s.IdEmpresa == intIdEmpresa && s.IdSucursal == intIdSucursal && s.Nulo == false && s.Saldo > 0 && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal && s.Tipo == StaticTipoCuentaPorCobrar.Clientes)
+                    var detalleCxCClientes = dbContext.CuentaPorCobrarRepository.Where(s => s.IdEmpresa == intIdEmpresa && s.IdSucursal == intIdSucursal && s.Nulo == false && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal && s.Tipo == StaticTipoCuentaPorCobrar.Clientes)
                         .Join(dbContext.ClienteRepository, x => x.IdPropietario, y => y.IdCliente, (x, y) => new { x, y })
                         .Select(z => new { z.x.IdPropietario, z.y.Nombre, z.x.IdCxC, z.x.Referencia, z.x.Fecha, z.x.Plazo, z.x.Total, z.x.Saldo });
+                    if (bolActivas)
+                        detalleCxCClientes = detalleCxCClientes.Where(x => x.Saldo > 0);
+                    else
+                        detalleCxCClientes = detalleCxCClientes.Where(x => x.Saldo <= 0);
                     if (intIdCliente > 0)
                         detalleCxCClientes = detalleCxCClientes.Where(x => x.IdPropietario == intIdCliente);
                     foreach (var value in detalleCxCClientes)
@@ -505,7 +505,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public List<ReporteCuentas> ObtenerReporteCuentasPorPagarProveedores(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, int intIdProveedor)
+        public List<ReporteCuentas> ObtenerReporteCuentasPorPagarProveedores(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, int intIdProveedor, bool bolActivas)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -514,9 +514,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     DateTime datFechaInicial = DateTime.ParseExact(strFechaInicial + " 00:00:01", strFormat, provider);
                     DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
                     List<ReporteCuentas> listaReporte = new List<ReporteCuentas>();
-                    var detalleCxPProveedores = dbContext.CuentaPorPagarRepository.Where(s => s.IdEmpresa == intIdEmpresa && s.IdSucursal == intIdSucursal && s.Nulo == false && s.Saldo > 0 && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal && s.Tipo == StaticTipoCuentaPorPagar.Proveedores)
+                    var detalleCxPProveedores = dbContext.CuentaPorPagarRepository.Where(s => s.IdEmpresa == intIdEmpresa && s.IdSucursal == intIdSucursal && s.Nulo == false && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal && s.Tipo == StaticTipoCuentaPorPagar.Proveedores)
                         .Join(dbContext.ProveedorRepository, x => x.IdPropietario, y => y.IdProveedor, (x, y) => new { x, y })
                         .Select(z => new { z.x.IdPropietario, z.y.Nombre, z.x.IdCxP, z.x.Fecha, z.x.Plazo, z.x.Referencia, z.x.Total, z.x.Saldo });
+                    if (bolActivas)
+                        detalleCxPProveedores = detalleCxPProveedores.Where(x => x.Saldo > 0);
+                    else
+                        detalleCxPProveedores = detalleCxPProveedores.Where(x => x.Saldo <= 0);
                     if (intIdProveedor > 0)
                         detalleCxPProveedores = detalleCxPProveedores.Where(x => x.IdPropietario == intIdProveedor);
                     foreach (var value in detalleCxPProveedores)
@@ -913,47 +917,53 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     List<DescripcionValor> listaReporte = new List<DescripcionValor>();
                     var datosCierre = dbContext.CierreCajaRepository.Where(a => a.IdCierre == intIdCierre).FirstOrDefault();
+                    decimal decTotalIngreosEfectivo = datosCierre.AdelantosApartadoEfectivo + datosCierre.AdelantosOrdenEfectivo + datosCierre.VentasEfectivo + datosCierre.PagosCxCEfectivo + datosCierre.IngresosEfectivo;
+                    decimal decTotalEgresosEfectivo = datosCierre.ComprasEfectivo + datosCierre.PagosCxPEfectivo + datosCierre.EgresosEfectivo;
                     DescripcionValor reporteLinea = new DescripcionValor("Fondo de inicio de caja", datosCierre.FondoInicio);
                     listaReporte.Add(reporteLinea);
-                    reporteLinea = new DescripcionValor("Adelantos de apartados en efectivo", datosCierre.AdelantosApartadoEfectivo);
+                    reporteLinea = new DescripcionValor("Adelantos apartados en efectivo", datosCierre.AdelantosApartadoEfectivo);
                     listaReporte.Add(reporteLinea);
-                    reporteLinea = new DescripcionValor("Fondo de inicio de caja", datosCierre.AdelantosApartadoTarjeta);
+                    reporteLinea = new DescripcionValor("Adelantos apartados con tarjeta", datosCierre.AdelantosApartadoTarjeta);
                     listaReporte.Add(reporteLinea);
-                    reporteLinea = new DescripcionValor("Fondo de inicio de caja", datosCierre.AdelantosApartadoBancos);
+                    reporteLinea = new DescripcionValor("Adelantos apartados en bancos", datosCierre.AdelantosApartadoBancos);
                     listaReporte.Add(reporteLinea);
-                    reporteLinea = new DescripcionValor("Fondo de inicio de caja", datosCierre.AdelantosOrdenEfectivo);
+                    reporteLinea = new DescripcionValor("Adelantos ordenes de servicio en efectivo", datosCierre.AdelantosOrdenEfectivo);
                     listaReporte.Add(reporteLinea);
-                    reporteLinea = new DescripcionValor("Fondo de inicio de caja", datosCierre.AdelantosOrdenTarjeta);
+                    reporteLinea = new DescripcionValor("Adelantos ordenes de servicio con tarjeta", datosCierre.AdelantosOrdenTarjeta);
                     listaReporte.Add(reporteLinea);
-                    reporteLinea = new DescripcionValor("Fondo de inicio de caja", datosCierre.AdelantosOrdenBancos);
+                    reporteLinea = new DescripcionValor("Adelantos ordenes de servicio en bancos", datosCierre.AdelantosOrdenBancos);
                     listaReporte.Add(reporteLinea);
-                    reporteLinea = new DescripcionValor("Fondo de inicio de caja", datosCierre.VentasEfectivo);
+                    reporteLinea = new DescripcionValor("Ventas de bienes y/o servicios en efectivo", datosCierre.VentasEfectivo);
                     listaReporte.Add(reporteLinea);
-                    reporteLinea = new DescripcionValor("Fondo de inicio de caja", datosCierre.VentasCredito);
+                    reporteLinea = new DescripcionValor("Ventas de bienes y/o servicios de crédito", datosCierre.VentasCredito);
                     listaReporte.Add(reporteLinea);
-                    reporteLinea = new DescripcionValor("Fondo de inicio de caja", datosCierre.VentasTarjeta);
+                    reporteLinea = new DescripcionValor("Ventas de bienes y/o servicios con tarjeta", datosCierre.VentasTarjeta);
                     listaReporte.Add(reporteLinea);
-                    reporteLinea = new DescripcionValor("Fondo de inicio de caja", datosCierre.VentasBancos);
+                    reporteLinea = new DescripcionValor("Ventas de bienes y/o servicios en bancos", datosCierre.VentasBancos);
                     listaReporte.Add(reporteLinea);
-                    reporteLinea = new DescripcionValor("Fondo de inicio de caja", datosCierre.PagosCxCEfectivo);
+                    reporteLinea = new DescripcionValor("Pagos a cuentas por cobrar en efectivo", datosCierre.PagosCxCEfectivo);
                     listaReporte.Add(reporteLinea);
-                    reporteLinea = new DescripcionValor("Fondo de inicio de caja", datosCierre.PagosCxCTarjeta);
+                    reporteLinea = new DescripcionValor("Pagos a cuentas por cobrar con tarjeta", datosCierre.PagosCxCTarjeta);
                     listaReporte.Add(reporteLinea);
-                    reporteLinea = new DescripcionValor("Fondo de inicio de caja", datosCierre.PagosCxCBancos);
+                    reporteLinea = new DescripcionValor("Pagos a cuentas por cobrar en bancos", datosCierre.PagosCxCBancos);
                     listaReporte.Add(reporteLinea);
-                    reporteLinea = new DescripcionValor("Fondo de inicio de caja", datosCierre.IngresosEfectivo);
+                    reporteLinea = new DescripcionValor("Registro de ingresos en efectivo", datosCierre.IngresosEfectivo);
                     listaReporte.Add(reporteLinea);
-                    reporteLinea = new DescripcionValor("Fondo de inicio de caja", datosCierre.ComprasEfectivo);
+                    reporteLinea = new DescripcionValor("Total de ingresos en efectivo ", decTotalIngreosEfectivo);
                     listaReporte.Add(reporteLinea);
-                    reporteLinea = new DescripcionValor("Fondo de inicio de caja", datosCierre.ComprasCredito);
+                    reporteLinea = new DescripcionValor("Compras de bienes y/o servicios en efectivo", datosCierre.ComprasEfectivo);
                     listaReporte.Add(reporteLinea);
-                    reporteLinea = new DescripcionValor("Fondo de inicio de caja", datosCierre.ComprasBancos);
+                    reporteLinea = new DescripcionValor("Compras de bienes y/o servicios de crédito", datosCierre.ComprasCredito);
                     listaReporte.Add(reporteLinea);
-                    reporteLinea = new DescripcionValor("Fondo de inicio de caja", datosCierre.PagosCxPEfectivo);
+                    reporteLinea = new DescripcionValor("de bienes y/o servicios en bancos", datosCierre.ComprasBancos);
                     listaReporte.Add(reporteLinea);
-                    reporteLinea = new DescripcionValor("Fondo de inicio de caja", datosCierre.PagosCxPBancos);
+                    reporteLinea = new DescripcionValor("Pagos a cuentas por pagar en efectivo", datosCierre.PagosCxPEfectivo);
                     listaReporte.Add(reporteLinea);
-                    reporteLinea = new DescripcionValor("Fondo de inicio de caja", datosCierre.EgresosEfectivo);
+                    reporteLinea = new DescripcionValor("Pagos a cuentas por pagar en bancos", datosCierre.PagosCxPBancos);
+                    listaReporte.Add(reporteLinea);
+                    reporteLinea = new DescripcionValor("Registro de ingresos en efectivo", datosCierre.EgresosEfectivo);
+                    listaReporte.Add(reporteLinea);
+                    reporteLinea = new DescripcionValor("Total de egresos en efectivo ", decTotalEgresosEfectivo);
                     listaReporte.Add(reporteLinea);
                     return listaReporte;
                 }
@@ -1236,7 +1246,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public List<ReporteDocumentoElectronico> ObtenerReporteFacturasElectronicasEmitidas(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal)
+        public List<ReporteDocumentoElectronico> ObtenerReporteDocumentosElectronicosEmitidos(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -1245,18 +1255,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     DateTime datFechaInicial = DateTime.ParseExact(strFechaInicial + " 00:00:01", strFormat, provider);
                     DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
                     List<ReporteDocumentoElectronico> listaReporte = new List<ReporteDocumentoElectronico>();
-                    var datosFacturasEmitidas = dbContext.DocumentoElectronicoRepository.Where(a => a.IdEmpresa == intIdEmpresa && a.IdSucursal == intIdSucursal && a.Fecha >= datFechaInicial && a.Fecha <= datFechaFinal && new[] { 1, 4 }.Any(s => s == a.IdTipoDocumento) && a.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado);
+                    var datosFacturasEmitidas = dbContext.DocumentoElectronicoRepository.Where(a => a.IdEmpresa == intIdEmpresa && a.IdSucursal == intIdSucursal && a.Fecha >= datFechaInicial && a.Fecha <= datFechaFinal && new[] { 1, 2, 3, 4 }.Any(s => s == a.IdTipoDocumento) && a.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado);
                     foreach (var documento in datosFacturasEmitidas)
                     {
-                        string strNombreReceptor = "CLIENTE DE CONTADO";
-                        string datosXml = Encoding.Default.GetString(documento.DatosDocumento);
+                        string strNombreReceptor = documento.NombreReceptor;
+                        string datosXml = Encoding.UTF8.GetString(documento.DatosDocumento);
                         XmlDocument documentoXml = new XmlDocument();
                         documentoXml.LoadXml(datosXml);
-                        if (documentoXml.GetElementsByTagName("Receptor").Count > 0)
-                        {
-                            XmlNode receptorNode = documentoXml.GetElementsByTagName("Receptor").Item(0);
-                            strNombreReceptor = receptorNode["Nombre"] != null && receptorNode["Nombre"].ChildNodes.Count > 0 ? receptorNode["Nombre"].InnerText : "CLIENTE DE CONTADO";
-                        }
                         XmlNode resumenFacturaNode = documentoXml.GetElementsByTagName("ResumenFactura").Item(0);
                         decimal decTotalImpuesto = resumenFacturaNode["TotalImpuesto"] != null && resumenFacturaNode["TotalImpuesto"].ChildNodes.Count > 0 ? decimal.Parse(resumenFacturaNode["TotalImpuesto"].InnerText) : 0;
                         decimal decTotal = decimal.Parse(resumenFacturaNode["TotalComprobante"].InnerText);
@@ -1268,6 +1273,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             decTotalImpuesto = decTotalImpuesto * decTipoCambio;
                         }
                         ReporteDocumentoElectronico reporteLinea = new ReporteDocumentoElectronico();
+                        reporteLinea.TipoDocumento = documento.IdTipoDocumento == 1 ? "FACTURA ELECTRONICA" : documento.IdTipoDocumento == 2 ? "NOTA DE DEBITO" : documento.IdTipoDocumento == 3 ? "NOTA DE CREDITO" : "TIQUETE ELECTRONICO";
                         reporteLinea.ClaveNumerica = documento.ClaveNumerica;
                         reporteLinea.Consecutivo = documento.Consecutivo;
                         reporteLinea.Fecha = documento.Fecha.ToString("dd/MM/yyyy");
@@ -1277,7 +1283,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         reporteLinea.Total = decTotal;
                         listaReporte.Add(reporteLinea);
                     }
-                    return listaReporte;
+                    return listaReporte.OrderBy(x => x.TipoDocumento).ThenBy(x => x.Fecha).ToList();
                 }
                 catch (Exception ex)
                 {
@@ -1287,58 +1293,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public List<ReporteDocumentoElectronico> ObtenerReporteNotasCreditoElectronicasEmitidas(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal)
-        {
-            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
-            {
-                try
-                {
-                    DateTime datFechaInicial = DateTime.ParseExact(strFechaInicial + " 00:00:01", strFormat, provider);
-                    DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
-                    List<ReporteDocumentoElectronico> listaReporte = new List<ReporteDocumentoElectronico>();
-                    var datosFacturasEmitidas = dbContext.DocumentoElectronicoRepository.Where(a => a.IdEmpresa == intIdEmpresa && a.IdSucursal == intIdSucursal && a.Fecha >= datFechaInicial && a.Fecha <= datFechaFinal && a.IdTipoDocumento == 3 && a.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado);
-                    foreach (var documento in datosFacturasEmitidas)
-                    {
-                        string strNombreReceptor = "CLIENTE DE CONTADO";
-                        string datosXml = Encoding.Default.GetString(documento.DatosDocumento);
-                        XmlDocument documentoXml = new XmlDocument();
-                        documentoXml.LoadXml(datosXml);
-                        if (documentoXml.GetElementsByTagName("Receptor").Count > 0)
-                        {
-                            XmlNode receptorNode = documentoXml.GetElementsByTagName("Receptor").Item(0);
-                            strNombreReceptor = receptorNode["Nombre"] != null && receptorNode["Nombre"].ChildNodes.Count > 0 ? receptorNode["Nombre"].InnerText : "CLIENTE DE CONTADO";
-                        }
-                        XmlNode resumenFacturaNode = documentoXml.GetElementsByTagName("ResumenFactura").Item(0);
-                        decimal decTotalImpuesto = resumenFacturaNode["TotalImpuesto"] != null && resumenFacturaNode["TotalImpuesto"].ChildNodes.Count > 0 ? decimal.Parse(resumenFacturaNode["TotalImpuesto"].InnerText) : 0;
-                        decimal decTotal = decimal.Parse(resumenFacturaNode["TotalComprobante"].InnerText);
-                        string strMoneda = resumenFacturaNode["CodigoTipoMoneda"] != null && resumenFacturaNode["CodigoTipoMoneda"].ChildNodes.Count > 0 ? resumenFacturaNode["CodigoTipoMoneda"]["CodigoMoneda"].InnerText : "CRC";
-                        if (strMoneda != "CRC")
-                        {
-                            decimal decTipoCambio = resumenFacturaNode["CodigoTipoMoneda"] != null && resumenFacturaNode["CodigoTipoMoneda"].ChildNodes.Count > 0 ? decimal.Parse(resumenFacturaNode["CodigoTipoMoneda"]["TipoCambio"].InnerText) : 1;
-                            decTotal = decTotal * decTipoCambio;
-                            decTotalImpuesto = decTotalImpuesto * decTipoCambio;
-                        }
-                        ReporteDocumentoElectronico reporteLinea = new ReporteDocumentoElectronico();
-                        reporteLinea.ClaveNumerica = documento.ClaveNumerica;
-                        reporteLinea.Consecutivo = documento.Consecutivo;
-                        reporteLinea.Fecha = documento.Fecha.ToString("dd/MM/yyyy");
-                        reporteLinea.Nombre = strNombreReceptor;
-                        reporteLinea.Moneda = strMoneda;
-                        reporteLinea.Impuesto = decTotalImpuesto;
-                        reporteLinea.Total = decTotal;
-                        listaReporte.Add(reporteLinea);
-                    }
-                    return listaReporte;
-                }
-                catch (Exception ex)
-                {
-                    log.Error("Error al procesar el reporte de Documentos Emitidos: ", ex);
-                    throw new Exception("Se produjo un error al ejecutar el reporte de documentos electrónicos emitidos. Por favor consulte con su proveedor.");
-                }
-            }
-        }
-
-        public List<ReporteDocumentoElectronico> ObtenerReporteFacturasElectronicasRecibidas(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal)
+        public List<ReporteDocumentoElectronico> ObtenerReporteDocumentosElectronicosRecibidos(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -1352,7 +1307,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         if (documento.DatosDocumentoOri != null)
                         {
-                            string datosXml = Encoding.Default.GetString(documento.DatosDocumentoOri);
+                            string datosXml = Encoding.UTF8.GetString(documento.DatosDocumentoOri);
                             XmlDocument documentoXml = new XmlDocument();
                             documentoXml.LoadXml(datosXml);
                             if (documentoXml.DocumentElement.Name == "FacturaElectronica")
@@ -1381,6 +1336,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                     decTotalImpuesto = decTotalImpuesto * decTipoDeCambio;
                                 }
                                 ReporteDocumentoElectronico reporteLinea = new ReporteDocumentoElectronico();
+                                reporteLinea.TipoDocumento = "FACTURA ELECTRONICA";
                                 reporteLinea.ClaveNumerica = documentoXml.GetElementsByTagName("Clave").Item(0).InnerText;
                                 reporteLinea.Consecutivo = documentoXml.GetElementsByTagName("NumeroConsecutivo").Item(0).InnerText;
                                 reporteLinea.Fecha = documento.Fecha.ToString("dd/MM/yyyy");
@@ -1393,7 +1349,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                         else
                         {
-                            string datosXml = Encoding.Default.GetString(documento.DatosDocumento);
+                            string datosXml = Encoding.UTF8.GetString(documento.DatosDocumento);
                             XmlDocument documentoXml = new XmlDocument();
                             documentoXml.LoadXml(datosXml);
                             decimal decTotalImpuesto = 0;
@@ -1405,6 +1361,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             if (documentoXml.GetElementsByTagName("MontoTotalImpuesto").Count > 0)
                                 decTotalImpuesto = decimal.Parse(documentoXml.GetElementsByTagName("MontoTotalImpuesto").Item(0).InnerText, CultureInfo.InvariantCulture);
                             ReporteDocumentoElectronico reporteLinea = new ReporteDocumentoElectronico();
+                            reporteLinea.TipoDocumento = "NOTA DE CREDITO";
                             reporteLinea.ClaveNumerica = documentoXml.GetElementsByTagName("Clave").Item(0).InnerText;
                             reporteLinea.Fecha = documento.Fecha.ToString("dd/MM/yyyy");
                             reporteLinea.Nombre = strNombreEmisor;
@@ -1415,68 +1372,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
 
                     }
-                    return listaReporte;
-                }
-                catch (Exception ex)
-                {
-                    log.Error("Error al procesar el reporte de Documentos Emitidos: ", ex);
-                    throw new Exception("Se produjo un error al ejecutar el reporte de documentos electrónicos emitidos. Por favor consulte con su proveedor.");
-                }
-            }
-        }
-
-        public List<ReporteDocumentoElectronico> ObtenerReporteNotasCreditoElectronicasRecibidas(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal)
-        {
-            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
-            {
-                try
-                {
-                    DateTime datFechaInicial = DateTime.ParseExact(strFechaInicial + " 00:00:01", strFormat, provider);
-                    DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
-                    List<ReporteDocumentoElectronico> listaReporte = new List<ReporteDocumentoElectronico>();
-                    var datosFacturasRecibidas = dbContext.DocumentoElectronicoRepository.Where(a => a.IdEmpresa == intIdEmpresa && a.IdSucursal == intIdSucursal && a.Fecha >= datFechaInicial && a.Fecha <= datFechaFinal && a.IdTipoDocumento == 5 && a.DatosDocumentoOri != null && a.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado);
-                    foreach (var documento in datosFacturasRecibidas)
-                    {
-                        string datosXml = Encoding.Default.GetString(documento.DatosDocumentoOri);
-                        XmlDocument documentoXml = new XmlDocument();
-                        documentoXml.LoadXml(datosXml);
-                        if (documentoXml.DocumentElement.Name == "NotaCreditoElectronica")
-                        {
-                            string strNombreEmisor = "";
-                            if (documentoXml.GetElementsByTagName("Emisor").Count > 0)
-                            {
-                                XmlNode emisorNode = documentoXml.GetElementsByTagName("Emisor").Item(0);
-                                strNombreEmisor = emisorNode["Nombre"].InnerText;
-                            }
-                            decimal decTotalImpuesto = 0;
-                            if (documentoXml.GetElementsByTagName("TotalImpuesto").Count > 0)
-                                decTotalImpuesto = decimal.Parse(documentoXml.GetElementsByTagName("TotalImpuesto").Item(0).InnerText, CultureInfo.InvariantCulture);
-                            decimal decTotal = 0;
-                            if (documentoXml.GetElementsByTagName("TotalComprobante").Count > 0)
-                                decTotal = decimal.Parse(documentoXml.GetElementsByTagName("TotalComprobante").Item(0).InnerText, CultureInfo.InvariantCulture);
-                            string strCodigoMoneda = "CRC";
-                            if (documentoXml.GetElementsByTagName("CodigoMoneda").Count > 0)
-                                strCodigoMoneda = documentoXml.GetElementsByTagName("CodigoMoneda").Item(0).InnerText;
-                            decimal decTipoDeCambio = 1;
-                            if (documentoXml.GetElementsByTagName("TipoCambio").Count > 0)
-                                decTipoDeCambio = decimal.Parse(documentoXml.GetElementsByTagName("TipoCambio").Item(0).InnerText, CultureInfo.InvariantCulture);
-                            if (strCodigoMoneda != "CRC")
-                            {
-                                decTotal = decTotal * decTipoDeCambio;
-                                decTotalImpuesto = decTotalImpuesto * decTipoDeCambio;
-                            }
-                            ReporteDocumentoElectronico reporteLinea = new ReporteDocumentoElectronico();
-                            reporteLinea.ClaveNumerica = documentoXml.GetElementsByTagName("Clave").Item(0).InnerText;
-                            reporteLinea.Consecutivo = documentoXml.GetElementsByTagName("NumeroConsecutivo").Item(0).InnerText;
-                            reporteLinea.Fecha = documento.Fecha.ToString("dd/MM/yyyy");
-                            reporteLinea.Nombre = strNombreEmisor;
-                            reporteLinea.Moneda = strCodigoMoneda;
-                            reporteLinea.Impuesto = decTotalImpuesto;
-                            reporteLinea.Total = decTotal;
-                            listaReporte.Add(reporteLinea);
-                        }
-                    }
-                    return listaReporte;
+                    return listaReporte.OrderBy(x => x.Nombre).ThenBy(x => x.Fecha).ToList();
                 }
                 catch (Exception ex)
                 {
@@ -1511,7 +1407,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     decimal decTotalVentaServiciosExento = 0;
                     foreach (var documento in grupoFacturasEmitidas)
                     {
-                        string datosXml = Encoding.Default.GetString(documento.DatosDocumento);
+                        string datosXml = Encoding.UTF8.GetString(documento.DatosDocumento);
                         XmlDocument documentoXml = new XmlDocument();
                         documentoXml.LoadXml(datosXml);
                         decimal decVentaServiciosTasa1 = 0;
@@ -1612,7 +1508,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         .Where(a => a.IdEmpresa == intIdEmpresa && a.IdSucursal == intIdSucursal && a.Fecha >= datFechaInicial && a.Fecha <= datFechaFinal && a.IdTipoDocumento == 3 && a.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado).ToList();
                     foreach (var documento in grupoNotasCreditoEmitidas)
                     {
-                        string datosXml = Encoding.Default.GetString(documento.DatosDocumento);
+                        string datosXml = Encoding.UTF8.GetString(documento.DatosDocumento);
                         XmlDocument documentoXml = new XmlDocument();
                         documentoXml.LoadXml(datosXml);
                         decimal decVentaServiciosTasa1 = 0;
@@ -1757,7 +1653,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         if (documento.DatosDocumentoOri != null)
                         {
-                            string datosXml = Encoding.Default.GetString(documento.DatosDocumentoOri);
+                            string datosXml = Encoding.UTF8.GetString(documento.DatosDocumentoOri);
                             XmlDocument documentoXml = new XmlDocument();
                             documentoXml.LoadXml(datosXml);
                             decimal decCompraServiciosTasa1 = 0;
@@ -1920,7 +1816,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                         else
                         {
-                            string datosXml = Encoding.Default.GetString(documento.DatosDocumento);
+                            string datosXml = Encoding.UTF8.GetString(documento.DatosDocumento);
                             XmlDocument documentoXml = new XmlDocument();
                             documentoXml.LoadXml(datosXml);
                             decimal decImpuestoPorLinea = 0;
@@ -2131,7 +2027,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void EnviarReporteFacturasEmitidas(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo)
+        public void EnviarReporteDocumentosEmitidos(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -2140,7 +2036,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     string strPlantillaReporte = "rptComprobanteElectronico.rdlc";
                     Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
                     string strNombreEmpresa = empresa.NombreComercial != "" ? empresa.NombreComercial : empresa.NombreEmpresa;
-                    IList<ReporteDocumentoElectronico> dstDatos = ObtenerReporteFacturasElectronicasEmitidas(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal);
+                    IList<ReporteDocumentoElectronico> dstDatos = ObtenerReporteDocumentosElectronicosEmitidos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal);
                     ReportDataSource rds = new ReportDataSource("dstDatos", dstDatos);
                     ReportParameter[] parameters = new ReportParameter[5];
                     parameters[0] = new ReportParameter("pUsuario", "SYSTEM");
@@ -2169,7 +2065,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void EnviarReporteFacturasRecibidas(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo)
+        public void EnviarReporteDocumentosRecibidos(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -2178,7 +2074,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     string strPlantillaReporte = "rptComprobanteElectronico.rdlc";
                     Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
                     string strNombreEmpresa = empresa.NombreComercial != "" ? empresa.NombreComercial : empresa.NombreEmpresa;
-                    IList<ReporteDocumentoElectronico> dstDatos = ObtenerReporteFacturasElectronicasRecibidas(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal);
+                    IList<ReporteDocumentoElectronico> dstDatos = ObtenerReporteDocumentosElectronicosRecibidos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal);
                     ReportDataSource rds = new ReportDataSource("dstDatos", dstDatos);
                     ReportParameter[] parameters = new ReportParameter[5];
                     parameters[0] = new ReportParameter("pUsuario", "SYSTEM");
@@ -2203,82 +2099,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     log.Error("Error al enviar el reporte de listado facturas electrónicas recibidas: ", ex);
                     throw new Exception("Se produjo un error al enviar el reporte de listado facturas electrónicas recibidas. Por favor consulte con su proveedor.");
-                }
-            }
-        }
-
-        public void EnviarReporteNotasCreditoEmitidas(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo)
-        {
-            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
-            {
-                try
-                {
-                    string strPlantillaReporte = "rptComprobanteElectronico.rdlc";
-                    Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
-                    string strNombreEmpresa = empresa.NombreComercial != "" ? empresa.NombreComercial : empresa.NombreEmpresa;
-                    IList<ReporteDocumentoElectronico> dstDatos = ObtenerReporteNotasCreditoElectronicasEmitidas(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal);
-                    ReportDataSource rds = new ReportDataSource("dstDatos", dstDatos);
-                    ReportParameter[] parameters = new ReportParameter[5];
-                    parameters[0] = new ReportParameter("pUsuario", "SYSTEM");
-                    parameters[1] = new ReportParameter("pEmpresa", strNombreEmpresa);
-                    parameters[2] = new ReportParameter("pNombreReporte", "Listado de Notas de Crédito Electrónicas Emitidas");
-                    parameters[3] = new ReportParameter("pFechaDesde", strFechaInicial);
-                    parameters[4] = new ReportParameter("pFechaHasta", strFechaInicial);
-                    byte[] bytes = GenerarContenidoReporte(strFormatoReporte, strPlantillaReporte, rds, parameters);
-                    if (bytes.Length > 0)
-                    {
-                        JArray jarrayObj = new JArray();
-                        JObject jobDatosAdjuntos1 = new JObject
-                        {
-                            ["nombre"] = "ReporteNotasCreditoElectrónicasEmitidas." + strFormatoReporte.ToLower(),
-                            ["contenido"] = Convert.ToBase64String(bytes)
-                        };
-                        jarrayObj.Add(jobDatosAdjuntos1);
-                        servicioEnvioCorreo.SendEmail(new string[] { empresa.CorreoNotificacion }, new string[] { }, "JLC Solutions CR - Reporte de notas de crédito electrónicas emitidas por rango de fechas", "Adjunto archivo en formato " + strFormatoReporte + " correspondiente al reporte de ventas por cliente para el rango de fechas solicitado.", false, jarrayObj);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    log.Error("Error al enviar el reporte de listado notas de crédito electrónicas emitidas: ", ex);
-                    throw new Exception("Se produjo un error al enviar el reporte de listado notas de crédito electrónicas emitidas. Por favor consulte con su proveedor.");
-                }
-            }
-        }
-
-        public void EnviarReporteNotasCreditoRecibidas(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo)
-        {
-            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
-            {
-                try
-                {
-                    string strPlantillaReporte = "rptComprobanteElectronico.rdlc";
-                    Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
-                    string strNombreEmpresa = empresa.NombreComercial != "" ? empresa.NombreComercial : empresa.NombreEmpresa;
-                    IList<ReporteDocumentoElectronico> dstDatos = ObtenerReporteNotasCreditoElectronicasRecibidas(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal);
-                    ReportDataSource rds = new ReportDataSource("dstDatos", dstDatos);
-                    ReportParameter[] parameters = new ReportParameter[5];
-                    parameters[0] = new ReportParameter("pUsuario", "SYSTEM");
-                    parameters[1] = new ReportParameter("pEmpresa", strNombreEmpresa);
-                    parameters[2] = new ReportParameter("pNombreReporte", "Listado de Notas de Crédito Electrónicas Recibidas");
-                    parameters[3] = new ReportParameter("pFechaDesde", strFechaInicial);
-                    parameters[4] = new ReportParameter("pFechaHasta", strFechaInicial);
-                    byte[] bytes = GenerarContenidoReporte(strFormatoReporte, strPlantillaReporte, rds, parameters);
-                    if (bytes.Length > 0)
-                    {
-                        JArray jarrayObj = new JArray();
-                        JObject jobDatosAdjuntos1 = new JObject
-                        {
-                            ["nombre"] = "ReporteNotasCreditoElectrónicasRecibidas." + strFormatoReporte.ToLower(),
-                            ["contenido"] = Convert.ToBase64String(bytes)
-                        };
-                        jarrayObj.Add(jobDatosAdjuntos1);
-                        servicioEnvioCorreo.SendEmail(new string[] { empresa.CorreoNotificacion }, new string[] { }, "JLC Solutions CR - Reporte de notas de crédito electrónicas recibidas por rango de fechas", "Adjunto archivo en formato " + strFormatoReporte + " correspondiente al reporte de ventas por cliente para el rango de fechas solicitado.", false, jarrayObj);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    log.Error("Error al enviar el reporte de listado notas de crédito electrónicas recibidas: ", ex);
-                    throw new Exception("Se produjo un error al enviar el reporte de listado notas de crédito electrónicas recibidas. Por favor consulte con su proveedor.");
                 }
             }
         }

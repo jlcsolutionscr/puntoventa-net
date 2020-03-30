@@ -349,33 +349,19 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             {
                 case 1:
                     {
-                        List<ReporteDocumentoElectronico> listado = servicioReportes.ObtenerReporteFacturasElectronicasEmitidas(idempresa, idsucursal, fechainicial, fechafinal);
+                        List<ReporteDocumentoElectronico> listado = servicioReportes.ObtenerReporteDocumentosElectronicosEmitidos(idempresa, idsucursal, fechainicial, fechafinal);
                         if (listado.Count > 0)
                             strRespuesta = serializer.Serialize(listado);
                         break;
                     }
                 case 2:
                     {
-                        List<ReporteDocumentoElectronico> listado = servicioReportes.ObtenerReporteNotasCreditoElectronicasEmitidas(idempresa, idsucursal, fechainicial, fechafinal);
+                        List<ReporteDocumentoElectronico> listado = servicioReportes.ObtenerReporteDocumentosElectronicosRecibidos(idempresa, idsucursal, fechainicial, fechafinal);
                         if (listado.Count > 0)
                             strRespuesta = serializer.Serialize(listado);
                         break;
                     }
                 case 3:
-                    {
-                        List<ReporteDocumentoElectronico> listado = servicioReportes.ObtenerReporteFacturasElectronicasRecibidas(idempresa, idsucursal, fechainicial, fechafinal);
-                        if (listado.Count > 0)
-                            strRespuesta = serializer.Serialize(listado);
-                        break;
-                    }
-                case 4:
-                    {
-                        List<ReporteDocumentoElectronico> listado = servicioReportes.ObtenerReporteNotasCreditoElectronicasRecibidas(idempresa, idsucursal, fechainicial, fechafinal);
-                        if (listado.Count > 0)
-                            strRespuesta = serializer.Serialize(listado);
-                        break;
-                    }
-                case 5:
                     {
                         List<ReporteResumenMovimiento> listado = servicioReportes.ObtenerReporteResumenDocumentosElectronicos(idempresa, idsucursal, fechainicial, fechafinal);
                         if (listado.Count > 0)

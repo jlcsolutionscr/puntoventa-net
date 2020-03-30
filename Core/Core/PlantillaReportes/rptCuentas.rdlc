@@ -73,10 +73,10 @@
             <TablixBody>
               <TablixColumns>
                 <TablixColumn>
-                  <Width>1.64371cm</Width>
+                  <Width>1.41668cm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>5.76871cm</Width>
+                  <Width>6.01148cm</Width>
                 </TablixColumn>
                 <TablixColumn>
                   <Width>2.18912cm</Width>
@@ -818,7 +818,7 @@
                   <TablixMembers>
                     <TablixMember>
                       <TablixHeader>
-                        <Size>2.26348cm</Size>
+                        <Size>2.24775cm</Size>
                         <CellContents>
                           <Textbox Name="Nombre">
                             <CanGrow>true</CanGrow>
@@ -859,7 +859,7 @@
                     </TablixMember>
                     <TablixMember>
                       <TablixHeader>
-                        <Size>2.26348cm</Size>
+                        <Size>2.24775cm</Size>
                         <CellContents>
                           <Textbox Name="Textbox42">
                             <CanGrow>true</CanGrow>
@@ -904,7 +904,7 @@
                     </TablixMember>
                     <TablixMember>
                       <TablixHeader>
-                        <Size>2.26348cm</Size>
+                        <Size>2.24775cm</Size>
                         <CellContents>
                           <Textbox Name="Textbox43">
                             <CanGrow>true</CanGrow>
@@ -952,7 +952,7 @@
             <Top>0.0441cm</Top>
             <Left>0.26974cm</Left>
             <Height>1.88799cm</Height>
-            <Width>20.96355cm</Width>
+            <Width>20.96356cm</Width>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -994,9 +994,9 @@
                 </Paragraph>
               </Paragraphs>
               <Top>4.69325cm</Top>
-              <Left>2.70961cm</Left>
+              <Left>2.51749cm</Left>
               <Height>0.6cm</Height>
-              <Width>1.46732cm</Width>
+              <Width>1.41668cm</Width>
               <Style>
                 <Border>
                   <Style>None</Style>
@@ -1363,9 +1363,9 @@
                 </Paragraph>
               </Paragraphs>
               <Top>4.69325cm</Top>
-              <Left>4.17693cm</Left>
+              <Left>3.93417cm</Left>
               <Height>0.6cm</Height>
-              <Width>5.76871cm</Width>
+              <Width>6.01147cm</Width>
               <ZIndex>11</ZIndex>
               <Style>
                 <Border>

@@ -411,7 +411,7 @@ Public Class FrmMenuReportes
                 Case "Cuentas por cobrar a clientes"
                     Dim datosReporte As List(Of ReporteCuentas)
                     Try
-                        datosReporte = Await Puntoventa.ObtenerReporteCuentasPorCobrarClientes(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FechaInicio.Text, FechaFinal.Text, intIdCliente, FrmPrincipal.usuarioGlobal.Token)
+                        datosReporte = Await Puntoventa.ObtenerReporteCuentasPorCobrarClientes(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FechaInicio.Text, FechaFinal.Text, intIdCliente, True, FrmPrincipal.usuarioGlobal.Token)
                     Catch ex As Exception
                         MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         Exit Sub
@@ -431,10 +431,33 @@ Public Class FrmMenuReportes
                     parameters(5) = New ReportParameter("pSucursal", cboSucursal.Text)
                     newFormReport.repReportViewer.LocalReport.SetParameters(parameters)
                     newFormReport.ShowDialog()
+                Case "Cuentas por cobrar canceladas"
+                    Dim datosReporte As List(Of ReporteCuentas)
+                    Try
+                        datosReporte = Await Puntoventa.ObtenerReporteCuentasPorCobrarClientes(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FechaInicio.Text, FechaFinal.Text, intIdCliente, False, FrmPrincipal.usuarioGlobal.Token)
+                    Catch ex As Exception
+                        MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        Exit Sub
+                    End Try
+                    Dim rds As ReportDataSource = New ReportDataSource("dstDatos", datosReporte)
+                    newFormReport.repReportViewer.LocalReport.DataSources.Clear()
+                    newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
+                    newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
+                    Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptCuentas.rdlc")
+                    newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
+                    Dim parameters(5) As ReportParameter
+                    parameters(0) = New ReportParameter("pUsuario", strUsuario)
+                    parameters(1) = New ReportParameter("pEmpresa", strEmpresa)
+                    parameters(2) = New ReportParameter("pNombreReporte", "Reporte de Cuentas por Cobrar Canceladas")
+                    parameters(3) = New ReportParameter("pFechaDesde", FechaInicio.Text)
+                    parameters(4) = New ReportParameter("pFechaHasta", FechaFinal.Text)
+                    parameters(5) = New ReportParameter("pSucursal", cboSucursal.Text)
+                    newFormReport.repReportViewer.LocalReport.SetParameters(parameters)
+                    newFormReport.ShowDialog()
                 Case "Cuentas por pagar a proveedores"
                     Dim datosReporte As List(Of ReporteCuentas)
                     Try
-                        datosReporte = Await Puntoventa.ObtenerReporteCuentasPorPagarProveedores(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FechaInicio.Text, FechaFinal.Text, intIdProveedor, FrmPrincipal.usuarioGlobal.Token)
+                        datosReporte = Await Puntoventa.ObtenerReporteCuentasPorPagarProveedores(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FechaInicio.Text, FechaFinal.Text, intIdProveedor, True, FrmPrincipal.usuarioGlobal.Token)
                     Catch ex As Exception
                         MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         Exit Sub
@@ -449,6 +472,29 @@ Public Class FrmMenuReportes
                     parameters(0) = New ReportParameter("pUsuario", strUsuario)
                     parameters(1) = New ReportParameter("pEmpresa", strEmpresa)
                     parameters(2) = New ReportParameter("pNombreReporte", "Reporte de Cuentas por Pagar a Proveedores")
+                    parameters(3) = New ReportParameter("pFechaDesde", FechaInicio.Text)
+                    parameters(4) = New ReportParameter("pFechaHasta", FechaFinal.Text)
+                    parameters(5) = New ReportParameter("pSucursal", cboSucursal.Text)
+                    newFormReport.repReportViewer.LocalReport.SetParameters(parameters)
+                    newFormReport.ShowDialog()
+                Case "Cuentas por pagar canceladas"
+                    Dim datosReporte As List(Of ReporteCuentas)
+                    Try
+                        datosReporte = Await Puntoventa.ObtenerReporteCuentasPorPagarProveedores(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FechaInicio.Text, FechaFinal.Text, intIdProveedor, False, FrmPrincipal.usuarioGlobal.Token)
+                    Catch ex As Exception
+                        MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        Exit Sub
+                    End Try
+                    Dim rds As ReportDataSource = New ReportDataSource("dstDatos", datosReporte)
+                    newFormReport.repReportViewer.LocalReport.DataSources.Clear()
+                    newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
+                    newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
+                    Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptCuentas.rdlc")
+                    newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
+                    Dim parameters(5) As ReportParameter
+                    parameters(0) = New ReportParameter("pUsuario", strUsuario)
+                    parameters(1) = New ReportParameter("pEmpresa", strEmpresa)
+                    parameters(2) = New ReportParameter("pNombreReporte", "Reporte de Cuentas por Pagar Canceladas")
                     parameters(3) = New ReportParameter("pFechaDesde", FechaInicio.Text)
                     parameters(4) = New ReportParameter("pFechaHasta", FechaFinal.Text)
                     parameters(5) = New ReportParameter("pSucursal", cboSucursal.Text)
@@ -634,10 +680,10 @@ Public Class FrmMenuReportes
                 '        formReport.crtViewer.ReportSource = reptVentasxLineaDetalle
                 '        formReport.ShowDialog()
                 '    End If
-                Case "Facturas electrónicas emitidas"
+                Case "Documentos electrónicos emitidos"
                     Dim datosReporte As List(Of ReporteDocumentoElectronico)
                     Try
-                        datosReporte = Await Puntoventa.ObtenerReporteFacturasElectronicasEmitidas(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FechaInicio.Text, FechaFinal.Text, FrmPrincipal.usuarioGlobal.Token)
+                        datosReporte = Await Puntoventa.ObtenerReporteDocumentosElectronicosEmitidos(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FechaInicio.Text, FechaFinal.Text, FrmPrincipal.usuarioGlobal.Token)
                     Catch ex As Exception
                         MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         CmdVistaPrevia.Enabled = True
@@ -652,16 +698,16 @@ Public Class FrmMenuReportes
                     Dim parameters(5) As ReportParameter
                     parameters(0) = New ReportParameter("pUsuario", strUsuario)
                     parameters(1) = New ReportParameter("pEmpresa", strEmpresa)
-                    parameters(2) = New ReportParameter("pNombreReporte", "Listado de Facturas Electrónicas Emitidas")
+                    parameters(2) = New ReportParameter("pNombreReporte", "Listado de Documentos Electrónicos Emitidos")
                     parameters(3) = New ReportParameter("pFechaDesde", FechaInicio.Text)
                     parameters(4) = New ReportParameter("pFechaHasta", FechaFinal.Text)
                     parameters(5) = New ReportParameter("pSucursal", cboSucursal.Text)
                     newFormReport.repReportViewer.LocalReport.SetParameters(parameters)
                     newFormReport.ShowDialog()
-                Case "Notas de crédito electrónicas emitidas"
+                Case "Documentos electrónicos recibidos"
                     Dim datosReporte As List(Of ReporteDocumentoElectronico)
                     Try
-                        datosReporte = Await Puntoventa.ObtenerReporteNotasCreditoElectronicasEmitidas(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FechaInicio.Text, FechaFinal.Text, FrmPrincipal.usuarioGlobal.Token)
+                        datosReporte = Await Puntoventa.ObtenerReporteDocumentosElectronicosRecibidos(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FechaInicio.Text, FechaFinal.Text, FrmPrincipal.usuarioGlobal.Token)
                     Catch ex As Exception
                         MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         CmdVistaPrevia.Enabled = True
@@ -676,55 +722,7 @@ Public Class FrmMenuReportes
                     Dim parameters(5) As ReportParameter
                     parameters(0) = New ReportParameter("pUsuario", strUsuario)
                     parameters(1) = New ReportParameter("pEmpresa", strEmpresa)
-                    parameters(2) = New ReportParameter("pNombreReporte", "Listado de Notas de Crédito Electrónicas Emitidas")
-                    parameters(3) = New ReportParameter("pFechaDesde", FechaInicio.Text)
-                    parameters(4) = New ReportParameter("pFechaHasta", FechaFinal.Text)
-                    parameters(5) = New ReportParameter("pSucursal", cboSucursal.Text)
-                    newFormReport.repReportViewer.LocalReport.SetParameters(parameters)
-                    newFormReport.ShowDialog()
-                Case "Facturas electrónicas recibidas"
-                    Dim datosReporte As List(Of ReporteDocumentoElectronico)
-                    Try
-                        datosReporte = Await Puntoventa.ObtenerReporteFacturasElectronicasRecibidas(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FechaInicio.Text, FechaFinal.Text, FrmPrincipal.usuarioGlobal.Token)
-                    Catch ex As Exception
-                        MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                        CmdVistaPrevia.Enabled = True
-                        Exit Sub
-                    End Try
-                    Dim rds As ReportDataSource = New ReportDataSource("dstDatos", datosReporte)
-                    newFormReport.repReportViewer.LocalReport.DataSources.Clear()
-                    newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
-                    newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
-                    Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptComprobanteElectronico.rdlc")
-                    newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
-                    Dim parameters(5) As ReportParameter
-                    parameters(0) = New ReportParameter("pUsuario", strUsuario)
-                    parameters(1) = New ReportParameter("pEmpresa", strEmpresa)
-                    parameters(2) = New ReportParameter("pNombreReporte", "Listado de Facturas Electrónicas Recibidas")
-                    parameters(3) = New ReportParameter("pFechaDesde", FechaInicio.Text)
-                    parameters(4) = New ReportParameter("pFechaHasta", FechaFinal.Text)
-                    parameters(5) = New ReportParameter("pSucursal", cboSucursal.Text)
-                    newFormReport.repReportViewer.LocalReport.SetParameters(parameters)
-                    newFormReport.ShowDialog()
-                Case "Notas de crédito electrónicas recibidas"
-                    Dim datosReporte As List(Of ReporteDocumentoElectronico)
-                    Try
-                        datosReporte = Await Puntoventa.ObtenerReporteNotasCreditoElectronicasRecibidas(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FechaInicio.Text, FechaFinal.Text, FrmPrincipal.usuarioGlobal.Token)
-                    Catch ex As Exception
-                        MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                        CmdVistaPrevia.Enabled = True
-                        Exit Sub
-                    End Try
-                    Dim rds As ReportDataSource = New ReportDataSource("dstDatos", datosReporte)
-                    newFormReport.repReportViewer.LocalReport.DataSources.Clear()
-                    newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
-                    newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
-                    Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptComprobanteElectronico.rdlc")
-                    newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
-                    Dim parameters(5) As ReportParameter
-                    parameters(0) = New ReportParameter("pUsuario", strUsuario)
-                    parameters(1) = New ReportParameter("pEmpresa", strEmpresa)
-                    parameters(2) = New ReportParameter("pNombreReporte", "Listado de Notas de Crédito Electrónicas Recibidas")
+                    parameters(2) = New ReportParameter("pNombreReporte", "Listado de Documentos Electrónicos Recibidos")
                     parameters(3) = New ReportParameter("pFechaDesde", FechaInicio.Text)
                     parameters(4) = New ReportParameter("pFechaHasta", FechaFinal.Text)
                     parameters(5) = New ReportParameter("pSucursal", cboSucursal.Text)
