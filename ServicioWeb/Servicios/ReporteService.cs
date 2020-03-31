@@ -1287,7 +1287,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    log.Error("Error al procesar el reporte de Documentos Emitidos: ", ex);
+                    log.Error("Error al procesar el reporte de documentos emitidos: ", ex);
                     throw new Exception("Se produjo un error al ejecutar el reporte de documentos electrónicos emitidos. Por favor consulte con su proveedor.");
                 }
             }
@@ -1310,42 +1310,39 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             string datosXml = Encoding.UTF8.GetString(documento.DatosDocumentoOri);
                             XmlDocument documentoXml = new XmlDocument();
                             documentoXml.LoadXml(datosXml);
-                            if (documentoXml.DocumentElement.Name == "FacturaElectronica")
+                            decimal decTotalImpuesto = 0;
+                            decimal decTotal = 0;
+                            string strCodigoMoneda = "CRC";
+                            decimal decTipoDeCambio = 1;
+                            string strNombreEmisor = "INFORMACION NO DISPONIBLE";
+                            if (documentoXml.GetElementsByTagName("Emisor").Count > 0)
                             {
-                                decimal decTotalImpuesto = 0;
-                                decimal decTotal = 0;
-                                string strCodigoMoneda = "CRC";
-                                decimal decTipoDeCambio = 1;
-                                string strNombreEmisor = "INFORMACION NO DISPONIBLE";
-                                if (documentoXml.GetElementsByTagName("Emisor").Count > 0)
-                                {
-                                    XmlNode emisorNode = documentoXml.GetElementsByTagName("Emisor").Item(0);
-                                    strNombreEmisor = emisorNode["Nombre"].InnerText;
-                                }
-                                if (documentoXml.GetElementsByTagName("TotalImpuesto").Count > 0)
-                                    decTotalImpuesto = decimal.Parse(documentoXml.GetElementsByTagName("TotalImpuesto").Item(0).InnerText, CultureInfo.InvariantCulture);
-                                if (documentoXml.GetElementsByTagName("TotalComprobante").Count > 0)
-                                    decTotal = decimal.Parse(documentoXml.GetElementsByTagName("TotalComprobante").Item(0).InnerText, CultureInfo.InvariantCulture);
-                                if (documentoXml.GetElementsByTagName("CodigoMoneda").Count > 0)
-                                    strCodigoMoneda = documentoXml.GetElementsByTagName("CodigoMoneda").Item(0).InnerText;
-                                if (documentoXml.GetElementsByTagName("TipoCambio").Count > 0)
-                                    decTipoDeCambio = decimal.Parse(documentoXml.GetElementsByTagName("TipoCambio").Item(0).InnerText, CultureInfo.InvariantCulture);
-                                if (strCodigoMoneda != "CRC")
-                                {
-                                    decTotal = decTotal * decTipoDeCambio;
-                                    decTotalImpuesto = decTotalImpuesto * decTipoDeCambio;
-                                }
-                                ReporteDocumentoElectronico reporteLinea = new ReporteDocumentoElectronico();
-                                reporteLinea.TipoDocumento = "FACTURA ELECTRONICA";
-                                reporteLinea.ClaveNumerica = documentoXml.GetElementsByTagName("Clave").Item(0).InnerText;
-                                reporteLinea.Consecutivo = documentoXml.GetElementsByTagName("NumeroConsecutivo").Item(0).InnerText;
-                                reporteLinea.Fecha = documento.Fecha.ToString("dd/MM/yyyy");
-                                reporteLinea.Nombre = strNombreEmisor;
-                                reporteLinea.Moneda = strCodigoMoneda;
-                                reporteLinea.Impuesto = decTotalImpuesto;
-                                reporteLinea.Total = decTotal;
-                                listaReporte.Add(reporteLinea);
+                                XmlNode emisorNode = documentoXml.GetElementsByTagName("Emisor").Item(0);
+                                strNombreEmisor = emisorNode["Nombre"].InnerText;
                             }
+                            if (documentoXml.GetElementsByTagName("TotalImpuesto").Count > 0)
+                                decTotalImpuesto = decimal.Parse(documentoXml.GetElementsByTagName("TotalImpuesto").Item(0).InnerText, CultureInfo.InvariantCulture);
+                            if (documentoXml.GetElementsByTagName("TotalComprobante").Count > 0)
+                                decTotal = decimal.Parse(documentoXml.GetElementsByTagName("TotalComprobante").Item(0).InnerText, CultureInfo.InvariantCulture);
+                            if (documentoXml.GetElementsByTagName("CodigoMoneda").Count > 0)
+                                strCodigoMoneda = documentoXml.GetElementsByTagName("CodigoMoneda").Item(0).InnerText;
+                            if (documentoXml.GetElementsByTagName("TipoCambio").Count > 0)
+                                decTipoDeCambio = decimal.Parse(documentoXml.GetElementsByTagName("TipoCambio").Item(0).InnerText, CultureInfo.InvariantCulture);
+                            if (strCodigoMoneda != "CRC")
+                            {
+                                decTotal = decTotal * decTipoDeCambio;
+                                decTotalImpuesto = decTotalImpuesto * decTipoDeCambio;
+                            }
+                            ReporteDocumentoElectronico reporteLinea = new ReporteDocumentoElectronico();
+                            reporteLinea.TipoDocumento = documentoXml.DocumentElement.Name == "FacturaElectronica" ? "FACTURA ELECTRONICA" : documentoXml.DocumentElement.Name == "NotaCreditoElectronica" ? "NOTA DE CREDITO" : "NOTA DE DEBITO";
+                            reporteLinea.ClaveNumerica = documentoXml.GetElementsByTagName("Clave").Item(0).InnerText;
+                            reporteLinea.Consecutivo = documentoXml.GetElementsByTagName("NumeroConsecutivo").Item(0).InnerText;
+                            reporteLinea.Fecha = documento.Fecha.ToString("dd/MM/yyyy");
+                            reporteLinea.Nombre = strNombreEmisor;
+                            reporteLinea.Moneda = strCodigoMoneda;
+                            reporteLinea.Impuesto = decTotalImpuesto;
+                            reporteLinea.Total = decTotal;
+                            listaReporte.Add(reporteLinea);
                         }
                         else
                         {
@@ -1361,7 +1358,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             if (documentoXml.GetElementsByTagName("MontoTotalImpuesto").Count > 0)
                                 decTotalImpuesto = decimal.Parse(documentoXml.GetElementsByTagName("MontoTotalImpuesto").Item(0).InnerText, CultureInfo.InvariantCulture);
                             ReporteDocumentoElectronico reporteLinea = new ReporteDocumentoElectronico();
-                            reporteLinea.TipoDocumento = "NOTA DE CREDITO";
+                            reporteLinea.TipoDocumento = "FACTURA ELECTRONICA";
                             reporteLinea.ClaveNumerica = documentoXml.GetElementsByTagName("Clave").Item(0).InnerText;
                             reporteLinea.Fecha = documento.Fecha.ToString("dd/MM/yyyy");
                             reporteLinea.Nombre = strNombreEmisor;
@@ -1376,8 +1373,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    log.Error("Error al procesar el reporte de Documentos Emitidos: ", ex);
-                    throw new Exception("Se produjo un error al ejecutar el reporte de documentos electrónicos emitidos. Por favor consulte con su proveedor.");
+                    log.Error("Error al procesar el reporte de documentos recibidos: ", ex);
+                    throw new Exception("Se produjo un error al ejecutar el reporte de documentos electrónicos recibidos. Por favor consulte con su proveedor.");
                 }
             }
         }

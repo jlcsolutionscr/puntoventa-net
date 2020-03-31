@@ -787,9 +787,9 @@ Public Class FrmProforma
             datos.DistritoEmisor = FrmPrincipal.empresaGlobal.Barrio.Distrito.Descripcion
             datos.BarrioEmisor = FrmPrincipal.empresaGlobal.Barrio.Descripcion
             datos.DireccionEmisor = FrmPrincipal.empresaGlobal.Direccion
+            datos.NombreReceptor = proforma.NombreCliente
             If proforma.IdCliente > 1 Then
                 datos.PoseeReceptor = True
-                datos.NombreReceptor = cliente.Nombre
                 datos.NombreComercialReceptor = cliente.NombreComercial
                 datos.IdentificacionReceptor = cliente.Identificacion
                 datos.CorreoElectronicoReceptor = cliente.CorreoElectronico
