@@ -1921,7 +1921,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     List<ProductoDetalle> listaReporte = new List<ProductoDetalle>();
-                    var listaProductos = dbContext.ProductoRepository.Where(x => x.IdEmpresa == intIdEmpresa);
+                    var listaProductos = dbContext.ProductoRepository.Include("ParametroImpuesto").Where(x => x.IdEmpresa == intIdEmpresa);
                     if (!bolIncluyeServicios)
                         listaProductos = listaProductos.Where(x => x.Tipo == StaticTipoProducto.Producto);
                     if (bolFiltraActivos)
@@ -1939,7 +1939,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         var listado = listaProductos.Join(dbContext.ExistenciaPorSucursalRepository, x => x.IdProducto, y => y.IdProducto, (x, y) => new { x, y }).Where(x => x.y.IdEmpresa == intIdEmpresa && x.y.IdSucursal == intIdSucursal && x.y.Cantidad > 0).OrderBy(x => x.x.Codigo).Skip((numPagina - 1) * cantRec).Take(cantRec).ToList();
                         foreach (var value in listado)
                         {
-                            ProductoDetalle item = new ProductoDetalle(value.x.IdProducto, value.x.Codigo, value.x.CodigoProveedor, value.x.Descripcion, value.y.Cantidad, value.x.PrecioCosto, value.x.PrecioVenta1, value.x.Observacion, value.x.Activo);
+                            decimal decUtilidad = value.x.PrecioCosto > 0 ? ((value.x.PrecioVenta1 / (1 + (value.x.ParametroImpuesto.TasaImpuesto / 100))) * 100 / value.x.PrecioCosto) - 100 : value.x.PrecioVenta1 > 0 ? 100 : 0;
+                            ProductoDetalle item = new ProductoDetalle(value.x.IdProducto, value.x.Codigo, value.x.CodigoProveedor, value.x.Descripcion, value.y.Cantidad, value.x.PrecioCosto, value.x.PrecioVenta1, value.x.Observacion, decUtilidad, value.x.Activo);
                             listaProducto.Add(item);
                         }
                     }
@@ -1950,7 +1951,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         {
                             var existencias = dbContext.ExistenciaPorSucursalRepository.AsNoTracking().Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdProducto == value.IdProducto).FirstOrDefault();
                             decimal decCantidad = existencias != null ? existencias.Cantidad : 0;
-                            ProductoDetalle item = new ProductoDetalle(value.IdProducto, value.Codigo, value.CodigoProveedor, value.Descripcion, decCantidad, value.PrecioCosto, value.PrecioVenta1, value.Observacion, value.Activo);
+                            decimal decUtilidad = value.PrecioCosto > 0 ? ((value.PrecioVenta1 / (1 + (value.ParametroImpuesto.TasaImpuesto / 100))) * 100 / value.PrecioCosto) - 100 : value.PrecioVenta1 > 0 ? 100 : 0;
+                            ProductoDetalle item = new ProductoDetalle(value.IdProducto, value.Codigo, value.CodigoProveedor, value.Descripcion, decCantidad, value.PrecioCosto, value.PrecioVenta1, value.Observacion, decUtilidad, value.Activo);
                             listaProducto.Add(item);
                         }
                     }

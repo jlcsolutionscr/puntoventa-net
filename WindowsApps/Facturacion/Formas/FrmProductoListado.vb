@@ -22,6 +22,7 @@ Public Class FrmProductoListado
         Dim dvcCantidad As New DataGridViewTextBoxColumn
         Dim dvcPrecioCosto As New DataGridViewTextBoxColumn
         Dim dvcPrecioVenta1 As New DataGridViewTextBoxColumn
+        Dim dvcUtilidad As New DataGridViewTextBoxColumn
         Dim dvcActivo As New DataGridViewCheckBoxColumn
         dvcIdProducto.DataPropertyName = "Id"
         dvcIdProducto.HeaderText = "Id"
@@ -43,13 +44,6 @@ Public Class FrmProductoListado
         dvcDescripcion.Width = 300
         dgvListado.Columns.Add(dvcDescripcion)
 
-        dvcActivo.DataPropertyName = "ACTIVO"
-        dvcActivo.HeaderText = "A"
-        dvcActivo.Width = 20
-        dvcActivo.Visible = True
-        dvcActivo.ReadOnly = True
-        dgvListado.Columns.Add(dvcActivo)
-
         dvcCantidad.DataPropertyName = "Cantidad"
         dvcCantidad.HeaderText = "Cant"
         dvcCantidad.Width = 47
@@ -67,6 +61,19 @@ Public Class FrmProductoListado
         dvcPrecioVenta1.Width = 100
         dvcPrecioVenta1.DefaultCellStyle = FrmPrincipal.dgvDecimal
         dgvListado.Columns.Add(dvcPrecioVenta1)
+
+        dvcUtilidad.DataPropertyName = "Utilidad"
+        dvcUtilidad.HeaderText = "Util"
+        dvcUtilidad.Width = 50
+        dvcUtilidad.DefaultCellStyle = FrmPrincipal.dgvDecimal
+        dgvListado.Columns.Add(dvcUtilidad)
+
+        dvcActivo.DataPropertyName = "ACTIVO"
+        dvcActivo.HeaderText = "A"
+        dvcActivo.Width = 20
+        dvcActivo.Visible = True
+        dvcActivo.ReadOnly = True
+        dgvListado.Columns.Add(dvcActivo)
     End Sub
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task

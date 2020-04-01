@@ -945,7 +945,7 @@ Public Class FrmOrdenServicio
         End If
         btnImprimir.Enabled = True
         btnImprimir.Focus()
-        btnGuardar.Enabled = False
+        btnGuardar.Enabled = True
         btnInsertarPago.Enabled = False
         btnEliminarPago.Enabled = False
         btnAnular.Enabled = FrmPrincipal.bolAnularTransacciones

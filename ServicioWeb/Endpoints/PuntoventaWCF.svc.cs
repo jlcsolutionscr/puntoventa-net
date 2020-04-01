@@ -826,6 +826,17 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         if (listadoReporteVentas.Count > 0)
                             strRespuesta = serializer.Serialize(listadoReporteVentas);
                         break;
+                    case "ObtenerReporteDevolucionesPorCliente":
+                        intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
+                        intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
+                        strFechaInicial = parametrosJO.Property("FechaInicial").Value.ToString();
+                        strFechaFinal = parametrosJO.Property("FechaFinal").Value.ToString();
+                        intIdCliente = int.Parse(parametrosJO.Property("IdCliente").Value.ToString());
+                        bolNulo = bool.Parse(parametrosJO.Property("isNulo").Value.ToString());
+                        IList<ReporteDetalle> listadoReporteDevolucionesClientes = servicioReportes.ObtenerReporteDevolucionesPorCliente(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, intIdCliente, bolNulo);
+                        if (listadoReporteDevolucionesClientes.Count > 0)
+                            strRespuesta = serializer.Serialize(listadoReporteDevolucionesClientes);
+                        break;
                     case "ObtenerReporteVentasPorVendedor":
                         intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                         intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());

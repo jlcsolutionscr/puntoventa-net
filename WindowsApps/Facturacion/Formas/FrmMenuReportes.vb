@@ -309,6 +309,54 @@ Public Class FrmMenuReportes
                     parameters(5) = New ReportParameter("pSucursal", cboSucursal.Text)
                     newFormReport.repReportViewer.LocalReport.SetParameters(parameters)
                     newFormReport.ShowDialog()
+                Case "Devoluciones de clientes"
+                    Dim datosReporte As List(Of ReporteDetalle)
+                    Try
+                        datosReporte = Await Puntoventa.ObtenerReporteDevolucionesPorCliente(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FechaInicio.Text, FechaFinal.Text, intIdCliente, StaticTipoNulo.NoNulo, FrmPrincipal.usuarioGlobal.Token)
+                    Catch ex As Exception
+                        MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        CmdVistaPrevia.Enabled = True
+                        Exit Sub
+                    End Try
+                    Dim rds As ReportDataSource = New ReportDataSource("dstDatos", datosReporte)
+                    newFormReport.repReportViewer.LocalReport.DataSources.Clear()
+                    newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
+                    newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
+                    Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptDetalle.rdlc")
+                    newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
+                    Dim parameters(5) As ReportParameter
+                    parameters(0) = New ReportParameter("pUsuario", strUsuario)
+                    parameters(1) = New ReportParameter("pEmpresa", strEmpresa)
+                    parameters(2) = New ReportParameter("pNombreReporte", "Reporte de Devoluciones de Clientes")
+                    parameters(3) = New ReportParameter("pFechaDesde", FechaInicio.Text)
+                    parameters(4) = New ReportParameter("pFechaHasta", FechaFinal.Text)
+                    parameters(5) = New ReportParameter("pSucursal", cboSucursal.Text)
+                    newFormReport.repReportViewer.LocalReport.SetParameters(parameters)
+                    newFormReport.ShowDialog()
+                Case "Devoluciones de clientes anuladas"
+                    Dim datosReporte As List(Of ReporteDetalle)
+                    Try
+                        datosReporte = Await Puntoventa.ObtenerReporteDevolucionesPorCliente(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FechaInicio.Text, FechaFinal.Text, intIdCliente, StaticTipoNulo.Nulo, FrmPrincipal.usuarioGlobal.Token)
+                    Catch ex As Exception
+                        MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        CmdVistaPrevia.Enabled = True
+                        Exit Sub
+                    End Try
+                    Dim rds As ReportDataSource = New ReportDataSource("dstDatos", datosReporte)
+                    newFormReport.repReportViewer.LocalReport.DataSources.Clear()
+                    newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
+                    newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
+                    Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptDetalle.rdlc")
+                    newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
+                    Dim parameters(5) As ReportParameter
+                    parameters(0) = New ReportParameter("pUsuario", strUsuario)
+                    parameters(1) = New ReportParameter("pEmpresa", strEmpresa)
+                    parameters(2) = New ReportParameter("pNombreReporte", "Reporte de Devoluciones de Clientes")
+                    parameters(3) = New ReportParameter("pFechaDesde", FechaInicio.Text)
+                    parameters(4) = New ReportParameter("pFechaHasta", FechaFinal.Text)
+                    parameters(5) = New ReportParameter("pSucursal", cboSucursal.Text)
+                    newFormReport.repReportViewer.LocalReport.SetParameters(parameters)
+                    newFormReport.ShowDialog()
                 Case "Ventas por vendedor"
                     Dim datosReporte As List(Of ReporteVentasPorVendedor)
                     Dim formaMenuVendedor As New FrmMenuVendedor
@@ -641,7 +689,7 @@ Public Class FrmMenuReportes
                         newFormReport.repReportViewer.LocalReport.SetParameters(parameters)
                         newFormReport.ShowDialog()
                     End If
-                'Case "Reporte resumido de ventas por línea"
+                'Case "Resumen de ventas por línea"
                 '    Dim reptVentasxLineaResumen As New rptVentasxLineaResumen
                 '    Dim datosReporte As List(Of ReporteVentasPorLineaResumen)
                 '    Try
@@ -659,7 +707,7 @@ Public Class FrmMenuReportes
                 '    reptVentasxLineaResumen.SetParameterValue(1, strEmpresa)
                 '    formReport.crtViewer.ReportSource = reptVentasxLineaResumen
                 '    formReport.ShowDialog()
-                'Case "Reporte detallado de ventas por línea"
+                'Case "Detalle de ventas por línea"
                 '    Dim reptVentasxLineaDetalle As New rptVentasxLineaDetalle
                 '    Dim datosReporte As List(Of ReporteVentasPorLineaDetalle)
                 '    Dim formaMenuLinea As New FrmMenuLinea

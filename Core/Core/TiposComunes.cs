@@ -464,7 +464,7 @@ namespace LeandroSoftware.Core.TiposComunes
         {
         }
 
-        public ProductoDetalle(int id, string codigo, string codigoProveedor, string descripcion, decimal cantidad, decimal precioCosto, decimal precioVenta1, string observacion, bool activo)
+        public ProductoDetalle(int id, string codigo, string codigoProveedor, string descripcion, decimal cantidad, decimal precioCosto, decimal precioVenta1, string observacion, decimal utilidad, bool activo)
         {
             Id = id;
             Codigo = codigo;
@@ -474,7 +474,7 @@ namespace LeandroSoftware.Core.TiposComunes
             PrecioCosto = precioCosto;
             PrecioVenta1 = precioVenta1;
             Observacion = observacion;
-            Utilidad = precioCosto > 0 ? (precioVenta1 * 100 / precioCosto) - 100 : PrecioVenta1 > 0 ? 100 : 0;
+            Utilidad = utilidad;
             Activo = activo;
         }
         public int Id { get; set; }

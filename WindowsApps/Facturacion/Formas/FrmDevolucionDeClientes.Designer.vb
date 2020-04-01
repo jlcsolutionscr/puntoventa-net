@@ -155,7 +155,7 @@ Partial Class FrmDevolucionDeClientes
         Me.txtIdDevolucion.BackColor = System.Drawing.SystemColors.Window
         Me.txtIdDevolucion.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtIdDevolucion.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtIdDevolucion.Location = New System.Drawing.Point(72, 40)
+        Me.txtIdDevolucion.Location = New System.Drawing.Point(97, 40)
         Me.txtIdDevolucion.MaxLength = 0
         Me.txtIdDevolucion.Name = "txtIdDevolucion"
         Me.txtIdDevolucion.ReadOnly = True
@@ -186,7 +186,7 @@ Partial Class FrmDevolucionDeClientes
         Me.txtIdFactura.BackColor = System.Drawing.SystemColors.Window
         Me.txtIdFactura.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtIdFactura.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtIdFactura.Location = New System.Drawing.Point(72, 66)
+        Me.txtIdFactura.Location = New System.Drawing.Point(97, 66)
         Me.txtIdFactura.MaxLength = 0
         Me.txtIdFactura.Name = "txtIdFactura"
         Me.txtIdFactura.ReadOnly = True
@@ -269,7 +269,7 @@ Partial Class FrmDevolucionDeClientes
         Me.lblLabel4.BackColor = System.Drawing.Color.Transparent
         Me.lblLabel4.Cursor = System.Windows.Forms.Cursors.Default
         Me.lblLabel4.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.lblLabel4.Location = New System.Drawing.Point(-2, 67)
+        Me.lblLabel4.Location = New System.Drawing.Point(23, 67)
         Me.lblLabel4.Name = "lblLabel4"
         Me.lblLabel4.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.lblLabel4.Size = New System.Drawing.Size(68, 18)
@@ -295,7 +295,7 @@ Partial Class FrmDevolucionDeClientes
         Me.lblLabel2.BackColor = System.Drawing.Color.Transparent
         Me.lblLabel2.Cursor = System.Windows.Forms.Cursors.Default
         Me.lblLabel2.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.lblLabel2.Location = New System.Drawing.Point(184, 67)
+        Me.lblLabel2.Location = New System.Drawing.Point(209, 67)
         Me.lblLabel2.Name = "lblLabel2"
         Me.lblLabel2.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.lblLabel2.Size = New System.Drawing.Size(43, 19)
@@ -308,12 +308,12 @@ Partial Class FrmDevolucionDeClientes
         Me.lblLabel0.BackColor = System.Drawing.Color.Transparent
         Me.lblLabel0.Cursor = System.Windows.Forms.Cursors.Default
         Me.lblLabel0.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.lblLabel0.Location = New System.Drawing.Point(0, 40)
+        Me.lblLabel0.Location = New System.Drawing.Point(12, 40)
         Me.lblLabel0.Name = "lblLabel0"
         Me.lblLabel0.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.lblLabel0.Size = New System.Drawing.Size(69, 19)
+        Me.lblLabel0.Size = New System.Drawing.Size(82, 19)
         Me.lblLabel0.TabIndex = 10
-        Me.lblLabel0.Text = "Empresa No:"
+        Me.lblLabel0.Text = "Devolución No:"
         Me.lblLabel0.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'grdDetalleDevolucion
@@ -333,7 +333,7 @@ Partial Class FrmDevolucionDeClientes
         'btnBuscarFactura
         '
         Me.btnBuscarFactura.Image = CType(resources.GetObject("btnBuscarFactura.Image"), System.Drawing.Image)
-        Me.btnBuscarFactura.Location = New System.Drawing.Point(154, 66)
+        Me.btnBuscarFactura.Location = New System.Drawing.Point(179, 66)
         Me.btnBuscarFactura.Name = "btnBuscarFactura"
         Me.btnBuscarFactura.Size = New System.Drawing.Size(20, 20)
         Me.btnBuscarFactura.TabIndex = 136
@@ -346,7 +346,7 @@ Partial Class FrmDevolucionDeClientes
         Me.txtCliente.BackColor = System.Drawing.SystemColors.Window
         Me.txtCliente.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtCliente.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtCliente.Location = New System.Drawing.Point(231, 66)
+        Me.txtCliente.Location = New System.Drawing.Point(256, 66)
         Me.txtCliente.MaxLength = 0
         Me.txtCliente.Name = "txtCliente"
         Me.txtCliente.ReadOnly = True

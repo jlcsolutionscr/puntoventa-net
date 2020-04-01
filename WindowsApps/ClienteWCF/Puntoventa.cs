@@ -485,6 +485,16 @@ namespace LeandroSoftware.ClienteWCF
             return listado;
         }
 
+        public static async Task<List<ReporteDetalle>> ObtenerReporteDevolucionesPorCliente(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, int intIdCliente, bool bolNulo, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'ObtenerReporteDevolucionesPorCliente', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "', IdCliente: " + intIdCliente + ", isNulo: '" + bolNulo + "'}}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            List<ReporteDetalle> listado = new List<ReporteDetalle>();
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<ReporteDetalle>>(respuesta);
+            return listado;
+        }
+
         public static async Task<List<ReporteVentasPorVendedor>> ObtenerReporteVentasPorVendedor(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, int intIdVendedor, string strToken)
         {
             string strDatos = "{NombreMetodo: 'ObtenerReporteVentasPorVendedor', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "', IdVendedor: " + intIdVendedor + "}}";

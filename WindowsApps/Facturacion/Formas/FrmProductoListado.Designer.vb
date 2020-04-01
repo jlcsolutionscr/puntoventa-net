@@ -57,7 +57,7 @@ Partial Class FrmProductoListado
         Me.dgvListado.ReadOnly = True
         Me.dgvListado.RowHeadersVisible = False
         Me.dgvListado.ScrollBars = System.Windows.Forms.ScrollBars.None
-        Me.dgvListado.Size = New System.Drawing.Size(770, 330)
+        Me.dgvListado.Size = New System.Drawing.Size(820, 330)
         Me.dgvListado.TabIndex = 4
         Me.dgvListado.TabStop = False
         '
@@ -65,7 +65,7 @@ Partial Class FrmProductoListado
         '
         Me.txtDescripcion.Location = New System.Drawing.Point(103, 24)
         Me.txtDescripcion.Name = "txtDescripcion"
-        Me.txtDescripcion.Size = New System.Drawing.Size(403, 20)
+        Me.txtDescripcion.Size = New System.Drawing.Size(450, 20)
         Me.txtDescripcion.TabIndex = 0
         '
         'lblDescripcion
@@ -79,7 +79,7 @@ Partial Class FrmProductoListado
         '
         'btnAgregar
         '
-        Me.btnAgregar.Location = New System.Drawing.Point(536, 22)
+        Me.btnAgregar.Location = New System.Drawing.Point(587, 22)
         Me.btnAgregar.Name = "btnAgregar"
         Me.btnAgregar.Size = New System.Drawing.Size(78, 22)
         Me.btnAgregar.TabIndex = 6
@@ -89,7 +89,7 @@ Partial Class FrmProductoListado
         '
         'btnEditar
         '
-        Me.btnEditar.Location = New System.Drawing.Point(620, 22)
+        Me.btnEditar.Location = New System.Drawing.Point(671, 22)
         Me.btnEditar.Name = "btnEditar"
         Me.btnEditar.Size = New System.Drawing.Size(78, 22)
         Me.btnEditar.TabIndex = 7
@@ -99,7 +99,7 @@ Partial Class FrmProductoListado
         '
         'btnEliminar
         '
-        Me.btnEliminar.Location = New System.Drawing.Point(704, 22)
+        Me.btnEliminar.Location = New System.Drawing.Point(755, 22)
         Me.btnEliminar.Name = "btnEliminar"
         Me.btnEliminar.Size = New System.Drawing.Size(78, 22)
         Me.btnEliminar.TabIndex = 8
@@ -110,7 +110,7 @@ Partial Class FrmProductoListado
         'btnFiltrar
         '
         Me.btnFiltrar.Image = CType(resources.GetObject("btnFiltrar.Image"), System.Drawing.Image)
-        Me.btnFiltrar.Location = New System.Drawing.Point(508, 23)
+        Me.btnFiltrar.Location = New System.Drawing.Point(559, 23)
         Me.btnFiltrar.Name = "btnFiltrar"
         Me.btnFiltrar.Size = New System.Drawing.Size(22, 22)
         Me.btnFiltrar.TabIndex = 5
@@ -120,7 +120,7 @@ Partial Class FrmProductoListado
         'lblPagina
         '
         Me.lblPagina.AutoSize = True
-        Me.lblPagina.Location = New System.Drawing.Point(535, 473)
+        Me.lblPagina.Location = New System.Drawing.Point(561, 473)
         Me.lblPagina.Name = "lblPagina"
         Me.lblPagina.Size = New System.Drawing.Size(77, 13)
         Me.lblPagina.TabIndex = 33
@@ -131,7 +131,7 @@ Partial Class FrmProductoListado
         Me.btnLast.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnLast.Enabled = False
         Me.btnLast.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnLast.Location = New System.Drawing.Point(754, 468)
+        Me.btnLast.Location = New System.Drawing.Point(804, 468)
         Me.btnLast.Name = "btnLast"
         Me.btnLast.Size = New System.Drawing.Size(29, 23)
         Me.btnLast.TabIndex = 10
@@ -144,7 +144,7 @@ Partial Class FrmProductoListado
         Me.btnNext.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnNext.Enabled = False
         Me.btnNext.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnNext.Location = New System.Drawing.Point(725, 468)
+        Me.btnNext.Location = New System.Drawing.Point(775, 468)
         Me.btnNext.Name = "btnNext"
         Me.btnNext.Size = New System.Drawing.Size(29, 23)
         Me.btnNext.TabIndex = 9
@@ -157,7 +157,7 @@ Partial Class FrmProductoListado
         Me.btnPrevious.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnPrevious.Enabled = False
         Me.btnPrevious.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnPrevious.Location = New System.Drawing.Point(696, 468)
+        Me.btnPrevious.Location = New System.Drawing.Point(746, 468)
         Me.btnPrevious.Name = "btnPrevious"
         Me.btnPrevious.Size = New System.Drawing.Size(29, 23)
         Me.btnPrevious.TabIndex = 8
@@ -170,7 +170,7 @@ Partial Class FrmProductoListado
         Me.btnFirst.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnFirst.Enabled = False
         Me.btnFirst.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnFirst.Location = New System.Drawing.Point(667, 468)
+        Me.btnFirst.Location = New System.Drawing.Point(717, 468)
         Me.btnFirst.Name = "btnFirst"
         Me.btnFirst.Size = New System.Drawing.Size(29, 23)
         Me.btnFirst.TabIndex = 7
@@ -213,7 +213,7 @@ Partial Class FrmProductoListado
         Me.cboLinea.FormattingEnabled = True
         Me.cboLinea.Location = New System.Drawing.Point(103, 102)
         Me.cboLinea.Name = "cboLinea"
-        Me.cboLinea.Size = New System.Drawing.Size(320, 21)
+        Me.cboLinea.Size = New System.Drawing.Size(260, 21)
         Me.cboLinea.TabIndex = 3
         '
         'Label3
@@ -235,7 +235,7 @@ Partial Class FrmProductoListado
         'chkFiltrarActivos
         '
         Me.chkFiltrarActivos.AutoSize = True
-        Me.chkFiltrarActivos.Location = New System.Drawing.Point(448, 103)
+        Me.chkFiltrarActivos.Location = New System.Drawing.Point(380, 104)
         Me.chkFiltrarActivos.Name = "chkFiltrarActivos"
         Me.chkFiltrarActivos.Size = New System.Drawing.Size(138, 17)
         Me.chkFiltrarActivos.TabIndex = 45
@@ -247,7 +247,7 @@ Partial Class FrmProductoListado
         Me.AcceptButton = Me.btnFiltrar
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(795, 504)
+        Me.ClientSize = New System.Drawing.Size(845, 504)
         Me.Controls.Add(Me.chkFiltrarActivos)
         Me.Controls.Add(Me.Label3)
         Me.Controls.Add(Me.txtCodigoProveedor)
@@ -268,6 +268,8 @@ Partial Class FrmProductoListado
         Me.Controls.Add(Me.txtDescripcion)
         Me.Controls.Add(Me.dgvListado)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
+        Me.MaximumSize = New System.Drawing.Size(861, 543)
+        Me.MinimumSize = New System.Drawing.Size(861, 543)
         Me.Name = "FrmProductoListado"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Mantenimientos de Productos"
