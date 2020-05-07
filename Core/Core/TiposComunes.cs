@@ -266,35 +266,13 @@ namespace LeandroSoftware.Core.TiposComunes
         public decimal Total { get; set; }
     }
 
-    public class ReporteVentasPorLineaResumen
+    public class ReporteGrupoLineaDetalle
     {
-        public string Codigo { get; set; }
-        public int IdLinea { get; set; }
         public string NombreLinea { get; set; }
-        public decimal Cantidad { get; set; }
-        public decimal PrecioVenta { get; set; }
-        public decimal Excento { get; set; }
-        public decimal Gravado { get; set; }
-        public decimal Impuesto { get; set; }
-        public decimal Descuento { get; set; }
-        public decimal Costo { get; set; }
-        public decimal PorcentajeIVA { get; set; }
-
-    }
-
-    public class ReporteVentasPorLineaDetalle
-    {
         public string Codigo { get; set; }
+        public decimal Cantidad { get; set; }
         public string Descripcion { get; set; }
-        public int IdLinea { get; set; }
-        public string NombreLinea { get; set; }
-        public decimal Cantidad { get; set; }
-        public decimal PrecioVenta { get; set; }
-        public decimal Excento { get; set; }
-        public decimal Gravado { get; set; }
-        public decimal Impuesto { get; set; }
-        public decimal Descuento { get; set; }
-        public decimal PorcentajeIVA { get; set; }
+        public decimal Total { get; set; }
     }
 
     public class ReporteInventario
@@ -562,9 +540,10 @@ namespace LeandroSoftware.Core.TiposComunes
         {
         }
 
-        public CompraDetalle(int id, string nombreProveedor, string fecha, decimal gravado, decimal excento, decimal impuesto, decimal total)
+        public CompraDetalle(int id, string referencia, string nombreProveedor, string fecha, decimal gravado, decimal excento, decimal impuesto, decimal total)
         {
             IdCompra = id;
+            RefFactura = referencia;
             NombreProveedor = nombreProveedor;
             Fecha = fecha;
             Gravado = gravado;
@@ -573,6 +552,7 @@ namespace LeandroSoftware.Core.TiposComunes
             Total = total;
         }
         public int IdCompra { get; set; }
+        public string RefFactura { get; set; }
         public string NombreProveedor { get; set; }
         public string Fecha { get; set; }
         public decimal Gravado { get; set; }

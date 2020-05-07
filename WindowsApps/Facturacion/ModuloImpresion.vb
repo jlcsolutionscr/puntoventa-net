@@ -349,6 +349,14 @@ Public Class ModuloImpresion
             End While
             lineas.Add(New ClsLineaImpresion(1, nombre, 0, 100, 10, StringAlignment.Near, False))
             lineas.Add(New ClsLineaImpresion(1, "Teléfono: " & objImpresion.strTelefono, 0, 100, 10, StringAlignment.Near, False))
+            If objImpresion.strDocumento.Length > 0 Then
+                Dim observacion As String = "Observación: " & objImpresion.strDocumento
+                While observacion.Length > 32
+                    lineas.Add(New ClsLineaImpresion(1, observacion.Substring(0, 32), 0, 100, 10, StringAlignment.Near, False))
+                    observacion = observacion.Substring(32)
+                End While
+                lineas.Add(New ClsLineaImpresion(1, observacion, 0, 100, 10, StringAlignment.Near, False))
+            End If
             ImprimirDetalle(objImpresion.arrDetalleComprobante)
             ImprimirTotales(objImpresion)
             lineas.Add(New ClsLineaImpresion(2, " ", 54, 46, 10, StringAlignment.Far, False))
@@ -821,7 +829,7 @@ Public Class ModuloImpresion
             lineas.Add(New ClsLineaImpresion(1, objImpresion.strTotalEfectivo, 0, 100, 10, StringAlignment.Far, True))
             lineas.Add(New ClsLineaImpresion(0, "Efectivo en caja", 0, 100, 10, StringAlignment.Near, False))
             lineas.Add(New ClsLineaImpresion(1, objImpresion.strEfectivoCaja, 0, 100, 10, StringAlignment.Far, False))
-            lineas.Add(New ClsLineaImpresion(0, "Faltante", 0, 100, 10, StringAlignment.Near, False))
+            lineas.Add(New ClsLineaImpresion(0, "Sobrante", 0, 100, 10, StringAlignment.Near, False))
             lineas.Add(New ClsLineaImpresion(1, objImpresion.strSobrante, 0, 100, 10, StringAlignment.Far, False))
             lineas.Add(New ClsLineaImpresion(0, "Total de entrega", 0, 100, 10, StringAlignment.Near, True))
             lineas.Add(New ClsLineaImpresion(2, objImpresion.strRetiroEfectivo, 0, 100, 10, StringAlignment.Far, True))

@@ -49,7 +49,7 @@ Public Class FrmBusquedaOrdenServicio
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
         Try
-            dgvListado.DataSource = Await Puntoventa.ObtenerListadoOrdenServicio(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FechaInicio.Value.ToString("dd/MM/yyyy"), FechaFinal.Value.ToString("dd/MM/yyyy"), cboEstado.SelectedValue, intNumeroPagina, intFilasPorPagina, intId, txtNombre.Text, FrmPrincipal.usuarioGlobal.Token)
+            dgvListado.DataSource = Await Puntoventa.ObtenerListadoOrdenServicio(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, cboEstado.SelectedValue, intNumeroPagina, intFilasPorPagina, intId, txtNombre.Text, FrmPrincipal.usuarioGlobal.Token)
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -61,7 +61,7 @@ Public Class FrmBusquedaOrdenServicio
 
     Private Async Function ValidarCantidadProformas() As Task
         Try
-            intTotalOrdenes = Await Puntoventa.ObtenerTotalListaOrdenServicio(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FechaInicio.Value.ToString("dd/MM/yyyy"), FechaFinal.Value.ToString("dd/MM/yyyy"), cboEstado.SelectedValue, intId, txtNombre.Text, FrmPrincipal.usuarioGlobal.Token)
+            intTotalOrdenes = Await Puntoventa.ObtenerTotalListaOrdenServicio(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, cboEstado.SelectedValue, intId, txtNombre.Text, FrmPrincipal.usuarioGlobal.Token)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -158,8 +158,6 @@ Public Class FrmBusquedaOrdenServicio
             cboEstado.Visible = bolIncluyeEstado
             lblEstado.Visible = bolIncluyeEstado
             EstablecerPropiedadesDataGridView()
-            FechaInicio.Value = Now
-            FechaFinal.Value = Now
             Await CargarCombos()
             Await ValidarCantidadProformas()
             intIndiceDePagina = 1

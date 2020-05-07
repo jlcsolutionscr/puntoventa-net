@@ -9,7 +9,7 @@ Imports LeandroSoftware.ClienteWCF
 
 Public Class FrmProforma
 #Region "Variables"
-    Private decExcento, decGravado, decExonerado, decImpuesto, decTotal, decSubTotal, decPrecioVenta As Decimal
+    Private decDescuento, decExcento, decGravado, decExonerado, decImpuesto, decTotal, decSubTotal, decPrecioVenta As Decimal
     Private I, consecDetalle As Short
     Private dtbDetalleProforma As DataTable
     Private dtrRowDetProforma As DataRow
@@ -216,6 +216,7 @@ Public Class FrmProforma
 
     Private Sub CargarTotales()
         decSubTotal = 0
+        decDescuento = 0
         decGravado = 0
         decExonerado = 0
         decExcento = 0
@@ -224,6 +225,7 @@ Public Class FrmProforma
         If txtPorcentajeExoneracion.Text <> "" Then intPorcentajeExoneracion = CInt(txtPorcentajeExoneracion.Text)
         For I = 0 To dtbDetalleProforma.Rows.Count - 1
             Dim decTasaImpuesto As Decimal = dtbDetalleProforma.Rows(I).Item(8)
+            decDescuento += Math.Round(dtbDetalleProforma.Rows(I).Item(10) / (1 + (decTasaImpuesto / 100)), 2, MidpointRounding.AwayFromZero) * dtbDetalleProforma.Rows(I).Item(3)
             If decTasaImpuesto > 0 Then
                 Dim decImpuestoProducto As Decimal = dtbDetalleProforma.Rows(I).Item(4) * decTasaImpuesto / 100
                 If intPorcentajeExoneracion > 0 Then
@@ -245,7 +247,8 @@ Public Class FrmProforma
         decExcento = Math.Round(decExcento, 2, MidpointRounding.AwayFromZero)
         decImpuesto = Math.Round(decImpuesto, 2, MidpointRounding.AwayFromZero)
         decTotal = Math.Round(decSubTotal + decImpuesto, 2, MidpointRounding.AwayFromZero)
-        txtSubTotal.Text = FormatNumber(decSubTotal, 2)
+        txtSubTotal.Text = FormatNumber(decSubTotal + decDescuento, 2)
+        txtDescuento.Text = FormatNumber(decDescuento, 2)
         txtImpuesto.Text = FormatNumber(decImpuesto, 2)
         txtTotal.Text = FormatNumber(decTotal, 2)
     End Sub
@@ -301,6 +304,11 @@ Public Class FrmProforma
         cboTipoMoneda.ValueMember = "Id"
         cboTipoMoneda.DisplayMember = "Descripcion"
         cboTipoMoneda.DataSource = Await Puntoventa.ObtenerListadoTipoMoneda(FrmPrincipal.usuarioGlobal.Token)
+        cboSucursal.ValueMember = "Id"
+        cboSucursal.DisplayMember = "Descripcion"
+        cboSucursal.DataSource = Await Puntoventa.ObtenerListadoSucursales(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+        cboSucursal.SelectedValue = FrmPrincipal.equipoGlobal.IdSucursal
+        cboSucursal.Enabled = FrmPrincipal.bolSeleccionaSucursal
     End Function
 #End Region
 
@@ -397,6 +405,7 @@ Public Class FrmProforma
         bolInit = True
         txtIdProforma.Text = ""
         txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
+        cboSucursal.SelectedValue = FrmPrincipal.equipoGlobal.IdSucursal
         cboTipoMoneda.SelectedValue = FrmPrincipal.empresaGlobal.IdTipoMoneda
         cboTipoMoneda.Enabled = True
         txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmPrincipal.decTipoCambioDolar.ToString())
@@ -492,6 +501,7 @@ Public Class FrmProforma
                 cliente = proforma.Cliente
                 txtNombreCliente.Text = proforma.NombreCliente
                 txtFecha.Text = proforma.Fecha
+                cboSucursal.SelectedValue = proforma.IdSucursal
                 cboTipoMoneda.SelectedValue = proforma.IdTipoMoneda
                 txtTextoAdicional.Text = proforma.TextoAdicional
                 txtTelefono.Text = proforma.Telefono
@@ -581,14 +591,15 @@ Public Class FrmProforma
 
     Private Async Sub BtnBusProd_Click(sender As Object, e As EventArgs) Handles btnBusProd.Click
         Dim formBusProd As New FrmBusquedaProducto With {
-            .bolIncluyeServicios = True
+            .bolIncluyeServicios = True,
+            .intIdSucursal = cboSucursal.SelectedValue
         }
         FrmPrincipal.strBusqueda = ""
         formBusProd.ShowDialog()
         If Not FrmPrincipal.strBusqueda.Equals("") Then
             Dim intIdProducto As Integer = Integer.Parse(FrmPrincipal.strBusqueda)
             Try
-                producto = Await Puntoventa.ObtenerProducto(intIdProducto, FrmPrincipal.equipoGlobal.IdSucursal, FrmPrincipal.usuarioGlobal.Token)
+                producto = Await Puntoventa.ObtenerProducto(intIdProducto, cboSucursal.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
                 MessageBox.Show("Error al obtener la información del producto seleccionado. Intente mas tarde.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
@@ -612,7 +623,7 @@ Public Class FrmProforma
         If txtIdProforma.Text = "" Then
             proforma = New Proforma With {
                 .IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa,
-                .IdSucursal = FrmPrincipal.equipoGlobal.IdSucursal,
+                .IdSucursal = cboSucursal.SelectedValue,
                 .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
                 .IdTipoMoneda = cboTipoMoneda.SelectedValue,
                 .IdCliente = cliente.IdCliente,
@@ -712,10 +723,10 @@ Public Class FrmProforma
                     .strVendedor = txtVendedor.Text,
                     .strNombre = txtNombreCliente.Text,
                     .strTelefono = txtTelefono.Text,
-                    .strDocumento = "",
+                    .strDocumento = txtTextoAdicional.Text,
                     .strFecha = proforma.Fecha.ToString("dd/MM/yyyy hh:mm:ss"),
                     .strSubTotal = txtSubTotal.Text,
-                    .strDescuento = "0.00",
+                    .strDescuento = txtDescuento.Text,
                     .strImpuesto = txtImpuesto.Text,
                     .strTotal = txtTotal.Text
                 }
@@ -995,7 +1006,7 @@ Public Class FrmProforma
     Private Async Sub TxtCodigo_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtCodigo.PreviewKeyDown
         If e.KeyCode = Keys.Enter Or e.KeyCode = Keys.Tab Then
             Try
-                producto = Await Puntoventa.ObtenerProductoPorCodigo(FrmPrincipal.empresaGlobal.IdEmpresa, txtCodigo.Text, FrmPrincipal.equipoGlobal.IdSucursal, FrmPrincipal.usuarioGlobal.Token)
+                producto = Await Puntoventa.ObtenerProductoPorCodigo(FrmPrincipal.empresaGlobal.IdEmpresa, txtCodigo.Text, cboSucursal.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
                 If producto IsNot Nothing Then
                     If producto.Activo Then
                         CargarDatosProducto(producto)

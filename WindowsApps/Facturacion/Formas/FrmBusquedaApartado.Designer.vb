@@ -31,10 +31,6 @@ Partial Class FrmBusquedaApartado
         Me.txtId = New System.Windows.Forms.TextBox()
         Me.cboSucursal = New System.Windows.Forms.ComboBox()
         Me.Label6 = New System.Windows.Forms.Label()
-        Me.FechaFinal = New System.Windows.Forms.DateTimePicker()
-        Me.FechaInicio = New System.Windows.Forms.DateTimePicker()
-        Me.Label2 = New System.Windows.Forms.Label()
-        Me.Label3 = New System.Windows.Forms.Label()
         Me.lblEstado = New System.Windows.Forms.Label()
         Me.cboEstado = New System.Windows.Forms.ComboBox()
         CType(Me.dgvListado, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -182,50 +178,6 @@ Partial Class FrmBusquedaApartado
         Me.Label6.Text = "Sucursal:"
         Me.Label6.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
-        'FechaFinal
-        '
-        Me.FechaFinal.Format = System.Windows.Forms.DateTimePickerFormat.Custom
-        Me.FechaFinal.Location = New System.Drawing.Point(318, 12)
-        Me.FechaFinal.Name = "FechaFinal"
-        Me.FechaFinal.Size = New System.Drawing.Size(84, 20)
-        Me.FechaFinal.TabIndex = 152
-        Me.FechaFinal.Value = New Date(2013, 6, 9, 0, 0, 0, 0)
-        '
-        'FechaInicio
-        '
-        Me.FechaInicio.Format = System.Windows.Forms.DateTimePickerFormat.Custom
-        Me.FechaInicio.Location = New System.Drawing.Point(176, 12)
-        Me.FechaInicio.Name = "FechaInicio"
-        Me.FechaInicio.Size = New System.Drawing.Size(84, 20)
-        Me.FechaInicio.TabIndex = 151
-        Me.FechaInicio.Value = New Date(2013, 6, 9, 0, 0, 0, 0)
-        '
-        'Label2
-        '
-        Me.Label2.BackColor = System.Drawing.SystemColors.Control
-        Me.Label2.Cursor = System.Windows.Forms.Cursors.Default
-        Me.Label2.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label2.Location = New System.Drawing.Point(270, 12)
-        Me.Label2.Name = "Label2"
-        Me.Label2.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label2.Size = New System.Drawing.Size(42, 17)
-        Me.Label2.TabIndex = 154
-        Me.Label2.Text = "Hasta:"
-        Me.Label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        '
-        'Label3
-        '
-        Me.Label3.BackColor = System.Drawing.SystemColors.Control
-        Me.Label3.Cursor = System.Windows.Forms.Cursors.Default
-        Me.Label3.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label3.Location = New System.Drawing.Point(128, 12)
-        Me.Label3.Name = "Label3"
-        Me.Label3.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label3.Size = New System.Drawing.Size(42, 17)
-        Me.Label3.TabIndex = 153
-        Me.Label3.Text = "Desde:"
-        Me.Label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        '
         'lblEstado
         '
         Me.lblEstado.BackColor = System.Drawing.Color.Transparent
@@ -258,10 +210,6 @@ Partial Class FrmBusquedaApartado
         Me.ClientSize = New System.Drawing.Size(644, 415)
         Me.Controls.Add(Me.lblEstado)
         Me.Controls.Add(Me.cboEstado)
-        Me.Controls.Add(Me.FechaFinal)
-        Me.Controls.Add(Me.FechaInicio)
-        Me.Controls.Add(Me.Label2)
-        Me.Controls.Add(Me.Label3)
         Me.Controls.Add(Me.cboSucursal)
         Me.Controls.Add(Me.Label6)
         Me.Controls.Add(Me.Label1)
@@ -304,10 +252,6 @@ Partial Class FrmBusquedaApartado
     Friend WithEvents txtId As System.Windows.Forms.TextBox
     Friend WithEvents cboSucursal As ComboBox
     Friend WithEvents Label6 As Label
-    Friend WithEvents FechaFinal As DateTimePicker
-    Friend WithEvents FechaInicio As DateTimePicker
-    Public WithEvents Label2 As Label
-    Public WithEvents Label3 As Label
     Friend WithEvents lblEstado As Label
     Friend WithEvents cboEstado As ComboBox
 End Class

@@ -6,7 +6,7 @@ Public Class FrmMenuLinea
 
 #Region "Métodos"
     Private Async Sub CargarCombos()
-        cboIdLinea.ValueMember = "IdLinea"
+        cboIdLinea.ValueMember = "Id"
         cboIdLinea.DisplayMember = "Descripcion"
         cboIdLinea.DataSource = Await Puntoventa.ObtenerListadoLineas(FrmPrincipal.empresaGlobal.IdEmpresa, "", FrmPrincipal.usuarioGlobal.Token)
         cboIdLinea.SelectedValue = 0

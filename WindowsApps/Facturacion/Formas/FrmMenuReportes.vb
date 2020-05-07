@@ -225,7 +225,7 @@ Public Class FrmMenuReportes
                     Dim parameters(5) As ReportParameter
                     parameters(0) = New ReportParameter("pUsuario", strUsuario)
                     parameters(1) = New ReportParameter("pEmpresa", strEmpresa)
-                    parameters(2) = New ReportParameter("pNombreReporte", "Reporte de Ordenes de Servicio en General")
+                    parameters(2) = New ReportParameter("pNombreReporte", "Reporte de Ordenes de Servicio Anuladas")
                     parameters(3) = New ReportParameter("pFechaDesde", FechaInicio.Text)
                     parameters(4) = New ReportParameter("pFechaHasta", FechaFinal.Text)
                     parameters(5) = New ReportParameter("pSucursal", cboSucursal.Text)
@@ -251,13 +251,13 @@ Public Class FrmMenuReportes
                         ElseIf intFormaPago = StaticReporteCondicionVentaFormaPago.Credito Then
                             strDescripcionReporte = "Reporte de Ventas de Crédito"
                         ElseIf intFormaPago = StaticReporteCondicionVentaFormaPago.ContadoEfectivo Then
-                            strDescripcionReporte = "Reporte de Ventas con pago en Efectivo"
+                            strDescripcionReporte = "Reporte de Ventas con Pago en Efectivo"
                         ElseIf intFormaPago = StaticReporteCondicionVentaFormaPago.ContadoTransferenciaDepositoBancario Then
-                            strDescripcionReporte = "Reporte de Ventas con pago en Depósito Bancario"
+                            strDescripcionReporte = "Reporte de Ventas con Pago en Depósito Bancario"
                         ElseIf intFormaPago = StaticReporteCondicionVentaFormaPago.ContadoCheque Then
-                            strDescripcionReporte = "Reporte de Ventas con pago en Cheque"
+                            strDescripcionReporte = "Reporte de Ventas con Pago en Cheque"
                         ElseIf intFormaPago = StaticReporteCondicionVentaFormaPago.ContadoTarjeta Then
-                            strDescripcionReporte = "Reporte de Ventas con Tarjeta"
+                            strDescripcionReporte = "Reporte de Ventas con Pago en Tarjeta"
                         End If
                         If intFormaPago <> 0 Then
                             Try
@@ -403,11 +403,11 @@ Public Class FrmMenuReportes
                         ElseIf intFormaPago = StaticReporteCondicionVentaFormaPago.Credito Then
                             strDescripcionReporte = "Reporte de Compras de Crédito"
                         ElseIf intFormaPago = StaticReporteCondicionVentaFormaPago.ContadoEfectivo Then
-                            strDescripcionReporte = "Reporte de Compras con pago en Efectivo"
+                            strDescripcionReporte = "Reporte de Compras con Pago en Efectivo"
                         ElseIf intFormaPago = StaticReporteCondicionVentaFormaPago.ContadoTransferenciaDepositoBancario Then
-                            strDescripcionReporte = "Reporte de Compras con pago en Transferencia/Depósito"
+                            strDescripcionReporte = "Reporte de Compras con Pago en Transferencia/Depósito"
                         ElseIf intFormaPago = StaticReporteCondicionVentaFormaPago.ContadoCheque Then
-                            strDescripcionReporte = "Reporte de Compras pago en Cheque"
+                            strDescripcionReporte = "Reporte de Compras con Pago en Cheque"
                         End If
                         If intFormaPago <> 0 Then
                             Try
@@ -656,7 +656,7 @@ Public Class FrmMenuReportes
                         Dim parameters(5) As ReportParameter
                         parameters(0) = New ReportParameter("pUsuario", strUsuario)
                         parameters(1) = New ReportParameter("pEmpresa", strEmpresa)
-                        parameters(2) = New ReportParameter("pNombreReporte", "Reporte de Detalle de egresos")
+                        parameters(2) = New ReportParameter("pNombreReporte", "Reporte de Detalle de Egresos")
                         parameters(3) = New ReportParameter("pFechaDesde", FechaInicio.Text)
                         parameters(4) = New ReportParameter("pFechaHasta", FechaFinal.Text)
                         parameters(5) = New ReportParameter("pSucursal", cboSucursal.Text)
@@ -682,52 +682,60 @@ Public Class FrmMenuReportes
                         Dim parameters(5) As ReportParameter
                         parameters(0) = New ReportParameter("pUsuario", strUsuario)
                         parameters(1) = New ReportParameter("pEmpresa", strEmpresa)
-                        parameters(2) = New ReportParameter("pNombreReporte", "Reporte de Detalle de ingresos")
+                        parameters(2) = New ReportParameter("pNombreReporte", "Reporte de Detalle de Ingresos")
                         parameters(3) = New ReportParameter("pFechaDesde", FechaInicio.Text)
                         parameters(4) = New ReportParameter("pFechaHasta", FechaFinal.Text)
                         parameters(5) = New ReportParameter("pSucursal", cboSucursal.Text)
                         newFormReport.repReportViewer.LocalReport.SetParameters(parameters)
                         newFormReport.ShowDialog()
                     End If
-                'Case "Resumen de ventas por línea"
-                '    Dim reptVentasxLineaResumen As New rptVentasxLineaResumen
-                '    Dim datosReporte As List(Of ReporteVentasPorLineaResumen)
-                '    Try
-                '        datosReporte = Await Puntoventa.ObtenerReporteVentasPorLineaResumen(FrmPrincipal.empresaGlobal.IdEmpresa, FechaInicio.Text, FechaFinal.Text, FrmPrincipal.usuarioGlobal.Token)
-                '    Catch ex As Exception
-                '        MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                '        Exit Sub
-                '    End Try
-                '    If datosReporte.Count = 0 Then
-                '        MessageBox.Show("No existen registros de ventas para los parámetros ingresados", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error, FrmPrincipal.usuarioGlobal.Token)
-                '        Exit Sub
-                '    End If
-                '    reptVentasxLineaResumen.SetDataSource(datosReporte)
-                '    reptVentasxLineaResumen.SetParameterValue(0, strUsuario)
-                '    reptVentasxLineaResumen.SetParameterValue(1, strEmpresa)
-                '    formReport.crtViewer.ReportSource = reptVentasxLineaResumen
-                '    formReport.ShowDialog()
-                'Case "Detalle de ventas por línea"
-                '    Dim reptVentasxLineaDetalle As New rptVentasxLineaDetalle
-                '    Dim datosReporte As List(Of ReporteVentasPorLineaDetalle)
-                '    Dim formaMenuLinea As New FrmMenuLinea
-                '    If formaMenuLinea.ShowDialog() = System.Windows.Forms.DialogResult.OK Then
-                '        Try
-                '            datosReporte = Await Puntoventa.ObtenerReporteVentasPorLineaDetalle(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.intBusqueda, FechaInicio.Text, FechaFinal.Text, FrmPrincipal.usuarioGlobal.Token)
-                '        Catch ex As Exception
-                '            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                '            Exit Sub
-                '        End Try
-                '        If datosReporte.Count = 0 Then
-                '            MessageBox.Show("No existen registros de ventas para los parámetros ingresados", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                '            Exit Sub
-                '        End If
-                '        reptVentasxLineaDetalle.SetDataSource(datosReporte)
-                '        reptVentasxLineaDetalle.SetParameterValue(0, strUsuario)
-                '        reptVentasxLineaDetalle.SetParameterValue(1, strEmpresa)
-                '        formReport.crtViewer.ReportSource = reptVentasxLineaDetalle
-                '        formReport.ShowDialog()
-                '    End If
+                Case "Resumen de ventas por línea"
+                    Dim datosReporte As List(Of DescripcionValor)
+                    Try
+                        datosReporte = Await Puntoventa.ObtenerReporteVentasPorLineaResumen(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FechaInicio.Text, FechaFinal.Text, FrmPrincipal.usuarioGlobal.Token)
+                    Catch ex As Exception
+                        MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        Exit Sub
+                    End Try
+                    Dim rds As ReportDataSource = New ReportDataSource("dstDatos", datosReporte)
+                    newFormReport.repReportViewer.LocalReport.DataSources.Clear()
+                    newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
+                    newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
+                    Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptResumenLineaDetalle.rdlc")
+                    newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
+                    Dim parameters(4) As ReportParameter
+                    parameters(0) = New ReportParameter("pUsuario", strUsuario)
+                    parameters(1) = New ReportParameter("pEmpresa", strEmpresa)
+                    parameters(2) = New ReportParameter("pFechaDesde", FechaInicio.Text)
+                    parameters(3) = New ReportParameter("pFechaHasta", FechaFinal.Text)
+                    parameters(4) = New ReportParameter("pSucursal", cboSucursal.Text)
+                    newFormReport.repReportViewer.LocalReport.SetParameters(parameters)
+                    newFormReport.ShowDialog()
+                Case "Detalle de ventas por línea"
+                    Dim datosReporte As List(Of ReporteGrupoLineaDetalle)
+                    Dim formaMenuLinea As New FrmMenuLinea
+                    If formaMenuLinea.ShowDialog() = System.Windows.Forms.DialogResult.OK Then
+                        Try
+                            datosReporte = Await Puntoventa.ObtenerReporteVentasPorLineaDetalle(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FrmPrincipal.intBusqueda, FechaInicio.Text, FechaFinal.Text, FrmPrincipal.usuarioGlobal.Token)
+                        Catch ex As Exception
+                            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                            Exit Sub
+                        End Try
+                        Dim rds As ReportDataSource = New ReportDataSource("dstDatos", datosReporte)
+                        newFormReport.repReportViewer.LocalReport.DataSources.Clear()
+                        newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
+                        newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
+                        Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptGrupoLineaDetalle.rdlc")
+                        newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
+                        Dim parameters(4) As ReportParameter
+                        parameters(0) = New ReportParameter("pUsuario", strUsuario)
+                        parameters(1) = New ReportParameter("pEmpresa", strEmpresa)
+                        parameters(2) = New ReportParameter("pFechaDesde", FechaInicio.Text)
+                        parameters(3) = New ReportParameter("pFechaHasta", FechaFinal.Text)
+                        parameters(4) = New ReportParameter("pSucursal", cboSucursal.Text)
+                        newFormReport.repReportViewer.LocalReport.SetParameters(parameters)
+                        newFormReport.ShowDialog()
+                    End If
                 Case "Documentos electrónicos emitidos"
                     Dim datosReporte As List(Of ReporteDocumentoElectronico)
                     Try

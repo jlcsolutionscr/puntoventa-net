@@ -5,6 +5,7 @@ Public Class FrmBusquedaProducto
 #Region "Variables"
     Public bolIncluyeServicios As Boolean
     Public bolIncluyePrecioCosto As Boolean = False
+    Public intIdSucursal As Integer
     Private intTotalRegistros As Integer
     Private intIndiceDePagina As Integer
     Private intFilasPorPagina As Integer = 16
@@ -85,7 +86,7 @@ Public Class FrmBusquedaProducto
         cboSucursal.ValueMember = "Id"
         cboSucursal.DisplayMember = "Descripcion"
         cboSucursal.DataSource = Await Puntoventa.ObtenerListadoSucursales(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
-        cboSucursal.SelectedValue = FrmPrincipal.equipoGlobal.IdSucursal
+        cboSucursal.SelectedValue = intIdSucursal
         cboSucursal.Enabled = True
     End Function
 

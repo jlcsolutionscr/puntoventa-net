@@ -546,36 +546,37 @@ Public Class FrmPrincipal
         Dim formInicio As New FrmInicio()
         formInicio.ShowDialog()
         mnuMenuPrincipal.Visible = True
-
         For Each reportePorEmpresa As ReportePorEmpresa In empresaGlobal.ReportePorEmpresa.OrderBy(Function(obj) obj.IdReporte)
             lstListaReportes.Add(reportePorEmpresa.CatalogoReporte.NombreReporte)
         Next
-        If usuarioGlobal.RolePorUsuario.First().IdRole = 1 Then
-            bolSeleccionaSucursal = True
-            bolAnularTransacciones = True
-            bolModificaDescripcion = True
-            bolModificaCliente = True
-            bolModificaPrecioVenta = True
-            For Each item As ToolStripMenuItem In mnuMenuPrincipal.Items
-                item.Visible = True
-                For Each subItem As ToolStripItem In item.DropDownItems
-                    subItem.Visible = True
+        If usuarioGlobal.RolePorUsuario.Count > 0 Then
+            If usuarioGlobal.RolePorUsuario.First().IdRole = 1 Then
+                bolSeleccionaSucursal = True
+                bolAnularTransacciones = True
+                bolModificaDescripcion = True
+                bolModificaCliente = True
+                bolModificaPrecioVenta = True
+                For Each item As ToolStripMenuItem In mnuMenuPrincipal.Items
+                    item.Visible = True
+                    For Each subItem As ToolStripItem In item.DropDownItems
+                        subItem.Visible = True
+                    Next
                 Next
-            Next
-        Else
-            For Each permiso As RolePorUsuario In usuarioGlobal.RolePorUsuario
-                Try
-                    If permiso.IdRole = 48 Then bolSeleccionaSucursal = True
-                    If permiso.IdRole = 49 Then bolAnularTransacciones = True
-                    If permiso.IdRole = 50 Then bolModificaDescripcion = True
-                    If permiso.IdRole = 51 Then bolModificaCliente = True
-                    If permiso.IdRole = 52 Then bolModificaPrecioVenta = True
-                    objMenu = mnuMenuPrincipal.Items(permiso.Role.MenuPadre)
-                    objMenu.Visible = True
-                    objMenu.DropDownItems(permiso.Role.MenuItem).Visible = True
-                Catch ex As Exception
-                End Try
-            Next
+            Else
+                For Each permiso As RolePorUsuario In usuarioGlobal.RolePorUsuario
+                    Try
+                        If permiso.IdRole = 48 Then bolSeleccionaSucursal = True
+                        If permiso.IdRole = 49 Then bolAnularTransacciones = True
+                        If permiso.IdRole = 50 Then bolModificaDescripcion = True
+                        If permiso.IdRole = 51 Then bolModificaCliente = True
+                        If permiso.IdRole = 52 Then bolModificaPrecioVenta = True
+                        objMenu = mnuMenuPrincipal.Items(permiso.Role.MenuPadre)
+                        objMenu.Visible = True
+                        objMenu.DropDownItems(permiso.Role.MenuItem).Visible = True
+                    Catch ex As Exception
+                    End Try
+                Next
+            End If
         End If
         If Not ValidarEmpresa(empresa) Then
             If usuarioGlobal.RolePorUsuario.Where(Function(s) s.IdRole = 61).Count > 0 Then

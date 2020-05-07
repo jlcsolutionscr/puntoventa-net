@@ -22,14 +22,8 @@ Partial Class FrmProforma
     Public WithEvents btnGuardar As System.Windows.Forms.Button
     Public WithEvents btnEliminar As System.Windows.Forms.Button
     Public WithEvents btnInsertar As System.Windows.Forms.Button
-    Public WithEvents txtImpuesto As System.Windows.Forms.TextBox
     Public WithEvents txtIdProforma As System.Windows.Forms.TextBox
-    Public WithEvents txtTotal As System.Windows.Forms.TextBox
-    Public WithEvents txtSubTotal As System.Windows.Forms.TextBox
     Public WithEvents _lblLabels_11 As System.Windows.Forms.Label
-    Public WithEvents _LblImpuesto_0 As System.Windows.Forms.Label
-    Public WithEvents _LblTotal_6 As System.Windows.Forms.Label
-    Public WithEvents _lblSubTotal_5 As System.Windows.Forms.Label
     Public WithEvents _lblLabels_2 As System.Windows.Forms.Label
     Public WithEvents _lblLabels_0 As System.Windows.Forms.Label
     Public WithEvents grdDetalleProforma As System.Windows.Forms.DataGridView
@@ -47,14 +41,8 @@ Partial Class FrmProforma
         Me.btnGuardar = New System.Windows.Forms.Button()
         Me.btnEliminar = New System.Windows.Forms.Button()
         Me.btnInsertar = New System.Windows.Forms.Button()
-        Me.txtImpuesto = New System.Windows.Forms.TextBox()
         Me.txtIdProforma = New System.Windows.Forms.TextBox()
-        Me.txtTotal = New System.Windows.Forms.TextBox()
-        Me.txtSubTotal = New System.Windows.Forms.TextBox()
         Me._lblLabels_11 = New System.Windows.Forms.Label()
-        Me._LblImpuesto_0 = New System.Windows.Forms.Label()
-        Me._LblTotal_6 = New System.Windows.Forms.Label()
-        Me._lblSubTotal_5 = New System.Windows.Forms.Label()
         Me._lblLabels_2 = New System.Windows.Forms.Label()
         Me._lblLabels_0 = New System.Windows.Forms.Label()
         Me.grdDetalleProforma = New System.Windows.Forms.DataGridView()
@@ -92,6 +80,16 @@ Partial Class FrmProforma
         Me.Label9 = New System.Windows.Forms.Label()
         Me.txtExistencias = New System.Windows.Forms.TextBox()
         Me.Label16 = New System.Windows.Forms.Label()
+        Me.txtDescuento = New System.Windows.Forms.TextBox()
+        Me.Label17 = New System.Windows.Forms.Label()
+        Me.txtImpuesto = New System.Windows.Forms.TextBox()
+        Me.txtTotal = New System.Windows.Forms.TextBox()
+        Me.txtSubTotal = New System.Windows.Forms.TextBox()
+        Me._LblImpuesto_0 = New System.Windows.Forms.Label()
+        Me._LblTotal_6 = New System.Windows.Forms.Label()
+        Me._lblSubTotal_5 = New System.Windows.Forms.Label()
+        Me.cboSucursal = New System.Windows.Forms.ComboBox()
+        Me.Label6 = New System.Windows.Forms.Label()
         CType(Me.grdDetalleProforma, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -224,22 +222,6 @@ Partial Class FrmProforma
         Me.btnInsertar.Text = "Insertar"
         Me.btnInsertar.UseVisualStyleBackColor = False
         '
-        'txtImpuesto
-        '
-        Me.txtImpuesto.AcceptsReturn = True
-        Me.txtImpuesto.BackColor = System.Drawing.SystemColors.Window
-        Me.txtImpuesto.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtImpuesto.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtImpuesto.Location = New System.Drawing.Point(627, 410)
-        Me.txtImpuesto.MaxLength = 0
-        Me.txtImpuesto.Name = "txtImpuesto"
-        Me.txtImpuesto.ReadOnly = True
-        Me.txtImpuesto.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtImpuesto.Size = New System.Drawing.Size(73, 20)
-        Me.txtImpuesto.TabIndex = 62
-        Me.txtImpuesto.TabStop = False
-        Me.txtImpuesto.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
-        '
         'txtIdProforma
         '
         Me.txtIdProforma.AcceptsReturn = True
@@ -255,38 +237,6 @@ Partial Class FrmProforma
         Me.txtIdProforma.TabIndex = 0
         Me.txtIdProforma.TabStop = False
         '
-        'txtTotal
-        '
-        Me.txtTotal.AcceptsReturn = True
-        Me.txtTotal.BackColor = System.Drawing.SystemColors.Window
-        Me.txtTotal.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtTotal.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtTotal.Location = New System.Drawing.Point(735, 410)
-        Me.txtTotal.MaxLength = 0
-        Me.txtTotal.Name = "txtTotal"
-        Me.txtTotal.ReadOnly = True
-        Me.txtTotal.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtTotal.Size = New System.Drawing.Size(73, 20)
-        Me.txtTotal.TabIndex = 63
-        Me.txtTotal.TabStop = False
-        Me.txtTotal.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
-        '
-        'txtSubTotal
-        '
-        Me.txtSubTotal.AcceptsReturn = True
-        Me.txtSubTotal.BackColor = System.Drawing.SystemColors.Window
-        Me.txtSubTotal.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtSubTotal.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtSubTotal.Location = New System.Drawing.Point(527, 410)
-        Me.txtSubTotal.MaxLength = 0
-        Me.txtSubTotal.Name = "txtSubTotal"
-        Me.txtSubTotal.ReadOnly = True
-        Me.txtSubTotal.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtSubTotal.Size = New System.Drawing.Size(73, 20)
-        Me.txtSubTotal.TabIndex = 59
-        Me.txtSubTotal.TabStop = False
-        Me.txtSubTotal.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
-        '
         '_lblLabels_11
         '
         Me._lblLabels_11.BackColor = System.Drawing.Color.Transparent
@@ -299,45 +249,6 @@ Partial Class FrmProforma
         Me._lblLabels_11.TabIndex = 44
         Me._lblLabels_11.Text = "Otras referencias:"
         Me._lblLabels_11.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        '
-        '_LblImpuesto_0
-        '
-        Me._LblImpuesto_0.BackColor = System.Drawing.Color.Transparent
-        Me._LblImpuesto_0.Cursor = System.Windows.Forms.Cursors.Default
-        Me._LblImpuesto_0.ForeColor = System.Drawing.SystemColors.ControlText
-        Me._LblImpuesto_0.Location = New System.Drawing.Point(596, 410)
-        Me._LblImpuesto_0.Name = "_LblImpuesto_0"
-        Me._LblImpuesto_0.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me._LblImpuesto_0.Size = New System.Drawing.Size(32, 19)
-        Me._LblImpuesto_0.TabIndex = 23
-        Me._LblImpuesto_0.Text = "Imp:"
-        Me._LblImpuesto_0.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        '
-        '_LblTotal_6
-        '
-        Me._LblTotal_6.BackColor = System.Drawing.Color.Transparent
-        Me._LblTotal_6.Cursor = System.Windows.Forms.Cursors.Default
-        Me._LblTotal_6.ForeColor = System.Drawing.SystemColors.ControlText
-        Me._LblTotal_6.Location = New System.Drawing.Point(695, 410)
-        Me._LblTotal_6.Name = "_LblTotal_6"
-        Me._LblTotal_6.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me._LblTotal_6.Size = New System.Drawing.Size(42, 19)
-        Me._LblTotal_6.TabIndex = 21
-        Me._LblTotal_6.Text = "Total:"
-        Me._LblTotal_6.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        '
-        '_lblSubTotal_5
-        '
-        Me._lblSubTotal_5.BackColor = System.Drawing.Color.Transparent
-        Me._lblSubTotal_5.Cursor = System.Windows.Forms.Cursors.Default
-        Me._lblSubTotal_5.ForeColor = System.Drawing.SystemColors.ControlText
-        Me._lblSubTotal_5.Location = New System.Drawing.Point(463, 410)
-        Me._lblSubTotal_5.Name = "_lblSubTotal_5"
-        Me._lblSubTotal_5.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me._lblSubTotal_5.Size = New System.Drawing.Size(65, 19)
-        Me._lblSubTotal_5.TabIndex = 17
-        Me._lblSubTotal_5.Text = "Sub-Total:"
-        Me._lblSubTotal_5.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         '_lblLabels_2
         '
@@ -774,7 +685,7 @@ Partial Class FrmProforma
         Me.cboTipoMoneda.ForeColor = System.Drawing.SystemColors.WindowText
         Me.cboTipoMoneda.IntegralHeight = False
         Me.cboTipoMoneda.ItemHeight = 13
-        Me.cboTipoMoneda.Location = New System.Drawing.Point(102, 91)
+        Me.cboTipoMoneda.Location = New System.Drawing.Point(471, 91)
         Me.cboTipoMoneda.Name = "cboTipoMoneda"
         Me.cboTipoMoneda.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.cboTipoMoneda.Size = New System.Drawing.Size(129, 21)
@@ -785,7 +696,7 @@ Partial Class FrmProforma
         Me.Label3.BackColor = System.Drawing.Color.Transparent
         Me.Label3.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label3.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label3.Location = New System.Drawing.Point(36, 91)
+        Me.Label3.Location = New System.Drawing.Point(405, 91)
         Me.Label3.Name = "Label3"
         Me.Label3.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label3.Size = New System.Drawing.Size(60, 19)
@@ -799,7 +710,7 @@ Partial Class FrmProforma
         Me.txtTipoCambio.BackColor = System.Drawing.SystemColors.Window
         Me.txtTipoCambio.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtTipoCambio.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtTipoCambio.Location = New System.Drawing.Point(330, 91)
+        Me.txtTipoCambio.Location = New System.Drawing.Point(699, 91)
         Me.txtTipoCambio.MaxLength = 0
         Me.txtTipoCambio.Name = "txtTipoCambio"
         Me.txtTipoCambio.ReadOnly = True
@@ -814,7 +725,7 @@ Partial Class FrmProforma
         Me.Label9.BackColor = System.Drawing.Color.Transparent
         Me.Label9.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label9.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label9.Location = New System.Drawing.Point(248, 91)
+        Me.Label9.Location = New System.Drawing.Point(617, 91)
         Me.Label9.Name = "Label9"
         Me.Label9.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label9.Size = New System.Drawing.Size(76, 19)
@@ -849,6 +760,145 @@ Partial Class FrmProforma
         Me.Label16.Text = "Stock"
         Me.Label16.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
+        'txtDescuento
+        '
+        Me.txtDescuento.AcceptsReturn = True
+        Me.txtDescuento.BackColor = System.Drawing.SystemColors.Window
+        Me.txtDescuento.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtDescuento.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtDescuento.Location = New System.Drawing.Point(527, 407)
+        Me.txtDescuento.MaxLength = 0
+        Me.txtDescuento.Name = "txtDescuento"
+        Me.txtDescuento.ReadOnly = True
+        Me.txtDescuento.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtDescuento.Size = New System.Drawing.Size(73, 20)
+        Me.txtDescuento.TabIndex = 208
+        Me.txtDescuento.TabStop = False
+        Me.txtDescuento.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        '
+        'Label17
+        '
+        Me.Label17.BackColor = System.Drawing.Color.Transparent
+        Me.Label17.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label17.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label17.Location = New System.Drawing.Point(492, 407)
+        Me.Label17.Name = "Label17"
+        Me.Label17.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label17.Size = New System.Drawing.Size(36, 19)
+        Me.Label17.TabIndex = 211
+        Me.Label17.Text = "Desc:"
+        Me.Label17.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
+        'txtImpuesto
+        '
+        Me.txtImpuesto.AcceptsReturn = True
+        Me.txtImpuesto.BackColor = System.Drawing.SystemColors.Window
+        Me.txtImpuesto.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtImpuesto.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtImpuesto.Location = New System.Drawing.Point(627, 407)
+        Me.txtImpuesto.MaxLength = 0
+        Me.txtImpuesto.Name = "txtImpuesto"
+        Me.txtImpuesto.ReadOnly = True
+        Me.txtImpuesto.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtImpuesto.Size = New System.Drawing.Size(73, 20)
+        Me.txtImpuesto.TabIndex = 209
+        Me.txtImpuesto.TabStop = False
+        Me.txtImpuesto.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        '
+        'txtTotal
+        '
+        Me.txtTotal.AcceptsReturn = True
+        Me.txtTotal.BackColor = System.Drawing.SystemColors.Window
+        Me.txtTotal.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtTotal.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtTotal.Location = New System.Drawing.Point(735, 407)
+        Me.txtTotal.MaxLength = 0
+        Me.txtTotal.Name = "txtTotal"
+        Me.txtTotal.ReadOnly = True
+        Me.txtTotal.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtTotal.Size = New System.Drawing.Size(73, 20)
+        Me.txtTotal.TabIndex = 210
+        Me.txtTotal.TabStop = False
+        Me.txtTotal.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        '
+        'txtSubTotal
+        '
+        Me.txtSubTotal.AcceptsReturn = True
+        Me.txtSubTotal.BackColor = System.Drawing.SystemColors.Window
+        Me.txtSubTotal.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtSubTotal.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtSubTotal.Location = New System.Drawing.Point(417, 407)
+        Me.txtSubTotal.MaxLength = 0
+        Me.txtSubTotal.Name = "txtSubTotal"
+        Me.txtSubTotal.ReadOnly = True
+        Me.txtSubTotal.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtSubTotal.Size = New System.Drawing.Size(73, 20)
+        Me.txtSubTotal.TabIndex = 207
+        Me.txtSubTotal.TabStop = False
+        Me.txtSubTotal.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        '
+        '_LblImpuesto_0
+        '
+        Me._LblImpuesto_0.BackColor = System.Drawing.Color.Transparent
+        Me._LblImpuesto_0.Cursor = System.Windows.Forms.Cursors.Default
+        Me._LblImpuesto_0.ForeColor = System.Drawing.SystemColors.ControlText
+        Me._LblImpuesto_0.Location = New System.Drawing.Point(596, 407)
+        Me._LblImpuesto_0.Name = "_LblImpuesto_0"
+        Me._LblImpuesto_0.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me._LblImpuesto_0.Size = New System.Drawing.Size(32, 19)
+        Me._LblImpuesto_0.TabIndex = 206
+        Me._LblImpuesto_0.Text = "Imp:"
+        Me._LblImpuesto_0.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
+        '_LblTotal_6
+        '
+        Me._LblTotal_6.BackColor = System.Drawing.Color.Transparent
+        Me._LblTotal_6.Cursor = System.Windows.Forms.Cursors.Default
+        Me._LblTotal_6.ForeColor = System.Drawing.SystemColors.ControlText
+        Me._LblTotal_6.Location = New System.Drawing.Point(695, 407)
+        Me._LblTotal_6.Name = "_LblTotal_6"
+        Me._LblTotal_6.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me._LblTotal_6.Size = New System.Drawing.Size(42, 19)
+        Me._LblTotal_6.TabIndex = 205
+        Me._LblTotal_6.Text = "Total:"
+        Me._LblTotal_6.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
+        '_lblSubTotal_5
+        '
+        Me._lblSubTotal_5.BackColor = System.Drawing.Color.Transparent
+        Me._lblSubTotal_5.Cursor = System.Windows.Forms.Cursors.Default
+        Me._lblSubTotal_5.ForeColor = System.Drawing.SystemColors.ControlText
+        Me._lblSubTotal_5.Location = New System.Drawing.Point(353, 407)
+        Me._lblSubTotal_5.Name = "_lblSubTotal_5"
+        Me._lblSubTotal_5.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me._lblSubTotal_5.Size = New System.Drawing.Size(65, 19)
+        Me._lblSubTotal_5.TabIndex = 204
+        Me._lblSubTotal_5.Text = "Sub-Total:"
+        Me._lblSubTotal_5.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
+        'cboSucursal
+        '
+        Me.cboSucursal.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.cboSucursal.FormattingEnabled = True
+        Me.cboSucursal.Location = New System.Drawing.Point(102, 91)
+        Me.cboSucursal.Name = "cboSucursal"
+        Me.cboSucursal.Size = New System.Drawing.Size(289, 21)
+        Me.cboSucursal.TabIndex = 212
+        Me.cboSucursal.TabStop = False
+        '
+        'Label6
+        '
+        Me.Label6.BackColor = System.Drawing.Color.Transparent
+        Me.Label6.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label6.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label6.Location = New System.Drawing.Point(35, 91)
+        Me.Label6.Name = "Label6"
+        Me.Label6.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label6.Size = New System.Drawing.Size(61, 19)
+        Me.Label6.TabIndex = 213
+        Me.Label6.Text = "Sucursal:"
+        Me.Label6.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
         'FrmProforma
         '
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
@@ -856,6 +906,16 @@ Partial Class FrmProforma
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(817, 493)
+        Me.Controls.Add(Me.cboSucursal)
+        Me.Controls.Add(Me.Label6)
+        Me.Controls.Add(Me.txtDescuento)
+        Me.Controls.Add(Me.Label17)
+        Me.Controls.Add(Me.txtImpuesto)
+        Me.Controls.Add(Me.txtTotal)
+        Me.Controls.Add(Me.txtSubTotal)
+        Me.Controls.Add(Me._LblImpuesto_0)
+        Me.Controls.Add(Me._LblTotal_6)
+        Me.Controls.Add(Me._lblSubTotal_5)
         Me.Controls.Add(Me.txtExistencias)
         Me.Controls.Add(Me.Label16)
         Me.Controls.Add(Me.cboTipoMoneda)
@@ -900,14 +960,8 @@ Partial Class FrmProforma
         Me.Controls.Add(Me.btnGuardar)
         Me.Controls.Add(Me.btnEliminar)
         Me.Controls.Add(Me.btnInsertar)
-        Me.Controls.Add(Me.txtImpuesto)
         Me.Controls.Add(Me.txtIdProforma)
-        Me.Controls.Add(Me.txtTotal)
-        Me.Controls.Add(Me.txtSubTotal)
         Me.Controls.Add(Me._lblLabels_11)
-        Me.Controls.Add(Me._LblImpuesto_0)
-        Me.Controls.Add(Me._LblTotal_6)
-        Me.Controls.Add(Me._lblSubTotal_5)
         Me.Controls.Add(Me._lblLabels_2)
         Me.Controls.Add(Me._lblLabels_0)
         Me.Cursor = System.Windows.Forms.Cursors.Default
@@ -961,4 +1015,14 @@ Partial Class FrmProforma
     Public WithEvents Label9 As Label
     Public WithEvents txtExistencias As TextBox
     Public WithEvents Label16 As Label
+    Public WithEvents txtDescuento As TextBox
+    Public WithEvents Label17 As Label
+    Public WithEvents txtImpuesto As TextBox
+    Public WithEvents txtTotal As TextBox
+    Public WithEvents txtSubTotal As TextBox
+    Public WithEvents _LblImpuesto_0 As Label
+    Public WithEvents _LblTotal_6 As Label
+    Public WithEvents _lblSubTotal_5 As Label
+    Friend WithEvents cboSucursal As ComboBox
+    Friend WithEvents Label6 As Label
 End Class

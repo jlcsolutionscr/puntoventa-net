@@ -35,8 +35,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         List<DescripcionValor> ObtenerReporteEstadoResultados(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal);
         List<ReporteGrupoDetalle> ObtenerReporteDetalleEgreso(int intIdEmpresa, int intIdSucursal, int idCuentaEgreso, string strFechaInicial, string strFechaFinal);
         List<ReporteGrupoDetalle> ObtenerReporteDetalleIngreso(int intIdEmpresa, int intIdSucursal, int idCuentaIngreso, string strFechaInicial, string strFechaFinal);
-        List<ReporteVentasPorLineaResumen> ObtenerReporteVentasPorLineaResumen(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal);
-        List<ReporteVentasPorLineaDetalle> ObtenerReporteVentasPorLineaDetalle(int intIdEmpresa, int intIdSucursal, int intIdLinea, string strFechaInicial, string strFechaFinal);
+        List<DescripcionValor> ObtenerReporteVentasPorLineaResumen(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal);
+        List<ReporteGrupoLineaDetalle> ObtenerReporteVentasPorLineaDetalle(int intIdEmpresa, int intIdSucursal, int intIdLinea, string strFechaInicial, string strFechaFinal);
         List<DescripcionValor> ObtenerReporteCierreDeCaja(int intIdCierre);
         List<ReporteInventario> ObtenerReporteInventario(int intIdEmpresa, int intIdSucursal, bool bolFiltraActivos, bool bolFiltraExistencias, int intIdLinea, string strCodigo, string strDescripcion);
         List<ReporteMovimientosContables> ObtenerReporteMovimientosContables(int intIdEmpresa, string strFechaInicial, string strFechaFinal);
@@ -850,7 +850,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public List<ReporteVentasPorLineaResumen> ObtenerReporteVentasPorLineaResumen(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal)
+        public List<DescripcionValor> ObtenerReporteVentasPorLineaResumen(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -858,26 +858,18 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     DateTime datFechaInicial = DateTime.ParseExact(strFechaInicial + " 00:00:01", strFormat, provider);
                     DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
-                    List<ReporteVentasPorLineaResumen> listaReporte = new List<ReporteVentasPorLineaResumen>();
+                    List<DescripcionValor> listaReporte = new List<DescripcionValor>();
                     var ventasResumen = dbContext.FacturaRepository.Where(s => s.IdEmpresa == intIdEmpresa && s.IdSucursal == intIdSucursal && s.Nulo == false && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal)
                         .Join(dbContext.DetalleFacturaRepository, x => x.IdFactura, y => y.IdFactura, (x, y) => new { x, y })
                         .Join(dbContext.ProductoRepository, x => x.y.IdProducto, y => y.IdProducto, (x, y) => new { x, y })
                         .Join(dbContext.LineaRepository, x => x.y.IdLinea, y => y.IdLinea, (x, y) => new { x, y })
-                        .Select(z => new { z.x.y.Codigo, z.x.y.IdLinea, NombreLinea = z.y.Descripcion, z.x.x.y.Cantidad, z.x.x.y.PrecioVenta, z.x.x.y.PorcentajeIVA, z.x.x.x.Excento, z.x.x.x.Gravado, z.x.x.x.Impuesto, z.x.x.x.Descuento, Costo = z.x.x.y.Cantidad * z.x.x.y.PrecioCosto });
+                        .GroupBy(x => x.y.Descripcion)
+                        .Select(sf => new { NombreLinea = sf.Key, Total = sf.Sum(z => (z.x.x.y.Cantidad - z.x.x.y.CantDevuelto) * (z.x.x.y.PrecioVenta * (1 + (z.x.x.y.PorcentajeIVA / 100)))) });
                     foreach (var value in ventasResumen)
                     {
-                        ReporteVentasPorLineaResumen reporteLinea = new ReporteVentasPorLineaResumen();
-                        reporteLinea.Codigo = value.Codigo;
-                        reporteLinea.IdLinea = value.IdLinea;
-                        reporteLinea.NombreLinea = value.NombreLinea;
-                        reporteLinea.Cantidad = value.Cantidad;
-                        reporteLinea.PrecioVenta = value.PrecioVenta;
-                        reporteLinea.Excento = value.Excento;
-                        reporteLinea.Gravado = value.Gravado;
-                        reporteLinea.Descuento = value.Descuento;
-                        reporteLinea.Impuesto = value.Impuesto;
-                        reporteLinea.Costo = value.Costo;
-                        reporteLinea.PorcentajeIVA = value.PorcentajeIVA;
+                        DescripcionValor reporteLinea = new DescripcionValor();
+                        reporteLinea.Descripcion = value.NombreLinea;
+                        reporteLinea.Valor = value.Total;
                         listaReporte.Add(reporteLinea);
                     }
                     return listaReporte;
@@ -890,7 +882,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public List<ReporteVentasPorLineaDetalle> ObtenerReporteVentasPorLineaDetalle(int intIdEmpresa, int intIdSucursal, int intIdLinea, string strFechaInicial, string strFechaFinal)
+        public List<ReporteGrupoLineaDetalle> ObtenerReporteVentasPorLineaDetalle(int intIdEmpresa, int intIdSucursal, int intIdLinea, string strFechaInicial, string strFechaFinal)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -898,28 +890,23 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     DateTime datFechaInicial = DateTime.ParseExact(strFechaInicial + " 00:00:01", strFormat, provider);
                     DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
-                    List<ReporteVentasPorLineaDetalle> listaReporte = new List<ReporteVentasPorLineaDetalle>();
+                    List<ReporteGrupoLineaDetalle> listaReporte = new List<ReporteGrupoLineaDetalle>();
                     var ventasDetalle = dbContext.FacturaRepository.Where(s => s.IdEmpresa == intIdEmpresa && s.IdSucursal == intIdSucursal && s.Nulo == false && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal)
                         .Join(dbContext.DetalleFacturaRepository, x => x.IdFactura, y => y.IdFactura, (x, y) => new { x, y })
                         .Join(dbContext.ProductoRepository, x => x.y.IdProducto, y => y.IdProducto, (x, y) => new { x, y })
-                        .Join(dbContext.LineaRepository, x => x.y.IdLinea, y => y.IdLinea, (x, y) => new { x, y })
-                        .Select(z => new { z.x.y.Codigo, z.x.y.Descripcion, z.x.y.IdLinea, NombreLinea = z.y.Descripcion, z.x.x.y.Cantidad, z.x.x.y.PrecioVenta, z.x.x.y.PorcentajeIVA, z.x.x.x.Excento, z.x.x.x.Gravado, z.x.x.x.Impuesto, z.x.x.x.Descuento });
+                        .Join(dbContext.LineaRepository, x => x.y.IdLinea, y => y.IdLinea, (x, y) => new { x, y });
                     if (intIdLinea > 0)
-                        ventasDetalle = ventasDetalle.Where(a => a.IdLinea == intIdLinea);
-                    foreach (var value in ventasDetalle)
+                        ventasDetalle = ventasDetalle.Where(x => x.y.IdLinea == intIdLinea);
+                    var listado = ventasDetalle.GroupBy(x => new { NombreLinea = x.y.Descripcion, x.x.y.Codigo, x.x.x.y.Descripcion })
+                        .Select(sf => new { sf.Key.NombreLinea, sf.Key.Codigo, Cantidad = sf.Sum(z => (z.x.x.y.Cantidad - z.x.x.y.CantDevuelto)), sf.Key.Descripcion, Total = sf.Sum(z => (z.x.x.y.Cantidad - z.x.x.y.CantDevuelto) * (z.x.x.y.PrecioVenta * (1 + (z.x.x.y.PorcentajeIVA / 100)))) });
+                    foreach (var value in listado)
                     {
-                        ReporteVentasPorLineaDetalle reporteLinea = new ReporteVentasPorLineaDetalle();
-                        reporteLinea.Codigo = value.Codigo;
-                        reporteLinea.Descripcion = value.Descripcion;
-                        reporteLinea.IdLinea = value.IdLinea;
+                        ReporteGrupoLineaDetalle reporteLinea = new ReporteGrupoLineaDetalle();
                         reporteLinea.NombreLinea = value.NombreLinea;
+                        reporteLinea.Codigo = value.Codigo;
                         reporteLinea.Cantidad = value.Cantidad;
-                        reporteLinea.PrecioVenta = value.PrecioVenta;
-                        reporteLinea.Excento = value.Excento;
-                        reporteLinea.Gravado = value.Gravado;
-                        reporteLinea.Descuento = value.Descuento;
-                        reporteLinea.Impuesto = value.Impuesto;
-                        reporteLinea.PorcentajeIVA = value.PorcentajeIVA;
+                        reporteLinea.Descripcion = value.Descripcion;
+                        reporteLinea.Total = value.Total;
                         listaReporte.Add(reporteLinea);
                     }
                     return listaReporte;

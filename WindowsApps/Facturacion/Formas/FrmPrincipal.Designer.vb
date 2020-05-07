@@ -76,6 +76,7 @@ Partial Class FrmPrincipal
         Me.MnuDocElectFC = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuDocElectCDE = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuDocElectRDE = New System.Windows.Forms.ToolStripMenuItem()
+        Me.MnuDocElectADE = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuCC = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuApRCxC = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuApRCxP = New System.Windows.Forms.ToolStripMenuItem()
@@ -94,7 +95,6 @@ Partial Class FrmPrincipal
         Me.picLoader = New System.Windows.Forms.PictureBox()
         Me.stsPrincipal = New System.Windows.Forms.StatusStrip()
         Me.tslUsuario = New System.Windows.Forms.ToolStripStatusLabel()
-        Me.MnuDocElectADE = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuMenuPrincipal.SuspendLayout()
         CType(Me.picLoader, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.stsPrincipal.SuspendLayout()
@@ -129,6 +129,7 @@ Partial Class FrmPrincipal
         Me.mnuArchivoConsultaCierre.Name = "mnuArchivoConsultaCierre"
         Me.mnuArchivoConsultaCierre.Size = New System.Drawing.Size(197, 22)
         Me.mnuArchivoConsultaCierre.Text = "Consulta Cierre de Caja"
+        Me.mnuArchivoConsultaCierre.Visible = False
         '
         'MnuArchivoIngreso
         '
@@ -402,6 +403,13 @@ Partial Class FrmPrincipal
         Me.MnuDocElectRDE.Text = "Consultar documentos procesados"
         Me.MnuDocElectRDE.Visible = False
         '
+        'MnuDocElectADE
+        '
+        Me.MnuDocElectADE.Name = "MnuDocElectADE"
+        Me.MnuDocElectADE.Size = New System.Drawing.Size(258, 22)
+        Me.MnuDocElectADE.Text = "Recepcion de facturas recibidas"
+        Me.MnuDocElectADE.Visible = False
+        '
         'MnuCC
         '
         Me.MnuCC.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MnuApRCxC, Me.MnuApRCxP, Me.MnuApRApartado, Me.MnuApROrdenServicio, Me.MnuAnRCxC, Me.MnuAnRCxP, Me.MnuAnRApartado, Me.MnuAnROrdenServicio})
@@ -538,13 +546,6 @@ Partial Class FrmPrincipal
         Me.tslUsuario.ForeColor = System.Drawing.SystemColors.ActiveCaptionText
         Me.tslUsuario.Name = "tslUsuario"
         Me.tslUsuario.Size = New System.Drawing.Size(0, 17)
-        '
-        'MnuDocElectADE
-        '
-        Me.MnuDocElectADE.Name = "MnuDocElectADE"
-        Me.MnuDocElectADE.Size = New System.Drawing.Size(258, 22)
-        Me.MnuDocElectADE.Text = "Recepcion de facturas recibidas"
-        Me.MnuDocElectADE.Visible = False
         '
         'FrmPrincipal
         '

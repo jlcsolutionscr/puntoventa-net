@@ -1,9 +1,9 @@
-<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
 Partial Class FrmBusquedaCompra
     Inherits System.Windows.Forms.Form
 
     'Form overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()> _
+    <System.Diagnostics.DebuggerNonUserCode()>
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         If disposing AndAlso components IsNot Nothing Then
             components.Dispose()
@@ -31,10 +31,8 @@ Partial Class FrmBusquedaCompra
         Me.txtId = New System.Windows.Forms.TextBox()
         Me.cboSucursal = New System.Windows.Forms.ComboBox()
         Me.Label6 = New System.Windows.Forms.Label()
-        Me.FechaFinal = New System.Windows.Forms.DateTimePicker()
-        Me.FechaInicio = New System.Windows.Forms.DateTimePicker()
         Me.Label2 = New System.Windows.Forms.Label()
-        Me.Label3 = New System.Windows.Forms.Label()
+        Me.txtRefFactura = New System.Windows.Forms.TextBox()
         CType(Me.dgvListado, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -60,7 +58,7 @@ Partial Class FrmBusquedaCompra
         Me.btnFiltrar.Location = New System.Drawing.Point(610, 10)
         Me.btnFiltrar.Name = "btnFiltrar"
         Me.btnFiltrar.Size = New System.Drawing.Size(22, 22)
-        Me.btnFiltrar.TabIndex = 2
+        Me.btnFiltrar.TabIndex = 9
         Me.btnFiltrar.TabStop = False
         Me.btnFiltrar.UseVisualStyleBackColor = True
         '
@@ -78,7 +76,7 @@ Partial Class FrmBusquedaCompra
         Me.txtNombre.Location = New System.Drawing.Point(48, 38)
         Me.txtNombre.Name = "txtNombre"
         Me.txtNombre.Size = New System.Drawing.Size(584, 20)
-        Me.txtNombre.TabIndex = 1
+        Me.txtNombre.TabIndex = 2
         '
         'lblPagina
         '
@@ -97,7 +95,7 @@ Partial Class FrmBusquedaCompra
         Me.btnLast.Location = New System.Drawing.Point(603, 380)
         Me.btnLast.Name = "btnLast"
         Me.btnLast.Size = New System.Drawing.Size(29, 23)
-        Me.btnLast.TabIndex = 7
+        Me.btnLast.TabIndex = 8
         Me.btnLast.TabStop = False
         Me.btnLast.Text = ">>"
         Me.btnLast.UseVisualStyleBackColor = True
@@ -110,7 +108,7 @@ Partial Class FrmBusquedaCompra
         Me.btnNext.Location = New System.Drawing.Point(574, 380)
         Me.btnNext.Name = "btnNext"
         Me.btnNext.Size = New System.Drawing.Size(29, 23)
-        Me.btnNext.TabIndex = 6
+        Me.btnNext.TabIndex = 7
         Me.btnNext.TabStop = False
         Me.btnNext.Text = ">"
         Me.btnNext.UseVisualStyleBackColor = True
@@ -123,7 +121,7 @@ Partial Class FrmBusquedaCompra
         Me.btnPrevious.Location = New System.Drawing.Point(545, 380)
         Me.btnPrevious.Name = "btnPrevious"
         Me.btnPrevious.Size = New System.Drawing.Size(29, 23)
-        Me.btnPrevious.TabIndex = 5
+        Me.btnPrevious.TabIndex = 6
         Me.btnPrevious.TabStop = False
         Me.btnPrevious.Text = "<"
         Me.btnPrevious.UseVisualStyleBackColor = True
@@ -136,7 +134,7 @@ Partial Class FrmBusquedaCompra
         Me.btnFirst.Location = New System.Drawing.Point(516, 380)
         Me.btnFirst.Name = "btnFirst"
         Me.btnFirst.Size = New System.Drawing.Size(29, 23)
-        Me.btnFirst.TabIndex = 4
+        Me.btnFirst.TabIndex = 5
         Me.btnFirst.TabStop = False
         Me.btnFirst.Text = "<<"
         Me.btnFirst.UseVisualStyleBackColor = True
@@ -154,7 +152,7 @@ Partial Class FrmBusquedaCompra
         '
         Me.txtId.Location = New System.Drawing.Point(48, 12)
         Me.txtId.Name = "txtId"
-        Me.txtId.Size = New System.Drawing.Size(55, 20)
+        Me.txtId.Size = New System.Drawing.Size(61, 20)
         Me.txtId.TabIndex = 0
         '
         'cboSucursal
@@ -164,7 +162,7 @@ Partial Class FrmBusquedaCompra
         Me.cboSucursal.Location = New System.Drawing.Point(70, 380)
         Me.cboSucursal.Name = "cboSucursal"
         Me.cboSucursal.Size = New System.Drawing.Size(300, 21)
-        Me.cboSucursal.TabIndex = 151
+        Me.cboSucursal.TabIndex = 4
         Me.cboSucursal.TabStop = False
         '
         'Label6
@@ -180,49 +178,21 @@ Partial Class FrmBusquedaCompra
         Me.Label6.Text = "Sucursal:"
         Me.Label6.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
-        'FechaFinal
-        '
-        Me.FechaFinal.Format = System.Windows.Forms.DateTimePickerFormat.Custom
-        Me.FechaFinal.Location = New System.Drawing.Point(318, 12)
-        Me.FechaFinal.Name = "FechaFinal"
-        Me.FechaFinal.Size = New System.Drawing.Size(84, 20)
-        Me.FechaFinal.TabIndex = 170
-        Me.FechaFinal.Value = New Date(2013, 6, 9, 0, 0, 0, 0)
-        '
-        'FechaInicio
-        '
-        Me.FechaInicio.Format = System.Windows.Forms.DateTimePickerFormat.Custom
-        Me.FechaInicio.Location = New System.Drawing.Point(176, 12)
-        Me.FechaInicio.Name = "FechaInicio"
-        Me.FechaInicio.Size = New System.Drawing.Size(84, 20)
-        Me.FechaInicio.TabIndex = 169
-        Me.FechaInicio.Value = New Date(2013, 6, 9, 0, 0, 0, 0)
-        '
         'Label2
         '
-        Me.Label2.BackColor = System.Drawing.SystemColors.Control
-        Me.Label2.Cursor = System.Windows.Forms.Cursors.Default
-        Me.Label2.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label2.Location = New System.Drawing.Point(270, 14)
+        Me.Label2.AutoSize = True
+        Me.Label2.Location = New System.Drawing.Point(118, 15)
         Me.Label2.Name = "Label2"
-        Me.Label2.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label2.Size = New System.Drawing.Size(42, 17)
-        Me.Label2.TabIndex = 172
-        Me.Label2.Text = "Hasta:"
-        Me.Label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        Me.Label2.Size = New System.Drawing.Size(54, 13)
+        Me.Label2.TabIndex = 154
+        Me.Label2.Text = "Ref. Fact:"
         '
-        'Label3
+        'txtRefFactura
         '
-        Me.Label3.BackColor = System.Drawing.SystemColors.Control
-        Me.Label3.Cursor = System.Windows.Forms.Cursors.Default
-        Me.Label3.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label3.Location = New System.Drawing.Point(128, 14)
-        Me.Label3.Name = "Label3"
-        Me.Label3.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label3.Size = New System.Drawing.Size(42, 17)
-        Me.Label3.TabIndex = 171
-        Me.Label3.Text = "Desde:"
-        Me.Label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        Me.txtRefFactura.Location = New System.Drawing.Point(178, 12)
+        Me.txtRefFactura.Name = "txtRefFactura"
+        Me.txtRefFactura.Size = New System.Drawing.Size(133, 20)
+        Me.txtRefFactura.TabIndex = 1
         '
         'FrmBusquedaCompra
         '
@@ -231,10 +201,8 @@ Partial Class FrmBusquedaCompra
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(644, 415)
-        Me.Controls.Add(Me.FechaFinal)
-        Me.Controls.Add(Me.FechaInicio)
         Me.Controls.Add(Me.Label2)
-        Me.Controls.Add(Me.Label3)
+        Me.Controls.Add(Me.txtRefFactura)
         Me.Controls.Add(Me.cboSucursal)
         Me.Controls.Add(Me.Label6)
         Me.Controls.Add(Me.Label1)
@@ -277,8 +245,6 @@ Partial Class FrmBusquedaCompra
     Friend WithEvents txtId As System.Windows.Forms.TextBox
     Friend WithEvents cboSucursal As ComboBox
     Friend WithEvents Label6 As Label
-    Friend WithEvents FechaFinal As DateTimePicker
-    Friend WithEvents FechaInicio As DateTimePicker
-    Public WithEvents Label2 As Label
-    Public WithEvents Label3 As Label
+    Friend WithEvents Label2 As Label
+    Friend WithEvents txtRefFactura As TextBox
 End Class

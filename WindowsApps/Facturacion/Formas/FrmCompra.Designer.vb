@@ -316,7 +316,7 @@ Partial Class FrmCompra
         Me.txtFactura.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtFactura.ForeColor = System.Drawing.SystemColors.WindowText
         Me.txtFactura.Location = New System.Drawing.Point(256, 66)
-        Me.txtFactura.MaxLength = 0
+        Me.txtFactura.MaxLength = 20
         Me.txtFactura.Name = "txtFactura"
         Me.txtFactura.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtFactura.Size = New System.Drawing.Size(141, 20)

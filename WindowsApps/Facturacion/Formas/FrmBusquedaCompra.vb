@@ -17,6 +17,7 @@ Public Class FrmBusquedaCompra
         dgvListado.AutoGenerateColumns = False
         Dim dvcId As New DataGridViewTextBoxColumn
         Dim dvcFecha As New DataGridViewTextBoxColumn
+        Dim dvcReferencia As New DataGridViewTextBoxColumn
         Dim dvcNombreCliente As New DataGridViewTextBoxColumn
         Dim dvcTotal As New DataGridViewTextBoxColumn
         dgvListado.Columns.Clear()
@@ -29,9 +30,13 @@ Public Class FrmBusquedaCompra
         dvcFecha.DataPropertyName = "Fecha"
         dvcFecha.Width = 70
         dgvListado.Columns.Add(dvcFecha)
+        dvcReferencia.HeaderText = "Factura Ref"
+        dvcReferencia.DataPropertyName = "RefFactura"
+        dvcReferencia.Width = 130
+        dgvListado.Columns.Add(dvcReferencia)
         dvcNombreCliente.HeaderText = "Proveedor"
         dvcNombreCliente.DataPropertyName = "NombreProveedor"
-        dvcNombreCliente.Width = 400
+        dvcNombreCliente.Width = 270
         dgvListado.Columns.Add(dvcNombreCliente)
         dvcTotal.HeaderText = "Total"
         dvcTotal.DataPropertyName = "Total"
@@ -42,7 +47,7 @@ Public Class FrmBusquedaCompra
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
         Try
-            dgvListado.DataSource = Await Puntoventa.ObtenerListadoCompras(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FechaInicio.Value.ToString("dd/MM/yyyy"), FechaFinal.Value.ToString("dd/MM/yyyy"), intNumeroPagina, intFilasPorPagina, intId, txtNombre.Text, FrmPrincipal.usuarioGlobal.Token)
+            dgvListado.DataSource = Await Puntoventa.ObtenerListadoCompras(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, intNumeroPagina, intFilasPorPagina, intId, txtRefFactura.Text, txtNombre.Text, FrmPrincipal.usuarioGlobal.Token)
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -54,7 +59,7 @@ Public Class FrmBusquedaCompra
 
     Private Async Function ValidarCantidadCompras() As Task
         Try
-            intTotalRegistros = Await Puntoventa.ObtenerTotalListaCompras(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FechaInicio.Value.ToString("dd/MM/yyyy"), FechaFinal.Value.ToString("dd/MM/yyyy"), intId, txtNombre.Text, FrmPrincipal.usuarioGlobal.Token)
+            intTotalRegistros = Await Puntoventa.ObtenerTotalListaCompras(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, intId, txtRefFactura.Text, txtNombre.Text, FrmPrincipal.usuarioGlobal.Token)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -134,8 +139,6 @@ Public Class FrmBusquedaCompra
     Private Async Sub FrmBusProd_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
             EstablecerPropiedadesDataGridView()
-            FechaInicio.Value = CDate("01/01/" & Now.Year)
-            FechaFinal.Value = Now
             Await CargarCombos()
             Await ValidarCantidadCompras()
             intIndiceDePagina = 1

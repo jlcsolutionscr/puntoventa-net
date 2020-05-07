@@ -24,8 +24,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         void ActualizarCompra(Compra compra);
         void AnularCompra(int intIdCompra, int intIdUsuario, string strMotivoAnulacion);
         Compra ObtenerCompra(int intIdCompra);
-        int ObtenerTotalListaCompras(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, int intIdCompra, string strNombre);
-        IList<CompraDetalle> ObtenerListadoCompras(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, int numPagina, int cantRec, int intIdCompra, string strNombre);
+        int ObtenerTotalListaCompras(int intIdEmpresa, int intIdSucursal, int intIdCompra, string strRefFactura, string strNombre);
+        IList<CompraDetalle> ObtenerListadoCompras(int intIdEmpresa, int intIdSucursal,  int numPagina, int cantRec, int intIdCompra, string strRefFactura, string strNombre);
         void AgregarOrdenCompra(OrdenCompra ordenCompra);
         void ActualizarOrdenCompra(OrdenCompra ordenCompra);
         void AnularOrdenCompra(int intIdOrdenCompra, int intIdUsuario, string strMotivoAnulacion);
@@ -44,8 +44,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
     {
         private static IUnityContainer localContainer;
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        private static CultureInfo provider = CultureInfo.InvariantCulture;
-        private static string strFormat = "dd/MM/yyyy HH:mm:ss";
 
         public CompraService(IUnityContainer Container)
         {
@@ -654,7 +652,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         detalle.Compra = null;
                         detalle.Producto.Proveedor = null;
-                        detalle.PrecioVenta = detalle.Producto.PrecioVenta1;
                     }
                     foreach (DesglosePagoCompra desglosePago in compra.DesglosePagoCompra)
                     {
@@ -676,18 +673,18 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public int ObtenerTotalListaCompras(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, int intIdCompra, string strNombre)
+        public int ObtenerTotalListaCompras(int intIdEmpresa, int intIdSucursal, int intIdCompra, string strRefFactura, string strNombre)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 try
                 {
-                    DateTime datFechaInicial = DateTime.ParseExact(strFechaInicial + " 00:00:01", strFormat, provider);
-                    DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
-                    var listaCompras = dbContext.CompraRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Fecha >= datFechaInicial && x.Fecha <= datFechaFinal);
+                    var listaCompras = dbContext.CompraRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
                     if (intIdCompra > 0)
                         listaCompras = listaCompras.Where(x => x.IdCompra == intIdCompra);
-                    else if (!strNombre.Equals(string.Empty))
+                    if (!strRefFactura.Equals(string.Empty))
+                        listaCompras = listaCompras.Where(x => x.NoDocumento.Contains(strRefFactura));
+                    if (!strNombre.Equals(string.Empty))
                         listaCompras = listaCompras.Where(x => x.Proveedor.Nombre.Contains(strNombre));
                     return listaCompras.Count();
                 }
@@ -699,24 +696,24 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IList<CompraDetalle> ObtenerListadoCompras(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, int numPagina, int cantRec, int intIdCompra, string strNombre)
+        public IList<CompraDetalle> ObtenerListadoCompras(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, int intIdCompra, string strRefFactura, string strNombre)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 var listaCompras = new List<CompraDetalle>();
                 try
                 {
-                    DateTime datFechaInicial = DateTime.ParseExact(strFechaInicial + " 00:00:01", strFormat, provider);
-                    DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
-                    var listado = dbContext.CompraRepository.Include("Proveedor").Where(x => !x.Nulo & x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Fecha >= datFechaInicial && x.Fecha <= datFechaFinal);
+                    var listado = dbContext.CompraRepository.Include("Proveedor").Where(x => !x.Nulo & x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
                     if (intIdCompra > 0)
                         listado = listado.Where(x => x.IdCompra == intIdCompra);
-                    else if (!strNombre.Equals(string.Empty))
+                    if (!strRefFactura.Equals(string.Empty))
+                        listado = listado.Where(x => x.NoDocumento.Contains(strRefFactura));
+                    if (!strNombre.Equals(string.Empty))
                         listado = listado.Where(x => x.Proveedor.Nombre.Contains(strNombre));
                     listado = listado.OrderByDescending(x => x.IdCompra).Skip((numPagina - 1) * cantRec).Take(cantRec);
                     foreach (var compra in listado)
                     {
-                        CompraDetalle item = new CompraDetalle(compra.IdCompra, compra.Proveedor.Nombre, compra.Fecha.ToString("dd/MM/yyyy"), compra.Gravado, compra.Excento, compra.Impuesto, compra.Total);
+                        CompraDetalle item = new CompraDetalle(compra.IdCompra, compra.NoDocumento, compra.Proveedor.Nombre, compra.Fecha.ToString("dd/MM/yyyy"), compra.Gravado, compra.Excento, compra.Impuesto, compra.Total);
                         listaCompras.Add(item);
                     }
                     return listaCompras;

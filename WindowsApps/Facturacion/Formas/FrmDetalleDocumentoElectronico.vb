@@ -276,7 +276,7 @@ Public Class FrmDetalleDocumentoElectronico
         Dim documento As DocumentoDetalle = listadoDocumentosProcesados.Item(intIndex)
         btnReenviarNotificacion.Enabled = False
         btnGenerar.Enabled = False
-        If documento.EstadoEnvio = StaticEstadoDocumentoElectronico.Aceptado And documento.EsMensajeReceptor = "N" And documento.CorreoNotificacion <> "" Then btnReenviarNotificacion.Enabled = True
+        If documento.EstadoEnvio = StaticEstadoDocumentoElectronico.Aceptado And documento.EsMensajeReceptor = "N" Then btnReenviarNotificacion.Enabled = True
         If documento.EstadoEnvio = StaticEstadoDocumentoElectronico.Rechazado And documento.EsMensajeReceptor = "N" And documento.Reprocesado = False Then btnGenerar.Enabled = True
     End Sub
 

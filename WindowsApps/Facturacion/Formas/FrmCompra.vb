@@ -225,7 +225,7 @@ Public Class FrmCompra
             dtrRowDetCompra.Item(0) = detalle.IdProducto
             dtrRowDetCompra.Item(1) = detalle.Producto.CodigoProveedor
             dtrRowDetCompra.Item(2) = detalle.Producto.Codigo
-            dtrRowDetCompra.Item(3) = detalle.Producto.Descripcion
+            dtrRowDetCompra.Item(3) = detalle.Descripcion
             dtrRowDetCompra.Item(4) = detalle.Cantidad
             dtrRowDetCompra.Item(5) = detalle.PrecioCosto
             dtrRowDetCompra.Item(6) = dtrRowDetCompra.Item(4) * dtrRowDetCompra.Item(5)
@@ -278,7 +278,7 @@ Public Class FrmCompra
         grdDesglosePago.Refresh()
     End Sub
 
-    Private Sub CargarLineaDetalleCompra(ByVal producto As Producto, intCantidad As Integer, dblPrecioCosto As Decimal)
+    Private Sub CargarLineaDetalleCompra(ByVal producto As Producto, intCantidad As Integer, dblPrecioCosto As Decimal, dblPrecioVenta As Decimal)
         Dim intIndice As Integer = ObtenerIndice(dtbDetalleCompra, producto.IdProducto)
         Dim decPorcUtilidad = 0
         If decPrecioVenta > 0 Then decPorcUtilidad = (decPrecioVenta * 100 / dblPrecioCosto) - 100
@@ -291,7 +291,7 @@ Public Class FrmCompra
             dtbDetalleCompra.Rows(intIndice).Item(6) = dtbDetalleCompra.Rows(intIndice).Item(4) * dtbDetalleCompra.Rows(intIndice).Item(5)
             dtbDetalleCompra.Rows(intIndice).Item(7) = producto.ParametroImpuesto.TasaImpuesto = 0
             dtbDetalleCompra.Rows(intIndice).Item(8) = producto.ParametroImpuesto.TasaImpuesto
-            dtbDetalleCompra.Rows(intIndice).Item(9) = producto.PrecioVenta1
+            dtbDetalleCompra.Rows(intIndice).Item(9) = dblPrecioVenta
             dtbDetalleCompra.Rows(intIndice).Item(10) = decPorcUtilidad
         Else
             consecDetalle += 1
@@ -305,7 +305,7 @@ Public Class FrmCompra
             dtrRowDetCompra.Item(6) = dtrRowDetCompra.Item(4) * dtrRowDetCompra.Item(5)
             dtrRowDetCompra.Item(7) = producto.ParametroImpuesto.TasaImpuesto = 0
             dtrRowDetCompra.Item(8) = producto.ParametroImpuesto.TasaImpuesto
-            dtrRowDetCompra.Item(9) = producto.PrecioVenta1
+            dtrRowDetCompra.Item(9) = dblPrecioVenta
             dtrRowDetCompra.Item(10) = decPorcUtilidad
             dtrRowDetCompra.Item(11) = consecDetalle
             dtbDetalleCompra.Rows.Add(dtrRowDetCompra)
@@ -466,7 +466,7 @@ Public Class FrmCompra
                     producto = FrmPrincipal.productoTranstorio
                     decPrecioVenta = 0
                     Dim decPrecioCosto As Decimal = producto.PrecioVenta1 / (1 + (producto.ParametroImpuesto.TasaImpuesto / 100))
-                    CargarLineaDetalleCompra(producto, producto.Existencias, decPrecioCosto)
+                    CargarLineaDetalleCompra(producto, producto.Existencias, decPrecioCosto, producto.PrecioVenta1)
                 End If
             End If
         ElseIf e.KeyCode = Keys.F3 Then
@@ -512,6 +512,7 @@ Public Class FrmCompra
         txtIdCompra.Text = ""
         txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
         cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
+        cboSucursal.SelectedValue = FrmPrincipal.equipoGlobal.IdSucursal
         cboTipoMoneda.SelectedValue = FrmPrincipal.empresaGlobal.IdTipoMoneda
         txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmPrincipal.decTipoCambioDolar.ToString())
         proveedor = Nothing
@@ -596,6 +597,7 @@ Public Class FrmCompra
                 txtFactura.Text = compra.NoDocumento
                 cboCondicionVenta.SelectedValue = compra.IdCondicionVenta
                 txtPlazoCredito.Text = compra.PlazoCredito
+                cboSucursal.SelectedValue = compra.IdSucursal
                 txtObservaciones.Text = compra.Observaciones
                 txtDescuento.Text = FormatNumber(compra.Descuento, 2)
                 txtImpuesto.Text = FormatNumber(compra.Impuesto, 2)
@@ -681,7 +683,8 @@ Public Class FrmCompra
     Private Async Sub BtnBusProd_Click(sender As Object, e As EventArgs) Handles btnBusProd.Click
         Dim formBusProd As New FrmBusquedaProducto With {
             .bolIncluyeServicios = False,
-            .bolIncluyePrecioCosto = True
+            .bolIncluyePrecioCosto = True,
+            .intIdSucursal = cboSucursal.SelectedValue
         }
         FrmPrincipal.strBusqueda = ""
         formBusProd.ShowDialog()
@@ -725,7 +728,7 @@ Public Class FrmCompra
             btnGuardar.Enabled = False
             compra = New Compra With {
                 .IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa,
-                .IdSucursal = FrmPrincipal.equipoGlobal.IdSucursal,
+                .IdSucursal = cboSucursal.SelectedValue,
                 .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
                 .IdProveedor = proveedor.IdProveedor,
                 .Fecha = Now(),
@@ -744,10 +747,12 @@ Public Class FrmCompra
             For I = 0 To dtbDetalleCompra.Rows.Count - 1
                 detalleCompra = New DetalleCompra With {
                     .IdProducto = dtbDetalleCompra.Rows(I).Item(0),
+                    .Descripcion = dtbDetalleCompra.Rows(I).Item(3),
                     .Cantidad = dtbDetalleCompra.Rows(I).Item(4),
                     .PrecioCosto = dtbDetalleCompra.Rows(I).Item(5),
                     .Excento = dtbDetalleCompra.Rows(I).Item(7),
-                    .PorcentajeIVA = dtbDetalleCompra.Rows(I).Item(8)
+                    .PorcentajeIVA = dtbDetalleCompra.Rows(I).Item(8),
+                    .PrecioVenta = dtbDetalleCompra.Rows(I).Item(9)
                 }
                 compra.DetalleCompra.Add(detalleCompra)
             Next
@@ -834,7 +839,7 @@ Public Class FrmCompra
             btnGenerarPDF.Enabled = False
             Dim datosReporte As New List(Of ReporteCompra)()
             For I = 0 To dtbDetalleCompra.Rows.Count - 1
-                Dim item As New ReporteCompra(compra.IdCompra, compra.NoDocumento, compra.Proveedor.Nombre, compra.Fecha, dtbDetalleCompra.Rows(I).Item(2), dtbDetalleCompra.Rows(I).Item(1), dtbDetalleCompra.Rows(I).Item(3), dtbDetalleCompra.Rows(I).Item(4), dtbDetalleCompra.Rows(I).Item(9))
+                Dim item As New ReporteCompra(compra.IdCompra, compra.NoDocumento, txtProveedor.Text, compra.Fecha, dtbDetalleCompra.Rows(I).Item(2), dtbDetalleCompra.Rows(I).Item(1), dtbDetalleCompra.Rows(I).Item(3), dtbDetalleCompra.Rows(I).Item(4), dtbDetalleCompra.Rows(I).Item(9))
                 datosReporte.Add(item)
             Next
             Dim strFecha As String = Now().ToString("dd/MM/yyyy hh:mm:ss")
@@ -868,7 +873,7 @@ Public Class FrmCompra
                 MessageBox.Show(strError, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End If
-            CargarLineaDetalleCompra(producto, txtCantidad.Text, txtPrecioCosto.Text)
+            CargarLineaDetalleCompra(producto, txtCantidad.Text, txtPrecioCosto.Text, producto.PrecioVenta1)
             txtCodigoProveedor.Text = ""
             txtCodigo.Text = ""
             txtDescripcion.Text = ""

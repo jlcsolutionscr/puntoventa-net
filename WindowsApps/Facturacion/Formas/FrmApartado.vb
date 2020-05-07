@@ -9,7 +9,7 @@ Imports LeandroSoftware.ClienteWCF
 
 Public Class FrmApartado
 #Region "Variables"
-    Private decExcento, decGravado, decExonerado, decImpuesto, decTotal, decSubTotal, decPrecioVenta, decPagoEfectivo, decPagoCliente, decTotalPago, decSaldoPorPagar As Decimal
+    Private decDescuento, decExcento, decGravado, decExonerado, decImpuesto, decTotal, decSubTotal, decPrecioVenta, decPagoEfectivo, decPagoCliente, decTotalPago, decSaldoPorPagar As Decimal
     Private I, consecDetalle As Short
     Private dtbDetalleApartado, dtbDesglosePago As DataTable
     Private dtrRowDetApartado, dtrRowDesglosePago As DataRow
@@ -351,6 +351,7 @@ Public Class FrmApartado
 
     Private Sub CargarTotales()
         decSubTotal = 0
+        decDescuento = 0
         decGravado = 0
         decExonerado = 0
         decExcento = 0
@@ -359,6 +360,7 @@ Public Class FrmApartado
         If txtPorcentajeExoneracion.Text <> "" Then intPorcentajeExoneracion = CInt(txtPorcentajeExoneracion.Text)
         For I = 0 To dtbDetalleApartado.Rows.Count - 1
             Dim decTasaImpuesto As Decimal = dtbDetalleApartado.Rows(I).Item(8)
+            decDescuento += Math.Round(dtbDetalleApartado.Rows(I).Item(10) / (1 + (decTasaImpuesto / 100)), 2, MidpointRounding.AwayFromZero) * dtbDetalleApartado.Rows(I).Item(3)
             If decTasaImpuesto > 0 Then
                 Dim decImpuestoProducto As Decimal = dtbDetalleApartado.Rows(I).Item(4) * decTasaImpuesto / 100
                 If intPorcentajeExoneracion > 0 Then
@@ -380,7 +382,8 @@ Public Class FrmApartado
         decExcento = Math.Round(decExcento, 2, MidpointRounding.AwayFromZero)
         decImpuesto = Math.Round(decImpuesto, 2, MidpointRounding.AwayFromZero)
         decTotal = Math.Round(decSubTotal + decImpuesto, 2, MidpointRounding.AwayFromZero)
-        txtSubTotal.Text = FormatNumber(decSubTotal, 2)
+        txtSubTotal.Text = FormatNumber(decSubTotal + decDescuento, 2)
+        txtDescuento.Text = FormatNumber(decDescuento, 2)
         txtImpuesto.Text = FormatNumber(decImpuesto, 2)
         txtTotal.Text = FormatNumber(decTotal, 2)
         decSaldoPorPagar = decTotal - decTotalPago
@@ -782,7 +785,8 @@ Public Class FrmApartado
 
     Private Async Sub BtnBusProd_Click(sender As Object, e As EventArgs) Handles btnBusProd.Click
         Dim formBusProd As New FrmBusquedaProducto With {
-            .bolIncluyeServicios = False
+            .bolIncluyeServicios = False,
+            .intIdSucursal = FrmPrincipal.equipoGlobal.IdSucursal
         }
         FrmPrincipal.strBusqueda = ""
         formBusProd.ShowDialog()
@@ -936,7 +940,7 @@ Public Class FrmApartado
                     .strDocumento = "",
                     .strFecha = apartado.Fecha.ToString("dd/MM/yyyy hh:mm:ss"),
                     .strSubTotal = txtSubTotal.Text,
-                    .strDescuento = "0.00",
+                    .strDescuento = txtDescuento.Text,
                     .strImpuesto = txtImpuesto.Text,
                     .strTotal = txtTotal.Text,
                     .strAdelanto = FormatNumber(apartado.MontoAdelanto, 2),

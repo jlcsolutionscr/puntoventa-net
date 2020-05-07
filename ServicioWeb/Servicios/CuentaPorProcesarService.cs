@@ -511,7 +511,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     var listado = dbContext.MovimientoCuentaPorPagarRepository.Include("CuentaPorPagar").Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdCxP == intIdCuenta).OrderByDescending(x => x.IdMovCxP);
                     foreach (var value in listado)
                     {
-                        EfectivoDetalle item = new EfectivoDetalle(value.IdMovCxP, value.Fecha.ToString("dd/MM/yyyy"), "Abono sobre cuenta por pagar nro " + value.CuentaPorPagar.Referencia, value.Monto);
+                        EfectivoDetalle item = new EfectivoDetalle(value.IdMovCxP, value.Fecha.ToString("dd/MM/yyyy"), "Abono con recibo " + value.Recibo + " sobre cuenta por pagar nro " + value.CuentaPorPagar.Referencia, value.Monto);
                         listaMovimientos.Add(item);
                     }
                     return listaMovimientos;

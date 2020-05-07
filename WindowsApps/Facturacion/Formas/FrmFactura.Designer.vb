@@ -124,6 +124,8 @@ Partial Class FrmFactura
         Me.Label3 = New System.Windows.Forms.Label()
         Me.txtTelefono = New System.Windows.Forms.TextBox()
         Me.Label6 = New System.Windows.Forms.Label()
+        Me.txtDescuento = New System.Windows.Forms.TextBox()
+        Me.Label17 = New System.Windows.Forms.Label()
         CType(Me.grdDetalleFactura, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.grdDesglosePago, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -315,7 +317,7 @@ Partial Class FrmFactura
         Me.txtImpuesto.ReadOnly = True
         Me.txtImpuesto.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtImpuesto.Size = New System.Drawing.Size(73, 20)
-        Me.txtImpuesto.TabIndex = 62
+        Me.txtImpuesto.TabIndex = 61
         Me.txtImpuesto.TabStop = False
         Me.txtImpuesto.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
@@ -346,7 +348,7 @@ Partial Class FrmFactura
         Me.txtTotal.ReadOnly = True
         Me.txtTotal.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtTotal.Size = New System.Drawing.Size(73, 20)
-        Me.txtTotal.TabIndex = 63
+        Me.txtTotal.TabIndex = 62
         Me.txtTotal.TabStop = False
         Me.txtTotal.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
@@ -356,7 +358,7 @@ Partial Class FrmFactura
         Me.txtSubTotal.BackColor = System.Drawing.SystemColors.Window
         Me.txtSubTotal.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtSubTotal.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtSubTotal.Location = New System.Drawing.Point(528, 404)
+        Me.txtSubTotal.Location = New System.Drawing.Point(418, 404)
         Me.txtSubTotal.MaxLength = 0
         Me.txtSubTotal.Name = "txtSubTotal"
         Me.txtSubTotal.ReadOnly = True
@@ -462,7 +464,7 @@ Partial Class FrmFactura
         Me._lblSubTotal_5.BackColor = System.Drawing.Color.Transparent
         Me._lblSubTotal_5.Cursor = System.Windows.Forms.Cursors.Default
         Me._lblSubTotal_5.ForeColor = System.Drawing.SystemColors.ControlText
-        Me._lblSubTotal_5.Location = New System.Drawing.Point(464, 404)
+        Me._lblSubTotal_5.Location = New System.Drawing.Point(354, 404)
         Me._lblSubTotal_5.Name = "_lblSubTotal_5"
         Me._lblSubTotal_5.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me._lblSubTotal_5.Size = New System.Drawing.Size(65, 19)
@@ -1243,6 +1245,35 @@ Partial Class FrmFactura
         Me.Label6.Text = "Telefono:"
         Me.Label6.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
+        'txtDescuento
+        '
+        Me.txtDescuento.AcceptsReturn = True
+        Me.txtDescuento.BackColor = System.Drawing.SystemColors.Window
+        Me.txtDescuento.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtDescuento.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtDescuento.Location = New System.Drawing.Point(528, 404)
+        Me.txtDescuento.MaxLength = 0
+        Me.txtDescuento.Name = "txtDescuento"
+        Me.txtDescuento.ReadOnly = True
+        Me.txtDescuento.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtDescuento.Size = New System.Drawing.Size(73, 20)
+        Me.txtDescuento.TabIndex = 60
+        Me.txtDescuento.TabStop = False
+        Me.txtDescuento.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        '
+        'Label17
+        '
+        Me.Label17.BackColor = System.Drawing.Color.Transparent
+        Me.Label17.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label17.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label17.Location = New System.Drawing.Point(493, 404)
+        Me.Label17.Name = "Label17"
+        Me.Label17.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label17.Size = New System.Drawing.Size(36, 19)
+        Me.Label17.TabIndex = 203
+        Me.Label17.Text = "Desc:"
+        Me.Label17.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
         'FrmFactura
         '
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
@@ -1250,6 +1281,8 @@ Partial Class FrmFactura
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(817, 642)
+        Me.Controls.Add(Me.txtDescuento)
+        Me.Controls.Add(Me.Label17)
         Me.Controls.Add(Me.txtTelefono)
         Me.Controls.Add(Me.Label6)
         Me.Controls.Add(Me.Label3)
@@ -1399,4 +1432,6 @@ Partial Class FrmFactura
     Public WithEvents Label3 As Label
     Public WithEvents txtTelefono As TextBox
     Public WithEvents Label6 As Label
+    Public WithEvents txtDescuento As TextBox
+    Public WithEvents Label17 As Label
 End Class
