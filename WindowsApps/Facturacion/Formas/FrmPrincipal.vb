@@ -544,13 +544,14 @@ Public Class FrmPrincipal
         equipoGlobal = empresa.EquipoRegistrado
         decTipoCambioDolar = Await Puntoventa.ObtenerTipoCambioDolar(usuarioGlobal.Token)
         Dim formInicio As New FrmInicio()
+        Dim bolAdministrador = usuarioGlobal.CodigoUsuario = "ADMIN"
         formInicio.ShowDialog()
         mnuMenuPrincipal.Visible = True
         For Each reportePorEmpresa As ReportePorEmpresa In empresaGlobal.ReportePorEmpresa.OrderBy(Function(obj) obj.IdReporte)
             lstListaReportes.Add(reportePorEmpresa.CatalogoReporte.NombreReporte)
         Next
         If usuarioGlobal.RolePorUsuario.Count > 0 Then
-            If usuarioGlobal.RolePorUsuario.First().IdRole = 1 Then
+            If bolAdministrador Then
                 bolSeleccionaSucursal = True
                 bolAnularTransacciones = True
                 bolModificaDescripcion = True
@@ -578,7 +579,7 @@ Public Class FrmPrincipal
                 Next
             End If
         End If
-        If Not ValidarEmpresa(empresa) Then
+        If Not bolAdministrador And Not ValidarEmpresa(empresa) Then
             If usuarioGlobal.RolePorUsuario.Where(Function(s) s.IdRole = 61).Count > 0 Then
                 MessageBox.Show("La información de la empresa requiere ser actualizada. Por favor ingrese al mantenimiento de Empresa para completar la información.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Try

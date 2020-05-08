@@ -462,6 +462,7 @@ Public Class ModuloImpresion
                 End While
                 lineas.Add(New ClsLineaImpresion(1, notas, 0, 100, 10, StringAlignment.Near, False))
             End If
+            lineas.Add(New ClsLineaImpresion(1, "", 0, 100, 10, StringAlignment.Near, False))
             If objImpresion.arrDesglosePago.Count > 0 Then ImprimirDesglosePago(objImpresion.arrDesglosePago)
             ImprimirDetalle(objImpresion.arrDetalleComprobante)
             ImprimirTotales(objImpresion)

@@ -489,6 +489,28 @@ Public Class FrmOrdenServicio
             txtUnidad.Text = IIf(producto.Tipo = 1, "UND", IIf(producto.Tipo = 2, "SP", "OS"))
         End If
     End Sub
+
+    Private Function ObtenerLeyendaEntrega(datFecha As Date, strEntrega As String) As String
+        Dim strLeyenda = datFecha.ToString().Substring(0, 5) & "-" & strEntrega
+        Select Case datFecha.DayOfWeek
+            Case DayOfWeek.Monday
+                Return "Lunes " & strLeyenda
+            Case DayOfWeek.Tuesday
+                Return "Martes " & strLeyenda
+            Case DayOfWeek.Wednesday
+                Return "Miércoles " & strLeyenda
+            Case DayOfWeek.Thursday
+                Return "Jueves " & strLeyenda
+            Case DayOfWeek.Friday
+                Return "Viernes " & strLeyenda
+            Case DayOfWeek.Saturday
+                Return "Sábado " & strLeyenda
+            Case DayOfWeek.Sunday
+                Return "Domingo " & strLeyenda
+            Case Else
+                Return ""
+        End Select
+    End Function
 #End Region
 
 #Region "Eventos Controles"
@@ -981,7 +1003,7 @@ Public Class FrmOrdenServicio
                     .strDireccion = txtDireccion.Text,
                     .strDescripcion = txtDescripcionOrden.Text,
                     .strDetalle = txtOtrosDetalles.Text,
-                    .strDocumento = txtFechaEntrega.Value.DayOfWeek.ToString() & " " & txtFechaEntrega.Value.ToString().Substring(0, 5) & "-" & cboHoraEntrega.Text,
+                    .strDocumento = ObtenerLeyendaEntrega(Date.ParseExact(ordenServicio.FechaEntrega, "dd/MM/yyyy", Nothing), ordenServicio.HoraEntrega),
                     .strSubTotal = txtSubTotal.Text,
                     .strDescuento = txtDescuento.Text,
                     .strImpuesto = txtImpuesto.Text,
