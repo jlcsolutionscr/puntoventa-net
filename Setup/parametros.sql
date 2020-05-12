@@ -2,6 +2,34 @@
 -- Volcar la base de datos para la tabla `catalogocontable`
 --
 
+INSERT INTO catalogoreporte (IdReporte, NombreReporte) VALUES(1, 'Proformas en general');
+INSERT INTO catalogoreporte (IdReporte, NombreReporte) VALUES(2, 'Proformas anuladas');
+INSERT INTO catalogoreporte (IdReporte, NombreReporte) VALUES(3, 'Apartados en general');
+INSERT INTO catalogoreporte (IdReporte, NombreReporte) VALUES(4, 'Apartados anulados');
+INSERT INTO catalogoreporte (IdReporte, NombreReporte) VALUES(5, 'Ordenes de servicio en general');
+INSERT INTO catalogoreporte (IdReporte, NombreReporte) VALUES(6, 'Ordenes de servicio anuladas');
+INSERT INTO catalogoreporte (IdReporte, NombreReporte) VALUES(7, 'Ventas en general');
+INSERT INTO catalogoreporte (IdReporte, NombreReporte) VALUES(8, 'Ventas anuladas');
+INSERT INTO catalogoreporte (IdReporte, NombreReporte) VALUES(9, 'Ventas por vendedor');
+INSERT INTO catalogoreporte (IdReporte, NombreReporte) VALUES(10, 'Resumen de ventas por línea');
+INSERT INTO catalogoreporte (IdReporte, NombreReporte) VALUES(11, 'Detalle de ventas por línea');
+INSERT INTO catalogoreporte (IdReporte, NombreReporte) VALUES(12, 'Devoluciones de clientes');
+INSERT INTO catalogoreporte (IdReporte, NombreReporte) VALUES(13, 'Devoluciones de clientes anuladas');
+INSERT INTO catalogoreporte (IdReporte, NombreReporte) VALUES(20, 'Compras en general');
+INSERT INTO catalogoreporte (IdReporte, NombreReporte) VALUES(21, 'Compras anuladas');
+INSERT INTO catalogoreporte (IdReporte, NombreReporte) VALUES(30, 'Cuentas por cobrar a clientes');
+INSERT INTO catalogoreporte (IdReporte, NombreReporte) VALUES(31, 'Cuentas por cobrar canceladas');
+INSERT INTO catalogoreporte (IdReporte, NombreReporte) VALUES(32, 'Cuentas por pagar a proveedores');
+INSERT INTO catalogoreporte (IdReporte, NombreReporte) VALUES(33, 'Cuentas por pagar canceladas');
+INSERT INTO catalogoreporte (IdReporte, NombreReporte) VALUES(34, 'Pagos a cuentas por cobrar de clientes');
+INSERT INTO catalogoreporte (IdReporte, NombreReporte) VALUES(35, 'Pagos a cuentas por pagar de proveedores');
+INSERT INTO catalogoreporte (IdReporte, NombreReporte) VALUES(40, 'Conciliación bancaria');
+INSERT INTO catalogoreporte (IdReporte, NombreReporte) VALUES(41, 'Resumen de movimientos');
+INSERT INTO catalogoreporte (IdReporte, NombreReporte) VALUES(42, 'Detalle de egresos');
+INSERT INTO catalogoreporte (IdReporte, NombreReporte) VALUES(43, 'Detalle de ingresos');
+INSERT INTO catalogoreporte (IdReporte, NombreReporte) VALUES(50, 'Documentos electrónicos emitidos');
+INSERT INTO catalogoreporte (IdReporte, NombreReporte) VALUES(51, 'Documentos electrónicos recibidos');
+INSERT INTO catalogoreporte (IdReporte, NombreReporte) VALUES(52, 'Resumen de comprobantes electrónicos');
 --
 -- Volcar la base de datos para la tabla `clasecuentacontable`
 --
@@ -59,8 +87,11 @@ INSERT INTO `parametroimpuesto` (`IdImpuesto`, `Descripcion`, `TasaImpuesto`) VA
 -- Volcar la base de datos para la tabla `parametrosistema`
 --
 
-INSERT INTO `parametrosistema` (`IdParametro`, `Descripcion`, `Valor`) VALUES(1, 'Version', '2.1.0.0');
-INSERT INTO `parametrosistema` (`IdParametro`, `Descripcion`, `Valor`) VALUES(2, 'Procesando', 'NO');
+INSERT INTO parametrosistema (IdParametro, Descripcion, Valor) VALUES(1, 'Version', '4.1.1.0');
+INSERT INTO parametrosistema (IdParametro, Descripcion, Valor) VALUES(2, 'UltimaEjecucion', '29-04-2020 10:02:48');
+INSERT INTO parametrosistema (IdParametro, Descripcion, Valor) VALUES(3, 'UltimaEjecucionCorreo', '29-04-2020 10:02:48');
+INSERT INTO parametrosistema (IdParametro, Descripcion, Valor) VALUES(4, 'MobileAppVersion', '1.0.5');
+INSERT INTO parametrosistema (IdParametro, Descripcion, Valor) VALUES(5, 'Modo mantenimiento', 'NO');
 
 --
 -- Volcar la base de datos para la tabla `tipocuentacontable`

@@ -690,7 +690,7 @@ Public Class FrmFactura
         txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmPrincipal.decTipoCambioDolar.ToString())
         txtTelefono.Text = ""
         txtReferencia.Text = ""
-        txtDocumento.Text = ""
+        txtObservaciones.Text = ""
         cboTipoMoneda.Enabled = True
         cboCondicionVenta.Enabled = False
         cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado
@@ -725,6 +725,7 @@ Public Class FrmFactura
         txtSaldoPorPagar.Text = FormatNumber(decSaldoPorPagar, 2)
         decTotal = 0
         decTotalPago = 0
+        decPagoEfectivo = 0
         btnInsertar.Enabled = True
         btnEliminar.Enabled = True
         btnInsertarPago.Enabled = True
@@ -812,7 +813,7 @@ Public Class FrmFactura
                 txtNombreCliente.Text = factura.NombreCliente
                 txtFecha.Text = factura.Fecha
                 txtTelefono.Text = factura.Telefono
-                txtDocumento.Text = factura.TextoAdicional
+                txtObservaciones.Text = factura.TextoAdicional
                 intIdProforma = factura.IdProforma
                 intIdOrdenServicio = factura.IdOrdenServicio
                 intIdApartado = factura.IdApartado
@@ -890,7 +891,7 @@ Public Class FrmFactura
                 txtNombreCliente.Text = ordenServicio.NombreCliente
                 txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
                 txtTelefono.Text = ordenServicio.Telefono
-                txtDocumento.Text = ""
+                txtObservaciones.Text = ""
                 cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado
                 cboCondicionVenta.Enabled = cliente.IdCliente > 1
                 txtPlazoCredito.Text = ""
@@ -956,7 +957,7 @@ Public Class FrmFactura
                 txtNombreCliente.Text = apartado.NombreCliente
                 txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
                 txtTelefono.Text = apartado.Telefono
-                txtDocumento.Text = ""
+                txtObservaciones.Text = ""
                 cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado
                 cboCondicionVenta.Enabled = cliente.IdCliente > 1
                 txtPlazoCredito.Text = ""
@@ -1022,7 +1023,7 @@ Public Class FrmFactura
                 txtNombreCliente.Text = proforma.NombreCliente
                 txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
                 txtTelefono.Text = proforma.Telefono
-                txtDocumento.Text = ""
+                txtObservaciones.Text = ""
                 cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado
                 cboCondicionVenta.Enabled = cliente.IdCliente > 1
                 txtPlazoCredito.Text = ""
@@ -1194,7 +1195,7 @@ Public Class FrmFactura
                 .PlazoCredito = IIf(txtPlazoCredito.Text = "", 0, txtPlazoCredito.Text),
                 .Fecha = Now(),
                 .Telefono = txtTelefono.Text,
-                .TextoAdicional = txtDocumento.Text,
+                .TextoAdicional = txtObservaciones.Text,
                 .IdVendedor = vendedor.IdVendedor,
                 .Excento = decExcento,
                 .Gravado = decGravado,
@@ -1302,6 +1303,7 @@ Public Class FrmFactura
                     .strNombre = txtNombreCliente.Text,
                     .strDocumento = txtReferencia.Text,
                     .strTelefono = txtTelefono.Text,
+                    .strDetalle = txtObservaciones.Text,
                     .strSubTotal = txtSubTotal.Text,
                     .strDescuento = txtDescuento.Text,
                     .strImpuesto = txtImpuesto.Text,

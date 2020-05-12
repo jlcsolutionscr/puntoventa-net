@@ -234,6 +234,7 @@ Public Class FrmAplicaAbonoCxC
         decTotal = 0
         txtMontoPago.Text = ""
         decTotalPago = 0
+        decPagoEfectivo = 0
         decSaldoPorPagar = 0
         txtSaldoPorPagar.Text = FormatNumber(0, 2)
         txtMonto.ReadOnly = False

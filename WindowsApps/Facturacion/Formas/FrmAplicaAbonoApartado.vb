@@ -232,6 +232,7 @@ Public Class FrmAplicaAbonoApartado
         decTotal = 0
         txtMontoPago.Text = ""
         decTotalPago = 0
+        decPagoEfectivo = 0
         decSaldoPorPagar = 0
         txtSaldoPorPagar.Text = FormatNumber(decSaldoPorPagar, 2)
         txtMonto.ReadOnly = False

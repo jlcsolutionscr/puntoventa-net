@@ -611,6 +611,7 @@ Public Class FrmApartado
         txtSaldoPorPagar.Text = FormatNumber(decSaldoPorPagar, 2)
         decTotal = 0
         decTotalPago = 0
+        decPagoEfectivo = 0
         btnInsertar.Enabled = True
         btnEliminar.Enabled = True
         btnInsertarPago.Enabled = True

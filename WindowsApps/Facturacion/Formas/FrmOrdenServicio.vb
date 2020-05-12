@@ -643,6 +643,7 @@ Public Class FrmOrdenServicio
         txtSaldoPorPagar.Text = FormatNumber(decSaldoPorPagar, 2)
         decTotal = 0
         decTotalPago = 0
+        decPagoEfectivo = 0
         btnInsertarPago.Enabled = True
         btnEliminarPago.Enabled = True
         btnGuardar.Enabled = True

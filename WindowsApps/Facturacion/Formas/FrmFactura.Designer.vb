@@ -13,7 +13,7 @@ Partial Class FrmFactura
 
     'Required by the Windows Form Designer
     Private components As System.ComponentModel.IContainer
-    Public WithEvents txtDocumento As System.Windows.Forms.TextBox
+    Public WithEvents txtObservaciones As System.Windows.Forms.TextBox
     Public WithEvents txtUnidad As System.Windows.Forms.TextBox
     Public WithEvents btnBusProd As System.Windows.Forms.Button
     Public WithEvents btnAnular As System.Windows.Forms.Button
@@ -45,7 +45,7 @@ Partial Class FrmFactura
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FrmFactura))
-        Me.txtDocumento = New System.Windows.Forms.TextBox()
+        Me.txtObservaciones = New System.Windows.Forms.TextBox()
         Me.txtUnidad = New System.Windows.Forms.TextBox()
         Me.btnBusProd = New System.Windows.Forms.Button()
         Me.btnAnular = New System.Windows.Forms.Button()
@@ -130,20 +130,20 @@ Partial Class FrmFactura
         CType(Me.grdDesglosePago, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
-        'txtDocumento
+        'txtObservaciones
         '
-        Me.txtDocumento.AcceptsReturn = True
-        Me.txtDocumento.BackColor = System.Drawing.SystemColors.Window
-        Me.txtDocumento.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtDocumento.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtDocumento.Location = New System.Drawing.Point(104, 587)
-        Me.txtDocumento.MaxLength = 500
-        Me.txtDocumento.Multiline = True
-        Me.txtDocumento.Name = "txtDocumento"
-        Me.txtDocumento.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtDocumento.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-        Me.txtDocumento.Size = New System.Drawing.Size(704, 45)
-        Me.txtDocumento.TabIndex = 81
+        Me.txtObservaciones.AcceptsReturn = True
+        Me.txtObservaciones.BackColor = System.Drawing.SystemColors.Window
+        Me.txtObservaciones.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtObservaciones.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtObservaciones.Location = New System.Drawing.Point(104, 587)
+        Me.txtObservaciones.MaxLength = 500
+        Me.txtObservaciones.Multiline = True
+        Me.txtObservaciones.Name = "txtObservaciones"
+        Me.txtObservaciones.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtObservaciones.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
+        Me.txtObservaciones.Size = New System.Drawing.Size(704, 45)
+        Me.txtObservaciones.TabIndex = 81
         '
         'txtUnidad
         '
@@ -1336,7 +1336,7 @@ Partial Class FrmFactura
         Me.Controls.Add(Me.txtDescripcion)
         Me.Controls.Add(Me.btnBuscarCliente)
         Me.Controls.Add(Me.grdDetalleFactura)
-        Me.Controls.Add(Me.txtDocumento)
+        Me.Controls.Add(Me.txtObservaciones)
         Me.Controls.Add(Me.txtUnidad)
         Me.Controls.Add(Me.btnBusProd)
         Me.Controls.Add(Me.btnAnular)
