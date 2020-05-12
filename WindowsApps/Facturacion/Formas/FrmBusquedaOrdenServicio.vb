@@ -21,6 +21,7 @@ Public Class FrmBusquedaOrdenServicio
         Dim dvcConsecutivo As New DataGridViewTextBoxColumn
         Dim dvcFecha As New DataGridViewTextBoxColumn
         Dim dvcNombreCliente As New DataGridViewTextBoxColumn
+        Dim dvcDescripcion As New DataGridViewTextBoxColumn
         Dim dvcTotal As New DataGridViewTextBoxColumn
         dgvListado.Columns.Clear()
         dgvListado.AutoGenerateColumns = False
@@ -38,8 +39,12 @@ Public Class FrmBusquedaOrdenServicio
         dgvListado.Columns.Add(dvcFecha)
         dvcNombreCliente.HeaderText = "Cliente"
         dvcNombreCliente.DataPropertyName = "NombreCliente"
-        dvcNombreCliente.Width = 400
+        dvcNombreCliente.Width = 150
         dgvListado.Columns.Add(dvcNombreCliente)
+        dvcDescripcion.HeaderText = "Descripción"
+        dvcDescripcion.DataPropertyName = "Descripcion"
+        dvcDescripcion.Width = 250
+        dgvListado.Columns.Add(dvcDescripcion)
         dvcTotal.HeaderText = "Total"
         dvcTotal.DataPropertyName = "Total"
         dvcTotal.Width = 100

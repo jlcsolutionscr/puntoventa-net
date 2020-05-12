@@ -473,7 +473,7 @@ namespace LeandroSoftware.Core.TiposComunes
         {
         }
 
-        public FacturaDetalle(int id, int consecutivo, string nombreCliente, string fecha, decimal gravado, decimal exonerado, decimal excento, decimal impuesto, decimal total, string estado)
+        public FacturaDetalle(int id, int consecutivo, string nombreCliente, string fecha, decimal gravado, decimal exonerado, decimal excento, decimal impuesto, decimal total, string estado, string descripcion)
         {
             IdFactura = id;
             Consecutivo = consecutivo;
@@ -485,6 +485,7 @@ namespace LeandroSoftware.Core.TiposComunes
             Impuesto = impuesto;
             Total = total;
             Estado = estado;
+            Descripcion = descripcion;
         }
         public int IdFactura { get; set; }
         public int Consecutivo { get; set; }
@@ -496,6 +497,7 @@ namespace LeandroSoftware.Core.TiposComunes
         public decimal Impuesto { get; set; }
         public decimal Total { get; set; }
         public string Estado { get; set; }
+        public string Descripcion { get; set; }
     }
 
     public class TrasladoDetalle
