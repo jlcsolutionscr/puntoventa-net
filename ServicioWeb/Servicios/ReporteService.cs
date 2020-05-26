@@ -13,6 +13,7 @@ using System.Text;
 using Microsoft.Reporting.WebForms;
 using LeandroSoftware.Core.Servicios;
 using Newtonsoft.Json.Linq;
+using System.IO;
 
 namespace LeandroSoftware.ServicioWeb.Servicios
 {
@@ -1269,9 +1270,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     foreach (var documento in datosFacturasEmitidas)
                     {
                         string strNombreReceptor = documento.NombreReceptor;
-                        string datosXml = Encoding.UTF8.GetString(documento.DatosDocumento);
                         XmlDocument documentoXml = new XmlDocument();
-                        documentoXml.LoadXml(datosXml);
+                        MemoryStream ms = new MemoryStream(documento.DatosDocumento);
+                        documentoXml.Load(ms);
                         XmlNode resumenFacturaNode = documentoXml.GetElementsByTagName("ResumenFactura").Item(0);
                         decimal decTotalImpuesto = resumenFacturaNode["TotalImpuesto"] != null && resumenFacturaNode["TotalImpuesto"].ChildNodes.Count > 0 ? decimal.Parse(resumenFacturaNode["TotalImpuesto"].InnerText) : 0;
                         decimal decTotal = decimal.Parse(resumenFacturaNode["TotalComprobante"].InnerText);
@@ -1317,9 +1318,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         if (documento.DatosDocumentoOri != null)
                         {
-                            string datosXml = Encoding.UTF8.GetString(documento.DatosDocumentoOri);
                             XmlDocument documentoXml = new XmlDocument();
-                            documentoXml.LoadXml(datosXml);
+                            MemoryStream ms = new MemoryStream(documento.DatosDocumentoOri);
+                            documentoXml.Load(ms);
                             decimal decTotalImpuesto = 0;
                             decimal decTotal = 0;
                             string strCodigoMoneda = "CRC";
@@ -1356,9 +1357,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                         else
                         {
-                            string datosXml = Encoding.UTF8.GetString(documento.DatosDocumento);
                             XmlDocument documentoXml = new XmlDocument();
-                            documentoXml.LoadXml(datosXml);
+                            MemoryStream ms = new MemoryStream(documento.DatosDocumento);
+                            documentoXml.Load(ms);
                             decimal decTotalImpuesto = 0;
                             decimal decTotal = 0;
                             string strCodigoMoneda = "CRC";
@@ -1414,9 +1415,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     decimal decTotalVentaServiciosExento = 0;
                     foreach (var documento in grupoFacturasEmitidas)
                     {
-                        string datosXml = Encoding.UTF8.GetString(documento.DatosDocumento);
                         XmlDocument documentoXml = new XmlDocument();
-                        documentoXml.LoadXml(datosXml);
+                        MemoryStream ms = new MemoryStream(documento.DatosDocumento);
+                        documentoXml.Load(ms);
                         decimal decVentaServiciosTasa1 = 0;
                         decimal decVentaServiciosTasa2 = 0;
                         decimal decVentaServiciosTasa4 = 0;
@@ -1515,9 +1516,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         .Where(a => a.IdEmpresa == intIdEmpresa && a.IdSucursal == intIdSucursal && a.Fecha >= datFechaInicial && a.Fecha <= datFechaFinal && a.IdTipoDocumento == 3 && a.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado).ToList();
                     foreach (var documento in grupoNotasCreditoEmitidas)
                     {
-                        string datosXml = Encoding.UTF8.GetString(documento.DatosDocumento);
                         XmlDocument documentoXml = new XmlDocument();
-                        documentoXml.LoadXml(datosXml);
+                        MemoryStream ms = new MemoryStream(documento.DatosDocumento);
+                        documentoXml.Load(ms);
                         decimal decVentaServiciosTasa1 = 0;
                         decimal decVentaServiciosTasa2 = 0;
                         decimal decVentaServiciosTasa4 = 0;
@@ -1660,9 +1661,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         if (documento.DatosDocumentoOri != null)
                         {
-                            string datosXml = Encoding.UTF8.GetString(documento.DatosDocumentoOri);
                             XmlDocument documentoXml = new XmlDocument();
-                            documentoXml.LoadXml(datosXml);
+                            MemoryStream ms = new MemoryStream(documento.DatosDocumentoOri);
+                            documentoXml.Load(ms);
                             decimal decCompraServiciosTasa1 = 0;
                             decimal decCompraServiciosTasa2 = 0;
                             decimal decCompraServiciosTasa4 = 0;
@@ -1823,9 +1824,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                         else
                         {
-                            string datosXml = Encoding.UTF8.GetString(documento.DatosDocumento);
                             XmlDocument documentoXml = new XmlDocument();
-                            documentoXml.LoadXml(datosXml);
+                            MemoryStream ms = new MemoryStream(documento.DatosDocumento);
+                            documentoXml.Load(ms);
                             decimal decImpuestoPorLinea = 0;
                             decimal decTotalPorLinea = 0;
                             if (documentoXml.GetElementsByTagName("TotalFactura").Count > 0)
