@@ -25,6 +25,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         [ForeignKey("Cliente")]
         public int IdCliente { get; set; }
         public int ConsecFactura { get; set; }
+        public string Detalle { get; set; }
         public DateTime Fecha { get; set; }
         public decimal Excento { get; set; }
         public decimal Gravado { get; set; }

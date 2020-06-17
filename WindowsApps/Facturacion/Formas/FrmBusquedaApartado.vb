@@ -22,6 +22,7 @@ Public Class FrmBusquedaApartado
         Dim dvcFecha As New DataGridViewTextBoxColumn
         Dim dvcNombreCliente As New DataGridViewTextBoxColumn
         Dim dvcTotal As New DataGridViewTextBoxColumn
+        Dim dvcSaldo As New DataGridViewTextBoxColumn
         dgvListado.Columns.Clear()
         dgvListado.AutoGenerateColumns = False
         dvcId.DataPropertyName = "IdFactura"
@@ -38,13 +39,18 @@ Public Class FrmBusquedaApartado
         dgvListado.Columns.Add(dvcFecha)
         dvcNombreCliente.HeaderText = "Cliente"
         dvcNombreCliente.DataPropertyName = "NombreCliente"
-        dvcNombreCliente.Width = 400
+        dvcNombreCliente.Width = 300
         dgvListado.Columns.Add(dvcNombreCliente)
         dvcTotal.HeaderText = "Total"
         dvcTotal.DataPropertyName = "Total"
         dvcTotal.Width = 100
         dvcTotal.DefaultCellStyle = FrmPrincipal.dgvDecimal
         dgvListado.Columns.Add(dvcTotal)
+        dvcSaldo.HeaderText = "Saldo"
+        dvcSaldo.DataPropertyName = "Saldo"
+        dvcSaldo.Width = 100
+        dvcSaldo.DefaultCellStyle = FrmPrincipal.dgvDecimal
+        dgvListado.Columns.Add(dvcSaldo)
     End Sub
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task

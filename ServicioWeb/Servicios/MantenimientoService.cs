@@ -1939,11 +1939,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         listaProductos = listaProductos.Where(x => x.Descripcion.Contains(strDescripcion));
                     if (bolFiltraExistencias)
                     {
-                        var listado = listaProductos.Join(dbContext.ExistenciaPorSucursalRepository, x => x.IdProducto, y => y.IdProducto, (x, y) => new { x, y }).Where(x => x.y.IdEmpresa == intIdEmpresa && x.y.IdSucursal == intIdSucursal && x.y.Cantidad > 0).OrderBy(x => x.x.Codigo).Skip((numPagina - 1) * cantRec).Take(cantRec).ToList();
+                        var listado = listaProductos.Join(dbContext.ExistenciaPorSucursalRepository, x => x.IdProducto, y => y.IdProducto, (x, y) => new { x, y }).Where(x => x.y.IdEmpresa == intIdEmpresa && x.y.IdSucursal == intIdSucursal && x.y.Cantidad > 0).Join(dbContext.ParametroImpuestoRepository, x => x.x.IdImpuesto, y => y.IdImpuesto, (x, y) => new { x, y }).OrderBy(x => x.x.x.Codigo).Skip((numPagina - 1) * cantRec).Take(cantRec).ToList();
                         foreach (var value in listado)
                         {
-                            decimal decUtilidad = value.x.PrecioCosto > 0 ? ((value.x.PrecioVenta1 / (1 + (value.x.ParametroImpuesto.TasaImpuesto / 100))) * 100 / value.x.PrecioCosto) - 100 : value.x.PrecioVenta1 > 0 ? 100 : 0;
-                            ProductoDetalle item = new ProductoDetalle(value.x.IdProducto, value.x.Codigo, value.x.CodigoProveedor, value.x.Descripcion, value.y.Cantidad, value.x.PrecioCosto, value.x.PrecioVenta1, value.x.Observacion, decUtilidad, value.x.Activo);
+                            decimal decUtilidad = value.x.x.PrecioCosto > 0 ? ((value.x.x.PrecioVenta1 / (1 + (value.x.x.ParametroImpuesto.TasaImpuesto / 100))) * 100 / value.x.x.PrecioCosto) - 100 : value.x.x.PrecioVenta1 > 0 ? 100 : 0;
+                            ProductoDetalle item = new ProductoDetalle(value.x.x.IdProducto, value.x.x.Codigo, value.x.x.CodigoProveedor, value.x.x.Descripcion, value.x.y.Cantidad, value.x.x.PrecioCosto, value.x.x.PrecioVenta1, value.x.x.Observacion, decUtilidad, value.x.x.Activo);
                             listaProducto.Add(item);
                         }
                     }

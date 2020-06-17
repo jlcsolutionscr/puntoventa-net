@@ -1270,6 +1270,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     foreach (var documento in datosFacturasEmitidas)
                     {
                         string strNombreReceptor = documento.NombreReceptor;
+                        string strIdentificacion = documento.IdentificacionReceptor;
                         XmlDocument documentoXml = new XmlDocument();
                         MemoryStream ms = new MemoryStream(documento.DatosDocumento);
                         documentoXml.Load(ms);
@@ -1289,6 +1290,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         reporteLinea.Consecutivo = documento.Consecutivo;
                         reporteLinea.Fecha = documento.Fecha.ToString("dd/MM/yyyy");
                         reporteLinea.Nombre = strNombreReceptor;
+                        reporteLinea.Identificacion = strIdentificacion;
                         reporteLinea.Moneda = strMoneda;
                         reporteLinea.Impuesto = decTotalImpuesto;
                         reporteLinea.Total = decTotal;
@@ -1320,6 +1322,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         {
                             XmlDocument documentoXml = new XmlDocument();
                             MemoryStream ms = new MemoryStream(documento.DatosDocumentoOri);
+                            string strIdentificacion = documento.IdentificacionEmisor;
                             documentoXml.Load(ms);
                             decimal decTotalImpuesto = 0;
                             decimal decTotal = 0;
@@ -1351,6 +1354,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             reporteLinea.Fecha = documento.Fecha.ToString("dd/MM/yyyy");
                             reporteLinea.Nombre = strNombreEmisor;
                             reporteLinea.Moneda = strCodigoMoneda;
+                            reporteLinea.Identificacion = strIdentificacion;
                             reporteLinea.Impuesto = decTotalImpuesto;
                             reporteLinea.Total = decTotal;
                             listaReporte.Add(reporteLinea);
@@ -1364,6 +1368,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             decimal decTotal = 0;
                             string strCodigoMoneda = "CRC";
                             string strNombreEmisor = "INFORMACION NO DISPONIBLE";
+                            string strIdentificacion = documento.IdentificacionEmisor;
                             if (documentoXml.GetElementsByTagName("TotalFactura").Count > 0)
                                 decTotal = decimal.Parse(documentoXml.GetElementsByTagName("TotalFactura").Item(0).InnerText, CultureInfo.InvariantCulture);
                             if (documentoXml.GetElementsByTagName("MontoTotalImpuesto").Count > 0)
@@ -1373,6 +1378,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             reporteLinea.ClaveNumerica = documentoXml.GetElementsByTagName("Clave").Item(0).InnerText;
                             reporteLinea.Fecha = documento.Fecha.ToString("dd/MM/yyyy");
                             reporteLinea.Nombre = strNombreEmisor;
+                            reporteLinea.Identificacion = strIdentificacion;
                             reporteLinea.Moneda = strCodigoMoneda;
                             reporteLinea.Impuesto = decTotalImpuesto;
                             reporteLinea.Total = decTotal;

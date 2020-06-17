@@ -269,6 +269,7 @@ Public Class FrmDevolucionDeClientes
         factura = Nothing
         txtCliente.Text = ""
         txtIdFactura.Text = ""
+        txtDetalle.Text = ""
         dtbDetalleDevolucion.Rows.Clear()
         grdDetalleDevolucion.Refresh()
         grdDetalleDevolucion.ReadOnly = False
@@ -317,6 +318,7 @@ Public Class FrmDevolucionDeClientes
                 cliente = devolucion.Cliente
                 txtCliente.Text = cliente.Nombre
                 txtFecha.Text = devolucion.Fecha
+                txtDetalle.Text = devolucion.Detalle
                 CargarDetalleDevolucion(devolucion)
                 CargarTotales()
                 grdDetalleDevolucion.ReadOnly = True
@@ -347,6 +349,7 @@ Public Class FrmDevolucionDeClientes
                     .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
                     .IdCliente = factura.IdCliente,
                     .IdFactura = factura.IdFactura,
+                    .Detalle = txtDetalle.Text,
                     .ConsecFactura = factura.ConsecFactura,
                     .Fecha = Now(),
                     .Excento = dblExcento,
@@ -398,6 +401,7 @@ Public Class FrmDevolucionDeClientes
                 .strDocumento = txtIdFactura.Text,
                 .strNombre = txtCliente.Text,
                 .strFecha = txtFecha.Text,
+                .strDetalle = txtDetalle.Text,
                 .strFormaPago = "Contado",
                 .strSubTotal = txtSubTotal.Text,
                 .strImpuesto = txtImpuesto.Text,

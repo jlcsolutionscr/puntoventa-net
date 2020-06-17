@@ -123,6 +123,7 @@ Public Class FrmProducto
     Private Async Sub FrmProducto_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
             Await CargarCombos()
+            chkModificaPrecio.Enabled = FrmPrincipal.bolModificaPrecioVenta
             If intIdProducto > 0 Then
                 datos = Await Puntoventa.ObtenerProducto(intIdProducto, FrmPrincipal.equipoGlobal.IdSucursal, FrmPrincipal.usuarioGlobal.Token)
                 If datos Is Nothing Then
@@ -150,6 +151,7 @@ Public Class FrmProducto
                 txtMarca.Text = datos.Marca
                 txtObservacion.Text = datos.Observacion
                 chkActivo.Checked = datos.Activo
+                chkModificaPrecio.Checked = datos.ModificaPrecio
                 Await CalcularPrecioSinImpuesto(datos.IdImpuesto)
                 txtPrecioImpuesto1.Focus()
             Else
@@ -213,6 +215,7 @@ Public Class FrmProducto
         datos.Marca = txtMarca.Text
         datos.Observacion = txtObservacion.Text
         datos.Activo = chkActivo.Checked
+        datos.ModificaPrecio = chkModificaPrecio.Checked
         Try
             If datos.IdProducto = 0 Then
                 Await Puntoventa.AgregarProducto(datos, FrmPrincipal.usuarioGlobal.Token)

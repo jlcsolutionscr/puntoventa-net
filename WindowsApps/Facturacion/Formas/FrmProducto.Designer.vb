@@ -85,6 +85,7 @@ Partial Class FrmProducto
         Me.chkActivo = New System.Windows.Forms.CheckBox()
         Me.txtMarca = New System.Windows.Forms.TextBox()
         Me.Label11 = New System.Windows.Forms.Label()
+        Me.chkModificaPrecio = New System.Windows.Forms.CheckBox()
         CType(Me.ptbImagen, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -747,12 +748,24 @@ Partial Class FrmProducto
         Me.Label11.Text = "Marca:"
         Me.Label11.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
+        'chkModificaPrecio
+        '
+        Me.chkModificaPrecio.AutoSize = True
+        Me.chkModificaPrecio.Location = New System.Drawing.Point(245, 526)
+        Me.chkModificaPrecio.Name = "chkModificaPrecio"
+        Me.chkModificaPrecio.Size = New System.Drawing.Size(183, 17)
+        Me.chkModificaPrecio.TabIndex = 19
+        Me.chkModificaPrecio.TabStop = False
+        Me.chkModificaPrecio.Text = "Permite modificar precio de venta"
+        Me.chkModificaPrecio.UseVisualStyleBackColor = True
+        '
         'FrmProducto
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(785, 551)
+        Me.Controls.Add(Me.chkModificaPrecio)
         Me.Controls.Add(Me.txtMarca)
         Me.Controls.Add(Me.Label11)
         Me.Controls.Add(Me.chkActivo)
@@ -854,4 +867,5 @@ Partial Class FrmProducto
     Friend WithEvents chkActivo As CheckBox
     Public WithEvents txtMarca As TextBox
     Public WithEvents Label11 As Label
+    Friend WithEvents chkModificaPrecio As CheckBox
 End Class

@@ -58,6 +58,8 @@ Partial Class FrmDevolucionDeClientes
         Me.grdDetalleDevolucion = New System.Windows.Forms.DataGridView()
         Me.btnBuscarFactura = New System.Windows.Forms.Button()
         Me.txtCliente = New System.Windows.Forms.TextBox()
+        Me.txtDetalle = New System.Windows.Forms.TextBox()
+        Me.Label1 = New System.Windows.Forms.Label()
         CType(Me.grdDetalleDevolucion, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -139,13 +141,13 @@ Partial Class FrmDevolucionDeClientes
         Me.txtImpuesto.BackColor = System.Drawing.SystemColors.Window
         Me.txtImpuesto.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtImpuesto.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtImpuesto.Location = New System.Drawing.Point(739, 377)
+        Me.txtImpuesto.Location = New System.Drawing.Point(739, 399)
         Me.txtImpuesto.MaxLength = 0
         Me.txtImpuesto.Name = "txtImpuesto"
         Me.txtImpuesto.ReadOnly = True
         Me.txtImpuesto.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtImpuesto.Size = New System.Drawing.Size(73, 20)
-        Me.txtImpuesto.TabIndex = 16
+        Me.txtImpuesto.TabIndex = 7
         Me.txtImpuesto.TabStop = False
         Me.txtImpuesto.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
@@ -170,13 +172,13 @@ Partial Class FrmDevolucionDeClientes
         Me.txtTotal.BackColor = System.Drawing.SystemColors.Window
         Me.txtTotal.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtTotal.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtTotal.Location = New System.Drawing.Point(739, 401)
+        Me.txtTotal.Location = New System.Drawing.Point(739, 423)
         Me.txtTotal.MaxLength = 0
         Me.txtTotal.Name = "txtTotal"
         Me.txtTotal.ReadOnly = True
         Me.txtTotal.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtTotal.Size = New System.Drawing.Size(73, 20)
-        Me.txtTotal.TabIndex = 17
+        Me.txtTotal.TabIndex = 8
         Me.txtTotal.TabStop = False
         Me.txtTotal.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
@@ -200,13 +202,13 @@ Partial Class FrmDevolucionDeClientes
         Me.txtSubTotal.BackColor = System.Drawing.SystemColors.Window
         Me.txtSubTotal.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtSubTotal.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtSubTotal.Location = New System.Drawing.Point(739, 351)
+        Me.txtSubTotal.Location = New System.Drawing.Point(739, 373)
         Me.txtSubTotal.MaxLength = 0
         Me.txtSubTotal.Name = "txtSubTotal"
         Me.txtSubTotal.ReadOnly = True
         Me.txtSubTotal.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtSubTotal.Size = New System.Drawing.Size(73, 20)
-        Me.txtSubTotal.TabIndex = 14
+        Me.txtSubTotal.TabIndex = 6
         Me.txtSubTotal.TabStop = False
         Me.txtSubTotal.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
@@ -230,7 +232,7 @@ Partial Class FrmDevolucionDeClientes
         Me.LblImpuesto.BackColor = System.Drawing.Color.Transparent
         Me.LblImpuesto.Cursor = System.Windows.Forms.Cursors.Default
         Me.LblImpuesto.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.LblImpuesto.Location = New System.Drawing.Point(668, 380)
+        Me.LblImpuesto.Location = New System.Drawing.Point(668, 402)
         Me.LblImpuesto.Name = "LblImpuesto"
         Me.LblImpuesto.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.LblImpuesto.Size = New System.Drawing.Size(65, 19)
@@ -243,7 +245,7 @@ Partial Class FrmDevolucionDeClientes
         Me.LblTotal.BackColor = System.Drawing.Color.Transparent
         Me.LblTotal.Cursor = System.Windows.Forms.Cursors.Default
         Me.LblTotal.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.LblTotal.Location = New System.Drawing.Point(668, 404)
+        Me.LblTotal.Location = New System.Drawing.Point(668, 426)
         Me.LblTotal.Name = "LblTotal"
         Me.LblTotal.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.LblTotal.Size = New System.Drawing.Size(65, 19)
@@ -256,7 +258,7 @@ Partial Class FrmDevolucionDeClientes
         Me.lblSubTotal.BackColor = System.Drawing.Color.Transparent
         Me.lblSubTotal.Cursor = System.Windows.Forms.Cursors.Default
         Me.lblSubTotal.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.lblSubTotal.Location = New System.Drawing.Point(668, 354)
+        Me.lblSubTotal.Location = New System.Drawing.Point(668, 376)
         Me.lblSubTotal.Name = "lblSubTotal"
         Me.lblSubTotal.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.lblSubTotal.Size = New System.Drawing.Size(65, 19)
@@ -323,12 +325,12 @@ Partial Class FrmDevolucionDeClientes
         Me.grdDetalleDevolucion.AllowUserToResizeColumns = False
         Me.grdDetalleDevolucion.AllowUserToResizeRows = False
         Me.grdDetalleDevolucion.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.grdDetalleDevolucion.Location = New System.Drawing.Point(12, 98)
+        Me.grdDetalleDevolucion.Location = New System.Drawing.Point(12, 120)
         Me.grdDetalleDevolucion.MultiSelect = False
         Me.grdDetalleDevolucion.Name = "grdDetalleDevolucion"
         Me.grdDetalleDevolucion.RowHeadersVisible = False
         Me.grdDetalleDevolucion.Size = New System.Drawing.Size(800, 247)
-        Me.grdDetalleDevolucion.TabIndex = 4
+        Me.grdDetalleDevolucion.TabIndex = 5
         '
         'btnBuscarFactura
         '
@@ -355,12 +357,41 @@ Partial Class FrmDevolucionDeClientes
         Me.txtCliente.TabIndex = 2
         Me.txtCliente.TabStop = False
         '
+        'txtDetalle
+        '
+        Me.txtDetalle.AcceptsReturn = True
+        Me.txtDetalle.BackColor = System.Drawing.SystemColors.Window
+        Me.txtDetalle.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtDetalle.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtDetalle.Location = New System.Drawing.Point(97, 92)
+        Me.txtDetalle.MaxLength = 500
+        Me.txtDetalle.Name = "txtDetalle"
+        Me.txtDetalle.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtDetalle.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
+        Me.txtDetalle.Size = New System.Drawing.Size(716, 20)
+        Me.txtDetalle.TabIndex = 4
+        '
+        'Label1
+        '
+        Me.Label1.BackColor = System.Drawing.Color.Transparent
+        Me.Label1.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label1.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label1.Location = New System.Drawing.Point(23, 92)
+        Me.Label1.Name = "Label1"
+        Me.Label1.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label1.Size = New System.Drawing.Size(68, 18)
+        Me.Label1.TabIndex = 138
+        Me.Label1.Text = "Detalle:"
+        Me.Label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
         'FrmDevolucionDeClientes
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
-        Me.ClientSize = New System.Drawing.Size(825, 434)
+        Me.ClientSize = New System.Drawing.Size(825, 458)
+        Me.Controls.Add(Me.Label1)
+        Me.Controls.Add(Me.txtDetalle)
         Me.Controls.Add(Me.btnBuscarFactura)
         Me.Controls.Add(Me.txtCliente)
         Me.Controls.Add(Me.grdDetalleDevolucion)
@@ -388,7 +419,9 @@ Partial Class FrmDevolucionDeClientes
         Me.KeyPreview = True
         Me.Location = New System.Drawing.Point(73, 22)
         Me.MaximizeBox = False
+        Me.MaximumSize = New System.Drawing.Size(841, 497)
         Me.MinimizeBox = False
+        Me.MinimumSize = New System.Drawing.Size(841, 497)
         Me.Name = "FrmDevolucionDeClientes"
         Me.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
@@ -401,4 +434,6 @@ Partial Class FrmDevolucionDeClientes
     Friend WithEvents grdDetalleDevolucion As System.Windows.Forms.DataGridView
     Friend WithEvents btnBuscarFactura As System.Windows.Forms.Button
     Public WithEvents txtCliente As System.Windows.Forms.TextBox
+    Public WithEvents txtDetalle As TextBox
+    Public WithEvents Label1 As Label
 End Class

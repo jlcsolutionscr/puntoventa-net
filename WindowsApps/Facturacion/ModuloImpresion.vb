@@ -548,7 +548,16 @@ Public Class ModuloImpresion
                 nombre = nombre.Substring(32)
             End While
             lineas.Add(New ClsLineaImpresion(1, nombre, 0, 100, 10, StringAlignment.Near, False))
-            lineas.Add(New ClsLineaImpresion(2, "Fecha: " & objImpresion.strFecha, 0, 100, 10, StringAlignment.Near, False))
+            lineas.Add(New ClsLineaImpresion(1, "Fecha: " & objImpresion.strFecha, 0, 100, 10, StringAlignment.Near, False))
+            If objImpresion.strDetalle.Length > 0 Then
+                Dim detalle As String = "Detalle: " & objImpresion.strDetalle
+                While detalle.Length > 32
+                    lineas.Add(New ClsLineaImpresion(1, detalle.Substring(0, 32), 0, 100, 10, StringAlignment.Near, False))
+                    detalle = detalle.Substring(32)
+                End While
+                lineas.Add(New ClsLineaImpresion(1, detalle, 0, 100, 10, StringAlignment.Near, False))
+            End If
+            lineas.Add(New ClsLineaImpresion(1, "", 0, 100, 10, StringAlignment.Near, False))
             ImprimirDetalle(objImpresion.arrDetalleComprobante)
             ImprimirTotales(objImpresion)
             lineas.Add(New ClsLineaImpresion(2, " ", 54, 46, 10, StringAlignment.Far, False))
