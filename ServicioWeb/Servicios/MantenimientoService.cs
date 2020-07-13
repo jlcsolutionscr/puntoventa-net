@@ -89,8 +89,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         Producto ObtenerProductoTransitorio(int intIdEmpresa);
         Producto ObtenerProductoPorCodigo(int intIdEmpresa, string strCodigo, int intIdSucursal);
         Producto ObtenerProductoPorCodigoProveedor(int intIdEmpresa, string strCodigo, int intIdSucursal);
-        int ObtenerTotalListaProductos(int intIdEmpresa, int intIdSucursal, bool bolIncluyeServicios, bool bolFiltraActivos, bool bolFiltraExistencias, int intIdLinea, string strCodigo, string strCodigoProveedor, string strDescripcion);
-        IList<ProductoDetalle> ObtenerListadoProductos(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, bool bolIncluyeServicios, bool bolFiltraActivos, bool bolFiltraExistencias, int intIdLinea, string strCodigo, string strCodigoProveedor, string strDescripcion);
+        int ObtenerTotalListaProductos(int intIdEmpresa, int intIdSucursal, bool bolIncluyeServicios, bool bolFiltraActivos, bool bolFiltraExistencias, bool bolFiltraConDescuento, int intIdLinea, string strCodigo, string strCodigoProveedor, string strDescripcion);
+        IList<ProductoDetalle> ObtenerListadoProductos(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, bool bolIncluyeServicios, bool bolFiltraActivos, bool bolFiltraExistencias, bool bolFiltraConDescuento, int intIdLinea, string strCodigo, string strCodigoProveedor, string strDescripcion);
         int ObtenerTotalMovimientosPorProducto(int intIdProducto, int intIdSucursal, string strFechaInicial, string strFechaFinal);
         IList<MovimientoProducto> ObtenerMovimientosPorProducto(int intIdProducto, int intIdSucursal, int numPagina, int cantRec, string strFechaInicial, string strFechaFinal);
         // Métodos para obtener las condiciones de venta para facturación
@@ -172,7 +172,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     if (usuario.Clave != strClave) throw new BusinessException("Los credenciales suministrados no son válidos. Por favor verifique la información suministrada.");
                     if (!usuario.PermiteRegistrarDispositivo) throw new BusinessException("El usuario suministrado no esta autorizado para registrar el punto de venta. Por favor, pongase en contacto con su proveedor del servicio.");
-                    var listado = dbContext.TerminalPorSucursalRepository.Include("SucursalPorEmpresa").Where(x => x.IdEmpresa == empresa.IdEmpresa && x.ValorRegistro == "" && x.IdTipoDispositivo == intTipoDispositivo)
+                    var listado = dbContext.TerminalPorSucursalRepository.Include("SucursalPorEmpresa").Where(x => x.IdEmpresa == empresa.IdEmpresa && x.IdTipoDispositivo == intTipoDispositivo)
                         .OrderBy(x => x.IdSucursal).ThenBy(x => x.IdTerminal);
                     foreach (var terminal in listado)
                     {
@@ -344,15 +344,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (sucursal == null) throw new BusinessException("La sucursal donde desea registrar su punto de venta no existe. Por favor, pongase en contacto con su proveedor del servicio.");
                     TerminalPorSucursal terminal = dbContext.TerminalPorSucursalRepository.FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa && x.IdSucursal == intIdSucursal && x.IdTerminal == intIdTerminal && x.IdTipoDispositivo == intTipoDispositivo);
                     if (terminal == null) throw new BusinessException("La terminal donde desea registrar su punto de venta no existe. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (terminal.ValorRegistro == "")
-                    {
-                        terminal.ValorRegistro = strDispositivoId;
-                        dbContext.NotificarModificacion(terminal);
-                        dbContext.Commit();
-                    } else
-                    {
-                        throw new BusinessException("La terminal donde desea registrar su punto de venta ya en uso. Por favor, pongase en contacto con su proveedor del servicio.");
-                    }
+                    terminal.ValorRegistro = strDispositivoId;
+                    dbContext.NotificarModificacion(terminal);
+                    dbContext.Commit();
                 }
                 catch (BusinessException ex)
                 {
@@ -1883,7 +1877,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public int ObtenerTotalListaProductos(int intIdEmpresa, int intIdSucursal, bool bolIncluyeServicios, bool bolFiltraActivos, bool bolFiltraExistencias, int intIdLinea, string strCodigo, string strCodigoProveedor, string strDescripcion)
+        public int ObtenerTotalListaProductos(int intIdEmpresa, int intIdSucursal, bool bolIncluyeServicios, bool bolFiltraActivos, bool bolFiltraExistencias, bool bolFiltraConDescuento, int intIdLinea, string strCodigo, string strCodigoProveedor, string strDescripcion)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -1895,6 +1889,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         listaProductos = listaProductos.Where(x => x.Tipo == StaticTipoProducto.Producto);
                     if (bolFiltraActivos)
                         listaProductos = listaProductos.Where(x => x.Activo);
+                    if (bolFiltraConDescuento)
+                        listaProductos = listaProductos.Where(x => x.PorcDescuento > 0);
                     if (intIdLinea > 0)
                         listaProductos = listaProductos.Where(x => x.IdLinea == intIdLinea);
                     if (!strCodigo.Equals(string.Empty))
@@ -1916,7 +1912,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IList<ProductoDetalle> ObtenerListadoProductos(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, bool bolIncluyeServicios, bool bolFiltraActivos, bool bolFiltraExistencias, int intIdLinea, string strCodigo, string strCodigoProveedor, string strDescripcion)
+        public IList<ProductoDetalle> ObtenerListadoProductos(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, bool bolIncluyeServicios, bool bolFiltraActivos, bool bolFiltraExistencias, bool bolFiltraConDescuento, int intIdLinea, string strCodigo, string strCodigoProveedor, string strDescripcion)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -1929,6 +1925,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         listaProductos = listaProductos.Where(x => x.Tipo == StaticTipoProducto.Producto);
                     if (bolFiltraActivos)
                         listaProductos = listaProductos.Where(x => x.Activo);
+                    if (bolFiltraConDescuento)
+                        listaProductos = listaProductos.Where(x => x.PorcDescuento > 0);
                     if (intIdLinea > 0)
                         listaProductos = listaProductos.Where(x => x.IdLinea == intIdLinea);
                     if (!strCodigo.Equals(string.Empty))

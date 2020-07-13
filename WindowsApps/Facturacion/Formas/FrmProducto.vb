@@ -38,6 +38,9 @@ Public Class FrmProducto
         ElseIf txtIndExistencia.Text = "" Then
             pCampo = "Punto de reorden"
             Return False
+        ElseIf txtPorcDescuento.Text = "" Then
+            pCampo = "Punto de reorden"
+            Return False
         Else
             Return True
         End If
@@ -143,6 +146,7 @@ Public Class FrmProducto
                 txtPrecioImpuesto3.Text = FormatoPrecio(datos.PrecioVenta3, 2)
                 txtPrecioImpuesto4.Text = FormatoPrecio(datos.PrecioVenta4, 2)
                 txtPrecioImpuesto5.Text = FormatoPrecio(datos.PrecioVenta5, 2)
+                txtPorcDescuento.Text = FormatoPrecio(datos.PorcDescuento, 2)
                 cboTipoImpuesto.SelectedValue = datos.IdImpuesto
                 txtIndExistencia.Text = FormatoPrecio(datos.IndExistencia, 2)
                 If datos.Imagen IsNot Nothing Then
@@ -169,6 +173,7 @@ Public Class FrmProducto
                 txtPrecioImpuesto4.Text = FormatoPrecio(0, 2)
                 txtPrecioImpuesto5.Text = FormatoPrecio(0, 2)
                 txtIndExistencia.Text = FormatoPrecio(0, 2)
+                txtPorcDescuento.Text = FormatoPrecio(0, 2)
                 chkActivo.Checked = True
             End If
             bolInit = False
@@ -204,6 +209,7 @@ Public Class FrmProducto
         datos.PrecioVenta3 = txtPrecioImpuesto3.Text
         datos.PrecioVenta4 = txtPrecioImpuesto4.Text
         datos.PrecioVenta5 = txtPrecioImpuesto5.Text
+        datos.PorcDescuento = txtPorcDescuento.Text
         datos.Tipo = cboTipoProducto.SelectedValue
         datos.IdImpuesto = cboTipoImpuesto.SelectedValue
         datos.IndExistencia = txtIndExistencia.Text

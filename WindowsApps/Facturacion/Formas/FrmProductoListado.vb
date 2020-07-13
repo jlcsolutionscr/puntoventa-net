@@ -78,7 +78,7 @@ Public Class FrmProductoListado
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
         Try
-            listado = Await Puntoventa.ObtenerListadoProductos(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, intNumeroPagina, intFilasPorPagina, True, chkFiltrarActivos.Checked, False, cboLinea.SelectedValue, txtCodigo.Text, txtCodigoProveedor.Text, txtDescripcion.Text, FrmPrincipal.usuarioGlobal.Token)
+            listado = Await Puntoventa.ObtenerListadoProductos(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, intNumeroPagina, intFilasPorPagina, True, chkFiltrarActivos.Checked, False, chkConDescuento.Checked, cboLinea.SelectedValue, txtCodigo.Text, txtCodigoProveedor.Text, txtDescripcion.Text, FrmPrincipal.usuarioGlobal.Token)
             dgvListado.DataSource = listado
             If listado.Count() > 0 Then
                 btnEditar.Enabled = True
@@ -96,7 +96,7 @@ Public Class FrmProductoListado
 
     Private Async Function ValidarCantidadRegistros() As Task
         Try
-            intTotalRegistros = Await Puntoventa.ObtenerTotalListaProductos(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, True, chkFiltrarActivos.Checked, False, cboLinea.SelectedValue, txtCodigo.Text, txtCodigoProveedor.Text, txtDescripcion.Text, FrmPrincipal.usuarioGlobal.Token)
+            intTotalRegistros = Await Puntoventa.ObtenerTotalListaProductos(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, True, chkFiltrarActivos.Checked, False, chkConDescuento.Checked, cboLinea.SelectedValue, txtCodigo.Text, txtCodigoProveedor.Text, txtDescripcion.Text, FrmPrincipal.usuarioGlobal.Token)
         Catch ex As Exception
             Throw ex
         End Try
@@ -246,6 +246,10 @@ Public Class FrmProductoListado
         If Not bolInit And Not cboLinea.SelectedValue Is Nothing Then
             btnFiltrar_Click(btnFiltrar, New EventArgs())
         End If
+    End Sub
+
+    Private Sub chkConDescuento_CheckedChanged(sender As Object, e As EventArgs) Handles chkConDescuento.CheckedChanged
+        BtnFiltrar_Click(btnFiltrar, New EventArgs())
     End Sub
 #End Region
 End Class

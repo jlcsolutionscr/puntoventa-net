@@ -949,9 +949,9 @@ namespace LeandroSoftware.ClienteWCF
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 
-        public static async Task<int> ObtenerTotalListaProductos(int intIdEmpresa, int intIdSucursal, bool bolIncluyeServicios, bool bolFiltraActivos, bool bolFitraExistencias, int intIdLinea, string strCodigo, string strCodigoProveedor, string strDescripcion, string strToken)
+        public static async Task<int> ObtenerTotalListaProductos(int intIdEmpresa, int intIdSucursal, bool bolIncluyeServicios, bool bolFiltraActivos, bool bolFitraExistencias, bool bolFiltraConDescuento, int intIdLinea, string strCodigo, string strCodigoProveedor, string strDescripcion, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerTotalListaProductos', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", IncluyeServicios: '" + bolIncluyeServicios + "', FiltraActivos: '" + bolFiltraActivos + "', FiltraExistencias: '" + bolFitraExistencias + "', IdLinea: " + intIdLinea + ", Codigo: '" + strCodigo + "', CodigoProveedor: '" + strCodigoProveedor + "', Descripcion: '" + strDescripcion + "'}}";
+            string strDatos = "{NombreMetodo: 'ObtenerTotalListaProductos', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", IncluyeServicios: '" + bolIncluyeServicios + "', FiltraActivos: '" + bolFiltraActivos + "', FiltraExistencias: '" + bolFitraExistencias + "', FiltraConDescuento: '" + bolFiltraConDescuento + "', IdLinea: " + intIdLinea + ", Codigo: '" + strCodigo + "', CodigoProveedor: '" + strCodigoProveedor + "', Descripcion: '" + strDescripcion + "'}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             int intCantidad = 0;
             if (respuesta != "")
@@ -959,9 +959,9 @@ namespace LeandroSoftware.ClienteWCF
             return intCantidad;
         }
 
-        public static async Task<List<ProductoDetalle>> ObtenerListadoProductos(int intIdEmpresa, int intIdSucursal, int intNumeroPagina, int intFilasPorPagina, bool bolIncluyeServicios, bool bolFiltraActivos, bool bolFitraExistencias, int intIdLinea, string strCodigo, string strCodigoProveedor, string strDescripcion, string strToken)
+        public static async Task<List<ProductoDetalle>> ObtenerListadoProductos(int intIdEmpresa, int intIdSucursal, int intNumeroPagina, int intFilasPorPagina, bool bolIncluyeServicios, bool bolFiltraActivos, bool bolFitraExistencias, bool bolFiltraConDescuento, int intIdLinea, string strCodigo, string strCodigoProveedor, string strDescripcion, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerListadoProductos', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", NumeroPagina: " + intNumeroPagina + ", FilasPorPagina: " + intFilasPorPagina + ", IncluyeServicios: '" + bolIncluyeServicios + "', FiltraActivos: '" + bolFiltraActivos + "', FiltraExistencias: '" + bolFitraExistencias + "', IdLinea: " + intIdLinea + ", Codigo: '" + strCodigo + "', CodigoProveedor: '" + strCodigoProveedor + "', Descripcion: '" + strDescripcion + "'}}";
+            string strDatos = "{NombreMetodo: 'ObtenerListadoProductos', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", NumeroPagina: " + intNumeroPagina + ", FilasPorPagina: " + intFilasPorPagina + ", IncluyeServicios: '" + bolIncluyeServicios + "', FiltraActivos: '" + bolFiltraActivos + "', FiltraExistencias: '" + bolFitraExistencias + "', FiltraConDescuento: '" + bolFiltraConDescuento + "', IdLinea: " + intIdLinea + ", Codigo: '" + strCodigo + "', CodigoProveedor: '" + strCodigoProveedor + "', Descripcion: '" + strDescripcion + "'}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             List<ProductoDetalle> listado = new List<ProductoDetalle>();
             if (respuesta != "")

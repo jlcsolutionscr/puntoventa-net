@@ -475,10 +475,15 @@ Public Class FrmApartado
             If txtCantidad.Text = "" Then txtCantidad.Text = "1"
             txtDescripcion.Text = producto.Descripcion
             txtExistencias.Text = producto.Existencias
-            decPrecioVenta = ObtenerPrecioVentaPorCliente(cliente, producto)
-            txtPrecio.Text = FormatNumber(decPrecioVenta, 2)
             txtUnidad.Text = IIf(producto.Tipo = 1, "UND", IIf(producto.Tipo = 2, "SP", "OS"))
             txtPrecio.ReadOnly = Not FrmPrincipal.bolModificaPrecioVenta And Not producto.ModificaPrecio
+            txtPorcDesc.Text = FormatNumber(producto.PorcDescuento, 2)
+            decPrecioVenta = ObtenerPrecioVentaPorCliente(cliente, producto)
+            If producto.PorcDescuento > 0 Then
+                Dim decPorcDesc As Decimal = producto.PorcDescuento / 100
+                decPrecioVenta -= (decPrecioVenta * decPorcDesc)
+            End If
+            txtPrecio.Text = FormatNumber(decPrecioVenta, 2)
         End If
     End Sub
 #End Region

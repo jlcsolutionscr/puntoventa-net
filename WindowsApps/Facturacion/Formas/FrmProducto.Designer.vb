@@ -86,6 +86,8 @@ Partial Class FrmProducto
         Me.txtMarca = New System.Windows.Forms.TextBox()
         Me.Label11 = New System.Windows.Forms.Label()
         Me.chkModificaPrecio = New System.Windows.Forms.CheckBox()
+        Me.txtPorcDescuento = New System.Windows.Forms.TextBox()
+        Me.Label12 = New System.Windows.Forms.Label()
         CType(Me.ptbImagen, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -670,7 +672,6 @@ Partial Class FrmProducto
         Me.txtPorcUtilidad.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtPorcUtilidad.Size = New System.Drawing.Size(106, 20)
         Me.txtPorcUtilidad.TabIndex = 10
-        Me.txtPorcUtilidad.TabStop = False
         '
         'Label9
         '
@@ -696,7 +697,7 @@ Partial Class FrmProducto
         Me.txtObservacion.Name = "txtObservacion"
         Me.txtObservacion.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtObservacion.Size = New System.Drawing.Size(651, 20)
-        Me.txtObservacion.TabIndex = 18
+        Me.txtObservacion.TabIndex = 19
         '
         'Label10
         '
@@ -717,7 +718,7 @@ Partial Class FrmProducto
         Me.chkActivo.Location = New System.Drawing.Point(121, 526)
         Me.chkActivo.Name = "chkActivo"
         Me.chkActivo.Size = New System.Drawing.Size(101, 17)
-        Me.chkActivo.TabIndex = 18
+        Me.chkActivo.TabIndex = 20
         Me.chkActivo.TabStop = False
         Me.chkActivo.Text = "Producto activo"
         Me.chkActivo.UseVisualStyleBackColor = True
@@ -733,7 +734,7 @@ Partial Class FrmProducto
         Me.txtMarca.Name = "txtMarca"
         Me.txtMarca.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtMarca.Size = New System.Drawing.Size(230, 20)
-        Me.txtMarca.TabIndex = 17
+        Me.txtMarca.TabIndex = 18
         '
         'Label11
         '
@@ -754,10 +755,37 @@ Partial Class FrmProducto
         Me.chkModificaPrecio.Location = New System.Drawing.Point(245, 526)
         Me.chkModificaPrecio.Name = "chkModificaPrecio"
         Me.chkModificaPrecio.Size = New System.Drawing.Size(183, 17)
-        Me.chkModificaPrecio.TabIndex = 19
+        Me.chkModificaPrecio.TabIndex = 21
         Me.chkModificaPrecio.TabStop = False
         Me.chkModificaPrecio.Text = "Permite modificar precio de venta"
         Me.chkModificaPrecio.UseVisualStyleBackColor = True
+        '
+        'txtPorcDescuento
+        '
+        Me.txtPorcDescuento.AcceptsReturn = True
+        Me.txtPorcDescuento.BackColor = System.Drawing.SystemColors.Window
+        Me.txtPorcDescuento.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtPorcDescuento.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtPorcDescuento.Location = New System.Drawing.Point(299, 448)
+        Me.txtPorcDescuento.MaxLength = 0
+        Me.txtPorcDescuento.Name = "txtPorcDescuento"
+        Me.txtPorcDescuento.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtPorcDescuento.Size = New System.Drawing.Size(52, 20)
+        Me.txtPorcDescuento.TabIndex = 17
+        Me.txtPorcDescuento.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        '
+        'Label12
+        '
+        Me.Label12.BackColor = System.Drawing.Color.Transparent
+        Me.Label12.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label12.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label12.Location = New System.Drawing.Point(198, 449)
+        Me.Label12.Name = "Label12"
+        Me.Label12.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label12.Size = New System.Drawing.Size(95, 17)
+        Me.Label12.TabIndex = 156
+        Me.Label12.Text = "Porc. Descuento:"
+        Me.Label12.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'FrmProducto
         '
@@ -765,6 +793,8 @@ Partial Class FrmProducto
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(785, 551)
+        Me.Controls.Add(Me.txtPorcDescuento)
+        Me.Controls.Add(Me.Label12)
         Me.Controls.Add(Me.chkModificaPrecio)
         Me.Controls.Add(Me.txtMarca)
         Me.Controls.Add(Me.Label11)
@@ -868,4 +898,6 @@ Partial Class FrmProducto
     Public WithEvents txtMarca As TextBox
     Public WithEvents Label11 As Label
     Friend WithEvents chkModificaPrecio As CheckBox
+    Public WithEvents txtPorcDescuento As TextBox
+    Public WithEvents Label12 As Label
 End Class

@@ -42,6 +42,7 @@ Partial Class FrmProductoListado
         Me.Label3 = New System.Windows.Forms.Label()
         Me.txtCodigoProveedor = New System.Windows.Forms.TextBox()
         Me.chkFiltrarActivos = New System.Windows.Forms.CheckBox()
+        Me.chkConDescuento = New System.Windows.Forms.CheckBox()
         CType(Me.dgvListado, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -242,12 +243,23 @@ Partial Class FrmProductoListado
         Me.chkFiltrarActivos.Text = "Filtrar productos activos"
         Me.chkFiltrarActivos.UseVisualStyleBackColor = True
         '
+        'chkConDescuento
+        '
+        Me.chkConDescuento.AutoSize = True
+        Me.chkConDescuento.Location = New System.Drawing.Point(524, 104)
+        Me.chkConDescuento.Name = "chkConDescuento"
+        Me.chkConDescuento.Size = New System.Drawing.Size(261, 17)
+        Me.chkConDescuento.TabIndex = 46
+        Me.chkConDescuento.Text = "Filtrar productos con porcentaje de descuento > 0"
+        Me.chkConDescuento.UseVisualStyleBackColor = True
+        '
         'FrmProductoListado
         '
         Me.AcceptButton = Me.btnFiltrar
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(845, 504)
+        Me.Controls.Add(Me.chkConDescuento)
         Me.Controls.Add(Me.chkFiltrarActivos)
         Me.Controls.Add(Me.Label3)
         Me.Controls.Add(Me.txtCodigoProveedor)
@@ -297,4 +309,5 @@ Partial Class FrmProductoListado
     Friend WithEvents Label3 As Label
     Friend WithEvents txtCodigoProveedor As TextBox
     Friend WithEvents chkFiltrarActivos As CheckBox
+    Friend WithEvents chkConDescuento As CheckBox
 End Class

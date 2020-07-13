@@ -92,7 +92,7 @@ Public Class FrmBusquedaProducto
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
         Try
-            dgvListado.DataSource = Await Puntoventa.ObtenerListadoProductos(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, intNumeroPagina, intFilasPorPagina, bolIncluyeServicios, True, False, cboLinea.SelectedValue, txtCodigo.Text, txtCodigoProveedor.Text, txtDesc.Text, FrmPrincipal.usuarioGlobal.Token)
+            dgvListado.DataSource = Await Puntoventa.ObtenerListadoProductos(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, intNumeroPagina, intFilasPorPagina, bolIncluyeServicios, True, False, False, cboLinea.SelectedValue, txtCodigo.Text, txtCodigoProveedor.Text, txtDesc.Text, FrmPrincipal.usuarioGlobal.Token)
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -103,7 +103,7 @@ Public Class FrmBusquedaProducto
 
     Private Async Function ValidarCantidadRegistros() As Task
         Try
-            intTotalRegistros = Await Puntoventa.ObtenerTotalListaProductos(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, bolIncluyeServicios, True, False, cboLinea.SelectedValue, txtCodigo.Text, txtCodigoProveedor.Text, txtDesc.Text, FrmPrincipal.usuarioGlobal.Token)
+            intTotalRegistros = Await Puntoventa.ObtenerTotalListaProductos(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, bolIncluyeServicios, True, False, False, cboLinea.SelectedValue, txtCodigo.Text, txtCodigoProveedor.Text, txtDesc.Text, FrmPrincipal.usuarioGlobal.Token)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()

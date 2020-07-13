@@ -30,6 +30,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public decimal PrecioVenta3 { get; set; }
         public decimal PrecioVenta4 { get; set; }
         public decimal PrecioVenta5 { get; set; }
+        public decimal PorcDescuento { get; set; }
         [ForeignKey("ParametroImpuesto")]
         public int IdImpuesto { get; set; }
         public int IndExistencia { get; set; }
