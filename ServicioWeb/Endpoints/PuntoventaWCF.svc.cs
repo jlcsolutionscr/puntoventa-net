@@ -1209,9 +1209,9 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                         intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
                         bolIncluyeServicios = bool.Parse(parametrosJO.Property("IncluyeServicios").Value.ToString());
-                        bolFiltraActivos = bool.Parse(parametrosJO.Property("FiltraActivos").Value.ToString());
-                        bolFiltraExistencias = bool.Parse(parametrosJO.Property("FiltraExistencias").Value.ToString());
-                        bolFiltraConDescuento = bool.Parse(parametrosJO.Property("FiltraConDescuento").Value.ToString());
+                        bolFiltraActivos = parametrosJO.Property("FiltraActivos") != null ? bool.Parse(parametrosJO.Property("FiltraActivos").Value.ToString()) : false;
+                        bolFiltraExistencias = parametrosJO.Property("FiltraExistencias") != null ? bool.Parse(parametrosJO.Property("FiltraExistencias").Value.ToString()) : false;
+                        bolFiltraConDescuento = parametrosJO.Property("FiltraConDescuento") != null ? bool.Parse(parametrosJO.Property("FiltraConDescuento").Value.ToString()) : false;
                         intIdLlave1 = parametrosJO.Property("IdLinea") != null ? int.Parse(parametrosJO.Property("IdLinea").Value.ToString()) : 0;
                         strCodigo = parametrosJO.Property("Codigo") != null ? parametrosJO.Property("Codigo").Value.ToString() : "";
                         strCodigoProveedor = parametrosJO.Property("CodigoProveedor") != null ? parametrosJO.Property("CodigoProveedor").Value.ToString() : "";
@@ -1224,10 +1224,10 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
                         intNumeroPagina = int.Parse(parametrosJO.Property("NumeroPagina").Value.ToString());
                         intFilasPorPagina = int.Parse(parametrosJO.Property("FilasPorPagina").Value.ToString());
-                        bolIncluyeServicios = bool.Parse(parametrosJO.Property("IncluyeServicios").Value.ToString());
-                        bolFiltraActivos = bool.Parse(parametrosJO.Property("FiltraActivos").Value.ToString());
-                        bolFiltraExistencias = bool.Parse(parametrosJO.Property("FiltraExistencias").Value.ToString());
-                        bolFiltraConDescuento = bool.Parse(parametrosJO.Property("FiltraConDescuento").Value.ToString());
+                        bolIncluyeServicios = parametrosJO.Property("IncluyeServicios") != null ? bool.Parse(parametrosJO.Property("IncluyeServicios").Value.ToString()) : true;
+                        bolFiltraActivos = parametrosJO.Property("FiltraActivos") != null ? bool.Parse(parametrosJO.Property("FiltraActivos").Value.ToString()) : false;
+                        bolFiltraExistencias = parametrosJO.Property("FiltraExistencias") != null ? bool.Parse(parametrosJO.Property("FiltraExistencias").Value.ToString()) : false;
+                        bolFiltraConDescuento = parametrosJO.Property("FiltraConDescuento") != null ? bool.Parse(parametrosJO.Property("FiltraConDescuento").Value.ToString()) : false;
                         intIdLlave1 = parametrosJO.Property("IdLinea") != null ? int.Parse(parametrosJO.Property("IdLinea").Value.ToString()) : 0;
                         strCodigo = parametrosJO.Property("Codigo") != null ? parametrosJO.Property("Codigo").Value.ToString() : "";
                         strCodigoProveedor = parametrosJO.Property("CodigoProveedor") != null ? parametrosJO.Property("CodigoProveedor").Value.ToString() : "";

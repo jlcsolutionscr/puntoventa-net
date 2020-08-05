@@ -745,7 +745,7 @@ Public Class FrmOrdenServicio
                 CargarTotalesPago()
                 decPagoCliente = ordenServicio.MontoPagado
                 cboTipoMoneda.Enabled = False
-                txtNombreCliente.ReadOnly = True
+                txtNombreCliente.ReadOnly = IIf(ordenServicio.IdCliente = 1, False, True)
                 btnImprimir.Enabled = True
                 btnBuscaVendedor.Enabled = False
                 btnBuscarCliente.Enabled = False
@@ -941,6 +941,7 @@ Public Class FrmOrdenServicio
                 MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
             End If
         Else
+            ordenServicio.NombreCliente = txtNombreCliente.Text
             ordenServicio.Telefono = txtTelefono.Text
             ordenServicio.Direccion = txtDireccion.Text
             ordenServicio.Descripcion = txtDescripcionOrden.Text

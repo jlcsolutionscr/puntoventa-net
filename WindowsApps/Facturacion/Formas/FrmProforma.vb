@@ -522,7 +522,7 @@ Public Class FrmProforma
                 CargarDetalleProforma(proforma)
                 CargarTotales()
                 cboTipoMoneda.Enabled = False
-                txtNombreCliente.ReadOnly = True
+                txtNombreCliente.ReadOnly = IIf(proforma.IdCliente = 1, False, True)
                 btnImprimir.Enabled = True
                 btnGenerarPDF.Enabled = True
                 btnBuscaVendedor.Enabled = False
@@ -670,6 +670,7 @@ Public Class FrmProforma
                 Exit Sub
             End Try
         Else
+            proforma.NombreCliente = txtNombreCliente.Text
             proforma.TextoAdicional = txtTextoAdicional.Text
             proforma.Excento = decExcento
             proforma.Gravado = decGravado

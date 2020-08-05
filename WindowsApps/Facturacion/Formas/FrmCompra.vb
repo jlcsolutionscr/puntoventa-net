@@ -82,44 +82,52 @@ Public Class FrmCompra
         dvcId.HeaderText = "Id"
         dvcId.Width = 0
         dvcId.Visible = False
+        dvcId.SortMode = DataGridViewColumnSortMode.NotSortable
         grdDetalleCompra.Columns.Add(dvcId)
 
         dvcIdProducto.DataPropertyName = "IDPRODUCTO"
         dvcIdProducto.HeaderText = "IdP"
         dvcIdProducto.Visible = False
+        dvcIdProducto.SortMode = DataGridViewColumnSortMode.NotSortable
         grdDetalleCompra.Columns.Add(dvcIdProducto)
 
         dvcCodigo.DataPropertyName = "CODIGO"
         dvcCodigo.HeaderText = "Cod Prov"
         dvcCodigo.Width = 110
+        dvcCodigo.SortMode = DataGridViewColumnSortMode.NotSortable
         grdDetalleCompra.Columns.Add(dvcCodigo)
 
         dvcCodigoInterno.DataPropertyName = "CODIGOINTERNO"
         dvcCodigoInterno.HeaderText = "Cod Int"
         dvcCodigoInterno.Width = 110
+        dvcCodigoInterno.SortMode = DataGridViewColumnSortMode.NotSortable
         grdDetalleCompra.Columns.Add(dvcCodigoInterno)
 
 
         dvcDescripcion.DataPropertyName = "DESCRIPCION"
         dvcDescripcion.HeaderText = "Descripción"
         dvcDescripcion.Width = 320
+        dvcDescripcion.SortMode = DataGridViewColumnSortMode.NotSortable
         grdDetalleCompra.Columns.Add(dvcDescripcion)
 
         dvcCantidad.DataPropertyName = "CANTIDAD"
         dvcCantidad.HeaderText = "Cantidad"
         dvcCantidad.Width = 60
+        dvcCantidad.SortMode = DataGridViewColumnSortMode.NotSortable
         dvcCantidad.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleCompra.Columns.Add(dvcCantidad)
 
         dvcPrecioCosto.DataPropertyName = "PRECIOCOSTO"
         dvcPrecioCosto.HeaderText = "P. Costo"
         dvcPrecioCosto.Width = 80
+        dvcPrecioCosto.SortMode = DataGridViewColumnSortMode.NotSortable
         dvcPrecioCosto.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleCompra.Columns.Add(dvcPrecioCosto)
 
         dvcTotal.DataPropertyName = "TOTAL"
         dvcTotal.HeaderText = "Total"
         dvcTotal.Width = 100
+        dvcTotal.SortMode = DataGridViewColumnSortMode.NotSortable
         dvcTotal.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleCompra.Columns.Add(dvcTotal)
 
@@ -138,12 +146,14 @@ Public Class FrmCompra
         dvcPrecioVenta.DataPropertyName = "PRECIOVENTA"
         dvcPrecioVenta.HeaderText = "P. Venta"
         dvcPrecioVenta.Width = 80
+        dvcPrecioVenta.SortMode = DataGridViewColumnSortMode.NotSortable
         dvcPrecioVenta.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleCompra.Columns.Add(dvcPrecioVenta)
 
         dvcUtilidad.DataPropertyName = "UTILIDAD"
         dvcUtilidad.HeaderText = "Utilidad"
         dvcUtilidad.Width = 54
+        dvcUtilidad.SortMode = DataGridViewColumnSortMode.NotSortable
         dvcUtilidad.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleCompra.Columns.Add(dvcUtilidad)
 
