@@ -1215,6 +1215,7 @@ Public Class FrmFactura
                 .IdProforma = intIdProforma,
                 .IdApartado = intIdApartado,
                 .IdTipoExoneracion = cliente.IdTipoExoneracion,
+                .NumDocExoneracion = cliente.NumDocExoneracion,
                 .NombreInstExoneracion = cliente.NombreInstExoneracion,
                 .FechaEmisionDoc = cliente.FechaEmisionDoc,
                 .PorcentajeExoneracion = cliente.PorcentajeExoneracion

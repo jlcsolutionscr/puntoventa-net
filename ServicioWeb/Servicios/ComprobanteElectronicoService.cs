@@ -488,7 +488,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     Clave = "",
                     CodigoActividad = empresa.CodigoActividad,
                     NumeroConsecutivo = "",
-                    FechaEmision = factura.Fecha
+                    FechaEmision = DateTime.Now
                 };
                 FacturaElectronicaEmisorType emisor = new FacturaElectronicaEmisorType();
                 FacturaElectronicaIdentificacionType identificacionEmisorType = new FacturaElectronicaIdentificacionType
@@ -602,13 +602,15 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         lineaDetalle.UnidadMedida = FacturaElectronicaUnidadMedidaType.Os;
                     lineaDetalle.Detalle = detalleFactura.Descripcion;
                     lineaDetalle.PrecioUnitario = Math.Round(detalleFactura.PrecioVenta, 2, MidpointRounding.AwayFromZero);
+                    lineaDetalle.MontoTotal = lineaDetalle.PrecioUnitario * lineaDetalle.Cantidad;
+                    lineaDetalle.SubTotal = lineaDetalle.MontoTotal;
                     decimal decTotalPorLinea = 0;
                     decimal decMontoImpuestoPorLinea = 0;
                     if (!detalleFactura.Excento)
                     {
                         decimal decMontoGravadoPorLinea = lineaDetalle.PrecioUnitario * detalleFactura.Cantidad;
                         decimal decMontoExoneradoPorLinea = 0;
-                        decMontoImpuestoPorLinea = Math.Round(detalleFactura.PrecioVenta * detalleFactura.PorcentajeIVA / 100, 2, MidpointRounding.AwayFromZero) * detalleFactura.Cantidad;
+                        decMontoImpuestoPorLinea = lineaDetalle.SubTotal * (detalleFactura.PorcentajeIVA / 100);
                         FacturaElectronicaImpuestoType impuestoType = new FacturaElectronicaImpuestoType
                         {
                             Codigo = FacturaElectronicaImpuestoTypeCodigo.Item01,
@@ -620,11 +622,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         };
                         if (factura.PorcentajeExoneracion > 0)
                         {
-                            decimal decMontoGravado = detalleFactura.PrecioVenta * (1 - (Convert.ToDecimal(factura.PorcentajeExoneracion) / 100));
-                            decimal decMontoExonerado = Math.Round(detalleFactura.PrecioVenta - decMontoGravado, 2, MidpointRounding.AwayFromZero);
-                            decMontoGravadoPorLinea = Math.Round(decMontoGravado, 2, MidpointRounding.AwayFromZero) * detalleFactura.Cantidad;
-                            decMontoExoneradoPorLinea = Math.Round(decMontoExonerado, 2, MidpointRounding.AwayFromZero) * detalleFactura.Cantidad;
-                            decimal decMontoImpuestoExonerado = Math.Round(decMontoExonerado * detalleFactura.PorcentajeIVA / 100, 2, MidpointRounding.AwayFromZero) * detalleFactura.Cantidad;
+                            decimal decPorcentajeSobreImpuesto = detalleFactura.PorcentajeIVA / 100 * factura.PorcentajeExoneracion;
+                            decMontoGravadoPorLinea = lineaDetalle.SubTotal * (1 - (Convert.ToDecimal(factura.PorcentajeExoneracion) / 100));
+                            decMontoExoneradoPorLinea = lineaDetalle.SubTotal * (Convert.ToDecimal(factura.PorcentajeExoneracion) / 100);
+                            decimal decMontoImpuestoExonerado = Math.Round(lineaDetalle.SubTotal * decPorcentajeSobreImpuesto / 100, 2, MidpointRounding.AwayFromZero);
                             decMontoImpuestoPorLinea -= decMontoImpuestoExonerado;
                             FacturaElectronicaExoneracionType exoneracionType = new FacturaElectronicaExoneracionType
                             {
@@ -632,14 +633,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 NumeroDocumento = factura.NumDocExoneracion,
                                 NombreInstitucion = factura.NombreInstExoneracion,
                                 FechaEmision = factura.FechaEmisionDoc,
-                                PorcentajeExoneracion = factura.PorcentajeExoneracion.ToString(),
+                                PorcentajeExoneracion = decPorcentajeSobreImpuesto.ToString("N0"),
                                 MontoExoneracion = decMontoImpuestoExonerado
                             };
                             impuestoType.Exoneracion = exoneracionType;
                             lineaDetalle.ImpuestoNeto = decMontoImpuestoPorLinea;
                             lineaDetalle.ImpuestoNetoSpecified = true;
                         }
-                        
                         lineaDetalle.Impuesto = new FacturaElectronicaImpuestoType[] { impuestoType };
                         decTotalImpuestos += decMontoImpuestoPorLinea;
                         if (detalleFactura.Producto.Tipo == StaticTipoProducto.Producto)
@@ -652,7 +652,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             decTotalServiciosGravados += decMontoGravadoPorLinea;
                             decTotalServiciosExonerados += decMontoExoneradoPorLinea;
                         }
-                        decTotalPorLinea = decMontoGravadoPorLinea + decMontoExoneradoPorLinea;
+                        decTotalPorLinea = lineaDetalle.SubTotal + decMontoImpuestoPorLinea;
                     }
                     else
                     {
@@ -663,9 +663,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             decTotalServiciosExcentos += decMontoExcento;
                         decTotalPorLinea += decMontoExcento;
                     }
-                    lineaDetalle.SubTotal = decTotalPorLinea;
-                    lineaDetalle.MontoTotal = decTotalPorLinea;
-                    lineaDetalle.MontoTotalLinea = decTotalPorLinea + decMontoImpuestoPorLinea;
+                    lineaDetalle.MontoTotalLinea = decTotalPorLinea;
                     detalleServicioList.Add(lineaDetalle);
                 }
                 facturaElectronica.DetalleServicio = detalleServicioList.ToArray();
@@ -2170,13 +2168,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                                         documento.EstadoEnvio = StaticEstadoDocumentoElectronico.Registrado;
                                                 else
                                                     documento.EstadoEnvio = StaticEstadoDocumentoElectronico.Registrado;
-                                                documento.ErrorEnvio = headers[0];
+                                                documento.ErrorEnvio = "Error en el envío: " + headers[0];
                                             }
                                         }
                                         else
                                         {
                                             documento.EstadoEnvio = StaticEstadoDocumentoElectronico.Registrado;
-                                            documento.ErrorEnvio = httpResponse.ReasonPhrase;
+                                            documento.ErrorEnvio = "Error en el envío: " + httpResponse.ReasonPhrase;
                                         }
                                         dbContext.NotificarModificacion(documento);
                                     }
@@ -2185,10 +2183,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             }
                             catch (Exception ex)
                             {
-                                string strMensajeError = ex.Message;
-                                if (ex.Message.Length > 500) strMensajeError = ex.Message.Substring(0, 500);
+                                log.Error("Error al enviar el documento electrónico: ", ex);
+                                string strMensajeError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                                if (strMensajeError.Length > 500) strMensajeError = strMensajeError.Substring(0, 500);
                                 documento.EstadoEnvio = StaticEstadoDocumentoElectronico.Registrado;
-                                documento.ErrorEnvio = strMensajeError;
+                                documento.ErrorEnvio = "Error en el envío: " + strMensajeError;
                                 dbContext.NotificarModificacion(documento);
                                 dbContext.Commit();
                             }
@@ -2198,7 +2197,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al generar el enviar el documento electrónico: ", ex);
+                log.Error("Error al enviar el documento electrónico: ", ex);
                 throw ex;
             }
         }
@@ -2209,61 +2208,76 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 if (documento.EstadoEnvio == StaticEstadoDocumentoElectronico.Enviado)
                 {
-                    ValidarToken(dbContext, empresaLocal, datos.ServicioTokenURL, datos.ClientId);
+                    try
+                    {
+                        ValidarToken(dbContext, empresaLocal, datos.ServicioTokenURL, datos.ClientId);
+                    }
+                    catch (Exception ex)
+                    {
+                        documento.EstadoEnvio = StaticEstadoDocumentoElectronico.Registrado;
+                        documento.ErrorEnvio = "No se logro obtener un token: " + ex.Message;
+                        empresaLocal.AccessToken = null;
+                    }
                     if (empresaLocal.AccessToken != null)
                     {
                         string strClave = documento.ClaveNumerica;
                         if (new int[] { 5, 6, 7 }.Contains(documento.IdTipoDocumento)) strClave = documento.ClaveNumerica + "-" + documento.Consecutivo;
-                        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", empresaLocal.AccessToken);
-                        HttpResponseMessage httpResponse = await httpClient.GetAsync(datos.ComprobantesElectronicosURL + "/recepcion/" + strClave);
-                        if (httpResponse.StatusCode == HttpStatusCode.OK)
+                        try
                         {
-                            JObject estadoDocumento = JObject.Parse(httpResponse.Content.ReadAsStringAsync().Result);
-                            string strEstado = estadoDocumento.Property("ind-estado").Value.ToString();
-                            if (strEstado != "procesando")
+                            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", empresaLocal.AccessToken);
+                            HttpResponseMessage httpResponse = await httpClient.GetAsync(datos.ComprobantesElectronicosURL + "/recepcion/" + strClave);
+                            if (httpResponse.StatusCode == HttpStatusCode.OK)
                             {
-                                string strRespuesta = estadoDocumento.Property("respuesta-xml").Value.ToString();
-                                documento.Respuesta = Convert.FromBase64String(strRespuesta);
-                                documento.EstadoEnvio = strEstado;
+                                JObject estadoDocumento = JObject.Parse(httpResponse.Content.ReadAsStringAsync().Result);
+                                string strEstado = estadoDocumento.Property("ind-estado").Value.ToString();
+                                if (strEstado != "procesando")
+                                {
+                                    string strRespuesta = estadoDocumento.Property("respuesta-xml").Value.ToString();
+                                    documento.Respuesta = Convert.FromBase64String(strRespuesta);
+                                    documento.EstadoEnvio = strEstado;
+                                }
+                                else
+                                    documento.ErrorEnvio = "El documento se encuentra procesando en el Ministerio de Hacienda";
                             }
                             else
-                                documento.ErrorEnvio = "El documento se encuentra procesando en el Ministerio de Hacienda";
-                        }
-                        else
-                        {
-                            if (httpResponse.StatusCode == HttpStatusCode.BadRequest)
                             {
-                                if (httpResponse.Headers.Where(x => x.Key == "X-Error-Cause").FirstOrDefault().Value != null)
+                                if (httpResponse.StatusCode == HttpStatusCode.BadRequest)
                                 {
-                                    IList<string> headers = httpResponse.Headers.Where(x => x.Key == "X-Error-Cause").FirstOrDefault().Value.ToList();
-                                    if (headers.Count > 0)
+                                    if (httpResponse.Headers.Where(x => x.Key == "X-Error-Cause").FirstOrDefault().Value != null)
                                     {
-                                        if (headers[0] == "El comprobante [" + documento.ClaveNumerica + "] no ha sido recibido.")
-                                            documento.EstadoEnvio = StaticEstadoDocumentoElectronico.Registrado;
-                                        documento.ErrorEnvio = headers[0];
+                                        IList<string> headers = httpResponse.Headers.Where(x => x.Key == "X-Error-Cause").FirstOrDefault().Value.ToList();
+                                        if (headers.Count > 0)
+                                        {
+                                            if (headers[0] == "El comprobante [" + documento.ClaveNumerica + "] no ha sido recibido.")
+                                                documento.EstadoEnvio = StaticEstadoDocumentoElectronico.Registrado;
+                                            documento.ErrorEnvio = "Error en la consulta: " + headers[0];
+                                        }
+                                    }
+                                    else
+                                    {
+                                        documento.ErrorEnvio = "Error en la consulta: " + httpResponse.ReasonPhrase;
                                     }
                                 }
                                 else
                                 {
-                                    documento.ErrorEnvio = httpResponse.ReasonPhrase;
+                                    documento.ErrorEnvio = "Error en la consulta: " + httpResponse.ReasonPhrase;
                                 }
                             }
-                            else
-                            {
-                                documento.ErrorEnvio = httpResponse.ReasonPhrase;
-                            }
                         }
-                    }
-                    else
-                    {
-                        throw new Exception("No se logro obtener un token válido para la empresa correspondiente al documento electrónico.");
+                        catch (Exception ex)
+                        {
+                            log.Error("Error al consultar el documento electrónico: ", ex);
+                            string strMensajeError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                            if (strMensajeError.Length > 500) strMensajeError = strMensajeError.Substring(0, 500);
+                            documento.ErrorEnvio = "Error en la consulta: " + strMensajeError;
+                        }
                     }
                 }
                 return documento;
             }
             catch (Exception ex)
             {
-                log.Error("Error al consultar el estado del documento electrónico: ", ex);
+                log.Error("Error al consultar el documento electrónico: ", ex);
                 throw ex;
             }
         }

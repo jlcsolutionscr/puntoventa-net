@@ -102,8 +102,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     Empresa empresa = dbContext.EmpresaRepository.Find(cliente.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     //if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
-                    bool existe = dbContext.ClienteRepository.AsNoTracking().Where(x => x.Identificacion == cliente.Identificacion).FirstOrDefault() != null;
-                    if (existe) throw new BusinessException("El cliente con identificación " + cliente.Identificacion + " ya se encuentra registrado en el sistema. Por favor verifique.");
+                    bool existe = dbContext.ClienteRepository.AsNoTracking().Where(x => x.Identificacion == cliente.Identificacion && x.IdEmpresa == empresa.IdEmpresa).FirstOrDefault() != null;
+                    if (existe) throw new BusinessException("El cliente con identificación " + cliente.Identificacion + " ya se encuentra registrado en la empresa. Por favor verifique.");
                     dbContext.ClienteRepository.Add(cliente);
                     dbContext.Commit();
                 }
