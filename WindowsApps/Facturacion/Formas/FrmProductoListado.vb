@@ -5,7 +5,7 @@ Public Class FrmProductoListado
 #Region "Variables"
     Private intTotalRegistros As Integer
     Private intIndiceDePagina As Integer
-    Private intFilasPorPagina As Integer = 16
+    Private intFilasPorPagina As Integer = 14
     Private intCantidadDePaginas As Integer
     Private listado As IList
     Private bolInit As Boolean = True

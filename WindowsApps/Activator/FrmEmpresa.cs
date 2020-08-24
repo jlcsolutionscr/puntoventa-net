@@ -312,6 +312,10 @@ namespace LeandroSoftware.Activator
                         chkRegimenSimplificado.Checked = empresa.RegimenSimplificado;
                         chkAsignaVendedor.Checked = empresa.AsignaVendedorPorDefecto;
                         chkIngresaPagoCliente.Checked = empresa.IngresaPagoCliente;
+                        if (empresa.NombreCertificado == null) empresa.NombreCertificado = "";
+                        if (empresa.PinCertificado == null) empresa.PinCertificado = "";
+                        if (empresa.UsuarioHacienda == null) empresa.UsuarioHacienda = "";
+                        if (empresa.ClaveHacienda == null) empresa.ClaveHacienda = "";
                         IList<LlaveDescripcion> reportePorEmpresa = await Administrador.ObtenerListadoReportePorEmpresa(empresa.IdEmpresa, strToken);
                         foreach (var reporte in reportePorEmpresa)
                         {
@@ -343,6 +347,11 @@ namespace LeandroSoftware.Activator
                     await CargarDistritos(1, 1);
                     await CargarBarrios(1, 1, 1);
                     empresa = new Empresa();
+                    empresa.NombreCertificado = "";
+                    empresa.PinCertificado = "";
+                    empresa.UsuarioHacienda = "";
+                    empresa.ClaveHacienda = "";
+
                 }
                 bolLoading = false;
             }

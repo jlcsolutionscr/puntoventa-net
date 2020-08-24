@@ -33,6 +33,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public decimal PorcDescuento { get; set; }
         [ForeignKey("ParametroImpuesto")]
         public int IdImpuesto { get; set; }
+        [NotMapped]
         public int IndExistencia { get; set; }
         public byte[] Imagen { get; set; }
         public string Marca { get; set; }

@@ -172,7 +172,7 @@ Public Class FrmCierreDeCaja
                 .strCierreEfectivoProx = txtCierreEfectivoProx.Text,
                 .strObservaciones = txtObservaciones.Text,
                 .strVentasEfectivo = txtVentasEfectivo01.Text,
-                .strVentasTarjeta = cierreCaja.VentasTarjeta + cierreCaja.AdelantosApartadoTarjeta + cierreCaja.AdelantosOrdenTarjeta + cierreCaja.PagosCxCTarjeta,
+                .strVentasTarjeta = txtVentasTarjeta02.Text,
                 .strVentasTransferencia = txtVentasBancos03.Text,
                 .strVentasCredito = txtVentasCredito04.Text,
                 .strTotalVentas = txtTotalVentas.Text

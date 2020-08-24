@@ -550,20 +550,34 @@ Public Class FrmPrincipal
         For Each reportePorEmpresa As ReportePorEmpresa In empresaGlobal.ReportePorEmpresa.OrderBy(Function(obj) obj.IdReporte)
             lstListaReportes.Add(reportePorEmpresa.CatalogoReporte.NombreReporte)
         Next
-        If usuarioGlobal.RolePorUsuario.Count > 0 Then
-            If bolAdministrador Then
-                bolSeleccionaSucursal = True
-                bolAnularTransacciones = True
-                bolModificaDescripcion = True
-                bolModificaCliente = True
-                bolModificaPrecioVenta = True
-                For Each item As ToolStripMenuItem In mnuMenuPrincipal.Items
-                    item.Visible = True
-                    For Each subItem As ToolStripItem In item.DropDownItems
-                        subItem.Visible = True
-                    Next
+        If bolAdministrador Then
+            bolSeleccionaSucursal = True
+            bolAnularTransacciones = True
+            bolModificaDescripcion = True
+            bolModificaCliente = True
+            bolModificaPrecioVenta = True
+            For Each item As ToolStripMenuItem In mnuMenuPrincipal.Items
+                item.Visible = True
+                For Each subItem As ToolStripItem In item.DropDownItems
+                    subItem.Visible = True
                 Next
+            Next
+        ElseIf Not ValidarEmpresa(empresa) Then
+            If usuarioGlobal.RolePorUsuario.Where(Function(s) s.IdRole = 61).Count > 0 Then
+                MessageBox.Show("La información de la empresa requiere ser actualizada. Por favor ingrese al mantenimiento de Empresa para completar la información.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Try
+                    objMenu = mnuMenuPrincipal.Items("MnuParam")
+                    objMenu.Visible = True
+                    objMenu.DropDownItems("MnuParamEmpresa").Visible = True
+                Catch ex As Exception
+                End Try
             Else
+                MessageBox.Show("La información de la empresa requiere ser actualizada por un usuario administrador.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Close()
+                Exit Sub
+            End If
+        Else
+            If usuarioGlobal.RolePorUsuario.Count > 0 Then
                 For Each permiso As RolePorUsuario In usuarioGlobal.RolePorUsuario
                     Try
                         If permiso.IdRole = 48 Then bolSeleccionaSucursal = True
@@ -578,33 +592,18 @@ Public Class FrmPrincipal
                     End Try
                 Next
             End If
-        End If
-        If Not bolAdministrador And Not ValidarEmpresa(empresa) Then
-            If usuarioGlobal.RolePorUsuario.Where(Function(s) s.IdRole = 61).Count > 0 Then
-                MessageBox.Show("La información de la empresa requiere ser actualizada. Por favor ingrese al mantenimiento de Empresa para completar la información.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Try
-                    objMenu = mnuMenuPrincipal.Items("MnuParam")
-                    objMenu.Visible = True
-                    objMenu.DropDownItems("MnuParamEmpresa").Visible = True
-                Catch ex As Exception
-                End Try
-            Else
-                MessageBox.Show("La información de la empresa requiere ser actualizada por un usuario administrador.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Close()
-                Exit Sub
+            productoTranstorio = Await Puntoventa.ObtenerProductoTransitorio(empresaGlobal.IdEmpresa, usuarioGlobal.Token)
+                dgvDecimal = New DataGridViewCellStyle With {
+                .Format = "N2",
+                .NullValue = "0",
+                .Alignment = DataGridViewContentAlignment.MiddleRight
+            }
+                dgvInteger = New DataGridViewCellStyle With {
+                .Format = "F0",
+                .NullValue = "0",
+                .Alignment = DataGridViewContentAlignment.MiddleCenter
+            }
             End If
-        End If
-        productoTranstorio = Await Puntoventa.ObtenerProductoTransitorio(empresaGlobal.IdEmpresa, usuarioGlobal.Token)
-        dgvDecimal = New DataGridViewCellStyle With {
-            .Format = "N2",
-            .NullValue = "0",
-            .Alignment = DataGridViewContentAlignment.MiddleRight
-        }
-        dgvInteger = New DataGridViewCellStyle With {
-            .Format = "F0",
-            .NullValue = "0",
-            .Alignment = DataGridViewContentAlignment.MiddleCenter
-        }
     End Sub
 #End Region
 End Class
