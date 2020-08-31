@@ -63,7 +63,7 @@ namespace LeandroSoftware.Core.Utilitario
             {
                 ManagementObjectSearcher mos = new ManagementObjectSearcher("SELECT * FROM Win32_Processor Where DeviceID =\"CPU0\"");
                 foreach (ManagementObject mo in mos.Get())
-                    strProcessorId = mo["ProcessorId"].ToString();
+                    strProcessorId = mo["ProcessorId"] != null ? mo["ProcessorId"].ToString() : "N/F-PROCESSOR";
             }
             catch
             {
@@ -73,7 +73,7 @@ namespace LeandroSoftware.Core.Utilitario
             {
                 ManagementObjectSearcher mos = new ManagementObjectSearcher("root\\CIMV2", "SELECT * FROM Win32_BaseBoard");
                 foreach (ManagementObject mo in mos.Get())
-                    strBoardSerialNumber = mo["SerialNumber"].ToString();
+                    strBoardSerialNumber = mo["SerialNumber"] != null ? mo["SerialNumber"].ToString() : "N/F-BASEBOARD";
             }
             catch
             {

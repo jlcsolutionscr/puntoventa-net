@@ -213,6 +213,7 @@ namespace LeandroSoftware.Activator
                     terminal.IdTerminal = 1;
                     terminal.ValorRegistro = "";
                     terminal.ImpresoraFactura = "";
+                    terminal.AnchoLinea = 0;
                     terminal.UltimoDocFE = 0;
                     terminal.UltimoDocND = 0;
                     terminal.UltimoDocNC = 0;

@@ -125,16 +125,15 @@ Public Class FrmAjusteInventario
         End If
     End Sub
 
-    Private Async Function CargarAutoCompletarProducto() As Task
-        Dim source As AutoCompleteStringCollection = New AutoCompleteStringCollection()
-        Dim listOfProducts As IList(Of Producto) = Await Puntoventa.ObtenerListadoProductos(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, 1, 0, True, True, False, False, 0, "", "", "", FrmPrincipal.usuarioGlobal.Token)
-        For Each producto As Producto In listOfProducts
-            source.Add(String.Concat(producto.Codigo, " ", producto.Descripcion))
+    Private Sub CargarAutoCompletarProducto()
+        Dim source As New AutoCompleteStringCollection()
+        For Each p As ProductoDetalle In FrmPrincipal.listaProductos
+            source.Add(p.Codigo + ": " + p.Descripcion)
         Next
         txtCodigo.AutoCompleteCustomSource = source
-        txtCodigo.AutoCompleteSource = AutoCompleteSource.CustomSource
         txtCodigo.AutoCompleteMode = AutoCompleteMode.SuggestAppend
-    End Function
+        txtCodigo.AutoCompleteSource = AutoCompleteSource.CustomSource
+    End Sub
 
     Private Async Function CargarCombos() As Task
         cboSucursal.ValueMember = "Id"
@@ -183,9 +182,7 @@ Public Class FrmAjusteInventario
         Try
             txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
             Await CargarCombos()
-            If FrmPrincipal.empresaGlobal.AutoCompletaProducto = True Then
-                Await CargarAutoCompletarProducto()
-            End If
+            If FrmPrincipal.empresaGlobal.AutoCompletaProducto Then CargarAutoCompletarProducto()
             btnBusProd.Enabled = True
             IniciaDetalleAjusteInventario()
             EstablecerPropiedadesDataGridView()

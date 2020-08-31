@@ -152,16 +152,15 @@ Public Class FrmTrasladoMercaderia
         End If
     End Sub
 
-    Private Async Function CargarAutoCompletarProducto() As Task
-        Dim source As AutoCompleteStringCollection = New AutoCompleteStringCollection()
-        Dim listOfProducts As IList(Of Producto) = Await Puntoventa.ObtenerListadoProductos(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, 1, 0, True, True, False, False, 0, "", "", "", FrmPrincipal.usuarioGlobal.Token)
-        For Each producto As Producto In listOfProducts
-            source.Add(String.Concat(producto.Codigo, " ", producto.Descripcion))
+    Private Sub CargarAutoCompletarProducto()
+        Dim source As New AutoCompleteStringCollection()
+        For Each p As ProductoDetalle In FrmPrincipal.listaProductos
+            source.Add(p.Codigo + ": " + p.Descripcion)
         Next
         txtCodigo.AutoCompleteCustomSource = source
-        txtCodigo.AutoCompleteSource = AutoCompleteSource.CustomSource
         txtCodigo.AutoCompleteMode = AutoCompleteMode.SuggestAppend
-    End Function
+        txtCodigo.AutoCompleteSource = AutoCompleteSource.CustomSource
+    End Sub
 #End Region
 
 #Region "Eventos Controles"
@@ -192,9 +191,7 @@ Public Class FrmTrasladoMercaderia
             txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
             txtNombreSucursalOrigen.Text = FrmPrincipal.equipoGlobal.NombreSucursal
             Await CargarCombos()
-            If FrmPrincipal.empresaGlobal.AutoCompletaProducto = True Then
-                Await CargarAutoCompletarProducto()
-            End If
+            If FrmPrincipal.empresaGlobal.AutoCompletaProducto Then CargarAutoCompletarProducto()
             If cboIdSucursalDestino.Items.Count = 0 Then
                 MessageBox.Show("La empresa no posee sucursales adicionales.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 Close()

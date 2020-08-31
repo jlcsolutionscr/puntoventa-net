@@ -21,6 +21,7 @@ Public Class FrmPrincipal
     Public dgvInteger As DataGridViewCellStyle
     Public lstListaReportes As New List(Of String)
     Public listaEmpresa As New List(Of LlaveDescripcion)
+    Public listaProductos As New List(Of ProductoDetalle)
     Public decTipoCambioDolar As Decimal
     Public strCodigoUsuario As String
     Public strContrasena As String
@@ -535,7 +536,6 @@ Public Class FrmPrincipal
                 Catch ex As Exception
                     MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 End Try
-                picLoader.Visible = False
             End If
         Loop While empresa Is Nothing
         stsPrincipal.Items("tslUsuario").Text = "Usuario: " & empresa.Usuario.CodigoUsuario & "   Sucursal: " & empresa.EquipoRegistrado.NombreSucursal
@@ -543,6 +543,11 @@ Public Class FrmPrincipal
         empresaGlobal = empresa
         equipoGlobal = empresa.EquipoRegistrado
         decTipoCambioDolar = Await Puntoventa.ObtenerTipoCambioDolar(usuarioGlobal.Token)
+        If empresaGlobal.AutoCompletaProducto Then
+            Dim intTotalRegistros As Integer = Await Puntoventa.ObtenerTotalListaProductos(empresa.IdEmpresa, equipoGlobal.IdSucursal, True, True, False, False, 0, "", "", "", usuarioGlobal.Token)
+            listaProductos = Await Puntoventa.ObtenerListadoProductos(empresa.IdEmpresa, equipoGlobal.IdSucursal, 1, intTotalRegistros, True, True, False, False, 0, "", "", "", usuarioGlobal.Token)
+        End If
+        picLoader.Visible = False
         Dim formInicio As New FrmInicio()
         Dim bolAdministrador = usuarioGlobal.CodigoUsuario = "ADMIN"
         formInicio.ShowDialog()
@@ -585,9 +590,11 @@ Public Class FrmPrincipal
                         If permiso.IdRole = 50 Then bolModificaDescripcion = True
                         If permiso.IdRole = 51 Then bolModificaCliente = True
                         If permiso.IdRole = 52 Then bolModificaPrecioVenta = True
-                        objMenu = mnuMenuPrincipal.Items(permiso.Role.MenuPadre)
-                        objMenu.Visible = True
-                        objMenu.DropDownItems(permiso.Role.MenuItem).Visible = True
+                        If permiso.Role.MenuPadre <> "" Then
+                            objMenu = mnuMenuPrincipal.Items(permiso.Role.MenuPadre)
+                            objMenu.Visible = True
+                            objMenu.DropDownItems(permiso.Role.MenuItem).Visible = True
+                        End If
                     Catch ex As Exception
                     End Try
                 Next

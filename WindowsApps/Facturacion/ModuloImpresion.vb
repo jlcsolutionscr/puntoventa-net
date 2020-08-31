@@ -6,6 +6,7 @@ Imports LeandroSoftware.Core.TiposComunes
 Public Class ModuloImpresion
 #Region "Variables"
     Private Shared lineas As IList = New List(Of ClsLineaImpresion)
+    Private Shared charCount As Integer
     Private Class ClsLineaImpresion
         Public Sub New(saltos As Integer, texto As String, posicionX As Single, ancho As Single, fuente As Integer, alineado As StringAlignment, bold As Boolean)
             intSaltos = saltos
@@ -182,7 +183,7 @@ Public Class ModuloImpresion
         'FontSize 8 41 Chars - FontSize 9 36 Chars - FontSize 10 32 Chars - FontSize 11 30 Chars - FontSize 12 27 Chars
         'FontSize 13 25 Chars - FontSize 14 23 Chars - FontSize 15 22 Chars - FontSize 16 20 Chars
         Dim i As Integer = 0
-        Dim paperWidth = 283
+        Dim paperWith = 3.5375 * charCount
         Dim graphics As Graphics = e.Graphics
         Dim positionY As Integer = 0
         Dim sf As StringFormat = New StringFormat()
@@ -192,11 +193,12 @@ Public Class ModuloImpresion
             sf.LineAlignment = StringAlignment.Center
             sf.Alignment = linea.agtAlineado
             Dim rec As RectangleF = New RectangleF()
-            rec.Width = paperWidth * linea.intAncho / 100
+            rec.Width = paperWith * linea.intAncho / 100
             rec.Height = 20
-            rec.X = paperWidth * linea.intPosicionX / 100
+            rec.X = paperWith * linea.intPosicionX / 100
             rec.Y = positionY
-            graphics.DrawString(linea.strTexto, New Font("Lucida Console", linea.intFuente, fontStyle), New SolidBrush(Color.Black), rec, sf)
+            Dim intFontSize = linea.intFuente / 80 * charCount
+            graphics.DrawString(linea.strTexto, New Font("Lucida Console", intFontSize, fontStyle), New SolidBrush(Color.Black), rec, sf)
             positionY += (20 * linea.intSaltos)
             i += 1
         End While
@@ -282,6 +284,7 @@ Public Class ModuloImpresion
 
     Public Shared Sub ImprimirFactura(ByVal objImpresion As ClsComprobante)
         lineas.Clear()
+        charCount = objImpresion.equipo.AnchoLinea
         Try
             ImprimirEncabezado(objImpresion.equipo, objImpresion.empresa, Date.Now.ToString("dd-MM-yyyy"), objImpresion.usuario.CodigoUsuario, "TIQUETE DE FACTURA")
             If objImpresion.strClaveNumerica <> "" Then
@@ -346,6 +349,7 @@ Public Class ModuloImpresion
 
     Public Shared Sub ImprimirProforma(ByVal objImpresion As ClsComprobante)
         lineas.Clear()
+        charCount = objImpresion.equipo.AnchoLinea
         Try
             ImprimirEncabezado(objImpresion.equipo, objImpresion.empresa, Date.Now.ToString("dd-MM-yyyy"), objImpresion.usuario.CodigoUsuario, "TIQUETE PROFORMA")
             lineas.Add(New ClsLineaImpresion(1, "Proforma Nro: " & objImpresion.strId, 0, 100, 10, StringAlignment.Near, False))
@@ -390,6 +394,7 @@ Public Class ModuloImpresion
 
     Public Shared Sub ImprimirApartado(ByVal objImpresion As ClsComprobante)
         lineas.Clear()
+        charCount = objImpresion.equipo.AnchoLinea
         Try
             ImprimirEncabezado(objImpresion.equipo, objImpresion.empresa, Date.Now.ToString("dd-MM-yyyy"), objImpresion.usuario.CodigoUsuario, "TIQUETE APARTADO")
             lineas.Add(New ClsLineaImpresion(1, "Apartado Nro: " & objImpresion.strId, 0, 100, 10, StringAlignment.Near, False))
@@ -434,6 +439,7 @@ Public Class ModuloImpresion
 
     Public Shared Sub ImprimirOrdenServicio(ByVal objImpresion As ClsComprobante)
         lineas.Clear()
+        charCount = objImpresion.equipo.AnchoLinea
         Try
             ImprimirEncabezado(objImpresion.equipo, objImpresion.empresa, Date.Now.ToString("dd-MM-yyyy"), objImpresion.usuario.CodigoUsuario, "ORDEN DE SERVICIO")
             lineas.Add(New ClsLineaImpresion(1, "Orden Nro: " & objImpresion.strId, 0, 100, 10, StringAlignment.Near, True))
@@ -504,6 +510,7 @@ Public Class ModuloImpresion
 
     Public Shared Sub ImprimirCompra(ByVal objImpresion As ClsComprobante)
         lineas.Clear()
+        charCount = objImpresion.equipo.AnchoLinea
         Try
             ImprimirEncabezado(objImpresion.equipo, objImpresion.empresa, Date.Now.ToString("dd-MM-yyyy"), objImpresion.usuario.CodigoUsuario, "TIQUETE DE COMPRA")
             lineas.Add(New ClsLineaImpresion(1, "Compra Nro: " & objImpresion.strId, 0, 100, 10, StringAlignment.Near, False))
@@ -538,6 +545,7 @@ Public Class ModuloImpresion
 
     Public Shared Sub ImprimirDevolucionCliente(ByVal objImpresion As ClsComprobante)
         lineas.Clear()
+        charCount = objImpresion.equipo.AnchoLinea
         Try
             ImprimirEncabezado(objImpresion.equipo, objImpresion.empresa, Date.Now.ToString("dd-MM-yyyy"), objImpresion.usuario.CodigoUsuario, "DEVOLUCION CLIENTE")
             lineas.Add(New ClsLineaImpresion(1, "Mov. Nro: " & objImpresion.strId, 0, 100, 10, StringAlignment.Near, False))
@@ -574,6 +582,7 @@ Public Class ModuloImpresion
 
     Public Shared Sub ImprimirDevolucionProveedor(ByVal objImpresion As ClsComprobante)
         lineas.Clear()
+        charCount = objImpresion.equipo.AnchoLinea
         Try
             ImprimirEncabezado(objImpresion.equipo, objImpresion.empresa, Date.Now.ToString("dd-MM-yyyy"), objImpresion.usuario.CodigoUsuario, "DEVOLUCION PROVEEDOR")
             lineas.Add(New ClsLineaImpresion(1, "Mov. Nro: " & objImpresion.strId, 0, 100, 10, StringAlignment.Near, False))
@@ -601,6 +610,7 @@ Public Class ModuloImpresion
 
     Public Shared Sub ImprimirTraslado(ByVal objImpresion As ClsComprobante)
         lineas.Clear()
+        charCount = objImpresion.equipo.AnchoLinea
         Try
             ImprimirEncabezado(objImpresion.equipo, objImpresion.empresa, Date.Now.ToString("dd-MM-yyyy"), objImpresion.usuario.CodigoUsuario, "TRASLADO DE MERCANCIA")
             lineas.Add(New ClsLineaImpresion(1, "Traslado Nro: " & objImpresion.strId, 0, 100, 10, StringAlignment.Near, False))
@@ -623,6 +633,7 @@ Public Class ModuloImpresion
 
     Public Shared Sub ImprimirReciboCxC(ByVal objImpresion As ClsRecibo)
         lineas.Clear()
+        charCount = objImpresion.equipo.AnchoLinea
         Try
             ImprimirEncabezado(objImpresion.equipo, objImpresion.empresa, Date.Now.ToString("dd-MM-yyyy"), objImpresion.usuario.CodigoUsuario, "RECIBO ABONO CXC")
             lineas.Add(New ClsLineaImpresion(1, "Cuenta nro: " + objImpresion.strIdCuenta, 0, 100, 10, StringAlignment.Near, False))
@@ -660,6 +671,7 @@ Public Class ModuloImpresion
 
     Public Shared Sub ImprimirReciboCxP(ByVal objImpresion As ClsRecibo)
         lineas.Clear()
+        charCount = objImpresion.equipo.AnchoLinea
         Try
             ImprimirEncabezado(objImpresion.equipo, objImpresion.empresa, Date.Now.ToString("dd-MM-yyyy"), objImpresion.usuario.CodigoUsuario, "RECIBO ABONO CXC")
             lineas.Add(New ClsLineaImpresion(1, "Cuenta nro: " + objImpresion.strIdCuenta, 0, 100, 10, StringAlignment.Near, False))
@@ -697,6 +709,7 @@ Public Class ModuloImpresion
 
     Public Shared Sub ImprimirReciboApartado(ByVal objImpresion As ClsRecibo)
         lineas.Clear()
+        charCount = objImpresion.equipo.AnchoLinea
         Try
             ImprimirEncabezado(objImpresion.equipo, objImpresion.empresa, Date.Now.ToString("dd-MM-yyyy"), objImpresion.usuario.CodigoUsuario, "RECIBO ABONO APARTADO")
             lineas.Add(New ClsLineaImpresion(1, "Apartado nro: " + objImpresion.strIdCuenta, 0, 100, 10, StringAlignment.Near, False))
@@ -734,6 +747,7 @@ Public Class ModuloImpresion
 
     Public Shared Sub ImprimirReciboOrdenServicio(ByVal objImpresion As ClsRecibo)
         lineas.Clear()
+        charCount = objImpresion.equipo.AnchoLinea
         Try
             ImprimirEncabezado(objImpresion.equipo, objImpresion.empresa, Date.Now.ToString("dd-MM-yyyy"), objImpresion.usuario.CodigoUsuario, "RECIBO ABONO ORDEN")
             lineas.Add(New ClsLineaImpresion(1, "Orden nro: " + objImpresion.strIdCuenta, 0, 100, 10, StringAlignment.Near, False))
@@ -771,6 +785,7 @@ Public Class ModuloImpresion
 
     Public Shared Sub ImprimirEgreso(ByVal objImpresion As ClsEgreso)
         lineas.Clear()
+        charCount = objImpresion.equipo.AnchoLinea
         Try
             ImprimirEncabezado(objImpresion.equipo, objImpresion.empresa, Date.Now.ToString("dd-MM-yyyy"), objImpresion.usuario.CodigoUsuario, "SALIDA DE EFECTIVO")
             lineas.Add(New ClsLineaImpresion(1, "Egreso Nro: " & objImpresion.strId, 0, 100, 10, StringAlignment.Near, False))
@@ -795,6 +810,7 @@ Public Class ModuloImpresion
 
     Public Shared Sub ImprimirIngreso(ByVal objImpresion As ClsIngreso)
         lineas.Clear()
+        charCount = objImpresion.equipo.AnchoLinea
         Try
             ImprimirEncabezado(objImpresion.equipo, objImpresion.empresa, Date.Now.ToString("dd-MM-yyyy"), objImpresion.usuario.CodigoUsuario, "INGRESO DE EFECTIVO")
             lineas.Add(New ClsLineaImpresion(1, "Ingreso Nro: " & objImpresion.strId, 0, 100, 10, StringAlignment.Near, False))
@@ -819,6 +835,7 @@ Public Class ModuloImpresion
 
     Public Shared Sub ImprimirCierreEfectivo(ByVal objImpresion As ClsCierreCaja)
         lineas.Clear()
+        charCount = objImpresion.equipo.AnchoLinea
         Try
             lineas.Add(New ClsLineaImpresion(0, Now.ToString("dd/MM/yyyy"), 0, 143, 10, StringAlignment.Near, True))
             lineas.Add(New ClsLineaImpresion(2, objImpresion.usuario.CodigoUsuario, 143, 143, 10, StringAlignment.Far, True))

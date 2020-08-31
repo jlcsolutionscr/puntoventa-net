@@ -200,14 +200,13 @@ Public Class FrmOrdenCompra
     End Sub
 
     Private Sub CargarAutoCompletarProducto()
-        Dim source As AutoCompleteStringCollection = New AutoCompleteStringCollection()
-        'listOfProducts = servicioMantenimiento.ObtenerListaProductos(FrmMenuPrincipal.empresaGlobal.IdEmpresa, 1, 0, True)
-        For Each producto As Producto In listOfProducts
-            source.Add(String.Concat(producto.Codigo, " ", producto.Descripcion))
+        Dim source As New AutoCompleteStringCollection()
+        For Each p As ProductoDetalle In FrmPrincipal.listaProductos
+            source.Add(p.Codigo + ": " + p.Descripcion)
         Next
         txtCodigo.AutoCompleteCustomSource = source
-        txtCodigo.AutoCompleteSource = AutoCompleteSource.CustomSource
         txtCodigo.AutoCompleteMode = AutoCompleteMode.SuggestAppend
+        txtCodigo.AutoCompleteSource = AutoCompleteSource.CustomSource
     End Sub
 
     Private Sub CargarCombos()
@@ -240,10 +239,8 @@ Public Class FrmOrdenCompra
     Private Sub FrmOrdenCompra_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
             txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
-            If FrmPrincipal.empresaGlobal.AutoCompletaProducto = True Then
-                CargarAutoCompletarProducto()
-            End If
             CargarCombos()
+            If FrmPrincipal.empresaGlobal.AutoCompletaProducto Then CargarAutoCompletarProducto()
             IniciaDetalleOrdenCompra()
             EstablecerPropiedadesDataGridView()
             grdDetalleOrdenCompra.DataSource = dtbDetalleOrdenCompra

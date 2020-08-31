@@ -410,5 +410,17 @@ Public Class FrmProducto
         txtPrecioVenta5.Text = FormatoPrecio(txtPrecioVenta1.Text, 2)
         txtPrecioImpuesto5.Text = FormatoPrecio(txtPrecioImpuesto1.Text, 2)
     End Sub
+
+    Private Sub txtCodigo_KeyPress(sender As Object, e As KeyPressEventArgs) Handles txtCodigo.KeyPress
+        If ":".IndexOf(e.KeyChar) <> -1 Then
+            e.Handled = True
+        End If
+    End Sub
+
+    Private Sub txtCodigoProveedor_KeyPress(sender As Object, e As KeyPressEventArgs) Handles txtCodigoProveedor.KeyPress
+        If ":".IndexOf(e.KeyChar) <> -1 Then
+            e.Handled = True
+        End If
+    End Sub
 #End Region
 End Class

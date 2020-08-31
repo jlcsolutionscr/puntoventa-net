@@ -183,7 +183,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             NombreSucursal = terminal.SucursalPorEmpresa.NombreSucursal,
                             DireccionSucursal = terminal.SucursalPorEmpresa.Direccion,
                             TelefonoSucursal = terminal.SucursalPorEmpresa.Telefono,
-                            ImpresoraFactura = terminal.ImpresoraFactura
+                            ImpresoraFactura = terminal.ImpresoraFactura,
+                            AnchoLinea = terminal.AnchoLinea
                         };
                         listaEquipoRegistrado.Add(item);
                     }
@@ -487,7 +488,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         NombreSucursal = sucursal.NombreSucursal,
                         DireccionSucursal = sucursal.Direccion,
                         TelefonoSucursal = sucursal.Telefono,
-                        ImpresoraFactura = terminal.ImpresoraFactura
+                        ImpresoraFactura = terminal.ImpresoraFactura,
+                        AnchoLinea = terminal.AnchoLinea
                     };
                     usuario.UsuarioPorEmpresa = new HashSet<UsuarioPorEmpresa>();
                     string strToken = GenerarRegistroAutenticacion(StaticRolePorUsuario.USUARIO_SISTEMA);

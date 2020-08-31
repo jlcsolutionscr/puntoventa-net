@@ -523,6 +523,16 @@ Public Class FrmFactura
         End If
     End Function
 
+    Private Sub CargarAutoCompletarProducto()
+        Dim source As New AutoCompleteStringCollection()
+        For Each p As ProductoDetalle In FrmPrincipal.listaProductos
+            source.Add(p.Codigo + ": " + p.Descripcion)
+        Next
+        txtCodigo.AutoCompleteCustomSource = source
+        txtCodigo.AutoCompleteMode = AutoCompleteMode.SuggestAppend
+        txtCodigo.AutoCompleteSource = AutoCompleteSource.CustomSource
+    End Sub
+
     Private Async Function CargarListaCuentaBanco() As Task
         Dim lista As IList = Await Puntoventa.ObtenerListadoCuentasBanco(FrmPrincipal.empresaGlobal.IdEmpresa, "", FrmPrincipal.usuarioGlobal.Token)
         If lista.Count() = 0 Then
@@ -642,6 +652,7 @@ Public Class FrmFactura
             Await CargarListaBancoAdquiriente()
             IniciaTablasDeDetalle()
             EstablecerPropiedadesDataGridView()
+            If FrmPrincipal.empresaGlobal.AutoCompletaProducto Then CargarAutoCompletarProducto()
             grdDetalleFactura.DataSource = dtbDetalleFactura
             grdDesglosePago.DataSource = dtbDesglosePago
             consecDetalle = 0
@@ -1696,8 +1707,9 @@ Public Class FrmFactura
 
     Private Async Sub TxtCodigo_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtCodigo.PreviewKeyDown
         If e.KeyCode = Keys.Enter Or e.KeyCode = Keys.Tab Then
+            Dim strCodigo As String = txtCodigo.Text.Split(":")(0)
             Try
-                producto = Await Puntoventa.ObtenerProductoPorCodigo(FrmPrincipal.empresaGlobal.IdEmpresa, txtCodigo.Text, FrmPrincipal.equipoGlobal.IdSucursal, FrmPrincipal.usuarioGlobal.Token)
+                producto = Await Puntoventa.ObtenerProductoPorCodigo(FrmPrincipal.empresaGlobal.IdEmpresa, strCodigo, FrmPrincipal.equipoGlobal.IdSucursal, FrmPrincipal.usuarioGlobal.Token)
                 If producto IsNot Nothing Then
                     If producto.Activo Then
                         CargarDatosProducto(producto)

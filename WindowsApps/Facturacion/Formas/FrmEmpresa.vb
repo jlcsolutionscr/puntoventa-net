@@ -2,6 +2,7 @@ Imports System.Threading.Tasks
 Imports LeandroSoftware.Core.Dominio.Entidades
 Imports System.IO
 Imports LeandroSoftware.ClienteWCF
+Imports System.Collections.Generic
 
 Public Class FrmEmpresa
 #Region "Variables"
@@ -41,6 +42,13 @@ Public Class FrmEmpresa
         cboProvincia.ValueMember = "Id"
         cboProvincia.DisplayMember = "Descripcion"
         cboProvincia.DataSource = Await Puntoventa.ObtenerListadoProvincias(FrmPrincipal.usuarioGlobal.Token)
+
+        Dim comboSource As New Dictionary(Of Integer, String)()
+        comboSource.Add(80, "80MM THERMAL RECEIPT PRINTER")
+        comboSource.Add(52, "58MM THERMAL RECEIPT PRINTER")
+        cboTipoImpresora.DataSource = New BindingSource(comboSource, Nothing)
+        cboTipoImpresora.ValueMember = "Key"
+        cboTipoImpresora.DisplayMember = "Value"
     End Function
 #End Region
 
@@ -111,6 +119,7 @@ Public Class FrmEmpresa
             txtConsecApartado.Text = datosSucursal.ConsecApartado
             txtIdTerminal.Text = datosTerminal.IdTerminal
             txtNombreImpresora.Text = datosTerminal.ImpresoraFactura
+            cboTipoImpresora.SelectedValue = datosTerminal.AnchoLinea
             txtUltimoFE.Text = datosTerminal.UltimoDocFE
             txtUltimoND.Text = datosTerminal.UltimoDocND
             txtUltimoNC.Text = datosTerminal.UltimoDocNC
@@ -237,6 +246,7 @@ Public Class FrmEmpresa
             End If
             If bolTerminalActualizada Then
                 datosTerminal.ImpresoraFactura = txtNombreImpresora.Text
+                datosTerminal.AnchoLinea = DirectCast(cboTipoImpresora.SelectedItem, KeyValuePair(Of Integer, String)).Key
                 datosTerminal.UltimoDocFE = txtUltimoFE.Text
                 datosTerminal.UltimoDocND = txtUltimoND.Text
                 datosTerminal.UltimoDocNC = txtUltimoNC.Text
@@ -245,6 +255,7 @@ Public Class FrmEmpresa
                 datosTerminal.UltimoDocFEC = txtUltimoFEC.Text
                 Await Puntoventa.ActualizarTerminalPorSucursal(datosTerminal, FrmPrincipal.usuarioGlobal.Token)
                 FrmPrincipal.equipoGlobal.ImpresoraFactura = txtNombreImpresora.Text
+                FrmPrincipal.equipoGlobal.AnchoLinea = datosTerminal.AnchoLinea
             End If
         Catch ex As Exception
             btnGuardar.Enabled = True
@@ -332,6 +343,10 @@ Public Class FrmEmpresa
             picLogo.Image = Nothing
             bolLogoModificado = True
         End If
+    End Sub
+
+    Private Sub cboTipoImpresora_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboTipoImpresora.SelectedIndexChanged
+        bolTerminalActualizada = True
     End Sub
 #End Region
 End Class
