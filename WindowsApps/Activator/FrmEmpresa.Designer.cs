@@ -103,6 +103,7 @@
             this.dgvReportePorEmpresa = new System.Windows.Forms.DataGridView();
             this.tabContainer = new System.Windows.Forms.TabControl();
             this.chkIngresaPagoCliente = new System.Windows.Forms.CheckBox();
+            this.btnLimpiar = new System.Windows.Forms.Button();
             this.TabRoles.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvRolePorEmpresa)).BeginInit();
             this.tabReportes.SuspendLayout();
@@ -1098,6 +1099,22 @@
             this.chkIngresaPagoCliente.Text = "Ingresa pago del cliente";
             this.chkIngresaPagoCliente.UseVisualStyleBackColor = true;
             // 
+            // btnLimpiar
+            // 
+            this.btnLimpiar.BackColor = System.Drawing.SystemColors.Control;
+            this.btnLimpiar.Cursor = System.Windows.Forms.Cursors.Default;
+            this.btnLimpiar.Enabled = false;
+            this.btnLimpiar.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.btnLimpiar.Location = new System.Drawing.Point(348, 12);
+            this.btnLimpiar.Name = "btnLimpiar";
+            this.btnLimpiar.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.btnLimpiar.Size = new System.Drawing.Size(101, 25);
+            this.btnLimpiar.TabIndex = 264;
+            this.btnLimpiar.TabStop = false;
+            this.btnLimpiar.Text = "Eliminar Registros";
+            this.btnLimpiar.UseVisualStyleBackColor = false;
+            this.btnLimpiar.Click += new System.EventHandler(this.btnLimpiar_Click);
+            // 
             // FrmEmpresa
             // 
             this.AcceptButton = this.btnInsertaRole;
@@ -1106,6 +1123,7 @@
             this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(193)))), ((int)(((byte)(215)))), ((int)(((byte)(225)))));
             this.ClientSize = new System.Drawing.Size(851, 569);
+            this.Controls.Add(this.btnLimpiar);
             this.Controls.Add(this.chkIngresaPagoCliente);
             this.Controls.Add(this.txtDescripcionTerminal);
             this.Controls.Add(this.chkDispositivoMovil);
@@ -1255,6 +1273,7 @@
         internal System.Windows.Forms.DataGridView dgvReportePorEmpresa;
         private System.Windows.Forms.TabControl tabContainer;
         internal System.Windows.Forms.CheckBox chkIngresaPagoCliente;
+        public System.Windows.Forms.Button btnLimpiar;
     }
 }
 

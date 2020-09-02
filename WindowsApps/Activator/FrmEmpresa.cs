@@ -335,6 +335,7 @@ namespace LeandroSoftware.Activator
                             dtRolePorEmpresa.Rows.Add(objRowEquipo);
                         }
                         dgvRolePorEmpresa.Refresh();
+                        btnLimpiar.Enabled = true;
                     }
                     else
                     {
@@ -554,6 +555,22 @@ namespace LeandroSoftware.Activator
             if (txtIdEmpresa.Text != "" && txtIdSucursal.Text != "" && txtIdTerminal.Text != "")
             {
                 CargarTerminalPorSucursal();
+            }
+        }
+
+        private async void btnLimpiar_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("Está seguro que desea eliminar los registros relacionados con la empresa?", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            {
+                try
+                {
+                    await Administrador.EliminarRegistrosPorEmpresa(int.Parse(txtIdEmpresa.Text), strToken);
+                    Close();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
     }

@@ -285,8 +285,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         Producto producto = dbContext.ProductoRepository.Find(detalleCompra.IdProducto);
                         if (producto == null)
                             throw new Exception("El producto asignado al detalle de la compra no existe.");
-                        if (producto.Tipo == StaticTipoProducto.ServicioProfesionales || producto.Tipo == StaticTipoProducto.OtrosServicios)
-                            throw new BusinessException("El tipo de producto por devolver no puede ser un servicio. Por favor verificar.");
+                        if (producto.Tipo != StaticTipoProducto.Producto)
+                            throw new BusinessException("El tipo del producto " + producto.Descripcion + " no puede ser un servicio. Por favor verificar.");
                         List<ExistenciaPorSucursal> existenciasLista = dbContext.ExistenciaPorSucursalRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto).ToList();
                         decimal cantidadExistente = existenciasLista.Sum(x => x.Cantidad);
                         if (producto.PrecioCosto > 0 && cantidadExistente > 0)

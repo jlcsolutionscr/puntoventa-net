@@ -95,6 +95,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         {
             try
             {
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
                 FormUrlEncodedContent formContent = new FormUrlEncodedContent(new[]
                 {
                     new KeyValuePair<string, string>("grant_type", "password"),
@@ -120,6 +121,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         {
             try
             {
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
                 FormUrlEncodedContent formContent = new FormUrlEncodedContent(new[]
                 {
                     new KeyValuePair<string, string>("grant_type", "refresh_token"),

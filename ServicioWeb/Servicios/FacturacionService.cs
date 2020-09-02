@@ -1519,7 +1519,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         if (producto == null)
                             throw new Exception("El producto asignado al detalle de la devolución no existe.");
                         if (producto.Tipo != StaticTipoProducto.Producto)
-                            throw new BusinessException("El tipo de producto por devolver no puede ser un servicio. Por favor verificar.");
+                            throw new BusinessException("El tipo del producto " + producto.Descripcion + " no puede ser un servicio. Por favor verificar.");
                         ExistenciaPorSucursal existencias = dbContext.ExistenciaPorSucursalRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == factura.IdSucursal).FirstOrDefault();
                         if (existencias == null)
                             throw new BusinessException("El producto " + producto.IdProducto + " no posee registro de existencias. Por favor consulte con su proveedor.");

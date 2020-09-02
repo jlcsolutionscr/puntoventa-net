@@ -118,11 +118,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     var lista = listado.OrderBy(x => x.Fecha).Skip((numPagina - 1) * cantRec).Take(cantRec).ToList();
                     foreach (var value in lista)
                     {
-                        Cliente cliente = dbContext.ClienteRepository.Find(value.IdPropietario);
+                        Cliente cliente = dbContext.ClienteRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdCliente ==value.IdPropietario).FirstOrDefault();
+                        if (cliente == null) throw new BusinessException("El propietario con Id " + value.IdPropietario + " no existe registrado en la empresa que envía la petición.");
                         CuentaPorProcesar item = new CuentaPorProcesar(value.IdCxC, value.Fecha.ToString("dd/MM/yyyy"), cliente.Nombre, value.Referencia, value.Total, value.Saldo);
                         listaCuentas.Add(item);
                     }
                     return listaCuentas;
+                }
+                catch (BusinessException ex)
+                {
+                    dbContext.RollBack();
+                    throw ex;
                 }
                 catch (Exception ex)
                 {
@@ -487,11 +493,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     var lista = listado.OrderBy(x => x.Fecha).Skip((numPagina - 1) * cantRec).Take(cantRec).ToList();
                     foreach (var value in lista)
                     {
-                        Proveedor proveedor = dbContext.ProveedorRepository.Find(value.IdPropietario);
+                        Proveedor proveedor = dbContext.ProveedorRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdProveedor == value.IdPropietario).FirstOrDefault();
+                        if (proveedor == null) throw new BusinessException("El propietario con Id " + value.IdPropietario + " no existe registrado en la empresa que envía la petición.");
                         CuentaPorProcesar item = new CuentaPorProcesar(value.IdCxP, value.Fecha.ToString("dd/MM/yyyy"), proveedor.Nombre, value.Referencia, value.Total, value.Saldo);
                         listaCuentas.Add(item);
                     }
                     return listaCuentas;
+                }
+                catch (BusinessException ex)
+                {
+                    dbContext.RollBack();
+                    throw ex;
                 }
                 catch (Exception ex)
                 {

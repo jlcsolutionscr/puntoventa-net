@@ -867,6 +867,8 @@ Public Class ModuloImpresion
             lineas.Add(New ClsLineaImpresion(1, objImpresion.strEfectivoCaja, 0, 100, 10, StringAlignment.Far, False))
             lineas.Add(New ClsLineaImpresion(0, "Sobrante", 0, 100, 10, StringAlignment.Near, False))
             lineas.Add(New ClsLineaImpresion(1, objImpresion.strSobrante, 0, 100, 10, StringAlignment.Far, False))
+            lineas.Add(New ClsLineaImpresion(0, "Próximo inicio efectivo", 0, 100, 10, StringAlignment.Near, True))
+            lineas.Add(New ClsLineaImpresion(2, objImpresion.strCierreEfectivoProx, 0, 100, 10, StringAlignment.Far, True))
             lineas.Add(New ClsLineaImpresion(0, "Total de entrega", 0, 100, 10, StringAlignment.Near, True))
             lineas.Add(New ClsLineaImpresion(2, objImpresion.strRetiroEfectivo, 0, 100, 10, StringAlignment.Far, True))
 

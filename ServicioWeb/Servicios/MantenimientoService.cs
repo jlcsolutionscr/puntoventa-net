@@ -48,6 +48,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         SucursalPorEmpresa ObtenerSucursalPorEmpresa(int intIdEmpresa, int intIdSucursal);
         void AgregarSucursalPorEmpresa(SucursalPorEmpresa sucursal);
         void ActualizarSucursalPorEmpresa(SucursalPorEmpresa sucursal);
+        void EliminarRegistrosPorEmpresa(int intIdEmpresa);
         TerminalPorSucursal ObtenerTerminalPorSucursal(int intIdEmpresa, int intIdSucursal, int intIdTerminal);
         void AgregarTerminalPorSucursal(TerminalPorSucursal terminal);
         void ActualizarTerminalPorSucursal(TerminalPorSucursal terminal);
@@ -970,6 +971,26 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     dbContext.NotificarModificacion(sucursal);
+                    dbContext.Commit();
+                }
+                catch (Exception ex)
+                {
+                    dbContext.RollBack();
+                    log.Error("Error al actualizar la sucursal: ", ex);
+                    throw new Exception("Se produjo un error actualizando la información de la sucursal. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public void EliminarRegistrosPorEmpresa(int intIdEmpresa)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    object[] objParameters = new object[1];
+                    objParameters.SetValue(intIdEmpresa, 0);
+                    dbContext.ExecuteProcedure("LimpiarRegistros", objParameters);
                     dbContext.Commit();
                 }
                 catch (Exception ex)

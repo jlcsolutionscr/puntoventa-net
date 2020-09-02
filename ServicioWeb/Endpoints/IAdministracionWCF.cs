@@ -128,6 +128,10 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
         void ActualizarTerminalPorSucursal(string strDatos);
 
         [OperationContract]
+        [WebGet(UriTemplate = "eliminarregistrosporempresa?idempresa={idempresa}", ResponseFormat = WebMessageFormat.Json)]
+        void EliminarRegistrosPorEmpresa(int idempresa);
+
+        [OperationContract]
         [WebGet(UriTemplate = "obtenerlistadodocumentospendientes", ResponseFormat = WebMessageFormat.Json)]
         string ObtenerListadoDocumentosElectronicosPendientes();
 

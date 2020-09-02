@@ -126,7 +126,7 @@ namespace LeandroSoftware.ClienteWCF
                 HttpResponseMessage httpResponse = await httpClient.GetAsync(strServicioURL + "/validarcredencialesadmin?usuario=" + strUsuario + "&clave=" + strEncryptedPassword);
                 if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
                 {
-                    string strError = serializer.Deserialize<string>(httpResponse.Content.ReadAsStringAsync().Result);
+                    string strError = httpResponse.Content.ReadAsStringAsync().Result;
                     throw new Exception(strError);
                 }
                 if (httpResponse.StatusCode != HttpStatusCode.OK)
@@ -275,6 +275,28 @@ namespace LeandroSoftware.ClienteWCF
                 if (strResponse != "")
                     sucursal = serializer.Deserialize<SucursalPorEmpresa>(strResponse);
                 return sucursal;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public static async Task EliminarRegistrosPorEmpresa(int intIdEmpresa, string strToken)
+        {
+            try
+            {
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+                if (strToken != "")
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", strToken);
+                HttpResponseMessage httpResponse = await httpClient.GetAsync(strServicioURL + "/eliminarregistrosporempresa?idempresa=" + intIdEmpresa);
+                if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
+                {
+                    string strError = serializer.Deserialize<string>(httpResponse.Content.ReadAsStringAsync().Result);
+                    throw new Exception(strError);
+                }
+                if (httpResponse.StatusCode != HttpStatusCode.OK)
+                    throw new Exception(httpResponse.ReasonPhrase);
             }
             catch (Exception ex)
             {

@@ -554,6 +554,18 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             }
         }
 
+        public void EliminarRegistrosPorEmpresa(int intIdEmpresa)
+        {
+            try
+            {
+                servicioMantenimiento.EliminarRegistrosPorEmpresa(intIdEmpresa);
+            }
+            catch (Exception ex)
+            {
+                throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
+            }
+        }
+
         public string ObtenerListadoDocumentosElectronicosPendientes()
         {
             try
