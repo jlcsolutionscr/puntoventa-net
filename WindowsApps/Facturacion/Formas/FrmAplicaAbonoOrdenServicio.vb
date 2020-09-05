@@ -228,6 +228,8 @@ Public Class FrmAplicaAbonoOrdenServicio
         txtMonto.Text = ""
         txtSaldoPosterior.Text = ""
         txtObservaciones.Text = ""
+        txtDocumento.Text = ""
+        txtTipoTarjeta.Text = ""
         dtbDesglosePago.Rows.Clear()
         grdDesglosePago.Refresh()
         decTotal = 0

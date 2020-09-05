@@ -348,6 +348,7 @@ Public Class FrmProforma
                 formCargar.ShowDialog()
                 If FrmPrincipal.productoTranstorio.PrecioVenta1 > 0 Then
                     CargarLineaDetalleProforma(FrmPrincipal.productoTranstorio, FrmPrincipal.productoTranstorio.Descripcion, FrmPrincipal.productoTranstorio.Existencias, FrmPrincipal.productoTranstorio.PrecioVenta1, 0)
+                    FrmPrincipal.productoTranstorio.PrecioVenta1 = 0
                 End If
             End If
         ElseIf e.KeyCode = Keys.F3 Then

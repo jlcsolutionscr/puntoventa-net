@@ -618,7 +618,8 @@ Public Class ModuloImpresion
             lineas.Add(New ClsLineaImpresion(1, "Destino: " & objImpresion.strFormaPago, 0, 100, 10, StringAlignment.Near, False))
             lineas.Add(New ClsLineaImpresion(2, "Enviado por: " & objImpresion.strEnviadoPor, 0, 100, 10, StringAlignment.Near, False))
             ImprimirDetalle(objImpresion.arrDetalleComprobante)
-            lineas.Add(New ClsLineaImpresion(3, "Monto total: " & objImpresion.strTotal, 0, 100, 10, StringAlignment.Near, False))
+            ImprimirTotales(objImpresion)
+            lineas.Add(New ClsLineaImpresion(1, " ", 54, 46, 10, StringAlignment.Far, False))
             lineas.Add(New ClsLineaImpresion(1, "Recibido por: __________________________", 0, 100, 10, StringAlignment.Near, False))
             lineas.Add(New ClsLineaImpresion(1, " ", 54, 46, 10, StringAlignment.Far, False))
         Catch ex As Exception

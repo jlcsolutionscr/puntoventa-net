@@ -6,7 +6,7 @@ Imports LeandroSoftware.ClienteWCF
 
 Public Class FrmTrasladoMercaderia
 #Region "Variables"
-    Private dblTotal As Decimal
+    Private decExcento, decGravado, decImpuesto, decTotal As Decimal
     Private I As Short
     Private dtbDetalleTraslado As DataTable
     Private dtrRowDetTraslado As DataRow
@@ -29,6 +29,7 @@ Public Class FrmTrasladoMercaderia
         dtbDetalleTraslado.Columns.Add("CANTIDAD", GetType(Decimal))
         dtbDetalleTraslado.Columns.Add("PRECIOCOSTO", GetType(Decimal))
         dtbDetalleTraslado.Columns.Add("TOTAL", GetType(Decimal))
+        dtbDetalleTraslado.Columns.Add("PORCDESCUENTO", GetType(Decimal))
         dtbDetalleTraslado.PrimaryKey = {dtbDetalleTraslado.Columns(0)}
     End Sub
 
@@ -43,7 +44,7 @@ Public Class FrmTrasladoMercaderia
         Dim dvcPrecioCosto As New DataGridViewTextBoxColumn
         Dim dvcPrecioVenta As New DataGridViewTextBoxColumn
         Dim dvcTotal As New DataGridViewTextBoxColumn
-        Dim dvcExc As New DataGridViewCheckBoxColumn
+        Dim dvcTasaIVA As New DataGridViewTextBoxColumn
 
         dvcIdProducto.DataPropertyName = "IDPRODUCTO"
         dvcIdProducto.HeaderText = "IdP"
@@ -78,6 +79,12 @@ Public Class FrmTrasladoMercaderia
         dvcTotal.Width = 100
         dvcTotal.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleTraslado.Columns.Add(dvcTotal)
+
+        dvcTasaIVA.DataPropertyName = "PORCDESCUENTO"
+        dvcTasaIVA.HeaderText = "PorcDescuento"
+        dvcTasaIVA.Visible = False
+        dvcTasaIVA.DefaultCellStyle = FrmPrincipal.dgvDecimal
+        grdDetalleTraslado.Columns.Add(dvcTasaIVA)
     End Sub
 
     Private Sub CargarDetalleTraslado(ByVal traslado As Traslado)
@@ -90,6 +97,7 @@ Public Class FrmTrasladoMercaderia
             dtrRowDetTraslado.Item(3) = detalle.Cantidad
             dtrRowDetTraslado.Item(4) = detalle.PrecioCosto
             dtrRowDetTraslado.Item(5) = dtrRowDetTraslado.Item(3) * dtrRowDetTraslado.Item(4)
+            dtrRowDetTraslado.Item(6) = detalle.Producto.ParametroImpuesto.TasaImpuesto
             dtbDetalleTraslado.Rows.Add(dtrRowDetTraslado)
         Next
         grdDetalleTraslado.Refresh()
@@ -103,6 +111,7 @@ Public Class FrmTrasladoMercaderia
             dtbDetalleTraslado.Rows(intIndice).Item(3) += txtCantidad.Text
             dtbDetalleTraslado.Rows(intIndice).Item(4) = producto.PrecioCosto
             dtbDetalleTraslado.Rows(intIndice).Item(5) = dtbDetalleTraslado.Rows(intIndice).Item(3) * dtbDetalleTraslado.Rows(intIndice).Item(4)
+            dtbDetalleTraslado.Rows(intIndice).Item(6) = producto.ParametroImpuesto.TasaImpuesto
         Else
             dtrRowDetTraslado = dtbDetalleTraslado.NewRow
             dtrRowDetTraslado.Item(0) = producto.IdProducto
@@ -111,6 +120,7 @@ Public Class FrmTrasladoMercaderia
             dtrRowDetTraslado.Item(3) = txtCantidad.Text
             dtrRowDetTraslado.Item(4) = producto.PrecioCosto
             dtrRowDetTraslado.Item(5) = dtrRowDetTraslado.Item(3) * dtrRowDetTraslado.Item(4)
+            dtrRowDetTraslado.Item(6) = producto.ParametroImpuesto.TasaImpuesto
             dtbDetalleTraslado.Rows.Add(dtrRowDetTraslado)
         End If
         grdDetalleTraslado.Refresh()
@@ -118,11 +128,23 @@ Public Class FrmTrasladoMercaderia
     End Sub
 
     Private Sub CargarTotales()
-        dblTotal = 0
+        decExcento = 0
+        decGravado = 0
+        decImpuesto = 0
+        decTotal = 0
         For I = 0 To dtbDetalleTraslado.Rows.Count - 1
-            dblTotal = dblTotal + CDbl(dtbDetalleTraslado.Rows(I).Item(5))
+            If dtbDetalleTraslado.Rows(I).Item(6) > 0 Then
+                decGravado += CDbl(dtbDetalleTraslado.Rows(I).Item(5))
+                decImpuesto += CDbl(dtbDetalleTraslado.Rows(I).Item(5)) * dtbDetalleTraslado.Rows(I).Item(6) / 100
+            Else
+                decExcento += CDbl(dtbDetalleTraslado.Rows(I).Item(5))
+            End If
         Next
-        txtTotal.Text = FormatNumber(dblTotal, 2)
+        decTotal = decGravado + decExcento + decImpuesto
+        txtExcento.Text = FormatNumber(decExcento, 2)
+        txtGravado.Text = FormatNumber(decGravado, 2)
+        txtImpuesto.Text = FormatNumber(decImpuesto, 2)
+        txtTotal.Text = FormatNumber(decTotal, 2)
     End Sub
 
     Private Async Function CargarCombos() As Task
@@ -215,6 +237,9 @@ Public Class FrmTrasladoMercaderia
         txtReferencia.Text = ""
         dtbDetalleTraslado.Rows.Clear()
         grdDetalleTraslado.Refresh()
+        txtExcento.Text = FormatNumber(0, 2)
+        txtGravado.Text = FormatNumber(0, 2)
+        txtImpuesto.Text = FormatNumber(0, 2)
         txtTotal.Text = FormatNumber(0, 2)
         txtCodigo.Text = ""
         txtDescripcion.Text = ""
@@ -317,7 +342,7 @@ Public Class FrmTrasladoMercaderia
                 .IdSucursalDestino = cboIdSucursalDestino.SelectedValue,
                 .Fecha = FrmPrincipal.ObtenerFechaFormateada(Now()),
                 .Referencia = txtReferencia.Text,
-                .Total = dblTotal
+                .Total = decTotal
             }
             For I = 0 To dtbDetalleTraslado.Rows.Count - 1
                 detalleTraslado = New DetalleTraslado With {
@@ -359,6 +384,8 @@ Public Class FrmTrasladoMercaderia
                 .strFecha = txtFecha.Text,
                 .strFormaPago = cboIdSucursalDestino.Text,
                 .strEnviadoPor = FrmPrincipal.usuarioGlobal.CodigoUsuario,
+                .strSubTotal = FormatNumber(decExcento + decGravado, 2),
+                .strImpuesto = txtImpuesto.Text,
                 .strTotal = txtTotal.Text
             }
             arrDetalleTraslado = New List(Of ModuloImpresion.ClsDetalleComprobante)

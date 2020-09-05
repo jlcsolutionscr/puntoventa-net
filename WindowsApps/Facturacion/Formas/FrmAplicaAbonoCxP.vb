@@ -229,6 +229,9 @@ Public Class FrmAplicaAbonoCxP
         txtMonto.Text = ""
         txtSaldoPosterior.Text = ""
         txtObservaciones.Text = ""
+        txtRecibo.Text = ""
+        txtDocumento.Text = ""
+        txtTipoTarjeta.Text = ""
         dtbDesglosePago.Rows.Clear()
         grdDesglosePago.Refresh()
         decTotal = 0

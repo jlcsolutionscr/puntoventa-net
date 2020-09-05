@@ -68,6 +68,12 @@ Partial Class FrmTrasladoMercaderia
         Me.txtNombreSucursalOrigen = New System.Windows.Forms.TextBox()
         Me.txtExistencias = New System.Windows.Forms.TextBox()
         Me.Label15 = New System.Windows.Forms.Label()
+        Me.txtImpuesto = New System.Windows.Forms.TextBox()
+        Me.Label3 = New System.Windows.Forms.Label()
+        Me.txtGravado = New System.Windows.Forms.TextBox()
+        Me.Label4 = New System.Windows.Forms.Label()
+        Me.txtExcento = New System.Windows.Forms.TextBox()
+        Me.Label5 = New System.Windows.Forms.Label()
         CType(Me.grdDetalleTraslado, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -527,12 +533,105 @@ Partial Class FrmTrasladoMercaderia
         Me.Label15.Text = "Stock"
         Me.Label15.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
+        'txtImpuesto
+        '
+        Me.txtImpuesto.AcceptsReturn = True
+        Me.txtImpuesto.BackColor = System.Drawing.SystemColors.Window
+        Me.txtImpuesto.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtImpuesto.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtImpuesto.Location = New System.Drawing.Point(611, 430)
+        Me.txtImpuesto.MaxLength = 0
+        Me.txtImpuesto.Name = "txtImpuesto"
+        Me.txtImpuesto.ReadOnly = True
+        Me.txtImpuesto.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtImpuesto.Size = New System.Drawing.Size(73, 20)
+        Me.txtImpuesto.TabIndex = 158
+        Me.txtImpuesto.TabStop = False
+        Me.txtImpuesto.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        '
+        'Label3
+        '
+        Me.Label3.BackColor = System.Drawing.Color.Transparent
+        Me.Label3.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label3.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label3.Location = New System.Drawing.Point(540, 433)
+        Me.Label3.Name = "Label3"
+        Me.Label3.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label3.Size = New System.Drawing.Size(65, 19)
+        Me.Label3.TabIndex = 157
+        Me.Label3.Text = "Impuesto:"
+        Me.Label3.TextAlign = System.Drawing.ContentAlignment.TopRight
+        '
+        'txtGravado
+        '
+        Me.txtGravado.AcceptsReturn = True
+        Me.txtGravado.BackColor = System.Drawing.SystemColors.Window
+        Me.txtGravado.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtGravado.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtGravado.Location = New System.Drawing.Point(474, 430)
+        Me.txtGravado.MaxLength = 0
+        Me.txtGravado.Name = "txtGravado"
+        Me.txtGravado.ReadOnly = True
+        Me.txtGravado.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtGravado.Size = New System.Drawing.Size(73, 20)
+        Me.txtGravado.TabIndex = 160
+        Me.txtGravado.TabStop = False
+        Me.txtGravado.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        '
+        'Label4
+        '
+        Me.Label4.BackColor = System.Drawing.Color.Transparent
+        Me.Label4.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label4.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label4.Location = New System.Drawing.Point(403, 433)
+        Me.Label4.Name = "Label4"
+        Me.Label4.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label4.Size = New System.Drawing.Size(65, 19)
+        Me.Label4.TabIndex = 159
+        Me.Label4.Text = "Gravado:"
+        Me.Label4.TextAlign = System.Drawing.ContentAlignment.TopRight
+        '
+        'txtExcento
+        '
+        Me.txtExcento.AcceptsReturn = True
+        Me.txtExcento.BackColor = System.Drawing.SystemColors.Window
+        Me.txtExcento.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtExcento.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtExcento.Location = New System.Drawing.Point(336, 430)
+        Me.txtExcento.MaxLength = 0
+        Me.txtExcento.Name = "txtExcento"
+        Me.txtExcento.ReadOnly = True
+        Me.txtExcento.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtExcento.Size = New System.Drawing.Size(73, 20)
+        Me.txtExcento.TabIndex = 162
+        Me.txtExcento.TabStop = False
+        Me.txtExcento.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        '
+        'Label5
+        '
+        Me.Label5.BackColor = System.Drawing.Color.Transparent
+        Me.Label5.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label5.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label5.Location = New System.Drawing.Point(265, 433)
+        Me.Label5.Name = "Label5"
+        Me.Label5.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label5.Size = New System.Drawing.Size(65, 19)
+        Me.Label5.TabIndex = 161
+        Me.Label5.Text = "Excento:"
+        Me.Label5.TextAlign = System.Drawing.ContentAlignment.TopRight
+        '
         'FrmTrasladoMercaderia
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(823, 463)
+        Me.Controls.Add(Me.txtExcento)
+        Me.Controls.Add(Me.Label5)
+        Me.Controls.Add(Me.txtGravado)
+        Me.Controls.Add(Me.Label4)
+        Me.Controls.Add(Me.txtImpuesto)
+        Me.Controls.Add(Me.Label3)
         Me.Controls.Add(Me.txtExistencias)
         Me.Controls.Add(Me.Label15)
         Me.Controls.Add(Me.txtNombreSucursalOrigen)
@@ -600,4 +699,10 @@ Partial Class FrmTrasladoMercaderia
     Public WithEvents txtNombreSucursalOrigen As TextBox
     Public WithEvents txtExistencias As TextBox
     Public WithEvents Label15 As Label
+    Public WithEvents txtImpuesto As TextBox
+    Public WithEvents Label3 As Label
+    Public WithEvents txtGravado As TextBox
+    Public WithEvents Label4 As Label
+    Public WithEvents txtExcento As TextBox
+    Public WithEvents Label5 As Label
 End Class
