@@ -206,6 +206,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         if (desglosePago.IdFormaPago == StaticFormaPago.Cheque || desglosePago.IdFormaPago == StaticFormaPago.TransferenciaDepositoBancario)
                         {
                             movimientoBanco = new MovimientoBanco();
+                            movimientoBanco.IdSucursal = movimiento.IdSucursal;
                             CuentaBanco cuentaBanco = dbContext.CuentaBancoRepository.Find(desglosePago.IdCuentaBanco);
                             if (cuentaBanco == null)
                                 throw new Exception("La cuenta bancaria asignada al movimiento no existe");
@@ -219,7 +220,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             }
                             else
                             {
-                                movimientoBanco.IdTipo = StaticTipoMovimientoBanco.TransferenciaDeposito;
+                                movimientoBanco.IdTipo = StaticTipoMovimientoBanco.DepositoEntrante;
                                 movimientoBanco.Descripcion = "Recepción de depósito bancario por abono a cuentas por cobrar recibo nro. ";
                             }
                             movimientoBanco.Numero = desglosePago.NroMovimiento;
@@ -572,6 +573,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         if (desglosePago.IdFormaPago == StaticFormaPago.Cheque || desglosePago.IdFormaPago == StaticFormaPago.TransferenciaDepositoBancario)
                         {
                             movimientoBanco = new MovimientoBanco();
+                            movimientoBanco.IdSucursal = movimiento.IdSucursal;
                             CuentaBanco cuentaBanco = dbContext.CuentaBancoRepository.Find(desglosePago.IdCuentaBanco);
                             if (cuentaBanco == null)
                                 throw new Exception("La cuenta bancaria asignada al movimiento no existe");
@@ -585,7 +587,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             }
                             else
                             {
-                                movimientoBanco.IdTipo = StaticTipoMovimientoBanco.TransferenciaDeposito;
+                                movimientoBanco.IdTipo = StaticTipoMovimientoBanco.DepositoSaliente;
                                 movimientoBanco.Descripcion = "Emisión de transferencia por abono a cuentas por pagar recibo nro. ";
                             }
                             movimientoBanco.Numero = desglosePago.NroMovimiento;
@@ -840,6 +842,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         if (desglosePago.IdFormaPago == StaticFormaPago.Cheque || desglosePago.IdFormaPago == StaticFormaPago.TransferenciaDepositoBancario)
                         {
                             movimientoBanco = new MovimientoBanco();
+                            movimientoBanco.IdSucursal = movimiento.IdSucursal;
                             CuentaBanco cuentaBanco = dbContext.CuentaBancoRepository.Find(desglosePago.IdCuentaBanco);
                             if (cuentaBanco == null)
                                 throw new Exception("La cuenta bancaria asignada al movimiento no existe");
@@ -853,7 +856,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             }
                             else
                             {
-                                movimientoBanco.IdTipo = StaticTipoMovimientoBanco.TransferenciaDeposito;
+                                movimientoBanco.IdTipo = StaticTipoMovimientoBanco.DepositoEntrante;
                                 movimientoBanco.Descripcion = "Recepción de depósito bancario por abono a cuentas por cobrar recibo nro. ";
                             }
                             movimientoBanco.Numero = desglosePago.NroMovimiento;
@@ -1008,6 +1011,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         if (desglosePago.IdFormaPago == StaticFormaPago.Cheque || desglosePago.IdFormaPago == StaticFormaPago.TransferenciaDepositoBancario)
                         {
                             movimientoBanco = new MovimientoBanco();
+                            movimientoBanco.IdSucursal = movimiento.IdSucursal;
                             CuentaBanco cuentaBanco = dbContext.CuentaBancoRepository.Find(desglosePago.IdCuentaBanco);
                             if (cuentaBanco == null)
                                 throw new Exception("La cuenta bancaria asignada al movimiento no existe");
@@ -1021,7 +1025,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             }
                             else
                             {
-                                movimientoBanco.IdTipo = StaticTipoMovimientoBanco.TransferenciaDeposito;
+                                movimientoBanco.IdTipo = StaticTipoMovimientoBanco.DepositoEntrante;
                                 movimientoBanco.Descripcion = "Recepción de depósito bancario por abono a cuentas por cobrar recibo nro. ";
                             }
                             movimientoBanco.Numero = desglosePago.NroMovimiento;

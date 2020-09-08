@@ -1,22 +1,19 @@
-Imports System.Collections.Generic
 Imports LeandroSoftware.Core.Dominio.Entidades
+Imports LeandroSoftware.ClienteWCF
 
 Public Class FrmMovimientoBanco
 #Region "Variables"
     Private movimiento As MovimientoBanco
-    Private listaMovimientos As IEnumerable(Of MovimientoBanco)
 #End Region
 
 #Region "Métodos"
-    Private Sub CargarCombos()
-        cboIdCuenta.ValueMember = "IdCuenta"
+    Private Async Sub CargarCombos()
+        cboIdCuenta.ValueMember = "Id"
         cboIdCuenta.DisplayMember = "Descripcion"
-        'cboIdCuenta.DataSource = servicioAuxiliarBancario.ObtenerListaCuentasBanco(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
-        cboIdTipo.ValueMember = "IdTipoMov"
+        cboIdCuenta.DataSource = Await Puntoventa.ObtenerListadoCuentasBanco(FrmPrincipal.empresaGlobal.IdEmpresa, "", FrmPrincipal.usuarioGlobal.Token)
+        cboIdTipo.ValueMember = "Id"
         cboIdTipo.DisplayMember = "Descripcion"
-        'cboIdTipo.DataSource = servicioAuxiliarBancario.ObtenerTipoMovimientoBanco()
-        cboIdCuenta.SelectedValue = 0
-        cboIdTipo.SelectedValue = 0
+        cboIdTipo.DataSource = Await Puntoventa.ObtenerListadoTipoMovimientoBanco(FrmPrincipal.usuarioGlobal.Token)
     End Sub
 #End Region
 
@@ -58,11 +55,11 @@ Public Class FrmMovimientoBanco
         CmdImprimir.Enabled = False
     End Sub
 
-    Private Sub CmdAnular_Click(sender As Object, e As EventArgs) Handles CmdAnular.Click
+    Private Async Sub CmdAnular_Click(sender As Object, e As EventArgs) Handles CmdAnular.Click
         If txtIdMov.Text <> "" And cboIdCuenta.SelectedValue <> Nothing And cboIdTipo.SelectedValue <> Nothing Then
             If MessageBox.Show("Desea anular este registro?", "JLC Solutions CR", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
                 Try
-                    'servicioAuxiliarBancario.AnularMovimientoBanco(txtIdMov.Text, FrmMenuPrincipal.usuarioGlobal.IdUsuario)
+                    Await Puntoventa.AnularMovimientoBanco(txtIdMov.Text, FrmPrincipal.usuarioGlobal.IdUsuario, "", FrmPrincipal.usuarioGlobal.Token)
                 Catch ex As Exception
                     MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
@@ -73,13 +70,13 @@ Public Class FrmMovimientoBanco
         End If
     End Sub
 
-    Private Sub CmdBuscar_Click(sender As Object, e As EventArgs) Handles CmdBuscar.Click
+    Private Async Sub CmdBuscar_Click(sender As Object, e As EventArgs) Handles CmdBuscar.Click
         Dim formBusqueda As New FrmBusquedaMovimientoBanco()
         FrmPrincipal.intBusqueda = 0
         formBusqueda.ShowDialog()
         If FrmPrincipal.intBusqueda > 0 Then
             Try
-                'movimiento = servicioAuxiliarBancario.ObtenerMovimientoBanco(FrmMenuPrincipal.intBusqueda)
+                movimiento = Await Puntoventa.ObtenerMovimientoBanco(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
@@ -94,47 +91,33 @@ Public Class FrmMovimientoBanco
                 txtMonto.Text = FormatNumber(movimiento.Monto, 2)
                 txtDescripcion.Text = movimiento.Descripcion
                 CmdImprimir.Enabled = True
-                txtMonto.ReadOnly = True
-                cboIdCuenta.Enabled = False
-                cboIdTipo.Enabled = False
                 CmdAnular.Enabled = FrmPrincipal.bolAnularTransacciones
                 CmdGuardar.Enabled = False
             End If
         End If
     End Sub
 
-    Private Sub CmdGuardar_Click(sender As Object, e As EventArgs) Handles CmdGuardar.Click
+    Private Async Sub CmdGuardar_Click(sender As Object, e As EventArgs) Handles CmdGuardar.Click
         If txtNumero.Text <> "" And txtFecha.Text <> "" And cboIdCuenta.SelectedValue <> Nothing And cboIdTipo.SelectedValue <> Nothing And txtBeneficiario.Text <> "" And CDbl(txtMonto.Text) > 0 And txtDescripcion.Text <> "" Then
-            If txtIdMov.Text = "" Then
-                movimiento = New MovimientoBanco With {
-                    .IdCuenta = cboIdCuenta.SelectedValue,
-                    .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
-                    .Fecha = FrmPrincipal.ObtenerFechaFormateada(Now()),
-                    .IdTipo = cboIdTipo.SelectedValue,
-                    .Numero = txtNumero.Text,
-                    .Beneficiario = txtBeneficiario.Text,
-                    .Monto = CDbl(txtMonto.Text),
-                    .Descripcion = txtDescripcion.Text
-                }
-                Try
-                    'movimiento = servicioAuxiliarBancario.AgregarMovimientoBanco(movimiento)
-                    txtIdMov.Text = movimiento.IdMov
-                Catch ex As Exception
-                    txtIdMov.Text = ""
-                    MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                    Exit Sub
-                End Try
-            Else
-                movimiento.Numero = txtNumero.Text
-                movimiento.Beneficiario = txtBeneficiario.Text
-                movimiento.Descripcion = txtDescripcion.Text
-                Try
-                    'servicioAuxiliarBancario.ActualizarMovimientoBanco(movimiento)
-                Catch ex As Exception
-                    MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                    Exit Sub
-                End Try
-            End If
+            movimiento = New MovimientoBanco With {
+                .IdSucursal = FrmPrincipal.equipoGlobal.IdSucursal,
+                .IdCuenta = cboIdCuenta.SelectedValue,
+                .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
+                .Fecha = FrmPrincipal.ObtenerFechaFormateada(Now()),
+                .IdTipo = cboIdTipo.SelectedValue,
+                .Numero = txtNumero.Text,
+                .Beneficiario = txtBeneficiario.Text,
+                .Monto = CDbl(txtMonto.Text),
+                .Descripcion = txtDescripcion.Text
+            }
+            Try
+                Dim strId As String = Await Puntoventa.AgregarMovimientoBanco(movimiento, FrmPrincipal.usuarioGlobal.Token)
+                txtIdMov.Text = strId
+            Catch ex As Exception
+                txtIdMov.Text = ""
+                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Exit Sub
+            End Try
             MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
             CmdImprimir.Enabled = True
             CmdAgregar.Enabled = True

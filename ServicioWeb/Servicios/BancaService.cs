@@ -17,15 +17,15 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         void EliminarCuentaBanco(int intIdCuenta);
         CuentaBanco ObtenerCuentaBanco(int intIdCuenta);
         IList<LlaveDescripcion> ObtenerListadoCuentasBanco(int intIdEmpresa, string strDescripcion = "");
-        IList<TipoMovimientoBanco> ObtenerTipoMovimientoBanco();
-        MovimientoBanco AgregarMovimientoBanco(MovimientoBanco movimiento);
-        MovimientoBanco AgregarMovimientoBanco(IDbContext dbContext, MovimientoBanco movimiento);
+        IList<LlaveDescripcion> ObtenerListadoTipoMovimientoBanco();
+        string AgregarMovimientoBanco(MovimientoBanco movimiento);
+        string AgregarMovimientoBanco(IDbContext dbContext, MovimientoBanco movimiento);
         void ActualizarMovimientoBanco(MovimientoBanco movimiento);
         void AnularMovimientoBanco(int intIdMovimiento, int intIdUsuario, string strMotivoAnulacion);
         void AnularMovimientoBanco(IDbContext dbContext, int intIdMovimiento, int intIdUsuario, string strMotivoAnulacion);
         MovimientoBanco ObtenerMovimientoBanco(int intIdMovimiento);
-        int ObtenerTotalListaMovimientos(int intIdEmpresa, string strDescripcion = "");
-        IList<MovimientoBanco> ObtenerListadoMovimientos(int intIdEmpresa, int numPagina, int cantRec, string strDescripcion = "");
+        int ObtenerTotalListaMovimientos(int intIdEmpresa, int intIdSucursal, string strDescripcion = "");
+        IList<EfectivoDetalle> ObtenerListadoMovimientos(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, string strDescripcion = "");
     }
 
     public class BancaService : IBancaService
@@ -174,13 +174,21 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IList<TipoMovimientoBanco> ObtenerTipoMovimientoBanco()
+        public IList<LlaveDescripcion> ObtenerListadoTipoMovimientoBanco()
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
+                var listaTipoMovimiento = new List<LlaveDescripcion>();
                 try
                 {
-                    return dbContext.TipoMovimientoBancoRepository.ToList();
+                    var listado = dbContext.TipoMovimientoBancoRepository;
+                    foreach (var value in listado)
+                    {
+                        LlaveDescripcion item = new LlaveDescripcion(value.IdTipoMov, value.Descripcion);
+                        listaTipoMovimiento.Add(item);
+                    }
+                    return listaTipoMovimiento;
+
                 }
                 catch (Exception ex)
                 {
@@ -190,7 +198,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public MovimientoBanco AgregarMovimientoBanco(MovimientoBanco movimiento)
+        public string AgregarMovimientoBanco(MovimientoBanco movimiento)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -211,7 +219,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.MovimientoBancoRepository.Add(movimiento);
                     dbContext.NotificarModificacion(cuenta);
                     dbContext.Commit();
-                    return movimiento;
+                    return movimiento.IdMov.ToString();
                 }
                 catch (BusinessException ex)
                 {
@@ -227,7 +235,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public MovimientoBanco AgregarMovimientoBanco(IDbContext dbContext, MovimientoBanco movimiento)
+        public string AgregarMovimientoBanco(IDbContext dbContext, MovimientoBanco movimiento)
         {
             try
             {
@@ -245,7 +253,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     cuenta.Saldo += movimiento.Monto;
                 dbContext.MovimientoBancoRepository.Add(movimiento);
                 dbContext.NotificarModificacion(cuenta);
-                return movimiento;
+                return movimiento.IdMov.ToString();
             }
             catch (BusinessException ex)
             {
@@ -365,14 +373,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public int ObtenerTotalListaMovimientos(int intIdEmpresa, string strDescripcion = "")
+        public int ObtenerTotalListaMovimientos(int intIdEmpresa, int intIdSucursal, string strDescripcion = "")
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 try
                 {
                     var listaMovimientos = dbContext.MovimientoBancoRepository.Join(dbContext.CuentaBancoRepository, a => a.IdCuenta, b => b.IdCuenta, (a, b) => new { a, b })
-                            .Where(a => !a.a.Nulo & a.b.IdEmpresa == intIdEmpresa);
+                            .Where(a => !a.a.Nulo & a.b.IdEmpresa == intIdEmpresa && a.a.IdSucursal == intIdSucursal);
                     if (!strDescripcion.Equals(string.Empty))
                         listaMovimientos = listaMovimientos.Where(a => a.a.Descripcion.Contains(strDescripcion));
                     return listaMovimientos.Count();
@@ -385,17 +393,25 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IList<MovimientoBanco> ObtenerListadoMovimientos(int intIdEmpresa, int numPagina, int cantRec, string strDescripcion = "")
+        public IList<EfectivoDetalle> ObtenerListadoMovimientos(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, string strDescripcion = "")
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
+                var listaTipoMovimiento = new List<EfectivoDetalle>();
                 try
                 {
                     var listaMovimientos = dbContext.MovimientoBancoRepository.Join(dbContext.CuentaBancoRepository, a => a.IdCuenta, b => b.IdCuenta, (a, b) => new { a, b })
-                        .Where(a => !a.a.Nulo & a.b.IdEmpresa == intIdEmpresa);
+                        .Where(a => !a.a.Nulo & a.b.IdEmpresa == intIdEmpresa && a.a.IdSucursal == intIdSucursal);
                     if (!strDescripcion.Equals(string.Empty))
                         listaMovimientos = listaMovimientos.Where(a => a.a.Descripcion.Contains(strDescripcion));
-                    return listaMovimientos.OrderByDescending(x => x.a.IdMov).Skip((numPagina - 1) * cantRec).Take(cantRec).Select(a => a.a).ToList();
+                    var lista = listaMovimientos.OrderByDescending(x => x.a.IdMov).Skip((numPagina - 1) * cantRec).Take(cantRec)
+                        .Select(z => new { z.a.IdMov, z.a.Fecha, z.a.Descripcion, z.a.Monto }).ToList();
+                    foreach (var value in lista)
+                    {
+                        var item = new EfectivoDetalle(value.IdMov, value.Fecha.ToString("dd/MM/yyyy"), value.Descripcion, value.Monto);
+                        listaTipoMovimiento.Add(item);
+                    }
+                    return listaTipoMovimiento;
                 }
                 catch (Exception ex)
                 {

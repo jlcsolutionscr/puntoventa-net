@@ -275,6 +275,17 @@ namespace LeandroSoftware.ClienteWCF
             return listado;
         }
 
+        public static async Task<List<LlaveDescripcion>> ObtenerListadoTipoMovimientoBanco(string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'ObtenerListadoTipoMovimientoBanco'}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<LlaveDescripcion>>(respuesta);
+            return listado;
+        }
+        
+
         public static async Task<List<LlaveDescripcion>> ObtenerListadoModulos(string strToken)
         {
             string strDatos = "{NombreMetodo: 'ObtenerListadoModulos'}";
@@ -555,9 +566,9 @@ namespace LeandroSoftware.ClienteWCF
             return listado;
         }
 
-        public static async Task<List<ReporteMovimientosBanco>> ObtenerReporteMovimientosBanco(int intIdCuenta, string strFechaInicial, string strFechaFinal, string strToken)
+        public static async Task<List<ReporteMovimientosBanco>> ObtenerReporteMovimientosBanco(int intIdCuenta, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerReporteMovimientosBanco', Parametros: {IdCuenta: " + intIdCuenta + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "'}}";
+            string strDatos = "{NombreMetodo: 'ObtenerReporteMovimientosBanco', Parametros: {IdCuenta: " + intIdCuenta + ", IdSucursal: " + intIdSucursal + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "'}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             List<ReporteMovimientosBanco> listado = new List<ReporteMovimientosBanco>();
             if (respuesta != "")
@@ -685,11 +696,12 @@ namespace LeandroSoftware.ClienteWCF
             return cierre;
         }
 
-        public static async Task GuardarDatosCierreCaja(CierreCaja cierre, string strToken)
+        public static async Task<string> GuardarDatosCierreCaja(CierreCaja cierre, string strToken)
         {
             string strEntidad = serializer.Serialize(cierre);
             string strDatos = "{NombreMetodo: 'GuardarDatosCierreCaja', Entidad: " + strEntidad + "}";
-            await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
+            string strId = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            return serializer.Deserialize<string>(strId);
         }
 
         public static async Task AbortarCierreCaja(int intIdEmpresa, int intIdSucursal, string strToken)
@@ -1217,6 +1229,50 @@ namespace LeandroSoftware.ClienteWCF
         {
             string strDatos = "{NombreMetodo: 'EliminarCuentaBanco', Parametros: {IdCuentaBanco: " + intIdCuentaBanco + "}}";
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
+        }
+
+        public static async Task<string> AgregarMovimientoBanco(MovimientoBanco movimiento, string strToken)
+        {
+            string strEntidad = serializer.Serialize(movimiento);
+            string strDatos = "{NombreMetodo: 'AgregarMovimientoBanco', Entidad: " + strEntidad + "}";
+            string strId = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            return serializer.Deserialize<string>(strId);
+        }
+
+        public static async Task<MovimientoBanco> ObtenerMovimientoBanco(int intIdMovimiento, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'ObtenerMovimientoBanco', Parametros: {IdMovimiento: " + intIdMovimiento + "}}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            MovimientoBanco movimientoBanco = null;
+            if (respuesta != "")
+                movimientoBanco = serializer.Deserialize<MovimientoBanco>(respuesta);
+            return movimientoBanco;
+        }
+
+        public static async Task AnularMovimientoBanco(int intIdMovimiento, int intIdUsuario, string strMotivo, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'AnularMovimientoBanco', Parametros: {IdMovimiento: " + intIdMovimiento + ", IdUsuario: " + intIdUsuario + ", MotivoAnulacion: '" + strMotivo + "'}}";
+            await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
+        }
+
+        public static async Task<int> ObtenerTotalListaMovimientoBanco(int intIdEmpresa, int intIdSucursal, string strDescripcion, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'ObtenerTotalListaMovimientoBanco', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", Descripcion: '" + strDescripcion + "'}}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            int intCantidad = 0;
+            if (respuesta != "")
+                intCantidad = serializer.Deserialize<int>(respuesta);
+            return intCantidad;
+        }
+
+        public static async Task<List<EfectivoDetalle>> ObtenerListadoMovimientoBanco(int intIdEmpresa, int intIdSucursal, int intNumeroPagina, int intFilasPorPagina, string strDescripcion, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'ObtenerListadoMovimientoBanco', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", NumeroPagina: " + intNumeroPagina + ",FilasPorPagina: " + intFilasPorPagina + ", Descripcion: '" + strDescripcion + "'}}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            List<EfectivoDetalle> listado = new List<EfectivoDetalle>();
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<EfectivoDetalle>>(respuesta);
+            return listado;
         }
 
         public static async Task<List<LlaveDescripcion>> ObtenerListadoVendedores(int intIdEmpresa, string strNombre, string strToken)

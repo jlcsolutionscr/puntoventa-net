@@ -34,7 +34,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         int ObtenerTotalListaEgresos(int intIdEmpresa, int intIdSucursal, int intIdEgreso, string strBeneficiario, string strDetalle);
         IList<EfectivoDetalle> ObtenerListadoEgresos(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, int intIdEgreso, string strBeneficiario, string strDetalle);
         CierreCaja GenerarDatosCierreCaja(int intIdEmpresa, int intIdSucursal);
-        void GuardarDatosCierreCaja(CierreCaja cierre);
+        string GuardarDatosCierreCaja(CierreCaja cierre);
         void AbortarCierreCaja(int intIdEmpresa, int intIdSucursal);
         int ObtenerTotalListaCierreCaja(int intIdEmpresa, int intIdSucursal);
         IList<LlaveDescripcion> ObtenerListadoCierreCaja(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec);
@@ -1213,7 +1213,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void GuardarDatosCierreCaja(CierreCaja cierre)
+        public string GuardarDatosCierreCaja(CierreCaja cierre)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -1232,6 +1232,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         sucursal.CierreEnEjecucion = false;
                         dbContext.Commit();
                         dbContextTransaction.Commit();
+                        return cierre.IdCierre.ToString();
                     }
                     catch (BusinessException ex)
                     {

@@ -128,11 +128,12 @@ namespace LeandroSoftware.Core.TiposComunes
     public static class StaticTipoMovimientoBanco
     {
         public static readonly int ChequeSaliente = 1;
-        public static readonly int TransferenciaDeposito = 2;
+        public static readonly int DepositoEntrante = 2;
         public static readonly int Inversion = 3;
         public static readonly int NotaDebito = 4;
         public static readonly int NotaCredito = 5;
         public static readonly int ChequeEntrante = 6;
+        public static readonly int DepositoSaliente = 7;
     };
 
     public static class StaticTipoDebitoCredito

@@ -2748,12 +2748,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
                 {
                     DateTime detFechaMaxima = DateTime.UtcNow.AddHours(-12);
-                    var listado = dbContext.RegistroAutenticacionRepository.Where(x => x.Fecha < detFechaMaxima).ToList();
-                    foreach(RegistroAutenticacion registro in listado)
-                    {
-                        dbContext.NotificarEliminacion(registro);
-                        dbContext.Commit();
-                    }
+                    dbContext.RegistroAutenticacionRepository.RemoveRange(dbContext.RegistroAutenticacionRepository.Where(x => x.Fecha < detFechaMaxima));
+                    dbContext.Commit();
                 }
             }
             catch (Exception ex)

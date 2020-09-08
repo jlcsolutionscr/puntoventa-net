@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Linq;
 using LeandroSoftware.Core.Dominio.Entidades;
@@ -116,6 +117,8 @@ namespace LeandroSoftware.ServicioWeb.Contexto
 
         public LeandroContext(string conectionString)
         {
+            var objectContext = (this as IObjectContextAdapter).ObjectContext;
+            objectContext.CommandTimeout = 180;
             Database.Connection.ConnectionString = conectionString;
             Configuration.LazyLoadingEnabled = false;
             Configuration.ProxyCreationEnabled = false;

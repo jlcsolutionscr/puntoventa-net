@@ -1,3 +1,5 @@
+Imports LeandroSoftware.ClienteWCF
+
 Public Class FrmBusquedaMovimientoBanco
 #Region "Variables"
     Private intTotalRegistros As Integer
@@ -15,7 +17,7 @@ Public Class FrmBusquedaMovimientoBanco
         dgvListado.Columns.Clear()
         dgvListado.AutoGenerateColumns = False
         dvcId.HeaderText = "Id"
-        dvcId.DataPropertyName = "IdMov"
+        dvcId.DataPropertyName = "Id"
         dvcId.Width = 50
         dgvListado.Columns.Add(dvcId)
         dvcNombre.HeaderText = "Descripción"
@@ -23,15 +25,15 @@ Public Class FrmBusquedaMovimientoBanco
         dvcNombre.Width = 450
         dgvListado.Columns.Add(dvcNombre)
         dvcTopeCredito.HeaderText = "Monto"
-        dvcTopeCredito.DataPropertyName = "Monto"
+        dvcTopeCredito.DataPropertyName = "Total"
         dvcTopeCredito.Width = 120
         dvcTopeCredito.DefaultCellStyle = FrmPrincipal.dgvDecimal
         dgvListado.Columns.Add(dvcTopeCredito)
     End Sub
 
-    Private Sub ActualizarDatos(ByVal intNumeroPagina As Integer)
+    Private Async Sub ActualizarDatos(ByVal intNumeroPagina As Integer)
         Try
-            'dgvListado.DataSource = servicioAuxiliarBancario.ObtenerListaMovimientos(FrmMenuPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, txtDescripcion.Text)
+            dgvListado.DataSource = Await Puntoventa.ObtenerListadoMovimientoBanco(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, intNumeroPagina, intFilasPorPagina, txtDescripcion.Text, FrmPrincipal.usuarioGlobal.Token)
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -41,9 +43,9 @@ Public Class FrmBusquedaMovimientoBanco
         dgvListado.Refresh()
     End Sub
 
-    Private Sub ValidarCantidadRegistros()
+    Private Async Sub ValidarCantidadRegistros()
         Try
-            'intTotalRegistros = servicioAuxiliarBancario.ObtenerTotalListaMovimientos(FrmMenuPrincipal.empresaGlobal.IdEmpresa, txtDescripcion.Text)
+            intTotalRegistros = Await Puntoventa.ObtenerTotalListaMovimientoBanco(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, txtDescripcion.Text, FrmPrincipal.usuarioGlobal.Token)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()

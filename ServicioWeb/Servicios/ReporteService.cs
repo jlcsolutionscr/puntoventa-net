@@ -28,11 +28,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         List<ReporteDetalle> ObtenerReporteDevolucionesPorCliente(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, int intIdCliente, bool bolNulo);
         List<ReporteVentasPorVendedor> ObtenerReporteVentasPorVendedor(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, int intIdVendedor);
         List<ReporteDetalle> ObtenerReporteComprasPorProveedor(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, int intIdProveedor, bool bolNulo, int intTipoPago);
-        List<ReporteCuentas> ObtenerReporteCuentasPorCobrarClientes(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, int intIdCliente, bool bolActivas);
-        List<ReporteCuentas> ObtenerReporteCuentasPorPagarProveedores(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, int intIdProveedor, bool bolActivas);
+        List<ReporteCuentas> ObtenerReporteCuentasPorCobrarClientes(int intIdEmpresa, int intIdSucursal, int intIdCliente, bool bolActivas);
+        List<ReporteCuentas> ObtenerReporteCuentasPorPagarProveedores(int intIdEmpresa, int intIdSucursal, int intIdProveedor, bool bolActivas);
         List<ReporteGrupoDetalle> ObtenerReporteMovimientosCxCClientes(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, int intIdCliente);
         List<ReporteGrupoDetalle> ObtenerReporteMovimientosCxPProveedores(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, int intIdProveedor);
-        List<ReporteMovimientosBanco> ObtenerReporteMovimientosBanco(int intIdCuenta, string strFechaInicial, string strFechaFinal);
+        List<ReporteMovimientosBanco> ObtenerReporteMovimientosBanco(int intIdCuenta, int intIdSucursal, string strFechaInicial, string strFechaFinal);
         List<DescripcionValor> ObtenerReporteEstadoResultados(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal);
         List<ReporteGrupoDetalle> ObtenerReporteDetalleEgreso(int intIdEmpresa, int intIdSucursal, int idCuentaEgreso, string strFechaInicial, string strFechaFinal);
         List<ReporteGrupoDetalle> ObtenerReporteDetalleIngreso(int intIdEmpresa, int intIdSucursal, int idCuentaIngreso, string strFechaInicial, string strFechaFinal);
@@ -486,16 +486,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public List<ReporteCuentas> ObtenerReporteCuentasPorCobrarClientes(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, int intIdCliente, bool bolActivas)
+        public List<ReporteCuentas> ObtenerReporteCuentasPorCobrarClientes(int intIdEmpresa, int intIdSucursal, int intIdCliente, bool bolActivas)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 try
                 {
-                    DateTime datFechaInicial = DateTime.ParseExact(strFechaInicial + " 00:00:01", strFormat, provider);
-                    DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
                     List<ReporteCuentas> listaReporte = new List<ReporteCuentas>();
-                    var detalleCxCClientes = dbContext.CuentaPorCobrarRepository.Where(s => s.IdEmpresa == intIdEmpresa && s.IdSucursal == intIdSucursal && s.Nulo == false && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal && s.Tipo == StaticTipoCuentaPorCobrar.Clientes)
+                    var detalleCxCClientes = dbContext.CuentaPorCobrarRepository.Where(s => s.IdEmpresa == intIdEmpresa && s.IdSucursal == intIdSucursal && s.Nulo == false && s.Tipo == StaticTipoCuentaPorCobrar.Clientes)
                         .Join(dbContext.ClienteRepository, x => x.IdPropietario, y => y.IdCliente, (x, y) => new { x, y })
                         .Select(z => new { z.x.IdPropietario, z.y.Nombre, z.x.IdCxC, z.x.Referencia, z.x.Fecha, z.x.Plazo, z.x.Total, z.x.Saldo });
                     if (bolActivas)
@@ -529,16 +527,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public List<ReporteCuentas> ObtenerReporteCuentasPorPagarProveedores(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, int intIdProveedor, bool bolActivas)
+        public List<ReporteCuentas> ObtenerReporteCuentasPorPagarProveedores(int intIdEmpresa, int intIdSucursal, int intIdProveedor, bool bolActivas)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 try
                 {
-                    DateTime datFechaInicial = DateTime.ParseExact(strFechaInicial + " 00:00:01", strFormat, provider);
-                    DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
                     List<ReporteCuentas> listaReporte = new List<ReporteCuentas>();
-                    var detalleCxPProveedores = dbContext.CuentaPorPagarRepository.Where(s => s.IdEmpresa == intIdEmpresa && s.IdSucursal == intIdSucursal && s.Nulo == false && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal && s.Tipo == StaticTipoCuentaPorPagar.Proveedores)
+                    var detalleCxPProveedores = dbContext.CuentaPorPagarRepository.Where(s => s.IdEmpresa == intIdEmpresa && s.IdSucursal == intIdSucursal && s.Nulo == false && s.Tipo == StaticTipoCuentaPorPagar.Proveedores)
                         .Join(dbContext.ProveedorRepository, x => x.IdPropietario, y => y.IdProveedor, (x, y) => new { x, y })
                         .Select(z => new { z.x.IdPropietario, z.y.Nombre, z.x.IdCxP, z.x.Fecha, z.x.Plazo, z.x.Referencia, z.x.Total, z.x.Saldo });
                     if (bolActivas)
@@ -642,7 +638,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public List<ReporteMovimientosBanco> ObtenerReporteMovimientosBanco(int intIdCuenta, string strFechaInicial, string strFechaFinal)
+        public List<ReporteMovimientosBanco> ObtenerReporteMovimientosBanco(int intIdCuenta, int intIdSucursal, string strFechaInicial, string strFechaFinal)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
@@ -651,7 +647,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     DateTime datFechaInicial = DateTime.ParseExact(strFechaInicial + " 00:00:01", strFormat, provider);
                     DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
                     List<ReporteMovimientosBanco> listaReporte = new List<ReporteMovimientosBanco>();
-                    var movimientoBanco = dbContext.MovimientoBancoRepository.Where(s => s.IdCuenta == intIdCuenta && s.Nulo == false && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal)
+                    var movimientoBanco = dbContext.MovimientoBancoRepository.Where(s => s.IdCuenta == intIdCuenta && s.IdSucursal == intIdSucursal && s.Nulo == false && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal)
                         .Join(dbContext.CuentaBancoRepository, x => x.IdCuenta, y => y.IdCuenta, (x, y) => new { x, y })
                         .Join(dbContext.TipoMovimientoBancoRepository, a => a.x.IdTipo, b => b.IdTipoMov, (a, b) => new { a, b })
                         .Select(z => new { z.a.x.IdMov, z.a.y.IdCuenta, NombreCuenta = z.a.y.Descripcion, z.a.x.Fecha, z.a.x.Numero, z.a.x.Beneficiario, z.a.x.Descripcion, z.b.DebeHaber, DescTipo = z.a.y.Descripcion, Total = z.a.x.Monto, z.a.x.SaldoAnterior })
@@ -660,10 +656,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         ReporteMovimientosBanco reporteLinea = new ReporteMovimientosBanco();
                         reporteLinea.IdMov = value.IdMov;
+                        reporteLinea.Fecha = value.Fecha.ToString("dd/MM/yyyy");
                         reporteLinea.IdCuenta = value.IdCuenta;
                         reporteLinea.NombreCuenta = value.NombreCuenta;
                         reporteLinea.SaldoAnterior = value.SaldoAnterior;
-                        reporteLinea.Fecha = value.Fecha.ToString("dd/MM/yyyy");
                         reporteLinea.Numero = value.Numero;
                         reporteLinea.Beneficiario = value.Beneficiario;
                         reporteLinea.Descripcion = value.Descripcion;
@@ -928,53 +924,36 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     List<DescripcionValor> listaReporte = new List<DescripcionValor>();
                     var datosCierre = dbContext.CierreCajaRepository.Where(a => a.IdCierre == intIdCierre).FirstOrDefault();
-                    decimal decTotalIngreosEfectivo = datosCierre.AdelantosApartadoEfectivo + datosCierre.AdelantosOrdenEfectivo + datosCierre.VentasEfectivo + datosCierre.PagosCxCEfectivo + datosCierre.IngresosEfectivo;
+                    decimal decTotalIngresosEfectivo = datosCierre.AdelantosApartadoEfectivo + datosCierre.AdelantosOrdenEfectivo + datosCierre.VentasEfectivo + datosCierre.PagosCxCEfectivo + datosCierre.IngresosEfectivo;
                     decimal decTotalEgresosEfectivo = datosCierre.ComprasEfectivo + datosCierre.PagosCxPEfectivo + datosCierre.EgresosEfectivo;
+                    decimal decTotalFondoCaja = datosCierre.FondoInicio + decTotalIngresosEfectivo - decTotalEgresosEfectivo;
                     DescripcionValor reporteLinea = new DescripcionValor("Fondo de inicio de caja", datosCierre.FondoInicio);
                     listaReporte.Add(reporteLinea);
                     reporteLinea = new DescripcionValor("Adelantos apartados en efectivo", datosCierre.AdelantosApartadoEfectivo);
                     listaReporte.Add(reporteLinea);
-                    reporteLinea = new DescripcionValor("Adelantos apartados con tarjeta", datosCierre.AdelantosApartadoTarjeta);
-                    listaReporte.Add(reporteLinea);
-                    reporteLinea = new DescripcionValor("Adelantos apartados en bancos", datosCierre.AdelantosApartadoBancos);
-                    listaReporte.Add(reporteLinea);
-                    reporteLinea = new DescripcionValor("Adelantos ordenes de servicio en efectivo", datosCierre.AdelantosOrdenEfectivo);
-                    listaReporte.Add(reporteLinea);
-                    reporteLinea = new DescripcionValor("Adelantos ordenes de servicio con tarjeta", datosCierre.AdelantosOrdenTarjeta);
-                    listaReporte.Add(reporteLinea);
-                    reporteLinea = new DescripcionValor("Adelantos ordenes de servicio en bancos", datosCierre.AdelantosOrdenBancos);
+                    reporteLinea = new DescripcionValor("Adelantos órdenes de servicio en efectivo", datosCierre.AdelantosOrdenEfectivo);
                     listaReporte.Add(reporteLinea);
                     reporteLinea = new DescripcionValor("Ventas de bienes y/o servicios en efectivo", datosCierre.VentasEfectivo);
                     listaReporte.Add(reporteLinea);
-                    reporteLinea = new DescripcionValor("Ventas de bienes y/o servicios de crédito", datosCierre.VentasCredito);
-                    listaReporte.Add(reporteLinea);
-                    reporteLinea = new DescripcionValor("Ventas de bienes y/o servicios con tarjeta", datosCierre.VentasTarjeta);
-                    listaReporte.Add(reporteLinea);
-                    reporteLinea = new DescripcionValor("Ventas de bienes y/o servicios en bancos", datosCierre.VentasBancos);
-                    listaReporte.Add(reporteLinea);
                     reporteLinea = new DescripcionValor("Pagos a cuentas por cobrar en efectivo", datosCierre.PagosCxCEfectivo);
-                    listaReporte.Add(reporteLinea);
-                    reporteLinea = new DescripcionValor("Pagos a cuentas por cobrar con tarjeta", datosCierre.PagosCxCTarjeta);
-                    listaReporte.Add(reporteLinea);
-                    reporteLinea = new DescripcionValor("Pagos a cuentas por cobrar en bancos", datosCierre.PagosCxCBancos);
                     listaReporte.Add(reporteLinea);
                     reporteLinea = new DescripcionValor("Registro de ingresos en efectivo", datosCierre.IngresosEfectivo);
                     listaReporte.Add(reporteLinea);
-                    reporteLinea = new DescripcionValor("Total de ingresos en efectivo ", decTotalIngreosEfectivo);
+                    reporteLinea = new DescripcionValor("Total de ingresos en efectivo ", decTotalIngresosEfectivo);
                     listaReporte.Add(reporteLinea);
                     reporteLinea = new DescripcionValor("Compras de bienes y/o servicios en efectivo", datosCierre.ComprasEfectivo);
                     listaReporte.Add(reporteLinea);
-                    reporteLinea = new DescripcionValor("Compras de bienes y/o servicios de crédito", datosCierre.ComprasCredito);
-                    listaReporte.Add(reporteLinea);
-                    reporteLinea = new DescripcionValor("de bienes y/o servicios en bancos", datosCierre.ComprasBancos);
-                    listaReporte.Add(reporteLinea);
                     reporteLinea = new DescripcionValor("Pagos a cuentas por pagar en efectivo", datosCierre.PagosCxPEfectivo);
                     listaReporte.Add(reporteLinea);
-                    reporteLinea = new DescripcionValor("Pagos a cuentas por pagar en bancos", datosCierre.PagosCxPBancos);
+                    reporteLinea = new DescripcionValor("Registro de egresos en efectivo", datosCierre.EgresosEfectivo);
                     listaReporte.Add(reporteLinea);
-                    reporteLinea = new DescripcionValor("Registro de ingresos en efectivo", datosCierre.EgresosEfectivo);
+                    reporteLinea = new DescripcionValor("Total de egresos en efectivo", decTotalEgresosEfectivo);
                     listaReporte.Add(reporteLinea);
-                    reporteLinea = new DescripcionValor("Total de egresos en efectivo ", decTotalEgresosEfectivo);
+                    reporteLinea = new DescripcionValor("Total de efectivo en caja", decTotalFondoCaja);
+                    listaReporte.Add(reporteLinea);
+                    reporteLinea = new DescripcionValor("Monto para retirar de fondo de caja", datosCierre.RetiroEfectivo);
+                    listaReporte.Add(reporteLinea);
+                    reporteLinea = new DescripcionValor("Monto de próximo inicio de caja", decTotalFondoCaja - datosCierre.RetiroEfectivo);
                     listaReporte.Add(reporteLinea);
                     return listaReporte;
                 }

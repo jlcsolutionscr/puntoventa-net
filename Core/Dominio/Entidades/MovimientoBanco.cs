@@ -9,6 +9,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
     {
         [Key]
         public int IdMov { get; set; }
+        public int IdSucursal { get; set; }
         public DateTime Fecha { get; set; }
         public int IdUsuario { get; set; }
         [ForeignKey("TipoMovimientoBanco")]
