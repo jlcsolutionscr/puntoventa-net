@@ -1,4 +1,3 @@
-Imports System.Collections.Generic
 Imports System.Threading.Tasks
 Imports LeandroSoftware.ClienteWCF
 Imports LeandroSoftware.Core.Dominio.Entidades
@@ -180,13 +179,13 @@ Public Class FrmAjusteInventario
 
     Private Async Sub FrmAjusteInventario_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
-            txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
-            Await CargarCombos()
-            If FrmPrincipal.empresaGlobal.AutoCompletaProducto Then CargarAutoCompletarProducto()
-            btnBusProd.Enabled = True
             IniciaDetalleAjusteInventario()
             EstablecerPropiedadesDataGridView()
+            txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
+            If FrmPrincipal.empresaGlobal.AutoCompletaProducto Then CargarAutoCompletarProducto()
+            btnBusProd.Enabled = True
             grdDetalleAjusteInventario.DataSource = dtbDetalleAjusteInventario
+            Await CargarCombos()
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -328,28 +327,37 @@ Public Class FrmAjusteInventario
     End Sub
 
     Private Async Sub TxtCodigo_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtCodigo.PreviewKeyDown
-        If e.KeyCode = Keys.F1 Then
-            BtnBusProd_Click(btnBusProd, New EventArgs())
-        ElseIf e.KeyCode = Keys.Enter Or e.KeyCode = Keys.Tab Then
-            Try
-                producto = Await Puntoventa.ObtenerProductoPorCodigo(FrmPrincipal.empresaGlobal.IdEmpresa, txtCodigo.Text, cboSucursal.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
-                If producto IsNot Nothing Then
-                    If producto.Activo And producto.Tipo = StaticTipoProducto.Producto Then
-                        CargarDatosProducto(producto)
-                        txtCantidad.Focus()
+        If e.KeyCode = Keys.Enter Or e.KeyCode = Keys.Tab Then
+            If txtCodigo.Text <> "" Then
+                Dim strCodigo As String = txtCodigo.Text.Split(":")(0)
+                Try
+                    producto = Await Puntoventa.ObtenerProductoPorCodigo(FrmPrincipal.empresaGlobal.IdEmpresa, strCodigo, cboSucursal.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
+                    If producto IsNot Nothing Then
+                        If producto.Activo And producto.Tipo = StaticTipoProducto.Producto Then
+                            CargarDatosProducto(producto)
+                            txtCantidad.Focus()
+                        Else
+                            MessageBox.Show("El código ingresado no pertenece a un producto o se encuentra inactivo", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                            txtCodigo.Text = ""
+                            txtDescripcion.Text = ""
+                            txtExistencias.Text = ""
+                            txtCantidad.Text = ""
+                            txtPrecioCosto.Text = ""
+                            txtCodigo.Focus()
+                        End If
+                    Else
+                        txtCodigo.Text = ""
+                        txtDescripcion.Text = ""
+                        txtExistencias.Text = ""
+                        txtCantidad.Text = ""
+                        txtPrecioCosto.Text = ""
+                        txtCodigo.Focus()
                     End If
-                Else
-                    txtCodigo.Text = ""
-                    txtDescripcion.Text = ""
-                    txtExistencias.Text = ""
-                    txtCantidad.Text = ""
-                    txtPrecioCosto.Text = ""
-                    txtCodigo.Focus()
-                End If
-            Catch ex As Exception
-                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Exit Sub
-            End Try
+                Catch ex As Exception
+                    MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    Exit Sub
+                End Try
+            End If
         End If
     End Sub
 

@@ -442,6 +442,16 @@ Public Class FrmCompra
             txtCantidad.Focus()
         End If
     End Sub
+
+    Private Sub CargarAutoCompletarProducto()
+        Dim source As New AutoCompleteStringCollection()
+        For Each p As ProductoDetalle In FrmPrincipal.listaProductos
+            source.Add(p.Codigo + ": " + p.Descripcion)
+        Next
+        txtCodigo.AutoCompleteCustomSource = source
+        txtCodigo.AutoCompleteMode = AutoCompleteMode.SuggestAppend
+        txtCodigo.AutoCompleteSource = AutoCompleteSource.CustomSource
+    End Sub
 #End Region
 
 #Region "Eventos Controles"
@@ -494,15 +504,12 @@ Public Class FrmCompra
 
     Private Async Sub FrmCompra_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
-            txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
-            txtIdOrdenCompra.Text = "0"
-            Await CargarCombos()
-            cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
-            cboTipoMoneda.SelectedValue = FrmPrincipal.empresaGlobal.IdTipoMoneda
-            txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmPrincipal.decTipoCambioDolar.ToString())
-            btnBusProd.Enabled = True
             IniciaDetalleCompra()
             EstablecerPropiedadesDataGridView()
+            txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
+            txtIdOrdenCompra.Text = "0"
+            If FrmPrincipal.empresaGlobal.AutoCompletaProducto Then CargarAutoCompletarProducto()
+            btnBusProd.Enabled = True
             grdDetalleCompra.DataSource = dtbDetalleCompra
             grdDesglosePago.DataSource = dtbDesglosePago
             consecDetalle = 0
@@ -513,6 +520,10 @@ Public Class FrmCompra
             txtImpuesto.Text = FormatNumber(0, 2)
             txtTotal.Text = FormatNumber(0, 2)
             txtSaldoPorPagar.Text = FormatNumber(decSaldoPorPagar, 2)
+            Await CargarCombos()
+            cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
+            cboTipoMoneda.SelectedValue = FrmPrincipal.empresaGlobal.IdTipoMoneda
+            txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmPrincipal.decTipoCambioDolar.ToString())
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -1011,11 +1022,21 @@ Public Class FrmCompra
                 Try
                     producto = Await Puntoventa.ObtenerProductoPorCodigoProveedor(FrmPrincipal.empresaGlobal.IdEmpresa, txtCodigoProveedor.Text, cboSucursal.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
                     If producto IsNot Nothing Then
-                        If producto.Activo Then
+                        If producto.Activo And producto.Tipo = StaticTipoProducto.Producto Then
                             CargarDatosProducto(producto)
                             txtCantidad.Focus()
+                        Else
+                            If producto.Activo = False Then MessageBox.Show("El código ingresado pertenece a un producto que se encuentra inactivo", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                            txtCodigoProveedor.Text = ""
+                            txtCodigo.Text = ""
+                            txtDescripcion.Text = ""
+                            txtExistencias.Text = ""
+                            txtCantidad.Text = "1"
+                            txtPrecioCosto.Text = ""
+                            txtCodigoProveedor.Focus()
                         End If
                     Else
+                        txtCodigoProveedor.Text = ""
                         txtCodigo.Text = ""
                         txtDescripcion.Text = ""
                         txtExistencias.Text = ""
@@ -1044,14 +1065,25 @@ Public Class FrmCompra
     Private Async Sub txtCodigo_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtCodigo.PreviewKeyDown
         If e.KeyCode = Keys.Enter Or e.KeyCode = Keys.Tab Then
             If txtCodigo.Text <> "" Then
+                Dim strCodigo As String = txtCodigo.Text.Split(":")(0)
                 Try
-                    producto = Await Puntoventa.ObtenerProductoPorCodigo(FrmPrincipal.empresaGlobal.IdEmpresa, txtCodigo.Text, cboSucursal.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
+                    producto = Await Puntoventa.ObtenerProductoPorCodigo(FrmPrincipal.empresaGlobal.IdEmpresa, strCodigo, cboSucursal.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
                     If producto IsNot Nothing Then
-                        If producto.Activo Then
+                        If producto.Activo And producto.Tipo = StaticTipoProducto.Producto Then
                             CargarDatosProducto(producto)
                             txtCantidad.Focus()
+                        Else
+                            If producto.Activo = False Then MessageBox.Show("El código ingresado pertenece a un producto que se encuentra inactivo", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                            txtCodigoProveedor.Text = ""
+                            txtCodigo.Text = ""
+                            txtDescripcion.Text = ""
+                            txtExistencias.Text = ""
+                            txtCantidad.Text = "1"
+                            txtPrecioCosto.Text = ""
+                            txtCodigo.Focus()
                         End If
                     Else
+                        txtCodigoProveedor.Text = ""
                         txtCodigo.Text = ""
                         txtDescripcion.Text = ""
                         txtExistencias.Text = ""

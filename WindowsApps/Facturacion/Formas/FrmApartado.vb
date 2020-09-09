@@ -486,6 +486,16 @@ Public Class FrmApartado
             txtPrecio.Text = FormatNumber(decPrecioVenta, 2)
         End If
     End Sub
+
+    Private Sub CargarAutoCompletarProducto()
+        Dim source As New AutoCompleteStringCollection()
+        For Each p As ProductoDetalle In FrmPrincipal.listaProductos
+            source.Add(p.Codigo + ": " + p.Descripcion)
+        Next
+        txtCodigo.AutoCompleteCustomSource = source
+        txtCodigo.AutoCompleteMode = AutoCompleteMode.SuggestAppend
+        txtCodigo.AutoCompleteSource = AutoCompleteSource.CustomSource
+    End Sub
 #End Region
 
 #Region "Eventos Controles"
@@ -512,15 +522,6 @@ Public Class FrmApartado
     Private Sub FrmApartado_KeyDown(sender As Object, e As KeyEventArgs) Handles MyBase.KeyDown
         If e.KeyCode = Keys.F1 Then
             BtnBusProd_Click(btnBusProd, New EventArgs())
-        ElseIf e.KeyCode = Keys.F2 Then
-            If FrmPrincipal.productoTranstorio IsNot Nothing Then
-                Dim formCargar As New FrmCargaProductoTransitorio
-                formCargar.ShowDialog()
-                If FrmPrincipal.productoTranstorio.PrecioVenta1 > 0 Then
-                    CargarLineaDetalleApartado(FrmPrincipal.productoTranstorio, FrmPrincipal.productoTranstorio.Descripcion, FrmPrincipal.productoTranstorio.Existencias, FrmPrincipal.productoTranstorio.PrecioVenta1, 0)
-                    FrmPrincipal.productoTranstorio.PrecioVenta1 = 0
-                End If
-            End If
         ElseIf e.KeyCode = Keys.F3 Then
             BtnBuscar_Click(btnBuscar, New EventArgs())
         ElseIf e.KeyCode = Keys.F4 Then
@@ -535,14 +536,10 @@ Public Class FrmApartado
 
     Private Async Sub FrmApartado_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
-            txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
-            Await CargarCombos()
-            cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
-            cboTipoMoneda.SelectedValue = FrmPrincipal.empresaGlobal.IdTipoMoneda
-            txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmPrincipal.decTipoCambioDolar.ToString())
-            Await CargarListaBancoAdquiriente()
             IniciaTablasDeDetalle()
             EstablecerPropiedadesDataGridView()
+            txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
+            If FrmPrincipal.empresaGlobal.AutoCompletaProducto Then CargarAutoCompletarProducto()
             grdDetalleApartado.DataSource = dtbDetalleApartado
             grdDesglosePago.DataSource = dtbDesglosePago
             consecDetalle = 0
@@ -576,6 +573,11 @@ Public Class FrmApartado
             If FrmPrincipal.bolModificaDescripcion Then txtDescripcion.ReadOnly = False
             If FrmPrincipal.bolModificaCliente Then txtPorcDesc.ReadOnly = False
             txtCodigo.Focus()
+            Await CargarCombos()
+            Await CargarListaBancoAdquiriente()
+            cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
+            cboTipoMoneda.SelectedValue = FrmPrincipal.empresaGlobal.IdTipoMoneda
+            txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmPrincipal.decTipoCambioDolar.ToString())
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -1307,30 +1309,40 @@ Public Class FrmApartado
 
     Private Async Sub TxtCodigo_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtCodigo.PreviewKeyDown
         If e.KeyCode = Keys.Enter Or e.KeyCode = Keys.Tab Then
-            Try
-                producto = Await Puntoventa.ObtenerProductoPorCodigo(FrmPrincipal.empresaGlobal.IdEmpresa, txtCodigo.Text, FrmPrincipal.equipoGlobal.IdSucursal, FrmPrincipal.usuarioGlobal.Token)
-                If producto IsNot Nothing Then
-                    If producto.Activo And producto.Tipo = StaticTipoProducto.Producto Then
-                        CargarDatosProducto(producto)
-                        txtCantidad.Focus()
+            If txtCodigo.Text <> "" Then
+                Dim strCodigo As String = txtCodigo.Text.Split(":")(0)
+                Try
+                    producto = Await Puntoventa.ObtenerProductoPorCodigo(FrmPrincipal.empresaGlobal.IdEmpresa, strCodigo, FrmPrincipal.equipoGlobal.IdSucursal, FrmPrincipal.usuarioGlobal.Token)
+                    If producto IsNot Nothing Then
+                        If producto.Activo And producto.Tipo = StaticTipoProducto.Producto Then
+                            CargarDatosProducto(producto)
+                            txtCantidad.Focus()
+                        Else
+                            MessageBox.Show("El código ingresado no pertenece a un producto o se encuentra inactivo", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                            txtCodigo.Text = ""
+                            txtDescripcion.Text = ""
+                            txtExistencias.Text = ""
+                            txtCantidad.Text = "1"
+                            txtUnidad.Text = ""
+                            txtPorcDesc.Text = "0"
+                            txtPrecio.Text = ""
+                            txtCodigo.Focus()
+                        End If
                     Else
-                        MessageBox.Show("El código ingresado no pertenece a un producto o se encuentra inactivo", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        txtCodigo.Text = ""
+                        txtDescripcion.Text = ""
+                        txtExistencias.Text = ""
+                        txtCantidad.Text = "1"
+                        txtUnidad.Text = ""
+                        txtPorcDesc.Text = "0"
+                        txtPrecio.Text = ""
                         txtCodigo.Focus()
                     End If
-                Else
-                    txtCodigo.Text = ""
-                    txtDescripcion.Text = ""
-                    txtExistencias.Text = ""
-                    txtCantidad.Text = "1"
-                    txtUnidad.Text = ""
-                    txtPorcDesc.Text = "0"
-                    txtPrecio.Text = ""
-                    txtCodigo.Focus()
-                End If
-            Catch ex As Exception
-                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Exit Sub
-            End Try
+                Catch ex As Exception
+                    MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    Exit Sub
+                End Try
+            End If
         End If
     End Sub
 

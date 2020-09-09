@@ -600,9 +600,9 @@ Public Class FrmPrincipal
                         End Try
                     Next
                 End If
-                productoTranstorio = Await Puntoventa.ObtenerProductoTransitorio(empresaGlobal.IdEmpresa, usuarioGlobal.Token)
             End If
         End If
+        productoTranstorio = Await Puntoventa.ObtenerProductoTransitorio(empresaGlobal.IdEmpresa, usuarioGlobal.Token)
         dgvDecimal = New DataGridViewCellStyle With {
             .Format = "N2",
             .NullValue = "0",

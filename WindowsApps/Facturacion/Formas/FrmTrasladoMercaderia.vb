@@ -206,31 +206,44 @@ Public Class FrmTrasladoMercaderia
         textbox.BackColor = Color.White
     End Sub
 
+    Private Sub FrmTrasladoMercaderia_KeyDown(sender As Object, e As KeyEventArgs) Handles MyBase.KeyDown
+        If e.KeyCode = Keys.F1 Then
+            BtnBusProd_Click(btnBusProd, New EventArgs())
+        ElseIf e.KeyCode = Keys.F3 Then
+            BtnBuscar_Click(btnBuscar, New EventArgs())
+        ElseIf e.KeyCode = Keys.F4 Then
+            BtnAgregar_Click(btnAgregar, New EventArgs())
+        ElseIf e.KeyCode = Keys.F10 And btnGuardar.Enabled Then
+            btnGuardar_Click(btnGuardar, New EventArgs())
+        End If
+        e.Handled = False
+    End Sub
+
     Private Async Sub FrmTrasladoMercaderia_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
             IniciaDetalleTraslado()
             EstablecerPropiedadesDataGridView()
             txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
             txtNombreSucursalOrigen.Text = FrmPrincipal.equipoGlobal.NombreSucursal
-            Await CargarCombos()
             If FrmPrincipal.empresaGlobal.AutoCompletaProducto Then CargarAutoCompletarProducto()
+            grdDetalleTraslado.DataSource = dtbDetalleTraslado
+            bolInit = False
+            txtCantidad.Text = ""
+            txtTotal.Text = FormatNumber(0, 2)
+            Await CargarCombos()
             If cboIdSucursalDestino.Items.Count = 0 Then
                 MessageBox.Show("La empresa no posee sucursales adicionales.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 Close()
                 Exit Sub
             End If
             cboIdSucursalDestino.SelectedIndex = 0
-            grdDetalleTraslado.DataSource = dtbDetalleTraslado
-            bolInit = False
-            txtCantidad.Text = ""
-            txtTotal.Text = FormatNumber(0, 2)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
         End Try
     End Sub
 
-    Private Sub CmdAgregar_Click(sender As Object, e As EventArgs) Handles btnAgregar.Click
+    Private Sub BtnAgregar_Click(sender As Object, e As EventArgs) Handles btnAgregar.Click
         txtIdTraslado.Text = ""
         txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
         txtNombreSucursalOrigen.Text = FrmPrincipal.equipoGlobal.NombreSucursal
@@ -269,12 +282,12 @@ Public Class FrmTrasladoMercaderia
                     Exit Sub
                 End Try
                 MessageBox.Show("Transacción procesada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
-                CmdAgregar_Click(btnAgregar, New EventArgs())
+                BtnAgregar_Click(btnAgregar, New EventArgs())
             End If
         End If
     End Sub
 
-    Private Async Sub btnBuscar_Click(sender As Object, e As EventArgs) Handles btnBuscar.Click
+    Private Async Sub BtnBuscar_Click(sender As Object, e As EventArgs) Handles btnBuscar.Click
         Dim formBusqueda As New FrmBusquedaTraslado()
         FrmPrincipal.intBusqueda = 0
         formBusqueda.ShowDialog()
@@ -432,29 +445,38 @@ Public Class FrmTrasladoMercaderia
     End Sub
 
     Private Async Sub TxtCodigo_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtCodigo.PreviewKeyDown
-        If e.KeyCode = Keys.F1 Then
-            BtnBusProd_Click(btnBusProd, New EventArgs())
-        ElseIf e.KeyCode = Keys.Enter Or e.KeyCode = Keys.Tab Then
-            Try
-                producto = Await Puntoventa.ObtenerProductoPorCodigo(FrmPrincipal.empresaGlobal.IdEmpresa, txtCodigo.Text, FrmPrincipal.equipoGlobal.IdSucursal, FrmPrincipal.usuarioGlobal.Token)
-                If producto IsNot Nothing Then
-                    If producto.Activo And producto.Tipo = StaticTipoProducto.Producto Then
-                        CargarDatosProducto(producto)
-                        txtCantidad.Focus()
+        If e.KeyCode = Keys.Enter Or e.KeyCode = Keys.Tab Then
+            If txtCodigo.Text <> "" Then
+                Dim strCodigo As String = txtCodigo.Text.Split(":")(0)
+                Try
+                    producto = Await Puntoventa.ObtenerProductoPorCodigo(FrmPrincipal.empresaGlobal.IdEmpresa, strCodigo, FrmPrincipal.equipoGlobal.IdSucursal, FrmPrincipal.usuarioGlobal.Token)
+                    If producto IsNot Nothing Then
+                        If producto.Activo And producto.Tipo = StaticTipoProducto.Producto Then
+                            CargarDatosProducto(producto)
+                            txtCantidad.Focus()
+                        Else
+                            MessageBox.Show("El código ingresado no pertenece a un producto o se encuentra inactivo", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                            txtCodigo.Text = ""
+                            txtDescripcion.Text = ""
+                            txtExistencias.Text = ""
+                            txtCantidad.Text = ""
+                            txtPrecioCosto.Text = ""
+                            txtCodigo.Focus()
+                        End If
+                    Else
+                        txtCodigo.Text = ""
+                        txtDescripcion.Text = ""
+                        txtExistencias.Text = ""
+                        txtCantidad.Text = ""
+                        txtUnidad.Text = ""
+                        txtPrecioCosto.Text = ""
+                        txtCodigo.Focus()
                     End If
-                Else
-                    txtCodigo.Text = ""
-                    txtDescripcion.Text = ""
-                    txtExistencias.Text = ""
-                    txtCantidad.Text = ""
-                    txtUnidad.Text = ""
-                    txtPrecioCosto.Text = ""
-                    txtCodigo.Focus()
-                End If
-            Catch ex As Exception
-                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Exit Sub
-            End Try
+                Catch ex As Exception
+                    MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    Exit Sub
+                End Try
+            End If
         End If
     End Sub
 

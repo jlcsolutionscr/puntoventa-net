@@ -238,11 +238,10 @@ Public Class FrmOrdenCompra
 
     Private Sub FrmOrdenCompra_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
-            txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
-            CargarCombos()
-            If FrmPrincipal.empresaGlobal.AutoCompletaProducto Then CargarAutoCompletarProducto()
             IniciaDetalleOrdenCompra()
             EstablecerPropiedadesDataGridView()
+            txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
+            If FrmPrincipal.empresaGlobal.AutoCompletaProducto Then CargarAutoCompletarProducto()
             grdDetalleOrdenCompra.DataSource = dtbDetalleOrdenCompra
             bolInit = False
             txtCantidad.Text = "1"
@@ -250,6 +249,7 @@ Public Class FrmOrdenCompra
             txtDescuento.Text = FormatNumber(0, 2)
             txtImpuesto.Text = FormatNumber(0, 2)
             txtTotal.Text = FormatNumber(0, 2)
+            CargarCombos()
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
