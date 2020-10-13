@@ -7,10 +7,8 @@ Public Class FrmUsuario
 #Region "Variables"
     Private dtbRolePorUsuario As DataTable
     Private dtrRolePorUsuario As DataRow
-    Private I As Short
     Private datos As Usuario
     Private rolePorUsuario As RolePorUsuario
-    Private bolInit As Boolean = True
     Public intIdUsuario As Integer
 #End Region
 
@@ -128,7 +126,6 @@ Public Class FrmUsuario
             Else
                 datos = New Usuario
             End If
-            bolInit = False
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -170,7 +167,7 @@ Public Class FrmUsuario
         datos.PorcMaxDescuento = txtPorcMaxDescuento.Text
         datos.PermiteRegistrarDispositivo = chkRegistraDispositivo.Checked
         datos.RolePorUsuario.Clear()
-        For I = 0 To dtbRolePorUsuario.Rows.Count - 1
+        For I As Short = 0 To dtbRolePorUsuario.Rows.Count - 1
             rolePorUsuario = New RolePorUsuario With {
                 .IdRole = dtbRolePorUsuario.Rows(I).Item(0)
             }

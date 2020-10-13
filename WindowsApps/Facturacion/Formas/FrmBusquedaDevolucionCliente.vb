@@ -8,7 +8,7 @@ Public Class FrmBusquedaDevolucionCliente
     Private intFilasPorPagina As Integer = 13
     Private intCantidadDePaginas As Integer
     Private intId As Integer = 0
-    Private bolInit As Boolean = False
+    Private bolReady As Boolean = False
 #End Region
 
 #Region "Métodos"
@@ -137,7 +137,7 @@ Public Class FrmBusquedaDevolucionCliente
             Await ValidarCantidadRegistros()
             intIndiceDePagina = 1
             Await ActualizarDatos(intIndiceDePagina)
-            bolInit = True
+            bolReady = True
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -164,7 +164,7 @@ Public Class FrmBusquedaDevolucionCliente
     End Sub
 
     Private Sub cboSucursal_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboSucursal.SelectedIndexChanged
-        If bolInit Then btnFiltrar_Click(btnFiltrar, New EventArgs())
+        If bolReady Then BtnFiltrar_Click(btnFiltrar, New EventArgs())
     End Sub
 #End Region
 End Class

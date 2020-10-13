@@ -7,7 +7,6 @@ Public Class FrmCliente
 #Region "Variables"
     Public intIdCliente As Integer
     Private datos As Cliente
-    Private bolInit As Boolean = True
     Private provider As CultureInfo = CultureInfo.InvariantCulture
 #End Region
 
@@ -80,7 +79,6 @@ Public Class FrmCliente
                 txtNombreInstExoneracion.Text = datos.NombreInstExoneracion
                 txtFechaExoneracion.Value = datos.FechaEmisionDoc
                 txtPorcentajeExoneracion.Text = datos.PorcentajeExoneracion
-                txtIdentificacion.ReadOnly = True
             Else
                 datos = New Cliente
                 cboTipoImpuesto.SelectedValue = 8
@@ -88,7 +86,6 @@ Public Class FrmCliente
                 txtPorcentajeExoneracion.Text = "0"
                 txtFechaExoneracion.Value = Date.ParseExact("01/01/2019", "dd/MM/yyyy", provider)
             End If
-            bolInit = False
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -150,7 +147,6 @@ Public Class FrmCliente
                 Dim cliente As Cliente = Nothing
                 cliente = Await Puntoventa.ValidaIdentificacionCliente(FrmPrincipal.empresaGlobal.IdEmpresa, txtIdentificacion.Text, FrmPrincipal.usuarioGlobal.Token)
                 If cliente IsNot Nothing Then
-                    bolInit = True
                     If cliente.IdCliente > 0 Then
                         MessageBox.Show("La identificación ingresada ya se encuentra registrada en la base de datos de clientes del sistema.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
                         datos = cliente
@@ -178,7 +174,6 @@ Public Class FrmCliente
                         cboTipoIdentificacion.SelectedValue = 0
                         txtNombre.Text = cliente.Nombre
                     End If
-                    bolInit = False
                 ElseIf cboTipoIdentificacion.SelectedValue = 0 Then
                     MessageBox.Show("No se encontró la identificación registrada en el sistema o en el padrón electoral. Por favor ingrese la información completa.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 End If

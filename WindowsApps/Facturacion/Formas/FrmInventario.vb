@@ -12,7 +12,7 @@ Public Class FrmInventario
     Private intFilasPorPagina As Integer = 16
     Private intCantidadDePaginas As Integer
     Private intIdSucursal As Integer = FrmPrincipal.equipoGlobal.IdSucursal
-    Private bolInit As Boolean = True
+    Private bolReady As Boolean = False
     Private newFormReport As FrmReportViewer
     Private assembly As Assembly = Assembly.LoadFrom("Core.dll")
     Private strEmpresa As String = IIf(FrmPrincipal.empresaGlobal.NombreComercial = "", FrmPrincipal.empresaGlobal.NombreEmpresa, FrmPrincipal.empresaGlobal.NombreComercial)
@@ -192,12 +192,12 @@ Public Class FrmInventario
 
     Private Async Sub FrmInventario_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
-            Await CargarComboBox()
             EstablecerPropiedadesDataGridView()
+            Await CargarComboBox()
             Await ValidarCantidadRegistros()
-            bolInit = False
             intIndiceDePagina = 1
             Await ActualizarDatos(intIndiceDePagina)
+            bolReady = True
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -250,26 +250,26 @@ Public Class FrmInventario
     End Sub
 
     Private Sub chkFiltrarActivos_CheckedChanged(sender As Object, e As EventArgs) Handles chkFiltrarActivos.CheckedChanged
-        If Not bolInit And Not cboSucursal.SelectedValue Is Nothing Then
+        If bolReady And Not cboSucursal.SelectedValue Is Nothing Then
             CmdFiltrar_Click(CmdFiltrar, New EventArgs())
         End If
     End Sub
 
     Private Sub cboSucursal_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboSucursal.SelectedIndexChanged
-        If Not bolInit And Not cboSucursal.SelectedValue Is Nothing Then
+        If bolReady And Not cboSucursal.SelectedValue Is Nothing Then
             intIdSucursal = cboSucursal.SelectedValue
             CmdFiltrar_Click(CmdFiltrar, New EventArgs())
         End If
     End Sub
 
     Private Sub cboLinea_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboLinea.SelectedIndexChanged
-        If Not bolInit And Not cboSucursal.SelectedValue Is Nothing Then
+        If bolReady And Not cboSucursal.SelectedValue Is Nothing Then
             CmdFiltrar_Click(CmdFiltrar, New EventArgs())
         End If
     End Sub
 
     Private Sub chkFiltrarExistencias_CheckedChanged(sender As Object, e As EventArgs) Handles chkFiltrarExistencias.CheckedChanged
-        If Not bolInit And Not cboSucursal.SelectedValue Is Nothing Then
+        If bolReady And Not cboSucursal.SelectedValue Is Nothing Then
             CmdFiltrar_Click(CmdFiltrar, New EventArgs())
         End If
     End Sub

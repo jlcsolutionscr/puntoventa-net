@@ -7,7 +7,6 @@ Imports LeandroSoftware.ClienteWCF
 Public Class FrmTrasladoMercaderia
 #Region "Variables"
     Private decExcento, decGravado, decImpuesto, decTotal As Decimal
-    Private I As Short
     Private dtbDetalleTraslado As DataTable
     Private dtrRowDetTraslado As DataRow
     Private arrDetalleTraslado As List(Of ModuloImpresion.ClsDetalleComprobante)
@@ -16,8 +15,6 @@ Public Class FrmTrasladoMercaderia
     Private producto As Producto
     Private comprobante As ModuloImpresion.ClsComprobante
     Private detalleComprobante As ModuloImpresion.ClsDetalleComprobante
-    Private listOfProducts As IList(Of Producto)
-    Private bolInit As Boolean = True
 #End Region
 
 #Region "Métodos"
@@ -132,7 +129,7 @@ Public Class FrmTrasladoMercaderia
         decGravado = 0
         decImpuesto = 0
         decTotal = 0
-        For I = 0 To dtbDetalleTraslado.Rows.Count - 1
+        For I As Short = 0 To dtbDetalleTraslado.Rows.Count - 1
             If dtbDetalleTraslado.Rows(I).Item(6) > 0 Then
                 decGravado += CDbl(dtbDetalleTraslado.Rows(I).Item(5))
                 decImpuesto += CDbl(dtbDetalleTraslado.Rows(I).Item(5)) * dtbDetalleTraslado.Rows(I).Item(6) / 100
@@ -227,7 +224,6 @@ Public Class FrmTrasladoMercaderia
             txtNombreSucursalOrigen.Text = FrmPrincipal.equipoGlobal.NombreSucursal
             If FrmPrincipal.empresaGlobal.AutoCompletaProducto Then CargarAutoCompletarProducto()
             grdDetalleTraslado.DataSource = dtbDetalleTraslado
-            bolInit = False
             txtCantidad.Text = ""
             txtTotal.Text = FormatNumber(0, 2)
             Await CargarCombos()
@@ -357,7 +353,7 @@ Public Class FrmTrasladoMercaderia
                 .Referencia = txtReferencia.Text,
                 .Total = decTotal
             }
-            For I = 0 To dtbDetalleTraslado.Rows.Count - 1
+            For I As Short = 0 To dtbDetalleTraslado.Rows.Count - 1
                 detalleTraslado = New DetalleTraslado With {
                     .IdProducto = dtbDetalleTraslado.Rows(I).Item(0),
                     .Cantidad = dtbDetalleTraslado.Rows(I).Item(3),
@@ -402,7 +398,7 @@ Public Class FrmTrasladoMercaderia
                 .strTotal = txtTotal.Text
             }
             arrDetalleTraslado = New List(Of ModuloImpresion.ClsDetalleComprobante)
-            For I = 0 To dtbDetalleTraslado.Rows.Count - 1
+            For I As Short = 0 To dtbDetalleTraslado.Rows.Count - 1
                 detalleComprobante = New ModuloImpresion.ClsDetalleComprobante With {
                     .strDescripcion = dtbDetalleTraslado.Rows(I).Item(1) + "-" + dtbDetalleTraslado.Rows(I).Item(2),
                     .strCantidad = CDbl(dtbDetalleTraslado.Rows(I).Item(3)),

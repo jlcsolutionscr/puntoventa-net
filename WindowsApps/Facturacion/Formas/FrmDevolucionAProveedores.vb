@@ -5,7 +5,6 @@ Imports LeandroSoftware.Core.Dominio.Entidades
 Public Class FrmDevolucionAProveedores
 #Region "Variables"
     Private decExcento, decGravado, decSubTotal As Decimal
-    Private I As Short
     Private dtbDatosLocal, dtbDetalleDevolucion As DataTable
     Private dtrRowDetDevolucion As DataRow
     Private arrDetalleDevolucion As List(Of ModuloImpresion.ClsDetalleComprobante)
@@ -15,7 +14,6 @@ Public Class FrmDevolucionAProveedores
     Private proveedor As Proveedor
     Private comprobante As ModuloImpresion.ClsComprobante
     Private detalleComprobante As ModuloImpresion.ClsDetalleComprobante
-    Private bolInit As Boolean = True
 #End Region
 
 #Region "Métodos"
@@ -149,7 +147,7 @@ Public Class FrmDevolucionAProveedores
         decExcento = 0
         decGravado = 0
         decSubTotal = 0
-        For I = 0 To dtbDetalleDevolucion.Rows.Count - 1
+        For I As Short = 0 To dtbDetalleDevolucion.Rows.Count - 1
             If dtbDetalleDevolucion.Rows(I).Item(7) > 0 Then
                 Dim decTotalPorLinea As Decimal = dtbDetalleDevolucion.Rows(I).Item(4).Value * dtbDetalleDevolucion.Rows(I).Item(7).Value
                 If dtbDetalleDevolucion.Rows(I).Item(6) = 0 Then
@@ -163,7 +161,7 @@ Public Class FrmDevolucionAProveedores
         decSubTotal = decGravado + decExcento
         If decSubTotal > 0 And compra.Descuento > 0 Then
             decImpuesto = 0
-            For I = 0 To dtbDetalleDevolucion.Rows.Count - 1
+            For I As Short = 0 To dtbDetalleDevolucion.Rows.Count - 1
                 Dim decDescuentoPorLinea As Decimal = 0
                 Dim decTotalPorLinea As Decimal = dtbDetalleDevolucion.Rows(I).Item(4).Value * dtbDetalleDevolucion.Rows(I).Item(7).Value
                 decDescuentoPorLinea = decTotalPorLinea - (compra.Descuento / decSubTotal * decTotalPorLinea)
@@ -221,7 +219,6 @@ Public Class FrmDevolucionAProveedores
             IniciaDetalleDevolucion()
             EstablecerPropiedadesDataGridView()
             grdDetalleDevolucion.DataSource = dtbDetalleDevolucion
-            bolInit = False
             txtSubTotal.Text = FormatNumber(0, 2)
             txtImpuesto.Text = FormatNumber(0, 2)
             txtTotal.Text = FormatNumber(0, 2)
@@ -330,7 +327,7 @@ Public Class FrmDevolucionAProveedores
                 .Gravado = decGravado,
                 .Impuesto = CDbl(txtImpuesto.Text)
             }
-            For I = 0 To dtbDetalleDevolucion.Rows.Count - 1
+            For I As Short = 0 To dtbDetalleDevolucion.Rows.Count - 1
                 detalleDevolucion = New DetalleDevolucionProveedor With {
                     .IdProducto = dtbDetalleDevolucion.Rows(I).Item(0),
                     .Cantidad = dtbDetalleDevolucion.Rows(I).Item(3),
@@ -375,7 +372,7 @@ Public Class FrmDevolucionAProveedores
                 .strTotal = txtTotal.Text
             }
             arrDetalleDevolucion = New List(Of ModuloImpresion.clsDetalleComprobante)
-            For I = 0 To dtbDetalleDevolucion.Rows.Count - 1
+            For I As Short = 0 To dtbDetalleDevolucion.Rows.Count - 1
                 If dtbDetalleDevolucion.Rows(I).Item(7) > 0 Then
                     detalleComprobante = New ModuloImpresion.clsDetalleComprobante With {
                         .strDescripcion = dtbDetalleDevolucion.Rows(I).Item(1) + "-" + dtbDetalleDevolucion.Rows(I).Item(2),

@@ -10,7 +10,7 @@ Imports LeandroSoftware.ClienteWCF
 Public Class FrmApartado
 #Region "Variables"
     Private decDescuento, decExcento, decGravado, decExonerado, decImpuesto, decTotal, decSubTotal, decPrecioVenta, decPagoEfectivo, decPagoCliente, decTotalPago, decSaldoPorPagar As Decimal
-    Private I, consecDetalle As Short
+    Private consecDetalle As Short
     Private dtbDetalleApartado, dtbDesglosePago As DataTable
     Private dtrRowDetApartado, dtrRowDesglosePago As DataRow
     Private apartado As Apartado
@@ -19,7 +19,7 @@ Public Class FrmApartado
     Private producto As Producto
     Private cliente As Cliente
     Private vendedor As Vendedor
-    Private bolInit As Boolean = True
+    Private bolReady As Boolean = False
     Private bolAutorizando As Boolean = False
     Private provider As CultureInfo = CultureInfo.InvariantCulture
     'Impresion de tiquete
@@ -358,7 +358,7 @@ Public Class FrmApartado
         decImpuesto = 0
         Dim intPorcentajeExoneracion As Integer = 0
         If txtPorcentajeExoneracion.Text <> "" Then intPorcentajeExoneracion = CInt(txtPorcentajeExoneracion.Text)
-        For I = 0 To dtbDetalleApartado.Rows.Count - 1
+        For I As Short = 0 To dtbDetalleApartado.Rows.Count - 1
             Dim decTasaImpuesto As Decimal = dtbDetalleApartado.Rows(I).Item(8)
             decDescuento += Math.Round(dtbDetalleApartado.Rows(I).Item(10) / (1 + (decTasaImpuesto / 100)), 2, MidpointRounding.AwayFromZero) * dtbDetalleApartado.Rows(I).Item(3)
             If decTasaImpuesto > 0 Then
@@ -394,7 +394,7 @@ Public Class FrmApartado
     Private Sub CargarTotalesPago()
         decTotalPago = 0
         decPagoEfectivo = 0
-        For I = 0 To dtbDesglosePago.Rows.Count - 1
+        For I As Short = 0 To dtbDesglosePago.Rows.Count - 1
             If dtbDesglosePago.Rows(I).Item(0) = StaticFormaPago.Efectivo Then decPagoEfectivo = CDbl(dtbDesglosePago.Rows(I).Item(7))
             decTotalPago = decTotalPago + CDbl(dtbDesglosePago.Rows(I).Item(7))
         Next
@@ -543,7 +543,6 @@ Public Class FrmApartado
             grdDetalleApartado.DataSource = dtbDetalleApartado
             grdDesglosePago.DataSource = dtbDesglosePago
             consecDetalle = 0
-            bolInit = False
             txtCantidad.Text = "1"
             txtPorcDesc.Text = "0"
             txtSubTotal.Text = FormatNumber(0, 2)
@@ -578,6 +577,7 @@ Public Class FrmApartado
             cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
             cboTipoMoneda.SelectedValue = FrmPrincipal.empresaGlobal.IdTipoMoneda
             txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmPrincipal.decTipoCambioDolar.ToString())
+            bolReady = True
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -585,7 +585,6 @@ Public Class FrmApartado
     End Sub
 
     Private Async Sub BtnAgregar_Click(sender As Object, e As EventArgs) Handles btnAgregar.Click
-        bolInit = True
         txtIdApartado.Text = ""
         txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
         cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
@@ -656,7 +655,6 @@ Public Class FrmApartado
             txtVendedor.Text = ""
         End If
         txtTipoCambio.Text = "1"
-        bolInit = False
         txtMontoPago.Text = ""
         txtCodigo.Focus()
     End Sub
@@ -692,7 +690,7 @@ Public Class FrmApartado
                 Exit Sub
             End Try
             If apartado IsNot Nothing Then
-                bolInit = True
+                bolReady = False
                 txtIdApartado.Text = apartado.ConsecApartado
                 cliente = apartado.Cliente
                 txtNombreCliente.Text = apartado.NombreCliente
@@ -727,7 +725,7 @@ Public Class FrmApartado
                 btnBuscarCliente.Enabled = False
                 btnAnular.Enabled = apartado.Aplicado = False And FrmPrincipal.bolAnularTransacciones
                 btnGuardar.Enabled = False
-                bolInit = False
+                bolReady = True
             Else
                 MessageBox.Show("No existe registro de proforma asociado al identificador seleccionado", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End If
@@ -865,7 +863,7 @@ Public Class FrmApartado
                 .MontoPagado = decPagoCliente,
                 .Nulo = False
             }
-            For I = 0 To dtbDetalleApartado.Rows.Count - 1
+            For I As Short = 0 To dtbDetalleApartado.Rows.Count - 1
                 detalleApartado = New DetalleApartado With {
                     .IdProducto = dtbDetalleApartado.Rows(I).Item(0),
                     .Descripcion = dtbDetalleApartado.Rows(I).Item(2),
@@ -877,7 +875,7 @@ Public Class FrmApartado
                 }
                 apartado.DetalleApartado.Add(detalleApartado)
             Next
-            For I = 0 To dtbDesglosePago.Rows.Count - 1
+            For I As Short = 0 To dtbDesglosePago.Rows.Count - 1
                 desglosePago = New DesglosePagoApartado With {
                     .IdFormaPago = dtbDesglosePago.Rows(I).Item(0),
                     .IdCuentaBanco = dtbDesglosePago.Rows(I).Item(2),
@@ -958,7 +956,7 @@ Public Class FrmApartado
                     .strCambio = FormatNumber(decPagoCliente - decPagoEfectivo, 2)
                 }
                 arrDetalleOrden = New List(Of ModuloImpresion.ClsDetalleComprobante)
-                For I = 0 To dtbDetalleApartado.Rows.Count - 1
+                For I As Short = 0 To dtbDetalleApartado.Rows.Count - 1
                     detalleComprobante = New ModuloImpresion.ClsDetalleComprobante With {
                     .strDescripcion = dtbDetalleApartado.Rows(I).Item(1) + "-" + dtbDetalleApartado.Rows(I).Item(2),
                     .strCantidad = CDbl(dtbDetalleApartado.Rows(I).Item(3)),
@@ -970,7 +968,7 @@ Public Class FrmApartado
                 Next
                 comprobanteImpresion.arrDetalleComprobante = arrDetalleOrden
                 arrDesglosePago = New List(Of ModuloImpresion.ClsDesgloseFormaPago)
-                For I = 0 To dtbDesglosePago.Rows.Count - 1
+                For I As Short = 0 To dtbDesglosePago.Rows.Count - 1
                     desglosePagoImpresion = New ModuloImpresion.ClsDesgloseFormaPago(dtbDesglosePago.Rows(I).Item(1), FormatNumber(dtbDesglosePago.Rows(I).Item(7), 2))
                     arrDesglosePago.Add(desglosePagoImpresion)
                 Next
@@ -1040,7 +1038,7 @@ Public Class FrmApartado
                 datos.TelefonoReceptor = cliente.Telefono
                 datos.FaxReceptor = cliente.Fax
             End If
-            For I = 0 To dtbDetalleApartado.Rows.Count - 1
+            For I As Short = 0 To dtbDetalleApartado.Rows.Count - 1
                 Dim decPrecioVenta As Decimal = dtbDetalleApartado.Rows(I).Item(4)
                 Dim decTotalLinea As Decimal = dtbDetalleApartado.Rows(I).Item(3) * decPrecioVenta
                 Dim detalle As EstructuraPDFDetalleServicio = New EstructuraPDFDetalleServicio With {
@@ -1107,7 +1105,7 @@ Public Class FrmApartado
     End Sub
 
     Private Async Sub CboFormaPago_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboFormaPago.SelectedValueChanged
-        If Not bolInit And Not cboFormaPago.SelectedValue Is Nothing Then
+        If bolReady And cboFormaPago.SelectedValue IsNot Nothing Then
             txtTipoTarjeta.Text = ""
             txtAutorizacion.Text = ""
             If cboFormaPago.SelectedValue <> StaticFormaPago.Cheque And cboFormaPago.SelectedValue <> StaticFormaPago.TransferenciaDepositoBancario Then
@@ -1156,7 +1154,7 @@ Public Class FrmApartado
     End Sub
 
     Private Sub CboTipoMoneda_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboTipoMoneda.SelectedValueChanged
-        If Not bolInit And Not cboTipoMoneda.SelectedValue Is Nothing Then
+        If bolReady And cboTipoMoneda.SelectedValue IsNot Nothing Then
             txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmPrincipal.decTipoCambioDolar.ToString())
         End If
     End Sub

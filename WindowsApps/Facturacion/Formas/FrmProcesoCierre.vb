@@ -3,7 +3,7 @@ Public Class FrmProcesoCierre
     Private strEstado, SQLString, strFecha As String
     Private FechaDia, FechaCxC As Date
     Private Monto As Decimal
-    Private I, IdMovCxC, IdCxC, Cuotas As Integer
+    Private IdMovCxC, IdCxC, Cuotas As Integer
     Private objDatosLocal As DataTable
     Private objDataRow As DataRow
 #End Region

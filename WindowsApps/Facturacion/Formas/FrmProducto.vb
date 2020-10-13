@@ -7,7 +7,7 @@ Public Class FrmProducto
 #Region "Variables"
     Public intIdProducto As Integer
     Private datos As Producto
-    Private bolInit As Boolean = True
+    Private bolReady As Boolean = False
     Private proveedor As Proveedor
     Private parametroImpuesto As ParametroImpuesto
 #End Region
@@ -176,7 +176,7 @@ Public Class FrmProducto
                 txtPorcDescuento.Text = FormatoPrecio(0, 2)
                 chkActivo.Checked = True
             End If
-            bolInit = False
+            bolReady = False
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -384,7 +384,7 @@ Public Class FrmProducto
     End Sub
 
     Private Async Sub cboTipoImpuesto_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboTipoImpuesto.SelectedIndexChanged
-        If Not bolInit And cboTipoImpuesto.SelectedValue IsNot Nothing Then
+        If bolReady And cboTipoImpuesto.SelectedValue IsNot Nothing Then
             Await CalcularPrecioSinImpuesto(cboTipoImpuesto.SelectedValue)
         End If
     End Sub

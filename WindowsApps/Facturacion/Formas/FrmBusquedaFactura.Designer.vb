@@ -31,6 +31,8 @@ Partial Class FrmBusquedaFactura
         Me.txtId = New System.Windows.Forms.TextBox()
         Me.cboSucursal = New System.Windows.Forms.ComboBox()
         Me.Label6 = New System.Windows.Forms.Label()
+        Me.Label2 = New System.Windows.Forms.Label()
+        Me.txtIdentificacion = New System.Windows.Forms.TextBox()
         CType(Me.dgvListado, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -73,8 +75,9 @@ Partial Class FrmBusquedaFactura
         '
         Me.txtNombre.Location = New System.Drawing.Point(48, 38)
         Me.txtNombre.Name = "txtNombre"
-        Me.txtNombre.Size = New System.Drawing.Size(584, 20)
+        Me.txtNombre.Size = New System.Drawing.Size(383, 20)
         Me.txtNombre.TabIndex = 1
+        Me.txtNombre.TabStop = False
         '
         'btnLast
         '
@@ -152,6 +155,7 @@ Partial Class FrmBusquedaFactura
         Me.txtId.Name = "txtId"
         Me.txtId.Size = New System.Drawing.Size(55, 20)
         Me.txtId.TabIndex = 0
+        Me.txtId.TabStop = False
         '
         'cboSucursal
         '
@@ -176,6 +180,23 @@ Partial Class FrmBusquedaFactura
         Me.Label6.Text = "Sucursal:"
         Me.Label6.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
+        'Label2
+        '
+        Me.Label2.AutoSize = True
+        Me.Label2.Location = New System.Drawing.Point(437, 41)
+        Me.Label2.Name = "Label2"
+        Me.Label2.Size = New System.Drawing.Size(73, 13)
+        Me.Label2.TabIndex = 156
+        Me.Label2.Text = "Identificación:"
+        '
+        'txtIdentificacion
+        '
+        Me.txtIdentificacion.Location = New System.Drawing.Point(516, 38)
+        Me.txtIdentificacion.Name = "txtIdentificacion"
+        Me.txtIdentificacion.Size = New System.Drawing.Size(116, 20)
+        Me.txtIdentificacion.TabIndex = 2
+        Me.txtIdentificacion.TabStop = False
+        '
         'FrmBusquedaFactura
         '
         Me.AcceptButton = Me.btnFiltrar
@@ -183,6 +204,8 @@ Partial Class FrmBusquedaFactura
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(644, 415)
+        Me.Controls.Add(Me.Label2)
+        Me.Controls.Add(Me.txtIdentificacion)
         Me.Controls.Add(Me.cboSucursal)
         Me.Controls.Add(Me.Label6)
         Me.Controls.Add(Me.Label1)
@@ -225,4 +248,6 @@ Partial Class FrmBusquedaFactura
     Friend WithEvents txtId As System.Windows.Forms.TextBox
     Friend WithEvents cboSucursal As ComboBox
     Friend WithEvents Label6 As Label
+    Friend WithEvents Label2 As Label
+    Friend WithEvents txtIdentificacion As TextBox
 End Class

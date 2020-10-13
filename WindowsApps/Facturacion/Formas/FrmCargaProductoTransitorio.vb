@@ -6,7 +6,7 @@ Public Class FrmCargaProductoTransitorio
 #Region "Variables"
     Private datos As Producto
     Private parametroImpuesto As ParametroImpuesto
-    Private bolInit As Boolean = False
+    Private bolReady As Boolean = False
 #End Region
 
 #Region "Métodos"
@@ -53,7 +53,7 @@ Public Class FrmCargaProductoTransitorio
             Await CargarCombos()
             datos = FrmPrincipal.productoTranstorio
             parametroImpuesto = Await Puntoventa.ObtenerParametroImpuesto(8, FrmPrincipal.usuarioGlobal.Token)
-            bolInit = True
+            bolReady = True
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -99,7 +99,7 @@ Public Class FrmCargaProductoTransitorio
     End Sub
 
     Private Async Sub cboTipoImpuesto_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboTipoImpuesto.SelectedIndexChanged
-        If Not bolInit And cboTipoImpuesto.SelectedValue IsNot Nothing Then
+        If bolReady And cboTipoImpuesto.SelectedValue IsNot Nothing Then
             Await CalcularPrecioSinImpuesto(cboTipoImpuesto.SelectedValue)
         End If
     End Sub

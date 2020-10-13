@@ -10,7 +10,7 @@ Imports LeandroSoftware.ClienteWCF
 Public Class FrmProforma
 #Region "Variables"
     Private decDescuento, decExcento, decGravado, decExonerado, decImpuesto, decTotal, decSubTotal, decPrecioVenta As Decimal
-    Private I, consecDetalle As Short
+    Private consecDetalle As Short
     Private dtbDetalleProforma As DataTable
     Private dtrRowDetProforma As DataRow
     Private proforma As Proforma
@@ -18,7 +18,7 @@ Public Class FrmProforma
     Private producto As Producto
     Private cliente As Cliente
     Private vendedor As Vendedor
-    Private bolInit As Boolean = True
+    Private bolReady As Boolean = False
     Private bolAutorizando As Boolean = False
     Private provider As CultureInfo = CultureInfo.InvariantCulture
     'Impresion de tiquete
@@ -223,7 +223,7 @@ Public Class FrmProforma
         decImpuesto = 0
         Dim intPorcentajeExoneracion As Integer = 0
         If txtPorcentajeExoneracion.Text <> "" Then intPorcentajeExoneracion = CInt(txtPorcentajeExoneracion.Text)
-        For I = 0 To dtbDetalleProforma.Rows.Count - 1
+        For I As Short = 0 To dtbDetalleProforma.Rows.Count - 1
             Dim decTasaImpuesto As Decimal = dtbDetalleProforma.Rows(I).Item(8)
             decDescuento += Math.Round(dtbDetalleProforma.Rows(I).Item(10) / (1 + (decTasaImpuesto / 100)), 2, MidpointRounding.AwayFromZero) * dtbDetalleProforma.Rows(I).Item(3)
             If decTasaImpuesto > 0 Then
@@ -381,7 +381,6 @@ Public Class FrmProforma
             If FrmPrincipal.empresaGlobal.AutoCompletaProducto Then CargarAutoCompletarProducto()
             grdDetalleProforma.DataSource = dtbDetalleProforma
             consecDetalle = 0
-            bolInit = False
             txtCantidad.Text = "1"
             txtPorcDesc.Text = "0"
             txtSubTotal.Text = FormatNumber(0, 2)
@@ -412,6 +411,7 @@ Public Class FrmProforma
             Await CargarCombos()
             cboTipoMoneda.SelectedValue = FrmPrincipal.empresaGlobal.IdTipoMoneda
             txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmPrincipal.decTipoCambioDolar.ToString())
+            bolReady = True
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -419,7 +419,6 @@ Public Class FrmProforma
     End Sub
 
     Private Async Sub BtnAgregar_Click(sender As Object, e As EventArgs) Handles btnAgregar.Click
-        bolInit = True
         txtIdProforma.Text = ""
         txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
         cboSucursal.SelectedValue = FrmPrincipal.equipoGlobal.IdSucursal
@@ -478,7 +477,6 @@ Public Class FrmProforma
             vendedor = Nothing
             txtVendedor.Text = ""
         End If
-        bolInit = False
         txtCodigo.Focus()
     End Sub
 
@@ -513,7 +511,6 @@ Public Class FrmProforma
                 Exit Sub
             End Try
             If proforma IsNot Nothing Then
-                bolInit = True
                 txtIdProforma.Text = proforma.ConsecProforma
                 cliente = proforma.Cliente
                 txtNombreCliente.Text = proforma.NombreCliente
@@ -541,7 +538,6 @@ Public Class FrmProforma
                 btnBuscarCliente.Enabled = False
                 btnGuardar.Enabled = proforma.Aplicado = False
                 btnAnular.Enabled = proforma.Aplicado = False And FrmPrincipal.bolAnularTransacciones
-                bolInit = False
             Else
                 MessageBox.Show("No existe registro de proforma asociado al identificador seleccionado", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End If
@@ -656,7 +652,7 @@ Public Class FrmProforma
                 .Impuesto = decImpuesto,
                 .Nulo = False
             }
-            For I = 0 To dtbDetalleProforma.Rows.Count - 1
+            For I As Short = 0 To dtbDetalleProforma.Rows.Count - 1
                 detalleProforma = New DetalleProforma With {
                     .IdProducto = dtbDetalleProforma.Rows(I).Item(0),
                     .Descripcion = dtbDetalleProforma.Rows(I).Item(2),
@@ -689,7 +685,7 @@ Public Class FrmProforma
             proforma.Descuento = 0
             proforma.Impuesto = CDbl(txtImpuesto.Text)
             proforma.DetalleProforma.Clear()
-            For I = 0 To dtbDetalleProforma.Rows.Count - 1
+            For I As Short = 0 To dtbDetalleProforma.Rows.Count - 1
                 detalleProforma = New DetalleProforma
                 detalleProforma.IdProforma = proforma.IdProforma
                 detalleProforma.IdProducto = dtbDetalleProforma.Rows(I).Item(0)
@@ -749,7 +745,7 @@ Public Class FrmProforma
                     .strTotal = txtTotal.Text
                 }
                 arrDetalleOrden = New List(Of ModuloImpresion.ClsDetalleComprobante)
-                For I = 0 To dtbDetalleProforma.Rows.Count - 1
+                For I As Short = 0 To dtbDetalleProforma.Rows.Count - 1
                     detalleComprobante = New ModuloImpresion.ClsDetalleComprobante With {
                     .strDescripcion = dtbDetalleProforma.Rows(I).Item(1) + "-" + dtbDetalleProforma.Rows(I).Item(2),
                     .strCantidad = CDbl(dtbDetalleProforma.Rows(I).Item(3)),
@@ -825,7 +821,7 @@ Public Class FrmProforma
                 datos.TelefonoReceptor = cliente.Telefono
                 datos.FaxReceptor = cliente.Fax
             End If
-            For I = 0 To dtbDetalleProforma.Rows.Count - 1
+            For I As Short = 0 To dtbDetalleProforma.Rows.Count - 1
                 Dim decPrecioVenta As Decimal = dtbDetalleProforma.Rows(I).Item(4)
                 Dim decTotalLinea As Decimal = dtbDetalleProforma.Rows(I).Item(3) * decPrecioVenta
                 Dim detalle As EstructuraPDFDetalleServicio = New EstructuraPDFDetalleServicio With {
@@ -899,7 +895,7 @@ Public Class FrmProforma
     End Sub
 
     Private Sub cboTipoMoneda_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboTipoMoneda.SelectedIndexChanged
-        If Not bolInit And Not cboTipoMoneda.SelectedValue Is Nothing Then
+        If bolReady And cboTipoMoneda.SelectedValue IsNot Nothing Then
             txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmPrincipal.decTipoCambioDolar.ToString())
         End If
     End Sub

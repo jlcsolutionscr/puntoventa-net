@@ -9,7 +9,7 @@ Public Class FrmBusquedaOrdenServicio
     Private intFilasPorPagina As Integer = 13
     Private intCantidadDePaginas As Integer
     Private intId As Integer = 0
-    Private bolInit As Boolean = False
+    Private bolReady As Boolean = False
     Public bolIncluyeEstado As Boolean = False
 #End Region
 
@@ -173,7 +173,7 @@ Public Class FrmBusquedaOrdenServicio
             Await ValidarCantidadProformas()
             intIndiceDePagina = 1
             Await ActualizarDatos(intIndiceDePagina)
-            bolInit = True
+            bolReady = True
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -200,11 +200,11 @@ Public Class FrmBusquedaOrdenServicio
     End Sub
 
     Private Sub cboEstado_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboEstado.SelectedIndexChanged
-        If bolInit Then btnFiltrar_Click(btnFiltrar, New EventArgs())
+        If bolReady Then BtnFiltrar_Click(btnFiltrar, New EventArgs())
     End Sub
 
     Private Sub cboSucursal_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboSucursal.SelectedIndexChanged
-        If bolInit Then btnFiltrar_Click(btnFiltrar, New EventArgs())
+        If bolReady Then BtnFiltrar_Click(btnFiltrar, New EventArgs())
     End Sub
 #End Region
 End Class

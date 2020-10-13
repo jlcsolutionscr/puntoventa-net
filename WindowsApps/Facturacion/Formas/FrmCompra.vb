@@ -12,7 +12,7 @@ Public Class FrmCompra
     Private decExcento, decGravado, decImpuesto, decSaldoPorPagar, decPrecioVenta As Decimal
     Private decTotalPago As Decimal = 0
     Private decTotal As Decimal = 0
-    Private I, consecDetalle As Short
+    Private consecDetalle As Short
     Private dtbDetalleCompra, dtbDesglosePago As DataTable
     Private dtrRowDetCompra, dtrRowDesglosePago As DataRow
     Private arrDetalleCompra As List(Of ModuloImpresion.ClsDetalleComprobante)
@@ -26,7 +26,7 @@ Public Class FrmCompra
     Private comprobanteImpresion As ModuloImpresion.ClsComprobante
     Private detalleComprobante As ModuloImpresion.ClsDetalleComprobante
     Private desglosePagoImpresion As ModuloImpresion.ClsDesgloseFormaPago
-    Private bolInit As Boolean = True
+    Private bolReady As Boolean = False
     Private newFormReport As FrmReportViewer
     Private assembly As Assembly = Assembly.LoadFrom("Core.dll")
     Private strEmpresa As String = IIf(FrmPrincipal.empresaGlobal.NombreComercial = "", FrmPrincipal.empresaGlobal.NombreEmpresa, FrmPrincipal.empresaGlobal.NombreComercial)
@@ -365,7 +365,7 @@ Public Class FrmCompra
         decExcento = 0
         decGravado = 0
         decImpuesto = 0
-        For I = 0 To dtbDetalleCompra.Rows.Count - 1
+        For I As Short = 0 To dtbDetalleCompra.Rows.Count - 1
             If dtbDetalleCompra.Rows(I).Item(7) = 0 Then
                 decTasaIva = dtbDetalleCompra.Rows(I).Item(8)
                 decGravado += dtbDetalleCompra.Rows(I).Item(6)
@@ -389,7 +389,7 @@ Public Class FrmCompra
 
     Private Sub CargarTotalesPago()
         decTotalPago = 0
-        For I = 0 To dtbDesglosePago.Rows.Count - 1
+        For I As Short = 0 To dtbDesglosePago.Rows.Count - 1
             decTotalPago = decTotalPago + CDbl(dtbDesglosePago.Rows(I).Item(6))
         Next
         decSaldoPorPagar = decTotal - decTotalPago
@@ -513,7 +513,6 @@ Public Class FrmCompra
             grdDetalleCompra.DataSource = dtbDetalleCompra
             grdDesglosePago.DataSource = dtbDesglosePago
             consecDetalle = 0
-            bolInit = False
             txtCantidad.Text = "1"
             txtSubTotal.Text = FormatNumber(0, 2)
             txtDescuento.Text = FormatNumber(0, 2)
@@ -524,6 +523,7 @@ Public Class FrmCompra
             cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
             cboTipoMoneda.SelectedValue = FrmPrincipal.empresaGlobal.IdTipoMoneda
             txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmPrincipal.decTipoCambioDolar.ToString())
+            bolReady = True
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -766,7 +766,7 @@ Public Class FrmCompra
                 .Observaciones = txtObservaciones.Text,
                 .Nulo = False
             }
-            For I = 0 To dtbDetalleCompra.Rows.Count - 1
+            For I As Short = 0 To dtbDetalleCompra.Rows.Count - 1
                 detalleCompra = New DetalleCompra With {
                     .IdProducto = dtbDetalleCompra.Rows(I).Item(0),
                     .Descripcion = dtbDetalleCompra.Rows(I).Item(3),
@@ -778,7 +778,7 @@ Public Class FrmCompra
                 }
                 compra.DetalleCompra.Add(detalleCompra)
             Next
-            For I = 0 To dtbDesglosePago.Rows.Count - 1
+            For I As Short = 0 To dtbDesglosePago.Rows.Count - 1
                 desglosePago = New DesglosePagoCompra With {
                     .IdFormaPago = dtbDesglosePago.Rows(I).Item(0),
                     .IdCuentaBanco = dtbDesglosePago.Rows(I).Item(2),
@@ -832,7 +832,7 @@ Public Class FrmCompra
                 .strTotal = txtTotal.Text
             }
             arrDetalleCompra = New List(Of ModuloImpresion.ClsDetalleComprobante)
-            For I = 0 To dtbDetalleCompra.Rows.Count - 1
+            For I As Short = 0 To dtbDetalleCompra.Rows.Count - 1
                 detalleComprobante = New ModuloImpresion.ClsDetalleComprobante With {
                     .strDescripcion = dtbDetalleCompra.Rows(I).Item(2) + " - " + dtbDetalleCompra.Rows(I).Item(1) + " - " + dtbDetalleCompra.Rows(I).Item(3),
                     .strCantidad = CDbl(dtbDetalleCompra.Rows(I).Item(4)),
@@ -842,7 +842,7 @@ Public Class FrmCompra
             Next
             comprobanteImpresion.arrDetalleComprobante = arrDetalleCompra
             arrDesglosePago = New List(Of ModuloImpresion.ClsDesgloseFormaPago)
-            For I = 0 To dtbDesglosePago.Rows.Count - 1
+            For I As Short = 0 To dtbDesglosePago.Rows.Count - 1
                 desglosePagoImpresion = New ModuloImpresion.ClsDesgloseFormaPago(dtbDesglosePago.Rows(I).Item(1), FormatNumber(dtbDesglosePago.Rows(I).Item(6), 2))
                 arrDesglosePago.Add(desglosePagoImpresion)
             Next
@@ -860,7 +860,7 @@ Public Class FrmCompra
         If txtIdCompra.Text <> "" Then
             btnGenerarPDF.Enabled = False
             Dim datosReporte As New List(Of ReporteCompra)()
-            For I = 0 To dtbDetalleCompra.Rows.Count - 1
+            For I As Short = 0 To dtbDetalleCompra.Rows.Count - 1
                 Dim item As New ReporteCompra(compra.IdCompra, compra.NoDocumento, txtProveedor.Text, compra.Fecha, dtbDetalleCompra.Rows(I).Item(2), dtbDetalleCompra.Rows(I).Item(1), dtbDetalleCompra.Rows(I).Item(3), dtbDetalleCompra.Rows(I).Item(4), dtbDetalleCompra.Rows(I).Item(9))
                 datosReporte.Add(item)
             Next
@@ -921,7 +921,7 @@ Public Class FrmCompra
     End Sub
 
     Private Sub CboFormaPago_SelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs) Handles cboFormaPago.SelectedValueChanged
-        If Not bolInit And Not cboFormaPago.SelectedValue Is Nothing Then
+        If bolReady And cboFormaPago.SelectedValue IsNot Nothing Then
             cboCuentaBanco.SelectedIndex = 0
             txtReferencia.Text = ""
             If cboFormaPago.SelectedValue <> StaticFormaPago.TransferenciaDepositoBancario And cboFormaPago.SelectedValue <> StaticFormaPago.Cheque And cboFormaPago.SelectedValue <> StaticFormaPago.Tarjeta Then
@@ -941,7 +941,7 @@ Public Class FrmCompra
     End Sub
 
     Private Sub CboTipoMoneda_SelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs) Handles cboTipoMoneda.SelectedIndexChanged
-        If Not bolInit And Not cboTipoMoneda.SelectedValue Is Nothing Then
+        If bolReady And cboTipoMoneda.SelectedValue IsNot Nothing Then
             txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmPrincipal.decTipoCambioDolar.ToString())
         End If
     End Sub

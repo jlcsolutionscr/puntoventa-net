@@ -11,7 +11,7 @@ Public Class FrmOrdenServicio
 #Region "Variables"
     Private strMotivoRechazo As String
     Private decDescuento, decSubTotal, decExcento, decGravado, decExonerado, decImpuesto, decTotal, decPagoEfectivo, decPagoCliente, decTotalPago, decSaldoPorPagar, decPrecioVenta As Decimal
-    Private I, consecDetalle As Short
+    Private consecDetalle As Short
     Private dtbDatosLocal, dtbDetalleOrdenServicio, dtbDesglosePago As DataTable
     Private dtrRowDetOrdenServicio, dtrRowDesglosePago As DataRow
     Private arrDetalleOrdenServicio As ArrayList
@@ -21,7 +21,7 @@ Public Class FrmOrdenServicio
     Private producto As Producto
     Private cliente As Cliente
     Private vendedor As Vendedor
-    Private bolInit As Boolean = True
+    Private bolReady As Boolean = False
     Private bolAutorizando As Boolean = False
     Private provider As CultureInfo = CultureInfo.InvariantCulture
     'Impresion de tiquete
@@ -367,7 +367,7 @@ Public Class FrmOrdenServicio
         decImpuesto = 0
         Dim intPorcentajeExoneracion As Integer = 0
         If txtPorcentajeExoneracion.Text <> "" Then intPorcentajeExoneracion = CInt(txtPorcentajeExoneracion.Text)
-        For I = 0 To dtbDetalleOrdenServicio.Rows.Count - 1
+        For I As Short = 0 To dtbDetalleOrdenServicio.Rows.Count - 1
             Dim decTasaImpuesto As Decimal = dtbDetalleOrdenServicio.Rows(I).Item(8)
             decDescuento += Math.Round(dtbDetalleOrdenServicio.Rows(I).Item(10) / (1 + (decTasaImpuesto / 100)), 2, MidpointRounding.AwayFromZero) * dtbDetalleOrdenServicio.Rows(I).Item(3)
             If decTasaImpuesto > 0 Then
@@ -403,7 +403,7 @@ Public Class FrmOrdenServicio
     Private Sub CargarTotalesPago()
         decTotalPago = 0
         decPagoEfectivo = 0
-        For I = 0 To dtbDesglosePago.Rows.Count - 1
+        For I As Short = 0 To dtbDesglosePago.Rows.Count - 1
             If dtbDesglosePago.Rows(I).Item(0) = StaticFormaPago.Efectivo Then decPagoEfectivo = CDbl(dtbDesglosePago.Rows(I).Item(7))
             decTotalPago = decTotalPago + CDbl(dtbDesglosePago.Rows(I).Item(7))
         Next
@@ -585,7 +585,6 @@ Public Class FrmOrdenServicio
             grdDetalleOrdenServicio.DataSource = dtbDetalleOrdenServicio
             grdDesglosePago.DataSource = dtbDesglosePago
             consecDetalle = 0
-            bolInit = False
             txtCantidad.Text = "1"
             txtPorcDesc.Text = "0"
             txtSubTotal.Text = FormatNumber(0, 2)
@@ -619,6 +618,7 @@ Public Class FrmOrdenServicio
             cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
             cboTipoMoneda.SelectedValue = FrmPrincipal.empresaGlobal.IdTipoMoneda
             txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmPrincipal.decTipoCambioDolar.ToString())
+            bolReady = True
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -626,7 +626,6 @@ Public Class FrmOrdenServicio
     End Sub
 
     Private Async Sub BtnAgregar_Click(sender As Object, e As EventArgs) Handles btnAgregar.Click
-        bolInit = True
         txtIdOrdenServicio.Text = ""
         txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
         cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
@@ -693,7 +692,6 @@ Public Class FrmOrdenServicio
             vendedor = Nothing
             txtVendedor.Text = ""
         End If
-        bolInit = False
         txtMontoPago.Text = ""
         txtCodigo.Focus()
     End Sub
@@ -729,7 +727,6 @@ Public Class FrmOrdenServicio
                 Exit Sub
             End Try
             If ordenServicio IsNot Nothing Then
-                bolInit = True
                 txtIdOrdenServicio.Text = ordenServicio.ConsecOrdenServicio
                 cliente = ordenServicio.Cliente
                 txtNombreCliente.Text = ordenServicio.NombreCliente
@@ -765,7 +762,6 @@ Public Class FrmOrdenServicio
                 btnEliminarPago.Enabled = False
                 btnGuardar.Enabled = ordenServicio.Aplicado = False
                 btnAnular.Enabled = ordenServicio.Aplicado = False And FrmPrincipal.bolAnularTransacciones
-                bolInit = False
             Else
                 MessageBox.Show("No existe registro de OrdenServicio asociado al identificador seleccionado", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End If
@@ -907,7 +903,7 @@ Public Class FrmOrdenServicio
                 .MontoPagado = decPagoCliente,
                 .Nulo = False
             }
-            For I = 0 To dtbDetalleOrdenServicio.Rows.Count - 1
+            For I As Short = 0 To dtbDetalleOrdenServicio.Rows.Count - 1
                 detalleOrdenServicio = New DetalleOrdenServicio
                 detalleOrdenServicio.IdProducto = dtbDetalleOrdenServicio.Rows(I).Item(0)
                 detalleOrdenServicio.Descripcion = dtbDetalleOrdenServicio.Rows(I).Item(2)
@@ -918,7 +914,7 @@ Public Class FrmOrdenServicio
                 detalleOrdenServicio.PorcDescuento = dtbDetalleOrdenServicio.Rows(I).Item(9)
                 ordenServicio.DetalleOrdenServicio.Add(detalleOrdenServicio)
             Next
-            For I = 0 To dtbDesglosePago.Rows.Count - 1
+            For I As Short = 0 To dtbDesglosePago.Rows.Count - 1
                 desglosePago = New DesglosePagoOrdenServicio With {
                     .IdFormaPago = dtbDesglosePago.Rows(I).Item(0),
                     .IdCuentaBanco = dtbDesglosePago.Rows(I).Item(2),
@@ -966,7 +962,7 @@ Public Class FrmOrdenServicio
             ordenServicio.Descuento = 0
             ordenServicio.Impuesto = CDbl(txtImpuesto.Text)
             ordenServicio.DetalleOrdenServicio.Clear()
-            For I = 0 To dtbDetalleOrdenServicio.Rows.Count - 1
+            For I As Short = 0 To dtbDetalleOrdenServicio.Rows.Count - 1
                 detalleOrdenServicio = New DetalleOrdenServicio
                 detalleOrdenServicio.IdOrden = ordenServicio.IdOrden
                 detalleOrdenServicio.IdProducto = dtbDetalleOrdenServicio.Rows(I).Item(0)
@@ -1033,7 +1029,7 @@ Public Class FrmOrdenServicio
                     .strCambio = FormatNumber(decPagoCliente - decPagoEfectivo, 2)
                 }
                 arrDetalleOrden = New List(Of ModuloImpresion.ClsDetalleComprobante)
-                For I = 0 To dtbDetalleOrdenServicio.Rows.Count - 1
+                For I As Short = 0 To dtbDetalleOrdenServicio.Rows.Count - 1
                     detalleComprobante = New ModuloImpresion.ClsDetalleComprobante With {
                     .strDescripcion = dtbDetalleOrdenServicio.Rows(I).Item(1) + "-" + dtbDetalleOrdenServicio.Rows(I).Item(2),
                     .strCantidad = CDbl(dtbDetalleOrdenServicio.Rows(I).Item(3)),
@@ -1045,7 +1041,7 @@ Public Class FrmOrdenServicio
                 Next
                 comprobanteImpresion.arrDetalleComprobante = arrDetalleOrden
                 arrDesglosePago = New List(Of ModuloImpresion.ClsDesgloseFormaPago)
-                For I = 0 To dtbDesglosePago.Rows.Count - 1
+                For I As Short = 0 To dtbDesglosePago.Rows.Count - 1
                     desglosePagoImpresion = New ModuloImpresion.ClsDesgloseFormaPago(dtbDesglosePago.Rows(I).Item(1), FormatNumber(dtbDesglosePago.Rows(I).Item(7), 2))
                     arrDesglosePago.Add(desglosePagoImpresion)
                 Next
@@ -1115,7 +1111,7 @@ Public Class FrmOrdenServicio
                 datos.TelefonoReceptor = cliente.Telefono
                 datos.FaxReceptor = cliente.Fax
             End If
-            For I = 0 To dtbDetalleOrdenServicio.Rows.Count - 1
+            For I As Short = 0 To dtbDetalleOrdenServicio.Rows.Count - 1
                 Dim decPrecioVenta As Decimal = dtbDetalleOrdenServicio.Rows(I).Item(4)
                 Dim decTotalLinea As Decimal = dtbDetalleOrdenServicio.Rows(I).Item(3) * decPrecioVenta
                 Dim detalle As EstructuraPDFDetalleServicio = New EstructuraPDFDetalleServicio With {
@@ -1181,7 +1177,7 @@ Public Class FrmOrdenServicio
     End Sub
 
     Private Async Sub CboFormaPago_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboFormaPago.SelectedValueChanged
-        If Not bolInit And Not cboFormaPago.SelectedValue Is Nothing Then
+        If bolReady And cboFormaPago.SelectedValue IsNot Nothing Then
             txtTipoTarjeta.Text = ""
             txtAutorizacion.Text = ""
             If cboFormaPago.SelectedValue <> StaticFormaPago.Cheque And cboFormaPago.SelectedValue <> StaticFormaPago.TransferenciaDepositoBancario Then
@@ -1230,7 +1226,7 @@ Public Class FrmOrdenServicio
     End Sub
 
     Private Sub CboTipoMoneda_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboTipoMoneda.SelectedIndexChanged
-        If Not bolInit And Not cboTipoMoneda.SelectedValue Is Nothing Then
+        If bolReady And cboTipoMoneda.SelectedValue IsNot Nothing Then
             txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmPrincipal.decTipoCambioDolar.ToString())
         End If
     End Sub

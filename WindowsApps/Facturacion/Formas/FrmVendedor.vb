@@ -3,7 +3,6 @@ Imports LeandroSoftware.ClienteWCF
 
 Public Class FrmVendedor
 #Region "Variables"
-    Private I As Short
     Private datos As Vendedor
     Public intIdVendedor As Integer
 #End Region

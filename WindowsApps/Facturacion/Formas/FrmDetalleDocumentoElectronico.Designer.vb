@@ -35,12 +35,14 @@ Partial Class FrmDetalleDocumentoElectronico
         Me.cboSucursal = New System.Windows.Forms.ComboBox()
         Me.Label6 = New System.Windows.Forms.Label()
         Me.btnGenerar = New System.Windows.Forms.Button()
+        Me.lblDescripcion = New System.Windows.Forms.Label()
+        Me.txtNombre = New System.Windows.Forms.TextBox()
         CType(Me.dgvDatos, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'btnMostrarRespuesta
         '
-        Me.btnMostrarRespuesta.Location = New System.Drawing.Point(439, 450)
+        Me.btnMostrarRespuesta.Location = New System.Drawing.Point(439, 468)
         Me.btnMostrarRespuesta.Name = "btnMostrarRespuesta"
         Me.btnMostrarRespuesta.Size = New System.Drawing.Size(100, 22)
         Me.btnMostrarRespuesta.TabIndex = 4
@@ -51,7 +53,7 @@ Partial Class FrmDetalleDocumentoElectronico
         'lblPagina
         '
         Me.lblPagina.AutoSize = True
-        Me.lblPagina.Location = New System.Drawing.Point(555, 455)
+        Me.lblPagina.Location = New System.Drawing.Point(555, 473)
         Me.lblPagina.Name = "lblPagina"
         Me.lblPagina.Size = New System.Drawing.Size(77, 13)
         Me.lblPagina.TabIndex = 44
@@ -62,7 +64,7 @@ Partial Class FrmDetalleDocumentoElectronico
         Me.btnLast.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnLast.Enabled = False
         Me.btnLast.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnLast.Location = New System.Drawing.Point(753, 450)
+        Me.btnLast.Location = New System.Drawing.Point(753, 468)
         Me.btnLast.Name = "btnLast"
         Me.btnLast.Size = New System.Drawing.Size(29, 23)
         Me.btnLast.TabIndex = 8
@@ -75,7 +77,7 @@ Partial Class FrmDetalleDocumentoElectronico
         Me.btnNext.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnNext.Enabled = False
         Me.btnNext.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnNext.Location = New System.Drawing.Point(724, 450)
+        Me.btnNext.Location = New System.Drawing.Point(724, 468)
         Me.btnNext.Name = "btnNext"
         Me.btnNext.Size = New System.Drawing.Size(29, 23)
         Me.btnNext.TabIndex = 7
@@ -88,7 +90,7 @@ Partial Class FrmDetalleDocumentoElectronico
         Me.btnPrevious.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnPrevious.Enabled = False
         Me.btnPrevious.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnPrevious.Location = New System.Drawing.Point(695, 450)
+        Me.btnPrevious.Location = New System.Drawing.Point(695, 468)
         Me.btnPrevious.Name = "btnPrevious"
         Me.btnPrevious.Size = New System.Drawing.Size(29, 23)
         Me.btnPrevious.TabIndex = 6
@@ -101,7 +103,7 @@ Partial Class FrmDetalleDocumentoElectronico
         Me.btnFirst.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnFirst.Enabled = False
         Me.btnFirst.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnFirst.Location = New System.Drawing.Point(666, 450)
+        Me.btnFirst.Location = New System.Drawing.Point(666, 468)
         Me.btnFirst.Name = "btnFirst"
         Me.btnFirst.Size = New System.Drawing.Size(29, 23)
         Me.btnFirst.TabIndex = 5
@@ -117,7 +119,7 @@ Partial Class FrmDetalleDocumentoElectronico
         Me.dgvDatos.AllowUserToResizeColumns = False
         Me.dgvDatos.AllowUserToResizeRows = False
         Me.dgvDatos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.dgvDatos.Location = New System.Drawing.Point(12, 47)
+        Me.dgvDatos.Location = New System.Drawing.Point(12, 65)
         Me.dgvDatos.Name = "dgvDatos"
         Me.dgvDatos.ReadOnly = True
         Me.dgvDatos.RowHeadersVisible = False
@@ -128,15 +130,15 @@ Partial Class FrmDetalleDocumentoElectronico
         '
         'rtxDetalleRespuesta
         '
-        Me.rtxDetalleRespuesta.Location = New System.Drawing.Point(12, 47)
+        Me.rtxDetalleRespuesta.Location = New System.Drawing.Point(12, 65)
         Me.rtxDetalleRespuesta.Name = "rtxDetalleRespuesta"
         Me.rtxDetalleRespuesta.Size = New System.Drawing.Size(770, 397)
-        Me.rtxDetalleRespuesta.TabIndex = 0
+        Me.rtxDetalleRespuesta.TabIndex = 3
         Me.rtxDetalleRespuesta.Text = ""
         '
         'btnReenviarNotificacion
         '
-        Me.btnReenviarNotificacion.Location = New System.Drawing.Point(12, 450)
+        Me.btnReenviarNotificacion.Location = New System.Drawing.Point(12, 468)
         Me.btnReenviarNotificacion.Name = "btnReenviarNotificacion"
         Me.btnReenviarNotificacion.Size = New System.Drawing.Size(115, 22)
         Me.btnReenviarNotificacion.TabIndex = 2
@@ -146,7 +148,7 @@ Partial Class FrmDetalleDocumentoElectronico
         '
         'btnMostrarXML
         '
-        Me.btnMostrarXML.Location = New System.Drawing.Point(333, 450)
+        Me.btnMostrarXML.Location = New System.Drawing.Point(333, 468)
         Me.btnMostrarXML.Name = "btnMostrarXML"
         Me.btnMostrarXML.Size = New System.Drawing.Size(100, 22)
         Me.btnMostrarXML.TabIndex = 3
@@ -161,7 +163,7 @@ Partial Class FrmDetalleDocumentoElectronico
         Me.cboSucursal.Location = New System.Drawing.Point(72, 12)
         Me.cboSucursal.Name = "cboSucursal"
         Me.cboSucursal.Size = New System.Drawing.Size(300, 21)
-        Me.cboSucursal.TabIndex = 151
+        Me.cboSucursal.TabIndex = 1
         Me.cboSucursal.TabStop = False
         '
         'Label6
@@ -180,7 +182,7 @@ Partial Class FrmDetalleDocumentoElectronico
         'btnGenerar
         '
         Me.btnGenerar.Enabled = False
-        Me.btnGenerar.Location = New System.Drawing.Point(133, 450)
+        Me.btnGenerar.Location = New System.Drawing.Point(133, 468)
         Me.btnGenerar.Name = "btnGenerar"
         Me.btnGenerar.Size = New System.Drawing.Size(147, 22)
         Me.btnGenerar.TabIndex = 153
@@ -188,11 +190,30 @@ Partial Class FrmDetalleDocumentoElectronico
         Me.btnGenerar.Text = "Generar nuevo documento"
         Me.btnGenerar.UseVisualStyleBackColor = True
         '
+        'lblDescripcion
+        '
+        Me.lblDescripcion.AutoSize = True
+        Me.lblDescripcion.Location = New System.Drawing.Point(19, 42)
+        Me.lblDescripcion.Name = "lblDescripcion"
+        Me.lblDescripcion.Size = New System.Drawing.Size(47, 13)
+        Me.lblDescripcion.TabIndex = 155
+        Me.lblDescripcion.Text = "Nombre:"
+        '
+        'txtNombre
+        '
+        Me.txtNombre.Location = New System.Drawing.Point(72, 39)
+        Me.txtNombre.Name = "txtNombre"
+        Me.txtNombre.Size = New System.Drawing.Size(708, 20)
+        Me.txtNombre.TabIndex = 2
+        Me.txtNombre.TabStop = False
+        '
         'FrmDetalleDocumentoElectronico
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(794, 487)
+        Me.ClientSize = New System.Drawing.Size(794, 505)
+        Me.Controls.Add(Me.lblDescripcion)
+        Me.Controls.Add(Me.txtNombre)
         Me.Controls.Add(Me.btnGenerar)
         Me.Controls.Add(Me.cboSucursal)
         Me.Controls.Add(Me.Label6)
@@ -227,4 +248,6 @@ Partial Class FrmDetalleDocumentoElectronico
     Friend WithEvents cboSucursal As ComboBox
     Friend WithEvents Label6 As Label
     Friend WithEvents btnGenerar As Button
+    Friend WithEvents lblDescripcion As Label
+    Friend WithEvents txtNombre As TextBox
 End Class

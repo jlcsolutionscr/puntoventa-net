@@ -7,7 +7,7 @@ Public Class FrmParametroContable
     Private datos As ParametroContable
     Private tipoParametro As TipoParametroContable
     Private cuentaContable As CatalogoContable
-    Private bolInit As Boolean = True
+    Private bolReady As Boolean = False
 #End Region
 
 #Region "Métodos"
@@ -121,7 +121,7 @@ Public Class FrmParametroContable
                 datos = New ParametroContable
                 If cboCuentaContable.SelectedValue > 0 Then CargarDatosCuentaContable(cboCuentaContable.SelectedValue)
             End If
-            bolInit = False
+            bolReady = False
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -165,7 +165,7 @@ Public Class FrmParametroContable
     End Sub
 
     Private Sub cboTipoParametro_SelectedValueChanged(ByVal sender As Object, ByVal e As EventArgs) Handles cboTipoParametro.SelectedValueChanged
-        If Not bolInit And cboTipoParametro.SelectedValue IsNot Nothing Then
+        If bolReady And cboTipoParametro.SelectedValue IsNot Nothing Then
             Try
                 'tipoParametro = servicioContabilidad.ObtenerTipoParametroContable(cboTipoParametro.SelectedValue)
             Catch ex As Exception
@@ -177,7 +177,7 @@ Public Class FrmParametroContable
     End Sub
 
     Private Sub cboCuentaContable_SelectedValueChanged(ByVal sender As Object, ByVal e As EventArgs) Handles cboCuentaContable.SelectedValueChanged
-        If Not bolInit And cboCuentaContable.SelectedValue IsNot Nothing Then
+        If bolReady And cboCuentaContable.SelectedValue IsNot Nothing Then
             Try
                 'cuentaContable = servicioContabilidad.ObtenerCuentaContable(cboCuentaContable.SelectedValue)
             Catch ex As Exception

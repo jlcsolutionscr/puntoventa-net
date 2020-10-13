@@ -7,7 +7,6 @@ Public Class FrmGestionAbonoCxP
 #Region "Variables"
     Private dtbDetalleMovimiento As DataTable
     Private dtrRowDetMovimiento As DataRow
-    Private bolInit As Boolean = True
     Private listadoMovimientos As IList(Of EfectivoDetalle)
     Private movimiento As MovimientoCuentaPorPagar
     Private cuentaPorPagar As CuentaPorPagar
@@ -195,7 +194,6 @@ Public Class FrmGestionAbonoCxP
             IniciaDetalleMovimiento()
             EstablecerPropiedadesDataGridView()
             grdDetalleRecibo.DataSource = dtbDetalleMovimiento
-            bolInit = False
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()

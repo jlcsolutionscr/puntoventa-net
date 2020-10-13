@@ -6,14 +6,13 @@ Imports LeandroSoftware.ClienteWCF
 
 Public Class FrmAplicaAbonoCxP
 #Region "Variables"
-    Private I As Integer
     Private decTotal As Decimal = 0
     Private decTotalPago As Decimal = 0
     Private decSaldoPorPagar As Decimal = 0
     Private decPagoEfectivo, decPagoCliente As Decimal
     Private dtbDesglosePago As DataTable
     Private dtrRowDesglosePago As DataRow
-    Private bolInit As Boolean = True
+    Private bolReady As Boolean = False
     Private cuentaPorPagar As CuentaPorPagar
     Private proveedor As Proveedor
     Private movimiento As MovimientoCuentaPorPagar
@@ -143,7 +142,7 @@ Public Class FrmAplicaAbonoCxP
     Private Sub CargarTotalesPago()
         decTotalPago = 0
         decPagoEfectivo = 0
-        For I = 0 To dtbDesglosePago.Rows.Count - 1
+        For I As Short = 0 To dtbDesglosePago.Rows.Count - 1
             If dtbDesglosePago.Rows(I).Item(0) = StaticFormaPago.Efectivo Then decPagoEfectivo = CDbl(dtbDesglosePago.Rows(I).Item(7))
             decTotalPago = decTotalPago + CDbl(dtbDesglosePago.Rows(I).Item(7))
         Next
@@ -211,7 +210,7 @@ Public Class FrmAplicaAbonoCxP
             decTotal = 0
             grdDesglosePago.DataSource = dtbDesglosePago
             cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
-            bolInit = False
+            bolReady = True
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -298,7 +297,7 @@ Public Class FrmAplicaAbonoCxP
             .SaldoActual = cuentaPorPagar.Saldo,
             .Fecha = Now()
         }
-        For I = 0 To dtbDesglosePago.Rows.Count - 1
+        For I As Short = 0 To dtbDesglosePago.Rows.Count - 1
             desglosePagoMovimiento = New DesglosePagoMovimientoCuentaPorPagar With {
                 .IdFormaPago = dtbDesglosePago.Rows(I).Item(0),
                 .IdCuentaBanco = dtbDesglosePago.Rows(I).Item(2),
@@ -353,7 +352,7 @@ Public Class FrmAplicaAbonoCxP
             .strCambio = FormatNumber(decPagoCliente - decPagoEfectivo, 2)
         }
         reciboComprobante.arrDesglosePago = New List(Of ModuloImpresion.ClsDesgloseFormaPago)
-        For I = 0 To dtbDesglosePago.Rows.Count - 1
+        For I As Short = 0 To dtbDesglosePago.Rows.Count - 1
             desglosePagoImpresion = New ModuloImpresion.ClsDesgloseFormaPago(dtbDesglosePago.Rows(I).Item(1), FormatNumber(dtbDesglosePago.Rows(I).Item(7), 2))
             reciboComprobante.arrDesglosePago.Add(desglosePagoImpresion)
         Next
@@ -366,7 +365,7 @@ Public Class FrmAplicaAbonoCxP
     End Sub
 
     Private Async Sub cboFormaPago_SelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs) Handles cboFormaPago.SelectedIndexChanged
-        If Not bolInit And Not cboFormaPago.SelectedValue Is Nothing Then
+        If bolReady And cboFormaPago.SelectedValue IsNot Nothing Then
             cboTipoBanco.SelectedIndex = 0
             txtTipoTarjeta.Text = ""
             txtDocumento.Text = ""

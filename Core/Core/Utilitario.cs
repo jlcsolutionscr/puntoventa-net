@@ -3,6 +3,7 @@ using System.IO;
 using System.Text;
 using System.Security.Cryptography;
 using System.Management;
+using System.Text.RegularExpressions;
 
 namespace LeandroSoftware.Core.Utilitario
 {
@@ -80,6 +81,30 @@ namespace LeandroSoftware.Core.Utilitario
                 strBoardSerialNumber = "N/F-BASEBOARD";
             }
             return strProcessorId + "-" + strVolumeSerial + "-" + strBoardSerialNumber;
+        }
+
+        public static void ValidaFormatoIdentificacion(int intTipoId, string id)
+        {
+            if (intTipoId == 0 && id.Length != 9) throw new Exception("El cliente posee una identificación de tipo 'Cedula física' con una longitud inadecuada. Deben ser 9 caracteres.");
+            if (intTipoId == 1 && id.Length != 10) throw new Exception("El cliente posee una identificación de tipo 'Cedula jurídica' con una longitud inadecuada. Deben ser 10 caracteres");
+            if (intTipoId > 1 && (id.Length < 11 || id.Length > 12)) throw new Exception("El cliente posee una identificación de tipo 'DIMEX o DITE' con una longitud inadecuada. Deben ser 11 o 12 caracteres");
+        }
+
+        public static void ValidaFormatoEmail(string email)
+        {
+            string expresion;
+            expresion = "\\w+([-+.']\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*";
+            if (Regex.IsMatch(email, expresion))
+            {
+                if (Regex.Replace(email, expresion, string.Empty).Length != 0)
+                {
+                    throw new Exception("El correo ingresado no posee un formato válido. Por favor verifique!");
+                }
+            }
+            else
+            {
+                throw new Exception("El correo ingresado no posee un formato válido. Por favor verifique!");
+            }
         }
 
         public static string NumeroALetras(double t)

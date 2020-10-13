@@ -4,7 +4,6 @@ Imports LeandroSoftware.ClienteWCF
 Public Class FrmDetalleTraslado
 #Region "Variables"
     Private dblTotal As Decimal
-    Private I As Short
     Private dtbDetalleTraslado As DataTable
     Private dtrRowDetTraslado As DataRow
     Private traslado As Traslado
@@ -87,7 +86,7 @@ Public Class FrmDetalleTraslado
 
     Private Sub CargarTotales()
         dblTotal = 0
-        For I = 0 To dtbDetalleTraslado.Rows.Count - 1
+        For I As Short = 0 To dtbDetalleTraslado.Rows.Count - 1
             dblTotal = dblTotal + CDbl(dtbDetalleTraslado.Rows(I).Item(5))
         Next
         txtTotal.Text = FormatNumber(dblTotal, 2)

@@ -10,7 +10,7 @@ Public Class FrmEmpresa
     Private datos As Empresa
     Private datosSucursal As SucursalPorEmpresa
     Private datosTerminal As TerminalPorSucursal
-    Private bolInit As Boolean = True
+    Private bolReady As Boolean = False
     Private bolSucursalActualizada As Boolean = False
     Private bolTerminalActualizada As Boolean = False
     Private bolCertificadoModificado As Boolean = False
@@ -126,6 +126,7 @@ Public Class FrmEmpresa
             txtUltimoTE.Text = datosTerminal.UltimoDocTE
             txtUltimoMR.Text = datosTerminal.UltimoDocMR
             txtUltimoFEC.Text = datosTerminal.UltimoDocFEC
+            chkCierre.Checked = datosSucursal.CierreEnEjecucion
             If logotipo IsNot Nothing Then
                 Dim logoImage As Image
                 Using ms As New MemoryStream(logotipo)
@@ -133,7 +134,7 @@ Public Class FrmEmpresa
                 End Using
                 picLogo.Image = logoImage
             End If
-            bolInit = False
+            bolReady = False
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -239,6 +240,7 @@ Public Class FrmEmpresa
                 datosSucursal.ConsecProforma = txtConsecProforma.Text
                 datosSucursal.ConsecOrdenServicio = txtConsecOrdenServicio.Text
                 datosSucursal.ConsecApartado = txtConsecApartado.Text
+                datosSucursal.CierreEnEjecucion = chkCierre.Checked
                 Await Puntoventa.ActualizarSucursalPorEmpresa(datosSucursal, FrmPrincipal.usuarioGlobal.Token)
                 FrmPrincipal.equipoGlobal.NombreSucursal = txtNombreSucursal.Text
                 FrmPrincipal.equipoGlobal.DireccionSucursal = txtDireccionSucursal.Text
@@ -268,26 +270,26 @@ Public Class FrmEmpresa
     End Sub
 
     Private Async Sub CboProvincia_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboProvincia.SelectedIndexChanged
-        If Not bolInit Then
-            bolInit = True
+        If bolReady Then
+            bolReady = False
             cboCanton.DataSource = Await Puntoventa.ObtenerListadoCantones(cboProvincia.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
             cboDistrito.DataSource = Await Puntoventa.ObtenerListadoDistritos(cboProvincia.SelectedValue, 1, FrmPrincipal.usuarioGlobal.Token)
             cboBarrio.DataSource = Await Puntoventa.ObtenerListadoBarrios(cboProvincia.SelectedValue, 1, 1, FrmPrincipal.usuarioGlobal.Token)
-            bolInit = False
+            bolReady = True
         End If
     End Sub
 
     Private Async Sub CboCanton_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboCanton.SelectedIndexChanged
-        If Not bolInit Then
-            bolInit = True
+        If bolReady Then
+            bolReady = False
             cboDistrito.DataSource = Await Puntoventa.ObtenerListadoDistritos(cboProvincia.SelectedValue, cboCanton.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
             cboBarrio.DataSource = Await Puntoventa.ObtenerListadoBarrios(cboProvincia.SelectedValue, cboCanton.SelectedValue, 1, FrmPrincipal.usuarioGlobal.Token)
-            bolInit = False
+            bolReady = True
         End If
     End Sub
 
     Private Async Sub CboDistrito_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboDistrito.SelectedIndexChanged
-        If Not bolInit Then
+        If bolReady Then
             cboBarrio.DataSource = Await Puntoventa.ObtenerListadoBarrios(cboProvincia.SelectedValue, cboCanton.SelectedValue, cboDistrito.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
         End If
     End Sub
@@ -301,6 +303,10 @@ Public Class FrmEmpresa
     End Sub
 
     Private Sub TextFieldSucursal_Validated(sender As Object, e As EventArgs) Handles txtNombreSucursal.Validated, txtDireccionSucursal.Validated, txtTelefonoSucursal.Validated
+        bolSucursalActualizada = True
+    End Sub
+
+    Private Sub chkCierre_CheckedChanged(sender As Object, e As EventArgs) Handles chkCierre.CheckedChanged
         bolSucursalActualizada = True
     End Sub
 

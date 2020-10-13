@@ -8,7 +8,7 @@ Public Class FrmBusquedaFactura
     Private intFilasPorPagina As Integer = 13
     Private intCantidadDePaginas As Integer
     Private intId As Integer = 0
-    Private bolInit As Boolean = False
+    Private bolReady As Boolean = False
 #End Region
 
 #Region "Métodos"
@@ -19,6 +19,7 @@ Public Class FrmBusquedaFactura
         Dim dvcConsecutivo As New DataGridViewTextBoxColumn
         Dim dvcFecha As New DataGridViewTextBoxColumn
         Dim dvcNombreCliente As New DataGridViewTextBoxColumn
+        Dim dvcIdentificacion As New DataGridViewTextBoxColumn
         Dim dvcTotal As New DataGridViewTextBoxColumn
         dgvListado.Columns.Clear()
         dgvListado.AutoGenerateColumns = False
@@ -34,10 +35,14 @@ Public Class FrmBusquedaFactura
         dvcFecha.DataPropertyName = "Fecha"
         dvcFecha.Width = 70
         dgvListado.Columns.Add(dvcFecha)
-        dvcNombreCliente.HeaderText = "Cliente"
+        dvcNombreCliente.HeaderText = "Nombre"
         dvcNombreCliente.DataPropertyName = "NombreCliente"
-        dvcNombreCliente.Width = 400
+        dvcNombreCliente.Width = 300
         dgvListado.Columns.Add(dvcNombreCliente)
+        dvcIdentificacion.HeaderText = "Id"
+        dvcIdentificacion.DataPropertyName = "Identificacion"
+        dvcIdentificacion.Width = 100
+        dgvListado.Columns.Add(dvcIdentificacion)
         dvcTotal.HeaderText = "Total"
         dvcTotal.DataPropertyName = "Total"
         dvcTotal.Width = 100
@@ -46,8 +51,13 @@ Public Class FrmBusquedaFactura
     End Sub
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
+        If txtId.Text <> "" Then
+            intId = CInt(txtId.Text)
+        Else
+            intId = 0
+        End If
         Try
-            dgvListado.DataSource = Await Puntoventa.ObtenerListadoFacturas(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, intNumeroPagina, intFilasPorPagina, intId, txtNombre.Text, FrmPrincipal.usuarioGlobal.Token)
+            dgvListado.DataSource = Await Puntoventa.ObtenerListadoFacturas(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, intNumeroPagina, intFilasPorPagina, intId, txtNombre.Text, txtIdentificacion.Text, FrmPrincipal.usuarioGlobal.Token)
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -59,7 +69,7 @@ Public Class FrmBusquedaFactura
 
     Private Async Function ValidarCantidadRegistros() As Task
         Try
-            intTotalRegistros = Await Puntoventa.ObtenerTotalListaFacturas(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, intId, txtNombre.Text, FrmPrincipal.usuarioGlobal.Token)
+            intTotalRegistros = Await Puntoventa.ObtenerTotalListaFacturas(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, intId, txtNombre.Text, txtIdentificacion.Text, FrmPrincipal.usuarioGlobal.Token)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -90,6 +100,7 @@ Public Class FrmBusquedaFactura
 
 #Region "Eventos Controles"
     Private Sub FrmBusquedaFactura_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        KeyPreview = True
         For Each ctl As Control In Controls
             If TypeOf (ctl) Is TextBox Then
                 AddHandler DirectCast(ctl, TextBox).Enter, AddressOf EnterTexboxHandler
@@ -143,7 +154,7 @@ Public Class FrmBusquedaFactura
             Await ValidarCantidadRegistros()
             intIndiceDePagina = 1
             Await ActualizarDatos(intIndiceDePagina)
-            bolInit = True
+            bolReady = True
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -159,18 +170,29 @@ Public Class FrmBusquedaFactura
     End Sub
 
     Private Async Sub BtnFiltrar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnFiltrar.Click
-        If txtId.Text <> "" Then
-            intId = CInt(txtId.Text)
-        Else
-            intId = 0
+        If bolReady Then
+            Await ValidarCantidadRegistros()
+            intIndiceDePagina = 1
+            Await ActualizarDatos(intIndiceDePagina)
         End If
-        Await ValidarCantidadRegistros()
-        intIndiceDePagina = 1
-        Await ActualizarDatos(intIndiceDePagina)
     End Sub
 
-    Private Sub cboSucursal_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboSucursal.SelectedIndexChanged
-        If bolInit Then btnFiltrar_Click(btnFiltrar, New EventArgs())
+    Private Async Sub cboSucursal_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboSucursal.SelectedIndexChanged
+        If bolReady Then
+            Await ValidarCantidadRegistros()
+            intIndiceDePagina = 1
+            Await ActualizarDatos(intIndiceDePagina)
+        End If
+    End Sub
+
+    Private Async Sub fields_TextChanged(sender As Object, e As PreviewKeyDownEventArgs) Handles txtId.PreviewKeyDown, txtNombre.PreviewKeyDown, txtIdentificacion.PreviewKeyDown
+        If bolReady Then
+            If e.KeyCode = Keys.Enter Then
+                Await ValidarCantidadRegistros()
+                intIndiceDePagina = 1
+                Await ActualizarDatos(intIndiceDePagina)
+            End If
+        End If
     End Sub
 #End Region
 End Class

@@ -1472,7 +1472,8 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
                         intIdLlave1 = parametrosJO.Property("IdFactura") != null ? int.Parse(parametrosJO.Property("IdFactura").Value.ToString()) : 0;
                         strNombre = parametrosJO.Property("Nombre") != null ? parametrosJO.Property("Nombre").Value.ToString() : "";
-                        intTotalLista = servicioFacturacion.ObtenerTotalListaFacturas(intIdEmpresa, intIdSucursal, intIdLlave1, strNombre);
+                        strIdentificacion = parametrosJO.Property("Identificacion") != null ? parametrosJO.Property("Identificacion").Value.ToString() : "";
+                        intTotalLista = servicioFacturacion.ObtenerTotalListaFacturas(intIdEmpresa, intIdSucursal, intIdLlave1, strNombre, strIdentificacion);
                         strRespuesta = serializer.Serialize(intTotalLista);
                         break;
                     case "ObtenerListadoFacturas":
@@ -1482,7 +1483,8 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         intFilasPorPagina = int.Parse(parametrosJO.Property("FilasPorPagina").Value.ToString());
                         intIdLlave1 = parametrosJO.Property("IdFactura") != null ? int.Parse(parametrosJO.Property("IdFactura").Value.ToString()) : 0;
                         strNombre = parametrosJO.Property("Nombre") != null ? parametrosJO.Property("Nombre").Value.ToString() : "";
-                        IList<FacturaDetalle> listadoFacturas = servicioFacturacion.ObtenerListadoFacturas(intIdEmpresa, intIdSucursal, intNumeroPagina, intFilasPorPagina, intIdLlave1, strNombre);
+                        strIdentificacion = parametrosJO.Property("Identificacion") != null ? parametrosJO.Property("Identificacion").Value.ToString() : "";
+                        IList<FacturaDetalle> listadoFacturas = servicioFacturacion.ObtenerListadoFacturas(intIdEmpresa, intIdSucursal, intNumeroPagina, intFilasPorPagina, intIdLlave1, strNombre, strIdentificacion);
                         if (listadoFacturas.Count > 0)
                             strRespuesta = serializer.Serialize(listadoFacturas);
                         break;
@@ -1794,7 +1796,8 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                     case "ObtenerTotalDocumentosElectronicosProcesados":
                         intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                         intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
-                        int intTotalDocumentosProcesados = servicioFacturacion.ObtenerTotalDocumentosElectronicosProcesados(intIdEmpresa, intIdSucursal);
+                        strNombre = parametrosJO.Property("Nombre") != null ? parametrosJO.Property("Nombre").Value.ToString() : "";
+                        int intTotalDocumentosProcesados = servicioFacturacion.ObtenerTotalDocumentosElectronicosProcesados(intIdEmpresa, intIdSucursal, strNombre);
                         strRespuesta = intTotalDocumentosProcesados.ToString();
                         break;
                     case "ObtenerListadoDocumentosElectronicosProcesados":
@@ -1802,7 +1805,8 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
                         intNumeroPagina = int.Parse(parametrosJO.Property("NumeroPagina").Value.ToString());
                         intFilasPorPagina = int.Parse(parametrosJO.Property("FilasPorPagina").Value.ToString());
-                        IList<DocumentoDetalle> listadoProcesados = servicioFacturacion.ObtenerListadoDocumentosElectronicosProcesados(intIdEmpresa, intIdSucursal, intNumeroPagina, intFilasPorPagina);
+                        strNombre = parametrosJO.Property("Nombre") != null ? parametrosJO.Property("Nombre").Value.ToString() : "";
+                        IList<DocumentoDetalle> listadoProcesados = servicioFacturacion.ObtenerListadoDocumentosElectronicosProcesados(intIdEmpresa, intIdSucursal, intNumeroPagina, intFilasPorPagina, strNombre);
                         if (listadoProcesados.Count > 0)
                             strRespuesta = serializer.Serialize(listadoProcesados);
                         break;

@@ -8,7 +8,7 @@ Public Class FrmProductoListado
     Private intFilasPorPagina As Integer = 14
     Private intCantidadDePaginas As Integer
     Private listado As IList
-    Private bolInit As Boolean = True
+    Private bolReady As Boolean = False
 #End Region
 
 #Region "Métodos"
@@ -168,12 +168,12 @@ Public Class FrmProductoListado
 
     Private Async Sub FrmProductoListado_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
-            Await CargarComboBox()
             EstablecerPropiedadesDataGridView()
             Await ValidarCantidadRegistros()
-            bolInit = False
             intIndiceDePagina = 1
             Await ActualizarDatos(intIndiceDePagina)
+            Await CargarComboBox()
+            bolReady = True
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -243,8 +243,8 @@ Public Class FrmProductoListado
     End Sub
 
     Private Sub cboLinea_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboLinea.SelectedIndexChanged
-        If Not bolInit And Not cboLinea.SelectedValue Is Nothing Then
-            btnFiltrar_Click(btnFiltrar, New EventArgs())
+        If bolReady And cboLinea.SelectedValue IsNot Nothing Then
+            BtnFiltrar_Click(btnFiltrar, New EventArgs())
         End If
     End Sub
 

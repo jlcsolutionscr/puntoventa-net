@@ -14,7 +14,7 @@ Public Class FrmDetalleDocumentoElectronico
     Private intFilasPorPagina As Integer = 17
     Private intCantidadDePaginas As Integer
     Private bolRespuestaVisible = False
-    Private bolInit As Boolean = False
+    Private bolReady As Boolean = False
 #End Region
 
 #Region "Métodos"
@@ -57,7 +57,7 @@ Public Class FrmDetalleDocumentoElectronico
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
         Try
-            listadoDocumentosProcesados = Await Puntoventa.ObtenerListadoDocumentosElectronicosProcesados(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, intNumeroPagina, intFilasPorPagina, FrmPrincipal.usuarioGlobal.Token)
+            listadoDocumentosProcesados = Await Puntoventa.ObtenerListadoDocumentosElectronicosProcesados(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, intNumeroPagina, intFilasPorPagina, txtNombre.Text, FrmPrincipal.usuarioGlobal.Token)
             dgvDatos.DataSource = listadoDocumentosProcesados
             If listadoDocumentosProcesados.Count() > 0 Then
                 btnMostrarRespuesta.Enabled = True
@@ -75,7 +75,7 @@ Public Class FrmDetalleDocumentoElectronico
 
     Private Async Function ObtenerCantidadDocumentosProcesados() As Task
         Try
-            intTotalDocumentos = Await Puntoventa.ObtenerTotalDocumentosElectronicosProcesados(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
+            intTotalDocumentos = Await Puntoventa.ObtenerTotalDocumentosElectronicosProcesados(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, txtNombre.Text, FrmPrincipal.usuarioGlobal.Token)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -102,10 +102,17 @@ Public Class FrmDetalleDocumentoElectronico
         cboSucursal.SelectedValue = FrmPrincipal.equipoGlobal.IdSucursal
         cboSucursal.Enabled = FrmPrincipal.bolSeleccionaSucursal
     End Function
+
+    Private Async Function ActualizarDatos() As Task
+        Await ObtenerCantidadDocumentosProcesados()
+        intIndiceDePagina = 1
+        Await ActualizarDatos(intIndiceDePagina)
+    End Function
 #End Region
 
 #Region "Eventos controles"
     Private Sub FrmDetalleDocumentoElectronico_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        KeyPreview = True
         For Each ctl As Control In Controls
             If TypeOf (ctl) Is TextBox Then
                 AddHandler DirectCast(ctl, TextBox).Enter, AddressOf EnterTexboxHandler
@@ -152,10 +159,8 @@ Public Class FrmDetalleDocumentoElectronico
             Await CargarCombos()
             rtxDetalleRespuesta.Visible = False
             EstablecerPropiedadesDataGridView()
-            Await ObtenerCantidadDocumentosProcesados()
-            intIndiceDePagina = 1
-            Await ActualizarDatos(intIndiceDePagina)
-            bolInit = True
+            Await ActualizarDatos()
+            bolReady = True
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -264,7 +269,7 @@ Public Class FrmDetalleDocumentoElectronico
     End Sub
 
     Private Async Sub cboSucursal_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboSucursal.SelectedIndexChanged
-        If bolInit Then
+        If bolReady Then
             Await ObtenerCantidadDocumentosProcesados()
             intIndiceDePagina = 1
             Await ActualizarDatos(intIndiceDePagina)
@@ -295,6 +300,12 @@ Public Class FrmDetalleDocumentoElectronico
             End Try
             btnGenerar.Enabled = True
             dgvDatos.Enabled = True
+        End If
+    End Sub
+
+    Private Async Sub TxtNombre_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtNombre.PreviewKeyDown
+        If e.KeyCode = Keys.Enter Then
+            Await ActualizarDatos()
         End If
     End Sub
 #End Region

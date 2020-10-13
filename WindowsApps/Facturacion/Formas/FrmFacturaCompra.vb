@@ -5,12 +5,11 @@ Imports LeandroSoftware.ClienteWCF
 Public Class FrmFacturaCompra
 #Region "Variables"
     Private decExcento, decGravado, decExonerado, decImpuesto, decTotal, decSubTotal, decPrecioVenta As Decimal
-    Private I As Short
     Private dtbDetalleProforma As DataTable
     Private dtrRowDetProforma As DataRow
     Private facturaCompra As FacturaCompra
     Private detalleFacturaCompra As DetalleFacturaCompra
-    Private bolInit As Boolean = True
+    Private bolReady As Boolean = False
 #End Region
 
 #Region "Métodos"
@@ -123,7 +122,7 @@ Public Class FrmFacturaCompra
         decImpuesto = 0
         Dim intPorcentajeExoneracion As Integer = 0
         If txtPorcentajeExoneracion.Text <> "" Then intPorcentajeExoneracion = CInt(txtPorcentajeExoneracion.Text)
-        For I = 0 To dtbDetalleProforma.Rows.Count - 1
+        For I As Short = 0 To dtbDetalleProforma.Rows.Count - 1
             Dim decTasaImpuesto As Decimal = dtbDetalleProforma.Rows(I).Item(4)
             If decTasaImpuesto > 0 Then
                 Dim decImpuestoProducto As Decimal = dtbDetalleProforma.Rows(I).Item(6) * decTasaImpuesto / 100
@@ -215,7 +214,7 @@ Public Class FrmFacturaCompra
             grdDetalleProforma.DataSource = dtbDetalleProforma
             txtFechaExoneracion.Text = "01/01/2019"
             txtPorcentajeExoneracion.Text = "0"
-            bolInit = False
+            bolReady = True
             txtCantidad.Text = "1"
             cboTipoImpuesto.SelectedValue = 8
             cboUnidadMedida.SelectedIndex = 0
@@ -231,30 +230,29 @@ Public Class FrmFacturaCompra
     End Sub
 
     Private Async Sub CboProvincia_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboProvincia.SelectedIndexChanged
-        If Not bolInit Then
-            bolInit = True
+        If bolReady Then
+            bolReady = False
             Await CargarListadoBarrios(cboProvincia.SelectedValue, 1, 1)
-            bolInit = False
+            bolReady = True
         End If
     End Sub
 
     Private Async Sub CboCanton_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboCanton.SelectedIndexChanged
-        If Not bolInit Then
-            bolInit = True
+        If bolReady Then
+            bolReady = False
             cboDistrito.DataSource = Await Puntoventa.ObtenerListadoDistritos(cboProvincia.SelectedValue, cboCanton.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
             cboBarrio.DataSource = Await Puntoventa.ObtenerListadoBarrios(cboProvincia.SelectedValue, cboCanton.SelectedValue, 1, FrmPrincipal.usuarioGlobal.Token)
-            bolInit = False
+            bolReady = True
         End If
     End Sub
 
     Private Async Sub CboDistrito_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboDistrito.SelectedIndexChanged
-        If Not bolInit Then
+        If bolReady Then
             cboBarrio.DataSource = Await Puntoventa.ObtenerListadoBarrios(cboProvincia.SelectedValue, cboCanton.SelectedValue, cboDistrito.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
         End If
     End Sub
 
     Private Async Sub BtnAgregar_Click(sender As Object, e As EventArgs) Handles btnAgregar.Click
-        bolInit = True
         txtIdFactCompra.Text = ""
         txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
         txtIdentificacion.Text = ""
@@ -283,18 +281,14 @@ Public Class FrmFacturaCompra
         txtPrecio.Text = "0.00"
         txtTextoAdicional.Text = ""
         decTotal = 0
-        bolInit = False
         cboTipoIdentificacion.Focus()
     End Sub
 
     Private Async Sub txtIdentificacion_Validated(sender As Object, e As EventArgs) Handles txtIdentificacion.Validated
         If cboTipoIdentificacion.SelectedValue = 0 Then
-            Dim cliente As Cliente = Nothing
-            cliente = Await Puntoventa.ValidaIdentificacionCliente(FrmPrincipal.empresaGlobal.IdEmpresa, txtIdentificacion.Text, FrmPrincipal.usuarioGlobal.Token)
+            Dim cliente As Cliente = Await Puntoventa.ValidaIdentificacionCliente(FrmPrincipal.empresaGlobal.IdEmpresa, txtIdentificacion.Text, FrmPrincipal.usuarioGlobal.Token)
             If cliente IsNot Nothing Then
-                bolInit = True
                 txtNombre.Text = cliente.Nombre
-                bolInit = False
             End If
         End If
     End Sub
@@ -339,7 +333,7 @@ Public Class FrmFacturaCompra
                 .Descuento = 0,
                 .Impuesto = decImpuesto
             }
-            For I = 0 To dtbDetalleProforma.Rows.Count - 1
+            For I As Short = 0 To dtbDetalleProforma.Rows.Count - 1
                 detalleFacturaCompra = New DetalleFacturaCompra With {
                     .Linea = I + 1,
                     .Cantidad = dtbDetalleProforma.Rows(I).Item(0),

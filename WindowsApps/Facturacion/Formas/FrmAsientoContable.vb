@@ -3,7 +3,6 @@ Imports LeandroSoftware.Core.Dominio.Entidades
 Public Class FrmAsientoContable
 #Region "Variables"
     Private dblTotalDebito, dblTotalCredito As Decimal
-    Private I As Short
     Private datFechaProc As Date
     Private dtbDetalleAsiento As DataTable
     Private dtrRowDetAsiento As DataRow
@@ -99,7 +98,7 @@ Public Class FrmAsientoContable
     Private Sub CargarTotales()
         dblTotalDebito = 0
         dblTotalCredito = 0
-        For I = 0 To dtbDetalleAsiento.Rows.Count - 1
+        For I As Short = 0 To dtbDetalleAsiento.Rows.Count - 1
             dblTotalDebito = dblTotalDebito + CDbl(grdDetalleAsiento.Rows(I).Cells(4).Value)
             dblTotalCredito = dblTotalCredito + CDbl(grdDetalleAsiento.Rows(I).Cells(5).Value)
         Next
@@ -204,7 +203,7 @@ Public Class FrmAsientoContable
                 .TotalDebito = 0,
                 .TotalCredito = 0
             }
-            For I = 0 To dtbDetalleAsiento.Rows.Count - 1
+            For I As Short = 0 To dtbDetalleAsiento.Rows.Count - 1
                 detalleAsiento = New DetalleAsiento With {
                     .Linea = I + 1,
                     .IdCuenta = dtbDetalleAsiento.Rows(I).Item(0),

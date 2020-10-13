@@ -5,7 +5,6 @@ Imports LeandroSoftware.Core.Dominio.Entidades
 Public Class FrmOrdenCompra
 #Region "Variables"
     Private decExcento, decGravado, decSubTotal As Decimal
-    Private I As Integer
     Private dtbDatosLocal, dtbDetalleOrdenCompra As DataTable
     Private objRowDetOrdenCompra As DataRow
     Private ordenCompra As OrdenCompra
@@ -13,7 +12,7 @@ Public Class FrmOrdenCompra
     Private detalleOrdenCompra As DetalleOrdenCompra
     Private producto As Producto
     Private listOfProducts As IList(Of Producto)
-    Private bolInit As Boolean = True
+    Private bolReady As Boolean = False
 
     Private formReport As New FrmReportViewer()
     Private dtbDatos As DataTable
@@ -141,7 +140,7 @@ Public Class FrmOrdenCompra
         decExcento = 0
         decGravado = 0
         decSubTotal = 0
-        For I = 0 To dtbDetalleOrdenCompra.Rows.Count - 1
+        For I As Short = 0 To dtbDetalleOrdenCompra.Rows.Count - 1
             Dim decTotalPorLinea As Decimal = dtbDetalleOrdenCompra.Rows(I).Item(5)
             If dtbDetalleOrdenCompra.Rows(I).Item(6) = 0 Then
                 decGravado += decTotalPorLinea
@@ -153,7 +152,7 @@ Public Class FrmOrdenCompra
         decSubTotal = decGravado + decExcento
         If decSubTotal > 0 And txtDescuento.Text > 0 Then
             decImpuesto = 0
-            For I = 0 To dtbDetalleOrdenCompra.Rows.Count - 1
+            For I As Short = 0 To dtbDetalleOrdenCompra.Rows.Count - 1
                 If dtbDetalleOrdenCompra.Rows(I).Item(6) = 0 Then
                     Dim decDescuentoPorLinea As Decimal = 0
                     Dim decTotalPorLinea As Decimal = dtbDetalleOrdenCompra.Rows(I).Item(5)
@@ -171,7 +170,7 @@ Public Class FrmOrdenCompra
     End Sub
 
     Private Sub ValidarProducto()
-        If Not bolInit Then
+        If bolReady Then
             If txtCodigo.Text <> "" Then
                 If FrmPrincipal.empresaGlobal.AutoCompletaProducto = True Then
                     If txtCodigo.Text.IndexOf(" ") >= 0 Then
@@ -243,13 +242,13 @@ Public Class FrmOrdenCompra
             txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
             If FrmPrincipal.empresaGlobal.AutoCompletaProducto Then CargarAutoCompletarProducto()
             grdDetalleOrdenCompra.DataSource = dtbDetalleOrdenCompra
-            bolInit = False
             txtCantidad.Text = "1"
             txtSubTotal.Text = FormatNumber(0, 2)
             txtDescuento.Text = FormatNumber(0, 2)
             txtImpuesto.Text = FormatNumber(0, 2)
             txtTotal.Text = FormatNumber(0, 2)
             CargarCombos()
+            bolReady = True
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -391,7 +390,7 @@ Public Class FrmOrdenCompra
         If txtIdOrdenCompra.Text <> "" Then
             ordenCompra.DetalleOrdenCompra.Clear()
         End If
-        For I = 0 To dtbDetalleOrdenCompra.Rows.Count - 1
+        For I As Short = 0 To dtbDetalleOrdenCompra.Rows.Count - 1
             detalleOrdenCompra = New DetalleOrdenCompra
             If txtIdOrdenCompra.Text <> "" Then
                 detalleOrdenCompra.IdOrdenCompra = ordenCompra.IdOrdenCompra
