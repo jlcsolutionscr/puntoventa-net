@@ -8,6 +8,8 @@ App_Data/
 errorLog*.*
 .DS_Store
 
+ServicioWeb/Endpoints/Web.*
+
 mobileapp/build/
 mobileapp/*.pbxuser
 mobileapp/!default.pbxuser
