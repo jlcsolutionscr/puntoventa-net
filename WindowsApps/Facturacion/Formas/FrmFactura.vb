@@ -367,11 +367,9 @@ Public Class FrmFactura
 
     Private Sub CargarLineaDetalleFactura(producto As Producto, strDescripcion As String, decCantidad As Decimal, decPrecio As Decimal, decPorcDesc As Decimal)
         Dim decTasaImpuesto As Decimal = producto.ParametroImpuesto.TasaImpuesto
-        If cliente.AplicaTasaDiferenciada Then decTasaImpuesto = cliente.ParametroImpuesto.TasaImpuesto
         Dim decPrecioGravado As Decimal = decPrecio
-        If decTasaImpuesto > 0 Then
-            decPrecioGravado = Math.Round(decPrecio / (1 + (decTasaImpuesto / 100)), 3, MidpointRounding.AwayFromZero)
-        End If
+        If decTasaImpuesto > 0 Then decPrecioGravado = Math.Round(decPrecio / (1 + (decTasaImpuesto / 100)), 5, MidpointRounding.AwayFromZero)
+        If cliente.AplicaTasaDiferenciada Then decTasaImpuesto = cliente.ParametroImpuesto.TasaImpuesto
         Dim intIndice As Integer = ObtenerIndice(dtbDetalleFactura, producto.IdProducto)
         If producto.Tipo = 1 And intIndice >= 0 Then
             Dim decNewCantidad = dtbDetalleFactura.Rows(intIndice).Item(3) + decCantidad
@@ -455,22 +453,21 @@ Public Class FrmFactura
         If txtPorcentajeExoneracion.Text <> "" Then intPorcentajeExoneracion = CInt(txtPorcentajeExoneracion.Text)
         For I As Short = 0 To dtbDetalleFactura.Rows.Count - 1
             Dim decTasaImpuesto As Decimal = dtbDetalleFactura.Rows(I).Item(9)
-            decDescuento += Math.Round(dtbDetalleFactura.Rows(I).Item(11) / (1 + (decTasaImpuesto / 100)), 2, MidpointRounding.AwayFromZero) * dtbDetalleFactura.Rows(I).Item(3)
             If decTasaImpuesto > 0 Then
                 Dim decImpuestoProducto As Decimal = dtbDetalleFactura.Rows(I).Item(4) * decTasaImpuesto / 100
                 If intPorcentajeExoneracion > 0 Then
                     Dim decGravadoPorcentual = dtbDetalleFactura.Rows(I).Item(4) * (1 - (intPorcentajeExoneracion / 100))
-                    decGravado += Math.Round(decGravadoPorcentual, 2, MidpointRounding.AwayFromZero) * dtbDetalleFactura.Rows(I).Item(3)
-                    decExonerado += Math.Round(dtbDetalleFactura.Rows(I).Item(4) - decGravadoPorcentual, 2, MidpointRounding.AwayFromZero) * dtbDetalleFactura.Rows(I).Item(3)
+                    decGravado += Math.Round(decGravadoPorcentual * dtbDetalleFactura.Rows(I).Item(3), 2, MidpointRounding.AwayFromZero)
+                    decExonerado += Math.Round(dtbDetalleFactura.Rows(I).Item(4) - decGravadoPorcentual * dtbDetalleFactura.Rows(I).Item(3), 2, MidpointRounding.AwayFromZero)
                     decImpuestoProducto = decGravadoPorcentual * decTasaImpuesto / 100
                 Else
-                    decGravado += Math.Round(dtbDetalleFactura.Rows(I).Item(4), 2, MidpointRounding.AwayFromZero) * dtbDetalleFactura.Rows(I).Item(3)
+                    decGravado += Math.Round(dtbDetalleFactura.Rows(I).Item(4) * dtbDetalleFactura.Rows(I).Item(3), 2, MidpointRounding.AwayFromZero)
                 End If
-                decImpuesto += Math.Round(decImpuestoProducto, 2, MidpointRounding.AwayFromZero) * dtbDetalleFactura.Rows(I).Item(3)
+                decImpuesto += Math.Round(decImpuestoProducto * dtbDetalleFactura.Rows(I).Item(3), 2, MidpointRounding.AwayFromZero)
             Else
-                decExcento += Math.Round(dtbDetalleFactura.Rows(I).Item(4), 2, MidpointRounding.AwayFromZero) * dtbDetalleFactura.Rows(I).Item(3)
+                decExcento += Math.Round(dtbDetalleFactura.Rows(I).Item(4) * dtbDetalleFactura.Rows(I).Item(3), 2, MidpointRounding.AwayFromZero)
             End If
-            decTotalCosto += Math.Round(dtbDetalleFactura.Rows(I).Item(7), 2, MidpointRounding.AwayFromZero) * dtbDetalleFactura.Rows(I).Item(3)
+            decTotalCosto += Math.Round(dtbDetalleFactura.Rows(I).Item(7) * dtbDetalleFactura.Rows(I).Item(3), 2, MidpointRounding.AwayFromZero)
         Next
         decSubTotal = decGravado + decExcento + decExonerado
         decGravado = Math.Round(decGravado, 2, MidpointRounding.AwayFromZero)
