@@ -20,6 +20,7 @@ namespace LeandroSoftware.ServicioWeb.Contexto
         DbSet<CatalogoReporte> CatalogoReporteRepository { get; set; }
         DbSet<CierreCaja> CierreCajaRepository { get; set; }
         DbSet<ClaseCuentaContable> ClaseCuentaContableRepository { get; set; }
+        DbSet<ClasificacionProducto> ClasificacionProductoRepository { get; set; }
         DbSet<Cliente> ClienteRepository { get; set; }
         DbSet<CondicionVenta> CondicionVentaRepository { get; set; }
         DbSet<CuentaBanco> CuentaBancoRepository { get; set; }
@@ -135,6 +136,7 @@ namespace LeandroSoftware.ServicioWeb.Contexto
         public DbSet<CatalogoReporte> CatalogoReporteRepository { get; set; }
         public DbSet<CierreCaja> CierreCajaRepository { get; set; }
         public DbSet<ClaseCuentaContable> ClaseCuentaContableRepository { get; set; }
+        public DbSet<ClasificacionProducto> ClasificacionProductoRepository { get; set; }
         public DbSet<Cliente> ClienteRepository { get; set; }
         public DbSet<CondicionVenta> CondicionVentaRepository { get; set; }
         public DbSet<CuentaBanco> CuentaBancoRepository { get; set; }

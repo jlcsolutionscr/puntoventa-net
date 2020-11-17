@@ -906,6 +906,7 @@ Public Class FrmOrdenServicio
             For I As Short = 0 To dtbDetalleOrdenServicio.Rows.Count - 1
                 detalleOrdenServicio = New DetalleOrdenServicio
                 detalleOrdenServicio.IdProducto = dtbDetalleOrdenServicio.Rows(I).Item(0)
+                detalleOrdenServicio.Codigo = dtbDetalleOrdenServicio.Rows(I).Item(1)
                 detalleOrdenServicio.Descripcion = dtbDetalleOrdenServicio.Rows(I).Item(2)
                 detalleOrdenServicio.Cantidad = dtbDetalleOrdenServicio.Rows(I).Item(3)
                 detalleOrdenServicio.PrecioVenta = dtbDetalleOrdenServicio.Rows(I).Item(4)
@@ -966,6 +967,7 @@ Public Class FrmOrdenServicio
                 detalleOrdenServicio = New DetalleOrdenServicio
                 detalleOrdenServicio.IdOrden = ordenServicio.IdOrden
                 detalleOrdenServicio.IdProducto = dtbDetalleOrdenServicio.Rows(I).Item(0)
+                detalleOrdenServicio.Codigo = dtbDetalleOrdenServicio.Rows(I).Item(1)
                 detalleOrdenServicio.Descripcion = dtbDetalleOrdenServicio.Rows(I).Item(2)
                 detalleOrdenServicio.Cantidad = dtbDetalleOrdenServicio.Rows(I).Item(3)
                 detalleOrdenServicio.PrecioVenta = dtbDetalleOrdenServicio.Rows(I).Item(4)
@@ -995,16 +997,9 @@ Public Class FrmOrdenServicio
         btnBuscarCliente.Enabled = False
     End Sub
 
-    Private Async Sub BtnImprimir_Click(sender As Object, e As EventArgs) Handles btnImprimir.Click
+    Private Sub BtnImprimir_Click(sender As Object, e As EventArgs) Handles btnImprimir.Click
         If txtIdOrdenServicio.Text <> "" Then
-            If ordenServicio.ConsecOrdenServicio = 0 Then
-                Try
-                    ordenServicio = Await Puntoventa.ObtenerOrdenServicio(txtIdOrdenServicio.Text, FrmPrincipal.usuarioGlobal.Token)
-                Catch ex As Exception
-                    MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                    Exit Sub
-                End Try
-            End If
+            Dim decTotal As Decimal = ordenServicio.Gravado + ordenServicio.Excento + ordenServicio.Exonerado + ordenServicio.Impuesto
             Try
                 comprobanteImpresion = New ModuloImpresion.ClsComprobante With {
                     .usuario = FrmPrincipal.usuarioGlobal,
@@ -1013,30 +1008,30 @@ Public Class FrmOrdenServicio
                     .strId = ordenServicio.ConsecOrdenServicio,
                     .strFecha = ordenServicio.Fecha.ToString("dd/MM/yyyy hh:mm:ss"),
                     .strVendedor = txtVendedor.Text,
-                    .strNombre = txtNombreCliente.Text,
-                    .strTelefono = txtTelefono.Text,
-                    .strDireccion = txtDireccion.Text,
-                    .strDescripcion = txtDescripcionOrden.Text,
-                    .strDetalle = txtOtrosDetalles.Text,
+                    .strNombre = ordenServicio.NombreCliente,
+                    .strTelefono = ordenServicio.Telefono,
+                    .strDireccion = ordenServicio.Direccion,
+                    .strDescripcion = ordenServicio.Descripcion,
+                    .strDetalle = ordenServicio.OtrosDetalles,
                     .strDocumento = ObtenerLeyendaEntrega(Date.ParseExact(ordenServicio.FechaEntrega, "dd/MM/yyyy", Nothing), ordenServicio.HoraEntrega),
-                    .strSubTotal = txtSubTotal.Text,
-                    .strDescuento = txtDescuento.Text,
-                    .strImpuesto = txtImpuesto.Text,
-                    .strTotal = txtTotal.Text,
+                    .strSubTotal = FormatNumber(ordenServicio.Gravado + ordenServicio.Excento + ordenServicio.Exonerado, 2),
+                    .strDescuento = FormatNumber(ordenServicio.Descuento, 2),
+                    .strImpuesto = FormatNumber(ordenServicio.Impuesto, 2),
+                    .strTotal = FormatNumber(decTotal, 2),
                     .strAdelanto = FormatNumber(ordenServicio.MontoAdelanto, 2),
-                    .strSaldo = FormatNumber(ordenServicio.Total - ordenServicio.MontoAdelanto, 2),
+                    .strSaldo = FormatNumber(decTotal - ordenServicio.MontoAdelanto, 2),
                     .strPagoCon = FormatNumber(decPagoCliente, 2),
                     .strCambio = FormatNumber(decPagoCliente - decPagoEfectivo, 2)
                 }
                 arrDetalleOrden = New List(Of ModuloImpresion.ClsDetalleComprobante)
-                For I As Short = 0 To dtbDetalleOrdenServicio.Rows.Count - 1
+                For Each item As DetalleOrdenServicio In ordenServicio.DetalleOrdenServicio
                     detalleComprobante = New ModuloImpresion.ClsDetalleComprobante With {
-                    .strDescripcion = dtbDetalleOrdenServicio.Rows(I).Item(1) + "-" + dtbDetalleOrdenServicio.Rows(I).Item(2),
-                    .strCantidad = CDbl(dtbDetalleOrdenServicio.Rows(I).Item(3)),
-                    .strPrecio = FormatNumber(dtbDetalleOrdenServicio.Rows(I).Item(4), 2),
-                    .strTotalLinea = FormatNumber(CDbl(dtbDetalleOrdenServicio.Rows(I).Item(3)) * CDbl(dtbDetalleOrdenServicio.Rows(I).Item(4)), 2),
-                    .strExcento = IIf(dtbDetalleOrdenServicio.Rows(I).Item(7) = 0, "G", "E")
-                }
+                        .strDescripcion = item.Codigo + "-" + item.Descripcion,
+                        .strCantidad = item.Cantidad,
+                        .strPrecio = FormatNumber(item.PrecioVenta, 2),
+                        .strTotalLinea = FormatNumber(item.PrecioVenta * item.Cantidad, 2),
+                        .strExcento = IIf(item.Excento, "G", "E")
+                    }
                     arrDetalleOrden.Add(detalleComprobante)
                 Next
                 comprobanteImpresion.arrDetalleComprobante = arrDetalleOrden
@@ -1056,14 +1051,6 @@ Public Class FrmOrdenServicio
 
     Private Async Sub btnGenerarPDF_Click(sender As Object, e As EventArgs) Handles btnGenerarPDF.Click
         If txtIdOrdenServicio.Text <> "" Then
-            If ordenServicio.ConsecOrdenServicio = 0 Then
-                Try
-                    ordenServicio = Await Puntoventa.ObtenerOrdenServicio(txtIdOrdenServicio.Text, FrmPrincipal.usuarioGlobal.Token)
-                Catch ex As Exception
-                    MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                    Exit Sub
-                End Try
-            End If
             Dim datos As EstructuraPDF = New EstructuraPDF()
             Try
                 Dim poweredByImage As Image = My.Resources.logo
@@ -1111,24 +1098,24 @@ Public Class FrmOrdenServicio
                 datos.TelefonoReceptor = cliente.Telefono
                 datos.FaxReceptor = cliente.Fax
             End If
-            For I As Short = 0 To dtbDetalleOrdenServicio.Rows.Count - 1
-                Dim decPrecioVenta As Decimal = dtbDetalleOrdenServicio.Rows(I).Item(4)
-                Dim decTotalLinea As Decimal = dtbDetalleOrdenServicio.Rows(I).Item(3) * decPrecioVenta
+            For Each item As DetalleOrdenServicio In ordenServicio.DetalleOrdenServicio
+                Dim decPrecioVenta As Decimal = item.PrecioVenta
+                Dim decTotalLinea As Decimal = item.Cantidad * decPrecioVenta
                 Dim detalle As EstructuraPDFDetalleServicio = New EstructuraPDFDetalleServicio With {
-                .Cantidad = dtbDetalleOrdenServicio.Rows(I).Item(3),
-                .Codigo = dtbDetalleOrdenServicio.Rows(I).Item(1),
-                .Detalle = dtbDetalleOrdenServicio.Rows(I).Item(2),
+                .Cantidad = item.Cantidad,
+                .Codigo = item.Codigo,
+                .Detalle = item.Descripcion,
                 .PrecioUnitario = decPrecioVenta.ToString("N2", CultureInfo.InvariantCulture),
                 .TotalLinea = decTotalLinea.ToString("N2", CultureInfo.InvariantCulture)
             }
                 datos.DetalleServicio.Add(detalle)
             Next
-            datos.TotalGravado = decGravado.ToString("N2", CultureInfo.InvariantCulture)
-            datos.TotalExonerado = "0.00"
-            datos.TotalExento = decExcento.ToString("N2", CultureInfo.InvariantCulture)
+            datos.TotalGravado = ordenServicio.Gravado.ToString("N2", CultureInfo.InvariantCulture)
+            datos.TotalExonerado = ordenServicio.Exonerado.ToString("N2", CultureInfo.InvariantCulture)
+            datos.TotalExento = ordenServicio.Excento.ToString("N2", CultureInfo.InvariantCulture)
             datos.Descuento = "0.00"
-            datos.Impuesto = decImpuesto.ToString("N2", CultureInfo.InvariantCulture)
-            datos.TotalGeneral = decTotal.ToString("N2", CultureInfo.InvariantCulture)
+            datos.Impuesto = ordenServicio.Impuesto.ToString("N2", CultureInfo.InvariantCulture)
+            datos.TotalGeneral = (ordenServicio.Excento + ordenServicio.Exonerado + ordenServicio.Gravado + ordenServicio.Impuesto).ToString("N2", CultureInfo.InvariantCulture)
             datos.CodigoMoneda = "CRC"
             datos.TipoDeCambio = 1
             Try
@@ -1255,8 +1242,10 @@ Public Class FrmOrdenServicio
 
     Private Sub Precio_KeyUp(sender As Object, e As KeyEventArgs) Handles txtPrecio.KeyUp
         If producto IsNot Nothing Then
-            Dim decTasaImpuesto As Decimal = producto.ParametroImpuesto.TasaImpuesto
-            If txtPrecio.Text <> "" Then decPrecioVenta = Math.Round(CDbl(txtPrecio.Text), 2, MidpointRounding.AwayFromZero)
+            If txtPrecio.Text <> "" And e.KeyCode <> Keys.Tab And e.KeyCode <> Keys.Enter And e.KeyCode <> Keys.ShiftKey Then
+                decPrecioVenta = Math.Round(CDbl(txtPrecio.Text), 2, MidpointRounding.AwayFromZero)
+                txtPorcDesc.Text = "0"
+            End If
         End If
     End Sub
 

@@ -961,6 +961,26 @@ namespace LeandroSoftware.ClienteWCF
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 
+        public static async Task<int> ObtenerTotalListaClasificacionProducto(string strDescripcion, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'ObtenerTotalListaClasificacionProducto', Parametros: {Descripcion: '" + strDescripcion + "'}}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            int intCantidad = 0;
+            if (respuesta != "")
+                intCantidad = serializer.Deserialize<int>(respuesta);
+            return intCantidad;
+        }
+
+        public static async Task<List<ClasificacionProducto>> ObtenerListadoClasificacionProducto(int intNumeroPagina, int intFilasPorPagina, string strDescripcion, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'ObtenerListadoClasificacionProducto', Parametros: {NumeroPagina: " + intNumeroPagina + ", FilasPorPagina: " + intFilasPorPagina + ", Descripcion: '" + strDescripcion + "'}}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            List<ClasificacionProducto> listado = new List<ClasificacionProducto>();
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<ClasificacionProducto>>(respuesta);
+            return listado;
+        }
+
         public static async Task<int> ObtenerTotalListaProductos(int intIdEmpresa, int intIdSucursal, bool bolIncluyeServicios, bool bolFiltraActivos, bool bolFitraExistencias, bool bolFiltraConDescuento, int intIdLinea, string strCodigo, string strCodigoProveedor, string strDescripcion, string strToken)
         {
             string strDatos = "{NombreMetodo: 'ObtenerTotalListaProductos', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", IncluyeServicios: '" + bolIncluyeServicios + "', FiltraActivos: '" + bolFiltraActivos + "', FiltraExistencias: '" + bolFitraExistencias + "', FiltraConDescuento: '" + bolFiltraConDescuento + "', IdLinea: " + intIdLinea + ", Codigo: '" + strCodigo + "', CodigoProveedor: '" + strCodigoProveedor + "', Descripcion: '" + strDescripcion + "'}}";

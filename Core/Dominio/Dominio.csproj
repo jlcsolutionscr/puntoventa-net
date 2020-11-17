@@ -57,6 +57,7 @@
     <Compile Include="Entidades\CatalogoContable.cs" />
     <Compile Include="Entidades\CatalogoReporte.cs" />
     <Compile Include="Entidades\CierreCaja.cs" />
+    <Compile Include="Entidades\ClasificacionProducto.cs" />
     <Compile Include="Entidades\Cliente.cs" />
     <Compile Include="Entidades\ClaseCuentaContable.cs" />
     <Compile Include="Entidades\DesglosePagoCompra.cs">

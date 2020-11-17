@@ -655,6 +655,7 @@ Public Class FrmProforma
             For I As Short = 0 To dtbDetalleProforma.Rows.Count - 1
                 detalleProforma = New DetalleProforma With {
                     .IdProducto = dtbDetalleProforma.Rows(I).Item(0),
+                    .Codigo = dtbDetalleProforma.Rows(I).Item(1),
                     .Descripcion = dtbDetalleProforma.Rows(I).Item(2),
                     .Cantidad = dtbDetalleProforma.Rows(I).Item(3),
                     .PrecioVenta = dtbDetalleProforma.Rows(I).Item(4),
@@ -689,6 +690,7 @@ Public Class FrmProforma
                 detalleProforma = New DetalleProforma
                 detalleProforma.IdProforma = proforma.IdProforma
                 detalleProforma.IdProducto = dtbDetalleProforma.Rows(I).Item(0)
+                detalleProforma.Codigo = dtbDetalleProforma.Rows(I).Item(1)
                 detalleProforma.Descripcion = dtbDetalleProforma.Rows(I).Item(2)
                 detalleProforma.Cantidad = dtbDetalleProforma.Rows(I).Item(3)
                 detalleProforma.PrecioVenta = dtbDetalleProforma.Rows(I).Item(4)
@@ -718,16 +720,9 @@ Public Class FrmProforma
         btnBuscarCliente.Enabled = False
     End Sub
 
-    Private Async Sub BtnImprimir_Click(sender As Object, e As EventArgs) Handles btnImprimir.Click
+    Private Sub BtnImprimir_Click(sender As Object, e As EventArgs) Handles btnImprimir.Click
         If txtIdProforma.Text <> "" Then
-            If proforma.ConsecProforma = 0 Then
-                Try
-                    proforma = Await Puntoventa.ObtenerProforma(txtIdProforma.Text, FrmPrincipal.usuarioGlobal.Token)
-                Catch ex As Exception
-                    MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                    Exit Sub
-                End Try
-            End If
+            Dim decTotal As Decimal = proforma.Gravado + proforma.Excento + proforma.Exonerado + proforma.Impuesto
             Try
                 comprobanteImpresion = New ModuloImpresion.ClsComprobante With {
                     .usuario = FrmPrincipal.usuarioGlobal,
@@ -735,24 +730,24 @@ Public Class FrmProforma
                     .equipo = FrmPrincipal.equipoGlobal,
                     .strId = proforma.ConsecProforma,
                     .strVendedor = txtVendedor.Text,
-                    .strNombre = txtNombreCliente.Text,
-                    .strTelefono = txtTelefono.Text,
-                    .strDocumento = txtTextoAdicional.Text,
+                    .strNombre = proforma.NombreCliente,
+                    .strTelefono = proforma.Telefono,
+                    .strDocumento = proforma.TextoAdicional,
                     .strFecha = proforma.Fecha.ToString("dd/MM/yyyy hh:mm:ss"),
-                    .strSubTotal = txtSubTotal.Text,
-                    .strDescuento = txtDescuento.Text,
-                    .strImpuesto = txtImpuesto.Text,
-                    .strTotal = txtTotal.Text
+                    .strSubTotal = FormatNumber(proforma.Excento + proforma.Gravado + proforma.Exonerado, 2),
+                    .strDescuento = FormatNumber(proforma.Descuento, 2),
+                    .strImpuesto = FormatNumber(proforma.Impuesto, 2),
+                    .strTotal = FormatNumber(decTotal, 2)
                 }
                 arrDetalleOrden = New List(Of ModuloImpresion.ClsDetalleComprobante)
-                For I As Short = 0 To dtbDetalleProforma.Rows.Count - 1
+                For Each item As DetalleProforma In proforma.DetalleProforma
                     detalleComprobante = New ModuloImpresion.ClsDetalleComprobante With {
-                    .strDescripcion = dtbDetalleProforma.Rows(I).Item(1) + "-" + dtbDetalleProforma.Rows(I).Item(2),
-                    .strCantidad = CDbl(dtbDetalleProforma.Rows(I).Item(3)),
-                    .strPrecio = FormatNumber(dtbDetalleProforma.Rows(I).Item(4), 2),
-                    .strTotalLinea = FormatNumber(CDbl(dtbDetalleProforma.Rows(I).Item(3)) * CDbl(dtbDetalleProforma.Rows(I).Item(4)), 2),
-                    .strExcento = IIf(dtbDetalleProforma.Rows(I).Item(7) = 0, "G", "E")
-                }
+                        .strDescripcion = item.Codigo + "-" + item.Descripcion,
+                        .strCantidad = item.Cantidad,
+                        .strPrecio = FormatNumber(item.PrecioVenta, 2),
+                        .strTotalLinea = FormatNumber(item.PrecioVenta * item.Cantidad, 2),
+                        .strExcento = IIf(item.Excento, "G", "E")
+                    }
                     arrDetalleOrden.Add(detalleComprobante)
                 Next
                 comprobanteImpresion.arrDetalleComprobante = arrDetalleOrden
@@ -821,25 +816,25 @@ Public Class FrmProforma
                 datos.TelefonoReceptor = cliente.Telefono
                 datos.FaxReceptor = cliente.Fax
             End If
-            For I As Short = 0 To dtbDetalleProforma.Rows.Count - 1
-                Dim decPrecioVenta As Decimal = dtbDetalleProforma.Rows(I).Item(4)
-                Dim decTotalLinea As Decimal = dtbDetalleProforma.Rows(I).Item(3) * decPrecioVenta
+            For Each item As DetalleProforma In proforma.DetalleProforma
+                Dim decPrecioVenta As Decimal = item.PrecioVenta
+                Dim decTotalLinea As Decimal = item.Cantidad * decPrecioVenta
                 Dim detalle As EstructuraPDFDetalleServicio = New EstructuraPDFDetalleServicio With {
-                    .Cantidad = dtbDetalleProforma.Rows(I).Item(3),
-                    .Codigo = dtbDetalleProforma.Rows(I).Item(1),
-                    .Detalle = dtbDetalleProforma.Rows(I).Item(2),
+                    .Cantidad = item.PrecioVenta,
+                    .Codigo = item.Codigo,
+                    .Detalle = item.Descripcion,
                     .PrecioUnitario = decPrecioVenta.ToString("N2", CultureInfo.InvariantCulture),
                     .TotalLinea = decTotalLinea.ToString("N2", CultureInfo.InvariantCulture)
                 }
                 datos.DetalleServicio.Add(detalle)
             Next
             If (proforma.TextoAdicional IsNot Nothing) Then datos.OtrosTextos = proforma.TextoAdicional
-            datos.TotalGravado = decGravado.ToString("N2", CultureInfo.InvariantCulture)
-            datos.TotalExonerado = decExonerado.ToString("N2", CultureInfo.InvariantCulture)
-            datos.TotalExento = decExcento.ToString("N2", CultureInfo.InvariantCulture)
+            datos.TotalGravado = proforma.Gravado.ToString("N2", CultureInfo.InvariantCulture)
+            datos.TotalExonerado = proforma.Exonerado.ToString("N2", CultureInfo.InvariantCulture)
+            datos.TotalExento = proforma.Excento.ToString("N2", CultureInfo.InvariantCulture)
             datos.Descuento = "0.00"
-            datos.Impuesto = decImpuesto.ToString("N2", CultureInfo.InvariantCulture)
-            datos.TotalGeneral = decTotal.ToString("N2", CultureInfo.InvariantCulture)
+            datos.Impuesto = proforma.Impuesto.ToString("N2", CultureInfo.InvariantCulture)
+            datos.TotalGeneral = (proforma.Gravado + proforma.Exonerado + proforma.Excento + proforma.Impuesto).ToString("N2", CultureInfo.InvariantCulture)
             datos.CodigoMoneda = IIf(proforma.IdTipoMoneda = 1, "CRC", "USD")
             datos.TipoDeCambio = 1
             Try
@@ -889,8 +884,10 @@ Public Class FrmProforma
 
     Private Sub Precio_KeyUp(sender As Object, e As KeyEventArgs) Handles txtPrecio.KeyUp
         If producto IsNot Nothing Then
-            Dim decTasaImpuesto As Decimal = producto.ParametroImpuesto.TasaImpuesto
-            If txtPrecio.Text <> "" Then decPrecioVenta = Math.Round(CDbl(txtPrecio.Text), 2, MidpointRounding.AwayFromZero)
+            If txtPrecio.Text <> "" And e.KeyCode <> Keys.Tab And e.KeyCode <> Keys.Enter And e.KeyCode <> Keys.ShiftKey Then
+                decPrecioVenta = Math.Round(CDbl(txtPrecio.Text), 2, MidpointRounding.AwayFromZero)
+                txtPorcDesc.Text = "0"
+            End If
         End If
     End Sub
 

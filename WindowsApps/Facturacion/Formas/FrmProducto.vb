@@ -23,6 +23,9 @@ Public Class FrmProducto
         ElseIf txtCodigo.Text = "" Then
             pCampo = "Código"
             Return False
+        ElseIf txtCodigoClasificacion.Text = "" Then
+            pCampo = "Código Cabys"
+            Return False
         ElseIf txtProveedor.Text = "" Then
             pCampo = "Proveedor"
             Return False
@@ -137,6 +140,7 @@ Public Class FrmProducto
                 cboLinea.SelectedValue = datos.IdLinea
                 txtCodigo.Text = datos.Codigo
                 txtCodigoProveedor.Text = datos.CodigoProveedor
+                txtCodigoClasificacion.Text = datos.CodigoClasificacion
                 proveedor = datos.Proveedor
                 txtProveedor.Text = proveedor.Nombre
                 txtDescripcion.Text = datos.Descripcion
@@ -201,6 +205,7 @@ Public Class FrmProducto
         datos.IdLinea = cboLinea.SelectedValue
         datos.Codigo = txtCodigo.Text
         datos.CodigoProveedor = txtCodigoProveedor.Text
+        datos.CodigoClasificacion = txtCodigoClasificacion.Text
         datos.IdProveedor = proveedor.IdProveedor
         datos.Descripcion = txtDescripcion.Text
         datos.PrecioCosto = txtPrecioCosto.Text
@@ -420,6 +425,16 @@ Public Class FrmProducto
     Private Sub txtCodigoProveedor_KeyPress(sender As Object, e As KeyPressEventArgs) Handles txtCodigoProveedor.KeyPress
         If ":".IndexOf(e.KeyChar) <> -1 Then
             e.Handled = True
+        End If
+    End Sub
+
+    Private Sub btnBuscarClasificacion_Click(sender As Object, e As EventArgs) Handles btnBuscarClasificacion.Click
+        Dim formBusquedaClasificacionProducto As New FrmBusquedaClasificacionProducto()
+        FrmPrincipal.strBusqueda = 0
+        formBusquedaClasificacionProducto.ShowDialog()
+        If FrmPrincipal.strBusqueda <> "" Then
+            Dim codigoDesc = FrmPrincipal.strBusqueda.Split(New Char() {"-"c}, 2)
+            txtCodigoClasificacion.Text = codigoDesc(0)
         End If
     End Sub
 #End Region

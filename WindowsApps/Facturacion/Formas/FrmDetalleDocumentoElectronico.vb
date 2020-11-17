@@ -294,11 +294,13 @@ Public Class FrmDetalleDocumentoElectronico
             Try
                 Await Puntoventa.ReprocesarDocumentoElectronico(documento.IdDocumento, FrmPrincipal.usuarioGlobal.Token)
                 listadoDocumentosProcesados.Item(intIndex).Reprocesado = True
+                btnGenerar.Enabled = False
                 MessageBox.Show("Transacción procesada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
             Catch ex As Exception
+                btnGenerar.Enabled = True
                 MessageBox.Show("Error al enviar el comprobante:" & ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
-            btnGenerar.Enabled = True
+
             dgvDatos.Enabled = True
         End If
     End Sub

@@ -23,6 +23,7 @@ Partial Class FrmFacturaCompra
     'It can be modified using the Windows Form Designer.
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FrmFacturaCompra))
         Me.txtTextoAdicional = New System.Windows.Forms.TextBox()
         Me.btnAgregar = New System.Windows.Forms.Button()
         Me.btnGuardar = New System.Windows.Forms.Button()
@@ -85,6 +86,7 @@ Partial Class FrmFacturaCompra
         Me.grdDetalleProforma = New System.Windows.Forms.DataGridView()
         Me.btnEliminar = New System.Windows.Forms.Button()
         Me.btnInsertar = New System.Windows.Forms.Button()
+        Me.btnBuscarClasificacion = New System.Windows.Forms.Button()
         Me.GroupBox1.SuspendLayout()
         CType(Me.grdDetalleProforma, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -635,6 +637,7 @@ Partial Class FrmFacturaCompra
         '
         'GroupBox1
         '
+        Me.GroupBox1.Controls.Add(Me.btnBuscarClasificacion)
         Me.GroupBox1.Controls.Add(Me.txtImpuesto)
         Me.GroupBox1.Controls.Add(Me._lblLabels_6)
         Me.GroupBox1.Controls.Add(Me.txtTotal)
@@ -729,7 +732,7 @@ Partial Class FrmFacturaCompra
         Me.Label12.BackColor = System.Drawing.Color.Transparent
         Me.Label12.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label12.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label12.Location = New System.Drawing.Point(355, 22)
+        Me.Label12.Location = New System.Drawing.Point(414, 22)
         Me.Label12.Name = "Label12"
         Me.Label12.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label12.Size = New System.Drawing.Size(83, 17)
@@ -759,10 +762,10 @@ Partial Class FrmFacturaCompra
         Me.cboTipoImpuesto.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cboTipoImpuesto.ForeColor = System.Drawing.SystemColors.WindowText
         Me.cboTipoImpuesto.Items.AddRange(New Object() {"UND", "MT2", "MT3", "MT", "LT", "GL", "CTO", "CUB", "PAQ", "LAM", "VAR", "PZA"})
-        Me.cboTipoImpuesto.Location = New System.Drawing.Point(444, 20)
+        Me.cboTipoImpuesto.Location = New System.Drawing.Point(503, 20)
         Me.cboTipoImpuesto.Name = "cboTipoImpuesto"
         Me.cboTipoImpuesto.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.cboTipoImpuesto.Size = New System.Drawing.Size(366, 21)
+        Me.cboTipoImpuesto.Size = New System.Drawing.Size(307, 21)
         Me.cboTipoImpuesto.TabIndex = 52
         '
         '_LblTotal_6
@@ -812,7 +815,8 @@ Partial Class FrmFacturaCompra
         Me.txtCodigo.Location = New System.Drawing.Point(195, 20)
         Me.txtCodigo.MaxLength = 13
         Me.txtCodigo.Name = "txtCodigo"
-        Me.txtCodigo.Size = New System.Drawing.Size(149, 20)
+        Me.txtCodigo.ReadOnly = True
+        Me.txtCodigo.Size = New System.Drawing.Size(187, 20)
         Me.txtCodigo.TabIndex = 51
         '
         'Label1
@@ -954,6 +958,16 @@ Partial Class FrmFacturaCompra
         Me.btnInsertar.Text = "Insertar"
         Me.btnInsertar.UseVisualStyleBackColor = False
         '
+        'btnBuscarClasificacion
+        '
+        Me.btnBuscarClasificacion.Image = CType(resources.GetObject("btnBuscarClasificacion.Image"), System.Drawing.Image)
+        Me.btnBuscarClasificacion.Location = New System.Drawing.Point(388, 19)
+        Me.btnBuscarClasificacion.Name = "btnBuscarClasificacion"
+        Me.btnBuscarClasificacion.Size = New System.Drawing.Size(20, 20)
+        Me.btnBuscarClasificacion.TabIndex = 231
+        Me.btnBuscarClasificacion.TabStop = False
+        Me.btnBuscarClasificacion.UseVisualStyleBackColor = True
+        '
         'FrmFacturaCompra
         '
         Me.AcceptButton = Me.btnInsertar
@@ -1076,4 +1090,5 @@ Partial Class FrmFacturaCompra
     Public WithEvents grdDetalleProforma As DataGridView
     Public WithEvents btnEliminar As Button
     Public WithEvents btnInsertar As Button
+    Friend WithEvents btnBuscarClasificacion As Button
 End Class

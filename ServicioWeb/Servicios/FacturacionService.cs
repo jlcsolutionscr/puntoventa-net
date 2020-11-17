@@ -428,7 +428,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         Producto producto = dbContext.ProductoRepository.Include("Linea").FirstOrDefault(x => x.IdProducto == detalleFactura.IdProducto);
                         if (producto == null)
-                            throw new BusinessException("El producto asignado al detalle de la devolución no existe.");
+                            throw new BusinessException("El producto con código " + producto.Codigo + " asignado al detalle de la factura no existe.");
+                        if (!empresa.RegimenSimplificado && producto.CodigoClasificacion == "")
+                            throw new BusinessException("El producto con código " + producto.Codigo + " asignado al detalle de la factura no posee clasificación CABYS.");
                         if (producto.Tipo == StaticTipoProducto.Producto)
                         {
                             ExistenciaPorSucursal existencias = dbContext.ExistenciaPorSucursalRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == factura.IdSucursal).FirstOrDefault();
@@ -702,7 +704,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (!empresa.RegimenSimplificado)
                     {                       
                         if (factura.IdCliente > 1)
-                            documentoFE = ComprobanteElectronicoService.GeneraFacturaElectronica(factura, factura.Empresa, cliente, dbContext, decTipoDeCambio);
+                            documentoFE = ComprobanteElectronicoService.GenerarFacturaElectronica(factura, factura.Empresa, cliente, dbContext, decTipoDeCambio);
                         else
                             documentoFE = ComprobanteElectronicoService.GeneraTiqueteElectronico(factura, factura.Empresa, cliente, dbContext, decTipoDeCambio);
                         factura.IdDocElectronico = documentoFE.ClaveNumerica;
@@ -777,7 +779,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     facturaCompra.TipoDeCambioDolar = decTipoDeCambio;
                     dbContext.FacturaCompraRepository.Add(facturaCompra);
-                    DocumentoElectronico documentoFE = ComprobanteElectronicoService.GeneraFacturaCompraElectronica(facturaCompra, facturaCompra.Empresa, dbContext, decTipoDeCambio);
+                    DocumentoElectronico documentoFE = ComprobanteElectronicoService.GenerarFacturaCompraElectronica(facturaCompra, facturaCompra.Empresa, dbContext, decTipoDeCambio);
                     dbContext.Commit();
                     if (documentoFE != null)
                     {
@@ -1103,7 +1105,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     Proforma proforma = dbContext.ProformaRepository.Include("Cliente.ParametroImpuesto").Include("Cliente.ParametroExoneracion").Include("Cliente").Include("Vendedor").Include("DetalleProforma.Producto.TipoProducto").FirstOrDefault(x => x.IdProforma == intIdProforma);
                     foreach (DetalleProforma detalle in proforma.DetalleProforma)
+                    {
+                        detalle.Codigo = detalle.Producto.Codigo;
                         detalle.Proforma = null;
+                    }
                     return proforma;
                 }
                 catch (Exception ex)
@@ -1441,7 +1446,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     OrdenServicio ordenServicio = dbContext.OrdenServicioRepository.Include("Cliente.ParametroImpuesto").Include("Cliente.ParametroExoneracion").Include("Cliente").Include("Vendedor").Include("DetalleOrdenServicio.Producto.TipoProducto").Include("DesglosePagoOrdenServicio.FormaPago").Include("DesglosePagoOrdenServicio.TipoMoneda").FirstOrDefault(x => x.IdOrden == intIdOrdenServicio);
                     foreach (DetalleOrdenServicio detalle in ordenServicio.DetalleOrdenServicio)
+                    {
+                        detalle.Codigo = detalle.Producto.Codigo;
                         detalle.OrdenServicio = null;
+                    }
                     foreach (DesglosePagoOrdenServicio desglosePago in ordenServicio.DesglosePagoOrdenServicio)
                     {
                         if (desglosePago.IdFormaPago == StaticFormaPago.Tarjeta)
@@ -2314,7 +2322,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         Factura factura = dbContext.FacturaRepository.Include("ParametroExoneracion").Include("Cliente").Include("Vendedor").Include("DetalleFactura.Producto.TipoProducto").Include("DesglosePagoFactura.FormaPago").Include("DesglosePagoFactura.TipoMoneda").FirstOrDefault(x => x.IdDocElectronico == documento.ClaveNumerica);
                         if (factura == null) throw new BusinessException("La registro origen del documento no existe.");
                         if ((int)TipoDocumento.FacturaElectronica == documento.IdTipoDocumento)
-                            nuevoDocumento = ComprobanteElectronicoService.GeneraFacturaElectronica(factura, factura.Empresa, factura.Cliente, dbContext, factura.TipoDeCambioDolar);
+                            nuevoDocumento = ComprobanteElectronicoService.GenerarFacturaElectronica(factura, factura.Empresa, factura.Cliente, dbContext, factura.TipoDeCambioDolar);
                         else
                             nuevoDocumento = ComprobanteElectronicoService.GeneraTiqueteElectronico(factura, factura.Empresa, factura.Cliente, dbContext, factura.TipoDeCambioDolar);
                         factura.IdDocElectronico = nuevoDocumento.ClaveNumerica;

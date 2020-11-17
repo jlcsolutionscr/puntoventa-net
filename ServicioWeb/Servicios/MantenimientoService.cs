@@ -125,6 +125,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         IList<LlaveDescripcion> ObtenerListadoDistritos(int intIdProvincia, int intIdCanton);
         IList<LlaveDescripcion> ObtenerListadoBarrios(int intIdProvincia, int intIdCanton, int intIdDistrito);
         IList<LlaveDescripcion> ObtenerListadoTipodePrecio();
+        int ObtenerTotalListaClasificacionProducto(string strDescripcion);
+        IList<ClasificacionProducto> ObtenerListadoClasificacionProducto(int numPagina, int cantRec, string strDescripcion);
         void ValidarRegistroAutenticacion(string strToken, int intRole);
         void EliminarRegistroAutenticacionInvalidos();
     }
@@ -2692,6 +2694,48 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 log.Error("Error al obtener el listado de tipos de precio: ", ex);
                 throw new Exception("Se produjo un error consultando el listado de tipos de precio. Por favor consulte con su proveedor.");
+            }
+        }
+
+        public int ObtenerTotalListaClasificacionProducto(string strDescripcion)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    var listado = dbContext.ClasificacionProductoRepository.AsQueryable();
+                    if (!strDescripcion.Equals(String.Empty))
+                    {
+                        listado = listado.Where(x => x.Descripcion.Contains(strDescripcion));
+                    }
+                    return listado.Count();
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al obtener el listado de barrios: ", ex);
+                    throw new Exception("Se produjo un error consultando el listado de barrios. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public IList<ClasificacionProducto> ObtenerListadoClasificacionProducto(int numPagina, int cantRec, string strDescripcion)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    var listado = dbContext.ClasificacionProductoRepository.AsQueryable();
+                    if (!strDescripcion.Equals(String.Empty))
+                    {
+                        listado = listado.Where(x => x.Descripcion.Contains(strDescripcion));
+                    }
+                    return listado.OrderByDescending(x => x.Descripcion).Skip((numPagina - 1) * cantRec).Take(cantRec).ToList();
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al obtener el listado de barrios: ", ex);
+                    throw new Exception("Se produjo un error consultando el listado de barrios. Por favor consulte con su proveedor.");
+                }
             }
         }
 

@@ -293,6 +293,17 @@ Public Class FrmFacturaCompra
         End If
     End Sub
 
+    Private Sub btnBuscarClasificacion_Click(sender As Object, e As EventArgs) Handles btnBuscarClasificacion.Click
+        Dim formBusquedaClasificacionProducto As New FrmBusquedaClasificacionProducto()
+        FrmPrincipal.strBusqueda = 0
+        formBusquedaClasificacionProducto.ShowDialog()
+        If FrmPrincipal.strBusqueda <> "" Then
+            Dim codigoDesc = FrmPrincipal.strBusqueda.Split(New Char() {"-"c}, 2)
+            txtCodigo.Text = codigoDesc(0)
+            txtDescripcion.Text = codigoDesc(1)
+        End If
+    End Sub
+
     Private Async Sub BtnGuardar_Click(sender As Object, e As EventArgs) Handles btnGuardar.Click
         If txtFecha.Text = "" Or decTotal = 0 Then
             MessageBox.Show("Información incompleta.  Favor verificar. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)

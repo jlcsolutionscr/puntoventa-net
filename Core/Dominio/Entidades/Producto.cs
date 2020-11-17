@@ -21,6 +21,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public int IdLinea { get; set; }
         public string Codigo { get; set; }
         public string CodigoProveedor { get; set; }
+        public string CodigoClasificacion { get; set; }
         [ForeignKey("Proveedor")]
         public int IdProveedor { get; set; }
         public string Descripcion { get; set; }
