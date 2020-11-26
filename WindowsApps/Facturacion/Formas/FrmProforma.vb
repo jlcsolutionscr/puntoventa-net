@@ -453,6 +453,7 @@ Public Class FrmProforma
         btnAnular.Enabled = False
         btnImprimir.Enabled = False
         btnGenerarPDF.Enabled = False
+        btnEnviar.Enabled = False
         btnBuscaVendedor.Enabled = True
         btnBuscarCliente.Enabled = True
         cliente = New Cliente With {
@@ -537,6 +538,7 @@ Public Class FrmProforma
                 txtNombreCliente.ReadOnly = IIf(proforma.IdCliente = 1, False, True)
                 btnImprimir.Enabled = True
                 btnGenerarPDF.Enabled = True
+                btnEnviar.Enabled = True
                 btnBuscaVendedor.Enabled = False
                 btnBuscarCliente.Enabled = False
                 btnGuardar.Enabled = proforma.Aplicado = False
@@ -715,6 +717,7 @@ Public Class FrmProforma
         btnImprimir.Enabled = True
         btnImprimir.Focus()
         btnGenerarPDF.Enabled = True
+        btnEnviar.Enabled = True
         btnGuardar.Enabled = True
         btnAgregar.Enabled = True
         btnAnular.Enabled = FrmPrincipal.bolAnularTransacciones
@@ -1006,6 +1009,20 @@ Public Class FrmProforma
                 txtPrecio.Text = FormatNumber(decPrecioVenta, 2)
                 If e.KeyCode = Keys.Enter Then BtnInsertar_Click(btnInsertar, New EventArgs())
             End If
+        End If
+    End Sub
+
+    Private Async Sub btnEnviar_Click(sender As Object, e As EventArgs) Handles btnEnviar.Click
+        If txtIdProforma.Text <> "" Then
+            Try
+                btnEnviar.Enabled = False
+                Await Puntoventa.GenerarNotificacionProforma(proforma.IdProforma, FrmPrincipal.usuarioGlobal.Token)
+                MessageBox.Show("Documento enviado satisfactoriamente", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            Catch ex As Exception
+                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Exit Sub
+            End Try
+            btnEnviar.Enabled = True
         End If
     End Sub
 

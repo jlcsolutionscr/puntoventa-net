@@ -1,6 +1,7 @@
 Imports LeandroSoftware.Core.Dominio.Entidades
 Imports System.Threading.Tasks
 Imports LeandroSoftware.ClienteWCF
+Imports System.Text.RegularExpressions
 
 Public Class FrmFacturaCompra
 #Region "Variables"
@@ -302,6 +303,13 @@ Public Class FrmFacturaCompra
             txtCodigo.Text = codigoDesc(0)
             txtDescripcion.Text = codigoDesc(1)
         End If
+    End Sub
+
+    Private Sub textJustNumbers_TextChanged(sender As Object, e As EventArgs) Handles txtIdentificacion.TextChanged, txtTelefono.TextChanged, txtNumDocExoneracion.TextChanged, txtPorcentajeExoneracion.TextChanged
+        Dim origin As TextBox = DirectCast(sender, TextBox)
+        Dim texto As String = origin.Text
+        texto = Regex.Replace(texto, "[^0-9]", "")
+        origin.Text = texto
     End Sub
 
     Private Async Sub BtnGuardar_Click(sender As Object, e As EventArgs) Handles btnGuardar.Click

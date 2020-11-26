@@ -2,6 +2,7 @@ Imports System.Threading.Tasks
 Imports System.Globalization
 Imports LeandroSoftware.Core.Dominio.Entidades
 Imports LeandroSoftware.ClienteWCF
+Imports System.Text.RegularExpressions
 
 Public Class FrmCliente
 #Region "Variables"
@@ -198,6 +199,13 @@ Public Class FrmCliente
 
     Private Sub txtPorcentajeExoneracion_TextChanged(sender As Object, e As KeyPressEventArgs) Handles txtPorcentajeExoneracion.KeyPress
         FrmPrincipal.ValidaNumero(e, sender, True, 0, ".")
+    End Sub
+
+    Private Sub textJustNumbers_TextChanged(sender As Object, e As EventArgs) Handles txtIdentificacion.TextChanged, txtTelefono.TextChanged, txtCelular.TextChanged, txtFax.TextChanged, txtNumDocExoneracion.TextChanged, txtPorcentajeExoneracion.TextChanged
+        Dim origin As TextBox = DirectCast(sender, TextBox)
+        Dim texto As String = origin.Text
+        texto = Regex.Replace(texto, "[^0-9]", "")
+        origin.Text = texto
     End Sub
 #End Region
 End Class

@@ -73,6 +73,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         DocumentoElectronico ObtenerDocumentoElectronico(int intIdDocumento);
         void ProcesarRespuestaHacienda(RespuestaHaciendaDTO mensaje, ICorreoService servicioEnvioCorreo, string strCorreoNotificacionErrores);
         void EnviarNotificacionDocumentoElectronico(int intIdDocumento, string strCorreoReceptor, ICorreoService servicioEnvioCorreo, string strCorreoNotificacionErrores);
+        void GenerarNotificacionProforma(int intIdProforma, ICorreoService servicioEnvioCorreo);
     }
 
     public class FacturacionService : IFacturacionService
@@ -429,8 +430,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         Producto producto = dbContext.ProductoRepository.Include("Linea").FirstOrDefault(x => x.IdProducto == detalleFactura.IdProducto);
                         if (producto == null)
                             throw new BusinessException("El producto con código " + producto.Codigo + " asignado al detalle de la factura no existe.");
-                        if (!empresa.RegimenSimplificado && producto.CodigoClasificacion == "")
-                            throw new BusinessException("El producto con código " + producto.Codigo + " asignado al detalle de la factura no posee clasificación CABYS.");
+                        /*if (!empresa.RegimenSimplificado && producto.CodigoClasificacion == "")
+                            throw new BusinessException("El producto con código " + producto.Codigo + " asignado al detalle de la factura no posee clasificación CABYS.");*/
                         if (producto.Tipo == StaticTipoProducto.Producto)
                         {
                             ExistenciaPorSucursal existencias = dbContext.ExistenciaPorSucursalRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == factura.IdSucursal).FirstOrDefault();
@@ -2630,7 +2631,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 log.Error("Error al enviar notificación al receptor para el documento con ID: " + intIdDocumento, ex);
-                throw new Exception("Se produjo un error al consultar el documento electrónico. Por favor consulte con su proveedor.");
+                throw new Exception("Se produjo un error al enviar el documento electrónico al receptor. Por favor consulte con su proveedor.");
             }
         }
 
@@ -2826,6 +2827,118 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 JArray emptyJArray = new JArray();
                 string strBody = "El documento con clave " + documentoElectronico.ClaveNumerica + " registrado en la empresa " + empresa.NombreEmpresa + " genero un error en el envío del PDF al remitente: " + strCorreoReceptor + " Error: " + ex.Message;
                 servicioEnvioCorreo.SendEmail(new string[] { strCorreoNotificacionErrores }, new string[] { }, "Error al tratar de enviar el correo al receptor.", strBody, false, emptyJArray);
+            }
+        }
+
+        public void GenerarNotificacionProforma(int intIdProforma, ICorreoService servicioEnvioCorreo)
+        {
+            try
+            {
+                using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+                {
+                    Proforma proforma = dbContext.ProformaRepository.Include("Empresa").Include("Cliente").Include("DetalleProforma.Producto.TipoProducto").Where(x => x.IdProforma == intIdProforma).FirstOrDefault();
+                    if (proforma == null) throw new BusinessException("No existe registro de proforma para el identificador suministrado: " + intIdProforma);
+                    if (proforma.Cliente.CorreoElectronico == "") throw new BusinessException("El cliente vinculado a la proforma no posee una dirección de electrónico. Por favor verifique. . .");
+                    string strBody;
+                    string strTitle = proforma.Empresa.NombreComercial + " - Factura proforma";
+                    strBody = "Estimado cliente, adjunto encontrará el detalle de la proforma solicitada.";
+                    EstructuraPDF datos = new EstructuraPDF();
+                    try
+                    {
+                        string apPath = HostingEnvironment.ApplicationPhysicalPath + "images\\Logo.png";
+                        Image poweredByImage = Image.FromFile(apPath);
+                        datos.PoweredByLogotipo = poweredByImage;
+                    }
+                    catch (Exception)
+                    {
+                        datos.PoweredByLogotipo = null;
+                    }
+                    try
+                    {
+                        Image logoImage;
+                        using (MemoryStream memStream = new MemoryStream(proforma.Empresa.Logotipo))
+                            logoImage = Image.FromStream(memStream);
+                        datos.Logotipo = logoImage;
+                    }
+                    catch (Exception)
+                    {
+                        datos.Logotipo = null;
+                    }
+
+                    datos.TituloDocumento = "FACTURA PROFORMA";
+                    datos.NombreEmpresa = proforma.Empresa.NombreEmpresa;
+                    datos.NombreComercial = proforma.Empresa.NombreComercial;
+                    datos.ConsecInterno = proforma.ConsecProforma.ToString();
+                    datos.Consecutivo = proforma.IdProforma.ToString();
+                    datos.Clave = "";
+                    datos.CondicionVenta = "Proforma";
+                    datos.PlazoCredito = "";
+                    datos.Fecha = proforma.Fecha.ToString("dd/MM/yyyy hh:mm:ss");
+                    datos.MedioPago = "";
+                    datos.NombreEmisor = proforma.Empresa.NombreEmpresa;
+                    datos.NombreComercialEmisor = proforma.Empresa.NombreComercial;
+                    datos.IdentificacionEmisor = proforma.Empresa.Identificacion;
+                    datos.CorreoElectronicoEmisor = proforma.Empresa.CorreoNotificacion;
+                    datos.TelefonoEmisor = proforma.Empresa.Telefono1 + (proforma.Empresa.Telefono2.Length > 0 ? " - " + proforma.Empresa.Telefono2.ToString() : "");
+                    datos.FaxEmisor = "";
+                    datos.ProvinciaEmisor = dbContext.ProvinciaRepository.Where(x => x.IdProvincia == proforma.Empresa.IdProvincia).FirstOrDefault().Descripcion;
+                    datos.CantonEmisor = dbContext.CantonRepository.Where(x => x.IdProvincia == proforma.Empresa.IdProvincia && x.IdCanton == proforma.Empresa.IdCanton).FirstOrDefault().Descripcion;
+                    datos.DistritoEmisor = dbContext.DistritoRepository.Where(x => x.IdProvincia == proforma.Empresa.IdProvincia && x.IdCanton == proforma.Empresa.IdCanton && x.IdDistrito == proforma.Empresa.IdDistrito).FirstOrDefault().Descripcion;
+                    datos.BarrioEmisor = dbContext.BarrioRepository.Where(x => x.IdProvincia == proforma.Empresa.IdProvincia && x.IdCanton == proforma.Empresa.IdCanton && x.IdDistrito == proforma.Empresa.IdDistrito && x.IdBarrio == proforma.Empresa.IdBarrio).FirstOrDefault().Descripcion;
+                    datos.DireccionEmisor = proforma.Empresa.Direccion;
+                    datos.NombreReceptor = proforma.NombreCliente;
+                    if (proforma.IdCliente > 1)
+                    {
+                        datos.PoseeReceptor = true;
+                        datos.NombreComercialReceptor = proforma.Cliente.NombreComercial;
+                        datos.IdentificacionReceptor = proforma.Cliente.Identificacion;
+                        datos.CorreoElectronicoReceptor = proforma.Cliente.CorreoElectronico;
+                        datos.TelefonoReceptor = proforma.Cliente.Telefono;
+                        datos.FaxReceptor = proforma.Cliente.Fax;
+                    }
+                    foreach (DetalleProforma item in proforma.DetalleProforma)
+                    {
+                        decimal decPrecioVenta = item.PrecioVenta;
+                        decimal decTotalLinea = item.Cantidad * decPrecioVenta;
+                        EstructuraPDFDetalleServicio detalle = new EstructuraPDFDetalleServicio
+                        {
+                            Cantidad = item.PrecioVenta.ToString("N2", CultureInfo.InvariantCulture),
+                            Codigo = item.Producto.Codigo,
+                            Detalle = item.Descripcion,
+                            PrecioUnitario = decPrecioVenta.ToString("N2", CultureInfo.InvariantCulture),
+                            TotalLinea = decTotalLinea.ToString("N2", CultureInfo.InvariantCulture)
+                        };
+                        datos.DetalleServicio.Add(detalle);
+                    }
+                    if (proforma.TextoAdicional != null) datos.OtrosTextos = proforma.TextoAdicional;
+                    datos.TotalGravado = proforma.Gravado.ToString("N2", CultureInfo.InvariantCulture);
+                    datos.TotalExonerado = proforma.Exonerado.ToString("N2", CultureInfo.InvariantCulture);
+                    datos.TotalExento = proforma.Excento.ToString("N2", CultureInfo.InvariantCulture);
+                    datos.Descuento = "0.00";
+                    datos.Impuesto = proforma.Impuesto.ToString("N2", CultureInfo.InvariantCulture);
+                    datos.TotalGeneral = (proforma.Gravado + proforma.Exonerado + proforma.Excento + proforma.Impuesto).ToString("N2", CultureInfo.InvariantCulture);
+                    datos.CodigoMoneda = proforma.IdTipoMoneda == 1 ? "CRC" : "USD";
+                    datos.TipoDeCambio = "1";
+                    JArray jarrayObj = new JArray();
+                    string[] arrCorreoReceptor = proforma.Cliente.CorreoElectronico.Split(';');
+                    byte[] pdfAttactment = UtilitarioPDF.GenerarPDF(datos);
+                    JObject jobDatosAdjuntos1 = new JObject
+                    {
+                        ["nombre"] = "proforma-" + intIdProforma + ".pdf",
+                        ["contenido"] = Convert.ToBase64String(pdfAttactment)
+                    };
+                    jarrayObj.Add(jobDatosAdjuntos1);
+                    servicioEnvioCorreo.SendEmail(arrCorreoReceptor, new string[] { }, strTitle, strBody, false, jarrayObj);
+                }
+            }
+            catch (BusinessException ex)
+            {
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                log.Error("Error al enviar notificación al receptor para el documento con ID: " + intIdProforma, ex);
+                throw new Exception("Se produjo un error al notificar al cliente. Por favor consulte con su proveedor.");
             }
         }
     }

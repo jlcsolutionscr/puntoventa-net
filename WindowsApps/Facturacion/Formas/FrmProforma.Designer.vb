@@ -90,6 +90,7 @@ Partial Class FrmProforma
         Me._lblSubTotal_5 = New System.Windows.Forms.Label()
         Me.cboSucursal = New System.Windows.Forms.ComboBox()
         Me.Label6 = New System.Windows.Forms.Label()
+        Me.btnEnviar = New System.Windows.Forms.Button()
         CType(Me.grdDetalleProforma, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -899,6 +900,20 @@ Partial Class FrmProforma
         Me.Label6.Text = "Sucursal:"
         Me.Label6.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
+        'btnEnviar
+        '
+        Me.btnEnviar.BackColor = System.Drawing.SystemColors.ButtonHighlight
+        Me.btnEnviar.Cursor = System.Windows.Forms.Cursors.Default
+        Me.btnEnviar.Enabled = False
+        Me.btnEnviar.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.btnEnviar.Location = New System.Drawing.Point(392, 8)
+        Me.btnEnviar.Name = "btnEnviar"
+        Me.btnEnviar.Size = New System.Drawing.Size(64, 21)
+        Me.btnEnviar.TabIndex = 214
+        Me.btnEnviar.TabStop = False
+        Me.btnEnviar.Text = "&Enviar"
+        Me.btnEnviar.UseVisualStyleBackColor = False
+        '
         'FrmProforma
         '
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
@@ -906,6 +921,7 @@ Partial Class FrmProforma
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(817, 493)
+        Me.Controls.Add(Me.btnEnviar)
         Me.Controls.Add(Me.cboSucursal)
         Me.Controls.Add(Me.Label6)
         Me.Controls.Add(Me.txtDescuento)
@@ -1025,4 +1041,5 @@ Partial Class FrmProforma
     Public WithEvents _lblSubTotal_5 As Label
     Friend WithEvents cboSucursal As ComboBox
     Friend WithEvents Label6 As Label
+    Public WithEvents btnEnviar As Button
 End Class

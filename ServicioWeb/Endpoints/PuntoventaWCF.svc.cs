@@ -630,6 +630,10 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         string strCorreoReceptor = parametrosJO.Property("CorreoReceptor").Value.ToString();
                         servicioFacturacion.EnviarNotificacionDocumentoElectronico(intIdLlave1, strCorreoReceptor, servicioEnvioCorreo, configuracionGeneral.CorreoNotificacionErrores);
                         break;
+                    case "GenerarNotificacionProforma":
+                        intIdLlave1 = int.Parse(parametrosJO.Property("IdProforma").Value.ToString());
+                        servicioFacturacion.GenerarNotificacionProforma(intIdLlave1, servicioEnvioCorreo);
+                        break;
                     case "ReprocesarDocumentoElectronico":
                         intIdLlave1 = int.Parse(parametrosJO.Property("IdDocumento").Value.ToString());
                         servicioFacturacion.ReprocesarDocumentoElectronico(intIdLlave1, configuracionGeneral);

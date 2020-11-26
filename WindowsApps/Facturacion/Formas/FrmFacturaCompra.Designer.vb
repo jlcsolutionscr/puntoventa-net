@@ -65,6 +65,7 @@ Partial Class FrmFacturaCompra
         Me.txtNumDocExoneracion = New System.Windows.Forms.TextBox()
         Me._lblLabels_3 = New System.Windows.Forms.Label()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
+        Me.btnBuscarClasificacion = New System.Windows.Forms.Button()
         Me.txtImpuesto = New System.Windows.Forms.TextBox()
         Me._lblLabels_6 = New System.Windows.Forms.Label()
         Me.txtTotal = New System.Windows.Forms.TextBox()
@@ -86,7 +87,6 @@ Partial Class FrmFacturaCompra
         Me.grdDetalleProforma = New System.Windows.Forms.DataGridView()
         Me.btnEliminar = New System.Windows.Forms.Button()
         Me.btnInsertar = New System.Windows.Forms.Button()
-        Me.btnBuscarClasificacion = New System.Windows.Forms.Button()
         Me.GroupBox1.SuspendLayout()
         CType(Me.grdDetalleProforma, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -666,6 +666,16 @@ Partial Class FrmFacturaCompra
         Me.GroupBox1.TabStop = False
         Me.GroupBox1.Text = "Detalle factura compra"
         '
+        'btnBuscarClasificacion
+        '
+        Me.btnBuscarClasificacion.Image = CType(resources.GetObject("btnBuscarClasificacion.Image"), System.Drawing.Image)
+        Me.btnBuscarClasificacion.Location = New System.Drawing.Point(388, 19)
+        Me.btnBuscarClasificacion.Name = "btnBuscarClasificacion"
+        Me.btnBuscarClasificacion.Size = New System.Drawing.Size(20, 20)
+        Me.btnBuscarClasificacion.TabIndex = 231
+        Me.btnBuscarClasificacion.TabStop = False
+        Me.btnBuscarClasificacion.UseVisualStyleBackColor = True
+        '
         'txtImpuesto
         '
         Me.txtImpuesto.AcceptsReturn = True
@@ -957,16 +967,6 @@ Partial Class FrmFacturaCompra
         Me.btnInsertar.TabStop = False
         Me.btnInsertar.Text = "Insertar"
         Me.btnInsertar.UseVisualStyleBackColor = False
-        '
-        'btnBuscarClasificacion
-        '
-        Me.btnBuscarClasificacion.Image = CType(resources.GetObject("btnBuscarClasificacion.Image"), System.Drawing.Image)
-        Me.btnBuscarClasificacion.Location = New System.Drawing.Point(388, 19)
-        Me.btnBuscarClasificacion.Name = "btnBuscarClasificacion"
-        Me.btnBuscarClasificacion.Size = New System.Drawing.Size(20, 20)
-        Me.btnBuscarClasificacion.TabIndex = 231
-        Me.btnBuscarClasificacion.TabStop = False
-        Me.btnBuscarClasificacion.UseVisualStyleBackColor = True
         '
         'FrmFacturaCompra
         '
