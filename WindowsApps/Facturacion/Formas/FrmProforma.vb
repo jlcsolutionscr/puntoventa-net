@@ -767,14 +767,12 @@ Public Class FrmProforma
 
     Private Async Sub BtnGenerarPDF_Click(sender As Object, e As EventArgs) Handles btnGenerarPDF.Click
         If txtIdProforma.Text <> "" Then
-            If proforma.ConsecProforma = 0 Then
-                Try
-                    proforma = Await Puntoventa.ObtenerProforma(txtIdProforma.Text, FrmPrincipal.usuarioGlobal.Token)
-                Catch ex As Exception
-                    MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                    Exit Sub
-                End Try
-            End If
+            Try
+                proforma = Await Puntoventa.ObtenerProforma(proforma.IdProforma, FrmPrincipal.usuarioGlobal.Token)
+            Catch ex As Exception
+                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Exit Sub
+            End Try
             Dim datos As EstructuraPDF = New EstructuraPDF()
             Try
                 Dim poweredByImage As Image = My.Resources.logo
@@ -826,8 +824,8 @@ Public Class FrmProforma
                 Dim decPrecioVenta As Decimal = item.PrecioVenta
                 Dim decTotalLinea As Decimal = item.Cantidad * decPrecioVenta
                 Dim detalle As EstructuraPDFDetalleServicio = New EstructuraPDFDetalleServicio With {
-                    .Cantidad = item.PrecioVenta,
-                    .Codigo = item.Codigo,
+                    .Cantidad = item.Cantidad,
+                    .Codigo = item.Producto.CodigoClasificacion,
                     .Detalle = item.Descripcion,
                     .PrecioUnitario = decPrecioVenta.ToString("N2", CultureInfo.InvariantCulture),
                     .TotalLinea = decTotalLinea.ToString("N2", CultureInfo.InvariantCulture)
@@ -1014,15 +1012,26 @@ Public Class FrmProforma
 
     Private Async Sub btnEnviar_Click(sender As Object, e As EventArgs) Handles btnEnviar.Click
         If txtIdProforma.Text <> "" Then
-            Try
-                btnEnviar.Enabled = False
-                Await Puntoventa.GenerarNotificacionProforma(proforma.IdProforma, FrmPrincipal.usuarioGlobal.Token)
-                MessageBox.Show("Documento enviado satisfactoriamente", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
-            Catch ex As Exception
-                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Exit Sub
-            End Try
-            btnEnviar.Enabled = True
+            Dim strCorreoReceptor = ""
+            If cliente.IdCliente > 1 Then
+                If MessageBox.Show("Desea utilizar la dirección(es) de correo electrónico registrada(s) en el cliente?", "JLC Solutions CR", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                    strCorreoReceptor = cliente.CorreoElectronico
+                Else
+                    strCorreoReceptor = InputBox("Ingrese la(s) dirección(es) de correo electrónico donde se enviará el comprobante, separados por punto y coma:")
+                End If
+            Else
+                strCorreoReceptor = InputBox("Ingrese la(s) dirección(es) de correo electrónico donde se enviará el comprobante, separados por punto y coma:")
+            End If
+            If strCorreoReceptor <> "" Then
+                btnGuardar.Enabled = False
+                Try
+                    Await Puntoventa.GenerarNotificacionProforma(proforma.IdProforma, strCorreoReceptor, FrmPrincipal.usuarioGlobal.Token)
+                    MessageBox.Show("Documento enviado satisfactoriamente", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                Catch ex As Exception
+                    MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                End Try
+                btnEnviar.Enabled = True
+            End If
         End If
     End Sub
 

@@ -320,6 +320,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                 string strNombreMetodo;
                 string strEntidad = null;
                 string strFormatoReporte = "PDF";
+                string strCorreoReceptor;
                 if (datosJO.Property("NombreMetodo") != null)
                 {
                     strNombreMetodo = datosJO.Property("NombreMetodo").Value.ToString();
@@ -627,12 +628,13 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         break;
                     case "EnviarNotificacionDocumentoElectronico":
                         intIdLlave1 = int.Parse(parametrosJO.Property("IdDocumento").Value.ToString());
-                        string strCorreoReceptor = parametrosJO.Property("CorreoReceptor").Value.ToString();
+                        strCorreoReceptor = parametrosJO.Property("CorreoReceptor").Value.ToString();
                         servicioFacturacion.EnviarNotificacionDocumentoElectronico(intIdLlave1, strCorreoReceptor, servicioEnvioCorreo, configuracionGeneral.CorreoNotificacionErrores);
                         break;
                     case "GenerarNotificacionProforma":
                         intIdLlave1 = int.Parse(parametrosJO.Property("IdProforma").Value.ToString());
-                        servicioFacturacion.GenerarNotificacionProforma(intIdLlave1, servicioEnvioCorreo);
+                        strCorreoReceptor = parametrosJO.Property("CorreoReceptor").Value.ToString();
+                        servicioFacturacion.GenerarNotificacionProforma(intIdLlave1, strCorreoReceptor, servicioEnvioCorreo);
                         break;
                     case "ReprocesarDocumentoElectronico":
                         intIdLlave1 = int.Parse(parametrosJO.Property("IdDocumento").Value.ToString());

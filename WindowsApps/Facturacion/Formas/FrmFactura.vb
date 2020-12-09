@@ -1411,15 +1411,15 @@ Public Class FrmFactura
                 datos.TelefonoReceptor = cliente.Telefono
                 datos.FaxReceptor = cliente.Fax
             End If
-            For I As Short = 0 To dtbDetalleFactura.Rows.Count - 1
-                Dim decTotalLinea As Decimal = CDbl(dtbDetalleFactura.Rows(I).Item(3)) * CDbl(dtbDetalleFactura.Rows(I).Item(4))
+            For Each linea As DetalleFactura In factura.DetalleFactura
+                Dim decTotalLinea As Decimal = linea.Cantidad * linea.PrecioVenta
                 Dim detalle As EstructuraPDFDetalleServicio = New EstructuraPDFDetalleServicio With {
-                .Cantidad = CDbl(dtbDetalleFactura.Rows(I).Item(3)),
-                .Codigo = dtbDetalleFactura.Rows(I).Item(1),
-                .Detalle = dtbDetalleFactura.Rows(I).Item(2),
-                .PrecioUnitario = CDbl(dtbDetalleFactura.Rows(I).Item(4)).ToString("N2", CultureInfo.InvariantCulture),
-                .TotalLinea = decTotalLinea.ToString("N2", CultureInfo.InvariantCulture)
-            }
+                    .Cantidad = linea.Cantidad,
+                    .Codigo = linea.Producto.CodigoClasificacion,
+                    .Detalle = linea.Descripcion,
+                    .PrecioUnitario = linea.PrecioVenta.ToString("N2", CultureInfo.InvariantCulture),
+                    .TotalLinea = decTotalLinea.ToString("N2", CultureInfo.InvariantCulture)
+                }
                 datos.DetalleServicio.Add(detalle)
             Next
             If (factura.TextoAdicional IsNot Nothing) Then datos.OtrosTextos = factura.TextoAdicional

@@ -511,7 +511,7 @@
                 {
                 "Name" = "8:.NET Framework"
                 "Message" = "8:[VSDNETMSG]"
-                "FrameworkVersion" = "8:v4.0                                                       "
+                "FrameworkVersion" = "8:v4.0                                                        "
                 "AllowLaterVersions" = "11:FALSE"
                 "InstallUrl" = "8:http://go.microsoft.com/fwlink/?LinkId=9832"
                 }
@@ -729,7 +729,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Dominio, Version=4.3.0.0, Culture=neutral, processorArchitecture=x86"
+            "AssemblyAsmDisplayName" = "8:Dominio, Version=4.3.1.0, Culture=neutral, processorArchitecture=x86"
                 "ScatterAssemblies"
                 {
                     "_40CEA3FF97A373747A91C7CA2E2694C3"
@@ -884,7 +884,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Core, Version=4.3.0.0, Culture=neutral, processorArchitecture=x86"
+            "AssemblyAsmDisplayName" = "8:Core, Version=4.3.1.0, Culture=neutral, processorArchitecture=x86"
                 "ScatterAssemblies"
                 {
                     "_A2BC57FD704A915169BEC07F7429E8BB"
@@ -1121,7 +1121,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:ClienteWCF, Version=4.3.0.0, Culture=neutral, processorArchitecture=x86"
+            "AssemblyAsmDisplayName" = "8:ClienteWCF, Version=4.3.1.0, Culture=neutral, processorArchitecture=x86"
                 "ScatterAssemblies"
                 {
                     "_DDF81ED43DB66AAB1C681EF38049BAF7"
@@ -1266,15 +1266,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:PuntoventaJLC"
-        "ProductCode" = "8:{E0B572FE-E863-44A5-86D6-33F7A7E3E8E1}"
-        "PackageCode" = "8:{CFC51931-CD7F-4F5B-9196-F5CDAD7557EA}"
+        "ProductCode" = "8:{0D62F8D1-BBB6-442A-8F40-A766F8D5B5F3}"
+        "PackageCode" = "8:{A61C1AED-9A6B-4521-BDFC-33C0E18B8B93}"
         "UpgradeCode" = "8:{9F4F56C6-17E9-4C36-9940-81BDB1283F7F}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:4.3.0"
+        "ProductVersion" = "8:4.3.1"
         "Manufacturer" = "8:JLC Solutions"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -1619,7 +1619,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_3ECECD27447042C9B8CD278EB2AE3EB0"
             {
-            "SourcePath" = "8:..\\WindowsApps\\Facturacion\\obj\\Release\\App.exe"
+            "SourcePath" = "8:..\\WindowsApps\\Facturacion\\obj\\Debug\\App.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_5A78B4A4225A47DC84E12965E5D1780F"

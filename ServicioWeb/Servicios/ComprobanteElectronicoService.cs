@@ -595,11 +595,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     decimal decSubtotal = 0;
                     FacturaElectronicaLineaDetalle lineaDetalle = new FacturaElectronicaLineaDetalle();
                     lineaDetalle.NumeroLinea = (detalleServicioList.Count() + 1).ToString();
-                    lineaDetalle.Codigo = detalleFactura.Producto.Codigo;
-                    /*FacturaElectronicaCodigoType codigoComercial = new FacturaElectronicaCodigoType();
+                    lineaDetalle.Codigo = detalleFactura.Producto.CodigoClasificacion;
+                    FacturaElectronicaCodigoType codigoComercial = new FacturaElectronicaCodigoType();
                     codigoComercial.Tipo = FacturaElectronicaCodigoTypeTipo.Item01;
                     codigoComercial.Codigo = detalleFactura.Producto.Codigo;
-                    lineaDetalle.CodigoComercial = new FacturaElectronicaCodigoType[] { codigoComercial };*/
+                    lineaDetalle.CodigoComercial = new FacturaElectronicaCodigoType[] { codigoComercial };
                     lineaDetalle.Cantidad = detalleFactura.Cantidad;
                     if (detalleFactura.Producto.Tipo == StaticTipoProducto.Producto)
                         lineaDetalle.UnidadMedida = FacturaElectronicaUnidadMedidaType.Unid;
@@ -853,11 +853,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     decimal decSubtotal = 0;
                     TiqueteElectronicoLineaDetalle lineaDetalle = new TiqueteElectronicoLineaDetalle();
                     lineaDetalle.NumeroLinea = (detalleServicioList.Count() + 1).ToString();
-                    lineaDetalle.Codigo = detalleFactura.Producto.Codigo;
-                    /*TiqueteElectronicoCodigoType codigoComercial = new TiqueteElectronicoCodigoType();
+                    lineaDetalle.Codigo = detalleFactura.Producto.CodigoClasificacion;
+                    TiqueteElectronicoCodigoType codigoComercial = new TiqueteElectronicoCodigoType();
                     codigoComercial.Tipo = TiqueteElectronicoCodigoTypeTipo.Item01;
                     codigoComercial.Codigo = detalleFactura.Producto.Codigo;
-                    lineaDetalle.CodigoComercial = new TiqueteElectronicoCodigoType[] { codigoComercial };*/
+                    lineaDetalle.CodigoComercial = new TiqueteElectronicoCodigoType[] { codigoComercial };
                     lineaDetalle.Cantidad = detalleFactura.Cantidad;
                     if (detalleFactura.Producto.Tipo == StaticTipoProducto.Producto)
                         lineaDetalle.UnidadMedida = TiqueteElectronicoUnidadMedidaType.Unid;
@@ -1124,11 +1124,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     decimal decSubtotal = 0;
                     NotaCreditoElectronicaLineaDetalle lineaDetalle = new NotaCreditoElectronicaLineaDetalle();
                     lineaDetalle.NumeroLinea = (detalleServicioList.Count() + 1).ToString();
-                    lineaDetalle.Codigo = detalleFactura.Producto.Codigo;
-                    /*NotaCreditoElectronicaCodigoType codigoComercial = new NotaCreditoElectronicaCodigoType();
+                    lineaDetalle.Codigo = detalleFactura.Producto.CodigoClasificacion;
+                    NotaCreditoElectronicaCodigoType codigoComercial = new NotaCreditoElectronicaCodigoType();
                     codigoComercial.Tipo = NotaCreditoElectronicaCodigoTypeTipo.Item01;
                     codigoComercial.Codigo = detalleFactura.Producto.Codigo;
-                    lineaDetalle.CodigoComercial = new NotaCreditoElectronicaCodigoType[] { codigoComercial };*/
+                    lineaDetalle.CodigoComercial = new NotaCreditoElectronicaCodigoType[] { codigoComercial };
                     lineaDetalle.Cantidad = detalleFactura.Cantidad;
                     if (detalleFactura.Producto.Tipo == StaticTipoProducto.Producto)
                         lineaDetalle.UnidadMedida = NotaCreditoElectronicaUnidadMedidaType.Unid;
@@ -1398,11 +1398,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     decimal decSubtotal = 0;
                     NotaCreditoElectronicaLineaDetalle lineaDetalle = new NotaCreditoElectronicaLineaDetalle();
                     lineaDetalle.NumeroLinea = (detalleServicioList.Count() + 1).ToString();
-                    lineaDetalle.Codigo = detalle.Producto.Codigo;
-                    /*NotaCreditoElectronicaCodigoType codigoComercial = new NotaCreditoElectronicaCodigoType();
+                    lineaDetalle.Codigo = detalle.Producto.CodigoClasificacion;
+                    NotaCreditoElectronicaCodigoType codigoComercial = new NotaCreditoElectronicaCodigoType();
                     codigoComercial.Tipo = NotaCreditoElectronicaCodigoTypeTipo.Item01;
                     codigoComercial.Codigo = detalle.Producto.Codigo;
-                    lineaDetalle.CodigoComercial = new NotaCreditoElectronicaCodigoType[] { codigoComercial };*/
+                    lineaDetalle.CodigoComercial = new NotaCreditoElectronicaCodigoType[] { codigoComercial };
                     lineaDetalle.Cantidad = detalle.Cantidad;
                     if (detalle.Producto.Tipo == StaticTipoProducto.Producto)
                         lineaDetalle.UnidadMedida = NotaCreditoElectronicaUnidadMedidaType.Unid;
@@ -1659,11 +1659,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     decimal decSubtotal = 0;
                     NotaDebitoElectronicaLineaDetalle lineaDetalle = new NotaDebitoElectronicaLineaDetalle();
                     lineaDetalle.NumeroLinea = (detalleServicioList.Count() + 1).ToString();
-                    lineaDetalle.Codigo = detalle.Producto.Codigo;
-                    /*NotaDebitoElectronicaCodigoType codigoComercial = new NotaDebitoElectronicaCodigoType();
-                   codigoComercial.Tipo = NotaDebitoElectronicaCodigoTypeTipo.Item01;
-                   codigoComercial.Codigo = detalleFactura.Producto.Codigo;
-                   lineaDetalle.CodigoComercial = new NotaDebitoElectronicaCodigoType[] { codigoComercial };*/
+                    lineaDetalle.Codigo = detalle.Producto.CodigoClasificacion;
+                    NotaDebitoElectronicaCodigoType codigoComercial = new NotaDebitoElectronicaCodigoType();
+                    codigoComercial.Tipo = NotaDebitoElectronicaCodigoTypeTipo.Item01;
+                    codigoComercial.Codigo = detalle.Producto.Codigo;
+                    lineaDetalle.CodigoComercial = new NotaDebitoElectronicaCodigoType[] { codigoComercial };
                     lineaDetalle.Cantidad = detalle.Cantidad;
                     if (detalle.Producto.Tipo == StaticTipoProducto.Producto)
                         lineaDetalle.UnidadMedida = NotaDebitoElectronicaUnidadMedidaType.Unid;
@@ -1672,10 +1672,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     else
                         lineaDetalle.UnidadMedida = NotaDebitoElectronicaUnidadMedidaType.Os;
                     lineaDetalle.Detalle = detalle.Producto.Descripcion;
-                    NotaDebitoElectronicaCodigoType codigoComercial = new NotaDebitoElectronicaCodigoType();
-                    codigoComercial.Tipo = NotaDebitoElectronicaCodigoTypeTipo.Item01;
-                    codigoComercial.Codigo = detalle.Producto.Codigo;
-                    lineaDetalle.CodigoComercial = new NotaDebitoElectronicaCodigoType[] { codigoComercial };
                     lineaDetalle.PrecioUnitario = Math.Round(detalle.PrecioVenta, 2, MidpointRounding.AwayFromZero);
                     decSubtotal = detalle.PrecioVenta * detalle.Cantidad;
                     lineaDetalle.MontoTotal = Math.Round(decSubtotal, 2, MidpointRounding.AwayFromZero);

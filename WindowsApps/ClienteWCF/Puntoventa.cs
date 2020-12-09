@@ -2145,9 +2145,9 @@ namespace LeandroSoftware.ClienteWCF
             return true;
         }
 
-        public static async Task<bool> GenerarNotificacionProforma(int intIdProforma, string strToken)
+        public static async Task<bool> GenerarNotificacionProforma(int intIdProforma, string strCorreoReceptor, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'GenerarNotificacionProforma', Parametros: {IdProforma: " + intIdProforma + "}}";
+            string strDatos = "{NombreMetodo: 'GenerarNotificacionProforma', Parametros: {IdProforma: " + intIdProforma + ", CorreoReceptor: '" + strCorreoReceptor + "'}}";
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
             return true;
         }

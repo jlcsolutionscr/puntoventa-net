@@ -73,7 +73,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         DocumentoElectronico ObtenerDocumentoElectronico(int intIdDocumento);
         void ProcesarRespuestaHacienda(RespuestaHaciendaDTO mensaje, ICorreoService servicioEnvioCorreo, string strCorreoNotificacionErrores);
         void EnviarNotificacionDocumentoElectronico(int intIdDocumento, string strCorreoReceptor, ICorreoService servicioEnvioCorreo, string strCorreoNotificacionErrores);
-        void GenerarNotificacionProforma(int intIdProforma, ICorreoService servicioEnvioCorreo);
+        void GenerarNotificacionProforma(int intIdProforma, string strCorreoReceptor, ICorreoService servicioEnvioCorreo);
     }
 
     public class FacturacionService : IFacturacionService
@@ -430,8 +430,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         Producto producto = dbContext.ProductoRepository.Include("Linea").FirstOrDefault(x => x.IdProducto == detalleFactura.IdProducto);
                         if (producto == null)
                             throw new BusinessException("El producto con código " + producto.Codigo + " asignado al detalle de la factura no existe.");
-                        /*if (!empresa.RegimenSimplificado && producto.CodigoClasificacion == "")
-                            throw new BusinessException("El producto con código " + producto.Codigo + " asignado al detalle de la factura no posee clasificación CABYS.");*/
+                        if (!empresa.RegimenSimplificado && producto.CodigoClasificacion == "")
+                            throw new BusinessException("El producto con código " + producto.Codigo + " asignado al detalle de la factura no posee clasificación CABYS.");
                         if (producto.Tipo == StaticTipoProducto.Producto)
                         {
                             ExistenciaPorSucursal existencias = dbContext.ExistenciaPorSucursalRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == factura.IdSucursal).FirstOrDefault();
@@ -1015,12 +1015,27 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == proforma.IdEmpresa && x.IdSucursal == proforma.IdSucursal);
                     if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (!empresa.RegimenSimplificado)
+                    {
+                        foreach (DetalleProforma detalle in proforma.DetalleProforma)
+                        {
+                            Producto producto = dbContext.ProductoRepository.Include("Linea").FirstOrDefault(x => x.IdProducto == detalle.IdProducto);
+                            if (producto == null)
+                                throw new BusinessException("El producto con código " + producto.Codigo + " asignado al detalle de la proforma no existe.");
+                            if (producto.CodigoClasificacion == "")
+                                throw new BusinessException("El producto con código " + producto.Codigo + " asignado al detalle de la proforma no posee clasificación CABYS.");
+                        }
+                    }
                     sucursal.ConsecProforma += 1;
                     dbContext.NotificarModificacion(sucursal);
                     proforma.ConsecProforma = sucursal.ConsecProforma;
                     dbContext.ProformaRepository.Add(proforma);
                     dbContext.Commit();
                     return proforma.IdProforma.ToString() + "-" + proforma.ConsecProforma.ToString();
+                }
+                catch (BusinessException ex)
+                {
+                    throw ex;
                 }
                 catch (Exception ex)
                 {
@@ -2604,6 +2619,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         {
             try
             {
+                if (strCorreoReceptor == "") throw new BusinessException("Se debe proveer una dirección de válida para el receptor del documento. Por favor verifique la información suministrada");
                 using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
                 {
                     DocumentoElectronico documento = dbContext.DocumentoElectronicoRepository.Find(intIdDocumento);
@@ -2830,15 +2846,15 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void GenerarNotificacionProforma(int intIdProforma, ICorreoService servicioEnvioCorreo)
+        public void GenerarNotificacionProforma(int intIdProforma, string strCorreoReceptor, ICorreoService servicioEnvioCorreo)
         {
             try
             {
+                if (strCorreoReceptor == "") throw new BusinessException("Se debe proveer una dirección de válida para el receptor del documento. Por favor verifique la información suministrada");
                 using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
                 {
                     Proforma proforma = dbContext.ProformaRepository.Include("Empresa").Include("Cliente").Include("DetalleProforma.Producto.TipoProducto").Where(x => x.IdProforma == intIdProforma).FirstOrDefault();
                     if (proforma == null) throw new BusinessException("No existe registro de proforma para el identificador suministrado: " + intIdProforma);
-                    if (proforma.Cliente.CorreoElectronico == "") throw new BusinessException("El cliente vinculado a la proforma no posee una dirección de electrónico. Por favor verifique. . .");
                     string strBody;
                     string strTitle = proforma.Empresa.NombreComercial + " - Factura proforma";
                     strBody = "Estimado cliente, adjunto encontrará el detalle de la proforma solicitada.";
@@ -2902,8 +2918,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         decimal decTotalLinea = item.Cantidad * decPrecioVenta;
                         EstructuraPDFDetalleServicio detalle = new EstructuraPDFDetalleServicio
                         {
-                            Cantidad = item.PrecioVenta.ToString("N2", CultureInfo.InvariantCulture),
-                            Codigo = item.Producto.Codigo,
+                            Cantidad = item.Cantidad.ToString("N2", CultureInfo.InvariantCulture),
+                            Codigo = item.Producto.CodigoClasificacion,
                             Detalle = item.Descripcion,
                             PrecioUnitario = decPrecioVenta.ToString("N2", CultureInfo.InvariantCulture),
                             TotalLinea = decTotalLinea.ToString("N2", CultureInfo.InvariantCulture)
@@ -2920,7 +2936,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     datos.CodigoMoneda = proforma.IdTipoMoneda == 1 ? "CRC" : "USD";
                     datos.TipoDeCambio = "1";
                     JArray jarrayObj = new JArray();
-                    string[] arrCorreoReceptor = proforma.Cliente.CorreoElectronico.Split(';');
+                    string[] arrCorreoReceptor = strCorreoReceptor.Split(';');
                     byte[] pdfAttactment = UtilitarioPDF.GenerarPDF(datos);
                     JObject jobDatosAdjuntos1 = new JObject
                     {

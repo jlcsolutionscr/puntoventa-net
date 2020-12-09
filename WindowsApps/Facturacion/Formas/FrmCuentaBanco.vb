@@ -77,6 +77,7 @@ Public Class FrmCuentaBanco
         Dim strCampo As String = ""
         If Not ValidarCampos(strCampo) Then
             MessageBox.Show("El campo " & strCampo & " es requerido", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            btnGuardar.Enabled = True
             Exit Sub
         End If
         If datos.IdCuenta = 0 Then

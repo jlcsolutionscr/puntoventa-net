@@ -93,7 +93,7 @@ namespace LeandroSoftware.Core.Utilitario
         public static void ValidaFormatoEmail(string email)
         {
             string expresion;
-            expresion = "\\w+([-+.']\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*";
+            expresion = @"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$";
             if (Regex.IsMatch(email, expresion))
             {
                 if (Regex.Replace(email, expresion, string.Empty).Length != 0)

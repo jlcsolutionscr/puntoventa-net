@@ -81,6 +81,7 @@ Public Class FrmProveedor
         Dim strCampo As String = ""
         If Not ValidarCampos(strCampo) Then
             MessageBox.Show("El campo " & strCampo & " es requerido", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            btnGuardar.Enabled = True
             Exit Sub
         End If
         If datos.IdProveedor = 0 Then
