@@ -2048,6 +2048,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     SignaturePackaging = SignaturePackaging.ENVELOPED
                 };
                 X509Certificate2 uidCert = new X509Certificate2(empresa.Certificado, empresa.PinCertificado, X509KeyStorageFlags.MachineKeySet);
+                if (uidCert.NotAfter <= DateTime.Now) throw new BusinessException("La llave criptográfica para la firma del documento electrónico se encuentra vencida. Por favor reemplace su llave criptográfica para poder emitir documentos electrónicos");
                 using (Signer signer2 = signatureParameters.Signer = new Signer(uidCert))
                 using (MemoryStream smDatos = new MemoryStream(mensajeEncoded))
                 {
@@ -2111,6 +2112,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                 }
                 return documento;
+            }
+            catch (BusinessException ex)
+            {
+                throw ex;
             }
             catch (Exception ex)
             {
