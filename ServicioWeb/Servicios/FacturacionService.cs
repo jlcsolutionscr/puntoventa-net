@@ -887,7 +887,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             string criteria = fechaDocumento.ToString("dd/MM/yyyy");
                             TipoDeCambioDolar tipoDeCambio = dbContext.TipoDeCambioDolarRepository.Find(criteria);
                             if (tipoDeCambio == null) throw new BusinessException("El tipo de cambio para la fecha " + criteria + " no ha sido actualizado. Por favor consulte con su proveedor.");
-                            documentoNC = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronica(factura, factura.Empresa, cliente, dbContext, fechaDocumento, tipoDeCambio.ValorTipoCambio);
+                            documentoNC = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronica(factura, factura.Empresa, cliente, dbContext, tipoDeCambio.ValorTipoCambio);
                             factura.IdDocElectronicoRev = documentoNC.ClaveNumerica;
                         }
                     }
@@ -1648,7 +1648,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         TipoDeCambioDolar tipoDeCambio = dbContext.TipoDeCambioDolarRepository.Find(criteria);
                         if (tipoDeCambio != null)
                         {
-                            documentoNC = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronicaParcial(devolucion, factura, empresa, cliente, dbContext, fechaDocumento, tipoDeCambio.ValorTipoCambio, factura.IdDocElectronico);
+                            documentoNC = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronicaParcial(devolucion, factura, empresa, cliente, dbContext, tipoDeCambio.ValorTipoCambio, factura.IdDocElectronico);
                             devolucion.IdDocElectronico = documentoNC.ClaveNumerica;
                         }
                         else
@@ -1758,7 +1758,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             TipoDeCambioDolar tipoDeCambio = dbContext.TipoDeCambioDolarRepository.Find(criteria);
                             if (tipoDeCambio != null)
                             {
-                                documentoND = ComprobanteElectronicoService.GenerarNotaDeDebitoElectronicaParcial(devolucion, factura, empresa, devolucion.Cliente, dbContext, fechaDocumento, tipoDeCambio.ValorTipoCambio, devolucion.IdDocElectronico);
+                                documentoND = ComprobanteElectronicoService.GenerarNotaDeDebitoElectronicaParcial(devolucion, factura, empresa, devolucion.Cliente, dbContext, tipoDeCambio.ValorTipoCambio, devolucion.IdDocElectronico);
                                 devolucion.IdDocElectronicoRev = documentoND.ClaveNumerica;
                             }
                             else
@@ -2349,7 +2349,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         Factura factura = dbContext.FacturaRepository.Include("ParametroExoneracion").Include("Cliente").Include("Vendedor").Include("DetalleFactura.Producto.TipoProducto").Include("DesglosePagoFactura.FormaPago").Include("DesglosePagoFactura.TipoMoneda").FirstOrDefault(x => x.IdDocElectronicoRev == documento.ClaveNumerica);
                         if (factura != null)
                         {
-                            nuevoDocumento = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronica(factura, factura.Empresa, factura.Cliente, dbContext, documento.Fecha, factura.TipoDeCambioDolar);
+                            nuevoDocumento = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronica(factura, factura.Empresa, factura.Cliente, dbContext, factura.TipoDeCambioDolar);
                             factura.IdDocElectronicoRev = nuevoDocumento.ClaveNumerica;
                             dbContext.NotificarModificacion(factura);
                         }
@@ -2358,7 +2358,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             DevolucionCliente devolucion = dbContext.DevolucionClienteRepository.Include("Cliente").Include("DetalleDevolucionCliente.Producto.TipoProducto").FirstOrDefault(x => x.IdDocElectronico == documento.ClaveNumerica);
                             if (devolucion == null) throw new BusinessException("El registro origen del documento no existe.");
                             factura = dbContext.FacturaRepository.AsNoTracking().Include("ParametroExoneracion").Include("Cliente").Include("Vendedor").Include("DetalleFactura.Producto.TipoProducto").Include("DesglosePagoFactura.FormaPago").Include("DesglosePagoFactura.TipoMoneda").FirstOrDefault(x => x.IdFactura == devolucion.IdFactura);
-                            nuevoDocumento = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronicaParcial(devolucion, factura, factura.Empresa, factura.Cliente, dbContext, documento.Fecha, factura.TipoDeCambioDolar, factura.IdDocElectronico);
+                            nuevoDocumento = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronicaParcial(devolucion, factura, factura.Empresa, factura.Cliente, dbContext, factura.TipoDeCambioDolar, factura.IdDocElectronico);
                             devolucion.IdDocElectronico = nuevoDocumento.ClaveNumerica;
                             dbContext.NotificarModificacion(devolucion);
                         }
@@ -2368,7 +2368,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         DevolucionCliente devolucion = dbContext.DevolucionClienteRepository.Include("Cliente").Include("DetalleDevolucionCliente.Producto.TipoProducto").FirstOrDefault(x => x.IdDocElectronicoRev == documento.ClaveNumerica);
                         if (devolucion == null) throw new BusinessException("El registro origen del documento no existe.");
                         Factura factura = dbContext.FacturaRepository.AsNoTracking().Include("ParametroExoneracion").Include("Cliente").Include("Vendedor").Include("DetalleFactura.Producto.TipoProducto").Include("DesglosePagoFactura.FormaPago").Include("DesglosePagoFactura.TipoMoneda").FirstOrDefault(x => x.IdFactura == devolucion.IdFactura);
-                        nuevoDocumento = ComprobanteElectronicoService.GenerarNotaDeDebitoElectronicaParcial(devolucion, factura, empresa, devolucion.Cliente, dbContext, documento.Fecha, factura.TipoDeCambioDolar, devolucion.IdDocElectronico);
+                        nuevoDocumento = ComprobanteElectronicoService.GenerarNotaDeDebitoElectronicaParcial(devolucion, factura, empresa, devolucion.Cliente, dbContext, factura.TipoDeCambioDolar, devolucion.IdDocElectronico);
                         devolucion.IdDocElectronicoRev = nuevoDocumento.ClaveNumerica;
                         dbContext.NotificarModificacion(devolucion);
                     }

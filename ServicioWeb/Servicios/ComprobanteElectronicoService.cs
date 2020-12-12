@@ -26,6 +26,7 @@ using System.Xml;
 using System.Xml.Serialization;
 using System.Web.Configuration;
 using Newtonsoft.Json.Linq;
+using LeandroSoftware.Core.Utilitario;
 
 namespace LeandroSoftware.ServicioWeb.Servicios
 {
@@ -233,8 +234,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 };
                 emisor.Identificacion = identificacionReceptorType;
                 emisor.Nombre = facturaCompra.NombreEmisor;
-                if (facturaCompra.NombreComercialEmisor.Length > 0)
-                    emisor.NombreComercial = facturaCompra.NombreComercialEmisor;
+                if (facturaCompra.NombreComercialEmisor.Length > 0) emisor.NombreComercial = facturaCompra.NombreComercialEmisor;
                 if (facturaCompra.TelefonoEmisor.Length > 0)
                 {
                     FacturaElectronicaCompraTelefonoType telefonoType = new FacturaElectronicaCompraTelefonoType
@@ -320,7 +320,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     else
                         lineaDetalle.UnidadMedida = FacturaElectronicaCompraUnidadMedidaType.Os;
                     lineaDetalle.Detalle = detalleFactura.Descripcion;
-                    decSubtotal = lineaDetalle.PrecioUnitario * lineaDetalle.Cantidad;
+                    decSubtotal = detalleFactura.PrecioVenta * detalleFactura.Cantidad;
                     lineaDetalle.PrecioUnitario = Math.Round(detalleFactura.PrecioVenta, 2, MidpointRounding.AwayFromZero);
                     lineaDetalle.MontoTotal = Math.Round(decSubtotal, 2, MidpointRounding.AwayFromZero);
                     lineaDetalle.SubTotal = lineaDetalle.MontoTotal;
@@ -490,7 +490,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     Clave = "",
                     CodigoActividad = empresa.CodigoActividad,
                     NumeroConsecutivo = "",
-                    FechaEmision = DateTime.Now
+                    FechaEmision = DateTime.UtcNow.AddHours(-6)
                 };
                 FacturaElectronicaEmisorType emisor = new FacturaElectronicaEmisorType();
                 FacturaElectronicaIdentificacionType identificacionEmisorType = new FacturaElectronicaIdentificacionType
@@ -778,7 +778,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     Clave = "",
                     CodigoActividad = empresa.CodigoActividad,
                     NumeroConsecutivo = "",
-                    FechaEmision = factura.Fecha
+                    FechaEmision = DateTime.UtcNow.AddHours(-6)
                 };
                 TiqueteElectronicoEmisorType emisor = new TiqueteElectronicoEmisorType();
                 TiqueteElectronicoIdentificacionType identificacionEmisorType = new TiqueteElectronicoIdentificacionType
@@ -994,7 +994,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public static DocumentoElectronico GenerarNotaDeCreditoElectronica(Factura factura, Empresa empresa, Cliente cliente, IDbContext dbContext, DateTime dttFecha, decimal decTipoCambioDolar)
+        public static DocumentoElectronico GenerarNotaDeCreditoElectronica(Factura factura, Empresa empresa, Cliente cliente, IDbContext dbContext, decimal decTipoCambioDolar)
         {
             try
             {
@@ -1016,7 +1016,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     Clave = "",
                     CodigoActividad = empresa.CodigoActividad,
                     NumeroConsecutivo = "",
-                    FechaEmision = dttFecha
+                    FechaEmision = DateTime.UtcNow.AddHours(-6)
                 };
                 NotaCreditoElectronicaEmisorType emisor = new NotaCreditoElectronicaEmisorType();
                 NotaCreditoElectronicaIdentificacionType identificacionEmisorType = new NotaCreditoElectronicaIdentificacionType
@@ -1294,7 +1294,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public static DocumentoElectronico GenerarNotaDeCreditoElectronicaParcial(DevolucionCliente devolucion, Factura factura, Empresa empresa, Cliente cliente, IDbContext dbContext, DateTime dttFecha, decimal decTipoCambioDolar, string referencia)
+        public static DocumentoElectronico GenerarNotaDeCreditoElectronicaParcial(DevolucionCliente devolucion, Factura factura, Empresa empresa, Cliente cliente, IDbContext dbContext, decimal decTipoCambioDolar, string referencia)
         {
             try
             {
@@ -1316,7 +1316,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     Clave = "",
                     CodigoActividad = empresa.CodigoActividad,
                     NumeroConsecutivo = "",
-                    FechaEmision = dttFecha
+                    FechaEmision = DateTime.UtcNow.AddHours(-6)
                 };
                 NotaCreditoElectronicaEmisorType emisor = new NotaCreditoElectronicaEmisorType();
                 NotaCreditoElectronicaIdentificacionType identificacionEmisorType = new NotaCreditoElectronicaIdentificacionType
@@ -1555,7 +1555,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public static DocumentoElectronico GenerarNotaDeDebitoElectronicaParcial(DevolucionCliente devolucion, Factura factura, Empresa empresa, Cliente cliente, IDbContext dbContext, DateTime dttFecha, decimal decTipoCambioDolar, string referencia)
+        public static DocumentoElectronico GenerarNotaDeDebitoElectronicaParcial(DevolucionCliente devolucion, Factura factura, Empresa empresa, Cliente cliente, IDbContext dbContext, decimal decTipoCambioDolar, string referencia)
         {
             try
             {
@@ -1577,7 +1577,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     Clave = "",
                     CodigoActividad = empresa.CodigoActividad,
                     NumeroConsecutivo = "",
-                    FechaEmision = dttFecha
+                    FechaEmision = DateTime.UtcNow.AddHours(-6)
                 };
                 NotaDebitoElectronicaEmisorType emisor = new NotaDebitoElectronicaEmisorType();
                 NotaDebitoElectronicaIdentificacionType identificacionEmisorType = new NotaDebitoElectronicaIdentificacionType

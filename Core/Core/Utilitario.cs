@@ -4,6 +4,7 @@ using System.Text;
 using System.Security.Cryptography;
 using System.Management;
 using System.Text.RegularExpressions;
+using System.Globalization;
 
 namespace LeandroSoftware.Core.Utilitario
 {

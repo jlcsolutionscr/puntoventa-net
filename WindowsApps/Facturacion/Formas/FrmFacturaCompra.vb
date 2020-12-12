@@ -298,7 +298,7 @@ Public Class FrmFacturaCompra
         Dim formBusquedaClasificacionProducto As New FrmBusquedaClasificacionProducto()
         FrmPrincipal.strBusqueda = 0
         formBusquedaClasificacionProducto.ShowDialog()
-        If FrmPrincipal.strBusqueda <> "" Then
+        If FrmPrincipal.strBusqueda <> "0" Then
             Dim codigoDesc = FrmPrincipal.strBusqueda.Split(New Char() {"-"c}, 2)
             txtCodigo.Text = codigoDesc(0)
             txtDescripcion.Text = codigoDesc(1)
@@ -313,12 +313,23 @@ Public Class FrmFacturaCompra
     End Sub
 
     Private Async Sub BtnGuardar_Click(sender As Object, e As EventArgs) Handles btnGuardar.Click
-        If txtFecha.Text = "" Or decTotal = 0 Then
-            MessageBox.Show("Información incompleta.  Favor verificar. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        btnGuardar.Enabled = False
+        Dim strCampo = ""
+        If txtIdentificacion.Text = "" Then strCampo = "Identificación"
+        If txtDireccion.Text = "" Then strCampo = "Dirección"
+        If txtNombre.Text = "" Then strCampo = "Nombre"
+        If txtCorreoElectronico.Text = "" Then strCampo = "Correo electrónico"
+        If strCampo <> "" Then
+            MessageBox.Show("El campo " & strCampo & " es requerido", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            btnGuardar.Enabled = True
+            Exit Sub
+        End If
+        If decTotal = 0 Then
+            MessageBox.Show("Debe agregar lineas de detalle a la factura. Por favor verifique. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            btnGuardar.Enabled = True
             Exit Sub
         End If
         btnAgregar.Focus()
-        btnGuardar.Enabled = False
         If txtIdFactCompra.Text = "" Then
             facturaCompra = New FacturaCompra With {
                 .IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa,
@@ -376,7 +387,6 @@ Public Class FrmFacturaCompra
             End Try
         End If
         MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
-        BtnAgregar_Click(btnAgregar, New EventArgs())
     End Sub
 
     Private Sub BtnInsertar_Click(sender As Object, e As EventArgs) Handles btnInsertar.Click
