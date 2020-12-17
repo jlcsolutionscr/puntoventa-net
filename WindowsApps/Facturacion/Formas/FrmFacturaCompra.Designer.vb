@@ -825,7 +825,6 @@ Partial Class FrmFacturaCompra
         Me.txtCodigo.Location = New System.Drawing.Point(195, 20)
         Me.txtCodigo.MaxLength = 13
         Me.txtCodigo.Name = "txtCodigo"
-        Me.txtCodigo.ReadOnly = True
         Me.txtCodigo.Size = New System.Drawing.Size(187, 20)
         Me.txtCodigo.TabIndex = 51
         '

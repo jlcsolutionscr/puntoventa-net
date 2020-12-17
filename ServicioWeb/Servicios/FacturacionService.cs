@@ -2482,7 +2482,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             datosXml = Encoding.UTF8.GetString(value.DatosDocumento);
                         XmlDocument documentoXml = new XmlDocument();
                         documentoXml.LoadXml(datosXml);
-                        if (value.EsMensajeReceptor == "S")
+                        if (value.EsMensajeReceptor == "S" || value.IdTipoDocumento == 8)
                         {
                             strReceptor = "SIN INFORMACION DEL EMISOR";
                             if (documentoXml.GetElementsByTagName("Emisor").Count > 0)

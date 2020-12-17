@@ -127,6 +127,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         IList<LlaveDescripcion> ObtenerListadoTipodePrecio();
         int ObtenerTotalListaClasificacionProducto(string strDescripcion);
         IList<ClasificacionProducto> ObtenerListadoClasificacionProducto(int numPagina, int cantRec, string strDescripcion);
+        ClasificacionProducto ObtenerClasificacionProducto(string strCodigo);
         void ValidarRegistroAutenticacion(string strToken, int intRole);
         void EliminarRegistroAutenticacionInvalidos();
     }
@@ -2733,8 +2734,25 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    log.Error("Error al obtener el listado de barrios: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de barrios. Por favor consulte con su proveedor.");
+                    log.Error("Error al obtener el listado de clasificaciones de producto: ", ex);
+                    throw new Exception("Se produjo un error consultando el listado de clasificaciones de producto. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public ClasificacionProducto ObtenerClasificacionProducto(string strCodigo)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    ClasificacionProducto clasificacionProducto = dbContext.ClasificacionProductoRepository.Where(x => x.Id == strCodigo).FirstOrDefault();
+                    return clasificacionProducto;
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al obtener la clasificación del producto: ", ex);
+                    throw new Exception("Se produjo un error consultando la clasificación del producto. Por favor consulte con su proveedor.");
                 }
             }
         }

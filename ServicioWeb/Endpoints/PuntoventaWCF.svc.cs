@@ -817,6 +817,12 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         if (listadoClasificacionProducto.Count > 0)
                             strRespuesta = serializer.Serialize(listadoClasificacionProducto);
                         break;
+                    case "ObtenerClasificacionProducto":
+                        strCodigo = parametrosJO.Property("Codigo") != null ? parametrosJO.Property("Codigo").Value.ToString() : "";
+                        ClasificacionProducto clasificacionProducto = servicioMantenimiento.ObtenerClasificacionProducto(strCodigo);
+                        if (clasificacionProducto != null)
+                            strRespuesta = serializer.Serialize(clasificacionProducto);
+                        break;
                     case "ObtenerReporteProformas":
                         intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                         intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());

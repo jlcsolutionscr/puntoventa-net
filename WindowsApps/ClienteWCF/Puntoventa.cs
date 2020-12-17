@@ -981,6 +981,16 @@ namespace LeandroSoftware.ClienteWCF
             return listado;
         }
 
+        public static async Task<ClasificacionProducto> ObtenerClasificacionProducto(string strCodigo, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'ObtenerClasificacionProducto', Parametros: {Codigo: '" + strCodigo + "'}}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            ClasificacionProducto clasificacionProducto = null;
+            if (respuesta != "")
+                clasificacionProducto = serializer.Deserialize<ClasificacionProducto>(respuesta);
+            return clasificacionProducto;
+        }
+
         public static async Task<int> ObtenerTotalListaProductos(int intIdEmpresa, int intIdSucursal, bool bolIncluyeServicios, bool bolFiltraActivos, bool bolFitraExistencias, bool bolFiltraConDescuento, int intIdLinea, string strCodigo, string strCodigoProveedor, string strDescripcion, string strToken)
         {
             string strDatos = "{NombreMetodo: 'ObtenerTotalListaProductos', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", IncluyeServicios: '" + bolIncluyeServicios + "', FiltraActivos: '" + bolFiltraActivos + "', FiltraExistencias: '" + bolFitraExistencias + "', FiltraConDescuento: '" + bolFiltraConDescuento + "', IdLinea: " + intIdLinea + ", Codigo: '" + strCodigo + "', CodigoProveedor: '" + strCodigoProveedor + "', Descripcion: '" + strDescripcion + "'}}";

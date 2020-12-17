@@ -40,7 +40,7 @@ Public Class FrmDetalleDocumentoElectronico
         dvcConsecutivo.DataPropertyName = "Consecutivo"
         dvcConsecutivo.Width = 150
         dgvDatos.Columns.Add(dvcConsecutivo)
-        dvcNombreReceptor.HeaderText = "Receptor"
+        dvcNombreReceptor.HeaderText = "Emisor/Receptor"
         dvcNombreReceptor.DataPropertyName = "NombreReceptor"
         dvcNombreReceptor.Width = 367
         dgvDatos.Columns.Add(dvcNombreReceptor)

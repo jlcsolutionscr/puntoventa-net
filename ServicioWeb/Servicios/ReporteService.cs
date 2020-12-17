@@ -1294,13 +1294,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     DateTime datFechaInicial = DateTime.ParseExact(strFechaInicial + " 00:00:01", strFormat, provider);
                     DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
                     List<ReporteDocumentoElectronico> listaReporte = new List<ReporteDocumentoElectronico>();
-                    var datosFacturasRecibidas = dbContext.DocumentoElectronicoRepository.Where(a => a.IdEmpresa == intIdEmpresa && a.IdSucursal == intIdSucursal && a.Fecha >= datFechaInicial && a.Fecha <= datFechaFinal && a.IdTipoDocumento == 5 && a.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado);
+                    var datosFacturasRecibidas = dbContext.DocumentoElectronicoRepository.Where(a => a.IdEmpresa == intIdEmpresa && a.IdSucursal == intIdSucursal && a.Fecha >= datFechaInicial && a.Fecha <= datFechaFinal && new[] { 5, 8 }.Any(s => s == a.IdTipoDocumento) && a.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado);
                     foreach (var documento in datosFacturasRecibidas)
                     {
-                        if (documento.DatosDocumentoOri != null)
+                        if (documento.DatosDocumentoOri != null || documento.IdTipoDocumento == 8)
                         {
                             XmlDocument documentoXml = new XmlDocument();
-                            MemoryStream ms = new MemoryStream(documento.DatosDocumentoOri);
+                            MemoryStream ms = new MemoryStream(documento.IdTipoDocumento == 8 ? documento.DatosDocumento : documento.DatosDocumentoOri);
                             string strIdentificacion = documento.IdentificacionEmisor;
                             documentoXml.Load(ms);
                             decimal decTotalImpuesto = 0;
@@ -1327,7 +1327,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 decTotalImpuesto = decTotalImpuesto * decTipoDeCambio;
                             }
                             ReporteDocumentoElectronico reporteLinea = new ReporteDocumentoElectronico();
-                            reporteLinea.TipoDocumento = documentoXml.DocumentElement.Name == "FacturaElectronica" ? "FACTURA ELECTRONICA" : documentoXml.DocumentElement.Name == "NotaCreditoElectronica" ? "NOTA DE CREDITO" : "NOTA DE DEBITO";
+                            reporteLinea.TipoDocumento = documentoXml.DocumentElement.Name == "FacturaElectronica" ? "FACTURA ELECTRONICA" : documentoXml.DocumentElement.Name == "NotaCreditoElectronica" ? "NOTA DE CREDITO" : documentoXml.DocumentElement.Name == "FacturaElectronicaCompra" ? "FACTURA ELEC. DE COMPRA" : "NOTA DE DEBITO";
                             reporteLinea.ClaveNumerica = documentoXml.GetElementsByTagName("Clave").Item(0).InnerText;
                             reporteLinea.Consecutivo = documentoXml.GetElementsByTagName("NumeroConsecutivo").Item(0).InnerText;
                             reporteLinea.Fecha = documento.Fecha.ToString("dd/MM/yyyy");
@@ -1617,7 +1617,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     reporteLinea.Tasa13 = decTotalVentaServiciosTasa13;
                     listaReporte.Add(reporteLinea);
                     var grupoFacturasRecibidas = dbContext.DocumentoElectronicoRepository
-                        .Where(a => a.IdEmpresa == intIdEmpresa && a.IdSucursal == intIdSucursal && a.Fecha >= datFechaInicial && a.Fecha <= datFechaFinal && a.IdTipoDocumento == 5 && a.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado).ToList();
+                        .Where(a => a.IdEmpresa == intIdEmpresa && a.IdSucursal == intIdSucursal && a.Fecha >= datFechaInicial && a.Fecha <= datFechaFinal && new[] { 5, 8 }.Any(s => s == a.IdTipoDocumento) && a.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado).ToList();
                     decimal decTotalCompraBienesIvaTasa1 = 0;
                     decimal decTotalCompraBienesIvaTasa2 = 0;
                     decimal decTotalCompraBienesIvaTasa4 = 0;
@@ -1644,11 +1644,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     decimal decTotalCompraServiciosGastoExento = 0;
                     foreach (var documento in grupoFacturasRecibidas)
                     {
-                        if (documento.DatosDocumentoOri != null)
+                        if (documento.DatosDocumentoOri != null || documento.IdTipoDocumento == 8)
                         {
                             XmlDocument documentoXml = new XmlDocument();
-                            MemoryStream ms = new MemoryStream(documento.DatosDocumentoOri);
+                            MemoryStream ms = new MemoryStream(documento.IdTipoDocumento == 8 ? documento.DatosDocumento : documento.DatosDocumentoOri);
                             documentoXml.Load(ms);
+                            decimal decTotalComprobante = 0;
+                            decimal decTotalOtrosCargos = 0;
                             decimal decCompraServiciosTasa1 = 0;
                             decimal decCompraServiciosTasa2 = 0;
                             decimal decCompraServiciosTasa4 = 0;
@@ -1679,25 +1681,32 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                         switch (strTarifa)
                                         {
                                             case "1":
+                                            case "1.0":
                                             case "1.00":
                                                 decCompraServiciosTasa1 += decMontoPorLinea;
                                                 break;
                                             case "2":
+                                            case "2.0":
                                             case "2.00":
                                                 decCompraServiciosTasa2 += decMontoPorLinea;
                                                 break;
                                             case "4":
+                                            case "4.0":
                                             case "4.00":
                                                 decCompraServiciosTasa4 += decMontoPorLinea;
                                                 break;
                                             case "8":
+                                            case "8.0":
                                             case "8.00":
                                                 decCompraServiciosTasa8 += decMontoPorLinea;
                                                 break;
                                             case "13":
+                                            case "13.0":
                                             case "13.00":
                                                 decCompraServiciosTasa13 += decMontoPorLinea;
                                                 break;
+                                            default:
+                                                throw new Exception("La tarifa de impuesto " + strTarifa + " de la linea de detalle no esta parametrizada");
                                         }
                                     }
                                     else
@@ -1705,25 +1714,32 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                         switch (strTarifa)
                                         {
                                             case "1":
+                                            case "1.0":
                                             case "1.00":
                                                 decCompraBienesTasa1 += decMontoPorLinea;
                                                 break;
                                             case "2":
+                                            case "2.0":
                                             case "2.00":
                                                 decCompraBienesTasa2 += decMontoPorLinea;
                                                 break;
                                             case "4":
+                                            case "4.0":
                                             case "4.00":
                                                 decCompraBienesTasa4 += decMontoPorLinea;
                                                 break;
                                             case "8":
+                                            case "8.0":
                                             case "8.00":
                                                 decCompraBienesTasa8 += decMontoPorLinea;
                                                 break;
                                             case "13":
+                                            case "13.0":
                                             case "13.00":
                                                 decCompraBienesTasa13 += decMontoPorLinea;
                                                 break;
+                                            default:
+                                                throw new Exception("La tarifa de impuesto " + strTarifa + " de la linea de detalle no esta parametrizada");
                                         }
                                     }
                                 }
@@ -1734,7 +1750,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                     else
                                         decCompraBienesExento += decMontoPorLinea;
                                 }
+                                decTotalComprobante += decMontoPorLinea;
                             }
+                            if (documentoXml.GetElementsByTagName("OtrosCargos").Count > 0)
+                            {
+                                XmlNode otrosCargos = documentoXml.GetElementsByTagName("OtrosCargos").Item(0);
+                                decTotalOtrosCargos = decimal.Parse(otrosCargos["MontoCargo"].InnerText, CultureInfo.InvariantCulture);
+                            }
+                            decTotalComprobante += decTotalOtrosCargos;
                             if (documentoXml.GetElementsByTagName("CodigoMoneda").Count > 0)
                                 strCodigoMoneda = documentoXml.GetElementsByTagName("CodigoMoneda").Item(0).InnerText;
                             if (strCodigoMoneda != "CRC")
@@ -1756,6 +1779,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                     decTotalCompraServiciosIvaTasa8 += decCompraServiciosTasa8 * decTipoDeCambio;
                                     decTotalCompraServiciosIvaTasa13 += decCompraServiciosTasa13 * decTipoDeCambio;
                                     decTotalCompraServiciosIvaExento += decCompraServiciosExento * decTipoDeCambio;
+                                    decTotalCompraServiciosIvaExento += decTotalOtrosCargos * decTipoDeCambio;
                                 }
                                 else
                                 {
@@ -1771,6 +1795,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                     decTotalCompraServiciosGastoTasa8 += decCompraServiciosTasa8 * decTipoDeCambio;
                                     decTotalCompraServiciosGastoTasa13 += decCompraServiciosTasa13 * decTipoDeCambio;
                                     decTotalCompraServiciosGastoExento += decCompraServiciosExento * decTipoDeCambio;
+                                    decTotalCompraServiciosGastoExento += decTotalOtrosCargos * decTipoDeCambio;
                                 }
                             }
                             else
@@ -1789,6 +1814,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                     decTotalCompraServiciosIvaTasa8 -= decCompraServiciosTasa8 * decTipoDeCambio;
                                     decTotalCompraServiciosIvaTasa13 -= decCompraServiciosTasa13 * decTipoDeCambio;
                                     decTotalCompraServiciosIvaExento -= decCompraServiciosExento * decTipoDeCambio;
+                                    decTotalCompraServiciosIvaExento -= decTotalOtrosCargos * decTipoDeCambio;
                                 }
                                 else
                                 {
@@ -1804,6 +1830,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                     decTotalCompraServiciosGastoTasa8 -= decCompraServiciosTasa8 * decTipoDeCambio;
                                     decTotalCompraServiciosGastoTasa13 -= decCompraServiciosTasa13 * decTipoDeCambio;
                                     decTotalCompraServiciosGastoExento -= decCompraServiciosExento * decTipoDeCambio;
+                                    decTotalCompraServiciosGastoExento -= decTotalOtrosCargos * decTipoDeCambio;
                                 }
                             }
                         }
@@ -1854,7 +1881,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     reporteLinea = new ReporteResumenMovimiento();
                     reporteLinea.Descripcion = "Compras de servicios sin IVA acreditable";
                     reporteLinea.Exento = decTotalCompraServiciosGastoExento;
-                    reporteLinea.Tasa1 = decTotalCompraServiciosIvaTasa1;
+                    reporteLinea.Tasa1 = decTotalCompraServiciosGastoTasa1;
                     reporteLinea.Tasa2 = decTotalCompraServiciosGastoTasa2;
                     reporteLinea.Tasa4 = decTotalCompraServiciosGastoTasa4;
                     reporteLinea.Tasa8 = decTotalCompraServiciosGastoTasa8;

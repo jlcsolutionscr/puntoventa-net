@@ -2010,7 +2010,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         break;
                     case TipoDocumento.FacturaElectronicaCompra:
                         intIdConsecutivo = terminal.UltimoDocFEC + 1;
-                        terminal.UltimoDocTE = intIdConsecutivo;
+                        terminal.UltimoDocFEC = intIdConsecutivo;
                         break;
                 }
                 strConsucutivo = intSucursal.ToString("D3") + intTerminal.ToString("D5") + intTipoDocumentoElectronico.ToString("D2") + intIdConsecutivo.ToString("D10");
