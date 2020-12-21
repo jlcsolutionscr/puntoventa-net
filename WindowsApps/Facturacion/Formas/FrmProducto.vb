@@ -312,7 +312,7 @@ Public Class FrmProducto
     Private Sub txtPrecioImpuesto1_Validating(sender As Object, e As EventArgs) Handles txtPrecioImpuesto1.Validated
         If txtPrecioImpuesto1.Text = "" Then txtPrecioImpuesto1.Text = "0"
         txtPrecioImpuesto1.Text = FormatoPrecio(txtPrecioImpuesto1.Text, 2)
-        txtPrecioVenta1.Text = FormatoPrecio(Math.Round(txtPrecioImpuesto1.Text / (1 + (parametroImpuesto.TasaImpuesto / 100)), 3, MidpointRounding.AwayFromZero), 2)
+        txtPrecioVenta1.Text = FormatoPrecio(Math.Round(txtPrecioImpuesto1.Text / (1 + (parametroImpuesto.TasaImpuesto / 100)), 3), 2)
         txtPrecioVenta2.Text = FormatoPrecio(txtPrecioVenta1.Text, 2)
         txtPrecioImpuesto2.Text = FormatoPrecio(txtPrecioImpuesto1.Text, 2)
         txtPrecioVenta3.Text = FormatoPrecio(txtPrecioVenta1.Text, 2)
@@ -337,7 +337,7 @@ Public Class FrmProducto
     Private Sub txtPrecioImpuesto2_Validating(sender As Object, e As EventArgs) Handles txtPrecioImpuesto2.Validated
         If txtPrecioImpuesto2.Text = "" Then txtPrecioImpuesto2.Text = "0"
         txtPrecioImpuesto2.Text = FormatoPrecio(txtPrecioImpuesto2.Text, 2)
-        txtPrecioVenta2.Text = FormatoPrecio(Math.Round(txtPrecioImpuesto2.Text / (1 + (parametroImpuesto.TasaImpuesto / 100)), 3, MidpointRounding.AwayFromZero), 2)
+        txtPrecioVenta2.Text = FormatoPrecio(Math.Round(txtPrecioImpuesto2.Text / (1 + (parametroImpuesto.TasaImpuesto / 100)), 3), 2)
     End Sub
 
     Private Sub PrecioVenta3_Validating(sender As Object, e As EventArgs) Handles txtPrecioVenta3.Validated
@@ -349,7 +349,7 @@ Public Class FrmProducto
     Private Sub txtPrecioImpuesto3_Validating(sender As Object, e As EventArgs) Handles txtPrecioImpuesto3.Validated
         If txtPrecioImpuesto3.Text = "" Then txtPrecioImpuesto3.Text = "0"
         txtPrecioImpuesto3.Text = FormatoPrecio(txtPrecioImpuesto3.Text, 2)
-        txtPrecioVenta3.Text = FormatoPrecio(Math.Round(txtPrecioImpuesto3.Text / (1 + (parametroImpuesto.TasaImpuesto / 100)), 3, MidpointRounding.AwayFromZero), 2)
+        txtPrecioVenta3.Text = FormatoPrecio(Math.Round(txtPrecioImpuesto3.Text / (1 + (parametroImpuesto.TasaImpuesto / 100)), 3), 2)
     End Sub
 
     Private Sub PrecioVenta4_Validating(sender As Object, e As EventArgs) Handles txtPrecioVenta4.Validated
@@ -361,7 +361,7 @@ Public Class FrmProducto
     Private Sub txtPrecioImpuesto4_Validating(sender As Object, e As EventArgs) Handles txtPrecioImpuesto4.Validated
         If txtPrecioImpuesto4.Text = "" Then txtPrecioImpuesto4.Text = "0"
         txtPrecioImpuesto4.Text = FormatoPrecio(txtPrecioImpuesto4.Text, 2)
-        txtPrecioVenta4.Text = FormatoPrecio(Math.Round(txtPrecioImpuesto4.Text / (1 + (parametroImpuesto.TasaImpuesto / 100)), 3, MidpointRounding.AwayFromZero), 2)
+        txtPrecioVenta4.Text = FormatoPrecio(Math.Round(txtPrecioImpuesto4.Text / (1 + (parametroImpuesto.TasaImpuesto / 100)), 3), 2)
     End Sub
 
     Private Sub PrecioVenta5_Validating(sender As Object, e As EventArgs) Handles txtPrecioVenta5.Validated
@@ -373,7 +373,7 @@ Public Class FrmProducto
     Private Sub txtPrecioImpuesto5_Validating(sender As Object, e As EventArgs) Handles txtPrecioImpuesto5.Validated
         If txtPrecioImpuesto5.Text = "" Then txtPrecioImpuesto5.Text = "0"
         txtPrecioImpuesto5.Text = FormatoPrecio(txtPrecioImpuesto5.Text, 2)
-        txtPrecioVenta5.Text = FormatoPrecio(Math.Round(txtPrecioImpuesto5.Text / (1 + (parametroImpuesto.TasaImpuesto / 100)), 3, MidpointRounding.AwayFromZero), 2)
+        txtPrecioVenta5.Text = FormatoPrecio(Math.Round(txtPrecioImpuesto5.Text / (1 + (parametroImpuesto.TasaImpuesto / 100)), 3), 2)
     End Sub
 
     Private Sub IndExistencia_Validating(sender As Object, e As EventArgs) Handles txtIndExistencia.Validated

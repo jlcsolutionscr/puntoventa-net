@@ -375,10 +375,10 @@ Public Class FrmCompra
         Next
         decSubTotal = decGravado + decExcento
         If decSubTotal > 0 Then decPorcDesc = CDbl(txtDescuento.Text) / decSubTotal
-        If decGravado > 0 Then decImpuesto = Math.Round(decGravado - (decGravado * decPorcDesc), 2, MidpointRounding.AwayFromZero) * decTasaIva / 100
-        decGravado = Math.Round(decGravado, 2, MidpointRounding.AwayFromZero)
-        decExcento = Math.Round(decExcento, 2, MidpointRounding.AwayFromZero)
-        decTotal = Math.Round(decExcento + decGravado + decImpuesto - CDbl(txtDescuento.Text), 2, MidpointRounding.AwayFromZero)
+        If decGravado > 0 Then decImpuesto = Math.Round(decGravado - (decGravado * decPorcDesc), 2) * decTasaIva / 100
+        decGravado = Math.Round(decGravado, 2)
+        decExcento = Math.Round(decExcento, 2)
+        decTotal = Math.Round(decExcento + decGravado + decImpuesto - CDbl(txtDescuento.Text), 2)
         txtSubTotal.Text = FormatNumber(decSubTotal, 2)
         txtImpuesto.Text = FormatNumber(decImpuesto, 2)
         txtTotal.Text = FormatNumber(decTotal, 2)

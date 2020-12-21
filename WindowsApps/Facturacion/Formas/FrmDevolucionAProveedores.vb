@@ -168,9 +168,9 @@ Public Class FrmDevolucionAProveedores
                 decImpuesto += decDescuentoPorLinea * dtbDetalleDevolucion.Rows(I).Item(8).Value
             Next
         End If
-        decGravado = Math.Round(decGravado, 2, MidpointRounding.AwayFromZero)
-        decExcento = Math.Round(decExcento, 2, MidpointRounding.AwayFromZero)
-        decImpuesto = Math.Round(decImpuesto, 2, MidpointRounding.AwayFromZero)
+        decGravado = Math.Round(decGravado, 2)
+        decExcento = Math.Round(decExcento, 2)
+        decImpuesto = Math.Round(decImpuesto, 2)
         txtSubTotal.Text = FormatNumber(decSubTotal, 2)
         txtImpuesto.Text = FormatNumber(decImpuesto, 2)
         txtTotal.Text = FormatNumber(decExcento + decGravado + txtImpuesto.Text, 2)

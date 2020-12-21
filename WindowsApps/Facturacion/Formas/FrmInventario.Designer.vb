@@ -38,6 +38,7 @@ Partial Class FrmInventario
         Me.Label2 = New System.Windows.Forms.Label()
         Me.chkFiltrarActivos = New System.Windows.Forms.CheckBox()
         Me.chkFiltrarExistencias = New System.Windows.Forms.CheckBox()
+        Me.chkIncluyeServicios = New System.Windows.Forms.CheckBox()
         CType(Me.dgvListado, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -305,6 +306,16 @@ Partial Class FrmInventario
         Me.chkFiltrarExistencias.Text = "Filtrar productos con existencias > 0"
         Me.chkFiltrarExistencias.UseVisualStyleBackColor = True
         '
+        'chkIncluyeServicios
+        '
+        Me.chkIncluyeServicios.AutoSize = True
+        Me.chkIncluyeServicios.Location = New System.Drawing.Point(803, 120)
+        Me.chkIncluyeServicios.Name = "chkIncluyeServicios"
+        Me.chkIncluyeServicios.Size = New System.Drawing.Size(157, 17)
+        Me.chkIncluyeServicios.TabIndex = 46
+        Me.chkIncluyeServicios.Text = "Incluir catalogo de servicios"
+        Me.chkIncluyeServicios.UseVisualStyleBackColor = True
+        '
         'FrmInventario
         '
         Me.AcceptButton = Me.CmdFiltrar
@@ -312,6 +323,7 @@ Partial Class FrmInventario
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(1028, 568)
+        Me.Controls.Add(Me.chkIncluyeServicios)
         Me.Controls.Add(Me.chkFiltrarExistencias)
         Me.Controls.Add(Me.chkFiltrarActivos)
         Me.Controls.Add(Me.txtCodigoProveedor)
@@ -342,7 +354,7 @@ Partial Class FrmInventario
         Me.Name = "FrmInventario"
         Me.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
-        Me.Text = "Actualización de Inventario"
+        Me.Text = "Catalogo de productos y servicios"
         CType(Me.dgvListado, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
@@ -369,4 +381,5 @@ Partial Class FrmInventario
     Public WithEvents Label2 As Label
     Friend WithEvents chkFiltrarActivos As CheckBox
     Friend WithEvents chkFiltrarExistencias As CheckBox
+    Friend WithEvents chkIncluyeServicios As CheckBox
 End Class

@@ -252,7 +252,7 @@ Public Class FrmOrdenServicio
             dtrRowDetOrdenServicio.Item(2) = detalle.Descripcion
             dtrRowDetOrdenServicio.Item(3) = detalle.Cantidad
             dtrRowDetOrdenServicio.Item(4) = detalle.PrecioVenta
-            dtrRowDetOrdenServicio.Item(5) = Math.Round(detalle.PrecioVenta * (1 + (detalle.PorcentajeIVA / 100)), 2, MidpointRounding.AwayFromZero)
+            dtrRowDetOrdenServicio.Item(5) = Math.Round(detalle.PrecioVenta * (1 + (detalle.PorcentajeIVA / 100)), 2)
             dtrRowDetOrdenServicio.Item(6) = dtrRowDetOrdenServicio.Item(3) * dtrRowDetOrdenServicio.Item(5)
             dtrRowDetOrdenServicio.Item(7) = detalle.Excento
             dtrRowDetOrdenServicio.Item(8) = detalle.PorcentajeIVA
@@ -284,9 +284,9 @@ Public Class FrmOrdenServicio
 
     Private Sub CargarLineaDetalleOrdenServicio(producto As Producto, strDescripcion As String, decCantidad As Decimal, decPrecio As Decimal, decPorcDesc As Decimal)
         Dim decTasaImpuesto As Decimal = producto.ParametroImpuesto.TasaImpuesto
-        Dim decPrecioGravado As Decimal = decPrecio
-        If decTasaImpuesto > 0 Then decPrecioGravado = Math.Round(decPrecio / (1 + (decTasaImpuesto / 100)), 5, MidpointRounding.AwayFromZero)
         If cliente.AplicaTasaDiferenciada Then decTasaImpuesto = cliente.ParametroImpuesto.TasaImpuesto
+        Dim decPrecioGravado As Decimal = decPrecio
+        If decTasaImpuesto > 0 Then decPrecioGravado = Math.Round(decPrecio / (1 + (decTasaImpuesto / 100)), 5)
         Dim intIndice As Integer = ObtenerIndice(dtbDetalleOrdenServicio, producto.IdProducto)
         If producto.Tipo = 1 And intIndice >= 0 Then
             Dim decNewCantidad = dtbDetalleOrdenServicio.Rows(intIndice).Item(3) + decCantidad
@@ -371,23 +371,25 @@ Public Class FrmOrdenServicio
                 Dim decImpuestoProducto As Decimal = dtbDetalleOrdenServicio.Rows(I).Item(4) * decTasaImpuesto / 100
                 If intPorcentajeExoneracion > 0 Then
                     Dim decGravadoPorcentual = dtbDetalleOrdenServicio.Rows(I).Item(4) * (1 - (intPorcentajeExoneracion / 100))
-                    decGravado += Math.Round(decGravadoPorcentual * dtbDetalleOrdenServicio.Rows(I).Item(3), 2, MidpointRounding.AwayFromZero)
-                    decExonerado += Math.Round(dtbDetalleOrdenServicio.Rows(I).Item(4) - decGravadoPorcentual * dtbDetalleOrdenServicio.Rows(I).Item(3), 2, MidpointRounding.AwayFromZero)
+                    decGravado += Math.Round(decGravadoPorcentual * dtbDetalleOrdenServicio.Rows(I).Item(3), 2)
+                    decExonerado += Math.Round((dtbDetalleOrdenServicio.Rows(I).Item(4) - decGravadoPorcentual) * dtbDetalleOrdenServicio.Rows(I).Item(3), 2)
                     decImpuestoProducto = decGravadoPorcentual * decTasaImpuesto / 100
                 Else
-                    decGravado += Math.Round(dtbDetalleOrdenServicio.Rows(I).Item(4) * dtbDetalleOrdenServicio.Rows(I).Item(3), 2, MidpointRounding.AwayFromZero)
+                    decGravado += Math.Round(dtbDetalleOrdenServicio.Rows(I).Item(3) * dtbDetalleOrdenServicio.Rows(I).Item(4), 2)
                 End If
-                decImpuesto += Math.Round(decImpuestoProducto * dtbDetalleOrdenServicio.Rows(I).Item(3), 2, MidpointRounding.AwayFromZero)
+                decImpuesto += Math.Round(decImpuestoProducto * dtbDetalleOrdenServicio.Rows(I).Item(3), 2)
             Else
-                decExcento += Math.Round(dtbDetalleOrdenServicio.Rows(I).Item(4) * dtbDetalleOrdenServicio.Rows(I).Item(3), 2, MidpointRounding.AwayFromZero)
+                decExcento += Math.Round(dtbDetalleOrdenServicio.Rows(I).Item(4) * dtbDetalleOrdenServicio.Rows(I).Item(3), 2)
             End If
+            decDescuento += dtbDetalleOrdenServicio.Rows(I).Item(10)
         Next
         decSubTotal = decGravado + decExcento + decExonerado
-        decGravado = Math.Round(decGravado, 2, MidpointRounding.AwayFromZero)
-        decExonerado = Math.Round(decExonerado, 2, MidpointRounding.AwayFromZero)
-        decExcento = Math.Round(decExcento, 2, MidpointRounding.AwayFromZero)
-        decImpuesto = Math.Round(decImpuesto, 2, MidpointRounding.AwayFromZero)
-        decTotal = Math.Round(decSubTotal + decImpuesto, 2, MidpointRounding.AwayFromZero)
+        decDescuento = Math.Round(decDescuento, 2)
+        decGravado = Math.Round(decGravado, 2)
+        decExonerado = Math.Round(decExonerado, 2)
+        decExcento = Math.Round(decExcento, 2)
+        decImpuesto = Math.Round(decImpuesto, 2)
+        decTotal = Math.Round(decSubTotal + decImpuesto, 2)
         decSaldoPorPagar = decTotal - decTotalPago
         txtSubTotal.Text = FormatNumber(decSubTotal + decDescuento, 2)
         txtDescuento.Text = FormatNumber(decDescuento, 2)
@@ -636,6 +638,11 @@ Public Class FrmOrdenServicio
         txtDescripcionOrden.Text = ""
         txtFechaEntrega.Text = ""
         txtOtrosDetalles.Text = ""
+        txtTipoExoneracion.Text = ""
+        txtNumDocExoneracion.Text = ""
+        txtNombreInstExoneracion.Text = ""
+        txtFechaExoneracion.Text = ""
+        txtPorcentajeExoneracion.Text = ""
         dtbDetalleOrdenServicio.Rows.Clear()
         grdDetalleOrdenServicio.Refresh()
         consecDetalle = 0
@@ -894,7 +901,7 @@ Public Class FrmOrdenServicio
                 .Excento = decExcento,
                 .Gravado = decGravado,
                 .Exonerado = decExonerado,
-                .Descuento = 0,
+                .Descuento = decDescuento,
                 .Impuesto = decImpuesto,
                 .MontoAdelanto = decTotalPago,
                 .MontoPagado = decPagoCliente,
@@ -957,7 +964,7 @@ Public Class FrmOrdenServicio
             ordenServicio.Excento = decExcento
             ordenServicio.Gravado = decGravado
             ordenServicio.Exonerado = decExonerado
-            ordenServicio.Descuento = 0
+            ordenServicio.Descuento = decDescuento
             ordenServicio.Impuesto = CDbl(txtImpuesto.Text)
             ordenServicio.DetalleOrdenServicio.Clear()
             For I As Short = 0 To dtbDetalleOrdenServicio.Rows.Count - 1
@@ -1011,7 +1018,7 @@ Public Class FrmOrdenServicio
                     .strDescripcion = ordenServicio.Descripcion,
                     .strDetalle = ordenServicio.OtrosDetalles,
                     .strDocumento = ObtenerLeyendaEntrega(Date.ParseExact(ordenServicio.FechaEntrega, "dd/MM/yyyy", Nothing), ordenServicio.HoraEntrega),
-                    .strSubTotal = FormatNumber(ordenServicio.Gravado + ordenServicio.Excento + ordenServicio.Exonerado, 2),
+                    .strSubTotal = FormatNumber(ordenServicio.Gravado + ordenServicio.Excento + ordenServicio.Exonerado + ordenServicio.Descuento, 2),
                     .strDescuento = FormatNumber(ordenServicio.Descuento, 2),
                     .strImpuesto = FormatNumber(ordenServicio.Impuesto, 2),
                     .strTotal = FormatNumber(decTotal, 2),
@@ -1240,7 +1247,7 @@ Public Class FrmOrdenServicio
     Private Sub Precio_KeyUp(sender As Object, e As KeyEventArgs) Handles txtPrecio.KeyUp
         If producto IsNot Nothing Then
             If txtPrecio.Text <> "" And e.KeyCode <> Keys.Tab And e.KeyCode <> Keys.Enter And e.KeyCode <> Keys.ShiftKey Then
-                decPrecioVenta = Math.Round(CDbl(txtPrecio.Text), 2, MidpointRounding.AwayFromZero)
+                decPrecioVenta = Math.Round(CDbl(txtPrecio.Text), 2)
                 txtPorcDesc.Text = "0"
             End If
         End If
@@ -1301,12 +1308,13 @@ Public Class FrmOrdenServicio
             Dim decMontoDesc = decPrecio / 100 * decPorcDesc
             decPrecio = decPrecio - decMontoDesc
             Dim decPrecioGravado As Decimal = decPrecio
-            If decTasaImpuesto > 0 Then decPrecioGravado = Math.Round(decPrecio / (1 + (decTasaImpuesto / 100)), 3, MidpointRounding.AwayFromZero)
+            If decTasaImpuesto > 0 Then decPrecioGravado = Math.Round(decPrecio / (1 + (decTasaImpuesto / 100)), 3)
             dtbDetalleOrdenServicio.Rows(e.RowIndex).Item(4) = decPrecioGravado
             dtbDetalleOrdenServicio.Rows(e.RowIndex).Item(5) = decPrecio
             dtbDetalleOrdenServicio.Rows(e.RowIndex).Item(6) = decCantidad * decPrecio
             dtbDetalleOrdenServicio.Rows(e.RowIndex).Item(9) = decPorcDesc
             dtbDetalleOrdenServicio.Rows(e.RowIndex).Item(10) = decMontoDesc
+            grdDetalleOrdenServicio.Refresh()
             CargarTotales()
             bolAutorizando = False
         End If

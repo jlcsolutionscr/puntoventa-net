@@ -129,23 +129,23 @@ Public Class FrmFacturaCompra
                 Dim decImpuestoProducto As Decimal = dtbDetalleProforma.Rows(I).Item(6) * decTasaImpuesto / 100
                 If intPorcentajeExoneracion > 0 Then
                     Dim decGravadoPorcentual = dtbDetalleProforma.Rows(I).Item(6) * (1 - (intPorcentajeExoneracion / 100))
-                    decGravado += Math.Round(decGravadoPorcentual, 2, MidpointRounding.AwayFromZero) * dtbDetalleProforma.Rows(I).Item(0)
-                    decExonerado += Math.Round(dtbDetalleProforma.Rows(I).Item(6) - decGravadoPorcentual, 2, MidpointRounding.AwayFromZero) * dtbDetalleProforma.Rows(I).Item(0)
+                    decGravado += Math.Round(decGravadoPorcentual, 2) * dtbDetalleProforma.Rows(I).Item(0)
+                    decExonerado += Math.Round(dtbDetalleProforma.Rows(I).Item(6) - decGravadoPorcentual, 2) * dtbDetalleProforma.Rows(I).Item(0)
                     decImpuestoProducto = decGravadoPorcentual * decTasaImpuesto / 100
                 Else
-                    decGravado += Math.Round(dtbDetalleProforma.Rows(I).Item(6), 2, MidpointRounding.AwayFromZero) * dtbDetalleProforma.Rows(I).Item(0)
+                    decGravado += Math.Round(dtbDetalleProforma.Rows(I).Item(6), 2) * dtbDetalleProforma.Rows(I).Item(0)
                 End If
-                decImpuesto += Math.Round(decImpuestoProducto, 2, MidpointRounding.AwayFromZero) * dtbDetalleProforma.Rows(I).Item(0)
+                decImpuesto += Math.Round(decImpuestoProducto, 2) * dtbDetalleProforma.Rows(I).Item(0)
             Else
-                decExcento += Math.Round(dtbDetalleProforma.Rows(I).Item(6), 2, MidpointRounding.AwayFromZero) * dtbDetalleProforma.Rows(I).Item(0)
+                decExcento += Math.Round(dtbDetalleProforma.Rows(I).Item(6), 2) * dtbDetalleProforma.Rows(I).Item(0)
             End If
         Next
         decSubTotal = decGravado + decExcento + decExonerado
-        decGravado = Math.Round(decGravado, 2, MidpointRounding.AwayFromZero)
-        decExonerado = Math.Round(decExonerado, 2, MidpointRounding.AwayFromZero)
-        decExcento = Math.Round(decExcento, 2, MidpointRounding.AwayFromZero)
-        decImpuesto = Math.Round(decImpuesto, 2, MidpointRounding.AwayFromZero)
-        decTotal = Math.Round(decSubTotal + decImpuesto, 2, MidpointRounding.AwayFromZero)
+        decGravado = Math.Round(decGravado, 2)
+        decExonerado = Math.Round(decExonerado, 2)
+        decExcento = Math.Round(decExcento, 2)
+        decImpuesto = Math.Round(decImpuesto, 2)
+        decTotal = Math.Round(decSubTotal + decImpuesto, 2)
         txtSubTotal.Text = FormatNumber(decSubTotal, 2)
         txtImpuesto.Text = FormatNumber(decImpuesto, 2)
         txtTotal.Text = FormatNumber(decTotal, 2)

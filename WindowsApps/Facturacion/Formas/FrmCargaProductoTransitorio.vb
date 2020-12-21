@@ -87,7 +87,7 @@ Public Class FrmCargaProductoTransitorio
     Private Sub txtPrecioImpuesto1_Validated(sender As Object, e As EventArgs) Handles txtPrecioImpuesto1.Validated
         If txtPrecioImpuesto1.Text = "" Then txtPrecioImpuesto1.Text = "0"
         txtPrecioImpuesto1.Text = FormatoPrecio(txtPrecioImpuesto1.Text, 2)
-        txtPrecioVenta1.Text = FormatoPrecio(Math.Round(txtPrecioImpuesto1.Text / (1 + (parametroImpuesto.TasaImpuesto / 100)), 3, MidpointRounding.AwayFromZero), 2)
+        txtPrecioVenta1.Text = FormatoPrecio(Math.Round(txtPrecioImpuesto1.Text / (1 + (parametroImpuesto.TasaImpuesto / 100)), 3), 2)
     End Sub
 
     Private Sub SelectionAll_MouseDown(sender As Object, e As MouseEventArgs) Handles txtPrecioVenta1.MouseDown, txtPrecioImpuesto1.MouseDown

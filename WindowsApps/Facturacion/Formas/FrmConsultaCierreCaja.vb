@@ -76,7 +76,7 @@ Public Class FrmConsultaCierreCaja
             dtrRowDetEfectivo.Item(0) = detalle.Denominacion
             dtrRowDetEfectivo.Item(1) = IIf(detalle.Denominacion > 500, "Billetes de ", "Monedas de ") & detalle.Denominacion
             dtrRowDetEfectivo.Item(2) = detalle.Cantidad
-            dtrRowDetEfectivo.Item(3) = Math.Round(detalle.Cantidad * detalle.Denominacion, 2, MidpointRounding.AwayFromZero)
+            dtrRowDetEfectivo.Item(3) = Math.Round(detalle.Cantidad * detalle.Denominacion, 2)
             dtbDetalleEfectivo.Rows.Add(dtrRowDetEfectivo)
         Next
         dgvDetalleEfectivoCierreCaja.Sort(dgvDetalleEfectivoCierreCaja.Columns(0), System.ComponentModel.ListSortDirection.Ascending)

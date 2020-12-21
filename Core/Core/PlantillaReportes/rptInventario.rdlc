@@ -545,7 +545,7 @@
                 <Paragraph>
                   <TextRuns>
                     <TextRun>
-                      <Value>Reporte de existencias de mercadería</Value>
+                      <Value>Reporte del catalogo de productos y servicios</Value>
                       <Style>
                         <FontFamily>Tahoma</FontFamily>
                         <FontWeight>Bold</FontWeight>

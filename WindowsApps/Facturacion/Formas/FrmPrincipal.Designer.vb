@@ -210,7 +210,7 @@ Partial Class FrmPrincipal
         '
         'MnuMant
         '
-        Me.MnuMant.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MnuMantCliente, Me.MnuMantLinea, Me.MnuMantProveedor, Me.MnuMantProducto, Me.MnuMantUsuario, Me.MnuMantCE, Me.MnuMantCI, Me.MnuMantCC, Me.MnuMantInv, Me.MnuMantVend})
+        Me.MnuMant.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MnuMantCliente, Me.MnuMantLinea, Me.MnuMantProveedor, Me.MnuMantProducto, Me.MnuMantUsuario, Me.MnuMantCE, Me.MnuMantCI, Me.MnuMantCC, Me.MnuMantVend, Me.MnuMantInv})
         Me.MnuMant.MergeAction = System.Windows.Forms.MergeAction.Remove
         Me.MnuMant.Name = "MnuMant"
         Me.MnuMant.Size = New System.Drawing.Size(101, 20)
@@ -220,70 +220,70 @@ Partial Class FrmPrincipal
         'MnuMantCliente
         '
         Me.MnuMantCliente.Name = "MnuMantCliente"
-        Me.MnuMantCliente.Size = New System.Drawing.Size(180, 22)
+        Me.MnuMantCliente.Size = New System.Drawing.Size(252, 22)
         Me.MnuMantCliente.Text = "Clientes"
         Me.MnuMantCliente.Visible = False
         '
         'MnuMantLinea
         '
         Me.MnuMantLinea.Name = "MnuMantLinea"
-        Me.MnuMantLinea.Size = New System.Drawing.Size(180, 22)
+        Me.MnuMantLinea.Size = New System.Drawing.Size(252, 22)
         Me.MnuMantLinea.Text = "Líneas"
         Me.MnuMantLinea.Visible = False
         '
         'MnuMantProveedor
         '
         Me.MnuMantProveedor.Name = "MnuMantProveedor"
-        Me.MnuMantProveedor.Size = New System.Drawing.Size(180, 22)
+        Me.MnuMantProveedor.Size = New System.Drawing.Size(252, 22)
         Me.MnuMantProveedor.Text = "Proveedores"
         Me.MnuMantProveedor.Visible = False
         '
         'MnuMantProducto
         '
         Me.MnuMantProducto.Name = "MnuMantProducto"
-        Me.MnuMantProducto.Size = New System.Drawing.Size(180, 22)
+        Me.MnuMantProducto.Size = New System.Drawing.Size(252, 22)
         Me.MnuMantProducto.Text = "Productos"
         Me.MnuMantProducto.Visible = False
         '
         'MnuMantUsuario
         '
         Me.MnuMantUsuario.Name = "MnuMantUsuario"
-        Me.MnuMantUsuario.Size = New System.Drawing.Size(180, 22)
+        Me.MnuMantUsuario.Size = New System.Drawing.Size(252, 22)
         Me.MnuMantUsuario.Text = "Usuarios"
         Me.MnuMantUsuario.Visible = False
         '
         'MnuMantCE
         '
         Me.MnuMantCE.Name = "MnuMantCE"
-        Me.MnuMantCE.Size = New System.Drawing.Size(180, 22)
+        Me.MnuMantCE.Size = New System.Drawing.Size(252, 22)
         Me.MnuMantCE.Text = "Cuentas de Egresos"
         Me.MnuMantCE.Visible = False
         '
         'MnuMantCI
         '
         Me.MnuMantCI.Name = "MnuMantCI"
-        Me.MnuMantCI.Size = New System.Drawing.Size(180, 22)
+        Me.MnuMantCI.Size = New System.Drawing.Size(252, 22)
         Me.MnuMantCI.Text = "Cuentas de Ingresos"
         Me.MnuMantCI.Visible = False
         '
         'MnuMantCC
         '
         Me.MnuMantCC.Name = "MnuMantCC"
-        Me.MnuMantCC.Size = New System.Drawing.Size(180, 22)
+        Me.MnuMantCC.Size = New System.Drawing.Size(252, 22)
         Me.MnuMantCC.Text = "Cuentas Contables"
         Me.MnuMantCC.Visible = False
         '
         'MnuMantInv
         '
         Me.MnuMantInv.Name = "MnuMantInv"
-        Me.MnuMantInv.Size = New System.Drawing.Size(180, 22)
-        Me.MnuMantInv.Text = "Inventario"
+        Me.MnuMantInv.Size = New System.Drawing.Size(252, 22)
+        Me.MnuMantInv.Text = "Catalogo de productos y servicios"
         Me.MnuMantInv.Visible = False
         '
         'MnuMantVend
         '
         Me.MnuMantVend.Name = "MnuMantVend"
-        Me.MnuMantVend.Size = New System.Drawing.Size(180, 22)
+        Me.MnuMantVend.Size = New System.Drawing.Size(252, 22)
         Me.MnuMantVend.Text = "Vendedores"
         Me.MnuMantVend.Visible = False
         '

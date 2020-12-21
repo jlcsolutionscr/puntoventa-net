@@ -168,9 +168,9 @@ Public Class FrmDevolucionDeClientes
             End If
         Next
         decSubTotal = decGravado + dblExcento
-        decGravado = Math.Round(decGravado, 2, MidpointRounding.AwayFromZero)
-        dblExcento = Math.Round(dblExcento, 2, MidpointRounding.AwayFromZero)
-        decImpuesto = Math.Round(decImpuesto, 2, MidpointRounding.AwayFromZero)
+        decGravado = Math.Round(decGravado, 2)
+        dblExcento = Math.Round(dblExcento, 2)
+        decImpuesto = Math.Round(decImpuesto, 2)
         txtSubTotal.Text = FormatNumber(decSubTotal, 2)
         txtImpuesto.Text = FormatNumber(decImpuesto, 2)
         txtTotal.Text = FormatNumber(dblExcento + decGravado + decImpuesto, 2)

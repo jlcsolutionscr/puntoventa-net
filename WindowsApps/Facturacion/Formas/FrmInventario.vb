@@ -96,7 +96,7 @@ Public Class FrmInventario
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Threading.Tasks.Task
         Try
-            dgvListado.DataSource = Await Puntoventa.ObtenerListadoProductos(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, intNumeroPagina, intFilasPorPagina, False, chkFiltrarActivos.Checked, chkFiltrarExistencias.Checked, False, cboLinea.SelectedValue, txtCodigo.Text, txtCodigoProveedor.Text, txtDescripcion.Text, FrmPrincipal.usuarioGlobal.Token)
+            dgvListado.DataSource = Await Puntoventa.ObtenerListadoProductos(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, intNumeroPagina, intFilasPorPagina, chkIncluyeServicios.Checked, chkFiltrarActivos.Checked, chkFiltrarExistencias.Checked, False, cboLinea.SelectedValue, txtCodigo.Text, txtCodigoProveedor.Text, txtDescripcion.Text, FrmPrincipal.usuarioGlobal.Token)
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -107,7 +107,7 @@ Public Class FrmInventario
 
     Private Async Function ValidarCantidadRegistros() As Threading.Tasks.Task
         Try
-            intTotalRegistros = Await Puntoventa.ObtenerTotalListaProductos(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, False, chkFiltrarActivos.Checked, chkFiltrarExistencias.Checked, False, cboLinea.SelectedValue, txtCodigo.Text, txtCodigoProveedor.Text, txtDescripcion.Text, FrmPrincipal.usuarioGlobal.Token)
+            intTotalRegistros = Await Puntoventa.ObtenerTotalListaProductos(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, chkIncluyeServicios.Checked, chkFiltrarActivos.Checked, chkFiltrarExistencias.Checked, False, cboLinea.SelectedValue, txtCodigo.Text, txtCodigoProveedor.Text, txtDescripcion.Text, FrmPrincipal.usuarioGlobal.Token)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -269,6 +269,12 @@ Public Class FrmInventario
     End Sub
 
     Private Sub chkFiltrarExistencias_CheckedChanged(sender As Object, e As EventArgs) Handles chkFiltrarExistencias.CheckedChanged
+        If bolReady And Not cboSucursal.SelectedValue Is Nothing Then
+            CmdFiltrar_Click(CmdFiltrar, New EventArgs())
+        End If
+    End Sub
+
+    Private Sub chkIncluyeServicios_CheckedChanged(sender As Object, e As EventArgs) Handles chkIncluyeServicios.CheckedChanged
         If bolReady And Not cboSucursal.SelectedValue Is Nothing Then
             CmdFiltrar_Click(CmdFiltrar, New EventArgs())
         End If
