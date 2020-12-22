@@ -80,15 +80,12 @@ Public Class FrmCompra
 
         dvcId.DataPropertyName = "ID"
         dvcId.HeaderText = "Id"
-        dvcId.Width = 0
         dvcId.Visible = False
-        dvcId.SortMode = DataGridViewColumnSortMode.NotSortable
         grdDetalleCompra.Columns.Add(dvcId)
 
         dvcIdProducto.DataPropertyName = "IDPRODUCTO"
         dvcIdProducto.HeaderText = "IdP"
         dvcIdProducto.Visible = False
-        dvcIdProducto.SortMode = DataGridViewColumnSortMode.NotSortable
         grdDetalleCompra.Columns.Add(dvcIdProducto)
 
         dvcCodigo.DataPropertyName = "CODIGO"
@@ -133,13 +130,11 @@ Public Class FrmCompra
 
         dvcExc.DataPropertyName = "EXCENTO"
         dvcExc.HeaderText = "Exc"
-        dvcExc.Width = 0
         dvcExc.Visible = False
         grdDetalleCompra.Columns.Add(dvcExc)
 
         dvcPorcentajeIVA.DataPropertyName = "PORCENTAJEIVA"
         dvcPorcentajeIVA.HeaderText = "PorcIVA"
-        dvcPorcentajeIVA.Width = 0
         dvcPorcentajeIVA.Visible = False
         grdDetalleCompra.Columns.Add(dvcPorcentajeIVA)
 
@@ -172,56 +167,48 @@ Public Class FrmCompra
 
         dvcIdFormaPago.DataPropertyName = "IDFORMAPAGO"
         dvcIdFormaPago.HeaderText = "Id"
-        dvcIdFormaPago.Width = 0
         dvcIdFormaPago.Visible = False
         grdDesglosePago.Columns.Add(dvcIdFormaPago)
 
         dvcDescFormaPago.DataPropertyName = "DESCFORMAPAGO"
         dvcDescFormaPago.HeaderText = "Forma de Pago"
         dvcDescFormaPago.Width = 154
-        dvcDescFormaPago.Visible = True
-        dvcDescFormaPago.ReadOnly = True
+        dvcDescFormaPago.SortMode = DataGridViewColumnSortMode.NotSortable
         grdDesglosePago.Columns.Add(dvcDescFormaPago)
 
         dvcIdCuentaBanco.DataPropertyName = "IDCUENTABANCO"
         dvcIdCuentaBanco.HeaderText = "IdCuentaBanco"
-        dvcIdCuentaBanco.Width = 0
         dvcIdCuentaBanco.Visible = False
         grdDesglosePago.Columns.Add(dvcIdCuentaBanco)
 
         dvcDescBanco.DataPropertyName = "DESCBANCO"
         dvcDescBanco.HeaderText = "Banco"
         dvcDescBanco.Width = 390
-        dvcDescBanco.Visible = True
-        dvcDescBanco.ReadOnly = True
+        dvcDescBanco.SortMode = DataGridViewColumnSortMode.NotSortable
         grdDesglosePago.Columns.Add(dvcDescBanco)
 
         dvcNroCheque.DataPropertyName = "NROCHEQUE"
         dvcNroCheque.HeaderText = "Nro. Cheque"
         dvcNroCheque.Width = 150
-        dvcNroCheque.Visible = True
-        dvcNroCheque.ReadOnly = True
+        dvcNroCheque.SortMode = DataGridViewColumnSortMode.NotSortable
         grdDesglosePago.Columns.Add(dvcNroCheque)
 
         dvcIdTipoMoneda.DataPropertyName = "IDTIPOMONEDA"
         dvcIdTipoMoneda.HeaderText = "TipoMoneda"
-        dvcIdTipoMoneda.Width = 0
         dvcIdTipoMoneda.Visible = False
         grdDesglosePago.Columns.Add(dvcIdTipoMoneda)
 
         dvcMontoLocal.DataPropertyName = "MONTOLOCAL"
         dvcMontoLocal.HeaderText = "Monto Local"
         dvcMontoLocal.Width = 110
-        dvcMontoLocal.Visible = True
-        dvcMontoLocal.ReadOnly = True
+        dvcMontoLocal.SortMode = DataGridViewColumnSortMode.NotSortable
         dvcMontoLocal.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDesglosePago.Columns.Add(dvcMontoLocal)
 
         dvcTipoCambio.DataPropertyName = "TIPODECAMBIO"
         dvcTipoCambio.HeaderText = "Tipo Cambio"
         dvcTipoCambio.Width = 110
-        dvcTipoCambio.Visible = True
-        dvcTipoCambio.ReadOnly = True
+        dvcTipoCambio.SortMode = DataGridViewColumnSortMode.NotSortable
         dvcTipoCambio.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDesglosePago.Columns.Add(dvcTipoCambio)
     End Sub

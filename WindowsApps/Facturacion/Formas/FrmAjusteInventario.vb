@@ -44,28 +44,33 @@ Public Class FrmAjusteInventario
         dvcCodigo.DataPropertyName = "CODIGO"
         dvcCodigo.HeaderText = "Código"
         dvcCodigo.Width = 125
+        dvcCodigo.SortMode = DataGridViewColumnSortMode.NotSortable
         grdDetalleAjusteInventario.Columns.Add(dvcCodigo)
 
         dvcDescripcion.DataPropertyName = "DESCRIPCION"
         dvcDescripcion.HeaderText = "Descripción"
         dvcDescripcion.Width = 360
+        dvcDescripcion.SortMode = DataGridViewColumnSortMode.NotSortable
         grdDetalleAjusteInventario.Columns.Add(dvcDescripcion)
 
         dvcCantidad.DataPropertyName = "CANTIDAD"
         dvcCantidad.HeaderText = "Cantidad"
         dvcCantidad.Width = 60
+        dvcCantidad.SortMode = DataGridViewColumnSortMode.NotSortable
         dvcCantidad.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleAjusteInventario.Columns.Add(dvcCantidad)
 
         dvcPrecioCosto.DataPropertyName = "PRECIOCOSTO"
         dvcPrecioCosto.HeaderText = "Precio"
         dvcPrecioCosto.Width = 75
+        dvcPrecioCosto.SortMode = DataGridViewColumnSortMode.NotSortable
         dvcPrecioCosto.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleAjusteInventario.Columns.Add(dvcPrecioCosto)
 
         dvcTotal.DataPropertyName = "TOTAL"
         dvcTotal.HeaderText = "Total"
         dvcTotal.Width = 100
+        dvcTotal.SortMode = DataGridViewColumnSortMode.NotSortable
         dvcTotal.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleAjusteInventario.Columns.Add(dvcTotal)
     End Sub

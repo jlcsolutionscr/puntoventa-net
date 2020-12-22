@@ -65,80 +65,76 @@ Public Class FrmProforma
 
         dvcIdProducto.DataPropertyName = "IDPRODUCTO"
         dvcIdProducto.HeaderText = "IdP"
-        dvcIdProducto.Width = 0
         dvcIdProducto.Visible = False
         grdDetalleProforma.Columns.Add(dvcIdProducto)
 
         dvcCodigo.DataPropertyName = "CODIGO"
         dvcCodigo.HeaderText = "Código"
         dvcCodigo.Width = 110
-        dvcCodigo.Visible = True
         dvcCodigo.ReadOnly = True
+        dvcCodigo.SortMode = DataGridViewColumnSortMode.NotSortable
         grdDetalleProforma.Columns.Add(dvcCodigo)
 
         dvcDescripcion.DataPropertyName = "DESCRIPCION"
         dvcDescripcion.HeaderText = "Descripción"
         dvcDescripcion.Width = 300
-        dvcDescripcion.Visible = True
         dvcDescripcion.ReadOnly = True
+        dvcDescripcion.SortMode = DataGridViewColumnSortMode.NotSortable
         grdDetalleProforma.Columns.Add(dvcDescripcion)
 
         dvcCantidad.DataPropertyName = "CANTIDAD"
         dvcCantidad.HeaderText = "Cantidad"
         dvcCantidad.Width = 60
-        dvcCantidad.Visible = True
         dvcCantidad.ReadOnly = True
+        dvcCantidad.SortMode = DataGridViewColumnSortMode.NotSortable
         dvcCantidad.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleProforma.Columns.Add(dvcCantidad)
 
         dvcPorcDescuento.DataPropertyName = "PORCDESCUENTO"
         dvcPorcDescuento.HeaderText = "Desc"
         dvcPorcDescuento.Width = 40
-        dvcPorcDescuento.Visible = True
-        dvcPorcDescuento.ReadOnly = False
+        dvcPorcDescuento.SortMode = DataGridViewColumnSortMode.NotSortable
         dvcPorcDescuento.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleProforma.Columns.Add(dvcPorcDescuento)
 
         dvcDescuento.DataPropertyName = "VALORDESCUENTO"
         dvcDescuento.HeaderText = "Desc"
         dvcDescuento.Width = 75
-        dvcDescuento.Visible = True
         dvcDescuento.ReadOnly = True
+        dvcDescuento.SortMode = DataGridViewColumnSortMode.NotSortable
         dvcDescuento.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleProforma.Columns.Add(dvcDescuento)
 
         dvcPrecio.DataPropertyName = "PRECIOIVA"
         dvcPrecio.HeaderText = "Precio/U"
         dvcPrecio.Width = 75
-        dvcPrecio.Visible = True
         dvcPrecio.ReadOnly = True
+        dvcPrecio.SortMode = DataGridViewColumnSortMode.NotSortable
         dvcPrecio.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleProforma.Columns.Add(dvcPrecio)
 
         dvcTotal.DataPropertyName = "TOTAL"
         dvcTotal.HeaderText = "Total"
         dvcTotal.Width = 100
-        dvcTotal.Visible = True
         dvcTotal.ReadOnly = True
+        dvcTotal.SortMode = DataGridViewColumnSortMode.NotSortable
         dvcTotal.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleProforma.Columns.Add(dvcTotal)
 
         dvcExc.DataPropertyName = "EXCENTO"
         dvcExc.HeaderText = "Exc"
         dvcExc.Width = 20
-        dvcExc.Visible = True
         dvcExc.ReadOnly = True
+        dvcExc.SortMode = DataGridViewColumnSortMode.NotSortable
         grdDetalleProforma.Columns.Add(dvcExc)
 
         dvcPorcentajeIVA.DataPropertyName = "PORCENTAJEIVA"
         dvcPorcentajeIVA.HeaderText = "PorcIVA"
-        dvcPorcentajeIVA.Width = 0
         dvcPorcentajeIVA.Visible = False
         grdDetalleProforma.Columns.Add(dvcPorcentajeIVA)
 
         dvcId.DataPropertyName = "ID"
         dvcId.HeaderText = "Id"
-        dvcId.Width = 0
         dvcId.Visible = False
         grdDetalleProforma.Columns.Add(dvcId)
     End Sub
