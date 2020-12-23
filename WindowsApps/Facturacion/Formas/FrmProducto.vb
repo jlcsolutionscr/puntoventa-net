@@ -439,10 +439,10 @@ Public Class FrmProducto
         End If
     End Sub
 
-    Private Sub TxtCodigo_Validated(sender As Object, e As EventArgs) Handles txtCodigo.Validated
-        If txtCodigo.TextLength < 13 Then
-            MessageBox.Show("El valor del campo 'Código' debe tener una longitud no menor a 13 caracteres. Por favor verifique la información suministrada", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-            txtCodigo.Text = ""
+    Private Sub TxtCodigoClasificacion_Validated(sender As Object, e As EventArgs) Handles txtCodigoClasificacion.Validated
+        If txtCodigoClasificacion.TextLength < 13 Then
+            MessageBox.Show("El valor del campo 'Código CABYS' debe tener una longitud no menor a 13 caracteres. Por favor verifique la información suministrada", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            txtCodigoClasificacion.Text = ""
         End If
     End Sub
 #End Region

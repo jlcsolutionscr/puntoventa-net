@@ -813,7 +813,7 @@ Partial Class FrmProducto
         Me.Label13.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label13.Size = New System.Drawing.Size(105, 17)
         Me.Label13.TabIndex = 158
-        Me.Label13.Text = "Codigo Cabys:"
+        Me.Label13.Text = "Codigo CABYS:"
         Me.Label13.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'btnBuscarClasificacion
