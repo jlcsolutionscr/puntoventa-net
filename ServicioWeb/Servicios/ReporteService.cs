@@ -1594,38 +1594,35 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                             int porcentaje = int.Parse(impuestoDetalle["Exoneracion"]["PorcentajeExoneracion"].InnerText, CultureInfo.InvariantCulture);
                                             decMontoPorLinea = decMontoPorLinea * (100 - porcentaje) / 100;
                                         }
-                                        string strTarifa = impuestoDetalle["Tarifa"].InnerText;
+                                        string strTarifa = impuestoDetalle["Tarifa"].InnerText.Replace(" ", string.Empty);
+                                        int intTarifa = -1;
+                                        try
+                                        {
+                                            intTarifa = int.Parse(strTarifa, NumberStyles.Integer | NumberStyles.AllowDecimalPoint, new CultureInfo("en-US"));
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            throw new Exception("No se logro convertir el string de la tarifa " + strTarifa + " en un numero entero");
+                                        }
                                         if (lineaDetalle["UnidadMedida"].InnerText == "Os" || lineaDetalle["UnidadMedida"].InnerText == "Sp" || lineaDetalle["UnidadMedida"].InnerText == "Spe" || lineaDetalle["UnidadMedida"].InnerText == "St")
                                         {
-                                            switch (strTarifa)
+                                            switch (intTarifa)
                                             {
-                                                case "0":
-                                                case "0.0":
-                                                case "0.00":
+                                                case 0:
                                                     break;
-                                                case "1":
-                                                case "1.0":
-                                                case "1.00":
+                                                case 1:
                                                     decCompraServiciosTasa1 += decMontoPorLinea;
                                                     break;
-                                                case "2":
-                                                case "2.0":
-                                                case "2.00":
+                                                case 2:
                                                     decCompraServiciosTasa2 += decMontoPorLinea;
                                                     break;
-                                                case "4":
-                                                case "4.0":
-                                                case "4.00":
+                                                case 4:
                                                     decCompraServiciosTasa4 += decMontoPorLinea;
                                                     break;
-                                                case "8":
-                                                case "8.0":
-                                                case "8.00":
+                                                case 8:
                                                     decCompraServiciosTasa8 += decMontoPorLinea;
                                                     break;
-                                                case "13":
-                                                case "13.0":
-                                                case "13.00":
+                                                case 13:
                                                     decCompraServiciosTasa13 += decMontoPorLinea;
                                                     break;
                                                 default:
@@ -1634,35 +1631,23 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                         }
                                         else
                                         {
-                                            switch (strTarifa)
+                                            switch (intTarifa)
                                             {
-                                                case "0":
-                                                case "0.0":
-                                                case "0.00":
+                                                case 0:
                                                     break;
-                                                case "1":
-                                                case "1.0":
-                                                case "1.00":
+                                                case 1:
                                                     decCompraBienesTasa1 += decMontoPorLinea;
                                                     break;
-                                                case "2":
-                                                case "2.0":
-                                                case "2.00":
+                                                case 2:
                                                     decCompraBienesTasa2 += decMontoPorLinea;
                                                     break;
-                                                case "4":
-                                                case "4.0":
-                                                case "4.00":
+                                                case 4:
                                                     decCompraBienesTasa4 += decMontoPorLinea;
                                                     break;
-                                                case "8":
-                                                case "8.0":
-                                                case "8.00":
+                                                case 8:
                                                     decCompraBienesTasa8 += decMontoPorLinea;
                                                     break;
-                                                case "13":
-                                                case "13.0":
-                                                case "13.00":
+                                                case 13:
                                                     decCompraBienesTasa13 += decMontoPorLinea;
                                                     break;
                                                 default:
