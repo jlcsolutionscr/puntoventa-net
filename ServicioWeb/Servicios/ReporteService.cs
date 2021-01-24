@@ -400,7 +400,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (intTipoPago == -1)
                     {
                         var detalleCompras = dbContext.CompraRepository.Include("Proveedor").Where(s => s.IdEmpresa == intIdEmpresa && s.IdSucursal == intIdSucursal && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal && s.Nulo == bolNulo)
-                            .Select(x => new { x.IdProveedor, x.Nulo, x.IdCondicionVenta, x.IdCompra, x.Fecha, NombreProveedor = x.Proveedor.Nombre, x.NoDocumento, x.Impuesto, Total = (x.Excento + x.Gravado + x.Impuesto) });
+                            .Select(x => new { x.IdProveedor, x.Nulo, x.IdCondicionVenta, x.IdCompra, x.Fecha, NombreProveedor = x.Proveedor.Nombre, x.NoDocumento, x.Impuesto, Total = (x.Excento + x.Gravado + x.Impuesto - x.Descuento) });
                         if (intIdProveedor > 0)
                             detalleCompras = detalleCompras.Where(x => x.IdProveedor == intIdProveedor);
                         foreach (var value in detalleCompras)
@@ -421,7 +421,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         if (intTipoPago == StaticReporteCondicionVentaFormaPago.Credito || !pagosEfectivo.Contains(intTipoPago))
                         {
                             var detalleCompras = dbContext.CompraRepository.Include("Proveedor").Where(s => s.IdEmpresa == intIdEmpresa && s.IdSucursal == intIdSucursal && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal && s.Nulo == bolNulo)
-                                .Select(x => new { x.IdProveedor, x.Nulo, x.IdCondicionVenta, x.IdCompra, x.Fecha, NombreProveedor = x.Proveedor.Nombre, x.NoDocumento, x.Impuesto, Total = (x.Excento + x.Gravado + x.Impuesto) });
+                                .Select(x => new { x.IdProveedor, x.Nulo, x.IdCondicionVenta, x.IdCompra, x.Fecha, NombreProveedor = x.Proveedor.Nombre, x.NoDocumento, x.Impuesto, Total = (x.Excento + x.Gravado + x.Impuesto - x.Descuento) });
                             if (intTipoPago == StaticReporteCondicionVentaFormaPago.Credito)
                                 detalleCompras = detalleCompras.Where(x => x.IdCondicionVenta == StaticCondicionVenta.Credito);
                             else
@@ -1367,7 +1367,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
 
                     }
-                    return listaReporte.OrderBy(x => x.Nombre).ThenBy(x => x.Fecha).ToList();
+                    return listaReporte.OrderBy(x => x.TipoDocumento).ThenBy(x => x.Fecha).ToList();
                 }
                 catch (Exception ex)
                 {
@@ -1676,7 +1676,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                     decTipoDeCambio = decimal.Parse(documentoXml.GetElementsByTagName("TipoCambio").Item(0).InnerText, CultureInfo.InvariantCulture);
                             if (documentoXml.DocumentElement.Name != "NotaCreditoElectronica")
                             {
-                                if (documento.EsIvaAcreditable == "S")
+                                if (documento.IdTipoDocumento == 8 || documento.EsIvaAcreditable == "S")
                                 {
                                     decTotalCompraBienesIvaTasa1 += decCompraBienesTasa1 * decTipoDeCambio;
                                     decTotalCompraBienesIvaTasa2 += decCompraBienesTasa2 * decTipoDeCambio;
@@ -1711,7 +1711,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             }
                             else
                             {
-                                if (documento.EsIvaAcreditable == "S")
+                                if (documento.IdTipoDocumento == 8 || documento.EsIvaAcreditable == "S")
                                 {
                                     decTotalCompraBienesIvaTasa1 -= decCompraBienesTasa1 * decTipoDeCambio;
                                     decTotalCompraBienesIvaTasa2 -= decCompraBienesTasa2 * decTipoDeCambio;
