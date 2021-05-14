@@ -245,7 +245,13 @@ Public Class FrmDetalleDocumentoElectronico
                             .Indentation = 4
                         }
                         Dim datos As XmlDocument = New XmlDocument()
-                        Dim strRespuesta As String = Encoding.UTF8.GetString(consulta.DatosDocumento)
+                        Dim strRespuesta As String = ""
+                        If consulta.EsMensajeReceptor = "S" Then
+                            strRespuesta = Encoding.UTF8.GetString(consulta.DatosDocumentoOri)
+                        Else
+                            strRespuesta = Encoding.UTF8.GetString(consulta.DatosDocumento)
+                        End If
+
                         datos.LoadXml(strRespuesta)
                         datos.Save(xw)
                         rtxDetalleRespuesta.Text = sw.ToString()

@@ -134,6 +134,7 @@ Public Class FrmEgreso
             Exit Sub
         End If
         If txtIdEgreso.Text = "" Then
+            btnGuardar.Enabled = False
             egreso = New Egreso With {
                 .IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa,
                 .IdSucursal = FrmPrincipal.equipoGlobal.IdSucursal,
@@ -149,6 +150,7 @@ Public Class FrmEgreso
                 txtIdEgreso.Text = Await Puntoventa.AgregarEgreso(egreso, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
                 txtIdEgreso.Text = ""
+                btnGuardar.Enabled = True
                 MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
@@ -158,7 +160,6 @@ Public Class FrmEgreso
         btnAgregar.Enabled = True
         btnAnular.Enabled = FrmPrincipal.bolAnularTransacciones
         btnImprimir.Focus()
-        btnGuardar.Enabled = False
     End Sub
 
     Private Sub BtnImprimir_Click(sender As Object, e As EventArgs) Handles btnImprimir.Click

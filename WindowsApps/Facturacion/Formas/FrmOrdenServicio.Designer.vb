@@ -110,6 +110,8 @@ Partial Class FrmOrdenServicio
         Me._LblImpuesto_0 = New System.Windows.Forms.Label()
         Me._LblTotal_6 = New System.Windows.Forms.Label()
         Me._lblSubTotal_5 = New System.Windows.Forms.Label()
+        Me.txtMontoAdelanto = New System.Windows.Forms.TextBox()
+        Me.Label15 = New System.Windows.Forms.Label()
         CType(Me.grdDetalleOrdenServicio, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.grdDesglosePago, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -1205,12 +1207,43 @@ Partial Class FrmOrdenServicio
         Me._lblSubTotal_5.Text = "Sub-Total:"
         Me._lblSubTotal_5.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
+        'txtMontoAdelanto
+        '
+        Me.txtMontoAdelanto.AcceptsReturn = True
+        Me.txtMontoAdelanto.BackColor = System.Drawing.SystemColors.Window
+        Me.txtMontoAdelanto.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtMontoAdelanto.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtMontoAdelanto.Location = New System.Drawing.Point(562, 646)
+        Me.txtMontoAdelanto.MaxLength = 0
+        Me.txtMontoAdelanto.Name = "txtMontoAdelanto"
+        Me.txtMontoAdelanto.ReadOnly = True
+        Me.txtMontoAdelanto.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtMontoAdelanto.Size = New System.Drawing.Size(73, 20)
+        Me.txtMontoAdelanto.TabIndex = 213
+        Me.txtMontoAdelanto.TabStop = False
+        Me.txtMontoAdelanto.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        '
+        'Label15
+        '
+        Me.Label15.BackColor = System.Drawing.Color.Transparent
+        Me.Label15.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label15.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label15.Location = New System.Drawing.Point(500, 648)
+        Me.Label15.Name = "Label15"
+        Me.Label15.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label15.Size = New System.Drawing.Size(56, 17)
+        Me.Label15.TabIndex = 214
+        Me.Label15.Text = "Adelanto:"
+        Me.Label15.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
         'FrmOrdenServicio
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(822, 679)
+        Me.Controls.Add(Me.txtMontoAdelanto)
+        Me.Controls.Add(Me.Label15)
         Me.Controls.Add(Me.txtDescuento)
         Me.Controls.Add(Me.Label17)
         Me.Controls.Add(Me.txtImpuesto)
@@ -1370,4 +1403,6 @@ Partial Class FrmOrdenServicio
     Public WithEvents _LblImpuesto_0 As Label
     Public WithEvents _LblTotal_6 As Label
     Public WithEvents _lblSubTotal_5 As Label
+    Public WithEvents txtMontoAdelanto As TextBox
+    Public WithEvents Label15 As Label
 End Class

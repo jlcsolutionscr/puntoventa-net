@@ -269,6 +269,7 @@ Public Class FrmAplicaAbonoCxP
             MessageBox.Show("El total del desglose de pago del movimiento es superior al saldo por pagar.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         End If
+        btnGuardar.Enabled = False
         If FrmPrincipal.empresaGlobal.IngresaPagoCliente And decPagoEfectivo > 0 Then
             Dim formPagoFactura As New FrmPagoEfectivo()
             formPagoFactura.decTotalEfectivo = decPagoEfectivo
@@ -312,6 +313,7 @@ Public Class FrmAplicaAbonoCxP
         Try
             Await Puntoventa.AplicarMovimientoCxP(movimiento, FrmPrincipal.usuarioGlobal.Token)
         Catch ex As Exception
+            btnGuardar.Enabled = True
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
         End Try
@@ -331,7 +333,6 @@ Public Class FrmAplicaAbonoCxP
         txtObservaciones.ReadOnly = True
         txtRecibo.ReadOnly = True
         txtMontoPago.ReadOnly = True
-        btnGuardar.Enabled = False
         btnInsertarPago.Enabled = False
         btnEliminarPago.Enabled = False
     End Sub

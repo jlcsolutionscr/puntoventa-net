@@ -903,8 +903,13 @@ Public Class FrmFactura
                     txtFechaExoneracion.Text = cliente.FechaEmisionDoc
                     txtPorcentajeExoneracion.Text = cliente.PorcentajeExoneracion
                 End If
-                vendedor = ordenServicio.Vendedor
-                txtVendedor.Text = IIf(vendedor IsNot Nothing, vendedor.Nombre, "")
+                If FrmPrincipal.empresaGlobal.AsignaVendedorPorDefecto Then
+                    vendedor = ordenServicio.Vendedor
+                    txtVendedor.Text = IIf(vendedor IsNot Nothing, vendedor.Nombre, "")
+                Else
+                    vendedor = Nothing
+                    txtVendedor.Text = ""
+                End If
                 intIdProforma = 0
                 intIdOrdenServicio = ordenServicio.IdOrden
                 intIdApartado = 0
@@ -957,7 +962,7 @@ Public Class FrmFactura
                 txtNombreCliente.Text = apartado.NombreCliente
                 txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
                 txtTelefono.Text = apartado.Telefono
-                txtObservaciones.Text = ""
+                txtObservaciones.Text = apartado.TextoAdicional
                 cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado
                 cboCondicionVenta.Enabled = cliente.IdCliente > 1
                 txtPlazoCredito.Text = ""
@@ -967,8 +972,13 @@ Public Class FrmFactura
                     txtFechaExoneracion.Text = cliente.FechaEmisionDoc
                     txtPorcentajeExoneracion.Text = cliente.PorcentajeExoneracion
                 End If
-                vendedor = apartado.Vendedor
-                txtVendedor.Text = IIf(vendedor IsNot Nothing, vendedor.Nombre, "")
+                If FrmPrincipal.empresaGlobal.AsignaVendedorPorDefecto Then
+                    vendedor = apartado.Vendedor
+                    txtVendedor.Text = IIf(vendedor IsNot Nothing, vendedor.Nombre, "")
+                Else
+                    vendedor = Nothing
+                    txtVendedor.Text = ""
+                End If
                 intIdProforma = 0
                 intIdOrdenServicio = 0
                 intIdApartado = apartado.IdApartado
@@ -1021,7 +1031,7 @@ Public Class FrmFactura
                 txtNombreCliente.Text = proforma.NombreCliente
                 txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
                 txtTelefono.Text = proforma.Telefono
-                txtObservaciones.Text = ""
+                txtObservaciones.Text = proforma.TextoAdicional
                 cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado
                 cboCondicionVenta.Enabled = cliente.IdCliente > 1
                 txtPlazoCredito.Text = ""
@@ -1031,8 +1041,13 @@ Public Class FrmFactura
                     txtFechaExoneracion.Text = cliente.FechaEmisionDoc
                     txtPorcentajeExoneracion.Text = cliente.PorcentajeExoneracion
                 End If
-                vendedor = proforma.Vendedor
-                txtVendedor.Text = IIf(vendedor IsNot Nothing, vendedor.Nombre, "")
+                If FrmPrincipal.empresaGlobal.AsignaVendedorPorDefecto Then
+                    vendedor = proforma.Vendedor
+                    txtVendedor.Text = IIf(vendedor IsNot Nothing, vendedor.Nombre, "")
+                Else
+                    vendedor = Nothing
+                    txtVendedor.Text = ""
+                End If
                 intIdProforma = proforma.IdProforma
                 intIdOrdenServicio = 0
                 intIdApartado = 0

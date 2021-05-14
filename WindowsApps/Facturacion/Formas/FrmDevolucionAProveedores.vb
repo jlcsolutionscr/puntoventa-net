@@ -315,7 +315,9 @@ Public Class FrmDevolucionAProveedores
     Private Sub CmdGuardar_Click(sender As Object, e As EventArgs) Handles CmdGuardar.Click
         If proveedor Is Nothing Or txtFecha.Text = "" Or compra Is Nothing Or CDbl(txtTotal.Text) = 0 Then
             MessageBox.Show("Información incompleta.  Favor verificar. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            Exit Sub
         End If
+        CmdGuardar.Enabled = False
         If txtIdDevolucion.Text = "" Then
             devolucion = New DevolucionProveedor With {
                 .IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa,
@@ -343,6 +345,7 @@ Public Class FrmDevolucionAProveedores
                 txtIdDevolucion.Text = devolucion.IdDevolucion
             Catch ex As Exception
                 txtIdDevolucion.Text = ""
+                CmdGuardar.Enabled = True
                 MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
@@ -353,7 +356,6 @@ Public Class FrmDevolucionAProveedores
         CmdAgregar.Enabled = True
         CmdAnular.Enabled = FrmPrincipal.bolAnularTransacciones
         CmdImprimir.Focus()
-        CmdGuardar.Enabled = False
     End Sub
 
     Private Sub CmdImprimir_Click(sender As Object, e As EventArgs) Handles CmdImprimir.Click

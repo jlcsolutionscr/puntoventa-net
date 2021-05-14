@@ -726,7 +726,6 @@ Public Class FrmProforma
 
     Private Sub BtnImprimir_Click(sender As Object, e As EventArgs) Handles btnImprimir.Click
         If txtIdProforma.Text <> "" Then
-            Dim decTotal As Decimal = proforma.Gravado + proforma.Excento + proforma.Exonerado + proforma.Impuesto
             Try
                 comprobanteImpresion = New ModuloImpresion.ClsComprobante With {
                     .usuario = FrmPrincipal.usuarioGlobal,
@@ -741,7 +740,7 @@ Public Class FrmProforma
                     .strSubTotal = FormatNumber(proforma.Excento + proforma.Gravado + proforma.Exonerado + proforma.Descuento, 2),
                     .strDescuento = FormatNumber(proforma.Descuento, 2),
                     .strImpuesto = FormatNumber(proforma.Impuesto, 2),
-                    .strTotal = FormatNumber(decTotal, 2)
+                    .strTotal = FormatNumber(proforma.Total, 2)
                 }
                 arrDetalleOrden = New List(Of ModuloImpresion.ClsDetalleComprobante)
                 For Each item As DetalleProforma In proforma.DetalleProforma

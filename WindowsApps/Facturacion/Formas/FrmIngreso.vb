@@ -134,6 +134,7 @@ Public Class FrmIngreso
             Exit Sub
         End If
         If txtIdIngreso.Text = "" Then
+            btnGuardar.Enabled = False
             ingreso = New Ingreso With {
                 .IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa,
                 .IdSucursal = FrmPrincipal.equipoGlobal.IdSucursal,
@@ -149,6 +150,7 @@ Public Class FrmIngreso
                 txtIdIngreso.Text = Await Puntoventa.AgregarIngreso(ingreso, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
                 txtIdIngreso.Text = ""
+                btnGuardar.Enabled = True
                 MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
@@ -158,7 +160,6 @@ Public Class FrmIngreso
         btnAgregar.Enabled = True
         btnAnular.Enabled = FrmPrincipal.bolAnularTransacciones
         btnImprimir.Focus()
-        btnGuardar.Enabled = False
     End Sub
 
     Private Sub BtnImprimir_Click(sender As Object, e As EventArgs) Handles btnImprimir.Click

@@ -733,7 +733,6 @@ Public Class FrmCompra
             Exit Sub
         End If
         If txtIdCompra.Text = "" Then
-            btnImprimir.Focus()
             btnGuardar.Enabled = False
             compra = New Compra With {
                 .IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa,
@@ -783,7 +782,6 @@ Public Class FrmCompra
             Catch ex As Exception
                 txtIdCompra.Text = ""
                 btnGuardar.Enabled = True
-                btnGuardar.Focus()
                 MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
@@ -794,7 +792,6 @@ Public Class FrmCompra
         btnAgregar.Enabled = True
         btnAnular.Enabled = FrmPrincipal.bolAnularTransacciones
         btnImprimir.Focus()
-        btnGuardar.Enabled = False
         btnInsertar.Enabled = False
         btnEliminar.Enabled = False
         btnInsertarPago.Enabled = False

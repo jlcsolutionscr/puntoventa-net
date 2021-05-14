@@ -10,7 +10,7 @@ Imports LeandroSoftware.ClienteWCF
 Public Class FrmOrdenServicio
 #Region "Variables"
     Private strMotivoRechazo As String
-    Private decDescuento, decSubTotal, decExcento, decGravado, decExonerado, decImpuesto, decTotal, decPagoEfectivo, decPagoCliente, decTotalPago, decSaldoPorPagar, decPrecioVenta As Decimal
+    Private decDescuento, decSubTotal, decExcento, decGravado, decExonerado, decImpuesto, decMontoAdelanto, decTotal, decPagoEfectivo, decPagoCliente, decSaldoPorPagar, decPrecioVenta As Decimal
     Private consecDetalle As Short
     Private dtbDatosLocal, dtbDetalleOrdenServicio, dtbDesglosePago As DataTable
     Private dtrRowDetOrdenServicio, dtrRowDesglosePago As DataRow
@@ -382,7 +382,7 @@ Public Class FrmOrdenServicio
         decExcento = Math.Round(decExcento, 2)
         decImpuesto = Math.Round(decImpuesto, 2)
         decTotal = Math.Round(decSubTotal + decImpuesto, 2)
-        decSaldoPorPagar = decTotal - decTotalPago
+        decSaldoPorPagar = decTotal - decMontoAdelanto
         txtSubTotal.Text = FormatNumber(decSubTotal + decDescuento, 2)
         txtDescuento.Text = FormatNumber(decDescuento, 2)
         txtImpuesto.Text = FormatNumber(decImpuesto, 2)
@@ -392,13 +392,13 @@ Public Class FrmOrdenServicio
     End Sub
 
     Private Sub CargarTotalesPago()
-        decTotalPago = 0
+        decMontoAdelanto = 0
         decPagoEfectivo = 0
         For I As Short = 0 To dtbDesglosePago.Rows.Count - 1
             If dtbDesglosePago.Rows(I).Item(0) = StaticFormaPago.Efectivo Then decPagoEfectivo = CDbl(dtbDesglosePago.Rows(I).Item(7))
-            decTotalPago = decTotalPago + CDbl(dtbDesglosePago.Rows(I).Item(7))
+            decMontoAdelanto = decMontoAdelanto + CDbl(dtbDesglosePago.Rows(I).Item(7))
         Next
-        decSaldoPorPagar = decTotal - decTotalPago
+        decSaldoPorPagar = decTotal - decMontoAdelanto
         txtMontoPago.Text = FormatNumber(decSaldoPorPagar, 2)
         txtSaldoPorPagar.Text = FormatNumber(decSaldoPorPagar, 2)
     End Sub
@@ -641,6 +641,7 @@ Public Class FrmOrdenServicio
         txtSubTotal.Text = FormatNumber(0, 2)
         txtImpuesto.Text = FormatNumber(0, 2)
         txtTotal.Text = FormatNumber(0, 2)
+        txtMontoAdelanto.Text = FormatNumber(0, 2)
         txtCodigo.Text = ""
         txtUnidad.Text = ""
         txtCantidad.Text = "1"
@@ -654,7 +655,7 @@ Public Class FrmOrdenServicio
         decSaldoPorPagar = 0
         txtSaldoPorPagar.Text = FormatNumber(decSaldoPorPagar, 2)
         decTotal = 0
-        decTotalPago = 0
+        decMontoAdelanto = 0
         decPagoEfectivo = 0
         btnInsertarPago.Enabled = True
         btnEliminarPago.Enabled = True
@@ -744,10 +745,11 @@ Public Class FrmOrdenServicio
                 End If
                 vendedor = ordenServicio.Vendedor
                 txtVendedor.Text = IIf(vendedor IsNot Nothing, vendedor.Nombre, "")
+                decMontoAdelanto = ordenServicio.MontoAdelanto
                 CargarDetalleOrdenServicio(ordenServicio)
                 CargarDesglosePago(ordenServicio)
                 CargarTotales()
-                CargarTotalesPago()
+                txtMontoAdelanto.Text = FormatNumber(decMontoAdelanto, 2)
                 decPagoCliente = ordenServicio.MontoPagado
                 cboTipoMoneda.Enabled = False
                 txtNombreCliente.ReadOnly = IIf(ordenServicio.IdCliente = 1, False, True)
@@ -895,7 +897,7 @@ Public Class FrmOrdenServicio
                 .Exonerado = decExonerado,
                 .Descuento = decDescuento,
                 .Impuesto = decImpuesto,
-                .MontoAdelanto = decTotalPago,
+                .MontoAdelanto = decMontoAdelanto,
                 .MontoPagado = decPagoCliente,
                 .Nulo = False
             }
@@ -995,7 +997,6 @@ Public Class FrmOrdenServicio
 
     Private Sub BtnImprimir_Click(sender As Object, e As EventArgs) Handles btnImprimir.Click
         If txtIdOrdenServicio.Text <> "" Then
-            Dim decTotal As Decimal = ordenServicio.Gravado + ordenServicio.Excento + ordenServicio.Exonerado + ordenServicio.Impuesto
             Try
                 comprobanteImpresion = New ModuloImpresion.ClsComprobante With {
                     .usuario = FrmPrincipal.usuarioGlobal,
@@ -1013,7 +1014,7 @@ Public Class FrmOrdenServicio
                     .strSubTotal = FormatNumber(ordenServicio.Gravado + ordenServicio.Excento + ordenServicio.Exonerado + ordenServicio.Descuento, 2),
                     .strDescuento = FormatNumber(ordenServicio.Descuento, 2),
                     .strImpuesto = FormatNumber(ordenServicio.Impuesto, 2),
-                    .strTotal = FormatNumber(decTotal, 2),
+                    .strTotal = FormatNumber(ordenServicio.Total, 2),
                     .strAdelanto = FormatNumber(ordenServicio.MontoAdelanto, 2),
                     .strSaldo = FormatNumber(decTotal - ordenServicio.MontoAdelanto, 2),
                     .strPagoCon = FormatNumber(decPagoCliente, 2),

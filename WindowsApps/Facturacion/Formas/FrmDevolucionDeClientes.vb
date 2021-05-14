@@ -344,54 +344,53 @@ Public Class FrmDevolucionDeClientes
     End Sub
 
     Private Async Sub BtnGuardar_Click(sender As Object, e As EventArgs) Handles btnGuardar.Click
-        If Not cliente Is Nothing And txtFecha.Text <> "" And Not factura Is Nothing And CDbl(txtTotal.Text) > 0 Then
-            btnGuardar.Enabled = False
-            If txtIdDevolucion.Text = "" Then
-                devolucion = New DevolucionCliente With {
-                    .IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa,
-                    .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
-                    .IdCliente = factura.IdCliente,
-                    .IdFactura = factura.IdFactura,
-                    .Detalle = txtDetalle.Text,
-                    .ConsecFactura = factura.ConsecFactura,
-                    .Fecha = Now(),
-                    .Excento = dblExcento,
-                    .Gravado = decGravado,
-                    .Impuesto = CDbl(txtImpuesto.Text)
-                }
-                For I As Short = 0 To dtbDetalleDevolucion.Rows.Count - 1
-                    If dtbDetalleDevolucion.Rows(I).Item(8) > 0 Then
-                        detalleDevolucion = New DetalleDevolucionCliente With {
-                            .IdProducto = dtbDetalleDevolucion.Rows(I).Item(0),
-                            .PrecioCosto = dtbDetalleDevolucion.Rows(I).Item(4),
-                            .PrecioVenta = dtbDetalleDevolucion.Rows(I).Item(5),
-                            .Excento = dtbDetalleDevolucion.Rows(I).Item(7),
-                            .Cantidad = dtbDetalleDevolucion.Rows(I).Item(8),
-                            .PorcentajeIVA = dtbDetalleDevolucion.Rows(I).Item(9)
-                        }
-                        devolucion.DetalleDevolucionCliente.Add(detalleDevolucion)
-                    End If
-                Next
-                Try
-                    txtIdDevolucion.Text = Await Puntoventa.AgregarDevolucionCliente(devolucion, FrmPrincipal.usuarioGlobal.Token)
-                Catch ex As Exception
-                    btnGuardar.Enabled = True
-                    txtIdDevolucion.Text = ""
-                    MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                    Exit Sub
-                End Try
-            End If
-            MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
-            grdDetalleDevolucion.ReadOnly = True
-            btnImprimir.Enabled = True
-            btnAgregar.Enabled = True
-            btnAnular.Enabled = FrmPrincipal.bolAnularTransacciones
-            btnImprimir.Focus()
-            btnGuardar.Enabled = False
-            btnBuscarFactura.Enabled = False
-        Else
+        If cliente Is Nothing Or txtFecha.Text = "" Or factura Is Nothing Or CDbl(txtTotal.Text) = 0 Then
             MessageBox.Show("Información incompleta.  Favor verificar. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            Exit Sub
         End If
+        btnGuardar.Enabled = False
+        If txtIdDevolucion.Text = "" Then
+            devolucion = New DevolucionCliente With {
+            .IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa,
+            .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
+            .IdCliente = factura.IdCliente,
+            .IdFactura = factura.IdFactura,
+            .Detalle = txtDetalle.Text,
+            .ConsecFactura = factura.ConsecFactura,
+            .Fecha = Now(),
+            .Excento = dblExcento,
+            .Gravado = decGravado,
+            .Impuesto = CDbl(txtImpuesto.Text)
+        }
+            For I As Short = 0 To dtbDetalleDevolucion.Rows.Count - 1
+                If dtbDetalleDevolucion.Rows(I).Item(8) > 0 Then
+                    detalleDevolucion = New DetalleDevolucionCliente With {
+                        .IdProducto = dtbDetalleDevolucion.Rows(I).Item(0),
+                        .PrecioCosto = dtbDetalleDevolucion.Rows(I).Item(4),
+                        .PrecioVenta = dtbDetalleDevolucion.Rows(I).Item(5),
+                        .Excento = dtbDetalleDevolucion.Rows(I).Item(7),
+                        .Cantidad = dtbDetalleDevolucion.Rows(I).Item(8),
+                        .PorcentajeIVA = dtbDetalleDevolucion.Rows(I).Item(9)
+                    }
+                    devolucion.DetalleDevolucionCliente.Add(detalleDevolucion)
+                End If
+            Next
+            Try
+                txtIdDevolucion.Text = Await Puntoventa.AgregarDevolucionCliente(devolucion, FrmPrincipal.usuarioGlobal.Token)
+            Catch ex As Exception
+                txtIdDevolucion.Text = ""
+                btnGuardar.Enabled = True
+                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Exit Sub
+            End Try
+        End If
+        MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        grdDetalleDevolucion.ReadOnly = True
+        btnImprimir.Enabled = True
+        btnAgregar.Enabled = True
+        btnAnular.Enabled = FrmPrincipal.bolAnularTransacciones
+        btnImprimir.Focus()
+        btnBuscarFactura.Enabled = False
     End Sub
 
     Private Sub BtnImprimir_Click(sender As Object, e As EventArgs) Handles btnImprimir.Click

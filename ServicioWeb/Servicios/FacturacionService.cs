@@ -810,6 +810,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     Factura factura = dbContext.FacturaRepository.Include("DetalleFactura.Producto").Include("DesglosePagoFactura").FirstOrDefault(x => x.IdFactura == intIdFactura);
                     if (factura.Nulo == true) throw new BusinessException("La factura ya ha sido anulada.");
+                    if (factura.Procesado == true) throw new BusinessException("La factura ya fue procesada en un cierre diario y no puede ser anulada.");
                     Empresa empresa = dbContext.EmpresaRepository.Find(factura.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (!empresa.PermiteFacturar) throw new BusinessException("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");

@@ -1609,6 +1609,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                             switch (intTarifa)
                                             {
                                                 case 0:
+                                                    decCompraServiciosExento += decMontoPorLinea;
                                                     break;
                                                 case 1:
                                                     decCompraServiciosTasa1 += decMontoPorLinea;
@@ -1634,6 +1635,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                             switch (intTarifa)
                                             {
                                                 case 0:
+                                                    decCompraBienesExento += decMontoPorLinea;
                                                     break;
                                                 case 1:
                                                     decCompraBienesTasa1 += decMontoPorLinea;

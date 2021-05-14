@@ -145,9 +145,11 @@ Public Class FrmDetalleTraslado
 
     Private Async Sub BtnAplicar_Click(sender As Object, e As EventArgs) Handles btnAplicar.Click
         If MessageBox.Show("Desea aplicar este registro de traslado?", "JLC Solutions CR", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
+            btnAplicar.Enabled = False
             Try
                 Await Puntoventa.AplicarTraslado(traslado.IdTraslado, FrmPrincipal.usuarioGlobal.IdUsuario, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
+                btnAplicar.Enabled = True
                 MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
