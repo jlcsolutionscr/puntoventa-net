@@ -1337,7 +1337,7 @@ Public Class FrmFactura
                     .strCantidad = CDbl(dtbDetalleFactura.Rows(I).Item(3)),
                     .strPrecio = FormatNumber(dtbDetalleFactura.Rows(I).Item(4), 2),
                     .strTotalLinea = FormatNumber(CDbl(dtbDetalleFactura.Rows(I).Item(3)) * CDbl(dtbDetalleFactura.Rows(I).Item(4)), 2),
-                    .strExcento = IIf(dtbDetalleFactura.Rows(I).Item(6) = 0, "G", "E")
+                    .strExcento = IIf(dtbDetalleFactura.Rows(I).Item(7) = 0, "G", "E")
                 }
                     arrDetalleFactura.Add(detalleComprobante)
                 Next
