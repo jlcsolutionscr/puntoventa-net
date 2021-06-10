@@ -5,6 +5,7 @@ import { roundNumber } from '../utils/formatHelper'
 export async function getCompanyIdentifiers(serviceURL, deviceId) {
   try {
     const endpoint = serviceURL + "/obtenerlistadoempresas?dispositivo=" + deviceId
+    console.log('endpoint', endpoint)
     const response = await getWithResponse(endpoint)
     if (response === null) return []
     return response
@@ -89,50 +90,6 @@ export async function getRentTypeList(serviceURL, token) {
   }
 }
 
-export async function getProvinciaList(serviceURL, token) {
-  try {
-    const data = "{NombreMetodo: 'ObtenerListadoProvincias'}"
-    const response = await postWithResponse(serviceURL + "/ejecutarconsulta", token, data)
-    if (response === null) return []
-    return response
-  } catch (e) {
-    throw e.message
-  }
-}
-
-export async function getCantonList(serviceURL, token, idProvincia) {
-  try {
-    const data = "{NombreMetodo: 'ObtenerListadoCantones', Parametros: {IdProvincia: " + idProvincia + "}}"
-    const response = await postWithResponse(serviceURL + "/ejecutarconsulta", token, data)
-    if (response === null) return []
-    return response
-  } catch (e) {
-    throw e.message
-  }
-}
-
-export async function getDistritoList(serviceURL, token, idProvincia, idCanton) {
-  try {
-    const data = "{NombreMetodo: 'ObtenerListadoDistritos', Parametros: {IdProvincia: " + idProvincia + ", IdCanton: " + idCanton + "}}"
-    const response = await postWithResponse(serviceURL + "/ejecutarconsulta", token, data)
-    if (response === null) return []
-    return response
-  } catch (e) {
-    throw e.message
-  }
-}
-
-export async function getBarrioList(serviceURL, token, idProvincia, idCanton, idDistrito) {
-  try {
-    const data = "{NombreMetodo: 'ObtenerListadoBarrios', Parametros: {IdProvincia: " + idProvincia + ", IdCanton: " + idCanton + ", IdDistrito: " + idDistrito + "}}"
-    const response = await postWithResponse(serviceURL + "/ejecutarconsulta", token, data)
-    if (response === null) return []
-    return response
-  } catch (e) {
-    throw e.message
-  }
-}
-
 export async function getPriceTypeList(serviceURL, token) {
   try {
     const data = "{NombreMetodo: 'ObtenerListadoTipodePrecio'}"
@@ -170,10 +127,13 @@ export async function saveCustomerEntity(serviceURL, token, customer) {
   try {
     const entidad = JSON.stringify(customer)
     let data = ""
-    if (customer.IdCliente)
+    if (customer.IdCliente) {
+      console.log('Actualizando cliente', entidad)
+
       data = "{NombreMetodo: 'ActualizarCliente', Entidad: " + entidad + "}"
-    else
+    } else {
       data = "{NombreMetodo: 'AgregarCliente', Entidad: " + entidad + "}"
+    }
     const response = await post(serviceURL + "/ejecutar", token, data)
     if (response === null) return null
     return response

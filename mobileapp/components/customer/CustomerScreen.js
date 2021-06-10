@@ -4,9 +4,6 @@ import { bindActionCreators } from 'redux'
 
 import {
   setParameters,
-  setNewCantonList,
-  setNewDistritoList,
-  setNewBarrioList,
   setCustomer,
   getCustomer,
   saveCustomerItem
@@ -34,10 +31,6 @@ class CustomerScreen extends Component {
       identificacion: '',
       nombreCliente: '',
       nombreComercial: '',
-      idProvincia: 0,
-      idCanton: 0,
-      idDistrito: 0,
-      idBarrio: 0,
       direccion: '',
       telefono: '',
       fax: '',
@@ -65,15 +58,12 @@ class CustomerScreen extends Component {
     const { customer } = this.props
     if (customer != null) {
       if (prevProps.customer == null || prevProps.customer.IdCliente != customer.IdCliente) {
+        console.log('customer', customer)
         this.setState({
           idtipoidentificacion: customer.IdTipoIdentificacion,
           identificacion: customer.Identificacion,
           nombreCliente: customer.Nombre,
           nombreComercial: customer.NombreComercial,
-          idProvincia: customer.IdProvincia,
-          idCanton: customer.IdCanton,
-          idDistrito: customer.IdDistrito,
-          idBarrio: customer.IdBarrio,
           direccion: customer.Direccion,
           telefono: customer.Telefono,
           fax: customer.Fax,
@@ -94,10 +84,6 @@ class CustomerScreen extends Component {
         identificacion: '',
         nombreCliente: '',
         nombreComercial: '',
-        idProvincia: 0,
-        idCanton: 0,
-        idDistrito: 0,
-        idBarrio: 0,
         direccion: '',
         telefono: '',
         fax: '',
@@ -119,10 +105,6 @@ class CustomerScreen extends Component {
       error,
       customerList,
       idTypeList,
-      provinciaList,
-      cantonList,
-      distritoList,
-      barrioList,
       priceTypeList,
       rentTypeList,
       exonerationTypeList
@@ -132,10 +114,6 @@ class CustomerScreen extends Component {
       identificacion,
       nombreCliente,
       nombreComercial,
-      idProvincia,
-      idCanton,
-      idDistrito,
-      idBarrio,
       direccion,
       telefono,
       fax,
@@ -154,18 +132,6 @@ class CustomerScreen extends Component {
     })
     const idTypeItems = idTypeList.map(item => {
       return { value: item.Id, label: item.Descripcion }
-    })
-    const provincias = provinciaList.map(item => {
-      return { id: item.Id, name: item.Descripcion }
-    })
-    const cantones = cantonList.map(item => {
-      return { id: item.Id, name: item.Descripcion }
-    })
-    const distritos = distritoList.map(item => {
-      return { id: item.Id, name: item.Descripcion }
-    })
-    const barrios = barrioList.map(item => {
-      return { id: item.Id, name: item.Descripcion }
     })
     const rentTypeItems = []
     rentTypeList.forEach(item => {
@@ -202,10 +168,6 @@ class CustomerScreen extends Component {
     }
     const buttonEnabled = identificacion != null &&
       nombreCliente != '' &&
-      idProvincia != null &&
-      idCanton != null &&
-      idDistrito != null &&
-      idBarrio != null &&
       direccion != '' &&
       telefono != '' &&
       correo != '' &&
@@ -249,30 +211,6 @@ class CustomerScreen extends Component {
             placeholder='Nombre comercial'
             value={nombreComercial}
             onChangeText={(nombreComercial) => this.setState({nombreComercial})}
-          />
-          <SearchableDropdown
-            label='Seleccione la provincia'
-            items={provincias}
-            selectedItemId={idProvincia}
-            onItemSelect={(item) => this.setSelectedProvincia(item)}
-          />
-          <SearchableDropdown
-            label='Seleccione el cantón'
-            items={cantones}
-            selectedItemId={idCanton}
-            onItemSelect={(item) => this.setSelectedCanton(item)}
-          />
-          <SearchableDropdown
-            label='Seleccione el distrito'
-            items={distritos}
-            selectedItemId={idDistrito}
-            onItemSelect={(item) => this.setSelectedDistrito(item)}
-          />
-          <SearchableDropdown
-            label='Seleccione el barrio'
-            items={barrios}
-            selectedItemId={idBarrio}
-            onItemSelect={(item) => this.setState({ idBarrio: item.id})}
           />
           <TextField
             label='Dirección'
@@ -358,39 +296,6 @@ class CustomerScreen extends Component {
     </View>)
   }
 
-  setSelectedProvincia (item) {
-    if (this.state.idProvincia != item.id) {
-      this.setState({
-        idProvincia: item.id,
-        idCanton: 1,
-        idDistrito: 1,
-        idBarrio: 1
-      })
-      this.props.setNewCantonList(item.id)
-    }
-  }
-
-  setSelectedCanton (item) {
-    if (this.state.idCanton != item.id) {
-      this.setState({
-        idCanton: item.id,
-        idDistrito: 1,
-        idBarrio: 1
-      })
-      this.props.setNewDistritoList(this.state.idProvincia, item.id)
-    }
-  }
-
-  setSelectedDistrito (item) {
-    if (this.state.idDistrito != item.id) {
-      this.setState({
-        idDistrito: item.id,
-        idBarrio: 1
-      })
-      this.props.setNewBarrioList(this.state.idProvincia, this.state.idCanton, item.id)
-    }
-  }
-
   handleCheckBoxChange () {
     this.setState({
       aplicaTarifaDif: !this.state.aplicaTarifaDif,
@@ -403,10 +308,6 @@ class CustomerScreen extends Component {
       identificacion,
       nombreCliente,
       nombreComercial,
-      idProvincia,
-      idCanton,
-      idDistrito,
-      idBarrio,
       direccion,
       telefono,
       fax,
@@ -425,10 +326,6 @@ class CustomerScreen extends Component {
       Identificacion: identificacion,
       Nombre: nombreCliente,
       NombreComercial: nombreComercial != null ? nombreComercial : '',
-      IdProvincia: idProvincia,
-      IdCanton: idCanton,
-      IdDistrito: idDistrito,
-      IdBarrio: idBarrio,
       Direccion: direccion,
       Telefono: telefono,
       Fax: fax != null ? fax : '',
@@ -460,10 +357,6 @@ const mapStateToProps = (state) => {
   return {
     customerList: state.customer.customerList,
     idTypeList: state.customer.idTypeList,
-    provinciaList: state.customer.provinciaList,
-    cantonList: state.customer.cantonList,
-    distritoList: state.customer.distritoList,
-    barrioList: state.customer.barrioList,
     priceTypeList: state.customer.priceTypeList,
     rentTypeList: state.customer.rentTypeList,
     exonerationTypeList: state.customer.exonerationTypeList,
@@ -475,9 +368,6 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({
     setParameters,
-    setNewCantonList,
-    setNewDistritoList,
-    setNewBarrioList,
     getCustomer,
     setCustomer,
     saveCustomerItem

@@ -32,7 +32,8 @@ class ProductScreen extends Component {
       precioVenta4: 0,
       precioVenta5: 0,
       idImpuesto: 8,
-      observacion: ''
+      observacion: '',
+      codigoClasificacion: ''
     }
   }
 
@@ -62,7 +63,8 @@ class ProductScreen extends Component {
           precioVenta4: product.PrecioVenta4,
           precioVenta5: product.PrecioVenta5,
           idImpuesto: product.IdImpuesto,
-          observacion: product.Observacion
+          observacion: product.Observacion,
+          codigoClasificacion: product.CodigoClasificacion
         })
       }
     } else if (prevProps.product != null) {
@@ -80,7 +82,8 @@ class ProductScreen extends Component {
         precioVenta4: 0,
         precioVenta5: 0,
         idImpuesto: 8,
-        observacion: ''
+        observacion: '',
+        codigoClasificacion: ''
       }
     }
   }
@@ -101,7 +104,8 @@ class ProductScreen extends Component {
       precioVenta4,
       precioVenta5,
       idImpuesto,
-      observacion
+      observacion,
+      codigoClasificacion
     } = this.state
     const products = productList.map(item => {
       return { id: item.Id, name: item.Descripcion }
@@ -163,6 +167,11 @@ class ProductScreen extends Component {
             label='Código proveedor del producto'
             value={codigoProveedor}
             onChangeText={(value) => this.handleOnChange({codigoProveedor: value})}
+          />
+          <TextField
+            label='Código CABIS del producto'
+            value={codigoClasificacion}
+            onChangeText={(value) => this.handleOnChange({codigoClasificacion: value})}
           />
           <TextField
             label='Descripción del producto'
@@ -253,7 +262,8 @@ class ProductScreen extends Component {
       precioVenta4,
       precioVenta5,
       idImpuesto,
-      observacion
+      observacion,
+      codigoClasificacion
     } = this.state
     const product = {
       Tipo: tipo,
@@ -272,7 +282,8 @@ class ProductScreen extends Component {
       Observacion: observacion,
       IndExistencia: 0,
       Imagen: null,
-      Activo: true
+      Activo: true,
+      CodigoClasificacion: codigoClasificacion
     }
     if (this.props.product) {
       product.IdProducto = this.props.product.IdProducto
