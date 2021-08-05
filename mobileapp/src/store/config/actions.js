@@ -89,8 +89,13 @@ export function validateAppState () {
     try {
       const metadata = await getAppstoreAppMetadata("com.jlcfacturacion")
       const deviceId = await DeviceInfo.getAndroidId()
-      const currentVersion = await DeviceInfo.getVersion()
-      if (metadata.version !== currentVersion) {
+      const currentVersion = await DeviceInfo.getVersion().split(".").reduce((sum, value, index) => {
+        return sum + (value * parseInt("1".padEnd(3 - index)))
+      })
+      const metadataVersion = metadata.version.split(".").reduce((sum, value, index) => {
+        return sum + (value * (100 - (10 * index)))
+      })
+      if (metadataVersion > currentVersion) {
         dispatch(setAppReady(deviceId, 'outdated'))
       } else {
         const identifierList = await getCompanyIdentifiers(serviceURL, deviceId)

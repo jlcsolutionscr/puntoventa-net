@@ -5713,10 +5713,10 @@ react-native-config@1.4.2:
   resolved "https://registry.npmjs.org/react-native-config/-/react-native-config-1.4.2.tgz"
   integrity sha512-iTvCvThvFTH7SdiBcsxYtpLy86zglsh51ZBqFPPZ75tdrQMdlRnDNnb86kNjQf03KT0qs1nCMLRejfPMIim8iA==
 
-react-native-device-info@8.1.5:
-  version "8.1.5"
-  resolved "https://registry.npmjs.org/react-native-device-info/-/react-native-device-info-8.1.5.tgz"
-  integrity sha512-w92x+FGIZdzEmU4SN+Zr+0zESubKb+zWRmHFECr0l+AtQlOZZ6AvO9WNwe2RBGpPkOUf54d7k8D0YgGvnRGIdQ==
+react-native-device-info@5.3.0:
+  version "5.3.0"
+  resolved "https://registry.yarnpkg.com/react-native-device-info/-/react-native-device-info-5.3.0.tgz#ca0386310f59ccce458e1cea39b9f5b8f8d02098"
+  integrity sha512-1WzER5Hck83b5sF850uPt71RXNI56di1aikoBqdauQid5PsKmvambDl2zIflCE1AkMFEv9HmfPYpCOWop0ZkPw==
 
 react-native-gesture-handler@1.10.3:
   version "1.10.3"
