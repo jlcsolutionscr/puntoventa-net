@@ -2,15 +2,12 @@ package com.jlcfacturacion;
 
 import android.app.Application;
 import android.content.Context;
-import android.util.Log;
 import com.facebook.react.PackageList;
-import com.facebook.hermes.reactexecutor.HermesExecutorFactory;
-import com.facebook.react.bridge.JavaScriptExecutorFactory;
 import com.facebook.react.ReactApplication;
+import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.soloader.SoLoader;
-import com.facebook.react.modules.network.OkHttpClientProvider;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
@@ -46,9 +43,6 @@ public class MainApplication extends Application implements ReactApplication {
   @Override
   public void onCreate() {
     super.onCreate();
-    if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.O) {
-      OkHttpClientProvider.setOkHttpClientFactory(new CustomClientFactory(this.getResources()));
-    }
     SoLoader.init(this, /* native exopackage */ false);
     initializeFlipper(this); // Remove this line if you don't want Flipper enabled
   }
