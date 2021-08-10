@@ -202,7 +202,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
         {
             try
             {
-                IList<LlaveDescripcion> listadoEmpresas = servicioMantenimiento.ObtenerListadoRolePorEmpresa(intIdEmpresa);
+                IList<LlaveDescripcion> listadoEmpresas = servicioMantenimiento.ObtenerListadoRolePorEmpresa(intIdEmpresa, true);
                 string strRespuesta = "";
                 if (listadoEmpresas.Count > 0)
                     strRespuesta = serializer.Serialize(listadoEmpresas);

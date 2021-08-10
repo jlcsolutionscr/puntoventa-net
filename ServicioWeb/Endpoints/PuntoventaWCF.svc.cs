@@ -280,6 +280,23 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             }
         }
 
+        public string ValidarCredencialesWeb(string strUsuario, string strClave, string strIdentificacion)
+        {
+            try
+            {
+                string strClaveFormateada = strClave.Replace(" ", "+");
+                Usuario usuario = servicioMantenimiento.ValidarCredenciales(strUsuario, strClaveFormateada, strIdentificacion);
+                string strRespuesta = "";
+                if (usuario != null)
+                    strRespuesta = serializer.Serialize(usuario);
+                return strRespuesta;
+            }
+            catch (Exception ex)
+            {
+                throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
+            }
+        }
+
         public string ObtenerListadoTerminalesDisponibles(string strUsuario, string strClave, string strIdentificacion, int intTipoDispositivo)
         {
             try
@@ -696,6 +713,40 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         strFormatoReporte = parametrosJO.Property("FormatoReporte").Value.ToString();
                         servicioReportes.EnviarReporteResumenMovimientosElectronicos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, strFormatoReporte, servicioEnvioCorreo);
                         break;
+                    case "EnviarReportePorCorreoElectronico":
+                        intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
+                        intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
+                        string strNombreReporte = parametrosJO.Property("NombreReporte").Value.ToString();
+                        strFechaInicial = parametrosJO.Property("FechaInicial").Value.ToString();
+                        strFechaFinal = parametrosJO.Property("FechaFinal").Value.ToString();
+                        strFormatoReporte = parametrosJO.Property("FormatoReporte").Value.ToString();
+                        switch (strNombreReporte)
+                        {
+                            case "Ventas en general":
+                                servicioReportes.EnviarReporteVentasGenerales(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, strFormatoReporte, servicioEnvioCorreo);
+                                break;
+                            case "Ventas anuladas":
+                                servicioReportes.EnviarReporteVentasAnuladas(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, strFormatoReporte, servicioEnvioCorreo);
+                                break;
+                            case "Resumen de movimientos":
+                                servicioReportes.EnviarReporteResumenMovimientos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, strFormatoReporte, servicioEnvioCorreo);
+                                break;
+                            case "Detalle de egresos":
+                                servicioReportes.EnviarReporteDetalleEgresos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, strFormatoReporte, servicioEnvioCorreo);
+                                break;
+                            case "Documentos electrónicos emitidos":
+                                servicioReportes.EnviarReporteDocumentosEmitidos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, strFormatoReporte, servicioEnvioCorreo);
+                                break;
+                            case "Documentos electrónicos recibidos":
+                                servicioReportes.EnviarReporteDocumentosRecibidos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, strFormatoReporte, servicioEnvioCorreo);
+                                break;
+                            case "Resumen de comprobantes electrónicos":
+                                servicioReportes.EnviarReporteResumenMovimientosElectronicos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, strFormatoReporte, servicioEnvioCorreo);
+                                break;
+                            default:
+                                throw new Exception("El método solicitado: '" + strNombreReporte + "' no ha sido implementado, contacte con su proveedor");
+                        }
+                        break;
                     default:
                         throw new Exception("El método solicitado no ha sido implementado: " + strNombreMetodo);
                 }
@@ -780,7 +831,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         break;
                     case "ObtenerListadoRolesPorEmpresa":
                         intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
-                        IList<LlaveDescripcion> listadoRoles = servicioMantenimiento.ObtenerListadoRolePorEmpresa(intIdEmpresa);
+                        IList<LlaveDescripcion> listadoRoles = servicioMantenimiento.ObtenerListadoRolePorEmpresa(intIdEmpresa, false);
                         if (listadoRoles.Count > 0)
                             strRespuesta = serializer.Serialize(listadoRoles);
                         break;

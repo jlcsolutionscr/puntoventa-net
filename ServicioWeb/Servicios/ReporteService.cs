@@ -1826,7 +1826,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     parameters[1] = new ReportParameter("pEmpresa", strNombreEmpresa);
                     parameters[2] = new ReportParameter("pNombreReporte", "Reporte de Ventas Generales");
                     parameters[3] = new ReportParameter("pFechaDesde", strFechaInicial);
-                    parameters[4] = new ReportParameter("pFechaHasta", strFechaInicial);
+                    parameters[4] = new ReportParameter("pFechaHasta", strFechaFinal);
                     byte[] bytes = GenerarContenidoReporte(strFormatoReporte, strPlantillaReporte, rds, parameters);
                     if (bytes.Length > 0)
                     {
@@ -1864,7 +1864,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     parameters[1] = new ReportParameter("pEmpresa", strNombreEmpresa);
                     parameters[2] = new ReportParameter("pNombreReporte", "Reporte de Ventas Anuladas");
                     parameters[3] = new ReportParameter("pFechaDesde", strFechaInicial);
-                    parameters[4] = new ReportParameter("pFechaHasta", strFechaInicial);
+                    parameters[4] = new ReportParameter("pFechaHasta", strFechaFinal);
                     byte[] bytes = GenerarContenidoReporte(strFormatoReporte, strPlantillaReporte, rds, parameters);
                     if (bytes.Length > 0)
                     {
@@ -1901,7 +1901,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     parameters[0] = new ReportParameter("pUsuario", "SYSTEM");
                     parameters[1] = new ReportParameter("pEmpresa", strNombreEmpresa);
                     parameters[2] = new ReportParameter("pFechaDesde", strFechaInicial);
-                    parameters[3] = new ReportParameter("pFechaHasta", strFechaInicial);
+                    parameters[3] = new ReportParameter("pFechaHasta", strFechaFinal);
                     byte[] bytes = GenerarContenidoReporte(strFormatoReporte, strPlantillaReporte, rds, parameters);
                     if (bytes.Length > 0)
                     {
@@ -1938,7 +1938,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     parameters[0] = new ReportParameter("pUsuario", "SYSTEM");
                     parameters[1] = new ReportParameter("pEmpresa", strNombreEmpresa);
                     parameters[2] = new ReportParameter("pFechaDesde", strFechaInicial);
-                    parameters[3] = new ReportParameter("pFechaHasta", strFechaInicial);
+                    parameters[3] = new ReportParameter("pFechaHasta", strFechaFinal);
                     byte[] bytes = GenerarContenidoReporte(strFormatoReporte, strPlantillaReporte, rds, parameters);
                     if (bytes.Length > 0)
                     {
@@ -1976,7 +1976,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     parameters[1] = new ReportParameter("pEmpresa", strNombreEmpresa);
                     parameters[2] = new ReportParameter("pNombreReporte", "Listado de Facturas Electrónicas Emitidas");
                     parameters[3] = new ReportParameter("pFechaDesde", strFechaInicial);
-                    parameters[4] = new ReportParameter("pFechaHasta", strFechaInicial);
+                    parameters[4] = new ReportParameter("pFechaHasta", strFechaFinal);
                     byte[] bytes = GenerarContenidoReporte(strFormatoReporte, strPlantillaReporte, rds, parameters);
                     if (bytes.Length > 0)
                     {
@@ -2014,7 +2014,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     parameters[1] = new ReportParameter("pEmpresa", strNombreEmpresa);
                     parameters[2] = new ReportParameter("pNombreReporte", "Listado de Facturas Electrónicas Recibidas");
                     parameters[3] = new ReportParameter("pFechaDesde", strFechaInicial);
-                    parameters[4] = new ReportParameter("pFechaHasta", strFechaInicial);
+                    parameters[4] = new ReportParameter("pFechaHasta", strFechaFinal);
                     byte[] bytes = GenerarContenidoReporte(strFormatoReporte, strPlantillaReporte, rds, parameters);
                     if (bytes.Length > 0)
                     {
@@ -2051,7 +2051,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     parameters[0] = new ReportParameter("pUsuario", "SYSTEM");
                     parameters[1] = new ReportParameter("pEmpresa", strNombreEmpresa);
                     parameters[2] = new ReportParameter("pFechaDesde", strFechaInicial);
-                    parameters[3] = new ReportParameter("pFechaHasta", strFechaInicial);
+                    parameters[3] = new ReportParameter("pFechaHasta", strFechaFinal);
                     byte[] bytes = GenerarContenidoReporte(strFormatoReporte, strPlantillaReporte, rds, parameters);
                     if (bytes.Length > 0)
                     {

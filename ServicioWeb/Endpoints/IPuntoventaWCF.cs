@@ -32,6 +32,10 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
         string ValidarCredenciales(string usuario, string clave, int id, string dispositivo);
 
         [OperationContract]
+        [WebGet(UriTemplate = "validarcredencialesweb?usuario={usuario}&clave={clave}&identificacion={identificacion}", ResponseFormat = WebMessageFormat.Json)]
+        string ValidarCredencialesWeb(string usuario, string clave, string identificacion);
+
+        [OperationContract]
         [WebGet(UriTemplate = "obtenerlistadoterminalesdisponibles?usuario={usuario}&clave={clave}&id={id}&tipodispositivo={tipo}", ResponseFormat = WebMessageFormat.Json)]
         string ObtenerListadoTerminalesDisponibles(string usuario, string clave, string id, int tipo);
 

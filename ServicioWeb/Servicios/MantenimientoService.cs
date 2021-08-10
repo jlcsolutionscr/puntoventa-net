@@ -37,7 +37,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         Empresa ObtenerEmpresa(int intIdEmpresa);
         void ActualizarEmpresa(Empresa empresa);
         List<LlaveDescripcion> ObtenerListadoReportePorEmpresa(int intIdEmpresa);
-        List<LlaveDescripcion> ObtenerListadoRolePorEmpresa(int intIdEmpresa);
+        List<LlaveDescripcion> ObtenerListadoRolePorEmpresa(int intIdEmpresa, bool bolAdministrator);
         void ActualizarReportePorEmpresa(int intIdEmpresa, List<ReportePorEmpresa> listado);
         void ActualizarRolePorEmpresa(int intIdEmpresa, List<RolePorEmpresa> listado);
         string ObtenerLogotipoEmpresa(int intIdEmpresa);
@@ -452,6 +452,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
+                    Empresa empresa = dbContext.EmpresaRepository.Include("ReportePorEmpresa.CatalogoReporte").Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.IdEmpresa == intIdEmpresa);
                     Usuario usuario = null;
                     UsuarioPorEmpresa usuarioEmpresa = null;
                     if (strUsuario.ToUpper() == "ADMIN")
@@ -461,15 +462,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     else
                     {
+                        if (!empresa.PermiteFacturar) throw new BusinessException("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
+                        if (empresa.FechaVence < DateTime.Today) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
+                        if (empresa.TipoContrato == 2 && empresa.CantidadDisponible == 0) throw new BusinessException("El disponible de documentos electrónicos fue agotado. Por favor, pongase en contacto con su proveedor del servicio.");
                         usuarioEmpresa = dbContext.UsuarioPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.Usuario.CodigoUsuario == strUsuario.ToUpper());
                         if (usuarioEmpresa == null) throw new BusinessException("Usuario no registrado en la empresa suministrada. Por favor verifique la información suministrada.");
                         usuario = dbContext.UsuarioRepository.Include("RolePorUsuario.Role").FirstOrDefault(x => x.IdUsuario == usuarioEmpresa.IdUsuario);
                     }
                     if (usuario.Clave != strClave) throw new BusinessException("Los credenciales suministrados no son válidos. Verifique los credenciales suministrados.");
-                    Empresa empresa = dbContext.EmpresaRepository.Include("ReportePorEmpresa.CatalogoReporte").Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.IdEmpresa == intIdEmpresa);
-                    if (!empresa.PermiteFacturar) throw new BusinessException("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.FechaVence < DateTime.Today) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
-                    if (empresa.TipoContrato == 2 && empresa.CantidadDisponible == 0) throw new BusinessException("El disponible de documentos electrónicos fue agotado. Por favor, pongase en contacto con su proveedor del servicio.");
                     TerminalPorSucursal terminal = null;
                     SucursalPorEmpresa sucursal = null;
                     if (strUsuario.ToUpper() == "ADMIN")
@@ -785,14 +785,15 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public List<LlaveDescripcion> ObtenerListadoRolePorEmpresa(int intIdEmpresa)
+        public List<LlaveDescripcion> ObtenerListadoRolePorEmpresa(int intIdEmpresa, bool bolAdministrator)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 var listaRoles = new List<LlaveDescripcion>();
                 try
                 {
-                    var listado = dbContext.RolePorEmpresaRepository.Include("Role").Where(x => x.IdEmpresa == intIdEmpresa && x.IdRole > 2);
+                    var intIdLowerRole = bolAdministrator ? 0 : 2;
+                    var listado = dbContext.RolePorEmpresaRepository.Include("Role").Where(x => x.IdEmpresa == intIdEmpresa && x.IdRole > intIdLowerRole);
                     foreach (var value in listado)
                     {
                         LlaveDescripcion item = new LlaveDescripcion(value.IdRole, value.Role.Descripcion);
@@ -1691,13 +1692,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    Empresa empresa = dbContext.EmpresaRepository.Find(producto.IdEmpresa);
-                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     bool existe = dbContext.ProductoRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.Codigo == producto.Codigo).Count() > 0;
                     if (existe) throw new BusinessException("El código de producto ingresado ya está registrado en la empresa.");
-                    if (producto.Tipo == 4)
+                    if (producto.Tipo == StaticTipoProducto.Transitorio)
                     {
-                        bool transitorio = dbContext.ProductoRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.Tipo == 4).Count() > 0;
+                        bool transitorio = dbContext.ProductoRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.Tipo == StaticTipoProducto.Transitorio).Count() > 0;
                         if (transitorio) throw new BusinessException("Ya existe un producto de tipo 'Transitorio' registrado en la empresa.");
                     }
                     dbContext.ProductoRepository.Add(producto);
@@ -1723,13 +1722,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    Empresa empresa = dbContext.EmpresaRepository.Find(producto.IdEmpresa);
-                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     bool existe = dbContext.ProductoRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto != producto.IdProducto && x.Codigo == producto.Codigo).Count() > 0;
                     if (existe) throw new BusinessException("El código del producto ingresado ya está registrado en la empresa.");
-                    if (producto.Tipo == 4)
+                    if (producto.Tipo == StaticTipoProducto.Transitorio)
                     {
-                        bool transitorio = dbContext.ProductoRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto != producto.IdProducto && x.Tipo == 4).Count() > 0;
+                        bool transitorio = dbContext.ProductoRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto != producto.IdProducto && x.Tipo == StaticTipoProducto.Transitorio).Count() > 0;
                         if (transitorio) throw new BusinessException("Ya existe un producto de tipo 'Transitorio' registrado en la empresa.");
                     }
                     if (producto.Imagen == null)
@@ -1805,8 +1802,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     Producto producto = dbContext.ProductoRepository.Find(intIdProducto);
                     if (producto == null) throw new BusinessException("El producto por eliminar no existe.");
-                    Empresa empresa = dbContext.EmpresaRepository.Find(producto.IdEmpresa);
-                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     dbContext.ProductoRepository.Remove(producto);
                     dbContext.Commit();
                 }
