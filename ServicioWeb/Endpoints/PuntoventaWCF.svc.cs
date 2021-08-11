@@ -657,62 +657,6 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         intIdLlave1 = int.Parse(parametrosJO.Property("IdDocumento").Value.ToString());
                         servicioFacturacion.ReprocesarDocumentoElectronico(intIdLlave1, configuracionGeneral);
                         break;
-                    case "EnviarReporteVentasGenerales":
-                        intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
-                        intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
-                        strFechaInicial = parametrosJO.Property("FechaInicial").Value.ToString();
-                        strFechaFinal = parametrosJO.Property("FechaFinal").Value.ToString();
-                        strFormatoReporte = parametrosJO.Property("FormatoReporte").Value.ToString();
-                        servicioReportes.EnviarReporteVentasGenerales(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, strFormatoReporte, servicioEnvioCorreo);
-                        break;
-                    case "EnviarReporteVentasAnuladas":
-                        intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
-                        intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
-                        strFechaInicial = parametrosJO.Property("FechaInicial").Value.ToString();
-                        strFechaFinal = parametrosJO.Property("FechaFinal").Value.ToString();
-                        strFormatoReporte = parametrosJO.Property("FormatoReporte").Value.ToString();
-                        servicioReportes.EnviarReporteVentasAnuladas(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, strFormatoReporte, servicioEnvioCorreo);
-                        break;
-                    case "EnviarReporteResumenMovimientos":
-                        intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
-                        intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
-                        strFechaInicial = parametrosJO.Property("FechaInicial").Value.ToString();
-                        strFechaFinal = parametrosJO.Property("FechaFinal").Value.ToString();
-                        strFormatoReporte = parametrosJO.Property("FormatoReporte").Value.ToString();
-                        servicioReportes.EnviarReporteResumenMovimientos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, strFormatoReporte, servicioEnvioCorreo);
-                        break;
-                    case "EnviarReporteDetalleEgresos":
-                        intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
-                        intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
-                        strFechaInicial = parametrosJO.Property("FechaInicial").Value.ToString();
-                        strFechaFinal = parametrosJO.Property("FechaFinal").Value.ToString();
-                        strFormatoReporte = parametrosJO.Property("FormatoReporte").Value.ToString();
-                        servicioReportes.EnviarReporteDetalleEgresos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, strFormatoReporte, servicioEnvioCorreo);
-                        break;
-                    case "EnviarReporteDocumentosEmitidos":
-                        intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
-                        intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
-                        strFechaInicial = parametrosJO.Property("FechaInicial").Value.ToString();
-                        strFechaFinal = parametrosJO.Property("FechaFinal").Value.ToString();
-                        strFormatoReporte = parametrosJO.Property("FormatoReporte").Value.ToString();
-                        servicioReportes.EnviarReporteDocumentosEmitidos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, strFormatoReporte, servicioEnvioCorreo);
-                        break;
-                    case "EnviarReporteDocumentosRecibidos":
-                        intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
-                        intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
-                        strFechaInicial = parametrosJO.Property("FechaInicial").Value.ToString();
-                        strFechaFinal = parametrosJO.Property("FechaFinal").Value.ToString();
-                        strFormatoReporte = parametrosJO.Property("FormatoReporte").Value.ToString();
-                        servicioReportes.EnviarReporteDocumentosRecibidos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, strFormatoReporte, servicioEnvioCorreo);
-                        break;
-                    case "EnviarReporteResumenMovimientosElectronicos":
-                        intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
-                        intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
-                        strFechaInicial = parametrosJO.Property("FechaInicial").Value.ToString();
-                        strFechaFinal = parametrosJO.Property("FechaFinal").Value.ToString();
-                        strFormatoReporte = parametrosJO.Property("FormatoReporte").Value.ToString();
-                        servicioReportes.EnviarReporteResumenMovimientosElectronicos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, strFormatoReporte, servicioEnvioCorreo);
-                        break;
                     case "EnviarReportePorCorreoElectronico":
                         intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                         intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
@@ -2010,6 +1954,37 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         cierre = servicioFlujoCaja.ObtenerCierreCaja(intIdLlave1);
                         if (cierre != null)
                             strRespuesta = serializer.Serialize(cierre);
+                        break;
+                    case "ObtenerDatosReporte":
+                        intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
+                        intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
+                        int intTipoReporte = int.Parse(parametrosJO.Property("TipoReporte").Value.ToString());
+                        strFechaInicial = parametrosJO.Property("FechaInicial").Value.ToString();
+                        strFechaFinal = parametrosJO.Property("FechaFinal").Value.ToString();
+                        switch (intTipoReporte)
+                        {
+                            case 1:
+                                {
+                                    List<ReporteDocumentoElectronico> listado = servicioReportes.ObtenerReporteDocumentosElectronicosEmitidos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal);
+                                    if (listado.Count > 0)
+                                        strRespuesta = serializer.Serialize(listado);
+                                    break;
+                                }
+                            case 2:
+                                {
+                                    List<ReporteDocumentoElectronico> listado = servicioReportes.ObtenerReporteDocumentosElectronicosRecibidos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal);
+                                    if (listado.Count > 0)
+                                        strRespuesta = serializer.Serialize(listado);
+                                    break;
+                                }
+                            case 3:
+                                {
+                                    List<ReporteResumenMovimiento> listado = servicioReportes.ObtenerReporteResumenDocumentosElectronicos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal);
+                                    if (listado.Count > 0)
+                                        strRespuesta = serializer.Serialize(listado);
+                                    break;
+                                }
+                        }
                         break;
                     default:
                         throw new Exception("El método solicitado no ha sido implementado: " + strNombreMetodo);

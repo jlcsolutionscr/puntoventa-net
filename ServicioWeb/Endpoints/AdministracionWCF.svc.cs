@@ -85,23 +85,6 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             }
         }
 
-        public string ValidarCredenciales(string strUsuario, string strClave, string id)
-        {
-            try
-            {
-                string strClaveFormateada = strClave.Replace(" ", "+");
-                Usuario usuario = servicioMantenimiento.ValidarCredenciales(strUsuario, strClaveFormateada, id);
-                string strRespuesta = "";
-                if (usuario != null)
-                    strRespuesta = serializer.Serialize(usuario);
-                return strRespuesta;
-            }
-            catch (Exception ex)
-            {
-                throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
-            }
-        }
-
         public string ObtenerListadoEmpresa()
         {
             try

@@ -422,6 +422,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     usuarioEmpresa.Usuario = null;
                     Empresa refEmpresa = new Empresa();
                     refEmpresa.NombreEmpresa = empresa.NombreEmpresa;
+                    refEmpresa.NombreComercial = empresa.NombreComercial;
                     refEmpresa.Identificacion = empresa.Identificacion;
                     usuarioEmpresa.Empresa = refEmpresa;
                     usuario.UsuarioPorEmpresa.Add(usuarioEmpresa);
