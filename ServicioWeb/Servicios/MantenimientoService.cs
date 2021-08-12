@@ -1693,8 +1693,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    bool existe = dbContext.ProductoRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.Codigo == producto.Codigo).Count() > 0;
-                    if (existe) throw new BusinessException("El código de producto ingresado ya está registrado en la empresa.");
+                    bool existe = dbContext.ProductoRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && (x.Codigo == producto.Codigo || x.CodigoProveedor == producto.CodigoProveedor)).Count() > 0;
+                    if (existe) throw new BusinessException("El código o código de proveedor de producto ingresado ya está registrado en la empresa.");
                     if (producto.Tipo == StaticTipoProducto.Transitorio)
                     {
                         bool transitorio = dbContext.ProductoRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.Tipo == StaticTipoProducto.Transitorio).Count() > 0;
@@ -1723,8 +1723,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    bool existe = dbContext.ProductoRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto != producto.IdProducto && x.Codigo == producto.Codigo).Count() > 0;
-                    if (existe) throw new BusinessException("El código del producto ingresado ya está registrado en la empresa.");
+                    bool existe = dbContext.ProductoRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto != producto.IdProducto && (x.Codigo == producto.Codigo || x.CodigoProveedor == producto.CodigoProveedor)).Count() > 0;
+                    if (existe) throw new BusinessException("El código o código de proveedor del producto ingresado ya está registrado en la empresa.");
                     if (producto.Tipo == StaticTipoProducto.Transitorio)
                     {
                         bool transitorio = dbContext.ProductoRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto != producto.IdProducto && x.Tipo == StaticTipoProducto.Transitorio).Count() > 0;
