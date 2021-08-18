@@ -110,14 +110,14 @@ Public Class FrmFactura
         grdDetalleFactura.Columns.Add(dvcCantidad)
 
         dvcPorcDescuento.DataPropertyName = "PORCDESCUENTO"
-        dvcPorcDescuento.HeaderText = "Desc"
+        dvcPorcDescuento.HeaderText = "% Des"
         dvcPorcDescuento.Width = 40
         dvcPorcDescuento.SortMode = DataGridViewColumnSortMode.NotSortable
         dvcPorcDescuento.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleFactura.Columns.Add(dvcPorcDescuento)
 
         dvcDescuento.DataPropertyName = "VALORDESCUENTO"
-        dvcDescuento.HeaderText = "Desc"
+        dvcDescuento.HeaderText = "Desc/U"
         dvcDescuento.Width = 75
         dvcDescuento.ReadOnly = True
         dvcDescuento.SortMode = DataGridViewColumnSortMode.NotSortable
@@ -459,7 +459,7 @@ Public Class FrmFactura
                 decExcento += Math.Round(dtbDetalleFactura.Rows(I).Item(4) * dtbDetalleFactura.Rows(I).Item(3), 2)
             End If
             decTotalCosto += dtbDetalleFactura.Rows(I).Item(7) * dtbDetalleFactura.Rows(I).Item(3)
-            decDescuento += dtbDetalleFactura.Rows(I).Item(11)
+            decDescuento += dtbDetalleFactura.Rows(I).Item(11) * dtbDetalleFactura.Rows(I).Item(3)
         Next
         decSubTotal = decGravado + decExcento + decExonerado
         decDescuento = Math.Round(decDescuento, 2)

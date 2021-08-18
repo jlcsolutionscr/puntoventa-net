@@ -106,14 +106,14 @@ Public Class FrmOrdenServicio
         grdDetalleOrdenServicio.Columns.Add(dvcCantidad)
 
         dvcPorcDescuento.DataPropertyName = "PORCDESCUENTO"
-        dvcPorcDescuento.HeaderText = "Desc"
+        dvcPorcDescuento.HeaderText = "% Desc"
         dvcPorcDescuento.Width = 40
         dvcPorcDescuento.SortMode = DataGridViewColumnSortMode.NotSortable
         dvcPorcDescuento.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleOrdenServicio.Columns.Add(dvcPorcDescuento)
 
         dvcDescuento.DataPropertyName = "VALORDESCUENTO"
-        dvcDescuento.HeaderText = "Desc"
+        dvcDescuento.HeaderText = "Desc/U"
         dvcDescuento.Width = 75
         dvcDescuento.ReadOnly = True
         dvcDescuento.SortMode = DataGridViewColumnSortMode.NotSortable
@@ -373,7 +373,7 @@ Public Class FrmOrdenServicio
             Else
                 decExcento += Math.Round(dtbDetalleOrdenServicio.Rows(I).Item(4) * dtbDetalleOrdenServicio.Rows(I).Item(3), 2)
             End If
-            decDescuento += dtbDetalleOrdenServicio.Rows(I).Item(10)
+            decDescuento += dtbDetalleOrdenServicio.Rows(I).Item(10) * dtbDetalleOrdenServicio.Rows(I).Item(3)
         Next
         decSubTotal = decGravado + decExcento + decExonerado
         decDescuento = Math.Round(decDescuento, 2)
@@ -1027,7 +1027,7 @@ Public Class FrmOrdenServicio
                         .strCantidad = item.Cantidad,
                         .strPrecio = FormatNumber(item.PrecioVenta, 2),
                         .strTotalLinea = FormatNumber(item.PrecioVenta * item.Cantidad, 2),
-                        .strExcento = IIf(item.Excento, "G", "E")
+                        .strExcento = IIf(item.Excento, "E", "G")
                     }
                     arrDetalleOrden.Add(detalleComprobante)
                 Next

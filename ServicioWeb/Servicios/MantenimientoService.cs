@@ -741,6 +741,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     empresa.Barrio = null;
                     if (noTracking != null && noTracking.Certificado != null) empresa.Certificado = noTracking.Certificado;
                     if (noTracking != null && noTracking.Logotipo != null) empresa.Logotipo = noTracking.Logotipo;
+                    if (empresa.PinCertificado != noTracking.PinCertificado && empresa.Certificado != null)
+                    {
+                        ComprobanteElectronicoService.ValidarCertificado(empresa.PinCertificado, empresa.Certificado);
+                    }
                     dbContext.NotificarModificacion(empresa);
                     dbContext.Commit();
                 }

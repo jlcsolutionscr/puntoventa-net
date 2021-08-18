@@ -2047,12 +2047,18 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     SigningDate = DateTime.Now,
                     SignaturePackaging = SignaturePackaging.ENVELOPED
                 };
-                X509Certificate2 uidCert = new X509Certificate2(empresa.Certificado, empresa.PinCertificado, X509KeyStorageFlags.MachineKeySet);
-                if (uidCert.NotAfter <= DateTime.Now) throw new BusinessException("La llave criptográfica para la firma del documento electrónico se encuentra vencida. Por favor reemplace su llave criptográfica para poder emitir documentos electrónicos");
-                using (Signer signer2 = signatureParameters.Signer = new Signer(uidCert))
-                using (MemoryStream smDatos = new MemoryStream(mensajeEncoded))
+                try
                 {
-                    signatureDocument = xadesService.Sign(smDatos, signatureParameters);
+                    X509Certificate2 uidCert = new X509Certificate2(empresa.Certificado, empresa.PinCertificado, X509KeyStorageFlags.MachineKeySet);
+                    if (uidCert.NotAfter <= DateTime.Now) throw new BusinessException("La llave criptográfica para la firma del documento electrónico se encuentra vencida. Por favor reemplace su llave criptográfica para poder emitir documentos electrónicos");
+                    using (Signer signer2 = signatureParameters.Signer = new Signer(uidCert))
+                    using (MemoryStream smDatos = new MemoryStream(mensajeEncoded))
+                    {
+                        signatureDocument = xadesService.Sign(smDatos, signatureParameters);
+                    }
+                } catch(Exception ex)
+                {
+                    throw new BusinessException("No se logró abrir la llave criptográfica con el pin suministrado. Por favor verifique la información registrada");
                 }
                 // Almacenaje del documento en base de datos
                 byte[] signedDataEncoded = Encoding.UTF8.GetBytes(signatureDocument.Document.OuterXml);
@@ -2310,6 +2316,24 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 log.Error("Error al consultar el documento electrónico: ", ex);
                 throw ex;
+            }
+        }
+
+        public static void ValidarCertificado(string pinCertificado, byte[] bytCertificado)
+        {
+            try
+            {
+                X509Certificate2 uidCert = new X509Certificate2(bytCertificado, pinCertificado, X509KeyStorageFlags.MachineKeySet);
+                if (uidCert.NotAfter <= DateTime.Now) throw new BusinessException("La llave criptográfica para la firma del documento electrónico se encuentra vencida. Por favor reemplace su llave criptográfica para poder emitir documentos electrónicos");
+            }
+            catch (BusinessException ex)
+            {
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                log.Error("Error al validar el certificado con el respectivo pin: ", ex);
+                throw new BusinessException("No se logró abrir la llave criptográfica con el pin suministrado. Por favor verifique la información registrada");
             }
         }
     }

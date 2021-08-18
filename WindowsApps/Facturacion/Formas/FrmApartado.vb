@@ -105,14 +105,14 @@ Public Class FrmApartado
         grdDetalleApartado.Columns.Add(dvcCantidad)
 
         dvcPorcDescuento.DataPropertyName = "PORCDESCUENTO"
-        dvcPorcDescuento.HeaderText = "%"
+        dvcPorcDescuento.HeaderText = "% Des"
         dvcPorcDescuento.Width = 40
         dvcPorcDescuento.SortMode = DataGridViewColumnSortMode.NotSortable
         dvcPorcDescuento.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleApartado.Columns.Add(dvcPorcDescuento)
 
         dvcDescuento.DataPropertyName = "VALORDESCUENTO"
-        dvcDescuento.HeaderText = "Desc"
+        dvcDescuento.HeaderText = "Desc/U"
         dvcDescuento.Width = 75
         dvcDescuento.ReadOnly = True
         dvcDescuento.SortMode = DataGridViewColumnSortMode.NotSortable
@@ -366,7 +366,7 @@ Public Class FrmApartado
             Else
                 decExcento += Math.Round(dtbDetalleApartado.Rows(I).Item(4) * dtbDetalleApartado.Rows(I).Item(3), 2)
             End If
-            decDescuento += dtbDetalleApartado.Rows(I).Item(10)
+            decDescuento += dtbDetalleApartado.Rows(I).Item(10) * dtbDetalleApartado.Rows(I).Item(3)
         Next
         decSubTotal = decGravado + decExcento + decExonerado
         decDescuento = Math.Round(decDescuento, 2)
