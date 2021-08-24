@@ -9,7 +9,6 @@ using log4net;
 using Unity;
 using System.Globalization;
 using System.Xml;
-using System.Text;
 using Microsoft.Reporting.WebForms;
 using LeandroSoftware.Core.Servicios;
 using Newtonsoft.Json.Linq;
@@ -1266,16 +1265,18 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             decTotal = decTotal * decTipoCambio;
                             decTotalImpuesto = decTotalImpuesto * decTipoCambio;
                         }
-                        ReporteDocumentoElectronico reporteLinea = new ReporteDocumentoElectronico();
-                        reporteLinea.TipoDocumento = documento.IdTipoDocumento == 1 ? "FACTURA ELECTRONICA" : documento.IdTipoDocumento == 2 ? "NOTA DE DEBITO" : documento.IdTipoDocumento == 3 ? "NOTA DE CREDITO" : "TIQUETE ELECTRONICO";
-                        reporteLinea.ClaveNumerica = documento.ClaveNumerica;
-                        reporteLinea.Consecutivo = documento.Consecutivo;
-                        reporteLinea.Fecha = documento.Fecha.ToString("dd/MM/yyyy");
-                        reporteLinea.Nombre = strNombreReceptor;
-                        reporteLinea.Identificacion = strIdentificacion;
-                        reporteLinea.Moneda = strMoneda;
-                        reporteLinea.Impuesto = decTotalImpuesto;
-                        reporteLinea.Total = decTotal;
+                        ReporteDocumentoElectronico reporteLinea = new ReporteDocumentoElectronico
+                        {
+                            TipoDocumento = documento.IdTipoDocumento == 1 ? "FACTURA ELECTRONICA" : documento.IdTipoDocumento == 2 ? "NOTA DE DEBITO" : documento.IdTipoDocumento == 3 ? "NOTA DE CREDITO" : "TIQUETE ELECTRONICO",
+                            ClaveNumerica = documento.ClaveNumerica,
+                            Consecutivo = documento.Consecutivo,
+                            Fecha = documento.Fecha.ToString("dd/MM/yyyy"),
+                            Nombre = strNombreReceptor,
+                            Identificacion = strIdentificacion,
+                            Moneda = strMoneda,
+                            Impuesto = decTotalImpuesto,
+                            Total = decTotal
+                        };
                         listaReporte.Add(reporteLinea);
                     }
                     return listaReporte.OrderBy(x => x.TipoDocumento).ThenBy(x => x.Fecha).ToList();
