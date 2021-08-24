@@ -588,7 +588,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 decimal decTotalServiciosExcentos = 0;
                 decimal decTotalMercanciasExoneradas = 0;
                 decimal decTotalServiciosExonerados = 0;
-                decimal decTotalDescuentoPorFactura = 0;
                 decimal decTotalImpuestos = 0;
                 foreach (DetalleFactura detalleFactura in factura.DetalleFactura)
                 {
@@ -846,7 +845,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 decimal decTotalServiciosExcentos = 0;
                 decimal decTotalMercanciasExoneradas = 0;
                 decimal decTotalServiciosExonerados = 0;
-                decimal decTotalDescuentoPorFactura = 0;
                 decimal decTotalImpuestos = 0;
                 foreach (DetalleFactura detalleFactura in factura.DetalleFactura)
                 {
@@ -1117,7 +1115,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 decimal decTotalServiciosExcentos = 0;
                 decimal decTotalMercanciasExoneradas = 0;
                 decimal decTotalServiciosExonerados = 0;
-                decimal decTotalDescuentoPorFactura = 0;
                 decimal decTotalImpuestos = 0;
                 foreach (DetalleFactura detalleFactura in factura.DetalleFactura)
                 {
@@ -2056,7 +2053,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         signatureDocument = xadesService.Sign(smDatos, signatureParameters);
                     }
-                } catch(Exception ex)
+                } catch(Exception)
                 {
                     throw new BusinessException("No se logró abrir la llave criptográfica con el pin suministrado. Por favor verifique la información registrada");
                 }

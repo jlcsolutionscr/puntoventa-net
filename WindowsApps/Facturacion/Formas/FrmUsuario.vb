@@ -2,6 +2,7 @@ Imports System.Collections.Generic
 Imports LeandroSoftware.ClienteWCF
 Imports LeandroSoftware.Core.Dominio.Entidades
 Imports LeandroSoftware.Core.Utilitario
+Imports System.Linq
 
 Public Class FrmUsuario
 #Region "Variables"
@@ -78,6 +79,10 @@ Public Class FrmUsuario
         cboRole.ValueMember = "Id"
         cboRole.DisplayMember = "Descripcion"
         cboRole.DataSource = Await Puntoventa.ObtenerListadoRolesPorEmpresa(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+        cboSucursal.ValueMember = "Id"
+        cboSucursal.DisplayMember = "Descripcion"
+        cboSucursal.DataSource = Await Puntoventa.ObtenerListadoSucursales(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+        cboSucursal.SelectedValue = FrmPrincipal.equipoGlobal.IdSucursal
     End Sub
 #End Region
 
@@ -107,6 +112,7 @@ Public Class FrmUsuario
             EstablecerPropiedadesDataGridView()
             CargarCombos()
             If intIdUsuario > 0 Then
+                txtUsuario.ReadOnly = True
                 Dim strDecryptedPassword As String
                 Try
                     datos = Await Puntoventa.ObtenerUsuario(intIdUsuario, FrmPrincipal.usuarioGlobal.Token)
@@ -122,8 +128,10 @@ Public Class FrmUsuario
                 txtPassword.Text = strDecryptedPassword
                 txtPorcMaxDescuento.Text = datos.PorcMaxDescuento
                 chkRegistraDispositivo.Checked = datos.PermiteRegistrarDispositivo
+                cboSucursal.SelectedValue = datos.SucursalPorUsuario.ToList()(0).IdSucursal
                 CargarDetalleRole(datos)
             Else
+                txtUsuario.ReadOnly = False
                 datos = New Usuario
             End If
         Catch ex As Exception
@@ -147,13 +155,14 @@ Public Class FrmUsuario
         End If
         Dim strEncryptedPassword As String
         If datos.IdUsuario = 0 Then
-            Dim empresaUsuario As UsuarioPorEmpresa = New UsuarioPorEmpresa With {
-                .IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa
+            Dim sucursalUsuario As SucursalPorUsuario = New SucursalPorUsuario With {
+                .IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa,
+                .IdSucursal = FrmPrincipal.equipoGlobal.IdSucursal
             }
-            Dim detalleEmpresa As List(Of UsuarioPorEmpresa) = New List(Of UsuarioPorEmpresa) From {
-                empresaUsuario
+            Dim detalleEmpresa As List(Of SucursalPorUsuario) = New List(Of SucursalPorUsuario) From {
+                sucursalUsuario
             }
-            datos.UsuarioPorEmpresa = detalleEmpresa
+            datos.SucursalPorUsuario = sucursalUsuario
         End If
         Try
             strEncryptedPassword = Utilitario.EncriptarDatos(txtPassword.Text)

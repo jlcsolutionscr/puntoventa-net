@@ -87,6 +87,7 @@ namespace LeandroSoftware.ServicioWeb.Contexto
         DbSet<RolePorUsuario> RolePorUsuarioRepository { get; set; }
         DbSet<SaldoMensualContable> SaldoMensualContableRepository { get; set; }
         DbSet<SucursalPorEmpresa> SucursalPorEmpresaRepository { get; set; }
+        DbSet<SucursalPorUsuario> SucursalPorUsuarioRepository { get; set; }
         DbSet<TerminalPorSucursal> TerminalPorSucursalRepository { get; set; }
         DbSet<TipoDeCambioDolar> TipoDeCambioDolarRepository { get; set; }
         DbSet<TipoCuentaContable> TipoCuentaContableRepository { get; set; }
@@ -97,7 +98,6 @@ namespace LeandroSoftware.ServicioWeb.Contexto
         DbSet<TipoProducto> TipoProductoRepository { get; set; }
         DbSet<Traslado> TrasladoRepository { get; set; }
         DbSet<Usuario> UsuarioRepository { get; set; }
-        DbSet<UsuarioPorEmpresa> UsuarioPorEmpresaRepository { get; set; }
         DbSet<Vendedor> VendedorRepository { get; set; }
 
         void NotificarModificacion<TEntity>(TEntity entidad) where TEntity : class;
@@ -203,6 +203,7 @@ namespace LeandroSoftware.ServicioWeb.Contexto
         public DbSet<RolePorUsuario> RolePorUsuarioRepository { get; set; }
         public DbSet<SaldoMensualContable> SaldoMensualContableRepository { get; set; }
         public DbSet<SucursalPorEmpresa> SucursalPorEmpresaRepository { get; set; }
+        public DbSet<SucursalPorUsuario> SucursalPorUsuarioRepository { get; set; }
         public DbSet<TerminalPorSucursal> TerminalPorSucursalRepository { get; set; }
         public DbSet<TipoDeCambioDolar> TipoDeCambioDolarRepository { get; set; }
         public DbSet<TipoCuentaContable> TipoCuentaContableRepository { get; set; }
@@ -213,7 +214,6 @@ namespace LeandroSoftware.ServicioWeb.Contexto
         public DbSet<TipoProducto> TipoProductoRepository { get; set; }
         public DbSet<Traslado> TrasladoRepository { get; set; }
         public DbSet<Usuario> UsuarioRepository { get; set; }
-        public DbSet<UsuarioPorEmpresa> UsuarioPorEmpresaRepository { get; set; }
         public DbSet<Vendedor> VendedorRepository { get; set; }
 
         public void NotificarModificacion<TEntity>(TEntity entidad) where TEntity : class

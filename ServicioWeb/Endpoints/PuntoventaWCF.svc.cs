@@ -70,7 +70,6 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
         private static OrdenServicio ordenServicio;
         private static Apartado apartado;
         private static DocumentoElectronico documento;
-        private static CierreCaja cierre;
         private static Traslado traslado;
         private static AjusteInventario ajusteInventario;
         private static CuentaPorCobrar cuentaPorCobrar;
@@ -674,6 +673,9 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                                 break;
                             case "Resumen de movimientos":
                                 servicioReportes.EnviarReporteResumenMovimientos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, strFormatoReporte, servicioEnvioCorreo);
+                                break;
+                            case "Detalle de ingresos":
+                                servicioReportes.EnviarReporteDetalleIngresos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, strFormatoReporte, servicioEnvioCorreo);
                                 break;
                             case "Detalle de egresos":
                                 servicioReportes.EnviarReporteDetalleEgresos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, strFormatoReporte, servicioEnvioCorreo);
@@ -1958,32 +1960,53 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                     case "ObtenerDatosReporte":
                         intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                         intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
-                        int intTipoReporte = int.Parse(parametrosJO.Property("TipoReporte").Value.ToString());
+                        string strNombreReporte = parametrosJO.Property("NombreReporte").Value.ToString();
                         strFechaInicial = parametrosJO.Property("FechaInicial").Value.ToString();
                         strFechaFinal = parametrosJO.Property("FechaFinal").Value.ToString();
-                        switch (intTipoReporte)
+                        switch (strNombreReporte)
                         {
-                            case 1:
-                                {
-                                    List<ReporteDocumentoElectronico> listado = servicioReportes.ObtenerReporteDocumentosElectronicosEmitidos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal);
-                                    if (listado.Count > 0)
-                                        strRespuesta = serializer.Serialize(listado);
-                                    break;
-                                }
-                            case 2:
-                                {
-                                    List<ReporteDocumentoElectronico> listado = servicioReportes.ObtenerReporteDocumentosElectronicosRecibidos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal);
-                                    if (listado.Count > 0)
-                                        strRespuesta = serializer.Serialize(listado);
-                                    break;
-                                }
-                            case 3:
-                                {
-                                    List<ReporteResumenMovimiento> listado = servicioReportes.ObtenerReporteResumenDocumentosElectronicos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal);
-                                    if (listado.Count > 0)
-                                        strRespuesta = serializer.Serialize(listado);
-                                    break;
-                                }
+                            case "Ventas en general":
+                                IList<ReporteDetalle> listado1 = servicioReportes.ObtenerReporteVentasPorCliente(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, 0, false, 0);
+                                if (listado1.Count > 0)
+                                    strRespuesta = serializer.Serialize(listado1);
+                                break;
+                            case "Ventas anuladas":
+                                IList<ReporteDetalle> listado2 = servicioReportes.ObtenerReporteVentasPorCliente(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, 0, true, 0);
+                                if (listado2.Count > 0)
+                                    strRespuesta = serializer.Serialize(listado2);
+                                break;
+                            case "Resumen de movimientos":
+                                IList<DescripcionValor> listado3 = servicioReportes.ObtenerReporteEstadoResultados(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal);
+                                if (listado3.Count > 0)
+                                    strRespuesta = serializer.Serialize(listado3);
+                                break;
+                            case "Detalle de ingresos":
+                                IList<ReporteGrupoDetalle> listado4 = servicioReportes.ObtenerReporteDetalleIngreso(intIdEmpresa, intIdSucursal, 0, strFechaInicial, strFechaFinal);
+                                if (listado4.Count > 0)
+                                    strRespuesta = serializer.Serialize(listado4);
+                                break;
+                            case "Detalle de egresos":
+                                IList<ReporteGrupoDetalle> listado5 = servicioReportes.ObtenerReporteDetalleEgreso(intIdEmpresa, intIdSucursal, 0, strFechaInicial, strFechaFinal);
+                                if (listado5.Count > 0)
+                                    strRespuesta = serializer.Serialize(listado5);
+                                break;
+                            case "Documentos electrónicos emitidos":
+                                List<ReporteDocumentoElectronico> listado6 = servicioReportes.ObtenerReporteDocumentosElectronicosEmitidos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal);
+                                if (listado6.Count > 0)
+                                    strRespuesta = serializer.Serialize(listado6);
+                                break;
+                            case "Documentos electrónicos recibidos":
+                                List<ReporteDocumentoElectronico> listado7 = servicioReportes.ObtenerReporteDocumentosElectronicosRecibidos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal);
+                                if (listado7.Count > 0)
+                                    strRespuesta = serializer.Serialize(listado7);
+                                break;
+                            case "Resumen de comprobantes electrónicos":
+                                List<ReporteResumenMovimiento> listado8 = servicioReportes.ObtenerReporteResumenDocumentosElectronicos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal);
+                                if (listado8.Count > 0)
+                                    strRespuesta = serializer.Serialize(listado8);
+                                break;
+                            default:
+                                throw new Exception("El reporte solicitado: '" + strNombreReporte + "' no ha sido implementado, contacte con su proveedor");
                         }
                         break;
                     default:

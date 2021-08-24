@@ -37,6 +37,8 @@ Partial Class FrmUsuario
         Me.btnGuardar = New System.Windows.Forms.Button()
         Me.txtPorcMaxDescuento = New System.Windows.Forms.TextBox()
         Me.Label3 = New System.Windows.Forms.Label()
+        Me.Label4 = New System.Windows.Forms.Label()
+        Me.cboSucursal = New System.Windows.Forms.ComboBox()
         CType(Me.dgvRoleXUsuario, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -125,7 +127,7 @@ Partial Class FrmUsuario
         'cboRole
         '
         Me.cboRole.FormattingEnabled = True
-        Me.cboRole.Location = New System.Drawing.Point(119, 90)
+        Me.cboRole.Location = New System.Drawing.Point(119, 117)
         Me.cboRole.Name = "cboRole"
         Me.cboRole.Size = New System.Drawing.Size(342, 21)
         Me.cboRole.TabIndex = 3
@@ -135,7 +137,7 @@ Partial Class FrmUsuario
         Me.Label2.BackColor = System.Drawing.Color.Transparent
         Me.Label2.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label2.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label2.Location = New System.Drawing.Point(13, 92)
+        Me.Label2.Location = New System.Drawing.Point(13, 119)
         Me.Label2.Name = "Label2"
         Me.Label2.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label2.Size = New System.Drawing.Size(99, 17)
@@ -151,14 +153,14 @@ Partial Class FrmUsuario
         Me.dgvRoleXUsuario.AllowUserToResizeRows = False
         Me.dgvRoleXUsuario.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.dgvRoleXUsuario.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter
-        Me.dgvRoleXUsuario.Location = New System.Drawing.Point(14, 117)
+        Me.dgvRoleXUsuario.Location = New System.Drawing.Point(14, 144)
         Me.dgvRoleXUsuario.MultiSelect = False
         Me.dgvRoleXUsuario.Name = "dgvRoleXUsuario"
         Me.dgvRoleXUsuario.ReadOnly = True
         Me.dgvRoleXUsuario.RowHeadersVisible = False
         Me.dgvRoleXUsuario.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing
         Me.dgvRoleXUsuario.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-        Me.dgvRoleXUsuario.Size = New System.Drawing.Size(447, 239)
+        Me.dgvRoleXUsuario.Size = New System.Drawing.Size(447, 212)
         Me.dgvRoleXUsuario.TabIndex = 0
         Me.dgvRoleXUsuario.TabStop = False
         '
@@ -246,6 +248,27 @@ Partial Class FrmUsuario
         Me.Label3.Text = "% Desc:"
         Me.Label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
+        'Label4
+        '
+        Me.Label4.BackColor = System.Drawing.Color.Transparent
+        Me.Label4.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label4.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label4.Location = New System.Drawing.Point(13, 92)
+        Me.Label4.Name = "Label4"
+        Me.Label4.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label4.Size = New System.Drawing.Size(99, 17)
+        Me.Label4.TabIndex = 58
+        Me.Label4.Text = "Sucursal:"
+        Me.Label4.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
+        'cboSucursal
+        '
+        Me.cboSucursal.FormattingEnabled = True
+        Me.cboSucursal.Location = New System.Drawing.Point(119, 90)
+        Me.cboSucursal.Name = "cboSucursal"
+        Me.cboSucursal.Size = New System.Drawing.Size(342, 21)
+        Me.cboSucursal.TabIndex = 59
+        '
         'FrmUsuario
         '
         Me.AcceptButton = Me.btnInsertarRole
@@ -253,6 +276,8 @@ Partial Class FrmUsuario
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(475, 394)
+        Me.Controls.Add(Me.Label4)
+        Me.Controls.Add(Me.cboSucursal)
         Me.Controls.Add(Me.txtPorcMaxDescuento)
         Me.Controls.Add(Me.Label3)
         Me.Controls.Add(Me.btnCancelar)
@@ -299,4 +324,6 @@ Partial Class FrmUsuario
     Friend WithEvents btnGuardar As System.Windows.Forms.Button
     Public WithEvents txtPorcMaxDescuento As TextBox
     Public WithEvents Label3 As Label
+    Public WithEvents Label4 As Label
+    Friend WithEvents cboSucursal As ComboBox
 End Class

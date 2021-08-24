@@ -97,6 +97,7 @@
     <Compile Include="Entidades\RolePorEmpresa.cs" />
     <Compile Include="Entidades\ExistenciaPorSucursal.cs" />
     <Compile Include="Entidades\SucursalPorEmpresa.cs" />
+    <Compile Include="Entidades\SucursalPorUsuario.cs" />
     <Compile Include="Entidades\TipoDeCambioDolar.cs" />
     <Compile Include="Entidades\TipoIdentificacion.cs" />
     <Compile Include="Entidades\ParametroExoneracion.cs" />
@@ -158,7 +159,6 @@
     <Compile Include="Entidades\TipoMovimientoBanco.cs" />
     <Compile Include="Entidades\TipoProducto.cs" />
     <Compile Include="Entidades\TipoUnidad.cs" />
-    <Compile Include="Entidades\UsuarioPorEmpresa.cs" />
     <Compile Include="Entidades\Vendedor.cs" />
     <Compile Include="Entidades\Usuario.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

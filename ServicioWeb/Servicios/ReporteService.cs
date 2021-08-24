@@ -52,6 +52,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         void EnviarReporteVentasGenerales(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo);
         void EnviarReporteVentasAnuladas(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo);
         void EnviarReporteResumenMovimientos(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo);
+        void EnviarReporteDetalleIngresos(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo);
         void EnviarReporteDetalleEgresos(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo);
         void EnviarReporteDocumentosEmitidos(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo);
         void EnviarReporteDocumentosRecibidos(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo);
@@ -1600,7 +1601,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                         {
                                             intTarifa = int.Parse(strTarifa, NumberStyles.Integer | NumberStyles.AllowDecimalPoint, new CultureInfo("en-US"));
                                         }
-                                        catch (Exception ex)
+                                        catch (Exception)
                                         {
                                             throw new Exception("No se logro convertir el string de la tarifa " + strTarifa + " en un numero entero");
                                         }
@@ -1913,6 +1914,43 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         };
                         jarrayObj.Add(jobDatosAdjuntos1);
                         servicioEnvioCorreo.SendEmail(new string[] { empresa.CorreoNotificacion }, new string[] { }, "JLC Solutions CR - Reporte de resumen de movimientos por rango de fechas", "Adjunto archivo en formato " + strFormatoReporte + " correspondiente al reporte de ventas por cliente para el rango de fechas solicitado.", false, jarrayObj);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al procesar el reporte de Resumen de Documentos Electrónicos: ", ex);
+                    throw new Exception("Se produjo un error al ejecutar el reporte resumen de documentos electrónicos. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public void EnviarReporteDetalleIngresos(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    string strPlantillaReporte = "rptDetalleIngresos.rdlc";
+                    Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
+                    string strNombreEmpresa = empresa.NombreComercial != "" ? empresa.NombreComercial : empresa.NombreEmpresa;
+                    IList<ReporteGrupoDetalle> dstDatos = ObtenerReporteDetalleIngreso(intIdEmpresa, intIdSucursal, 0, strFechaInicial, strFechaFinal);
+                    ReportDataSource rds = new ReportDataSource("dstDatos", dstDatos);
+                    ReportParameter[] parameters = new ReportParameter[4];
+                    parameters[0] = new ReportParameter("pUsuario", "SYSTEM");
+                    parameters[1] = new ReportParameter("pEmpresa", strNombreEmpresa);
+                    parameters[2] = new ReportParameter("pFechaDesde", strFechaInicial);
+                    parameters[3] = new ReportParameter("pFechaHasta", strFechaFinal);
+                    byte[] bytes = GenerarContenidoReporte(strFormatoReporte, strPlantillaReporte, rds, parameters);
+                    if (bytes.Length > 0)
+                    {
+                        JArray jarrayObj = new JArray();
+                        JObject jobDatosAdjuntos1 = new JObject
+                        {
+                            ["nombre"] = "ReporteDetalleDeIngresos." + strFormatoReporte.ToLower(),
+                            ["contenido"] = Convert.ToBase64String(bytes)
+                        };
+                        jarrayObj.Add(jobDatosAdjuntos1);
+                        servicioEnvioCorreo.SendEmail(new string[] { empresa.CorreoNotificacion }, new string[] { }, "JLC Solutions CR - Reporte detallado de ingresos por rango de fechas", "Adjunto archivo en formato " + strFormatoReporte + " correspondiente al reporte de ventas por cliente para el rango de fechas solicitado.", false, jarrayObj);
                     }
                 }
                 catch (Exception ex)

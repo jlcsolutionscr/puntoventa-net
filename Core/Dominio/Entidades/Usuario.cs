@@ -10,7 +10,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public Usuario()
         {
             RolePorUsuario = new HashSet<RolePorUsuario>();
-            UsuarioPorEmpresa = new HashSet<UsuarioPorEmpresa>();
+            SucursalPorUsuario = new HashSet<SucursalPorUsuario>();
         }
 
         [Key]
@@ -23,6 +23,6 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public string Token;
 
         public ICollection<RolePorUsuario> RolePorUsuario { get; set; }
-        public ICollection<UsuarioPorEmpresa> UsuarioPorEmpresa { get; set; }
+        public ICollection<SucursalPorUsuario> SucursalPorUsuario { get; set; }
     }
 }
