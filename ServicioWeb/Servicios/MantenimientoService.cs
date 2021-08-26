@@ -395,21 +395,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    Empresa empresa = dbContext.EmpresaRepository.Include("ReportePorEmpresa.CatalogoReporte").Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.Identificacion == strIdentificacion);
+                    Empresa empresa = dbContext.EmpresaRepository.Include("SucursalPorEmpresa").Include("ReportePorEmpresa.CatalogoReporte").Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.Identificacion == strIdentificacion);
                     Usuario usuario = null;
                     if (strUsuario.ToUpper() == "ADMIN")
                     {
                         usuario = dbContext.UsuarioRepository.Include("RolePorUsuario.Role").FirstOrDefault(x => x.IdUsuario == 1);
-                        List<SucursalPorEmpresa> sucursalPorEmpresa = dbContext.SucursalPorEmpresaRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa).ToList();
-                        foreach (SucursalPorEmpresa sucursal in sucursalPorEmpresa)
-                        {
-                            SucursalPorUsuario sucursalPorUsuario = new SucursalPorUsuario();
-                            sucursalPorUsuario.IdEmpresa = sucursal.IdEmpresa;
-                            sucursalPorUsuario.IdSucursal = sucursal.IdSucursal;
-                            sucursalPorUsuario.IdUsuario = 1;
-                            sucursalPorUsuario.SucursalPorEmpresa = sucursal;
-                            usuario.SucursalPorUsuario.Add(sucursalPorUsuario);
-                        }
+                        usuario.IdSucursal = 1;
                     }
                     else
                     {
@@ -419,26 +410,26 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             if (empresa.FechaVence < DateTime.Today) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
                             if (empresa.TipoContrato == 2 && empresa.CantidadDisponible == 0) throw new BusinessException("El disponible de documentos electrónicos fue agotado. Por favor, pongase en contacto con su proveedor del servicio.");
                         }
-                        usuario = dbContext.UsuarioRepository.Include("RolePorUsuario.Role").FirstOrDefault(x => x.SucursalPorUsuario.FirstOrDefault().IdEmpresa == empresa.IdEmpresa && x.CodigoUsuario == strUsuario.ToUpper());
+                        usuario = dbContext.UsuarioRepository.Include("SucursalPorUsuario").Include("RolePorUsuario.Role").FirstOrDefault(x => x.SucursalPorUsuario.FirstOrDefault(y => y.IdEmpresa == empresa.IdEmpresa) != null && x.CodigoUsuario == strUsuario.ToUpper());
                         if (usuario == null) throw new BusinessException("Usuario no registrado en la empresa suministrada. Por favor verifique la información suministrada.");
-                        List<SucursalPorUsuario> sucursalPorUsuario = dbContext.SucursalPorUsuarioRepository.Include("SucursalPorEmpresa").Where(x => x.IdEmpresa == empresa.IdEmpresa && x.IdUsuario == usuario.IdUsuario).ToList();
-                        usuario.SucursalPorUsuario = sucursalPorUsuario;
+                        usuario.IdSucursal = usuario.SucursalPorUsuario.FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa).IdSucursal;
+                        usuario.SucursalPorUsuario = new SucursalPorUsuario[] { };
                     }
                     if (usuario.Clave != strClave) throw new BusinessException("Los credenciales suministrados no son válidos. Verifique los credenciales suministrados.");
-                    Empresa refEmpresa = new Empresa();
-                    refEmpresa.IdEmpresa = empresa.IdEmpresa;
-                    refEmpresa.NombreEmpresa = empresa.NombreEmpresa;
-                    refEmpresa.NombreComercial = empresa.NombreComercial;
-                    refEmpresa.Identificacion = empresa.Identificacion;
-                    refEmpresa.ReportePorEmpresa = empresa.ReportePorEmpresa;
-                    foreach (ReportePorEmpresa reporte in refEmpresa.ReportePorEmpresa)
+                    usuario.Empresa = new Empresa();
+                    usuario.Empresa.IdEmpresa = empresa.IdEmpresa;
+                    usuario.Empresa.NombreEmpresa = empresa.NombreEmpresa;
+                    usuario.Empresa.NombreComercial = empresa.NombreComercial;
+                    usuario.Empresa.Identificacion = empresa.Identificacion;
+                    usuario.Empresa.ReportePorEmpresa = empresa.ReportePorEmpresa;
+                    usuario.Empresa.SucursalPorEmpresa = empresa.SucursalPorEmpresa;
+                    foreach (ReportePorEmpresa reporte in usuario.Empresa.ReportePorEmpresa)
                     {
                         reporte.Empresa = null;
                     }
-                    foreach (SucursalPorUsuario sucursalUsuario in usuario.SucursalPorUsuario)
+                    foreach (SucursalPorEmpresa sucursal in usuario.Empresa.SucursalPorEmpresa)
                     {
-                        sucursalUsuario.Usuario = null;
-                        sucursalUsuario.SucursalPorEmpresa.Empresa = refEmpresa;
+                        sucursal.Empresa = null;
                     }
                     foreach (RolePorUsuario role in usuario.RolePorUsuario)
                     {
@@ -472,13 +463,16 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (strUsuario.ToUpper() == "ADMIN")
                     {
                         usuario = dbContext.UsuarioRepository.Include("RolePorUsuario.Role").FirstOrDefault(x => x.IdUsuario == 1);
+                        usuario.IdSucursal = 1;
                     }
                     else
                     {
                         if (!empresa.PermiteFacturar) throw new BusinessException("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
                         if (empresa.FechaVence < DateTime.Today) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
                         if (empresa.TipoContrato == 2 && empresa.CantidadDisponible == 0) throw new BusinessException("El disponible de documentos electrónicos fue agotado. Por favor, pongase en contacto con su proveedor del servicio.");
-                        usuario = dbContext.UsuarioRepository.Include("SucursalPorUsuario.SucursalPorEmpresa").Include("RolePorUsuario.Role").FirstOrDefault(x => x.SucursalPorUsuario.FirstOrDefault().IdEmpresa == empresa.IdEmpresa && x.CodigoUsuario == strUsuario.ToUpper());
+                        usuario = dbContext.UsuarioRepository.Include("SucursalPorUsuario").Include("RolePorUsuario.Role").FirstOrDefault(x => x.SucursalPorUsuario.FirstOrDefault().IdEmpresa == empresa.IdEmpresa && x.CodigoUsuario == strUsuario.ToUpper());
+                        usuario.IdSucursal = usuario.SucursalPorUsuario.FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa).IdSucursal;
+                        usuario.SucursalPorUsuario = new SucursalPorUsuario[] { };
                     }
                     if (usuario == null) throw new BusinessException("Usuario no registrado en la empresa suministrada. Por favor verifique la información suministrada.");
                     if (usuario.Clave != strClave) throw new BusinessException("Los credenciales suministrados no son válidos. Verifique los credenciales suministrados.");
@@ -506,6 +500,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         ImpresoraFactura = terminal.ImpresoraFactura,
                         AnchoLinea = terminal.AnchoLinea
                     };
+                    empresa.SucursalPorEmpresa = new SucursalPorEmpresa[] { };
                     string strToken = GenerarRegistroAutenticacion(StaticRolePorUsuario.USUARIO_SISTEMA);
                     usuario.Token = strToken;
                     empresa.Logotipo = null;
@@ -521,9 +516,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     foreach (ReportePorEmpresa reporte in empresa.ReportePorEmpresa)
                         reporte.Empresa = null;
                     foreach (RolePorUsuario role in usuario.RolePorUsuario)
-                    {
                         role.Usuario = null;
-                    }
                     foreach (SucursalPorUsuario sucursalUsuario in usuario.SucursalPorUsuario)
                     {
                         sucursalUsuario.SucursalPorEmpresa.Empresa = null;

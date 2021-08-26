@@ -576,9 +576,10 @@ namespace LeandroSoftware.Core.TiposComunes
         {
         }
 
-        public DocumentoDetalle(int id, string clave, string consecutivo, string fecha, string nombre, string estado, string error, decimal monto, string esMensajeReceptor, bool reprocesado, string correoNotificacion)
+        public DocumentoDetalle(int id, int idTipo, string clave, string consecutivo, string fecha, string nombre, string estado, string error, decimal monto, string esMensajeReceptor, bool reprocesado, string correoNotificacion)
         {
             IdDocumento = id;
+            IdTipoDocumento = idTipo;
             ClaveNumerica = clave;
             Consecutivo = consecutivo;
             Fecha = fecha;
@@ -591,6 +592,7 @@ namespace LeandroSoftware.Core.TiposComunes
             CorreoNotificacion = correoNotificacion;
         }
         public int IdDocumento { get; set; }
+        public int IdTipoDocumento { get; set; }
         public string ClaveNumerica { get; set; }
         public string Consecutivo { get; set; }
         public string Fecha { get; set; }

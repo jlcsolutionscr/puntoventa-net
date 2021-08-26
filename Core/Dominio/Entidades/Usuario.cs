@@ -20,6 +20,10 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public decimal PorcMaxDescuento { get; set; }
         public bool PermiteRegistrarDispositivo { get; set; }
         [NotMapped]
+        public int IdSucursal;
+        [NotMapped]
+        public Empresa Empresa;
+        [NotMapped]
         public string Token;
 
         public ICollection<RolePorUsuario> RolePorUsuario { get; set; }

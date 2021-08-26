@@ -13,6 +13,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         {
             ReportePorEmpresa = new HashSet<ReportePorEmpresa>();
             RolePorEmpresa = new HashSet<RolePorEmpresa>();
+            SucursalPorEmpresa = new HashSet<SucursalPorEmpresa>();
         }
         [Key]
         public int IdEmpresa { get; set; }
@@ -70,5 +71,6 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public Barrio Barrio { get; set; }
         public ICollection<ReportePorEmpresa> ReportePorEmpresa { get; set; }
         public ICollection<RolePorEmpresa> RolePorEmpresa { get; set; }
+        public ICollection<SucursalPorEmpresa> SucursalPorEmpresa { get; set; }
     }
 }

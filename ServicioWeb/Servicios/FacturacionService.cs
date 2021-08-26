@@ -73,6 +73,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         DocumentoElectronico ObtenerDocumentoElectronico(int intIdDocumento);
         void ProcesarRespuestaHacienda(RespuestaHaciendaDTO mensaje, ICorreoService servicioEnvioCorreo, string strCorreoNotificacionErrores);
         void EnviarNotificacionDocumentoElectronico(int intIdDocumento, string strCorreoReceptor, ICorreoService servicioEnvioCorreo, string strCorreoNotificacionErrores);
+        byte[] GenerarFacturaPDF(int intIdFactura);
+        void GenerarNotificacionFactura(int intIdFactura, ICorreoService servicioEnvioCorreo);
         void GenerarNotificacionProforma(int intIdProforma, string strCorreoReceptor, ICorreoService servicioEnvioCorreo);
     }
 
@@ -493,8 +495,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         if (desglosePago.IdFormaPago == StaticFormaPago.Cheque || desglosePago.IdFormaPago == StaticFormaPago.TransferenciaDepositoBancario)
                         {
-                            movimientoBanco = new MovimientoBanco();
-                            movimientoBanco.IdSucursal = factura.IdSucursal;
+                            movimientoBanco = new MovimientoBanco
+                            {
+                                IdSucursal = factura.IdSucursal
+                            };
                             CuentaBanco cuentaBanco = dbContext.CuentaBancoRepository.Find(desglosePago.IdCuentaBanco);
                             if (cuentaBanco == null)
                                 throw new BusinessException("La cuenta bancaria asignada al movimiento no existe.");
@@ -1599,25 +1603,29 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         if (cuentaBanco == null) throw new BusinessException("La empresa no posee ningun banco adquiriente parametrizado");
                         CuentaPorCobrar cxc = dbContext.CuentaPorCobrarRepository.Find(factura.IdCxC);
                         if (cxc == null) throw new BusinessException("La cuenta por cobrar asignada a la factura de la devolución no existe");
-                        MovimientoCuentaPorCobrar mov = new MovimientoCuentaPorCobrar();
-                        mov.IdEmpresa = devolucion.IdEmpresa;
-                        mov.IdUsuario = devolucion.IdUsuario;
-                        mov.IdPropietario = factura.IdCliente;
-                        mov.IdSucursal = devolucion.IdSucursal;
-                        mov.Tipo = StaticTipoAbono.AbonoEfectivo;
-                        mov.IdCxC = factura.IdCxC;
-                        mov.Observaciones = "Abono por devolución de mercancía";
-                        mov.Monto = devolucion.Total;
-                        mov.SaldoActual = cxc.Saldo;
-                        mov.Fecha = DateTime.Now;
-                        DesglosePagoMovimientoCuentaPorCobrar desglosePagoMovimiento = new DesglosePagoMovimientoCuentaPorCobrar();
-                        desglosePagoMovimiento.IdFormaPago = StaticFormaPago.TransferenciaDepositoBancario;
-                        desglosePagoMovimiento.IdCuentaBanco = cuentaBanco.IdBanco;
-                        desglosePagoMovimiento.TipoTarjeta = "";
-                        desglosePagoMovimiento.NroMovimiento = "";
-                        desglosePagoMovimiento.IdTipoMoneda = factura.IdTipoMoneda;
-                        desglosePagoMovimiento.MontoLocal = devolucion.Total;
-                        desglosePagoMovimiento.TipoDeCambio = factura.TipoDeCambioDolar;
+                        MovimientoCuentaPorCobrar mov = new MovimientoCuentaPorCobrar
+                        {
+                            IdEmpresa = devolucion.IdEmpresa,
+                            IdUsuario = devolucion.IdUsuario,
+                            IdPropietario = factura.IdCliente,
+                            IdSucursal = devolucion.IdSucursal,
+                            Tipo = StaticTipoAbono.AbonoEfectivo,
+                            IdCxC = factura.IdCxC,
+                            Observaciones = "Abono por devolución de mercancía",
+                            Monto = devolucion.Total,
+                            SaldoActual = cxc.Saldo,
+                            Fecha = DateTime.Now
+                        };
+                        DesglosePagoMovimientoCuentaPorCobrar desglosePagoMovimiento = new DesglosePagoMovimientoCuentaPorCobrar
+                        {
+                            IdFormaPago = StaticFormaPago.TransferenciaDepositoBancario,
+                            IdCuentaBanco = cuentaBanco.IdBanco,
+                            TipoTarjeta = "",
+                            NroMovimiento = "",
+                            IdTipoMoneda = factura.IdTipoMoneda,
+                            MontoLocal = devolucion.Total,
+                            TipoDeCambio = factura.TipoDeCambioDolar
+                        };
                         mov.DesglosePagoMovimientoCuentaPorCobrar.Add(desglosePagoMovimiento);
                         dbContext.MovimientoCuentaPorCobrarRepository.Add(mov);
                         cxc.Saldo -= devolucion.Total;
@@ -1627,17 +1635,19 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         CuentaEgreso cuenta = dbContext.CuentaEgresoRepository.FirstOrDefault(x => x.IdEmpresa == devolucion.IdEmpresa && x.Descripcion.ToUpper().Contains("DEVOLUCION"));
                         if (cuenta == null) throw new BusinessException("La empresa no posee ninguna cuenta de egresos para devoluciones de clientes parametrizada");
-                        Egreso egreso = new Egreso();
-                        egreso.IdEmpresa = devolucion.IdEmpresa;
-                        egreso.IdSucursal = devolucion.IdSucursal;
-                        egreso.IdUsuario = devolucion.IdUsuario;
-                        egreso.Fecha = DateTime.Now;
-                        egreso.IdCuenta = cuenta.IdCuenta;
-                        egreso.Beneficiario = factura.NombreCliente;
-                        egreso.Detalle = "Devolución de mercancías de factura " + factura.ConsecFactura;
-                        egreso.Monto = devolucion.Total;
-                        egreso.Nulo = false;
-                        egreso.Procesado = false;
+                        Egreso egreso = new Egreso
+                        {
+                            IdEmpresa = devolucion.IdEmpresa,
+                            IdSucursal = devolucion.IdSucursal,
+                            IdUsuario = devolucion.IdUsuario,
+                            Fecha = DateTime.Now,
+                            IdCuenta = cuenta.IdCuenta,
+                            Beneficiario = factura.NombreCliente,
+                            Detalle = "Devolución de mercancías de factura " + factura.ConsecFactura,
+                            Monto = devolucion.Total,
+                            Nulo = false,
+                            Procesado = false
+                        };
                         dbContext.EgresoRepository.Add(egreso);
                     }
                     DocumentoElectronico documentoNC = null;
@@ -1899,7 +1909,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             if (documentoXml.GetElementsByTagName("TotalComprobante").Count > 0)
                                 decTotal = decimal.Parse(documentoXml.GetElementsByTagName("TotalComprobante").Item(0).InnerText, CultureInfo.InvariantCulture);
                         }
-                        DocumentoDetalle item = new DocumentoDetalle(value.IdDocumento, value.ClaveNumerica, value.Consecutivo, value.Fecha.ToString("dd/MM/yyyy"), strNombre, value.EstadoEnvio, value.ErrorEnvio, decTotal, value.EsMensajeReceptor, value.Reprocesado, value.CorreoNotificacion);
+                        DocumentoDetalle item = new DocumentoDetalle(value.IdDocumento, value.IdTipoDocumento, value.ClaveNumerica, value.Consecutivo, value.Fecha.ToString("dd/MM/yyyy"), strNombre, value.EstadoEnvio, value.ErrorEnvio, decTotal, value.EsMensajeReceptor, value.Reprocesado, value.CorreoNotificacion);
                         listaDocumento.Add(item);
                     }
                     return listaDocumento;
@@ -1960,7 +1970,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             if (documentoXml.GetElementsByTagName("TotalComprobante").Count > 0)
                                 decTotal = decimal.Parse(documentoXml.GetElementsByTagName("TotalComprobante").Item(0).InnerText, CultureInfo.InvariantCulture);
                         }
-                        DocumentoDetalle item = new DocumentoDetalle(value.IdDocumento, value.ClaveNumerica, value.Consecutivo, value.Fecha.ToString("dd/MM/yyyy"), strNombre, value.EstadoEnvio, value.ErrorEnvio, decTotal, value.EsMensajeReceptor, value.Reprocesado, value.CorreoNotificacion);
+                        DocumentoDetalle item = new DocumentoDetalle(value.IdDocumento, value.IdTipoDocumento, value.ClaveNumerica, value.Consecutivo, value.Fecha.ToString("dd/MM/yyyy"), strNombre, value.EstadoEnvio, value.ErrorEnvio, decTotal, value.EsMensajeReceptor, value.Reprocesado, value.CorreoNotificacion);
                         listaDocumento.Add(item);
                     }
                     return listaDocumento;
@@ -2152,7 +2162,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             {
                                 ProcesarMensajeReceptor(dbContext, correo, config, true);
                                 servicioRecepcionCorreo.EliminarMensaje(datos.CuentaIvaAcreditable, datos.ClaveIvaAcreditable, correo.MessageNumber);
-                                stringBuilder.AppendLine("PROCESADO: Documento con IVA acreditable con asunto " + correo.Subject);
                             }
                             catch (BusinessException ex)
                             {
@@ -2186,7 +2195,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             {
                                 ProcesarMensajeReceptor(dbContext, correo, config, false);
                                 servicioRecepcionCorreo.EliminarMensaje(datos.CuentaGastoNoAcreditable, datos.ClaveGastoNoAcreditable, correo.MessageNumber);
-                                stringBuilder.AppendLine("PROCESADO: Documento sin IVA acreditable con asunto " + correo.Subject);
                             }
                             catch (BusinessException ex)
                             {
@@ -2502,7 +2510,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             if (documentoXml.GetElementsByTagName("TotalComprobante").Count > 0)
                                 decTotal = decimal.Parse(documentoXml.GetElementsByTagName("TotalComprobante").Item(0).InnerText, CultureInfo.InvariantCulture);
                         }
-                        DocumentoDetalle item = new DocumentoDetalle(value.IdDocumento, value.ClaveNumerica, value.Consecutivo, value.Fecha.ToString("dd/MM/yyyy"), strReceptor, value.EstadoEnvio, value.ErrorEnvio, decTotal, value.EsMensajeReceptor, value.Reprocesado, value.CorreoNotificacion);
+                        DocumentoDetalle item = new DocumentoDetalle(value.IdDocumento, value.IdTipoDocumento, value.ClaveNumerica, value.Consecutivo, value.Fecha.ToString("dd/MM/yyyy"), strReceptor, value.EstadoEnvio, value.ErrorEnvio, decTotal, value.EsMensajeReceptor, value.Reprocesado, value.CorreoNotificacion);
                         listaDocumento.Add(item);
                     }
                     return listaDocumento;
@@ -2652,141 +2660,183 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
+        public byte[] GenerarFacturaPDF(int intIdFactura)
+        {
+            try
+            {
+                using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+                {
+                    Factura factura = dbContext.FacturaRepository.Include("Cliente").Include("DetalleFactura.Producto").Include("DesglosePagoFactura").FirstOrDefault(x => x.IdFactura == intIdFactura);
+                    Empresa empresa = dbContext.EmpresaRepository.Include("Barrio.Distrito.Canton.Provincia").Where(x => x.IdEmpresa == factura.IdEmpresa).FirstOrDefault();
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    EstructuraPDF datos = GenerarEstructuraFacturaPDF(empresa, factura);
+                    byte[] archivoPDF = UtilitarioPDF.GenerarPDF(datos);
+                    return archivoPDF;
+                }
+            }
+            catch (BusinessException ex)
+            {
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                log.Error("Error al generar archivo PDF de factura con ID: " + intIdFactura, ex);
+                throw new Exception("Se produjo un error al generar el archivo DPF de la factura. Por favor consulte con su proveedor.");
+            }
+        }
+
+        public void GenerarNotificacionFactura(int intIdFactura, ICorreoService servicioEnvioCorreo)
+        {
+            try
+            {
+                using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+                {
+                    JArray jarrayObj = new JArray();
+                    Factura factura = dbContext.FacturaRepository.Include("Cliente").Include("DetalleFactura.Producto").Include("DesglosePagoFactura").FirstOrDefault(x => x.IdFactura == intIdFactura);
+                    Empresa empresa = dbContext.EmpresaRepository.Include("Barrio.Distrito.Canton.Provincia").Where(x => x.IdEmpresa == factura.IdEmpresa).FirstOrDefault();
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (empresa.CorreoNotificacion != "")
+                    {
+                        EstructuraPDF datos = GenerarEstructuraFacturaPDF(empresa, factura);
+                        byte[] pdfAttactment = UtilitarioPDF.GenerarPDF(datos);
+                        JObject jobDatosAdjuntos1 = new JObject
+                        {
+                            ["nombre"] = "Factura-" + intIdFactura + ".pdf",
+                            ["contenido"] = Convert.ToBase64String(pdfAttactment)
+                        };
+                        jarrayObj.Add(jobDatosAdjuntos1);
+                        servicioEnvioCorreo.SendEmail(new string[] { empresa.CorreoNotificacion }, new string[] { }, "Notificación de factura nro. " + intIdFactura + " en formato PDF", "Adunto encotrará el documento en formato PDF correspondiente a la factura número " + intIdFactura, false, jarrayObj);
+                    }
+                    else
+                        throw new BusinessException("La empresa no cuenta con un correo para el envío de notificaciones. Por favor actualice su información");
+                }
+            }
+            catch (BusinessException ex)
+            {
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                log.Error("Error al enviar por correo la factura con ID: " + intIdFactura, ex);
+                throw new Exception("Se produjo un error al enviar el documento por correo. Por favor consulte con su proveedor.");
+            }
+        }
+
+        private EstructuraPDF GenerarEstructuraFacturaPDF(Empresa empresa, Factura factura)
+        {
+            EstructuraPDF datos = new EstructuraPDF();
+            try
+            {
+                string apPath = HostingEnvironment.ApplicationPhysicalPath + "images\\Logo.png";
+                Image poweredByImage = Image.FromFile(apPath);
+                datos.PoweredByLogotipo = poweredByImage;
+            }
+            catch (Exception)
+            {
+                datos.PoweredByLogotipo = null;
+            }
+            try
+            {
+                Image logoImage;
+                using (MemoryStream memStream = new MemoryStream(empresa.Logotipo))
+                    logoImage = Image.FromStream(memStream);
+                datos.Logotipo = logoImage;
+            }
+            catch (Exception)
+            {
+                datos.Logotipo = null;
+            }
+            datos.TituloDocumento = "FACTURA ELECTRONICA";
+            datos.NombreEmpresa = empresa.NombreEmpresa;
+            datos.NombreComercial = empresa.NombreComercial;
+            datos.PlazoCredito = factura.PlazoCredito > 0 ? factura.PlazoCredito.ToString() : "";
+            datos.ConsecInterno = factura.ConsecFactura.ToString();
+            datos.Clave = factura.IdDocElectronico;
+            if (factura.IdDocElectronico != "") datos.Consecutivo = factura.IdDocElectronico.Substring(21, 20);
+            datos.CondicionVenta = ObtenerValoresCodificados.ObtenerCondicionDeVenta(factura.IdCondicionVenta);
+            datos.Fecha = factura.Fecha.ToString("dd/MM/yyyy hh:mm:ss");
+            if (factura.IdCondicionVenta == StaticCondicionVenta.Credito)
+                datos.MedioPago = "Crédito";
+            else if (factura.DesglosePagoFactura.ToList().Count > 1)
+                datos.MedioPago = "Otros";
+            else
+                datos.MedioPago = ObtenerValoresCodificados.ObtenerMedioDePago(factura.DesglosePagoFactura.FirstOrDefault().IdFormaPago);
+            datos.NombreEmisor = empresa.NombreEmpresa;
+            datos.NombreComercialEmisor = empresa.NombreComercial;
+            datos.IdentificacionEmisor = empresa.Identificacion;
+            datos.CorreoElectronicoEmisor = empresa.CorreoNotificacion;
+            datos.TelefonoEmisor = empresa.Telefono1 + (empresa.Telefono2.Length > 0 ? " - " + empresa.Telefono2 : "");
+            datos.FaxEmisor = "";
+            datos.ProvinciaEmisor = empresa.Barrio.Distrito.Canton.Provincia.Descripcion;
+            datos.CantonEmisor = empresa.Barrio.Distrito.Canton.Descripcion;
+            datos.DistritoEmisor = empresa.Barrio.Distrito.Descripcion;
+            datos.BarrioEmisor = empresa.Barrio.Descripcion;
+            datos.DireccionEmisor = empresa.Direccion;
+            datos.NombreReceptor = factura.NombreCliente;
+            if (factura.IdCliente > 1)
+            {
+                datos.PoseeReceptor = true;
+                datos.NombreComercialReceptor = factura.Cliente.NombreComercial;
+                datos.IdentificacionReceptor = factura.Cliente.Identificacion;
+                datos.CorreoElectronicoReceptor = factura.Cliente.CorreoElectronico;
+                datos.TelefonoReceptor = factura.Cliente.Telefono;
+                datos.FaxReceptor = factura.Cliente.Fax;
+            }
+            foreach (DetalleFactura linea in factura.DetalleFactura)
+            {
+                decimal decTotalLinea = linea.Cantidad * linea.PrecioVenta;
+                EstructuraPDFDetalleServicio detalle = new EstructuraPDFDetalleServicio
+                {
+                    Cantidad = linea.Cantidad.ToString("N2", CultureInfo.InvariantCulture),
+                    Codigo = linea.Producto.CodigoClasificacion,
+                    Detalle = linea.Descripcion,
+                    PrecioUnitario = linea.PrecioVenta.ToString("N2", CultureInfo.InvariantCulture),
+                    TotalLinea = decTotalLinea.ToString("N2", CultureInfo.InvariantCulture)
+                };
+                datos.DetalleServicio.Add(detalle);
+            };
+            if (factura.TextoAdicional != null) datos.OtrosTextos = factura.TextoAdicional;
+            datos.TotalGravado = factura.Gravado.ToString("N2", CultureInfo.InvariantCulture);
+            datos.TotalExonerado = factura.Exonerado.ToString("N2", CultureInfo.InvariantCulture);
+            datos.TotalExento = factura.Excento.ToString("N2", CultureInfo.InvariantCulture);
+            datos.Descuento = "0.00";
+            datos.Impuesto = factura.Impuesto.ToString("N2", CultureInfo.InvariantCulture);
+            datos.TotalGeneral = (factura.Gravado + factura.Exonerado + factura.Excento + factura.Impuesto).ToString("N2", CultureInfo.InvariantCulture);
+            datos.CodigoMoneda = factura.IdTipoMoneda == 1 ? "CRC" : "USD";
+            datos.TipoDeCambio = "1";
+            return datos;
+        }
+
         private void GenerarNotificacionDocumentoElectronico(DocumentoElectronico documentoElectronico, Empresa empresa, IDbContext dbContext, ICorreoService servicioEnvioCorreo, string strCorreoReceptor, string strCorreoNotificacionErrores)
         {
             try
             {
                 string strBody;
-                string strTitle = "";
                 JArray jarrayObj = new JArray();
                 if (documentoElectronico.IdTipoDocumento == (int)TipoDocumento.FacturaElectronica || documentoElectronico.IdTipoDocumento == (int)TipoDocumento.TiqueteElectronico || documentoElectronico.IdTipoDocumento == (int)TipoDocumento.NotaCreditoElectronica || documentoElectronico.IdTipoDocumento == (int)TipoDocumento.NotaDebitoElectronica)
                 {
                     if (documentoElectronico.EstadoEnvio == "aceptado" && strCorreoReceptor != "")
                     {
+                        string strTitle = "";
                         string[] arrCorreoReceptor = strCorreoReceptor.Split(';');
                         strBody = "Estimado cliente, adjunto encontrará el detalle del documento electrónico en formato PDF y XML con clave " + documentoElectronico.ClaveNumerica + " y la respuesta de aceptación del Ministerio de Hacienda.";
-                        EstructuraPDF datos = new EstructuraPDF();
-                        try
-                        {
-                            string apPath = HostingEnvironment.ApplicationPhysicalPath + "images\\Logo.png";
-                            Image poweredByImage = Image.FromFile(apPath);
-                            datos.PoweredByLogotipo = poweredByImage;
-                        }
-                        catch (Exception)
-                        {
-                            datos.PoweredByLogotipo = null;
-                        }
-                        try
-                        {
-                            Image logoImage;
-                            using (MemoryStream memStream = new MemoryStream(empresa.Logotipo))
-                                logoImage = Image.FromStream(memStream);
-                            datos.Logotipo = logoImage;
-                        }
-                        catch (Exception)
-                        {
-                            datos.Logotipo = null;
-                        }
-                        
                         if (documentoElectronico.IdTipoDocumento == (int)TipoDocumento.FacturaElectronica)
                         {
                             strTitle = "Factura electrónica de emisor " + empresa.NombreComercial;
-                            datos.TituloDocumento = "FACTURA ELECTRONICA";
                         }
                         else if (documentoElectronico.IdTipoDocumento == (int)TipoDocumento.TiqueteElectronico)
                         {
                             strTitle = "Tiquete electrónico de emisor " + empresa.NombreComercial;
-                            datos.TituloDocumento = "TIQUETE ELECTRONICO";
                         }
                         else if (documentoElectronico.IdTipoDocumento == (int)TipoDocumento.NotaCreditoElectronica)
                         {
                             strTitle = "Nota de crédito electrónica de emisor " + empresa.NombreComercial;
-                            datos.TituloDocumento = "NOTA DE CREDITO ELECTRONICA";
                         }
                         else
                         {
                             strTitle = "Nota de débito electrónica de emisor " + empresa.NombreComercial;
-                            datos.TituloDocumento = "NOTA DE DEBITO ELECTRONICA";
                         }
-                        string datosXml = Encoding.UTF8.GetString(documentoElectronico.DatosDocumento);
-                        XmlDocument documentoXml = new XmlDocument();
-                        documentoXml.LoadXml(datosXml);
-                        datos.NombreEmpresa = empresa.NombreEmpresa;
-                        datos.NombreComercial = empresa.NombreComercial;
-                        datos.ConsecInterno = documentoElectronico.IdDocumento.ToString();
-                        datos.Consecutivo = documentoElectronico.Consecutivo;
-                        datos.PlazoCredito = documentoXml.GetElementsByTagName("PlazoCredito").Count > 0 ? documentoXml.GetElementsByTagName("PlazoCredito").Item(0).InnerText : "";
-                        datos.Clave = documentoElectronico.ClaveNumerica;
-                        datos.CondicionVenta = ObtenerValoresCodificados.ObtenerCondicionDeVenta(int.Parse(documentoXml.GetElementsByTagName("CondicionVenta").Item(0).InnerText));
-                        datos.Fecha = documentoElectronico.Fecha.ToString("dd/MM/yyyy hh:mm:ss");
-                        datos.MedioPago = ObtenerValoresCodificados.ObtenerMedioDePago(int.Parse(documentoXml.GetElementsByTagName("MedioPago").Item(0).InnerText));
-                        XmlNode emisorNode = documentoXml.GetElementsByTagName("Emisor").Item(0);
-                        datos.NombreEmisor = emisorNode["Nombre"] != null && emisorNode["Nombre"].ChildNodes.Count > 0 ? emisorNode["Nombre"].InnerText : "";
-                        datos.NombreComercialEmisor = emisorNode["NombreComercial"] != null && emisorNode["NombreComercial"].ChildNodes.Count > 0 ? emisorNode["NombreComercial"].InnerText : "";
-                        datos.IdentificacionEmisor = emisorNode["Identificacion"]["Numero"].InnerText;
-                        datos.CorreoElectronicoEmisor = emisorNode["CorreoElectronico"].InnerText;
-                        datos.TelefonoEmisor = emisorNode["Telefono"] != null && emisorNode["Telefono"].ChildNodes.Count > 0 ? emisorNode["Telefono"]["NumTelefono"].InnerText : "";
-                        datos.FaxEmisor = emisorNode["Fax"] != null && emisorNode["Fax"].ChildNodes.Count > 0 ? emisorNode["Fax"]["NumTelefono"].InnerText : "";
-                        int intProvincia = int.Parse(emisorNode["Ubicacion"]["Provincia"].InnerText);
-                        int intCanton = int.Parse(emisorNode["Ubicacion"]["Canton"].InnerText);
-                        int intDistrito = int.Parse(emisorNode["Ubicacion"]["Distrito"].InnerText);
-                        int intBarrio = int.Parse(emisorNode["Ubicacion"]["Barrio"].InnerText);
-                        datos.ProvinciaEmisor = dbContext.ProvinciaRepository.Where(x => x.IdProvincia == intProvincia).FirstOrDefault().Descripcion;
-                        datos.CantonEmisor = dbContext.CantonRepository.Where(x => x.IdProvincia == intProvincia && x.IdCanton == intCanton).FirstOrDefault().Descripcion;
-                        datos.DistritoEmisor = dbContext.DistritoRepository.Where(x => x.IdProvincia == intProvincia && x.IdCanton == intCanton && x.IdDistrito == intDistrito).FirstOrDefault().Descripcion;
-                        datos.BarrioEmisor = dbContext.BarrioRepository.Where(x => x.IdProvincia == intProvincia && x.IdCanton == intCanton && x.IdDistrito == intDistrito && x.IdBarrio == intBarrio).FirstOrDefault().Descripcion;
-                        datos.DireccionEmisor = emisorNode["Ubicacion"]["OtrasSenas"].InnerText;
-                        string strExoneracionLeyenda = "";
-                        if (documentoXml.GetElementsByTagName("Receptor").Count > 0)
-                        {
-                            XmlNode receptorNode = documentoXml.GetElementsByTagName("Receptor").Item(0);
-                            datos.PoseeReceptor = true;
-                            datos.NombreReceptor = receptorNode["Nombre"] != null && receptorNode["Nombre"].ChildNodes.Count > 0 ? receptorNode["Nombre"].InnerText : "";
-                            datos.NombreComercialReceptor = receptorNode["NombreComercial"] != null && receptorNode["NombreComercial"].ChildNodes.Count > 0 ? receptorNode["NombreComercial"].InnerText : "";
-                            datos.IdentificacionReceptor = receptorNode["Identificacion"]["Numero"].InnerText;
-                            datos.CorreoElectronicoReceptor = receptorNode["CorreoElectronico"].InnerText;
-                            datos.TelefonoReceptor = receptorNode["Telefono"] != null && receptorNode["Telefono"].ChildNodes.Count > 0 ? receptorNode["Telefono"]["NumTelefono"].InnerText : "";
-                            datos.FaxReceptor = receptorNode["Fax"] != null && receptorNode["Fax"].ChildNodes.Count > 0 ? receptorNode["Fax"]["NumTelefono"].InnerText : "";
-                        }
-                        else
-                        {
-                            datos.NombreReceptor = documentoElectronico.NombreReceptor;
-                        }
-                        foreach (XmlNode lineaDetalle in documentoXml.GetElementsByTagName("LineaDetalle"))
-                        {
-                            if (lineaDetalle["Impuesto"] != null)
-                            {
-                                if (lineaDetalle["Impuesto"]["Exoneracion"] != null)
-                                {
-                                    if (strExoneracionLeyenda.Length == 0) strExoneracionLeyenda = "Se aplica exoneración segun oficio " + lineaDetalle["Impuesto"]["Exoneracion"]["NumeroDocumento"].InnerText + " por un porcentaje del " + lineaDetalle["Impuesto"]["Exoneracion"]["PorcentajeExoneracion"].InnerText + "% del valor gravado.";
-                                }
-                            }
-                            EstructuraPDFDetalleServicio detalle = new EstructuraPDFDetalleServicio
-                            {
-                                Cantidad = lineaDetalle["Cantidad"].InnerText,
-                                Codigo = lineaDetalle["Codigo"].InnerText,
-                                Detalle = lineaDetalle["Detalle"].InnerText,
-                                PrecioUnitario = string.Format("{0:N2}", Convert.ToDouble(lineaDetalle["PrecioUnitario"].InnerText, CultureInfo.InvariantCulture)),
-                                TotalLinea = string.Format("{0:N2}", Convert.ToDouble(lineaDetalle["MontoTotalLinea"].InnerText, CultureInfo.InvariantCulture))
-                            };
-                            datos.DetalleServicio.Add(detalle);
-                        }
-                        string otrosTextos = documentoXml.GetElementsByTagName("Otros") != null && documentoXml.GetElementsByTagName("Otros").Count > 0 ? documentoXml.GetElementsByTagName("Otros").Item(0)["OtroTexto"].InnerText : "";
-                        if (strExoneracionLeyenda.Length > 0)
-                        {
-                            if (otrosTextos.Length > 0) otrosTextos += " ";
-                            otrosTextos += strExoneracionLeyenda;
-                        }
-                        if (otrosTextos.Length > 0) datos.OtrosTextos = otrosTextos;
-                        XmlNode resumenFacturaNode = documentoXml.GetElementsByTagName("ResumenFactura").Item(0);
-                        datos.TotalGravado = string.Format("{0:N2}", Convert.ToDouble(resumenFacturaNode["TotalGravado"].InnerText, CultureInfo.InvariantCulture));
-                        datos.TotalExonerado = resumenFacturaNode["TotalExonerado"] != null && resumenFacturaNode["TotalExonerado"].ChildNodes.Count > 0 ? string.Format("{0:N2}", Convert.ToDouble(resumenFacturaNode["TotalExonerado"].InnerText, CultureInfo.InvariantCulture)) : "0.00";
-                        datos.TotalExento = string.Format("{0:N2}", Convert.ToDouble(resumenFacturaNode["TotalExento"].InnerText, CultureInfo.InvariantCulture));
-                        datos.Descuento = resumenFacturaNode["TotalDescuentos"] != null && resumenFacturaNode["TotalDescuentos"].ChildNodes.Count > 0 ? string.Format("{0:N2}", Convert.ToDouble(resumenFacturaNode["TotalDescuentos"].InnerText, CultureInfo.InvariantCulture)) : "0.00";
-                        datos.Impuesto = resumenFacturaNode["TotalImpuesto"] != null && resumenFacturaNode["TotalImpuesto"].ChildNodes.Count > 0 ? string.Format("{0:N2}", Convert.ToDouble(resumenFacturaNode["TotalImpuesto"].InnerText, CultureInfo.InvariantCulture)) : "0.00";
-                        datos.TotalGeneral = string.Format("{0:N2}", Convert.ToDouble(resumenFacturaNode["TotalComprobante"].InnerText, CultureInfo.InvariantCulture));
-                        datos.CodigoMoneda = resumenFacturaNode["CodigoTipoMoneda"] != null && resumenFacturaNode["CodigoTipoMoneda"].ChildNodes.Count > 0 ? resumenFacturaNode["CodigoTipoMoneda"]["CodigoMoneda"].InnerText : "CRC";
-                        datos.TipoDeCambio = resumenFacturaNode["CodigoTipoMoneda"] != null && resumenFacturaNode["CodigoTipoMoneda"].ChildNodes.Count > 0 ? resumenFacturaNode["CodigoTipoMoneda"]["TipoCambio"].InnerText : "1.00000";
+                        EstructuraPDF datos = GenerarEstructuraDocumentoPDF(empresa, documentoElectronico, dbContext);
                         byte[] pdfAttactment = UtilitarioPDF.GenerarPDF(datos);
                         JObject jobDatosAdjuntos1 = new JObject
                         {
@@ -2845,6 +2895,128 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 string strBody = "El documento con clave " + documentoElectronico.ClaveNumerica + " registrado en la empresa " + empresa.NombreEmpresa + " genero un error en el envío del PDF al remitente: " + strCorreoReceptor + " Error: " + ex.Message;
                 servicioEnvioCorreo.SendEmail(new string[] { strCorreoNotificacionErrores }, new string[] { }, "Error al tratar de enviar el correo al receptor.", strBody, false, emptyJArray);
             }
+        }
+
+        private EstructuraPDF GenerarEstructuraDocumentoPDF(Empresa empresa, DocumentoElectronico documentoElectronico, IDbContext dbContext)
+        {
+            EstructuraPDF datos = new EstructuraPDF();
+            try
+            {
+                string apPath = HostingEnvironment.ApplicationPhysicalPath + "images\\Logo.png";
+                Image poweredByImage = Image.FromFile(apPath);
+                datos.PoweredByLogotipo = poweredByImage;
+            }
+            catch (Exception)
+            {
+                datos.PoweredByLogotipo = null;
+            }
+            try
+            {
+                Image logoImage;
+                using (MemoryStream memStream = new MemoryStream(empresa.Logotipo))
+                    logoImage = Image.FromStream(memStream);
+                datos.Logotipo = logoImage;
+            }
+            catch (Exception)
+            {
+                datos.Logotipo = null;
+            }
+            if (documentoElectronico.IdTipoDocumento == (int)TipoDocumento.FacturaElectronica)
+            {
+                datos.TituloDocumento = "FACTURA ELECTRONICA";
+            }
+            else if (documentoElectronico.IdTipoDocumento == (int)TipoDocumento.TiqueteElectronico)
+            {
+                datos.TituloDocumento = "TIQUETE ELECTRONICO";
+            }
+            else if (documentoElectronico.IdTipoDocumento == (int)TipoDocumento.NotaCreditoElectronica)
+            {
+                datos.TituloDocumento = "NOTA DE CREDITO ELECTRONICA";
+            }
+            else
+            {
+                datos.TituloDocumento = "NOTA DE DEBITO ELECTRONICA";
+            }
+            string datosXml = Encoding.UTF8.GetString(documentoElectronico.DatosDocumento);
+            XmlDocument documentoXml = new XmlDocument();
+            documentoXml.LoadXml(datosXml);
+            datos.NombreEmpresa = empresa.NombreEmpresa;
+            datos.NombreComercial = empresa.NombreComercial;
+            datos.ConsecInterno = documentoElectronico.IdDocumento.ToString();
+            datos.Consecutivo = documentoElectronico.Consecutivo;
+            datos.PlazoCredito = documentoXml.GetElementsByTagName("PlazoCredito").Count > 0 ? documentoXml.GetElementsByTagName("PlazoCredito").Item(0).InnerText : "";
+            datos.Clave = documentoElectronico.ClaveNumerica;
+            datos.CondicionVenta = ObtenerValoresCodificados.ObtenerCondicionDeVenta(int.Parse(documentoXml.GetElementsByTagName("CondicionVenta").Item(0).InnerText));
+            datos.Fecha = documentoElectronico.Fecha.ToString("dd/MM/yyyy hh:mm:ss");
+            datos.MedioPago = ObtenerValoresCodificados.ObtenerMedioDePago(int.Parse(documentoXml.GetElementsByTagName("MedioPago").Item(0).InnerText));
+            XmlNode emisorNode = documentoXml.GetElementsByTagName("Emisor").Item(0);
+            datos.NombreEmisor = emisorNode["Nombre"] != null && emisorNode["Nombre"].ChildNodes.Count > 0 ? emisorNode["Nombre"].InnerText : "";
+            datos.NombreComercialEmisor = emisorNode["NombreComercial"] != null && emisorNode["NombreComercial"].ChildNodes.Count > 0 ? emisorNode["NombreComercial"].InnerText : "";
+            datos.IdentificacionEmisor = emisorNode["Identificacion"]["Numero"].InnerText;
+            datos.CorreoElectronicoEmisor = emisorNode["CorreoElectronico"].InnerText;
+            datos.TelefonoEmisor = emisorNode["Telefono"] != null && emisorNode["Telefono"].ChildNodes.Count > 0 ? emisorNode["Telefono"]["NumTelefono"].InnerText : "";
+            datos.FaxEmisor = emisorNode["Fax"] != null && emisorNode["Fax"].ChildNodes.Count > 0 ? emisorNode["Fax"]["NumTelefono"].InnerText : "";
+            int intProvincia = int.Parse(emisorNode["Ubicacion"]["Provincia"].InnerText);
+            int intCanton = int.Parse(emisorNode["Ubicacion"]["Canton"].InnerText);
+            int intDistrito = int.Parse(emisorNode["Ubicacion"]["Distrito"].InnerText);
+            int intBarrio = int.Parse(emisorNode["Ubicacion"]["Barrio"].InnerText);
+            datos.ProvinciaEmisor = dbContext.ProvinciaRepository.Where(x => x.IdProvincia == intProvincia).FirstOrDefault().Descripcion;
+            datos.CantonEmisor = dbContext.CantonRepository.Where(x => x.IdProvincia == intProvincia && x.IdCanton == intCanton).FirstOrDefault().Descripcion;
+            datos.DistritoEmisor = dbContext.DistritoRepository.Where(x => x.IdProvincia == intProvincia && x.IdCanton == intCanton && x.IdDistrito == intDistrito).FirstOrDefault().Descripcion;
+            datos.BarrioEmisor = dbContext.BarrioRepository.Where(x => x.IdProvincia == intProvincia && x.IdCanton == intCanton && x.IdDistrito == intDistrito && x.IdBarrio == intBarrio).FirstOrDefault().Descripcion;
+            datos.DireccionEmisor = emisorNode["Ubicacion"]["OtrasSenas"].InnerText;
+            string strExoneracionLeyenda = "";
+            if (documentoXml.GetElementsByTagName("Receptor").Count > 0)
+            {
+                XmlNode receptorNode = documentoXml.GetElementsByTagName("Receptor").Item(0);
+                datos.PoseeReceptor = true;
+                datos.NombreReceptor = receptorNode["Nombre"] != null && receptorNode["Nombre"].ChildNodes.Count > 0 ? receptorNode["Nombre"].InnerText : "";
+                datos.NombreComercialReceptor = receptorNode["NombreComercial"] != null && receptorNode["NombreComercial"].ChildNodes.Count > 0 ? receptorNode["NombreComercial"].InnerText : "";
+                datos.IdentificacionReceptor = receptorNode["Identificacion"]["Numero"].InnerText;
+                datos.CorreoElectronicoReceptor = receptorNode["CorreoElectronico"].InnerText;
+                datos.TelefonoReceptor = receptorNode["Telefono"] != null && receptorNode["Telefono"].ChildNodes.Count > 0 ? receptorNode["Telefono"]["NumTelefono"].InnerText : "";
+                datos.FaxReceptor = receptorNode["Fax"] != null && receptorNode["Fax"].ChildNodes.Count > 0 ? receptorNode["Fax"]["NumTelefono"].InnerText : "";
+            }
+            else
+            {
+                datos.NombreReceptor = documentoElectronico.NombreReceptor;
+            }
+            foreach (XmlNode lineaDetalle in documentoXml.GetElementsByTagName("LineaDetalle"))
+            {
+                if (lineaDetalle["Impuesto"] != null)
+                {
+                    if (lineaDetalle["Impuesto"]["Exoneracion"] != null)
+                    {
+                        if (strExoneracionLeyenda.Length == 0) strExoneracionLeyenda = "Se aplica exoneración segun oficio " + lineaDetalle["Impuesto"]["Exoneracion"]["NumeroDocumento"].InnerText + " por un porcentaje del " + lineaDetalle["Impuesto"]["Exoneracion"]["PorcentajeExoneracion"].InnerText + "% del valor gravado.";
+                    }
+                }
+                EstructuraPDFDetalleServicio detalle = new EstructuraPDFDetalleServicio
+                {
+                    Cantidad = lineaDetalle["Cantidad"].InnerText,
+                    Codigo = lineaDetalle["Codigo"].InnerText,
+                    Detalle = lineaDetalle["Detalle"].InnerText,
+                    PrecioUnitario = string.Format("{0:N2}", Convert.ToDouble(lineaDetalle["PrecioUnitario"].InnerText, CultureInfo.InvariantCulture)),
+                    TotalLinea = string.Format("{0:N2}", Convert.ToDouble(lineaDetalle["MontoTotal"].InnerText, CultureInfo.InvariantCulture))
+                };
+                datos.DetalleServicio.Add(detalle);
+            }
+            string otrosTextos = documentoXml.GetElementsByTagName("Otros") != null && documentoXml.GetElementsByTagName("Otros").Count > 0 ? documentoXml.GetElementsByTagName("Otros").Item(0)["OtroTexto"].InnerText : "";
+            if (strExoneracionLeyenda.Length > 0)
+            {
+                if (otrosTextos.Length > 0) otrosTextos += " ";
+                otrosTextos += strExoneracionLeyenda;
+            }
+            if (otrosTextos.Length > 0) datos.OtrosTextos = otrosTextos;
+            XmlNode resumenFacturaNode = documentoXml.GetElementsByTagName("ResumenFactura").Item(0);
+            datos.TotalGravado = string.Format("{0:N2}", Convert.ToDouble(resumenFacturaNode["TotalGravado"].InnerText, CultureInfo.InvariantCulture));
+            datos.TotalExonerado = resumenFacturaNode["TotalExonerado"] != null && resumenFacturaNode["TotalExonerado"].ChildNodes.Count > 0 ? string.Format("{0:N2}", Convert.ToDouble(resumenFacturaNode["TotalExonerado"].InnerText, CultureInfo.InvariantCulture)) : "0.00";
+            datos.TotalExento = string.Format("{0:N2}", Convert.ToDouble(resumenFacturaNode["TotalExento"].InnerText, CultureInfo.InvariantCulture));
+            datos.Descuento = resumenFacturaNode["TotalDescuentos"] != null && resumenFacturaNode["TotalDescuentos"].ChildNodes.Count > 0 ? string.Format("{0:N2}", Convert.ToDouble(resumenFacturaNode["TotalDescuentos"].InnerText, CultureInfo.InvariantCulture)) : "0.00";
+            datos.Impuesto = resumenFacturaNode["TotalImpuesto"] != null && resumenFacturaNode["TotalImpuesto"].ChildNodes.Count > 0 ? string.Format("{0:N2}", Convert.ToDouble(resumenFacturaNode["TotalImpuesto"].InnerText, CultureInfo.InvariantCulture)) : "0.00";
+            datos.TotalGeneral = string.Format("{0:N2}", Convert.ToDouble(resumenFacturaNode["TotalComprobante"].InnerText, CultureInfo.InvariantCulture));
+            datos.CodigoMoneda = resumenFacturaNode["CodigoTipoMoneda"] != null && resumenFacturaNode["CodigoTipoMoneda"].ChildNodes.Count > 0 ? resumenFacturaNode["CodigoTipoMoneda"]["CodigoMoneda"].InnerText : "CRC";
+            datos.TipoDeCambio = resumenFacturaNode["CodigoTipoMoneda"] != null && resumenFacturaNode["CodigoTipoMoneda"].ChildNodes.Count > 0 ? resumenFacturaNode["CodigoTipoMoneda"]["TipoCambio"].InnerText : "1.00000";
+            return datos;
         }
 
         public void GenerarNotificacionProforma(int intIdProforma, string strCorreoReceptor, ICorreoService servicioEnvioCorreo)

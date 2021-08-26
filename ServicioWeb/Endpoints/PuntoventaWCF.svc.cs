@@ -162,7 +162,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             try
             {
                 string strPath = HttpContext.Current.Server.MapPath("~");
-                string[] directoryEntries = Directory.GetFileSystemEntries(strPath, "errorlog.txt??-??-????");
+                string[] directoryEntries = Directory.GetFileSystemEntries(strPath, "errorlog-??-??-????.txt");
                 foreach (string str in directoryEntries)
                 {
                     byte[] bytes = File.ReadAllBytes(str);
@@ -646,6 +646,10 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         intIdLlave1 = int.Parse(parametrosJO.Property("IdDocumento").Value.ToString());
                         strCorreoReceptor = parametrosJO.Property("CorreoReceptor").Value.ToString();
                         servicioFacturacion.EnviarNotificacionDocumentoElectronico(intIdLlave1, strCorreoReceptor, servicioEnvioCorreo, configuracionGeneral.CorreoNotificacionErrores);
+                        break;
+                    case "GenerarNotificacionFactura":
+                        intIdLlave1 = int.Parse(parametrosJO.Property("IdFactura").Value.ToString());
+                        servicioFacturacion.GenerarNotificacionFactura(intIdLlave1, servicioEnvioCorreo);
                         break;
                     case "GenerarNotificacionProforma":
                         intIdLlave1 = int.Parse(parametrosJO.Property("IdProforma").Value.ToString());
@@ -1956,6 +1960,12 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         cierre = servicioFlujoCaja.ObtenerCierreCaja(intIdLlave1);
                         if (cierre != null)
                             strRespuesta = serializer.Serialize(cierre);
+                        break;
+                    case "ObtenerFacturaPDF":
+                        intIdLlave1 = int.Parse(parametrosJO.Property("IdFactura").Value.ToString());
+                        byte[] facturaPdf = servicioFacturacion.GenerarFacturaPDF(intIdLlave1);
+                        if (facturaPdf.Length > 0)
+                            strRespuesta = serializer.Serialize(facturaPdf);
                         break;
                     case "ObtenerDatosReporte":
                         intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
