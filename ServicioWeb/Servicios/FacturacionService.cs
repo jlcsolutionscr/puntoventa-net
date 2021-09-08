@@ -783,6 +783,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         decTipoDeCambio = tipoDeCambio.ValorTipoCambio;
                     }
                     facturaCompra.TipoDeCambioDolar = decTipoDeCambio;
+                    foreach (var detalle in facturaCompra.DetalleFacturaCompra)
+                    {
+                        var clasificacion = dbContext.ClasificacionProductoRepository.Where(x => x.Id == detalle.Codigo).FirstOrDefault();
+                        if (clasificacion == null) throw new BusinessException("El código " + detalle.Codigo + " asignado al detalle de la factura de compra no corresponde a un código CABYS válido.");
+                    }
                     dbContext.FacturaCompraRepository.Add(facturaCompra);
                     DocumentoElectronico documentoFE = ComprobanteElectronicoService.GenerarFacturaCompraElectronica(facturaCompra, facturaCompra.Empresa, dbContext, decTipoDeCambio);
                     dbContext.Commit();

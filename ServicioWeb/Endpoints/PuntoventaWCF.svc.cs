@@ -284,10 +284,10 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             try
             {
                 string strClaveFormateada = strClave.Replace(" ", "+");
-                Usuario usuario = servicioMantenimiento.ValidarCredenciales(strUsuario, strClaveFormateada, strIdentificacion);
+                Empresa empresa = servicioMantenimiento.ValidarCredenciales(strUsuario, strClaveFormateada, strIdentificacion);
                 string strRespuesta = "";
-                if (usuario != null)
-                    strRespuesta = serializer.Serialize(usuario);
+                if (empresa != null)
+                    strRespuesta = serializer.Serialize(empresa);
                 return strRespuesta;
             }
             catch (Exception ex)
