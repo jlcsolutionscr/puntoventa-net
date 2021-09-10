@@ -755,7 +755,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                             strRespuesta = serializer.Serialize(listadoTipoExoneracion);
                         break;
                     case "ObtenerListadoTipoImpuesto":
-                        IList<LlaveDescripcion> listadoTipoImpuesto = servicioMantenimiento.ObtenerListadoTipoImpuesto();
+                        IList<LlaveDescripcionValor> listadoTipoImpuesto = servicioMantenimiento.ObtenerListadoTipoImpuesto();
                         if (listadoTipoImpuesto.Count > 0)
                             strRespuesta = serializer.Serialize(listadoTipoImpuesto);
                         break;

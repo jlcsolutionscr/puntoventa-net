@@ -78,7 +78,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         // Métodos para administrar los productos
         IList<LlaveDescripcion> ObtenerListadoTipoProducto();
         IList<LlaveDescripcion> ObtenerListadoTipoExoneracion();
-        IList<LlaveDescripcion> ObtenerListadoTipoImpuesto();
+        IList<LlaveDescripcionValor> ObtenerListadoTipoImpuesto();
         ParametroImpuesto ObtenerParametroImpuesto(int intIdImpuesto);
         void AgregarProducto(Producto producto);
         void ActualizarProducto(Producto producto);
@@ -407,9 +407,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         if (!empresa.PermiteFacturar) throw new BusinessException("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
                         if (empresa.FechaVence < DateTime.Today) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
                         if (empresa.TipoContrato == 2 && empresa.CantidadDisponible == 0) throw new BusinessException("El disponible de documentos electrónicos fue agotado. Por favor, pongase en contacto con su proveedor del servicio.");
-                        usuario = dbContext.UsuarioRepository.Include("SucursalPorUsuario").Include("RolePorUsuario.Role").FirstOrDefault(x => x.SucursalPorUsuario.FirstOrDefault().IdEmpresa == empresa.IdEmpresa && x.CodigoUsuario == strUsuario.ToUpper());
-                        usuario.IdSucursal = usuario.SucursalPorUsuario.FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa).IdSucursal;
-                        usuario.SucursalPorUsuario = new SucursalPorUsuario[] { };
+                        usuario = dbContext.UsuarioRepository.Include("RolePorUsuario.Role").FirstOrDefault(x => x.CodigoUsuario == strUsuario.ToUpper());
+                        SucursalPorUsuario sucursalPorUsuario = dbContext.SucursalPorUsuarioRepository.FirstOrDefault(y => y.IdUsuario == usuario.IdUsuario && y.IdEmpresa == empresa.IdEmpresa);
+                        usuario.IdSucursal = sucursalPorUsuario.IdSucursal;
                     }
                     if (usuario == null) throw new BusinessException("Usuario no registrado en la empresa suministrada. Por favor verifique la información suministrada.");
                     if (usuario.Clave != strClave) throw new BusinessException("Los credenciales suministrados no son válidos. Verifique los credenciales suministrados.");
@@ -1640,17 +1640,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IList<LlaveDescripcion> ObtenerListadoTipoImpuesto()
+        public IList<LlaveDescripcionValor> ObtenerListadoTipoImpuesto()
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
-                var listaTipoImpuesto = new List<LlaveDescripcion>();
+                var listaTipoImpuesto = new List<LlaveDescripcionValor>();
                 try
                 {
                     var listado = dbContext.ParametroImpuestoRepository;
                     foreach (var value in listado)
                     {
-                        LlaveDescripcion item = new LlaveDescripcion(value.IdImpuesto, value.Descripcion);
+                        LlaveDescripcionValor item = new LlaveDescripcionValor(value.IdImpuesto, value.Descripcion, value.TasaImpuesto);
                         listaTipoImpuesto.Add(item);
                     }
                     return listaTipoImpuesto;

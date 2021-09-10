@@ -439,6 +439,23 @@ namespace LeandroSoftware.Core.TiposComunes
         public string Descripcion { get; set; }
     }
 
+    public class LlaveDescripcionValor
+    {
+        public LlaveDescripcionValor()
+        {
+        }
+
+        public LlaveDescripcionValor(int id, string descripcion, decimal valor)
+        {
+            Id = id;
+            Descripcion = descripcion;
+            Valor = valor;
+        }
+        public int Id { get; set; }
+        public string Descripcion { get; set; }
+        public decimal Valor { get; set; }
+    }
+
     public class ProductoDetalle
     {
         public ProductoDetalle()
