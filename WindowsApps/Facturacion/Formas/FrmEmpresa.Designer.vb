@@ -58,6 +58,7 @@ Partial Class FrmEmpresa
         Me.txtFechaRenovacion = New System.Windows.Forms.TextBox()
         Me.Label9 = New System.Windows.Forms.Label()
         Me.gpbSucursal = New System.Windows.Forms.GroupBox()
+        Me.chkCierre = New System.Windows.Forms.CheckBox()
         Me.Label36 = New System.Windows.Forms.Label()
         Me.cboTipoImpresora = New System.Windows.Forms.ComboBox()
         Me.txtConsecApartado = New System.Windows.Forms.TextBox()
@@ -119,7 +120,6 @@ Partial Class FrmEmpresa
         Me.Label29 = New System.Windows.Forms.Label()
         Me.txtTelefono2 = New System.Windows.Forms.TextBox()
         Me.Label30 = New System.Windows.Forms.Label()
-        Me.chkCierre = New System.Windows.Forms.CheckBox()
         Me.gpbSucursal.SuspendLayout()
         Me.GroupBox1.SuspendLayout()
         CType(Me.picLogo, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -579,6 +579,16 @@ Partial Class FrmEmpresa
         Me.gpbSucursal.TabIndex = 14
         Me.gpbSucursal.TabStop = False
         Me.gpbSucursal.Text = "Datos de la Terminal en Uso"
+        '
+        'chkCierre
+        '
+        Me.chkCierre.AutoSize = True
+        Me.chkCierre.Location = New System.Drawing.Point(285, 23)
+        Me.chkCierre.Name = "chkCierre"
+        Me.chkCierre.Size = New System.Drawing.Size(117, 17)
+        Me.chkCierre.TabIndex = 290
+        Me.chkCierre.Text = "Cierre en ejecución"
+        Me.chkCierre.UseVisualStyleBackColor = True
         '
         'Label36
         '
@@ -1395,16 +1405,6 @@ Partial Class FrmEmpresa
         Me.Label30.TabIndex = 273
         Me.Label30.Text = "Teléfono 2:"
         Me.Label30.TextAlign = System.Drawing.ContentAlignment.TopRight
-        '
-        'chkCierre
-        '
-        Me.chkCierre.AutoSize = True
-        Me.chkCierre.Location = New System.Drawing.Point(285, 23)
-        Me.chkCierre.Name = "chkCierre"
-        Me.chkCierre.Size = New System.Drawing.Size(117, 17)
-        Me.chkCierre.TabIndex = 290
-        Me.chkCierre.Text = "Cierre en ejecución"
-        Me.chkCierre.UseVisualStyleBackColor = True
         '
         'FrmEmpresa
         '

@@ -893,7 +893,7 @@ Public Class FrmFactura
                 txtNombreCliente.Text = ordenServicio.NombreCliente
                 txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
                 txtTelefono.Text = ordenServicio.Telefono
-                txtObservaciones.Text = ""
+                txtObservaciones.Text = ordenServicio.OtrosDetalles
                 cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado
                 cboCondicionVenta.Enabled = cliente.IdCliente > 1
                 txtPlazoCredito.Text = ""
