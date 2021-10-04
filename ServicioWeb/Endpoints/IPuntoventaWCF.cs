@@ -16,6 +16,14 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
         string ObtenerUltimaVersionMobileApp();
 
         [OperationContract]
+        [WebGet(UriTemplate = "obtenerlistadotiqueteordenserviciopendiente?idempresa={idempresa}&idsucursal={idsucursal}", ResponseFormat = WebMessageFormat.Json)]
+        string ObtenerListadoTiqueteOrdenServicioPendiente(int idempresa, int idsucursal);
+
+        [OperationContract]
+        [WebGet(UriTemplate = "cambiarestadoaimpresotiqueteordenservicio?idtiquete={idtiquete}", ResponseFormat = WebMessageFormat.Json)]
+        void CambiarEstadoAImpresoTiqueteOrdenServicio(int idtiquete);
+
+        [OperationContract]
         [WebGet(UriTemplate = "descargaractualizacion")]
         Stream DescargarActualizacion();
 

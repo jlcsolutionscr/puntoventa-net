@@ -30,7 +30,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
         private IFlujoCajaService servicioFlujoCaja;
         private IBancaService servicioBanca;
         private IReporteService servicioReportes;
-        private IContabilidadService servicioContabilidad;
+        // private IContabilidadService servicioContabilidad;
         private ITrasladoService servicioTraslado;
         private ICuentaPorProcesarService servicioCuentaPorProcesar;
         IUnityContainer unityContainer;
@@ -79,6 +79,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
         private static MovimientoApartado movimientoApartado;
         private static MovimientoOrdenServicio movimientoOrdenServicio;
         private static MovimientoBanco movimientoBanco;
+        private static PuntoDeServicio puntoDeServicio;
         private static int intIdEmpresa;
         private static int intIdSucursal;
         private static int intIdCuenta;
@@ -112,9 +113,9 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
         string strFechaInicial;
         string strFechaFinal;
         string strRespuesta = "";
-
         public PuntoventaWCF()
         {
+            WebOperationContext.Current.OutgoingResponse.ContentType = "application/json";
             unityContainer = new UnityContainer();
             string connString = WebConfigurationManager.ConnectionStrings["LeandroContext"].ConnectionString;
             unityContainer.RegisterType<LeandroContext>(new ContainerControlledLifetimeManager());
@@ -137,7 +138,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             servicioFlujoCaja = unityContainer.Resolve<IFlujoCajaService>();
             servicioBanca = unityContainer.Resolve<IBancaService>();
             servicioReportes = unityContainer.Resolve<IReporteService>();
-            servicioContabilidad = unityContainer.Resolve<IContabilidadService>();
+            // servicioContabilidad = unityContainer.Resolve<IContabilidadService>();
             servicioTraslado = unityContainer.Resolve<ITrasladoService>();
             servicioCuentaPorProcesar = unityContainer.Resolve<ICuentaPorProcesarService>();
             try
@@ -148,7 +149,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             catch (Exception ex)
             {
                 log.Error("Error al consultar el estado del modo mantenimiento del sistema: ", ex);
-                throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
+                throw new WebFaultException<string>(ex.Message, HttpStatusCode.SeeOther);
             }
             try
             {
@@ -157,7 +158,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             catch (Exception ex)
             {
                 log.Error("Error al consultar el tipo de cambio del dolar: ", ex);
-                throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
+                throw new WebFaultException<string>(ex.Message, HttpStatusCode.SeeOther);
             }
             try
             {
@@ -194,7 +195,37 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             }
             catch (Exception ex)
             {
-                throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
+                throw new WebFaultException<string>(ex.Message, HttpStatusCode.SeeOther);
+            }
+        }
+
+        public string ObtenerListadoTiqueteOrdenServicioPendiente(int intIdEmpresa, int intIdSucursal)
+        {
+            try
+            {
+                JavaScriptSerializer serializer = new JavaScriptSerializer();
+                IList<ClsTiquete> listadoTiqueteOrdenServicio = servicioFacturacion.ObtenerListadoTiqueteOrdenServicio(intIdEmpresa, intIdSucursal, false, false);
+                string strRespuesta = "";
+                if (listadoTiqueteOrdenServicio.Count > 0)
+                    strRespuesta = serializer.Serialize(listadoTiqueteOrdenServicio);
+                return strRespuesta;
+            }
+            catch (Exception ex)
+            {
+                throw new WebFaultException<string>(ex.Message, HttpStatusCode.SeeOther);
+            }
+        }
+
+        public void CambiarEstadoAImpresoTiqueteOrdenServicio(int intIdTiquete)
+        {
+            try
+            {
+                JavaScriptSerializer serializer = new JavaScriptSerializer();
+                servicioFacturacion.ActualizarEstadoTiqueteOrdenServicio(intIdTiquete, true);
+            }
+            catch (Exception ex)
+            {
+                throw new WebFaultException<string>(ex.Message, HttpStatusCode.SeeOther);
             }
         }
 
@@ -206,7 +237,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             }
             catch (Exception ex)
             {
-                throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
+                throw new WebFaultException<string>(ex.Message, HttpStatusCode.SeeOther);
             }
         }
 
@@ -223,7 +254,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             }
             catch (Exception ex)
             {
-                throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
+                throw new WebFaultException<string>(ex.Message, HttpStatusCode.SeeOther);
             }
         }
 
@@ -240,7 +271,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             }
             catch (Exception ex)
             {
-                throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
+                throw new WebFaultException<string>(ex.Message, HttpStatusCode.SeeOther);
             }
         }
 
@@ -257,7 +288,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             }
             catch (Exception ex)
             {
-                throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
+                throw new WebFaultException<string>(ex.Message, HttpStatusCode.SeeOther);
             }
         }
 
@@ -275,7 +306,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             }
             catch (Exception ex)
             {
-                throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
+                throw new WebFaultException<string>(ex.Message, HttpStatusCode.SeeOther);
             }
         }
 
@@ -292,7 +323,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             }
             catch (Exception ex)
             {
-                throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
+                throw new WebFaultException<string>(ex.Message, HttpStatusCode.SeeOther);
             }
         }
 
@@ -310,7 +341,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             }
             catch (Exception ex)
             {
-                throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
+                throw new WebFaultException<string>(ex.Message, HttpStatusCode.SeeOther);
             }
 }
 
@@ -323,7 +354,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             }
             catch (Exception ex)
             {
-                throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
+                throw new WebFaultException<string>(ex.Message, HttpStatusCode.SeeOther);
             }
         }
 
@@ -343,7 +374,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                 }
                 else
                 {
-                    throw new WebFaultException<string>("El mensaje no contiene la información suficiente para ser procesado.", HttpStatusCode.InternalServerError);
+                    throw new WebFaultException<string>("El mensaje no contiene la información suficiente para ser procesado.", HttpStatusCode.SeeOther);
                 }
                 if (datosJO.Property("Entidad") != null)
                 {
@@ -355,7 +386,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                 }
                 else
                 {
-                    throw new WebFaultException<string>("El mensaje no contiene la información suficiente para ser procesado.", HttpStatusCode.InternalServerError);
+                    throw new WebFaultException<string>("El mensaje no contiene la información suficiente para ser procesado.", HttpStatusCode.SeeOther);
                 }
                 switch (strNombreMetodo)
                 {
@@ -629,6 +660,23 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         strMotivoAnulacion = parametrosJO.Property("MotivoAnulacion") != null ? parametrosJO.Property("MotivoAnulacion").Value.ToString() : "";
                         servicioBanca.AnularMovimientoBanco(intIdLlave1, intIdUsuario, strMotivoAnulacion);
                         break;
+                    case "AgregarPuntoDeServicio":
+                        puntoDeServicio = serializer.Deserialize<PuntoDeServicio>(strEntidad);
+                        servicioMantenimiento.AgregarPuntoDeServicio(puntoDeServicio);
+                        break;
+                    case "ActualizarPuntoDeServicio":
+                        puntoDeServicio = serializer.Deserialize<PuntoDeServicio>(strEntidad);
+                        servicioMantenimiento.ActualizarPuntoDeServicio(puntoDeServicio);
+                        break;
+                    case "ActualizarEstadoTiqueteOrdenServicio":
+                        intIdLlave1 = int.Parse(parametrosJO.Property("IdTiquete").Value.ToString());
+                        bolAplicado = bool.Parse(parametrosJO.Property("Estado").Value.ToString());
+                        servicioFacturacion.ActualizarEstadoTiqueteOrdenServicio(intIdLlave1, bolAplicado);
+                        break;
+                    case "EliminarPuntoDeServicio":
+                        intIdLlave1 = int.Parse(parametrosJO.Property("IdPuntoDeServicio").Value.ToString());
+                        servicioMantenimiento.EliminarPuntoDeServicio(intIdLlave1);
+                        break;
                     case "GenerarMensajeReceptor":
                         strDatos = parametrosJO.Property("Datos").Value.ToString();
                         intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
@@ -703,7 +751,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             }
             catch (Exception ex)
             {
-                throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
+                throw new WebFaultException<string>(ex.Message, HttpStatusCode.SeeOther);
             }
         }
 
@@ -718,7 +766,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                 if (datosJO.Property("NombreMetodo") != null)
                     strNombreMetodo = datosJO.Property("NombreMetodo").Value.ToString();
                 else
-                    throw new WebFaultException<string>("El mensaje no contiene la información suficiente para ser procesado.", HttpStatusCode.InternalServerError);
+                    throw new WebFaultException<string>("El mensaje no contiene la información suficiente para ser procesado.", HttpStatusCode.SeeOther);
                 if (datosJO.Property("Entidad") != null)
                     strEntidad = datosJO.Property("Entidad").Value.ToString();
                 else if (datosJO.Property("Parametros") != null)
@@ -1967,6 +2015,29 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         if (facturaPdf.Length > 0)
                             strRespuesta = serializer.Serialize(facturaPdf);
                         break;
+                    case "ObtenerListadoPuntoDeServicio":
+                        intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
+                        intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
+                        bolFiltraActivos = bool.Parse(parametrosJO.Property("FiltraActivos").Value.ToString());
+                        strDescripcion = parametrosJO.Property("Descripcion") != null ? parametrosJO.Property("Descripcion").Value.ToString() : "";
+                        IList<LlaveDescripcion> listadoPuntoDeServicio = servicioMantenimiento.ObtenerListadoPuntoDeServicio(intIdEmpresa, intIdSucursal, bolFiltraActivos, strDescripcion);
+                        if (listadoPuntoDeServicio.Count > 0)
+                            strRespuesta = serializer.Serialize(listadoPuntoDeServicio);
+                        break;
+                    case "ObtenerPuntoDeServicio":
+                        intIdLlave1 = int.Parse(parametrosJO.Property("IdPuntoDeServicio").Value.ToString());
+                        puntoDeServicio = servicioMantenimiento.ObtenerPuntoDeServicio(intIdLlave1);
+                        if (puntoDeServicio != null)
+                            strRespuesta = serializer.Serialize(puntoDeServicio);
+                        break;
+                    case "ObtenerListadoTiqueteOrdenServicio":
+                        intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
+                        intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
+                        bolFiltraActivos = bool.Parse(parametrosJO.Property("Impreso").Value.ToString());
+                        IList<ClsTiquete> listadoTiqueteOrdenServicio = servicioFacturacion.ObtenerListadoTiqueteOrdenServicio(intIdEmpresa, intIdSucursal, bolFiltraActivos, true);
+                        if (listadoTiqueteOrdenServicio.Count > 0)
+                            strRespuesta = serializer.Serialize(listadoTiqueteOrdenServicio);
+                        break;
                     case "ObtenerDatosReporte":
                         intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                         intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
@@ -2026,7 +2097,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             }
             catch (Exception ex)
             {
-                throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
+                throw new WebFaultException<string>(ex.Message, HttpStatusCode.SeeOther);
             }
         }
 

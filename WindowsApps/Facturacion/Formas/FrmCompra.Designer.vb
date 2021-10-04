@@ -914,11 +914,9 @@ Partial Class FrmCompra
         Me.txtPrecioVenta.Location = New System.Drawing.Point(808, 142)
         Me.txtPrecioVenta.MaxLength = 0
         Me.txtPrecioVenta.Name = "txtPrecioVenta"
-        Me.txtPrecioVenta.ReadOnly = True
         Me.txtPrecioVenta.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtPrecioVenta.Size = New System.Drawing.Size(88, 20)
         Me.txtPrecioVenta.TabIndex = 26
-        Me.txtPrecioVenta.TabStop = False
         Me.txtPrecioVenta.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'Label13
@@ -943,7 +941,6 @@ Partial Class FrmCompra
         Me.txtUtilidad.Location = New System.Drawing.Point(896, 142)
         Me.txtUtilidad.MaxLength = 0
         Me.txtUtilidad.Name = "txtUtilidad"
-        Me.txtUtilidad.ReadOnly = True
         Me.txtUtilidad.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtUtilidad.Size = New System.Drawing.Size(46, 20)
         Me.txtUtilidad.TabIndex = 27
@@ -1098,7 +1095,7 @@ Partial Class FrmCompra
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
-        Me.ClientSize = New System.Drawing.Size(952, 633)
+        Me.ClientSize = New System.Drawing.Size(952, 634)
         Me.Controls.Add(Me.txtObservaciones)
         Me.Controls.Add(Me._lblLabels_11)
         Me.Controls.Add(Me.btnGenerarPDF)

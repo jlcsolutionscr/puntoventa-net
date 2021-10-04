@@ -20,6 +20,7 @@ using LeandroSoftware.Core.Dominio.Entidades;
 using LeandroSoftware.ServicioWeb.TiposDatosHacienda;
 using LeandroSoftware.Core.Utilitario;
 using System.Drawing;
+using System.Web.Script.Serialization;
 
 namespace LeandroSoftware.ServicioWeb.Servicios
 {
@@ -55,6 +56,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         OrdenServicio ObtenerOrdenServicio(int intIdOrdenServicio);
         int ObtenerTotalListaOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolAplicado, int intIdOrdenServicio, string strNombre);
         IList<FacturaDetalle> ObtenerListadoOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolAplicado, int numPagina, int cantRec, int intIdOrdenServicio, string strNombre);
+        IList<ClsTiquete> ObtenerListadoTiqueteOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolImpreso, bool bolSortedDesc);
+        void ActualizarEstadoTiqueteOrdenServicio(int intIdTiquete, bool bolEstado);
         string AgregarDevolucionCliente(DevolucionCliente devolucion, ConfiguracionGeneral datos);
         void AnularDevolucionCliente(int intIdDevolucion, int intIdUsuario, string strMotivoAnulacion, ConfiguracionGeneral datos);
         DevolucionCliente ObtenerDevolucionCliente(int intIdDevolucion);
@@ -338,11 +341,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    Empresa empresa = dbContext.EmpresaRepository.Find(factura.IdEmpresa);
+                    Empresa empresa = dbContext.EmpresaRepository.Include("PlanFacturacion").Where(x => x.IdEmpresa == factura.IdEmpresa).FirstOrDefault();
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (!empresa.PermiteFacturar) throw new BusinessException("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.FechaVence < DateTime.Today) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
-                    if (empresa.TipoContrato == 2 && empresa.CantidadDisponible == 0) throw new BusinessException("El disponible de documentos electrónicos fue agotado. Por favor, pongase en contacto con su proveedor del servicio.");
                     SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == factura.IdEmpresa && x.IdSucursal == factura.IdSucursal);
                     if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
@@ -764,12 +766,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    Empresa empresa = dbContext.EmpresaRepository.Find(facturaCompra.IdEmpresa);
+                    Empresa empresa = dbContext.EmpresaRepository.Include("PlanFacturacion").Where(x => x.IdEmpresa == facturaCompra.IdEmpresa).FirstOrDefault();
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.RegimenSimplificado) throw new BusinessException("La empresa se encuentra parametrizada dentro del regimen simplificado. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (!empresa.PermiteFacturar) throw new BusinessException("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.FechaVence < DateTime.Today) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
-                    if (empresa.TipoContrato == 2 && empresa.CantidadDisponible == 0) throw new BusinessException("El disponible de documentos electrónicos fue agotado. Por favor, pongase en contacto con su proveedor del servicio.");
                     SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == facturaCompra.IdEmpresa && x.IdSucursal == facturaCompra.IdSucursal);
                     if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
@@ -820,11 +821,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     Factura factura = dbContext.FacturaRepository.Include("DetalleFactura.Producto").Include("DesglosePagoFactura").FirstOrDefault(x => x.IdFactura == intIdFactura);
                     if (factura.Nulo == true) throw new BusinessException("La factura ya ha sido anulada.");
                     if (factura.Procesado == true) throw new BusinessException("La factura ya fue procesada en un cierre diario y no puede ser anulada.");
-                    Empresa empresa = dbContext.EmpresaRepository.Find(factura.IdEmpresa);
+                    Empresa empresa = dbContext.EmpresaRepository.Include("PlanFacturacion").Where(x => x.IdEmpresa == factura.IdEmpresa).FirstOrDefault();
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (!empresa.PermiteFacturar) throw new BusinessException("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.FechaVence < DateTime.Today) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
-                    if (empresa.TipoContrato == 2 && empresa.CantidadDisponible == 0) throw new BusinessException("El disponible de documentos electrónicos fue agotado. Por favor, pongase en contacto con su proveedor del servicio.");
                     SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == factura.IdEmpresa && x.IdSucursal == factura.IdSucursal);
                     if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
@@ -1377,6 +1377,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.NotificarModificacion(sucursal);
                     ordenServicio.ConsecOrdenServicio = sucursal.ConsecOrdenServicio;
                     dbContext.OrdenServicioRepository.Add(ordenServicio);
+                    if (empresa.Modalidad == StaticModalidadEmpresa.Restaurante)
+                    {
+                        AgregarTiqueteOrdenServicio(dbContext, ordenServicio, ordenServicio.DetalleOrdenServicio);
+                    }
                     dbContext.Commit();
                     return ordenServicio.IdOrden.ToString() + "-" + ordenServicio.ConsecOrdenServicio.ToString();
                 }
@@ -1408,6 +1412,31 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     ordenServicio.TipoMoneda = null;
                     List<DetalleOrdenServicio> listadoDetalleAnterior = dbContext.DetalleOrdenServicioRepository.Where(x => x.IdOrden == ordenServicio.IdOrden).ToList();
                     List<DetalleOrdenServicio> listadoDetalle = ordenServicio.DetalleOrdenServicio.ToList();
+                    if (empresa.Modalidad == StaticModalidadEmpresa.Restaurante)
+                    {
+                        List<DetalleOrdenServicio> nuevoDetalle = new List<DetalleOrdenServicio> { };
+                        foreach (DetalleOrdenServicio detalle in listadoDetalle)
+                        {
+                            DetalleOrdenServicio anterior = listadoDetalleAnterior.Where(x => x.IdOrden == detalle.IdOrden && x.IdProducto == detalle.IdProducto).FirstOrDefault();
+                            if (anterior != null)
+                            {
+                                if (anterior.Cantidad != detalle.Cantidad)
+                                {
+                                    nuevoDetalle.Add(new DetalleOrdenServicio
+                                    {
+                                        IdProducto = detalle.IdProducto,
+                                        Cantidad = detalle.Cantidad - anterior.Cantidad,
+                                        Descripcion = detalle.Descripcion
+                                    });
+                                }
+                            }
+                            else
+                            {
+                                nuevoDetalle.Add(detalle);
+                            }
+                        }
+                        if (nuevoDetalle.Count > 0) AgregarTiqueteOrdenServicio(dbContext, ordenServicio, nuevoDetalle);
+                    }
                     ordenServicio.DetalleOrdenServicio = null;
                     foreach (DetalleOrdenServicio detalle in listadoDetalleAnterior)
                         dbContext.NotificarEliminacion(detalle);
@@ -1427,6 +1456,75 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     throw new Exception("Se produjo un error actualizando la información de la orden de servicio. Por favor consulte con su proveedor.");
                 }
             }
+        }
+
+        private void AgregarTiqueteOrdenServicio(IDbContext dbContext, OrdenServicio ordenServicio, ICollection<DetalleOrdenServicio> detalleOrdenServicio)
+        {
+            DataTable dtbDetalleTiquete = new DataTable();
+            dtbDetalleTiquete.Columns.Add("Linea", typeof(string));
+            dtbDetalleTiquete.Columns.Add("Descripcion", typeof(string));
+            dtbDetalleTiquete.Columns.Add("Cantidad", typeof(string));
+            foreach (DetalleOrdenServicio detalle in detalleOrdenServicio)
+            {
+                Producto producto = dbContext.ProductoRepository.Include("Linea").FirstOrDefault(x => x.IdProducto == detalle.IdProducto);
+                DataRow data = dtbDetalleTiquete.NewRow();
+                data["Linea"] = producto.Linea.Descripcion;
+                data["Descripcion"] = detalle.Descripcion;
+                data["Cantidad"] = detalle.Cantidad.ToString();
+                dtbDetalleTiquete.Rows.Add(data);
+            }
+            DataView view = new DataView(dtbDetalleTiquete);
+            view.Sort = "Linea ASC";
+            string strLineaDesc = view[0].Row["Linea"].ToString();
+            IList<ClsLineaImpresion> lineasDetalle = new List<ClsLineaImpresion> { };
+            IList<ClsLineaImpresion> lineas = new List<ClsLineaImpresion> { };
+            TiqueteOrdenServicio tiquete;
+            foreach (DataRowView row in view)
+            {
+                if (strLineaDesc != row["Linea"].ToString())
+                {
+                    tiquete = GenerarTiqueteOrdenServicio(ordenServicio, lineasDetalle, strLineaDesc);
+                    dbContext.TiqueteOrdenServicioRepository.Add(tiquete);
+                    lineasDetalle = new List<ClsLineaImpresion> { };
+                    strLineaDesc = row["Linea"].ToString();
+                }
+                string strLinea = row["Descripcion"].ToString();
+                lineasDetalle.Add(new ClsLineaImpresion(0, strLinea.Substring(0, Math.Min(30, strLinea.Length)), 0, 95, 10, (int)StringAlignment.Near, false));
+                lineasDetalle.Add(new ClsLineaImpresion(1, row["Cantidad"].ToString(), 95, 5, 10, (int)StringAlignment.Far, false));
+                strLinea = strLinea.Substring(Math.Min(30, strLinea.Length));
+                while (strLinea.Length > 30)
+                {
+                    lineasDetalle.Add(new ClsLineaImpresion(1, strLinea.Substring(0, 30), 0, 100, 10, (int)StringAlignment.Near, false));
+                    strLinea = strLinea.Substring(30);
+                }
+                if (strLinea.Length > 0) lineasDetalle.Add(new ClsLineaImpresion(1, strLinea, 0, 100, 10, (int)StringAlignment.Near, false));
+            }
+            tiquete = GenerarTiqueteOrdenServicio(ordenServicio, lineasDetalle, strLineaDesc);
+            dbContext.TiqueteOrdenServicioRepository.Add(tiquete);
+        }
+
+        private TiqueteOrdenServicio GenerarTiqueteOrdenServicio(OrdenServicio ordenServicio, IList<ClsLineaImpresion> lineasDetalle, string strLineaDesc)
+        {
+            JavaScriptSerializer serializer = new JavaScriptSerializer();
+            List<ClsLineaImpresion> lineas = new List<ClsLineaImpresion> { };
+            lineas.Add(new ClsLineaImpresion(2, "PEDIDO EN PROCESO", 0, 100, 14, (int)StringAlignment.Center, true));
+            lineas.Add(new ClsLineaImpresion(2, DateTime.Now.ToString(), 0, 100, 12, (int)StringAlignment.Center, false));
+            lineas.Add(new ClsLineaImpresion(2, ordenServicio.NombreCliente, 0, 100, 14, (int)StringAlignment.Center, true));
+            lineas.Add(new ClsLineaImpresion(1, "DETALLE DE ORDEN", 0, 100, 12, (int)StringAlignment.Center, false));
+            foreach (ClsLineaImpresion linea in lineasDetalle)
+                lineas.Add(linea);
+            lineas.Add(new ClsLineaImpresion(2, "", 0, 100, 10, (int)StringAlignment.Near, false));
+            byte[] bytLineas = Encoding.UTF8.GetBytes(serializer.Serialize(lineas));
+            return new TiqueteOrdenServicio
+            {
+                IdTiquete = 0,
+                IdEmpresa = ordenServicio.IdEmpresa,
+                IdSucursal = ordenServicio.IdSucursal,
+                Descripcion = ordenServicio.NombreCliente,
+                Impresora = strLineaDesc,
+                Lineas = bytLineas,
+                Impreso = false
+            };
         }
 
         public void AnularOrdenServicio(int intIdOrdenServicio, int intIdUsuario, string strMotivoAnulacion)
@@ -1458,8 +1556,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    log.Error("Error al anular el registro de proforma de facturación: ", ex);
-                    throw new Exception("Se produjo un error anulando la proforma. Por favor consulte con su proveedor.");
+                    log.Error("Error al anular el registro de la orden de servicio: ", ex);
+                    throw new Exception("Se produjo un error anulando la orden de servicio. Por favor consulte con su proveedor.");
                 }
             }
         }
@@ -1500,8 +1598,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    log.Error("Error al obtener el registro de proforma de facturación: ", ex);
-                    throw new Exception("Se produjo un error consultando la información de la proforma. Por favor consulte con su proveedor.");
+                    log.Error("Error al obtener el registro de orden de servicio: ", ex);
+                    throw new Exception("Se produjo un error consultando la información de la orden de servicio. Por favor consulte con su proveedor.");
                 }
             }
         }
@@ -1521,8 +1619,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    log.Error("Error al obtener el total del listado de registros de proforma de facturación: ", ex);
-                    throw new Exception("Se produjo un error consultando el total del listado de proformas. Por favor consulte con su proveedor.");
+                    log.Error("Error al obtener el total del listado de registros de ordenes de servicio: ", ex);
+                    throw new Exception("Se produjo un error consultando el total del listado de ordenes de serviciov. Por favor consulte con su proveedor.");
                 }
             }
         }
@@ -1550,8 +1648,63 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    log.Error("Error al obtener el listado de registros de proforma de facturación: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de proformas. Por favor consulte con su proveedor.");
+                    log.Error("Error al obtener el listado de registros de ordenes de servicio: ", ex);
+                    throw new Exception("Se produjo un error consultando el listado de ordenes de servicio. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public IList<ClsTiquete> ObtenerListadoTiqueteOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolImpreso, bool bolSortedDesc)
+        {
+            JavaScriptSerializer serializer = new JavaScriptSerializer();
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                var listaTiquete = new List<ClsTiquete>();
+                try
+                {
+                    var listado = dbContext.TiqueteOrdenServicioRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Impreso == bolImpreso);
+                    if (bolSortedDesc)
+                        listado = listado.OrderByDescending(x => x.IdTiquete);
+                    else
+                        listado = listado.OrderBy(x => x.IdTiquete);
+                    foreach (var tiquete in listado)
+                    {
+                        string strLineas = Encoding.UTF8.GetString(tiquete.Lineas);
+                        IList<ClsLineaImpresion> lineas = serializer.Deserialize<List<ClsLineaImpresion>>(strLineas);
+                        ClsTiquete item = new ClsTiquete(tiquete.IdTiquete, tiquete.IdEmpresa, tiquete.IdSucursal, tiquete.Descripcion, tiquete.Impresora, lineas, tiquete.Impreso);
+                        listaTiquete.Add(item);
+                    }
+                    return listaTiquete;
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al obtener el listado de tiquetes de orden de servicio: ", ex);
+                    throw new Exception("Se produjo un error consultando el listado de tiquetes de orden de servicio. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public void ActualizarEstadoTiqueteOrdenServicio(int intIdTiquete, bool bolEstado)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+
+                    TiqueteOrdenServicio tiquete = dbContext.TiqueteOrdenServicioRepository.Where(x => x.IdTiquete == intIdTiquete).FirstOrDefault();
+                    if (tiquete == null) throw new BusinessException("No se logró obtener la información del tiquete de orden de servicio. Por favor, pongase en contacto con su proveedor del servicio.");
+                    tiquete.Impreso = bolEstado;
+                    dbContext.Commit();
+                }
+                catch (BusinessException ex)
+                {
+                    throw ex;
+                }
+                catch (Exception ex)
+                {
+                    dbContext.RollBack();
+                    log.Error("Error al actualizar el registro de tiquete de orden de servicio: ", ex);
+                    throw new Exception("Se produjo un error actualizando la información del tiquete de orden de servicio. Por favor consulte con su proveedor.");
                 }
             }
         }
@@ -1565,7 +1718,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     Factura factura = dbContext.FacturaRepository.AsNoTracking().Include("DetalleFactura").FirstOrDefault(x => x.IdFactura == devolucion.IdFactura);
                     if (factura == null) throw new Exception("La factura asignada a la devolución no existe.");
                     if (factura.Nulo) throw new BusinessException("La factura asingada a la devolución ya ha sido anulada.");
-                    Empresa empresa = dbContext.EmpresaRepository.Find(devolucion.IdEmpresa);
+                    Empresa empresa = dbContext.EmpresaRepository.Include("PlanFacturacion").Where(x => x.IdEmpresa == devolucion.IdEmpresa).FirstOrDefault();
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == factura.IdEmpresa && x.IdSucursal == factura.IdSucursal);
                     if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
@@ -1703,7 +1856,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     DevolucionCliente devolucion = dbContext.DevolucionClienteRepository.Include("Cliente").Include("DetalleDevolucionCliente").FirstOrDefault(x => x.IdDevolucion == intIdDevolucion);
                     if (devolucion == null) throw new Exception("La devolución por anular no existe.");
                     if (devolucion.Nulo) throw new Exception("La devolución ya ha sido anulada.");
-                    Empresa empresa = dbContext.EmpresaRepository.Find(devolucion.IdEmpresa);
+                    Empresa empresa = dbContext.EmpresaRepository.Include("PlanFacturacion").Where(x => x.IdEmpresa == devolucion.IdEmpresa).FirstOrDefault();
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (devolucion.Procesado) throw new BusinessException("El registro ya fue procesado por el cierre. No es posible registrar la transacción.");
                     Factura factura = dbContext.FacturaRepository.AsNoTracking().Include("DetalleFactura").FirstOrDefault(x => x.IdFactura == devolucion.IdFactura);
@@ -2287,8 +2440,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             if (empresa == null) throw new BusinessException("La identificación contenida en el archivo XML enviado: " + strIdentificacion + " no pertenece a ninguna empresa suscrita al servicio de facturación electrónica.");
             if (!empresa.PermiteFacturar) throw new BusinessException("La empresa que envía la solicitud no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
             if (empresa.FechaVence < DateTime.Today) throw new BusinessException("La vigencia del plan de facturación de la empresa que envía la solicitud ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
-            if (empresa.TipoContrato == 2 && empresa.CantidadDisponible == 0) throw new BusinessException("El disponible de documentos electrónicos de la empresa que envía la solicitud fue agotado. Por favor, pongase en contacto con su proveedor del servicio.");
-            if (!empresa.RecepcionGastos) throw new BusinessException("La empresa que envía la solicitud no esta vinculada a un plan que permita procesar documentos de gastos.");
             DocumentoElectronico documentoMR = ComprobanteElectronicoService.GeneraMensajeReceptor(strDatos, empresa, dbContext, 1, 1, 0, bolIvaAplicable);
             dbContext.DocumentoElectronicoRepository.Add(documentoMR);
             dbContext.Commit();

@@ -1,7 +1,13 @@
-﻿using System;
+﻿using System.Collections.Generic;
 
 namespace LeandroSoftware.Core.TiposComunes
 {
+
+    public static class StaticModalidadEmpresa
+    {
+        public static readonly short Puntoventa = 1;
+        public static readonly short Restaurante = 2;
+    };
     public static class StaticTipoUsuario
     {
         public static readonly short Normal = 1;
@@ -244,9 +250,7 @@ namespace LeandroSoftware.Core.TiposComunes
 
     public class DescripcionValor
     {
-        public DescripcionValor()
-        {
-        }
+        public DescripcionValor() { }
 
         public DescripcionValor(string descripcion, decimal valor)
         {
@@ -278,10 +282,7 @@ namespace LeandroSoftware.Core.TiposComunes
 
     public class ReporteInventario
     {
-        public ReporteInventario()
-        {
-
-        }
+        public ReporteInventario() { }
 
         public ReporteInventario(int id, string codigo, string descripcion, decimal cantidad, decimal precioCosto, decimal precioVenta)
         {
@@ -303,12 +304,9 @@ namespace LeandroSoftware.Core.TiposComunes
 
     public class ReporteCompra
     {
-        public ReporteCompra()
-        {
+        public ReporteCompra() { }
 
-        }
-
-        public ReporteCompra(int id, string referencia, string nombreProveedor, string fecha, string codigo, string codigoProveedor, string descripcion, decimal cantidad, decimal precioVenta)
+        public ReporteCompra(int id, string referencia, string nombreProveedor, string fecha, string codigo, string codigoProveedor, string descripcion, decimal cantidad, decimal precioVenta, decimal precioVentaAnt)
         {
             IdCompra = id;
             Referencia = referencia;
@@ -319,6 +317,7 @@ namespace LeandroSoftware.Core.TiposComunes
             Descripcion = descripcion;
             Cantidad = cantidad;
             PrecioVenta = precioVenta;
+            PrecioVentaAnt = precioVentaAnt;
         }
 
         public int IdCompra { get; set; }
@@ -330,6 +329,7 @@ namespace LeandroSoftware.Core.TiposComunes
         public string Descripcion { get; set; }
         public decimal Cantidad { get; set; }
         public decimal PrecioVenta { get; set; }
+        public decimal PrecioVentaAnt { get; set; }
     }
 
     public class ReporteMovimientosContables
@@ -426,9 +426,7 @@ namespace LeandroSoftware.Core.TiposComunes
 
     public class LlaveDescripcion
     {
-        public LlaveDescripcion()
-        {
-        }
+        public LlaveDescripcion() { }
 
         public LlaveDescripcion(int id, string descripcion)
         {
@@ -441,9 +439,7 @@ namespace LeandroSoftware.Core.TiposComunes
 
     public class LlaveDescripcionValor
     {
-        public LlaveDescripcionValor()
-        {
-        }
+        public LlaveDescripcionValor() { }
 
         public LlaveDescripcionValor(int id, string descripcion, decimal valor)
         {
@@ -458,9 +454,7 @@ namespace LeandroSoftware.Core.TiposComunes
 
     public class ProductoDetalle
     {
-        public ProductoDetalle()
-        {
-        }
+        public ProductoDetalle() { }
 
         public ProductoDetalle(int id, string codigo, string codigoProveedor, string descripcion, decimal cantidad, decimal precioCosto, decimal precioVenta1, string observacion, decimal utilidad, bool activo)
         {
@@ -489,9 +483,7 @@ namespace LeandroSoftware.Core.TiposComunes
 
     public class FacturaDetalle
     {
-        public FacturaDetalle()
-        {
-        }
+        public FacturaDetalle() { }
 
         public FacturaDetalle(int id, int consecutivo, string nombreCliente, string identificacion, string fecha, decimal gravado, decimal exonerado, decimal excento, decimal impuesto, decimal total, decimal saldo, string estado, string descripcion)
         {
@@ -526,9 +518,7 @@ namespace LeandroSoftware.Core.TiposComunes
 
     public class TrasladoDetalle
     {
-        public TrasladoDetalle()
-        {
-        }
+        public TrasladoDetalle() { }
 
         public TrasladoDetalle(int id, string fecha, string nombreSucursal, decimal total)
         {
@@ -545,9 +535,7 @@ namespace LeandroSoftware.Core.TiposComunes
 
     public class AjusteInventarioDetalle
     {
-        public AjusteInventarioDetalle()
-        {
-        }
+        public AjusteInventarioDetalle() { }
 
         public AjusteInventarioDetalle(int id, string fecha, string descripcion)
         {
@@ -562,9 +550,7 @@ namespace LeandroSoftware.Core.TiposComunes
 
     public class CompraDetalle
     {
-        public CompraDetalle()
-        {
-        }
+        public CompraDetalle() { }
 
         public CompraDetalle(int id, string referencia, string nombreProveedor, string fecha, decimal gravado, decimal excento, decimal impuesto, decimal total)
         {
@@ -589,9 +575,7 @@ namespace LeandroSoftware.Core.TiposComunes
 
     public class DocumentoDetalle
     {
-        public DocumentoDetalle()
-        {
-        }
+        public DocumentoDetalle() { }
 
         public DocumentoDetalle(int id, int idTipo, string clave, string consecutivo, string fecha, string nombre, string estado, string error, decimal monto, string esMensajeReceptor, bool reprocesado, string correoNotificacion)
         {
@@ -624,9 +608,7 @@ namespace LeandroSoftware.Core.TiposComunes
 
     public class CierreDeEfectivo
     {
-        public CierreDeEfectivo()
-        {
-        }
+        public CierreDeEfectivo() { }
 
         public CierreDeEfectivo(int id, string fecha, string detalle, decimal total)
         {
@@ -643,9 +625,7 @@ namespace LeandroSoftware.Core.TiposComunes
 
     public class EfectivoDetalle
     {
-        public EfectivoDetalle()
-        {
-        }
+        public EfectivoDetalle() { }
 
         public EfectivoDetalle(int id, string fecha, string descripcion, decimal total)
         {
@@ -662,9 +642,7 @@ namespace LeandroSoftware.Core.TiposComunes
 
     public class CuentaPorProcesar
     {
-        public CuentaPorProcesar()
-        {
-        }
+        public CuentaPorProcesar() { }
 
         public CuentaPorProcesar(int id, string fecha, string propietario, string referencia, decimal total, decimal saldo)
         {
@@ -681,5 +659,52 @@ namespace LeandroSoftware.Core.TiposComunes
         public string Referencia { get; set; }
         public decimal Total { get; set; }
         public decimal Saldo { get; set; }
+    }
+
+    public class ClsLineaImpresion
+    {
+        public ClsLineaImpresion() {}
+
+        public ClsLineaImpresion(int saltos, string texto, int posicionX, int ancho, int fuente, int alineado, bool bold)
+        {
+            intSaltos = saltos;
+            strTexto = texto;
+            intPosicionX = posicionX;
+            intAncho = ancho;
+            intFuente = fuente;
+            intAlineado = alineado;
+            bolBold = bold;
+        }
+
+        public int intSaltos { get; set; }
+        public string strTexto { get; set; }
+        public int intPosicionX { get; set; }
+        public int intAncho { get; set; }
+        public int intFuente { get; set; }
+        public int intAlineado { get; set; }
+        public bool bolBold { get; set; }
+    }
+
+    public class ClsTiquete
+    {
+        public ClsTiquete() {}
+
+        public ClsTiquete(int idTiquete, int idEmpresa, int idSucursal, string descripcion, string impresora, IList<ClsLineaImpresion> lineas, bool impreso)
+        {
+            IdTiquete = idTiquete;
+            IdEmpresa = idEmpresa;
+            IdSucursal = idSucursal;
+            Descripcion = descripcion;
+            Impresora = impresora;
+            Lineas = lineas;
+            Impreso = impreso;
+        }
+        public int IdTiquete { get; set; }
+        public int IdEmpresa { get; set; }
+        public int IdSucursal { get; set; }
+        public string Descripcion { get; set; }
+        public string Impresora { get; set; }
+        public IList<ClsLineaImpresion> Lineas { get; set; }
+        public bool Impreso { get; set; }
     }
 }

@@ -127,6 +127,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         int ObtenerTotalListaClasificacionProducto(string strDescripcion);
         IList<ClasificacionProducto> ObtenerListadoClasificacionProducto(int numPagina, int cantRec, string strDescripcion);
         ClasificacionProducto ObtenerClasificacionProducto(string strCodigo);
+        void AgregarPuntoDeServicio(PuntoDeServicio puntoDeServicio);
+        void ActualizarPuntoDeServicio(PuntoDeServicio puntoDeServicio);
+        void EliminarPuntoDeServicio(int intIdPunto);
+        PuntoDeServicio ObtenerPuntoDeServicio(int intIdPunto);
+        IList<LlaveDescripcion> ObtenerListadoPuntoDeServicio(int intIdEmpresa, int intIdSucursal, bool bolSoloActivo, string strDescripcion);
         void ValidarRegistroAutenticacion(string strToken, int intRole);
         void EliminarRegistroAutenticacionInvalidos();
     }
@@ -160,7 +165,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     Empresa empresa = dbContext.EmpresaRepository.Include("ReportePorEmpresa.CatalogoReporte").Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.Identificacion == strIdentificacion);
                     if (!empresa.PermiteFacturar) throw new BusinessException("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.FechaVence < DateTime.Today) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
-                    if (empresa.TipoContrato == 2 && empresa.CantidadDisponible == 0) throw new BusinessException("El disponible de documentos electrónicos fue agotado. Por favor, pongase en contacto con su proveedor del servicio.");
                     Usuario usuario = null;
                     if (strUsuario.ToUpper() == "ADMIN")
                     {
@@ -329,8 +333,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     Empresa empresa = dbContext.EmpresaRepository.Include("ReportePorEmpresa.CatalogoReporte").Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.Identificacion == strIdentificacion);
                     if (!empresa.PermiteFacturar) throw new BusinessException("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.FechaVence < DateTime.Today) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
-                    if (empresa.TipoContrato == 2 && empresa.CantidadDisponible == 0) throw new BusinessException("El disponible de documentos electrónicos fue agotado. Por favor, pongase en contacto con su proveedor del servicio.");
-                     Usuario usuario = null;
+                    Usuario usuario = null;
                     if (strUsuario.ToUpper() == "ADMIN")
                     {
                         usuario = dbContext.UsuarioRepository.Include("RolePorUsuario.Role").FirstOrDefault(x => x.IdUsuario == 1);
@@ -406,10 +409,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         if (!empresa.PermiteFacturar) throw new BusinessException("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
                         if (empresa.FechaVence < DateTime.Today) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
-                        if (empresa.TipoContrato == 2 && empresa.CantidadDisponible == 0) throw new BusinessException("El disponible de documentos electrónicos fue agotado. Por favor, pongase en contacto con su proveedor del servicio.");
-                        usuario = dbContext.UsuarioRepository.Include("RolePorUsuario.Role").FirstOrDefault(x => x.CodigoUsuario == strUsuario.ToUpper());
-                        SucursalPorUsuario sucursalPorUsuario = dbContext.SucursalPorUsuarioRepository.FirstOrDefault(y => y.IdUsuario == usuario.IdUsuario && y.IdEmpresa == empresa.IdEmpresa);
-                        usuario.IdSucursal = sucursalPorUsuario.IdSucursal;
+                        usuario = dbContext.UsuarioRepository.Include("RolePorUsuario.Role").Include("SucursalPorUsuario").FirstOrDefault(x => x.SucursalPorUsuario.FirstOrDefault(z => z.IdEmpresa == empresa.IdEmpresa) != null && x.CodigoUsuario == strUsuario.ToUpper());
+                        usuario.IdSucursal = usuario.SucursalPorUsuario.FirstOrDefault().IdSucursal;
+                        usuario.SucursalPorUsuario = new SucursalPorUsuario[] { };
                     }
                     if (usuario == null) throw new BusinessException("Usuario no registrado en la empresa suministrada. Por favor verifique la información suministrada.");
                     if (usuario.Clave != strClave) throw new BusinessException("Los credenciales suministrados no son válidos. Verifique los credenciales suministrados.");
@@ -480,9 +482,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         if (!empresa.PermiteFacturar) throw new BusinessException("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
                         if (empresa.FechaVence < DateTime.Today) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
-                        if (empresa.TipoContrato == 2 && empresa.CantidadDisponible == 0) throw new BusinessException("El disponible de documentos electrónicos fue agotado. Por favor, pongase en contacto con su proveedor del servicio.");
-                        usuario = dbContext.UsuarioRepository.Include("SucursalPorUsuario").Include("RolePorUsuario.Role").FirstOrDefault(x => x.SucursalPorUsuario.FirstOrDefault().IdEmpresa == empresa.IdEmpresa && x.CodigoUsuario == strUsuario.ToUpper());
-                        usuario.IdSucursal = usuario.SucursalPorUsuario.FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa).IdSucursal;
+                        usuario = dbContext.UsuarioRepository.Include("SucursalPorUsuario").Include("RolePorUsuario.Role").FirstOrDefault(x => x.SucursalPorUsuario.FirstOrDefault(y => y.IdEmpresa == empresa.IdEmpresa) != null && x.CodigoUsuario == strUsuario.ToUpper());
+                        usuario.IdSucursal = usuario.SucursalPorUsuario.FirstOrDefault().IdSucursal;
                         usuario.SucursalPorUsuario = new SucursalPorUsuario[] { };
                     }
                     if (usuario == null) throw new BusinessException("Usuario no registrado en la empresa suministrada. Por favor verifique la información suministrada.");
@@ -757,10 +758,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     empresa.Barrio = null;
                     if (noTracking != null && noTracking.Certificado != null) empresa.Certificado = noTracking.Certificado;
                     if (noTracking != null && noTracking.Logotipo != null) empresa.Logotipo = noTracking.Logotipo;
-                    if (empresa.PinCertificado != noTracking.PinCertificado && empresa.Certificado != null)
-                    {
-                        ComprobanteElectronicoService.ValidarCertificado(empresa.PinCertificado, empresa.Certificado);
-                    }
                     dbContext.NotificarModificacion(empresa);
                     dbContext.Commit();
                 }
@@ -935,6 +932,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     byte[] bytCertificado = Convert.FromBase64String(strCertificado);
+                    ComprobanteElectronicoService.ValidarCertificado(empresa.PinCertificado, bytCertificado);
                     empresa.Certificado = bytCertificado;
                     dbContext.Commit();
                 }
@@ -2743,6 +2741,117 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     log.Error("Error al obtener la clasificación del producto: ", ex);
                     throw new Exception("Se produjo un error consultando la clasificación del producto. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public void AgregarPuntoDeServicio(PuntoDeServicio puntoDeServicio)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    dbContext.PuntoDeServicioRepository.Add(puntoDeServicio);
+                    dbContext.Commit();
+                }
+                catch (Exception ex)
+                {
+                    dbContext.RollBack();
+                    log.Error("Error al agregar el punto de servicio: ", ex);
+                    throw new Exception("Se produjo un error agragando la información del punto de servicio. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public void ActualizarPuntoDeServicio(PuntoDeServicio puntoDeServicio)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    dbContext.NotificarModificacion(puntoDeServicio);
+                    dbContext.Commit();
+                }
+                catch (Exception ex)
+                {
+                    dbContext.RollBack();
+                    log.Error("Error al actualizar el punto de servicio: ", ex);
+                    throw new Exception("Se produjo un error actualizando la información del punto de servicio. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public void EliminarPuntoDeServicio(int intIdPunto)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    PuntoDeServicio puntoDeServicio = dbContext.PuntoDeServicioRepository.Find(intIdPunto);
+                    if (puntoDeServicio == null)
+                        throw new BusinessException("El punto de servicio por eliminar no existe.");
+                    dbContext.PuntoDeServicioRepository.Remove(puntoDeServicio);
+                    dbContext.Commit();
+                }
+                catch (DbUpdateException ex)
+                {
+                    log.Info("Validación al eliminar el punto de servicio: ", ex);
+                    throw new BusinessException("No es posible eliminar el punto de servicio seleccionado. Posee registros relacionados en el sistema.");
+                }
+                catch (BusinessException ex)
+                {
+                    dbContext.RollBack();
+                    throw ex;
+                }
+                catch (Exception ex)
+                {
+                    dbContext.RollBack();
+                    log.Error("Error al eliminar el punto de servicio: ", ex);
+                    throw new Exception("Se produjo un error eliminando al punto de servicio. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public PuntoDeServicio ObtenerPuntoDeServicio(int intIdPunto)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    PuntoDeServicio puntoDeServicio = dbContext.PuntoDeServicioRepository.Where(x => x.IdPunto == intIdPunto).FirstOrDefault();
+                    return puntoDeServicio;
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al obtener la entidad PuntoDeServicio: ", ex);
+                    throw new Exception("Se produjo un error consultando el punto  de servicio. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public IList<LlaveDescripcion> ObtenerListadoPuntoDeServicio(int intIdEmpresa, int intIdSucursal, bool bolSoloActivo, string strDescripcion)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                var listaPuntos = new List<LlaveDescripcion>();
+                try
+                {
+                    var listado = dbContext.PuntoDeServicioRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
+                    if (bolSoloActivo)
+                        listado = listado.Where(x => x.Activo);
+                    if (!strDescripcion.Equals(string.Empty))
+                        listado = listado.Where(x => x.Descripcion.Contains(strDescripcion));
+                    foreach (var value in listado)
+                    {
+                        LlaveDescripcion item = new LlaveDescripcion(value.IdPunto, value.Descripcion);
+                        listaPuntos.Add(item);
+                    }
+                    return listaPuntos;
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error al obtener el listado de puntos de servicio: ", ex);
+                    throw new Exception("Se produjo un error consultando el listado de puntos de servicio. Por favor consulte con su proveedor.");
                 }
             }
         }

@@ -289,6 +289,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             throw new BusinessException("El tipo del producto " + producto.Descripcion + " no puede ser un servicio. Por favor verificar.");
                         if (producto.Tipo == StaticTipoProducto.Producto)
                         {
+                            decimal decPrecioVenta = Math.Round(detalleCompra.PrecioVenta * (1 + (detalleCompra.PorcentajeIVA / 100)), 2, MidpointRounding.AwayFromZero);
+                            if (producto.PrecioVenta1 != decPrecioVenta)
+                            {
+                                producto.PrecioVenta1 = decPrecioVenta;
+                                dbContext.NotificarModificacion(producto);
+                            }
                             List<ExistenciaPorSucursal> existenciasLista = dbContext.ExistenciaPorSucursalRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto).ToList();
                             decimal cantidadExistente = existenciasLista.Sum(x => x.Cantidad);
                             if (producto.PrecioCosto > 0 && cantidadExistente > 0)

@@ -150,11 +150,34 @@ namespace LeandroSoftware.Activator
             cboTipoContrato.ValueMember = "Id";
             cboTipoContrato.DisplayMember = "Descripcion";
             IList<LlaveDescripcion> dsTipoContrato = new List<LlaveDescripcion>();
-            LlaveDescripcion tipo = new LlaveDescripcion(1, "Pago mensual o anual");
+            LlaveDescripcion tipo = new LlaveDescripcion(1, "Plan 50 Documentos");
             dsTipoContrato.Add(tipo);
-            tipo = new LlaveDescripcion(2, "Limite de documentos anual");
+            new LlaveDescripcion(2, "Plan 100 Documentos");
+            dsTipoContrato.Add(tipo);
+            tipo = new LlaveDescripcion(3, "PYMES 1");
+            dsTipoContrato.Add(tipo);
+            tipo = new LlaveDescripcion(4, "PYMES 2");
+            dsTipoContrato.Add(tipo);
+            tipo = new LlaveDescripcion(5, "Plan Empresarial 1");
+            dsTipoContrato.Add(tipo);
+            tipo = new LlaveDescripcion(6, "Plan Empresarial 2");
+            dsTipoContrato.Add(tipo);
+            tipo = new LlaveDescripcion(7, "Plan Empresarial 3");
+            dsTipoContrato.Add(tipo);
+            tipo = new LlaveDescripcion(8, "Plan Empresarial 4");
+            dsTipoContrato.Add(tipo);
+            tipo = new LlaveDescripcion(9, "Plan Empresarial PRO");
             dsTipoContrato.Add(tipo);
             cboTipoContrato.DataSource = dsTipoContrato;
+            // Carga Modalidad Empresa
+            cboModalidad.ValueMember = "Id";
+            cboModalidad.DisplayMember = "Descripcion";
+            IList<LlaveDescripcion> dsModalidad = new List<LlaveDescripcion>();
+            LlaveDescripcion modalidad = new LlaveDescripcion(1, "Punto de venta");
+            dsModalidad.Add(modalidad);
+            tipo = new LlaveDescripcion(2, "Restaurante");
+            dsModalidad.Add(tipo);
+            cboModalidad.DataSource = dsModalidad;
         }
 
         public async Task CargarProvincias()
@@ -305,6 +328,7 @@ namespace LeandroSoftware.Activator
                         txtLineasFactura.Text = empresa.LineasPorFactura.ToString();
                         if (empresa.FechaVence != null) txtFecha.Text = DateTime.Parse(empresa.FechaVence.ToString()).ToString("dd-MM-yyyy");
                         cboTipoContrato.SelectedValue = empresa.TipoContrato;
+                        cboModalidad.SelectedValue = empresa.Modalidad;
                         txtCantidadDocumentos.Text = empresa.CantidadDisponible.ToString();
                         chkContabiliza.Checked = empresa.Contabiliza;
                         chkAutoCompleta.Checked = empresa.AutoCompletaProducto;
@@ -412,6 +436,7 @@ namespace LeandroSoftware.Activator
                 }
                 empresa.IdTipoMoneda = 1;
                 empresa.TipoContrato = (int)cboTipoContrato.SelectedValue;
+                empresa.Modalidad = (int)cboModalidad.SelectedValue;
                 empresa.CantidadDisponible = int.Parse(txtCantidadDocumentos.Text);
                 empresa.Contabiliza = chkContabiliza.Checked;
                 empresa.AutoCompletaProducto = chkAutoCompleta.Checked;

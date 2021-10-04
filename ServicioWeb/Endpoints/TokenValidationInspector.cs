@@ -35,7 +35,7 @@ namespace LeandroSoftware.ServicioWeb
                     if (modoMantenimiento) throw new Exception("El sistema se encuentra en modo mantenimiento y no es posible procesar su solicitud.");
                 }
                 string strOperacion = request.Properties["HttpOperationName"].ToString();
-                if (!new string[] { "", "ObtenerUltimaVersionMobileApp", "ObtenerUltimaVersionApp", "DescargarActualizacion", "LimpiarRegistrosInvalidos", "ProcesarDocumentosElectronicosPendientes", "ValidarCredencialesAdmin", "ValidarCredenciales", "ValidarCredencialesWeb", "ObtenerListadoEmpresasAdministrador", "ObtenerListadoEmpresasPorTerminal", "ObtenerListadoTerminalesDisponibles", "RegistrarTerminal" }.Contains(strOperacion))
+                if (!new string[] { "", "CambiarEstadoAImpresoTiqueteOrdenServicio", "ObtenerListadoTiqueteOrdenServicioPendiente", "ObtenerUltimaVersionMobileApp", "ObtenerUltimaVersionApp", "DescargarActualizacion", "LimpiarRegistrosInvalidos", "ProcesarDocumentosElectronicosPendientes", "ValidarCredencialesAdmin", "ValidarCredenciales", "ValidarCredencialesWeb", "ObtenerListadoEmpresasAdministrador", "ObtenerListadoEmpresasPorTerminal", "ObtenerListadoTerminalesDisponibles", "RegistrarTerminal" }.Contains(strOperacion))
                 {
                     IncomingWebRequestContext incomingRequest = WebOperationContext.Current.IncomingRequest;
                     WebHeaderCollection headers = incomingRequest.Headers;

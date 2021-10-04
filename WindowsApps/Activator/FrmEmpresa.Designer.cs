@@ -104,6 +104,8 @@
             this.tabContainer = new System.Windows.Forms.TabControl();
             this.chkIngresaPagoCliente = new System.Windows.Forms.CheckBox();
             this.btnLimpiar = new System.Windows.Forms.Button();
+            this.label9 = new System.Windows.Forms.Label();
+            this.cboModalidad = new System.Windows.Forms.ComboBox();
             this.TabRoles.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvRolePorEmpresa)).BeginInit();
             this.tabReportes.SuspendLayout();
@@ -256,7 +258,7 @@
             // 
             this.chkFacturaElectronica.AutoSize = true;
             this.chkFacturaElectronica.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkFacturaElectronica.Location = new System.Drawing.Point(85, 447);
+            this.chkFacturaElectronica.Location = new System.Drawing.Point(85, 468);
             this.chkFacturaElectronica.Name = "chkFacturaElectronica";
             this.chkFacturaElectronica.Size = new System.Drawing.Size(99, 17);
             this.chkFacturaElectronica.TabIndex = 40;
@@ -310,7 +312,7 @@
             // 
             this.chkRecibeDocumentos.AutoSize = true;
             this.chkRecibeDocumentos.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkRecibeDocumentos.Location = new System.Drawing.Point(85, 516);
+            this.chkRecibeDocumentos.Location = new System.Drawing.Point(85, 537);
             this.chkRecibeDocumentos.Name = "chkRecibeDocumentos";
             this.chkRecibeDocumentos.Size = new System.Drawing.Size(187, 17);
             this.chkRecibeDocumentos.TabIndex = 45;
@@ -322,7 +324,7 @@
             // 
             this.chkAutoCompleta.AutoSize = true;
             this.chkAutoCompleta.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkAutoCompleta.Location = new System.Drawing.Point(260, 493);
+            this.chkAutoCompleta.Location = new System.Drawing.Point(260, 514);
             this.chkAutoCompleta.Name = "chkAutoCompleta";
             this.chkAutoCompleta.Size = new System.Drawing.Size(189, 17);
             this.chkAutoCompleta.TabIndex = 43;
@@ -334,7 +336,7 @@
             // 
             this.chkContabiliza.AutoSize = true;
             this.chkContabiliza.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkContabiliza.Location = new System.Drawing.Point(85, 470);
+            this.chkContabiliza.Location = new System.Drawing.Point(85, 491);
             this.chkContabiliza.Name = "chkContabiliza";
             this.chkContabiliza.Size = new System.Drawing.Size(77, 17);
             this.chkContabiliza.TabIndex = 46;
@@ -559,7 +561,7 @@
             // 
             this.chkRegimenSimplificado.AutoSize = true;
             this.chkRegimenSimplificado.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkRegimenSimplificado.Location = new System.Drawing.Point(260, 470);
+            this.chkRegimenSimplificado.Location = new System.Drawing.Point(260, 491);
             this.chkRegimenSimplificado.Name = "chkRegimenSimplificado";
             this.chkRegimenSimplificado.Size = new System.Drawing.Size(127, 17);
             this.chkRegimenSimplificado.TabIndex = 41;
@@ -661,7 +663,7 @@
             // 
             this.chkAsignaVendedor.AutoSize = true;
             this.chkAsignaVendedor.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkAsignaVendedor.Location = new System.Drawing.Point(85, 493);
+            this.chkAsignaVendedor.Location = new System.Drawing.Point(85, 514);
             this.chkAsignaVendedor.Name = "chkAsignaVendedor";
             this.chkAsignaVendedor.Size = new System.Drawing.Size(163, 17);
             this.chkAsignaVendedor.TabIndex = 209;
@@ -1091,7 +1093,7 @@
             // 
             this.chkIngresaPagoCliente.AutoSize = true;
             this.chkIngresaPagoCliente.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkIngresaPagoCliente.Location = new System.Drawing.Point(260, 447);
+            this.chkIngresaPagoCliente.Location = new System.Drawing.Point(260, 468);
             this.chkIngresaPagoCliente.Name = "chkIngresaPagoCliente";
             this.chkIngresaPagoCliente.Size = new System.Drawing.Size(139, 17);
             this.chkIngresaPagoCliente.TabIndex = 263;
@@ -1115,6 +1117,30 @@
             this.btnLimpiar.UseVisualStyleBackColor = false;
             this.btnLimpiar.Click += new System.EventHandler(this.btnLimpiar_Click);
             // 
+            // label9
+            // 
+            this.label9.BackColor = System.Drawing.Color.Transparent;
+            this.label9.Cursor = System.Windows.Forms.Cursors.Default;
+            this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label9.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label9.Location = new System.Drawing.Point(17, 434);
+            this.label9.Name = "label9";
+            this.label9.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.label9.Size = new System.Drawing.Size(113, 17);
+            this.label9.TabIndex = 266;
+            this.label9.Text = "Modalidad:";
+            this.label9.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // cboModalidad
+            // 
+            this.cboModalidad.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboModalidad.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cboModalidad.FormattingEnabled = true;
+            this.cboModalidad.Location = new System.Drawing.Point(136, 433);
+            this.cboModalidad.Name = "cboModalidad";
+            this.cboModalidad.Size = new System.Drawing.Size(126, 21);
+            this.cboModalidad.TabIndex = 265;
+            // 
             // FrmEmpresa
             // 
             this.AcceptButton = this.btnInsertaRole;
@@ -1123,6 +1149,8 @@
             this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(193)))), ((int)(((byte)(215)))), ((int)(((byte)(225)))));
             this.ClientSize = new System.Drawing.Size(851, 569);
+            this.Controls.Add(this.label9);
+            this.Controls.Add(this.cboModalidad);
             this.Controls.Add(this.btnLimpiar);
             this.Controls.Add(this.chkIngresaPagoCliente);
             this.Controls.Add(this.txtDescripcionTerminal);
@@ -1274,6 +1302,8 @@
         private System.Windows.Forms.TabControl tabContainer;
         internal System.Windows.Forms.CheckBox chkIngresaPagoCliente;
         public System.Windows.Forms.Button btnLimpiar;
+        public System.Windows.Forms.Label label9;
+        internal System.Windows.Forms.ComboBox cboModalidad;
     }
 }
 

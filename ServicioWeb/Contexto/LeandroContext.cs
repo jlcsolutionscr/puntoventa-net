@@ -79,6 +79,7 @@ namespace LeandroSoftware.ServicioWeb.Contexto
         DbSet<Proforma> ProformaRepository { get; set; }
         DbSet<Proveedor> ProveedorRepository { get; set; }
         DbSet<Provincia> ProvinciaRepository { get; set; }
+        DbSet<PuntoDeServicio> PuntoDeServicioRepository { get; set; }
         DbSet<RegistroAutenticacion> RegistroAutenticacionRepository { get; set; }
         DbSet<RegistroRespuestaHacienda> RegistroRespuestaHaciendaRepository { get; set; }
         DbSet<ReportePorEmpresa> ReportePorEmpresaRepository { get; set; }
@@ -96,6 +97,7 @@ namespace LeandroSoftware.ServicioWeb.Contexto
         DbSet<TipoMovimientoBanco> TipoMovimientoBancoRepository { get; set; }
         DbSet<TipoParametroContable> TipoParametroContableRepository { get; set; }
         DbSet<TipoProducto> TipoProductoRepository { get; set; }
+        DbSet<TiqueteOrdenServicio> TiqueteOrdenServicioRepository { get; set; }
         DbSet<Traslado> TrasladoRepository { get; set; }
         DbSet<Usuario> UsuarioRepository { get; set; }
         DbSet<Vendedor> VendedorRepository { get; set; }
@@ -195,6 +197,7 @@ namespace LeandroSoftware.ServicioWeb.Contexto
         public DbSet<Proforma> ProformaRepository { get; set; }
         public DbSet<Proveedor> ProveedorRepository { get; set; }
         public DbSet<Provincia> ProvinciaRepository { get; set; }
+        public DbSet<PuntoDeServicio> PuntoDeServicioRepository { get; set; }
         public DbSet<RegistroAutenticacion> RegistroAutenticacionRepository { get; set; }
         public DbSet<RegistroRespuestaHacienda> RegistroRespuestaHaciendaRepository { get; set; }
         public DbSet<ReportePorEmpresa> ReportePorEmpresaRepository { get; set; }
@@ -212,6 +215,7 @@ namespace LeandroSoftware.ServicioWeb.Contexto
         public DbSet<TipoMovimientoBanco> TipoMovimientoBancoRepository { get; set; }
         public DbSet<TipoParametroContable> TipoParametroContableRepository { get; set; }
         public DbSet<TipoProducto> TipoProductoRepository { get; set; }
+        public DbSet<TiqueteOrdenServicio> TiqueteOrdenServicioRepository { get; set; }
         public DbSet<Traslado> TrasladoRepository { get; set; }
         public DbSet<Usuario> UsuarioRepository { get; set; }
         public DbSet<Vendedor> VendedorRepository { get; set; }

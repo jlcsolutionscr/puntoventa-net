@@ -23,7 +23,7 @@ namespace LeandroSoftware.ClienteWCF
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
             HttpResponseMessage httpResponse = await httpClient.GetAsync(strServicioPuntoventaURL + "/obtenerultimaversionapp");
-            if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
+            if (httpResponse.StatusCode == HttpStatusCode.SeeOther)
             {
                 string strError = httpResponse.Content.ReadAsStringAsync().Result;
                 throw new Exception(serializer.Deserialize<string>(strError));
@@ -39,7 +39,7 @@ namespace LeandroSoftware.ClienteWCF
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
             HttpResponseMessage httpResponse = await httpClient.GetAsync(strServicioPuntoventaURL + "/obtenerlistadoempresasadmin");
-            if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
+            if (httpResponse.StatusCode == HttpStatusCode.SeeOther)
             {
                 string strError = httpResponse.Content.ReadAsStringAsync().Result;
                 throw new Exception(strError);
@@ -58,7 +58,7 @@ namespace LeandroSoftware.ClienteWCF
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
             HttpResponseMessage httpResponse = await httpClient.GetAsync(strServicioPuntoventaURL + "/obtenerlistadoempresas?dispositivo=" + strIdDispositivo);
-            if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
+            if (httpResponse.StatusCode == HttpStatusCode.SeeOther)
             {
                 string strError = serializer.Deserialize<string>(httpResponse.Content.ReadAsStringAsync().Result);
                 throw new Exception(strError);
@@ -77,7 +77,7 @@ namespace LeandroSoftware.ClienteWCF
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
             HttpResponseMessage httpResponse = await httpClient.GetAsync(strServicioPuntoventaURL + "/validarcredenciales?usuario=" + strUsuario + "&clave=" + strClave + "&idempresa=" + intIdEmpresa + "&dispositivo=" + strValorRegistro);
-            if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
+            if (httpResponse.StatusCode == HttpStatusCode.SeeOther)
             {
                 string strError = serializer.Deserialize<string>(httpResponse.Content.ReadAsStringAsync().Result);
                 throw new Exception(strError);
@@ -96,7 +96,7 @@ namespace LeandroSoftware.ClienteWCF
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
             HttpResponseMessage httpResponse = await httpClient.GetAsync(strServicioPuntoventaURL + "/obtenerlistadoterminalesdisponibles?usuario=" + strUsuario + "&clave=" + strClave + "&id=" + strIdentificacion + "&tipodispositivo=" + intTipoDispositivo);
-            if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
+            if (httpResponse.StatusCode == HttpStatusCode.SeeOther)
             {
                 string strError = serializer.Deserialize<string>(httpResponse.Content.ReadAsStringAsync().Result);
                 throw new Exception(strError);
@@ -115,7 +115,7 @@ namespace LeandroSoftware.ClienteWCF
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
             HttpResponseMessage httpResponse = await httpClient.GetAsync(strServicioPuntoventaURL + "/registrarterminal?usuario=" + strUsuario + "&clave=" + strClave + "&id=" + strIdentificacion + "&sucursal=" + intIdSucursal + "&terminal=" + intIdTerminal + "&tipodispositivo=" + intTipoDispositivo + "&dispositivo=" + strDispositivoId);
-            if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
+            if (httpResponse.StatusCode == HttpStatusCode.SeeOther)
             {
                 string strError = serializer.Deserialize<string>(httpResponse.Content.ReadAsStringAsync().Result);
                 throw new Exception(strError);
@@ -134,7 +134,7 @@ namespace LeandroSoftware.ClienteWCF
                 if (strToken != "")
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", strToken);
                 HttpResponseMessage httpResponse = await httpClient.PostAsync(servicioURL + "/ejecutar", contentJson);
-                if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
+                if (httpResponse.StatusCode == HttpStatusCode.SeeOther)
                 {
                     string strError = serializer.Deserialize<string>(httpResponse.Content.ReadAsStringAsync().Result);
                     throw new Exception(strError);
@@ -158,7 +158,7 @@ namespace LeandroSoftware.ClienteWCF
                 if (strToken != "")
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", strToken);
                 HttpResponseMessage httpResponse = await httpClient.PostAsync(servicioURL + "/ejecutarconsulta", contentJson);
-                if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
+                if (httpResponse.StatusCode == HttpStatusCode.SeeOther)
                 {
                     string strError = serializer.Deserialize<string>(httpResponse.Content.ReadAsStringAsync().Result);
                     throw new Exception(strError);
@@ -2177,6 +2177,62 @@ namespace LeandroSoftware.ClienteWCF
             if (respuesta != "")
                 decPorcentaje = serializer.Deserialize<decimal>(respuesta);
             return decPorcentaje;
+        }
+
+        public static async Task<List<LlaveDescripcion>> ObtenerListadoPuntoDeServicio(int intIdEmpresa, int intIdSucursal, bool bolFiltraActivos, string strDescripcion, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'ObtenerListadoPuntoDeServicio', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", FiltraActivos: '" + bolFiltraActivos + "', Descripcion: '" + strDescripcion + "'}}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<LlaveDescripcion>>(respuesta);
+            return listado;
+        }
+
+        public static async Task AgregarPuntoDeServicio(PuntoDeServicio puntoDeServicio, string strToken)
+        {
+            string strEntidad = serializer.Serialize(puntoDeServicio);
+            string strDatos = "{NombreMetodo: 'AgregarPuntoDeServicio', Entidad: " + strEntidad + "}";
+            await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
+        }
+
+        public static async Task ActualizarPuntoDeServicio(PuntoDeServicio puntoDeServicio, string strToken)
+        {
+            string strEntidad = serializer.Serialize(puntoDeServicio);
+            string strDatos = "{NombreMetodo: 'ActualizarPuntoDeServicio', Entidad: " + strEntidad + "}";
+            await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
+        }
+
+        public static async Task<PuntoDeServicio> ObtenerPuntoDeServicio(int intIdPunto, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'ObtenerPuntoDeServicio', Parametros: {IdPuntoDeServicio: " + intIdPunto + "}}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            PuntoDeServicio puntoDeServicio = null;
+            if (respuesta != "")
+                puntoDeServicio = serializer.Deserialize<PuntoDeServicio>(respuesta);
+            return puntoDeServicio;
+        }
+
+        public static async Task EliminarPuntoDeServicio(int intIdPunto, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'EliminarPuntoDeServicio', Parametros: {IdPuntoDeServicio: " + intIdPunto + "}}";
+            await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
+        }
+
+        public static async Task<List<ClsTiquete>> ObtenerListadoTiqueteOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolImpreso, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'ObtenerListadoTiqueteOrdenServicio', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", Impreso: '" + bolImpreso + "'}}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            List<ClsTiquete> listado = new List<ClsTiquete>();
+            if (respuesta != "")
+                listado = serializer.Deserialize<List<ClsTiquete>>(respuesta);
+            return listado;
+        }
+
+        public static async Task ActualizarEstadoTiqueteOrdenServicio(int intIdTiquete, bool bolEstado, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'ActualizarEstadoTiqueteOrdenServicio', Parametros: {IdTiquete: " + intIdTiquete + ", Estado: '" + bolEstado + "'}}";
+            await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
     }
 }

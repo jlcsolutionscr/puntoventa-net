@@ -7,25 +7,7 @@ Public Class ModuloImpresion
 #Region "Variables"
     Private Shared lineas As IList = New List(Of ClsLineaImpresion)
     Private Shared charCount As Integer
-    Private Class ClsLineaImpresion
-        Public Sub New(saltos As Integer, texto As String, posicionX As Single, ancho As Single, fuente As Integer, alineado As StringAlignment, bold As Boolean)
-            intSaltos = saltos
-            strTexto = texto
-            intPosicionX = posicionX
-            intAncho = ancho
-            intFuente = fuente
-            agtAlineado = alineado
-            bolBold = bold
-        End Sub
 
-        Public intSaltos As Integer
-        Public strTexto As String
-        Public intPosicionX As Single
-        Public intAncho As Single
-        Public intFuente As Integer
-        Public agtAlineado As StringAlignment
-        Public bolBold As Boolean
-    End Class
     Public Class ClsEgreso
         Public empresa As Empresa
         Public equipo As EquipoRegistrado
@@ -191,7 +173,7 @@ Public Class ModuloImpresion
             Dim linea As ClsLineaImpresion = lineas(i)
             Dim fontStyle As FontStyle = IIf(linea.bolBold, FontStyle.Bold, FontStyle.Regular)
             sf.LineAlignment = StringAlignment.Center
-            sf.Alignment = linea.agtAlineado
+            sf.Alignment = linea.intAlineado
             Dim rec As RectangleF = New RectangleF()
             rec.Width = paperWith * linea.intAncho / 100
             rec.Height = 20
@@ -406,7 +388,15 @@ Public Class ModuloImpresion
                 nombre = nombre.Substring(32)
             End While
             lineas.Add(New ClsLineaImpresion(1, nombre, 0, 100, 10, StringAlignment.Near, False))
-            lineas.Add(New ClsLineaImpresion(1, "Teléfono: " & objImpresion.strTelefono, 0, 100, 10, StringAlignment.Near, False))
+            lineas.Add(New ClsLineaImpresion(2, "Teléfono: " & objImpresion.strTelefono, 0, 100, 10, StringAlignment.Near, False))
+            If objImpresion.strDetalle.Length > 0 Then
+                Dim observacion As String = "Observación: " & objImpresion.strDetalle
+                While observacion.Length > 32
+                    lineas.Add(New ClsLineaImpresion(1, observacion.Substring(0, 32), 0, 100, 10, StringAlignment.Near, False))
+                    observacion = observacion.Substring(32)
+                End While
+                lineas.Add(New ClsLineaImpresion(2, observacion, 0, 100, 10, StringAlignment.Near, False))
+            End If
             If objImpresion.arrDesglosePago.Count > 0 Then ImprimirDesglosePago(objImpresion.arrDesglosePago)
             ImprimirDetalle(objImpresion.arrDetalleComprobante)
             ImprimirTotales(objImpresion)

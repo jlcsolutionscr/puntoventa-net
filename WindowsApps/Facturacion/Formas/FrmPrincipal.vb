@@ -249,6 +249,13 @@ Public Class FrmPrincipal
         formVendedorListado.Show()
     End Sub
 
+    Private Sub MnuMantPuntServicio_Click(sender As Object, e As EventArgs) Handles MnuMantPuntServicio.Click
+        Dim formPuntoDeServicioListado As New FrmPuntoDeServicioListado With {
+            .MdiParent = Me
+        }
+        formPuntoDeServicioListado.Show()
+    End Sub
+
     Public Sub MnuCapturaFactura_Click(sender As Object, e As EventArgs) Handles MnuCapturaFactura.Click
         Dim formFactura As New FrmFactura With {
             .MdiParent = Me
@@ -296,6 +303,13 @@ Public Class FrmPrincipal
             .MdiParent = Me
         }
         formDevolucionClientes.Show()
+    End Sub
+
+    Private Sub MnuCapturaReimprimirTiquete_Click(sender As Object, e As EventArgs) Handles MnuCapturaReimprimirTiquete.Click
+        Dim formListadoTiqueteOrdenServicio As New FrmListadoTiqueteOrdenServicio With {
+            .MdiParent = Me
+        }
+        formListadoTiqueteOrdenServicio.Show()
     End Sub
 
     Public Sub MnuApRCxC_Click(sender As Object, e As EventArgs) Handles MnuApRCxC.Click

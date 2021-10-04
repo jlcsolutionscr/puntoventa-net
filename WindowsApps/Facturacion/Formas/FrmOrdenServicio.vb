@@ -733,7 +733,7 @@ Public Class FrmOrdenServicio
                 txtTelefono.Text = ordenServicio.Telefono
                 txtDireccion.Text = ordenServicio.Direccion
                 txtDescripcionOrden.Text = ordenServicio.Descripcion
-                txtFechaEntrega.Value = ordenServicio.FechaEntrega
+                If ordenServicio.FechaEntrega <> "" Then txtFechaEntrega.Value = ordenServicio.FechaEntrega
                 cboHoraEntrega.SelectedIndex = IIf(ordenServicio.HoraEntrega = "Tarde", 1, 0)
                 txtOtrosDetalles.Text = ordenServicio.OtrosDetalles
                 If cliente.PorcentajeExoneracion > 0 Then

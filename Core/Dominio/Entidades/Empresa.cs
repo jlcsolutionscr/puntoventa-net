@@ -32,6 +32,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public string Direccion { get; set; }
         public string Telefono1 { get; set; }
         public string Telefono2 { get; set; }
+        [ForeignKey("PlanFacturacion")]
         public int TipoContrato { get; set; }
         public int CantidadDisponible { get; set; }
         public DateTime? FechaVence { get; set; }
@@ -61,6 +62,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public int? RefreshExpiresIn { get; set; }
         public string RefreshToken { get; set; }
         public DateTime? EmitedAt { get; set; }
+        public int Modalidad { get; set; }
         [NotMapped]
         public Usuario Usuario;
         [NotMapped]
@@ -70,6 +72,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public TipoMoneda TipoMoneda { get; set; }
         [ForeignKey("IdProvincia, IdCanton, IdDistrito, IdBarrio")]
         public Barrio Barrio { get; set; }
+        public PlanFacturacion PlanFacturacion { get; set; }
         public ICollection<ReportePorEmpresa> ReportePorEmpresa { get; set; }
         public ICollection<RolePorEmpresa> RolePorEmpresa { get; set; }
         public ICollection<SucursalPorEmpresa> SucursalPorEmpresa { get; set; }

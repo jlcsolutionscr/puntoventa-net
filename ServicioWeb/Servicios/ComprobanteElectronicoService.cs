@@ -1944,6 +1944,36 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         {
             try
             {
+                int intMesEnCurso = DateTime.Now.Month;
+                int intAnnioEnCurso = DateTime.Now.Year;
+                CantFEMensualEmpresa cantiFacturasMensual = dbContext.CantFEMensualEmpresaRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa & x.IdMes == intMesEnCurso & x.IdAnio == intAnnioEnCurso).FirstOrDefault();
+                int intCantidadActual = cantiFacturasMensual == null ? 0 : cantiFacturasMensual.CantidadDoc;
+                int intCantidadPlan = empresa.PlanFacturacion.CantidadDocumentos + empresa.CantidadDisponible;
+                if (intCantidadPlan <= intCantidadActual) throw new BusinessException("La cantidad de documentos disponibles para su plan de facturación ha sido agotado. Contacte con su proveedor del servicio. . .");
+                if (cantiFacturasMensual.CantidadDoc < empresa.PlanFacturacion.CantidadDocumentos)
+                {
+                    if (cantiFacturasMensual == null)
+                    {
+                        cantiFacturasMensual = new CantFEMensualEmpresa
+                        {
+                            IdEmpresa = empresa.IdEmpresa,
+                            IdMes = intMesEnCurso,
+                            IdAnio = intAnnioEnCurso,
+                            CantidadDoc = 1
+                        };
+                        dbContext.CantFEMensualEmpresaRepository.Add(cantiFacturasMensual);
+                    }
+                    else
+                    {
+                        cantiFacturasMensual.CantidadDoc += 1;
+                        dbContext.NotificarModificacion(cantiFacturasMensual);
+                    }
+                }
+                else
+                {
+                    empresa.CantidadDisponible -= 1;
+                }
+                dbContext.NotificarModificacion(empresa);
                 string strTipoIdentificacionEmisor = "";
                 string strIdentificacionEmisor = "";
                 string strTipoIdentificacionReceptor = "";
@@ -2084,36 +2114,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     DatosDocumentoOri = documentoOriEncoded
                 };
                 dbContext.DocumentoElectronicoRepository.Add(documento);
-                if (!new int[] { (int)TipoDocumento.MensajeReceptorAceptado, (int)TipoDocumento.MensajeReceptorAceptadoParcial, (int)TipoDocumento.MensajeReceptorRechazado }.Contains(intTipoDocumentoElectronico))
-                {
-                    if (empresa.TipoContrato == 1)
-                    {
-                        int intMesEnCurso = DateTime.Now.Month;
-                        int intAnnioEnCurso = DateTime.Now.Year;
-                        CantFEMensualEmpresa cantiFacturasMensual = dbContext.CantFEMensualEmpresaRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa & x.IdMes == intMesEnCurso & x.IdAnio == intAnnioEnCurso).FirstOrDefault();
-                        if (cantiFacturasMensual == null)
-                        {
-                            cantiFacturasMensual = new CantFEMensualEmpresa
-                            {
-                                IdEmpresa = empresa.IdEmpresa,
-                                IdMes = intMesEnCurso,
-                                IdAnio = intAnnioEnCurso,
-                                CantidadDoc = 1
-                            };
-                            dbContext.CantFEMensualEmpresaRepository.Add(cantiFacturasMensual);
-                        }
-                        else
-                        {
-                            cantiFacturasMensual.CantidadDoc += 1;
-                            dbContext.NotificarModificacion(cantiFacturasMensual);
-                        }
-                    }
-                    else if (empresa.TipoContrato == 2)
-                    {
-                        empresa.CantidadDisponible -= 1;
-                        dbContext.NotificarModificacion(empresa);
-                    }
-                }
                 return documento;
             }
             catch (BusinessException ex)

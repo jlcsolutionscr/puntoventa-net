@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="Entidades\AjusteInventario.cs" />
     <Compile Include="Entidades\Asiento.cs" />
+    <Compile Include="Entidades\PlanFacturacion.cs" />
     <Compile Include="Entidades\Barrio.cs" />
     <Compile Include="Entidades\CantFEMensualEmpresa.cs" />
     <Compile Include="Entidades\Canton.cs" />
@@ -101,6 +102,8 @@
     <Compile Include="Entidades\TipoDeCambioDolar.cs" />
     <Compile Include="Entidades\TipoIdentificacion.cs" />
     <Compile Include="Entidades\ParametroExoneracion.cs" />
+    <Compile Include="Entidades\PuntoDeServicio.cs" />
+    <Compile Include="Entidades\TiqueteOrdenServicio.cs" />
     <Compile Include="Entidades\Traslado.cs" />
     <Compile Include="Entidades\Ingreso.cs" />
     <Compile Include="Entidades\CuentaIngreso.cs" />

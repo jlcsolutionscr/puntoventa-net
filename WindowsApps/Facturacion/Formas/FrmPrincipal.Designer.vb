@@ -58,14 +58,16 @@ Partial Class FrmPrincipal
         Me.MnuMantCE = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuMantCI = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuMantCC = New System.Windows.Forms.ToolStripMenuItem()
-        Me.MnuMantInv = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuMantVend = New System.Windows.Forms.ToolStripMenuItem()
+        Me.MnuMantInv = New System.Windows.Forms.ToolStripMenuItem()
+        Me.MnuMantPuntServicio = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuCaptura = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuCapturaProforma = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuCapturaOrdenServicio = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuCapturaApartado = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuCapturaFactura = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuDevolucionCliente = New System.Windows.Forms.ToolStripMenuItem()
+        Me.MnuCapturaReimprimirTiquete = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuCompra = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuCompraRegistro = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuCompraTraslado = New System.Windows.Forms.ToolStripMenuItem()
@@ -210,7 +212,7 @@ Partial Class FrmPrincipal
         '
         'MnuMant
         '
-        Me.MnuMant.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MnuMantCliente, Me.MnuMantLinea, Me.MnuMantProveedor, Me.MnuMantProducto, Me.MnuMantUsuario, Me.MnuMantCE, Me.MnuMantCI, Me.MnuMantCC, Me.MnuMantVend, Me.MnuMantInv})
+        Me.MnuMant.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MnuMantCliente, Me.MnuMantLinea, Me.MnuMantProveedor, Me.MnuMantProducto, Me.MnuMantUsuario, Me.MnuMantCE, Me.MnuMantCI, Me.MnuMantCC, Me.MnuMantVend, Me.MnuMantInv, Me.MnuMantPuntServicio})
         Me.MnuMant.MergeAction = System.Windows.Forms.MergeAction.Remove
         Me.MnuMant.Name = "MnuMant"
         Me.MnuMant.Size = New System.Drawing.Size(101, 20)
@@ -273,13 +275,6 @@ Partial Class FrmPrincipal
         Me.MnuMantCC.Text = "Cuentas Contables"
         Me.MnuMantCC.Visible = False
         '
-        'MnuMantInv
-        '
-        Me.MnuMantInv.Name = "MnuMantInv"
-        Me.MnuMantInv.Size = New System.Drawing.Size(252, 22)
-        Me.MnuMantInv.Text = "Catalogo de productos y servicios"
-        Me.MnuMantInv.Visible = False
-        '
         'MnuMantVend
         '
         Me.MnuMantVend.Name = "MnuMantVend"
@@ -287,9 +282,23 @@ Partial Class FrmPrincipal
         Me.MnuMantVend.Text = "Vendedores"
         Me.MnuMantVend.Visible = False
         '
+        'MnuMantInv
+        '
+        Me.MnuMantInv.Name = "MnuMantInv"
+        Me.MnuMantInv.Size = New System.Drawing.Size(252, 22)
+        Me.MnuMantInv.Text = "Catalogo de productos y servicios"
+        Me.MnuMantInv.Visible = False
+        '
+        'MnuMantPuntServicio
+        '
+        Me.MnuMantPuntServicio.Name = "MnuMantPuntServicio"
+        Me.MnuMantPuntServicio.Size = New System.Drawing.Size(252, 22)
+        Me.MnuMantPuntServicio.Text = "Puntos de Servicio"
+        Me.MnuMantPuntServicio.Visible = False
+        '
         'MnuCaptura
         '
-        Me.MnuCaptura.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MnuCapturaProforma, Me.MnuCapturaOrdenServicio, Me.MnuCapturaApartado, Me.MnuCapturaFactura, Me.MnuDevolucionCliente})
+        Me.MnuCaptura.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MnuCapturaProforma, Me.MnuCapturaOrdenServicio, Me.MnuCapturaApartado, Me.MnuCapturaFactura, Me.MnuDevolucionCliente, Me.MnuCapturaReimprimirTiquete})
         Me.MnuCaptura.MergeAction = System.Windows.Forms.MergeAction.Remove
         Me.MnuCaptura.Name = "MnuCaptura"
         Me.MnuCaptura.Size = New System.Drawing.Size(81, 20)
@@ -299,37 +308,44 @@ Partial Class FrmPrincipal
         'MnuCapturaProforma
         '
         Me.MnuCapturaProforma.Name = "MnuCapturaProforma"
-        Me.MnuCapturaProforma.Size = New System.Drawing.Size(206, 22)
+        Me.MnuCapturaProforma.Size = New System.Drawing.Size(256, 22)
         Me.MnuCapturaProforma.Text = "Proformas"
         Me.MnuCapturaProforma.Visible = False
         '
         'MnuCapturaOrdenServicio
         '
         Me.MnuCapturaOrdenServicio.Name = "MnuCapturaOrdenServicio"
-        Me.MnuCapturaOrdenServicio.Size = New System.Drawing.Size(206, 22)
+        Me.MnuCapturaOrdenServicio.Size = New System.Drawing.Size(256, 22)
         Me.MnuCapturaOrdenServicio.Text = "Ordenes de Servicio"
         Me.MnuCapturaOrdenServicio.Visible = False
         '
         'MnuCapturaApartado
         '
         Me.MnuCapturaApartado.Name = "MnuCapturaApartado"
-        Me.MnuCapturaApartado.Size = New System.Drawing.Size(206, 22)
+        Me.MnuCapturaApartado.Size = New System.Drawing.Size(256, 22)
         Me.MnuCapturaApartado.Text = "Apartados"
         Me.MnuCapturaApartado.Visible = False
         '
         'MnuCapturaFactura
         '
         Me.MnuCapturaFactura.Name = "MnuCapturaFactura"
-        Me.MnuCapturaFactura.Size = New System.Drawing.Size(206, 22)
+        Me.MnuCapturaFactura.Size = New System.Drawing.Size(256, 22)
         Me.MnuCapturaFactura.Text = "Facturación"
         Me.MnuCapturaFactura.Visible = False
         '
         'MnuDevolucionCliente
         '
         Me.MnuDevolucionCliente.Name = "MnuDevolucionCliente"
-        Me.MnuDevolucionCliente.Size = New System.Drawing.Size(206, 22)
+        Me.MnuDevolucionCliente.Size = New System.Drawing.Size(256, 22)
         Me.MnuDevolucionCliente.Text = "Devoluciones de Clientes"
         Me.MnuDevolucionCliente.Visible = False
+        '
+        'MnuCapturaReimprimirTiquete
+        '
+        Me.MnuCapturaReimprimirTiquete.Name = "MnuCapturaReimprimirTiquete"
+        Me.MnuCapturaReimprimirTiquete.Size = New System.Drawing.Size(256, 22)
+        Me.MnuCapturaReimprimirTiquete.Text = "Reimprimir Tiquete Orden Servicio"
+        Me.MnuCapturaReimprimirTiquete.Visible = False
         '
         'MnuCompra
         '
@@ -617,4 +633,6 @@ Partial Class FrmPrincipal
     Friend WithEvents stsPrincipal As StatusStrip
     Friend WithEvents tslUsuario As ToolStripStatusLabel
     Friend WithEvents MnuDocElectADE As ToolStripMenuItem
+    Friend WithEvents MnuMantPuntServicio As ToolStripMenuItem
+    Friend WithEvents MnuCapturaReimprimirTiquete As ToolStripMenuItem
 End Class
