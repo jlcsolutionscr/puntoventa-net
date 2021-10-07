@@ -1238,6 +1238,7 @@
     <ProjectReference Include="..\..\Core\Dominio\Dominio.csproj">
       <Project>{74e3681e-1245-4268-adb9-d76da18b2fe0}</Project>
       <Name>Dominio</Name>
+      <Private>True</Private>
     </ProjectReference>
     <ProjectReference Include="..\ClienteWCF\ClienteWCF.csproj">
       <Project>{2602dd72-5aa0-45a2-a4a6-4805da33c318}</Project>

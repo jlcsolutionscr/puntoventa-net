@@ -27,7 +27,7 @@ Public Class FrmBusquedaIngreso
         dvcFecha.Width = 70
         dgvListado.Columns.Add(dvcFecha)
         dvcDescripcion.HeaderText = "Detalle"
-        dvcDescripcion.DataPropertyName = "Detalle"
+        dvcDescripcion.DataPropertyName = "Descripcion"
         dvcDescripcion.Width = 400
         dgvListado.Columns.Add(dvcDescripcion)
         dvcMonto.HeaderText = "Total"

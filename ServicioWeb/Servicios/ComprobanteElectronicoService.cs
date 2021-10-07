@@ -1950,7 +1950,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 int intCantidadActual = cantiFacturasMensual == null ? 0 : cantiFacturasMensual.CantidadDoc;
                 int intCantidadPlan = empresa.PlanFacturacion.CantidadDocumentos + empresa.CantidadDisponible;
                 if (intCantidadPlan <= intCantidadActual) throw new BusinessException("La cantidad de documentos disponibles para su plan de facturación ha sido agotado. Contacte con su proveedor del servicio. . .");
-                if (cantiFacturasMensual.CantidadDoc < empresa.PlanFacturacion.CantidadDocumentos)
+                if (intCantidadActual < empresa.PlanFacturacion.CantidadDocumentos)
                 {
                     if (cantiFacturasMensual == null)
                     {
