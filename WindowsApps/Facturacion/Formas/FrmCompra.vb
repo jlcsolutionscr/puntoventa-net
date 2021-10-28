@@ -484,7 +484,7 @@ Public Class FrmCompra
                     producto = FrmPrincipal.productoTranstorio
                     decPrecioVenta = 0
                     Dim decPrecioCosto As Decimal = producto.PrecioVenta1 / (1 + (producto.ParametroImpuesto.TasaImpuesto / 100))
-                    CargarLineaDetalleCompra(producto, producto.Existencias, decPrecioCosto, producto.PrecioVenta1)
+                    CargarLineaDetalleCompra(producto, producto.Existencias, decPrecioCosto, decPrecioCosto)
                     FrmPrincipal.productoTranstorio.PrecioVenta1 = 0
                 End If
             End If
