@@ -33,6 +33,7 @@ Public Class FrmPrincipal
     Public bolModificaCliente As Boolean = False
     Public bolModificaPrecioVenta As Boolean = False
     Public productoTranstorio As Producto
+    Public productoImpuestoServicio As Producto
     Public bolDescargaFinalizada As Boolean = False
 #End Region
 
@@ -616,7 +617,17 @@ Public Class FrmPrincipal
                 End If
             End If
         End If
-        productoTranstorio = Await Puntoventa.ObtenerProductoTransitorio(empresaGlobal.IdEmpresa, usuarioGlobal.Token)
+        Try
+            productoTranstorio = Await Puntoventa.ObtenerProductoTransitorio(empresaGlobal.IdEmpresa, usuarioGlobal.Token)
+
+        Catch
+            productoImpuestoServicio = Nothing
+        End Try
+        Try
+            productoImpuestoServicio = Await Puntoventa.ObtenerProductoImpuestoServicio(empresaGlobal.IdEmpresa, usuarioGlobal.Token)
+        Catch
+            productoImpuestoServicio = Nothing
+        End Try
         dgvDecimal = New DataGridViewCellStyle With {
             .Format = "N2",
             .NullValue = "0",

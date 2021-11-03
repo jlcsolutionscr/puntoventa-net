@@ -793,7 +793,8 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                             strRespuesta = serializer.Serialize(listadoTipodePrecio);
                         break;
                     case "ObtenerListadoTipoProducto":
-                        IList<LlaveDescripcion> listadoTipoProducto = servicioMantenimiento.ObtenerListadoTipoProducto();
+                        strCodigo = parametrosJO.Property("CodigoUsuario").Value.ToString();
+                        IList<LlaveDescripcion> listadoTipoProducto = servicioMantenimiento.ObtenerListadoTipoProducto(strCodigo);
                         if (listadoTipoProducto.Count > 0)
                             strRespuesta = serializer.Serialize(listadoTipoProducto);
                         break;
@@ -1332,9 +1333,10 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         if (producto != null)
                             strRespuesta = serializer.Serialize(producto);
                         break;
-                    case "ObtenerProductoTransitorio":
+                    case "ObtenerProductoEspecial":
                         intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
-                        producto = servicioMantenimiento.ObtenerProductoTransitorio(intIdEmpresa);
+                        intIdLlave1 = int.Parse(parametrosJO.Property("IdTipo").Value.ToString());
+                        producto = servicioMantenimiento.ObtenerProductoEspecial(intIdEmpresa, intIdLlave1);
                         if (producto != null)
                             strRespuesta = serializer.Serialize(producto);
                         break;

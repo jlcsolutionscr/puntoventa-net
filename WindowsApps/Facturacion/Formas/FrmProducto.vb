@@ -52,7 +52,7 @@ Public Class FrmProducto
     Private Async Function CargarCombos() As Task
         cboTipoProducto.ValueMember = "Id"
         cboTipoProducto.DisplayMember = "Descripcion"
-        cboTipoProducto.DataSource = Await Puntoventa.ObtenerListadoTipoProducto(FrmPrincipal.usuarioGlobal.Token)
+        cboTipoProducto.DataSource = Await Puntoventa.ObtenerListadoTipoProducto(FrmPrincipal.usuarioGlobal.CodigoUsuario, FrmPrincipal.usuarioGlobal.Token)
         cboTipoImpuesto.ValueMember = "Id"
         cboTipoImpuesto.DisplayMember = "Descripcion"
         cboTipoImpuesto.DataSource = Await Puntoventa.ObtenerListadoTipoImpuesto(FrmPrincipal.usuarioGlobal.Token)

@@ -25,6 +25,7 @@ Public Class FrmFactura
     Private vendedor As Vendedor
     Private bolReady As Boolean = False
     Private bolAutorizando As Boolean = False
+    Private bolImpuestoCargado As Boolean = False
     Private provider As CultureInfo = CultureInfo.InvariantCulture
     'Impresion de tiquete
     Private comprobanteImpresion As ModuloImpresion.ClsComprobante
@@ -50,6 +51,7 @@ Public Class FrmFactura
         dtbDetalleFactura.Columns.Add("PORCDESCUENTO", GetType(Decimal))
         dtbDetalleFactura.Columns.Add("VALORDESCUENTO", GetType(Decimal))
         dtbDetalleFactura.Columns.Add("ID", GetType(Integer))
+        dtbDetalleFactura.Columns.Add("IMPSER", GetType(Integer))
         dtbDetalleFactura.PrimaryKey = {dtbDetalleFactura.Columns(12)}
 
         dtbDesglosePago = New DataTable()
@@ -103,7 +105,7 @@ Public Class FrmFactura
 
         dvcCantidad.DataPropertyName = "CANTIDAD"
         dvcCantidad.HeaderText = "Cantidad"
-        dvcCantidad.Width = 60
+        dvcCantidad.Width = 50
         dvcCantidad.ReadOnly = True
         dvcCantidad.SortMode = DataGridViewColumnSortMode.NotSortable
         dvcCantidad.DefaultCellStyle = FrmPrincipal.dgvDecimal
@@ -111,7 +113,7 @@ Public Class FrmFactura
 
         dvcPorcDescuento.DataPropertyName = "PORCDESCUENTO"
         dvcPorcDescuento.HeaderText = "% Des"
-        dvcPorcDescuento.Width = 40
+        dvcPorcDescuento.Width = 50
         dvcPorcDescuento.SortMode = DataGridViewColumnSortMode.NotSortable
         dvcPorcDescuento.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleFactura.Columns.Add(dvcPorcDescuento)
@@ -261,6 +263,7 @@ Public Class FrmFactura
             dtrRowDetFactura.Item(10) = detalle.PorcDescuento
             dtrRowDetFactura.Item(11) = (dtrRowDetFactura.Item(5) * 100 / (100 - detalle.PorcDescuento)) - dtrRowDetFactura.Item(5)
             dtrRowDetFactura.Item(12) = consecDetalle
+            dtrRowDetFactura.Item(13) = False
             dtbDetalleFactura.Rows.Add(dtrRowDetFactura)
         Next
         grdDetalleFactura.Refresh()
@@ -285,12 +288,13 @@ Public Class FrmFactura
             dtrRowDetFactura.Item(10) = detalle.PorcDescuento
             dtrRowDetFactura.Item(11) = (dtrRowDetFactura.Item(5) * 100 / (100 - detalle.PorcDescuento)) - dtrRowDetFactura.Item(5)
             dtrRowDetFactura.Item(12) = consecDetalle
+            dtrRowDetFactura.Item(13) = False
             dtbDetalleFactura.Rows.Add(dtrRowDetFactura)
         Next
         grdDetalleFactura.Refresh()
     End Sub
 
-    Private Sub CargarDetalleFactura(apartado As Apartado)
+    Private Sub CargarDetalleApartado(apartado As Apartado)
         dtbDetalleFactura.Rows.Clear()
         consecDetalle = 0
         For Each detalle As DetalleApartado In apartado.DetalleApartado
@@ -309,6 +313,7 @@ Public Class FrmFactura
             dtrRowDetFactura.Item(10) = detalle.PorcDescuento
             dtrRowDetFactura.Item(11) = (dtrRowDetFactura.Item(5) * 100 / (100 - detalle.PorcDescuento)) - dtrRowDetFactura.Item(5)
             dtrRowDetFactura.Item(12) = consecDetalle
+            dtrRowDetFactura.Item(13) = False
             dtbDetalleFactura.Rows.Add(dtrRowDetFactura)
         Next
         grdDetalleFactura.Refresh()
@@ -333,6 +338,7 @@ Public Class FrmFactura
             dtrRowDetFactura.Item(10) = detalle.PorcDescuento
             dtrRowDetFactura.Item(11) = (dtrRowDetFactura.Item(5) * 100 / (100 - detalle.PorcDescuento)) - dtrRowDetFactura.Item(5)
             dtrRowDetFactura.Item(12) = consecDetalle
+            dtrRowDetFactura.Item(13) = False
             dtbDetalleFactura.Rows.Add(dtrRowDetFactura)
         Next
         grdDetalleFactura.Refresh()
@@ -356,8 +362,9 @@ Public Class FrmFactura
         grdDesglosePago.Refresh()
     End Sub
 
-    Private Sub CargarLineaDetalleFactura(producto As Producto, strDescripcion As String, decCantidad As Decimal, decPrecio As Decimal, decPorcDesc As Decimal)
-        Dim decTasaImpuesto As Decimal = producto.ParametroImpuesto.TasaImpuesto
+    Private Sub CargarLineaDetalleFactura(producto As Producto, strDescripcion As String, decCantidad As Decimal, decPrecio As Decimal, decPorcDesc As Decimal, bolImpServicio As Boolean)
+        Dim decTasaImpuesto As Decimal = 0
+        If producto.ParametroImpuesto IsNot Nothing Then decTasaImpuesto = producto.ParametroImpuesto.TasaImpuesto
         If cliente.AplicaTasaDiferenciada Then decTasaImpuesto = cliente.ParametroImpuesto.TasaImpuesto
         Dim decPrecioGravado As Decimal = decPrecio
         If decTasaImpuesto > 0 Then decPrecioGravado = Math.Round(decPrecio / (1 + (decTasaImpuesto / 100)), 5)
@@ -391,6 +398,7 @@ Public Class FrmFactura
             dtrRowDetFactura.Item(10) = decPorcDesc
             dtrRowDetFactura.Item(11) = (decPrecio * 100 / (100 - decPorcDesc)) - decPrecio
             dtrRowDetFactura.Item(12) = consecDetalle
+            dtrRowDetFactura.Item(13) = bolImpServicio
             dtbDetalleFactura.Rows.Add(dtrRowDetFactura)
         End If
         grdDetalleFactura.Refresh()
@@ -570,13 +578,13 @@ Public Class FrmFactura
             txtCodigo.Focus()
             Exit Sub
         Else
-            Dim decTasaImpuesto As Decimal = producto.ParametroImpuesto.TasaImpuesto
             txtCodigo.Text = producto.Codigo
             If txtCantidad.Text = "" Then txtCantidad.Text = "1"
             txtDescripcion.Text = producto.Descripcion
             txtExistencias.Text = producto.Existencias
             txtUnidad.Text = IIf(producto.Tipo = 1, "UND", IIf(producto.Tipo = 2, "SP", "OS"))
             txtPrecio.ReadOnly = Not FrmPrincipal.bolModificaPrecioVenta And Not producto.ModificaPrecio
+            Dim decTasaImpuesto As Decimal = producto.ParametroImpuesto.TasaImpuesto
             txtPorcDesc.Text = FormatNumber(producto.PorcDescuento, 2)
             decPrecioVenta = ObtenerPrecioVentaPorCliente(cliente, producto)
             If producto.PorcDescuento > 0 Then
@@ -617,7 +625,7 @@ Public Class FrmFactura
                 Dim formCargar As New FrmCargaProductoTransitorio
                 formCargar.ShowDialog()
                 If FrmPrincipal.productoTranstorio.PrecioVenta1 > 0 Then
-                    CargarLineaDetalleFactura(FrmPrincipal.productoTranstorio, FrmPrincipal.productoTranstorio.Descripcion, FrmPrincipal.productoTranstorio.Existencias, FrmPrincipal.productoTranstorio.PrecioVenta1, 0)
+                    CargarLineaDetalleFactura(FrmPrincipal.productoTranstorio, FrmPrincipal.productoTranstorio.Descripcion, FrmPrincipal.productoTranstorio.Existencias, FrmPrincipal.productoTranstorio.PrecioVenta1, 0, False)
                     FrmPrincipal.productoTranstorio.PrecioVenta1 = 0
                 End If
             End If
@@ -625,6 +633,20 @@ Public Class FrmFactura
             BtnBuscar_Click(btnBuscar, New EventArgs())
         ElseIf e.KeyCode = Keys.F4 Then
             BtnAgregar_Click(btnAgregar, New EventArgs())
+        ElseIf e.KeyCode = Keys.F5 Then
+            If FrmPrincipal.empresaGlobal.Modalidad = 2 Then
+                If FrmPrincipal.productoImpuestoServicio Is Nothing Then
+                    MessageBox.Show("El impuesto de servicio no se encuentra configurado. Contacte con su proveedor del sistema. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Else
+                    If bolImpuestoCargado Then
+                        MessageBox.Show("El impuesto de servicio ya se encuentra cargado. Debe eliminarlo si desea recalcularlo. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                    Else
+                        Dim decMontoImpuesto As Decimal = (decExonerado + decExcento + decGravado) * 0.1
+                        CargarLineaDetalleFactura(FrmPrincipal.productoImpuestoServicio, FrmPrincipal.productoImpuestoServicio.Descripcion, 1, decMontoImpuesto, 0, True)
+                        bolImpuestoCargado = True
+                    End If
+                End If
+            End If
         ElseIf e.KeyCode = Keys.F10 And btnGuardar.Enabled Then
             BtnGuardar_Click(btnGuardar, New EventArgs())
         ElseIf e.KeyCode = Keys.F11 And btnImprimir.Enabled Then
@@ -982,7 +1004,7 @@ Public Class FrmFactura
                 intIdProforma = 0
                 intIdOrdenServicio = 0
                 intIdApartado = apartado.IdApartado
-                CargarDetalleFactura(apartado)
+                CargarDetalleApartado(apartado)
                 dtbDesglosePago.Rows.Clear()
                 grdDesglosePago.Refresh()
                 decMontoAdelanto = apartado.MontoAdelanto
@@ -1460,7 +1482,7 @@ Public Class FrmFactura
                 MessageBox.Show(strError, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End If
-            CargarLineaDetalleFactura(producto, txtDescripcion.Text, txtCantidad.Text, decPrecioVenta, txtPorcDesc.Text)
+            CargarLineaDetalleFactura(producto, txtDescripcion.Text, txtCantidad.Text, decPrecioVenta, txtPorcDesc.Text, False)
             txtCantidad.Text = "1"
             txtCodigo.Text = ""
             txtDescripcion.Text = ""
@@ -1476,6 +1498,9 @@ Public Class FrmFactura
     Private Sub BtnEliminar_Click(sender As Object, e As EventArgs) Handles btnEliminar.Click
         If grdDetalleFactura.Rows.Count > 0 Then
             Dim intId = grdDetalleFactura.CurrentRow.Cells(11).Value
+            If bolImpuestoCargado Then
+                If dtbDetalleFactura.Rows.Find(intId).Item(13) = 1 Then bolImpuestoCargado = False
+            End If
             dtbDetalleFactura.Rows.RemoveAt(dtbDetalleFactura.Rows.IndexOf(dtbDetalleFactura.Rows.Find(intId)))
             grdDetalleFactura.Refresh()
             If dtbDetalleFactura.Rows.Count = 0 Then consecDetalle = 0
@@ -1604,52 +1629,56 @@ Public Class FrmFactura
         If e.ColumnIndex = 4 And Not bolAutorizando Then
             bolAutorizando = True
             Dim decPorcDesc As Decimal = 0
-            If Not IsDBNull(grdDetalleFactura.Rows(e.RowIndex).Cells(4).Value) Then
-                decPorcDesc = grdDetalleFactura.Rows(e.RowIndex).Cells(4).Value
-            End If
-            If decPorcDesc > FrmPrincipal.empresaGlobal.PorcentajeDescMaximo And decPorcDesc > FrmPrincipal.usuarioGlobal.PorcMaxDescuento Then
-                Dim strEntidad = "la empresa"
-                If decPorcDesc > FrmPrincipal.usuarioGlobal.PorcMaxDescuento Then strEntidad += "el usuario actual"
-                If MessageBox.Show("El porcentaje ingresado es mayor al parámetro establecido para " & strEntidad & ". Desea ingresar una autorización?", "JLC Solutions CR", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
-                    FrmPrincipal.strCodigoUsuario = ""
-                    FrmPrincipal.strContrasena = ""
-                    Dim formAutorizacion As New FrmAutorizacionEspecial
-                    formAutorizacion.ShowDialog()
-                    If FrmPrincipal.strCodigoUsuario <> "" And FrmPrincipal.strContrasena <> "" Then
-                        Dim decPorcentaje As Decimal
-                        Try
-                            decPorcentaje = Await Puntoventa.AutorizacionPorcentaje(FrmPrincipal.strCodigoUsuario, FrmPrincipal.strContrasena, FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
-                        Catch ex As Exception
-                            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                            decPorcDesc = 0
-                        End Try
-                        If decPorcentaje < decPorcDesc Then
-                            MessageBox.Show("El usuario ingresado no puede autorizar el porcentaje solicitado.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            If dtbDetalleFactura.Rows(e.RowIndex).Item(13) = 1 Then
+                grdDetalleFactura.Rows(e.RowIndex).Cells(e.ColumnIndex).Value = 0
+            Else
+                If Not IsDBNull(grdDetalleFactura.Rows(e.RowIndex).Cells(4).Value) Then
+                    decPorcDesc = grdDetalleFactura.Rows(e.RowIndex).Cells(4).Value
+                End If
+                If decPorcDesc > FrmPrincipal.empresaGlobal.PorcentajeDescMaximo And decPorcDesc > FrmPrincipal.usuarioGlobal.PorcMaxDescuento Then
+                    Dim strEntidad = "la empresa"
+                    If decPorcDesc > FrmPrincipal.usuarioGlobal.PorcMaxDescuento Then strEntidad += "el usuario actual"
+                    If MessageBox.Show("El porcentaje ingresado es mayor al parámetro establecido para " & strEntidad & ". Desea ingresar una autorización?", "JLC Solutions CR", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
+                        FrmPrincipal.strCodigoUsuario = ""
+                        FrmPrincipal.strContrasena = ""
+                        Dim formAutorizacion As New FrmAutorizacionEspecial
+                        formAutorizacion.ShowDialog()
+                        If FrmPrincipal.strCodigoUsuario <> "" And FrmPrincipal.strContrasena <> "" Then
+                            Dim decPorcentaje As Decimal
+                            Try
+                                decPorcentaje = Await Puntoventa.AutorizacionPorcentaje(FrmPrincipal.strCodigoUsuario, FrmPrincipal.strContrasena, FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+                            Catch ex As Exception
+                                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                                decPorcDesc = 0
+                            End Try
+                            If decPorcentaje < decPorcDesc Then
+                                MessageBox.Show("El usuario ingresado no puede autorizar el porcentaje solicitado.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                                decPorcDesc = 0
+                            End If
+                        Else
+                            MessageBox.Show("Proceso de autorización abortado por el usuario.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
                             decPorcDesc = 0
                         End If
                     Else
-                        MessageBox.Show("Proceso de autorización abortado por el usuario.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
                         decPorcDesc = 0
                     End If
-                Else
-                    decPorcDesc = 0
                 End If
+                grdDetalleFactura.Rows(e.RowIndex).Cells(e.ColumnIndex).Value = decPorcDesc
+                Dim decCantidad As Decimal = grdDetalleFactura.Rows(e.RowIndex).Cells(3).Value
+                Dim decTasaImpuesto As Decimal = grdDetalleFactura.Rows(e.RowIndex).Cells(10).Value
+                Dim decPrecio As Decimal = grdDetalleFactura.Rows(e.RowIndex).Cells(6).Value + grdDetalleFactura.Rows(e.RowIndex).Cells(5).Value
+                Dim decMontoDesc = decPrecio / 100 * decPorcDesc
+                decPrecio = decPrecio - decMontoDesc
+                Dim decPrecioGravado As Decimal = decPrecio
+                If decTasaImpuesto > 0 Then decPrecioGravado = Math.Round(decPrecio / (1 + (decTasaImpuesto / 100)), 3)
+                dtbDetalleFactura.Rows(e.RowIndex).Item(4) = decPrecioGravado
+                dtbDetalleFactura.Rows(e.RowIndex).Item(5) = decPrecio
+                dtbDetalleFactura.Rows(e.RowIndex).Item(6) = decCantidad * decPrecio
+                dtbDetalleFactura.Rows(e.RowIndex).Item(10) = decPorcDesc
+                dtbDetalleFactura.Rows(e.RowIndex).Item(11) = decMontoDesc
+                grdDetalleFactura.Refresh()
+                CargarTotales()
             End If
-            grdDetalleFactura.Rows(e.RowIndex).Cells(e.ColumnIndex).Value = decPorcDesc
-            Dim decCantidad As Decimal = grdDetalleFactura.Rows(e.RowIndex).Cells(3).Value
-            Dim decTasaImpuesto As Decimal = grdDetalleFactura.Rows(e.RowIndex).Cells(10).Value
-            Dim decPrecio As Decimal = grdDetalleFactura.Rows(e.RowIndex).Cells(6).Value + grdDetalleFactura.Rows(e.RowIndex).Cells(5).Value
-            Dim decMontoDesc = decPrecio / 100 * decPorcDesc
-            decPrecio = decPrecio - decMontoDesc
-            Dim decPrecioGravado As Decimal = decPrecio
-            If decTasaImpuesto > 0 Then decPrecioGravado = Math.Round(decPrecio / (1 + (decTasaImpuesto / 100)), 3)
-            dtbDetalleFactura.Rows(e.RowIndex).Item(4) = decPrecioGravado
-            dtbDetalleFactura.Rows(e.RowIndex).Item(5) = decPrecio
-            dtbDetalleFactura.Rows(e.RowIndex).Item(6) = decCantidad * decPrecio
-            dtbDetalleFactura.Rows(e.RowIndex).Item(10) = decPorcDesc
-            dtbDetalleFactura.Rows(e.RowIndex).Item(11) = decMontoDesc
-            grdDetalleFactura.Refresh()
-            CargarTotales()
             bolAutorizando = False
         End If
     End Sub

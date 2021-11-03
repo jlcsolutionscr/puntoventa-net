@@ -346,9 +346,9 @@ namespace LeandroSoftware.ClienteWCF
             return listado;
         }
 
-        public static async Task<List<LlaveDescripcion>> ObtenerListadoTipoProducto(string strToken)
+        public static async Task<List<LlaveDescripcion>> ObtenerListadoTipoProducto(string strCodigoUsuario, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerListadoTipoProducto'}";
+            string strDatos = "{NombreMetodo: 'ObtenerListadoTipoProducto', Parametros: {CodigoUsuario: '" + strCodigoUsuario + "'}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
             if (respuesta != "")
@@ -1057,7 +1057,17 @@ namespace LeandroSoftware.ClienteWCF
 
         public static async Task<Producto> ObtenerProductoTransitorio(int intIdEmpresa, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerProductoTransitorio', Parametros: {IdEmpresa: " + intIdEmpresa + "}}";
+            string strDatos = "{NombreMetodo: 'ObtenerProductoEspecial', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdTipo: 4}}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            Producto producto = null;
+            if (respuesta != "")
+                producto = serializer.Deserialize<Producto>(respuesta);
+            return producto;
+        }
+
+        public static async Task<Producto> ObtenerProductoImpuestoServicio(int intIdEmpresa, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'ObtenerProductoEspecial', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdTipo: 5}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             Producto producto = null;
             if (respuesta != "")
