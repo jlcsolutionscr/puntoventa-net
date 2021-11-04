@@ -642,8 +642,10 @@ Public Class FrmFactura
                         MessageBox.Show("El impuesto de servicio ya se encuentra cargado. Debe eliminarlo si desea recalcularlo. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
                     Else
                         Dim decMontoImpuesto As Decimal = (decExonerado + decExcento + decGravado) * 0.1
-                        CargarLineaDetalleFactura(FrmPrincipal.productoImpuestoServicio, FrmPrincipal.productoImpuestoServicio.Descripcion, 1, decMontoImpuesto, 0, True)
-                        bolImpuestoCargado = True
+                        If decMontoImpuesto > 0 Then
+                            CargarLineaDetalleFactura(FrmPrincipal.productoImpuestoServicio, FrmPrincipal.productoImpuestoServicio.Descripcion, 1, decMontoImpuesto, 0, True)
+                            bolImpuestoCargado = True
+                        End If
                     End If
                 End If
             End If
