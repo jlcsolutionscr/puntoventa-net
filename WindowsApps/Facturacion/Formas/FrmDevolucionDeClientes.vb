@@ -138,8 +138,9 @@ Public Class FrmDevolucionDeClientes
 
     Private Sub CargarDetalleFactura(ByVal factura As Factura)
         dtbDetalleDevolucion.Rows.Clear()
+        Dim tipoProducto As New List(Of Integer)(New Integer() {StaticTipoProducto.Producto, StaticTipoProducto.Transitorio})
         For Each detalle As DetalleFactura In factura.DetalleFactura
-            If detalle.Producto.TipoProducto.IdTipoProducto = StaticTipoProducto.Producto Then
+            If tipoProducto.Contains(detalle.Producto.TipoProducto.IdTipoProducto) Then
                 dtrRowDetDevolucion = dtbDetalleDevolucion.NewRow
                 dtrRowDetDevolucion.Item(0) = detalle.IdProducto
                 dtrRowDetDevolucion.Item(1) = detalle.Producto.Codigo
