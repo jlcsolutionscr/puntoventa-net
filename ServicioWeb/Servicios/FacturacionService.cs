@@ -1731,6 +1731,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         Producto producto = dbContext.ProductoRepository.Include("Linea").FirstOrDefault(x => x.IdProducto == detalleDevolucion.IdProducto);
                         if (producto == null)
                             throw new Exception("El producto asignado al detalle de la devolución no existe.");
+                        detalleDevolucion.Producto = producto;
+                        DetalleFactura detalleFactura = dbContext.DetalleFacturaRepository.Where(x => x.IdFactura == factura.IdFactura && x.IdProducto == detalleDevolucion.IdProducto).FirstOrDefault();
+                        if (detalleFactura == null)
+                            throw new BusinessException("El producto " + producto.IdProducto + " no posee registro en el detalle de la factura con id " + factura.IdFactura + ". Por favor consulte con su proveedor.");
+                        detalleFactura.CantDevuelto += detalleDevolucion.Cantidad;
+                        dbContext.NotificarModificacion(detalleFactura);
                         if (producto.Tipo == StaticTipoProducto.Producto)
                         {
                             ExistenciaPorSucursal existencias = dbContext.ExistenciaPorSucursalRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == factura.IdSucursal).FirstOrDefault();
@@ -1738,12 +1744,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 throw new BusinessException("El producto " + producto.IdProducto + " no posee registro de existencias. Por favor consulte con su proveedor.");
                             existencias.Cantidad += detalleDevolucion.Cantidad;
                             dbContext.NotificarModificacion(existencias);
-                            DetalleFactura detalleFactura = dbContext.DetalleFacturaRepository.Where(x => x.IdFactura == factura.IdFactura && x.IdProducto == detalleDevolucion.IdProducto).FirstOrDefault();
-                            if (detalleFactura == null)
-                                throw new BusinessException("El producto " + producto.IdProducto + " no posee registro en el detalle de la factura con id " + factura.IdFactura + ". Por favor consulte con su proveedor.");
-                            detalleFactura.CantDevuelto += detalleDevolucion.Cantidad;
-                            dbContext.NotificarModificacion(detalleFactura);
-                            detalleDevolucion.Producto = producto;
                             MovimientoProducto movimientoProducto = new MovimientoProducto
                             {
                                 IdProducto = producto.IdProducto,
@@ -1842,7 +1842,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    log.Error("Error al agregar el registro de devolución: ", ex);
+                    log.Error("Error al agregar el registro de devolución: ", ex.InnerException);
                     throw new Exception("Se produjo un error agregando la información de la devolución. Por favor consulte con su proveedor.");
                 }
             }
@@ -1875,6 +1875,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         Producto producto = dbContext.ProductoRepository.Find(detalleDevolucion.IdProducto);
                         if (producto == null) throw new Exception("El producto asignado al detalle de la devolución no existe.");
+                        DetalleFactura detalleFactura = dbContext.DetalleFacturaRepository.Where(x => x.IdFactura == factura.IdFactura && x.IdProducto == detalleDevolucion.IdProducto).FirstOrDefault();
+                        if (detalleFactura == null)
+                            throw new BusinessException("El producto " + producto.IdProducto + " no posee registro en el detalle de la factura con id " + factura.IdFactura + ". Por favor consulte con su proveedor.");
+                        detalleFactura.CantDevuelto -= detalleDevolucion.Cantidad;
+                        dbContext.NotificarModificacion(detalleFactura);
                         if (producto.Tipo == StaticTipoProducto.Producto)
                         {
                             ExistenciaPorSucursal existencias = dbContext.ExistenciaPorSucursalRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == factura.IdSucursal).FirstOrDefault();
@@ -1882,11 +1887,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 throw new BusinessException("El producto " + producto.IdProducto + " no posee registro de existencias. Por favor consulte con su proveedor.");
                             existencias.Cantidad -= detalleDevolucion.Cantidad;
                             dbContext.NotificarModificacion(existencias);
-                            DetalleFactura detalleFactura = dbContext.DetalleFacturaRepository.Where(x => x.IdFactura == factura.IdFactura && x.IdProducto == detalleDevolucion.IdProducto).FirstOrDefault();
-                            if (detalleFactura == null)
-                                throw new BusinessException("El producto " + producto.IdProducto + " no posee registro en el detalle de la factura con id " + factura.IdFactura + ". Por favor consulte con su proveedor.");
-                            detalleFactura.CantDevuelto -= detalleDevolucion.Cantidad;
-                            dbContext.NotificarModificacion(detalleFactura);
                             MovimientoProducto movimientoProducto = new MovimientoProducto
                             {
                                 IdProducto = producto.IdProducto,
