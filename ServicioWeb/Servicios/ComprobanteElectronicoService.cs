@@ -2053,34 +2053,39 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 int intMesEnCurso = DateTime.Now.Month;
                 int intAnnioEnCurso = DateTime.Now.Year;
-                CantFEMensualEmpresa cantiFacturasMensual = dbContext.CantFEMensualEmpresaRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa & x.IdMes == intMesEnCurso & x.IdAnio == intAnnioEnCurso).FirstOrDefault();
-                int intCantidadActual = cantiFacturasMensual == null ? 0 : cantiFacturasMensual.CantidadDoc;
-                int intCantidadPlan = empresa.PlanFacturacion.CantidadDocumentos + empresa.CantidadDisponible;
-                if (intCantidadPlan <= intCantidadActual) throw new BusinessException("La cantidad de documentos disponibles para su plan de facturación ha sido agotado. Contacte con su proveedor del servicio. . .");
-                if (intCantidadActual < empresa.PlanFacturacion.CantidadDocumentos)
+                var documentosRecepcion = new[] { TipoDocumento.MensajeReceptorAceptado, TipoDocumento.MensajeReceptorAceptadoParcial, TipoDocumento.MensajeReceptorRechazado };
+                bool esMensajeReceptor = documentosRecepcion.Contains(tipoDocumento);
+                if (!esMensajeReceptor || new[] { 1, 2 }.Contains(empresa.PlanFacturacion.IdPlan))
                 {
-                    if (cantiFacturasMensual == null)
+                    CantFEMensualEmpresa cantiFacturasMensual = dbContext.CantFEMensualEmpresaRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa & x.IdMes == intMesEnCurso & x.IdAnio == intAnnioEnCurso).FirstOrDefault();
+                    int intCantidadActual = cantiFacturasMensual == null ? 0 : cantiFacturasMensual.CantidadDoc;
+                    int intCantidadPlan = empresa.PlanFacturacion.CantidadDocumentos + empresa.CantidadDisponible;
+                    if (intCantidadPlan <= intCantidadActual) throw new BusinessException("La cantidad de documentos disponibles para su plan de facturación ha sido agotado. Contacte con su proveedor del servicio. . .");
+                    if (intCantidadActual < empresa.PlanFacturacion.CantidadDocumentos)
                     {
-                        cantiFacturasMensual = new CantFEMensualEmpresa
+                        if (cantiFacturasMensual == null)
                         {
-                            IdEmpresa = empresa.IdEmpresa,
-                            IdMes = intMesEnCurso,
-                            IdAnio = intAnnioEnCurso,
-                            CantidadDoc = 1
-                        };
-                        dbContext.CantFEMensualEmpresaRepository.Add(cantiFacturasMensual);
+                            cantiFacturasMensual = new CantFEMensualEmpresa
+                            {
+                                IdEmpresa = empresa.IdEmpresa,
+                                IdMes = intMesEnCurso,
+                                IdAnio = intAnnioEnCurso,
+                                CantidadDoc = 1
+                            };
+                            dbContext.CantFEMensualEmpresaRepository.Add(cantiFacturasMensual);
+                        }
+                        else
+                        {
+                            cantiFacturasMensual.CantidadDoc += 1;
+                            dbContext.NotificarModificacion(cantiFacturasMensual);
+                        }
                     }
                     else
                     {
-                        cantiFacturasMensual.CantidadDoc += 1;
-                        dbContext.NotificarModificacion(cantiFacturasMensual);
+                        empresa.CantidadDisponible -= 1;
                     }
+                    dbContext.NotificarModificacion(empresa);
                 }
-                else
-                {
-                    empresa.CantidadDisponible -= 1;
-                }
-                dbContext.NotificarModificacion(empresa);
                 string strTipoIdentificacionEmisor = "";
                 string strIdentificacionEmisor = "";
                 string strTipoIdentificacionReceptor = "";
@@ -2088,9 +2093,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 DateTime fechaEmision;
                 string strConsucutivo = "";
                 string strClaveNumerica = "";
-                bool esMensajeReceptor = false;
-                if (tipoDocumento == TipoDocumento.MensajeReceptorAceptado || tipoDocumento == TipoDocumento.MensajeReceptorAceptadoParcial || tipoDocumento == TipoDocumento.MensajeReceptorRechazado)
-                    esMensajeReceptor = true;
                 if (!esMensajeReceptor)
                 {
                     fechaEmision = DateTime.Parse(documentoXml.GetElementsByTagName("FechaEmision").Item(0).InnerText, CultureInfo.InvariantCulture);
