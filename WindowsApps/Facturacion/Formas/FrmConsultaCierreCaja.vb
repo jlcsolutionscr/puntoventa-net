@@ -205,7 +205,11 @@ Public Class FrmConsultaCierreCaja
                 .strVentasTarjeta = txtVentasTarjeta02.Text,
                 .strVentasTransferencia = txtVentasBancos03.Text,
                 .strVentasCredito = txtVentasCredito04.Text,
-                .strTotalVentas = txtTotalVentas.Text
+                .strTotalVentas = txtTotalVentas.Text,
+                .strAdelantosEfectivo = FormatNumber(CDec(txtAdelantosApartadoEfectivo05.Text) + CDec(txtAdelantosOrdenEfectivo08.Text), 2),
+                .strAdelantosTarjeta = FormatNumber(CDec(txtAdelantosApartadoTarjeta06.Text) + CDec(txtAdelantosOrdenTarjeta09.Text), 2),
+                .strAdelantosTransferencia = FormatNumber(CDec(txtAdelantosApartadoBancos07.Text) + CDec(txtAdelantosOrdenBancos10.Text), 2),
+                .strTotalAdelantos = FormatNumber(CDec(txtAdelantosApartadoEfectivo05.Text) + CDec(txtAdelantosOrdenEfectivo08.Text) + CDec(txtAdelantosApartadoTarjeta06.Text) + CDec(txtAdelantosOrdenTarjeta09.Text) + CDec(txtAdelantosApartadoBancos07.Text) + CDec(txtAdelantosOrdenBancos10.Text), 2)
             }
             comprobanteImpresion.arrDetalleIngresos = New List(Of ModuloImpresion.ClsDesgloseFormaPago) From {
                 New ModuloImpresion.ClsDesgloseFormaPago("Inicio efectivo", FormatNumber(cierreCaja.FondoInicio)),
