@@ -2435,6 +2435,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             strIdentificacion = emisorNode["Identificacion"]["Numero"].InnerText;
                         }
                         strDatos = documentoXml.OuterXml.Replace("'", "");
+                    } else
+                    {
+                        throw new BusinessException("El documento electrónico no corresponde a una factura o nota de crédito/débito electrónica. Consulte con el emisor de su factura de gastos");
                     }
                 }
             }
