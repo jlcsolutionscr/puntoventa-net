@@ -10,12 +10,14 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
+using System.Globalization;
 
 namespace LeandroSoftware.ClienteWCF
 {
     public static class Puntoventa
     {
-        private static JavaScriptSerializer serializer = new CustomJavascriptSerializer();
+        private static CultureInfo cultureinfo = new CultureInfo("es-CR");
+        private static JavaScriptSerializer serializer = new CustomJavascriptSerializer(cultureinfo);
         private static string strServicioPuntoventaURL = ConfigurationManager.AppSettings["ServicioURL"];
         private static HttpClient httpClient = new HttpClient();
 

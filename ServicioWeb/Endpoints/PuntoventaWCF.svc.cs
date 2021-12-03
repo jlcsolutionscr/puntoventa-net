@@ -17,6 +17,7 @@ using LeandroSoftware.Core.TiposComunes;
 using LeandroSoftware.Core.CustomClasses;
 using System.IO;
 using System.Web;
+using System.Globalization;
 
 namespace LeandroSoftware.ServicioWeb.EndPoints
 {
@@ -36,6 +37,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
         IUnityContainer unityContainer;
         private static decimal decTipoCambioDolar;
         private static System.Collections.Specialized.NameValueCollection appSettings = WebConfigurationManager.AppSettings;
+        private static CultureInfo cultureinfo = new CultureInfo("es-CR");
         private readonly ConfiguracionGeneral configuracionGeneral = new ConfiguracionGeneral
         (
             appSettings["strConsultaIEURL"].ToString(),
@@ -46,7 +48,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             appSettings["strComprobantesCallbackURL"].ToString(),
             appSettings["strCorreoNotificacionErrores"].ToString()
         );
-        private static JavaScriptSerializer serializer = new CustomJavascriptSerializer();
+        private static JavaScriptSerializer serializer = new CustomJavascriptSerializer(cultureinfo);
         private static Empresa empresa;
         private static SucursalPorEmpresa sucursal;
         private static TerminalPorSucursal terminal;
@@ -262,7 +264,6 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
         {
             try
             {
-                JavaScriptSerializer serializer = new CustomJavascriptSerializer();
                 IList<LlaveDescripcion> listadoEmpresaAdministrador = servicioMantenimiento.ObtenerListadoEmpresasAdministrador();
                 string strRespuesta = "";
                 if (listadoEmpresaAdministrador.Count > 0)
@@ -279,7 +280,6 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
         {
             try
             {
-                JavaScriptSerializer serializer = new CustomJavascriptSerializer();
                 IList<LlaveDescripcion> listadoEmpresaPorDispositivo = servicioMantenimiento.ObtenerListadoEmpresasPorTerminal(strDispositivoId);
                 string strRespuesta = "";
                 if (listadoEmpresaPorDispositivo.Count > 0)
@@ -296,7 +296,6 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
         {
             try
             {
-                JavaScriptSerializer serializer = new CustomJavascriptSerializer();
                 string strClaveFormateada = strClave.Replace(" ", "+");
                 empresa = servicioMantenimiento.ValidarCredenciales(strUsuario, strClaveFormateada, intIdEmpresa, strValorRegistro);
                 string strRespuesta = "";
@@ -331,7 +330,6 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
         {
             try
             {
-                JavaScriptSerializer serializer = new CustomJavascriptSerializer();
                 string strClaveFormateada = strClave.Replace(" ", "+");
                 IList<EquipoRegistrado> listadoSucursales = (List<EquipoRegistrado>)servicioMantenimiento.ObtenerListadoTerminalesDisponibles(strUsuario, strClaveFormateada, strIdentificacion, intTipoDispositivo);
                 string strRespuesta = "";

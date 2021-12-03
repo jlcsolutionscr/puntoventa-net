@@ -18,6 +18,7 @@ using System.ServiceModel.Web;
 using System.Net;
 using System.Web.Script.Serialization;
 using System.Threading.Tasks;
+using System.Globalization;
 
 namespace LeandroSoftware.ServicioWeb.EndPoints
 {
@@ -30,7 +31,8 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
         private IMantenimientoService servicioMantenimiento;
         private IReporteService servicioReportes;
         private static System.Collections.Specialized.NameValueCollection appSettings = WebConfigurationManager.AppSettings;
-        private static JavaScriptSerializer serializer = new CustomJavascriptSerializer();
+        private static CultureInfo cultureinfo = new CultureInfo("es-CR");
+        private static JavaScriptSerializer serializer = new CustomJavascriptSerializer(cultureinfo);
         
         private readonly ConfiguracionGeneral configuracionGeneral = new ConfiguracionGeneral
         (

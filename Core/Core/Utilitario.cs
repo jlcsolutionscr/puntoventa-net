@@ -112,6 +112,13 @@ namespace LeandroSoftware.Core.Utilitario
             }
         }
 
+        public static DateTime ObtenerFechaHoraCostaRica()
+        {
+            DateTime timeUtc = DateTime.UtcNow;
+            TimeZoneInfo cstZone = TimeZoneInfo.FindSystemTimeZoneById("Central Standard Time");
+            return TimeZoneInfo.ConvertTimeFromUtc(timeUtc, cstZone);
+        }
+
         public static string NumeroALetras(double t)
         {
             string strCadena, strText, strLetra, strDec;
