@@ -1,5 +1,0 @@
-export const SET_AUTHORIZED = 'session/SET_AUTHORIZED'
-export const SET_UNAUTHORIZED = 'session/SET_UNAUTHORIZED'
-export const SET_LOGIN_ERROR = 'session/SET_LOGIN_ERROR'
-export const SET_REPORT_MESSAGE = 'session/SET_REPORT_MESSAGE'
-export const SET_REPORT_ERROR = 'session/SET_REPORT_ERROR'
