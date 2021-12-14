@@ -622,10 +622,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             decimal decMontoGravadoPorLinea = lineaDetalle.SubTotal;
                             decimal decMontoExoneradoPorLinea = 0;
                             decMontoImpuestoPorLinea = Math.Round(decSubtotal * (detalleFactura.PorcentajeIVA / 100), 2, MidpointRounding.AwayFromZero);
+                            int intCodigoTarifa = detalleFactura.Producto.IdImpuesto;
+                            if (cliente.IdImpuesto != intCodigoTarifa) intCodigoTarifa = cliente.IdImpuesto;
                             FacturaElectronicaImpuestoType impuestoType = new FacturaElectronicaImpuestoType
                             {
                                 Codigo = FacturaElectronicaImpuestoTypeCodigo.Item01,
-                                CodigoTarifa = (FacturaElectronicaImpuestoTypeCodigoTarifa)detalleFactura.Producto.IdImpuesto - 1,
+                                CodigoTarifa = (FacturaElectronicaImpuestoTypeCodigoTarifa)intCodigoTarifa - 1,
                                 CodigoTarifaSpecified = true,
                                 Tarifa = detalleFactura.PorcentajeIVA,
                                 TarifaSpecified = true,
@@ -901,10 +903,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             decimal decMontoGravadoPorLinea = lineaDetalle.SubTotal;
                             decimal decMontoExoneradoPorLinea = 0;
                             decMontoImpuestoPorLinea = Math.Round(decSubtotal * (detalleFactura.PorcentajeIVA / 100), 2, MidpointRounding.AwayFromZero);
+                            int intCodigoTarifa = detalleFactura.Producto.IdImpuesto;
+                            if (cliente.IdImpuesto != intCodigoTarifa) intCodigoTarifa = cliente.IdImpuesto;
                             TiqueteElectronicoImpuestoType impuestoType = new TiqueteElectronicoImpuestoType
                             {
                                 Codigo = TiqueteElectronicoImpuestoTypeCodigo.Item01,
-                                CodigoTarifa = (TiqueteElectronicoImpuestoTypeCodigoTarifa)detalleFactura.Producto.IdImpuesto - 1,
+                                CodigoTarifa = (TiqueteElectronicoImpuestoTypeCodigoTarifa)intCodigoTarifa - 1,
                                 CodigoTarifaSpecified = true,
                                 Tarifa = detalleFactura.PorcentajeIVA,
                                 TarifaSpecified = true,
@@ -1193,10 +1197,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             decimal decMontoGravadoPorLinea = lineaDetalle.SubTotal;
                             decimal decMontoExoneradoPorLinea = 0;
                             decMontoImpuestoPorLinea = Math.Round(decSubtotal * (detalleFactura.PorcentajeIVA / 100), 2, MidpointRounding.AwayFromZero);
+                            int intCodigoTarifa = detalleFactura.Producto.IdImpuesto;
+                            if (cliente.IdImpuesto != intCodigoTarifa) intCodigoTarifa = cliente.IdImpuesto;
                             NotaCreditoElectronicaImpuestoType impuestoType = new NotaCreditoElectronicaImpuestoType
                             {
                                 Codigo = NotaCreditoElectronicaImpuestoTypeCodigo.Item01,
-                                CodigoTarifa = (NotaCreditoElectronicaImpuestoTypeCodigoTarifa)detalleFactura.Producto.IdImpuesto - 1,
+                                CodigoTarifa = (NotaCreditoElectronicaImpuestoTypeCodigoTarifa)intCodigoTarifa - 1,
                                 CodigoTarifaSpecified = true,
                                 Tarifa = detalleFactura.PorcentajeIVA,
                                 TarifaSpecified = true,
@@ -1489,10 +1495,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             decimal decMontoGravadoPorLinea = lineaDetalle.SubTotal;
                             decimal decMontoExoneradoPorLinea = 0;
                             decMontoImpuestoPorLinea = Math.Round(decSubtotal * (detalle.PorcentajeIVA / 100), 2, MidpointRounding.AwayFromZero);
+                            int intCodigoTarifa = detalle.Producto.IdImpuesto;
+                            if (cliente.IdImpuesto != intCodigoTarifa) intCodigoTarifa = cliente.IdImpuesto;
                             NotaCreditoElectronicaImpuestoType impuestoType = new NotaCreditoElectronicaImpuestoType
                             {
                                 Codigo = NotaCreditoElectronicaImpuestoTypeCodigo.Item01,
-                                CodigoTarifa = (NotaCreditoElectronicaImpuestoTypeCodigoTarifa)detalle.Producto.IdImpuesto - 1,
+                                CodigoTarifa = (NotaCreditoElectronicaImpuestoTypeCodigoTarifa)intCodigoTarifa - 1,
                                 CodigoTarifaSpecified = true,
                                 Tarifa = detalle.PorcentajeIVA,
                                 TarifaSpecified = true,
@@ -1771,10 +1779,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             decimal decMontoGravadoPorLinea = lineaDetalle.SubTotal;
                             decimal decMontoExoneradoPorLinea = 0;
                             decMontoImpuestoPorLinea = Math.Round(decSubtotal * (detalle.PorcentajeIVA / 100), 2, MidpointRounding.AwayFromZero);
+                            int intCodigoTarifa = detalle.Producto.IdImpuesto;
+                            if (cliente.IdImpuesto != intCodigoTarifa) intCodigoTarifa = cliente.IdImpuesto;
                             NotaDebitoElectronicaImpuestoType impuestoType = new NotaDebitoElectronicaImpuestoType
                             {
                                 Codigo = NotaDebitoElectronicaImpuestoTypeCodigo.Item01,
-                                CodigoTarifa = (NotaDebitoElectronicaImpuestoTypeCodigoTarifa)detalle.Producto.IdImpuesto - 1,
+                                CodigoTarifa = (NotaDebitoElectronicaImpuestoTypeCodigoTarifa)intCodigoTarifa - 1,
                                 CodigoTarifaSpecified = true,
                                 Tarifa = detalle.PorcentajeIVA,
                                 TarifaSpecified = true,

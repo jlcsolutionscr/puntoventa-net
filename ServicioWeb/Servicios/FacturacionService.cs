@@ -2394,6 +2394,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         void ProcesarMensajeReceptor(IDbContext dbContext, POPEmail correo, ConfiguracionGeneral datos, bool bolIvaAplicable)
         {
             string strDatos = "";
+            string strError = "";
             string strIdentificacion = "";
             if (correo.Attachments.Count == 0) throw new BusinessException("El correo no contiene ningún archivo adjunto para poder procesar el mensaje de recepción");
             foreach (Attachment archivo in correo.Attachments)
@@ -2415,13 +2416,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             strXml = strXml.Substring(strXml.IndexOf("<?xml"));
                             documentoXml.LoadXml(strXml);
                         }
-                        catch (Exception ex)
+                        catch (Exception)
                         {
-                            throw new BusinessException("El archivo XML del documento electrónico no se posee el formato adecuado para ser procesado: " + ex.Message);
+                            strError = "El archivo XML del documento electrónico no se posee el formato adecuado para ser procesado";
                         }
                     }
                     if (documentoXml.DocumentElement.Name == "FacturaElectronica" || documentoXml.DocumentElement.Name == "NotaCreditoElectronica" || documentoXml.DocumentElement.Name == "NotaDebitoElectronica")
                     {
+                        strError = "";
                         if (strXml.Contains("v4.2/facturaElectronica"))
                             throw new BusinessException("El documento electrónico no contiene el formato V4.3 requerido por el Ministerio de Hacienda. Consulte con el emisor de su factura de gastos");
                         if (documentoXml.GetElementsByTagName("Otros").Count > 0)
@@ -2437,11 +2439,15 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         strDatos = documentoXml.OuterXml.Replace("'", "");
                     } else
                     {
-                        throw new BusinessException("El documento electrónico no corresponde a una factura o nota de crédito/débito electrónica. Consulte con el emisor de su factura de gastos");
+                        strError = "El documento electrónico no corresponde a una factura o nota de crédito/débito electrónica. Consulte con el emisor de su factura de gastos";
                     }
                 }
             }
-            if (strDatos == "") throw new BusinessException("No se logró extraer la  información requerida para procesar el documento eletrónico adjunto. Por favor comuniquese con su proveedor.");
+            if (strDatos == "")
+            {
+                if (strError == "") strError = "No se logró extraer la  información requerida para procesar el documento eletrónico adjunto. Por favor comuniquese con su proveedor.";
+                throw new BusinessException(strError);
+            }
             Empresa empresa = dbContext.EmpresaRepository.Include("PlanFacturacion").Where(x => x.Identificacion == strIdentificacion).FirstOrDefault();
             if (empresa == null) throw new BusinessException("La identificación contenida en el archivo XML enviado: " + strIdentificacion + " no pertenece a ninguna empresa suscrita al servicio de facturación electrónica.");
             if (!empresa.PermiteFacturar) throw new BusinessException("La empresa que envía la solicitud no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
