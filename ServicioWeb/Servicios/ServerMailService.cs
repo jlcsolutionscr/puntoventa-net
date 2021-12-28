@@ -1,5 +1,6 @@
 ﻿using OpenPop.Mime;
 using OpenPop.Pop3;
+using System;
 using System.Collections.Generic;
 
 namespace LeandroSoftware.ServicioWeb
@@ -32,40 +33,49 @@ namespace LeandroSoftware.ServicioWeb
                 int counter = 0;
                 for (int i = count; i >= 1; i--)
                 {
-                    Message message = pop3Client.GetMessage(i);
-                    POPEmail email = new POPEmail()
+                    try
                     {
-                        MessageNumber = i,
-                        Subject = message.Headers.Subject,
-                        DateSent = message.Headers.DateSent,
-                        From = string.Format("<a href = 'mailto:{1}'>{0}</a>", message.Headers.From.DisplayName, message.Headers.From.Address),
-                    };
-                    MessagePart body = message.FindFirstHtmlVersion();
-                    if (body != null)
-                    {
-                        email.Body = body.GetBodyAsText();
-                    }
-                    else
-                    {
-                        body = message.FindFirstPlainTextVersion();
+                        Message message = pop3Client.GetMessage(i);
+                        POPEmail email = new POPEmail()
+                        {
+                            MessageNumber = i,
+                            Subject = message.Headers.Subject,
+                            DateSent = message.Headers.DateSent,
+                            From = string.Format("<a href = 'mailto:{1}'>{0}</a>", message.Headers.From.DisplayName, message.Headers.From.Address),
+                        };
+                        MessagePart body = message.FindFirstHtmlVersion();
                         if (body != null)
                         {
                             email.Body = body.GetBodyAsText();
                         }
-                    }
-                    List<MessagePart> attachments = message.FindAllAttachments();
-
-                    foreach (MessagePart attachment in attachments)
-                    {
-                        email.Attachments.Add(new Attachment
+                        else
                         {
-                            FileName = attachment.FileName,
-                            ContentType = attachment.ContentType.MediaType,
-                            Content = attachment.Body
-                        });
+                            body = message.FindFirstPlainTextVersion();
+                            if (body != null)
+                            {
+                                email.Body = body.GetBodyAsText();
+                            }
+                        }
+                        try
+                        {
+                            List<MessagePart> attachments = message.FindAllAttachments();
+                            foreach (MessagePart attachment in attachments)
+                            {
+                                email.Attachments.Add(new Attachment
+                                {
+                                    FileName = attachment.FileName,
+                                    ContentType = attachment.ContentType.MediaType,
+                                    Content = attachment.Body
+                                });
+                            }
+                        }
+                        catch (Exception)
+                        { }
+                        Emails.Add(email);
+                        counter++;
                     }
-                    Emails.Add(email);
-                    counter++;
+                    catch (Exception)
+                    { }
                     if (counter > 50) break;
                 }
                 return Emails;
