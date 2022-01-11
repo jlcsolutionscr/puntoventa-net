@@ -3,6 +3,7 @@ Imports LeandroSoftware.ClienteWCF
 
 Public Class FrmAutorizacionEspecial
 #Region "Variables"
+    Private decMontoDescuento As Decimal
     Public decPorcentaje As Decimal
     Public decPrecioVenta As Decimal
 #End Region
@@ -21,7 +22,8 @@ Public Class FrmAutorizacionEspecial
         TxtUsuario.Text = ""
         TxtClave.Text = ""
         txtPorcentaje.Text = FormatNumber(decPorcentaje, 5)
-        txtMonto.Text = FormatNumber(decPrecioVenta * decPorcentaje / 100, 5)
+        decMontoDescuento = decPrecioVenta * decPorcentaje / 100
+        txtPrecioFinal.Text = FormatNumber(decPrecioVenta - decMontoDescuento, 2)
     End Sub
 
     Private Sub EnterTexboxHandler(sender As Object, e As EventArgs)
@@ -71,15 +73,17 @@ Public Class FrmAutorizacionEspecial
 
     Private Sub txtPorcentaje_Validated(sender As Object, e As EventArgs) Handles txtPorcentaje.Validated
         txtPorcentaje.Text = FormatNumber(txtPorcentaje.Text, 5)
-        txtMonto.Text = FormatNumber(decPrecioVenta * CDec(txtPorcentaje.Text) / 100, 5)
+        decMontoDescuento = decPrecioVenta * CDec(txtPorcentaje.Text) / 100
+        txtPrecioFinal.Text = FormatNumber(decPrecioVenta - decMontoDescuento, 2)
     End Sub
 
-    Private Sub txtMonto_Validated(sender As Object, e As EventArgs) Handles txtMonto.Validated
-        txtMonto.Text = FormatNumber(txtMonto.Text, 5)
-        txtPorcentaje.Text = FormatNumber(CDec(txtMonto.Text) / decPrecioVenta * 100, 5)
+    Private Sub txtMonto_Validated(sender As Object, e As EventArgs) Handles txtPrecioFinal.Validated
+        txtPrecioFinal.Text = FormatNumber(txtPrecioFinal.Text, 2)
+        decMontoDescuento = decPrecioVenta - txtPrecioFinal.Text
+        txtPorcentaje.Text = FormatNumber(decMontoDescuento / decPrecioVenta * 100, 5)
     End Sub
 
-    Private Sub ValidaDigitos(sender As Object, e As KeyPressEventArgs) Handles txtPorcentaje.KeyPress, txtMonto.KeyPress
+    Private Sub ValidaDigitos(sender As Object, e As KeyPressEventArgs) Handles txtPorcentaje.KeyPress, txtPrecioFinal.KeyPress
         FrmPrincipal.ValidaNumero(e, sender, True, 2, ".")
     End Sub
 #End Region

@@ -33,7 +33,7 @@ Partial Class FrmAutorizacionEspecial
         Me.LblClave = New System.Windows.Forms.Label()
         Me.LblUsuario = New System.Windows.Forms.Label()
         Me.txtPorcentaje = New System.Windows.Forms.TextBox()
-        Me.txtMonto = New System.Windows.Forms.TextBox()
+        Me.txtPrecioFinal = New System.Windows.Forms.TextBox()
         Me.lblDescuento = New System.Windows.Forms.Label()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.SuspendLayout()
@@ -130,7 +130,7 @@ Partial Class FrmAutorizacionEspecial
         Me.txtPorcentaje.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtPorcentaje.ForeColor = System.Drawing.SystemColors.WindowText
         Me.txtPorcentaje.ImeMode = System.Windows.Forms.ImeMode.Disable
-        Me.txtPorcentaje.Location = New System.Drawing.Point(92, 89)
+        Me.txtPorcentaje.Location = New System.Drawing.Point(81, 89)
         Me.txtPorcentaje.MaxLength = 0
         Me.txtPorcentaje.Name = "txtPorcentaje"
         Me.txtPorcentaje.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -138,20 +138,20 @@ Partial Class FrmAutorizacionEspecial
         Me.txtPorcentaje.TabIndex = 2
         Me.txtPorcentaje.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
-        'txtMonto
+        'txtPrecioFinal
         '
-        Me.txtMonto.AcceptsReturn = True
-        Me.txtMonto.BackColor = System.Drawing.SystemColors.Window
-        Me.txtMonto.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtMonto.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtMonto.ImeMode = System.Windows.Forms.ImeMode.Disable
-        Me.txtMonto.Location = New System.Drawing.Point(199, 89)
-        Me.txtMonto.MaxLength = 0
-        Me.txtMonto.Name = "txtMonto"
-        Me.txtMonto.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtMonto.Size = New System.Drawing.Size(92, 20)
-        Me.txtMonto.TabIndex = 3
-        Me.txtMonto.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        Me.txtPrecioFinal.AcceptsReturn = True
+        Me.txtPrecioFinal.BackColor = System.Drawing.SystemColors.Window
+        Me.txtPrecioFinal.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtPrecioFinal.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtPrecioFinal.ImeMode = System.Windows.Forms.ImeMode.Disable
+        Me.txtPrecioFinal.Location = New System.Drawing.Point(220, 89)
+        Me.txtPrecioFinal.MaxLength = 0
+        Me.txtPrecioFinal.Name = "txtPrecioFinal"
+        Me.txtPrecioFinal.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtPrecioFinal.Size = New System.Drawing.Size(92, 20)
+        Me.txtPrecioFinal.TabIndex = 3
+        Me.txtPrecioFinal.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'lblDescuento
         '
@@ -161,9 +161,9 @@ Partial Class FrmAutorizacionEspecial
         Me.lblDescuento.Location = New System.Drawing.Point(150, 90)
         Me.lblDescuento.Name = "lblDescuento"
         Me.lblDescuento.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.lblDescuento.Size = New System.Drawing.Size(43, 17)
+        Me.lblDescuento.Size = New System.Drawing.Size(64, 17)
         Me.lblDescuento.TabIndex = 8
-        Me.lblDescuento.Text = "Monto"
+        Me.lblDescuento.Text = "Precio final"
         Me.lblDescuento.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'Label1
@@ -171,7 +171,7 @@ Partial Class FrmAutorizacionEspecial
         Me.Label1.BackColor = System.Drawing.Color.Transparent
         Me.Label1.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label1.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label1.Location = New System.Drawing.Point(20, 90)
+        Me.Label1.Location = New System.Drawing.Point(9, 90)
         Me.Label1.Name = "Label1"
         Me.Label1.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label1.Size = New System.Drawing.Size(66, 17)
@@ -190,7 +190,7 @@ Partial Class FrmAutorizacionEspecial
         Me.ControlBox = False
         Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.lblDescuento)
-        Me.Controls.Add(Me.txtMonto)
+        Me.Controls.Add(Me.txtPrecioFinal)
         Me.Controls.Add(Me.txtPorcentaje)
         Me.Controls.Add(Me.CmdCancelar)
         Me.Controls.Add(Me.CmdAceptar)
@@ -215,7 +215,7 @@ Partial Class FrmAutorizacionEspecial
     End Sub
 
     Public WithEvents txtPorcentaje As TextBox
-    Public WithEvents txtMonto As TextBox
+    Public WithEvents txtPrecioFinal As TextBox
     Public WithEvents lblDescuento As Label
     Public WithEvents Label1 As Label
 End Class
