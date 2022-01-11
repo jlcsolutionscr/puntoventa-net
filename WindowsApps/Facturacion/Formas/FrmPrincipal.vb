@@ -35,6 +35,7 @@ Public Class FrmPrincipal
     Public productoTranstorio As Producto
     Public productoImpuestoServicio As Producto
     Public bolDescargaFinalizada As Boolean = False
+    Public decDescAutorizado As Decimal
 #End Region
 
 #Region "Métodos"

@@ -196,19 +196,25 @@
         "Entry"
         {
         "MsmKey" = "8:_DC19362097BB1B6ADF6218AD23A3F8EE"
-        "OwnerKey" = "8:_552F8B1EF10CD12DDC98E8956B67E04D"
+        "OwnerKey" = "8:_04866C8F660A4B7F99CFDDB236E33576"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_DC19362097BB1B6ADF6218AD23A3F8EE"
-        "OwnerKey" = "8:_04866C8F660A4B7F99CFDDB236E33576"
+        "OwnerKey" = "8:_552F8B1EF10CD12DDC98E8956B67E04D"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_04866C8F660A4B7F99CFDDB236E33576"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_DC19362097BB1B6ADF6218AD23A3F8EE"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -295,12 +301,6 @@
         "OwnerKey" = "8:_552F8B1EF10CD12DDC98E8956B67E04D"
         "MsmSig" = "8:_UNDEFINED"
         }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_DC19362097BB1B6ADF6218AD23A3F8EE"
-        "MsmSig" = "8:_UNDEFINED"
-        }
     }
     "Configurations"
     {
@@ -361,7 +361,7 @@
                 {
                 "Name" = "8:.NET Framework"
                 "Message" = "8:[VSDNETMSG]"
-                "FrameworkVersion" = "8:v4.0                                                                     "
+                "FrameworkVersion" = "8:v4.0                                                                      "
                 "AllowLaterVersions" = "11:FALSE"
                 "InstallUrl" = "8:http://go.microsoft.com/fwlink/?LinkId=9832"
                 }
@@ -548,7 +548,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:ClienteWCF, Version=4.4.2.0, Culture=neutral, processorArchitecture=x86"
+            "AssemblyAsmDisplayName" = "8:ClienteWCF, Version=4.4.3.0, Culture=neutral, processorArchitecture=x86"
                 "ScatterAssemblies"
                 {
                     "_6BF13CCADD8BA6B82383EFB1BB68DC65"
@@ -703,7 +703,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Core, Version=4.4.2.0, Culture=neutral, processorArchitecture=x86"
+            "AssemblyAsmDisplayName" = "8:Core, Version=4.4.3.0, Culture=neutral, processorArchitecture=x86"
                 "ScatterAssemblies"
                 {
                     "_A0DF2F8FF63CA14CA44CEBC1640805EB"
@@ -765,7 +765,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Dominio, Version=4.4.2.0, Culture=neutral, processorArchitecture=x86"
+            "AssemblyAsmDisplayName" = "8:Dominio, Version=4.4.3.0, Culture=neutral, processorArchitecture=x86"
                 "ScatterAssemblies"
                 {
                     "_BDEF3F6B819C3A896434BEDAC471F247"
@@ -930,15 +930,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:PuntoventaJLC"
-        "ProductCode" = "8:{C7330036-C179-4282-93B8-CAC9C8E3CCCD}"
-        "PackageCode" = "8:{E7B61C8F-7AC8-492B-80C0-72F5EF12D4EA}"
+        "ProductCode" = "8:{16C5CA3F-4A26-47A2-AC3A-35A28779A0E5}"
+        "PackageCode" = "8:{BB6FC0E4-B6B3-4653-924A-BE59AA6467E5}"
         "UpgradeCode" = "8:{9F4F56C6-17E9-4C36-9940-81BDB1283F7F}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:4.4.2"
+        "ProductVersion" = "8:4.4.3"
         "Manufacturer" = "8:JLC Solutions"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"

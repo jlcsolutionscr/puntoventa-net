@@ -1,8 +1,10 @@
 Imports LeandroSoftware.Core.Utilitario
+Imports LeandroSoftware.ClienteWCF
 
 Public Class FrmAutorizacionEspecial
 #Region "Variables"
-    Private autorizado As Boolean
+    Public decPorcentaje As Decimal
+    Public decPrecioVenta As Decimal
 #End Region
 
 #Region "Eventos Controles"
@@ -15,6 +17,13 @@ Public Class FrmAutorizacionEspecial
         Next
     End Sub
 
+    Private Sub FrmAutorizaPrecio_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+        TxtUsuario.Text = ""
+        TxtClave.Text = ""
+        txtPorcentaje.Text = FormatNumber(decPorcentaje, 5)
+        txtMonto.Text = FormatNumber(decPrecioVenta * decPorcentaje / 100, 5)
+    End Sub
+
     Private Sub EnterTexboxHandler(sender As Object, e As EventArgs)
         Dim textbox As TextBox = DirectCast(sender, TextBox)
         textbox.BackColor = Color.PeachPuff
@@ -25,15 +34,29 @@ Public Class FrmAutorizacionEspecial
         textbox.BackColor = Color.White
     End Sub
 
-    Private Sub CmdAceptar_Click(sender As Object, e As EventArgs) Handles CmdAceptar.Click
+    Private Async Sub CmdAceptar_Click(sender As Object, e As EventArgs) Handles CmdAceptar.Click
+        DialogResult = DialogResult.None
         Try
-            If TxtUsuario.Text <> "" And TxtClave.Text <> "" Then
+            If TxtUsuario.Text <> "" And TxtClave.Text <> "" And txtPorcentaje.Text <> "" Then
                 Dim strEncryptedPassword As String = Utilitario.EncriptarDatos(TxtClave.Text)
-                FrmPrincipal.strCodigoUsuario = TxtUsuario.Text
-                FrmPrincipal.strContrasena = strEncryptedPassword
-                Close()
+                Dim decPorcentaje As Decimal
+                Dim decDescAutorizado As Decimal = txtPorcentaje.Text
+                Try
+                    decPorcentaje = Await Puntoventa.AutorizacionPorcentaje(TxtUsuario.Text, strEncryptedPassword, FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+                    If decPorcentaje < decDescAutorizado Then
+                        MessageBox.Show("El usuario ingresado no puede autorizar el porcentaje solicitado.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                        TxtUsuario.Focus()
+                    Else
+                        FrmPrincipal.decDescAutorizado = decDescAutorizado
+                        Close()
+                    End If
+                Catch ex As Exception
+                    MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    TxtUsuario.Focus()
+                End Try
             Else
                 MessageBox.Show("Información incompleta. Por favor verifique. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                TxtUsuario.Focus()
             End If
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -42,9 +65,22 @@ Public Class FrmAutorizacionEspecial
     End Sub
 
     Private Sub CmdCancelar_Click(sender As Object, e As EventArgs) Handles CmdCancelar.Click
-        TxtUsuario.Text = ""
-        TxtClave.Text = ""
+        FrmPrincipal.decDescAutorizado = 0
         Close()
+    End Sub
+
+    Private Sub txtPorcentaje_Validated(sender As Object, e As EventArgs) Handles txtPorcentaje.Validated
+        txtPorcentaje.Text = FormatNumber(txtPorcentaje.Text, 5)
+        txtMonto.Text = FormatNumber(decPrecioVenta * CDec(txtPorcentaje.Text) / 100, 5)
+    End Sub
+
+    Private Sub txtMonto_Validated(sender As Object, e As EventArgs) Handles txtMonto.Validated
+        txtMonto.Text = FormatNumber(txtMonto.Text, 5)
+        txtPorcentaje.Text = FormatNumber(CDec(txtMonto.Text) / decPrecioVenta * 100, 5)
+    End Sub
+
+    Private Sub ValidaDigitos(sender As Object, e As KeyPressEventArgs) Handles txtPorcentaje.KeyPress, txtMonto.KeyPress
+        FrmPrincipal.ValidaNumero(e, sender, True, 2, ".")
     End Sub
 #End Region
 End Class

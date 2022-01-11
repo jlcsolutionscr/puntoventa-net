@@ -110,8 +110,6 @@ Partial Class FrmEmpresa
         Me.ofdAbrirDocumento = New System.Windows.Forms.OpenFileDialog()
         Me.txtLeyendaOrdenServicio = New System.Windows.Forms.TextBox()
         Me.Label15 = New System.Windows.Forms.Label()
-        Me.txtPorcentajeDescMaximo = New System.Windows.Forms.TextBox()
-        Me.Label23 = New System.Windows.Forms.Label()
         Me.txtLeyendaFactura = New System.Windows.Forms.TextBox()
         Me.Label26 = New System.Windows.Forms.Label()
         Me.txtLeyendaProforma = New System.Windows.Forms.TextBox()
@@ -509,7 +507,7 @@ Partial Class FrmEmpresa
         Me.txtFechaRenovacion.BackColor = System.Drawing.SystemColors.Window
         Me.txtFechaRenovacion.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtFechaRenovacion.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtFechaRenovacion.Location = New System.Drawing.Point(122, 459)
+        Me.txtFechaRenovacion.Location = New System.Drawing.Point(122, 433)
         Me.txtFechaRenovacion.MaxLength = 10
         Me.txtFechaRenovacion.Name = "txtFechaRenovacion"
         Me.txtFechaRenovacion.ReadOnly = True
@@ -523,7 +521,7 @@ Partial Class FrmEmpresa
         Me.Label9.BackColor = System.Drawing.Color.Transparent
         Me.Label9.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label9.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label9.Location = New System.Drawing.Point(4, 462)
+        Me.Label9.Location = New System.Drawing.Point(4, 436)
         Me.Label9.Name = "Label9"
         Me.Label9.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label9.Size = New System.Drawing.Size(112, 17)
@@ -1276,32 +1274,6 @@ Partial Class FrmEmpresa
         Me.Label15.Text = "Nota factura:"
         Me.Label15.TextAlign = System.Drawing.ContentAlignment.TopRight
         '
-        'txtPorcentajeDescMaximo
-        '
-        Me.txtPorcentajeDescMaximo.AcceptsReturn = True
-        Me.txtPorcentajeDescMaximo.BackColor = System.Drawing.SystemColors.Window
-        Me.txtPorcentajeDescMaximo.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtPorcentajeDescMaximo.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtPorcentajeDescMaximo.Location = New System.Drawing.Point(122, 433)
-        Me.txtPorcentajeDescMaximo.MaxLength = 6
-        Me.txtPorcentajeDescMaximo.Name = "txtPorcentajeDescMaximo"
-        Me.txtPorcentajeDescMaximo.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtPorcentajeDescMaximo.Size = New System.Drawing.Size(38, 20)
-        Me.txtPorcentajeDescMaximo.TabIndex = 14
-        '
-        'Label23
-        '
-        Me.Label23.BackColor = System.Drawing.Color.Transparent
-        Me.Label23.Cursor = System.Windows.Forms.Cursors.Default
-        Me.Label23.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label23.Location = New System.Drawing.Point(7, 436)
-        Me.Label23.Name = "Label23"
-        Me.Label23.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label23.Size = New System.Drawing.Size(109, 17)
-        Me.Label23.TabIndex = 266
-        Me.Label23.Text = "Porc max descuento:"
-        Me.Label23.TextAlign = System.Drawing.ContentAlignment.TopRight
-        '
         'txtLeyendaFactura
         '
         Me.txtLeyendaFactura.AcceptsReturn = True
@@ -1420,8 +1392,6 @@ Partial Class FrmEmpresa
         Me.Controls.Add(Me.Label28)
         Me.Controls.Add(Me.txtLeyendaFactura)
         Me.Controls.Add(Me.Label26)
-        Me.Controls.Add(Me.txtPorcentajeDescMaximo)
-        Me.Controls.Add(Me.Label23)
         Me.Controls.Add(Me.txtLeyendaOrdenServicio)
         Me.Controls.Add(Me.Label15)
         Me.Controls.Add(Me.GroupBox1)
@@ -1531,8 +1501,6 @@ Partial Class FrmEmpresa
     Public WithEvents Label13 As Label
     Public WithEvents txtLeyendaOrdenServicio As TextBox
     Public WithEvents Label15 As Label
-    Public WithEvents txtPorcentajeDescMaximo As TextBox
-    Public WithEvents Label23 As Label
     Public WithEvents txtUltimoFEC As TextBox
     Public WithEvents Label27 As Label
     Public WithEvents txtLeyendaFactura As TextBox

@@ -1259,35 +1259,23 @@ Public Class FrmOrdenServicio
         If Char.IsDigit(CChar(CStr(e.KeyChar))) = False Then e.Handled = True
     End Sub
 
-    Private Async Sub grdDetalleOrdenServicio_CellValueChanged(sender As Object, e As DataGridViewCellEventArgs) Handles grdDetalleOrdenServicio.CellValueChanged
+    Private Sub grdDetalleOrdenServicio_CellValueChanged(sender As Object, e As DataGridViewCellEventArgs) Handles grdDetalleOrdenServicio.CellValueChanged
         If e.ColumnIndex = 4 And Not bolAutorizando Then
             bolAutorizando = True
             Dim decPorcDesc As Decimal = 0
             If Not IsDBNull(grdDetalleOrdenServicio.Rows(e.RowIndex).Cells(e.ColumnIndex).Value) Then
                 decPorcDesc = grdDetalleOrdenServicio.Rows(e.RowIndex).Cells(e.ColumnIndex).Value
             End If
-            If decPorcDesc > FrmPrincipal.empresaGlobal.PorcentajeDescMaximo And decPorcDesc > FrmPrincipal.usuarioGlobal.PorcMaxDescuento Then
-                Dim strEntidad = "la empresa"
-                If decPorcDesc > FrmPrincipal.usuarioGlobal.PorcMaxDescuento Then strEntidad += "el usuario actual"
-                If MessageBox.Show("El porcentaje ingresado es mayor al parámetro establecido para " & strEntidad & ". Desea ingresar una autorización?", "JLC Solutions CR", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
-                    FrmPrincipal.strCodigoUsuario = ""
-                    FrmPrincipal.strContrasena = ""
+            If decPorcDesc > FrmPrincipal.usuarioGlobal.PorcMaxDescuento Then
+                If MessageBox.Show("El porcentaje ingresado es mayor al parámetro establecido para el usuario actual. Desea ingresar una autorización?", "JLC Solutions CR", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
                     Dim formAutorizacion As New FrmAutorizacionEspecial
+                    formAutorizacion.decPorcentaje = decPorcDesc
+                    formAutorizacion.decPrecioVenta = dtbDetalleOrdenServicio.Rows(e.RowIndex).Item(5) + dtbDetalleOrdenServicio.Rows(e.RowIndex).Item(10)
                     formAutorizacion.ShowDialog()
-                    If FrmPrincipal.strCodigoUsuario <> "" And FrmPrincipal.strContrasena <> "" Then
-                        Dim decPorcentaje As Decimal
-                        Try
-                            decPorcentaje = Await Puntoventa.AutorizacionPorcentaje(FrmPrincipal.strCodigoUsuario, FrmPrincipal.strContrasena, FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
-                        Catch ex As Exception
-                            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                            decPorcDesc = 0
-                        End Try
-                        If decPorcentaje < decPorcDesc Then
-                            MessageBox.Show("El usuario ingresado no puede autorizar el porcentaje solicitado.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
-                            decPorcDesc = 0
-                        End If
+                    If FrmPrincipal.decDescAutorizado > 0 Then
+                        decPorcDesc = FrmPrincipal.decDescAutorizado
                     Else
-                        MessageBox.Show("Proceso de autorización abortado por el usuario.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                        MessageBox.Show("No se logró obtener la autorización solicitada.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
                         decPorcDesc = 0
                     End If
                 Else
@@ -1297,7 +1285,7 @@ Public Class FrmOrdenServicio
             grdDetalleOrdenServicio.Rows(e.RowIndex).Cells(e.ColumnIndex).Value = decPorcDesc
             Dim decCantidad As Decimal = grdDetalleOrdenServicio.Rows(e.RowIndex).Cells(3).Value
             Dim decTasaImpuesto As Decimal = grdDetalleOrdenServicio.Rows(e.RowIndex).Cells(9).Value
-            Dim decPrecio As Decimal = grdDetalleOrdenServicio.Rows(e.RowIndex).Cells(6).Value + grdDetalleOrdenServicio.Rows(e.RowIndex).Cells(5).Value
+            Dim decPrecio As Decimal = grdDetalleOrdenServicio.Rows(e.RowIndex).Cells(5).Value + grdDetalleOrdenServicio.Rows(e.RowIndex).Cells(6).Value
             Dim decMontoDesc = decPrecio / 100 * decPorcDesc
             decPrecio = decPrecio - decMontoDesc
             Dim decPrecioGravado As Decimal = decPrecio
@@ -1313,38 +1301,28 @@ Public Class FrmOrdenServicio
         End If
     End Sub
 
-    Private Async Sub txtPorcDesc_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtPorcDesc.PreviewKeyDown
+    Private Sub txtPorcDesc_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtPorcDesc.PreviewKeyDown
         If e.KeyCode = Keys.Enter Or e.KeyCode = Keys.Tab Then
             If txtPorcDesc.Text = "" Then txtPorcDesc.Text = "0"
             Dim decPorcDesc As Decimal = CDbl(txtPorcDesc.Text)
             If producto IsNot Nothing Then
                 decPrecioVenta = ObtenerPrecioVentaPorCliente(cliente, producto)
-                If decPorcDesc > FrmPrincipal.empresaGlobal.PorcentajeDescMaximo And decPorcDesc > FrmPrincipal.usuarioGlobal.PorcMaxDescuento Then
-                    Dim strEntidad = "la empresa"
-                    If decPorcDesc > FrmPrincipal.usuarioGlobal.PorcMaxDescuento Then strEntidad += "el usuario actual"
-                    If MessageBox.Show("El porcentaje ingresado es mayor al parámetro establecido para " & strEntidad & ". Desea ingresar una autorización?", "JLC Solutions CR", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
-                        FrmPrincipal.strCodigoUsuario = ""
-                        FrmPrincipal.strContrasena = ""
+                If decPorcDesc > FrmPrincipal.usuarioGlobal.PorcMaxDescuento Then
+                    If MessageBox.Show("El porcentaje ingresado es mayor al parámetro establecido para el usuario actual. Desea ingresar una autorización?", "JLC Solutions CR", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
                         Dim formAutorizacion As New FrmAutorizacionEspecial
+                        formAutorizacion.decPorcentaje = decPorcDesc
+                        formAutorizacion.decPrecioVenta = decPrecioVenta
                         formAutorizacion.ShowDialog()
-                        If FrmPrincipal.strCodigoUsuario <> "" And FrmPrincipal.strContrasena <> "" Then
-                            Dim decPorcentaje As Decimal
-                            Try
-                                decPorcentaje = Await Puntoventa.AutorizacionPorcentaje(FrmPrincipal.strCodigoUsuario, FrmPrincipal.strContrasena, FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
-                            Catch ex As Exception
-                                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                                decPorcDesc = 0
-                            End Try
-                            If decPorcentaje < decPorcDesc Then
-                                MessageBox.Show("El usuario ingresado no puede autorizar el porcentaje solicitado.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
-                                decPorcDesc = 0
-                            End If
+                        If FrmPrincipal.decDescAutorizado > 0 Then
+                            decPorcDesc = FrmPrincipal.decDescAutorizado
                         Else
-                            MessageBox.Show("Proceso de autorización abortado por el usuario.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
-                            decPorcDesc = 0
+                            MessageBox.Show("No se logró obtener la autorización solicitada.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                            txtPorcDesc.Text = 0
+                            Exit Sub
                         End If
                     Else
-                        decPorcDesc = 0
+                        txtPorcDesc.Text = 0
+                        Exit Sub
                     End If
                 End If
                 txtPorcDesc.Text = decPorcDesc

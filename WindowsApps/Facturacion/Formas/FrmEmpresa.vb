@@ -103,7 +103,6 @@ Public Class FrmEmpresa
             txtLeyendaOrdenServicio.Text = datos.LeyendaOrdenServicio
             txtLeyendaApartado.Text = datos.LeyendaApartado
             txtLeyendaProforma.Text = datos.LeyendaProforma
-            txtPorcentajeDescMaximo.Text = datos.PorcentajeDescMaximo
             txtFechaRenovacion.Text = Format(datos.FechaVence, "dd/MM/yyyy")
             txtNombreCertificado.Text = datos.NombreCertificado
             txtPinCertificado.Text = datos.PinCertificado
@@ -206,7 +205,6 @@ Public Class FrmEmpresa
         datos.LeyendaOrdenServicio = txtLeyendaOrdenServicio.Text
         datos.LeyendaApartado = txtLeyendaApartado.Text
         datos.LeyendaProforma = txtLeyendaProforma.Text
-        datos.PorcentajeDescMaximo = txtPorcentajeDescMaximo.Text
         datos.NombreCertificado = txtNombreCertificado.Text
         datos.PinCertificado = txtPinCertificado.Text
         datos.UsuarioHacienda = txtUsuarioATV.Text
@@ -298,7 +296,7 @@ Public Class FrmEmpresa
         FrmPrincipal.ValidaNumero(e, sender, True, 0, ".")
     End Sub
 
-    Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As KeyPressEventArgs) Handles txtPorcentajeDescMaximo.KeyPress
+    Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As KeyPressEventArgs)
         FrmPrincipal.ValidaNumero(e, sender, True, 2, ".")
     End Sub
 
