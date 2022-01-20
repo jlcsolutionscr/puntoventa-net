@@ -623,7 +623,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             decimal decMontoExoneradoPorLinea = 0;
                             decMontoImpuestoPorLinea = Math.Round(decSubtotal * (detalleFactura.PorcentajeIVA / 100), 2, MidpointRounding.AwayFromZero);
                             int intCodigoTarifa = detalleFactura.Producto.IdImpuesto;
-                            if (cliente.IdImpuesto != intCodigoTarifa) intCodigoTarifa = cliente.IdImpuesto;
+                            if (cliente.IdImpuesto < intCodigoTarifa) intCodigoTarifa = cliente.IdImpuesto;
                             FacturaElectronicaImpuestoType impuestoType = new FacturaElectronicaImpuestoType
                             {
                                 Codigo = FacturaElectronicaImpuestoTypeCodigo.Item01,
@@ -904,7 +904,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             decimal decMontoExoneradoPorLinea = 0;
                             decMontoImpuestoPorLinea = Math.Round(decSubtotal * (detalleFactura.PorcentajeIVA / 100), 2, MidpointRounding.AwayFromZero);
                             int intCodigoTarifa = detalleFactura.Producto.IdImpuesto;
-                            if (cliente.IdImpuesto != intCodigoTarifa) intCodigoTarifa = cliente.IdImpuesto;
+                            if (cliente.IdImpuesto < intCodigoTarifa) intCodigoTarifa = cliente.IdImpuesto;
                             TiqueteElectronicoImpuestoType impuestoType = new TiqueteElectronicoImpuestoType
                             {
                                 Codigo = TiqueteElectronicoImpuestoTypeCodigo.Item01,
@@ -1198,7 +1198,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             decimal decMontoExoneradoPorLinea = 0;
                             decMontoImpuestoPorLinea = Math.Round(decSubtotal * (detalleFactura.PorcentajeIVA / 100), 2, MidpointRounding.AwayFromZero);
                             int intCodigoTarifa = detalleFactura.Producto.IdImpuesto;
-                            if (cliente.IdImpuesto != intCodigoTarifa) intCodigoTarifa = cliente.IdImpuesto;
+                            if (cliente.IdImpuesto < intCodigoTarifa) intCodigoTarifa = cliente.IdImpuesto;
                             NotaCreditoElectronicaImpuestoType impuestoType = new NotaCreditoElectronicaImpuestoType
                             {
                                 Codigo = NotaCreditoElectronicaImpuestoTypeCodigo.Item01,
