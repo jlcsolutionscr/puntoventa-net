@@ -104,6 +104,8 @@ Public Class FrmEmpresa
             txtLeyendaApartado.Text = datos.LeyendaApartado
             txtLeyendaProforma.Text = datos.LeyendaProforma
             txtFechaRenovacion.Text = Format(datos.FechaVence, "dd/MM/yyyy")
+            chkPrecioVentaIncluyeIVA.Checked = datos.PrecioVentaIncluyeIVA
+            txtMontoRedondeoDescuento.Text = datos.MontoRedondeoDescuento
             txtNombreCertificado.Text = datos.NombreCertificado
             txtPinCertificado.Text = datos.PinCertificado
             txtUsuarioATV.Text = datos.UsuarioHacienda
@@ -209,6 +211,8 @@ Public Class FrmEmpresa
         datos.PinCertificado = txtPinCertificado.Text
         datos.UsuarioHacienda = txtUsuarioATV.Text
         datos.ClaveHacienda = txtClaveATV.Text
+        datos.PrecioVentaIncluyeIVA = chkPrecioVentaIncluyeIVA.Checked
+        datos.MontoRedondeoDescuento = txtMontoRedondeoDescuento.Text
         datos.Barrio = Nothing
         Try
             btnCancelar.Focus()
@@ -292,7 +296,7 @@ Public Class FrmEmpresa
         End If
     End Sub
 
-    Private Sub ValidaDigitosSinDecimal(ByVal sender As Object, ByVal e As KeyPressEventArgs) Handles txtIdentificacion.KeyPress, txtTelefono1.KeyPress, txtTelefono2.KeyPress, txtConsecFactura.KeyPress, txtConsecProforma.KeyPress, txtConsecOrdenServicio.KeyPress, txtConsecApartado.KeyPress, txtUltimoFE.KeyPress, txtUltimoND.KeyPress, txtUltimoNC.KeyPress, txtUltimoTE.KeyPress, txtUltimoMR.KeyPress, txtUltimoFEC.KeyPress
+    Private Sub ValidaDigitosSinDecimal(ByVal sender As Object, ByVal e As KeyPressEventArgs) Handles txtIdentificacion.KeyPress, txtTelefono1.KeyPress, txtTelefono2.KeyPress, txtMontoRedondeoDescuento.KeyPress, txtConsecFactura.KeyPress, txtConsecProforma.KeyPress, txtConsecOrdenServicio.KeyPress, txtConsecApartado.KeyPress, txtUltimoFE.KeyPress, txtUltimoND.KeyPress, txtUltimoNC.KeyPress, txtUltimoTE.KeyPress, txtUltimoMR.KeyPress, txtUltimoFEC.KeyPress
         FrmPrincipal.ValidaNumero(e, sender, True, 0, ".")
     End Sub
 
@@ -351,6 +355,13 @@ Public Class FrmEmpresa
 
     Private Sub cboTipoImpresora_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboTipoImpresora.SelectedIndexChanged
         bolTerminalActualizada = True
+    End Sub
+
+    Private Sub txtMontoRedondeoDescuento_Validated(sender As Object, e As EventArgs) Handles txtMontoRedondeoDescuento.Validated
+        If txtMontoRedondeoDescuento.Text > 100 Then
+            MessageBox.Show("El monto de redondeo para los descuentos no puede ser mayor a 100", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            txtMontoRedondeoDescuento.Text = "100"
+        End If
     End Sub
 #End Region
 End Class

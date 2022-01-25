@@ -1305,7 +1305,8 @@ Public Class FrmOrdenServicio
         If e.KeyCode = Keys.Enter Or e.KeyCode = Keys.Tab Then
             If txtPorcDesc.Text = "" Then txtPorcDesc.Text = "0"
             Dim decPorcDesc As Decimal = CDbl(txtPorcDesc.Text)
-            If producto IsNot Nothing Then
+            Dim decPrecioConDescuento As Decimal = 0
+            If producto IsNot Nothing And decPorcDesc > 0 Then
                 decPrecioVenta = ObtenerPrecioVentaPorCliente(cliente, producto)
                 If decPorcDesc > FrmPrincipal.usuarioGlobal.PorcMaxDescuento Then
                     If MessageBox.Show("El porcentaje ingresado es mayor al parámetro establecido para el usuario actual. Desea ingresar una autorización?", "JLC Solutions CR", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
@@ -1327,7 +1328,22 @@ Public Class FrmOrdenServicio
                 End If
                 txtPorcDesc.Text = decPorcDesc
                 decPorcDesc /= 100
-                decPrecioVenta -= (decPrecioVenta * decPorcDesc)
+                decPrecioConDescuento = decPrecioVenta - (decPrecioVenta * decPorcDesc)
+                If FrmPrincipal.empresaGlobal.MontoRedondeoDescuento > 0 Then
+                    Dim strPrecioConDescuento As String = decPrecioConDescuento.ToString()
+                    Dim decDecimales As Decimal = strPrecioConDescuento.Substring(strPrecioConDescuento.IndexOf("."))
+                    Dim decTotalIncremento As Decimal = IIf(decDecimales > 0, 1 - decDecimales, 0)
+                    Dim decDigitos As Decimal = strPrecioConDescuento.Substring(strPrecioConDescuento.IndexOf(".") - 2)
+                    Do While (decDigitos + decTotalIncremento) Mod FrmPrincipal.empresaGlobal.MontoRedondeoDescuento <> 0
+                        decTotalIncremento += 1
+                    Loop
+                    If decTotalIncremento > 0 Then
+                        decPrecioConDescuento += decTotalIncremento
+                        decPorcDesc = (decPrecioVenta - decPrecioConDescuento) / decPrecioVenta * 100
+                        txtPorcDesc.Text = decPorcDesc
+                    End If
+                    decPrecioVenta = decPrecioConDescuento
+                End If
                 txtPrecio.Text = FormatNumber(decPrecioVenta, 2)
                 If e.KeyCode = Keys.Enter Then BtnInsertar_Click(btnInsertar, New EventArgs())
             End If

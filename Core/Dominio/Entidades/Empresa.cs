@@ -51,7 +51,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public string UsuarioHacienda { get; set; }
         public string ClaveHacienda { get; set; }
         public string CorreoNotificacion { get; set; }
-        public decimal PorcentajeDescMaximo { get; set; }
+        public decimal MontoRedondeoDescuento { get; set; }
         public string LeyendaFactura { get; set; }
         public string LeyendaProforma { get; set; }
         public string LeyendaApartado { get; set; }

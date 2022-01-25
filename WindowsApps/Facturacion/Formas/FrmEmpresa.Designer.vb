@@ -118,6 +118,9 @@ Partial Class FrmEmpresa
         Me.Label29 = New System.Windows.Forms.Label()
         Me.txtTelefono2 = New System.Windows.Forms.TextBox()
         Me.Label30 = New System.Windows.Forms.Label()
+        Me.chkPrecioVentaIncluyeIVA = New System.Windows.Forms.CheckBox()
+        Me.txtMontoRedondeoDescuento = New System.Windows.Forms.TextBox()
+        Me.Label23 = New System.Windows.Forms.Label()
         Me.gpbSucursal.SuspendLayout()
         Me.GroupBox1.SuspendLayout()
         CType(Me.picLogo, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -1259,7 +1262,7 @@ Partial Class FrmEmpresa
         Me.txtLeyendaOrdenServicio.Name = "txtLeyendaOrdenServicio"
         Me.txtLeyendaOrdenServicio.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtLeyendaOrdenServicio.Size = New System.Drawing.Size(1121, 20)
-        Me.txtLeyendaOrdenServicio.TabIndex = 17
+        Me.txtLeyendaOrdenServicio.TabIndex = 19
         '
         'Label15
         '
@@ -1285,7 +1288,7 @@ Partial Class FrmEmpresa
         Me.txtLeyendaFactura.Name = "txtLeyendaFactura"
         Me.txtLeyendaFactura.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtLeyendaFactura.Size = New System.Drawing.Size(1121, 20)
-        Me.txtLeyendaFactura.TabIndex = 16
+        Me.txtLeyendaFactura.TabIndex = 18
         '
         'Label26
         '
@@ -1311,7 +1314,7 @@ Partial Class FrmEmpresa
         Me.txtLeyendaProforma.Name = "txtLeyendaProforma"
         Me.txtLeyendaProforma.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtLeyendaProforma.Size = New System.Drawing.Size(1121, 20)
-        Me.txtLeyendaProforma.TabIndex = 18
+        Me.txtLeyendaProforma.TabIndex = 20
         '
         'Label28
         '
@@ -1337,7 +1340,7 @@ Partial Class FrmEmpresa
         Me.txtLeyendaApartado.Name = "txtLeyendaApartado"
         Me.txtLeyendaApartado.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtLeyendaApartado.Size = New System.Drawing.Size(1121, 20)
-        Me.txtLeyendaApartado.TabIndex = 19
+        Me.txtLeyendaApartado.TabIndex = 21
         '
         'Label29
         '
@@ -1378,12 +1381,52 @@ Partial Class FrmEmpresa
         Me.Label30.Text = "Teléfono 2:"
         Me.Label30.TextAlign = System.Drawing.ContentAlignment.TopRight
         '
+        'chkPrecioVentaIncluyeIVA
+        '
+        Me.chkPrecioVentaIncluyeIVA.AutoSize = True
+        Me.chkPrecioVentaIncluyeIVA.Location = New System.Drawing.Point(293, 462)
+        Me.chkPrecioVentaIncluyeIVA.Name = "chkPrecioVentaIncluyeIVA"
+        Me.chkPrecioVentaIncluyeIVA.Size = New System.Drawing.Size(142, 17)
+        Me.chkPrecioVentaIncluyeIVA.TabIndex = 17
+        Me.chkPrecioVentaIncluyeIVA.TabStop = False
+        Me.chkPrecioVentaIncluyeIVA.Text = "Precio venta incluye IVA"
+        Me.chkPrecioVentaIncluyeIVA.UseVisualStyleBackColor = True
+        '
+        'txtMontoRedondeoDescuento
+        '
+        Me.txtMontoRedondeoDescuento.AcceptsReturn = True
+        Me.txtMontoRedondeoDescuento.BackColor = System.Drawing.SystemColors.Window
+        Me.txtMontoRedondeoDescuento.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtMontoRedondeoDescuento.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtMontoRedondeoDescuento.Location = New System.Drawing.Point(122, 459)
+        Me.txtMontoRedondeoDescuento.MaxLength = 3
+        Me.txtMontoRedondeoDescuento.Name = "txtMontoRedondeoDescuento"
+        Me.txtMontoRedondeoDescuento.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtMontoRedondeoDescuento.Size = New System.Drawing.Size(85, 20)
+        Me.txtMontoRedondeoDescuento.TabIndex = 16
+        '
+        'Label23
+        '
+        Me.Label23.BackColor = System.Drawing.Color.Transparent
+        Me.Label23.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label23.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label23.Location = New System.Drawing.Point(-26, 462)
+        Me.Label23.Name = "Label23"
+        Me.Label23.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label23.Size = New System.Drawing.Size(142, 17)
+        Me.Label23.TabIndex = 293
+        Me.Label23.Text = "Monto redondeo desc:"
+        Me.Label23.TextAlign = System.Drawing.ContentAlignment.TopRight
+        '
         'FrmEmpresa
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(1257, 591)
+        Me.Controls.Add(Me.txtMontoRedondeoDescuento)
+        Me.Controls.Add(Me.Label23)
+        Me.Controls.Add(Me.chkPrecioVentaIncluyeIVA)
         Me.Controls.Add(Me.txtTelefono2)
         Me.Controls.Add(Me.Label30)
         Me.Controls.Add(Me.txtLeyendaApartado)
@@ -1526,4 +1569,7 @@ Partial Class FrmEmpresa
     Public WithEvents Label36 As Label
     Friend WithEvents cboTipoImpresora As ComboBox
     Friend WithEvents chkCierre As CheckBox
+    Friend WithEvents chkPrecioVentaIncluyeIVA As CheckBox
+    Public WithEvents txtMontoRedondeoDescuento As TextBox
+    Public WithEvents Label23 As Label
 End Class
