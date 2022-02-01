@@ -119,6 +119,21 @@ namespace LeandroSoftware.Core.Utilitario
             return TimeZoneInfo.ConvertTimeFromUtc(timeUtc, cstZone);
         }
 
+        public static decimal ObtenerPrecioRedondeado(decimal decValorRedondeo, decimal decPrecioVenta)
+        {
+            decimal decPrecioRedondeado = decPrecioVenta;
+            string[] arrPrecioConDescuento = decPrecioVenta.ToString().Split('.');
+            decimal decDecimales = arrPrecioConDescuento.Length > 1 ? decimal.Parse("0." + arrPrecioConDescuento[1].ToString()) : 0;
+            decimal decTotalIncremento = decDecimales > 0 ? 1 - decDecimales : 0;
+            decimal decDigitos = decimal.Parse(arrPrecioConDescuento[0].Substring(arrPrecioConDescuento[0].Length - 2)) + decDecimales;
+            while ((decDigitos + decTotalIncremento) % decValorRedondeo != 0)
+            {
+                decTotalIncremento += 1;
+            }
+            if (decTotalIncremento > 0) decPrecioRedondeado += decTotalIncremento;
+            return decPrecioRedondeado;
+        }
+
         public static string NumeroALetras(double t)
         {
             string strCadena, strText, strLetra, strDec;

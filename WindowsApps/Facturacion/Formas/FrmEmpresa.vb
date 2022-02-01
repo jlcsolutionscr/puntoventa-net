@@ -218,6 +218,8 @@ Public Class FrmEmpresa
             btnCancelar.Focus()
             btnGuardar.Enabled = False
             Await Puntoventa.ActualizarEmpresa(datos, FrmPrincipal.usuarioGlobal.Token)
+            FrmPrincipal.empresaGlobal.PrecioVentaIncluyeIVA = datos.PrecioVentaIncluyeIVA
+            FrmPrincipal.empresaGlobal.MontoRedondeoDescuento = datos.MontoRedondeoDescuento
             If bolCertificadoModificado And txtNombreCertificado.Text.Length > 0 Then
                 Dim bytCertificado As Byte() = File.ReadAllBytes(strRutaCertificado)
                 Await Puntoventa.ActualizarCertificadoEmpresa(txtIdEmpresa.Text, Convert.ToBase64String(bytCertificado), FrmPrincipal.usuarioGlobal.Token)

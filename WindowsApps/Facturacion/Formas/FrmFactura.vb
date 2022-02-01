@@ -112,7 +112,7 @@ Public Class FrmFactura
         grdDetalleFactura.Columns.Add(dvcCantidad)
 
         dvcPorcDescuento.DataPropertyName = "PORCDESCUENTO"
-        dvcPorcDescuento.HeaderText = "% Des"
+        dvcPorcDescuento.HeaderText = "Des%"
         dvcPorcDescuento.Width = 50
         dvcPorcDescuento.SortMode = DataGridViewColumnSortMode.NotSortable
         dvcPorcDescuento.DefaultCellStyle = FrmPrincipal.dgvDecimal
@@ -1623,14 +1623,16 @@ Public Class FrmFactura
         End If
     End Sub
 
-    Private Sub TextBox_keyPress(ByVal sender As Object, ByVal e As KeyPressEventArgs)
-        FrmPrincipal.ValidaNumero(e, sender, True, 2, ".")
+    Private Sub TextBox_keyPress(sender As Object, e As KeyPressEventArgs)
+        FrmPrincipal.ValidaNumero(e, sender, True, 2)
     End Sub
 
     Private Sub grdDetalleFactura_CellValueChanged(sender As Object, e As DataGridViewCellEventArgs) Handles grdDetalleFactura.CellValueChanged
         If e.ColumnIndex = 4 And Not bolAutorizando Then
             bolAutorizando = True
+            Dim bolPrecioAutorizado As Boolean = False
             Dim decPorcDesc As Decimal = 0
+            Dim decPrecioTotal As Decimal = dtbDetalleFactura.Rows(e.RowIndex).Item(5) + dtbDetalleFactura.Rows(e.RowIndex).Item(11)
             If dtbDetalleFactura.Rows(e.RowIndex).Item(13) = 1 Then
                 grdDetalleFactura.Rows(e.RowIndex).Cells(4).Value = 0
             Else
@@ -1641,9 +1643,10 @@ Public Class FrmFactura
                     If MessageBox.Show("El porcentaje ingresado es mayor al parámetro establecido para el usuario actual. Desea ingresar una autorización?", "JLC Solutions CR", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
                         Dim formAutorizacion As New FrmAutorizacionEspecial
                         formAutorizacion.decPorcentaje = decPorcDesc
-                        formAutorizacion.decPrecioVenta = dtbDetalleFactura.Rows(e.RowIndex).Item(5) + dtbDetalleFactura.Rows(e.RowIndex).Item(11)
+                        formAutorizacion.decPrecioVenta = decPrecioTotal
                         formAutorizacion.ShowDialog()
                         If FrmPrincipal.decDescAutorizado > 0 Then
+                            bolPrecioAutorizado = True
                             decPorcDesc = FrmPrincipal.decDescAutorizado
                         Else
                             MessageBox.Show("No se logró obtener la autorización solicitada.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
@@ -1656,14 +1659,17 @@ Public Class FrmFactura
                 grdDetalleFactura.Rows(e.RowIndex).Cells(e.ColumnIndex).Value = decPorcDesc
                 Dim decCantidad As Decimal = grdDetalleFactura.Rows(e.RowIndex).Cells(3).Value
                 Dim decTasaImpuesto As Decimal = grdDetalleFactura.Rows(e.RowIndex).Cells(10).Value
-                Dim decPrecio As Decimal = grdDetalleFactura.Rows(e.RowIndex).Cells(5).Value + grdDetalleFactura.Rows(e.RowIndex).Cells(6).Value
-                Dim decMontoDesc = decPrecio / 100 * decPorcDesc
-                decPrecio = decPrecio - decMontoDesc
-                Dim decPrecioGravado As Decimal = decPrecio
-                If decTasaImpuesto > 0 Then decPrecioGravado = Math.Round(decPrecio / (1 + (decTasaImpuesto / 100)), 3)
+                Dim decPrecioConDescuento As Decimal = decPrecioTotal - (decPrecioTotal * decPorcDesc / 100)
+                If decPorcDesc > 0 And Not bolPrecioAutorizado And FrmPrincipal.empresaGlobal.MontoRedondeoDescuento > 0 Then
+                    decPrecioConDescuento = Utilitario.ObtenerPrecioRedondeado(FrmPrincipal.empresaGlobal.MontoRedondeoDescuento, decPrecioConDescuento)
+                    decPorcDesc = (decPrecioTotal - decPrecioConDescuento) / decPrecioTotal * 100
+                End If
+                Dim decMontoDesc = decPrecioTotal - decPrecioConDescuento
+                Dim decPrecioGravado As Decimal = decPrecioConDescuento
+                If decTasaImpuesto > 0 Then decPrecioGravado = Math.Round(decPrecioConDescuento / (1 + (decTasaImpuesto / 100)), 3)
                 dtbDetalleFactura.Rows(e.RowIndex).Item(4) = decPrecioGravado
-                dtbDetalleFactura.Rows(e.RowIndex).Item(5) = decPrecio
-                dtbDetalleFactura.Rows(e.RowIndex).Item(6) = decCantidad * decPrecio
+                dtbDetalleFactura.Rows(e.RowIndex).Item(5) = decPrecioConDescuento
+                dtbDetalleFactura.Rows(e.RowIndex).Item(6) = decCantidad * decPrecioConDescuento
                 dtbDetalleFactura.Rows(e.RowIndex).Item(10) = decPorcDesc
                 dtbDetalleFactura.Rows(e.RowIndex).Item(11) = decMontoDesc
                 grdDetalleFactura.Refresh()
@@ -1675,10 +1681,10 @@ Public Class FrmFactura
 
     Private Sub txtPorcDesc_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtPorcDesc.PreviewKeyDown
         If e.KeyCode = Keys.Enter Or e.KeyCode = Keys.Tab Then
+            Dim bolPrecioAutorizado As Boolean = False
             If txtPorcDesc.Text = "" Then txtPorcDesc.Text = "0"
             Dim decPorcDesc As Decimal = CDbl(txtPorcDesc.Text)
-            Dim decPrecioConDescuento As Decimal = 0
-            If producto IsNot Nothing And decPorcDesc > 0 Then
+            If producto IsNot Nothing Then
                 decPrecioVenta = ObtenerPrecioVentaPorCliente(cliente, producto)
                 If decPorcDesc > FrmPrincipal.usuarioGlobal.PorcMaxDescuento Then
                     If MessageBox.Show("El porcentaje ingresado es mayor al parámetro establecido para el usuario actual. Desea ingresar una autorización?", "JLC Solutions CR", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
@@ -1687,6 +1693,7 @@ Public Class FrmFactura
                         formAutorizacion.decPrecioVenta = decPrecioVenta
                         formAutorizacion.ShowDialog()
                         If FrmPrincipal.decDescAutorizado > 0 Then
+                            bolPrecioAutorizado = True
                             decPorcDesc = FrmPrincipal.decDescAutorizado
                         Else
                             MessageBox.Show("No se logró obtener la autorización solicitada.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
@@ -1699,18 +1706,10 @@ Public Class FrmFactura
                     End If
                 End If
                 txtPorcDesc.Text = decPorcDesc
-                decPorcDesc /= 100
-                decPrecioConDescuento = decPrecioVenta - (decPrecioVenta * decPorcDesc)
-                If FrmPrincipal.empresaGlobal.MontoRedondeoDescuento > 0 Then
-                    Dim strPrecioConDescuento As String = decPrecioConDescuento.ToString()
-                    Dim decDecimales As Decimal = strPrecioConDescuento.Substring(strPrecioConDescuento.IndexOf("."))
-                    Dim decTotalIncremento As Decimal = IIf(decDecimales > 0, 1 - decDecimales, 0)
-                    Dim decDigitos As Decimal = strPrecioConDescuento.Substring(strPrecioConDescuento.IndexOf(".") - 2)
-                    Do While (decDigitos + decTotalIncremento) Mod FrmPrincipal.empresaGlobal.MontoRedondeoDescuento <> 0
-                        decTotalIncremento += 1
-                    Loop
-                    If decTotalIncremento > 0 Then
-                        decPrecioConDescuento += decTotalIncremento
+                If decPorcDesc > 0 Then
+                    Dim decPrecioConDescuento As Decimal = decPrecioVenta - (decPrecioVenta * decPorcDesc / 100)
+                    If Not bolPrecioAutorizado And FrmPrincipal.empresaGlobal.MontoRedondeoDescuento > 0 Then
+                        decPrecioConDescuento = Utilitario.ObtenerPrecioRedondeado(FrmPrincipal.empresaGlobal.MontoRedondeoDescuento, decPrecioConDescuento)
                         decPorcDesc = (decPrecioVenta - decPrecioConDescuento) / decPrecioVenta * 100
                         txtPorcDesc.Text = decPorcDesc
                     End If
