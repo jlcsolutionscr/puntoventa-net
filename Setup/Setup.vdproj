@@ -361,7 +361,7 @@
                 {
                 "Name" = "8:.NET Framework"
                 "Message" = "8:[VSDNETMSG]"
-                "FrameworkVersion" = "8:v4.0                                                                         "
+                "FrameworkVersion" = "8:v4.0                                                                          "
                 "AllowLaterVersions" = "11:FALSE"
                 "InstallUrl" = "8:http://go.microsoft.com/fwlink/?LinkId=9832"
                 }
@@ -905,15 +905,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:PuntoventaJLC"
-        "ProductCode" = "8:{0264F3A3-BF3C-4E2D-AE27-8C8317876001}"
-        "PackageCode" = "8:{FA832905-27F4-447F-8631-FA8549B9A18D}"
+        "ProductCode" = "8:{EC96ABC7-E298-4667-82C8-953488804E03}"
+        "PackageCode" = "8:{5C60E4FD-DDAA-4DB2-A343-5402776CD82F}"
         "UpgradeCode" = "8:{9F4F56C6-17E9-4C36-9940-81BDB1283F7F}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:4.5.2"
+        "ProductVersion" = "8:4.5.3"
         "Manufacturer" = "8:JLC Solutions"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"

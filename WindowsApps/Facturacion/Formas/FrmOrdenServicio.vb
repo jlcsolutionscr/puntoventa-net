@@ -1295,7 +1295,7 @@ Public Class FrmOrdenServicio
             End If
             Dim decMontoDesc = decPrecioTotal - decPrecioConDescuento
             Dim decPrecioGravado As Decimal = decPrecioConDescuento
-            If decTasaImpuesto > 0 Then decPrecioGravado = Math.Round(decPrecioConDescuento / (1 + (decTasaImpuesto / 100)), 3)
+            If decTasaImpuesto > 0 Then decPrecioGravado = Math.Round(decPrecioConDescuento / (1 + (decTasaImpuesto / 100)), 5)
             dtbDetalleOrdenServicio.Rows(e.RowIndex).Item(4) = decPrecioGravado
             dtbDetalleOrdenServicio.Rows(e.RowIndex).Item(5) = decPrecioConDescuento
             dtbDetalleOrdenServicio.Rows(e.RowIndex).Item(6) = decCantidad * decPrecioConDescuento
