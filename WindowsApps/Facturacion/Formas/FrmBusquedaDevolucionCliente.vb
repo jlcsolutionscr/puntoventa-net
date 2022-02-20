@@ -73,13 +73,13 @@ Public Class FrmBusquedaDevolucionCliente
         End If
     End Function
 
-    Private Async Function CargarCombos() As Task
+    Private Sub CargarCombos()
         cboSucursal.ValueMember = "Id"
         cboSucursal.DisplayMember = "Descripcion"
-        cboSucursal.DataSource = Await Puntoventa.ObtenerListadoSucursales(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+        cboSucursal.DataSource = FrmPrincipal.listaSucursales
         cboSucursal.SelectedValue = FrmPrincipal.equipoGlobal.IdSucursal
         cboSucursal.Enabled = FrmPrincipal.bolSeleccionaSucursal
-    End Function
+    End Sub
 #End Region
 
 #Region "Eventos Controles"
@@ -133,7 +133,7 @@ Public Class FrmBusquedaDevolucionCliente
     Private Async Sub FrmBusProd_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
             EstablecerPropiedadesDataGridView()
-            Await CargarCombos()
+            CargarCombos()
             Await ValidarCantidadRegistros()
             intIndiceDePagina = 1
             Await ActualizarDatos(intIndiceDePagina)

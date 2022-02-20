@@ -1,7 +1,7 @@
-Imports System.Collections.Generic
-Imports LeandroSoftware.Core.TiposComunes
-Imports LeandroSoftware.Core.Dominio.Entidades
 Imports LeandroSoftware.ClienteWCF
+Imports LeandroSoftware.Common.Dominio.Entidades
+Imports LeandroSoftware.Common.Constantes
+Imports System.Collections.Generic
 
 Public Class FrmDevolucionDeClientes
 #Region "Variables"
@@ -140,7 +140,7 @@ Public Class FrmDevolucionDeClientes
         dtbDetalleDevolucion.Rows.Clear()
         Dim tipoProducto As New List(Of Integer)(New Integer() {StaticTipoProducto.Producto, StaticTipoProducto.Transitorio})
         For Each detalle As DetalleFactura In factura.DetalleFactura
-            If tipoProducto.Contains(detalle.Producto.TipoProducto.IdTipoProducto) Then
+            If tipoProducto.Contains(detalle.Producto.Tipo) Then
                 dtrRowDetDevolucion = dtbDetalleDevolucion.NewRow
                 dtrRowDetDevolucion.Item(0) = detalle.IdProducto
                 dtrRowDetDevolucion.Item(1) = detalle.Producto.Codigo

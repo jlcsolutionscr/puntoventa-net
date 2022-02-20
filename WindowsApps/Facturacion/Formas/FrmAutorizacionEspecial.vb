@@ -1,5 +1,5 @@
-Imports LeandroSoftware.Core.Utilitario
 Imports LeandroSoftware.ClienteWCF
+Imports LeandroSoftware.Common.Seguridad
 
 Public Class FrmAutorizacionEspecial
 #Region "Variables"
@@ -40,7 +40,7 @@ Public Class FrmAutorizacionEspecial
         DialogResult = DialogResult.None
         Try
             If TxtUsuario.Text <> "" And TxtClave.Text <> "" And txtPorcentaje.Text <> "" Then
-                Dim strEncryptedPassword As String = Utilitario.EncriptarDatos(TxtClave.Text)
+                Dim strEncryptedPassword As String = Encriptador.EncriptarDatos(TxtClave.Text)
                 Dim decPorcentaje As Decimal
                 Dim decDescAutorizado As Decimal = txtPorcentaje.Text
                 Try

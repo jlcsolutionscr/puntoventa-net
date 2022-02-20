@@ -1,8 +1,9 @@
-Imports System.Collections.Generic
-Imports LeandroSoftware.Core.TiposComunes
-Imports LeandroSoftware.Core.Dominio.Entidades
-Imports System.Threading.Tasks
 Imports LeandroSoftware.ClienteWCF
+Imports LeandroSoftware.Common.DatosComunes
+Imports LeandroSoftware.Common.Dominio.Entidades
+Imports LeandroSoftware.Common.Constantes
+Imports System.Threading.Tasks
+Imports System.Collections.Generic
 
 Public Class FrmAplicaAbonoOrdenServicio
 #Region "Variables"
@@ -153,7 +154,7 @@ Public Class FrmAplicaAbonoOrdenServicio
     Private Async Function CargarCombos() As Task
         cboFormaPago.ValueMember = "Id"
         cboFormaPago.DisplayMember = "Descripcion"
-        cboFormaPago.DataSource = Await Puntoventa.ObtenerListadoFormaPagoCliente(FrmPrincipal.usuarioGlobal.Token)
+        cboFormaPago.DataSource = FrmPrincipal.listaFormaPagoCliente
         cboTipoBanco.ValueMember = "Id"
         cboTipoBanco.DisplayMember = "Descripcion"
         cboTipoBanco.DataSource = Await Puntoventa.ObtenerListadoBancoAdquiriente(FrmPrincipal.empresaGlobal.IdEmpresa, "", FrmPrincipal.usuarioGlobal.Token)

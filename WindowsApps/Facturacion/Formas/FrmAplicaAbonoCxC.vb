@@ -1,8 +1,8 @@
-Imports System.Collections.Generic
-Imports LeandroSoftware.Core.TiposComunes
-Imports LeandroSoftware.Core.Dominio.Entidades
-Imports System.Threading.Tasks
 Imports LeandroSoftware.ClienteWCF
+Imports LeandroSoftware.Common.Dominio.Entidades
+Imports LeandroSoftware.Common.Constantes
+Imports System.Threading.Tasks
+Imports System.Collections.Generic
 
 Public Class FrmAplicaAbonoCxC
 #Region "Variables"
@@ -154,7 +154,7 @@ Public Class FrmAplicaAbonoCxC
     Private Async Function CargarCombos() As Task
         cboFormaPago.ValueMember = "Id"
         cboFormaPago.DisplayMember = "Descripcion"
-        cboFormaPago.DataSource = Await Puntoventa.ObtenerListadoFormaPagoCliente(FrmPrincipal.usuarioGlobal.Token)
+        cboFormaPago.DataSource = FrmPrincipal.listaFormaPagoCliente
         cboTipoBanco.ValueMember = "Id"
         cboTipoBanco.DisplayMember = "Descripcion"
         cboTipoBanco.DataSource = Await Puntoventa.ObtenerListadoBancoAdquiriente(FrmPrincipal.empresaGlobal.IdEmpresa, "", FrmPrincipal.usuarioGlobal.Token)
@@ -251,7 +251,7 @@ Public Class FrmAplicaAbonoCxC
     Private Async Sub BtnGuardar_Click(sender As Object, e As EventArgs) Handles btnGuardar.Click
         If cuentaPorCobrar Is Nothing Then
             MessageBox.Show("Debe seleccionar la cuenta por procesar para poder guardar el registro.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-            btnBuscarCxC_Click(btnBuscarCxC, New EventArgs())
+            BtnBuscarCxC_Click(btnBuscarCxC, New EventArgs())
             Exit Sub
         ElseIf decTotal = 0 Then
             MessageBox.Show("Debe ingresar el monto del abono para guardar el registro.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)

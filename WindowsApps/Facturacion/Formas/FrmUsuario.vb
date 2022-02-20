@@ -1,8 +1,8 @@
 Imports System.Collections.Generic
-Imports LeandroSoftware.ClienteWCF
-Imports LeandroSoftware.Core.Dominio.Entidades
-Imports LeandroSoftware.Core.Utilitario
 Imports System.Linq
+Imports LeandroSoftware.ClienteWCF
+Imports LeandroSoftware.Common.Dominio.Entidades
+Imports LeandroSoftware.Common.Seguridad
 
 Public Class FrmUsuario
 #Region "Variables"
@@ -82,7 +82,7 @@ Public Class FrmUsuario
         cboRole.DataSource = Await Puntoventa.ObtenerListadoRolesPorEmpresa(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
         cboSucursal.ValueMember = "Id"
         cboSucursal.DisplayMember = "Descripcion"
-        cboSucursal.DataSource = Await Puntoventa.ObtenerListadoSucursales(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+        cboSucursal.DataSource = FrmPrincipal.listaSucursales
         cboSucursal.SelectedValue = FrmPrincipal.equipoGlobal.IdSucursal
     End Sub
 #End Region
@@ -117,7 +117,7 @@ Public Class FrmUsuario
                 Dim strDecryptedPassword As String
                 Try
                     datos = Await Puntoventa.ObtenerUsuario(intIdUsuario, FrmPrincipal.usuarioGlobal.Token)
-                    strDecryptedPassword = Utilitario.DesencriptarDatos(datos.Clave)
+                    strDecryptedPassword = Encriptador.DesencriptarDatos(datos.Clave)
                 Catch ex As Exception
                     Throw ex
                 End Try
@@ -166,7 +166,7 @@ Public Class FrmUsuario
             datos.SucursalPorUsuario = listaSucursalPorUsuario
         End If
         Try
-            strEncryptedPassword = Utilitario.EncriptarDatos(txtPassword.Text)
+            strEncryptedPassword = Encriptador.EncriptarDatos(txtPassword.Text)
         Catch ex As Exception
             btnGuardar.Enabled = True
             btnGuardar.Focus()

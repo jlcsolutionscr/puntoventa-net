@@ -1,6 +1,8 @@
+Imports LeandroSoftware.Common.DatosComunes
+Imports LeandroSoftware.Common.Dominio.Entidades
+Imports LeandroSoftware.Common.Constantes
 Imports System.Collections.Generic
-Imports LeandroSoftware.Core.TiposComunes
-Imports LeandroSoftware.Core.Dominio.Entidades
+Imports System.Linq
 
 Public Class FrmOrdenCompra
 #Region "Variables"
@@ -112,14 +114,15 @@ Public Class FrmOrdenCompra
 
     Private Sub CargarLineaDetalleOrdenCompra(ByVal producto As Producto)
         Dim intIndice As Integer = dtbDetalleOrdenCompra.Rows.IndexOf(dtbDetalleOrdenCompra.Rows.Find(producto.IdProducto))
+        Dim decTasaImpuesto = FrmPrincipal.ObtenerTarifaImpuesto(producto.IdImpuesto)
         If intIndice >= 0 Then
             dtbDetalleOrdenCompra.Rows(intIndice).Item(1) = producto.Codigo
             dtbDetalleOrdenCompra.Rows(intIndice).Item(2) = producto.Descripcion
             dtbDetalleOrdenCompra.Rows(intIndice).Item(3) += txtCantidad.Text
             dtbDetalleOrdenCompra.Rows(intIndice).Item(4) = txtPrecioCosto.Text
             dtbDetalleOrdenCompra.Rows(intIndice).Item(5) = dtbDetalleOrdenCompra.Rows(intIndice).Item(3) * dtbDetalleOrdenCompra.Rows(intIndice).Item(4)
-            dtbDetalleOrdenCompra.Rows(intIndice).Item(6) = producto.ParametroImpuesto.TasaImpuesto = 0
-            dtbDetalleOrdenCompra.Rows(intIndice).Item(7) = producto.ParametroImpuesto.TasaImpuesto
+            dtbDetalleOrdenCompra.Rows(intIndice).Item(6) = decTasaImpuesto = 0
+            dtbDetalleOrdenCompra.Rows(intIndice).Item(7) = decTasaImpuesto
         Else
             objRowDetOrdenCompra = dtbDetalleOrdenCompra.NewRow
             objRowDetOrdenCompra.Item(0) = producto.IdProducto
@@ -128,8 +131,8 @@ Public Class FrmOrdenCompra
             objRowDetOrdenCompra.Item(3) = txtCantidad.Text
             objRowDetOrdenCompra.Item(4) = txtPrecioCosto.Text
             objRowDetOrdenCompra.Item(5) = objRowDetOrdenCompra.Item(3) * objRowDetOrdenCompra.Item(4)
-            objRowDetOrdenCompra.Item(6) = producto.ParametroImpuesto.TasaImpuesto = 0
-            objRowDetOrdenCompra.Item(7) = producto.ParametroImpuesto.TasaImpuesto
+            objRowDetOrdenCompra.Item(6) = decTasaImpuesto = 0
+            objRowDetOrdenCompra.Item(7) = decTasaImpuesto
             dtbDetalleOrdenCompra.Rows.Add(objRowDetOrdenCompra)
         End If
         grdDetalleOrdenCompra.Refresh()

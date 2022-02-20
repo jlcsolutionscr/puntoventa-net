@@ -1,7 +1,8 @@
 Imports System.Collections.Generic
 Imports LeandroSoftware.ClienteWCF
-Imports LeandroSoftware.Core.TiposComunes
-Imports LeandroSoftware.Core.Utilitario
+Imports LeandroSoftware.Common.DatosComunes
+Imports LeandroSoftware.Common.Constantes
+Imports LeandroSoftware.Common.Seguridad
 
 Public Class FrmRegistro
 #Region "Variables"
@@ -59,7 +60,7 @@ Public Class FrmRegistro
         Try
             EstablecerPropiedadesDataGridView()
             dgvDatos.DataSource = listado
-            strDispositivoId = Utilitario.ObtenerIdentificadorEquipo()
+            strDispositivoId = Puntoventa.ObtenerIdentificadorEquipo()
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -83,7 +84,7 @@ Public Class FrmRegistro
 
     Private Async Sub BtnConsultar_Click(sender As Object, e As EventArgs) Handles btnConsultar.Click
         Try
-            strEncryptedPassword = Utilitario.EncriptarDatos(txtClave.Text)
+            strEncryptedPassword = Encriptador.EncriptarDatos(txtClave.Text)
             listado = Await Puntoventa.ObtenerListadoTerminalesDisponibles(txtUsuario.Text, strEncryptedPassword, txtIdentificacion.Text, StaticTipoDispisitivo.AppEscritorio)
             dgvDatos.DataSource = listado
             If listado.Count > 0 Then

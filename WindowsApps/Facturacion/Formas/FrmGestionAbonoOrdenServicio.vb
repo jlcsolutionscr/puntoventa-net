@@ -1,7 +1,9 @@
-Imports System.Collections.Generic
-Imports LeandroSoftware.Core.TiposComunes
-Imports LeandroSoftware.Core.Dominio.Entidades
 Imports LeandroSoftware.ClienteWCF
+Imports LeandroSoftware.Common.DatosComunes
+Imports LeandroSoftware.Common.Dominio.Entidades
+Imports LeandroSoftware.Common.Constantes
+Imports System.Collections.Generic
+Imports System.Linq
 
 Public Class FrmGestionAbonoOrdenServicio
 #Region "Variables"
@@ -166,7 +168,7 @@ Public Class FrmGestionAbonoOrdenServicio
                 }
                 reciboComprobante.arrDesglosePago = New List(Of ModuloImpresion.ClsDesgloseFormaPago)()
                 For Each desglosePago As DesglosePagoMovimientoOrdenServicio In movimiento.DesglosePagoMovimientoOrdenServicio
-                    desglosePagoImpresion = New ModuloImpresion.ClsDesgloseFormaPago(desglosePago.FormaPago.Descripcion, FormatNumber(desglosePago.MontoLocal, 2))
+                    desglosePagoImpresion = New ModuloImpresion.ClsDesgloseFormaPago(FrmPrincipal.ObtenerDescripcionFormaPagoCliente(desglosePago.IdFormaPago), FormatNumber(desglosePago.MontoLocal, 2))
                     reciboComprobante.arrDesglosePago.Add(desglosePagoImpresion)
                 Next
                 Try

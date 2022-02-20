@@ -1,8 +1,10 @@
 Imports System.Collections.Generic
-Imports LeandroSoftware.Core.Dominio.Entidades
 Imports System.Threading.Tasks
-Imports LeandroSoftware.Core.TiposComunes
 Imports LeandroSoftware.ClienteWCF
+Imports LeandroSoftware.Common.DatosComunes
+Imports LeandroSoftware.Common.Dominio.Entidades
+Imports LeandroSoftware.Common.Constantes
+Imports System.Linq
 
 Public Class FrmTrasladoMercaderia
 #Region "Variables"
@@ -94,7 +96,7 @@ Public Class FrmTrasladoMercaderia
             dtrRowDetTraslado.Item(3) = detalle.Cantidad
             dtrRowDetTraslado.Item(4) = detalle.PrecioCosto
             dtrRowDetTraslado.Item(5) = dtrRowDetTraslado.Item(3) * dtrRowDetTraslado.Item(4)
-            dtrRowDetTraslado.Item(6) = detalle.Producto.ParametroImpuesto.TasaImpuesto
+            dtrRowDetTraslado.Item(6) = FrmPrincipal.ObtenerTarifaImpuesto(producto.IdImpuesto)
             dtbDetalleTraslado.Rows.Add(dtrRowDetTraslado)
         Next
         grdDetalleTraslado.Refresh()
@@ -108,7 +110,7 @@ Public Class FrmTrasladoMercaderia
             dtbDetalleTraslado.Rows(intIndice).Item(3) += txtCantidad.Text
             dtbDetalleTraslado.Rows(intIndice).Item(4) = producto.PrecioCosto
             dtbDetalleTraslado.Rows(intIndice).Item(5) = dtbDetalleTraslado.Rows(intIndice).Item(3) * dtbDetalleTraslado.Rows(intIndice).Item(4)
-            dtbDetalleTraslado.Rows(intIndice).Item(6) = producto.ParametroImpuesto.TasaImpuesto
+            dtbDetalleTraslado.Rows(intIndice).Item(6) = FrmPrincipal.ObtenerTarifaImpuesto(producto.IdImpuesto)
         Else
             dtrRowDetTraslado = dtbDetalleTraslado.NewRow
             dtrRowDetTraslado.Item(0) = producto.IdProducto
@@ -117,7 +119,7 @@ Public Class FrmTrasladoMercaderia
             dtrRowDetTraslado.Item(3) = txtCantidad.Text
             dtrRowDetTraslado.Item(4) = producto.PrecioCosto
             dtrRowDetTraslado.Item(5) = dtrRowDetTraslado.Item(3) * dtrRowDetTraslado.Item(4)
-            dtrRowDetTraslado.Item(6) = producto.ParametroImpuesto.TasaImpuesto
+            dtrRowDetTraslado.Item(6) = FrmPrincipal.ObtenerTarifaImpuesto(producto.IdImpuesto)
             dtbDetalleTraslado.Rows.Add(dtrRowDetTraslado)
         End If
         grdDetalleTraslado.Refresh()
@@ -161,7 +163,6 @@ Public Class FrmTrasladoMercaderia
             txtCodigo.Focus()
             Exit Sub
         Else
-            Dim decTasaImpuesto As Decimal = producto.ParametroImpuesto.TasaImpuesto
             txtCodigo.Text = producto.Codigo
             txtDescripcion.Text = producto.Descripcion
             txtExistencias.Text = producto.Existencias

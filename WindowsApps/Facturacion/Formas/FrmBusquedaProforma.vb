@@ -81,10 +81,10 @@ Public Class FrmBusquedaProforma
         End If
     End Function
 
-    Private Async Function CargarCombos() As Task
+    Private Sub CargarCombos()
         cboSucursal.ValueMember = "Id"
         cboSucursal.DisplayMember = "Descripcion"
-        cboSucursal.DataSource = Await Puntoventa.ObtenerListadoSucursales(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+        cboSucursal.DataSource = FrmPrincipal.listaSucursales
         cboSucursal.SelectedValue = FrmPrincipal.equipoGlobal.IdSucursal
         cboSucursal.Enabled = FrmPrincipal.bolSeleccionaSucursal
         dtListaEstado.Clear()
@@ -102,7 +102,7 @@ Public Class FrmBusquedaProforma
         cboEstado.DisplayMember = "Descripcion"
         cboEstado.DataSource = dtListaEstado
         cboEstado.SelectedValue = 0
-    End Function
+    End Sub
 #End Region
 
 #Region "Eventos Controles"
@@ -158,7 +158,7 @@ Public Class FrmBusquedaProforma
             cboEstado.Visible = bolIncluyeEstado
             lblEstado.Visible = bolIncluyeEstado
             EstablecerPropiedadesDataGridView()
-            Await CargarCombos()
+            CargarCombos()
             Await ValidarCantidadProformas()
             intIndiceDePagina = 1
             Await ActualizarDatos(intIndiceDePagina)

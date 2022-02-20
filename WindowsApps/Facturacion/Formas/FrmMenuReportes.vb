@@ -1,11 +1,12 @@
-﻿Imports System.Collections.Generic
-Imports LeandroSoftware.Core.TiposComunes
-Imports LeandroSoftware.Core.Dominio.Entidades
-Imports Microsoft.Reporting.WinForms
+﻿Imports Microsoft.Reporting.WinForms
 Imports System.Reflection
 Imports System.IO
-Imports System.Threading.Tasks
 Imports LeandroSoftware.ClienteWCF
+Imports LeandroSoftware.Common.DatosComunes
+Imports LeandroSoftware.Common.Dominio.Entidades
+Imports LeandroSoftware.Common.Constantes
+Imports System.Threading.Tasks
+Imports System.Collections.Generic
 
 Public Class FrmMenuReportes
 #Region "Variables"
@@ -17,13 +18,13 @@ Public Class FrmMenuReportes
 #End Region
 
 #Region "Métodos"
-    Private Async Function CargarCombos() As Task
+    Private Sub CargarCombos()
         cboSucursal.ValueMember = "Id"
         cboSucursal.DisplayMember = "Descripcion"
-        cboSucursal.DataSource = Await Puntoventa.ObtenerListadoSucursales(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+        cboSucursal.DataSource = FrmPrincipal.listaSucursales
         cboSucursal.SelectedValue = FrmPrincipal.equipoGlobal.IdSucursal
         cboSucursal.Enabled = FrmPrincipal.bolSeleccionaSucursal
-    End Function
+    End Sub
 #End Region
 
 #Region "Eventos Controles"
@@ -33,7 +34,7 @@ Public Class FrmMenuReportes
 
     Private Async Sub FrmMenuReportes_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
-            Await CargarCombos()
+            CargarCombos()
             FechaInicio.Text = Date.Now.Day & "/" & Date.Now.Month & "/" & Date.Now.Year
             FechaFinal.Text = Date.Now.Day & "/" & Date.Now.Month & "/" & Date.Now.Year
         Catch ex As Exception

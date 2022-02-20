@@ -1,7 +1,9 @@
-Imports LeandroSoftware.Core.Dominio.Entidades
+Imports LeandroSoftware.Common.Dominio.Entidades
 Imports System.Threading.Tasks
 Imports LeandroSoftware.ClienteWCF
 Imports System.Text.RegularExpressions
+Imports System.Linq
+Imports LeandroSoftware.Common.Constantes
 
 Public Class FrmFacturaCompra
 #Region "Variables"
@@ -163,7 +165,7 @@ Public Class FrmFacturaCompra
         cboBarrio.DataSource = Await Puntoventa.ObtenerListadoBarrios(IdProvincia, IdCanton, IdDistrito, FrmPrincipal.usuarioGlobal.Token)
         cboTipoImpuesto.ValueMember = "Id"
         cboTipoImpuesto.DisplayMember = "Descripcion"
-        cboTipoImpuesto.DataSource = Await Puntoventa.ObtenerListadoTipoImpuesto(FrmPrincipal.usuarioGlobal.Token)
+        cboTipoImpuesto.DataSource = FrmPrincipal.listaTipoImpuesto
     End Function
 
     Private Async Function CargarCombos() As Task
@@ -174,13 +176,13 @@ Public Class FrmFacturaCompra
         Next
         cboTipoIdentificacion.ValueMember = "Id"
         cboTipoIdentificacion.DisplayMember = "Descripcion"
-        cboTipoIdentificacion.DataSource = Await Puntoventa.ObtenerListadoTipoIdentificacion(FrmPrincipal.usuarioGlobal.Token)
+        cboTipoIdentificacion.DataSource = FrmPrincipal.listaTipoIdentificacion
         cboProvincia.ValueMember = "Id"
         cboProvincia.DisplayMember = "Descripcion"
         cboProvincia.DataSource = Await Puntoventa.ObtenerListadoProvincias(FrmPrincipal.usuarioGlobal.Token)
         cboTipoExoneracion.ValueMember = "Id"
         cboTipoExoneracion.DisplayMember = "Descripcion"
-        cboTipoExoneracion.DataSource = Await Puntoventa.ObtenerListadoTipoExoneracion(FrmPrincipal.usuarioGlobal.Token)
+        cboTipoExoneracion.DataSource = FrmPrincipal.listaTipoExoneracion
     End Function
 #End Region
 
@@ -217,7 +219,7 @@ Public Class FrmFacturaCompra
             txtPorcentajeExoneracion.Text = "0"
             bolReady = True
             txtCantidad.Text = "1"
-            cboTipoImpuesto.SelectedValue = 8
+            cboTipoImpuesto.SelectedValue = StaticValoresPorDefecto.TasaImpuesto
             cboUnidadMedida.SelectedIndex = 0
             txtPrecio.Text = "0.00"
             txtSubTotal.Text = FormatNumber(0, 2)
@@ -276,7 +278,7 @@ Public Class FrmFacturaCompra
         txtTotal.Text = FormatNumber(0, 2)
         txtCantidad.Text = "1"
         txtCodigo.Text = ""
-        cboTipoImpuesto.SelectedValue = 8
+        cboTipoImpuesto.SelectedValue = StaticValoresPorDefecto.TasaImpuesto
         txtDescripcion.Text = ""
         cboUnidadMedida.SelectedIndex = 0
         txtPrecio.Text = "0.00"
@@ -400,14 +402,13 @@ Public Class FrmFacturaCompra
         MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
     End Sub
 
-    Private Async Sub BtnInsertar_Click(sender As Object, e As EventArgs) Handles btnInsertar.Click
+    Private Sub BtnInsertar_Click(sender As Object, e As EventArgs) Handles btnInsertar.Click
         If txtCantidad.Text <> "" And txtCodigo.Text <> "" And txtDescripcion.Text <> "" And txtPrecio.Text <> "" Then
             If txtCantidad.Text = "0" Then
                 MessageBox.Show("La cantidad no puede ser 0. Por favor verifique la información. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End If
-            Dim parametroImpuesto As ParametroImpuesto = Await Puntoventa.ObtenerParametroImpuesto(cboTipoImpuesto.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
-            CargarLineaDetalleFacturaCompra(txtCantidad.Text, txtCodigo.Text, txtDescripcion.Text, cboTipoImpuesto.SelectedValue, parametroImpuesto.TasaImpuesto, cboUnidadMedida.Text, txtPrecio.Text)
-            cboTipoImpuesto.SelectedValue = 8
+            CargarLineaDetalleFacturaCompra(txtCantidad.Text, txtCodigo.Text, txtDescripcion.Text, cboTipoImpuesto.SelectedValue, FrmPrincipal.ObtenerTarifaImpuesto(cboTipoImpuesto.SelectedValue), cboUnidadMedida.Text, txtPrecio.Text)
+            cboTipoImpuesto.SelectedValue = StaticValoresPorDefecto.TasaImpuesto
             txtCantidad.Text = ""
             txtCodigo.Text = ""
             txtDescripcion.Text = ""

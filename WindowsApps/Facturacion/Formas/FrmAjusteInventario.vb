@@ -1,7 +1,8 @@
 Imports System.Threading.Tasks
 Imports LeandroSoftware.ClienteWCF
-Imports LeandroSoftware.Core.Dominio.Entidades
-Imports LeandroSoftware.Core.TiposComunes
+Imports LeandroSoftware.Common.Dominio.Entidades
+Imports LeandroSoftware.Common.DatosComunes
+Imports LeandroSoftware.Common.Constantes
 
 Public Class FrmAjusteInventario
 #Region "Variables"
@@ -120,7 +121,6 @@ Public Class FrmAjusteInventario
             txtCodigo.Focus()
             Exit Sub
         Else
-            Dim decTasaImpuesto As Decimal = producto.ParametroImpuesto.TasaImpuesto
             txtCodigo.Text = producto.Codigo
             If txtCantidad.Text = "" Then txtCantidad.Text = "1"
             txtDescripcion.Text = producto.Descripcion
@@ -139,13 +139,13 @@ Public Class FrmAjusteInventario
         txtCodigo.AutoCompleteSource = AutoCompleteSource.CustomSource
     End Sub
 
-    Private Async Function CargarCombos() As Task
+    Private Sub CargarCombos()
         cboSucursal.ValueMember = "Id"
         cboSucursal.DisplayMember = "Descripcion"
-        cboSucursal.DataSource = Await Puntoventa.ObtenerListadoSucursales(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+        cboSucursal.DataSource = FrmPrincipal.listaSucursales
         cboSucursal.SelectedValue = FrmPrincipal.equipoGlobal.IdSucursal
         cboSucursal.Enabled = FrmPrincipal.bolSeleccionaSucursal
-    End Function
+    End Sub
 #End Region
 
 #Region "Eventos Controles"
@@ -190,7 +190,7 @@ Public Class FrmAjusteInventario
             If FrmPrincipal.empresaGlobal.AutoCompletaProducto Then CargarAutoCompletarProducto()
             btnBusProd.Enabled = True
             grdDetalleAjusteInventario.DataSource = dtbDetalleAjusteInventario
-            Await CargarCombos()
+            CargarCombos()
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()

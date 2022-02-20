@@ -1,9 +1,9 @@
 Imports System.Collections.Generic
-Imports LeandroSoftware.Core.TiposComunes
 Imports Microsoft.Reporting.WinForms
 Imports System.Reflection
 Imports System.IO
 Imports LeandroSoftware.ClienteWCF
+Imports LeandroSoftware.Common.DatosComunes
 
 Public Class FrmInventario
 #Region "Variables"
@@ -90,7 +90,7 @@ Public Class FrmInventario
         cboLinea.SelectedValue = 0
         cboSucursal.ValueMember = "Id"
         cboSucursal.DisplayMember = "Descripcion"
-        cboSucursal.DataSource = Await Puntoventa.ObtenerListadoSucursales(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+        cboSucursal.DataSource = FrmPrincipal.listaSucursales
         cboSucursal.SelectedValue = FrmPrincipal.equipoGlobal.IdSucursal
     End Function
 

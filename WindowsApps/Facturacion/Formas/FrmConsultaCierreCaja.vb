@@ -1,7 +1,7 @@
 Imports System.Collections.Generic
 Imports System.Linq
-Imports LeandroSoftware.Core.TiposComunes
-Imports LeandroSoftware.Core.Dominio.Entidades
+Imports LeandroSoftware.Common.DatosComunes
+Imports LeandroSoftware.Common.Dominio.Entidades
 Imports Microsoft.Reporting.WinForms
 Imports System.IO
 Imports System.Reflection

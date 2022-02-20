@@ -1,5 +1,5 @@
 Imports System.Threading.Tasks
-Imports LeandroSoftware.Core.Dominio.Entidades
+Imports LeandroSoftware.Common.Dominio.Entidades
 Imports System.IO
 Imports LeandroSoftware.ClienteWCF
 Imports System.Collections.Generic
@@ -38,7 +38,7 @@ Public Class FrmEmpresa
     Private Async Function CargarCombos() As Task
         cboTipoIdentificacion.ValueMember = "Id"
         cboTipoIdentificacion.DisplayMember = "Descripcion"
-        cboTipoIdentificacion.DataSource = Await Puntoventa.ObtenerListadoTipoIdentificacion(FrmPrincipal.usuarioGlobal.Token)
+        cboTipoIdentificacion.DataSource = FrmPrincipal.listaTipoIdentificacion
         cboProvincia.ValueMember = "Id"
         cboProvincia.DisplayMember = "Descripcion"
         cboProvincia.DataSource = Await Puntoventa.ObtenerListadoProvincias(FrmPrincipal.usuarioGlobal.Token)

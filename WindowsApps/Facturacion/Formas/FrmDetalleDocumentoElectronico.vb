@@ -1,10 +1,11 @@
 ﻿Imports System.IO
 Imports System.Xml
-Imports LeandroSoftware.Core.Dominio.Entidades
 Imports System.Text
-Imports System.Threading.Tasks
-Imports LeandroSoftware.Core.TiposComunes
 Imports LeandroSoftware.ClienteWCF
+Imports LeandroSoftware.Common.DatosComunes
+Imports LeandroSoftware.Common.Dominio.Entidades
+Imports LeandroSoftware.Common.Constantes
+Imports System.Threading.Tasks
 
 Public Class FrmDetalleDocumentoElectronico
 #Region "Variables"
@@ -95,13 +96,13 @@ Public Class FrmDetalleDocumentoElectronico
         End If
     End Function
 
-    Private Async Function CargarCombos() As Task
+    Private Sub CargarCombos()
         cboSucursal.ValueMember = "Id"
         cboSucursal.DisplayMember = "Descripcion"
-        cboSucursal.DataSource = Await Puntoventa.ObtenerListadoSucursales(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+        cboSucursal.DataSource = FrmPrincipal.listaSucursales
         cboSucursal.SelectedValue = FrmPrincipal.equipoGlobal.IdSucursal
         cboSucursal.Enabled = FrmPrincipal.bolSeleccionaSucursal
-    End Function
+    End Sub
 
     Private Async Function ActualizarDatos() As Task
         Await ObtenerCantidadDocumentosProcesados()
@@ -156,7 +157,7 @@ Public Class FrmDetalleDocumentoElectronico
 
     Private Async Sub FrmDetalleDocumentoElectronico_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
-            Await CargarCombos()
+            CargarCombos()
             rtxDetalleRespuesta.Visible = False
             EstablecerPropiedadesDataGridView()
             Await ActualizarDatos()

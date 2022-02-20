@@ -1,7 +1,7 @@
 ﻿Imports System.Collections.Generic
-Imports LeandroSoftware.Core.Dominio.Entidades
+Imports LeandroSoftware.Common.Dominio.Entidades
 Imports System.Drawing.Printing
-Imports LeandroSoftware.Core.TiposComunes
+Imports LeandroSoftware.Common.DatosComunes
 
 Public Class ModuloImpresion
 #Region "Variables"
@@ -183,7 +183,7 @@ Public Class ModuloImpresion
             rec.Height = 20
             rec.X = paperWith * linea.intPosicionX / 100
             rec.Y = positionY
-            Dim intFontSize = linea.intFuente / 80 * charCount
+            Dim intFontSize As Integer = linea.intFuente / 80 * charCount
             graphics.DrawString(linea.strTexto, New Font("Lucida Console", intFontSize, fontStyle), New SolidBrush(Color.Black), rec, sf)
             positionY += (20 * linea.intSaltos)
             i += 1

@@ -1,6 +1,6 @@
 Imports LeandroSoftware.ClienteWCF
-Imports LeandroSoftware.Core.Dominio.Entidades
-Imports LeandroSoftware.Core.Utilitario
+Imports LeandroSoftware.Common.Dominio.Entidades
+Imports LeandroSoftware.Common.Seguridad
 
 Public Class FrmActualizarClave
 #Region "Eventos Controles"
@@ -26,7 +26,7 @@ Public Class FrmActualizarClave
     Private Async Sub CmdAceptar_Click(sender As Object, e As EventArgs) Handles CmdAceptar.Click
         If TxtClave1.Text = TxtClave2.Text Then
             Try
-                Dim strClaveEncriptada = Utilitario.EncriptarDatos(TxtClave1.Text)
+                Dim strClaveEncriptada = Encriptador.EncriptarDatos(TxtClave1.Text)
                 Dim usuario As Usuario = Await Puntoventa.ActualizarClaveUsuario(FrmPrincipal.usuarioGlobal.IdUsuario, strClaveEncriptada, FrmPrincipal.usuarioGlobal.Token)
                 FrmPrincipal.usuarioGlobal = usuario
                 MessageBox.Show("Transacción completa exitósamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)

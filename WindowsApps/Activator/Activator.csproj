@@ -179,15 +179,5 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Core\Core\Core.csproj">
-      <Project>{fa3c5bce-3db6-486e-b16b-8b7f76eef63f}</Project>
-      <Name>Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Core\Dominio\Dominio.csproj">
-      <Project>{74E3681E-1245-4268-ADB9-D76DA18B2FE0}</Project>
-      <Name>Dominio</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -85,7 +85,7 @@ Public Class FrmBusquedaProducto
         cboLinea.SelectedValue = 0
         cboSucursal.ValueMember = "Id"
         cboSucursal.DisplayMember = "Descripcion"
-        cboSucursal.DataSource = Await Puntoventa.ObtenerListadoSucursales(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+        cboSucursal.DataSource = FrmPrincipal.listaSucursales
         cboSucursal.SelectedValue = intIdSucursal
         cboSucursal.Enabled = True
     End Function

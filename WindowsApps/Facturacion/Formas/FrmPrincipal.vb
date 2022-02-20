@@ -1,11 +1,11 @@
 Imports System.Threading
 Imports System.Configuration
-Imports LeandroSoftware.Core.Dominio.Entidades
+Imports LeandroSoftware.ClienteWCF
+Imports LeandroSoftware.Common.DatosComunes
+Imports LeandroSoftware.Common.Dominio.Entidades
+Imports LeandroSoftware.Common.Seguridad
 Imports System.Collections.Generic
 Imports System.Linq
-Imports LeandroSoftware.Core.Utilitario
-Imports LeandroSoftware.Core.TiposComunes
-Imports LeandroSoftware.ClienteWCF
 
 Public Class FrmPrincipal
 #Region "Variables"
@@ -36,6 +36,16 @@ Public Class FrmPrincipal
     Public productoImpuestoServicio As Producto
     Public bolDescargaFinalizada As Boolean = False
     Public decDescAutorizado As Decimal
+    'Parametros generales
+    Public listaTipoIdentificacion As List(Of LlaveDescripcion)
+    Public listaFormaPagoCliente As List(Of LlaveDescripcion)
+    Public listaFormaPagoEmpresa As List(Of LlaveDescripcion)
+    Public listaTipoProducto As List(Of LlaveDescripcion)
+    Public listaTipoImpuesto As List(Of LlaveDescripcionValor)
+    Public listaTipoMoneda As List(Of LlaveDescripcion)
+    Public listaCondicionVenta As List(Of LlaveDescripcion)
+    Public listaTipoExoneracion As List(Of LlaveDescripcion)
+    Public listaSucursales As List(Of LlaveDescripcion)
 #End Region
 
 #Region "Métodos"
@@ -107,6 +117,14 @@ Public Class FrmPrincipal
             End If
         End If
         Return True
+    End Function
+
+    Public Function ObtenerTarifaImpuesto(intIdImpuesto As Integer) As Decimal
+        Return listaTipoImpuesto.FirstOrDefault(Function(x) x.Id = intIdImpuesto).Valor
+    End Function
+
+    Public Function ObtenerDescripcionFormaPagoCliente(intIdFormaPago) As String
+        Return listaFormaPagoCliente.FirstOrDefault(Function(x) x.Id = intIdFormaPago).Descripcion
     End Function
 #End Region
 
@@ -503,7 +521,7 @@ Public Class FrmPrincipal
             formDescarga.ShowDialog()
             If bolDescargaFinalizada Then Application.Exit()
         End If
-        Dim strIdentificadoEquipoLocal = Utilitario.ObtenerIdentificadorEquipo()
+        Dim strIdentificadoEquipoLocal = Puntoventa.ObtenerIdentificadorEquipo()
         If bolEsAdministrador Then
             listaEmpresa = Await Puntoventa.ObtenerListadoEmpresasAdministrador()
         Else
@@ -547,7 +565,7 @@ Public Class FrmPrincipal
             Else
                 picLoader.Visible = True
                 Try
-                    Dim strEncryptedPassword As String = Utilitario.EncriptarDatos(strContrasena)
+                    Dim strEncryptedPassword As String = Encriptador.EncriptarDatos(strContrasena)
                     empresa = Await Puntoventa.ValidarCredenciales(strCodigoUsuario, strEncryptedPassword, strIdEmpresa, strIdentificadoEquipoLocal)
                 Catch ex As Exception
                     MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -559,6 +577,15 @@ Public Class FrmPrincipal
         empresaGlobal = empresa
         equipoGlobal = empresa.EquipoRegistrado
         decTipoCambioDolar = Await Puntoventa.ObtenerTipoCambioDolar(usuarioGlobal.Token)
+        listaTipoIdentificacion = Await Puntoventa.ObtenerListadoTipoIdentificacion(usuarioGlobal.Token)
+        listaFormaPagoCliente = Await Puntoventa.ObtenerListadoFormaPagoCliente(usuarioGlobal.Token)
+        listaFormaPagoEmpresa = Await Puntoventa.ObtenerListadoFormaPagoEmpresa(usuarioGlobal.Token)
+        listaTipoProducto = Await Puntoventa.ObtenerListadoTipoProducto(usuarioGlobal.CodigoUsuario, usuarioGlobal.Token)
+        listaTipoImpuesto = Await Puntoventa.ObtenerListadoTipoImpuesto(usuarioGlobal.Token)
+        listaTipoMoneda = Await Puntoventa.ObtenerListadoTipoMoneda(usuarioGlobal.Token)
+        listaCondicionVenta = Await Puntoventa.ObtenerListadoCondicionVenta(usuarioGlobal.Token)
+        listaTipoExoneracion = Await Puntoventa.ObtenerListadoTipoExoneracion(usuarioGlobal.Token)
+        listaSucursales = Await Puntoventa.ObtenerListadoSucursales(empresaGlobal.IdEmpresa, usuarioGlobal.Token)
         If empresaGlobal.AutoCompletaProducto Then
             Dim intTotalRegistros As Integer = Await Puntoventa.ObtenerTotalListaProductos(empresa.IdEmpresa, equipoGlobal.IdSucursal, True, True, False, False, 0, "", "", "", usuarioGlobal.Token)
             listaProductos = Await Puntoventa.ObtenerListadoProductos(empresa.IdEmpresa, equipoGlobal.IdSucursal, 1, intTotalRegistros, True, True, False, False, 0, "", "", "", usuarioGlobal.Token)
