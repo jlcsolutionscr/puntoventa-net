@@ -627,12 +627,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         {
             try
             {
-                Compra compra = dbContext.CompraRepository.Include("Proveedor").Include("DetalleCompra.Producto.TipoProducto").Include("DesglosePagoCompra.FormaPago").Include("DesglosePagoCompra.TipoMoneda").FirstOrDefault(x => x.IdCompra == intIdCompra);
-                foreach (DetalleCompra detalle in compra.DetalleCompra)
-                {
-                    detalle.Compra = null;
-                    detalle.Producto.Proveedor = null;
-                }
+                Compra compra = dbContext.CompraRepository.Include("Proveedor").Include("DetalleCompra.Producto").Include("DesglosePagoCompra").FirstOrDefault(x => x.IdCompra == intIdCompra);
                 foreach (DesglosePagoCompra desglosePago in compra.DesglosePagoCompra)
                 {
                     CuentaBanco banco = dbContext.CuentaBancoRepository.AsNoTracking().Where(x => x.IdCuenta == desglosePago.IdCuentaBanco).FirstOrDefault();
@@ -640,9 +635,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         desglosePago.DescripcionCuenta = banco.Descripcion;
                     else
                         desglosePago.DescripcionCuenta = "NO INFORMATION AVAILABLE";
-                    desglosePago.Compra = null;
                 }
-                compra.Proveedor.Compra = null;
                 return compra;
             }
             catch (Exception ex)
@@ -774,7 +767,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         {
             try
             {
-                return dbContext.OrdenRepository.Include("Proveedor").Include("DetalleOrdenCompra.Producto.TipoProducto").FirstOrDefault(x => x.IdOrdenCompra == intIdOrdenCompra);
+                return dbContext.OrdenRepository.Include("Proveedor").Include("DetalleOrdenCompra.Producto").FirstOrDefault(x => x.IdOrdenCompra == intIdOrdenCompra);
             }
             catch (Exception ex)
             {

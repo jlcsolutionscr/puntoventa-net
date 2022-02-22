@@ -1234,10 +1234,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             try
             {
                 CierreCaja cierre = dbContext.CierreCajaRepository.Include("DetalleMovimientoCierreCaja").Include("DetalleEfectivoCierreCaja").FirstOrDefault(x => x.IdCierre == intIdCierreCaja);
-                foreach (var item in cierre.DetalleMovimientoCierreCaja)
-                    item.CierreCaja = null;
-                foreach (var item in cierre.DetalleEfectivoCierreCaja)
-                    item.CierreCaja = null;
                 return cierre;
             }
             catch (Exception ex)

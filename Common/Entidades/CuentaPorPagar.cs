@@ -20,7 +20,5 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public int IdAsiento { get; set; }
         public bool Nulo { get; set; }
         public int? IdAnuladoPor { get; set; }
-
-        public Usuario Usuario { get; set; }
     }
 }

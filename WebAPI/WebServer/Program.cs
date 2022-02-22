@@ -4,6 +4,7 @@ using LeandroSoftware.ServicioWeb;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using static System.Net.Mime.MediaTypeNames;
+using Newtonsoft.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,10 +38,10 @@ app.UseExceptionHandler(c => c.Run(async context =>
     var exception = context.Features
         .Get<IExceptionHandlerPathFeature>()
         .Error;
-    context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-    context.Response.ContentType = Text.Plain;
-
-    await context.Response.WriteAsync(exception.Message);
+    context.Response.StatusCode = StatusCodes.Status303SeeOther;
+    context.Response.ContentType = "application/json";
+    var jsonString = JsonConvert.SerializeObject(exception.Message);
+    await context.Response.WriteAsync(jsonString);
 }));
 
 app.Run();

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace LeandroSoftware.Common.Dominio.Entidades
 {
@@ -15,7 +16,7 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public string Celular { get; set; }
         public string Fax { get; set; }
         public string CorreoElectronico { get; set; }
-        public int IdVendedor { get; set; }
+        public int? IdVendedor { get; set; }
         public int IdTipoPrecio { get; set; }
         public bool AplicaTasaDiferenciada { get; set; }
         public int IdImpuesto { get; set; }
@@ -25,7 +26,6 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public DateTime FechaEmisionDoc { get; set; }
         public int PorcentajeExoneracion { get; set; }
         public bool PermiteCredito { get; set; }
-
         public Vendedor Vendedor { get; set; }
     }
 }

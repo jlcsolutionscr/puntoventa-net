@@ -10,6 +10,7 @@ namespace LeandroSoftwarbuilder.ServicioWeb.Dominio.Entidades
         {
             builder.ToTable("detallefactura");
             builder.HasKey(p => p.IdConsecutivo);
+            builder.HasOne(p => p.Producto).WithMany().HasForeignKey(p => p.IdProducto);
         }
     }
 }

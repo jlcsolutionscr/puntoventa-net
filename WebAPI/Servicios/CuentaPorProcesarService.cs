@@ -900,8 +900,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             try
             {
                 MovimientoApartado movimiento = dbContext.MovimientoApartadoRepository.Include("Apartado").Include("DesglosePagoMovimientoApartado.FormaPago").FirstOrDefault(x => x.IdMovApartado == intIdMovimiento);
-                foreach (var detalle in movimiento.DesglosePagoMovimientoApartado)
-                    detalle.MovimientoApartado = null;
                 return movimiento;
             }
             catch (Exception ex)
@@ -1063,8 +1061,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             try
             {
                 MovimientoOrdenServicio movimiento = dbContext.MovimientoOrdenServicioRepository.Include("OrdenServicio").Include("DesglosePagoMovimientoOrdenServicio.FormaPago").FirstOrDefault(x => x.IdMovOrden == intIdMovimiento);
-                foreach (var detalle in movimiento.DesglosePagoMovimientoOrdenServicio)
-                    detalle.MovimientoOrdenServicio = null;
                 return movimiento;
             }
             catch (Exception ex)

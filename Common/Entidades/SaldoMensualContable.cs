@@ -8,7 +8,5 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public decimal SaldoFinMes { get; set; }
         public decimal TotalDebito { get; set; }
         public decimal TotalCredito { get; set; }
-
-        public CatalogoContable CatalogoContable { get; set; }
     }
 }

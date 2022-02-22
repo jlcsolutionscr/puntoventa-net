@@ -15,7 +15,6 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public int UltimoDocMR { get; set; }
         public int UltimoDocFEC { get; set; }
         public int IdTipoDispositivo { get; set; }
-
         public SucursalPorEmpresa SucursalPorEmpresa { get; set; }
     }
 }

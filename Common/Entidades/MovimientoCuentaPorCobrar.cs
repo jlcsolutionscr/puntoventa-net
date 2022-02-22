@@ -5,11 +5,6 @@ namespace LeandroSoftware.Common.Dominio.Entidades
 {
     public partial class MovimientoCuentaPorCobrar
     {
-        public MovimientoCuentaPorCobrar()
-        {
-            DesglosePagoMovimientoCuentaPorCobrar = new HashSet<DesglosePagoMovimientoCuentaPorCobrar>();
-        }
-
         public int IdEmpresa { get; set; }
         public int IdSucursal { get; set; }
         public int IdMovCxC { get; set; }
@@ -28,9 +23,7 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public int? IdAnuladoPor { get; set; }
         public string MotivoAnulacion { get; set; }
         public bool Procesado { get; set; }
-
-        public Usuario Usuario { get; set; }
         public CuentaPorCobrar CuentaPorCobrar { get; set; }
-        public ICollection<DesglosePagoMovimientoCuentaPorCobrar> DesglosePagoMovimientoCuentaPorCobrar { get; set; }
+        public List<DesglosePagoMovimientoCuentaPorCobrar> DesglosePagoMovimientoCuentaPorCobrar { get; set; }
     }
 }

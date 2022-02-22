@@ -4,8 +4,6 @@ namespace LeandroSoftware.Common.Dominio.Entidades
     {
         public int IdUsuario { get; set; }
         public int IdRole { get; set; }
-
-        public Usuario Usuario { get; set; }
         public Role Role { get; set; }
     }
 }

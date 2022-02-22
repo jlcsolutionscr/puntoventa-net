@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace LeandroSoftware.Common.Dominio.Entidades
 {
     public partial class SucursalPorEmpresa
@@ -12,5 +14,6 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public int ConsecProforma { get; set; }
         public int ConsecOrdenServicio { get; set; }
         public int ConsecApartado { get; set; }
+        public List<TerminalPorSucursal> TerminalPorSucursal { get; set; }
     }
 }

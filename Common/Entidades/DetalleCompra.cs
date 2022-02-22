@@ -12,8 +12,6 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public decimal PorcentajeIVA { get; set; }
         public decimal PrecioVenta { get; set; }
         public decimal PrecioVentaAnt { get; set; }
-
-        public Compra Compra { get; set; }
         public Producto Producto { get; set; }
     }
 }

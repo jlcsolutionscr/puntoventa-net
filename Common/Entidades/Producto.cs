@@ -4,10 +4,6 @@ namespace LeandroSoftware.Common.Dominio.Entidades
 {
     public partial class Producto
     {
-        public Producto()
-        {
-            MovimientoProducto = new HashSet<MovimientoProducto>();
-        }
         public int IdEmpresa { get; set; }
         public int IdProducto { get; set; }
         public int Tipo { get; set; }
@@ -32,9 +28,7 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public bool ModificaPrecio { get; set; }
         public bool Activo { get; set; }
         public decimal Existencias { get; set; }
-
         public Linea Linea { get; set; }
-        public Proveedor Proveedor { get; set; }
-        public ICollection<MovimientoProducto> MovimientoProducto { get; set; }
+        public List<MovimientoProducto> MovimientoProducto { get; set; }
     }
 }

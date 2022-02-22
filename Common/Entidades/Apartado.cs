@@ -5,12 +5,6 @@ namespace LeandroSoftware.Common.Dominio.Entidades
 {
     public partial class Apartado
     {
-        public Apartado()
-        {
-            DetalleApartado = new HashSet<DetalleApartado>();
-            DesglosePagoApartado = new HashSet<DesglosePagoApartado>();
-        }
-
         public int IdEmpresa { get; set; }
         public int IdSucursal { get; set; }
         public int IdApartado { get; set; }
@@ -38,9 +32,8 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public bool Procesado { get; set; }
 
         public Cliente Cliente { get; set; }
-        public Usuario Usuario { get; set; }
         public Vendedor Vendedor { get; set; }
-        public ICollection<DetalleApartado> DetalleApartado { get; set; }
-        public ICollection<DesglosePagoApartado> DesglosePagoApartado { get; set; }
+        public IList<DetalleApartado> DetalleApartado { get; set; }
+        public IList<DesglosePagoApartado> DesglosePagoApartado { get; set; }
     }
 }

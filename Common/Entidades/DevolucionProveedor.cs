@@ -5,12 +5,6 @@ namespace LeandroSoftware.Common.Dominio.Entidades
 {
     public partial class DevolucionProveedor
     {
-        public DevolucionProveedor()
-        {
-            DetalleDevolucionProveedor = new HashSet<DetalleDevolucionProveedor>();
-            DesglosePagoDevolucionProveedor = new HashSet<DesglosePagoDevolucionProveedor>();
-        }
-
         public int IdEmpresa { get; set; }
         public int IdDevolucion { get; set; }
         public int IdCompra { get; set; }
@@ -28,10 +22,8 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public bool Procesado { get; set; }
         public string NombreProveedor { get { if (Proveedor == null) return ""; else return Proveedor.Nombre; } }
 
-        public Compra Compra { get; set; }
-        public Usuario Usuario { get; set; }
         public Proveedor Proveedor { get; set; }
-        public ICollection<DetalleDevolucionProveedor> DetalleDevolucionProveedor { get; set; }
-        public ICollection<DesglosePagoDevolucionProveedor> DesglosePagoDevolucionProveedor { get; set; }
+        public List<DetalleDevolucionProveedor> DetalleDevolucionProveedor { get; set; }
+        public List<DesglosePagoDevolucionProveedor> DesglosePagoDevolucionProveedor { get; set; }
     }
 }

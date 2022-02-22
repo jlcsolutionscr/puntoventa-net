@@ -5,11 +5,6 @@ namespace LeandroSoftware.Common.Dominio.Entidades
 {
     public partial class Asiento
     {
-        public Asiento()
-        {
-            DetalleAsiento = new HashSet<DetalleAsiento>();
-        }
-
         public int IdEmpresa { get; set; }
         public int IdAsiento { get; set; }
         public int IdUsuario { get; set; }
@@ -21,6 +16,6 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public bool Nulo { get; set; }
         public int? IdAnuladoPor { get; set; }
 
-        public ICollection<DetalleAsiento> DetalleAsiento { get; set; }
+        public List<DetalleAsiento> DetalleAsiento { get; set; }
     }
 }

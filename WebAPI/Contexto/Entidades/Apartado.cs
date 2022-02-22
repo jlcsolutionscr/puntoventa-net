@@ -11,6 +11,8 @@ namespace LeandroSoftwarbuilder.ServicioWeb.Dominio.Entidades
             builder.ToTable("apartado");
             builder.HasKey(p => p.IdApartado);
             builder.Ignore(p => p.Total);
+            builder.HasOne(p => p.Cliente).WithMany().HasForeignKey(p => p.IdCliente);
+            builder.HasOne(p => p.Vendedor).WithMany().HasForeignKey(p => p.IdVendedor);
         }
     }
 }

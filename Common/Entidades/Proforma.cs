@@ -5,11 +5,6 @@ namespace LeandroSoftware.Common.Dominio.Entidades
 {
     public partial class Proforma
     {
-        public Proforma()
-        {
-            DetalleProforma = new HashSet<DetalleProforma>();
-        }
-
         public int IdEmpresa { get; set; }
         public int IdSucursal { get; set; }
         public int IdProforma { get; set; }
@@ -34,8 +29,7 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public bool Aplicado { get; set; }
 
         public Cliente Cliente { get; set; }
-        public Usuario Usuario { get; set; }
         public Vendedor Vendedor { get; set; }
-        public ICollection<DetalleProforma> DetalleProforma { get; set; }
+        public List<DetalleProforma> DetalleProforma { get; set; }
     }
 }

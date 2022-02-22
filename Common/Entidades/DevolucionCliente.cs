@@ -5,11 +5,6 @@ namespace LeandroSoftware.Common.Dominio.Entidades
 {
     public partial class DevolucionCliente
     {
-        public DevolucionCliente()
-        {
-            DetalleDevolucionCliente = new HashSet<DetalleDevolucionCliente>();
-        }
-
         public int IdEmpresa { get; set; }
         public int IdSucursal { get; set; }
         public int IdDevolucion { get; set; }
@@ -32,10 +27,8 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public string IdDocElectronico { get; set; }
         public string IdDocElectronicoRev { get; set; }
         public string NombreCliente { get { if (Factura == null) return ""; else return Factura.Cliente.Nombre; } }
-
-        public Factura Factura { get; set; }
-        public Usuario Usuario { get; set; }
         public Cliente Cliente { get; set; }
-        public ICollection<DetalleDevolucionCliente> DetalleDevolucionCliente { get; set; }
+        public Factura Factura { get; set; }
+        public List<DetalleDevolucionCliente> DetalleDevolucionCliente { get; set; }
     }
 }

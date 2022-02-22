@@ -11,6 +11,7 @@ namespace LeandroSoftwarbuilder.ServicioWeb.Dominio.Entidades
             builder.ToTable("asiento");
             builder.HasKey(p => p.IdAsiento);
             builder.Ignore(p => p.Total);
+            builder.HasMany(p => p.DetalleAsiento).WithOne().HasForeignKey(p => p.IdAsiento);
         }
     }
 }

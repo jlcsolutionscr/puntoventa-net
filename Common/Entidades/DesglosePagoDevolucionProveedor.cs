@@ -12,7 +12,5 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public string NroMovimiento { get; set; }
         public decimal MontoLocal { get; set; }
         public decimal TipoDeCambio { get; set; }
-
-        public DevolucionProveedor DevolucionProveedor { get; set; }
     }
 }

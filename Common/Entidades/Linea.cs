@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace LeandroSoftware.Common.Dominio.Entidades
 {
     public partial class Linea

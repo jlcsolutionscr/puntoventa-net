@@ -10,6 +10,7 @@ namespace LeandroSoftwarbuilder.ServicioWeb.Dominio.Entidades
         {
             builder.ToTable("detalleajusteinventario");
             builder.HasKey(p => new { p.IdAjuste, p.IdProducto });
+            builder.HasOne(p => p.Producto).WithMany().HasForeignKey(p => p.IdProducto);
         }
     }
 }

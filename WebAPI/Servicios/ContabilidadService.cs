@@ -875,13 +875,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             {
                                 decTotalMercancia += decTotalPorLinea;
                                 decTotalCostoVentas += producto.PrecioCosto * detalleFactura.Cantidad;
-                                int intExiste = dtbInventarios.Rows.IndexOf(dtbInventarios.Rows.Find(producto.Linea.IdLinea));
+                                int intExiste = dtbInventarios.Rows.IndexOf(dtbInventarios.Rows.Find(producto.IdLinea));
                                 if (intExiste >= 0)
                                     dtbInventarios.Rows[intExiste]["Total"] = (decimal)dtbInventarios.Rows[intExiste]["Total"] + (producto.PrecioCosto * detalleFactura.Cantidad);
                                 else
                                 {
                                     DataRow data = dtbInventarios.NewRow();
-                                    data["IdLinea"] = producto.Linea.IdLinea;
+                                    data["IdLinea"] = producto.IdLinea;
                                     data["Total"] = producto.PrecioCosto * detalleFactura.Cantidad;
                                     dtbInventarios.Rows.Add(data);
                                 }
@@ -889,13 +889,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             else
                             {
                                 decTotalServicios += decTotalPorLinea;
-                                int intExiste = dtbIngresosPorServicios.Rows.IndexOf(dtbIngresosPorServicios.Rows.Find(producto.Linea.IdLinea));
+                                int intExiste = dtbIngresosPorServicios.Rows.IndexOf(dtbIngresosPorServicios.Rows.Find(producto.IdLinea));
                                 if (intExiste >= 0)
                                     dtbIngresosPorServicios.Rows[intExiste]["Total"] = (decimal)dtbIngresosPorServicios.Rows[intExiste]["Total"] + decTotalPorLinea;
                                 else
                                 {
                                     DataRow data = dtbIngresosPorServicios.NewRow();
-                                    data["IdLinea"] = detalleFactura.Producto.Linea.IdLinea;
+                                    data["IdLinea"] = detalleFactura.Producto.IdLinea;
                                     data["Total"] = Math.Round(decTotalPorLinea, 2, MidpointRounding.AwayFromZero);
                                     dtbIngresosPorServicios.Rows.Add(data);
                                 }
@@ -1167,13 +1167,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 decimal decTotalPorLinea = detalleCompra.PrecioCosto * detalleCompra.Cantidad;
                                 decTotalPorLinea = Math.Round(decTotalPorLinea - (compra.Descuento / decSubTotalCompra * decTotalPorLinea), 2, MidpointRounding.AwayFromZero);
                                 decTotalInventario += decTotalPorLinea;
-                                int intExiste = dtbInventarios.Rows.IndexOf(dtbInventarios.Rows.Find(producto.Linea.IdLinea));
+                                int intExiste = dtbInventarios.Rows.IndexOf(dtbInventarios.Rows.Find(producto.IdLinea));
                                 if (intExiste >= 0)
                                     dtbInventarios.Rows[intExiste]["Total"] = (decimal)dtbInventarios.Rows[intExiste]["Total"] + decTotalPorLinea;
                                 else
                                 {
                                     DataRow data = dtbInventarios.NewRow();
-                                    data["IdLinea"] = producto.Linea.IdLinea;
+                                    data["IdLinea"] = producto.IdLinea;
                                     data["Total"] = decTotalPorLinea;
                                     dtbInventarios.Rows.Add(data);
                                 }

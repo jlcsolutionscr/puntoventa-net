@@ -5,11 +5,6 @@ namespace LeandroSoftware.Common.Dominio.Entidades
 {
     public partial class Traslado
     {
-        public Traslado()
-        {
-            DetalleTraslado = new HashSet<DetalleTraslado>();
-        }
-
         public int IdEmpresa { get; set; }
         public int IdTraslado { get; set; }
         public int IdUsuario { get; set; }
@@ -26,8 +21,6 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public bool Nulo { get; set; }
         public int? IdAnuladoPor { get; set; }
         public string MotivoAnulacion { get; set; }
-
-        public Usuario Usuario { get; set; }
-        public ICollection<DetalleTraslado> DetalleTraslado { get; set; }
+        public List<DetalleTraslado> DetalleTraslado { get; set; }
     }
 }

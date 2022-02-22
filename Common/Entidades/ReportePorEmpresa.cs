@@ -4,7 +4,6 @@
     {
         public int IdEmpresa { get; set; }
         public int IdReporte { get; set; }
-
         public CatalogoReporte CatalogoReporte { get; set; }
     }
 }

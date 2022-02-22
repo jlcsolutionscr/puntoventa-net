@@ -194,13 +194,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         {
                             decimal decTotalPorLinea = Math.Round(detalleTraslado.PrecioCosto * detalleTraslado.Cantidad, 2, MidpointRounding.AwayFromZero);
                             decTotalInventario += decTotalPorLinea;
-                            int intExiste = dtbInventarios.Rows.IndexOf(dtbInventarios.Rows.Find(producto.Linea.IdLinea));
+                            int intExiste = dtbInventarios.Rows.IndexOf(dtbInventarios.Rows.Find(producto.IdLinea));
                             if (intExiste >= 0)
                                 dtbInventarios.Rows[intExiste]["Total"] = (decimal)dtbInventarios.Rows[intExiste]["Total"] + decTotalPorLinea;
                             else
                             {
                                 DataRow data = dtbInventarios.NewRow();
-                                data["IdLinea"] = producto.Linea.IdLinea;
+                                data["IdLinea"] = producto.IdLinea;
                                 data["Total"] = decTotalPorLinea;
                                 dtbInventarios.Rows.Add(data);
                             }
@@ -345,13 +345,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         {
             try
             {
-                Traslado traslado = dbContext.TrasladoRepository.Include("DetalleTraslado.Producto.ParametroImpuesto").FirstOrDefault(x => x.IdTraslado == intIdTraslado);
+                Traslado traslado = dbContext.TrasladoRepository.Include("DetalleTraslado.Producto").FirstOrDefault(x => x.IdTraslado == intIdTraslado);
                 SucursalPorEmpresa sucursalOrigen = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == traslado.IdEmpresa && x.IdSucursal == traslado.IdSucursalOrigen);
                 traslado.NombreSucursalOrigen = sucursalOrigen.NombreSucursal;
                 SucursalPorEmpresa sucursalDestino = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == traslado.IdEmpresa && x.IdSucursal == traslado.IdSucursalDestino);
                 traslado.NombreSucursalDestino = sucursalDestino.NombreSucursal;
-                foreach (var detalle in traslado.DetalleTraslado)
-                    detalle.Traslado = null;
                 return traslado;
             }
             catch (Exception ex)

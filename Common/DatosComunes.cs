@@ -548,11 +548,6 @@ namespace LeandroSoftware.Common.DatosComunes
 
     public class EstructuraPDF
     {
-        public EstructuraPDF()
-        {
-            DetalleServicio = new HashSet<EstructuraPDFDetalleServicio>();
-        }
-
         public string TituloDocumento { get; set; }
         public string NombreComercial { get; set; }
         public string NombreEmpresa { get; set; }
@@ -593,7 +588,7 @@ namespace LeandroSoftware.Common.DatosComunes
         public byte[] Logotipo { get; set; }
         public byte[] PoweredByLogotipo { get; set; }
 
-        public ICollection<EstructuraPDFDetalleServicio> DetalleServicio { get; set; }
+        public List<EstructuraPDFDetalleServicio> DetalleServicio { get; set; }
     }
 
     public class EstructuraPDFDetalleServicio
@@ -607,14 +602,9 @@ namespace LeandroSoftware.Common.DatosComunes
 
     public class EstructuraListadoProductosPDF
     {
-        public EstructuraListadoProductosPDF()
-        {
-            DetalleProducto = new HashSet<EstructuraPDFDetalleProducto>();
-        }
-
         public string TituloDocumento { get; set; }
         public string TotalInventario { get; set; }
-        public ICollection<EstructuraPDFDetalleProducto> DetalleProducto { get; set; }
+        public List<EstructuraPDFDetalleProducto> DetalleProducto { get; set; }
     }
 
     public class EstructuraPDFDetalleProducto

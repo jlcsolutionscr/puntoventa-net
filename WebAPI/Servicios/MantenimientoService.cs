@@ -267,11 +267,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             var listaEmpresa = new List<LlaveDescripcion>();
             try
             {
-                var listado = dbContext.TerminalPorSucursalRepository.Where(x => x.ValorRegistro == strDispositivoId);
+                var listado = dbContext.TerminalPorSucursalRepository.Include("SucursalPorEmpresa.Empresa").Where(x => x.ValorRegistro == strDispositivoId);
                 foreach (TerminalPorSucursal value in listado)
                 {
-                    Empresa empresa = dbContext.EmpresaRepository.FirstOrDefault(x => x.IdEmpresa == value.IdEmpresa);
-                    LlaveDescripcion item = new LlaveDescripcion(value.IdEmpresa, empresa.NombreComercial);
+                    LlaveDescripcion item = new LlaveDescripcion(value.IdEmpresa, value.SucursalPorEmpresa.NombreSucursal);
                     listaEmpresa.Add(item);
                 }
                 return listaEmpresa;
@@ -389,7 +388,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         if (empresa.FechaVence < DateTime.Today) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
                         usuario = dbContext.UsuarioRepository.Include("RolePorUsuario.Role").Include("SucursalPorUsuario").FirstOrDefault(x => x.SucursalPorUsuario.FirstOrDefault(z => z.IdEmpresa == empresa.IdEmpresa) != null && x.CodigoUsuario == strUsuario.ToUpper());
                         usuario.IdSucursal = usuario.SucursalPorUsuario.FirstOrDefault().IdSucursal;
-                        usuario.SucursalPorUsuario = new SucursalPorUsuario[] { };
+                        usuario.SucursalPorUsuario = new List<SucursalPorUsuario> {};
                     }
                     if (usuario == null) throw new BusinessException("Usuario no registrado en la empresa suministrada. Por favor verifique la información suministrada.");
                     if (usuario.Clave != strClave) throw new BusinessException("Los credenciales suministrados no son válidos. Verifique los credenciales suministrados.");
@@ -417,8 +416,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     empresa.RefreshExpiresIn = null;
                     empresa.EquipoRegistrado = equipo;
                     empresa.Usuario = usuario;
-                    foreach (RolePorUsuario role in usuario.RolePorUsuario)
-                        role.Usuario = null;
                     foreach (SucursalPorUsuario sucursalUsuario in usuario.SucursalPorUsuario)
                         sucursalUsuario.Usuario = null;
                     return empresa;
@@ -454,7 +451,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         if (empresa.FechaVence < DateTime.Today) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
                         usuario = dbContext.UsuarioRepository.Include("SucursalPorUsuario").Include("RolePorUsuario.Role").FirstOrDefault(x => x.SucursalPorUsuario.FirstOrDefault(y => y.IdEmpresa == empresa.IdEmpresa) != null && x.CodigoUsuario == strUsuario.ToUpper());
                         usuario.IdSucursal = usuario.SucursalPorUsuario.FirstOrDefault().IdSucursal;
-                        usuario.SucursalPorUsuario = new SucursalPorUsuario[] { };
                     }
                     if (usuario == null) throw new BusinessException("Usuario no registrado en la empresa suministrada. Por favor verifique la información suministrada.");
                     if (usuario.Clave != strClave) throw new BusinessException("Los credenciales suministrados no son válidos. Verifique los credenciales suministrados.");
@@ -482,9 +478,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         ImpresoraFactura = terminal.ImpresoraFactura,
                         AnchoLinea = terminal.AnchoLinea
                     };
-                    empresa.SucursalPorEmpresa = new SucursalPorEmpresa[] { };
                     string strToken = GenerarRegistroAutenticacion(StaticRolePorUsuario.USUARIO_SISTEMA);
+                    usuario.SucursalPorUsuario = new List<SucursalPorUsuario> { };
                     usuario.Token = strToken;
+                    empresa.SucursalPorEmpresa = new List<SucursalPorEmpresa> { };
                     empresa.Logotipo = null;
                     empresa.Certificado = null;
                     empresa.AccessToken = null;
@@ -494,8 +491,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     empresa.RefreshExpiresIn = null;
                     empresa.EquipoRegistrado = equipo;
                     empresa.Usuario = usuario;
-                    foreach (RolePorUsuario role in usuario.RolePorUsuario)
-                        role.Usuario = null;
                     foreach (SucursalPorUsuario sucursalUsuario in usuario.SucursalPorUsuario)
                     {
                         sucursalUsuario.Usuario = null;
@@ -1190,8 +1185,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     Usuario usuario = dbContext.UsuarioRepository.Include("SucursalPorUsuario.SucursalPorEmpresa").Include("RolePorUsuario.Role").FirstOrDefault(x => x.IdUsuario == intIdUsuario);
                     if (usuario == null)
                         throw new BusinessException("El usuario por consultar no existe");
-                    foreach (RolePorUsuario roleUsuario in usuario.RolePorUsuario)
-                        roleUsuario.Usuario = null;
                     foreach (SucursalPorUsuario sucursalUsuario in usuario.SucursalPorUsuario)
                         sucursalUsuario.Usuario = null;
                     return usuario;
@@ -1218,7 +1211,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     var listado = dbContext.SucursalPorUsuarioRepository.Include("Usuario").Where(x => x.IdEmpresa == intIdEmpresa && x.IdUsuario > 2);
                     if (!strCodigo.Equals(string.Empty))
                         listado = listado.Where(x => x.Usuario.CodigoUsuario.Contains(strCodigo.ToUpper()));
-                    listado.OrderBy(x => x.Usuario.IdUsuario);
+                    listado.OrderBy(x => x.IdUsuario);
                     foreach (var value in listado)
                     {
                         LlaveDescripcion item = new LlaveDescripcion(value.IdUsuario, value.Usuario.CodigoUsuario);
@@ -1627,7 +1620,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         byte[] imagen = dbContext.ProductoRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto).FirstOrDefault().Imagen;
                         producto.Imagen = imagen;
                     }
-                    producto.Proveedor = null;
                     dbContext.NotificarModificacion(producto);
                     dbContext.Commit();
                 }
@@ -1722,12 +1714,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    Producto producto = dbContext.ProductoRepository.Include("ParametroImpuesto").Include("Proveedor").FirstOrDefault(x => x.IdProducto == intIdProducto);
+                    Producto producto = dbContext.ProductoRepository.Include("Proveedor").FirstOrDefault(x => x.IdProducto == intIdProducto);
                     if (producto != null)
                     {
                         var existencias = dbContext.ExistenciaPorSucursalRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == intIdProducto && x.IdSucursal == intIdSucursal).FirstOrDefault();
                         decimal decCantidad = existencias != null ? existencias.Cantidad : 0;
-                        producto.Proveedor.Producto = null;
                         producto.Existencias = decCantidad;
                     }
                     return producto;
@@ -1762,7 +1753,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    Producto producto = dbContext.ProductoRepository.Include("ParametroImpuesto").Where(x => x.IdEmpresa == intIdEmpresa && x.Codigo.Equals(strCodigo)).FirstOrDefault();
+                    Producto producto = dbContext.ProductoRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.Codigo.Equals(strCodigo)).FirstOrDefault();
                     if (producto != null)
                     {
                         var existencias = dbContext.ExistenciaPorSucursalRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == intIdSucursal).FirstOrDefault();
@@ -1785,7 +1776,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    Producto producto = dbContext.ProductoRepository.Include("ParametroImpuesto").Where(x => x.IdEmpresa == intIdEmpresa && x.CodigoProveedor.Equals(strCodigo)).FirstOrDefault();
+                    Producto producto = dbContext.ProductoRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.CodigoProveedor.Equals(strCodigo)).FirstOrDefault();
                     if (producto != null)
                     {
                         var existencias = dbContext.ExistenciaPorSucursalRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == intIdSucursal).FirstOrDefault();
@@ -1845,7 +1836,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     List<ProductoDetalle> listaReporte = new List<ProductoDetalle>();
-                    var listaProductos = dbContext.ProductoRepository.Include("ParametroImpuesto").Where(x => x.IdEmpresa == intIdEmpresa && new int[] { 1, 2, 3 }.Contains(x.Tipo));
+                    var listaProductos = dbContext.ProductoRepository.Where(x => x.IdEmpresa == intIdEmpresa && new int[] { 1, 2, 3 }.Contains(x.Tipo));
                     if (!bolIncluyeServicios)
                         listaProductos = listaProductos.Where(x => x.Tipo == StaticTipoProducto.Producto);
                     if (bolFiltraActivos)
@@ -2207,9 +2198,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    AjusteInventario ajuste = dbContext.AjusteInventarioRepository.Include("DetalleAjusteInventario.Producto.TipoProducto").FirstOrDefault(x => x.IdAjuste == intIdAjusteInventario);
-                    foreach (var detalle in ajuste.DetalleAjusteInventario)
-                        detalle.AjusteInventario = null;
+                    AjusteInventario ajuste = dbContext.AjusteInventarioRepository.Include("DetalleAjusteInventario.Producto").FirstOrDefault(x => x.IdAjuste == intIdAjusteInventario);
                     return ajuste;
                 }
                 catch (Exception ex)

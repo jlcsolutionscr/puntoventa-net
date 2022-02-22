@@ -5,12 +5,6 @@ namespace LeandroSoftware.Common.Dominio.Entidades
 {
     public partial class Factura
     {
-        public Factura()
-        {
-            DetalleFactura = new HashSet<DetalleFactura>();
-            DesglosePagoFactura = new HashSet<DesglosePagoFactura>();
-        }
-
         public int IdEmpresa { get; set; }
         public int IdSucursal { get; set; }
         public int IdTerminal { get; set; }
@@ -55,9 +49,8 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public string IdDocElectronicoRev { get; set; }
 
         public Cliente Cliente { get; set; }
-        public Usuario Usuario { get; set; }
         public Vendedor Vendedor { get; set; }
-        public ICollection<DetalleFactura> DetalleFactura { get; set; }
-        public ICollection<DesglosePagoFactura> DesglosePagoFactura { get; set; }
+        public List<DetalleFactura> DetalleFactura { get; set; }
+        public List<DesglosePagoFactura> DesglosePagoFactura { get; set; }
     }
 }

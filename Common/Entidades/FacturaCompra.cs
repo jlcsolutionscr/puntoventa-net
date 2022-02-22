@@ -5,11 +5,6 @@ namespace LeandroSoftware.Common.Dominio.Entidades
 {
     public partial class FacturaCompra
     {
-        public FacturaCompra()
-        {
-            DetalleFacturaCompra = new HashSet<DetalleFacturaCompra>();
-        }
-
         public int IdEmpresa { get; set; }
         public int IdSucursal { get; set; }
         public int IdTerminal { get; set; }
@@ -44,8 +39,6 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public decimal Impuesto { get; set; }
         public decimal Total { get { return Excento + Gravado + Exonerado + Impuesto - Descuento; } }
         public string IdDocElectronico { get; set; }
-
-        public Usuario Usuario { get; set; }
-        public ICollection<DetalleFacturaCompra> DetalleFacturaCompra { get; set; }
+        public List<DetalleFacturaCompra> DetalleFacturaCompra { get; set; }
     }
 }

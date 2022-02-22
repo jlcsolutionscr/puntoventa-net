@@ -6,12 +6,6 @@ namespace LeandroSoftware.Common.Dominio.Entidades
 {
     public partial class Empresa
     {
-        public Empresa()
-        {
-            ReportePorEmpresa = new HashSet<ReportePorEmpresa>();
-            RolePorEmpresa = new HashSet<RolePorEmpresa>();
-            SucursalPorEmpresa = new HashSet<SucursalPorEmpresa>();
-        }
         public int IdEmpresa { get; set; }
         public string NombreEmpresa { get; set; }
         public string NombreComercial { get; set; }
@@ -61,8 +55,8 @@ namespace LeandroSoftware.Common.Dominio.Entidades
 
         public Barrio Barrio { get; set; }
         public PlanFacturacion PlanFacturacion { get; set; }
-        public ICollection<ReportePorEmpresa> ReportePorEmpresa { get; set; }
-        public ICollection<RolePorEmpresa> RolePorEmpresa { get; set; }
-        public ICollection<SucursalPorEmpresa> SucursalPorEmpresa { get; set; }
+        public List<ReportePorEmpresa> ReportePorEmpresa { get; set; }
+        public List<RolePorEmpresa> RolePorEmpresa { get; set; }
+        public List<SucursalPorEmpresa> SucursalPorEmpresa { get; set; }
     }
 }

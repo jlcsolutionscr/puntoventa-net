@@ -5,12 +5,6 @@ namespace LeandroSoftware.Common.Dominio.Entidades
 {
     public partial class CierreCaja
     {
-        public CierreCaja()
-        {
-            DetalleEfectivoCierreCaja = new HashSet<DetalleEfectivoCierreCaja>();
-            DetalleMovimientoCierreCaja = new HashSet<DetalleMovimientoCierreCaja>();
-        }
-
         public int IdEmpresa { get; set; }
         public int IdSucursal { get; set; }
         public int IdCierre { get; set; }
@@ -42,7 +36,7 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public decimal FondoCierre { get; set; }
         public string Observaciones { get; set; }
 
-        public ICollection<DetalleEfectivoCierreCaja> DetalleEfectivoCierreCaja { get; set; }
-        public ICollection<DetalleMovimientoCierreCaja> DetalleMovimientoCierreCaja { get; set; }
+        public List<DetalleEfectivoCierreCaja> DetalleEfectivoCierreCaja { get; set; }
+        public List<DetalleMovimientoCierreCaja> DetalleMovimientoCierreCaja { get; set; }
     }
 }

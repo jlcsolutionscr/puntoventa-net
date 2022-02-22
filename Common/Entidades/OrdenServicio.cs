@@ -5,12 +5,6 @@ namespace LeandroSoftware.Common.Dominio.Entidades
 {
     public partial class OrdenServicio
     {
-        public OrdenServicio()
-        {
-            DetalleOrdenServicio = new HashSet<DetalleOrdenServicio>();
-            DesglosePagoOrdenServicio = new HashSet<DesglosePagoOrdenServicio>();
-        }
-
         public int IdEmpresa { get; set; }
         public int IdSucursal { get; set; }
         public int IdOrden { get; set; }
@@ -40,11 +34,9 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public string MotivoAnulacion { get; set; }
         public bool Aplicado { get; set; }
         public bool Procesado { get; set; }
-
-        public Usuario Usuario { get; set; }
         public Cliente Cliente { get; set; }
         public Vendedor Vendedor { get; set; }
-        public ICollection<DetalleOrdenServicio> DetalleOrdenServicio { get; set; }
-        public ICollection<DesglosePagoOrdenServicio> DesglosePagoOrdenServicio { get; set; }
+        public List<DetalleOrdenServicio> DetalleOrdenServicio { get; set; }
+        public List<DesglosePagoOrdenServicio> DesglosePagoOrdenServicio { get; set; }
     }
 }

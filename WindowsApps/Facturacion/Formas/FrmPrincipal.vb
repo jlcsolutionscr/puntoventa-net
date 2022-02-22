@@ -647,9 +647,8 @@ Public Class FrmPrincipal
         End If
         Try
             productoTranstorio = Await Puntoventa.ObtenerProductoTransitorio(empresaGlobal.IdEmpresa, usuarioGlobal.Token)
-
         Catch
-            productoImpuestoServicio = Nothing
+            productoTranstorio = Nothing
         End Try
         Try
             productoImpuestoServicio = Await Puntoventa.ObtenerProductoImpuestoServicio(empresaGlobal.IdEmpresa, usuarioGlobal.Token)

@@ -7,7 +7,5 @@
         public int IdSucursal { get; set; }
         public string Descripcion { get; set; }
         public bool Activo { get; set; }
-
-        public SucursalPorEmpresa SucursalPorEmpresa { get; set; }
     }
 }

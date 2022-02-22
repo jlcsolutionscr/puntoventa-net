@@ -9,7 +9,5 @@
         public string Impresora { get; set; }
         public byte[] Lineas { get; set; }
         public bool Impreso { get; set; }
-
-        public SucursalPorEmpresa SucursalPorEmpresa { get; set; }
     }
 }

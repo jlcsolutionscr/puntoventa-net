@@ -4,12 +4,6 @@ namespace LeandroSoftware.Common.Dominio.Entidades
 {
     public partial class CatalogoContable
     {
-        public CatalogoContable()
-        {
-            SaldoMensualContable = new HashSet<SaldoMensualContable>();
-            ParametroContable = new HashSet<ParametroContable>();
-        }
-        
         public int IdEmpresa { get; set; }
         public int IdCuenta { get; set; }
         public string Nivel_1 { get; set; }
@@ -36,7 +30,7 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public CatalogoContable CatalogoContableGrupo { get; set; }
         public TipoCuentaContable TipoCuentaContable { get; set; }
         public ClaseCuentaContable ClaseCuentaContable { get; set; }
-        public ICollection<SaldoMensualContable> SaldoMensualContable { get; set; }
-        public ICollection<ParametroContable> ParametroContable { get; set; }
+        public List<SaldoMensualContable> SaldoMensualContable { get; set; }
+        public List<ParametroContable> ParametroContable { get; set; }
     }
 }

@@ -11,8 +11,6 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public bool Excento { get; set; }
         public decimal PorcentajeIVA { get; set; }
         public decimal PorcDescuento { get; set; }
-
-        public Apartado Apartado { get; set; }
         public Producto Producto { get; set; }
     }
 }

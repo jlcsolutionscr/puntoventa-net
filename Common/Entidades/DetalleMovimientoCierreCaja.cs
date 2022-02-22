@@ -11,7 +11,5 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public DateTime Fecha { get; set; }
         public string Descripcion { get; set; }
         public decimal Total { get; set; }
-
-        public CierreCaja CierreCaja { get; set; }
     }
 }

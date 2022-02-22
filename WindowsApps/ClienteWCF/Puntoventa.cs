@@ -2,7 +2,6 @@
 using System.Net.Http.Headers;
 using System.Text;
 using System.Configuration;
-using System.Globalization;
 using System.Management;
 using Newtonsoft.Json;
 using LeandroSoftware.Common.Dominio.Entidades;
@@ -16,7 +15,6 @@ namespace LeandroSoftware.ClienteWCF
 {
     public static class Puntoventa
     {
-        private static CultureInfo cultureinfo = new CultureInfo("es-CR");
         private static string strServicioPuntoventaURL = ConfigurationManager.AppSettings["ServicioURL"];
         private static HttpClient httpClient = new HttpClient();
 
@@ -90,8 +88,7 @@ namespace LeandroSoftware.ClienteWCF
             }
             if (httpResponse.StatusCode != HttpStatusCode.OK)
                 throw new Exception(httpResponse.ReasonPhrase);
-            string responseContent = await httpResponse.Content.ReadAsStringAsync();
-            string respuesta = JsonConvert.DeserializeObject<string>(responseContent);
+            string respuesta = await httpResponse.Content.ReadAsStringAsync();
             List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
             if (respuesta != "")
                 listado = JsonConvert.DeserializeObject<List<LlaveDescripcion>>(respuesta);
@@ -109,8 +106,7 @@ namespace LeandroSoftware.ClienteWCF
             }
             if (httpResponse.StatusCode != HttpStatusCode.OK)
                 throw new Exception(httpResponse.ReasonPhrase);
-            string responseContent = await httpResponse.Content.ReadAsStringAsync();
-            string respuesta = JsonConvert.DeserializeObject<string>(responseContent);
+            string respuesta = await httpResponse.Content.ReadAsStringAsync();
             List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
             if (respuesta != "")
                 listado = JsonConvert.DeserializeObject<List<LlaveDescripcion>>(respuesta);
@@ -128,8 +124,7 @@ namespace LeandroSoftware.ClienteWCF
             }
             if (httpResponse.StatusCode != HttpStatusCode.OK)
                 throw new Exception(httpResponse.ReasonPhrase);
-            string responseContent = await httpResponse.Content.ReadAsStringAsync();
-            string respuesta = JsonConvert.DeserializeObject<string>(responseContent);
+            string respuesta = await httpResponse.Content.ReadAsStringAsync();
             Empresa empresa = null;
             if (respuesta != "")
                 empresa = JsonConvert.DeserializeObject<Empresa>(respuesta);
@@ -147,8 +142,7 @@ namespace LeandroSoftware.ClienteWCF
             }
             if (httpResponse.StatusCode != HttpStatusCode.OK)
                 throw new Exception(httpResponse.ReasonPhrase);
-            string responseContent = await httpResponse.Content.ReadAsStringAsync();
-            string respuesta = JsonConvert.DeserializeObject<string>(responseContent);
+            string respuesta = await httpResponse.Content.ReadAsStringAsync();
             List<EquipoRegistrado> listado = new List<EquipoRegistrado>();
             if (respuesta != "")
                 listado = JsonConvert.DeserializeObject<List<EquipoRegistrado>>(respuesta);
@@ -173,8 +167,8 @@ namespace LeandroSoftware.ClienteWCF
             try
             {
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
-                string strContent = JsonConvert.SerializeObject(strDatos);
-                StringContent contentJson = new StringContent(strContent, Encoding.UTF8, "application/json");
+                var jsonString = JsonConvert.SerializeObject(strDatos);
+                StringContent contentJson = new StringContent(jsonString, Encoding.UTF8, "application/json");
                 if (strToken != "")
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", strToken);
                 HttpResponseMessage httpResponse = await httpClient.PostAsync(servicioURL + "/ejecutar", contentJson);
@@ -197,8 +191,8 @@ namespace LeandroSoftware.ClienteWCF
             try
             {
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
-                string strContent = JsonConvert.SerializeObject(strDatos);
-                StringContent contentJson = new StringContent(strContent, Encoding.UTF8, "application/json");
+                var jsonString = JsonConvert.SerializeObject(strDatos);
+                StringContent contentJson = new StringContent(jsonString, Encoding.UTF8, "application/json");
                 if (strToken != "")
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", strToken);
                 HttpResponseMessage httpResponse = await httpClient.PostAsync(servicioURL + "/ejecutarconsulta", contentJson);
@@ -209,9 +203,7 @@ namespace LeandroSoftware.ClienteWCF
                 }
                 if (httpResponse.StatusCode != HttpStatusCode.OK)
                     throw new Exception(httpResponse.ReasonPhrase);
-                string responseContent = await httpResponse.Content.ReadAsStringAsync();
-                string strRespuesta = JsonConvert.DeserializeObject<string>(responseContent);
-                return strRespuesta;
+                return await httpResponse.Content.ReadAsStringAsync();
             }
             catch (Exception ex)
             {

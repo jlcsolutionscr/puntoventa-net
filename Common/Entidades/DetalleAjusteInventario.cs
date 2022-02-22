@@ -6,8 +6,6 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public int IdProducto { get; set; }
         public decimal Cantidad { get; set; }
         public decimal PrecioCosto { get; set; }
-
-        public AjusteInventario AjusteInventario { get; set; }
         public Producto Producto { get; set; }
     }
 }
