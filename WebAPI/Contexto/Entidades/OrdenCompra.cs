@@ -12,6 +12,8 @@ namespace LeandroSoftwarbuilder.ServicioWeb.Dominio.Entidades
             builder.HasKey(p => p.IdOrdenCompra);
             builder.Ignore(p => p.Total);
             builder.Ignore(p => p.NombreProveedor);
+            builder.HasOne(p => p.Proveedor).WithMany().HasForeignKey(p => p.IdProveedor);
+            builder.HasMany(p => p.DetalleOrdenCompra).WithOne().HasForeignKey(p => p.IdConsecutivo);
         }
     }
 }

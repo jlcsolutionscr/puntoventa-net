@@ -12,6 +12,8 @@ namespace LeandroSoftwarbuilder.ServicioWeb.Dominio.Entidades
             builder.HasKey(p => p.IdParametro);
             builder.Ignore(p => p.Descripcion);
             builder.Ignore(p => p.DescCuentaContable);
+            builder.HasOne(p => p.TipoParametroContable).WithMany().HasForeignKey(p => p.IdTipo);
+            builder.HasOne(p => p.CatalogoContable).WithMany().HasForeignKey(p => p.IdCuenta);
         }
     }
 }

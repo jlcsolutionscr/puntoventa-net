@@ -758,6 +758,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
             JObject parametrosJO = null;
             string strNombreMetodo;
             string strEntidad = "";
+            string strCodigoUsuario;
             if (datosJO.Property("NombreMetodo") != null)
                 strNombreMetodo = datosJO.Property("NombreMetodo").Value.ToString();
             else
@@ -1897,7 +1898,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                         strRespuesta = JsonConvert.SerializeObject(documento);
                     break;
                 case "AutorizacionPorcentaje":
-                    string strCodigoUsuario = parametrosJO.Property("CodigoUsuario").Value.ToString();
+                    strCodigoUsuario = parametrosJO.Property("CodigoUsuario").Value.ToString();
                     strClave = parametrosJO.Property("Clave").Value.ToString();
                     intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                     decimal decPorcentaje = _servicioMantenimiento.AutorizacionPorcentaje(strCodigoUsuario, strClave, intIdEmpresa);
@@ -2037,6 +2038,16 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     IList<ClsTiquete> listadoTiqueteOrdenServicio = _servicioFacturacion.ObtenerListadoTiqueteOrdenServicio(intIdEmpresa, intIdSucursal, bolFiltraActivos, true);
                     if (listadoTiqueteOrdenServicio.Count > 0)
                         strRespuesta = JsonConvert.SerializeObject(listadoTiqueteOrdenServicio);
+                    break;
+                case "GenerarReporteCompra":
+                    strLogoPath = Path.Combine(_environment.ContentRootPath, "PlantillaReportes/rptCompra.rdlc");
+                    int intIdCompra = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
+                    strCodigoUsuario = parametrosJO.Property("CodigoUsuario").Value.ToString();
+                    string strFormatoReporte = parametrosJO.Property("FormatoReporte").Value.ToString();
+                    byte[] bytPlantillaReporte = System.IO.File.ReadAllBytes(strLogoPath);
+                    byte[] compraReporte = _servicioReportes.GenerarReporteCompra(intIdCompra, strCodigoUsuario, strFormatoReporte, bytPlantillaReporte);
+                    if (compraReporte.Length > 0)
+                        strRespuesta = JsonConvert.SerializeObject(compraReporte);
                     break;
                 case "ObtenerDatosReporte":
                     intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());

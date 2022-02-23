@@ -112,7 +112,7 @@ namespace LeandroSoftware.Common.Constantes
         public static readonly short NotaCredito = 2;
     };
 
-    public static class StaticTipoCuentaContable
+    public static class StaticTipoParametroContable
     {
         public static readonly int IngresosPorVentas = 1;
         public static readonly int CostosDeVentas = 2;

@@ -119,8 +119,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     if (empresa.Contabiliza)
                     {
-                        ivaPorPagarParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.IVAPorPagar).FirstOrDefault();
-                        efectivoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.Efectivo).FirstOrDefault();
+                        ivaPorPagarParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.IVAPorPagar).FirstOrDefault();
+                        efectivoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.Efectivo).FirstOrDefault();
                         if (ivaPorPagarParam == null || efectivoParam == null)
                             throw new BusinessException("La parametrización contable está incompleta y no se puede continuar. Por favor verificar.");
                     }
@@ -228,7 +228,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         DetalleAsiento detalleAsiento = new DetalleAsiento();
                         int intLineaDetalleAsiento = 1;
                         detalleAsiento.Linea = intLineaDetalleAsiento;
-                        trasladosParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.Traslados && x.IdProducto == traslado.IdSucursalOrigen).FirstOrDefault();
+                        trasladosParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.Traslados && x.IdProducto == traslado.IdSucursalOrigen).FirstOrDefault();
                         if (trasladosParam == null)
                             throw new BusinessException("No existe parametrización contable para la sucursal origen " + traslado.IdSucursalOrigen + " y no se puede continuar. Por favor verificar.");
                         detalleAsiento.IdCuenta = trasladosParam.IdCuenta;
@@ -242,7 +242,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             intLineaDetalleAsiento += 1;
                             detalleAsiento.Linea = intLineaDetalleAsiento;
                             int intIdLinea = (int)data["IdLinea"];
-                            lineaParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.LineaDeProductos && x.IdProducto == intIdLinea).FirstOrDefault();
+                            lineaParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.LineaDeProductos && x.IdProducto == intIdLinea).FirstOrDefault();
                             if (lineaParam == null)
                                 throw new BusinessException("No existe parametrización contable para la línea de producto " + intIdLinea + " y no se puede continuar. Por favor verificar.");
                             detalleAsiento.IdCuenta = lineaParam.IdCuenta;
@@ -255,7 +255,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         detalleAsiento = new DetalleAsiento();
                         intLineaDetalleAsiento = 2;
                         detalleAsiento.Linea = intLineaDetalleAsiento;
-                        trasladosParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.Traslados && x.IdProducto == traslado.IdSucursalDestino).FirstOrDefault();
+                        trasladosParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.Traslados && x.IdProducto == traslado.IdSucursalDestino).FirstOrDefault();
                         if (trasladosParam == null)
                             throw new BusinessException("No existe parametrización contable para la sucursal destino " + traslado.IdSucursalOrigen + " y no se puede continuar. Por favor verificar.");
                         detalleAsiento.IdCuenta = trasladosParam.IdCuenta;
@@ -269,7 +269,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             intLineaDetalleAsiento += 1;
                             detalleAsiento.Linea = intLineaDetalleAsiento;
                             int intIdLinea = (int)data["IdLinea"];
-                            lineaParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.LineaDeProductos && x.IdProducto == intIdLinea).FirstOrDefault();
+                            lineaParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.LineaDeProductos && x.IdProducto == intIdLinea).FirstOrDefault();
                             if (lineaParam == null)
                                 throw new BusinessException("No existe parametrización contable para la línea de producto " + intIdLinea + " y no se puede continuar. Por favor verificar.");
                             detalleAsiento.IdCuenta = lineaParam.IdCuenta;

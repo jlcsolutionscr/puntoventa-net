@@ -12,6 +12,7 @@ namespace LeandroSoftwarbuilder.ServicioWeb.Dominio.Entidades
             builder.HasKey(p => p.IdTraslado);
             builder.Ignore(p => p.NombreSucursalOrigen);
             builder.Ignore(p => p.NombreSucursalDestino);
+            builder.HasMany(p => p.DetalleTraslado).WithOne().HasForeignKey(p => p.IdTraslado);
         }
     }
 }

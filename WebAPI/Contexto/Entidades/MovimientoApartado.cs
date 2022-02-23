@@ -10,6 +10,8 @@ namespace LeandroSoftwarbuilder.ServicioWeb.Dominio.Entidades
         {
             builder.ToTable("movimientoapartado");
             builder.HasKey(p => p.IdMovApartado);
+            builder.HasOne(p => p.Apartado).WithMany().HasForeignKey(p => p.IdApartado);
+            builder.HasMany(p => p.DesglosePagoMovimientoApartado).WithOne().HasForeignKey(p => p.IdConsecutivo);
         }
     }
 }

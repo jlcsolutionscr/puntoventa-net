@@ -25,11 +25,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         IEnumerable<ClaseCuentaContable> ObtenerClaseCuentaContable();
         IEnumerable<CatalogoContable> ObtenerListaCuentasPrimerOrden(int intIdEmpresa);
         IEnumerable<CatalogoContable> ObtenerListaCuentasParaMovimientos(int intIdEmpresa);
-        IEnumerable<CatalogoContable> ObtenerListaCuentasParaLineasDeProducto(int intIdEmpresa);
-        IEnumerable<CatalogoContable> ObtenerListaCuentasParaLineasDeServicio(int intIdEmpresa);
-        IEnumerable<CatalogoContable> ObtenerListaCuentasParaBancos(int intIdEmpresa);
-        IEnumerable<CatalogoContable> ObtenerListaCuentasParaEgresos(int intIdEmpresa);
-        IEnumerable<CatalogoContable> ObtenerListaCuentasParaIngresos(int intIdEmpresa);
+        IEnumerable<ParametroContable> ObtenerListaCuentasParaLineasDeProducto(int intIdEmpresa);
+        IEnumerable<ParametroContable> ObtenerListaCuentasParaLineasDeServicio(int intIdEmpresa);
+        IEnumerable<ParametroContable> ObtenerListaCuentasParaBancos(int intIdEmpresa);
+        IEnumerable<ParametroContable> ObtenerListaCuentasParaEgresos(int intIdEmpresa);
+        IEnumerable<ParametroContable> ObtenerListaCuentasParaIngresos(int intIdEmpresa);
         IEnumerable<CatalogoContable> ObtenerListaCuentasDeBalance(int intIdEmpresa);
         Asiento AgregarAsiento(Asiento asiento);
         Asiento AgregarAsiento(ILeandroContext dbContext, Asiento asiento);
@@ -359,11 +359,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<CatalogoContable> ObtenerListaCuentasParaLineasDeProducto(int intIdEmpresa)
+        public IEnumerable<ParametroContable> ObtenerListaCuentasParaLineasDeProducto(int intIdEmpresa)
         {
             try
             {
-                return dbContext.CatalogoContableRepository.Where(c => c.IdEmpresa == intIdEmpresa && c.PermiteMovimiento && c.ParametroContable.Where(y => y.IdTipo == StaticTipoCuentaContable.LineaDeProductos).Count() > 0).OrderBy(x => x.Nivel_1).ThenBy(x => x.Nivel_2).ThenBy(x => x.Nivel_3).ThenBy(x => x.Nivel_4).ThenBy(x => x.Nivel_5).ThenBy(x => x.Nivel_6).ThenBy(x => x.Nivel_7).ToList();
+                return dbContext.ParametroContableRepository.Include("CatalogoContable").Where(c => c.CatalogoContable.IdEmpresa == intIdEmpresa && c.CatalogoContable.PermiteMovimiento && new[] { StaticTipoParametroContable.LineaDeProductos }.Contains(c.IdTipo)).OrderBy(x => x.CatalogoContable.Nivel_1).ThenBy(x => x.CatalogoContable.Nivel_2).ThenBy(x => x.CatalogoContable.Nivel_3).ThenBy(x => x.CatalogoContable.Nivel_4).ThenBy(x => x.CatalogoContable.Nivel_5).ThenBy(x => x.CatalogoContable.Nivel_6).ThenBy(x => x.CatalogoContable.Nivel_7).ToList();
             }
             catch (Exception ex)
             {
@@ -372,11 +372,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<CatalogoContable> ObtenerListaCuentasParaLineasDeServicio(int intIdEmpresa)
+        public IEnumerable<ParametroContable> ObtenerListaCuentasParaLineasDeServicio(int intIdEmpresa)
         {
             try
             {
-                return dbContext.CatalogoContableRepository.Where(c => c.IdEmpresa == intIdEmpresa && c.PermiteMovimiento && c.ParametroContable.Where(y => y.IdTipo == StaticTipoCuentaContable.LineaDeServicios).Count() > 0).OrderBy(x => x.Nivel_1).ThenBy(x => x.Nivel_2).ThenBy(x => x.Nivel_3).ThenBy(x => x.Nivel_4).ThenBy(x => x.Nivel_5).ThenBy(x => x.Nivel_6).ThenBy(x => x.Nivel_7).ToList();
+                return dbContext.ParametroContableRepository.Include("CatalogoContable").Where(c => c.CatalogoContable.IdEmpresa == intIdEmpresa && c.CatalogoContable.PermiteMovimiento && new[] { StaticTipoParametroContable.LineaDeServicios }.Contains(c.IdTipo)).OrderBy(x => x.CatalogoContable.Nivel_1).ThenBy(x => x.CatalogoContable.Nivel_2).ThenBy(x => x.CatalogoContable.Nivel_3).ThenBy(x => x.CatalogoContable.Nivel_4).ThenBy(x => x.CatalogoContable.Nivel_5).ThenBy(x => x.CatalogoContable.Nivel_6).ThenBy(x => x.CatalogoContable.Nivel_7).ToList();
             }
             catch (Exception ex)
             {
@@ -385,11 +385,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<CatalogoContable> ObtenerListaCuentasParaBancos(int intIdEmpresa)
+        public IEnumerable<ParametroContable> ObtenerListaCuentasParaBancos(int intIdEmpresa)
         {
             try
             {
-                return dbContext.CatalogoContableRepository.Where(c => c.IdEmpresa == intIdEmpresa && c.PermiteMovimiento && c.ParametroContable.Where(y => y.IdTipo == StaticTipoCuentaContable.CuentaDeBancos).Count() > 0).OrderBy(x => x.Nivel_1).ThenBy(x => x.Nivel_2).ThenBy(x => x.Nivel_3).ThenBy(x => x.Nivel_4).ThenBy(x => x.Nivel_5).ThenBy(x => x.Nivel_6).ThenBy(x => x.Nivel_7).ToList();
+                return dbContext.ParametroContableRepository.Include("CatalogoContable").Where(c => c.CatalogoContable.IdEmpresa == intIdEmpresa && c.CatalogoContable.PermiteMovimiento && new[] { StaticTipoParametroContable.CuentaDeBancos }.Contains(c.IdTipo)).OrderBy(x => x.CatalogoContable.Nivel_1).ThenBy(x => x.CatalogoContable.Nivel_2).ThenBy(x => x.CatalogoContable.Nivel_3).ThenBy(x => x.CatalogoContable.Nivel_4).ThenBy(x => x.CatalogoContable.Nivel_5).ThenBy(x => x.CatalogoContable.Nivel_6).ThenBy(x => x.CatalogoContable.Nivel_7).ToList();
             }
             catch (Exception ex)
             {
@@ -398,11 +398,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<CatalogoContable> ObtenerListaCuentasParaEgresos(int intIdEmpresa)
+        public IEnumerable<ParametroContable> ObtenerListaCuentasParaEgresos(int intIdEmpresa)
         {
             try
             {
-                return dbContext.CatalogoContableRepository.Where(c => c.IdEmpresa == intIdEmpresa && c.PermiteMovimiento && c.ParametroContable.Where(y => y.IdTipo == StaticTipoCuentaContable.CuentaDeEgresos).Count() > 0).OrderBy(x => x.Nivel_1).ThenBy(x => x.Nivel_2).ThenBy(x => x.Nivel_3).ThenBy(x => x.Nivel_4).ThenBy(x => x.Nivel_5).ThenBy(x => x.Nivel_6).ThenBy(x => x.Nivel_7).ToList();
+                return dbContext.ParametroContableRepository.Include("CatalogoContable").Where(c => c.CatalogoContable.IdEmpresa == intIdEmpresa && c.CatalogoContable.PermiteMovimiento && new[] { StaticTipoParametroContable.CuentaDeEgresos }.Contains(c.IdTipo)).OrderBy(x => x.CatalogoContable.Nivel_1).ThenBy(x => x.CatalogoContable.Nivel_2).ThenBy(x => x.CatalogoContable.Nivel_3).ThenBy(x => x.CatalogoContable.Nivel_4).ThenBy(x => x.CatalogoContable.Nivel_5).ThenBy(x => x.CatalogoContable.Nivel_6).ThenBy(x => x.CatalogoContable.Nivel_7).ToList();
             }
             catch (Exception ex)
             {
@@ -411,12 +411,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<CatalogoContable> ObtenerListaCuentasParaIngresos(int intIdEmpresa)
+        public IEnumerable<ParametroContable> ObtenerListaCuentasParaIngresos(int intIdEmpresa)
         {
             try
             {
-                return dbContext.CatalogoContableRepository.Where(c => c.IdEmpresa == intIdEmpresa && c.PermiteMovimiento && c.ParametroContable.Where(y => y.IdTipo == StaticTipoCuentaContable.CuentaDeIngresos).Count() > 0).OrderBy(x => x.Nivel_1).ThenBy(x => x.Nivel_2).ThenBy(x => x.Nivel_3).ThenBy(x => x.Nivel_4).ThenBy(x => x.Nivel_5).ThenBy(x => x.Nivel_6).ThenBy(x => x.Nivel_7).ToList();
-            }
+                return dbContext.ParametroContableRepository.Include("CatalogoContable").Where(c => c.CatalogoContable.IdEmpresa == intIdEmpresa && c.CatalogoContable.PermiteMovimiento && new[] { StaticTipoParametroContable.CuentaDeIngresos }.Contains(c.IdTipo)).OrderBy(x => x.CatalogoContable.Nivel_1).ThenBy(x => x.CatalogoContable.Nivel_2).ThenBy(x => x.CatalogoContable.Nivel_3).ThenBy(x => x.CatalogoContable.Nivel_4).ThenBy(x => x.CatalogoContable.Nivel_5).ThenBy(x => x.CatalogoContable.Nivel_6).ThenBy(x => x.CatalogoContable.Nivel_7).ToList();
+                }
             catch (Exception ex)
             {
                 log.Error("Error al obtener el listado de cuentas contables para cuentas de egreso: ", ex);
@@ -718,7 +718,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 //if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                 //empresa.CierreEnEjecucion = true;
                 dbContext.Commit();
-                perdidaGananciaParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.PerdidasyGanancias).FirstOrDefault();
+                perdidaGananciaParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.PerdidasyGanancias).FirstOrDefault();
                 if (perdidaGananciaParam == null) throw new Exception("La cuenta de perdidas y ganancias no se encuentra parametrizada y no se puede ejecutar el cierre contable. Por favor verificar.");
 
                 var saldosMensuales = dbContext.CatalogoContableRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.SaldoActual != 0)
@@ -851,14 +851,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     Asiento asiento = null;
                     try
                     {
-                        ingresosVentasParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.IngresosPorVentas).FirstOrDefault();
-                        costoVentasParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.CostosDeVentas).FirstOrDefault();
-                        ivaPorPagarParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.IVAPorPagar).FirstOrDefault();
-                        efectivoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.Efectivo).FirstOrDefault();
-                        cuentaPorCobrarClientesParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.CuentasPorCobrarClientes).FirstOrDefault();
-                        cuentaPorCobrarTarjetaParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.CuentasPorCobrarTarjeta).FirstOrDefault();
-                        gastoComisionParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.GastoComisionTarjeta).FirstOrDefault();
-                        otraCondicionVentaParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.OtraCondicionVenta).FirstOrDefault();
+                        ingresosVentasParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.IngresosPorVentas).FirstOrDefault();
+                        costoVentasParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.CostosDeVentas).FirstOrDefault();
+                        ivaPorPagarParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.IVAPorPagar).FirstOrDefault();
+                        efectivoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.Efectivo).FirstOrDefault();
+                        cuentaPorCobrarClientesParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.CuentasPorCobrarClientes).FirstOrDefault();
+                        cuentaPorCobrarTarjetaParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.CuentasPorCobrarTarjeta).FirstOrDefault();
+                        gastoComisionParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.GastoComisionTarjeta).FirstOrDefault();
+                        otraCondicionVentaParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.OtraCondicionVenta).FirstOrDefault();
                         if (ingresosVentasParam == null || costoVentasParam == null || ivaPorPagarParam == null || efectivoParam == null || cuentaPorCobrarClientesParam == null || cuentaPorCobrarTarjetaParam == null || gastoComisionParam == null || otraCondicionVentaParam == null)
                             throw new BusinessException("La parametrización contable está incompleta y no se puede continuar. Por favor verificar.");
                         factura.IdAsiento = 0;
@@ -943,7 +943,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             {
                                 if (desglosePago.IdFormaPago == StaticFormaPago.Cheque || desglosePago.IdFormaPago == StaticFormaPago.TransferenciaDepositoBancario)
                                 {
-                                    ParametroContable bancoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.CuentaDeBancos && x.IdProducto == desglosePago.IdCuentaBanco).FirstOrDefault();
+                                    ParametroContable bancoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.CuentaDeBancos && x.IdProducto == desglosePago.IdCuentaBanco).FirstOrDefault();
                                     if (bancoParam == null)
                                         throw new BusinessException("No existe parametrización contable para la cuenta bancaría " + desglosePago.IdCuentaBanco + " y no se puede continuar. Por favor verificar.");
                                     intLineaDetalleAsiento += 1;
@@ -1056,7 +1056,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             intLineaDetalleAsiento += 1;
                             detalleAsiento.Linea = intLineaDetalleAsiento;
                             int intIdLinea = (int)data["IdLinea"];
-                            lineaParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.LineaDeServicios && x.IdProducto == intIdLinea).FirstOrDefault();
+                            lineaParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.LineaDeServicios && x.IdProducto == intIdLinea).FirstOrDefault();
                             if (lineaParam == null)
                                 throw new BusinessException("No existe parametrización contable para la línea de servicios " + intIdLinea + " y no se puede continuar. Por favor verificar.");
                             detalleAsiento.IdCuenta = lineaParam.IdCuenta;
@@ -1081,7 +1081,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 intLineaDetalleAsiento += 1;
                                 detalleAsiento.Linea = intLineaDetalleAsiento;
                                 int intIdLinea = (int)data["IdLinea"];
-                                lineaParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.LineaDeProductos && x.IdProducto == intIdLinea).FirstOrDefault();
+                                lineaParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.LineaDeProductos && x.IdProducto == intIdLinea).FirstOrDefault();
                                 if (lineaParam == null)
                                     throw new BusinessException("No existe parametrización contable para la línea de producto " + intIdLinea + " y no se puede continuar. Por favor verificar.");
                                 detalleAsiento.IdCuenta = lineaParam.IdCuenta;
@@ -1147,10 +1147,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         Empresa empresa = dbContext.EmpresaRepository.Find(compra.IdEmpresa);
                         if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                        efectivoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.Efectivo).FirstOrDefault();
-                        cuentasPorPagarProveedoresParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.CuentasPorPagarProveedores).FirstOrDefault();
-                        ivaPorPagarParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.IVAPorPagar).FirstOrDefault();
-                        otraCondicionVentaParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.OtraCondicionVenta).FirstOrDefault();
+                        efectivoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.Efectivo).FirstOrDefault();
+                        cuentasPorPagarProveedoresParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.CuentasPorPagarProveedores).FirstOrDefault();
+                        ivaPorPagarParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.IVAPorPagar).FirstOrDefault();
+                        otraCondicionVentaParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.OtraCondicionVenta).FirstOrDefault();
                         if (efectivoParam == null || cuentasPorPagarProveedoresParam == null || ivaPorPagarParam == null || otraCondicionVentaParam == null)
                             throw new BusinessException("La parametrización contable está incompleta y no se puede continuar. Por favor verificar.");
                         decTotalImpuesto = compra.Impuesto;
@@ -1241,7 +1241,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 }
                                 else if (desglosePago.IdFormaPago == StaticFormaPago.Cheque || desglosePago.IdFormaPago == StaticFormaPago.TransferenciaDepositoBancario)
                                 {
-                                    ParametroContable bancoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.CuentaDeBancos && x.IdProducto == desglosePago.IdCuentaBanco).FirstOrDefault();
+                                    ParametroContable bancoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.CuentaDeBancos && x.IdProducto == desglosePago.IdCuentaBanco).FirstOrDefault();
                                     if (bancoParam == null)
                                         throw new BusinessException("No existe parametrización contable para la cuenta bancaría " + desglosePago.IdCuentaBanco + " y no se puede continuar. Por favor verificar.");
                                     intLineaDetalleAsiento += 1;
@@ -1276,7 +1276,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             intLineaDetalleAsiento += 1;
                             detalleAsiento.Linea = intLineaDetalleAsiento;
                             int intIdLinea = (int)data["IdLinea"];
-                            lineaParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.LineaDeProductos && x.IdProducto == intIdLinea).FirstOrDefault();
+                            lineaParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.LineaDeProductos && x.IdProducto == intIdLinea).FirstOrDefault();
                             if (lineaParam == null)
                                 throw new BusinessException("No existe parametrización contable para la línea de producto " + intIdLinea + " y no se puede continuar. Por favor verificar.");
                             detalleAsiento.IdCuenta = lineaParam.IdCuenta;
@@ -1330,7 +1330,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         Empresa empresa = dbContext.EmpresaRepository.Find(egreso.IdEmpresa);
                         if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                        efectivo = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.Efectivo).FirstOrDefault();
+                        efectivo = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.Efectivo).FirstOrDefault();
                         if (efectivo == null)
                             throw new BusinessException("La parametrización contable está incompleta y no se puede continuar. Por favor verificar.");
                         CuentaEgreso cuentaEgreso = dbContext.CuentaEgresoRepository.Find(egreso.IdCuenta);
@@ -1349,7 +1349,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         DetalleAsiento detalleAsiento = new DetalleAsiento();
                         intLineaDetalleAsiento += 1;
                         detalleAsiento.Linea = intLineaDetalleAsiento;
-                        egresoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.CuentaDeEgresos && x.IdProducto == cuentaEgreso.IdCuenta).FirstOrDefault();
+                        egresoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.CuentaDeEgresos && x.IdProducto == cuentaEgreso.IdCuenta).FirstOrDefault();
                         if (egresoParam == null)
                             throw new BusinessException("No existe parametrización contable para la cuenta de ingresos " + cuentaEgreso.IdCuenta + " y no se puede continuar. Por favor verificar.");
                         detalleAsiento.IdCuenta = egresoParam.IdCuenta;
@@ -1410,7 +1410,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         Empresa empresa = dbContext.EmpresaRepository.Find(ingreso.IdEmpresa);
                         if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                        efectivo = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.Efectivo).FirstOrDefault();
+                        efectivo = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.Efectivo).FirstOrDefault();
                         if (efectivo == null) throw new BusinessException("La parametrización contable está incompleta y no se puede continuar. Por favor verificar.");
                         CuentaIngreso cuentaIngreso = dbContext.CuentaIngresoRepository.Find(ingreso.IdCuenta);
                         if (cuentaIngreso == null) throw new Exception("La cuenta de ingreso asignada al registro no existe");
@@ -1436,7 +1436,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         detalleAsiento = new DetalleAsiento();
                         intLineaDetalleAsiento += 1;
                         detalleAsiento.Linea = intLineaDetalleAsiento;
-                        ingresoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.CuentaDeIngresos && x.IdProducto == cuentaIngreso.IdCuenta).FirstOrDefault();
+                        ingresoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.CuentaDeIngresos && x.IdProducto == cuentaIngreso.IdCuenta).FirstOrDefault();
                         if (ingresoParam == null)
                             throw new BusinessException("No existe parametrización contable para la cuenta de ingresos " + cuentaIngreso.IdCuenta + " y no se puede continuar. Por favor verificar.");
                         detalleAsiento.IdCuenta = ingresoParam.IdCuenta;
@@ -1495,11 +1495,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         Empresa empresa = dbContext.EmpresaRepository.Find(movimiento.IdEmpresa);
                         if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                        efectivoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.Efectivo).FirstOrDefault();
-                        cuentaPorCobrarTarjetaParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.CuentasPorCobrarTarjeta).FirstOrDefault();
-                        ivaPorPagarParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.IVAPorPagar).FirstOrDefault();
-                        gastoComisionParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.GastoComisionTarjeta).FirstOrDefault();
-                        cuentaPorCobrarClientesParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.CuentasPorCobrarClientes).FirstOrDefault();
+                        efectivoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.Efectivo).FirstOrDefault();
+                        cuentaPorCobrarTarjetaParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.CuentasPorCobrarTarjeta).FirstOrDefault();
+                        ivaPorPagarParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.IVAPorPagar).FirstOrDefault();
+                        gastoComisionParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.GastoComisionTarjeta).FirstOrDefault();
+                        cuentaPorCobrarClientesParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.CuentasPorCobrarClientes).FirstOrDefault();
                         if (efectivoParam == null || cuentaPorCobrarTarjetaParam == null || ivaPorPagarParam == null || gastoComisionParam == null || cuentaPorCobrarClientesParam == null)
                             throw new BusinessException("La parametrización contable está incompleta y no se puede continuar. Por favor verificar.");
                         movimiento.IdAsiento = 0;
@@ -1620,8 +1620,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         Empresa empresa = dbContext.EmpresaRepository.Find(movimiento.IdEmpresa);
                         if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                        efectivoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.Efectivo).FirstOrDefault();
-                        cuentaPorPagarProveedoresParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.CuentasPorPagarProveedores).FirstOrDefault();
+                        efectivoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.Efectivo).FirstOrDefault();
+                        cuentaPorPagarProveedoresParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.CuentasPorPagarProveedores).FirstOrDefault();
                         if (efectivoParam == null || cuentaPorPagarProveedoresParam == null)
                             throw new BusinessException("La parametrización contable está incompleta y no se puede continuar. Por favor verificar.");
                         movimiento.IdAsiento = 0;
@@ -1660,7 +1660,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 detalleAsiento = new DetalleAsiento();
                                 intLineaDetalleAsiento += 1;
                                 detalleAsiento.Linea = intLineaDetalleAsiento;
-                                bancoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.CuentaDeBancos && x.IdProducto == desglosePago.IdCuentaBanco).FirstOrDefault();
+                                bancoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.CuentaDeBancos && x.IdProducto == desglosePago.IdCuentaBanco).FirstOrDefault();
                                 if (bancoParam == null)
                                     throw new BusinessException("No existe parametrización contable para la cuenta bancaría " + desglosePago.IdCuentaBanco + " y no se puede continuar. Por favor verificar.");
                                 detalleAsiento.IdCuenta = bancoParam.IdCuenta;

@@ -10,6 +10,7 @@ Public Class FrmBusquedaProducto
     Private intIndiceDePagina As Integer
     Private intFilasPorPagina As Integer = 16
     Private intCantidadDePaginas As Integer
+    Private bolInizializando = True
 #End Region
 
 #Region "Métodos"
@@ -199,6 +200,7 @@ Public Class FrmBusquedaProducto
             intIndiceDePagina = 1
             Await ActualizarDatos(intIndiceDePagina)
             txtDesc.Focus()
+            bolInizializando = False
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -207,11 +209,11 @@ Public Class FrmBusquedaProducto
     End Sub
 
     Private Sub cboLinea_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboLinea.SelectedIndexChanged
-        CmdFiltro_Click(CmdFiltro, New EventArgs())
+        If Not bolInizializando Then CmdFiltro_Click(CmdFiltro, New EventArgs())
     End Sub
 
     Private Sub cboSucursal_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboSucursal.SelectedIndexChanged
-        CmdFiltro_Click(CmdFiltro, New EventArgs())
+        If Not bolInizializando Then CmdFiltro_Click(CmdFiltro, New EventArgs())
     End Sub
 #End Region
 End Class

@@ -11,6 +11,7 @@ namespace LeandroSoftwarbuilder.ServicioWeb.Dominio.Entidades
             builder.ToTable("facturacompra");
             builder.HasKey(p => p.IdFactCompra);
             builder.Ignore(p => p.Total);
+            builder.HasMany(p => p.DetalleFacturaCompra).WithOne().HasForeignKey(p => p.IdFactCompra);
         }
     }
 }

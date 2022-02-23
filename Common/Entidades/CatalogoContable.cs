@@ -30,7 +30,5 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public CatalogoContable CatalogoContableGrupo { get; set; }
         public TipoCuentaContable TipoCuentaContable { get; set; }
         public ClaseCuentaContable ClaseCuentaContable { get; set; }
-        public List<SaldoMensualContable> SaldoMensualContable { get; set; }
-        public List<ParametroContable> ParametroContable { get; set; }
     }
 }

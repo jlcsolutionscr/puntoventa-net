@@ -29,6 +29,7 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public bool Activo { get; set; }
         public decimal Existencias { get; set; }
         public Linea Linea { get; set; }
+        public Proveedor Proveedor { get; set; }
         public List<MovimientoProducto> MovimientoProducto { get; set; }
     }
 }

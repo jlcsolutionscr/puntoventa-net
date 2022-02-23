@@ -10,6 +10,7 @@ namespace LeandroSoftwarbuilder.ServicioWeb.Dominio.Entidades
         {
             builder.ToTable("terminalporsucursal");
             builder.HasKey(p => new { p.IdEmpresa, p.IdSucursal, p.IdTerminal });
+            builder.HasOne(p => p.SucursalPorEmpresa).WithMany().HasForeignKey(p => new { p.IdEmpresa, p.IdSucursal });
         }
     }
 }

@@ -14,6 +14,7 @@ namespace LeandroSoftwarbuilder.ServicioWeb.Dominio.Entidades
             builder.HasOne(p => p.Cliente).WithMany().HasForeignKey(p => p.IdCliente);
             builder.HasOne(p => p.Vendedor).WithMany().HasForeignKey(p => p.IdVendedor);
             builder.HasMany(p => p.DetalleFactura).WithOne().HasForeignKey(p => p.IdFactura);
+            builder.HasMany(p => p.DesglosePagoFactura).WithOne().HasForeignKey(p => p.IdFactura);
         }
     }
 }

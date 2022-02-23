@@ -237,8 +237,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al validar la lista de empresas por valor de registro: ", ex);
-                throw new Exception("Error al validar la lista de empresas por valor de registro. . .");
+                log.Error("Error al validar la lista de sucursales asignadas a la empresa: ", ex);
+                throw new Exception("Error al validar la lista de sucursales asignadas a la empresa. . .");
             }
         }
 
@@ -257,8 +257,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al validar la lista de empresas por valor de registro: ", ex);
-                throw new Exception("Error al validar la lista de empresas por valor de registro. . .");
+                log.Error("Error al validar la lista de terminales asignadas a la empresa: ", ex);
+                throw new Exception("Error al validar la lista de terminales asignadas a la empresa. . .");
             }
         }
 
@@ -270,15 +270,15 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 var listado = dbContext.TerminalPorSucursalRepository.Include("SucursalPorEmpresa.Empresa").Where(x => x.ValorRegistro == strDispositivoId);
                 foreach (TerminalPorSucursal value in listado)
                 {
-                    LlaveDescripcion item = new LlaveDescripcion(value.IdEmpresa, value.SucursalPorEmpresa.NombreSucursal);
+                    LlaveDescripcion item = new LlaveDescripcion(value.IdEmpresa, value.SucursalPorEmpresa.Empresa.NombreComercial);
                     listaEmpresa.Add(item);
                 }
                 return listaEmpresa;
             }
             catch (Exception ex)
             {
-                log.Error("Error al validar la lista de empresas por valor de registro: ", ex);
-                throw new Exception("Error al validar la lista de empresas por valor de registro. . .");
+                log.Error("Error al validar la lista de empresas asignadas a una terminal: ", ex);
+                throw new Exception("Error al validar la lista de empresas asignadas a una terminal. . .");
             }
         }
 
@@ -416,8 +416,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     empresa.RefreshExpiresIn = null;
                     empresa.EquipoRegistrado = equipo;
                     empresa.Usuario = usuario;
-                    foreach (SucursalPorUsuario sucursalUsuario in usuario.SucursalPorUsuario)
-                        sucursalUsuario.Usuario = null;
                     return empresa;
                 }
                 catch (BusinessException ex)
@@ -491,10 +489,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     empresa.RefreshExpiresIn = null;
                     empresa.EquipoRegistrado = equipo;
                     empresa.Usuario = usuario;
-                    foreach (SucursalPorUsuario sucursalUsuario in usuario.SucursalPorUsuario)
-                    {
-                        sucursalUsuario.Usuario = null;
-                    }
                     return empresa;
                 }
                 catch (BusinessException ex)
@@ -1182,11 +1176,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    Usuario usuario = dbContext.UsuarioRepository.Include("SucursalPorUsuario.SucursalPorEmpresa").Include("RolePorUsuario.Role").FirstOrDefault(x => x.IdUsuario == intIdUsuario);
+                    Usuario usuario = dbContext.UsuarioRepository.Include("SucursalPorUsuario").Include("RolePorUsuario.Role").FirstOrDefault(x => x.IdUsuario == intIdUsuario);
                     if (usuario == null)
                         throw new BusinessException("El usuario por consultar no existe");
-                    foreach (SucursalPorUsuario sucursalUsuario in usuario.SucursalPorUsuario)
-                        sucursalUsuario.Usuario = null;
                     return usuario;
                 }
                 catch (BusinessException ex)
@@ -1208,13 +1200,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 var listaUsuario = new List<LlaveDescripcion>();
                 try
                 {
-                    var listado = dbContext.SucursalPorUsuarioRepository.Include("Usuario").Where(x => x.IdEmpresa == intIdEmpresa && x.IdUsuario > 2);
+                    var listado = dbContext.UsuarioRepository.Include("SucursalPorUsuario").Where(x => x.SucursalPorUsuario.FirstOrDefault(y => y.IdEmpresa == intIdEmpresa) != null && x.IdUsuario > 2);
                     if (!strCodigo.Equals(string.Empty))
-                        listado = listado.Where(x => x.Usuario.CodigoUsuario.Contains(strCodigo.ToUpper()));
+                        listado = listado.Where(x => x.CodigoUsuario.Contains(strCodigo.ToUpper()));
                     listado.OrderBy(x => x.IdUsuario);
                     foreach (var value in listado)
                     {
-                        LlaveDescripcion item = new LlaveDescripcion(value.IdUsuario, value.Usuario.CodigoUsuario);
+                        LlaveDescripcion item = new LlaveDescripcion(value.IdUsuario, value.CodigoUsuario);
                         listaUsuario.Add(item);
                     }
                     return listaUsuario;

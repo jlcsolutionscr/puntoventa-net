@@ -182,10 +182,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                 if (empresa.Contabiliza)
                 {
-                    efectivo = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.Efectivo).FirstOrDefault();
-                    cuentaPorCobrarTarjetaParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.CuentasPorCobrarTarjeta).FirstOrDefault();
-                    gastoComisionParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.GastoComisionTarjeta).FirstOrDefault();
-                    ivaPorPagarParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.IVAPorPagar).FirstOrDefault();
+                    efectivo = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.Efectivo).FirstOrDefault();
+                    cuentaPorCobrarTarjetaParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.CuentasPorCobrarTarjeta).FirstOrDefault();
+                    gastoComisionParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.GastoComisionTarjeta).FirstOrDefault();
+                    ivaPorPagarParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.IVAPorPagar).FirstOrDefault();
                     if (efectivo == null || cuentaPorCobrarTarjetaParam == null || gastoComisionParam == null || ivaPorPagarParam == null)
                         throw new BusinessException("La parametrización contable está incompleta y no se puede continuar. Por favor verificar.");
                 }
@@ -218,7 +218,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     detalleAsiento = new DetalleAsiento();
                     intLineaDetalleAsiento += 1;
                     detalleAsiento.Linea = intLineaDetalleAsiento;
-                    ingresoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.CuentaDeIngresos & x.IdProducto == cuentaIngreso.IdCuenta).FirstOrDefault();
+                    ingresoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.CuentaDeIngresos & x.IdProducto == cuentaIngreso.IdCuenta).FirstOrDefault();
                     if (ingresoParam == null)
                         throw new BusinessException("No existe parametrización contable para la cuenta de ingresos " + cuentaIngreso.IdCuenta + " y no se puede continuar. Por favor verificar.");
                     detalleAsiento.IdCuenta = ingresoParam.IdCuenta;
@@ -479,7 +479,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                 if (empresa.Contabiliza)
                 {
-                    efectivo = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.Efectivo).FirstOrDefault();
+                    efectivo = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.Efectivo).FirstOrDefault();
                     if (efectivo == null)
                         throw new BusinessException("La parametrización contable está incompleta y no se puede continuar. Por favor verificar.");
                 }
@@ -503,7 +503,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     DetalleAsiento detalleAsiento = new DetalleAsiento();
                     intLineaDetalleAsiento += 1;
                     detalleAsiento.Linea = intLineaDetalleAsiento;
-                    egresoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.CuentaDeEgresos & x.IdProducto == cuentaEgreso.IdCuenta).FirstOrDefault();
+                    egresoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.CuentaDeEgresos & x.IdProducto == cuentaEgreso.IdCuenta).FirstOrDefault();
                     if (egresoParam == null)
                         throw new BusinessException("No existe parametrización contable para la cuenta de ingresos " + cuentaEgreso.IdCuenta + " y no se puede continuar. Por favor verificar.");
                     detalleAsiento.IdCuenta = egresoParam.IdCuenta;

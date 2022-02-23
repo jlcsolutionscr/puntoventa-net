@@ -51,7 +51,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         void EnviarReporteDocumentosEmitidos(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte, byte[] bytDefinicionReporte, ICorreoService servicioEnvioCorreo);
         void EnviarReporteDocumentosRecibidos(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte, byte[] bytDefinicionReporte, ICorreoService servicioEnvioCorreo);
         void EnviarReporteResumenMovimientosElectronicos(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte, byte[] bytDefinicionReporte, ICorreoService servicioEnvioCorreo);
-
+        byte[] GenerarReporteCompra(int intIdCompra, string strCodigoUsuario, string strFormatoReporte, byte[] bytDefinicionReporte);
     }
 
     public class ReporteService : IReporteService
@@ -2007,6 +2007,34 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 log.Error("Error al generar el reporte: ", ex);
+                throw new Exception("Se produjo un error al ejecutar el reporte resumen de documentos electrónicos. Por favor consulte con su proveedor.");
+            }
+        }
+
+        public byte[] GenerarReporteCompra(int intIdCompra, string strCodigoUsuario, string strFormatoReporte, byte[] bytDefinicionReporte)
+        {
+            try
+            {
+                Compra compra = dbContext.CompraRepository.Include("DetalleCompra").FirstOrDefault(x => x.IdCompra == intIdCompra);
+                Empresa empresa = dbContext.EmpresaRepository.Find(compra.IdEmpresa);
+                string strNombreEmpresa = empresa.NombreComercial != "" ? empresa.NombreComercial : empresa.NombreEmpresa;
+
+                List<ReporteCompra> dstDatos = new List<ReporteCompra>();
+                foreach (DetalleCompra detalle in compra.DetalleCompra)
+                {
+                    decimal decPrecioVenta = Math.Round(detalle.PrecioVenta * (1 + (detalle.PorcentajeIVA / 100)), 2, MidpointRounding.AwayFromZero);
+                    ReporteCompra item = new ReporteCompra(compra.IdCompra, compra.NoDocumento, compra.Proveedor.Nombre, compra.Fecha.ToString("dd/MM/yyyy"), detalle.Producto.CodigoProveedor, detalle.Producto.Codigo, detalle.Producto.Descripcion, detalle.Cantidad, decPrecioVenta, detalle.PrecioVentaAnt);
+                    dstDatos.Add(item);
+                }
+                ReportDataSource rds = new ReportDataSource("dstDatos", dstDatos);
+                ReportParameter[] parameters = new ReportParameter[5];
+                parameters[0] = new ReportParameter("pUsuario", "SYSTEM");
+                parameters[1] = new ReportParameter("pEmpresa", strNombreEmpresa);
+                return GenerarContenidoReporte(strFormatoReporte, bytDefinicionReporte, rds, parameters);
+            }
+            catch (Exception ex)
+            {
+                log.Error("Error al procesar el reporte de Resumen de Documentos Electrónicos: ", ex);
                 throw new Exception("Se produjo un error al ejecutar el reporte resumen de documentos electrónicos. Por favor consulte con su proveedor.");
             }
         }

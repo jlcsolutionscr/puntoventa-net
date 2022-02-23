@@ -18,8 +18,5 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public bool Nulo { get; set; }
         public int? IdAnuladoPor { get; set; }
         public string MotivoAnulacion { get; set; }
-
-        public TipoMovimientoBanco TipoMovimientoBanco { get; set; }
-        public CuentaBanco CuentaBanco { get; set; }
     }
 }
