@@ -1,5 +1,3 @@
-Imports System.IO
-Imports Microsoft.Reporting.WinForms
 Imports System.Reflection
 Imports LeandroSoftware.ClienteWCF
 Imports LeandroSoftware.Common.DatosComunes
@@ -8,6 +6,8 @@ Imports LeandroSoftware.Common.Constantes
 Imports System.Collections.Generic
 Imports System.Threading.Tasks
 Imports System.Linq
+Imports Microsoft.Reporting.WinForms
+Imports System.IO
 
 Public Class FrmCompra
 #Region "Variables"
@@ -31,6 +31,7 @@ Public Class FrmCompra
     Private bolReady As Boolean = False
     Private newFormReport As FrmReportViewer
     Private strEmpresa As String = IIf(FrmPrincipal.empresaGlobal.NombreComercial = "", FrmPrincipal.empresaGlobal.NombreEmpresa, FrmPrincipal.empresaGlobal.NombreComercial)
+    Private assembly As Assembly = Assembly.LoadFrom("Common.dll")
 #End Region
 
 #Region "Métodos"
@@ -856,7 +857,24 @@ Public Class FrmCompra
     Private Sub BtnGenerarPDF_Click(sender As Object, e As EventArgs) Handles btnGenerarPDF.Click
         If txtIdCompra.Text <> "" Then
             btnGenerarPDF.Enabled = False
-
+            Dim datosReporte As New List(Of ReporteCompra)()
+            For I As Short = 0 To dtbDetalleCompra.Rows.Count - 1
+                Dim decPrecioVenta As Decimal = Math.Round(dtbDetalleCompra.Rows(I).Item(9) * (1 + (dtbDetalleCompra.Rows(I).Item(8) / 100)), 2, MidpointRounding.AwayFromZero)
+                Dim item As New ReporteCompra(compra.IdCompra, compra.NoDocumento, txtProveedor.Text, compra.Fecha, dtbDetalleCompra.Rows(I).Item(2), dtbDetalleCompra.Rows(I).Item(1), dtbDetalleCompra.Rows(I).Item(3), dtbDetalleCompra.Rows(I).Item(4), decPrecioVenta, dtbDetalleCompra.Rows(I).Item(12))
+                datosReporte.Add(item)
+            Next
+            Dim strFecha As String = Now().ToString("dd/MM/yyyy hh:mm:ss")
+            Dim rds As ReportDataSource = New ReportDataSource("dstDatos", datosReporte)
+            newFormReport = New FrmReportViewer
+            newFormReport.Visible = False
+            newFormReport.repReportViewer.LocalReport.DataSources.Clear()
+            newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
+            newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
+            Dim stream As Stream = Assembly.GetManifestResourceStream("LeandroSoftware.Common.PlantillaReportes.rptCompra.rdlc")
+            newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
+            Dim parameters(1) As ReportParameter
+            parameters(0) = New ReportParameter("pUsuario", FrmPrincipal.usuarioGlobal.CodigoUsuario)
+            parameters(1) = New ReportParameter("pEmpresa", strEmpresa)
             Try
                 newFormReport.repReportViewer.LocalReport.SetParameters(parameters)
                 newFormReport.ShowDialog()

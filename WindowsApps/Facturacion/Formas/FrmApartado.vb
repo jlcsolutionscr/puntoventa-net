@@ -625,6 +625,7 @@ Public Class FrmApartado
         btnAnular.Enabled = False
         btnGuardar.Enabled = True
         btnImprimir.Enabled = False
+        btnGenerarPDF.Enabled = False
         btnBuscaVendedor.Enabled = True
         btnBuscarCliente.Enabled = True
         cliente = New Cliente With {
@@ -719,6 +720,7 @@ Public Class FrmApartado
                 btnInsertarPago.Enabled = False
                 btnEliminarPago.Enabled = False
                 btnImprimir.Enabled = True
+                btnGenerarPDF.Enabled = True
                 btnBuscaVendedor.Enabled = False
                 btnBuscarCliente.Enabled = False
                 btnAnular.Enabled = apartado.Aplicado = False And FrmPrincipal.bolAnularTransacciones
@@ -909,6 +911,7 @@ Public Class FrmApartado
             End If
         End If
         btnImprimir.Enabled = True
+        btnGenerarPDF.Enabled = True
         btnImprimir.Focus()
         btnGuardar.Enabled = False
         btnAgregar.Enabled = True
@@ -979,90 +982,17 @@ Public Class FrmApartado
         End If
     End Sub
 
-    Private Async Sub BtnGenerarPDF_Click(sender As Object, e As EventArgs)
+    Private Async Sub BtnGenerarPDF_Click(sender As Object, e As EventArgs) Handles btnGenerarPDF.Click
         If txtIdApartado.Text <> "" Then
-            If apartado.ConsecApartado = 0 Then
-                Try
-                    apartado = Await Puntoventa.ObtenerApartado(txtIdApartado.Text, FrmPrincipal.usuarioGlobal.Token)
-                Catch ex As Exception
-                    MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                    Exit Sub
-                End Try
-            End If
-            'Dim datos As EstructuraPDF = New EstructuraPDF()
-            'Try
-            '    Using ms As New MemoryStream()
-            '        My.Resources.logo.Save(ms, Imaging.ImageFormat.Png)
-            '        datos.PoweredByLogotipo = ms.ToArray()
-            '    End Using
-            'Catch ex As Exception
-            '    datos.PoweredByLogotipo = Nothing
-            'End Try
-            'Try
-            '    datos.Logotipo = Await Puntoventa.ObtenerLogotipoEmpresa(apartado.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
-            'Catch ex As Exception
-            '    datos.Logotipo = Nothing
-            'End Try
-            'datos.TituloDocumento = "APARTADO"
-            'datos.NombreEmpresa = FrmPrincipal.empresaGlobal.NombreEmpresa
-            'datos.NombreComercial = FrmPrincipal.empresaGlobal.NombreComercial
-            'datos.ConsecInterno = apartado.ConsecApartado
-            'datos.Consecutivo = Nothing
-            'datos.Clave = Nothing
-            'datos.CondicionVenta = "Efectivo"
-            'datos.PlazoCredito = ""
-            'datos.Fecha = apartado.Fecha.ToString("dd/MM/yyyy hh:mm:ss")
-            'datos.MedioPago = ""
-            'datos.NombreEmisor = FrmPrincipal.empresaGlobal.NombreEmpresa
-            'datos.NombreComercialEmisor = FrmPrincipal.empresaGlobal.NombreComercial
-            'datos.IdentificacionEmisor = FrmPrincipal.empresaGlobal.Identificacion
-            'datos.CorreoElectronicoEmisor = FrmPrincipal.empresaGlobal.CorreoNotificacion
-            'datos.TelefonoEmisor = FrmPrincipal.empresaGlobal.Telefono1 + IIf(FrmPrincipal.empresaGlobal.Telefono2.Length > 0, " - " + FrmPrincipal.empresaGlobal.Telefono2, "")
-            'datos.FaxEmisor = ""
-            'datos.ProvinciaEmisor = FrmPrincipal.empresaGlobal.Barrio.Distrito.Canton.Provincia.Descripcion
-            'datos.CantonEmisor = FrmPrincipal.empresaGlobal.Barrio.Distrito.Canton.Descripcion
-            'datos.DistritoEmisor = FrmPrincipal.empresaGlobal.Barrio.Distrito.Descripcion
-            'datos.BarrioEmisor = FrmPrincipal.empresaGlobal.Barrio.Descripcion
-            'datos.DireccionEmisor = FrmPrincipal.empresaGlobal.Direccion
-            'If apartado.IdCliente > 1 Then
-            '    datos.PoseeReceptor = True
-            '    datos.NombreReceptor = cliente.Nombre
-            '    datos.NombreComercialReceptor = cliente.NombreComercial
-            '    datos.IdentificacionReceptor = cliente.Identificacion
-            '    datos.CorreoElectronicoReceptor = cliente.CorreoElectronico
-            '    datos.TelefonoReceptor = cliente.Telefono
-            '    datos.FaxReceptor = cliente.Fax
-            'End If
-            'For I As Short = 0 To dtbDetalleApartado.Rows.Count - 1
-            '    Dim decPrecioVenta As Decimal = dtbDetalleApartado.Rows(I).Item(4)
-            '    Dim decTotalLinea As Decimal = dtbDetalleApartado.Rows(I).Item(3) * decPrecioVenta
-            '    Dim detalle As EstructuraPDFDetalleServicio = New EstructuraPDFDetalleServicio With {
-            '        .Cantidad = dtbDetalleApartado.Rows(I).Item(3),
-            '        .Codigo = dtbDetalleApartado.Rows(I).Item(1),
-            '        .Detalle = dtbDetalleApartado.Rows(I).Item(2),
-            '        .PrecioUnitario = decPrecioVenta.ToString("N2", CultureInfo.InvariantCulture),
-            '        .TotalLinea = decTotalLinea.ToString("N2", CultureInfo.InvariantCulture)
-            '    }
-            '    datos.DetalleServicio.Add(detalle)
-            'Next
-            'If (apartado.TextoAdicional IsNot Nothing) Then datos.OtrosTextos = apartado.TextoAdicional
-            'datos.TotalGravado = decGravado.ToString("N2", CultureInfo.InvariantCulture)
-            'datos.TotalExonerado = decExonerado.ToString("N2", CultureInfo.InvariantCulture)
-            'datos.TotalExento = decExcento.ToString("N2", CultureInfo.InvariantCulture)
-            'datos.Descuento = "0.00"
-            'datos.Impuesto = decImpuesto.ToString("N2", CultureInfo.InvariantCulture)
-            'datos.TotalGeneral = decTotal.ToString("N2", CultureInfo.InvariantCulture)
-            'datos.CodigoMoneda = IIf(apartado.IdTipoMoneda = 1, "CRC", "USD")
-            'datos.TipoDeCambio = 1
-            'Try
-            '    Dim pdfBytes As Byte() = Generador.GenerarPDF(datos)
-            '    Dim pdfFilePath As String = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\PROFORMA-" + txtIdApartado.Text + ".pdf"
-            '    File.WriteAllBytes(pdfFilePath, pdfBytes)
-            '    Process.Start(pdfFilePath)
-            'Catch ex As Exception
-            '    MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            '    Exit Sub
-            'End Try
+            Try
+                Dim pdfBytes As Byte() = Await Puntoventa.ObtenerApartadoPDF(apartado.IdApartado, FrmPrincipal.usuarioGlobal.Token)
+                Dim pdfFilePath As String = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\APARTADO-" + apartado.IdApartado.ToString() + ".pdf"
+                File.WriteAllBytes(pdfFilePath, pdfBytes)
+                Process.Start(pdfFilePath)
+            Catch ex As Exception
+                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Exit Sub
+            End Try
         End If
     End Sub
 
@@ -1350,7 +1280,7 @@ Public Class FrmApartado
         If txtCantidad.Text = "" Then txtCantidad.Text = "1"
     End Sub
 
-    Private Sub SelectionAll_MouseDown(sender As Object, e As MouseEventArgs) Handles txtCantidad.MouseDown, txtCodigo.MouseDown, txtDescripcion.MouseDown, txtPrecio.MouseDown
+    Private Sub SelectionAll_MouseDown(sender As Object, e As MouseEventArgs) Handles txtPrecio.MouseDown, txtDescripcion.MouseDown, txtCodigo.MouseDown, txtCantidad.MouseDown
         sender.SelectAll()
     End Sub
 
@@ -1380,7 +1310,7 @@ Public Class FrmApartado
         FrmPrincipal.ValidaNumero(e, sender, False, 0)
     End Sub
 
-    Private Sub ValidaDigitos(sender As Object, e As KeyPressEventArgs) Handles txtCantidad.KeyPress, txtPorcDesc.KeyPress, txtPrecio.KeyPress, txtMontoPago.KeyPress
+    Private Sub ValidaDigitos(sender As Object, e As KeyPressEventArgs) Handles txtPrecio.KeyPress, txtPorcDesc.KeyPress, txtMontoPago.KeyPress, txtCantidad.KeyPress
         FrmPrincipal.ValidaNumero(e, sender, True, 2, ".")
     End Sub
 #End Region

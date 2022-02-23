@@ -215,10 +215,40 @@ namespace LeandroSoftware.ClienteWCF
         {
             string strDatos = "{NombreMetodo: 'ObtenerFacturaPDF', Parametros: {IdFactura: '" + intIdFactura + "'}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
-            byte[] facturaPDF = new byte[0];
+            byte[] archivoPDF = new byte[0];
             if (respuesta != "")
-                facturaPDF = JsonConvert.DeserializeObject<byte[]>(respuesta);
-            return facturaPDF;
+                archivoPDF = JsonConvert.DeserializeObject<byte[]>(respuesta);
+            return archivoPDF;
+        }
+
+        public static async Task<byte[]> ObtenerApartadoPDF(int intIdApartado, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'ObtenerApartadoPDF', Parametros: {IdApartado: '" + intIdApartado + "'}}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            byte[] archivoPDF = new byte[0];
+            if (respuesta != "")
+                archivoPDF = JsonConvert.DeserializeObject<byte[]>(respuesta);
+            return archivoPDF;
+        }
+
+        public static async Task<byte[]> ObtenerOrdenServicioPDF(int intIdOrden, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'ObtenerOrdenServicioPDF', Parametros: {IdOrden: '" + intIdOrden + "'}}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            byte[] archivoPDF = new byte[0];
+            if (respuesta != "")
+                archivoPDF = JsonConvert.DeserializeObject<byte[]>(respuesta);
+            return archivoPDF;
+        }
+
+        public static async Task<byte[]> ObtenerProformaPDF(int intIdProforma, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'ObtenerProformaPDF', Parametros: {IdProforma: '" + intIdProforma + "'}}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            byte[] archivoPDF = new byte[0];
+            if (respuesta != "")
+                archivoPDF = JsonConvert.DeserializeObject<byte[]>(respuesta);
+            return archivoPDF;
         }
 
         public static async Task<bool> ValidarUsuarioHacienda(string strCodigoUsuario, string strClave, string strToken)

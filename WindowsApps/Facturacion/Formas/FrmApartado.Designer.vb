@@ -102,6 +102,7 @@ Partial Class FrmApartado
         Me._LblImpuesto_0 = New System.Windows.Forms.Label()
         Me._LblTotal_6 = New System.Windows.Forms.Label()
         Me._lblSubTotal_5 = New System.Windows.Forms.Label()
+        Me.btnGenerarPDF = New System.Windows.Forms.Button()
         CType(Me.grdDetalleApartado, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.grdDesglosePago, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -1088,6 +1089,21 @@ Partial Class FrmApartado
         Me._lblSubTotal_5.Text = "Sub-Total:"
         Me._lblSubTotal_5.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
+        'btnGenerarPDF
+        '
+        Me.btnGenerarPDF.BackColor = System.Drawing.SystemColors.ButtonHighlight
+        Me.btnGenerarPDF.Cursor = System.Windows.Forms.Cursors.Default
+        Me.btnGenerarPDF.Enabled = False
+        Me.btnGenerarPDF.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.btnGenerarPDF.Location = New System.Drawing.Point(328, 8)
+        Me.btnGenerarPDF.Name = "btnGenerarPDF"
+        Me.btnGenerarPDF.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.btnGenerarPDF.Size = New System.Drawing.Size(64, 21)
+        Me.btnGenerarPDF.TabIndex = 212
+        Me.btnGenerarPDF.TabStop = False
+        Me.btnGenerarPDF.Text = "A&brir PDF"
+        Me.btnGenerarPDF.UseVisualStyleBackColor = False
+        '
         'FrmApartado
         '
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
@@ -1095,6 +1111,7 @@ Partial Class FrmApartado
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(817, 616)
+        Me.Controls.Add(Me.btnGenerarPDF)
         Me.Controls.Add(Me.txtDescuento)
         Me.Controls.Add(Me.Label17)
         Me.Controls.Add(Me.txtImpuesto)
@@ -1239,4 +1256,5 @@ Partial Class FrmApartado
     Public WithEvents _LblImpuesto_0 As Label
     Public WithEvents _LblTotal_6 As Label
     Public WithEvents _lblSubTotal_5 As Label
+    Public WithEvents btnGenerarPDF As Button
 End Class

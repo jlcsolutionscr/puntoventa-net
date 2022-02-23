@@ -1,4 +1,4 @@
-﻿using LeandroSoftware.Common.DatosComunes;
+﻿using LeandroSoftware.ServicioWeb.EstructuraDatos;
 using PdfSharpCore.Drawing;
 using PdfSharpCore.Drawing.Layout;
 using PdfSharpCore.Pdf;
@@ -220,8 +220,7 @@ namespace LeandroSoftware.ServicioWeb.Utilitario
 
             MemoryStream stream = new MemoryStream();
             document.Save(stream, false);
-            byte[] bytes = stream.ToArray();
-            return bytes;
+            return stream.ToArray();
         }
     }
 }

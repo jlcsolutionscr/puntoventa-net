@@ -3,10 +3,20 @@ using LeandroSoftware.ServicioWeb.Servicios;
 using LeandroSoftware.ServicioWeb;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
-using static System.Net.Mime.MediaTypeNames;
 using Newtonsoft.Json;
 
 var builder = WebApplication.CreateBuilder(args);
+
+/*ILoggerProvider logProvider = new Log4NetProvider(new FileInfo("log4net.config").FullName);
+builder.Services.AddLogging((builder) =>
+{
+    builder.ClearProviders();
+    builder.AddProvider(logProvider).AddFilter(level => level >= LogLevel.Information);
+});
+
+ILogger logger = logProvider.CreateLogger("JLCPuntoventa");
+
+builder.Services.AddSingleton(logger);*/
 
 var config = new ConfigurationBuilder()
     .AddJsonFile("appsettings.json", optional: false)

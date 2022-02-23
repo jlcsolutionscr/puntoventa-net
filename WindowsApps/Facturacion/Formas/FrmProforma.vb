@@ -769,86 +769,15 @@ Public Class FrmProforma
 
     Private Async Sub BtnGenerarPDF_Click(sender As Object, e As EventArgs) Handles btnGenerarPDF.Click
         If txtIdProforma.Text <> "" Then
-            'Try
-            '    proforma = Await Puntoventa.ObtenerProforma(proforma.IdProforma, FrmPrincipal.usuarioGlobal.Token)
-            'Catch ex As Exception
-            '    MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            '    Exit Sub
-            'End Try
-            'Dim datos As EstructuraPDF = New EstructuraPDF()
-            'Try
-            '    Using ms As New MemoryStream()
-            '        My.Resources.logo.Save(ms, Imaging.ImageFormat.Png)
-            '        datos.PoweredByLogotipo = ms.ToArray()
-            '    End Using
-            'Catch ex As Exception
-            '    datos.PoweredByLogotipo = Nothing
-            'End Try
-            'Try
-            '    datos.Logotipo = Await Puntoventa.ObtenerLogotipoEmpresa(proforma.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
-            'Catch ex As Exception
-            '    datos.Logotipo = Nothing
-            'End Try
-            'datos.TituloDocumento = "FACTURA PROFORMA"
-            'datos.NombreEmpresa = FrmPrincipal.empresaGlobal.NombreEmpresa
-            'datos.NombreComercial = FrmPrincipal.empresaGlobal.NombreComercial
-            'datos.ConsecInterno = proforma.ConsecProforma
-            'datos.Consecutivo = Nothing
-            'datos.Clave = Nothing
-            'datos.CondicionVenta = "Proforma"
-            'datos.PlazoCredito = ""
-            'datos.Fecha = proforma.Fecha.ToString("dd/MM/yyyy hh:mm:ss")
-            'datos.MedioPago = ""
-            'datos.NombreEmisor = FrmPrincipal.empresaGlobal.NombreEmpresa
-            'datos.NombreComercialEmisor = FrmPrincipal.empresaGlobal.NombreComercial
-            'datos.IdentificacionEmisor = FrmPrincipal.empresaGlobal.Identificacion
-            'datos.CorreoElectronicoEmisor = FrmPrincipal.empresaGlobal.CorreoNotificacion
-            'datos.TelefonoEmisor = FrmPrincipal.empresaGlobal.Telefono1 + IIf(FrmPrincipal.empresaGlobal.Telefono2.Length > 0, " - " + FrmPrincipal.empresaGlobal.Telefono2, "")
-            'datos.FaxEmisor = ""
-            'datos.ProvinciaEmisor = FrmPrincipal.empresaGlobal.Barrio.Distrito.Canton.Provincia.Descripcion
-            'datos.CantonEmisor = FrmPrincipal.empresaGlobal.Barrio.Distrito.Canton.Descripcion
-            'datos.DistritoEmisor = FrmPrincipal.empresaGlobal.Barrio.Distrito.Descripcion
-            'datos.BarrioEmisor = FrmPrincipal.empresaGlobal.Barrio.Descripcion
-            'datos.DireccionEmisor = FrmPrincipal.empresaGlobal.Direccion
-            'datos.NombreReceptor = proforma.NombreCliente
-            'If proforma.IdCliente > 1 Then
-            '    datos.PoseeReceptor = True
-            '    datos.NombreComercialReceptor = cliente.NombreComercial
-            '    datos.IdentificacionReceptor = cliente.Identificacion
-            '    datos.CorreoElectronicoReceptor = cliente.CorreoElectronico
-            '    datos.TelefonoReceptor = cliente.Telefono
-            '    datos.FaxReceptor = cliente.Fax
-            'End If
-            'For Each item As DetalleProforma In proforma.DetalleProforma
-            '    Dim decPrecioVenta As Decimal = item.PrecioVenta
-            '    Dim decTotalLinea As Decimal = item.Cantidad * decPrecioVenta
-            '    Dim detalle As EstructuraPDFDetalleServicio = New EstructuraPDFDetalleServicio With {
-            '        .Cantidad = item.Cantidad,
-            '        .Codigo = item.Producto.CodigoClasificacion,
-            '        .Detalle = item.Descripcion,
-            '        .PrecioUnitario = decPrecioVenta.ToString("N2", CultureInfo.InvariantCulture),
-            '        .TotalLinea = decTotalLinea.ToString("N2", CultureInfo.InvariantCulture)
-            '    }
-            '    datos.DetalleServicio.Add(detalle)
-            'Next
-            'If (proforma.TextoAdicional IsNot Nothing) Then datos.OtrosTextos = proforma.TextoAdicional
-            'datos.TotalGravado = proforma.Gravado.ToString("N2", CultureInfo.InvariantCulture)
-            'datos.TotalExonerado = proforma.Exonerado.ToString("N2", CultureInfo.InvariantCulture)
-            'datos.TotalExento = proforma.Excento.ToString("N2", CultureInfo.InvariantCulture)
-            'datos.Descuento = "0.00"
-            'datos.Impuesto = proforma.Impuesto.ToString("N2", CultureInfo.InvariantCulture)
-            'datos.TotalGeneral = (proforma.Gravado + proforma.Exonerado + proforma.Excento + proforma.Impuesto).ToString("N2", CultureInfo.InvariantCulture)
-            'datos.CodigoMoneda = IIf(proforma.IdTipoMoneda = 1, "CRC", "USD")
-            'datos.TipoDeCambio = 1
-            'Try
-            '    Dim pdfBytes As Byte() = Generador.GenerarPDF(datos)
-            '    Dim pdfFilePath As String = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\PROFORMA-" + txtIdProforma.Text + ".pdf"
-            '    File.WriteAllBytes(pdfFilePath, pdfBytes)
-            '    Process.Start(pdfFilePath)
-            'Catch ex As Exception
-            '    MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            '    Exit Sub
-            'End Try
+            Try
+                Dim pdfBytes As Byte() = Await Puntoventa.ObtenerProformaPDF(proforma.IdProforma, FrmPrincipal.usuarioGlobal.Token)
+                Dim pdfFilePath As String = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\PROFORMA-" + proforma.IdProforma.ToString() + ".pdf"
+                File.WriteAllBytes(pdfFilePath, pdfBytes)
+                Process.Start(pdfFilePath)
+            Catch ex As Exception
+                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Exit Sub
+            End Try
         End If
     End Sub
 

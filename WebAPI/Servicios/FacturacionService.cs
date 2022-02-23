@@ -71,6 +71,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         void ProcesarRespuestaHacienda(RespuestaHaciendaDTO mensaje, ICorreoService servicioEnvioCorreo, string strCorreoNotificacionErrores, byte[] bytLogo);
         void EnviarNotificacionDocumentoElectronico(int intIdDocumento, string strCorreoReceptor, ICorreoService servicioEnvioCorreo, string strCorreoNotificacionErrores, byte[] bytLogo);
         byte[] GenerarFacturaPDF(int intIdFactura, byte[] bytLogo);
+        byte[] GenerarApartadoPDF(int intIdApartado, byte[] bytLogo);
+        byte[] GenerarOrdenServicioPDF(int intIdOrdenServicio, byte[] bytLogo);
+        byte[] GenerarProformaPDF(int intIdProforma, byte[] bytLogo);
         void GenerarNotificacionFactura(int intIdFactura, ICorreoService servicioEnvioCorreo, byte[] bytLogo);
         void GenerarNotificacionProforma(int intIdProforma, string strCorreoReceptor, ICorreoService servicioEnvioCorreo, byte[] bytLogo);
     }
@@ -2656,8 +2659,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 Empresa empresa = dbContext.EmpresaRepository.Include("Barrio.Distrito.Canton.Provincia").Where(x => x.IdEmpresa == factura.IdEmpresa).FirstOrDefault();
                 if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                 EstructuraPDF datos = GenerarEstructuraFacturaPDF(empresa, factura, bytLogo);
-                byte[] archivoPDF = Generador.GenerarPDF(datos);
-                return archivoPDF;
+                return Generador.GenerarPDF(datos);
             }
             catch (BusinessException ex)
             {
@@ -2667,6 +2669,69 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 log.Error("Error al generar archivo PDF de factura con ID: " + intIdFactura, ex);
                 throw new Exception("Se produjo un error al generar el archivo DPF de la factura. Por favor consulte con su proveedor.");
+            }
+        }
+
+        public byte[] GenerarApartadoPDF(int intIdApartado, byte[] bytLogo)
+        {
+            try
+            {
+                Apartado apartado = dbContext.ApartadoRepository.Include("Cliente").Include("DetalleApartado.Producto").FirstOrDefault(x => x.IdApartado == intIdApartado);
+                Empresa empresa = dbContext.EmpresaRepository.Include("Barrio.Distrito.Canton.Provincia").Where(x => x.IdEmpresa == apartado.IdEmpresa).FirstOrDefault();
+                if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                EstructuraPDF datos = GenerarEstructuraApartadoPDF(empresa, apartado, bytLogo);
+                return Generador.GenerarPDF(datos);
+            }
+            catch (BusinessException ex)
+            {
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                log.Error("Error al generar archivo PDF del apartado con ID: " + intIdApartado, ex);
+                throw new Exception("Se produjo un error al generar el archivo DPF del apartado. Por favor consulte con su proveedor.");
+            }
+        }
+
+        public byte[] GenerarOrdenServicioPDF(int intIdOrdenServicio, byte[] bytLogo)
+        {
+            try
+            {
+                OrdenServicio ordenServicio = dbContext.OrdenServicioRepository.Include("Cliente").Include("DetalleOrdenServicio.Producto").FirstOrDefault(x => x.IdOrden == intIdOrdenServicio);
+                Empresa empresa = dbContext.EmpresaRepository.Include("Barrio.Distrito.Canton.Provincia").Where(x => x.IdEmpresa == ordenServicio.IdEmpresa).FirstOrDefault();
+                if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                EstructuraPDF datos = GenerarEstructuraOrdenServicioPDF(empresa, ordenServicio, bytLogo);
+                return Generador.GenerarPDF(datos);
+            }
+            catch (BusinessException ex)
+            {
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                log.Error("Error al generar archivo PDF de orden de servicio con ID: " + intIdOrdenServicio, ex);
+                throw new Exception("Se produjo un error al generar el archivo DPF de la orden de servicio. Por favor consulte con su proveedor.");
+            }
+        }
+
+        public byte[] GenerarProformaPDF(int intIdProforma, byte[] bytLogo)
+        {
+            try
+            {
+                Proforma proforma = dbContext.ProformaRepository.Include("Cliente").Include("DetalleProforma.Producto").FirstOrDefault(x => x.IdProforma == intIdProforma);
+                Empresa empresa = dbContext.EmpresaRepository.Include("Barrio.Distrito.Canton.Provincia").Where(x => x.IdEmpresa == proforma.IdEmpresa).FirstOrDefault();
+                if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                EstructuraPDF datos = GenerarEstructuraProformaPDF(empresa, proforma, bytLogo);
+                return Generador.GenerarPDF(datos);
+            }
+            catch (BusinessException ex)
+            {
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                log.Error("Error al generar archivo PDF de la proforma con ID: " + intIdProforma, ex);
+                throw new Exception("Se produjo un error al generar el archivo DPF de la proforma. Por favor consulte con su proveedor.");
             }
         }
 
@@ -2752,6 +2817,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 datos.TelefonoReceptor = factura.Cliente.Telefono;
                 datos.FaxReceptor = factura.Cliente.Fax;
             }
+            datos.DetalleServicio = new List<EstructuraPDFDetalleServicio>();
             foreach (DetalleFactura linea in factura.DetalleFactura)
             {
                 decimal decTotalLinea = linea.Cantidad * linea.PrecioVenta;
@@ -2773,6 +2839,215 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             datos.Impuesto = factura.Impuesto.ToString("N2", CultureInfo.InvariantCulture);
             datos.TotalGeneral = (factura.Gravado + factura.Exonerado + factura.Excento + factura.Impuesto).ToString("N2", CultureInfo.InvariantCulture);
             datos.CodigoMoneda = factura.IdTipoMoneda == 1 ? "CRC" : "USD";
+            datos.TipoDeCambio = "1";
+            return datos;
+        }
+
+        private EstructuraPDF GenerarEstructuraApartadoPDF(Empresa empresa, Apartado apartado, byte[] bytLogo)
+        {
+            EstructuraPDF datos = new EstructuraPDF();
+            datos.PoweredByLogotipo = bytLogo;
+            try
+            {
+                datos.Logotipo = empresa.Logotipo;
+            }
+            catch (Exception)
+            {
+                datos.Logotipo = null;
+            }
+            datos.TituloDocumento = "APARTADO";
+            datos.NombreEmpresa = empresa.NombreEmpresa;
+            datos.NombreComercial = empresa.NombreComercial;
+            datos.PlazoCredito = "";
+            datos.ConsecInterno = apartado.ConsecApartado.ToString();
+            datos.Consecutivo = null;
+            datos.Clave = null;
+            datos.CondicionVenta = "Proforma";
+            datos.PlazoCredito = "";
+            datos.Fecha = apartado.Fecha.ToString("dd/MM/yyyy hh:mm:ss");
+            datos.MedioPago = "";
+            datos.NombreEmisor = empresa.NombreEmpresa;
+            datos.NombreComercialEmisor = empresa.NombreComercial;
+            datos.IdentificacionEmisor = empresa.Identificacion;
+            datos.CorreoElectronicoEmisor = empresa.CorreoNotificacion;
+            datos.TelefonoEmisor = empresa.Telefono1 + (empresa.Telefono2.Length > 0 ? " - " + empresa.Telefono2 : "");
+            datos.FaxEmisor = "";
+            datos.ProvinciaEmisor = empresa.Barrio.Distrito.Canton.Provincia.Descripcion;
+            datos.CantonEmisor = empresa.Barrio.Distrito.Canton.Descripcion;
+            datos.DistritoEmisor = empresa.Barrio.Distrito.Descripcion;
+            datos.BarrioEmisor = empresa.Barrio.Descripcion;
+            datos.DireccionEmisor = empresa.Direccion;
+            datos.NombreReceptor = apartado.NombreCliente;
+            if (apartado.IdCliente > 1)
+            {
+                datos.PoseeReceptor = true;
+                datos.NombreComercialReceptor = apartado.Cliente.NombreComercial;
+                datos.IdentificacionReceptor = apartado.Cliente.Identificacion;
+                datos.CorreoElectronicoReceptor = apartado.Cliente.CorreoElectronico;
+                datos.TelefonoReceptor = apartado.Cliente.Telefono;
+                datos.FaxReceptor = apartado.Cliente.Fax;
+            }
+            datos.DetalleServicio = new List<EstructuraPDFDetalleServicio>();
+            foreach (DetalleApartado linea in apartado.DetalleApartado)
+            {
+                decimal decTotalLinea = linea.Cantidad * linea.PrecioVenta;
+                EstructuraPDFDetalleServicio detalle = new EstructuraPDFDetalleServicio
+                {
+                    Cantidad = linea.Cantidad.ToString("N2", CultureInfo.InvariantCulture),
+                    Codigo = linea.Producto.CodigoClasificacion,
+                    Detalle = linea.Descripcion,
+                    PrecioUnitario = linea.PrecioVenta.ToString("N2", CultureInfo.InvariantCulture),
+                    TotalLinea = decTotalLinea.ToString("N2", CultureInfo.InvariantCulture)
+                };
+                datos.DetalleServicio.Add(detalle);
+            };
+            if (apartado.TextoAdicional != null) datos.OtrosTextos = apartado.TextoAdicional;
+            datos.TotalGravado = apartado.Gravado.ToString("N2", CultureInfo.InvariantCulture);
+            datos.TotalExonerado = apartado.Exonerado.ToString("N2", CultureInfo.InvariantCulture);
+            datos.TotalExento = apartado.Excento.ToString("N2", CultureInfo.InvariantCulture);
+            datos.Descuento = "0.00";
+            datos.Impuesto = apartado.Impuesto.ToString("N2", CultureInfo.InvariantCulture);
+            datos.TotalGeneral = (apartado.Gravado + apartado.Exonerado + apartado.Excento + apartado.Impuesto).ToString("N2", CultureInfo.InvariantCulture);
+            datos.CodigoMoneda = apartado.IdTipoMoneda == 1 ? "CRC" : "USD";
+            datos.TipoDeCambio = "1";
+            return datos;
+        }
+
+        private EstructuraPDF GenerarEstructuraOrdenServicioPDF(Empresa empresa, OrdenServicio ordenServicio, byte[] bytLogo)
+        {
+            EstructuraPDF datos = new EstructuraPDF();
+            datos.PoweredByLogotipo = bytLogo;
+            try
+            {
+                datos.Logotipo = empresa.Logotipo;
+            }
+            catch (Exception)
+            {
+                datos.Logotipo = null;
+            }
+            datos.TituloDocumento = "ORDEN DE SERVICIO";
+            datos.NombreEmpresa = empresa.NombreEmpresa;
+            datos.NombreComercial = empresa.NombreComercial;
+            datos.PlazoCredito = "";
+            datos.ConsecInterno = ordenServicio.ConsecOrdenServicio.ToString();
+            datos.Consecutivo = null;
+            datos.Clave = null;
+            datos.CondicionVenta = "Efectivo";
+            datos.PlazoCredito = "";
+            datos.Fecha = ordenServicio.Fecha.ToString("dd/MM/yyyy hh:mm:ss");
+            datos.MedioPago = "";
+            datos.NombreEmisor = empresa.NombreEmpresa;
+            datos.NombreComercialEmisor = empresa.NombreComercial;
+            datos.IdentificacionEmisor = empresa.Identificacion;
+            datos.CorreoElectronicoEmisor = empresa.CorreoNotificacion;
+            datos.TelefonoEmisor = empresa.Telefono1 + (empresa.Telefono2.Length > 0 ? " - " + empresa.Telefono2 : "");
+            datos.FaxEmisor = "";
+            datos.ProvinciaEmisor = empresa.Barrio.Distrito.Canton.Provincia.Descripcion;
+            datos.CantonEmisor = empresa.Barrio.Distrito.Canton.Descripcion;
+            datos.DistritoEmisor = empresa.Barrio.Distrito.Descripcion;
+            datos.BarrioEmisor = empresa.Barrio.Descripcion;
+            datos.DireccionEmisor = empresa.Direccion;
+            datos.NombreReceptor = ordenServicio.NombreCliente;
+            if (ordenServicio.IdCliente > 1)
+            {
+                datos.PoseeReceptor = true;
+                datos.NombreComercialReceptor = ordenServicio.Cliente.NombreComercial;
+                datos.IdentificacionReceptor = ordenServicio.Cliente.Identificacion;
+                datos.CorreoElectronicoReceptor = ordenServicio.Cliente.CorreoElectronico;
+                datos.TelefonoReceptor = ordenServicio.Cliente.Telefono;
+                datos.FaxReceptor = ordenServicio.Cliente.Fax;
+            }
+            datos.DetalleServicio = new List<EstructuraPDFDetalleServicio>();
+            foreach (DetalleOrdenServicio linea in ordenServicio.DetalleOrdenServicio)
+            {
+                decimal decTotalLinea = linea.Cantidad * linea.PrecioVenta;
+                EstructuraPDFDetalleServicio detalle = new EstructuraPDFDetalleServicio
+                {
+                    Cantidad = linea.Cantidad.ToString("N2", CultureInfo.InvariantCulture),
+                    Codigo = linea.Producto.CodigoClasificacion,
+                    Detalle = linea.Descripcion,
+                    PrecioUnitario = linea.PrecioVenta.ToString("N2", CultureInfo.InvariantCulture),
+                    TotalLinea = decTotalLinea.ToString("N2", CultureInfo.InvariantCulture)
+                };
+                datos.DetalleServicio.Add(detalle);
+            };
+            datos.TotalGravado = ordenServicio.Gravado.ToString("N2", CultureInfo.InvariantCulture);
+            datos.TotalExonerado = ordenServicio.Exonerado.ToString("N2", CultureInfo.InvariantCulture);
+            datos.TotalExento = ordenServicio.Excento.ToString("N2", CultureInfo.InvariantCulture);
+            datos.Descuento = "0.00";
+            datos.Impuesto = ordenServicio.Impuesto.ToString("N2", CultureInfo.InvariantCulture);
+            datos.TotalGeneral = (ordenServicio.Gravado + ordenServicio.Exonerado + ordenServicio.Excento + ordenServicio.Impuesto).ToString("N2", CultureInfo.InvariantCulture);
+            datos.CodigoMoneda = ordenServicio.IdTipoMoneda == 1 ? "CRC" : "USD";
+            datos.TipoDeCambio = "1";
+            return datos;
+        }
+
+        private EstructuraPDF GenerarEstructuraProformaPDF(Empresa empresa, Proforma proforma, byte[] bytLogo)
+        {
+            EstructuraPDF datos = new EstructuraPDF();
+            datos.PoweredByLogotipo = bytLogo;
+            try
+            {
+                datos.Logotipo = empresa.Logotipo;
+            }
+            catch (Exception)
+            {
+                datos.Logotipo = null;
+            }
+            datos.TituloDocumento = "PROFORMA";
+            datos.NombreEmpresa = empresa.NombreEmpresa;
+            datos.NombreComercial = empresa.NombreComercial;
+            datos.PlazoCredito = "";
+            datos.ConsecInterno = proforma.ConsecProforma.ToString();
+            datos.Consecutivo = null;
+            datos.Clave = null;
+            datos.CondicionVenta = "Proforma";
+            datos.PlazoCredito = "";
+            datos.Fecha = proforma.Fecha.ToString("dd/MM/yyyy hh:mm:ss");
+            datos.MedioPago = "";
+            datos.NombreEmisor = empresa.NombreEmpresa;
+            datos.NombreComercialEmisor = empresa.NombreComercial;
+            datos.IdentificacionEmisor = empresa.Identificacion;
+            datos.CorreoElectronicoEmisor = empresa.CorreoNotificacion;
+            datos.TelefonoEmisor = empresa.Telefono1 + (empresa.Telefono2.Length > 0 ? " - " + empresa.Telefono2 : "");
+            datos.FaxEmisor = "";
+            datos.ProvinciaEmisor = empresa.Barrio.Distrito.Canton.Provincia.Descripcion;
+            datos.CantonEmisor = empresa.Barrio.Distrito.Canton.Descripcion;
+            datos.DistritoEmisor = empresa.Barrio.Distrito.Descripcion;
+            datos.BarrioEmisor = empresa.Barrio.Descripcion;
+            datos.DireccionEmisor = empresa.Direccion;
+            datos.NombreReceptor = proforma.NombreCliente;
+            if (proforma.IdCliente > 1)
+            {
+                datos.PoseeReceptor = true;
+                datos.NombreComercialReceptor = proforma.Cliente.NombreComercial;
+                datos.IdentificacionReceptor = proforma.Cliente.Identificacion;
+                datos.CorreoElectronicoReceptor = proforma.Cliente.CorreoElectronico;
+                datos.TelefonoReceptor = proforma.Cliente.Telefono;
+                datos.FaxReceptor = proforma.Cliente.Fax;
+            }
+            datos.DetalleServicio = new List<EstructuraPDFDetalleServicio>();
+            foreach (DetalleProforma linea in proforma.DetalleProforma)
+            {
+                decimal decTotalLinea = linea.Cantidad * linea.PrecioVenta;
+                EstructuraPDFDetalleServicio detalle = new EstructuraPDFDetalleServicio
+                {
+                    Cantidad = linea.Cantidad.ToString("N2", CultureInfo.InvariantCulture),
+                    Codigo = linea.Producto.CodigoClasificacion,
+                    Detalle = linea.Descripcion,
+                    PrecioUnitario = linea.PrecioVenta.ToString("N2", CultureInfo.InvariantCulture),
+                    TotalLinea = decTotalLinea.ToString("N2", CultureInfo.InvariantCulture)
+                };
+                datos.DetalleServicio.Add(detalle);
+            };
+            if (proforma.TextoAdicional != "") datos.OtrosTextos = proforma.TextoAdicional;
+            datos.TotalGravado = proforma.Gravado.ToString("N2", CultureInfo.InvariantCulture);
+            datos.TotalExonerado = proforma.Exonerado.ToString("N2", CultureInfo.InvariantCulture);
+            datos.TotalExento = proforma.Excento.ToString("N2", CultureInfo.InvariantCulture);
+            datos.Descuento = "0.00";
+            datos.Impuesto = proforma.Impuesto.ToString("N2", CultureInfo.InvariantCulture);
+            datos.TotalGeneral = (proforma.Gravado + proforma.Exonerado + proforma.Excento + proforma.Impuesto).ToString("N2", CultureInfo.InvariantCulture);
+            datos.CodigoMoneda = proforma.IdTipoMoneda == 1 ? "CRC" : "USD";
             datos.TipoDeCambio = "1";
             return datos;
         }
