@@ -3,6 +3,7 @@ Imports LeandroSoftware.ClienteWCF
 Imports LeandroSoftware.Common.Dominio.Entidades
 Imports LeandroSoftware.Common.DatosComunes
 Imports LeandroSoftware.Common.Constantes
+Imports System.Collections.Generic
 
 Public Class FrmAjusteInventario
 #Region "Variables"
@@ -267,6 +268,7 @@ Public Class FrmAjusteInventario
                 .Fecha = Now(),
                 .Descripcion = txtDescAjuste.Text
             }
+            ajusteInventario.DetalleAjusteInventario = New List(Of DetalleAjusteInventario)
             For I As Integer = 0 To dtbDetalleAjusteInventario.Rows.Count - 1
                 detalleAjusteInventario = New DetalleAjusteInventario With {
                     .IdProducto = dtbDetalleAjusteInventario.Rows(I).Item(0),

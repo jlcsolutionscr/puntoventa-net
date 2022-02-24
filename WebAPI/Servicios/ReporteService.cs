@@ -57,10 +57,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
     public class ReporteService : IReporteService
     {
         private static ILeandroContext dbContext;
-        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private static CultureInfo provider = CultureInfo.InvariantCulture;
         private static string strFormat = "dd/MM/yyyy HH:mm:ss";
-        private static Assembly assembly = Assembly.LoadFrom("Common.dll");
+        private static Assembly assembly = Assembly.LoadFrom(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\Common.dll");
 
         public ReporteService(ILeandroContext pContext)
         {

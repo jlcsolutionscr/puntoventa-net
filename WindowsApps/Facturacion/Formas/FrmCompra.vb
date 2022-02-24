@@ -765,6 +765,7 @@ Public Class FrmCompra
                 .Observaciones = txtObservaciones.Text,
                 .Nulo = False
             }
+            compra.DetalleCompra = New List(Of DetalleCompra)
             For I As Short = 0 To dtbDetalleCompra.Rows.Count - 1
                 detalleCompra = New DetalleCompra With {
                     .IdProducto = dtbDetalleCompra.Rows(I).Item(0),
@@ -778,6 +779,7 @@ Public Class FrmCompra
                 }
                 compra.DetalleCompra.Add(detalleCompra)
             Next
+            compra.DesglosePagoCompra = New List(Of DesglosePagoCompra)
             For I As Short = 0 To dtbDesglosePago.Rows.Count - 1
                 desglosePago = New DesglosePagoCompra With {
                     .IdFormaPago = dtbDesglosePago.Rows(I).Item(0),

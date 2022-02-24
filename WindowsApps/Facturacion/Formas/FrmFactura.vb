@@ -1255,6 +1255,7 @@ Public Class FrmFactura
                 .FechaEmisionDoc = cliente.FechaEmisionDoc,
                 .PorcentajeExoneracion = cliente.PorcentajeExoneracion
             }
+            factura.DetalleFactura = New List(Of DetalleFactura)
             For I As Short = 0 To dtbDetalleFactura.Rows.Count - 1
                 detalleFactura = New DetalleFactura With {
                     .IdProducto = dtbDetalleFactura.Rows(I).Item(0),
@@ -1268,6 +1269,7 @@ Public Class FrmFactura
                 }
                 factura.DetalleFactura.Add(detalleFactura)
             Next
+            factura.DesglosePagoFactura = New List(Of DesglosePagoFactura)
             For I As Short = 0 To dtbDesglosePago.Rows.Count - 1
                 desglosePago = New DesglosePagoFactura With {
                     .IdFormaPago = dtbDesglosePago.Rows(I).Item(0),

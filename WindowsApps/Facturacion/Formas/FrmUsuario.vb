@@ -1,5 +1,6 @@
 Imports System.Collections.Generic
 Imports System.Linq
+Imports System.Threading.Tasks
 Imports LeandroSoftware.ClienteWCF
 Imports LeandroSoftware.Common.Dominio.Entidades
 Imports LeandroSoftware.Common.Seguridad
@@ -11,6 +12,7 @@ Public Class FrmUsuario
     Private datos As Usuario
     Private rolePorUsuario As RolePorUsuario
     Private sucursalPorUsuario As SucursalPorUsuario
+    Private inicializando As Boolean = True
     Public intIdUsuario As Integer
 #End Region
 
@@ -76,7 +78,7 @@ Public Class FrmUsuario
         End If
     End Function
 
-    Private Async Sub CargarCombos()
+    Private Async Function CargarCombos() As Task
         cboRole.ValueMember = "Id"
         cboRole.DisplayMember = "Descripcion"
         cboRole.DataSource = Await Puntoventa.ObtenerListadoRolesPorEmpresa(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
@@ -84,7 +86,8 @@ Public Class FrmUsuario
         cboSucursal.DisplayMember = "Descripcion"
         cboSucursal.DataSource = FrmPrincipal.listaSucursales
         cboSucursal.SelectedValue = FrmPrincipal.equipoGlobal.IdSucursal
-    End Sub
+        inicializando = False
+    End Function
 #End Region
 
 #Region "Eventos Controles"
@@ -111,7 +114,7 @@ Public Class FrmUsuario
         Try
             IniciaDetalleRole()
             EstablecerPropiedadesDataGridView()
-            CargarCombos()
+            Await CargarCombos()
             If intIdUsuario > 0 Then
                 txtUsuario.ReadOnly = True
                 Dim strDecryptedPassword As String

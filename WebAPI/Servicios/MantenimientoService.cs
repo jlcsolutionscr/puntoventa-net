@@ -1179,6 +1179,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     Usuario usuario = dbContext.UsuarioRepository.Include("SucursalPorUsuario").Include("RolePorUsuario.Role").FirstOrDefault(x => x.IdUsuario == intIdUsuario);
                     if (usuario == null)
                         throw new BusinessException("El usuario por consultar no existe");
+                    foreach (SucursalPorUsuario sucursal in usuario.SucursalPorUsuario)
+                        sucursal.Usuario = null;
                     return usuario;
                 }
                 catch (BusinessException ex)
@@ -1577,6 +1579,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         bool impuestoServ = dbContext.ProductoRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.Tipo == StaticTipoProducto.ImpuestodeServicio).Count() > 0;
                         if (impuestoServ) throw new BusinessException("Ya existe un producto de tipo 'Impuesto de servicio' registrado en la empresa.");
                     }
+                    if (producto.Imagen == null) producto.Imagen = new byte[0];
                     dbContext.ProductoRepository.Add(producto);
                     dbContext.Commit();
                 }
@@ -1607,11 +1610,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         bool transitorio = dbContext.ProductoRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto != producto.IdProducto && x.Tipo == StaticTipoProducto.Transitorio).Count() > 0;
                         if (transitorio) throw new BusinessException("Ya existe un producto de tipo 'Transitorio' registrado en la empresa.");
                     }
-                    if (producto.Imagen == null)
+                    if (producto.Tipo == StaticTipoProducto.ImpuestodeServicio)
                     {
-                        byte[] imagen = dbContext.ProductoRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto).FirstOrDefault().Imagen;
-                        producto.Imagen = imagen;
+                        bool transitorio = dbContext.ProductoRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto != producto.IdProducto && x.Tipo == StaticTipoProducto.ImpuestodeServicio).Count() > 0;
+                        if (transitorio) throw new BusinessException("Ya existe un producto de tipo 'Impuesto de servicio' registrado en la empresa.");
                     }
+                    if (producto.Imagen == null) producto.Imagen = new byte[0];
                     dbContext.NotificarModificacion(producto);
                     dbContext.Commit();
                 }

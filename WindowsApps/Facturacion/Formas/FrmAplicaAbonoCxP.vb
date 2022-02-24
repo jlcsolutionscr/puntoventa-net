@@ -298,6 +298,7 @@ Public Class FrmAplicaAbonoCxP
             .SaldoActual = cuentaPorPagar.Saldo,
             .Fecha = Now()
         }
+        movimiento.DesglosePagoMovimientoCuentaPorPagar = New List(Of DesglosePagoMovimientoCuentaPorPagar)
         For I As Short = 0 To dtbDesglosePago.Rows.Count - 1
             desglosePagoMovimiento = New DesglosePagoMovimientoCuentaPorPagar With {
                 .IdFormaPago = dtbDesglosePago.Rows(I).Item(0),

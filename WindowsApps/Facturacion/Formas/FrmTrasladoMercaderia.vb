@@ -354,6 +354,7 @@ Public Class FrmTrasladoMercaderia
                 .Referencia = txtReferencia.Text,
                 .Total = decTotal
             }
+            traslado.DetalleTraslado = New List(Of DetalleTraslado)
             For I As Short = 0 To dtbDetalleTraslado.Rows.Count - 1
                 detalleTraslado = New DetalleTraslado With {
                     .IdProducto = dtbDetalleTraslado.Rows(I).Item(0),

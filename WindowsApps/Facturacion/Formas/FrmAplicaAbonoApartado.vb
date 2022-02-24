@@ -290,6 +290,7 @@ Public Class FrmAplicaAbonoApartado
             .SaldoActual = apartado.Total - apartado.MontoAdelanto,
             .Fecha = Now()
         }
+        movimiento.DesglosePagoMovimientoApartado = New List(Of DesglosePagoMovimientoApartado)
         For I As Short = 0 To dtbDesglosePago.Rows.Count - 1
             desglosePagoMovimiento = New DesglosePagoMovimientoApartado With {
                 .IdFormaPago = dtbDesglosePago.Rows(I).Item(0),

@@ -292,6 +292,7 @@ Public Class FrmAplicaAbonoOrdenServicio
             .SaldoActual = ordenServicio.Total - ordenServicio.MontoAdelanto,
             .Fecha = Now()
         }
+        movimiento.DesglosePagoMovimientoOrdenServicio = New List(Of DesglosePagoMovimientoOrdenServicio)
         For I As Short = 0 To dtbDesglosePago.Rows.Count - 1
             desglosePagoMovimiento = New DesglosePagoMovimientoOrdenServicio With {
                 .IdFormaPago = dtbDesglosePago.Rows(I).Item(0),

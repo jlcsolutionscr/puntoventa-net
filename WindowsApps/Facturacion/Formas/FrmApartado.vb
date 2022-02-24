@@ -863,6 +863,7 @@ Public Class FrmApartado
                 .MontoPagado = decPagoCliente,
                 .Nulo = False
             }
+            apartado.DetalleApartado = New List(Of DetalleApartado)
             For I As Short = 0 To dtbDetalleApartado.Rows.Count - 1
                 detalleApartado = New DetalleApartado With {
                     .IdProducto = dtbDetalleApartado.Rows(I).Item(0),
@@ -875,6 +876,7 @@ Public Class FrmApartado
                 }
                 apartado.DetalleApartado.Add(detalleApartado)
             Next
+            apartado.DesglosePagoApartado = New List(Of DesglosePagoApartado)
             For I As Short = 0 To dtbDesglosePago.Rows.Count - 1
                 desglosePago = New DesglosePagoApartado With {
                     .IdFormaPago = dtbDesglosePago.Rows(I).Item(0),

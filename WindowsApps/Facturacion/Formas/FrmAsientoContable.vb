@@ -1,3 +1,4 @@
+Imports System.Collections.Generic
 Imports LeandroSoftware.Common.Dominio.Entidades
 
 Public Class FrmAsientoContable
@@ -203,6 +204,7 @@ Public Class FrmAsientoContable
                 .TotalDebito = 0,
                 .TotalCredito = 0
             }
+            asientoDiario.DetalleAsiento = New List(Of DetalleAsiento)
             For I As Short = 0 To dtbDetalleAsiento.Rows.Count - 1
                 detalleAsiento = New DetalleAsiento With {
                     .Linea = I + 1,

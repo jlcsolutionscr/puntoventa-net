@@ -4,6 +4,7 @@ Imports LeandroSoftware.ClienteWCF
 Imports System.Text.RegularExpressions
 Imports System.Linq
 Imports LeandroSoftware.Common.Constantes
+Imports System.Collections.Generic
 
 Public Class FrmFacturaCompra
 #Region "Variables"
@@ -376,6 +377,7 @@ Public Class FrmFacturaCompra
                 .Descuento = 0,
                 .Impuesto = decImpuesto
             }
+            facturaCompra.DetalleFacturaCompra = New List(Of DetalleFacturaCompra)
             For I As Short = 0 To dtbDetalleProforma.Rows.Count - 1
                 detalleFacturaCompra = New DetalleFacturaCompra With {
                     .Linea = I + 1,

@@ -908,6 +908,7 @@ Public Class FrmOrdenServicio
                 .MontoPagado = decPagoCliente,
                 .Nulo = False
             }
+            ordenServicio.DetalleOrdenServicio = New List(Of DetalleOrdenServicio)
             For I As Short = 0 To dtbDetalleOrdenServicio.Rows.Count - 1
                 detalleOrdenServicio = New DetalleOrdenServicio
                 detalleOrdenServicio.IdProducto = dtbDetalleOrdenServicio.Rows(I).Item(0)
@@ -920,6 +921,7 @@ Public Class FrmOrdenServicio
                 detalleOrdenServicio.PorcDescuento = dtbDetalleOrdenServicio.Rows(I).Item(9)
                 ordenServicio.DetalleOrdenServicio.Add(detalleOrdenServicio)
             Next
+            ordenServicio.DesglosePagoOrdenServicio = New List(Of DesglosePagoOrdenServicio)
             For I As Short = 0 To dtbDesglosePago.Rows.Count - 1
                 desglosePago = New DesglosePagoOrdenServicio With {
                     .IdFormaPago = dtbDesglosePago.Rows(I).Item(0),

@@ -352,17 +352,18 @@ Public Class FrmDevolucionDeClientes
         btnGuardar.Enabled = False
         If txtIdDevolucion.Text = "" Then
             devolucion = New DevolucionCliente With {
-            .IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa,
-            .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
-            .IdCliente = factura.IdCliente,
-            .IdFactura = factura.IdFactura,
-            .Detalle = txtDetalle.Text,
-            .ConsecFactura = factura.ConsecFactura,
-            .Fecha = Now(),
-            .Excento = dblExcento,
-            .Gravado = decGravado,
-            .Impuesto = CDbl(txtImpuesto.Text)
-        }
+                .IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa,
+                .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
+                .IdCliente = factura.IdCliente,
+                .IdFactura = factura.IdFactura,
+                .Detalle = txtDetalle.Text,
+                .ConsecFactura = factura.ConsecFactura,
+                .Fecha = Now(),
+                .Excento = dblExcento,
+                .Gravado = decGravado,
+                .Impuesto = CDbl(txtImpuesto.Text)
+            }
+            devolucion.DetalleDevolucionCliente = New List(Of DetalleDevolucionCliente)
             For I As Short = 0 To dtbDetalleDevolucion.Rows.Count - 1
                 If dtbDetalleDevolucion.Rows(I).Item(8) > 0 Then
                     detalleDevolucion = New DetalleDevolucionCliente With {

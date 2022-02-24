@@ -393,6 +393,7 @@ Public Class FrmOrdenCompra
         If txtIdOrdenCompra.Text <> "" Then
             ordenCompra.DetalleOrdenCompra.Clear()
         End If
+        ordenCompra.DetalleOrdenCompra = New List(Of DetalleOrdenCompra)
         For I As Short = 0 To dtbDetalleOrdenCompra.Rows.Count - 1
             detalleOrdenCompra = New DetalleOrdenCompra
             If txtIdOrdenCompra.Text <> "" Then

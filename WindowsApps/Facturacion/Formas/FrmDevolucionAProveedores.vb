@@ -329,6 +329,7 @@ Public Class FrmDevolucionAProveedores
                 .Gravado = decGravado,
                 .Impuesto = CDbl(txtImpuesto.Text)
             }
+            devolucion.DetalleDevolucionProveedor = New List(Of DetalleDevolucionProveedor)
             For I As Short = 0 To dtbDetalleDevolucion.Rows.Count - 1
                 detalleDevolucion = New DetalleDevolucionProveedor With {
                     .IdProducto = dtbDetalleDevolucion.Rows(I).Item(0),

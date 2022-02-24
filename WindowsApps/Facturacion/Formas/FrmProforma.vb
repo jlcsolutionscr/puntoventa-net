@@ -660,6 +660,7 @@ Public Class FrmProforma
                 .Impuesto = decImpuesto,
                 .Nulo = False
             }
+            proforma.DetalleProforma = New List(Of DetalleProforma)
             For I As Short = 0 To dtbDetalleProforma.Rows.Count - 1
                 detalleProforma = New DetalleProforma With {
                     .IdProducto = dtbDetalleProforma.Rows(I).Item(0),
