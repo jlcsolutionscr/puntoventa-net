@@ -465,44 +465,28 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     switch (strNombreReporte)
                     {
                         case "Ventas en general":
-                            strLogoPath = Path.Combine(_environment.ContentRootPath, "PlantillaReportes/rptVentas.rdlc");
-                            bytPlantillaReporte = System.IO.File.ReadAllBytes(strLogoPath);
-                            _servicioReportes.EnviarReporteVentasGenerales(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, strFormatoReporte, bytPlantillaReporte, _servicioEnvioCorreo);
+                            _servicioReportes.EnviarReporteVentasGenerales(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, strFormatoReporte, _servicioEnvioCorreo);
                             break;
                         case "Ventas anuladas":
-                            strLogoPath = Path.Combine(_environment.ContentRootPath, "PlantillaReportes/rptVentas.rdlc");
-                            bytPlantillaReporte = System.IO.File.ReadAllBytes(strLogoPath);
-                            _servicioReportes.EnviarReporteVentasAnuladas(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, strFormatoReporte, bytPlantillaReporte, _servicioEnvioCorreo);
+                            _servicioReportes.EnviarReporteVentasAnuladas(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, strFormatoReporte, _servicioEnvioCorreo);
                             break;
                         case "Resumen de movimientos":
-                            strLogoPath = Path.Combine(_environment.ContentRootPath, "PlantillaReportes/rptResumenMovimientos.rdlc");
-                            bytPlantillaReporte = System.IO.File.ReadAllBytes(strLogoPath);
-                            _servicioReportes.EnviarReporteResumenMovimientos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, strFormatoReporte, bytPlantillaReporte, _servicioEnvioCorreo);
+                            _servicioReportes.EnviarReporteResumenMovimientos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, strFormatoReporte, _servicioEnvioCorreo);
                             break;
                         case "Detalle de ingresos":
-                            strLogoPath = Path.Combine(_environment.ContentRootPath, "PlantillaReportes/rptDetalleIngresos.rdlc");
-                            bytPlantillaReporte = System.IO.File.ReadAllBytes(strLogoPath);
-                            _servicioReportes.EnviarReporteDetalleIngresos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, strFormatoReporte, bytPlantillaReporte, _servicioEnvioCorreo);
+                            _servicioReportes.EnviarReporteDetalleIngresos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, strFormatoReporte, _servicioEnvioCorreo);
                             break;
                         case "Detalle de egresos":
-                            strLogoPath = Path.Combine(_environment.ContentRootPath, "PlantillaReportes/rptDetalleEgresos.rdlc");
-                            bytPlantillaReporte = System.IO.File.ReadAllBytes(strLogoPath);
-                            _servicioReportes.EnviarReporteDetalleEgresos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, strFormatoReporte, bytPlantillaReporte, _servicioEnvioCorreo);
+                            _servicioReportes.EnviarReporteDetalleEgresos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, strFormatoReporte, _servicioEnvioCorreo);
                             break;
                         case "Documentos electrónicos emitidos":
-                            strLogoPath = Path.Combine(_environment.ContentRootPath, "PlantillaReportes/rptComprobanteElectronico.rdlc");
-                            bytPlantillaReporte = System.IO.File.ReadAllBytes(strLogoPath);
-                            _servicioReportes.EnviarReporteDocumentosEmitidos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, strFormatoReporte, bytPlantillaReporte, _servicioEnvioCorreo);
+                            _servicioReportes.EnviarReporteDocumentosEmitidos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, strFormatoReporte, _servicioEnvioCorreo);
                             break;
                         case "Documentos electrónicos recibidos":
-                            strLogoPath = Path.Combine(_environment.ContentRootPath, "PlantillaReportes/rptComprobanteElectronico.rdlc");
-                            bytPlantillaReporte = System.IO.File.ReadAllBytes(strLogoPath);
-                            _servicioReportes.EnviarReporteDocumentosRecibidos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, strFormatoReporte, bytPlantillaReporte, _servicioEnvioCorreo);
+                            _servicioReportes.EnviarReporteDocumentosRecibidos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, strFormatoReporte, _servicioEnvioCorreo);
                             break;
                         case "Resumen de comprobantes electrónicos":
-                            strLogoPath = Path.Combine(_environment.ContentRootPath, "PlantillaReportes/rptResumenComprobanteElectronico.rdlc");
-                            bytPlantillaReporte = System.IO.File.ReadAllBytes(strLogoPath);
-                            _servicioReportes.EnviarReporteResumenMovimientosElectronicos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, strFormatoReporte, bytPlantillaReporte, _servicioEnvioCorreo);
+                            _servicioReportes.EnviarReporteResumenMovimientosElectronicos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, strFormatoReporte, _servicioEnvioCorreo);
                             break;
                         default:
                             throw new Exception("El método solicitado: '" + strNombreReporte + "' no ha sido implementado, contacte con su proveedor");

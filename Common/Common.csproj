@@ -11,4 +11,20 @@
     <Folder Include="Properties\" />
   </ItemGroup>
 
+  <ItemGroup>
+	<EmbeddedResource Include="PlantillaReportes\rptDescripcionValor.rdlc" />
+	<EmbeddedResource Include="PlantillaReportes\rptComprobanteElectronico.rdlc" />
+	<EmbeddedResource Include="PlantillaReportes\rptCompra.rdlc" />
+	<EmbeddedResource Include="PlantillaReportes\rptCostoInventario.rdlc" />
+	<EmbeddedResource Include="PlantillaReportes\rptMovimientoBanco.rdlc" />
+	<EmbeddedResource Include="PlantillaReportes\rptResumenLineaDetalle.rdlc" />
+	<EmbeddedResource Include="PlantillaReportes\rptGrupoLineaDetalle.rdlc" />
+	<EmbeddedResource Include="PlantillaReportes\rptGrupoDetalle.rdlc" />
+	<EmbeddedResource Include="PlantillaReportes\rptInventario.rdlc" />
+	<EmbeddedResource Include="PlantillaReportes\rptResumenComprobanteElectronico.rdlc" />
+	<EmbeddedResource Include="PlantillaReportes\rptResumenMovimientos.rdlc" />
+	<EmbeddedResource Include="PlantillaReportes\rptDetalle.rdlc" />
+	<EmbeddedResource Include="PlantillaReportes\rptCuentas.rdlc" />
+	<EmbeddedResource Include="PlantillaReportes\rptVentasPorVendedor.rdlc" />
+  </ItemGroup>
 </Project>

@@ -8,6 +8,7 @@ using LeandroSoftware.Common.DatosComunes;
 using LeandroSoftware.Common.Dominio.Entidades;
 using LeandroSoftware.ServicioWeb.Contexto;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 namespace LeandroSoftware.ServicioWeb.Servicios
 {
@@ -43,14 +44,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         List<ReporteDocumentoElectronico> ObtenerReporteDocumentosElectronicosEmitidos(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal);
         List<ReporteDocumentoElectronico> ObtenerReporteDocumentosElectronicosRecibidos(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal);
         List<ReporteResumenMovimiento> ObtenerReporteResumenDocumentosElectronicos(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal);
-        void EnviarReporteVentasGenerales(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte, byte[] bytDefinicionReporte, ICorreoService servicioEnvioCorreo);
-        void EnviarReporteVentasAnuladas(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte, byte[] bytDefinicionReporte, ICorreoService servicioEnvioCorreo);
-        void EnviarReporteResumenMovimientos(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte, byte[] bytDefinicionReporte, ICorreoService servicioEnvioCorreo);
-        void EnviarReporteDetalleIngresos(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte, byte[] bytDefinicionReporte, ICorreoService servicioEnvioCorreo);
-        void EnviarReporteDetalleEgresos(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte, byte[] bytDefinicionReporte, ICorreoService servicioEnvioCorreo);
-        void EnviarReporteDocumentosEmitidos(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte, byte[] bytDefinicionReporte, ICorreoService servicioEnvioCorreo);
-        void EnviarReporteDocumentosRecibidos(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte, byte[] bytDefinicionReporte, ICorreoService servicioEnvioCorreo);
-        void EnviarReporteResumenMovimientosElectronicos(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte, byte[] bytDefinicionReporte, ICorreoService servicioEnvioCorreo);
+        void EnviarReporteVentasGenerales(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo);
+        void EnviarReporteVentasAnuladas(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo);
+        void EnviarReporteResumenMovimientos(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo);
+        void EnviarReporteDetalleIngresos(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo);
+        void EnviarReporteDetalleEgresos(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo);
+        void EnviarReporteDocumentosEmitidos(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo);
+        void EnviarReporteDocumentosRecibidos(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo);
+        void EnviarReporteResumenMovimientosElectronicos(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo);
     }
 
     public class ReporteService : IReporteService
@@ -59,6 +60,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private static CultureInfo provider = CultureInfo.InvariantCulture;
         private static string strFormat = "dd/MM/yyyy HH:mm:ss";
+        private static Assembly assembly = Assembly.LoadFrom("Common.dll");
 
         public ReporteService(ILeandroContext pContext)
         {
@@ -1725,7 +1727,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void EnviarReporteVentasGenerales(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte, byte[] bytDefinicionReporte, ICorreoService servicioEnvioCorreo)
+        public void EnviarReporteVentasGenerales(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo)
         {
             try
             {
@@ -1739,7 +1741,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 parameters[2] = new ReportParameter("pNombreReporte", "Reporte de Ventas Generales");
                 parameters[3] = new ReportParameter("pFechaDesde", strFechaInicial);
                 parameters[4] = new ReportParameter("pFechaHasta", strFechaFinal);
-                byte[] bytes = GenerarContenidoReporte(strFormatoReporte, bytDefinicionReporte, rds, parameters);
+                Stream stream = assembly.GetManifestResourceStream("LeandroSoftware.Common.PlantillaReportes.rptDetalle.rdlc");
+                byte[] bytes = GenerarContenidoReporte(strFormatoReporte, stream, rds, parameters);
                 if (bytes.Length > 0)
                 {
                     JArray jarrayObj = new JArray();
@@ -1759,7 +1762,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void EnviarReporteVentasAnuladas(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte, byte[] bytDefinicionReporte, ICorreoService servicioEnvioCorreo)
+        public void EnviarReporteVentasAnuladas(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo)
         {
             try
             {
@@ -1773,7 +1776,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 parameters[2] = new ReportParameter("pNombreReporte", "Reporte de Ventas Anuladas");
                 parameters[3] = new ReportParameter("pFechaDesde", strFechaInicial);
                 parameters[4] = new ReportParameter("pFechaHasta", strFechaFinal);
-                byte[] bytes = GenerarContenidoReporte(strFormatoReporte, bytDefinicionReporte, rds, parameters);
+                Stream stream = assembly.GetManifestResourceStream("LeandroSoftware.Common.PlantillaReportes.rptDetalle.rdlc");
+                byte[] bytes = GenerarContenidoReporte(strFormatoReporte, stream, rds, parameters);
                 if (bytes.Length > 0)
                 {
                     JArray jarrayObj = new JArray();
@@ -1793,7 +1797,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void EnviarReporteResumenMovimientos(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte, byte[] bytDefinicionReporte, ICorreoService servicioEnvioCorreo)
+        public void EnviarReporteResumenMovimientos(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo)
         {
             try
             {
@@ -1806,7 +1810,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 parameters[1] = new ReportParameter("pEmpresa", strNombreEmpresa);
                 parameters[2] = new ReportParameter("pFechaDesde", strFechaInicial);
                 parameters[3] = new ReportParameter("pFechaHasta", strFechaFinal);
-                byte[] bytes = GenerarContenidoReporte(strFormatoReporte, bytDefinicionReporte, rds, parameters);
+                Stream stream = assembly.GetManifestResourceStream("LeandroSoftware.Common.PlantillaReportes.rptResumenMovimientos.rdlc");
+                byte[] bytes = GenerarContenidoReporte(strFormatoReporte, stream, rds, parameters);
                 if (bytes.Length > 0)
                 {
                     JArray jarrayObj = new JArray();
@@ -1826,7 +1831,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void EnviarReporteDetalleIngresos(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte, byte[] bytDefinicionReporte, ICorreoService servicioEnvioCorreo)
+        public void EnviarReporteDetalleIngresos(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo)
         {
             try
             {
@@ -1839,7 +1844,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 parameters[1] = new ReportParameter("pEmpresa", strNombreEmpresa);
                 parameters[2] = new ReportParameter("pFechaDesde", strFechaInicial);
                 parameters[3] = new ReportParameter("pFechaHasta", strFechaFinal);
-                byte[] bytes = GenerarContenidoReporte(strFormatoReporte, bytDefinicionReporte, rds, parameters);
+                Stream stream = assembly.GetManifestResourceStream("LeandroSoftware.Common.PlantillaReportes.rptDetalleIngresos.rdlc");
+                byte[] bytes = GenerarContenidoReporte(strFormatoReporte, stream, rds, parameters);
                 if (bytes.Length > 0)
                 {
                     JArray jarrayObj = new JArray();
@@ -1859,7 +1865,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void EnviarReporteDetalleEgresos(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte, byte[] bytDefinicionReporte, ICorreoService servicioEnvioCorreo)
+        public void EnviarReporteDetalleEgresos(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo)
         {
             try
             {
@@ -1872,7 +1878,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 parameters[1] = new ReportParameter("pEmpresa", strNombreEmpresa);
                 parameters[2] = new ReportParameter("pFechaDesde", strFechaInicial);
                 parameters[3] = new ReportParameter("pFechaHasta", strFechaFinal);
-                byte[] bytes = GenerarContenidoReporte(strFormatoReporte, bytDefinicionReporte, rds, parameters);
+                Stream stream = assembly.GetManifestResourceStream("LeandroSoftware.Common.PlantillaReportes.rptDetalleEgresos.rdlc");
+                byte[] bytes = GenerarContenidoReporte(strFormatoReporte, stream, rds, parameters);
                 if (bytes.Length > 0)
                 {
                     JArray jarrayObj = new JArray();
@@ -1892,7 +1899,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void EnviarReporteDocumentosEmitidos(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte, byte[] bytDefinicionReporte, ICorreoService servicioEnvioCorreo)
+        public void EnviarReporteDocumentosEmitidos(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo)
         {
             try
             {
@@ -1906,7 +1913,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 parameters[2] = new ReportParameter("pNombreReporte", "Listado de Facturas Electrónicas Emitidas");
                 parameters[3] = new ReportParameter("pFechaDesde", strFechaInicial);
                 parameters[4] = new ReportParameter("pFechaHasta", strFechaFinal);
-                byte[] bytes = GenerarContenidoReporte(strFormatoReporte, bytDefinicionReporte, rds, parameters);
+                Stream stream = assembly.GetManifestResourceStream("LeandroSoftware.Common.PlantillaReportes.rptComprobanteElectronico.rdlc");
+                byte[] bytes = GenerarContenidoReporte(strFormatoReporte, stream, rds, parameters);
                 if (bytes.Length > 0)
                 {
                     JArray jarrayObj = new JArray();
@@ -1926,7 +1934,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void EnviarReporteDocumentosRecibidos(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte, byte[] bytDefinicionReporte, ICorreoService servicioEnvioCorreo)
+        public void EnviarReporteDocumentosRecibidos(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo)
         {
             try
             {
@@ -1940,7 +1948,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 parameters[2] = new ReportParameter("pNombreReporte", "Listado de Facturas Electrónicas Recibidas");
                 parameters[3] = new ReportParameter("pFechaDesde", strFechaInicial);
                 parameters[4] = new ReportParameter("pFechaHasta", strFechaFinal);
-                byte[] bytes = GenerarContenidoReporte(strFormatoReporte, bytDefinicionReporte, rds, parameters);
+                Stream stream = assembly.GetManifestResourceStream("LeandroSoftware.Common.PlantillaReportes.rptComprobanteElectronico.rdlc");
+                byte[] bytes = GenerarContenidoReporte(strFormatoReporte, stream, rds, parameters);
                 if (bytes.Length > 0)
                 {
                     JArray jarrayObj = new JArray();
@@ -1960,7 +1969,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void EnviarReporteResumenMovimientosElectronicos(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte, byte[] bytDefinicionReporte, ICorreoService servicioEnvioCorreo)
+        public void EnviarReporteResumenMovimientosElectronicos(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte, ICorreoService servicioEnvioCorreo)
         {
             try
             {
@@ -1973,7 +1982,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 parameters[1] = new ReportParameter("pEmpresa", strNombreEmpresa);
                 parameters[2] = new ReportParameter("pFechaDesde", strFechaInicial);
                 parameters[3] = new ReportParameter("pFechaHasta", strFechaFinal);
-                byte[] bytes = GenerarContenidoReporte(strFormatoReporte, bytDefinicionReporte, rds, parameters);
+                Stream stream = assembly.GetManifestResourceStream("LeandroSoftware.Common.PlantillaReportes.rptResumenComprobanteElectronico.rdlc");
+                byte[] bytes = GenerarContenidoReporte(strFormatoReporte, stream, rds, parameters);
                 if (bytes.Length > 0)
                 {
                     JArray jarrayObj = new JArray();
@@ -1993,12 +2003,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        byte[] GenerarContenidoReporte(string strFormatoReporte, byte[] bytDefinicionReporte, ReportDataSource rds, ReportParameter[] parameters)
+        byte[] GenerarContenidoReporte(string strFormatoReporte, Stream stmDefinicionReporte, ReportDataSource rds, ReportParameter[] parameters)
         {
             try
             {
                 LocalReport report = new LocalReport();
-                report.LoadReportDefinition(new MemoryStream(bytDefinicionReporte));
+                report.LoadReportDefinition(stmDefinicionReporte);
                 report.DataSources.Add(new ReportDataSource("source", rds));
                 report.SetParameters(parameters);
                 return report.Render(strFormatoReporte);
