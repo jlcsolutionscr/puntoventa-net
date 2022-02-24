@@ -13,7 +13,7 @@ Public Class FrmCierreDeCaja
     Private decTotalEnCaja As Decimal
     Private cierreCaja As CierreCaja
     Private lstReporte As List(Of DescripcionValor)
-    Private ReadOnly assembly As Assembly = Assembly.LoadFrom("Core.dll")
+    Private ReadOnly assembly As Assembly = Assembly.LoadFrom("Common.dll")
     Private comprobanteImpresion As ModuloImpresion.ClsCierreCaja
     Private initialized As Boolean = False
 #End Region
@@ -145,7 +145,7 @@ Public Class FrmCierreDeCaja
         newFormReport.repReportViewer.LocalReport.DataSources.Clear()
         newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
         newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
-        Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptDescripcionValor.rdlc")
+        Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Common.PlantillaReportes.rptDescripcionValor.rdlc")
         newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
         Dim parameters(4) As ReportParameter
         parameters(0) = New ReportParameter("pUsuario", strUsuario)

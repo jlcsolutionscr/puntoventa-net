@@ -1925,12 +1925,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         public IList<LlaveDescripcion> ObtenerListadoFormaPagoCliente()
         {
-            return CondicionDeVenta.ObtenerListado().Where(x => new[] { StaticFormaPago.Efectivo, StaticFormaPago.TransferenciaDepositoBancario, StaticFormaPago.Cheque, StaticFormaPago.Tarjeta }.Contains(x.Id)).ToList();
+            return FormaDePago.ObtenerListado().Where(x => new[] { StaticFormaPago.Efectivo, StaticFormaPago.TransferenciaDepositoBancario, StaticFormaPago.Cheque, StaticFormaPago.Tarjeta }.Contains(x.Id)).ToList();
         }
 
         public IList<LlaveDescripcion> ObtenerListadoFormaPagoEmpresa()
         {
-            return CondicionDeVenta.ObtenerListado().Where(x => new[] { StaticFormaPago.Efectivo, StaticFormaPago.TransferenciaDepositoBancario, StaticFormaPago.Cheque }.Contains(x.Id)).ToList();
+            return FormaDePago.ObtenerListado().Where(x => new[] { StaticFormaPago.Efectivo, StaticFormaPago.TransferenciaDepositoBancario, StaticFormaPago.Cheque }.Contains(x.Id)).ToList();
         }
 
         public void AgregarBancoAdquiriente(BancoAdquiriente bancoAdquiriente)
