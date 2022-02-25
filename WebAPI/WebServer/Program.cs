@@ -4,8 +4,11 @@ using LeandroSoftware.ServicioWeb;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using WebServer.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddCors(options => options.AddPolicy("CorsPolicy", builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()));
 
 /*ILoggerProvider logProvider = new Log4NetProvider(new FileInfo("log4net.config").FullName);
 builder.Services.AddLogging((builder) =>
@@ -37,19 +40,19 @@ builder.Services.AddControllers();
 
 var app = builder.Build();
 
-app.UseAuthorization();
-
-app.MapControllers();
-
 app.UseExceptionHandler(c => c.Run(async context =>
 {
-    var exception = context.Features
-        .Get<IExceptionHandlerPathFeature>()
-        .Error;
+    var exception = context.Features.Get<IExceptionHandlerPathFeature>().Error;
     context.Response.StatusCode = StatusCodes.Status303SeeOther;
     context.Response.ContentType = "application/json";
     var jsonString = JsonConvert.SerializeObject(exception.Message);
     await context.Response.WriteAsync(jsonString);
 }));
+
+app.UseCors();
+
+app.UseCustomAuthorization();
+
+app.MapControllers();
 
 app.Run();

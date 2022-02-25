@@ -120,16 +120,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                 configuration.GetSection("appSettings").GetSection("strComprobantesCallbackURL").Value,
                 configuration.GetSection("appSettings").GetSection("strCorreoNotificacionErrores").Value
             );
-            try
-            {
-                bool modoMantenimiento = _servicioMantenimiento.EnModoMantenimiento();
-                if (modoMantenimiento) throw new Exception("El sistema se encuentra en modo mantenimiento y no es posible acceder por el momento.");
-            }
-            catch (Exception ex)
-            {
-                log.Error("Error al consultar el estado del modo mantenimiento del sistema: ", ex);
-                throw new Exception("Error al consultar la disponibilidad del sistema");
-            }
         }
 
         [HttpPost("ejecutarconsulta")]

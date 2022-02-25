@@ -860,7 +860,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     DocumentoElectronico documento = dbContext.DocumentoElectronicoRepository.FirstOrDefault(x => x.ClaveNumerica == factura.IdDocElectronico);
                     if (documento == null)
                         throw new BusinessException("El documento electrónico relacionado con la factura no existe.");
-                    if (documento.EstadoEnvio != StaticEstadoDocumentoElectronico.Aceptado || documento.EstadoEnvio != StaticEstadoDocumentoElectronico.Rechazado)
+                    if (documento.EstadoEnvio != StaticEstadoDocumentoElectronico.Aceptado && documento.EstadoEnvio != StaticEstadoDocumentoElectronico.Rechazado)
                     {
                         throw new BusinessException("El documento electrónico de la factura no ha sido procesado. No se puede proceder con la anulación en este momento");
                     }
@@ -1644,13 +1644,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         producto.MovimientoProducto.Add(movimientoProducto);
                     }
                 }
+                MovimientoCuentaPorCobrar mov = null;
                 if (factura.IdCondicionVenta == StaticCondicionVenta.Credito)
                 {
                     BancoAdquiriente cuentaBanco = dbContext.BancoAdquirienteRepository.FirstOrDefault(x => x.IdEmpresa == devolucion.IdEmpresa);
                     if (cuentaBanco == null) throw new BusinessException("La empresa no posee ningun banco adquiriente parametrizado");
                     CuentaPorCobrar cxc = dbContext.CuentaPorCobrarRepository.Find(factura.IdCxC);
                     if (cxc == null) throw new BusinessException("La cuenta por cobrar asignada a la factura de la devolución no existe");
-                    MovimientoCuentaPorCobrar mov = new MovimientoCuentaPorCobrar
+                    mov = new MovimientoCuentaPorCobrar
                     {
                         IdEmpresa = devolucion.IdEmpresa,
                         IdUsuario = devolucion.IdUsuario,
@@ -1673,6 +1674,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         MontoLocal = devolucion.Total,
                         TipoDeCambio = factura.TipoDeCambioDolar
                     };
+                    mov.DesglosePagoMovimientoCuentaPorCobrar = new List<DesglosePagoMovimientoCuentaPorCobrar>();
                     mov.DesglosePagoMovimientoCuentaPorCobrar.Add(desglosePagoMovimiento);
                     dbContext.MovimientoCuentaPorCobrarRepository.Add(mov);
                     cxc.Saldo -= devolucion.Total;
@@ -1681,7 +1683,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 else
                 {
                     CuentaEgreso cuenta = dbContext.CuentaEgresoRepository.FirstOrDefault(x => x.IdEmpresa == devolucion.IdEmpresa && x.Descripcion.ToUpper().Contains("DEVOLUCION"));
-                    if (cuenta == null) throw new BusinessException("La empresa no posee ninguna cuenta de egresos para devoluciones de clientes parametrizada");
+                    if (cuenta == null) throw new BusinessException("La empresa no posee ninguna cuenta de egresos parametrizada para devoluciones de clientes");
                     Egreso egreso = new Egreso
                     {
                         IdEmpresa = devolucion.IdEmpresa,
@@ -1716,6 +1718,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 dbContext.DevolucionClienteRepository.Add(devolucion);
                 dbContext.Commit();
+                if (mov != null)
+                {
+                    devolucion.IdMovimientoCxC = mov.IdMovCxC;
+                    dbContext.NotificarModificacion(devolucion);
+                    dbContext.Commit();
+                }
                 /*if (documentoNC != null)
                 {
                     Task.Run(() => EnviarDocumentoElectronico(empresa, documentoNC, dbContext, datos));
@@ -1757,7 +1765,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 devolucion.IdSucursal = factura.IdSucursal;
                 foreach (var detalleDevolucion in devolucion.DetalleDevolucionCliente)
                 {
-                    Producto producto = dbContext.ProductoRepository.AsNoTracking().FirstOrDefault(x => x.IdProducto == detalleDevolucion.IdProducto);
+                    Producto producto = dbContext.ProductoRepository.FirstOrDefault(x => x.IdProducto == detalleDevolucion.IdProducto);
                     if (producto == null) throw new Exception("El producto asignado al detalle de la devolución no existe.");
                     DetalleFactura detalleFactura = dbContext.DetalleFacturaRepository.Where(x => x.IdFactura == factura.IdFactura && x.IdProducto == detalleDevolucion.IdProducto).FirstOrDefault();
                     if (detalleFactura == null)
@@ -1797,6 +1805,25 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     cuentaPorCobrar.Saldo += movimiento.Monto;
                     dbContext.NotificarModificacion(cuentaPorCobrar);
                 }
+                else
+                {
+                    CuentaIngreso cuenta = dbContext.CuentaIngresoRepository.FirstOrDefault(x => x.IdEmpresa == devolucion.IdEmpresa && x.Descripcion.ToUpper().Contains("DEVOLUCION"));
+                    if (cuenta == null) throw new BusinessException("La empresa no posee ninguna cuenta de ingresos parametrizada para devoluciones de clientes");
+                    Ingreso ingreso = new Ingreso
+                    {
+                        IdEmpresa = devolucion.IdEmpresa,
+                        IdSucursal = devolucion.IdSucursal,
+                        IdUsuario = devolucion.IdUsuario,
+                        Fecha = DateTime.Now,
+                        IdCuenta = cuenta.IdCuenta,
+                        RecibidoDe = devolucion.Cliente.Nombre,
+                        Detalle = "Anulación de devolución de mercancías de factura " + factura.ConsecFactura,
+                        Monto = devolucion.Total,
+                        Nulo = false,
+                        Procesado = false
+                    };
+                    dbContext.IngresoRepository.Add(ingreso);
+                }
                 if (devolucion.IdAsiento > 0)
                 {
                     IContabilidadService servicioContabilidad = new ContabilidadService(dbContext);
@@ -1808,7 +1835,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     DocumentoElectronico documento = dbContext.DocumentoElectronicoRepository.FirstOrDefault(x => x.ClaveNumerica == devolucion.IdDocElectronico);
                     if (documento == null)
                         throw new BusinessException("El documento electrónico relacionado con la devolución no existe.");
-                    if (documento.EstadoEnvio != StaticEstadoDocumentoElectronico.Aceptado || documento.EstadoEnvio != StaticEstadoDocumentoElectronico.Rechazado)
+                    if (documento.EstadoEnvio != StaticEstadoDocumentoElectronico.Aceptado && documento.EstadoEnvio != StaticEstadoDocumentoElectronico.Rechazado)
                     {
                         throw new BusinessException("El documento electrónico de la devolución no ha sido procesado. No se puede proceder con la anulación en este momento");
                     }
@@ -2364,7 +2391,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 Empresa empresa = dbContext.EmpresaRepository.Find(documento.IdEmpresa);
                 if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                 if (documento.Reprocesado) throw new BusinessException("El documento ya fue reprocesado y no puede procesarse nuevamente.");
-                if (documento.EstadoEnvio != StaticEstadoDocumentoElectronico.Aceptado || documento.EstadoEnvio != StaticEstadoDocumentoElectronico.Rechazado)
+                if (documento.EstadoEnvio != StaticEstadoDocumentoElectronico.Aceptado && documento.EstadoEnvio != StaticEstadoDocumentoElectronico.Rechazado)
                 {
                     throw new BusinessException("El documento electrónico por procesar no ha sido procesado. No se puede generar un nuevo documento por el momento");
                 }
