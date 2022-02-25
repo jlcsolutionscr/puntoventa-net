@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using LeandroSoftware.ClienteWCF;
-using LeandroSoftware.Core.TiposComunes;
+using LeandroSoftware.Common.DatosComunes;
 
 namespace LeandroSoftware.Activator
 {

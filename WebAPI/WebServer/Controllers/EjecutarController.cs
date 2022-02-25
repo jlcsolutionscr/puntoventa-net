@@ -12,6 +12,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
     public class EjecutarController : ControllerBase
     {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static IHostEnvironment _environment;
         private static IMantenimientoService _servicioMantenimiento;
         private static IFacturacionService _servicioFacturacion;
         private static ICompraService _servicioCompra;
@@ -66,6 +67,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
             ICuentaPorProcesarService servicioCuentaPorProcesar
         )
         {
+            _environment = environment;
             _servicioMantenimiento = servicioMantenimiento;
             _servicioFacturacion = servicioFacturacion;
             _servicioCompra = servicioCompra;
@@ -86,6 +88,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                 configuration.GetSection("appSettings").GetSection("strCorreoNotificacionErrores").Value
             );
         }
+
 
         [HttpPost("ejecutar")]
         public void Ejecutar([FromBody] string strDatos)
@@ -117,6 +120,11 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
             }
             switch (strNombreMetodo)
             {
+                case "ActualizarParametroDelSistema":
+                    intIdLlave1 = int.Parse(parametrosJO.Property("IdParametro").Value.ToString());
+                    string strValor = parametrosJO.Property("Valor").Value.ToString();
+                    _servicioMantenimiento.ActualizarParametroSistema(intIdLlave1, strValor);
+                    break;
                 case "AbortarCierreCaja":
                     intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                     intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());

@@ -16,7 +16,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         private static IHostEnvironment _environment;
         private static IMantenimientoService _servicioMantenimiento;
         private static IFacturacionService _servicioFacturacion;
-        private static ICorreoService _servicioEnvioCorreo;
+        private static ICorreoService _servicioCorreo;
         private ConfiguracionGeneral configuracionGeneral;
         private static Empresa? empresa;
         private static int intIdEmpresa;
@@ -33,7 +33,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
             _environment = environment;
             _servicioMantenimiento = servicioMantenimiento;
             _servicioFacturacion = servicioFacturacion;
-            _servicioEnvioCorreo = servicioEnvioCorreo;
+            _servicioCorreo = servicioEnvioCorreo;
             configuracionGeneral = new ConfiguracionGeneral
             (
                 configuration.GetSection("appSettings").GetSection("strConsultaIEURL").Value,
@@ -44,6 +44,24 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                 configuration.GetSection("appSettings").GetSection("strComprobantesCallbackURL").Value,
                 configuration.GetSection("appSettings").GetSection("strCorreoNotificacionErrores").Value
             );
+        }
+
+        [HttpGet("validarcredencialesadmin")]
+        public string ValidarCredencialesAdmin(string usuario, string clave)
+        {
+            try
+            {
+                string strClaveFormateada = clave.Replace(" ", "+");
+                Usuario usuarioEntity = _servicioMantenimiento.ValidarCredencialesAdmin(usuario, strClaveFormateada);
+                string strRespuesta = "";
+                if (usuarioEntity != null)
+                    strRespuesta = JsonConvert.SerializeObject(usuarioEntity);
+                return strRespuesta;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         [HttpGet("enviarhistoricoerrores")]
@@ -64,7 +82,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                             ["contenido"] = Convert.ToBase64String(bytes)
                         };
                         jarrayObj.Add(jobDatosAdjuntos1);
-                        _servicioEnvioCorreo.SendEmail(new string[] { configuracionGeneral.CorreoNotificacionErrores }, new string[] { }, "Archivo log con errores de procesamiento", "Adjunto archivo con errores de procesamiento anteriores a la fecha actual.", false, jarrayObj);
+                        _servicioCorreo.SendEmail(new string[] { configuracionGeneral.CorreoNotificacionErrores }, new string[] { }, "Archivo log con errores de procesamiento", "Adjunto archivo con errores de procesamiento anteriores a la fecha actual.", false, jarrayObj);
                     }
                     System.IO.File.Delete(str);
                 }

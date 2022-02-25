@@ -61,7 +61,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         IList<DocumentoDetalle> ObtenerListadoDocumentosElectronicosEnProceso(int intIdEmpresa);
         void ProcesarDocumentosElectronicosPendientes(ConfiguracionGeneral datos, byte[] bytLogo);
         void GenerarMensajeReceptor(string strDatos, int intIdEmpresa, int intSucursal, int intTerminal, int intEstado, bool bolIvaAplicable, ConfiguracionGeneral datos);
-        void ProcesarCorreoRecepcion(ICorreoService servicioRecepcionCorreo, ConfiguracionGeneral config, ConfiguracionRecepcion datos);
+        void ProcesarCorreoRecepcion(ConfiguracionGeneral config, ConfiguracionRecepcion datos);
         void EnviarDocumentoElectronicoPendiente(int intIdDocumento, ConfiguracionGeneral datos);
         void ReprocesarDocumentoElectronico(int intIdDocumento, ConfiguracionGeneral datos);
         DocumentoElectronico ObtenerRespuestaDocumentoElectronicoEnviado(int intIdDocumento, ConfiguracionGeneral datos);
@@ -713,10 +713,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.NotificarModificacion(movimientoBanco);
                 }
                 dbContext.Commit();
-                /*if (documentoFE != null)
+                if (documentoFE != null)
                 {
-                    Task.Run(() => EnviarDocumentoElectronico(empresa, documentoFE, dbContext, datos));
-                }*/
+                    Task.Run(() => EnviarDocumentoElectronico(empresa, documentoFE, datos));
+                }
                 return factura.IdFactura.ToString() + "-" + factura.ConsecFactura.ToString();
             }
             catch (BusinessException ex)
@@ -763,10 +763,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 dbContext.FacturaCompraRepository.Add(facturaCompra);
                 DocumentoElectronico documentoFE = ComprobanteElectronicoService.GenerarFacturaCompraElectronica(facturaCompra, empresa, dbContext, decTipoDeCambio);
                 dbContext.Commit();
-                /*if (documentoFE != null)
+                if (documentoFE != null)
                 {
-                    Task.Run(() => EnviarDocumentoElectronico(empresa, documentoFE, dbContext, datos));
-                }*/
+                    Task.Run(() => EnviarDocumentoElectronico(empresa, documentoFE, datos));
+                }
                 return facturaCompra.IdFactCompra.ToString();
             }
             catch (BusinessException ex)
@@ -875,10 +875,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                 }
                 dbContext.Commit();
-                /*if (documentoNC != null)
+                if (documentoNC != null)
                 {
-                    Task.Run(() => EnviarDocumentoElectronico(empresa, documentoNC, dbContext, datos));
-                }*/
+                    Task.Run(() => EnviarDocumentoElectronico(empresa, documentoNC, datos));
+                }
             }
             catch (BusinessException ex)
             {
@@ -1724,10 +1724,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.NotificarModificacion(devolucion);
                     dbContext.Commit();
                 }
-                /*if (documentoNC != null)
+                if (documentoNC != null)
                 {
-                    Task.Run(() => EnviarDocumentoElectronico(empresa, documentoNC, dbContext, datos));
-                }*/
+                    Task.Run(() => EnviarDocumentoElectronico(empresa, documentoNC, datos));
+                }
             }
             catch (BusinessException ex)
             {
@@ -1857,10 +1857,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 dbContext.NotificarModificacion(devolucion);
                 dbContext.Commit();
-                /*if (documentoND != null)
+                if (documentoND != null)
                 {
-                    Task.Run(() => EnviarDocumentoElectronico(empresa, documentoND, dbContext, datos));
-                }*/
+                    Task.Run(() => EnviarDocumentoElectronico(empresa, documentoND, datos));
+                }
             }
             catch (BusinessException ex)
             {
@@ -2167,10 +2167,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 DocumentoElectronico documentoMR = ComprobanteElectronicoService.GeneraMensajeReceptor(strDatos, empresa, dbContext, intSucursal, intTerminal, intEstado, bolIvaAplicable);
                 dbContext.DocumentoElectronicoRepository.Add(documentoMR);
                 dbContext.Commit();
-                /*if (documentoMR != null)
+                if (documentoMR != null)
                 {
-                    Task.Run(() => EnviarDocumentoElectronico(empresa, documentoMR, dbContext, datos));
-                }*/
+                    Task.Run(() => EnviarDocumentoElectronico(empresa, documentoMR, datos));
+                }
             }
             catch (BusinessException ex)
             {
@@ -2186,7 +2186,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void ProcesarCorreoRecepcion(ICorreoService servicioRecepcionCorreo, ConfiguracionGeneral config, ConfiguracionRecepcion datos)
+        public void ProcesarCorreoRecepcion(ConfiguracionGeneral config, ConfiguracionRecepcion datos)
         {
             var stringBuilder = new StringBuilder();
             ParametroSistema procesando = dbContext.ParametroSistemaRepository.Where(x => x.IdParametro == 3).FirstOrDefault();
@@ -2200,7 +2200,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     List<POPEmail> listadoCorreoAcreditable = new List<POPEmail>();
                     try
                     {
-                        listadoCorreoAcreditable = servicioRecepcionCorreo.ObtenerListadoMensaje(datos.CuentaIvaAcreditable, datos.ClaveIvaAcreditable).ToList();
+                        listadoCorreoAcreditable = servicioCorreo.ObtenerListadoMensaje(datos.CuentaIvaAcreditable, datos.ClaveIvaAcreditable).ToList();
                     }
                     catch (Exception ex)
                     {
@@ -2212,7 +2212,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         try
                         {
                             ProcesarMensajeReceptor(correo, config, true);
-                            servicioRecepcionCorreo.EliminarMensaje(datos.CuentaIvaAcreditable, datos.ClaveIvaAcreditable, correo.MessageNumber);
+                            servicioCorreo.EliminarMensaje(datos.CuentaIvaAcreditable, datos.ClaveIvaAcreditable, correo.MessageNumber);
                         }
                         catch (BusinessException ex)
                         {
@@ -2220,7 +2220,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             strFrom = strFrom.Substring(0, strFrom.IndexOf("'"));
                             string strError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
                             stringBuilder.AppendLine("Error al procesar el documento con IVA acreditable. Enviado por " + strFrom + " Asunto " + correo.Subject + ". Detalle: " + strError);
-                            servicioRecepcionCorreo.EliminarMensaje(datos.CuentaIvaAcreditable, datos.ClaveIvaAcreditable, correo.MessageNumber);
+                            servicioCorreo.EliminarMensaje(datos.CuentaIvaAcreditable, datos.ClaveIvaAcreditable, correo.MessageNumber);
                             JArray archivosJArray = new JArray();
                             servicioCorreo.SendEmail(new string[] { strFrom }, new string[] { }, "Notificación de error en recepción de documento electrónico", "El correo del envio del documento electrónico con asunto " + correo.Subject + " presenta el siguiente detalle: " + ex.Message, false, archivosJArray);
                         }
@@ -2233,7 +2233,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     List<POPEmail> listadoCorreoGasto = new List<POPEmail>();
                     try
                     {
-                        listadoCorreoGasto = servicioRecepcionCorreo.ObtenerListadoMensaje(datos.CuentaGastoNoAcreditable, datos.ClaveGastoNoAcreditable).ToList();
+                        listadoCorreoGasto = servicioCorreo.ObtenerListadoMensaje(datos.CuentaGastoNoAcreditable, datos.ClaveGastoNoAcreditable).ToList();
                     }
                     catch (Exception ex)
                     {
@@ -2245,7 +2245,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         try
                         {
                             ProcesarMensajeReceptor(correo, config, false);
-                            servicioRecepcionCorreo.EliminarMensaje(datos.CuentaGastoNoAcreditable, datos.ClaveGastoNoAcreditable, correo.MessageNumber);
+                            servicioCorreo.EliminarMensaje(datos.CuentaGastoNoAcreditable, datos.ClaveGastoNoAcreditable, correo.MessageNumber);
                         }
                         catch (BusinessException ex)
                         {
@@ -2253,7 +2253,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             strFrom = strFrom.Substring(0, strFrom.IndexOf("'"));
                             string strError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
                             stringBuilder.AppendLine("Error al procesar el documento sin IVA acreditable. Enviado por " + strFrom + " Asunto " + correo.Subject + ". Detalle: " + strError);
-                            servicioRecepcionCorreo.EliminarMensaje(datos.CuentaGastoNoAcreditable, datos.ClaveGastoNoAcreditable, correo.MessageNumber);
+                            servicioCorreo.EliminarMensaje(datos.CuentaGastoNoAcreditable, datos.ClaveGastoNoAcreditable, correo.MessageNumber);
                             JArray archivosJArray = new JArray();
                             servicioCorreo.SendEmail(new string[] { strFrom }, new string[] { }, "Notificación de error en recepción de documento electrónico", "El correo del envio del documento electrónico con asunto " + correo.Subject + " presenta el siguiente detalle: " + ex.Message, false, archivosJArray);
                         }
@@ -2344,10 +2344,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             DocumentoElectronico documentoMR = ComprobanteElectronicoService.GeneraMensajeReceptor(strDatos, empresa, dbContext, 1, 1, 0, bolIvaAplicable);
             dbContext.DocumentoElectronicoRepository.Add(documentoMR);
             dbContext.Commit();
-            /*if (documentoMR != null)
+            if (documentoMR != null)
             {
-                Task.Run(() => EnviarDocumentoElectronico(empresa, documentoMR, dbContext, datos));
-            }*/
+                Task.Run(() => EnviarDocumentoElectronico(empresa, documentoMR, datos));
+            }
         }
 
         public async void EnviarDocumentoElectronicoPendiente(int intIdDocumento, ConfiguracionGeneral datos)
@@ -2442,10 +2442,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 documento.Reprocesado = true;
                 dbContext.NotificarModificacion(documento);
                 dbContext.Commit();
-                /*if (nuevoDocumento != null)
+                if (nuevoDocumento != null)
                 {
-                    Task.Run(() => EnviarDocumentoElectronico(empresa, nuevoDocumento, dbContext, datos));
-                }*/
+                    Task.Run(() => EnviarDocumentoElectronico(empresa, nuevoDocumento, datos));
+                }
             }
             catch (BusinessException ex)
             {

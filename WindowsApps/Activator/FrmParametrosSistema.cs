@@ -5,7 +5,7 @@ using System.Net;
 using System.Linq;
 using System.Windows.Forms;
 using LeandroSoftware.ClienteWCF;
-using LeandroSoftware.Core.Dominio.Entidades;
+using LeandroSoftware.Common.Dominio.Entidades;
 
 namespace LeandroSoftware.Activator
 {

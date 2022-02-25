@@ -77,6 +77,17 @@ namespace LeandroSoftware.ClienteWCF
             return await httpResponse.Content.ReadAsStringAsync();
         }
 
+        public static async Task ActualizarVersionApp(string strValor, byte[] bytZipFile, string strToken)
+        {
+            WebClient client = new WebClient();
+            client.Encoding = Encoding.UTF8;
+            client.Headers[HttpRequestHeader.ContentType] = "application/octet-stream";
+            client.Headers[HttpRequestHeader.Authorization] = "bearer " + strToken;
+            client.UploadData(strServicioPuntoventaURL + "/actualizararchivoaplicacion", bytZipFile);
+            string strDatos = JsonConvert.SerializeObject("{IdParametro: 1, Valor: '" + strValor + "'}");
+            await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
+        }
+
         public static async Task<List<LlaveDescripcion>> ObtenerListadoEmpresasAdministrador()
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
