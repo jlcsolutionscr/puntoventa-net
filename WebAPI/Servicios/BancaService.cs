@@ -16,10 +16,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         IList<LlaveDescripcion> ObtenerListadoCuentasBanco(int intIdEmpresa, string strDescripcion = "");
         IList<LlaveDescripcion> ObtenerListadoTipoMovimientoBanco();
         string AgregarMovimientoBanco(MovimientoBanco movimiento);
-        string AgregarMovimientoBanco(ILeandroContext dbContext, MovimientoBanco movimiento);
         void ActualizarMovimientoBanco(MovimientoBanco movimiento);
         void AnularMovimientoBanco(int intIdMovimiento, int intIdUsuario, string strMotivoAnulacion);
-        void AnularMovimientoBanco(ILeandroContext dbContext, int intIdMovimiento, int intIdUsuario, string strMotivoAnulacion);
         MovimientoBanco ObtenerMovimientoBanco(int intIdMovimiento);
         int ObtenerTotalListaMovimientos(int intIdEmpresa, int intIdSucursal, string strDescripcion = "");
         IList<EfectivoDetalle> ObtenerListadoMovimientos(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, string strDescripcion = "");
@@ -29,10 +27,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
     {
         private static ILeandroContext dbContext;
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-        public BancaService()
-        {
-        }
 
         public BancaService(ILeandroContext pContext)
         {
@@ -211,38 +205,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public string AgregarMovimientoBanco(ILeandroContext dbContext, MovimientoBanco movimiento)
-        {
-            try
-            {
-                CuentaBanco cuenta = dbContext.CuentaBancoRepository.Find(movimiento.IdCuenta);
-                if (cuenta == null) throw new Exception("La cuenta bancaria asignada al movimiento no existe.");
-                Empresa empresa = dbContext.EmpresaRepository.Find(cuenta.IdEmpresa);
-                if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                TipoMovimientoBanco tipo = dbContext.TipoMovimientoBancoRepository.Find(movimiento.IdTipo);
-                if (tipo == null)
-                    throw new Exception("El tipo de movimiento no existe.");
-                movimiento.SaldoAnterior = cuenta.Saldo;
-                if (tipo.DebeHaber == StaticTipoDebitoCredito.Debito)
-                    cuenta.Saldo -= movimiento.Monto;
-                else
-                    cuenta.Saldo += movimiento.Monto;
-                dbContext.MovimientoBancoRepository.Add(movimiento);
-                dbContext.NotificarModificacion(cuenta);
-                return movimiento.IdMov.ToString();
-            }
-            catch (BusinessException ex)
-            {
-                dbContext.RollBack();
-                throw ex;
-            }
-            catch (Exception ex)
-            {
-                log.Error("Error al agregar el movimiento bancario: ", ex);
-                throw;
-            }
-        }
-
         public void ActualizarMovimientoBanco(MovimientoBanco movimiento)
         {
             try
@@ -295,35 +257,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 dbContext.RollBack();
                 log.Error("Error al anular el movimiento bancario: ", ex);
                 throw new Exception("Se produjo un error anulando el movimiento bancario. Por favor consulte con su proveedor..");
-            }
-        }
-
-        public void AnularMovimientoBanco(ILeandroContext dbContext, int intIdMovimiento, int intIdUsuario, string strMotivoAnulacion)
-        {
-            try
-            {
-                MovimientoBanco movimiento = dbContext.MovimientoBancoRepository.Find(intIdMovimiento);
-                if (movimiento == null) throw new Exception("El movimiento por eliminar no existe.");
-                CuentaBanco cuenta = dbContext.CuentaBancoRepository.Find(movimiento.IdCuenta);
-                if (cuenta == null) throw new Exception("La cuenta bancaria asignada al movimiento no existe.");
-                Empresa empresa = dbContext.EmpresaRepository.Find(cuenta.IdEmpresa);
-                if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                movimiento.Nulo = true;
-                movimiento.IdAnuladoPor = intIdUsuario;
-                movimiento.MotivoAnulacion = strMotivoAnulacion;
-                dbContext.NotificarModificacion(movimiento);
-                cuenta.Saldo -= movimiento.Monto;
-                dbContext.NotificarModificacion(cuenta);
-            }
-            catch (BusinessException ex)
-            {
-                dbContext.RollBack();
-                throw ex;
-            }
-            catch (Exception ex)
-            {
-                log.Error("Error al anular el movimiento bancario: ", ex);
-                throw;
             }
         }
 

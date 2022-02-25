@@ -18,11 +18,9 @@ ILogger logger = logProvider.CreateLogger("JLCPuntoventa");
 
 builder.Services.AddSingleton(logger);*/
 
-var config = new ConfigurationBuilder()
-    .AddJsonFile("appsettings.json", optional: false)
-    .Build();
+string strConnection = builder.Configuration.GetSection("connectionString").Value;
 
-builder.Services.AddDbContext<LeandroContext>(x => x.UseMySQL(config.GetSection("connectionString").Value));
+builder.Services.AddDbContext<LeandroContext>(x => x.UseMySQL(strConnection));
 builder.Services.AddScoped<ILeandroContext, LeandroContext>();
 builder.Services.AddScoped<ICorreoService, CorreoService>();
 builder.Services.AddScoped<IMantenimientoService, MantenimientoService>();

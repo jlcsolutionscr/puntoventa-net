@@ -643,9 +643,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         decimal decTotalPorLinea = Math.Round(detalleFactura.PrecioVenta, 2, MidpointRounding.AwayFromZero);
                         FacturaElectronicaOtrosCargosType lineaOtrosCargos = new FacturaElectronicaOtrosCargosType();
-                        lineaOtrosCargos.Detalle = detalleFactura.Descripcion;
+                        lineaOtrosCargos.Detalle = detalleFactura.Producto.Descripcion;
                         lineaOtrosCargos.MontoCargo = decTotalPorLinea;
-                        lineaOtrosCargos.Porcentaje = 10;
+                        lineaOtrosCargos.Porcentaje = detalleFactura.Producto.PrecioVenta1;
                         lineaOtrosCargos.TipoDocumento = FacturaElectronicaOtrosCargosTypeTipoDocumento.Item06;
                         detalleOtrosCargosList.Add(lineaOtrosCargos);
                         decTotalOtrosCargos += decTotalPorLinea;
@@ -904,9 +904,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         decimal decTotalPorLinea = Math.Round(detalleFactura.PrecioVenta, 2, MidpointRounding.AwayFromZero);
                         TiqueteElectronicoOtrosCargosType lineaOtrosCargos = new TiqueteElectronicoOtrosCargosType();
-                        lineaOtrosCargos.Detalle = detalleFactura.Descripcion;
+                        lineaOtrosCargos.Detalle = detalleFactura.Producto.Descripcion;
                         lineaOtrosCargos.MontoCargo = decTotalPorLinea;
-                        lineaOtrosCargos.Porcentaje = 10;
+                        lineaOtrosCargos.Porcentaje = detalleFactura.Producto.PrecioVenta1;
                         lineaOtrosCargos.TipoDocumento = TiqueteElectronicoOtrosCargosTypeTipoDocumento.Item06;
                         detalleOtrosCargosList.Add(lineaOtrosCargos);
                         decTotalOtrosCargos += decTotalPorLinea;
@@ -1218,9 +1218,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         decimal decTotalPorLinea = Math.Round(detalleFactura.PrecioVenta, 2, MidpointRounding.AwayFromZero);
                         NotaCreditoElectronicaOtrosCargosType lineaOtrosCargos = new NotaCreditoElectronicaOtrosCargosType();
-                        lineaOtrosCargos.Detalle = detalleFactura.Descripcion;
+                        lineaOtrosCargos.Detalle = detalleFactura.Producto.Descripcion;
                         lineaOtrosCargos.MontoCargo = decTotalPorLinea;
-                        lineaOtrosCargos.Porcentaje = 10;
+                        lineaOtrosCargos.Porcentaje = detalleFactura.Producto.PrecioVenta1;
                         lineaOtrosCargos.TipoDocumento = NotaCreditoElectronicaOtrosCargosTypeTipoDocumento.Item06;
                         detalleOtrosCargosList.Add(lineaOtrosCargos);
                         decTotalOtrosCargos += decTotalPorLinea;
@@ -1514,10 +1514,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     else
                     {
+                        decimal decTotalPorLinea = Math.Round(detalle.PrecioVenta, 2, MidpointRounding.AwayFromZero);
                         NotaCreditoElectronicaOtrosCargosType lineaOtrosCargos = new NotaCreditoElectronicaOtrosCargosType();
-                        lineaOtrosCargos.Detalle = detalle.Descripcion;
-                        lineaOtrosCargos.MontoCargo = detalle.PrecioVenta;
-                        lineaOtrosCargos.Porcentaje = 10;
+                        lineaOtrosCargos.Detalle = detalle.Producto.Descripcion;
+                        lineaOtrosCargos.MontoCargo = decTotalPorLinea;
+                        lineaOtrosCargos.Porcentaje = detalle.Producto.PrecioVenta1;
                         lineaOtrosCargos.TipoDocumento = NotaCreditoElectronicaOtrosCargosTypeTipoDocumento.Item06;
                         detalleOtrosCargosList.Add(lineaOtrosCargos);
                         decTotalOtrosCargos += detalle.PrecioVenta;
@@ -1798,10 +1799,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     else
                     {
+                        decimal decTotalPorLinea = Math.Round(detalle.PrecioVenta, 2, MidpointRounding.AwayFromZero);
                         NotaDebitoElectronicaOtrosCargosType lineaOtrosCargos = new NotaDebitoElectronicaOtrosCargosType();
-                        lineaOtrosCargos.Detalle = detalle.Descripcion;
-                        lineaOtrosCargos.MontoCargo = detalle.PrecioVenta;
-                        lineaOtrosCargos.Porcentaje = 10;
+                        lineaOtrosCargos.Detalle = detalle.Producto.Descripcion;
+                        lineaOtrosCargos.MontoCargo = decTotalPorLinea;
+                        lineaOtrosCargos.Porcentaje = detalle.Producto.PrecioVenta1;
                         lineaOtrosCargos.TipoDocumento = NotaDebitoElectronicaOtrosCargosTypeTipoDocumento.Item06;
                         detalleOtrosCargosList.Add(lineaOtrosCargos);
                         decTotalOtrosCargos += detalle.PrecioVenta;
@@ -2169,7 +2171,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 // Almacenaje del documento en base de datos
                 byte[] signedDataEncoded = Encoding.UTF8.GetBytes(signatureDocument.Document.OuterXml);
-                byte[] documentoOriEncoded = null;
+                byte[] documentoOriEncoded = new byte[0];
                 if (documentoOriXml != null) documentoOriEncoded = Encoding.UTF8.GetBytes(documentoOriXml.OuterXml);
                 DocumentoElectronico documento = new DocumentoElectronico
                 {
@@ -2191,7 +2193,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     EstadoEnvio = StaticEstadoDocumentoElectronico.Procesando,
                     CorreoNotificacion = strCorreoNotificacion,
                     DatosDocumento = signedDataEncoded,
-                    DatosDocumentoOri = documentoOriEncoded
+                    DatosDocumentoOri = documentoOriEncoded,
+                    Respuesta = new byte[0]
                 };
                 dbContext.DocumentoElectronicoRepository.Add(documento);
                 return documento;

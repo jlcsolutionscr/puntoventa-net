@@ -52,7 +52,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
             catch (Exception ex)
             {
                 log.Error("Error al consultar el estado del modo mantenimiento del sistema: ", ex);
-                throw new Exception("Error al consultar el estado del modo mantenimiento del sistema");
+                throw new Exception("Error al consultar la disponibilidad del sistema");
             }
         }
 

@@ -32,15 +32,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         IEnumerable<ParametroContable> ObtenerListaCuentasParaIngresos(int intIdEmpresa);
         IEnumerable<CatalogoContable> ObtenerListaCuentasDeBalance(int intIdEmpresa);
         Asiento AgregarAsiento(Asiento asiento);
-        Asiento AgregarAsiento(ILeandroContext dbContext, Asiento asiento);
-        void ReversarAsientoContable(ILeandroContext dbContext, int intIdAsiento);
+        void ReversarAsientoContable(int intIdAsiento);
         void ActualizarAsiento(Asiento asiento);
         void AnularAsiento(int intIdAsiento, int intIdUsuario);
-        void AnularAsiento(ILeandroContext dbContext, int intIdAsiento, int intIdUsuario);
         Asiento ObtenerAsiento(int intIdAsiento);
         int ObtenerTotalListaAsientos(int intIdEmpresa, int intIdAsiento = 0, string strDetalle = "");
         IEnumerable<Asiento> ObtenerListaAsientos(int intIdEmpresa, int numPagina, int cantRec, int intIdAsiento = 0, string strDetalle = "");
-        void MayorizarCuenta(ILeandroContext dbContext, int intIdCuenta, string strTipoMov, decimal dblMonto);
+        void MayorizarCuenta(int intIdCuenta, string strTipoMov, decimal dblMonto);
         void ProcesarCierreMensual(int intIdEmpresa);
         void GenerarAsientosdeFacturas();
         void GenerarAsientosdeCompras();
@@ -55,10 +53,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
     {
         private static ILeandroContext dbContext;
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-        public ContabilidadService()
-        {
-        }
 
         public ContabilidadService(ILeandroContext pContext)
         {
@@ -451,9 +445,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (detalleAsiento.CatalogoContable.PermiteMovimiento == false)
                         throw new BusinessException("La cuenta contable " + detalleAsiento.CatalogoContable.Descripcion + " no permite movimientos. Por favor verifique los parámetros del catalogo contable.");
                     if (detalleAsiento.Debito > 0)
-                        MayorizarCuenta(dbContext, detalleAsiento.IdCuenta, StaticTipoDebitoCredito.Debito, detalleAsiento.Debito);
+                        MayorizarCuenta(detalleAsiento.IdCuenta, StaticTipoDebitoCredito.Debito, detalleAsiento.Debito);
                     else
-                        MayorizarCuenta(dbContext, detalleAsiento.IdCuenta, StaticTipoDebitoCredito.Credito, detalleAsiento.Credito);
+                        MayorizarCuenta(detalleAsiento.IdCuenta, StaticTipoDebitoCredito.Credito, detalleAsiento.Credito);
                 }
                 dbContext.Commit();
             }
@@ -471,32 +465,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             return asiento;
         }
 
-        public Asiento AgregarAsiento(ILeandroContext dbContext, Asiento asiento)
-        {
-            if (asiento.TotalDebito != asiento.TotalCredito)
-                throw new BusinessException("El asiento contable se encuentra descuadrado. Por favor verifique los datos.");
-            try
-            {
-                dbContext.AsientoRepository.Add(asiento);
-                foreach (DetalleAsiento detalleAsiento in asiento.DetalleAsiento)
-                {
-                    if (detalleAsiento.CatalogoContable.PermiteMovimiento == false)
-                        throw new BusinessException("La cuenta contable " + detalleAsiento.CatalogoContable.Descripcion + " no permite movimientos. Por favor verifique los parámetros del catalogo contable.");
-                    if (detalleAsiento.Debito > 0)
-                        MayorizarCuenta(dbContext, detalleAsiento.IdCuenta, StaticTipoDebitoCredito.Debito, detalleAsiento.Debito);
-                    else
-                        MayorizarCuenta(dbContext, detalleAsiento.IdCuenta, StaticTipoDebitoCredito.Credito, detalleAsiento.Credito);
-                }
-            }
-            catch (Exception ex)
-            {
-                log.Error("Error al agregar el asiento contable: ", ex);
-                throw ex;
-            }
-            return asiento;
-        }
-
-        public void ReversarAsientoContable(ILeandroContext dbContext, int intIdAsiento)
+        public void ReversarAsientoContable(int intIdAsiento)
         {
             try
             {
@@ -520,8 +489,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     };
                     asientoDeReversion.DetalleAsiento.Add(detalleReversion);
                 }
-                IContabilidadService servicioContabilidad = new ContabilidadService();
-                servicioContabilidad.AgregarAsiento(dbContext, asientoDeReversion);
+                IContabilidadService servicioContabilidad = new ContabilidadService(dbContext);
+                servicioContabilidad.AgregarAsiento(asientoDeReversion);
             }
             catch (Exception ex)
             {
@@ -567,9 +536,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 foreach (DetalleAsiento detalleAsiento in asiento.DetalleAsiento)
                 {
                     if (detalleAsiento.Debito > 0)
-                        MayorizarCuenta(dbContext, detalleAsiento.IdCuenta, StaticTipoDebitoCredito.Credito, detalleAsiento.Debito);
+                        MayorizarCuenta(detalleAsiento.IdCuenta, StaticTipoDebitoCredito.Credito, detalleAsiento.Debito);
                     else
-                        MayorizarCuenta(dbContext, detalleAsiento.IdCuenta, StaticTipoDebitoCredito.Debito, detalleAsiento.Credito);
+                        MayorizarCuenta(detalleAsiento.IdCuenta, StaticTipoDebitoCredito.Debito, detalleAsiento.Credito);
                 }
                 asiento.Nulo = true;
                 asiento.IdAnuladoPor = intIdUsuario;
@@ -586,33 +555,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 dbContext.RollBack();
                 log.Error("Error al anular el asiento contable: ", ex);
                 throw new Exception("Se produjo un error anulando el asiento contable. Por favor consulte con su proveedor.");
-            }
-        }
-
-        public void AnularAsiento(ILeandroContext dbContext, int intIdAsiento, int intIdUsuario)
-        {
-            try
-            {
-                Asiento asiento = dbContext.AsientoRepository.Include("DetalleAsiento").FirstOrDefault(x => x.IdAsiento == intIdAsiento);
-                if (asiento == null)
-                    throw new Exception("El asiento contable por anular no existe");
-                if (asiento.Nulo)
-                    return;
-                foreach (DetalleAsiento detalleAsiento in asiento.DetalleAsiento)
-                {
-                    if (detalleAsiento.Debito > 0)
-                        MayorizarCuenta(dbContext, detalleAsiento.IdCuenta, StaticTipoDebitoCredito.Credito, detalleAsiento.Debito);
-                    else
-                        MayorizarCuenta(dbContext, detalleAsiento.IdCuenta, StaticTipoDebitoCredito.Debito, detalleAsiento.Credito);
-                }
-                asiento.Nulo = true;
-                asiento.IdAnuladoPor = intIdUsuario;
-                dbContext.NotificarModificacion(asiento);
-            }
-            catch (Exception ex)
-            {
-                log.Error("Error al anular el asiento contable: ", ex);
-                throw ex;
             }
         }
 
@@ -665,7 +607,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void MayorizarCuenta(ILeandroContext dbContext, int intIdCuenta, string strTipoMov, decimal dblMonto)
+        public void MayorizarCuenta(int intIdCuenta, string strTipoMov, decimal dblMonto)
         {
             try
             {
@@ -696,7 +638,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                 dbContext.NotificarModificacion(catalogoContable);
                 if (catalogoContable.IdCuentaGrupo > 0)
-                    MayorizarCuenta(dbContext, (int)catalogoContable.IdCuentaGrupo, strTipoMov, dblMonto);
+                    MayorizarCuenta((int)catalogoContable.IdCuentaGrupo, strTipoMov, dblMonto);
             }
             catch (Exception ex)
             {
@@ -798,7 +740,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 asiento.DetalleAsiento.Add(detalleAsiento);
                 asiento.TotalDebito = decTotalIngresos;
                 asiento.TotalCredito = decTotalEgresos;
-                AgregarAsiento(dbContext, asiento);
+                AgregarAsiento(asiento);
                 //empresa.CierreEnEjecucion = false;
                 dbContext.Commit();
             }
@@ -1091,7 +1033,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 asiento.TotalCredito += detalleAsiento.Credito;
                             }
                         }
-                        AgregarAsiento(dbContext, asiento);
+                        AgregarAsiento(asiento);
                         dbContext.Commit();
                         if (asiento != null)
                         {
@@ -1285,7 +1227,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             asiento.DetalleAsiento.Add(detalleAsiento);
                             asiento.TotalDebito += detalleAsiento.Debito;
                         }
-                        AgregarAsiento(dbContext, asiento);
+                        AgregarAsiento(asiento);
                         dbContext.Commit();
                         if (asiento != null)
                         {
@@ -1365,7 +1307,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         detalleAsiento.SaldoAnterior = dbContext.CatalogoContableRepository.Find(detalleAsiento.IdCuenta).SaldoActual;
                         asiento.DetalleAsiento.Add(detalleAsiento);
                         asiento.TotalCredito += detalleAsiento.Credito;
-                        AgregarAsiento(dbContext, asiento);
+                        AgregarAsiento(asiento);
                         dbContext.Commit();
                         if (asiento != null)
                         {
@@ -1444,7 +1386,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         detalleAsiento.SaldoAnterior = dbContext.CatalogoContableRepository.Find(detalleAsiento.IdCuenta).SaldoActual;
                         asiento.DetalleAsiento.Add(detalleAsiento);
                         asiento.TotalCredito += detalleAsiento.Credito;
-                        AgregarAsiento(dbContext, asiento);
+                        AgregarAsiento(asiento);
                         dbContext.Commit();
                         if (asiento != null)
                         {
@@ -1575,7 +1517,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         detalleAsiento.SaldoAnterior = dbContext.CatalogoContableRepository.Find(detalleAsiento.IdCuenta).SaldoActual;
                         asiento.DetalleAsiento.Add(detalleAsiento);
                         asiento.TotalCredito += detalleAsiento.Credito;
-                        AgregarAsiento(dbContext, asiento);
+                        AgregarAsiento(asiento);
                         dbContext.Commit();
                         if (asiento != null)
                         {
@@ -1670,7 +1612,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 asiento.TotalCredito += detalleAsiento.Credito;
                             }
                         }
-                        AgregarAsiento(dbContext, asiento);
+                        AgregarAsiento(asiento);
                         dbContext.Commit();
                         if (asiento != null)
                         {
@@ -1709,9 +1651,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (cuenta.IdCuentaGrupo != null)
                     {
                         if (cuenta.TipoCuentaContable.TipoSaldo == StaticTipoDebitoCredito.Debito)
-                            MayorizarCuenta(dbContext, (int)cuenta.IdCuentaGrupo, StaticTipoDebitoCredito.Debito, cuenta.SaldoActual);
+                            MayorizarCuenta((int)cuenta.IdCuentaGrupo, StaticTipoDebitoCredito.Debito, cuenta.SaldoActual);
                         else
-                            MayorizarCuenta(dbContext, (int)cuenta.IdCuentaGrupo, StaticTipoDebitoCredito.Credito, cuenta.SaldoActual);
+                            MayorizarCuenta((int)cuenta.IdCuentaGrupo, StaticTipoDebitoCredito.Credito, cuenta.SaldoActual);
                     }
                 }
                 dbContext.Commit();

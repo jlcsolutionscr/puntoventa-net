@@ -263,6 +263,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         throw new Exception("El producto asignado al detalle de la compra no existe.");
                     if (producto.Tipo != StaticTipoProducto.Producto && producto.Tipo != StaticTipoProducto.Transitorio)
                         throw new BusinessException("El tipo del producto " + producto.Descripcion + " no puede ser un servicio. Por favor verificar.");
+                    if (producto.Imagen == null) producto.Imagen = new byte[0];
                     if (producto.Tipo == StaticTipoProducto.Producto)
                     {
                         decimal decPrecioVenta = Math.Round(detalleCompra.PrecioVenta * (1 + (detalleCompra.PorcentajeIVA / 100)), 2, MidpointRounding.AwayFromZero);
@@ -309,6 +310,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             };
                             dbContext.ExistenciaPorSucursalRepository.Add(nuevoRegistro);
                         }
+                        producto.MovimientoProducto = new List<MovimientoProducto>();
                         producto.MovimientoProducto.Add(movimiento);
                         dbContext.NotificarModificacion(producto);
                     }
@@ -359,8 +361,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         movimientoBanco.Numero = desglosePago.NroMovimiento;
                         movimientoBanco.Beneficiario = dbContext.ProveedorRepository.Find(compra.IdProveedor).Nombre;
                         movimientoBanco.Monto = desglosePago.MontoLocal;
-                        IBancaService servicioAuxiliarBancario = new BancaService();
-                        servicioAuxiliarBancario.AgregarMovimientoBanco(dbContext, movimientoBanco);
+                        IBancaService servicioAuxiliarBancario = new BancaService(dbContext);
+                        servicioAuxiliarBancario.AgregarMovimientoBanco(movimientoBanco);
                     }
                 }
                 if (empresa.Contabiliza)
@@ -474,8 +476,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         asiento.DetalleAsiento.Add(detalleAsiento);
                         asiento.TotalDebito += detalleAsiento.Debito;
                     }
-                    IContabilidadService servicioContabilidad = new ContabilidadService();
-                    servicioContabilidad.AgregarAsiento(dbContext, asiento);
+                    IContabilidadService servicioContabilidad = new ContabilidadService(dbContext);
+                    servicioContabilidad.AgregarAsiento(asiento);
                 }
                 dbContext.Commit();
                 if (cuentaPorPagar != null)
@@ -557,9 +559,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 dbContext.NotificarModificacion(compra);
                 foreach (var detalleCompra in compra.DetalleCompra)
                 {
-                    Producto producto = dbContext.ProductoRepository.Find(detalleCompra.IdProducto);
+                    Producto producto = dbContext.ProductoRepository.FirstOrDefault(x => x.IdProducto == detalleCompra.IdProducto);
                     if (producto == null)
                         throw new Exception("El producto asignado al detalle de la compra no existe.");
+                    if (producto.Imagen == null) producto.Imagen = new byte[0];
                     if (producto.Tipo == StaticTipoProducto.Producto)
                     {
                         ExistenciaPorSucursal existencias = dbContext.ExistenciaPorSucursalRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == compra.IdSucursal).FirstOrDefault();
@@ -582,6 +585,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             Cantidad = detalleCompra.Cantidad,
                             PrecioCosto = detalleCompra.PrecioCosto
                         };
+                        producto.MovimientoProducto = new List<MovimientoProducto>();
                         producto.MovimientoProducto.Add(movimiento);
                         producto.PrecioCosto = decPrecioCostoPromedio;
                         dbContext.NotificarModificacion(producto);
@@ -600,13 +604,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 if (compra.IdAsiento > 0)
                 {
-                    IContabilidadService servicioContabilidad = new ContabilidadService();
-                    servicioContabilidad.ReversarAsientoContable(dbContext, compra.IdAsiento);
+                    IContabilidadService servicioContabilidad = new ContabilidadService(dbContext);
+                    servicioContabilidad.ReversarAsientoContable(compra.IdAsiento);
                 }
                 if (compra.IdMovBanco > 0)
                 {
-                    IBancaService servicioAuxiliarBancario = new BancaService();
-                    servicioAuxiliarBancario.AnularMovimientoBanco(dbContext, compra.IdMovBanco, intIdUsuario, "Anulación de registro de compra " + compra.IdCompra);
+                    IBancaService servicioAuxiliarBancario = new BancaService(dbContext);
+                    servicioAuxiliarBancario.AnularMovimientoBanco(compra.IdMovBanco, intIdUsuario, "Anulación de registro de compra " + compra.IdCompra);
                 }
                 dbContext.Commit();
             }
@@ -844,7 +848,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     if (detalleDevolucion.CantDevolucion > 0)
                     {
-                        Producto producto = dbContext.ProductoRepository.Include("Linea").FirstOrDefault(x => x.IdProducto == detalleDevolucion.IdProducto);
+                        Producto producto = dbContext.ProductoRepository.AsNoTracking().FirstOrDefault(x => x.IdProducto == detalleDevolucion.IdProducto);
                         if (producto == null)
                             throw new Exception("El producto asignado al detalle de la devolución no existe.");
                         if (producto.Tipo != StaticTipoProducto.Producto)
@@ -864,6 +868,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             Cantidad = detalleDevolucion.CantDevolucion,
                             PrecioCosto = detalleDevolucion.PrecioCosto
                         };
+                        producto.MovimientoProducto = new List<MovimientoProducto>();
                         producto.MovimientoProducto.Add(movimientoProducto);
                     }
                 }
@@ -901,7 +906,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 dbContext.NotificarModificacion(devolucion);
                 foreach (var detalleDevolucion in devolucion.DetalleDevolucionProveedor)
                 {
-                    Producto producto = dbContext.ProductoRepository.Include("Linea").FirstOrDefault(x => x.IdProducto == detalleDevolucion.IdProducto);
+                    Producto producto = dbContext.ProductoRepository.AsNoTracking().FirstOrDefault(x => x.IdProducto == detalleDevolucion.IdProducto);
                     if (producto == null)
                         throw new Exception("El producto asignado al detalle de la devolución no existe.");
                     if (producto.Tipo != StaticTipoProducto.Producto)
@@ -921,6 +926,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         Cantidad = detalleDevolucion.CantDevolucion,
                         PrecioCosto = detalleDevolucion.PrecioCosto
                     };
+                    producto.MovimientoProducto = new List<MovimientoProducto>();
                     producto.MovimientoProducto.Add(movimientoProducto);
                 }
                 if (devolucion.IdMovimientoCxP > 0)
@@ -937,8 +943,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 if (devolucion.IdAsiento > 0)
                 {
-                    IContabilidadService servicioContabilidad = new ContabilidadService();
-                    servicioContabilidad.ReversarAsientoContable(dbContext, devolucion.IdAsiento);
+                    IContabilidadService servicioContabilidad = new ContabilidadService(dbContext);
+                    servicioContabilidad.ReversarAsientoContable(devolucion.IdAsiento);
                 }
                 dbContext.Commit();
             }

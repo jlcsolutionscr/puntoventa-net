@@ -1733,7 +1733,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    return dbContext.ProductoRepository.FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.Tipo == intIdTipo);
+                    return dbContext.ProductoRepository.AsNoTracking().FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.Tipo == intIdTipo);
                 }
                 catch (Exception ex)
                 {
@@ -1749,7 +1749,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    Producto producto = dbContext.ProductoRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.Codigo.Equals(strCodigo)).FirstOrDefault();
+                    Producto producto = dbContext.ProductoRepository.Include("Proveedor").AsNoTracking().FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.Codigo.Equals(strCodigo));
                     if (producto != null)
                     {
                         var existencias = dbContext.ExistenciaPorSucursalRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == intIdSucursal).FirstOrDefault();
@@ -1772,7 +1772,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    Producto producto = dbContext.ProductoRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.CodigoProveedor.Equals(strCodigo)).FirstOrDefault();
+                    Producto producto = dbContext.ProductoRepository.AsNoTracking().FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.CodigoProveedor.Equals(strCodigo));
                     if (producto != null)
                     {
                         var existencias = dbContext.ExistenciaPorSucursalRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == intIdSucursal).FirstOrDefault();
@@ -2079,7 +2079,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.AjusteInventarioRepository.Add(ajusteInventario);
                     foreach (var detalleAjuste in ajusteInventario.DetalleAjusteInventario)
                     {
-                        Producto producto = dbContext.ProductoRepository.Include("Linea").FirstOrDefault(x => x.IdProducto == detalleAjuste.IdProducto);
+                        Producto producto = dbContext.ProductoRepository.AsNoTracking().FirstOrDefault(x => x.IdProducto == detalleAjuste.IdProducto);
                         if (producto == null)
                             throw new Exception("El producto asignado al detalle de la devolución no existe.");
                         if (producto.Tipo != StaticTipoProducto.Producto)
@@ -2111,6 +2111,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             Cantidad = detalleAjuste.Cantidad < 0 ? detalleAjuste.Cantidad * -1 : detalleAjuste.Cantidad,
                             PrecioCosto = detalleAjuste.PrecioCosto
                         };
+                        producto.MovimientoProducto = new List<MovimientoProducto>();
                         producto.MovimientoProducto.Add(movimiento);
                     }
                     dbContext.Commit();
@@ -2150,7 +2151,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.NotificarModificacion(ajusteInventario);
                     foreach (var detalleAjuste in ajusteInventario.DetalleAjusteInventario)
                     {
-                        Producto producto = dbContext.ProductoRepository.Include("Linea").FirstOrDefault(x => x.IdProducto == detalleAjuste.IdProducto);
+                        Producto producto = dbContext.ProductoRepository.AsNoTracking().FirstOrDefault(x => x.IdProducto == detalleAjuste.IdProducto);
                         if (producto == null)
                             throw new Exception("El producto asignado al detalle de la devolución no existe.");
                         if (producto.Tipo != StaticTipoProducto.Producto)
@@ -2170,6 +2171,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             Cantidad = detalleAjuste.Cantidad < 0 ? detalleAjuste.Cantidad * -1 : detalleAjuste.Cantidad,
                             PrecioCosto = detalleAjuste.PrecioCosto
                         };
+                        producto.MovimientoProducto = new List<MovimientoProducto>();
                         producto.MovimientoProducto.Add(movimiento);
                     }
                     dbContext.Commit();

@@ -129,7 +129,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.NotificarModificacion(traslado);
                     foreach (var detalleTraslado in traslado.DetalleTraslado)
                     {
-                        Producto producto = dbContext.ProductoRepository.Include("Linea").FirstOrDefault(x => x.IdProducto == detalleTraslado.IdProducto);
+                        Producto producto = dbContext.ProductoRepository.AsNoTracking().FirstOrDefault(x => x.IdProducto == detalleTraslado.IdProducto);
                         if (producto == null)
                             throw new Exception("El producto asignado al detalle del traslado no existe");
                         if (producto.Tipo != StaticTipoProducto.Producto)
@@ -161,6 +161,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             Tipo = StaticTipoMovimientoProducto.Salida,
                             Cantidad = detalleTraslado.Cantidad
                         };
+                        producto.MovimientoProducto = new List<MovimientoProducto>();
                         producto.MovimientoProducto.Add(movimiento);
                         existencias = dbContext.ExistenciaPorSucursalRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == traslado.IdSucursalDestino).FirstOrDefault();
                         if (existencias != null)
@@ -189,6 +190,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             Tipo = StaticTipoMovimientoProducto.Entrada,
                             Cantidad = detalleTraslado.Cantidad
                         };
+                        producto.MovimientoProducto = new List<MovimientoProducto>();
                         producto.MovimientoProducto.Add(movimiento);
                         if (empresa.Contabiliza)
                         {
@@ -278,8 +280,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             asiento.DetalleAsiento.Add(detalleAsiento);
                             asiento.TotalDebito += detalleAsiento.Debito;
                         }
-                        IContabilidadService servicioContabilidad = new ContabilidadService();
-                        servicioContabilidad.AgregarAsiento(dbContext, asiento);
+                        IContabilidadService servicioContabilidad = new ContabilidadService(dbContext);
+                        servicioContabilidad.AgregarAsiento(asiento);
                     }
                     dbContext.Commit();
                     if (asiento != null)
@@ -323,8 +325,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 dbContext.NotificarModificacion(traslado);
                 if (traslado.IdAsiento > 0)
                 {
-                    IContabilidadService servicioContabilidad = new ContabilidadService();
-                    servicioContabilidad.ReversarAsientoContable(dbContext, traslado.IdAsiento);
+                    IContabilidadService servicioContabilidad = new ContabilidadService(dbContext);
+                    servicioContabilidad.ReversarAsientoContable(traslado.IdAsiento);
                 }
                 dbContext.Commit();
             }

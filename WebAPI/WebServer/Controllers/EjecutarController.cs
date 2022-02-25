@@ -12,7 +12,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
     public class EjecutarController : ControllerBase
     {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        private static IHostEnvironment _environment;
         private static IMantenimientoService _servicioMantenimiento;
         private static IFacturacionService _servicioFacturacion;
         private static ICompraService _servicioCompra;
@@ -21,7 +20,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         private static IReporteService _servicioReportes;
         private static ITrasladoService _servicioTraslado;
         private static ICuentaPorProcesarService _servicioCuentaPorProcesar;
-        private static ICorreoService _servicioEnvioCorreo;
         private ConfiguracionGeneral configuracionGeneral;
         private static Empresa? empresa;
         private static SucursalPorEmpresa? sucursal;
@@ -65,11 +63,9 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
             IBancaService servicioBanca,
             IReporteService servicioReportes,
             ITrasladoService servicioTraslado,
-            ICuentaPorProcesarService servicioCuentaPorProcesar,
-            ICorreoService servicioEnvioCorreo
+            ICuentaPorProcesarService servicioCuentaPorProcesar
         )
         {
-            _environment = environment;
             _servicioMantenimiento = servicioMantenimiento;
             _servicioFacturacion = servicioFacturacion;
             _servicioCompra = servicioCompra;
@@ -78,7 +74,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
             _servicioReportes = servicioReportes;
             _servicioTraslado = servicioTraslado;
             _servicioCuentaPorProcesar = servicioCuentaPorProcesar;
-            _servicioEnvioCorreo = servicioEnvioCorreo;
             strLogoPath = Path.Combine(environment.ContentRootPath, "images/Logo.png");
             configuracionGeneral = new ConfiguracionGeneral
             (
@@ -98,7 +93,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
             catch (Exception ex)
             {
                 log.Error("Error al consultar el estado del modo mantenimiento del sistema: ", ex);
-                throw new Exception("Error al consultar el estado del modo mantenimiento del sistema");
+                throw new Exception("Error al consultar la disponibilidad del sistema");
             }
         }
 
@@ -109,7 +104,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
             JObject parametrosJO = null;
             string strNombreMetodo;
             string strEntidad = null;
-            string strFormatoReporte = "PDF";
             string strCorreoReceptor;
             if (datosJO.Property("NombreMetodo") != null)
             {
@@ -437,18 +431,18 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     intIdLlave1 = int.Parse(parametrosJO.Property("IdDocumento").Value.ToString());
                     strCorreoReceptor = parametrosJO.Property("CorreoReceptor").Value.ToString();
                     bytLogo = System.IO.File.ReadAllBytes(strLogoPath);
-                    _servicioFacturacion.EnviarNotificacionDocumentoElectronico(intIdLlave1, strCorreoReceptor, _servicioEnvioCorreo, configuracionGeneral.CorreoNotificacionErrores, bytLogo);
+                    _servicioFacturacion.EnviarNotificacionDocumentoElectronico(intIdLlave1, strCorreoReceptor, configuracionGeneral.CorreoNotificacionErrores, bytLogo);
                     break;
                 case "GenerarNotificacionFactura":
                     intIdLlave1 = int.Parse(parametrosJO.Property("IdFactura").Value.ToString());
                     bytLogo = System.IO.File.ReadAllBytes(strLogoPath);
-                    _servicioFacturacion.GenerarNotificacionFactura(intIdLlave1, _servicioEnvioCorreo, bytLogo);
+                    _servicioFacturacion.GenerarNotificacionFactura(intIdLlave1, bytLogo);
                     break;
                 case "GenerarNotificacionProforma":
                     intIdLlave1 = int.Parse(parametrosJO.Property("IdProforma").Value.ToString());
                     strCorreoReceptor = parametrosJO.Property("CorreoReceptor").Value.ToString();
                     bytLogo = System.IO.File.ReadAllBytes(strLogoPath);
-                    _servicioFacturacion.GenerarNotificacionProforma(intIdLlave1, strCorreoReceptor, _servicioEnvioCorreo, bytLogo);
+                    _servicioFacturacion.GenerarNotificacionProforma(intIdLlave1, strCorreoReceptor, bytLogo);
                     break;
                 case "ReprocesarDocumentoElectronico":
                     intIdLlave1 = int.Parse(parametrosJO.Property("IdDocumento").Value.ToString());
@@ -460,33 +454,32 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     string strNombreReporte = parametrosJO.Property("NombreReporte").Value.ToString();
                     strFechaInicial = parametrosJO.Property("FechaInicial").Value.ToString();
                     strFechaFinal = parametrosJO.Property("FechaFinal").Value.ToString();
-                    strFormatoReporte = parametrosJO.Property("FormatoReporte").Value.ToString();
-                    byte[] bytPlantillaReporte;
+                    string strFormatoReporte = parametrosJO.Property("FormatoReporte").Value.ToString();
                     switch (strNombreReporte)
                     {
                         case "Ventas en general":
-                            _servicioReportes.EnviarReporteVentasGenerales(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, strFormatoReporte, _servicioEnvioCorreo);
+                            _servicioReportes.EnviarReporteVentasGenerales(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, strFormatoReporte);
                             break;
                         case "Ventas anuladas":
-                            _servicioReportes.EnviarReporteVentasAnuladas(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, strFormatoReporte, _servicioEnvioCorreo);
+                            _servicioReportes.EnviarReporteVentasAnuladas(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, strFormatoReporte);
                             break;
                         case "Resumen de movimientos":
-                            _servicioReportes.EnviarReporteResumenMovimientos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, strFormatoReporte, _servicioEnvioCorreo);
+                            _servicioReportes.EnviarReporteResumenMovimientos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, strFormatoReporte);
                             break;
                         case "Detalle de ingresos":
-                            _servicioReportes.EnviarReporteDetalleIngresos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, strFormatoReporte, _servicioEnvioCorreo);
+                            _servicioReportes.EnviarReporteDetalleIngresos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, strFormatoReporte);
                             break;
                         case "Detalle de egresos":
-                            _servicioReportes.EnviarReporteDetalleEgresos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, strFormatoReporte, _servicioEnvioCorreo);
+                            _servicioReportes.EnviarReporteDetalleEgresos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, strFormatoReporte);
                             break;
                         case "Documentos electrónicos emitidos":
-                            _servicioReportes.EnviarReporteDocumentosEmitidos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, strFormatoReporte, _servicioEnvioCorreo);
+                            _servicioReportes.EnviarReporteDocumentosEmitidos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, strFormatoReporte);
                             break;
                         case "Documentos electrónicos recibidos":
-                            _servicioReportes.EnviarReporteDocumentosRecibidos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, strFormatoReporte, _servicioEnvioCorreo);
+                            _servicioReportes.EnviarReporteDocumentosRecibidos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, strFormatoReporte);
                             break;
                         case "Resumen de comprobantes electrónicos":
-                            _servicioReportes.EnviarReporteResumenMovimientosElectronicos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, strFormatoReporte, _servicioEnvioCorreo);
+                            _servicioReportes.EnviarReporteResumenMovimientosElectronicos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, strFormatoReporte);
                             break;
                         default:
                             throw new Exception("El método solicitado: '" + strNombreReporte + "' no ha sido implementado, contacte con su proveedor");

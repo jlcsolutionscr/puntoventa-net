@@ -9,7 +9,7 @@
     }
   },
   "profiles": {
-    "WebServer2": {
+    "WebServer": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,

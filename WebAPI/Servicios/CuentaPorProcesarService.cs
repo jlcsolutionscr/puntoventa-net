@@ -218,8 +218,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         movimientoBanco.Numero = desglosePago.NroMovimiento;
                         movimientoBanco.Beneficiario = empresa.NombreEmpresa;
                         movimientoBanco.Monto = desglosePago.MontoLocal;
-                        IBancaService servicioAuxiliarBancario = new BancaService();
-                        servicioAuxiliarBancario.AgregarMovimientoBanco(dbContext, movimientoBanco);
+                        IBancaService servicioAuxiliarBancario = new BancaService(dbContext);
+                        servicioAuxiliarBancario.AgregarMovimientoBanco(movimientoBanco);
                     }
                 }
                 if (empresa.Contabiliza)
@@ -310,8 +310,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     detalleAsiento.SaldoAnterior = dbContext.CatalogoContableRepository.Find(detalleAsiento.IdCuenta).SaldoActual;
                     asiento.DetalleAsiento.Add(detalleAsiento);
                     asiento.TotalCredito += detalleAsiento.Credito;
-                    IContabilidadService servicioContabilidad = new ContabilidadService();
-                    servicioContabilidad.AgregarAsiento(dbContext, asiento);
+                    IContabilidadService servicioContabilidad = new ContabilidadService(dbContext);
+                    servicioContabilidad.AgregarAsiento(asiento);
                 }
                 dbContext.Commit();
                 if (asiento != null)
@@ -366,8 +366,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 dbContext.NotificarModificacion(cxc);
                 if (movimiento.IdAsiento > 0)
                 {
-                    IContabilidadService servicioContabilidad = new ContabilidadService();
-                    servicioContabilidad.ReversarAsientoContable(dbContext, movimiento.IdAsiento);
+                    IContabilidadService servicioContabilidad = new ContabilidadService(dbContext);
+                    servicioContabilidad.ReversarAsientoContable(movimiento.IdAsiento);
                 }
                 dbContext.Commit();
             }
@@ -575,8 +575,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         movimientoBanco.Numero = desglosePago.NroMovimiento;
                         movimientoBanco.Beneficiario = desglosePago.Beneficiario;
                         movimientoBanco.Monto = desglosePago.MontoLocal;
-                        IBancaService servicioAuxiliarBancario = new BancaService();
-                        servicioAuxiliarBancario.AgregarMovimientoBanco(dbContext, movimientoBanco);
+                        IBancaService servicioAuxiliarBancario = new BancaService(dbContext);
+                        servicioAuxiliarBancario.AgregarMovimientoBanco(movimientoBanco);
                     }
                 }
                 if (empresa.Contabiliza)
@@ -626,8 +626,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             asiento.TotalCredito += detalleAsiento.Credito;
                         }
                     }
-                    IContabilidadService servicioContabilidad = new ContabilidadService();
-                    servicioContabilidad.AgregarAsiento(dbContext, asiento);
+                    IContabilidadService servicioContabilidad = new ContabilidadService(dbContext);
+                    servicioContabilidad.AgregarAsiento(asiento);
                 }
                 dbContext.Commit();
                 if (asiento != null)
@@ -682,13 +682,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 dbContext.NotificarModificacion(cxp);
                 if (movimiento.IdAsiento > 0)
                 {
-                    IContabilidadService servicioContabilidad = new ContabilidadService();
-                    servicioContabilidad.ReversarAsientoContable(dbContext, movimiento.IdAsiento);
+                    IContabilidadService servicioContabilidad = new ContabilidadService(dbContext);
+                    servicioContabilidad.ReversarAsientoContable(movimiento.IdAsiento);
                 }
                 if (movimiento.IdMovBanco > 0)
                 {
-                    IBancaService servicioAuxiliarBancario = new BancaService();
-                    servicioAuxiliarBancario.AnularMovimientoBanco(dbContext, movimiento.IdMovBanco, intIdUsuario, "Anulación de registro de movimiento CxP " + movimiento.IdMovCxP);
+                    IBancaService servicioAuxiliarBancario = new BancaService(dbContext);
+                    servicioAuxiliarBancario.AnularMovimientoBanco(movimiento.IdMovBanco, intIdUsuario, "Anulación de registro de movimiento CxP " + movimiento.IdMovCxP);
                 }
                 dbContext.Commit();
             }
@@ -832,8 +832,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         movimientoBanco.Numero = desglosePago.NroMovimiento;
                         movimientoBanco.Beneficiario = empresa.NombreEmpresa;
                         movimientoBanco.Monto = desglosePago.MontoLocal;
-                        IBancaService servicioAuxiliarBancario = new BancaService();
-                        servicioAuxiliarBancario.AgregarMovimientoBanco(dbContext, movimientoBanco);
+                        IBancaService servicioAuxiliarBancario = new BancaService(dbContext);
+                        servicioAuxiliarBancario.AgregarMovimientoBanco(movimientoBanco);
                     }
                 }
                 dbContext.Commit();
@@ -993,8 +993,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         movimientoBanco.Numero = desglosePago.NroMovimiento;
                         movimientoBanco.Beneficiario = empresa.NombreEmpresa;
                         movimientoBanco.Monto = desglosePago.MontoLocal;
-                        IBancaService servicioAuxiliarBancario = new BancaService();
-                        servicioAuxiliarBancario.AgregarMovimientoBanco(dbContext, movimientoBanco);
+                        IBancaService servicioAuxiliarBancario = new BancaService(dbContext);
+                        servicioAuxiliarBancario.AgregarMovimientoBanco(movimientoBanco);
                     }
                 }
                 dbContext.Commit();

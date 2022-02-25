@@ -59,35 +59,37 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         IList<FacturaDetalle> ObtenerListadoDevolucionesPorCliente(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, int intIdDevolucion, string strNombre);
         IList<DocumentoDetalle> ObtenerListadoDocumentosElectronicosPendientes();
         IList<DocumentoDetalle> ObtenerListadoDocumentosElectronicosEnProceso(int intIdEmpresa);
-        void ProcesarDocumentosElectronicosPendientes(ICorreoService servicioEnvioCorreo, ConfiguracionGeneral datos, byte[] bytLogo);
+        void ProcesarDocumentosElectronicosPendientes(ConfiguracionGeneral datos, byte[] bytLogo);
         void GenerarMensajeReceptor(string strDatos, int intIdEmpresa, int intSucursal, int intTerminal, int intEstado, bool bolIvaAplicable, ConfiguracionGeneral datos);
-        void ProcesarCorreoRecepcion(ICorreoService servicioEnvioCorreo, ICorreoService servicioRecepcionCorreo, ConfiguracionGeneral config, ConfiguracionRecepcion datos);
+        void ProcesarCorreoRecepcion(ICorreoService servicioRecepcionCorreo, ConfiguracionGeneral config, ConfiguracionRecepcion datos);
         void EnviarDocumentoElectronicoPendiente(int intIdDocumento, ConfiguracionGeneral datos);
         void ReprocesarDocumentoElectronico(int intIdDocumento, ConfiguracionGeneral datos);
         DocumentoElectronico ObtenerRespuestaDocumentoElectronicoEnviado(int intIdDocumento, ConfiguracionGeneral datos);
         int ObtenerTotalDocumentosElectronicosProcesados(int intIdEmpresa, int intIdSucursal, string strNombre);
         IList<DocumentoDetalle> ObtenerListadoDocumentosElectronicosProcesados(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, string strNombre);
         DocumentoElectronico ObtenerDocumentoElectronico(int intIdDocumento);
-        void ProcesarRespuestaHacienda(RespuestaHaciendaDTO mensaje, ICorreoService servicioEnvioCorreo, string strCorreoNotificacionErrores, byte[] bytLogo);
-        void EnviarNotificacionDocumentoElectronico(int intIdDocumento, string strCorreoReceptor, ICorreoService servicioEnvioCorreo, string strCorreoNotificacionErrores, byte[] bytLogo);
+        void ProcesarRespuestaHacienda(RespuestaHaciendaDTO mensaje, string strCorreoNotificacionErrores, byte[] bytLogo);
+        void EnviarNotificacionDocumentoElectronico(int intIdDocumento, string strCorreoReceptor, string strCorreoNotificacionErrores, byte[] bytLogo);
         byte[] GenerarFacturaPDF(int intIdFactura, byte[] bytLogo);
         byte[] GenerarApartadoPDF(int intIdApartado, byte[] bytLogo);
         byte[] GenerarOrdenServicioPDF(int intIdOrdenServicio, byte[] bytLogo);
         byte[] GenerarProformaPDF(int intIdProforma, byte[] bytLogo);
-        void GenerarNotificacionFactura(int intIdFactura, ICorreoService servicioEnvioCorreo, byte[] bytLogo);
-        void GenerarNotificacionProforma(int intIdProforma, string strCorreoReceptor, ICorreoService servicioEnvioCorreo, byte[] bytLogo);
+        void GenerarNotificacionFactura(int intIdFactura, byte[] bytLogo);
+        void GenerarNotificacionProforma(int intIdProforma, string strCorreoReceptor, byte[] bytLogo);
     }
 
     public class FacturacionService : IFacturacionService
     {
         private static ILeandroContext dbContext;
+        private static ICorreoService servicioCorreo;
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public FacturacionService(ILeandroContext pContext)
+        public FacturacionService(ILeandroContext pContext, ICorreoService pServicioCorreo)
         {
             try
             {
                 dbContext = pContext;
+                servicioCorreo = pServicioCorreo;
             }
             catch (Exception ex)
             {
@@ -402,7 +404,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 decTotalImpuesto += factura.Impuesto;
                 foreach (var detalleFactura in factura.DetalleFactura)
                 {
-                    Producto producto = dbContext.ProductoRepository.Include("Linea").FirstOrDefault(x => x.IdProducto == detalleFactura.IdProducto);
+                    Producto producto = dbContext.ProductoRepository.FirstOrDefault(x => x.IdProducto == detalleFactura.IdProducto);
                     if (producto == null)
                         throw new BusinessException("El producto con código " + producto.Codigo + " asignado al detalle de la factura no existe.");
                     if (!empresa.RegimenSimplificado && producto.CodigoClasificacion == "")
@@ -436,6 +438,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             Cantidad = detalleFactura.Cantidad,
                             PrecioCosto = detalleFactura.PrecioCosto
                         };
+                        producto.MovimientoProducto = new List<MovimientoProducto>();
                         producto.MovimientoProducto.Add(movimiento);
                     }
                     if (empresa.Contabiliza)
@@ -491,8 +494,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         movimientoBanco.Numero = desglosePago.TipoTarjeta;
                         movimientoBanco.Beneficiario = empresa.NombreEmpresa;
                         movimientoBanco.Monto = desglosePago.MontoLocal;
-                        IBancaService servicioAuxiliarBancario = new BancaService();
-                        servicioAuxiliarBancario.AgregarMovimientoBanco(dbContext, movimientoBanco);
+                        IBancaService servicioAuxiliarBancario = new BancaService(dbContext);
+                        servicioAuxiliarBancario.AgregarMovimientoBanco(movimientoBanco);
                     }
                 }
                 if (empresa.Contabiliza)
@@ -675,8 +678,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             asiento.TotalCredito += detalleAsiento.Credito;
                         }
                     }
-                    IContabilidadService servicioContabilidad = new ContabilidadService();
-                    servicioContabilidad.AgregarAsiento(dbContext, asiento);
+                    IContabilidadService servicioContabilidad = new ContabilidadService(dbContext);
+                    servicioContabilidad.AgregarAsiento(asiento);
                 }
                 DocumentoElectronico documentoFE = null;
                 if (!empresa.RegimenSimplificado)
@@ -710,10 +713,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.NotificarModificacion(movimientoBanco);
                 }
                 dbContext.Commit();
-                if (documentoFE != null)
+                /*if (documentoFE != null)
                 {
                     Task.Run(() => EnviarDocumentoElectronico(empresa, documentoFE, dbContext, datos));
-                }
+                }*/
                 return factura.IdFactura.ToString() + "-" + factura.ConsecFactura.ToString();
             }
             catch (BusinessException ex)
@@ -760,10 +763,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 dbContext.FacturaCompraRepository.Add(facturaCompra);
                 DocumentoElectronico documentoFE = ComprobanteElectronicoService.GenerarFacturaCompraElectronica(facturaCompra, empresa, dbContext, decTipoDeCambio);
                 dbContext.Commit();
-                if (documentoFE != null)
+                /*if (documentoFE != null)
                 {
                     Task.Run(() => EnviarDocumentoElectronico(empresa, documentoFE, dbContext, datos));
-                }
+                }*/
                 return facturaCompra.IdFactCompra.ToString();
             }
             catch (BusinessException ex)
@@ -802,7 +805,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 dbContext.NotificarModificacion(factura);
                 foreach (var detalleFactura in factura.DetalleFactura)
                 {
-                    Producto producto = dbContext.ProductoRepository.Find(detalleFactura.IdProducto);
+                    Producto producto = dbContext.ProductoRepository.AsNoTracking().FirstOrDefault(x => x.IdProducto == detalleFactura.IdProducto);
                     if (producto == null)
                         throw new Exception("El producto asignado al detalle de la devolución no existe.");
                     if (producto.Tipo == StaticTipoProducto.Producto)
@@ -825,6 +828,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 Cantidad = cantPorAnular,
                                 PrecioCosto = detalleFactura.PrecioCosto
                             };
+                            producto.MovimientoProducto = new List<MovimientoProducto>();
                             producto.MovimientoProducto.Add(movimiento);
                         }
                     }
@@ -842,13 +846,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 if (factura.IdMovBanco > 0)
                 {
-                    IBancaService servicioAuxiliarBancario = new BancaService();
-                    servicioAuxiliarBancario.AnularMovimientoBanco(dbContext, factura.IdMovBanco, intIdUsuario, "Anulación de registro de factura " + factura.ConsecFactura);
+                    IBancaService servicioAuxiliarBancario = new BancaService(dbContext);
+                    servicioAuxiliarBancario.AnularMovimientoBanco(factura.IdMovBanco, intIdUsuario, "Anulación de registro de factura " + factura.ConsecFactura);
                 }
                 if (factura.IdAsiento > 0)
                 {
-                    IContabilidadService servicioContabilidad = new ContabilidadService();
-                    servicioContabilidad.ReversarAsientoContable(dbContext, factura.IdAsiento);
+                    IContabilidadService servicioContabilidad = new ContabilidadService(dbContext);
+                    servicioContabilidad.ReversarAsientoContable(factura.IdAsiento);
                 }
                 DocumentoElectronico documentoNC = null;
                 if (!empresa.RegimenSimplificado && factura.IdDocElectronico != null)
@@ -856,6 +860,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     DocumentoElectronico documento = dbContext.DocumentoElectronicoRepository.FirstOrDefault(x => x.ClaveNumerica == factura.IdDocElectronico);
                     if (documento == null)
                         throw new BusinessException("El documento electrónico relacionado con la factura no existe.");
+                    if (documento.EstadoEnvio != StaticEstadoDocumentoElectronico.Aceptado || documento.EstadoEnvio != StaticEstadoDocumentoElectronico.Rechazado)
+                    {
+                        throw new BusinessException("El documento electrónico de la factura no ha sido procesado. No se puede proceder con la anulación en este momento");
+                    }
                     if (documento.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado)
                     {
                         DateTime fechaDocumento = DateTime.UtcNow.AddHours(-6);
@@ -867,10 +875,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                 }
                 dbContext.Commit();
-                if (documentoNC != null)
+                /*if (documentoNC != null)
                 {
                     Task.Run(() => EnviarDocumentoElectronico(empresa, documentoNC, dbContext, datos));
-                }
+                }*/
             }
             catch (BusinessException ex)
             {
@@ -978,7 +986,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     foreach (DetalleProforma detalle in proforma.DetalleProforma)
                     {
-                        Producto producto = dbContext.ProductoRepository.Include("Linea").FirstOrDefault(x => x.IdProducto == detalle.IdProducto);
+                        Producto producto = dbContext.ProductoRepository.AsNoTracking().FirstOrDefault(x => x.IdProducto == detalle.IdProducto);
                         if (producto == null)
                             throw new BusinessException("El producto con código " + producto.Codigo + " asignado al detalle de la proforma no existe.");
                         if (producto.CodigoClasificacion == "")
@@ -1288,7 +1296,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 dbContext.OrdenServicioRepository.Add(ordenServicio);
                 if (empresa.Modalidad == StaticModalidadEmpresa.Restaurante)
                 {
-                    AgregarTiqueteOrdenServicio(dbContext, ordenServicio, ordenServicio.DetalleOrdenServicio);
+                    AgregarTiqueteOrdenServicio(ordenServicio, ordenServicio.DetalleOrdenServicio);
                 }
                 dbContext.Commit();
                 return ordenServicio.IdOrden.ToString() + "-" + ordenServicio.ConsecOrdenServicio.ToString();
@@ -1341,7 +1349,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             nuevoDetalle.Add(detalle);
                         }
                     }
-                    if (nuevoDetalle.Count > 0) AgregarTiqueteOrdenServicio(dbContext, ordenServicio, nuevoDetalle);
+                    if (nuevoDetalle.Count > 0) AgregarTiqueteOrdenServicio(ordenServicio, nuevoDetalle);
                 }
                 ordenServicio.DetalleOrdenServicio = null;
                 foreach (DetalleOrdenServicio detalle in listadoDetalleAnterior)
@@ -1363,7 +1371,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        private void AgregarTiqueteOrdenServicio(ILeandroContext dbContext, OrdenServicio ordenServicio, ICollection<DetalleOrdenServicio> detalleOrdenServicio)
+        private void AgregarTiqueteOrdenServicio(OrdenServicio ordenServicio, ICollection<DetalleOrdenServicio> detalleOrdenServicio)
         {
             DataTable dtbDetalleTiquete = new DataTable();
             dtbDetalleTiquete.Columns.Add("Linea", typeof(string));
@@ -1371,7 +1379,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             dtbDetalleTiquete.Columns.Add("Cantidad", typeof(string));
             foreach (DetalleOrdenServicio detalle in detalleOrdenServicio)
             {
-                Producto producto = dbContext.ProductoRepository.Include("Linea").FirstOrDefault(x => x.IdProducto == detalle.IdProducto);
+                Producto producto = dbContext.ProductoRepository.Include("Linea").AsNoTracking().FirstOrDefault(x => x.IdProducto == detalle.IdProducto);
                 DataRow data = dtbDetalleTiquete.NewRow();
                 data["Linea"] = producto.Linea.Descripcion;
                 data["Descripcion"] = detalle.Descripcion;
@@ -1593,7 +1601,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         {
             try
             {
-                Factura factura = dbContext.FacturaRepository.AsNoTracking().Include("DetalleFactura").FirstOrDefault(x => x.IdFactura == devolucion.IdFactura);
+                Factura factura = dbContext.FacturaRepository.Include("DetalleFactura").FirstOrDefault(x => x.IdFactura == devolucion.IdFactura);
                 if (factura == null) throw new Exception("La factura asignada a la devolución no existe.");
                 if (factura.Nulo) throw new BusinessException("La factura asingada a la devolución ya ha sido anulada.");
                 Empresa empresa = dbContext.EmpresaRepository.Include("PlanFacturacion").Where(x => x.IdEmpresa == devolucion.IdEmpresa).FirstOrDefault();
@@ -1605,9 +1613,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 devolucion.IdSucursal = factura.IdSucursal;
                 foreach (var detalleDevolucion in devolucion.DetalleDevolucionCliente)
                 {
-                    Producto producto = dbContext.ProductoRepository.Include("Linea").FirstOrDefault(x => x.IdProducto == detalleDevolucion.IdProducto);
+                    Producto producto = dbContext.ProductoRepository.FirstOrDefault(x => x.IdProducto == detalleDevolucion.IdProducto);
                     if (producto == null)
                         throw new Exception("El producto asignado al detalle de la devolución no existe.");
+                    if (producto.Imagen == null) producto.Imagen = new byte[0];
                     detalleDevolucion.Producto = producto;
                     DetalleFactura detalleFactura = dbContext.DetalleFacturaRepository.Where(x => x.IdFactura == factura.IdFactura && x.IdProducto == detalleDevolucion.IdProducto).FirstOrDefault();
                     if (detalleFactura == null)
@@ -1631,6 +1640,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             Cantidad = detalleDevolucion.Cantidad,
                             PrecioCosto = detalleDevolucion.PrecioCosto
                         };
+                        producto.MovimientoProducto = new List<MovimientoProducto>();
                         producto.MovimientoProducto.Add(movimientoProducto);
                     }
                 }
@@ -1706,10 +1716,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 dbContext.DevolucionClienteRepository.Add(devolucion);
                 dbContext.Commit();
-                if (documentoNC != null)
+                /*if (documentoNC != null)
                 {
                     Task.Run(() => EnviarDocumentoElectronico(empresa, documentoNC, dbContext, datos));
-                }
+                }*/
             }
             catch (BusinessException ex)
             {
@@ -1747,7 +1757,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 devolucion.IdSucursal = factura.IdSucursal;
                 foreach (var detalleDevolucion in devolucion.DetalleDevolucionCliente)
                 {
-                    Producto producto = dbContext.ProductoRepository.Find(detalleDevolucion.IdProducto);
+                    Producto producto = dbContext.ProductoRepository.AsNoTracking().FirstOrDefault(x => x.IdProducto == detalleDevolucion.IdProducto);
                     if (producto == null) throw new Exception("El producto asignado al detalle de la devolución no existe.");
                     DetalleFactura detalleFactura = dbContext.DetalleFacturaRepository.Where(x => x.IdFactura == factura.IdFactura && x.IdProducto == detalleDevolucion.IdProducto).FirstOrDefault();
                     if (detalleFactura == null)
@@ -1771,6 +1781,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             Cantidad = detalleDevolucion.Cantidad,
                             PrecioCosto = detalleDevolucion.PrecioCosto
                         };
+                        producto.MovimientoProducto = new List<MovimientoProducto>();
                         producto.MovimientoProducto.Add(movimientoProducto);
                     }
                 }
@@ -1788,8 +1799,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 if (devolucion.IdAsiento > 0)
                 {
-                    IContabilidadService servicioContabilidad = new ContabilidadService();
-                    servicioContabilidad.ReversarAsientoContable(dbContext, devolucion.IdAsiento);
+                    IContabilidadService servicioContabilidad = new ContabilidadService(dbContext);
+                    servicioContabilidad.ReversarAsientoContable(devolucion.IdAsiento);
                 }
                 DocumentoElectronico documentoND = null;
                 if (!empresa.RegimenSimplificado && devolucion.IdDocElectronico != null)
@@ -1797,6 +1808,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     DocumentoElectronico documento = dbContext.DocumentoElectronicoRepository.FirstOrDefault(x => x.ClaveNumerica == devolucion.IdDocElectronico);
                     if (documento == null)
                         throw new BusinessException("El documento electrónico relacionado con la devolución no existe.");
+                    if (documento.EstadoEnvio != StaticEstadoDocumentoElectronico.Aceptado || documento.EstadoEnvio != StaticEstadoDocumentoElectronico.Rechazado)
+                    {
+                        throw new BusinessException("El documento electrónico de la devolución no ha sido procesado. No se puede proceder con la anulación en este momento");
+                    }
                     if (documento.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado)
                     {
                         DateTime fechaDocumento = DateTime.UtcNow.AddHours(-6);
@@ -1815,10 +1830,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 dbContext.NotificarModificacion(devolucion);
                 dbContext.Commit();
-                if (documentoND != null)
+                /*if (documentoND != null)
                 {
                     Task.Run(() => EnviarDocumentoElectronico(empresa, documentoND, dbContext, datos));
-                }
+                }*/
             }
             catch (BusinessException ex)
             {
@@ -2004,7 +2019,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public async void ProcesarDocumentosElectronicosPendientes(ICorreoService servicioEnvioCorreo, ConfiguracionGeneral datos, byte[] bytLogo)
+        public async void ProcesarDocumentosElectronicosPendientes(ConfiguracionGeneral datos, byte[] bytLogo)
         {
             var stringBuilder = new StringBuilder();
             try
@@ -2036,7 +2051,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 {
                                     try
                                     {
-                                        await EnviarDocumentoElectronico(empresa, documento, dbContext, datos);
+                                        await EnviarDocumentoElectronico(empresa, documento, datos);
                                     }
                                     catch (Exception ex)
                                     {
@@ -2070,7 +2085,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                             respuesta.RespuestaXml = Convert.ToBase64String(estadoDoc.Respuesta);
                                             try
                                             {
-                                                ProcesarMensajeDeRespuesta(respuesta, dbContext, servicioEnvioCorreo, datos.CorreoNotificacionErrores, bytLogo);
+                                                ProcesarRespuestaHacienda(respuesta, datos.CorreoNotificacionErrores, bytLogo);
                                             }
                                             catch (Exception ex)
                                             {
@@ -2111,7 +2126,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     ["contenido"] = Convert.ToBase64String(bytes)
                 };
                 archivosJArray.Add(jobDatosAdjuntos1);
-                servicioEnvioCorreo.SendEmail(new string[] { datos.CorreoNotificacionErrores }, new string[] { }, "Excepción en la interface de procesamiento de documentos pendientes", "Adjunto el archivo con el detalle de los errores en procesamiento.", false, archivosJArray);
+                servicioCorreo.SendEmail(new string[] { datos.CorreoNotificacionErrores }, new string[] { }, "Excepción en la interface de procesamiento de documentos pendientes", "Adjunto el archivo con el detalle de los errores en procesamiento.", false, archivosJArray);
             }
         }
 
@@ -2125,10 +2140,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 DocumentoElectronico documentoMR = ComprobanteElectronicoService.GeneraMensajeReceptor(strDatos, empresa, dbContext, intSucursal, intTerminal, intEstado, bolIvaAplicable);
                 dbContext.DocumentoElectronicoRepository.Add(documentoMR);
                 dbContext.Commit();
-                if (documentoMR != null)
+                /*if (documentoMR != null)
                 {
                     Task.Run(() => EnviarDocumentoElectronico(empresa, documentoMR, dbContext, datos));
-                }
+                }*/
             }
             catch (BusinessException ex)
             {
@@ -2144,7 +2159,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void ProcesarCorreoRecepcion(ICorreoService servicioEnvioCorreo, ICorreoService servicioRecepcionCorreo, ConfiguracionGeneral config, ConfiguracionRecepcion datos)
+        public void ProcesarCorreoRecepcion(ICorreoService servicioRecepcionCorreo, ConfiguracionGeneral config, ConfiguracionRecepcion datos)
         {
             var stringBuilder = new StringBuilder();
             ParametroSistema procesando = dbContext.ParametroSistemaRepository.Where(x => x.IdParametro == 3).FirstOrDefault();
@@ -2169,7 +2184,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         try
                         {
-                            ProcesarMensajeReceptor(dbContext, correo, config, true);
+                            ProcesarMensajeReceptor(correo, config, true);
                             servicioRecepcionCorreo.EliminarMensaje(datos.CuentaIvaAcreditable, datos.ClaveIvaAcreditable, correo.MessageNumber);
                         }
                         catch (BusinessException ex)
@@ -2180,7 +2195,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             stringBuilder.AppendLine("Error al procesar el documento con IVA acreditable. Enviado por " + strFrom + " Asunto " + correo.Subject + ". Detalle: " + strError);
                             servicioRecepcionCorreo.EliminarMensaje(datos.CuentaIvaAcreditable, datos.ClaveIvaAcreditable, correo.MessageNumber);
                             JArray archivosJArray = new JArray();
-                            servicioEnvioCorreo.SendEmail(new string[] { strFrom }, new string[] { }, "Notificación de error en recepción de documento electrónico", "El correo del envio del documento electrónico con asunto " + correo.Subject + " presenta el siguiente detalle: " + ex.Message, false, archivosJArray);
+                            servicioCorreo.SendEmail(new string[] { strFrom }, new string[] { }, "Notificación de error en recepción de documento electrónico", "El correo del envio del documento electrónico con asunto " + correo.Subject + " presenta el siguiente detalle: " + ex.Message, false, archivosJArray);
                         }
                         catch (Exception ex)
                         {
@@ -2202,7 +2217,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         try
                         {
-                            ProcesarMensajeReceptor(dbContext, correo, config, false);
+                            ProcesarMensajeReceptor(correo, config, false);
                             servicioRecepcionCorreo.EliminarMensaje(datos.CuentaGastoNoAcreditable, datos.ClaveGastoNoAcreditable, correo.MessageNumber);
                         }
                         catch (BusinessException ex)
@@ -2213,7 +2228,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             stringBuilder.AppendLine("Error al procesar el documento sin IVA acreditable. Enviado por " + strFrom + " Asunto " + correo.Subject + ". Detalle: " + strError);
                             servicioRecepcionCorreo.EliminarMensaje(datos.CuentaGastoNoAcreditable, datos.ClaveGastoNoAcreditable, correo.MessageNumber);
                             JArray archivosJArray = new JArray();
-                            servicioEnvioCorreo.SendEmail(new string[] { strFrom }, new string[] { }, "Notificación de error en recepción de documento electrónico", "El correo del envio del documento electrónico con asunto " + correo.Subject + " presenta el siguiente detalle: " + ex.Message, false, archivosJArray);
+                            servicioCorreo.SendEmail(new string[] { strFrom }, new string[] { }, "Notificación de error en recepción de documento electrónico", "El correo del envio del documento electrónico con asunto " + correo.Subject + " presenta el siguiente detalle: " + ex.Message, false, archivosJArray);
                         }
                         catch (Exception ex)
                         {
@@ -2234,11 +2249,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     ["contenido"] = Convert.ToBase64String(bytes)
                 };
                 archivosJArray.Add(jobDatosAdjuntos1);
-                servicioEnvioCorreo.SendEmail(new string[] { config.CorreoNotificacionErrores }, new string[] { }, "Detalle de errores del procesamiento de recepción de documentos electrónicos", "Adjunto el archivo con el detalle del procesamiento.", false, archivosJArray);
+                servicioCorreo.SendEmail(new string[] { config.CorreoNotificacionErrores }, new string[] { }, "Detalle de errores del procesamiento de recepción de documentos electrónicos", "Adjunto el archivo con el detalle del procesamiento.", false, archivosJArray);
             }
         }
 
-        void ProcesarMensajeReceptor(ILeandroContext dbContext, POPEmail correo, ConfiguracionGeneral datos, bool bolIvaAplicable)
+        void ProcesarMensajeReceptor(POPEmail correo, ConfiguracionGeneral datos, bool bolIvaAplicable)
         {
             string strDatos = "";
             string strError = "";
@@ -2302,10 +2317,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             DocumentoElectronico documentoMR = ComprobanteElectronicoService.GeneraMensajeReceptor(strDatos, empresa, dbContext, 1, 1, 0, bolIvaAplicable);
             dbContext.DocumentoElectronicoRepository.Add(documentoMR);
             dbContext.Commit();
-            if (documentoMR != null)
+            /*if (documentoMR != null)
             {
                 Task.Run(() => EnviarDocumentoElectronico(empresa, documentoMR, dbContext, datos));
-            }
+            }*/
         }
 
         public async void EnviarDocumentoElectronicoPendiente(int intIdDocumento, ConfiguracionGeneral datos)
@@ -2319,7 +2334,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     try
                     {
-                        await EnviarDocumentoElectronico(empresa, documento, dbContext, datos);
+                        await EnviarDocumentoElectronico(empresa, documento, datos);
                     }
                     catch (Exception ex)
                     {
@@ -2349,6 +2364,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 Empresa empresa = dbContext.EmpresaRepository.Find(documento.IdEmpresa);
                 if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                 if (documento.Reprocesado) throw new BusinessException("El documento ya fue reprocesado y no puede procesarse nuevamente.");
+                if (documento.EstadoEnvio != StaticEstadoDocumentoElectronico.Aceptado || documento.EstadoEnvio != StaticEstadoDocumentoElectronico.Rechazado)
+                {
+                    throw new BusinessException("El documento electrónico por procesar no ha sido procesado. No se puede generar un nuevo documento por el momento");
+                }
                 if (documento.EstadoEnvio != StaticEstadoDocumentoElectronico.Rechazado) throw new BusinessException("El documento no posee un estado de rechazado por lo que no puede ser reenviado al Ministerio de Hacienda.");
                 if (documento.EsMensajeReceptor == "S") throw new BusinessException("No se puede reenviar documento recepcionados, solo documentos emitidos por el sistema.");
                 DocumentoElectronico nuevoDocumento = null;
@@ -2396,10 +2415,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 documento.Reprocesado = true;
                 dbContext.NotificarModificacion(documento);
                 dbContext.Commit();
-                if (nuevoDocumento != null)
+                /*if (nuevoDocumento != null)
                 {
                     Task.Run(() => EnviarDocumentoElectronico(empresa, nuevoDocumento, dbContext, datos));
-                }
+                }*/
             }
             catch (BusinessException ex)
             {
@@ -2551,20 +2570,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void ProcesarRespuestaHacienda(RespuestaHaciendaDTO mensaje, ICorreoService servicioEnvioCorreo, string strCorreoNotificacionErrores, byte[] bytLogo)
-        {
-            try
-            {
-                ProcesarMensajeDeRespuesta(mensaje, dbContext, servicioEnvioCorreo, strCorreoNotificacionErrores, bytLogo);
-            }
-            catch (Exception ex)
-            {
-                JArray emptyJArray = new JArray();
-                servicioEnvioCorreo.SendEmail(new string[] { strCorreoNotificacionErrores }, new string[] { }, "Excepción en la interface de procesamiento del mensaje de respuesta de Hacienda", ex.Message, false, emptyJArray);
-            }
-        }
-
-        private void ProcesarMensajeDeRespuesta(RespuestaHaciendaDTO mensaje, ILeandroContext dbContext, ICorreoService servicioEnvioCorreo, string strCorreoNotificacionErrores, byte[] bytLogo)
+        public void ProcesarRespuestaHacienda(RespuestaHaciendaDTO mensaje, string strCorreoNotificacionErrores, byte[] bytLogo)
         {
             string strClave = "";
             string strConsecutivo = "";
@@ -2587,7 +2593,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     JArray emptyJArray = new JArray();
                     string strBody = "El documento con clave " + mensaje.Clave + " no se encuentra registrado en los registros del cliente.";
-                    servicioEnvioCorreo.SendEmail(new string[] { strCorreoNotificacionErrores }, new string[] { }, "Error al recibir respuesta de Hacienda.", strBody, false, emptyJArray);
+                    servicioCorreo.SendEmail(new string[] { strCorreoNotificacionErrores }, new string[] { }, "Error al recibir respuesta de Hacienda.", strBody, false, emptyJArray);
                 }
                 else
                 {
@@ -2607,18 +2613,18 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         };
                         dbContext.RegistroRespuestaHaciendaRepository.Add(registro);
                         dbContext.Commit();
-                        if (documentoElectronico.IdTipoDocumento != (int)TipoDocumento.TiqueteElectronico && documentoElectronico.CorreoNotificacion != "") GenerarNotificacionDocumentoElectronico(documentoElectronico, empresa, dbContext, servicioEnvioCorreo, documentoElectronico.CorreoNotificacion, strCorreoNotificacionErrores, bytLogo);
+                        if (documentoElectronico.IdTipoDocumento != (int)TipoDocumento.TiqueteElectronico && documentoElectronico.CorreoNotificacion != "") GenerarNotificacionDocumentoElectronico(documentoElectronico, empresa, documentoElectronico.CorreoNotificacion, strCorreoNotificacionErrores, bytLogo);
                     }
                 }
             }
             catch (Exception ex)
             {
                 JArray emptyJArray = new JArray();
-                servicioEnvioCorreo.SendEmail(new string[] { strCorreoNotificacionErrores }, new string[] { }, "Excepción en el procesamiento de la respuesta de hacienda para el comprobante con clave: " + mensaje.Clave, ex.Message, false, emptyJArray);
+                servicioCorreo.SendEmail(new string[] { strCorreoNotificacionErrores }, new string[] { }, "Excepción en el procesamiento de la respuesta de hacienda para el comprobante con clave: " + mensaje.Clave, ex.Message, false, emptyJArray);
             }
         }
 
-        public void EnviarNotificacionDocumentoElectronico(int intIdDocumento, string strCorreoReceptor, ICorreoService servicioEnvioCorreo, string strCorreoNotificacionErrores, byte[] bytLogo)
+        public void EnviarNotificacionDocumentoElectronico(int intIdDocumento, string strCorreoReceptor, string strCorreoNotificacionErrores, byte[] bytLogo)
         {
             try
             {
@@ -2628,7 +2634,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     JArray emptyJArray = new JArray();
                     string strBody = "El documento con ID " + intIdDocumento + " no se encuentra registrado.";
-                    servicioEnvioCorreo.SendEmail(new string[] { strCorreoNotificacionErrores }, new string[] { }, "Error al recibir respuesta de Hacienda.", strBody, false, emptyJArray);
+                    servicioCorreo.SendEmail(new string[] { strCorreoNotificacionErrores }, new string[] { }, "Error al recibir respuesta de Hacienda.", strBody, false, emptyJArray);
                 }
                 else
                 {
@@ -2636,7 +2642,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (documento.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado || documento.EstadoEnvio == StaticEstadoDocumentoElectronico.Rechazado)
                     {
-                        GenerarNotificacionDocumentoElectronico(documento, empresa, dbContext, servicioEnvioCorreo, strCorreoReceptor, strCorreoNotificacionErrores, bytLogo);
+                        GenerarNotificacionDocumentoElectronico(documento, empresa, strCorreoReceptor, strCorreoNotificacionErrores, bytLogo);
                     }
                 }
             }
@@ -2668,7 +2674,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 log.Error("Error al generar archivo PDF de factura con ID: " + intIdFactura, ex);
-                throw new Exception("Se produjo un error al generar el archivo DPF de la factura. Por favor consulte con su proveedor.");
+                throw new Exception("Se produjo un error al generar el archivo PDF de la factura. Por favor consulte con su proveedor.");
             }
         }
 
@@ -2689,7 +2695,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 log.Error("Error al generar archivo PDF del apartado con ID: " + intIdApartado, ex);
-                throw new Exception("Se produjo un error al generar el archivo DPF del apartado. Por favor consulte con su proveedor.");
+                throw new Exception("Se produjo un error al generar el archivo PDF del apartado. Por favor consulte con su proveedor.");
             }
         }
 
@@ -2710,7 +2716,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 log.Error("Error al generar archivo PDF de orden de servicio con ID: " + intIdOrdenServicio, ex);
-                throw new Exception("Se produjo un error al generar el archivo DPF de la orden de servicio. Por favor consulte con su proveedor.");
+                throw new Exception("Se produjo un error al generar el archivo PDF de la orden de servicio. Por favor consulte con su proveedor.");
             }
         }
 
@@ -2731,11 +2737,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 log.Error("Error al generar archivo PDF de la proforma con ID: " + intIdProforma, ex);
-                throw new Exception("Se produjo un error al generar el archivo DPF de la proforma. Por favor consulte con su proveedor.");
+                throw new Exception("Se produjo un error al generar el archivo PDF de la proforma. Por favor consulte con su proveedor.");
             }
         }
 
-        public void GenerarNotificacionFactura(int intIdFactura, ICorreoService servicioEnvioCorreo, byte[] bytLogo)
+        public void GenerarNotificacionFactura(int intIdFactura, byte[] bytLogo)
         {
             try
             {
@@ -2753,7 +2759,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         ["contenido"] = Convert.ToBase64String(pdfAttactment)
                     };
                     jarrayObj.Add(jobDatosAdjuntos1);
-                    servicioEnvioCorreo.SendEmail(new string[] { empresa.CorreoNotificacion }, new string[] { }, "Notificación de factura nro. " + intIdFactura + " en formato PDF", "Adunto encotrará el documento en formato PDF correspondiente a la factura número " + intIdFactura, false, jarrayObj);
+                    servicioCorreo.SendEmail(new string[] { empresa.CorreoNotificacion }, new string[] { }, "Notificación de factura nro. " + intIdFactura + " en formato PDF", "Adunto encotrará el documento en formato PDF correspondiente a la factura número " + intIdFactura, false, jarrayObj);
                 }
                 else
                     throw new BusinessException("La empresa no cuenta con un correo para el envío de notificaciones. Por favor actualice su información");
@@ -3052,7 +3058,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             return datos;
         }
 
-        private void GenerarNotificacionDocumentoElectronico(DocumentoElectronico documentoElectronico, Empresa empresa, ILeandroContext dbContext, ICorreoService servicioEnvioCorreo, string strCorreoReceptor, string strCorreoNotificacionErrores, byte[] bytLogo)
+        private void GenerarNotificacionDocumentoElectronico(DocumentoElectronico documentoElectronico, Empresa empresa, string strCorreoReceptor, string strCorreoNotificacionErrores, byte[] bytLogo)
         {
             try
             {
@@ -3081,7 +3087,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         {
                             strTitle = "Nota de débito electrónica de emisor " + empresa.NombreComercial;
                         }
-                        EstructuraPDF datos = GenerarEstructuraDocumentoPDF(empresa, documentoElectronico, dbContext, bytLogo);
+                        EstructuraPDF datos = GenerarEstructuraDocumentoPDF(empresa, documentoElectronico, bytLogo);
                         byte[] pdfAttactment = Generador.GenerarPDF(datos);
                         JObject jobDatosAdjuntos1 = new JObject
                         {
@@ -3101,7 +3107,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             ["contenido"] = Convert.ToBase64String(documentoElectronico.Respuesta)
                         };
                         jarrayObj.Add(jobDatosAdjuntos3);
-                        servicioEnvioCorreo.SendEmail(arrCorreoReceptor, new string[] { }, strTitle, strBody, false, jarrayObj);
+                        servicioCorreo.SendEmail(arrCorreoReceptor, new string[] { }, strTitle, strBody, false, jarrayObj);
                     }
                     else if(documentoElectronico.EstadoEnvio == "rechazado")
                     {
@@ -3110,7 +3116,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         string strMensajeHacienda = xmlRespuesta.GetElementsByTagName("DetalleMensaje").Item(0).InnerText;
                         strBody = "Estimado cliente, le informamos que el documento electrónico con clave " + documentoElectronico.ClaveNumerica + " fue rechazado por el Ministerio de Hacienda con el siguiente mensaje:\n\n" + strMensajeHacienda + "\n\nPara mayor información consulte el documento en su plataforma de factura electrónica.";
                         JArray emptyJArray = new JArray();
-                        servicioEnvioCorreo.SendEmail(new string[] { empresa.CorreoNotificacion }, new string[] { }, "Rechazo de documento electrónico con clave " + documentoElectronico.ClaveNumerica, strBody, false, emptyJArray);
+                        servicioCorreo.SendEmail(new string[] { empresa.CorreoNotificacion }, new string[] { }, "Rechazo de documento electrónico con clave " + documentoElectronico.ClaveNumerica, strBody, false, emptyJArray);
                     }
                 }
                 else
@@ -3130,7 +3136,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             ["contenido"] = Convert.ToBase64String(documentoElectronico.Respuesta)
                         };
                         jarrayObj.Add(jobDatosAdjuntos2);
-                        servicioEnvioCorreo.SendEmail(new string[] { empresa.CorreoNotificacion }, new string[] { }, "Estado de documento electrónico enviado a aceptación", strBody, false, jarrayObj);
+                        servicioCorreo.SendEmail(new string[] { empresa.CorreoNotificacion }, new string[] { }, "Estado de documento electrónico enviado a aceptación", strBody, false, jarrayObj);
                     }
                 }
             }
@@ -3138,11 +3144,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 JArray emptyJArray = new JArray();
                 string strBody = "El documento con clave " + documentoElectronico.ClaveNumerica + " registrado en la empresa " + empresa.NombreEmpresa + " genero un error en el envío del PDF al remitente: " + strCorreoReceptor + " Error: " + ex.Message;
-                servicioEnvioCorreo.SendEmail(new string[] { strCorreoNotificacionErrores }, new string[] { }, "Error al tratar de enviar el correo al receptor.", strBody, false, emptyJArray);
+                servicioCorreo.SendEmail(new string[] { strCorreoNotificacionErrores }, new string[] { }, "Error al tratar de enviar el correo al receptor.", strBody, false, emptyJArray);
             }
         }
 
-        private EstructuraPDF GenerarEstructuraDocumentoPDF(Empresa empresa, DocumentoElectronico documentoElectronico, ILeandroContext dbContext, byte[] bytLogo)
+        private EstructuraPDF GenerarEstructuraDocumentoPDF(Empresa empresa, DocumentoElectronico documentoElectronico, byte[] bytLogo)
         {
             EstructuraPDF datos = new EstructuraPDF();
             datos.PoweredByLogotipo = bytLogo;
@@ -3252,7 +3258,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             return datos;
         }
 
-        public void GenerarNotificacionProforma(int intIdProforma, string strCorreoReceptor, ICorreoService servicioEnvioCorreo, byte[] bytLogo)
+        public void GenerarNotificacionProforma(int intIdProforma, string strCorreoReceptor, byte[] bytLogo)
         {
             try
             {
@@ -3338,7 +3344,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     ["contenido"] = Convert.ToBase64String(pdfAttactment)
                 };
                 jarrayObj.Add(jobDatosAdjuntos1);
-                servicioEnvioCorreo.SendEmail(arrCorreoReceptor, new string[] { }, strTitle, strBody, false, jarrayObj);
+                servicioCorreo.SendEmail(arrCorreoReceptor, new string[] { }, strTitle, strBody, false, jarrayObj);
             }
             catch (BusinessException ex)
             {
@@ -3351,7 +3357,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        private async Task EnviarDocumentoElectronico(Empresa empresa, DocumentoElectronico documento, ILeandroContext dbContext, ConfiguracionGeneral datos)
+        private async Task EnviarDocumentoElectronico(Empresa empresa, DocumentoElectronico documento, ConfiguracionGeneral datos)
         {
             try
             {

@@ -226,8 +226,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     detalleAsiento.SaldoAnterior = dbContext.CatalogoContableRepository.Find(detalleAsiento.IdCuenta).SaldoActual;
                     asiento.DetalleAsiento.Add(detalleAsiento);
                     asiento.TotalCredito += detalleAsiento.Credito;
-                    IContabilidadService servicioContabilidad = new ContabilidadService();
-                    servicioContabilidad.AgregarAsiento(dbContext, asiento);
+                    IContabilidadService servicioContabilidad = new ContabilidadService(dbContext);
+                    servicioContabilidad.AgregarAsiento(asiento);
                 }
                 dbContext.Commit();
                 if (asiento != null)
@@ -271,8 +271,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 dbContext.NotificarModificacion(ingreso);
                 if (ingreso.IdAsiento > 0)
                 {
-                    IContabilidadService servicioContabilidad = new ContabilidadService();
-                    servicioContabilidad.ReversarAsientoContable(dbContext, ingreso.IdAsiento);
+                    IContabilidadService servicioContabilidad= new ContabilidadService(dbContext);
+                    servicioContabilidad.ReversarAsientoContable(ingreso.IdAsiento);
                 }
                 dbContext.Commit();
             }
@@ -519,8 +519,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     detalleAsiento.SaldoAnterior = dbContext.CatalogoContableRepository.Find(detalleAsiento.IdCuenta).SaldoActual;
                     asiento.DetalleAsiento.Add(detalleAsiento);
                     asiento.TotalCredito += detalleAsiento.Credito;
-                    IContabilidadService servicioContabilidad = new ContabilidadService();
-                    servicioContabilidad.AgregarAsiento(dbContext, asiento);
+                    IContabilidadService servicioContabilidad= new ContabilidadService(dbContext);
+                    servicioContabilidad.AgregarAsiento(asiento);
                 }
                 dbContext.Commit();
                 if (asiento != null)
@@ -564,8 +564,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 dbContext.NotificarModificacion(egreso);
                 if (egreso.IdAsiento > 0)
                 {
-                    IContabilidadService servicioContabilidad = new ContabilidadService();
-                    servicioContabilidad.ReversarAsientoContable(dbContext, egreso.IdAsiento);
+                    IContabilidadService servicioContabilidad = new ContabilidadService(dbContext);
+                    servicioContabilidad.ReversarAsientoContable(egreso.IdAsiento);
                 }
                 dbContext.Commit();
             }

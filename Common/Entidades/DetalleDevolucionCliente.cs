@@ -4,7 +4,6 @@ namespace LeandroSoftware.Common.Dominio.Entidades
     {
         public int IdDevolucion { get; set; }
         public int IdProducto { get; set; }
-        public string Descripcion { get; set; }
         public decimal Cantidad { get; set; }
         public decimal PrecioCosto { get; set; }
         public decimal PrecioVenta { get; set; }
