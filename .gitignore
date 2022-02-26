@@ -68,3 +68,4 @@ mobileapp/ios/Pods/
 #Env
 mobileapp/.env
 mobileapp/.env.production
+/WebAPI/WebServer/appsettings.Development.json
