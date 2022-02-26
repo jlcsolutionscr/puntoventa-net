@@ -21,8 +21,8 @@ namespace LeandroSoftware.ClienteWCF
 
         public static StringContent serializarEntidad<T>(T entidad)
         {
-            string strEntidad = JsonConvert.SerializeObject("{Entidad: " + JsonConvert.SerializeObject(entidad) + "}");
-            StringContent contentJson = new StringContent(strEntidad, Encoding.UTF8, "application/json");
+            string strDatos = JsonConvert.SerializeObject("{NombreMetodo: 'ActualizarEmpresa', Entidad: " + JsonConvert.SerializeObject(entidad) + "}");
+            StringContent contentJson = new StringContent(strDatos, Encoding.UTF8, "application/json");
             return contentJson;
         }
 
@@ -44,8 +44,7 @@ namespace LeandroSoftware.ClienteWCF
             }
             if (httpResponse.StatusCode != HttpStatusCode.OK)
                 throw new Exception(httpResponse.ReasonPhrase);
-            string responseContent = await httpResponse.Content.ReadAsStringAsync();
-            string response = JsonConvert.DeserializeObject<string>(responseContent);
+            string response = await httpResponse.Content.ReadAsStringAsync();
             return response;
         }
 
@@ -68,7 +67,7 @@ namespace LeandroSoftware.ClienteWCF
             client.Encoding = Encoding.UTF8;
             client.Headers[HttpRequestHeader.ContentType] = "application/octet-stream";
             client.Headers[HttpRequestHeader.Authorization] = "bearer " + strToken;
-            client.UploadData(strServicioURL + "/actualizararchivoaplicacion", bytZipFile);
+            client.UploadData(strServicioURL + "/actualizararchivoaplicacion", "POST", bytZipFile);
         }
 
         public static async Task<List<ParametroSistema>> ObtenerListadoParametros(string strToken)
@@ -87,10 +86,9 @@ namespace LeandroSoftware.ClienteWCF
                 if (httpResponse.StatusCode != HttpStatusCode.OK)
                     throw new Exception(httpResponse.ReasonPhrase);
                 List<ParametroSistema> listado = new List<ParametroSistema>();
-                string responseContent = await httpResponse.Content.ReadAsStringAsync();
-                string strResponse = JsonConvert.DeserializeObject<string>(responseContent);
-                if (strResponse != "")
-                    listado = JsonConvert.DeserializeObject<List<ParametroSistema>>(strResponse);
+                string response = await httpResponse.Content.ReadAsStringAsync();
+                if (response != "")
+                    listado = JsonConvert.DeserializeObject<List<ParametroSistema>>(response);
                 return listado;
             }
             catch (Exception ex)
@@ -130,9 +128,8 @@ namespace LeandroSoftware.ClienteWCF
                 }
                 if (httpResponse.StatusCode != HttpStatusCode.OK)
                     throw new Exception(httpResponse.ReasonPhrase);
-                string responseContent = await httpResponse.Content.ReadAsStringAsync();
-                string strResponse = JsonConvert.DeserializeObject<string>(responseContent);
-                Usuario usuario = JsonConvert.DeserializeObject<Usuario>(strResponse);
+                string response = await httpResponse.Content.ReadAsStringAsync();
+                Usuario usuario = JsonConvert.DeserializeObject<Usuario>(response);
                 return usuario;
             }
             catch (Exception ex)
@@ -157,10 +154,9 @@ namespace LeandroSoftware.ClienteWCF
                 if (httpResponse.StatusCode != HttpStatusCode.OK)
                     throw new Exception(httpResponse.ReasonPhrase);
                 List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
-                string responseContent = await httpResponse.Content.ReadAsStringAsync();
-                string strResponse = JsonConvert.DeserializeObject<string>(responseContent);
-                if (strResponse != "")
-                    listado = JsonConvert.DeserializeObject<List<LlaveDescripcion>>(strResponse);
+                string response = await httpResponse.Content.ReadAsStringAsync();
+                if (response != "")
+                    listado = JsonConvert.DeserializeObject<List<LlaveDescripcion>>(response);
                 return listado;
             }
             catch (Exception ex)
@@ -185,10 +181,9 @@ namespace LeandroSoftware.ClienteWCF
                 if (httpResponse.StatusCode != HttpStatusCode.OK)
                     throw new Exception(httpResponse.ReasonPhrase);
                 Empresa empresa = null;
-                string responseContent = await httpResponse.Content.ReadAsStringAsync();
-                string strResponse = JsonConvert.DeserializeObject<string>(responseContent);
-                if (strResponse != "")
-                    empresa = JsonConvert.DeserializeObject<Empresa>(strResponse);
+                string response = await httpResponse.Content.ReadAsStringAsync();
+                if (response != "")
+                    empresa = JsonConvert.DeserializeObject<Empresa>(response);
                 return empresa;
             }
             catch (Exception ex)
@@ -213,10 +208,9 @@ namespace LeandroSoftware.ClienteWCF
                 if (httpResponse.StatusCode != HttpStatusCode.OK)
                     throw new Exception(httpResponse.ReasonPhrase);
                 List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
-                string responseContent = await httpResponse.Content.ReadAsStringAsync();
-                string strResponse = JsonConvert.DeserializeObject<string>(responseContent);
-                if (strResponse != "")
-                    listado = JsonConvert.DeserializeObject<List<LlaveDescripcion>>(strResponse);
+                string response = await httpResponse.Content.ReadAsStringAsync();
+                if (response != "")
+                    listado = JsonConvert.DeserializeObject<List<LlaveDescripcion>>(response);
                 return listado;
             }
             catch (Exception ex)
@@ -241,10 +235,9 @@ namespace LeandroSoftware.ClienteWCF
                 if (httpResponse.StatusCode != HttpStatusCode.OK)
                     throw new Exception(httpResponse.ReasonPhrase);
                 List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
-                string responseContent = await httpResponse.Content.ReadAsStringAsync();
-                string strResponse = JsonConvert.DeserializeObject<string>(responseContent);
-                if (strResponse != "")
-                    listado = JsonConvert.DeserializeObject<List<LlaveDescripcion>>(strResponse);
+                string response = await httpResponse.Content.ReadAsStringAsync();
+                if (response != "")
+                    listado = JsonConvert.DeserializeObject<List<LlaveDescripcion>>(response);
                 return listado;
             }
             catch (Exception ex)
@@ -269,10 +262,9 @@ namespace LeandroSoftware.ClienteWCF
                 if (httpResponse.StatusCode != HttpStatusCode.OK)
                     throw new Exception(httpResponse.ReasonPhrase);
                 SucursalPorEmpresa sucursal = null;
-                string responseContent = await httpResponse.Content.ReadAsStringAsync();
-                string strResponse = JsonConvert.DeserializeObject<string>(responseContent);
-                if (strResponse != "")
-                    sucursal = JsonConvert.DeserializeObject<SucursalPorEmpresa>(strResponse);
+                string response = await httpResponse.Content.ReadAsStringAsync();
+                if (response != "")
+                    sucursal = JsonConvert.DeserializeObject<SucursalPorEmpresa>(response);
                 return sucursal;
             }
             catch (Exception ex)
@@ -319,10 +311,9 @@ namespace LeandroSoftware.ClienteWCF
                 if (httpResponse.StatusCode != HttpStatusCode.OK)
                     throw new Exception(httpResponse.ReasonPhrase);
                 TerminalPorSucursal sucursal = null;
-                string responseContent = await httpResponse.Content.ReadAsStringAsync();
-                string strResponse = JsonConvert.DeserializeObject<string>(responseContent);
-                if (strResponse != "")
-                    sucursal = JsonConvert.DeserializeObject<TerminalPorSucursal>(strResponse);
+                string response = await httpResponse.Content.ReadAsStringAsync();
+                if (response != "")
+                    sucursal = JsonConvert.DeserializeObject<TerminalPorSucursal>(response);
                 return sucursal;
             }
             catch (Exception ex)
@@ -347,10 +338,9 @@ namespace LeandroSoftware.ClienteWCF
                 if (httpResponse.StatusCode != HttpStatusCode.OK)
                     throw new Exception(httpResponse.ReasonPhrase);
                 List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
-                string responseContent = await httpResponse.Content.ReadAsStringAsync();
-                string strResponse = JsonConvert.DeserializeObject<string>(responseContent);
-                if (strResponse != "")
-                    listado = JsonConvert.DeserializeObject<List<LlaveDescripcion>>(strResponse);
+                string response = await httpResponse.Content.ReadAsStringAsync();
+                if (response != "")
+                    listado = JsonConvert.DeserializeObject<List<LlaveDescripcion>>(response);
                 return listado;
             }
             catch (Exception ex)
@@ -375,10 +365,9 @@ namespace LeandroSoftware.ClienteWCF
                 if (httpResponse.StatusCode != HttpStatusCode.OK)
                     throw new Exception(httpResponse.ReasonPhrase);
                 List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
-                string responseContent = await httpResponse.Content.ReadAsStringAsync();
-                string strResponse = JsonConvert.DeserializeObject<string>(responseContent);
-                if (strResponse != "")
-                    listado = JsonConvert.DeserializeObject<List<LlaveDescripcion>>(strResponse);
+                string response = await httpResponse.Content.ReadAsStringAsync();
+                if (response != "")
+                    listado = JsonConvert.DeserializeObject<List<LlaveDescripcion>>(response);
                 return listado;
             }
             catch (Exception ex)
@@ -403,10 +392,9 @@ namespace LeandroSoftware.ClienteWCF
                 if (httpResponse.StatusCode != HttpStatusCode.OK)
                     throw new Exception(httpResponse.ReasonPhrase);
                 List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
-                string responseContent = await httpResponse.Content.ReadAsStringAsync();
-                string strResponse = JsonConvert.DeserializeObject<string>(responseContent);
-                if (strResponse != "")
-                    listado = JsonConvert.DeserializeObject<List<LlaveDescripcion>>(strResponse);
+                string response = await httpResponse.Content.ReadAsStringAsync();
+                if (response != "")
+                    listado = JsonConvert.DeserializeObject<List<LlaveDescripcion>>(response);
                 return listado;
             }
             catch (Exception ex)
@@ -431,10 +419,9 @@ namespace LeandroSoftware.ClienteWCF
                 if (httpResponse.StatusCode != HttpStatusCode.OK)
                     throw new Exception(httpResponse.ReasonPhrase);
                 List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
-                string responseContent = await httpResponse.Content.ReadAsStringAsync();
-                string strResponse = JsonConvert.DeserializeObject<string>(responseContent);
-                if (strResponse != "")
-                    listado = JsonConvert.DeserializeObject<List<LlaveDescripcion>>(strResponse);
+                string response = await httpResponse.Content.ReadAsStringAsync();
+                if (response != "")
+                    listado = JsonConvert.DeserializeObject<List<LlaveDescripcion>>(response);
                 return listado;
             }
             catch (Exception ex)
@@ -459,10 +446,9 @@ namespace LeandroSoftware.ClienteWCF
                 if (httpResponse.StatusCode != HttpStatusCode.OK)
                     throw new Exception(httpResponse.ReasonPhrase);
                 List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
-                string responseContent = await httpResponse.Content.ReadAsStringAsync();
-                string strResponse = JsonConvert.DeserializeObject<string>(responseContent);
-                if (strResponse != "")
-                    listado = JsonConvert.DeserializeObject<List<LlaveDescripcion>>(strResponse);
+                string response = await httpResponse.Content.ReadAsStringAsync();
+                if (response != "")
+                    listado = JsonConvert.DeserializeObject<List<LlaveDescripcion>>(response);
                 return listado;
             }
             catch (Exception ex)
@@ -487,10 +473,9 @@ namespace LeandroSoftware.ClienteWCF
                 if (httpResponse.StatusCode != HttpStatusCode.OK)
                     throw new Exception(httpResponse.ReasonPhrase);
                 List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
-                string responseContent = await httpResponse.Content.ReadAsStringAsync();
-                string strResponse = JsonConvert.DeserializeObject<string>(responseContent);
-                if (strResponse != "")
-                    listado = JsonConvert.DeserializeObject<List<LlaveDescripcion>>(strResponse);
+                string response = await httpResponse.Content.ReadAsStringAsync();
+                if (response != "")
+                    listado = JsonConvert.DeserializeObject<List<LlaveDescripcion>>(response);
                 return listado;
             }
             catch (Exception ex)
@@ -515,10 +500,9 @@ namespace LeandroSoftware.ClienteWCF
                 if (httpResponse.StatusCode != HttpStatusCode.OK)
                     throw new Exception(httpResponse.ReasonPhrase);
                 List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
-                string responseContent = await httpResponse.Content.ReadAsStringAsync();
-                string strResponse = JsonConvert.DeserializeObject<string>(responseContent);
-                if (strResponse != "")
-                    listado = JsonConvert.DeserializeObject<List<LlaveDescripcion>>(strResponse);
+                string response = await httpResponse.Content.ReadAsStringAsync();
+                if (response != "")
+                    listado = JsonConvert.DeserializeObject<List<LlaveDescripcion>>(response);
                 return listado;
             }
             catch (Exception ex)
@@ -543,8 +527,8 @@ namespace LeandroSoftware.ClienteWCF
                 }
                 if (httpResponse.StatusCode != HttpStatusCode.OK)
                     throw new Exception(httpResponse.ReasonPhrase);
-                string responseContent = await httpResponse.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<string>(responseContent);
+                string response = await httpResponse.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<string>(response);
             }
             catch (Exception ex)
             {
@@ -799,10 +783,9 @@ namespace LeandroSoftware.ClienteWCF
                 if (httpResponse.StatusCode != HttpStatusCode.OK)
                     throw new Exception(httpResponse.ReasonPhrase);
                 List<DocumentoDetalle> listado = new List<DocumentoDetalle>();
-                string responseContent = await httpResponse.Content.ReadAsStringAsync();
-                string strResponse = JsonConvert.DeserializeObject<string>(responseContent);
-                if (strResponse != "")
-                    listado = JsonConvert.DeserializeObject<List<DocumentoDetalle>>(strResponse);
+                string response = await httpResponse.Content.ReadAsStringAsync();
+                if (response != "")
+                    listado = JsonConvert.DeserializeObject<List<DocumentoDetalle>>(response);
                 return listado;
             }
             catch (Exception ex)

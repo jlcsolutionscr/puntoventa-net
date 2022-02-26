@@ -55,12 +55,12 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         }
 
         [HttpPost("actualizararchivoaplicacion")]
-        public void ActualizarArchivoAplicacion([FromBody] Stream fileStream)
+        public async Task ActualizarArchivoAplicacionAsync()
         {
             byte[] bytContenido;
             using (MemoryStream ms = new MemoryStream())
             {
-                fileStream.CopyTo(ms);
+                await Request.Body.CopyToAsync(ms);
                 bytContenido = ms.ToArray();
             }
             string strUpdateAppPath = Path.Combine(_environment.ContentRootPath, "appupdates");
@@ -372,7 +372,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         }
 
         [HttpPost("agregarempresa")]
-        public string AgregarEmpresa(string strDatos)
+        public string AgregarEmpresa([FromBody] string strDatos)
         {
             try
             {
@@ -389,7 +389,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         }
 
         [HttpPost("actualizarempresa")]
-        public void ActualizarEmpresa(string strDatos)
+        public void ActualizarEmpresa([FromBody] string strDatos)
         {
             try
             {
@@ -405,7 +405,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         }
 
         [HttpPost("actualizarlistadoreportes")]
-        public void ActualizarListadoReporte(string strDatos)
+        public void ActualizarListadoReporte([FromBody] string strDatos)
         {
             try
             {
@@ -422,7 +422,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         }
 
         [HttpPost("actualizarlistadoroles")]
-        public void ActualizarListadoRoles(string strDatos)
+        public void ActualizarListadoRoles([FromBody] string strDatos)
         {
             try
             {
@@ -439,7 +439,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         }
 
         [HttpPost("actualizarlogoempresa")]
-        public void ActualizarLogoEmpresa(string strDatos)
+        public void ActualizarLogoEmpresa([FromBody] string strDatos)
         {
             try
             {
