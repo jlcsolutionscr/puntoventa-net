@@ -5,7 +5,9 @@ bin/
 obj/
 App_Data/
 .vs/
+.vscode/
 errorLog*.*
+appsettings.*
 .DS_Store
 
 ServicioWeb/Endpoints/Web.*
