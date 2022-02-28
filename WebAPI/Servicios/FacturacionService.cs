@@ -63,13 +63,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         void ProcesarDocumentosElectronicosPendientes(ConfiguracionGeneral datos, byte[] bytLogo);
         void GenerarMensajeReceptor(string strDatos, int intIdEmpresa, int intSucursal, int intTerminal, int intEstado, bool bolIvaAplicable, ConfiguracionGeneral datos);
         void ProcesarCorreoRecepcion(ConfiguracionGeneral config, ConfiguracionRecepcion datos);
-        void EnviarDocumentoElectronicoPendiente(int intIdDocumento, ConfiguracionGeneral datos);
         void ReprocesarDocumentoElectronico(int intIdDocumento, ConfiguracionGeneral datos);
         DocumentoElectronico ObtenerRespuestaDocumentoElectronicoEnviado(int intIdDocumento, ConfiguracionGeneral datos);
         int ObtenerTotalDocumentosElectronicosProcesados(int intIdEmpresa, int intIdSucursal, string strNombre);
         IList<DocumentoDetalle> ObtenerListadoDocumentosElectronicosProcesados(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, string strNombre);
         DocumentoElectronico ObtenerDocumentoElectronico(int intIdDocumento);
-        void ProcesarRespuestaHacienda(RespuestaHaciendaDTO mensaje, string strCorreoNotificacionErrores, byte[] bytLogo);
+        void ProcesarRespuestaHacienda(ILeandroContext dbContext, RespuestaHaciendaDTO mensaje, string strCorreoNotificacionErrores, byte[] bytLogo);
         void EnviarNotificacionDocumentoElectronico(int intIdDocumento, string strCorreoReceptor, string strCorreoNotificacionErrores, byte[] bytLogo);
         byte[] GenerarFacturaPDF(int intIdFactura, byte[] bytLogo);
         byte[] GenerarApartadoPDF(int intIdApartado, byte[] bytLogo);
@@ -1941,7 +1940,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             var listaDocumento = new List<DocumentoDetalle>();
             try
             {
-                List<DocumentoElectronico> listado = dbContext.DocumentoElectronicoRepository.Where(x => x.EstadoEnvio == StaticEstadoDocumentoElectronico.Registrado || x.EstadoEnvio == StaticEstadoDocumentoElectronico.Enviado || x.EstadoEnvio == StaticEstadoDocumentoElectronico.Procesando).OrderBy(x => x.ClaveNumerica).ToList();
+                List<DocumentoElectronico> listado = dbContext.DocumentoElectronicoRepository.Where(x => x.EstadoEnvio == StaticEstadoDocumentoElectronico.Registrado || x.EstadoEnvio == StaticEstadoDocumentoElectronico.Enviado).OrderBy(x => x.ClaveNumerica).ToList();
                 foreach (var value in listado)
                 {
                     string datosXml = "";
@@ -1999,7 +1998,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
                 if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                 if (empresa.FechaVence < DateTime.Today) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
-                List<DocumentoElectronico> listado = dbContext.DocumentoElectronicoRepository.Where(x => x.IdEmpresa == intIdEmpresa && (x.EstadoEnvio == StaticEstadoDocumentoElectronico.Registrado || x.EstadoEnvio == StaticEstadoDocumentoElectronico.Enviado || x.EstadoEnvio == StaticEstadoDocumentoElectronico.Procesando)).ToList();
+                List<DocumentoElectronico> listado = dbContext.DocumentoElectronicoRepository.Where(x => x.IdEmpresa == intIdEmpresa && (x.EstadoEnvio == StaticEstadoDocumentoElectronico.Registrado || x.EstadoEnvio == StaticEstadoDocumentoElectronico.Enviado)).ToList();
                 foreach (var value in listado)
                 {
                     string datosXml = "";
@@ -2049,7 +2048,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public async void ProcesarDocumentosElectronicosPendientes(ConfiguracionGeneral datos, byte[] bytLogo)
+        public void ProcesarDocumentosElectronicosPendientes(ConfiguracionGeneral datos, byte[] bytLogo)
         {
             using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<ILeandroContext>())
             {
@@ -2067,7 +2066,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             List<DocumentoElectronico> listaPendientes = new List<DocumentoElectronico>();
                             try
                             {
-                                listaPendientes = dbContext.DocumentoElectronicoRepository.Where(x => x.EstadoEnvio == StaticEstadoDocumentoElectronico.Registrado || x.EstadoEnvio == StaticEstadoDocumentoElectronico.Enviado || x.EstadoEnvio == StaticEstadoDocumentoElectronico.Procesando).OrderBy(x => x.IdEmpresa).ToList();
+                                listaPendientes = dbContext.DocumentoElectronicoRepository.Where(x => x.EstadoEnvio == StaticEstadoDocumentoElectronico.Registrado || x.EstadoEnvio == StaticEstadoDocumentoElectronico.Enviado).OrderBy(x => x.IdEmpresa).ToList();
                             }
                             catch (Exception ex)
                             {
@@ -2079,24 +2078,18 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 Empresa empresa = dbContext.EmpresaRepository.Find(documento.IdEmpresa);
                                 if (empresa != null)
                                 {
+                                    if (documento.DatosDocumentoOri == null) documento.DatosDocumentoOri = new byte[0];
+                                    if (documento.Respuesta == null) documento.Respuesta = new byte[0];
                                     if (documento.EstadoEnvio == StaticEstadoDocumentoElectronico.Registrado)
                                     {
-                                        try
-                                        {
-                                            await EnviarDocumentoElectronico(empresa, documento, datos);
-                                        }
-                                        catch (Exception ex)
-                                        {
-                                            string strError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                                            stringBuilder.AppendLine("Error al enviar el documento electrónico con id: " + documento.IdDocumento + " Detalle: " + strError);
-                                        }
+                                        EnviarDocumentoElectronico(empresa, documento, datos).Wait();
                                     }
                                     else if (documento.EstadoEnvio == StaticEstadoDocumentoElectronico.Enviado)
                                     {
                                         DocumentoElectronico estadoDoc = null;
                                         try
                                         {
-                                            estadoDoc = await ComprobanteElectronicoService.ConsultarDocumentoElectronico(empresa, documento, dbContext, datos);
+                                            estadoDoc = ComprobanteElectronicoService.ConsultarDocumentoElectronico(empresa, documento, dbContext, datos).Result;
                                         }
                                         catch (Exception ex)
                                         {
@@ -2117,7 +2110,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                                 respuesta.RespuestaXml = Convert.ToBase64String(estadoDoc.Respuesta);
                                                 try
                                                 {
-                                                    ProcesarRespuestaHacienda(respuesta, datos.CorreoNotificacionErrores, bytLogo);
+                                                    ProcesarRespuestaHacienda(dbContext, respuesta, datos.CorreoNotificacionErrores, bytLogo);
                                                 }
                                                 catch (Exception ex)
                                                 {
@@ -2359,39 +2352,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public async void EnviarDocumentoElectronicoPendiente(int intIdDocumento, ConfiguracionGeneral datos)
-        {
-            try
-            {
-                DocumentoElectronico documento = dbContext.DocumentoElectronicoRepository.Find(intIdDocumento);
-                Empresa empresa = dbContext.EmpresaRepository.Find(documento.IdEmpresa);
-                if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                if (documento.EstadoEnvio == StaticEstadoDocumentoElectronico.Registrado)
-                {
-                    try
-                    {
-                        await EnviarDocumentoElectronico(empresa, documento, datos);
-                    }
-                    catch (Exception ex)
-                    {
-                        throw ex;
-                    }
-                }
-            }
-            catch (BusinessException ex)
-            {
-                throw ex;
-            }
-            catch (Exception ex)
-            {
-                log.Error("Error al procesar el documento electrónico pendiente: ", ex);
-                if (ex.Message == "Service Unavailable")
-                    throw new Exception("El servicio de factura electrónica se encuentra fuera de servicio. Por favor intente más tarde.");
-                else
-                    throw new Exception("Se produjo un error al procesar el documento electrónico pendiente. Por favor consulte con su proveedor.");
-            }
-        }
-
         public void ReprocesarDocumentoElectronico(int intIdDocumento, ConfiguracionGeneral datos)
         {
             try
@@ -2606,7 +2566,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void ProcesarRespuestaHacienda(RespuestaHaciendaDTO mensaje, string strCorreoNotificacionErrores, byte[] bytLogo)
+        public void ProcesarRespuestaHacienda(ILeandroContext dbContext, RespuestaHaciendaDTO mensaje, string strCorreoNotificacionErrores, byte[] bytLogo)
         {
             string strClave = "";
             string strConsecutivo = "";

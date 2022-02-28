@@ -2190,7 +2190,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     EsMensajeReceptor = esMensajeReceptor ? "S" : "N",
                     EsIvaAcreditable = bolIvaAcreditable ? "S" : "N",
                     NombreReceptor = strNombreReceptor,
-                    EstadoEnvio = StaticEstadoDocumentoElectronico.Procesando,
+                    EstadoEnvio = StaticEstadoDocumentoElectronico.Registrado,
                     CorreoNotificacion = strCorreoNotificacion,
                     DatosDocumento = signedDataEncoded,
                     DatosDocumentoOri = documentoOriEncoded,

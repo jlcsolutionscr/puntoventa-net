@@ -104,7 +104,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
             }
             else
             {
-                throw new Exception("El mensaje no contiene la información suficiente para ser procesado.");
+                throw new Exception("El mensaje no contiene la informaciï¿½n suficiente para ser procesado.");
             }
             if (datosJO.Property("Entidad") != null)
             {
@@ -116,7 +116,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
             }
             else
             {
-                throw new Exception("El mensaje no contiene la información suficiente para ser procesado.");
+                throw new Exception("El mensaje no contiene la informaciï¿½n suficiente para ser procesado.");
             }
             switch (strNombreMetodo)
             {
@@ -421,10 +421,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     bolAplicado = bool.Parse(parametrosJO.Property("IvaAcreditable").Value.ToString());
                     _servicioFacturacion.GenerarMensajeReceptor(strDatos, intIdEmpresa, intIdSucursal, intIdLlave1, intIdTipoPago, bolAplicado, configuracionGeneral);
                     break;
-                case "EnviarDocumentoElectronicoPendiente":
-                    intIdLlave1 = int.Parse(parametrosJO.Property("IdDocumento").Value.ToString());
-                    _servicioFacturacion.EnviarDocumentoElectronicoPendiente(intIdLlave1, configuracionGeneral);
-                    break;
                 case "EnviarNotificacionDocumentoElectronico":
                     intIdLlave1 = int.Parse(parametrosJO.Property("IdDocumento").Value.ToString());
                     strCorreoReceptor = parametrosJO.Property("CorreoReceptor").Value.ToString();
@@ -470,21 +466,21 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                         case "Detalle de egresos":
                             _servicioReportes.EnviarReporteDetalleEgresos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, strFormatoReporte);
                             break;
-                        case "Documentos electrónicos emitidos":
+                        case "Documentos electrï¿½nicos emitidos":
                             _servicioReportes.EnviarReporteDocumentosEmitidos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, strFormatoReporte);
                             break;
-                        case "Documentos electrónicos recibidos":
+                        case "Documentos electrï¿½nicos recibidos":
                             _servicioReportes.EnviarReporteDocumentosRecibidos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, strFormatoReporte);
                             break;
-                        case "Resumen de comprobantes electrónicos":
+                        case "Resumen de comprobantes electrï¿½nicos":
                             _servicioReportes.EnviarReporteResumenMovimientosElectronicos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, strFormatoReporte);
                             break;
                         default:
-                            throw new Exception("El método solicitado: '" + strNombreReporte + "' no ha sido implementado, contacte con su proveedor");
+                            throw new Exception("El mï¿½todo solicitado: '" + strNombreReporte + "' no ha sido implementado, contacte con su proveedor");
                     }
                     break;
                 default:
-                    throw new Exception("El método solicitado no ha sido implementado: " + strNombreMetodo);
+                    throw new Exception("El mï¿½todo solicitado no ha sido implementado: " + strNombreMetodo);
             }
         }
     }

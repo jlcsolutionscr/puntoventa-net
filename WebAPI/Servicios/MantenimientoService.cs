@@ -386,9 +386,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         if (!empresa.PermiteFacturar) throw new BusinessException("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
                         if (empresa.FechaVence < DateTime.Today) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
-                        usuario = dbContext.UsuarioRepository.Include("RolePorUsuario.Role").Include("SucursalPorUsuario").FirstOrDefault(x => x.SucursalPorUsuario.FirstOrDefault(z => z.IdEmpresa == empresa.IdEmpresa) != null && x.CodigoUsuario == strUsuario.ToUpper());
-                        usuario.IdSucursal = usuario.SucursalPorUsuario.FirstOrDefault().IdSucursal;
-                        usuario.SucursalPorUsuario = new List<SucursalPorUsuario> {};
+                        usuario = dbContext.UsuarioRepository.Include("SucursalPorUsuario").Include("RolePorUsuario.Role").FirstOrDefault(x => x.SucursalPorUsuario.FirstOrDefault(y => y.IdEmpresa == empresa.IdEmpresa) != null && x.CodigoUsuario == strUsuario.ToUpper());
+                        if (usuario != null) usuario.IdSucursal = usuario.SucursalPorUsuario.FirstOrDefault().IdSucursal;
                     }
                     if (usuario == null) throw new BusinessException("Usuario no registrado en la empresa suministrada. Por favor verifique la información suministrada.");
                     if (usuario.Clave != strClave) throw new BusinessException("Los credenciales suministrados no son válidos. Verifique los credenciales suministrados.");
@@ -406,7 +405,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         AnchoLinea = terminal.AnchoLinea
                     };
                     string strToken = GenerarRegistroAutenticacion(StaticRolePorUsuario.USUARIO_SISTEMA);
+                    usuario.SucursalPorUsuario = new List<SucursalPorUsuario> { };
                     usuario.Token = strToken;
+                    empresa.SucursalPorEmpresa = new List<SucursalPorEmpresa> { };
                     empresa.Logotipo = null;
                     empresa.Certificado = null;
                     empresa.AccessToken = null;
