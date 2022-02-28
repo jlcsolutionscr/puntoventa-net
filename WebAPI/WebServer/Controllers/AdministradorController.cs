@@ -16,7 +16,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         private static IHostEnvironment _environment;
         private static IMantenimientoService _servicioMantenimiento;
         private static IFacturacionService _servicioFacturacion;
-        private static ICorreoService _servicioCorreo;
         private static ConfiguracionGeneral configuracionGeneral;
         private static ConfiguracionRecepcion configuracionRecepcion;
         private string strLogoPath;
@@ -33,7 +32,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
             _environment = environment;
             _servicioMantenimiento = servicioMantenimiento;
             _servicioFacturacion = servicioFacturacion;
-            _servicioCorreo = servicioCorreo;
             strLogoPath = Path.Combine(environment.ContentRootPath, "images/Logo.png");
             configuracionGeneral = new ConfiguracionGeneral
             (
@@ -581,22 +579,12 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         [HttpGet("procesarpendientes")]
         public void ProcesarDocumentosElectronicosPendientes()
         {
-            Task.Run(() => RunSyncProcesarPendientes());
-        }
-
-        private void RunSyncProcesarPendientes()
-        {
-            try
+            Task.Run(() =>
             {
                 bytLogo = System.IO.File.ReadAllBytes(strLogoPath);
                 _servicioFacturacion.ProcesarDocumentosElectronicosPendientes(configuracionGeneral, bytLogo);
-                _servicioFacturacion.ProcesarCorreoRecepcion(configuracionGeneral, configuracionRecepcion);
-            }
-            catch (Exception ex)
-            {
-                JArray jarrayObj = new JArray();
-                _servicioCorreo.SendEmail(new string[] { configuracionGeneral.CorreoNotificacionErrores }, new string[] { }, "Error en el procesamiento de documentos pendientes", "Ocurrio un error en el procesamiento de documentos pendientes: " + ex.Message, false, jarrayObj);
-            }
+            });
+            //Task.Run(() => _servicioFacturacion.ProcesarCorreoRecepcion(configuracionGeneral, configuracionRecepcion));
         }
 
         [HttpGet("limpiarregistrosinvalidos")]
