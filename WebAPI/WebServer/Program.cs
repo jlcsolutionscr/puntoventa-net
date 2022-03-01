@@ -36,7 +36,7 @@ builder.Services.AddScoped<IContabilidadService, ContabilidadService>();
 builder.Services.AddScoped<ITrasladoService, TrasladoService>();
 builder.Services.AddScoped<ICuentaPorProcesarService, CuentaPorProcesarService>();
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddNewtonsoftJson();
 
 var app = builder.Build();
 
