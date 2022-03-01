@@ -31,7 +31,7 @@ namespace WebServer.Middlewares
                 }
                 if (strPath[1] != "recibirrespuestahacienda")
                     if (!environment.IsDevelopment() && !context.Request.IsHttps) throw new Exception("La petición no se encuentra en un protocolo seguro y no es posible procesar su solicitud");
-                if (!new string[] { "enviarhistoricoerrores", "obtenerultimaversionapp", "obtenerlistadotiqueteordenserviciopendiente", "cambiarestadoaimpresotiqueteordenservicio", "descargaractualizacion", "obtenerlistadoempresasadministrador", "obtenerlistadoempresas", "validarcredenciales", "validarcredencialesweb", "validarcredencialesadmin", "obtenerlistadoterminalesdisponibles", "procesarpendientes" }.Contains(strPath[1]))
+                if (!new string[] { "recibirrespuestahacienda", "enviarhistoricoerrores", "obtenerultimaversionapp", "obtenerlistadotiqueteordenserviciopendiente", "cambiarestadoaimpresotiqueteordenservicio", "descargaractualizacion", "obtenerlistadoempresasadministrador", "obtenerlistadoempresas", "validarcredenciales", "validarcredencialesweb", "validarcredencialesadmin", "obtenerlistadoterminalesdisponibles", "procesarpendientes" }.Contains(strPath[1]))
                 {
                     var headers = context.Request.Headers;
                     string strToken = headers["Authorization"];
