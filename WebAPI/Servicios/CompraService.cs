@@ -3,7 +3,6 @@ using LeandroSoftware.Common.Constantes;
 using LeandroSoftware.Common.DatosComunes;
 using LeandroSoftware.Common.Dominio.Entidades;
 using LeandroSoftware.ServicioWeb.Contexto;
-using log4net;
 using Microsoft.EntityFrameworkCore;
 
 namespace LeandroSoftware.ServicioWeb.Servicios
@@ -39,7 +38,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
     public class CompraService : ICompraService
     {
         private static ILeandroContext dbContext;
-        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public CompraService(ILeandroContext pContext)
         {
@@ -49,7 +47,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al inicializar el servicio: ", ex);
+                //_logger.LogError("Error al inicializar el servicio: ", ex);
                 throw new Exception("Se produjo un error al inicializar el servicio de Compras. Por favor consulte con su proveedor.");
             }
         }
@@ -71,7 +69,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 dbContext.RollBack();
-                log.Error("Error al agregar el proveedor: ", ex);
+                //_logger.LogError("Error al agregar el proveedor: ", ex);
                 throw new Exception("Se produjo un error agregando la información del proveedor. Por favor consulte con su proveedor.");
             }
         }
@@ -93,7 +91,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 dbContext.RollBack();
-                log.Error("Error al actualizar el proveedor: ", ex);
+                //_logger.LogError("Error al actualizar el proveedor: ", ex);
                 throw new Exception("Se produjo un error actualizando la información del proveedor. Por favor consulte con su proveedor.");
             }
         }
@@ -111,7 +109,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (DbUpdateException ex)
             {
-                log.Info("Validación al eliminar el proveedor: ", ex);
+                //_logger.LogError("Validación al eliminar el proveedor: ", ex);
                 throw new BusinessException("No es posible eliminar el proveedor seleccionado. Posee registros relacionados en el sistema.");
             }
             catch (BusinessException ex)
@@ -122,7 +120,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 dbContext.RollBack();
-                log.Error("Error al eliminar el proveedor: ", ex);
+                //_logger.LogError("Error al eliminar el proveedor: ", ex);
                 throw new Exception("Se produjo un error eliminando al proveedor. Por favor consulte con su proveedor.");
             }
         }
@@ -135,7 +133,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el proveedor: ", ex);
+                //_logger.LogError("Error al obtener el proveedor: ", ex);
                 throw new Exception("Se produjo un error consultando la información del proveedor. Por favor consulte con su proveedor.");
             }
         }
@@ -151,7 +149,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el listado de proveedores: ", ex);
+                //_logger.LogError("Error al obtener el listado de proveedores: ", ex);
                 throw new Exception("Se produjo un error consultando el listado de proveedores. Por favor consulte con su proveedor.");
             }
         }
@@ -177,7 +175,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el listado de proveedores: ", ex);
+                //_logger.LogError("Error al obtener el listado de proveedores: ", ex);
                 throw new Exception("Se produjo un error consultando el listado de proveedores. Por favor consulte con su proveedor.");
             }
         }
@@ -512,7 +510,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 dbContext.RollBack();
-                log.Error("Error al agregar el registro de compra: ", ex);
+                //_logger.LogError("Error al agregar el registro de compra: ", ex);
                 throw new Exception("Se produjo un error agregando la información de la compra. Por favor consulte con su proveedor.");
             }
         }
@@ -537,7 +535,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 dbContext.RollBack();
-                log.Error("Error al actualizar el registro de compra: ", ex);
+                //_logger.LogError("Error al actualizar el registro de compra: ", ex);
                 throw new Exception("Se produjo un error actualizando la información de la compra. Por favor consulte con su proveedor.");
             }
         }
@@ -622,7 +620,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 dbContext.RollBack();
-                log.Error("Error al anular el registro de compra: ", ex);
+                //_logger.LogError("Error al anular el registro de compra: ", ex);
                 throw new Exception("Se produjo un error anulando la compra. Por favor consulte con su proveedor.");
             }
         }
@@ -644,7 +642,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el registro de compra: ", ex);
+                //_logger.LogError("Error al obtener el registro de compra: ", ex);
                 throw new Exception("Se produjo un error consultando la información de la compra. Por favor consulte con su proveedor..");
             }
         }
@@ -664,7 +662,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el total del listado de registros de compra: ", ex);
+                //_logger.LogError("Error al obtener el total del listado de registros de compra: ", ex);
                 throw new Exception("Se produjo un error consultando el total del listado de las compras. Por favor consulte con su proveedor.");
             }
         }
@@ -691,7 +689,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el listado de registros de compra: ", ex);
+                //_logger.LogError("Error al obtener el listado de registros de compra: ", ex);
                 throw new Exception("Se produjo un error consultando el listado de las compras. Por favor consulte con su proveedor.");
             }
         }
@@ -708,7 +706,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 dbContext.RollBack();
-                log.Error("Error al agregar el registro de orden de compra: ", ex);
+                //_logger.LogError("Error al agregar el registro de orden de compra: ", ex);
                 throw new Exception("Se produjo un error agregando la información de la orden de compra. Por favor consulte con su proveedor.");
             }
         }
@@ -735,7 +733,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 dbContext.RollBack();
-                log.Error("Error al actualizar el registro de orden de compra: ", ex);
+                //_logger.LogError("Error al actualizar el registro de orden de compra: ", ex);
                 throw new Exception("Se produjo un error actualizando la información de la orden de compra. Por favor consulte con su proveedor.");
             }
         }
@@ -762,7 +760,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 dbContext.RollBack();
-                log.Error("Error al anular el registro de orden de compra: ", ex);
+                //_logger.LogError("Error al anular el registro de orden de compra: ", ex);
                 throw new Exception("Se produjo un error anulando la orden de compra. Por favor consulte con su proveedor.");
             }
         }
@@ -775,7 +773,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el registro de orden de compra: ", ex);
+                //_logger.LogError("Error al obtener el registro de orden de compra: ", ex);
                 throw new Exception("Se produjo un error consultando la información de la orden de compra. Por favor consulte con su proveedor.");
             }
         }
@@ -795,7 +793,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el total del listado de registros de orden de compra: ", ex);
+                //_logger.LogError("Error al obtener el total del listado de registros de orden de compra: ", ex);
                 throw new Exception("Se produjo un error consultando el total del listado de ordenes de compra. Por favor consulte con su proveedor.");
             }
         }
@@ -815,7 +813,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el listado de registros de orden de compra: ", ex);
+                //_logger.LogError("Error al obtener el listado de registros de orden de compra: ", ex);
                 throw new Exception("Se produjo un error consultando el listado de ordenes de compra. Por favor consulte con su proveedor.");
             }
         }
@@ -828,7 +826,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el listado de registros de compra por proveedor: ", ex);
+                //_logger.LogError("Error al obtener el listado de registros de compra por proveedor: ", ex);
                 throw new Exception("Se produjo un error consultando el listado de compras por proveedor. Por favor consulte con su proveedor.");
             }
         }
@@ -883,7 +881,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 dbContext.RollBack();
-                log.Error("Error al agregar el registro de devolución: ", ex);
+                //_logger.LogError("Error al agregar el registro de devolución: ", ex);
                 throw new Exception("Se produjo un error agregando la información de la devolución. Por favor consulte con su proveedor.");
             }
         }
@@ -956,7 +954,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 dbContext.RollBack();
-                log.Error("Error al anular el registro de devolución: ", ex);
+                //_logger.LogError("Error al anular el registro de devolución: ", ex);
                 throw new Exception("Se produjo un error anulando la devolución. Por favor consulte con su proveedor.");
             }
         }
@@ -969,7 +967,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el registro de devolución: ", ex);
+                //_logger.LogError("Error al obtener el registro de devolución: ", ex);
                 throw new Exception("Se produjo un error consultado la información de la devolución. Por favor consulte con su proveedor.");
             }
         }
@@ -987,7 +985,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el total del listado de registros de devolución: ", ex);
+                //_logger.LogError("Error al obtener el total del listado de registros de devolución: ", ex);
                 throw new Exception("Se produjo un error consultando el total del listado de devoluciones. Por favor consulte con su proveedor.");
             }
         }
@@ -1005,7 +1003,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el listado de registros de devolución: ", ex);
+                //_logger.LogError("Error al obtener el listado de registros de devolución: ", ex);
                 throw new Exception("Se produjo un error consultando el listado de devoluciones. Por favor consulte con su proveedor.");
             }
         }

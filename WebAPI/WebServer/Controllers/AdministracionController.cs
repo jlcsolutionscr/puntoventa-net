@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using LeandroSoftware.Common.Dominio.Entidades;
@@ -9,10 +8,9 @@ using LeandroSoftware.Common.DatosComunes;
 namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
 {
     [ApiController]
-    [Route("administrador")]
-    public class AdministradorController : ControllerBase
+    [Route("administracion")]
+    public class AdministracionController : ControllerBase
     {
-        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private static IHostEnvironment _environment;
         private static IMantenimientoService _servicioMantenimiento;
         private static IFacturacionService _servicioFacturacion;
@@ -21,7 +19,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         private string strLogoPath;
         private byte[] bytLogo;
 
-        public AdministradorController(
+        public AdministracionController(
             IConfiguration configuration,
             IHostEnvironment environment,
             IMantenimientoService servicioMantenimiento,

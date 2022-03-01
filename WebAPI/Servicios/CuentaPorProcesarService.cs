@@ -1,5 +1,4 @@
-﻿using log4net;
-using LeandroSoftware.Common.Constantes;
+﻿using LeandroSoftware.Common.Constantes;
 using LeandroSoftware.Common.DatosComunes;
 using LeandroSoftware.Common.Dominio.Entidades;
 using LeandroSoftware.ServicioWeb.Contexto;
@@ -43,11 +42,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
     public class CuentaPorProcesarService : ICuentaPorProcesarService
     {
         private static ILeandroContext dbContext;
-        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-        public CuentaPorProcesarService()
-        {
-        }
 
         public CuentaPorProcesarService(ILeandroContext pContext)
         {
@@ -57,7 +51,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al inicializar el servicio: ", ex);
+                //_logger.LogError("Error al inicializar el servicio: ", ex);
                 throw new Exception("Se produjo un error al inicializar el servicio de Cuentas por Cobrar. Por favor consulte con su proveedor.");
             }
         }
@@ -70,7 +64,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al inicializar el servicio: ", ex);
+                //_logger.LogError("Error al inicializar el servicio: ", ex);
                 throw new Exception("Se produjo un error al obtener la Cuenta por Cobrar. Por favor consulte con su proveedor.");
             }
         }
@@ -93,7 +87,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el listado de cuentas por cobrar: ", ex);
+                //_logger.LogError("Error al obtener el listado de cuentas por cobrar: ", ex);
                 throw new Exception("Se produjo un error consultando el listado de cuenta por cobrar. Por favor consulte con su proveedor.");
             }
         }
@@ -130,7 +124,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el listado de cuentas por cobrar: ", ex);
+                //_logger.LogError("Error al obtener el listado de cuentas por cobrar: ", ex);
                 throw new Exception("Se produjo un error consultando el listado de cuenta por cobrar. Por favor consulte con su proveedor.");
             }
         }
@@ -150,7 +144,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el listado de movimientos de cuentas por cobrar: ", ex);
+                //_logger.LogError("Error al obtener el listado de movimientos de cuentas por cobrar: ", ex);
                 throw new Exception("Se produjo un error consultando el listado de movimientos de cuentas por cobrar. Por favor consulte con su proveedor.");
             }
         }
@@ -338,7 +332,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 dbContext.RollBack();
-                log.Error("Error al aplicar el movimiento de una cuenta por cobrar: ", ex);
+                //_logger.LogError("Error al aplicar el movimiento de una cuenta por cobrar: ", ex);
                 throw new Exception("Se produjo un error aplicando el movimiento de la cuenta por cobrar. Por favor consulte con su proveedor.");
             }
         }
@@ -379,7 +373,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 dbContext.RollBack();
-                log.Error("Error al anular el movimiento de una cuenta por cobrar: ", ex);
+                //_logger.LogError("Error al anular el movimiento de una cuenta por cobrar: ", ex);
                 throw new Exception("Se produjo un error anulando el movimiento de la cuenta por cobrar. Por favor consulte con su proveedor.");
             }
         }
@@ -397,7 +391,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 dbContext.RollBack();
-                log.Error("Error al obtener el movimiento de una cuenta por cobrar: ", ex);
+                //_logger.LogError("Error al obtener el movimiento de una cuenta por cobrar: ", ex);
                 throw new Exception("Se produjo un error al obtener el movimiento de la cuenta por cobrar. Por favor consulte con su proveedor.");
             }
         }
@@ -410,7 +404,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener la cantidad de cuentas por cobrar vencidas de un cliente: ", ex);
+                //_logger.LogError("Error al obtener la cantidad de cuentas por cobrar vencidas de un cliente: ", ex);
                 throw new Exception("Se produjo un error consultando la cantidad de cuentas por cobrar vencidas. Por favor consulte con su proveedor.");
             }
         }
@@ -423,7 +417,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el saldo total de cuentas por cobrar activas de un cliente: ", ex);
+                //_logger.LogError("Error al obtener el saldo total de cuentas por cobrar activas de un cliente: ", ex);
                 throw new Exception("Se produjo un error consultando el saldo acumulado de cuentas por cobrar vigentes. Por favor consulte con su proveedor.");
             }
         }
@@ -436,7 +430,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener la cuenta por cobrar: ", ex);
+                //_logger.LogError("Error al obtener la cuenta por cobrar: ", ex);
                 throw new Exception("Se produjo un error al obtener la cuenta por cobrar. Por favor consulte con su proveedor.");
             }
         }
@@ -459,7 +453,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el listado de cuentas por cobrar: ", ex);
+                //_logger.LogError("Error al obtener el listado de cuentas por cobrar: ", ex);
                 throw new Exception("Se produjo un error consultando el listado de cuenta por cobrar. Por favor consulte con su proveedor.");
             }
         }
@@ -496,7 +490,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el listado de cuentas por cobrar: ", ex);
+                //_logger.LogError("Error al obtener el listado de cuentas por cobrar: ", ex);
                 throw new Exception("Se produjo un error consultando el listado de cuenta por cobrar. Por favor consulte con su proveedor.");
             }
         }
@@ -516,7 +510,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el listado de movimientos de cuentas por pagar: ", ex);
+                //_logger.LogError("Error al obtener el listado de movimientos de cuentas por pagar: ", ex);
                 throw new Exception("Se produjo un error consultando el listado de movimientos de cuentas por pagar. Por favor consulte con su proveedor.");
             }
         }
@@ -654,7 +648,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 dbContext.RollBack();
-                log.Error("Error al aplicar el movimiento de una cuenta por pagar: ", ex);
+                //_logger.LogError("Error al aplicar el movimiento de una cuenta por pagar: ", ex);
                 throw new Exception("Se produjo un error aplicando el movimiento de la cuenta por pagar. Por favor consulte con su proveedor.");
             }
         }
@@ -700,7 +694,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 dbContext.RollBack();
-                log.Error("Error al anular el movimiento de una cuenta por pagar: ", ex);
+                //_logger.LogError("Error al anular el movimiento de una cuenta por pagar: ", ex);
                 throw new Exception("Se produjo un error anulando el movimiento de la cuenta por pagar. Por favor consulte con su proveedor.");
             }
         }
@@ -718,7 +712,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 dbContext.RollBack();
-                log.Error("Error al obtener el movimiento de una cuenta por pagar: ", ex);
+                //_logger.LogError("Error al obtener el movimiento de una cuenta por pagar: ", ex);
                 throw new Exception("Se produjo un error al obtener el movimiento de la cuenta por pagar. Por favor consulte con su proveedor.");
             }
         }
@@ -731,7 +725,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener la cantidad de cuentas por pagar vencidas de un proveedor: ", ex);
+                //_logger.LogError("Error al obtener la cantidad de cuentas por pagar vencidas de un proveedor: ", ex);
                 throw new Exception("Se produjo un error consultando la cantidad de cuentas por cobrar vencidas. Por favor consulte con su proveedor.");
             }
         }
@@ -744,7 +738,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el saldo total de cuentas por pagar activas de un proveedor: ", ex);
+                //_logger.LogError("Error al obtener el saldo total de cuentas por pagar activas de un proveedor: ", ex);
                 throw new Exception("Se produjo un error al ejecutar la transacción. Por favor consulte con su proveedor.");
             }
         }
@@ -764,7 +758,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el listado de apartados pendientes: ", ex);
+                //_logger.LogError("Error al obtener el listado de apartados pendientes: ", ex);
                 throw new Exception("Se produjo un error consultando el listado de apartados pendientes. Por favor consulte con su proveedor.");
             }
         }
@@ -784,7 +778,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el listado de movimientos del apartado: ", ex);
+                //_logger.LogError("Error al obtener el listado de movimientos del apartado: ", ex);
                 throw new Exception("Se produjo un error consultando el listado de movimientos del apartado. Por favor consulte con su proveedor.");
             }
         }
@@ -854,7 +848,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 dbContext.RollBack();
-                log.Error("Error al aplicar el movimiento al registro de apartado: ", ex);
+                //_logger.LogError("Error al aplicar el movimiento al registro de apartado: ", ex);
                 throw new Exception("Se produjo un error aplicando el movimiento al registro de apartado. Por favor consulte con su proveedor.");
             }
         }
@@ -890,7 +884,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 dbContext.RollBack();
-                log.Error("Error al anular el movimiento del registro de apartado: ", ex);
+                //_logger.LogError("Error al anular el movimiento del registro de apartado: ", ex);
                 throw new Exception("Se produjo un error anulando el movimiento del registro de apartado. Por favor consulte con su proveedor.");
             }
         }
@@ -905,7 +899,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 dbContext.RollBack();
-                log.Error("Error al obtener el movimiento del registro de apartado: ", ex);
+                //_logger.LogError("Error al obtener el movimiento del registro de apartado: ", ex);
                 throw new Exception("Se produjo un error al obtener el movimiento del registro de apartado. Por favor consulte con su proveedor.");
             }
         }
@@ -925,7 +919,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el listado de ordenes de servicio pendientes: ", ex);
+                //_logger.LogError("Error al obtener el listado de ordenes de servicio pendientes: ", ex);
                 throw new Exception("Se produjo un error consultando el listado de ordenes de servicio pendientes. Por favor consulte con su proveedor.");
             }
         }
@@ -945,7 +939,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el listado de movimientos de la orden de servicio: ", ex);
+                //_logger.LogError("Error al obtener el listado de movimientos de la orden de servicio: ", ex);
                 throw new Exception("Se produjo un error consultando el listado de movimientos de la orden de servicio. Por favor consulte con su proveedor.");
             }
         }
@@ -1015,7 +1009,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 dbContext.RollBack();
-                log.Error("Error al aplicar el movimiento a la orden de servicio: ", ex);
+                //_logger.LogError("Error al aplicar el movimiento a la orden de servicio: ", ex);
                 throw new Exception("Se produjo un error aplicando el movimiento a la orden de servicio. Por favor consulte con su proveedor.");
             }
         }
@@ -1051,7 +1045,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 dbContext.RollBack();
-                log.Error("Error al anular el movimiento del registro de orden de servicio: ", ex);
+                //_logger.LogError("Error al anular el movimiento del registro de orden de servicio: ", ex);
                 throw new Exception("Se produjo un error anulando el movimiento del registro de orden de servicio. Por favor consulte con su proveedor.");
             }
         }
@@ -1066,7 +1060,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 dbContext.RollBack();
-                log.Error("Error al obtener el movimiento del registro de orden de servicio: ", ex);
+                //_logger.LogError("Error al obtener el movimiento del registro de orden de servicio: ", ex);
                 throw new Exception("Se produjo un error al obtener el movimiento del registro de orden de servicio. Por favor consulte con su proveedor.");
             }
         }

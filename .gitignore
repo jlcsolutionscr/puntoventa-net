@@ -6,6 +6,7 @@ obj/
 App_Data/
 .vs/
 .vscode/
+publish/
 errorLog*.*
 appsettings.*
 .DS_Store

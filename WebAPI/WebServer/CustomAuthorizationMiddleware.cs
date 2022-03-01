@@ -1,7 +1,5 @@
 ﻿using LeandroSoftware.Common.Constantes;
 using LeandroSoftware.ServicioWeb.Servicios;
-using Microsoft.AspNetCore.Mvc.Controllers;
-using Newtonsoft.Json;
 
 namespace WebServer.Middlewares
 {
@@ -14,12 +12,14 @@ namespace WebServer.Middlewares
             _next = next;
         }
 
-        public Task Invoke(HttpContext context, IHostEnvironment environment, IMantenimientoService servicioMantenimiento)
+        public Task Invoke(HttpContext context, IHostEnvironment environment, IMantenimientoService servicioMantenimiento
+        )
         {
             return BeginInvoke(context, environment, servicioMantenimiento);
         }
 
-        private Task BeginInvoke(HttpContext context, IHostEnvironment environment, IMantenimientoService servicioMantenimiento)
+        private Task BeginInvoke(HttpContext context, IHostEnvironment environment, IMantenimientoService servicioMantenimiento
+        )
         {
             string[] strPath = context.Request.Path.ToString().Substring(1).Split('/');
             if (strPath.Length > 1)
@@ -30,7 +30,9 @@ namespace WebServer.Middlewares
                     if (modoMantenimiento) throw new Exception("El sistema se encuentra en modo mantenimiento y no es posible procesar su solicitud.");
                 }
                 if (strPath[1] != "recibirrespuestahacienda")
+                {
                     if (!environment.IsDevelopment() && !context.Request.IsHttps) throw new Exception("La petición no se encuentra en un protocolo seguro y no es posible procesar su solicitud");
+                }
                 if (!new string[] { "recibirrespuestahacienda", "enviarhistoricoerrores", "obtenerultimaversionapp", "obtenerlistadotiqueteordenserviciopendiente", "cambiarestadoaimpresotiqueteordenservicio", "descargaractualizacion", "obtenerlistadoempresasadministrador", "obtenerlistadoempresas", "validarcredenciales", "validarcredencialesweb", "validarcredencialesadmin", "obtenerlistadoterminalesdisponibles", "procesarpendientes" }.Contains(strPath[1]))
                 {
                     var headers = context.Request.Headers;

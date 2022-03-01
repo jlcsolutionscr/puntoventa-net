@@ -2,7 +2,6 @@
 using LeandroSoftware.Common.DatosComunes;
 using LeandroSoftware.Common.Dominio.Entidades;
 using LeandroSoftware.ServicioWeb.Contexto;
-using log4net;
 using System.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,7 +23,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
     public class TrasladoService : ITrasladoService
     {
         private static ILeandroContext dbContext;
-        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public TrasladoService(ILeandroContext pContext)
         {
@@ -34,7 +32,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al inicializar el servicio: ", ex);
+                //_logger.LogError("Error al inicializar el servicio: ", ex);
                 throw new Exception("Se produjo un error al inicializar el servicio de Traslados. Por favor consulte con su proveedor.");
             }
         }
@@ -54,7 +52,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el listado de sucursales: ", ex);
+                //_logger.LogError("Error al obtener el listado de sucursales: ", ex);
                 throw new Exception("Se produjo un error consultando el listado de sucursales. Por favor consulte con su proveedor.");
             }
         }
@@ -88,7 +86,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 dbContext.RollBack();
-                log.Error("Error al agregar el registro de devolución: ", ex);
+                //_logger.LogError("Error al agregar el registro de devolución: ", ex);
                 throw new Exception("Se produjo un error agregando la información de la devolución. Por favor consulte con su proveedor.");
             }
             return traslado.IdTraslado.ToString();
@@ -301,7 +299,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    log.Error("Error al aplicar el registro de traslado: ", ex);
+                    //_logger.LogError("Error al aplicar el registro de traslado: ", ex);
                     throw new Exception("Se produjo un error aplicando la información del traslado. Por favor consulte con su proveedor.");
                 }
             }
@@ -338,7 +336,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 dbContext.RollBack();
-                log.Error("Error al anular el registro de traslado: ", ex);
+                //_logger.LogError("Error al anular el registro de traslado: ", ex);
                 throw new Exception("Se produjo un error anulando el traslado. Por favor consulte con su proveedor.");
             }
         }
@@ -356,7 +354,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el registro de traslado: ", ex);
+                //_logger.LogError("Error al obtener el registro de traslado: ", ex);
                 throw new Exception("Se produjo un error consultado la información del traslado. Por favor consulte con su proveedor.");
             }
         }
@@ -372,7 +370,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el total del listado de registros de traslado: ", ex);
+                //_logger.LogError("Error al obtener el total del listado de registros de traslado: ", ex);
                 throw new Exception("Se produjo un error consultando el total del listado de traslados. Por favor consulte con su proveedor.");
             }
         }
@@ -400,7 +398,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el listado de registros de traslado: ", ex);
+                //_logger.LogError("Error al obtener el listado de registros de traslado: ", ex);
                 throw new Exception("Se produjo un error consultando el listado de traslados. Por favor consulte con su proveedor.");
             }
         }
@@ -414,7 +412,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el total del listado de registros de traslados por aplicar: ", ex);
+                //_logger.LogError("Error al obtener el total del listado de registros de traslados por aplicar: ", ex);
                 throw new Exception("Se produjo un error consultando el total del listado de traslados por aplicar. Por favor consulte con su proveedor.");
             }
         }
@@ -440,7 +438,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el listado de registros de traslados por aplicar: ", ex);
+                //_logger.LogError("Error al obtener el listado de registros de traslados por aplicar: ", ex);
                 throw new Exception("Se produjo un error consultando el listado de traslados por aplicar. Por favor consulte con su proveedor.");
             }
         }

@@ -1,17 +1,16 @@
-﻿using System.Runtime.Serialization;
+﻿using Newtonsoft.Json;
 
 namespace LeandroSoftware.ServicioWeb.EstructuraDatos
 {
-    [DataContract]
     public class RespuestaHaciendaDTO
     {
-        [DataMember(Name = "clave")]
+        [JsonProperty("clave")]
         public string Clave { get; set; }
-        [DataMember(Name = "fecha")]
+        [JsonProperty("fecha")]
         public string Fecha { get; set; }
-        [DataMember(Name = "ind-estado")]
+        [JsonProperty("ind-estado")]
         public string IndEstado { get; set; }
-        [DataMember(Name = "respuesta-xml")]
+        [JsonProperty("respuesta-xml")]
         public string RespuestaXml { get; set; }
     }
 

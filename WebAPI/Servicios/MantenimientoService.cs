@@ -3,7 +3,6 @@ using LeandroSoftware.Common.DatosComunes;
 using LeandroSoftware.Common.Dominio.Entidades;
 using LeandroSoftware.Common.Seguridad;
 using LeandroSoftware.ServicioWeb.Contexto;
-using log4net;
 using System.Globalization;
 using Microsoft.EntityFrameworkCore;
 using LeandroSoftware.ServicioWeb.Parametros;
@@ -135,7 +134,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
     public class MantenimientoService : IMantenimientoService
     {
         private static ILeandroContext dbContext;
-        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private static CultureInfo provider = CultureInfo.InvariantCulture;
         private static string strFormat = "dd/MM/yyyy HH:mm:ss";
 
@@ -147,7 +145,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al inicializar el servicio: ", ex);
+                //_logger.LogError("Error al inicializar el servicio: ", ex);
                 throw new Exception("Se produjo un error al inicializar el servicio de Mantenimiento. Por favor consulte con su proveedor.");
             }
         }
@@ -197,7 +195,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el listado de terminales disponibles: ", ex);
+                //_logger.LogError("Error al obtener el listado de terminales disponibles: ", ex);
                 throw new Exception("Error al obtener las terminales disponibles. . .");
             }
         }
@@ -217,7 +215,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al validar la lista de empresas para usuario administrador: ", ex);
+                //_logger.LogError("Error al validar la lista de empresas para usuario administrador: ", ex);
                 throw new Exception("Error al validar la lista de empresas para usuario administrador. . .");
             }
         }
@@ -237,7 +235,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al validar la lista de sucursales asignadas a la empresa: ", ex);
+                //_logger.LogError("Error al validar la lista de sucursales asignadas a la empresa: ", ex);
                 throw new Exception("Error al validar la lista de sucursales asignadas a la empresa. . .");
             }
         }
@@ -257,7 +255,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al validar la lista de terminales asignadas a la empresa: ", ex);
+                //_logger.LogError("Error al validar la lista de terminales asignadas a la empresa: ", ex);
                 throw new Exception("Error al validar la lista de terminales asignadas a la empresa. . .");
             }
         }
@@ -277,7 +275,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al validar la lista de empresas asignadas a una terminal: ", ex);
+                //_logger.LogError("Error al validar la lista de empresas asignadas a una terminal: ", ex);
                 throw new Exception("Error al validar la lista de empresas asignadas a una terminal. . .");
             }
         }
@@ -298,7 +296,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al consultar el parámetro de modo mantenimiento del sistema: ", ex);
+                //_logger.LogError("Error al consultar el parámetro de modo mantenimiento del sistema: ", ex);
                 throw new Exception("No es posible consultar el modo mantenimieto del sistema.");
             }
         }
@@ -337,7 +335,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al registrar el dispositivo movil para la identificación suministrada: ", ex);
+                //_logger.LogError("Error al registrar el dispositivo movil para la identificación suministrada: ", ex);
                 throw new Exception("Error al registrar el dispositivo movil para la identificación suministrada.");
             }
         }
@@ -362,7 +360,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    log.Error("Error al validar credenciales del usuario: ", ex);
+                    //_logger.LogError("Error al validar credenciales del usuario: ", ex);
                     throw new Exception("Error en la validación de los credenciales suministrados por favor verifique la información. . .");
                 }
             }
@@ -425,7 +423,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    log.Error("Error al validar los credenciales del usuario por identificación: ", ex);
+                    //_logger.LogError("Error al validar los credenciales del usuario por identificación: ", ex);
                     throw new Exception("Error en la validación de los credenciales suministrados por favor verifique la información. . .");
                 }
             }
@@ -498,7 +496,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    log.Error("Error al validar los credenciales del usuario por terminal: ", ex);
+                    //_logger.LogError("Error al validar los credenciales del usuario por terminal: ", ex);
                     throw new Exception("Error en la validación de los credenciales suministrados por favor verifique la información. . .");
                 }
             }
@@ -514,7 +512,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al validar los credenciales del usuario en Hacienda: ", ex);
+                //_logger.LogError("Error al validar los credenciales del usuario en Hacienda: ", ex);
             }
             return bolRespuesta;
         }
@@ -536,7 +534,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    log.Error("Error al validar los credenciales del usuario por terminal: ", ex);
+                    //_logger.LogError("Error al validar los credenciales del usuario por terminal: ", ex);
                     throw new Exception("Error en la validación de los credenciales suministrados por favor verifique la información. . .");
                 }
             }
@@ -556,7 +554,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    log.Error("Error al consultar el parámetro 'Version' del sistema: ", ex);
+                    //_logger.LogError("Error al consultar el parámetro 'Version' del sistema: ", ex);
                     throw new Exception("Se produjo un error consultado la versión actual del sistema. Por favor consulte con su proveedor.");
                 }
             }
@@ -577,7 +575,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    log.Error("Error al consultar el parámetro 'Version' del sistema: ", ex);
+                    //_logger.LogError("Error al consultar el parámetro 'Version' del sistema: ", ex);
                     throw new Exception("Se produjo un error consultado la versión actual del sistema. Por favor consulte con su proveedor.");
                 }
             }
@@ -595,7 +593,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    log.Error("Error al consultar el listado d parámetros del sistema: ", ex);
+                    //_logger.LogError("Error al consultar el listado d parámetros del sistema: ", ex);
                     throw new Exception("Error al consultar el listado d parámetros del sistema. . .");
                 }
             }
@@ -616,7 +614,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    log.Error("Error al actualizar el parámetro del sistema: ", ex);
+                    //_logger.LogError("Error al actualizar el parámetro del sistema: ", ex);
                     throw new Exception("Se produjo un error actualizando el parámetro del sistema. Por favor consulte con su proveedor.");
                 }
             }
@@ -639,7 +637,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    log.Error("Error al validar la lista de empresas para usuario administrador: ", ex);
+                    //_logger.LogError("Error al validar la lista de empresas para usuario administrador: ", ex);
                     throw new Exception("Error al validar la lista de empresas para usuario administrador. . .");
                 }
             }
@@ -658,7 +656,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    log.Error("Error al agregar la empresa: ", ex);
+                    //_logger.LogError("Error al agregar la empresa: ", ex);
                     throw new Exception("Se produjo un error agregando la información de la empresa. Por favor consulte con su proveedor.");
                 }
             }
@@ -687,7 +685,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    log.Error("Error al obtener la empresa: ", ex);
+                    //_logger.LogError("Error al obtener la empresa: ", ex);
                     throw new Exception("Se produjo un error consultando la información de la empresa. Por favor consulte con su proveedor.");
                 }
             }
@@ -722,7 +720,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    log.Error("Error al actualizar la empresa: ", ex);
+                    //_logger.LogError("Error al actualizar la empresa: ", ex);
                     throw new Exception("Se produjo un error actualizando la información de la empresa. Por favor consulte con su proveedor.");
                 }
             }
@@ -751,7 +749,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    log.Error("Error al obtener el logotipo de la empresa: ", ex);
+                    //_logger.LogError("Error al obtener el logotipo de la empresa: ", ex);
                     throw new Exception("Se produjo un error consultando el logotipo de la empresa. Por favor consulte con su proveedor.");
                 }
             }
@@ -775,7 +773,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    log.Error("Error al obtener el listado de registros de roles de usuario: ", ex);
+                    //_logger.LogError("Error al obtener el listado de registros de roles de usuario: ", ex);
                     throw new Exception("Se produjo un error consultando el listado de roles de acceso. Por favor consulte con su proveedor.");
                 }
             }
@@ -796,7 +794,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    log.Error("Error al actualizar el listado de reportes por empresa: ", ex);
+                    //_logger.LogError("Error al actualizar el listado de reportes por empresa: ", ex);
                     throw new Exception("Se produjo un error al actualizar el listado de reportes por empresa. Por favor consulte con su proveedor.");
                 }
             }
@@ -817,7 +815,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    log.Error("Error al actualizar el listado de roles por empresa: ", ex);
+                    //_logger.LogError("Error al actualizar el listado de roles por empresa: ", ex);
                     throw new Exception("Se produjo un error al actualizar el listado de roles por empresa. Por favor consulte con su proveedor.");
                 }
             }
@@ -842,7 +840,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    log.Error("Error al obtener el logotipo de la empresa: ", ex);
+                    //_logger.LogError("Error al obtener el logotipo de la empresa: ", ex);
                     throw new Exception("Se produjo un error consultando el logotipo de la empresa. Por favor consulte con su proveedor.");
                 }
             }
@@ -871,7 +869,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    log.Error("Error al actualizar el logotipo de la empresa: ", ex);
+                    //_logger.LogError("Error al actualizar el logotipo de la empresa: ", ex);
                     throw new Exception("Se produjo un error registrando el logotipo de la empresa. Por favor consulte con su proveedor.");
                 }
             }
@@ -896,7 +894,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    log.Error("Error al actualizar el certificado de la empresa: ", ex);
+                    //_logger.LogError("Error al actualizar el certificado de la empresa: ", ex);
                     throw new Exception("Se produjo un error registrando el certificado de la empresa. Por favor consulte con su proveedor.");
                 }
             }
@@ -912,7 +910,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    log.Error("Error al obtener la información del catalogo de reporte: ", ex);
+                    //_logger.LogError("Error al obtener la información del catalogo de reporte: ", ex);
                     throw new Exception("Se produjo un error consultando la parametrización de la empresa. Por favor consulte con su proveedor.");
                 }
             }
@@ -929,7 +927,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    log.Error("Error al obtener la información de la sucursal: ", ex);
+                    //_logger.LogError("Error al obtener la información de la sucursal: ", ex);
                     throw new Exception("Se produjo un error al obtener la información de la sucursal. Por favor consulte con su proveedor.");
                 }
             }
@@ -947,7 +945,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    log.Error("Error al agregar la sucursal: ", ex);
+                    //_logger.LogError("Error al agregar la sucursal: ", ex);
                     throw new Exception("Se produjo un error adicionando la información de la sucursal. Por favor consulte con su proveedor.");
                 }
             }
@@ -965,7 +963,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    log.Error("Error al actualizar la sucursal: ", ex);
+                    //_logger.LogError("Error al actualizar la sucursal: ", ex);
                     throw new Exception("Se produjo un error actualizando la información de la sucursal. Por favor consulte con su proveedor.");
                 }
             }
@@ -985,7 +983,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    log.Error("Error al actualizar la sucursal: ", ex);
+                    //_logger.LogError("Error al actualizar la sucursal: ", ex);
                     throw new Exception("Se produjo un error actualizando la información de la sucursal. Por favor consulte con su proveedor.");
                 }
             }
@@ -1002,7 +1000,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    log.Error("Error al obtener la información de la terminal: ", ex);
+                    //_logger.LogError("Error al obtener la información de la terminal: ", ex);
                     throw new Exception("Se produjo un error al obtener la información de la terminal. Por favor consulte con su proveedor.");
                 }
             }
@@ -1020,7 +1018,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    log.Error("Error al agregar la terminal: ", ex);
+                    //_logger.LogError("Error al agregar la terminal: ", ex);
                     throw new Exception("Se produjo un error adicionando la información de la terminal. Por favor consulte con su proveedor.");
                 }
             }
@@ -1038,7 +1036,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    log.Error("Error al actualizar la terminal: ", ex);
+                    //_logger.LogError("Error al actualizar la terminal: ", ex);
                     throw new Exception("Se produjo un error actualizando la información de la terminal. Por favor consulte con su proveedor.");
                 }
             }
@@ -1068,7 +1066,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    log.Error("Error al agregar el usuario: ", ex);
+                    //_logger.LogError("Error al agregar el usuario: ", ex);
                     throw new Exception("Se produjo un error agregando la información del usuario. Por favor consulte con su proveedor.");
                 }
             }
@@ -1102,7 +1100,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    log.Error("Error al actualizar el usuario: ", ex);
+                    //_logger.LogError("Error al actualizar el usuario: ", ex);
                     throw new Exception("Se produjo un error actualizando la información del usuario. Por favor consulte con su proveedor.");
                 }
             }
@@ -1127,7 +1125,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    log.Error("Error al actualizar la contraseña del usuario: ", ex);
+                    //_logger.LogError("Error al actualizar la contraseña del usuario: ", ex);
                     throw new Exception("Se produjo un error actualizando la contraseña del usuario. Por favor consulte con su proveedor.");
                 }
             }
@@ -1154,7 +1152,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (DbUpdateException ex)
                 {
-                    log.Info("Validación al eliminar el usuario: ", ex);
+                    //_logger.LogError("Validación al eliminar el usuario: ", ex);
                     throw new BusinessException("No es posible eliminar el usuario seleccionado. Posee registros relacionados en el sistema.");
                 }
                 catch (BusinessException ex)
@@ -1165,7 +1163,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    log.Error("Error al eliminar el usuario: ", ex);
+                    //_logger.LogError("Error al eliminar el usuario: ", ex);
                     throw new Exception("Se produjo un error eliminando al usuario. Por favor consulte con su proveedor.");
                 }
             }
@@ -1190,7 +1188,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    log.Error("Error al obtener el usuario: ", ex);
+                    //_logger.LogError("Error al obtener el usuario: ", ex);
                     throw new Exception("Se produjo un error consultando la información del usuario. Por favor consulte con su proveedor.");
                 }
             }
@@ -1216,7 +1214,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    log.Error("Error al obtener el listado de usuarios: ", ex);
+                    //_logger.LogError("Error al obtener el listado de usuarios: ", ex);
                     throw new Exception("Se produjo un error consultando el listado de usuarios. Por favor consulte con su proveedor.");
                 }
             }
@@ -1241,7 +1239,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    log.Error("Error al agregar el vendedor: ", ex);
+                    //_logger.LogError("Error al agregar el vendedor: ", ex);
                     throw new Exception("Se produjo un error agregando la información del vendedor. Por favor consulte con su proveedor.");
                 }
             }
@@ -1266,7 +1264,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    log.Error("Error al actualizar el vendedor: ", ex);
+                    //_logger.LogError("Error al actualizar el vendedor: ", ex);
                     throw new Exception("Se produjo un error actualizando la información del vendedor. Por favor consulte con su proveedor.");
                 }
             }
@@ -1288,7 +1286,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (DbUpdateException ex)
                 {
-                    log.Info("Validación al eliminar el vendedor: ", ex);
+                    //_logger.LogError("Validación al eliminar el vendedor: ", ex);
                     throw new BusinessException("No es posible eliminar el vendedor seleccionado. Posee registros relacionados en el sistema.");
                 }
                 catch (BusinessException ex)
@@ -1299,7 +1297,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    log.Error("Error al eliminar el vendedor: ", ex);
+                    //_logger.LogError("Error al eliminar el vendedor: ", ex);
                     throw new Exception("Se produjo un error eliminando al vendedor. Por favor consulte con su proveedor.");
                 }
             }
@@ -1322,7 +1320,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    log.Error("Error al obtener el vendedor: ", ex);
+                    //_logger.LogError("Error al obtener el vendedor: ", ex);
                     throw new Exception("Se produjo un error consultando la información del vendedor. Por favor consulte con su proveedor.");
                 }
             }
@@ -1345,7 +1343,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    log.Error("Error al obtener el vendedor: ", ex);
+                    //_logger.LogError("Error al obtener el vendedor: ", ex);
                     throw new Exception("Se produjo un error consultando la información del vendedor. Por favor consulte con su proveedor.");
                 }
             }
@@ -1371,7 +1369,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    log.Error("Error al obtener el listado de vendedores: ", ex);
+                    //_logger.LogError("Error al obtener el listado de vendedores: ", ex);
                     throw new Exception("Se produjo un error consultando el listado de vendedores. Por favor consulte con su proveedor.");
                 }
             }
@@ -1387,7 +1385,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    log.Error("Error al obtener el registro de role de usuario: ", ex);
+                    //_logger.LogError("Error al obtener el registro de role de usuario: ", ex);
                     throw new Exception("Se produjo un error consultando la información del role de acceso. Por favor consulte con su proveedor.");
                 }
             }
@@ -1410,7 +1408,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    log.Error("Error al obtener el listado de registros de roles de usuario: ", ex);
+                    //_logger.LogError("Error al obtener el listado de registros de roles de usuario: ", ex);
                     throw new Exception("Se produjo un error consultando el listado de roles de acceso. Por favor consulte con su proveedor.");
                 }
             }
@@ -1435,7 +1433,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    log.Error("Error al agregar la línea de producto: ", ex);
+                    //_logger.LogError("Error al agregar la línea de producto: ", ex);
                     throw new Exception("Se produjo un error agregando la información de la línea. Por favor consulte con su proveedor.");
                 }
             }
@@ -1460,7 +1458,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    log.Error("Error al actualizar la línea de producto: ", ex);
+                    //_logger.LogError("Error al actualizar la línea de producto: ", ex);
                     throw new Exception("Se produjo un error actualizando la información de la línea. Por favor consulte con su proveedor.");
                 }
             }
@@ -1482,7 +1480,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (DbUpdateException ex)
                 {
-                    log.Info("Validación al agregar el parámetro contable: ", ex);
+                    //_logger.LogError("Validación al agregar el parámetro contable: ", ex);
                     throw new BusinessException("No es posible eliminar la línea seleccionada. Posee registros relacionados en el sistema.");
                 }
                 catch (BusinessException ex)
@@ -1493,7 +1491,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    log.Error("Error al eliminar la línea de producto: ", ex);
+                    //_logger.LogError("Error al eliminar la línea de producto: ", ex);
                     throw new Exception("Se produjo un error eliminando la línea. Por favor consulte con su proveedor.");
                 }
             }
@@ -1509,7 +1507,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    log.Error("Error al obtener la línea de producto: ", ex);
+                    //_logger.LogError("Error al obtener la línea de producto: ", ex);
                     throw new Exception("Se produjo un error consultando la información de la línea. Por favor consulte con su proveedor.");
                 }
             }
@@ -1535,7 +1533,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    log.Error("Error al obtener el listado de líneas general: ", ex);
+                    //_logger.LogError("Error al obtener el listado de líneas general: ", ex);
                     throw new Exception("Se produjo un error consultando el listado de líneas. Por favor consulte con su proveedor.");
                 }
             }
@@ -1592,7 +1590,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    log.Error("Error al agregar el producto: ", ex);
+                    //_logger.LogError("Error al agregar el producto: ", ex);
                     throw new Exception("Se produjo un error agregando la información del producto. Por favor consulte con su proveedor.");
                 }
             }
@@ -1628,7 +1626,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    log.Error("Error al actualizar el producto: ", ex);
+                    //_logger.LogError("Error al actualizar el producto: ", ex);
                     throw new Exception("Se produjo un error actualizando la información del producto. Por favor consulte con su proveedor.");
                 }
             }
@@ -1669,7 +1667,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    log.Error("Error al actualizar el precio de venta del inventario: ", ex);
+                    //_logger.LogError("Error al actualizar el precio de venta del inventario: ", ex);
                     throw new Exception("Se produjo un error actualizando el precio de venta del inventario. Por favor consulte con su proveedor.");
                 }
             }
@@ -1688,7 +1686,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (DbUpdateException ex)
                 {
-                    log.Info("Validación al agregar el parámetro contable: ", ex);
+                    //_logger.LogError("Validación al agregar el parámetro contable: ", ex);
                     throw new BusinessException("No es posible eliminar el producto seleccionado. Posee registros relacionados en el sistema.");
                 }
                 catch (BusinessException ex)
@@ -1699,7 +1697,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    log.Error("Error al eliminar el producto: ", ex);
+                    //_logger.LogError("Error al eliminar el producto: ", ex);
                     throw new Exception("Se produjo un error eliminando el producto. Por favor consulte con su proveedor.");
                 }
             }
@@ -1722,7 +1720,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    log.Error("Error al obtener el producto: ", ex);
+                    //_logger.LogError("Error al obtener el producto: ", ex);
                     throw new Exception("Se produjo un error consultando la información del producto. Por favor consulte con su proveedor.");
                 }
             }
@@ -1738,7 +1736,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    log.Error("Error al obtener el código de producto transitorio: ", ex);
+                    //_logger.LogError("Error al obtener el código de producto transitorio: ", ex);
                     throw new Exception("Se produjo un error consultando el producto transitorio. Por favor consulte con su proveedor.");
                 }
             }
@@ -1761,7 +1759,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    log.Error("Error al obtener el producto: ", ex);
+                    //_logger.LogError("Error al obtener el producto: ", ex);
                     throw new Exception("Se produjo un error consultando la información del producto. Por favor consulte con su proveedor.");
                 }
             }
@@ -1784,7 +1782,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    log.Error("Error al obtener el producto: ", ex);
+                    //_logger.LogError("Error al obtener el producto: ", ex);
                     throw new Exception("Se produjo un error consultando la información del producto. Por favor consulte con su proveedor.");
                 }
             }
@@ -1819,7 +1817,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    log.Error("Error al obtener el listado de productos por criterios: ", ex);
+                    //_logger.LogError("Error al obtener el listado de productos por criterios: ", ex);
                     throw new Exception("Se produjo un error consultando el listado de productos por criterio. Por favor consulte con su proveedor.");
                 }
             }
@@ -1876,7 +1874,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    log.Error("Error al obtener el listado de productos por criterios: ", ex);
+                    //_logger.LogError("Error al obtener el listado de productos por criterios: ", ex);
                     throw new Exception("Se produjo un error consultando el listado de productos por criterio. Por favor consulte con su proveedor.");
                 }
             }
@@ -1886,18 +1884,15 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         {
             DateTime datFechaInicial = DateTime.ParseExact(strFechaInicial + " 00:00:01", strFormat, provider);
             DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
-
+            try
             {
-                try
-                {
-                    var listaMovimientos = dbContext.MovimientoProductoRepository.Where(x => x.IdProducto == intIdProducto && x.IdSucursal == intIdSucursal && x.Fecha > datFechaInicial && x.Fecha < datFechaFinal);
-                    return listaMovimientos.Count();
-                }
-                catch (Exception ex)
-                {
-                    log.Error("Error al obtener el listado de productos por criterios: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de productos por criterio. Por favor consulte con su proveedor.");
-                }
+                var listaMovimientos = dbContext.MovimientoProductoRepository.Where(x => x.IdProducto == intIdProducto && x.IdSucursal == intIdSucursal && x.Fecha > datFechaInicial && x.Fecha < datFechaFinal);
+                return listaMovimientos.Count();
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError("Error al obtener el listado de productos por criterios: ", ex);
+                throw new Exception("Se produjo un error consultando el listado de productos por criterio. Por favor consulte con su proveedor.");
             }
         }
 
@@ -1905,21 +1900,18 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         {
             DateTime datFechaInicial = DateTime.ParseExact(strFechaInicial + " 00:00:01", strFormat, provider);
             DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
-
+            try
             {
-                try
-                {
-                    var listaMovimientos = dbContext.MovimientoProductoRepository.Where(x => x.IdProducto == intIdProducto && x.IdSucursal == intIdSucursal && x.Fecha >= datFechaInicial && x.Fecha <= datFechaFinal);
-                    if (cantRec > 0)
-                        return listaMovimientos.OrderByDescending(x => x.Fecha).Skip((numPagina - 1) * cantRec).Take(cantRec).ToList();
-                    else
-                        return listaMovimientos.OrderByDescending(x => x.Fecha).ToList();
-                }
-                catch (Exception ex)
-                {
-                    log.Error("Error al obtener el listado de productos por criterios: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de productos por criterio. Por favor consulte con su proveedor.");
-                }
+                var listaMovimientos = dbContext.MovimientoProductoRepository.Where(x => x.IdProducto == intIdProducto && x.IdSucursal == intIdSucursal && x.Fecha >= datFechaInicial && x.Fecha <= datFechaFinal);
+                if (cantRec > 0)
+                    return listaMovimientos.OrderByDescending(x => x.Fecha).Skip((numPagina - 1) * cantRec).Take(cantRec).ToList();
+                else
+                    return listaMovimientos.OrderByDescending(x => x.Fecha).ToList();
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError("Error al obtener el listado de productos por criterios: ", ex);
+                throw new Exception("Se produjo un error consultando el listado de productos por criterio. Por favor consulte con su proveedor.");
             }
         }
 
@@ -1940,124 +1932,109 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         public void AgregarBancoAdquiriente(BancoAdquiriente bancoAdquiriente)
         {
-
+            try
             {
-                try
-                {
-                    Empresa empresa = dbContext.EmpresaRepository.Find(bancoAdquiriente.IdEmpresa);
-                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    dbContext.BancoAdquirienteRepository.Add(bancoAdquiriente);
-                    dbContext.Commit();
-                }
-                catch (BusinessException ex)
-                {
-                    dbContext.RollBack();
-                    throw ex;
-                }
-                catch (Exception ex)
-                {
-                    dbContext.RollBack();
-                    log.Error("Error al agregar el registro de banco adquiriente: ", ex);
-                    throw new Exception("Se produjo un error agregando la información del banco adquiriente. Por favor consulte con su proveedor.");
-                }
+                Empresa empresa = dbContext.EmpresaRepository.Find(bancoAdquiriente.IdEmpresa);
+                if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                dbContext.BancoAdquirienteRepository.Add(bancoAdquiriente);
+                dbContext.Commit();
+            }
+            catch (BusinessException ex)
+            {
+                dbContext.RollBack();
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                dbContext.RollBack();
+                //_logger.LogError("Error al agregar el registro de banco adquiriente: ", ex);
+                throw new Exception("Se produjo un error agregando la información del banco adquiriente. Por favor consulte con su proveedor.");
             }
         }
 
         public void ActualizarBancoAdquiriente(BancoAdquiriente bancoAdquiriente)
         {
-
+            try
             {
-                try
-                {
-                    Empresa empresa = dbContext.EmpresaRepository.Find(bancoAdquiriente.IdEmpresa);
-                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    dbContext.NotificarModificacion(bancoAdquiriente);
-                    dbContext.Commit();
-                }
-                catch (BusinessException ex)
-                {
-                    dbContext.RollBack();
-                    throw ex;
-                }
-                catch (Exception ex)
-                {
-                    dbContext.RollBack();
-                    log.Error("Error al actualizar el registro de banco adquiriente: ", ex);
-                    throw new Exception("Se produjo un error actualizando la información del banco adquiriente. Por favor consulte con su proveedor.");
-                }
+                Empresa empresa = dbContext.EmpresaRepository.Find(bancoAdquiriente.IdEmpresa);
+                if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                dbContext.NotificarModificacion(bancoAdquiriente);
+                dbContext.Commit();
+            }
+            catch (BusinessException ex)
+            {
+                dbContext.RollBack();
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                dbContext.RollBack();
+                //_logger.LogError("Error al actualizar el registro de banco adquiriente: ", ex);
+                throw new Exception("Se produjo un error actualizando la información del banco adquiriente. Por favor consulte con su proveedor.");
             }
         }
 
         public void EliminarBancoAdquiriente(int intIdBanco)
         {
-
+            try
             {
-                try
-                {
-                    BancoAdquiriente banco = dbContext.BancoAdquirienteRepository.Find(intIdBanco);
-                    if (banco == null) throw new BusinessException("El banco adquiriente por eliminar no existe.");
-                    Empresa empresa = dbContext.EmpresaRepository.Find(banco.IdEmpresa);
-                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    dbContext.BancoAdquirienteRepository.Remove(banco);
-                    dbContext.Commit();
-                }
-                catch (DbUpdateException ex)
-                {
-                    log.Info("Validación al agregar el parámetro contable: ", ex);
-                    throw new BusinessException("No es posible eliminar el banco adquiriente seleccionado. Posee registros relacionados en el sistema.");
-                }
-                catch (BusinessException ex)
-                {
-                    dbContext.RollBack();
-                    throw ex;
-                }
-                catch (Exception ex)
-                {
-                    dbContext.RollBack();
-                    log.Error("Error al eliminar registro de banco adquiriente: ", ex);
-                    throw new Exception("Se produjo un error eliminando el banco adquiriente. Por favor consulte con su proveedor.");
-                }
+                BancoAdquiriente banco = dbContext.BancoAdquirienteRepository.Find(intIdBanco);
+                if (banco == null) throw new BusinessException("El banco adquiriente por eliminar no existe.");
+                Empresa empresa = dbContext.EmpresaRepository.Find(banco.IdEmpresa);
+                if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                dbContext.BancoAdquirienteRepository.Remove(banco);
+                dbContext.Commit();
+            }
+            catch (DbUpdateException ex)
+            {
+                //_logger.LogError("Validación al agregar el parámetro contable: ", ex);
+                throw new BusinessException("No es posible eliminar el banco adquiriente seleccionado. Posee registros relacionados en el sistema.");
+            }
+            catch (BusinessException ex)
+            {
+                dbContext.RollBack();
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                dbContext.RollBack();
+                //_logger.LogError("Error al eliminar registro de banco adquiriente: ", ex);
+                throw new Exception("Se produjo un error eliminando el banco adquiriente. Por favor consulte con su proveedor.");
             }
         }
 
         public BancoAdquiriente ObtenerBancoAdquiriente(int intIdBanco)
         {
-
+            try
             {
-                try
-                {
-                    return dbContext.BancoAdquirienteRepository.Find(intIdBanco);
-                }
-                catch (Exception ex)
-                {
-                    log.Error("Error al obtener el registro de banco adquiriente: ", ex);
-                    throw new Exception("Se produjo un error consultando la información del banco adquiriente. Por favor consulte con su proveedor.");
-                }
+                return dbContext.BancoAdquirienteRepository.Find(intIdBanco);
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError("Error al obtener el registro de banco adquiriente: ", ex);
+                throw new Exception("Se produjo un error consultando la información del banco adquiriente. Por favor consulte con su proveedor.");
             }
         }
 
         public IList<LlaveDescripcion> ObtenerListadoBancoAdquiriente(int intIdEmpresa, string strDescripcion)
         {
-
+            var listaBancoAdquiriente = new List<LlaveDescripcion>();
+            try
             {
-                var listaBancoAdquiriente = new List<LlaveDescripcion>();
-                try
+                var listado = dbContext.BancoAdquirienteRepository.Where(x => x.IdEmpresa == intIdEmpresa);
+                if (strDescripcion != "")
+                    listado = listado.Where(x => x.Descripcion.Contains(strDescripcion));
+                foreach (var value in listado)
                 {
-                    var listado = dbContext.BancoAdquirienteRepository.Where(x => x.IdEmpresa == intIdEmpresa);
-                    if (strDescripcion != "")
-                        listado = listado.Where(x => x.Descripcion.Contains(strDescripcion));
-                    foreach (var value in listado)
-                    {
-                        LlaveDescripcion item = new LlaveDescripcion(value.IdBanco, value.Descripcion);
-                        listaBancoAdquiriente.Add(item);
-                    }
-                    return listaBancoAdquiriente;
+                    LlaveDescripcion item = new LlaveDescripcion(value.IdBanco, value.Descripcion);
+                    listaBancoAdquiriente.Add(item);
                 }
-                catch (Exception ex)
-                {
-                    log.Error("Error al obtener el listado de registros de banco adquiriente: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de bancos adquirientes. Por favor consulte con su proveedor.");
-                }
+                return listaBancoAdquiriente;
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError("Error al obtener el listado de registros de banco adquiriente: ", ex);
+                throw new Exception("Se produjo un error consultando el listado de bancos adquirientes. Por favor consulte con su proveedor.");
             }
         }
 
@@ -2068,192 +2045,177 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         public string AgregarAjusteInventario(AjusteInventario ajusteInventario)
         {
-
+            try
             {
-                try
+                Empresa empresa = dbContext.EmpresaRepository.Find(ajusteInventario.IdEmpresa);
+                if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == ajusteInventario.IdEmpresa && x.IdSucursal == ajusteInventario.IdSucursal);
+                if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
+                dbContext.AjusteInventarioRepository.Add(ajusteInventario);
+                foreach (var detalleAjuste in ajusteInventario.DetalleAjusteInventario)
                 {
-                    Empresa empresa = dbContext.EmpresaRepository.Find(ajusteInventario.IdEmpresa);
-                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == ajusteInventario.IdEmpresa && x.IdSucursal == ajusteInventario.IdSucursal);
-                    if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
-                    dbContext.AjusteInventarioRepository.Add(ajusteInventario);
-                    foreach (var detalleAjuste in ajusteInventario.DetalleAjusteInventario)
+                    Producto producto = dbContext.ProductoRepository.AsNoTracking().FirstOrDefault(x => x.IdProducto == detalleAjuste.IdProducto);
+                    if (producto == null)
+                        throw new Exception("El producto asignado al detalle de la devolución no existe.");
+                    if (producto.Tipo != StaticTipoProducto.Producto)
+                        throw new BusinessException("El tipo de producto por ajustar no puede ser un servicio. Por favor verificar.");
+                    ExistenciaPorSucursal existencias = dbContext.ExistenciaPorSucursalRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == ajusteInventario.IdSucursal).FirstOrDefault();
+                    if (existencias != null)
                     {
-                        Producto producto = dbContext.ProductoRepository.AsNoTracking().FirstOrDefault(x => x.IdProducto == detalleAjuste.IdProducto);
-                        if (producto == null)
-                            throw new Exception("El producto asignado al detalle de la devolución no existe.");
-                        if (producto.Tipo != StaticTipoProducto.Producto)
-                            throw new BusinessException("El tipo de producto por ajustar no puede ser un servicio. Por favor verificar.");
-                        ExistenciaPorSucursal existencias = dbContext.ExistenciaPorSucursalRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == ajusteInventario.IdSucursal).FirstOrDefault();
-                        if (existencias != null)
-                        {
-                            existencias.Cantidad += detalleAjuste.Cantidad;
-                            dbContext.NotificarModificacion(existencias);
-                        }
-                        else
-                        {
-                            ExistenciaPorSucursal nuevoRegistro = new ExistenciaPorSucursal
-                            {
-                                IdEmpresa = ajusteInventario.IdEmpresa,
-                                IdSucursal = ajusteInventario.IdSucursal,
-                                IdProducto = detalleAjuste.IdProducto,
-                                Cantidad = detalleAjuste.Cantidad
-                            };
-                            dbContext.ExistenciaPorSucursalRepository.Add(nuevoRegistro);
-                        }
-                        MovimientoProducto movimiento = new MovimientoProducto
-                        {
-                            IdProducto = producto.IdProducto,
-                            IdSucursal = ajusteInventario.IdSucursal,
-                            Fecha = DateTime.Now,
-                            Tipo = detalleAjuste.Cantidad < 0 ? StaticTipoMovimientoProducto.Salida : StaticTipoMovimientoProducto.Entrada,
-                            Origen = "Registro de ajuste de inventario",
-                            Cantidad = detalleAjuste.Cantidad < 0 ? detalleAjuste.Cantidad * -1 : detalleAjuste.Cantidad,
-                            PrecioCosto = detalleAjuste.PrecioCosto
-                        };
-                        producto.MovimientoProducto = new List<MovimientoProducto>();
-                        producto.MovimientoProducto.Add(movimiento);
+                        existencias.Cantidad += detalleAjuste.Cantidad;
+                        dbContext.NotificarModificacion(existencias);
                     }
-                    dbContext.Commit();
+                    else
+                    {
+                        ExistenciaPorSucursal nuevoRegistro = new ExistenciaPorSucursal
+                        {
+                            IdEmpresa = ajusteInventario.IdEmpresa,
+                            IdSucursal = ajusteInventario.IdSucursal,
+                            IdProducto = detalleAjuste.IdProducto,
+                            Cantidad = detalleAjuste.Cantidad
+                        };
+                        dbContext.ExistenciaPorSucursalRepository.Add(nuevoRegistro);
+                    }
+                    MovimientoProducto movimiento = new MovimientoProducto
+                    {
+                        IdProducto = producto.IdProducto,
+                        IdSucursal = ajusteInventario.IdSucursal,
+                        Fecha = DateTime.Now,
+                        Tipo = detalleAjuste.Cantidad < 0 ? StaticTipoMovimientoProducto.Salida : StaticTipoMovimientoProducto.Entrada,
+                        Origen = "Registro de ajuste de inventario",
+                        Cantidad = detalleAjuste.Cantidad < 0 ? detalleAjuste.Cantidad * -1 : detalleAjuste.Cantidad,
+                        PrecioCosto = detalleAjuste.PrecioCosto
+                    };
+                    producto.MovimientoProducto = new List<MovimientoProducto>();
+                    producto.MovimientoProducto.Add(movimiento);
                 }
-                catch (BusinessException ex)
-                {
-                    dbContext.RollBack();
-                    throw ex;
-                }
-                catch (Exception ex)
-                {
-                    dbContext.RollBack();
-                    log.Error("Error al agregar el registro de ajuste de inventario: ", ex);
-                    throw new Exception("Se produjo un error guardando la información del ajuste de inventario. Por favor consulte con su proveedor.");
-                }
+                dbContext.Commit();
+            }
+            catch (BusinessException ex)
+            {
+                dbContext.RollBack();
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                dbContext.RollBack();
+                //_logger.LogError("Error al agregar el registro de ajuste de inventario: ", ex);
+                throw new Exception("Se produjo un error guardando la información del ajuste de inventario. Por favor consulte con su proveedor.");
             }
             return ajusteInventario.IdAjuste.ToString();
         }
 
         public void AnularAjusteInventario(int intIdAjusteInventario, int intIdUsuario, string strMotivoAnulacion)
         {
-
+            try
             {
-                try
+                AjusteInventario ajusteInventario = dbContext.AjusteInventarioRepository.Include("DetalleAjusteInventario").FirstOrDefault(x => x.IdAjuste == intIdAjusteInventario);
+                if (ajusteInventario == null) throw new Exception("El registro de ajuste de inventario por anular no existe.");
+                if (ajusteInventario.Nulo == true) throw new BusinessException("El registro de ajuste de inventario ya ha sido anulado.");
+                Empresa empresa = dbContext.EmpresaRepository.Find(ajusteInventario.IdEmpresa);
+                if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == ajusteInventario.IdEmpresa && x.IdSucursal == ajusteInventario.IdSucursal);
+                if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
+                ajusteInventario.Nulo = true;
+                ajusteInventario.IdAnuladoPor = intIdUsuario;
+                ajusteInventario.MotivoAnulacion = strMotivoAnulacion;
+                dbContext.NotificarModificacion(ajusteInventario);
+                foreach (var detalleAjuste in ajusteInventario.DetalleAjusteInventario)
                 {
-                    AjusteInventario ajusteInventario = dbContext.AjusteInventarioRepository.Include("DetalleAjusteInventario").FirstOrDefault(x => x.IdAjuste == intIdAjusteInventario);
-                    if (ajusteInventario == null) throw new Exception("El registro de ajuste de inventario por anular no existe.");
-                    if (ajusteInventario.Nulo == true) throw new BusinessException("El registro de ajuste de inventario ya ha sido anulado.");
-                    Empresa empresa = dbContext.EmpresaRepository.Find(ajusteInventario.IdEmpresa);
-                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == ajusteInventario.IdEmpresa && x.IdSucursal == ajusteInventario.IdSucursal);
-                    if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
-                    ajusteInventario.Nulo = true;
-                    ajusteInventario.IdAnuladoPor = intIdUsuario;
-                    ajusteInventario.MotivoAnulacion = strMotivoAnulacion;
-                    dbContext.NotificarModificacion(ajusteInventario);
-                    foreach (var detalleAjuste in ajusteInventario.DetalleAjusteInventario)
+                    Producto producto = dbContext.ProductoRepository.AsNoTracking().FirstOrDefault(x => x.IdProducto == detalleAjuste.IdProducto);
+                    if (producto == null)
+                        throw new Exception("El producto asignado al detalle de la devolución no existe.");
+                    if (producto.Tipo != StaticTipoProducto.Producto)
+                        throw new BusinessException("El tipo de producto por ajustar no puede ser un servicio. Por favor verificar.");
+                    ExistenciaPorSucursal existencias = dbContext.ExistenciaPorSucursalRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == ajusteInventario.IdSucursal).FirstOrDefault();
+                    if (existencias == null)
+                        throw new BusinessException("El producto " + producto.IdProducto + " no posee registro de existencias. Por favor consulte con su proveedor.");
+                    existencias.Cantidad -= detalleAjuste.Cantidad;
+                    dbContext.NotificarModificacion(existencias);
+                    MovimientoProducto movimiento = new MovimientoProducto
                     {
-                        Producto producto = dbContext.ProductoRepository.AsNoTracking().FirstOrDefault(x => x.IdProducto == detalleAjuste.IdProducto);
-                        if (producto == null)
-                            throw new Exception("El producto asignado al detalle de la devolución no existe.");
-                        if (producto.Tipo != StaticTipoProducto.Producto)
-                            throw new BusinessException("El tipo de producto por ajustar no puede ser un servicio. Por favor verificar.");
-                        ExistenciaPorSucursal existencias = dbContext.ExistenciaPorSucursalRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == ajusteInventario.IdSucursal).FirstOrDefault();
-                        if (existencias == null)
-                            throw new BusinessException("El producto " + producto.IdProducto + " no posee registro de existencias. Por favor consulte con su proveedor.");
-                        existencias.Cantidad -= detalleAjuste.Cantidad;
-                        dbContext.NotificarModificacion(existencias);
-                        MovimientoProducto movimiento = new MovimientoProducto
-                        {
-                            IdProducto = producto.IdProducto,
-                            IdSucursal = ajusteInventario.IdSucursal,
-                            Fecha = DateTime.Now,
-                            Tipo = detalleAjuste.Cantidad < 0 ? StaticTipoMovimientoProducto.Entrada : StaticTipoMovimientoProducto.Salida,
-                            Origen = "Registro de reversión de ajuste de inventario",
-                            Cantidad = detalleAjuste.Cantidad < 0 ? detalleAjuste.Cantidad * -1 : detalleAjuste.Cantidad,
-                            PrecioCosto = detalleAjuste.PrecioCosto
-                        };
-                        producto.MovimientoProducto = new List<MovimientoProducto>();
-                        producto.MovimientoProducto.Add(movimiento);
-                    }
-                    dbContext.Commit();
+                        IdProducto = producto.IdProducto,
+                        IdSucursal = ajusteInventario.IdSucursal,
+                        Fecha = DateTime.Now,
+                        Tipo = detalleAjuste.Cantidad < 0 ? StaticTipoMovimientoProducto.Entrada : StaticTipoMovimientoProducto.Salida,
+                        Origen = "Registro de reversión de ajuste de inventario",
+                        Cantidad = detalleAjuste.Cantidad < 0 ? detalleAjuste.Cantidad * -1 : detalleAjuste.Cantidad,
+                        PrecioCosto = detalleAjuste.PrecioCosto
+                    };
+                    producto.MovimientoProducto = new List<MovimientoProducto>();
+                    producto.MovimientoProducto.Add(movimiento);
                 }
-                catch (BusinessException ex)
-                {
-                    dbContext.RollBack();
-                    throw ex;
-                }
-                catch (Exception ex)
-                {
-                    dbContext.RollBack();
-                    log.Error("Error al anular el registro de ajuste de inventario: ", ex);
-                    throw new Exception("Se produjo un error anulando el ajuste de inventario. Por favor consulte con su proveedor.");
-                }
+                dbContext.Commit();
+            }
+            catch (BusinessException ex)
+            {
+                dbContext.RollBack();
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                dbContext.RollBack();
+                //_logger.LogError("Error al anular el registro de ajuste de inventario: ", ex);
+                throw new Exception("Se produjo un error anulando el ajuste de inventario. Por favor consulte con su proveedor.");
             }
         }
 
         public AjusteInventario ObtenerAjusteInventario(int intIdAjusteInventario)
         {
-
+            try
             {
-                try
-                {
-                    AjusteInventario ajuste = dbContext.AjusteInventarioRepository.Include("DetalleAjusteInventario.Producto").FirstOrDefault(x => x.IdAjuste == intIdAjusteInventario);
-                    return ajuste;
-                }
-                catch (Exception ex)
-                {
-                    log.Error("Error al obtener el registro de facturación: ", ex);
-                    throw new Exception("Se produjo un error consultando la información de la factura. Por favor consulte con su proveedor.");
-                }
+                AjusteInventario ajuste = dbContext.AjusteInventarioRepository.Include("DetalleAjusteInventario.Producto").FirstOrDefault(x => x.IdAjuste == intIdAjusteInventario);
+                return ajuste;
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError("Error al obtener el registro de facturación: ", ex);
+                throw new Exception("Se produjo un error consultando la información de la factura. Por favor consulte con su proveedor.");
             }
         }
 
         public int ObtenerTotalListaAjusteInventario(int intIdEmpresa, int intIdSucursal, int intIdAjusteInventario, string strDescripcion)
         {
-
+            try
             {
-                try
-                {
-                    var listaAjusteInventario = dbContext.AjusteInventarioRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
-                    if (intIdAjusteInventario > 0)
-                        listaAjusteInventario = listaAjusteInventario.Where(x => !x.Nulo && x.IdAjuste == intIdAjusteInventario);
-                    else if (!strDescripcion.Equals(string.Empty))
-                        listaAjusteInventario = listaAjusteInventario.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.Descripcion.Contains(strDescripcion));
-                    return listaAjusteInventario.Count();
-                }
-                catch (Exception ex)
-                {
-                    log.Error("Error al obtener el total del listado de registros de facturación: ", ex);
-                    throw new Exception("Se produjo un error consultando el total del listado de facturas. Por favor consulte con su proveedor.");
-                }
+                var listaAjusteInventario = dbContext.AjusteInventarioRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
+                if (intIdAjusteInventario > 0)
+                    listaAjusteInventario = listaAjusteInventario.Where(x => !x.Nulo && x.IdAjuste == intIdAjusteInventario);
+                else if (!strDescripcion.Equals(string.Empty))
+                    listaAjusteInventario = listaAjusteInventario.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.Descripcion.Contains(strDescripcion));
+                return listaAjusteInventario.Count();
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError("Error al obtener el total del listado de registros de facturación: ", ex);
+                throw new Exception("Se produjo un error consultando el total del listado de facturas. Por favor consulte con su proveedor.");
             }
         }
 
         public IList<AjusteInventarioDetalle> ObtenerListadoAjusteInventario(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, int intIdAjusteInventario, string strDescripcion)
         {
-
+            var listaAjustes = new List<AjusteInventarioDetalle>();
+            try
             {
-                var listaAjustes = new List<AjusteInventarioDetalle>();
-                try
+                var listado = dbContext.AjusteInventarioRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
+                if (intIdAjusteInventario > 0)
+                    listado = listado.Where(x => !x.Nulo && x.IdAjuste == intIdAjusteInventario);
+                else if (!strDescripcion.Equals(string.Empty))
+                    listado = listado.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.Descripcion.Contains(strDescripcion));
+                listado = listado.OrderByDescending(x => x.IdAjuste).Skip((numPagina - 1) * cantRec).Take(cantRec);
+                foreach (var value in listado)
                 {
-                    var listado = dbContext.AjusteInventarioRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
-                    if (intIdAjusteInventario > 0)
-                        listado = listado.Where(x => !x.Nulo && x.IdAjuste == intIdAjusteInventario);
-                    else if (!strDescripcion.Equals(string.Empty))
-                        listado = listado.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.Descripcion.Contains(strDescripcion));
-                    listado = listado.OrderByDescending(x => x.IdAjuste).Skip((numPagina - 1) * cantRec).Take(cantRec);
-                    foreach (var value in listado)
-                    {
-                        AjusteInventarioDetalle item = new AjusteInventarioDetalle(value.IdAjuste, value.Fecha.ToString("dd/MM/yyyy"), value.Descripcion);
-                        listaAjustes.Add(item);
-                    }
-                    return listaAjustes;
+                    AjusteInventarioDetalle item = new AjusteInventarioDetalle(value.IdAjuste, value.Fecha.ToString("dd/MM/yyyy"), value.Descripcion);
+                    listaAjustes.Add(item);
                 }
-                catch (Exception ex)
-                {
-                    log.Error("Error al obtener el listado de registros de facturación: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de facturas. Por favor consulte con su proveedor.");
-                }
+                return listaAjustes;
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError("Error al obtener el listado de registros de facturación: ", ex);
+                throw new Exception("Se produjo un error consultando el listado de facturas. Por favor consulte con su proveedor.");
             }
         }
 
@@ -2264,116 +2226,101 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         public IList<LlaveDescripcion> ObtenerListadoCatalogoReportes()
         {
-
+            var listaCatalogoReporte = new List<LlaveDescripcion>();
+            try
             {
-                var listaCatalogoReporte = new List<LlaveDescripcion>();
-                try
+                var listado = dbContext.CatalogoReporteRepository;
+                foreach (var value in listado)
                 {
-                    var listado = dbContext.CatalogoReporteRepository;
-                    foreach (var value in listado)
-                    {
-                        LlaveDescripcion item = new LlaveDescripcion(value.IdReporte, value.NombreReporte);
-                        listaCatalogoReporte.Add(item);
-                    }
-                    return listaCatalogoReporte;
+                    LlaveDescripcion item = new LlaveDescripcion(value.IdReporte, value.NombreReporte);
+                    listaCatalogoReporte.Add(item);
                 }
-                catch (Exception ex)
-                {
-                    log.Error("Error al obtener el listado de reportes: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de reportes. Por favor consulte con su proveedor.");
-                }
+                return listaCatalogoReporte;
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError("Error al obtener el listado de reportes: ", ex);
+                throw new Exception("Se produjo un error consultando el listado de reportes. Por favor consulte con su proveedor.");
             }
         }
 
         public IList<LlaveDescripcion> ObtenerListadoProvincias()
         {
-
+            var listaProvincia = new List<LlaveDescripcion>();
+            try
             {
-                var listaProvincia = new List<LlaveDescripcion>();
-                try
+                var listado = dbContext.ProvinciaRepository;
+                foreach (var value in listado)
                 {
-                    var listado = dbContext.ProvinciaRepository;
-                    foreach (var value in listado)
-                    {
-                        LlaveDescripcion item = new LlaveDescripcion(value.IdProvincia, value.Descripcion);
-                        listaProvincia.Add(item);
-                    }
-                    return listaProvincia;
+                    LlaveDescripcion item = new LlaveDescripcion(value.IdProvincia, value.Descripcion);
+                    listaProvincia.Add(item);
                 }
-                catch (Exception ex)
-                {
-                    log.Error("Error al obtener el listado de provincias: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de provincias. Por favor consulte con su proveedor.");
-                }
+                return listaProvincia;
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError("Error al obtener el listado de provincias: ", ex);
+                throw new Exception("Se produjo un error consultando el listado de provincias. Por favor consulte con su proveedor.");
             }
         }
 
         public IList<LlaveDescripcion> ObtenerListadoCantones(int intIdProvincia)
         {
-
+            var listaCanton = new List<LlaveDescripcion>();
+            try
             {
-                var listaCanton = new List<LlaveDescripcion>();
-                try
+                var listado = dbContext.CantonRepository.Where(x => x.IdProvincia == intIdProvincia);
+                foreach (var value in listado)
                 {
-                    var listado = dbContext.CantonRepository.Where(x => x.IdProvincia == intIdProvincia);
-                    foreach (var value in listado)
-                    {
-                        LlaveDescripcion item = new LlaveDescripcion(value.IdCanton, value.Descripcion);
-                        listaCanton.Add(item);
-                    }
-                    return listaCanton;
+                    LlaveDescripcion item = new LlaveDescripcion(value.IdCanton, value.Descripcion);
+                    listaCanton.Add(item);
                 }
-                catch (Exception ex)
-                {
-                    log.Error("Error al obtener el listado de cantones: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de cantones. Por favor consulte con su proveedor.");
-                }
+                return listaCanton;
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError("Error al obtener el listado de cantones: ", ex);
+                throw new Exception("Se produjo un error consultando el listado de cantones. Por favor consulte con su proveedor.");
             }
         }
 
         public IList<LlaveDescripcion> ObtenerListadoDistritos(int intIdProvincia, int intIdCanton)
         {
-
+            var listaDistrito = new List<LlaveDescripcion>();
+            try
             {
-                var listaDistrito = new List<LlaveDescripcion>();
-                try
+                var listado = dbContext.DistritoRepository.Where(x => x.IdProvincia == intIdProvincia && x.IdCanton == intIdCanton);
+                foreach (var value in listado)
                 {
-                    var listado = dbContext.DistritoRepository.Where(x => x.IdProvincia == intIdProvincia && x.IdCanton == intIdCanton);
-                    foreach (var value in listado)
-                    {
-                        LlaveDescripcion item = new LlaveDescripcion(value.IdDistrito, value.Descripcion);
-                        listaDistrito.Add(item);
-                    }
-                    return listaDistrito;
+                    LlaveDescripcion item = new LlaveDescripcion(value.IdDistrito, value.Descripcion);
+                    listaDistrito.Add(item);
                 }
-                catch (Exception ex)
-                {
-                    log.Error("Error al obtener el listado de distritos: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de distritos. Por favor consulte con su proveedor.");
-                }
+                return listaDistrito;
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError("Error al obtener el listado de distritos: ", ex);
+                throw new Exception("Se produjo un error consultando el listado de distritos. Por favor consulte con su proveedor.");
             }
         }
 
         public IList<LlaveDescripcion> ObtenerListadoBarrios(int intIdProvincia, int intIdCanton, int intIdDistrito)
         {
-
+            var listaBarrio = new List<LlaveDescripcion>();
+            try
             {
-                var listaBarrio = new List<LlaveDescripcion>();
-                try
+                var listado = dbContext.BarrioRepository.Where(x => x.IdProvincia == intIdProvincia && x.IdCanton == intIdCanton && x.IdDistrito == intIdDistrito);
+                foreach (var value in listado)
                 {
-                    var listado = dbContext.BarrioRepository.Where(x => x.IdProvincia == intIdProvincia && x.IdCanton == intIdCanton && x.IdDistrito == intIdDistrito);
-                    foreach (var value in listado)
-                    {
-                        LlaveDescripcion item = new LlaveDescripcion(value.IdBarrio, value.Descripcion);
-                        listaBarrio.Add(item);
-                    }
-                    return listaBarrio;
+                    LlaveDescripcion item = new LlaveDescripcion(value.IdBarrio, value.Descripcion);
+                    listaBarrio.Add(item);
                 }
-                catch (Exception ex)
-                {
-                    log.Error("Error al obtener el listado de barrios: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de barrios. Por favor consulte con su proveedor.");
-                }
+                return listaBarrio;
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError("Error al obtener el listado de barrios: ", ex);
+                throw new Exception("Se produjo un error consultando el listado de barrios. Por favor consulte con su proveedor.");
             }
         }
 
@@ -2396,226 +2343,196 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el listado de tipos de precio: ", ex);
+                //_logger.LogError("Error al obtener el listado de tipos de precio: ", ex);
                 throw new Exception("Se produjo un error consultando el listado de tipos de precio. Por favor consulte con su proveedor.");
             }
         }
 
         public int ObtenerTotalListaClasificacionProducto(string strDescripcion)
         {
-
+            try
             {
-                try
+                var listado = dbContext.ClasificacionProductoRepository.AsQueryable();
+                if (!strDescripcion.Equals(String.Empty))
                 {
-                    var listado = dbContext.ClasificacionProductoRepository.AsQueryable();
-                    if (!strDescripcion.Equals(String.Empty))
-                    {
-                        listado = listado.Where(x => x.Descripcion.Contains(strDescripcion));
-                    }
-                    return listado.Count();
+                    listado = listado.Where(x => x.Descripcion.Contains(strDescripcion));
                 }
-                catch (Exception ex)
-                {
-                    log.Error("Error al obtener el listado de barrios: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de barrios. Por favor consulte con su proveedor.");
-                }
+                return listado.Count();
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError("Error al obtener el listado de barrios: ", ex);
+                throw new Exception("Se produjo un error consultando el listado de barrios. Por favor consulte con su proveedor.");
             }
         }
 
         public IList<ClasificacionProducto> ObtenerListadoClasificacionProducto(int numPagina, int cantRec, string strDescripcion)
         {
-
+            try
             {
-                try
+                var listado = dbContext.ClasificacionProductoRepository.AsQueryable();
+                if (!strDescripcion.Equals(String.Empty))
                 {
-                    var listado = dbContext.ClasificacionProductoRepository.AsQueryable();
-                    if (!strDescripcion.Equals(String.Empty))
-                    {
-                        listado = listado.Where(x => x.Descripcion.Contains(strDescripcion));
-                    }
-                    return listado.OrderByDescending(x => x.Descripcion).Skip((numPagina - 1) * cantRec).Take(cantRec).ToList();
+                    listado = listado.Where(x => x.Descripcion.Contains(strDescripcion));
                 }
-                catch (Exception ex)
-                {
-                    log.Error("Error al obtener el listado de clasificaciones de producto: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de clasificaciones de producto. Por favor consulte con su proveedor.");
-                }
+                return listado.OrderByDescending(x => x.Descripcion).Skip((numPagina - 1) * cantRec).Take(cantRec).ToList();
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError("Error al obtener el listado de clasificaciones de producto: ", ex);
+                throw new Exception("Se produjo un error consultando el listado de clasificaciones de producto. Por favor consulte con su proveedor.");
             }
         }
 
         public ClasificacionProducto ObtenerClasificacionProducto(string strCodigo)
         {
-
+            try
             {
-                try
-                {
-                    ClasificacionProducto clasificacionProducto = dbContext.ClasificacionProductoRepository.Where(x => x.Id == strCodigo).FirstOrDefault();
-                    return clasificacionProducto;
-                }
-                catch (Exception ex)
-                {
-                    log.Error("Error al obtener la clasificación del producto: ", ex);
-                    throw new Exception("Se produjo un error consultando la clasificación del producto. Por favor consulte con su proveedor.");
-                }
+                ClasificacionProducto clasificacionProducto = dbContext.ClasificacionProductoRepository.Where(x => x.Id == strCodigo).FirstOrDefault();
+                return clasificacionProducto;
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError("Error al obtener la clasificación del producto: ", ex);
+                throw new Exception("Se produjo un error consultando la clasificación del producto. Por favor consulte con su proveedor.");
             }
         }
 
         public void AgregarPuntoDeServicio(PuntoDeServicio puntoDeServicio)
         {
-
+            try
             {
-                try
-                {
-                    dbContext.PuntoDeServicioRepository.Add(puntoDeServicio);
-                    dbContext.Commit();
-                }
-                catch (Exception ex)
-                {
-                    dbContext.RollBack();
-                    log.Error("Error al agregar el punto de servicio: ", ex);
-                    throw new Exception("Se produjo un error agragando la información del punto de servicio. Por favor consulte con su proveedor.");
-                }
+                dbContext.PuntoDeServicioRepository.Add(puntoDeServicio);
+                dbContext.Commit();
+            }
+            catch (Exception ex)
+            {
+                dbContext.RollBack();
+                //_logger.LogError("Error al agregar el punto de servicio: ", ex);
+                throw new Exception("Se produjo un error agragando la información del punto de servicio. Por favor consulte con su proveedor.");
             }
         }
 
         public void ActualizarPuntoDeServicio(PuntoDeServicio puntoDeServicio)
         {
-
+            try
             {
-                try
-                {
-                    dbContext.NotificarModificacion(puntoDeServicio);
-                    dbContext.Commit();
-                }
-                catch (Exception ex)
-                {
-                    dbContext.RollBack();
-                    log.Error("Error al actualizar el punto de servicio: ", ex);
-                    throw new Exception("Se produjo un error actualizando la información del punto de servicio. Por favor consulte con su proveedor.");
-                }
+                dbContext.NotificarModificacion(puntoDeServicio);
+                dbContext.Commit();
+            }
+            catch (Exception ex)
+            {
+                dbContext.RollBack();
+                //_logger.LogError("Error al actualizar el punto de servicio: ", ex);
+                throw new Exception("Se produjo un error actualizando la información del punto de servicio. Por favor consulte con su proveedor.");
             }
         }
 
         public void EliminarPuntoDeServicio(int intIdPunto)
         {
-
+            try
             {
-                try
-                {
-                    PuntoDeServicio puntoDeServicio = dbContext.PuntoDeServicioRepository.Find(intIdPunto);
-                    if (puntoDeServicio == null)
-                        throw new BusinessException("El punto de servicio por eliminar no existe.");
-                    dbContext.PuntoDeServicioRepository.Remove(puntoDeServicio);
-                    dbContext.Commit();
-                }
-                catch (DbUpdateException ex)
-                {
-                    log.Info("Validación al eliminar el punto de servicio: ", ex);
-                    throw new BusinessException("No es posible eliminar el punto de servicio seleccionado. Posee registros relacionados en el sistema.");
-                }
-                catch (BusinessException ex)
-                {
-                    dbContext.RollBack();
-                    throw ex;
-                }
-                catch (Exception ex)
-                {
-                    dbContext.RollBack();
-                    log.Error("Error al eliminar el punto de servicio: ", ex);
-                    throw new Exception("Se produjo un error eliminando al punto de servicio. Por favor consulte con su proveedor.");
-                }
+                PuntoDeServicio puntoDeServicio = dbContext.PuntoDeServicioRepository.Find(intIdPunto);
+                if (puntoDeServicio == null)
+                    throw new BusinessException("El punto de servicio por eliminar no existe.");
+                dbContext.PuntoDeServicioRepository.Remove(puntoDeServicio);
+                dbContext.Commit();
+            }
+            catch (DbUpdateException ex)
+            {
+                //_logger.LogError("Validación al eliminar el punto de servicio: ", ex);
+                throw new BusinessException("No es posible eliminar el punto de servicio seleccionado. Posee registros relacionados en el sistema.");
+            }
+            catch (BusinessException ex)
+            {
+                dbContext.RollBack();
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                dbContext.RollBack();
+                //_logger.LogError("Error al eliminar el punto de servicio: ", ex);
+                throw new Exception("Se produjo un error eliminando al punto de servicio. Por favor consulte con su proveedor.");
             }
         }
 
         public PuntoDeServicio ObtenerPuntoDeServicio(int intIdPunto)
         {
-
+            try
             {
-                try
-                {
-                    PuntoDeServicio puntoDeServicio = dbContext.PuntoDeServicioRepository.Where(x => x.IdPunto == intIdPunto).FirstOrDefault();
-                    return puntoDeServicio;
-                }
-                catch (Exception ex)
-                {
-                    log.Error("Error al obtener la entidad PuntoDeServicio: ", ex);
-                    throw new Exception("Se produjo un error consultando el punto  de servicio. Por favor consulte con su proveedor.");
-                }
+                PuntoDeServicio puntoDeServicio = dbContext.PuntoDeServicioRepository.Where(x => x.IdPunto == intIdPunto).FirstOrDefault();
+                return puntoDeServicio;
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError("Error al obtener la entidad PuntoDeServicio: ", ex);
+                throw new Exception("Se produjo un error consultando el punto  de servicio. Por favor consulte con su proveedor.");
             }
         }
 
         public IList<LlaveDescripcion> ObtenerListadoPuntoDeServicio(int intIdEmpresa, int intIdSucursal, bool bolSoloActivo, string strDescripcion)
         {
-
+            var listaPuntos = new List<LlaveDescripcion>();
+            try
             {
-                var listaPuntos = new List<LlaveDescripcion>();
-                try
+                var listado = dbContext.PuntoDeServicioRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
+                if (bolSoloActivo)
+                    listado = listado.Where(x => x.Activo);
+                if (!strDescripcion.Equals(string.Empty))
+                    listado = listado.Where(x => x.Descripcion.Contains(strDescripcion));
+                foreach (var value in listado)
                 {
-                    var listado = dbContext.PuntoDeServicioRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
-                    if (bolSoloActivo)
-                        listado = listado.Where(x => x.Activo);
-                    if (!strDescripcion.Equals(string.Empty))
-                        listado = listado.Where(x => x.Descripcion.Contains(strDescripcion));
-                    foreach (var value in listado)
-                    {
-                        LlaveDescripcion item = new LlaveDescripcion(value.IdPunto, value.Descripcion);
-                        listaPuntos.Add(item);
-                    }
-                    return listaPuntos;
+                    LlaveDescripcion item = new LlaveDescripcion(value.IdPunto, value.Descripcion);
+                    listaPuntos.Add(item);
                 }
-                catch (Exception ex)
-                {
-                    log.Error("Error al obtener el listado de puntos de servicio: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de puntos de servicio. Por favor consulte con su proveedor.");
-                }
+                return listaPuntos;
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError("Error al obtener el listado de puntos de servicio: ", ex);
+                throw new Exception("Se produjo un error consultando el listado de puntos de servicio. Por favor consulte con su proveedor.");
             }
         }
 
         private string GenerarRegistroAutenticacion(int intRole)
         {
-
+            string strGuid = Guid.NewGuid().ToString();
+            DateTime fechaRegistro = DateTime.UtcNow;
+            RegistroAutenticacion registro = new RegistroAutenticacion
             {
-                string strGuid = Guid.NewGuid().ToString();
-                DateTime fechaRegistro = DateTime.UtcNow;
-                RegistroAutenticacion registro = new RegistroAutenticacion
-                {
-                    Id = strGuid,
-                    Fecha = fechaRegistro,
-                    Role = intRole
-                };
-                try
-                {
-                    dbContext.RegistroAutenticacionRepository.Add(registro);
-                    dbContext.Commit();
-                }
-                catch (Exception ex)
-                {
-                    throw ex;
-                }
-                string strTokenEncriptado = Encriptador.EncriptarDatos(strGuid);
-                return strTokenEncriptado;
+                Id = strGuid,
+                Fecha = fechaRegistro,
+                Role = intRole
+            };
+            try
+            {
+                dbContext.RegistroAutenticacionRepository.Add(registro);
+                dbContext.Commit();
             }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            string strTokenEncriptado = Encriptador.EncriptarDatos(strGuid);
+            return strTokenEncriptado;
         }
 
         public void ValidarRegistroAutenticacion(string strToken, int intRole)
         {
             try
             {
-
+                string strTokenDesencriptado = Encriptador.DesencriptarDatos(strToken);
+                RegistroAutenticacion registro = dbContext.RegistroAutenticacionRepository.Where(x => x.Id == strTokenDesencriptado).FirstOrDefault();
+                if (registro == null) throw new BusinessException("La sessión del usuario no es válida. Debe reiniciar su sesión.");
+                if (registro.Fecha < DateTime.UtcNow.AddHours(-12))
                 {
-                    string strTokenDesencriptado = Encriptador.DesencriptarDatos(strToken);
-                    RegistroAutenticacion registro = dbContext.RegistroAutenticacionRepository.Where(x => x.Id == strTokenDesencriptado).FirstOrDefault();
-                    if (registro == null) throw new BusinessException("La sessión del usuario no es válida. Debe reiniciar su sesión.");
-                    if (registro.Fecha < DateTime.UtcNow.AddHours(-12))
-                    {
-                        dbContext.NotificarEliminacion(registro);
-                        dbContext.Commit();
-                        throw new BusinessException("La sessión del usuario se encuentra expirada. Debe reiniciar su sesión.");
-                    }
-                    if (registro.Role != StaticRolePorUsuario.ADMINISTRADOR)
-                    {
-                        if (registro.Role != intRole) throw new BusinessException("El usuario no se encuentra autorizado para ejecutar la acción solicitada.");
-                    }
+                    dbContext.NotificarEliminacion(registro);
+                    dbContext.Commit();
+                    throw new BusinessException("La sessión del usuario se encuentra expirada. Debe reiniciar su sesión.");
+                }
+                if (registro.Role != StaticRolePorUsuario.ADMINISTRADOR)
+                {
+                    if (registro.Role != intRole) throw new BusinessException("El usuario no se encuentra autorizado para ejecutar la acción solicitada.");
                 }
             }
             catch (BusinessException ex)
@@ -2624,7 +2541,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al validar el registro de autenticación: ", ex);
+                //_logger.LogError("Error al validar el registro de autenticación: ", ex);
                 throw ex;
             }
         }
@@ -2633,16 +2550,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         {
             try
             {
-
-                {
-                    DateTime detFechaMaxima = DateTime.UtcNow.AddHours(-12);
-                    dbContext.RegistroAutenticacionRepository.RemoveRange(dbContext.RegistroAutenticacionRepository.Where(x => x.Fecha < detFechaMaxima));
-                    dbContext.Commit();
-                }
+                DateTime detFechaMaxima = DateTime.UtcNow.AddHours(-12);
+                dbContext.RegistroAutenticacionRepository.RemoveRange(dbContext.RegistroAutenticacionRepository.Where(x => x.Fecha < detFechaMaxima));
+                dbContext.Commit();
             }
             catch (Exception ex)
             {
-                log.Error("Error al validar el registro de autenticación: ", ex);
+                //_logger.LogError("Error al validar el registro de autenticación: ", ex);
             }
         }
 
@@ -2672,7 +2586,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el tipo de cambio de venta: ", ex);
+                //_logger.LogError("Error al obtener el tipo de cambio de venta: ", ex);
                 throw ex;
             }
         }

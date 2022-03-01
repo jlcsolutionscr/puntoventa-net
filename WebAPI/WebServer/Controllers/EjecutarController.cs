@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using LeandroSoftware.Common.Dominio.Entidades;
@@ -11,7 +10,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
     [Route("puntoventa")]
     public class EjecutarController : ControllerBase
     {
-        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private static IHostEnvironment _environment;
         private static IMantenimientoService _servicioMantenimiento;
         private static IFacturacionService _servicioFacturacion;

@@ -1,8 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
-using log4net;
 using LeandroSoftware.ServicioWeb.Servicios;
 using LeandroSoftware.ServicioWeb.EstructuraDatos;
 using LeandroSoftware.ServicioWeb.Contexto;
+using System.Text;
+using Newtonsoft.Json;
 
 namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
 {
@@ -10,7 +11,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
     [Route("recepcion")]
     public class RecepcionController : ControllerBase
     {
-        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private static ILeandroContext dbContext;
         private static IFacturacionService _servicioFacturacion;
         private static string _strLogoPath;
@@ -29,8 +29,11 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         }
 
         [HttpPost("recibirrespuestahacienda")]
-        public void RecibirRespuestaHacienda([FromBody] RespuestaHaciendaDTO mensaje)
+        public void RecibirRespuestaHacienda()
         {
+            var reader = new StreamReader(Request.Body, Encoding.UTF8);
+            string bodyStr = reader.ReadToEndAsync().Result;
+            RespuestaHaciendaDTO mensaje = JsonConvert.DeserializeObject<RespuestaHaciendaDTO>(bodyStr);
             byte[] bytLogo = System.IO.File.ReadAllBytes(_strLogoPath);
             _servicioFacturacion.ProcesarRespuestaHacienda(dbContext, mensaje, _strCorreoNotificacionErrores, bytLogo);
         }

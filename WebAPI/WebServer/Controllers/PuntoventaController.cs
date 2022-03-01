@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using LeandroSoftware.Common.DatosComunes;
@@ -12,12 +11,11 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
     [Route("puntoventa")]
     public class PuntoventaController : ControllerBase
     {
-        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private static IHostEnvironment _environment;
         private static IMantenimientoService _servicioMantenimiento;
         private static IFacturacionService _servicioFacturacion;
         private static ICorreoService _servicioCorreo;
-        private ConfiguracionGeneral configuracionGeneral;
+        private static string _strCorreoNotificacionErrores;
         private static Empresa? empresa;
         private static int intIdEmpresa;
         private static int intIdSucursal;
@@ -27,23 +25,14 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
             IHostEnvironment environment,
             IMantenimientoService servicioMantenimiento,
             IFacturacionService servicioFacturacion,
-            ICorreoService servicioEnvioCorreo
+            ICorreoService servicioCorreo
         )
         {
             _environment = environment;
             _servicioMantenimiento = servicioMantenimiento;
             _servicioFacturacion = servicioFacturacion;
-            _servicioCorreo = servicioEnvioCorreo;
-            configuracionGeneral = new ConfiguracionGeneral
-            (
-                configuration.GetSection("appSettings").GetSection("strConsultaIEURL").Value,
-                configuration.GetSection("appSettings").GetSection("strSoapOperation").Value,
-                configuration.GetSection("appSettings").GetSection("strServicioComprobantesURL").Value,
-                configuration.GetSection("appSettings").GetSection("strClientId").Value,
-                configuration.GetSection("appSettings").GetSection("strServicioTokenURL").Value,
-                configuration.GetSection("appSettings").GetSection("strComprobantesCallbackURL").Value,
-                configuration.GetSection("appSettings").GetSection("strCorreoNotificacionErrores").Value
-            );
+            _servicioCorreo = servicioCorreo;
+            _strCorreoNotificacionErrores = configuration.GetSection("appSettings").GetSection("strCorreoNotificacionErrores").Value;
         }
 
         [HttpGet("validarcredencialesadmin")]
@@ -82,14 +71,15 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                             ["contenido"] = Convert.ToBase64String(bytes)
                         };
                         jarrayObj.Add(jobDatosAdjuntos1);
-                        _servicioCorreo.SendEmail(new string[] { configuracionGeneral.CorreoNotificacionErrores }, new string[] { }, "Archivo log con errores de procesamiento", "Adjunto archivo con errores de procesamiento anteriores a la fecha actual.", false, jarrayObj);
+                        _servicioCorreo.SendEmail(new string[] { _strCorreoNotificacionErrores }, new string[] { }, "Archivo log con errores de procesamiento", "Adjunto archivo con errores de procesamiento anteriores a la fecha actual.", false, jarrayObj);
                     }
                     System.IO.File.Delete(str);
                 }
             }
             catch (Exception ex)
             {
-                log.Error("Error al enviar los archivos historicos de errores del sistema: ", ex);
+                JArray jarrayObj = new JArray();
+                _servicioCorreo.SendEmail(new string[] { _strCorreoNotificacionErrores }, new string[] { }, "Error al enviar el historico de archivo con errores", "Se produjo el siguiente error: " + ex.Message, false, jarrayObj);
             }
         }
 

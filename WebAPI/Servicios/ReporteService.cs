@@ -1,5 +1,4 @@
 ﻿using Microsoft.Reporting.NETCore;
-using log4net;
 using System.Globalization;
 using System.Xml;
 using Newtonsoft.Json.Linq;
@@ -58,7 +57,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
     {
         private static ILeandroContext dbContext;
         private static ICorreoService servicioCorreo;
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private static CultureInfo provider = CultureInfo.InvariantCulture;
         private static string strFormat = "dd/MM/yyyy HH:mm:ss";
         private static Assembly assembly = Assembly.LoadFrom(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\Common.dll");
@@ -72,7 +70,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al inicializar el servicio: ", ex);
+                //_logger.LogError("Error al inicializar el servicio: ", ex);
                 throw new Exception("Se produjo un error al inicializar el servicio de Reportería. Por favor consulte con su proveedor.");
             }
         }
@@ -97,7 +95,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el listado de formas de pago para facturación: ", ex);
+                //_logger.LogError("Error al obtener el listado de formas de pago para facturación: ", ex);
                 throw new Exception("Se produjo un error consultando el listado de formas de pago. Por favor consulte con su proveedor.");
             }
         }
@@ -120,7 +118,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el listado de formas de pago para facturación: ", ex);
+                //_logger.LogError("Error al obtener el listado de formas de pago para facturación: ", ex);
                 throw new Exception("Se produjo un error consultando el listado de formas de pago. Por favor consulte con su proveedor.");
             }
         }
@@ -151,7 +149,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    log.Error("Error al procesar el reporte de proformas: ", ex);
+                    //_logger.LogError("Error al procesar el reporte de proformas: ", ex);
                     throw new Exception("Se produjo un error al ejecutar el reporte de proformas. Por favor consulte con su proveedor.");
                 }
             }
@@ -181,7 +179,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al procesar el reporte de apartados: ", ex);
+                //_logger.LogError("Error al procesar el reporte de apartados: ", ex);
                 throw new Exception("Se produjo un error al ejecutar el reporte de apartados. Por favor consulte con su proveedor.");
             }
         }
@@ -210,7 +208,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al procesar el reporte de proformas: ", ex);
+                //_logger.LogError("Error al procesar el reporte de proformas: ", ex);
                 throw new Exception("Se produjo un error al ejecutar el reporte de proformas. Por favor consulte con su proveedor.");
             }
         }
@@ -305,7 +303,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al procesar el reporte de Ventas por Cliente: ", ex);
+                //_logger.LogError("Error al procesar el reporte de Ventas por Cliente: ", ex);
                 throw new Exception("Se produjo un error al ejecutar el reporte de ventas. Por favor consulte con su proveedor.");
             }
         }
@@ -335,7 +333,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al procesar el reporte de devoluciones de clientes: ", ex);
+                //_logger.LogError("Error al procesar el reporte de devoluciones de clientes: ", ex);
                 throw new Exception("Se produjo un error al ejecutar el reporte de devoluciones de clientes. Por favor consulte con su proveedor.");
             }
         }
@@ -366,7 +364,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al procesar el reporte de Ventas por Vendedor: ", ex);
+                //_logger.LogError("Error al procesar el reporte de Ventas por Vendedor: ", ex);
                 throw new Exception("Se produjo un error al ejecutar el reporte de ventas. Por favor consulte con su proveedor.");
             }
         }
@@ -461,7 +459,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al procesar el reporte de Compras por Proveedor: ", ex);
+                //_logger.LogError("Error al procesar el reporte de Compras por Proveedor: ", ex);
                 throw new Exception("Se produjo un error al ejecutar el reporte de compras. Por favor consulte con su proveedor.");
             }
         }
@@ -499,7 +497,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al procesar el reporte de Cuentas por Cobrar: ", ex);
+                //_logger.LogError("Error al procesar el reporte de Cuentas por Cobrar: ", ex);
                 throw new Exception("Se produjo un error al ejecutar el reporte de cuentas por cobrar. Por favor consulte con su proveedor.");
             }
         }
@@ -537,7 +535,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al procesar el reporte de Cuentas por Pagar: ", ex);
+                //_logger.LogError("Error al procesar el reporte de Cuentas por Pagar: ", ex);
                 throw new Exception("Se produjo un error al ejecutar el reporte de cuentas por pagar. Por favor consulte con su proveedor.");
             }
         }
@@ -569,7 +567,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al procesar el reporte de Movimientos de Cuentas por Cobrar: ", ex);
+                //_logger.LogError("Error al procesar el reporte de Movimientos de Cuentas por Cobrar: ", ex);
                 throw new Exception("Se produjo un error al ejecutar el reporte de movimientos de cuentas por cobrar. Por favor consulte con su proveedor.");
             }
         }
@@ -601,7 +599,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al procesar el reporte de Movimientos de Cuentas por Pagar: ", ex);
+                //_logger.LogError("Error al procesar el reporte de Movimientos de Cuentas por Pagar: ", ex);
                 throw new Exception("Se produjo un error al ejecutar el reporte de movimientos de cuentas por pagar. Por favor consulte con su proveedor.");
             }
         }
@@ -648,7 +646,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al procesar el reporte de Movimientos Bancarios: ", ex);
+                //_logger.LogError("Error al procesar el reporte de Movimientos Bancarios: ", ex);
                 throw new Exception("Se produjo un error al ejecutar el reporte de movimientos bancarios. Por favor consulte con su proveedor.");
             }
         }
@@ -736,7 +734,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al procesar el reporte de Estado de Resultados: ", ex);
+                //_logger.LogError("Error al procesar el reporte de Estado de Resultados: ", ex);
                 throw new Exception("Se produjo un error al ejecutar el reporte de estado de resultados. Por favor consulte con su proveedor.");
             }
         }
@@ -767,7 +765,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al procesar el reporte de Detalle de Egresos: ", ex);
+                //_logger.LogError("Error al procesar el reporte de Detalle de Egresos: ", ex);
                 throw new Exception("Se produjo un error al ejecutar el reporte de detalle de egresos. Por favor consulte con su proveedor.");
             }
         }
@@ -798,7 +796,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al procesar el reporte de Detalle de ingresos: ", ex);
+                //_logger.LogError("Error al procesar el reporte de Detalle de ingresos: ", ex);
                 throw new Exception("Se produjo un error al ejecutar el reporte de detalle de ingresos. Por favor consulte con su proveedor.");
             }
         }
@@ -827,7 +825,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al procesar el reporte de Resumen de Ventas por Línea: ", ex);
+                //_logger.LogError("Error al procesar el reporte de Resumen de Ventas por Línea: ", ex);
                 throw new Exception("Se produjo un error al ejecutar el reporte de ventas por línea resumido. Por favor consulte con su proveedor.");
             }
         }
@@ -861,7 +859,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al procesar el reporte de Detalle de Ventas por Línea: ", ex);
+                //_logger.LogError("Error al procesar el reporte de Detalle de Ventas por Línea: ", ex);
                 throw new Exception("Se produjo un error al ejecutar el reporte de ventas por línea detallado. Por favor consulte con su proveedor.");
             }
         }
@@ -907,7 +905,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al procesar el reporte de cierre de Caja: ", ex);
+                //_logger.LogError("Error al procesar el reporte de cierre de Caja: ", ex);
                 throw new Exception("Se produjo un error al ejecutar el reporte de cierre de caja. Por favor consulte con su proveedor.");
             }
         }
@@ -952,7 +950,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al procesar el reporte de Inventario: ", ex);
+                //_logger.LogError("Error al procesar el reporte de Inventario: ", ex);
                 throw new Exception("Se produjo un error al ejecutar el reporte de Inventario. Por favor consulte con su proveedor.");
             }
         }
@@ -984,7 +982,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al procesar el reporte de movimientos contables: ", ex);
+                //_logger.LogError("Error al procesar el reporte de movimientos contables: ", ex);
                 throw new Exception("Se produjo un error al ejecutar el reporte de movimientos contables. Por favor consulte con su proveedor.");
             }
         }
@@ -1024,7 +1022,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al procesar el reporte de balance de comprobación: ", ex);
+                //_logger.LogError("Error al procesar el reporte de balance de comprobación: ", ex);
                 throw new Exception("Se produjo un error al ejecutar el reporte de balance de comprobación. Por favor consulte con su proveedor.");
             }
         }
@@ -1064,7 +1062,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al procesar el reporte de balance de comprobación: ", ex);
+                //_logger.LogError("Error al procesar el reporte de balance de comprobación: ", ex);
                 throw new Exception("Se produjo un error al ejecutar el reporte de balance de comprobación. Por favor consulte con su proveedor.");
             }
         }
@@ -1107,7 +1105,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al procesar el reporte de detalle del balance de comprobación: ", ex);
+                //_logger.LogError("Error al procesar el reporte de detalle del balance de comprobación: ", ex);
                 throw new Exception("Se produjo un error al ejecutar el reporte de detalle del balance de comprobación. Por favor consulte con su proveedor.");
             }
         }
@@ -1133,7 +1131,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al procesar el reporte de Egreso: ", ex);
+                //_logger.LogError("Error al procesar el reporte de Egreso: ", ex);
                 throw new Exception("Se produjo un error al ejecutar el reporte de Egreso. Por favor consulte con su proveedor.");
             }
         }
@@ -1159,7 +1157,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al procesar el reporte de Ingreso: ", ex);
+                //_logger.LogError("Error al procesar el reporte de Ingreso: ", ex);
                 throw new Exception("Se produjo un error al ejecutar el reporte de Ingreso. Por favor consulte con su proveedor.");
             }
         }
@@ -1207,7 +1205,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al procesar el reporte de documentos emitidos: ", ex);
+                //_logger.LogError("Error al procesar el reporte de documentos emitidos: ", ex);
                 throw new Exception("Se produjo un error al ejecutar el reporte de documentos electrónicos emitidos. Por favor consulte con su proveedor.");
             }
         }
@@ -1294,7 +1292,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al procesar el reporte de documentos recibidos: ", ex);
+                //_logger.LogError("Error al procesar el reporte de documentos recibidos: ", ex);
                 throw new Exception("Se produjo un error al ejecutar el reporte de documentos electrónicos recibidos. Por favor consulte con su proveedor.");
             }
         }
@@ -1724,7 +1722,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al procesar el reporte de Resumen de Documentos Electrónicos: ", ex);
+                //_logger.LogError("Error al procesar el reporte de Resumen de Documentos Electrónicos: ", ex);
                 throw new Exception("Se produjo un error al ejecutar el reporte resumen de documentos electrónicos. Por favor consulte con su proveedor.");
             }
         }
@@ -1759,7 +1757,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al procesar el reporte de ventas generales: ", ex);
+                //_logger.LogError("Error al procesar el reporte de ventas generales: ", ex);
                 throw new Exception("Se produjo un error al ejecutar el reporte de ventas generales. Por favor consulte con su proveedor.");
             }
         }
@@ -1794,7 +1792,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al procesar el reporte de ventas anuladas: ", ex);
+                //_logger.LogError("Error al procesar el reporte de ventas anuladas: ", ex);
                 throw new Exception("Se produjo un error al ejecutar el reporte de ventas anuladas. Por favor consulte con su proveedor.");
             }
         }
@@ -1828,7 +1826,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al procesar el reporte de resumen de movimientos: ", ex);
+                //_logger.LogError("Error al procesar el reporte de resumen de movimientos: ", ex);
                 throw new Exception("Se produjo un error al ejecutar el reporte de resumen de movimientos. Por favor consulte con su proveedor.");
             }
         }
@@ -1862,7 +1860,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al procesar el reporte de detalle de ingresos: ", ex);
+                //_logger.LogError("Error al procesar el reporte de detalle de ingresos: ", ex);
                 throw new Exception("Se produjo un error al ejecutar el reporte de detalle de ingresos. Por favor consulte con su proveedor.");
             }
         }
@@ -1896,7 +1894,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al procesar el reporte de detalle de egresos: ", ex);
+                //_logger.LogError("Error al procesar el reporte de detalle de egresos: ", ex);
                 throw new Exception("Se produjo un error al ejecutar el reporte de detalle de egresos. Por favor consulte con su proveedor.");
             }
         }
@@ -1931,7 +1929,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al enviar el reporte de listado facturas electrónicas emitidas: ", ex);
+                //_logger.LogError("Error al enviar el reporte de listado facturas electrónicas emitidas: ", ex);
                 throw new Exception("Se produjo un error al enviar el reporte de listado facturas electrónicas emitidas. Por favor consulte con su proveedor.");
             }
         }
@@ -1966,7 +1964,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al enviar el reporte de listado facturas electrónicas recibidas: ", ex);
+                //_logger.LogError("Error al enviar el reporte de listado facturas electrónicas recibidas: ", ex);
                 throw new Exception("Se produjo un error al enviar el reporte de listado facturas electrónicas recibidas. Por favor consulte con su proveedor.");
             }
         }
@@ -2000,7 +1998,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al enviar el reporte de resumen de documentos electrónicos: ", ex);
+                //_logger.LogError("Error al enviar el reporte de resumen de documentos electrónicos: ", ex);
                 throw new Exception("Se produjo un error al enviar el reporte de resumen de documentos electrónicos. Por favor consulte con su proveedor.");
             }
         }
@@ -2017,7 +2015,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al generar el reporte: ", ex);
+                //_logger.LogError("Error al generar el reporte: ", ex);
                 throw new Exception("Se produjo un error al ejecutar el reporte resumen de documentos electrónicos. Por favor consulte con su proveedor.");
             }
         }

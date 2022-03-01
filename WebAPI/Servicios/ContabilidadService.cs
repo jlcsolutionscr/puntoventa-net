@@ -2,7 +2,6 @@
 using LeandroSoftware.Common.Constantes;
 using LeandroSoftware.Common.Dominio.Entidades;
 using LeandroSoftware.ServicioWeb.Contexto;
-using log4net;
 using Microsoft.EntityFrameworkCore;
 
 namespace LeandroSoftware.ServicioWeb.Servicios
@@ -52,7 +51,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
     public class ContabilidadService: IContabilidadService
     {
         private static ILeandroContext dbContext;
-        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public ContabilidadService(ILeandroContext pContext)
         {
@@ -62,7 +60,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al inicializar el servicio: ", ex);
+                //_logger.LogError("Error al inicializar el servicio: ", ex);
                 throw new Exception("Se produjo un error al inicializar el servicio de Contabilidad. Por favor consulte con su proveedor.");
             }
         }
@@ -84,7 +82,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 dbContext.RollBack();
-                log.Error("Error al agregar la cuenta contable: ", ex);
+                //_logger.LogError("Error al agregar la cuenta contable: ", ex);
                 throw new Exception("Se produjo un error agregando la cuenta contable. Por favor consulte con su proveedor.");
             }
         }
@@ -106,7 +104,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 dbContext.RollBack();
-                log.Error("Error al actualizar la cuenta contable: ", ex);
+                //_logger.LogError("Error al actualizar la cuenta contable: ", ex);
                 throw new Exception("Se produjo un error actualizando la cuenta contable. Por favor consulte con su proveedor.");
             }
         }
@@ -124,7 +122,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (DbUpdateException uex)
             {
-                log.Info("Validación al eliminar la cuenta contable: ", uex);
+                //_logger.LogError("Validación al eliminar la cuenta contable: ", uex);
                 throw new BusinessException("No es posible eliminar la cuenta contable seleccionada. Posee registros relacionados en el sistema.");
             }
             catch (BusinessException ex)
@@ -135,7 +133,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 dbContext.RollBack();
-                log.Error("Error al eliminar la cuenta contable: ", ex);
+                //_logger.LogError("Error al eliminar la cuenta contable: ", ex);
                 throw new Exception("Se produjo un error eliminando la cuenta contable. Por favor consulte con su proveedor.");
             }
         }
@@ -148,7 +146,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener la cuenta contable: ", ex);
+                //_logger.LogError("Error al obtener la cuenta contable: ", ex);
                 throw new Exception("Se produjo un error consultando la cuenta contable. Por favor consulte con su proveedor.");
             }
         }
@@ -164,7 +162,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el listado de cuentas contables: ", ex);
+                //_logger.LogError("Error al obtener el listado de cuentas contables: ", ex);
                 throw new Exception("Se produjo un error cosultando el listado de cuentas contables. Por favor consulte con su proveedor.");
             }
         }
@@ -178,7 +176,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al evaluar si la cuenta indicada es cuenta madre: ", ex);
+                //_logger.LogError("Error al evaluar si la cuenta indicada es cuenta madre: ", ex);
                 throw new Exception("Se produjo un error verificando la cuenta contable. Por favor consulte con su proveedor.");
             }
         }
@@ -205,7 +203,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 dbContext.RollBack();
-                log.Error("Error al agregar el parámetro contable: ", ex);
+                //_logger.LogError("Error al agregar el parámetro contable: ", ex);
                 throw new Exception("Se produjo un error agregando el parámetro contable. Por favor consulte con su proveedor.");
             }
             return parametro;
@@ -221,7 +219,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 dbContext.RollBack();
-                log.Error("Error al actualizar el parámetro contable: ", ex);
+                //_logger.LogError("Error al actualizar el parámetro contable: ", ex);
                 throw new Exception("Se produjo un error actualizando el parámetro contable. Por favor consulte con su proveedor.");
             }
         }
@@ -239,7 +237,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 dbContext.RollBack();
-                log.Error("Error al eliminar el parámetro contable: ", ex);
+                //_logger.LogError("Error al eliminar el parámetro contable: ", ex);
                 throw new Exception("Se produjo un error eliminando el parámetro contable. Por favor consulte con su proveedor.");
             }
         }
@@ -253,7 +251,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el parámetro contable: ", ex);
+                //_logger.LogError("Error al obtener el parámetro contable: ", ex);
                 throw new Exception("Se produjo un error consultando el parámetro contable. Por favor consulte con su proveedor.");
             }
         }
@@ -267,7 +265,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el parámetro contable: ", ex);
+                //_logger.LogError("Error al obtener el parámetro contable: ", ex);
                 throw new Exception("Se produjo un error consultando el parámetro contable. Por favor consulte con su proveedor.");
             }
         }
@@ -283,7 +281,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el listado de parámetros contables: ", ex);
+                //_logger.LogError("Error al obtener el listado de parámetros contables: ", ex);
                 throw new Exception("Se produjo un error consultando el listado de parámetros contables. Por favor consulte con su proveedor.");
             }
         }
@@ -296,7 +294,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el tipo de cuenta contable: ", ex);
+                //_logger.LogError("Error al obtener el tipo de cuenta contable: ", ex);
                 throw new Exception("Se produjo un error consultando el listado de tipos de cuenta contable. Por favor consulte con su proveedor.");
             }
         }
@@ -309,7 +307,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el tipo de parámetro contable: ", ex);
+                //_logger.LogError("Error al obtener el tipo de parámetro contable: ", ex);
                 throw new Exception("Se produjo un error consultando el listado de tipos de parámetro contable. Por favor consulte con su proveedor.");
             }
         }
@@ -322,7 +320,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el listado de clases de cuentas contables: ", ex);
+                //_logger.LogError("Error al obtener el listado de clases de cuentas contables: ", ex);
                 throw new Exception("Se produjo un error consultando el listado de tipos de clases de cuentas contables. Por favor consulte con su proveedor.");
             }
         }
@@ -335,7 +333,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el listado de cuentas contables de primer orden: ", ex);
+                //_logger.LogError("Error al obtener el listado de cuentas contables de primer orden: ", ex);
                 throw new Exception("Se produjo un error consultando el listado de cuentas contables de primer orden. Por favor consulte con su proveedor.");
             }
         }
@@ -348,7 +346,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el listado de cuentas contables para movimientos: ", ex);
+                //_logger.LogError("Error al obtener el listado de cuentas contables para movimientos: ", ex);
                 throw new Exception("Se produjo un error consultando el listado de cuentas contables para movimientos. Por favor consulte con su proveedor.");
             }
         }
@@ -361,7 +359,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el listado de cuentas contables para líneas de producto: ", ex);
+                //_logger.LogError("Error al obtener el listado de cuentas contables para líneas de producto: ", ex);
                 throw new Exception("Se produjo un error consultando el listado de cuentas contables para líneas de producto. Por favor consulte con su proveedor.");
             }
         }
@@ -374,7 +372,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el listado de cuentas contables para líneas de servicio: ", ex);
+                //_logger.LogError("Error al obtener el listado de cuentas contables para líneas de servicio: ", ex);
                 throw new Exception("Se produjo un error consultando el listado de cuentas contables para líneas de servicio. Por favor consulte con su proveedor.");
             }
         }
@@ -387,7 +385,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el listado de cuentas contables para cuentas bancarias: ", ex);
+                //_logger.LogError("Error al obtener el listado de cuentas contables para cuentas bancarias: ", ex);
                 throw new Exception("Se produjo un error consultando el listado de cuentas contables para cuentas bancarías. Por favor consulte con su proveedor.");
             }
         }
@@ -400,7 +398,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el listado de cuentas contables para cuentas de egreso: ", ex);
+                //_logger.LogError("Error al obtener el listado de cuentas contables para cuentas de egreso: ", ex);
                 throw new Exception("Se produjo un error consultando el listado de cuentas contables para egresos. Por favor consulte con su proveedor.");
             }
         }
@@ -413,7 +411,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el listado de cuentas contables para cuentas de egreso: ", ex);
+                //_logger.LogError("Error al obtener el listado de cuentas contables para cuentas de egreso: ", ex);
                 throw new Exception("Se produjo un error consultando el listado de cuentas contables para egresos. Por favor consulte con su proveedor.");
             }
         }
@@ -426,7 +424,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el listado de cuentas contables para cuentas de PyG: ", ex);
+                //_logger.LogError("Error al obtener el listado de cuentas contables para cuentas de PyG: ", ex);
                 throw new Exception("Se produjo un error consultando el listado de cuentas contables de perdias y ganancias. Por favor consulte con su proveedor.");
             }
         }
@@ -459,7 +457,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 dbContext.RollBack();
-                log.Error("Error al agregar el asiento contable: ", ex);
+                //_logger.LogError("Error al agregar el asiento contable: ", ex);
                 throw new Exception("Se produjo un error agregando la información del asiento contable. Por favor consulte con su proveedor.");
             }
             return asiento;
@@ -495,7 +493,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 dbContext.RollBack();
-                log.Error("Error al reversar asiento contable: ", ex);
+                //_logger.LogError("Error al reversar asiento contable: ", ex);
                 throw new Exception("Se produjo un error reversando el asiento contable. Por favor consulte con su proveedor.");
             }
         }
@@ -517,7 +515,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 dbContext.RollBack();
-                log.Error("Error al actualizar el asiento contable: ", ex);
+                //_logger.LogError("Error al actualizar el asiento contable: ", ex);
                 throw new Exception("Se produjo un error actualizando la información del asiento contable. Por favor consulte con su proveedor.");
             }
         }
@@ -553,7 +551,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 dbContext.RollBack();
-                log.Error("Error al anular el asiento contable: ", ex);
+                //_logger.LogError("Error al anular el asiento contable: ", ex);
                 throw new Exception("Se produjo un error anulando el asiento contable. Por favor consulte con su proveedor.");
             }
         }
@@ -566,7 +564,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el asiento contable: ", ex);
+                //_logger.LogError("Error al obtener el asiento contable: ", ex);
                 throw new Exception("Se produjo un error consultando la información del asiento contable. Por favor consulte con su proveedor.");
             }
         }
@@ -584,7 +582,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el total del listado de asientos contables: ", ex);
+                //_logger.LogError("Error al obtener el total del listado de asientos contables: ", ex);
                 throw new Exception("Se produjo un error consultando el total del listado de asientos contables. Por favor consulte con su proveedor.");
             }
         }
@@ -602,7 +600,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el listado de asientos contables: ", ex);
+                //_logger.LogError("Error al obtener el listado de asientos contables: ", ex);
                 throw new Exception("Se produjo un error consultando el listado de asientos contables. Por favor consulte con su proveedor.");
             }
         }
@@ -756,7 +754,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 //    empresa.CierreEnEjecucion = false;
                 //    dbContext.Commit();
                 //}
-                log.Error("Error al ejecutar el cierre mensual contable: ", ex);
+                //_logger.LogError("Error al ejecutar el cierre mensual contable: ", ex);
                 throw new Exception("Se produjo un error ejecutando el cierre mensual contable. Por favor consulte con su proveedor.");
             }
         }
@@ -1052,7 +1050,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     catch (Exception ex)
                     {
                         dbContext.RollBack();
-                        log.Error("Error al agregar el registro de facturación: ", ex);
+                        //_logger.LogError("Error al agregar el registro de facturación: ", ex);
                         throw new Exception("Se produjo un error guardando la información de la factura. Por favor consulte con su proveedor.");
                     }
                 }
@@ -1060,7 +1058,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al general los asientos contables de las facturas: ", ex);
+                //_logger.LogError("Error al general los asientos contables de las facturas: ", ex);
                 throw new Exception("Se produjo un error generando los asientos contables. Por favor consulte con su proveedor.");
             }
         }
@@ -1246,14 +1244,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     catch (Exception ex)
                     {
                         dbContext.RollBack();
-                        log.Error("Error al agregar el registro de compra: ", ex);
+                        //_logger.LogError("Error al agregar el registro de compra: ", ex);
                         throw new Exception("Se produjo un error agregando la información de la compra. Por favor consulte con su proveedor.");
                     }
                 }
             }
             catch (Exception ex)
             {
-                log.Error("Error al general los asientos contables de las compras: ", ex);
+                //_logger.LogError("Error al general los asientos contables de las compras: ", ex);
                 throw new Exception("Se produjo un error generando los asientos contables. Por favor consulte con su proveedor.");
             }
         }
@@ -1326,14 +1324,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     catch (Exception ex)
                     {
                         dbContext.RollBack();
-                        log.Error("Error al agregar el registro de egreso: ", ex);
+                        //_logger.LogError("Error al agregar el registro de egreso: ", ex);
                         throw new Exception("Se produjo un error agregando la información del egreso. Por favor consulte con su proveedor.");
                     }
                 }
             }
             catch (Exception ex)
             {
-                log.Error("Error al general los asientos contables de los egresos: ", ex);
+                //_logger.LogError("Error al general los asientos contables de los egresos: ", ex);
                 throw new Exception("Se produjo un error generando los asientos contables. Por favor consulte con su proveedor.");
             }
         }
@@ -1405,14 +1403,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     catch (Exception ex)
                     {
                         dbContext.RollBack();
-                        log.Error("Error al agregar el registro de ingreso: ", ex);
+                        //_logger.LogError("Error al agregar el registro de ingreso: ", ex);
                         throw new Exception("Se produjo un error agregando la información del ingreso. Por favor consulte con su proveedor.");
                     }
                 }
             }
             catch (Exception ex)
             {
-                log.Error("Error al general los asientos contables de los ingresos: ", ex);
+                //_logger.LogError("Error al general los asientos contables de los ingresos: ", ex);
                 throw new Exception("Se produjo un error generando los asientos contables. Por favor consulte con su proveedor.");
             }
         }
@@ -1535,14 +1533,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     catch (Exception ex)
                     {
                         dbContext.RollBack();
-                        log.Error("Error al aplicar el movimiento de una cuenta por cobrar: ", ex);
+                        //_logger.LogError("Error al aplicar el movimiento de una cuenta por cobrar: ", ex);
                         throw new Exception("Se produjo un error aplicando el movimiento de la cuenta por cobrar. Por favor consulte con su proveedor.");
                     }
                 }
             }
             catch (Exception ex)
             {
-                log.Error("Error al general los asientos contables de los ingresos: ", ex);
+                //_logger.LogError("Error al general los asientos contables de los ingresos: ", ex);
                 throw new Exception("Se produjo un error generando los asientos contables. Por favor consulte con su proveedor.");
             }
         }
@@ -1629,14 +1627,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     catch (Exception ex)
                     {
                         dbContext.RollBack();
-                        log.Error("Error al aplicar el movimiento de una cuenta por pagar: ", ex);
+                        //_logger.LogError("Error al aplicar el movimiento de una cuenta por pagar: ", ex);
                         throw new Exception("Se produjo un error aplicando el movimiento de la cuenta por pagar. Por favor consulte con su proveedor.");
                     }
                 }
             }
             catch (Exception ex)
             {
-                log.Error("Error al general los asientos contables de los ingresos: ", ex);
+                //_logger.LogError("Error al general los asientos contables de los ingresos: ", ex);
                 throw new Exception("Se produjo un error generando los asientos contables. Por favor consulte con su proveedor.");
             }
         }
@@ -1660,7 +1658,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al realizar el ajuste de saldos contables: ", ex);
+                //_logger.LogError("Error al realizar el ajuste de saldos contables: ", ex);
                 throw new Exception("Se produjo un error ejecutando el ajuste de saldos contables. Por favor consulte con su proveedor.");
             }
         }

@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using log4net;
 using System.Globalization;
 using LeandroSoftware.Common.Constantes;
 using LeandroSoftware.Common.DatosComunes;
@@ -41,7 +40,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
     public class FlujoCajaService : IFlujoCajaService
     {
         private static ILeandroContext dbContext;
-        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public FlujoCajaService(ILeandroContext pContext)
         {
@@ -51,7 +49,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al inicializar el servicio: ", ex);
+                //_logger.LogError("Error al inicializar el servicio: ", ex);
                 throw new Exception("Se produjo un error al inicializar el servicio de Egresos. Por favor consulte con su proveedor.");
             }
         }
@@ -73,7 +71,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 dbContext.RollBack();
-                log.Error("Error al agregar la cuenta de ingreso: ", ex);
+                //_logger.LogError("Error al agregar la cuenta de ingreso: ", ex);
                 throw new Exception("Se produjo un error agregando la cuenta de ingreso. Por favor consulte con su proveedor.");
             }
         }
@@ -95,7 +93,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 dbContext.RollBack();
-                log.Error("Error al actualizar la cuenta de ingreso: ", ex);
+                //_logger.LogError("Error al actualizar la cuenta de ingreso: ", ex);
                 throw new Exception("Se produjo un error actualizando la cuenta de ingreso. Por favor consulte con su proveedor.");
             }
         }
@@ -113,7 +111,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (DbUpdateException ex)
             {
-                log.Info("Validación al eliminar la cuenta de ingreso: ", ex);
+                //_logger.LogError("Validación al eliminar la cuenta de ingreso: ", ex);
                 throw new BusinessException("No es posible eliminar la cuenta de ingreso seleccionada. Posee registros relacionados en el sistema.");
             }
             catch (BusinessException ex)
@@ -124,7 +122,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 dbContext.RollBack();
-                log.Error("Error al eliminar la cuenta de ingreso: ", ex);
+                //_logger.LogError("Error al eliminar la cuenta de ingreso: ", ex);
                 throw new Exception("Se produjo un error eliminando la cuenta de ingreso. Por favor consulte con su proveedor.");
             }
         }
@@ -137,7 +135,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener la cuenta de ingreso: ", ex);
+                //_logger.LogError("Error al obtener la cuenta de ingreso: ", ex);
                 throw new Exception("Se produjo un error consultando la cuenta de ingreso. Por favor consulte con su proveedor.");
             }
         }
@@ -160,7 +158,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el listado de cuentas de ingresos: ", ex);
+                //_logger.LogError("Error al obtener el listado de cuentas de ingresos: ", ex);
                 throw new Exception("Se produjo un error consultando el listado de cuentas de ingresos. Por favor consulte con su proveedor.");
             }
         }
@@ -247,7 +245,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 dbContext.RollBack();
-                log.Error("Error al agregar el registro de ingreso: ", ex);
+                //_logger.LogError("Error al agregar el registro de ingreso: ", ex);
                 throw new Exception("Se produjo un error agregando la información del ingreso. Por favor consulte con su proveedor.");
             }
             return ingreso.IdIngreso.ToString();
@@ -284,7 +282,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 dbContext.RollBack();
-                log.Error("Error al anular el registro de ingreso: ", ex);
+                //_logger.LogError("Error al anular el registro de ingreso: ", ex);
                 throw new Exception("Se produjo un error anulando el ingreso. Por favor consulte con su proveedor.");
             }
         }
@@ -298,7 +296,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el registro de ingreso: ", ex);
+                //_logger.LogError("Error al obtener el registro de ingreso: ", ex);
                 throw new Exception("Se produjo un error consultando la información del ingreso. Por favor consulte con su proveedor.");
             }
         }
@@ -321,7 +319,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el total del listado de registros de ingreso: ", ex);
+                //_logger.LogError("Error al obtener el total del listado de registros de ingreso: ", ex);
                 throw new Exception("Se produjo un error consultando el total del listado de ingresos. Por favor consulte con su proveedor.");
             }
         }
@@ -351,7 +349,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el listado de registros de egreso: ", ex);
+                //_logger.LogError("Error al obtener el listado de registros de egreso: ", ex);
                 throw new Exception("Se produjo un error consultando el listado de egresos. Por favor consulte con su proveedor.");
             }
         }
@@ -373,7 +371,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 dbContext.RollBack();
-                log.Error("Error al agregar la cuenta de egreso: ", ex);
+                //_logger.LogError("Error al agregar la cuenta de egreso: ", ex);
                 throw new Exception("Se produjo un error agregando la cuenta de egreso. Por favor consulte con su proveedor.");
             }
         }
@@ -395,7 +393,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 dbContext.RollBack();
-                log.Error("Error al actualizar la cuenta de egreso: ", ex);
+                //_logger.LogError("Error al actualizar la cuenta de egreso: ", ex);
                 throw new Exception("Se produjo un error actualizando la cuenta de egreso. Por favor consulte con su proveedor.");
             }
         }
@@ -413,7 +411,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (DbUpdateException ex)
             {
-                log.Info("Validación al eliminar la cuenta de egreso: ", ex);
+                //_logger.LogError("Validación al eliminar la cuenta de egreso: ", ex);
                 throw new BusinessException("No es posible eliminar la cuenta de egreso seleccionada. Posee registros relacionados en el sistema.");
             }
             catch (BusinessException ex)
@@ -424,7 +422,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 dbContext.RollBack();
-                log.Error("Error al eliminar la cuenta de egreso: ", ex);
+                //_logger.LogError("Error al eliminar la cuenta de egreso: ", ex);
                 throw new Exception("Se produjo un error eliminando la cuenta de egreso. Por favor consulte con su proveedor.");
             }
         }
@@ -437,7 +435,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener la cuenta de egreso: ", ex);
+                //_logger.LogError("Error al obtener la cuenta de egreso: ", ex);
                 throw new Exception("Se produjo un error consultando la cuenta de egreso. Por favor consulte con su proveedor.");
             }
         }
@@ -460,7 +458,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el listado de cuentas de egresos: ", ex);
+                //_logger.LogError("Error al obtener el listado de cuentas de egresos: ", ex);
                 throw new Exception("Se produjo un error consultando el listado de cuentas de egresos. Por favor consulte con su proveedor.");
             }
         }
@@ -541,7 +539,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 dbContext.RollBack();
-                log.Error("Error al agregar el registro de egreso: ", ex);
+                //_logger.LogError("Error al agregar el registro de egreso: ", ex);
                 throw new Exception("Se produjo un error agregando la información del egreso. Por favor consulte con su proveedor.");
             }
         }
@@ -577,7 +575,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 dbContext.RollBack();
-                log.Error("Error al anular el registro de egreso: ", ex);
+                //_logger.LogError("Error al anular el registro de egreso: ", ex);
                 throw new Exception("Se produjo un error anulando el egreso. Por favor consulte con su proveedor.");
             }
         }
@@ -591,7 +589,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el registro de egreso: ", ex);
+                //_logger.LogError("Error al obtener el registro de egreso: ", ex);
                 throw new Exception("Se produjo un error consultando la información del egreso. Por favor consulte con su proveedor.");
             }
         }
@@ -614,7 +612,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el total del listado de registros de egreso: ", ex);
+                //_logger.LogError("Error al obtener el total del listado de registros de egreso: ", ex);
                 throw new Exception("Se produjo un error consultando el total del listado de egresos. Por favor consulte con su proveedor.");
             }
         }
@@ -644,7 +642,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el listado de registros de egreso: ", ex);
+                //_logger.LogError("Error al obtener el listado de registros de egreso: ", ex);
                 throw new Exception("Se produjo un error consultando el listado de egresos. Por favor consulte con su proveedor.");
             }
         }
@@ -1142,7 +1140,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 sucursal.CierreEnEjecucion = false;
                 dbContext.Commit();
-                log.Error("Error al general el cierre diario: ", ex);
+                //_logger.LogError("Error al general el cierre diario: ", ex);
                 throw new Exception("Se produjo un error generando la información del cierre diario. Por favor consulte con su proveedor.");
             }
         }
@@ -1173,7 +1171,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContextTransaction.Rollback();
-                    log.Error("Error al actualizar el cierre diario: ", ex);
+                    //_logger.LogError("Error al actualizar el cierre diario: ", ex);
                     throw new Exception("Se produjo un error actualizando la información del cierre diario. Por favor consulte con su proveedor.");
                 }
             }
@@ -1190,7 +1188,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al finalizar el cierre diario: ", ex);
+                //_logger.LogError("Error al finalizar el cierre diario: ", ex);
                 throw new Exception("Se produjo un error finalizando el proceso de cierre diario. Por favor consulte con su proveedor.");
             }
         }
@@ -1203,7 +1201,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el total del listado de registros de cierres de efectivo: ", ex);
+                //_logger.LogError("Error al obtener el total del listado de registros de cierres de efectivo: ", ex);
                 throw new Exception("Se produjo un error consultando el total del listado de cierres de efectivo. Por favor consulte con su proveedor.");
             }
         }
@@ -1224,7 +1222,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el listado de cierres de efectivo procesados: ", ex);
+                //_logger.LogError("Error al obtener el listado de cierres de efectivo procesados: ", ex);
                 throw new Exception("Se produjo un error consultando el listado de cierres de efectivo procesados. Por favor consulte con su proveedor.");
             }
         }
@@ -1238,7 +1236,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                log.Error("Error al obtener el registro de cierre de caja: ", ex);
+                //_logger.LogError("Error al obtener el registro de cierre de caja: ", ex);
                 throw new Exception("Se produjo un error consultando la información del cierre de caja. Por favor consulte con su proveedor.");
             }
         }

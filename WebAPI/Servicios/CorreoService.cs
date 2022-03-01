@@ -5,7 +5,7 @@ using System.Net;
 using Newtonsoft.Json.Linq;
 using Microsoft.Extensions.Configuration;
 
-namespace LeandroSoftware.ServicioWeb
+namespace LeandroSoftware.ServicioWeb.Servicios
 {
     public interface ICorreoService
     {
@@ -19,6 +19,7 @@ namespace LeandroSoftware.ServicioWeb
         private static IConfiguration config;
         private string smtpHost;
         private int smtpPort;
+        private int pop3Port;
         private string mailUserAddress;
         private string mailUserPassword;
         private string sslHost;
@@ -30,13 +31,14 @@ namespace LeandroSoftware.ServicioWeb
             mailUserAddress = config.GetSection("appSettings").GetSection("smtpEmailAccount").Value;
             mailUserPassword = config.GetSection("appSettings").GetSection("smtpEmailPass").Value;
             sslHost = config.GetSection("appSettings").GetSection("smtpSSLHost").Value;
+            pop3Port = int.Parse(config.GetSection("appSettings").GetSection("pop3EmailPort").Value);
         }
 
         public IList<POPEmail> ObtenerListadoMensaje(string strMailUserAddress, string strMailUserPassword)
         {
             using (Pop3Client pop3Client = new Pop3Client())
             {
-                pop3Client.Connect(smtpHost, smtpPort, false);
+                pop3Client.Connect(smtpHost, pop3Port, false);
                 pop3Client.Authenticate(strMailUserAddress, strMailUserPassword);
                 int count = pop3Client.GetMessageCount();
                 var Emails = new List<POPEmail>();

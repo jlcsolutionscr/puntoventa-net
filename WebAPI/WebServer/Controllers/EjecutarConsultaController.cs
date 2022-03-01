@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using LeandroSoftware.Common.DatosComunes;
@@ -12,7 +11,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
     [Route("puntoventa")]
     public class EjecutarConsultaController : ControllerBase
     {
-        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private static IMantenimientoService _servicioMantenimiento;
         private static IFacturacionService _servicioFacturacion;
         private static ICompraService _servicioCompra;
@@ -133,7 +131,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
             if (datosJO.Property("NombreMetodo") != null)
                 strNombreMetodo = datosJO.Property("NombreMetodo").Value.ToString();
             else
-                throw new Exception("El mensaje no contiene la información suficiente para ser procesado.");
+                throw new Exception("El mensaje no contiene la informaciï¿½n suficiente para ser procesado.");
             if (datosJO.Property("Entidad") != null)
                 strEntidad = datosJO.Property("Entidad").Value.ToString();
             else if (datosJO.Property("Parametros") != null)
@@ -1464,17 +1462,17 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                             if (listado5.Count > 0)
                                 strRespuesta = JsonConvert.SerializeObject(listado5);
                             break;
-                        case "Documentos electrónicos emitidos":
+                        case "Documentos electrï¿½nicos emitidos":
                             List<ReporteDocumentoElectronico> listado6 = _servicioReportes.ObtenerReporteDocumentosElectronicosEmitidos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal);
                             if (listado6.Count > 0)
                                 strRespuesta = JsonConvert.SerializeObject(listado6);
                             break;
-                        case "Documentos electrónicos recibidos":
+                        case "Documentos electrï¿½nicos recibidos":
                             List<ReporteDocumentoElectronico> listado7 = _servicioReportes.ObtenerReporteDocumentosElectronicosRecibidos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal);
                             if (listado7.Count > 0)
                                 strRespuesta = JsonConvert.SerializeObject(listado7);
                             break;
-                        case "Resumen de comprobantes electrónicos":
+                        case "Resumen de comprobantes electrï¿½nicos":
                             List<ReporteResumenMovimiento> listado8 = _servicioReportes.ObtenerReporteResumenDocumentosElectronicos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal);
                             if (listado8.Count > 0)
                                 strRespuesta = JsonConvert.SerializeObject(listado8);
@@ -1484,7 +1482,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     }
                     break;
                 default:
-                    throw new Exception("El método solicitado no ha sido implementado: " + strNombreMetodo);
+                    throw new Exception("El mï¿½todo solicitado no ha sido implementado: " + strNombreMetodo);
             }
             return strRespuesta;
         }
