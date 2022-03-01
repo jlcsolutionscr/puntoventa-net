@@ -584,7 +584,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                 bytLogo = System.IO.File.ReadAllBytes(strLogoPath);
                 _servicioFacturacion.ProcesarDocumentosElectronicosPendientes(configuracionGeneral, bytLogo);
             });
-            //Task.Run(() => _servicioFacturacion.ProcesarCorreoRecepcion(configuracionGeneral, configuracionRecepcion));
+            Task.Run(() => _servicioFacturacion.ProcesarCorreoRecepcion(configuracionGeneral, configuracionRecepcion));
         }
 
         [HttpGet("limpiarregistrosinvalidos")]

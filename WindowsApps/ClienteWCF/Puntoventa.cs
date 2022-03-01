@@ -2229,12 +2229,6 @@ namespace LeandroSoftware.ClienteWCF
             return listado;
         }
 
-        public static async Task EnviarDocumentoElectronicoPendiente(int intIdDocumento, string strToken)
-        {
-            string strDatos = "{NombreMetodo: 'EnviarDocumentoElectronicoPendiente', Parametros: {IdDocumento: " + intIdDocumento + "}}";
-            await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
-        }
-
         public static async Task<DocumentoElectronico> ObtenerRespuestaDocumentoElectronicoEnviado(int intIdDocumento, string strToken)
         {
             string strDatos = "{NombreMetodo: 'ObtenerRespuestaDocumentoElectronicoEnviado', Parametros: {IdDocumento: " + intIdDocumento + "}}";
