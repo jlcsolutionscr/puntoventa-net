@@ -649,6 +649,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
+                    if (empresa.Logotipo == null) empresa.Logotipo = new byte[0];
                     dbContext.EmpresaRepository.Add(empresa);
                     dbContext.Commit();
                     return empresa.IdEmpresa.ToString();
@@ -693,36 +694,34 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         public void ActualizarEmpresa(Empresa empresa)
         {
-
+            try
             {
                 try
                 {
-                    try
-                    {
-                        Validador.ValidaFormatoIdentificacion(empresa.IdTipoIdentificacion, empresa.Identificacion);
-                        Validador.ValidaFormatoEmail(empresa.CorreoNotificacion);
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new BusinessException(ex.Message);
-                    }
-                    Empresa noTracking = dbContext.EmpresaRepository.AsNoTracking().Where(x => x.IdEmpresa == empresa.IdEmpresa).FirstOrDefault();
-                    empresa.Barrio = null;
-                    if (noTracking != null && noTracking.Certificado != null) empresa.Certificado = noTracking.Certificado;
-                    if (noTracking != null && noTracking.Logotipo != null) empresa.Logotipo = noTracking.Logotipo;
-                    dbContext.NotificarModificacion(empresa);
-                    dbContext.Commit();
-                }
-                catch (BusinessException ex)
-                {
-                    throw ex;
+                    Validador.ValidaFormatoIdentificacion(empresa.IdTipoIdentificacion, empresa.Identificacion);
+                    Validador.ValidaFormatoEmail(empresa.CorreoNotificacion);
                 }
                 catch (Exception ex)
                 {
-                    dbContext.RollBack();
-                    //_logger.LogError("Error al actualizar la empresa: ", ex);
-                    throw new Exception("Se produjo un error actualizando la información de la empresa. Por favor consulte con su proveedor.");
+                    throw new BusinessException(ex.Message);
                 }
+                Empresa noTracking = dbContext.EmpresaRepository.AsNoTracking().Where(x => x.IdEmpresa == empresa.IdEmpresa).FirstOrDefault();
+                empresa.Barrio = null;
+                if (noTracking != null && noTracking.Certificado != null) empresa.Certificado = noTracking.Certificado;
+                if (noTracking != null && noTracking.Logotipo != null) empresa.Logotipo = noTracking.Logotipo;
+                if (empresa.Logotipo == null) empresa.Logotipo = new byte[0];
+                dbContext.NotificarModificacion(empresa);
+                dbContext.Commit();
+            }
+            catch (BusinessException ex)
+            {
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                dbContext.RollBack();
+                //_logger.LogError("Error al actualizar la empresa: ", ex);
+                throw new Exception("Se produjo un error actualizando la información de la empresa. Por favor consulte con su proveedor.");
             }
         }
 
