@@ -2064,6 +2064,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 int intMesEnCurso = DateTime.Now.Month;
                 int intAnnioEnCurso = DateTime.Now.Year;
+                var documentosRecepcion = new[] { TipoDocumento.MensajeReceptorAceptado, TipoDocumento.MensajeReceptorAceptadoParcial, TipoDocumento.MensajeReceptorRechazado };
+                bool esMensajeReceptor = documentosRecepcion.Contains(tipoDocumento);
                 CantFEMensualEmpresa cantiFacturasMensual = dbContext.CantFEMensualEmpresaRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa & x.IdMes == intMesEnCurso & x.IdAnio == intAnnioEnCurso).FirstOrDefault();
                 int intCantidadActual = cantiFacturasMensual == null ? 0 : cantiFacturasMensual.CantidadDoc;
                 int intCantidadPlan = empresa.PlanFacturacion.CantidadDocumentos + empresa.CantidadDisponible;
@@ -2191,6 +2193,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 };
                 try
                 {
+                    CredencialesHacienda credenciales = dbContext.CredencialesHaciendaRepository.Find(empresa.Identificacion);
+                    if (credenciales == null) throw new BusinessException("La empresa no tiene registrado los credenciales ATV para generar documentos electrónicos");
                     X509Certificate2 uidCert = new X509Certificate2(credenciales.Certificado, credenciales.PinCertificado, X509KeyStorageFlags.MachineKeySet);
                     if (uidCert.NotAfter <= DateTime.Now) throw new BusinessException("La llave criptográfica para la firma del documento electrónico se encuentra vencida. Por favor reemplace su llave criptográfica para poder emitir documentos electrónicos");
                     using (Signer signer2 = signatureParameters.Signer = new Signer(uidCert))

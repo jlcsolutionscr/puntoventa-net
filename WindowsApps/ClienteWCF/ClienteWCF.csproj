@@ -56,7 +56,7 @@
       <Name>Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Core\Dominio\Dominio.csproj">
-      <Project>{74E3681E-1245-4268-ADB9-D76DA18B2FE0}</Project>
+      <Project>{74e3681e-1245-4268-adb9-d76da18b2fe0}</Project>
       <Name>Dominio</Name>
     </ProjectReference>
   </ItemGroup>

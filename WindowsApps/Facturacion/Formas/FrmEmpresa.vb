@@ -108,10 +108,10 @@ Public Class FrmEmpresa
             txtFechaRenovacion.Text = Format(datos.FechaVence, "dd/MM/yyyy")
             chkPrecioVentaIncluyeIVA.Checked = datos.PrecioVentaIncluyeIVA
             txtMontoRedondeoDescuento.Text = datos.MontoRedondeoDescuento
-            txtNombreCertificado.Text = datos.NombreCertificado
-            txtPinCertificado.Text = datos.PinCertificado
-            txtUsuarioATV.Text = datos.UsuarioHacienda
-            txtClaveATV.Text = datos.ClaveHacienda
+            txtNombreCertificado.Text = credenciales.NombreCertificado
+            txtPinCertificado.Text = credenciales.PinCertificado
+            txtUsuarioATV.Text = credenciales.UsuarioHacienda
+            txtClaveATV.Text = credenciales.ClaveHacienda
             txtIdSucursal.Text = datosSucursal.IdSucursal
             txtNombreSucursal.Text = datosSucursal.NombreSucursal
             txtDireccionSucursal.Text = datosSucursal.Direccion
@@ -209,10 +209,6 @@ Public Class FrmEmpresa
         datos.LeyendaOrdenServicio = txtLeyendaOrdenServicio.Text
         datos.LeyendaApartado = txtLeyendaApartado.Text
         datos.LeyendaProforma = txtLeyendaProforma.Text
-        datos.NombreCertificado = txtNombreCertificado.Text
-        datos.PinCertificado = txtPinCertificado.Text
-        datos.UsuarioHacienda = txtUsuarioATV.Text
-        datos.ClaveHacienda = txtClaveATV.Text
         datos.PrecioVentaIncluyeIVA = chkPrecioVentaIncluyeIVA.Checked
         datos.MontoRedondeoDescuento = txtMontoRedondeoDescuento.Text
         datos.Barrio = Nothing
