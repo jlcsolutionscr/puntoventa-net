@@ -207,6 +207,16 @@ namespace LeandroSoftware.ClienteWCF
             return logotipo;
         }
 
+        public static async Task<CredencialesHacienda> ObtenerCredencialesHacienda(string strIdentificacion, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'ObtenerCredencialesHacienda', Parametros: {Identificacion: " + strIdentificacion + "}}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            CredencialesHacienda credenciales = null;
+            if (respuesta != "")
+                credenciales = serializer.Deserialize<CredencialesHacienda>(respuesta);
+            return credenciales;
+        }
+
         public static async Task<List<LlaveDescripcion>> ObtenerListadoSucursales(int intIdEmpresa, string strToken)
         {
             string strDatos = "{NombreMetodo: 'ObtenerListadoSucursales', Parametros: {IdEmpresa: " + intIdEmpresa + "}}";
@@ -876,9 +886,9 @@ namespace LeandroSoftware.ClienteWCF
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 
-        public static async Task ActualizarCertificadoEmpresa(int intIdEmpresa, string strCertificado, string strToken)
+        public static async Task ActualizarCredencialesHacienda(string strIdentificacion, string strUsuario, string strClave, string strNombreCertificado, string strPin, string strCertificado, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ActualizarCertificadoEmpresa', Parametros: {IdEmpresa: " + intIdEmpresa + ", Certificado: '" + strCertificado + "'}}";
+            string strDatos = "{NombreMetodo: 'ActualizarCredencialesHacienda', Parametros: {Identificacion: '" + strIdentificacion + "', Usuario: '" + strUsuario + "', Clave: '" + strClave + "', NombreCertificado: '" + strNombreCertificado  + "', PinCertificado: '" + strPin + "', Certificado: '" + strCertificado + "'}}";
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 
@@ -2148,16 +2158,6 @@ namespace LeandroSoftware.ClienteWCF
         {
             string strDatos = "{NombreMetodo: 'EnviarDocumentoElectronicoPendiente', Parametros: {IdDocumento: " + intIdDocumento + "}}";
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
-        }
-
-        public static async Task<DocumentoElectronico> ObtenerRespuestaDocumentoElectronicoEnviado(int intIdDocumento, string strToken)
-        {
-            string strDatos = "{NombreMetodo: 'ObtenerRespuestaDocumentoElectronicoEnviado', Parametros: {IdDocumento: " + intIdDocumento + "}}";
-            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
-            DocumentoElectronico documento = null;
-            if (respuesta != "")
-                documento = serializer.Deserialize<DocumentoElectronico>(respuesta);
-            return documento;
         }
 
         public static async Task<bool> EnviarNotificacion(int intIdDocumento, string strCorreoReceptor, string strToken)

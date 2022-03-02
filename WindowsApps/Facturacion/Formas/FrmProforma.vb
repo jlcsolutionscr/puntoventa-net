@@ -823,7 +823,7 @@ Public Class FrmProforma
                 Dim detalle As EstructuraPDFDetalleServicio = New EstructuraPDFDetalleServicio With {
                     .Cantidad = item.Cantidad,
                     .Codigo = item.Producto.CodigoClasificacion,
-                    .Detalle = item.Descripcion,
+                    .detalle = item.Descripcion,
                     .PrecioUnitario = decPrecioVenta.ToString("N2", CultureInfo.InvariantCulture),
                     .TotalLinea = decTotalLinea.ToString("N2", CultureInfo.InvariantCulture)
                 }

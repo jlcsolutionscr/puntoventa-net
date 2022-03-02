@@ -50,6 +50,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
         );
         private static JavaScriptSerializer serializer = new CustomJavascriptSerializer(cultureinfo);
         private static Empresa empresa;
+        private static CredencialesHacienda credenciales;
         private static SucursalPorEmpresa sucursal;
         private static TerminalPorSucursal terminal;
         private static BancoAdquiriente bancoAdquiriente;
@@ -406,10 +407,14 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                         servicioMantenimiento.ActualizarLogoEmpresa(intIdEmpresa, "");
                         break;
-                    case "ActualizarCertificadoEmpresa":
-                        intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
+                    case "ActualizarCredencialesHacienda":
+                        string strIdentificacion = parametrosJO.Property("Identificacion").Value.ToString();
+                        string strUsuario = parametrosJO.Property("Usuario").Value.ToString();
+                        string strClave = parametrosJO.Property("Clave").Value.ToString();
+                        string strNombreCertificado = parametrosJO.Property("NombreCertificado").Value.ToString();
+                        string strPin = parametrosJO.Property("PinCertificado").Value.ToString();
                         string strCertificado = parametrosJO.Property("Certificado").Value.ToString();
-                        servicioMantenimiento.ActualizarCertificadoEmpresa(intIdEmpresa, strCertificado);
+                        servicioMantenimiento.ActualizarCredencialesHacienda(strIdentificacion, strUsuario, strClave, strNombreCertificado, strPin, strCertificado);
                         break;
                     case "ActualizarSucursalPorEmpresa":
                         sucursal = serializer.Deserialize<SucursalPorEmpresa>(strEntidad);
@@ -1155,6 +1160,12 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         if (logotipo != null)
                             strRespuesta = serializer.Serialize(logotipo);
                         break;
+                    case "ObtenerCredencialesHacienda":
+                        strIdentificacion = parametrosJO.Property("Identificacion").Value.ToString();
+                        credenciales = servicioMantenimiento.ObtenerCredencialesHacienda(strIdentificacion);
+                        if (credenciales != null)
+                            strRespuesta = serializer.Serialize(credenciales);
+                        break;
                     case "ObtenerListadoSucursales":
                         intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                         IList<LlaveDescripcion> listadoSucursales = servicioMantenimiento.ObtenerListadoSucursales(intIdEmpresa);
@@ -1888,12 +1899,6 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                     case "ObtenerDocumentoElectronico":
                         intIdLlave1 = int.Parse(parametrosJO.Property("IdDocumento").Value.ToString());
                         documento = servicioFacturacion.ObtenerDocumentoElectronico(intIdLlave1);
-                        if (documento != null)
-                            strRespuesta = serializer.Serialize(documento);
-                        break;
-                    case "ObtenerRespuestaDocumentoElectronicoEnviado":
-                        intIdLlave1 = int.Parse(parametrosJO.Property("IdDocumento").Value.ToString());
-                        documento = servicioFacturacion.ObtenerRespuestaDocumentoElectronicoEnviado(intIdLlave1, configuracionGeneral);
                         if (documento != null)
                             strRespuesta = serializer.Serialize(documento);
                         break;

@@ -1448,7 +1448,7 @@ Public Class FrmFactura
                 Dim detalle As EstructuraPDFDetalleServicio = New EstructuraPDFDetalleServicio With {
                     .Cantidad = linea.Cantidad,
                     .Codigo = linea.Producto.CodigoClasificacion,
-                    .Detalle = linea.Descripcion,
+                    .detalle = linea.Descripcion,
                     .PrecioUnitario = linea.PrecioVenta.ToString("N2", CultureInfo.InvariantCulture),
                     .TotalLinea = decTotalLinea.ToString("N2", CultureInfo.InvariantCulture)
                 }

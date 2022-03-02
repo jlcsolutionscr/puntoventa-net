@@ -42,7 +42,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         void ActualizarRolePorEmpresa(int intIdEmpresa, List<RolePorEmpresa> listado);
         string ObtenerLogotipoEmpresa(int intIdEmpresa);
         void ActualizarLogoEmpresa(int intIdEmpresa, string strLogo);
-        void ActualizarCertificadoEmpresa(int intIdEmpresa, string strCertificado);
+        void AgregarCredencialesHacienda(CredencialesHacienda credenciales);
+        CredencialesHacienda ObtenerCredencialesHacienda(string strIdentificacion);
+        void ActualizarCredencialesHacienda(string strIdentificacion, string strUsuario, string strClave, string strNombreCertificado, string strPin, string strCertificado);
         // Métodos para administrar las sucursales
         SucursalPorEmpresa ObtenerSucursalPorEmpresa(int intIdEmpresa, int intIdSucursal);
         void AgregarSucursalPorEmpresa(SucursalPorEmpresa sucursal);
@@ -226,7 +228,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     log.Error("Error al validar la lista de empresas para usuario administrador: ", ex);
-                    throw new Exception("Error al validar la lista de empresas para usuario administrador. . .");
+                    throw ex.InnerException;
                 }
             }
         }
@@ -432,12 +434,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     usuario.Token = strToken;
                     empresa.Logotipo = null;
                     terminal.Empresa = null;
-                    empresa.Certificado = null;
-                    empresa.AccessToken = null;
-                    empresa.RefreshToken = null;
-                    empresa.EmitedAt = null;
-                    empresa.ExpiresIn = null;
-                    empresa.RefreshExpiresIn = null;
                     empresa.EquipoRegistrado = equipo;
                     empresa.Usuario = usuario;
                     foreach (SucursalPorEmpresa sucursalPorEmpresa in empresa.SucursalPorEmpresa)
@@ -517,12 +513,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     usuario.Token = strToken;
                     empresa.Logotipo = null;
                     terminal.Empresa = null;
-                    empresa.Certificado = null;
-                    empresa.AccessToken = null;
-                    empresa.RefreshToken = null;
-                    empresa.EmitedAt = null;
-                    empresa.ExpiresIn = null;
-                    empresa.RefreshExpiresIn = null;
                     empresa.EquipoRegistrado = equipo;
                     empresa.Usuario = usuario;
                     foreach (ReportePorEmpresa reporte in empresa.ReportePorEmpresa)
@@ -716,13 +706,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.IdEmpresa == intIdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    empresa.Certificado = null;
-                    empresa.Logotipo = null;
-                    empresa.AccessToken = null;
-                    empresa.RefreshToken = null;
-                    empresa.EmitedAt = null;
-                    empresa.ExpiresIn = null;
-                    empresa.RefreshExpiresIn = null;
                     foreach (ReportePorEmpresa reporte in empresa.ReportePorEmpresa)
                         reporte.Empresa = null;
                     return empresa;
@@ -756,7 +739,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     Empresa noTracking = dbContext.EmpresaRepository.AsNoTracking().Where(x => x.IdEmpresa == empresa.IdEmpresa).FirstOrDefault();
                     empresa.Barrio = null;
-                    if (noTracking != null && noTracking.Certificado != null) empresa.Certificado = noTracking.Certificado;
                     if (noTracking != null && noTracking.Logotipo != null) empresa.Logotipo = noTracking.Logotipo;
                     dbContext.NotificarModificacion(empresa);
                     dbContext.Commit();
@@ -923,17 +905,59 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void ActualizarCertificadoEmpresa(int intIdEmpresa, string strCertificado)
+        public void AgregarCredencialesHacienda(CredencialesHacienda credenciales)
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
                 try
                 {
-                    Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
-                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    dbContext.CredencialesHaciendaRepository.Add(credenciales);
+                    dbContext.Commit();
+                }
+                catch (Exception ex)
+                {
+                    dbContext.RollBack();
+                    log.Error("Error al agregar los credenciales de Hacienda: ", ex);
+                    throw new Exception("Se produjo un error agregando la información de los credenciales de Hacienda. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public CredencialesHacienda ObtenerCredencialesHacienda(string strIdentificacion)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    CredencialesHacienda credenciales = dbContext.CredencialesHaciendaRepository.Find(strIdentificacion);
+                    credenciales.Certificado = new byte[0];
+                    return credenciales;
+                }
+                catch (Exception ex)
+                {
+                    dbContext.RollBack();
+                    log.Error("Error al consultar los credenciales de Hacienda: ", ex);
+                    throw new Exception("Se produjo un error consultando la información de los credenciales de Hacienda. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public void ActualizarCredencialesHacienda(string strIdentificacion, string strUsuario, string strClave, string strNombreCertificado, string strPin, string strCertificado)
+        {
+            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
+            {
+                try
+                {
+                    CredencialesHacienda credenciales = dbContext.CredencialesHaciendaRepository.Find(strIdentificacion);
+                    if (credenciales == null) throw new BusinessException("La empresa no tiene registrado los credenciales ATV para generar documentos electrónicos");
                     byte[] bytCertificado = Convert.FromBase64String(strCertificado);
-                    ComprobanteElectronicoService.ValidarCertificado(empresa.PinCertificado, bytCertificado);
-                    empresa.Certificado = bytCertificado;
+                    ComprobanteElectronicoService.ValidarCertificado(strPin, bytCertificado);
+                    credenciales.UsuarioHacienda = strUsuario;
+                    credenciales.ClaveHacienda = strClave;
+                    credenciales.NombreCertificado = strNombreCertificado;
+                    credenciales.PinCertificado = strPin;
+                    credenciales.Certificado = bytCertificado;
+                    dbContext.NotificarModificacion(credenciales);
                     dbContext.Commit();
                 }
                 catch (BusinessException ex)
@@ -942,8 +966,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    log.Error("Error al actualizar el certificado de la empresa: ", ex);
-                    throw new Exception("Se produjo un error registrando el certificado de la empresa. Por favor consulte con su proveedor.");
+                    dbContext.RollBack();
+                    log.Error("Error al actualizar los credenciales de Hacienda: ", ex);
+                    throw new Exception("Se produjo un error actualizando los credenciales de Hacienda. Por favor consulte con su proveedor.");
                 }
             }
         }

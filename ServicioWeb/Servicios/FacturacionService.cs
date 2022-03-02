@@ -70,7 +70,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         void ProcesarCorreoRecepcion(ICorreoService servicioEnvioCorreo, IServerMailService servicioRecepcionCorreo, ConfiguracionGeneral config, ConfiguracionRecepcion datos);
         void EnviarDocumentoElectronicoPendiente(int intIdDocumento, ConfiguracionGeneral datos);
         void ReprocesarDocumentoElectronico(int intIdDocumento, ConfiguracionGeneral datos);
-        DocumentoElectronico ObtenerRespuestaDocumentoElectronicoEnviado(int intIdDocumento, ConfiguracionGeneral datos);
         int ObtenerTotalDocumentosElectronicosProcesados(int intIdEmpresa, int intIdSucursal, string strNombre);
         IList<DocumentoDetalle> ObtenerListadoDocumentosElectronicosProcesados(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, string strNombre);
         DocumentoElectronico ObtenerDocumentoElectronico(int intIdDocumento);
@@ -2178,56 +2177,64 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 Empresa empresa = dbContext.EmpresaRepository.Find(documento.IdEmpresa);
                                 if (empresa != null)
                                 {
-                                    if (documento.EstadoEnvio == StaticEstadoDocumentoElectronico.Registrado)
+                                    CredencialesHacienda credenciales = dbContext.CredencialesHaciendaRepository.Find(empresa.Identificacion);
+                                    if (credenciales == null)
                                     {
-                                        try
-                                        {
-                                            await ComprobanteElectronicoService.EnviarDocumentoElectronico(empresa.IdEmpresa, documento.IdDocumento, datos);
-                                        }
-                                        catch (Exception ex)
-                                        {
-                                            string strError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                                            stringBuilder.AppendLine("Error al enviar el documento electrónico con id: " + documento.IdDocumento + " Detalle: " + strError);
-                                        }
+                                        stringBuilder.AppendLine("Error al enviar el documento electrónico con id: " + documento.IdDocumento + " Detalle: La empresa no tiene registrado los credenciales ATV para generar documentos electrónicos");
                                     }
-                                    else if (documento.EstadoEnvio == StaticEstadoDocumentoElectronico.Enviado)
+                                    else
                                     {
-                                        DocumentoElectronico estadoDoc = null;
-                                        try
+                                        if (documento.EstadoEnvio == StaticEstadoDocumentoElectronico.Registrado)
                                         {
-                                            estadoDoc = await ComprobanteElectronicoService.ConsultarDocumentoElectronico(empresa, documento, dbContext, datos);
-                                        }
-                                        catch (Exception ex)
-                                        {
-                                            string strError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                                            stringBuilder.AppendLine("Error al consultar el documento electrónico con id: " + documento.IdDocumento + " Detalle: " + strError);
-                                        }
-                                        if (estadoDoc != null)
-                                        {
-                                            if (estadoDoc.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado || estadoDoc.EstadoEnvio == StaticEstadoDocumentoElectronico.Rechazado)
+                                            try
                                             {
-                                                RespuestaHaciendaDTO respuesta = new RespuestaHaciendaDTO();
-                                                if (documento.EsMensajeReceptor == "S")
-                                                    respuesta.Clave = documento.ClaveNumerica + "-" + documento.Consecutivo;
-                                                else
-                                                    respuesta.Clave = documento.ClaveNumerica;
-                                                respuesta.Fecha = documento.Fecha.ToString("yyyy-MM-dd'T'HH:mm:ssZ");
-                                                respuesta.IndEstado = estadoDoc.EstadoEnvio;
-                                                respuesta.RespuestaXml = Convert.ToBase64String(estadoDoc.Respuesta);
-                                                try
-                                                {
-                                                    ProcesarMensajeDeRespuesta(respuesta, dbContext, servicioEnvioCorreo, datos.CorreoNotificacionErrores);
-                                                }
-                                                catch (Exception ex)
-                                                {
-                                                    string strError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                                                    stringBuilder.AppendLine("Error al procesar la respuesta del documento electrónico con id: " + documento.IdDocumento + " Detalle: " + strError);
-                                                }
+                                                await ComprobanteElectronicoService.EnviarDocumentoElectronico(empresa.IdEmpresa, documento.IdDocumento, datos);
                                             }
-                                            else
+                                            catch (Exception ex)
                                             {
-                                                dbContext.NotificarModificacion(estadoDoc);
-                                                dbContext.Commit();
+                                                string strError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                                                stringBuilder.AppendLine("Error al enviar el documento electrónico con id: " + documento.IdDocumento + " Detalle: " + strError);
+                                            }
+                                        }
+                                        else if (documento.EstadoEnvio == StaticEstadoDocumentoElectronico.Enviado)
+                                        {
+                                            DocumentoElectronico estadoDoc = null;
+                                            try
+                                            {
+                                                estadoDoc = await ComprobanteElectronicoService.ConsultarDocumentoElectronico(credenciales, documento, dbContext, datos);
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                string strError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                                                stringBuilder.AppendLine("Error al consultar el documento electrónico con id: " + documento.IdDocumento + " Detalle: " + strError);
+                                            }
+                                            if (estadoDoc != null)
+                                            {
+                                                if (estadoDoc.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado || estadoDoc.EstadoEnvio == StaticEstadoDocumentoElectronico.Rechazado)
+                                                {
+                                                    RespuestaHaciendaDTO respuesta = new RespuestaHaciendaDTO();
+                                                    if (documento.EsMensajeReceptor == "S")
+                                                        respuesta.Clave = documento.ClaveNumerica + "-" + documento.Consecutivo;
+                                                    else
+                                                        respuesta.Clave = documento.ClaveNumerica;
+                                                    respuesta.Fecha = documento.Fecha.ToString("yyyy-MM-dd'T'HH:mm:ssZ");
+                                                    respuesta.IndEstado = estadoDoc.EstadoEnvio;
+                                                    respuesta.RespuestaXml = Convert.ToBase64String(estadoDoc.Respuesta);
+                                                    try
+                                                    {
+                                                        ProcesarMensajeDeRespuesta(respuesta, dbContext, servicioEnvioCorreo, datos.CorreoNotificacionErrores);
+                                                    }
+                                                    catch (Exception ex)
+                                                    {
+                                                        string strError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                                                        stringBuilder.AppendLine("Error al procesar la respuesta del documento electrónico con id: " + documento.IdDocumento + " Detalle: " + strError);
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    dbContext.NotificarModificacion(estadoDoc);
+                                                    dbContext.Commit();
+                                                }
                                             }
                                         }
                                     }
@@ -2570,38 +2577,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         throw new Exception("El servicio de factura electrónica se encuentra fuera de servicio. Por favor intente más tarde.");
                     else
                         throw new Exception("Se produjo un error al reenviar el documento electrónico pendiente. Por favor consulte con su proveedor.");
-                }
-            }
-        }
-
-        public DocumentoElectronico ObtenerRespuestaDocumentoElectronicoEnviado(int intIdDocumento, ConfiguracionGeneral datos)
-        {
-            using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
-            {
-                DocumentoElectronico respuesta = null;
-                try
-                {
-                    DocumentoElectronico documento = dbContext.DocumentoElectronicoRepository.Find(intIdDocumento);
-                    if (documento == null) throw new BusinessException("El documento solicitado no existe.");
-                    Empresa empresa = dbContext.EmpresaRepository.Find(documento.IdEmpresa);
-                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (documento.EstadoEnvio == StaticEstadoDocumentoElectronico.Enviado)
-                    {
-                        respuesta = ComprobanteElectronicoService.ConsultarDocumentoElectronico(empresa, documento, dbContext, datos).Result;
-                    }
-                    return respuesta;
-                }
-                catch (BusinessException ex)
-                {
-                    throw ex;
-                }
-                catch (Exception ex)
-                {
-                    log.Error("Error al consultar respuesta de Hacienda del documento electrónico: ", ex);
-                    if (ex.Message == "Service Unavailable")
-                        throw new Exception("El servicio de factura electrónica se encuentra fuera de servicio. Por favor intente más tarde.");
-                    else
-                        throw new Exception("Se produjo un error al consultar respuesta de Hacienda del documento electrónico. Por favor consulte con su proveedor.");
                 }
             }
         }

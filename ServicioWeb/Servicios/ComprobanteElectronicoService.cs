@@ -36,38 +36,38 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         private static HttpClient httpClient = new HttpClient();
         private static IUnityContainer unityContainer = new UnityContainer();
 
-        private static void ValidarToken(IDbContext dbContext, Empresa empresaLocal, string strServicioTokenURL, string strClientId)
+        private static void ValidarToken(IDbContext dbContext, CredencialesHacienda credenciales, string strServicioTokenURL, string strClientId)
         {
             TokenType nuevoToken;
             try
             {
-                if (empresaLocal.AccessToken != null)
+                if (credenciales.AccessToken != null)
                 {
-                    if (empresaLocal.EmitedAt != null)
+                    if (credenciales.EmitedAt != null)
                     {
-                        DateTime horaEmision = DateTime.Parse(empresaLocal.EmitedAt.ToString());
-                        if (horaEmision.AddSeconds((int)empresaLocal.ExpiresIn) < DateTime.Now)
+                        DateTime horaEmision = DateTime.Parse(credenciales.EmitedAt.ToString());
+                        if (horaEmision.AddSeconds((int)credenciales.ExpiresIn) < DateTime.Now)
                         {
-                            if (horaEmision.AddSeconds((int)empresaLocal.RefreshExpiresIn) < DateTime.Now)
+                            if (horaEmision.AddSeconds((int)credenciales.RefreshExpiresIn) < DateTime.Now)
                             {
-                                nuevoToken = ObtenerToken(strServicioTokenURL, strClientId, empresaLocal.UsuarioHacienda, empresaLocal.ClaveHacienda).Result;
-                                empresaLocal.AccessToken = nuevoToken.access_token;
-                                empresaLocal.ExpiresIn = nuevoToken.expires_in;
-                                empresaLocal.RefreshExpiresIn = nuevoToken.refresh_expires_in;
-                                empresaLocal.RefreshToken = nuevoToken.refresh_token;
-                                empresaLocal.EmitedAt = nuevoToken.emitedAt;
-                                dbContext.NotificarModificacion(empresaLocal);
+                                nuevoToken = ObtenerToken(strServicioTokenURL, strClientId, credenciales.UsuarioHacienda, credenciales.ClaveHacienda).Result;
+                                credenciales.AccessToken = nuevoToken.access_token;
+                                credenciales.ExpiresIn = nuevoToken.expires_in;
+                                credenciales.RefreshExpiresIn = nuevoToken.refresh_expires_in;
+                                credenciales.RefreshToken = nuevoToken.refresh_token;
+                                credenciales.EmitedAt = nuevoToken.emitedAt;
+                                dbContext.NotificarModificacion(credenciales);
                                 dbContext.Commit();
                             }
                             else
                             {
-                                nuevoToken = RefrescarToken(strServicioTokenURL, strClientId, empresaLocal.RefreshToken).Result;
-                                empresaLocal.AccessToken = nuevoToken.access_token;
-                                empresaLocal.ExpiresIn = nuevoToken.expires_in;
-                                empresaLocal.RefreshExpiresIn = nuevoToken.refresh_expires_in;
-                                empresaLocal.RefreshToken = nuevoToken.refresh_token;
-                                empresaLocal.EmitedAt = nuevoToken.emitedAt;
-                                dbContext.NotificarModificacion(empresaLocal);
+                                nuevoToken = RefrescarToken(strServicioTokenURL, strClientId, credenciales.RefreshToken).Result;
+                                credenciales.AccessToken = nuevoToken.access_token;
+                                credenciales.ExpiresIn = nuevoToken.expires_in;
+                                credenciales.RefreshExpiresIn = nuevoToken.refresh_expires_in;
+                                credenciales.RefreshToken = nuevoToken.refresh_token;
+                                credenciales.EmitedAt = nuevoToken.emitedAt;
+                                dbContext.NotificarModificacion(credenciales);
                                 dbContext.Commit();
                             }
                         }
@@ -75,13 +75,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 else
                 {
-                    nuevoToken = ObtenerToken(strServicioTokenURL, strClientId, empresaLocal.UsuarioHacienda, empresaLocal.ClaveHacienda).Result;
-                    empresaLocal.AccessToken = nuevoToken.access_token;
-                    empresaLocal.ExpiresIn = nuevoToken.expires_in;
-                    empresaLocal.RefreshExpiresIn = nuevoToken.refresh_expires_in;
-                    empresaLocal.RefreshToken = nuevoToken.refresh_token;
-                    empresaLocal.EmitedAt = nuevoToken.emitedAt;
-                    dbContext.NotificarModificacion(empresaLocal);
+                    nuevoToken = ObtenerToken(strServicioTokenURL, strClientId, credenciales.UsuarioHacienda, credenciales.ClaveHacienda).Result;
+                    credenciales.AccessToken = nuevoToken.access_token;
+                    credenciales.ExpiresIn = nuevoToken.expires_in;
+                    credenciales.RefreshExpiresIn = nuevoToken.refresh_expires_in;
+                    credenciales.RefreshToken = nuevoToken.refresh_token;
+                    credenciales.EmitedAt = nuevoToken.emitedAt;
+                    dbContext.NotificarModificacion(credenciales);
                     dbContext.Commit();
                 }
             }
@@ -2064,39 +2064,34 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 int intMesEnCurso = DateTime.Now.Month;
                 int intAnnioEnCurso = DateTime.Now.Year;
-                var documentosRecepcion = new[] { TipoDocumento.MensajeReceptorAceptado, TipoDocumento.MensajeReceptorAceptadoParcial, TipoDocumento.MensajeReceptorRechazado };
-                bool esMensajeReceptor = documentosRecepcion.Contains(tipoDocumento);
-                if (!esMensajeReceptor || new[] { 1, 2 }.Contains(empresa.PlanFacturacion.IdPlan))
+                CantFEMensualEmpresa cantiFacturasMensual = dbContext.CantFEMensualEmpresaRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa & x.IdMes == intMesEnCurso & x.IdAnio == intAnnioEnCurso).FirstOrDefault();
+                int intCantidadActual = cantiFacturasMensual == null ? 0 : cantiFacturasMensual.CantidadDoc;
+                int intCantidadPlan = empresa.PlanFacturacion.CantidadDocumentos + empresa.CantidadDisponible;
+                if (intCantidadPlan <= intCantidadActual) throw new BusinessException("La cantidad de documentos disponibles para su plan de facturación ha sido agotado. Contacte con su proveedor del servicio. . .");
+                if (cantiFacturasMensual.CantidadDoc < empresa.PlanFacturacion.CantidadDocumentos)
                 {
-                    CantFEMensualEmpresa cantiFacturasMensual = dbContext.CantFEMensualEmpresaRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa & x.IdMes == intMesEnCurso & x.IdAnio == intAnnioEnCurso).FirstOrDefault();
-                    int intCantidadActual = cantiFacturasMensual == null ? 0 : cantiFacturasMensual.CantidadDoc;
-                    int intCantidadPlan = empresa.PlanFacturacion.CantidadDocumentos + empresa.CantidadDisponible;
-                    if (intCantidadPlan <= intCantidadActual) throw new BusinessException("La cantidad de documentos disponibles para su plan de facturación ha sido agotado. Contacte con su proveedor del servicio. . .");
-                    if (intCantidadActual < empresa.PlanFacturacion.CantidadDocumentos)
+                    if (cantiFacturasMensual == null)
                     {
-                        if (cantiFacturasMensual == null)
+                        cantiFacturasMensual = new CantFEMensualEmpresa
                         {
-                            cantiFacturasMensual = new CantFEMensualEmpresa
-                            {
-                                IdEmpresa = empresa.IdEmpresa,
-                                IdMes = intMesEnCurso,
-                                IdAnio = intAnnioEnCurso,
-                                CantidadDoc = 1
-                            };
-                            dbContext.CantFEMensualEmpresaRepository.Add(cantiFacturasMensual);
-                        }
-                        else
-                        {
-                            cantiFacturasMensual.CantidadDoc += 1;
-                            dbContext.NotificarModificacion(cantiFacturasMensual);
-                        }
+                            IdEmpresa = empresa.IdEmpresa,
+                            IdMes = intMesEnCurso,
+                            IdAnio = intAnnioEnCurso,
+                            CantidadDoc = 1
+                        };
+                        dbContext.CantFEMensualEmpresaRepository.Add(cantiFacturasMensual);
                     }
                     else
                     {
-                        empresa.CantidadDisponible -= 1;
+                        cantiFacturasMensual.CantidadDoc += 1;
+                        dbContext.NotificarModificacion(cantiFacturasMensual);
                     }
-                    dbContext.NotificarModificacion(empresa);
                 }
+                else
+                {
+                    empresa.CantidadDisponible -= 1;
+                }
+                dbContext.NotificarModificacion(empresa);
                 string strTipoIdentificacionEmisor = "";
                 string strIdentificacionEmisor = "";
                 string strTipoIdentificacionReceptor = "";
@@ -2196,7 +2191,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 };
                 try
                 {
-                    X509Certificate2 uidCert = new X509Certificate2(empresa.Certificado, empresa.PinCertificado, X509KeyStorageFlags.MachineKeySet);
+                    X509Certificate2 uidCert = new X509Certificate2(credenciales.Certificado, credenciales.PinCertificado, X509KeyStorageFlags.MachineKeySet);
                     if (uidCert.NotAfter <= DateTime.Now) throw new BusinessException("La llave criptográfica para la firma del documento electrónico se encuentra vencida. Por favor reemplace su llave criptográfica para poder emitir documentos electrónicos");
                     using (Signer signer2 = signatureParameters.Signer = new Signer(uidCert))
                     using (MemoryStream smDatos = new MemoryStream(mensajeEncoded))
@@ -2264,6 +2259,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         {
                             try
                             {
+                                CredencialesHacienda credenciales = dbContext.CredencialesHaciendaRepository.Find(empresa.Identificacion);
                                 XmlDocument documentoXml = new XmlDocument();
                                 using (MemoryStream ms = new MemoryStream(documento.DatosDocumento))
                                 {
@@ -2273,7 +2269,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 string strComprobanteXML = Convert.ToBase64String(mensajeEncoded);
                                 try
                                 {
-                                    ValidarToken(dbContext, empresa, datos.ServicioTokenURL, datos.ClientId);
+                                    ValidarToken(dbContext, credenciales, datos.ServicioTokenURL, datos.ClientId);
                                 }
                                 catch (Exception ex)
                                 {
@@ -2282,7 +2278,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                     dbContext.NotificarModificacion(documento);
                                     dbContext.Commit();
                                 }
-                                if (empresa.AccessToken != null)
+                                if (credenciales.AccessToken != null)
                                 {
                                     string JsonObject = "{\"clave\": \"" + documento.ClaveNumerica + "\",\"fecha\": \"" + documento.Fecha.ToString("yyyy-MM-ddTHH:mm:ssss") + "\"," +
                                         "\"emisor\": {\"tipoIdentificacion\": \"" + documento.TipoIdentificacionEmisor + "\"," +
@@ -2298,7 +2294,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                         JsonObject += "\"consecutivoReceptor\": \"" + documento.Consecutivo + "\",";
                                     JsonObject += "\"comprobanteXml\": \"" + strComprobanteXML + "\"}";
                                     StringContent contentJson = new StringContent(JsonObject, Encoding.UTF8, "application/json");
-                                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", empresa.AccessToken);
+                                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", credenciales.AccessToken);
                                     HttpResponseMessage httpResponse = httpClient.PostAsync(datos.ComprobantesElectronicosURL + "/recepcion", contentJson).Result;
                                     string responseContent = await httpResponse.Content.ReadAsStringAsync();
                                     if (httpResponse.StatusCode == HttpStatusCode.Accepted)
@@ -2356,7 +2352,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public static async Task<DocumentoElectronico> ConsultarDocumentoElectronico(Empresa empresaLocal, DocumentoElectronico documento, IDbContext dbContext, ConfiguracionGeneral datos)
+        public static async Task<DocumentoElectronico> ConsultarDocumentoElectronico(CredencialesHacienda credenciales, DocumentoElectronico documento, IDbContext dbContext, ConfiguracionGeneral datos)
         {
             try
             {
@@ -2364,21 +2360,21 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     try
                     {
-                        ValidarToken(dbContext, empresaLocal, datos.ServicioTokenURL, datos.ClientId);
+                        ValidarToken(dbContext, credenciales, datos.ServicioTokenURL, datos.ClientId);
                     }
                     catch (Exception ex)
                     {
                         documento.EstadoEnvio = StaticEstadoDocumentoElectronico.Registrado;
                         documento.ErrorEnvio = "No se logro obtener un token: " + ex.Message;
-                        empresaLocal.AccessToken = null;
+                        credenciales.AccessToken = null;
                     }
-                    if (empresaLocal.AccessToken != null)
+                    if (credenciales.AccessToken != null)
                     {
                         string strClave = documento.ClaveNumerica;
                         if (new int[] { 5, 6, 7 }.Contains(documento.IdTipoDocumento)) strClave = documento.ClaveNumerica + "-" + documento.Consecutivo;
                         try
                         {
-                            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", empresaLocal.AccessToken);
+                            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", credenciales.AccessToken);
                             HttpResponseMessage httpResponse = await httpClient.GetAsync(datos.ComprobantesElectronicosURL + "/recepcion/" + strClave);
                             if (httpResponse.StatusCode == HttpStatusCode.OK)
                             {

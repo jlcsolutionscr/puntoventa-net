@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="Entidades\AjusteInventario.cs" />
     <Compile Include="Entidades\Asiento.cs" />
+    <Compile Include="Entidades\CredencialesHacienda.cs" />
     <Compile Include="Entidades\PlanFacturacion.cs" />
     <Compile Include="Entidades\Barrio.cs" />
     <Compile Include="Entidades\CantFEMensualEmpresa.cs" />

@@ -23,6 +23,7 @@ namespace LeandroSoftware.ServicioWeb.Contexto
         DbSet<ClasificacionProducto> ClasificacionProductoRepository { get; set; }
         DbSet<Cliente> ClienteRepository { get; set; }
         DbSet<CondicionVenta> CondicionVentaRepository { get; set; }
+        DbSet<CredencialesHacienda> CredencialesHaciendaRepository { get; set; }
         DbSet<CuentaBanco> CuentaBancoRepository { get; set; }
         DbSet<CuentaEgreso> CuentaEgresoRepository { get; set; }
         DbSet<CuentaIngreso> CuentaIngresoRepository { get; set; }
@@ -141,6 +142,7 @@ namespace LeandroSoftware.ServicioWeb.Contexto
         public DbSet<ClasificacionProducto> ClasificacionProductoRepository { get; set; }
         public DbSet<Cliente> ClienteRepository { get; set; }
         public DbSet<CondicionVenta> CondicionVentaRepository { get; set; }
+        public DbSet<CredencialesHacienda> CredencialesHaciendaRepository { get; set; }
         public DbSet<CuentaBanco> CuentaBancoRepository { get; set; }
         public DbSet<CuentaEgreso> CuentaEgresoRepository { get; set; }
         public DbSet<CuentaIngreso> CuentaIngresoRepository { get; set; }

@@ -1037,7 +1037,7 @@ Public Class FrmApartado
                 Dim detalle As EstructuraPDFDetalleServicio = New EstructuraPDFDetalleServicio With {
                     .Cantidad = dtbDetalleApartado.Rows(I).Item(3),
                     .Codigo = dtbDetalleApartado.Rows(I).Item(1),
-                    .Detalle = dtbDetalleApartado.Rows(I).Item(2),
+                    .detalle = dtbDetalleApartado.Rows(I).Item(2),
                     .PrecioUnitario = decPrecioVenta.ToString("N2", CultureInfo.InvariantCulture),
                     .TotalLinea = decTotalLinea.ToString("N2", CultureInfo.InvariantCulture)
                 }

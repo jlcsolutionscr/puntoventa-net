@@ -45,11 +45,6 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public bool AsignaVendedorPorDefecto { get; set; }
         public bool IngresaPagoCliente { get; set; }
         public bool PrecioVentaIncluyeIVA { get; set; }
-        public byte[] Certificado { get; set; }
-        public string NombreCertificado { get; set; }
-        public string PinCertificado { get; set; }
-        public string UsuarioHacienda { get; set; }
-        public string ClaveHacienda { get; set; }
         public string CorreoNotificacion { get; set; }
         public decimal MontoRedondeoDescuento { get; set; }
         public string LeyendaFactura { get; set; }
@@ -57,11 +52,6 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public string LeyendaApartado { get; set; }
         public string LeyendaOrdenServicio { get; set; }
         public byte[] Logotipo { get; set; }
-        public string AccessToken { get; set; }
-        public int? ExpiresIn { get; set; }
-        public int? RefreshExpiresIn { get; set; }
-        public string RefreshToken { get; set; }
-        public DateTime? EmitedAt { get; set; }
         public int Modalidad { get; set; }
         [NotMapped]
         public Usuario Usuario;

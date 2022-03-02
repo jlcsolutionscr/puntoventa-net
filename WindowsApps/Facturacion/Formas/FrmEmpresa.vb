@@ -8,6 +8,7 @@ Public Class FrmEmpresa
 #Region "Variables"
     Public intIdEmpresa As Integer
     Private datos As Empresa
+    Private credenciales As CredencialesHacienda
     Private datosSucursal As SucursalPorEmpresa
     Private datosTerminal As TerminalPorSucursal
     Private bolReady As Boolean = False
@@ -77,6 +78,7 @@ Public Class FrmEmpresa
             Await CargarCombos()
             datos = Await Puntoventa.ObtenerEmpresa(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
             Dim logotipo As Byte() = Await Puntoventa.ObtenerLogotipoEmpresa(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+            credenciales = Await Puntoventa.ObtenerCredencialesHacienda(FrmPrincipal.empresaGlobal.Identificacion, FrmPrincipal.usuarioGlobal.Token)
             datosSucursal = Await Puntoventa.ObtenerSucursalPorEmpresa(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, FrmPrincipal.usuarioGlobal.Token)
             datosTerminal = Await Puntoventa.ObtenerTerminalPorSucursal(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, FrmPrincipal.equipoGlobal.IdTerminal, FrmPrincipal.usuarioGlobal.Token)
             If datos Is Nothing Then
@@ -222,7 +224,7 @@ Public Class FrmEmpresa
             FrmPrincipal.empresaGlobal.MontoRedondeoDescuento = datos.MontoRedondeoDescuento
             If bolCertificadoModificado And txtNombreCertificado.Text.Length > 0 Then
                 Dim bytCertificado As Byte() = File.ReadAllBytes(strRutaCertificado)
-                Await Puntoventa.ActualizarCertificadoEmpresa(txtIdEmpresa.Text, Convert.ToBase64String(bytCertificado), FrmPrincipal.usuarioGlobal.Token)
+                Await Puntoventa.ActualizarCredencialesHacienda(txtIdentificacion.Text, txtUsuarioATV.Text, txtClaveATV.Text, txtNombreCertificado.Text, txtPinCertificado.Text, Convert.ToBase64String(bytCertificado), FrmPrincipal.usuarioGlobal.Token)
             End If
             If bolLogoModificado Then
                 If picLogo.Image IsNot Nothing Then
@@ -349,7 +351,7 @@ Public Class FrmEmpresa
 
     Private Sub btnLimpiarLogo_Click(sender As Object, e As EventArgs) Handles btnLimpiarLogo.Click
         Dim dialogResult As DialogResult = MessageBox.Show("Desea eliminar el logotipo de la empresa?", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
-        If dialogResult = DialogResult.Yes Then
+        If dialogResult = dialogResult.Yes Then
             picLogo.Image = Nothing
             bolLogoModificado = True
         End If
