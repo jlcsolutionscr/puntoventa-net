@@ -1,0 +1,48 @@
+2022-03-02 18:59:05,486 [10] ERROR LeandroSoftware.ServicioWeb.EndPoints.PuntoventaWCF - Error al enviar los archivos historicos de errores del sistema: 
+System.NullReferenceException: Object reference not set to an instance of an object.
+   at LeandroSoftware.ServicioWeb.EndPoints.PuntoventaWCF..ctor() in C:\Users\JasonLopez\development\puntoventa-net\ServicioWeb\Endpoints\PuntoventaWCF.svc.cs:line 172
+2022-03-02 19:07:21,205 [13] ERROR LeandroSoftware.ServicioWeb.EndPoints.PuntoventaWCF - Error al enviar los archivos historicos de errores del sistema: 
+System.NullReferenceException: Object reference not set to an instance of an object.
+   at LeandroSoftware.ServicioWeb.EndPoints.PuntoventaWCF..ctor() in C:\Users\JasonLopez\development\puntoventa-net\ServicioWeb\Endpoints\PuntoventaWCF.svc.cs:line 172
+2022-03-02 19:07:31,422 [5] ERROR LeandroSoftware.ServicioWeb.EndPoints.PuntoventaWCF - Error al enviar los archivos historicos de errores del sistema: 
+System.NullReferenceException: Object reference not set to an instance of an object.
+   at LeandroSoftware.ServicioWeb.EndPoints.PuntoventaWCF..ctor() in C:\Users\JasonLopez\development\puntoventa-net\ServicioWeb\Endpoints\PuntoventaWCF.svc.cs:line 172
+2022-03-02 19:07:40,715 [5] ERROR LeandroSoftware.ServicioWeb.EndPoints.PuntoventaWCF - Error al enviar los archivos historicos de errores del sistema: 
+System.NullReferenceException: Object reference not set to an instance of an object.
+   at LeandroSoftware.ServicioWeb.EndPoints.PuntoventaWCF..ctor() in C:\Users\JasonLopez\development\puntoventa-net\ServicioWeb\Endpoints\PuntoventaWCF.svc.cs:line 172
+2022-03-02 19:08:39,846 [19] ERROR LeandroSoftware.ServicioWeb.EndPoints.PuntoventaWCF - Error al enviar los archivos historicos de errores del sistema: 
+System.NullReferenceException: Object reference not set to an instance of an object.
+   at LeandroSoftware.ServicioWeb.EndPoints.PuntoventaWCF..ctor() in C:\Users\JasonLopez\development\puntoventa-net\ServicioWeb\Endpoints\PuntoventaWCF.svc.cs:line 172
+2022-03-02 19:18:16,002 [9] ERROR LeandroSoftware.ServicioWeb.EndPoints.PuntoventaWCF - Error al enviar los archivos historicos de errores del sistema: 
+System.NullReferenceException: Object reference not set to an instance of an object.
+   at LeandroSoftware.ServicioWeb.EndPoints.PuntoventaWCF..ctor() in C:\Users\JasonLopez\development\puntoventa-net\ServicioWeb\Endpoints\PuntoventaWCF.svc.cs:line 172
+2022-03-02 19:18:21,410 [9] ERROR LeandroSoftware.ServicioWeb.EndPoints.PuntoventaWCF - Error al enviar los archivos historicos de errores del sistema: 
+System.NullReferenceException: Object reference not set to an instance of an object.
+   at LeandroSoftware.ServicioWeb.EndPoints.PuntoventaWCF..ctor() in C:\Users\JasonLopez\development\puntoventa-net\ServicioWeb\Endpoints\PuntoventaWCF.svc.cs:line 172
+2022-03-02 19:20:04,684 [9] ERROR LeandroSoftware.ServicioWeb.EndPoints.PuntoventaWCF - Error al enviar los archivos historicos de errores del sistema: 
+System.NullReferenceException: Object reference not set to an instance of an object.
+   at LeandroSoftware.ServicioWeb.EndPoints.PuntoventaWCF..ctor() in C:\Users\JasonLopez\development\puntoventa-net\ServicioWeb\Endpoints\PuntoventaWCF.svc.cs:line 172
+2022-03-02 19:20:07,387 [8] ERROR LeandroSoftware.ServicioWeb.EndPoints.PuntoventaWCF - Error al enviar los archivos historicos de errores del sistema: 
+System.NullReferenceException: Object reference not set to an instance of an object.
+   at LeandroSoftware.ServicioWeb.EndPoints.PuntoventaWCF..ctor() in C:\Users\JasonLopez\development\puntoventa-net\ServicioWeb\Endpoints\PuntoventaWCF.svc.cs:line 172
+2022-03-02 19:21:28,622 [9] ERROR LeandroSoftware.ServicioWeb.EndPoints.PuntoventaWCF - Error al enviar los archivos historicos de errores del sistema: 
+System.NullReferenceException: Object reference not set to an instance of an object.
+   at LeandroSoftware.ServicioWeb.EndPoints.PuntoventaWCF..ctor() in C:\Users\JasonLopez\development\puntoventa-net\ServicioWeb\Endpoints\PuntoventaWCF.svc.cs:line 172
+2022-03-02 19:21:32,886 [11] ERROR LeandroSoftware.ServicioWeb.EndPoints.PuntoventaWCF - Error al enviar los archivos historicos de errores del sistema: 
+System.NullReferenceException: Object reference not set to an instance of an object.
+   at LeandroSoftware.ServicioWeb.EndPoints.PuntoventaWCF..ctor() in C:\Users\JasonLopez\development\puntoventa-net\ServicioWeb\Endpoints\PuntoventaWCF.svc.cs:line 172
+2022-03-02 19:24:16,464 [9] ERROR LeandroSoftware.ServicioWeb.EndPoints.PuntoventaWCF - Error al enviar los archivos historicos de errores del sistema: 
+System.NullReferenceException: Object reference not set to an instance of an object.
+   at LeandroSoftware.ServicioWeb.EndPoints.PuntoventaWCF..ctor() in C:\Users\JasonLopez\development\puntoventa-net\ServicioWeb\Endpoints\PuntoventaWCF.svc.cs:line 172
+2022-03-02 19:24:59,269 [9] ERROR LeandroSoftware.ServicioWeb.EndPoints.PuntoventaWCF - Error al enviar los archivos historicos de errores del sistema: 
+System.NullReferenceException: Object reference not set to an instance of an object.
+   at LeandroSoftware.ServicioWeb.EndPoints.PuntoventaWCF..ctor() in C:\Users\JasonLopez\development\puntoventa-net\ServicioWeb\Endpoints\PuntoventaWCF.svc.cs:line 172
+2022-03-02 19:25:09,450 [9] ERROR LeandroSoftware.ServicioWeb.EndPoints.PuntoventaWCF - Error al enviar los archivos historicos de errores del sistema: 
+System.NullReferenceException: Object reference not set to an instance of an object.
+   at LeandroSoftware.ServicioWeb.EndPoints.PuntoventaWCF..ctor() in C:\Users\JasonLopez\development\puntoventa-net\ServicioWeb\Endpoints\PuntoventaWCF.svc.cs:line 172
+2022-03-02 19:25:35,519 [17] ERROR LeandroSoftware.ServicioWeb.EndPoints.PuntoventaWCF - Error al enviar los archivos historicos de errores del sistema: 
+System.NullReferenceException: Object reference not set to an instance of an object.
+   at LeandroSoftware.ServicioWeb.EndPoints.PuntoventaWCF..ctor() in C:\Users\JasonLopez\development\puntoventa-net\ServicioWeb\Endpoints\PuntoventaWCF.svc.cs:line 172
+2022-03-02 19:25:39,082 [17] ERROR LeandroSoftware.ServicioWeb.EndPoints.PuntoventaWCF - Error al enviar los archivos historicos de errores del sistema: 
+System.NullReferenceException: Object reference not set to an instance of an object.
+   at LeandroSoftware.ServicioWeb.EndPoints.PuntoventaWCF..ctor() in C:\Users\JasonLopez\development\puntoventa-net\ServicioWeb\Endpoints\PuntoventaWCF.svc.cs:line 172

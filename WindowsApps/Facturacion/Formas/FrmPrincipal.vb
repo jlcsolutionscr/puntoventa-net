@@ -99,7 +99,9 @@ Public Class FrmPrincipal
             Return False
         End If
         If Not empresa.RegimenSimplificado Then
-            If credenciales.NombreCertificado.Length = 0 Or
+            If credenciales Is Nothing Then
+                Return False
+            ElseIf credenciales.NombreCertificado.Length = 0 Or
                 credenciales.PinCertificado.Length = 0 Or
                 credenciales.UsuarioHacienda.Length = 0 Or
                 credenciales.ClaveHacienda.Length = 0 Then
@@ -621,7 +623,6 @@ Public Class FrmPrincipal
         End If
         Try
             productoTranstorio = Await Puntoventa.ObtenerProductoTransitorio(empresaGlobal.IdEmpresa, usuarioGlobal.Token)
-
         Catch
             productoImpuestoServicio = Nothing
         End Try

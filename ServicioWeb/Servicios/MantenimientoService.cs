@@ -9,6 +9,7 @@ using LeandroSoftware.ServicioWeb.Contexto;
 using log4net;
 using Unity;
 using System.Globalization;
+using System.Security.Cryptography.X509Certificates;
 
 namespace LeandroSoftware.ServicioWeb.Servicios
 {
@@ -23,7 +24,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         Usuario ValidarCredencialesAdmin(string strUsuario, string strClave);
         Empresa ValidarCredenciales(string strUsuario, string strClave, string id);
         Empresa ValidarCredenciales(string strUsuario, string strClave, int intIdEmpresa, string strValorRegistro);
-        bool ValidarUsuarioHacienda(string strUsuario, string strClave, ConfiguracionGeneral config);
+        void ValidarCredencialesHacienda(string strUsuario, string strClave, ConfiguracionGeneral config);
+        void ValidarCertificadoHacienda(string strPin, string strCertificado);
         decimal AutorizacionPorcentaje(string strUsuario, string strClave, int intIdEmpresa);
         string ObtenerUltimaVersionApp();
         string ObtenerUltimaVersionMobileApp();
@@ -538,19 +540,33 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public bool ValidarUsuarioHacienda(string strUsuario, string strClave, ConfiguracionGeneral config)
+        public void ValidarCredencialesHacienda(string strUsuario, string strClave, ConfiguracionGeneral config)
         {
-            bool bolRespuesta = false;
             try
             {
                 TokenType token = ComprobanteElectronicoService.ObtenerToken(config.ServicioTokenURL, config.ClientId, strUsuario, strClave).Result;
-                if (token.access_token != null) bolRespuesta = true;
+                if (token.access_token == null) throw new BusinessException("No fue posible validar los credenciales de Hacienda. Por favor verifique la información. . .");
             }
             catch (Exception ex)
             {
                 log.Error("Error al validar los credenciales del usuario en Hacienda: ", ex);
+                throw new BusinessException("Se encontro un error validando los credenciales de Hacienda");
             }
-            return bolRespuesta;
+        }
+
+        public void ValidarCertificadoHacienda(string strPin, string strCertificado)
+        {
+            try
+            {
+                byte[] bytCertificado = Convert.FromBase64String(strCertificado);
+                X509Certificate2 uidCert = new X509Certificate2(bytCertificado, strPin, X509KeyStorageFlags.MachineKeySet);
+                if (uidCert.NotAfter <= DateTime.Now) throw new BusinessException("La llave criptográfica para la firma del documento electrónico se encuentra vencida. Por favor reemplace su llave criptográfica para poder emitir documentos electrónicos");
+            }
+            catch (Exception ex)
+            {
+                log.Error("Error al validar la llave criptográfica: ", ex);
+                throw new BusinessException("No se logró abrir la llave criptográfica con el pin suministrado. Por favor verifique la información suministrada");
+            }
         }
 
         public decimal AutorizacionPorcentaje(string strUsuario, string strClave, int intIdEmpresa)
@@ -560,7 +576,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     Usuario usuario = dbContext.UsuarioRepository.Include("SucursalPorUsuario").FirstOrDefault(x => x.SucursalPorUsuario.FirstOrDefault().IdEmpresa == intIdEmpresa && x.CodigoUsuario == strUsuario.ToUpper());
-                    if (usuario == null) throw new BusinessException("Usuario no registrado en la empresa suministrada. Por favor verifique la información suministrada.");
+                    if (usuario == null) throw new BusinessException("Los credenciales suministrados no son válidos.Verifique los credenciales suministrados.");
                     if (usuario.Clave != strClave) throw new BusinessException("Los credenciales suministrados no son válidos. Verifique los credenciales suministrados.");
                     return usuario.PorcMaxDescuento;
                 }
@@ -570,8 +586,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    log.Error("Error al validar los credenciales del usuario por terminal: ", ex);
-                    throw new Exception("Error en la validación de los credenciales suministrados por favor verifique la información. . .");
+                    log.Error("Error al autorizar un porcentaje de descuento con credenciales: ", ex);
+                    throw new Exception("Error al obtener la autorización del descuento. Por favor consulte con su proveedor.");
                 }
             }
         }
@@ -916,9 +932,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    dbContext.RollBack();
                     log.Error("Error al agregar los credenciales de Hacienda: ", ex);
-                    throw new Exception("Se produjo un error agregando la información de los credenciales de Hacienda. Por favor consulte con su proveedor.");
+                    throw new Exception("Se produjo un error agregando los credenciales de Hacienda. Por favor consulte con su proveedor.");
                 }
             }
         }
@@ -930,7 +945,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     CredencialesHacienda credenciales = dbContext.CredencialesHaciendaRepository.Find(strIdentificacion);
-                    credenciales.Certificado = new byte[0];
+                    if (credenciales != null) credenciales.Certificado = new byte[0];
                     return credenciales;
                 }
                 catch (Exception ex)
@@ -949,14 +964,16 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     CredencialesHacienda credenciales = dbContext.CredencialesHaciendaRepository.Find(strIdentificacion);
-                    if (credenciales == null) throw new BusinessException("La empresa no tiene registrado los credenciales ATV para generar documentos electrónicos");
-                    byte[] bytCertificado = Convert.FromBase64String(strCertificado);
-                    ComprobanteElectronicoService.ValidarCertificado(strPin, bytCertificado);
+
                     credenciales.UsuarioHacienda = strUsuario;
                     credenciales.ClaveHacienda = strClave;
                     credenciales.NombreCertificado = strNombreCertificado;
                     credenciales.PinCertificado = strPin;
-                    credenciales.Certificado = bytCertificado;
+                    if (strCertificado != "")
+                    {
+                        byte[] bytCertificado = Convert.FromBase64String(strCertificado);
+                        credenciales.Certificado = bytCertificado;
+                    }
                     dbContext.NotificarModificacion(credenciales);
                     dbContext.Commit();
                 }

@@ -1203,6 +1203,7 @@ Partial Class FrmEmpresa
         Me.txtPinCertificado.Location = New System.Drawing.Point(104, 52)
         Me.txtPinCertificado.MaxLength = 4
         Me.txtPinCertificado.Name = "txtPinCertificado"
+        Me.txtPinCertificado.ReadOnly = True
         Me.txtPinCertificado.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtPinCertificado.Size = New System.Drawing.Size(44, 20)
         Me.txtPinCertificado.TabIndex = 51

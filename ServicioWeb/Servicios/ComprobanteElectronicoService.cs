@@ -2435,23 +2435,5 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 throw ex;
             }
         }
-
-        public static void ValidarCertificado(string pinCertificado, byte[] bytCertificado)
-        {
-            try
-            {
-                X509Certificate2 uidCert = new X509Certificate2(bytCertificado, pinCertificado, X509KeyStorageFlags.MachineKeySet);
-                if (uidCert.NotAfter <= DateTime.Now) throw new BusinessException("La llave criptográfica para la firma del documento electrónico se encuentra vencida. Por favor reemplace su llave criptográfica para poder emitir documentos electrónicos");
-            }
-            catch (BusinessException ex)
-            {
-                throw ex;
-            }
-            catch (Exception ex)
-            {
-                log.Error("Error al validar el certificado con el respectivo pin: ", ex);
-                throw new BusinessException("No se logró abrir la llave criptográfica con el pin suministrado. Por favor verifique la información registrada");
-            }
-        }
     }
 }

@@ -104,8 +104,12 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
         bool bolFiltraConDescuento;
         bool bolNulo;
         bool bolAplicado;
-        string strClave;
         string strIdentificacion;
+        string strUsuario;
+        string strClave;
+        string strNombreCertificado;
+        string strPin;
+        string strCertificado;
         string strCodigo;
         string strCodigoProveedor;
         string strDescripcion;
@@ -407,13 +411,30 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                         servicioMantenimiento.ActualizarLogoEmpresa(intIdEmpresa, "");
                         break;
+                    case "AgregarCredencialesHacienda":
+                        strIdentificacion = parametrosJO.Property("Identificacion").Value.ToString();
+                        strUsuario = parametrosJO.Property("Usuario").Value.ToString();
+                        strClave = parametrosJO.Property("Clave").Value.ToString();
+                        strNombreCertificado = parametrosJO.Property("NombreCertificado").Value.ToString();
+                        strPin = parametrosJO.Property("PinCertificado").Value.ToString();
+                        strCertificado = parametrosJO.Property("Certificado").Value.ToString();
+                        byte[] bytCertificado = Convert.FromBase64String(strCertificado);
+                        credenciales = new CredencialesHacienda();
+                        credenciales.Identificacion = strIdentificacion;
+                        credenciales.UsuarioHacienda = strUsuario;
+                        credenciales.ClaveHacienda = strClave;
+                        credenciales.NombreCertificado = strNombreCertificado;
+                        credenciales.PinCertificado = strPin;
+                        credenciales.Certificado = bytCertificado;
+                        servicioMantenimiento.AgregarCredencialesHacienda(credenciales);
+                        break;
                     case "ActualizarCredencialesHacienda":
-                        string strIdentificacion = parametrosJO.Property("Identificacion").Value.ToString();
-                        string strUsuario = parametrosJO.Property("Usuario").Value.ToString();
-                        string strClave = parametrosJO.Property("Clave").Value.ToString();
-                        string strNombreCertificado = parametrosJO.Property("NombreCertificado").Value.ToString();
-                        string strPin = parametrosJO.Property("PinCertificado").Value.ToString();
-                        string strCertificado = parametrosJO.Property("Certificado").Value.ToString();
+                        strIdentificacion = parametrosJO.Property("Identificacion").Value.ToString();
+                        strUsuario = parametrosJO.Property("Usuario").Value.ToString();
+                        strClave = parametrosJO.Property("Clave").Value.ToString();
+                        strNombreCertificado = parametrosJO.Property("NombreCertificado").Value.ToString();
+                        strPin = parametrosJO.Property("PinCertificado").Value.ToString();
+                        strCertificado = parametrosJO.Property("Certificado").Value.ToString();
                         servicioMantenimiento.ActualizarCredencialesHacienda(strIdentificacion, strUsuario, strClave, strNombreCertificado, strPin, strCertificado);
                         break;
                     case "ActualizarSucursalPorEmpresa":
@@ -711,6 +732,16 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         intIdLlave1 = int.Parse(parametrosJO.Property("IdDocumento").Value.ToString());
                         servicioFacturacion.ReprocesarDocumentoElectronico(intIdLlave1, configuracionGeneral);
                         break;
+                    case "ValidarCredencialesHacienda":
+                        strCodigo = parametrosJO.Property("CodigoUsuario").Value.ToString();
+                        strClave = parametrosJO.Property("Clave").Value.ToString();
+                        servicioMantenimiento.ValidarCredencialesHacienda(strCodigo, strClave, configuracionGeneral);
+                        break;
+                    case "ValidarCertificadoHacienda":
+                        strPin = parametrosJO.Property("PinCertificado").Value.ToString();
+                        strCertificado = parametrosJO.Property("Certificado").Value.ToString();
+                        servicioMantenimiento.ValidarCertificadoHacienda(strPin, strCertificado);
+                        break;
                     case "EnviarReportePorCorreoElectronico":
                         intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                         intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
@@ -783,12 +814,6 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         break;
                     case "ObtenerTipoCambioDolar":
                         strRespuesta = decTipoCambioDolar.ToString();
-                        break;
-                    case "ValidarUsuarioHacienda":
-                        strCodigo = parametrosJO.Property("CodigoUsuario").Value.ToString();
-                        strClave = parametrosJO.Property("Clave").Value.ToString();
-                        bool bolValido = servicioMantenimiento.ValidarUsuarioHacienda(strCodigo, strClave, configuracionGeneral);
-                        strRespuesta = serializer.Serialize(bolValido);
                         break;
                     case "ObtenerListadoTipodePrecio":
                         IList<LlaveDescripcion> listadoTipodePrecio = servicioMantenimiento.ObtenerListadoTipodePrecio();

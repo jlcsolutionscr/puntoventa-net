@@ -11,12 +11,12 @@ Public Class FrmEmpresa
     Private credenciales As CredencialesHacienda
     Private datosSucursal As SucursalPorEmpresa
     Private datosTerminal As TerminalPorSucursal
-    Private bolReady As Boolean = False
+    Private bolInicializado As Boolean = False
     Private bolSucursalActualizada As Boolean = False
     Private bolTerminalActualizada As Boolean = False
-    Private bolCertificadoModificado As Boolean = False
     Private bolLogoModificado As Boolean = False
-    Private strRutaCertificado As String
+    Private bolCredencialesModificados As Boolean = False
+    Private bytCertificado As Byte() = Nothing
 #End Region
 
 #Region "Métodos"
@@ -108,10 +108,12 @@ Public Class FrmEmpresa
             txtFechaRenovacion.Text = Format(datos.FechaVence, "dd/MM/yyyy")
             chkPrecioVentaIncluyeIVA.Checked = datos.PrecioVentaIncluyeIVA
             txtMontoRedondeoDescuento.Text = datos.MontoRedondeoDescuento
-            txtNombreCertificado.Text = credenciales.NombreCertificado
-            txtPinCertificado.Text = credenciales.PinCertificado
-            txtUsuarioATV.Text = credenciales.UsuarioHacienda
-            txtClaveATV.Text = credenciales.ClaveHacienda
+            If credenciales IsNot Nothing Then
+                txtNombreCertificado.Text = credenciales.NombreCertificado
+                txtPinCertificado.Text = credenciales.PinCertificado
+                txtUsuarioATV.Text = credenciales.UsuarioHacienda
+                txtClaveATV.Text = credenciales.ClaveHacienda
+            End If
             txtIdSucursal.Text = datosSucursal.IdSucursal
             txtNombreSucursal.Text = datosSucursal.NombreSucursal
             txtDireccionSucursal.Text = datosSucursal.Direccion
@@ -137,7 +139,7 @@ Public Class FrmEmpresa
                 End Using
                 picLogo.Image = logoImage
             End If
-            bolReady = False
+            bolInicializado = True
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -169,29 +171,6 @@ Public Class FrmEmpresa
             MessageBox.Show("Existen campos requeridos que no fueron ingresados. Por favor verifique la información. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
         End If
-        If Not FrmPrincipal.empresaGlobal.RegimenSimplificado Then
-            If txtNombreCertificado.Text.Length = 0 Or
-                txtPinCertificado.Text.Length = 0 Or
-                txtUsuarioATV.Text.Length = 0 Or
-                txtClaveATV.Text.Length = 0 Or
-                txtCodigoActividad.Text.Length = 0 Then
-                MessageBox.Show("Los datos para generar los documentos electrónicos son requeridos. Por favor verifique la información. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Exit Sub
-            End If
-            If txtUltimoFE.Text.Length = 0 Or
-                txtUltimoND.Text.Length = 0 Or
-                txtUltimoNC.Text.Length = 0 Or
-                txtUltimoTE.Text.Length = 0 Or
-                txtUltimoMR.Text.Length = 0 Then
-                MessageBox.Show("La numeración de los últimos documentos electrónicos es requerida. Por favor verifique la información. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Exit Sub
-            End If
-            Dim usuarioValido As Boolean = Await Puntoventa.ValidarUsuarioHacienda(txtUsuarioATV.Text, txtClaveATV.Text, FrmPrincipal.usuarioGlobal.Token)
-            If usuarioValido = False Then
-                MessageBox.Show("Los credenciales para validar el usuario en el ATV son incorrectos. Por favor verifique la información. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Exit Sub
-            End If
-        End If
         datos.NombreEmpresa = txtNombreEmpresa.Text
         datos.NombreComercial = txtNombreComercial.Text
         datos.IdTipoIdentificacion = cboTipoIdentificacion.SelectedValue
@@ -212,15 +191,57 @@ Public Class FrmEmpresa
         datos.PrecioVentaIncluyeIVA = chkPrecioVentaIncluyeIVA.Checked
         datos.MontoRedondeoDescuento = txtMontoRedondeoDescuento.Text
         datos.Barrio = Nothing
+        If Not FrmPrincipal.empresaGlobal.RegimenSimplificado Then
+            If txtNombreCertificado.Text.Length = 0 Or
+                txtPinCertificado.Text.Length = 0 Or
+                txtUsuarioATV.Text.Length = 0 Or
+                txtClaveATV.Text.Length = 0 Or
+                txtCodigoActividad.Text.Length = 0 Then
+                MessageBox.Show("Los datos para generar los documentos electrónicos son requeridos. Por favor verifique la información. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Exit Sub
+            End If
+            If txtUltimoFE.Text.Length = 0 Or
+                txtUltimoND.Text.Length = 0 Or
+                txtUltimoNC.Text.Length = 0 Or
+                txtUltimoTE.Text.Length = 0 Or
+                txtUltimoMR.Text.Length = 0 Then
+                MessageBox.Show("La numeración de los últimos documentos electrónicos es requerida. Por favor verifique la información. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Exit Sub
+            End If
+            If credenciales Is Nothing Or bolCredencialesModificados Then
+                Try
+                    Await Puntoventa.ValidarCredencialesHacienda(txtUsuarioATV.Text, txtClaveATV.Text, FrmPrincipal.usuarioGlobal.Token)
+                Catch ex As Exception
+                    MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    Exit Sub
+                End Try
+            End If
+            If bytCertificado IsNot Nothing Then
+                Try
+                    Dim strCertificado = Convert.ToBase64String(bytCertificado)
+                    Await Puntoventa.ValidarCertificadoHacienda(txtPinCertificado.Text, strCertificado, FrmPrincipal.usuarioGlobal.Token)
+                Catch ex As Exception
+                    MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    Exit Sub
+                End Try
+            End If
+        End If
         Try
             btnCancelar.Focus()
             btnGuardar.Enabled = False
             Await Puntoventa.ActualizarEmpresa(datos, FrmPrincipal.usuarioGlobal.Token)
             FrmPrincipal.empresaGlobal.PrecioVentaIncluyeIVA = datos.PrecioVentaIncluyeIVA
             FrmPrincipal.empresaGlobal.MontoRedondeoDescuento = datos.MontoRedondeoDescuento
-            If bolCertificadoModificado And txtNombreCertificado.Text.Length > 0 Then
-                Dim bytCertificado As Byte() = File.ReadAllBytes(strRutaCertificado)
-                Await Puntoventa.ActualizarCredencialesHacienda(txtIdentificacion.Text, txtUsuarioATV.Text, txtClaveATV.Text, txtNombreCertificado.Text, txtPinCertificado.Text, Convert.ToBase64String(bytCertificado), FrmPrincipal.usuarioGlobal.Token)
+            If bolCredencialesModificados Then
+                Dim strCertificado As String = ""
+                If bytCertificado IsNot Nothing Then strCertificado = Convert.ToBase64String(bytCertificado)
+                If credenciales Is Nothing Then
+                    Await Puntoventa.AgregarCredencialesHacienda(txtIdentificacion.Text, txtUsuarioATV.Text, txtClaveATV.Text, txtNombreCertificado.Text, txtPinCertificado.Text, strCertificado, FrmPrincipal.usuarioGlobal.Token)
+                Else
+                    Await Puntoventa.ActualizarCredencialesHacienda(txtIdentificacion.Text, txtUsuarioATV.Text, txtClaveATV.Text, txtNombreCertificado.Text, txtPinCertificado.Text, strCertificado, FrmPrincipal.usuarioGlobal.Token)
+                End If
+
+                txtPinCertificado.ReadOnly = True
             End If
             If bolLogoModificado Then
                 If picLogo.Image IsNot Nothing Then
@@ -272,27 +293,29 @@ Public Class FrmEmpresa
     End Sub
 
     Private Async Sub CboProvincia_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboProvincia.SelectedIndexChanged
-        If bolReady Then
-            bolReady = False
+        If bolInicializado Then
+            bolInicializado = False
             cboCanton.DataSource = Await Puntoventa.ObtenerListadoCantones(cboProvincia.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
             cboDistrito.DataSource = Await Puntoventa.ObtenerListadoDistritos(cboProvincia.SelectedValue, 1, FrmPrincipal.usuarioGlobal.Token)
             cboBarrio.DataSource = Await Puntoventa.ObtenerListadoBarrios(cboProvincia.SelectedValue, 1, 1, FrmPrincipal.usuarioGlobal.Token)
-            bolReady = True
+            bolInicializado = True
         End If
     End Sub
 
     Private Async Sub CboCanton_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboCanton.SelectedIndexChanged
-        If bolReady Then
-            bolReady = False
+        If bolInicializado Then
+            bolInicializado = False
             cboDistrito.DataSource = Await Puntoventa.ObtenerListadoDistritos(cboProvincia.SelectedValue, cboCanton.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
             cboBarrio.DataSource = Await Puntoventa.ObtenerListadoBarrios(cboProvincia.SelectedValue, cboCanton.SelectedValue, 1, FrmPrincipal.usuarioGlobal.Token)
-            bolReady = True
+            bolInicializado = True
         End If
     End Sub
 
     Private Async Sub CboDistrito_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboDistrito.SelectedIndexChanged
-        If bolReady Then
+        If bolInicializado Then
+            bolInicializado = False
             cboBarrio.DataSource = Await Puntoventa.ObtenerListadoBarrios(cboProvincia.SelectedValue, cboCanton.SelectedValue, cboDistrito.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
+            bolInicializado = True
         End If
     End Sub
 
@@ -322,9 +345,11 @@ Public Class FrmEmpresa
         Dim result As DialogResult = ofdAbrirDocumento.ShowDialog()
         If result = DialogResult.OK Then
             Try
-                strRutaCertificado = ofdAbrirDocumento.FileName
+                Dim strRutaCertificado As String = ofdAbrirDocumento.FileName
                 txtNombreCertificado.Text = Path.GetFileName(strRutaCertificado)
-                bolCertificadoModificado = True
+                bytCertificado = File.ReadAllBytes(strRutaCertificado)
+                bolCredencialesModificados = True
+                txtPinCertificado.ReadOnly = False
             Catch ex As Exception
                 MessageBox.Show("Error al intentar cargar el certificado. Verifique que sea un archivo .p12 válido. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
@@ -354,7 +379,9 @@ Public Class FrmEmpresa
     End Sub
 
     Private Sub cboTipoImpresora_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboTipoImpresora.SelectedIndexChanged
-        bolTerminalActualizada = True
+        If bolInicializado Then
+            bolTerminalActualizada = True
+        End If
     End Sub
 
     Private Sub txtMontoRedondeoDescuento_Validated(sender As Object, e As EventArgs) Handles txtMontoRedondeoDescuento.Validated
@@ -362,6 +389,10 @@ Public Class FrmEmpresa
             MessageBox.Show("El monto de redondeo para los descuentos no puede ser mayor a 100", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Warning)
             txtMontoRedondeoDescuento.Text = "100"
         End If
+    End Sub
+
+    Private Sub CredencialesATV_Validated(sender As Object, e As EventArgs) Handles txtUsuarioATV.Validated, txtClaveATV.Validated
+        bolCredencialesModificados = True
     End Sub
 #End Region
 End Class
