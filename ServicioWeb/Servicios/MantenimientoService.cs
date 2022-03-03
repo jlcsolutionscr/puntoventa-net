@@ -407,7 +407,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (strUsuario.ToUpper() == "ADMIN")
                     {
                         usuario = dbContext.UsuarioRepository.Include("RolePorUsuario.Role").FirstOrDefault(x => x.IdUsuario == 1);
-                        usuario.IdSucursal = 1;
+                        usuario.IdSucursal = empresa.SucursalPorEmpresa.FirstOrDefault().IdSucursal;
                     }
                     else
                     {
@@ -474,7 +474,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (strUsuario.ToUpper() == "ADMIN")
                     {
                         usuario = dbContext.UsuarioRepository.Include("RolePorUsuario.Role").FirstOrDefault(x => x.IdUsuario == 1);
-                        usuario.IdSucursal = 1;
+                        usuario.IdSucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa).IdSucursal;
                     }
                     else
                     {
@@ -490,8 +490,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     SucursalPorEmpresa sucursal = null;
                     if (strUsuario.ToUpper() == "ADMIN")
                     {
-                        terminal = dbContext.TerminalPorSucursalRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa).FirstOrDefault();
-                        sucursal = dbContext.SucursalPorEmpresaRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa && x.IdSucursal == terminal.IdTerminal).FirstOrDefault();
+                        sucursal = dbContext.SucursalPorEmpresaRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa).FirstOrDefault();
+                        terminal = dbContext.TerminalPorSucursalRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa && x.IdSucursal == sucursal.IdSucursal).FirstOrDefault();
                     }
                     else
                     {
