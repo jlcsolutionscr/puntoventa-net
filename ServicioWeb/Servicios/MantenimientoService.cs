@@ -459,7 +459,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         private Empresa ObtenerEmpresaPorUsuario(IDbContext dbContext, string strUsuario, string strClave, int intIdEmpresa, string strValorRegistro)
         {
-            Empresa empresa = dbContext.EmpresaRepository.Include("ReportePorEmpresa.CatalogoReporte").Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.IdEmpresa == intIdEmpresa);
+            Empresa empresa = dbContext.EmpresaRepository.Include("SucursalPorEmpresa").Include("ReportePorEmpresa.CatalogoReporte").Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.IdEmpresa == intIdEmpresa);
             Usuario usuario = null;
             if (strUsuario.ToUpper() == "ADMIN")
             {
@@ -472,7 +472,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 if (empresa.FechaVence < DateTime.Today) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
                 usuario = dbContext.UsuarioRepository.Include("SucursalPorUsuario").Include("RolePorUsuario.Role").FirstOrDefault(x => x.SucursalPorUsuario.FirstOrDefault(y => y.IdEmpresa == empresa.IdEmpresa) != null && x.CodigoUsuario == strUsuario.ToUpper());
                 usuario.IdSucursal = usuario.SucursalPorUsuario.FirstOrDefault().IdSucursal;
-                usuario.SucursalPorUsuario = new SucursalPorUsuario[] { };
+                usuario.SucursalPorUsuario = new List<SucursalPorUsuario>();
             }
             if (usuario == null) throw new BusinessException("Usuario no registrado en la empresa suministrada. Por favor verifique la información suministrada.");
             if (usuario.Clave != strClave) throw new BusinessException("Los credenciales suministrados no son válidos. Verifique los credenciales suministrados.");
@@ -500,7 +500,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 ImpresoraFactura = terminal.ImpresoraFactura,
                 AnchoLinea = terminal.AnchoLinea
             };
-            empresa.SucursalPorEmpresa = new SucursalPorEmpresa[] { };
             empresa.Logotipo = null;
             terminal.Empresa = null;
             empresa.EquipoRegistrado = equipo;
@@ -509,11 +508,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 reporte.Empresa = null;
             foreach (RolePorUsuario role in usuario.RolePorUsuario)
                 role.Usuario = null;
-            foreach (SucursalPorUsuario sucursalUsuario in usuario.SucursalPorUsuario)
-            {
-                sucursalUsuario.SucursalPorEmpresa.Empresa = null;
-                sucursalUsuario.Usuario = null;
-            }
+            foreach (SucursalPorEmpresa sucursalEmpresa in empresa.SucursalPorEmpresa)
+                sucursalEmpresa.Empresa = null;
             return empresa;
         }
 
