@@ -2213,7 +2213,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         {
                             try
                             {
-                                ProcesarMensajeReceptor(correo, config, true);
+                                ProcesarMensajeReceptor(dbContext, correo, config, true);
                                 servicioCorreo.EliminarMensaje(datos.CuentaIvaAcreditable, datos.ClaveIvaAcreditable, correo.MessageNumber);
                             }
                             catch (BusinessException ex)
@@ -2246,7 +2246,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         {
                             try
                             {
-                                ProcesarMensajeReceptor(correo, config, false);
+                                ProcesarMensajeReceptor(dbContext, correo, config, false);
                                 servicioCorreo.EliminarMensaje(datos.CuentaGastoNoAcreditable, datos.ClaveGastoNoAcreditable, correo.MessageNumber);
                             }
                             catch (BusinessException ex)
@@ -2283,7 +2283,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        void ProcesarMensajeReceptor(POPEmail correo, ConfiguracionGeneral datos, bool bolIvaAplicable)
+        void ProcesarMensajeReceptor(ILeandroContext dbContext, POPEmail correo, ConfiguracionGeneral datos, bool bolIvaAplicable)
         {
             string strDatos = "";
             string strError = "";
