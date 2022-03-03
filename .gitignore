@@ -5,10 +5,10 @@ bin/
 obj/
 App_Data/
 .vs/
-errorLog*.*
 .DS_Store
 
 ServicioWeb/Endpoints/Web.*
+ServicioWeb/Endpoints/errorLo*
 
 mobileapp/build/
 mobileapp/*.pbxuser
