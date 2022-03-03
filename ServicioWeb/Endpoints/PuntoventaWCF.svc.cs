@@ -167,7 +167,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                 log.Error("Error al consultar el tipo de cambio del dolar: ", ex);
                 throw new WebFaultException<string>(ex.Message, HttpStatusCode.SeeOther);
             }
-            try
+            /*try
             {
                 string strPath = HttpContext.Current.Server.MapPath("~");
                 string[] directoryEntries = Directory.GetFileSystemEntries(strPath, "errorlog-??-??-????.txt");
@@ -191,7 +191,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             catch (Exception ex)
             {
                 log.Error("Error al enviar los archivos historicos de errores del sistema: ", ex);
-            }
+            }*/
         }
 
         public string ObtenerUltimaVersionApp()

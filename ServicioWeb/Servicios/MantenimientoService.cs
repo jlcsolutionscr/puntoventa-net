@@ -400,56 +400,27 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         {
             using (IDbContext dbContext = localContainer.Resolve<IDbContext>())
             {
+                List<Empresa> listadoEmpresa = new List<Empresa>();
                 try
                 {
-                    Empresa empresa = dbContext.EmpresaRepository.Include("SucursalPorEmpresa").Include("ReportePorEmpresa.CatalogoReporte").Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.Identificacion == strIdentificacion);
-                    Usuario usuario = null;
-                    if (strUsuario.ToUpper() == "ADMIN")
+                    var identifiers = dbContext.EmpresaRepository.Where(x => x.Identificacion == strIdentificacion).Select(x => x.IdEmpresa).ToList();
+                    foreach (int id in identifiers)
                     {
-                        usuario = dbContext.UsuarioRepository.Include("RolePorUsuario.Role").FirstOrDefault(x => x.IdUsuario == 1);
-                        usuario.IdSucursal = empresa.SucursalPorEmpresa.FirstOrDefault().IdSucursal;
+                        try
+                        {
+                            Empresa empresa = ObtenerEmpresaPorUsuario(dbContext, strUsuario, strClave, id, "WebAPI");
+                            listadoEmpresa.Add(empresa);
+                        }
+                        catch (Exception ex)
+                        {
+
+                        }
                     }
-                    else
-                    {
-                        if (!empresa.PermiteFacturar) throw new BusinessException("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
-                        if (empresa.FechaVence < DateTime.Today) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
-                        usuario = dbContext.UsuarioRepository.Include("RolePorUsuario.Role").Include("SucursalPorUsuario").FirstOrDefault(x => x.SucursalPorUsuario.FirstOrDefault(z => z.IdEmpresa == empresa.IdEmpresa) != null && x.CodigoUsuario == strUsuario.ToUpper());
-                        usuario.IdSucursal = usuario.SucursalPorUsuario.FirstOrDefault().IdSucursal;
-                        usuario.SucursalPorUsuario = new SucursalPorUsuario[] { };
-                    }
-                    if (usuario == null) throw new BusinessException("Usuario no registrado en la empresa suministrada. Por favor verifique la información suministrada.");
-                    if (usuario.Clave != strClave) throw new BusinessException("Los credenciales suministrados no son válidos. Verifique los credenciales suministrados.");
-                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa && x.IdSucursal == usuario.IdSucursal).FirstOrDefault();
-                    TerminalPorSucursal terminal = dbContext.TerminalPorSucursalRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa && x.IdTerminal == 1).FirstOrDefault();
-                    if (terminal == null || sucursal == null) throw new BusinessException("La terminal o dispositivo movil no se encuentra registrado para la empresa suministrada.");
-                    EquipoRegistrado equipo = new EquipoRegistrado
-                    {
-                        IdSucursal = sucursal.IdSucursal,
-                        IdTerminal = terminal.IdTerminal,
-                        NombreSucursal = sucursal.NombreSucursal,
-                        DireccionSucursal = sucursal.Direccion,
-                        TelefonoSucursal = sucursal.Telefono,
-                        ImpresoraFactura = terminal.ImpresoraFactura,
-                        AnchoLinea = terminal.AnchoLinea
-                    };
+                    if (listadoEmpresa.Count == 0) throw new BusinessException("Los credenciales suministrados no son válidos. Verifique los credenciales suministrados.");
+                    if (listadoEmpresa.Count > 1) throw new BusinessException("Existe mas de un registro de usuario para La identificacion ingresada. Por favor contacte con su proveedor.");
                     string strToken = GenerarRegistroAutenticacion(StaticRolePorUsuario.USUARIO_SISTEMA);
-                    usuario.Token = strToken;
-                    empresa.Logotipo = null;
-                    terminal.Empresa = null;
-                    empresa.EquipoRegistrado = equipo;
-                    empresa.Usuario = usuario;
-                    foreach (SucursalPorEmpresa sucursalPorEmpresa in empresa.SucursalPorEmpresa)
-                        sucursalPorEmpresa.Empresa = null;
-                    foreach (ReportePorEmpresa reporte in empresa.ReportePorEmpresa)
-                        reporte.Empresa = null;
-                    foreach (RolePorUsuario role in usuario.RolePorUsuario)
-                        role.Usuario = null;
-                    foreach (SucursalPorUsuario sucursalUsuario in usuario.SucursalPorUsuario)
-                    {
-                        sucursalUsuario.SucursalPorEmpresa.Empresa = null;
-                        sucursalUsuario.Usuario = null;
-                    }
-                    return empresa;
+                    listadoEmpresa[0].Usuario.Token = strToken;
+                    return listadoEmpresa[0];
                 }
                 catch (BusinessException ex)
                 {
@@ -469,63 +440,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    Empresa empresa = dbContext.EmpresaRepository.Include("ReportePorEmpresa.CatalogoReporte").Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.IdEmpresa == intIdEmpresa);
-                    Usuario usuario = null;
-                    if (strUsuario.ToUpper() == "ADMIN")
-                    {
-                        usuario = dbContext.UsuarioRepository.Include("RolePorUsuario.Role").FirstOrDefault(x => x.IdUsuario == 1);
-                        usuario.IdSucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa).IdSucursal;
-                    }
-                    else
-                    {
-                        if (!empresa.PermiteFacturar) throw new BusinessException("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
-                        if (empresa.FechaVence < DateTime.Today) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
-                        usuario = dbContext.UsuarioRepository.Include("SucursalPorUsuario").Include("RolePorUsuario.Role").FirstOrDefault(x => x.SucursalPorUsuario.FirstOrDefault(y => y.IdEmpresa == empresa.IdEmpresa) != null && x.CodigoUsuario == strUsuario.ToUpper());
-                        usuario.IdSucursal = usuario.SucursalPorUsuario.FirstOrDefault().IdSucursal;
-                        usuario.SucursalPorUsuario = new SucursalPorUsuario[] { };
-                    }
-                    if (usuario == null) throw new BusinessException("Usuario no registrado en la empresa suministrada. Por favor verifique la información suministrada.");
-                    if (usuario.Clave != strClave) throw new BusinessException("Los credenciales suministrados no son válidos. Verifique los credenciales suministrados.");
-                    TerminalPorSucursal terminal = null;
-                    SucursalPorEmpresa sucursal = null;
-                    if (strUsuario.ToUpper() == "ADMIN")
-                    {
-                        sucursal = dbContext.SucursalPorEmpresaRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa).FirstOrDefault();
-                        terminal = dbContext.TerminalPorSucursalRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa && x.IdSucursal == sucursal.IdSucursal).FirstOrDefault();
-                    }
-                    else
-                    {
-                        terminal = dbContext.TerminalPorSucursalRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa && x.ValorRegistro == strValorRegistro).FirstOrDefault();
-                        if (terminal == null) throw new BusinessException("El dispositivo no se encuentra registrado en el sistema.");
-                        sucursal = dbContext.SucursalPorEmpresaRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa && x.IdSucursal == terminal.IdSucursal).FirstOrDefault();
-                    }
-                    if (terminal == null || sucursal == null) throw new BusinessException("La terminal o dispositivo movil no se encuentra registrado para la empresa suministrada.");
-                    EquipoRegistrado equipo = new EquipoRegistrado
-                    {
-                        IdSucursal = sucursal.IdSucursal,
-                        IdTerminal = terminal.IdTerminal,
-                        NombreSucursal = sucursal.NombreSucursal,
-                        DireccionSucursal = sucursal.Direccion,
-                        TelefonoSucursal = sucursal.Telefono,
-                        ImpresoraFactura = terminal.ImpresoraFactura,
-                        AnchoLinea = terminal.AnchoLinea
-                    };
-                    empresa.SucursalPorEmpresa = new SucursalPorEmpresa[] { };
+                    Empresa empresa = ObtenerEmpresaPorUsuario(dbContext, strUsuario, strClave, intIdEmpresa, strValorRegistro);
                     string strToken = GenerarRegistroAutenticacion(StaticRolePorUsuario.USUARIO_SISTEMA);
-                    usuario.Token = strToken;
-                    empresa.Logotipo = null;
-                    terminal.Empresa = null;
-                    empresa.EquipoRegistrado = equipo;
-                    empresa.Usuario = usuario;
-                    foreach (ReportePorEmpresa reporte in empresa.ReportePorEmpresa)
-                        reporte.Empresa = null;
-                    foreach (RolePorUsuario role in usuario.RolePorUsuario)
-                        role.Usuario = null;
-                    foreach (SucursalPorUsuario sucursalUsuario in usuario.SucursalPorUsuario)
-                    {
-                        sucursalUsuario.SucursalPorEmpresa.Empresa = null;
-                        sucursalUsuario.Usuario = null;
-                    }
+                    empresa.Usuario.Token = strToken;
                     return empresa;
                 }
                 catch (BusinessException ex)
@@ -538,6 +455,66 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     throw new Exception("Error en la validación de los credenciales suministrados por favor verifique la información. . .");
                 }
             }
+        }
+
+        private Empresa ObtenerEmpresaPorUsuario(IDbContext dbContext, string strUsuario, string strClave, int intIdEmpresa, string strValorRegistro)
+        {
+            Empresa empresa = dbContext.EmpresaRepository.Include("ReportePorEmpresa.CatalogoReporte").Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.IdEmpresa == intIdEmpresa);
+            Usuario usuario = null;
+            if (strUsuario.ToUpper() == "ADMIN")
+            {
+                usuario = dbContext.UsuarioRepository.Include("RolePorUsuario.Role").FirstOrDefault(x => x.IdUsuario == 1);
+                usuario.IdSucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa).IdSucursal;
+            }
+            else
+            {
+                if (!empresa.PermiteFacturar) throw new BusinessException("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
+                if (empresa.FechaVence < DateTime.Today) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
+                usuario = dbContext.UsuarioRepository.Include("SucursalPorUsuario").Include("RolePorUsuario.Role").FirstOrDefault(x => x.SucursalPorUsuario.FirstOrDefault(y => y.IdEmpresa == empresa.IdEmpresa) != null && x.CodigoUsuario == strUsuario.ToUpper());
+                usuario.IdSucursal = usuario.SucursalPorUsuario.FirstOrDefault().IdSucursal;
+                usuario.SucursalPorUsuario = new SucursalPorUsuario[] { };
+            }
+            if (usuario == null) throw new BusinessException("Usuario no registrado en la empresa suministrada. Por favor verifique la información suministrada.");
+            if (usuario.Clave != strClave) throw new BusinessException("Los credenciales suministrados no son válidos. Verifique los credenciales suministrados.");
+            TerminalPorSucursal terminal = null;
+            SucursalPorEmpresa sucursal = null;
+            if (strUsuario.ToUpper() == "ADMIN" || strValorRegistro == "WebAPI")
+            {
+                sucursal = dbContext.SucursalPorEmpresaRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa).FirstOrDefault();
+                terminal = dbContext.TerminalPorSucursalRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa && x.IdSucursal == sucursal.IdSucursal).FirstOrDefault();
+            }
+            else
+            {
+                terminal = dbContext.TerminalPorSucursalRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa && x.ValorRegistro == strValorRegistro).FirstOrDefault();
+                if (terminal == null) throw new BusinessException("El dispositivo no se encuentra registrado en el sistema.");
+                sucursal = dbContext.SucursalPorEmpresaRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa && x.IdSucursal == terminal.IdSucursal).FirstOrDefault();
+            }
+            if (terminal == null || sucursal == null) throw new BusinessException("La terminal o dispositivo movil no se encuentra registrado para la empresa suministrada.");
+            EquipoRegistrado equipo = new EquipoRegistrado
+            {
+                IdSucursal = sucursal.IdSucursal,
+                IdTerminal = terminal.IdTerminal,
+                NombreSucursal = sucursal.NombreSucursal,
+                DireccionSucursal = sucursal.Direccion,
+                TelefonoSucursal = sucursal.Telefono,
+                ImpresoraFactura = terminal.ImpresoraFactura,
+                AnchoLinea = terminal.AnchoLinea
+            };
+            empresa.SucursalPorEmpresa = new SucursalPorEmpresa[] { };
+            empresa.Logotipo = null;
+            terminal.Empresa = null;
+            empresa.EquipoRegistrado = equipo;
+            empresa.Usuario = usuario;
+            foreach (ReportePorEmpresa reporte in empresa.ReportePorEmpresa)
+                reporte.Empresa = null;
+            foreach (RolePorUsuario role in usuario.RolePorUsuario)
+                role.Usuario = null;
+            foreach (SucursalPorUsuario sucursalUsuario in usuario.SucursalPorUsuario)
+            {
+                sucursalUsuario.SucursalPorEmpresa.Empresa = null;
+                sucursalUsuario.Usuario = null;
+            }
+            return empresa;
         }
 
         public void ValidarCredencialesHacienda(string strUsuario, string strClave, ConfiguracionGeneral config)
