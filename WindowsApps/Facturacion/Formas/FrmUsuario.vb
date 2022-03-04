@@ -11,7 +11,6 @@ Public Class FrmUsuario
     Private dtrRolePorUsuario As DataRow
     Private datos As Usuario
     Private rolePorUsuario As RolePorUsuario
-    Private sucursalPorUsuario As SucursalPorUsuario
     Private inicializando As Boolean = True
     Public intIdUsuario As Integer
 #End Region
@@ -132,7 +131,7 @@ Public Class FrmUsuario
                 txtPassword.Text = strDecryptedPassword
                 txtPorcMaxDescuento.Text = datos.PorcMaxDescuento
                 chkRegistraDispositivo.Checked = datos.PermiteRegistrarDispositivo
-                cboSucursal.SelectedValue = datos.SucursalPorUsuario.ToList()(0).IdSucursal
+                cboSucursal.SelectedValue = datos.IdSucursal
                 CargarDetalleRole(datos)
             Else
                 txtUsuario.ReadOnly = False
@@ -158,16 +157,6 @@ Public Class FrmUsuario
             Exit Sub
         End If
         Dim strEncryptedPassword As String
-        If datos.IdUsuario = 0 Then
-            sucursalPorUsuario = New SucursalPorUsuario With {
-                .IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa,
-                .IdSucursal = FrmPrincipal.equipoGlobal.IdSucursal
-            }
-            Dim listaSucursalPorUsuario As List(Of SucursalPorUsuario) = New List(Of SucursalPorUsuario) From {
-                sucursalPorUsuario
-            }
-            datos.SucursalPorUsuario = listaSucursalPorUsuario
-        End If
         Try
             strEncryptedPassword = Encriptador.EncriptarDatos(txtPassword.Text)
         Catch ex As Exception
@@ -176,6 +165,8 @@ Public Class FrmUsuario
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         End Try
+        datos.IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa
+        datos.IdSucursal = cboSucursal.SelectedValue
         datos.CodigoUsuario = txtUsuario.Text
         datos.Clave = strEncryptedPassword
         datos.PorcMaxDescuento = txtPorcMaxDescuento.Text

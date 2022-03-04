@@ -37,7 +37,7 @@ namespace LeandroSoftware.ClienteWCF
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
             HttpResponseMessage httpResponse = await httpClient.GetAsync(strServicioURL + "/obtenerultimaversionapp");
-            if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
+            if (httpResponse.StatusCode == HttpStatusCode.SeeOther)
             {
                 string strError = JsonConvert.DeserializeObject<string>(httpResponse.Content.ReadAsStringAsync().Result);
                 throw new Exception(strError);
@@ -56,7 +56,7 @@ namespace LeandroSoftware.ClienteWCF
             if (strToken != "")
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", strToken);
             HttpResponseMessage httpResponse = await httpClient.PostAsync(strServicioURL + "/actualizarparametrosistema", contentJson);
-            if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
+            if (httpResponse.StatusCode == HttpStatusCode.SeeOther)
             {
                 string strError = JsonConvert.DeserializeObject<string>(httpResponse.Content.ReadAsStringAsync().Result);
                 throw new Exception(strError);
@@ -78,7 +78,7 @@ namespace LeandroSoftware.ClienteWCF
                 if (strToken != "")
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", strToken);
                 HttpResponseMessage httpResponse = await httpClient.GetAsync(strServicioURL + "/obtenerlistadoparametros");
-                if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
+                if (httpResponse.StatusCode == HttpStatusCode.SeeOther)
                 {
                     string strError = JsonConvert.DeserializeObject<string>(httpResponse.Content.ReadAsStringAsync().Result);
                     throw new Exception(strError);
@@ -105,7 +105,7 @@ namespace LeandroSoftware.ClienteWCF
             if (strToken != "")
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", strToken);
             HttpResponseMessage httpResponse = await httpClient.PostAsync(strServicioURL + "/actualizarparametrosistema", contentJson);
-            if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
+            if (httpResponse.StatusCode == HttpStatusCode.SeeOther)
             {
                 string strError = JsonConvert.DeserializeObject<string>(httpResponse.Content.ReadAsStringAsync().Result);
                 throw new Exception(strError);
@@ -121,7 +121,7 @@ namespace LeandroSoftware.ClienteWCF
                 string strEncryptedPassword = Encriptador.EncriptarDatos(strClave);
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
                 HttpResponseMessage httpResponse = await httpClient.GetAsync(strServicioURL + "/validarcredencialesadmin?usuario=" + strUsuario + "&clave=" + strEncryptedPassword);
-                if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
+                if (httpResponse.StatusCode == HttpStatusCode.SeeOther)
                 {
                     string strError = httpResponse.Content.ReadAsStringAsync().Result;
                     throw new Exception(strError);
@@ -146,7 +146,7 @@ namespace LeandroSoftware.ClienteWCF
                 if (strToken != "")
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", strToken);
                 HttpResponseMessage httpResponse = await httpClient.GetAsync(strServicioURL + "/obtenerlistadoempresa");
-                if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
+                if (httpResponse.StatusCode == HttpStatusCode.SeeOther)
                 {
                     string strError = JsonConvert.DeserializeObject<string>(httpResponse.Content.ReadAsStringAsync().Result);
                     throw new Exception(strError);
@@ -173,7 +173,7 @@ namespace LeandroSoftware.ClienteWCF
                 if (strToken != "")
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", strToken);
                 HttpResponseMessage httpResponse = await httpClient.GetAsync(strServicioURL + "/obtenerempresa?idempresa=" + intIdEmpresa);
-                if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
+                if (httpResponse.StatusCode == HttpStatusCode.SeeOther)
                 {
                     string strError = JsonConvert.DeserializeObject<string>(httpResponse.Content.ReadAsStringAsync().Result);
                     throw new Exception(strError);
@@ -200,7 +200,7 @@ namespace LeandroSoftware.ClienteWCF
                 if (strToken != "")
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", strToken);
                 HttpResponseMessage httpResponse = await httpClient.GetAsync(strServicioURL + "/obtenerlistadoreporteporempresa?idempresa=" + intIdEmpresa);
-                if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
+                if (httpResponse.StatusCode == HttpStatusCode.SeeOther)
                 {
                     string strError = JsonConvert.DeserializeObject<string>(httpResponse.Content.ReadAsStringAsync().Result);
                     throw new Exception(strError);
@@ -227,7 +227,7 @@ namespace LeandroSoftware.ClienteWCF
                 if (strToken != "")
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", strToken);
                 HttpResponseMessage httpResponse = await httpClient.GetAsync(strServicioURL + "/obtenerlistadoroleporempresa?idempresa=" + intIdEmpresa);
-                if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
+                if (httpResponse.StatusCode == HttpStatusCode.SeeOther)
                 {
                     string strError = JsonConvert.DeserializeObject<string>(httpResponse.Content.ReadAsStringAsync().Result);
                     throw new Exception(strError);
@@ -254,7 +254,7 @@ namespace LeandroSoftware.ClienteWCF
                 if (strToken != "")
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", strToken);
                 HttpResponseMessage httpResponse = await httpClient.GetAsync(strServicioURL + "/obtenersucursalporempresa?idempresa=" + intIdEmpresa + "&idsucursal=" + intIdSucursal);
-                if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
+                if (httpResponse.StatusCode == HttpStatusCode.SeeOther)
                 {
                     string strError = JsonConvert.DeserializeObject<string>(httpResponse.Content.ReadAsStringAsync().Result);
                     throw new Exception(strError);
@@ -281,7 +281,7 @@ namespace LeandroSoftware.ClienteWCF
                 if (strToken != "")
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", strToken);
                 HttpResponseMessage httpResponse = await httpClient.GetAsync(strServicioURL + "/eliminarregistrosporempresa?idempresa=" + intIdEmpresa);
-                if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
+                if (httpResponse.StatusCode == HttpStatusCode.SeeOther)
                 {
                     string strError = JsonConvert.DeserializeObject<string>(httpResponse.Content.ReadAsStringAsync().Result);
                     throw new Exception(strError);
@@ -303,7 +303,7 @@ namespace LeandroSoftware.ClienteWCF
                 if (strToken != "")
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", strToken);
                 HttpResponseMessage httpResponse = await httpClient.GetAsync(strServicioURL + "/obtenerterminalporsucursal?idempresa=" + intIdEmpresa + "&idsucursal=" + intIdSucursal + "&idterminal=" + intIdTerminal);
-                if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
+                if (httpResponse.StatusCode == HttpStatusCode.SeeOther)
                 {
                     string strError = JsonConvert.DeserializeObject<string>(httpResponse.Content.ReadAsStringAsync().Result);
                     throw new Exception(strError);
@@ -330,7 +330,7 @@ namespace LeandroSoftware.ClienteWCF
                 if (strToken != "")
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", strToken);
                 HttpResponseMessage httpResponse = await httpClient.GetAsync(strServicioURL + "/obtenerlistadotipoidentificacion");
-                if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
+                if (httpResponse.StatusCode == HttpStatusCode.SeeOther)
                 {
                     string strError = JsonConvert.DeserializeObject<string>(httpResponse.Content.ReadAsStringAsync().Result);
                     throw new Exception(strError);
@@ -357,7 +357,7 @@ namespace LeandroSoftware.ClienteWCF
                 if (strToken != "")
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", strToken);
                 HttpResponseMessage httpResponse = await httpClient.GetAsync(strServicioURL + "/obtenerlistadocatalogoreportes");
-                if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
+                if (httpResponse.StatusCode == HttpStatusCode.SeeOther)
                 {
                     string strError = JsonConvert.DeserializeObject<string>(httpResponse.Content.ReadAsStringAsync().Result);
                     throw new Exception(strError);
@@ -384,7 +384,7 @@ namespace LeandroSoftware.ClienteWCF
                 if (strToken != "")
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", strToken);
                 HttpResponseMessage httpResponse = await httpClient.GetAsync(strServicioURL + "/obtenerlistadoroles");
-                if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
+                if (httpResponse.StatusCode == HttpStatusCode.SeeOther)
                 {
                     string strError = JsonConvert.DeserializeObject<string>(httpResponse.Content.ReadAsStringAsync().Result);
                     throw new Exception(strError);
@@ -411,7 +411,7 @@ namespace LeandroSoftware.ClienteWCF
                 if (strToken != "")
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", strToken);
                 HttpResponseMessage httpResponse = await httpClient.GetAsync(strServicioURL + "/obtenerlistadoprovincias");
-                if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
+                if (httpResponse.StatusCode == HttpStatusCode.SeeOther)
                 {
                     string strError = JsonConvert.DeserializeObject<string>(httpResponse.Content.ReadAsStringAsync().Result);
                     throw new Exception(strError);
@@ -438,7 +438,7 @@ namespace LeandroSoftware.ClienteWCF
                 if (strToken != "")
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", strToken);
                 HttpResponseMessage httpResponse = await httpClient.GetAsync(strServicioURL + "/obtenerlistadocantones?idprovincia=" + intIdProvincia);
-                if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
+                if (httpResponse.StatusCode == HttpStatusCode.SeeOther)
                 {
                     string strError = JsonConvert.DeserializeObject<string>(httpResponse.Content.ReadAsStringAsync().Result);
                     throw new Exception(strError);
@@ -465,7 +465,7 @@ namespace LeandroSoftware.ClienteWCF
                 if (strToken != "")
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", strToken);
                 HttpResponseMessage httpResponse = await httpClient.GetAsync(strServicioURL + "/obtenerlistadodistritos?idprovincia=" + intIdProvincia + "&idcanton=" + intIdCanton);
-                if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
+                if (httpResponse.StatusCode == HttpStatusCode.SeeOther)
                 {
                     string strError = JsonConvert.DeserializeObject<string>(httpResponse.Content.ReadAsStringAsync().Result);
                     throw new Exception(strError);
@@ -492,7 +492,7 @@ namespace LeandroSoftware.ClienteWCF
                 if (strToken != "")
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", strToken);
                 HttpResponseMessage httpResponse = await httpClient.GetAsync(strServicioURL + "/obtenerlistadobarrios?idprovincia=" + intIdProvincia + "&idcanton=" + intIdCanton + "&iddistrito=" + intIdDistrito);
-                if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
+                if (httpResponse.StatusCode == HttpStatusCode.SeeOther)
                 {
                     string strError = JsonConvert.DeserializeObject<string>(httpResponse.Content.ReadAsStringAsync().Result);
                     throw new Exception(strError);
@@ -520,7 +520,7 @@ namespace LeandroSoftware.ClienteWCF
                 if (strToken != "")
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", strToken);
                 HttpResponseMessage httpResponse = await httpClient.PostAsync(strServicioURL + "/agregarempresa", contentJson);
-                if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
+                if (httpResponse.StatusCode == HttpStatusCode.SeeOther)
                 {
                     string strError = JsonConvert.DeserializeObject<string>(httpResponse.Content.ReadAsStringAsync().Result);
                     throw new Exception(strError);
@@ -545,7 +545,7 @@ namespace LeandroSoftware.ClienteWCF
                 if (strToken != "")
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", strToken);
                 HttpResponseMessage httpResponse = await httpClient.PostAsync(strServicioURL + "/actualizarempresa", contentJson);
-                if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
+                if (httpResponse.StatusCode == HttpStatusCode.SeeOther)
                 {
                     string strError = JsonConvert.DeserializeObject<string>(httpResponse.Content.ReadAsStringAsync().Result);
                     throw new Exception(strError);
@@ -569,7 +569,7 @@ namespace LeandroSoftware.ClienteWCF
                 if (strToken != "")
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", strToken);
                 HttpResponseMessage httpResponse = await httpClient.PostAsync(strServicioURL + "/actualizarlistadoreportes", contentJson);
-                if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
+                if (httpResponse.StatusCode == HttpStatusCode.SeeOther)
                 {
                     string strError = JsonConvert.DeserializeObject<string>(httpResponse.Content.ReadAsStringAsync().Result);
                     throw new Exception(strError);
@@ -593,7 +593,7 @@ namespace LeandroSoftware.ClienteWCF
                 if (strToken != "")
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", strToken);
                 HttpResponseMessage httpResponse = await httpClient.PostAsync(strServicioURL + "/actualizarlistadoroles", contentJson);
-                if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
+                if (httpResponse.StatusCode == HttpStatusCode.SeeOther)
                 {
                     string strError = JsonConvert.DeserializeObject<string>(httpResponse.Content.ReadAsStringAsync().Result);
                     throw new Exception(strError);
@@ -616,7 +616,7 @@ namespace LeandroSoftware.ClienteWCF
                 if (strToken != "")
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", strToken);
                 HttpResponseMessage httpResponse = await httpClient.PostAsync(strServicioURL + "/actualizarlogoempresa", contentJson);
-                if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
+                if (httpResponse.StatusCode == HttpStatusCode.SeeOther)
                 {
                     string strError = JsonConvert.DeserializeObject<string>(httpResponse.Content.ReadAsStringAsync().Result);
                     throw new Exception(strError);
@@ -638,7 +638,7 @@ namespace LeandroSoftware.ClienteWCF
                 if (strToken != "")
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", strToken);
                 HttpResponseMessage httpResponse = await httpClient.GetAsync(strServicioURL + "/removerlogoempresaidempresa=" + intIdEmpresa);
-                if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
+                if (httpResponse.StatusCode == HttpStatusCode.SeeOther)
                 {
                     string strError = JsonConvert.DeserializeObject<string>(httpResponse.Content.ReadAsStringAsync().Result);
                     throw new Exception(strError);
@@ -661,7 +661,7 @@ namespace LeandroSoftware.ClienteWCF
                 if (strToken != "")
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", strToken);
                 HttpResponseMessage httpResponse = await httpClient.PostAsync(strServicioURL + "/actualizarcertificadoempresa", contentJson);
-                if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
+                if (httpResponse.StatusCode == HttpStatusCode.SeeOther)
                 {
                     string strError = JsonConvert.DeserializeObject<string>(httpResponse.Content.ReadAsStringAsync().Result);
                     throw new Exception(strError);
@@ -684,7 +684,7 @@ namespace LeandroSoftware.ClienteWCF
                 if (strToken != "")
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", strToken);
                 HttpResponseMessage httpResponse = await httpClient.PostAsync(strServicioURL + "/agregarsucursalporempresa", contentJson);
-                if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
+                if (httpResponse.StatusCode == HttpStatusCode.SeeOther)
                 {
                     string strError = JsonConvert.DeserializeObject<string>(httpResponse.Content.ReadAsStringAsync().Result);
                     throw new Exception(strError);
@@ -707,7 +707,7 @@ namespace LeandroSoftware.ClienteWCF
                 if (strToken != "")
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", strToken);
                 HttpResponseMessage httpResponse = await httpClient.PostAsync(strServicioURL + "/actualizarsucursalporempresa", contentJson);
-                if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
+                if (httpResponse.StatusCode == HttpStatusCode.SeeOther)
                 {
                     string strError = JsonConvert.DeserializeObject<string>(httpResponse.Content.ReadAsStringAsync().Result);
                     throw new Exception(strError);
@@ -730,7 +730,7 @@ namespace LeandroSoftware.ClienteWCF
                 if (strToken != "")
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", strToken);
                 HttpResponseMessage httpResponse = await httpClient.PostAsync(strServicioURL + "/agregarterminalporsucursal", contentJson);
-                if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
+                if (httpResponse.StatusCode == HttpStatusCode.SeeOther)
                 {
                     string strError = JsonConvert.DeserializeObject<string>(httpResponse.Content.ReadAsStringAsync().Result);
                     throw new Exception(strError);
@@ -753,7 +753,7 @@ namespace LeandroSoftware.ClienteWCF
                 if (strToken != "")
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", strToken);
                 HttpResponseMessage httpResponse = await httpClient.PostAsync(strServicioURL + "/actualizarterminalporsucursal", contentJson);
-                if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
+                if (httpResponse.StatusCode == HttpStatusCode.SeeOther)
                 {
                     string strError = JsonConvert.DeserializeObject<string>(httpResponse.Content.ReadAsStringAsync().Result);
                     throw new Exception(strError);
@@ -775,7 +775,7 @@ namespace LeandroSoftware.ClienteWCF
                 if (strToken != "")
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", strToken);
                 HttpResponseMessage httpResponse = await httpClient.GetAsync(strServicioURL + "/obtenerlistadodocumentospendientes");
-                if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
+                if (httpResponse.StatusCode == HttpStatusCode.SeeOther)
                 {
                     string strError = JsonConvert.DeserializeObject<string>(httpResponse.Content.ReadAsStringAsync().Result);
                     throw new Exception(strError);
@@ -800,7 +800,7 @@ namespace LeandroSoftware.ClienteWCF
             {
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
                 HttpResponseMessage httpResponse = await httpClient.GetAsync(strServicioURL + "/procesarpendientes");
-                if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
+                if (httpResponse.StatusCode == HttpStatusCode.SeeOther)
                 {
                     string strError = JsonConvert.DeserializeObject<string>(httpResponse.Content.ReadAsStringAsync().Result);
                     throw new Exception(strError);

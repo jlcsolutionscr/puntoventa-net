@@ -92,7 +92,7 @@ Public Class FrmPrincipal
         End If
     End Sub
 
-    Public Function ValidarEmpresa(empresa As Empresa)
+    Public Function ValidarEmpresa(empresa As Empresa, credenciales As CredencialesHacienda)
         If empresa.NombreEmpresa.Length = 0 Or
             empresa.IdTipoIdentificacion < 0 Or
             empresa.Identificacion.Length = 0 Or
@@ -109,10 +109,12 @@ Public Class FrmPrincipal
             Return False
         End If
         If Not empresa.RegimenSimplificado Then
-            If empresa.NombreCertificado.Length = 0 Or
-                empresa.PinCertificado.Length = 0 Or
-                empresa.UsuarioHacienda.Length = 0 Or
-                empresa.ClaveHacienda.Length = 0 Then
+            If credenciales Is Nothing Then
+                Return False
+            ElseIf credenciales.NombreCertificado.Length = 0 Or
+                credenciales.PinCertificado.Length = 0 Or
+                credenciales.UsuarioHacienda.Length = 0 Or
+                credenciales.ClaveHacienda.Length = 0 Then
                 Return False
             End If
         End If
@@ -611,7 +613,8 @@ Public Class FrmPrincipal
                 Next
             Next
         Else
-            If Not ValidarEmpresa(empresa) Then
+            Dim credenciales As CredencialesHacienda = Await Puntoventa.ObtenerCredencialesHacienda(empresa.IdEmpresa, usuarioGlobal.Token)
+            If Not ValidarEmpresa(empresa, credenciales) Then
                 If usuarioGlobal.RolePorUsuario.Where(Function(s) s.IdRole = 61).Count > 0 Then
                     MessageBox.Show("La información de la empresa requiere ser actualizada. Por favor ingrese al mantenimiento de Empresa para completar la información.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Try

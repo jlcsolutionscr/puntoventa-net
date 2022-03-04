@@ -25,7 +25,13 @@ Partial Class FrmLinea
         Me.txtIdLinea = New System.Windows.Forms.TextBox()
         Me._lblLabels_1 = New System.Windows.Forms.Label()
         Me._lblLabels_0 = New System.Windows.Forms.Label()
+        Me.cboSucursal = New System.Windows.Forms.ComboBox()
+        Me.btnEliminar = New System.Windows.Forms.Button()
+        Me.btnInsertar = New System.Windows.Forms.Button()
+        Me.dgvLineaPorSucursal = New System.Windows.Forms.DataGridView()
+        Me.Label4 = New System.Windows.Forms.Label()
         CType(Me.ClienteBindingSource, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.dgvLineaPorSucursal, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'btnCancelar
@@ -102,12 +108,85 @@ Partial Class FrmLinea
         Me._lblLabels_0.Text = "Id:"
         Me._lblLabels_0.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
+        'cboSucursal
+        '
+        Me.cboSucursal.FormattingEnabled = True
+        Me.cboSucursal.Location = New System.Drawing.Point(92, 105)
+        Me.cboSucursal.Name = "cboSucursal"
+        Me.cboSucursal.Size = New System.Drawing.Size(360, 21)
+        Me.cboSucursal.TabIndex = 63
+        '
+        'btnEliminar
+        '
+        Me.btnEliminar.BackColor = System.Drawing.SystemColors.ButtonHighlight
+        Me.btnEliminar.Cursor = System.Windows.Forms.Cursors.Default
+        Me.btnEliminar.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.btnEliminar.Location = New System.Drawing.Point(388, 264)
+        Me.btnEliminar.Name = "btnEliminar"
+        Me.btnEliminar.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.btnEliminar.Size = New System.Drawing.Size(64, 21)
+        Me.btnEliminar.TabIndex = 60
+        Me.btnEliminar.TabStop = False
+        Me.btnEliminar.Text = "&Eliminar"
+        Me.btnEliminar.UseVisualStyleBackColor = False
+        '
+        'btnInsertar
+        '
+        Me.btnInsertar.BackColor = System.Drawing.SystemColors.ButtonHighlight
+        Me.btnInsertar.Cursor = System.Windows.Forms.Cursors.Default
+        Me.btnInsertar.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.btnInsertar.Location = New System.Drawing.Point(322, 264)
+        Me.btnInsertar.Name = "btnInsertar"
+        Me.btnInsertar.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.btnInsertar.Size = New System.Drawing.Size(64, 21)
+        Me.btnInsertar.TabIndex = 61
+        Me.btnInsertar.TabStop = False
+        Me.btnInsertar.Text = "&Insertar"
+        Me.btnInsertar.UseVisualStyleBackColor = False
+        '
+        'dgvLineaPorSucursal
+        '
+        Me.dgvLineaPorSucursal.AllowUserToAddRows = False
+        Me.dgvLineaPorSucursal.AllowUserToDeleteRows = False
+        Me.dgvLineaPorSucursal.AllowUserToResizeColumns = False
+        Me.dgvLineaPorSucursal.AllowUserToResizeRows = False
+        Me.dgvLineaPorSucursal.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        Me.dgvLineaPorSucursal.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter
+        Me.dgvLineaPorSucursal.Location = New System.Drawing.Point(12, 132)
+        Me.dgvLineaPorSucursal.MultiSelect = False
+        Me.dgvLineaPorSucursal.Name = "dgvLineaPorSucursal"
+        Me.dgvLineaPorSucursal.ReadOnly = True
+        Me.dgvLineaPorSucursal.RowHeadersVisible = False
+        Me.dgvLineaPorSucursal.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing
+        Me.dgvLineaPorSucursal.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
+        Me.dgvLineaPorSucursal.Size = New System.Drawing.Size(440, 126)
+        Me.dgvLineaPorSucursal.TabIndex = 62
+        Me.dgvLineaPorSucursal.TabStop = False
+        '
+        'Label4
+        '
+        Me.Label4.BackColor = System.Drawing.Color.Transparent
+        Me.Label4.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label4.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label4.Location = New System.Drawing.Point(22, 106)
+        Me.Label4.Name = "Label4"
+        Me.Label4.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label4.Size = New System.Drawing.Size(64, 17)
+        Me.Label4.TabIndex = 64
+        Me.Label4.Text = "Sucursal:"
+        Me.Label4.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
         'FrmLinea
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
-        Me.ClientSize = New System.Drawing.Size(464, 112)
+        Me.ClientSize = New System.Drawing.Size(464, 299)
+        Me.Controls.Add(Me.Label4)
+        Me.Controls.Add(Me.cboSucursal)
+        Me.Controls.Add(Me.btnEliminar)
+        Me.Controls.Add(Me.btnInsertar)
+        Me.Controls.Add(Me.dgvLineaPorSucursal)
         Me.Controls.Add(Me.txtDescripcion)
         Me.Controls.Add(Me.txtIdLinea)
         Me.Controls.Add(Me._lblLabels_1)
@@ -119,14 +198,15 @@ Partial Class FrmLinea
         Me.KeyPreview = True
         Me.Location = New System.Drawing.Point(73, 22)
         Me.MaximizeBox = False
-        Me.MaximumSize = New System.Drawing.Size(480, 150)
+        Me.MaximumSize = New System.Drawing.Size(480, 338)
         Me.MinimizeBox = False
-        Me.MinimumSize = New System.Drawing.Size(480, 150)
+        Me.MinimumSize = New System.Drawing.Size(480, 338)
         Me.Name = "FrmLinea"
         Me.ShowInTaskbar = False
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Actualización de Datos"
         CType(Me.ClienteBindingSource, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.dgvLineaPorSucursal, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -138,4 +218,9 @@ Partial Class FrmLinea
     Public WithEvents txtIdLinea As System.Windows.Forms.TextBox
     Public WithEvents _lblLabels_1 As System.Windows.Forms.Label
     Public WithEvents _lblLabels_0 As System.Windows.Forms.Label
+    Friend WithEvents cboSucursal As ComboBox
+    Public WithEvents btnEliminar As Button
+    Public WithEvents btnInsertar As Button
+    Friend WithEvents dgvLineaPorSucursal As DataGridView
+    Public WithEvents Label4 As Label
 End Class

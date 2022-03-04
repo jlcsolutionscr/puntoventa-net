@@ -22,7 +22,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         Usuario ValidarCredencialesAdmin(string strUsuario, string strClave);
         Empresa ValidarCredenciales(string strUsuario, string strClave, string id);
         Empresa ValidarCredenciales(string strUsuario, string strClave, int intIdEmpresa, string strValorRegistro);
-        bool ValidarUsuarioHacienda(string strUsuario, string strClave, ConfiguracionGeneral config);
         decimal AutorizacionPorcentaje(string strUsuario, string strClave, int intIdEmpresa);
         string ObtenerUltimaVersionApp();
         string ObtenerUltimaVersionMobileApp();
@@ -672,7 +671,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 Empresa noTracking = dbContext.EmpresaRepository.AsNoTracking().Where(x => x.IdEmpresa == empresa.IdEmpresa).FirstOrDefault();
                 empresa.Barrio = null;
-                if (noTracking != null && noTracking.Certificado != null) empresa.Certificado = noTracking.Certificado;
                 if (noTracking != null && noTracking.Logotipo != null) empresa.Logotipo = noTracking.Logotipo;
                 if (empresa.Logotipo == null) empresa.Logotipo = new byte[0];
                 dbContext.NotificarModificacion(empresa);
@@ -1017,10 +1015,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 usuario.CodigoUsuario = usuario.CodigoUsuario.ToUpper();
                 if (usuario.CodigoUsuario == "ADMIN" || usuario.CodigoUsuario == "CONTADOR") throw new BusinessException("El código de usuario ingresado no se encuentra disponible. Por favor modifique la información suministrada.");
-                if (usuario.SucursalPorUsuario.Count == 0) throw new BusinessException("El usuario por modificar debe estar vinculado a la empresa actual. Por favor, pongase en contacto con su proveedor del servicio.");
-                Empresa empresa = dbContext.EmpresaRepository.Find(usuario.SucursalPorUsuario.FirstOrDefault().IdEmpresa);
+                if (usuario.IdEmpresa == null || usuario.IdSucursal == null) throw new BusinessException("El usuario por modificar debe estar vinculado a la empresa actual. Por favor, pongase en contacto con su proveedor del servicio.");
+                Empresa empresa = dbContext.EmpresaRepository.Find(usuario.IdEmpresa);
                 if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                Usuario usuarioExistente = dbContext.UsuarioRepository.FirstOrDefault(x => x.SucursalPorUsuario.FirstOrDefault().IdEmpresa == empresa.IdEmpresa && x.CodigoUsuario.Contains(usuario.CodigoUsuario.ToUpper()));
+                Usuario usuarioExistente = dbContext.UsuarioRepository.FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa && x.CodigoUsuario.Contains(usuario.CodigoUsuario.ToUpper()));
                 if (usuarioExistente != null) throw new BusinessException("El código de usuario que desea agregar ya existe para la empresa suministrada.");
                 usuario.Clave = usuario.Clave;
                 dbContext.UsuarioRepository.Add(usuario);
@@ -1044,8 +1042,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 usuario.CodigoUsuario = usuario.CodigoUsuario.ToUpper();
                 if (usuario.CodigoUsuario == "ADMIN" || usuario.CodigoUsuario == "CONTADOR") throw new BusinessException("El código de usuario ingresado no se encuentra disponible. Por favor modifique la información suministrada.");
-                if (usuario.SucursalPorUsuario.Count == 0) throw new BusinessException("El usuario por modificar debe estar vinculado a la empresa actual. Por favor, pongase en contacto con su proveedor del servicio.");
-                Empresa empresa = dbContext.EmpresaRepository.Find(usuario.SucursalPorUsuario.FirstOrDefault().IdEmpresa);
+                if (usuario.IdEmpresa == null || usuario.IdSucursal == null) throw new BusinessException("El usuario por modificar debe estar vinculado a la empresa actual. Por favor, pongase en contacto con su proveedor del servicio.");
+                Empresa empresa = dbContext.EmpresaRepository.Find(usuario.IdEmpresa);
                 if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                 List<RolePorUsuario> listadoDetalleAnterior = dbContext.RolePorUsuarioRepository.Where(x => x.IdUsuario == usuario.IdUsuario).ToList();
                 List<RolePorUsuario> listadoDetalle = usuario.RolePorUsuario.ToList();
@@ -1075,8 +1073,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 Usuario usuario = usuario = dbContext.UsuarioRepository.FirstOrDefault(x => x.IdUsuario == intIdUsuario);
                 if (usuario == null) throw new Exception("El usuario seleccionado para la actualización de la clave no existe.");
-                if (usuario.SucursalPorUsuario.Count == 0) throw new BusinessException("El usuario por modificar debe estar vinculado a la empresa actual. Por favor, pongase en contacto con su proveedor del servicio.");
-                Empresa empresa = dbContext.EmpresaRepository.Find(usuario.SucursalPorUsuario.FirstOrDefault().IdEmpresa);
+                if (usuario.IdEmpresa == null || usuario.IdSucursal == null) throw new BusinessException("El usuario por modificar debe estar vinculado a la empresa actual. Por favor, pongase en contacto con su proveedor del servicio.");
+                Empresa empresa = dbContext.EmpresaRepository.Find(usuario.IdEmpresa);
                 if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                 usuario.Clave = strClave;
                 dbContext.NotificarModificacion(usuario);
@@ -1097,8 +1095,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 Usuario usuario = dbContext.UsuarioRepository.Where(x => x.IdUsuario == intIdUsuario).FirstOrDefault();
                 if (usuario == null) throw new BusinessException("El usuario por eliminar no existe.");
-                if (usuario.SucursalPorUsuario.Count == 0) throw new BusinessException("El usuario por modificar debe estar vinculado a la empresa actual. Por favor, pongase en contacto con su proveedor del servicio.");
-                Empresa empresa = dbContext.EmpresaRepository.Find(usuario.SucursalPorUsuario.FirstOrDefault().IdEmpresa);
+                if (usuario.IdEmpresa == null || usuario.IdSucursal == null) throw new BusinessException("El usuario por modificar debe estar vinculado a la empresa actual. Por favor, pongase en contacto con su proveedor del servicio.");
+                Empresa empresa = dbContext.EmpresaRepository.Find(usuario.IdEmpresa);
                 if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                 List<RolePorUsuario> listaRole = dbContext.RolePorUsuarioRepository.Where(x => x.IdUsuario == usuario.IdUsuario).ToList();
                 foreach (RolePorUsuario roleUsuario in listaRole)

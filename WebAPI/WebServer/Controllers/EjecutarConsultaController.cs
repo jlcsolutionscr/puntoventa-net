@@ -149,12 +149,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                         decTipoCambioDolar = _servicioMantenimiento.ObtenerTipoCambioVenta(configuracionGeneral.ConsultaIndicadoresEconomicosURL, configuracionGeneral.OperacionSoap, DateTime.Now);
                     strRespuesta = decTipoCambioDolar.ToString();
                     break;
-                case "ValidarUsuarioHacienda":
-                    strCodigo = parametrosJO.Property("CodigoUsuario").Value.ToString();
-                    strClave = parametrosJO.Property("Clave").Value.ToString();
-                    bool bolValido = _servicioMantenimiento.ValidarUsuarioHacienda(strCodigo, strClave, configuracionGeneral);
-                    strRespuesta = JsonConvert.SerializeObject(bolValido);
-                    break;
                 case "ObtenerListadoTipodePrecio":
                     IList<LlaveDescripcion> listadoTipodePrecio = _servicioMantenimiento.ObtenerListadoTipodePrecio();
                     if (listadoTipodePrecio.Count > 0)
