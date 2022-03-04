@@ -151,7 +151,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             try
             {
                 bool modoMantenimiento = servicioMantenimiento.EnModoMantenimiento();
-                if (modoMantenimiento) throw new Exception("El sistema se encuentra en modo mantenimiento y no es posible acceder por el momento.");
+                if (modoMantenimiento) throw new WebFaultException<string>("El sistema se encuentra en modo mantenimiento y no es posible acceder por el momento.", HttpStatusCode.SeeOther);
             }
             catch (Exception ex)
             {
@@ -167,31 +167,34 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                 log.Error("Error al consultar el tipo de cambio del dolar: ", ex);
                 throw new WebFaultException<string>(ex.Message, HttpStatusCode.SeeOther);
             }
-            /*try
+            try
             {
-                string strPath = HttpContext.Current.Server.MapPath("~");
-                string[] directoryEntries = Directory.GetFileSystemEntries(strPath, "errorlog-??-??-????.txt");
-                foreach (string str in directoryEntries)
+                if (HttpContext.Current != null)
                 {
-                    byte[] bytes = File.ReadAllBytes(str);
-                    if (bytes.Length > 0)
+                    string strPath = HttpContext.Current.Server.MapPath("~");
+                    string[] directoryEntries = Directory.GetFileSystemEntries(strPath, "errorlog-??-??-????.txt");
+                    foreach (string str in directoryEntries)
                     {
-                        JArray jarrayObj = new JArray();
-                        JObject jobDatosAdjuntos1 = new JObject
+                        byte[] bytes = File.ReadAllBytes(str);
+                        if (bytes.Length > 0)
                         {
-                            ["nombre"] = str,
-                            ["contenido"] = Convert.ToBase64String(bytes)
-                        };
-                        jarrayObj.Add(jobDatosAdjuntos1);
-                        servicioEnvioCorreo.SendEmail(new string[] { configuracionGeneral.CorreoNotificacionErrores }, new string[] { }, "Archivo log con errores de procesamiento", "Adjunto archivo con errores de procesamiento anteriores a la fecha actual.", false, jarrayObj);
+                            JArray jarrayObj = new JArray();
+                            JObject jobDatosAdjuntos1 = new JObject
+                            {
+                                ["nombre"] = str,
+                                ["contenido"] = Convert.ToBase64String(bytes)
+                            };
+                            jarrayObj.Add(jobDatosAdjuntos1);
+                            servicioEnvioCorreo.SendEmail(new string[] { configuracionGeneral.CorreoNotificacionErrores }, new string[] { }, "Archivo log con errores de procesamiento", "Adjunto archivo con errores de procesamiento anteriores a la fecha actual.", false, jarrayObj);
+                        }
+                        File.Delete(str);
                     }
-                    File.Delete(str);
                 }
             }
             catch (Exception ex)
             {
                 log.Error("Error al enviar los archivos historicos de errores del sistema: ", ex);
-            }*/
+            }
         }
 
         public string ObtenerUltimaVersionApp()
@@ -412,7 +415,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         servicioMantenimiento.ActualizarLogoEmpresa(intIdEmpresa, "");
                         break;
                     case "AgregarCredencialesHacienda":
-                        strIdentificacion = parametrosJO.Property("Identificacion").Value.ToString();
+                        intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                         strUsuario = parametrosJO.Property("Usuario").Value.ToString();
                         strClave = parametrosJO.Property("Clave").Value.ToString();
                         strNombreCertificado = parametrosJO.Property("NombreCertificado").Value.ToString();
@@ -420,7 +423,7 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         strCertificado = parametrosJO.Property("Certificado").Value.ToString();
                         byte[] bytCertificado = Convert.FromBase64String(strCertificado);
                         credenciales = new CredencialesHacienda();
-                        credenciales.Identificacion = strIdentificacion;
+                        credenciales.IdEmpresa = intIdEmpresa;
                         credenciales.UsuarioHacienda = strUsuario;
                         credenciales.ClaveHacienda = strClave;
                         credenciales.NombreCertificado = strNombreCertificado;
@@ -429,13 +432,13 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                         servicioMantenimiento.AgregarCredencialesHacienda(credenciales);
                         break;
                     case "ActualizarCredencialesHacienda":
-                        strIdentificacion = parametrosJO.Property("Identificacion").Value.ToString();
+                        intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                         strUsuario = parametrosJO.Property("Usuario").Value.ToString();
                         strClave = parametrosJO.Property("Clave").Value.ToString();
                         strNombreCertificado = parametrosJO.Property("NombreCertificado").Value.ToString();
                         strPin = parametrosJO.Property("PinCertificado").Value.ToString();
                         strCertificado = parametrosJO.Property("Certificado").Value.ToString();
-                        servicioMantenimiento.ActualizarCredencialesHacienda(strIdentificacion, strUsuario, strClave, strNombreCertificado, strPin, strCertificado);
+                        servicioMantenimiento.ActualizarCredencialesHacienda(intIdEmpresa, strUsuario, strClave, strNombreCertificado, strPin, strCertificado);
                         break;
                     case "ActualizarSucursalPorEmpresa":
                         sucursal = serializer.Deserialize<SucursalPorEmpresa>(strEntidad);
@@ -1186,8 +1189,8 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
                             strRespuesta = serializer.Serialize(logotipo);
                         break;
                     case "ObtenerCredencialesHacienda":
-                        strIdentificacion = parametrosJO.Property("Identificacion").Value.ToString();
-                        credenciales = servicioMantenimiento.ObtenerCredencialesHacienda(strIdentificacion);
+                        intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
+                        credenciales = servicioMantenimiento.ObtenerCredencialesHacienda(intIdEmpresa);
                         if (credenciales != null)
                             strRespuesta = serializer.Serialize(credenciales);
                         break;

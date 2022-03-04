@@ -11,12 +11,14 @@ using System.Web.Script.Serialization;
 using LeandroSoftware.Core.Utilitario;
 using System.Collections.Generic;
 using System.Text;
+using System.Globalization;
 
 namespace LeandroSoftware.ClienteWCF
 {
     public static class Administrador
     {
-        private static JavaScriptSerializer serializer = new CustomJavascriptSerializer();
+        private static CultureInfo cultureinfo = new CultureInfo("es-CR");
+        private static JavaScriptSerializer serializer = new CustomJavascriptSerializer(cultureinfo);
         private static string strServicioURL = ConfigurationManager.AppSettings["ServicioURL"];
         private static HttpClient httpClient = new HttpClient();
 
@@ -655,29 +657,6 @@ namespace LeandroSoftware.ClienteWCF
                 if (strToken != "")
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", strToken);
                 HttpResponseMessage httpResponse = await httpClient.GetAsync(strServicioURL + "/removerlogoempresaidempresa=" + intIdEmpresa);
-                if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
-                {
-                    string strError = serializer.Deserialize<string>(httpResponse.Content.ReadAsStringAsync().Result);
-                    throw new Exception(strError);
-                }
-                if (httpResponse.StatusCode != HttpStatusCode.OK)
-                    throw new Exception(httpResponse.ReasonPhrase);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
-        public static async Task ActualizarCertificadoEmpresa(int intIdEmpresa, string strCertificado, string strToken)
-        {
-            try
-            {
-                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
-                StringContent contentJson = serializarDatosConId(intIdEmpresa, strCertificado);
-                if (strToken != "")
-                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", strToken);
-                HttpResponseMessage httpResponse = await httpClient.PostAsync(strServicioURL + "/actualizarcertificadoempresa", contentJson);
                 if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
                 {
                     string strError = serializer.Deserialize<string>(httpResponse.Content.ReadAsStringAsync().Result);

@@ -808,8 +808,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    //if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
-                    //empresa.CierreEnEjecucion = true;
                     dbContext.Commit();
                     perdidaGananciaParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoCuentaContable.PerdidasyGanancias).FirstOrDefault();
                     if (perdidaGananciaParam == null) throw new Exception("La cuenta de perdidas y ganancias no se encuentra parametrizada y no se puede ejecutar el cierre contable. Por favor verificar.");
@@ -892,7 +890,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     asiento.TotalDebito = decTotalIngresos;
                     asiento.TotalCredito = decTotalEgresos;
                     AgregarAsiento(dbContext, asiento);
-                    //empresa.CierreEnEjecucion = false;
                     dbContext.Commit();
                 }
                 catch (BusinessException ex)
@@ -902,11 +899,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    //if (empresa != null)
-                    //{
-                    //    empresa.CierreEnEjecucion = false;
-                    //    dbContext.Commit();
-                    //}
                     log.Error("Error al ejecutar el cierre mensual contable: ", ex);
                     throw new Exception("Se produjo un error ejecutando el cierre mensual contable. Por favor consulte con su proveedor.");
                 }

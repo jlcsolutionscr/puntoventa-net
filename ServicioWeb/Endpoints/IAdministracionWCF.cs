@@ -104,10 +104,6 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
         void RemoverLogoEmpresa(int idempresa);
 
         [OperationContract]
-        [WebInvoke(Method = "POST", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, UriTemplate = "actualizarcertificadoempresa")]
-        void ActualizarCertificadoEmpresa(string strDatos);
-
-        [OperationContract]
         [WebInvoke(Method = "POST", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, UriTemplate = "agregarsucursalporempresa")]
         void AgregarSucursalPorEmpresa(string strDatos);
 

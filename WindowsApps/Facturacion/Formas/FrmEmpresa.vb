@@ -73,12 +73,12 @@ Public Class FrmEmpresa
         textbox.BackColor = Color.White
     End Sub
 
-    Private Async Sub FrmCliente_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+    Private Async Sub FrmEmpresa_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
             Await CargarCombos()
             datos = Await Puntoventa.ObtenerEmpresa(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
             Dim logotipo As Byte() = Await Puntoventa.ObtenerLogotipoEmpresa(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
-            credenciales = Await Puntoventa.ObtenerCredencialesHacienda(FrmPrincipal.empresaGlobal.Identificacion, FrmPrincipal.usuarioGlobal.Token)
+            credenciales = Await Puntoventa.ObtenerCredencialesHacienda(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
             datosSucursal = Await Puntoventa.ObtenerSucursalPorEmpresa(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, FrmPrincipal.usuarioGlobal.Token)
             datosTerminal = Await Puntoventa.ObtenerTerminalPorSucursal(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, FrmPrincipal.equipoGlobal.IdTerminal, FrmPrincipal.usuarioGlobal.Token)
             If datos Is Nothing Then
@@ -236,9 +236,9 @@ Public Class FrmEmpresa
                 Dim strCertificado As String = ""
                 If bytCertificado IsNot Nothing Then strCertificado = Convert.ToBase64String(bytCertificado)
                 If credenciales Is Nothing Then
-                    Await Puntoventa.AgregarCredencialesHacienda(txtIdentificacion.Text, txtUsuarioATV.Text, txtClaveATV.Text, txtNombreCertificado.Text, txtPinCertificado.Text, strCertificado, FrmPrincipal.usuarioGlobal.Token)
+                    Await Puntoventa.AgregarCredencialesHacienda(txtIdEmpresa.Text, txtUsuarioATV.Text, txtClaveATV.Text, txtNombreCertificado.Text, txtPinCertificado.Text, strCertificado, FrmPrincipal.usuarioGlobal.Token)
                 Else
-                    Await Puntoventa.ActualizarCredencialesHacienda(txtIdentificacion.Text, txtUsuarioATV.Text, txtClaveATV.Text, txtNombreCertificado.Text, txtPinCertificado.Text, strCertificado, FrmPrincipal.usuarioGlobal.Token)
+                    Await Puntoventa.ActualizarCredencialesHacienda(txtIdEmpresa.Text, txtUsuarioATV.Text, txtClaveATV.Text, txtNombreCertificado.Text, txtPinCertificado.Text, strCertificado, FrmPrincipal.usuarioGlobal.Token)
                 End If
 
                 txtPinCertificado.ReadOnly = True

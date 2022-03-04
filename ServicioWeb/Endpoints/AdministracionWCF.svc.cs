@@ -463,25 +463,6 @@ namespace LeandroSoftware.ServicioWeb.EndPoints
             }
         }
 
-        public void ActualizarCertificadoEmpresa(string strDatos)
-        {
-            try
-            {
-                JObject parametrosJO = JObject.Parse(strDatos);
-                string strIdentificacion = parametrosJO.Property("Identificacion").Value.ToString();
-                string strUsuario = parametrosJO.Property("Usuario").Value.ToString();
-                string strClave = parametrosJO.Property("Clave").Value.ToString();
-                string strNombreCertificado = parametrosJO.Property("NombreCertificado").Value.ToString();
-                string strPin = parametrosJO.Property("PinCertificado").Value.ToString();
-                string strCertificado = parametrosJO.Property("Certificado").Value.ToString();
-                servicioMantenimiento.ActualizarCredencialesHacienda(strIdentificacion, strUsuario, strClave, strNombreCertificado, strPin, strCertificado);
-            }
-            catch (Exception ex)
-            {
-                throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
-            }
-        }
-
         public void AgregarSucursalPorEmpresa(string strDatos)
         {
             try

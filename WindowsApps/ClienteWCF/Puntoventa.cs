@@ -11,7 +11,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 using System.Globalization;
-using System.Security.Cryptography.X509Certificates;
 
 namespace LeandroSoftware.ClienteWCF
 {
@@ -210,9 +209,9 @@ namespace LeandroSoftware.ClienteWCF
             return logotipo;
         }
 
-        public static async Task<CredencialesHacienda> ObtenerCredencialesHacienda(string strIdentificacion, string strToken)
+        public static async Task<CredencialesHacienda> ObtenerCredencialesHacienda(int intIdEmpresa, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerCredencialesHacienda', Parametros: {Identificacion: " + strIdentificacion + "}}";
+            string strDatos = "{NombreMetodo: 'ObtenerCredencialesHacienda', Parametros: {IdEmpresa: " + intIdEmpresa + "}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             CredencialesHacienda credenciales = null;
             if (respuesta != "")
@@ -889,15 +888,15 @@ namespace LeandroSoftware.ClienteWCF
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 
-        public static async Task AgregarCredencialesHacienda(string strIdentificacion, string strUsuario, string strClave, string strNombreCertificado, string strPin, string strCertificado, string strToken)
+        public static async Task AgregarCredencialesHacienda(int intIdEmpresa, string strUsuario, string strClave, string strNombreCertificado, string strPin, string strCertificado, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'AgregarCredencialesHacienda', Parametros: {Identificacion: '" + strIdentificacion + "', Usuario: '" + strUsuario + "', Clave: '" + strClave + "', NombreCertificado: '" + strNombreCertificado + "', PinCertificado: '" + strPin + "', Certificado: '" + strCertificado + "'}}";
+            string strDatos = "{NombreMetodo: 'AgregarCredencialesHacienda', Parametros: {IdEmpresa: " + intIdEmpresa + ", Usuario: '" + strUsuario + "', Clave: '" + strClave + "', NombreCertificado: '" + strNombreCertificado + "', PinCertificado: '" + strPin + "', Certificado: '" + strCertificado + "'}}";
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 
-        public static async Task ActualizarCredencialesHacienda(string strIdentificacion, string strUsuario, string strClave, string strNombreCertificado, string strPin, string strCertificado, string strToken)
+        public static async Task ActualizarCredencialesHacienda(int intIdEmpresa, string strUsuario, string strClave, string strNombreCertificado, string strPin, string strCertificado, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ActualizarCredencialesHacienda', Parametros: {Identificacion: '" + strIdentificacion + "', Usuario: '" + strUsuario + "', Clave: '" + strClave + "', NombreCertificado: '" + strNombreCertificado  + "', PinCertificado: '" + strPin + "', Certificado: '" + strCertificado + "'}}";
+            string strDatos = "{NombreMetodo: 'ActualizarCredencialesHacienda', Parametros: {IdEmpresa: " + intIdEmpresa + ", Usuario: '" + strUsuario + "', Clave: '" + strClave + "', NombreCertificado: '" + strNombreCertificado  + "', PinCertificado: '" + strPin + "', Certificado: '" + strCertificado + "'}}";
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 

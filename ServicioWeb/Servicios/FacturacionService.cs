@@ -115,7 +115,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     Empresa empresa = dbContext.EmpresaRepository.Find(cliente.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    //if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     bool existe = dbContext.ClienteRepository.AsNoTracking().FirstOrDefault(x => x.Identificacion == cliente.Identificacion && x.IdEmpresa == empresa.IdEmpresa) != null;
                     if (existe) throw new BusinessException("El cliente con identificación " + cliente.Identificacion + " ya se encuentra registrado en la empresa. Por favor verifique.");
                     dbContext.ClienteRepository.Add(cliente);
@@ -2177,7 +2176,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 Empresa empresa = dbContext.EmpresaRepository.Find(documento.IdEmpresa);
                                 if (empresa != null)
                                 {
-                                    CredencialesHacienda credenciales = dbContext.CredencialesHaciendaRepository.Find(empresa.Identificacion);
+                                    CredencialesHacienda credenciales = dbContext.CredencialesHaciendaRepository.Find(empresa.IdEmpresa);
                                     if (credenciales == null)
                                     {
                                         stringBuilder.AppendLine("Error al enviar el documento electrónico con id: " + documento.IdDocumento + " Detalle: La empresa no tiene registrado los credenciales ATV para generar documentos electrónicos");

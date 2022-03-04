@@ -10,7 +10,6 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public Usuario()
         {
             RolePorUsuario = new HashSet<RolePorUsuario>();
-            SucursalPorUsuario = new HashSet<SucursalPorUsuario>();
         }
 
         [Key]
@@ -19,14 +18,11 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public string Clave { get; set; }
         public decimal PorcMaxDescuento { get; set; }
         public bool PermiteRegistrarDispositivo { get; set; }
-        [NotMapped]
-        public int IdSucursal;
-        [NotMapped]
-        public Empresa Empresa;
+        public int IdEmpresa { get; set; }
+        public int IdSucursal { get; set; }
         [NotMapped]
         public string Token;
 
         public ICollection<RolePorUsuario> RolePorUsuario { get; set; }
-        public ICollection<SucursalPorUsuario> SucursalPorUsuario { get; set; }
     }
 }

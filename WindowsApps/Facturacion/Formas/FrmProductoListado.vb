@@ -78,7 +78,7 @@ Public Class FrmProductoListado
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
         Try
-            listado = Await Puntoventa.ObtenerListadoProductos(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, intNumeroPagina, intFilasPorPagina, True, chkFiltrarActivos.Checked, False, chkConDescuento.Checked, cboLinea.SelectedValue, txtCodigo.Text, txtCodigoProveedor.Text, txtDescripcion.Text, FrmPrincipal.usuarioGlobal.Token)
+            listado = Await Puntoventa.ObtenerListadoProductos(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, intNumeroPagina, intFilasPorPagina, True, chkFiltrarActivos.Checked, False, chkConDescuento.Checked, cboLinea.SelectedValue, txtCodigo.Text, txtCodigoProveedor.Text, txtDescripcion.Text, FrmPrincipal.usuarioGlobal.Token)
             dgvListado.DataSource = listado
             If listado.Count() > 0 Then
                 btnEditar.Enabled = True
@@ -96,7 +96,7 @@ Public Class FrmProductoListado
 
     Private Async Function ValidarCantidadRegistros() As Task
         Try
-            intTotalRegistros = Await Puntoventa.ObtenerTotalListaProductos(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, True, chkFiltrarActivos.Checked, False, chkConDescuento.Checked, cboLinea.SelectedValue, txtCodigo.Text, txtCodigoProveedor.Text, txtDescripcion.Text, FrmPrincipal.usuarioGlobal.Token)
+            intTotalRegistros = Await Puntoventa.ObtenerTotalListaProductos(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, True, chkFiltrarActivos.Checked, False, chkConDescuento.Checked, cboLinea.SelectedValue, txtCodigo.Text, txtCodigoProveedor.Text, txtDescripcion.Text, FrmPrincipal.usuarioGlobal.Token)
         Catch ex As Exception
             Throw ex
         End Try
@@ -119,6 +119,11 @@ Public Class FrmProductoListado
         cboLinea.ValueMember = "Id"
         cboLinea.DisplayMember = "Descripcion"
         cboLinea.SelectedValue = 0
+        cboSucursal.ValueMember = "Id"
+        cboSucursal.DisplayMember = "Descripcion"
+        cboSucursal.DataSource = Await Puntoventa.ObtenerListadoSucursales(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+        cboSucursal.SelectedValue = FrmPrincipal.equipoGlobal.IdSucursal
+        cboSucursal.Enabled = FrmPrincipal.bolSeleccionaSucursal
     End Function
 #End Region
 
@@ -169,10 +174,10 @@ Public Class FrmProductoListado
     Private Async Sub FrmProductoListado_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
             EstablecerPropiedadesDataGridView()
+            Await CargarComboBox()
             Await ValidarCantidadRegistros()
             intIndiceDePagina = 1
             Await ActualizarDatos(intIndiceDePagina)
-            Await CargarComboBox()
             bolReady = True
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -244,6 +249,12 @@ Public Class FrmProductoListado
 
     Private Sub cboLinea_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboLinea.SelectedIndexChanged
         If bolReady And cboLinea.SelectedValue IsNot Nothing Then
+            BtnFiltrar_Click(btnFiltrar, New EventArgs())
+        End If
+    End Sub
+
+    Private Sub cboSucursal_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboSucursal.SelectedIndexChanged
+        If bolReady And cboSucursal.SelectedValue IsNot Nothing Then
             BtnFiltrar_Click(btnFiltrar, New EventArgs())
         End If
     End Sub

@@ -63,6 +63,7 @@ namespace LeandroSoftware.ServicioWeb.Contexto
         DbSet<FormaPago> FormaPagoRepository { get; set; }
         DbSet<Ingreso> IngresoRepository { get; set; }
         DbSet<Linea> LineaRepository { get; set; }
+        DbSet<LineaPorSucursal> LineaPorSucursalRepository { get; set; }
         DbSet<MovimientoApartado> MovimientoApartadoRepository { get; set; }
         DbSet<MovimientoBanco> MovimientoBancoRepository { get; set; }
         DbSet<MovimientoCuentaPorCobrar> MovimientoCuentaPorCobrarRepository { get; set; }
@@ -89,7 +90,6 @@ namespace LeandroSoftware.ServicioWeb.Contexto
         DbSet<RolePorUsuario> RolePorUsuarioRepository { get; set; }
         DbSet<SaldoMensualContable> SaldoMensualContableRepository { get; set; }
         DbSet<SucursalPorEmpresa> SucursalPorEmpresaRepository { get; set; }
-        DbSet<SucursalPorUsuario> SucursalPorUsuarioRepository { get; set; }
         DbSet<TerminalPorSucursal> TerminalPorSucursalRepository { get; set; }
         DbSet<TipoDeCambioDolar> TipoDeCambioDolarRepository { get; set; }
         DbSet<TipoCuentaContable> TipoCuentaContableRepository { get; set; }
@@ -182,6 +182,7 @@ namespace LeandroSoftware.ServicioWeb.Contexto
         public DbSet<FormaPago> FormaPagoRepository { get; set; }
         public DbSet<Ingreso> IngresoRepository { get; set; }
         public DbSet<Linea> LineaRepository { get; set; }
+        public DbSet<LineaPorSucursal> LineaPorSucursalRepository { get; set; }
         public DbSet<MovimientoApartado> MovimientoApartadoRepository { get; set; }
         public DbSet<MovimientoBanco> MovimientoBancoRepository { get; set; }
         public DbSet<MovimientoCuentaPorCobrar> MovimientoCuentaPorCobrarRepository { get; set; }
@@ -208,7 +209,6 @@ namespace LeandroSoftware.ServicioWeb.Contexto
         public DbSet<RolePorUsuario> RolePorUsuarioRepository { get; set; }
         public DbSet<SaldoMensualContable> SaldoMensualContableRepository { get; set; }
         public DbSet<SucursalPorEmpresa> SucursalPorEmpresaRepository { get; set; }
-        public DbSet<SucursalPorUsuario> SucursalPorUsuarioRepository { get; set; }
         public DbSet<TerminalPorSucursal> TerminalPorSucursalRepository { get; set; }
         public DbSet<TipoDeCambioDolar> TipoDeCambioDolarRepository { get; set; }
         public DbSet<TipoCuentaContable> TipoCuentaContableRepository { get; set; }

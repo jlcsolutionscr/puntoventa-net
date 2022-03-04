@@ -99,7 +99,7 @@
     <Compile Include="Entidades\RolePorEmpresa.cs" />
     <Compile Include="Entidades\ExistenciaPorSucursal.cs" />
     <Compile Include="Entidades\SucursalPorEmpresa.cs" />
-    <Compile Include="Entidades\SucursalPorUsuario.cs" />
+    <Compile Include="Entidades\LineaPorSucursal.cs" />
     <Compile Include="Entidades\TipoDeCambioDolar.cs" />
     <Compile Include="Entidades\TipoIdentificacion.cs" />
     <Compile Include="Entidades\ParametroExoneracion.cs" />

@@ -586,7 +586,7 @@ Public Class FrmPrincipal
                 Next
             Next
         Else
-            Dim credenciales As CredencialesHacienda = Await Puntoventa.ObtenerCredencialesHacienda(empresa.Identificacion, usuarioGlobal.Token)
+            Dim credenciales As CredencialesHacienda = Await Puntoventa.ObtenerCredencialesHacienda(empresa.IdEmpresa, usuarioGlobal.Token)
             If Not ValidarEmpresa(empresa, credenciales) Then
                 If usuarioGlobal.RolePorUsuario.Where(Function(s) s.IdRole = 61).Count > 0 Then
                     MessageBox.Show("La información de la empresa requiere ser actualizada. Por favor ingrese al mantenimiento de Empresa para completar la información.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)

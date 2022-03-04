@@ -10,7 +10,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
     public partial class CredencialesHacienda
     {
         [Key]
-        public string Identificacion { get; set; }
+        public int IdEmpresa { get; set; }
         public string UsuarioHacienda { get; set; }
         public string ClaveHacienda { get; set; }
         public string AccessToken { get; set; }
@@ -21,5 +21,7 @@ namespace LeandroSoftware.Core.Dominio.Entidades
         public byte[] Certificado { get; set; }
         public string NombreCertificado { get; set; }
         public string PinCertificado { get; set; }
+        [ForeignKey("IdEmpresa")]
+        public Empresa Empresa { get; set; }
     }
 }

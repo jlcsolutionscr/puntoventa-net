@@ -1,8 +1,7 @@
-Imports System.Collections.Generic
 Imports LeandroSoftware.ClienteWCF
 Imports LeandroSoftware.Core.Dominio.Entidades
 Imports LeandroSoftware.Core.Utilitario
-Imports System.Linq
+Imports System.Threading.Tasks
 
 Public Class FrmUsuario
 #Region "Variables"
@@ -10,7 +9,6 @@ Public Class FrmUsuario
     Private dtrRolePorUsuario As DataRow
     Private datos As Usuario
     Private rolePorUsuario As RolePorUsuario
-    Private sucursalPorUsuario As SucursalPorUsuario
     Public intIdUsuario As Integer
 #End Region
 
@@ -76,7 +74,7 @@ Public Class FrmUsuario
         End If
     End Function
 
-    Private Async Sub CargarCombos()
+    Private Async Function CargarCombos() As Task
         cboRole.ValueMember = "Id"
         cboRole.DisplayMember = "Descripcion"
         cboRole.DataSource = Await Puntoventa.ObtenerListadoRolesPorEmpresa(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
@@ -84,7 +82,7 @@ Public Class FrmUsuario
         cboSucursal.DisplayMember = "Descripcion"
         cboSucursal.DataSource = Await Puntoventa.ObtenerListadoSucursales(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
         cboSucursal.SelectedValue = FrmPrincipal.equipoGlobal.IdSucursal
-    End Sub
+    End Function
 #End Region
 
 #Region "Eventos Controles"
@@ -111,13 +109,14 @@ Public Class FrmUsuario
         Try
             IniciaDetalleRole()
             EstablecerPropiedadesDataGridView()
-            CargarCombos()
+            Await CargarCombos()
             If intIdUsuario > 0 Then
                 txtUsuario.ReadOnly = True
                 Dim strDecryptedPassword As String
                 Try
                     datos = Await Puntoventa.ObtenerUsuario(intIdUsuario, FrmPrincipal.usuarioGlobal.Token)
                     strDecryptedPassword = Utilitario.DesencriptarDatos(datos.Clave)
+                    cboSucursal.SelectedValue = datos.IdSucursal
                 Catch ex As Exception
                     Throw ex
                 End Try
@@ -129,7 +128,7 @@ Public Class FrmUsuario
                 txtPassword.Text = strDecryptedPassword
                 txtPorcMaxDescuento.Text = datos.PorcMaxDescuento
                 chkRegistraDispositivo.Checked = datos.PermiteRegistrarDispositivo
-                cboSucursal.SelectedValue = datos.SucursalPorUsuario.ToList()(0).IdSucursal
+                cboSucursal.SelectedValue = datos.IdSucursal
                 CargarDetalleRole(datos)
             Else
                 txtUsuario.ReadOnly = False
@@ -155,16 +154,6 @@ Public Class FrmUsuario
             Exit Sub
         End If
         Dim strEncryptedPassword As String
-        If datos.IdUsuario = 0 Then
-            sucursalPorUsuario = New SucursalPorUsuario With {
-                .IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa,
-                .IdSucursal = FrmPrincipal.equipoGlobal.IdSucursal
-            }
-            Dim listaSucursalPorUsuario As List(Of SucursalPorUsuario) = New List(Of SucursalPorUsuario) From {
-                sucursalPorUsuario
-            }
-            datos.SucursalPorUsuario = listaSucursalPorUsuario
-        End If
         Try
             strEncryptedPassword = Utilitario.EncriptarDatos(txtPassword.Text)
         Catch ex As Exception
@@ -177,6 +166,10 @@ Public Class FrmUsuario
         datos.Clave = strEncryptedPassword
         datos.PorcMaxDescuento = txtPorcMaxDescuento.Text
         datos.PermiteRegistrarDispositivo = chkRegistraDispositivo.Checked
+        If datos.IdUsuario = 0 Then
+            datos.IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa
+        End If
+        datos.IdSucursal = cboSucursal.SelectedValue
         datos.RolePorUsuario.Clear()
         For I As Short = 0 To dtbRolePorUsuario.Rows.Count - 1
             rolePorUsuario = New RolePorUsuario With {

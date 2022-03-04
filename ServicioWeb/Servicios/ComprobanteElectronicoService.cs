@@ -2193,7 +2193,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 };
                 try
                 {
-                    CredencialesHacienda credenciales = dbContext.CredencialesHaciendaRepository.Find(empresa.Identificacion);
+                    CredencialesHacienda credenciales = dbContext.CredencialesHaciendaRepository.Find(empresa.IdEmpresa);
                     if (credenciales == null) throw new BusinessException("La empresa no tiene registrado los credenciales ATV para generar documentos electrónicos");
                     X509Certificate2 uidCert = new X509Certificate2(credenciales.Certificado, credenciales.PinCertificado, X509KeyStorageFlags.MachineKeySet);
                     if (uidCert.NotAfter <= DateTime.Now) throw new BusinessException("La llave criptográfica para la firma del documento electrónico se encuentra vencida. Por favor reemplace su llave criptográfica para poder emitir documentos electrónicos");
@@ -2263,7 +2263,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         {
                             try
                             {
-                                CredencialesHacienda credenciales = dbContext.CredencialesHaciendaRepository.Find(empresa.Identificacion);
+                                CredencialesHacienda credenciales = dbContext.CredencialesHaciendaRepository.Find(empresa.IdEmpresa);
                                 XmlDocument documentoXml = new XmlDocument();
                                 using (MemoryStream ms = new MemoryStream(documento.DatosDocumento))
                                 {
