@@ -224,7 +224,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             TotalDebito = 0
                         };
                         asiento.Detalle = "Registro de traslado de mercancías entre sucursales.";
-                        //Detalle asiento sucursal origne
+                        //Detalle asiento sucursal origen
                         DetalleAsiento detalleAsiento = new DetalleAsiento();
                         int intLineaDetalleAsiento = 1;
                         detalleAsiento.Linea = intLineaDetalleAsiento;

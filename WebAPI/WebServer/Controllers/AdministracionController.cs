@@ -463,22 +463,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
             }
         }
 
-        [HttpPost("actualizarcertificadoempresa")]
-        public void ActualizarCertificadoEmpresa([FromBody] string strDatos)
-        {
-            try
-            {
-                JObject parametrosJO = JObject.Parse(strDatos);
-                int intIdEmpresa = int.Parse(parametrosJO.Property("Id").Value.ToString());
-                string strCertificado = parametrosJO.Property("Datos").Value.ToString();
-                _servicioMantenimiento.ActualizarCertificadoEmpresa(intIdEmpresa, strCertificado);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-
         [HttpPost("agregarsucursalporempresa")]
         public void AgregarSucursalPorEmpresa([FromBody] string strDatos)
         {

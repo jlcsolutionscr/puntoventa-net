@@ -31,6 +31,7 @@ namespace LeandroSoftware.ServicioWeb.Contexto
         public DbSet<ClaseCuentaContable> ClaseCuentaContableRepository { get; set; }
         public DbSet<ClasificacionProducto> ClasificacionProductoRepository { get; set; }
         public DbSet<Cliente> ClienteRepository { get; set; }
+        public DbSet<CredencialesHacienda> CredencialesHaciendaRepository { get; set; }
         public DbSet<CuentaBanco> CuentaBancoRepository { get; set; }
         public DbSet<CuentaEgreso> CuentaEgresoRepository { get; set; }
         public DbSet<CuentaIngreso> CuentaIngresoRepository { get; set; }
@@ -69,6 +70,7 @@ namespace LeandroSoftware.ServicioWeb.Contexto
         public DbSet<Empresa> EmpresaRepository { get; set; }
         public DbSet<Ingreso> IngresoRepository { get; set; }
         public DbSet<Linea> LineaRepository { get; set; }
+        public DbSet<LineaPorSucursal> LineaPorSucursalRepository { get; set; }
         public DbSet<MovimientoApartado> MovimientoApartadoRepository { get; set; }
         public DbSet<MovimientoBanco> MovimientoBancoRepository { get; set; }
         public DbSet<MovimientoCuentaPorCobrar> MovimientoCuentaPorCobrarRepository { get; set; }
@@ -93,7 +95,6 @@ namespace LeandroSoftware.ServicioWeb.Contexto
         public DbSet<RolePorUsuario> RolePorUsuarioRepository { get; set; }
         public DbSet<SaldoMensualContable> SaldoMensualContableRepository { get; set; }
         public DbSet<SucursalPorEmpresa> SucursalPorEmpresaRepository { get; set; }
-        public DbSet<SucursalPorUsuario> SucursalPorUsuarioRepository { get; set; }
         public DbSet<TerminalPorSucursal> TerminalPorSucursalRepository { get; set; }
         public DbSet<TipoDeCambioDolar> TipoDeCambioDolarRepository { get; set; }
         public DbSet<TipoCuentaContable> TipoCuentaContableRepository { get; set; }

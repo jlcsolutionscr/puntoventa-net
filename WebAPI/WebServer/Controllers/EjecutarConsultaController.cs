@@ -19,8 +19,9 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         private static IReporteService _servicioReportes;
         private static ITrasladoService _servicioTraslado;
         private static ICuentaPorProcesarService _servicioCuentaPorProcesar;
-        private ConfiguracionGeneral configuracionGeneral;
+        private static ConfiguracionGeneral configuracionGeneral;
         private static Empresa? empresa;
+        private static CredencialesHacienda credenciales;
         private static BancoAdquiriente? bancoAdquiriente;
         private static Cliente? cliente;
         private static Linea? linea;
@@ -66,25 +67,25 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         private static int intFilasPorPagina;
         private static int intTotalLista;
         private static decimal decTipoCambioDolar = 0;
-        private string strLogoPath;
-        private bool bolIncluyeServicios;
-        private bool bolFiltraActivos;
-        private bool bolFiltraExistencias;
-        private bool bolFiltraConDescuento;
-        private bool bolNulo;
-        private bool bolAplicado;
-        private string strClave;
-        private string strIdentificacion;
-        private string strCodigo;
-        private string strCodigoProveedor;
-        private string strDescripcion;
-        private string strNombre;
-        private string strBeneficiario;
-        private string strDetalle;
-        private string strFechaInicial;
-        private string strFechaFinal;
-        private byte[] bytLogo;
-        private string strRespuesta = "";
+        private static string strLogoPath;
+        private static string strClave;
+        private static bool bolIncluyeServicios;
+        private static bool bolFiltraActivos;
+        private static bool bolFiltraExistencias;
+        private static bool bolFiltraConDescuento;
+        private static bool bolNulo;
+        private static bool bolAplicado;
+        private static string strIdentificacion;
+        private static string strCodigo;
+        private static string strCodigoProveedor;
+        private static string strDescripcion;
+        private static string strNombre;
+        private static string strBeneficiario;
+        private static string strDetalle;
+        private static string strFechaInicial;
+        private static string strFechaFinal;
+        private static byte[] bytLogo;
+        private static string strRespuesta = "";
 
         public EjecutarConsultaController(
             IConfiguration configuration,
@@ -517,6 +518,12 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     empresa = _servicioMantenimiento.ObtenerEmpresa(intIdEmpresa);
                     if (empresa != null)
                         strRespuesta = JsonConvert.SerializeObject(empresa);
+                    break;
+                case "ObtenerCredencialesHacienda":
+                    intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
+                    credenciales = _servicioMantenimiento.ObtenerCredencialesHacienda(intIdEmpresa);
+                    if (credenciales != null)
+                        strRespuesta = JsonConvert.SerializeObject(credenciales);
                     break;
                 case "ObtenerLogotipoEmpresa":
                     intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
@@ -1257,12 +1264,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                 case "ObtenerDocumentoElectronico":
                     intIdLlave1 = int.Parse(parametrosJO.Property("IdDocumento").Value.ToString());
                     documento = _servicioFacturacion.ObtenerDocumentoElectronico(intIdLlave1);
-                    if (documento != null)
-                        strRespuesta = JsonConvert.SerializeObject(documento);
-                    break;
-                case "ObtenerRespuestaDocumentoElectronicoEnviado":
-                    intIdLlave1 = int.Parse(parametrosJO.Property("IdDocumento").Value.ToString());
-                    documento = _servicioFacturacion.ObtenerRespuestaDocumentoElectronicoEnviado(intIdLlave1, configuracionGeneral);
                     if (documento != null)
                         strRespuesta = JsonConvert.SerializeObject(documento);
                     break;

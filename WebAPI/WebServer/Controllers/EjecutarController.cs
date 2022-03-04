@@ -19,8 +19,9 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         private static IReporteService _servicioReportes;
         private static ITrasladoService _servicioTraslado;
         private static ICuentaPorProcesarService _servicioCuentaPorProcesar;
-        private ConfiguracionGeneral configuracionGeneral;
+        private static ConfiguracionGeneral configuracionGeneral;
         private static Empresa? empresa;
+        private static CredencialesHacienda credenciales;
         private static SucursalPorEmpresa? sucursal;
         private static TerminalPorSucursal? terminal;
         private static BancoAdquiriente? bancoAdquiriente;
@@ -45,12 +46,17 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         private static int intIdUsuario;
         private static int intIdTipoPago;
         private static int intIdLlave1;
-        private string strLogoPath;
-        private bool bolAplicado;
-        private string strMotivoAnulacion;
-        private string strFechaInicial;
-        private string strFechaFinal;
-        private byte[] bytLogo;
+        private static string strLogoPath;
+        private static string strUsuario;
+        private static string strClave;
+        private static string strNombreCertificado;
+        private static string strPin;
+        private static string strCertificado;
+        private static bool bolAplicado;
+        private static string strMotivoAnulacion;
+        private static string strFechaInicial;
+        private static string strFechaFinal;
+        private static byte[] bytLogo;
 
         public EjecutarController(
             IConfiguration configuration,
@@ -141,10 +147,41 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                     _servicioMantenimiento.ActualizarLogoEmpresa(intIdEmpresa, "");
                     break;
-                case "ActualizarCertificadoEmpresa":
+                case "AgregarCredencialesHacienda":
                     intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
-                    string strCertificado = parametrosJO.Property("Certificado").Value.ToString();
-                    _servicioMantenimiento.ActualizarCertificadoEmpresa(intIdEmpresa, strCertificado);
+                    strUsuario = parametrosJO.Property("Usuario").Value.ToString();
+                    strClave = parametrosJO.Property("Clave").Value.ToString();
+                    strNombreCertificado = parametrosJO.Property("NombreCertificado").Value.ToString();
+                    strPin = parametrosJO.Property("PinCertificado").Value.ToString();
+                    strCertificado = parametrosJO.Property("Certificado").Value.ToString();
+                    byte[] bytCertificado = Convert.FromBase64String(strCertificado);
+                    credenciales = new CredencialesHacienda();
+                    credenciales.IdEmpresa = intIdEmpresa;
+                    credenciales.UsuarioHacienda = strUsuario;
+                    credenciales.ClaveHacienda = strClave;
+                    credenciales.NombreCertificado = strNombreCertificado;
+                    credenciales.PinCertificado = strPin;
+                    credenciales.Certificado = bytCertificado;
+                    _servicioMantenimiento.AgregarCredencialesHacienda(credenciales);
+                    break;
+                case "ActualizarCredencialesHacienda":
+                    intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
+                    strUsuario = parametrosJO.Property("Usuario").Value.ToString();
+                    strClave = parametrosJO.Property("Clave").Value.ToString();
+                    strNombreCertificado = parametrosJO.Property("NombreCertificado").Value.ToString();
+                    strPin = parametrosJO.Property("PinCertificado").Value.ToString();
+                    strCertificado = parametrosJO.Property("Certificado").Value.ToString();
+                    _servicioMantenimiento.ActualizarCredencialesHacienda(intIdEmpresa, strUsuario, strClave, strNombreCertificado, strPin, strCertificado);
+                    break;
+                case "ValidarCredencialesHacienda":
+                    string strCodigo = parametrosJO.Property("CodigoUsuario").Value.ToString();
+                    strClave = parametrosJO.Property("Clave").Value.ToString();
+                    _servicioMantenimiento.ValidarCredencialesHacienda(strCodigo, strClave, configuracionGeneral);
+                    break;
+                case "ValidarCertificadoHacienda":
+                    strPin = parametrosJO.Property("PinCertificado").Value.ToString();
+                    strCertificado = parametrosJO.Property("Certificado").Value.ToString();
+                    _servicioMantenimiento.ValidarCertificadoHacienda(strPin, strCertificado);
                     break;
                 case "ActualizarSucursalPorEmpresa":
                     sucursal = JsonConvert.DeserializeObject<SucursalPorEmpresa>(strEntidad);

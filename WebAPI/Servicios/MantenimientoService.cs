@@ -7,6 +7,7 @@ using System.Globalization;
 using Microsoft.EntityFrameworkCore;
 using LeandroSoftware.ServicioWeb.Parametros;
 using LeandroSoftware.ServicioWeb.Utilitario;
+using System.Security.Cryptography.X509Certificates;
 
 namespace LeandroSoftware.ServicioWeb.Servicios
 {
@@ -34,13 +35,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         string AgregarEmpresa(Empresa empresa);
         Empresa ObtenerEmpresa(int intIdEmpresa);
         void ActualizarEmpresa(Empresa empresa);
+        void ValidarCredencialesHacienda(string strUsuario, string strClave, ConfiguracionGeneral config);
+        void ValidarCertificadoHacienda(string strPin, string strCertificado);
+        void AgregarCredencialesHacienda(CredencialesHacienda credenciales);
+        CredencialesHacienda ObtenerCredencialesHacienda(int intIdEmpresa);
+        void ActualizarCredencialesHacienda(int intIdEmpresa, string strUsuario, string strClave, string strNombreCertificado, string strPin, string strCertificado);
         List<LlaveDescripcion> ObtenerListadoReportePorEmpresa(int intIdEmpresa);
         List<LlaveDescripcion> ObtenerListadoRolePorEmpresa(int intIdEmpresa, bool bolAdministrator);
         void ActualizarReportePorEmpresa(int intIdEmpresa, List<ReportePorEmpresa> listado);
         void ActualizarRolePorEmpresa(int intIdEmpresa, List<RolePorEmpresa> listado);
         string ObtenerLogotipoEmpresa(int intIdEmpresa);
         void ActualizarLogoEmpresa(int intIdEmpresa, string strLogo);
-        void ActualizarCertificadoEmpresa(int intIdEmpresa, string strCertificado);
         // Métodos para administrar las sucursales
         SucursalPorEmpresa ObtenerSucursalPorEmpresa(int intIdEmpresa, int intIdSucursal);
         void AgregarSucursalPorEmpresa(SucursalPorEmpresa sucursal);
@@ -65,7 +70,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         IList<LlaveDescripcion> ObtenerListadoVendedores(int intIdEmpresa, string strNombre);
         // Métodos para administrar los roles del sistema
         Role ObtenerRole(int intIdRole);
-
         IList<LlaveDescripcion> ObtenerListadoRoles();
         // Métodos para administrar las líneas de producto
         void AgregarLinea(Linea linea);
@@ -152,20 +156,22 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         public IList<EquipoRegistrado> ObtenerListadoTerminalesDisponibles(string strUsuario, string strClave, string strIdentificacion, int intTipoDispositivo)
         {
+            if (strUsuario.ToUpper() == "CONTADOR") throw new Exception("El usuario que envia la petición no posee los privilegios necesarios.");
             var listaEquipoRegistrado = new List<EquipoRegistrado>();
             try
             {
                 Empresa empresa = dbContext.EmpresaRepository.Include("ReportePorEmpresa.CatalogoReporte").Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.Identificacion == strIdentificacion);
+                if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                 if (!empresa.PermiteFacturar) throw new BusinessException("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
                 if (empresa.FechaVence < DateTime.Today) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
                 Usuario usuario = null;
                 if (strUsuario.ToUpper() == "ADMIN")
                 {
-                    usuario = dbContext.UsuarioRepository.Include("RolePorUsuario").FirstOrDefault(x => x.IdUsuario == 1);
+                    usuario = dbContext.UsuarioRepository.AsNoTracking().FirstOrDefault(x => x.IdUsuario == 1);
                 }
                 else
                 {
-                    usuario = dbContext.UsuarioRepository.Include("SucursalPorUsuario").FirstOrDefault(x => x.SucursalPorUsuario.FirstOrDefault().IdEmpresa == empresa.IdEmpresa && x.CodigoUsuario == strUsuario.ToUpper());
+                    usuario = dbContext.UsuarioRepository.AsNoTracking().FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa && x.CodigoUsuario == strUsuario.ToUpper());
 
                 }
                 if (usuario == null)
@@ -315,7 +321,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 else
                 {
-                    usuario = dbContext.UsuarioRepository.Include("SucursalPorUsuario").FirstOrDefault(x => x.SucursalPorUsuario.FirstOrDefault().IdEmpresa == empresa.IdEmpresa && x.CodigoUsuario == strUsuario.ToUpper());
+                    usuario = dbContext.UsuarioRepository.FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa && x.CodigoUsuario == strUsuario.ToUpper());
                 }
                 if (usuario == null) throw new BusinessException("Usuario no registrado en la empresa suministrada. Por favor verifique la información suministrada.");
                 if (usuario.Clave != strClave) throw new BusinessException("Los credenciales suministrados no son válidos. Por favor verifique la información suministrada.");
@@ -342,179 +348,145 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         public Usuario ValidarCredencialesAdmin(string strUsuario, string strClave)
         {
-
+            if (strUsuario.ToUpper() != "ADMIN") throw new BusinessException("Los credenciales suministrados no son válidos. Por favor verifique la información suministrada.");
+            try
             {
-                try
-                {
-                    Usuario usuario = dbContext.UsuarioRepository.Where(x => x.CodigoUsuario == strUsuario.ToUpper()).FirstOrDefault();
-                    if (usuario == null) throw new BusinessException("Usuario no registrado. Por favor verifique la información suministrada.");
-                    if (usuario.Clave != strClave) throw new BusinessException("Los credenciales suministrados no son válidos. Por favor verifique la información suministrada.");
-                    if (usuario.IdUsuario != 1) throw new BusinessException("Los credenciales suministrados no corresponden al usuario administrador. Por favor verifique la información suministrada.");
-                    string strToken = GenerarRegistroAutenticacion(StaticRolePorUsuario.ADMINISTRADOR);
-                    usuario.Token = strToken;
-                    return usuario;
-                }
-                catch (BusinessException ex)
-                {
-                    throw ex;
-                }
-                catch (Exception ex)
-                {
-                    //_logger.LogError("Error al validar credenciales del usuario: ", ex);
-                    throw new Exception("Error en la validación de los credenciales suministrados por favor verifique la información. . .");
-                }
+                Usuario usuario = dbContext.UsuarioRepository.Where(x => x.CodigoUsuario == strUsuario.ToUpper()).FirstOrDefault();
+                if (usuario == null) throw new BusinessException("Los credenciales suministrados no son válidos. Por favor verifique la información suministrada.");
+                if (usuario.Clave != strClave) throw new BusinessException("Los credenciales suministrados no son válidos. Por favor verifique la información suministrada.");
+                string strToken = GenerarRegistroAutenticacion(StaticRolePorUsuario.ADMINISTRADOR);
+                usuario.Token = strToken;
+                return usuario;
+            }
+            catch (BusinessException ex)
+            {
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError("Error al validar credenciales del usuario: ", ex);
+                throw new Exception("Error en la validación de los credenciales suministrados por favor verifique la información. . .");
             }
         }
 
         public Empresa ValidarCredenciales(string strUsuario, string strClave, string strIdentificacion)
         {
-
+            try
             {
-                try
-                {
-                    Empresa empresa = dbContext.EmpresaRepository.Include("SucursalPorEmpresa").Include("ReportePorEmpresa.CatalogoReporte").Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.Identificacion == strIdentificacion);
-                    if (empresa == null) throw new BusinessException("La identificación suministrada no pertenece a ninguna empresa registrada en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
-                    Usuario usuario = null;
-                    if (strUsuario.ToUpper() == "ADMIN")
-                    {
-                        usuario = dbContext.UsuarioRepository.Include("RolePorUsuario.Role").FirstOrDefault(x => x.IdUsuario == 1);
-                        usuario.IdSucursal = 1;
-                    }
-                    else
-                    {
-                        if (!empresa.PermiteFacturar) throw new BusinessException("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
-                        if (empresa.FechaVence < DateTime.Today) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
-                        usuario = dbContext.UsuarioRepository.Include("SucursalPorUsuario").Include("RolePorUsuario.Role").FirstOrDefault(x => x.SucursalPorUsuario.FirstOrDefault(y => y.IdEmpresa == empresa.IdEmpresa) != null && x.CodigoUsuario == strUsuario.ToUpper());
-                        if (usuario != null) usuario.IdSucursal = usuario.SucursalPorUsuario.FirstOrDefault().IdSucursal;
-                    }
-                    if (usuario == null) throw new BusinessException("Usuario no registrado en la empresa suministrada. Por favor verifique la información suministrada.");
-                    if (usuario.Clave != strClave) throw new BusinessException("Los credenciales suministrados no son válidos. Verifique los credenciales suministrados.");
-                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa && x.IdSucursal == usuario.IdSucursal).FirstOrDefault();
-                    TerminalPorSucursal terminal = dbContext.TerminalPorSucursalRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa && x.IdTerminal == 1).FirstOrDefault();
-                    if (terminal == null || sucursal == null) throw new BusinessException("La terminal o dispositivo movil no se encuentra registrado para la empresa suministrada.");
-                    EquipoRegistrado equipo = new EquipoRegistrado
-                    {
-                        IdSucursal = sucursal.IdSucursal,
-                        IdTerminal = terminal.IdTerminal,
-                        NombreSucursal = sucursal.NombreSucursal,
-                        DireccionSucursal = sucursal.Direccion,
-                        TelefonoSucursal = sucursal.Telefono,
-                        ImpresoraFactura = terminal.ImpresoraFactura,
-                        AnchoLinea = terminal.AnchoLinea
-                    };
-                    string strToken = GenerarRegistroAutenticacion(StaticRolePorUsuario.USUARIO_SISTEMA);
-                    usuario.SucursalPorUsuario = new List<SucursalPorUsuario> { };
-                    usuario.Token = strToken;
-                    empresa.SucursalPorEmpresa = new List<SucursalPorEmpresa> { };
-                    empresa.Logotipo = null;
-                    empresa.Certificado = null;
-                    empresa.AccessToken = null;
-                    empresa.RefreshToken = null;
-                    empresa.EmitedAt = null;
-                    empresa.ExpiresIn = null;
-                    empresa.RefreshExpiresIn = null;
-                    empresa.EquipoRegistrado = equipo;
-                    empresa.Usuario = usuario;
-                    return empresa;
-                }
-                catch (BusinessException ex)
-                {
-                    throw ex;
-                }
-                catch (Exception ex)
-                {
-                    //_logger.LogError("Error al validar los credenciales del usuario por identificación: ", ex);
-                    throw new Exception("Error en la validación de los credenciales suministrados por favor verifique la información. . .");
-                }
+                Empresa local = dbContext.EmpresaRepository.AsNoTracking().FirstOrDefault(x => x.Identificacion == strIdentificacion);
+                if (local == null) throw new BusinessException("Los credenciales suministrados no son válidos. Verifique los credenciales suministrados.");
+                Empresa empresa = ObtenerEmpresaPorUsuario(strUsuario, strClave, local.IdEmpresa, "WebAPI");
+                string strToken = GenerarRegistroAutenticacion(StaticRolePorUsuario.USUARIO_SISTEMA);
+                empresa.Usuario.Token = strToken;
+                return empresa;
+            }
+            catch (BusinessException ex)
+            {
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError("Error al validar los credenciales del usuario por identificación: ", ex);
+                throw new Exception("Error en la validación de los credenciales suministrados por favor verifique la información. . .");
             }
         }
 
         public Empresa ValidarCredenciales(string strUsuario, string strClave, int intIdEmpresa, string strValorRegistro)
         {
-
+            try
             {
-                try
-                {
-                    Empresa empresa = dbContext.EmpresaRepository.Include("ReportePorEmpresa.CatalogoReporte").Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.IdEmpresa == intIdEmpresa);
-                    Usuario usuario = null;
-                    if (strUsuario.ToUpper() == "ADMIN")
-                    {
-                        usuario = dbContext.UsuarioRepository.Include("RolePorUsuario.Role").FirstOrDefault(x => x.IdUsuario == 1);
-                        usuario.IdSucursal = 1;
-                    }
-                    else
-                    {
-                        if (!empresa.PermiteFacturar) throw new BusinessException("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
-                        if (empresa.FechaVence < DateTime.Today) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
-                        usuario = dbContext.UsuarioRepository.Include("SucursalPorUsuario").Include("RolePorUsuario.Role").FirstOrDefault(x => x.SucursalPorUsuario.FirstOrDefault(y => y.IdEmpresa == empresa.IdEmpresa) != null && x.CodigoUsuario == strUsuario.ToUpper());
-                        usuario.IdSucursal = usuario.SucursalPorUsuario.FirstOrDefault().IdSucursal;
-                    }
-                    if (usuario == null) throw new BusinessException("Usuario no registrado en la empresa suministrada. Por favor verifique la información suministrada.");
-                    if (usuario.Clave != strClave) throw new BusinessException("Los credenciales suministrados no son válidos. Verifique los credenciales suministrados.");
-                    TerminalPorSucursal terminal = null;
-                    SucursalPorEmpresa sucursal = null;
-                    if (strUsuario.ToUpper() == "ADMIN")
-                    {
-                        terminal = dbContext.TerminalPorSucursalRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa).FirstOrDefault();
-                        sucursal = dbContext.SucursalPorEmpresaRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa && x.IdSucursal == terminal.IdTerminal).FirstOrDefault();
-                    }
-                    else
-                    {
-                        terminal = dbContext.TerminalPorSucursalRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa && x.ValorRegistro == strValorRegistro).FirstOrDefault();
-                        if (terminal == null) throw new BusinessException("El dispositivo no se encuentra registrado en el sistema.");
-                        sucursal = dbContext.SucursalPorEmpresaRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa && x.IdSucursal == terminal.IdSucursal).FirstOrDefault();
-                    }
-                    if (terminal == null || sucursal == null) throw new BusinessException("La terminal o dispositivo movil no se encuentra registrado para la empresa suministrada.");
-                    EquipoRegistrado equipo = new EquipoRegistrado
-                    {
-                        IdSucursal = sucursal.IdSucursal,
-                        IdTerminal = terminal.IdTerminal,
-                        NombreSucursal = sucursal.NombreSucursal,
-                        DireccionSucursal = sucursal.Direccion,
-                        TelefonoSucursal = sucursal.Telefono,
-                        ImpresoraFactura = terminal.ImpresoraFactura,
-                        AnchoLinea = terminal.AnchoLinea
-                    };
-                    string strToken = GenerarRegistroAutenticacion(StaticRolePorUsuario.USUARIO_SISTEMA);
-                    usuario.SucursalPorUsuario = new List<SucursalPorUsuario> { };
-                    usuario.Token = strToken;
-                    empresa.SucursalPorEmpresa = new List<SucursalPorEmpresa> { };
-                    empresa.Logotipo = null;
-                    empresa.Certificado = null;
-                    empresa.AccessToken = null;
-                    empresa.RefreshToken = null;
-                    empresa.EmitedAt = null;
-                    empresa.ExpiresIn = null;
-                    empresa.RefreshExpiresIn = null;
-                    empresa.EquipoRegistrado = equipo;
-                    empresa.Usuario = usuario;
-                    return empresa;
-                }
-                catch (BusinessException ex)
-                {
-                    throw ex;
-                }
-                catch (Exception ex)
-                {
-                    //_logger.LogError("Error al validar los credenciales del usuario por terminal: ", ex);
-                    throw new Exception("Error en la validación de los credenciales suministrados por favor verifique la información. . .");
-                }
+                Empresa empresa = ObtenerEmpresaPorUsuario(strUsuario, strClave, intIdEmpresa, strValorRegistro);
+                string strToken = GenerarRegistroAutenticacion(StaticRolePorUsuario.USUARIO_SISTEMA);
+                empresa.Usuario.Token = strToken;
+                return empresa;
+            }
+            catch (BusinessException ex)
+            {
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError("Error al validar los credenciales del usuario por terminal: ", ex);
+                throw new Exception("Error en la validación de los credenciales suministrados por favor verifique la información. . .");
             }
         }
 
-        public bool ValidarUsuarioHacienda(string strUsuario, string strClave, ConfiguracionGeneral config)
+        private Empresa ObtenerEmpresaPorUsuario(string strUsuario, string strClave, int intIdEmpresa, string strValorRegistro)
         {
-            bool bolRespuesta = false;
+            Empresa empresa = dbContext.EmpresaRepository.Include("SucursalPorEmpresa").Include("ReportePorEmpresa.CatalogoReporte").Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.IdEmpresa == intIdEmpresa);
+            Usuario usuario = null;
+            if (strUsuario.ToUpper() == "ADMIN" || strUsuario.ToUpper() == "CONTADOR")
+            {
+                usuario = dbContext.UsuarioRepository.FirstOrDefault(x => x.CodigoUsuario == strUsuario);
+                usuario.IdEmpresa = empresa.IdEmpresa;
+                usuario.IdSucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa).IdSucursal;
+            }
+            else
+            {
+                if (!empresa.PermiteFacturar) throw new BusinessException("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
+                if (empresa.FechaVence < DateTime.Today) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
+                usuario = dbContext.UsuarioRepository.Include("RolePorUsuario.Role").FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa && x.CodigoUsuario == strUsuario.ToUpper());
+            }
+            if (usuario == null) throw new BusinessException("Usuario no registrado en la empresa suministrada. Por favor verifique la información suministrada.");
+            if (usuario.Clave != strClave) throw new BusinessException("Los credenciales suministrados no son válidos. Verifique los credenciales suministrados.");
+            TerminalPorSucursal terminal = null;
+            SucursalPorEmpresa sucursal = null;
+            if (strValorRegistro == "WebAPI")
+            {
+                sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa && x.IdSucursal == usuario.IdSucursal);
+                terminal = dbContext.TerminalPorSucursalRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa && x.IdSucursal == sucursal.IdSucursal).FirstOrDefault();
+            }
+            else
+            {
+                terminal = dbContext.TerminalPorSucursalRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa && x.ValorRegistro == strValorRegistro).FirstOrDefault();
+                if (terminal == null) throw new BusinessException("El dispositivo no se encuentra registrado en el sistema.");
+                sucursal = dbContext.SucursalPorEmpresaRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa && x.IdSucursal == terminal.IdSucursal).FirstOrDefault();
+            }
+            if (terminal == null || sucursal == null) throw new BusinessException("La terminal o dispositivo movil no se encuentra registrado para la empresa suministrada.");
+            EquipoRegistrado equipo = new EquipoRegistrado
+            {
+                IdSucursal = sucursal.IdSucursal,
+                IdTerminal = terminal.IdTerminal,
+                NombreSucursal = sucursal.NombreSucursal,
+                DireccionSucursal = sucursal.Direccion,
+                TelefonoSucursal = sucursal.Telefono,
+                ImpresoraFactura = terminal.ImpresoraFactura,
+                AnchoLinea = terminal.AnchoLinea
+            };
+            empresa.Logotipo = null;
+            empresa.EquipoRegistrado = equipo;
+            empresa.Usuario = usuario;
+            foreach (SucursalPorEmpresa sucursalEmpresa in empresa.SucursalPorEmpresa)
+                sucursalEmpresa.Empresa = null;
+            return empresa;
+        }
+
+        public void ValidarCredencialesHacienda(string strUsuario, string strClave, ConfiguracionGeneral config)
+        {
             try
             {
                 TokenType token = ComprobanteElectronicoService.ObtenerToken(config.ServicioTokenURL, config.ClientId, strUsuario, strClave).Result;
-                if (token.access_token != null) bolRespuesta = true;
             }
             catch (Exception ex)
             {
                 //_logger.LogError("Error al validar los credenciales del usuario en Hacienda: ", ex);
+                throw new BusinessException("No fue posible validar los credenciales de Hacienda. Por favor verifique la información. . .");
             }
-            return bolRespuesta;
+        }
+
+        public void ValidarCertificadoHacienda(string strPin, string strCertificado)
+        {
+            try
+            {
+                byte[] bytCertificado = Convert.FromBase64String(strCertificado);
+                X509Certificate2 uidCert = new X509Certificate2(bytCertificado, strPin, X509KeyStorageFlags.MachineKeySet);
+                if (uidCert.NotAfter <= DateTime.Now) throw new BusinessException("La llave criptográfica para la firma del documento electrónico se encuentra vencida. Por favor reemplace su llave criptográfica para poder emitir documentos electrónicos");
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError("Error al validar la llave criptográfica: ", ex);
+                throw new BusinessException("No se logró abrir la llave criptográfica con el pin suministrado. Por favor verifique la información suministrada");
+            }
         }
 
         public decimal AutorizacionPorcentaje(string strUsuario, string strClave, int intIdEmpresa)
@@ -523,8 +495,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    Usuario usuario = dbContext.UsuarioRepository.Include("SucursalPorUsuario").FirstOrDefault(x => x.SucursalPorUsuario.FirstOrDefault().IdEmpresa == intIdEmpresa && x.CodigoUsuario == strUsuario.ToUpper());
-                    if (usuario == null) throw new BusinessException("Usuario no registrado en la empresa suministrada. Por favor verifique la información suministrada.");
+                    Usuario usuario = dbContext.UsuarioRepository.FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.CodigoUsuario == strUsuario.ToUpper());
+                    if (usuario == null) throw new BusinessException("Los credenciales suministrados no son válidos.Verifique los credenciales suministrados.");
                     if (usuario.Clave != strClave) throw new BusinessException("Los credenciales suministrados no son válidos. Verifique los credenciales suministrados.");
                     return usuario.PorcMaxDescuento;
                 }
@@ -534,8 +506,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    //_logger.LogError("Error al validar los credenciales del usuario por terminal: ", ex);
-                    throw new Exception("Error en la validación de los credenciales suministrados por favor verifique la información. . .");
+                    //_logger.LogError("Error al autorizar un porcentaje de descuento con credenciales: ", ex);
+                    throw new Exception("Error al obtener la autorización del descuento. Por favor consulte con su proveedor.");
                 }
             }
         }
@@ -671,13 +643,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.IdEmpresa == intIdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    empresa.Certificado = null;
-                    empresa.Logotipo = null;
-                    empresa.AccessToken = null;
-                    empresa.RefreshToken = null;
-                    empresa.EmitedAt = null;
-                    empresa.ExpiresIn = null;
-                    empresa.RefreshExpiresIn = null;
                     return empresa;
                 }
                 catch (BusinessException ex)
@@ -874,373 +839,353 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void ActualizarCertificadoEmpresa(int intIdEmpresa, string strCertificado)
+        public void AgregarCredencialesHacienda(CredencialesHacienda credenciales)
         {
-
+            try
             {
-                try
+                dbContext.CredencialesHaciendaRepository.Add(credenciales);
+                dbContext.Commit();
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError("Error al agregar los credenciales de Hacienda: ", ex);
+                throw new Exception("Se produjo un error agregando los credenciales de Hacienda. Por favor consulte con su proveedor.");
+            }
+        }
+
+        public CredencialesHacienda ObtenerCredencialesHacienda(int intIdEmpresa)
+        {
+            try
+            {
+                CredencialesHacienda credenciales = dbContext.CredencialesHaciendaRepository.Find(intIdEmpresa);
+                if (credenciales != null) credenciales.Certificado = new byte[0];
+                return credenciales;
+            }
+            catch (Exception ex)
+            {
+                dbContext.RollBack();
+                //_logger.LogError("Error al consultar los credenciales de Hacienda: ", ex);
+                throw new Exception("Se produjo un error consultando la información de los credenciales de Hacienda. Por favor consulte con su proveedor.");
+            }
+        }
+
+        public void ActualizarCredencialesHacienda(int intIdEmpresa, string strUsuario, string strClave, string strNombreCertificado, string strPin, string strCertificado)
+        {
+            try
+            {
+                CredencialesHacienda credenciales = dbContext.CredencialesHaciendaRepository.Find(intIdEmpresa);
+                credenciales.UsuarioHacienda = strUsuario;
+                credenciales.ClaveHacienda = strClave;
+                credenciales.NombreCertificado = strNombreCertificado;
+                credenciales.PinCertificado = strPin;
+                if (strCertificado != "")
                 {
-                    Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
-                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     byte[] bytCertificado = Convert.FromBase64String(strCertificado);
-                    ComprobanteElectronicoService.ValidarCertificado(empresa.PinCertificado, bytCertificado);
-                    empresa.Certificado = bytCertificado;
-                    dbContext.Commit();
+                    credenciales.Certificado = bytCertificado;
                 }
-                catch (BusinessException ex)
-                {
-                    throw ex;
-                }
-                catch (Exception ex)
-                {
-                    //_logger.LogError("Error al actualizar el certificado de la empresa: ", ex);
-                    throw new Exception("Se produjo un error registrando el certificado de la empresa. Por favor consulte con su proveedor.");
-                }
+                dbContext.NotificarModificacion(credenciales);
+                dbContext.Commit();
+            }
+            catch (BusinessException ex)
+            {
+                //_logger.LogError("Error al actualizar los credenciales de Hacienda: ", ex);
+                throw new Exception("Se produjo un error actualizando los credenciales de Hacienda. Por favor consulte con su proveedor.");
             }
         }
 
         public CatalogoReporte ObtenerCatalogoReporte(int intIdReporte)
         {
-
+            try
             {
-                try
-                {
-                    return dbContext.CatalogoReporteRepository.FirstOrDefault(x => x.IdReporte == intIdReporte);
-                }
-                catch (Exception ex)
-                {
-                    //_logger.LogError("Error al obtener la información del catalogo de reporte: ", ex);
-                    throw new Exception("Se produjo un error consultando la parametrización de la empresa. Por favor consulte con su proveedor.");
-                }
+                return dbContext.CatalogoReporteRepository.FirstOrDefault(x => x.IdReporte == intIdReporte);
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError("Error al obtener la información del catalogo de reporte: ", ex);
+                throw new Exception("Se produjo un error consultando la parametrización de la empresa. Por favor consulte con su proveedor.");
             }
         }
 
         public SucursalPorEmpresa ObtenerSucursalPorEmpresa(int intIdEmpresa, int intIdSucursal)
         {
-
+            try
             {
-                try
-                {
-                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal).FirstOrDefault();
-                    return sucursal;
-                }
-                catch (Exception ex)
-                {
-                    //_logger.LogError("Error al obtener la información de la sucursal: ", ex);
-                    throw new Exception("Se produjo un error al obtener la información de la sucursal. Por favor consulte con su proveedor.");
-                }
+                SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal).FirstOrDefault();
+                return sucursal;
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError("Error al obtener la información de la sucursal: ", ex);
+                throw new Exception("Se produjo un error al obtener la información de la sucursal. Por favor consulte con su proveedor.");
             }
         }
 
         public void AgregarSucursalPorEmpresa(SucursalPorEmpresa sucursal)
         {
-
+            try
             {
-                try
-                {
-                    dbContext.SucursalPorEmpresaRepository.Add(sucursal);
-                    dbContext.Commit();
-                }
-                catch (Exception ex)
-                {
-                    dbContext.RollBack();
-                    //_logger.LogError("Error al agregar la sucursal: ", ex);
-                    throw new Exception("Se produjo un error adicionando la información de la sucursal. Por favor consulte con su proveedor.");
-                }
+                dbContext.SucursalPorEmpresaRepository.Add(sucursal);
+                dbContext.Commit();
+            }
+            catch (Exception ex)
+            {
+                dbContext.RollBack();
+                //_logger.LogError("Error al agregar la sucursal: ", ex);
+                throw new Exception("Se produjo un error adicionando la información de la sucursal. Por favor consulte con su proveedor.");
             }
         }
 
         public void ActualizarSucursalPorEmpresa(SucursalPorEmpresa sucursal)
         {
-
+            try
             {
-                try
-                {
-                    dbContext.NotificarModificacion(sucursal);
-                    dbContext.Commit();
-                }
-                catch (Exception ex)
-                {
-                    dbContext.RollBack();
-                    //_logger.LogError("Error al actualizar la sucursal: ", ex);
-                    throw new Exception("Se produjo un error actualizando la información de la sucursal. Por favor consulte con su proveedor.");
-                }
+                dbContext.NotificarModificacion(sucursal);
+                dbContext.Commit();
+            }
+            catch (Exception ex)
+            {
+                dbContext.RollBack();
+                //_logger.LogError("Error al actualizar la sucursal: ", ex);
+                throw new Exception("Se produjo un error actualizando la información de la sucursal. Por favor consulte con su proveedor.");
             }
         }
 
         public void EliminarRegistrosPorEmpresa(int intIdEmpresa)
         {
-
+            try
             {
-                try
-                {
-                    object[] objParameters = new object[1];
-                    objParameters.SetValue(intIdEmpresa, 0);
-                    dbContext.ExecuteProcedure("LimpiarRegistros", objParameters);
-                    dbContext.Commit();
-                }
-                catch (Exception ex)
-                {
-                    dbContext.RollBack();
-                    //_logger.LogError("Error al actualizar la sucursal: ", ex);
-                    throw new Exception("Se produjo un error actualizando la información de la sucursal. Por favor consulte con su proveedor.");
-                }
+                object[] objParameters = new object[1];
+                objParameters.SetValue(intIdEmpresa, 0);
+                dbContext.ExecuteProcedure("LimpiarRegistros", objParameters);
+                dbContext.Commit();
+            }
+            catch (Exception ex)
+            {
+                dbContext.RollBack();
+                //_logger.LogError("Error al actualizar la sucursal: ", ex);
+                throw new Exception("Se produjo un error actualizando la información de la sucursal. Por favor consulte con su proveedor.");
             }
         }
 
         public TerminalPorSucursal ObtenerTerminalPorSucursal(int intIdEmpresa, int intIdSucursal, int intIdTerminal)
         {
-
+            try
             {
-                try
-                {
-                    TerminalPorSucursal terminal = dbContext.TerminalPorSucursalRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdTerminal == intIdTerminal).FirstOrDefault();
-                    return terminal;
-                }
-                catch (Exception ex)
-                {
-                    //_logger.LogError("Error al obtener la información de la terminal: ", ex);
-                    throw new Exception("Se produjo un error al obtener la información de la terminal. Por favor consulte con su proveedor.");
-                }
+                TerminalPorSucursal terminal = dbContext.TerminalPorSucursalRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdTerminal == intIdTerminal).FirstOrDefault();
+                return terminal;
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError("Error al obtener la información de la terminal: ", ex);
+                throw new Exception("Se produjo un error al obtener la información de la terminal. Por favor consulte con su proveedor.");
             }
         }
 
         public void AgregarTerminalPorSucursal(TerminalPorSucursal terminal)
         {
-
+            try
             {
-                try
-                {
-                    dbContext.TerminalPorSucursalRepository.Add(terminal);
-                    dbContext.Commit();
-                }
-                catch (Exception ex)
-                {
-                    dbContext.RollBack();
-                    //_logger.LogError("Error al agregar la terminal: ", ex);
-                    throw new Exception("Se produjo un error adicionando la información de la terminal. Por favor consulte con su proveedor.");
-                }
+                dbContext.TerminalPorSucursalRepository.Add(terminal);
+                dbContext.Commit();
+            }
+            catch (Exception ex)
+            {
+                dbContext.RollBack();
+                //_logger.LogError("Error al agregar la terminal: ", ex);
+                throw new Exception("Se produjo un error adicionando la información de la terminal. Por favor consulte con su proveedor.");
             }
         }
 
         public void ActualizarTerminalPorSucursal(TerminalPorSucursal terminal)
         {
-
+            try
             {
-                try
-                {
-                    dbContext.NotificarModificacion(terminal);
-                    dbContext.Commit();
-                }
-                catch (Exception ex)
-                {
-                    dbContext.RollBack();
-                    //_logger.LogError("Error al actualizar la terminal: ", ex);
-                    throw new Exception("Se produjo un error actualizando la información de la terminal. Por favor consulte con su proveedor.");
-                }
+                dbContext.NotificarModificacion(terminal);
+                dbContext.Commit();
+            }
+            catch (Exception ex)
+            {
+                dbContext.RollBack();
+                //_logger.LogError("Error al actualizar la terminal: ", ex);
+                throw new Exception("Se produjo un error actualizando la información de la terminal. Por favor consulte con su proveedor.");
             }
         }
 
         public void AgregarUsuario(Usuario usuario)
         {
-
+            try
             {
-                try
-                {
-                    usuario.CodigoUsuario = usuario.CodigoUsuario.ToUpper();
-                    if (usuario.CodigoUsuario == "ADMIN" || usuario.CodigoUsuario == "CONTADOR") throw new BusinessException("El código de usuario ingresado no se encuentra disponible. Por favor modifique la información suministrada.");
-                    if (usuario.SucursalPorUsuario.Count == 0) throw new BusinessException("El usuario por modificar debe estar vinculado a la empresa actual. Por favor, pongase en contacto con su proveedor del servicio.");
-                    Empresa empresa = dbContext.EmpresaRepository.Find(usuario.SucursalPorUsuario.FirstOrDefault().IdEmpresa);
-                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    Usuario usuarioExistente = dbContext.UsuarioRepository.Include("SucursalPorUsuario").FirstOrDefault(x => x.SucursalPorUsuario.FirstOrDefault().IdEmpresa == empresa.IdEmpresa && x.CodigoUsuario.Contains(usuario.CodigoUsuario.ToUpper()));
-                    if (usuarioExistente != null) throw new BusinessException("El código de usuario que desea agregar ya existe para la empresa suministrada.");
-                    usuario.Clave = usuario.Clave;
-                    dbContext.UsuarioRepository.Add(usuario);
-                    dbContext.Commit();
-                }
-                catch (BusinessException ex)
-                {
-                    throw ex;
-                }
-                catch (Exception ex)
-                {
-                    dbContext.RollBack();
-                    //_logger.LogError("Error al agregar el usuario: ", ex);
-                    throw new Exception("Se produjo un error agregando la información del usuario. Por favor consulte con su proveedor.");
-                }
+                usuario.CodigoUsuario = usuario.CodigoUsuario.ToUpper();
+                if (usuario.CodigoUsuario == "ADMIN" || usuario.CodigoUsuario == "CONTADOR") throw new BusinessException("El código de usuario ingresado no se encuentra disponible. Por favor modifique la información suministrada.");
+                if (usuario.SucursalPorUsuario.Count == 0) throw new BusinessException("El usuario por modificar debe estar vinculado a la empresa actual. Por favor, pongase en contacto con su proveedor del servicio.");
+                Empresa empresa = dbContext.EmpresaRepository.Find(usuario.SucursalPorUsuario.FirstOrDefault().IdEmpresa);
+                if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                Usuario usuarioExistente = dbContext.UsuarioRepository.FirstOrDefault(x => x.SucursalPorUsuario.FirstOrDefault().IdEmpresa == empresa.IdEmpresa && x.CodigoUsuario.Contains(usuario.CodigoUsuario.ToUpper()));
+                if (usuarioExistente != null) throw new BusinessException("El código de usuario que desea agregar ya existe para la empresa suministrada.");
+                usuario.Clave = usuario.Clave;
+                dbContext.UsuarioRepository.Add(usuario);
+                dbContext.Commit();
+            }
+            catch (BusinessException ex)
+            {
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                dbContext.RollBack();
+                //_logger.LogError("Error al agregar el usuario: ", ex);
+                throw new Exception("Se produjo un error agregando la información del usuario. Por favor consulte con su proveedor.");
             }
         }
 
         public void ActualizarUsuario(Usuario usuario)
         {
-
+            try
             {
-                try
-                {
-                    usuario.CodigoUsuario = usuario.CodigoUsuario.ToUpper();
-                    if (usuario.CodigoUsuario == "ADMIN" || usuario.CodigoUsuario == "CONTADOR") throw new BusinessException("El código de usuario ingresado no se encuentra disponible. Por favor modifique la información suministrada.");
-                    if (usuario.SucursalPorUsuario.Count == 0) throw new BusinessException("El usuario por modificar debe estar vinculado a la empresa actual. Por favor, pongase en contacto con su proveedor del servicio.");
-                    Empresa empresa = dbContext.EmpresaRepository.Find(usuario.SucursalPorUsuario.FirstOrDefault().IdEmpresa);
-                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    List<RolePorUsuario> listadoDetalleAnterior = dbContext.RolePorUsuarioRepository.Where(x => x.IdUsuario == usuario.IdUsuario).ToList();
-                    List<RolePorUsuario> listadoDetalle = usuario.RolePorUsuario.ToList();
-                    usuario.RolePorUsuario = null;
-                    foreach (RolePorUsuario detalle in listadoDetalleAnterior)
-                        dbContext.NotificarEliminacion(detalle);
-                    dbContext.NotificarModificacion(usuario);
-                    foreach (RolePorUsuario detalle in listadoDetalle)
-                        dbContext.RolePorUsuarioRepository.Add(detalle);
-                    dbContext.Commit();
-                }
-                catch (BusinessException ex)
-                {
-                    throw ex;
-                }
-                catch (Exception ex)
-                {
-                    dbContext.RollBack();
-                    //_logger.LogError("Error al actualizar el usuario: ", ex);
-                    throw new Exception("Se produjo un error actualizando la información del usuario. Por favor consulte con su proveedor.");
-                }
+                usuario.CodigoUsuario = usuario.CodigoUsuario.ToUpper();
+                if (usuario.CodigoUsuario == "ADMIN" || usuario.CodigoUsuario == "CONTADOR") throw new BusinessException("El código de usuario ingresado no se encuentra disponible. Por favor modifique la información suministrada.");
+                if (usuario.SucursalPorUsuario.Count == 0) throw new BusinessException("El usuario por modificar debe estar vinculado a la empresa actual. Por favor, pongase en contacto con su proveedor del servicio.");
+                Empresa empresa = dbContext.EmpresaRepository.Find(usuario.SucursalPorUsuario.FirstOrDefault().IdEmpresa);
+                if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                List<RolePorUsuario> listadoDetalleAnterior = dbContext.RolePorUsuarioRepository.Where(x => x.IdUsuario == usuario.IdUsuario).ToList();
+                List<RolePorUsuario> listadoDetalle = usuario.RolePorUsuario.ToList();
+                usuario.RolePorUsuario = null;
+                foreach (RolePorUsuario detalle in listadoDetalleAnterior)
+                    dbContext.NotificarEliminacion(detalle);
+                dbContext.NotificarModificacion(usuario);
+                foreach (RolePorUsuario detalle in listadoDetalle)
+                    dbContext.RolePorUsuarioRepository.Add(detalle);
+                dbContext.Commit();
+            }
+            catch (BusinessException ex)
+            {
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                dbContext.RollBack();
+                //_logger.LogError("Error al actualizar el usuario: ", ex);
+                throw new Exception("Se produjo un error actualizando la información del usuario. Por favor consulte con su proveedor.");
             }
         }
 
         public Usuario ActualizarClaveUsuario(int intIdUsuario, string strClave)
         {
-
+            try
             {
-                try
-                {
-                    Usuario usuario = usuario = dbContext.UsuarioRepository.FirstOrDefault(x => x.IdUsuario == intIdUsuario);
-                    if (usuario == null) throw new Exception("El usuario seleccionado para la actualización de la clave no existe.");
-                    if (usuario.SucursalPorUsuario.Count == 0) throw new BusinessException("El usuario por modificar debe estar vinculado a la empresa actual. Por favor, pongase en contacto con su proveedor del servicio.");
-                    Empresa empresa = dbContext.EmpresaRepository.Find(usuario.SucursalPorUsuario.FirstOrDefault().IdEmpresa);
-                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    usuario.Clave = strClave;
-                    dbContext.NotificarModificacion(usuario);
-                    dbContext.Commit();
-                    return usuario;
-                }
-                catch (Exception ex)
-                {
-                    dbContext.RollBack();
-                    //_logger.LogError("Error al actualizar la contraseña del usuario: ", ex);
-                    throw new Exception("Se produjo un error actualizando la contraseña del usuario. Por favor consulte con su proveedor.");
-                }
+                Usuario usuario = usuario = dbContext.UsuarioRepository.FirstOrDefault(x => x.IdUsuario == intIdUsuario);
+                if (usuario == null) throw new Exception("El usuario seleccionado para la actualización de la clave no existe.");
+                if (usuario.SucursalPorUsuario.Count == 0) throw new BusinessException("El usuario por modificar debe estar vinculado a la empresa actual. Por favor, pongase en contacto con su proveedor del servicio.");
+                Empresa empresa = dbContext.EmpresaRepository.Find(usuario.SucursalPorUsuario.FirstOrDefault().IdEmpresa);
+                if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                usuario.Clave = strClave;
+                dbContext.NotificarModificacion(usuario);
+                dbContext.Commit();
+                return usuario;
+            }
+            catch (Exception ex)
+            {
+                dbContext.RollBack();
+                //_logger.LogError("Error al actualizar la contraseña del usuario: ", ex);
+                throw new Exception("Se produjo un error actualizando la contraseña del usuario. Por favor consulte con su proveedor.");
             }
         }
 
         public void EliminarUsuario(int intIdUsuario)
         {
-
+            try
             {
-                try
-                {
-                    Usuario usuario = dbContext.UsuarioRepository.Where(x => x.IdUsuario == intIdUsuario).FirstOrDefault();
-                    if (usuario == null) throw new BusinessException("El usuario por eliminar no existe.");
-                    if (usuario.SucursalPorUsuario.Count == 0) throw new BusinessException("El usuario por modificar debe estar vinculado a la empresa actual. Por favor, pongase en contacto con su proveedor del servicio.");
-                    Empresa empresa = dbContext.EmpresaRepository.Find(usuario.SucursalPorUsuario.FirstOrDefault().IdEmpresa);
-                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    List<RolePorUsuario> listaRole = dbContext.RolePorUsuarioRepository.Where(x => x.IdUsuario == usuario.IdUsuario).ToList();
-                    foreach (RolePorUsuario roleUsuario in listaRole)
-                        dbContext.NotificarEliminacion(roleUsuario);
-                    foreach (SucursalPorUsuario sucursalUsuario in usuario.SucursalPorUsuario)
-                        dbContext.NotificarEliminacion(sucursalUsuario);
-                    dbContext.NotificarEliminacion(usuario);
-                    dbContext.Commit();
-                }
-                catch (DbUpdateException ex)
-                {
-                    //_logger.LogError("Validación al eliminar el usuario: ", ex);
-                    throw new BusinessException("No es posible eliminar el usuario seleccionado. Posee registros relacionados en el sistema.");
-                }
-                catch (BusinessException ex)
-                {
-                    dbContext.RollBack();
-                    throw ex;
-                }
-                catch (Exception ex)
-                {
-                    dbContext.RollBack();
-                    //_logger.LogError("Error al eliminar el usuario: ", ex);
-                    throw new Exception("Se produjo un error eliminando al usuario. Por favor consulte con su proveedor.");
-                }
+                Usuario usuario = dbContext.UsuarioRepository.Where(x => x.IdUsuario == intIdUsuario).FirstOrDefault();
+                if (usuario == null) throw new BusinessException("El usuario por eliminar no existe.");
+                if (usuario.SucursalPorUsuario.Count == 0) throw new BusinessException("El usuario por modificar debe estar vinculado a la empresa actual. Por favor, pongase en contacto con su proveedor del servicio.");
+                Empresa empresa = dbContext.EmpresaRepository.Find(usuario.SucursalPorUsuario.FirstOrDefault().IdEmpresa);
+                if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                List<RolePorUsuario> listaRole = dbContext.RolePorUsuarioRepository.Where(x => x.IdUsuario == usuario.IdUsuario).ToList();
+                foreach (RolePorUsuario roleUsuario in listaRole)
+                    dbContext.NotificarEliminacion(roleUsuario);
+                dbContext.NotificarEliminacion(usuario);
+                dbContext.Commit();
+            }
+            catch (DbUpdateException ex)
+            {
+                //_logger.LogError("Validación al eliminar el usuario: ", ex);
+                throw new BusinessException("No es posible eliminar el usuario seleccionado. Posee registros relacionados en el sistema.");
+            }
+            catch (BusinessException ex)
+            {
+                dbContext.RollBack();
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                dbContext.RollBack();
+                //_logger.LogError("Error al eliminar el usuario: ", ex);
+                throw new Exception("Se produjo un error eliminando al usuario. Por favor consulte con su proveedor.");
             }
         }
 
         public Usuario ObtenerUsuario(int intIdUsuario)
         {
-
+            try
             {
-                try
-                {
-                    Usuario usuario = dbContext.UsuarioRepository.Include("SucursalPorUsuario").Include("RolePorUsuario.Role").FirstOrDefault(x => x.IdUsuario == intIdUsuario);
-                    if (usuario == null)
-                        throw new BusinessException("El usuario por consultar no existe");
-                    foreach (SucursalPorUsuario sucursal in usuario.SucursalPorUsuario)
-                        sucursal.Usuario = null;
-                    return usuario;
-                }
-                catch (BusinessException ex)
-                {
-                    throw ex;
-                }
-                catch (Exception ex)
-                {
-                    //_logger.LogError("Error al obtener el usuario: ", ex);
-                    throw new Exception("Se produjo un error consultando la información del usuario. Por favor consulte con su proveedor.");
-                }
+                Usuario usuario = dbContext.UsuarioRepository.Include("RolePorUsuario.Role").FirstOrDefault(x => x.IdUsuario == intIdUsuario);
+                if (usuario == null)
+                    throw new BusinessException("El usuario por consultar no existe");
+                return usuario;
+            }
+            catch (BusinessException ex)
+            {
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError("Error al obtener el usuario: ", ex);
+                throw new Exception("Se produjo un error consultando la información del usuario. Por favor consulte con su proveedor.");
             }
         }
 
         public IList<LlaveDescripcion> ObtenerListadoUsuarios(int intIdEmpresa, string strCodigo)
         {
-
+            var listaUsuario = new List<LlaveDescripcion>();
+            try
             {
-                var listaUsuario = new List<LlaveDescripcion>();
-                try
+                var listado = dbContext.UsuarioRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdUsuario > 2);
+                if (!strCodigo.Equals(string.Empty))
+                    listado = listado.Where(x => x.CodigoUsuario.Contains(strCodigo.ToUpper()));
+                listado.OrderBy(x => x.IdUsuario);
+                foreach (var value in listado)
                 {
-                    var listado = dbContext.UsuarioRepository.Include("SucursalPorUsuario").Where(x => x.SucursalPorUsuario.FirstOrDefault(y => y.IdEmpresa == intIdEmpresa) != null && x.IdUsuario > 2);
-                    if (!strCodigo.Equals(string.Empty))
-                        listado = listado.Where(x => x.CodigoUsuario.Contains(strCodigo.ToUpper()));
-                    listado.OrderBy(x => x.IdUsuario);
-                    foreach (var value in listado)
-                    {
-                        LlaveDescripcion item = new LlaveDescripcion(value.IdUsuario, value.CodigoUsuario);
-                        listaUsuario.Add(item);
-                    }
-                    return listaUsuario;
+                    LlaveDescripcion item = new LlaveDescripcion(value.IdUsuario, value.CodigoUsuario);
+                    listaUsuario.Add(item);
                 }
-                catch (Exception ex)
-                {
-                    //_logger.LogError("Error al obtener el listado de usuarios: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de usuarios. Por favor consulte con su proveedor.");
-                }
+                return listaUsuario;
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError("Error al obtener el listado de usuarios: ", ex);
+                throw new Exception("Se produjo un error consultando el listado de usuarios. Por favor consulte con su proveedor.");
             }
         }
 
         public void AgregarVendedor(Vendedor vendedor)
         {
-
+            try
             {
-                try
-                {
-                    Empresa empresa = dbContext.EmpresaRepository.Find(vendedor.IdEmpresa);
-                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    dbContext.VendedorRepository.Add(vendedor);
-                    dbContext.Commit();
-                }
-                catch (BusinessException ex)
-                {
-                    dbContext.RollBack();
-                    throw ex;
-                }
-                catch (Exception ex)
-                {
-                    dbContext.RollBack();
-                    //_logger.LogError("Error al agregar el vendedor: ", ex);
-                    throw new Exception("Se produjo un error agregando la información del vendedor. Por favor consulte con su proveedor.");
-                }
+                Empresa empresa = dbContext.EmpresaRepository.Find(vendedor.IdEmpresa);
+                if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                dbContext.VendedorRepository.Add(vendedor);
+                dbContext.Commit();
+            }
+            catch (BusinessException ex)
+            {
+                dbContext.RollBack();
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                dbContext.RollBack();
+                //_logger.LogError("Error al agregar el vendedor: ", ex);
+                throw new Exception("Se produjo un error agregando la información del vendedor. Por favor consulte con su proveedor.");
             }
         }
 

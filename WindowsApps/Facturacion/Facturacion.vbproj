@@ -1052,6 +1052,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Formas\FrmLinea.resx">
       <DependentUpon>FrmLinea.vb</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Formas\FrmLineaListado.resx">
       <DependentUpon>FrmLineaListado.vb</DependentUpon>

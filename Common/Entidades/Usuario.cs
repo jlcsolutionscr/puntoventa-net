@@ -9,10 +9,10 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public string Clave { get; set; }
         public decimal PorcMaxDescuento { get; set; }
         public bool PermiteRegistrarDispositivo { get; set; }
-        public int IdSucursal;
+        public int IdEmpresa { get; set; }
+        public int IdSucursal { get; set; }
         public string Token;
 
         public List<RolePorUsuario> RolePorUsuario { get; set; }
-        public List<SucursalPorUsuario> SucursalPorUsuario { get; set; }
     }
 }
