@@ -513,7 +513,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 log.Error("Error al validar los credenciales del usuario en Hacienda: ", ex);
-                throw new BusinessException("Se encontro un error validando los credenciales de Hacienda");
+                throw new BusinessException("No fue posible validar los credenciales de Hacienda. Por favor verifique la información. . .");
             }
         }
 
