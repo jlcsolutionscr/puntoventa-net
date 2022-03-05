@@ -407,7 +407,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     Empresa local = dbContext.EmpresaRepository.AsNoTracking().FirstOrDefault(x => x.Identificacion == strIdentificacion);
-                    if (local == null) throw new BusinessException("Los credenciales suministrados no son válidos. Verifique los credenciales suministrados.");
+                    if (local == null) throw new BusinessException("No existe registro de empresa con los credenciales suministrados. Verifique los credenciales suministrados.");
                     Empresa empresa = ObtenerEmpresaPorUsuario(dbContext, strUsuario, strClave, local.IdEmpresa, "WebAPI");
                     string strToken = GenerarRegistroAutenticacion(StaticRolePorUsuario.USUARIO_SISTEMA);
                     empresa.Usuario.Token = strToken;
@@ -468,7 +468,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             if (usuario.Clave != strClave) throw new BusinessException("Los credenciales suministrados no son válidos. Verifique los credenciales suministrados.");
             TerminalPorSucursal terminal = null;
             SucursalPorEmpresa sucursal = null;
-            if (strValorRegistro == "WebAPI")
+            if (strUsuario.ToUpper() == "ADMIN" || strValorRegistro == "WebAPI")
             {
                 sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa && x.IdSucursal == usuario.IdSucursal);
                 terminal = dbContext.TerminalPorSucursalRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa && x.IdSucursal == sucursal.IdSucursal).FirstOrDefault();
