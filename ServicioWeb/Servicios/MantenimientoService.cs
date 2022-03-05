@@ -454,7 +454,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             Usuario usuario = null;
             if (strUsuario.ToUpper() == "ADMIN" || strUsuario.ToUpper() == "CONTADOR")
             {
-                usuario = dbContext.UsuarioRepository.FirstOrDefault(x => x.CodigoUsuario == strUsuario);
+                usuario = dbContext.UsuarioRepository.Include("RolePorUsuario.Role").FirstOrDefault(x => x.CodigoUsuario == strUsuario);
                 usuario.IdEmpresa = empresa.IdEmpresa;
                 usuario.IdSucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa).IdSucursal;
             }
